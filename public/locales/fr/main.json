@@ -1,0 +1,26 @@
+{
+  "projectName": "Misakey",
+
+  "cancel": "Annuler",
+  "loading": "Chargement ...",
+  "next": "Suivant",
+  "ok": "OK",
+
+  "signIn": "Connexion",
+  "signOut": "Déconnexion",
+
+  "links": {
+    "privacy": {
+      "text": "Confidentialité",
+      "href": "https://static.misakey.com/docs/privacy-policy/misakey-privacy-policy-v0-beta.pdf"
+    },
+    "tos": {
+      "text": "Conditions d'utilisation",
+      "href": "https://static.misakey.com/docs/tos/misakey-tos-v0-beta.pdf"
+    }
+  },
+
+  "navigation": {
+    "backButton": "Retour en arrière"
+  }
+}

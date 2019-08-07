@@ -1,0 +1,23 @@
+{
+  "extends": "airbnb",
+  "parser": "babel-eslint",
+  "plugins": ["jest", "import"],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src"]
+      }
+    }
+  },
+  "rules": {
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/forbid-prop-types": [1, { "forbid": ["any", "array"] }],
+    "import/prefer-default-export": 0,
+    "object-curly-newline": "off"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "jest": true
+  }
+}

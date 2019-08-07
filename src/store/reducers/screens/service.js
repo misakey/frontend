@@ -1,0 +1,23 @@
+import { createReducer } from 'store/reducers/helpers';
+import { SCREEN_SERVICE_RESET, SCREEN_SERVICE_UPDATE } from 'store/actions/screens/service';
+
+const initialState = {
+  id: null,
+  updatedAt: null,
+};
+
+function reset() {
+  return initialState;
+}
+
+function update(state, { type, ...rest }) {
+  return {
+    ...state,
+    ...rest,
+  };
+}
+
+export default createReducer(initialState, {
+  [SCREEN_SERVICE_RESET]: reset,
+  [SCREEN_SERVICE_UPDATE]: update,
+});

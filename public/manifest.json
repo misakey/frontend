@@ -1,0 +1,15 @@
+{
+  "short_name": "MKAdmin",
+  "name": "Misakey for admin",
+  "icons": [
+    {
+      "src": "/ico/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#e32e72",
+  "background_color": "#ffffff"
+}

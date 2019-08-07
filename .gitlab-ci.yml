@@ -1,0 +1,11 @@
+stages:
+  - lint
+
+lint:node:
+  stage: lint
+  image: node:10.15.3
+  variables:
+    GIT_SUBMODULE_STRATEGY: normal
+  script:
+    - yarn install
+    - yarn lint:ci

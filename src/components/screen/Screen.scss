@@ -1,0 +1,40 @@
+.Screen {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  overflow: hidden;
+
+  .main {
+    position: relative;
+    width: 100vw;
+    height: 100vh; // viewHeight - navHeight
+
+    @media (min-width: 600px) {
+      width: 31vw;
+    }
+  }
+
+  .section {
+    position: absolute;
+    width: 100vw;
+    min-height: 100vh; // viewHeight - navHeight
+    background-color: var(--light-grey);
+    z-index: 1100;
+
+    @media (min-width: 600px) {
+      position: relative;
+      width: 69vw;
+      height: auto;
+    }
+  }
+
+  .hide-exact {
+    display: none;
+    visibility: hidden;
+
+    @media (min-width: 600px) {
+      display: block;
+      visibility: visible;
+    }
+  }
+}

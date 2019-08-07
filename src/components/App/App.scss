@@ -1,0 +1,29 @@
+@import "~animate.css/source/_base.css";
+@import '~@misakey/ui/static/sass/colors';
+@import '~@misakey/ui/static/sass/fonts';
+
+:root {
+  --primary-color: #{$primary-color};
+  --secondary-color: #{$secondary-color};
+  --gold-yellow: #{$gold-yellow};
+  --dark-grey: #{$dark-grey};
+  --grey: #{$grey};
+  --light-grey: #{$light-grey};
+  --ultralight-grey: #{$ultralight-grey};
+  --light-background: #{$light-background};
+}
+
+html, body {
+  background-color: var(--light-background);
+  margin: 0;
+}
+
+.router-link {
+  text-decoration: none;
+  outline: none;
+}
+
+.misakey-brand {
+  font-family: 'Futura Std Bold', 'Roboto', sans-serif;
+  color: $secondary-color !important;
+}
