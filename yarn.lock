@@ -1215,10 +1215,10 @@
     prop-types "^15.7.2"
     react-is "^16.8.6"
 
-"@misakey/api@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@misakey/api/-/api-0.1.1.tgz#a06c087c4d8f9db3d298868915c8b59e0811af33"
-  integrity sha512-8tBtlh3jKwGbQznOviBXWqLyO1pZzmtdOzSUnlXlPb4da8+UsrY5kqbp1/ByN0NSEP+NalqhtRVsypN2lM/5Bg==
+"@misakey/api@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@misakey/api/-/api-0.1.2.tgz#eff89d62d0f231ced5f260582f52f60daedab699"
+  integrity sha512-mU6c5Ljw3V4RHcQMBY4YZRWpIgIi9LGwT7YFhlHEY6nsutPiL140rUA+jIThgGdzv90gZx90m+zTO9hl/cK/Eg==
   dependencies:
     "@misakey/helpers" "^1.0.0"
     http-status-codes "^1.3.2"
@@ -1234,6 +1234,17 @@
     path-to-regexp "^3.0.0"
     ramda "^0.26.1"
 
+"@misakey/helpers@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@misakey/helpers/-/helpers-1.0.2.tgz#57f256bccca241beef8ef8ea11536ba24c016e32"
+  integrity sha512-XnFC/vWGhxbJQu7m90ReSNXgoJq7K1rOPSUatrqzWGw9WKMNHr45cecR2S6+7lPqnOHBTIGA1XMYBT0PafuH7w==
+  dependencies:
+    "@babel/runtime" "^7.5.5"
+    lodash "^4.17.15"
+    normalizr "^3.4.0"
+    path-to-regexp "^3.0.0"
+    ramda "^0.26.1"
+
 "@misakey/hooks@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@misakey/hooks/-/hooks-0.1.0.tgz#00682bfe5c6495ec18b8309b658dca4c0e167466"
@@ -1242,10 +1253,10 @@
     "@babel/runtime" "^7.5.5"
     "@misakey/helpers" "^1.0.0"
 
-"@misakey/ui@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@misakey/ui/-/ui-0.1.2.tgz#49ef1c0c4514113d2c8c038a27afa660eb80c939"
-  integrity sha512-MXigz2X1itWyP4vKnNkHsXDS8GtO3ravn3ChvM2iMCNVLfenBbF8I/kkknOxDCMvOPOCgmEeL4CSL4p+34HiPQ==
+"@misakey/ui@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@misakey/ui/-/ui-0.1.5.tgz#fa4aa6ad732f6bc8b6e75d236b2f219b02028be8"
+  integrity sha512-dS/yJyDBRu+YLDmL4WnuJiPBgJq6xe9iWTsEuzewykjzevLZC9cP9iq8MULHSHNC//4BiWhFfq+uDijAXoXfrw==
   dependencies:
     "@babel/runtime" "^7.5.5"
     "@misakey/helpers" "^1.0.0"
