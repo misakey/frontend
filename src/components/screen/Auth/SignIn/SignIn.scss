@@ -1,18 +1,14 @@
 @import '~@misakey/ui/static/sass/colors';
 
 #AuthSignIn {
-  .container {
-    height: 100%;
-    width: 100%;
-    min-height: 100vh;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-
-    h3 {
-      padding: 1rem;
-    }
+  h3 {
+    padding-bottom: 1rem;
   }
 }

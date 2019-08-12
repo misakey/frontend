@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import clsx from 'clsx';
 
 import './Screen.scss';
 
@@ -14,7 +14,7 @@ import './Screen.scss';
  */
 function Screen({ children, className, ...rest }) {
   return (
-    <div className={classNames('Screen', className)} {...rest}>
+    <div className={clsx('Screen', className)} {...rest}>
       {children}
     </div>
   );

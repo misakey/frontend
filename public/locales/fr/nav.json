@@ -1,0 +1,36 @@
+{
+  "drawer": {
+    "toggle": "Basculer le menu",
+    "select": {
+      "service": {
+        "dropdown": "Basculer la liste des services",
+        "logo": {
+          "alt": "Logo du service : {{mainDomain}}",
+          "title": "{{mainDomain}}"
+        }
+      }
+    },
+    "list": {
+      "items": {
+        "home": "Accueil",
+        "information": "Informations",
+        "sso": "Single Sign On",
+        "users": "Utilisateurs",
+        "data": "Données personnelles",
+        "requests": "Requêtes RGPD"
+      }
+    }
+  },
+  "search": {
+    "label": "Recherche",
+    "placeholder": "Rechercher...",
+    "reset": {
+      "label": "Réinitialiser"
+    }
+  },
+  "history": {
+    "goBack": "Retour",
+    "goForward": "Suivant",
+    "goTo": "Aller à {{href}}"
+  }
+}

@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 
-import service from './screens/service';
-import serviceDetails from './screens/service/details';
+import Service from './screens/Service';
+import ServiceHome from './screens/Service/Home';
 
 export default combineReducers({
-  service,
-  serviceDetails,
+  Service,
+  ServiceHome,
 });

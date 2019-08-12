@@ -1,4 +1,4 @@
-@import "~animate.css/source/_base.css";
+@import '~animate.css/source/_base.css';
 @import '~@misakey/ui/static/sass/colors';
 @import '~@misakey/ui/static/sass/fonts';
 
@@ -14,8 +14,9 @@
 }
 
 html, body {
-  background-color: var(--light-background);
+  background-color: $light-background !important;
   margin: 0;
+  overflow-x: hidden;
 }
 
 .router-link {

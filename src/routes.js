@@ -17,10 +17,12 @@ const routes = {
       mainDomain: '/service/create/:mainDomain',
     },
     list: '/service/list',
-    home: '/:mainDomain',
-    details: {
-      _: '/:mainDomain/details',
-      edit: '/:mainDomain/details/edit',
+    home: {
+      _: '/:mainDomain',
+    },
+    information: {
+      _: '/:mainDomain/information',
+      edit: '/:mainDomain/information/edit',
     },
     sso: {
       _: '/:mainDomain/sso',
@@ -30,8 +32,12 @@ const routes = {
       _: '/:mainDomain/users',
       edit: '/:mainDomain/users/edit',
     },
-    data: '/:mainDomain/data',
-    requests: '/:mainDomain/requests',
+    data: {
+      _: '/:mainDomain/data',
+    },
+    requests: {
+      _: '/:mainDomain/requests',
+    },
   },
 };
 

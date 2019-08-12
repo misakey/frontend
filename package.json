@@ -18,7 +18,7 @@
     "@misakey/hooks": "^0.1.0",
     "@misakey/ui": "^0.2.0",
     "animate.css": "^3.7.2",
-    "classnames": "^2.2.6",
+    "clsx": "^1.0.4",
     "formik": "^1.5.8",
     "http-status-codes": "^1.3.2",
     "i18next": "^17.0.6",

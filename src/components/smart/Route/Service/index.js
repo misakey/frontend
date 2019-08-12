@@ -2,16 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
+import { withTranslation } from 'react-i18next';
 import AuthSignIn from 'components/screen/Auth/SignIn';
 import ServiceSearchSimple from 'components/screen/Service/Search/Simple';
 
 const DEFAULT_DOMAIN = 'service';
 
-function RouteService({ component: Component, componentProps, isAuthenticated, ...rest }) {
+function RouteService({ component: Component, componentProps, isAuthenticated, t, ...rest }) {
   const render = (props) => {
     const renderProps = { ...props, ...componentProps };
 
-    if (!isAuthenticated) { return <AuthSignIn {...renderProps} />; }
+    const { name } = componentProps;
+    if (!isAuthenticated) {
+      return (
+        <AuthSignIn
+          title={name && t(`auth:signIn.titleByComponentName.${name}`)}
+          {...renderProps}
+        />
+      );
+    }
 
     const { match } = props;
     const { mainDomain } = match.params;
@@ -35,6 +44,7 @@ RouteService.propTypes = {
   component: PropTypes.elementType.isRequired,
   componentProps: PropTypes.objectOf(PropTypes.any),
   isAuthenticated: PropTypes.bool,
+  t: PropTypes.func.isRequired,
 };
 
 RouteService.defaultProps = {
@@ -42,6 +52,6 @@ RouteService.defaultProps = {
   isAuthenticated: false,
 };
 
-export default connect(
+export default withTranslation('auth')(connect(
   state => ({ isAuthenticated: !!state.auth.token }),
-)(RouteService);
+)(RouteService));

@@ -12,14 +12,12 @@ import './SignIn.scss';
 
 const AuthSignIn = ({ buttonProps, title, t }) => (
   <div id="AuthSignIn">
-    <div className="container">
-      <Typography variant="h5" component="h3" align="center" color="textSecondary">
-        {isEmpty(title) ? t('auth:signIn.title') : title}
-      </Typography>
-      <Button href={getSignInHref(SIGN_IN_STATE_LENGTH)} rel="noopener noreferrer" {...buttonProps}>
-        {t('auth:signIn.button.label')}
-      </Button>
-    </div>
+    <Typography variant="h5" component="h3" align="center" color="textSecondary">
+      {isEmpty(title) ? t('auth:signIn.title') : title}
+    </Typography>
+    <Button href={getSignInHref(SIGN_IN_STATE_LENGTH)} rel="noopener noreferrer" {...buttonProps}>
+      {t('auth:signIn.button.label')}
+    </Button>
   </div>
 );
 
