@@ -36,9 +36,9 @@ import StorageIcon from '@material-ui/icons/Storage';
 import ChatIcon from '@material-ui/icons/Chat';
 
 import ButtonBurger from 'components/dumb/Button/Burger';
+import ElevationScroll from 'components/dumb/ElevationScroll';
 import ButtonConnect from 'components/smart/Button/Connect';
 
-const drawerWidth = 280;
 // @FIXME: use helper isIOS from @misakey/helpers/isIOS when released
 // https://gitlab.com/Misakey/js-common/merge_requests/14
 const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -73,6 +73,9 @@ export const LIST_ITEMS = {
   },
 };
 
+export const NAV_HEIGHT = 64;
+export const DRAWER_WIDTH = 280;
+
 // We export it in case we want to reuse the style with the left Portal
 // Going to make a high level Component for Navigation AppBar type
 export const menuButtonStyle = theme => ({
@@ -94,14 +97,14 @@ const useStyles = makeStyles(theme => ({
     }),
   },
   appBarShift: {
-    marginLeft: drawerWidth,
+    marginLeft: DRAWER_WIDTH,
     width: '100%',
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
     [theme.breakpoints.up('sm')]: {
-      width: `calc(100% - ${drawerWidth}px)`,
+      width: `calc(100% - ${DRAWER_WIDTH}px)`,
     },
   },
   menuButton: menuButtonStyle(theme),
@@ -109,12 +112,12 @@ const useStyles = makeStyles(theme => ({
     display: 'none',
   },
   drawer: {
-    width: drawerWidth,
+    width: DRAWER_WIDTH,
     flexShrink: 0,
     whiteSpace: 'nowrap',
   },
   drawerOpen: {
-    width: drawerWidth,
+    width: DRAWER_WIDTH,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -142,8 +145,9 @@ const useStyles = makeStyles(theme => ({
   content: {
     position: 'relative',
     flexGrow: 1,
-    padding: theme.spacing(2),
+    width: '100%',
     minHeight: '100vh',
+    paddingTop: NAV_HEIGHT,
   },
   current: {
     borderLeft: '4px solid black',
@@ -253,7 +257,7 @@ function Layout({ children, location, mainDomain, t }) {
           />
         </Portal>
         <Portal elementId={RIGHT_PORTAL_ID}>
-          <ButtonConnect t={t} className={classes.buttonConnect} application="/admin" />
+          <ButtonConnect t={t} className={classes.buttonConnect} authUri="admin/auth" />
         </Portal>
       </>
     );
@@ -267,32 +271,34 @@ function Layout({ children, location, mainDomain, t }) {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar
-        position="fixed"
-        color="inherit"
-        elevation={0}
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
-        <Toolbar>
-          <div id={LEFT_PORTAL_ID} className={classes.portal} />
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
+      <ElevationScroll>
+        <AppBar
+          position="fixed"
+          color="inherit"
+          elevation={0}
+          className={clsx(classes.appBar, {
+            [classes.appBarShift]: open,
+          })}
+        >
+          <Toolbar>
+            <div id={LEFT_PORTAL_ID} className={classes.portal} />
+            <div className={classes.search}>
+              <div className={classes.searchIcon}>
+                <SearchIcon />
+              </div>
+              <InputBase
+                placeholder={t('nav:search.placeholder')}
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                }}
+                inputProps={{ 'aria-label': t('nav:search.label') }}
+              />
             </div>
-            <InputBase
-              placeholder={t('nav:search.placeholder')}
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': t('nav:search.label') }}
-            />
-          </div>
-          <div id={RIGHT_PORTAL_ID} />
-        </Toolbar>
-      </AppBar>
+            <div id={RIGHT_PORTAL_ID} />
+          </Toolbar>
+        </AppBar>
+      </ElevationScroll>
       <SwipeableDrawer
         onOpen={noop}
         onClose={noop}

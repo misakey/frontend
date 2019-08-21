@@ -1,0 +1,39 @@
+{
+  "Service": {
+    "Claim": {
+      "title": "",
+      "description": "",
+      "body": {
+        "title": "Confirmer {{mainDomain}}",
+        "subTitle": "Ajouter le fichier TXT_Key ci-dessous à votre configuration DNS",
+        "steps": {
+          "title": "Étapes de configuration",
+          "label": {
+            "1": "Aller sur l’outil d’administration de votre DNS.",
+            "2": "Ajouter un nouvel enregistrement DNS",
+            "3": "Sélectionner le type TXT",
+            "4": "Configurer le domain : misakey.domain.com",
+            "5": "Coller la TXT_KEY ci-dessus",
+            "6": "Cliquer sur vérifier"
+          }
+        },
+        "txtKey": {
+          "title": "Clef d'appropriation du domaine",
+          "label": "TXT_KEY",
+          "actions": {
+            "copy": "Copier la clef",
+            "submit": "Vérifier",
+            "submitAgain": "Revérifier",
+            "submitLater": "Vérifier plus tard"
+          },
+          "copied": "Copié dans le presse papier !",
+          "error": {
+            "notYet": "Nous n’avons pas trouvé l’enregistrement sur votre configuration DNS. Parfois la propagation prend du temps. Vous pouvez revenir vérifier plus tard.",
+            "notYetShort": "Nous n’avons pas trouvé l’enregistrement"
+          },
+          "success": "Le service dont le domaine de référence est {{mainDomain}} a été ajouté à votre console d’administration"
+        }
+      }
+    }
+  }
+}

@@ -8,15 +8,14 @@ const routes = {
     signOut: '/logout',
   },
   service: {
-    claim: {
-      _: '/service/claim',
-      mainDomain: '/service/claim/:mainDomain',
-    },
     create: {
       _: '/service/create',
       mainDomain: '/service/create/:mainDomain',
     },
     list: '/service/list',
+    claim: {
+      _: '/:mainDomain/claim',
+    },
     home: {
       _: '/:mainDomain',
     },

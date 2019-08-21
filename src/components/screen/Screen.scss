@@ -1,29 +1,31 @@
 .Screen {
-  display: flex;
-  align-items: stretch;
-  flex-wrap: nowrap;
   overflow: hidden;
+
+  &.flex {
+    display: flex;
+    align-items: stretch;
+    flex-wrap: nowrap;
+  }
 
   .main {
     position: relative;
-    width: 100vw;
-    height: 100vh; // viewHeight - navHeight
+    width: 100%;
+    height: 100%;
 
     @media (min-width: 600px) {
-      width: 31vw;
+      width: 31%;
     }
   }
 
   .section {
     position: absolute;
-    width: 100vw;
-    min-height: 100vh; // viewHeight - navHeight
-    background-color: var(--light-grey);
+    width: 100%;
+    min-height: 100%;
     z-index: 1100;
 
     @media (min-width: 600px) {
       position: relative;
-      width: 69vw;
+      width: 69%;
       height: auto;
     }
   }

@@ -12,7 +12,6 @@ import AuthSignInCallback from 'components/screen/Auth/SignIn/Callback';
 import Layout from 'components/smart/Layout';
 
 const Home = React.lazy(() => import('components/screen/Home'));
-const ServiceClaim = React.lazy(() => import('components/screen/Service/Claim'));
 const ServiceCreate = React.lazy(() => import('components/screen/Service/Create'));
 const ServiceList = React.lazy(() => import('components/screen/Service/List'));
 const Service = React.lazy(() => import('components/screen/Service'));
@@ -26,7 +25,6 @@ function App() {
           <Switch>
             <Route exact path={routes._} component={Home} />
             <Route path={routes.auth.callback} component={AuthSignInCallback} />
-            <RoutePrivate path={routes.service.claim._} component={ServiceClaim} />
             <RoutePrivate path={routes.service.create._} component={ServiceCreate} />
             <RoutePrivate path={routes.service.list} component={ServiceList} />
             <Route path={routes.service.home._} component={Service} />
