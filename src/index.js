@@ -1,34 +1,39 @@
-// React
 import React from 'react';
 import ReactDOM from 'react-dom';
-import * as serviceWorker from 'serviceWorker';
-import { BrowserRouter as Router } from 'react-router-dom';
 
-// Redux
-import { Provider as StoreProvider } from 'react-redux';
+// STORE
 import { applyMiddleware, compose, createStore } from 'redux';
-import reducers from 'store/reducers';
-
-// Persistence
-import { PersistGate } from 'redux-persist/integration/react';
+import { Provider as StoreProvider } from 'react-redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import { PersistGate } from 'redux-persist/integration/react';
+import reducers from 'store/reducers';
 
-// Middlewares
-import APITokenMiddleware from 'middlewares/APItoken';
+// MIDDLEWARES
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
+import APITokenMiddleware from '@misakey/auth/middlewares/APItoken';
 
-// Theme & styles
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+// ROUTING
+import { BrowserRouter as Router } from 'react-router-dom';
+import * as serviceWorker from 'serviceWorker';
+
+// UI
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import theme from '@misakey/ui/theme';
 
-// Translations
-import 'i18n';
-
-// Components
+// COMPONENTS
 import App from 'components/App';
 import SplashScreen from 'components/dumb/SplashScreen';
+import i18n from 'i18next';
+
+// TRANSLATIONS
+import '@misakey/ui/i18n';
+import FRCommon from 'constants/locales/fr/common';
+import FRFields from 'constants/locales/fr/fields';
+
+i18n.addResourceBundle('fr', 'common', FRCommon, true, true);
+i18n.addResourceBundle('fr', 'fields', FRFields, true, true);
 
 /* ============================================================================================== */
 
@@ -44,7 +49,7 @@ ReactDOM.render((
   <React.Suspense fallback={null}>
     <StoreProvider store={store}>
       <PersistGate loading={<SplashScreen />} persistor={persistor}>
-        <MuiThemeProvider theme={createMuiTheme(theme)}>
+        <MuiThemeProvider theme={theme}>
           <Router>
             <App />
           </Router>

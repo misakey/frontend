@@ -37,7 +37,7 @@ import ChatIcon from '@material-ui/icons/Chat';
 
 import ButtonBurger from 'components/dumb/Button/Burger';
 import ElevationScroll from 'components/dumb/ElevationScroll';
-import ButtonConnect from 'components/smart/Button/Connect';
+import ButtonConnect from 'components/dumb/Button/Connect';
 
 // @FIXME: use helper isIOS from @misakey/helpers/isIOS when released
 // https://gitlab.com/Misakey/js-common/merge_requests/14
@@ -257,7 +257,7 @@ function Layout({ children, location, mainDomain, t }) {
           />
         </Portal>
         <Portal elementId={RIGHT_PORTAL_ID}>
-          <ButtonConnect t={t} className={classes.buttonConnect} authUri="admin/auth" />
+          <ButtonConnect className={classes.buttonConnect} />
         </Portal>
       </>
     );

@@ -2,12 +2,14 @@ import { combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-import { RESET_APP } from 'store/actions/app';
-import { SIGN_OUT } from 'store/actions/auth';
+import { RESET_APP } from '@misakey/store/actions/app';
+import { SIGN_OUT } from '@misakey/auth/store/actions/auth';
 
-import auth from './auth';
-import entities from './entities';
-import global from './global';
+import { makeReducer } from '@misakey/store/reducers/entities';
+
+import reducers from '@misakey/store/reducers';
+import auth from '@misakey/auth/store/reducers/auth';
+
 import screens from './screens';
 
 const authPersistConfig = {
@@ -18,9 +20,11 @@ const authPersistConfig = {
 
 const appReducer = combineReducers({
   auth: persistReducer(authPersistConfig, auth),
-  entities,
-  global,
   screens,
+  ...reducers,
+  entities: makeReducer({
+    services: {},
+  }),
 });
 
 const rootReducer = (state, action) => {

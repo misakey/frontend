@@ -1,4 +1,4 @@
-import { createReducer } from 'store/reducers/helpers';
+import createReducer from '@misakey/store/reducers/helpers/createReducer';
 import { SCREEN_SERVICE_RESET, SCREEN_SERVICE_UPDATE } from 'store/actions/screens/service';
 
 const initialState = {

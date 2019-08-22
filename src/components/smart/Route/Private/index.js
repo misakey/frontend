@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { getSignInHref } from '@misakey/api/endpoints/auth/helpers';
-import { SIGN_IN_STATE_LENGTH } from 'constants/auth';
 import Redirect from 'components/smart/Redirect';
 
 /**
@@ -21,7 +20,7 @@ function RoutePrivate({ component: Component, componentProps, isAuthenticated, i
     if (isValid(isAuthenticated)) { return <Component {...props} {...componentProps} />; }
     if (isAuthenticated) { return <Component notAllowed {...props} {...componentProps} />; }
 
-    return <Redirect to={getSignInHref(SIGN_IN_STATE_LENGTH)} />;
+    return <Redirect to={getSignInHref()} />;
   };
 
   return <Route {...rest} render={render} />;

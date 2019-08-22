@@ -36,6 +36,7 @@ function Service({ match, entity, userId }) {
     <Screen className="Service">
       <Switch>
         <RouteService
+          path={routes.service.claim._}
           component={ServiceClaim}
           componentProps={{ entity: fakeService, name: 'ServiceClaim', userId }}
         />

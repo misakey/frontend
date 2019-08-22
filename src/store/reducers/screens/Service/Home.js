@@ -1,4 +1,4 @@
-import { createReducer } from 'store/reducers/helpers';
+import createReducer from '@misakey/store/reducers/helpers/createReducer';
 
 const initialState = {};
 
