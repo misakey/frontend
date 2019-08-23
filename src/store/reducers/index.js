@@ -10,6 +10,7 @@ import { makeReducer } from '@misakey/store/reducers/entities';
 import reducers from '@misakey/store/reducers';
 import auth from '@misakey/auth/store/reducers/auth';
 
+import Layout from './Layout';
 import screens from './screens';
 
 const authPersistConfig = {
@@ -20,6 +21,7 @@ const authPersistConfig = {
 
 const appReducer = combineReducers({
   auth: persistReducer(authPersistConfig, auth),
+  Layout,
   screens,
   ...reducers,
   entities: makeReducer({

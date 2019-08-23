@@ -8,6 +8,7 @@ const routes = {
     signOut: '/logout',
   },
   service: {
+    _: '/:mainDomain',
     create: {
       _: '/service/create',
       mainDomain: '/service/create/:mainDomain',

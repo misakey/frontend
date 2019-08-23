@@ -11,6 +11,7 @@ import routes from 'routes';
 import ServiceSchema from 'store/schemas/Service';
 
 import RouteService from 'components/smart/Route/Service';
+import Drawer from 'components/screen/Service/Drawer';
 import Screen from 'components/screen';
 
 import ServiceClaim from './Claim';
@@ -34,51 +35,56 @@ const fakeService = {
 function Service({ match, entity, userId }) {
   return (
     <Screen className="Service">
-      <Switch>
-        <RouteService
-          path={routes.service.claim._}
-          component={ServiceClaim}
-          componentProps={{ entity: fakeService, name: 'ServiceClaim', userId }}
-        />
-        <RouteService
-          path={routes.service.information._}
-          component={ServiceInformation}
-          componentProps={{ entity, name: 'ServiceInformation' }}
-        />
-        <RouteService
-          path={routes.service.sso._}
-          component={ServiceSSO}
-          componentProps={{ entity, name: 'ServiceSSO' }}
-        />
-        <RouteService
-          path={routes.service.users._}
-          component={ServiceUsers}
-          componentProps={{ entity, name: 'ServiceUsers' }}
-        />
-        <RouteService
-          path={routes.service.data._}
-          component={ServiceData}
-          componentProps={{ entity, name: 'ServiceData' }}
-        />
-        <RouteService
-          path={routes.service.requests._}
-          component={ServiceRequests}
-          componentProps={{ entity, name: 'ServiceRequests' }}
-        />
-        <RouteService
-          exact
-          path={match.path}
-          component={ServiceHome}
-          componentProps={{ entity, name: 'ServiceHome' }}
-        />
-      </Switch>
+      <Drawer mainDomain={match.params.mainDomain}>
+        <Switch>
+          <RouteService
+            path={routes.service.claim._}
+            component={ServiceClaim}
+            componentProps={{ entity: fakeService, name: 'ServiceClaim', userId }}
+          />
+          <RouteService
+            path={routes.service.information._}
+            component={ServiceInformation}
+            componentProps={{ entity, name: 'ServiceInformation' }}
+          />
+          <RouteService
+            path={routes.service.sso._}
+            component={ServiceSSO}
+            componentProps={{ entity, name: 'ServiceSSO' }}
+          />
+          <RouteService
+            path={routes.service.users._}
+            component={ServiceUsers}
+            componentProps={{ entity, name: 'ServiceUsers' }}
+          />
+          <RouteService
+            path={routes.service.data._}
+            component={ServiceData}
+            componentProps={{ entity, name: 'ServiceData' }}
+          />
+          <RouteService
+            path={routes.service.requests._}
+            component={ServiceRequests}
+            componentProps={{ entity, name: 'ServiceRequests' }}
+          />
+          <RouteService
+            exact
+            path={match.path}
+            component={ServiceHome}
+            componentProps={{ entity, name: 'ServiceHome' }}
+          />
+        </Switch>
+      </Drawer>
     </Screen>
   );
 }
 
 Service.propTypes = {
   entity: PropTypes.shape(ServiceSchema.propTypes),
-  match: PropTypes.shape({ path: PropTypes.string }).isRequired,
+  match: PropTypes.shape({
+    path: PropTypes.string,
+    params: PropTypes.shape({ mainDomain: PropTypes.string }),
+  }).isRequired,
   userId: PropTypes.string,
 };
 
