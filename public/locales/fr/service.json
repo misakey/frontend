@@ -1,0 +1,33 @@
+{
+  "information": {
+    "title": "Informations",
+    "home": {
+      "title": "Informations publiques",
+      "subtitle": "Informations affichées sur la fiche descriptive du service"
+    }
+  },
+  "name": {
+    "title": "Nom",
+    "subtitle": "Le nom apparaît sur la fiche descriptive du service",
+    "success": "Le nom du service a été mis à jour"
+  },
+  "logo": {
+    "title": "Logo",
+    "subtitle": "Le logo apparaît sur la fiche descriptive du service",
+    "success": "Le logo du service a été mis à jour",
+    "upload": {
+      "title": "Upload logo",
+      "subtitle": "Les fichiers .jpg .jpeg .png .tiff .gif de moins de 3mo sont acceptés"
+    }
+  },
+  "shortDesc": {
+    "title": "Description courte",
+    "subtitle": "La description courte apparaît sur la fiche descriptive du service",
+    "success": "La description courte du service a été mise à jour"
+  },
+  "longDesc": {
+    "title": "Description longue",
+    "subtitle": "La description longue apparaît sur la fiche descriptive du service",
+    "success": "La description longue du service a été mise à jour"
+  }
+}

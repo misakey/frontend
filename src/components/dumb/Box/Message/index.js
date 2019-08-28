@@ -14,8 +14,8 @@ import orange from '@material-ui/core/colors/orange';
 import lightBlue from '@material-ui/core/colors/lightBlue';
 import ceriseRed from '@misakey/ui/colors/ceriseRed';
 
-import SplashScreen from 'components/dumb/SplashScreen';
-import BoxSection from 'components/dumb/Box/Section';
+import SplashScreen from '@misakey/ui/SplashScreen';
+import BoxSection from '@misakey/ui/Box/Section';
 
 import InfoIcon from '@material-ui/icons/Info';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';

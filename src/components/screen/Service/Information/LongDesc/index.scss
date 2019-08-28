@@ -1,0 +1,29 @@
+.LongDesc {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  .subtitle {
+    margin-left: 24px;
+  }
+
+  .content {
+
+    display: flex;
+    flex: 1;
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      flex: 1;
+      justify-content: center;
+    
+      .field {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+  
+
+}

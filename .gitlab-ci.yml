@@ -1,11 +1,47 @@
-stages:
-  - lint
+cache:
+  paths:
+    - node_modules/
 
-lint:node:
-  stage: lint
+variables:
+  CI: "true"
+  GIT_SUBMODULE_STRATEGY: normal
+
+
+stages:
+  - dep
+  - lint
+  - release
+
+install_modules:
+  stage: dep
   image: node:10.15.3
-  variables:
-    GIT_SUBMODULE_STRATEGY: normal
+  tags:
+    - misakey_js
   script:
-    - yarn install
-    - yarn lint:ci
+    - make dep
+
+
+lint_code:
+  stage: lint
+  tags:
+    - misakey_js  
+  image: node:10.15.3
+  script:
+    - make dep
+    - make strict-lint
+
+release:
+  stage: release
+  tags:
+    - misakey_docker
+  image: docker:stable
+  before_script:
+    - apk add make
+    - apk add git
+    - make docker-login
+
+  script:
+    - make build
+    - make tag
+    - make deploy
+

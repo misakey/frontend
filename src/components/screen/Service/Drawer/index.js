@@ -75,6 +75,7 @@ export const DRAWER_WIDTH = 280;
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
+    flexGrow: '1',
     height: '100%',
   },
   toolbar: {

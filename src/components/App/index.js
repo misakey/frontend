@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { Route, Switch } from 'react-router-dom';
 
 import routes from 'routes';
-import SplashScreen from 'components/dumb/SplashScreen';
+import SplashScreen from '@misakey/ui/SplashScreen';
 import RoutePrivate from 'components/smart/Route/Private';
 
 import './App.scss';
@@ -13,16 +13,22 @@ import './App.scss';
 import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallback';
 import Layout from 'components/smart/Layout';
 
+// LAZY
 const Home = React.lazy(() => import('components/screen/Home'));
 const ServiceCreate = React.lazy(() => import('components/screen/Service/Create'));
 const ServiceList = React.lazy(() => import('components/screen/Service/List'));
 const Service = React.lazy(() => import('components/screen/Service'));
 const NotFound = React.lazy(() => import('components/screen/NotFound'));
 
-const FALLBACK_REFERRERS = {
-  success: '/',
-  error: '/error',
+// CONSTANTS
+const REFERRERS = {
+  success: routes.service.information._,
+  error: routes.service.home._,
 };
+
+
+// COMPONENTS
+const TRedirectAuthCallback = withTranslation('common')(RedirectAuthCallback);
 
 function App({ t }) {
   return (
@@ -33,11 +39,11 @@ function App({ t }) {
             <Route exact path={routes._} component={Home} />
             <Route
               path={routes.auth.callback}
-              render={props => (
-                <RedirectAuthCallback
-                  {...props}
-                  fallbackReferrers={FALLBACK_REFERRERS}
+              render={routerProps => (
+                <TRedirectAuthCallback
+                  fallbackReferrers={REFERRERS}
                   t={t}
+                  {...routerProps}
                 />
               )}
             />

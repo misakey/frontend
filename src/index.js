@@ -8,7 +8,6 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { PersistGate } from 'redux-persist/integration/react';
 import reducers from 'store/reducers';
-
 // MIDDLEWARES
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
@@ -24,11 +23,10 @@ import theme from '@misakey/ui/theme';
 
 // COMPONENTS
 import App from 'components/App';
-import SplashScreen from 'components/dumb/SplashScreen';
-import i18n from 'i18next';
+import SplashScreen from '@misakey/ui/SplashScreen';
 
 // TRANSLATIONS
-import '@misakey/ui/i18n';
+import i18n from '@misakey/ui/i18n';
 import FRCommon from 'constants/locales/fr/common';
 import FRFields from 'constants/locales/fr/fields';
 

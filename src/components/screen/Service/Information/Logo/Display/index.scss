@@ -1,0 +1,14 @@
+.Display {
+  
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  .controls {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+}

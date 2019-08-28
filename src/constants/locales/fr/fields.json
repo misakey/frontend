@@ -1,3 +1,36 @@
 {
-
+  "logo": {
+    "label": "Logo",
+    "placeholder": "Vous pouvez ici renseigner le logo du service",
+    "action": "Modifier",
+    "error": {
+      "size": "Taille maximale dépassée",
+      "format": "Format incorrect. Formats acceptés: .jpg .jpeg .png .tiff .gif"
+    }
+  },
+  "name": {
+    "label": "Nom",
+    "action": "Editer"
+  },
+  "mainDomain": {
+    "label": "Domaine principal",
+    "action": "Editer"
+  },
+  "otherDomains": {
+    "label": "Autres domaines",
+    "action": "Editer",
+    "placeholder": "autres domaines"
+  },
+  "shortDesc": {
+    "label": "Desc. courte",
+    "action": "Editer",
+    "hint": "Un nombre maximum de 40 caractères est attendu",
+    "error": {
+      "malformed": "Maximum de 40 caractères"
+    }
+  },
+  "longDesc": {
+    "label": "Desc. longue",
+    "action": "Editer"
+  }
 }

@@ -10,6 +10,7 @@
 
 # production
 /build
+/public/version.txt
 
 # misc
 .DS_Store

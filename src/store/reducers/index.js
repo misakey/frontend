@@ -1,32 +1,26 @@
 import { combineReducers } from 'redux';
-import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 import { RESET_APP } from '@misakey/store/actions/app';
 import { SIGN_OUT } from '@misakey/auth/store/actions/auth';
 
-import { makeReducer } from '@misakey/store/reducers/entities';
-
-import reducers from '@misakey/store/reducers';
-import auth from '@misakey/auth/store/reducers/auth';
-
+import authReducers from '@misakey/auth/store/reducers';
+import global from '@misakey/store/reducers/global';
+import { makeReducer as makeEntities } from '@misakey/store/reducers/entities';
 import Layout from './Layout';
 import screens from './screens';
 
-const authPersistConfig = {
-  key: 'auth',
-  storage,
-  blacklist: ['profile'],
-};
+const entities = makeEntities({
+  users: {},
+  services: {},
+});
 
 const appReducer = combineReducers({
-  auth: persistReducer(authPersistConfig, auth),
+  ...authReducers,
+  global,
   Layout,
   screens,
-  ...reducers,
-  entities: makeReducer({
-    services: {},
-  }),
+  entities: makeEntities(entities),
 });
 
 const rootReducer = (state, action) => {

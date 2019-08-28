@@ -25,11 +25,11 @@ import StepContent from '@material-ui/core/StepContent';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Skeleton from '@material-ui/lab/Skeleton';
 
-import SplashScreen from 'components/dumb/SplashScreen';
-import BoxSection from 'components/dumb/Box/Section';
-import ButtonSubmit from 'components/dumb/Button/Submit';
+import SplashScreen from '@misakey/ui/SplashScreen';
+import BoxSection from '@misakey/ui/Box/Section';
+import ButtonSubmit from '@misakey/ui/Button/Submit';
 import BoxMessage from 'components/dumb/Box/Message';
-import ErrorOverlay from 'components/dumb/Error/Overlay';
+import ErrorOverlay from '@misakey/ui/Error/Overlay';
 import clsx from 'clsx';
 
 // @FIXME: add to @misakey/API
@@ -94,7 +94,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function ServiceClaim({ entity, t, userId }) {
+function ServiceClaim({ service, t, userId }) {
   const classes = useStyles();
   const width = useWidth();
   const { enqueueSnackbar } = useSnackbar();
@@ -126,7 +126,7 @@ function ServiceClaim({ entity, t, userId }) {
     function createClaim() {
       const payload = {
         user_id: userId,
-        application_id: entity.id,
+        application_id: service.id,
         valid: false,
       };
 
@@ -136,6 +136,8 @@ function ServiceClaim({ entity, t, userId }) {
         .then(({ body }) => { setClaim(body); });
     }
 
+    if (isNil(service)) { return; }
+
     setFetching(true);
     const payload = {};
 
@@ -143,14 +145,14 @@ function ServiceClaim({ entity, t, userId }) {
       .build(null, payload)
       .send()
       .then(({ body }) => {
-        const found = find(body, ['application_id', entity.id]);
+        const found = find(body, ['application_id', service.id]);
         if (isObject(found)) {
           setClaim(found);
         } else { createClaim(); }
       })
       .catch(e => setError(e.httpStatus || 500))
       .finally(() => setFetching(false));
-  }, [userId, entity, setFetching, setError, setClaim]);
+  }, [userId, service, setFetching, setError, setClaim]);
 
   const handleSubmit = React.useCallback(() => {
     const { id } = claim;
@@ -178,9 +180,9 @@ function ServiceClaim({ entity, t, userId }) {
       .finally(() => setSubmitting(false));
   }, [claim, error, setSubmitting, setError, enqueueSnackbar, t]);
 
-  React.useEffect(fetchClaim, [entity.mainDomain]);
+  React.useEffect(fetchClaim, [service]);
 
-  if (isFetching) { return <SplashScreen />; }
+  if (isFetching || isNil(service)) { return <SplashScreen />; }
 
   if (isInteger(error)) { return <ErrorOverlay httpStatus={error} />; }
 
@@ -191,7 +193,7 @@ function ServiceClaim({ entity, t, userId }) {
     <section id="ServiceClaim">
       <Container>
         <Typography variant="h4" component="h3" align="center">
-          {t('screens:Service.Claim.body.title', entity)}
+          {t('screens:Service.Claim.body.title', service)}
         </Typography>
         <Typography
           align="center"
@@ -221,7 +223,7 @@ function ServiceClaim({ entity, t, userId }) {
             <BoxMessage
               type="success"
               className={classes.boxMessage}
-              text={t('screens:Service.Claim.body.txtKey.success', { entity })}
+              text={t('screens:Service.Claim.body.txtKey.success', service)}
             />
           )}
           {error === VERIFY_ERROR && (
@@ -314,7 +316,7 @@ function ServiceClaim({ entity, t, userId }) {
 }
 
 ServiceClaim.propTypes = {
-  entity: PropTypes.shape({
+  service: PropTypes.shape({
     id: PropTypes.string.isRequired,
     mainDomain: PropTypes.string.isRequired,
   }).isRequired,
@@ -322,4 +324,4 @@ ServiceClaim.propTypes = {
   userId: PropTypes.string.isRequired,
 };
 
-export default withTranslation(['main', 'screens'])(ServiceClaim);
+export default withTranslation(['common', 'screens'])(ServiceClaim);

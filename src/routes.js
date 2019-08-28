@@ -22,7 +22,15 @@ const routes = {
     },
     information: {
       _: '/:mainDomain/information',
-      edit: '/:mainDomain/information/edit',
+      name: '/:mainDomain/information/name',
+      logo: {
+        _: '/:mainDomain/information/logo',
+        upload: '/:mainDomain/information/logo/upload',
+      },
+      mainDomain: '/:mainDomain/information/mainDomain',
+      otherDomains: '/:mainDomain/information/otherDomains',
+      shortDesc: '/:mainDomain/information/shortDesc',
+      longDesc: '/:mainDomain/information/longDesc',
     },
     sso: {
       _: '/:mainDomain/sso',
