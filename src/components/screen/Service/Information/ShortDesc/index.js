@@ -19,7 +19,7 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Navigation from '@misakey/ui/Navigation';
+import Navigation from 'components/dumb/Navigation';
 import FieldText from '@misakey/ui/Form/Field/Text';
 import ButtonSubmit from '@misakey/ui/Button/Submit';
 import ScreenError from 'components/screen/Error';
@@ -55,7 +55,7 @@ const useOnSubmit = (
 ) => useMemo(
   () => (form, { setSubmitting }) => updateApplicationInfo(service.id, form)
     .then(() => {
-      enqueueSnackbar(t('service:shortDesc.success'), { variant: 'success' });
+      enqueueSnackbar(t('service:information.shortDesc.success'), { variant: 'success' });
       dispatchUpdateEntities(service.mainDomain, form, history);
     })
     .catch((error) => {
@@ -85,6 +85,11 @@ const ServiceShortDesc = ({
     t,
   );
 
+  const pushPath = useMemo(
+    () => (isNil(service) ? '' : generatePath(PARENT_ROUTE, { mainDomain: service.mainDomain })),
+    [service],
+  );
+
   if (isNil(service)) { return null; }
 
   const { shortDesc } = service;
@@ -95,9 +100,9 @@ const ServiceShortDesc = ({
   return (
     <div className="ShortDesc">
       <div className="header">
-        <Navigation history={history} appBarProps={APP_BAR_PROPS} pushPath={PARENT_ROUTE} hideBackButton={false} title={t('service:shortDesc.title')} />
+        <Navigation history={history} appBarProps={APP_BAR_PROPS} pushPath={pushPath} hideBackButton={false} title={t('service:information.shortDesc.title')} />
         <Typography variant="body2" color="textSecondary" align="left" className="subtitle">
-          {t('service:shortDesc.subtitle')}
+          {t('service:information.shortDesc.subtitle')}
         </Typography>
       </div>
       {shortDesc && (

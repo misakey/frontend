@@ -32,5 +32,35 @@
   "longDesc": {
     "label": "Desc. longue",
     "action": "Editer"
+  },
+  "allowedCorsOrigins": {
+    "label": "CORS authorisés",
+    "action": "Editer",
+    "placeholder": "autres domaines",
+    "empty": "Aucun",
+    "hint": "Une liste d'adresses absolues séparées par des points virgule ';'"
+  },
+  "redirectUris": {
+    "label": "URI de redirection",
+    "action": "Editer",
+    "placeholder": "autres URI",
+    "empty": "Aucune",
+    "error": {
+      "malformed": "Merci d'entrer une uri absolue valide"
+    }
+  },
+  "clientSecret": {
+    "label": "Secret",
+    "action": "Regénérer",
+    "placeholder": "********"
+  },
+  "customRoles": {
+    "label": "Custom roles",
+    "placeholder": "Aucun",
+    "action": "Editer les rôles",
+    "empty": {
+      "label": "Créer un nouveau rôle custom",
+      "action": "Créer votre premier rôle"
+    }
   }
 }

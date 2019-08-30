@@ -19,6 +19,8 @@ const ServiceSchema = {
       applicationId: PropTypes.string,
       uri: PropTypes.string,
     })),
+    redirectUris: PropTypes.arrayOf(PropTypes.string),
+    allowedCorsOrigins: PropTypes.arrayOf(PropTypes.string),
   },
 };
 

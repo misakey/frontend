@@ -34,7 +34,11 @@ const routes = {
     },
     sso: {
       _: '/:mainDomain/sso',
-      edit: '/:mainDomain/sso/edit',
+      mainDomain: '/:mainDomain/sso/mainDomain',
+      allowedOrigins: '/:mainDomain/sso/allowedOrigins',
+      redirectUri: '/:mainDomain/sso/redirectUri',
+      productionSetup: '/:mainDomain/sso/productionSetup',
+      customRoles: '/:mainDomain/sso/customRoles',
     },
     users: {
       _: '/:mainDomain/users',

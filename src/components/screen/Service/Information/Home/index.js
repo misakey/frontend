@@ -40,7 +40,7 @@ const FieldItem = ({ field, mainDomain, t }) => {
   const [key, value] = Object.entries(field)[0];
   const linkTo = useMemo(
     () => generatePath(routes.service.information[key], { mainDomain }),
-    [mainDomain],
+    [mainDomain, key],
   );
 
   return (

@@ -1,28 +1,24 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
+
 import clsx from 'clsx';
+import tDefault from '@misakey/helpers/tDefault';
+import isNil from '@misakey/helpers/isNil';
+import omit from '@misakey/helpers/omit';
 
 import { makeStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 
 const useStyles = makeStyles(theme => ({
   marginRight: theme.spacing(2),
 }));
-
-/**
- * @FIXME add to @misakey/ui
- * @param className
- * @param history
- * @param pushPath
- * @param t
- * @returns {*}
- * @constructor
- */
-function ButtonGoBack({ className, history, pushPath, t }) {
+// @FIXME update js-common component to have IconButtonGoBack and ButtonGoBack
+function ButtonGoBack({ children, className, history, pushPath, t, ...rest }) {
   const classes = useStyles();
+
+  const content = useMemo(() => (isNil(children) ? <ArrowBack /> : children), [children]);
 
   function handleGoBack() {
     if (!history.goBack()) {
@@ -31,29 +27,31 @@ function ButtonGoBack({ className, history, pushPath, t }) {
   }
 
   return (
-    <IconButton
-      edge="start"
+    <Button
+      {...omit(rest, ['i18N', 'tReady'])}
       className={clsx(className, classes)}
-      color="inherit"
-      aria-label={t('nav:history.goBack', 'Go back')}
+      aria-label={t('navigation:history.goBack', 'Go back')}
       onClick={handleGoBack}
       onKeyPress={handleGoBack}
     >
-      <ArrowBack />
-    </IconButton>
+      {content}
+    </Button>
   );
 }
 
 ButtonGoBack.propTypes = {
+  children: PropTypes.oneOfType([PropTypes.elementType, PropTypes.node]),
   className: PropTypes.string,
   history: PropTypes.shape({ goBack: PropTypes.func, push: PropTypes.func }).isRequired,
   pushPath: PropTypes.string,
-  t: PropTypes.func.isRequired,
+  t: PropTypes.func,
 };
 
 ButtonGoBack.defaultProps = {
+  children: null,
   className: '',
   pushPath: '/',
+  t: tDefault,
 };
 
-export default withRouter(withTranslation('nav')(ButtonGoBack));
+export default withTranslation()(ButtonGoBack);

@@ -1,0 +1,43 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: flex-end;
+
+  .box {
+    
+    .title {
+      margin-top: -1rem; 
+    }
+    
+  }
+  .form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex: 1;
+    justify-content: center;
+
+    .row {
+      display: flex;
+      flex-direction: row;
+    }
+    .field {
+      margin: 1rem 0;
+    }
+
+    .skeleton {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 4px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+  }
+
+}

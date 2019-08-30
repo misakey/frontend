@@ -1,0 +1,16 @@
+@import '~@misakey/ui/static/sass/colors';
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .details {
+    width: 100%;
+    margin-bottom: 1rem;
+
+    .accent {
+      color: $gold-yellow;
+    }
+  }
+}

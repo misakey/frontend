@@ -9,7 +9,9 @@ import Typography from '@material-ui/core/Typography';
 
 // COMPONENTS
 // @FIXME add to @misakey/ui
-const LimitedList = ({ items, limit, extraText, renderListItem }) => {
+const LimitedList = ({ items, limit, emptyText, extraText, renderListItem }) => {
+  const isEmpty = useMemo(() => items.length === 0, [items]);
+
   const limitItems = useMemo(() => items.slice(0, limit), [items, limit]);
 
   const extraCount = useMemo(
@@ -19,6 +21,7 @@ const LimitedList = ({ items, limit, extraText, renderListItem }) => {
 
   return (
     <List dense>
+      {isEmpty && emptyText}
       {limitItems.map(renderListItem)}
       {extraCount > 0 && (
         <ListItem dense disableGutters>
@@ -35,13 +38,21 @@ const LimitedList = ({ items, limit, extraText, renderListItem }) => {
 };
 
 LimitedList.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.object).isRequired,
+  items: PropTypes.arrayOf(
+    PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.string,
+      PropTypes.number,
+    ]),
+  ).isRequired,
   limit: PropTypes.number.isRequired,
-  extraText: PropTypes.string,
+  emptyText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  extraText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   renderListItem: PropTypes.func.isRequired,
 };
 
 LimitedList.defaultProps = {
+  emptyText: '',
   extraText: '',
 };
 

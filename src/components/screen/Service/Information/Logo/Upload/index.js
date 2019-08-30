@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import FileField from '@misakey/ui/Form/Field/File';
 
-import Navigation from '@misakey/ui/Navigation';
+import Navigation from 'components/dumb/Navigation';
 
 import './index.scss';
 
@@ -38,10 +38,15 @@ const useOnChange = (mainDomain, setFieldValue, history) => useCallback((file, p
 const ServiceLogoUpload = ({ service, t, setFieldValue, history }) => {
   const onChange = useOnChange(service.mainDomain, setFieldValue, history);
 
+  const pushPath = useMemo(
+    () => generatePath(routes.service.information.logo._, { mainDomain: service.mainDomain }),
+    [service.mainDomain],
+  );
+
   return (
     <div className="Upload">
       <div className="header">
-        <Navigation history={history} appBarProps={APP_BAR_PROPS} pushPath={routes.service.information.logo._} hideBackButton={false} title={t('service:logo.upload.title')} />
+        <Navigation history={history} appBarProps={APP_BAR_PROPS} pushPath={pushPath} hideBackButton={false} title={t('service:information.logo.upload.title')} />
         <Typography variant="body2" color="textSecondary" align="left" className="subtitle">
           {t('service:logo.upload.subtitle')}
         </Typography>

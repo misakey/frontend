@@ -6,13 +6,13 @@ import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 
 import routes from 'routes';
-import { longDescForm } from 'constants/validationSchemas/information';
+import { redirectUriForm } from 'constants/validationSchemas/sso';
 
 import ServiceSchema from 'store/schemas/Service';
 import { updateEntities } from '@misakey/store/actions/entities';
 
-import isNil from '@misakey/helpers/isNil';
 import generatePath from '@misakey/helpers/generatePath';
+import isNil from '@misakey/helpers/isNil';
 
 import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
@@ -24,49 +24,66 @@ import FieldText from '@misakey/ui/Form/Field/Text';
 import ButtonSubmit from '@misakey/ui/Button/Submit';
 import ScreenError from 'components/screen/Error';
 
-import './index.scss';
 
 // CONSTANTS
 const APP_BAR_PROPS = {
   color: 'inherit',
   elevation: 0,
   position: 'static',
+  maxWidth: 'sm',
+  component: Container,
 };
 
-const PARENT_ROUTE = routes.service.information._;
+const PARENT_ROUTE = routes.service.sso._;
 
 // @FIXME js-common
-const INFO_UPDATE_ENDPOINT = {
-  method: 'PATCH',
-  path: '/application-info/:id',
+const SSO_UPDATE_ENDPOINT = {
+  method: 'PUT',
+  path: '/sso-clients/:id',
   auth: true,
 };
 
 // HELPERS
-const updateApplicationInfo = (id, form) => API
-  .use(INFO_UPDATE_ENDPOINT)
+const updateApplicationSSO = (id, form) => API
+  .use(SSO_UPDATE_ENDPOINT)
   .build({ id }, objectToSnakeCase(form))
   .send();
+
+const redirectUriToList = redirectUriString => [redirectUriString];
+const listToRedirectUri = (redirectUriList) => {
+  const redirectUri = redirectUriList[0];
+  return isNil(redirectUri) ? '' : redirectUri;
+};
+
+const getRedirectUri = service => (isNil(service) ? '' : listToRedirectUri(service));
 
 // HOOKS
 const useOnSubmit = (
   service, dispatchUpdateEntities, enqueueSnackbar, setError, history, t,
 ) => useMemo(
-  () => (form, { setSubmitting }) => updateApplicationInfo(service.id, form)
-    .then(() => {
-      enqueueSnackbar(t('service:information.longDesc.success'), { variant: 'success' });
-      dispatchUpdateEntities(service.mainDomain, form, history);
-    })
-    .catch((error) => {
-      const httpStatus = error.httpStatus ? error.httpStatus : 500;
-      setError(httpStatus);
-    })
-    .finally(() => { setSubmitting(false); }),
+  () => (
+    { redirectUris }, { setSubmitting },
+  ) => {
+    const form = { redirectUris: redirectUriToList(redirectUris) };
+    return updateApplicationSSO(
+      service.id,
+      form,
+    )
+      .then(() => {
+        enqueueSnackbar(t('service:sso.redirectUri.success'), { variant: 'success' });
+        dispatchUpdateEntities(service.mainDomain, form, history);
+      })
+      .catch((error) => {
+        const httpStatus = error.httpStatus ? error.httpStatus : 500;
+        setError(httpStatus);
+      })
+      .finally(() => { setSubmitting(false); });
+  },
   [service, dispatchUpdateEntities, enqueueSnackbar, setError, history, t],
 );
 
 // COMPONENTS
-const ServiceLongDesc = ({
+const SSORedirectUri = ({
   t,
   service,
   dispatchUpdateEntities,
@@ -84,6 +101,11 @@ const ServiceLongDesc = ({
     t,
   );
 
+  const redirectUris = useMemo(
+    () => getRedirectUri(service),
+    [service],
+  );
+
   const pushPath = useMemo(
     () => (isNil(service) ? '' : generatePath(PARENT_ROUTE, { mainDomain: service.mainDomain })),
     [service],
@@ -91,51 +113,46 @@ const ServiceLongDesc = ({
 
   if (isNil(service)) { return null; }
 
-  const { longDesc } = service;
-
   if (error) {
     return <ScreenError httpStatus={error} />;
   }
   return (
-    <div className="LongDesc">
-      <div className="header">
-        <Navigation history={history} appBarProps={APP_BAR_PROPS} pushPath={pushPath} hideBackButton={false} title={t('service:information.longDesc.title')} />
-        <Typography variant="body2" color="textSecondary" align="left" className="subtitle">
-          {t('service:information.longDesc.subtitle')}
+    <>
+      <Navigation history={history} appBarProps={APP_BAR_PROPS} pushPath={pushPath} hideBackButton={false} title={t('service:sso.redirectUri.title')} />
+      <Container maxWidth="sm" className="screen">
+        <Typography variant="body2" color="textSecondary" align="left" gutterBottom>
+          {t('service:sso.redirectUri.subtitle')}
         </Typography>
-      </div>
-      {longDesc && (
         <Formik
-          validationSchema={longDescForm}
+          validationSchema={redirectUriForm}
           onSubmit={onSubmit}
-          initialValues={{ longDesc }}
+          initialValues={{ redirectUris }}
         >
           {({ isSubmitting, isValid }) => (
-            <Container maxWidth="sm" className="content">
+            <div className="content">
               <Form className="form">
                 <Field
                   className="field"
-                  type="text"
-                  name="longDesc"
+                  type="url"
+                  name="redirectUris"
                   autoFocus
-                  multiline
                   component={FieldText}
-                  label={t('fields:longDesc.label')}
+                  label={t('fields:redirectUris.label')}
                 />
                 <ButtonSubmit disabled={isSubmitting || !isValid}>
                   {t('common:submit')}
                 </ButtonSubmit>
               </Form>
-            </Container>
+            </div>
           )}
         </Formik>
-      )}
-    </div>
+      </Container>
+    </>
   );
 };
 
-ServiceLongDesc.propTypes = {
-  service: PropTypes.shape({ longDesc: PropTypes.string, mainDomain: PropTypes.string }),
+SSORedirectUri.propTypes = {
+  service: PropTypes.shape(ServiceSchema.propTypes),
   // router props
   history: PropTypes.object.isRequired,
   // withTranslation HOC
@@ -144,7 +161,7 @@ ServiceLongDesc.propTypes = {
   dispatchUpdateEntities: PropTypes.func.isRequired,
 };
 
-ServiceLongDesc.defaultProps = {
+SSORedirectUri.defaultProps = {
   service: null,
 };
 
@@ -157,4 +174,4 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['service', 'fields', 'common'])(ServiceLongDesc));
+export default connect(null, mapDispatchToProps)(withTranslation(['service', 'fields', 'common'])(SSORedirectUri));

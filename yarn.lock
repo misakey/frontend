@@ -1149,10 +1149,10 @@
   dependencies:
     "@babel/runtime" "^7.5.5"
 
-"@misakey/ui@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@misakey/ui/-/ui-1.2.0.tgz#12fda49ca6f590da04ba3ab7c99a4ee45cd8454e"
-  integrity sha512-dLHNw4wswEcEUaVzFQgXWsxrSBe2vDH2btWe4pTick6l81TLxl/WcD4s5bNt6eAuQmthhgrgJzQRh01zYhkiUQ==
+"@misakey/ui@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@misakey/ui/-/ui-1.3.0.tgz#b36fc9c2c031a44cc160af3432a3f774e413438c"
+  integrity sha512-vnvLLNBF/YvV3Pwsm2/uYUTuf3WQg/be5ofL/7le+n1OPJpp/zY/fUjXJYzOl0iYypPpJ6u8qLpRPY7W10xm5g==
   dependencies:
     "@babel/runtime" "^7.5.5"
     clsx "^1.0.4"

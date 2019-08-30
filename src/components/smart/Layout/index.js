@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
 import clsx from 'clsx';
@@ -109,7 +110,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Layout({ burger, burgerProps, buttonConnect, children, dispatch, goBack, shift, t }) {
+function Layout({
+  burger,
+  burgerProps,
+  buttonConnect,
+  children,
+  dispatch,
+  goBack,
+  history,
+  shift,
+  t,
+}) {
   const classes = useStyles();
 
   const handleBurgerClick = React.useCallback(() => {
@@ -128,7 +139,7 @@ function Layout({ burger, burgerProps, buttonConnect, children, dispatch, goBack
         >
           <Toolbar>
             {burger && <ButtonBurger {...burgerProps} onClick={handleBurgerClick} />}
-            {(goBack && !burger) && <ButtonGoBack />}
+            {(goBack && !burger) && <ButtonGoBack history={history} />}
             <div id={LEFT_PORTAL_ID} className={classes.portal} />
             <div className={classes.search}>
               <div className={classes.searchIcon}>
@@ -166,6 +177,7 @@ Layout.propTypes = {
   goBack: PropTypes.bool,
   shift: PropTypes.bool,
   children: PropTypes.oneOfType([PropTypes.elementType, PropTypes.object]).isRequired,
+  history: PropTypes.shape({ goBack: PropTypes.func, push: PropTypes.func }).isRequired,
   t: PropTypes.func.isRequired,
 };
 
@@ -179,4 +191,4 @@ Layout.defaultProps = {
 
 export default connect(
   state => ({ ...state.Layout }),
-)(withTranslation('nav')(Layout));
+)(withRouter(withTranslation('nav')(Layout)));

@@ -6,7 +6,7 @@ import { Field } from 'formik';
 
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Navigation from '@misakey/ui/Navigation';
+import Navigation from 'components/dumb/Navigation';
 import Button from '@material-ui/core/Button';
 import ButtonSubmit from '@misakey/ui/Button/Submit';
 import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
@@ -40,13 +40,18 @@ const ServiceLogoDisplay = ({ t, isSubmitting, isValid, service, history }) => {
     [mainDomain],
   );
 
+  const pushPath = useMemo(
+    () => generatePath(routes.service.information._, { mainDomain }),
+    [mainDomain],
+  );
+
   if (isNil(service)) { return null; }
   return (
     <div className="Display">
       <div className="header">
-        <Navigation history={history} appBarProps={APP_BAR_PROPS} pushPath={routes.service.information._} hideBackButton={false} title={t('service:logo.title')} />
+        <Navigation history={history} appBarProps={APP_BAR_PROPS} pushPath={pushPath} hideBackButton={false} title={t('service:information.logo.title')} />
         <Typography variant="body2" color="textSecondary" align="left" className="subtitle">
-          {t('service:logo.subtitle')}
+          {t('service:information.logo.subtitle')}
         </Typography>
       </div>
       <Container maxWidth="sm" className="content">

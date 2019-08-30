@@ -56,7 +56,7 @@ const useOnSubmit = (
 ) => useMemo(
   () => (form, { setSubmitting }) => updateLogo(service.id, pickForm(form))
     .then(() => {
-      enqueueSnackbar(t('service:logo.success'), { variant: 'success' });
+      enqueueSnackbar(t('service:information.logo.success'), { variant: 'success' });
       const changes = { logoUri: form.preview };
       dispatchUpdate(service.mainDomain, changes, history);
     })
