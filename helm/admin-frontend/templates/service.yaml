@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "admin-frontend.fullname" . }}
+  labels:
+    app: {{ template "admin-frontend.name" . }}
+    chart: {{ template "admin-frontend.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+      env: {{ required "env is required" .Values.env }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "admin-frontend.name" . }}
+    release: {{ .Release.Name }}
+    env: {{ required "env is required" .Values.env }}

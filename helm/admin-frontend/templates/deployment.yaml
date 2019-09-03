@@ -1,0 +1,65 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "admin-frontend.fullname" . }}
+  labels:
+    app: {{ template "admin-frontend.name" . }}
+    chart: {{ template "admin-frontend.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    env: {{ required "env is required" .Values.env }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "admin-frontend.name" . }}
+      release: {{ .Release.Name }}
+      env: {{ required "env is required" .Values.env }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "admin-frontend.name" . }}
+        release: {{ .Release.Name }}
+        env: {{ required "env is required" .Values.env }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ required "image.tag is required" .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /app/build/env.js
+              subPath: env.js
+              name: config
+          livenessProbe:
+            httpGet:
+              path: /version.txt
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /version.txt
+              port: http
+
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      imagePullSecrets:
+        - name: regcred
+      volumes:
+        - name: config
+          configMap:
+            name: {{ template "admin-frontend.fullname" . }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

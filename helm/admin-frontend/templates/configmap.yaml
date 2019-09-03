@@ -1,0 +1,14 @@
+# This is a simple example of using a config map to create a single page static site.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "admin-frontend.fullname" . }}
+  labels:
+    app: {{ template "admin-frontend.name" . }}
+    chart: {{ template "admin-frontend.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    env: {{ required "env is required" .Values.env }}
+data:
+  # When the config map is mounted as a volume, these will be created as files.
+  env.js: {{ .Values.config | quote }}
