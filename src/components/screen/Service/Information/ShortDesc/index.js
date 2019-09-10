@@ -17,21 +17,13 @@ import isNil from '@misakey/helpers/isNil';
 import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
+import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Navigation from 'components/dumb/Navigation';
+import Navigation from '@misakey/ui/Navigation';
 import FieldText from '@misakey/ui/Form/Field/Text';
 import ButtonSubmit from '@misakey/ui/Button/Submit';
 import ScreenError from 'components/screen/Error';
-
-import './index.scss';
-
-// CONSTANTS
-const APP_BAR_PROPS = {
-  color: 'inherit',
-  elevation: 0,
-  position: 'static',
-};
 
 const PARENT_ROUTE = routes.service.information._;
 
@@ -98,40 +90,45 @@ const ServiceShortDesc = ({
     return <ScreenError httpStatus={error} />;
   }
   return (
-    <div className="ShortDesc">
-      <div className="header">
-        <Navigation history={history} appBarProps={APP_BAR_PROPS} pushPath={pushPath} hideBackButton={false} title={t('service:information.shortDesc.title')} />
-        <Typography variant="body2" color="textSecondary" align="left" className="subtitle">
+    <div id="ServiceInformationShortDesc">
+      <Navigation
+        history={history}
+        pushPath={pushPath}
+        toolbarProps={{ maxWidth: 'md' }}
+        title={t('service:information.shortDesc.title')}
+      />
+      <Container maxWidth="md">
+        <Typography variant="body2" color="textSecondary" gutterBottom>
           {t('service:information.shortDesc.subtitle')}
         </Typography>
-      </div>
-      {shortDesc && (
+        {shortDesc && (
         <Formik
           validationSchema={shortDescForm}
           onSubmit={onSubmit}
           initialValues={{ shortDesc }}
         >
           {({ isSubmitting, isValid }) => (
-            <Container maxWidth="sm" className="content">
-              <Form className="form">
-                <Field
-                  className="field"
-                  type="text"
-                  name="shortDesc"
-                  autoFocus
-                  component={FieldText}
-                  label={t('fields:shortDesc.label')}
-                  helperText={t('fields:shortDesc.hint')}
-                  t={t}
-                />
+            <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
+              <Field
+                className="field"
+                type="text"
+                name="shortDesc"
+                autoFocus
+                component={FieldText}
+                label={t('fields:shortDesc.label')}
+                helperText={t('fields:shortDesc.helperText')}
+                t={t}
+              />
+              <Box mt={1}>
                 <ButtonSubmit disabled={isSubmitting || !isValid}>
                   {t('common:submit')}
                 </ButtonSubmit>
-              </Form>
-            </Container>
+              </Box>
+            </Box>
           )}
         </Formik>
-      )}
+        )}
+      </Container>
     </div>
   );
 };

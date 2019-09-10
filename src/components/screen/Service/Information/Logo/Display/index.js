@@ -4,12 +4,14 @@ import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Field } from 'formik';
 
+import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Navigation from 'components/dumb/Navigation';
+import Navigation from '@misakey/ui/Navigation';
 import Button from '@material-ui/core/Button';
 import ButtonSubmit from '@misakey/ui/Button/Submit';
 import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
+import BoxSection from '@misakey/ui/Box/Section';
 
 import routes from 'routes';
 
@@ -17,15 +19,6 @@ import path from '@misakey/helpers/path';
 import isNil from '@misakey/helpers/isNil';
 import generatePath from '@misakey/helpers/generatePath';
 
-import './index.scss';
-
-
-// CONSTANTS
-const APP_BAR_PROPS = {
-  color: 'inherit',
-  elevation: 0,
-  position: 'static',
-};
 const FIELD_PATH = ['field', 'value'];
 
 // HELPERS
@@ -47,38 +40,44 @@ const ServiceLogoDisplay = ({ t, isSubmitting, isValid, service, history }) => {
 
   if (isNil(service)) { return null; }
   return (
-    <div className="Display">
-      <div className="header">
-        <Navigation history={history} appBarProps={APP_BAR_PROPS} pushPath={pushPath} hideBackButton={false} title={t('service:information.logo.title')} />
-        <Typography variant="body2" color="textSecondary" align="left" className="subtitle">
+    <div id="ServiceInformationLogoDisplay">
+      <Navigation
+        history={history}
+        pushPath={pushPath}
+        toolbarProps={{ maxWidth: 'md' }}
+        title={t('service:information.logo.title')}
+      />
+      <Container maxWidth="md">
+        <Typography variant="body2" color="textSecondary" gutterBottom>
           {t('service:information.logo.subtitle')}
         </Typography>
-      </div>
-      <Container maxWidth="sm" className="content">
-        <Field
-          name="preview"
-          render={(fieldProps) => {
-            const preview = getPreview(fieldProps);
-            const image = isNil(preview) ? logoUri : preview;
-            return (
-              <AvatarDetailed
-                image={image}
-                text={name}
-              />
-            );
-          }}
-        />
-        <div className="controls">
-          <Button
-            variant="contained"
-            to={linkTo}
-            component={Link}
-            aria-label={t('common:update')}
-          >
-            {t('common:update')}
-          </Button>
-          <ButtonSubmit disabled={isSubmitting || !isValid} aria-label={t('common:submit')} />
-        </div>
+        <BoxSection>
+          <Field
+            name="preview"
+            render={(fieldProps) => {
+              const preview = getPreview(fieldProps);
+              const image = isNil(preview) ? logoUri : preview;
+
+              return <AvatarDetailed image={image} text={name} />;
+            }}
+          />
+          <Box display="flex" justifyContent="center">
+            <Button
+              to={linkTo}
+              color="secondary"
+              component={Link}
+            >
+              {t('common:update')}
+            </Button>
+            <Box
+              disabled={isSubmitting || !isValid}
+              component={ButtonSubmit}
+              ml={1}
+            >
+              {t('common:submit')}
+            </Box>
+          </Box>
+        </BoxSection>
       </Container>
     </div>
   );

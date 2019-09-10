@@ -4,13 +4,11 @@ import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
 
-
 import isNil from '@misakey/helpers/isNil';
 import isArray from '@misakey/helpers/isArray';
 import generatePath from '@misakey/helpers/generatePath';
 
-import makeStyles from '@material-ui/core/styles/makeStyles';
-
+import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
@@ -21,19 +19,10 @@ import LimitedList from 'components/dumb/List/Limited';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-
-import './index.scss';
-
 // CONSTANTS
 const MAX_LIST_ITEMS = 3;
 
 // HOOKS
-const useStyles = makeStyles(theme => ({
-  box: {
-    marginTop: theme.spacing(3),
-  },
-}));
-
 const useLinkTo = (key, mainDomain) => useMemo(
   () => generatePath(routes.service.sso[key], { mainDomain }),
   [key, mainDomain],
@@ -62,8 +51,6 @@ FieldItem.propTypes = {
 };
 
 const ServiceSSOHome = ({ service, t }) => {
-  const classes = useStyles();
-
   const {
     mainDomain,
     allowedCorsOrigins,
@@ -83,18 +70,20 @@ const ServiceSSOHome = ({ service, t }) => {
 
   if (service) {
     return (
-      <Container className="card">
+      <Container maxWidth="md" id="ServiceSSOHome">
         <Typography variant="h4" component="h3" align="center">
           {t('service:sso.title')}
         </Typography>
-        <BoxSection className={classes.box}>
-          <Typography variant="h6">
-            {t('service:sso.home.title')}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" className="subtitle">
-            {t('service:sso.home.subtitle')}
-          </Typography>
-          <List className="details">
+        <BoxSection my={3} p={0}>
+          <Box p={3}>
+            <Typography variant="h6">
+              {t('service:sso.home.title')}
+            </Typography>
+            <Typography variant="body2" color="textSecondary" className="subtitle">
+              {t('service:sso.home.subtitle')}
+            </Typography>
+          </Box>
+          <List>
             <FieldItem field={{ mainDomain }} mainDomain={mainDomain} t={t} />
             <ListDataItem
               ariaAction={t('fields:allowedCorsOrigins.action')}
@@ -142,11 +131,15 @@ const ServiceSSOHome = ({ service, t }) => {
               linkTo={linkToProductionSetup}
               action={<ChevronRightIcon className="icon" />}
             >
-              <Typography variant="body2" className="accent">
-                Setup mode
+              <Typography variant="body2" color="secondary">
+                {t('mode.setup', 'Setup mode')}
               </Typography>
             </ListDataItem>
-            <FieldItem field={{ customRoles: t('fields:customRoles.placeholder') }} mainDomain={mainDomain} t={t} />
+            <FieldItem
+              field={{ customRoles: t('fields:customRoles.placeholder') }}
+              mainDomain={mainDomain}
+              t={t}
+            />
           </List>
         </BoxSection>
       </Container>
@@ -175,4 +168,4 @@ ServiceSSOHome.defaultProps = {
   service: null,
 };
 
-export default withTranslation(['service', 'fields'])(ServiceSSOHome);
+export default withTranslation(['common', 'service', 'fields'])(ServiceSSOHome);

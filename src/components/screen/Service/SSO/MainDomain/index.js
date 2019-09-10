@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import routes from 'routes';
 
-
 import generatePath from '@misakey/helpers/generatePath';
 import isNil from '@misakey/helpers/isNil';
 
@@ -11,18 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
-import Navigation from 'components/dumb/Navigation';
+import Navigation from '@misakey/ui/Navigation';
 import ButtonCopy from '@misakey/ui/Button/Copy';
-
-
-// CONSTANTS
-const APP_BAR_PROPS = {
-  color: 'inherit',
-  elevation: 0,
-  position: 'static',
-  maxWidth: 'sm',
-  component: Container,
-};
 
 const PARENT_ROUTE = routes.service.sso._;
 
@@ -43,14 +32,18 @@ const SSOMainDomain = ({
 
   return (
     <>
-      <Navigation history={history} appBarProps={APP_BAR_PROPS} pushPath={pushPath} hideBackButton={false} title={t('service:sso.mainDomain.title')} />
-      <Container maxWidth="sm" className="screen">
-
-        <Typography variant="body2" color="textSecondary" align="left" gutterBottom>
+      <Navigation
+        history={history}
+        pushPath={pushPath}
+        toolbarProps={{ maxWidth: 'md' }}
+        title={t('service:sso.mainDomain.title')}
+      />
+      <Container maxWidth="md">
+        <Typography variant="body2" color="textSecondary" gutterBottom>
           {t('service:sso.mainDomain.subtitle')}
         </Typography>
         {mainDomain && (
-          <div className="form">
+          <div>
             <TextField
               margin="normal"
               fullWidth

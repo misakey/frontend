@@ -5,7 +5,7 @@ import { SCREEN_SERVICE_RESET, SCREEN_SERVICE_UPDATE } from 'store/actions/scree
 import prop from '@misakey/helpers/prop';
 
 const initialState = {
-  mainDomain: null,
+  mainDomain: '',
   id: null,
   updatedAt: null,
 };

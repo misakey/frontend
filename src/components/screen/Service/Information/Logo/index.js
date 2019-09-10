@@ -21,12 +21,9 @@ import API from '@misakey/api';
 
 import ScreenError from 'components/screen/Error';
 
-import './index.scss';
-
 // LAZY
 const ServiceLogoDisplay = lazy(() => import('./Display'));
 const ServiceLogoUpload = lazy(() => import('./Upload'));
-
 
 // CONSTANTS
 const INITIAL_VALUES = {

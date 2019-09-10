@@ -24,7 +24,7 @@
   "shortDesc": {
     "label": "Desc. courte",
     "action": "Editer",
-    "hint": "Un nombre maximum de 40 caractères est attendu",
+    "helperText": "Un nombre maximum de 40 caractères est attendu",
     "error": {
       "malformed": "Maximum de 40 caractères"
     }
@@ -38,7 +38,10 @@
     "action": "Editer",
     "placeholder": "autres domaines",
     "empty": "Aucun",
-    "hint": "Une liste d'adresses absolues séparées par des points virgule ';'"
+    "helperText": "Une liste d'adresses absolues séparées par des points virgule ';'",
+    "error": {
+      "malformed": "Merci d'enter une liste d'adresses absolues séparées par des points virgule ';'"
+    }
   },
   "redirectUris": {
     "label": "URI de redirection",

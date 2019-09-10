@@ -9,8 +9,7 @@ import isNil from '@misakey/helpers/isNil';
 import isArray from '@misakey/helpers/isArray';
 import generatePath from '@misakey/helpers/generatePath';
 
-import makeStyles from '@material-ui/core/styles/makeStyles';
-
+import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
@@ -22,18 +21,8 @@ import LimitedList from 'components/dumb/List/Limited';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-
-import './index.scss';
-
 // CONSTANTS
 const MAX_DOMAIN = 3;
-
-// HOOKS
-const useStyles = makeStyles(theme => ({
-  box: {
-    marginTop: theme.spacing(3),
-  },
-}));
 
 // COMPONENTS
 const FieldItem = ({ field, mainDomain, t }) => {
@@ -60,8 +49,6 @@ FieldItem.propTypes = {
 };
 
 const ServiceInformationHome = ({ service, t }) => {
-  const classes = useStyles();
-
   const {
     name,
     logoUri,
@@ -80,29 +67,26 @@ const ServiceInformationHome = ({ service, t }) => {
 
   if (service) {
     return (
-      <Container className="card">
+      <Container maxWidth="md">
         <Typography variant="h4" component="h3" align="center">
           {t('service:information.title')}
         </Typography>
-        <BoxSection className={classes.box}>
-          <Typography variant="h6">
-            {t('service:information.home.title')}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" className="subtitle">
-            {t('service:information.home.subtitle')}
-          </Typography>
+        <BoxSection my={3} p={0}>
+          <Box p={3}>
+            <Typography variant="h6">
+              {t('service:information.home.title')}
+            </Typography>
+            <Typography variant="body2" color="textSecondary" className="subtitle">
+              {t('service:information.home.subtitle')}
+            </Typography>
+          </Box>
           <List className="details">
             <FieldItem field={{ name }} mainDomain={mainDomain} t={t} />
             <ListDataItem
               ariaAction={t('fields:logo.action')}
               label={t('fields:logo.label')}
               text={{ primary: t('fields:logo.placeholder') }}
-              action={(
-                <ColorizedAvatar
-                  text={name}
-                  image={logoUri}
-                />
-              )}
+              action={(<ColorizedAvatar text={name} image={logoUri} />)}
               linkTo={logoLinkTo}
             />
             <ListDataItem

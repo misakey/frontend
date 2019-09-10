@@ -3,5 +3,8 @@
   "copy": "Copier dans le presse papier",
   "copied": "Copié dans le presse papier!",
   "goToProd": "Mettre en production",
-  "leaveFromProd": "Retirer de production"
+  "leaveFromProd": "Retirer de production",
+  "mode": {
+    "setup": "Setup mode"
+  }
 }

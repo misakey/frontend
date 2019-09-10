@@ -12,6 +12,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
 
 // HOOKS
 const useStyles = makeStyles(theme => ({
@@ -64,7 +65,7 @@ const useTextProps = text => useMemo(() => {
 
 // COMPONENTS
 // @FIXME add to @misakey/ui
-const ListDataItem = ({ action, ariaAction, label, linkTo, text, children, ...props }) => {
+const ListDataItem = ({ action, ariaAction, first, label, linkTo, text, children, ...props }) => {
   const classes = useStyles();
 
   const textProps = useTextProps(text);
@@ -72,34 +73,37 @@ const ListDataItem = ({ action, ariaAction, label, linkTo, text, children, ...pr
   const linkProps = useMemo(() => (isNil(linkTo) ? {} : { component: Link, to: linkTo }), [linkTo]);
 
   return (
-    <ListItem
-      button
-      {...linkProps}
-      divider
-      aria-label={ariaAction}
-      classes={{
-        root: classes.listItemRoot,
-        container: classes.listItemContainer,
-        secondaryAction: classes.listItemSecondaryAction,
-      }}
-      {...props}
-    >
-      <ListItemIcon className={classes.title}>
-        <Typography className={classes.titleText}>
-          {label}
-        </Typography>
-      </ListItemIcon>
-      <ListItemText {...textProps}>{children}</ListItemText>
-      <ListItemSecondaryAction classes={{ root: classes.secondaryActionRoot }}>
-        {action}
-      </ListItemSecondaryAction>
-    </ListItem>
+    <>
+      {!first && <Divider variant="fullWidth" component="li" />}
+      <ListItem
+        button
+        {...linkProps}
+        aria-label={ariaAction}
+        classes={{
+          root: classes.listItemRoot,
+          container: classes.listItemContainer,
+          secondaryAction: classes.listItemSecondaryAction,
+        }}
+        {...props}
+      >
+        <ListItemIcon className={classes.title}>
+          <Typography className={classes.titleText}>
+            {label}
+          </Typography>
+        </ListItemIcon>
+        <ListItemText {...textProps}>{children}</ListItemText>
+        <ListItemSecondaryAction classes={{ root: classes.secondaryActionRoot }}>
+          {action}
+        </ListItemSecondaryAction>
+      </ListItem>
+    </>
   );
 };
 
 ListDataItem.propTypes = {
   action: PropTypes.oneOfType([PropTypes.node, PropTypes.elementType]),
   ariaAction: PropTypes.string,
+  first: PropTypes.bool,
   label: PropTypes.oneOfType([PropTypes.node, PropTypes.elementType]),
   linkTo: PropTypes.string,
   text: PropTypes.oneOfType([
@@ -114,6 +118,7 @@ ListDataItem.propTypes = {
 
 ListDataItem.defaultProps = {
   ariaAction: '',
+  first: false,
   label: null,
   linkTo: null,
   text: null,

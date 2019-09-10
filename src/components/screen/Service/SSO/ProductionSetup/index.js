@@ -18,22 +18,13 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import Navigation from 'components/dumb/Navigation';
+import Navigation from '@misakey/ui/Navigation';
 import BoxSection from '@misakey/ui/Box/Section';
 import ButtonCopy from '@misakey/ui/Button/Copy';
 import ButtonProgress from 'components/dumb/Button/Progress';
+import ButtonSubmit from '@misakey/ui/Button/Submit';
 import FieldTextPasswordRevealable, { ADORNMENT_POSITION } from 'components/dumb/Field/Text/Password/Revealable';
 import ScreenError from 'components/screen/Error';
-
-
-// CONSTANTS
-const APP_BAR_PROPS = {
-  color: 'inherit',
-  elevation: 0,
-  position: 'static',
-  maxWidth: 'sm',
-  component: Container,
-};
 
 // @FIXME js-common
 const SSO_CREATE_SECRET_ENDPOINT = {
@@ -120,9 +111,14 @@ const SSOProductionSetup = ({
 
   return (
     <>
-      <Navigation history={history} appBarProps={APP_BAR_PROPS} pushPath={pushPath} hideBackButton={false} title={t('service:sso.productionSetup.title')} />
-      <Container maxWidth="sm" className="screen">
-        <Typography variant="body2" color="textSecondary" align="left" gutterBottom>
+      <Navigation
+        history={history}
+        pushPath={pushPath}
+        toolbarProps={{ maxWidth: 'md' }}
+        title={t('service:sso.productionSetup.title')}
+      />
+      <Container maxWidth="md">
+        <Typography variant="body2" color="textSecondary" gutterBottom>
           {t('service:sso.productionSetup.subtitle')}
         </Typography>
         <BoxSection className={clsx(classes.box, 'box')} bgcolor={prodStatus ? 'text.disabled' : 'inherit'}>
@@ -139,7 +135,7 @@ const SSOProductionSetup = ({
                 {t('service:sso.productionSetup.clientSecret.subtitle')}
               </Typography>
             )}
-          <Box mt={3} className="form">
+          <Box mt={3}>
             <FieldTextPasswordRevealable
               className="field"
               name="clientSecret"
@@ -164,7 +160,7 @@ const SSOProductionSetup = ({
               }}
               value={clientSecret}
             />
-            <div className="controls">
+            <Box display="flex" justifyContent="flex-end" mt={1}>
               <ButtonProgress
                 isProgressing={isSubmitting}
                 onClick={onGenerateSecret}
@@ -173,13 +169,17 @@ const SSOProductionSetup = ({
               >
                 {t('common:regenerate', 'Regenerate')}
               </ButtonProgress>
-              <ButtonProgress
-                isProgressing={isSubmitting}
+              <Box
+                ml={1}
+                component={ButtonSubmit}
+                isSubmitting={isSubmitting}
                 onClick={onSwitchProdStatus}
-              >
-                {prodStatus ? t('common:leaveFromProd', 'Leave from production') : t('common:goToProd', 'Go to production')}
-              </ButtonProgress>
-            </div>
+                text={prodStatus
+                  ? t('common:leaveFromProd', 'Leave from production')
+                  : t('common:goToProd', 'Go to production')
+                }
+              />
+            </Box>
           </Box>
         </BoxSection>
       </Container>

@@ -17,21 +17,13 @@ import isNil from '@misakey/helpers/isNil';
 import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
+import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Navigation from 'components/dumb/Navigation';
+import Navigation from '@misakey/ui/Navigation';
 import FieldText from '@misakey/ui/Form/Field/Text';
 import ButtonSubmit from '@misakey/ui/Button/Submit';
 import ScreenError from 'components/screen/Error';
-
-import './index.scss';
-
-// CONSTANTS
-const APP_BAR_PROPS = {
-  color: 'inherit',
-  elevation: 0,
-  position: 'static',
-};
 
 const PARENT_ROUTE = routes.service.information._;
 
@@ -97,22 +89,25 @@ const ServiceName = ({
     return <ScreenError httpStatus={error} />;
   }
   return (
-    <div className="Name">
-      <div className="header">
-        <Navigation history={history} appBarProps={APP_BAR_PROPS} pushPath={pushPath} hideBackButton={false} title={t('service:information.name.title')} />
-        <Typography variant="body2" color="textSecondary" align="left" className="subtitle">
+    <div id="ServiceInformationName">
+      <Navigation
+        history={history}
+        pushPath={pushPath}
+        toolbarProps={{ maxWidth: 'md' }}
+        title={t('service:information.name.title')}
+      />
+      <Container maxWidth="md">
+        <Typography variant="body2" color="textSecondary" gutterBottom>
           {t('service:information.name.subtitle')}
         </Typography>
-      </div>
-      {name && (
-        <Formik
-          validationSchema={nameForm}
-          onSubmit={onSubmit}
-          initialValues={{ name }}
-        >
-          {({ isSubmitting, isValid }) => (
-            <Container maxWidth="sm" className="content">
-              <Form className="form">
+        {name && (
+          <Formik
+            validationSchema={nameForm}
+            onSubmit={onSubmit}
+            initialValues={{ name }}
+          >
+            {({ isSubmitting, isValid }) => (
+              <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
                 <Field
                   className="field"
                   type="text"
@@ -121,14 +116,16 @@ const ServiceName = ({
                   component={FieldText}
                   label={t('fields:name.label')}
                 />
-                <ButtonSubmit disabled={isSubmitting || !isValid}>
-                  {t('common:submit')}
-                </ButtonSubmit>
-              </Form>
-            </Container>
-          )}
-        </Formik>
-      )}
+                <Box mt={1}>
+                  <ButtonSubmit disabled={isSubmitting || !isValid}>
+                    {t('common:submit')}
+                  </ButtonSubmit>
+                </Box>
+              </Box>
+            )}
+          </Formik>
+        )}
+      </Container>
     </div>
   );
 };

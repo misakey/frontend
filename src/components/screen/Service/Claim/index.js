@@ -191,7 +191,7 @@ function ServiceClaim({ service, t, userId }) {
 
   return (
     <section id="ServiceClaim">
-      <Container>
+      <Container maxWidth="md">
         <Typography variant="h4" component="h3" align="center">
           {t('screens:Service.Claim.body.title', service)}
         </Typography>

@@ -14,17 +14,7 @@ import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import BoxSection from '@misakey/ui/Box/Section';
-import Navigation from 'components/dumb/Navigation';
-
-
-// CONSTANTS
-const APP_BAR_PROPS = {
-  color: 'inherit',
-  elevation: 0,
-  position: 'static',
-  maxWidth: 'sm',
-  component: Container,
-};
+import Navigation from '@misakey/ui/Navigation';
 
 const PARENT_ROUTE = routes.service.sso._;
 
@@ -47,12 +37,17 @@ const SSOCustomRoles = ({
 
   return (
     <>
-      <Navigation history={history} appBarProps={APP_BAR_PROPS} pushPath={pushPath} hideBackButton={false} title={t('service:sso.customRoles.title')}>
+      <Navigation
+        history={history}
+        pushPath={pushPath}
+        toolbarProps={{ maxWidth: 'md' }}
+        title={t('service:sso.customRoles.title')}
+      >
         <IconButton edge="end" type="button" color="secondary" disabled>
           <AddIcon />
         </IconButton>
       </Navigation>
-      <Container maxWidth="sm" className="screen">
+      <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
           {t('service:sso.customRoles.subtitle')}
         </Typography>

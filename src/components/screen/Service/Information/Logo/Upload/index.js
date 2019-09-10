@@ -11,16 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import FileField from '@misakey/ui/Form/Field/File';
 
-import Navigation from 'components/dumb/Navigation';
-
-import './index.scss';
-
-// CONSTANTS
-const APP_BAR_PROPS = {
-  color: 'inherit',
-  elevation: 0,
-  position: 'static',
-};
+import Navigation from '@misakey/ui/Navigation';
 
 const FIELD = 'logo';
 const PREVIEW = 'preview';
@@ -44,21 +35,22 @@ const ServiceLogoUpload = ({ service, t, setFieldValue, history }) => {
   );
 
   return (
-    <div className="Upload">
-      <div className="header">
-        <Navigation history={history} appBarProps={APP_BAR_PROPS} pushPath={pushPath} hideBackButton={false} title={t('service:information.logo.upload.title')} />
-        <Typography variant="body2" color="textSecondary" align="left" className="subtitle">
-          {t('service:logo.upload.subtitle')}
+    <div id="ServiceInformationLogoUpload">
+      <Navigation
+        history={history}
+        pushPath={pushPath}
+        toolbarProps={{ maxWidth: 'md' }}
+        title={t('service:information.logo.upload.title')}
+      />
+      <Container maxWidth="md">
+        <Typography variant="body2" color="textSecondary" gutterBottom>
+          {t('service:information.logo.upload.subtitle')}
         </Typography>
-      </div>
-
-      <Container maxWidth="sm" className="content">
         <FileField
           accept={ACCEPTED_TYPES}
           onChange={onChange}
         />
       </Container>
-
     </div>
   );
 };

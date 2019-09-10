@@ -25,8 +25,6 @@ import includes from '@misakey/helpers/includes';
 import ScreenError from 'components/screen/Error';
 import SplashScreen from '@misakey/ui/SplashScreen';
 
-import './index.scss';
-
 // LAZY
 const SSOHome = lazy(() => import('./Home'));
 const SSOMainDomain = lazy(() => import('./MainDomain'));

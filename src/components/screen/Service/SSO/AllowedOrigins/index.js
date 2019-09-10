@@ -21,22 +21,13 @@ import join from '@misakey/helpers/join';
 import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
+import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Navigation from 'components/dumb/Navigation';
+import Navigation from '@misakey/ui/Navigation';
 import FieldText from '@misakey/ui/Form/Field/Text';
 import ButtonSubmit from '@misakey/ui/Button/Submit';
 import ScreenError from 'components/screen/Error';
-
-
-// CONSTANTS
-const APP_BAR_PROPS = {
-  color: 'inherit',
-  elevation: 0,
-  position: 'static',
-  maxWidth: 'sm',
-  component: Container,
-};
 
 const PARENT_ROUTE = routes.service.sso._;
 
@@ -117,10 +108,14 @@ const SSOAllowedOrigins = ({
   }
   return (
     <>
-      <Navigation history={history} appBarProps={APP_BAR_PROPS} pushPath={pushPath} hideBackButton={false} title={t('service:sso.allowedOrigins.title')} />
-      <Container maxWidth="sm" className="screen">
-
-        <Typography variant="body2" color="textSecondary" align="left" gutterBottom>
+      <Navigation
+        history={history}
+        pushPath={pushPath}
+        toolbarProps={{ maxWidth: 'md' }}
+        title={t('service:sso.allowedOrigins.title')}
+      />
+      <Container maxWidth="md">
+        <Typography variant="body2" color="textSecondary" gutterBottom>
           {t('service:sso.allowedOrigins.subtitle')}
         </Typography>
         <Formik
@@ -129,7 +124,7 @@ const SSOAllowedOrigins = ({
           initialValues={{ allowedCorsOrigins }}
         >
           {({ isSubmitting, isValid }) => (
-            <Form className="form">
+            <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
               <Field
                 className="field"
                 type="url"
@@ -138,12 +133,14 @@ const SSOAllowedOrigins = ({
                 autoFocus
                 component={FieldText}
                 label={t('fields:allowedCorsOrigins.label')}
-                helperText={t('fields:allowedCorsOrigins.hint')}
+                helperText={t('fields:allowedCorsOrigins.helperText')}
               />
-              <ButtonSubmit disabled={isSubmitting || !isValid}>
-                {t('common:submit')}
-              </ButtonSubmit>
-            </Form>
+              <Box mt={1}>
+                <ButtonSubmit disabled={isSubmitting || !isValid}>
+                  {t('common:submit')}
+                </ButtonSubmit>
+              </Box>
+            </Box>
           )}
         </Formik>
       </Container>
