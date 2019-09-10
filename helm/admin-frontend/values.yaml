@@ -3,7 +3,6 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 2
-env:
 
 image:
   repository: registry.gitlab.com/misakey/admin-frontend

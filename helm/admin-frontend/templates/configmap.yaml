@@ -8,7 +8,6 @@ metadata:
     chart: {{ template "admin-frontend.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    env: {{ required "env is required" .Values.env }}
 data:
   # When the config map is mounted as a volume, these will be created as files.
   env.js: {{ .Values.config | quote }}
