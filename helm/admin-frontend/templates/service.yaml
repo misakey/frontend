@@ -7,7 +7,6 @@ metadata:
     chart: {{ template "admin-frontend.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    env: {{ required "env is required" .Values.env }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -18,4 +17,3 @@ spec:
   selector:
     app: {{ template "admin-frontend.name" . }}
     release: {{ .Release.Name }}
-    env: {{ required "env is required" .Values.env }}
