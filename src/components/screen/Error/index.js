@@ -11,7 +11,6 @@ import './Error.scss';
 import ErrorOverlay from '@misakey/ui/Error/Overlay';
 
 /**
- * @FIXME add to @misakey/ui
  * @param error
  * @param history
  * @param httpStatus

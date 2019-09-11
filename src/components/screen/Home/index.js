@@ -1,5 +1,5 @@
 import React from 'react';
-import Redirect from 'components/smart/Redirect';
+import Redirect from '@misakey/ui/Redirect';
 import generatePath from '@misakey/helpers/generatePath';
 import routes from 'routes';
 

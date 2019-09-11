@@ -5,7 +5,6 @@ import clsx from 'clsx';
 import './Screen.scss';
 
 /**
- * @FIXME add to @misakey/ui
  * @param children
  * @param className
  * @param rest

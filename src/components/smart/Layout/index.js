@@ -17,8 +17,8 @@ import ElevationScroll from 'components/dumb/ElevationScroll';
 import ButtonConnect from 'components/dumb/Button/Connect';
 
 import { DRAWER_WIDTH } from 'components/screen/Service/Drawer';
-import ButtonGoBack from 'components/dumb/Button/GoBack';
-import ButtonBurger from 'components/dumb/Button/Burger';
+import ButtonGoBack from '@misakey/ui/Button/GoBack';
+import ButtonBurger from '@misakey/ui/Button/Burger';
 import { layoutBurgerClicked } from 'store/actions/Layout';
 
 export const LEFT_PORTAL_ID = 'LayoutLeftPortal';

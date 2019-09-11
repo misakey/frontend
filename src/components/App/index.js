@@ -6,7 +6,7 @@ import { Route, Switch } from 'react-router-dom';
 
 import routes from 'routes';
 import SplashScreen from '@misakey/ui/SplashScreen';
-import RoutePrivate from 'components/smart/Route/Private';
+import RoutePrivate from '@misakey/auth/components/Route/Private';
 
 import './App.scss';
 

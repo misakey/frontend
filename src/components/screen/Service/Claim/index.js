@@ -28,7 +28,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import SplashScreen from '@misakey/ui/SplashScreen';
 import BoxSection from '@misakey/ui/Box/Section';
 import ButtonSubmit from '@misakey/ui/Button/Submit';
-import BoxMessage from 'components/dumb/Box/Message';
+import BoxMessage from '@misakey/ui/Box/Message';
 import ErrorOverlay from '@misakey/ui/Error/Overlay';
 import clsx from 'clsx';
 
