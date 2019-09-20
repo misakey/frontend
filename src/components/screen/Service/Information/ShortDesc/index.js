@@ -101,7 +101,6 @@ const ServiceShortDesc = ({
         <Typography variant="body2" color="textSecondary" gutterBottom>
           {t('service:information.shortDesc.subtitle')}
         </Typography>
-        {shortDesc && (
         <Formik
           validationSchema={shortDescForm}
           onSubmit={onSubmit}
@@ -127,7 +126,6 @@ const ServiceShortDesc = ({
             </Box>
           )}
         </Formik>
-        )}
       </Container>
     </div>
   );

@@ -100,31 +100,29 @@ const ServiceName = ({
         <Typography variant="body2" color="textSecondary" gutterBottom>
           {t('service:information.name.subtitle')}
         </Typography>
-        {name && (
-          <Formik
-            validationSchema={nameForm}
-            onSubmit={onSubmit}
-            initialValues={{ name }}
-          >
-            {({ isSubmitting, isValid }) => (
-              <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
-                <Field
-                  className="field"
-                  type="text"
-                  name="name"
-                  autoFocus
-                  component={FieldText}
-                  label={t('fields:name.label')}
-                />
-                <Box mt={1}>
-                  <ButtonSubmit disabled={isSubmitting || !isValid}>
-                    {t('common:submit')}
-                  </ButtonSubmit>
-                </Box>
+        <Formik
+          validationSchema={nameForm}
+          onSubmit={onSubmit}
+          initialValues={{ name }}
+        >
+          {({ isSubmitting, isValid }) => (
+            <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
+              <Field
+                className="field"
+                type="text"
+                name="name"
+                autoFocus
+                component={FieldText}
+                label={t('fields:name.label')}
+              />
+              <Box mt={1}>
+                <ButtonSubmit disabled={isSubmitting || !isValid}>
+                  {t('common:submit')}
+                </ButtonSubmit>
               </Box>
-            )}
-          </Formik>
-        )}
+            </Box>
+          )}
+        </Formik>
       </Container>
     </div>
   );
