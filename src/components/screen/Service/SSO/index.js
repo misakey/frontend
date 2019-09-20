@@ -29,7 +29,6 @@ import './index.scss';
 
 // LAZY
 const SSOHome = lazy(() => import('./Home'));
-const SSOMainDomain = lazy(() => import('./MainDomain'));
 const SSOAllowedOrigins = lazy(() => import('./AllowedOrigins'));
 const SSORedirectUri = lazy(() => import('./RedirectUri'));
 const SSOProductionSetup = lazy(() => import('./ProductionSetup'));
@@ -122,11 +121,6 @@ const ServiceSSO = ({ service, entity, dispatchUpdate }) => {
           exact
           path={routes.service.sso._}
           render={routerProps => <SSOHome service={entity} {...routerProps} />}
-        />
-        <Route
-          exact
-          path={routes.service.sso.mainDomain}
-          render={routerProps => <SSOMainDomain service={entity} {...routerProps} />}
         />
         <Route
           exact

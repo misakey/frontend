@@ -217,7 +217,7 @@ function ServiceClaim({ service, t, userId }) {
             margin="normal"
             variant="outlined"
             fullWidth
-            disabled
+            InputProps={{ readOnly: true }}
           />
           {success && (
             <BoxMessage

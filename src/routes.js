@@ -34,7 +34,6 @@ const routes = {
     },
     sso: {
       _: '/:mainDomain/sso',
-      mainDomain: '/:mainDomain/sso/mainDomain',
       allowedOrigins: '/:mainDomain/sso/allowedOrigins',
       redirectUri: '/:mainDomain/sso/redirectUri',
       productionSetup: '/:mainDomain/sso/productionSetup',
