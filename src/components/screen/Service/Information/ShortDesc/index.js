@@ -105,33 +105,31 @@ const ServiceShortDesc = ({
           {t('service:information.shortDesc.subtitle')}
         </Typography>
       </div>
-      {shortDesc && (
-        <Formik
-          validationSchema={shortDescForm}
-          onSubmit={onSubmit}
-          initialValues={{ shortDesc }}
-        >
-          {({ isSubmitting, isValid }) => (
-            <Container maxWidth="sm" className="content">
-              <Form className="form">
-                <Field
-                  className="field"
-                  type="text"
-                  name="shortDesc"
-                  autoFocus
-                  component={FieldText}
-                  label={t('fields:shortDesc.label')}
-                  helperText={t('fields:shortDesc.hint')}
-                  t={t}
-                />
-                <ButtonSubmit disabled={isSubmitting || !isValid}>
-                  {t('common:submit')}
-                </ButtonSubmit>
-              </Form>
-            </Container>
-          )}
-        </Formik>
-      )}
+      <Formik
+        validationSchema={shortDescForm}
+        onSubmit={onSubmit}
+        initialValues={{ shortDesc }}
+      >
+        {({ isSubmitting, isValid }) => (
+          <Container maxWidth="sm" className="content">
+            <Form className="form">
+              <Field
+                className="field"
+                type="text"
+                name="shortDesc"
+                autoFocus
+                component={FieldText}
+                label={t('fields:shortDesc.label')}
+                helperText={t('fields:shortDesc.hint')}
+                t={t}
+              />
+              <ButtonSubmit disabled={isSubmitting || !isValid}>
+                {t('common:submit')}
+              </ButtonSubmit>
+            </Form>
+          </Container>
+        )}
+      </Formik>
     </div>
   );
 };

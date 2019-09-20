@@ -49,34 +49,32 @@ const SSOMainDomain = ({
         <Typography variant="body2" color="textSecondary" align="left" gutterBottom>
           {t('service:sso.mainDomain.subtitle')}
         </Typography>
-        {mainDomain && (
-          <div className="form">
-            <TextField
-              margin="normal"
-              fullWidth
-              variant="outlined"
-              className="field"
-              type="text"
-              name="mainDomain"
-              label={t('fields:mainDomain.label')}
-              value={mainDomain}
-              disabled
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <ButtonCopy
-                      color="default"
-                      mode="icon"
-                      edge="end"
-                      value={mainDomain}
-                    />
+        <div className="form">
+          <TextField
+            margin="normal"
+            fullWidth
+            variant="outlined"
+            className="field"
+            type="text"
+            name="mainDomain"
+            label={t('fields:mainDomain.label')}
+            value={mainDomain}
+            disabled
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <ButtonCopy
+                    color="default"
+                    mode="icon"
+                    edge="end"
+                    value={mainDomain}
+                  />
 
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </div>
-        )}
+                </InputAdornment>
+              ),
+            }}
+          />
+        </div>
       </Container>
     </>
   );

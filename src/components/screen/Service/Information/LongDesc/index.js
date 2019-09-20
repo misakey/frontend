@@ -104,32 +104,30 @@ const ServiceLongDesc = ({
           {t('service:information.longDesc.subtitle')}
         </Typography>
       </div>
-      {longDesc && (
-        <Formik
-          validationSchema={longDescForm}
-          onSubmit={onSubmit}
-          initialValues={{ longDesc }}
-        >
-          {({ isSubmitting, isValid }) => (
-            <Container maxWidth="sm" className="content">
-              <Form className="form">
-                <Field
-                  className="field"
-                  type="text"
-                  name="longDesc"
-                  autoFocus
-                  multiline
-                  component={FieldText}
-                  label={t('fields:longDesc.label')}
-                />
-                <ButtonSubmit disabled={isSubmitting || !isValid}>
-                  {t('common:submit')}
-                </ButtonSubmit>
-              </Form>
-            </Container>
-          )}
-        </Formik>
-      )}
+      <Formik
+        validationSchema={longDescForm}
+        onSubmit={onSubmit}
+        initialValues={{ longDesc }}
+      >
+        {({ isSubmitting, isValid }) => (
+          <Container maxWidth="sm" className="content">
+            <Form className="form">
+              <Field
+                className="field"
+                type="text"
+                name="longDesc"
+                autoFocus
+                multiline
+                component={FieldText}
+                label={t('fields:longDesc.label')}
+              />
+              <ButtonSubmit disabled={isSubmitting || !isValid}>
+                {t('common:submit')}
+              </ButtonSubmit>
+            </Form>
+          </Container>
+        )}
+      </Formik>
     </div>
   );
 };
