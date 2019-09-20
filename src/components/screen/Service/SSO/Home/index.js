@@ -87,7 +87,12 @@ const ServiceSSOHome = ({ service, t }) => {
             </Typography>
           </Box>
           <List>
-            <FieldItem field={{ mainDomain }} mainDomain={mainDomain} t={t} />
+            <ListDataItem
+              ariaAction={t('fields:mainDomain.action')}
+              label={t('fields:mainDomain.label')}
+              text={{ primary: mainDomain }}
+              disabled
+            />
             <ListDataItem
               ariaAction={t('fields:allowedCorsOrigins.action')}
               label={t('fields:allowedCorsOrigins.label')}
