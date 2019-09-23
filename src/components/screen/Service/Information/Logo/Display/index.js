@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Navigation from '@misakey/ui/Navigation';
 import Button from '@material-ui/core/Button';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import ButtonSubmit from '@misakey/ui/Button/Submit';
 import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
 import BoxSection from '@misakey/ui/Box/Section';
@@ -25,7 +26,7 @@ const FIELD_PATH = ['field', 'value'];
 const getPreview = path(FIELD_PATH);
 
 // COMPONENTS
-const ServiceLogoDisplay = ({ t, isSubmitting, isValid, service, history }) => {
+const ServiceLogoDisplay = ({ t, isSubmitting, isValid, errors, service, history }) => {
   const { logoUri, mainDomain, name } = useMemo(() => (isNil(service) ? {} : service), [service]);
 
   const linkTo = useMemo(
@@ -37,6 +38,8 @@ const ServiceLogoDisplay = ({ t, isSubmitting, isValid, service, history }) => {
     () => generatePath(routes.service.information._, { mainDomain }),
     [mainDomain],
   );
+
+  const errorList = useMemo(() => Object.entries(errors), [errors]);
 
   if (isNil(service)) { return null; }
   return (
@@ -52,6 +55,7 @@ const ServiceLogoDisplay = ({ t, isSubmitting, isValid, service, history }) => {
           {t('service:information.logo.subtitle')}
         </Typography>
         <BoxSection>
+        {/* @FIXME create a standard component based on material-ui for field */}
           <Field
             name="preview"
             render={(fieldProps) => {
@@ -61,6 +65,10 @@ const ServiceLogoDisplay = ({ t, isSubmitting, isValid, service, history }) => {
               return <AvatarDetailed image={image} text={name} />;
             }}
           />
+        {errorList.map(([field, error]) => (
+          // @FIXME use standard error display with a new Material Field
+          <FormHelperText className="error" key={error} error>{t(`fields:${field}.error.${error}`)}</FormHelperText>
+        ))}
           <Box display="flex" justifyContent="center">
             <Button
               to={linkTo}
@@ -87,7 +95,7 @@ ServiceLogoDisplay.propTypes = {
   t: PropTypes.func.isRequired,
   isSubmitting: PropTypes.bool.isRequired,
   isValid: PropTypes.bool.isRequired,
-
+  errors: PropTypes.objectOf(PropTypes.string),
   service: PropTypes.shape({
     logoUri: PropTypes.string,
     name: PropTypes.string,
@@ -99,6 +107,7 @@ ServiceLogoDisplay.propTypes = {
 
 ServiceLogoDisplay.defaultProps = {
   service: null,
+  errors: {},
 };
 
-export default withTranslation(['common', 'service'])(ServiceLogoDisplay);
+export default withTranslation(['common', 'service', 'fields'])(ServiceLogoDisplay);
