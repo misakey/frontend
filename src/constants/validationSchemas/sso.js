@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 
 // [http|https]://*;[http|https]://*
-const ORIGIN_LIST_REGEX = /^(?:https?:\/\/[^;]+;)+?(?:https?:\/\/[^;]+)$/;
+const ORIGIN_LIST_REGEX = /^(?:https?:\/\/[^;]+;)*?(?:https?:\/\/[^;]+)$/;
 
 export const allowedOriginsForm = Yup.object().shape({
   allowedCorsOrigins: Yup

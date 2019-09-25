@@ -37,15 +37,8 @@ const SSOCustomRoles = lazy(() => import('./CustomRoles'));
 const SSO_PROPS = ['allowedCorsOrigins', 'redirectUris'];
 
 const SSO_DEFAULT = {
-  allowedCorsOrigins: [],
-  redirectUris: [],
-};
-
-// @FIXME js-common
-const SSO_ENDPOINT = {
-  method: 'GET',
-  path: '/sso-clients/:id',
-  auth: true,
+  allowedCorsOrigins: null,
+  redirectUris: null,
 };
 
 // HELPERS
@@ -59,7 +52,7 @@ const missingSSOProps = compose(
 );
 
 const fetchApplicationSSO = id => API
-  .use(SSO_ENDPOINT)
+  .use(API.endpoints.sso.read)
   .build(objectToSnakeCase({ id }))
   .send();
 
@@ -77,8 +70,8 @@ const useGetApplicationSSO = (
     const { id, mainDomain } = service;
     setIsFetching(true);
     return fetchApplicationSSO(id)
-      .then((response) => {
-        const sso = objectToCamelCase(response.body);
+      .then((responseBody) => {
+        const sso = objectToCamelCase(responseBody);
         dispatchUpdate(mainDomain, sso);
         setIsFetching(false);
       })

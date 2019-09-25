@@ -59,8 +59,8 @@ const useGetApplicationInfo = (
     const { id, mainDomain } = service;
     setIsFetching(true);
     return fetchApplicationDomains(id)
-      .then((response) => {
-        const domains = response.body.map(objectToCamelCase);
+      .then((responseBody) => {
+        const domains = responseBody.map(objectToCamelCase);
         dispatchUpdate(mainDomain, { domains });
         setIsFetching(false);
       })

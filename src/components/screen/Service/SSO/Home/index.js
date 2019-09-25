@@ -4,6 +4,8 @@ import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
 
+import ServiceSchema from 'store/schemas/Service';
+
 import isNil from '@misakey/helpers/isNil';
 import isArray from '@misakey/helpers/isArray';
 import generatePath from '@misakey/helpers/generatePath';
@@ -51,17 +53,18 @@ FieldItem.propTypes = {
 };
 
 const ServiceSSOHome = ({ service, t }) => {
-  const {
-    mainDomain,
-    allowedCorsOrigins,
-    redirectUri,
-  } = useMemo(() => (isNil(service) ? {} : service), [service]);
+  const mainDomain = useMemo(() => (isNil(service) ? null : service.mainDomain), [service]);
+  const allowedCorsOrigins = useMemo(
+    () => (isNil(service) ? null : service.allowedCorsOrigins),
+    [service],
+  );
+  const redirectUris = useMemo(() => (isNil(service) ? null : service.redirectUris), [service]);
 
   const allowedCorsOriginsList = useMemo(
     () => (isArray(allowedCorsOrigins) ? allowedCorsOrigins : []), [allowedCorsOrigins],
   );
   const redirectUriList = useMemo(
-    () => (isArray(redirectUri) ? redirectUri : []), [redirectUri],
+    () => (isArray(redirectUris) ? redirectUris : []), [redirectUris],
   );
 
   const linkToAllowedOrigins = useLinkTo('allowedOrigins', mainDomain);
@@ -151,14 +154,7 @@ const ServiceSSOHome = ({ service, t }) => {
 
 ServiceSSOHome.propTypes = {
 
-  service: PropTypes.shape({
-    name: PropTypes.string,
-    logoUri: PropTypes.string,
-    mainDomain: PropTypes.string,
-    domains: PropTypes.arrayOf(PropTypes.object),
-    shortDesc: PropTypes.string,
-    longDesc: PropTypes.string,
-  }),
+  service: PropTypes.shape(ServiceSchema.propTypes),
 
   // withTranslation
   t: PropTypes.func.isRequired,

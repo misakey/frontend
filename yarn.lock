@@ -1109,50 +1109,51 @@
     prop-types "^15.7.2"
     react-is "^16.8.6"
 
-"@misakey/api@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@misakey/api/-/api-1.1.0.tgz#889ffc0b835fbcd72adbd752caadbcefade415d0"
-  integrity sha512-8uJI9UNA10U+GCasoBK6gP20Tjp4LTRgKkuy4Fhs5NXsNe02t0cQa7H9WyO1q4jldTH+o0JLQrwZaXBjpq7k/w==
+"@misakey/api@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@misakey/api/-/api-2.0.2.tgz#3c4b44c455f18f3ebd08ff43eb4275145cd9781e"
+  integrity sha512-GL81ep4HBfRn+v9nkJmpnn3WLMjZM/R/oBV++iPfFj4YB1kber/hhibOPsjCFU2tE7Pe9dJgTUAjdnC36TXA7g==
   dependencies:
     http-status-codes "^1.3.2"
 
-"@misakey/auth@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@misakey/auth/-/auth-1.1.1.tgz#bf148f2eaee4b509162d13018e41a2242636a903"
-  integrity sha512-vtbZE/6gw9lSOjTUwQMN7QJFb/9k7ZIQ4ygeCa+B9XLJ8DjXn1nP3c/Z6wlqxWSYRkx6fBR8jB7Tdb45Z/MhMA==
+"@misakey/auth@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@misakey/auth/-/auth-1.2.1.tgz#930814510c41b88d63a6dfbab2199f3a00414262"
+  integrity sha512-pwI1RmR5dlwFSKGGyuTDavmsRQMa755o9r0HmEc3gvLs1afAEjYrlzJ77wS72mDn9KQg5fjtUfi89t5yBravPQ==
   dependencies:
     "@babel/runtime" "^7.5.5"
     clsx "^1.0.4"
     prop-types "^15.7.2"
 
-"@misakey/helpers@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@misakey/helpers/-/helpers-2.0.0.tgz#f1c59d6bac506ed4e59633897dccfd7ff0328917"
-  integrity sha512-KBPH0rfhHrbN4WY1abf2VedVXOd4DHnc7JNIkmnf6Pv9/2VrL/UQGBIPONorPsTaOWUPdtYrDapkHDj0iz/BIQ==
+"@misakey/helpers@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@misakey/helpers/-/helpers-3.0.0.tgz#0e7eb1bac8e7fad7208e5d95892e8bd6750d2203"
+  integrity sha512-cQzGh1PvAc2UWXN1ssrlS+oVWTikJ6EftR325YUb/lDfCZpFX3YXbR6405/B9frQTDNDVO0WdJnMWVBG9fc4wQ==
   dependencies:
     "@babel/runtime" "^7.5.5"
     lodash "^4.17.15"
     path-to-regexp "^3.0.0"
     ramda "^0.26.1"
+    validator "^11.1.0"
 
-"@misakey/hooks@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@misakey/hooks/-/hooks-1.0.0.tgz#d565cfbb83abcf77188fc72f39975e277f35bbf1"
-  integrity sha512-mPBujh9fTpMGcMRlkkCb1CN71oLvUOxF2P10HghwlNc5hpzaD88/7vD5P8NK8HZkM68MztiOCsg7WTpGzCIpyQ==
-  dependencies:
-    "@babel/runtime" "^7.5.5"
-
-"@misakey/store@^1.1.0":
+"@misakey/hooks@^1.1.0":
   version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@misakey/store/-/store-1.1.0.tgz#d2b3e154fb0128845bcc373dd3d5ffc3a4fbb85f"
-  integrity sha512-00L5hGnhQsCX0Icj/AbPt0B6P1TbymkS03NMbsNMN0cCIZlM72fQhL/4o/oyokyZHvGB6vVzzDkNFpQvZlgQ4w==
+  resolved "https://registry.yarnpkg.com/@misakey/hooks/-/hooks-1.1.0.tgz#c2b06dadfc6711c855dcdc0dad77240d51cc448f"
+  integrity sha512-ujQJSqQj+gtmcZo9AbT2EkOsb1KKqeWdAXKBsWxUFO65v6tFgvsaLmGK9PquyGHv8TeOMddh6cAo9ibqmWyImw==
   dependencies:
     "@babel/runtime" "^7.5.5"
 
-"@misakey/ui@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@misakey/ui/-/ui-1.5.0.tgz#5e1dd3baa82f6743e9781c8cbc4e92693572115a"
-  integrity sha512-XGSP700qt+OSfkkecGz32VxX/DIW/GxiGpKlngnyaL1b7XrCV66rMfv6d1AYcoJxgqa9q5k7Em7lFaFlGvmVog==
+"@misakey/store@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@misakey/store/-/store-1.2.0.tgz#5b4efa388eb6c6e555a7eba340dd906ab8552b06"
+  integrity sha512-I/Oo7GF0UDg9+bX7n4oXnRPDFr4h43r5PHfd/ukhNU+xkXSDQ5/1R7+0MadCeLSFulbvYvRhdvwuxko/AjLYlw==
+  dependencies:
+    "@babel/runtime" "^7.5.5"
+
+"@misakey/ui@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@misakey/ui/-/ui-1.6.2.tgz#cd248b3bf2555a7c6d3758b21217da227afb9ac9"
+  integrity sha512-poATPNDb4Ni7btQIVZN5yaDw8vbD7an6OIBn0vtAyccxL5s9aIHJ07kx18ffnK89ORHFQ1Vy1J7Nq8qQTWEtxQ==
   dependencies:
     "@babel/runtime" "^7.5.5"
     clsx "^1.0.4"
@@ -10490,6 +10491,11 @@ validate-npm-package-license@^3.0.1:
   dependencies:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
+
+validator@^11.1.0:
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-11.1.0.tgz#ac18cac42e0aa5902b603d7a5d9b7827e2346ac4"
+  integrity sha512-qiQ5ktdO7CD6C/5/mYV4jku/7qnqzjrxb3C/Q5wR3vGGinHTgJZN/TdFT3ZX4vXhX2R1PXx42fB1cn5W+uJ4lg==
 
 value-equal@^0.4.0:
   version "0.4.0"

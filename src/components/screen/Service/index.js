@@ -78,8 +78,8 @@ const useGetApplication = (
   if (shouldFetch && !isNil(param)) {
     setIsFetching(true);
     return fetchApplication(param)
-      .then((response) => {
-        const data = response.body.map(objectToCamelCase);
+      .then((responseBody) => {
+        const data = responseBody.map(objectToCamelCase);
         dispatchReceive(data);
         setIsFetching(false);
       })

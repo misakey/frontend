@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Formik, Field, Form } from 'formik';
 import { withTranslation } from 'react-i18next';
@@ -19,6 +19,7 @@ import split from '@misakey/helpers/split';
 import join from '@misakey/helpers/join';
 
 import API from '@misakey/api';
+import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
 import Box from '@material-ui/core/Box';
@@ -31,16 +32,14 @@ import ScreenError from 'components/screen/Error';
 
 const PARENT_ROUTE = routes.service.sso._;
 
-// @FIXME js-common
-const SSO_UPDATE_ENDPOINT = {
-  method: 'PUT',
-  path: '/sso-clients/:id',
-  auth: true,
-};
-
 // HELPERS
+const createApplicationSSO = (id, form) => API
+  .use(API.endpoints.sso.create)
+  .build(null, objectToSnakeCase({ ...form, clientId: id, redirectUris: [] }))
+  .send();
+
 const updateApplicationSSO = (id, form) => API
-  .use(SSO_UPDATE_ENDPOINT)
+  .use(API.endpoints.sso.update)
   .build({ id }, objectToSnakeCase(form))
   .send();
 
@@ -50,27 +49,26 @@ const listToAllowedOrigins = originsList => (isArray(originsList) ? join(origins
 // HOOKS
 const useOnSubmit = (
   service, dispatchUpdateEntities, enqueueSnackbar, setError, history, t,
-) => useMemo(
-  () => (
-    { allowedCorsOrigins }, { setSubmitting },
-  ) => {
-    const form = { allowedCorsOrigins: allowedOriginsToList(allowedCorsOrigins) };
-    return updateApplicationSSO(
-      service.id,
-      form,
-    )
-      .then(() => {
-        enqueueSnackbar(t('service:sso.allowedOrigins.success'), { variant: 'success' });
-        dispatchUpdateEntities(service.mainDomain, form, history);
-      })
-      .catch((error) => {
-        const httpStatus = error.httpStatus ? error.httpStatus : 500;
-        setError(httpStatus);
-      })
-      .finally(() => { setSubmitting(false); });
-  },
-  [service, dispatchUpdateEntities, enqueueSnackbar, setError, history, t],
-);
+) => useCallback((
+  { allowedCorsOrigins }, { setSubmitting },
+) => {
+  const form = { allowedCorsOrigins: allowedOriginsToList(allowedCorsOrigins) };
+  const alreadyExists = !isNil(service.allowedCorsOrigins);
+  return (alreadyExists
+    ? updateApplicationSSO(service.id, form)
+    : createApplicationSSO(service.id, form))
+    .then(({ body }) => {
+      const update = isNil(body) ? form : { ...form, ...objectToCamelCase(body) };
+      enqueueSnackbar(t('service:sso.allowedOrigins.success'), { variant: 'success' });
+      dispatchUpdateEntities(service.mainDomain, update, history);
+    })
+    .catch((error) => {
+      const httpStatus = error.httpStatus ? error.httpStatus : 500;
+      setError(httpStatus);
+    })
+    .finally(() => { setSubmitting(false); });
+},
+[service, dispatchUpdateEntities, enqueueSnackbar, setError, history, t]);
 
 // COMPONENTS
 const SSOAllowedOrigins = ({

@@ -26,20 +26,13 @@ import ButtonSubmit from '@misakey/ui/Button/Submit';
 import FieldTextPasswordRevealable, { ADORNMENT_POSITION } from 'components/dumb/Field/Text/Password/Revealable';
 import ScreenError from 'components/screen/Error';
 
-// @FIXME js-common
-const SSO_CREATE_SECRET_ENDPOINT = {
-  method: 'POST',
-  path: '/sso-clients/:id/secret',
-  auth: true,
-};
-
 const PARENT_ROUTE = routes.service.sso._;
 
 const EMPTY_SECRET = '';
 
 // HELPERS
 const createSSOSecret = id => API
-  .use(SSO_CREATE_SECRET_ENDPOINT)
+  .use(API.endpoints.sso.secret.create)
   .build({ id })
   .send();
 
@@ -61,8 +54,8 @@ const useOnGenerateSecret = (
   t,
 ) => useCallback(
   () => createSSOSecret(service.id)
-    .then((response) => {
-      const { clientSecret } = objectToCamelCase(response.body);
+    .then((responseBody) => {
+      const { clientSecret } = objectToCamelCase(responseBody);
       enqueueSnackbar(t('service:sso.productionSetup.clientSecret.success'), { variant: 'success' });
       setClientSecret(clientSecret);
     })

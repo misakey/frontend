@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Formik, Field, Form } from 'formik';
 import { withTranslation } from 'react-i18next';
@@ -13,9 +13,11 @@ import { updateEntities } from '@misakey/store/actions/entities';
 
 import generatePath from '@misakey/helpers/generatePath';
 import isNil from '@misakey/helpers/isNil';
+import isArray from '@misakey/helpers/isArray';
 
 import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -25,44 +27,47 @@ import FieldText from '@misakey/ui/Form/Field/Text';
 import ButtonSubmit from '@misakey/ui/Button/Submit';
 import ScreenError from 'components/screen/Error';
 
+// CONSTANTS
 const PARENT_ROUTE = routes.service.sso._;
 
-// @FIXME js-common
-const SSO_UPDATE_ENDPOINT = {
-  method: 'PUT',
-  path: '/sso-clients/:id',
-  auth: true,
-};
-
 // HELPERS
+const createApplicationSSO = (id, form) => API
+  .use(API.endpoints.sso.create)
+  .build(null, objectToSnakeCase({ ...form, clientId: id, allowedCorsOrigins: [] }))
+  .send();
+
 const updateApplicationSSO = (id, form) => API
-  .use(SSO_UPDATE_ENDPOINT)
+  .use(API.endpoints.sso.update)
   .build({ id }, objectToSnakeCase(form))
   .send();
 
 const redirectUriToList = redirectUriString => [redirectUriString];
 const listToRedirectUri = (redirectUriList) => {
-  const redirectUri = redirectUriList[0];
-  return isNil(redirectUri) ? '' : redirectUri;
+  if (isArray(redirectUriList)) {
+    const redirectUri = redirectUriList[0];
+    return isNil(redirectUri) ? '' : redirectUri;
+  }
+  return '';
 };
 
-const getRedirectUri = service => (isNil(service) ? '' : listToRedirectUri(service));
+const getRedirectUri = service => (isNil(service) ? '' : listToRedirectUri(service.redirectUris));
 
 // HOOKS
 const useOnSubmit = (
   service, dispatchUpdateEntities, enqueueSnackbar, setError, history, t,
-) => useMemo(
-  () => (
+) => useCallback(
+  (
     { redirectUris }, { setSubmitting },
   ) => {
     const form = { redirectUris: redirectUriToList(redirectUris) };
-    return updateApplicationSSO(
-      service.id,
-      form,
-    )
-      .then(() => {
+    const alreadyExists = !isNil(service.redirectUris);
+    return (alreadyExists
+      ? updateApplicationSSO(service.id, form)
+      : createApplicationSSO(service.id, form))
+      .then(({ body }) => {
+        const update = isNil(body) ? form : { ...form, ...objectToCamelCase(body) };
         enqueueSnackbar(t('service:sso.redirectUri.success'), { variant: 'success' });
-        dispatchUpdateEntities(service.mainDomain, form, history);
+        dispatchUpdateEntities(service.mainDomain, update, history);
       })
       .catch((error) => {
         const httpStatus = error.httpStatus ? error.httpStatus : 500;
