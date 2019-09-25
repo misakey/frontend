@@ -55,7 +55,7 @@ const ServiceLogoDisplay = ({ t, isSubmitting, isValid, errors, service, history
           {t('service:information.logo.subtitle')}
         </Typography>
         <BoxSection>
-        {/* @FIXME create a standard component based on material-ui for field */}
+          {/* @FIXME create a standard component based on material-ui for field */}
           <Field
             name="preview"
             render={(fieldProps) => {
@@ -65,10 +65,10 @@ const ServiceLogoDisplay = ({ t, isSubmitting, isValid, errors, service, history
               return <AvatarDetailed image={image} text={name} />;
             }}
           />
-        {errorList.map(([field, error]) => (
+          {errorList.map(([field, error]) => (
           // @FIXME use standard error display with a new Material Field
-          <FormHelperText className="error" key={error} error>{t(`fields:${field}.error.${error}`)}</FormHelperText>
-        ))}
+            <FormHelperText className="error" key={error} error>{t(`fields:${field}.error.${error}`)}</FormHelperText>
+          ))}
           <Box display="flex" justifyContent="center">
             <Button
               to={linkTo}
