@@ -15,7 +15,7 @@
           },
           "content": {
             "1": "Allez sur l'interface de gestion de la zone DNS de votre registrar (OVH, Gandi, Route 53, ...).",
-            "2": "Ajoutez une nouvelle entrée DNS, de Type \"TXT\".<br> De nom (sous-domaine) <1>_misakey.{{mainDomain}}</1><br> De valeur <3>{{key}}</3><br> Enregistrez.",
+            "2": "Ajoutez une nouvelle entrée DNS, de Type \"TXT\".<br> De nom (sous-domaine) <2>_misakey.{{mainDomain}}</2><br> De valeur <4>{{key}}</4><br> Enregistrez.",
             "3": "La diffusion DNS peut prendre de quelques secondes à plusieurs heures.<br> Si cela ne fonctionne pas tout de suite, reesayez plus tard.<br> Vous pouvez ré-essayer autant de fois que vous voulez en revenant sur cette page."
           }
         },
