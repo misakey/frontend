@@ -71,6 +71,9 @@ tag: ## Tag a docker image and set some aliases
 ifeq ($(CI_COMMIT_REF_NAME),develop)
 	@docker tag $(CI_REGISTRY_IMAGE):$(VERSION) $(CI_REGISTRY_IMAGE):latest
 endif
+ifeq ($(CI_COMMIT_REF_NAME),release)
+	@docker tag $(CI_REGISTRY_IMAGE):$(VERSION) $(CI_REGISTRY_IMAGE):rc
+endif
 	@docker tag $(CI_REGISTRY_IMAGE):$(VERSION) $(CI_REGISTRY_IMAGE):$(CI_COMMIT_REF_NAME)
 
 .PHONY: deploy
@@ -79,7 +82,11 @@ deploy: ## Push image to the docker registry
 ifeq ($(CI_COMMIT_REF_NAME),develop)
 	@docker push $(CI_REGISTRY_IMAGE):latest
 endif
+ifeq ($(CI_COMMIT_REF_NAME),release)
+	@docker push $(CI_REGISTRY_IMAGE):rc
+endif
 	@docker push $(CI_REGISTRY_IMAGE):$(CI_COMMIT_REF_NAME)
+
 
 .PHONY: clean
 clean: ## Remove all images related to the project
