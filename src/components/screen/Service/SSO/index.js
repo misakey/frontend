@@ -75,7 +75,7 @@ const useGetApplicationSSO = (
         setIsFetching(false);
       })
       .catch((error) => {
-        const httpStatus = error.httpStatus ? error.httpStatus : 500;
+        const httpStatus = error.httpStatus || 500;
         if (httpStatus === 404) {
           dispatchUpdate(mainDomain, SSO_DEFAULT);
         } else {

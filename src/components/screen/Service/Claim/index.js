@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import copy from 'copy-to-clipboard';
 import { useSnackbar } from 'notistack';
-import { Link } from 'react-router-dom';
-import { withTranslation } from 'react-i18next';
+import { Link, generatePath } from 'react-router-dom';
+import { Trans, withTranslation } from 'react-i18next';
 
 import routes from 'routes';
 
@@ -14,6 +14,7 @@ import isObject from '@misakey/helpers/isObject';
 import isInteger from '@misakey/helpers/isInteger';
 import useWidth from '@misakey/hooks/useWidth';
 
+import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -30,7 +31,6 @@ import BoxSection from '@misakey/ui/Box/Section';
 import ButtonSubmit from '@misakey/ui/Button/Submit';
 import BoxMessage from '@misakey/ui/Box/Message';
 import ErrorOverlay from '@misakey/ui/Error/Overlay';
-import clsx from 'clsx';
 
 // @FIXME: add to @misakey/API
 export const ENDPOINTS = {
@@ -55,42 +55,27 @@ export const ENDPOINTS = {
   },
 };
 
-const STEPS = [1, 2, 3, 4, 5, 6];
+const STEPS = [1, 2, 3];
 
 const VERIFY_ERROR = Symbol('verify.403');
 const RETRY_ERROR = Symbol('retry');
 
 const useStyles = makeStyles(theme => ({
-  box: {
-    marginTop: theme.spacing(3),
-  },
-  boxMessage: {
-    margin: theme.spacing(1, 0),
-  },
-  lastBox: {
-    marginBottom: theme.spacing(3),
-  },
   stepper: {
     padding: 0,
     marginTop: theme.spacing(2),
   },
-  button: {
-    marginTop: theme.spacing(1),
-    marginRight: theme.spacing(1),
-  },
-  actionsContainer: {
-    marginBottom: theme.spacing(2),
-  },
   submitLater: {
     marginRight: theme.spacing(1),
-  },
-  subtitle: {
-    marginTop: theme.spacing(1),
   },
   txtKeyActions: {
     display: 'flex',
     flexWrap: 'nowrap',
     justifyContent: 'space-between',
+  },
+  stepButton: {
+    marginTop: theme.spacing(1),
+    marginLeft: theme.spacing(1),
   },
 }));
 
@@ -107,6 +92,8 @@ function ServiceClaim({ service, t, userId }) {
   const [isSubmitting, setSubmitting] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
   const [error, setError] = React.useState(null);
+
+  const i18nKey = React.useCallback(step => `screens:Service.Claim.body.steps.content.${step}`);
 
   const handleNext = React.useCallback(() => {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
@@ -133,19 +120,18 @@ function ServiceClaim({ service, t, userId }) {
       return API.use(ENDPOINTS.claim.create)
         .build(null, payload)
         .send()
-        .then(({ body }) => { setClaim(body); });
+        .then((response) => { setClaim(response); });
     }
 
     if (isNil(service)) { return; }
 
     setFetching(true);
-    const payload = {};
 
     API.use(ENDPOINTS.claim.list)
-      .build(null, payload)
+      .build()
       .send()
-      .then(({ body }) => {
-        const found = find(body, ['application_id', service.id]);
+      .then((response) => {
+        const found = find(response, ['application_id', service.id]);
         if (isObject(found)) {
           setClaim(found);
         } else { createClaim(); }
@@ -172,8 +158,11 @@ function ServiceClaim({ service, t, userId }) {
       .catch((e) => {
         if (e.httpStatus === 403) {
           setError(VERIFY_ERROR);
+        } else if (e.httpStatus === 409) {
+          const text = t('screens:Service.Claim.body.txtKey.error.conflict');
+          enqueueSnackbar(text, { variant: 'warning' });
         } else {
-          const text = t(`error:${API.errors.filter(e.httpStatus)}`);
+          const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
           enqueueSnackbar(text, { variant: 'error' });
         }
       })
@@ -199,17 +188,17 @@ function ServiceClaim({ service, t, userId }) {
           align="center"
           variant="subtitle1"
           color="textSecondary"
-          className={classes.subtitle}
+          gutterBottom
         >
           {t('screens:Service.Claim.body.subTitle')}
         </Typography>
 
-        <BoxSection className={classes.box}>
+        <BoxSection my={3}>
           <Typography variant="h5" component="h4">
             {t('screens:Service.Claim.body.txtKey.title')}
           </Typography>
           <TextField
-            label={t('screens:Service.Claim.body.txtKey.label')}
+            label={t('screens:Service.Claim.body.txtKey.label', { mainDomain: service.mainDomain })}
             multiline
             rowsMax="4"
             value={claim.validation_token}
@@ -222,7 +211,8 @@ function ServiceClaim({ service, t, userId }) {
           {success && (
             <BoxMessage
               type="success"
-              className={classes.boxMessage}
+              my={1}
+              mx={0}
               text={t('screens:Service.Claim.body.txtKey.success', service)}
             />
           )}
@@ -233,7 +223,7 @@ function ServiceClaim({ service, t, userId }) {
               text={t(`screens:Service.Claim.body.txtKey.error.notYet${width === 'xs' ? 'Short' : ''}`)}
             />
           )}
-          {error === RETRY_ERROR && (
+          {(error === RETRY_ERROR && isSubmitting) && (
             <Skeleton classes={classes.boxMessage} variant="text" width="100%" height={54} />
           )}
           <Typography className={classes.txtKeyActions}>
@@ -259,7 +249,7 @@ function ServiceClaim({ service, t, userId }) {
                 variant="contained"
                 color="secondary"
                 component={Link}
-                to={routes.service.list}
+                to={generatePath(routes.service._, { mainDomain: service.mainDomain })}
               >
                 {t('next')}
               </Button>
@@ -267,7 +257,7 @@ function ServiceClaim({ service, t, userId }) {
           </Typography>
         </BoxSection>
 
-        <BoxSection className={clsx(classes.box, classes.lastBox)}>
+        <BoxSection mb={3}>
           <Typography variant="h5" component="h4">
             {t('screens:Service.Claim.body.steps.title')}
           </Typography>
@@ -276,35 +266,55 @@ function ServiceClaim({ service, t, userId }) {
               <Step key={step}>
                 <StepLabel>{t(`screens:Service.Claim.body.steps.label.${step}`)}</StepLabel>
                 <StepContent>
-                  <Typography>{t(`screens:Service.Claim.body.steps.content.${step}`)}</Typography>
-                  <div className={classes.actionsContainer}>
-                    <div>
-                      <Button
-                        disabled={activeStep === 1}
-                        onClick={handleBack}
-                        className={classes.button}
+                  <Typography>
+                    {step === STEPS[1] ? (
+                      <Trans
+                        i18nKey={i18nKey(step)}
+                        values={{ mainDomain: service.mainDomain, key: claim.validation_token }}
                       >
-                        {t('back')}
-                      </Button>
-                      {activeStep !== STEPS.length && (
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleNext}
-                          className={classes.button}
-                        >
-                          {t('next')}
-                        </Button>
-                      )}
-                      {activeStep === STEPS.length && (
-                        <ButtonSubmit
-                          text={submitText}
-                          onClick={handleSubmit}
-                          isSubmitting={isSubmitting}
-                        />
-                      )}
-                    </div>
-                  </div>
+                        {'Ajoutez une nouvelle entrée DNS, de Type "TXT".'}
+                        {'De nom (sous-domaine)'}
+                        <code>{'_misakey.{{mainDomain}}'}</code>
+                        {'De valeur '}
+                        <code>{'{{key}}'}</code>
+                        {'Enregistrez.'}
+                      </Trans>
+                    ) : (
+                      <Trans i18nKey={i18nKey(step)}>
+                        {t(i18nKey(step), {
+                          mainDomain: service.mainDomain,
+                          key: claim.validation_token,
+                        })}
+                      </Trans>
+                    )}
+                  </Typography>
+                  <Box mb={2} display="flex" justifyContent="flex-end">
+                    <Button
+                      disabled={activeStep === 1}
+                      onClick={handleBack}
+                      className={classes.stepButton}
+                    >
+                      {t('back')}
+                    </Button>
+                    {activeStep !== STEPS.length && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleNext}
+                      className={classes.stepButton}
+                    >
+                      {t('next')}
+                    </Button>
+                    )}
+                    {activeStep === STEPS.length && (
+                    <ButtonSubmit
+                      text={submitText}
+                      onClick={handleSubmit}
+                      isSubmitting={isSubmitting}
+                      className={classes.stepButton}
+                    />
+                    )}
+                  </Box>
                 </StepContent>
               </Step>
             ))}
@@ -319,9 +329,13 @@ ServiceClaim.propTypes = {
   service: PropTypes.shape({
     id: PropTypes.string.isRequired,
     mainDomain: PropTypes.string.isRequired,
-  }).isRequired,
+  }),
   t: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
+};
+
+ServiceClaim.defaultProps = {
+  service: null,
 };
 
 export default withTranslation(['common', 'screens'])(ServiceClaim);

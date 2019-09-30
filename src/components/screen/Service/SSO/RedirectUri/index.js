@@ -64,13 +64,13 @@ const useOnSubmit = (
     return (alreadyExists
       ? updateApplicationSSO(service.id, form)
       : createApplicationSSO(service.id, form))
-      .then(({ body }) => {
-        const update = isNil(body) ? form : { ...form, ...objectToCamelCase(body) };
+      .then((response) => {
+        const update = isNil(response) ? form : { ...form, ...objectToCamelCase(response) };
         enqueueSnackbar(t('service:sso.redirectUri.success'), { variant: 'success' });
         dispatchUpdateEntities(service.mainDomain, update, history);
       })
       .catch((error) => {
-        const httpStatus = error.httpStatus ? error.httpStatus : 500;
+        const httpStatus = error.httpStatus || 500;
         setError(httpStatus);
       })
       .finally(() => { setSubmitting(false); });

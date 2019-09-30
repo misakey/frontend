@@ -58,7 +58,7 @@ const useOnSubmit = (
       dispatchUpdate(service.mainDomain, changes, history);
     })
     .catch((error) => {
-      const httpStatus = error.httpStatus ? error.httpStatus : 500;
+      const httpStatus = error.httpStatus || 500;
       setError(httpStatus);
     })
     .finally(() => { setSubmitting(false); }),

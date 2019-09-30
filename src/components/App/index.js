@@ -32,7 +32,7 @@ const TRedirectAuthCallback = withTranslation('common')(RedirectAuthCallback);
 
 function App({ t }) {
   return (
-    <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+    <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
       <React.Suspense fallback={<SplashScreen />}>
         <Layout>
           <Switch>
