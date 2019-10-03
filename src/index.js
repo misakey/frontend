@@ -30,36 +30,53 @@ import i18n from '@misakey/ui/i18n';
 import FRCommon from 'constants/locales/fr/common';
 import FRFields from 'constants/locales/fr/fields';
 
-i18n.addResourceBundle('fr', 'common', FRCommon, true, true);
-i18n.addResourceBundle('fr', 'fields', FRFields, true, true);
+// Silent auth
+import {
+  isSilentAuthIframe,
+  processSilentAuthCallbackInIframe,
+} from '@misakey/auth/helpers';
 
-/* ============================================================================================== */
+// OIDC provider
+import OidcProvider from '@misakey/auth/components/OidcProvider';
 
-const middleWares = [thunk, APITokenMiddleware];
-if (!!process && process.env.NODE_ENV === 'development') { middleWares.push(createLogger()); }
+// The main purpose of the iframe is to launch auth request and update user
+// in localStorage when the request is finished. It doesn't need to load the
+// rest of the application and if it does, the iframe can throw timeout errors
+// https://github.com/maxmantz/redux-oidc/issues/48#issuecomment-315422236
+if (isSilentAuthIframe()) {
+  processSilentAuthCallbackInIframe();
+} else {
+  i18n.addResourceBundle('fr', 'common', FRCommon, true, true);
+  i18n.addResourceBundle('fr', 'fields', FRFields, true, true);
 
-const rootPersistConfig = { key: 'root', storage, whitelist: ['global'], blacklist: ['auth'] };
-const persistedReducer = persistReducer(rootPersistConfig, reducers);
-const store = createStore(persistedReducer, compose(applyMiddleware(...middleWares)));
-const persistor = persistStore(store);
+  /* =============================================================================== */
 
-ReactDOM.render((
-  <React.Suspense fallback={null}>
-    <StoreProvider store={store}>
-      <PersistGate loading={<SplashScreen />} persistor={persistor}>
-        <MuiThemeProvider theme={theme}>
-          <Router>
-            <App />
-          </Router>
-        </MuiThemeProvider>
-      </PersistGate>
-    </StoreProvider>
-  </React.Suspense>
-), document.getElementById('root'));
+  const middleWares = [thunk, APITokenMiddleware];
+  if (!!process && process.env.NODE_ENV === 'development') { middleWares.push(createLogger()); }
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.register();
+  const rootPersistConfig = { key: 'root', storage, whitelist: ['global'], blacklist: [''] };
+  const persistedReducer = persistReducer(rootPersistConfig, reducers);
+  const store = createStore(persistedReducer, compose(applyMiddleware(...middleWares)));
+  const persistor = persistStore(store);
 
-export { store as default };
+  ReactDOM.render((
+    <React.Suspense fallback={null}>
+      <StoreProvider store={store}>
+        <OidcProvider store={store} config={window.env.AUTH}>
+          <PersistGate loading={<SplashScreen />} persistor={persistor}>
+            <MuiThemeProvider theme={theme}>
+              <Router>
+                <App />
+              </Router>
+            </MuiThemeProvider>
+          </PersistGate>
+        </OidcProvider>
+      </StoreProvider>
+    </React.Suspense>
+  ), document.getElementById('root'));
+
+  // If you want your app to work offline and load faster, you can change
+  // unregister() to register() below. Note this comes with some pitfalls.
+  // Learn more about service workers: http://bit.ly/CRA-PWA
+  serviceWorker.register();
+}

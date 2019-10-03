@@ -23,7 +23,7 @@ const NotFound = React.lazy(() => import('components/screen/NotFound'));
 // CONSTANTS
 const REFERRERS = {
   success: routes.service.information._,
-  error: routes.service.home._,
+  error: routes._,
 };
 
 

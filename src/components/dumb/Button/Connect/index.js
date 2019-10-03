@@ -4,7 +4,6 @@ import AccountLink from 'components/dumb/Link/Account';
 
 const ButtonConnect = props => (
   <ButtonConnectWrapper
-    authUri="admin/auth"
     AccountLink={AccountLink}
     {...props}
   />
