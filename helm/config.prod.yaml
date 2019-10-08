@@ -1,0 +1,9 @@
+# Example of the config.yaml file for deploying in prod
+
+config: >-
+  window.env = {
+    ENV: 'production',
+    API_ENDPOINT: 'https://api.misakey.com',
+    FRONTEND_ENDPOINT: 'https://www.misakey.com',
+  };
+  
