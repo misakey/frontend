@@ -19,7 +19,7 @@
     "@misakey/helpers": "^3.0.0",
     "@misakey/hooks": "^1.1.0",
     "@misakey/store": "^1.2.0",
-    "@misakey/ui": "^3.0.2",
+    "@misakey/ui": "^3.0.3",
     "animate.css": "^3.7.2",
     "clsx": "^1.0.4",
     "copy-to-clipboard": "^3.2.0",
