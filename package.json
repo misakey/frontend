@@ -15,7 +15,7 @@
     "@material-ui/icons": "^4.2.1",
     "@material-ui/lab": "^4.0.0-alpha.23",
     "@misakey/api": "^2.0.2",
-    "@misakey/auth": "^2.0.0",
+    "@misakey/auth": "^2.0.4",
     "@misakey/helpers": "^3.0.0",
     "@misakey/hooks": "^1.1.0",
     "@misakey/store": "^1.2.0",

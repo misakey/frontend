@@ -1116,10 +1116,10 @@
   dependencies:
     http-status-codes "^1.3.2"
 
-"@misakey/auth@^2.0.0-alpha.3":
-  version "2.0.0-alpha.3"
-  resolved "https://registry.yarnpkg.com/@misakey/auth/-/auth-2.0.0-alpha.3.tgz#7b8d726bf81e71e7e2967c4a37bd942c0e53e541"
-  integrity sha512-c8cBt9Zffain+Uu4Vnd4u+W3MaV+dUENlRfjc/+6SkHvnJNgnbbwmirqxs+Zc3KUDZ3uTRVwMRWhV11A9cuhCA==
+"@misakey/auth@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@misakey/auth/-/auth-2.0.4.tgz#78548711da2f1cf5a6577d3a50871bb6d1d1c966"
+  integrity sha512-EYaSr+9tOtOSfnzoQc4t4ta43tVa89U9JQRvqx4x4+jWgNsUYnxiJn93rsb+FaGtcqALepvrE/Bx2lQQcQyHmw==
   dependencies:
     "@babel/runtime" "^7.5.5"
     clsx "^1.0.4"
@@ -1152,10 +1152,10 @@
   dependencies:
     "@babel/runtime" "^7.5.5"
 
-"@misakey/ui@^2.0.0-alpha.0":
-  version "2.0.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@misakey/ui/-/ui-2.0.0-alpha.0.tgz#ad26b63c8e0cbef659efc66e63b104df8b07b394"
-  integrity sha512-ivA5wvS7viNkH7wrJw/l6oZhmXnSFywZbNUApoaHAzZjuOJ1jSESQR8wE7CL6gCFjxWCUfUsiS7leu/EO46qLA==
+"@misakey/ui@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@misakey/ui/-/ui-3.0.0.tgz#424523e5b60f07d31048e385ddb31e5794206dcf"
+  integrity sha512-Iz350z9+JPW2YzK+Ryf8mCVsFPg3xOGq/NzxnxTmIBqj7iscTStmEuiSnY1hLVQuC9i9shZYfR5jbz/4J9HP0A==
   dependencies:
     "@babel/runtime" "^7.5.5"
     clsx "^1.0.4"
