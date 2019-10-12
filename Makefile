@@ -68,7 +68,7 @@ build: ## Build a docker image with the folder
 
 .PHONY: tag
 tag: ## Tag a docker image and set some aliases
-ifeq ($(CI_COMMIT_REF_NAME),develop)
+ifeq ($(CI_COMMIT_REF_NAME),master)
 	@docker tag $(CI_REGISTRY_IMAGE):$(VERSION) $(CI_REGISTRY_IMAGE):latest
 endif
 ifeq ($(CI_COMMIT_REF_NAME),release)
@@ -79,7 +79,7 @@ endif
 .PHONY: deploy
 deploy: ## Push image to the docker registry
 	@docker push $(CI_REGISTRY_IMAGE):$(VERSION)
-ifeq ($(CI_COMMIT_REF_NAME),develop)
+ifeq ($(CI_COMMIT_REF_NAME),master)
 	@docker push $(CI_REGISTRY_IMAGE):latest
 endif
 ifeq ($(CI_COMMIT_REF_NAME),release)
