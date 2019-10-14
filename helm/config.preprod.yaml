@@ -1,0 +1,12 @@
+config: >-
+  window.env = {
+    ENV: 'production',
+    API_ENDPOINT: 'https://api.preprod.misakey.dev',
+    FRONTEND_ENDPOINT: 'https://preprod.misakey.dev',
+    AUTH: {
+      authority: 'https://auth.preprod.misakey.dev/_',
+      client_id: 'e2753d81-de8d-4230-bf5c-43b445b6330e',
+      redirect_uri: 'https://api.preprod.misakey.dev/admin/auth/callback',
+    },
+  };
+
