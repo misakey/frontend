@@ -7,6 +7,9 @@ import { SIGN_OUT } from '@misakey/auth/store/actions/auth';
 import authReducers from '@misakey/auth/store/reducers';
 import global from '@misakey/store/reducers/global';
 import { makeReducer as makeEntities } from '@misakey/store/reducers/entities';
+
+import accessRequest from './accessRequest';
+import accessToken from './accessToken';
 import Layout from './Layout';
 import screens from './screens';
 
@@ -17,6 +20,8 @@ const entities = makeEntities({
 
 const appReducer = combineReducers({
   ...authReducers,
+  accessRequest,
+  accessToken,
   global,
   Layout,
   screens,

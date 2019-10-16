@@ -12,6 +12,8 @@ import './App.scss';
 
 import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallback';
 import Layout from 'components/smart/Layout';
+import RouteAccessRequest from 'components/smart/Route/AccessRequest';
+import ServiceRequestsRead from 'components/screen/Service/Requests/Read';
 
 // LAZY
 const Home = React.lazy(() => import('components/screen/Home'));
@@ -46,6 +48,11 @@ function App({ t }) {
                   {...routerProps}
                 />
               )}
+            />
+            <RouteAccessRequest
+              path={routes.requests._}
+              component={ServiceRequestsRead}
+              componentProps={{ showGoBack: false }}
             />
             <RoutePrivate path={routes.service.create._} component={ServiceCreate} />
             <RoutePrivate path={routes.service.list} component={ServiceList} />

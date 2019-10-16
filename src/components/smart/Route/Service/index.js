@@ -6,7 +6,8 @@ import { withTranslation } from 'react-i18next';
 import AuthSignIn from 'components/screen/Auth/SignIn';
 import ServiceSearchSimple from 'components/screen/Service/Search/Simple';
 
-const DEFAULT_DOMAIN = 'service';
+export const DEFAULT_DOMAIN = 'service';
+export const DEFAULT_SERVICE_ENTITY = { mainDomain: DEFAULT_DOMAIN };
 
 function RouteService({ component: Component, componentProps, isAuthenticated, t, ...rest }) {
   const render = (props) => {

@@ -1,4 +1,21 @@
 {
+  "AccessRequest": {
+    "title": "",
+    "description": "",
+    "body": {
+      "title": "Accèder temporairement à la demande de {{ownerName}}",
+      "confirm": {
+        "desc": "Cliquer sur \"Demander un code\" pour recevoir un email à l'adresse {{dpoEmail}}"
+      },
+      "email": {
+        "submit": "Demander un code",
+        "success": "L'email a été envoyé avec succès !"
+      },
+      "token": {
+        "success": "Vous avez maintenant accès à la demande de portabilité de {{ownerName}} !"
+      }
+    }
+  },
   "Service": {
     "Claim": {
       "title": "",
@@ -35,6 +52,29 @@
             "conflict": "Ce domaine est déjà validé"
           },
           "success": "Le service dont le domaine de référence est {{mainDomain}} a été ajouté à votre console d’administration"
+        }
+      }
+    },
+    "Requests": {
+      "Read": {
+        "title": "",
+        "description": "",
+        "body": {
+          "title": "Répondre à la demande de portabilité de {{ownerName}}",
+          "desc": "Retrouver les derniers fichiers chiffrés envoyés à {{ownerName}}",
+          "upload": {
+            "title": "Validez-vous l'envoi de ce fichier ?",
+            "text": "Le fichier va être chiffré avec la clé de {{ownerName}} puis lui être envoyé.",
+            "success": "Le fichier {{name}} a été envoyé avec succès !"
+          }
+        }
+      },
+      "List": {
+        "title": "",
+        "description": "",
+        "body": {
+          "title": "Liste des requêtes de {{mainDomain}}",
+          "desc": "Retrouver les dernières demandes de portabilité"
         }
       }
     }

@@ -6,5 +6,9 @@
   "leaveFromProd": "Retirer de production",
   "mode": {
     "setup": "Setup mode"
+  },
+  "emptyList": {
+    "title": "Dommage \uD83D\uDE14",
+    "text": "Cette liste ne contient aucun élément."
   }
 }

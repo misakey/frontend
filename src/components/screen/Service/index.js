@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { normalize, denormalize } from 'normalizr';
 import { Switch } from 'react-router-dom';
+import { normalize, denormalize } from 'normalizr';
 
 import parseJwt from '@misakey/helpers/parseJwt';
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -25,10 +25,13 @@ import compose from '@misakey/helpers/compose';
 import when from '@misakey/helpers/when';
 import trim from '@misakey/helpers/trim';
 
-import RouteService from 'components/smart/Route/Service';
+import ResponseHandlerWrapper from '@misakey/ui/ResponseHandlerWrapper';
+import RouteService, {
+  DEFAULT_DOMAIN,
+  DEFAULT_SERVICE_ENTITY,
+} from 'components/smart/Route/Service';
 import Drawer from 'components/screen/Service/Drawer';
 import Screen from 'components/screen';
-import ScreenError from 'components/screen/Error';
 import ServiceClaim from './Claim';
 import ServiceHome from './Home';
 import ServiceInformation from './Information';
@@ -40,6 +43,16 @@ import ServiceRequests from './Requests';
 import './Service.scss';
 
 // CONSTANTS
+export const SERVICE_SCREEN_NAMES = {
+  CLAIM: 'ServiceClaim',
+  INFORMATION: 'ServiceInformation',
+  SSO: 'ServiceSSO',
+  USERS: 'ServiceUsers',
+  DATA: 'ServiceData',
+  REQUESTS: 'ServiceRequests',
+  HOME: 'ServiceHome',
+};
+
 const SERVICE_PROPS = ['id', 'mainDomain'];
 // @FIXME js-common
 const APPINFO_ENDPOINT = {
@@ -93,9 +106,10 @@ const useGetApplication = (
 }, [mainDomain, match, shouldFetch, dispatchReceive, setIsFetching, setError]);
 
 // COMPONENTS
-function Service({ match, mainDomain, entity, dispatchReceive, userId }) {
+function Service({ match, entity, dispatchReceive, userId }) {
   const [isFetching, setIsFetching] = useState(false);
-  const [error, setError] = useState();
+  const [error, setError] = useState(null);
+  const mainDomain = useMemo(() => match.params.mainDomain, [match.params.mainDomain]);
 
   const shouldFetch = useShouldFetch(isFetching, error, entity);
 
@@ -103,60 +117,66 @@ function Service({ match, mainDomain, entity, dispatchReceive, userId }) {
     mainDomain, match, shouldFetch, dispatchReceive, setIsFetching, setError,
   );
 
-  useAsync(getApplication, mainDomain);
+  const responseEntity = useMemo(
+    () => (mainDomain === DEFAULT_DOMAIN ? DEFAULT_SERVICE_ENTITY : entity),
+    [mainDomain, entity],
+  );
 
-  if (error) {
-    return <ScreenError httpStatus={error} />;
-  }
+  useAsync(getApplication, mainDomain);
 
   return (
     <Screen className="Service">
-      <Drawer mainDomain={match.params.mainDomain}>
-        <Switch>
-          <RouteService
-            path={routes.service.claim._}
-            component={ServiceClaim}
-            componentProps={{ service: entity, name: 'ServiceClaim', userId }}
-          />
-          <RouteService
-            path={routes.service.information._}
-            component={ServiceInformation}
-            componentProps={{ service: entity, name: 'ServiceInformation' }}
-          />
-          <RouteService
-            path={routes.service.sso._}
-            component={ServiceSSO}
-            componentProps={{ service: entity, name: 'ServiceSSO' }}
-          />
-          <RouteService
-            path={routes.service.users._}
-            component={ServiceUsers}
-            componentProps={{ service: entity, name: 'ServiceUsers' }}
-          />
-          <RouteService
-            path={routes.service.data._}
-            component={ServiceData}
-            componentProps={{ service: entity, name: 'ServiceData' }}
-          />
-          <RouteService
-            path={routes.service.requests._}
-            component={ServiceRequests}
-            componentProps={{ service: entity, name: 'ServiceRequests' }}
-          />
-          <RouteService
-            exact
-            path={match.path}
-            component={ServiceHome}
-            componentProps={{ service: entity, name: 'ServiceHome' }}
-          />
-        </Switch>
-      </Drawer>
+      <ResponseHandlerWrapper
+        error={error}
+        entity={responseEntity}
+        isFetching={isFetching}
+      >
+        <Drawer mainDomain={mainDomain}>
+          <Switch>
+            <RouteService
+              path={routes.service.claim._}
+              component={ServiceClaim}
+              componentProps={{ service: entity, name: SERVICE_SCREEN_NAMES.CLAIM, userId }}
+            />
+            <RouteService
+              path={routes.service.information._}
+              component={ServiceInformation}
+              componentProps={{ service: entity, name: SERVICE_SCREEN_NAMES.INFORMATION }}
+            />
+            <RouteService
+              path={routes.service.sso._}
+              component={ServiceSSO}
+              componentProps={{ service: entity, name: SERVICE_SCREEN_NAMES.SSO }}
+            />
+            <RouteService
+              path={routes.service.users._}
+              component={ServiceUsers}
+              componentProps={{ service: entity, name: SERVICE_SCREEN_NAMES.USERS }}
+            />
+            <RouteService
+              path={routes.service.data._}
+              component={ServiceData}
+              componentProps={{ service: entity, name: SERVICE_SCREEN_NAMES.DATA }}
+            />
+            <RouteService
+              path={routes.service.requests._}
+              component={ServiceRequests}
+              componentProps={{ service: entity, name: SERVICE_SCREEN_NAMES.REQUESTS }}
+            />
+            <RouteService
+              exact
+              path={match.path}
+              component={ServiceHome}
+              componentProps={{ service: entity, name: SERVICE_SCREEN_NAMES.HOME }}
+            />
+          </Switch>
+        </Drawer>
+      </ResponseHandlerWrapper>
     </Screen>
   );
 }
 
 Service.propTypes = {
-  mainDomain: PropTypes.string,
   entity: PropTypes.shape(ServiceSchema.propTypes),
   match: PropTypes.shape({
     path: PropTypes.string,
@@ -167,7 +187,6 @@ Service.propTypes = {
 };
 
 Service.defaultProps = {
-  mainDomain: null,
   entity: null,
   userId: null,
 };

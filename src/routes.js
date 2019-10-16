@@ -48,7 +48,11 @@ const routes = {
     },
     requests: {
       _: '/:mainDomain/requests',
+      read: '/:mainDomain/requests/:databoxId',
     },
+  },
+  requests: {
+    _: '/requests',
   },
 };
 

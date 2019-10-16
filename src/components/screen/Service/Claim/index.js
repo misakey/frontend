@@ -275,9 +275,9 @@ function ServiceClaim({ service, t, userId }) {
                         {'Ajoutez une nouvelle entrée DNS, de Type "TXT".'}
                         {'De nom (sous-domaine)'}
                         <code>{'_misakey.{{mainDomain}}'}</code>
-                        {'De valeur '}
+                        De valeur
                         <code>{'{{key}}'}</code>
-                        {'Enregistrez.'}
+                        Enregistrez.
                       </Trans>
                     ) : (
                       <Trans i18nKey={i18nKey(step)}>

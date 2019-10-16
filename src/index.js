@@ -20,6 +20,7 @@ import * as serviceWorker from 'serviceWorker';
 // UI
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import theme from '@misakey/ui/theme';
+import 'react-virtualized/styles.css';
 
 // COMPONENTS
 import App from 'components/App';
