@@ -33,6 +33,7 @@ import RouteService, {
 import Drawer from 'components/screen/Service/Drawer';
 import Screen from 'components/screen';
 import ServiceClaim from './Claim';
+import ServiceRoleClaim from './Role/Claim';
 import ServiceHome from './Home';
 import ServiceInformation from './Information';
 import ServiceSSO from './SSO';
@@ -137,6 +138,11 @@ function Service({ match, entity, dispatchReceive, userId }) {
               path={routes.service.claim._}
               component={ServiceClaim}
               componentProps={{ service: entity, name: SERVICE_SCREEN_NAMES.CLAIM, userId }}
+            />
+            <RouteService
+              path={routes.service.role.claim._}
+              component={ServiceRoleClaim}
+              componentProps={{ service: entity, name: 'ServiceRoleClaim', userId }}
             />
             <RouteService
               path={routes.service.information._}

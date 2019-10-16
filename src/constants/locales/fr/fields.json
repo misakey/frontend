@@ -65,5 +65,15 @@
       "label": "Créer un nouveau rôle custom",
       "action": "Créer votre premier rôle"
     }
+  },
+  "code": {
+    "helperText": "Remplissez le code que nous vous avons envoyé"
+  },
+  "serviceRoleClaim": {
+    "code": {
+      "error": {
+        "conflict": "Nous vous avons envoyé un code il y a moins de 5 minutes. Revérifiez vos mails ou réessayez dans un petit instant."
+      }
+    }
   }
 }

@@ -32,6 +32,11 @@ const routes = {
       shortDesc: '/:mainDomain/information/shortDesc',
       longDesc: '/:mainDomain/information/longDesc',
     },
+    role: {
+      claim: {
+        _: '/:mainDomain/dpo/claim', // '/:mainDomain/:role/claim'
+      },
+    },
     sso: {
       _: '/:mainDomain/sso',
       allowedOrigins: '/:mainDomain/sso/allowedOrigins',

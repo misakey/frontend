@@ -55,6 +55,25 @@
         }
       }
     },
+    "Role": {
+      "Claim": {
+        "title": "",
+        "description": "",
+        "body": {
+          "title": "Confirmer {{mainDomain}}",
+          "subTitle": "Ce processus vous attribuera le rôle DPO",
+          "content": {
+            "title": "Renseigner votre code de confirmation",
+            "desc": "Un email avec un code de confirmation va être envoyé à l'adresse email du DPO de {{mainDomain}}"
+          },
+          "email": {
+            "submit": "Renvoyer un code de confirmation",
+            "success": "Un email a bien été envoyé à l'adresse du DPO de {{mainDomain}}"
+          },
+          "success": "Le service dont le domaine de référence est {{mainDomain}} a été ajouté à votre console d’administration"
+        }
+      }
+    },
     "Requests": {
       "Read": {
         "title": "",
