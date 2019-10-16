@@ -1,14 +1,62 @@
 {
-  "regenerate": "Régénérer",
-  "copy": "Copier dans le presse papier",
+  "boolean": {
+    "true": "Oui",
+    "false": "Non"
+  },
+  "cancel": "Annuler",
+  "connectedOnly": "Vous devez etre connectés",
+  "contact": "CONTACTER",
   "copied": "Copié dans le presse papier!",
+  "copy": "Copier dans le presse papier",
+  "dpoMail": "Mail du DPD : ",
+  "edit": "Modifier",
+  "emailBody": "Madame, Monsieur,\n\nJe vous prie de bien vouloir m’indiquer si des données me concernant figurent dans vos fichiers informatisés.\n\nDans l’affirmative, je souhaiterais transférer une copie à Misakey, dans un format lisible par une machine, de l’ensemble de ces données, en application de l’article 20 du Règlement général sur la protection des données (RGPD).\nVeuillez déposer directement les fichiers contenant mes données dans la boîte de dépôt associé à mon compte afin qu’aucun autre service n’y ait accès : {{databoxURL}}\nVous devrez confirmer votre accès avec un code envoyé à l’adresse {{dpoEmail}}\n\nJe vous remercie de me faire parvenir votre réponse dans les meilleurs délais et au plus tard dans un délai d’un mois à compter de la réception de ma demande (article 12.3 du RGPD).\nA défaut de réponse de votre part dans les délais impartis ou en cas de réponse incomplète, je me réserve la possibilité de saisir la Commission nationale de l’informatique et des libertés (CNIL) d’une réclamation.\nA toutes fins utiles, vous trouverez des informations sur le site internet de la CNIL : https://www.cnil.fr/fr/le-droit-la-portabilite-en-questions\n\nJe vous prie d’agréer, Madame, Monsieur, l’expression de mes salutations distinguées.",
+  "emailSubject": "Demande de portabilité",
+  "emailTo": "DPO de {{applicationName}} <{{dpoEmail}}>",
+  "emptyList": {
+    "text": "Cette liste ne contient aucun élément.",
+    "title": "Dommage \uD83D\uDE14"
+  },
+  "go": "Voir le site",
   "goToProd": "Mettre en production",
   "leaveFromProd": "Retirer de production",
+  "loading": "Chargement ...",
   "mode": {
     "setup": "Setup mode"
   },
-  "emptyList": {
-    "title": "Dommage \uD83D\uDE14",
-    "text": "Cette liste ne contient aucun élément."
+  "must": "Devoir",
+  "name": "Nom",
+  "next": "Suivant",
+  "noContact": "Vous n'avez contacter aucune entreprise !",
+  "ok": "OK",
+  "on": "Sur ",
+  "password": "mot de passe",
+  "previous": "Précédent",
+  "profile": "Profil",
+  "projectName": "Misakey",
+  "providers": {
+    "error": "Echec de la configuration du service d'email",
+    "manual": {
+      "send": "Envoyer manuellement",
+      "notify": "Envoyer l’e-mail depuis la fenêtre ouverte dans votre gestionnaire d’e-mail. Si aucune fenêtre ne s’est ouverte, vérifier que les pop-up ne sont pas bloquées par votre navigateur web"
+    },
+    "others": "Autres",
+    "success": "Configuration du service d'email réussie!"
+  },
+  "ratings": "notes",
+  "ratingsAndComments": "Recommandations et avis",
+  "regenerate": "Régénérer",
+  "resendEmail": "Relancer",
+  "search": "Rechercher",
+  "searchAppText": "Chercher un site pour le contacter et récupérer vos données",
+  "seeMore": "Voir plus",
+  "send": "Envoyer",
+  "show": "Tout voir",
+  "signIn": "Connexion",
+  "signOut": "Déconnexion",
+  "submit": "Valider",
+  "upload": "Sélectionner un fichier",
+  "units": {
+    "bytes": "o"
   }
 }

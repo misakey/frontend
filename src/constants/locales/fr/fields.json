@@ -1,73 +1,76 @@
 {
+  "allowedCorsOrigins": {
+    "action": "Editer",
+    "empty": "Aucun",
+    "error": {
+      "malformed": "Merci d'enter une liste d'adresses absolues séparées par des points virgule ';'"
+    },
+    "helperText": "Une liste d'adresses absolues séparées par des points virgule ';'",
+    "label": "CORS authorisés",
+    "placeholder": "autres domaines"
+  },
+  "clientSecret": {
+    "action": "Regénérer",
+    "label": "Secret",
+    "placeholder": "********"
+  },
+  "code": {
+    "helperText": "Remplissez le code que nous vous avons envoyé"
+  },
+  "confirmationCode": {
+    "error": {
+      "expired": "Le code de confirmation a expiré. Nous vous en avons envoyé un nouveau",
+      "invalid": "Le code de confirmation est incorrect"
+    }
+  },
+  "customRoles": {
+    "action": "Editer les rôles",
+    "empty": {
+      "action": "Créer votre premier rôle",
+      "label": "Créer un nouveau rôle custom"
+    },
+    "label": "Custom roles",
+    "placeholder": "Aucun"
+  },
+  "email": {
+    "error": {
+      "not_found": "Aucun compte lié à cet email"
+    }
+  },
   "logo": {
-    "label": "Logo",
-    "placeholder": "Vous pouvez ici renseigner le logo du service",
     "action": "Modifier",
     "error": {
       "size": "Taille maximale dépassée",
       "format": "Format incorrect. Formats acceptés: .jpg .jpeg .png .tiff .gif"
-    }
-  },
-  "name": {
-    "label": "Nom",
-    "action": "Editer"
-  },
-  "mainDomain": {
-    "label": "Domaine principal",
-    "action": "Editer"
-  },
-  "otherDomains": {
-    "label": "Autres domaines",
-    "action": "Editer",
-    "placeholder": "autres domaines"
-  },
-  "shortDesc": {
-    "label": "Desc. courte",
-    "action": "Editer",
-    "helperText": "Un nombre maximum de 40 caractères est attendu",
-    "error": {
-      "malformed": "Maximum de 40 caractères"
-    }
+    },
+    "label": "Logo",
+    "placeholder": "Vous pouvez ici renseigner le logo du service"
   },
   "longDesc": {
-    "label": "Desc. longue",
-    "action": "Editer"
-  },
-  "allowedCorsOrigins": {
-    "label": "CORS authorisés",
     "action": "Editer",
-    "placeholder": "autres domaines",
-    "empty": "Aucun",
-    "helperText": "Une liste d'adresses absolues séparées par des points virgule ';'",
-    "error": {
-      "malformed": "Merci d'enter une liste d'adresses absolues séparées par des points virgule ';'"
-    }
+    "label": "Desc. longue"
+  },
+  "mainDomain": {
+    "action": "Editer",
+    "label": "Domaine principal"
+  },
+  "name": {
+    "action": "Editer",
+    "label": "Nom"
+  },
+  "otherDomains": {
+    "action": "Editer",
+    "label": "Autres domaines",
+    "placeholder": "autres domaines"
   },
   "redirectUris": {
-    "label": "URI de redirection",
     "action": "Editer",
-    "placeholder": "autres URI",
     "empty": "Aucune",
     "error": {
       "malformed": "Merci d'entrer une uri absolue valide"
-    }
-  },
-  "clientSecret": {
-    "label": "Secret",
-    "action": "Regénérer",
-    "placeholder": "********"
-  },
-  "customRoles": {
-    "label": "Custom roles",
-    "placeholder": "Aucun",
-    "action": "Editer les rôles",
-    "empty": {
-      "label": "Créer un nouveau rôle custom",
-      "action": "Créer votre premier rôle"
-    }
-  },
-  "code": {
-    "helperText": "Remplissez le code que nous vous avons envoyé"
+    },
+    "label": "URI de redirection",
+    "placeholder": "autres URI"
   },
   "serviceRoleClaim": {
     "code": {
@@ -75,5 +78,24 @@
         "conflict": "Nous vous avons envoyé un code il y a moins de 5 minutes. Revérifiez vos mails ou réessayez dans un petit instant."
       }
     }
+  },
+  "signUpConfirm": {
+    "code": {
+      "error": {
+        "expired": "Le code de confirmation a expiré. Nous vous en avons envoyé un nouveau",
+        "invalid": "Le code de confirmation est incorrect",
+        "malformed": "Le code de confirmation doit contenir 6 chiffres"
+      },
+      "label": "Code de confirmation",
+      "placeholder": "161803"
+    }
+  },
+  "shortDesc": {
+    "action": "Editer",
+    "error": {
+      "malformed": "Maximum de 40 caractères"
+    },
+    "helperText": "Un nombre maximum de 40 caractères est attendu",
+    "label": "Desc. courte"
   }
 }

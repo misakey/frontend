@@ -16,6 +16,196 @@
       }
     }
   },
+  "application": {
+    "none": {
+      "title": "Sélectionner une organisation"
+    },
+    "notFound": {
+      "title": "Oops, nous n'avons rien trouvé concernant le domaine {{mainDomain}} :-("
+    },
+    "list": {
+      "empty": "Nous n'avons trouvé aucun résultat \uD83D\uDE1E"
+    },
+    "info": {
+      "emailSignIn": "Connectez-vous pour voir l'email du DPD",
+      "ratingCount": "{{count}} note",
+      "ratingCount_plural": "{{count}} notes",
+      "rate": "Donner mon avis",
+      "desc": {
+        "title": "Description du service",
+        "openInNew": "Voir le site"
+      },
+      "userContribution": {
+        "dpoEmailOpenDialog": "Je connais l'email du DPO !",
+        "linkOpenDialog": "Je connais ce lien !",
+        "missingLinkNotConnected": "Si vous connaissez ce lien, connectez vous pour l'ajouter !",
+        "dialog": {
+          "title": "Améliorer la fiche de {{appName}}",
+          "intro": {
+            "dpoEmail": "Vous connaissez l'email du DPO de {{appName}} ? Envoyez le nous pour que nous puissions l'intégrer à la base de donnée collaborative !",
+            "link": "Vous connaissez une page légale de {{appName}} ? (politique de confidentialité, CGU, ...) Envoyez le nous pour que nous puissions l'intégrer à la base de donnée collaborative !"
+          },
+          "linkExplaination": {
+            "dpoEmail": "Donnez nous l'URL de la page sur laquelle vous avez trouvé l'email, pour qu'on ait un moyen de vérifier ce mail.",
+            "link": "Donnez nous l'URL de la page légale"
+          },
+          "fields": {
+            "dpoEmail": "Email du DPO",
+            "link": {
+              "dpoEmail": "Page où est renseigné l'email",
+              "link": "URL de la page"
+            }
+          },
+          "outro": "Nous vérifions toutes les contributions à la main. Cela peut prendre plusieurs jours avant que la base de donnée soit mise à jour. N'hésitez pas à nous contacter si vous ne voyez pas votre contribution en ligne dans quelques semaines.",
+          "send": "Envoyer"
+        },
+        "success": "Merci ! Votre contribution a bien été envoyée"
+      },
+      "primary": {
+        "title": "Informations principales",
+        "keys": {
+          "serviceType": "Type de service",
+          "privacyJuridiction": "Juridiction données personnelles",
+          "mainIncome": "Principale source de revenue",
+          "homeCountry": "Siège social"
+        },
+        "values": {
+          "serviceType": {
+            "personal": "Site personel",
+            "public_organization": "Organisation publique",
+            "private_non_profit_organization": "ONG",
+            "private_for_profit_organization": "Entreprise privée",
+            "collaborative": "Organisation collaborative"
+          },
+          "privacyJuridiction": {
+            "eu_us_privacy_shield": "USA - Privacy shield",
+            "eu": "Europe - RGPD",
+            "outside_eu": "Hors Europe"
+          },
+          "mainIncome": {
+            "advertising": "Publicité",
+            "volunteering": "Pas de revenus",
+            "benefactions": "Dons",
+            "trade_in_services": "Vente de services",
+            "trade_in_products": "Vente de produits",
+            "trade_in_data": "Vente de données",
+            "public_funding": "Investissements publiques",
+            "private_funding": "Investissements privés"
+          }
+        }
+      },
+      "secondary": {
+        "title": "Informations secondaires",
+        "keys": {
+          "isThirdParty": "Peut être utilisé en tant que tier parti",
+          "name": "Nom",
+          "mainDomain": "Nom de domaine principal",
+          "id": "Identifiant",
+          "shortDesc": "Description courte",
+          "longDesc": "Description longue",
+          "logoUri": "URI du logo",
+          "dpoEmail": "Email du DPO",
+          "weight": "Pondération",
+          "claimed": "Domaine approprié",
+          "tos": "CGU",
+          "terms": "Conditions",
+          "home_page": "Page d'accueil",
+          "legal_notice": "Légalité",
+          "cookies": "Cookies",
+          "personal_data": "Données personnelles",
+          "privacy_policy": "Protection des données",
+          "dpo_contact": "Contact du DPD",
+          "help": "Aide",
+          "social_facebook": "Facebook",
+          "social_twitter": "Twitter",
+          "social_linkedin": "Linkedin"
+        }
+      },
+      "domains": {
+        "title": "Domaine associé",
+        "title_plural": "Domaines associés",
+        "moreCount": "+ {{count}} domaine",
+        "moreCount_plural": "+ {{count}} domaines"
+      },
+      "privacyShieldLink": "https://www.cnil.fr/fr/le-privacy-shield"
+    },
+    "box": {
+      "needPassword": "Pour accéder à ce fichier, nous avons besoin de votre mot de passe",
+      "errorNotif": "Une erreur est survenue.",
+      "wrongPassword": "Le mot de passe semble erronné, veuillez ré-essayer",
+      "noResult": "Vous n'avez pas encore contacté {{name}}."
+    },
+    "thirdParty": {
+      "categories": {
+        "essentials": "Essentiels",
+        "advertising": "Publicité",
+        "social_interaction": "Interaction sociales",
+        "analytics": "Analyse",
+        "personalization": "Personnalisation",
+        "other": "Autre"
+      },
+      "detectedTrackers": "{{count}} tracker détecté",
+      "detectedTrackers_plural": "{{count}} trackers détectés",
+      "additionalDetectedTrackers": "+ {{count}} autre service",
+      "additionalDetectedTrackers_plural": "+ {{count}} autres services",
+      "trackers": {
+        "empty": "Pas de trackers détectés !",
+        "detected": "{{count}} tracker détecté",
+        "detected_plural": "{{count}} trackers détectés",
+        "additionalDetected": "+ {{count}} autre service",
+        "additionalDetected_plural": "+ {{count}} autres services"
+      },
+      "filters": {
+        "mainPurpose": {
+          "title": "Catégorie",
+          "remove": {
+            "text": "Pour voir plus de services tiers, supprimer le filtre {{ purpose }}",
+            "button": "Supprimer le filtre"
+          }
+        },
+        "mainDomain": {
+          "title": "Domaine actuel",
+          "remove": {
+            "text": "Pour voir la liste de tous les services tiers gérés par Misakey",
+            "button": "Voir la liste"
+          }
+        }
+      },
+      "setup": "Paramétrer"
+    },
+    "nav": {
+      "label": "Navigation de {{mainDomain}}",
+      "info": "Informations",
+      "comments": "Commentaires",
+      "personalData": "Données personnelles",
+      "thirdParty": "Service tiers",
+      "myAccount": "Mon compte"
+    }
+  },
+  "auth": {
+    "error": "Une erreur est survenue avec le flow de connexion, cela ne devrait pas arriver en production./nCet écran est destiné à du debug en développement"
+  },
+  "contact": {
+    "providers": {
+      "subtitle": "Connecter votre service d'email pour envoyer vos demandes de portabilité en un clic",
+      "title": "Portabilité de mes données"
+    },
+    "preview": {
+      "subtitle": "Valider la pré-visualisation pour envoyer votre email de demande de portabilité",
+      "success": "E-mail envoyé!",
+      "title": "E-mail de portabilité"
+    }
+  },
+  "databox": {
+    "empty": "{{applicationName}} n'a pas encore répondu à votre demande de portabilité.",
+    "enterPassword": "Veuillez saisir votre mot de passe",
+    "intro": "Liste des fichiers envoyés par le DPO de {{applicationName}}",
+    "sendAt": "Envoyé {{date}}",
+    "size": "Envoyé {{size}}"
+  },
+  "landing": {
+    "search": "Contacter les sites pour récupérer vos données"
+  },
   "Service": {
     "Claim": {
       "title": "",
@@ -97,5 +287,6 @@
         }
       }
     }
-  }
+  },
+  "wip": "La fonctionnalité \"{{featureName}}\" arrive prochainement"
 }

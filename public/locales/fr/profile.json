@@ -1,0 +1,50 @@
+{
+  "home": {
+    "title": "Profil utilisateur"
+  },
+  "name": {
+    "title": "Nom public",
+    "subtitle": "Le nom public est visible par tous. Votre email permet de l'obtenir",
+    "success": "Votre nom public a été mis à jour"
+  },
+  "avatar": {
+    "title": "Photo",
+    "subtitle": "Votre photo de profil est visible par tous, sur l'ensemble des sites qui utilisent Misakey",
+    "success": "Votre photo de profil a été mise à jour",
+    "upload": {
+      "title": "Upload photo",
+      "subtitle": "Les fichiers .jpg .jpeg .png .tiff .gif de moins de 3mo sont acceptés"
+    }
+  },
+  "password": {
+    "title": "Mot de passe",
+    "subtitle": "Si vous modifiez ce mot de passe, vous serez déconnecté de tous vos appareils, y compris votre téléphone. Vous devrez saisir le nouveau mot de passe sur tous ces appareils",
+    "success": "Votre mot de passe a été mis à jour"
+  },
+  "form": {
+    "field": {
+      "displayName": {
+        "label": "Nom public",
+        "action": "Editer",
+        "hint": "Vous pouvez utiliser des lettres, des chiffres et des espaces"
+      },
+      "avatar": {
+        "label": "Photo",
+        "placeholder": "Une photo permet de personnaliser votre compte",
+        "action": "Modifier"
+      },
+      "passwordOld": {
+        "label": "Ancien mot de passe"
+      },
+      "password": {
+        "label": "Mot de passe",
+        "placeholder": "********",
+        "action": "Editer",
+        "hint": "Utilisez au moins huit caractères avec des lettres, des chiffres et des symboles"
+      },
+      "passwordConfirm": {
+        "label": "Confirmer"
+      }
+    }
+  }
+}

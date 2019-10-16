@@ -1,0 +1,17 @@
+{
+  "time": {
+    "hour": "{{count}} heure",
+    "hour_plural": "{{count}} heures",
+    "minute": "{{count}} minute",
+    "minute_plural": "{{count}} minutes"
+  },
+  "pause": {
+    "title": "Pause",
+    "description": "Stopper momentanément le bloquage"
+  },
+  "resume": {
+    "title": "Reprendre",
+    "description": "Blocage stoppé",
+    "plannedResume": "Reprise prévue le {{planned}}"
+  }
+}
