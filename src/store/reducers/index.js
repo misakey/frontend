@@ -2,36 +2,36 @@ import { combineReducers } from 'redux';
 import storage from 'redux-persist/lib/storage';
 
 import { RESET_APP } from '@misakey/store/actions/app';
-import { SIGN_OUT } from '@misakey/auth/store/actions/auth';
 
 import authReducers from '@misakey/auth/store/reducers';
-import global from '@misakey/store/reducers/global';
+import reducers from '@misakey/store/reducers';
 import { makeReducer as makeEntities } from '@misakey/store/reducers/entities';
 
 import accessRequest from './accessRequest';
 import accessToken from './accessToken';
 import Layout from './Layout';
 import screens from './screens';
-
-const entities = makeEntities({
-  users: {},
-  services: {},
-});
+import sso from './sso';
 
 const appReducer = combineReducers({
   ...authReducers,
+  ...reducers,
   accessRequest,
   accessToken,
-  global,
   Layout,
   screens,
-  entities: makeEntities(entities),
+  sso,
+  entities: makeEntities({
+    applications: {},
+    users: {},
+    services: {},
+  }),
 });
 
 const rootReducer = (state, action) => {
   let newState = state;
 
-  if (action.type === RESET_APP || action.type === SIGN_OUT) {
+  if (action.type === RESET_APP) {
     if (storage && storage.removeItem) {
       Object.keys(state).forEach((key) => {
         if (key !== 'global') {

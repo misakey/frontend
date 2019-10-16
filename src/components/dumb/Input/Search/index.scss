@@ -1,0 +1,32 @@
+@import '~@misakey/ui/static/sass/colors';
+.search {
+  position: relative;
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid $ultralight-grey;
+  background-color: var(--light-background);
+  &:hover {
+    background-color: scale-color($light-background, $lightness: +40%);
+  }
+  &.dark {
+    background-color: var(--ultralight-grey);
+    border: none;
+    &:hover {
+      background-color: scale-color($ultralight-grey, $lightness: +40%);
+    }
+  }
+
+
+  .searchIcon {
+    width: 4.5rem;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .searchButton {
+      z-index: 2;
+    }
+  }
+}

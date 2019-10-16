@@ -22,7 +22,7 @@ function update(state, { type, ...rest }) {
 }
 
 // SELECTORS
-const getState = state => state.screens.Service;
+const getState = (state) => state.screens.Service;
 
 const getMainDomain = createSelector(
   getState,

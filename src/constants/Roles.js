@@ -13,6 +13,6 @@ Object.keys(ROLE_IDS).forEach((key) => {
 export default {
   ids: Object.values(ROLE_IDS),
   labels: Object.values(ROLE_LABELS),
-  getLabelById: id => ROLE_LABELS_BY_ROLE_IDS[id],
-  getIdByLabel: label => ROLE_IDS_BY_LABEL[label],
+  getLabelById: (id) => ROLE_LABELS_BY_ROLE_IDS[id],
+  getIdByLabel: (label) => ROLE_IDS_BY_LABEL[label],
 };

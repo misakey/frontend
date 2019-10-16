@@ -1,0 +1,11 @@
+FROM node:10.15.3
+
+COPY ./plugin/src /app/src
+COPY ./plugin/package.json /app/package.json
+COPY ./plugin/webpack.config.js /app/webpack.config.js
+COPY ./plugin/yarn.lock /app/yarn.lock
+
+WORKDIR /app
+RUN yarn install
+
+CMD yarn start

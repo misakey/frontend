@@ -1,0 +1,43 @@
+.Application {
+  .main {
+    border-right: 1px solid var(--ultralight-grey);
+    transition: ease .3s;
+
+    nav {
+      position: relative;
+      height: calc(100vh - 56px - 51px); // viewHeight - app bar - search bar
+      overflow: auto;
+      padding-bottom: 1rem;
+
+      &.no-app-bar {
+        height: calc(100vh - 51px); // viewHeight - search bar
+      }
+
+      &.focused {
+        height: calc(100vh - 51px); // viewHeight - search bar
+      }
+
+      &.prevent-scroll {
+        overflow: hidden;
+      }
+    }
+
+    &.slided {
+      transform: translateY(-56px); // - app bar
+
+      nav {
+        height: calc(100vh - 51px); // viewHeight - search bar
+      }
+    }
+
+    @media (min-height: 768px) {
+      nav {
+        height: calc(100vh - 64px - 51px);
+      }
+
+      &.slided {
+        transform: translateY(-64px);
+      }
+    }
+  }
+}

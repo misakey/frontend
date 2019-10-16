@@ -1,0 +1,19 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .details {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  .title {
+    text-transform: uppercase;
+    width: 8rem;
+  }
+
+  .icon {
+    width: 40px;
+    vertical-align: middle;
+  }
+}

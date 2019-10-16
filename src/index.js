@@ -8,17 +8,20 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { PersistGate } from 'redux-persist/integration/react';
 import reducers from 'store/reducers';
+
 // MIDDLEWARES
+import API from '@misakey/api';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 import APITokenMiddleware from '@misakey/auth/middlewares/APItoken';
+import invalidTokenMiddleware from 'middlewares/invalidToken';
 
 // ROUTING
 import { BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from 'serviceWorker';
 
 // UI
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import MuiThemeProvider from 'components/smart/ThemeProvider';
 import theme from '@misakey/ui/theme';
 import 'react-virtualized/styles.css';
 
@@ -28,8 +31,13 @@ import SplashScreen from '@misakey/ui/SplashScreen';
 
 // TRANSLATIONS
 import i18n from '@misakey/ui/i18n';
+import countries from 'i18n-iso-countries';
+
 import FRCommon from 'constants/locales/fr/common';
 import FRFields from 'constants/locales/fr/fields';
+
+// HELPERS
+import { isDesktopDevice } from 'helpers/devices';
 
 // Silent auth
 import {
@@ -39,6 +47,15 @@ import {
 
 // OIDC provider
 import OidcProvider from '@misakey/auth/components/OidcProvider';
+
+if (window.env.PLUGIN) {
+  document.documentElement.setAttribute(
+    'data-plugin-controlsize',
+    isDesktopDevice(),
+  );
+}
+
+countries.registerLocale(require('i18n-iso-countries/langs/fr.json'));
 
 // The main purpose of the iframe is to launch auth request and update user
 // in localStorage when the request is finished. It doesn't need to load the
@@ -50,15 +67,17 @@ if (isSilentAuthIframe()) {
   i18n.addResourceBundle('fr', 'common', FRCommon, true, true);
   i18n.addResourceBundle('fr', 'fields', FRFields, true, true);
 
-  /* =============================================================================== */
-
+  // STORE
   const middleWares = [thunk, APITokenMiddleware];
   if (!!process && process.env.NODE_ENV === 'development') { middleWares.push(createLogger()); }
 
-  const rootPersistConfig = { key: 'root', storage, whitelist: ['global'], blacklist: [''] };
+  const rootPersistConfig = { key: 'root', storage, whitelist: ['global'], blacklist: [] };
   const persistedReducer = persistReducer(rootPersistConfig, reducers);
   const store = createStore(persistedReducer, compose(applyMiddleware(...middleWares)));
   const persistor = persistStore(store);
+
+  // ADD MIDDLEWARE TO API
+  API.addMiddleware(invalidTokenMiddleware(store.dispatch));
 
   ReactDOM.render((
     <React.Suspense fallback={null}>

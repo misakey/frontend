@@ -15,7 +15,7 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 
 // HOOKS
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   listItemContainer: {
     width: '100%',
   },
@@ -53,7 +53,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const useTextProps = text => useMemo(() => {
+const useTextProps = (text) => useMemo(() => {
   if (isNil(text)) {
     return {};
   }

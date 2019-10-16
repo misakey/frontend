@@ -8,7 +8,7 @@ export const screenServiceDrawerOpen = () => ({
 export const screenServiceDrawerClose = () => ({
   type: SCREEN_SERVICE_DRAWER_CLOSE,
 });
-export const screenServiceDrawerToggle = toggle => ({
+export const screenServiceDrawerToggle = (toggle) => ({
   type: SCREEN_SERVICE_DRAWER_TOGGLE,
   toggle,
 });

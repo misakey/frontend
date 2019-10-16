@@ -1,0 +1,14 @@
+@import '~@misakey/ui/static/sass/colors';
+
+#BoxSignIn {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  h3 {
+    padding-bottom: 1rem;
+  }
+}

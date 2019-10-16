@@ -36,35 +36,59 @@ help:
 
 .PHONY: dep
 dep: ## Install all dependencies in the node_modules folder
-	@yarn install
+	@yarn install && yarn --cwd plugin install
 
 .PHONY: docs
 docs: ## Validate documentation
-	@echo "No documentation in frontend project. Doc is in `js-common`"
+	@echo "No documentation in frontend project. Doc is in js-common project"
 
 .PHONY: deploy-docs
 deploy-docs: ## Deploy documentation. USE ONLY ON PRODUCTION!
-	@echo "No documentation in frontend project. Doc is in `js-common`"
+	@echo "No documentation in frontend project. Doc is in js-common project"
 
 .PHONY: test
 test: ## Unit test code
-	@yarn test
+	@yarn test --passWithNoTests
 
 .PHONY: lint
 lint: strict-lint ## Lint project code with eslint
 
 .PHONY: strict-lint
 strict-lint: ## Lint project code with eslint, return error if there is any suggestion
-	@./node_modules/eslint/bin/eslint.js ./src/
+	@yarn lint
 
 .PHONY: docker-login
 docker-login: ## Log in to the default registry
 	@docker login -u $(CI_REGISTRY_USER) -p $(CI_REGISTRY_PASSWORD) $(DOCKER_REGISTRY)
 
 .PHONY: build
-build: ## Build a docker image with the folder
+build: ## Build a docker image with the build folder and serve server
 	@echo $(VERSION) >> public/version.txt
 	@docker build -t $(CI_REGISTRY_IMAGE):$(VERSION) .
+
+.PHONY: build-plugin
+build-plugin: ## Generate production folder for misakey webextension
+	@docker build -f plugin/docker/Dockerfile -t plugin .
+	@docker run -d --name plugin plugin
+	@mkdir -p ./build_plugin
+	# Copy files in /plugin/build/prod without subfolder /plugin
+	@docker cp plugin:/app/build_plugin/. ./build_plugin
+	# Stop plugin container
+	@docker stop plugin
+	# Remove plugin container
+	@docker rm plugin
+
+CURRENT_DIR := $(shell pwd)
+.PHONY: start-plugin
+start-plugin:  ## Generate development environment for plugin
+	@mkdir -p ./plugin/build/dev/
+	@cp -r ./public/locales ./plugin/build/dev/
+	docker-compose -f $(CURRENT_DIR)/docker-compose.plugin.yml up --build
+
+.PHONY: clean-plugin
+clean-plugin:  ## Stop and remove dev container for plugin-dev
+	docker-compose -f $(CURRENT_DIR)/docker-compose.plugin.yml stop
+	docker-compose -f $(CURRENT_DIR)/docker-compose.plugin.yml rm
 
 .PHONY: tag
 tag: ## Tag a docker image and set some aliases
@@ -86,7 +110,6 @@ ifeq ($(CI_COMMIT_REF_NAME),release)
 	@docker push $(CI_REGISTRY_IMAGE):rc
 endif
 	@docker push $(CI_REGISTRY_IMAGE):$(CI_COMMIT_REF_NAME)
-
 
 .PHONY: clean
 clean: ## Remove all images related to the project

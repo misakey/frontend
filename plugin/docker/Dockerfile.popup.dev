@@ -1,0 +1,20 @@
+FROM node:10.15.3 
+
+COPY ./src /app/src
+COPY ./scripts /app/scripts
+COPY ./public /app/public
+COPY ./package.json /app/package.json
+COPY ./jsconfig.json /app/jsconfig.json
+COPY ./yarn.lock /app/yarn.lock
+RUN rm /app/public/manifest.json
+
+# Replace env.js and index.html with specific files for plugin 
+COPY ./plugin/popup/env.dev.js /app/public/env.js
+COPY ./plugin/popup/index.html /app/public/index.html
+
+WORKDIR /app
+
+ENV INLINE_RUNTIME_CHUNK false 
+
+RUN yarn install
+CMD yarn run watch

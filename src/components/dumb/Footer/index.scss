@@ -1,0 +1,11 @@
+.footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 0 0 1rem 0;
+  height: 42px;
+  
+  .separator {
+    margin: 0 1rem;
+  }
+}

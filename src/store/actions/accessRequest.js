@@ -5,7 +5,7 @@ export const accessRequestReset = () => ({
   type: ACCESS_REQUEST_RESET,
 });
 
-export const accessRequestUpdate = props => ({
+export const accessRequestUpdate = (props) => ({
   type: ACCESS_REQUEST_UPDATE,
   ...props,
 });

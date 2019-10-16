@@ -1,0 +1,11 @@
+.Error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.Error .initialDescription {
+  padding: 10px;
+  margin: 10px;
+}

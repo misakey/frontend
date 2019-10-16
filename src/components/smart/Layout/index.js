@@ -16,7 +16,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import ButtonConnect from 'components/dumb/Button/Connect';
 
-import { DRAWER_WIDTH } from 'components/screen/Service/Drawer';
+import { DRAWER_WIDTH } from 'components/screens/Service/Drawer';
 import ButtonGoBack from '@misakey/ui/Button/GoBack';
 import ButtonBurger from '@misakey/ui/Button/Burger';
 import { layoutBurgerClicked } from 'store/actions/Layout';
@@ -28,14 +28,14 @@ export const NAV_HEIGHT = 64;
 
 // We export it in case we want to reuse the style with the left Portal
 // Going to make a high level Component for Navigation AppBar type
-export const menuButtonStyle = theme => ({
+export const menuButtonStyle = (theme) => ({
   marginRight: theme.spacing(2),
   [theme.breakpoints.up('sm')]: {
     marginRight: theme.spacing(4),
   },
 });
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
   },
@@ -190,5 +190,5 @@ Layout.defaultProps = {
 };
 
 export default connect(
-  state => ({ ...state.Layout }),
+  (state) => ({ ...state.Layout }),
 )(withRouter(withTranslation('nav')(Layout)));

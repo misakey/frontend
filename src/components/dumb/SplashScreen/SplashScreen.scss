@@ -1,0 +1,26 @@
+$lightBackground: #fff;
+
+.splashScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1100;
+  width: 100%;
+  height: 100%;
+  max-height: 100vh;
+  background-color: transparentize($lightBackground, 0.3);
+  color: var(--dark-grey);
+  text-align: center;
+}
+
+.splashScreen .svg-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.splashScreen svg {
+  left: 50%;
+  color: var(--secondary-color);
+}

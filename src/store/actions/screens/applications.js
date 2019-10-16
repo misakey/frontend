@@ -1,0 +1,59 @@
+import { normalize } from 'normalizr';
+import ApplicationSchema from 'store/schemas/Application';
+import { receiveEntities } from '@misakey/store/actions/entities';
+import isEmpty from '@misakey/helpers/isEmpty';
+import mergeWith from '@misakey/helpers/mergeWith';
+
+export const APPLICATIONS_IDS_ADD = 'APPLICATIONS_IDS_ADD';
+export const APPLICATIONS_IDS_REMOVE = 'APPLICATIONS_IDS_REMOVE';
+export const APPLICATIONS_IDS_OVERRIDE = 'APPLICATIONS_IDS_OVERRIDE';
+export const APPLICATIONS_BOXES_ADD = 'APPLICATIONS_BOXES_ADD';
+export const APPLICATIONS_RESET = 'APPLICATIONS_RESET';
+
+// HELPERS
+// do not override destination if source is empty
+const noEmptyOverride = (dest, src) => {
+  if (isEmpty(src)) {
+    return dest;
+  }
+  return undefined;
+};
+
+const mergeEntitiesNoEmpty = (state, { entities }) => mergeWith(
+  {},
+  state,
+  { ...state.entities, ...entities },
+  noEmptyOverride,
+);
+
+
+function applicationsIdsOverride(ids) {
+  return {
+    type: APPLICATIONS_IDS_OVERRIDE,
+    ids,
+  };
+}
+
+export function applicationsReset() {
+  return {
+    type: APPLICATIONS_RESET,
+  };
+}
+
+export function applicationsOnFetch(applications) {
+  return (dispatch) => {
+    const normalized = normalize(applications, ApplicationSchema.collection);
+    const { result, entities } = normalized;
+    return Promise.all([
+      dispatch(receiveEntities(entities, mergeEntitiesNoEmpty)),
+      dispatch(applicationsIdsOverride(result)),
+    ]);
+  };
+}
+
+export function screenApplicationsBoxesAdd(boxes) {
+  return {
+    type: APPLICATIONS_BOXES_ADD,
+    boxes,
+  };
+}

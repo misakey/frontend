@@ -5,7 +5,7 @@ export const screenServiceReset = () => ({
   type: SCREEN_SERVICE_RESET,
 });
 
-export const screenServiceUpdate = props => ({
+export const screenServiceUpdate = (props) => ({
   type: SCREEN_SERVICE_UPDATE,
   ...props,
 });

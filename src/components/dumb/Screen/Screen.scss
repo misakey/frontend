@@ -1,0 +1,9 @@
+@import '~@misakey/ui/static/styles/Screen.scss';
+
+.Screen {
+  .section {
+    overflow: auto;
+    height: 100vh;
+    background-color: var(--light-background);
+  }
+}

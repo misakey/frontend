@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import AuthSignIn from 'components/screen/Auth/SignIn';
-import ServiceSearchSimple from 'components/screen/Service/Search/Simple';
+import BoxSignIn from 'components/dumb/Box/SignIn';
+import ServiceSearchSimple from 'components/screens/Service/Search/Simple';
 
 export const DEFAULT_DOMAIN = 'service';
 export const DEFAULT_SERVICE_ENTITY = { mainDomain: DEFAULT_DOMAIN };
@@ -16,7 +16,7 @@ function RouteService({ component: Component, componentProps, isAuthenticated, t
     const { name } = componentProps;
     if (!isAuthenticated) {
       return (
-        <AuthSignIn
+        <BoxSignIn
           title={name && t(`auth:signIn.titleByComponentName.${name}`)}
           {...renderProps}
         />
@@ -54,5 +54,5 @@ RouteService.defaultProps = {
 };
 
 export default withTranslation('auth')(connect(
-  state => ({ isAuthenticated: !!state.auth.token }),
+  (state) => ({ isAuthenticated: !!state.auth.token }),
 )(RouteService));

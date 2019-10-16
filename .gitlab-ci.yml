@@ -4,15 +4,14 @@ cache:
 
 variables:
   CI: "true"
-  GIT_SUBMODULE_STRATEGY: normal
 
 
 stages:
   - dep
-  - lint
-  - release
+  - test
+  - build
 
-install_modules:
+install_mod:
   stage: dep
   image: node:10.15.3
   tags:
@@ -20,28 +19,34 @@ install_modules:
   script:
     - make dep
 
-
 lint_code:
-  stage: lint
-  tags:
-    - misakey_js  
+  stage: test
   image: node:10.15.3
+  tags:
+    - misakey_js
   script:
     - make dep
     - make strict-lint
 
-release:
-  stage: release
+unit_tests:
+  stage: test
+  image: node:10.15.3
+  tags:
+    - misakey_js
+  script:
+    - make dep
+    - make test
+
+build:
+  stage: build
+  image: docker:stable
   tags:
     - misakey_docker
-  image: docker:stable
   before_script:
     - apk add make
     - apk add git
     - make docker-login
-
   script:
     - make build
     - make tag
     - make deploy
-

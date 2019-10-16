@@ -1,0 +1,17 @@
+.categoryCard {
+  .list {
+    border-top: 1px solid var(--light-grey);
+    .text {
+      flex: none;
+
+      &.blocked {
+        text-decoration: line-through;
+      }
+    }
+  }
+
+  .displayMore {
+    cursor: pointer;
+    margin-left: auto;
+  }
+}

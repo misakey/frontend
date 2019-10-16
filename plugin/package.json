@@ -1,0 +1,25 @@
+{
+  "name": "misakey_plugin",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@cliqz/adblocker": "^1.0.2",
+    "@cliqz/adblocker-webextension": "^1.0.2",
+    "@cliqz/adblocker-webextension-cosmetics": "^1.0.2",
+    "@misakey/helpers": "^2.0.0",
+    "@misakey/ui": "^1.4.1",
+    "tldts": "^5.4.0",
+    "ua-parser-js": "^0.7.20",
+    "webextension-polyfill": "^0.4.0"
+  },
+  "scripts": {
+    "start": "webpack --watch --mode=development",
+    "build": "webpack",
+    "clean": "rm -rf build && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^5.0.4",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.9"
+  }
+}

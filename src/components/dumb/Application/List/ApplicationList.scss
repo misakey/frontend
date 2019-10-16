@@ -1,0 +1,16 @@
+.applicationList {
+  height: 100%;
+  padding-top: 0;
+
+  .MuiListItemText-primary,
+  .MuiListItemText-secondary {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .MuiListItemText-primary {
+    font-size: 16px;
+    color: #000 !important;
+  }
+}

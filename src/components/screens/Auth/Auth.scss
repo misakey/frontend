@@ -1,0 +1,13 @@
+@import '../../../../node_modules/@misakey/ui/static/sass/colors';
+
+#Auth {
+  background-color: $light-grey;
+
+  .flex {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}

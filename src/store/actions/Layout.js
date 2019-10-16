@@ -8,7 +8,7 @@ export const layoutAppBarShift = () => ({
 export const layoutAppBarUnshift = () => ({
   type: LAYOUT_APP_BAR_UNSHIFT,
 });
-export const layoutAppBarToggleShift = toggle => ({
+export const layoutAppBarToggleShift = (toggle) => ({
   type: LAYOUT_APP_BAR_TOGGLE_SHIFT,
   toggle,
 });
@@ -25,11 +25,11 @@ export const layoutBurgerShow = () => ({
 export const layoutBurgerHide = () => ({
   type: LAYOUT_BURGER_HIDE,
 });
-export const layoutBurgerToggle = toggle => ({
+export const layoutBurgerToggle = (toggle) => ({
   type: LAYOUT_BURGER_TOGGLE,
   toggle,
 });
-export const layoutBurgerUpdate = burgerProps => ({
+export const layoutBurgerUpdate = (burgerProps) => ({
   type: LAYOUT_BURGER_UPDATE,
   burgerProps,
 });
@@ -47,7 +47,7 @@ export const layoutGoBackShow = () => ({
 export const layoutGoBackHide = () => ({
   type: LAYOUT_GO_BACK_HIDE,
 });
-export const layoutGoBackToggle = toggle => ({
+export const layoutGoBackToggle = (toggle) => ({
   type: LAYOUT_GO_BACK_TOGGLE,
   toggle,
 });
@@ -62,7 +62,7 @@ export const layoutButtonConnectShow = () => ({
 export const layoutButtonConnectHide = () => ({
   type: LAYOUT_BUTTON_CONNECT_HIDE,
 });
-export const layoutButtonConnectToggle = toggle => ({
+export const layoutButtonConnectToggle = (toggle) => ({
   type: LAYOUT_BUTTON_CONNECT_TOGGLE,
   toggle,
 });

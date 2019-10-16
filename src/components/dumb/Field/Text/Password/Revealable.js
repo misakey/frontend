@@ -26,7 +26,7 @@ const HIDDEN_TYPE = 'password';
 const VISIBLE_DEFAULT = 'text';
 
 // HELPERS
-const getVisibleType = type => (type === HIDDEN_TYPE ? VISIBLE_DEFAULT : type);
+const getVisibleType = (type) => (type === HIDDEN_TYPE ? VISIBLE_DEFAULT : type);
 
 // HOOKS
 const useActualType = (visible, type) => useMemo(() => {
@@ -36,8 +36,8 @@ const useActualType = (visible, type) => useMemo(() => {
   return HIDDEN_TYPE;
 }, [visible, type]);
 
-const useOnToggleVisible = setVisible => useCallback(() => {
-  setVisible(visible => !visible);
+const useOnToggleVisible = (setVisible) => useCallback(() => {
+  setVisible((visible) => !visible);
 }, [setVisible]);
 
 const useInputProps = (

@@ -59,7 +59,7 @@ RouteAccessRequest.defaultProps = {
 };
 
 export default connect(
-  state => ({
+  (state) => ({
     accessToken: state.accessToken,
     isConfirmed: !!state.accessToken.token,
     isAuthenticated: !!state.auth.token,

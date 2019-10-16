@@ -1,6 +1,22 @@
 @import '~animate.css/source/_base.css';
+@import '~animate.css/source/fading_entrances/fadeInDownBig.css';
+@import '~animate.css/source/fading_exits/fadeOutUpBig.css';
+
 @import '~@misakey/ui/static/sass/colors';
 @import '~@misakey/ui/static/sass/fonts';
+
+@font-face {
+  font-family: 'Futura Std Bold';
+  font-style: normal;
+  font-weight: 600;
+  src: url('~@misakey/ui/static/fonts/FuturaStdBold.eot');
+  src: local('Futura Std Bold'),
+  url('~@misakey/ui/static/fonts/FuturaStdBold.woff') format('woff'),
+  url('~@misakey/ui/static/fonts/FuturaStdBold.woff2') format('woff2'),
+  url('~@misakey/ui/static/fonts/FuturaStdBold.ttf') format('truetype'),
+  url('~@misakey/ui/static/fonts/FuturaStdBold.svg') format('svg');
+}
+
 
 :root {
   --primary-color: #{$primary-color};
@@ -19,15 +35,37 @@ html, body {
   overflow-x: hidden;
 }
 
+html[data-plugin-controlsize='true'] body {
+  width: 450px;
+  height: 500px;
+}
+
 .router-link {
   text-decoration: none;
   outline: none;
 }
 
 .misakey-brand {
-  font-family: 'Futura Std Bold', 'Roboto', sans-serif;
+  font-family: 'Futura Std Bold', 'Roboto', sans-serif !important;
   color: $secondary-color !important;
 }
+
+.swal2-container {
+  z-index: 1200 !important;
+  font-family: 'Futura Std Bold', 'Roboto', sans-serif;
+
+  .swal2-file:focus,
+  .swal2-input:focus,
+  .swal2-textarea:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 3px var(--secondary-color);
+  }
+
+  .swal2-styled.swal2-confirm {
+    background-color: var(--secondary-color);
+  }
+}
+
 
 code {
   color: $gold-yellow;

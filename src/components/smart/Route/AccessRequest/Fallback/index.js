@@ -196,5 +196,5 @@ AccessRequestFallback.propTypes = {
 };
 
 export default withTranslation(['common', 'screens'])(connect(
-  state => ({ accessRequest: state.accessRequest }),
+  (state) => ({ accessRequest: state.accessRequest }),
 )(AccessRequestFallback));
