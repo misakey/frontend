@@ -62,7 +62,7 @@ function ApplicationImg({ alt, children, className, fontSize, src, ...rest }) {
         onLoad={handleLoaded}
         {...rest}
       >
-        {children}
+        {(isBroken || !src) && children}
       </Avatar>
     </>
   );

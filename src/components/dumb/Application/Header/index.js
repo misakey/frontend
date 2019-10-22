@@ -8,28 +8,33 @@ import { withTranslation } from 'react-i18next';
 
 import useWidth from '@misakey/hooks/useWidth';
 import ApplicationSchema from 'store/schemas/Application';
-import routes from 'routes';
+
+import displayIn from '@misakey/helpers/displayIn';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import MUILink from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Rating from '@material-ui/lab/Rating';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import ContactButton from 'components/smart/ContactButton';
 import ApplicationImg from 'components/dumb/Application/Img';
-import Navigation from '@misakey/ui/Navigation';
 import Container from '@material-ui/core/Container';
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
 
 import './index.scss';
 
+// CONSTANTS
 const DISPLAY_RATING = false;
 
+const SMALL_BREAKPOINTS = ['xs', 'sm'];
 const spacing = 3;
 const avatarSize = { sm: 75, md: 100 };
+
+// HOOKS
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(3, 0),
@@ -74,13 +79,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function OnLoading(width) {
+const useIsSmall = (width) => useMemo(
+  () => displayIn(width, SMALL_BREAKPOINTS),
+  [width],
+);
+
+// COMPONENTS
+function OnLoading({ width }) {
+  const isSmall = useIsSmall(width);
+
   return (
     <>
       <Skeleton
         variant="text"
         style={{ margin: 0 }}
-        height={['xs', 'sm'].includes(width) ? 31 : 39}
+        height={isSmall ? 31 : 39}
       />
       <Skeleton variant="text" />
       <Skeleton variant="text" style={{ marginBottom: 0 }} />
@@ -88,16 +101,18 @@ function OnLoading(width) {
   );
 }
 
+OnLoading.propTypes = {
+  width: PropTypes.number.isRequired,
+};
+
 function ApplicationHeader({
   auth,
   className,
   dpoEmail,
-  hideNavigation,
   homepage,
   id,
   isAuthenticated,
   isLoading,
-  location,
   logoUri,
   name,
   mainDomain,
@@ -111,122 +126,99 @@ function ApplicationHeader({
 }) {
   const classes = useStyles();
   const width = useWidth();
-
-  const goBackPath = useMemo(
-    () => ({ pathname: routes.application._, search: location.search }),
-    [location],
-  );
+  const isSmall = useIsSmall(width);
 
   return (
-    <>
-      {(['xs', 'sm'].includes(width) && !hideNavigation) && (
-        <Navigation
-          goBackPath={goBackPath}
-          gutterBottom={false}
-          showGoBack={!window.env.PLUGIN}
-        >
-          {isAuthenticated && (
-            <ContactButton
-              idToken={auth.id}
-              dpoEmail={dpoEmail}
-              applicationID={id}
-              mainDomain={mainDomain}
-              contactedView={wasContacted}
-            />
-          )}
-        </Navigation>
-      )}
-      <Container maxWidth={false}>
-        <header className={clsx(className, classes.root)}>
-          <Grid container spacing={spacing} className={classes.grid} alignItems="center">
-            <Grid item>
-              <ApplicationImg
-                alt={name}
-                component="a"
-                target="_blank"
-                href={homepage}
-                fontSize="large"
-                src={!isEmpty(logoUri) ? logoUri : undefined}
-                className={clsx(classes.avatar, { [classes.letterAvatar]: isEmpty(logoUri) })}
-              >
-                {name.slice(0, 3)}
-              </ApplicationImg>
-            </Grid>
-            <Grid item className={classes.titles}>
-              {isLoading ? <OnLoading width={width} /> : (
-                <>
-                  <Typography
-                    variant={['xs', 'sm'].includes(width) ? 'h5' : 'h4'}
-                    className={classes.nameTitle}
-                  >
-                    {name}
-                  </Typography>
-                  <Typography variant="body1" color="textSecondary">
-                    {shortDesc}
-                  </Typography>
-                  <Typography>
-                    {isAuthenticated && dpoEmail && (
-                      <MUILink href={`mailto:${dpoEmail}`}>
-                        {dpoEmail}
-                      </MUILink>
-                    )}
-                    {isAuthenticated && !dpoEmail && (
-                      <MUILink
-                        onClick={onContributionDpoEmailClick}
-                        className="lightLink"
-                        component="button"
-                      >
-                        {t('screens:application.info.userContribution.dpoEmailOpenDialog')}
-                      </MUILink>
-                    )}
-                    {!isAuthenticated && !window.env.PLUGIN && (
-                      <MUILink onClick={() => userManager.signinRedirect()} component="button">
-                        {t('screens:application.info.emailSignIn')}
-                      </MUILink>
-                    )}
-                  </Typography>
-                </>
-              )}
-              {DISPLAY_RATING && (
-                <>
-                  <Divider className={classes.divider} />
-                  <Grid container spacing={1} alignItems="center" wrap="nowrap">
-                    <Grid item>
-                      <Typography color="primary" variant="h5">{rating}</Typography>
-                    </Grid>
-                    <Grid item>
-                      <Rating
-                        readOnly
-                        size="large"
-                        value={rating}
-                        classes={{ iconFilled: classes.ratingIcon }}
-                      />
-                    </Grid>
-                  </Grid>
-                  <Typography color="textSecondary" variant="subtitle1">
-                    {t('screens:application.info.ratingCount', { count: ratingCount })}
-                    <MUILink component={Link} to="#" className={classes.rateLink}>
-                      {t('screens:application.info.rate')}
+    <Container maxWidth={false}>
+      <header className={clsx(className, classes.root)}>
+        <Grid container spacing={spacing} className={classes.grid} alignItems="center">
+          <Grid item>
+            <ApplicationImg
+              alt={name}
+              component="a"
+              target="_blank"
+              href={homepage}
+              fontSize="large"
+              src={!isEmpty(logoUri) ? logoUri : undefined}
+              className={clsx(classes.avatar, { [classes.letterAvatar]: isEmpty(logoUri) })}
+            >
+              {name.slice(0, 3)}
+            </ApplicationImg>
+          </Grid>
+          <Grid item className={classes.titles}>
+            {isLoading ? <OnLoading width={width} /> : (
+              <>
+                <Typography
+                  variant={isSmall ? 'h5' : 'h4'}
+                  className={classes.nameTitle}
+                >
+                  {name}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {shortDesc}
+                </Typography>
+                <Typography>
+                  {isAuthenticated && dpoEmail && (
+                    <MUILink href={`mailto:${dpoEmail}`}>
+                      {dpoEmail}
                     </MUILink>
-                  </Typography>
-                </>
-              )}
-            </Grid>
-            {(isAuthenticated && !['xs', 'sm'].includes(width)) && (
-              <Grid item>
-                <ContactButton
-                  idToken={auth.id}
-                  dpoEmail={dpoEmail}
-                  applicationID={id}
-                  mainDomain={mainDomain}
-                  contactedView={wasContacted}
-                />
-              </Grid>
+                  )}
+                  {!isAuthenticated && !window.env.PLUGIN && (
+                    <MUILink onClick={() => userManager.signinRedirect()} component="button">
+                      {t('screens:application.info.emailSignIn')}
+                    </MUILink>
+                  )}
+                </Typography>
+              </>
+            )}
+            {DISPLAY_RATING && (
+              <>
+                <Divider className={classes.divider} />
+                <Grid container spacing={1} alignItems="center" wrap="nowrap">
+                  <Grid item>
+                    <Typography color="primary" variant="h5">{rating}</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Rating
+                      readOnly
+                      size="large"
+                      value={rating}
+                      classes={{ iconFilled: classes.ratingIcon }}
+                    />
+                  </Grid>
+                </Grid>
+                <Typography color="textSecondary" variant="subtitle1">
+                  {t('screens:application.info.ratingCount', { count: ratingCount })}
+                  <MUILink component={Link} to="#" className={classes.rateLink}>
+                    {t('screens:application.info.rate')}
+                  </MUILink>
+                </Typography>
+              </>
             )}
           </Grid>
-        </header>
-      </Container>
-    </>
+          {(isAuthenticated) && (
+            <Grid item>
+              <ContactButton
+                idToken={auth.id}
+                dpoEmail={dpoEmail}
+                applicationID={id}
+                mainDomain={mainDomain}
+                contactedView={wasContacted}
+              />
+              {!dpoEmail && (
+                <Button
+                  onClick={onContributionDpoEmailClick}
+                  variant="outlined"
+                  color="secondary"
+                >
+                  {t('screens:application.info.userContribution.dpoEmailOpenDialog')}
+                </Button>
+              )}
+            </Grid>
+          )}
+        </Grid>
+      </header>
+    </Container>
   );
 }
 
@@ -234,7 +226,6 @@ ApplicationHeader.propTypes = {
   ...ApplicationSchema.propTypes,
   auth: PropTypes.shape({ id: PropTypes.string }).isRequired,
   className: PropTypes.string,
-  hideNavigation: PropTypes.bool,
   isAuthenticated: PropTypes.bool,
   isLoading: PropTypes.bool,
   location: PropTypes.shape({ pathname: PropTypes.string, search: PropTypes.string }).isRequired,
@@ -248,7 +239,6 @@ ApplicationHeader.propTypes = {
 
 ApplicationHeader.defaultProps = {
   className: '',
-  hideNavigation: false,
   rating: 2.5,
   ratingCount: 0,
   isAuthenticated: false,

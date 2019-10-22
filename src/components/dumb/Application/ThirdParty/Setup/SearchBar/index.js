@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -57,11 +56,11 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const useOnActive = (isSearchActive, inputRef) => useMemo(() => () => {
+const useOnActive = (inputRef) => useMemo(() => () => {
   if (!isNil(inputRef.current)) {
     inputRef.current.focus();
   }
-}, [isSearchActive, inputRef]);
+}, [inputRef]);
 
 const useIsSearchActive = (search) => useMemo(() => getIsSearchActive(search), [search]);
 const useHasSearch = (search) => useMemo(() => getHasSearch(search), [search]);
@@ -90,7 +89,7 @@ function ThirdPartySearchBar({
 
   const onSearchChange = useOnSearchChange(onSearch);
   const onReset = useOnReset(onSearch, inputRef);
-  const onActive = useOnActive(isSearchActive, inputRef);
+  const onActive = useOnActive(inputRef);
 
   return (
     <>
@@ -190,4 +189,4 @@ const mapDispatchToProps = (dispatch) => ({
 export default connect(
   null,
   mapDispatchToProps,
-)(withRouter(withTranslation(['screens'])(ThirdPartySearchBar)));
+)(withTranslation(['screens'])(ThirdPartySearchBar));

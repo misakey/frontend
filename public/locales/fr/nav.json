@@ -17,7 +17,8 @@
         "sso": "Single Sign On",
         "users": "Utilisateurs",
         "data": "Données personnelles",
-        "requests": "Requêtes RGPD"
+        "requests": "Requêtes RGPD",
+        "claim": "Revendiquer ce service"
       }
     }
   },

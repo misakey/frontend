@@ -126,8 +126,7 @@
         "title_plural": "Domaines associés",
         "moreCount": "+ {{count}} domaine",
         "moreCount_plural": "+ {{count}} domaines"
-      },
-      "privacyShieldLink": "https://www.cnil.fr/fr/le-privacy-shield"
+      }
     },
     "box": {
       "needPassword": "Pour accéder à ce fichier, nous avons besoin de votre mot de passe",

@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 import className from 'clsx';
@@ -164,4 +163,4 @@ ThirdPartyBlockCategory.defaultProps = {
   setupAction: null,
 };
 
-export default (withRouter(withTranslation(['screens'])(ThirdPartyBlockCategory)));
+export default (withTranslation(['screens'])(ThirdPartyBlockCategory));

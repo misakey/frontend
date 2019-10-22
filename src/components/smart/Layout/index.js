@@ -16,7 +16,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import ButtonConnect from 'components/dumb/Button/Connect';
 
-import { DRAWER_WIDTH } from 'components/screens/Service/Drawer';
+import { DRAWER_WIDTH } from 'components/screens/Admin/Service/Drawer';
 import ButtonGoBack from '@misakey/ui/Button/GoBack';
 import ButtonBurger from '@misakey/ui/Button/Burger';
 import { layoutBurgerClicked } from 'store/actions/Layout';
@@ -68,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   search: {
+    display: 'none', // Remove to show search bar
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.black, 0.15),

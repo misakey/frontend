@@ -10,20 +10,45 @@ const routes = {
       name: '/account/profile/name',
       password: '/account/profile/password',
     },
-    mailProvider: {
-      _: '/account/mail-provider',
-    },
-    thirdParty: {
-      setup: '/account/third-party/setup',
-    },
+    mailProvider: { _: '/account/mail-provider' },
+    thirdParty: { setup: '/account/third-party/setup' },
   },
-  application: {
-    _: '/',
-    info: '/:mainDomain',
-    comments: '/:mainDomain/comments',
-    personalData: '/:mainDomain/personal-data',
-    thirdParty: '/:mainDomain/third-party',
-    myAccount: '/:mainDomain/my-account',
+  admin: {
+    _: '/admin',
+    service: {
+      _: '/admin/:mainDomain',
+      home: { _: '/admin/:mainDomain' },
+      create: {
+        _: '/admin/service/create',
+        mainDomain: '/admin/service/create/:mainDomain',
+      },
+      list: { _: '/admin/service/list' },
+      claim: { _: '/admin/:mainDomain/claim' },
+      information: {
+        _: '/admin/:mainDomain/information',
+        name: '/admin/:mainDomain/information/name',
+        logo: {
+          _: '/admin/:mainDomain/information/logo',
+          upload: '/admin/:mainDomain/information/logo/upload',
+        },
+        mainDomain: '/admin/:mainDomain/information/mainDomain',
+        otherDomains: '/admin/:mainDomain/information/otherDomains',
+        shortDesc: '/admin/:mainDomain/information/shortDesc',
+        longDesc: '/admin/:mainDomain/information/longDesc',
+      },
+      sso: {
+        _: '/admin/:mainDomain/sso',
+        allowedOrigins: '/admin/:mainDomain/sso/allowedOrigins',
+        redirectUri: '/admin/:mainDomain/sso/redirectUri',
+        productionSetup: '/admin/:mainDomain/sso/productionSetup',
+        customRoles: '/admin/:mainDomain/sso/customRoles',
+      },
+      users: {
+        _: '/admin/:mainDomain/users',
+        edit: '/admin/:mainDomain/users/edit',
+      },
+      data: { _: '/admin/:mainDomain/data' },
+    },
   },
   auth: {
     _: '/auth',
@@ -38,68 +63,38 @@ const routes = {
     },
     forgotPassword: '/auth/password/forgot',
   },
-  contact: {
-    _: '/contact/:mainDomain',
-    preview: '/contact/:mainDomain/:provider',
+  citizen: {
+    _: '/citizen',
+    application: {
+      _: '/citizen/:mainDomain',
+      contact: {
+        _: '/citizen/:mainDomain/contact',
+        preview: '/citizen/:mainDomain/contact/:provider',
+      },
+      info: '/citizen/:mainDomain',
+      comments: '/citizen/:mainDomain/comments',
+      personalData: '/citizen/:mainDomain/personal-data',
+      thirdParty: '/citizen/:mainDomain/third-party',
+      myAccount: '/citizen/:mainDomain/my-account',
+    },
   },
-  landing: '/welcome',
+  dpo: {
+    _: '/dpo',
+    service: {
+      _: '/dpo/:mainDomain',
+      claim: { _: '/dpo/:mainDomain/claim' },
+      requests: {
+        _: '/dpo/:mainDomain/requests',
+        read: '/dpo/:mainDomain/requests/:databoxId',
+      },
+    },
+  },
   legals: {
     privacy: '/legals/privacy',
     tos: '/legals/tos',
   },
+  requests: '/requests',
   plugin: '/index.html',
-  service: {
-    _: '/:mainDomain',
-    create: {
-      _: '/service/create',
-      mainDomain: '/service/create/:mainDomain',
-    },
-    list: '/service/list',
-    claim: {
-      _: '/:mainDomain/claim',
-    },
-    home: {
-      _: '/:mainDomain',
-    },
-    information: {
-      _: '/:mainDomain/information',
-      name: '/:mainDomain/information/name',
-      logo: {
-        _: '/:mainDomain/information/logo',
-        upload: '/:mainDomain/information/logo/upload',
-      },
-      mainDomain: '/:mainDomain/information/mainDomain',
-      otherDomains: '/:mainDomain/information/otherDomains',
-      shortDesc: '/:mainDomain/information/shortDesc',
-      longDesc: '/:mainDomain/information/longDesc',
-    },
-    role: {
-      claim: {
-        _: '/:mainDomain/dpo/claim', // '/:mainDomain/:role/claim'
-      },
-    },
-    sso: {
-      _: '/:mainDomain/sso',
-      allowedOrigins: '/:mainDomain/sso/allowedOrigins',
-      redirectUri: '/:mainDomain/sso/redirectUri',
-      productionSetup: '/:mainDomain/sso/productionSetup',
-      customRoles: '/:mainDomain/sso/customRoles',
-    },
-    users: {
-      _: '/:mainDomain/users',
-      edit: '/:mainDomain/users/edit',
-    },
-    data: {
-      _: '/:mainDomain/data',
-    },
-    requests: {
-      _: '/:mainDomain/requests',
-      read: '/:mainDomain/requests/:databoxId',
-    },
-  },
-  requests: {
-    _: '/requests',
-  },
 };
 
 export default routes;

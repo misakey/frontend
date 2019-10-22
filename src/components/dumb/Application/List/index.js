@@ -140,7 +140,7 @@ ApplicationList.defaultProps = {
   applications: [],
   bottomAction: null,
   secondaryAction: null,
-  linkTo: routes.application.info,
+  linkTo: routes.citizen.application.info,
   search: undefined,
 };
 

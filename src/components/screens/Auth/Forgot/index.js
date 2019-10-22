@@ -123,7 +123,7 @@ const useOnNext = (email, setStep, setCode, setError, t, isAuthenticated) => use
     })
     .catch(handleError(setError, setFieldError, setStep))
     .finally(() => { setSubmitting(false); }),
-  [email, setStep, setCode, setError, t, isAuthenticated],
+  [email, setStep, setCode, setError, isAuthenticated],
 );
 
 const useOnReset = (
@@ -141,14 +141,14 @@ const useOnReset = (
     })
     .catch(handleError(setError, setFieldError, setStep))
     .finally(() => { setSubmitting(false); }),
-  [email, code, enqueueSnackbar, setError, history, setStep, t, isAuthenticated],
+  [email, code, enqueueSnackbar, setError, setStep, t, isAuthenticated, challenge],
 );
 
 const useOnPrevious = (history) => useCallback(() => {
   history.push({
     pathname: routes.auth.signIn,
   });
-});
+}, [history]);
 
 const useAskResetPassword = (email, step, isAuthenticated) => useEffect(() => {
   if (!isEmpty(email) && isStepConfirm(step)) {

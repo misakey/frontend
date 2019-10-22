@@ -2,34 +2,31 @@ import React, { Suspense, lazy } from 'react';
 import PropTypes from 'prop-types';
 import { SnackbarProvider } from 'notistack';
 import { withTranslation } from 'react-i18next';
-import { Route, Switch } from 'react-router-dom';
-
-import routes from 'routes';
-
-import RoutePrivate from '@misakey/auth/components/Route/Private';
-import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallback';
 
 import Layout from 'components/smart/Layout';
+import SplashScreen from '@misakey/ui/SplashScreen';
+import DisclaimerBeta from 'components/dumb/Disclaimer/Beta';
+
+import routes from 'routes';
+import { Route, Switch } from 'react-router-dom';
+import RoutePrivate from '@misakey/auth/components/Route/Private';
 import RouteAccessRequest from 'components/smart/Route/AccessRequest';
-import ServiceRequestsRead from 'components/screens/Service/Requests/Read';
+import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallback';
 
 import Auth from 'components/screens/Auth';
-import SplashScreen from '@misakey/ui/SplashScreen';
 import Landing from 'components/screens/Landing';
-import Application from 'components/screens/Application';
-import ThirdPartySetup from 'components/screens/Application/Info/ThirdParty/Setup';
-import DisclaimerBeta from 'components/dumb/Disclaimer/Beta';
+import Citizen from 'components/screens/Citizen';
+import NotFound from 'components/screens/NotFound';
+import Requests from 'components/screens/DPO/Service/Requests/Read';
+import Plugin from 'components/screens/Plugin';
+import ThirdPartySetup from 'components/screens/Citizen/Application/Info/ThirdParty/Setup';
 
 import './App.scss';
 
 // LAZY
-const Home = lazy(() => import('components/screens/Home'));
-const ServiceCreate = lazy(() => import('components/screens/Service/Create'));
-const ServiceList = lazy(() => import('components/screens/Service/List'));
-const Service = lazy(() => import('components/screens/Service'));
 const Account = lazy(() => import('components/screens/Account'));
-const Contact = lazy(() => import('components/screens/Contact'));
-const NotFound = lazy(() => import('components/screens/NotFound'));
+const Admin = lazy(() => import('components/screens/Admin'));
+const DPO = lazy(() => import('components/screens/DPO'));
 
 // CONSTANTS
 const REFERRERS = {
@@ -47,48 +44,48 @@ function App({ t }) {
       <Suspense fallback={<SplashScreen />}>
         <Layout>
           <Switch>
+            <Route exact path={routes._} component={Landing} />
+            <Route exact path={routes.plugin} component={Plugin} />
+
+            {/* LEGALS */}
             <Route
+              exact
               path={routes.legals.tos}
               component={() => window.location.replace(t('footer.links.tos.href'))}
             />
             <Route
+              exact
               path={routes.legals.privacy}
               component={() => window.location.replace(t('footer.links.privacy.href'))}
             />
 
+            {/* AUTH and ACCOUNT */}
+            { /* @FIXME: move with other account route when auth in plugin is implemented */}
+            <Route exact path={routes.account.thirdParty.setup} component={ThirdPartySetup} />
             <Route path={routes.auth._} component={Auth} />
-            <Route exact path={routes.landing} component={Landing} />
-            <Route exact path={routes._} component={Home} />
+            <RoutePrivate path={routes.account._} component={Account} />
             <Route
+              exact
               path={routes.auth.callback}
               render={(routerProps) => (
-                <TRedirectAuthCallback
-                  fallbackReferrers={REFERRERS}
-                  t={t}
-                  {...routerProps}
-                />
+                <TRedirectAuthCallback fallbackReferrers={REFERRERS} t={t} {...routerProps} />
               )}
             />
 
+            {/* WORKSPACES */}
+            <Route path={routes.admin._} component={Admin} />
+            <Route path={routes.citizen._} component={Citizen} />
+            <Route path={routes.dpo._} component={DPO} />
+
+            {/* REQUESTS */}
             <RouteAccessRequest
+              exact
               path={routes.requests._}
-              component={ServiceRequestsRead}
+              component={Requests}
               componentProps={{ showGoBack: false }}
             />
 
-            { /* @FIXME: move with other account route when auth in plugin is implemented */}
-            <Route path={routes.account.thirdParty.setup} component={ThirdPartySetup} />
-            <RoutePrivate path={routes.account._} component={Account} />
-            <RoutePrivate path={routes.contact._} component={Contact} />
-
-            {/* ADMIN */}
-            <RoutePrivate path={routes.service.create._} component={ServiceCreate} />
-            <RoutePrivate path={routes.service.list} component={ServiceList} />
-            <Route path={routes.service.home._} component={Service} />
-
-            {/* PAGES_ROSES (APPLICATION) */}
-            <Route path={routes.application._} component={Application} />
-
+            {/* DEFAULT */}
             <Route component={NotFound} />
           </Switch>
         </Layout>

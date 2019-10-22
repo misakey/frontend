@@ -15,7 +15,6 @@ import propOr from '@misakey/helpers/propOr';
 import isObject from '@misakey/helpers/isObject';
 import isEmpty from '@misakey/helpers/isEmpty';
 
-import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -95,7 +94,6 @@ const ListMailProviders = ({
   onChange,
   allowManual,
   mailtoProps,
-  containerProps,
   t,
 }) => {
   const classes = useStyles();
@@ -147,57 +145,55 @@ const ListMailProviders = ({
   );
 
   return (
-    <Container {...containerProps}>
-      <List>
-        {PROVIDERS.map(({ key, alt, logoSrc }) => (
-          <ListItem
-            button
-            divider
-            id={key}
-            key={key}
-            aria-label={alt}
-            classes={{ root: classes.listItemRoot }}
-            onClick={onProviderClick}
-          >
-            <ListItemAvatar>
-              <Avatar alt={alt} src={logoSrc} classes={{ root: classes.avatarRoot }} />
-            </ListItemAvatar>
-            <ChevronRightIcon color="primary" />
-          </ListItem>
-        ))}
+    <List>
+      {PROVIDERS.map(({ key, alt, logoSrc }) => (
         <ListItem
           button
           divider
-          disabled
-          aria-label={t('common:providers.others', 'Others')}
-          component={Link}
-          to=""
+          id={key}
+          key={key}
+          aria-label={alt}
+          classes={{ root: classes.listItemRoot }}
+          onClick={onProviderClick}
         >
-          <ListItemIcon>
-            <Typography variant="button" color="secondary">
-              {t('common:providers.others', 'Others')}
-            </Typography>
-          </ListItemIcon>
+          <ListItemAvatar>
+            <Avatar alt={alt} src={logoSrc} classes={{ root: classes.avatarRoot }} />
+          </ListItemAvatar>
+          <ChevronRightIcon color="primary" />
         </ListItem>
-        {allowManual && (
-          <ListItem
-            button
-            divider
-            aria-label={t('common:providers.manual.send', 'Send Manually')}
-            component="a"
-            href={mailtoHref}
-            target="_blank"
-            onClick={onManualClick}
-          >
-            <ListItemIcon>
-              <Typography variant="button" color="textSecondary">
-                {t('common:providers.manual.send', 'Send Manually')}
-              </Typography>
-            </ListItemIcon>
-          </ListItem>
-        )}
-      </List>
-    </Container>
+      ))}
+      <ListItem
+        button
+        divider
+        disabled
+        aria-label={t('common:providers.others', 'Others')}
+        component={Link}
+        to=""
+      >
+        <ListItemIcon>
+          <Typography variant="button" color="secondary">
+            {t('common:providers.others', 'Others')}
+          </Typography>
+        </ListItemIcon>
+      </ListItem>
+      {allowManual && (
+      <ListItem
+        button
+        divider
+        aria-label={t('common:providers.manual.send', 'Send Manually')}
+        component="a"
+        href={mailtoHref}
+        target="_blank"
+        onClick={onManualClick}
+      >
+        <ListItemIcon>
+          <Typography variant="button" color="textSecondary">
+            {t('common:providers.manual.send', 'Send Manually')}
+          </Typography>
+        </ListItemIcon>
+      </ListItem>
+      )}
+    </List>
   );
 };
 
@@ -210,7 +206,6 @@ ListMailProviders.propTypes = {
   }),
   allowManual: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
-  containerProps: PropTypes.object,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
@@ -218,7 +213,6 @@ ListMailProviders.propTypes = {
 ListMailProviders.defaultProps = {
   mailtoProps: {},
   allowManual: false,
-  containerProps: { maxWidth: 'xs' },
 };
 
 export default withTranslation('common')(ListMailProviders);

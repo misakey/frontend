@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>MKAdmin - Misakey for admins</title>
+    <title>Misakey</title>
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -15,10 +15,42 @@
     <link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/ico/favicon-16x16.png">
     <link rel="mask-icon" href="%PUBLIC_URL%/ico/safari-pinned-tab.svg" color="#e13173">
 
+    <script src="%PUBLIC_URL%/libs/argon2/argon2.js" charset="utf-8"></script>
     <script src="%PUBLIC_URL%/env.js"></script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
   </body>
+
+  <script type="text/javascript">
+    if(window.env.ENV === 'production') {
+      var _paq = window._paq || [];
+
+      _paq.push([function() {
+        var self = this;
+        function getOriginalVisitorCookieTimeout() {
+          var now = new Date(),
+            nowTs = Math.round(now.getTime() / 1000),
+            visitorInfo = self.getVisitorInfo();
+          var createTs = parseInt(visitorInfo[2]);
+          var cookieTimeout = 33696000;
+          var originalTimeout = createTs + cookieTimeout -
+            nowTs;
+          return originalTimeout;
+        }
+        this.setVisitorCookieTimeout( getOriginalVisitorCookieTimeout() );
+      }]);
+
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="//analytics.misakey.com/";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', '1']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+      })();
+    }
+  </script>
 </html>

@@ -172,7 +172,7 @@ const ContactButton = (
           onClick={onClick}
           className="contactButton"
         >
-          {t('contact', 'CONTACT')}
+          {t('contact', 'MY DATA')}
         </Button>
       </div>
     );
@@ -208,10 +208,10 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchContact: (databoxURL, mainDomain, mailProvider, history, location) => {
     dispatch(contactDataboxURL(databoxURL, mainDomain));
     const pathname = isNil(mailProvider) ? generatePath(
-      routes.contact._,
+      routes.citizen.application.contact._,
       { mainDomain },
     ) : generatePath(
-      routes.contact.preview,
+      routes.citizen.application.contact.preview,
       { mainDomain, provider: mailProvider },
     );
     history.push({ pathname, state: { from: location } });

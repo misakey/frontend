@@ -108,7 +108,7 @@ function AccessRequestFallback({ accessRequest, dispatch, location, t }) {
         }
       })
       .finally(() => setSubmitting(false));
-  }, [accessRequest, enqueueSnackbar, t]);
+  }, [accessRequest, enqueueSnackbar, t, dispatch]);
 
   const fetchAccessRequest = useCallback(() => {
     if (!isFetching && hash) {
@@ -123,7 +123,7 @@ function AccessRequestFallback({ accessRequest, dispatch, location, t }) {
         .catch((e) => { setError(e); })
         .finally(() => setIsFetching(false));
     }
-  }, [hash, setIsFetching, setError, isFetching]);
+  }, [hash, setIsFetching, setError, isFetching, dispatch]);
 
   useEffect(() => {
     if (isEmpty(accessRequest) && !error && hash) { fetchAccessRequest(); }

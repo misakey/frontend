@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import BoxSignIn from 'components/dumb/Box/SignIn';
-import ServiceSearchSimple from 'components/screens/Service/Search/Simple';
+import ServiceSearchSimple from 'components/screens/Admin/Service/Search/Simple';
 
 export const DEFAULT_DOMAIN = 'service';
 export const DEFAULT_SERVICE_ENTITY = { mainDomain: DEFAULT_DOMAIN };
