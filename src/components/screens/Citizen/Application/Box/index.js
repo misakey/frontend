@@ -29,10 +29,8 @@ import BoxSection from '@misakey/ui/Box/Section';
 import ContactButton from 'components/smart/ContactButton';
 import { makeStyles } from '@material-ui/core/styles';
 
-import {
-  ownerCryptoContext as crypto,
-  BackupDecryptionError,
-} from '@misakey/crypto';
+import { ownerCryptoContext as crypto } from '@misakey/crypto';
+import { BackupDecryptionError } from '@misakey/crypto/Errors/classes';
 
 import { NoPassword } from 'constants/Errors/classes';
 

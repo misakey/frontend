@@ -9,6 +9,7 @@ import { passwordForm } from 'constants/validationSchemas/profile';
 import { invalid } from '@misakey/ui/constants/errorTypes';
 
 import isNil from '@misakey/helpers/isNil';
+import log from '@misakey/helpers/log';
 
 import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
@@ -20,7 +21,11 @@ import ScreenError from 'components/dumb/Screen/Error';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
+import { ownerCryptoContext as cryptoContext } from '@misakey/crypto';
+import { BackupDecryptionError } from '@misakey/crypto/Errors/classes';
+
 import './index.scss';
+
 
 const INITIAL_VALUES = {
   passwordOld: '',
@@ -31,34 +36,75 @@ const INITIAL_VALUES = {
 const OLD_PASSWORD_FIELD_NAME = 'passwordOld';
 
 // HELPERS
-const updateProfile = (id, { passwordOld, passwordNew, passwordConfirm }) => API
-  .use(API.endpoints.user.password.update)
-  .build({}, objectToSnakeCase({
-    userId: id,
-    oldPassword: passwordOld,
-    newPassword: passwordNew,
-    confirm: passwordConfirm,
-  }))
-  .send();
+async function updatePassword(
+  id,
+  { passwordOld, passwordNew, passwordConfirm },
+  enqueueSnackbar,
+  t,
+) {
+  let backupData;
+  let backupDecryptionError;
+  try {
+    ({ backupData } = await cryptoContext.preparePasswordChange(passwordNew, passwordOld, id));
+    backupDecryptionError = null;
+  } catch (e) {
+    if (e instanceof BackupDecryptionError) {
+      backupDecryptionError = e;
+    } else {
+      throw e;
+    }
+  }
+
+  let response;
+  try {
+    response = await API.use(API.endpoints.user.password.update)
+      .build({}, objectToSnakeCase({
+        userId: id,
+        oldPassword: passwordOld,
+        newPassword: passwordNew,
+        confirm: passwordConfirm,
+        backupData,
+      }))
+      .send();
+    if (!isNil(backupDecryptionError)) {
+      log(backupDecryptionError, 'error');
+      enqueueSnackbar(t('profile:password.backupDecryptionError'), { variant: 'error' });
+    }
+    return response;
+  } catch (e) {
+    if (e.error_code === 'invalid_password' && isNil(backupDecryptionError)) {
+      log('server indicated a bad password but backup decryption seems to have succeeded', 'error');
+      enqueueSnackbar(t('profile:password.backupDecryptionError'), { variant: 'error' });
+    }
+    // note that we do *not* display an "backupDecryptionError" error in the UI
+    // if the the backup did failed to decrypt
+    // but the HTTP error is something else than "invalid password".
+    // We don't want to scare the user without a reason.
+    throw e;
+  }
+}
 
 // HOOKS
 const useOnSubmit = (
   profile, enqueueSnackbar, setError, history, t,
 ) => useMemo(
-  () => (form, { setSubmitting, setFieldError }) => updateProfile(profile.id, form)
-    .then(() => {
-      enqueueSnackbar(t('profile:password.success'), { variant: 'success' });
-      history.push(routes.account._);
-    })
-    .catch((error) => {
-      if (error.error_code === 'invalid_password') {
-        setFieldError(OLD_PASSWORD_FIELD_NAME, invalid);
-      } else {
-        const { httpStatus } = error;
-        setError({ httpStatus });
-      }
-    })
-    .finally(() => { setSubmitting(false); }),
+  () => (form, { setSubmitting, setFieldError }) => (
+    updatePassword(profile.id, form, enqueueSnackbar, t)
+      .then(() => {
+        cryptoContext.commitPasswordChange();
+        enqueueSnackbar(t('profile:password.success'), { variant: 'success' });
+        history.push(routes.account._);
+      })
+      .catch((error) => {
+        if (error.error_code === 'invalid_password') {
+          setFieldError(OLD_PASSWORD_FIELD_NAME, invalid);
+        } else {
+          const { httpStatus } = error;
+          setError({ httpStatus });
+        }
+      })
+      .finally(() => { setSubmitting(false); })
+  ),
   [profile, enqueueSnackbar, setError, history, t],
 );
 

@@ -17,6 +17,7 @@
     }
   },
   "password": {
+    "backupDecryptionError": "Il semble y avoir un problème technique avec votre compte. Merci de contacter love@misakey.com",
     "title": "Mot de passe",
     "subtitle": "Si vous modifiez ce mot de passe, vous serez déconnecté de tous vos appareils, y compris votre téléphone. Vous devrez saisir le nouveau mot de passe sur tous ces appareils",
     "success": "Votre mot de passe a été mis à jour"
