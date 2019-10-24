@@ -81,8 +81,8 @@ build-plugin: ## Generate production folder for misakey webextension
 CURRENT_DIR := $(shell pwd)
 .PHONY: start-plugin
 start-plugin:  ## Generate development environment for plugin
-	@mkdir -p ./plugin/build/dev/
-	@cp -r ./public/locales ./plugin/build/dev/
+	@mkdir -p ./plugin/build/
+	@cp -r ./public/locales ./plugin/build/
 	docker-compose -f $(CURRENT_DIR)/docker-compose.plugin.yml up --build
 
 .PHONY: clean-plugin

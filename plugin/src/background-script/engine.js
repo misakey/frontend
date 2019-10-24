@@ -20,7 +20,7 @@ function getBlockingResponse(engine, details) {
   const ruleId = filter.getId();
   const rule = globals.rules[ruleId]
     || globals.rules[globals.getRuleIdByFilter(filter)]
-    || { ...filter, category: DEFAULT_CATEGORY };
+    || { ...filter, mainPurpose: DEFAULT_CATEGORY };
 
   if (globals.pausedBlocking || globals.requestIsWhitelisted(details, rule)) {
     return { blockingResponse: {}, rule };

@@ -1,7 +1,8 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { SnackbarProvider } from 'notistack';
 import { withTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
 
 import Layout from 'components/smart/Layout';
 import SplashScreen from '@misakey/ui/SplashScreen';
@@ -9,6 +10,8 @@ import DisclaimerBeta from 'components/dumb/Disclaimer/Beta';
 
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
+import { layoutButtonConnectHide, layoutGoBackHide } from 'store/actions/Layout';
+
 import RoutePrivate from '@misakey/auth/components/Route/Private';
 import RouteAccessRequest from 'components/smart/Route/AccessRequest';
 import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallback';
@@ -37,7 +40,14 @@ const REFERRERS = {
 // COMPONENTS
 const TRedirectAuthCallback = withTranslation('common')(RedirectAuthCallback);
 
-function App({ t }) {
+function App({ dispatch, t }) {
+  useEffect(() => {
+    if (window.env.PLUGIN) {
+      dispatch(layoutButtonConnectHide());
+      dispatch(layoutGoBackHide());
+    }
+  }, [dispatch]);
+
   return (
     <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
       <DisclaimerBeta />
@@ -61,7 +71,11 @@ function App({ t }) {
 
             {/* AUTH and ACCOUNT */}
             { /* @FIXME: move with other account route when auth in plugin is implemented */}
-            <Route exact path={routes.account.thirdParty.setup} component={ThirdPartySetup} />
+            <Route
+              exact
+              path={routes.account.thirdParty.setup}
+              render={(routerProps) => <ThirdPartySetup {...routerProps} />}
+            />
             <Route path={routes.auth._} component={Auth} />
             <RoutePrivate path={routes.account._} component={Account} />
             <Route
@@ -96,6 +110,7 @@ function App({ t }) {
 
 App.propTypes = {
   t: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(App);
+export default connect()(withTranslation()(App));

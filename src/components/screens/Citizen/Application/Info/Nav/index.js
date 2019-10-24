@@ -30,10 +30,14 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
-    borderBottom: '1px solid #f3f3f3',
+    borderBottom: `1px solid ${theme.palette.grey[100]}`,
   },
   linkTab: {
-    lineHeight: '39px',
+    fontSize: theme.typography.caption.fontSize,
+    minHeight: '32px',
+  },
+  tabs: {
+    minHeight: '32px',
   },
 }));
 
@@ -68,10 +72,11 @@ function ApplicationNavTabs({ location, mainDomain, scrollButtons, t, ...rest })
       <Tabs
         centered={centered}
         value={value}
+        className={classes.tabs}
         variant={variant}
         scrollButtons={scrollButtons}
         indicatorColor="secondary"
-        textColor="primary"
+        textColor="secondary"
         aria-label={t('screens:application.nav.label', { mainDomain })}
       >
         {APPLICATION_TAB_LINKS.map((link) => (

@@ -16,9 +16,8 @@ import { sendMessage, listenForBackground, stopListenerForBackground } from 'bac
 import { GET_BLOCKED_INFOS, REFRESH_BLOCKED_INFOS, UPDATE_WHITELIST } from 'background/messages';
 
 import { Typography, Grid } from '@material-ui/core';
-import ThirdPartyBlockCategory from 'components/dumb/Application/ThirdParty';
+import ThirdPartyBlockPurpose from 'components/dumb/Application/ThirdParty';
 import SplashScreen from 'components/dumb/SplashScreen';
-import PausePluginButton from 'components/smart/PausePluginButton';
 
 import routes from 'routes';
 
@@ -26,34 +25,40 @@ const useStyles = makeStyles((theme) => ({
   block: {
     padding: theme.spacing(1),
   },
+  empty: {
+    height: '30vh',
+    border: `1px solid ${theme.palette.grey[400]}`,
+    margin: '1.5rem',
+    borderRadius: '10px',
+  },
 }));
 
 // @TODO add to js-common helpers
-function isWhitelisted(whitelist = {}, initiatorDomain, category, target = null) {
+function isWhitelisted(whitelist = {}, initiatorDomain, mainPurpose, target = null) {
   const globalWhitelist = whitelist.apps || [];
 
   if (target) {
     return globalWhitelist.includes(target);
   }
 
-  // Check if category has been accepted
-  const domainWhitelist = get(whitelist, ['categories', initiatorDomain], []);
-  return domainWhitelist.includes(category);
+  // Check if purpose has been accepted
+  const domainWhitelist = get(whitelist, ['mainPurposes', initiatorDomain], []);
+  return domainWhitelist.includes(mainPurpose);
 }
 
 const useFormatDetectedTrackers = (
   whitelist,
   initiatorDomain,
 ) => useCallback((trackers, sort = false) => {
-  const formattedTrackers = trackers.map(({ name: category, apps }) => {
+  const formattedTrackers = trackers.map(({ name: mainPurpose, apps }) => {
     const formattedApps = apps.map((app) => ({
       ...app,
-      whitelisted: isWhitelisted(whitelist, initiatorDomain, category, app.domain),
+      whitelisted: isWhitelisted(whitelist, initiatorDomain, mainPurpose, app.domain),
     }));
     return {
-      name: category,
+      name: mainPurpose,
       apps: orderBy(formattedApps, ['whitelisted', 'name'], ['desc', 'asc']),
-      whitelisted: isWhitelisted(whitelist, initiatorDomain, category),
+      whitelisted: isWhitelisted(whitelist, initiatorDomain, mainPurpose),
     };
   });
   return sort ? orderBy(formattedTrackers, ['whitelisted', 'name'], ['desc', 'asc']) : formattedTrackers;
@@ -63,11 +68,11 @@ const useUpdateWhitelist = (
   dispatchWhitelist,
   whitelist,
   mainDomain,
-) => useCallback((action, category) => {
-  const domainWhitelist = get(whitelist, ['categories', mainDomain], []);
+) => useCallback((action, purpose) => {
+  const domainWhitelist = get(whitelist, ['mainPurposes', mainDomain], []);
   const newWhitelist = { ...whitelist };
-  const newValue = action === 'add' ? [...domainWhitelist, category] : domainWhitelist.filter((val) => val !== category);
-  set(newWhitelist, ['categories', mainDomain], newValue);
+  const newValue = action === 'add' ? [...domainWhitelist, purpose] : domainWhitelist.filter((val) => val !== purpose);
+  set(newWhitelist, ['mainPurposes', mainDomain], newValue);
 
   sendMessage(UPDATE_WHITELIST, { whitelist: newWhitelist }).then((response) => {
     dispatchWhitelist(response.whitelist);
@@ -140,10 +145,6 @@ function ThirdPartyBlock({
       justify="center"
       alignItems={empty ? 'center' : 'flex-start'}
     >
-      <Grid item xs={12} className={classes.block}>
-        <PausePluginButton />
-      </Grid>
-
       {
         formattedDetectedTrackers.map(({ name, apps, whitelisted }) => (
           <Grid
@@ -152,17 +153,16 @@ function ThirdPartyBlock({
             className={classes.block}
             key={name}
           >
-            <ThirdPartyBlockCategory
+            <ThirdPartyBlockPurpose
               entity={entity}
-              category={{ name, whitelisted }}
+              mainPurpose={{ name, whitelisted }}
               apps={apps}
               addToWhitelist={() => updateWhitelist('add', name)}
               removeFromWhitelist={() => updateWhitelist('remove', name)}
-              setupAction={(search = null) => {
+              setupAction={() => {
                 const query = new URLSearchParams();
                 query.set('mainPurpose', name);
                 query.set('mainDomain', mainDomain);
-                if (search) { query.set('search', search); }
                 history.push({
                   pathname: routes.account.thirdParty.setup,
                   search: query.toString(),
@@ -172,7 +172,17 @@ function ThirdPartyBlock({
           </Grid>
         ))
       }
-      {empty && <Typography>{t('screens:application.thirdParty.trackers.empty')}</Typography>}
+      {empty && (
+        <Grid
+          container
+          className={classes.empty}
+          direction="row"
+          justify="center"
+          alignItems="center"
+        >
+          <Typography>{t('screens:application.thirdParty.trackers.empty')}</Typography>
+        </Grid>
+      )}
 
     </Grid>
   );

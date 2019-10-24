@@ -18,12 +18,17 @@ import {
   LAYOUT_BUTTON_CONNECT_SHOW,
   LAYOUT_BUTTON_CONNECT_HIDE,
   LAYOUT_BUTTON_CONNECT_TOGGLE,
+
+  LAYOUT_APP_BAR_SHOW,
+  LAYOUT_APP_BAR_HIDE,
+  LAYOUT_APP_BAR_TOGGLE,
 } from 'store/actions/Layout';
 
 const initialState = {
   burger: false,
   burgerProps: { className: '' },
   buttonConnect: true,
+  displayAppBar: true,
   goBack: true,
   shift: false,
 };
@@ -78,6 +83,16 @@ function toggleButtonConnect(state, { toggle }) {
   return { ...state, buttonConnect: toggle ? !!toggle : !state.buttonConnect };
 }
 
+function showAppBar(state) {
+  return { ...state, displayAppBar: true };
+}
+function hideAppBar(state) {
+  return { ...state, displayAppBar: false };
+}
+function toggleAppBar(state, { toggle }) {
+  return { ...state, displayAppBar: toggle ? !!toggle : !state.displayAppBar };
+}
+
 export default createReducer(initialState, {
   [LAYOUT_APP_BAR_SHIFT]: shift,
   [LAYOUT_APP_BAR_UNSHIFT]: unShift,
@@ -95,4 +110,8 @@ export default createReducer(initialState, {
   [LAYOUT_BUTTON_CONNECT_SHOW]: showButtonConnect,
   [LAYOUT_BUTTON_CONNECT_HIDE]: hideButtonConnect,
   [LAYOUT_BUTTON_CONNECT_TOGGLE]: toggleButtonConnect,
+
+  [LAYOUT_APP_BAR_SHOW]: showAppBar,
+  [LAYOUT_APP_BAR_HIDE]: hideAppBar,
+  [LAYOUT_APP_BAR_TOGGLE]: toggleAppBar,
 });

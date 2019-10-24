@@ -17,6 +17,8 @@
   url('~@misakey/ui/static/fonts/FuturaStdBold.svg') format('svg');
 }
 
+$plugin-width: 450px;
+$plugin-height: 500px;
 
 :root {
   --primary-color: #{$primary-color};
@@ -32,12 +34,13 @@
 html, body {
   background-color: $light-background !important;
   margin: 0;
-  overflow-x: hidden;
+  overflow: hidden;
+  color: $dark-grey !important;
 }
 
 html[data-plugin-controlsize='true'] body {
-  width: 450px;
-  height: 500px;
+  width: $plugin-width;
+  height: $plugin-height;
 }
 
 .router-link {

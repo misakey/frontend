@@ -78,7 +78,15 @@ function handleRequest(engine) {
     const { blockingResponse, rule } = getBlockingResponse(engine, details);
     const hasToBeBlocked = Boolean(blockingResponse.cancel || blockingResponse.redirectUrl);
 
-    globals.updateBlockingInfos(details, rule, hasToBeBlocked);
+    const { type, tabId } = details;
+    // Reset tab infos in case of reload or url changes
+    if (type === 'main_frame') {
+      globals.initTabInfos(tabId);
+      globals.updateActiveTrackerCounter(tabId, { reset: true });
+    }
+
+    // The request has match a rule
+    if (rule) { globals.updateBlockingInfos(details, rule, hasToBeBlocked); }
 
     return blockingResponse;
   },
@@ -94,12 +102,12 @@ function handleRequest(engine) {
       return;
     }
 
-    const tab = await getCurrentTab();
-    if (tab && details.tabId === tab.id) {
+    const { id } = await getCurrentTab();
+    if (details.tabId === id) {
       // postMessage doesn't wait for a response
       globals.popupOpened.postMessage({
         action: 'refreshBlockedInfos',
-        detectedTrackers: globals.getTabInfosForPopup(tab.id),
+        detectedTrackers: globals.getTabInfosForPopup(id),
       });
     }
   }, { urls: URLS_PATTERNS });
@@ -122,8 +130,8 @@ function handleCommunication(engine) {
   browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     switch (msg.action) {
       case 'getCurrentDomain':
-        return getCurrentTab().then((tab) => {
-          const { domain } = parse(tab.url);
+        return getCurrentTab().then(({ url }) => {
+          const { domain } = parse(url);
           return domain;
         });
 
@@ -135,8 +143,8 @@ function handleCommunication(engine) {
         });
       }
       case 'getCurrentTabResume':
-        return Promise.all([getCurrentTab(), getItem('whitelist')]).then(([tab, { whitelist }]) => ({
-          detectedTrackers: globals.getTabInfosForPopup(tab.id),
+        return Promise.all([getCurrentTab(), getItem('whitelist')]).then(([{ id }, { whitelist }]) => ({
+          detectedTrackers: globals.getTabInfosForPopup(id),
           whitelist,
         }));
 

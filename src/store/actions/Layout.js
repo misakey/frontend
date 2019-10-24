@@ -66,3 +66,18 @@ export const layoutButtonConnectToggle = (toggle) => ({
   type: LAYOUT_BUTTON_CONNECT_TOGGLE,
   toggle,
 });
+
+export const LAYOUT_APP_BAR_SHOW = Symbol('LAYOUT_APP_BAR_SHOW');
+export const LAYOUT_APP_BAR_HIDE = Symbol('LAYOUT_APP_BAR_HIDE');
+export const LAYOUT_APP_BAR_TOGGLE = Symbol('LAYOUT_APP_BAR_TOGGLE');
+
+export const layoutAppbarShow = () => ({
+  type: LAYOUT_APP_BAR_SHOW,
+});
+export const layoutAppbarHide = () => ({
+  type: LAYOUT_APP_BAR_HIDE,
+});
+export const layoutAppbarToggle = (toggle) => ({
+  type: LAYOUT_APP_BAR_TOGGLE,
+  toggle,
+});

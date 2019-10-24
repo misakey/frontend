@@ -135,20 +135,24 @@
       "noResult": "Vous n'avez pas encore contacté {{name}}."
     },
     "thirdParty": {
-      "categories": {
+      "purposes": {
         "essentials": "Essentiels",
         "advertising": "Publicité",
-        "social_interaction": "Interaction sociales",
+        "social_interaction": "Social",
         "analytics": "Analyse",
         "personalization": "Personnalisation",
-        "other": "Autre"
+        "other": "Autres"
+      },
+      "categories": {
+        "blocked": "Recommandations",
+        "whitelisted": "Mes services tiers"
       },
       "detectedTrackers": "{{count}} tracker détecté",
       "detectedTrackers_plural": "{{count}} trackers détectés",
       "additionalDetectedTrackers": "+ {{count}} autre service",
       "additionalDetectedTrackers_plural": "+ {{count}} autres services",
       "trackers": {
-        "empty": "Pas de trackers détectés !",
+        "empty": "Aucun service tiers détecté",
         "detected": "{{count}} tracker détecté",
         "detected_plural": "{{count}} trackers détectés",
         "additionalDetected": "+ {{count}} autre service",
@@ -156,21 +160,19 @@
       },
       "filters": {
         "mainPurpose": {
-          "title": "Catégorie",
           "remove": {
-            "text": "Pour voir plus de services tiers, supprimer le filtre {{ purpose }}",
-            "button": "Supprimer le filtre"
+            "text": "La liste des services tiers utilisés par <1>{{ mainDomain }}</1> pour la catégorie <3>{{ mainPurpose }}</3> est terminée",
+            "button": "Voir toutes les catégories"
           }
         },
         "mainDomain": {
-          "title": "Domaine actuel",
           "remove": {
-            "text": "Pour voir la liste de tous les services tiers gérés par Misakey",
-            "button": "Voir la liste"
+            "text": "La liste des services tiers utilisés par <1>{{ mainDomain }}</1> est terminée",
+            "button": "Voir tous mes services tiers"
           }
-        }
-      },
-      "setup": "Paramétrer"
+        },
+        "empty": "La liste des services tiers connus par <1>Misakey</1> est terminée"
+      }
     },
     "nav": {
       "label": "Navigation de {{mainDomain}}",

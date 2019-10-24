@@ -15,10 +15,12 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import ButtonConnect from 'components/dumb/Button/Connect';
+import PausePluginButton from 'components/smart/PausePluginButton';
 
 import { DRAWER_WIDTH } from 'components/screens/Admin/Service/Drawer';
 import ButtonGoBack from '@misakey/ui/Button/GoBack';
 import ButtonBurger from '@misakey/ui/Button/Burger';
+
 import { layoutBurgerClicked } from 'store/actions/Layout';
 
 export const LEFT_PORTAL_ID = 'LayoutLeftPortal';
@@ -61,8 +63,11 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     flexGrow: 1,
     width: '100%',
-    minHeight: '100vh',
-    paddingTop: NAV_HEIGHT,
+    overflow: 'auto',
+    '&.hasAppbar': {
+      marginTop: NAV_HEIGHT,
+      height: `calc(100vh - ${NAV_HEIGHT}px)`,
+    },
   },
   portal: {
     flexGrow: 1,
@@ -117,8 +122,10 @@ function Layout({
   buttonConnect,
   children,
   dispatch,
+  displayAppBar,
   goBack,
   history,
+  pausePluginButton,
   shift,
   t,
 }) {
@@ -131,36 +138,39 @@ function Layout({
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <ElevationScroll>
-        <AppBar
-          position="fixed"
-          color="inherit"
-          elevation={0}
-          className={clsx(classes.appBar, { [classes.appBarShift]: shift })}
-        >
-          <Toolbar>
-            {burger && <ButtonBurger {...burgerProps} onClick={handleBurgerClick} />}
-            {(goBack && !burger) && <ButtonGoBack history={history} />}
-            <div id={LEFT_PORTAL_ID} className={classes.portal} />
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
+      {displayAppBar && (
+        <ElevationScroll>
+          <AppBar
+            position="fixed"
+            color="inherit"
+            elevation={0}
+            className={clsx(classes.appBar, { [classes.appBarShift]: shift })}
+          >
+            <Toolbar>
+              {burger && <ButtonBurger {...burgerProps} onClick={handleBurgerClick} />}
+              {(goBack && !burger) && <ButtonGoBack history={history} />}
+              <div id={LEFT_PORTAL_ID} className={classes.portal} />
+              <div className={classes.search}>
+                <div className={classes.searchIcon}>
+                  <SearchIcon />
+                </div>
+                <InputBase
+                  placeholder={t('nav:search.placeholder')}
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                  }}
+                  inputProps={{ 'aria-label': t('nav:search.label') }}
+                />
               </div>
-              <InputBase
-                placeholder={t('nav:search.placeholder')}
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-                inputProps={{ 'aria-label': t('nav:search.label') }}
-              />
-            </div>
-            <div id={RIGHT_PORTAL_ID} />
-            {buttonConnect && <ButtonConnect className={classes.buttonConnect} />}
-          </Toolbar>
-        </AppBar>
-      </ElevationScroll>
-      <main className={classes.content}>
+              <div id={RIGHT_PORTAL_ID} />
+              {buttonConnect && <ButtonConnect className={classes.buttonConnect} />}
+              {pausePluginButton && <PausePluginButton />}
+            </Toolbar>
+          </AppBar>
+        </ElevationScroll>
+      )}
+      <main className={clsx(classes.content, { hasAppbar: displayAppBar })}>
         {children}
       </main>
     </div>
@@ -175,19 +185,23 @@ Layout.propTypes = {
     onClick: PropTypes.func,
   }),
   dispatch: PropTypes.func.isRequired,
+  displayAppBar: PropTypes.bool,
   goBack: PropTypes.bool,
   shift: PropTypes.bool,
   children: PropTypes.oneOfType([PropTypes.elementType, PropTypes.object]).isRequired,
   history: PropTypes.shape({ goBack: PropTypes.func, push: PropTypes.func }).isRequired,
   t: PropTypes.func.isRequired,
+  pausePluginButton: PropTypes.bool,
 };
 
 Layout.defaultProps = {
   burger: false,
   burgerProps: { className: '' },
   buttonConnect: true,
+  displayAppBar: true,
   goBack: true,
   shift: false,
+  pausePluginButton: window.env.PLUGIN === true,
 };
 
 export default connect(

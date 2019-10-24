@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import { isDesktopDevice } from 'helpers/devices';
-
 import API from '@misakey/api';
 import ApplicationSchema from 'store/schemas/Application';
 
@@ -31,8 +29,6 @@ const APPLICATION_CONTRIBUTION_ENDPOINT = {
   auth: true,
 };
 
-const useScrollButtons = () => useMemo(() => window.env.PLUGIN && isDesktopDevice(), []);
-
 function ApplicationInfo({
   auth, entity, isAuthenticated,
   isFetching, match, t,
@@ -41,7 +37,6 @@ function ApplicationInfo({
   const [userContributionType, setUserContributionType] = useState('');
 
   const { enqueueSnackbar } = useSnackbar();
-  const displayScrollButtons = useScrollButtons();
 
   const closeUserContributionDialog = useCallback(() => {
     setOpenUserContributionDialog(false);
@@ -94,7 +89,7 @@ function ApplicationInfo({
   );
 
   return (
-    <Container maxWidth="md">
+    <Container className="container" maxWidth="md">
       <UserContributionDialog
         open={isOpenUserContributionDialog}
         onClose={closeUserContributionDialog}
@@ -112,10 +107,7 @@ function ApplicationInfo({
         onContributionDpoEmailClick={onContributionDpoEmailClick}
       />
       {!entity.unknown && (
-        <ApplicationNavTabs
-          mainDomain={entity.mainDomain}
-          scrollButtons={displayScrollButtons ? 'on' : 'auto'}
-        />
+        <ApplicationNavTabs mainDomain={entity.mainDomain} />
       )}
 
       <Switch>

@@ -1,13 +1,20 @@
 import isNil from '@misakey/helpers/isNil';
 import get from '@misakey/helpers/get';
 import log from '@misakey/helpers/log';
+import isString from '@misakey/helpers/isString';
+import isEmpty from '@misakey/helpers/isEmpty';
+import unionBy from '@misakey/helpers/unionBy';
+import groupBy from '@misakey/helpers/groupBy';
+import propOr from '@misakey/helpers/propOr';
 import parser from 'ua-parser-js';
 import { parse } from 'tldts';
 import { setItem, getItem } from './storage';
-import { getCurrentTab } from './utils';
+import { getCurrentTab, capitalize } from './utils';
 import { APP_URL } from './config';
 
-const DEFAULT_CATEGORY = 'other';
+// HELPERS
+const DEFAULT_PURPOSE = 'other';
+const getMainPurpose = propOr(DEFAULT_PURPOSE, 'mainPurpose');
 
 /**
  * Structure which holds parameters to be used throughout the code, a.k.a. global values.
@@ -51,10 +58,12 @@ class Globals {
   }
 
   initTabInfos(tabId) {
-    this.tabsInfos.set(tabId, {});
+    this.tabsInfos.set(tabId, []);
+    this.counter.delete(tabId);
   }
 
   getTabInfos(tabId) {
+    if (!tabId) { return []; }
     if (!this.tabsInfos.has(tabId)) {
       this.initTabInfos(tabId);
     }
@@ -70,102 +79,97 @@ class Globals {
   /* Helper function used to both reset, increment and show the current value of
   * the blocked requests counter for a given tabId.
   */
-  updateBlockedCounter(tabId, { reset = false, incr = false } = {}) {
+  updateActiveTrackerCounter(tabId, { reset = false, incr = false } = {}) {
     if (tabId === -1) { return; }
 
     const newValue = (reset === true ? 0 : this.counter.get(tabId) || 0) + (incr === true ? 1 : 0);
     this.counter.set(tabId, newValue);
 
-    getCurrentTab().then((tab) => {
-      if (tab && tab.id === tabId) {
+    getCurrentTab().then(({ id }) => {
+      if (tabId === id) {
         try {
           browser.browserAction.setBadgeText({
             text: `${this.counter.get(tabId) || 0}`,
           });
-        } catch (error) { log('Non supported operation'); }
+        } catch (error) { log('Operation non supported on this device.'); }
       }
     });
   }
 
   /* Helper function used to set in tabInfos the different request detected and if it
   * has been blocked or not according to whitelist or paused state.
-  * It also retrieved the known app and category associated to the rule that has blocked the request
+  * It also retrieved the known app and purpose associated to the rule that has blocked the request
   */
-  updateBlockingInfos({ tabId, url, type }, rule, blocked = false) {
-    // Reset tab infos in case of reload of url changes
-    if (type === 'main_frame') {
-      this.initTabInfos(tabId);
-    }
+  updateBlockingInfos({ tabId, url }, rule, blocked = false) {
+    const { domain, domainWithoutSuffix } = parse(url);
 
-    this.updateBlockedCounter(tabId, {
-      incr: blocked,
-      reset: type === 'main_frame',
-    });
+    const newTabInfos = [...this.getTabInfos(tabId)];
+    const data = { blocked, url };
 
-    if (!rule) { return; } // It was a request with no rule associated in our db
+    const mainPurpose = getMainPurpose(rule);
+    const name = capitalize(domainWithoutSuffix);
+    const app = { id: Date.now(), name, domain, mainPurpose };
 
-    const { hostname, domainWithoutSuffix } = parse(url);
+    const alreadyDetectedIndex = newTabInfos.findIndex((a) => a.domain === domain);
 
-    const tabInfos = this.getTabInfos(tabId);
-    const data = { blocked, count: 1, url };
+    // Group scripts detected by mainDomain
+    if (alreadyDetectedIndex > -1) {
+      const alreadyDetected = { ...newTabInfos[alreadyDetectedIndex] };
 
-    const category = (rule && rule.category) || DEFAULT_CATEGORY;
-    const app = {
-      id: Date.now(),
-      name: `${domainWithoutSuffix.charAt(0).toUpperCase()}${domainWithoutSuffix.slice(1)}`,
-      domain: hostname,
-      category,
-    };
-
-    if (!tabInfos[category]) {
-      tabInfos[category] = [];
-    }
-
-    const position = tabInfos[category].findIndex((a) => a.domain === hostname);
-
-    if (position > -1) {
-      const alreadyDetected = tabInfos[category][position].detected
-        .findIndex((d) => d.url === data.url);
-      if (alreadyDetected > -1) {
-        tabInfos[category][position].detected[alreadyDetected].count += 1;
-      } else {
-        tabInfos[category][position].detected.push(data);
+      // If the previous script detected has no known category but this one have one
+      // we replace the category associated to the tracker
+      if (mainPurpose !== DEFAULT_PURPOSE && alreadyDetected.mainPurpose === DEFAULT_PURPOSE) {
+        alreadyDetected.mainPurpose = mainPurpose;
+        newTabInfos[alreadyDetectedIndex] = alreadyDetected;
+        this.tabsInfos.set(tabId, newTabInfos);
+        return;
       }
-    } else {
-      tabInfos[category].push({ ...app, detected: [data] });
+      // The detected script doesn't bring any new information about the app
+      if (mainPurpose === DEFAULT_PURPOSE || mainPurpose === alreadyDetected.mainPurpose) {
+        return;
+      }
     }
 
-    this.tabsInfos.set(tabId, tabInfos);
+    newTabInfos.push({ ...app, detected: [data] });
+    this.tabsInfos.set(tabId, newTabInfos);
+    this.updateActiveTrackerCounter(tabId, { incr: !blocked });
   }
 
   getTabInfosForPopup(tabId) {
-    return Object.entries(this.getTabInfos(tabId))
-      .map(([category, apps]) => ({ name: category, apps }));
+    return Object.entries(groupBy(this.getTabInfos(tabId), 'mainPurpose'))
+      .map(([mainPurpose, apps]) => ({ name: mainPurpose, apps }));
+  }
+
+  async convertDetectedTrackersToApps() {
+    return getCurrentTab()
+      .then(({ id }) => (this.getTabInfos(id).map((app) => ({
+        name: app.name,
+        id: app.domain,
+        mainDomain: app.domain,
+        mainPurpose: app.mainPurpose,
+        shortDesc: app.domain,
+      }))));
+  }
+
+  async getAllThirdPartiesApps() {
+    if (!this.apps) {
+      this.apps = (await (await fetch(APP_URL)).json()).apps;
+    }
+    const whitelistedApps = (this.whitelist.apps || []).map((domain) => {
+      const { domainWithoutSuffix: name } = parse(domain);
+      return { id: domain, name: capitalize(name), mainDomain: domain, shortDesc: domain };
+    });
+    return unionBy(whitelistedApps, this.apps, 'id');
   }
 
   async getThirdPartyApps(search, mainPurpose, getAllThirdParties = false, limit = 100) {
-    let appsFiltered = [];
-    if (getAllThirdParties) {
-      if (!this.apps) {
-        this.apps = (await (await fetch(APP_URL)).json()).apps;
-      }
-      appsFiltered = this.apps.map((app) => ({ ...app, id: app.mainDomain }));
-    } else {
-      appsFiltered = await getCurrentTab()
-        .then((tab) => Object.values(this.getTabInfos(tab.id)).reduce((total, detectedApps) => [
-          ...total,
-          ...detectedApps.map((app) => ({
-            name: app.name,
-            id: app.domain,
-            mainDomain: app.domain,
-            mainPurpose: app.category,
-            shortDesc: app.domain,
-          })),
-        ], []));
-    }
+    let appsFiltered = await (getAllThirdParties
+      ? this.getAllThirdPartiesApps()
+      : this.convertDetectedTrackersToApps());
 
-    if (search) {
-      appsFiltered = appsFiltered.filter((app) => (app.mainDomain.includes(search)));
+    if (isString(search) && !isEmpty(search)) {
+      appsFiltered = appsFiltered
+        .filter((app) => (app.mainDomain.toLowerCase().includes(search.toLowerCase())));
     }
 
     if (mainPurpose) {
@@ -206,17 +210,17 @@ class Globals {
 
   requestIsWhitelisted({ url, tabId, initiator, originUrl }, rule) {
     const initiatorUrl = this.tabsInitiator.get(tabId) || originUrl || initiator;
-    const { hostname: targetDomain } = parse(url);
+    const { domain: targetDomain } = parse(url);
     const { domain: initiatorDomain } = parse(initiatorUrl);
-    const category = (rule && rule.category) || DEFAULT_CATEGORY;
+    const mainPurpose = getMainPurpose(rule);
 
     const globalWhitelist = this.whitelist.apps || [];
-    const domainWhitelist = get(this.whitelist, ['categories', initiatorDomain], []);
+    const domainWhitelist = get(this.whitelist, ['mainPurposes', initiatorDomain], []);
 
-    const categoryIsWhitelisted = domainWhitelist.includes(category);
+    const purposeIsWhitelisted = domainWhitelist.includes(mainPurpose);
     const targetDomainIsWhitelisted = globalWhitelist.includes(targetDomain);
 
-    return categoryIsWhitelisted && targetDomainIsWhitelisted;
+    return purposeIsWhitelisted && targetDomainIsWhitelisted;
   }
 }
 

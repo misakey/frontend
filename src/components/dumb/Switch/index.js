@@ -46,8 +46,6 @@ const useStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.grey[500]}`,
     borderRadius: 16 / 2,
     opacity: 1,
-    width: '90%',
-    height: '90%',
     backgroundColor: theme.palette.common.white,
   },
   checked: {

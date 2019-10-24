@@ -1,0 +1,21 @@
+version: '2'
+services:
+  plugin:
+    build:
+      context: ./
+      dockerfile: plugin/docker/Dockerfile.dev
+    volumes:
+      - ./plugin/src/:/app/src
+      - ./plugin/package.json:/app/package.json
+      - ./plugin/yarn.lock:/app/yarn.lock
+      - ./build_plugin_dev:/app/build/
+
+  plugin-popup:
+    build:
+      context: ./
+      dockerfile: plugin/docker/Dockerfile.popup.dev
+    volumes:
+      - ./src/:/app/src
+      - ./package.json:/app/package.json
+      - ./yarn.lock:/app/yarn.lock
+      - ./build_plugin_dev:/app/build/

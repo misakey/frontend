@@ -1,3 +1,22 @@
-.applicationAvatar {
-  margin-left: 1rem
+$search-bar-height: 52px;
+$purpose-chip-filters: 38px;
+
+.trackerList {
+  height: calc(100vh - #{$search-bar-height} - #{$purpose-chip-filters});
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  &.prevent-scroll {
+    overflow: hidden;
+  }
+}
+
+.purposeChipFilters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  * {
+    margin: 7px 4px;
+  }
 }

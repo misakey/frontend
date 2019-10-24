@@ -3,41 +3,66 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import { withTranslation } from 'react-i18next';
+import { Trans, withTranslation } from 'react-i18next';
+import { makeStyles } from '@material-ui/core/styles';
+import { denormalize } from 'normalizr';
 
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import { Typography } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import Chip from '@material-ui/core/Chip';
 
 import isEmpty from '@misakey/helpers/isEmpty';
 import getSearchParams from '@misakey/helpers/getSearchParams';
-import orderBy from '@misakey/helpers/orderBy';
+import groupBy from '@misakey/helpers/groupBy';
 
 import ApplicationSchema from 'store/schemas/Application';
 import TrackersWhitelistSchema from 'store/schemas/TrackersWhitelist';
-import { setWhitelist, setApps } from 'store/actions/screens/thirdparty';
+import { setWhitelist, setApps, toggleWhitelistForApp } from 'store/actions/screens/thirdparty';
+import { layoutAppbarHide, layoutAppbarShow } from 'store/actions/Layout';
 
-import ApplicationList from 'components/dumb/Application/List';
+import TrackerList from 'components/dumb/Application/ThirdParty/Setup/List';
+
 import SplashScreen from 'components/dumb/SplashScreen';
 import ThirdPartySearchBar from 'components/dumb/Application/ThirdParty/Setup/SearchBar';
 import Switch from 'components/dumb/Switch';
 
 import { sendMessage } from 'background';
 import { UPDATE_WHITELIST, GET_APPS } from 'background/messages';
-import 'components/screens/Citizen/Application/Info/ThirdParty/Setup/Application.scss';
 import './Setup.scss';
+
+// STYLES
+const useStyles = makeStyles((theme) => ({
+  labelSmall: {
+    padding: '5px',
+  },
+  bottomAction: {
+    padding: '1rem',
+    textAlign: 'center',
+  },
+  button: {
+    textTransform: 'none',
+  },
+  typography: {
+    color: theme.palette.grey[400],
+  },
+}));
 
 // HELPERS
 
-const useFormatApps = (whitelist) => useCallback((apps, sort = false) => {
-  const formattedApps = apps.map((app) => ({
+const useFormatApps = (whitelist) => useCallback(
+  (apps) => apps.map((app) => ({
     ...app,
     whitelisted: (whitelist.apps || []).includes(app.mainDomain),
-  }));
-  return sort ? orderBy(formattedApps, ['whitelisted', 'name'], ['desc', 'asc']) : formattedApps;
-}, [whitelist]);
+  })),
+  [whitelist],
+);
 
-const useUpdateWhitelist = (dispatchWhitelist, whitelist) => useCallback((action, domain) => {
+const useUpdateWhitelist = (
+  dispatchWhitelist,
+  dispatchToggleWhitelistForApp,
+  whitelist,
+) => useCallback((action, domain, listKey) => {
   const appsWhitelist = whitelist.apps || [];
   const newWhitelist = {
     ...whitelist,
@@ -46,8 +71,9 @@ const useUpdateWhitelist = (dispatchWhitelist, whitelist) => useCallback((action
 
   sendMessage(UPDATE_WHITELIST, { whitelist: newWhitelist }).then((response) => {
     dispatchWhitelist(response.whitelist);
+    dispatchToggleWhitelistForApp(domain, listKey);
   });
-}, [dispatchWhitelist, whitelist]);
+}, [dispatchWhitelist, dispatchToggleWhitelistForApp, whitelist]);
 
 const useSetParams = (location, history) => useCallback((search, mainPurpose, mainDomain) => {
   const nextParams = new URLSearchParams('');
@@ -69,45 +95,17 @@ const useSetParams = (location, history) => useCallback((search, mainPurpose, ma
   history.replace(nextLocation);
 }, [location, history]);
 
-// COMPONENTS
-
-const useBottomAction = (t, setParams, search, mainPurpose, mainDomain) => useCallback(() => {
-  if (mainPurpose) {
-    return (
-      <Grid container direction="column" justify="center" alignItems="center" spacing={1}>
-        <Typography variant="body2" color="textSecondary">
-          {t(
-            'screens:application.thirdParty.filters.mainPurpose.remove.text',
-            { purpose: t(`screens:application.thirdParty.categories.${mainPurpose}`) },
-          )}
-        </Typography>
-        <Button size="small" variant="contained" color="secondary" onClick={() => { setParams(search, null, mainDomain); }}>
-          {t('screens:application.thirdParty.filters.mainPurpose.remove.button', { purpose: mainPurpose })}
-        </Button>
-      </Grid>
-    );
-  }
-
-  if (mainDomain) {
-    return (
-      <Grid container direction="column" justify="center" alignItems="center" spacing={1}>
-        <Typography variant="body2" color="textSecondary">
-          {t('screens:application.thirdParty.filters.mainDomain.remove.text')}
-        </Typography>
-        <Button size="small" variant="contained" color="secondary" onClick={() => { setParams(search, mainPurpose, null); }}>
-          {t('screens:application.thirdParty.filters.mainDomain.remove.button')}
-        </Button>
-      </Grid>
-    );
-  }
-  return null;
-}, [t, setParams, search, mainPurpose, mainDomain]);
 
 function ThirdPartySetup({
-  className,
+  appBarIsDisplayed,
+  entity,
   dispatchApps,
   dispatchWhitelist,
-  apps,
+  dispatchToggleWhitelistForApp,
+  dispatchLayoutAppbarShow,
+  dispatchLayoutAppbarHide,
+  whitelistedApps,
+  blockedApps,
   location,
   history,
   whitelist,
@@ -117,6 +115,7 @@ function ThirdPartySetup({
   const { search, mainPurpose, mainDomain } = getSearchParams(location.search);
   const { enqueueSnackbar } = useSnackbar();
   const formatApps = useFormatApps(whitelist);
+  const classes = useStyles();
 
   const getData = (s = search) => {
     if (!isFetching) {
@@ -128,7 +127,8 @@ function ThirdPartySetup({
         getAllThirdParties: isEmpty(mainDomain),
       })
         .then((response) => {
-          dispatchApps(formatApps(response.apps, true) || []);
+          const { whitelisted, blocked } = groupBy(formatApps(response.apps), (app) => (app.whitelisted ? 'whitelisted' : 'blocked'));
+          dispatchApps({ whitelisted: whitelisted || [], blocked: blocked || [] });
           setFetching(false);
         })
         .catch(() => {
@@ -141,58 +141,174 @@ function ThirdPartySetup({
     }
   };
 
+  function hideAppbar() {
+    if (appBarIsDisplayed) {
+      dispatchLayoutAppbarHide();
+      return () => { dispatchLayoutAppbarShow(); };
+    }
+    return null;
+  }
+
   useEffect(getData, [search, mainPurpose, mainDomain]);
+  useEffect(hideAppbar, []);
 
   const setParams = useSetParams(location, history);
-  const updateWhitelist = useUpdateWhitelist(dispatchWhitelist, whitelist);
-  const formattedApps = formatApps(apps, false);
-  const bottomAction = useBottomAction(t, setParams, search, mainPurpose, mainDomain);
+  const updateWhitelist = useUpdateWhitelist(
+    dispatchWhitelist,
+    dispatchToggleWhitelistForApp,
+    whitelist,
+  );
 
   return (
-    <div className={clsx('Application', className)}>
-      <div className="main">
-        <ThirdPartySearchBar
-          location={location}
-          onSearch={(s) => { setParams(s, mainPurpose, mainDomain); }}
-          onFiltersChange={(purpose) => { setParams(search, purpose, mainDomain); }}
-          onFetching={(value) => setFetching(value)}
-        />
-        <nav className={clsx('no-app-bar', { 'prevent-scroll': isFetching })}>
-          {(
-            <ApplicationList
-              applications={formattedApps}
-              search={location.search}
-              linkTo={null}
-              bottomAction={mainPurpose || mainDomain ? bottomAction : null}
-              secondaryAction={(application) => (
-                <Switch
-                  checked={application.whitelisted}
-                  onChange={
-                    () => updateWhitelist(
-                      application.whitelisted ? 'remove' : 'add',
-                      application.mainDomain,
-                      whitelist,
-                      dispatchWhitelist,
-                    )
-                  }
-                  value={application.id}
-                />
-              )}
-            />
-          )}
-
-          {isFetching && <SplashScreen />}
-        </nav>
+    <div className="main">
+      <ThirdPartySearchBar
+        history={history}
+        location={location}
+        entity={isEmpty(entity) ? null : entity}
+        onSearch={(s) => { setParams(s, mainPurpose, mainDomain); }}
+        onFiltersChange={(purpose) => { setParams(search, purpose, mainDomain); }}
+        onFetching={(value) => setFetching(value)}
+      />
+      <div className="purposeChipFilters">
+        {['advertising', 'analytics', 'social_interaction', 'personalization', 'other'].map((purpose) => (
+          <Chip
+            key={purpose}
+            classes={{ labelSmall: classes.labelSmall }}
+            label={t(`screens:application.thirdParty.purposes.${purpose}`)}
+            color={mainPurpose === purpose ? 'secondary' : 'primary'}
+            onClick={() => (mainPurpose === purpose
+              ? setParams(search, null, mainDomain)
+              : setParams(search, purpose, mainDomain))}
+            size="small"
+            variant="outlined"
+          />
+        ))}
       </div>
+
+      <nav className={clsx('trackerList', { 'prevent-scroll': isFetching })}>
+        {!isFetching && (
+          <>
+            {whitelistedApps && whitelistedApps.length > 0 && (
+              <TrackerList
+                title={t('screens:application.thirdParty.categories.whitelisted')}
+                entities={whitelistedApps}
+                secondaryAction={(application) => (
+                  <Switch
+                    checked={application.whitelisted}
+                    onChange={
+                      () => updateWhitelist(
+                        application.whitelisted ? 'remove' : 'add',
+                        application.mainDomain,
+                        'whitelisted',
+                      )
+                    }
+                    value={application.id}
+                  />
+                )}
+              />
+            )}
+
+            {blockedApps && blockedApps.length > 0 && (
+              <TrackerList
+                title={t('screens:application.thirdParty.categories.blocked')}
+                entities={blockedApps}
+                secondaryAction={(application) => (
+                  <Switch
+                    checked={application.whitelisted}
+                    onChange={
+                      () => updateWhitelist(
+                        application.whitelisted ? 'remove' : 'add',
+                        application.mainDomain,
+                        'blocked',
+                      )
+                    }
+                    value={application.id}
+                  />
+                )}
+              />
+            )}
+            {mainPurpose && (
+              <Grid className={classes.bottomAction} container direction="column" justify="center" alignItems="center" spacing={2}>
+                <Grid item>
+                  <Typography variant="body2" className={classes.typography}>
+                    <Trans i18nKey="screens:application.thirdParty.filters.mainPurpose.remove.text">
+                      La liste des services tiers utilisés par
+                      <b>{{ mainDomain: entity.name }}</b>
+                      pour la catégorie
+                      <b>{{ mainPurpose: t(`screens:application.thirdParty.purposes.${mainPurpose}`) }}</b>
+                      est terminée
+                    </Trans>
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Button
+                    className={classes.button}
+                    size="small"
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => { setParams(search, null, mainDomain); }}
+                  >
+                    {t('screens:application.thirdParty.filters.mainPurpose.remove.button')}
+                  </Button>
+                </Grid>
+              </Grid>
+            )}
+
+            {!mainPurpose && mainDomain && (
+              <Grid className={classes.bottomAction} container direction="column" justify="center" alignItems="center" spacing={2}>
+                <Grid item>
+                  <Typography variant="body2" className={classes.typography}>
+                    <Trans i18nKey="screens:application.thirdParty.filters.mainDomain.remove.text">
+                      La liste des services tiers utilisés par
+                      <b>{{ mainDomain: entity.name }}</b>
+                      est terminée
+                    </Trans>
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Button
+                    className={classes.button}
+                    size="small"
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => { setParams(search, mainPurpose, null); }}
+                  >
+                    {t('screens:application.thirdParty.filters.mainDomain.remove.button')}
+                  </Button>
+                </Grid>
+              </Grid>
+            )}
+
+            {!mainPurpose && !mainDomain && (
+              <Grid className={classes.bottomAction} container direction="column" justify="center" alignItems="center" spacing={2}>
+                <Typography variant="body2" className={classes.typography}>
+                  <Trans i18nKey="screens:application.thirdParty.filters.empty">
+                    La liste des services tiers connus par
+                    <b>Misakey</b>
+                    est terminée
+                  </Trans>
+                </Typography>
+              </Grid>
+            )}
+          </>
+        )}
+
+        {isFetching && <SplashScreen />}
+      </nav>
     </div>
   );
 }
 
 ThirdPartySetup.propTypes = {
-  className: PropTypes.string,
+  appBarIsDisplayed: PropTypes.bool.isRequired,
+  entity: PropTypes.object,
   dispatchApps: PropTypes.func.isRequired,
   dispatchWhitelist: PropTypes.func.isRequired,
-  apps: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
+  dispatchToggleWhitelistForApp: PropTypes.func.isRequired,
+  dispatchLayoutAppbarShow: PropTypes.func.isRequired,
+  dispatchLayoutAppbarHide: PropTypes.func.isRequired,
+  whitelistedApps: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
+  blockedApps: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
   history: PropTypes.object.isRequired,
   location: PropTypes.shape({ search: PropTypes.string, pathname: PropTypes.string }).isRequired,
   whitelist: PropTypes.shape(TrackersWhitelistSchema).isRequired,
@@ -200,24 +316,35 @@ ThirdPartySetup.propTypes = {
 };
 
 ThirdPartySetup.defaultProps = {
-  className: '',
-  apps: [],
+  whitelistedApps: [],
+  blockedApps: [],
+  entity: {},
 };
 
 // CONNECT
-const mapStateToProps = (state) => ({
-  apps: state.screens.thirdparty.apps,
-  whitelist: state.screens.thirdparty.whitelist,
-});
-
+const mapStateToProps = (state, ownProps) => {
+  const params = getSearchParams(ownProps.location.search);
+  return {
+    whitelistedApps: state.screens.thirdparty.apps.whitelisted,
+    blockedApps: state.screens.thirdparty.apps.blocked,
+    whitelist: state.screens.thirdparty.whitelist,
+    appBarIsDisplayed: state.Layout.displayAppBar,
+    entity: denormalize(
+      params.mainDomain,
+      ApplicationSchema.entity,
+      state.entities,
+    ),
+  };
+};
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchApps: (data) => {
-    dispatch(setApps(data));
+  dispatchApps: (data) => dispatch(setApps(data)),
+  dispatchToggleWhitelistForApp: (id, listKey) => {
+    dispatch(toggleWhitelistForApp(id, listKey));
   },
-  dispatchWhitelist: (data) => {
-    dispatch(setWhitelist(data));
-  },
+  dispatchWhitelist: (data) => dispatch(setWhitelist(data)),
+  dispatchLayoutAppbarHide: () => dispatch(layoutAppbarHide()),
+  dispatchLayoutAppbarShow: () => dispatch(layoutAppbarShow()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['common', 'screens'])(ThirdPartySetup));

@@ -1,6 +1,12 @@
 .categoryCard {
+  .content, .list {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
   .list {
     border-top: 1px solid var(--light-grey);
+    
     .text {
       flex: none;
 
@@ -11,7 +17,6 @@
   }
 
   .displayMore {
-    cursor: pointer;
     margin-left: auto;
   }
 }
