@@ -62,7 +62,14 @@ const withApplication = (Component) => {
 
     useEffect(startFetching, [mainDomain]);
 
-    return <Component {...props} error={error} isFetching={isFetching} mainDomain={mainDomain} />;
+    return (
+      <Component
+        {...props}
+        error={error}
+        isFetching={shouldFetch || isFetching === true}
+        mainDomain={mainDomain}
+      />
+    );
   };
 
   ComponentWithApplication.propTypes = {
