@@ -19,7 +19,7 @@ import groupBy from '@misakey/helpers/groupBy';
 import ApplicationSchema from 'store/schemas/Application';
 import TrackersWhitelistSchema from 'store/schemas/TrackersWhitelist';
 import { setWhitelist, setApps, toggleWhitelistForApp } from 'store/actions/screens/thirdparty';
-import { layoutAppbarHide, layoutAppbarShow } from 'store/actions/Layout';
+import { layoutAppbarHide, layoutAppbarShow, layoutWarningDrawerShow } from 'store/actions/Layout';
 
 import TrackerList from 'components/dumb/Application/ThirdParty/Setup/List';
 
@@ -61,6 +61,7 @@ const useFormatApps = (whitelist) => useCallback(
 const useUpdateWhitelist = (
   dispatchWhitelist,
   dispatchToggleWhitelistForApp,
+  dispatchShowWarning,
   whitelist,
 ) => useCallback((action, domain, listKey) => {
   const appsWhitelist = whitelist.apps || [];
@@ -72,6 +73,7 @@ const useUpdateWhitelist = (
   sendMessage(UPDATE_WHITELIST, { whitelist: newWhitelist }).then((response) => {
     dispatchWhitelist(response.whitelist);
     dispatchToggleWhitelistForApp(domain, listKey);
+    dispatchShowWarning();
   });
 }, [dispatchWhitelist, dispatchToggleWhitelistForApp, whitelist]);
 
@@ -104,6 +106,7 @@ function ThirdPartySetup({
   dispatchToggleWhitelistForApp,
   dispatchLayoutAppbarShow,
   dispatchLayoutAppbarHide,
+  dispatchShowWarning,
   whitelistedApps,
   blockedApps,
   location,
@@ -156,6 +159,7 @@ function ThirdPartySetup({
   const updateWhitelist = useUpdateWhitelist(
     dispatchWhitelist,
     dispatchToggleWhitelistForApp,
+    dispatchShowWarning,
     whitelist,
   );
 
@@ -307,6 +311,7 @@ ThirdPartySetup.propTypes = {
   dispatchToggleWhitelistForApp: PropTypes.func.isRequired,
   dispatchLayoutAppbarShow: PropTypes.func.isRequired,
   dispatchLayoutAppbarHide: PropTypes.func.isRequired,
+  dispatchShowWarning: PropTypes.func.isRequired,
   whitelistedApps: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
   blockedApps: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
   history: PropTypes.object.isRequired,
@@ -345,6 +350,7 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchWhitelist: (data) => dispatch(setWhitelist(data)),
   dispatchLayoutAppbarHide: () => dispatch(layoutAppbarHide()),
   dispatchLayoutAppbarShow: () => dispatch(layoutAppbarShow()),
+  dispatchShowWarning: () => dispatch(layoutWarningDrawerShow()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['common', 'screens'])(ThirdPartySetup));

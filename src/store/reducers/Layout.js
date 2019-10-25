@@ -22,6 +22,9 @@ import {
   LAYOUT_APP_BAR_SHOW,
   LAYOUT_APP_BAR_HIDE,
   LAYOUT_APP_BAR_TOGGLE,
+
+  LAYOUT_WARNING_DRAWER_SHOW,
+  LAYOUT_WARNING_DRAWER_HIDE,
 } from 'store/actions/Layout';
 
 const initialState = {
@@ -29,6 +32,7 @@ const initialState = {
   burgerProps: { className: '' },
   buttonConnect: true,
   displayAppBar: true,
+  displayWarningDrawer: false,
   goBack: true,
   shift: false,
 };
@@ -93,6 +97,13 @@ function toggleAppBar(state, { toggle }) {
   return { ...state, displayAppBar: toggle ? !!toggle : !state.displayAppBar };
 }
 
+function showWarningDrawer(state) {
+  return { ...state, displayWarningDrawer: true };
+}
+function hideWarningDrawer(state) {
+  return { ...state, displayWarningDrawer: false };
+}
+
 export default createReducer(initialState, {
   [LAYOUT_APP_BAR_SHIFT]: shift,
   [LAYOUT_APP_BAR_UNSHIFT]: unShift,
@@ -114,4 +125,7 @@ export default createReducer(initialState, {
   [LAYOUT_APP_BAR_SHOW]: showAppBar,
   [LAYOUT_APP_BAR_HIDE]: hideAppBar,
   [LAYOUT_APP_BAR_TOGGLE]: toggleAppBar,
+
+  [LAYOUT_WARNING_DRAWER_SHOW]: showWarningDrawer,
+  [LAYOUT_WARNING_DRAWER_HIDE]: hideWarningDrawer,
 });

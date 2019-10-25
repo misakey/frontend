@@ -16,6 +16,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import ButtonConnect from 'components/dumb/Button/Connect';
 import PausePluginButton from 'components/smart/PausePluginButton';
+import WarningDrawer from 'components/dumb/PluginWarningDrawer';
 
 import { DRAWER_WIDTH } from 'components/screens/Admin/Service/Drawer';
 import ButtonGoBack from '@misakey/ui/Button/GoBack';
@@ -123,6 +124,7 @@ function Layout({
   children,
   dispatch,
   displayAppBar,
+  displayWarningDrawer,
   goBack,
   history,
   pausePluginButton,
@@ -172,6 +174,7 @@ function Layout({
       )}
       <main className={clsx(classes.content, { hasAppbar: displayAppBar })}>
         {children}
+        {displayWarningDrawer && (<WarningDrawer />)}
       </main>
     </div>
   );
@@ -186,6 +189,7 @@ Layout.propTypes = {
   }),
   dispatch: PropTypes.func.isRequired,
   displayAppBar: PropTypes.bool,
+  displayWarningDrawer: PropTypes.bool,
   goBack: PropTypes.bool,
   shift: PropTypes.bool,
   children: PropTypes.oneOfType([PropTypes.elementType, PropTypes.object]).isRequired,
@@ -199,6 +203,7 @@ Layout.defaultProps = {
   burgerProps: { className: '' },
   buttonConnect: true,
   displayAppBar: true,
+  displayWarningDrawer: false,
   goBack: true,
   shift: false,
   pausePluginButton: window.env.PLUGIN === true,

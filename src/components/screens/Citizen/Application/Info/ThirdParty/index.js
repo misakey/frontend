@@ -9,6 +9,8 @@ import get from '@misakey/helpers/get';
 import set from '@misakey/helpers/set';
 
 import { setDetectedTrackers, setWhitelist } from 'store/actions/screens/thirdparty';
+import { layoutWarningDrawerShow } from 'store/actions/Layout';
+
 import TrackersSchema from 'store/schemas/Trackers';
 import TrackersWhitelistSchema from 'store/schemas/TrackersWhitelist';
 
@@ -66,6 +68,7 @@ const useFormatDetectedTrackers = (
 
 const useUpdateWhitelist = (
   dispatchWhitelist,
+  dispatchShowWarning,
   whitelist,
   mainDomain,
 ) => useCallback((action, purpose) => {
@@ -76,8 +79,9 @@ const useUpdateWhitelist = (
 
   sendMessage(UPDATE_WHITELIST, { whitelist: newWhitelist }).then((response) => {
     dispatchWhitelist(response.whitelist);
+    dispatchShowWarning();
   });
-}, [dispatchWhitelist, whitelist, mainDomain]);
+}, [dispatchWhitelist, dispatchShowWarning, whitelist, mainDomain]);
 
 const useListenForBackgroundCb = (
   formatDetectedTrackers,
@@ -92,6 +96,7 @@ const useListenForBackgroundCb = (
 function ThirdPartyBlock({
   dispatchDetectedTrackers,
   dispatchWhitelist,
+  dispatchShowWarning,
   detectedTrackers,
   entity,
   history,
@@ -131,7 +136,12 @@ function ThirdPartyBlock({
     return () => { stopListenerForBackground(listenForBackgroundCb); };
   }
 
-  const updateWhitelist = useUpdateWhitelist(dispatchWhitelist, whitelist, mainDomain);
+  const updateWhitelist = useUpdateWhitelist(
+    dispatchWhitelist,
+    dispatchShowWarning,
+    whitelist,
+    mainDomain,
+  );
 
   useEffect(getData, []);
 
@@ -198,6 +208,7 @@ ThirdPartyBlock.propTypes = {
   whitelist: PropTypes.shape(TrackersWhitelistSchema).isRequired,
   dispatchWhitelist: PropTypes.func.isRequired,
   dispatchDetectedTrackers: PropTypes.func.isRequired,
+  dispatchShowWarning: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
 };
@@ -214,12 +225,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchWhitelist: (data) => {
-    dispatch(setWhitelist(data));
-  },
-  dispatchDetectedTrackers: (data) => {
-    dispatch(setDetectedTrackers(data));
-  },
+  dispatchWhitelist: (data) => dispatch(setWhitelist(data)),
+  dispatchDetectedTrackers: (data) => dispatch(setDetectedTrackers(data)),
+  dispatchShowWarning: () => dispatch(layoutWarningDrawerShow()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['screens'])(ThirdPartyBlock));

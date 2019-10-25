@@ -81,3 +81,14 @@ export const layoutAppbarToggle = (toggle) => ({
   type: LAYOUT_APP_BAR_TOGGLE,
   toggle,
 });
+
+
+export const LAYOUT_WARNING_DRAWER_SHOW = Symbol('LAYOUT_WARNING_DRAWER_SHOW');
+export const LAYOUT_WARNING_DRAWER_HIDE = Symbol('LAYOUT_WARNING_DRAWER_HIDE');
+
+export const layoutWarningDrawerShow = () => ({
+  type: LAYOUT_WARNING_DRAWER_SHOW,
+});
+export const layoutWarningDrawerHide = () => ({
+  type: LAYOUT_WARNING_DRAWER_HIDE,
+});

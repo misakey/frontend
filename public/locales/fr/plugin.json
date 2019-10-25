@@ -13,5 +13,6 @@
     "title": "Reprendre",
     "description": "Blocage stoppé",
     "plannedResume": "Reprise prévue le {{planned}}"
-  }
+  },
+  "refresh_warning": "Pour que les modifications que vous avez effectuées soient prises en compte, vous devez recharger l'onglet du navigateur"
 }

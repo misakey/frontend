@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import className from 'clsx';
 
 import TrackersSchema from 'store/schemas/Trackers';
+import every from '@misakey/helpers/every';
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -17,6 +18,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
+
 import Switch from 'components/dumb/Switch';
 import ApplicationImg from 'components/dumb/Application/Img';
 
@@ -45,6 +47,9 @@ const useStyles = makeStyles((theme) => ({
     alignSelf: 'unset',
   },
 }));
+
+// HELPERS
+const appHasBeenBlocked = (detected) => every(detected, 'blocked');
 
 // COMPONENTS
 function ThirdPartyBlockPurpose({
@@ -77,7 +82,7 @@ function ThirdPartyBlockPurpose({
         <List className="list" component="div" aria-labelledby="nested-list-apps">
           {
             apps.slice(0, MAX_TO_DISPLAY).map((app) => {
-              const { id, name, domain, whitelisted } = app;
+              const { id, name, domain, whitelisted, detected } = app;
               return (
                 <div key={id}>
                   <ListItem dense disableGutters>
@@ -90,7 +95,7 @@ function ThirdPartyBlockPurpose({
                       </ApplicationImg>
                     </ListItemAvatar>
                     <ListItemText
-                      className={className('text', { blocked: (!mainPurpose.whitelisted || !whitelisted) })}
+                      className={className('text', { blocked: appHasBeenBlocked(detected) })}
                       id={`switch-list-label-${id}`}
                       primary={name}
                       secondary={domain}

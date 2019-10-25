@@ -12,7 +12,7 @@ import { parse } from 'tldts';
 
 import { getBlockingResponse, deserializeEngine } from './engine';
 import { getItem } from './storage';
-import { getCurrentTab } from './utils';
+import { getCurrentTab, setBadgeBackgroundColor, setBadgeTextColor, setBadgeText } from './utils';
 import globals from './globals';
 import { ENGINE_URL, DATABASE_URL } from './config';
 
@@ -34,13 +34,11 @@ async function loadAdblocker() {
 }
 
 function handleConfig() {
-  try {
-    browser.browserAction.setBadgeBackgroundColor({ color: common.misakey });
-
-    if (globals.BROWSER_INFOS.name === 'firefox' && globals.BROWSER_INFOS.version >= 63) {
-      browser.browserAction.setBadgeTextColor({ color: common.white });
-    }
-  } catch (err) { log('Operation non supported by device'); }
+  setBadgeBackgroundColor(common.misakey);
+  const { name, version } = globals.BROWSER_INFOS;
+  if (name === 'firefox' && version >= 63) {
+    setBadgeTextColor(common.white);
+  }
 }
 
 function handleTabs() {
@@ -54,9 +52,7 @@ function handleTabs() {
     if (tabId > -1) {
       // Popup extension has a tab = -1 : we don't want
       // to update counter if it's the 'newTab' is the popup
-      browser.browserAction.setBadgeText({
-        text: `${globals.counter.get(tabId) || 0}`,
-      });
+      setBadgeText(`${globals.counter.get(tabId) || 0}`);
     }
   });
 

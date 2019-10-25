@@ -9,7 +9,7 @@ import propOr from '@misakey/helpers/propOr';
 import parser from 'ua-parser-js';
 import { parse } from 'tldts';
 import { setItem, getItem } from './storage';
-import { getCurrentTab, capitalize } from './utils';
+import { getCurrentTab, capitalize, toggleBadgeAndIconOnPaused } from './utils';
 import { APP_URL } from './config';
 
 // HELPERS
@@ -120,6 +120,7 @@ class Globals {
       // we replace the category associated to the tracker
       if (mainPurpose !== DEFAULT_PURPOSE && alreadyDetected.mainPurpose === DEFAULT_PURPOSE) {
         alreadyDetected.mainPurpose = mainPurpose;
+        alreadyDetected.detected.push(data);
         newTabInfos[alreadyDetectedIndex] = alreadyDetected;
         this.tabsInfos.set(tabId, newTabInfos);
         return;
@@ -186,6 +187,8 @@ class Globals {
   async onPauseBlocker(time) {
     this.pausedBlocking = !this.pausedBlocking;
 
+    toggleBadgeAndIconOnPaused(this.pausedBlocking);
+
     if (time) {
       this.pausedBlocking = true;
       this.pausedTime = time;
@@ -195,6 +198,7 @@ class Globals {
       this.pausedTimeout = setTimeout(() => {
         this.pausedBlocking = false;
         this.pausedTime = null;
+        toggleBadgeAndIconOnPaused(this.pausedBlocking);
       }, time - Date.now());
     } else if (this.pausedTime && !this.pausedBlocking) {
       this.pausedTime = null;
