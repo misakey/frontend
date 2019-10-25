@@ -9,6 +9,7 @@ const webpack = require('webpack');
 const config = require('react-scripts/config/webpack.config.js')('development');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const getClientEnvironment = require('react-scripts/config/env');
 /**
  * We also need to update the path where the different files get generated.
@@ -22,18 +23,23 @@ const disableChunks = true;
 // the in-memory development server to serve the content
 const env = getClientEnvironment(process.env.PUBLIC_URL || ''); // eslint-disable-line no-process-env
 
-function copyPublicFolder() {
-  return fs.copy(paths.appPublic, buildPath, {
-    dereference: true,
-    filter: file => file !== paths.appHtml,
-  });
+function modify(buffer, targetBrowser) {
+  // copy-webpack-plugin passes a buffer
+  const manifest = JSON.parse(buffer.toString());
+
+  const targetManifest = (manifest[`${targetBrowser}_specific`])
+    ? { ...manifest.common, ...manifest[`${targetBrowser}_specific`] }
+    : { ...manifest.common };
+
+  return JSON.stringify(targetManifest);
 }
+
 /**
  * We need to update the webpack dev config in order to remove the use of webpack devserver
  */
-config.entry = config.entry.filter(fileName => !fileName.match(/webpackHotDevClient/));
+config.entry = config.entry.filter((fileName) => !fileName.match(/webpackHotDevClient/));
 config.plugins = config.plugins.filter(
-  plugin => !(plugin instanceof webpack.HotModuleReplacementPlugin),
+  (plugin) => !(plugin instanceof webpack.HotModuleReplacementPlugin),
 );
 
 
@@ -71,6 +77,19 @@ config.plugins[htmlPluginIndex] = new HtmlWebpackPlugin({
   template: paths.appHtml,
   filename: 'index.html',
 });
+config.plugins.push(new CopyWebpackPlugin([
+  { from: 'public', ignore: ['index.html', 'env.js', 'manifest.json'] },
+  { from: 'public/env.dev.js', to: 'env.js' },
+  {
+    from: 'public/manifest.json',
+    to: 'manifest.json',
+    transform(content) {
+      const targetBrowser = process.env.TARGET_BROWSER || 'chrome';
+
+      return modify(content, targetBrowser);
+    },
+  },
+]));
 
 console.log('Clear destination folder');
 
@@ -109,5 +128,4 @@ fs.emptyDir(paths.appBuild)
 
       return resolve();
     });
-  }))
-  .then(() => copyPublicFolder());
+  }));

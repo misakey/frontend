@@ -2,7 +2,7 @@ import log from '@misakey/helpers/log';
 
 export async function setItem(key, value) {
   try {
-    await browser.storage.local.set({ [key]: value });
+    await browser.storage.sync.set({ [key]: value });
     return true;
   } catch (error) {
     log(`Fail to set storage value: ${error}`);
@@ -11,5 +11,5 @@ export async function setItem(key, value) {
 }
 
 export async function getItem(key) {
-  return browser.storage.local.get(key);
+  return browser.storage.sync.get(key);
 }

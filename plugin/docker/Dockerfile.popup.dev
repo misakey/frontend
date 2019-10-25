@@ -11,6 +11,7 @@ RUN rm /app/public/manifest.json
 # Replace env.js and index.html with specific files for plugin 
 COPY ./plugin/popup/env.dev.js /app/public/env.js
 COPY ./plugin/popup/index.html /app/public/index.html
+COPY ./plugin/src/manifest.json /app/public/manifest.json
 
 WORKDIR /app
 

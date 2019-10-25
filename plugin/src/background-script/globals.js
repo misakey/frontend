@@ -208,12 +208,7 @@ class Globals {
     return setItem('whitelist', this.whitelist);
   }
 
-  requestIsWhitelisted({ url, tabId, initiator, originUrl }, rule) {
-    const initiatorUrl = this.tabsInitiator.get(tabId) || originUrl || initiator;
-    const { domain: targetDomain } = parse(url);
-    const { domain: initiatorDomain } = parse(initiatorUrl);
-    const mainPurpose = getMainPurpose(rule);
-
+  isRequestWhitelisted(initiatorDomain, targetDomain, mainPurpose) {
     const globalWhitelist = this.whitelist.apps || [];
     const domainWhitelist = get(this.whitelist, ['mainPurposes', initiatorDomain], []);
 
