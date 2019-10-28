@@ -15,6 +15,7 @@ const routes = {
   },
   admin: {
     _: '/admin',
+    services: '/admin/services',
     service: {
       _: '/admin/:mainDomain',
       home: { _: '/admin/:mainDomain' },
@@ -65,6 +66,7 @@ const routes = {
   },
   citizen: {
     _: '/citizen',
+    applications: '/citizen/applications',
     application: {
       _: '/citizen/:mainDomain',
       contact: {

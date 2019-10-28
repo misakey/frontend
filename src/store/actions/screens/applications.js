@@ -2,6 +2,7 @@ import { normalize } from 'normalizr';
 import ApplicationSchema from 'store/schemas/Application';
 import { receiveEntities } from '@misakey/store/actions/entities';
 import isEmpty from '@misakey/helpers/isEmpty';
+import uniq from '@misakey/helpers/uniq';
 import mergeWith from '@misakey/helpers/mergeWith';
 
 export const APPLICATIONS_IDS_ADD = 'APPLICATIONS_IDS_ADD';
@@ -46,7 +47,8 @@ export function applicationsOnFetch(applications) {
     const { result, entities } = normalized;
     return Promise.all([
       dispatch(receiveEntities(entities, mergeEntitiesNoEmpty)),
-      dispatch(applicationsIdsOverride(result)),
+      // could have multiple times same id if source has duplicates => uniq
+      dispatch(applicationsIdsOverride(uniq(result))),
     ]);
   };
 }

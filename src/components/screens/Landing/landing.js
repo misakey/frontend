@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import BusinessIcon from '@material-ui/icons/Business';
-// import routes from 'routes';
+import routes from 'routes';
 import Footer from 'components/dumb/Footer';
 import InputSearchWithButton from 'components/dumb/Input/Search/WithButton';
 
@@ -20,15 +20,14 @@ const getOnSearchChange = (setSearch) => ({ target: { value } }) => {
   setSearch(value);
 };
 
-const getOnSearchSubmit = (/* history */) => (value) => {
+const getOnSearchSubmit = (history) => (value) => {
   const isLengthValid = value.length >= 3 || value.length === 0;
 
   if (isLengthValid) {
-    // @FIXME go to list applications route
-    // history.push({
-    //   pathname: routes.citizen.?,
-    //   search: `?search=${value}`,
-    // });
+    history.push({
+      pathname: routes.citizen.applications,
+      search: `?search=${value}`,
+    });
   }
 };
 

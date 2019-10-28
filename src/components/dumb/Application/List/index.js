@@ -26,6 +26,8 @@ const useStyles = makeStyles((theme) => ({
   listItem: {
     height: '62px',
     overflow: 'hidden',
+    left: ({ maxWidth }) => (maxWidth ? 'auto !important' : undefined),
+    maxWidth: ({ maxWidth }) => (maxWidth ? theme.breakpoints.values[maxWidth] : 'none'),
   },
   letterAvatar: {
     color: theme.palette.grey[500],
@@ -37,8 +39,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ApplicationList({ applications, bottomAction, secondaryAction, linkTo, search, t }) {
-  const classes = useStyles();
+function ApplicationList({
+  applications,
+  bottomAction,
+  linkTo,
+  maxWidth,
+  search,
+  secondaryAction,
+  t,
+}) {
+  const classes = useStyles({ maxWidth });
 
   // eslint-disable-next-line react/prop-types
   const rowRenderer = ({ index, key, style }) => {
@@ -130,18 +140,20 @@ function ApplicationList({ applications, bottomAction, secondaryAction, linkTo, 
 ApplicationList.propTypes = {
   applications: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
   bottomAction: PropTypes.func,
-  secondaryAction: PropTypes.func,
   linkTo: PropTypes.string,
+  maxWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   search: PropTypes.string,
+  secondaryAction: PropTypes.func,
   t: PropTypes.func.isRequired,
 };
 
 ApplicationList.defaultProps = {
   applications: [],
   bottomAction: null,
-  secondaryAction: null,
   linkTo: routes.citizen.application.info,
+  maxWidth: 'lg',
   search: undefined,
+  secondaryAction: null,
 };
 
 export default withTranslation(['common', 'screens'])(ApplicationList);

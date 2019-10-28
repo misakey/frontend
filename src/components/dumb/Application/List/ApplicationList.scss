@@ -13,4 +13,9 @@
     font-size: 16px;
     color: #000 !important;
   }
+
+  .ReactVirtualized__Grid__innerScrollContainer {
+    display: flex;
+    justify-content: center;
+  }
 }

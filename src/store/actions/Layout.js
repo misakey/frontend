@@ -37,21 +37,6 @@ export const layoutBurgerClicked = () => ({
   type: LAYOUT_BURGER_CLICKED,
 });
 
-export const LAYOUT_GO_BACK_SHOW = Symbol('LAYOUT_GO_BACK_SHOW');
-export const LAYOUT_GO_BACK_HIDE = Symbol('LAYOUT_GO_BACK_HIDE');
-export const LAYOUT_GO_BACK_TOGGLE = Symbol('LAYOUT_GO_BACK_TOGGLE');
-
-export const layoutGoBackShow = () => ({
-  type: LAYOUT_GO_BACK_SHOW,
-});
-export const layoutGoBackHide = () => ({
-  type: LAYOUT_GO_BACK_HIDE,
-});
-export const layoutGoBackToggle = (toggle) => ({
-  type: LAYOUT_GO_BACK_TOGGLE,
-  toggle,
-});
-
 export const LAYOUT_BUTTON_CONNECT_SHOW = Symbol('LAYOUT_BUTTON_CONNECT_SHOW');
 export const LAYOUT_BUTTON_CONNECT_HIDE = Symbol('LAYOUT_BUTTON_CONNECT_HIDE');
 export const LAYOUT_BUTTON_CONNECT_TOGGLE = Symbol('LAYOUT_BUTTON_CONNECT_TOGGLE');

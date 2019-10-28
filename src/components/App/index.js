@@ -10,7 +10,7 @@ import DisclaimerBeta from 'components/dumb/Disclaimer/Beta';
 
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
-import { layoutButtonConnectHide, layoutGoBackHide } from 'store/actions/Layout';
+import { layoutButtonConnectHide } from 'store/actions/Layout';
 
 import RoutePrivate from '@misakey/auth/components/Route/Private';
 import RouteAccessRequest from 'components/smart/Route/AccessRequest';
@@ -44,7 +44,6 @@ function App({ dispatch, t }) {
   useEffect(() => {
     if (window.env.PLUGIN) {
       dispatch(layoutButtonConnectHide());
-      dispatch(layoutGoBackHide());
     }
   }, [dispatch]);
 

@@ -16,6 +16,14 @@
       }
     }
   },
+  "applications": {
+    "linked": {
+      "subtitle": "Mes Services"
+    },
+    "searched": {
+      "subtitle": "Résultats de recherche"
+    }
+  },
   "application": {
     "none": {
       "title": "Sélectionner une organisation"

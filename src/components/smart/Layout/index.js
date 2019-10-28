@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -6,12 +6,10 @@ import { withTranslation } from 'react-i18next';
 
 import clsx from 'clsx';
 
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import InputBase from '@material-ui/core/InputBase';
-import SearchIcon from '@material-ui/icons/Search';
 
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import ButtonConnect from 'components/dumb/Button/Connect';
@@ -19,13 +17,14 @@ import PausePluginButton from 'components/smart/PausePluginButton';
 import WarningDrawer from 'components/dumb/PluginWarningDrawer';
 
 import { DRAWER_WIDTH } from 'components/screens/Admin/Service/Drawer';
-import ButtonGoBack from '@misakey/ui/Button/GoBack';
 import ButtonBurger from '@misakey/ui/Button/Burger';
 
 import { layoutBurgerClicked } from 'store/actions/Layout';
 
+import InputSearchRedirect from 'components/smart/Input/Search/Redirect';
+
 export const LEFT_PORTAL_ID = 'LayoutLeftPortal';
-export const RIGHT_PORTAL_ID = 'LayoutRightPortal';
+export const RIGHT_PORTAL_ID = 'LayoutRight{Portal}';
 
 export const NAV_HEIGHT = 64;
 
@@ -73,44 +72,6 @@ const useStyles = makeStyles((theme) => ({
   portal: {
     flexGrow: 1,
   },
-  search: {
-    display: 'none', // Remove to show search bar
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.black, 0.15),
-    '&:hover': {
-      backgroundColor: fade(theme.palette.common.black, 0.25),
-    },
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(1),
-      width: 'auto',
-    },
-  },
-  searchIcon: {
-    width: theme.spacing(7),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inputRoot: {
-    color: 'inherit',
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 7),
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      width: 120,
-      '&:focus': {
-        width: 360,
-      },
-    },
-  },
   buttonConnect: {
     marginLeft: theme.spacing(2),
     whiteSpace: 'nowrap',
@@ -125,15 +86,13 @@ function Layout({
   dispatch,
   displayAppBar,
   displayWarningDrawer,
-  goBack,
-  history,
   pausePluginButton,
   shift,
   t,
 }) {
   const classes = useStyles();
 
-  const handleBurgerClick = React.useCallback(() => {
+  const handleBurgerClick = useCallback(() => {
     dispatch(layoutBurgerClicked());
   }, [dispatch]);
 
@@ -150,21 +109,9 @@ function Layout({
           >
             <Toolbar>
               {burger && <ButtonBurger {...burgerProps} onClick={handleBurgerClick} />}
-              {(goBack && !burger) && <ButtonGoBack history={history} />}
               <div id={LEFT_PORTAL_ID} className={classes.portal} />
-              <div className={classes.search}>
-                <div className={classes.searchIcon}>
-                  <SearchIcon />
-                </div>
-                <InputBase
-                  placeholder={t('nav:search.placeholder')}
-                  classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                  }}
-                  inputProps={{ 'aria-label': t('nav:search.label') }}
-                />
-              </div>
+              {/* @FIXME: implement store actions to hide searchbar */}
+              {!window.env.PLUGIN && <InputSearchRedirect aria-label={t('nav:search.label')} placeholder={t('nav:search.placeholder')} />}
               <div id={RIGHT_PORTAL_ID} />
               {buttonConnect && <ButtonConnect className={classes.buttonConnect} />}
               {pausePluginButton && <PausePluginButton />}
@@ -190,10 +137,10 @@ Layout.propTypes = {
   dispatch: PropTypes.func.isRequired,
   displayAppBar: PropTypes.bool,
   displayWarningDrawer: PropTypes.bool,
-  goBack: PropTypes.bool,
   shift: PropTypes.bool,
   children: PropTypes.oneOfType([PropTypes.elementType, PropTypes.object]).isRequired,
   history: PropTypes.shape({ goBack: PropTypes.func, push: PropTypes.func }).isRequired,
+  location: PropTypes.shape({ pathname: PropTypes.string }).isRequired,
   t: PropTypes.func.isRequired,
   pausePluginButton: PropTypes.bool,
 };
@@ -204,7 +151,6 @@ Layout.defaultProps = {
   buttonConnect: true,
   displayAppBar: true,
   displayWarningDrawer: false,
-  goBack: true,
   shift: false,
   pausePluginButton: window.env.PLUGIN === true,
 };

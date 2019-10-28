@@ -29,6 +29,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import SplashScreen from '@misakey/ui/SplashScreen';
+import Navigation from '@misakey/ui/Navigation';
 import BoxSection from '@misakey/ui/Box/Section';
 import ButtonSubmit from '@misakey/ui/Button/Submit';
 import BoxMessage from '@misakey/ui/Box/Message';
@@ -81,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ServiceClaim({ service, t, userId }) {
+function ServiceClaim({ service, t, userId, history }) {
   const classes = useStyles();
   const width = useWidth();
   const { enqueueSnackbar } = useSnackbar();
@@ -182,12 +183,13 @@ function ServiceClaim({ service, t, userId }) {
 
   return (
     <section id="ServiceClaim">
+      <Navigation
+        toolbarProps={{ maxWidth: 'md' }}
+        history={history}
+        title={t('screens:Service.Claim.body.title', service)}
+      />
       <Container maxWidth="md">
-        <Typography variant="h4" component="h3" align="center">
-          {t('screens:Service.Claim.body.title', service)}
-        </Typography>
         <Typography
-          align="center"
           variant="subtitle1"
           color="textSecondary"
           gutterBottom
@@ -303,22 +305,22 @@ function ServiceClaim({ service, t, userId }) {
                       {t('back')}
                     </Button>
                     {activeStep !== STEPS.length && (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleNext}
-                      className={classes.stepButton}
-                    >
-                      {t('next')}
-                    </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleNext}
+                        className={classes.stepButton}
+                      >
+                        {t('next')}
+                      </Button>
                     )}
                     {activeStep === STEPS.length && (
-                    <ButtonSubmit
-                      text={submitText}
-                      onClick={handleSubmit}
-                      isSubmitting={isSubmitting}
-                      className={classes.stepButton}
-                    />
+                      <ButtonSubmit
+                        text={submitText}
+                        onClick={handleSubmit}
+                        isSubmitting={isSubmitting}
+                        className={classes.stepButton}
+                      />
                     )}
                   </Box>
                 </StepContent>
@@ -338,6 +340,7 @@ ServiceClaim.propTypes = {
   }),
   t: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 ServiceClaim.defaultProps = {

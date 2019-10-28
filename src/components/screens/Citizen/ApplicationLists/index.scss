@@ -1,0 +1,10 @@
+.Applications {
+  height: inherit;
+    .overlay {
+      height: inherit;
+    }
+
+  .prevent-scroll {
+    overflow: hidden;
+  }
+}

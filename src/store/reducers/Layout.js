@@ -11,10 +11,6 @@ import {
   LAYOUT_BURGER_TOGGLE,
   LAYOUT_BURGER_UPDATE,
 
-  LAYOUT_GO_BACK_SHOW,
-  LAYOUT_GO_BACK_HIDE,
-  LAYOUT_GO_BACK_TOGGLE,
-
   LAYOUT_BUTTON_CONNECT_SHOW,
   LAYOUT_BUTTON_CONNECT_HIDE,
   LAYOUT_BUTTON_CONNECT_TOGGLE,
@@ -33,7 +29,6 @@ const initialState = {
   buttonConnect: true,
   displayAppBar: true,
   displayWarningDrawer: false,
-  goBack: true,
   shift: false,
 };
 
@@ -65,16 +60,6 @@ function updateBurger(state, { burger, burgerProps }) {
       ...burgerProps,
     },
   };
-}
-
-function showGoBack(state) {
-  return { ...state, goBack: true };
-}
-function hideGoBack(state) {
-  return { ...state, goBack: false };
-}
-function toggleGoBack(state, { toggle }) {
-  return { ...state, goBack: toggle ? !!toggle : !state.goBack };
 }
 
 function showButtonConnect(state) {
@@ -113,10 +98,6 @@ export default createReducer(initialState, {
   [LAYOUT_BURGER_HIDE]: hideBurger,
   [LAYOUT_BURGER_TOGGLE]: toggleBurger,
   [LAYOUT_BURGER_UPDATE]: updateBurger,
-
-  [LAYOUT_GO_BACK_SHOW]: showGoBack,
-  [LAYOUT_GO_BACK_HIDE]: hideGoBack,
-  [LAYOUT_GO_BACK_TOGGLE]: toggleGoBack,
 
   [LAYOUT_BUTTON_CONNECT_SHOW]: showButtonConnect,
   [LAYOUT_BUTTON_CONNECT_HIDE]: hideButtonConnect,
