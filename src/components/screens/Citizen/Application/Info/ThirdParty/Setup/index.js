@@ -144,16 +144,20 @@ function ThirdPartySetup({
     }
   };
 
-  function hideAppbar() {
+  const onGoBack = useCallback(() => {
+    setFetching(true);
+    dispatchLayoutAppbarShow();
+    history.goBack();
+  }, [setFetching, dispatchLayoutAppbarShow, history]);
+
+  useEffect(getData, [search, mainPurpose, mainDomain]);
+  useEffect(() => {
     if (appBarIsDisplayed) {
       dispatchLayoutAppbarHide();
       return () => { dispatchLayoutAppbarShow(); };
     }
     return null;
-  }
-
-  useEffect(getData, [search, mainPurpose, mainDomain]);
-  useEffect(hideAppbar, []);
+  }, []);
 
   const setParams = useSetParams(location, history);
   const updateWhitelist = useUpdateWhitelist(
@@ -166,7 +170,7 @@ function ThirdPartySetup({
   return (
     <div className="main">
       <ThirdPartySearchBar
-        history={history}
+        onIconClick={onGoBack}
         location={location}
         entity={isEmpty(entity) ? null : entity}
         onSearch={(s) => { setParams(s, mainPurpose, mainDomain); }}

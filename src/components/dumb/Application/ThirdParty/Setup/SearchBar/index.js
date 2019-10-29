@@ -69,7 +69,7 @@ function ThirdPartySearchBar({
   dispatchApps,
   location,
   entity,
-  history,
+  onIconClick,
   onFetching,
   onSearch,
   onFiltersChange,
@@ -101,7 +101,7 @@ function ThirdPartySearchBar({
       onChange={onSearchChange}
       onFocus={onActive}
       Icon={ArrowBackIcon}
-      onIconClick={() => history.goBack()}
+      onIconClick={onIconClick}
     >
       {hasSearch && (
         <IconButton
@@ -130,7 +130,7 @@ ThirdPartySearchBar.propTypes = {
   dispatchApps: PropTypes.func.isRequired,
   entity: PropTypes.shape({ name: PropTypes.string, logoUri: PropTypes.string }),
   location: PropTypes.shape({ pathname: PropTypes.string, search: PropTypes.string }).isRequired,
-  history: PropTypes.shape({ goBack: PropTypes.func }).isRequired,
+  onIconClick: PropTypes.func.isRequired,
   onFetching: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
   onFiltersChange: PropTypes.func.isRequired,
