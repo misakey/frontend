@@ -15,11 +15,14 @@ The extension use [mozilla/webextension-polyfill](https://github.com/mozilla/web
 
 ### Generate build folder as plugin (Misakey extension)
 
+To generate the zip files for publishing on store with docker and make (output: `build_plugin`):
+- `make build-plugin`
+
+To generate a clean zip of the source_code for reviewers of firefox addons store: (output: `build_plugin/source_code.zip`)
+- `make zip-plugin-source-code`
+
 To generate an output folder for the web extension use:
 - `yarn install && yarn --cwd plugin install && yarn build-plugin`
-
-OR with docker and make: 
-- `make build-plugin`
 
 To use different env files, use :
 - `PLUGIN_ENV=preprod yarn build-plugin`

@@ -22,12 +22,7 @@ module.exports = {
 
     const plugins = (config.plugins || []);
 
-    plugins.push(new WebpackShellPlugin({
-      onBuildStart: ['yarn --cwd plugin build'],
-      onBuildEnd: process.env.NO_ZIP
-        ? []
-        : [`zip -r -FS build_plugin/misakey_extension_${targetBrowser}.xpi build_plugin/${targetBrowser}`],
-    }));
+    plugins.push(new WebpackShellPlugin({ onBuildStart: ['yarn --cwd plugin build'] }));
 
     plugins.push(new CopyWebpackPlugin([
       { from: 'public', ignore: ['index.html', 'env.js', 'manifest.json'] },

@@ -15,7 +15,8 @@ COPY ./plugin/src/manifest.json /app/public/manifest.json
 
 WORKDIR /app
 
-ENV INLINE_RUNTIME_CHUNK false 
+ENV INLINE_RUNTIME_CHUNK false
+ENV TARGET_BROWSER firefox
 
 RUN yarn install
 CMD yarn run watch

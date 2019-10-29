@@ -78,13 +78,13 @@ config.plugins[htmlPluginIndex] = new HtmlWebpackPlugin({
   filename: 'index.html',
 });
 config.plugins.push(new CopyWebpackPlugin([
-  { from: 'public', ignore: ['index.html', 'env.js', 'manifest.json'] },
-  { from: 'public/env.dev.js', to: 'env.js' },
+  { from: 'public', ignore: ['index.html', 'manifest.json'] },
   {
     from: 'public/manifest.json',
     to: 'manifest.json',
     transform(content) {
-      const targetBrowser = process.env.TARGET_BROWSER || 'chrome';
+      // chrome can work with firefox manifest but the invert is not true
+      const targetBrowser = process.env.TARGET_BROWSER || 'firefox';
 
       return modify(content, targetBrowser);
     },

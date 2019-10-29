@@ -15,13 +15,18 @@ COPY ./plugin/yarn.lock /app/plugin/yarn.lock
 
 WORKDIR /app
 
-ENV INLINE_RUNTIME_CHUNK false 
-ENV NO_ZIP true
+ENV INLINE_RUNTIME_CHUNK false
 
 RUN yarn install
 RUN yarn --cwd plugin install
 RUN yarn build-plugin
 
 RUN yarn global add serve
+
+RUN yarn global add web-ext
+
+RUN for D in `find build_plugin/* -maxdepth 0 -type d`; \
+do browser=${D#build_plugin/} ; web-ext build --source-dir=$D --overwrite-dest --artifacts-dir="artifacts/${browser}"; \
+done
 
 CMD ["serve"] 

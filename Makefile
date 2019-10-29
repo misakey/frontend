@@ -67,22 +67,25 @@ build: ## Build a docker image with the build folder and serve server
 	@docker build -t $(CI_REGISTRY_IMAGE):$(VERSION) .
 
 .PHONY: build-plugin
-build-plugin: ## Generate production folder for misakey webextension
+build-plugin: ## Generate zip folder for misakey webextension
 	@docker build -f plugin/docker/Dockerfile -t plugin .
 	@docker run -d --name plugin plugin
 	@mkdir -p ./build_plugin
-	# Copy files in /plugin/build/prod without subfolder /plugin
-	@docker cp plugin:/app/build_plugin/. ./build_plugin
+	# Copy files in /build_plugin
+	@docker cp plugin:/app/artifacts/. ./build_plugin
 	# Stop plugin container
 	@docker stop plugin
 	# Remove plugin container
 	@docker rm plugin
 
+.PHONY: zip-plugin-source-code
+zip-plugin-source-code: ## Generate a clean zip of the source code for firefox review
+	@zip build_plugin/source_code.zip -r -FS src/* public/* plugin/* Makefile .eslintrc config-overrides.js jsconfig.json LICENSE package.json README.md yarn.lock -x '*plugin/build/*' '*plugin/node_modules/*' '*plugin/docker/*'
+
 CURRENT_DIR := $(shell pwd)
 .PHONY: start-plugin
 start-plugin:  ## Generate development environment for plugin
-	@mkdir -p ./plugin/build/
-	@cp -r ./public/locales ./plugin/build/
+	@mkdir -p ./build_plugin_dev/
 	docker-compose -f $(CURRENT_DIR)/docker-compose.plugin.yml up --build
 
 .PHONY: clean-plugin
