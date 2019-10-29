@@ -27,6 +27,16 @@ lint_code:
   script:
     - make dep
     - make strict-lint
+  only:
+    refs:
+      - tags
+      - branches
+      - schedules
+      - web
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /^wip:/
+
 
 unit_tests:
   stage: test
@@ -36,6 +46,16 @@ unit_tests:
   script:
     - make dep
     - make test
+  only:
+    refs:
+      - tags
+      - branches
+      - schedules
+      - web
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /^wip:/
+
 
 build:
   stage: build
@@ -50,3 +70,12 @@ build:
     - make build
     - make tag
     - make deploy
+  only:
+    refs:
+      - master
+      - tags
+      - schedules
+      - web
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /^wip:/
