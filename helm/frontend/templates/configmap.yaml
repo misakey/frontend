@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "admin-frontend.fullname" . }}
+  name: {{ template "frontend.fullname" . }}
   labels:
-    app: {{ template "admin-frontend.name" . }}
-    chart: {{ template "admin-frontend.chart" . }}
+    app: {{ template "frontend.name" . }}
+    chart: {{ template "frontend.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:

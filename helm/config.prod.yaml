@@ -4,10 +4,12 @@ config: >-
   window.env = {
     ENV: 'production',
     API_ENDPOINT: 'https://api.misakey.com',
-    FRONTEND_ENDPOINT: 'https://www.misakey.com',
+    DATABOX_LOGIN_PAGE: 'https://databox.misakey.com/login',
+    GAPI_CLIENT_ID: '932593622193-c6i3ghh44ip9hhbh2heempuugcbk94n7.apps.googleusercontent.com',
     AUTH: {
       authority: 'https://auth.misakey.com/_',
-      client_id: 'b0f9fe2c-20e7-4c40-a6bc-4dc69a4bf869',
-      redirect_uri: 'https://api.misakey.com/admin/auth/callback',
+      client_id: 'f27effe1-5d57-4b70-bf73-939feef50f71',
+      redirect_uri: 'https://api.misakey.com/app/auth/callback',
     },
+
   };

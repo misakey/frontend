@@ -141,11 +141,11 @@ Create a `config.yaml` file with a `config:` key and the `env.js` production con
 When you want to deploy the application for the first time, clone the repo, checkout to the desired tag, then run:
 
 ```
-helm install --name admin-frontend helm/admin-frontend -f path/to/config.yaml --set env=production --set image.tag=`git describe --tags --always`
+helm install --name frontend helm/frontend -f path/to/config.yaml --set env=production --set image.tag=`git describe --tags --always`
 
 ```
 
 If you just need to upgrade the application, then run:
 ```
-helm upgrade admin-frontend helm/admin-frontend -f path/to/config.yaml --set env=production --set image.tag=`git describe --tags --always`
+helm upgrade frontend helm/frontend -f path/to/config.yaml --set env=production --set image.tag=`git describe --tags --always`
 ```

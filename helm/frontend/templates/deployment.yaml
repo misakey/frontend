@@ -1,22 +1,22 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "admin-frontend.fullname" . }}
+  name: {{ template "frontend.fullname" . }}
   labels:
-    app: {{ template "admin-frontend.name" . }}
-    chart: {{ template "admin-frontend.chart" . }}
+    app: {{ template "frontend.name" . }}
+    chart: {{ template "frontend.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "admin-frontend.name" . }}
+      app: {{ template "frontend.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "admin-frontend.name" . }}
+        app: {{ template "frontend.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
@@ -47,7 +47,7 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: {{ template "admin-frontend.fullname" . }}
+            name: {{ template "frontend.fullname" . }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

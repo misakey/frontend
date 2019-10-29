@@ -1,11 +1,11 @@
-# Default values for admin-frontend.
+# Default values for frontend.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 2
 
 image:
-  repository: registry.gitlab.com/misakey/admin-frontend
+  repository: registry.gitlab.com/misakey/frontend
   tag:
   pullPolicy: IfNotPresent
 
@@ -33,7 +33,6 @@ affinity: {}
 config: >-
   window.env = {
     ENV: 'production',
-    API_ENDPOINT: 'https://api.misakey.com.local',
-    FRONTEND_ENDPOINT: 'https://misakey.com.local',
+    PLEASE: 'override-me: I am not configured',
   };
   

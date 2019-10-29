@@ -1,6 +1,6 @@
 {
-  "name": "admin-frontend",
-  "version": "0.1.0",
+  "name": "frontend",
+  "version": "0.2.0",
   "private": true,
   "devDependencies": {
     "copy-webpack-plugin": "^5.0.4",
