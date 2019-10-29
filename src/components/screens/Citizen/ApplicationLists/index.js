@@ -98,7 +98,7 @@ const useGetApplications = (
   isAuthenticated,
   setFetching,
   dispatchApplications,
-  dispatchBoxes,
+  // dispatchBoxes,
 ) => useCallback(
   () => {
     if (!shouldFetch) { return; }
@@ -130,7 +130,9 @@ const useGetApplications = (
     })
       .finally(() => setFetching(false));
   },
-  [search, shouldFetch, isAuthenticated, setFetching, dispatchApplications, dispatchBoxes],
+  [search, shouldFetch, isAuthenticated, setFetching, dispatchApplications,
+    // dispatchBoxes,
+  ],
 );
 
 // COMPONENTS

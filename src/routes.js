@@ -78,6 +78,11 @@ const routes = {
       personalData: '/citizen/:mainDomain/personal-data',
       thirdParty: '/citizen/:mainDomain/third-party',
       myAccount: '/citizen/:mainDomain/my-account',
+      feedback: {
+        _: '/citizen/:mainDomain/feedback',
+        others: '/citizen/:mainDomain/feedback/others',
+        me: '/citizen/:mainDomain/feedback/me',
+      },
     },
   },
   dpo: {

@@ -164,7 +164,7 @@ function InputSearchRedirect({
 
   const search = useMemo(
     () => searchProp(searchParams),
-    [locationSearch],
+    [searchParams],
   );
 
   const [value, setValue] = useState(search || '');

@@ -2,6 +2,7 @@ import { schema } from 'normalizr';
 import PropTypes from 'prop-types';
 
 import isArray from '@misakey/helpers/isArray';
+import RatingSchema from 'store/schemas/Rating';
 
 const HOME_PAGE_LINK_TYPE = 'home_page';
 
@@ -31,8 +32,15 @@ const ApplicationSchema = {
     logoUri: PropTypes.string,
     name: PropTypes.string,
     shortDesc: PropTypes.string,
-    dpoEmail: PropTypes.string,
 
+    // PAGES ROSES APPLICATIONS
+    dpoEmail: PropTypes.string,
+    avgRating: PropTypes.number,
+    totalRating: PropTypes.number,
+    distrRating: PropTypes.arrayOf(PropTypes.number),
+
+    // eslint-disable-next-line react/forbid-foreign-prop-types
+    ratings: PropTypes.arrayOf(PropTypes.shape(RatingSchema.propTypes)),
   },
 };
 

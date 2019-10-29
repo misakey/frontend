@@ -33,9 +33,15 @@ import GridListKeyValue from '@misakey/ui/Grid/List/KeyValue';
 
 import ApplicationInfoContentDomains from 'components/screens/Citizen/Application/Info/Content/Domains';
 import Skeleton from '@material-ui/lab/Skeleton';
+import MyFeedbackCard from 'components/dumb/Card/Feedback/My';
+import SummaryFeedbackCard from 'components/dumb/Card/Feedback/Summary';
+import withMyFeedback from 'components/smart/withMyFeedback';
 
+
+// CONSTANTS
 const requiredLinksType = ['privacy_policy', 'tos', 'terms', 'legal_notice', 'cookies', 'personal_data', 'dpo_contact'];
 
+// HOOKS
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(3),
@@ -63,6 +69,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// COMPONENTS
 const getTranslationCustomizer = (prefix) => {
   const translatedValues = {
     serviceType: [
@@ -169,6 +176,10 @@ function OnLoading({ classes }) {
 }
 
 OnLoading.propTypes = { classes: PropTypes.objectOf(PropTypes.string).isRequired };
+
+const WithMyFeedbackCard = withMyFeedback(
+  ({ application: { mainDomain }, ...rest }) => ({ mainDomain, ...rest }),
+)(MyFeedbackCard);
 
 const ApplicationInfoContent = ({
   entity,
@@ -327,6 +338,12 @@ const ApplicationInfoContent = ({
           </Button>
         )}
       </BoxSection>
+      <Box mb={3}>
+        {isAuthenticated && <WithMyFeedbackCard application={entity} />}
+      </Box>
+      <Box mb={3}>
+        <SummaryFeedbackCard application={entity} />
+      </Box>
     </Container>
   );
 };

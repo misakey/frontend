@@ -46,7 +46,7 @@ const usePause = (assignCallback, dispatchShowWarning) => useCallback((time = nu
     assignCallback(response);
     dispatchShowWarning();
   });
-}, [assignCallback]);
+}, [assignCallback, dispatchShowWarning]);
 
 const useHandleChoice = (pause, setAnchorEl) => useCallback((value) => {
   pause(value);

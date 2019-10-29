@@ -89,7 +89,6 @@ const ContactProviders = ({
     <div className="ContactProviders">
       <Navigation
         pushPath={pushPath}
-        showGoBack={false}
         toolbarProps={{ maxWidth: 'md' }}
         title={t('screens:contact.providers.title')}
       />

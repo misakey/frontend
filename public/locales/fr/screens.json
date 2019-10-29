@@ -212,6 +212,16 @@
     "sendAt": "Envoyé {{date}}",
     "size": "Envoyé {{size}}"
   },
+  "feedback": {
+    "me": {
+      "title": "Mon avis global",
+      "subtitle": "Avis posté en mode public",
+      "success": "Votre avis a été publié!"
+    },
+    "others": {
+      "title": "Avis des utilisateurs"
+    }
+  },
   "landing": {
     "search": "Contacter les sites pour récupérer vos données"
   },

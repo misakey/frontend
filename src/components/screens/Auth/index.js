@@ -1,4 +1,4 @@
-import React, { lazy } from 'react';
+import React, { lazy, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch } from 'react-router-dom';
@@ -21,6 +21,8 @@ import anyPass from '@misakey/helpers/anyPass';
 import routes from 'routes';
 
 import { ssoUpdate } from 'store/actions/sso';
+import { layoutAppbarHide, layoutAppbarShow } from 'store/actions/Layout';
+
 import 'components/screens/Auth/Auth.scss';
 
 import { screenAuthReset } from 'store/actions/screens/auth';
@@ -63,14 +65,18 @@ function Auth({ dispatch, from, isAuthenticated, location, match, sso, userManag
   const searchParams = getSearchParams(location.search);
 
   function onMount() {
+    dispatch(layoutAppbarHide());
     if (!isEmpty(searchParams)) {
       dispatch(ssoUpdate(objectToCamelCase(pickSearchParams(searchParams))));
     }
 
-    return () => dispatch(screenAuthReset());
+    return () => {
+      dispatch(screenAuthReset());
+      dispatch(layoutAppbarShow());
+    };
   }
 
-  React.useEffect(onMount, []);
+  useEffect(onMount, []);
 
   const challenge = searchParams.login_challenge;
 

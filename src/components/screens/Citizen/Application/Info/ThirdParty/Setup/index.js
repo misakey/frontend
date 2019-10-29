@@ -75,7 +75,7 @@ const useUpdateWhitelist = (
     dispatchToggleWhitelistForApp(domain, listKey);
     dispatchShowWarning();
   });
-}, [dispatchWhitelist, dispatchToggleWhitelistForApp, whitelist]);
+}, [dispatchWhitelist, dispatchToggleWhitelistForApp, dispatchShowWarning, whitelist]);
 
 const useSetParams = (location, history) => useCallback((search, mainPurpose, mainDomain) => {
   const nextParams = new URLSearchParams('');

@@ -15,12 +15,24 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isNil from '@misakey/helpers/isNil';
 
-const fetchApplication = (mainDomain, isAuthenticated) => API
-  .use({ method: 'GET', path: '/application-info', auth: isAuthenticated })
-  .build(null, null, objectToSnakeCase({ mainDomain }))
-  .send();
+// CONSTANTS
+const DEFAULT_ENDPOINT = {
+  method: 'GET',
+  path: '/application-info',
+};
 
-const withApplication = (Component) => {
+const fetchApplication = (mainDomain, isAuthenticated, endpoint) => {
+  const authEndpoint = isNil(endpoint)
+    ? { ...DEFAULT_ENDPOINT, auth: isAuthenticated }
+    : { ...endpoint, auth: isAuthenticated };
+  return API
+    .use(authEndpoint)
+    .build(null, null, objectToSnakeCase({ mainDomain }))
+    .send();
+};
+
+const withApplication = (Component, options = {}) => {
+  const { endpoint } = options;
   const ComponentWithApplication = (props) => {
     const {
       isAuthenticated, isDefaultDomain, mainDomain,
@@ -41,7 +53,7 @@ const withApplication = (Component) => {
       if (shouldFetch) {
         setIsFetching(true);
 
-        fetchApplication(mainDomain, isAuthenticated)
+        fetchApplication(mainDomain, isAuthenticated, endpoint)
           .then((response) => {
             dispatchReceive(response.map(objectToCamelCase));
             if (window.env.PLUGIN && isEmpty(response)) {

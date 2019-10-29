@@ -1,17 +1,23 @@
-import React, { useMemo } from 'react';
+/* global browser */ // eslint-disable-line no-redeclare
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import isEmpty from 'lodash/isEmpty';
-import { connect } from 'react-redux';
-import { withRouter, Link } from 'react-router-dom';
+import * as numeral from 'numeral';
+import { generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
 import useWidth from '@misakey/hooks/useWidth';
 import ApplicationSchema from 'store/schemas/Application';
 
+import routes from 'routes';
+
 import displayIn from '@misakey/helpers/displayIn';
 
 import { makeStyles } from '@material-ui/core/styles';
+
+import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/helpers/isNil';
+
 import Typography from '@material-ui/core/Typography';
 import MUILink from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
@@ -22,22 +28,21 @@ import Skeleton from '@material-ui/lab/Skeleton';
 
 import ContactButton from 'components/smart/ContactButton';
 import ApplicationImg from 'components/dumb/Application/Img';
+import FeedbackLink from 'components/dumb/Link/Feedback';
+
 import Container from '@material-ui/core/Container';
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
-
 import './index.scss';
 
 // CONSTANTS
-const DISPLAY_RATING = false;
-
 const SMALL_BREAKPOINTS = ['xs', 'sm'];
-const spacing = 3;
-const avatarSize = { sm: 75, md: 100 };
+const SPACING = 3;
+const AVATAR_SIZE = { sm: 75, md: 100 };
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: theme.spacing(3, 0),
+    padding: theme.spacing(SPACING, 0),
   },
   grid: {
     flexGrow: 1,
@@ -45,12 +50,12 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     borderRadius: 5,
-    width: avatarSize.sm,
-    height: avatarSize.sm,
+    width: AVATAR_SIZE.sm,
+    height: AVATAR_SIZE.sm,
     marginTop: 5,
     [theme.breakpoints.up('md')]: {
-      width: avatarSize.md,
-      height: avatarSize.md,
+      width: AVATAR_SIZE.md,
+      height: AVATAR_SIZE.md,
     },
   },
   letterAvatar: {
@@ -58,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.grey[200],
   },
   titles: {
-    width: `calc(100% - ${avatarSize.sm}px - ${theme.spacing(spacing)}px - 2px)`,
+    width: `calc(100% - ${AVATAR_SIZE.sm}px - ${theme.spacing(SPACING)}px - 2px)`,
     [theme.breakpoints.up('sm')]: {
       minWidth: 300,
       width: 'auto',
@@ -87,7 +92,6 @@ const useIsSmall = (width) => useMemo(
 // COMPONENTS
 function OnLoading({ width }) {
   const isSmall = useIsSmall(width);
-
   return (
     <>
       <Skeleton
@@ -116,8 +120,8 @@ function ApplicationHeader({
   logoUri,
   name,
   mainDomain,
-  rating,
-  ratingCount,
+  avgRating,
+  totalRating,
   shortDesc,
   t,
   userManager,
@@ -126,12 +130,34 @@ function ApplicationHeader({
 }) {
   const classes = useStyles();
   const width = useWidth();
-  const isSmall = useIsSmall(width);
+
+  const addFeedbackRoute = useMemo(
+    () => generatePath(routes.citizen.application.feedback.me, { mainDomain }),
+    [mainDomain],
+  );
+
+  const avgRatingText = useMemo(
+    () => (totalRating === 0 || isNil(avgRating) ? t('common:ratingEmpty') : numeral(avgRating).format('0.0')),
+    [totalRating, avgRating, t],
+  );
+
+  const signInRedirect = useCallback(() => {
+    // @FIXME: remove when auth in plugin is implemented
+    if (window.env.PLUGIN) {
+      browser.tabs.create({
+        url: `https://www.misakey.com/${mainDomain}`,
+      });
+    } else {
+      userManager.signinRedirect();
+    }
+  }, [userManager, mainDomain]);
+
+  const feedbackApp = useMemo(() => ({ id, mainDomain }), [id, mainDomain]);
 
   return (
     <Container maxWidth={false}>
       <header className={clsx(className, classes.root)}>
-        <Grid container spacing={spacing} className={classes.grid} alignItems="center">
+        <Grid container spacing={SPACING} className={classes.grid} alignItems="center">
           <Grid item>
             <ApplicationImg
               alt={name}
@@ -149,18 +175,27 @@ function ApplicationHeader({
             {isLoading ? <OnLoading width={width} /> : (
               <>
                 <Typography
-                  variant={isSmall ? 'h5' : 'h4'}
+                  variant={['xs', 'sm'].includes(width) ? 'h5' : 'h4'}
                   className={classes.nameTitle}
                 >
                   {name}
                 </Typography>
-                <Typography variant="body2" color="textSecondary">
+                <Typography variant="body1" color="textSecondary">
                   {shortDesc}
                 </Typography>
                 <Typography>
                   {isAuthenticated && dpoEmail && (
                     <MUILink href={`mailto:${dpoEmail}`}>
                       {dpoEmail}
+                    </MUILink>
+                  )}
+                  {isAuthenticated && !dpoEmail && (
+                    <MUILink
+                      onClick={onContributionDpoEmailClick}
+                      className="lightLink"
+                      component="button"
+                    >
+                      {t('screens:application.info.userContribution.dpoEmailOpenDialog')}
                     </MUILink>
                   )}
                   {!isAuthenticated && !window.env.PLUGIN && (
@@ -171,30 +206,32 @@ function ApplicationHeader({
                 </Typography>
               </>
             )}
-            {DISPLAY_RATING && (
-              <>
-                <Divider className={classes.divider} />
-                <Grid container spacing={1} alignItems="center" wrap="nowrap">
-                  <Grid item>
-                    <Typography color="primary" variant="h5">{rating}</Typography>
-                  </Grid>
-                  <Grid item>
-                    <Rating
-                      readOnly
-                      size="large"
-                      value={rating}
-                      classes={{ iconFilled: classes.ratingIcon }}
-                    />
-                  </Grid>
-                </Grid>
-                <Typography color="textSecondary" variant="subtitle1">
-                  {t('screens:application.info.ratingCount', { count: ratingCount })}
-                  <MUILink component={Link} to="#" className={classes.rateLink}>
-                    {t('screens:application.info.rate')}
-                  </MUILink>
-                </Typography>
-              </>
-            )}
+            <Divider className={classes.divider} />
+            <Grid container spacing={1} alignItems="center" wrap="nowrap">
+              <Grid item>
+                <Typography color="primary" variant="h5">{avgRatingText}</Typography>
+              </Grid>
+              <Grid item>
+                <Rating
+                  readOnly
+                  size="large"
+                  value={avgRating}
+                  classes={{ iconFilled: classes.ratingIcon }}
+                />
+              </Grid>
+            </Grid>
+            <Typography color="textSecondary" variant="subtitle1" display="inline">
+              {t('screens:application.info.ratingCount', { count: totalRating })}
+            </Typography>
+            <FeedbackLink
+              application={feedbackApp}
+              to={addFeedbackRoute}
+              onClick={signInRedirect}
+              variant="subtitle1"
+              className={classes.rateLink}
+            >
+              {t('screens:application.info.rate')}
+            </FeedbackLink>
           </Grid>
           {(isAuthenticated) && (
             <Grid item>
@@ -224,13 +261,10 @@ function ApplicationHeader({
 
 ApplicationHeader.propTypes = {
   ...ApplicationSchema.propTypes,
-  auth: PropTypes.shape({ id: PropTypes.string }).isRequired,
+  auth: PropTypes.shape({ id: PropTypes.string, profile: PropTypes.object }).isRequired,
   className: PropTypes.string,
   isAuthenticated: PropTypes.bool,
   isLoading: PropTypes.bool,
-  location: PropTypes.shape({ pathname: PropTypes.string, search: PropTypes.string }).isRequired,
-  rating: PropTypes.number,
-  ratingCount: PropTypes.number,
   t: PropTypes.func.isRequired,
   userManager: PropTypes.object.isRequired,
   wasContacted: PropTypes.bool,
@@ -239,16 +273,9 @@ ApplicationHeader.propTypes = {
 
 ApplicationHeader.defaultProps = {
   className: '',
-  rating: 2.5,
-  ratingCount: 0,
   isAuthenticated: false,
   isLoading: false,
   wasContacted: false,
 };
 
-export default connect(
-  (state) => ({
-    auth: state.auth,
-    isAuthenticated: !!state.auth.token,
-  }),
-)(withRouter(withUserManager(withTranslation(['common', 'screens'])(ApplicationHeader))));
+export default withUserManager(withTranslation(['common', 'screens'])(ApplicationHeader));

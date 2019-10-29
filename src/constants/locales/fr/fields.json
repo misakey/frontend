@@ -97,5 +97,19 @@
     },
     "helperText": "Un nombre maximum de 40 caractères est attendu",
     "label": "Desc. courte"
+  },
+  "value": {
+    "error": {
+      "required": "Veuillez saisir une note",
+      "malformed": "Cette note est incorrecte"
+    }
+  },
+  "comment": {
+    "placeholder": "Partager votre expérience concernant cette application",
+    "helperText": "Un commentaire pertinent et concis donnera de l'impact à votre avis",
+    "error": {
+      "required": "Veuillez rédiger un avis",
+      "malformed": "Votre avis doit comporter entre 10 et 4096 caractères"
+    }
   }
 }

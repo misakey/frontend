@@ -19,7 +19,6 @@ import ApplicationBox from 'components/screens/Citizen/Application/Box';
 import UserContributionDialog from 'components/smart/UserContributionDialog';
 
 import Content from 'components/screens/Citizen/Application/Info/Content';
-import Comments from 'components/screens/Citizen/Application/Info/Comments';
 import MyAccount from 'components/screens/Citizen/Application/Info/MyAccount';
 import ThirdParty from 'components/screens/Citizen/Application/Info/ThirdParty';
 
@@ -102,7 +101,6 @@ function ApplicationInfo({
         {...entity}
         auth={auth}
         isAuthenticated={isAuthenticated}
-        hideNavigation={window.env.PLUGIN && !isAuthenticated}
         isLoading={isFetching}
         onContributionDpoEmailClick={onContributionDpoEmailClick}
       />
@@ -111,11 +109,6 @@ function ApplicationInfo({
       )}
 
       <Switch>
-        <Route
-          exact
-          path={routes.citizen.application.comments}
-          render={() => <Comments entity={entity} />}
-        />
         {!window.env.PLUGIN && (
           <PrivateRoute
             exact
@@ -171,5 +164,5 @@ ApplicationInfo.defaultProps = {
 
 export default connect((state) => ({
   auth: state.auth,
-  isAuthenticated: !!state.auth,
+  isAuthenticated: !!state.auth.token,
 }))(withTranslation(['screens'])(ApplicationInfo));

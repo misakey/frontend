@@ -20,7 +20,6 @@ import { userProfileReceive } from 'store/actions/screens/account';
 
 import SplashScreen from 'components/dumb/SplashScreen';
 import ScreenError from 'components/dumb/Screen/Error';
-import AppBar from 'components/dumb/AppBar';
 import Footer from 'components/dumb/Footer';
 import Container from '@material-ui/core/Container';
 
@@ -33,9 +32,6 @@ const AccountHome = lazy(() => import('components/screens/Account/Home'));
 const AccountName = lazy(() => import('components/screens/Account/Name'));
 const AccountAvatar = lazy(() => import('components/screens/Account/Avatar'));
 const AccountPassword = lazy(() => import('components/screens/Account/Password'));
-
-// CONSTANTS
-const APP_BAR_COLOR = 'inherit';
 
 // HELPERS
 const getAvatarUri = propOr('', 'avatarUri');
@@ -98,7 +94,6 @@ const Account = ({ profile, entity, dispatchReceive }) => {
     <div className="account">
       <Container maxWidth={false}>
         <div className="flexWrapper">
-          <AppBar color={APP_BAR_COLOR} className="headerBar" />
           <Suspense fallback={<SplashScreen />}>
             <Switch>
               <Route

@@ -14,14 +14,13 @@ import routes from 'routes';
 
 const TAB_LINKS = [
   'info',
-  'comments',
   'personalData',
   // 'myAccount',
 ];
 
 if (window.env.PLUGIN) {
-  TAB_LINKS.splice(3, 0, 'thirdParty');
-  TAB_LINKS.splice(2, 1);
+  TAB_LINKS.splice(2, 0, 'thirdParty');
+  TAB_LINKS.splice(1, 1);
 }
 
 export const APPLICATION_TAB_LINKS = TAB_LINKS;
