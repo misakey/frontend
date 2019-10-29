@@ -23,8 +23,8 @@
     }
   },
   "search": {
-    "label": "Recherche",
-    "placeholder": "Rechercher...",
+    "label": "Chercher",
+    "placeholder": "Chercher un service",
     "reset": {
       "label": "Réinitialiser"
     }

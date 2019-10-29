@@ -39,11 +39,28 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
   inputSearch: {
-    transition: theme.transitions.create('width'),
+    transition: theme.transitions.create('all'),
     width: '200px',
+    fontSize: theme.typography.subtitle2.fontSize,
+    fontWeight: theme.typography.subtitle2.fontWeight,
+    lineHeight: theme.typography.subtitle2.lineHeight,
+    letterSpacing: theme.typography.subtitle2.letterSpacing,
   },
   inputSearchOverlay: {
     width: '100%',
+    [theme.breakpoints.only('xs')]: {
+      fontSize: theme.typography.subtitle1.fontSize,
+      fontWeight: theme.typography.subtitle1.fontWeight,
+      lineHeight: theme.typography.subtitle1.lineHeight,
+      letterSpacing: theme.typography.subtitle1.letterSpacing,
+    },
+    [theme.breakpoints.up('sm')]: {
+      fontSize: theme.typography.h6.fontSize,
+      fontWeight: theme.typography.h6.fontWeight,
+      lineHeight: theme.typography.h6.lineHeight,
+      letterSpacing: theme.typography.h6.letterSpacing,
+    },
+
   },
 }));
 

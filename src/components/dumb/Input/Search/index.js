@@ -19,12 +19,25 @@ const PROPS_INTERNAL = ['tReady', 'i18n', 'staticContext'];
 const useStyles = makeStyles((theme) => ({
   inputRoot: {
     color: 'inherit',
+    fontSize: 'inherit',
     width: '100%',
   },
   inputInput: {
-    padding: theme.spacing(2, 2, 2, 9),
+    padding: theme.spacing(2, 2, 2, 6),
     transition: theme.transitions.create('width'),
     width: '100%',
+    textOverflow: 'ellipsis',
+  },
+  searchIcon: {
+    height: '100%',
+    width: '3rem',
+    position: 'absolute',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  searchIconButton: {
+    zIndex: '2',
   },
 }));
 
@@ -50,13 +63,13 @@ let InputSearch = ({ t, Icon, onIconClick, children, dark, ...rest }, ref) => {
   return (
     <div className={searchClassName}>
       {hasClick ? (
-        <div className="searchIcon">
-          <IconButton onClick={onClick} className="searchButton">
+        <div className={classes.searchIcon}>
+          <IconButton onClick={onClick} className={classes.searchIconButton}>
             <Icon />
           </IconButton>
         </div>
       ) : (
-        <div className="searchIcon">
+        <div className={classes.searchIcon}>
           <Icon />
         </div>
       )}
@@ -69,7 +82,6 @@ let InputSearch = ({ t, Icon, onIconClick, children, dark, ...rest }, ref) => {
           root: classes.inputRoot,
           input: classes.inputInput,
         }}
-        inputProps={{ 'aria-label': 'Search' }}
         {...props}
       />
       {children}

@@ -111,7 +111,12 @@ function Layout({
               {burger && <ButtonBurger {...burgerProps} onClick={handleBurgerClick} />}
               <div id={LEFT_PORTAL_ID} className={classes.portal} />
               {/* @FIXME: implement store actions to hide searchbar */}
-              {!window.env.PLUGIN && <InputSearchRedirect aria-label={t('nav:search.label')} placeholder={t('nav:search.placeholder')} />}
+              {!window.env.PLUGIN && (
+                <InputSearchRedirect
+                  inputProps={{ 'aria-label': t('nav:search.label') }}
+                  placeholder={t('nav:search.placeholder')}
+                />
+              )}
               <div id={RIGHT_PORTAL_ID} />
               {buttonConnect && <ButtonConnect className={classes.buttonConnect} />}
               {pausePluginButton && <PausePluginButton />}

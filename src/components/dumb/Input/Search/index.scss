@@ -15,18 +15,4 @@
       background-color: scale-color($ultralight-grey, $lightness: +40%);
     }
   }
-
-
-  .searchIcon {
-    width: 4.5rem;
-    height: 100%;
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    .searchButton {
-      z-index: 2;
-    }
-  }
 }
