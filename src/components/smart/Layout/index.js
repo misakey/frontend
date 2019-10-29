@@ -59,6 +59,9 @@ const useStyles = makeStyles((theme) => ({
       width: `calc(100% - ${DRAWER_WIDTH}px)`,
     },
   },
+  toolbar: {
+    height: NAV_HEIGHT,
+  },
   content: {
     position: 'relative',
     flexGrow: 1,
@@ -107,7 +110,7 @@ function Layout({
             elevation={0}
             className={clsx(classes.appBar, { [classes.appBarShift]: shift })}
           >
-            <Toolbar>
+            <Toolbar className={classes.toolbar}>
               {burger && <ButtonBurger {...burgerProps} onClick={handleBurgerClick} />}
               <div id={LEFT_PORTAL_ID} className={classes.portal} />
               {/* @FIXME: implement store actions to hide searchbar */}
