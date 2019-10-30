@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 
 import routes from 'routes';
-import { longDescForm } from 'constants/validationSchemas/information';
+import { longDescValidationSchema } from 'constants/validationSchemas/information';
 
 import ServiceSchema from 'store/schemas/Service';
 import { updateEntities } from '@misakey/store/actions/entities';
@@ -101,7 +101,7 @@ const ServiceLongDesc = ({
           {t('service:information.longDesc.subtitle')}
         </Typography>
         <Formik
-          validationSchema={longDescForm}
+          validationSchema={longDescValidationSchema}
           onSubmit={onSubmit}
           initialValues={{ longDesc }}
         >

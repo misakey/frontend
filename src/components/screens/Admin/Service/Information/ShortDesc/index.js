@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 
 import routes from 'routes';
-import { shortDescForm } from 'constants/validationSchemas/information';
+import { shortDescValidationSchema } from 'constants/validationSchemas/information';
 
 import ServiceSchema from 'store/schemas/Service';
 import { updateEntities } from '@misakey/store/actions/entities';
@@ -102,7 +102,7 @@ const ServiceShortDesc = ({
           {t('service:information.shortDesc.subtitle')}
         </Typography>
         <Formik
-          validationSchema={shortDescForm}
+          validationSchema={shortDescValidationSchema}
           onSubmit={onSubmit}
           initialValues={{ shortDesc }}
         >

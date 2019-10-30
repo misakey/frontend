@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 
 import routes from 'routes';
-import { nameForm } from 'constants/validationSchemas/information';
+import { nameValidationSchema } from 'constants/validationSchemas/information';
 
 import ServiceSchema from 'store/schemas/Service';
 import { updateEntities } from '@misakey/store/actions/entities';
@@ -101,7 +101,7 @@ const ServiceName = ({
           {t('service:information.name.subtitle')}
         </Typography>
         <Formik
-          validationSchema={nameForm}
+          validationSchema={nameValidationSchema}
           onSubmit={onSubmit}
           initialValues={{ name }}
         >

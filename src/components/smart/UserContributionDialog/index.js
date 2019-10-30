@@ -18,7 +18,7 @@ import { withStyles } from '@material-ui/core/styles';
 import FieldText from '@misakey/ui/Form/Field/Text';
 import ButtonSubmit from '@misakey/ui/Button/Submit';
 
-import { privacyLinkSchema, dpoEmailSchema } from './validationSchemas';
+import { privacyLinkSchema, dpoEmailSchema } from 'constants/validationSchemas/contribution';
 
 const INITIAL_VALUES = {
   link: '',

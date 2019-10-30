@@ -12,7 +12,7 @@ import routes from 'routes';
 
 
 import ApplicationSchema from 'store/schemas/Application';
-import { ratingForm } from 'constants/validationSchemas/ratings';
+import { ratingValidationSchema } from 'constants/validationSchemas/ratings';
 
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isNil from '@misakey/helpers/isNil';
@@ -144,7 +144,7 @@ const FeedbackMeScreen = ({ application, userId, rating, history, match: { param
           </TypographySubtitle>
           <Box my={3}>
             <Formik
-              validationSchema={ratingForm}
+              validationSchema={ratingValidationSchema}
               onSubmit={onSubmit}
               initialValues={initialValues}
               enableReinitialize

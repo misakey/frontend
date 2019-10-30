@@ -3,7 +3,7 @@ import errorTypes from '@misakey/ui/constants/errorTypes';
 
 const { required, malformed } = errorTypes;
 
-export const ratingForm = Yup.object().shape({
+export const ratingValidationSchema = Yup.object().shape({
   value: Yup
     .number()
     .min(1, required)

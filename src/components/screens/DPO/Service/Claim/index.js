@@ -26,7 +26,7 @@ import Button from '@material-ui/core/Button';
 import routes from 'routes';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 
-import validationSchema from 'components/screens/DPO/Service/Claim/validationSchema';
+import { serviceClaimValidationSchema } from 'constants/validationSchemas/dpo';
 
 const { conflict } = errorTypes;
 
@@ -196,7 +196,7 @@ function ServiceRoleClaim({ match, service, t, userId }) {
             )}
             <Formik
               initialValues={initialValues}
-              validationSchema={validationSchema}
+              validationSchema={serviceClaimValidationSchema}
               onSubmit={handleSubmit}
             >
               {({ isValid, isSubmitting }) => (
@@ -240,9 +240,11 @@ function ServiceRoleClaim({ match, service, t, userId }) {
 }
 
 ServiceRoleClaim.propTypes = {
-  match: PropTypes.shape({ params: PropTypes.shape({
-    role: PropTypes.string,
-  }) }).isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      role: PropTypes.string,
+    }),
+  }).isRequired,
   service: PropTypes.shape({
     id: PropTypes.string.isRequired,
     mainDomain: PropTypes.string.isRequired,

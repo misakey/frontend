@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 
 import routes from 'routes';
-import { avatarForm } from 'constants/validationSchemas/profile';
+import { avatarValidationSchema } from 'constants/validationSchemas/profile';
 import { userProfileUpdate } from 'store/actions/screens/account';
 
 import isNil from '@misakey/helpers/isNil';
@@ -88,7 +88,7 @@ const AccountName = ({
   return (
     <div className="Avatar">
       <Formik
-        validationSchema={avatarForm}
+        validationSchema={avatarValidationSchema}
         onSubmit={onSubmit}
         initialValues={{ avatar: avatarUri }}
       >

@@ -16,7 +16,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 
 import SignInForm from 'components/smart/Auth/SignIn/Form';
 import DEFAULT_VALUES from 'components/smart/Auth/SignIn/values';
-import validationSchema from 'components/smart/Auth/SignIn/validationSchema';
+import { signInValidationSchema } from 'constants/validationSchemas/auth';
 import routes from 'routes';
 import { screenAuthSetCredentials } from 'store/actions/screens/auth';
 
@@ -59,7 +59,7 @@ const SignIn = ({ challenge, dispatch, displayCard, fields, initialValues, onSub
     <Formik
       isInitialValid={isInitialValid}
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validationSchema={signInValidationSchema}
       onSubmit={onSubmit || handleSubmit}
     >
       {(formProps) => <SignInForm displayCard={displayCard} {...formProps} fields={fields} />}

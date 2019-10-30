@@ -18,7 +18,7 @@ import { screenAuthSetCredentials } from 'store/actions/screens/auth';
 
 import SignUpForm from 'components/smart/Auth/SignUp/Form';
 import DEFAULT_VALUES from 'components/smart/Auth/SignUp/values';
-import validationSchema from 'components/smart/Auth/SignUp/validationSchema';
+import { signUpValidationSchema } from 'constants/validationSchemas/auth';
 
 const SignUp = ({ dispatch, displayCard, fields, history, initialValues, onSubmit, t }) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -52,7 +52,7 @@ const SignUp = ({ dispatch, displayCard, fields, history, initialValues, onSubmi
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validationSchema={signUpValidationSchema}
       onSubmit={onSubmit || handleSubmit}
     >
       {(formProps) => <SignUpForm displayCard={displayCard} fields={fields} {...formProps} />}

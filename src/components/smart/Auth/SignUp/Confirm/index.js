@@ -7,7 +7,7 @@ import isNil from '@misakey/helpers/isNil';
 
 import { FIELD_PROPTYPES } from '@misakey/ui/Form/Fields';
 import DEFAULT_VALUES from 'components/smart/Auth/SignUp/Confirm/values';
-import validationSchema from 'components/smart/Auth/SignUp/Confirm/validationSchema';
+import { signUpConfirmValidationSchema } from 'constants/validationSchemas/auth';
 
 import SignUpConfirmForm from 'components/smart/Auth/SignUp/Confirm/Form';
 import Redirect from '@misakey/ui/Redirect';
@@ -47,7 +47,7 @@ const SignUpConfirm = ({ displayCard, fields, initialValues, onSubmit }) => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validationSchema={signUpConfirmValidationSchema}
       onSubmit={onSubmit || handleSubmit}
     >
       {(formProps) => (

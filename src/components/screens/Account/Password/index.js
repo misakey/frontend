@@ -5,8 +5,8 @@ import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
 import routes from 'routes';
-import { passwordForm } from 'constants/validationSchemas/profile';
-import { invalid } from '@misakey/ui/constants/errorTypes';
+import { passwordValidationSchema } from 'constants/validationSchemas/profile';
+import errorTypes from '@misakey/ui/constants/errorTypes';
 
 import isNil from '@misakey/helpers/isNil';
 import log from '@misakey/helpers/log';
@@ -25,7 +25,6 @@ import { ownerCryptoContext as cryptoContext } from '@misakey/crypto';
 import { BackupDecryptionError } from '@misakey/crypto/Errors/classes';
 
 import './index.scss';
-
 
 const INITIAL_VALUES = {
   passwordOld: '',
@@ -97,7 +96,7 @@ const useOnSubmit = (
       })
       .catch((error) => {
         if (error.error_code === 'invalid_password') {
-          setFieldError(OLD_PASSWORD_FIELD_NAME, invalid);
+          setFieldError(OLD_PASSWORD_FIELD_NAME, errorTypes.invalid);
         } else {
           const { httpStatus } = error;
           setError({ httpStatus });
@@ -139,7 +138,7 @@ const AccountName = ({
         </Typography>
       </div>
       <Formik
-        validationSchema={passwordForm}
+        validationSchema={passwordValidationSchema}
         onSubmit={onSubmit}
         initialValues={INITIAL_VALUES}
         isInitialValid

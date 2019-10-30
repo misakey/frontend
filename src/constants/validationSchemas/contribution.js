@@ -1,5 +1,7 @@
 import * as Yup from 'yup';
-import { malformed, required } from '@misakey/ui/constants/errorTypes';
+import errorTypes from '@misakey/ui/constants/errorTypes';
+
+const { malformed, required } = errorTypes;
 
 export const dpoEmailSchema = Yup.object().shape({
   dpoEmail: Yup.string().email(malformed).required(required),

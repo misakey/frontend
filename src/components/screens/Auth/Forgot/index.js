@@ -7,9 +7,9 @@ import { useSnackbar } from 'notistack';
 
 import routes from 'routes';
 import API from '@misakey/api';
-import { forbidden } from '@misakey/ui/constants/errorTypes';
+import errorTypes from '@misakey/ui/constants/errorTypes';
 
-import { forgotConfirmForm, forgotResetPasswordForm } from 'constants/validationSchemas/auth';
+import { forgotConfirmValidationSchema, forgotResetPasswordValidationSchema } from 'constants/validationSchemas/auth';
 
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
@@ -32,6 +32,7 @@ import AuthForgotSubtitle from 'components/screens/Auth/Forgot/Subtitle';
 import 'components/screens/Auth/Forgot/index.scss';
 
 // CONSTANTS
+const { forbidden } = errorTypes;
 const STEP_CONFIRM = 'confirm';
 const STEP_RESET = 'resetPassword';
 
@@ -109,10 +110,10 @@ const useGetUserPublicData = (email) => useCallback(
 );
 const useValidationSchema = (step) => useMemo(() => {
   if (step === STEP_CONFIRM) {
-    return forgotConfirmForm;
+    return forgotConfirmValidationSchema;
   }
 
-  return forgotResetPasswordForm;
+  return forgotResetPasswordValidationSchema;
 }, [step]);
 
 const useOnNext = (email, setStep, setCode, setError, t, isAuthenticated) => useCallback(

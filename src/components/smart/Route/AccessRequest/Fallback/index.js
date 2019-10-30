@@ -26,7 +26,7 @@ import API from '@misakey/api';
 import { accessTokenUpdate } from 'store/actions/accessToken';
 import { accessRequestUpdate } from 'store/actions/accessRequest';
 import ResponseHandlerWrapper from '@misakey/ui/ResponseHandlerWrapper';
-import validationSchema from './validationSchema';
+import { accessRequestValidationSchema } from 'constants/validationSchemas/auth';
 
 const DEFAULT_FIELDS = { code: { component: FieldCode, label: undefined } };
 const INITIAL_VALUES = { code: '' };
@@ -146,7 +146,7 @@ function AccessRequestFallback({ accessRequest, dispatch, location, t }) {
             </Typography>
             <Formik
               initialValues={INITIAL_VALUES}
-              validationSchema={validationSchema}
+              validationSchema={accessRequestValidationSchema}
               onSubmit={handleSubmit}
             >
               {({ isSubmitting }) => (

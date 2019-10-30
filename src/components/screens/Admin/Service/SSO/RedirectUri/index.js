@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 
 import routes from 'routes';
-import { redirectUriForm } from 'constants/validationSchemas/sso';
+import { redirectUriValidationSchema } from 'constants/validationSchemas/sso';
 
 import ServiceSchema from 'store/schemas/Service';
 import { updateEntities } from '@misakey/store/actions/entities';
@@ -125,7 +125,7 @@ const SSORedirectUri = ({
           {t('service:sso.redirectUri.subtitle')}
         </Typography>
         <Formik
-          validationSchema={redirectUriForm}
+          validationSchema={redirectUriValidationSchema}
           onSubmit={onSubmit}
           initialValues={{ redirectUris }}
         >

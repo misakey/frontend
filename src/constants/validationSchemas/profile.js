@@ -5,21 +5,21 @@ import { ACCEPTED_TYPES } from 'constants/file/image';
 const DISPLAY_NAME_REGEX = /^[\da-zA-Z ]+$/;
 const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3MO
 
-export const displayNameForm = Yup.object().shape({
+export const displayNameValidationSchema = Yup.object().shape({
   displayName: Yup
     .string()
     .matches(DISPLAY_NAME_REGEX, { message: 'malformed', excludeEmptyString: true })
     .required('required'),
 });
 
-export const avatarForm = Yup.object().shape({
+export const avatarValidationSchema = Yup.object().shape({
   avatar: Yup.mixed()
     .required('required')
     .test('fileSize', 'size', ({ size }) => size <= MAX_FILE_SIZE)
     .test('fileType', 'format', ({ type }) => ACCEPTED_TYPES.includes(type)),
 });
 
-export const passwordForm = Yup.object().shape({
+export const passwordValidationSchema = Yup.object().shape({
   passwordOld: Yup
     .string()
     .min(8, 'malformed')

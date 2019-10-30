@@ -8,7 +8,7 @@ import { useSnackbar } from 'notistack';
 
 import routes from 'routes';
 
-import { logoForm } from 'constants/validationSchemas/information';
+import { logoValidationSchema } from 'constants/validationSchemas/information';
 import ServiceSchema from 'store/schemas/Service';
 import { updateEntities } from '@misakey/store/actions/entities';
 
@@ -92,7 +92,7 @@ const ServiceLogo = ({
   return (
     <div className="Avatar">
       <Formik
-        validationSchema={logoForm}
+        validationSchema={logoValidationSchema}
         onSubmit={onSubmit}
         initialValues={INITIAL_VALUES}
       >

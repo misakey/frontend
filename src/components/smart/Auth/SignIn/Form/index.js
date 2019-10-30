@@ -9,7 +9,6 @@ import API from '@misakey/api';
 import { screenAuthSetEmail } from 'store/actions/screens/auth';
 
 import { FIELD_PROPTYPES } from '@misakey/ui/Form/Fields';
-import { handleApiErrors } from 'components/smart/Auth/SignIn/validationSchema';
 
 import FormCard from '@misakey/ui/Form/Card';
 import AuthCardTitle from 'components/smart/Auth/Card/Title';
@@ -23,6 +22,12 @@ import SignInFormActions from 'components/smart/Auth/SignIn/Form/Actions';
 import SignInCardContent from 'components/smart/Auth/SignIn/Form/CardContent';
 
 import { STEP } from 'components/smart/Auth/SignIn/Form/constants';
+
+// HELPERS
+const handleApiErrors = (e) => ({
+  error: `httpStatus.error.${API.errors.filter(e.httpStatus)}`,
+  fields: e.details,
+});
 
 // HOOKS
 // @FIXME: better not use "value check" inside form but make profit of formik's validation

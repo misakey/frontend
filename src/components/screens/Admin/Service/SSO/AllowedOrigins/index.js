@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 
 import routes from 'routes';
-import { allowedOriginsForm } from 'constants/validationSchemas/sso';
+import { allowedOriginsValidationSchema } from 'constants/validationSchemas/sso';
 
 import ServiceSchema from 'store/schemas/Service';
 import { updateEntities } from '@misakey/store/actions/entities';
@@ -117,7 +117,7 @@ const SSOAllowedOrigins = ({
           {t('service:sso.allowedOrigins.subtitle')}
         </Typography>
         <Formik
-          validationSchema={allowedOriginsForm}
+          validationSchema={allowedOriginsValidationSchema}
           onSubmit={onSubmit}
           initialValues={{ allowedCorsOrigins }}
         >

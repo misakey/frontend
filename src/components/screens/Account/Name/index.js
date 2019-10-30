@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 
 import routes from 'routes';
-import { displayNameForm } from 'constants/validationSchemas/profile';
+import { displayNameValidationSchema } from 'constants/validationSchemas/profile';
 import { userProfileUpdate } from 'store/actions/screens/account';
 
 import isNil from '@misakey/helpers/isNil';
@@ -82,7 +82,7 @@ const AccountName = ({
       </div>
       {displayName && (
         <Formik
-          validationSchema={displayNameForm}
+          validationSchema={displayNameValidationSchema}
           onSubmit={onSubmit}
           initialValues={{ displayName }}
         >
