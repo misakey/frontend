@@ -16,6 +16,7 @@ import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import log from '@misakey/helpers/log';
 import parseJwt from '@misakey/helpers/parseJwt';
+import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -44,7 +45,7 @@ const useGetDatabox = (applicationID) => useCallback(
 
 const useOnMailTo = (mainDomain, mailProvider, dispatchContact, history, location) => useCallback(
   (token) => {
-    const databoxURL = `${window.env.DATABOX_LOGIN_PAGE}#${token}`;
+    const databoxURL = parseUrlFromLocation(`${routes.requests}#${token}`).href;
     dispatchContact(databoxURL, mainDomain, mailProvider, history, location);
   },
   [mainDomain, mailProvider, dispatchContact, history, location],

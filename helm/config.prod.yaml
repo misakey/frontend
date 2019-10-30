@@ -4,7 +4,6 @@ config: >-
   window.env = {
     ENV: 'production',
     API_ENDPOINT: 'https://api.misakey.com',
-    DATABOX_LOGIN_PAGE: 'https://databox.misakey.com/login',
     GAPI_CLIENT_ID: '932593622193-c6i3ghh44ip9hhbh2heempuugcbk94n7.apps.googleusercontent.com',
     AUTH: {
       authority: 'https://auth.misakey.com/_',
