@@ -132,7 +132,7 @@ const AccountName = ({
   return (
     <div className="Name">
       <div className="header">
-        <Navigation pushPath={routes.account._} title={t('profile:password.title')} />
+        <Navigation history={history} title={t('profile:password.title')} />
         <Typography variant="body2" color="textSecondary" align="left" className="subtitle">
           {t('profile:password.subtitle')}
         </Typography>

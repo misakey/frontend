@@ -117,10 +117,6 @@ const ContactPreview = ({
   );
   const from = useFrom(state, mainDomain);
 
-  const pushPath = useMemo(
-    () => generatePath(routes.citizen.application.contact._, { mainDomain }),
-    [mainDomain],
-  );
   const providerConfig = useMemo(() => PROVIDERS[provider], [provider]);
   const scriptSrc = useMemo(() => scriptSrcProp(providerConfig), [providerConfig]);
 
@@ -159,8 +155,7 @@ const ContactPreview = ({
   return (
     <div>
       <Navigation
-        pushPath={pushPath}
-        showGoBack={false}
+        history={history}
         toolbarProps={{ maxWidth: 'md' }}
         title={t('screens:contact.preview.title')}
       />

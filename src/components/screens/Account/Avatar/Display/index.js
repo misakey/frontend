@@ -25,10 +25,11 @@ const AccountAvatarDisplay = ({
   avatarUri,
   name,
   previewName,
+  history,
   ...rest
 }) => (
   <div className="Display">
-    <Navigation pushPath={routes.account._} title={t('profile:avatar.title')} />
+    <Navigation history={history} title={t('profile:avatar.title')} />
     <Container maxWidth="md" className="content">
       <Typography variant="body2" color="textSecondary" align="left" className="subtitle">
         {t('profile:avatar.subtitle')}
@@ -68,6 +69,7 @@ AccountAvatarDisplay.propTypes = {
   avatarUri: PropTypes.string,
   name: PropTypes.string.isRequired,
   previewName: PropTypes.string.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 AccountAvatarDisplay.defaultProps = {
