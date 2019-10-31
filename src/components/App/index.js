@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 
 import Layout from 'components/smart/Layout';
 import SplashScreen from '@misakey/ui/SplashScreen';
-import DisclaimerBeta from 'components/dumb/Disclaimer/Beta';
 
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
@@ -49,7 +48,6 @@ function App({ dispatch, t }) {
 
   return (
     <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
-      <DisclaimerBeta />
       <Suspense fallback={<SplashScreen />}>
         <Layout>
           <Switch>
