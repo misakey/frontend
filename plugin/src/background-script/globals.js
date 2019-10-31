@@ -187,22 +187,23 @@ class Globals {
   async onPauseBlocker(time) {
     this.pausedBlocking = !this.pausedBlocking;
 
-    toggleBadgeAndIconOnPaused(this.pausedBlocking);
-
     if (time) {
       this.pausedBlocking = true;
       this.pausedTime = time;
       // handle clearing of a previous timeout to reset a new timeout and avoid collision
       if (!isNil(this.pausedTimeout)) { clearTimeout(this.pausedTimeout); }
 
+      const globals = this;
+
       this.pausedTimeout = setTimeout(() => {
-        this.pausedBlocking = false;
-        this.pausedTime = null;
+        globals.pausedBlocking = false;
+        globals.pausedTime = null;
         toggleBadgeAndIconOnPaused(this.pausedBlocking);
       }, time - Date.now());
     } else if (this.pausedTime && !this.pausedBlocking) {
       this.pausedTime = null;
     }
+    toggleBadgeAndIconOnPaused(this.pausedBlocking);
 
     return { paused: this.pausedBlocking, pausedTime: this.pausedTime };
   }

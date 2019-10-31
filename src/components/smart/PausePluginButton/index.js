@@ -76,7 +76,7 @@ function PausePluginButton({ dispatchShowWarning, t }) {
   const handleChoice = useHandleChoice(pause, setAnchorEl);
   const getData = useGetData(assignCallback);
 
-  useEffect(getData);
+  useEffect(getData, []);
 
   return (
     <>
