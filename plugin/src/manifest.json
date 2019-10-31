@@ -2,7 +2,7 @@
   "common": {
     "manifest_version": 2,
     "name": "Misakey",
-    "version": "0.0.3",
+    "version": "0.5.3",
     "author": "Misakey",
     "description": "Visualiser et bloquer les requêtes vers des sites externes de tracking non nécessaires à la navigation.",
 

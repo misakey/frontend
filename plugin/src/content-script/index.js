@@ -16,4 +16,9 @@ import { injectCosmetics } from '@cliqz/adblocker-webextension-cosmetics';
  * 'beforescriptexecute' event is available, currently only on Firefox).
  */
 
-injectCosmetics(window, true /* MutationObserver */);
+
+browser.runtime.sendMessage({ action: 'getBlockerState' }).then(({ paused }) => {
+  if (!paused) {
+    injectCosmetics(window, true /* MutationObserver */);
+  }
+});
