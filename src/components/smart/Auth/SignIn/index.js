@@ -3,7 +3,9 @@ import { Formik } from 'formik';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
+
+import * as moment from 'moment';
 
 import API from '@misakey/api';
 import isNil from '@misakey/helpers/isNil';
@@ -48,6 +50,21 @@ const SignIn = ({ challenge, dispatch, displayCard, fields, initialValues, onSub
         } else if (e.details.confirmed === 'conflict') {
           dispatch(screenAuthSetCredentials(values.email, values.password));
           setRedirectTo(routes.auth.signUp.confirm);
+        } else if (e.details.to_delete === 'conflict') {
+          const text = (
+            <Trans
+              i18nKey="auth:signIn.form.error.deletedAccount"
+              values={{ deletionDate: moment.parseZone(e.details.deletion_date).format('LL') }}
+            >
+              Votre compte est en cours de suppression, vous ne pouvez donc plus vous y connecter.
+              <br />
+              {'Sans action de votre part il sera supprimé le {{deletionDate}}.'}
+              <br />
+              Si vous voulez le récupérer envoyez nous un email à&nbsp;
+              <a href="mailto:love@misakey.com">love@misakey.com</a>
+            </Trans>
+          );
+          enqueueSnackbar(text, { variant: 'error' });
         }
       })
       .finally(() => actions.setSubmitting(false));

@@ -66,6 +66,9 @@ if (isSilentAuthIframe()) {
 } else {
   i18n.addResourceBundle('fr', 'common', FRCommon, true, true);
   i18n.addResourceBundle('fr', 'fields', FRFields, true, true);
+  // If you want a helper to know what you should use as Trans component value in translate file
+  // Uncomment next line
+  // i18n.init({debug: true});
 
   // STORE
   const middleWares = [thunk, APITokenMiddleware];
