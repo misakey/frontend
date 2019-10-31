@@ -64,7 +64,7 @@ function ApplicationNavTabs({ location, mainDomain, scrollButtons, t, ...rest })
       elevation={0}
       color="inherit"
       component="nav"
-      position="sticky"
+      position={window.env.PLUGIN ? 'static' : 'sticky'}
       className={classes.root}
       {...omit(rest, ['i18n', 'tReady', 'history', 'match', 'staticContext'])}
     >
