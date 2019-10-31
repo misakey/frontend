@@ -7,7 +7,7 @@ import { withTranslation } from 'react-i18next';
 import moment from 'moment';
 
 import API from '@misakey/api';
-import { serviceRequestsReadValidationSchema } from 'constants/validationSchemas/dpo';
+// import { serviceRequestsReadValidationSchema } from 'constants/validationSchemas/dpo';
 import log from '@misakey/helpers/log';
 import prop from '@misakey/helpers/prop';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
@@ -237,7 +237,8 @@ function ServiceRequestsRead({
             </List>
           </BoxSection>
           <Formik
-            validationSchema={serviceRequestsReadValidationSchema}
+            // @fixme: WE NEED TO VALIDATE THE BLOB
+            // validationSchema={serviceRequestsReadValidationSchema}
             initialValues={INITIAL_VALUES}
             onSubmit={handleOpen}
           >

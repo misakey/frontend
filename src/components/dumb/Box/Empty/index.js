@@ -25,10 +25,10 @@ function Empty({ t, text, title }) {
       className={classes.root}
     >
       <Typography variant="h5" component="h4" align="center">
-        {title || t('emptyList.title')}
+        {title || t('list.empty.title')}
       </Typography>
       <Typography variant="subtitle1" color="textSecondary" align="center">
-        {text || t('emptyList.text')}
+        {text || t('list.empty.text')}
       </Typography>
     </Box>
   );
@@ -45,4 +45,4 @@ Empty.defaultProps = {
   title: null,
 };
 
-export default withTranslation()(Empty);
+export default withTranslation('components')(Empty);
