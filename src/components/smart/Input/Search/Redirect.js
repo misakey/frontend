@@ -38,9 +38,14 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  baseInputRoot: {
+    width: ({ isOverlay }) => `${isOverlay ? '' : 0}`,
+    pointerEvents: ({ isOverlay }) => `${isOverlay ? '' : 'none'}`,
+  },
   inputSearch: {
-    transition: theme.transitions.create('all'),
-    width: '200px',
+    transition: theme.transitions.create('width'),
+    display: 'flex',
+    flexShrink: '1',
     fontSize: theme.typography.subtitle2.fontSize,
     fontWeight: theme.typography.subtitle2.fontWeight,
     lineHeight: theme.typography.subtitle2.lineHeight,
@@ -60,7 +65,6 @@ const useStyles = makeStyles((theme) => ({
       lineHeight: theme.typography.h6.lineHeight,
       letterSpacing: theme.typography.h6.letterSpacing,
     },
-
   },
 }));
 
@@ -71,16 +75,17 @@ const useOnSearchChange = (setValue) => useCallback(
   [setValue],
 );
 
-const useOnReset = (setValue, searchParams, history) => useCallback(
+const useOnReset = (setValue, searchParams, history, onIconClick) => useCallback(
   () => {
     setValue('');
     const nextSearch = new URLSearchParams(searchParams);
-    nextSearch.delete('search');
+    nextSearch.set('search', '');
     history.replace({
       search: nextSearch.toString(),
     });
+    onIconClick();
   },
-  [setValue, searchParams, history],
+  [setValue, searchParams, history, onIconClick],
 );
 
 const useOnExternalRedirect = (search, isSearchActive, setValue, isOverlay, inputRef) => useEffect(
@@ -89,6 +94,7 @@ const useOnExternalRedirect = (search, isSearchActive, setValue, isOverlay, inpu
     const isFocused = !isNil(current) ? document.activeElement === current : false;
     if (isOverlay && !isFocused && isSearchActive) {
       setValue(search);
+      current.focus();
     }
   },
   [search, isSearchActive, setValue, isOverlay, inputRef],
@@ -117,7 +123,6 @@ const useOnActive = (
   isSearchActive,
   locationPrefix,
   setValue,
-  inputRef,
 ) => useCallback(
   () => {
     // @FIXME quick fix, maybe won't work all the time, not so clean anyway
@@ -138,12 +143,8 @@ const useOnActive = (
         search: nextSearch.toString(),
       });
     }
-
-    if (!isNil(inputRef.current)) {
-      inputRef.current.focus();
-    }
   },
-  [searchParams, history, isOverlay, isSearchActive, locationPrefix, setValue, inputRef],
+  [searchParams, history, isOverlay, isSearchActive, locationPrefix, setValue],
 );
 
 
@@ -155,7 +156,14 @@ function InputSearchRedirect({
   ...rest
 }) {
   const inputRef = useRef();
-  const classes = useStyles();
+
+  const isOverlay = useMemo(
+    () => matchPath(pathname, routes.citizen.applications) !== null
+      || matchPath(pathname, routes.admin.applications) !== null,
+    [pathname],
+  );
+
+  const classes = useStyles({ isOverlay });
 
   const searchParams = useMemo(
     () => getSearchParams(locationSearch),
@@ -169,11 +177,6 @@ function InputSearchRedirect({
 
   const [value, setValue] = useState(search || '');
 
-  const isOverlay = useMemo(
-    () => matchPath(pathname, routes.citizen.applications) !== null
-      || matchPath(pathname, routes.admin.applications) !== null,
-    [pathname],
-  );
 
   const isSearchActive = useMemo(
     () => !isNil(search),
@@ -189,8 +192,17 @@ function InputSearchRedirect({
     [pathname],
   );
 
+  const onIconClick = useCallback(
+    () => {
+      if (!isNil(inputRef.current)) {
+        inputRef.current.focus();
+      }
+    },
+    [inputRef],
+  );
+
   const onSearchChange = useOnSearchChange(setValue);
-  const onReset = useOnReset(setValue, searchParams, history);
+  const onReset = useOnReset(setValue, searchParams, history, onIconClick);
   const onActive = useOnActive(
     searchParams,
     history,
@@ -198,7 +210,6 @@ function InputSearchRedirect({
     isSearchActive,
     locationPrefix,
     setValue,
-    inputRef,
   );
 
   useOnExternalRedirect(search, isSearchActive, setValue, isOverlay, inputRef);
@@ -222,21 +233,26 @@ function InputSearchRedirect({
     <div className={clsx(classes.inputSearch, { [classes.inputSearchOverlay]: isOverlay })}>
       <InputSearch
         ref={inputRef}
+        inputClasses={{ root: classes.baseInputRoot }}
         value={isOverlay ? value : ''}
         readOnly={!isOverlay}
         onChange={onSearchChange}
         onFocus={onActive}
+        onIconClick={onIconClick}
         {...rest}
       >
         {hasSearch && isOverlay && (
-          <IconButton
+          <div
             className={classes.clearButton}
-            aria-label="Clear"
-            type="reset"
-            onClick={onReset}
           >
-            <CancelIcon />
-          </IconButton>
+            <IconButton
+              aria-label="Clear"
+              type="reset"
+              onClick={onReset}
+            >
+              <CancelIcon />
+            </IconButton>
+          </div>
         )}
       </InputSearch>
     </div>

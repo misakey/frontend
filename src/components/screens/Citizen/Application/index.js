@@ -5,6 +5,7 @@ import { Route, Switch } from 'react-router-dom';
 import routes from 'routes';
 import ApplicationSchema from 'store/schemas/Application';
 
+import { makeStyles } from '@material-ui/core/styles';
 import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import RoutePrivate from '@misakey/auth/components/Route/Private';
 import withApplication from 'components/smart/withApplication';
@@ -17,13 +18,22 @@ import ApplicationFeedback from 'components/screens/Citizen/Application/Feedback
 
 import { LEFT_PORTAL_ID } from 'components/smart/Layout';
 
-
+// CONSTANTS
 const PAGES_ROSES_ENDPOINT = {
   method: 'GET',
   path: '/applications',
 };
 
+// HOOKS
+const useStyles = makeStyles(() => ({
+  portalAvatar: {
+    overflow: 'hidden',
+  },
+}));
+
 function Application({ entity, error, isFetching, mainDomain, match }) {
+  const classes = useStyles();
+
   return (
     <ResponseHandlerWrapper
       error={error}
@@ -31,7 +41,7 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
       isFetching={isFetching}
     >
       <>
-        <Portal elementId={LEFT_PORTAL_ID}>
+        <Portal elementId={LEFT_PORTAL_ID} className={classes.portalAvatar}>
           <ApplicationAvatar application={entity} />
         </Portal>
         <Switch>

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+
 import Avatar from '@material-ui/core/Avatar';
 import Skeleton from '@material-ui/lab/Skeleton';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -48,7 +49,7 @@ function ApplicationImg({ alt, children, className, fontSize, src, ...rest }) {
   return (
     <>
       {(src && !isLoaded && !isBroken) && (
-        <Skeleton variant="rect" className={clsx(classes.skeleton, className)} />
+        <Skeleton variant="rect" className={clsx(classes.skeleton, className)} {...rest} />
       )}
       <Avatar
         alt={alt}

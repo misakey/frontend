@@ -1,5 +1,7 @@
 import React, { useMemo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
+
 import { withTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -23,21 +25,15 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   inputInput: {
-    padding: theme.spacing(2, 2, 2, 6),
+    padding: theme.spacing(2),
     transition: theme.transitions.create('width'),
     width: '100%',
     textOverflow: 'ellipsis',
   },
   searchIcon: {
-    height: '100%',
-    width: '3rem',
-    position: 'absolute',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  searchIconButton: {
-    zIndex: '2',
   },
 }));
 
@@ -52,7 +48,14 @@ const getOnClick = (onIconClick) => (e) => {
 const useOnClick = (onIconClick) => useMemo(() => getOnClick(onIconClick), [onIconClick]);
 const useHasClick = (onIconClick) => useMemo(() => isFunction(onIconClick), [onIconClick]);
 // COMPONENTS
-let InputSearch = ({ t, Icon, onIconClick, children, dark, ...rest }, ref) => {
+let InputSearch = ({
+  t,
+  Icon,
+  onIconClick,
+  inputClasses: { root: inputClassesRoot, input: inputClassesInput, ...inputClassesRest },
+  children,
+  dark,
+  ...rest }, ref) => {
   const classes = useStyles();
   const props = omit(rest, PROPS_INTERNAL);
 
@@ -64,7 +67,7 @@ let InputSearch = ({ t, Icon, onIconClick, children, dark, ...rest }, ref) => {
     <div className={searchClassName}>
       {hasClick ? (
         <div className={classes.searchIcon}>
-          <IconButton onClick={onClick} className={classes.searchIconButton}>
+          <IconButton onClick={onClick}>
             <Icon />
           </IconButton>
         </div>
@@ -79,8 +82,9 @@ let InputSearch = ({ t, Icon, onIconClick, children, dark, ...rest }, ref) => {
         inputRef={ref}
         placeholder={t('navigation.search.placeholder', 'Search...')}
         classes={{
-          root: classes.inputRoot,
-          input: classes.inputInput,
+          root: clsx(classes.inputRoot, inputClassesRoot),
+          input: clsx(classes.inputInput, inputClassesInput),
+          ...inputClassesRest,
         }}
         {...props}
       />
@@ -95,6 +99,7 @@ InputSearch.propTypes = {
   t: PropTypes.func.isRequired,
   Icon: PropTypes.oneOfType([PropTypes.node, PropTypes.func, PropTypes.object]),
   children: PropTypes.node,
+  inputClasses: PropTypes.object,
   dark: PropTypes.bool,
   onIconClick: PropTypes.func,
 };
@@ -102,6 +107,7 @@ InputSearch.propTypes = {
 InputSearch.defaultProps = {
   Icon: SearchIcon,
   onIconClick: null,
+  inputClasses: {},
   children: null,
   dark: false,
 };

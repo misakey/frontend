@@ -223,7 +223,10 @@
     }
   },
   "landing": {
-    "search": "Contacter les sites pour récupérer vos données"
+    "subtitle": "Contacter les sites pour récupérer vos données",
+    "search": {
+      "placeholder": "Chercher un service..."
+    }
   },
   "Service": {
     "Claim": {

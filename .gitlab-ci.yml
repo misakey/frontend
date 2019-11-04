@@ -76,6 +76,7 @@ build:
       - tags
       - schedules
       - web
+      - branches
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /^wip:/

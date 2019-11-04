@@ -1,59 +1,54 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import BusinessIcon from '@material-ui/icons/Business';
+import SearchIcon from '@material-ui/icons/Search';
 import routes from 'routes';
 import Footer from 'components/dumb/Footer';
-import InputSearchWithButton from 'components/dumb/Input/Search/WithButton';
+import Button from '@material-ui/core/Button';
 
 import 'components/screens/Landing/landing.scss';
 
-// CONSTANTS
-const SEARCH_DARK = true;
-
-// HELPERS
-const getOnSearchChange = (setSearch) => ({ target: { value } }) => {
-  setSearch(value);
-};
-
-const getOnSearchSubmit = (history) => (value) => {
-  const isLengthValid = value.length >= 3 || value.length === 0;
-
-  if (isLengthValid) {
-    history.push({
-      pathname: routes.citizen.applications,
-      search: `?search=${value}`,
-    });
-  }
-};
-
 // HOOKS
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   title: {
     fontFamily: '"Futura Std Bold"',
   },
+  searchButtonRoot: {
+    borderRadius: 0,
+    boxShadow: 'none',
+    backgroundColor: theme.palette.grey[100],
+    height: `calc(${theme.typography.h2.lineHeight} * ${theme.typography.h2.fontSize})`,
+  },
+  searchButtonLabel: {
+    textTransform: 'capitalize',
+    color: theme.palette.primary.main,
+  },
+  searchButtonEndIcon: {
+    marginLeft: 'auto',
+  },
 }));
 
-const useOnSearchChange = (setSearch) => useMemo(
-  () => getOnSearchChange(setSearch), [setSearch],
-);
-
-const useOnSearchSubmit = (history) => useMemo(
-  () => getOnSearchSubmit(history), [history],
-);
-
 // COMPONENTS
-const LandingScreen = ({ t, history }) => {
+const LandingScreen = ({ t }) => {
   const classes = useStyles();
 
-  const [search, setSearch] = useState('');
-
-  const onSearchChange = useOnSearchChange(setSearch);
-  const onSearchSubmit = useOnSearchSubmit(history);
+  const to = useMemo(
+    () => {
+      const search = new URLSearchParams();
+      search.set('search', '');
+      return {
+        pathname: routes.citizen.applications,
+        search: search.toString(),
+      };
+    },
+    [],
+  );
 
   return (
     <Container maxWidth={false} className="landing">
@@ -63,18 +58,25 @@ const LandingScreen = ({ t, history }) => {
             {t('projectName', 'Misakey')}
           </Typography>
           <Typography className="subtitle">
-            {t('screens:landing.search', 'Contacter les sites pour récupérer vos données')}
+            {t('screens:landing.subtitle', 'Contacter les sites pour récupérer vos données')}
           </Typography>
           <div className="searchBlock">
-            <InputSearchWithButton
-              value={search}
-              onChange={onSearchChange}
-              onSubmit={onSearchSubmit}
-              Icon={BusinessIcon}
-              dark={SEARCH_DARK}
-              iconButtonProps={{ disabled: search.length < 3 && search.length !== 0 }}
-              autoFocus
-            />
+            <Button
+              component={Link}
+              to={to}
+              variant="contained"
+              size="large"
+              fullWidth
+              classes={{
+                root: classes.searchButtonRoot,
+                label: classes.searchButtonLabel,
+                endIcon: classes.searchButtonEndIcon,
+              }}
+              startIcon={<BusinessIcon />}
+              endIcon={<SearchIcon />}
+            >
+              {t('screens:landing.search.placeholder')}
+            </Button>
           </div>
         </div>
       </div>

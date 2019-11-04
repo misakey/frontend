@@ -1,9 +1,7 @@
 @import '~@misakey/ui/static/sass/colors';
 .search {
-  position: relative;
   display: flex;
   width: 100%;
-  border-bottom: 1px solid $ultralight-grey;
   background-color: var(--light-background);
   &:hover {
     background-color: scale-color($light-background, $lightness: +40%);

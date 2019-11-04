@@ -10,6 +10,7 @@ import Box from '@material-ui/core/Box';
 import ApplicationImg from 'components/dumb/Application/Img';
 import Typography from '@material-ui/core/Typography';
 
+// HOOKS
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -48,7 +49,7 @@ const ApplicationAvatar = ({ application }) => {
         {/* @FIXME: this fallback behaviour should be handled inside ApplicationImg */}
         {name.slice(0, 3)}
       </ApplicationImg>
-      <Typography variant="h6" color="textSecondary" className={classes.appName}>
+      <Typography noWrap color="textSecondary" className={classes.appName}>
         {name}
       </Typography>
     </Box>

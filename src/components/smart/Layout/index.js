@@ -1,12 +1,17 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
+import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter, matchPath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
-import clsx from 'clsx';
-
 import { makeStyles } from '@material-ui/core/styles';
+import useWidth from '@misakey/hooks/useWidth';
+
+import displayIn from '@misakey/helpers/displayIn';
+
+import routes from 'routes';
+
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -22,12 +27,17 @@ import ButtonBurger from '@misakey/ui/Button/Burger';
 import { layoutBurgerClicked } from 'store/actions/Layout';
 
 import InputSearchRedirect from 'components/smart/Input/Search/Redirect';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 
+// CONSTANTS
 export const LEFT_PORTAL_ID = 'LayoutLeftPortal';
 export const RIGHT_PORTAL_ID = 'LayoutRight{Portal}';
 
 export const NAV_HEIGHT = 64;
 
+const SMALL_BREAKPOINTS = ['xs'];
+
+// HELPERS
 // We export it in case we want to reuse the style with the left Portal
 // Going to make a high level Component for Navigation AppBar type
 export const menuButtonStyle = (theme) => ({
@@ -37,6 +47,7 @@ export const menuButtonStyle = (theme) => ({
   },
 });
 
+// HOOKS
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -73,11 +84,21 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   portal: {
-    flexGrow: 1,
+    display: 'flex',
+    flexGrow: '1',
+    flexShrink: '1',
+    overflow: 'hidden',
   },
   buttonConnect: {
+    flexShrink: '0',
     marginLeft: theme.spacing(2),
+    [theme.breakpoints.only('xs')]: {
+      marginLeft: '0',
+    },
     whiteSpace: 'nowrap',
+  },
+  buttonTextRounded: {
+    borderRadius: '2rem',
   },
 }));
 
@@ -91,13 +112,42 @@ function Layout({
   displayWarningDrawer,
   pausePluginButton,
   shift,
+  location: { pathname },
   t,
 }) {
   const classes = useStyles();
+  const width = useWidth();
+
+  const isSmallDisplay = useMemo(
+    () => displayIn(width, SMALL_BREAKPOINTS),
+    [width],
+  );
+
+  const buttonProps = useMemo(
+    () => (isSmallDisplay ? undefined : { variant: 'outlined' }),
+    [isSmallDisplay],
+  );
+
+  const noTokenIcon = useMemo(
+    () => (
+      isSmallDisplay
+        ? <AccountCircle />
+        : null
+    ),
+    [isSmallDisplay],
+  );
 
   const handleBurgerClick = useCallback(() => {
     dispatch(layoutBurgerClicked());
   }, [dispatch]);
+
+  const isLanding = useMemo(
+    () => matchPath(pathname, {
+      path: routes._,
+      exact: true,
+    }),
+    [pathname],
+  );
 
   return (
     <div className={classes.root}>
@@ -113,15 +163,23 @@ function Layout({
             <Toolbar className={classes.toolbar}>
               {burger && <ButtonBurger {...burgerProps} onClick={handleBurgerClick} />}
               <div id={LEFT_PORTAL_ID} className={classes.portal} />
-              {/* @FIXME: implement store actions to hide searchbar */}
-              {!window.env.PLUGIN && (
+              {(!window.env.PLUGIN && !isLanding) && (
                 <InputSearchRedirect
                   inputProps={{ 'aria-label': t('nav:search.label') }}
                   placeholder={t('nav:search.placeholder')}
                 />
               )}
               <div id={RIGHT_PORTAL_ID} />
-              {buttonConnect && <ButtonConnect className={classes.buttonConnect} />}
+              {buttonConnect && (
+                <ButtonConnect
+                  noTokenIcon={noTokenIcon}
+                  buttonProps={buttonProps}
+                  className={clsx(
+                    classes.buttonConnect,
+                    { [classes.buttonTextRounded]: !isSmallDisplay },
+                  )}
+                />
+              )}
               {pausePluginButton && <PausePluginButton />}
             </Toolbar>
           </AppBar>

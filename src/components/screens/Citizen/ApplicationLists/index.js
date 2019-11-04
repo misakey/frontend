@@ -90,6 +90,10 @@ const useStyles = makeStyles((theme) => ({
       height: '100%',
     },
   },
+  goBackRoot: {
+    marginLeft: 0,
+    marginRight: theme.spacing(1),
+  },
 }));
 
 const useGetApplications = (
@@ -192,7 +196,7 @@ const ApplicationListsScreen = ({
   return (
     <div className="Applications">
       <Portal elementId={LEFT_PORTAL_ID}>
-        <ButtonGoBack history={history} />
+        <ButtonGoBack history={history} className={classes.goBackRoot} />
       </Portal>
       <div className="overlay">
         {isAuthenticated && hasBoxes && (
