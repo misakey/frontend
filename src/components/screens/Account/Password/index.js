@@ -47,7 +47,7 @@ async function updatePassword(
     ({ backupData } = await cryptoContext.preparePasswordChange(passwordNew, passwordOld, id));
     backupDecryptionError = null;
   } catch (e) {
-    if (e instanceof BackupDecryptionError) {
+    if (e instanceof BackupDecryptionError || e instanceof TypeError) {
       backupDecryptionError = e;
     } else {
       throw e;
@@ -95,7 +95,7 @@ const useOnSubmit = (
         history.push(routes.account._);
       })
       .catch((error) => {
-        if (error.error_code === 'invalid_password') {
+        if (error.code === errorTypes.forbidden) {
           setFieldError(OLD_PASSWORD_FIELD_NAME, errorTypes.invalid);
         } else {
           const { httpStatus } = error;

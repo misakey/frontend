@@ -22,7 +22,6 @@ export const avatarValidationSchema = Yup.object().shape({
 export const passwordValidationSchema = Yup.object().shape({
   passwordOld: Yup
     .string()
-    .min(8, 'malformed')
     .required('required'),
   passwordNew: Yup
     .string()
