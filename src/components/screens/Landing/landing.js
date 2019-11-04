@@ -20,14 +20,11 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: '"Futura Std Bold"',
   },
   searchButtonRoot: {
-    borderRadius: 0,
-    boxShadow: 'none',
-    backgroundColor: theme.palette.grey[100],
+    borderRadius: '200px',
     height: `calc(${theme.typography.h2.lineHeight} * ${theme.typography.h2.fontSize})`,
   },
   searchButtonLabel: {
-    textTransform: 'capitalize',
-    color: theme.palette.primary.main,
+    textTransform: 'none',
   },
   searchButtonEndIcon: {
     marginLeft: 'auto',
@@ -64,7 +61,8 @@ const LandingScreen = ({ t }) => {
             <Button
               component={Link}
               to={to}
-              variant="contained"
+              color="primary"
+              variant="outlined"
               size="large"
               fullWidth
               classes={{

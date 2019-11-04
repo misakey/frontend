@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
   },
   buttonTextRounded: {
-    borderRadius: '2rem',
+    borderRadius: '200px',
   },
 }));
 
