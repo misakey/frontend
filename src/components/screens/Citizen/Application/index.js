@@ -11,6 +11,10 @@ import RoutePrivate from '@misakey/auth/components/Route/Private';
 import withApplication from 'components/smart/withApplication';
 import ResponseHandlerWrapper from '@misakey/ui/ResponseHandlerWrapper';
 import Portal from '@misakey/ui/Portal';
+import isNil from '@misakey/helpers/isNil';
+import prop from '@misakey/helpers/prop';
+import compose from '@misakey/helpers/compose';
+
 import ApplicationNone from 'components/screens/Citizen/Application/None';
 import ApplicationInfo from 'components/screens/Citizen/Application/Info';
 import ApplicationContact from 'components/screens/Citizen/Application/Contact';
@@ -85,4 +89,7 @@ Application.defaultProps = {
   isFetching: true,
 };
 
-export default withApplication(Application, { endpoint: PAGES_ROSES_ENDPOINT });
+export default withApplication(Application, {
+  endpoint: PAGES_ROSES_ENDPOINT,
+  getSpecificShouldFetch: compose(isNil, prop('avgRating')),
+});

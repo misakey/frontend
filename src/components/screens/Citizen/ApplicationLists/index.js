@@ -43,7 +43,7 @@ const SEARCH_MIN_LENGTH = 3;
 // @FIXME add to js-common
 const PAGES_ROSES_FIND = {
   method: 'GET',
-  path: '/applications',
+  path: '/application-info',
 };
 
 // HELPERS

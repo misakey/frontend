@@ -32,7 +32,7 @@ const fetchApplication = (mainDomain, isAuthenticated, endpoint) => {
 };
 
 const withApplication = (Component, options = {}) => {
-  const { endpoint } = options;
+  const { endpoint, getSpecificShouldFetch } = options;
   const ComponentWithApplication = (props) => {
     const {
       isAuthenticated, isDefaultDomain, mainDomain,
@@ -44,9 +44,13 @@ const withApplication = (Component, options = {}) => {
 
     const shouldFetch = useMemo(() => {
       const validDomain = isString(mainDomain) && !isDefaultDomain;
-      const validComponentState = !isFetching && isNil(error) && isNil(entity);
+      const validInternalState = !isFetching && isNil(error);
+      const defaultShouldFetch = isNil(entity);
+      const specificShouldFetch = (
+        isNil(getSpecificShouldFetch)
+      ) ? true : getSpecificShouldFetch(entity);
 
-      return validDomain && validComponentState;
+      return validDomain && validInternalState && (defaultShouldFetch || specificShouldFetch);
     }, [isDefaultDomain, isFetching, error, entity, mainDomain]);
 
     const startFetching = useCallback(() => {
