@@ -21,7 +21,7 @@ export const signUpValidationSchema = Yup.object().shape({
     .required(required)
     .min(3, invalid)
     .max(21, invalid)
-    .matches(/^[a-z0-9_]$/, { message: invalid, excludeEmptyString: true })
+    .matches(/^[a-z0-9_]*$/, { message: invalid, excludeEmptyString: true })
     .matches(/^[^_].*[^_]$/, { message: noTrailingUnderscore, excludeEmptyString: true }),
   email: Yup.string()
     .email(malformed)
