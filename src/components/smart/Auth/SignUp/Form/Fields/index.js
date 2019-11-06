@@ -9,10 +9,21 @@ import Fields from '@misakey/ui/Form/Fields';
 
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 
 const defaultProps = {
   email: { component: FieldText, type: 'email' },
-  displayName: { component: FieldText },
+  handle: {
+    component: FieldText,
+    InputProps: {
+      startAdornment: (
+        <InputAdornment position="start">
+          <AccountCircle />
+        </InputAdornment>
+      ),
+    },
+  },
   password: { component: FieldText, type: 'password' },
   tos: { component: FieldCheckbox },
 };
@@ -60,7 +71,7 @@ SignUpFormFields.propTypes = {
   i18n: PropTypes.object.isRequired,
   tReady: PropTypes.bool.isRequired,
   email: PropTypes.object,
-  displayName: PropTypes.object,
+  handle: PropTypes.object,
   password: PropTypes.object,
   tos: PropTypes.object,
 };

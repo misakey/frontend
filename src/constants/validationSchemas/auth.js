@@ -3,6 +3,9 @@ import errorTypes from '@misakey/ui/constants/errorTypes';
 
 // CONSTANTS
 const { malformed, required, invalid } = errorTypes;
+const noTrailingUnderscore = 'noTrailingUnderscore';
+
+
 const CONFIRM_REGEX = /^[0-9]{6}$/;
 
 export const signInValidationSchema = Yup.object().shape({
@@ -14,10 +17,12 @@ export const signInValidationSchema = Yup.object().shape({
 });
 
 export const signUpValidationSchema = Yup.object().shape({
-  displayName: Yup.string()
+  handle: Yup.string()
+    .required(required)
     .min(3, invalid)
-    .max(25, invalid)
-    .required(required),
+    .max(21, invalid)
+    .matches(/^[a-z0-9_]$/, { message: invalid, excludeEmptyString: true })
+    .matches(/^[^_].*[^_]$/, { message: noTrailingUnderscore, excludeEmptyString: true }),
   email: Yup.string()
     .email(malformed)
     .required(required),

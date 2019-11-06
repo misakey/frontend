@@ -23,9 +23,9 @@ import { signUpValidationSchema } from 'constants/validationSchemas/auth';
 const SignUp = ({ dispatch, displayCard, fields, history, initialValues, onSubmit, t }) => {
   const { enqueueSnackbar } = useSnackbar();
 
-  function afterCrypto(values, actions) {
-    const payload = objectToSnakeCase({ ...values });
-    dispatch(screenAuthSetCredentials(values.email, values.password));
+  function afterCrypto({ email, password, handle, ...rest }, actions) {
+    const payload = objectToSnakeCase({ email, password, displayName: handle, handle, ...rest });
+    dispatch(screenAuthSetCredentials(email, password));
 
     API.use(API.endpoints.auth.signUp)
       .build(undefined, payload)
@@ -66,7 +66,7 @@ SignUp.propTypes = {
   fields: PropTypes.objectOf(FIELD_PROPTYPES),
   history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired,
   initialValues: PropTypes.shape({
-    displayName: PropTypes.string,
+    handle: PropTypes.string,
     email: PropTypes.string,
     password: PropTypes.string,
   }),

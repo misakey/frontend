@@ -27,7 +27,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const CardProfile = ({ profile: { displayName, avatarUri, email }, t }) => {
+const CardProfile = ({ profile: { displayName, avatarUri, handle }, t }) => {
   const classes = useStyles();
 
   return (
@@ -36,7 +36,7 @@ const CardProfile = ({ profile: { displayName, avatarUri, email }, t }) => {
         text={displayName}
         image={avatarUri}
         title={displayName}
-        subtitle={email}
+        subtitle={`@${handle}`}
       />
       <List className="details">
         <ListItem button to={routes.account.profile.name} component={Link} divider aria-label={t('form.field.displayName.action')} classes={classes}>
@@ -78,7 +78,7 @@ CardProfile.propTypes = {
   profile: PropTypes.shape({
     displayName: PropTypes.string,
     avatarUri: PropTypes.string,
-    email: PropTypes.string,
+    handle: PropTypes.string,
   }).isRequired,
   t: PropTypes.func.isRequired,
 };
