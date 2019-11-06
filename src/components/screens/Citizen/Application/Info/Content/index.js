@@ -135,7 +135,7 @@ const getMissingLinkCustomizer = (t, handleClick, userManager, isAuthenticated, 
         <MUILink
           onClick={() => {
             browser.tabs.create({
-              url: `https://www.misakey.com/${mainDomain}`,
+              url: `${window.env.APP_URL}/citizen/${mainDomain}`,
             });
           }}
           component="button"

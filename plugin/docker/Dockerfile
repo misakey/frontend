@@ -27,6 +27,7 @@ RUN yarn global add web-ext
 
 RUN for D in `find build_plugin/* -maxdepth 0 -type d`; \
 do browser=${D#build_plugin/} ; web-ext build --source-dir=$D --overwrite-dest --artifacts-dir="artifacts/${browser}"; \
+mv artifacts/${browser}/*.zip artifacts/misakey_${browser}.zip; \
 done
 
 CMD ["serve"] 

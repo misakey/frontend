@@ -3,4 +3,5 @@ window.env = {
   DATABOX_LOGIN_PAGE: 'https://databox.preprod.misakey.com.dev/login',
   PLUGIN: true,
   AUTH: false,
+  APP_URL: 'https://www.preprod.misakey.dev',
 };

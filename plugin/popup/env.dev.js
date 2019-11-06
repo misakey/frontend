@@ -3,4 +3,5 @@ window.env = {
   DATABOX_LOGIN_PAGE: 'https://databox.misakey.com.local/login',
   PLUGIN: true,
   AUTH: false,
+  APP_URL: 'https://misakey.com.local',
 };

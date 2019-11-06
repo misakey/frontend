@@ -145,7 +145,7 @@ function ApplicationHeader({
     // @FIXME: remove when auth in plugin is implemented
     if (window.env.PLUGIN) {
       browser.tabs.create({
-        url: `https://www.misakey.com/${mainDomain}`,
+        url: `${window.env.APP_URL}/citizen/${mainDomain}`,
       });
     } else {
       userManager.signinRedirect();
