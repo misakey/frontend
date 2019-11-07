@@ -1,22 +1,27 @@
+/* eslint-disable no-redeclare */
+/* global browser */
+
 import React, { useEffect, useState } from 'react';
 import { Redirect, generatePath } from 'react-router-dom';
-
 import routes from 'routes';
-
-import { sendMessage } from 'background';
-import { GET_CURRENT_DOMAIN } from 'background/messages';
+import { parse } from 'tldts';
 
 import DefaultScreen from './DefaultScreen';
+
+// @TODO add o js-common helpers
+async function getCurrentTab() {
+  const tabs = await browser.tabs.query({ currentWindow: true, active: true });
+  return tabs[0] || {};
+}
 
 function Plugin() {
   const [pluginDomain, setPluginDomain] = useState(null);
 
   useEffect(() => {
-    if (window.env.PLUGIN) {
-      sendMessage(GET_CURRENT_DOMAIN).then((domain) => {
-        setPluginDomain(domain);
-      });
-    }
+    getCurrentTab().then(({ url }) => {
+      const { domain } = parse(url);
+      setPluginDomain(domain);
+    });
   }, []);
 
   if (pluginDomain) {

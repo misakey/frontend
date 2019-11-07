@@ -28,7 +28,7 @@ const ApplicationSchema = {
   collection,
   propTypes: {
     mainDomain: PropTypes.string.isRequired,
-    id: PropTypes.string.isRequired,
+    id: PropTypes.string,
     logoUri: PropTypes.string,
     name: PropTypes.string,
     shortDesc: PropTypes.string,

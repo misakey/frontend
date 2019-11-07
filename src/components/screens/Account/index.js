@@ -18,7 +18,7 @@ import useAsync from '@misakey/hooks/useAsync';
 
 import { userProfileReceive } from 'store/actions/screens/account';
 
-import SplashScreen from 'components/dumb/SplashScreen';
+import SplashScreen from '@misakey/ui/SplashScreen';
 import ScreenError from 'components/dumb/Screen/Error';
 import Footer from 'components/dumb/Footer';
 import Container from '@material-ui/core/Container';

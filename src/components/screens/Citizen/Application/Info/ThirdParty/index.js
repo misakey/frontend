@@ -19,7 +19,6 @@ import { GET_BLOCKED_INFOS, REFRESH_BLOCKED_INFOS, UPDATE_WHITELIST } from 'back
 
 import { Typography, Grid } from '@material-ui/core';
 import ThirdPartyBlockPurpose from 'components/dumb/Application/ThirdParty';
-import SplashScreen from 'components/dumb/SplashScreen';
 
 import routes from 'routes';
 
@@ -145,10 +144,6 @@ function ThirdPartyBlock({
 
   useEffect(getData, []);
 
-  if (isFetching) {
-    return <SplashScreen />;
-  }
-
   return (
     <Grid
       container
@@ -182,7 +177,7 @@ function ThirdPartyBlock({
           </Grid>
         ))
       }
-      {empty && (
+      {empty && !isFetching && (
         <Grid
           container
           className={classes.empty}

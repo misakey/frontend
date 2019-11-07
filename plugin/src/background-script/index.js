@@ -8,8 +8,6 @@
 import log from '@misakey/helpers/log';
 import common from '@misakey/ui/colors/common';
 
-import { parse } from 'tldts';
-
 import { getBlockingResponse, deserializeEngine } from './engine';
 import { getItem } from './storage';
 import { getCurrentTab, setBadgeBackgroundColor, setBadgeTextColor, setBadgeText } from './utils';
@@ -125,12 +123,6 @@ function handleCommunication(engine) {
   // Listener for other scripts messages. The main messages come from popup script
   browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     switch (msg.action) {
-      case 'getCurrentDomain':
-        return getCurrentTab().then(({ url }) => {
-          const { domain } = parse(url);
-          return domain;
-        });
-
       case 'getBlockerState': {
         const { pausedBlocking, pausedTime } = globals;
         return Promise.resolve({

@@ -106,7 +106,7 @@ function OnLoading({ width }) {
 }
 
 OnLoading.propTypes = {
-  width: PropTypes.number.isRequired,
+  width: PropTypes.string.isRequired,
 };
 
 function ApplicationHeader({
@@ -153,6 +153,7 @@ function ApplicationHeader({
   }, [userManager, mainDomain]);
 
   const feedbackApp = useMemo(() => ({ id, mainDomain }), [id, mainDomain]);
+  const applicationName = useMemo(() => (name || mainDomain), [name, mainDomain]);
 
   return (
     <Container maxWidth={false}>
@@ -160,7 +161,7 @@ function ApplicationHeader({
         <Grid container spacing={SPACING} className={classes.grid} alignItems="center">
           <Grid item>
             <ApplicationImg
-              alt={name}
+              alt={applicationName}
               component="a"
               target="_blank"
               href={homepage}
@@ -168,7 +169,7 @@ function ApplicationHeader({
               src={!isEmpty(logoUri) ? logoUri : undefined}
               className={clsx(classes.avatar, { [classes.letterAvatar]: isEmpty(logoUri) })}
             >
-              {name.slice(0, 3)}
+              {applicationName.slice(0, 3)}
             </ApplicationImg>
           </Grid>
           <Grid item className={classes.titles}>
@@ -178,7 +179,7 @@ function ApplicationHeader({
                   variant={['xs', 'sm'].includes(width) ? 'h5' : 'h4'}
                   className={classes.nameTitle}
                 >
-                  {name}
+                  {applicationName}
                 </Typography>
                 <Typography variant="body1" color="textSecondary">
                   {shortDesc}
@@ -223,15 +224,17 @@ function ApplicationHeader({
             <Typography color="textSecondary" variant="subtitle1" display="inline">
               {t('screens:application.info.ratingCount', { count: totalRating })}
             </Typography>
-            <FeedbackLink
-              application={feedbackApp}
-              to={addFeedbackRoute}
-              onClick={signInRedirect}
-              variant="subtitle1"
-              className={classes.rateLink}
-            >
-              {t('screens:application.info.rate')}
-            </FeedbackLink>
+            {feedbackApp.id && (
+              <FeedbackLink
+                application={feedbackApp}
+                to={addFeedbackRoute}
+                onClick={signInRedirect}
+                variant="subtitle1"
+                className={classes.rateLink}
+              >
+                {t('screens:application.info.rate')}
+              </FeedbackLink>
+            )}
           </Grid>
           {(isAuthenticated) && (
             <Grid item>

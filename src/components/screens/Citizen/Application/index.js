@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Route, Switch } from 'react-router-dom';
 
@@ -9,7 +9,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import RoutePrivate from '@misakey/auth/components/Route/Private';
 import withApplication from 'components/smart/withApplication';
-import ResponseHandlerWrapper from '@misakey/ui/ResponseHandlerWrapper';
 import Portal from '@misakey/ui/Portal';
 import isNil from '@misakey/helpers/isNil';
 import prop from '@misakey/helpers/prop';
@@ -20,7 +19,12 @@ import ApplicationInfo from 'components/screens/Citizen/Application/Info';
 import ApplicationContact from 'components/screens/Citizen/Application/Contact';
 import ApplicationFeedback from 'components/screens/Citizen/Application/Feedback';
 
+import isEmpty from '@misakey/helpers/isEmpty';
+import isNumber from '@misakey/helpers/isNumber';
+import isString from '@misakey/helpers/isString';
+import ErrorOverlay from '@misakey/ui/Error/Overlay';
 import { LEFT_PORTAL_ID } from 'components/smart/Layout';
+import SplashScreen from '@misakey/ui/SplashScreen';
 
 // CONSTANTS
 const PAGES_ROSES_ENDPOINT = {
@@ -37,47 +41,50 @@ const useStyles = makeStyles(() => ({
 
 function Application({ entity, error, isFetching, mainDomain, match }) {
   const classes = useStyles();
+  const application = useMemo(
+    () => (isFetching ? { mainDomain } : entity),
+    [mainDomain, entity, isFetching],
+  );
+  // @FIXME use ResponseHandlerWrapper
+  if (isString(error) || isNumber(error)) { return <ErrorOverlay httpStatus={error} />; }
+  if (!window.env.PLUGIN && isFetching && isEmpty(entity)) { return <SplashScreen />; }
 
   return (
-    <ResponseHandlerWrapper
-      error={error}
-      entity={entity}
-      isFetching={isFetching}
-    >
-      <>
+    <>
+      {application && (
         <Portal elementId={LEFT_PORTAL_ID} className={classes.portalAvatar}>
-          <ApplicationAvatar application={entity} />
+          <ApplicationAvatar application={application} />
         </Portal>
-        <Switch>
-          <RoutePrivate
-            path={routes.citizen.application.contact._}
-            component={ApplicationContact}
-            componentProps={{ entity, error, isFetching, mainDomain }}
-          />
-          <Route path={routes.citizen.application.feedback._} component={ApplicationFeedback} />
+      )}
+      <Switch>
+        <RoutePrivate
+          path={routes.citizen.application.contact._}
+          component={ApplicationContact}
+          componentProps={{ entity: application, error, isFetching, mainDomain }}
+        />
+        <Route path={routes.citizen.application.feedback._} component={ApplicationFeedback} />
 
-          <Route
-            path={routes.citizen.application.info}
-            render={(routerProps) => (
-              <ApplicationInfo
-                entity={entity}
-                error={error}
-                isFetching={isFetching}
-                {...routerProps}
-              />
-            )}
-          />
-          <Route exact path={match.path} component={ApplicationNone} />
-        </Switch>
-      </>
-    </ResponseHandlerWrapper>
+        <Route
+          path={routes.citizen.application.info}
+          render={(routerProps) => (
+            <ApplicationInfo
+              entity={application}
+              error={error}
+              isFetching={isFetching}
+              {...routerProps}
+            />
+          )}
+        />
+        <Route exact path={match.path} component={ApplicationNone} />
+      </Switch>
+    </>
   );
 }
 
 Application.propTypes = {
   dispatch: PropTypes.func.isRequired,
   entity: PropTypes.shape(ApplicationSchema.propTypes),
-  error: PropTypes.object,
+  error: PropTypes.number,
   isFetching: PropTypes.bool,
   mainDomain: PropTypes.string.isRequired,
   match: PropTypes.shape({ path: PropTypes.string }).isRequired,

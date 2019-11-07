@@ -60,14 +60,18 @@ const withApplication = (Component, options = {}) => {
         fetchApplication(mainDomain, isAuthenticated, endpoint)
           .then((response) => {
             dispatchReceive(response.map(objectToCamelCase));
-            if (window.env.PLUGIN && isEmpty(response)) {
-              dispatchReceivePlugin(mainDomain);
+            if (isEmpty(response)) {
+              if (window.env.PLUGIN) {
+                dispatchReceivePlugin(mainDomain);
+              } else {
+                setError(404);
+              }
             }
           })
           .catch((e) => {
             if (window.env.PLUGIN && e.status === 404) {
               dispatchReceivePlugin(mainDomain);
-            } else { setError(e); }
+            } else { setError(e.status); }
           })
           .finally(() => { setIsFetching(false); });
       }
