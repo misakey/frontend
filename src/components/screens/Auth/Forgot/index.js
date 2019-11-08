@@ -237,6 +237,7 @@ const AuthForgot = ({ challenge, email, t, history, isAuthenticated }) => {
                     type="text"
                     name={CONFIRM_FIELD_NAME}
                     component={FieldText}
+                    inputProps={{ 'data-matomo-ignore': true }}
                     label={t('auth:forgotPassword.form.field.confirm.label')}
                   />
                 )

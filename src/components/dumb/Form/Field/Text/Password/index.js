@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import FieldText from '@misakey/ui/Form/Field/Text/index';
+import FieldText from '../index';
 
 // COMPONENTS
-const FieldTextPassword = ({ type, ...props }) => <FieldText {...props} type={type} />;
+const FieldTextPassword = ({ type, ...props }) => (
+  <FieldText {...props} type={type} inputProps={{ 'data-matomo-ignore': true }} />
+);
 
 FieldTextPassword.propTypes = {
   type: PropTypes.string,

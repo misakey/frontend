@@ -1,6 +1,6 @@
 config: >-
   window.env = {
-    ENV: 'production',
+    ENV: 'preprod',
     API_ENDPOINT: 'https://api.preprod.misakey.dev',
     GAPI_CLIENT_ID: '932593622193-rgk9os4utgk93v2ac3k6bbrqu9v829l3.apps.googleusercontent.com',
     AUTH: {

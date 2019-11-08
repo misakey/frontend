@@ -6,9 +6,10 @@ import Fields, { FIELD_PROPTYPES } from '@misakey/ui/Form/Fields';
 
 import { STEP } from 'components/smart/Auth/SignIn/Form/constants';
 
+
 const defaultProps = {
-  email: { component: FieldText, type: 'email' },
-  password: { component: FieldText, type: 'password' },
+  email: { component: FieldText, type: 'email', inputProps: { 'data-matomo-ignore': true } },
+  password: { component: FieldText, type: 'password', inputProps: { 'data-matomo-ignore': true } },
 };
 
 const SignInFormFields = ({ step, ...fields }) => (

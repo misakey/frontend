@@ -11,7 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
-import FieldTextPassword from '../index';
+import FieldTextPassword from './index';
 
 // CONSTANTS
 const INTERNAL_PROPS = ['i18n', 'tReady'];
@@ -45,7 +45,6 @@ const useInputProps = (visible, onToggleVisible, t) => useMemo(() => ({
         {visible ? <VisibilityOff /> : <Visibility />}
       </IconButton>
     </InputAdornment>
-
   ),
 }), [visible, onToggleVisible, t]);
 

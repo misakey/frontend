@@ -13,7 +13,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 
 const defaultProps = {
-  email: { component: FieldText, type: 'email' },
+  email: { component: FieldText, type: 'email', inputProps: { 'data-matomo-ignore': true } },
   handle: {
     component: FieldText,
     InputProps: {
@@ -23,8 +23,9 @@ const defaultProps = {
         </InputAdornment>
       ),
     },
+    inputProps: { 'data-matomo-ignore': true },
   },
-  password: { component: FieldText, type: 'password' },
+  password: { component: FieldText, type: 'password', inputProps: { 'data-matomo-ignore': true } },
   tos: { component: FieldCheckbox },
 };
 

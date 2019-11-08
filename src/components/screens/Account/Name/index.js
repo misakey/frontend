@@ -96,6 +96,7 @@ const AccountName = ({
                   component={FieldText}
                   label={t('profile:form.field.displayName.label')}
                   helperText={t('profile:form.field.displayName.hint')}
+                  inputProps={{ 'data-matomo-ignore': true }}
                 />
                 <ButtonSubmit isSubmitting={isSubmitting} isValid={isValid}>
                   {t('submit')}

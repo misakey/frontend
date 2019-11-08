@@ -4,7 +4,7 @@ import FieldText from '@misakey/ui/Form/Field/Text';
 import Fields from '@misakey/ui/Form/Fields';
 
 const defaultProps = {
-  code: { component: FieldText },
+  code: { component: FieldText, inputProps: { 'data-matomo-ignore': true } },
 };
 
 const SignUpConfirmFormFields = (fields) => (

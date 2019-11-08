@@ -168,7 +168,6 @@ const AccountName = ({
                 component={FieldTextPasswordRevealable}
                 label={t('profile:form.field.passwordConfirm.label')}
               />
-
               <ButtonSubmit isSubmitting={isSubmitting} isValid={isValid}>
                 {t('submit')}
               </ButtonSubmit>
