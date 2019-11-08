@@ -29,7 +29,7 @@ import SplashScreen from '@misakey/ui/SplashScreen';
 // CONSTANTS
 const PAGES_ROSES_ENDPOINT = {
   method: 'GET',
-  path: '/applications',
+  path: '/applications/:mainDomain',
 };
 
 // HOOKS
@@ -98,5 +98,6 @@ Application.defaultProps = {
 
 export default withApplication(Application, {
   endpoint: PAGES_ROSES_ENDPOINT,
+  paramMapper: (props) => [props],
   getSpecificShouldFetch: compose(isNil, prop('avgRating')),
 });

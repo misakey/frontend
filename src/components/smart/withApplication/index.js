@@ -4,8 +4,11 @@ import { connect } from 'react-redux';
 import { normalize, denormalize } from 'normalizr';
 
 import parseJwt from '@misakey/helpers/parseJwt';
-import isString from '@misakey/helpers/isString';
+import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
+import isString from '@misakey/helpers/isString';
+import isArray from '@misakey/helpers/isArray';
+import isFunction from '@misakey/helpers/isFunction';
 
 import API from '@misakey/api';
 import ApplicationSchema from 'store/schemas/Application';
@@ -13,7 +16,6 @@ import { receiveEntities } from '@misakey/store/actions/entities';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import isNil from '@misakey/helpers/isNil';
 
 // CONSTANTS
 const DEFAULT_ENDPOINT = {
@@ -21,18 +23,23 @@ const DEFAULT_ENDPOINT = {
   path: '/application-info',
 };
 
-const fetchApplication = (mainDomain, isAuthenticated, endpoint) => {
+// HELPERS
+const defaultMapper = (props) => [null, null, objectToSnakeCase(props)];
+
+const fetchApplication = (mainDomain, isAuthenticated, endpoint, paramMapper) => {
   const authEndpoint = isNil(endpoint)
     ? { ...DEFAULT_ENDPOINT, auth: isAuthenticated }
     : { ...endpoint, auth: isAuthenticated };
+  const mapper = isFunction(paramMapper) ? paramMapper : defaultMapper;
   return API
     .use(authEndpoint)
-    .build(null, null, objectToSnakeCase({ mainDomain }))
+    .build(...(mapper({ mainDomain })))
     .send();
 };
 
 const withApplication = (Component, options = {}) => {
-  const { endpoint, getSpecificShouldFetch } = options;
+  // @FIXME simplify logic of the HOC: params, endpoint, schema
+  const { endpoint, paramMapper, getSpecificShouldFetch, schema = ApplicationSchema } = options;
   const ComponentWithApplication = (props) => {
     const {
       isAuthenticated, isDefaultDomain, mainDomain,
@@ -57,15 +64,18 @@ const withApplication = (Component, options = {}) => {
       if (shouldFetch) {
         setIsFetching(true);
 
-        fetchApplication(mainDomain, isAuthenticated, endpoint)
+        fetchApplication(mainDomain, isAuthenticated, endpoint, paramMapper)
           .then((response) => {
-            dispatchReceive(response.map(objectToCamelCase));
             if (isEmpty(response)) {
               if (window.env.PLUGIN) {
                 dispatchReceivePlugin(mainDomain);
               } else {
                 setError(404);
               }
+            } else if (isArray(response)) {
+              dispatchReceive(response.map(objectToCamelCase));
+            } else {
+              dispatchReceive(objectToCamelCase(response));
             }
           })
           .catch((e) => {
@@ -95,7 +105,7 @@ const withApplication = (Component, options = {}) => {
   ComponentWithApplication.propTypes = {
     isAuthenticated: PropTypes.bool.isRequired,
     isDefaultDomain: PropTypes.bool.isRequired,
-    entity: PropTypes.shape(ApplicationSchema.propTypes),
+    entity: PropTypes.shape(schema.propTypes),
     mainDomain: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
     dispatchReceive: PropTypes.func.isRequired,
@@ -117,7 +127,7 @@ const withApplication = (Component, options = {}) => {
       isDefaultDomain: isDefault(mainDomain),
       entity: denormalize(
         mainDomain,
-        ApplicationSchema.entity,
+        schema.entity,
         state.entities,
       ),
       mainDomain,
@@ -128,7 +138,12 @@ const withApplication = (Component, options = {}) => {
   const mapDispatchToProps = (dispatch) => ({
     dispatch,
     dispatchReceive: (data) => {
-      const normalized = normalize(data, ApplicationSchema.collection);
+      const normalized = normalize(
+        data,
+        isArray(data)
+          ? schema.collection
+          : schema.entity,
+      );
       const { entities } = normalized;
       dispatch(receiveEntities(entities));
     },
@@ -139,7 +154,7 @@ const withApplication = (Component, options = {}) => {
         id: mainDomain,
         name: `${mainDomain.charAt(0).toUpperCase()}${mainDomain.slice(1)}`,
       }];
-      const normalized = normalize(data, ApplicationSchema.collection);
+      const normalized = normalize(data, schema.collection);
       const { entities } = normalized;
       dispatch(receiveEntities(entities));
     },
