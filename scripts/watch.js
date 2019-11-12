@@ -1,6 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies, no-console */
 // from https://gist.github.com/jasonblanchard/ae0d2e304a647cd847c0b4493c2353d4 and https://www.npmjs.com/package/cra-build-watch
 
+// FIXME : use config-overrides.js
+
 process.env.NODE_ENV = 'development'; // eslint-disable-line no-process-env
 
 const fs = require('fs-extra');
@@ -22,16 +24,26 @@ const disableChunks = true;
 // it is supposed to always be an empty string as they are using
 // the in-memory development server to serve the content
 const env = getClientEnvironment(process.env.PUBLIC_URL || ''); // eslint-disable-line no-process-env
+const CONFIG = {
+  __configAppUrlTpl__: {
+    prod: 'https://www.misakey.com/',
+    preprod: 'https://www.preprod.misakey.dev/',
+    dev: 'https://misakey.com.local/',
+  },
+};
 
 function modify(buffer, targetBrowser) {
   // copy-webpack-plugin passes a buffer
+  // build for browser target
   const manifest = JSON.parse(buffer.toString());
-
   const targetManifest = (manifest[`${targetBrowser}_specific`])
     ? { ...manifest.common, ...manifest[`${targetBrowser}_specific`] }
     : { ...manifest.common };
 
-  return JSON.stringify(targetManifest);
+  // replace template values depending on environment
+  const newManifestString = JSON.stringify(targetManifest);
+  // eslint-disable-next-line no-underscore-dangle
+  return newManifestString.replace('__configAppUrlTpl__', CONFIG.__configAppUrlTpl__.dev);
 }
 
 /**

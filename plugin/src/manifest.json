@@ -23,6 +23,7 @@
     "background": {
       "scripts": [
         "polyfill/browser-polyfill.js",
+        "env.js",
         "background.bundle.js"
       ]
     },
@@ -39,6 +40,18 @@
           "http://*/*",
           "https://*/*"
         ],
+        "run_at": "document_start"
+      },
+      {
+        "matches": [
+          "__configAppUrlTpl__"
+        ],
+        "js": [
+          "polyfill/browser-polyfill.js",
+          "env.js",
+          "content_script_misakey.bundle.js"
+        ],
+        "all_frames": true,
         "run_at": "document_start"
       }
     ],

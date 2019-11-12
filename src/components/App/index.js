@@ -1,15 +1,13 @@
-import React, { Suspense, lazy, useEffect } from 'react';
+import React, { Suspense, lazy } from 'react';
 import PropTypes from 'prop-types';
 import { SnackbarProvider } from 'notistack';
 import { withTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
 
 import Layout from 'components/smart/Layout';
 import SplashScreen from '@misakey/ui/SplashScreen';
 
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
-import { layoutButtonConnectHide } from 'store/actions/Layout';
 
 import RoutePrivate from '@misakey/auth/components/Route/Private';
 import RouteAccessRequest from 'components/smart/Route/AccessRequest';
@@ -39,13 +37,7 @@ const REFERRERS = {
 // COMPONENTS
 const TRedirectAuthCallback = withTranslation('common')(RedirectAuthCallback);
 
-function App({ dispatch, t }) {
-  useEffect(() => {
-    if (window.env.PLUGIN) {
-      dispatch(layoutButtonConnectHide());
-    }
-  }, [dispatch]);
-
+function App({ t }) {
   return (
     <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
 
@@ -54,7 +46,7 @@ function App({ dispatch, t }) {
           <Switch>
             <Route exact path={routes.plugin} component={Plugin} />
             <Route path={routes.citizen._} component={Citizen} />
-            { /* @FIXME: move with other account route when auth in plugin is implemented */}
+            { /* @FIXME: move with other account routes when save profile will be implemented */}
             <Route
               exact
               path={routes.account.thirdParty.setup}
@@ -123,7 +115,6 @@ function App({ dispatch, t }) {
 
 App.propTypes = {
   t: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired,
 };
 
-export default connect()(withTranslation()(App));
+export default withTranslation()(App);

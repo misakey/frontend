@@ -1,9 +1,9 @@
-/* global browser */ // eslint-disable-line no-redeclare
-
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+import { generatePath } from 'react-router-dom';
 
+import routes from 'routes';
 import { connect } from 'react-redux';
 
 import ApplicationSchema from 'store/schemas/Application';
@@ -37,6 +37,7 @@ import MyFeedbackCard from 'components/dumb/Card/Feedback/My';
 import SummaryFeedbackCard from 'components/dumb/Card/Feedback/Summary';
 import withMyFeedback from 'components/smart/withMyFeedback';
 
+import { redirectToApp } from 'helpers/plugin';
 
 // CONSTANTS
 const requiredLinksType = ['privacy_policy', 'tos', 'terms', 'legal_notice', 'cookies', 'personal_data', 'dpo_contact'];
@@ -118,9 +119,17 @@ const getHomeCountryCustomizer = (lng) => {
   return [match, format];
 };
 
-const getMissingLinkCustomizer = (t, handleClick, userManager, isAuthenticated, mainDomain) => {
-  const match = (value, key) => requiredLinksType.includes(key) && isNil(value);
+const useSignInRedirect = (userManager, mainDomain) => useCallback(() => {
+  // @FIXME: remove when auth inside plugin popup is implemented
+  if (window.env.PLUGIN) {
+    redirectToApp(generatePath(routes.citizen.application._, { mainDomain }));
+  } else {
+    userManager.signinRedirect();
+  }
+}, [userManager, mainDomain]);
 
+const getMissingLinkCustomizer = (t, handleClick, isAuthenticated, signInRedirect) => {
+  const match = (value, key) => requiredLinksType.includes(key) && isNil(value);
   const format = () => {
     if (isAuthenticated) {
       return (
@@ -129,24 +138,9 @@ const getMissingLinkCustomizer = (t, handleClick, userManager, isAuthenticated, 
         </MUILink>
       );
     }
-    // TODO : remove when auth in plugin is implemented
-    if (window.env.PLUGIN) {
-      return (
-        <MUILink
-          onClick={() => {
-            browser.tabs.create({
-              url: `${window.env.APP_URL}/citizen/${mainDomain}`,
-            });
-          }}
-          component="button"
-        >
-          {t('screens:application.info.userContribution.missingLinkNotConnected')}
-        </MUILink>
-      );
-    }
 
     return (
-      <MUILink onClick={() => userManager.signinRedirect()} component="button">
+      <MUILink onClick={signInRedirect} component="button">
         {t('screens:application.info.userContribution.missingLinkNotConnected')}
       </MUILink>
     );
@@ -201,6 +195,9 @@ const ApplicationInfoContent = ({
     [collapse],
   );
 
+  const mainDomain = useMemo(() => entity.mainDomain, [entity]);
+  const signInRedirect = useSignInRedirect(userManager, mainDomain);
+
   const translationCustomizer = React.useMemo(() => getTranslationCustomizer('.primary'), []);
   const privacyShieldCustomizer = React.useMemo(() => getPrivacyShieldCustomizer(), []);
   const homeCountryCustomizer = React.useMemo(() => getHomeCountryCustomizer(language), [language]);
@@ -208,11 +205,10 @@ const ApplicationInfoContent = ({
     () => getMissingLinkCustomizer(
       t,
       onContributionLinkClick,
-      userManager,
       isAuthenticated,
-      entity.mainDomain,
+      signInRedirect,
     ),
-    [t, onContributionLinkClick, userManager, isAuthenticated, entity.mainDomain],
+    [t, onContributionLinkClick, isAuthenticated, signInRedirect],
   );
 
   // @FIXME: define if we want that behaviour or not.

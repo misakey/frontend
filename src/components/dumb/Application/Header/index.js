@@ -1,4 +1,3 @@
-/* global browser */ // eslint-disable-line no-redeclare
 import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -12,6 +11,7 @@ import ApplicationSchema from 'store/schemas/Application';
 import routes from 'routes';
 
 import displayIn from '@misakey/helpers/displayIn';
+import { redirectToApp, openInNewTab } from 'helpers/plugin';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -127,6 +127,7 @@ function ApplicationHeader({
   userManager,
   wasContacted,
   onContributionDpoEmailClick,
+  readOnly,
 }) {
   const classes = useStyles();
   const width = useWidth();
@@ -144,9 +145,7 @@ function ApplicationHeader({
   const signInRedirect = useCallback(() => {
     // @FIXME: remove when auth in plugin is implemented
     if (window.env.PLUGIN) {
-      browser.tabs.create({
-        url: `${window.env.APP_URL}/citizen/${mainDomain}`,
-      });
+      redirectToApp(generatePath(routes.citizen.application._, { mainDomain }));
     } else {
       userManager.signinRedirect();
     }
@@ -154,6 +153,8 @@ function ApplicationHeader({
 
   const feedbackApp = useMemo(() => ({ id, mainDomain }), [id, mainDomain]);
   const applicationName = useMemo(() => (name || mainDomain), [name, mainDomain]);
+
+  const mailToForPlugin = useCallback(() => { openInNewTab(`mailto:${dpoEmail}`); }, [dpoEmail]);
 
   return (
     <Container maxWidth={false}>
@@ -184,27 +185,34 @@ function ApplicationHeader({
                 <Typography variant="body1" color="textSecondary">
                   {shortDesc}
                 </Typography>
-                <Typography>
-                  {isAuthenticated && dpoEmail && (
-                    <MUILink href={`mailto:${dpoEmail}`}>
-                      {dpoEmail}
-                    </MUILink>
-                  )}
-                  {isAuthenticated && !dpoEmail && (
-                    <MUILink
-                      onClick={onContributionDpoEmailClick}
-                      className="lightLink"
-                      component="button"
-                    >
-                      {t('screens:application.info.userContribution.dpoEmailOpenDialog')}
-                    </MUILink>
-                  )}
-                  {!isAuthenticated && !window.env.PLUGIN && (
-                    <MUILink onClick={() => userManager.signinRedirect()} component="button">
-                      {t('screens:application.info.emailSignIn')}
-                    </MUILink>
-                  )}
-                </Typography>
+                {!readOnly && (
+                  <Typography>
+                    {isAuthenticated && dpoEmail && !window.env.PLUGIN && (
+                      <MUILink href={`mailto:${dpoEmail}`}>
+                        {dpoEmail}
+                      </MUILink>
+                    )}
+                    {isAuthenticated && dpoEmail && window.env.PLUGIN && (
+                      <MUILink onClick={mailToForPlugin} component="button">
+                        {dpoEmail}
+                      </MUILink>
+                    )}
+                    {isAuthenticated && !dpoEmail && (
+                      <MUILink
+                        onClick={onContributionDpoEmailClick}
+                        className="lightLink"
+                        component="button"
+                      >
+                        {t('screens:application.info.userContribution.dpoEmailOpenDialog')}
+                      </MUILink>
+                    )}
+                    {!isAuthenticated && (
+                      <MUILink onClick={signInRedirect} component="button">
+                        {t('screens:application.info.emailSignIn')}
+                      </MUILink>
+                    )}
+                  </Typography>
+                )}
               </>
             )}
             <Divider className={classes.divider} />
@@ -224,7 +232,7 @@ function ApplicationHeader({
             <Typography color="textSecondary" variant="subtitle1" display="inline">
               {t('screens:application.info.ratingCount', { count: totalRating })}
             </Typography>
-            {feedbackApp.id && (
+            {feedbackApp.id && !readOnly && (
               <FeedbackLink
                 application={feedbackApp}
                 to={addFeedbackRoute}
@@ -236,15 +244,17 @@ function ApplicationHeader({
               </FeedbackLink>
             )}
           </Grid>
-          {(isAuthenticated) && (
+          {(isAuthenticated && !readOnly) && (
             <Grid item>
-              <ContactButton
-                idToken={auth.id}
-                dpoEmail={dpoEmail}
-                applicationID={id}
-                mainDomain={mainDomain}
-                contactedView={wasContacted}
-              />
+              {!window.env.PLUGIN && (
+                <ContactButton
+                  idToken={auth.id}
+                  dpoEmail={dpoEmail}
+                  applicationID={id}
+                  mainDomain={mainDomain}
+                  contactedView={wasContacted}
+                />
+              )}
               {!dpoEmail && (
                 <Button
                   onClick={onContributionDpoEmailClick}
@@ -252,6 +262,15 @@ function ApplicationHeader({
                   color="secondary"
                 >
                   {t('screens:application.info.userContribution.dpoEmailOpenDialog')}
+                </Button>
+              )}
+              {window.env.PLUGIN && dpoEmail && (
+                <Button
+                  onClick={signInRedirect}
+                  variant="contained"
+                  color="secondary"
+                >
+                  {t('screens:application.info.contact.goToApp')}
                 </Button>
               )}
             </Grid>
@@ -272,6 +291,7 @@ ApplicationHeader.propTypes = {
   userManager: PropTypes.object.isRequired,
   wasContacted: PropTypes.bool,
   onContributionDpoEmailClick: PropTypes.func.isRequired,
+  readOnly: PropTypes.bool,
 };
 
 ApplicationHeader.defaultProps = {
@@ -279,6 +299,7 @@ ApplicationHeader.defaultProps = {
   isAuthenticated: false,
   isLoading: false,
   wasContacted: false,
+  readOnly: false,
 };
 
 export default withUserManager(withTranslation(['common', 'screens'])(ApplicationHeader));

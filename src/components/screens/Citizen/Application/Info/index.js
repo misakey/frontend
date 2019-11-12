@@ -103,19 +103,18 @@ function ApplicationInfo({
         isAuthenticated={isAuthenticated}
         isLoading={isFetching}
         onContributionDpoEmailClick={onContributionDpoEmailClick}
+        readOnly={entity.unknown}
       />
       {!entity.unknown && (
-        <ApplicationNavTabs mainDomain={entity.mainDomain} />
+        <ApplicationNavTabs mainDomain={entity.mainDomain} isAuthenticated={isAuthenticated} />
       )}
 
       <Switch>
-        {!window.env.PLUGIN && (
-          <PrivateRoute
-            exact
-            path={routes.citizen.application.personalData}
-            component={ApplicationBox}
-          />
-        )}
+        <PrivateRoute
+          exact
+          path={routes.citizen.application.personalData}
+          component={ApplicationBox}
+        />
         {window.env.PLUGIN && (
           <Route
             exact

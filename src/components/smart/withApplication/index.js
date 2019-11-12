@@ -53,11 +53,11 @@ const withApplication = (Component, options = {}) => {
       const validDomain = isString(mainDomain) && !isDefaultDomain;
       const validInternalState = !isFetching && isNil(error);
       const defaultShouldFetch = isNil(entity);
-      const specificShouldFetch = (
+      const isFetchNeeded = (
         isNil(getSpecificShouldFetch)
-      ) ? true : getSpecificShouldFetch(entity);
+      ) ? defaultShouldFetch : getSpecificShouldFetch(entity);
 
-      return validDomain && validInternalState && (defaultShouldFetch || specificShouldFetch);
+      return validDomain && validInternalState && isFetchNeeded;
     }, [isDefaultDomain, isFetching, error, entity, mainDomain]);
 
     const startFetching = useCallback(() => {
@@ -96,7 +96,7 @@ const withApplication = (Component, options = {}) => {
       <Component
         {...props}
         error={error}
-        isFetching={shouldFetch || isFetching === true}
+        isFetching={isFetching}
         mainDomain={mainDomain}
       />
     );

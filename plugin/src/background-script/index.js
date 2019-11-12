@@ -8,10 +8,18 @@
 import log from '@misakey/helpers/log';
 import common from '@misakey/ui/colors/common';
 
+import globals from './globals';
+import { setLocalStorage, initAuthIframe } from './auth';
+
 import { getBlockingResponse, deserializeEngine } from './engine';
 import { getItem } from './storage';
-import { getCurrentTab, setBadgeBackgroundColor, setBadgeTextColor, setBadgeText } from './utils';
-import globals from './globals';
+import {
+  getCurrentTab,
+  setBadgeBackgroundColor,
+  setBadgeTextColor,
+  setBadgeText,
+  toggleBadgeAndIconOnPaused,
+} from './utils';
 import { ENGINE_URL, DATABASE_URL } from './config';
 
 
@@ -108,15 +116,27 @@ function handleRequest(engine) {
 }
 
 function handleCommunication(engine) {
-  // Follow a connection with the popup when it's opened in order to refresh information in popup
-  // (cf. browser.webRequest.onErrorOccurred)
   browser.runtime.onConnect.addListener((externalPort) => {
+    // Follow a connection with the popup when it's opened in order to refresh information in popup
+    // (cf. browser.webRequest.onErrorOccurred)
     if (externalPort.name === 'popup') {
       externalPort.onDisconnect.addListener(() => {
         globals.popupOpened = null;
       });
 
       globals.popupOpened = externalPort;
+    }
+
+    // Follow a connection with the misakey content-script to sync localStorage
+    // between webapp and plugin
+    if (externalPort.name === 'misakey-cs') {
+      externalPort.onMessage.addListener((msg) => {
+        if (msg.action === 'syncLocalStorage') {
+          setLocalStorage(msg.misakeyLocalStorage);
+          return Promise.resolve('success');
+        }
+        return Promise.reject(new Error('Fail to set localStorage'));
+      });
     }
   });
 
@@ -157,6 +177,10 @@ function handleCommunication(engine) {
   });
 }
 
+function handleConnexion() {
+  initAuthIframe();
+}
+
 function launchExtension() {
   loadAdblocker()
     .then(((engine) => {
@@ -164,8 +188,12 @@ function launchExtension() {
       handleConfig();
       handleRequest(engine);
       handleCommunication(engine);
+      handleConnexion();
     }))
-    .catch((err) => { log(err); });
+    .catch((err) => {
+      log(err);
+      toggleBadgeAndIconOnPaused(true);
+    });
 }
 
 launchExtension();

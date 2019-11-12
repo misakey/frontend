@@ -4,6 +4,7 @@ import { Link, generatePath, withRouter, matchPath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
 import omit from '@misakey/helpers/omit';
+import pickBy from '@misakey/helpers/pickBy';
 import useWidth from '@misakey/hooks/useWidth';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,19 +12,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import routes from 'routes';
-
-const TAB_LINKS = [
-  'info',
-  'personalData',
-  // 'myAccount',
-];
-
-if (window.env.PLUGIN) {
-  TAB_LINKS.splice(2, 0, 'thirdParty');
-  TAB_LINKS.splice(1, 1);
-}
-
-export const APPLICATION_TAB_LINKS = TAB_LINKS;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,18 +22,28 @@ const useStyles = makeStyles((theme) => ({
   linkTab: {
     fontSize: theme.typography.caption.fontSize,
     minHeight: '32px',
+    padding: '6px 9px',
   },
   tabs: {
     minHeight: '32px',
   },
 }));
 
-function ApplicationNavTabs({ location, mainDomain, scrollButtons, t, ...rest }) {
+function ApplicationNavTabs({ location, mainDomain, scrollButtons, t, isAuthenticated, ...rest }) {
   const classes = useStyles();
   const width = useWidth();
 
   const variant = React.useMemo(() => (['xs', 'sm'].includes(width) ? 'scrollable' : 'standard'), [width]);
   const centered = React.useMemo(() => variant === 'standard', [variant]);
+
+  const applicationTabsLinks = React.useMemo(() => Object.keys(pickBy({
+    info: true,
+    // FIXME : remove when unauthenticated view with CTA to singin is implemented
+    personalData: window.env.PLUGIN ? isAuthenticated : true,
+    // FIXME : remove when thirdparty in webapp is implemented
+    thirdParty: window.env.PLUGIN,
+    myAccount: false,
+  }, (value) => value === true)), [isAuthenticated]);
 
   const isCurrent = React.useCallback((name) => !!matchPath(location.pathname, {
     path: routes.citizen.application[name],
@@ -53,10 +51,10 @@ function ApplicationNavTabs({ location, mainDomain, scrollButtons, t, ...rest })
   }), [location.pathname]);
 
   const value = React.useMemo(
-    () => APPLICATION_TAB_LINKS.indexOf(
-      APPLICATION_TAB_LINKS.find((link) => isCurrent(link)),
+    () => applicationTabsLinks.indexOf(
+      applicationTabsLinks.find((link) => isCurrent(link)),
     ),
-    [isCurrent],
+    [isCurrent, applicationTabsLinks],
   );
 
   return (
@@ -78,7 +76,7 @@ function ApplicationNavTabs({ location, mainDomain, scrollButtons, t, ...rest })
         textColor="secondary"
         aria-label={t('screens:application.nav.label', { mainDomain })}
       >
-        {APPLICATION_TAB_LINKS.map((link) => (
+        {applicationTabsLinks.map((link) => (
           <Tab
             key={`tab-${link}`}
             className={classes.linkTab}
@@ -97,6 +95,7 @@ ApplicationNavTabs.propTypes = {
   mainDomain: PropTypes.string.isRequired,
   scrollButtons: PropTypes.string,
   t: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired,
 };
 
 ApplicationNavTabs.defaultProps = {

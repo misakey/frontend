@@ -43,6 +43,9 @@
         "title": "Description du service",
         "openInNew": "Voir le site"
       },
+      "contact": {
+        "goToApp": "Contacter depuis l'application"
+      },
       "userContribution": {
         "dpoEmailOpenDialog": "Je connais l'email du DPO !",
         "linkOpenDialog": "Je connais ce lien !",
@@ -210,7 +213,11 @@
     "enterPassword": "Veuillez saisir votre mot de passe",
     "intro": "Liste des fichiers envoyés par le DPO de {{applicationName}}",
     "sendAt": "Envoyé {{date}}",
-    "size": "Envoyé {{size}}"
+    "size": "Envoyé {{size}}",
+    "errors": {
+      "getBlob": "Une erreur s'est produite lors de la récupération du fichier",
+      "default": "Oops, impossible de télécharger le fichier !"
+    }
   },
   "feedback": {
     "me": {

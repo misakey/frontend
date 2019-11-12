@@ -18,6 +18,7 @@ import deburr from '@misakey/helpers/deburr';
 import parseJwt from '@misakey/helpers/parseJwt';
 import isObject from '@misakey/helpers/isObject';
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
 import SplashScreen from '@misakey/ui/SplashScreen';
@@ -157,7 +158,7 @@ function ApplicationBox({ application, match, t, auth }) {
       );
     } catch (e) {
       errorSnackBar('screens:databox.errors.getBlob');
-      return null;
+      return {};
     }
   }
 
@@ -185,6 +186,7 @@ function ApplicationBox({ application, match, t, auth }) {
       }
 
       const { blob: ciphertext } = await readBlob(id);
+      if (isEmpty(ciphertext)) { return; }
 
       const decryptedBlob = (
         await crypto.databox.decryptBlob(ciphertext, nonce, ephemeralProducerPubKey)

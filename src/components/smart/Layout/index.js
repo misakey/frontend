@@ -9,6 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import useWidth from '@misakey/hooks/useWidth';
 
 import displayIn from '@misakey/helpers/displayIn';
+import { redirectToApp } from 'helpers/plugin';
 
 import routes from 'routes';
 
@@ -149,6 +150,9 @@ function Layout({
     [pathname],
   );
 
+  const signInActionForPlugin = useCallback(() => redirectToApp('/'), []);
+  const redirectToWebAppAccount = useCallback(() => redirectToApp('/account'), []);
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -170,17 +174,19 @@ function Layout({
                 />
               )}
               <div id={RIGHT_PORTAL_ID} />
+              {pausePluginButton && <PausePluginButton />}
               {buttonConnect && (
                 <ButtonConnect
                   noTokenIcon={noTokenIcon}
                   buttonProps={buttonProps}
+                  signInAction={window.env.PLUGIN ? signInActionForPlugin : null}
+                  customAction={window.env.PLUGIN ? redirectToWebAppAccount : null}
                   className={clsx(
                     classes.buttonConnect,
                     { [classes.buttonTextRounded]: !isSmallDisplay },
                   )}
                 />
               )}
-              {pausePluginButton && <PausePluginButton />}
             </Toolbar>
           </AppBar>
         </ElevationScroll>

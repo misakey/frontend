@@ -4,15 +4,26 @@ const WebpackShellPlugin = require('webpack-shell-plugin');
 
 /* eslint-disable no-param-reassign */
 
-function modify(buffer, targetBrowser) {
-  // copy-webpack-plugin passes a buffer
-  const manifest = JSON.parse(buffer.toString());
+const CONFIG = {
+  __configAppUrlTpl__: {
+    prod: 'https://www.misakey.com/',
+    preprod: 'https://www.preprod.misakey.dev/',
+    dev: 'https://misakey.com.local/',
+  },
+};
 
+function modify(buffer, targetBrowser, environment) {
+  // copy-webpack-plugin passes a buffer
+  // build for browser target
+  const manifest = JSON.parse(buffer.toString());
   const targetManifest = (manifest[`${targetBrowser}_specific`])
     ? { ...manifest.common, ...manifest[`${targetBrowser}_specific`] }
     : { ...manifest.common };
 
-  return JSON.stringify(targetManifest);
+  // replace template values depending on environment
+  const newManifestString = JSON.stringify(targetManifest);
+  // eslint-disable-next-line no-underscore-dangle
+  return newManifestString.replace('__configAppUrlTpl__', CONFIG.__configAppUrlTpl__[environment]);
 }
 
 module.exports = {
@@ -32,7 +43,7 @@ module.exports = {
         from: 'plugin/src/manifest.json',
         to: 'manifest.json',
         transform(content) {
-          return modify(content, targetBrowser);
+          return modify(content, targetBrowser, environment);
         },
       },
     ]));

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
@@ -150,14 +150,17 @@ function ThirdPartySetup({
     history.goBack();
   }, [setFetching, dispatchLayoutAppbarShow, history]);
 
+  const appBarDisplayRef = useRef();
+  appBarDisplayRef.current = appBarIsDisplayed;
+
   useEffect(getData, [search, mainPurpose, mainDomain]);
   useEffect(() => {
-    if (appBarIsDisplayed) {
+    if (appBarDisplayRef.current) {
       dispatchLayoutAppbarHide();
       return () => { dispatchLayoutAppbarShow(); };
     }
-    return null;
-  }, []);
+    return undefined;
+  }, [appBarDisplayRef, dispatchLayoutAppbarHide, dispatchLayoutAppbarShow]);
 
   const setParams = useSetParams(location, history);
   const updateWhitelist = useUpdateWhitelist(
