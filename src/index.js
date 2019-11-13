@@ -71,12 +71,12 @@ if (isSilentAuthIframe()) {
   // i18n.init({debug: true});
 
   // STORE
-  const middleWares = [thunk, APITokenMiddleware];
-  if (!!process && process.env.NODE_ENV === 'development') { middleWares.push(createLogger()); }
+  const storeMiddleWares = [thunk, APITokenMiddleware];
+  if (window.env.ENV === 'development') { storeMiddleWares.push(createLogger()); }
 
   const rootPersistConfig = { key: 'root', storage, whitelist: ['global'], blacklist: [] };
   const persistedReducer = persistReducer(rootPersistConfig, reducers);
-  const store = createStore(persistedReducer, compose(applyMiddleware(...middleWares)));
+  const store = createStore(persistedReducer, compose(applyMiddleware(...storeMiddleWares)));
   const persistor = persistStore(store);
 
   // ADD MIDDLEWARE TO API

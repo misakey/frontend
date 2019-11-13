@@ -1,8 +1,0 @@
-# Example of the config.yaml file for deploying in prod
-
-config: >-
-  window.env = {
-    ENV: 'production',
-    KEY: 'VALUE FOR PROD', # Check the values.yaml file to have the real structure
-  };
-

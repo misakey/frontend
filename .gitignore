@@ -24,11 +24,6 @@ build_*
 
 .idea
 
-/helm/config.yaml
-/helm/config.prod.yaml
-/helm/config.production.yaml
-/helm/config.preprod.yaml
-
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

@@ -1,4 +1,5 @@
 window.env = {
+  ENV: 'production',
   API_ENDPOINT: 'https://api.misakey.com',
   PLUGIN: true,
   AUTH: {
