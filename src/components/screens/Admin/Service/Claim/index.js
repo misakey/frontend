@@ -28,12 +28,12 @@ import StepContent from '@material-ui/core/StepContent';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Skeleton from '@material-ui/lab/Skeleton';
 
-import SplashScreen from '@misakey/ui/SplashScreen';
-import Navigation from '@misakey/ui/Navigation';
-import BoxSection from '@misakey/ui/Box/Section';
-import ButtonSubmit from '@misakey/ui/Button/Submit';
-import BoxMessage from '@misakey/ui/Box/Message';
-import ErrorOverlay from '@misakey/ui/Error/Overlay';
+import SplashScreen from 'components/dumb/SplashScreen';
+import Navigation from 'components/dumb/Navigation';
+import BoxSection from 'components/dumb/Box/Section';
+import ButtonSubmit from 'components/dumb/Button/Submit';
+import BoxMessage from 'components/dumb/Box/Message';
+import ErrorOverlay from 'components/dumb/Error/Overlay';
 
 // @FIXME: add to @misakey/API
 export const ENDPOINTS = {

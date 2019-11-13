@@ -15,17 +15,17 @@ import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 
-import BoxSection from '@misakey/ui/Box/Section';
-import ButtonSubmit from '@misakey/ui/Button/Submit';
-import FormFields from '@misakey/ui/Form/Fields';
-import FieldCode from '@misakey/ui/Form/Field/Code';
+import BoxSection from 'components/dumb/Box/Section';
+import ButtonSubmit from 'components/dumb/Button/Submit';
+import FormFields from 'components/dumb/Form/Fields';
+import FieldCode from 'components/dumb/Form/Field/Code';
 
 import EmailIcon from '@material-ui/icons/Email';
 
 import API from '@misakey/api';
 import { accessTokenUpdate } from 'store/actions/accessToken';
 import { accessRequestUpdate } from 'store/actions/accessRequest';
-import ResponseHandlerWrapper from '@misakey/ui/ResponseHandlerWrapper';
+import ResponseHandlerWrapper from 'components/dumb/ResponseHandlerWrapper';
 import { accessRequestValidationSchema } from 'constants/validationSchemas/auth';
 
 const DEFAULT_FIELDS = { code: { component: FieldCode, label: undefined } };

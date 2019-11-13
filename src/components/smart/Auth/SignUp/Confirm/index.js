@@ -5,12 +5,12 @@ import PropTypes from 'prop-types';
 import API from '@misakey/api';
 import isNil from '@misakey/helpers/isNil';
 
-import { FIELD_PROPTYPES } from '@misakey/ui/Form/Fields';
+import { FIELD_PROPTYPES } from 'components/dumb/Form/Fields';
 import DEFAULT_VALUES from 'components/smart/Auth/SignUp/Confirm/values';
 import { signUpConfirmValidationSchema } from 'constants/validationSchemas/auth';
 
 import SignUpConfirmForm from 'components/smart/Auth/SignUp/Confirm/Form';
-import Redirect from '@misakey/ui/Redirect';
+import Redirect from 'components/dumb/Redirect';
 
 const SignUpConfirm = ({ displayCard, fields, initialValues, onSubmit }) => {
   const [redirectTo, setRedirectTo] = React.useState(null);

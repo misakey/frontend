@@ -18,11 +18,11 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import Navigation from '@misakey/ui/Navigation';
-import BoxSection from '@misakey/ui/Box/Section';
-import ButtonCopy from '@misakey/ui/Button/Copy';
+import Navigation from 'components/dumb/Navigation';
+import BoxSection from 'components/dumb/Box/Section';
+import ButtonCopy from 'components/dumb/Button/Copy';
 import ButtonProgress from 'components/dumb/Button/Progress';
-import ButtonSubmit from '@misakey/ui/Button/Submit';
+import ButtonSubmit from 'components/dumb/Button/Submit';
 import FieldTextPasswordRevealable, { ADORNMENT_POSITION } from 'components/dumb/Field/Text/Password/Revealable';
 import ScreenError from 'components/dumb/Screen/Error';
 

@@ -9,10 +9,10 @@ import isString from '@misakey/helpers/isString';
 import isNil from '@misakey/helpers/isNil';
 
 import Box from '@material-ui/core/Box';
-import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
+import AvatarDetailed from 'components/dumb/Avatar/Detailed';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import withErrors from '@misakey/ui/Form/Field/withErrors';
+import withErrors from 'components/dumb/Form/Field/withErrors';
 
 // HELPERS
 const getImage = prop('value');

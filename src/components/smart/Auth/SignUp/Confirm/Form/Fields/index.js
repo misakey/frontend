@@ -1,7 +1,7 @@
 import React from 'react';
 
-import FieldText from '@misakey/ui/Form/Field/Text';
-import Fields from '@misakey/ui/Form/Fields';
+import FieldText from 'components/dumb/Form/Field/Text';
+import Fields from 'components/dumb/Form/Fields';
 
 const defaultProps = {
   code: { component: FieldText, inputProps: { 'data-matomo-ignore': true } },

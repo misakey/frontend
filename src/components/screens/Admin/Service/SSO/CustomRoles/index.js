@@ -13,8 +13,8 @@ import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
-import BoxSection from '@misakey/ui/Box/Section';
-import Navigation from '@misakey/ui/Navigation';
+import BoxSection from 'components/dumb/Box/Section';
+import Navigation from 'components/dumb/Navigation';
 
 const PARENT_ROUTE = routes.admin.service.sso._;
 

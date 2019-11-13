@@ -14,7 +14,7 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
-import BoxSection from '@misakey/ui/Box/Section';
+import BoxSection from 'components/dumb/Box/Section';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListDataItem from 'components/dumb/List/Data/Item';
 import LimitedList from 'components/dumb/List/Limited';

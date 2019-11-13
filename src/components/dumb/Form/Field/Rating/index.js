@@ -5,7 +5,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Rating from '@material-ui/lab/Rating';
 import omit from '@misakey/helpers/omit';
-import withErrors from '@misakey/ui/Form/Field/withErrors';
+import withErrors from 'components/dumb/Form/Field/withErrors';
 
 const RatingField = ({
   displayError, errorKeys, field, form, helperText, t, ...rest

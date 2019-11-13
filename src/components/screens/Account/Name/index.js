@@ -16,9 +16,9 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Navigation from '@misakey/ui/Navigation';
-import ButtonSubmit from '@misakey/ui/Button/Submit';
-import FieldText from '@misakey/ui/Form/Field/Text';
+import Navigation from 'components/dumb/Navigation';
+import ButtonSubmit from 'components/dumb/Button/Submit';
+import FieldText from 'components/dumb/Form/Field/Text';
 import ScreenError from 'components/dumb/Screen/Error';
 
 import 'components/screens/Account/Name/index.scss';

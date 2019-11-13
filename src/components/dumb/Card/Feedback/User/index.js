@@ -15,7 +15,7 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import Rating from '@material-ui/lab/Rating';
-import ColorizedAvatar from '@misakey/ui/Avatar/Colorized';
+import ColorizedAvatar from 'components/dumb/Avatar/Colorized';
 
 // CONSTANTS
 const TITLE_TYPO_PROPS = {

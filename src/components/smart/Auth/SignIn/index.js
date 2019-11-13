@@ -10,8 +10,8 @@ import * as moment from 'moment';
 import API from '@misakey/api';
 import isNil from '@misakey/helpers/isNil';
 
-import { FIELD_PROPTYPES } from '@misakey/ui/Form/Fields';
-import Redirect from '@misakey/ui/Redirect';
+import { FIELD_PROPTYPES } from 'components/dumb/Form/Fields';
+import Redirect from 'components/dumb/Redirect';
 
 import prop from '@misakey/helpers/prop';
 import isEmpty from '@misakey/helpers/isEmpty';

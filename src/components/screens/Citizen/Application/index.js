@@ -9,7 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import RoutePrivate from '@misakey/auth/components/Route/Private';
 import withApplication from 'components/smart/withApplication';
-import Portal from '@misakey/ui/Portal';
+import Portal from 'components/dumb/Portal';
 import isNil from '@misakey/helpers/isNil';
 import prop from '@misakey/helpers/prop';
 import compose from '@misakey/helpers/compose';
@@ -22,9 +22,9 @@ import ApplicationFeedback from 'components/screens/Citizen/Application/Feedback
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNumber from '@misakey/helpers/isNumber';
 import isString from '@misakey/helpers/isString';
-import ErrorOverlay from '@misakey/ui/Error/Overlay';
+import ErrorOverlay from 'components/dumb/Error/Overlay';
 import { LEFT_PORTAL_ID } from 'components/smart/Layout';
-import SplashScreen from '@misakey/ui/SplashScreen';
+import SplashScreen from 'components/dumb/SplashScreen';
 
 // CONSTANTS
 const PAGES_ROSES_ENDPOINT = {

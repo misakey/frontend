@@ -16,7 +16,7 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
 
 import PrivateRoute from '@misakey/auth/components/Route/Private';
-import SplashScreen from '@misakey/ui/SplashScreen';
+import SplashScreen from 'components/dumb/SplashScreen';
 import ScreenError from 'components/dumb/Screen/Error';
 
 import './index.scss';

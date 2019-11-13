@@ -6,7 +6,7 @@ import routes from 'routes';
 import ApplicationSchema from 'store/schemas/Application';
 import withApplication from 'components/smart/withApplication';
 
-import ResponseHandlerWrapper from '@misakey/ui/ResponseHandlerWrapper';
+import ResponseHandlerWrapper from 'components/dumb/ResponseHandlerWrapper';
 import RouteService, { DEFAULT_SERVICE_ENTITY } from 'components/smart/Route/Service';
 import Screen from 'components/dumb/Screen';
 import NotFound from 'components/screens/NotFound';

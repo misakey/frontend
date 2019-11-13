@@ -1,34 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
 import { withTranslation } from 'react-i18next';
-
-import { makeStyles } from '@material-ui/core';
+import clsx from 'clsx';
 import TextField from '@material-ui/core/TextField';
-
 import omit from '@misakey/helpers/omit';
-
-import withErrors from '@misakey/ui/Form/Field/withErrors';
-
-const useStyles = makeStyles(() => ({
-  hidden: {
-    display: 'none',
-  },
-}));
+import withErrors from '../withErrors';
 
 const FieldText = (props) => {
-  const classes = useStyles();
-  const { className, displayError, errorKeys, field, helperText, hidden, t, ...rest } = props;
+  const {
+    className, displayError, errorKeys, field, helperText, hidden, t, ...rest
+  } = props;
 
   return (
     <TextField
       margin="normal"
-      classes={{ root: hidden && classes.hidden }}
       fullWidth
       variant="outlined"
       className={clsx('FieldText', className)}
       {...field}
-      {...omit(rest, ['i18n', 'tReady'])}
+      {...omit(rest, ['i18n', 'tReady', 'form'])}
       error={displayError}
       helperText={displayError ? t(errorKeys) : helperText}
     />
@@ -51,4 +41,4 @@ FieldText.defaultProps = {
   hidden: false,
 };
 
-export default withErrors(withTranslation()(FieldText));
+export default withTranslation('fields')(withErrors(FieldText));

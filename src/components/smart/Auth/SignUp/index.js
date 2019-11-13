@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
 import API from '@misakey/api';
-import { FIELD_PROPTYPES } from '@misakey/ui/Form/Fields';
+import { FIELD_PROPTYPES } from 'components/dumb/Form/Fields';
 
 import routes from 'routes';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';

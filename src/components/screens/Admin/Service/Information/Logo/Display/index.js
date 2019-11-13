@@ -7,12 +7,12 @@ import { Field } from 'formik';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Navigation from '@misakey/ui/Navigation';
+import Navigation from 'components/dumb/Navigation';
 import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import ButtonSubmit from '@misakey/ui/Button/Submit';
-import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
-import BoxSection from '@misakey/ui/Box/Section';
+import ButtonSubmit from 'components/dumb/Button/Submit';
+import AvatarDetailed from 'components/dumb/Avatar/Detailed';
+import BoxSection from 'components/dumb/Box/Section';
 
 import routes from 'routes';
 

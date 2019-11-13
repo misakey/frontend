@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import AvatarColorized from '@misakey/ui/Avatar/Colorized';
+import AvatarColorized from 'components/dumb/Avatar/Colorized';
 import Chip from '@material-ui/core/Chip';
 
 import isFunction from '@misakey/helpers/isFunction';

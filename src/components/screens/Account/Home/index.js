@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import UserSchema from 'store/schemas/User';
 
-import Navigation from '@misakey/ui/Navigation';
+import Navigation from 'components/dumb/Navigation';
 import CardProfile from 'components/dumb/Card/Profile';
 
 // COMPONENTS

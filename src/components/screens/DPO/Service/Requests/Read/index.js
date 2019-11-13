@@ -28,14 +28,14 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import FolderIcon from '@material-ui/icons/Folder';
 import CloudDoneIcon from '@material-ui/icons/CloudDone';
 
-import Navigation from '@misakey/ui/Navigation';
-import BoxSection from '@misakey/ui/Box/Section';
-import ButtonSubmit from '@misakey/ui/Button/Submit';
-import ResponseHandlerWrapper from '@misakey/ui/ResponseHandlerWrapper';
-import FormFields from '@misakey/ui/Form/Fields';
-import FieldFile from '@misakey/ui/Form/Field/File';
-import Alert from '@misakey/ui/Alert';
-import SplashScreen from '@misakey/ui/SplashScreen';
+import Navigation from 'components/dumb/Navigation';
+import BoxSection from 'components/dumb/Box/Section';
+import ButtonSubmit from 'components/dumb/Button/Submit';
+import ResponseHandlerWrapper from 'components/dumb/ResponseHandlerWrapper';
+import FormFields from 'components/dumb/Form/Fields';
+import FieldFile from 'components/dumb/Form/Field/File';
+import Alert from 'components/dumb/Alert';
+import SplashScreen from 'components/dumb/SplashScreen';
 import Empty from 'components/dumb/Box/Empty';
 
 const INITIAL_VALUES = { blob: null };

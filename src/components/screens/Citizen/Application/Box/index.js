@@ -21,12 +21,12 @@ import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
-import SplashScreen from '@misakey/ui/SplashScreen';
+import SplashScreen from 'components/dumb/SplashScreen';
 import ScreenError from 'components/dumb/Screen/Error';
 
 import DataboxDisplay from 'components/screens/Citizen/Application/Box/DataboxDisplay';
 
-import BoxSection from '@misakey/ui/Box/Section';
+import BoxSection from 'components/dumb/Box/Section';
 import ContactButton from 'components/smart/ContactButton';
 import { makeStyles } from '@material-ui/core/styles';
 

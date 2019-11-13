@@ -27,12 +27,12 @@ import partition from '@misakey/helpers/partition';
 import propOr from '@misakey/helpers/propOr';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
-import ButtonGoBack from '@misakey/ui/Button/GoBack';
+import ButtonGoBack from 'components/dumb/Button/GoBack';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Portal from '@misakey/ui/Portal';
+import Portal from 'components/dumb/Portal';
 import ApplicationList from 'components/dumb/Application/List';
-import SplashScreen from '@misakey/ui/SplashScreen';
+import SplashScreen from 'components/dumb/SplashScreen';
 
 import './index.scss';
 

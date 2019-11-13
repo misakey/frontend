@@ -29,8 +29,8 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import InboxIcon from '@material-ui/icons/Inbox';
 
-import BoxSection from '@misakey/ui/Box/Section';
-import ResponseHandlerWrapper from '@misakey/ui/ResponseHandlerWrapper';
+import BoxSection from 'components/dumb/Box/Section';
+import ResponseHandlerWrapper from 'components/dumb/ResponseHandlerWrapper';
 import Empty from 'components/dumb/Box/Empty';
 
 const ENDPOINTS = {

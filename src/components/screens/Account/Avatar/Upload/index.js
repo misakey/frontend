@@ -7,9 +7,9 @@ import routes from 'routes';
 
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import FileField from '@misakey/ui/Form/Field/File';
+import FileField from 'components/dumb/Form/Field/File';
 
-import Navigation from '@misakey/ui/Navigation';
+import Navigation from 'components/dumb/Navigation';
 
 import 'components/screens/Account/Avatar/Upload/index.scss';
 

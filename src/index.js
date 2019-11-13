@@ -22,15 +22,15 @@ import * as serviceWorker from 'serviceWorker';
 
 // UI
 import MuiThemeProvider from 'components/smart/ThemeProvider';
-import theme from '@misakey/ui/theme';
+import theme from 'theme';
 import 'react-virtualized/styles.css';
 
 // COMPONENTS
 import App from 'components/App';
-import SplashScreen from '@misakey/ui/SplashScreen';
+import SplashScreen from 'components/dumb/SplashScreen';
 
 // TRANSLATIONS
-import i18n from '@misakey/ui/i18n';
+import i18n from 'i18n';
 import countries from 'i18n-iso-countries';
 
 import FRCommon from 'constants/locales/fr/common';

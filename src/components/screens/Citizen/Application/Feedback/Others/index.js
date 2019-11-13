@@ -19,7 +19,7 @@ import isObject from '@misakey/helpers/isObject';
 import API from '@misakey/api';
 
 import { makeStyles } from '@material-ui/core/styles';
-import Navigation from '@misakey/ui/Navigation';
+import Navigation from 'components/dumb/Navigation';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import SummaryFeedbackCard from 'components/dumb/Card/Feedback/Summary';

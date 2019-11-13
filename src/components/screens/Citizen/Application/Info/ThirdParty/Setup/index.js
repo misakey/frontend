@@ -23,7 +23,7 @@ import { layoutAppbarHide, layoutAppbarShow, layoutWarningDrawerShow } from 'sto
 
 import TrackerList from 'components/dumb/Application/ThirdParty/Setup/List';
 
-import SplashScreen from '@misakey/ui/SplashScreen';
+import SplashScreen from 'components/dumb/SplashScreen';
 import ThirdPartySearchBar from 'components/dumb/Application/ThirdParty/Setup/SearchBar';
 import Switch from 'components/dumb/Switch';
 

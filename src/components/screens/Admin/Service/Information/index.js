@@ -12,7 +12,7 @@ import API from '@misakey/api';
 import { updateEntities } from '@misakey/store/actions/entities';
 import ServiceSchema from 'store/schemas/Service';
 
-import ResponseHandlerWrapper from '@misakey/ui/ResponseHandlerWrapper';
+import ResponseHandlerWrapper from 'components/dumb/ResponseHandlerWrapper';
 
 // LAZY
 const InformationHome = lazy(() => import('components/screens/Admin/Service/Information/Home'));

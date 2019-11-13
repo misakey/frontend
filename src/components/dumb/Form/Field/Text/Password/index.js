@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import FieldText from '../index';
+import FieldText from 'components/dumb/Form/Field/Text';
 
 // COMPONENTS
 const FieldTextPassword = ({ type, ...props }) => (

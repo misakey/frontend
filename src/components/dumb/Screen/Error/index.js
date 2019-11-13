@@ -5,10 +5,10 @@ import { withTranslation } from 'react-i18next';
 
 import useWidth from '@misakey/hooks/useWidth';
 
-import Navigation from '@misakey/ui/Navigation';
+import Navigation from 'components/dumb/Navigation';
 
 import './Error.scss';
-import ErrorOverlay from '@misakey/ui/Error/Overlay';
+import ErrorOverlay from 'components/dumb/Error/Overlay';
 
 /**
  * @param error

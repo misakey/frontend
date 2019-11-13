@@ -7,7 +7,7 @@ import { useSnackbar } from 'notistack';
 
 import routes from 'routes';
 import API from '@misakey/api';
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import errorTypes from 'constants/errorTypes';
 
 import { forgotConfirmValidationSchema, forgotResetPasswordValidationSchema } from 'constants/validationSchemas/auth';
 
@@ -19,11 +19,11 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
 import useAsync from '@misakey/hooks/useAsync';
 
-import Redirect from '@misakey/ui/Redirect';
-import FormCard from '@misakey/ui/Form/Card';
+import Redirect from 'components/dumb/Redirect';
+import FormCard from 'components/dumb/Form/Card';
 import Button from '@material-ui/core/Button';
-import ButtonSubmit from '@misakey/ui/Button/Submit';
-import FieldText from '@misakey/ui/Form/Field/Text';
+import ButtonSubmit from 'components/dumb/Button/Submit';
+import FieldText from 'components/dumb/Form/Field/Text';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
 import ScreenError from 'components/dumb/Screen/Error';
 import ChipUser from 'components/dumb/Chip/User';

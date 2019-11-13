@@ -6,7 +6,7 @@ import { useSnackbar } from 'notistack';
 
 import routes from 'routes';
 import { passwordValidationSchema } from 'constants/validationSchemas/profile';
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import errorTypes from 'constants/errorTypes';
 
 import isNil from '@misakey/helpers/isNil';
 import log from '@misakey/helpers/log';
@@ -14,8 +14,8 @@ import log from '@misakey/helpers/log';
 import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
-import Navigation from '@misakey/ui/Navigation';
-import ButtonSubmit from '@misakey/ui/Button/Submit';
+import Navigation from 'components/dumb/Navigation';
+import ButtonSubmit from 'components/dumb/Button/Submit';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
 import ScreenError from 'components/dumb/Screen/Error';
 import Typography from '@material-ui/core/Typography';

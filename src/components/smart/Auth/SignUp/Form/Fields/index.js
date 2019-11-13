@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 
 import { withTranslation, Trans } from 'react-i18next';
 
-import FieldText from '@misakey/ui/Form/Field/Text';
-import FieldCheckbox from '@misakey/ui/Form/Field/Checkbox';
-import Fields from '@misakey/ui/Form/Fields';
+import FieldText from 'components/dumb/Form/Field/Text';
+import FieldCheckbox from 'components/dumb/Form/Field/Checkbox';
+import Fields from 'components/dumb/Form/Fields';
 
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';

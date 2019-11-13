@@ -23,7 +23,7 @@ import PausePluginButton from 'components/smart/PausePluginButton';
 import WarningDrawer from 'components/dumb/PluginWarningDrawer';
 
 import { DRAWER_WIDTH } from 'components/screens/Admin/Service/Drawer';
-import ButtonBurger from '@misakey/ui/Button/Burger';
+import ButtonBurger from 'components/dumb/Button/Burger';
 
 import { layoutBurgerClicked } from 'store/actions/Layout';
 

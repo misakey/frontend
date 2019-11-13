@@ -8,9 +8,9 @@ import { withTranslation } from 'react-i18next';
 import API from '@misakey/api';
 import { screenAuthSetEmail } from 'store/actions/screens/auth';
 
-import { FIELD_PROPTYPES } from '@misakey/ui/Form/Fields';
+import { FIELD_PROPTYPES } from 'components/dumb/Form/Fields';
 
-import FormCard from '@misakey/ui/Form/Card';
+import FormCard from 'components/dumb/Form/Card';
 import AuthCardTitle from 'components/smart/Auth/Card/Title';
 import AuthCardSubTitle from 'components/smart/Auth/Card/SubTitle';
 

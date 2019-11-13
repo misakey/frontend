@@ -18,13 +18,13 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isNil from '@misakey/helpers/isNil';
 import pick from '@misakey/helpers/pick';
 
-import Navigation from '@misakey/ui/Navigation';
+import Navigation from 'components/dumb/Navigation';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import withMyFeedback from 'components/smart/withMyFeedback';
-import ButtonSubmit from '@misakey/ui/Button/Submit';
-import FieldText from '@misakey/ui/Form/Field/Text';
+import ButtonSubmit from 'components/dumb/Button/Submit';
+import FieldText from 'components/dumb/Form/Field/Text';
 import FieldRating from 'components/dumb/Form/Field/Rating';
 import TypographySubtitle from 'components/dumb/Typography/Subtitle';
 import ScreenError from 'components/dumb/Screen/Error';

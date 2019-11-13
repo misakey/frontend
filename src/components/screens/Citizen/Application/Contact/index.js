@@ -18,7 +18,7 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isNil from '@misakey/helpers/isNil';
 
-import SplashScreen from '@misakey/ui/SplashScreen';
+import SplashScreen from 'components/dumb/SplashScreen';
 
 // LAZY
 const ContactPreview = lazy(() => import('components/screens/Citizen/Application/Contact/Preview'));

@@ -15,7 +15,7 @@ import props from '@misakey/helpers/props';
 import compose from '@misakey/helpers/compose';
 import includes from '@misakey/helpers/includes';
 
-import ResponseHandlerWrapper from '@misakey/ui/ResponseHandlerWrapper';
+import ResponseHandlerWrapper from 'components/dumb/ResponseHandlerWrapper';
 
 // LAZY
 const SSOHome = lazy(() => import('components/screens/Admin/Service/SSO/Home'));

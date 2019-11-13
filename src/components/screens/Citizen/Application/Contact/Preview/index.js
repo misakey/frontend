@@ -24,10 +24,10 @@ import isFunction from '@misakey/helpers/isFunction';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import ButtonSubmit from '@misakey/ui/Button/Submit';
+import ButtonSubmit from 'components/dumb/Button/Submit';
 
 // @FIXME local override
-import Navigation from '@misakey/ui/Navigation';
+import Navigation from 'components/dumb/Navigation';
 
 // CONSTANTS
 const APP_CONTACT_PROPS = ['dpoEmail', 'name', 'mainDomain'];

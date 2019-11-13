@@ -15,8 +15,8 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import AvatarColorized from '@misakey/ui/Avatar/Colorized';
-import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
+import AvatarColorized from 'components/dumb/Avatar/Colorized';
+import AvatarDetailed from 'components/dumb/Avatar/Detailed';
 
 import 'components/dumb/Card/Profile/index.scss';
 

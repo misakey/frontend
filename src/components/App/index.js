@@ -4,7 +4,7 @@ import { SnackbarProvider } from 'notistack';
 import { withTranslation } from 'react-i18next';
 
 import Layout from 'components/smart/Layout';
-import SplashScreen from '@misakey/ui/SplashScreen';
+import SplashScreen from 'components/dumb/SplashScreen';
 
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';

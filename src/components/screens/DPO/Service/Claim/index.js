@@ -15,16 +15,16 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import EmailIcon from '@material-ui/icons/Email';
 
-import BoxSection from '@misakey/ui/Box/Section';
-import ButtonSubmit from '@misakey/ui/Button/Submit';
-import ResponseHandlerWrapper from '@misakey/ui/ResponseHandlerWrapper';
-import FormFields from '@misakey/ui/Form/Fields';
-import FieldCode from '@misakey/ui/Form/Field/Code';
-import BoxMessage from '@misakey/ui/Box/Message';
+import BoxSection from 'components/dumb/Box/Section';
+import ButtonSubmit from 'components/dumb/Button/Submit';
+import ResponseHandlerWrapper from 'components/dumb/ResponseHandlerWrapper';
+import FormFields from 'components/dumb/Form/Fields';
+import FieldCode from 'components/dumb/Form/Field/Code';
+import BoxMessage from 'components/dumb/Box/Message';
 import Button from '@material-ui/core/Button';
 
 import routes from 'routes';
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import errorTypes from 'constants/errorTypes';
 
 import { serviceClaimValidationSchema } from 'constants/validationSchemas/dpo';
 

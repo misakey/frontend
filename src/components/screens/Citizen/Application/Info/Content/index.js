@@ -18,7 +18,7 @@ import countries from 'i18n-iso-countries';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import BoxSection from '@misakey/ui/Box/Section';
+import BoxSection from 'components/dumb/Box/Section';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
@@ -28,8 +28,8 @@ import MUILink from '@material-ui/core/Link';
 
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
-import LongText from '@misakey/ui/LongText';
-import GridListKeyValue from '@misakey/ui/Grid/List/KeyValue';
+import LongText from 'components/dumb/LongText';
+import GridListKeyValue from 'components/dumb/Grid/List/KeyValue';
 
 import ApplicationInfoContentDomains from 'components/screens/Citizen/Application/Info/Content/Domains';
 import Skeleton from '@material-ui/lab/Skeleton';

@@ -17,7 +17,7 @@ import isNil from '@misakey/helpers/isNil';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import ListMailProviders from 'components/smart/List/MailProviders';
-import Navigation from '@misakey/ui/Navigation';
+import Navigation from 'components/dumb/Navigation';
 
 
 import 'components/screens/Citizen/Application/Contact/Providers/index.scss';

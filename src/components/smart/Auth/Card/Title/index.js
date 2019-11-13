@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
-import ApplicationChip from '@misakey/ui/Application/Chip';
+import ApplicationChip from 'components/dumb/Application/Chip';
 
 function AuthCardTitle({ name, sso, t }) {
   return (

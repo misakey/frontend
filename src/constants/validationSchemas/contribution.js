@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import errorTypes from 'constants/errorTypes';
 
 const { malformed, required } = errorTypes;
 

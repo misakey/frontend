@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import Typography from '@material-ui/core/Typography';
-import BoxMessage from '@misakey/ui/Box/Message';
+import BoxMessage from 'components/dumb/Box/Message';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 

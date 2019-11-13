@@ -22,9 +22,9 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Navigation from '@misakey/ui/Navigation';
-import FieldText from '@misakey/ui/Form/Field/Text';
-import ButtonSubmit from '@misakey/ui/Button/Submit';
+import Navigation from 'components/dumb/Navigation';
+import FieldText from 'components/dumb/Form/Field/Text';
+import ButtonSubmit from 'components/dumb/Button/Submit';
 import ScreenError from 'components/dumb/Screen/Error';
 
 // CONSTANTS

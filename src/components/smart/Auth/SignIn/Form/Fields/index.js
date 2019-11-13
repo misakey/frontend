@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import FieldText from '@misakey/ui/Form/Field/Text';
-import Fields, { FIELD_PROPTYPES } from '@misakey/ui/Form/Fields';
+import FieldText from 'components/dumb/Form/Field/Text';
+import Fields, { FIELD_PROPTYPES } from 'components/dumb/Form/Fields';
 
 import { STEP } from 'components/smart/Auth/SignIn/Form/constants';
 
