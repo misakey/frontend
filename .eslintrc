@@ -3,7 +3,8 @@
   "parser": "babel-eslint",
   "plugins": [
     "jest",
-    "import"
+    "import",
+    "react-hooks"
   ],
   "settings": {
     "import/resolver": {
@@ -35,7 +36,11 @@
       }
     ],
     "import/prefer-default-export": 0,
-    "object-curly-newline": "off"
+    "object-curly-newline": "off",
+    // Strict, airbnb is using warn
+    "no-console": "error",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error",
   },
   "env": {
     "browser": true,
