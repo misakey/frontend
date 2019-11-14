@@ -27,6 +27,12 @@
     "placeholder": "Chercher un service",
     "reset": {
       "label": "Réinitialiser"
+    },
+    "button": {
+      "close": "Fermer",
+      "goBack": "Retour",
+      "clear": "Vider",
+      "search": "Rechercher"
     }
   },
   "history": {

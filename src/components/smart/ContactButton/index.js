@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { withRouter, generatePath } from 'react-router-dom';
@@ -18,10 +18,10 @@ import log from '@misakey/helpers/log';
 import parseJwt from '@misakey/helpers/parseJwt';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 
+import withDialogConnect from 'components/smart/Dialog/Connect/with';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import './contactButton.scss';
 
 // HELPERS
 const requestDataboxAccess = (id) => API.use(API.endpoints.application.box.requestAccess)
@@ -37,10 +37,12 @@ const createDatabox = (payload) => API.use(API.endpoints.application.box.create)
   .send();
 
 // HOOKS
-const useGetDatabox = (applicationID) => useCallback(
-  () => listDataboxes()
-    .then((databoxes) => databoxes.find((databox) => databox.producer_id === applicationID)),
-  [applicationID],
+const useGetDatabox = (applicationID, isAuthenticated) => useCallback(
+  () => (!isAuthenticated
+    ? Promise.resolve()
+    : listDataboxes()
+      .then((databoxes) => databoxes.find((databox) => databox.producer_id === applicationID))),
+  [applicationID, isAuthenticated],
 );
 
 const useOnMailTo = (mainDomain, mailProvider, dispatchContact, history, location) => useCallback(
@@ -112,29 +114,35 @@ const useOnClick = (
 
 
 // COMPONENTS
+const DialogConnectButton = withDialogConnect(Button);
+
 const ContactButton = (
   {
     mainDomain,
     applicationID,
     idToken,
     dpoEmail,
+    onContributionClick,
     contactedView,
     t,
     history,
     location,
     mailProvider,
+    buttonProps,
+    children,
+    isAuthenticated,
     dispatchContact,
   },
 ) => {
   const [loading, setLoading] = useState(false);
 
-  const getDatabox = useGetDatabox(applicationID);
+  const getDatabox = useGetDatabox(applicationID, isAuthenticated);
 
   const onMailTo = useOnMailTo(mainDomain, mailProvider, dispatchContact, history, location);
   const onAccessRequest = useOnAccessRequest(onMailTo);
   const onAlreadyExists = useOnAlreadyExists(getDatabox);
 
-  const databox = useAsync(getDatabox);
+  const databox = useAsync(getDatabox, isAuthenticated);
 
   const onClick = useOnClick(
     databox,
@@ -143,48 +151,68 @@ const ContactButton = (
     setLoading,
   );
 
+  const dpoText = useMemo(
+    () => children || t('common:contact.label'),
+    [children, t],
+  );
+
+  const noDpoText = useMemo(
+    () => (isAuthenticated
+      ? t('common:contact.dpo')
+      : dpoText),
+    [isAuthenticated, dpoText, t],
+  );
+
+
   if (loading) {
     return (
-      <div className="contactButtonContainer">
-        <CircularProgress
-          className="contactLoad"
-          size={30}
-        />
-      </div>
+      <CircularProgress
+        className="contactLoad"
+        size={30}
+      />
     );
   }
 
   if (contactedView) {
     return (
-      <div className="contactButtonContainer">
-        <Button color="secondary" onClick={onClick} className="contactButton">
-          {t('resendEmail', 'resend email')}
-        </Button>
-      </div>
+      <Button color="secondary" onClick={onClick} {...buttonProps}>
+        {t('resendEmail', 'resend email')}
+      </Button>
     );
   }
 
   if (!isEmpty(dpoEmail)) {
     return (
-      <div className="contactButtonContainer">
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={onClick}
-          className="contactButton"
-        >
-          {t('contact', 'MY DATA')}
-        </Button>
-      </div>
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={onClick}
+        {...buttonProps}
+      >
+        {dpoText}
+      </Button>
     );
   }
-  return null;
+  return (
+    <DialogConnectButton
+      onClick={onContributionClick}
+      variant="contained"
+      color="secondary"
+      {...buttonProps}
+    >
+      {noDpoText}
+    </DialogConnectButton>
+  );
 };
 
 ContactButton.propTypes = {
-  idToken: PropTypes.string.isRequired,
+  isAuthenticated: PropTypes.bool,
+  idToken: PropTypes.string,
+  buttonProps: PropTypes.object,
   contactedView: PropTypes.bool,
   dpoEmail: PropTypes.string.isRequired,
+  onContributionClick: PropTypes.func.isRequired,
+  children: PropTypes.node,
   applicationID: PropTypes.string.isRequired,
   mainDomain: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
@@ -199,11 +227,17 @@ ContactButton.propTypes = {
 ContactButton.defaultProps = {
   mailProvider: null,
   contactedView: false,
+  buttonProps: {},
+  idToken: null,
+  isAuthenticated: false,
+  children: null,
 };
 
 // CONNECT
 const mapStateToProps = (state) => ({
   mailProvider: contactSelectors.getMailProviderPreferency(state),
+  idToken: state.auth.id,
+  isAuthenticated: !!state.auth.token,
 });
 const mapDispatchToProps = (dispatch) => ({
   dispatchContact: (databoxURL, mainDomain, mailProvider, history, location) => {

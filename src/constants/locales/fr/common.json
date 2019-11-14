@@ -132,7 +132,10 @@
       }
     }
   },
-
+  "dialogConnect": {
+    "title": "Bonjour,",
+    "subtitle": "Connectez-vous pour pouvoir publier du contenu et contacter les sites pour récupérer vos données"
+  },
   "connectedOnly": "Vous devez etre connectés",
   "ratingsAndComments": "Recommandations et avis",
   "ratingCount": "{{count}} note",
@@ -145,7 +148,10 @@
     "setup": "Setup mode"
   },
   "must": "Devoir",
-  "contact": "Mes données",
+  "contact": {
+    "label": "Mes données",
+    "dpo": "Je connais l'email du DPO !"
+  },
   "name": "Nom",
   "on": "Sur ",
   "password": "mot de passe",

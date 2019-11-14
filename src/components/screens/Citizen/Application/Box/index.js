@@ -27,6 +27,7 @@ import ScreenError from 'components/dumb/Screen/Error';
 import DataboxDisplay from 'components/screens/Citizen/Application/Box/DataboxDisplay';
 
 import BoxSection from 'components/dumb/Box/Section';
+import Box from '@material-ui/core/Box';
 import ContactButton from 'components/smart/ContactButton';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -46,9 +47,24 @@ const useStyles = makeStyles((theme) => ({
   contactButton: {
     marginLeft: theme.spacing(1),
   },
+  boxRoot: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
+  contactButtonRoot: {
+    alignSelf: 'flex-end',
+  },
 }));
 
-function ApplicationBox({ application, match, t, auth }) {
+function ApplicationBox({
+  application,
+  match,
+  t,
+  auth,
+  isAuthenticated,
+  onContributionDpoEmailClick,
+}) {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
 
@@ -76,20 +92,22 @@ function ApplicationBox({ application, match, t, auth }) {
   }
 
   function fetchDatabox() {
-    setError(false);
-    setLoading(true);
+    if (isAuthenticated) {
+      setError(false);
+      setLoading(true);
 
-    API.use(API.endpoints.application.box.find)
-      .build()
-      .send()
-      .then((databoxes) => databoxes.forEach(({ producer_id: producerId, id }) => {
-        if (producerId === application.id) {
-          fetchBlobs(id);
-          setDatabox(id);
-        }
-      }))
-      .catch(({ httpStatus }) => setError(httpStatus))
-      .finally(() => setLoading(false));
+      API.use(API.endpoints.application.box.find)
+        .build()
+        .send()
+        .then((databoxes) => databoxes.forEach(({ producer_id: producerId, id }) => {
+          if (producerId === application.id) {
+            fetchBlobs(id);
+            setDatabox(id);
+          }
+        }))
+        .catch(({ httpStatus }) => setError(httpStatus))
+        .finally(() => setLoading(false));
+    }
   }
 
   function promptForPassword(previousAttemptFailed = false) {
@@ -202,7 +220,7 @@ function ApplicationBox({ application, match, t, auth }) {
     }
   }
 
-  React.useEffect(fetchDatabox, [mainDomain]);
+  React.useEffect(fetchDatabox, [mainDomain, isAuthenticated]);
 
   if (error) {
     return <ScreenError httpStatus={error} />;
@@ -216,30 +234,60 @@ function ApplicationBox({ application, match, t, auth }) {
           {isObject(application) && (
             <>
               <Typography variant="h6" component="h5" className={classes.titleWithButton}>
-                {t('screens:application.nav.personalData')}
-                {databox && (
+                {t('screens:application.box.title')}
+                {!isNil(blobs) && blobs.length > 0 && (
                   <ContactButton
-                    className={classes.contactButton}
-                    idToken={auth.id}
                     dpoEmail={application.dpoEmail}
+                    onContributionClick={onContributionDpoEmailClick}
                     applicationID={application.id}
                     mainDomain={application.mainDomain}
                     contactedView={!!databox}
-                  />
+                    buttonProps={{ variant: 'outlined', classes: { root: classes.contactButtonRoot } }}
+                  >
+                    {t('screens:application.box.button.label')}
+                  </ContactButton>
                 )}
               </Typography>
-              {!blobs && (
-                <Typography>
-                  {t('screens:application.box.noResult', { name: application.name })}
-                </Typography>
-              )}
-              {!!blobs && (
-                <DataboxDisplay
-                  application={application}
-                  blobs={blobs}
-                  downloadBlob={downloadBlob}
-                />
-              )}
+
+              <Box mt={1} classes={{ root: classes.boxRoot }}>
+                {isNil(blobs) && (
+                  <>
+                    <Typography variant="body1" color="textSecondary" paragraph>
+                      {t('screens:application.box.noResult')}
+                    </Typography>
+                    <ContactButton
+                      dpoEmail={application.dpoEmail}
+                      onContributionClick={onContributionDpoEmailClick}
+                      applicationID={application.id}
+                      mainDomain={application.mainDomain}
+                      contactedView={!!databox}
+                      buttonProps={{ variant: 'outlined', classes: { root: classes.contactButtonRoot } }}
+                    >
+                      {t('screens:application.box.button.label')}
+                    </ContactButton>
+                  </>
+                )}
+
+                {!isNil(blobs) && (
+                  <>
+                    <DataboxDisplay
+                      application={application}
+                      blobs={blobs}
+                      downloadBlob={downloadBlob}
+                    />
+                    {blobs.length === 0 && (
+                      <ContactButton
+                        dpoEmail={application.dpoEmail}
+                        onContributionClick={onContributionDpoEmailClick}
+                        applicationID={application.id}
+                        mainDomain={application.mainDomain}
+                        contactedView={!!databox}
+                        buttonProps={{ variant: 'outlined', classes: { root: classes.contactButtonRoot } }}
+                      />
+                    )}
+                  </>
+                )}
+              </Box>
             </>
           )}
         </BoxSection>
@@ -249,16 +297,23 @@ function ApplicationBox({ application, match, t, auth }) {
 }
 
 ApplicationBox.propTypes = {
-  application: PropTypes.shape(ApplicationSchema.propTypes).isRequired,
+  application: PropTypes.shape(ApplicationSchema.propTypes),
   match: PropTypes.shape({
     params: PropTypes.shape({
       mainDomain: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
+  onContributionDpoEmailClick: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   auth: PropTypes.shape({
-    id: PropTypes.string.isRequired,
+    id: PropTypes.string,
   }).isRequired,
+  isAuthenticated: PropTypes.bool,
+};
+
+ApplicationBox.defaultProps = {
+  application: null,
+  isAuthenticated: false,
 };
 
 export default connect(
@@ -269,5 +324,6 @@ export default connect(
       state.entities,
     ),
     auth: state.auth,
+    isAuthenticated: !!state.auth.token,
   }),
 )(withTranslation(['common', 'screens'])(ApplicationBox));

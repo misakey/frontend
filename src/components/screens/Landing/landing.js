@@ -8,7 +8,6 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import BusinessIcon from '@material-ui/icons/Business';
 import SearchIcon from '@material-ui/icons/Search';
-import routes from 'routes';
 import Footer from 'components/dumb/Footer';
 import Button from '@material-ui/core/Button';
 
@@ -40,7 +39,6 @@ const LandingScreen = ({ t }) => {
       const search = new URLSearchParams();
       search.set('search', '');
       return {
-        pathname: routes.citizen.applications,
         search: search.toString(),
       };
     },

@@ -46,7 +46,7 @@ const ApplicationAvatar = ({ application }) => {
 
 
   return (
-    <Box p={1} className={classes.appBlock}>
+    <Box className={classes.appBlock}>
       <ApplicationImg
         classes={{ root: classes.appImg }}
         src={logoUri}

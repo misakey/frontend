@@ -1,16 +1,13 @@
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useMemo, useCallback, useState, lazy, Suspense } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withTranslation } from 'react-i18next';
 import { denormalize } from 'normalizr';
-
 import { connect } from 'react-redux';
 
 import routes from 'routes';
 import API from '@misakey/api';
 import { makeStyles } from '@material-ui/core/styles';
-
-import { LEFT_PORTAL_ID } from 'components/smart/Layout';
 
 import ApplicationSchema from 'store/schemas/Application';
 import {
@@ -20,25 +17,21 @@ import {
 
 import useAsync from '@misakey/hooks/useAsync';
 
-import getSearchParams from '@misakey/helpers/getSearchParams';
-import compose from '@misakey/helpers/compose';
 import partition from '@misakey/helpers/partition';
 // import prop from '@misakey/helpers/prop';
-import propOr from '@misakey/helpers/propOr';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import isEmpty from '@misakey/helpers/isEmpty';
 
-import ButtonGoBack from 'components/dumb/Button/GoBack';
 import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
-import Portal from 'components/dumb/Portal';
-import ApplicationList from 'components/dumb/Application/List';
+import ApplicationListGroups from 'components/dumb/Application/List/Groups';
 import SplashScreen from 'components/dumb/SplashScreen';
+import DialogSearchBottomAction from './BottomAction';
 
-import './index.scss';
+// LAZY
+const SuggestionApplicationListItem = lazy(() => import('components/dumb/ListItem/Application/Suggestion'));
 
 // CONSTANTS
-const MAX_WIDTH = 'md';
-const SEARCH_MIN_LENGTH = 3;
+const SEARCH_MIN_LENGTH = 1;
 
 // @FIXME add to js-common
 const PAGES_ROSES_FIND = {
@@ -48,10 +41,6 @@ const PAGES_ROSES_FIND = {
 
 // HELPERS
 // const producerIdProp = prop('producerId');
-const getSearch = compose(
-  propOr('', 'search'),
-  getSearchParams,
-);
 
 // const fetchBoxes = () => API.use(API.endpoints.application.box.find)
 //   .build()
@@ -71,28 +60,31 @@ const searchApplications = (search, isAuthenticated) => {
   endpoint.auth = isAuthenticated;
 
   return API.use(endpoint)
-    .build(undefined, undefined, { search })
+    .build(undefined, undefined, { search, published: true })
     .send();
 };
 
 // HOOKS
-const useStyles = makeStyles((theme) => ({
-  titleUppercase: {
+const useStyles = makeStyles(() => ({
+  main: {
+    height: '100%',
+  },
+  overlay: {
+    height: 'inherit',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyTitle: {
     textTransform: 'uppercase',
   },
+  preventScroll: {
+    overflow: 'hidden',
+  },
   navBlock: {
-    height: `calc(100% - ${theme.typography.body2.fontSize} * ${theme.typography.body2.lineHeight})`,
-  },
-  halfBlock: {
-    height: '50%',
-    paddingTop: theme.spacing(3),
-    '&:first-child:last-child': {
-      height: '100%',
-    },
-  },
-  goBackRoot: {
-    marginLeft: 0,
-    marginRight: theme.spacing(1),
+    height: 'inherit',
+    width: '100%',
   },
 }));
 
@@ -117,7 +109,9 @@ const useGetApplications = (
     //     }
     //     return [];
     //   });
-    const searchPromise = searchApplications(search, isAuthenticated);
+    const searchPromise = isEmpty(search)
+      ? Promise.resolve([]) // empty application list when search is empty
+      : searchApplications(search, isAuthenticated);
 
     // const promise = Promise.all([boxesPromise, searchPromise]);
     const promise = searchPromise;
@@ -139,13 +133,35 @@ const useGetApplications = (
   ],
 );
 
+const useGroups = (entities, linkedLinkTo, searchedLinkTo, t) => useMemo(
+  () => {
+    const groups = [];
+    const [linked, suggested] = partition(entities, (app) => app.hasBoxes);
+    if (linked.length > 0) {
+      groups.push({
+        title: t('screens:applications.linked.subtitle'),
+        applications: linked,
+        linkTo: linkedLinkTo,
+      });
+    }
+    if (suggested.length > 0) {
+      groups.push({
+        title: t('screens:applications.suggested.subtitle'),
+        applications: suggested,
+        linkTo: searchedLinkTo,
+        rowRenderer: SuggestionApplicationListItem,
+      });
+    }
+    return groups;
+  },
+  [entities, linkedLinkTo, searchedLinkTo, t],
+);
+
 // COMPONENTS
-const ApplicationListsScreen = ({
+const DialogSearchList = ({
   isAuthenticated,
-  hasBoxes,
   entities,
-  history,
-  location: { search: locationSearch },
+  value,
   t,
   dispatchApplications,
   dispatchBoxes,
@@ -154,17 +170,12 @@ const ApplicationListsScreen = ({
 
   const [isFetching, setFetching] = useState(false);
 
-  const search = useMemo(
-    () => getSearch(locationSearch),
-    [locationSearch],
-  );
-
   const shouldFetch = useMemo(
     () => {
-      const { length } = search;
+      const { length } = value;
       return length >= SEARCH_MIN_LENGTH || length === 0;
     },
-    [search],
+    [value],
   );
 
   const linkedLinkTo = useMemo(
@@ -177,13 +188,10 @@ const ApplicationListsScreen = ({
     [],
   );
 
-  const [linkedApplications, applications] = useMemo(
-    () => partition(entities, (app) => app.hasBoxes),
-    [entities],
-  );
+  const groups = useGroups(entities, linkedLinkTo, searchedLinkTo, t);
 
   const getApplications = useGetApplications(
-    search,
+    value,
     shouldFetch,
     isAuthenticated,
     setFetching,
@@ -191,69 +199,54 @@ const ApplicationListsScreen = ({
     dispatchBoxes,
   );
 
+  const emptyNoSearch = useMemo(
+    () => isEmpty(groups) && isEmpty(value),
+    [groups, value],
+  );
+
   useAsync(getApplications);
-
   return (
-    <div className="Applications">
-      <Portal elementId={LEFT_PORTAL_ID}>
-        <ButtonGoBack history={history} className={classes.goBackRoot} />
-      </Portal>
-      <div className="overlay">
-        {isAuthenticated && hasBoxes && (
-          <div className={classes.halfBlock}>
-            <Container maxWidth={MAX_WIDTH}>
-              <Typography variant="body2" color="textSecondary" align="left" className={classes.titleUppercase}>
-                {t('screens:applications.linked.subtitle')}
+    <Suspense fallback={<SplashScreen />}>
+      <div className={classes.main}>
+        <div className={classes.overlay}>
+          {emptyNoSearch
+            ? (
+              <Typography variant="body2" color="textSecondary" align="center" className={classes.emptyTitle}>
+                {t('screens:applications.empty.subtitle')}
               </Typography>
-            </Container>
-            <nav className={clsx(classes.navBlock, { 'prevent-scroll': isFetching })}>
-              <ApplicationList
-                applications={linkedApplications}
-                linkTo={linkedLinkTo}
-              />
-              {isFetching && <SplashScreen />}
-            </nav>
-
-          </div>
-        )}
-        <div className={classes.halfBlock}>
-          <Container maxWidth={MAX_WIDTH}>
-            <Typography variant="body2" color="textSecondary" align="left" className={classes.titleUppercase}>
-              {t('screens:applications.searched.subtitle')}
-            </Typography>
-          </Container>
-          <nav className={clsx(classes.navBlock, { 'prevent-scroll': isFetching })}>
-            <ApplicationList
-              applications={applications}
-              linkTo={searchedLinkTo}
-              maxWidth={MAX_WIDTH}
-            />
-            {isFetching && <SplashScreen />}
-          </nav>
+            )
+            : (
+              <nav className={clsx(classes.navBlock, { [classes.preventScroll]: isFetching })}>
+                <ApplicationListGroups
+                  groups={groups}
+                  BottomAction={DialogSearchBottomAction}
+                />
+                {isFetching && <SplashScreen />}
+              </nav>
+            )}
         </div>
       </div>
-    </div>
+    </Suspense>
   );
 };
 
-ApplicationListsScreen.propTypes = {
-  // ROUTER
-  history: PropTypes.object.isRequired,
-  location: PropTypes.shape({ search: PropTypes.string }).isRequired,
+DialogSearchList.propTypes = {
+  value: PropTypes.string,
   // withTranslation
   t: PropTypes.func.isRequired,
   // STATE
   isAuthenticated: PropTypes.bool,
-  hasBoxes: PropTypes.bool,
+  // hasBoxes: PropTypes.bool,
   entities: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
   // DISPATCH
   dispatchApplications: PropTypes.func.isRequired,
   dispatchBoxes: PropTypes.func.isRequired,
 };
 
-ApplicationListsScreen.defaultProps = {
+DialogSearchList.defaultProps = {
+  value: '',
   isAuthenticated: false,
-  hasBoxes: false,
+  // hasBoxes: false,
   entities: [],
 };
 
@@ -277,4 +270,4 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('screens')(ApplicationListsScreen));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('screens')(DialogSearchList));

@@ -11,7 +11,6 @@ import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
 
 import Container from '@material-ui/core/Container';
-import PrivateRoute from '@misakey/auth/components/Route/Private';
 
 import ApplicationHeader from 'components/dumb/Application/Header';
 import ApplicationNavTabs from 'components/screens/Citizen/Application/Info/Nav';
@@ -34,6 +33,11 @@ function ApplicationInfo({
 }) {
   const [isOpenUserContributionDialog, setOpenUserContributionDialog] = useState(false);
   const [userContributionType, setUserContributionType] = useState('');
+
+  const { name, id, mainDomain, unknown } = useMemo(
+    () => entity || {},
+    [entity],
+  );
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -66,7 +70,7 @@ function ApplicationInfo({
         user_id: userId,
         dpo_email: dpoEmail,
         link,
-        application_id: entity.id,
+        application_id: id,
       })
       .send()
       .then(() => {
@@ -78,13 +82,7 @@ function ApplicationInfo({
         enqueueSnackbar(text, { variant: 'error' });
       })
       .finally(closeUserContributionDialog),
-    [
-      userId,
-      entity.id,
-      closeUserContributionDialog,
-      t,
-      enqueueSnackbar,
-    ],
+    [userId, id, closeUserContributionDialog, t, enqueueSnackbar],
   );
 
   return (
@@ -94,26 +92,29 @@ function ApplicationInfo({
         onClose={closeUserContributionDialog}
         onSuccess={onUserContribute}
         userContributionType={userContributionType}
-        appName={entity.name}
+        appName={name}
       />
 
       <ApplicationHeader
         {...entity}
-        auth={auth}
-        isAuthenticated={isAuthenticated}
         isLoading={isFetching}
         onContributionDpoEmailClick={onContributionDpoEmailClick}
-        readOnly={entity.unknown}
+        readOnly={unknown}
       />
-      {!entity.unknown && (
-        <ApplicationNavTabs mainDomain={entity.mainDomain} isAuthenticated={isAuthenticated} />
+      {!unknown && mainDomain && (
+        <ApplicationNavTabs mainDomain={mainDomain} isAuthenticated={isAuthenticated} />
       )}
 
       <Switch>
-        <PrivateRoute
+        <Route
           exact
           path={routes.citizen.application.personalData}
-          component={ApplicationBox}
+          render={(routerProps) => (
+            <ApplicationBox
+              onContributionDpoEmailClick={onContributionDpoEmailClick}
+              {...routerProps}
+            />
+          )}
         />
         {window.env.PLUGIN && (
           <Route
@@ -158,7 +159,7 @@ ApplicationInfo.propTypes = {
 };
 
 ApplicationInfo.defaultProps = {
-  entity: {},
+  entity: null,
 };
 
 export default connect((state) => ({

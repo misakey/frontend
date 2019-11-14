@@ -20,8 +20,20 @@
     "linked": {
       "subtitle": "Mes Services"
     },
-    "searched": {
-      "subtitle": "Résultats de recherche"
+    "suggested": {
+      "subtitle": "Mes suggestions"
+    },
+    "empty": {
+      "subtitle": "Cherchez un service pour récupérer vos données"
+    },
+    "notFound": {
+      "subtitle": "Votre service manque à la liste ?",
+      "button": "Créer le service"
+    },
+    "create": {
+      "title": "Créer un service",
+      "subtitle": "Indiquez l'adresse de votre service, nous nous occupons de rappatrier ses informations",
+      "success": "Demande de création d'application reçue!"
     }
   },
   "application": {
@@ -31,17 +43,21 @@
     "notFound": {
       "title": "Oops, nous n'avons rien trouvé concernant le domaine {{mainDomain}} :-("
     },
-    "list": {
-      "empty": "Nous n'avons trouvé aucun résultat \uD83D\uDE1E"
-    },
     "info": {
-      "emailSignIn": "Connectez-vous pour voir l'email du DPD",
+      "emailSignIn": "Connectez-vous pour voir l'email du DPO",
       "ratingCount": "{{count}} note",
       "ratingCount_plural": "{{count}} notes",
       "rate": "Donner mon avis",
       "desc": {
         "title": "Description du service",
-        "openInNew": "Voir le site"
+        "openInNew": "Voir le site",
+        "inProgress": {
+          "title": "Fiche en cours de création",
+          "text": "La fiche du service est en cours de création. Vous pouvez ajouter l'email du dpo et les liens vers la politique de confidentialité et les conditions générales. Si vous êtes administrateur du service, vous pouvez lancer le processus de récupération du rôle administrateur.",
+          "button": {
+            "label": "Je suis administrateur"
+          }
+        }
       },
       "contact": {
         "goToApp": "Contacter depuis l'application"
@@ -78,7 +94,8 @@
           "serviceType": "Type de service",
           "privacyJuridiction": "Juridiction données personnelles",
           "mainIncome": "Principale source de revenue",
-          "homeCountry": "Siège social"
+          "homeCountry": "Siège social",
+          "dpoEmail": "Email du DPO"
         },
         "values": {
           "serviceType": {
@@ -142,8 +159,12 @@
     "box": {
       "needPassword": "Pour accéder à ce fichier, nous avons besoin de votre mot de passe",
       "errorNotif": "Une erreur est survenue.",
-      "wrongPassword": "Le mot de passe semble erronné, veuillez ré-essayer",
-      "noResult": "Vous n'avez pas encore contacté {{name}}."
+      "wrongPassword": "Le mot de passe semble erroné, veuillez réessayer",
+      "title": "Récupérer vos données",
+      "button": {
+        "label": "Contacter le DPO"
+      },
+      "noResult": "Vous pouvez contacter le dpo afin de récupérer vos données personnelles dans votre coffre-fort. Vous serez ensuite libre d'en disposer comme bon vous semble. Vos données seront chiffrées afin que vous seul puissiez y accéder."
     },
     "thirdParty": {
       "purposes": {

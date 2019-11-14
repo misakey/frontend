@@ -29,6 +29,7 @@ import './App.scss';
 const Account = lazy(() => import('components/screens/Account'));
 const Admin = lazy(() => import('components/screens/Admin'));
 const DPO = lazy(() => import('components/screens/DPO'));
+const ApplicationListsDialog = lazy(() => import('components/smart/Dialog/Search'));
 
 // CONSTANTS
 const REFERRERS = {
@@ -108,6 +109,7 @@ function App({ t }) {
               {/* DEFAULT */}
               <Route component={NotFound} />
             </Switch>
+            <Route component={ApplicationListsDialog} />
           </Layout>
         </Suspense>
         )}

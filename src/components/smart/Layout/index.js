@@ -27,8 +27,9 @@ import ButtonBurger from 'components/dumb/Button/Burger';
 
 import { layoutBurgerClicked } from 'store/actions/Layout';
 
-import InputSearchRedirect from 'components/smart/Input/Search/Redirect';
+// import InputSearchRedirect from 'components/smart/Input/Search/Redirect';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import LayoutSearch from './Search';
 
 // CONSTANTS
 export const LEFT_PORTAL_ID = 'LayoutLeftPortal';
@@ -101,6 +102,10 @@ const useStyles = makeStyles((theme) => ({
   buttonTextRounded: {
     borderRadius: '200px',
   },
+  iconRoot: {
+    width: '40px',
+    height: '40px',
+  },
 }));
 
 function Layout({
@@ -114,7 +119,6 @@ function Layout({
   pausePluginButton,
   shift,
   location: { pathname },
-  t,
 }) {
   const classes = useStyles();
   const width = useWidth();
@@ -132,10 +136,10 @@ function Layout({
   const noTokenIcon = useMemo(
     () => (
       isSmallDisplay
-        ? <AccountCircle />
+        ? <AccountCircle classes={{ root: classes.iconRoot }} />
         : null
     ),
-    [isSmallDisplay],
+    [classes.iconRoot, isSmallDisplay],
   );
 
   const handleBurgerClick = useCallback(() => {
@@ -168,10 +172,7 @@ function Layout({
               {burger && <ButtonBurger {...burgerProps} onClick={handleBurgerClick} />}
               <div id={LEFT_PORTAL_ID} className={classes.portal} />
               {(!window.env.PLUGIN && !isLanding) && (
-                <InputSearchRedirect
-                  inputProps={{ 'aria-label': t('nav:search.label') }}
-                  placeholder={t('nav:search.placeholder')}
-                />
+                <LayoutSearch />
               )}
               <div id={RIGHT_PORTAL_ID} />
               {pausePluginButton && <PausePluginButton />}
@@ -210,10 +211,13 @@ Layout.propTypes = {
   displayAppBar: PropTypes.bool,
   displayWarningDrawer: PropTypes.bool,
   shift: PropTypes.bool,
-  children: PropTypes.oneOfType([PropTypes.elementType, PropTypes.object]).isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.elementType,
+    PropTypes.object,
+    PropTypes.node,
+  ]).isRequired,
   history: PropTypes.shape({ goBack: PropTypes.func, push: PropTypes.func }).isRequired,
   location: PropTypes.shape({ pathname: PropTypes.string }).isRequired,
-  t: PropTypes.func.isRequired,
   pausePluginButton: PropTypes.bool,
 };
 

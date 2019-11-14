@@ -11,7 +11,7 @@ import ApplicationSchema from 'store/schemas/Application';
 import routes from 'routes';
 
 import displayIn from '@misakey/helpers/displayIn';
-import { redirectToApp, openInNewTab } from 'helpers/plugin';
+import { redirectToApp } from 'helpers/plugin';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -19,10 +19,8 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 
 import Typography from '@material-ui/core/Typography';
-import MUILink from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
 import Rating from '@material-ui/lab/Rating';
 import Skeleton from '@material-ui/lab/Skeleton';
 
@@ -30,8 +28,6 @@ import ContactButton from 'components/smart/ContactButton';
 import ApplicationImg from 'components/dumb/Application/Img';
 import FeedbackLink from 'components/dumb/Link/Feedback';
 
-import Container from '@material-ui/core/Container';
-import { withUserManager } from '@misakey/auth/components/OidcProvider';
 import './index.scss';
 
 // CONSTANTS
@@ -110,12 +106,10 @@ OnLoading.propTypes = {
 };
 
 function ApplicationHeader({
-  auth,
   className,
   dpoEmail,
   homepage,
   id,
-  isAuthenticated,
   isLoading,
   logoUri,
   name,
@@ -123,8 +117,8 @@ function ApplicationHeader({
   avgRating,
   totalRating,
   shortDesc,
+  published,
   t,
-  userManager,
   wasContacted,
   onContributionDpoEmailClick,
   readOnly,
@@ -142,153 +136,107 @@ function ApplicationHeader({
     [totalRating, avgRating, t],
   );
 
-  const signInRedirect = useCallback(() => {
-    // @FIXME: remove when auth in plugin is implemented
-    if (window.env.PLUGIN) {
+  const openInNewTab = useCallback(
+    () => {
+      // @FIXME: remove when auth in plugin is implemented
       redirectToApp(generatePath(routes.citizen.application._, { mainDomain }));
-    } else {
-      userManager.signinRedirect();
-    }
-  }, [userManager, mainDomain]);
+    },
+    [mainDomain],
+  );
 
   const feedbackApp = useMemo(() => ({ id, mainDomain }), [id, mainDomain]);
   const applicationName = useMemo(() => (name || mainDomain), [name, mainDomain]);
 
-  const mailToForPlugin = useCallback(() => { openInNewTab(`mailto:${dpoEmail}`); }, [dpoEmail]);
-
   return (
-    <Container maxWidth={false}>
-      <header className={clsx(className, classes.root)}>
-        <Grid container spacing={SPACING} className={classes.grid} alignItems="center">
-          <Grid item>
-            <ApplicationImg
-              alt={applicationName}
-              component="a"
-              target="_blank"
-              href={homepage}
-              fontSize="large"
-              src={!isEmpty(logoUri) ? logoUri : undefined}
-              className={clsx(classes.avatar, { [classes.letterAvatar]: isEmpty(logoUri) })}
-            >
-              {applicationName.slice(0, 3)}
-            </ApplicationImg>
-          </Grid>
-          <Grid item className={classes.titles}>
-            {isLoading ? <OnLoading width={width} /> : (
-              <>
-                <Typography
-                  variant={['xs', 'sm'].includes(width) ? 'h5' : 'h4'}
-                  className={classes.nameTitle}
-                >
-                  {applicationName}
-                </Typography>
-                <Typography variant="body1" color="textSecondary">
-                  {shortDesc}
-                </Typography>
-                {!readOnly && (
-                  <Typography>
-                    {isAuthenticated && dpoEmail && !window.env.PLUGIN && (
-                      <MUILink href={`mailto:${dpoEmail}`}>
-                        {dpoEmail}
-                      </MUILink>
-                    )}
-                    {isAuthenticated && dpoEmail && window.env.PLUGIN && (
-                      <MUILink onClick={mailToForPlugin} component="button">
-                        {dpoEmail}
-                      </MUILink>
-                    )}
-                    {isAuthenticated && !dpoEmail && (
-                      <MUILink
-                        onClick={onContributionDpoEmailClick}
-                        className="lightLink"
-                        component="button"
-                      >
-                        {t('screens:application.info.userContribution.dpoEmailOpenDialog')}
-                      </MUILink>
-                    )}
-                    {!isAuthenticated && (
-                      <MUILink onClick={signInRedirect} component="button">
-                        {t('screens:application.info.emailSignIn')}
-                      </MUILink>
-                    )}
-                  </Typography>
-                )}
-              </>
-            )}
-            <Divider className={classes.divider} />
-            <Grid container spacing={1} alignItems="center" wrap="nowrap">
-              <Grid item>
-                <Typography color="primary" variant="h5">{avgRatingText}</Typography>
-              </Grid>
-              <Grid item>
-                <Rating
-                  readOnly
-                  size="large"
-                  value={avgRating}
-                  classes={{ iconFilled: classes.ratingIcon }}
-                />
-              </Grid>
-            </Grid>
-            <Typography color="textSecondary" variant="subtitle1" display="inline">
-              {t('screens:application.info.ratingCount', { count: totalRating })}
-            </Typography>
-            {feedbackApp.id && !readOnly && (
-              <FeedbackLink
-                application={feedbackApp}
-                to={addFeedbackRoute}
-                onClick={signInRedirect}
-                variant="subtitle1"
-                className={classes.rateLink}
+    <header className={clsx(className, classes.root)}>
+      <Grid container spacing={SPACING} className={classes.grid} alignItems="center">
+        <Grid item>
+          <ApplicationImg
+            alt={applicationName}
+            component="a"
+            target="_blank"
+            href={homepage}
+            fontSize="large"
+            src={!isEmpty(logoUri) ? logoUri : undefined}
+            className={clsx(classes.avatar, { [classes.letterAvatar]: isEmpty(logoUri) })}
+          >
+            {applicationName.slice(0, 3)}
+          </ApplicationImg>
+        </Grid>
+        <Grid item className={classes.titles}>
+          {isLoading ? <OnLoading width={width} /> : (
+            <>
+              <Typography
+                variant={['xs', 'sm'].includes(width) ? 'h5' : 'h4'}
+                className={classes.nameTitle}
               >
-                {t('screens:application.info.rate')}
-              </FeedbackLink>
-            )}
-          </Grid>
-          {(isAuthenticated && !readOnly) && (
+                {applicationName}
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                {shortDesc}
+              </Typography>
+            </>
+          )}
+          <Grid container spacing={1} alignItems="center" wrap="nowrap">
             <Grid item>
-              {!window.env.PLUGIN && (
-                <ContactButton
-                  idToken={auth.id}
-                  dpoEmail={dpoEmail}
-                  applicationID={id}
-                  mainDomain={mainDomain}
-                  contactedView={wasContacted}
-                />
-              )}
-              {!dpoEmail && (
+              <Typography color="primary" variant="h5">{avgRatingText}</Typography>
+            </Grid>
+            <Grid item>
+              <Rating
+                readOnly
+                size="large"
+                value={avgRating}
+                classes={{ iconFilled: classes.ratingIcon }}
+              />
+            </Grid>
+          </Grid>
+          <Typography color="textSecondary" variant="subtitle1" display="inline">
+            {t('screens:application.info.ratingCount', { count: totalRating })}
+          </Typography>
+          {feedbackApp.id && !readOnly && published && (
+            <FeedbackLink
+              application={feedbackApp}
+              to={addFeedbackRoute}
+              variant="subtitle1"
+              className={classes.rateLink}
+            >
+              {t('screens:application.info.rate')}
+            </FeedbackLink>
+          )}
+        </Grid>
+        {(!readOnly && !isLoading) && (
+          <Grid item>
+            {(window.env.PLUGIN && dpoEmail)
+              ? (
                 <Button
-                  onClick={onContributionDpoEmailClick}
-                  variant="outlined"
-                  color="secondary"
-                >
-                  {t('screens:application.info.userContribution.dpoEmailOpenDialog')}
-                </Button>
-              )}
-              {window.env.PLUGIN && dpoEmail && (
-                <Button
-                  onClick={signInRedirect}
+                  onClick={openInNewTab}
                   variant="contained"
                   color="secondary"
                 >
                   {t('screens:application.info.contact.goToApp')}
                 </Button>
+              )
+              : (
+                <ContactButton
+                  dpoEmail={dpoEmail}
+                  onContributionClick={onContributionDpoEmailClick}
+                  applicationID={id}
+                  mainDomain={mainDomain}
+                  contactedView={wasContacted}
+                />
               )}
-            </Grid>
-          )}
-        </Grid>
-      </header>
-    </Container>
+          </Grid>
+        )}
+      </Grid>
+    </header>
   );
 }
 
 ApplicationHeader.propTypes = {
   ...ApplicationSchema.propTypes,
-  auth: PropTypes.shape({ id: PropTypes.string, profile: PropTypes.object }).isRequired,
   className: PropTypes.string,
-  isAuthenticated: PropTypes.bool,
   isLoading: PropTypes.bool,
   t: PropTypes.func.isRequired,
-  userManager: PropTypes.object.isRequired,
   wasContacted: PropTypes.bool,
   onContributionDpoEmailClick: PropTypes.func.isRequired,
   readOnly: PropTypes.bool,
@@ -296,10 +244,9 @@ ApplicationHeader.propTypes = {
 
 ApplicationHeader.defaultProps = {
   className: '',
-  isAuthenticated: false,
   isLoading: false,
   wasContacted: false,
   readOnly: false,
 };
 
-export default withUserManager(withTranslation(['common', 'screens'])(ApplicationHeader));
+export default withTranslation(['common', 'screens'])(ApplicationHeader);

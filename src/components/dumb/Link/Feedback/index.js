@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import withMyFeedback from 'components/smart/withMyFeedback';
+import withDialogConnect from 'components/smart/Dialog/Connect/with';
+
 import RatingSchema from 'store/schemas/Rating';
 
 import isNil from '@misakey/helpers/isNil';
@@ -15,33 +17,21 @@ const OMIT_PROPS = ['userId'];
 
 // COMPONENTS
 const FeedbackLink = ({
-  isAuthenticated,
   rating,
   children,
-  onClick,
-  to,
   ...rest
 }) => {
   if (!isNil(rating)) {
     return null;
   }
-  if (isAuthenticated) {
-    return (
-      <MUILink component={Link} to={to} {...omit(rest, OMIT_PROPS)}>
-        {children}
-      </MUILink>
-    );
-  }
-
   return (
-    <MUILink onClick={onClick} component="button" {...omit(rest, OMIT_PROPS)}>
+    <MUILink component={Link} {...omit(rest, OMIT_PROPS)}>
       {children}
     </MUILink>
   );
 };
 
 FeedbackLink.propTypes = {
-  isAuthenticated: PropTypes.bool,
   rating: PropTypes.shape(RatingSchema.propTypes),
   children: PropTypes.oneOfType([PropTypes.elementType, PropTypes.object]).isRequired,
   onClick: PropTypes.func.isRequired,
@@ -49,8 +39,7 @@ FeedbackLink.propTypes = {
 };
 
 FeedbackLink.defaultProps = {
-  isAuthenticated: false,
   rating: null,
 };
 
-export default withMyFeedback()(FeedbackLink);
+export default withMyFeedback()(withDialogConnect(FeedbackLink));

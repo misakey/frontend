@@ -66,7 +66,10 @@ const routes = {
   },
   citizen: {
     _: '/citizen',
-    applications: '/citizen/applications',
+    applications: {
+      _: '/citizen/applications',
+      create: '/citizen/applications/create',
+    },
     application: {
       _: '/citizen/:mainDomain',
       contact: {

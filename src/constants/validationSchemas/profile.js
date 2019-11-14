@@ -1,9 +1,9 @@
 import * as Yup from 'yup';
+import { MAX_FILE_SIZE } from 'constants/file/size';
 import { ACCEPTED_TYPES } from 'constants/file/image';
 
 // CONSTANTS
 const DISPLAY_NAME_REGEX = /^[\da-zA-Z ]+$/;
-const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3MO
 
 export const displayNameValidationSchema = Yup.object().shape({
   displayName: Yup

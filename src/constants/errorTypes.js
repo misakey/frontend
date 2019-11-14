@@ -7,6 +7,7 @@ const errorTypes = {
   notfound: 'notfound',
   required: 'required',
   unknown: 'unknown',
+  badRequest: 'bad_request',
 };
 
 export default errorTypes;

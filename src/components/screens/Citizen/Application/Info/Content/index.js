@@ -1,23 +1,22 @@
+/* global browser */ // eslint-disable-line no-redeclare
 import React, { useCallback, useState, useMemo } from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import { generatePath } from 'react-router-dom';
+import { generatePath, Link } from 'react-router-dom';
 
 import routes from 'routes';
 import { connect } from 'react-redux';
 
 import ApplicationSchema from 'store/schemas/Application';
 
-import { withUserManager } from '@misakey/auth/components/OidcProvider';
-
 import isArray from '@misakey/helpers/isArray';
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 import some from '@misakey/helpers/some';
+import { redirectToApp } from 'helpers/plugin';
 import countries from 'i18n-iso-countries';
 
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
 import BoxSection from 'components/dumb/Box/Section';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -36,11 +35,12 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import MyFeedbackCard from 'components/dumb/Card/Feedback/My';
 import SummaryFeedbackCard from 'components/dumb/Card/Feedback/Summary';
 import withMyFeedback from 'components/smart/withMyFeedback';
+import withDialogConnect from 'components/smart/Dialog/Connect/with';
 
-import { redirectToApp } from 'helpers/plugin';
 
 // CONSTANTS
 const requiredLinksType = ['privacy_policy', 'tos', 'terms', 'legal_notice', 'cookies', 'personal_data', 'dpo_contact'];
+const DPO_EMAIL_KEY = 'dpoEmail';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -68,9 +68,19 @@ const useStyles = makeStyles((theme) => ({
     borderTop: `1px solid ${theme.palette.grey.A100}`,
     padding: theme.spacing(2, 3),
   },
+  boxRoot: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
+  claimButtonRoot: {
+    alignSelf: 'flex-end',
+  },
 }));
 
 // COMPONENTS
+const ConnectLink = withDialogConnect(MUILink);
+
 const getTranslationCustomizer = (prefix) => {
   const translatedValues = {
     serviceType: [
@@ -119,57 +129,78 @@ const getHomeCountryCustomizer = (lng) => {
   return [match, format];
 };
 
-const useSignInRedirect = (userManager, mainDomain) => useCallback(() => {
-  // @FIXME: remove when auth inside plugin popup is implemented
-  if (window.env.PLUGIN) {
-    redirectToApp(generatePath(routes.citizen.application._, { mainDomain }));
-  } else {
-    userManager.signinRedirect();
-  }
-}, [userManager, mainDomain]);
-
-const getMissingLinkCustomizer = (t, handleClick, isAuthenticated, signInRedirect) => {
+const getMissingLinkCustomizer = (t, handleClick, signInRedirect) => {
   const match = (value, key) => requiredLinksType.includes(key) && isNil(value);
+
   const format = () => {
-    if (isAuthenticated) {
+    // TODO : remove when auth in plugin is implemented
+    if (window.env.PLUGIN) {
       return (
-        <MUILink onClick={handleClick} color="primary" component="button">
-          {t('screens:application.info.userContribution.linkOpenDialog')}
+        <MUILink
+          onClick={signInRedirect}
+          component="button"
+        >
+          {t('screens:application.info.userContribution.missingLinkNotConnected')}
         </MUILink>
       );
     }
-
     return (
-      <MUILink onClick={signInRedirect} component="button">
-        {t('screens:application.info.userContribution.missingLinkNotConnected')}
-      </MUILink>
+      <ConnectLink onClick={handleClick} color="primary" component="button">
+        {t('screens:application.info.userContribution.linkOpenDialog')}
+      </ConnectLink>
     );
   };
 
   return [match, format];
 };
 
-function OnLoading({ classes }) {
+const getMissingDpoEmailCustomizer = (t, handleClick, mainDomain) => {
+  const match = (value, key) => DPO_EMAIL_KEY === key && isEmpty(value);
+
+  const format = () => {
+    // TODO : remove when auth in plugin is implemented
+    if (window.env.PLUGIN) {
+      return (
+        <ConnectLink
+          onClick={() => {
+            browser.tabs.create({
+              url: `${window.env.APP_URL}/citizen/${mainDomain}`,
+            });
+          }}
+          component="button"
+        >
+          {t('common:contact.dpo')}
+        </ConnectLink>
+      );
+    }
+
+    return (
+      <ConnectLink onClick={handleClick} color="primary" component="button">
+        {t('common:contact.dpo')}
+      </ConnectLink>
+    );
+  };
+
+  return [match, format];
+};
+
+function OnLoading(props) {
   return (
-    <Container className={classes.root} maxWidth={false}>
-      <BoxSection mb={3} p={0}>
-        <Box p={3}>
-          <Typography variant="h6" component="h5">
-            <Skeleton variant="text" style={{ marginTop: 0 }} />
-          </Typography>
-          <Box mt={1}>
-            <Skeleton variant="text" />
-          </Box>
-          <Box mt={2}>
-            <Skeleton variant="rect" height={120} />
-          </Box>
+    <BoxSection mb={3} p={0} {...props}>
+      <Box p={3}>
+        <Typography variant="h6" component="h5">
+          <Skeleton variant="text" style={{ marginTop: 0 }} />
+        </Typography>
+        <Box mt={1}>
+          <Skeleton variant="text" />
         </Box>
-      </BoxSection>
-    </Container>
+        <Box mt={2}>
+          <Skeleton variant="rect" height={120} />
+        </Box>
+      </Box>
+    </BoxSection>
   );
 }
-
-OnLoading.propTypes = { classes: PropTypes.objectOf(PropTypes.string).isRequired };
 
 const WithMyFeedbackCard = withMyFeedback(
   ({ application: { mainDomain }, ...rest }) => ({ mainDomain, ...rest }),
@@ -181,7 +212,6 @@ const ApplicationInfoContent = ({
   isLoading,
   t,
   onContributionLinkClick,
-  userManager,
   isAuthenticated,
 }) => {
   const classes = useStyles();
@@ -194,9 +224,20 @@ const ApplicationInfoContent = ({
     () => { collapse(true); },
     [collapse],
   );
-
   const mainDomain = useMemo(() => entity.mainDomain, [entity]);
-  const signInRedirect = useSignInRedirect(userManager, mainDomain);
+
+  const adminClaimLink = useMemo(
+    () => generatePath(routes.admin.service.claim._, { mainDomain }),
+    [mainDomain],
+  );
+
+  const signInRedirect = useCallback(
+    () => {
+      // @FIXME: remove when auth inside plugin popup is implemented
+      redirectToApp(generatePath(routes.citizen.application._, { mainDomain }));
+    },
+    [mainDomain],
+  );
 
   const translationCustomizer = React.useMemo(() => getTranslationCustomizer('.primary'), []);
   const privacyShieldCustomizer = React.useMemo(() => getPrivacyShieldCustomizer(), []);
@@ -205,10 +246,17 @@ const ApplicationInfoContent = ({
     () => getMissingLinkCustomizer(
       t,
       onContributionLinkClick,
-      isAuthenticated,
       signInRedirect,
     ),
-    [t, onContributionLinkClick, isAuthenticated, signInRedirect],
+    [t, onContributionLinkClick, signInRedirect],
+  );
+  const missingDpoEmailCustomizer = React.useMemo(
+    () => getMissingDpoEmailCustomizer(
+      t,
+      onContributionLinkClick,
+      entity.mainDomain,
+    ),
+    [t, onContributionLinkClick, entity.mainDomain],
   );
 
   // @FIXME: define if we want that behaviour or not.
@@ -226,6 +274,7 @@ const ApplicationInfoContent = ({
   let otherInfo = {
     privacy_policy: null,
     tos: null,
+    dpoEmail: entity.dpoEmail,
     pleaseFixMe: 'ASAP',
   };
 
@@ -256,12 +305,57 @@ const ApplicationInfoContent = ({
     [entity.domains],
   );
 
-  if (isLoading) { return <OnLoading classes={classes} />; }
+  if (isLoading) { return <OnLoading classes={{ root: classes.root }} />; }
 
   if (isEmpty(entity)) { return null; }
 
   return (
-    <Container className={classes.root} maxWidth={false}>
+    <Box mt={3}>
+      {!entity.published && (
+        <BoxSection mb={3} p={3} classes={{ root: classes.boxRoot }}>
+          <Typography variant="h6" component="h5" className={classes.titleWithButton}>
+            {t('screens:application.info.desc.inProgress.title')}
+            {homepage && (
+              <>
+                <Button
+                  href={homepage}
+                  className={classes.openInNew}
+                  target="_blank"
+                >
+                  <Box component="span" mr={1}>
+                    {t('screens:application.info.desc.openInNew')}
+                  </Box>
+                  <OpenInNewIcon />
+                </Button>
+                <IconButton
+                  aria-label={t('screens:application.info.desc.openInNew')}
+                  href={homepage}
+                  className={classes.openInNewIconButton}
+                  target="_blank"
+                  edge="end"
+                >
+                  <OpenInNewIcon />
+                </IconButton>
+              </>
+            )}
+          </Typography>
+          <Box mt={1}>
+            <Typography variant="body1" color="textSecondary" paragraph>
+              {t('screens:application.info.desc.inProgress.text')}
+            </Typography>
+          </Box>
+          <Button
+            component={Link}
+            to={adminClaimLink}
+            variant="outlined"
+            color="secondary"
+            aria-label={t('screens:application.info.desc.inProgress.button.label')}
+            classes={{ root: classes.claimButtonRoot }}
+          >
+            {t('screens:application.info.desc.inProgress.button.label')}
+          </Button>
+        </BoxSection>
+      )}
       <BoxSection mb={3} p={0}>
         <Box p={3}>
           <Typography variant="h6" component="h5" className={classes.titleWithButton}>
@@ -322,7 +416,10 @@ const ApplicationInfoContent = ({
                 hideEmpty={false}
                 omitKeys={['pleaseFixMe']}
                 keyPrefix="screens:application.info.secondary.keys."
-                customizers={[missingLinkCustomizer]}
+                customizers={[
+                  missingLinkCustomizer,
+                  missingDpoEmailCustomizer,
+                ]}
               />
             </Box>
           )}
@@ -334,13 +431,17 @@ const ApplicationInfoContent = ({
           </Button>
         )}
       </BoxSection>
-      <Box mb={3}>
-        {isAuthenticated && <WithMyFeedbackCard application={entity} />}
-      </Box>
-      <Box mb={3}>
-        <SummaryFeedbackCard application={entity} />
-      </Box>
-    </Container>
+      {entity.published && (
+        <>
+          <Box mb={3}>
+            {isAuthenticated && <WithMyFeedbackCard application={entity} />}
+          </Box>
+          <Box mb={3}>
+            <SummaryFeedbackCard application={entity} />
+          </Box>
+        </>
+      )}
+    </Box>
   );
 };
 
@@ -349,7 +450,6 @@ ApplicationInfoContent.propTypes = {
   i18n: PropTypes.shape({ language: PropTypes.string }).isRequired,
   isLoading: PropTypes.bool,
   onContributionLinkClick: PropTypes.func.isRequired,
-  userManager: PropTypes.object.isRequired,
   isAuthenticated: PropTypes.bool,
   t: PropTypes.func.isRequired,
 };
@@ -364,4 +464,4 @@ export default connect(
     auth: state.auth,
     isAuthenticated: !!state.auth.token,
   }),
-)(withUserManager(withTranslation(['common', 'screens'])(ApplicationInfoContent)));
+)(withTranslation(['common', 'screens'])(ApplicationInfoContent));

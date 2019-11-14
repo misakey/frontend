@@ -32,8 +32,8 @@ const ApplicationSchema = {
     logoUri: PropTypes.string,
     name: PropTypes.string,
     shortDesc: PropTypes.string,
-
     // PAGES ROSES APPLICATIONS
+    mainPurpose: PropTypes.string,
     dpoEmail: PropTypes.string,
     avgRating: PropTypes.number,
     totalRating: PropTypes.number,

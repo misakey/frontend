@@ -34,7 +34,6 @@ function ApplicationNavTabs({ location, mainDomain, scrollButtons, t, isAuthenti
   const width = useWidth();
 
   const variant = React.useMemo(() => (['xs', 'sm'].includes(width) ? 'scrollable' : 'standard'), [width]);
-  const centered = React.useMemo(() => variant === 'standard', [variant]);
 
   const applicationTabsLinks = React.useMemo(() => Object.keys(pickBy({
     info: true,
@@ -67,7 +66,6 @@ function ApplicationNavTabs({ location, mainDomain, scrollButtons, t, isAuthenti
       {...omit(rest, ['i18n', 'tReady', 'history', 'match', 'staticContext'])}
     >
       <Tabs
-        centered={centered}
         value={value}
         className={classes.tabs}
         variant={variant}

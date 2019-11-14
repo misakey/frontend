@@ -162,7 +162,12 @@
   },
   "mainDomain": {
     "action": "Editer",
-    "label": "Domaine principal"
+    "label": "Domaine principal",
+    "altLabel": "Page d'accueil",
+    "helperText": "Indiquez l'adresse de la page d'accueil",
+    "error": {
+      "malformed": "Merci d'entrer un nom de domaine valide"
+    }
   },
   "name": {
     "action": "Editer",
