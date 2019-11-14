@@ -8,5 +8,11 @@ config: >-
       client_id: 'f1f6c6c8-2b91-4a63-8797-cb0fffdcf3df',
       redirect_uri: 'https://api.preprod.misakey.dev/app/auth/callback',
     },
+    SENTRY: {
+      debug: false,
+      dsn: 'https://8d456528721649a39d8ec22794be3fad@sentry.io/1817198',
+      environment: 'preprod',
+      release: '',
+    },
   };
 

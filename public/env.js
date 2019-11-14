@@ -7,4 +7,10 @@ window.env = {
     client_id: 'c001d00d-5ecc-beef-ca4e-b00b1e54a111',
     redirect_uri: 'https://api.misakey.com.local/app/auth/callback',
   },
+  SENTRY: {
+    debug: false,
+    dsn: 'https://63f724116593491aabcfefa591f19f00@sentry.io/1816689',
+    environment: 'development',
+    release: '',
+  },
 };

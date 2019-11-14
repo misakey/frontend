@@ -9,10 +9,12 @@ import SplashScreen from 'components/dumb/SplashScreen';
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
 
+import Container from '@material-ui/core/Container';
 import RoutePrivate from '@misakey/auth/components/Route/Private';
 import RouteAccessRequest from 'components/smart/Route/AccessRequest';
 import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallback';
 
+import ErrorBoundary from 'components/smart/ErrorBoundary';
 import Auth from 'components/screens/Auth';
 import Landing from 'components/screens/Landing';
 import Citizen from 'components/screens/Citizen';
@@ -39,9 +41,10 @@ const TRedirectAuthCallback = withTranslation('common')(RedirectAuthCallback);
 
 function App({ t }) {
   return (
-    <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+    <ErrorBoundary component={Container} maxWidth="md" my={3}>
+      <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
 
-      {window.env.PLUGIN && (
+        {window.env.PLUGIN && (
         <Layout>
           <Switch>
             <Route exact path={routes.plugin} component={Plugin} />
@@ -56,10 +59,10 @@ function App({ t }) {
             <Route component={NotFound} />
           </Switch>
         </Layout>
-      )}
+        )}
 
 
-      {!window.env.PLUGIN && (
+        {!window.env.PLUGIN && (
         <Suspense fallback={<SplashScreen />}>
           <Layout>
             <Switch>
@@ -107,9 +110,10 @@ function App({ t }) {
             </Switch>
           </Layout>
         </Suspense>
-      )}
+        )}
 
-    </SnackbarProvider>
+      </SnackbarProvider>
+    </ErrorBoundary>
   );
 }
 

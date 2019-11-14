@@ -1,52 +1,46 @@
+/* IMPORTS */
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-// STORE
+// metrics
+import * as Sentry from '@sentry/browser';
+// store
 import { applyMiddleware, compose, createStore } from 'redux';
 import { Provider as StoreProvider } from 'react-redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { PersistGate } from 'redux-persist/integration/react';
 import reducers from 'store/reducers';
-
-// MIDDLEWARES
+// middlewares
 import API from '@misakey/api';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 import APITokenMiddleware from '@misakey/auth/middlewares/APItoken';
 import invalidTokenMiddleware from 'middlewares/invalidToken';
-
-// ROUTING
+// routing
 import { BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from 'serviceWorker';
-
-// UI
+// ui
 import MuiThemeProvider from 'components/smart/ThemeProvider';
 import theme from 'theme';
 import 'react-virtualized/styles.css';
-
-// COMPONENTS
+// components
 import App from 'components/App';
 import SplashScreen from 'components/dumb/SplashScreen';
-
-// TRANSLATIONS
+import OidcProvider from '@misakey/auth/components/OidcProvider'; // OIDC provider
+// translations
 import i18n from 'i18n';
 import countries from 'i18n-iso-countries';
-
 import FRCommon from 'constants/locales/fr/common';
 import FRFields from 'constants/locales/fr/fields';
-
-// HELPERS
+// helpers
 import { isDesktopDevice } from 'helpers/devices';
+import { isSilentAuthIframe, processSilentAuthCallbackInIframe } from '@misakey/auth/helpers'; // Silent auth
 
-// Silent auth
-import {
-  isSilentAuthIframe,
-  processSilentAuthCallbackInIframe,
-} from '@misakey/auth/helpers';
+/* END OF IMPORTS */
 
-// OIDC provider
-import OidcProvider from '@misakey/auth/components/OidcProvider';
+if (window.env.ENV !== 'development' || window.env.SENTRY.debug === true) {
+  Sentry.init(window.env.SENTRY);
+}
 
 if (window.env.PLUGIN) {
   document.documentElement.setAttribute(

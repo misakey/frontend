@@ -184,5 +184,13 @@
   "boolean": {
     "true": "Oui",
     "false": "Non"
+  },
+  "error": {
+    "title": {
+      "default": "Aïe ! Une erreur est survenue..."
+    },
+    "button": {
+      "collapse": "Détails"
+    }
   }
 }
