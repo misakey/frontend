@@ -12,11 +12,13 @@ function Redirect(props) {
   const { href, search, pathname } = parseUrlFromLocation(to);
 
   if (forceRefresh && isSamePage(href)) {
-    return window.location.reload();
+    window.location.reload();
+    return null;
   }
 
   if (!isSameHost(href)) {
-    return window.location.replace(href);
+    window.location.replace(href);
+    return null;
   }
 
   return <RouterRedirect {...props} to={`${pathname}${search}`} />;
