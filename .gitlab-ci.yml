@@ -68,7 +68,6 @@ build:
     - make docker-login
   script:
     - make build
-    - make tag
     - make deploy
   only:
     refs:

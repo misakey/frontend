@@ -7,17 +7,23 @@ dpl ?= deploy.env
 include $(dpl)
 export $(shell sed 's/=.*//' $(dpl))
 
-# This version-strategy uses git tags to set the version string
-VERSION := $(shell git describe --tags --always --dirty)
-
 # Set gitlab-ci variables if not in a CI context
 ifndef CI_REGISTRY_IMAGE
-	CI_REGISTRY_IMAGE := $(DOCKER_REGISTRY)/misakey/$(APP_NAME)
+	CI_REGISTRY_IMAGE := $(DOCKER_REGISTRY)/misakey
 endif
+DOCKER_IMAGE := $(CI_REGISTRY_IMAGE)/$(APP_NAME)
 ifndef CI_COMMIT_REF_NAME
 	CI_COMMIT_REF_NAME := $(shell git rev-parse --abbrev-ref HEAD)
 endif
-CI_COMMIT_REF_NAME := $(shell if echo "$(CI_COMMIT_REF_NAME)" | grep -q "/"; then echo $(CI_COMMIT_REF_NAME) |  sed -n "s/^.*\/\(.*\)$$/\1/p"; else echo $(CI_COMMIT_REF_NAME); fi)
+
+SERVICE_TAG_METADATA := $(shell echo '+frontend')
+# remove `/` & `SERVICE_TAG_METADATA` from commit ref name
+ifneq (,$(findstring /,$(CI_COMMIT_REF_NAME)))
+	CI_COMMIT_REF_NAME := $(shell echo $(CI_COMMIT_REF_NAME) |  sed -n "s/^.*\/\(.*\)$$/\1/p")
+endif
+ifneq (,$(findstring $(SERVICE_TAG_METADATA),$(CI_COMMIT_REF_NAME)))
+	CI_COMMIT_REF_NAME := $(shell echo $(CI_COMMIT_REF_NAME) |  sed 's/$(SERVICE_TAG_METADATA)//g')
+endif
 
 # Set default goal (`make` without command)
 .DEFAULT_GOAL := help
@@ -63,8 +69,7 @@ docker-login: ## Log in to the default registry
 
 .PHONY: build
 build: ## Build a docker image with the build folder and serve server
-	@echo $(VERSION) >> public/version.txt
-	@docker build -t $(CI_REGISTRY_IMAGE):$(VERSION) .
+	@docker build --build-arg VERSION=$(CI_COMMIT_REF_NAME) -t $(DOCKER_IMAGE):$(CI_COMMIT_REF_NAME) .
 
 .PHONY: build-plugin
 build-plugin: ## Generate zip folder for misakey webextension
@@ -93,27 +98,10 @@ clean-plugin:  ## Stop and remove dev container for plugin-dev
 	docker-compose -f $(CURRENT_DIR)/docker-compose.plugin.yml stop
 	docker-compose -f $(CURRENT_DIR)/docker-compose.plugin.yml rm
 
-.PHONY: tag
-tag: ## Tag a docker image and set some aliases
-ifeq ($(CI_COMMIT_REF_NAME),master)
-	@docker tag $(CI_REGISTRY_IMAGE):$(VERSION) $(CI_REGISTRY_IMAGE):latest
-endif
-ifeq ($(CI_COMMIT_REF_NAME),release)
-	@docker tag $(CI_REGISTRY_IMAGE):$(VERSION) $(CI_REGISTRY_IMAGE):rc
-endif
-	@docker tag $(CI_REGISTRY_IMAGE):$(VERSION) $(CI_REGISTRY_IMAGE):$(CI_COMMIT_REF_NAME)
-
 .PHONY: deploy
 deploy: ## Push image to the docker registry
-	@docker push $(CI_REGISTRY_IMAGE):$(VERSION)
-ifeq ($(CI_COMMIT_REF_NAME),master)
-	@docker push $(CI_REGISTRY_IMAGE):latest
-endif
-ifeq ($(CI_COMMIT_REF_NAME),release)
-	@docker push $(CI_REGISTRY_IMAGE):rc
-endif
-	@docker push $(CI_REGISTRY_IMAGE):$(CI_COMMIT_REF_NAME)
+	@docker push $(DOCKER_IMAGE):$(CI_COMMIT_REF_NAME)
 
 .PHONY: clean
 clean: ## Remove all images related to the project
-	@docker images | grep $(CI_REGISTRY_IMAGE) | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi $(CI_REGISTRY_IMAGE):{}
+	@docker images | grep $(DOCKER_IMAGE) | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi $(CI_REGISTRY_IMAGE):{}

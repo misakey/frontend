@@ -1,5 +1,6 @@
 FROM node:10.15.3 AS builder
 LABEL stage=intermediate
+ARG VERSION
 
 COPY ./src /app/src
 COPY ./public /app/public
@@ -8,6 +9,9 @@ COPY ./jsconfig.json /app/jsconfig.json
 COPY ./yarn.lock /app/yarn.lock
 
 WORKDIR /app
+
+RUN echo $VERSION >> public/version.txt
+RUN sed -i "s/VERSION_TO_SET_ON_BUILD/$VERSION/g" /app/public/env.js
 
 RUN yarn install
 RUN yarn run build --env=prod
