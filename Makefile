@@ -11,7 +11,7 @@ export $(shell sed 's/=.*//' $(dpl))
 ifndef CI_REGISTRY_IMAGE
 	CI_REGISTRY_IMAGE := $(DOCKER_REGISTRY)/misakey
 endif
-DOCKER_IMAGE := $(CI_REGISTRY_IMAGE)/$(APP_NAME)
+DOCKER_IMAGE := $(CI_REGISTRY_IMAGE)
 ifndef CI_COMMIT_REF_NAME
 	CI_COMMIT_REF_NAME := $(shell git rev-parse --abbrev-ref HEAD)
 endif
