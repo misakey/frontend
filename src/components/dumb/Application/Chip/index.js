@@ -1,13 +1,14 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 
-function ApplicationChip({ clientName, logoUri, ...rest }) {
+function ApplicationChip({ clientName, logoUri, t, ...rest }) {
   return (
     <Chip
       component="span"
-      avatar={<Avatar component="span" alt={clientName} src={logoUri} />}
+      avatar={<Avatar component="span" alt={t('screens:application.chipAvatar.alt', { clientName })} src={logoUri} />}
       label={clientName}
       variant="outlined"
       {...rest}
@@ -18,6 +19,7 @@ function ApplicationChip({ clientName, logoUri, ...rest }) {
 ApplicationChip.propTypes = {
   clientName: PropTypes.string,
   logoUri: PropTypes.string,
+  t: PropTypes.func.isRequired,
 };
 
 ApplicationChip.defaultProps = {
@@ -25,4 +27,4 @@ ApplicationChip.defaultProps = {
   logoUri: '',
 };
 
-export default ApplicationChip;
+export default withTranslation(['screens'])(ApplicationChip);

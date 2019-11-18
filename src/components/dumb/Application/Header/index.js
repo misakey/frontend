@@ -152,7 +152,7 @@ function ApplicationHeader({
       <Grid container spacing={SPACING} className={classes.grid} alignItems="center">
         <Grid item>
           <ApplicationImg
-            alt={applicationName}
+            alt={t('screens:application.info.logoAlt', { applicationName })}
             component="a"
             target="_blank"
             href={homepage}

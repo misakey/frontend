@@ -59,7 +59,7 @@ function TrackerList({ entities, secondaryAction, title }) {
                   { [classes.letterAvatar]: isEmpty(entity.logoUri) },
                 ),
               }}
-              alt={entity.name}
+              alt=""
               src={!isEmpty(entity.logoUri) ? entity.logoUri : undefined}
             >
               {entity.name.slice(0, 3)}

@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
 import ApplicationSchema from 'store/schemas/Application';
 
@@ -31,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ApplicationAvatar = ({ application }) => {
+const ApplicationAvatar = ({ application, t }) => {
   const classes = useStyles();
 
   const { name, logoUri, mainDomain } = useMemo(
@@ -50,7 +51,7 @@ const ApplicationAvatar = ({ application }) => {
       <ApplicationImg
         classes={{ root: classes.appImg }}
         src={logoUri}
-        alt={displayName}
+        alt={t('screens:application.info.logoAlt', { mainDomain: displayName })}
       >
         {/* @FIXME: this fallback behaviour should be handled inside ApplicationImg */}
         {displayName.slice(0, 3)}
@@ -64,10 +65,11 @@ const ApplicationAvatar = ({ application }) => {
 
 ApplicationAvatar.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes),
+  t: PropTypes.func.isRequired,
 };
 
 ApplicationAvatar.defaultProps = {
   application: null,
 };
 
-export default ApplicationAvatar;
+export default withTranslation(['screens'])(ApplicationAvatar);

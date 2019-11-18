@@ -88,7 +88,7 @@ function ThirdPartyBlockPurpose({
                   <ListItem dense disableGutters>
                     <ListItemAvatar>
                       <ApplicationImg
-                        alt={name}
+                        alt=""
                         src={entity.mainDomain === domain ? entity.logoUri : null}
                       >
                         {name.slice(0, 3)}

@@ -67,7 +67,7 @@ const SuggestionApplicationListItem = ({
               { [classes.letterAvatar]: !hasLogoUri },
             ),
           }}
-          alt={name}
+          alt=""
           src={hasLogoUri ? logoUri : undefined}
         >
           {name.slice(0, 3)}

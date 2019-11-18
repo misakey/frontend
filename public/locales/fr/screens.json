@@ -43,7 +43,11 @@
     "notFound": {
       "title": "Oops, nous n'avons rien trouvé concernant le domaine {{mainDomain}} :-("
     },
+    "chipAvatar": {
+      "alt": "Univers de {{clientName}}"
+    },
     "info": {
+      "logoAlt": "Informations à propos de {{applicationName}}",
       "emailSignIn": "Connectez-vous pour voir l'email du DPO",
       "ratingCount": "{{count}} note",
       "ratingCount_plural": "{{count}} notes",
@@ -198,6 +202,7 @@
           }
         },
         "mainDomain": {
+          "logoAlt": "Univers de {{mainDomain}}",
           "remove": {
             "text": "La liste des services tiers utilisés par <1>{{ mainDomain }}</1> est terminée",
             "button": "Voir tous mes services tiers"
@@ -257,6 +262,9 @@
     }
   },
   "Service": {
+    "Menu": {
+      "logoAlt": "Univers de {{mainDomain}}"
+    },
     "Claim": {
       "title": "",
       "description": "",

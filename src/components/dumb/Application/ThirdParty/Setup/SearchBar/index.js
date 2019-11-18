@@ -117,7 +117,7 @@ function ThirdPartySearchBar({
         <ApplicationImg
           className={classes.avatar}
           src={entity.logoUri}
-          alt={entity.name}
+          alt={t('screens:application.thirdParty.filters.logoAlt', { mainDomain: entity.name })}
         >
           {initialsName}
         </ApplicationImg>

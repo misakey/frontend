@@ -1,4 +1,5 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import isFunction from '@misakey/helpers/isFunction';
 import Button from '@material-ui/core/Button';
@@ -40,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
  */
 function MenuService({
   afterServices, buttonProps, buttonGroupProps,
-  hideLogo, itemProps, selected, services,
+  hideLogo, itemProps, selected, services, t,
 }) {
   const classes = useStyles();
 
@@ -103,7 +104,7 @@ function MenuService({
         <Button {...buttonProps} onClick={handleClick}>
           {!hideLogo && (
             <Avatar
-              alt={currentService.mainDomain}
+              alt={t('screens:Service.Menu.logoAlt', { mainDomain: currentService.mainDomain })}
               src={currentService.logoUri}
               className={classes.logo}
             />
@@ -149,7 +150,7 @@ function MenuService({
                         onClick={getHandleMenuItemClick(index)}
                       >
                         <ListItemAvatar>
-                          <Avatar alt={name} src={logoUri} component="span" />
+                          <Avatar alt="" src={logoUri} component="span" />
                         </ListItemAvatar>
                         <ListItemText
                           primary={name}
@@ -193,6 +194,7 @@ MenuService.propTypes = {
   }),
   selected: PropTypes.number.isRequired,
   services: PropTypes.arrayOf(PropTypes.shape(SERVICE_SHAPE)),
+  t: PropTypes.func.isRequired,
 };
 
 MenuService.defaultProps = {
@@ -204,4 +206,4 @@ MenuService.defaultProps = {
   services: [],
 };
 
-export default MenuService;
+export default withTranslation(['screens'])(MenuService);
