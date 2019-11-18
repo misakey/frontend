@@ -11,7 +11,7 @@ COPY ./yarn.lock /app/yarn.lock
 WORKDIR /app
 
 RUN echo $VERSION >> public/version.txt
-RUN sed -i "s/VERSION_TO_SET_ON_BUILD/$VERSION/g" /app/public/env.js
+RUN sed -i "s/VERSION_TO_SET_ON_BUILD/$VERSION/g" /app/public/index.html
 
 RUN yarn install
 RUN yarn run build --env=prod

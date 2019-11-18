@@ -34,12 +34,17 @@ import FRCommon from 'constants/locales/fr/common';
 import FRFields from 'constants/locales/fr/fields';
 // helpers
 import { isDesktopDevice } from 'helpers/devices';
+import isNil from '@misakey/helpers/isNil';
 import { isSilentAuthIframe, processSilentAuthCallbackInIframe } from '@misakey/auth/helpers'; // Silent auth
 
 /* END OF IMPORTS */
 
 if (window.env.ENV !== 'development' || window.env.SENTRY.debug === true) {
-  Sentry.init(window.env.SENTRY);
+  const sentryConfig = window.env.SENTRY;
+  if (!isNil(window.bundleVersion)) {
+    sentryConfig.release = window.bundleVersion;
+  }
+  Sentry.init(sentryConfig);
 }
 
 if (window.env.PLUGIN) {

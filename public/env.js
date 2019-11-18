@@ -11,6 +11,5 @@ window.env = {
     debug: false,
     dsn: 'https://63f724116593491aabcfefa591f19f00@sentry.io/1816689',
     environment: 'development',
-    release: 'frontend@VERSION_TO_SET_ON_BUILD',
   },
 };
