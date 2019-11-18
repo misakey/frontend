@@ -79,7 +79,8 @@ const withApplication = (Component, options = {}) => {
             }
           })
           .catch((e) => {
-            if (window.env.PLUGIN && e.status === 404) {
+            if (window.env.PLUGIN) {
+              // We can display the basic information from plugin anyway
               dispatchReceivePlugin(mainDomain);
             } else { setError(e.status); }
           })

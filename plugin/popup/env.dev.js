@@ -9,5 +9,5 @@ window.env = {
     automaticSilentRenew: false,
   },
   APP_URL: 'https://misakey.com.local',
-
+  SENTRY: {},
 };

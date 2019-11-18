@@ -1,4 +1,3 @@
-/* global browser */ // eslint-disable-line no-redeclare
 import React, { useCallback, useState, useMemo } from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
@@ -13,7 +12,6 @@ import isArray from '@misakey/helpers/isArray';
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 import some from '@misakey/helpers/some';
-import { redirectToApp } from 'helpers/plugin';
 import countries from 'i18n-iso-countries';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -129,57 +127,26 @@ const getHomeCountryCustomizer = (lng) => {
   return [match, format];
 };
 
-const getMissingLinkCustomizer = (t, handleClick, signInRedirect) => {
+const getMissingLinkCustomizer = (t, handleClick) => {
   const match = (value, key) => requiredLinksType.includes(key) && isNil(value);
 
-  const format = () => {
-    // TODO : remove when auth in plugin is implemented
-    if (window.env.PLUGIN) {
-      return (
-        <MUILink
-          onClick={signInRedirect}
-          component="button"
-        >
-          {t('screens:application.info.userContribution.missingLinkNotConnected')}
-        </MUILink>
-      );
-    }
-    return (
-      <ConnectLink onClick={handleClick} color="primary" component="button">
-        {t('screens:application.info.userContribution.linkOpenDialog')}
-      </ConnectLink>
-    );
-  };
+  const format = () => (
+    <ConnectLink onClick={handleClick} color="primary" component="button">
+      {t('screens:application.info.userContribution.linkOpenDialog')}
+    </ConnectLink>
+  );
 
   return [match, format];
 };
 
-const getMissingDpoEmailCustomizer = (t, handleClick, mainDomain) => {
+const getMissingDpoEmailCustomizer = (t, handleClick) => {
   const match = (value, key) => DPO_EMAIL_KEY === key && isEmpty(value);
 
-  const format = () => {
-    // TODO : remove when auth in plugin is implemented
-    if (window.env.PLUGIN) {
-      return (
-        <ConnectLink
-          onClick={() => {
-            browser.tabs.create({
-              url: `${window.env.APP_URL}/citizen/${mainDomain}`,
-            });
-          }}
-          component="button"
-        >
-          {t('common:contact.dpo')}
-        </ConnectLink>
-      );
-    }
-
-    return (
-      <ConnectLink onClick={handleClick} color="primary" component="button">
-        {t('common:contact.dpo')}
-      </ConnectLink>
-    );
-  };
+  const format = () => (
+    <ConnectLink onClick={handleClick} color="primary" component="button">
+      {t('common:contact.dpo')}
+    </ConnectLink>
+  );
 
   return [match, format];
 };
@@ -231,32 +198,16 @@ const ApplicationInfoContent = ({
     [mainDomain],
   );
 
-  const signInRedirect = useCallback(
-    () => {
-      // @FIXME: remove when auth inside plugin popup is implemented
-      redirectToApp(generatePath(routes.citizen.application._, { mainDomain }));
-    },
-    [mainDomain],
-  );
-
   const translationCustomizer = React.useMemo(() => getTranslationCustomizer('.primary'), []);
   const privacyShieldCustomizer = React.useMemo(() => getPrivacyShieldCustomizer(), []);
   const homeCountryCustomizer = React.useMemo(() => getHomeCountryCustomizer(language), [language]);
   const missingLinkCustomizer = React.useMemo(
-    () => getMissingLinkCustomizer(
-      t,
-      onContributionLinkClick,
-      signInRedirect,
-    ),
-    [t, onContributionLinkClick, signInRedirect],
+    () => getMissingLinkCustomizer(t, onContributionLinkClick),
+    [t, onContributionLinkClick],
   );
   const missingDpoEmailCustomizer = React.useMemo(
-    () => getMissingDpoEmailCustomizer(
-      t,
-      onContributionLinkClick,
-      entity.mainDomain,
-    ),
-    [t, onContributionLinkClick, entity.mainDomain],
+    () => getMissingDpoEmailCustomizer(t, onContributionLinkClick),
+    [t, onContributionLinkClick],
   );
 
   // @FIXME: define if we want that behaviour or not.

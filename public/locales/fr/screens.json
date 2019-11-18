@@ -69,7 +69,6 @@
       "userContribution": {
         "dpoEmailOpenDialog": "Je connais l'email du DPO !",
         "linkOpenDialog": "Je connais ce lien !",
-        "missingLinkNotConnected": "Si vous connaissez ce lien, connectez vous pour l'ajouter !",
         "dialog": {
           "title": "Améliorer la fiche de {{appName}}",
           "intro": {

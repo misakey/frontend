@@ -60,6 +60,8 @@
 * [ ] Environment is running
 * [ ] Pipeline was successful
 * [ ] All changes are related only to referenced issues
+* [ ] Browser console is clean
+* [ ] I considered if my changes can impact the plugin and if so, I have tested it
 * [ ] I considered adding internationalization
 * [ ] I considered updating migrate/hydra/???
 * [ ] I considered refactoring code to avoid duplication

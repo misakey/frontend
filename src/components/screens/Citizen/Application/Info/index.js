@@ -97,6 +97,7 @@ function ApplicationInfo({
 
       <ApplicationHeader
         {...entity}
+        mainDomain={mainDomain}
         isLoading={isFetching}
         onContributionDpoEmailClick={onContributionDpoEmailClick}
         readOnly={unknown}

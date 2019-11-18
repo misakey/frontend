@@ -104,7 +104,7 @@ function ThirdPartyBlock({
 }) {
   const classes = useStyles();
   const [isFetching, setFetching] = React.useState(false);
-  const mainDomain = useMemo(() => entity.mainDomain, [entity]);
+  const { mainDomain, logoUri } = useMemo(() => (entity || { mainDomain: '', logoUri: null }), [entity]);
   const empty = useMemo(() => detectedTrackers.length === 0, [detectedTrackers]);
 
   const formatDetectedTrackers = useFormatDetectedTrackers(whitelist, mainDomain);
@@ -159,7 +159,7 @@ function ThirdPartyBlock({
             key={name}
           >
             <ThirdPartyBlockPurpose
-              entity={entity}
+              entity={{ mainDomain, logoUri }}
               mainPurpose={{ name, whitelisted }}
               apps={apps}
               addToWhitelist={() => updateWhitelist('add', name)}
@@ -209,7 +209,7 @@ ThirdPartyBlock.propTypes = {
 };
 
 ThirdPartyBlock.defaultProps = {
-  entity: {},
+  entity: null,
 };
 
 

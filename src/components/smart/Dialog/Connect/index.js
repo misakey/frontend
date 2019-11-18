@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
+import { redirectToApp } from 'helpers/plugin';
 
 import isFunction from '@misakey/helpers/isFunction';
 
@@ -31,6 +32,8 @@ const DialogConnect = ({ open, onClose, t }) => {
     [onClose],
   );
 
+  const signInActionForPlugin = useCallback(() => redirectToApp('/'), []);
+
   return (
     <Dialog
       open={open}
@@ -44,7 +47,7 @@ const DialogConnect = ({ open, onClose, t }) => {
         <Button onClick={onCancel} color="primary">
           {t('common:cancel')}
         </Button>
-        <ButtonConnect buttonProps={{ variant: 'contained' }} />
+        <ButtonConnect signInAction={window.env.PLUGIN ? signInActionForPlugin : null} buttonProps={{ variant: 'contained' }} />
       </DialogActions>
     </Dialog>
   );
