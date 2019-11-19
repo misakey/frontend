@@ -1201,10 +1201,10 @@
     prop-types "^15.7.2"
     uuid "^3.3.3"
 
-"@misakey/crypto@0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@misakey/crypto/-/crypto-0.7.0.tgz#bebadca06bfdfbe999a40e48c5fd38273936d802"
-  integrity sha512-UgUMVSlr52F5KSLVFaBKJhjsfTx2rAYqW2f9qdet7aE4uoaZ6DH5gG0rgzfMdkYapnrMBPqDfK+oUglKI65dVw==
+"@misakey/crypto@0.8.3-alpha.2":
+  version "0.8.3-alpha.2"
+  resolved "https://registry.yarnpkg.com/@misakey/crypto/-/crypto-0.8.3-alpha.2.tgz#43f5159f562ded1ce762579901520d9d27492015"
+  integrity sha512-3OX6odRtMD828/4FQd8UixM26nhOIx8d0Zjpw5SVg9/BiytEoKeoY8sD8uNDTOKz7PTwPcYBRJxQCHo/azXNyw==
   dependencies:
     "@babel/runtime" "^7.5.5"
     "@misakey/api" "^2.x"
@@ -1223,10 +1223,10 @@
     path-to-regexp "^3.0.0"
     ramda "^0.26.1"
 
-"@misakey/helpers@^3.1.1":
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/@misakey/helpers/-/helpers-3.1.1.tgz#ec5d21e9226e1148c08606b52e3f18b2874007a4"
-  integrity sha512-rZP3dEt71zfjCNcKX5/y0xuoGq1N98W0yD+rzLYMBx25tAvXWF7JvE1b0qEkKJlrNWYe/bCjOhcOmh1HaU+PcA==
+"@misakey/helpers@^3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@misakey/helpers/-/helpers-3.2.1.tgz#e9e1a4c27c9b8cecc5aa8d674cdcd269e6080dff"
+  integrity sha512-5hNXUi/BLwmySCFDRJlkli9lBlZ/QOb5tXagUDHulfDcxDAscY5jwN5ACbgR3l6E+s6ztY0pU9qrTP5+SDF5Hg==
   dependencies:
     "@babel/runtime" "^7.5.5"
     lodash "^4.17.15"

@@ -16,11 +16,15 @@ import isNil from '@misakey/helpers/isNil';
 import path from '@misakey/helpers/path';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+import objectToSnakeCaseDeep from '@misakey/helpers/objectToSnakeCaseDeep';
 
 import useAsync from '@misakey/hooks/useAsync';
 
 import Redirect from 'components/dumb/Redirect';
 import FormCard from 'components/dumb/Form/Card';
+
+import { ownerCryptoContext as cryptoContext } from '@misakey/crypto';
+
 import Button from '@material-ui/core/Button';
 import ButtonSubmit from 'components/dumb/Button/Submit';
 import FieldText from 'components/dumb/Form/Field/Text';
@@ -92,14 +96,26 @@ const confirmCode = (email, form, isAuthenticated) => {
     .send();
 };
 
-const resetPassword = (email, code, form, isAuthenticated) => {
+const resetPassword = async (email, code, form, isAuthenticated) => {
   const endpoint = API.endpoints.user.password.reset;
 
   if (!isAuthenticated) { endpoint.auth = false; }
 
+  const newPassword = form[PASSWORD_FIELD_NAME];
+
+  const newCryptoValues = await cryptoContext.hardPasswordChange(newPassword);
+
   return API
     .use(endpoint)
-    .build(undefined, { email, ...objectToSnakeCase(convertForm(form)), otp: code })
+    .build(
+      undefined,
+      objectToSnakeCaseDeep({
+        email,
+        ...convertForm(form),
+        otp: code,
+        ...newCryptoValues,
+      }),
+    )
     .send();
 };
 
