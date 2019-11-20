@@ -326,11 +326,11 @@
         "title": "",
         "description": "",
         "body": {
-          "title": "Répondre à la demande de portabilité de {{ownerName}}",
-          "desc": "Retrouver les derniers fichiers chiffrés envoyés à {{ownerName}}",
+          "title": "Répondre à la demande de portabilité lié à l'email {{ownerEmail}}",
+          "desc": "Retrouver les derniers fichiers chiffrés envoyés à {{ownerEmail}}",
           "upload": {
             "title": "Validez-vous l'envoi de ce fichier ?",
-            "text": "Le fichier va être chiffré avec la clé de {{ownerName}} puis lui être envoyé.",
+            "text": "Le fichier va être chiffré avec la clé de {{ownerEmail}} puis lui être envoyé. Cette opération est irreversible.",
             "success": "Le fichier {{name}} a été envoyé avec succès !"
           }
         }
