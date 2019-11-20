@@ -1201,10 +1201,10 @@
     prop-types "^15.7.2"
     uuid "^3.3.3"
 
-"@misakey/crypto@0.8.3-alpha.2":
-  version "0.8.3-alpha.2"
-  resolved "https://registry.yarnpkg.com/@misakey/crypto/-/crypto-0.8.3-alpha.2.tgz#43f5159f562ded1ce762579901520d9d27492015"
-  integrity sha512-3OX6odRtMD828/4FQd8UixM26nhOIx8d0Zjpw5SVg9/BiytEoKeoY8sD8uNDTOKz7PTwPcYBRJxQCHo/azXNyw==
+"@misakey/crypto@0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@misakey/crypto/-/crypto-0.8.3.tgz#097b12627d85370e1b7e53ee20f4a947219a6596"
+  integrity sha512-ms28eEsssXep92uSGmKO2kIg6+fWpQ5FqXYum7EnK1YX3yEah9jZDIhqJGkD47bIO9YgNYXMSUjN28Y7adARzA==
   dependencies:
     "@babel/runtime" "^7.5.5"
     "@misakey/api" "^2.x"

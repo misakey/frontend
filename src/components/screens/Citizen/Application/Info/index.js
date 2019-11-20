@@ -136,6 +136,7 @@ function ApplicationInfo({
             <Content
               entity={entity}
               isLoading={isFetching}
+              onContributionDpoEmailClick={onContributionDpoEmailClick}
               onContributionLinkClick={onContributionLinkClick}
             />
           )}

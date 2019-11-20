@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import Swal from 'sweetalert2';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -6,10 +6,12 @@ import { useSnackbar } from 'notistack';
 import { denormalize } from 'normalizr';
 import fileDownload from 'js-file-download';
 import { withTranslation } from 'react-i18next';
+import { generatePath } from 'react-router-dom';
 
 import ApplicationSchema from 'store/schemas/Application';
 
 import API from '@misakey/api';
+import routes from 'routes';
 
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
@@ -19,6 +21,7 @@ import parseJwt from '@misakey/helpers/parseJwt';
 import isObject from '@misakey/helpers/isObject';
 import isNil from '@misakey/helpers/isNil';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import { redirectToApp } from 'helpers/plugin';
 
 import SplashScreen from 'components/dumb/SplashScreen';
 import ScreenError from 'components/dumb/Screen/Error';
@@ -74,6 +77,19 @@ function ApplicationBox({
   const [blobs, setBlobs] = React.useState(null);
 
   const { mainDomain } = match.params;
+
+  const openInNewTab = useCallback(
+    () => {
+      // @FIXME: remove when auth in plugin is implemented
+      redirectToApp(generatePath(routes.citizen.application.personalData, { mainDomain }));
+    },
+    [mainDomain],
+  );
+
+  const dialogConnectProps = useMemo(
+    () => (window.env.PLUGIN ? { signInAction: openInNewTab } : {}),
+    [openInNewTab],
+  );
 
   function errorSnackBar(translationKey) {
     const text = t(translationKey);
@@ -245,6 +261,7 @@ function ApplicationBox({
                     mainDomain={application.mainDomain}
                     contactedView={!!databox}
                     buttonProps={{ variant: 'outlined', classes: { root: classes.contactButtonRoot } }}
+                    dialogConnectProps={dialogConnectProps}
                   >
                     {t('screens:application.box.button.label')}
                   </ContactButton>
@@ -264,6 +281,7 @@ function ApplicationBox({
                       mainDomain={application.mainDomain}
                       contactedView={!!databox}
                       buttonProps={{ variant: 'outlined', classes: { root: classes.contactButtonRoot } }}
+                      dialogConnectProps={dialogConnectProps}
                     >
                       {t('screens:application.box.button.label')}
                     </ContactButton>
@@ -285,6 +303,7 @@ function ApplicationBox({
                         mainDomain={application.mainDomain}
                         contactedView={!!databox}
                         buttonProps={{ variant: 'outlined', classes: { root: classes.contactButtonRoot } }}
+                        dialogConnectProps={dialogConnectProps}
                       />
                     )}
                   </>

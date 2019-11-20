@@ -144,6 +144,11 @@ function ApplicationHeader({
     [mainDomain],
   );
 
+  const dialogConnectProps = useMemo(
+    () => (window.env.PLUGIN ? { signInAction: openInNewTab } : {}),
+    [openInNewTab],
+  );
+
   const feedbackApp = useMemo(() => ({ id, mainDomain }), [id, mainDomain]);
   const applicationName = useMemo(() => (name || mainDomain), [name, mainDomain]);
 
@@ -197,6 +202,7 @@ function ApplicationHeader({
             <FeedbackLink
               application={feedbackApp}
               to={addFeedbackRoute}
+              dialogConnectProps={dialogConnectProps}
               variant="subtitle1"
               className={classes.rateLink}
             >
@@ -223,6 +229,7 @@ function ApplicationHeader({
                   applicationID={id}
                   mainDomain={mainDomain}
                   contactedView={wasContacted}
+                  dialogConnectProps={dialogConnectProps}
                 />
               )}
           </Grid>

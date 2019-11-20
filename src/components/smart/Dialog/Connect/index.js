@@ -2,9 +2,9 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
-import { redirectToApp } from 'helpers/plugin';
 
 import isFunction from '@misakey/helpers/isFunction';
+import omit from '@misakey/helpers/omit';
 
 import ButtonConnect from 'components/dumb/Button/Connect';
 import Button from '@material-ui/core/Button';
@@ -22,7 +22,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-const DialogConnect = ({ open, onClose, t }) => {
+const DialogConnect = ({ open, onClose, t, signInAction, ...rest }) => {
   const classes = useStyles();
 
   const onCancel = useCallback(
@@ -32,12 +32,11 @@ const DialogConnect = ({ open, onClose, t }) => {
     [onClose],
   );
 
-  const signInActionForPlugin = useCallback(() => redirectToApp('/'), []);
-
   return (
     <Dialog
       open={open}
       onClose={onCancel}
+      {...omit(rest, ['tReady'])}
     >
       <DialogTitle>{t('common:dialogConnect.title')}</DialogTitle>
       <DialogContent>
@@ -47,7 +46,7 @@ const DialogConnect = ({ open, onClose, t }) => {
         <Button onClick={onCancel} color="primary">
           {t('common:cancel')}
         </Button>
-        <ButtonConnect signInAction={window.env.PLUGIN ? signInActionForPlugin : null} buttonProps={{ variant: 'contained' }} />
+        <ButtonConnect signInAction={signInAction} buttonProps={{ variant: 'contained' }} />
       </DialogActions>
     </Dialog>
   );
@@ -57,10 +56,12 @@ DialogConnect.propTypes = {
   onClose: PropTypes.func,
   open: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
+  signInAction: PropTypes.func,
 };
 
 DialogConnect.defaultProps = {
   onClose: null,
+  signInAction: null,
 };
 
 export default withTranslation('common')(DialogConnect);

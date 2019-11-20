@@ -129,6 +129,7 @@ const ContactButton = (
     location,
     mailProvider,
     buttonProps,
+    dialogConnectProps,
     children,
     isAuthenticated,
     dispatchContact,
@@ -199,6 +200,7 @@ const ContactButton = (
       variant="contained"
       color="secondary"
       {...buttonProps}
+      dialogConnectProps={dialogConnectProps}
     >
       {noDpoText}
     </DialogConnectButton>
@@ -209,6 +211,7 @@ ContactButton.propTypes = {
   isAuthenticated: PropTypes.bool,
   idToken: PropTypes.string,
   buttonProps: PropTypes.object,
+  dialogConnectProps: PropTypes.object,
   contactedView: PropTypes.bool,
   dpoEmail: PropTypes.string.isRequired,
   onContributionClick: PropTypes.func.isRequired,
@@ -228,6 +231,7 @@ ContactButton.defaultProps = {
   mailProvider: null,
   contactedView: false,
   buttonProps: {},
+  dialogConnectProps: {},
   idToken: null,
   isAuthenticated: false,
   children: null,

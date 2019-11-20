@@ -3,12 +3,12 @@ import omit from '@misakey/helpers/omit';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-import withMyFeedback from 'components/smart/withMyFeedback';
-import withDialogConnect from 'components/smart/Dialog/Connect/with';
-
 import RatingSchema from 'store/schemas/Rating';
 
 import isNil from '@misakey/helpers/isNil';
+
+import withMyFeedback from 'components/smart/withMyFeedback';
+import withDialogConnect from 'components/smart/Dialog/Connect/with';
 
 import MUILink from '@material-ui/core/Link';
 
@@ -24,8 +24,12 @@ const FeedbackLink = ({
   if (!isNil(rating)) {
     return null;
   }
+
   return (
-    <MUILink component={Link} {...omit(rest, OMIT_PROPS)}>
+    <MUILink
+      component={Link}
+      {...omit(rest, OMIT_PROPS)}
+    >
       {children}
     </MUILink>
   );

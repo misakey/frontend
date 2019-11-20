@@ -9,7 +9,7 @@ import DialogConnect from './index';
 
 // COMPONENTS
 const withDialogConnect = (Component) => {
-  const Wrapper = ({ isAuthenticated, onClick, to, replace, ...props }) => {
+  const Wrapper = ({ isAuthenticated, onClick, to, replace, dialogConnectProps, ...props }) => {
     const [open, setOpen] = useState(false);
     const location = useLocation();
 
@@ -43,7 +43,7 @@ const withDialogConnect = (Component) => {
 
     return (
       <>
-        <DialogConnect open={open} onClose={onClose} />
+        <DialogConnect open={open} onClose={onClose} {...dialogConnectProps} />
         <Component onClick={onWrapperClick} {...wrapperLinkProps} {...props} />
       </>
     );
@@ -54,6 +54,7 @@ const withDialogConnect = (Component) => {
     onClick: PropTypes.func,
     to: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     replace: PropTypes.bool,
+    dialogConnectProps: PropTypes.object,
   };
 
   Wrapper.defaultProps = {
@@ -61,6 +62,7 @@ const withDialogConnect = (Component) => {
     onClick: null,
     to: null,
     replace: undefined,
+    dialogConnectProps: {},
   };
 
   // CONNECT

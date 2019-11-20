@@ -13,6 +13,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 import some from '@misakey/helpers/some';
 import countries from 'i18n-iso-countries';
+import { redirectToApp } from 'helpers/plugin';
 
 import { makeStyles } from '@material-ui/core/styles';
 import BoxSection from 'components/dumb/Box/Section';
@@ -127,11 +128,13 @@ const getHomeCountryCustomizer = (lng) => {
   return [match, format];
 };
 
-const getMissingLinkCustomizer = (t, handleClick) => {
+const getMissingLinkCustomizer = (t, handleClick, signInRedirect) => {
   const match = (value, key) => requiredLinksType.includes(key) && isNil(value);
 
+  const dialogConnectProps = window.env.PLUGIN ? { signInAction: signInRedirect } : {};
+
   const format = () => (
-    <ConnectLink onClick={handleClick} color="primary" component="button">
+    <ConnectLink dialogConnectProps={dialogConnectProps} onClick={handleClick} color="primary" component="button">
       {t('screens:application.info.userContribution.linkOpenDialog')}
     </ConnectLink>
   );
@@ -139,11 +142,13 @@ const getMissingLinkCustomizer = (t, handleClick) => {
   return [match, format];
 };
 
-const getMissingDpoEmailCustomizer = (t, handleClick) => {
+const getMissingDpoEmailCustomizer = (t, handleClick, signInRedirect) => {
   const match = (value, key) => DPO_EMAIL_KEY === key && isEmpty(value);
 
+  const dialogConnectProps = window.env.PLUGIN ? { signInAction: signInRedirect } : {};
+
   const format = () => (
-    <ConnectLink onClick={handleClick} color="primary" component="button">
+    <ConnectLink dialogConnectProps={dialogConnectProps} onClick={handleClick} color="primary" component="button">
       {t('common:contact.dpo')}
     </ConnectLink>
   );
@@ -179,6 +184,7 @@ const ApplicationInfoContent = ({
   isLoading,
   t,
   onContributionLinkClick,
+  onContributionDpoEmailClick,
   isAuthenticated,
 }) => {
   const classes = useStyles();
@@ -193,6 +199,15 @@ const ApplicationInfoContent = ({
   );
   const mainDomain = useMemo(() => entity.mainDomain, [entity]);
 
+  const signInRedirect = useCallback(
+    () => {
+      // @FIXME: remove when auth inside plugin popup is implemented
+      redirectToApp(generatePath(routes.citizen.application._, { mainDomain }));
+    },
+    [mainDomain],
+  );
+
+
   const adminClaimLink = useMemo(
     () => generatePath(routes.admin.service.claim._, { mainDomain }),
     [mainDomain],
@@ -202,12 +217,12 @@ const ApplicationInfoContent = ({
   const privacyShieldCustomizer = React.useMemo(() => getPrivacyShieldCustomizer(), []);
   const homeCountryCustomizer = React.useMemo(() => getHomeCountryCustomizer(language), [language]);
   const missingLinkCustomizer = React.useMemo(
-    () => getMissingLinkCustomizer(t, onContributionLinkClick),
-    [t, onContributionLinkClick],
+    () => getMissingLinkCustomizer(t, onContributionLinkClick, signInRedirect),
+    [t, onContributionLinkClick, signInRedirect],
   );
   const missingDpoEmailCustomizer = React.useMemo(
-    () => getMissingDpoEmailCustomizer(t, onContributionLinkClick),
-    [t, onContributionLinkClick],
+    () => getMissingDpoEmailCustomizer(t, onContributionDpoEmailClick, signInRedirect),
+    [t, onContributionDpoEmailClick, signInRedirect],
   );
 
   // @FIXME: define if we want that behaviour or not.
@@ -401,6 +416,7 @@ ApplicationInfoContent.propTypes = {
   i18n: PropTypes.shape({ language: PropTypes.string }).isRequired,
   isLoading: PropTypes.bool,
   onContributionLinkClick: PropTypes.func.isRequired,
+  onContributionDpoEmailClick: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
   t: PropTypes.func.isRequired,
 };
