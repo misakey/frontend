@@ -57,7 +57,10 @@
         "openInNew": "Voir le site",
         "inProgress": {
           "title": "Fiche en cours de création",
-          "text": "La fiche du service est en cours de création. Vous pouvez ajouter l'email du dpo et les liens vers la politique de confidentialité et les conditions générales. Si vous êtes administrateur du service, vous pouvez lancer le processus de récupération du rôle administrateur.",
+          "text": {
+            "contribute": "La fiche du service est en cours de création. Vous pouvez ajouter l'email du dpo et les liens vers la politique de confidentialité et les conditions générales.",
+            "claim": "Si vous êtes administrateur du service, vous pouvez lancer le processus de récupération du rôle administrateur."
+          },
           "button": {
             "label": "Je suis administrateur"
           }
