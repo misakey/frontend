@@ -1,9 +1,7 @@
-import React, { useCallback, useState, useMemo } from 'react';
+import React, { useCallback, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import { generatePath, Link } from 'react-router-dom';
 
-import routes from 'routes';
 import { connect } from 'react-redux';
 
 import ApplicationSchema from 'store/schemas/Application';
@@ -191,12 +189,13 @@ const ApplicationInfoContent = ({
     () => { collapse(true); },
     [collapse],
   );
-  const mainDomain = useMemo(() => entity.mainDomain, [entity]);
+  // @FIXME : uncomment when admin workspace is ready
+  // const mainDomain = useMemo(() => entity.mainDomain, [entity]);
 
-  const adminClaimLink = useMemo(
-    () => generatePath(routes.admin.service.claim._, { mainDomain }),
-    [mainDomain],
-  );
+  // const adminClaimLink = useMemo(
+  //   () => generatePath(routes.admin.service.claim._, { mainDomain }),
+  //   [mainDomain],
+  // );
 
   const translationCustomizer = React.useMemo(() => getTranslationCustomizer('.primary'), []);
   const privacyShieldCustomizer = React.useMemo(() => getPrivacyShieldCustomizer(), []);
@@ -292,10 +291,16 @@ const ApplicationInfoContent = ({
           </Typography>
           <Box mt={1}>
             <Typography variant="body1" color="textSecondary" paragraph>
-              {t('screens:application.info.desc.inProgress.text')}
+              {t('screens:application.info.desc.inProgress.text.contribute')}
             </Typography>
+            {/* @FIXME: uncomment when admin workspace is ready
+            <Typography variant="body1" color="textSecondary" paragraph>
+              {t('screens:application.info.desc.inProgress.text.claim')}
+            </Typography> */}
           </Box>
-          <Button
+          {/* @FIXME: uncomment when admin workspace is ready
+              @FIXME: on plugi the button shoudl redirect to web app in new tab
+            <Button
             component={Link}
             to={adminClaimLink}
             variant="outlined"
@@ -304,7 +309,7 @@ const ApplicationInfoContent = ({
             classes={{ root: classes.claimButtonRoot }}
           >
             {t('screens:application.info.desc.inProgress.button.label')}
-          </Button>
+          </Button> */}
         </BoxSection>
       )}
       <BoxSection mb={3} p={0}>
