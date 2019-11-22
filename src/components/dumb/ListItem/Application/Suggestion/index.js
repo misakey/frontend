@@ -37,7 +37,7 @@ const SuggestionApplicationListItem = ({
 }) => {
   const classes = useStyles();
 
-  const { logoUri, name, shortDesc } = application;
+  const { logoUri, name, mainDomain } = application;
 
   const to = useMemo(
     () => (isNil(linkTo)
@@ -75,7 +75,7 @@ const SuggestionApplicationListItem = ({
       </ListItemAvatar>
       <ListItemText
         primary={name}
-        secondary={shortDesc}
+        secondary={mainDomain}
         primaryTypographyProps={{
           variant: 'subtitle1',
           noWrap: true,

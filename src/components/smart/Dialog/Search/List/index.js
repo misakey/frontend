@@ -17,6 +17,7 @@ import {
 
 import useAsync from '@misakey/hooks/useAsync';
 
+
 import partition from '@misakey/helpers/partition';
 // import prop from '@misakey/helpers/prop';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
@@ -25,6 +26,9 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import Typography from '@material-ui/core/Typography';
 import ApplicationListGroups from 'components/dumb/Application/List/Groups';
 import SplashScreen from 'components/dumb/SplashScreen';
+
+import { ROLE_LABELS } from 'constants/Roles';
+
 import DialogSearchBottomAction from './BottomAction';
 
 // LAZY
@@ -165,6 +169,7 @@ const DialogSearchList = ({
   t,
   dispatchApplications,
   dispatchBoxes,
+  role,
 }) => {
   const classes = useStyles();
 
@@ -184,8 +189,16 @@ const DialogSearchList = ({
   );
 
   const searchedLinkTo = useMemo(
-    () => routes.citizen.application.info,
-    [],
+    () => {
+      if (role === ROLE_LABELS.DPO) {
+        return routes.dpo.service.requests._;
+      }
+      if (role === ROLE_LABELS.ADMIN) {
+        return routes.admin.service._;
+      }
+      return routes.citizen.application.info;
+    },
+    [role],
   );
 
   const groups = useGroups(entities, linkedLinkTo, searchedLinkTo, t);
@@ -241,6 +254,7 @@ DialogSearchList.propTypes = {
   // DISPATCH
   dispatchApplications: PropTypes.func.isRequired,
   dispatchBoxes: PropTypes.func.isRequired,
+  role: PropTypes.string,
 };
 
 DialogSearchList.defaultProps = {
@@ -248,6 +262,7 @@ DialogSearchList.defaultProps = {
   isAuthenticated: false,
   // hasBoxes: false,
   entities: [],
+  role: ROLE_LABELS.CITIZEN,
 };
 
 // CONNECT

@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import useLocationSearchParams from 'hooks/useLocationSearchParams';
+import useLocationRole from 'hooks/useLocationRole';
 
 import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
@@ -60,6 +61,7 @@ const DialogSearch = ({ history: { replace, goBack }, t }) => {
   const fullScreen = useMediaQuery(theme.breakpoints.down(BREAK_FULLSCREEN));
 
   const locationSearchParams = useLocationSearchParams();
+  const locationRole = useLocationRole();
 
   const search = useMemo(
     () => searchProp(locationSearchParams),
@@ -123,7 +125,7 @@ const DialogSearch = ({ history: { replace, goBack }, t }) => {
         </AppBar>
       </ElevationScroll>
       <DialogContent classes={{ root: classes.dialogContentRoot }}>
-        <DialogSearchList value={search} />
+        <DialogSearchList value={search} role={locationRole} />
       </DialogContent>
     </Dialog>
   );
