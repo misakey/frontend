@@ -23,6 +23,9 @@ import Requests from 'components/screens/DPO/Service/Requests/Read';
 import Plugin from 'components/screens/Plugin';
 import ThirdPartySetup from 'components/screens/Citizen/Application/Info/ThirdParty/Setup';
 
+import Redirect from 'components/dumb/Redirect';
+
+
 import './App.scss';
 
 // LAZY
@@ -74,12 +77,12 @@ function App({ t }) {
               <Route
                 exact
                 path={routes.legals.tos}
-                component={() => window.location.replace(t('footer.links.tos.href'))}
+                render={(routerProps) => <Redirect to={t('footer.links.tos.href')} {...routerProps} />}
               />
               <Route
                 exact
                 path={routes.legals.privacy}
-                component={() => window.location.replace(t('footer.links.privacy.href'))}
+                render={(routerProps) => <Redirect to={t('footer.links.privacy.href')} {...routerProps} />}
               />
 
               {/* AUTH and ACCOUNT */}
