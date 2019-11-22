@@ -3,7 +3,7 @@
     "manifest_version": 2,
     "name": "Misakey - Prenez le contrôle de vos cookies",
     "short_name": "Misakey",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "author": "Misakey",
     "description": "Prenez le contrôle de vos cookies en supprimant les popups de consentement et en imposant votre profil unique sur tous les sites.",
 

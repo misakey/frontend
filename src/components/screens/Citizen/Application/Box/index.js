@@ -262,6 +262,7 @@ function ApplicationBox({
                     contactedView={!!databox}
                     buttonProps={{ variant: 'outlined', classes: { root: classes.contactButtonRoot } }}
                     dialogConnectProps={dialogConnectProps}
+                    customAction={window.env.PLUGIN ? openInNewTab : null}
                   >
                     {t('screens:application.box.button.label')}
                   </ContactButton>
@@ -282,6 +283,7 @@ function ApplicationBox({
                       contactedView={!!databox}
                       buttonProps={{ variant: 'outlined', classes: { root: classes.contactButtonRoot } }}
                       dialogConnectProps={dialogConnectProps}
+                      customAction={window.env.PLUGIN ? openInNewTab : null}
                     >
                       {t('screens:application.box.button.label')}
                     </ContactButton>

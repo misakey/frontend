@@ -13,6 +13,7 @@ import { selectors as contactSelectors } from 'store/reducers/screens/contact';
 import useAsync from '@misakey/hooks/useAsync';
 
 import isNil from '@misakey/helpers/isNil';
+import isFunction from '@misakey/helpers/isFunction';
 import isEmpty from '@misakey/helpers/isEmpty';
 import log from '@misakey/helpers/log';
 import parseJwt from '@misakey/helpers/parseJwt';
@@ -133,6 +134,7 @@ const ContactButton = (
     children,
     isAuthenticated,
     dispatchContact,
+    customAction,
   },
 ) => {
   const [loading, setLoading] = useState(false);
@@ -176,7 +178,11 @@ const ContactButton = (
 
   if (contactedView) {
     return (
-      <Button color="secondary" onClick={onClick} {...buttonProps}>
+      <Button
+        color="secondary"
+        onClick={isFunction(customAction) ? customAction : onClick}
+        {...buttonProps}
+      >
         {t('resendEmail', 'resend email')}
       </Button>
     );
@@ -187,7 +193,7 @@ const ContactButton = (
       <Button
         variant="contained"
         color="secondary"
-        onClick={onClick}
+        onClick={isFunction(customAction) ? customAction : onClick}
         {...buttonProps}
       >
         {dpoText}
@@ -221,6 +227,7 @@ ContactButton.propTypes = {
   t: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
+  customAction: PropTypes.func,
 
   // CONNECT
   mailProvider: PropTypes.string,
@@ -235,6 +242,7 @@ ContactButton.defaultProps = {
   idToken: null,
   isAuthenticated: false,
   children: null,
+  customAction: null,
 };
 
 // CONNECT
