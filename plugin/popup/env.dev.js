@@ -9,5 +9,9 @@ window.env = {
     automaticSilentRenew: false,
   },
   APP_URL: 'https://misakey.com.local',
-  SENTRY: {},
+  SENTRY: {
+    debug: false,
+    dsn: 'https://63f724116593491aabcfefa591f19f00@sentry.io/1816689',
+    environment: 'development',
+  },
 };

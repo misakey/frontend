@@ -9,5 +9,9 @@ window.env = {
     automaticSilentRenew: false,
   },
   APP_URL: 'https://www.preprod.misakey.dev',
-  SENTRY: {},
+  SENTRY: {
+    debug: false,
+    dsn: 'https://8d456528721649a39d8ec22794be3fad@sentry.io/1817198',
+    environment: 'preprod',
+  },
 };

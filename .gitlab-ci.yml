@@ -1,4 +1,5 @@
 cache:
+  key: frontend-${CI_COMMIT_REF_NAME}
   paths:
     - node_modules/
 

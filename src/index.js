@@ -1,3 +1,5 @@
+/* global browser */ // eslint-disable-line no-redeclare
+
 /* IMPORTS */
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -42,7 +44,10 @@ import { isSilentAuthIframe, processSilentAuthCallbackInIframe } from '@misakey/
 if (window.env.ENV !== 'development' || window.env.SENTRY.debug === true) {
   const sentryConfig = window.env.SENTRY;
   if (!isNil(window.bundleVersion)) {
-    sentryConfig.release = window.bundleVersion;
+    sentryConfig.release = `frontend@${window.bundleVersion}`;
+  }
+  if (window.env.PLUGIN) {
+    sentryConfig.release = `plugin@${browser.runtime.getManifest().version}`;
   }
   Sentry.init(sentryConfig);
 }
