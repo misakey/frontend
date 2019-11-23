@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import isEmpty from 'lodash/isEmpty';
 
 import { makeStyles } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -21,6 +22,14 @@ const useStyles = makeStyles((theme) => ({
   letterAvatar: {
     color: theme.palette.grey[500],
     backgroundColor: theme.palette.grey[200],
+  },
+  primary: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  separator: {
+    margin: '0 5px',
   },
   empty: {
     margin: theme.spacing(2),
@@ -66,7 +75,13 @@ function TrackerList({ entities, secondaryAction, title }) {
             </ApplicationImg>
           </ListItemAvatar>
           <ListItemText
-            primary={entity.name}
+            primary={(
+              <div className={classes.primary}>
+                <Typography>{entity.name}</Typography>
+                <Typography className={classes.separator}> - </Typography>
+                <Typography color="textSecondary" variant="caption">{entity.mainDomain}</Typography>
+              </div>
+            )}
             secondary={entity.shortDesc}
           />
           {secondaryAction && (

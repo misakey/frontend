@@ -182,8 +182,12 @@
         "other": "Autres"
       },
       "categories": {
-        "blocked": "Recommandations",
-        "whitelisted": "Mes services tiers"
+        "blocked": "Autres services tiers",
+        "whitelisted": "Services tiers acceptés"
+      },
+      "myConfig": {
+        "title": "Ma configuration",
+        "description": "Paramétrer les catégories de services tiers que vous acceptez sur ce site. Cliquer sur une catégorie pour ajouter des services tiers que vous acceptez"
       },
       "detectedTrackers": "{{count}} tracker détecté",
       "detectedTrackers_plural": "{{count}} trackers détectés",

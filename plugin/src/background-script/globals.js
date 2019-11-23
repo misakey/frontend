@@ -1,20 +1,18 @@
+import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
 import get from '@misakey/helpers/get';
 import log from '@misakey/helpers/log';
-import isString from '@misakey/helpers/isString';
 import isEmpty from '@misakey/helpers/isEmpty';
 import unionBy from '@misakey/helpers/unionBy';
 import groupBy from '@misakey/helpers/groupBy';
-import propOr from '@misakey/helpers/propOr';
+import API from '@misakey/api';
 import parser from 'ua-parser-js';
 import { parse } from 'tldts';
 import { setItem, getItem } from './storage';
-import { getCurrentTab, capitalize, toggleBadgeAndIconOnPaused } from './utils';
-import { APP_URL } from './config';
+import { getCurrentTab, mergeArrays, toggleBadgeAndIconOnPaused, filterAppsBy, markAsFetched } from './utils';
 
 // HELPERS
 const DEFAULT_PURPOSE = 'other';
-const getMainPurpose = propOr(DEFAULT_PURPOSE, 'mainPurpose');
 
 /**
  * Structure which holds parameters to be used throughout the code, a.k.a. global values.
@@ -39,7 +37,7 @@ class Globals {
 
   async getWhitelist() {
     const { whitelist } = await getItem('whitelist');
-    this.whitelist = whitelist || [];
+    this.whitelist = whitelist || { apps: [], appsFormated: [] };
   }
 
   async getBrowserInfo() {
@@ -100,28 +98,27 @@ class Globals {
   * has been blocked or not according to whitelist or paused state.
   * It also retrieved the known app and purpose associated to the rule that has blocked the request
   */
-  updateBlockingInfos({ tabId, url }, rule, blocked = false) {
-    const { domain, domainWithoutSuffix } = parse(url);
+  updateBlockingInfos({ tabId, url }, mainPurpose, blocked = false) {
+    const { hostname, domainWithoutSuffix } = parse(url);
 
     const newTabInfos = [...this.getTabInfos(tabId)];
-    const data = { blocked, url };
+    const app = {
+      mainDomain: hostname,
+      mainPurpose,
+      blocked,
+      name: domainWithoutSuffix,
+      id: hostname,
+    };
 
-    const mainPurpose = getMainPurpose(rule);
-    const name = capitalize(domainWithoutSuffix);
-    const app = { id: Date.now(), name, domain, mainPurpose };
-
-    const alreadyDetectedIndex = newTabInfos.findIndex((a) => a.domain === domain);
+    const alreadyDetected = newTabInfos.find((a) => a.mainDomain === hostname);
 
     // Group scripts detected by mainDomain
-    if (alreadyDetectedIndex > -1) {
-      const alreadyDetected = { ...newTabInfos[alreadyDetectedIndex] };
-
+    if (!isEmpty(alreadyDetected)) {
       // If the previous script detected has no known category but this one have one
       // we replace the category associated to the tracker
       if (mainPurpose !== DEFAULT_PURPOSE && alreadyDetected.mainPurpose === DEFAULT_PURPOSE) {
         alreadyDetected.mainPurpose = mainPurpose;
-        alreadyDetected.detected.push(data);
-        newTabInfos[alreadyDetectedIndex] = alreadyDetected;
+        alreadyDetected.blocked = alreadyDetected.blocked || blocked;
         this.tabsInfos.set(tabId, newTabInfos);
         return;
       }
@@ -131,53 +128,111 @@ class Globals {
       }
     }
 
-    newTabInfos.push({ ...app, detected: [data] });
+    newTabInfos.push(app);
     this.tabsInfos.set(tabId, newTabInfos);
     this.updateActiveTrackerCounter(tabId, { incr: !blocked });
   }
 
   getTabInfosForPopup(tabId) {
     return Object.entries(groupBy(this.getTabInfos(tabId), 'mainPurpose'))
-      .map(([mainPurpose, apps]) => ({ name: mainPurpose, apps }));
+      .map(([mainPurpose, apps]) => ({
+        name: mainPurpose,
+        apps,
+      }));
   }
 
   async convertDetectedTrackersToApps() {
-    return getCurrentTab()
-      .then(({ id }) => (this.getTabInfos(id).map((app) => ({
-        name: app.name,
-        id: app.domain,
-        mainDomain: app.domain,
-        mainPurpose: app.mainPurpose,
-        shortDesc: app.domain,
-      }))));
-  }
+    return getCurrentTab().then(({ id }) => {
+      const detected = this.getTabInfos(id);
+      const domainsToFetch = detected.filter((app) => !app.fetched).map((app) => app.mainDomain);
+      if (isEmpty(domainsToFetch)) {
+        return detected;
+      }
 
-  async getAllThirdPartiesApps() {
-    if (!this.apps) {
-      this.apps = (await (await fetch(APP_URL)).json()).apps;
-    }
-    const whitelistedApps = (this.whitelist.apps || []).map((domain) => {
-      const { domainWithoutSuffix: name } = parse(domain);
-      return { id: domain, name: capitalize(name), mainDomain: domain, shortDesc: domain };
+      return API.use(API.endpoints.application.find)
+        .build(undefined, undefined, {
+          main_domains: domainsToFetch.join(),
+          include_related_domains: true,
+        })
+        .send()
+        .then((response) => {
+          const newTabInfos = mergeArrays(
+            markAsFetched(detected, domainsToFetch),
+            response.map(objectToCamelCase),
+            'mainDomain',
+          );
+          this.tabsInfos.set(id, newTabInfos);
+          return newTabInfos;
+        })
+        .catch((err) => {
+          log(`Fetch application API returned and error in plugin background: ${err}`);
+          return detected;
+        });
     });
-    return unionBy(whitelistedApps, this.apps, 'id');
   }
 
-  async getThirdPartyApps(search, mainPurpose, getAllThirdParties = false, limit = 100) {
-    let appsFiltered = await (getAllThirdParties
-      ? this.getAllThirdPartiesApps()
-      : this.convertDetectedTrackersToApps());
+  async convertWhitelistToApps() {
+    if (!this.whitelist.apps) { return []; }
+    const whitelistFormated = this.whitelist.appsFormated || [];
+    const alreadyFetched = whitelistFormated.map((app) => app.mainDomain);
+    const domainsToFetch = this.whitelist.apps.filter((app) => !alreadyFetched.includes(app));
 
-    if (isString(search) && !isEmpty(search)) {
-      appsFiltered = appsFiltered
-        .filter((app) => (app.mainDomain.toLowerCase().includes(search.toLowerCase())));
+    if (isEmpty(domainsToFetch)) {
+      return whitelistFormated;
     }
+    return API.use(API.endpoints.application.find)
+      .build(undefined, undefined, {
+        main_domains: domainsToFetch.join(),
+        include_related_domains: true,
+      })
+      .send()
+      .then((response) => {
+        const newWhitelistFormated = mergeArrays(
+          whitelistFormated,
+          response.map(objectToCamelCase),
+          'mainDomain',
+        );
+        this.whitelist.appsFormated = newWhitelistFormated;
+        return newWhitelistFormated;
+      })
+      .catch((err) => {
+        log(`Fetch application API returned and error in plugin background: ${err}`);
+        return mergeArrays(
+          whitelistFormated,
+          this.whitelist.apps.map((domain) => ({
+            mainDomain: domain,
+            mainPurpose: 'other',
+            name: domain,
+            id: domain,
+          })),
+          'mainDomain',
+        );
+      });
+  }
 
-    if (mainPurpose) {
-      appsFiltered = appsFiltered.filter((app) => (app.mainPurpose === mainPurpose));
+  async getAllThirdPartiesApps(search, mainPurpose) {
+    const query = { is_third_party: true };
+    if (mainPurpose) { query.main_purpose = mainPurpose; }
+    if (search) { query.search = search; }
+
+    const whitelistedApps = await (this.convertWhitelistToApps());
+    const filteredWhitelist = filterAppsBy(search, mainPurpose, whitelistedApps);
+
+    try {
+      const apps = (await API.use(API.endpoints.application.find)
+        .build(undefined, undefined, query)
+        .send()
+      ).map(objectToCamelCase);
+      return unionBy(filteredWhitelist, apps, 'id');
+    } catch (err) {
+      log(`Fetch application API returned and error in plugin background: ${err}`);
+      return filteredWhitelist;
     }
+  }
 
-    return getAllThirdParties ? appsFiltered.slice(0, limit) : appsFiltered;
+  async getThirdPartyApps(search, mainPurpose) {
+    const apps = await (this.convertDetectedTrackersToApps());
+    return filterAppsBy(search, mainPurpose, apps);
   }
 
   /**

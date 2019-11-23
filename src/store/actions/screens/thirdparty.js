@@ -24,10 +24,10 @@ export function setApps(apps) {
   };
 }
 
-export function toggleWhitelistForApp(appId, listKey) {
+export function toggleWhitelistForApp(mainDomain, listKey) {
   return {
     type: TOGGLE_WHITELIST_FOR_APP,
-    appId,
+    mainDomain,
     listKey,
   };
 }

@@ -77,7 +77,7 @@ function handleRequest(engine) {
   // Start listening to requests, and allow 'blocking' so that we can cancel
   // some of them (or redirect).
   browser.webRequest.onBeforeRequest.addListener((details) => {
-    const { blockingResponse, rule } = getBlockingResponse(engine, details);
+    const { blockingResponse, mainPurpose } = getBlockingResponse(engine, details);
     const hasToBeBlocked = Boolean(blockingResponse.cancel || blockingResponse.redirectUrl);
 
     const { type, tabId } = details;
@@ -88,7 +88,7 @@ function handleRequest(engine) {
     }
 
     // The request has match a rule
-    if (rule) { globals.updateBlockingInfos(details, rule, hasToBeBlocked); }
+    if (mainPurpose) { globals.updateBlockingInfos(details, mainPurpose, hasToBeBlocked); }
 
     return blockingResponse;
   },
@@ -157,8 +157,10 @@ function handleCommunication(engine) {
         }));
 
       case 'getApps':
-        return globals.getThirdPartyApps(msg.search, msg.mainPurpose, msg.getAllThirdParties)
-          .then((apps) => ({ apps }));
+        if (msg.getAllThirdParties) {
+          return globals.getAllThirdPartiesApps(msg.search, msg.mainPurpose);
+        }
+        return globals.getThirdPartyApps(msg.search, msg.mainPurpose);
 
       case 'togglePauseBlocker':
         return Promise.resolve(globals.onPauseBlocker(msg.time));

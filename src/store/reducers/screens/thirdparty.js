@@ -25,9 +25,9 @@ function setApps(state, { apps }) {
   return { ...state, apps };
 }
 
-function toggleWhitelistForApp(state, { appId, listKey }) {
+function toggleWhitelistForApp(state, { mainDomain, listKey }) {
   const newList = [...state.apps[listKey]];
-  const targetIndex = newList.findIndex((app) => app.id === appId);
+  const targetIndex = newList.findIndex((app) => app.mainDomain === mainDomain);
   newList[targetIndex].whitelisted = !newList[targetIndex].whitelisted;
   return { ...state, apps: { ...state.apps, [listKey]: newList } };
 }

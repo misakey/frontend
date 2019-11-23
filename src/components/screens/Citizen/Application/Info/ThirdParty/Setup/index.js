@@ -75,7 +75,7 @@ const useUpdateWhitelist = (
     dispatchToggleWhitelistForApp(domain, listKey);
     dispatchShowWarning();
   });
-}, [dispatchWhitelist, dispatchToggleWhitelistForApp, dispatchShowWarning, whitelist]);
+}, [whitelist, dispatchWhitelist, dispatchToggleWhitelistForApp, dispatchShowWarning]);
 
 const useSetParams = (location, history) => useCallback((search, mainPurpose, mainDomain) => {
   const nextParams = new URLSearchParams('');
@@ -130,7 +130,7 @@ function ThirdPartySetup({
         getAllThirdParties: isEmpty(mainDomain),
       })
         .then((response) => {
-          const { whitelisted, blocked } = groupBy(formatApps(response.apps), (app) => (app.whitelisted ? 'whitelisted' : 'blocked'));
+          const { whitelisted, blocked } = groupBy(formatApps(response), (app) => (app.whitelisted ? 'whitelisted' : 'blocked'));
           dispatchApps({ whitelisted: whitelisted || [], blocked: blocked || [] });
           setFetching(false);
         })

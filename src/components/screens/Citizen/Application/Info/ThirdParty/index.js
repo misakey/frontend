@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
+import className from 'clsx';
 
 import orderBy from '@misakey/helpers/orderBy';
 import get from '@misakey/helpers/get';
@@ -17,24 +18,58 @@ import TrackersWhitelistSchema from 'store/schemas/TrackersWhitelist';
 import { sendMessage, listenForBackground, stopListenerForBackground } from 'background';
 import { GET_BLOCKED_INFOS, REFRESH_BLOCKED_INFOS, UPDATE_WHITELIST } from 'background/messages';
 
-import { Typography, Grid } from '@material-ui/core';
-import ThirdPartyBlockPurpose from 'components/dumb/Application/ThirdParty';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import Skeleton from '@material-ui/lab/Skeleton';
+
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Switch from 'components/dumb/Switch';
 
 import routes from 'routes';
 
 const useStyles = makeStyles((theme) => ({
-  block: {
-    padding: theme.spacing(1),
-  },
   empty: {
     height: '30vh',
     border: `1px solid ${theme.palette.grey[400]}`,
-    margin: '1.5rem',
-    borderRadius: '10px',
+    margin: `${theme.spacing(1)}px 0`,
+    borderRadius: '5px',
+  },
+  root: {
+    border: `1px solid ${theme.palette.grey[400]}`,
+    borderBox: 'none',
+    margin: theme.spacing(1),
+  },
+  header: {
+    padding: '16px 8px 0 16px',
+  },
+  content: {
+    padding: 0,
+    '&:last-child': {
+      paddingBottom: 0,
+    },
+  },
+  listItem: {
+    borderTop: `1px solid ${theme.palette.grey[400]}`,
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    '&.whitelisted': {
+      cursor: 'pointer',
+    },
+    '&:not(.whitelisted)': {
+      backgroundColor: theme.palette.grey[100],
+      color: theme.palette.grey[700],
+      opacity: 0.5,
+      filter: 'grayscale(1)',
+    },
   },
 }));
 
-// @TODO add to js-common helpers
 function isWhitelisted(whitelist = {}, initiatorDomain, mainPurpose, target = null) {
   const globalWhitelist = whitelist.apps || [];
 
@@ -54,7 +89,7 @@ const useFormatDetectedTrackers = (
   const formattedTrackers = trackers.map(({ name: mainPurpose, apps }) => {
     const formattedApps = apps.map((app) => ({
       ...app,
-      whitelisted: isWhitelisted(whitelist, initiatorDomain, mainPurpose, app.domain),
+      whitelisted: isWhitelisted(whitelist, initiatorDomain, mainPurpose, app.mainDomain),
     }));
     return {
       name: mainPurpose,
@@ -104,7 +139,7 @@ function ThirdPartyBlock({
 }) {
   const classes = useStyles();
   const [isFetching, setFetching] = React.useState(false);
-  const { mainDomain, logoUri } = useMemo(() => (entity || { mainDomain: '', logoUri: null }), [entity]);
+  const { mainDomain } = useMemo(() => (entity || { mainDomain: '' }), [entity]);
   const empty = useMemo(() => detectedTrackers.length === 0, [detectedTrackers]);
 
   const formatDetectedTrackers = useFormatDetectedTrackers(whitelist, mainDomain);
@@ -126,8 +161,8 @@ function ThirdPartyBlock({
           const sorted = formatDetectedTrackers(response.detectedTrackers, true);
           dispatchDetectedTrackers(sorted || []);
           dispatchWhitelist(response.whitelist || {});
-          setFetching(false);
-        });
+        })
+        .finally(() => { setFetching(false); });
     }
 
     listenForBackground(listenForBackgroundCb);
@@ -142,54 +177,90 @@ function ThirdPartyBlock({
     mainDomain,
   );
 
+  const setupAction = useCallback((name) => {
+    const query = new URLSearchParams();
+    query.set('mainPurpose', name);
+    query.set('mainDomain', mainDomain);
+    history.push({
+      pathname: routes.account.thirdParty.setup,
+      search: query.toString(),
+    });
+  }, [history, mainDomain]);
+
   useEffect(getData, []);
 
-  return (
-    <Grid
-      container
-      justify="center"
-      alignItems={empty ? 'center' : 'flex-start'}
-    >
-      {
-        formattedDetectedTrackers.map(({ name, apps, whitelisted }) => (
-          <Grid
-            item
-            xs={12}
-            className={classes.block}
-            key={name}
-          >
-            <ThirdPartyBlockPurpose
-              entity={{ mainDomain, logoUri }}
-              mainPurpose={{ name, whitelisted }}
-              apps={apps}
-              addToWhitelist={() => updateWhitelist('add', name)}
-              removeFromWhitelist={() => updateWhitelist('remove', name)}
-              setupAction={() => {
-                const query = new URLSearchParams();
-                query.set('mainPurpose', name);
-                query.set('mainDomain', mainDomain);
-                history.push({
-                  pathname: routes.account.thirdParty.setup,
-                  search: query.toString(),
-                });
-              }}
-            />
-          </Grid>
-        ))
-      }
-      {empty && !isFetching && (
-        <Grid
-          container
-          className={classes.empty}
-          direction="row"
-          justify="center"
-          alignItems="center"
-        >
-          <Typography>{t('screens:application.thirdParty.trackers.empty')}</Typography>
-        </Grid>
-      )}
+  if (empty && !isFetching) {
+    return (
+      <Grid
+        container
+        className={classes.empty}
+        direction="row"
+        justify="center"
+        alignItems="center"
+      >
+        <Typography>{t('screens:application.thirdParty.trackers.empty')}</Typography>
+      </Grid>
+    );
+  }
 
-    </Grid>
+  return (
+    <Card className={classes.root}>
+      <CardHeader
+        title={t('screens:application.thirdParty.myConfig.title')}
+        subheader={t('screens:application.thirdParty.myConfig.description')}
+        titleTypographyProps={{ variant: 'h6', component: 'h3' }}
+        className={classes.header}
+        classes={{ action: classes.action }}
+      />
+      <CardContent
+        className={className('content', classes.content)}
+      >
+        {empty && isFetching && (
+          <List component="div" aria-labelledby="placeholder-list-apps">
+            <ListItem className={classes.listItem}>
+              <ListItemText
+                className="text"
+                primary={<Skeleton variant="text" style={{ margin: 0 }} />}
+              />
+            </ListItem>
+          </List>
+        )}
+        <List component="div" aria-labelledby="list-apps">
+          {
+            formattedDetectedTrackers.map(({ name, apps, whitelisted }) => {
+              const whitelistedApps = apps.filter(((app) => !app.blocked));
+              return (
+                <ListItem
+                  key={name}
+                  className={className(classes.listItem, { whitelisted })}
+                  onClick={whitelisted ? () => setupAction(name) : null}
+                >
+                  <ListItemText
+                    id={`switch-list-label-${name}`}
+                    primary={t(`screens:application.thirdParty.purposes.${name}`)}
+                  />
+
+                  <Typography variant="body2" className={classes.typography}>
+                    {`${whitelistedApps.length}/${apps.length}`}
+                  </Typography>
+
+                  <ListItemSecondaryAction>
+                    <Switch
+                      checked={whitelisted}
+                      value={name.toString()}
+                      inputProps={{ 'aria-label': 'secondary checkbox' }}
+                      onChange={whitelisted ? () => updateWhitelist('remove', name) : () => updateWhitelist('add', name)}
+                    />
+                  </ListItemSecondaryAction>
+
+                </ListItem>
+              );
+            })
+          }
+        </List>
+
+      </CardContent>
+    </Card>
   );
 }
 

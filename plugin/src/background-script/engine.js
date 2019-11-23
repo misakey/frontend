@@ -1,10 +1,8 @@
 import { WebExtensionBlocker, fromWebRequestDetails } from '@cliqz/adblocker-webextension';
-import propOr from '@misakey/helpers/propOr';
 import { parse } from 'tldts';
 import globals from './globals';
 
 const DEFAULT_PURPOSE = 'other';
-const getMainPurpose = propOr(DEFAULT_PURPOSE, 'mainPurpose');
 
 function getRequestDetails({ tabId, originUrl, initiator, url }) {
   const initiatorUrl = globals.tabsInitiator.get(tabId) || originUrl || initiator;
@@ -39,22 +37,18 @@ function getBlockingResponse(engine, details) {
 
   // Check if request has been whitelisted
   const ruleId = filter.getId();
-  const rule = globals.rules[ruleId]
-    || globals.rules[globals.getRuleIdByFilter(filter)]
-    || { ...filter, mainPurpose: DEFAULT_PURPOSE };
-
-  const mainPurpose = getMainPurpose(rule);
+  const mainPurpose = globals.rules[ruleId] || DEFAULT_PURPOSE;
 
   if (globals.pausedBlocking || globals.isRequestWhitelisted(initiator, target, mainPurpose)) {
-    return { blockingResponse: {}, rule };
+    return { blockingResponse: {}, mainPurpose };
   }
 
   if (redirect !== undefined) {
-    return { blockingResponse: { redirectUrl: redirect.dataUrl }, rule };
+    return { blockingResponse: { redirectUrl: redirect.dataUrl }, mainPurpose };
   }
 
   if (match === true) {
-    return { blockingResponse: { cancel: true }, rule };
+    return { blockingResponse: { cancel: true }, mainPurpose };
   }
 
   return {};

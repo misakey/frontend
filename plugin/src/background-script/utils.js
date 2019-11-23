@@ -1,5 +1,7 @@
 import isString from '@misakey/helpers/isString';
 import isEmpty from '@misakey/helpers/isEmpty';
+import assignInWith from '@misakey/helpers/assignInWith';
+import keyBy from '@misakey/helpers/keyBy';
 import log from '@misakey/helpers/log';
 import common from '@misakey/ui/colors/common';
 
@@ -56,4 +58,42 @@ export function toggleBadgeAndIconOnPaused(paused = false) {
 
   setBadgeBackgroundColor(color);
   setIcon(path);
+}
+
+// @FIXME add to js-common helpers
+export function mergeArrays(array1, array2, key) {
+  const arrayAsObject = keyBy(array1, key);
+  array2.forEach((element) => {
+    arrayAsObject[element[key]] = assignInWith(
+      element,
+      arrayAsObject[element[key]],
+      (objValue, srcValue) => (isEmpty(objValue) ? srcValue : objValue),
+    );
+  });
+  return Object.values(arrayAsObject);
+}
+
+
+export function filterAppsBy(search, mainPurpose, apps) {
+  let filteredApps = [...apps];
+  if (isString(search) && !isEmpty(search)) {
+    filteredApps = filteredApps
+      .filter((app) => (app.mainDomain.toLowerCase().includes(search.toLowerCase())));
+  }
+
+  if (mainPurpose) {
+    filteredApps = filteredApps.filter((app) => (app.mainPurpose === mainPurpose));
+  }
+
+  return filteredApps;
+}
+
+
+export function markAsFetched(apps, domainFetched) {
+  return apps.map((app) => {
+    if (domainFetched.includes(app.mainDomain)) {
+      return { ...app, fetched: true };
+    }
+    return app;
+  });
 }
