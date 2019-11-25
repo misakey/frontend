@@ -64,7 +64,7 @@ const searchApplications = (search, isAuthenticated) => {
   endpoint.auth = isAuthenticated;
 
   return API.use(endpoint)
-    .build(undefined, undefined, { search, published: true })
+    .build(undefined, undefined, { search, published: true, heavier_than: 99 })
     .send();
 };
 
