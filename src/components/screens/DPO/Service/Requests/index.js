@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Switch } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 
 import routes from 'routes';
 import ServiceSchema from 'store/schemas/Service';
-import RouteService from 'components/smart/Route/Service';
 
 import ServiceRequestsList from 'components/screens/DPO/Service/Requests/List';
 import ServiceRequestsRead from 'components/screens/DPO/Service/Requests/Read';
@@ -18,16 +17,14 @@ function ServiceRequests({ match: { path }, service }) {
   return (
     <section className="ServiceRequests">
       <Switch>
-        <RouteService
+        <Route
           path={routes.dpo.service.requests.read}
           component={ServiceRequestsRead}
-          componentProps={{ service, name: SERVICE_REQUESTS_SCREEN_NAMES.READ }}
         />
-        <RouteService
+        <Route
           exact
           path={path}
-          component={ServiceRequestsList}
-          componentProps={{ service, name: SERVICE_REQUESTS_SCREEN_NAMES.LIST }}
+          render={(routerProps) => <ServiceRequestsList service={service} {...routerProps} />}
         />
       </Switch>
     </section>
@@ -44,5 +41,6 @@ ServiceRequests.propTypes = {
 ServiceRequests.defaultProps = {
   service: null,
 };
+
 
 export default ServiceRequests;

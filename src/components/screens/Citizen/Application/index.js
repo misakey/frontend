@@ -42,9 +42,10 @@ const useStyles = makeStyles(() => ({
 function Application({ entity, error, isFetching, mainDomain, match }) {
   const classes = useStyles();
   const application = useMemo(
-    () => (isFetching ? { mainDomain } : entity),
-    [mainDomain, entity, isFetching],
+    () => (isNil(entity) ? { mainDomain } : entity),
+    [mainDomain, entity],
   );
+
   // @FIXME use ResponseHandlerWrapper
   if (isString(error) || isNumber(error)) { return <ErrorOverlay httpStatus={error} />; }
   if (!window.env.PLUGIN && isFetching && isEmpty(entity)) { return <SplashScreen />; }

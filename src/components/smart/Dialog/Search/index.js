@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import useLocationSearchParams from 'hooks/useLocationSearchParams';
-import useLocationRole from 'hooks/useLocationRole';
+import useLocationWorkspace from 'hooks/useLocationWorkspace';
 
 import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
@@ -61,7 +61,7 @@ const DialogSearch = ({ history: { replace, goBack }, t }) => {
   const fullScreen = useMediaQuery(theme.breakpoints.down(BREAK_FULLSCREEN));
 
   const locationSearchParams = useLocationSearchParams();
-  const locationRole = useLocationRole();
+  const locationRole = useLocationWorkspace();
 
   const search = useMemo(
     () => searchProp(locationSearchParams),

@@ -269,7 +269,7 @@ Drawer.propTypes = {
 };
 
 Drawer.defaultProps = {
-  mainDomain: 'service',
+  mainDomain: 'intro',
   open: false,
 };
 

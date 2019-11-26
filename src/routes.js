@@ -105,6 +105,9 @@ const routes = {
   },
   requests: '/requests',
   plugin: '/index.html',
+  errors: {
+    forbidden: '/errors/forbidden',
+  },
 };
 
 export default routes;

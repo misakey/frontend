@@ -1,6 +1,6 @@
 @import '~@misakey/ui/static/sass/colors';
 
-#BoxSignIn {
+#BoxAction {
   height: 100%;
   width: 100%;
   display: flex;
@@ -10,5 +10,13 @@
 
   h3 {
     padding-bottom: 1rem;
+  }
+
+  .flexBox {
+    display: flex;
+
+    .action {
+      margin: 1rem;
+    }
   }
 }

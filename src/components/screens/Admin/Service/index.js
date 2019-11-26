@@ -18,6 +18,7 @@ import ServiceInformation from 'components/screens/Admin/Service/Information';
 import ServiceSSO from 'components/screens/Admin/Service/SSO';
 import ServiceUsers from 'components/screens/Admin/Service/Users';
 import ServiceData from 'components/screens/Admin/Service/Data';
+import useLocationWorkspace from 'hooks/useLocationWorkspace';
 
 import 'components/screens/Admin/Service/Service.scss';
 
@@ -35,6 +36,11 @@ function Service({ entity, error, isDefaultDomain, isFetching, mainDomain, match
     () => (isDefaultDomain ? DEFAULT_SERVICE_ENTITY : entity),
     [isDefaultDomain, entity],
   );
+  const workspace = useLocationWorkspace();
+  const requiredScope = useMemo(() => service && `rol.${workspace}.${service.id}`, [service, workspace]);
+  const routeServiceProps = useMemo(
+    () => ({ requiredScope, workspace, mainDomain }), [mainDomain, requiredScope, workspace],
+  );
 
   return (
     <Screen className="Service">
@@ -49,32 +55,38 @@ function Service({ entity, error, isDefaultDomain, isFetching, mainDomain, match
               path={routes.admin.service.claim._}
               component={ServiceClaim}
               componentProps={{ service, name: ADMIN_SERVICE_SCREEN_NAMES.CLAIM, userId }}
+              {...routeServiceProps}
             />
             <RouteService
               path={routes.admin.service.information._}
               component={ServiceInformation}
               componentProps={{ service, name: ADMIN_SERVICE_SCREEN_NAMES.INFORMATION }}
+              {...routeServiceProps}
             />
             <RouteService
               path={routes.admin.service.sso._}
               component={ServiceSSO}
               componentProps={{ service, name: ADMIN_SERVICE_SCREEN_NAMES.SSO }}
+              {...routeServiceProps}
             />
             <RouteService
               path={routes.admin.service.users._}
               component={ServiceUsers}
               componentProps={{ service, name: ADMIN_SERVICE_SCREEN_NAMES.USERS }}
+              {...routeServiceProps}
             />
             <RouteService
               path={routes.admin.service.data._}
               component={ServiceData}
               componentProps={{ service, name: ADMIN_SERVICE_SCREEN_NAMES.DATA }}
+              {...routeServiceProps}
             />
             <RouteService
               exact
               path={routes.admin.service.home._}
               component={ServiceHome}
               componentProps={{ service, name: ADMIN_SERVICE_SCREEN_NAMES.HOME }}
+              {...routeServiceProps}
             />
             <Route
               exact

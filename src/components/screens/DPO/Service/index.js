@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Route, Switch } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
 
 import routes from 'routes';
 import ApplicationSchema from 'store/schemas/Application';
@@ -9,13 +9,15 @@ import withApplication from 'components/smart/withApplication';
 import ResponseHandlerWrapper from 'components/dumb/ResponseHandlerWrapper';
 import RouteService, { DEFAULT_SERVICE_ENTITY } from 'components/smart/Route/Service';
 import Screen from 'components/dumb/Screen';
-import NotFound from 'components/screens/NotFound';
+import Redirect from 'components/dumb/Redirect';
 
 import Drawer from 'components/screens/DPO/Service/Drawer';
 import ServiceClaim from 'components/screens/DPO/Service/Claim';
 import ServiceRequests from 'components/screens/DPO/Service/Requests';
+import useLocationWorkspace from 'hooks/useLocationWorkspace';
 
 import 'components/screens/DPO/Service/Service.scss';
+
 
 export const DPO_SERVICE_SCREEN_NAMES = {
   CLAIM: 'DPOServiceClaim',
@@ -26,6 +28,11 @@ function Service({ entity, error, isDefaultDomain, isFetching, mainDomain, match
   const service = useMemo(
     () => (isDefaultDomain ? DEFAULT_SERVICE_ENTITY : entity),
     [isDefaultDomain, entity],
+  );
+  const workspace = useLocationWorkspace();
+  const requiredScope = useMemo(() => entity && `rol.${workspace}.${entity.id}`, [entity, workspace]);
+  const routeServiceProps = useMemo(
+    () => ({ requiredScope, workspace, mainDomain }), [mainDomain, requiredScope, workspace],
   );
 
   return (
@@ -41,16 +48,21 @@ function Service({ entity, error, isDefaultDomain, isFetching, mainDomain, match
               path={routes.dpo.service.claim._}
               component={ServiceClaim}
               componentProps={{ service, name: DPO_SERVICE_SCREEN_NAMES.CLAIM, userId }}
+              {...routeServiceProps}
             />
             <RouteService
               path={routes.dpo.service.requests._}
               component={ServiceRequests}
-              componentProps={{ service, name: DPO_SERVICE_SCREEN_NAMES.REQUESTS }}
+              componentProps={{
+                service,
+                name: DPO_SERVICE_SCREEN_NAMES.REQUESTS,
+                routeProps: routeServiceProps,
+              }}
+              {...routeServiceProps}
             />
-            <Route
-              exact
-              path={match.path}
-              component={NotFound}
+            <Redirect
+              from={match.path}
+              to={routes.dpo.service.requests._}
             />
           </Switch>
         </Drawer>

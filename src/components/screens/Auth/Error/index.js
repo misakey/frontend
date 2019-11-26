@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 import getSearchParams from '@misakey/helpers/getSearchParams';
 
+import Redirect from 'components/dumb/Redirect';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -20,6 +21,10 @@ import 'components/screens/Auth/Error/index.scss';
 
 const AuthError = ({ location, t }) => {
   const searchParams = getSearchParams(location.search);
+
+  if (searchParams.error_code === 'forbidden_role') {
+    return <Redirect to={routes.errors.forbidden} />;
+  }
 
   return (
     <Paper className="Error">

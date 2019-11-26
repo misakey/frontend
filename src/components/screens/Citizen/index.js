@@ -1,7 +1,7 @@
 import React, { lazy } from 'react';
 import PropTypes from 'prop-types';
-import { Route, Switch } from 'react-router-dom';
-import RoutePrivate from '@misakey/auth/components/Route/Private';
+import { Switch } from 'react-router-dom';
+import RouteCitizen from 'components/smart/Route/Citizen';
 
 
 import routes from 'routes';
@@ -15,9 +15,13 @@ const ApplicationsCreate = lazy(() => import('components/screens/Citizen/Applica
 function Citizen({ match }) {
   return (
     <Switch>
-      <RoutePrivate path={routes.citizen.applications.create} component={ApplicationsCreate} />
-      <Route path={routes.citizen.application._} component={Application} />
-      <Route exact path={match.path} component={NotFound} />
+      <RouteCitizen
+        isPrivate
+        path={routes.citizen.applications.create}
+        component={ApplicationsCreate}
+      />
+      <RouteCitizen path={routes.citizen.application._} component={Application} />
+      <RouteCitizen exact path={match.path} component={NotFound} />
     </Switch>
   );
 }

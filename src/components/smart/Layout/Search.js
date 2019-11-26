@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import { useHistory } from 'react-router-dom';
 import useLocationSearchParams from 'hooks/useLocationSearchParams';
-import useLocationRole from 'hooks/useLocationRole';
+import useLocationWorkspace from 'hooks/useLocationWorkspace';
 
 import SearchIcon from '@material-ui/icons/Search';
 import IconButton from '@material-ui/core/IconButton';
@@ -11,7 +11,7 @@ const LayoutSearch = (props) => {
   const { push } = useHistory();
 
   // @FIXME handle role in a future version
-  const locationRole = useLocationRole(); // eslint-disable-line no-unused-vars
+  const locationRole = useLocationWorkspace(); // eslint-disable-line no-unused-vars
   const locationSearchParams = useLocationSearchParams();
 
   const onClick = useCallback(

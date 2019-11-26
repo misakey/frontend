@@ -4,7 +4,7 @@ import generatePath from '@misakey/helpers/generatePath';
 import routes from 'routes';
 
 function Home() {
-  return <Redirect to={generatePath(routes.dpo.service.requests._, { mainDomain: 'service' })} />;
+  return <Redirect to={generatePath(routes.dpo.service.requests._, { mainDomain: 'intro' })} />;
 }
 
 export default Home;

@@ -4,11 +4,14 @@ import { Formik, Form } from 'formik';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
 import { Link, generatePath } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import API from '@misakey/api';
 import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import useGetRoles from '@misakey/auth/hooks/useGetRoles';
+import { loadUserRoles } from '@misakey/auth/store/actions/auth';
 
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
@@ -69,7 +72,7 @@ const ServiceRoleClaimFormFields = (fields) => (
 
 ServiceRoleClaimFormFields.defaultProps = defaultFields;
 
-function ServiceRoleClaim({ match, service, t, userId }) {
+function ServiceRoleClaim({ match, service, t, userId, dispatchUserRoles }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const { role = 'dpo' } = match.params;
@@ -80,6 +83,7 @@ function ServiceRoleClaim({ match, service, t, userId }) {
   const [success, setSuccess] = useState(false);
   const [isFetching, setFetching] = useState(false);
   const [isCreating, setCreating] = useState(false);
+  const fetchRoleList = useGetRoles(dispatchUserRoles);
 
   const handleEmail = useCallback(() => {
     if (isNil(service) || isCreating) { return; }
@@ -114,7 +118,7 @@ function ServiceRoleClaim({ match, service, t, userId }) {
         }
       })
       .finally(() => setCreating(false));
-  }, [userId, service, setCreating, setClaim, enqueueSnackbar, t, isCreating, role]);
+  }, [service, isCreating, userId, role, t, enqueueSnackbar]);
 
   const handleSubmit = useCallback((values, { setErrors, setSubmitting }) => {
     if (isNil(claim) || isNil(claim.id)) { return; }
@@ -127,7 +131,10 @@ function ServiceRoleClaim({ match, service, t, userId }) {
     API.use(ENDPOINTS.claim.confirm.update)
       .build(query, payload)
       .send()
-      .then(() => { setSuccess(true); })
+      .then(() => {
+        setSuccess(true);
+        fetchRoleList(userId);
+      })
       .catch((e) => {
         const details = prop('details')(e);
         if (details) {
@@ -138,7 +145,7 @@ function ServiceRoleClaim({ match, service, t, userId }) {
         }
       })
       .finally(() => setSubmitting(false));
-  }, [claim, enqueueSnackbar, t]);
+  }, [claim, enqueueSnackbar, fetchRoleList, t, userId]);
 
   const fetchClaims = useCallback(() => {
     setFetching(true);
@@ -251,10 +258,15 @@ ServiceRoleClaim.propTypes = {
   }),
   t: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
+  dispatchUserRoles: PropTypes.func.isRequired,
 };
 
 ServiceRoleClaim.defaultProps = {
   service: null,
 };
 
-export default withTranslation(['common', 'screens', 'fields'])(ServiceRoleClaim);
+const mapDispatchToProps = (dispatch) => ({
+  dispatchUserRoles: (roles) => dispatch(loadUserRoles(roles)),
+});
+
+export default connect(null, mapDispatchToProps)(withTranslation(['common', 'screens', 'fields'])(ServiceRoleClaim));

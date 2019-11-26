@@ -22,6 +22,7 @@ import NotFound from 'components/screens/NotFound';
 import Requests from 'components/screens/DPO/Service/Requests/Read';
 import Plugin from 'components/screens/Plugin';
 import ThirdPartySetup from 'components/screens/Citizen/Application/Info/ThirdParty/Setup';
+import Forbidden from 'components/screens/Forbidden';
 
 import Redirect from 'components/dumb/Redirect';
 
@@ -94,6 +95,13 @@ function App({ t }) {
                 render={(routerProps) => (
                   <TRedirectAuthCallback fallbackReferrers={REFERRERS} t={t} {...routerProps} />
                 )}
+              />
+
+              {/* ERRORS */}
+              <Route
+                exact
+                path={routes.errors.forbidden}
+                component={Forbidden}
               />
 
               {/* WORKSPACES */}

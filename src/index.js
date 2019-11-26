@@ -85,7 +85,6 @@ if (isSilentAuthIframe()) {
 
   // ADD MIDDLEWARE TO API
   API.addMiddleware(invalidTokenMiddleware(store.dispatch));
-
   ReactDOM.render((
     <React.Suspense fallback={null}>
       <StoreProvider store={store}>

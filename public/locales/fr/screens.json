@@ -16,6 +16,15 @@
       }
     }
   },
+  "Citizen": {
+    "Actions": {
+      "loginAs": {
+        "button": "Connexion en tant que citoyen",
+        "description": "Vous ne pouvez pas accéder à cet espace en étant connecté en tant qu'administrateur ou DPO",
+        "loading": "Connexion en tant que citoyen en cours..."
+      }
+    }
+  },
   "applications": {
     "linked": {
       "subtitle": "Mes Services"
@@ -268,6 +277,42 @@
     }
   },
   "Service": {
+    "Actions": {
+      "search_other": {
+        "button": "Chercher un autre service"
+      },
+      "claim": {
+        "dpo": {
+          "button": "Je suis DPO",
+          "description": "Vous n'êtes pas connecté en tant que DPO de ce service. Si vous êtes DPO du service, vous pouvez lancer le processus de récupération du rôle DPO."
+        },
+        "admin": {
+          "button": "Je suis administrateur",
+          "description": "Vous n'êtes pas connecté en tant qu'administrateur de ce service. Si vous êtes administrateur du service, vous pouvez lancer le processus de récupération du rôle administrateur."
+        }
+      },
+      "loginAs": {
+        "dpo": {
+          "button": "Connexion en tant que DPO",
+          "description": "Vous n'êtes pas connecté en tant que DPO",
+          "loading": "Connexion en tant que DPO en cours..."
+        },
+        "admin": {
+          "button": "Connexion en tant qu'administrateur",
+          "description": "Vous n'êtes pas connecté en tant qu'administrateur",
+          "loading": "Connexion en tant qu'administrateur en cours..."
+        }
+      }
+    },
+    "Intro": {
+      "dpo": {
+        "description": "Bienvenue dans l'espace DPO. Pour commencer, veuillez chercher un service"
+      },
+      "admin": {
+        "description": "Bienvenue dans l'espace administrateur. Pour commencer, veuillez chercher un service"
+      },
+      "searchService": "Chercher un service"
+    },
     "Menu": {
       "logoAlt": "Univers de {{mainDomain}}"
     },

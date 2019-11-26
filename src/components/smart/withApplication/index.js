@@ -119,7 +119,7 @@ const withApplication = (Component, options = {}) => {
     userId: null,
   };
 
-  const isDefault = (mainDomain) => mainDomain === 'service';
+  const isDefault = (mainDomain) => mainDomain === 'intro';
 
   const mapStateToProps = (state, ownProps) => {
     const { mainDomain } = ownProps.match.params;

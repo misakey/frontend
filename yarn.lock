@@ -1183,17 +1183,24 @@
     prop-types "^15.7.2"
     react-is "^16.8.6"
 
-"@misakey/api@^2.1.0", "@misakey/api@^2.x":
+"@misakey/api@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@misakey/api/-/api-2.1.2.tgz#46ed87a6a2fa2070115a1aeff37f5ec158f48d2e"
+  integrity sha512-kXy+mZDm8d5ImoBC7o77MDF1JkUOJoyrYSgyVVdGD2meRXhgNDISu1+D+dibS7E+vdaaO9jjZ+jdbO0yOlRqwQ==
+  dependencies:
+    http-status-codes "^1.3.2"
+
+"@misakey/api@^2.x":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@misakey/api/-/api-2.1.1.tgz#8809c648ca21af864ff0ac66efbd9b93e9c6dbfc"
   integrity sha512-hvSTyaMQnEjHQPlQzeB8tWz9/8X3FCk6Zt4pD1RXIhA6MUPoTVpO/D7r4psMvWidWFZTHD9Lu9I6UCroMUrlNQ==
   dependencies:
     http-status-codes "^1.3.2"
 
-"@misakey/auth@^2.1.3":
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/@misakey/auth/-/auth-2.1.3.tgz#d00a442b6ad0ccff5359bb33668ee79636d459d3"
-  integrity sha512-f10ELrBVrIY8BDopeU4uZ2k1fi5vCasZWyenbDFD3WflZh5dLEo+dPL/cUlwGeHoyRV+4RotKLHORU1c5zhRig==
+"@misakey/auth@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@misakey/auth/-/auth-2.3.0.tgz#35c0be02b75b6ac7adbb40139ca4cc2858b856f7"
+  integrity sha512-bR/4rvcZdHXEvUGQq7S/p+engqRa8/FEAPcJ5BBJYSygn481pKxvr9laXpo/mS73lTTOzvUUqyV42t2aGj5fmQ==
   dependencies:
     "@babel/runtime" "^7.5.5"
     clsx "^1.0.4"

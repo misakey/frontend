@@ -4,6 +4,10 @@ import copy from 'copy-to-clipboard';
 import { useSnackbar } from 'notistack';
 import { Link, generatePath } from 'react-router-dom';
 import { Trans, withTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
+
+import useGetRoles from '@misakey/auth/hooks/useGetRoles';
+import { loadUserRoles } from '@misakey/auth/store/actions/auth';
 
 import routes from 'routes';
 
@@ -82,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ServiceClaim({ service, t, userId, history }) {
+function ServiceClaim({ service, t, userId, history, dispatchUserRoles }) {
   const classes = useStyles();
   const width = useWidth();
   const { enqueueSnackbar } = useSnackbar();
@@ -97,6 +101,7 @@ function ServiceClaim({ service, t, userId, history }) {
   const [error, setError] = useState(null);
 
   const i18nKey = useCallback((step) => `screens:Service.Claim.body.steps.content.${step}`, []);
+  const fetchRoleList = useGetRoles(dispatchUserRoles);
 
   const handleNext = useCallback(() => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -157,7 +162,7 @@ function ServiceClaim({ service, t, userId, history }) {
     API.use(ENDPOINTS.claim.verify.update)
       .build(query, payload)
       .send()
-      .then(() => { setSuccess(true); })
+      .then(() => { setSuccess(true); fetchRoleList(userId); })
       .catch((e) => {
         if (e.httpStatus === 403) {
           setError(VERIFY_ERROR);
@@ -170,7 +175,7 @@ function ServiceClaim({ service, t, userId, history }) {
         }
       })
       .finally(() => setSubmitting(false));
-  }, [claim, error, setSubmitting, setError, enqueueSnackbar, t]);
+  }, [claim, error, fetchRoleList, userId, t, enqueueSnackbar]);
 
   useEffect(fetchClaim, [service]);
 
@@ -341,10 +346,15 @@ ServiceClaim.propTypes = {
   t: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
+  dispatchUserRoles: PropTypes.func.isRequired,
 };
 
 ServiceClaim.defaultProps = {
   service: null,
 };
 
-export default withTranslation(['common', 'screens'])(ServiceClaim);
+const mapDispatchToProps = (dispatch) => ({
+  dispatchUserRoles: (roles) => dispatch(loadUserRoles(roles)),
+});
+
+export default connect(null, mapDispatchToProps)(withTranslation(['common', 'screens'])(ServiceClaim));
