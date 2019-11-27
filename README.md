@@ -25,14 +25,20 @@ To generate an output folder for the web extension use:
 - `yarn install && yarn --cwd plugin install && yarn build-plugin`
 
 To use different env files, use :
-- `PLUGIN_ENV=preprod yarn build-plugin`
-- Values supported: `prod`, `preprod`, `dev`
--  Default value: `prod`
+- `PLUGIN_ENV=preproduction make build-plugin` or `PLUGIN_ENV=preproduction yarn build-plugin`
+- Values supported: `production`, `preproduction`, `development`
+-  Default value: `production`
+
+To add version in the zip output name add `VERSION=<version>`
 
 To generate build for firefox only use:
+- `TARGET_BROWSER=firefox make build-plugin`
+  OR
 - `yarn install && yarn install --cwd plugin && yarn build-plugin-firefox`
-
-To generate build for firefox only use:
+  
+To generate build for chrome only use:
+- `TARGET_BROWSER=chrome make build-plugin`
+  OR
 - `yarn install && yarn install --cwd plugin && yarn build-plugin-chrome`
 
 N.B: To launch this project as a web extension in developer mode with hot reload, see `README.md` in `/plugin` folder.

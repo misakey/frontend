@@ -4,18 +4,24 @@ services:
     build:
       context: ./
       dockerfile: plugin/docker/Dockerfile.dev
+    environment:
+      - PLUGIN_ENV=${PLUGIN_ENV}
+      - TARGET_BROWSER=${TARGET_BROWSER}
     volumes:
       - ./plugin/src/:/app/src
       - ./plugin/package.json:/app/package.json
       - ./plugin/yarn.lock:/app/yarn.lock
-      - ./build_plugin_dev:/app/build/
+      - ./build_plugin/${PLUGIN_ENV}/${TARGET_BROWSER}:/app/build/
 
   plugin-popup:
     build:
       context: ./
       dockerfile: plugin/docker/Dockerfile.popup.dev
+    environment:
+      - PLUGIN_ENV=${PLUGIN_ENV}
+      - TARGET_BROWSER=${TARGET_BROWSER}
     volumes:
       - ./src/:/app/src
       - ./package.json:/app/package.json
       - ./yarn.lock:/app/yarn.lock
-      - ./build_plugin_dev:/app/build/
+      - ./build_plugin/${PLUGIN_ENV}/${TARGET_BROWSER}:/app/build_plugin/${PLUGIN_ENV}/${TARGET_BROWSER}/

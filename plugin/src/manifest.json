@@ -1,11 +1,11 @@
 {
   "common": {
     "manifest_version": 2,
-    "name": "Misakey - Prenez le contrôle de vos cookies",
+    "name": "Misakey - Prenez le contrôle des cookies",
     "short_name": "Misakey",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "author": "Misakey",
-    "description": "Prenez le contrôle de vos cookies en supprimant les popups de consentement et en imposant votre profil unique sur tous les sites.",
+    "description": "Supprimez les bandeaux “j’accepte” et naviguez avec le même profil cookies sur tous les sites.",
 
     "icons": {
       "48": "ico/favicon-48x48.png"

@@ -54,7 +54,7 @@ As `react-scripts` don't enable to easily configure output build directory, we g
 - First, from src folder in `plugin/` it build the bundles for background.js and content-script.js and put them in a `/build/prod` folder
 - Then it generate the output `build` for `app-front` in a `/tmp` folder with specific ENV values: 
       - `INLINE_RUNTIME_CHUNK = false` because by default, Create React App embeds a small runtime script into index.html during the production build to reduce the number of HTTP requests and it is not possible in webextension due to [CSP](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_Security_Policy).
-- Finally, we move the generated `/tmp/build/` of `app-front` from the docker container in `/build_plugin` (`/build` generated in step 1 for background and content-script)
+- Finally, we generate zip folder for each browser, rename it and expose it when docker image is running
 - We run it with docker and use docker cp to get the final folder (See Makefile on root of this project)
   - `make build-plugin`
 
@@ -64,11 +64,13 @@ As `react-scripts` don't enable to easily configure output build directory, we g
 
 - The first one, for the plugin scripts is very simple : it share volumes with the host machine on source files and output dir (as we want to put it in the browser debugging extension menu) and it simply launch a `webpack --watch`
 
-- The second need more configuration because we cannot use `react-scripts watch` in the extension as the extension doesn't support hotreload with SocketJs (because the library test if the destination host is valid and the host in the extension is not a classic url). So we need to build a production version of the application but with a watch on source files changes (https://gist.github.com/jasonblanchard/ae0d2e304a647cd847c0b4493c2353d4). We use a custom scripts `watch.js` to do that, and once it's generated, we put it in a subfolder `/popup` in the volume shared with the other plugin container.
+- The second use `react-app-rewired start` for building popup with watch mode
 
 * To launch the dev environement, use `make start-plugin` in the root directory.
+    *  Default env is `development` for watch mode, to custom it use `PLUGIN_ENV=<production, development, preproduction>`
+    *  Default browser is `firefox`, to custom it use `TARGET_BROWSER=<chrome, firefox>`
 
-The command `make start-plugin` create the folder `build_plugin_dev` which is the location of the volume shared. 
+The command `make start-plugin` create the folder `build_plugin/<env>/<browser>` which is the location of the volume shared. 
 By creating it before launching the generation, it is owned by the current_user and allows to manipulate it without sudo (Docker create volume with root owner by default).
 Then it launch the `docker-compose` command with `docker-compose.plugin.yml`.
 

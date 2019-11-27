@@ -71,9 +71,10 @@ docker-login: ## Log in to the default registry
 build: ## Build a docker image with the build folder and serve server
 	@docker build --build-arg VERSION=$(CI_COMMIT_REF_NAME) -t $(DOCKER_IMAGE):$(CI_COMMIT_REF_NAME) .
 
+PLUGIN_ENV ?= production
 .PHONY: build-plugin
 build-plugin: ## Generate zip folder for misakey webextension
-	@docker build -f plugin/docker/Dockerfile -t plugin .
+	@docker build -f plugin/docker/Dockerfile -t plugin --build-arg plugin_env=${PLUGIN_ENV} --build-arg plugin_version=${VERSION} .
 	@docker run -d --name plugin plugin
 	@mkdir -p ./build_plugin
 	# Copy files in /build_plugin
@@ -90,7 +91,7 @@ zip-plugin-source-code: ## Generate a clean zip of the source code for firefox r
 CURRENT_DIR := $(shell pwd)
 .PHONY: start-plugin
 start-plugin:  ## Generate development environment for plugin
-	@mkdir -p ./build_plugin_dev/
+	@mkdir -p ./build_plugin/$(PLUGIN_ENV)/${TARGET_BROWSER}
 	docker-compose -f $(CURRENT_DIR)/docker-compose.plugin.yml up --build
 
 .PHONY: clean-plugin

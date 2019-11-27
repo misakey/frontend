@@ -8,4 +8,4 @@ COPY ./plugin/yarn.lock /app/yarn.lock
 WORKDIR /app
 RUN yarn install
 
-CMD yarn start
+CMD ROOT_FOLDER=build yarn start
