@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import copy from 'copy-to-clipboard';
 import { useSnackbar } from 'notistack';
@@ -12,12 +13,13 @@ import { loadUserRoles } from '@misakey/auth/store/actions/auth';
 import routes from 'routes';
 
 import API from '@misakey/api';
-import find from '@misakey/helpers/find';
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 import isObject from '@misakey/helpers/isObject';
 import isInteger from '@misakey/helpers/isInteger';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+import head from '@misakey/helpers/head';
 import useWidth from '@misakey/hooks/useWidth';
 
 import Box from '@material-ui/core/Box';
@@ -31,6 +33,7 @@ import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Skeleton from '@material-ui/lab/Skeleton';
+import useLocationWorkspace from 'hooks/useLocationWorkspace';
 
 import SplashScreen from 'components/dumb/SplashScreen';
 import Navigation from 'components/dumb/Navigation';
@@ -38,29 +41,48 @@ import BoxSection from 'components/dumb/Box/Section';
 import ButtonSubmit from 'components/dumb/Button/Submit';
 import BoxMessage from 'components/dumb/Box/Message';
 import ErrorOverlay from 'components/dumb/Error/Overlay';
+import Redirect from 'components/dumb/Redirect';
 
 // @FIXME: add to @misakey/API
 export const ENDPOINTS = {
   claim: {
     list: {
       method: 'GET',
-      path: '/application-claims',
+      path: '/user-role-claims',
       auth: true,
     },
     create: {
       method: 'POST',
-      path: '/application-claims',
+      path: '/user-role-claims',
       auth: true,
     },
     verify: {
       update: {
         method: 'PATCH',
-        path: '/application-claims/:id',
+        path: '/user-role-claims/:id',
         auth: true,
       },
     },
   },
 };
+
+// HOOKS
+
+const useCreateClaim = (setClaim, userId, serviceId, role) => useCallback(() => {
+  const payload = {
+    user_role: {
+      user_id: userId,
+      application_id: serviceId,
+      role_label: role,
+    },
+    type: 'dns',
+  };
+
+  return API.use(ENDPOINTS.claim.create)
+    .build(null, objectToSnakeCase(payload))
+    .send()
+    .then((response) => { setClaim(objectToCamelCase(response)); });
+}, [role, serviceId, setClaim, userId]);
 
 const STEPS = [1, 2, 3];
 
@@ -86,14 +108,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ServiceClaim({ service, t, userId, history, dispatchUserRoles }) {
+function ServiceClaim({ service, t, userId, history, dispatchUserRoles, userRoles }) {
   const classes = useStyles();
   const width = useWidth();
   const { enqueueSnackbar } = useSnackbar();
-
+  const role = useLocationWorkspace();
+  const { id: userRoleId, valid: userHasRole } = useMemo(
+    () => {
+      const { id } = service;
+      const userRole = userRoles.find(
+        ({ applicationId, roleLabel }) => applicationId === id && roleLabel === role,
+      );
+      return userRole || { valid: false };
+    },
+    [service, userRoles, role],
+  );
   const [activeStep, setActiveStep] = useState(1);
 
-  const [claim, setClaim] = useState({ validationToken: '' });
+  const [claim, setClaim] = useState({ value: '' });
   const [isFetching, setFetching] = useState(false);
 
   const [isSubmitting, setSubmitting] = useState(false);
@@ -102,6 +134,10 @@ function ServiceClaim({ service, t, userId, history, dispatchUserRoles }) {
 
   const i18nKey = useCallback((step) => `screens:Service.Claim.body.steps.content.${step}`, []);
   const fetchRoleList = useGetRoles(dispatchUserRoles);
+  const pathToAdminHome = useMemo(
+    () => generatePath(routes.admin.service._, { mainDomain: service.mainDomain }),
+    [service.mainDomain],
+  );
 
   const handleNext = useCallback(() => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -112,41 +148,31 @@ function ServiceClaim({ service, t, userId, history, dispatchUserRoles }) {
   }, [setActiveStep]);
 
   const handleCopy = useCallback(() => {
-    copy(claim.validationToken);
+    copy(claim.value);
     const text = t('screens:Service.Claim.body.txtKey.copied');
     enqueueSnackbar(text, { variant: 'success' });
   }, [claim, enqueueSnackbar, t]);
 
+  const createClaim = useCreateClaim(setClaim, userId, service.id, role);
+
   const fetchClaim = useCallback(() => {
-    function createClaim() {
-      const payload = {
-        userId,
-        applicationId: service.id,
-        valid: false,
-      };
-
-      return API.use(ENDPOINTS.claim.create)
-        .build(null, objectToSnakeCase(payload))
-        .send()
-        .then((response) => { setClaim(objectToCamelCase(response)); });
-    }
-
-    if (isNil(service)) { return; }
+    if (isNil(service) || !isEmpty(claim.value) || isFetching || userHasRole) { return; }
+    if (isNil(userRoleId)) { createClaim(); return; }
 
     setFetching(true);
 
     API.use(ENDPOINTS.claim.list)
-      .build()
+      .build(null, null, { user_role_id: userRoleId })
       .send()
       .then((response) => {
-        const found = find(response, ['application_id', service.id]);
+        const found = head(response);
         if (isObject(found)) {
           setClaim(objectToCamelCase(found));
-        } else { createClaim(); }
+        } else { setError(400); }
       })
       .catch((e) => setError(e.httpStatus || 500))
       .finally(() => setFetching(false));
-  }, [userId, service, setFetching, setError, setClaim]);
+  }, [service, claim.value, isFetching, userHasRole, userRoleId, createClaim]);
 
   const handleSubmit = useCallback(() => {
     const { id } = claim;
@@ -157,7 +183,7 @@ function ServiceClaim({ service, t, userId, history, dispatchUserRoles }) {
     if (error) { setError(RETRY_ERROR); }
 
     const query = { id };
-    const payload = { valid: true };
+    const payload = { validated_at: moment.utc(Date.now()).format() };
 
     API.use(ENDPOINTS.claim.verify.update)
       .build(query, payload)
@@ -182,6 +208,11 @@ function ServiceClaim({ service, t, userId, history, dispatchUserRoles }) {
   if (isFetching || isNil(service)) { return <SplashScreen />; }
 
   if (isInteger(error)) { return <ErrorOverlay httpStatus={error} />; }
+
+  if (userHasRole) {
+    enqueueSnackbar(t('screens:Service.Role.Claim.info.alreadyDpo', { mainDomain: service.mainDomain, role }), { variant: 'info' });
+    return <Redirect to={pathToAdminHome} />;
+  }
 
   const again = error === VERIFY_ERROR;
   const submitText = t(`screens:Service.Claim.body.txtKey.actions.submit${again ? 'Again' : ''}`);
@@ -210,7 +241,7 @@ function ServiceClaim({ service, t, userId, history, dispatchUserRoles }) {
             label={t('screens:Service.Claim.body.txtKey.label', { mainDomain: service.mainDomain })}
             multiline
             rowsMax="4"
-            value={claim.validationToken}
+            value={claim.value}
             className={classes.textField}
             margin="normal"
             variant="outlined"
@@ -283,7 +314,7 @@ function ServiceClaim({ service, t, userId, history, dispatchUserRoles }) {
                     {step === STEPS[1] ? (
                       <Trans
                         i18nKey={i18nKey(step)}
-                        values={{ mainDomain: service.mainDomain, key: claim.validationToken }}
+                        values={{ mainDomain: service.mainDomain, key: claim.value }}
                       >
                         {'Ajoutez une nouvelle entrée DNS, de Type "TXT".'}
                         {'De nom (sous-domaine)'}
@@ -296,7 +327,7 @@ function ServiceClaim({ service, t, userId, history, dispatchUserRoles }) {
                       <Trans i18nKey={i18nKey(step)}>
                         {t(i18nKey(step), {
                           mainDomain: service.mainDomain,
-                          key: claim.validationToken,
+                          key: claim.value,
                         })}
                       </Trans>
                     )}
@@ -347,6 +378,10 @@ ServiceClaim.propTypes = {
   userId: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
   dispatchUserRoles: PropTypes.func.isRequired,
+  userRoles: PropTypes.arrayOf(PropTypes.shape({
+    roleLabel: PropTypes.string.isRequired,
+    applicationId: PropTypes.string.isRequired,
+  })).isRequired,
 };
 
 ServiceClaim.defaultProps = {

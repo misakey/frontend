@@ -15,6 +15,7 @@ import Drawer from 'components/screens/DPO/Service/Drawer';
 import ServiceClaim from 'components/screens/DPO/Service/Claim';
 import ServiceRequests from 'components/screens/DPO/Service/Requests';
 import useLocationWorkspace from 'hooks/useLocationWorkspace';
+import useUserHasRole from 'hooks/useUserHasRole';
 
 import 'components/screens/DPO/Service/Service.scss';
 
@@ -24,15 +25,26 @@ export const DPO_SERVICE_SCREEN_NAMES = {
   REQUESTS: 'DPOServiceRequests',
 };
 
-function Service({ entity, error, isDefaultDomain, isFetching, mainDomain, match, userId }) {
+function Service({
+  entity,
+  error,
+  isDefaultDomain,
+  isFetching,
+  mainDomain,
+  match,
+  userId,
+  userRoles,
+}) {
   const service = useMemo(
     () => (isDefaultDomain ? DEFAULT_SERVICE_ENTITY : entity),
     [isDefaultDomain, entity],
   );
   const workspace = useLocationWorkspace();
   const requiredScope = useMemo(() => entity && `rol.${workspace}.${entity.id}`, [entity, workspace]);
+  const userHasRole = useUserHasRole(userRoles, requiredScope);
   const routeServiceProps = useMemo(
-    () => ({ requiredScope, workspace, mainDomain }), [mainDomain, requiredScope, workspace],
+    () => ({ requiredScope, workspace, mainDomain, userHasRole }),
+    [mainDomain, requiredScope, userHasRole, workspace],
   );
 
   return (
@@ -42,12 +54,12 @@ function Service({ entity, error, isDefaultDomain, isFetching, mainDomain, match
         entity={service}
         isFetching={isFetching}
       >
-        <Drawer mainDomain={mainDomain}>
+        <Drawer mainDomain={mainDomain} userHasRole={userHasRole}>
           <Switch>
             <RouteService
               path={routes.dpo.service.claim._}
               component={ServiceClaim}
-              componentProps={{ service, name: DPO_SERVICE_SCREEN_NAMES.CLAIM, userId }}
+              componentProps={{ service, name: DPO_SERVICE_SCREEN_NAMES.CLAIM, userId, userRoles }}
               {...routeServiceProps}
             />
             <RouteService
@@ -79,6 +91,10 @@ Service.propTypes = {
   mainDomain: PropTypes.string.isRequired,
   match: PropTypes.shape({ path: PropTypes.string }).isRequired,
   userId: PropTypes.string.isRequired,
+  userRoles: PropTypes.arrayOf(PropTypes.shape({
+    roleLabel: PropTypes.string.isRequired,
+    applicationId: PropTypes.string.isRequired,
+  })).isRequired,
 };
 
 Service.defaultProps = {

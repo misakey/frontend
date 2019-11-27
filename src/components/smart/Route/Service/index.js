@@ -6,8 +6,6 @@ import { withTranslation } from 'react-i18next';
 import routes from 'routes';
 
 import parseJwt from '@misakey/helpers/parseJwt';
-import isNil from '@misakey/helpers/isNil';
-import some from '@misakey/helpers/some';
 import log from '@misakey/helpers/log';
 import generatePath from '@misakey/helpers/generatePath';
 
@@ -18,10 +16,6 @@ import BoxAction from 'components/dumb/Box/Action';
 import SplashScreen from 'components/dumb/SplashScreen';
 import useLocationSearchParams from 'hooks/useLocationSearchParams';
 
-const useUserHasRole = (userRoles, requiredScope) => useMemo(() => {
-  if (isNil(userRoles)) { return false; }
-  return some(userRoles, ({ roleLabel, applicationId }) => (`rol.${roleLabel}.${applicationId}` === requiredScope));
-}, [requiredScope, userRoles]);
 
 // @FIXME: factorize with src/components/smart/Layout/Search.js
 const useLaunchSearch = (locationSearchParams, push) => useCallback(
@@ -44,7 +38,7 @@ function RouteService({
   isAuthenticated,
   t,
   requiredScope,
-  userRoles,
+  userHasRole,
   userScope,
   userId,
   userManager,
@@ -52,7 +46,6 @@ function RouteService({
   workspace,
   ...rest
 }) {
-  const userHasRole = useUserHasRole(userRoles, requiredScope);
   const signIn = useCallback(() => userManager.signinRedirect(), [userManager]);
   const signInAs = useCallback(() => userManager.signinRedirect({ scope: `openid user ${requiredScope}` }), [requiredScope, userManager]);
   const [loginAsScreen, setLoginAsScreen] = useState(false);
@@ -172,10 +165,7 @@ RouteService.propTypes = {
   t: PropTypes.func.isRequired,
   requiredScope: PropTypes.string.isRequired,
   userScope: PropTypes.string,
-  userRoles: PropTypes.arrayOf(PropTypes.shape({
-    roleLabel: PropTypes.string,
-    applicationId: PropTypes.string,
-  })),
+  userHasRole: PropTypes.bool,
   userId: PropTypes.string,
   userManager: PropTypes.object.isRequired,
   mainDomain: PropTypes.string.isRequired,
@@ -187,7 +177,7 @@ RouteService.defaultProps = {
   isAuthenticated: false,
   userScope: '',
   userId: null,
-  userRoles: null,
+  userHasRole: false,
 };
 
 // CONNECT

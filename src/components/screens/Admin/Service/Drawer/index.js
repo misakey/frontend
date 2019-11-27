@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
@@ -159,7 +159,7 @@ const getListItemsClasses = () => {
   return classes;
 };
 
-function Drawer({ children, dispatch, location, mainDomain, open, t }) {
+function Drawer({ children, dispatch, location, mainDomain, open, t, userHasRole }) {
   const theme = useTheme();
   const width = useWidth();
   const classes = useStyles();
@@ -192,6 +192,11 @@ function Drawer({ children, dispatch, location, mainDomain, open, t }) {
   const drawerVariant = React.useMemo(
     () => (displayIn(width, ['xs', 'sm']) ? null : 'permanent'),
     [width],
+  );
+
+  const itemsToDisplay = useMemo(
+    () => (userHasRole ? Object.keys(LIST_ITEMS).filter((key) => key !== 'claim') : Object.keys(LIST_ITEMS)),
+    [userHasRole],
   );
 
   React.useEffect(handleDrawerOpened, [open]);
@@ -233,7 +238,7 @@ function Drawer({ children, dispatch, location, mainDomain, open, t }) {
         </div>
         {open && <Divider />}
         <List>
-          {Object.keys(LIST_ITEMS).map((name) => (
+          {itemsToDisplay.map((name) => (
             <ListItem
               component={Link}
               button
@@ -266,11 +271,13 @@ Drawer.propTypes = {
   mainDomain: PropTypes.string, // from parent Component
   open: PropTypes.bool, // from state.screens.ServiceDrawer
   t: PropTypes.func.isRequired,
+  userHasRole: PropTypes.bool,
 };
 
 Drawer.defaultProps = {
   mainDomain: 'intro',
   open: false,
+  userHasRole: false,
 };
 
 export default connect(

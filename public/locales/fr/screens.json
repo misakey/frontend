@@ -335,7 +335,7 @@
           "content": {
             "1": "Allez sur l'interface de gestion de la zone DNS de votre registrar (OVH, Gandi, Route 53, ...).",
             "2": "Ajoutez une nouvelle entrée DNS, de Type \"TXT\".<br> De nom (sous-domaine) <2>_misakey.{{mainDomain}}</2><br> De valeur <4>{{key}}</4><br> Enregistrez.",
-            "3": "La diffusion DNS peut prendre de quelques secondes à plusieurs heures.<br> Si cela ne fonctionne pas tout de suite, reesayez plus tard.<br> Vous pouvez ré-essayer autant de fois que vous voulez en revenant sur cette page."
+            "3": "La diffusion DNS peut prendre de quelques secondes à plusieurs heures.<br> Si cela ne fonctionne pas tout de suite, réessayez plus tard.<br> Vous pouvez réessayer autant de fois que vous voulez en revenant sur cette page."
           }
         },
         "txtKey": {
@@ -359,6 +359,9 @@
     },
     "Role": {
       "Claim": {
+        "info": {
+          "alreadyDpo": "Vous possédez déjà le rôle {{role}} pour le service {{mainDomain}}"
+        },
         "title": "",
         "description": "",
         "body": {
@@ -366,7 +369,13 @@
           "subTitle": "Ce processus vous attribuera le rôle DPO",
           "content": {
             "title": "Renseigner votre code de confirmation",
-            "desc": "Un email avec un code de confirmation va être envoyé à l'adresse email du DPO de {{mainDomain}}"
+            "desc": "Un email avec un code de confirmation va être envoyé à l'adresse email du DPO de {{mainDomain}}",
+            "errors": {
+              "missingDpoEmail": {
+                "text": "Nous avons besoin de connaître l'adresse e-mail du DPO de {{mainDomain}} pour vous permettre de le confirmer. Si vous la connaissez, vous pouvez la communiquer.",
+                "button": "Envoyer un mail à Misakey"
+              }
+            }
           },
           "email": {
             "submit": "Renvoyer un code de confirmation",

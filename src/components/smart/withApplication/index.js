@@ -133,6 +133,7 @@ const withApplication = (Component, options = {}) => {
       ),
       mainDomain,
       userId: !isEmpty(state.auth.id) ? parseJwt(state.auth.id).sub : null,
+      userRoles: !isNil(state.auth.roles) ? state.auth.roles : [],
     };
   };
 
