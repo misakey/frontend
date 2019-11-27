@@ -172,9 +172,11 @@
       }
     },
     "box": {
-      "needPassword": "Pour accéder à ce fichier, nous avons besoin de votre mot de passe",
+      "needPassword": "Pour cette action nous avons besoin de votre mot de passe",
       "errorNotif": "Une erreur est survenue.",
       "wrongPassword": "Le mot de passe semble erroné, veuillez réessayer",
+      "mustUnlockVault": "Vous devez ouvrir votre coffre-fort pour télécharger les fichiers",
+      "unlockVaultButton": "Cliquez ici",
       "title": "Récupérer vos données",
       "button": {
         "label": "Contacter le DPO"
@@ -256,6 +258,7 @@
     "sendAt": "Envoyé {{date}}",
     "size": "Envoyé {{size}}",
     "errors": {
+      "missingSecretKey": "Vous n'avez pas accès à la clé de déchiffrement",
       "getBlob": "Une erreur s'est produite lors de la récupération du fichier",
       "default": "Oops, impossible de télécharger le fichier !"
     }

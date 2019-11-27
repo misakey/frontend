@@ -18,6 +18,7 @@ import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 import APITokenMiddleware from '@misakey/auth/middlewares/APItoken';
 import invalidTokenMiddleware from 'middlewares/invalidToken';
+import cryptoMiddleware from 'middlewares/crypto';
 // routing
 import { BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from 'serviceWorker';
@@ -75,7 +76,7 @@ if (isSilentAuthIframe()) {
   // i18n.init({debug: true});
 
   // STORE
-  const storeMiddleWares = [thunk, APITokenMiddleware];
+  const storeMiddleWares = [thunk, APITokenMiddleware, cryptoMiddleware];
   if (window.env.ENV === 'development') { storeMiddleWares.push(createLogger()); }
 
   const rootPersistConfig = { key: 'root', storage, whitelist: ['global'], blacklist: [] };

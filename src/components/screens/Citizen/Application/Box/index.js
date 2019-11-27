@@ -15,11 +15,13 @@ import routes from 'routes';
 
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import Link from '@material-ui/core/Link';
 
 import deburr from '@misakey/helpers/deburr';
 import parseJwt from '@misakey/helpers/parseJwt';
 import isObject from '@misakey/helpers/isObject';
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import { redirectToApp } from 'helpers/plugin';
 
@@ -29,6 +31,7 @@ import ScreenError from 'components/dumb/Screen/Error';
 import DataboxDisplay from 'components/screens/Citizen/Application/Box/DataboxDisplay';
 
 import BoxSection from 'components/dumb/Box/Section';
+import BoxMessage from 'components/dumb/Box/Message';
 import Box from '@material-ui/core/Box';
 import ContactButton from 'components/smart/ContactButton';
 import { makeStyles } from '@material-ui/core/styles';
@@ -57,7 +60,89 @@ const useStyles = makeStyles((theme) => ({
   contactButtonRoot: {
     alignSelf: 'flex-end',
   },
+  initCryptoLink: {
+    marginLeft: theme.spacing(1),
+    fontWeight: 'bold',
+    color: 'inherit',
+  },
 }));
+
+function promptForPassword(t, previousAttemptFailed = false) {
+  return Swal.fire({
+    title: t(`screens:application.box.${previousAttemptFailed ? 'wrongPassword' : 'needPassword'}`),
+    input: 'password',
+    cancelButtonText: t('cancel'),
+    showCancelButton: true,
+    inputPlaceholder: t('password'),
+    reverseButtons: true,
+    inputAttributes: {
+      autocapitalize: 'off',
+      autocorrect: 'off',
+    },
+  })
+    .then(({ value: password }) => {
+      if (isNil(password)) { throw new NoPassword(); }
+
+      return password;
+    });
+}
+
+async function loadBackupAndAskPassword(t, auth) {
+  const promisedPassword = promptForPassword(t);
+
+  const userId = parseJwt(auth.id).sub;
+  const promisedBackupData = API.use(API.endpoints.user.getSecretBackup)
+    .build({ id: userId })
+    .send()
+    .then((response) => response.data);
+
+  // we cannot use 'const backupData' because of destructuration
+  /* eslint-disable prefer-const */
+  let [
+    password,
+    backupData,
+  ] = await Promise.all([promisedPassword, promisedBackupData]);
+  /* eslint-enable prefer-const */
+
+  // this ESLint rule is about loops where iterations are independent from one another,
+  // which is not the case here (next loop is executed if previous loop failed)
+  // @FIXME consider using recursion instead?
+  /* eslint-disable no-await-in-loop */
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    try {
+      await crypto.loadSecretBackup(password, backupData);
+      break;
+    } catch (e) {
+      if (e instanceof BackupDecryptionError) {
+        password = await promptForPassword(t, /* previousAttemptFailed = */true);
+      } else {
+        throw e;
+      }
+    }
+  }
+  /* eslint-enable no-await-in-loop */
+}
+
+async function initCrypto({ t, auth, setPublicKeysWeCanDecryptFrom, setIsCryptoReadyToDecrypt }) {
+  if (crypto.databox.isReadyToDecrypt()) {
+    setIsCryptoReadyToDecrypt(true);
+    setPublicKeysWeCanDecryptFrom(crypto.databox.getPublicKeysWeCanDecryptFrom());
+    return;
+  }
+
+  try {
+    await loadBackupAndAskPassword(t, auth);
+  } catch (e) {
+    if (e instanceof NoPassword) {
+      // do nothing
+      return;
+    }
+    throw e;
+  }
+  setIsCryptoReadyToDecrypt(true);
+  setPublicKeysWeCanDecryptFrom(crypto.databox.getPublicKeysWeCanDecryptFrom());
+}
 
 function ApplicationBox({
   application,
@@ -75,6 +160,11 @@ function ApplicationBox({
 
   const [databox, setDatabox] = React.useState(null);
   const [blobs, setBlobs] = React.useState(null);
+
+  const [isCryptoReadyToDecrypt, setIsCryptoReadyToDecrypt] = React.useState(
+    crypto.databox.isReadyToDecrypt(),
+  );
+  const [publicKeysWeCanDecryptFrom, setPublicKeysWeCanDecryptFrom] = React.useState([]);
 
   const { mainDomain } = match.params;
 
@@ -125,63 +215,6 @@ function ApplicationBox({
     }
   }
 
-  function promptForPassword(previousAttemptFailed = false) {
-    return Swal.fire({
-      title: t(`screens:application.box.${previousAttemptFailed ? 'wrongPassword' : 'needPassword'}`),
-      input: 'password',
-      cancelButtonText: t('cancel'),
-      showCancelButton: true,
-      inputPlaceholder: t('password'),
-      reverseButtons: true,
-      inputAttributes: {
-        autocapitalize: 'off',
-        autocorrect: 'off',
-      },
-    })
-      .then(({ value: password }) => {
-        if (isNil(password)) { throw new NoPassword(); }
-
-        return password;
-      });
-  }
-
-  async function initCrypto() {
-    const promisedPassword = promptForPassword();
-
-    const userId = parseJwt(auth.id).sub;
-    const promisedBackupData = API.use(API.endpoints.user.getSecretBackup)
-      .build({ id: userId })
-      .send()
-      .then((response) => response.data);
-
-    // we cannot use 'const backupData' because of destructuration
-    /* eslint-disable prefer-const */
-    let [
-      password,
-      backupData,
-    ] = await Promise.all([promisedPassword, promisedBackupData]);
-    /* eslint-enable prefer-const */
-
-    // this ESLint rule is about loops where iterations are independent from one another,
-    // which is not the case here (next loop is executed if previous loop failed)
-    // @FIXME consider using recursion instead?
-    /* eslint-disable no-await-in-loop */
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      try {
-        await crypto.loadSecretBackup(password, backupData);
-        break;
-      } catch (e) {
-        if (e instanceof BackupDecryptionError) {
-          password = await promptForPassword(/* previousAttemptFailed = */true);
-        } else {
-          throw e;
-        }
-      }
-    }
-    /* eslint-enable no-await-in-loop */
-  }
-
   async function readBlob(id) {
     try {
       return (
@@ -195,7 +228,6 @@ function ApplicationBox({
     }
   }
 
-
   async function downloadBlob(id) {
     try {
       const [blobMetadata] = blobs.filter((blob) => (blob.id === id));
@@ -208,7 +240,7 @@ function ApplicationBox({
 
       if (!crypto.databox.isReadyToDecrypt()) {
         try {
-          await initCrypto();
+          await loadBackupAndAskPassword(t, auth);
         } catch (e) {
           if (e instanceof NoPassword) {
             // do nothing
@@ -238,21 +270,50 @@ function ApplicationBox({
     }
   }
 
+  React.useEffect(
+    () => {
+      if (isCryptoReadyToDecrypt) {
+        setPublicKeysWeCanDecryptFrom(crypto.databox.getPublicKeysWeCanDecryptFrom());
+      }
+    },
+    [isCryptoReadyToDecrypt],
+  );
   React.useEffect(fetchDatabox, [mainDomain, isAuthenticated]);
 
   if (error) {
     return <ScreenError httpStatus={error} />;
   }
 
+  /* eslint-disable jsx-a11y/anchor-is-valid */
   return (
     <section id="ApplicationBox">
       <Container maxWidth={false}>
+        { (isAuthenticated && !isCryptoReadyToDecrypt && !isEmpty(blobs)) && (
+        <BoxMessage type="warning" my={2}>
+          <Typography>{t('screens:application.box.mustUnlockVault')}</Typography>
+          <Link
+            className={classes.initCryptoLink}
+            component="button"
+            variant="body2"
+            onClick={() => {
+              initCrypto({ t, auth, setPublicKeysWeCanDecryptFrom, setIsCryptoReadyToDecrypt });
+            }}
+          >
+            {t('screens:application.box.unlockVaultButton')}
+          </Link>
+        </BoxMessage>
+        )}
         <BoxSection my={3} className={classes.boxSection}>
           {loading && <SplashScreen variant="default" />}
           {isObject(application) && (
             <>
               <Typography variant="h6" component="h5" className={classes.titleWithButton}>
                 {t('screens:application.box.title')}
+                {
+                  // @FIXME should use "isEmpty" instead of "isNil"
+                  // because "isNil" is true on empty list
+                  // (this applies to other occurences of isNil in this file)
+                }
                 {!isNil(blobs) && blobs.length > 0 && (
                   <ContactButton
                     dpoEmail={application.dpoEmail}
@@ -290,12 +351,14 @@ function ApplicationBox({
                   </>
                 )}
 
-                {!isNil(blobs) && (
+                {(!isNil(blobs)) && (
                   <>
                     <DataboxDisplay
                       application={application}
                       blobs={blobs}
                       downloadBlob={downloadBlob}
+                      publicKeysWeCanDecryptFrom={publicKeysWeCanDecryptFrom}
+                      isCryptoReadyToDecrypt={isCryptoReadyToDecrypt}
                     />
                     {blobs.length === 0 && (
                       <ContactButton
