@@ -79,9 +79,6 @@
     "notFound": {
       "title": "Oops, nous n'avons rien trouvé concernant le domaine {{mainDomain}} :-("
     },
-    "chipAvatar": {
-      "alt": "Univers de {{clientName}}"
-    },
     "info": {
       "logoAlt": "Informations à propos de {{applicationName}}",
       "emailSignIn": "Connectez-vous pour voir l'email du DPO",

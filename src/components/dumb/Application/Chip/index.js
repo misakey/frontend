@@ -3,15 +3,16 @@ import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
+import omit from '@misakey/helpers/omit';
 
 function ApplicationChip({ clientName, logoUri, t, ...rest }) {
   return (
     <Chip
       component="span"
-      avatar={<Avatar component="span" alt={t('screens:application.chipAvatar.alt', { clientName })} src={logoUri} />}
+      avatar={<Avatar component="span" alt={t('brand', { brand: clientName })} src={logoUri} />}
       label={clientName}
       variant="outlined"
-      {...rest}
+      {...omit(rest, ['i18n', 'tReady'])}
     />
   );
 }
@@ -27,4 +28,4 @@ ApplicationChip.defaultProps = {
   logoUri: '',
 };
 
-export default withTranslation(['screens'])(ApplicationChip);
+export default withTranslation()(ApplicationChip);

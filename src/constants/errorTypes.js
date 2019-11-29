@@ -4,7 +4,7 @@ const errorTypes = {
   expired: 'expired',
   invalid: 'invalid',
   malformed: 'malformed',
-  notfound: 'notfound',
+  notFound: 'not_found',
   required: 'required',
   unknown: 'unknown',
   badRequest: 'bad_request',

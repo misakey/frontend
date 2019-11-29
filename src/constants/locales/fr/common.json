@@ -31,6 +31,7 @@
   "signIn": "Connexion",
   "signOut": "Déconnexion",
   "report": "Signaler",
+  "brand": "Logo de la marque {{brand}}",
   "account": {
     "delete": {
       "label": "Supprimer mon compte",

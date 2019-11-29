@@ -6,24 +6,21 @@ import TextField from '@material-ui/core/TextField';
 import omit from '@misakey/helpers/omit';
 import withErrors from '../withErrors';
 
-const FieldText = (props) => {
-  const {
-    className, displayError, errorKeys, field, helperText, hidden, t, ...rest
-  } = props;
-
-  return (
-    <TextField
-      margin="normal"
-      fullWidth
-      variant="outlined"
-      className={clsx('FieldText', className)}
-      {...field}
-      {...omit(rest, ['i18n', 'tReady', 'form'])}
-      error={displayError}
-      helperText={displayError ? t(errorKeys) : helperText}
-    />
-  );
-};
+const FieldText = ({
+  className, displayError, errorKeys, field,
+  helperText, hidden, t, ...rest
+}) => (
+  <TextField
+    margin="normal"
+    fullWidth
+    variant="outlined"
+    className={clsx('FieldText', className)}
+    {...field}
+    {...omit(rest, ['i18n', 'tReady', 'form', 'prefix'])}
+    error={displayError}
+    helperText={displayError ? t(errorKeys) : helperText}
+  />
+);
 
 FieldText.propTypes = {
   className: PropTypes.string,

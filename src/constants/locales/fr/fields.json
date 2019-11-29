@@ -57,7 +57,7 @@
     "error": {
       "conflict": "Un compte existe déjà avec cet email",
       "malformed": "Merci d'entrer une adresse email valide",
-      "notfound": "Aucun compte lié à cet email"
+      "not_found": "Aucun compte lié à cet email"
     }
   },
   "file": {

@@ -6,7 +6,6 @@ import Fields, { FIELD_PROPTYPES } from 'components/dumb/Form/Fields';
 
 import { STEP } from 'components/smart/Auth/SignIn/Form/constants';
 
-
 const defaultProps = {
   email: { component: FieldText, type: 'email', inputProps: { 'data-matomo-ignore': true } },
   password: { component: FieldText, type: 'password', inputProps: { 'data-matomo-ignore': true } },
