@@ -11,19 +11,13 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
-import IconButton from '@material-ui/core/IconButton';
-import AddIcon from '@material-ui/icons/Add';
 import BoxSection from 'components/dumb/Box/Section';
-import Navigation from 'components/dumb/Navigation';
+import ScreenAction from 'components/dumb/Screen/Action';
 
 const PARENT_ROUTE = routes.admin.service.sso._;
 
 // COMPONENTS
-const SSOCustomRoles = ({
-  t,
-  service,
-  history,
-}) => {
+const SSOCustomRoles = ({ appBarProps, t, service, history }) => {
   const [roles] = useState([]);
 
   const rolesEmpty = useMemo(() => roles.length === 0, [roles]);
@@ -36,17 +30,12 @@ const SSOCustomRoles = ({
   if (isNil(service)) { return null; }
 
   return (
-    <>
-      <Navigation
-        history={history}
-        pushPath={pushPath}
-        toolbarProps={{ maxWidth: 'md' }}
-        title={t('service:sso.customRoles.title')}
-      >
-        <IconButton edge="end" type="button" color="secondary" disabled>
-          <AddIcon />
-        </IconButton>
-      </Navigation>
+    <ScreenAction
+      history={history}
+      pushPath={pushPath}
+      appBarProps={appBarProps}
+      title={t('service:sso.customRoles.title')}
+    >
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
           {t('service:sso.customRoles.subtitle')}
@@ -69,11 +58,15 @@ const SSOCustomRoles = ({
           </BoxSection>
         )}
       </Container>
-    </>
+    </ScreenAction>
   );
 };
 
 SSOCustomRoles.propTypes = {
+  appBarProps: PropTypes.shape({
+    shift: PropTypes.bool,
+    items: PropTypes.arrayOf(PropTypes.node),
+  }),
   service: PropTypes.shape({ mainDomain: PropTypes.string }),
   // router props
   history: PropTypes.object.isRequired,
@@ -83,6 +76,7 @@ SSOCustomRoles.propTypes = {
 };
 
 SSOCustomRoles.defaultProps = {
+  appBarProps: null,
   service: null,
 };
 

@@ -12,16 +12,17 @@ WORKDIR /app
 
 RUN echo $VERSION >> public/version.txt
 RUN sed -i "s/VERSION_TO_SET_ON_BUILD/$VERSION/g" /app/public/index.html
+RUN sed -i "s/VERSION_TO_SET_ON_BUILD/$VERSION/g" /app/public/landing.html
+
 
 RUN yarn install
 RUN yarn run build --env=prod
 
-FROM node:10.15.3-alpine
-RUN yarn global add serve
-COPY --from=builder /app/build /app/build
-WORKDIR /app
-
-ENV REACT_APP_ENVIRONMENT=prod
-ENV PORT=3000
-
-CMD ["sh", "-c", "serve -p ${PORT} -s build"]
+FROM nginx:1.16.0-alpine
+COPY --from=builder /app/build /usr/share/nginx/html
+RUN mv /usr/share/nginx/html/index.html /usr/share/nginx/html/app.html
+RUN mv /usr/share/nginx/html/landing.html /usr/share/nginx/html/index.html
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

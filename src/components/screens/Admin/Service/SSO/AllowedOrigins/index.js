@@ -25,10 +25,10 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Navigation from 'components/dumb/Navigation';
 import FieldText from 'components/dumb/Form/Field/Text';
 import ButtonSubmit from 'components/dumb/Button/Submit';
 import ScreenError from 'components/dumb/Screen/Error';
+import ScreenAction from 'components/dumb/Screen/Action';
 
 const PARENT_ROUTE = routes.admin.service.sso._;
 
@@ -71,12 +71,7 @@ const useOnSubmit = (
 [service, dispatchUpdateEntities, enqueueSnackbar, setError, history, t]);
 
 // COMPONENTS
-const SSOAllowedOrigins = ({
-  t,
-  service,
-  dispatchUpdateEntities,
-  history,
-}) => {
+const SSOAllowedOrigins = ({ appBarProps, t, service, dispatchUpdateEntities, history }) => {
   const [error, setError] = useState();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -105,13 +100,12 @@ const SSOAllowedOrigins = ({
     return <ScreenError httpStatus={error} />;
   }
   return (
-    <>
-      <Navigation
-        history={history}
-        pushPath={pushPath}
-        toolbarProps={{ maxWidth: 'md' }}
-        title={t('service:sso.allowedOrigins.title')}
-      />
+    <ScreenAction
+      history={history}
+      pushPath={pushPath}
+      appBarProps={appBarProps}
+      title={t('service:sso.allowedOrigins.title')}
+    >
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
           {t('service:sso.allowedOrigins.subtitle')}
@@ -142,11 +136,15 @@ const SSOAllowedOrigins = ({
           )}
         </Formik>
       </Container>
-    </>
+    </ScreenAction>
   );
 };
 
 SSOAllowedOrigins.propTypes = {
+  appBarProps: PropTypes.shape({
+    shift: PropTypes.bool,
+    items: PropTypes.arrayOf(PropTypes.node),
+  }),
   service: PropTypes.shape(ServiceSchema.propTypes),
   // router props
   history: PropTypes.object.isRequired,
@@ -157,6 +155,7 @@ SSOAllowedOrigins.propTypes = {
 };
 
 SSOAllowedOrigins.defaultProps = {
+  appBarProps: null,
   service: null,
 };
 

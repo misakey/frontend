@@ -20,6 +20,7 @@ import ListDataItem from 'components/dumb/List/Data/Item';
 import LimitedList from 'components/dumb/List/Limited';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Screen from 'components/dumb/Screen';
 
 // CONSTANTS
 const MAX_LIST_ITEMS = 3;
@@ -52,7 +53,7 @@ FieldItem.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-const ServiceSSOHome = ({ service, t }) => {
+const ServiceSSOHome = ({ appBarProps, service, t }) => {
   const mainDomain = useMemo(() => (isNil(service) ? null : service.mainDomain), [service]);
   const allowedCorsOrigins = useMemo(
     () => (isNil(service) ? null : service.allowedCorsOrigins),
@@ -73,84 +74,86 @@ const ServiceSSOHome = ({ service, t }) => {
 
   if (service) {
     return (
-      <Container maxWidth="md" id="ServiceSSOHome">
-        <Typography variant="h4" component="h3" align="center">
-          {t('service:sso.title')}
-        </Typography>
-        <BoxSection my={3} p={0}>
-          <Box p={3}>
-            <Typography variant="h6">
-              {t('service:sso.home.title')}
-            </Typography>
-            <Typography variant="body2" color="textSecondary" className="subtitle">
-              {t('service:sso.home.subtitle')}
-            </Typography>
-          </Box>
-          <List>
-            <ListDataItem
-              ariaAction={t('fields:mainDomain.action')}
-              label={t('fields:mainDomain.label')}
-              text={{ primary: mainDomain }}
-              disabled
-            />
-            <ListDataItem
-              ariaAction={t('fields:allowedCorsOrigins.action')}
-              label={t('fields:allowedCorsOrigins.label')}
-              linkTo={linkToAllowedOrigins}
-              action={<ChevronRightIcon className="icon" />}
-            >
-              <LimitedList
-                items={allowedCorsOriginsList}
-                limit={MAX_LIST_ITEMS}
-                emptyText={t('fields:allowedCorsOrigins.empty')}
-                extraText={t('fields:allowedCorsOrigins.placeholder')}
-                renderListItem={
-                  (corsItem) => (
-                    <ListItem key={corsItem} dense disableGutters>
-                      <ListItemText>{corsItem}</ListItemText>
-                    </ListItem>
-                  )
-                }
-              />
-            </ListDataItem>
-            <ListDataItem
-              ariaAction={t('fields:redirectUris.action')}
-              label={t('fields:redirectUris.label')}
-              linkTo={linkToRedirectUris}
-              action={<ChevronRightIcon className="icon" />}
-            >
-              <LimitedList
-                items={redirectUriList}
-                limit={MAX_LIST_ITEMS}
-                emptyText={t('fields:redirectUris.empty')}
-                extraText={t('fields:redirectUris.placeholder')}
-                renderListItem={
-                  (uriItem) => (
-                    <ListItem key={uriItem} dense disableGutters>
-                      <ListItemText>{uriItem}</ListItemText>
-                    </ListItem>
-                  )
-                }
-              />
-            </ListDataItem>
-            <ListDataItem
-              ariaAction={t('service:sso.productionSetup.action')}
-              label={t('service:sso.productionSetup.title')}
-              linkTo={linkToProductionSetup}
-              action={<ChevronRightIcon className="icon" />}
-            >
-              <Typography variant="body2" color="secondary">
-                {t('mode.setup', 'Setup mode')}
+      <Screen appBarProps={appBarProps}>
+        <Container maxWidth="md" id="ServiceSSOHome">
+          <Typography variant="h4" component="h3" align="center">
+            {t('service:sso.title')}
+          </Typography>
+          <BoxSection my={3} p={0}>
+            <Box p={3}>
+              <Typography variant="h6">
+                {t('service:sso.home.title')}
               </Typography>
-            </ListDataItem>
-            <FieldItem
-              field={{ customRoles: t('fields:customRoles.placeholder') }}
-              mainDomain={mainDomain}
-              t={t}
-            />
-          </List>
-        </BoxSection>
-      </Container>
+              <Typography variant="body2" color="textSecondary" className="subtitle">
+                {t('service:sso.home.subtitle')}
+              </Typography>
+            </Box>
+            <List>
+              <ListDataItem
+                ariaAction={t('fields:mainDomain.action')}
+                label={t('fields:mainDomain.label')}
+                text={{ primary: mainDomain }}
+                disabled
+              />
+              <ListDataItem
+                ariaAction={t('fields:allowedCorsOrigins.action')}
+                label={t('fields:allowedCorsOrigins.label')}
+                linkTo={linkToAllowedOrigins}
+                action={<ChevronRightIcon className="icon" />}
+              >
+                <LimitedList
+                  items={allowedCorsOriginsList}
+                  limit={MAX_LIST_ITEMS}
+                  emptyText={t('fields:allowedCorsOrigins.empty')}
+                  extraText={t('fields:allowedCorsOrigins.placeholder')}
+                  renderListItem={
+                    (corsItem) => (
+                      <ListItem key={corsItem} dense disableGutters>
+                        <ListItemText>{corsItem}</ListItemText>
+                      </ListItem>
+                    )
+                  }
+                />
+              </ListDataItem>
+              <ListDataItem
+                ariaAction={t('fields:redirectUris.action')}
+                label={t('fields:redirectUris.label')}
+                linkTo={linkToRedirectUris}
+                action={<ChevronRightIcon className="icon" />}
+              >
+                <LimitedList
+                  items={redirectUriList}
+                  limit={MAX_LIST_ITEMS}
+                  emptyText={t('fields:redirectUris.empty')}
+                  extraText={t('fields:redirectUris.placeholder')}
+                  renderListItem={
+                    (uriItem) => (
+                      <ListItem key={uriItem} dense disableGutters>
+                        <ListItemText>{uriItem}</ListItemText>
+                      </ListItem>
+                    )
+                  }
+                />
+              </ListDataItem>
+              <ListDataItem
+                ariaAction={t('service:sso.productionSetup.action')}
+                label={t('service:sso.productionSetup.title')}
+                linkTo={linkToProductionSetup}
+                action={<ChevronRightIcon className="icon" />}
+              >
+                <Typography variant="body2" color="secondary">
+                  {t('mode.setup', 'Setup mode')}
+                </Typography>
+              </ListDataItem>
+              <FieldItem
+                field={{ customRoles: t('fields:customRoles.placeholder') }}
+                mainDomain={mainDomain}
+                t={t}
+              />
+            </List>
+          </BoxSection>
+        </Container>
+      </Screen>
     );
   }
 
@@ -158,14 +161,17 @@ const ServiceSSOHome = ({ service, t }) => {
 };
 
 ServiceSSOHome.propTypes = {
-
+  appBarProps: PropTypes.shape({
+    shift: PropTypes.bool,
+    items: PropTypes.arrayOf(PropTypes.node),
+  }),
   service: PropTypes.shape(ServiceSchema.propTypes),
-
   // withTranslation
   t: PropTypes.func.isRequired,
 };
 
 ServiceSSOHome.defaultProps = {
+  appBarProps: null,
   service: null,
 };
 

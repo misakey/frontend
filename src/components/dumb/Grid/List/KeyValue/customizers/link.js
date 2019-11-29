@@ -11,6 +11,7 @@ function format(value, key, t, text) {
   return (
     <LongText variant="body2" key={key}>
       <Link
+        color="secondary"
         href={value}
         rel="noopener noreferrer"
         target="_blank"

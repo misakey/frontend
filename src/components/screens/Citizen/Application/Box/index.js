@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { denormalize } from 'normalizr';
 import fileDownload from 'js-file-download';
-import { withTranslation } from 'react-i18next';
-import { generatePath } from 'react-router-dom';
+import { withTranslation, Trans } from 'react-i18next';
+import { generatePath, Link } from 'react-router-dom';
 
 import ApplicationSchema from 'store/schemas/Application';
 
@@ -14,12 +14,9 @@ import API from '@misakey/api';
 import routes from 'routes';
 
 import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
-import Link from '@material-ui/core/Link';
+import MUILink from '@material-ui/core/Link';
 
 import deburr from '@misakey/helpers/deburr';
-import parseJwt from '@misakey/helpers/parseJwt';
-import isObject from '@misakey/helpers/isObject';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
@@ -27,43 +24,32 @@ import { redirectToApp } from 'helpers/plugin';
 
 import SplashScreen from 'components/dumb/SplashScreen';
 import ScreenError from 'components/dumb/Screen/Error';
+import BoxMessage from 'components/dumb/Box/Message';
+
 
 import DataboxDisplay from 'components/screens/Citizen/Application/Box/DataboxDisplay';
 
-import BoxSection from 'components/dumb/Box/Section';
-import BoxMessage from 'components/dumb/Box/Message';
-import Box from '@material-ui/core/Box';
+
+import Grid from '@material-ui/core/Grid';
+import Hidden from '@material-ui/core/Hidden';
 import ContactButton from 'components/smart/ContactButton';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { ownerCryptoContext as crypto } from '@misakey/crypto';
 import { BackupDecryptionError } from '@misakey/crypto/Errors/classes';
 
+import Card from 'components/dumb/Card';
+
 import { NoPassword } from 'constants/Errors/classes';
 
 const useStyles = makeStyles((theme) => ({
-  boxSection: {
-    position: 'relative',
-  },
-  titleWithButton: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  contactButton: {
-    marginLeft: theme.spacing(1),
-  },
-  boxRoot: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-  },
-  contactButtonRoot: {
-    alignSelf: 'flex-end',
-  },
   initCryptoLink: {
     marginLeft: theme.spacing(1),
     fontWeight: 'bold',
     color: 'inherit',
+  },
+  portabilityIllu: {
+    width: '100%',
   },
 }));
 
@@ -87,10 +73,9 @@ function promptForPassword(t, previousAttemptFailed = false) {
     });
 }
 
-async function loadBackupAndAskPassword(t, auth) {
+async function loadBackupAndAskPassword(t, userId) {
   const promisedPassword = promptForPassword(t);
 
-  const userId = parseJwt(auth.id).sub;
   const promisedBackupData = API.use(API.endpoints.user.getSecretBackup)
     .build({ id: userId })
     .send()
@@ -124,7 +109,7 @@ async function loadBackupAndAskPassword(t, auth) {
   /* eslint-enable no-await-in-loop */
 }
 
-async function initCrypto({ t, auth, setPublicKeysWeCanDecryptFrom, setIsCryptoReadyToDecrypt }) {
+async function initCrypto({ t, userId, setPublicKeysWeCanDecryptFrom, setIsCryptoReadyToDecrypt }) {
   if (crypto.databox.isReadyToDecrypt()) {
     setIsCryptoReadyToDecrypt(true);
     setPublicKeysWeCanDecryptFrom(crypto.databox.getPublicKeysWeCanDecryptFrom());
@@ -132,7 +117,7 @@ async function initCrypto({ t, auth, setPublicKeysWeCanDecryptFrom, setIsCryptoR
   }
 
   try {
-    await loadBackupAndAskPassword(t, auth);
+    await loadBackupAndAskPassword(t, userId);
   } catch (e) {
     if (e instanceof NoPassword) {
       // do nothing
@@ -148,7 +133,7 @@ function ApplicationBox({
   application,
   match,
   t,
-  auth,
+  userId,
   isAuthenticated,
   onContributionDpoEmailClick,
 }) {
@@ -158,7 +143,6 @@ function ApplicationBox({
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(false);
 
-  const [databox, setDatabox] = React.useState(null);
   const [blobs, setBlobs] = React.useState(null);
 
   const [isCryptoReadyToDecrypt, setIsCryptoReadyToDecrypt] = React.useState(
@@ -207,7 +191,6 @@ function ApplicationBox({
         .then((databoxes) => databoxes.forEach(({ producer_id: producerId, id }) => {
           if (producerId === application.id) {
             fetchBlobs(id);
-            setDatabox(id);
           }
         }))
         .catch(({ httpStatus }) => setError(httpStatus))
@@ -240,7 +223,7 @@ function ApplicationBox({
 
       if (!crypto.databox.isReadyToDecrypt()) {
         try {
-          await loadBackupAndAskPassword(t, auth);
+          await loadBackupAndAskPassword(t, userId);
         } catch (e) {
           if (e instanceof NoPassword) {
             // do nothing
@@ -284,101 +267,103 @@ function ApplicationBox({
     return <ScreenError httpStatus={error} />;
   }
 
-  /* eslint-disable jsx-a11y/anchor-is-valid */
   return (
-    <section id="ApplicationBox">
-      <Container maxWidth={false}>
-        { (isAuthenticated && !isCryptoReadyToDecrypt && !isEmpty(blobs)) && (
-        <BoxMessage type="warning" my={2}>
-          <Typography>{t('screens:application.box.mustUnlockVault')}</Typography>
-          <Link
-            className={classes.initCryptoLink}
-            component="button"
-            variant="body2"
-            onClick={() => {
-              initCrypto({ t, auth, setPublicKeysWeCanDecryptFrom, setIsCryptoReadyToDecrypt });
-            }}
+    <>
+      { (isAuthenticated && !isCryptoReadyToDecrypt && !isEmpty(blobs)) && (
+      <BoxMessage type="warning" my={2}>
+        <Typography>{t('screens:application.box.mustUnlockVault')}</Typography>
+        <MUILink
+          className={classes.initCryptoLink}
+          component="button"
+          variant="body2"
+          onClick={() => {
+            initCrypto({ t, userId, setPublicKeysWeCanDecryptFrom, setIsCryptoReadyToDecrypt });
+          }}
+        >
+          {t('screens:application.box.unlockVaultButton')}
+        </MUILink>
+      </BoxMessage>
+      )}
+      <Card
+        my={3}
+        title={t('screens:application.box.title')}
+        primary={application && (
+          <ContactButton
+            dpoEmail={application.dpoEmail}
+            onContributionClick={onContributionDpoEmailClick}
+            applicationID={application.id}
+            mainDomain={application.mainDomain}
+            buttonProps={{ variant: 'outlined' }}
+            dialogConnectProps={dialogConnectProps}
+            customAction={window.env.PLUGIN ? openInNewTab : null}
           >
-            {t('screens:application.box.unlockVaultButton')}
-          </Link>
-        </BoxMessage>
+            {t('screens:application.box.button.label')}
+          </ContactButton>
         )}
-        <BoxSection my={3} className={classes.boxSection}>
-          {loading && <SplashScreen variant="default" />}
-          {isObject(application) && (
-            <>
-              <Typography variant="h6" component="h5" className={classes.titleWithButton}>
-                {t('screens:application.box.title')}
-                {
-                  // @FIXME should use "isEmpty" instead of "isNil"
-                  // because "isNil" is true on empty list
-                  // (this applies to other occurences of isNil in this file)
-                }
-                {!isNil(blobs) && blobs.length > 0 && (
-                  <ContactButton
-                    dpoEmail={application.dpoEmail}
-                    onContributionClick={onContributionDpoEmailClick}
-                    applicationID={application.id}
-                    mainDomain={application.mainDomain}
-                    contactedView={!!databox}
-                    buttonProps={{ variant: 'outlined', classes: { root: classes.contactButtonRoot } }}
-                    dialogConnectProps={dialogConnectProps}
-                    customAction={window.env.PLUGIN ? openInNewTab : null}
-                  >
-                    {t('screens:application.box.button.label')}
-                  </ContactButton>
-                )}
-              </Typography>
-
-              <Box mt={1} classes={{ root: classes.boxRoot }}>
-                {isNil(blobs) && (
-                  <>
-                    <Typography variant="body1" color="textSecondary" paragraph>
-                      {t('screens:application.box.noResult')}
-                    </Typography>
-                    <ContactButton
-                      dpoEmail={application.dpoEmail}
-                      onContributionClick={onContributionDpoEmailClick}
-                      applicationID={application.id}
-                      mainDomain={application.mainDomain}
-                      contactedView={!!databox}
-                      buttonProps={{ variant: 'outlined', classes: { root: classes.contactButtonRoot } }}
-                      dialogConnectProps={dialogConnectProps}
-                      customAction={window.env.PLUGIN ? openInNewTab : null}
-                    >
-                      {t('screens:application.box.button.label')}
-                    </ContactButton>
-                  </>
-                )}
-
-                {(!isNil(blobs)) && (
-                  <>
-                    <DataboxDisplay
-                      application={application}
-                      blobs={blobs}
-                      downloadBlob={downloadBlob}
-                      publicKeysWeCanDecryptFrom={publicKeysWeCanDecryptFrom}
-                      isCryptoReadyToDecrypt={isCryptoReadyToDecrypt}
-                    />
-                    {blobs.length === 0 && (
-                      <ContactButton
-                        dpoEmail={application.dpoEmail}
-                        onContributionClick={onContributionDpoEmailClick}
-                        applicationID={application.id}
-                        mainDomain={application.mainDomain}
-                        contactedView={!!databox}
-                        buttonProps={{ variant: 'outlined', classes: { root: classes.contactButtonRoot } }}
-                        dialogConnectProps={dialogConnectProps}
-                      />
-                    )}
-                  </>
-                )}
-              </Box>
-            </>
+      >
+        {loading && <SplashScreen variant="default" />}
+        {(!isNil(blobs) && blobs.length > 0)
+          ? (
+            <DataboxDisplay
+              application={application}
+              blobs={blobs}
+              downloadBlob={downloadBlob}
+              publicKeysWeCanDecryptFrom={publicKeysWeCanDecryptFrom}
+              isCryptoReadyToDecrypt={isCryptoReadyToDecrypt}
+            />
+          )
+          : (
+            <Typography variant="body1" color="textSecondary" paragraph>
+              {t('screens:application.box.noResult')}
+            </Typography>
           )}
-        </BoxSection>
-      </Container>
-    </section>
+      </Card>
+      <Card
+        my={3}
+        title={t('screens:application.box.info.title')}
+        primary={!isAuthenticated ? {
+          variant: 'contained',
+          color: 'secondary',
+          text: t('screens:application.box.info.primaryButton'),
+          to: routes.auth.redirectToSignIn,
+          component: Link,
+        } : null}
+        secondary={isAuthenticated ? {
+          variant: 'outlined',
+          color: 'secondary',
+          text: t('screens:application.box.info.secondaryButton'),
+          to: routes.auth.redirectToSignIn,
+          component: Link,
+        } : null}
+      >
+        <Grid container spacing={3}>
+          <Grid item sm={8} xs={12}>
+            <Typography>
+              <Trans i18nKey="screens:application.box.info.details">
+                Votre coffre-fort est chiffré par une clé secrète, elle même protégée par votre mot
+                de passe. Vous seul avez accès à cette clé qui permet de lire les données contenues
+                dans votre coffre. Lorsqu’un site vous envoie des données, elles sont chiffrées
+                avant d’être envoyées dans votre coffre afin que vous seul puissiez y accéder.
+                Misakey ne peut pas lire vos données.
+                <br />
+                <br />
+                En cas de perte de votre mot de passe, vos données ne seront plus accessibles.
+              </Trans>
+            </Typography>
+          </Grid>
+          <Hidden xsDown>
+            <Grid item sm={1} />
+            <Grid item sm={3}>
+              <img
+                src="/img/illustrations/portability.png"
+                className={classes.portabilityIllu}
+                alt={t('screens:application.box.info.altIllu')}
+              />
+            </Grid>
+          </Hidden>
+        </Grid>
+      </Card>
+    </>
   );
 }
 
@@ -391,14 +376,13 @@ ApplicationBox.propTypes = {
   }).isRequired,
   onContributionDpoEmailClick: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  auth: PropTypes.shape({
-    id: PropTypes.string,
-  }).isRequired,
+  userId: PropTypes.string,
   isAuthenticated: PropTypes.bool,
 };
 
 ApplicationBox.defaultProps = {
   application: null,
+  userId: null,
   isAuthenticated: false,
 };
 
@@ -409,7 +393,7 @@ export default connect(
       ApplicationSchema.entity,
       state.entities,
     ),
-    auth: state.auth,
+    userId: state.auth.userId,
     isAuthenticated: !!state.auth.token,
   }),
 )(withTranslation(['common', 'screens'])(ApplicationBox));

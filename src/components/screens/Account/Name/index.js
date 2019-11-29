@@ -14,14 +14,11 @@ import isNil from '@misakey/helpers/isNil';
 import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
-import Typography from '@material-ui/core/Typography';
+import Subtitle from 'components/dumb/Typography/Subtitle';
 import Container from '@material-ui/core/Container';
-import Navigation from 'components/dumb/Navigation';
-import ButtonSubmit from 'components/dumb/Button/Submit';
+import BoxControls from 'components/dumb/Box/Controls';
 import FieldText from 'components/dumb/Form/Field/Text';
-import ScreenError from 'components/dumb/Screen/Error';
-
-import 'components/screens/Account/Name/index.scss';
+import ScreenAction from 'components/dumb/Screen/Action';
 
 // HELPERS
 const updateProfile = (id, form) => API
@@ -31,19 +28,19 @@ const updateProfile = (id, form) => API
 
 // HOOKS
 const useOnSubmit = (
-  profile, dispatchUpdateEntities, enqueueSnackbar, setError, history, t,
+  profile, dispatchUpdateEntities, enqueueSnackbar, setInternalError, history, t,
 ) => useMemo(
   () => (form, { setSubmitting }) => updateProfile(profile.id, form)
     .then(() => {
-      enqueueSnackbar(t('profile:name.success'), { variant: 'success' });
+      enqueueSnackbar(t('screens:account.name.success'), { variant: 'success' });
       dispatchUpdateEntities(profile.id, form, history);
       history.push(routes.account._);
     })
     .catch(({ httpStatus }) => {
-      setError(httpStatus);
+      setInternalError(httpStatus);
     })
     .finally(() => { setSubmitting(false); }),
-  [profile, dispatchUpdateEntities, enqueueSnackbar, setError, history, t],
+  [profile, dispatchUpdateEntities, enqueueSnackbar, setInternalError, history, t],
 );
 
 // COMPONENTS
@@ -52,15 +49,23 @@ const AccountName = ({
   profile,
   dispatchUpdateEntities,
   history,
+  error,
+  isFetching,
 }) => {
-  const [error, setError] = useState();
+  const [internalError, setInternalError] = useState();
   const { enqueueSnackbar } = useSnackbar();
+
+  const state = useMemo(
+    () => ({ error: error || internalError, isLoading: isFetching }),
+    [error, internalError, isFetching],
+  );
+
 
   const onSubmit = useOnSubmit(
     profile,
     dispatchUpdateEntities,
     enqueueSnackbar,
-    setError,
+    setInternalError,
     history,
     t,
   );
@@ -69,49 +74,56 @@ const AccountName = ({
 
   const { displayName } = profile;
 
-  if (error) {
-    return <ScreenError httpStatus={error} />;
-  }
+
   return (
-    <div className="Name">
-      <div className="header">
-        <Navigation history={history} title={t('profile:name.title')} />
-        <Typography variant="body2" color="textSecondary" align="left" className="subtitle">
-          {t('profile:name.subtitle')}
-        </Typography>
-      </div>
-      {displayName && (
-        <Formik
-          validationSchema={displayNameValidationSchema}
-          onSubmit={onSubmit}
-          initialValues={{ displayName }}
-        >
-          {({ isSubmitting, isValid }) => (
-            <Container maxWidth="sm" className="content">
-              <Form className="form">
+    <ScreenAction
+      title={t('screens:account.name.title')}
+      state={state}
+      hideAppBar
+    >
+      <Container maxWidth="md">
+        <Subtitle>
+          {t('screens:account.name.subtitle')}
+        </Subtitle>
+        {displayName && (
+          <Formik
+            validationSchema={displayNameValidationSchema}
+            onSubmit={onSubmit}
+            initialValues={{ displayName }}
+          >
+            {({ isSubmitting, isValid }) => (
+              <Form>
                 <Field
-                  className="field"
                   type="text"
                   name="displayName"
                   component={FieldText}
-                  label={t('profile:form.field.displayName.label')}
-                  helperText={t('profile:form.field.displayName.hint')}
+                  label={t('fields:displayName.label')}
+                  helperText={t('fields:displayName.helperText')}
                   inputProps={{ 'data-matomo-ignore': true }}
                 />
-                <ButtonSubmit isSubmitting={isSubmitting} isValid={isValid}>
-                  {t('submit')}
-                </ButtonSubmit>
+                <BoxControls
+                  mt={3}
+                  primary={{
+                    type: 'submit',
+                    isLoading: isSubmitting,
+                    isValid,
+                    'aria-label': t('common:submit'),
+                    text: t('common:submit'),
+                  }}
+                />
               </Form>
-            </Container>
-          )}
-        </Formik>
-      )}
-    </div>
+            )}
+          </Formik>
+        )}
+      </Container>
+    </ScreenAction>
   );
 };
 
 AccountName.propTypes = {
   profile: PropTypes.shape({ displayName: PropTypes.string, id: PropTypes.string }),
+  error: PropTypes.instanceOf(Error),
+  isFetching: PropTypes.bool,
   // router props
   history: PropTypes.object.isRequired,
   // withTranslation HOC
@@ -122,6 +134,8 @@ AccountName.propTypes = {
 
 AccountName.defaultProps = {
   profile: null,
+  error: null,
+  isFetching: false,
 };
 
 // CONNECT
@@ -135,4 +149,4 @@ const mapDispatchToProps = (dispatch) => ({
 export default connect(
   null,
   mapDispatchToProps,
-)(withTranslation(['common', 'profile'])(AccountName));
+)(withTranslation(['common', 'screens', 'fields'])(AccountName));

@@ -1,13 +1,13 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 
-const TypographySubtitle = (props) => <Typography {...props} />;
+const Subtitle = (props) => <Typography {...props} />;
 
-TypographySubtitle.defaultProps = {
+Subtitle.defaultProps = {
+  component: 'h3',
   variant: 'body2',
   color: 'textSecondary',
   gutterBottom: true,
 };
 
-// @FIXME add to js-common
-export default TypographySubtitle;
+export default Subtitle;

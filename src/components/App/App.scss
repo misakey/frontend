@@ -18,7 +18,7 @@
 }
 
 $plugin-width: 450px;
-$plugin-height: 500px;
+$plugin-height: 446px;
 
 :root {
   --primary-color: #{$primary-color};
@@ -34,7 +34,6 @@ $plugin-height: 500px;
 html, body {
   background-color: $light-background !important;
   margin: 0;
-  overflow: hidden;
   color: $dark-grey !important;
 }
 

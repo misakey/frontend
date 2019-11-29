@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import clsx from 'clsx';
@@ -25,7 +25,6 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
     borderBottom: '1px solid #dadce0',
   },
   gutterBottom: {
@@ -59,7 +58,7 @@ const useWithLocationState = (path, locationState) => useMemo(
   [path, locationState],
 );
 
-function Navigation({
+const Navigation = forwardRef(({
   appBarProps,
   children,
   className,
@@ -73,7 +72,7 @@ function Navigation({
   title,
   toolbarProps,
   ...rest
-}) {
+}, ref) => {
   const classes = useStyles();
   const width = useWidth();
   const showTitle = useMemo(() => isString(title), [title]);
@@ -123,6 +122,7 @@ function Navigation({
 
   return (
     <AppBar
+      ref={ref}
       position="static"
       elevation={0}
       color="inherit"
@@ -159,7 +159,7 @@ function Navigation({
       </Toolbar>
     </AppBar>
   );
-}
+});
 
 Navigation.propTypes = {
   /**
@@ -204,4 +204,4 @@ Navigation.defaultProps = {
   toolbarProps: {},
 };
 
-export default withTranslation()(Navigation);
+export default withTranslation('common', { withRef: true })(Navigation);

@@ -19,6 +19,7 @@ function RouteCitizen({
   userScope,
   userManager,
   isPrivate,
+  isAuthenticated,
   ...rest
 }) {
   const [loginAsScreen, setLoginAsScreen] = useState(false);
@@ -40,7 +41,7 @@ function RouteCitizen({
       );
     }
 
-    if (userScope !== 'openid user' && !loginInProgress && !window.env.PLUGIN) {
+    if (isAuthenticated && userScope !== 'openid user' && !loginInProgress && !window.env.PLUGIN) {
       setLoginInProgress(true);
       userManager.signinSilent({ scope: 'openid user' })
         .then(() => {
@@ -71,7 +72,7 @@ function RouteCitizen({
   };
 
   if (isPrivate) {
-    return <RoutePrivate {...rest} render={render} />;
+    return <RoutePrivate {...rest} component={render} />;
   }
 
   return <Route {...rest} render={render} />;
@@ -83,6 +84,7 @@ RouteCitizen.propTypes = {
   t: PropTypes.func.isRequired,
   userScope: PropTypes.string,
   userManager: PropTypes.object.isRequired,
+  isAuthenticated: PropTypes.bool,
   isPrivate: PropTypes.bool,
 };
 
@@ -90,12 +92,13 @@ RouteCitizen.defaultProps = {
   componentProps: {},
   userScope: '',
   isPrivate: false,
+  isAuthenticated: false,
 };
 
 // CONNECT
 const mapStateToProps = (state) => {
   const { sco } = state.auth.id ? parseJwt(state.auth.id) : {};
-  return { userScope: sco };
+  return { userScope: sco, isAuthenticated: !!state.auth.token };
 };
 
 export default withUserManager(

@@ -19,11 +19,9 @@ import { sendMessage, listenForBackground, stopListenerForBackground } from 'bac
 import { GET_BLOCKED_INFOS, REFRESH_BLOCKED_INFOS, UPDATE_WHITELIST } from 'background/messages';
 
 import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
 import Skeleton from '@material-ui/lab/Skeleton';
 
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
+import Card from 'components/dumb/Card';
 import CardContent from '@material-ui/core/CardContent';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -34,20 +32,6 @@ import Switch from 'components/dumb/Switch';
 import routes from 'routes';
 
 const useStyles = makeStyles((theme) => ({
-  empty: {
-    height: '30vh',
-    border: `1px solid ${theme.palette.grey[400]}`,
-    margin: `${theme.spacing(1)}px 0`,
-    borderRadius: '5px',
-  },
-  root: {
-    border: `1px solid ${theme.palette.grey[400]}`,
-    borderBox: 'none',
-    margin: theme.spacing(1),
-  },
-  header: {
-    padding: '16px 8px 0 16px',
-  },
   content: {
     padding: 0,
     '&:last-child': {
@@ -191,27 +175,26 @@ function ThirdPartyBlock({
 
   if (empty && !isFetching) {
     return (
-      <Grid
-        container
-        className={classes.empty}
+      <Card
+        display="flex"
+        minHeight="30vh"
+        mt={3}
+        p={2}
         direction="row"
-        justify="center"
+        justifyContent="center"
         alignItems="center"
       >
         <Typography>{t('screens:application.thirdParty.trackers.empty')}</Typography>
-      </Grid>
+      </Card>
     );
   }
 
   return (
-    <Card className={classes.root}>
-      <CardHeader
-        title={t('screens:application.thirdParty.myConfig.title')}
-        subheader={t('screens:application.thirdParty.myConfig.description')}
-        titleTypographyProps={{ variant: 'h6', component: 'h3' }}
-        className={classes.header}
-        classes={{ action: classes.action }}
-      />
+    <Card
+      mt={3}
+      title={t('screens:application.thirdParty.myConfig.title')}
+      subtitle={t('screens:application.thirdParty.myConfig.description')}
+    >
       <CardContent
         className={className('content', classes.content)}
       >

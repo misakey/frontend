@@ -20,10 +20,10 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Navigation from 'components/dumb/Navigation';
 import FieldText from 'components/dumb/Form/Field/Text';
 import ButtonSubmit from 'components/dumb/Button/Submit';
 import ScreenError from 'components/dumb/Screen/Error';
+import ScreenAction from 'components/dumb/Screen/Action';
 
 const PARENT_ROUTE = routes.admin.service.information._;
 
@@ -58,12 +58,7 @@ const useOnSubmit = (
 );
 
 // COMPONENTS
-const ServiceName = ({
-  t,
-  service,
-  dispatchUpdateEntities,
-  history,
-}) => {
+const ServiceName = ({ appBarProps, t, service, dispatchUpdateEntities, history }) => {
   const [error, setError] = useState();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -89,13 +84,13 @@ const ServiceName = ({
     return <ScreenError httpStatus={error} />;
   }
   return (
-    <div id="ServiceInformationName">
-      <Navigation
-        history={history}
-        pushPath={pushPath}
-        toolbarProps={{ maxWidth: 'md' }}
-        title={t('service:information.name.title')}
-      />
+    <ScreenAction
+      id="ServiceInformationName"
+      history={history}
+      pushPath={pushPath}
+      appBarProps={appBarProps}
+      title={t('service:information.name.title')}
+    >
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
           {t('service:information.name.subtitle')}
@@ -124,11 +119,15 @@ const ServiceName = ({
           )}
         </Formik>
       </Container>
-    </div>
+    </ScreenAction>
   );
 };
 
 ServiceName.propTypes = {
+  appBarProps: PropTypes.shape({
+    shift: PropTypes.bool,
+    items: PropTypes.arrayOf(PropTypes.node),
+  }),
   service: PropTypes.shape({ name: PropTypes.string, mainDomain: PropTypes.string }),
   // router props
   history: PropTypes.object.isRequired,
@@ -139,6 +138,7 @@ ServiceName.propTypes = {
 };
 
 ServiceName.defaultProps = {
+  appBarProps: null,
   service: null,
 };
 

@@ -11,7 +11,7 @@ import isNil from '@misakey/helpers/isNil';
 
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Typography from '@material-ui/core/Typography';
-import Card from '@material-ui/core/Card';
+import Card from 'components/dumb/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import Rating from '@material-ui/lab/Rating';

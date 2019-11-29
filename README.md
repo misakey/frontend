@@ -9,9 +9,31 @@ The rest of the Misakey webextension code (background script and content script)
 
 The extension use [mozilla/webextension-polyfill](https://github.com/mozilla/webextension-polyfill) as it is intented to work with Chrome, Firefox, Opera, Edge and Safari.
 
-### Generate production build 
+### Generate production image 
 
-- `yarn install && yarn build`
+- `make build`
+
+### Webapp & static pages
+
+We have some static pages beside the React App. We want that for performance and easiness of edition of those pages.
+
+For now, we only have a static version of the landing page. We'll also have some other pages (about, team, ...) at a point, and maybe some other static content.
+
+For now this is static HTML page. We'll probably use Hugo soon to manage templating.
+
+#### Development
+
+To develop the static landing page, start the dev server (with `test-and-run`), then you can only go on https://misakey.com.local/landing.html
+
+For now there is no hot reloading for that page.
+
+#### Production
+
+The production build to make work the webapp aside of the static page is this one:
+* We create a build of the webapp
+* We rename the `index.html` into `app.html`
+* We rename the `landing.html` into `index.html`
+* We serve the static content with a Nginx server, trying all static files, then index, then give all other URI to app.html
 
 ### Generate build folder as plugin (Misakey extension)
 

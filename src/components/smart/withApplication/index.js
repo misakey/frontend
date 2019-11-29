@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { normalize, denormalize } from 'normalizr';
 
-import parseJwt from '@misakey/helpers/parseJwt';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import isString from '@misakey/helpers/isString';
 import isArray from '@misakey/helpers/isArray';
 import isFunction from '@misakey/helpers/isFunction';
+import omit from '@misakey/helpers/omit';
 
 import API from '@misakey/api';
 import ApplicationSchema from 'store/schemas/Application';
@@ -22,6 +22,8 @@ const DEFAULT_ENDPOINT = {
   method: 'GET',
   path: '/application-info',
 };
+
+const INTERNAL_PROPS = ['dispatchReceive', 'dispatchReceivePlugin'];
 
 // HELPERS
 const defaultMapper = (props) => [null, null, objectToSnakeCase(props)];
@@ -95,7 +97,7 @@ const withApplication = (Component, options = {}) => {
 
     return (
       <Component
-        {...props}
+        {...omit(props, INTERNAL_PROPS)}
         error={error}
         isFetching={isFetching}
         mainDomain={mainDomain}
@@ -108,7 +110,6 @@ const withApplication = (Component, options = {}) => {
     isDefaultDomain: PropTypes.bool.isRequired,
     entity: PropTypes.shape(schema.propTypes),
     mainDomain: PropTypes.string.isRequired,
-    dispatch: PropTypes.func.isRequired,
     dispatchReceive: PropTypes.func.isRequired,
     dispatchReceivePlugin: PropTypes.func.isRequired,
     userId: PropTypes.string,
@@ -132,13 +133,12 @@ const withApplication = (Component, options = {}) => {
         state.entities,
       ),
       mainDomain,
-      userId: !isEmpty(state.auth.id) ? parseJwt(state.auth.id).sub : null,
+      userId: state.auth.userId,
       userRoles: !isNil(state.auth.roles) ? state.auth.roles : [],
     };
   };
 
   const mapDispatchToProps = (dispatch) => ({
-    dispatch,
     dispatchReceive: (data) => {
       const normalized = normalize(
         data,

@@ -39,20 +39,20 @@ const CardProfile = ({ profile: { displayName, avatarUri, handle }, t }) => {
         subtitle={`@${handle}`}
       />
       <List className="details">
-        <ListItem button to={routes.account.profile.name} component={Link} divider aria-label={t('form.field.displayName.action')} classes={classes}>
+        <ListItem button to={routes.account.profile.name} component={Link} divider aria-label={t('fields:displayName.action')} classes={classes}>
           <ListItemIcon className="title">
-            <Typography>{t('form.field.displayName.label')}</Typography>
+            <Typography>{t('fields:displayName.label')}</Typography>
           </ListItemIcon>
           <ListItemText primary={displayName} />
           <ListItemSecondaryAction>
             <ChevronRightIcon className="icon" />
           </ListItemSecondaryAction>
         </ListItem>
-        <ListItem button to={routes.account.profile.avatar._} component={Link} divider aria-label={t('form.field.avatar.action')} classes={classes}>
+        <ListItem button to={routes.account.profile.avatar._} component={Link} divider aria-label={t('fields:avatar.action')} classes={classes}>
           <ListItemIcon className="title">
-            <Typography>{t('form.field.avatar.label')}</Typography>
+            <Typography>{t('fields:avatar.label')}</Typography>
           </ListItemIcon>
-          <ListItemText primary={t('form.field.avatar.placeholder')} />
+          <ListItemText primary={t('fields:avatar.helperText')} />
           <ListItemSecondaryAction>
             <AvatarColorized
               text={displayName}
@@ -60,11 +60,11 @@ const CardProfile = ({ profile: { displayName, avatarUri, handle }, t }) => {
             />
           </ListItemSecondaryAction>
         </ListItem>
-        <ListItem button to={routes.account.profile.password} component={Link} divider aria-label={t('form.field.password.action')} classes={classes}>
+        <ListItem button to={routes.account.profile.password} component={Link} aria-label={t('fields:password.action')} classes={classes}>
           <ListItemIcon className="title">
-            <Typography>{t('form.field.password.label')}</Typography>
+            <Typography>{t('fields:password.label')}</Typography>
           </ListItemIcon>
-          <ListItemText primary={t('form.field.password.placeholder')} />
+          <ListItemText primary={t('fields:password.placeholder')} />
           <ListItemSecondaryAction>
             <ChevronRightIcon className="icon" />
           </ListItemSecondaryAction>
@@ -83,4 +83,4 @@ CardProfile.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('profile')(CardProfile);
+export default withTranslation('fields')(CardProfile);

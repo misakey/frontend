@@ -6,11 +6,11 @@ import RouteCitizen from 'components/smart/Route/Citizen';
 
 import routes from 'routes';
 
-import NotFound from 'components/screens/NotFound';
 import Application from 'components/screens/Citizen/Application';
 
 // LAZY
 const ApplicationsCreate = lazy(() => import('components/screens/Citizen/Applications/Create'));
+const Landing = lazy(() => import('components/screens/Landing'));
 
 function Citizen({ match }) {
   return (
@@ -21,7 +21,7 @@ function Citizen({ match }) {
         component={ApplicationsCreate}
       />
       <RouteCitizen path={routes.citizen.application._} component={Application} />
-      <RouteCitizen exact path={match.path} component={NotFound} />
+      <RouteCitizen exact path={match.path} component={Landing} />
     </Switch>
   );
 }

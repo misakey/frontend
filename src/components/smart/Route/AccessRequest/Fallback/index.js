@@ -1,45 +1,33 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Formik, Form } from 'formik';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
 
+import API from '@misakey/api';
+import { accessTokenUpdate } from 'store/actions/accessToken';
+import { accessRequestValidationSchema } from 'constants/validationSchemas/auth';
+
 import prop from '@misakey/helpers/prop';
 import log from '@misakey/helpers/log';
-import isEmpty from '@misakey/helpers/isEmpty';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
-import Box from '@material-ui/core/Box';
+import BoxControls from 'components/dumb/Box/Controls';
 import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
-
-import BoxSection from 'components/dumb/Box/Section';
-import ButtonSubmit from 'components/dumb/Button/Submit';
+import Subtitle from 'components/dumb/Typography/Subtitle';
 import FormFields from 'components/dumb/Form/Fields';
 import FieldCode from 'components/dumb/Form/Field/Code';
+import ScreenAction from 'components/dumb/Screen/Action';
 
-import EmailIcon from '@material-ui/icons/Email';
-
-import API from '@misakey/api';
-import { accessTokenUpdate } from 'store/actions/accessToken';
-import { accessRequestUpdate } from 'store/actions/accessRequest';
-import ResponseHandlerWrapper from 'components/dumb/ResponseHandlerWrapper';
-import { accessRequestValidationSchema } from 'constants/validationSchemas/auth';
-
+// CONSTANTS
 const DEFAULT_FIELDS = { code: { component: FieldCode, label: undefined } };
 const INITIAL_VALUES = { code: '' };
 
 // @FIXME: js-common
 const ENDPOINTS = {
   databoxes: {
-    accessRequest: {
-      read: {
-        method: 'GET',
-        path: '/databoxes/access-request/:token',
-      },
-    },
     confirmationCode: {
       create: {
         method: 'POST',
@@ -55,14 +43,26 @@ const ENDPOINTS = {
   },
 };
 
-function AccessRequestFallback({ accessRequest, dispatch, location, t }) {
+function AccessRequestFallback({ accessRequest, dispatchAccessTokenUpdate, isFetching, error, t }) {
   const { enqueueSnackbar } = useSnackbar();
-  const { hash } = location;
-
-  const [isFetching, setIsFetching] = useState(false);
-  const [error, setError] = useState(null);
 
   const [isRequestingCode, setIsRequestingCode] = useState(false);
+
+  const appBarProps = useMemo(
+    () => ({
+      withUser: false,
+      withSearchBar: false,
+    }),
+    [],
+  );
+
+  const state = useMemo(
+    () => ({
+      error,
+      isLoading: isFetching,
+    }),
+    [error, isFetching],
+  );
 
   const handleEmail = useCallback(() => {
     setIsRequestingCode(true);
@@ -72,7 +72,7 @@ function AccessRequestFallback({ accessRequest, dispatch, location, t }) {
       .build(null, objectToSnakeCase(payload))
       .send()
       .then(() => {
-        const text = t('screens:AccessRequest.body.email.success', accessRequest);
+        const text = t('screens:accessRequest.email.success', accessRequest);
         enqueueSnackbar(text, { variant: 'success' });
       })
       .catch((e) => {
@@ -94,8 +94,8 @@ function AccessRequestFallback({ accessRequest, dispatch, location, t }) {
       .build(null, objectToSnakeCase(payload))
       .send()
       .then((response) => {
-        dispatch(accessTokenUpdate(objectToCamelCase(response)));
-        enqueueSnackbar(t('screens:AccessRequest.body.token.success', accessRequest));
+        dispatchAccessTokenUpdate(objectToCamelCase(response));
+        enqueueSnackbar(t('screens:accessRequest.token.success', accessRequest), { variant: 'success' });
       })
       .catch((e) => {
         log(e);
@@ -108,75 +108,49 @@ function AccessRequestFallback({ accessRequest, dispatch, location, t }) {
         }
       })
       .finally(() => setSubmitting(false));
-  }, [accessRequest, enqueueSnackbar, t, dispatch]);
-
-  const fetchAccessRequest = useCallback(() => {
-    if (!isFetching && hash) {
-      setIsFetching(true);
-      setError(false);
-      const query = { token: hash.substr(1) };
-
-      API.use(ENDPOINTS.databoxes.accessRequest.read)
-        .build(query)
-        .send()
-        .then((response) => { dispatch(accessRequestUpdate(objectToCamelCase(response))); })
-        .catch((e) => { setError(e); })
-        .finally(() => setIsFetching(false));
-    }
-  }, [hash, setIsFetching, setError, isFetching, dispatch]);
-
-  useEffect(() => {
-    if (isEmpty(accessRequest) && !error && hash) { fetchAccessRequest(); }
-  }, [hash, accessRequest, error, fetchAccessRequest]);
+  }, [accessRequest, enqueueSnackbar, t, dispatchAccessTokenUpdate]);
 
   return (
-    <section id="AccessRequest">
-      <ResponseHandlerWrapper
-        error={error}
-        entity={accessRequest}
-        isFetching={isFetching}
-      >
-        <Container maxWidth="md">
-          <BoxSection my={3}>
-            <Typography variant="h5" component="h4">
-              {t('screens:AccessRequest.body.title', accessRequest)}
-            </Typography>
-            <Typography>
-              {t('screens:AccessRequest.body.confirm.desc', accessRequest)}
-            </Typography>
-            <Formik
-              initialValues={INITIAL_VALUES}
-              validationSchema={accessRequestValidationSchema}
-              onSubmit={handleSubmit}
-            >
-              {({ isSubmitting }) => (
-                <Form>
-                  <FormFields
-                    fields={DEFAULT_FIELDS}
-                    prefix="AccessRequest."
-                    defaultFields={DEFAULT_FIELDS}
-                  />
-                  <Box display="flex" justifyContent="space-between">
-                    <ButtonSubmit
-                      Icon={EmailIcon}
-                      isSubmitting={isRequestingCode}
-                      onClick={handleEmail}
-                      variant="text"
-                      text={t('screens:AccessRequest.body.email.submit')}
-                      type="button"
-                    />
-                    <ButtonSubmit
-                      disabled={isSubmitting}
-                      isSubmitting={isSubmitting}
-                    />
-                  </Box>
-                </Form>
-              )}
-            </Formik>
-          </BoxSection>
-        </Container>
-      </ResponseHandlerWrapper>
-    </section>
+    <ScreenAction
+      appBarProps={appBarProps}
+      state={state}
+      title={t('screens:accessRequest.title', accessRequest)}
+    >
+      <Container maxWidth="md">
+        <Subtitle>
+          {t('screens:accessRequest.subtitle', accessRequest)}
+        </Subtitle>
+        <Formik
+          initialValues={INITIAL_VALUES}
+          validationSchema={accessRequestValidationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              <FormFields
+                fields={DEFAULT_FIELDS}
+                prefix="AccessRequest."
+                defaultFields={DEFAULT_FIELDS}
+              />
+              <BoxControls
+                mt={3}
+                secondary={{
+                  type: 'button',
+                  isLoading: isRequestingCode,
+                  text: t('screens:accessRequest.email.submit'),
+                  onClick: handleEmail,
+                }}
+                primary={{
+                  type: 'submit',
+                  isLoading: isSubmitting,
+                  text: t('common:submit'),
+                }}
+              />
+            </Form>
+          )}
+        </Formik>
+      </Container>
+    </ScreenAction>
   );
 }
 
@@ -187,14 +161,23 @@ AccessRequestFallback.propTypes = {
     ownerName: PropTypes.string,
     ownerEmail: PropTypes.string,
     token: PropTypes.string,
-  }).isRequired,
-  dispatch: PropTypes.func.isRequired,
-  location: PropTypes.shape({
-    hash: PropTypes.string.isRequired,
-  }).isRequired,
+  }),
+  isFetching: PropTypes.bool.isRequired,
+  error: PropTypes.instanceOf(Error),
+  dispatchAccessTokenUpdate: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['common', 'screens'])(connect(
-  (state) => ({ accessRequest: state.accessRequest }),
-)(AccessRequestFallback));
+AccessRequestFallback.defaultProps = {
+  accessRequest: null,
+  error: null,
+};
+
+// CONNECT
+const mapDispatchToProps = (dispatch) => ({
+  dispatchAccessTokenUpdate: (accessToken) => {
+    dispatch(accessTokenUpdate(accessToken));
+  },
+});
+
+export default connect(null, mapDispatchToProps)(withTranslation(['common', 'screens'])(AccessRequestFallback));

@@ -1,7 +1,6 @@
 import React, { useMemo, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -162,36 +161,23 @@ const ListMailProviders = ({
           <ChevronRightIcon color="primary" />
         </ListItem>
       ))}
-      <ListItem
-        button
-        divider
-        disabled
-        aria-label={t('common:providers.others', 'Others')}
-        component={Link}
-        to=""
-      >
-        <ListItemIcon>
-          <Typography variant="button" color="secondary">
-            {t('common:providers.others', 'Others')}
-          </Typography>
-        </ListItemIcon>
-      </ListItem>
       {allowManual && (
-      <ListItem
-        button
-        divider
-        aria-label={t('common:providers.manual.send', 'Send Manually')}
-        component="a"
-        href={mailtoHref}
-        target="_blank"
-        onClick={onManualClick}
-      >
-        <ListItemIcon>
-          <Typography variant="button" color="textSecondary">
-            {t('common:providers.manual.send', 'Send Manually')}
-          </Typography>
-        </ListItemIcon>
-      </ListItem>
+        <ListItem
+          button
+          divider
+          aria-label={t('common:providers.manual.send', 'Send Manually')}
+          component="a"
+          href={mailtoHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={onManualClick}
+        >
+          <ListItemIcon>
+            <Typography variant="button" color="textSecondary">
+              {t('common:providers.manual.send', 'Send Manually')}
+            </Typography>
+          </ListItemIcon>
+        </ListItem>
       )}
     </List>
   );

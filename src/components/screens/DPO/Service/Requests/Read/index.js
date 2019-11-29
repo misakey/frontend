@@ -10,14 +10,14 @@ import API from '@misakey/api';
 // import { serviceRequestsReadValidationSchema } from 'constants/validationSchemas/dpo';
 import log from '@misakey/helpers/log';
 import prop from '@misakey/helpers/prop';
+import isNil from '@misakey/helpers/isNil';
+import omit from '@misakey/helpers/omit';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
 import { producerCryptoContext as crypto } from '@misakey/crypto';
 
 import { makeStyles } from '@material-ui/core/styles/';
-import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -28,28 +28,19 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import FolderIcon from '@material-ui/icons/Folder';
 import CloudDoneIcon from '@material-ui/icons/CloudDone';
 
-import Navigation from 'components/dumb/Navigation';
-import BoxSection from 'components/dumb/Box/Section';
-import ButtonSubmit from 'components/dumb/Button/Submit';
-import ResponseHandlerWrapper from 'components/dumb/ResponseHandlerWrapper';
+import Subtitle from 'components/dumb/Typography/Subtitle';
+import BoxControls from 'components/dumb/Box/Controls';
 import FormFields from 'components/dumb/Form/Fields';
 import FieldFile from 'components/dumb/Form/Field/File';
 import Alert from 'components/dumb/Alert';
 import SplashScreen from 'components/dumb/SplashScreen';
 import Empty from 'components/dumb/Box/Empty';
+import ScreenAction from 'components/dumb/Screen/Action';
+import withAccessRequest from 'components/smart/withAccessRequest';
 
+// CONSTANTS
+const INTERNAL_PROPS = ['tReady', 'isAuthenticated'];
 const INITIAL_VALUES = { blob: null };
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    marginBottom: theme.spacing(3),
-  },
-  blob: {
-    height: 'auto',
-    padding: theme.spacing(3, 0),
-  },
-}));
-
 const ENDPOINTS = {
   blob: {
     create: {
@@ -76,6 +67,7 @@ const ENDPOINTS = {
   },
 };
 
+// HELPERS
 function getFileExtension(fileName) {
   if (typeof fileName !== 'string' || !fileName.includes('.')) {
     throw TypeError({ details: { file: 'invalid ' } });
@@ -84,12 +76,21 @@ function getFileExtension(fileName) {
   return `.${fileName.split('.').slice(-1)[0]}`;
 }
 
+// HOOKS
+const useStyles = makeStyles((theme) => ({
+  blob: {
+    height: 'auto',
+    padding: theme.spacing(3, 0),
+  },
+}));
+
+// COMPONENTS
 function Blob({ id, fileExtension, createdAt }) {
   const primary = useMemo(() => id + fileExtension, [id, fileExtension]);
   const secondary = useMemo(() => moment(createdAt).format('LLL'), [createdAt]);
 
   return (
-    <ListItem disableGutters divider alignItemsFlexStart>
+    <ListItem disableGutters divider alignItems="flex-start">
       <ListItemAvatar>
         <Avatar>
           <FolderIcon />
@@ -114,7 +115,8 @@ Blob.propTypes = {
 
 function ServiceRequestsRead({
   match: { params }, accessRequest, accessToken,
-  history, showGoBack, t,
+  isLoading, isFetching, error,
+  appBarProps, t, ...rest
 }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
@@ -127,6 +129,14 @@ function ServiceRequestsRead({
   const [databox] = useState({ ownerId: 'test' });
   const [isFetchingDatabox] = useState(false);
   const [errorDatabox] = useState();
+
+  const state = useMemo(
+    () => ({
+      error: errorDatabox || error,
+      isLoading: isFetchingDatabox || isLoading || isFetching,
+    }),
+    [error, errorDatabox, isFetching, isFetchingDatabox, isLoading],
+  );
 
   const [blobs, setBlobs] = useState([]);
   const [isFetchingBlobs, setFetchingBlobs] = useState(false);
@@ -172,7 +182,7 @@ function ServiceRequestsRead({
               .send({ contentType: null })
               .then((response) => {
                 setBlobs([...blobs, objectToCamelCase(response)]);
-                const text = t('screens:Service.Requests.Read.body.upload.success', response);
+                const text = t('screens:Service.requests.read.upload.success', response);
                 enqueueSnackbar(text, { variant: 'success' });
               });
           });
@@ -216,62 +226,60 @@ function ServiceRequestsRead({
   useEffect(fetchBlobs, []);
 
   return (
-    <section id="ServiceRequestsRead" className={classes.root}>
-      <Navigation
-        history={history}
-        showGoBack={showGoBack}
-        toolbarProps={{ maxWidth: 'md' }}
-        title={t('screens:Service.Requests.Read.body.title', { ...databox, ...accessRequest })}
-      />
-
-      <ResponseHandlerWrapper error={errorDatabox} entity={databox} isFetching={isFetchingDatabox}>
-        <Container maxWidth="md">
-          <BoxSection my={3}>
-            <Typography>
-              {t('screens:Service.Requests.Read.body.desc', { ...databox, ...accessRequest })}
-            </Typography>
-            <List>
-              {isFetchingBlobs && <SplashScreen />}
-              {(!isFetchingBlobs && blobs.length === 0) && <Empty />}
-              {blobs.map((props) => <Blob {...props} />)}
-            </List>
-          </BoxSection>
-          <Formik
-            // @fixme: WE NEED TO VALIDATE THE BLOB
-            // validationSchema={serviceRequestsReadValidationSchema}
-            initialValues={INITIAL_VALUES}
-            onSubmit={handleOpen}
-          >
-            {({ values, ...formikBag }) => (
-              <Form>
-                <Alert
-                  open={open}
-                  onClose={handleClose}
-                  onOk={() => handleUpload(values, formikBag)}
-                  title={t('screens:Service.Requests.Read.body.upload.title', { ...databox, ...accessRequest })}
-                  text={t('screens:Service.Requests.Read.body.upload.text', { ...databox, ...accessRequest })}
-                />
-                <FormFields
-                  fields={fields}
-                  prefix="serviceRequests.Read."
-                  defaultFields={fields}
-                />
-                <Box mt={1} display="flex" justifyContent="flex-end">
-                  <ButtonSubmit
-                    isSubmitting={isUploading}
-                    disabled={isUploading || !fieldBlob}
-                  />
-                </Box>
-              </Form>
-            )}
-          </Formik>
-        </Container>
-      </ResponseHandlerWrapper>
-    </section>
+    <ScreenAction
+      state={state}
+      appBarProps={appBarProps}
+      {...omit(rest, INTERNAL_PROPS)}
+      title={t('screens:Service.requests.read.title', { ...databox, ...accessRequest })}
+    >
+      <Container maxWidth="md">
+        <Subtitle>
+          {t('screens:Service.requests.read.subtitle', { ...databox, ...accessRequest })}
+        </Subtitle>
+        <List>
+          {isFetchingBlobs && <SplashScreen />}
+          {(!isFetchingBlobs && blobs.length === 0) && <Empty />}
+          {blobs.map((props) => <Blob {...props} />)}
+        </List>
+        <Formik
+          // @fixme: WE NEED TO VALIDATE THE BLOB
+          // validationSchema={serviceRequestsReadValidationSchema}
+          initialValues={INITIAL_VALUES}
+          onSubmit={handleOpen}
+        >
+          {({ values, ...formikBag }) => (
+            <Form>
+              <Alert
+                open={open}
+                onClose={handleClose}
+                onOk={() => handleUpload(values, formikBag)}
+                title={t('screens:Service.requests.read.upload.title', { ...databox, ...accessRequest })}
+                text={t('screens:Service.requests.read.upload.text', { ...databox, ...accessRequest })}
+              />
+              <FormFields
+                fields={fields}
+                prefix="servicerequests.read"
+                defaultFields={fields}
+              />
+              <BoxControls
+                mt={1}
+                primary={{
+                  type: 'submit',
+                  isLoading: isUploading,
+                  isValid: !isNil(fieldBlob),
+                  text: t('common:submit'),
+                }}
+              />
+            </Form>
+          )}
+        </Formik>
+      </Container>
+    </ScreenAction>
   );
 }
 
 ServiceRequestsRead.propTypes = {
+  // withAccessRequest
   accessRequest: PropTypes.shape({
     databoxId: PropTypes.string,
     producerName: PropTypes.string,
@@ -281,22 +289,34 @@ ServiceRequestsRead.propTypes = {
     ownerEmail: PropTypes.string,
     token: PropTypes.string,
   }).isRequired,
+  error: PropTypes.instanceOf(Error),
+  isFetching: PropTypes.bool.isRequired,
+  // CONNECT
   accessToken: PropTypes.shape({
     token: PropTypes.string,
   }).isRequired,
+  appBarProps: PropTypes.shape({
+    shift: PropTypes.bool,
+    items: PropTypes.arrayOf(PropTypes.node),
+  }),
   history: PropTypes.object.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({ databoxId: PropTypes.string }),
   }).isRequired,
-  showGoBack: PropTypes.bool,
   t: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
-ServiceRequestsRead.defaultProps = { showGoBack: true };
+ServiceRequestsRead.defaultProps = {
+  appBarProps: null,
+  error: null,
+};
 
-export default withTranslation(['common', 'screens'])(connect(
-  (state, ownProps) => ({
-    accessRequest: ownProps.accessRequest || state.accessRequest,
-    accessToken: state.accessToken,
-  }),
-)(ServiceRequestsRead));
+// CONNECT
+const mapStateToProps = (state) => ({
+  accessToken: state.accessToken,
+});
+
+export default withTranslation(['common', 'screens'])(connect(mapStateToProps, {})(
+  withAccessRequest(ServiceRequestsRead),
+));

@@ -20,15 +20,19 @@ import UserContributionDialog from 'components/smart/UserContributionDialog';
 import Content from 'components/screens/Citizen/Application/Info/Content';
 import MyAccount from 'components/screens/Citizen/Application/Info/MyAccount';
 import ThirdParty from 'components/screens/Citizen/Application/Info/ThirdParty';
+import NoPluginThirdParty from 'components/screens/Citizen/Application/Info/ThirdParty/NoPlugin';
 
+
+// CONSTANTS
 const APPLICATION_CONTRIBUTION_ENDPOINT = {
   method: 'POST',
   path: '/application-contributions',
   auth: true,
 };
 
+// COMPONENTS
 function ApplicationInfo({
-  auth, entity, isAuthenticated,
+  userId, entity, isAuthenticated,
   isFetching, match, t,
 }) {
   const [isOpenUserContributionDialog, setOpenUserContributionDialog] = useState(false);
@@ -57,11 +61,6 @@ function ApplicationInfo({
   const onContributionLinkClick = useCallback(
     () => openUserContributionDialog('link'),
     [openUserContributionDialog],
-  );
-
-  const userId = useMemo(
-    () => ((auth.profile) ? auth.profile.id : null),
-    [auth],
   );
 
   const onUserContribute = useCallback(
@@ -96,11 +95,11 @@ function ApplicationInfo({
       />
 
       <ApplicationHeader
-        {...entity}
-        mainDomain={mainDomain}
+        application={entity}
         isLoading={isFetching}
         onContributionDpoEmailClick={onContributionDpoEmailClick}
         readOnly={unknown}
+        mb={3}
       />
       {!unknown && mainDomain && (
         <ApplicationNavTabs mainDomain={mainDomain} isAuthenticated={isAuthenticated} />
@@ -122,6 +121,19 @@ function ApplicationInfo({
             exact
             path={routes.citizen.application.thirdParty}
             render={(routerProps) => <ThirdParty entity={entity} {...routerProps} />}
+          />
+        )}
+        {!window.env.PLUGIN && (
+          <Route
+            exact
+            path={routes.citizen.application.thirdParty}
+            render={(routerProps) => (
+              <NoPluginThirdParty
+                entity={entity}
+                onContributionLinkClick={onContributionLinkClick}
+                {...routerProps}
+              />
+            )}
           />
         )}
         <Route
@@ -147,7 +159,7 @@ function ApplicationInfo({
 }
 
 ApplicationInfo.propTypes = {
-  auth: PropTypes.shape({ id: PropTypes.string, profile: PropTypes.object }).isRequired,
+  userId: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
   entity: PropTypes.shape(ApplicationSchema.propTypes),
   history: PropTypes.shape({ replace: PropTypes.func }).isRequired,
@@ -161,10 +173,11 @@ ApplicationInfo.propTypes = {
 };
 
 ApplicationInfo.defaultProps = {
+  userId: null,
   entity: null,
 };
 
 export default connect((state) => ({
-  auth: state.auth,
+  userId: state.auth.userId,
   isAuthenticated: !!state.auth.token,
 }))(withTranslation(['screens'])(ApplicationInfo));

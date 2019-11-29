@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
 import API from '@misakey/api';
+import isNil from '@misakey/helpers/isNil';
 import noop from '@misakey/helpers/noop';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
@@ -16,7 +17,6 @@ import VirtualizedList from 'react-virtualized/dist/commonjs/List';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
@@ -30,8 +30,9 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import InboxIcon from '@material-ui/icons/Inbox';
 
 import BoxSection from 'components/dumb/Box/Section';
-import ResponseHandlerWrapper from 'components/dumb/ResponseHandlerWrapper';
+import Subtitle from 'components/dumb/Typography/Subtitle';
 import Empty from 'components/dumb/Box/Empty';
+import ScreenAction from 'components/dumb/Screen/Action';
 
 const ENDPOINTS = {
   databoxes: {
@@ -47,9 +48,6 @@ const ROW_HEIGHT = 73;
 const ITEM_PER_PAGE = 50;
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    height: 'calc(100vh - 64px)',
-  },
   container: {
     height: '100%',
   },
@@ -71,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Row = ({ list, isRowLoaded, classes, service, index, key, style }) => {
+const Row = ({ list, isRowLoaded, classes, service, index, style }) => {
   const item = list[index] || {};
   const { id, user } = item;
 
@@ -81,7 +79,7 @@ const Row = ({ list, isRowLoaded, classes, service, index, key, style }) => {
 
   if (!isLoaded) {
     return (
-      <ListItem divider key={key} style={style}>
+      <ListItem divider style={style}>
         <ListItemAvatar>
           <Skeleton height={40} width={40} variant="circle" />
         </ListItemAvatar>
@@ -94,7 +92,16 @@ const Row = ({ list, isRowLoaded, classes, service, index, key, style }) => {
   }
 
   return (
-    <ListItem divider key={key} style={style}>
+    <ListItem
+      divider
+      style={style}
+      component={Link}
+      button
+      to={generatePath(routes.dpo.service.requests.read, {
+        databoxId: id,
+        mainDomain: service.mainDomain,
+      })}
+    >
       <Box
         position="relative"
         display="flex"
@@ -114,11 +121,6 @@ const Row = ({ list, isRowLoaded, classes, service, index, key, style }) => {
           <IconButton
             edge="end"
             aria-label="see"
-            component={Link}
-            to={generatePath(routes.dpo.service.requests.read, {
-              databoxId: id,
-              mainDomain: service.mainDomain,
-            })}
           >
             <ArrowForwardIcon />
           </IconButton>
@@ -133,18 +135,26 @@ Row.propTypes = {
   isRowLoaded: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
   service: PropTypes.object.isRequired,
-  index: PropTypes.string.isRequired,
-  key: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
   style: PropTypes.object.isRequired,
 };
 
-function ServiceRequestsList({ service, t }) {
+function ServiceRequestsList({ appBarProps, service, t, isLoading, error }) {
   const classes = useStyles();
 
-  const [error, setError] = useState(false);
+  const [internalError, setInternalError] = useState();
   const [list, setList] = useState([]);
   const [offset, setOffset] = useState(0);
-  const [isFetching, setFetching] = useState(false);
+  const [isInternalFetching, setInternalFetching] = useState(false);
+
+  const state = useMemo(
+    () => ({
+      error: internalError || error,
+      isLoading: isInternalFetching || isLoading,
+      preventSplashScreen: !isNil(service),
+    }),
+    [error, internalError, isLoading, isInternalFetching, service],
+  );
 
   const [isNextPageLoading, setNextPageLoading] = useState(false);
   const [hasNextPage, setHasNextPage] = useState(true);
@@ -152,18 +162,17 @@ function ServiceRequestsList({ service, t }) {
   const fetchList = useCallback((queryParams) => {
     setNextPageLoading(true);
 
-    API.use(ENDPOINTS.databoxes.list)
+    return API.use(ENDPOINTS.databoxes.list)
       .build(null, null, objectToSnakeCase(queryParams))
       .send()
       .then((response) => {
         setList((prevList) => [...prevList, ...response.map((item) => objectToCamelCase(item))]);
         if (response.length !== ITEM_PER_PAGE) { setHasNextPage(false); }
       })
-      .catch((e) => { setError(e); })
+      .catch((e) => { setInternalError(e); })
       .finally(() => {
         setOffset(queryParams.offset + ITEM_PER_PAGE);
         setNextPageLoading(false);
-        setFetching(false);
       });
   }, []);
 
@@ -174,7 +183,7 @@ function ServiceRequestsList({ service, t }) {
       limit: ITEM_PER_PAGE,
       offset,
     };
-    fetchList(payload);
+    return fetchList(payload);
   }, [service, offset, fetchList]);
 
   const rowCount = useMemo(
@@ -200,69 +209,80 @@ function ServiceRequestsList({ service, t }) {
   }), [list, isRowLoaded, classes, service]);
 
   const handleMount = useCallback(() => {
-    setFetching(true);
-    loadNextPage();
-  }, [setFetching, loadNextPage]);
+    if (!isNil(service) && !isInternalFetching) {
+      setInternalFetching(true);
+      loadNextPage().finally(() => {
+        setInternalFetching(false);
+      });
+    }
+  }, [isInternalFetching, setInternalFetching, loadNextPage, service]);
 
-  useEffect(handleMount, []);
+  useEffect(handleMount, [service]);
 
   return (
-    <section id="ServiceRequestsList" className={classes.root}>
-      <ResponseHandlerWrapper error={error} entity={service} isFetching={isFetching}>
-        <Container maxWidth="md" className={classes.container}>
-          <Typography variant="h4" component="h3" align="center" className={classes.title}>
-            {t('screens:Service.Requests.List.body.title', service)}
-          </Typography>
-          <Typography
-            align="center"
-            variant="subtitle1"
-            color="textSecondary"
-            gutterBottom
-            className={classes.title}
-          >
-            {t('screens:Service.Requests.List.body.desc')}
-          </Typography>
-          <BoxSection my={3} p={0} className={classes.box}>
-            <List className={classes.list} disablePadding>
-              {list.length === 0 && <Empty />}
-              {list.length > 0 && (
-                <InfiniteLoader
-                  isRowLoaded={isRowLoaded}
-                  loadMoreRows={loadMoreRows}
-                  rowCount={rowCount}
-                >
-                  {({ onRowsRendered, registerChild }) => (
-                    <AutoSizer>
-                      {({ width, height }) => (
-                        <VirtualizedList
-                          width={width}
-                          height={height}
-                          tabIndex={null}
-                          ref={registerChild}
-                          onRowsRendered={onRowsRendered}
-                          rowHeight={ROW_HEIGHT}
-                          rowCount={rowCount}
-                          rowRenderer={(rowProps) => <Row {...listProps} {...rowProps} />}
-                        />
-                      )}
-                    </AutoSizer>
-                  )}
-                </InfiniteLoader>
-              )}
-            </List>
-          </BoxSection>
-        </Container>
-      </ResponseHandlerWrapper>
-    </section>
+    <ScreenAction
+      state={state}
+      appBarProps={appBarProps}
+      title={t('screens:Service.requests.list.title', service)}
+      display="flex"
+      flexDirection="column"
+    >
+      <Container maxWidth="md" className={classes.container}>
+        <Subtitle>
+          {t('screens:Service.requests.list.subtitle')}
+        </Subtitle>
+        <BoxSection my={3} p={0} className={classes.box}>
+          <List className={classes.list} disablePadding>
+            {list.length === 0 && <Empty />}
+            {list.length > 0 && (
+              <InfiniteLoader
+                isRowLoaded={isRowLoaded}
+                loadMoreRows={loadMoreRows}
+                rowCount={rowCount}
+              >
+                {({ onRowsRendered, registerChild }) => (
+                  <AutoSizer>
+                    {({ width, height }) => (
+                      <VirtualizedList
+                        width={width}
+                        height={height}
+                        tabIndex={null}
+                        ref={registerChild}
+                        onRowsRendered={onRowsRendered}
+                        rowHeight={ROW_HEIGHT}
+                        rowCount={rowCount}
+                        rowRenderer={(rowProps) => <Row {...listProps} {...rowProps} />}
+                      />
+                    )}
+                  </AutoSizer>
+                )}
+              </InfiniteLoader>
+            )}
+          </List>
+        </BoxSection>
+      </Container>
+    </ScreenAction>
   );
 }
 
 ServiceRequestsList.propTypes = {
+  appBarProps: PropTypes.shape({
+    shift: PropTypes.bool,
+    items: PropTypes.arrayOf(PropTypes.node),
+  }),
   service: PropTypes.shape({
     id: PropTypes.string.isRequired,
     mainDomain: PropTypes.string.isRequired,
-  }).isRequired,
+  }),
   t: PropTypes.func.isRequired,
+  error: PropTypes.instanceOf(Error),
+  isLoading: PropTypes.bool.isRequired,
+};
+
+ServiceRequestsList.defaultProps = {
+  appBarProps: null,
+  service: null,
+  error: null,
 };
 
 export default withTranslation(['common', 'screens'])(ServiceRequestsList);

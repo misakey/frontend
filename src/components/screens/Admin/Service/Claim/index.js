@@ -36,11 +36,11 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import useLocationWorkspace from 'hooks/useLocationWorkspace';
 
 import SplashScreen from 'components/dumb/SplashScreen';
-import Navigation from 'components/dumb/Navigation';
 import BoxSection from 'components/dumb/Box/Section';
 import ButtonSubmit from 'components/dumb/Button/Submit';
 import BoxMessage from 'components/dumb/Box/Message';
 import ErrorOverlay from 'components/dumb/Error/Overlay';
+import ScreenAction from 'components/dumb/Screen/Action';
 import Redirect from 'components/dumb/Redirect';
 
 // @FIXME: add to @misakey/API
@@ -108,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ServiceClaim({ service, t, userId, history, dispatchUserRoles, userRoles }) {
+function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRoles, userRoles }) {
   const classes = useStyles();
   const width = useWidth();
   const { enqueueSnackbar } = useSnackbar();
@@ -210,7 +210,7 @@ function ServiceClaim({ service, t, userId, history, dispatchUserRoles, userRole
   if (isInteger(error)) { return <ErrorOverlay httpStatus={error} />; }
 
   if (userHasRole) {
-    enqueueSnackbar(t('screens:Service.Role.Claim.info.alreadyDpo', { mainDomain: service.mainDomain, role }), { variant: 'info' });
+    enqueueSnackbar(t('screens:Service.role.claim.info.alreadyDpo', { mainDomain: service.mainDomain, role }), { variant: 'info' });
     return <Redirect to={pathToAdminHome} />;
   }
 
@@ -218,12 +218,12 @@ function ServiceClaim({ service, t, userId, history, dispatchUserRoles, userRole
   const submitText = t(`screens:Service.Claim.body.txtKey.actions.submit${again ? 'Again' : ''}`);
 
   return (
-    <section id="ServiceClaim">
-      <Navigation
-        toolbarProps={{ maxWidth: 'md' }}
-        history={history}
-        title={t('screens:Service.Claim.body.title', service)}
-      />
+    <ScreenAction
+      id="ServiceClaim"
+      history={history}
+      appBarProps={appBarProps}
+      title={t('screens:Service.Claim.body.title', service)}
+    >
       <Container maxWidth="md">
         <Typography
           variant="subtitle1"
@@ -365,11 +365,15 @@ function ServiceClaim({ service, t, userId, history, dispatchUserRoles, userRole
           </Stepper>
         </BoxSection>
       </Container>
-    </section>
+    </ScreenAction>
   );
 }
 
 ServiceClaim.propTypes = {
+  appBarProps: PropTypes.shape({
+    shift: PropTypes.bool,
+    items: PropTypes.arrayOf(PropTypes.node),
+  }),
   service: PropTypes.shape({
     id: PropTypes.string.isRequired,
     mainDomain: PropTypes.string.isRequired,
@@ -385,6 +389,7 @@ ServiceClaim.propTypes = {
 };
 
 ServiceClaim.defaultProps = {
+  appBarProps: null,
   service: null,
 };
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -9,7 +9,14 @@ import DialogConnect from './index';
 
 // COMPONENTS
 const withDialogConnect = (Component) => {
-  const Wrapper = ({ isAuthenticated, onClick, to, replace, dialogConnectProps, ...props }) => {
+  let Wrapper = ({
+    isAuthenticated,
+    onClick,
+    to,
+    replace,
+    dialogConnectProps,
+    ...props
+  }, ref) => {
     const [open, setOpen] = useState(false);
     const location = useLocation();
 
@@ -30,24 +37,27 @@ const withDialogConnect = (Component) => {
     );
 
     const wrapperLinkProps = useMemo(
-      () => (!isAuthenticated ? {
-        // give a to prop to Link component to avoid error, but force replace to current location
-        to: location,
-        replace: true,
-      } : {
-        to,
-        replace,
-      }),
+      () => (!isAuthenticated
+        ? {
+          // give a to prop to Link component to avoid error, but force replace to current location
+          to: location,
+          replace: true,
+        } : {
+          to,
+          replace,
+        }),
       [isAuthenticated, location, to, replace],
     );
 
     return (
       <>
         <DialogConnect open={open} onClose={onClose} {...dialogConnectProps} />
-        <Component onClick={onWrapperClick} {...wrapperLinkProps} {...props} />
+        <Component ref={ref} onClick={onWrapperClick} {...wrapperLinkProps} {...props} />
       </>
     );
   };
+
+  Wrapper = forwardRef(Wrapper);
 
   Wrapper.propTypes = {
     isAuthenticated: PropTypes.bool,
@@ -72,7 +82,7 @@ const withDialogConnect = (Component) => {
       isAuthenticated: !!token,
     };
   };
-  return connect(mapStateToProps, {})(Wrapper);
+  return connect(mapStateToProps, {}, null, { forwardRef: true })(Wrapper);
 };
 
 export default withDialogConnect;

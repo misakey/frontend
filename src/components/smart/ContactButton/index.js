@@ -16,7 +16,6 @@ import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 import isEmpty from '@misakey/helpers/isEmpty';
 import log from '@misakey/helpers/log';
-import parseJwt from '@misakey/helpers/parseJwt';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 
 import withDialogConnect from 'components/smart/Dialog/Connect/with';
@@ -39,7 +38,7 @@ const createDatabox = (payload) => API.use(API.endpoints.application.box.create)
 
 // HOOKS
 const useGetDatabox = (applicationID, isAuthenticated) => useCallback(
-  () => (!isAuthenticated
+  () => ((!isAuthenticated || isEmpty(applicationID))
     ? Promise.resolve()
     : listDataboxes()
       .then((databoxes) => databoxes.find((databox) => databox.producer_id === applicationID))),
@@ -71,7 +70,7 @@ const useOnAccessRequest = (onMailTo) => useCallback(
 );
 
 const useOnClick = (
-  databox, onAccessRequest, onAlreadyExists, idToken, applicationID, setLoading,
+  databox, onAccessRequest, onAlreadyExists, userId, applicationID, setLoading,
 ) => useCallback(
   () => {
     setLoading(true);
@@ -83,10 +82,9 @@ const useOnClick = (
         .finally(() => {
           setLoading(false);
         });
-    } else if (idToken) {
-      const { sub } = parseJwt(idToken);
+    } else if (userId) {
       const payload = {
-        owner_id: sub,
+        owner_id: userId,
         producer_id: applicationID,
       };
       createDatabox(payload)
@@ -110,7 +108,7 @@ const useOnClick = (
         });
     }
   },
-  [databox, onAccessRequest, onAlreadyExists, idToken, applicationID, setLoading],
+  [databox, onAccessRequest, onAlreadyExists, userId, applicationID, setLoading],
 );
 
 
@@ -121,10 +119,9 @@ const ContactButton = (
   {
     mainDomain,
     applicationID,
-    idToken,
+    userId,
     dpoEmail,
     onContributionClick,
-    contactedView,
     t,
     history,
     location,
@@ -135,6 +132,7 @@ const ContactButton = (
     isAuthenticated,
     dispatchContact,
     customAction,
+    className,
   },
 ) => {
   const [loading, setLoading] = useState(false);
@@ -150,7 +148,7 @@ const ContactButton = (
   const onClick = useOnClick(
     databox,
     onAccessRequest, onAlreadyExists,
-    idToken, applicationID,
+    userId, applicationID,
     setLoading,
   );
 
@@ -176,37 +174,28 @@ const ContactButton = (
     );
   }
 
-  if (contactedView) {
-    return (
-      <Button
-        color="secondary"
-        onClick={isFunction(customAction) ? customAction : onClick}
-        {...buttonProps}
-      >
-        {t('resendEmail', 'resend email')}
-      </Button>
-    );
-  }
-
   if (!isEmpty(dpoEmail)) {
     return (
-      <Button
+      <DialogConnectButton
+        className={className}
         variant="contained"
         color="secondary"
         onClick={isFunction(customAction) ? customAction : onClick}
+        dialogConnectProps={dialogConnectProps}
         {...buttonProps}
       >
         {dpoText}
-      </Button>
+      </DialogConnectButton>
     );
   }
   return (
     <DialogConnectButton
-      onClick={onContributionClick}
+      className={className}
       variant="contained"
       color="secondary"
-      {...buttonProps}
+      onClick={onContributionClick}
       dialogConnectProps={dialogConnectProps}
+      {...buttonProps}
     >
       {noDpoText}
     </DialogConnectButton>
@@ -215,19 +204,19 @@ const ContactButton = (
 
 ContactButton.propTypes = {
   isAuthenticated: PropTypes.bool,
-  idToken: PropTypes.string,
+  userId: PropTypes.string,
   buttonProps: PropTypes.object,
   dialogConnectProps: PropTypes.object,
-  contactedView: PropTypes.bool,
-  dpoEmail: PropTypes.string.isRequired,
+  dpoEmail: PropTypes.string,
   onContributionClick: PropTypes.func.isRequired,
   children: PropTypes.node,
-  applicationID: PropTypes.string.isRequired,
+  applicationID: PropTypes.string,
   mainDomain: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   customAction: PropTypes.func,
+  className: PropTypes.string,
 
   // CONNECT
   mailProvider: PropTypes.string,
@@ -235,20 +224,22 @@ ContactButton.propTypes = {
 };
 
 ContactButton.defaultProps = {
+  dpoEmail: '',
   mailProvider: null,
-  contactedView: false,
   buttonProps: {},
   dialogConnectProps: {},
-  idToken: null,
+  userId: null,
   isAuthenticated: false,
+  applicationID: null,
   children: null,
   customAction: null,
+  className: '',
 };
 
 // CONNECT
 const mapStateToProps = (state) => ({
   mailProvider: contactSelectors.getMailProviderPreferency(state),
-  idToken: state.auth.id,
+  userId: state.auth.userId,
   isAuthenticated: !!state.auth.token,
 });
 const mapDispatchToProps = (dispatch) => ({

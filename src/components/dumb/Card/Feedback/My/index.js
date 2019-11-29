@@ -11,12 +11,11 @@ import propOr from '@misakey/helpers/propOr';
 import isNil from '@misakey/helpers/isNil';
 
 import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
+import Card from 'components/dumb/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Rating from '@material-ui/lab/Rating';
-import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 
 // CONSTANTS
@@ -28,9 +27,14 @@ const valueProp = propOr(DISABLED_RATING, 'value');
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  card: (disabled) => ({
-    backgroundColor: disabled ? theme.palette.text.disabled : theme.palette.common.white,
-  }),
+  card: {
+    backgroundColor: theme.palette.common.white,
+  },
+  feedbackLink: {
+    textAlign: 'center',
+    margin: 'auto',
+    display: 'block',
+  },
   cardContentRoot: {
     padding: '0 1rem',
   },
@@ -42,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
   },
   ratingIconFilled: {
     color: theme.palette.secondary.main,
+  },
+  ratingRoot: {
+    fontSize: theme.typography.h2.fontSize,
   },
   actionButton: {
     marginLeft: 'auto',
@@ -78,7 +85,7 @@ const MyFeedbackCard = ({ mainDomain, rating, t }) => {
     <Card classes={{ root: classes.card }}>
       <CardHeader
         title={t('common:feedback.me')}
-        action={(
+        action={(disabled) ? null : (
           <Rating
             value={value}
             readOnly
@@ -92,34 +99,35 @@ const MyFeedbackCard = ({ mainDomain, rating, t }) => {
 
         <div className={classes.comment}>
           {disabled ? (
-            <Skeleton variant="text" disableAnimate />
-          )
-            : (
-              <Typography
-                variant="body2"
-                color="textSecondary"
-                className={classes.commentTypography}
-              >
-                {comment}
-              </Typography>
-            )}
+            <Link to={linkTo} className={classes.feedbackLink}>
+              <Rating
+                value={value}
+                size="large"
+                classes={{ root: classes.ratingRoot, iconFilled: classes.ratingIconFilled }}
+              />
+            </Link>
+          ) : (
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              className={classes.commentTypography}
+            >
+              {comment}
+            </Typography>
+          )}
         </div>
       </CardContent>
       <CardActions>
-        {/* @FIXME: remove condition when edit comment feature is handled */
-          disabled && (
-            <Button
-              variant="contained"
-              color="secondary"
-              to={linkTo}
-              component={Link}
-              aria-label={t(`common:feedback.${feedbackKey}`)}
-              classes={{ root: classes.actionButton }}
-            >
-              {t(`common:feedback.${feedbackKey}`)}
-            </Button>
-          )
-}
+        <Button
+          variant="contained"
+          color="secondary"
+          to={linkTo}
+          component={Link}
+          aria-label={t(`common:feedback.${feedbackKey}`)}
+          classes={{ root: classes.actionButton }}
+        >
+          {t(`common:feedback.${feedbackKey}`)}
+        </Button>
       </CardActions>
     </Card>
 

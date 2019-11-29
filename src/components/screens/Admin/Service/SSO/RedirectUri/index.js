@@ -22,10 +22,10 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Navigation from 'components/dumb/Navigation';
 import FieldText from 'components/dumb/Form/Field/Text';
 import ButtonSubmit from 'components/dumb/Button/Submit';
 import ScreenError from 'components/dumb/Screen/Error';
+import ScreenAction from 'components/dumb/Screen/Action';
 
 // CONSTANTS
 const PARENT_ROUTE = routes.admin.service.sso._;
@@ -79,12 +79,7 @@ const useOnSubmit = (
 );
 
 // COMPONENTS
-const SSORedirectUri = ({
-  t,
-  service,
-  dispatchUpdateEntities,
-  history,
-}) => {
+const SSORedirectUri = ({ appBarProps, t, service, dispatchUpdateEntities, history }) => {
   const [error, setError] = useState();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -113,13 +108,12 @@ const SSORedirectUri = ({
     return <ScreenError httpStatus={error} />;
   }
   return (
-    <>
-      <Navigation
-        history={history}
-        pushPath={pushPath}
-        toolbarProps={{ maxWidth: 'md' }}
-        title={t('service:sso.redirectUri.title')}
-      />
+    <ScreenAction
+      history={history}
+      pushPath={pushPath}
+      appBarProps={appBarProps}
+      title={t('service:sso.redirectUri.title')}
+    >
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
           {t('service:sso.redirectUri.subtitle')}
@@ -148,11 +142,15 @@ const SSORedirectUri = ({
           )}
         </Formik>
       </Container>
-    </>
+    </ScreenAction>
   );
 };
 
 SSORedirectUri.propTypes = {
+  appBarProps: PropTypes.shape({
+    shift: PropTypes.bool,
+    items: PropTypes.arrayOf(PropTypes.node),
+  }),
   service: PropTypes.shape(ServiceSchema.propTypes),
   // router props
   history: PropTypes.object.isRequired,
@@ -163,6 +161,7 @@ SSORedirectUri.propTypes = {
 };
 
 SSORedirectUri.defaultProps = {
+  appBarProps: null,
   service: null,
 };
 

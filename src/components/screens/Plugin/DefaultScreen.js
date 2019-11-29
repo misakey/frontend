@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { withTranslation } from 'react-i18next';
 
 import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
+import Screen from 'components/dumb/Screen';
 
 import 'components/screens/Plugin/DefaultScreen.scss';
 
@@ -21,13 +21,14 @@ const DefaultScreen = ({ t }) => {
   const classes = useStyles();
 
   return (
-    <Container maxWidth={false} className="DefaultScreen">
+    <Screen className="DefaultScreen">
       <div className="flexWrapper">
         <Typography variant="h3" className={classes.title} color="primary">
           {t('projectName', 'Misakey')}
         </Typography>
       </div>
-    </Container>
+
+    </Screen>
   );
 };
 

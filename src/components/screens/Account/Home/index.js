@@ -1,34 +1,47 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
 import UserSchema from 'store/schemas/User';
 
-import Navigation from 'components/dumb/Navigation';
+import isEmpty from '@misakey/helpers/isEmpty';
+
 import CardProfile from 'components/dumb/Card/Profile';
+import Screen from 'components/dumb/Screen';
+import LinkHome from 'components/dumb/Link/Home';
 
 // COMPONENTS
-const AccountHome = ({ t, profile, history }) => {
-  if (profile) {
-    return (
-      <div className="Home">
-        <Navigation history={history} title={t('home.title')} />
-        <CardProfile profile={profile} />
-      </div>
-    );
-  }
-  return null;
+const AccountHome = ({ profile, error, isFetching }) => {
+  const state = useMemo(
+    () => ({ error, isLoading: isFetching || isEmpty(profile) }),
+    [error, isFetching, profile],
+  );
+
+  const preventSplashScreen = useMemo(
+    () => !isEmpty(profile),
+    [profile],
+  );
+
+  const appBarProps = useMemo(
+    () => ({ items: [<LinkHome />] }),
+    [],
+  );
+
+  return (
+    <Screen appBarProps={appBarProps} state={state} preventSplashScreen={preventSplashScreen}>
+      <CardProfile profile={profile} />
+    </Screen>
+  );
 };
 
 AccountHome.propTypes = {
-  profile: PropTypes.shape(UserSchema.propTypes),
-  t: PropTypes.func.isRequired,
-  // ROUTER
-  history: PropTypes.object.isRequired,
+  profile: PropTypes.shape(UserSchema.propTypes).isRequired,
+  error: PropTypes.instanceOf(Error),
+  isFetching: PropTypes.bool,
 };
 
 AccountHome.defaultProps = {
-  profile: null,
+  error: null,
+  isFetching: false,
 };
 
-export default withTranslation('profile')(AccountHome);
+export default AccountHome;

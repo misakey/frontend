@@ -51,6 +51,7 @@ const SignInFormCard = ({ fields, handlePrevious, step, t, userPublicData, value
       <Typography className={classes.moreTypography}>
         {t('auth:signIn.card.more.text')}
         <MUILink
+          color="secondary"
           to={routes.legals.privacy}
           component={Link}
           target="_blank"

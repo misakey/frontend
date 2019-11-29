@@ -4,7 +4,6 @@ import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
 
-
 import isNil from '@misakey/helpers/isNil';
 import isArray from '@misakey/helpers/isArray';
 import generatePath from '@misakey/helpers/generatePath';
@@ -20,6 +19,7 @@ import ListDataItem from 'components/dumb/List/Data/Item';
 import LimitedList from 'components/dumb/List/Limited';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Screen from 'components/dumb/Screen';
 
 // CONSTANTS
 const MAX_DOMAIN = 3;
@@ -48,7 +48,7 @@ FieldItem.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-const ServiceInformationHome = ({ service, t }) => {
+const ServiceInformationHome = ({ appBarProps, service, t }) => {
   const {
     name,
     logoUri,
@@ -67,57 +67,59 @@ const ServiceInformationHome = ({ service, t }) => {
 
   if (service) {
     return (
-      <Container maxWidth="md">
-        <Typography variant="h4" component="h3" align="center">
-          {t('service:information.title')}
-        </Typography>
-        <BoxSection my={3} p={0}>
-          <Box p={3}>
-            <Typography variant="h6">
-              {t('service:information.home.title')}
-            </Typography>
-            <Typography variant="body2" color="textSecondary" className="subtitle">
-              {t('service:information.home.subtitle')}
-            </Typography>
-          </Box>
-          <List className="details">
-            <FieldItem field={{ name }} mainDomain={mainDomain} t={t} />
-            <ListDataItem
-              ariaAction={t('fields:logo.action')}
-              label={t('fields:logo.label')}
-              text={{ primary: t('fields:logo.placeholder') }}
-              action={(<ColorizedAvatar text={name} image={logoUri} />)}
-              linkTo={logoLinkTo}
-            />
-            <ListDataItem
-              ariaAction={t('fields:mainDomain.action')}
-              label={t('fields:mainDomain.label')}
-              text={{ primary: mainDomain }}
-              disabled
-            />
-            <ListDataItem
-              ariaAction={t('fields:otherDomains.action')}
-              label={t('fields:otherDomains.label')}
-              disabled
-            >
-              <LimitedList
-                items={domainsList}
-                limit={MAX_DOMAIN}
-                extraText={t('fields:otherDomains.placeholder')}
-                renderListItem={
-                  (domainItem) => (
-                    <ListItem key={domainItem.id} dense disableGutters>
-                      <ListItemText>{domainItem.uri}</ListItemText>
-                    </ListItem>
-                  )
-                }
+      <Screen appBarProps={appBarProps}>
+        <Container maxWidth="md">
+          <Typography variant="h4" component="h3" align="center">
+            {t('service:information.title')}
+          </Typography>
+          <BoxSection my={3} p={0}>
+            <Box p={3}>
+              <Typography variant="h6">
+                {t('service:information.home.title')}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" className="subtitle">
+                {t('service:information.home.subtitle')}
+              </Typography>
+            </Box>
+            <List className="details">
+              <FieldItem field={{ name }} mainDomain={mainDomain} t={t} />
+              <ListDataItem
+                ariaAction={t('fields:logo.action')}
+                label={t('fields:logo.label')}
+                text={{ primary: t('fields:logo.placeholder') }}
+                action={(<ColorizedAvatar text={name} image={logoUri} />)}
+                linkTo={logoLinkTo}
               />
-            </ListDataItem>
-            <FieldItem field={{ shortDesc }} mainDomain={mainDomain} t={t} />
-            <FieldItem field={{ longDesc }} mainDomain={mainDomain} t={t} />
-          </List>
-        </BoxSection>
-      </Container>
+              <ListDataItem
+                ariaAction={t('fields:mainDomain.action')}
+                label={t('fields:mainDomain.label')}
+                text={{ primary: mainDomain }}
+                disabled
+              />
+              <ListDataItem
+                ariaAction={t('fields:otherDomains.action')}
+                label={t('fields:otherDomains.label')}
+                disabled
+              >
+                <LimitedList
+                  items={domainsList}
+                  limit={MAX_DOMAIN}
+                  extraText={t('fields:otherDomains.placeholder')}
+                  renderListItem={
+                    (domainItem) => (
+                      <ListItem key={domainItem.id} dense disableGutters>
+                        <ListItemText>{domainItem.uri}</ListItemText>
+                      </ListItem>
+                    )
+                  }
+                />
+              </ListDataItem>
+              <FieldItem field={{ shortDesc }} mainDomain={mainDomain} t={t} />
+              <FieldItem field={{ longDesc }} mainDomain={mainDomain} t={t} />
+            </List>
+          </BoxSection>
+        </Container>
+      </Screen>
     );
   }
 
@@ -125,7 +127,10 @@ const ServiceInformationHome = ({ service, t }) => {
 };
 
 ServiceInformationHome.propTypes = {
-
+  appBarProps: PropTypes.shape({
+    shift: PropTypes.bool,
+    items: PropTypes.arrayOf(PropTypes.node),
+  }),
   service: PropTypes.shape({
     name: PropTypes.string,
     logoUri: PropTypes.string,
@@ -134,12 +139,12 @@ ServiceInformationHome.propTypes = {
     shortDesc: PropTypes.string,
     longDesc: PropTypes.string,
   }),
-
   // withTranslation
   t: PropTypes.func.isRequired,
 };
 
 ServiceInformationHome.defaultProps = {
+  appBarProps: null,
   service: null,
 };
 

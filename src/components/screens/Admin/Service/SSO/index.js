@@ -45,7 +45,7 @@ const fetchApplicationSSO = (id) => API
   .send();
 
 // COMPONENTS
-const ServiceSSO = ({ service, dispatchUpdate }) => {
+const ServiceSSO = ({ service, dispatchUpdate, ...rest }) => {
   const [isFetching, setFetching] = useState(false);
   const [error, setError] = useState();
 
@@ -80,27 +80,37 @@ const ServiceSSO = ({ service, dispatchUpdate }) => {
         <Route
           exact
           path={routes.admin.service.sso._}
-          render={(routerProps) => <SSOHome service={service} {...routerProps} />}
+          render={(routerProps) => (
+            <SSOHome service={service} {...routerProps} {...rest} />
+          )}
         />
         <Route
           exact
           path={routes.admin.service.sso.allowedOrigins}
-          render={(routerProps) => <SSOAllowedOrigins service={service} {...routerProps} />}
+          render={(routerProps) => (
+            <SSOAllowedOrigins service={service} {...routerProps} {...rest} />
+          )}
         />
         <Route
           exact
           path={routes.admin.service.sso.redirectUri}
-          render={(routerProps) => <SSORedirectUri service={service} {...routerProps} />}
+          render={(routerProps) => (
+            <SSORedirectUri service={service} {...routerProps} {...rest} />
+          )}
         />
         <Route
           exact
           path={routes.admin.service.sso.productionSetup}
-          render={(routerProps) => <SSOProductionSetup service={service} {...routerProps} />}
+          render={(routerProps) => (
+            <SSOProductionSetup service={service} {...routerProps} {...rest} />
+          )}
         />
         <Route
           exact
           path={routes.admin.service.sso.customRoles}
-          render={(routerProps) => <SSOCustomRoles service={service} {...routerProps} />}
+          render={(routerProps) => (
+            <SSOCustomRoles service={service} {...routerProps} {...rest} />
+          )}
         />
       </Switch>
     </ResponseHandlerWrapper>

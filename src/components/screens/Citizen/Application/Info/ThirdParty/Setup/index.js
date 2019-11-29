@@ -26,6 +26,7 @@ import TrackerList from 'components/dumb/Application/ThirdParty/Setup/List';
 import SplashScreen from 'components/dumb/SplashScreen';
 import ThirdPartySearchBar from 'components/dumb/Application/ThirdParty/Setup/SearchBar';
 import Switch from 'components/dumb/Switch';
+import Screen from 'components/dumb/Screen';
 
 import { sendMessage } from 'background';
 import { UPDATE_WHITELIST, GET_APPS } from 'background/messages';
@@ -171,7 +172,7 @@ function ThirdPartySetup({
   );
 
   return (
-    <div className="main">
+    <Screen hideAppBar>
       <ThirdPartySearchBar
         onIconClick={onGoBack}
         location={location}
@@ -306,7 +307,7 @@ function ThirdPartySetup({
 
         {isFetching && <SplashScreen />}
       </nav>
-    </div>
+    </Screen>
   );
 }
 

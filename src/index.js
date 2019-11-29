@@ -40,6 +40,8 @@ import { isDesktopDevice } from 'helpers/devices';
 import isNil from '@misakey/helpers/isNil';
 import { isSilentAuthIframe, processSilentAuthCallbackInIframe } from '@misakey/auth/helpers'; // Silent auth
 
+import { isSigninRedirect, processSigninRedirect } from 'helpers/auth';
+
 /* END OF IMPORTS */
 
 if (window.env.ENV !== 'development' || window.env.SENTRY.debug === true) {
@@ -68,6 +70,8 @@ countries.registerLocale(require('i18n-iso-countries/langs/fr.json'));
 // https://github.com/maxmantz/redux-oidc/issues/48#issuecomment-315422236
 if (isSilentAuthIframe()) {
   processSilentAuthCallbackInIframe();
+} else if (isSigninRedirect()) {
+  processSigninRedirect();
 } else {
   i18n.addResourceBundle('fr', 'common', FRCommon, true, true);
   i18n.addResourceBundle('fr', 'fields', FRFields, true, true);

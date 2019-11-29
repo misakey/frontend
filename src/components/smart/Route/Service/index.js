@@ -14,20 +14,8 @@ import { loadUserRoles } from '@misakey/auth/store/actions/auth';
 
 import BoxAction from 'components/dumb/Box/Action';
 import SplashScreen from 'components/dumb/SplashScreen';
-import useLocationSearchParams from 'hooks/useLocationSearchParams';
-
-
-// @FIXME: factorize with src/components/smart/Layout/Search.js
-const useLaunchSearch = (locationSearchParams, push) => useCallback(
-  () => {
-    const nextSearch = new URLSearchParams(locationSearchParams);
-    nextSearch.set('search', '');
-    push({
-      search: nextSearch.toString(),
-    });
-  },
-  [locationSearchParams, push],
-);
+import Screen from 'components/dumb/Screen';
+import Container from '@material-ui/core/Container';
 
 export const DEFAULT_DOMAIN = 'intro';
 export const DEFAULT_SERVICE_ENTITY = { mainDomain: DEFAULT_DOMAIN };
@@ -53,10 +41,8 @@ function RouteService({
   const pathToClaim = useMemo(
     () => generatePath(routes[workspace].service.claim._, { mainDomain }), [mainDomain, workspace],
   );
-  const locationSearchParams = useLocationSearchParams();
-  const { push, replace } = useHistory();
+  const { replace } = useHistory();
   const redirectToClaim = useCallback(() => { replace(pathToClaim); }, [pathToClaim, replace]);
-  const launchSearch = useLaunchSearch(locationSearchParams, push);
 
   const render = (props) => {
     const renderProps = { ...props, ...componentProps };
@@ -91,12 +77,6 @@ function RouteService({
       return (
         <BoxAction
           title={t(`screens:Service.Intro.${workspace}.description`)}
-          actions={[
-            {
-              buttonText: t('screens:Service.Intro.searchService'),
-              onClick: launchSearch,
-            },
-          ]}
           {...renderProps}
         />
       );
@@ -104,7 +84,20 @@ function RouteService({
 
     if (userHasRole && !userScope.includes(requiredScope)) {
       if (loginInProgress) {
-        return <SplashScreen text={t(`screens:Service.Actions.loginAs.${workspace}.loading`)} />;
+        return (
+          <Screen
+            className="boxAction"
+            fullHeight
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            {...renderProps}
+          >
+            <Container maxWidth="md">
+              <SplashScreen text={t(`screens:Service.Actions.loginAs.${workspace}.loading`)} />
+            </Container>
+          </Screen>
+        );
       }
       setLoginInProgress(true);
       userManager.signinSilent({ scope: `openid user ${requiredScope}` })
@@ -126,10 +119,6 @@ function RouteService({
         <BoxAction
           title={name && t(`screens:Service.Actions.claim.${workspace}.description`)}
           actions={[
-            {
-              buttonText: t('screens:Service.Actions.search_other.button'),
-              onClick: launchSearch,
-            },
             {
               buttonText: t(`screens:Service.Actions.claim.${workspace}.button`),
               onClick: redirectToClaim,

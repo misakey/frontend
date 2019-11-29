@@ -20,10 +20,10 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Navigation from 'components/dumb/Navigation';
 import FieldText from 'components/dumb/Form/Field/Text';
 import ButtonSubmit from 'components/dumb/Button/Submit';
 import ScreenError from 'components/dumb/Screen/Error';
+import ScreenAction from 'components/dumb/Screen/Action';
 
 const PARENT_ROUTE = routes.admin.service.information._;
 
@@ -58,12 +58,7 @@ const useOnSubmit = (
 );
 
 // COMPONENTS
-const ServiceLongDesc = ({
-  t,
-  service,
-  dispatchUpdateEntities,
-  history,
-}) => {
+const ServiceLongDesc = ({ appBarProps, t, service, dispatchUpdateEntities, history }) => {
   const [error, setError] = useState();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -89,13 +84,13 @@ const ServiceLongDesc = ({
     return <ScreenError httpStatus={error} />;
   }
   return (
-    <div id="ServiceInformationLongDesc">
-      <Navigation
-        history={history}
-        pushPath={pushPath}
-        toolbarProps={{ maxWidth: 'md' }}
-        title={t('service:information.longDesc.title')}
-      />
+    <ScreenAction
+      id="ServiceInformationLongDesc"
+      history={history}
+      pushPath={pushPath}
+      appBarProps={appBarProps}
+      title={t('service:information.longDesc.title')}
+    >
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" align="left" gutterBottom>
           {t('service:information.longDesc.subtitle')}
@@ -124,11 +119,15 @@ const ServiceLongDesc = ({
           )}
         </Formik>
       </Container>
-    </div>
+    </ScreenAction>
   );
 };
 
 ServiceLongDesc.propTypes = {
+  appBarProps: PropTypes.shape({
+    shift: PropTypes.bool,
+    items: PropTypes.arrayOf(PropTypes.node),
+  }),
   service: PropTypes.shape({ longDesc: PropTypes.string, mainDomain: PropTypes.string }),
   // router props
   history: PropTypes.object.isRequired,
@@ -139,6 +138,7 @@ ServiceLongDesc.propTypes = {
 };
 
 ServiceLongDesc.defaultProps = {
+  appBarProps: null,
   service: null,
 };
 

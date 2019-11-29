@@ -19,6 +19,7 @@ const SignUpFormCardContent = ({ t, fields }) => (
     <Typography className={useStyles().moreTypography}>
       {t('auth:signUp.card.more.text')}
       <MUILink
+        color="secondary"
         to={routes.legals.privacy}
         component={Link}
         target="_blank"

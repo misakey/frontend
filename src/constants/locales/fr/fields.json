@@ -10,13 +10,9 @@
     }
   },
   "avatar": {
-    "title": "Photo",
-    "subtitle": "Votre photo de profil est visible par tous, sur l'ensemble des sites qui utilisent Misakey",
-    "success": "Votre photo de profil a été mise à jour",
-    "upload": {
-      "title": "Upload photo",
-      "subtitle": "Les fichiers .jpg .jpeg .png .tiff .gif de moins de 3mo sont acceptés"
-    },
+    "label": "Photo",
+    "action": "Modifier",
+    "helperText": "Une photo permet de personnaliser votre compte",
     "error": {
       "size": "Taille maximale dépassée",
       "format": "Format incorrect. Formats acceptés: .jpg .jpeg .png .tiff .gif"
@@ -47,8 +43,9 @@
   },
   "displayName": {
     "label": "Nom public",
+    "action": "Editer",
     "placeholder": "Rose Flamingo",
-    "helperText": "Vous pouvez choisir un nom entre 3 et 25 caractères.",
+    "helperText": "Vous pouvez choisir un nom entre 3 et 25 caractères, composé de lettres, de chiffres et d'espaces.",
     "error": {
       "invalid": "Le nom public doit comporter entre 3 et 20 caractères, composés de lettres, de chiffres et d'espaces",
       "malformed": "Le nom public ne peut comporter que des lettres, des chiffres et des espaces"
@@ -76,12 +73,15 @@
   "password": {
     "label": "Mot de passe",
     "placeholder": "********",
+    "action": "Editer",
+    "helperText": "Utilisez au moins huit caractères avec des lettres, des chiffres et des symboles",
     "error": {
       "invalid": "Le mot de passe n'est pas le bon",
       "malformed": "Le mot de passe doit contenir au moins 8 caractères"
     }
   },
   "passwordConfirm": {
+    "label": "Confirmer",
     "error": {
       "malformed": "Les mots de passe ne correspondent pas"
     }

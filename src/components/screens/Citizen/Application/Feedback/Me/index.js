@@ -45,14 +45,27 @@ const POST_RATING_ENDPOINT = {
   auth: true,
 };
 
+const UPDATE_RATING_ENDPOINT = {
+  method: 'PATCH',
+  path: '/ratings/:id',
+  auth: true,
+};
+
 // HELPERS
 const pickInitialValues = pick([VALUE_FIELD, COMMENT_FIELD]);
 
-const postFeedback = (applicationId, userId, form) => API
-  .use(POST_RATING_ENDPOINT)
-  .build(null, objectToSnakeCase({ userId, applicationId, ...form }))
-  .send();
-
+const postFeedback = (applicationId, userId, form, rating) => {
+  if (isNil(rating)) {
+    return API
+      .use(POST_RATING_ENDPOINT)
+      .build(null, objectToSnakeCase({ userId, applicationId, ...form }))
+      .send();
+  }
+  return API
+    .use(UPDATE_RATING_ENDPOINT)
+    .build({ id: rating.id }, objectToSnakeCase(form))
+    .send();
+};
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -72,10 +85,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const useOnSubmit = (application, userId, enqueueSnackbar, setError, history, t) => useCallback(
+const useOnSubmit = (
+  application, userId, enqueueSnackbar, setError, history, t, rating,
+) => useCallback(
   (form, { setSubmitting }) => {
     const { id, mainDomain } = application;
-    return postFeedback(id, userId, form)
+    return postFeedback(id, userId, form, rating)
       .then(() => {
         enqueueSnackbar(t('screens:feedback.me.success'), { variant: 'success' });
         history.push(generatePath(routes.citizen.application.info, { mainDomain }));
@@ -85,7 +100,7 @@ const useOnSubmit = (application, userId, enqueueSnackbar, setError, history, t)
       })
       .finally(() => { setSubmitting(false); });
   },
-  [application, userId, enqueueSnackbar, setError, history, t],
+  [application, userId, enqueueSnackbar, setError, history, t, rating],
 );
 
 // COMPONENTS
@@ -122,7 +137,7 @@ const FeedbackMeScreen = ({ application, userId, rating, history, match: { param
     [goBackPath, history],
   );
 
-  const onSubmit = useOnSubmit(application, userId, enqueueSnackbar, setError, history, t);
+  const onSubmit = useOnSubmit(application, userId, enqueueSnackbar, setError, history, t, rating);
 
   if (error) {
     return <ScreenError httpStatus={error} />;

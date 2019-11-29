@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Route, Switch } from 'react-router-dom';
 
@@ -6,9 +6,9 @@ import routes from 'routes';
 import ApplicationSchema from 'store/schemas/Application';
 import withApplication from 'components/smart/withApplication';
 
+import ButtonBurger from 'components/dumb/Button/Burger';
 import ResponseHandlerWrapper from 'components/dumb/ResponseHandlerWrapper';
 import RouteService, { DEFAULT_SERVICE_ENTITY } from 'components/smart/Route/Service';
-import Screen from 'components/dumb/Screen';
 import NotFound from 'components/screens/NotFound';
 
 import Drawer from 'components/screens/Admin/Service/Drawer';
@@ -42,10 +42,13 @@ function Service({
   userId,
   userRoles,
 }) {
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
+
   const service = useMemo(
     () => (isDefaultDomain ? DEFAULT_SERVICE_ENTITY : entity),
     [isDefaultDomain, entity],
   );
+
   const workspace = useLocationWorkspace();
   const requiredScope = useMemo(() => service && `rol.${workspace}.${service.id}`, [service, workspace]);
   const userHasRole = useUserHasRole(userRoles, requiredScope);
@@ -54,19 +57,30 @@ function Service({
     [mainDomain, requiredScope, userHasRole, workspace],
   );
 
+  const appBarProps = useMemo(() => ({
+    shift: isDrawerOpen,
+    items: isDrawerOpen ? [] : [<ButtonBurger onClick={() => setDrawerOpen(true)} />],
+  }), [isDrawerOpen, setDrawerOpen]);
+
   return (
-    <Screen className="Service">
+    <div className="Service">
       <ResponseHandlerWrapper
         error={error}
         entity={service}
         isFetching={isFetching}
       >
-        <Drawer mainDomain={mainDomain} userHasRole={userHasRole}>
+        <Drawer
+          mainDomain={mainDomain}
+          open={isDrawerOpen}
+          onClose={() => setDrawerOpen(false)}
+          userHasRole={userHasRole}
+        >
           <Switch>
             <RouteService
               path={routes.admin.service.claim._}
               component={ServiceClaim}
               componentProps={{
+                appBarProps,
                 service,
                 name: ADMIN_SERVICE_SCREEN_NAMES.CLAIM,
                 userId,
@@ -77,43 +91,63 @@ function Service({
             <RouteService
               path={routes.admin.service.information._}
               component={ServiceInformation}
-              componentProps={{ service, name: ADMIN_SERVICE_SCREEN_NAMES.INFORMATION }}
+              componentProps={{
+                appBarProps,
+                service,
+                name: ADMIN_SERVICE_SCREEN_NAMES.INFORMATION,
+              }}
               {...routeServiceProps}
             />
             <RouteService
               path={routes.admin.service.sso._}
               component={ServiceSSO}
-              componentProps={{ service, name: ADMIN_SERVICE_SCREEN_NAMES.SSO }}
+              componentProps={{
+                appBarProps,
+                service,
+                name: ADMIN_SERVICE_SCREEN_NAMES.SSO,
+              }}
               {...routeServiceProps}
             />
             <RouteService
               path={routes.admin.service.users._}
               component={ServiceUsers}
-              componentProps={{ service, name: ADMIN_SERVICE_SCREEN_NAMES.USERS }}
+              componentProps={{
+                appBarProps,
+                service,
+                name: ADMIN_SERVICE_SCREEN_NAMES.USERS,
+              }}
               {...routeServiceProps}
             />
             <RouteService
               path={routes.admin.service.data._}
               component={ServiceData}
-              componentProps={{ service, name: ADMIN_SERVICE_SCREEN_NAMES.DATA }}
+              componentProps={{
+                appBarProps,
+                service,
+                name: ADMIN_SERVICE_SCREEN_NAMES.DATA,
+              }}
               {...routeServiceProps}
             />
             <RouteService
               exact
               path={routes.admin.service.home._}
               component={ServiceHome}
-              componentProps={{ service, name: ADMIN_SERVICE_SCREEN_NAMES.HOME }}
+              componentProps={{
+                appBarProps,
+                service,
+                name: ADMIN_SERVICE_SCREEN_NAMES.HOME,
+              }}
               {...routeServiceProps}
             />
             <Route
               exact
               path={match.path}
-              component={NotFound}
+              render={(routerProps) => <NotFound {...routerProps} appBarProps={appBarProps} />}
             />
           </Switch>
         </Drawer>
       </ResponseHandlerWrapper>
-    </Screen>
+    </div>
   );
 }
 

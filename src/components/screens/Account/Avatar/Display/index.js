@@ -3,12 +3,10 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Navigation from 'components/dumb/Navigation';
-import Button from '@material-ui/core/Button';
-import ButtonSubmit from 'components/dumb/Button/Submit';
-import BoxSection from 'components/dumb/Box/Section';
+import Card from 'components/dumb/Card';
+import ScreenAction from 'components/dumb/Screen/Action';
+import Subtitle from 'components/dumb/Typography/Subtitle';
 
 import routes from 'routes';
 
@@ -26,39 +24,44 @@ const AccountAvatarDisplay = ({
   name,
   previewName,
   history,
+  state,
   ...rest
 }) => (
-  <div className="Display">
-    <Navigation history={history} title={t('profile:avatar.title')} />
+  <ScreenAction
+    className="Display"
+    title={t('screens:account.avatar.title')}
+    state={state}
+    pushPath={routes.account._}
+    hideAppBar
+  >
     <Container maxWidth="md" className="content">
-      <Typography variant="body2" color="textSecondary" align="left" className="subtitle">
-        {t('profile:avatar.subtitle')}
-      </Typography>
-      <BoxSection>
+      <Subtitle>
+        {t('screens:account.avatar.subtitle')}
+      </Subtitle>
+      <Card
+        primary={{
+          type: 'submit',
+          isLoading: isSubmitting,
+          isValid,
+          'aria-label': t('common:submit'),
+          text: t('common:submit'),
+        }}
+        secondary={{
+          to: routes.account.profile.avatar.upload,
+          component: Link,
+          'aria-label': t('common:edit'),
+          text: t('common:edit'),
+        }}
+      >
         <FormImage
           previewName={previewName}
           name={name}
           text={displayName}
           {...rest}
         />
-
-        <div className="controls">
-          <Button
-            color="secondary"
-            to={routes.account.profile.avatar.upload}
-            component={Link}
-            aria-label={t('edit')}
-          >
-            {t('edit')}
-          </Button>
-          <ButtonSubmit isSubmitting={isSubmitting} isValid={isValid} aria-label={t('submit')}>
-            {t('submit')}
-          </ButtonSubmit>
-        </div>
-      </BoxSection>
-
+      </Card>
     </Container>
-  </div>
+  </ScreenAction>
 );
 
 AccountAvatarDisplay.propTypes = {
@@ -69,12 +72,14 @@ AccountAvatarDisplay.propTypes = {
   avatarUri: PropTypes.string,
   name: PropTypes.string.isRequired,
   previewName: PropTypes.string.isRequired,
+  state: PropTypes.object,
   history: PropTypes.object.isRequired,
 };
 
 AccountAvatarDisplay.defaultProps = {
   displayName: '',
   avatarUri: '',
+  state: {},
 };
 
-export default withTranslation()(AccountAvatarDisplay);
+export default withTranslation(['common', 'screens'])(AccountAvatarDisplay);

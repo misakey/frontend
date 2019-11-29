@@ -37,10 +37,9 @@ function ApplicationNavTabs({ location, mainDomain, scrollButtons, t, isAuthenti
 
   const applicationTabsLinks = React.useMemo(() => Object.keys(pickBy({
     info: true,
+    thirdParty: true,
     // FIXME : remove when unauthenticated view with CTA to singin is implemented
     personalData: window.env.PLUGIN ? isAuthenticated : true,
-    // FIXME : remove when thirdparty in webapp is implemented
-    thirdParty: window.env.PLUGIN,
     myAccount: false,
   }, (value) => value === true)), [isAuthenticated]);
 
@@ -80,7 +79,7 @@ function ApplicationNavTabs({ location, mainDomain, scrollButtons, t, isAuthenti
             className={classes.linkTab}
             component={Link}
             label={t(`screens:application.nav.${link}`)}
-            to={generatePath(routes.citizen.application[link], { mainDomain }) + location.search}
+            to={generatePath(routes.citizen.application[link], { mainDomain })}
           />
         ))}
       </Tabs>

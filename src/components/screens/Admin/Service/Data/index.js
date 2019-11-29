@@ -1,11 +1,22 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import Container from '@material-ui/core/Container';
+import ScreenAction from 'components/dumb/Screen/Action';
 
-function ServiceData() {
+function ServiceData({ appBarProps }) {
   return (
-    <section id="ServiceData">
-      <h2>ServiceData</h2>
-    </section>
+    <ScreenAction title="Data" appBarProps={appBarProps}>
+      <Container />
+    </ScreenAction>
   );
 }
+
+ServiceData.propTypes = {
+  appBarProps: PropTypes.object,
+};
+
+ServiceData.defaultProps = {
+  appBarProps: {},
+};
 
 export default ServiceData;

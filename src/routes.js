@@ -57,6 +57,7 @@ const routes = {
     error: '/auth/error',
     recover: '/auth/recover',
     signIn: '/auth/login',
+    redirectToSignIn: '/login',
     signOut: '/logout',
     signUp: {
       _: '/auth/register',

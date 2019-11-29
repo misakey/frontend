@@ -18,13 +18,6 @@ export const themeOptions = {
   typography: {
     useNextVariants: true,
   },
-  overrides: {
-    MuiLink: {
-      root: {
-        color: common.secondary,
-      },
-    },
-  },
 };
 
 export default createMuiTheme(themeOptions);

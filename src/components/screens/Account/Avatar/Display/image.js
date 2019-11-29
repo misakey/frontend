@@ -44,6 +44,7 @@ let FormImageField = ({
   field,
   text,
   helperText,
+  showImage,
   t,
 }) => {
   const image = useImage(field);
@@ -51,9 +52,9 @@ let FormImageField = ({
   return (
     <FormControl>
       {
-        isNil(image)
-          ? (null)
-          : (<AvatarDetailed image={image} text={text} />)
+        showImage
+          ? (<AvatarDetailed image={image} text={text} />)
+          : (null)
       }
       <FormHelperText error={displayError}>
         {displayError ? t(errorKeys) : helperText}
@@ -68,12 +69,14 @@ FormImageField.propTypes = {
   errorKeys: PropTypes.arrayOf(PropTypes.string).isRequired,
   field: PropTypes.shape({ name: PropTypes.string.isRequired, value: PropTypes.any }).isRequired,
   helperText: PropTypes.string,
+  showImage: PropTypes.bool,
   text: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
 };
 
 FormImageField.defaultProps = {
   helperText: '',
+  showImage: false,
 };
 
 FormImageField = withTranslation('fields')(withErrors(FormImageField));
@@ -92,13 +95,20 @@ const FormImage = ({
     () => prop(previewName, values),
     [values, previewName],
   );
+
+  const hasPreview = useMemo(
+    () => !isNil(preview),
+    [preview],
+  );
+
   return (
     <Box my={2} className={classes.box}>
-      {preview && <AvatarDetailed image={preview} text={text} />}
+      {hasPreview && <AvatarDetailed image={preview} text={text} />}
       <Field
         name={name}
         text={text}
         component={FormImageField}
+        showImage={!hasPreview}
         {...rest}
       />
     </Box>

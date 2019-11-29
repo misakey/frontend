@@ -11,7 +11,6 @@ import useAsync from '@misakey/hooks/useAsync';
 
 import identity from '@misakey/helpers/identity';
 import isNil from '@misakey/helpers/isNil';
-import prop from '@misakey/helpers/prop';
 import head from '@misakey/helpers/head';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
@@ -39,9 +38,6 @@ export const DEFAULT_PROPS = {
 };
 
 // HELPERS
-const getId = prop('id');
-
-
 const fetchMyFeedback = (applicationId, userId) => API
   .use(RATINGS_ENDPOINT)
   .build(null, null, objectToSnakeCase({ applicationId, userId }))
@@ -101,10 +97,10 @@ const withMyFeedback = (mapper = identity) => (Component) => {
 
   // CONNECT
   const mapStateToProps = (state) => {
-    const { profile, token } = state.auth;
+    const { userId, token } = state.auth;
     return {
       isAuthenticated: !!token,
-      userId: getId(profile),
+      userId,
     };
   };
 

@@ -20,6 +20,7 @@ import toFormData from '@misakey/helpers/toFormData';
 import API from '@misakey/api';
 
 import ScreenError from 'components/dumb/Screen/Error';
+import Screen from 'components/dumb/Screen';
 
 // LAZY
 const ServiceLogoDisplay = lazy(() => import('components/screens/Admin/Service/Information/Logo/Display'));
@@ -66,12 +67,7 @@ const useOnSubmit = (
 );
 
 // COMPONENTS
-const ServiceLogo = ({
-  t,
-  service,
-  dispatchUpdate,
-  history,
-}) => {
+const ServiceLogo = ({ appBarProps, t, service, dispatchUpdate, history }) => {
   const [error, setError] = useState();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -90,7 +86,7 @@ const ServiceLogo = ({
     return <ScreenError httpStatus={error} />;
   }
   return (
-    <div className="Avatar">
+    <Screen className="Avatar" appBarProps={appBarProps}>
       <Formik
         validationSchema={logoValidationSchema}
         onSubmit={onSubmit}
@@ -125,20 +121,22 @@ const ServiceLogo = ({
           </Form>
         )}
       </Formik>
-    </div>
+    </Screen>
   );
 };
 
 ServiceLogo.propTypes = {
+  appBarProps: PropTypes.shape({
+    shift: PropTypes.bool,
+    items: PropTypes.arrayOf(PropTypes.node),
+  }),
   service: PropTypes.shape({
     id: PropTypes.string,
     logoUri: PropTypes.string,
     name: PropTypes.string,
   }),
-
   // router props
   history: PropTypes.object.isRequired,
-
   // withTranslation HOC
   t: PropTypes.func.isRequired,
   // CONNECT dispatch
@@ -146,6 +144,7 @@ ServiceLogo.propTypes = {
 };
 
 ServiceLogo.defaultProps = {
+  appBarProps: null,
   service: null,
 };
 

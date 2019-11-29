@@ -1,8 +1,8 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import * as numeral from 'numeral';
-import { generatePath } from 'react-router-dom';
+import { generatePath, Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
 import useWidth from '@misakey/hooks/useWidth';
@@ -10,6 +10,7 @@ import ApplicationSchema from 'store/schemas/Application';
 
 import routes from 'routes';
 
+import omit from '@misakey/helpers/omit';
 import displayIn from '@misakey/helpers/displayIn';
 import { redirectToApp } from 'helpers/plugin';
 
@@ -18,59 +19,81 @@ import { makeStyles } from '@material-ui/core/styles';
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 
+import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import Rating from '@material-ui/lab/Rating';
 import Skeleton from '@material-ui/lab/Skeleton';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import ContactButton from 'components/smart/ContactButton';
 import ApplicationImg from 'components/dumb/Application/Img';
 import FeedbackLink from 'components/dumb/Link/Feedback';
-
-import './index.scss';
+import withDialogConnect from 'components/smart/Dialog/Connect/with';
+import GroupTitles from 'components/dumb/Typography/GroupTitles';
 
 // CONSTANTS
 const SMALL_BREAKPOINTS = ['xs', 'sm'];
-const SPACING = 3;
 const AVATAR_SIZE = { sm: 75, md: 100 };
+const MORE_MENU_ID = 'application-more-menu';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: theme.spacing(SPACING, 0),
-  },
-  grid: {
+  flexGrow: {
     flexGrow: 1,
-    justifyContent: 'center',
+  },
+  flexWrap: {
+    flexWrap: 'wrap',
+    [theme.breakpoints.up('sm')]: {
+      flexWrap: 'nowrap',
+    },
   },
   avatar: {
     borderRadius: 5,
     width: AVATAR_SIZE.sm,
     height: AVATAR_SIZE.sm,
-    marginTop: 5,
+    marginRight: theme.spacing(2),
     [theme.breakpoints.up('md')]: {
       width: AVATAR_SIZE.md,
       height: AVATAR_SIZE.md,
+      marginRight: theme.spacing(4),
     },
   },
   letterAvatar: {
     color: theme.palette.grey[500],
     backgroundColor: theme.palette.grey[200],
   },
-  titles: {
-    width: `calc(100% - ${AVATAR_SIZE.sm}px - ${theme.spacing(SPACING)}px - 2px)`,
+  subtitle: {
+    textAlign: 'justify',
+  },
+  boxButtons: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'space-between',
+    [theme.breakpoints.down('xs')]: {
+      marginTop: theme.spacing(2),
+    },
     [theme.breakpoints.up('sm')]: {
-      minWidth: 300,
-      width: 'auto',
+      flexDirection: 'column',
+      justifyContent: 'space-around',
+      width: 160,
+      marginLeft: theme.spacing(4),
     },
   },
-  nameTitle: {
-    overflow: 'hidden',
+  button: {
+    [theme.breakpoints.up('sm')]: {
+      width: 160,
+    },
   },
-  divider: {
-    margin: theme.spacing(1, 0),
-    backgroundColor: theme.palette.grey[200],
+  buttonFill: {
+    [theme.breakpoints.down('xs')]: {
+      display: 'flex',
+      flexGrow: 1,
+      marginRight: theme.spacing(2),
+    },
   },
   ratingIcon: {
     color: theme.palette.primary.main,
@@ -86,6 +109,8 @@ const useIsSmall = (width) => useMemo(
 );
 
 // COMPONENTS
+const DialogConnectMenuItem = withDialogConnect(MenuItem);
+
 function OnLoading({ width }) {
   const isSmall = useIsSmall(width);
   return (
@@ -106,25 +131,94 @@ OnLoading.propTypes = {
 };
 
 function ApplicationHeader({
-  className,
-  dpoEmail,
-  homepage,
-  id,
+  application,
   isLoading,
-  logoUri,
-  name,
-  mainDomain,
-  avgRating,
-  totalRating,
-  shortDesc,
-  published,
-  t,
-  wasContacted,
   onContributionDpoEmailClick,
   readOnly,
+  t,
+  wasContacted,
+  ...rest
 }) {
   const classes = useStyles();
   const width = useWidth();
+  const {
+    dpoEmail,
+    homepage,
+    id,
+    logoUri,
+    name,
+    mainDomain,
+    avgRating,
+    totalRating,
+    published,
+  } = application;
+
+  const [moreMenuAnchorEl, setMoreMenuAnchorEl] = useState(null);
+  const moreMenuOpen = useMemo(
+    () => !isNil(moreMenuAnchorEl),
+    [moreMenuAnchorEl],
+  );
+  const onMoreMenuClick = useCallback(
+    (event) => { setMoreMenuAnchorEl(event.currentTarget); },
+    [setMoreMenuAnchorEl],
+  );
+
+  const onMoreMenuClose = useCallback(
+    () => { setMoreMenuAnchorEl(null); },
+    [setMoreMenuAnchorEl],
+  );
+
+  const dpoClaimRoute = useMemo(
+    () => generatePath(routes.dpo.service.claim._, { mainDomain }),
+    [mainDomain],
+  );
+
+  const onDpoClaimClick = useCallback(
+    () => {
+      onMoreMenuClose();
+      redirectToApp(dpoClaimRoute);
+    },
+    [onMoreMenuClose, dpoClaimRoute],
+  );
+
+  const dpoClaimProps = useMemo(
+    () => (window.env.PLUGIN
+      ? {
+        onClick: onDpoClaimClick,
+      } : {
+        to: dpoClaimRoute,
+        onClick: onMoreMenuClose,
+        component: Link,
+      }
+    ),
+    [dpoClaimRoute, onDpoClaimClick, onMoreMenuClose],
+  );
+
+  // @FIXME: Uncomment when admin claim is updated
+  // const adminClaimRoute = useMemo(
+  //   () => generatePath(routes.admin.service.claim._, { mainDomain }),
+  //   [mainDomain],
+  // );
+
+  // const onAdminClaimClick = useCallback(
+  //   () => {
+  //     onMoreMenuClose();
+  //     redirectToApp(adminClaimRoute);
+  //   },
+  //   [onMoreMenuClose, adminClaimRoute],
+  // );
+
+  // const adminClaimProps = useMemo(
+  //   () => (window.env.PLUGIN
+  //     ? {
+  //       onClick: onAdminClaimClick,
+  //     } : {
+  //       to: adminClaimRoute,
+  //       onClick: onMoreMenuClose,
+  //       component: Link,
+  //     }),
+  //   [adminClaimRoute, onAdminClaimClick, onMoreMenuClose],
+  // );
 
   const addFeedbackRoute = useMemo(
     () => generatePath(routes.citizen.application.feedback.me, { mainDomain }),
@@ -153,13 +247,14 @@ function ApplicationHeader({
   const applicationName = useMemo(() => (name || mainDomain), [name, mainDomain]);
 
   return (
-    <header className={clsx(className, classes.root)}>
-      <Grid container spacing={SPACING} className={classes.grid} alignItems="center">
-        <Grid item>
+    <Box component="header" {...omit(rest, ['tReady', 'i18n'])}>
+      <Box display="flex" className={classes.flexWrap}>
+        <Box display="flex" flexWrap="nowrap" alignItems="center" className={classes.flexGrow}>
           <ApplicationImg
             alt={t('screens:application.info.logoAlt', { applicationName })}
             component="a"
             target="_blank"
+            rel="noopener noreferrer"
             href={homepage}
             fontSize="large"
             src={!isEmpty(logoUri) ? logoUri : undefined}
@@ -167,57 +262,53 @@ function ApplicationHeader({
           >
             {applicationName.slice(0, 3)}
           </ApplicationImg>
-        </Grid>
-        <Grid item className={classes.titles}>
-          {isLoading ? <OnLoading width={width} /> : (
-            <>
-              <Typography
-                variant={['xs', 'sm'].includes(width) ? 'h5' : 'h4'}
-                className={classes.nameTitle}
-              >
-                {applicationName}
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                {shortDesc}
-              </Typography>
-            </>
-          )}
-          <Grid container spacing={1} alignItems="center" wrap="nowrap">
-            <Grid item>
-              <Typography color="primary" variant="h5">{avgRatingText}</Typography>
-            </Grid>
-            <Grid item>
-              <Rating
-                readOnly
-                size="large"
-                value={avgRating}
-                classes={{ iconFilled: classes.ratingIcon }}
+          <Box>
+            {isLoading ? <OnLoading width={width} /> : (
+              <GroupTitles
+                title={applicationName}
+                subtitle={mainDomain}
+                subtitleProps={{ className: classes.subtitle }}
               />
+            )}
+            <Grid container spacing={1} alignItems="center" wrap="nowrap">
+              <Grid item>
+                <Typography color="primary" variant="h5">{avgRatingText}</Typography>
+              </Grid>
+              <Grid item>
+                <Rating
+                  readOnly
+                  size="large"
+                  value={avgRating}
+                  classes={{ iconFilled: classes.ratingIcon }}
+                />
+              </Grid>
             </Grid>
-          </Grid>
-          <Typography color="textSecondary" variant="subtitle1" display="inline">
-            {t('screens:application.info.ratingCount', { count: totalRating })}
-          </Typography>
-          {feedbackApp.id && !readOnly && published && (
-            <FeedbackLink
-              application={feedbackApp}
-              to={addFeedbackRoute}
-              dialogConnectProps={dialogConnectProps}
-              variant="subtitle1"
-              className={classes.rateLink}
-            >
-              {t('screens:application.info.rate')}
-            </FeedbackLink>
-          )}
-        </Grid>
+            <Typography color="textSecondary" variant="subtitle1" display="inline">
+              {t('screens:application.info.ratingCount', { count: totalRating })}
+            </Typography>
+            {feedbackApp.id && !readOnly && published && (
+              <FeedbackLink
+                application={feedbackApp}
+                to={addFeedbackRoute}
+                dialogConnectProps={dialogConnectProps}
+                variant="subtitle1"
+                color="secondary"
+                className={classes.rateLink}
+              >
+                {t('screens:application.info.rate')}
+              </FeedbackLink>
+            )}
+          </Box>
+        </Box>
         {(!readOnly && !isLoading) && (
-          <Grid item>
+          <Box className={classes.boxButtons}>
             {(window.env.PLUGIN && dpoEmail)
               ? (
                 <Button
                   onClick={openInNewTab}
                   variant="contained"
                   color="secondary"
+                  className={clsx(classes.button, classes.buttonFill)}
                 >
                   {t('screens:application.info.contact.goToApp')}
                 </Button>
@@ -230,17 +321,61 @@ function ApplicationHeader({
                   mainDomain={mainDomain}
                   contactedView={wasContacted}
                   dialogConnectProps={dialogConnectProps}
+                  className={clsx(classes.button, classes.buttonFill)}
                 />
               )}
-          </Grid>
+            {/* @FIXME create a generic menu button */}
+            <Button
+              variant="outlined"
+              color="secondary"
+              aria-controls={MORE_MENU_ID}
+              aria-haspopup="true"
+              onClick={onMoreMenuClick}
+              className={classes.button}
+            >
+              {t('common:more')}
+              <ArrowDropDownIcon />
+            </Button>
+            <Menu
+              id={MORE_MENU_ID}
+              anchorEl={moreMenuAnchorEl}
+              keepMounted
+              open={moreMenuOpen}
+              onClose={onMoreMenuClose}
+            >
+              {published && (
+                // @FIXME: Ensure dpo claim is updated
+                <DialogConnectMenuItem
+                  {...dpoClaimProps}
+                >
+                  {t('common:claim.dpo')}
+                </DialogConnectMenuItem>
+              )}
+              {/* @FIXME: Uncomment when admin claim is updated */}
+              {/* <DialogConnectMenuItem
+                {...adminClaimProps}
+              >
+                {t('common:claim.admin')}
+              </DialogConnectMenuItem> */}
+              <MenuItem
+                component="a"
+                onClick={onMoreMenuClose}
+                href="mailto:love@misakey.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t('common:report')}
+              </MenuItem>
+            </Menu>
+          </Box>
         )}
-      </Grid>
-    </header>
+      </Box>
+    </Box>
   );
 }
 
 ApplicationHeader.propTypes = {
-  ...ApplicationSchema.propTypes,
+  application: PropTypes.shape(ApplicationSchema.propTypes),
   className: PropTypes.string,
   isLoading: PropTypes.bool,
   t: PropTypes.func.isRequired,
@@ -250,6 +385,7 @@ ApplicationHeader.propTypes = {
 };
 
 ApplicationHeader.defaultProps = {
+  application: {},
   className: '',
   isLoading: false,
   wasContacted: false,

@@ -14,18 +14,17 @@ import log from '@misakey/helpers/log';
 import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
-import Navigation from 'components/dumb/Navigation';
-import ButtonSubmit from 'components/dumb/Button/Submit';
+import ScreenAction from 'components/dumb/Screen/Action';
+import Subtitle from 'components/dumb/Typography/Subtitle';
+import BoxControls from 'components/dumb/Box/Controls';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
-import ScreenError from 'components/dumb/Screen/Error';
-import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import Box from '@material-ui/core/Box';
 
 import { ownerCryptoContext as cryptoContext } from '@misakey/crypto';
 import { BackupDecryptionError } from '@misakey/crypto/Errors/classes';
 
-import './index.scss';
-
+// CONSTANTS
 const INITIAL_VALUES = {
   passwordOld: '',
   passwordNew: '',
@@ -67,13 +66,13 @@ async function updatePassword(
       .send();
     if (!isNil(backupDecryptionError)) {
       log(backupDecryptionError, 'error');
-      enqueueSnackbar(t('profile:password.backupDecryptionError'), { variant: 'error' });
+      enqueueSnackbar(t('screens:account.password.backupDecryptionError'), { variant: 'error' });
     }
     return response;
   } catch (e) {
     if (e.error_code === 'invalid_password' && isNil(backupDecryptionError)) {
       log('server indicated a bad password but backup decryption seems to have succeeded', 'error');
-      enqueueSnackbar(t('profile:password.backupDecryptionError'), { variant: 'error' });
+      enqueueSnackbar(t('screens:account.password.backupDecryptionError'), { variant: 'error' });
     }
     // note that we do *not* display an "backupDecryptionError" error in the UI
     // if the the backup did failed to decrypt
@@ -85,13 +84,13 @@ async function updatePassword(
 
 // HOOKS
 const useOnSubmit = (
-  profile, enqueueSnackbar, setError, history, t,
+  profile, enqueueSnackbar, setInternalError, history, t,
 ) => useMemo(
   () => (form, { setSubmitting, setFieldError }) => (
     updatePassword(profile.id, form, enqueueSnackbar, t)
       .then(() => {
         cryptoContext.commitPasswordChange();
-        enqueueSnackbar(t('profile:password.success'), { variant: 'success' });
+        enqueueSnackbar(t('screens:account.password.success'), { variant: 'success' });
         history.push(routes.account._);
       })
       .catch((error) => {
@@ -99,89 +98,103 @@ const useOnSubmit = (
           setFieldError(OLD_PASSWORD_FIELD_NAME, errorTypes.invalid);
         } else {
           const { httpStatus } = error;
-          setError({ httpStatus });
+          setInternalError({ httpStatus });
         }
       })
       .finally(() => { setSubmitting(false); })
   ),
-  [profile, enqueueSnackbar, setError, history, t],
+  [profile, enqueueSnackbar, setInternalError, history, t],
 );
 
 // COMPONENTS
-const AccountName = ({
+const AccountPassword = ({
   t,
   profile,
   history,
+  error,
+  isFetching,
 }) => {
-  const [error, setError] = useState();
+  const [internalError, setInternalError] = useState();
   const { enqueueSnackbar } = useSnackbar();
+
+  const state = useMemo(
+    () => ({ error: error || internalError, isLoading: isFetching }),
+    [error, internalError, isFetching],
+  );
 
   const onSubmit = useOnSubmit(
     profile,
     enqueueSnackbar,
-    setError,
+    setInternalError,
     history,
     t,
   );
 
   if (isNil(profile)) { return null; }
 
-  if (error) {
-    return <ScreenError {...error} />;
-  }
   return (
-    <div className="Name">
-      <div className="header">
-        <Navigation history={history} title={t('profile:password.title')} />
-        <Typography variant="body2" color="textSecondary" align="left" className="subtitle">
-          {t('profile:password.subtitle')}
-        </Typography>
-      </div>
-      <Formik
-        validationSchema={passwordValidationSchema}
-        onSubmit={onSubmit}
-        initialValues={INITIAL_VALUES}
-        isInitialValid
-      >
-        {({ isSubmitting, isValid }) => (
-          <Container maxWidth="sm" className="content">
-            <Form className="form">
+    <ScreenAction
+      title={t('screens:account.password.title')}
+      state={state}
+      hideAppBar
+    >
+      <Container maxWidth="md">
+        <Subtitle>
+          {t('screens:account.password.subtitle')}
+        </Subtitle>
+        <Formik
+          validationSchema={passwordValidationSchema}
+          onSubmit={onSubmit}
+          initialValues={INITIAL_VALUES}
+          isInitialValid
+        >
+          {({ isSubmitting, isValid }) => (
+            <Form>
+              <Box mb={2}>
+                <Field
+                  type="password"
+                  name={OLD_PASSWORD_FIELD_NAME}
+                  component={FieldTextPasswordRevealable}
+                  label={t('fields:passwordOld.label')}
+                />
+              </Box>
+              <Box mb={2}>
+                <Field
+                  type="password"
+                  name="passwordNew"
+                  component={FieldTextPasswordRevealable}
+                  label={t('fields:password.label')}
+                  helperText={t('fields:password.helperText')}
+                />
+              </Box>
               <Field
-                className="field"
-                type="password"
-                name={OLD_PASSWORD_FIELD_NAME}
-                component={FieldTextPasswordRevealable}
-                label={t('profile:form.field.passwordOld.label')}
-              />
-              <Field
-                className="field"
-                type="password"
-                name="passwordNew"
-                component={FieldTextPasswordRevealable}
-                label={t('profile:form.field.password.label')}
-                helperText={t('profile:form.field.password.hint')}
-              />
-              <Field
-                className="field"
                 type="password"
                 name="passwordConfirm"
                 component={FieldTextPasswordRevealable}
-                label={t('profile:form.field.passwordConfirm.label')}
+                label={t('fields:passwordConfirm.label')}
               />
-              <ButtonSubmit isSubmitting={isSubmitting} isValid={isValid}>
-                {t('submit')}
-              </ButtonSubmit>
+              <BoxControls
+                mt={3}
+                primary={{
+                  type: 'submit',
+                  isLoading: isSubmitting,
+                  isValid,
+                  'aria-label': t('common:submit'),
+                  text: t('common:submit'),
+                }}
+              />
             </Form>
-          </Container>
-        )}
-      </Formik>
-    </div>
+          )}
+        </Formik>
+      </Container>
+    </ScreenAction>
   );
 };
 
-AccountName.propTypes = {
+AccountPassword.propTypes = {
   profile: PropTypes.shape({ id: PropTypes.string }),
-
+  error: PropTypes.instanceOf(Error),
+  isFetching: PropTypes.bool,
   // router props
   history: PropTypes.object.isRequired,
 
@@ -189,8 +202,10 @@ AccountName.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-AccountName.defaultProps = {
+AccountPassword.defaultProps = {
   profile: null,
+  error: null,
+  isFetching: false,
 };
 
-export default withTranslation(['common', 'profile'])(AccountName);
+export default withTranslation(['common', 'screens', 'fields'])(AccountPassword);

@@ -36,7 +36,7 @@ const fetchApplicationDomains = (applicationId) => API
   .send();
 
 // COMPONENTS
-const ServiceInformation = ({ service, dispatchUpdate }) => {
+const ServiceInformation = ({ service, dispatchUpdate, ...rest }) => {
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState();
 
@@ -67,26 +67,36 @@ const ServiceInformation = ({ service, dispatchUpdate }) => {
         <Route
           exact
           path={routes.admin.service.information._}
-          render={(routerProps) => <InformationHome service={service} {...routerProps} />}
+          render={(routerProps) => (
+            <InformationHome service={service} {...routerProps} {...rest} />
+          )}
         />
         <Route
           exact
           path={routes.admin.service.information.name}
-          render={(routerProps) => <InformationName service={service} {...routerProps} />}
+          render={(routerProps) => (
+            <InformationName service={service} {...routerProps} {...rest} />
+          )}
         />
         <Route
           path={routes.admin.service.information.logo._}
-          render={(routerProps) => <InformationLogo service={service} {...routerProps} />}
+          render={(routerProps) => (
+            <InformationLogo service={service} {...routerProps} {...rest} />
+          )}
         />
         <Route
           exact
           path={routes.admin.service.information.shortDesc}
-          render={(routerProps) => <InformationShortDesc service={service} {...routerProps} />}
+          render={(routerProps) => (
+            <InformationShortDesc service={service} {...routerProps} {...rest} />
+          )}
         />
         <Route
           exact
           path={routes.admin.service.information.longDesc}
-          render={(routerProps) => <InformationLongDesc service={service} {...routerProps} />}
+          render={(routerProps) => (
+            <InformationLongDesc service={service} {...routerProps} {...rest} />
+          )}
         />
       </Switch>
     </ResponseHandlerWrapper>

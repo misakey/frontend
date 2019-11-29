@@ -21,10 +21,10 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Navigation from 'components/dumb/Navigation';
 import BoxSection from 'components/dumb/Box/Section';
 import ButtonCopy from 'components/dumb/Button/Copy';
-import ButtonProgress from 'components/dumb/Button/Progress';
 import ButtonSubmit from 'components/dumb/Button/Submit';
 import FieldTextPasswordRevealable, { ADORNMENT_POSITION } from 'components/dumb/Field/Text/Password/Revealable';
 import ScreenError from 'components/dumb/Screen/Error';
+import ScreenAction from 'components/dumb/Screen/Action';
 
 const PARENT_ROUTE = routes.admin.service.sso._;
 
@@ -69,11 +69,7 @@ const useOnGenerateSecret = (
 
 
 // COMPONENTS
-const SSOProductionSetup = ({
-  t,
-  service,
-  history,
-}) => {
+const SSOProductionSetup = ({ appBarProps, t, service, history }) => {
   const classes = useStyles();
 
   const [error, setError] = useState();
@@ -103,12 +99,16 @@ const SSOProductionSetup = ({
   }
 
   return (
-    <>
+    <ScreenAction
+      history={history}
+      pushPath={pushPath}
+      appBarProps={appBarProps}
+      title={t('service:sso.productionSetup.title')}
+    >
       <Navigation
         history={history}
         pushPath={pushPath}
         toolbarProps={{ maxWidth: 'md' }}
-        title={t('service:sso.productionSetup.title')}
       />
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
@@ -154,14 +154,12 @@ const SSOProductionSetup = ({
               value={clientSecret}
             />
             <Box display="flex" justifyContent="flex-end" mt={1}>
-              <ButtonProgress
-                isProgressing={isSubmitting}
+              <ButtonSubmit
+                isSubmitting={isSubmitting}
                 onClick={onGenerateSecret}
                 disabled={prodStatus}
-                variant="text"
-              >
-                {t('common:regenerate', 'Regenerate')}
-              </ButtonProgress>
+                text={t('common:regenerate', 'Regenerate')}
+              />
               <Box
                 ml={1}
                 component={ButtonSubmit}
@@ -175,11 +173,15 @@ const SSOProductionSetup = ({
           </Box>
         </BoxSection>
       </Container>
-    </>
+    </ScreenAction>
   );
 };
 
 SSOProductionSetup.propTypes = {
+  appBarProps: PropTypes.shape({
+    shift: PropTypes.bool,
+    items: PropTypes.arrayOf(PropTypes.node),
+  }),
   service: PropTypes.shape(ServiceSchema.propTypes),
   // router props
   history: PropTypes.object.isRequired,
@@ -189,6 +191,7 @@ SSOProductionSetup.propTypes = {
 };
 
 SSOProductionSetup.defaultProps = {
+  appBarProps: null,
   service: null,
 };
 

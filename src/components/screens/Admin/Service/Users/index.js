@@ -1,11 +1,22 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import Container from '@material-ui/core/Container';
+import ScreenAction from 'components/dumb/Screen/Action';
 
-function ServiceUsers() {
+function ServiceUsers({ appBarProps }) {
   return (
-    <section id="ServiceUsers">
-      <h2>ServiceUsers</h2>
-    </section>
+    <ScreenAction title="Users" appBarProps={appBarProps}>
+      <Container />
+    </ScreenAction>
   );
 }
+
+ServiceUsers.propTypes = {
+  appBarProps: PropTypes.object,
+};
+
+ServiceUsers.defaultProps = {
+  appBarProps: {},
+};
 
 export default ServiceUsers;

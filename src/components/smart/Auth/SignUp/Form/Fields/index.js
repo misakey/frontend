@@ -37,7 +37,7 @@ const SignUpFormFields = ({ t, i18n, tReady, ...fields }) => {
         {'J\'accepte les '}
         <Link
           href={t('footer.links.tos.href')}
-          color="textSecondary"
+          color="secondary"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -47,7 +47,7 @@ const SignUpFormFields = ({ t, i18n, tReady, ...fields }) => {
         {', et la '}
         <Link
           href={t('footer.links.privacy.href')}
-          color="textSecondary"
+          color="secondary"
           target="_blank"
           rel="noopener noreferrer"
         >

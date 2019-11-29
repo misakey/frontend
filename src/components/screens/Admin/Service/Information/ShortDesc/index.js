@@ -20,10 +20,10 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Navigation from 'components/dumb/Navigation';
 import FieldText from 'components/dumb/Form/Field/Text';
 import ButtonSubmit from 'components/dumb/Button/Submit';
 import ScreenError from 'components/dumb/Screen/Error';
+import ScreenAction from 'components/dumb/Screen/Action';
 
 const PARENT_ROUTE = routes.admin.service.information._;
 
@@ -59,12 +59,7 @@ const useOnSubmit = (
 );
 
 // COMPONENTS
-const ServiceShortDesc = ({
-  t,
-  service,
-  dispatchUpdateEntities,
-  history,
-}) => {
+const ServiceShortDesc = ({ appBarProps, t, service, dispatchUpdateEntities, history }) => {
   const [error, setError] = useState();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -90,13 +85,13 @@ const ServiceShortDesc = ({
     return <ScreenError httpStatus={error} />;
   }
   return (
-    <div id="ServiceInformationShortDesc">
-      <Navigation
-        history={history}
-        pushPath={pushPath}
-        toolbarProps={{ maxWidth: 'md' }}
-        title={t('service:information.shortDesc.title')}
-      />
+    <ScreenAction
+      id="ServiceInformationShortDesc"
+      history={history}
+      pushPath={pushPath}
+      appBarProps={appBarProps}
+      title={t('service:information.shortDesc.title')}
+    >
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
           {t('service:information.shortDesc.subtitle')}
@@ -127,11 +122,15 @@ const ServiceShortDesc = ({
           )}
         </Formik>
       </Container>
-    </div>
+    </ScreenAction>
   );
 };
 
 ServiceShortDesc.propTypes = {
+  appBarProps: PropTypes.shape({
+    shift: PropTypes.bool,
+    items: PropTypes.arrayOf(PropTypes.node),
+  }),
   service: PropTypes.shape({ shortDesc: PropTypes.string, mainDomain: PropTypes.string }),
   // router props
   history: PropTypes.object.isRequired,
@@ -142,6 +141,7 @@ ServiceShortDesc.propTypes = {
 };
 
 ServiceShortDesc.defaultProps = {
+  appBarProps: null,
   service: null,
 };
 

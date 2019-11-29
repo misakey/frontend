@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 import { Link, generatePath, withRouter, matchPath } from 'react-router-dom';
 
@@ -31,15 +30,7 @@ import StorageIcon from '@material-ui/icons/Storage';
 import CheckIcon from '@material-ui/icons/Check';
 
 import routes from 'routes';
-
-import {
-  layoutAppBarShift,
-  layoutAppBarUnshift,
-  layoutBurgerHide,
-  layoutBurgerShow,
-  layoutBurgerUpdate,
-} from 'store/actions/Layout';
-import { screenServiceDrawerClose } from 'store/actions/screens/Service/Drawer';
+import { DRAWER_WIDTH } from 'constants/ui/sizes';
 
 const iOS = isIOS();
 
@@ -70,8 +61,6 @@ export const LIST_ITEMS = {
   },
 };
 
-export const DRAWER_WIDTH = 280;
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -101,6 +90,7 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
     overflowX: 'hidden',
+    zIndex: theme.zIndex.drawer + 2,
   },
   drawerClose: {
     transition: theme.transitions.create('width', {
@@ -159,35 +149,17 @@ const getListItemsClasses = () => {
   return classes;
 };
 
-function Drawer({ children, dispatch, location, mainDomain, open, t, userHasRole }) {
+function Drawer({ children, location, mainDomain, onClose, open, t, userHasRole }) {
   const theme = useTheme();
   const width = useWidth();
   const classes = useStyles();
   const listItemsClasses = getListItemsClasses();
-
-  const handleDrawerOpened = React.useCallback(() => {
-    if (open) { dispatch(layoutAppBarShift()); } else { dispatch(layoutAppBarUnshift()); }
-
-    return () => { dispatch(layoutAppBarUnshift()); };
-  }, [dispatch, open]);
-
-  const handleDrawerClose = React.useCallback(() => {
-    dispatch(layoutAppBarUnshift());
-    dispatch(screenServiceDrawerClose());
-  }, [dispatch]);
 
   // @FIXME: use match instead
   const isCurrent = React.useCallback((name) => !!matchPath(location.pathname, {
     path: routes.admin.service[name]._,
     exact: name === 'home',
   }), [location]);
-
-  const updateBurger = React.useCallback((visible = true) => {
-    if (visible) { dispatch(layoutBurgerShow()); } else { dispatch(layoutBurgerHide()); }
-    dispatch(layoutBurgerUpdate({
-      className: visible ? clsx(classes.menuButton, { [classes.hide]: open }) : '',
-    }));
-  }, [dispatch, classes, open]);
 
   const drawerVariant = React.useMemo(
     () => (displayIn(width, ['xs', 'sm']) ? null : 'permanent'),
@@ -198,17 +170,6 @@ function Drawer({ children, dispatch, location, mainDomain, open, t, userHasRole
     () => (userHasRole ? Object.keys(LIST_ITEMS).filter((key) => key !== 'claim') : Object.keys(LIST_ITEMS)),
     [userHasRole],
   );
-
-  React.useEffect(handleDrawerOpened, [open]);
-
-  React.useEffect(() => {
-    updateBurger();
-
-    return () => {
-      updateBurger(false);
-      dispatch(layoutAppBarUnshift());
-    };
-  }, [dispatch, updateBurger]);
 
   return (
     <div className={classes.root}>
@@ -232,7 +193,7 @@ function Drawer({ children, dispatch, location, mainDomain, open, t, userHasRole
         open={open}
       >
         <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={onClose}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </div>
@@ -266,20 +227,17 @@ function Drawer({ children, dispatch, location, mainDomain, open, t, userHasRole
 
 Drawer.propTypes = {
   children: PropTypes.oneOfType([PropTypes.elementType, PropTypes.object]).isRequired,
-  dispatch: PropTypes.func.isRequired,
   location: PropTypes.shape({ pathname: PropTypes.string.isRequired }).isRequired,
   mainDomain: PropTypes.string, // from parent Component
-  open: PropTypes.bool, // from state.screens.ServiceDrawer
+  onClose: PropTypes.func.isRequired, // from parent Component
+  open: PropTypes.bool.isRequired, // from parent Component
   t: PropTypes.func.isRequired,
   userHasRole: PropTypes.bool,
 };
 
 Drawer.defaultProps = {
   mainDomain: 'intro',
-  open: false,
   userHasRole: false,
 };
 
-export default connect(
-  (state) => ({ ...state.screens.ServiceDrawer }),
-)(withRouter(withTranslation('nav')(Drawer)));
+export default withRouter(withTranslation('nav')(Drawer));

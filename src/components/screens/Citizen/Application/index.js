@@ -9,7 +9,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import RoutePrivate from '@misakey/auth/components/Route/Private';
 import withApplication from 'components/smart/withApplication';
-import Portal from 'components/dumb/Portal';
 import isNil from '@misakey/helpers/isNil';
 import prop from '@misakey/helpers/prop';
 import compose from '@misakey/helpers/compose';
@@ -20,11 +19,8 @@ import ApplicationContact from 'components/screens/Citizen/Application/Contact';
 import ApplicationFeedback from 'components/screens/Citizen/Application/Feedback';
 
 import isEmpty from '@misakey/helpers/isEmpty';
-import isNumber from '@misakey/helpers/isNumber';
-import isString from '@misakey/helpers/isString';
-import ErrorOverlay from 'components/dumb/Error/Overlay';
-import { LEFT_PORTAL_ID } from 'components/smart/Layout';
-import SplashScreen from 'components/dumb/SplashScreen';
+
+import Screen from 'components/dumb/Screen';
 
 // CONSTANTS
 const PAGES_ROSES_ENDPOINT = {
@@ -34,29 +30,43 @@ const PAGES_ROSES_ENDPOINT = {
 
 // HOOKS
 const useStyles = makeStyles(() => ({
-  portalAvatar: {
-    overflow: 'hidden',
+  avatarParent: {
+    /* overflow: 'hidden',
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
+    }, */
   },
 }));
 
 function Application({ entity, error, isFetching, mainDomain, match }) {
   const classes = useStyles();
   const application = useMemo(
-    () => (isNil(entity) ? { mainDomain } : entity),
-    [mainDomain, entity],
+    () => ((isFetching || isNil(entity)) ? { mainDomain } : entity),
+    [mainDomain, entity, isFetching],
   );
 
-  // @FIXME use ResponseHandlerWrapper
-  if (isString(error) || isNumber(error)) { return <ErrorOverlay httpStatus={error} />; }
-  if (!window.env.PLUGIN && isFetching && isEmpty(entity)) { return <SplashScreen />; }
+  const state = useMemo(
+    () => ({
+      error,
+      isLoading: !window.env.PLUGIN && isFetching && isEmpty(entity),
+    }),
+    [error, isFetching, entity],
+  );
+
+  const appBarProps = useMemo(
+    () => ({
+      items: [(
+        <div className={classes.avatarParent}>
+          {application && <ApplicationAvatar application={application} />}
+        </div>
+      )],
+    }),
+    [application, classes.avatarParent],
+  );
 
   return (
-    <>
-      {application && (
-        <Portal elementId={LEFT_PORTAL_ID} className={classes.portalAvatar}>
-          <ApplicationAvatar application={application} />
-        </Portal>
-      )}
+    <Screen state={state} appBarProps={appBarProps}>
       <Switch>
         <RoutePrivate
           path={routes.citizen.application.contact._}
@@ -78,12 +88,11 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
         />
         <Route exact path={match.path} component={ApplicationNone} />
       </Switch>
-    </>
+    </Screen>
   );
 }
 
 Application.propTypes = {
-  dispatch: PropTypes.func.isRequired,
   entity: PropTypes.shape(ApplicationSchema.propTypes),
   error: PropTypes.number,
   isFetching: PropTypes.bool,

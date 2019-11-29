@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <title>Misakey</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#e32e72" />
+    <meta name="msapplication-TileColor" content="#e13173">
+
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/ico/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/ico/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/ico/favicon-16x16.png">
+    <link rel="mask-icon" href="/ico/safari-pinned-tab.svg" color="#e13173">
+
+    <link rel="stylesheet" type="text/css" href="style/materialize.min.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="style/landing.css" media="screen" />
+    <script src="/env.js"></script>
+
+  </head>
+  <body>
+    <div id="cookiebar" class="white">
+      <div class="row">
+        <div class="col l10 m8 s7">
+          <p>
+              <a class="btn white black-text" id="closeCookieBar">x</a> Supprimez les bandeaux <strong>j’accepte</strong> de tous les sites et imposez votre décision face aux acteurs publicitaires une bonne fois pour toutes.              
+          </p>
+        </div>
+        <div class="col l2 m4 s5 center">
+            <a href="https://addons.mozilla.org/addon/misakey/" class="btn white pink-text pink-border border-basic installPluginLink">Me protéger</a>
+        </div>
+      </div>
+    </div>
+
+    <nav class="transparent z-depth-0" role="navigation">
+      <div class="nav-wrapper container">
+        <a id="logo-container" href="" class="pink-text">
+          <img src="img/misakey-rose.svg" />
+        </a>
+        <ul class="right">
+          <li><a class="btn pink" href="/login">Mon coffre-fort</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container" id="main-container">
+      <div class="row">
+        <div class="col m6">
+            <img src="img/misakey-rose.svg" class="image-as-main-title" />
+            <h3>La vie privée est importante,</h3>
+            <p>Tous ensemble nous pouvons la protéger.</p>
+            <div class="card paper pink white-text">
+              <p>
+                  Pour en savoir plus sur la politique de protection de la vie privée d’un site que vous utilisez
+              </p>
+              <a class="btn-large white grey-text searchbar" href="/citizen?search=">
+                <i class="material-icons right">search</i>
+                Chercher un site</a>
+            </div>
+        </div>
+        <div class="col m6 center hide-on-small-and-down">
+          <img src="img/landing/data-vault.png" class="responsive-img" id="datavault"/>
+        </div>
+      </div>
+
+      <div class="row">
+          <div class="col l6 m12 s12">
+            <div class="card paper">
+              <h4>Entreprises</h4>
+              <p>Protégez vos données en envoyant vos informations directement dans le coffre-fort de vos clients.</p>
+              <blockquote class="pink-border">
+                  Lorsque vous envoyez un e-mail d’information à vos clients comme un récapitulatif de commande, Google le lit et s’approprie son contenu. Vous pouvez protéger ces informations en les envoyant de manière sécurisée.
+              </blockquote>
+              <div class="button-container">
+                <!-- pink-border border-basic when not disabled -->
+                <a href="/entreprise" class="btn button-contained-right white pink-text disabled" >Sécurisez vos informations</a>
+              </div>
+            </div>
+          </div>
+        <div class="col l6 m12 s12">
+          <div class="card paper">
+            <h4>Consommateurs</h4>
+            <p>Protégez vos données personnelles en demandant aux entreprises de les envoyer dans votre coffre-fort</p>
+            <blockquote class="pink-border">
+                Article 20 de la RGPD (<a href="https://www.cnil.fr/fr/le-droit-la-portabilite-obtenir-et-reutiliser-une-copie-de-vos-donnees">extrait de la CNIL</a>)
+                “vous avez la possibilité de demander à un organisme A de directement transmettre vos données à un organisme B sans que vous ayez à intervenir”                
+            </blockquote>
+            <div class="button-container">
+              <a href="/login" class="btn pink button-contained-right">Mon coffre-fort</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col l12">
+            <div class="row">
+              <div class="col l6">
+                  <h5>Notre mission</h5>
+                  <h4>Permettre à chacun de protéger ses données</h4>
+                  <div class="button-container">
+                      <!-- pink-border border-basic when not disabled -->
+                      <a href="/about" class="btn button-contained-right white pink-text disabled">En savoir plus</a>
+                  </div>
+              </div>
+              <div class="col l6">
+                <img src="img/landing/mission-illu.png" class="responsive-img" />
+              </div>
+            </div>
+        </div>
+
+
+        <div class="col l6 m12 s12">
+          <div class="card paper">
+            <h4>Participer</h4>
+            <p>En demandant vos données auprès des sites que vous utilisez régulièrement</p>
+            <blockquote class="pink-border">
+                Les sites n’ont pas ou peu été formés à l’utilisation respectueuse des données personnelles. Nous pouvons leur montrer que nos données comptent pour nous simplement en leur demandant            
+            </blockquote>
+            <div class="button-container">
+              <a href="/citizen?search=" class="btn button-contained-right pink">Chercher mes sites</a>
+            </div>
+          </div>
+
+          <div class="card paper pink no-border">
+            <h4 class="white-text">Tous ensemble,<br/>
+              nous pouvons protéger nos vies privées.</h4>
+
+              <div class="button-container">
+                <a href="/citizen?search=" class="btn button-contained-right white pink-text">Demander mes données</a>
+              </div>
+          </div>
+        </div>        
+        <div class="col l6 m12 s12">
+          <div class="card paper">
+            <h4>Internautes</h4>
+            <p>Installez le plugin Misakey pour supprimer les bandeaux “j’accepte” et imposez votre décision face aux acteurs publicitaires</p>
+
+            <div class="browserLogos">
+              <a href="https://addons.mozilla.org/addon/misakey/">
+                <img src="/img/landing/firefox.png" alt="Marche sur Firefox !" />
+              </a>
+              <a href="https://chrome.google.com/webstore/detail/misakey-prenez-le-contr%C3%B4l/lhnflkdbfockggbfaocheaehpmejnaij">
+                  <img src="/img/landing/chromium.png" alt="Marche sur Chromium (et Chrome aussi accessoirement) !"/>
+              </a>
+              <a href="https://chrome.google.com/webstore/detail/misakey-prenez-le-contr%C3%B4l/lhnflkdbfockggbfaocheaehpmejnaij">
+                  <img src="/img/landing/kiwi.png" class="roundedApp" alt="Marche sur Kiwi: mobile version of Chromium" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="page-footer grey">
+      <div class="container">
+        <div class="row">
+          <div class="col l5 s12">
+            <h5 class="white-text">Un avis? Une idée?</h5>
+            <p class="grey-text text-lighten-4">
+              Nous faisons tout ce que nous pouvons pour créer une meilleure protection de la vie privée et nous avons besoin de vous. N'hésitez pas à nous faire des retours : <a class="pink-text" href="mailto:love@misakey.com">love@misakey.com</a>.
+            </p>  
+          </div>
+          <div class="col l3 s12">
+            <h5 class="white-text">Liens</h5>
+            <ul>
+              <li><a class="white-text" href="/legals/tos">CGU</a></li>
+              <li><a class="white-text" href="/legals/privacy">Politique de confidentialité</a></li>
+            </ul>
+          </div>
+          <div class="col l4 s12">
+            <h5 class="white-text">Financement</h5>
+            <img src="img/landing/eu.png" class="responsive-img" />
+          </div>
+        </div>
+      </div>
+      <div class="footer-copyright">
+        <div class="container center">
+          Made in France
+        </div>
+      </div>
+    </footer>
+  </body>
+  <script type="text/javascript">
+    const chromeStorePluginUrl = 'https://chrome.google.com/webstore/detail/misakey-prenez-le-contr%C3%B4l/lhnflkdbfockggbfaocheaehpmejnaij';
+    if (navigator.userAgent.indexOf("Chrome") != -1 ) {
+      var links = document.querySelectorAll('.installPluginLink')
+      links.forEach((link) => {
+        link.href = chromeStorePluginUrl;
+      });
+    }
+
+    document.querySelector('#closeCookieBar').onclick = function() {
+      var cookiebar = document.querySelector('#cookiebar');
+      cookiebar.parentElement.removeChild(cookiebar);
+    }
+    
+    window.bundleVersion = 'VERSION_TO_SET_ON_BUILD';
+    if(window.env.ENV !== 'development') {
+      var siteId;
+      if (window.env.ENV === 'preprod') {
+        siteId = '4';
+      } else if (window.env.ENV === 'production') {
+        siteId = '1';
+      }
+      var _paq = window._paq || [];
+
+      _paq.push([function() {
+        var self = this;
+        function getOriginalVisitorCookieTimeout() {
+          var now = new Date(),
+            nowTs = Math.round(now.getTime() / 1000),
+            visitorInfo = self.getVisitorInfo();
+          var createTs = parseInt(visitorInfo[2]);
+          var cookieTimeout = 33696000;
+          var originalTimeout = createTs + cookieTimeout -
+            nowTs;
+          return originalTimeout;
+        }
+        this.setVisitorCookieTimeout( getOriginalVisitorCookieTimeout() );
+      }]);
+
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="//analytics.misakey.com/";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', siteId]);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+      })();
+    }
+  </script>
+</html>

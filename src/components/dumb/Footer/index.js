@@ -12,7 +12,7 @@ const Footer = ({ className, t }) => (
     <Typography variant="body2">
       <Link
         href={t('footer.links.privacy.href')}
-        color="textSecondary"
+        color="secondary"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -23,7 +23,7 @@ const Footer = ({ className, t }) => (
     <Typography variant="body2">
       <Link
         href={t('footer.links.tos.href')}
-        color="textSecondary"
+        color="secondary"
         target="_blank"
         rel="noopener noreferrer"
       >

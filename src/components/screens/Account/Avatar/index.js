@@ -13,10 +13,10 @@ import { userProfileUpdate } from 'store/actions/screens/account';
 import isNil from '@misakey/helpers/isNil';
 import pick from '@misakey/helpers/pick';
 import toFormData from '@misakey/helpers/toFormData';
+import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
 import API from '@misakey/api';
 
-import ScreenError from 'components/dumb/Screen/Error';
 
 import 'components/screens/Account/Avatar/index.scss';
 
@@ -40,39 +40,53 @@ const updateProfile = (id, form) => API
   .build({ id }, toFormData(form))
   .send({ contentType: null });
 
+const fetchProfile = (id) => API
+  .use(API.endpoints.user.read)
+  .build({ id })
+  .send();
+
 // HOOKS
 const useOnSubmit = (
-  profile, dispatchUpdate, enqueueSnackbar, setError, history, t,
+  profile, dispatchUpdate, enqueueSnackbar, setInternalError, history, t,
 ) => useMemo(
   () => (form, { setSubmitting }) => updateProfile(profile.id, pickForm(form))
-    .then(() => {
-      enqueueSnackbar(t('profile:avatar.success'), { variant: 'success' });
-      const changes = { avatarUri: form.preview };
+    .then(() => fetchProfile(profile.id))
+    .then((response) => {
+      const { avatarUri } = objectToCamelCase(response);
+      const changes = { avatarUri };
+      enqueueSnackbar(t('screens:account.avatar.success'), { variant: 'success' });
       dispatchUpdate(profile.id, changes, history);
       history.push(routes.account._);
     })
     .catch(({ httpStatus }) => {
-      setError(httpStatus);
+      setInternalError(httpStatus);
     })
     .finally(() => { setSubmitting(false); }),
-  [profile, dispatchUpdate, enqueueSnackbar, setError, history, t],
+  [profile, dispatchUpdate, enqueueSnackbar, setInternalError, history, t],
 );
 
 // COMPONENTS
-const AccountName = ({
+const AccountAvatar = ({
   t,
   profile,
   dispatchUpdate,
   history,
+  error,
+  isFetching,
 }) => {
-  const [error, setError] = useState();
+  const [internalError, setInternalError] = useState();
   const { enqueueSnackbar } = useSnackbar();
+
+  const state = useMemo(
+    () => ({ error: error || internalError, isLoading: isFetching }),
+    [error, internalError, isFetching],
+  );
 
   const onSubmit = useOnSubmit(
     profile,
     dispatchUpdate,
     enqueueSnackbar,
-    setError,
+    setInternalError,
     history,
     t,
   );
@@ -81,10 +95,6 @@ const AccountName = ({
 
   const { displayName, avatarUri } = profile;
 
-
-  if (error) {
-    return <ScreenError httpStatus={error} />;
-  }
   return (
     <div className="Avatar">
       <Formik
@@ -104,6 +114,7 @@ const AccountName = ({
                     displayName={displayName}
                     name={FIELD_NAME}
                     previewName={PREVIEW_NAME}
+                    state={state}
                     {...formikProps}
                     {...routerProps}
                   />
@@ -116,6 +127,7 @@ const AccountName = ({
                   <AccountAvatarUpload
                     name={FIELD_NAME}
                     previewName={PREVIEW_NAME}
+                    state={state}
                     {...formikProps}
                     {...routerProps}
                   />
@@ -130,13 +142,14 @@ const AccountName = ({
   );
 };
 
-AccountName.propTypes = {
+AccountAvatar.propTypes = {
   profile: PropTypes.shape({
     id: PropTypes.string,
     avatarUri: PropTypes.string,
     displayName: PropTypes.string,
   }),
-
+  error: PropTypes.instanceOf(Error),
+  isFetching: PropTypes.bool,
   // router props
   history: PropTypes.object.isRequired,
 
@@ -146,8 +159,10 @@ AccountName.propTypes = {
   dispatchUpdate: PropTypes.func.isRequired,
 };
 
-AccountName.defaultProps = {
+AccountAvatar.defaultProps = {
   profile: null,
+  error: null,
+  isFetching: false,
 };
 
 // CONNECT
@@ -159,4 +174,4 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['profile', 'button'])(AccountName));
+export default connect(null, mapDispatchToProps)(withTranslation(['screens'])(AccountAvatar));

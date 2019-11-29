@@ -1,5 +1,6 @@
 {
   "projectName": "Misakey",
+  "home": "Misakey home",
   "back": "Précedent",
   "next": "Suivant",
   "cancel": "Annuler",
@@ -29,6 +30,7 @@
   "validating": "Validation en cours ...",
   "signIn": "Connexion",
   "signOut": "Déconnexion",
+  "report": "Signaler",
   "account": {
     "delete": {
       "label": "Supprimer mon compte",
@@ -140,7 +142,7 @@
   "ratingsAndComments": "Recommandations et avis",
   "ratingCount": "{{count}} note",
   "ratingCount_plural": "{{count}} notes",
-  "ratingEmpty": "-,-",
+  "ratingEmpty": "N/A",
   "go": "Voir le site",
   "goToProd": "Mettre en production",
   "leaveFromProd": "Retirer de production",
@@ -150,7 +152,11 @@
   "must": "Devoir",
   "contact": {
     "label": "Mes données",
-    "dpo": "Je connais l'email du DPO !"
+    "dpo": "Ajouter le DPO"
+  },
+  "claim": {
+    "admin": "Je suis admin",
+    "dpo": "Je suis dpo"
   },
   "name": "Nom",
   "on": "Sur ",
@@ -158,7 +164,7 @@
   "see": "Voir",
   "feedback": {
     "me": "Mon avis global",
-    "all": "Avis des utilisateurs",
+    "all": "Avis sur le respect des demandes",
     "give": "Donner mon avis",
     "edit": "Modifier mon avis",
     "submit": "Publier"
@@ -175,7 +181,6 @@
       "send": "Envoyer manuellement",
       "notify": "Envoyer l’e-mail depuis la fenêtre ouverte dans votre gestionnaire d’e-mail. Si aucune fenêtre ne s’est ouverte, vérifier que les pop-up ne sont pas bloquées par votre navigateur web"
     },
-    "others": "Autres",
     "success": "Configuration du service d'email réussie!"
   },
   "ratings": "notes",

@@ -1,10 +1,7 @@
-import React, { Suspense, lazy } from 'react';
+import React, { lazy } from 'react';
 import PropTypes from 'prop-types';
 import { SnackbarProvider } from 'notistack';
 import { withTranslation } from 'react-i18next';
-
-import Layout from 'components/smart/Layout';
-import SplashScreen from 'components/dumb/SplashScreen';
 
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
@@ -33,7 +30,6 @@ import './App.scss';
 const Account = lazy(() => import('components/screens/Account'));
 const Admin = lazy(() => import('components/screens/Admin'));
 const DPO = lazy(() => import('components/screens/DPO'));
-const ApplicationListsDialog = lazy(() => import('components/smart/Dialog/Search'));
 
 // CONSTANTS
 const REFERRERS = {
@@ -50,7 +46,6 @@ function App({ t }) {
       <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
 
         {window.env.PLUGIN && (
-        <Layout>
           <Switch>
             <Route exact path={routes.plugin} component={Plugin} />
             <Route path={routes.citizen._} component={Citizen} />
@@ -63,66 +58,61 @@ function App({ t }) {
             {/* DEFAULT */}
             <Route component={NotFound} />
           </Switch>
-        </Layout>
         )}
 
 
         {!window.env.PLUGIN && (
-        <Suspense fallback={<SplashScreen />}>
-          <Layout>
-            <Switch>
-              <Route exact path={routes._} component={Landing} />
-              {window.env.PLUGIN && <Route exact path={routes.plugin} component={Plugin} />}
+        <Switch>
+          <Route exact path={routes._} component={Landing} />
+          {/* LEGALS */}
+          <Route
+            exact
+            path={routes.legals.tos}
+            render={(routerProps) => <Redirect to={t('footer.links.tos.href')} {...routerProps} />}
+          />
+          <Route
+            exact
+            path={routes.legals.privacy}
+            render={(routerProps) => <Redirect to={t('footer.links.privacy.href')} {...routerProps} />}
+          />
 
-              {/* LEGALS */}
-              <Route
-                exact
-                path={routes.legals.tos}
-                render={(routerProps) => <Redirect to={t('footer.links.tos.href')} {...routerProps} />}
-              />
-              <Route
-                exact
-                path={routes.legals.privacy}
-                render={(routerProps) => <Redirect to={t('footer.links.privacy.href')} {...routerProps} />}
-              />
+          {/* AUTH and ACCOUNT */}
+          <Route path={routes.auth._} component={Auth} />
+          <RoutePrivate path={routes.account._} component={Account} />
+          <Route
+            exact
+            path={routes.auth.callback}
+            render={(routerProps) => (
+              <TRedirectAuthCallback fallbackReferrers={REFERRERS} t={t} {...routerProps} />
+            )}
+          />
 
-              {/* AUTH and ACCOUNT */}
-              <Route path={routes.auth._} component={Auth} />
-              <RoutePrivate path={routes.account._} component={Account} />
-              <Route
-                exact
-                path={routes.auth.callback}
-                render={(routerProps) => (
-                  <TRedirectAuthCallback fallbackReferrers={REFERRERS} t={t} {...routerProps} />
-                )}
-              />
+          {/* ERRORS */}
+          <Route
+            exact
+            path={routes.errors.forbidden}
+            component={Forbidden}
+          />
 
-              {/* ERRORS */}
-              <Route
-                exact
-                path={routes.errors.forbidden}
-                component={Forbidden}
-              />
+          {/* WORKSPACES */}
+          <Route path={routes.admin._} component={Admin} />
+          <Route path={routes.citizen._} component={Citizen} />
+          <Route path={routes.dpo._} component={DPO} />
 
-              {/* WORKSPACES */}
-              <Route path={routes.admin._} component={Admin} />
-              <Route path={routes.citizen._} component={Citizen} />
-              <Route path={routes.dpo._} component={DPO} />
+          {/* REQUESTS */}
+          <RouteAccessRequest
+            exact
+            path={routes.requests._}
+            component={Requests}
+            componentProps={{
+              navigationProps: { showGoBack: false },
+              appBarProps: { withUser: false, withSearchBar: false },
+            }}
+          />
 
-              {/* REQUESTS */}
-              <RouteAccessRequest
-                exact
-                path={routes.requests._}
-                component={Requests}
-                componentProps={{ showGoBack: false }}
-              />
-
-              {/* DEFAULT */}
-              <Route component={NotFound} />
-            </Switch>
-            <Route component={ApplicationListsDialog} />
-          </Layout>
-        </Suspense>
+          {/* DEFAULT */}
+          <Route component={NotFound} />
+        </Switch>
         )}
 
       </SnackbarProvider>
