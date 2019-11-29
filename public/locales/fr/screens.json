@@ -296,7 +296,7 @@
   },
   "contact": {
     "providers": {
-      "subtitle": "Connecter votre service d'email pour envoyer vos demandes de portabilité en un clic",
+      "subtitle": "Connecter votre service d'email pour envoyer vos demandes de portabilité en un clic. Certains bloqueurs peuvent empêcher la configuration de l'envoi avec Gmail, pensez à l'autoriser",
       "title": "Portabilité de mes données"
     },
     "preview": {

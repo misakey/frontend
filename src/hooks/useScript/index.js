@@ -38,7 +38,7 @@ const useAlreadyLoadedScript = (src, onAlreadyLoaded) => useEffect(
 );
 
 const useScript = (
-  src, onload, addLoadingScript, addLoadedScript,
+  src, onload, addLoadingScript, addLoadedScript, onScriptError,
 ) => useEffect(
   () => {
     if (isNil(src)) { return noop; }
@@ -59,26 +59,31 @@ const useScript = (
         onload(...args).then(() => { addLoadedScript(script); });
       };
       script.addEventListener('load', onLoadScript);
+      script.addEventListener('error', onScriptError);
       document.body.appendChild(script);
       addLoadingScript(script);
       return () => {
         script.removeEventListener('load', onLoadScript);
+        script.removeEventListener('error', onScriptError);
       };
     }
     const onLoadScript = (...args) => {
       onload(...args).then(() => { addLoadedScript(existingScript); });
     };
     existingScript.addEventListener('load', onLoadScript);
+    existingScript.addEventListener('error', onScriptError);
+
     addLoadingScript(existingScript);
     return () => {
       existingScript.removeEventListener('load', onLoadScript);
+      existingScript.removeEventListener('error', onScriptError);
     };
   },
-  [src, onload, addLoadingScript, addLoadedScript],
+  [src, onload, addLoadingScript, addLoadedScript, onScriptError],
 );
 
 // @FIXME add to @misakey/hooks
-export default (src, onload, onAlreadyLoaded) => {
+export default (src, onload, onAlreadyLoaded, onError) => {
   const onLoadSafe = useMemo(
     () => (isFunction(onload) ? onload : noop),
     [onload],
@@ -99,6 +104,17 @@ export default (src, onload, onAlreadyLoaded) => {
   );
   const addLoadedScript = useAddLoadedScript();
 
-  useScript(src, onLoadSafe, addLoadingScript, addLoadedScript);
+  const onScriptError = useCallback(
+    (error) => {
+      if (!isFunction(onError)) {
+        throw error;
+      }
+      onError(error);
+    },
+    [onError],
+  );
+
+
+  useScript(src, onLoadSafe, addLoadingScript, addLoadedScript, onScriptError);
   useAlreadyLoadedScript(src, onAlreadyLoadedSafe);
 };

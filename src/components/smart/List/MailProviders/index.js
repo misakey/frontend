@@ -109,9 +109,8 @@ const ListMailProviders = ({
   const onConsentCatch = useCallback(
     () => {
       setLoaded(true);
-      enqueueSnackbar(t('common:providers.error'), { variant: 'warning' });
     },
-    [setLoaded, enqueueSnackbar, t],
+    [setLoaded],
   );
 
   const onManualClick = useCallback(
@@ -133,10 +132,18 @@ const ListMailProviders = ({
     [provider, loaded, onConsentCheck, onConsentCatch],
   );
 
+  const onError = useCallback(
+    () => {
+      enqueueSnackbar(t('common:providers.error'), { variant: 'error' });
+    },
+    [enqueueSnackbar, t],
+  );
+
   useScript(
     scriptSrc,
     onLoad,
     onAlreadyLoaded,
+    onError,
   );
 
   const onProviderClick = useOnProviderClick(

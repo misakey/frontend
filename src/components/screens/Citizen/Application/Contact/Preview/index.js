@@ -146,10 +146,18 @@ const ContactPreview = ({
     [providerConfig, onLoaded],
   );
 
+  const onError = useCallback(
+    () => {
+      enqueueSnackbar(t('common:providers.error'), { variant: 'error' });
+    },
+    [enqueueSnackbar, t],
+  );
+
   useScript(
     scriptSrc,
     onLoad,
     onAlreadyLoaded,
+    onError,
   );
 
   return (
@@ -197,4 +205,4 @@ ContactPreview.defaultProps = {
 };
 
 
-export default withTranslation('screens')(ContactPreview);
+export default withTranslation(['common', 'screens'])(ContactPreview);

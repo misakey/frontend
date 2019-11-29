@@ -176,7 +176,7 @@
   "emailSubject": "Demande de portabilité",
   "emailBody": "Madame, Monsieur,\n\nJe vous prie de bien vouloir m’indiquer si des données me concernant figurent dans vos fichiers informatisés.\n\nDans l’affirmative, je souhaiterais transférer une copie à Misakey, dans un format lisible par une machine, de l’ensemble de ces données, en application de l’article 20 du Règlement général sur la protection des données (RGPD).\nVeuillez déposer directement les fichiers contenant mes données dans la boîte de dépôt associé à mon compte afin qu’aucun autre service n’y ait accès : {{databoxURL}}\nVous devrez confirmer votre accès avec un code envoyé à l’adresse {{dpoEmail}}\n\nJe vous remercie de me faire parvenir votre réponse dans les meilleurs délais et au plus tard dans un délai d’un mois à compter de la réception de ma demande (article 12.3 du RGPD).\nA défaut de réponse de votre part dans les délais impartis ou en cas de réponse incomplète, je me réserve la possibilité de saisir la Commission nationale de l’informatique et des libertés (CNIL) d’une réclamation.\nA toutes fins utiles, vous trouverez des informations sur le site internet de la CNIL : https://www.cnil.fr/fr/le-droit-la-portabilite-en-questions\n\nJe vous prie d’agréer, Madame, Monsieur, l’expression de mes salutations distinguées.",
   "providers": {
-    "error": "Echec de la configuration du service d'email",
+    "error": "Veuillez désactiver votre bloqueur pour accéder à l'envoi avec Gmail",
     "manual": {
       "send": "Envoyer manuellement",
       "notify": "Envoyer l’e-mail depuis la fenêtre ouverte dans votre gestionnaire d’e-mail. Si aucune fenêtre ne s’est ouverte, vérifier que les pop-up ne sont pas bloquées par votre navigateur web"
