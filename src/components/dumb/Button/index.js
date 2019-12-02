@@ -36,6 +36,9 @@ const makeStyles = () => ({
   wrapper: {
     position: 'relative',
   },
+  buttonRoot: {
+    width: '100%',
+  },
   buttonProgress: {
     position: 'absolute',
     top: '50%',
@@ -54,6 +57,7 @@ const getDefaultProps = (standing) => {
 const Button = ({ classes, isLoading, isValid, text, progressProps, standing, ...rest }) => (
   <span className={classes.wrapper}>
     <MUIButton
+      classes={{ root: classes.buttonRoot }}
       {...getDefaultProps(standing)}
       disabled={isLoading || !isValid}
       {...rest}

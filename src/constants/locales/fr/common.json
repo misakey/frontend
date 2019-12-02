@@ -152,7 +152,7 @@
   },
   "must": "Devoir",
   "contact": {
-    "label": "Mes données",
+    "label": "Contacter",
     "dpo": "Ajouter le DPO"
   },
   "claim": {

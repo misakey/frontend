@@ -102,7 +102,8 @@
         "dpo": "Contacter le DPO du site pour faire une demande de portabilité. Vous avez le droit de demander à n'importe quel site de transmettre vos données dans votre coffre-fort Misakey pour en profiter comme bon vous semble.",
         "contactForm": "Ce site redirige vers un formulaire pour demander ses données personnelles. Si vous connaissez l'email du délégué à la protection des données, ajoutez le afin que nous puissions sécuriser la récupération des données personnelles",
         "button": {
-          "contactForm": "Formulaire de contact"
+          "contactForm": "Formulaire de contact",
+          "dpo": "Contacter le DPO"
         }
       },
       "contact": {
@@ -283,7 +284,7 @@
       "label": "Navigation de {{mainDomain}}",
       "info": "Informations",
       "comments": "Commentaires",
-      "personalData": "Données personnelles",
+      "vault": "Mon coffre-fort",
       "thirdParty": "Services tiers",
       "myAccount": "Mon compte"
     }

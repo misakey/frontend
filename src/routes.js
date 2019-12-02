@@ -79,7 +79,7 @@ const routes = {
       },
       info: '/citizen/:mainDomain',
       comments: '/citizen/:mainDomain/comments',
-      personalData: '/citizen/:mainDomain/personal-data',
+      vault: '/citizen/:mainDomain/vault',
       thirdParty: '/citizen/:mainDomain/third-party',
       myAccount: '/citizen/:mainDomain/my-account',
       feedback: {

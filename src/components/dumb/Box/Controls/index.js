@@ -56,7 +56,6 @@ const BoxControls = ({ primary, secondary, outlined, ...rest }) => {
       display="flex"
       flexDirection={flexDirection}
       justifyContent={justifyContent}
-      alignItems="center"
       {...rest}
     >
       {secondaryNode}

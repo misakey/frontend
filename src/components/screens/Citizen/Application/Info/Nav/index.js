@@ -38,10 +38,9 @@ function ApplicationNavTabs({ location, mainDomain, scrollButtons, t, isAuthenti
   const applicationTabsLinks = React.useMemo(() => Object.keys(pickBy({
     info: true,
     thirdParty: true,
-    // FIXME : remove when unauthenticated view with CTA to singin is implemented
-    personalData: window.env.PLUGIN ? isAuthenticated : true,
+    vault: true,
     myAccount: false,
-  }, (value) => value === true)), [isAuthenticated]);
+  }, (value) => value === true)), []);
 
   const isCurrent = React.useCallback((name) => !!matchPath(location.pathname, {
     path: routes.citizen.application[name],

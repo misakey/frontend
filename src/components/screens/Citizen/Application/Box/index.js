@@ -6,7 +6,7 @@ import { useSnackbar } from 'notistack';
 import { denormalize } from 'normalizr';
 import fileDownload from 'js-file-download';
 import { withTranslation, Trans } from 'react-i18next';
-import { generatePath, Link } from 'react-router-dom';
+import { generatePath } from 'react-router-dom';
 
 import ApplicationSchema from 'store/schemas/Application';
 
@@ -22,10 +22,12 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import { redirectToApp } from 'helpers/plugin';
 
+import withDialogConnect from 'components/smart/Dialog/Connect/with';
 import SplashScreen from 'components/dumb/SplashScreen';
 import ScreenError from 'components/dumb/Screen/Error';
 import BoxMessage from 'components/dumb/Box/Message';
-
+import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
+import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
 
 import DataboxDisplay from 'components/screens/Citizen/Application/Box/DataboxDisplay';
 
@@ -129,6 +131,9 @@ async function initCrypto({ t, userId, setPublicKeysWeCanDecryptFrom, setIsCrypt
   setPublicKeysWeCanDecryptFrom(crypto.databox.getPublicKeysWeCanDecryptFrom());
 }
 
+// COMPONENTS
+const DialogConnectButton = withDialogConnect(Button);
+
 function ApplicationBox({
   application,
   match,
@@ -155,7 +160,7 @@ function ApplicationBox({
   const openInNewTab = useCallback(
     () => {
       // @FIXME: remove when auth in plugin is implemented
-      redirectToApp(generatePath(routes.citizen.application.personalData, { mainDomain }));
+      redirectToApp(generatePath(routes.citizen.application.vault, { mainDomain }));
     },
     [mainDomain],
   );
@@ -269,20 +274,20 @@ function ApplicationBox({
 
   return (
     <>
-      { (isAuthenticated && !isCryptoReadyToDecrypt && !isEmpty(blobs)) && (
-      <BoxMessage type="warning" my={2}>
-        <Typography>{t('screens:application.box.mustUnlockVault')}</Typography>
-        <MUILink
-          className={classes.initCryptoLink}
-          component="button"
-          variant="body2"
-          onClick={() => {
-            initCrypto({ t, userId, setPublicKeysWeCanDecryptFrom, setIsCryptoReadyToDecrypt });
-          }}
-        >
-          {t('screens:application.box.unlockVaultButton')}
-        </MUILink>
-      </BoxMessage>
+      {(isAuthenticated && !isCryptoReadyToDecrypt && !isEmpty(blobs)) && (
+        <BoxMessage type="warning" my={2}>
+          <Typography>{t('screens:application.box.mustUnlockVault')}</Typography>
+          <MUILink
+            className={classes.initCryptoLink}
+            component="button"
+            variant="body2"
+            onClick={() => {
+              initCrypto({ t, userId, setPublicKeysWeCanDecryptFrom, setIsCryptoReadyToDecrypt });
+            }}
+          >
+            {t('screens:application.box.unlockVaultButton')}
+          </MUILink>
+        </BoxMessage>
       )}
       <Card
         my={3}
@@ -321,20 +326,18 @@ function ApplicationBox({
       <Card
         my={3}
         title={t('screens:application.box.info.title')}
-        primary={!isAuthenticated ? {
-          variant: 'contained',
-          color: 'secondary',
-          text: t('screens:application.box.info.primaryButton'),
-          to: routes.auth.redirectToSignIn,
-          component: Link,
-        } : null}
-        secondary={isAuthenticated ? {
-          variant: 'outlined',
-          color: 'secondary',
-          text: t('screens:application.box.info.secondaryButton'),
-          to: routes.auth.redirectToSignIn,
-          component: Link,
-        } : null}
+        primary={!isAuthenticated && (
+          <ButtonConnectSimple buttonProps={{ variant: 'contained' }} {...dialogConnectProps}>
+            {t('screens:application.box.info.primaryButton')}
+          </ButtonConnectSimple>
+        )}
+        secondary={!isAuthenticated && (
+          <DialogConnectButton
+            standing={BUTTON_STANDINGS.ENHANCED}
+            text={t('screens:application.box.info.secondaryButton')}
+            dialogConnectProps={dialogConnectProps}
+          />
+        )}
       >
         <Grid container spacing={3}>
           <Grid item sm={8} xs={12}>

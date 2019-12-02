@@ -108,7 +108,7 @@ function ApplicationInfo({
       <Switch>
         <Route
           exact
-          path={routes.citizen.application.personalData}
+          path={routes.citizen.application.vault}
           render={(routerProps) => (
             <ApplicationBox
               onContributionDpoEmailClick={onContributionDpoEmailClick}

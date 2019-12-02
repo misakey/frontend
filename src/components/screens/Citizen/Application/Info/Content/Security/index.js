@@ -74,7 +74,9 @@ const InfoContentSecurity = ({
             mainDomain={mainDomain}
             buttonProps={{ variant: 'contained' }}
             dialogConnectProps={dialogConnectProps}
-          />
+          >
+            {t('screens:application.info.security.button.dpo')}
+          </ContactButton>
         )}
       secondary={(!hasDpoEmail && hasDpoContact) ? (
         <ContactButton

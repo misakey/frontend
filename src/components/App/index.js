@@ -62,57 +62,57 @@ function App({ t }) {
 
 
         {!window.env.PLUGIN && (
-        <Switch>
-          <Route exact path={routes._} component={Landing} />
-          {/* LEGALS */}
-          <Route
-            exact
-            path={routes.legals.tos}
-            render={(routerProps) => <Redirect to={t('footer.links.tos.href')} {...routerProps} />}
-          />
-          <Route
-            exact
-            path={routes.legals.privacy}
-            render={(routerProps) => <Redirect to={t('footer.links.privacy.href')} {...routerProps} />}
-          />
+          <Switch>
+            <Route exact path={routes._} component={Landing} />
+            {/* LEGALS */}
+            <Route
+              exact
+              path={routes.legals.tos}
+              render={(routerProps) => <Redirect to={t('footer.links.tos.href')} {...routerProps} />}
+            />
+            <Route
+              exact
+              path={routes.legals.privacy}
+              render={(routerProps) => <Redirect to={t('footer.links.privacy.href')} {...routerProps} />}
+            />
 
-          {/* AUTH and ACCOUNT */}
-          <Route path={routes.auth._} component={Auth} />
-          <RoutePrivate path={routes.account._} component={Account} />
-          <Route
-            exact
-            path={routes.auth.callback}
-            render={(routerProps) => (
-              <TRedirectAuthCallback fallbackReferrers={REFERRERS} t={t} {...routerProps} />
-            )}
-          />
+            {/* AUTH and ACCOUNT */}
+            <Route path={routes.auth._} component={Auth} />
+            <RoutePrivate path={routes.account._} component={Account} />
+            <Route
+              exact
+              path={routes.auth.callback}
+              render={(routerProps) => (
+                <TRedirectAuthCallback fallbackReferrers={REFERRERS} t={t} {...routerProps} />
+              )}
+            />
 
-          {/* ERRORS */}
-          <Route
-            exact
-            path={routes.errors.forbidden}
-            component={Forbidden}
-          />
+            {/* ERRORS */}
+            <Route
+              exact
+              path={routes.errors.forbidden}
+              component={Forbidden}
+            />
 
-          {/* WORKSPACES */}
-          <Route path={routes.admin._} component={Admin} />
-          <Route path={routes.citizen._} component={Citizen} />
-          <Route path={routes.dpo._} component={DPO} />
+            {/* WORKSPACES */}
+            <Route path={routes.admin._} component={Admin} />
+            <Route path={routes.citizen._} component={Citizen} />
+            <Route path={routes.dpo._} component={DPO} />
 
-          {/* REQUESTS */}
-          <RouteAccessRequest
-            exact
-            path={routes.requests._}
-            component={Requests}
-            componentProps={{
-              navigationProps: { showGoBack: false },
-              appBarProps: { withUser: false, withSearchBar: false },
-            }}
-          />
+            {/* REQUESTS */}
+            <RouteAccessRequest
+              exact
+              path={routes.requests}
+              component={Requests}
+              componentProps={{
+                navigationProps: { showGoBack: false },
+                appBarProps: { withUser: false, withSearchBar: false },
+              }}
+            />
 
-          {/* DEFAULT */}
-          <Route component={NotFound} />
-        </Switch>
+            {/* DEFAULT */}
+            <Route component={NotFound} />
+          </Switch>
         )}
 
       </SnackbarProvider>
