@@ -2,9 +2,8 @@ import React, { useMemo, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
 
-import { layoutWarningDrawerShow } from 'store/actions/Layout';
+import WarningDrawer from 'components/dumb/PluginWarningDrawer';
 
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
@@ -40,13 +39,13 @@ const useAssignCallback = (
   setPausedTime(response.pausedTime);
 }, [setPaused, setPausedTime]);
 
-const usePause = (assignCallback, dispatchShowWarning) => useCallback((time = null) => {
+const usePause = (assignCallback, setDisplayWarningDrawer) => useCallback((time = null) => {
   const deadline = time ? Date.now() + (time * 60 * 1000) : null;
   sendMessage(TOGGLE_BLOCKED_STATE, { time: deadline }).then((response) => {
     assignCallback(response);
-    dispatchShowWarning();
+    setDisplayWarningDrawer(true);
   });
-}, [assignCallback, dispatchShowWarning]);
+}, [assignCallback, setDisplayWarningDrawer]);
 
 const useHandleChoice = (pause, setAnchorEl) => useCallback((value) => {
   pause(value);
@@ -64,17 +63,19 @@ const getPlannedDate = (pausedTime) => {
   return `${date.toLocaleDateString()} - ${date.toLocaleTimeString()}`;
 };
 
-function PausePluginButton({ dispatchShowWarning, t }) {
+function PausePluginButton({ t }) {
   const options = useOptions(t);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [paused, setPaused] = React.useState(null);
   const [pausedTime, setPausedTime] = React.useState(null);
+  const [displayWarningDrawer, setDisplayWarningDrawer] = React.useState(false);
 
   const assignCallback = useAssignCallback(setPaused, setPausedTime);
-  const pause = usePause(assignCallback, dispatchShowWarning);
+  const pause = usePause(assignCallback, setDisplayWarningDrawer);
   const handleChoice = useHandleChoice(pause, setAnchorEl);
   const getData = useGetData(assignCallback);
+  const hideDrawer = useCallback(() => setDisplayWarningDrawer(false), []);
 
   useEffect(getData, []);
 
@@ -117,19 +118,13 @@ function PausePluginButton({ dispatchShowWarning, t }) {
           </MenuItem>
         ))}
       </Menu>
+      {displayWarningDrawer && <WarningDrawer onHide={hideDrawer} />}
     </>
   );
 }
 
 PausePluginButton.propTypes = {
   t: PropTypes.func.isRequired,
-  dispatchShowWarning: PropTypes.func.isRequired,
 };
 
-
-// CONNECT
-const mapDispatchToProps = (dispatch) => ({
-  dispatchShowWarning: () => dispatch(layoutWarningDrawerShow()),
-});
-
-export default connect(null, mapDispatchToProps)(withTranslation(['plugin'])(PausePluginButton));
+export default withTranslation(['plugin'])(PausePluginButton);

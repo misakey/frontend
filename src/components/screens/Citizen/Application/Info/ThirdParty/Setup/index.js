@@ -19,7 +19,6 @@ import groupBy from '@misakey/helpers/groupBy';
 import ApplicationSchema from 'store/schemas/Application';
 import TrackersWhitelistSchema from 'store/schemas/TrackersWhitelist';
 import { setWhitelist, setApps, toggleWhitelistForApp } from 'store/actions/screens/thirdparty';
-import { layoutAppbarHide, layoutAppbarShow, layoutWarningDrawerShow } from 'store/actions/Layout';
 
 import TrackerList from 'components/dumb/Application/ThirdParty/Setup/List';
 
@@ -27,6 +26,7 @@ import SplashScreen from 'components/dumb/SplashScreen';
 import ThirdPartySearchBar from 'components/dumb/Application/ThirdParty/Setup/SearchBar';
 import Switch from 'components/dumb/Switch';
 import Screen from 'components/dumb/Screen';
+import WarningDrawer from 'components/dumb/PluginWarningDrawer';
 
 import { sendMessage } from 'background';
 import { UPDATE_WHITELIST, GET_APPS } from 'background/messages';
@@ -62,7 +62,7 @@ const useFormatApps = (whitelist) => useCallback(
 const useUpdateWhitelist = (
   dispatchWhitelist,
   dispatchToggleWhitelistForApp,
-  dispatchShowWarning,
+  setDisplayWarningDrawer,
   whitelist,
 ) => useCallback((action, domain, listKey) => {
   const appsWhitelist = whitelist.apps || [];
@@ -74,9 +74,9 @@ const useUpdateWhitelist = (
   sendMessage(UPDATE_WHITELIST, { whitelist: newWhitelist }).then((response) => {
     dispatchWhitelist(response.whitelist);
     dispatchToggleWhitelistForApp(domain, listKey);
-    dispatchShowWarning();
+    setDisplayWarningDrawer(true);
   });
-}, [whitelist, dispatchWhitelist, dispatchToggleWhitelistForApp, dispatchShowWarning]);
+}, [whitelist, dispatchWhitelist, dispatchToggleWhitelistForApp, setDisplayWarningDrawer]);
 
 const useSetParams = (location, history) => useCallback((search, mainPurpose, mainDomain) => {
   const nextParams = new URLSearchParams('');
@@ -105,9 +105,6 @@ function ThirdPartySetup({
   dispatchApps,
   dispatchWhitelist,
   dispatchToggleWhitelistForApp,
-  dispatchLayoutAppbarShow,
-  dispatchLayoutAppbarHide,
-  dispatchShowWarning,
   whitelistedApps,
   blockedApps,
   location,
@@ -116,6 +113,7 @@ function ThirdPartySetup({
   t,
 }) {
   const [isFetching, setFetching] = React.useState(false);
+  const [displayWarningDrawer, setDisplayWarningDrawer] = React.useState(false);
   const { search, mainPurpose, mainDomain } = getSearchParams(location.search);
   const { enqueueSnackbar } = useSnackbar();
   const formatApps = useFormatApps(whitelist);
@@ -145,36 +143,26 @@ function ThirdPartySetup({
     }
   };
 
-  const onGoBack = useCallback(() => {
-    setFetching(true);
-    dispatchLayoutAppbarShow();
-    history.goBack();
-  }, [setFetching, dispatchLayoutAppbarShow, history]);
+  const hideDrawer = useCallback(() => setDisplayWarningDrawer(false), []);
 
   const appBarDisplayRef = useRef();
   appBarDisplayRef.current = appBarIsDisplayed;
 
   useEffect(getData, [search, mainPurpose, mainDomain]);
-  useEffect(() => {
-    if (appBarDisplayRef.current) {
-      dispatchLayoutAppbarHide();
-      return () => { dispatchLayoutAppbarShow(); };
-    }
-    return undefined;
-  }, [appBarDisplayRef, dispatchLayoutAppbarHide, dispatchLayoutAppbarShow]);
 
   const setParams = useSetParams(location, history);
   const updateWhitelist = useUpdateWhitelist(
     dispatchWhitelist,
     dispatchToggleWhitelistForApp,
-    dispatchShowWarning,
+    setDisplayWarningDrawer,
     whitelist,
   );
 
   return (
     <Screen hideAppBar>
+      {displayWarningDrawer && <WarningDrawer onHide={hideDrawer} />}
       <ThirdPartySearchBar
-        onIconClick={onGoBack}
+        onIconClick={history.goBack}
         location={location}
         entity={isEmpty(entity) ? null : entity}
         onSearch={(s) => { setParams(s, mainPurpose, mainDomain); }}
@@ -317,9 +305,6 @@ ThirdPartySetup.propTypes = {
   dispatchApps: PropTypes.func.isRequired,
   dispatchWhitelist: PropTypes.func.isRequired,
   dispatchToggleWhitelistForApp: PropTypes.func.isRequired,
-  dispatchLayoutAppbarShow: PropTypes.func.isRequired,
-  dispatchLayoutAppbarHide: PropTypes.func.isRequired,
-  dispatchShowWarning: PropTypes.func.isRequired,
   whitelistedApps: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
   blockedApps: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
   history: PropTypes.object.isRequired,
@@ -356,9 +341,6 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(toggleWhitelistForApp(id, listKey));
   },
   dispatchWhitelist: (data) => dispatch(setWhitelist(data)),
-  dispatchLayoutAppbarHide: () => dispatch(layoutAppbarHide()),
-  dispatchLayoutAppbarShow: () => dispatch(layoutAppbarShow()),
-  dispatchShowWarning: () => dispatch(layoutWarningDrawerShow()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['common', 'screens'])(ThirdPartySetup));

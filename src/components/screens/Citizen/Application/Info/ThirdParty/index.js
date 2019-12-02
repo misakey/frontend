@@ -10,7 +10,6 @@ import get from '@misakey/helpers/get';
 import set from '@misakey/helpers/set';
 
 import { setDetectedTrackers, setWhitelist } from 'store/actions/screens/thirdparty';
-import { layoutWarningDrawerShow } from 'store/actions/Layout';
 
 import TrackersSchema from 'store/schemas/Trackers';
 import TrackersWhitelistSchema from 'store/schemas/TrackersWhitelist';
@@ -28,6 +27,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Switch from 'components/dumb/Switch';
+import WarningDrawer from 'components/dumb/PluginWarningDrawer';
 
 import routes from 'routes';
 
@@ -86,7 +86,7 @@ const useFormatDetectedTrackers = (
 
 const useUpdateWhitelist = (
   dispatchWhitelist,
-  dispatchShowWarning,
+  setDisplayWarningDrawer,
   whitelist,
   mainDomain,
 ) => useCallback((action, purpose) => {
@@ -97,9 +97,9 @@ const useUpdateWhitelist = (
 
   sendMessage(UPDATE_WHITELIST, { whitelist: newWhitelist }).then((response) => {
     dispatchWhitelist(response.whitelist);
-    dispatchShowWarning();
+    setDisplayWarningDrawer(true);
   });
-}, [dispatchWhitelist, dispatchShowWarning, whitelist, mainDomain]);
+}, [dispatchWhitelist, setDisplayWarningDrawer, whitelist, mainDomain]);
 
 const useListenForBackgroundCb = (
   formatDetectedTrackers,
@@ -114,7 +114,6 @@ const useListenForBackgroundCb = (
 function ThirdPartyBlock({
   dispatchDetectedTrackers,
   dispatchWhitelist,
-  dispatchShowWarning,
   detectedTrackers,
   entity,
   history,
@@ -123,6 +122,8 @@ function ThirdPartyBlock({
 }) {
   const classes = useStyles();
   const [isFetching, setFetching] = React.useState(false);
+  const [displayWarningDrawer, setDisplayWarningDrawer] = React.useState(false);
+  const hideDrawer = useCallback(() => setDisplayWarningDrawer(false), []);
   const { mainDomain } = useMemo(() => (entity || { mainDomain: '' }), [entity]);
   const empty = useMemo(() => detectedTrackers.length === 0, [detectedTrackers]);
 
@@ -156,7 +157,7 @@ function ThirdPartyBlock({
 
   const updateWhitelist = useUpdateWhitelist(
     dispatchWhitelist,
-    dispatchShowWarning,
+    setDisplayWarningDrawer,
     whitelist,
     mainDomain,
   );
@@ -243,6 +244,7 @@ function ThirdPartyBlock({
         </List>
 
       </CardContent>
+      {displayWarningDrawer && <WarningDrawer onHide={hideDrawer} />}
     </Card>
   );
 }
@@ -257,7 +259,6 @@ ThirdPartyBlock.propTypes = {
   whitelist: PropTypes.shape(TrackersWhitelistSchema).isRequired,
   dispatchWhitelist: PropTypes.func.isRequired,
   dispatchDetectedTrackers: PropTypes.func.isRequired,
-  dispatchShowWarning: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
 };
@@ -276,7 +277,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   dispatchWhitelist: (data) => dispatch(setWhitelist(data)),
   dispatchDetectedTrackers: (data) => dispatch(setDetectedTrackers(data)),
-  dispatchShowWarning: () => dispatch(layoutWarningDrawerShow()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['screens'])(ThirdPartyBlock));

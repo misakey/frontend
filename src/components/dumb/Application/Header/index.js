@@ -233,9 +233,9 @@ function ApplicationHeader({
   const openInNewTab = useCallback(
     () => {
       // @FIXME: remove when auth in plugin is implemented
-      redirectToApp(generatePath(routes.citizen.application._, { mainDomain }));
+      redirectToApp(routes.auth.redirectToSignIn);
     },
-    [mainDomain],
+    [],
   );
 
   const dialogConnectProps = useMemo(
@@ -302,28 +302,17 @@ function ApplicationHeader({
         </Box>
         {(!readOnly && !isLoading) && (
           <Box className={classes.boxButtons}>
-            {(window.env.PLUGIN && dpoEmail)
-              ? (
-                <Button
-                  onClick={openInNewTab}
-                  variant="contained"
-                  color="secondary"
-                  className={clsx(classes.button, classes.buttonFill)}
-                >
-                  {t('screens:application.info.contact.goToApp')}
-                </Button>
-              )
-              : (
-                <ContactButton
-                  dpoEmail={dpoEmail}
-                  onContributionClick={onContributionDpoEmailClick}
-                  applicationID={id}
-                  mainDomain={mainDomain}
-                  contactedView={wasContacted}
-                  dialogConnectProps={dialogConnectProps}
-                  className={clsx(classes.button, classes.buttonFill)}
-                />
-              )}
+            {(
+              <ContactButton
+                dpoEmail={dpoEmail}
+                onContributionClick={onContributionDpoEmailClick}
+                applicationID={id}
+                mainDomain={mainDomain}
+                contactedView={wasContacted}
+                dialogConnectProps={dialogConnectProps}
+                className={clsx(classes.button, classes.buttonFill)}
+              />
+            )}
             {/* @FIXME create a generic menu button */}
             <Button
               variant="outlined"

@@ -17,6 +17,7 @@ import isFunction from '@misakey/helpers/isFunction';
 import isEmpty from '@misakey/helpers/isEmpty';
 import log from '@misakey/helpers/log';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
+import { redirectToApp } from 'helpers/plugin';
 
 import withDialogConnect from 'components/smart/Dialog/Connect/with';
 import Button from '@material-ui/core/Button';
@@ -164,6 +165,13 @@ const ContactButton = (
     [isAuthenticated, dpoText, t],
   );
 
+  const openInNewTab = useCallback(
+    () => {
+      // @FIXME: remove when contact app in plugin is implemented
+      redirectToApp(generatePath(routes.citizen.application._, { mainDomain }));
+    },
+    [mainDomain],
+  );
 
   if (loading) {
     return (
@@ -174,30 +182,43 @@ const ContactButton = (
     );
   }
 
-  if (!isEmpty(dpoEmail)) {
+  if (isEmpty(dpoEmail)) {
     return (
       <DialogConnectButton
         className={className}
         variant="contained"
         color="secondary"
-        onClick={isFunction(customAction) ? customAction : onClick}
+        onClick={onContributionClick}
         dialogConnectProps={dialogConnectProps}
         {...buttonProps}
       >
-        {dpoText}
+        {noDpoText}
       </DialogConnectButton>
     );
   }
+
+  if (window.env.PLUGIN) {
+    return (
+      <Button
+        onClick={openInNewTab}
+        variant="contained"
+        color="secondary"
+      >
+        {t('screens:application.info.contact.goToApp')}
+      </Button>
+    );
+  }
+
   return (
     <DialogConnectButton
       className={className}
       variant="contained"
       color="secondary"
-      onClick={onContributionClick}
+      onClick={isFunction(customAction) ? customAction : onClick}
       dialogConnectProps={dialogConnectProps}
       {...buttonProps}
     >
-      {noDpoText}
+      {dpoText}
     </DialogConnectButton>
   );
 };

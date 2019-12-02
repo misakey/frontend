@@ -33,20 +33,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const useRefreshTab = (hideWarning) => useCallback(() => {
+const useRefreshTab = (onHide) => useCallback(() => {
   browser.tabs.reload();
-  hideWarning();
-}, [hideWarning]);
-
-const useHideWarning = (dispatchHideWarning) => useCallback(() => {
-  dispatchHideWarning();
-}, [dispatchHideWarning]);
+  onHide();
+}, [onHide]);
 
 // COMPONENTS
-const WarningDrawer = ({ dispatchHideWarning, t }) => {
+const WarningDrawer = ({ onHide, t }) => {
   const classes = useStyles();
-  const hideWarning = useHideWarning(dispatchHideWarning);
-  const refreshTab = useRefreshTab(hideWarning);
+  const refreshTab = useRefreshTab(onHide);
 
   return (
     <Drawer
@@ -56,7 +51,7 @@ const WarningDrawer = ({ dispatchHideWarning, t }) => {
       open
     >
       <div className={classes.container}>
-        <IconButton className={classes.padding} size="small" onClick={hideWarning}>
+        <IconButton className={classes.padding} size="small" onClick={onHide}>
           <CloseIcon fontSize="inherit" />
         </IconButton>
         <Typography variant="caption" style={{ width: '70%' }}>
@@ -72,7 +67,7 @@ const WarningDrawer = ({ dispatchHideWarning, t }) => {
 
 WarningDrawer.propTypes = {
   t: PropTypes.func.isRequired,
-  dispatchHideWarning: PropTypes.func.isRequired,
+  onHide: PropTypes.func.isRequired,
 };
 
 
