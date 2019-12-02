@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { normalize, denormalize } from 'normalizr';
+import { parse } from 'tldts';
 
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -150,11 +151,12 @@ const withApplication = (Component, options = {}) => {
       dispatch(receiveEntities(entities));
     },
     dispatchReceivePlugin: (mainDomain) => {
+      const { domainWithoutSuffix } = parse(mainDomain);
       const data = [{
         mainDomain,
         unknown: true,
         id: mainDomain,
-        name: `${mainDomain.charAt(0).toUpperCase()}${mainDomain.slice(1)}`,
+        name: `${domainWithoutSuffix.charAt(0).toUpperCase()}${domainWithoutSuffix.slice(1)}`,
       }];
       const normalized = normalize(data, schema.collection);
       const { entities } = normalized;

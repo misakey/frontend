@@ -4,11 +4,19 @@ import globals from './globals';
 
 const DEFAULT_PURPOSE = 'other';
 
+// @FIXME add to js-common helpers
+function getMainDomainWithoutPrefix(domain) {
+  if (domain.startsWith('www.')) {
+    return domain.replace('www.', '');
+  }
+  return domain;
+}
+
 function getRequestDetails({ tabId, originUrl, initiator, url }) {
   const initiatorUrl = globals.tabsInitiator.get(tabId) || originUrl || initiator;
-  const { domain: targetDomain } = parse(url);
-  const { domain: initiatorDomain } = parse(initiatorUrl);
-  return { initiator: initiatorDomain, target: targetDomain };
+  const { hostname: targetDomain } = parse(url);
+  const { hostname: initiatorDomain } = parse(initiatorUrl);
+  return { initiator: getMainDomainWithoutPrefix(initiatorDomain), target: targetDomain };
 }
 
 function isRequestFirstParty(initiatorDomain, targetDomain) {

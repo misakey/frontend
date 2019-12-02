@@ -8,10 +8,18 @@ import { parse } from 'tldts';
 
 import DefaultScreen from './DefaultScreen';
 
-// @TODO add o js-common helpers
+// @FIXME add to js-common helpers
 async function getCurrentTab() {
   const tabs = await browser.tabs.query({ currentWindow: true, active: true });
   return tabs[0] || {};
+}
+
+// @FIXME add to js-common helpers
+function getMainDomainWithoutPrefix(domain) {
+  if (domain.startsWith('www.')) {
+    return domain.replace('www.', '');
+  }
+  return domain;
 }
 
 function Plugin() {
@@ -19,8 +27,8 @@ function Plugin() {
 
   useEffect(() => {
     getCurrentTab().then(({ url }) => {
-      const { domain } = parse(url);
-      setPluginDomain(domain);
+      const { hostname } = parse(url);
+      setPluginDomain(getMainDomainWithoutPrefix(hostname));
     });
   }, []);
 
