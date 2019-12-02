@@ -223,6 +223,7 @@ function ServiceRequestsList({ appBarProps, service, t, isLoading, error }) {
     <ScreenAction
       state={state}
       appBarProps={appBarProps}
+      navigationProps={{ showGoBack: false }}
       title={t('screens:Service.requests.list.title', service)}
       display="flex"
       flexDirection="column"
