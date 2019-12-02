@@ -43,6 +43,9 @@ function getPopperListboxHeight(theme, media) {
   return { height: `calc(${height} - ${toolbar.minHeight}px)` };
 }
 
+export const SEARCH_WIDTH_MD = 400;
+export const SEARCH_WIDTH_LG = 600;
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -53,14 +56,14 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: fade(theme.palette.grey['500'], 0.15),
     '&:hover': { backgroundColor: fade(theme.palette.grey['500'], 0.25) },
     [theme.breakpoints.up('md')]: {
-      width: 400,
+      width: SEARCH_WIDTH_MD,
       position: 'absolute',
       left: '50%',
       transform: 'translateX(-50%)',
       margin: 0,
     },
     [theme.breakpoints.up('lg')]: {
-      width: 600,
+      width: SEARCH_WIDTH_LG,
     },
   },
   paper: {

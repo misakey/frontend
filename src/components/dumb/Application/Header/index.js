@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
   flexWrap: {
     flexWrap: 'wrap',
+    overflow: 'hidden',
     [theme.breakpoints.up('sm')]: {
       flexWrap: 'nowrap',
     },

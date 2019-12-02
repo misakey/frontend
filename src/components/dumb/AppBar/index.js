@@ -52,9 +52,7 @@ function ResponsiveSearch({ onButtonClick, searchBarProps, shift }) {
   if (SMALL_BREAKPOINTS.includes(width) || shift) {
     return (
       <IconButton
-        edge="start"
         color="inherit"
-        aria-label="open drawer"
         onClick={onButtonClick}
       >
         <SearchIcon />
@@ -86,8 +84,8 @@ function AppBar({
 
   const rightAppBarItems = useMemo(() => {
     const rightItems = [];
-    if (withPausePluginButton) { rightItems.push(<PausePluginButton />); }
-    if (withUser) { rightItems.push(<User />); }
+    if (withPausePluginButton) { rightItems.push(<PausePluginButton key="pausePluginButton" />); }
+    if (withUser) { rightItems.push(<User key="appBarUser" />); }
 
     return rightItems;
   }, [withPausePluginButton, withUser]);
@@ -110,7 +108,7 @@ function AppBar({
     >
       {!isSearchOpen && (
         <Toolbar {...toolbarProps} className={clsx(classes.toolbar, toolbarProps.className)}>
-          {map(items, (item, i) => <span key={`appBarLeftItem-${i}`}>{item}</span>)}
+          {map(items)}
           <div className={classes.grow} />
           {withSearchBar && (
             <ResponsiveSearch
@@ -119,7 +117,7 @@ function AppBar({
               shift={shift}
             />
           )}
-          {map(rightAppBarItems, (item, i) => <span key={`appBarRightItem-${i}`}>{item}</span>)}
+          {map(rightAppBarItems)}
         </Toolbar>
       )}
       <AppBarSearch open={isSearchOpen} onClose={handleSearchClose} {...searchBarProps} />

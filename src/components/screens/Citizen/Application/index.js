@@ -22,6 +22,8 @@ import isEmpty from '@misakey/helpers/isEmpty';
 
 import Screen from 'components/dumb/Screen';
 
+import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD } from 'components/smart/Search/Applications';
+
 // CONSTANTS
 const PAGES_ROSES_ENDPOINT = {
   method: 'GET',
@@ -29,13 +31,18 @@ const PAGES_ROSES_ENDPOINT = {
 };
 
 // HOOKS
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   avatarParent: {
-    /* overflow: 'hidden',
-    display: 'none',
-    [theme.breakpoints.up('sm')]: {
-      display: 'block',
-    }, */
+    // Maybe this style should be more documented
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    [theme.breakpoints.up('md')]: {
+      maxWidth: `calc(50% - ${SEARCH_WIDTH_MD / 2}px - ${theme.spacing(2)}px)`,
+    },
+    [theme.breakpoints.up('lg')]: {
+      maxWidth: `calc(50% - ${SEARCH_WIDTH_LG / 2}px - ${theme.spacing(2)}px)`,
+    },
   },
 }));
 
@@ -57,7 +64,7 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
   const appBarProps = useMemo(
     () => ({
       items: [(
-        <div className={classes.avatarParent}>
+        <div className={classes.avatarParent} key="applicationAvatarParent">
           {application && <ApplicationAvatar application={application} />}
         </div>
       )],

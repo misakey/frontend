@@ -5,6 +5,7 @@ import { Switch } from 'react-router-dom';
 import routes from 'routes';
 import ApplicationSchema from 'store/schemas/Application';
 
+import clsx from 'clsx';
 import isNil from '@misakey/helpers/isNil';
 
 import withApplication from 'components/smart/withApplication';
@@ -22,6 +23,8 @@ import SplashScreen from 'components/dumb/SplashScreen';
 import useLocationWorkspace from 'hooks/useLocationWorkspace';
 import useUserHasRole from 'hooks/useUserHasRole';
 
+import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD } from 'components/smart/Search/Applications';
+
 export const DPO_SERVICE_SCREEN_NAMES = {
   CLAIM: 'DPOServiceClaim',
   REQUESTS: 'DPOServiceRequests',
@@ -34,6 +37,13 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     marginLeft: theme.spacing(isDrawerOpen ? 0 : 2),
+    [theme.breakpoints.up('md')]: {
+      maxWidth: `calc(50% - ${SEARCH_WIDTH_MD / 2}px - ${theme.spacing(2)}px - 48px)`,
+      '&.isDrawerOpen': { maxWidth: '100%' },
+    },
+    [theme.breakpoints.up('lg')]: {
+      maxWidth: `calc(50% - ${SEARCH_WIDTH_LG / 2}px - ${theme.spacing(2)}px - 48px)`,
+    },
   }),
 }));
 
@@ -58,12 +68,10 @@ function Service({
 
   const appBarProps = useMemo(() => ({
     shift: isDrawerOpen,
-    items: isDrawerOpen ? [(
-      <div className={classes.avatarParent}>
-        {!isDefaultDomain && service && <ApplicationAvatar application={service} />}
-      </div>
-    )] : [<ButtonBurger onClick={() => setDrawerOpen(true)} />, (
-      <div className={classes.avatarParent}>
+    items: [!isDrawerOpen ? (
+      <ButtonBurger key="ButtonBurger" onClick={() => setDrawerOpen(true)} />
+    ) : null, (
+      <div className={clsx(classes.avatarParent, { isDrawerOpen })} key="serviceAvatarParent">
         {!isDefaultDomain && service && <ApplicationAvatar application={service} />}
       </div>
     )],
