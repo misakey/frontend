@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import clsx from 'clsx';
+import routes from 'routes';
 
 import { makeStyles } from '@material-ui/core/styles';
 import useWidth from '@misakey/hooks/useWidth';
@@ -48,8 +49,8 @@ function User() {
     [classes.iconRoot, isSmallDisplay],
   );
 
-  const signInActionForPlugin = useCallback(() => redirectToApp('/'), []);
-  const redirectToWebAppAccount = useCallback(() => redirectToApp('/account'), []);
+  const signInActionForPlugin = useCallback(() => redirectToApp(routes.auth.redirectToSignIn), []);
+  const redirectToWebAppAccount = useCallback(() => redirectToApp(routes.account._), []);
 
   return (
     <ButtonConnect

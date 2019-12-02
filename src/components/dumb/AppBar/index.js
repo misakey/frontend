@@ -17,6 +17,7 @@ import useWidth from '@misakey/hooks/useWidth';
 import SearchIcon from '@material-ui/icons/Search';
 import IconButton from '@material-ui/core/IconButton';
 import { SMALL_BREAKPOINTS } from 'constants/ui/medias';
+import { isDesktopDevice } from 'helpers/devices';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -25,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+  },
+  appBarFixedHeight: {
+    height: 56,
   },
   appBarShift: (drawerWidth) => ({
     marginLeft: drawerWidth,
@@ -94,7 +98,14 @@ function AppBar({
       position="fixed"
       color="inherit"
       elevation={0}
-      className={clsx(classes.appBar, { [classes.appBarShift]: shift }, className)}
+      className={clsx(
+        classes.appBar,
+        {
+          [classes.appBarShift]: shift,
+          [classes.appBarFixedHeight]: window.env.PLUGIN && isDesktopDevice(),
+        },
+        className,
+      )}
       {...rest}
     >
       {!isSearchOpen && (
@@ -144,7 +155,7 @@ AppBar.defaultProps = {
   shift: false,
   toolbarProps: { className: '' },
   withPausePluginButton: window.env.PLUGIN === true,
-  withSearchBar: true,
+  withSearchBar: !window.env.PLUGIN,
   withUser: true,
 };
 

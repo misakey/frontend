@@ -145,9 +145,9 @@ function getRootStyle(theme, options = {}, hideAppBar = false) {
   const isPopupPlugin = window.env.PLUGIN && isDesktopDevice();
 
   if (isPopupPlugin) {
-    const appBarHeight = theme.mixins.toolbar[MIN_PX_600].minHeight;
+    const appBarHeight = 56;
     return {
-      height: PLUGIN_HEIGHT,
+      height: hideAppBar ? PLUGIN_HEIGHT + appBarHeight : PLUGIN_HEIGHT,
       width: PLUGIN_WIDTH,
       marginTop: hideAppBar ? 0 : appBarHeight,
       overflowY: 'auto',

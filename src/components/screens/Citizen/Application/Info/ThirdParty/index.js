@@ -193,6 +193,7 @@ function ThirdPartyBlock({
   return (
     <Card
       mt={3}
+      mb={1}
       title={t('screens:application.thirdParty.myConfig.title')}
       subtitle={t('screens:application.thirdParty.myConfig.description')}
     >
