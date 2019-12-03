@@ -13,6 +13,7 @@ export const serviceClaimValidationSchema = Yup.object().shape({
 export const serviceRequestsReadValidationSchema = Yup.object().shape({
   blob: Yup.mixed()
     .required(required)
-    .test('fileSize', 'size', ({ size }) => size <= MAX_FILE_SIZE),
+    .test('fileSize', 'size', ({ size }) => size <= MAX_FILE_SIZE)
+    .test('fileExtension', 'extension', ({ name }) => typeof name === 'string' && name.includes('.')),
   // .test('fileType', 'format', ({ type }) => ACCEPTED_TYPES.includes(type)),
 });

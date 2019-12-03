@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import errorTypes from 'constants/errorTypes';
-import { MAX_FILE_SIZE } from 'constants/file/size';
+import { MAX_AVATAR_SIZE } from 'constants/file/size';
 import { ACCEPTED_TYPES } from 'constants/file/image';
 
 // CONSTANTS
@@ -24,7 +24,7 @@ export const nameValidationSchema = Yup.object().shape({
 export const logoValidationSchema = Yup.object().shape({
   logo: Yup.mixed()
     .required(required)
-    .test('fileSize', 'size', ({ size }) => size <= MAX_FILE_SIZE)
+    .test('fileSize', 'size', ({ size }) => size <= MAX_AVATAR_SIZE)
     .test('fileType', 'format', ({ type }) => ACCEPTED_TYPES.includes(type)),
 });
 

@@ -14,8 +14,14 @@
     "action": "Modifier",
     "helperText": "Une photo permet de personnaliser votre compte",
     "error": {
-      "size": "Taille maximale dépassée",
+      "size": "Taille maximale de 3Mo. dépassée",
       "format": "Format incorrect. Formats acceptés: .jpg .jpeg .png .tiff .gif"
+    }
+  },
+  "blob": {
+    "error": {
+      "size": "Taille maximale de 9Mo. dépassée",
+      "extension": "Format incorrect. Fichier sans extension"
     }
   },
   "code": {

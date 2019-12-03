@@ -1,17 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Formik, Form } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
 import moment from 'moment';
 
 import API from '@misakey/api';
-// import { serviceRequestsReadValidationSchema } from 'constants/validationSchemas/dpo';
+import { serviceRequestsReadValidationSchema } from 'constants/validationSchemas/dpo';
 import log from '@misakey/helpers/log';
 import prop from '@misakey/helpers/prop';
-import isNil from '@misakey/helpers/isNil';
 import omit from '@misakey/helpers/omit';
+import last from '@misakey/helpers/last';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
 import { producerCryptoContext as crypto } from '@misakey/crypto';
@@ -30,17 +30,19 @@ import CloudDoneIcon from '@material-ui/icons/CloudDone';
 
 import Subtitle from 'components/dumb/Typography/Subtitle';
 import BoxControls from 'components/dumb/Box/Controls';
-import FormFields from 'components/dumb/Form/Fields';
 import FieldFile from 'components/dumb/Form/Field/File';
 import Alert from 'components/dumb/Alert';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import SplashScreen from 'components/dumb/SplashScreen';
 import Empty from 'components/dumb/Box/Empty';
 import ScreenAction from 'components/dumb/Screen/Action';
 import withAccessRequest from 'components/smart/withAccessRequest';
+import withErrors from 'components/dumb/Form/Field/withErrors';
 
 // CONSTANTS
+const FIELD_NAME = 'blob';
 const INTERNAL_PROPS = ['tReady', 'isAuthenticated'];
-const INITIAL_VALUES = { blob: null };
+const INITIAL_VALUES = { [FIELD_NAME]: null };
 const ENDPOINTS = {
   blob: {
     create: {
@@ -69,11 +71,7 @@ const ENDPOINTS = {
 
 // HELPERS
 function getFileExtension(fileName) {
-  if (typeof fileName !== 'string' || !fileName.includes('.')) {
-    throw TypeError({ details: { file: 'invalid ' } });
-  }
-
-  return `.${fileName.split('.').slice(-1)[0]}`;
+  return `.${last(fileName.split('.'))}`;
 }
 
 // HOOKS
@@ -113,6 +111,50 @@ Blob.propTypes = {
   createdAt: PropTypes.string.isRequired,
 };
 
+// @FIXME: refactor field file to properly integrate formik validation
+let FieldBlob = ({
+  className,
+  displayError,
+  errorKeys,
+  setFieldValue,
+  setFieldTouched,
+  t,
+}) => {
+  const onChange = useCallback(
+    (file) => {
+      setFieldValue(FIELD_NAME, file);
+      setFieldTouched(FIELD_NAME, true, false);
+    },
+    [setFieldValue, setFieldTouched],
+  );
+
+  return (
+    <>
+      <FieldFile
+        accept={['*']}
+        className={className}
+        onChange={onChange}
+      />
+      {displayError && (
+        <FormHelperText error={displayError}>
+          {t(errorKeys)}
+        </FormHelperText>
+      )}
+    </>
+  );
+};
+
+FieldBlob.propTypes = {
+  className: PropTypes.string.isRequired,
+  setFieldValue: PropTypes.func.isRequired,
+  setFieldTouched: PropTypes.func.isRequired,
+  displayError: PropTypes.bool.isRequired,
+  errorKeys: PropTypes.arrayOf(PropTypes.string).isRequired,
+  t: PropTypes.func.isRequired,
+};
+
+FieldBlob = withTranslation('fields')(withErrors(FieldBlob));
+
 function ServiceRequestsRead({
   match: { params }, accessRequest, accessToken,
   isLoading, isFetching, error,
@@ -141,30 +183,22 @@ function ServiceRequestsRead({
   const [blobs, setBlobs] = useState([]);
   const [isFetchingBlobs, setFetchingBlobs] = useState(false);
 
-  const [fieldBlob, setFieldBlob] = useState(null);
   const [isUploading, setUploading] = useState(false);
 
-  const fields = useMemo(() => ({
-    blob: {
-      component: FieldFile,
-      className: classes.blob,
-      onChange: setFieldBlob,
-    },
-  }), [setFieldBlob, classes.blob]);
-
-  const handleUpload = useCallback((values, { setErrors }) => {
+  const handleUpload = useCallback((form, { setFieldError }) => {
     handleClose();
     setUploading(true);
 
     const { databoxId = params.databoxId, ownerId = databox.ownerId } = accessRequest;
-    const blob = fieldBlob;
+
+    const blob = form[FIELD_NAME];
 
     API.use(ENDPOINTS.user.pubKey.read, accessToken.token)
       .build({ id: ownerId })
       .send()
       .then(({ pubkey }) => {
         crypto.databox.setOwnerPublicKey(ownerId, pubkey, true);
-        crypto.databox.encryptBlob(blob, ownerId)
+        return crypto.databox.encryptBlob(blob, ownerId)
           .then(({ ciphertext, nonce, ephemeralProducerPubKey, ownerPublicKey }) => {
             const formData = new FormData();
             formData.append('transaction_id', Math.floor(Math.random() * 10000000000));
@@ -177,7 +211,7 @@ function ServiceRequestsRead({
             formData.append('encryption[ephemeral_producer_pub_key]', ephemeralProducerPubKey);
             formData.append('encryption[owner_pub_key]', ownerPublicKey);
 
-            API.use(ENDPOINTS.blob.create, accessToken.token)
+            return API.use(ENDPOINTS.blob.create, accessToken.token)
               .build(null, formData)
               .send({ contentType: null })
               .then((response) => {
@@ -191,7 +225,7 @@ function ServiceRequestsRead({
         log(e);
         const details = prop('details')(e);
         if (details) {
-          setErrors(details);
+          setFieldError(FIELD_NAME, 'invalid');
         } else {
           const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
           enqueueSnackbar(text, { variant: 'error' });
@@ -199,9 +233,16 @@ function ServiceRequestsRead({
       })
       .finally(() => { setUploading(false); });
   }, [
-    fieldBlob, handleClose, setUploading, setBlobs,
-    enqueueSnackbar, t, params.databoxId, blobs,
-    accessRequest, accessToken.token, databox.ownerId,
+    handleClose,
+    setUploading,
+    setBlobs,
+    enqueueSnackbar,
+    t,
+    params.databoxId,
+    blobs,
+    accessRequest,
+    accessToken.token,
+    databox.ownerId,
   ]);
 
   const fetchBlobs = useCallback(() => {
@@ -242,12 +283,11 @@ function ServiceRequestsRead({
           {blobs.map((props) => <Blob {...props} />)}
         </List>
         <Formik
-          // @fixme: WE NEED TO VALIDATE THE BLOB
-          // validationSchema={serviceRequestsReadValidationSchema}
+          validationSchema={serviceRequestsReadValidationSchema}
           initialValues={INITIAL_VALUES}
           onSubmit={handleOpen}
         >
-          {({ values, ...formikBag }) => (
+          {({ values, isValid, setFieldValue, setFieldTouched, ...formikBag }) => (
             <Form>
               <Alert
                 open={open}
@@ -256,17 +296,19 @@ function ServiceRequestsRead({
                 title={t('screens:Service.requests.read.upload.title', { ...databox, ...accessRequest })}
                 text={t('screens:Service.requests.read.upload.text', { ...databox, ...accessRequest })}
               />
-              <FormFields
-                fields={fields}
-                prefix="servicerequests.read"
-                defaultFields={fields}
+              <Field
+                name={FIELD_NAME}
+                component={FieldBlob}
+                className={classes.blob}
+                setFieldValue={setFieldValue}
+                setFieldTouched={setFieldTouched}
               />
               <BoxControls
                 mt={1}
                 primary={{
                   type: 'submit',
                   isLoading: isUploading,
-                  isValid: !isNil(fieldBlob),
+                  isValid,
                   text: t('common:submit'),
                 }}
               />
