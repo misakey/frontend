@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
   box: {
     // 100% - margins - titlesHeight
-    height: `calc(100% - ${2 * theme.spacing(3)}px - 67px)`,
+    height: `calc(100% - ${theme.spacing(1)}px - 67px)`,
   },
   list: {
     height: '100%',
@@ -227,6 +227,7 @@ function ServiceRequestsList({ appBarProps, service, t, isLoading, error }) {
       title={t('screens:Service.requests.list.title', service)}
       display="flex"
       flexDirection="column"
+      fullHeight
     >
       <Container maxWidth="md" className={classes.container}>
         <Subtitle>

@@ -293,9 +293,9 @@ function Screen({
         component="main"
         className={clsx(classes.root, className, {
           [classes.gutters]: !disableGutters,
-          [classes.fullHeight]: fullHeight,
+          [classes.fixedHeight]: fullHeight,
         })}
-        {...omit(rest, ['staticContext'])}
+        {...omit(rest, ['staticContext', 'match'])}
       >
         <StateWrapper
           splashScreen={splashScreen}
