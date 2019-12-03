@@ -7,7 +7,7 @@ import { generatePath, useHistory } from 'react-router-dom';
 import map from '@misakey/helpers/map';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNull from '@misakey/helpers/isNull';
-import isNil from '@misakey/helpers/isNil';
+import isObject from '@misakey/helpers/isObject';
 
 import API from '@misakey/api';
 import routes from 'routes';
@@ -200,7 +200,7 @@ function SearchApplications({ isAuthenticated, ...rest }) {
   }, [isAuthenticated]);
 
   const handleChange = useCallback((event, option) => {
-    if (!isNil(option)) {
+    if (isObject(option)) {
       const { mainDomain } = option;
 
       if (mainDomain === null) {
