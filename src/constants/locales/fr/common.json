@@ -90,11 +90,11 @@
     "links": {
       "privacy": {
         "text": "Confidentialité",
-        "href": "https://static.misakey.com/docs/privacy-policy/misakey-privacy-policy-v0-beta.pdf"
+        "href": "https://static.misakey.com/docs/privacy-policy/misakey-privacy-policy-v1.pdf"
       },
       "tos": {
         "text": "Conditions d'utilisation",
-        "href": "https://static.misakey.com/docs/tos/misakey-tos-v0-beta.pdf"
+        "href": "https://static.misakey.com/docs/tos/misakey-tos-v1.pdf"
       }
     }
   },
