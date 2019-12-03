@@ -27,8 +27,10 @@ function Plugin() {
 
   useEffect(() => {
     getCurrentTab().then(({ url }) => {
-      const { hostname } = parse(url);
-      setPluginDomain(getMainDomainWithoutPrefix(hostname));
+      const { hostname, domain } = parse(url);
+      if (domain) {
+        setPluginDomain(getMainDomainWithoutPrefix(hostname));
+      }
     });
   }, []);
 
