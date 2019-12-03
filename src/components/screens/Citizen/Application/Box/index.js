@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React from 'react';
 import Swal from 'sweetalert2';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -6,12 +6,10 @@ import { useSnackbar } from 'notistack';
 import { denormalize } from 'normalizr';
 import fileDownload from 'js-file-download';
 import { withTranslation, Trans } from 'react-i18next';
-import { generatePath } from 'react-router-dom';
 
 import ApplicationSchema from 'store/schemas/Application';
 
 import API from '@misakey/api';
-import routes from 'routes';
 
 import Typography from '@material-ui/core/Typography';
 import MUILink from '@material-ui/core/Link';
@@ -20,7 +18,6 @@ import deburr from '@misakey/helpers/deburr';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import { redirectToApp } from 'helpers/plugin';
 
 import withDialogConnect from 'components/smart/Dialog/Connect/with';
 import SplashScreen from 'components/dumb/SplashScreen';
@@ -157,19 +154,6 @@ function ApplicationBox({
 
   const { mainDomain } = match.params;
 
-  const openInNewTab = useCallback(
-    () => {
-      // @FIXME: remove when auth in plugin is implemented
-      redirectToApp(generatePath(routes.citizen.application.vault, { mainDomain }));
-    },
-    [mainDomain],
-  );
-
-  const dialogConnectProps = useMemo(
-    () => (window.env.PLUGIN ? { signInAction: openInNewTab } : {}),
-    [openInNewTab],
-  );
-
   function errorSnackBar(translationKey) {
     const text = t(translationKey);
     enqueueSnackbar(text, { variant: 'error' });
@@ -299,8 +283,6 @@ function ApplicationBox({
             applicationID={application.id}
             mainDomain={application.mainDomain}
             buttonProps={{ variant: 'outlined' }}
-            dialogConnectProps={dialogConnectProps}
-            customAction={window.env.PLUGIN ? openInNewTab : null}
           >
             {t('screens:application.box.button.label')}
           </ContactButton>
@@ -327,7 +309,7 @@ function ApplicationBox({
         my={3}
         title={t('screens:application.box.info.title')}
         primary={!isAuthenticated && (
-          <ButtonConnectSimple buttonProps={{ variant: 'contained' }} {...dialogConnectProps}>
+          <ButtonConnectSimple buttonProps={{ variant: 'contained' }}>
             {t('screens:application.box.info.primaryButton')}
           </ButtonConnectSimple>
         )}
@@ -335,7 +317,6 @@ function ApplicationBox({
           <DialogConnectButton
             standing={BUTTON_STANDINGS.ENHANCED}
             text={t('screens:application.box.info.secondaryButton')}
-            dialogConnectProps={dialogConnectProps}
           />
         )}
       >

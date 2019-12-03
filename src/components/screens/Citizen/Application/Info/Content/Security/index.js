@@ -21,7 +21,6 @@ const getDpoContactLink = (links = []) => {
 };
 
 const InfoContentSecurity = ({
-  dialogConnectProps,
   onContributionDpoEmailClick,
   isAuthenticated,
   entity: { dpoEmail, links, id, mainDomain },
@@ -73,7 +72,6 @@ const InfoContentSecurity = ({
             applicationID={id}
             mainDomain={mainDomain}
             buttonProps={{ variant: 'contained' }}
-            dialogConnectProps={dialogConnectProps}
           >
             {t('screens:application.info.security.button.dpo')}
           </ContactButton>
@@ -85,7 +83,6 @@ const InfoContentSecurity = ({
           applicationID={id}
           mainDomain={mainDomain}
           buttonProps={{ variant: 'outlined' }}
-          dialogConnectProps={dialogConnectProps}
         />
       ) : undefined}
     >
@@ -97,7 +94,6 @@ const InfoContentSecurity = ({
 };
 
 InfoContentSecurity.propTypes = {
-  dialogConnectProps: PropTypes.object.isRequired,
   onContributionDpoEmailClick: PropTypes.func.isRequired,
   entity: PropTypes.shape(ApplicationSchema.propTypes),
   isAuthenticated: PropTypes.bool,

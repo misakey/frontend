@@ -13,7 +13,6 @@ import { selectors as contactSelectors } from 'store/reducers/screens/contact';
 import useAsync from '@misakey/hooks/useAsync';
 
 import isNil from '@misakey/helpers/isNil';
-import isFunction from '@misakey/helpers/isFunction';
 import isEmpty from '@misakey/helpers/isEmpty';
 import log from '@misakey/helpers/log';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
@@ -132,7 +131,6 @@ const ContactButton = (
     children,
     isAuthenticated,
     dispatchContact,
-    customAction,
     className,
   },
 ) => {
@@ -214,7 +212,7 @@ const ContactButton = (
       className={className}
       variant="contained"
       color="secondary"
-      onClick={isFunction(customAction) ? customAction : onClick}
+      onClick={onClick}
       dialogConnectProps={dialogConnectProps}
       {...buttonProps}
     >
@@ -236,7 +234,6 @@ ContactButton.propTypes = {
   t: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
-  customAction: PropTypes.func,
   className: PropTypes.string,
 
   // CONNECT
@@ -253,7 +250,6 @@ ContactButton.defaultProps = {
   isAuthenticated: false,
   applicationID: null,
   children: null,
-  customAction: null,
   className: '',
 };
 

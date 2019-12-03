@@ -22,7 +22,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-const DialogConnect = ({ open, onClose, t, signInAction, ...rest }) => {
+const DialogConnect = ({ open, onClose, t, buttonConnectProps, ...rest }) => {
   const classes = useStyles();
 
   const onCancel = useCallback(
@@ -46,7 +46,7 @@ const DialogConnect = ({ open, onClose, t, signInAction, ...rest }) => {
         <Button onClick={onCancel} color="primary">
           {t('common:cancel')}
         </Button>
-        <ButtonConnectSimple signInAction={signInAction} buttonProps={{ variant: 'contained' }}>
+        <ButtonConnectSimple {...buttonConnectProps} buttonProps={{ variant: 'contained' }}>
           {t('common:signIn')}
         </ButtonConnectSimple>
       </DialogActions>
@@ -58,12 +58,12 @@ DialogConnect.propTypes = {
   onClose: PropTypes.func,
   open: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
-  signInAction: PropTypes.func,
+  buttonConnectProps: PropTypes.object,
 };
 
 DialogConnect.defaultProps = {
   onClose: null,
-  signInAction: null,
+  buttonConnectProps: {},
 };
 
 export default withTranslation('common')(DialogConnect);

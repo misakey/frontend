@@ -32,7 +32,6 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ContactButton from 'components/smart/ContactButton';
 import ApplicationImg from 'components/dumb/Application/Img';
 import FeedbackLink from 'components/dumb/Link/Feedback';
-import withDialogConnect from 'components/smart/Dialog/Connect/with';
 import GroupTitles from 'components/dumb/Typography/GroupTitles';
 
 // CONSTANTS
@@ -109,8 +108,6 @@ const useIsSmall = (width) => useMemo(
 );
 
 // COMPONENTS
-const DialogConnectMenuItem = withDialogConnect(MenuItem);
-
 function OnLoading({ width }) {
   const isSmall = useIsSmall(width);
   return (
@@ -230,19 +227,6 @@ function ApplicationHeader({
     [totalRating, avgRating, t],
   );
 
-  const openInNewTab = useCallback(
-    () => {
-      // @FIXME: remove when auth in plugin is implemented
-      redirectToApp(routes.auth.redirectToSignIn);
-    },
-    [],
-  );
-
-  const dialogConnectProps = useMemo(
-    () => (window.env.PLUGIN ? { signInAction: openInNewTab } : {}),
-    [openInNewTab],
-  );
-
   const feedbackApp = useMemo(() => ({ id, mainDomain }), [id, mainDomain]);
   const applicationName = useMemo(() => (name || mainDomain), [name, mainDomain]);
 
@@ -290,7 +274,6 @@ function ApplicationHeader({
               <FeedbackLink
                 application={feedbackApp}
                 to={addFeedbackRoute}
-                dialogConnectProps={dialogConnectProps}
                 variant="subtitle1"
                 color="secondary"
                 className={classes.rateLink}
@@ -309,7 +292,6 @@ function ApplicationHeader({
                 applicationID={id}
                 mainDomain={mainDomain}
                 contactedView={wasContacted}
-                dialogConnectProps={dialogConnectProps}
                 className={clsx(classes.button, classes.buttonFill)}
               />
             )}
@@ -334,18 +316,18 @@ function ApplicationHeader({
             >
               {published && (
                 // @FIXME: Ensure dpo claim is updated
-                <DialogConnectMenuItem
+                <MenuItem
                   {...dpoClaimProps}
                 >
                   {t('common:claim.dpo')}
-                </DialogConnectMenuItem>
+                </MenuItem>
               )}
               {/* @FIXME: Uncomment when admin claim is updated */}
-              {/* <DialogConnectMenuItem
+              {/* <MenuItem
                 {...adminClaimProps}
               >
                 {t('common:claim.admin')}
-              </DialogConnectMenuItem> */}
+              </MenuItem> */}
               <MenuItem
                 component="a"
                 onClick={onMoreMenuClose}

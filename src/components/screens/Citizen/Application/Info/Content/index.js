@@ -127,11 +127,11 @@ const useGetCountDataboxes = (
 // COMPONENTS
 const ConnectLink = withDialogConnect(MUILink);
 
-const getMissingLinkCustomizer = (t, handleClick, dialogConnectProps) => {
+const getMissingLinkCustomizer = (t, handleClick) => {
   const match = (value, key) => requiredLinksType.includes(key) && isNil(value);
 
   const format = () => (
-    <ConnectLink dialogConnectProps={dialogConnectProps} onClick={handleClick} color="primary" component="button">
+    <ConnectLink onClick={handleClick} color="primary" component="button">
       {t('screens:application.info.userContribution.linkOpenDialog')}
     </ConnectLink>
   );
@@ -190,22 +190,9 @@ const ApplicationInfoContent = ({
 
   const mainDomain = useMemo(() => entity.mainDomain, [entity]);
 
-  const signInRedirect = useCallback(
-    () => {
-      // @FIXME: remove when auth inside plugin popup is implemented
-      redirectToApp(generatePath(routes.citizen.application._, { mainDomain }));
-    },
-    [mainDomain],
-  );
-
-  const dialogConnectProps = useMemo(
-    () => (window.env.PLUGIN ? { signInAction: signInRedirect } : {}),
-    [signInRedirect],
-  );
-
   const missingLinkCustomizer = React.useMemo(
-    () => getMissingLinkCustomizer(t, onContributionLinkClick, dialogConnectProps),
-    [t, onContributionLinkClick, dialogConnectProps],
+    () => getMissingLinkCustomizer(t, onContributionLinkClick),
+    [t, onContributionLinkClick],
   );
 
   // @FIXME: define if we want that behaviour or not.
@@ -357,7 +344,6 @@ const ApplicationInfoContent = ({
       {entity.published && (
         <>
           <InfoContentSecurity
-            dialogConnectProps={dialogConnectProps}
             onContributionDpoEmailClick={onContributionDpoEmailClick}
             isAuthenticated={isAuthenticated}
             entity={entity}

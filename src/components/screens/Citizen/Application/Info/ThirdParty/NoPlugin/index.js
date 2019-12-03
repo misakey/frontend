@@ -1,17 +1,12 @@
-import React, { useMemo, useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { generatePath } from 'react-router-dom';
-import routes from 'routes';
-
 
 import isArray from '@misakey/helpers/isArray';
 import isNil from '@misakey/helpers/isNil';
 
 import Box from '@material-ui/core/Box';
 import MUILink from '@material-ui/core/Link';
-
-import { redirectToApp } from 'helpers/plugin';
 
 import PluginDownloadCard from 'components/dumb/Card/PluginDownload';
 
@@ -25,13 +20,12 @@ const requiredLinksType = ['cookies'];
 
 const ConnectLink = withDialogConnect(MUILink);
 
-const getMissingLinkCustomizer = (t, handleClick, signInRedirect) => {
+const getMissingLinkCustomizer = (t, handleClick) => {
   const match = (value, key) => requiredLinksType.includes(key) && isNil(value);
 
-  const dialogConnectProps = window.env.PLUGIN ? { signInAction: signInRedirect } : {};
 
   const format = () => (
-    <ConnectLink dialogConnectProps={dialogConnectProps} onClick={handleClick} color="primary" component="button">
+    <ConnectLink onClick={handleClick} color="primary" component="button">
       {t('screens:application.info.userContribution.linkOpenDialog')}
     </ConnectLink>
   );
@@ -44,20 +38,9 @@ function NoPluginThirdParty({
   onContributionLinkClick,
   t,
 }) {
-  const mainDomain = useMemo(() => entity.mainDomain, [entity]);
-
-
-  const signInRedirect = useCallback(
-    () => {
-      // @FIXME: remove when auth inside plugin popup is implemented
-      redirectToApp(generatePath(routes.citizen.application._, { mainDomain }));
-    },
-    [mainDomain],
-  );
-
   const missingLinkCustomizer = React.useMemo(
-    () => getMissingLinkCustomizer(t, onContributionLinkClick, signInRedirect),
-    [t, onContributionLinkClick, signInRedirect],
+    () => getMissingLinkCustomizer(t, onContributionLinkClick),
+    [t, onContributionLinkClick],
   );
 
 
