@@ -287,7 +287,7 @@ function ApplicationBox({
         )}
       >
         {loading && <SplashScreen variant="default" />}
-        {(!isNil(blobs) && blobs.length > 0)
+        {(isAuthenticated && !isNil(blobs) && blobs.length > 0)
           ? (
             <DataboxDisplay
               application={application}
