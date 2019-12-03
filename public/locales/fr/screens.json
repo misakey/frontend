@@ -251,14 +251,14 @@
       },
       "myConfig": {
         "title": "Ma configuration",
-        "description": "Paramétrer les catégories de services tiers que vous acceptez sur ce site. Cliquer sur une catégorie pour ajouter des services tiers que vous acceptez"
+        "description": "Paramétrer les catégories de cookies que vous acceptez sur ce site. Cliquer sur une catégorie pour ajouter des cookies que vous acceptez"
       },
       "detectedTrackers": "{{count}} tracker détecté",
       "detectedTrackers_plural": "{{count}} trackers détectés",
       "additionalDetectedTrackers": "+ {{count}} autre service",
       "additionalDetectedTrackers_plural": "+ {{count}} autres services",
       "trackers": {
-        "empty": "Aucun service tiers détecté",
+        "empty": "Aucun cookie détecté",
         "detected": "{{count}} tracker détecté",
         "detected_plural": "{{count}} trackers détectés",
         "additionalDetected": "+ {{count}} autre service",
@@ -286,7 +286,7 @@
       "info": "Informations",
       "comments": "Commentaires",
       "vault": "Mon coffre-fort",
-      "thirdParty": "Services tiers",
+      "thirdParty": "Cookies",
       "myAccount": "Mon compte"
     }
   },

@@ -221,10 +221,16 @@
   },
   "comment": {
     "placeholder": "Partager votre expérience concernant cette application",
-    "helperText": "Un commentaire pertinent et concis donnera de l'impact à votre avis",
+    "helperText": "10 caractères minimum requis",
     "error": {
       "required": "Veuillez rédiger un avis",
       "malformed": "Votre avis doit comporter entre 10 et 4096 caractères"
+    }
+  },
+  "link": {
+    "placeholder": "https://misakey.com",
+    "error": {
+      "malformed": "Le lien est malformé. Vérifiez qu'il commence bien par http ou https"
     }
   }
 }
