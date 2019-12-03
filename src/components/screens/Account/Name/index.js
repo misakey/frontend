@@ -10,9 +10,11 @@ import { displayNameValidationSchema } from 'constants/validationSchemas/profile
 import { userProfileUpdate } from 'store/actions/screens/account';
 
 import isNil from '@misakey/helpers/isNil';
+import path from '@misakey/helpers/path';
 
 import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+import snakeCase from '@misakey/helpers/snakeCase';
 
 import Subtitle from 'components/dumb/Typography/Subtitle';
 import Container from '@material-ui/core/Container';
@@ -20,7 +22,12 @@ import BoxControls from 'components/dumb/Box/Controls';
 import FieldText from 'components/dumb/Form/Field/Text';
 import ScreenAction from 'components/dumb/Screen/Action';
 
+// CONSTANTS
+const FIELD_NAME = 'displayName';
+
 // HELPERS
+const getFieldError = path(['details', snakeCase(FIELD_NAME)]);
+
 const updateProfile = (id, form) => API
   .use(API.endpoints.user.update)
   .build({ id }, objectToSnakeCase(form))
@@ -30,14 +37,19 @@ const updateProfile = (id, form) => API
 const useOnSubmit = (
   profile, dispatchUpdateEntities, enqueueSnackbar, setInternalError, history, t,
 ) => useMemo(
-  () => (form, { setSubmitting }) => updateProfile(profile.id, form)
+  () => (form, { setSubmitting, setFieldError }) => updateProfile(profile.id, form)
     .then(() => {
       enqueueSnackbar(t('screens:account.name.success'), { variant: 'success' });
       dispatchUpdateEntities(profile.id, form, history);
       history.push(routes.account._);
     })
-    .catch(({ httpStatus }) => {
-      setInternalError(httpStatus);
+    .catch((e) => {
+      const fieldError = getFieldError(e);
+      if (fieldError) {
+        setFieldError(FIELD_NAME, fieldError);
+      } else {
+        setInternalError(e);
+      }
     })
     .finally(() => { setSubmitting(false); }),
   [profile, dispatchUpdateEntities, enqueueSnackbar, setInternalError, history, t],
@@ -95,7 +107,7 @@ const AccountName = ({
               <Form>
                 <Field
                   type="text"
-                  name="displayName"
+                  name={FIELD_NAME}
                   component={FieldText}
                   label={t('fields:displayName.label')}
                   helperText={t('fields:displayName.helperText')}

@@ -55,6 +55,10 @@ async function updatePassword(
 
   let response;
   try {
+    if (!isNil(backupDecryptionError)) {
+      backupDecryptionError.code = errorTypes.forbidden;
+      throw backupDecryptionError;
+    }
     response = await API.use(API.endpoints.user.password.update)
       .build({}, objectToSnakeCase({
         userId: id,
@@ -64,10 +68,6 @@ async function updatePassword(
         backupData,
       }))
       .send();
-    if (!isNil(backupDecryptionError)) {
-      log(backupDecryptionError, 'error');
-      enqueueSnackbar(t('screens:account.password.backupDecryptionError'), { variant: 'error' });
-    }
     return response;
   } catch (e) {
     if (e.error_code === 'invalid_password' && isNil(backupDecryptionError)) {

@@ -5,8 +5,6 @@ import routes from 'routes';
 
 import withUser from 'components/smart/withUser';
 
-import 'components/screens/Account/index.scss';
-
 // LAZY
 const AccountHome = lazy(() => import('components/screens/Account/Home'));
 const AccountName = lazy(() => import('components/screens/Account/Name'));

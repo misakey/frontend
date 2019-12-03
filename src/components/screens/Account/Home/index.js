@@ -34,7 +34,7 @@ const AccountHome = ({ profile, error, isFetching }) => {
 };
 
 AccountHome.propTypes = {
-  profile: PropTypes.shape(UserSchema.propTypes).isRequired,
+  profile: PropTypes.shape(UserSchema.propTypes),
   error: PropTypes.instanceOf(Error),
   isFetching: PropTypes.bool,
 };
@@ -42,6 +42,7 @@ AccountHome.propTypes = {
 AccountHome.defaultProps = {
   error: null,
   isFetching: false,
+  profile: null,
 };
 
 export default AccountHome;

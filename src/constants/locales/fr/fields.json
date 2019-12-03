@@ -45,9 +45,9 @@
     "label": "Nom public",
     "action": "Editer",
     "placeholder": "Rose Flamingo",
-    "helperText": "Vous pouvez choisir un nom entre 3 et 25 caractères, composé de lettres, de chiffres et d'espaces.",
+    "helperText": "Vous pouvez choisir un nom entre 3 et 21 caractères, composé de lettres, de chiffres et d'espaces.",
     "error": {
-      "invalid": "Le nom public doit comporter entre 3 et 20 caractères, composés de lettres, de chiffres et d'espaces",
+      "invalid": "Le nom public doit comporter entre 3 et 21 caractères, composés de lettres, de chiffres et d'espaces",
       "malformed": "Le nom public ne peut comporter que des lettres, des chiffres et des espaces"
     }
   },
