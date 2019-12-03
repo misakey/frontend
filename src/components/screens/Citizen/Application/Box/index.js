@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import Swal from 'sweetalert2';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -169,23 +169,21 @@ function ApplicationBox({
       .finally(() => setLoading(false));
   }
 
-  function fetchDatabox() {
-    if (isAuthenticated) {
+  const fetchDatabox = useCallback(() => {
+    if (isAuthenticated && application && application.id) {
       setError(false);
       setLoading(true);
 
       API.use(API.endpoints.application.box.find)
-        .build()
+        .build(null, null, { producer_id: application.id })
         .send()
-        .then((databoxes) => databoxes.forEach(({ producer_id: producerId, id }) => {
-          if (producerId === application.id) {
-            fetchBlobs(id);
-          }
+        .then((databoxes) => databoxes.forEach(({ id }) => {
+          fetchBlobs(id);
         }))
         .catch(({ httpStatus }) => setError(httpStatus))
         .finally(() => setLoading(false));
     }
-  }
+  }, [application, isAuthenticated]);
 
   async function readBlob(id) {
     try {

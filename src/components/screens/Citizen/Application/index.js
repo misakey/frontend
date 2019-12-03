@@ -94,7 +94,7 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
 
 Application.propTypes = {
   entity: PropTypes.shape(ApplicationSchema.propTypes),
-  error: PropTypes.number,
+  error: PropTypes.object,
   isFetching: PropTypes.bool,
   mainDomain: PropTypes.string.isRequired,
   match: PropTypes.shape({ path: PropTypes.string }).isRequired,

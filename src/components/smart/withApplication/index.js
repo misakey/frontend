@@ -85,7 +85,7 @@ const withApplication = (Component, options = {}) => {
             if (window.env.PLUGIN) {
               // We can display the basic information from plugin anyway
               dispatchReceivePlugin(mainDomain);
-            } else { setError(e.status); }
+            } else { setError(e); }
           })
           .finally(() => { setIsFetching(false); });
       }

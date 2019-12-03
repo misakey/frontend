@@ -15,6 +15,7 @@ import useAsync from '@misakey/hooks/useAsync';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import log from '@misakey/helpers/log';
+import head from '@misakey/helpers/head';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 import { redirectToApp } from 'helpers/plugin';
 
@@ -28,8 +29,8 @@ const requestDataboxAccess = (id) => API.use(API.endpoints.application.box.reque
   .build({ id })
   .send();
 
-const listDataboxes = () => API.use(API.endpoints.application.box.find)
-  .build()
+const listDataboxes = (applicationID) => API.use(API.endpoints.application.box.find)
+  .build(null, null, { producer_id: applicationID })
   .send();
 
 const createDatabox = (payload) => API.use(API.endpoints.application.box.create)
@@ -40,8 +41,7 @@ const createDatabox = (payload) => API.use(API.endpoints.application.box.create)
 const useGetDatabox = (applicationID, isAuthenticated) => useCallback(
   () => ((!isAuthenticated || isEmpty(applicationID))
     ? Promise.resolve()
-    : listDataboxes()
-      .then((databoxes) => databoxes.find((databox) => databox.producer_id === applicationID))),
+    : listDataboxes(applicationID).then((databoxes) => head(databoxes))),
   [applicationID, isAuthenticated],
 );
 
