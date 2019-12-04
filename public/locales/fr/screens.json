@@ -409,9 +409,9 @@
     "role": {
       "claim": {
         "title": "Revendiquez le rôle DPO sur {{mainDomain}}",
-        "subtitle": "Un email avec un code de confirmation va être envoyé à l'adresse {{dpoEmail}}. Veuillez renseigner le code de confirmation pour acquérir le rôle DPO de l'application {{name}}",
+        "subtitle": "Veuillez confirmer que vous êtes DPO de {{name}}. Pour cela demandez un code de confirmation en cliquant sur le bouton \"Envoyer le code\". Ensuite il vous suffit de renseigner le code reçu à l'adresse {{dpoEmail}}",
         "email": {
-          "submit": "Renvoyer un code de confirmation",
+          "submit": "Envoyer un code de confirmation",
           "success": "Un email a bien été envoyé à l'adresse du DPO de {{mainDomain}}"
         },
         "info": {
