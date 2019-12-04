@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import { generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
@@ -10,7 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import API from '@misakey/api';
 import routes from 'routes';
 
-
+import { updateEntities } from '@misakey/store/actions/entities';
 import ApplicationSchema from 'store/schemas/Application';
 import { ratingValidationSchema } from 'constants/validationSchemas/ratings';
 
@@ -86,26 +87,34 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const useOnSubmit = (
-  application, userId, enqueueSnackbar, setError, history, t, rating,
+  application, userId, enqueueSnackbar, setError, history, t, rating, dispatchClearAvgRating,
 ) => useCallback(
   (form, { setSubmitting }) => {
     const { id, mainDomain } = application;
     return postFeedback(id, userId, form, rating)
       .then(() => {
         enqueueSnackbar(t('screens:feedback.me.success'), { variant: 'success' });
-        history.push(generatePath(routes.citizen.application.info, { mainDomain }));
+        dispatchClearAvgRating(mainDomain, history);
       })
       .catch(({ httpStatus }) => {
         setError(httpStatus);
       })
       .finally(() => { setSubmitting(false); });
   },
-  [application, userId, enqueueSnackbar, setError, history, t, rating],
+  [application, userId, enqueueSnackbar, setError, history, t, rating, dispatchClearAvgRating],
 );
 
 // COMPONENTS
 // @FIXME move to @misakey/ui
-const FeedbackMeScreen = ({ application, userId, rating, history, match: { params }, t }) => {
+const FeedbackMeScreen = ({
+  application,
+  userId,
+  rating,
+  history,
+  match: { params },
+  t,
+  dispatchClearAvgRating,
+}) => {
   const classes = useStyles();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -137,7 +146,16 @@ const FeedbackMeScreen = ({ application, userId, rating, history, match: { param
     [goBackPath, history],
   );
 
-  const onSubmit = useOnSubmit(application, userId, enqueueSnackbar, setError, history, t, rating);
+  const onSubmit = useOnSubmit(
+    application,
+    userId,
+    enqueueSnackbar,
+    setError,
+    history,
+    t,
+    rating,
+    dispatchClearAvgRating,
+  );
 
   if (error) {
     return <ScreenError httpStatus={error} />;
@@ -210,6 +228,8 @@ FeedbackMeScreen.propTypes = {
   }).isRequired,
   match: PropTypes.shape({ params: PropTypes.object }).isRequired,
   t: PropTypes.func.isRequired,
+  // CONNECT
+  dispatchClearAvgRating: PropTypes.func.isRequired,
 };
 
 FeedbackMeScreen.defaultProps = {
@@ -217,4 +237,14 @@ FeedbackMeScreen.defaultProps = {
   userId: null,
 };
 
-export default withMyFeedback()(withTranslation(['common', 'screens', 'fields'])(FeedbackMeScreen));
+// CONNECT
+const mapDispatchToProps = (dispatch) => ({
+  // @FIXME implement a less tricky way to force update of page rose screen
+  dispatchClearAvgRating: (mainDomain, history) => {
+    const entities = [{ id: mainDomain, changes: { avgRating: null } }];
+    dispatch(updateEntities(entities, ApplicationSchema.entity));
+    history.push(generatePath(routes.citizen.application.info, { mainDomain }));
+  },
+});
+
+export default connect(null, mapDispatchToProps)(withMyFeedback()(withTranslation(['common', 'screens', 'fields'])(FeedbackMeScreen)));

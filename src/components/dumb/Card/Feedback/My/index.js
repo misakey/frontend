@@ -101,6 +101,7 @@ const MyFeedbackCard = ({ mainDomain, rating, t }) => {
           {disabled ? (
             <Link to={linkTo} className={classes.feedbackLink}>
               <Rating
+                name="rating-link"
                 value={value}
                 size="large"
                 classes={{ root: classes.ratingRoot, iconFilled: classes.ratingIconFilled }}

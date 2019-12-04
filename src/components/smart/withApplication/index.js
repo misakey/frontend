@@ -94,7 +94,7 @@ const withApplication = (Component, options = {}) => {
       isAuthenticated, mainDomain, dispatchReceivePlugin,
     ]);
 
-    useEffect(startFetching, [mainDomain]);
+    useEffect(startFetching, [mainDomain, shouldFetch]);
 
     return (
       <Component
