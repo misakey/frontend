@@ -290,7 +290,7 @@ function Screen({
         />
       )}
       <Box
-        component="main"
+        component="div"
         className={clsx(classes.root, className, {
           [classes.gutters]: !disableGutters,
           [classes.fixedHeight]: fullHeight,
