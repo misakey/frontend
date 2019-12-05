@@ -151,9 +151,7 @@ function Option({ classes, logoUri, mainDomain, name }) {
       className={classes.option}
     >
       <ListItemAvatar>
-        <Avatar>
-          <ApplicationImg alt={mainDomain} src={logoUri} />
-        </Avatar>
+        <ApplicationImg alt={mainDomain} src={logoUri} />
       </ListItemAvatar>
       <ListItemText
         primary={name}
