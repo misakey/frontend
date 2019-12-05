@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import Swal from 'sweetalert2';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
@@ -27,7 +26,7 @@ import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
 
 import DataboxDisplay from 'components/screens/Citizen/Application/Box/DataboxDisplay';
-
+import { usePasswordPrompt, PasswordPromptProvider } from 'components/screens/Citizen/Application/Box/PasswordPrompt';
 
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
@@ -52,28 +51,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function promptForPassword(t, previousAttemptFailed = false) {
-  return Swal.fire({
-    title: t(`screens:application.box.${previousAttemptFailed ? 'wrongPassword' : 'needPassword'}`),
-    input: 'password',
-    cancelButtonText: t('cancel'),
-    showCancelButton: true,
-    inputPlaceholder: t('password'),
-    reverseButtons: true,
-    inputAttributes: {
-      autocapitalize: 'off',
-      autocorrect: 'off',
-    },
-  })
-    .then(({ value: password }) => {
-      if (isNil(password)) { throw new NoPassword(); }
+const usePromptForPassword = (openPasswordPrompt) => useCallback(
+  (previousAttemptFailed = false) => (
+    openPasswordPrompt({ firstAttempt: !previousAttemptFailed })
+      .then(({ password }) => {
+        if (isNil(password)) { throw new NoPassword(); }
+        return password;
+      })),
+  [openPasswordPrompt],
+);
 
-      return password;
-    });
-}
 
-async function loadBackupAndAskPassword(t, userId) {
-  const promisedPassword = promptForPassword(t);
+const useLoadBackupAndAskPassword = (userId, promptForPassword) => useCallback(async () => {
+  const promisedPassword = promptForPassword();
 
   const promisedBackupData = API.use(API.endpoints.user.getSecretBackup)
     .build({ id: userId })
@@ -99,34 +89,41 @@ async function loadBackupAndAskPassword(t, userId) {
       break;
     } catch (e) {
       if (e instanceof BackupDecryptionError) {
-        password = await promptForPassword(t, /* previousAttemptFailed = */true);
+        password = await promptForPassword(/* previousAttemptFailed = */true);
       } else {
         throw e;
       }
     }
   }
   /* eslint-enable no-await-in-loop */
-}
+}, [promptForPassword, userId]);
 
-async function initCrypto({ t, userId, setPublicKeysWeCanDecryptFrom, setIsCryptoReadyToDecrypt }) {
-  if (crypto.databox.isReadyToDecrypt()) {
-    setIsCryptoReadyToDecrypt(true);
-    setPublicKeysWeCanDecryptFrom(crypto.databox.getPublicKeysWeCanDecryptFrom());
-    return;
-  }
-
-  try {
-    await loadBackupAndAskPassword(t, userId);
-  } catch (e) {
-    if (e instanceof NoPassword) {
-      // do nothing
+const useInitCrypto = (
+  setPublicKeysWeCanDecryptFrom,
+  setIsCryptoReadyToDecrypt,
+  loadBackupAndAskPassword,
+) => useCallback(
+  async () => {
+    if (crypto.databox.isReadyToDecrypt()) {
+      setIsCryptoReadyToDecrypt(true);
+      setPublicKeysWeCanDecryptFrom(crypto.databox.getPublicKeysWeCanDecryptFrom());
       return;
     }
-    throw e;
-  }
-  setIsCryptoReadyToDecrypt(true);
-  setPublicKeysWeCanDecryptFrom(crypto.databox.getPublicKeysWeCanDecryptFrom());
-}
+
+    try {
+      await loadBackupAndAskPassword();
+    } catch (e) {
+      if (e instanceof NoPassword) {
+      // do nothing
+        return;
+      }
+      throw e;
+    }
+    setIsCryptoReadyToDecrypt(true);
+    setPublicKeysWeCanDecryptFrom(crypto.databox.getPublicKeysWeCanDecryptFrom());
+  },
+  [loadBackupAndAskPassword, setIsCryptoReadyToDecrypt, setPublicKeysWeCanDecryptFrom],
+);
 
 // COMPONENTS
 const DialogConnectButton = withDialogConnect(Button);
@@ -153,6 +150,14 @@ function ApplicationBox({
   const [publicKeysWeCanDecryptFrom, setPublicKeysWeCanDecryptFrom] = React.useState([]);
 
   const { mainDomain } = match.params;
+  const openPasswordPrompt = usePasswordPrompt();
+  const promptForPassword = usePromptForPassword(openPasswordPrompt);
+  const loadBackupAndAskPassword = useLoadBackupAndAskPassword(userId, promptForPassword);
+  const initCrypto = useInitCrypto(
+    setPublicKeysWeCanDecryptFrom,
+    setIsCryptoReadyToDecrypt,
+    loadBackupAndAskPassword,
+  );
 
   function errorSnackBar(translationKey) {
     const text = t(translationKey);
@@ -210,7 +215,7 @@ function ApplicationBox({
 
       if (!crypto.databox.isReadyToDecrypt()) {
         try {
-          await loadBackupAndAskPassword(t, userId);
+          await loadBackupAndAskPassword();
         } catch (e) {
           if (e instanceof NoPassword) {
             // do nothing
@@ -254,6 +259,7 @@ function ApplicationBox({
     return <ScreenError httpStatus={error} />;
   }
 
+
   return (
     <>
       {(isAuthenticated && !isCryptoReadyToDecrypt && !isEmpty(blobs)) && (
@@ -264,7 +270,7 @@ function ApplicationBox({
             component="button"
             variant="body2"
             onClick={() => {
-              initCrypto({ t, userId, setPublicKeysWeCanDecryptFrom, setIsCryptoReadyToDecrypt });
+              initCrypto();
             }}
           >
             {t('screens:application.box.unlockVaultButton')}
@@ -368,7 +374,7 @@ ApplicationBox.defaultProps = {
   isAuthenticated: false,
 };
 
-export default connect(
+const ApplicationBoxComponent = connect(
   (state, ownProps) => ({
     application: denormalize(
       ownProps.match.params.mainDomain,
@@ -379,3 +385,14 @@ export default connect(
     isAuthenticated: !!state.auth.token,
   }),
 )(withTranslation(['common', 'screens'])(ApplicationBox));
+
+
+function ApplicationBoxWithPasswordPrompt({ ...props }) {
+  return (
+    <PasswordPromptProvider>
+      <ApplicationBoxComponent {...props} />
+    </PasswordPromptProvider>
+  );
+}
+
+export default ApplicationBoxWithPasswordPrompt;

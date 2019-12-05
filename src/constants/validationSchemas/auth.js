@@ -16,6 +16,12 @@ export const signInValidationSchema = Yup.object().shape({
     .required(required),
 });
 
+
+export const openVaultValidationSchema = Yup.object().shape({
+  password: Yup.string()
+    .required(required),
+});
+
 export const signUpValidationSchema = Yup.object().shape({
   handle: Yup.string()
     .required(required)

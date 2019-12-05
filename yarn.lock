@@ -1220,13 +1220,6 @@
   dependencies:
     http-status-codes "^1.3.2"
 
-"@misakey/api@^2.x":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@misakey/api/-/api-2.1.1.tgz#8809c648ca21af864ff0ac66efbd9b93e9c6dbfc"
-  integrity sha512-hvSTyaMQnEjHQPlQzeB8tWz9/8X3FCk6Zt4pD1RXIhA6MUPoTVpO/D7r4psMvWidWFZTHD9Lu9I6UCroMUrlNQ==
-  dependencies:
-    http-status-codes "^1.3.2"
-
 "@misakey/auth@^2.3.1":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@misakey/auth/-/auth-2.3.1.tgz#b95b343186a8e873d7c62ccccf2bb1d6f46d44d8"
@@ -1238,27 +1231,14 @@
     prop-types "^15.7.2"
     uuid "^3.3.3"
 
-"@misakey/crypto@0.8.4":
-  version "0.8.4"
-  resolved "https://registry.yarnpkg.com/@misakey/crypto/-/crypto-0.8.4.tgz#80faa42a27e1911d6e2a9e1445c0bef64956e13e"
-  integrity sha512-pJF8vdQG+vDAeJVqs4PrYJuAMWq2VhW++8tOsfY6xPLsZC44m7mpYHPWFPjf88dz6K5ZxAVt3UwlXM/ZtuCRlg==
+"@misakey/crypto@0.8.5":
+  version "0.8.5"
+  resolved "https://registry.yarnpkg.com/@misakey/crypto/-/crypto-0.8.5.tgz#b5f61a52c8d75f63b07130fc955f478efcc60219"
+  integrity sha512-Hf9C8o8BHMH/Mw9eaHIVeEE7sTv1ZZHSZeShx1iYMJcVGijhtZOwGsmmG+UeY2hOBxd5tMQBYJ2qRkz96wQYtw==
   dependencies:
     "@babel/runtime" "^7.5.5"
-    "@misakey/api" "^2.x"
-    "@misakey/helpers" "^1.1.2"
     tweetnacl "^1.0.1"
     tweetnacl-util "^0.15.0"
-
-"@misakey/helpers@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@misakey/helpers/-/helpers-1.1.2.tgz#ecf0e0f6630616040f794d0d6b5c74b547ea5dd0"
-  integrity sha512-3plFUuKfDCKXzJp89bgjIJgC3345DjGQ6ZuQkwKDbLzeQJjsKIZM31IxQU9I+j7sxztTNM5OOjgIdhWDLccYRg==
-  dependencies:
-    "@babel/runtime" "^7.5.5"
-    lodash "^4.17.15"
-    normalizr "^3.4.0"
-    path-to-regexp "^3.0.0"
-    ramda "^0.26.1"
 
 "@misakey/helpers@^3.2.1":
   version "3.2.1"
@@ -10556,11 +10536,6 @@ svgo@^1.0.0, svgo@^1.2.2:
     stable "^0.1.8"
     unquote "~1.1.1"
     util.promisify "~1.0.0"
-
-sweetalert2@^8.13.1:
-  version "8.18.6"
-  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-8.18.6.tgz#9df053369cb2b4ae0b955280505bf0cad0f8c4fe"
-  integrity sha512-6Jio6FH3p5hm+VHYN8mUyGhGozVo+r+eJtkUC/+bvSpXss84hcMRXNqKQs+J1+LWPy2DT7ozdyVXaVY6sMnm+w==
 
 symbol-observable@^1.2.0:
   version "1.2.0"

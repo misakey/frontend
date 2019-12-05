@@ -211,9 +211,11 @@
       }
     },
     "box": {
-      "needPassword": "Pour cette action nous avons besoin de votre mot de passe",
+      "passwordPrompt": {
+        "title": "Ouvrir mon coffre-fort",
+        "description": "Pour cette action nous avons besoin de votre mot de passe"
+      },
       "errorNotif": "Une erreur est survenue.",
-      "wrongPassword": "Le mot de passe semble erroné, veuillez réessayer",
       "mustUnlockVault": "Vous devez ouvrir votre coffre-fort pour télécharger les fichiers",
       "unlockVaultButton": "Cliquez ici",
       "title": "Récupérer vos données",
