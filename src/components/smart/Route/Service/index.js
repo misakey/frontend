@@ -7,6 +7,7 @@ import routes from 'routes';
 
 import parseJwt from '@misakey/helpers/parseJwt';
 import log from '@misakey/helpers/log';
+import omit from '@misakey/helpers/omit';
 import generatePath from '@misakey/helpers/generatePath';
 
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
@@ -19,6 +20,9 @@ import Container from '@material-ui/core/Container';
 
 export const DEFAULT_DOMAIN = 'intro';
 export const DEFAULT_SERVICE_ENTITY = { mainDomain: DEFAULT_DOMAIN };
+
+// CONSTANTS
+const INTERNAL_PROPS = ['isLoading', 'isAuthenticated'];
 
 function RouteService({
   component: Component, componentProps,
@@ -81,7 +85,6 @@ function RouteService({
         />
       );
     }
-
     if (userHasRole && !userScope.includes(requiredScope)) {
       if (loginInProgress) {
         return (
@@ -91,7 +94,7 @@ function RouteService({
             display="flex"
             flexDirection="column"
             justifyContent="center"
-            {...renderProps}
+            {...omit(renderProps, INTERNAL_PROPS)}
           >
             <Container maxWidth="md">
               <SplashScreen text={t(`screens:Service.Actions.loginAs.${workspace}.loading`)} />
@@ -111,6 +114,7 @@ function RouteService({
         .finally(() => {
           setLoginInProgress(false);
         });
+      return null;
     }
     const { location } = props;
 
@@ -128,7 +132,6 @@ function RouteService({
         />
       );
     }
-
     return <Component {...renderProps} />;
   };
 

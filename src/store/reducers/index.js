@@ -7,8 +7,7 @@ import authReducers from '@misakey/auth/store/reducers';
 import reducers from '@misakey/store/reducers';
 import { makeReducer as makeEntities } from '@misakey/store/reducers/entities';
 
-import accessRequest from './accessRequest';
-import accessToken from './accessToken';
+import access from './access';
 import Layout from './Layout';
 import screens from './screens';
 import sso from './sso';
@@ -16,8 +15,7 @@ import sso from './sso';
 const appReducer = combineReducers({
   ...authReducers,
   ...reducers,
-  accessRequest,
-  accessToken,
+  access,
   Layout,
   screens,
   sso,

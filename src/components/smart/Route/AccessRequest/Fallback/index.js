@@ -6,10 +6,11 @@ import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
 
 import API from '@misakey/api';
-import { accessTokenUpdate } from 'store/actions/accessToken';
+import { accessTokenUpdate } from 'store/actions/access';
 import { accessRequestValidationSchema } from 'constants/validationSchemas/auth';
 
 import prop from '@misakey/helpers/prop';
+import path from '@misakey/helpers/path';
 import log from '@misakey/helpers/log';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
@@ -43,6 +44,10 @@ const ENDPOINTS = {
   },
 };
 
+// HELPERS
+const getOwnerEmail = path(['owner', 'email']);
+
+// COMPONENTS
 function AccessRequestFallback({ accessRequest, dispatchAccessTokenUpdate, isFetching, error, t }) {
   const { enqueueSnackbar } = useSnackbar();
 
@@ -62,6 +67,11 @@ function AccessRequestFallback({ accessRequest, dispatchAccessTokenUpdate, isFet
       isLoading: isFetching,
     }),
     [error, isFetching],
+  );
+
+  const ownerEmail = useMemo(
+    () => getOwnerEmail(accessRequest),
+    [accessRequest],
   );
 
   const handleEmail = useCallback(() => {
@@ -95,7 +105,7 @@ function AccessRequestFallback({ accessRequest, dispatchAccessTokenUpdate, isFet
       .send()
       .then((response) => {
         dispatchAccessTokenUpdate(objectToCamelCase(response));
-        enqueueSnackbar(t('screens:accessRequest.token.success', accessRequest), { variant: 'success' });
+        enqueueSnackbar(t('screens:accessRequest.token.success', { ownerEmail }), { variant: 'success' });
       })
       .catch((e) => {
         log(e);
@@ -108,13 +118,13 @@ function AccessRequestFallback({ accessRequest, dispatchAccessTokenUpdate, isFet
         }
       })
       .finally(() => setSubmitting(false));
-  }, [accessRequest, enqueueSnackbar, t, dispatchAccessTokenUpdate]);
+  }, [accessRequest.token, dispatchAccessTokenUpdate, enqueueSnackbar, t, ownerEmail]);
 
   return (
     <ScreenAction
       appBarProps={appBarProps}
       state={state}
-      title={t('screens:accessRequest.title', accessRequest)}
+      title={t('screens:accessRequest.title', { ownerEmail })}
     >
       <Container maxWidth="md">
         <Subtitle>

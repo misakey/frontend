@@ -8,13 +8,19 @@ import moment from 'moment';
 
 import API from '@misakey/api';
 import { serviceRequestsReadValidationSchema } from 'constants/validationSchemas/dpo';
+import errorTypes from 'constants/errorTypes';
+
 import log from '@misakey/helpers/log';
 import prop from '@misakey/helpers/prop';
 import omit from '@misakey/helpers/omit';
+import head from '@misakey/helpers/head';
 import last from '@misakey/helpers/last';
+import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
-import { producerCryptoContext as crypto } from '@misakey/crypto';
+import { encryptBlobFile } from '@misakey/crypto/databox/crypto';
 
 import { makeStyles } from '@material-ui/core/styles/';
 import Container from '@material-ui/core/Container';
@@ -40,6 +46,7 @@ import withAccessRequest from 'components/smart/withAccessRequest';
 import withErrors from 'components/dumb/Form/Field/withErrors';
 
 // CONSTANTS
+const { notFound } = errorTypes;
 const FIELD_NAME = 'blob';
 const INTERNAL_PROPS = ['tReady', 'isAuthenticated'];
 const INITIAL_VALUES = { [FIELD_NAME]: null };
@@ -58,13 +65,11 @@ const ENDPOINTS = {
       auth: true,
     },
   },
-  user: {
-    pubKey: {
-      read: {
-        method: 'GET',
-        path: '/users/:id/pubkey',
-        auth: true,
-      },
+  pubkeys: {
+    list: {
+      method: 'GET',
+      path: '/pubkeys',
+      auth: true,
     },
   },
 };
@@ -73,6 +78,16 @@ const ENDPOINTS = {
 function getFileExtension(fileName) {
   return `.${last(fileName.split('.'))}`;
 }
+
+const databoxIdProp = prop('databoxId');
+const ownerProp = prop('owner');
+const handleProp = prop('handle');
+const ownerEmailProp = prop('email');
+
+const fetchPubkey = (handle, token) => API
+  .use(ENDPOINTS.pubkeys.list, token)
+  .build(null, null, objectToSnakeCase({ handle }))
+  .send();
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -157,7 +172,7 @@ FieldBlob = withTranslation('fields')(withErrors(FieldBlob));
 
 function ServiceRequestsRead({
   match: { params }, accessRequest, accessToken,
-  isLoading, isFetching, error,
+  isLoading, isFetching, error, accessRequestError,
   appBarProps, t, ...rest
 }) {
   const classes = useStyles();
@@ -167,17 +182,43 @@ function ServiceRequestsRead({
   const handleOpen = useCallback(() => setOpen(true), []);
   const handleClose = useCallback(() => setOpen(false), []);
 
-  // TODO: get databox from next to be created endpoint
-  const [databox] = useState({ ownerId: 'test' });
   const [isFetchingDatabox] = useState(false);
   const [errorDatabox] = useState();
 
   const state = useMemo(
     () => ({
-      error: errorDatabox || error,
+      error: errorDatabox || error || accessRequestError,
       isLoading: isFetchingDatabox || isLoading || isFetching,
     }),
-    [error, errorDatabox, isFetching, isFetchingDatabox, isLoading],
+    [error, errorDatabox, accessRequestError, isFetching, isFetchingDatabox, isLoading],
+  );
+
+  const apiToken = useMemo(
+    () => {
+      const { token } = accessToken;
+      return isNil(token) ? undefined : token;
+    },
+    [accessToken],
+  );
+
+  const databoxId = useMemo(
+    () => databoxIdProp(accessToken) || databoxIdProp(accessRequest) || params.databoxId,
+    [accessRequest, accessToken, params.databoxId],
+  );
+
+  const owner = useMemo(
+    () => ownerProp(accessToken) || ownerProp(accessRequest),
+    [accessToken, accessRequest],
+  );
+
+  const handle = useMemo(
+    () => handleProp(owner),
+    [owner],
+  );
+
+  const ownerEmail = useMemo(
+    () => ownerEmailProp(owner),
+    [owner],
   );
 
   const [blobs, setBlobs] = useState([]);
@@ -189,17 +230,16 @@ function ServiceRequestsRead({
     handleClose();
     setUploading(true);
 
-    const { databoxId = params.databoxId, ownerId = databox.ownerId } = accessRequest;
-
     const blob = form[FIELD_NAME];
 
-    API.use(ENDPOINTS.user.pubKey.read, accessToken.token)
-      .build({ id: ownerId })
-      .send()
-      .then(({ pubkey }) => {
-        crypto.databox.setOwnerPublicKey(ownerId, pubkey, true);
-        return crypto.databox.encryptBlob(blob, ownerId)
-          .then(({ ciphertext, nonce, ephemeralProducerPubKey, ownerPublicKey }) => {
+    fetchPubkey(handle, apiToken)
+      .then((pubkeys) => {
+        if (isEmpty(pubkeys)) { throw new Error(notFound); }
+
+        const { pubkey } = head(pubkeys);
+
+        return encryptBlobFile(blob, pubkey)
+          .then(({ ciphertext, nonce, ephemeralProducerPubKey }) => {
             const formData = new FormData();
             formData.append('transaction_id', Math.floor(Math.random() * 10000000000));
             formData.append('databox_id', databoxId);
@@ -209,9 +249,9 @@ function ServiceRequestsRead({
             formData.append('encryption[algorithm]', 'com.misakey.nacl-box');
             formData.append('encryption[nonce]', nonce);
             formData.append('encryption[ephemeral_producer_pub_key]', ephemeralProducerPubKey);
-            formData.append('encryption[owner_pub_key]', ownerPublicKey);
+            formData.append('encryption[owner_pub_key]', pubkey);
 
-            return API.use(ENDPOINTS.blob.create, accessToken.token)
+            return API.use(ENDPOINTS.blob.create, apiToken)
               .build(null, formData)
               .send({ contentType: null })
               .then((response) => {
@@ -232,25 +272,14 @@ function ServiceRequestsRead({
         }
       })
       .finally(() => { setUploading(false); });
-  }, [
-    handleClose,
-    setUploading,
-    setBlobs,
-    enqueueSnackbar,
-    t,
-    params.databoxId,
-    blobs,
-    accessRequest,
-    accessToken.token,
-    databox.ownerId,
-  ]);
+  }, [handleClose, handle, apiToken, databoxId, blobs, t, enqueueSnackbar]);
 
   const fetchBlobs = useCallback(() => {
     setFetchingBlobs(true);
 
-    const queryParams = { databox_ids: [accessRequest.databoxId || params.databoxId] };
+    const queryParams = { databox_ids: [databoxId] };
 
-    API.use(ENDPOINTS.blobMetadata.list, accessToken.token)
+    API.use(ENDPOINTS.blobMetadata.list, apiToken)
       .build(null, null, queryParams)
       .send()
       .then((response) => { setBlobs(response.map((blob) => objectToCamelCase(blob))); })
@@ -259,10 +288,7 @@ function ServiceRequestsRead({
         enqueueSnackbar(text, { variant: 'error' });
       })
       .finally(() => { setFetchingBlobs(false); });
-  }, [
-    setFetchingBlobs, accessRequest, setBlobs, t,
-    enqueueSnackbar, params.databoxId, accessToken.token,
-  ]);
+  }, [setFetchingBlobs, setBlobs, t, enqueueSnackbar, databoxId, apiToken]);
 
   useEffect(fetchBlobs, []);
 
@@ -271,16 +297,16 @@ function ServiceRequestsRead({
       state={state}
       appBarProps={appBarProps}
       {...omit(rest, INTERNAL_PROPS)}
-      title={t('screens:Service.requests.read.title', { ...databox, ...accessRequest })}
+      title={t('screens:Service.requests.read.title', { ownerEmail })}
     >
       <Container maxWidth="md">
         <Subtitle>
-          {t('screens:Service.requests.read.subtitle', { ...databox, ...accessRequest })}
+          {t('screens:Service.requests.read.subtitle', { ownerEmail })}
         </Subtitle>
         <List>
           {isFetchingBlobs && <SplashScreen />}
           {(!isFetchingBlobs && blobs.length === 0) && <Empty />}
-          {blobs.map((props) => <Blob {...props} />)}
+          {blobs.map(({ id, ...props }) => <Blob key={id} id={id} {...props} />)}
         </List>
         <Formik
           validationSchema={serviceRequestsReadValidationSchema}
@@ -293,8 +319,8 @@ function ServiceRequestsRead({
                 open={open}
                 onClose={handleClose}
                 onOk={() => handleUpload(values, formikBag)}
-                title={t('screens:Service.requests.read.upload.title', { ...databox, ...accessRequest })}
-                text={t('screens:Service.requests.read.upload.text', { ...databox, ...accessRequest })}
+                title={t('screens:Service.requests.read.upload.title')}
+                text={t('screens:Service.requests.read.upload.text', { ownerEmail })}
               />
               <Field
                 name={FIELD_NAME}
@@ -331,6 +357,7 @@ ServiceRequestsRead.propTypes = {
     ownerEmail: PropTypes.string,
     token: PropTypes.string,
   }).isRequired,
+  accessRequestError: PropTypes.instanceOf(Error),
   error: PropTypes.instanceOf(Error),
   isFetching: PropTypes.bool.isRequired,
   // CONNECT
@@ -346,19 +373,24 @@ ServiceRequestsRead.propTypes = {
     params: PropTypes.shape({ databoxId: PropTypes.string }),
   }).isRequired,
   t: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool,
 };
 
 ServiceRequestsRead.defaultProps = {
   appBarProps: null,
+  accessRequestError: null,
   error: null,
+  isLoading: false,
 };
 
 // CONNECT
 const mapStateToProps = (state) => ({
-  accessToken: state.accessToken,
+  accessToken: state.access.token,
 });
 
 export default withTranslation(['common', 'screens'])(connect(mapStateToProps, {})(
-  withAccessRequest(ServiceRequestsRead),
+  withAccessRequest(
+    ServiceRequestsRead,
+    ({ error, ...props }) => ({ accessRequestError: error, ...props }),
+  ),
 ));

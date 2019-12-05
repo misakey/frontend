@@ -4,6 +4,8 @@ import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
 
+import path from '@misakey/helpers/path';
+import prop from '@misakey/helpers/prop';
 
 import ButtonConnectNoToken from '@misakey/ui/Button/Connect/NoToken';
 import ScreenAction from 'components/dumb/Screen/Action';
@@ -12,6 +14,11 @@ import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 
+// HELPERS
+const getOwnerEmail = path(['owner', 'email']);
+const dpoEmailProp = prop('dpoEmail');
+
+// COMPONENTS
 const AccessRequestChoose = ({ accessRequest, isFetching, error, location, userManager, t }) => {
   const navigationProps = useMemo(
     () => ({ showGoBack: false }),
@@ -32,6 +39,16 @@ const AccessRequestChoose = ({ accessRequest, isFetching, error, location, userM
       isLoading: isFetching,
     }),
     [error, isFetching],
+  );
+
+  const ownerEmail = useMemo(
+    () => getOwnerEmail(accessRequest),
+    [accessRequest],
+  );
+
+  const dpoEmail = useMemo(
+    () => dpoEmailProp(accessRequest),
+    [accessRequest],
   );
 
   const fallbackTo = useMemo(
@@ -56,13 +73,13 @@ const AccessRequestChoose = ({ accessRequest, isFetching, error, location, userM
 
   return (
     <ScreenAction
-      title={t('screens:accessRequest.choose.title', accessRequest)}
+      title={t('screens:accessRequest.choose.title', { ownerEmail })}
       appBarProps={appBarProps}
       navigationProps={navigationProps}
       state={state}
     >
       <Container maxWidth="md">
-        <Subtitle>{t('screens:accessRequest.choose.subtitle', accessRequest)}</Subtitle>
+        <Subtitle>{t('screens:accessRequest.choose.subtitle', { dpoEmail, ownerEmail })}</Subtitle>
         <Box mt={3} display="flex" justifyContent="space-between">
           <Button
             variant="outlined"
@@ -86,7 +103,9 @@ const AccessRequestChoose = ({ accessRequest, isFetching, error, location, userM
 AccessRequestChoose.propTypes = {
   accessRequest: PropTypes.shape({
     dpoEmail: PropTypes.string,
-    ownerName: PropTypes.string,
+    owner: PropTypes.shape({
+      email: PropTypes.string,
+    }),
   }),
   isFetching: PropTypes.bool.isRequired,
   error: PropTypes.instanceOf(Error),

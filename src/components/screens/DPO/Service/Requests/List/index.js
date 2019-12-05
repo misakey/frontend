@@ -34,6 +34,8 @@ import Subtitle from 'components/dumb/Typography/Subtitle';
 import Empty from 'components/dumb/Box/Empty';
 import ScreenAction from 'components/dumb/Screen/Action';
 
+
+// CONSTANTS
 const ENDPOINTS = {
   databoxes: {
     list: {
@@ -47,6 +49,10 @@ const ENDPOINTS = {
 const ROW_HEIGHT = 73;
 const ITEM_PER_PAGE = 50;
 
+// HELPERS
+const mapItem = ({ owner, ...rest }) => ({ owner: objectToCamelCase(owner), ...rest });
+
+// HOOKS
 const useStyles = makeStyles((theme) => ({
   container: {
     height: '100%',
@@ -69,11 +75,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// COMPONENTS
 const Row = ({ list, isRowLoaded, classes, service, index, style }) => {
   const item = list[index] || {};
-  const { id, user } = item;
-
-  if (!id || !user) { return false; }
 
   const isLoaded = isRowLoaded({ index });
 
@@ -90,6 +94,8 @@ const Row = ({ list, isRowLoaded, classes, service, index, style }) => {
       </ListItem>
     );
   }
+
+  const { id, owner } = item;
 
   return (
     <ListItem
@@ -114,8 +120,8 @@ const Row = ({ list, isRowLoaded, classes, service, index, style }) => {
           </Avatar>
         </ListItemAvatar>
         <ListItemText
-          primary={user.display_name}
-          secondary={user.email}
+          primary={owner.displayName}
+          secondary={owner.email}
         />
         <ListItemSecondaryAction>
           <IconButton
@@ -166,7 +172,7 @@ function ServiceRequestsList({ appBarProps, service, t, isLoading, error }) {
       .build(null, null, objectToSnakeCase(queryParams))
       .send()
       .then((response) => {
-        setList((prevList) => [...prevList, ...response.map((item) => objectToCamelCase(item))]);
+        setList((prevList) => [...prevList, ...response.map(mapItem)]);
         if (response.length !== ITEM_PER_PAGE) { setHasNextPage(false); }
       })
       .catch((e) => { setInternalError(e); })

@@ -1,22 +1,46 @@
-import React, { useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Redirect, generatePath } from 'react-router-dom';
 
 import { ROLE_LABELS } from 'constants/Roles';
+import API from '@misakey/api';
 import routes from 'routes';
 
+import ApplicationSchema from 'store/schemas/Application';
+import { onReceiveProducer } from 'store/actions/access';
+import { denormalize } from 'normalizr';
+
+import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
 import prop from '@misakey/helpers/prop';
 
 import withAccessRequest from 'components/smart/withAccessRequest';
 import useUserHasRole from 'hooks/useUserHasRole';
+import SplashScreen from 'components/dumb/SplashScreen';
 import Fallback from './Fallback';
 import Choose from './Choose';
 
+// CONSTANTS
+const APP_INFO_READ_ENDPOINT = {
+  method: 'GET',
+  path: '/application-info/:id',
+};
+
 // HELPERS
-const producerMainDomainProp = prop('producerMainDomain');
+const getApplication = (id, isAuthenticated) => {
+  const endpoint = {
+    ...APP_INFO_READ_ENDPOINT,
+    auth: isAuthenticated,
+  };
+  return API
+    .use(endpoint)
+    .build({ id })
+    .send();
+};
+
 const producerIdProp = prop('producerId');
+const producerMainDomainProp = prop('mainDomain');
 const databoxIdProp = prop('databoxId');
 
 const hasNoAuth = (location) => {
@@ -38,17 +62,23 @@ function RouteAccessRequest({
   const Render = ({
     location, match, history,
     accessRequest,
-    isAuthenticated, isConfirmed, userRoles,
+    isAuthenticated, isConfirmed, userRoles, producer,
+    dispatchOnReceiveProducer,
     isFetching,
     error,
     ...props
   }) => {
+    const [internalFetching, setInternalFetching] = useState(false);
+    const [internalError, setInternalError] = useState();
+
     const renderProps = {
-      accessRequest,
+      history,
       location,
       match,
-      isFetching,
-      error,
+      accessRequest,
+      producer,
+      isFetching: isFetching || internalFetching,
+      error: error || internalError,
       ...props,
       ...componentProps,
     };
@@ -58,14 +88,19 @@ function RouteAccessRequest({
       [location],
     );
 
-    const mainDomain = useMemo(
-      () => producerMainDomainProp(accessRequest),
+    const producerId = useMemo(
+      () => producerIdProp(accessRequest),
       [accessRequest],
     );
 
+    const mainDomain = useMemo(
+      () => producerMainDomainProp(producer),
+      [producer],
+    );
+
     const requiredScope = useMemo(
-      () => `rol.${ROLE_LABELS.DPO}.${producerIdProp(accessRequest)}`,
-      [accessRequest],
+      () => `rol.${ROLE_LABELS.DPO}.${producerId}`,
+      [producerId],
     );
 
     const requestReadTo = useMemo(
@@ -95,6 +130,37 @@ function RouteAccessRequest({
       [claimRedirectTo, history],
     );
 
+    const shouldFetchApplication = useMemo(
+      () => isNil(producer) && !isNil(producerId) && !internalFetching && !internalError,
+      [producer, producerId, internalFetching, internalError],
+    );
+
+    const fetchApplication = useCallback(
+      () => {
+        setInternalFetching(true);
+        getApplication(producerId, isAuthenticated)
+          .then((response) => dispatchOnReceiveProducer(objectToCamelCase(response)))
+          .catch((e) => { setInternalError(e); })
+          .finally(() => { setInternalFetching(false); });
+      },
+      [
+        dispatchOnReceiveProducer,
+        isAuthenticated,
+        producerId,
+        setInternalFetching,
+        setInternalError,
+      ],
+    );
+
+    useEffect(
+      () => {
+        if (shouldFetchApplication) {
+          fetchApplication();
+        }
+      },
+      [shouldFetchApplication, fetchApplication],
+    );
+
     useEffect(
       () => {
         if (!isNil(claimRedirectTo) && (isAuthenticated && !isNil(userRoles) && !userHasRole)) {
@@ -103,6 +169,10 @@ function RouteAccessRequest({
       },
       [claimRedirectTo, isAuthenticated, redirectToClaim, userHasRole, userRoles],
     );
+
+    if (isFetching || internalFetching || isNil(requestReadTo)) {
+      return <SplashScreen />;
+    }
 
     if (isAuthenticated && userHasRole) {
       return <Redirect to={requestReadTo} />;
@@ -132,6 +202,14 @@ function RouteAccessRequest({
     history: PropTypes.shape({
       replace: PropTypes.func.isRequired,
     }).isRequired,
+    isFetching: PropTypes.bool.isRequired,
+    error: PropTypes.instanceOf(Error),
+    // withAccessRequest
+    accessRequest: PropTypes.shape({
+      producerId: PropTypes.string,
+      databoxId: PropTypes.string,
+    }),
+    // CONNECT state
     accessToken: PropTypes.shape({
       token: PropTypes.string,
       createdAt: PropTypes.string,
@@ -139,22 +217,19 @@ function RouteAccessRequest({
       subject: PropTypes.string,
       scope: PropTypes.string,
     }),
-    accessRequest: PropTypes.shape({
-      producerMainDomain: PropTypes.string,
-      producerId: PropTypes.string,
-      databoxId: PropTypes.string,
-    }),
     isAuthenticated: PropTypes.bool,
     isConfirmed: PropTypes.bool,
     userRoles: PropTypes.arrayOf(PropTypes.shape({
       roleLabel: PropTypes.string,
       applicationId: PropTypes.string,
     })),
-    isFetching: PropTypes.bool.isRequired,
-    error: PropTypes.instanceOf(Error),
+    producer: PropTypes.shape(ApplicationSchema.propTypes),
+    // CONNECT dispatch
+    dispatchOnReceiveProducer: PropTypes.func.isRequired,
   };
 
   Render.defaultProps = {
+    producer: null,
     accessToken: {},
     accessRequest: {},
     isAuthenticated: false,
@@ -165,15 +240,29 @@ function RouteAccessRequest({
 
 
   // CONNECT
-  const mapStateToProps = (state) => ({
-    accessToken: state.accessToken,
-    isConfirmed: !!state.accessToken.token,
-    isAuthenticated: !!state.auth.token,
-    userRoles: state.auth.roles,
+  const mapStateToProps = (state) => {
+    const { producerKey } = state.access;
+
+    return {
+      producer: isNil(producerKey)
+        ? null
+        : denormalize(
+          producerKey,
+          ApplicationSchema.entity,
+          state.entities,
+        ),
+      accessToken: state.access.token,
+      isConfirmed: !!state.access.token.token,
+      isAuthenticated: !!state.auth.token,
+      userRoles: state.auth.roles,
+    };
+  };
+
+  const mapDispatchToProps = (dispatch) => ({
+    dispatchOnReceiveProducer: (data) => dispatch(onReceiveProducer(data)),
   });
 
-
-  const component = connect(mapStateToProps, {})(
+  const component = connect(mapStateToProps, mapDispatchToProps)(
     withAccessRequest(Render),
   );
 
