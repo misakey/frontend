@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import omit from '@misakey/helpers/omit';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { withTranslation } from 'react-i18next';
 
 import RatingSchema from 'store/schemas/Rating';
 
@@ -13,15 +14,19 @@ import withDialogConnect from 'components/smart/Dialog/Connect/with';
 import MUILink from '@material-ui/core/Link';
 
 // CONSTANTS
-const OMIT_PROPS = ['userId'];
+const OMIT_PROPS = ['userId', 'tReady'];
 
 // COMPONENTS
 const FeedbackLink = ({
   rating,
   children,
+  isFetchingRating,
+  t,
   ...rest
 }) => {
-  if (!isNil(rating)) {
+  const translationKey = useMemo(() => (!isNil(rating) ? 'edit' : 'give'), [rating]);
+
+  if (isFetchingRating) {
     return null;
   }
 
@@ -30,6 +35,7 @@ const FeedbackLink = ({
       component={Link}
       {...omit(rest, OMIT_PROPS)}
     >
+      {t(`common:feedback.${translationKey}`)}
       {children}
     </MUILink>
   );
@@ -37,13 +43,17 @@ const FeedbackLink = ({
 
 FeedbackLink.propTypes = {
   rating: PropTypes.shape(RatingSchema.propTypes),
-  children: PropTypes.oneOfType([PropTypes.elementType, PropTypes.object]).isRequired,
+  isFetchingRating: PropTypes.bool,
+  children: PropTypes.oneOfType([PropTypes.elementType, PropTypes.object]),
   onClick: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
   to: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
 };
 
 FeedbackLink.defaultProps = {
   rating: null,
+  children: null,
+  isFetchingRating: false,
 };
 
-export default withMyFeedback()(withDialogConnect(FeedbackLink));
+export default withTranslation(['common'])(withMyFeedback()(withDialogConnect(FeedbackLink)));

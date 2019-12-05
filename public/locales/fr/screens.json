@@ -85,7 +85,6 @@
       "emailSignIn": "Connectez-vous pour voir l'email du DPO",
       "ratingCount": "{{count}} note",
       "ratingCount_plural": "{{count}} notes",
-      "rate": "Donner mon avis",
       "desc": {
         "title": "Informations légales",
         "openInNew": "Voir le site",

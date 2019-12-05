@@ -278,9 +278,7 @@ function ApplicationHeader({
                 variant="subtitle1"
                 color="secondary"
                 className={classes.rateLink}
-              >
-                {t('screens:application.info.rate')}
-              </FeedbackLink>
+              />
             )}
           </Box>
         </Box>

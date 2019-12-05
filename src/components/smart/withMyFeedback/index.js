@@ -49,39 +49,40 @@ const useShouldFetch = (isAuthenticated, userId) => useMemo(
   [isAuthenticated, userId],
 );
 
-const useGetMyFeedback = (id, userId, shouldFetch, setError) => useCallback(
+const useGetMyFeedback = (id, userId, shouldFetch, setError, setIsFetching) => useCallback(
   () => {
     if (shouldFetch) {
+      setIsFetching(true);
       return fetchMyFeedback(id, userId)
         .then(
           (response) => {
             const data = response.map(objectToCamelCase);
             return head(data);
           },
-          ({ httpStatus }) => {
-            setError(httpStatus);
-          },
-        );
+        )
+        .catch(({ httpStatus }) => { setError(httpStatus); })
+        .finally(() => { setIsFetching(false); });
     }
     return Promise.resolve();
   },
-  [id, userId, shouldFetch, setError],
+  [shouldFetch, setIsFetching, id, userId, setError],
 );
 
 // COMPONENTS
 const withMyFeedback = (mapper = identity) => (Component) => {
   const Wrapper = (props) => {
     const [error, setError] = useState();
+    const [isFetching, setIsFetching] = useState();
 
     const { application: { id }, isAuthenticated, userId } = props;
     const shouldFetch = useShouldFetch(isAuthenticated, userId);
-    const getMyFeedback = useGetMyFeedback(id, userId, shouldFetch, setError);
+    const getMyFeedback = useGetMyFeedback(id, userId, shouldFetch, setError, setIsFetching);
 
     const rating = useAsync(getMyFeedback, id, userId);
 
     const mappedProps = useMemo(
-      () => mapper({ ...props, rating }),
-      [props, rating],
+      () => mapper({ ...props, rating, isFetchingRating: isFetching }),
+      [isFetching, props, rating],
     );
 
     if (error) {
