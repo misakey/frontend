@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
@@ -255,10 +255,11 @@ function ApplicationBox({
   );
   React.useEffect(fetchDatabox, [mainDomain, isAuthenticated]);
 
+  const resend = useMemo(() => !isNil(blobs) && isEmpty(blobs), [blobs]);
+
   if (error) {
     return <ScreenError httpStatus={error} />;
   }
-
 
   return (
     <>
@@ -288,12 +289,12 @@ function ApplicationBox({
             mainDomain={application.mainDomain}
             buttonProps={{ variant: 'outlined' }}
           >
-            {t('screens:application.box.button.label')}
+            {t(`screens:application.box.button.label.${resend ? 'resend' : 'send'}`)}
           </ContactButton>
         )}
       >
         {loading && <SplashScreen variant="default" />}
-        {(isAuthenticated && !isNil(blobs) && blobs.length > 0)
+        {(isAuthenticated && !isNil(blobs))
           ? (
             <DataboxDisplay
               application={application}
@@ -303,11 +304,7 @@ function ApplicationBox({
               isCryptoReadyToDecrypt={isCryptoReadyToDecrypt}
             />
           )
-          : (
-            <Typography variant="body1" color="textSecondary" paragraph>
-              {t('screens:application.box.noResult')}
-            </Typography>
-          )}
+          : <Typography>{t('screens:application.box.noResult')}</Typography>}
       </Card>
       <Card
         my={3}

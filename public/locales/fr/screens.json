@@ -219,7 +219,10 @@
       "unlockVaultButton": "Cliquez ici",
       "title": "Récupérer vos données",
       "button": {
-        "label": "Contacter le DPO"
+        "label": {
+          "send": "Contacter le DPO",
+          "resend": "Relancer le DPO"
+        }
       },
       "noResult": "Vous pouvez contacter le dpo afin de récupérer vos données personnelles dans votre coffre-fort. Vous serez ensuite libre d'en disposer comme bon vous semble. Vos données seront chiffrées afin que vous seul puissiez y accéder.",
       "info": {
@@ -306,7 +309,7 @@
     }
   },
   "databox": {
-    "empty": "{{applicationName}} n'a pas encore répondu à votre demande de portabilité.",
+    "empty": "Votre demande de portabilité n'a pas encore été traitée par {{applicationName}}. Vous pouvez les relancer si nécessaire.",
     "enterPassword": "Veuillez saisir votre mot de passe",
     "intro": "Liste des fichiers envoyés par le DPO de {{applicationName}}",
     "sendAt": "Envoyé {{date}}",

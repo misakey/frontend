@@ -18,7 +18,6 @@ import * as numeral from 'numeral';
 
 import 'components/screens/Citizen/Application/Box/DataboxDisplay/databoxDisplay.scss';
 
-
 const DataboxDisplay = (props) => {
   const {
     application, blobs, t, downloadBlob,
@@ -40,7 +39,6 @@ const DataboxDisplay = (props) => {
     <div className="databoxDisplay">
       <Typography className="databoxDescription">
         {t('screens:databox.intro', { applicationName: application.name })}
-
       </Typography>
       <List disablePadding>
         {
