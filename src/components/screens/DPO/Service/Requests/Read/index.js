@@ -17,6 +17,7 @@ import head from '@misakey/helpers/head';
 import last from '@misakey/helpers/last';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
+import isArray from '@misakey/helpers/isArray';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
@@ -260,7 +261,8 @@ function ServiceRequestsRead({
               .build(null, formData)
               .send({ contentType: null })
               .then((response) => {
-                setBlobs([...blobs, objectToCamelCase(response)]);
+                const nextBlobs = (isArray(blobs) ? blobs : []).concat(objectToCamelCase(response));
+                setBlobs(nextBlobs);
                 const text = t('screens:Service.requests.read.upload.success', response);
                 enqueueSnackbar(text, { variant: 'success' });
               });
