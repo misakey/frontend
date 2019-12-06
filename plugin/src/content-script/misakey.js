@@ -1,3 +1,5 @@
+import isNil from '@misakey/helpers/isNil';
+
 const allowedKeys = [
   `oidc.user:${window.env.AUTH.authority}:${window.env.AUTH.client_id}`,
   'i18nextLng',
@@ -6,10 +8,16 @@ const allowedKeys = [
 const port = browser.runtime.connect({ name: 'misakey-cs' });
 
 function getLocalStorage() {
-  return allowedKeys.reduce((misakeyLocalStorage, key) => ({
-    ...misakeyLocalStorage,
-    [key]: localStorage.getItem(key),
-  }), {});
+  return allowedKeys.reduce((misakeyLocalStorage, key) => {
+    const foundValue = localStorage.getItem(key);
+    if (!isNil(foundValue)) {
+      return {
+        ...misakeyLocalStorage,
+        [key]: foundValue,
+      };
+    }
+    return misakeyLocalStorage;
+  }, {});
 }
 
 // Triggers changes from other instance of window (tabs, iframe)

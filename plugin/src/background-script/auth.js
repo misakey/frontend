@@ -1,4 +1,5 @@
 export function setLocalStorage(storage) {
+  localStorage.clear();
   Object.entries(storage).forEach(([key, value]) => {
     localStorage.setItem(key, value);
   });
