@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { normalize, denormalize } from 'normalizr';
 import { parse } from 'tldts';
 
+import usePropChanged from 'hooks/usePropChanged';
+
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import isString from '@misakey/helpers/isString';
@@ -49,52 +51,60 @@ const withApplication = (Component, options = {}) => {
       entity, dispatchReceive, dispatchReceivePlugin,
     } = props;
 
+    const authChanged = usePropChanged(isAuthenticated);
+
     const [isFetching, setIsFetching] = useState(false);
     const [error, setError] = useState(null);
+
 
     const shouldFetch = useMemo(() => {
       const validDomain = isString(mainDomain) && !isDefaultDomain;
       const validInternalState = !isFetching && isNil(error);
+      const forceFetch = authChanged;
       const defaultShouldFetch = isNil(entity);
       const isFetchNeeded = (
         isNil(getSpecificShouldFetch)
       ) ? defaultShouldFetch : getSpecificShouldFetch(entity);
 
-      return validDomain && validInternalState && isFetchNeeded;
-    }, [isDefaultDomain, isFetching, error, entity, mainDomain]);
+      return validDomain && validInternalState && (isFetchNeeded || forceFetch);
+    }, [isDefaultDomain, isFetching, error, entity, mainDomain, authChanged]);
 
     const startFetching = useCallback(() => {
-      if (shouldFetch) {
-        setIsFetching(true);
+      setIsFetching(true);
 
-        fetchApplication(mainDomain, isAuthenticated, endpoint, paramMapper)
-          .then((response) => {
-            if (isEmpty(response)) {
-              if (window.env.PLUGIN) {
-                dispatchReceivePlugin(mainDomain);
-              } else {
-                setError(404);
-              }
-            } else if (isArray(response)) {
-              dispatchReceive(response.map(objectToCamelCase));
-            } else {
-              dispatchReceive(objectToCamelCase(response));
-            }
-          })
-          .catch((e) => {
+      fetchApplication(mainDomain, isAuthenticated, endpoint, paramMapper)
+        .then((response) => {
+          if (isEmpty(response)) {
             if (window.env.PLUGIN) {
-              // We can display the basic information from plugin anyway
               dispatchReceivePlugin(mainDomain);
-            } else { setError(e); }
-          })
-          .finally(() => { setIsFetching(false); });
-      }
+            } else {
+              setError(404);
+            }
+          } else if (isArray(response)) {
+            dispatchReceive(response.map(objectToCamelCase));
+          } else {
+            dispatchReceive(objectToCamelCase(response));
+          }
+        })
+        .catch((e) => {
+          if (window.env.PLUGIN) {
+            // We can display the basic information from plugin anyway
+            dispatchReceivePlugin(mainDomain);
+          } else { setError(e); }
+        })
+        .finally(() => { setIsFetching(false); });
     }, [
-      shouldFetch, setIsFetching, dispatchReceive, setError,
+      setIsFetching, dispatchReceive, setError,
       isAuthenticated, mainDomain, dispatchReceivePlugin,
     ]);
 
-    useEffect(startFetching, [mainDomain, shouldFetch]);
+    useEffect(
+      () => {
+        if (shouldFetch) {
+          startFetching();
+        }
+      }, [shouldFetch, startFetching],
+    );
 
     return (
       <Component
