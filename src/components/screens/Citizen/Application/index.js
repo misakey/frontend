@@ -10,8 +10,6 @@ import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import RoutePrivate from '@misakey/auth/components/Route/Private';
 import withApplication from 'components/smart/withApplication';
 import isNil from '@misakey/helpers/isNil';
-import prop from '@misakey/helpers/prop';
-import compose from '@misakey/helpers/compose';
 
 import ApplicationNone from 'components/screens/Citizen/Application/None';
 import ApplicationInfo from 'components/screens/Citizen/Application/Info';
@@ -116,5 +114,8 @@ Application.defaultProps = {
 export default withApplication(Application, {
   endpoint: PAGES_ROSES_ENDPOINT,
   paramMapper: (props) => [props],
-  getSpecificShouldFetch: compose(isNil, prop('avgRating')),
+  getSpecificShouldFetch: (entity) => {
+    const { avgRating, unknown } = entity || {};
+    return isNil(avgRating) && unknown !== true;
+  },
 });
