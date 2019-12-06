@@ -13,7 +13,7 @@ import { CloudDownload as CloudDownloadIcon } from '@material-ui/icons';
 
 import includes from '@misakey/helpers/includes';
 
-import * as moment from 'moment';
+import moment from 'moment';
 import * as numeral from 'numeral';
 
 import 'components/screens/Citizen/Application/Box/DataboxDisplay/databoxDisplay.scss';
@@ -57,7 +57,7 @@ const DataboxDisplay = (props) => {
                   owner_pub_key: ownerPubKey,
                 },
               } = blob;
-              const date = moment.parseZone(createdAt).format('LLLL');
+              const date = moment(createdAt).format('LLLL');
               const size = numeral(contentLength).format('0a') + t('units.bytes');
               const canBeDecrypted = includes(publicKeysWeCanDecryptFrom, ownerPubKey);
               return (
@@ -66,8 +66,8 @@ const DataboxDisplay = (props) => {
                     primary={t('screens:databox.sendAt', { date })}
                     secondary={(
                       <>
-                        <span>{ t('screens:databox.size', { size }) }</span>
-                        { (!isCryptoReadyToDecrypt || !canBeDecrypted) && (
+                        <span>{t('screens:databox.size', { size })}</span>
+                        {(!isCryptoReadyToDecrypt || !canBeDecrypted) && (
                           <>
                             <Box component="span" mx={1}> &ndash; </Box>
                             <span>
@@ -96,7 +96,7 @@ const DataboxDisplay = (props) => {
                 </ListItem>
               );
             })
-          }
+        }
       </List>
     </div>
   );

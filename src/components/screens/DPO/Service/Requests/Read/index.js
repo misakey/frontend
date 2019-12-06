@@ -221,10 +221,15 @@ function ServiceRequestsRead({
     [owner],
   );
 
-  const [blobs, setBlobs] = useState([]);
+  const [blobs, setBlobs] = useState(null);
   const [isFetchingBlobs, setFetchingBlobs] = useState(false);
 
   const [isUploading, setUploading] = useState(false);
+
+  const shouldFetch = useMemo(
+    () => !isFetchingBlobs && databoxId === params.databoxId && isNil(blobs),
+    [databoxId, isFetchingBlobs, params.databoxId, blobs],
+  );
 
   const handleUpload = useCallback((form, { setFieldError }) => {
     handleClose();
@@ -290,7 +295,14 @@ function ServiceRequestsRead({
       .finally(() => { setFetchingBlobs(false); });
   }, [setFetchingBlobs, setBlobs, t, enqueueSnackbar, databoxId, apiToken]);
 
-  useEffect(fetchBlobs, []);
+  useEffect(
+    () => {
+      if (shouldFetch) {
+        fetchBlobs();
+      }
+    },
+    [fetchBlobs, shouldFetch],
+  );
 
   return (
     <ScreenAction
@@ -305,8 +317,8 @@ function ServiceRequestsRead({
         </Subtitle>
         <List>
           {isFetchingBlobs && <SplashScreen />}
-          {(!isFetchingBlobs && blobs.length === 0) && <Empty />}
-          {blobs.map(({ id, ...props }) => <Blob key={id} id={id} {...props} />)}
+          {(!isFetchingBlobs && isEmpty(blobs)) && <Empty />}
+          {!isEmpty(blobs) && blobs.map(({ id, ...props }) => <Blob key={id} id={id} {...props} />)}
         </List>
         <Formik
           validationSchema={serviceRequestsReadValidationSchema}
