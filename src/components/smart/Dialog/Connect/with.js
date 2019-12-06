@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 
 import DialogConnect from './index';
@@ -37,15 +38,21 @@ const withDialogConnect = (Component) => {
     );
 
     const wrapperLinkProps = useMemo(
-      () => (!isAuthenticated
-        ? {
-          // give a to prop to Link component to avoid error, but force replace to current location
-          to: location,
-          replace: true,
-        } : {
-          to,
-          replace,
-        }),
+      () => {
+        if (!isNil(to) || !isNil(replace)) {
+          return (!isAuthenticated
+            ? {
+              // give a to prop to Link component to avoid error,
+              // but force replace to current location
+              to: location,
+              replace: true,
+            } : {
+              to,
+              replace,
+            });
+        }
+        return {};
+      },
       [isAuthenticated, location, to, replace],
     );
 

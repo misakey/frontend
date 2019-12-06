@@ -6,6 +6,7 @@ import omit from '@misakey/helpers/omit';
 import isString from '@misakey/helpers/isString';
 import debounce from '@misakey/helpers/debounce';
 import isFunction from '@misakey/helpers/isFunction';
+import propOr from '@misakey/helpers/propOr';
 
 import { makeStyles } from '@material-ui/core';
 
@@ -17,8 +18,13 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import 'components/dumb/Search/Async/Async.scss';
 
+// CONSTANTS
 export const SEARCH_MIN_CHAR = 1;
 
+// HELPERS
+const optionMainDomainOrEmpty = propOr('', 'mainDomain');
+
+// HOOKS
 const useStyles = makeStyles((theme) => ({
   icon: {
     width: theme.spacing(7),
@@ -61,7 +67,7 @@ function SearchAsync({
     [onGetOptions],
   );
 
-  const getOptionLabel = useCallback((option) => option.mainDomain || '', []);
+  const getOptionLabel = useCallback((option) => optionMainDomainOrEmpty(option), []);
 
   useEffect(() => {
     let active = true;
