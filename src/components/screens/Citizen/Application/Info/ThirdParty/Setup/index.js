@@ -15,6 +15,7 @@ import Chip from '@material-ui/core/Chip';
 import isEmpty from '@misakey/helpers/isEmpty';
 import getSearchParams from '@misakey/helpers/getSearchParams';
 import groupBy from '@misakey/helpers/groupBy';
+import getNextSearch from 'helpers/getNextSearch';
 
 import ApplicationSchema from 'store/schemas/Application';
 import TrackersWhitelistSchema from 'store/schemas/TrackersWhitelist';
@@ -79,21 +80,20 @@ const useUpdateWhitelist = (
 }, [whitelist, dispatchWhitelist, dispatchToggleWhitelistForApp, setDisplayWarningDrawer]);
 
 const useSetParams = (location, history) => useCallback((search, mainPurpose, mainDomain) => {
-  const nextParams = new URLSearchParams('');
-
+  const nextParams = [];
   if (!isEmpty(search)) {
-    nextParams.set('search', search);
+    nextParams.push(['search', search]);
   }
 
   if (!isEmpty(mainPurpose)) {
-    nextParams.set('mainPurpose', mainPurpose);
+    nextParams.push(['mainPurpose', mainPurpose]);
   }
 
   if (!isEmpty(mainDomain)) {
-    nextParams.set('mainDomain', mainDomain);
+    nextParams.push(['mainDomain', mainDomain]);
   }
 
-  const query = nextParams.toString();
+  const query = getNextSearch(location.search, new Map(nextParams));
   const nextLocation = isEmpty(query) ? location.pathname : `${location.pathname}?${query}`;
   history.replace(nextLocation);
 }, [location, history]);

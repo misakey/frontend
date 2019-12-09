@@ -8,6 +8,7 @@ import className from 'clsx';
 import orderBy from '@misakey/helpers/orderBy';
 import get from '@misakey/helpers/get';
 import set from '@misakey/helpers/set';
+import getNextSearch from 'helpers/getNextSearch';
 
 import { setDetectedTrackers, setWhitelist } from 'store/actions/screens/thirdparty';
 
@@ -117,6 +118,7 @@ function ThirdPartyBlock({
   detectedTrackers,
   entity,
   history,
+  location: { search },
   t,
   whitelist,
 }) {
@@ -163,14 +165,18 @@ function ThirdPartyBlock({
   );
 
   const setupAction = useCallback((name) => {
-    const query = new URLSearchParams();
-    query.set('mainPurpose', name);
-    query.set('mainDomain', mainDomain);
+    const query = getNextSearch(
+      search,
+      new Map([
+        ['mainPurpose', name],
+        ['mainDomain', mainDomain],
+      ]),
+    );
     history.push({
       pathname: routes.account.thirdParty.setup,
-      search: query.toString(),
+      search: query,
     });
-  }, [history, mainDomain]);
+  }, [history, mainDomain, search]);
 
   useEffect(getData, []);
 
@@ -261,6 +267,9 @@ ThirdPartyBlock.propTypes = {
   dispatchWhitelist: PropTypes.func.isRequired,
   dispatchDetectedTrackers: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
+  location: PropTypes.shape({
+    search: PropTypes.string.isRequired,
+  }).isRequired,
   t: PropTypes.func.isRequired,
 };
 
