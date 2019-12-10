@@ -99,11 +99,11 @@
       "security": {
         "title": "Sécuriser mes données",
         "default": "Vous connaissez l'email du DPO du site ? Envoyez le nous pour que nous puissions l'intégrer à la base de donnée collaborative !",
-        "dpo": "Contacter le DPO du site pour faire une demande de portabilité. Vous avez le droit de demander à n'importe quel site de transmettre vos données dans votre coffre-fort Misakey pour en profiter comme bon vous semble.",
+        "dpo": "Demandez vos données au site au travers d'une demande de portabilité. Vous avez le droit de demander à n'importe quel site de transmettre vos données dans votre coffre-fort Misakey pour en profiter comme bon vous semble.",
         "contactForm": "Ce site redirige vers un formulaire pour demander ses données personnelles. Si vous connaissez l'email du délégué à la protection des données, ajoutez le afin que nous puissions sécuriser la récupération des données personnelles",
         "button": {
           "contactForm": "Formulaire de contact",
-          "dpo": "Contacter le DPO"
+          "dpo": "Demander mes données"
         }
       },
       "contact": {
@@ -220,11 +220,11 @@
       "title": "Récupérer vos données",
       "button": {
         "label": {
-          "send": "Contacter le DPO",
+          "send": "Demander mes données",
           "resend": "Relancer le DPO"
         }
       },
-      "noResult": "Vous pouvez contacter le dpo afin de récupérer vos données personnelles dans votre coffre-fort. Vous serez ensuite libre d'en disposer comme bon vous semble. Vos données seront chiffrées afin que vous seul puissiez y accéder.",
+      "noResult": "Vous pouvez demander vos données afin de récupérer vos données personnelles dans votre coffre-fort. Vous serez ensuite libre d'en disposer comme bon vous semble. Vos données seront chiffrées afin que vous seul puissiez y accéder.",
       "info": {
         "title": "À propos de votre coffre-fort",
         "primaryButton": "Créer un coffre",

@@ -154,12 +154,12 @@
     "placeholder": "Aucun"
   },
   "handle": {
-    "label": "Handle",
+    "label": "Pseudo",
     "placeholder": "roseflam",
     "error": {
-      "noTrailingUnderscore": "Votre handle ne peut commencer ou terminer par un underscore",
-      "invalid": "Votre handle doit comporter entre 3 et 21 lettres minuscules, chiffres et underscore",
-      "conflict": "Il existe déjà un compte avec ce handle. Merci d'en choisir un autre"
+      "noTrailingUnderscore": "Votre pseudo ne peut commencer ou terminer par un underscore",
+      "invalid": "Votre pseudo doit comporter entre 3 et 21 lettres minuscules, chiffres et underscore",
+      "conflict": "Il existe déjà un compte avec ce pseudo. Merci d'en choisir un autre"
     }
   },
   "logo": {
