@@ -7,6 +7,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Box from '@material-ui/core/Box';
 
 import isNil from '@misakey/helpers/isNil';
+import isObject from '@misakey/helpers/isObject';
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 
 
@@ -35,18 +36,28 @@ const BoxControls = ({ primary, secondary, outlined, ...rest }) => {
   );
 
   const primaryNode = useMemo(
-    () => (
-      (isValidElement(primary) || isNil(primary))
-        ? primary : (<Button standing={standings.primary} {...primary} />)
-    ),
+    () => {
+      if (isValidElement(primary) || isNil(primary)) {
+        return primary;
+      }
+      if (isObject(primary)) {
+        return <Button standing={standings.primary} {...primary} />;
+      }
+      return null;
+    },
     [standings, primary],
   );
 
   const secondaryNode = useMemo(
-    () => (
-      (isValidElement(secondary) || isNil(secondary))
-        ? secondary : (<Button standing={standings.secondary} {...secondary} />)
-    ),
+    () => {
+      if (isValidElement(secondary) || isNil(secondary)) {
+        return secondary;
+      }
+      if (isObject(secondary)) {
+        return <Button standing={standings.secondary} {...secondary} />;
+      }
+      return null;
+    },
     [standings, secondary],
   );
 
