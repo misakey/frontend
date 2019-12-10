@@ -12,6 +12,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import routes from 'routes';
+import { IS_PLUGIN } from 'constants/plugin';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,7 +60,8 @@ function ApplicationNavTabs({ location, mainDomain, scrollButtons, t, isAuthenti
       elevation={0}
       color="inherit"
       component="nav"
-      position={window.env.PLUGIN ? 'static' : 'sticky'}
+      // @FIXME: should be sticky also on plugin
+      position={IS_PLUGIN ? 'static' : 'sticky'}
       className={classes.root}
       {...omit(rest, ['i18n', 'tReady', 'history', 'match', 'staticContext'])}
     >

@@ -6,7 +6,7 @@ import isMap from '@misakey/helpers/isMap';
  * @returns {string}
  */
 // @FIXME move to js-common
-export default (search, paramsMap = new Map()) => {
+export default (search = '', paramsMap = new Map()) => {
   if (!isMap(paramsMap)) {
     throw new Error('Invalid paramsMap parameter!');
   }

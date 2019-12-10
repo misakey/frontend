@@ -18,6 +18,7 @@ import log from '@misakey/helpers/log';
 import head from '@misakey/helpers/head';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 import { redirectToApp } from 'helpers/plugin';
+import { IS_PLUGIN } from 'constants/plugin';
 
 import withDialogConnect from 'components/smart/Dialog/Connect/with';
 import Button from '@material-ui/core/Button';
@@ -195,7 +196,7 @@ const ContactButton = (
     );
   }
 
-  if (window.env.PLUGIN) {
+  if (IS_PLUGIN) {
     return (
       <Button
         onClick={openInNewTab}

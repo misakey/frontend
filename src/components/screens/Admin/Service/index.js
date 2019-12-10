@@ -20,6 +20,7 @@ import ServiceUsers from 'components/screens/Admin/Service/Users';
 import ServiceData from 'components/screens/Admin/Service/Data';
 import useLocationWorkspace from 'hooks/useLocationWorkspace';
 import useUserHasRole from 'hooks/useUserHasRole';
+import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
 
 import 'components/screens/Admin/Service/Service.scss';
 
@@ -50,7 +51,7 @@ function Service({
   );
 
   const workspace = useLocationWorkspace();
-  const requiredScope = useMemo(() => service && `rol.${workspace}.${service.id}`, [service, workspace]);
+  const requiredScope = useMemo(() => service && `${ROLE_PREFIX_SCOPE}.${workspace}.${service.id}`, [service, workspace]);
   const userHasRole = useUserHasRole(userRoles, requiredScope);
   const routeServiceProps = useMemo(
     () => ({ requiredScope, workspace, mainDomain, userHasRole }),

@@ -40,6 +40,7 @@ import FRCommon from 'constants/locales/fr/common';
 import FRFields from 'constants/locales/fr/fields';
 // helpers
 import { isDesktopDevice } from 'helpers/devices';
+import { IS_PLUGIN } from 'constants/plugin';
 import isNil from '@misakey/helpers/isNil';
 import { isSilentAuthIframe, processSilentAuthCallbackInIframe } from '@misakey/auth/helpers'; // Silent auth
 
@@ -52,16 +53,16 @@ if (window.env.ENV !== 'development' || window.env.SENTRY.debug === true) {
   if (!isNil(window.bundleVersion)) {
     sentryConfig.release = `frontend@${window.bundleVersion}`;
   }
-  if (window.env.PLUGIN) {
+  if (IS_PLUGIN) {
     sentryConfig.release = `plugin@${browser.runtime.getManifest().version}`;
   }
   Sentry.init(sentryConfig);
 }
 
-if (window.env.PLUGIN) {
+if (IS_PLUGIN && isDesktopDevice()) {
   document.documentElement.setAttribute(
     'data-plugin-controlsize',
-    isDesktopDevice(),
+    true,
   );
 }
 

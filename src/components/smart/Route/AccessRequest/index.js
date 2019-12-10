@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Redirect, generatePath } from 'react-router-dom';
 
-import { ROLE_LABELS } from 'constants/Roles';
+import { ROLE_LABELS, ROLE_PREFIX_SCOPE } from 'constants/Roles';
 import API from '@misakey/api';
 import routes from 'routes';
 
@@ -99,7 +99,7 @@ function RouteAccessRequest({
     );
 
     const requiredScope = useMemo(
-      () => `rol.${ROLE_LABELS.DPO}.${producerId}`,
+      () => `${ROLE_PREFIX_SCOPE}.${ROLE_LABELS.DPO}.${producerId}`,
       [producerId],
     );
 

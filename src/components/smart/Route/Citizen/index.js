@@ -5,11 +5,13 @@ import { Route } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import RoutePrivate from '@misakey/auth/components/Route/Private';
 import BoxAction from 'components/dumb/Box/Action';
+import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
 
 import parseJwt from '@misakey/helpers/parseJwt';
 import log from '@misakey/helpers/log';
 
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
+import { IS_PLUGIN } from 'constants/plugin';
 
 import SplashScreen from 'components/dumb/SplashScreen';
 
@@ -41,9 +43,9 @@ function RouteCitizen({
       );
     }
 
-    if (isAuthenticated && userScope !== 'openid user' && !loginInProgress && !window.env.PLUGIN) {
+    if (!IS_PLUGIN && !loginInProgress && isAuthenticated && userScope.includes(`${ROLE_PREFIX_SCOPE}.`)) {
       setLoginInProgress(true);
-      userManager.signinSilent({ scope: 'openid user' })
+      userManager.signinSilent()
         .then(() => {
           log('Silent auth as citizen succeed');
         })

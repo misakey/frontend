@@ -19,6 +19,7 @@ import { receiveEntities } from '@misakey/store/actions/entities';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+import { IS_PLUGIN } from 'constants/plugin';
 
 // CONSTANTS
 const DEFAULT_ENDPOINT = {
@@ -75,7 +76,8 @@ const withApplication = (Component, options = {}) => {
       fetchApplication(mainDomain, isAuthenticated, endpoint, paramMapper)
         .then((response) => {
           if (isEmpty(response)) {
-            if (window.env.PLUGIN) {
+            // @FIXME: is it still useful ?
+            if (IS_PLUGIN) {
               dispatchReceivePlugin(mainDomain);
             } else {
               setError(404);
@@ -87,7 +89,7 @@ const withApplication = (Component, options = {}) => {
           }
         })
         .catch((e) => {
-          if (window.env.PLUGIN) {
+          if (IS_PLUGIN) {
             // We can display the basic information from plugin anyway
             dispatchReceivePlugin(mainDomain);
           } else { setError(e); }

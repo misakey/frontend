@@ -16,6 +16,7 @@ import isArray from '@misakey/helpers/isArray';
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 import { redirectToApp } from 'helpers/plugin';
+import { IS_PLUGIN } from 'constants/plugin';
 import useAsync from '@misakey/hooks/useAsync';
 
 
@@ -40,6 +41,7 @@ import Card from 'components/dumb/Card';
 import withMyFeedback from 'components/smart/withMyFeedback';
 import withDialogConnect from 'components/smart/Dialog/Connect/with';
 import InfoContentSecurity from './Security';
+
 
 // CONSTANTS
 const requiredLinksType = ['privacy_policy', 'tos', 'terms', 'legal_notice', 'cookies', 'personal_data', 'dpo_contact'];
@@ -230,8 +232,8 @@ const ApplicationInfoContent = ({
 
   const dpoClaimButtonPrimaryProps = useMemo(
     () => ({
-      to: (window.env.PLUGIN) ? undefined : dpoClaimRoute,
-      onClick: (window.env.PLUGIN) ? redirectToDpoClaim : undefined,
+      to: (IS_PLUGIN) ? undefined : dpoClaimRoute,
+      onClick: (IS_PLUGIN) ? redirectToDpoClaim : undefined,
     }),
     [redirectToDpoClaim, dpoClaimRoute],
   );
@@ -371,7 +373,7 @@ const ApplicationInfoContent = ({
         </Card>
       )}
 
-      {!window.env.PLUGIN && <PluginDownloadCard />}
+      {!IS_PLUGIN && <PluginDownloadCard />}
 
       <Card
         my={2}

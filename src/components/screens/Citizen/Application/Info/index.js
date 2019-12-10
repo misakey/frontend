@@ -20,8 +20,8 @@ import UserContributionDialog from 'components/smart/UserContributionDialog';
 import Content from 'components/screens/Citizen/Application/Info/Content';
 import MyAccount from 'components/screens/Citizen/Application/Info/MyAccount';
 import ThirdParty from 'components/screens/Citizen/Application/Info/ThirdParty';
-import NoPluginThirdParty from 'components/screens/Citizen/Application/Info/ThirdParty/NoPlugin';
 
+import { IS_PLUGIN } from 'constants/plugin';
 
 // CONSTANTS
 const APPLICATION_CONTRIBUTION_ENDPOINT = {
@@ -38,7 +38,8 @@ function ApplicationInfo({
   const [isOpenUserContributionDialog, setOpenUserContributionDialog] = useState(false);
   const [userContributionType, setUserContributionType] = useState('');
 
-  const { name, id, mainDomain, unknown } = useMemo(
+  const { mainDomain } = match.params;
+  const { name, id, unknown } = useMemo(
     () => entity || {},
     [entity],
   );
@@ -94,14 +95,16 @@ function ApplicationInfo({
         appName={name}
       />
 
-      <ApplicationHeader
-        application={entity}
-        isLoading={isFetching}
-        onContributionDpoEmailClick={onContributionDpoEmailClick}
-        readOnly={unknown}
-        mb={3}
-      />
-      {!unknown && mainDomain && (
+      {!IS_PLUGIN && (
+        <ApplicationHeader
+          application={entity}
+          isLoading={isFetching}
+          onContributionDpoEmailClick={onContributionDpoEmailClick}
+          readOnly={unknown}
+          mb={3}
+        />
+      )}
+      {!unknown && !isFetching && (
         <ApplicationNavTabs mainDomain={mainDomain} isAuthenticated={isAuthenticated} />
       )}
 
@@ -116,26 +119,18 @@ function ApplicationInfo({
             />
           )}
         />
-        {window.env.PLUGIN && (
-          <Route
-            exact
-            path={routes.citizen.application.thirdParty}
-            render={(routerProps) => <ThirdParty entity={entity} {...routerProps} />}
-          />
-        )}
-        {!window.env.PLUGIN && (
-          <Route
-            exact
-            path={routes.citizen.application.thirdParty}
-            render={(routerProps) => (
-              <NoPluginThirdParty
-                entity={entity}
-                onContributionLinkClick={onContributionLinkClick}
-                {...routerProps}
-              />
-            )}
-          />
-        )}
+        <Route
+          exact
+          path={routes.citizen.application.thirdParty}
+          render={(routerProps) => (
+            <ThirdParty
+              entity={entity}
+              onContributionLinkClick={onContributionLinkClick}
+              {...routerProps}
+            />
+          )}
+        />
+
         <Route
           exact
           path={routes.citizen.application.myAccount}

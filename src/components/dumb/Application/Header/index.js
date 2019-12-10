@@ -13,6 +13,7 @@ import routes from 'routes';
 import omit from '@misakey/helpers/omit';
 import displayIn from '@misakey/helpers/displayIn';
 import { redirectToApp } from 'helpers/plugin';
+import { IS_PLUGIN } from 'constants/plugin';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -180,7 +181,7 @@ function ApplicationHeader({
   );
 
   const dpoClaimProps = useMemo(
-    () => (window.env.PLUGIN
+    () => (IS_PLUGIN
       ? {
         onClick: onDpoClaimClick,
       } : {
@@ -207,7 +208,7 @@ function ApplicationHeader({
   // );
 
   // const adminClaimProps = useMemo(
-  //   () => (window.env.PLUGIN
+  //   () => (IS_PLUGIN
   //     ? {
   //       onClick: onAdminClaimClick,
   //     } : {

@@ -21,6 +21,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import Screen from 'components/dumb/Screen';
 
 import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD } from 'components/smart/Search/Applications';
+import { IS_PLUGIN } from 'constants/plugin';
 
 // CONSTANTS
 const PAGES_ROSES_ENDPOINT = {
@@ -54,7 +55,7 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
   const state = useMemo(
     () => ({
       error,
-      isLoading: !window.env.PLUGIN && isFetching && isEmpty(entity),
+      isLoading: !IS_PLUGIN && isFetching && isEmpty(entity),
     }),
     [error, isFetching, entity],
   );
@@ -63,7 +64,9 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
     () => ({
       items: [(
         <div className={classes.avatarParent} key="applicationAvatarParent">
-          {application && <ApplicationAvatar application={application} />}
+          {application && (
+            <ApplicationAvatar application={application} displayRating={IS_PLUGIN} />
+          )}
         </div>
       )],
     }),

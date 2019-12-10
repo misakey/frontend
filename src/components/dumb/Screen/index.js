@@ -25,6 +25,7 @@ import ErrorIcon from '@material-ui/icons/Error';
 import AppBar from 'components/dumb/AppBar';
 import { PLUGIN_HEIGHT, PLUGIN_WIDTH } from 'constants/ui/sizes';
 import { isDesktopDevice } from 'helpers/devices';
+import { IS_PLUGIN } from 'constants/plugin';
 
 const useBoxStyles = makeStyles({
   root: { height: '100%' },
@@ -142,7 +143,7 @@ function getRootStyle(theme, options = {}, hideAppBar = false) {
   const spacing = theme.spacing(gutters ? 3 : 0);
   const toolbar = theme.mixins.toolbar[media] || theme.mixins.toolbar;
 
-  const isPopupPlugin = window.env.PLUGIN && isDesktopDevice();
+  const isPopupPlugin = IS_PLUGIN && isDesktopDevice();
 
   if (isPopupPlugin) {
     const appBarHeight = 56;

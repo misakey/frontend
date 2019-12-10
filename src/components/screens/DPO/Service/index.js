@@ -24,6 +24,7 @@ import useLocationWorkspace from 'hooks/useLocationWorkspace';
 import useUserHasRole from 'hooks/useUserHasRole';
 
 import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD } from 'components/smart/Search/Applications';
+import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
 
 export const DPO_SERVICE_SCREEN_NAMES = {
   CLAIM: 'DPOServiceClaim',
@@ -59,7 +60,7 @@ function Service({
   );
 
   const workspace = useLocationWorkspace();
-  const requiredScope = useMemo(() => service && `rol.${workspace}.${service.id}`, [service, workspace]);
+  const requiredScope = useMemo(() => service && `${ROLE_PREFIX_SCOPE}.${workspace}.${service.id}`, [service, workspace]);
   const userHasRole = useUserHasRole(userRoles, requiredScope);
   const routeServiceProps = useMemo(
     () => ({ requiredScope, workspace, mainDomain, userHasRole }),

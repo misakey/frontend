@@ -20,6 +20,7 @@ import Requests from 'components/screens/DPO/Service/Requests/Read';
 import Plugin from 'components/screens/Plugin';
 import ThirdPartySetup from 'components/screens/Citizen/Application/Info/ThirdParty/Setup';
 import Forbidden from 'components/screens/Forbidden';
+import { IS_PLUGIN } from 'constants/plugin';
 
 import Redirect from 'components/dumb/Redirect';
 
@@ -45,7 +46,7 @@ function App({ t }) {
     <ErrorBoundary component={Container} maxWidth="md" my={3}>
       <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
 
-        {window.env.PLUGIN && (
+        {IS_PLUGIN && (
           <Switch>
             <Route exact path={routes.plugin} component={Plugin} />
             <Route path={routes.citizen._} component={Citizen} />
@@ -61,7 +62,7 @@ function App({ t }) {
         )}
 
 
-        {!window.env.PLUGIN && (
+        {!IS_PLUGIN && (
           <Switch>
             <Route exact path={routes._} component={Landing} />
             {/* LEGALS */}

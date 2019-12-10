@@ -16,6 +16,7 @@ import { makeStyles } from '@material-ui/core';
 import { fade } from '@material-ui/core/styles';
 import { ceriseRed } from '@misakey/ui/colors';
 import { isDesktopDevice } from 'helpers/devices';
+import { IS_PLUGIN } from 'constants/plugin';
 import { PLUGIN_HEIGHT } from 'constants/ui/sizes';
 import { MIN_PX_0_LANDSCAPE, MIN_PX_600 } from 'constants/ui/medias';
 import useLocationWorkspace from 'hooks/useLocationWorkspace';
@@ -37,7 +38,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 function getPopperListboxHeight(theme, media) {
   const toolbar = theme.mixins.toolbar[media] || theme.mixins.toolbar;
   // @FIXME: plugin size should be handle better
-  const isPopupPlugin = window.env.PLUGIN && isDesktopDevice();
+  const isPopupPlugin = IS_PLUGIN && isDesktopDevice();
   const height = isPopupPlugin ? `${PLUGIN_HEIGHT}px` : '100vh';
 
   return { height: `calc(${height} - ${toolbar.minHeight}px)` };

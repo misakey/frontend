@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import routes from 'routes';
 
 import { redirectToApp } from 'helpers/plugin';
+import { IS_PLUGIN } from 'constants/plugin';
 
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
 
@@ -15,7 +16,7 @@ import ButtonConnectNoToken from '@misakey/ui/Button/Connect/NoToken';
 const ButtonConnectSimple = ({ userManager, children, ...props }) => {
   const signInAction = useCallback(
     () => {
-      if (window.env.PLUGIN) {
+      if (IS_PLUGIN) {
         redirectToApp(routes.auth.redirectToSignIn);
       } else {
         userManager.signinRedirect();

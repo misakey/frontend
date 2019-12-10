@@ -18,6 +18,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import IconButton from '@material-ui/core/IconButton';
 import { SMALL_BREAKPOINTS } from 'constants/ui/medias';
 import { isDesktopDevice } from 'helpers/devices';
+import { IS_PLUGIN } from 'constants/plugin';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -81,6 +82,7 @@ function AppBar({
   const [isSearchOpen, setSearchOpen] = useState(false);
   const handleSearchClose = useCallback(() => setSearchOpen(false), [setSearchOpen]);
   const handleSearchOpen = useCallback(() => setSearchOpen(true), [setSearchOpen]);
+  const isHeightFixed = useMemo(() => IS_PLUGIN && isDesktopDevice(), []);
 
   const rightAppBarItems = useMemo(() => {
     const rightItems = [];
@@ -100,7 +102,7 @@ function AppBar({
         classes.appBar,
         {
           [classes.appBarShift]: shift,
-          [classes.appBarFixedHeight]: window.env.PLUGIN && isDesktopDevice(),
+          [classes.appBarFixedHeight]: isHeightFixed,
         },
         className,
       )}
@@ -152,8 +154,8 @@ AppBar.defaultProps = {
   searchBarProps: {},
   shift: false,
   toolbarProps: { className: '' },
-  withPausePluginButton: window.env.PLUGIN === true,
-  withSearchBar: !window.env.PLUGIN,
+  withPausePluginButton: IS_PLUGIN,
+  withSearchBar: !IS_PLUGIN,
   withUser: true,
 };
 

@@ -7,6 +7,7 @@ import useWidth from '@misakey/hooks/useWidth';
 
 import displayIn from '@misakey/helpers/displayIn';
 import { redirectToApp } from 'helpers/plugin';
+import { IS_PLUGIN } from 'constants/plugin';
 
 import ButtonConnect from 'components/dumb/Button/Connect';
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -56,8 +57,8 @@ function User() {
     <ButtonConnect
       noTokenIcon={noTokenIcon}
       buttonProps={buttonProps}
-      signInAction={window.env.PLUGIN ? signInActionForPlugin : null}
-      customAction={window.env.PLUGIN ? redirectToWebAppAccount : null}
+      signInAction={IS_PLUGIN ? signInActionForPlugin : null}
+      customAction={IS_PLUGIN ? redirectToWebAppAccount : null}
       className={clsx(
         classes.buttonConnect,
         { [classes.buttonTextRounded]: !isSmallDisplay },

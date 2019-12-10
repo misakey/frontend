@@ -5,6 +5,8 @@ export const ROLE_LABELS = { CITIZEN: 'citizen', ADMIN: 'admin', DPO: 'dpo' };
 export const ROLE_IDS_BY_LABEL = {};
 export const ROLE_LABELS_BY_ROLE_IDS = {};
 
+export const ROLE_PREFIX_SCOPE = 'rol';
+
 Object.keys(ROLE_IDS).forEach((key) => {
   ROLE_IDS_BY_LABEL[ROLE_LABELS[key]] = ROLE_IDS[key];
   ROLE_LABELS_BY_ROLE_IDS[ROLE_IDS[key]] = ROLE_LABELS[key];

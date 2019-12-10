@@ -93,7 +93,7 @@ const useSetParams = (location, history) => useCallback((search, mainPurpose, ma
     nextParams.push(['mainDomain', mainDomain]);
   }
 
-  const query = getNextSearch(location.search, new Map(nextParams));
+  const query = getNextSearch('', new Map(nextParams));
   const nextLocation = isEmpty(query) ? location.pathname : `${location.pathname}?${query}`;
   history.replace(nextLocation);
 }, [location, history]);
