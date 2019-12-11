@@ -6,6 +6,29 @@
   src: url(./materialicons.woff2) format('woff2');
 }
 
+/* roboto-regular - latin */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: url('https://static.misakey.com/fonts/Roboto/roboto-latin-400.woff');
+  src: local('Roboto'), local('Roboto-Regular'),
+       url('https://static.misakey.com/fonts/Roboto/roboto-latin-400.woff2') format('woff2'), /* Super Modern Browsers */
+       url('https://static.misakey.com/fonts/Roboto/Roboto-Regular.ttf') format('truetype'); /* Safari, Android, iOS */
+}
+
+html {
+  font-family: -apple-system, Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: -apple-system, Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
