@@ -3,18 +3,14 @@ import PropTypes from 'prop-types';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 
 /**
- * @FIXME: add to misakey/ui
  * @param props
  * @returns {React.ReactSVGElement}
  * @constructor
  */
-function ElevationScroll(props) {
-  const { children, window } = props;
-
+function ElevationScroll({ children, threshold }) {
   const trigger = useScrollTrigger({
     disableHysteresis: true,
-    threshold: 0,
-    target: window ? window() : undefined,
+    threshold,
   });
 
   return React.cloneElement(children, {
@@ -24,7 +20,11 @@ function ElevationScroll(props) {
 
 ElevationScroll.propTypes = {
   children: PropTypes.element.isRequired,
-  window: PropTypes.func,
+  threshold: PropTypes.number,
+};
+
+ElevationScroll.defaultProps = {
+  threshold: 0,
 };
 
 export default ElevationScroll;

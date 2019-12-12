@@ -101,15 +101,7 @@ function App({ t }) {
             <Route path={routes.dpo._} component={DPO} />
 
             {/* REQUESTS */}
-            <RouteAccessRequest
-              exact
-              path={routes.requests}
-              component={Requests}
-              componentProps={{
-                navigationProps: { showGoBack: false },
-                appBarProps: { withUser: false, withSearchBar: false },
-              }}
-            />
+            <RouteAccessRequest exact path={routes.requests} component={Requests} />
 
             {/* DEFAULT */}
             <Route component={NotFound} />

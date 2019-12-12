@@ -17,7 +17,11 @@ import prop from '@misakey/helpers/prop';
 
 import withAccessRequest from 'components/smart/withAccessRequest';
 import useUserHasRole from 'hooks/useUserHasRole';
+
+import { makeStyles } from '@material-ui/core/styles';
 import SplashScreen from 'components/dumb/SplashScreen';
+import ApplicationAvatar from 'components/dumb/Avatar/Application';
+
 import Fallback from './Fallback';
 import Choose from './Choose';
 
@@ -49,6 +53,15 @@ const hasNoAuth = (location) => {
   return searchParams.has('noAuth');
 };
 
+// HOOKS
+const useStyles = makeStyles(() => ({
+  avatarParent: {
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+  },
+}));
+
 // COMPONENTS
 function RouteAccessRequest({
   component: Component, componentProps,
@@ -68,6 +81,7 @@ function RouteAccessRequest({
     error,
     ...props
   }) => {
+    const classes = useStyles();
     const [internalFetching, setInternalFetching] = useState(false);
     const [internalError, setInternalError] = useState();
 
@@ -82,6 +96,20 @@ function RouteAccessRequest({
       ...props,
       ...componentProps,
     };
+
+    const appBarProps = useMemo(
+      () => ({
+        withUser: false,
+        withSearchBar: false,
+        items: [(
+          // @FIXME Make a dumb component of it
+          <div className={classes.avatarParent} key="applicationAvatarParent">
+            <ApplicationAvatar application={producer} />
+          </div>
+        )],
+      }),
+      [classes.avatarParent, producer],
+    );
 
     const noAuth = useMemo(
       () => hasNoAuth(location),
@@ -179,11 +207,17 @@ function RouteAccessRequest({
     }
 
     if (isConfirmed) {
-      return <Component isAuthenticated={isAuthenticated} {...renderProps} />;
+      return (
+        <Component
+          appBarProps={appBarProps}
+          isAuthenticated={isAuthenticated}
+          {...renderProps}
+        />
+      );
     }
 
     if (!isAuthenticated && !noAuth) {
-      return <Choose {...renderProps} />;
+      return <Choose producer={producer} {...renderProps} />;
     }
 
     return <Fallback isAuthenticated={isAuthenticated} {...renderProps} />;
@@ -237,7 +271,6 @@ function RouteAccessRequest({
     userRoles: null,
     error: null,
   };
-
 
   // CONNECT
   const mapStateToProps = (state) => {

@@ -29,7 +29,7 @@
     "helperText": "Remplissez le code à {{count}} chiffre que nous vous avons envoyé",
     "helperText_plural": "Remplissez le code à {{count}} chiffres que nous vous avons envoyé",
     "error": {
-      "invalid": "Ce code est incorrect",
+      "invalid": "Ce code est invalide. Vérifiez qu'il correspond au code que nous vous avons envoyé il y a moins de 30min ou redemandez-en un nouveau",
       "expired": "Le code a expiré. Veuillez en demander un nouveau",
       "malformed": "Le code ne contient pas le bon nombre de chiffres ou est incorrect"
     }

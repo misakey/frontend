@@ -32,6 +32,11 @@
   "signOut": "Déconnexion",
   "report": "Signaler",
   "brand": "Logo de la marque {{brand}}",
+  "links": {
+    "docs": {
+      "dpo": "https://docs.misakey.com/#/dpo/"
+    }
+  },
   "account": {
     "delete": {
       "label": "Supprimer mon compte",

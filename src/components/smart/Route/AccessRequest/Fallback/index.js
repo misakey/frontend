@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Formik, Form } from 'formik';
 import { useSnackbar } from 'notistack';
-import { withTranslation } from 'react-i18next';
+import { Trans, withTranslation } from 'react-i18next';
 
 import API from '@misakey/api';
 import { accessTokenUpdate } from 'store/actions/access';
 import { accessRequestValidationSchema } from 'constants/validationSchemas/auth';
+import ApplicationSchema from 'store/schemas/Application';
 
 import prop from '@misakey/helpers/prop';
 import path from '@misakey/helpers/path';
@@ -15,12 +16,16 @@ import log from '@misakey/helpers/log';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
-import BoxControls from 'components/dumb/Box/Controls';
+import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import Subtitle from 'components/dumb/Typography/Subtitle';
+
 import FormFields from 'components/dumb/Form/Fields';
 import FieldCode from 'components/dumb/Form/Field/Code';
 import ScreenAction from 'components/dumb/Screen/Action';
+import ApplicationAvatar from 'components/dumb/Avatar/Application';
+import Card from 'components/dumb/Card';
+import { Typography } from '@material-ui/core';
+import Link from '@material-ui/core/Link';
 
 // CONSTANTS
 const DEFAULT_FIELDS = { code: { component: FieldCode, label: undefined } };
@@ -44,12 +49,30 @@ const ENDPOINTS = {
   },
 };
 
+// HOOKS
+const useStyles = makeStyles((theme) => ({
+  avatarParent: {
+    // Maybe this style should be more documented
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+  },
+  p: {
+    marginTop: theme.spacing(2),
+    textAlign: 'justify',
+  },
+}));
+
 // HELPERS
 const getOwnerEmail = path(['owner', 'email']);
+const getOwnerName = path(['owner', 'display_name']);
 
 // COMPONENTS
-function AccessRequestFallback({ accessRequest, dispatchAccessTokenUpdate, isFetching, error, t }) {
+function AccessRequestFallback({
+  accessRequest, dispatchAccessTokenUpdate, error, isFetching, producer, t,
+}) {
   const { enqueueSnackbar } = useSnackbar();
+  const classes = useStyles();
 
   const [isRequestingCode, setIsRequestingCode] = useState(false);
 
@@ -57,8 +80,14 @@ function AccessRequestFallback({ accessRequest, dispatchAccessTokenUpdate, isFet
     () => ({
       withUser: false,
       withSearchBar: false,
+      items: [(
+        // @FIXME Make a dumb component of it
+        <div className={classes.avatarParent} key="applicationAvatarParent">
+          <ApplicationAvatar application={producer} />
+        </div>
+      )],
     }),
-    [],
+    [classes.avatarParent, producer],
   );
 
   const state = useMemo(
@@ -67,6 +96,11 @@ function AccessRequestFallback({ accessRequest, dispatchAccessTokenUpdate, isFet
       isLoading: isFetching,
     }),
     [error, isFetching],
+  );
+
+  const ownerName = useMemo(
+    () => getOwnerName(accessRequest),
+    [accessRequest],
   );
 
   const ownerEmail = useMemo(
@@ -124,12 +158,9 @@ function AccessRequestFallback({ accessRequest, dispatchAccessTokenUpdate, isFet
     <ScreenAction
       appBarProps={appBarProps}
       state={state}
-      title={t('screens:accessRequest.title', { ownerEmail })}
+      title={t('screens:accessRequest.title', { ownerName, ownerEmail })}
     >
       <Container maxWidth="md">
-        <Subtitle>
-          {t('screens:accessRequest.subtitle', accessRequest)}
-        </Subtitle>
         <Formik
           initialValues={INITIAL_VALUES}
           validationSchema={accessRequestValidationSchema}
@@ -137,28 +168,47 @@ function AccessRequestFallback({ accessRequest, dispatchAccessTokenUpdate, isFet
         >
           {({ isSubmitting }) => (
             <Form>
-              <FormFields
-                fields={DEFAULT_FIELDS}
-                prefix="AccessRequest."
-                defaultFields={DEFAULT_FIELDS}
-              />
-              <BoxControls
-                mt={3}
+              <Card
+                title={t('screens:accessRequest.form.title')}
+                subtitle={t('screens:accessRequest.form.subtitle', accessRequest)}
                 secondary={{
-                  type: 'button',
+                  variant: 'outlined',
                   isLoading: isRequestingCode,
                   text: t('screens:accessRequest.email.submit'),
                   onClick: handleEmail,
                 }}
                 primary={{
+                  variant: 'contained',
                   type: 'submit',
                   isLoading: isSubmitting,
                   text: t('common:submit'),
                 }}
-              />
+              >
+                <FormFields
+                  fields={DEFAULT_FIELDS}
+                  prefix="AccessRequest."
+                  defaultFields={DEFAULT_FIELDS}
+                />
+              </Card>
             </Form>
           )}
         </Formik>
+        <Card
+          mt={2}
+          title={t('screens:accessRequest.troubleshooting.title')}
+          subtitle={t('screens:accessRequest.troubleshooting.subtitle', accessRequest)}
+        >
+          <Typography className={classes.p}>
+            {t('screens:accessRequest.troubleshooting.desc.1')}
+          </Typography>
+          <Typography className={classes.p}>
+            <Trans i18nKey="screens:accessRequest.troubleshooting.desc.2">
+              {'Si vous rencontrez un problème, n\'hésitez pas à nous contacter à'}
+              <Link href="mailto:question.pro@misakey.com">question.pro@misakey.com</Link>
+              , nous vous répondrons rapidement !
+            </Trans>
+          </Typography>
+        </Card>
       </Container>
     </ScreenAction>
   );
@@ -168,19 +218,19 @@ AccessRequestFallback.propTypes = {
   accessRequest: PropTypes.shape({
     producerName: PropTypes.string,
     dpoEmail: PropTypes.string,
-    ownerName: PropTypes.string,
-    ownerEmail: PropTypes.string,
     token: PropTypes.string,
   }),
-  isFetching: PropTypes.bool.isRequired,
-  error: PropTypes.instanceOf(Error),
   dispatchAccessTokenUpdate: PropTypes.func.isRequired,
+  error: PropTypes.instanceOf(Error),
+  isFetching: PropTypes.bool.isRequired,
+  producer: PropTypes.shape(ApplicationSchema.propTypes),
   t: PropTypes.func.isRequired,
 };
 
 AccessRequestFallback.defaultProps = {
   accessRequest: null,
   error: null,
+  producer: {},
 };
 
 // CONNECT

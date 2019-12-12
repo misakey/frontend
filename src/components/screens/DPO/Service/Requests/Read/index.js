@@ -26,6 +26,8 @@ import { encryptBlobFile } from '@misakey/crypto/databox/crypto';
 import { makeStyles } from '@material-ui/core/styles/';
 import Container from '@material-ui/core/Container';
 import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
+import MUILink from '@material-ui/core/Link/Link';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -36,6 +38,7 @@ import FolderIcon from '@material-ui/icons/Folder';
 import CloudDoneIcon from '@material-ui/icons/CloudDone';
 
 import Subtitle from 'components/dumb/Typography/Subtitle';
+import BoxMessage from 'components/dumb/Box/Message';
 import BoxControls from 'components/dumb/Box/Controls';
 import FieldFile from 'components/dumb/Form/Field/File';
 import Alert from 'components/dumb/Alert';
@@ -45,8 +48,13 @@ import Empty from 'components/dumb/Box/Empty';
 import ScreenAction from 'components/dumb/Screen/Action';
 import withAccessRequest from 'components/smart/withAccessRequest';
 import withErrors from 'components/dumb/Form/Field/withErrors';
+import CardContent from '@material-ui/core/CardContent';
+import Title from 'components/dumb/Typography/Title';
+import ListQuestions, { useQuestionsItems } from 'components/dumb/List/Questions';
+import Card from 'components/dumb/Card';
 
 // CONSTANTS
+const QUESTIONS_TRANS_KEY = 'screens:Service.requests.read.questions';
 const { notFound } = errorTypes;
 const FIELD_NAME = 'blob';
 const INTERNAL_PROPS = ['tReady', 'isAuthenticated'];
@@ -84,6 +92,7 @@ const databoxIdProp = prop('databoxId');
 const ownerProp = prop('owner');
 const handleProp = prop('handle');
 const ownerEmailProp = prop('email');
+const ownerNameProp = prop('display_name');
 
 const fetchPubkey = (handle, token) => API
   .use(ENDPOINTS.pubkeys.list, token)
@@ -95,6 +104,11 @@ const useStyles = makeStyles((theme) => ({
   blob: {
     height: 'auto',
     padding: theme.spacing(3, 0),
+  },
+  mkAgentLink: {
+    marginLeft: theme.spacing(1),
+    fontWeight: 'bold',
+    color: 'inherit',
   },
 }));
 
@@ -178,6 +192,7 @@ function ServiceRequestsRead({
 }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+  const questionItems = useQuestionsItems(t, QUESTIONS_TRANS_KEY, 2);
 
   const [open, setOpen] = useState(false);
   const handleOpen = useCallback(() => setOpen(true), []);
@@ -219,6 +234,11 @@ function ServiceRequestsRead({
 
   const ownerEmail = useMemo(
     () => ownerEmailProp(owner),
+    [owner],
+  );
+
+  const ownerName = useMemo(
+    () => ownerNameProp(owner),
     [owner],
   );
 
@@ -311,12 +331,24 @@ function ServiceRequestsRead({
       state={state}
       appBarProps={appBarProps}
       {...omit(rest, INTERNAL_PROPS)}
-      title={t('screens:Service.requests.read.title', { ownerEmail })}
+      title={t('screens:Service.requests.read.title', { ownerName, ownerEmail })}
     >
       <Container maxWidth="md">
         <Subtitle>
           {t('screens:Service.requests.read.subtitle', { ownerEmail })}
         </Subtitle>
+        <BoxMessage type="info" mt={2}>
+          <Typography>
+            {t('screens:Service.requests.read.mkAgent.message')}
+            <MUILink
+              className={classes.mkAgentLink}
+              variant="body2"
+              href={`mailto:question.pro@misakey.com?subject=${t('screens:Service.requests.read.mkAgent.mailToSubject')}`}
+            >
+              {t('screens:Service.requests.read.mkAgent.link')}
+            </MUILink>
+          </Typography>
+        </BoxMessage>
         <List>
           {isFetchingBlobs && <SplashScreen />}
           {(!isFetchingBlobs && isEmpty(blobs)) && <Empty />}
@@ -355,6 +387,21 @@ function ServiceRequestsRead({
             </Form>
           )}
         </Formik>
+        <Card mt={2}>
+          <CardContent>
+            <Title>{t('screens:Service.requests.read.questions.title')}</Title>
+            <Subtitle>
+              <MUILink
+                target="_blank"
+                rel="nooppener noreferrer"
+                href={t('links.docs.dpo')}
+              >
+                {t('screens:Service.requests.read.questions.subtitle')}
+              </MUILink>
+            </Subtitle>
+          </CardContent>
+          <ListQuestions items={questionItems} breakpoints={{ xs: 12 }} />
+        </Card>
       </Container>
     </ScreenAction>
   );

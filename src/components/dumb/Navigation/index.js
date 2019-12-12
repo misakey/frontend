@@ -134,7 +134,7 @@ const Navigation = forwardRef(({
       {...omit(rest, ['i18n', 'tReady'])}
       {...appBarProps}
     >
-      <Toolbar component={Container} {...toolbarProps}>
+      <Toolbar component={Container} disableGutters {...toolbarProps}>
         {(isBoolean(showGoBack) ? showGoBack : width === 'xs') && (
           <IconButton
             edge="start"

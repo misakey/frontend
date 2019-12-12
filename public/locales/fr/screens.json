@@ -1,10 +1,37 @@
 {
   "accessRequest": {
-    "title": "Accéder temporairement à la demande de {{ownerEmail}}",
-    "subtitle": "Cliquer sur \"Demander un code\" pour recevoir un email à l'adresse {{dpoEmail}}",
+    "title": "Accès au coffre-fort de {{ownerName}} ({{ownerEmail}})",
+    "form": {
+      "title": "Continuer sans compte",
+      "subtitle": "Cliquer sur \"Demander un code\" pour recevoir un email à l'adresse {{dpoEmail}}"
+    },
     "choose": {
-      "title": "Coffre fort de {{ownerEmail}}",
-      "subtitle": "Vous pouvez vous connecter avec l'email {{dpoEmail}} pour accéder à l'espace de chiffrement des données de {{ownerEmail}} ou utiliser votre compte Misakey",
+      "title": "Accès au coffre-fort de {{ownerName}} ({{ownerEmail}})",
+      "desc": {
+        "0": "{{ownerName}} vous a fait une demande de portabilité RGPD, vous demandant de nous transférer les données que vous avez sur lui ou elle.",
+        "1": "Nous allons vous autoriser à ajouter des données à son coffre fort afin que vous puissiez effectuer ce transfert. Pour cela nous devons vérifier que vous êtes bien le ou la DPO de {{name}}.",
+        "2": "Nous vous proposons deux solutions :",
+        "3": "Ouvrir une session à usage unique : nous allons vous envoyer un email à l'adresse {{dpoEmail}} avec un code, en renseignant ce code sur l'écran suivant vous pourrez déposer des données dans le coffre fort de {{ownerName}}.",
+        "4": "Créer un compte Misakey en tant que DPO (ou vous connecter sur un compte existant) : cela vous permettra d'avoir accès en un seul endroit à toutes les requêtes des utilisateurs de votre service."
+      },
+      "questions": {
+        "title": "Questions fréquentes",
+        "subtitle": "Retrouvez toutes les réponses à vos questions sur notre FAQ pour les DPO.",
+        "text": {
+          "0": "Comment utiliser la plateforme Misakey&nbsp;?",
+          "1": "Qu’est-ce qu’une requête de portabilité&nbsp;?",
+          "2": "Quelles sont vos obligations&nbsp;?",
+          "3": "Comment sont transférées les données&nbsp;?",
+          "4": "Comment automatiser les réponses aux requêtes&nbsp;?"
+        },
+        "href": {
+          "0": "https://docs.misakey.com/#/dpo/?id=comment-utiliser-la-plateforme-misakey-",
+          "1": "https://docs.misakey.com/#/dpo/?id=quest-ce-quune-requ%c3%aate-de-portabilit%c3%a9-",
+          "2": "https://docs.misakey.com/#/dpo/?id=quelles-sont-mes-obligations- ",
+          "3": "https://docs.misakey.com/#/dpo/?id=comment-sont-transf%c3%a9r%c3%a9es-les-donn%c3%a9es-",
+          "4": "https://docs.misakey.com/#/dpo/?id=je-ne-veux-plus-traiter-toutes-ces-demandes-manuellement-comment-automatiser-ce-processus-"
+        }
+      },
       "noAuth": {
         "label": "Continuer sans compte"
       },
@@ -18,6 +45,14 @@
     },
     "token": {
       "success": "Vous avez maintenant accès à la demande de portabilité de {{ownerEmail}} !"
+    },
+    "troubleshooting": {
+      "title": "Un soucis avec la connexion ?",
+      "subtitle": "Vérifiez bien votre boite email {{dpoEmail}} et votre dossier spam si vous ne recevez pas l'email.",
+      "desc": {
+        "1": "Le code que nous vous envoyons est à usage unique et valide 30 minutes. Après ce délai ou utilisation du premier code, vous devrez en demander un nouveau.",
+        "2": "Si vous rencontrez un problème, n'hésitez pas à nous contacter à <1>question.pro@misakey.com</1>, nous vous répondrons rapidement !"
+      }
     }
   },
   "Citizen": {
@@ -432,12 +467,30 @@
     },
     "requests": {
       "read": {
-        "title": "Répondre à la demande de portabilité liée à l'email {{ownerEmail}}",
-        "subtitle": "Retrouver les derniers fichiers chiffrés envoyés à {{ownerEmail}}",
+        "title": "Coffre-fort de {{ownerName}} ({{ownerEmail}})",
+        "subtitle": "Répondre à la demande de portabilité liée à l'email {{ownerEmail}}",
         "upload": {
           "title": "Validez-vous l'envoi de ce fichier ?",
           "text": "Le fichier va être chiffré avec la clé de {{ownerEmail}} puis lui être envoyé. Cette opération est irréversible.",
           "success": "Le fichier {{name}} a été envoyé avec succès !"
+        },
+        "mkAgent": {
+          "message": "Fatigué de répondre manuellement ? Installez notre Agent !",
+          "link": "Contactez-nous pour plus d'informations.",
+          "mailToSubject": "Demande d'informations sur Misakey Agent"
+        },
+
+        "questions": {
+          "title": "Questions fréquentes",
+          "subtitle": "Retrouvez toutes les réponses à vos questions sur notre FAQ pour les DPO.",
+          "text": {
+            "0": "Comment sont transférées les données&nbsp;?",
+            "1": "Je ne veux plus traiter toutes ces demandes manuellement, comment automatiser ce processus&nbsp;?"
+          },
+          "href": {
+            "0": "https://docs.misakey.com/#/dpo/?id=comment-sont-transf%c3%a9r%c3%a9es-les-donn%c3%a9es-",
+            "1": "https://docs.misakey.com/#/dpo/?id=je-ne-veux-plus-traiter-toutes-ces-demandes-manuellement-comment-automatiser-ce-processus-"
+          }
         }
       },
       "list": {

@@ -8,12 +8,12 @@ import { useTheme } from '@material-ui/core/styles';
 
 import Screen from 'components/dumb/Screen';
 import Navigation from 'components/dumb/Navigation';
-import ScrollEffect from 'components/dumb/ScrollEffect';
+import ElevationScroll from 'components/dumb/ElevationScroll';
 
 import { MIN_PX_0_LANDSCAPE, MIN_PX_600 } from 'constants/ui/medias';
 
 function ScreenAction({
-  children, hideAppBar, history, navigation, navigationProps, pushPath, title, ...rest
+  appBarProps, children, hideAppBar, history, navigation, navigationProps, pushPath, title, ...rest
 }) {
   const theme = useTheme();
   const width = useWidth();
@@ -27,16 +27,15 @@ function ScreenAction({
     return theme.mixins.toolbar.minHeight;
   }, [hideAppBar, theme, width, landscape]);
 
-
   return (
     <Screen
       title={title}
       disableGutters
       hideAppBar={hideAppBar}
-      appBarProps={{ position: 'absolute', elevationScroll: false }}
+      appBarProps={{ position: 'absolute', elevationScroll: false, ...appBarProps }}
       {...omit(rest, ['location', 'match', 'staticContext'])}
     >
-      <ScrollEffect propsOnTrigger={{ elevation: 4 }} threshold={threshold}>
+      <ElevationScroll threshold={threshold}>
         <Navigation
           position="sticky"
           toolbarProps={{ maxWidth: 'md' }}
@@ -47,13 +46,14 @@ function ScreenAction({
         >
           {navigation}
         </Navigation>
-      </ScrollEffect>
+      </ElevationScroll>
       {children}
     </Screen>
   );
 }
 
 ScreenAction.propTypes = {
+  appBarProps: PropTypes.objectOf(PropTypes.any),
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.node, PropTypes.element]).isRequired,
   hideAppBar: PropTypes.bool,
   history: PropTypes.object.isRequired,
@@ -64,6 +64,7 @@ ScreenAction.propTypes = {
 };
 
 ScreenAction.defaultProps = {
+  appBarProps: {},
   hideAppBar: false,
   navigation: null,
   navigationProps: {},
