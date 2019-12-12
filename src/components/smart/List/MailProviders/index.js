@@ -5,28 +5,35 @@ import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import { GMAIL } from 'constants/mail-providers';
+
 import useScript from 'hooks/useScript';
 
-import { SEND_MAIL_CONFIG as GMAIL_CONFIG } from 'helpers/gapi/gmail';
+import { sendMessage as sendGmailMessage, SEND_MAIL_CONFIG as GMAIL_CONFIG } from 'helpers/gapi/gmail';
 import prop from '@misakey/helpers/prop';
 import noop from '@misakey/helpers/noop';
 import propOr from '@misakey/helpers/propOr';
 import isObject from '@misakey/helpers/isObject';
 import isEmpty from '@misakey/helpers/isEmpty';
+import isFunction from '@misakey/helpers/isFunction';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import MailIcon from '@material-ui/icons/Mail';
 
 // CONSTANTS
 const PROVIDERS = [
   GMAIL_CONFIG,
 ];
+
+const SEND_CONFIG = {
+  [GMAIL.key]: sendGmailMessage,
+};
 
 // HELPERS
 const scriptSrcProp = prop('scriptSrc');
@@ -51,14 +58,19 @@ const useOnProviderSelect = (setProvider) => useCallback(
   [setProvider],
 );
 
-const useOnConsentCheck = (provider, onChange, setLoaded, enqueueSnackbar, t) => useCallback(
+const useOnConsentCheck = (
+  provider,
+  onChange,
+  submit,
+  setLoaded,
+) => useCallback(
   (isSignedIn) => {
     setLoaded(true);
     if (isSignedIn) {
-      enqueueSnackbar(t('common:providers.success'), { variant: 'success' });
       onChange(provider.key);
+      submit(provider.key);
     }
-  }, [provider, onChange, setLoaded, enqueueSnackbar, t],
+  }, [provider, onChange, submit, setLoaded],
 );
 
 const useOnProviderClick = (
@@ -105,7 +117,37 @@ const ListMailProviders = ({
 
   const mailtoHref = useMailtoHref(mailtoProps, t);
 
-  const onConsentCheck = useOnConsentCheck(provider, onChange, setLoaded, enqueueSnackbar, t);
+  const onResponse = useCallback(
+    (jsonResponse) => {
+      if (jsonResponse === false) {
+        enqueueSnackbar(t('common:providers.send.error'), { variant: 'error' });
+      }
+      enqueueSnackbar(t('common:providers.send.success'), { variant: 'success' });
+    },
+    [enqueueSnackbar, t],
+  );
+
+  const submit = useCallback(
+    (providerKey) => {
+      const send = SEND_CONFIG[providerKey];
+      if (isFunction(send)) {
+        const { mailto, applicationName, subject, body } = mailtoProps || {};
+        const extendedMailto = t('common:emailTo', { applicationName, dpoEmail: mailto });
+
+        send(extendedMailto, subject, body, onResponse);
+      } else {
+        throw new Error(`Unknown send behaviour for provider ${providerKey}`);
+      }
+    },
+    [mailtoProps, t, onResponse],
+  );
+
+  const onConsentCheck = useOnConsentCheck(
+    provider,
+    onChange,
+    submit,
+    setLoaded,
+  );
   const onConsentCatch = useCallback(
     () => {
       setLoaded(true);
@@ -114,8 +156,11 @@ const ListMailProviders = ({
   );
 
   const onManualClick = useCallback(
-    () => enqueueSnackbar(t('common:providers.manual.notify'), { variant: 'info' }),
-    [enqueueSnackbar, t],
+    () => {
+      enqueueSnackbar(t('common:providers.manual.notify'), { variant: 'info' });
+      onChange();
+    },
+    [onChange, enqueueSnackbar, t],
   );
 
   const onLoad = useMemo(
@@ -165,7 +210,6 @@ const ListMailProviders = ({
           <ListItemAvatar>
             <Avatar alt={alt} src={logoSrc} classes={{ root: classes.avatarRoot }} />
           </ListItemAvatar>
-          <ChevronRightIcon color="primary" />
         </ListItem>
       ))}
       {allowManual && (
@@ -179,11 +223,16 @@ const ListMailProviders = ({
           rel="noopener noreferrer"
           onClick={onManualClick}
         >
-          <ListItemIcon>
+          <ListItemAvatar>
+            <Avatar alt={t('common:providers.manual.send', 'Send Manually')}>
+              <MailIcon />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText>
             <Typography variant="button" color="textSecondary">
               {t('common:providers.manual.send', 'Send Manually')}
             </Typography>
-          </ListItemIcon>
+          </ListItemText>
         </ListItem>
       )}
     </List>
@@ -204,8 +253,9 @@ ListMailProviders.propTypes = {
 };
 
 ListMailProviders.defaultProps = {
-  mailtoProps: {},
+  mailtoProps: null,
   allowManual: false,
 };
+
 
 export default withTranslation('common')(ListMailProviders);

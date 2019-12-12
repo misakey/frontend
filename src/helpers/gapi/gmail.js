@@ -35,8 +35,9 @@ export const SEND_MAIL_CONFIG = {
 export const sendMessage = (mailto, subject, body, callback) => {
   const email = `to: ${mailto}
 Subject: =?utf-8?B?${Base64.encodeURI(subject)}?=
+Content-Type: text/html; charset=UTF-8
 
-${body}`;
+${body.replace(/\n/g, '<br/>')}`;
   const base64EncodedEmail = Base64.encodeURI(email);
   if (isNil(gmailPath(window))) {
     window.gapi.client.load('gmail', 'v1', () => { requestMessage(base64EncodedEmail, callback); });

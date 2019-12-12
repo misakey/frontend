@@ -75,7 +75,8 @@ const routes = {
       _: '/citizen/:mainDomain',
       contact: {
         _: '/citizen/:mainDomain/contact',
-        preview: '/citizen/:mainDomain/contact/:provider',
+        preview: '/citizen/:mainDomain/contact/preview',
+        providers: '/citizen/:mainDomain/contact/providers',
       },
       info: '/citizen/:mainDomain',
       comments: '/citizen/:mainDomain/comments',

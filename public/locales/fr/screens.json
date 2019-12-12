@@ -335,11 +335,11 @@
   "contact": {
     "providers": {
       "subtitle": "Connecter votre service d'email pour envoyer vos demandes de portabilité en un clic. Certains bloqueurs peuvent empêcher la configuration de l'envoi avec Gmail, pensez à l'autoriser",
+      "mailReminder": "Assurez-vous d'utiliser l'adresse email associée à votre compte client chez {{applicationName}}.\nPour des raisons de sécurité et d'authentification, celle-ci doit également être celle que vous utilisez pour votre compte Misakey.",
       "title": "Portabilité de mes données"
     },
     "preview": {
       "subtitle": "Valider la pré-visualisation pour envoyer votre email de demande de portabilité",
-      "success": "E-mail envoyé!",
       "title": "E-mail de portabilité"
     }
   },

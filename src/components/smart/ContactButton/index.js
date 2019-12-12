@@ -8,7 +8,6 @@ import routes from 'routes';
 
 import { connect } from 'react-redux';
 import { contactDataboxURL } from 'store/actions/screens/contact';
-import { selectors as contactSelectors } from 'store/reducers/screens/contact';
 
 import useAsync from '@misakey/hooks/useAsync';
 
@@ -46,12 +45,12 @@ const useGetDatabox = (applicationID, isAuthenticated) => useCallback(
   [applicationID, isAuthenticated],
 );
 
-const useOnMailTo = (mainDomain, mailProvider, dispatchContact, history, location) => useCallback(
+const useOnMailTo = (mainDomain, dispatchContact, history) => useCallback(
   (token) => {
     const databoxURL = parseUrlFromLocation(`${routes.requests}#${token}`).href;
-    dispatchContact(databoxURL, mainDomain, mailProvider, history, location);
+    dispatchContact(databoxURL, mainDomain, history);
   },
-  [mainDomain, mailProvider, dispatchContact, history, location],
+  [mainDomain, dispatchContact, history],
 );
 
 const useOnAlreadyExists = (getDatabox) => useCallback(
@@ -125,8 +124,6 @@ const ContactButton = (
     onContributionClick,
     t,
     history,
-    location,
-    mailProvider,
     buttonProps,
     dialogConnectProps,
     children,
@@ -139,7 +136,7 @@ const ContactButton = (
 
   const getDatabox = useGetDatabox(applicationID, isAuthenticated);
 
-  const onMailTo = useOnMailTo(mainDomain, mailProvider, dispatchContact, history, location);
+  const onMailTo = useOnMailTo(mainDomain, dispatchContact, history);
   const onAccessRequest = useOnAccessRequest(onMailTo);
   const onAlreadyExists = useOnAlreadyExists(getDatabox);
 
@@ -223,8 +220,6 @@ const ContactButton = (
 };
 
 ContactButton.propTypes = {
-  isAuthenticated: PropTypes.bool,
-  userId: PropTypes.string,
   buttonProps: PropTypes.object,
   dialogConnectProps: PropTypes.object,
   dpoEmail: PropTypes.string,
@@ -238,13 +233,13 @@ ContactButton.propTypes = {
   className: PropTypes.string,
 
   // CONNECT
-  mailProvider: PropTypes.string,
+  isAuthenticated: PropTypes.bool,
+  userId: PropTypes.string,
   dispatchContact: PropTypes.func.isRequired,
 };
 
 ContactButton.defaultProps = {
   dpoEmail: '',
-  mailProvider: null,
   buttonProps: {},
   dialogConnectProps: {},
   userId: null,
@@ -256,21 +251,17 @@ ContactButton.defaultProps = {
 
 // CONNECT
 const mapStateToProps = (state) => ({
-  mailProvider: contactSelectors.getMailProviderPreferency(state),
   userId: state.auth.userId,
   isAuthenticated: !!state.auth.token,
 });
 const mapDispatchToProps = (dispatch) => ({
-  dispatchContact: (databoxURL, mainDomain, mailProvider, history, location) => {
+  dispatchContact: (databoxURL, mainDomain, history) => {
     dispatch(contactDataboxURL(databoxURL, mainDomain));
-    const pathname = isNil(mailProvider) ? generatePath(
-      routes.citizen.application.contact._,
-      { mainDomain },
-    ) : generatePath(
+    const pathname = generatePath(
       routes.citizen.application.contact.preview,
-      { mainDomain, provider: mailProvider },
+      { mainDomain },
     );
-    history.push({ pathname, state: { from: location } });
+    history.push({ pathname });
   },
 });
 

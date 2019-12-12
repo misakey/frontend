@@ -3,6 +3,7 @@
   "home": "Misakey home",
   "back": "Précedent",
   "next": "Suivant",
+  "done": "Terminer",
   "cancel": "Annuler",
   "ok": "OK",
   "validate": "Valider",
@@ -144,6 +145,14 @@
     "title": "Bonjour,",
     "subtitle": "Connectez-vous pour pouvoir publier du contenu et contacter les sites pour récupérer vos données"
   },
+  "mailType": {
+    "group": "Modèle d'email",
+    "types": {
+      "legal": "Légal",
+      "friendly-legal": "Cordial légal",
+      "friendly": "Cordial"
+    }
+  },
   "connectedOnly": "Vous devez etre connectés",
   "ratingsAndComments": "Recommandations et avis",
   "ratingCount": "{{count}} note",
@@ -179,15 +188,26 @@
   "edit": "Modifier",
   "noContact": "Vous n'avez contacter aucune entreprise !",
   "emailTo": "DPO de {{applicationName}} <{{dpoEmail}}>",
+  "emailToTrans": "DPO de {{applicationName}} <1>{{dpoEmail}}</1>",
   "emailSubject": "Demande de portabilité",
-  "emailBody": "Madame, Monsieur,\n\nJe vous prie de bien vouloir m’indiquer si des données me concernant figurent dans vos fichiers informatisés.\n\nDans l’affirmative, je souhaiterais transférer une copie à Misakey, dans un format lisible par une machine, de l’ensemble de ces données, en application de l’article 20 du Règlement général sur la protection des données (RGPD).\nVeuillez déposer directement les fichiers contenant mes données dans la boîte de dépôt associé à mon compte afin qu’aucun autre service n’y ait accès : {{databoxURL}}\nVous devrez confirmer votre accès avec un code envoyé à l’adresse {{dpoEmail}}\n\nJe vous remercie de me faire parvenir votre réponse dans les meilleurs délais et au plus tard dans un délai d’un mois à compter de la réception de ma demande (article 12.3 du RGPD).\nA défaut de réponse de votre part dans les délais impartis ou en cas de réponse incomplète, je me réserve la possibilité de saisir la Commission nationale de l’informatique et des libertés (CNIL) d’une réclamation.\nA toutes fins utiles, vous trouverez des informations sur le site internet de la CNIL : https://www.cnil.fr/fr/le-droit-la-portabilite-en-questions\n\nJe vous prie d’agréer, Madame, Monsieur, l’expression de mes salutations distinguées.",
+  "emailBody": {
+    "legal": "Madame, Monsieur,\n\nLes données à caractère personnel me concernant telles que mon adresse email sont protégées par les lois relatives aux données personnelles.\nDepuis Mai 2018, le Règlement Européen sur la Protection des Données (RGPD) s'applique au traitement de mon adresse email et toute autre information me concernant (http://www.privacy-regulation.eu/fr/).\n\nEn vertu de l'article 3 du RGPD, les règles prévues par ce texte s'appliquent à votre entreprise car le traitement de données personnelles est effectué sur le territoire de l'Union Européenne, y compris si votre société se situe en dehors de l'Union Européenne (http://www.privacy-regulation.eu/fr/3.htm).\nJe vous prie de bien vouloir m’indiquer si des données me concernant figurent dans vos fichiers informatisés.\n\nDans l’affirmative, je souhaiterais transférer à Misakey une copie de l’ensemble de ces données dans un format lisible par une machine, en application de l’article 20 du Règlement Général sur la Protection des Données (http://www.privacy-regulation.eu/fr/20.htm).\n\nVeuillez déposer directement les fichiers contenant mes données dans la boîte de dépôt sécurisée associée à mon compte afin qu’aucun autre service n’y ait accès : {{databoxURL}}\nVous devrez confirmer votre accès avec un code envoyé à l’adresse {{dpoEmail}}\n\nPour plus d’informations sur le service Misakey, vous pouvez vous rendre sur : https://docs.misakey.com/#/dpo/\n\nSelon l'article 12 (3), vous devez répondre à ma demande dans les meilleurs délais et en tout état de cause dans un délai d'un mois à compter de la réception de cette demande.\nPassé ce délai, je porterai plainte auprès de l'autorité compétente (http://www.privacy-regulation.eu/fr/12.htm).\n\nJe vous prie d’agréer, Madame, Monsieur, l’expression de mes salutations distinguées.",
+    "friendly-legal": "Bonjour,\n\nJe possède un compte sur votre service et je souhaiterais connaître l’ensemble des données que vous conservez sur moi, conformément à ce que m’autorise le RGPD (http://www.privacy-regulation.eu/fr/).\n\nComme je ne souhaite pas recevoir ces informations par email pour des raisons de confidentialité et de sécurité (mon fournisseur d'email procède explicitement à la lecture de mes emails), je souhaiterais bénéficier d’une portabilité vers un service sécurisé, comme m’y autorise l’article (http://www.privacy-regulation.eu/fr/20.htm) du RGPD.\nJe vous demanderais donc de me communiquer mes données via la plateforme sécurisée Misakey, grâce à laquelle je peux regrouper toutes mes données de façon chiffrée à un seul endroit.\nVous pouvez déposer facilement mes données sur l’URL suivante : {{databoxURL}}\nUn code de confirmation vous sera envoyé à l’adresse {{dpoEmail}}.\n\nPour plus d’informations sur le service Misakey et mes droits RGPD, vous pouvez vous rendre sur : https://docs.misakey.com/#/dpo/\n\nJe me tiens bien entendu à votre disposition si vous désirez des informations complémentaires concernant ma demande.\n\nBien à vous.",
+    "friendly": "Bonjour,\n\nJe possède un compte sur votre service et je souhaiterais connaître l’ensemble des données que vous conservez sur moi, conformément à ce que m’autorise le RGPD.\n\nComme je ne souhaite pas recevoir cette copie par email pour des raisons de confidentialité et de sécurité (mon fournisseur d'email procède explicitement à la lecture de mes emails), je vous propose de me les communiquer via la plateforme sécurisée Misakey, qui me permet de regrouper toutes mes données de façon chiffrée.\nVous pouvez déposer facilement mes données sur l’URL suivante : {{databoxURL}}\nUn code de confirmation vous sera envoyé à l’adresse {{dpoEmail}}.\n\nPour plus d’informations sur le service Misakey et mes droits RGPD, vous pouvez vous rendre sur : https://docs.misakey.com/#/dpo/\n\nJe me tiens bien entendu à votre disposition si vous désirez des informations complémentaires concernant ma demande.\n\nBien à vous."
+  },
   "providers": {
     "error": "Veuillez désactiver votre bloqueur pour accéder à l'envoi avec Gmail",
     "manual": {
       "send": "Envoyer manuellement",
       "notify": "Envoyer l’e-mail depuis la fenêtre ouverte dans votre gestionnaire d’e-mail. Si aucune fenêtre ne s’est ouverte, vérifier que les pop-up ne sont pas bloquées par votre navigateur web"
     },
-    "success": "Configuration du service d'email réussie!"
+    "configuration": {
+      "success": "Configuration du service d'email réussie!"
+    },
+    "send": {
+      "success": "Email envoyé!",
+      "error": "Une erreur inconnue est survenue lors de l'envoi de l'email"
+    }
   },
   "ratings": "notes",
   "regenerate": "Régénérer",

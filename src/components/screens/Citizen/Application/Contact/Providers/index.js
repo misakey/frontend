@@ -1,105 +1,135 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { generatePath } from 'react-router-dom';
-
+import { generatePath, Link, useLocation } from 'react-router-dom';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { connect } from 'react-redux';
-import ApplicationSchema from 'store/schemas/Application';
 
+import ApplicationSchema from 'store/schemas/Application';
 import { mailProviderPreferencyUpdate } from 'store/actions/screens/contact';
 
 import routes from 'routes';
 
-import pick from '@misakey/helpers/pick';
 import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
+import getSearchParams from '@misakey/helpers/getSearchParams';
 
 import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
+import Subtitle from 'components/dumb/Typography/Subtitle';
 import ListMailProviders from 'components/smart/List/MailProviders';
 import Navigation from 'components/dumb/Navigation';
+import BoxControls from 'components/dumb/Box/Controls';
+import BoxMessage from 'components/dumb/Box/Message';
 
-
-import 'components/screens/Citizen/Application/Contact/Providers/index.scss';
-
-// CONSTANTS
-const APP_CONTACT_PROPS = ['dpoEmail', 'name'];
 // HELPERS
-const getAppContactProvidersProps = pick(APP_CONTACT_PROPS);
-const fromProp = prop('from');
 const mainDomainProp = prop('mainDomain');
 
 // HOOKS
-const useOnChange = (dispatchUpdateMailProvider, history, params, search, state) => useCallback(
-  (provider) => {
-    const pathname = generatePath(
-      routes.citizen.application.contact.preview,
-      { provider, ...params },
-    );
-    dispatchUpdateMailProvider(provider, history, { pathname, search, state });
-  },
-  [dispatchUpdateMailProvider, history, params, search, state],
+const useMailtoProps = (dpoEmail, name, subject, body) => useMemo(
+  () => (isNil(dpoEmail) ? undefined : ({
+    mailto: dpoEmail,
+    applicationName: name,
+    subject,
+    body,
+  })),
+  [dpoEmail, name, subject, body],
 );
 
-const useMailtoProps = (entity, databoxURL, t) => useMemo(
+const useDoneTo = (entity) => useMemo(
   () => {
-    if (isNil(entity)) { return undefined; }
-    const { dpoEmail, name } = getAppContactProvidersProps(entity);
-    const subject = t('common:emailSubject');
-    const body = t('common:emailBody', { databoxURL, dpoEmail, applicationName: name });
-    return {
-      mailto: dpoEmail,
-      applicationName: name,
-      subject,
-      body,
-    };
-  },
-  [entity, databoxURL, t],
-);
-
-const usePushPath = (state, entity) => useMemo(
-  () => {
-    const from = fromProp(state);
     const mainDomain = mainDomainProp(entity);
-    if (isNil(from)) {
-      return generatePath(routes.citizen.application.box, { mainDomain });
-    }
-    return from;
+    return generatePath(routes.citizen.application.vault, { mainDomain });
   },
-  [state, entity],
+  [entity],
 );
+
+const useStyles = makeStyles(() => ({
+  subtitleRoot: {
+    whiteSpace: 'pre-wrap',
+  },
+}));
 
 // COMPONENTS
 const ContactProviders = ({
   history,
-  match: { params },
-  location: { search, state },
   entity,
   databoxURL,
   dispatchUpdateMailProvider,
   t,
 }) => {
-  const mailtoProps = useMailtoProps(entity, databoxURL, t);
+  const classes = useStyles();
 
-  const pushPath = usePushPath(state, entity);
+  const [showButton, setShowButton] = useState(false);
 
-  const onChange = useOnChange(dispatchUpdateMailProvider, history, params, search, state);
+  const { dpoEmail, name } = useMemo(
+    () => (isNil(entity) ? {} : entity),
+    [entity],
+  );
+  const subtitle = useMemo(
+    () => t('screens:contact.providers.subtitle'),
+    [t],
+  );
+  const mailReminder = useMemo(
+    () => t('screens:contact.providers.mailReminder', { applicationName: name }),
+    [name, t],
+  );
+
+  const doneTo = useDoneTo(entity);
+
+  const { search } = useLocation();
+  const mailType = useMemo(
+    () => getSearchParams(search).mailType,
+    [search],
+  );
+
+  const subject = useMemo(
+    () => t('common:emailSubject'),
+    [t],
+  );
+  const body = useMemo(
+    () => t(`common:emailBody.${mailType}`, { dpoEmail, databoxURL }),
+    [databoxURL, dpoEmail, mailType, t],
+  );
+
+  const mailtoProps = useMailtoProps(dpoEmail, name, subject, body);
+
+  const onChange = useCallback(
+    (provider) => {
+      dispatchUpdateMailProvider(provider);
+      setShowButton(true);
+    },
+    [dispatchUpdateMailProvider, setShowButton],
+  );
+
+  const primary = useMemo(
+    () => (showButton ? {
+      component: Link,
+      to: doneTo,
+      text: t('common:done'),
+    } : null),
+    [showButton, doneTo, t],
+  );
 
   return (
     <div className="ContactProviders">
       <Navigation
-        pushPath={pushPath}
+        history={history}
         toolbarProps={{ maxWidth: 'md' }}
         title={t('screens:contact.providers.title')}
       />
       <Container maxWidth="md">
-        <Typography variant="body2" color="textSecondary" gutterBottom>
-          {t('screens:contact.providers.subtitle')}
-        </Typography>
+        <Subtitle>
+          {subtitle}
+        </Subtitle>
+        <BoxMessage text={mailReminder} my={2} type="info" classes={{ root: classes.subtitleRoot }} />
         <ListMailProviders
           mailtoProps={mailtoProps}
           allowManual
           onChange={onChange}
+        />
+        <BoxControls
+          mt={2}
+          primary={primary}
         />
       </Container>
     </div>
@@ -108,7 +138,6 @@ const ContactProviders = ({
 
 ContactProviders.propTypes = {
   match: PropTypes.shape({ params: PropTypes.object }).isRequired,
-  location: PropTypes.shape({ search: PropTypes.string, state: PropTypes.object }).isRequired,
   history: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   entity: PropTypes.shape(ApplicationSchema.propTypes),
@@ -124,9 +153,10 @@ ContactProviders.defaultProps = {
 
 // CONNECT
 const mapDispatchToProps = (dispatch) => ({
-  dispatchUpdateMailProvider: (mailProvider, history, pushObj) => {
-    dispatch(mailProviderPreferencyUpdate(mailProvider));
-    history.push(pushObj);
+  dispatchUpdateMailProvider: (mailProvider) => {
+    if (!isNil(mailProvider)) {
+      dispatch(mailProviderPreferencyUpdate(mailProvider));
+    }
   },
 });
 
