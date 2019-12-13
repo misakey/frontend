@@ -59,7 +59,7 @@ const ContactProviders = ({
 }) => {
   const classes = useStyles();
 
-  const [showButton, setShowButton] = useState(false);
+  const [contacted, setContacted] = useState(false);
 
   const { dpoEmail, name } = useMemo(
     () => (isNil(entity) ? {} : entity),
@@ -95,19 +95,37 @@ const ContactProviders = ({
 
   const onChange = useCallback(
     (provider) => {
-      dispatchUpdateMailProvider(provider);
-      setShowButton(true);
+      if (!isNil(provider)) {
+        dispatchUpdateMailProvider(provider);
+      }
+      setContacted(true);
     },
-    [dispatchUpdateMailProvider, setShowButton],
+    [dispatchUpdateMailProvider, setContacted],
+  );
+
+  const onReset = useCallback(
+    () => {
+      dispatchUpdateMailProvider(null);
+      setContacted(false);
+    },
+    [dispatchUpdateMailProvider, setContacted],
   );
 
   const primary = useMemo(
-    () => (showButton ? {
+    () => (contacted ? {
       component: Link,
       to: doneTo,
       text: t('common:done'),
     } : null),
-    [showButton, doneTo, t],
+    [contacted, doneTo, t],
+  );
+
+  const secondary = useMemo(
+    () => ((contacted) ? {
+      onClick: onReset,
+      text: t('common:retry'),
+    } : null),
+    [contacted, onReset, t],
   );
 
   return (
@@ -124,12 +142,14 @@ const ContactProviders = ({
         <BoxMessage text={mailReminder} my={2} type="info" classes={{ root: classes.subtitleRoot }} />
         <ListMailProviders
           mailtoProps={mailtoProps}
+          disabled={contacted}
           allowManual
           onChange={onChange}
         />
         <BoxControls
           mt={2}
           primary={primary}
+          secondary={secondary}
         />
       </Container>
     </div>
@@ -154,9 +174,7 @@ ContactProviders.defaultProps = {
 // CONNECT
 const mapDispatchToProps = (dispatch) => ({
   dispatchUpdateMailProvider: (mailProvider) => {
-    if (!isNil(mailProvider)) {
-      dispatch(mailProviderPreferencyUpdate(mailProvider));
-    }
+    dispatch(mailProviderPreferencyUpdate(mailProvider));
   },
 });
 

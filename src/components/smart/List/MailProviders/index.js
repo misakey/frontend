@@ -103,6 +103,7 @@ const useMailtoHref = (mailtoProps, t) => useMemo(
 // COMPONENTS
 const ListMailProviders = ({
   onChange,
+  disabled,
   allowManual,
   mailtoProps,
   t,
@@ -200,6 +201,7 @@ const ListMailProviders = ({
       {PROVIDERS.map(({ key, alt, logoSrc }) => (
         <ListItem
           button
+          disabled={disabled}
           divider
           id={key}
           key={key}
@@ -215,6 +217,7 @@ const ListMailProviders = ({
       {allowManual && (
         <ListItem
           button
+          disabled={disabled}
           divider
           aria-label={t('common:providers.manual.send', 'Send Manually')}
           component="a"
@@ -246,6 +249,7 @@ ListMailProviders.propTypes = {
     subject: PropTypes.string.isRequired,
     body: PropTypes.string.isRequired,
   }),
+  disabled: PropTypes.bool,
   allowManual: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   // withTranslation
@@ -254,6 +258,7 @@ ListMailProviders.propTypes = {
 
 ListMailProviders.defaultProps = {
   mailtoProps: null,
+  disabled: false,
   allowManual: false,
 };
 

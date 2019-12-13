@@ -344,12 +344,12 @@
   },
   "contact": {
     "providers": {
-      "subtitle": "Connecter votre service d'email pour envoyer vos demandes de portabilité en un clic. Certains bloqueurs peuvent empêcher la configuration de l'envoi avec Gmail, pensez à l'autoriser",
+      "subtitle": "Connectez votre service d'email pour envoyer vos demandes de portabilité en un clic. Certains bloqueurs peuvent empêcher la configuration de l'envoi avec Gmail, pensez à l'autoriser",
       "mailReminder": "Assurez-vous d'utiliser l'adresse email associée à votre compte client chez {{applicationName}}.\nPour des raisons de sécurité et d'authentification, celle-ci doit également être celle que vous utilisez pour votre compte Misakey.",
       "title": "Portabilité de mes données"
     },
     "preview": {
-      "subtitle": "Valider la pré-visualisation pour envoyer votre email de demande de portabilité",
+      "subtitle": "Validez la pré-visualisation pour envoyer votre email de demande de portabilité",
       "title": "E-mail de portabilité"
     }
   },
@@ -489,7 +489,6 @@
           "link": "Contactez-nous pour plus d'informations.",
           "mailToSubject": "Demande d'informations sur Misakey Agent"
         },
-
         "questions": {
           "title": "Questions fréquentes",
           "subtitle": "Retrouvez toutes les réponses à vos questions sur notre FAQ pour les DPO.",

@@ -5,6 +5,7 @@
   "next": "Suivant",
   "done": "Terminer",
   "cancel": "Annuler",
+  "retry": "Recommencer",
   "ok": "OK",
   "validate": "Valider",
   "reset": "Réinitialiser",
@@ -199,7 +200,7 @@
     "error": "Veuillez désactiver votre bloqueur pour accéder à l'envoi avec Gmail",
     "manual": {
       "send": "Envoyer manuellement",
-      "notify": "Envoyer l’e-mail depuis la fenêtre ouverte dans votre gestionnaire d’e-mail. Si aucune fenêtre ne s’est ouverte, vérifier que les pop-up ne sont pas bloquées par votre navigateur web"
+      "notify": "Envoyez l’e-mail depuis la fenêtre ouverte dans votre gestionnaire d’e-mail. Si aucune fenêtre ne s’est ouverte, vérifiez que les pop-up ne sont pas bloquées par votre navigateur web"
     },
     "configuration": {
       "success": "Configuration du service d'email réussie!"
