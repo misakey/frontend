@@ -47,11 +47,21 @@
       "success": "Vous avez maintenant accès à la demande de portabilité de {{ownerEmail}} !"
     },
     "troubleshooting": {
-      "title": "Un soucis avec la connexion ?",
+      "title": "Un souci avec la connexion ?",
       "subtitle": "Vérifiez bien votre boite email {{dpoEmail}} et votre dossier spam si vous ne recevez pas l'email.",
       "desc": {
         "1": "Le code que nous vous envoyons est à usage unique et valide 30 minutes. Après ce délai ou utilisation du premier code, vous devrez en demander un nouveau.",
         "2": "Si vous rencontrez un problème, n'hésitez pas à nous contacter à <1>question.pro@misakey.com</1>, nous vous répondrons rapidement !"
+      }
+    },
+    "error": {
+      "404": {
+        "title": "Demande de portabilité introuvable",
+        "desc": "La demande de portabilité que vous essayez de consulter n'existe pas. \nVeuillez vérifier que vous avez bien recopié le lien qui vous a été envoyé par email. Si cela ne fonctionne toujours pas, vous pouvez nous contacter à <1>question.pro@misakey.com</1>. \nPensez à nous joindre le lien qui ne fonctionne pas et le mail de l'utilisateur ayant fait la demande. \nVeuillez nous excuser de la gêne occasionnée."
+      },
+      "default": {
+        "title": "Demande de portabilité introuvable",
+        "desc": "La demande de portabilité que vous essayez de consulter n'existe pas. \nVeuillez vérifier que vous avez bien recopié le lien qui vous a été envoyé par email. Si cela ne fonctionne toujours pas, vous pouvez nous contacter à <1>question.pro@misakey.com</1>. \nPensez à nous joindre le lien qui ne fonctionne pas et le mail de l'utilisateur ayant fait la demande. \nVeuillez nous excuser de la gêne occasionnée."
       }
     }
   },

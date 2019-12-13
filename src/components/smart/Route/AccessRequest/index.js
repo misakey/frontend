@@ -16,6 +16,7 @@ import isNil from '@misakey/helpers/isNil';
 import prop from '@misakey/helpers/prop';
 
 import withAccessRequest from 'components/smart/withAccessRequest';
+import AccessRequestError from 'components/smart/Route/AccessRequest/Error';
 import useUserHasRole from 'hooks/useUserHasRole';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -198,6 +199,10 @@ function RouteAccessRequest({
       [claimRedirectTo, isAuthenticated, redirectToClaim, userHasRole, userRoles],
     );
 
+    if (error) {
+      return <AccessRequestError error={error} />;
+    }
+
     if (isFetching || internalFetching || isNil(requestReadTo)) {
       return <SplashScreen />;
     }
@@ -205,6 +210,7 @@ function RouteAccessRequest({
     if (isAuthenticated && userHasRole) {
       return <Redirect to={requestReadTo} />;
     }
+
 
     if (isConfirmed) {
       return (
