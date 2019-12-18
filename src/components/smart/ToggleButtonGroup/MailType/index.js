@@ -72,6 +72,7 @@ const ToggleButtonGroupMailType = ({ values, defaultValue, prefix, t }) => {
           classes={{ selected: classes.toggleButtonSelected }}
           component={Link}
           to={getLinkTo(type)}
+          replace
           value={type}
           aria-label={t(`common:${prefix}.types.${type}`)}
         >
