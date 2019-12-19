@@ -298,7 +298,7 @@ function ServiceRoleClaim({
                       target="_blank"
                       rel="noopener noreferrer"
                       component="a"
-                      href="mailto:love@misakey.com"
+                      href="mailto:question.perso@misakey.com"
                     >
                       {t('screens:Service.role.claim.errors.missingDpoEmail.button')}
                     </Button>

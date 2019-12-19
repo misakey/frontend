@@ -66,13 +66,6 @@
       }
     }
   },
-  "disclaimer": {
-    "beta": {
-      "text": "Ce site est en version Beta publique. Vous pouvez l'utiliser sous votre propre responsabilité. Toutes vos remarques sont bienvenues à love@misakey.com",
-      "title": "Bienvenue !",
-      "refused": "Vous ne pouvez avoir accès à la version Beta du site que si vous acceptez de l'utiliser sous votre propre responsabilité. Vous pouvez toujours cliquer sur OK. Merci."
-    }
-  },
   "httpStatus": {
     "success": {},
     "error": {

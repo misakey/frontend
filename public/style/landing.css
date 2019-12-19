@@ -17,6 +17,16 @@
        url('https://static.misakey.com/fonts/Roboto/Roboto-Regular.ttf') format('truetype'); /* Safari, Android, iOS */
 }
 
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: url('https://static.misakey.com/fonts/Roboto/roboto-latin-500.woff');
+  src: local('Roboto'), local('Roboto-Bold'),
+       url('https://static.misakey.com/fonts/Roboto/roboto-latin-500.woff2') format('woff2'), /* Super Modern Browsers */
+       url('https://static.misakey.com/fonts/Roboto/Roboto-Bold.ttf') format('truetype'); /* Safari, Android, iOS */
+}
+
 html {
   font-family: -apple-system, Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
 }
@@ -151,4 +161,26 @@ textarea {
 
 .browserLogos .roundedApp {
   border-radius: 100px;
+}
+
+.carousel {
+  height: 280px;
+  margin-bottom: 20px;
+}
+
+.carousel .carousel-item {
+  height: 100%;
+}
+
+.collection.team {
+  border: 0;
+}
+
+.collection.team img {
+  width: 60px !important;
+  height: 60px !important;
+}
+
+.collection.team li {
+  padding-left: 84px !important;
 }

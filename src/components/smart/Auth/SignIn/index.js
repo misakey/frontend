@@ -61,7 +61,7 @@ const SignIn = ({ challenge, dispatch, displayCard, fields, initialValues, onSub
               {'Sans action de votre part il sera supprimé le {{deletionDate}}.'}
               <br />
               Si vous voulez le récupérer envoyez nous un email à&nbsp;
-              <a href="mailto:love@misakey.com">love@misakey.com</a>
+              <a href="mailto:question.perso@misakey.com">question.perso@misakey.com</a>
             </Trans>
           );
           enqueueSnackbar(text, { variant: 'error' });

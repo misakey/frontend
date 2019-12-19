@@ -64,19 +64,18 @@
       </div>
 
       <div class="row">
-          <div class="col l6 m12 s12">
-            <div class="card paper">
-              <h4>Entreprises</h4>
-              <p>Protégez vos données en envoyant vos informations directement dans le coffre-fort de vos clients.</p>
-              <blockquote class="pink-border">
-                  Lorsque vous envoyez un e-mail d’information à vos clients comme un récapitulatif de commande, Google le lit et s’approprie son contenu. Vous pouvez protéger ces informations en les envoyant de manière sécurisée.
-              </blockquote>
-              <div class="button-container">
-                <!-- pink-border border-basic when not disabled -->
-                <a href="/entreprise" class="btn button-contained-right white pink-text disabled" >Sécurisez vos informations</a>
-              </div>
+        <div class="col l6 m12 s12">
+          <div class="card paper">
+            <h4>Entreprises</h4>
+            <p>Protégez vos données en envoyant vos informations directement dans le coffre-fort de vos clients.</p>
+            <blockquote class="pink-border">
+                Lorsque vous envoyez un e-mail d’information à vos clients comme un récapitulatif de commande, Google le lit et s’approprie son contenu. Vous pouvez protéger ces informations en les envoyant de manière sécurisée.
+            </blockquote>
+            <div class="button-container">
+              <a href="mailto:Misakey%20%3Cquestion.pro@misakey.com%3E?subject=S%C3%A9curiser%20les%20informations%20de%20mes%20client.e.s&body=Bonjour%20Misakey%20!%0A%0AEst-ce%20qu'on%20pourrait%20discuter%20de%20nos%20probl%C3%A8mes%20de%20protection%20des%20donn%C3%A9es%20de%20nos%20utilisateurs%20?%0A%0A" class="btn button-contained-right white pink-text pink-border border-basic" >Sécurisez vos informations</a>
             </div>
           </div>
+        </div>
         <div class="col l6 m12 s12">
           <div class="card paper">
             <h4>Consommateurs</h4>
@@ -97,8 +96,7 @@
                   <h5>Notre mission</h5>
                   <h4>Permettre à chacun de protéger ses données</h4>
                   <div class="button-container">
-                      <!-- pink-border border-basic when not disabled -->
-                      <a href="/about" class="btn button-contained-right white pink-text disabled">En savoir plus</a>
+                      <a href="/about" class="btn button-contained-right white pink-text pink-border border-basic">En savoir plus</a>
                   </div>
               </div>
               <div class="col l6">
@@ -156,7 +154,7 @@
           <div class="col l5 s12">
             <h5 class="white-text">Un avis? Une idée?</h5>
             <p class="grey-text text-lighten-4">
-              Nous faisons tout ce que nous pouvons pour créer une meilleure protection de la vie privée et nous avons besoin de vous. N'hésitez pas à nous faire des retours : <a class="pink-text" href="mailto:love@misakey.com">love@misakey.com</a>.
+              Nous faisons tout ce que nous pouvons pour créer une meilleure protection de la vie privée et nous avons besoin de vous. N'hésitez pas à nous faire des retours : <a class="pink-text" href="mailto:feedback@misakey.com">feedback@misakey.com</a>.
             </p>  
           </div>
           <div class="col l3 s12">
@@ -192,8 +190,7 @@
       var cookiebar = document.querySelector('#cookiebar');
       cookiebar.parentElement.removeChild(cookiebar);
     }
-    
-    window.bundleVersion = 'VERSION_TO_SET_ON_BUILD';
+
     if(window.env.ENV !== 'development') {
       var siteId;
       if (window.env.ENV === 'preprod') {

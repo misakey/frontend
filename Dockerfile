@@ -12,7 +12,6 @@ WORKDIR /app
 
 RUN echo $VERSION >> public/version.txt
 RUN sed -i "s/VERSION_TO_SET_ON_BUILD/$VERSION/g" /app/public/index.html
-RUN sed -i "s/VERSION_TO_SET_ON_BUILD/$VERSION/g" /app/public/landing.html
 
 
 RUN yarn install

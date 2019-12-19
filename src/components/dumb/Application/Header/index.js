@@ -331,7 +331,7 @@ function ApplicationHeader({
               <MenuItem
                 component="a"
                 onClick={onMoreMenuClose}
-                href="mailto:love@misakey.com"
+                href="mailto:question.perso@misakey.com"
                 target="_blank"
                 rel="noopener noreferrer"
               >
