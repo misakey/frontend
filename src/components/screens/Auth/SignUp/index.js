@@ -5,7 +5,7 @@ import { Route, Switch } from 'react-router-dom';
 import routes from 'routes';
 
 import SignUp from 'components/smart/Auth/SignUp';
-import DEFAULT_VALUES from 'components/smart/Auth/SignUp/values';
+import DEFAULT_VALUES from 'components/smart/Auth/SignUp/values.json';
 
 import Confirm from 'components/screens/Auth/SignUp/Confirm';
 

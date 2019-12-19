@@ -17,7 +17,7 @@ import { ownerCryptoContext as crypto } from '@misakey/crypto';
 import { screenAuthSetCredentials } from 'store/actions/screens/auth';
 
 import SignUpForm from 'components/smart/Auth/SignUp/Form';
-import DEFAULT_VALUES from 'components/smart/Auth/SignUp/values';
+import DEFAULT_VALUES from 'components/smart/Auth/SignUp/values.json';
 import { signUpValidationSchema } from 'constants/validationSchemas/auth';
 
 const SignUp = ({ dispatch, displayCard, fields, history, initialValues, onSubmit, t }) => {

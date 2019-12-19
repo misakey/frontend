@@ -17,7 +17,7 @@ import prop from '@misakey/helpers/prop';
 import isEmpty from '@misakey/helpers/isEmpty';
 
 import SignInForm from 'components/smart/Auth/SignIn/Form';
-import DEFAULT_VALUES from 'components/smart/Auth/SignIn/values';
+import DEFAULT_VALUES from 'components/smart/Auth/SignIn/values.json';
 import { signInValidationSchema } from 'constants/validationSchemas/auth';
 import routes from 'routes';
 import { screenAuthSetCredentials } from 'store/actions/screens/auth';
