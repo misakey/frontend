@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
-import Container from '@material-ui/core/Container';
-
 import pick from '@misakey/helpers/pick';
 import every from '@misakey/helpers/every';
 import isNil from '@misakey/helpers/isNil';
@@ -21,9 +19,7 @@ import anyPass from '@misakey/helpers/anyPass';
 import routes from 'routes';
 
 import { ssoUpdate } from 'store/actions/sso';
-import { layoutAppbarHide, layoutAppbarShow } from 'store/actions/Layout';
-
-import 'components/screens/Auth/Auth.scss';
+import Screen from 'components/dumb/Screen';
 
 import { screenAuthReset } from 'store/actions/screens/auth';
 
@@ -65,14 +61,12 @@ function Auth({ dispatch, from, isAuthenticated, location, match, sso, userManag
   const searchParams = getSearchParams(location.search);
 
   function onMount() {
-    dispatch(layoutAppbarHide());
     if (!isEmpty(searchParams)) {
       dispatch(ssoUpdate(objectToCamelCase(pickSearchParams(searchParams))));
     }
 
     return () => {
       dispatch(screenAuthReset());
-      dispatch(layoutAppbarShow());
     };
   }
 
@@ -102,25 +96,21 @@ function Auth({ dispatch, from, isAuthenticated, location, match, sso, userManag
   }
 
   return (
-    <div id="Auth">
-      <Container>
-        <div className="flex">
-          <Switch>
-            <Route path={routes.auth.error} component={AuthError} />
-            <Route path={routes.auth.signUp._} component={SignUp} />
-            <Route
-              path={routes.auth.signIn}
-              render={(routerProps) => <SignIn {...routerProps} challenge={challenge} />}
-            />
-            <Route
-              path={routes.auth.forgotPassword}
-              component={Forgot}
-            />
-            <Redirect from={match.path} to={routes.auth.signIn} exact />
-          </Switch>
-        </div>
-      </Container>
-    </div>
+    <Screen hideAppBar display="flex" justifyContent="center" alignItems="center">
+      <Switch>
+        <Route path={routes.auth.error} component={AuthError} />
+        <Route path={routes.auth.signUp._} component={SignUp} />
+        <Route
+          path={routes.auth.signIn}
+          render={(routerProps) => <SignIn {...routerProps} challenge={challenge} />}
+        />
+        <Route
+          path={routes.auth.forgotPassword}
+          component={Forgot}
+        />
+        <Redirect from={match.path} to={routes.auth.signIn} exact />
+      </Switch>
+    </Screen>
   );
 }
 

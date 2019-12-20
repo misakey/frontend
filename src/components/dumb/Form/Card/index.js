@@ -2,10 +2,7 @@ import React from 'react';
 import { Form } from 'formik';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Typography from '@material-ui/core/Typography';
+import Card from 'components/dumb/Card';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -15,87 +12,34 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(3),
     },
   },
-  title: {
-    marginBottom: theme.spacing(2),
-  },
-  subTitle: {
-    marginBottom: theme.spacing(2),
-  },
 }));
 
-const FormCardTitle = (props) => {
-  const classes = useStyles();
-
-  const { children } = props;
-  if (!children) { return null; }
-
-  return <Typography className={classes.title} {...props} />;
-};
-
-FormCardTitle.propTypes = {
-  align: PropTypes.string,
-  children: PropTypes.node,
-  component: PropTypes.string,
-  variant: PropTypes.string,
-};
-
-FormCardTitle.defaultProps = {
-  align: 'center',
-  children: null,
-  component: 'h3',
-  variant: 'h4',
-};
-
-const FormCardSubTitle = (props) => {
-  const classes = useStyles();
-
-  const { children } = props;
-  if (!children) { return null; }
-
-  return <Typography className={classes.subTitle} {...props} />;
-};
-
-FormCardSubTitle.propTypes = {
-  align: PropTypes.string,
-  children: PropTypes.node,
-  color: PropTypes.string,
-  variant: PropTypes.string,
-};
-
-FormCardSubTitle.defaultProps = {
-  align: 'center',
-  children: null,
-  color: 'textSecondary',
-  variant: 'body2',
-};
 
 const FormCard = ({
-  children, actions, subtitle, title,
+  children, primary, secondary, subtitle, title,
 }) => {
   const classes = useStyles();
 
   return (
     <Form>
-      <Card className={classes.card}>
-        <CardContent>
-          <FormCardTitle>
-            {title}
-          </FormCardTitle>
-          <FormCardSubTitle>
-            {subtitle}
-          </FormCardSubTitle>
-          {children}
-        </CardContent>
-        <CardActions>
-          {actions}
-        </CardActions>
+      <Card
+        title={title}
+        subtitle={subtitle}
+        primary={primary}
+        secondary={secondary}
+        className={classes.card}
+        subtitleProps={{ align: 'center' }}
+        titleProps={{ align: 'center', gutterBottom: true }}
+      >
+        {children}
       </Card>
     </Form>
   );
 };
 
 FormCard.propTypes = {
-  actions: PropTypes.node.isRequired,
+  primary: PropTypes.oneOf([PropTypes.node, PropTypes.object]).isRequired,
+  secondary: PropTypes.oneOf([PropTypes.node, PropTypes.object]),
   children: PropTypes.node.isRequired,
   subtitle: PropTypes.node,
   title: PropTypes.node,
@@ -104,6 +48,7 @@ FormCard.propTypes = {
 FormCard.defaultProps = {
   subtitle: null,
   title: null,
+  secondary: null,
 };
 
 export default FormCard;

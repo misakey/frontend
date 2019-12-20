@@ -25,15 +25,13 @@ import FormCard from 'components/dumb/Form/Card';
 
 import { ownerCryptoContext as cryptoContext } from '@misakey/crypto';
 
-import Button from '@material-ui/core/Button';
-import ButtonSubmit from 'components/dumb/Button/Submit';
+import Box from '@material-ui/core/Box';
 import FieldText from 'components/dumb/Form/Field/Text';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
 import ScreenError from 'components/dumb/Screen/Error';
 import ChipUser from 'components/dumb/Chip/User';
 import AuthForgotSubtitle from 'components/screens/Auth/Forgot/Subtitle';
 
-import 'components/screens/Auth/Forgot/index.scss';
 
 // CONSTANTS
 const { forbidden } = errorTypes;
@@ -211,66 +209,54 @@ const AuthForgot = ({ challenge, email, t, history, isAuthenticated }) => {
   }
 
   return (
-    <div className="Forgot">
-      <Formik
-        validationSchema={validationSchema}
-        onSubmit={onSubmit}
-        initialValues={INITIAL_VALUES}
-      >
-        {({ isSubmitting, isValid }) => (
-          <FormCard
-            title={t('auth:forgotPassword.title')}
-            subtitle={<AuthForgotSubtitle name={step} email={email} />}
-            actions={(
-              <div className="actions">
-                <Button
-                  variant="contained"
-                  type="button"
-                  onClick={onPrevious}
-                >
-                  {t('common:previous')}
-                </Button>
-                <ButtonSubmit
-                  isSubmitting={isSubmitting}
-                  isValid={isValid}
-                >
-                  {t(`auth:forgotPassword.form.action.${step}`)}
-                </ButtonSubmit>
-              </div>
-            )}
-          >
-            <div className="content">
-              <ChipUser
-                email={email}
-                {...userPublicData}
-                onClick={onPrevious}
-                onDelete={onPrevious}
-              />
-              {isStepConfirm(step)
-                ? (
-                  <Field
-                    className="field"
-                    type="text"
-                    name={CONFIRM_FIELD_NAME}
-                    component={FieldText}
-                    inputProps={{ 'data-matomo-ignore': true }}
-                    label={t('auth:forgotPassword.form.field.confirm.label')}
-                  />
-                )
-                : (
-                  <Field
-                    className="field"
-                    type="password"
-                    name={PASSWORD_FIELD_NAME}
-                    component={FieldTextPasswordRevealable}
-                    label={t('auth:forgotPassword.form.field.password.label')}
-                  />
-                )}
-            </div>
-          </FormCard>
-        )}
-      </Formik>
-    </div>
+    <Formik
+      validationSchema={validationSchema}
+      onSubmit={onSubmit}
+      initialValues={INITIAL_VALUES}
+    >
+      {({ isSubmitting, isValid }) => (
+        <FormCard
+          title={t('auth:forgotPassword.title')}
+          subtitle={<AuthForgotSubtitle name={step} email={email} />}
+          secondary={{ onClick: onPrevious, text: t('common:previous') }}
+          primary={{
+            type: 'submit',
+            isLoading: isSubmitting,
+            isValid,
+            text: t(`auth:forgotPassword.form.action.${step}`),
+          }}
+        >
+          <Box alignItems="center" flexDirection="column" display="flex">
+            <ChipUser
+              email={email}
+              {...userPublicData}
+              onClick={onPrevious}
+              onDelete={onPrevious}
+            />
+            {isStepConfirm(step)
+              ? (
+                <Field
+                  className="field"
+                  type="text"
+                  name={CONFIRM_FIELD_NAME}
+                  component={FieldText}
+                  inputProps={{ 'data-matomo-ignore': true }}
+                  label={t('auth:forgotPassword.form.field.confirm.label')}
+                />
+              )
+              : (
+                <Field
+                  className="field"
+                  type="password"
+                  name={PASSWORD_FIELD_NAME}
+                  component={FieldTextPasswordRevealable}
+                  label={t('auth:forgotPassword.form.field.password.label')}
+                />
+              )}
+          </Box>
+        </FormCard>
+      )}
+    </Formik>
   );
 };
 

@@ -26,7 +26,18 @@ const Card = withStyles((theme) => ({
       borderRadius: 0,
     }, */
   },
-}))(({ children, classes, className, primary, secondary, subtitle, title, ...rest }) => (
+}))(({
+  children,
+  classes,
+  className,
+  primary,
+  secondary,
+  subtitle,
+  title,
+  subtitleProps,
+  titleProps,
+  ...rest
+}) => (
   <MuiCard
     className={clsx(classes.root, className)}
     component={Box}
@@ -35,7 +46,12 @@ const Card = withStyles((theme) => ({
   >
     {title && (
       <CardContent>
-        <GroupTitles title={title} subtitle={subtitle} />
+        <GroupTitles
+          title={title}
+          subtitle={subtitle}
+          subtitleProps={subtitleProps}
+          titleProps={titleProps}
+        />
         {children}
       </CardContent>
     )}
@@ -51,10 +67,12 @@ const Card = withStyles((theme) => ({
 Card.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
-  title: PropTypes.string,
+  title: PropTypes.node,
   primary: PropTypes.oneOfType([PropTypes.object, PropTypes.node]),
   secondary: PropTypes.object,
-  subtitle: PropTypes.string,
+  subtitle: PropTypes.node,
+  subtitleProps: PropTypes.object,
+  titleProps: PropTypes.object,
 };
 
 Card.defaultProps = {
@@ -62,6 +80,8 @@ Card.defaultProps = {
   className: '',
   primary: null,
   secondary: null,
+  subtitleProps: {},
+  titleProps: {},
 };
 
 export default Card;

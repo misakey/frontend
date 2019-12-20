@@ -21,7 +21,7 @@ function GroupTitles({ offset, subtitle, subtitleProps, title, titleProps }) {
   return (
     <>
       <Title
-        gutterBottom={false}
+        gutterBottom={titleProps.gutterBottom || false}
         {...titleProps}
         className={clsx(classes.text, titleProps.className, {
           [classes.empty]: empty,
@@ -44,9 +44,9 @@ function GroupTitles({ offset, subtitle, subtitleProps, title, titleProps }) {
 
 GroupTitles.propTypes = {
   offset: PropTypes.bool,
-  subtitle: PropTypes.string,
+  subtitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   subtitleProps: PropTypes.object,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
   titleProps: PropTypes.object,
 };
 

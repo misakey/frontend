@@ -18,7 +18,7 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isEmpty from '@misakey/helpers/isEmpty';
 
 import SignInFormFields from 'components/smart/Auth/SignIn/Form/Fields';
-import SignInFormActions from 'components/smart/Auth/SignIn/Form/Actions';
+import SignInFormActions, { useSignInFormPrimaryAction, useSignInFormSecondaryAction } from 'components/smart/Auth/SignIn/Form/Actions';
 import SignInCardContent from 'components/smart/Auth/SignIn/Form/CardContent';
 
 import { STEP } from 'components/smart/Auth/SignIn/Form/constants';
@@ -90,18 +90,16 @@ const SignInForm = ({ dispatch, displayCard, fields, t, ...formProps }) => {
   };
 
   const Fields = <SignInFormFields {...newFields} step={step} />;
-  const Actions = (
-    <SignInFormActions
-      disableNext={disableNext}
-      onNext={handleNext}
-      step={step}
-      {...formProps}
-    />
+
+  const signInFormSecondaryAction = useSignInFormSecondaryAction(step, t);
+  const signInFormPrimaryAction = useSignInFormPrimaryAction(
+    disableNext, isSubmitting, isValid, handleNext, step, t,
   );
 
   const Card = displayCard && (
     <FormCard
-      actions={Actions}
+      primary={signInFormPrimaryAction}
+      secondary={signInFormSecondaryAction}
       title={<AuthCardTitle name="signIn" />}
       subtitle={<AuthCardSubTitle name="signIn" />}
     >
@@ -118,7 +116,13 @@ const SignInForm = ({ dispatch, displayCard, fields, t, ...formProps }) => {
   return Card || (
     <Form>
       {Fields}
-      {Actions}
+      <SignInFormActions
+        disableNext={disableNext}
+        onNext={handleNext}
+        step={step}
+        t={t}
+        {...formProps}
+      />
     </Form>
   );
 };
