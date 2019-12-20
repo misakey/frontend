@@ -3,10 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { normalize, denormalize } from 'normalizr';
 import { parse } from 'tldts';
+import { useSnackbar } from 'notistack';
+import { withTranslation } from 'react-i18next';
 
 import usePropChanged from 'hooks/usePropChanged';
 
 import isNil from '@misakey/helpers/isNil';
+import head from '@misakey/helpers/head';
 import isEmpty from '@misakey/helpers/isEmpty';
 import isString from '@misakey/helpers/isString';
 import isArray from '@misakey/helpers/isArray';
@@ -30,7 +33,11 @@ const DEFAULT_ENDPOINT = {
 const INTERNAL_PROPS = ['dispatchReceive', 'dispatchReceivePlugin'];
 
 // HELPERS
-const defaultMapper = (props) => [null, null, objectToSnakeCase(props)];
+const defaultMapper = (props) => [
+  null,
+  null,
+  objectToSnakeCase({ ...props, includeRelatedDomains: true }),
+];
 
 const fetchApplication = (mainDomain, isAuthenticated, endpoint, paramMapper) => {
   const authEndpoint = isNil(endpoint)
@@ -43,20 +50,61 @@ const fetchApplication = (mainDomain, isAuthenticated, endpoint, paramMapper) =>
     .send();
 };
 
+// HOOKS
+
+const useHandleError = (dispatchReceivePlugin, mainDomain, setError) => useCallback((e) => {
+  if (IS_PLUGIN) {
+    // We can display the basic information from plugin anyway
+    dispatchReceivePlugin(mainDomain);
+  } else {
+    setError(e);
+  }
+}, [dispatchReceivePlugin, mainDomain, setError]);
+
+const useHandleReceive = (enqueueSnackbar, history, pathname, mainDomain, t) => useCallback(
+  (data) => {
+    const application = head(data);
+    const isLinkedDomain = application.mainDomain !== mainDomain;
+    if (isLinkedDomain) {
+      if (IS_PLUGIN) {
+        const { domainWithoutSuffix } = parse(mainDomain);
+        data.push({ ...application, mainDomain, name: domainWithoutSuffix });
+      } else {
+        enqueueSnackbar(
+          t('common:application.linkedDomain.redirect',
+            { mainDomainTo: application.mainDomain, mainDomainFrom: mainDomain }),
+          { variant: 'info' },
+        );
+        history.replace(pathname.replace(mainDomain, application.mainDomain));
+      }
+    }
+    return data;
+  },
+  [enqueueSnackbar, history, mainDomain, pathname, t],
+);
+
 const withApplication = (Component, options = {}) => {
   // @FIXME simplify logic of the HOC: params, endpoint, schema
   const { endpoint, paramMapper, getSpecificShouldFetch, schema = ApplicationSchema } = options;
   const ComponentWithApplication = (props) => {
     const {
       isAuthenticated, isDefaultDomain, mainDomain,
-      entity, dispatchReceive, dispatchReceivePlugin,
+      entity, dispatchReceive, dispatchReceivePlugin, history, location, t,
     } = props;
 
     const authChanged = usePropChanged(isAuthenticated);
 
     const [isFetching, setIsFetching] = useState(false);
     const [error, setError] = useState(null);
-
+    const { enqueueSnackbar } = useSnackbar();
+    const handleError = useHandleError(dispatchReceivePlugin, mainDomain, setError);
+    const handleReceive = useHandleReceive(
+      enqueueSnackbar,
+      history,
+      location.pathname,
+      mainDomain,
+      t,
+    );
 
     const shouldFetch = useMemo(() => {
       const validDomain = isString(mainDomain) && !isDefaultDomain;
@@ -70,35 +118,26 @@ const withApplication = (Component, options = {}) => {
       return validDomain && validInternalState && (isFetchNeeded || forceFetch);
     }, [isDefaultDomain, isFetching, error, entity, mainDomain, authChanged]);
 
-    const startFetching = useCallback(() => {
-      setIsFetching(true);
+    const startFetching = useCallback(
+      () => {
+        setIsFetching(true);
 
-      fetchApplication(mainDomain, isAuthenticated, endpoint, paramMapper)
-        .then((response) => {
-          if (isEmpty(response)) {
-            // @FIXME: is it still useful ?
-            if (IS_PLUGIN) {
-              dispatchReceivePlugin(mainDomain);
+        fetchApplication(mainDomain, isAuthenticated, endpoint, paramMapper)
+          .then((response) => {
+            if (isEmpty(response)) {
+              handleError({ status: 404 });
             } else {
-              setError(404);
+              const data = (isArray(response) ? response : [response]).map(objectToCamelCase);
+              dispatchReceive(handleReceive(data));
             }
-          } else if (isArray(response)) {
-            dispatchReceive(response.map(objectToCamelCase));
-          } else {
-            dispatchReceive(objectToCamelCase(response));
-          }
-        })
-        .catch((e) => {
-          if (IS_PLUGIN) {
-            // We can display the basic information from plugin anyway
-            dispatchReceivePlugin(mainDomain);
-          } else { setError(e); }
-        })
-        .finally(() => { setIsFetching(false); });
-    }, [
-      setIsFetching, dispatchReceive, setError,
-      isAuthenticated, mainDomain, dispatchReceivePlugin,
-    ]);
+          })
+          .catch((e) => {
+            handleError(e);
+          })
+          .finally(() => { setIsFetching(false); });
+      },
+      [mainDomain, isAuthenticated, handleError, dispatchReceive, handleReceive],
+    );
 
     useEffect(
       () => {
@@ -126,6 +165,9 @@ const withApplication = (Component, options = {}) => {
     dispatchReceive: PropTypes.func.isRequired,
     dispatchReceivePlugin: PropTypes.func.isRequired,
     userId: PropTypes.string,
+    history: PropTypes.shape({ replace: PropTypes.func }).isRequired,
+    location: PropTypes.shape({ search: PropTypes.string, pathname: PropTypes.string }).isRequired,
+    t: PropTypes.func.isRequired,
   };
 
   ComponentWithApplication.defaultProps = {
@@ -155,9 +197,7 @@ const withApplication = (Component, options = {}) => {
     dispatchReceive: (data) => {
       const normalized = normalize(
         data,
-        isArray(data)
-          ? schema.collection
-          : schema.entity,
+        schema.collection,
       );
       const { entities } = normalized;
       dispatch(receiveEntities(entities));
@@ -176,7 +216,7 @@ const withApplication = (Component, options = {}) => {
     },
   });
 
-  return connect(mapStateToProps, mapDispatchToProps)(ComponentWithApplication);
+  return withTranslation('common')((connect(mapStateToProps, mapDispatchToProps)(ComponentWithApplication)));
 };
 
 export default withApplication;

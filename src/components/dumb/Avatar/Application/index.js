@@ -30,13 +30,19 @@ const useStyles = makeStyles((theme) => ({
   },
   appName: {
     marginLeft: theme.spacing(2),
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+  },
+  mainDomain: {
+    marginRight: theme.spacing(1),
   },
   ratingIcon: {
     color: theme.palette.primary.main,
   },
 }));
 
-const ApplicationAvatar = ({ application, t, displayRating }) => {
+const ApplicationAvatar = ({ application, t, displayRating, displayMainDomain }) => {
   const classes = useStyles();
 
   const { name, logoUri, mainDomain, avgRating } = useMemo(
@@ -64,14 +70,23 @@ const ApplicationAvatar = ({ application, t, displayRating }) => {
         <Typography noWrap color="textSecondary">
           {displayName}
         </Typography>
-        {displayRating && (
-          <Rating
-            readOnly
-            size="small"
-            value={avgRating}
-            classes={{ iconFilled: classes.ratingIcon }}
-          />
-        )}
+
+        <Box display="flex">
+          {displayMainDomain && (
+            <Typography noWrap variant="body2" color="textSecondary" className={classes.mainDomain}>
+              {mainDomain}
+            </Typography>
+          )}
+          {displayRating && avgRating && (
+            <Rating
+              readOnly
+              size="small"
+              value={avgRating}
+              classes={{ iconFilled: classes.ratingIcon }}
+            />
+          )}
+        </Box>
+
       </div>
 
     </Box>
@@ -81,12 +96,14 @@ const ApplicationAvatar = ({ application, t, displayRating }) => {
 ApplicationAvatar.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes),
   displayRating: PropTypes.bool,
+  displayMainDomain: PropTypes.bool,
   t: PropTypes.func.isRequired,
 };
 
 ApplicationAvatar.defaultProps = {
   application: null,
   displayRating: false,
+  displayMainDomain: false,
 };
 
 export default withTranslation(['screens'])(ApplicationAvatar);

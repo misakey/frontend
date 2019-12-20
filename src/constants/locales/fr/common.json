@@ -203,6 +203,11 @@
       "error": "Une erreur inconnue est survenue lors de l'envoi de l'email"
     }
   },
+  "application": {
+    "linkedDomain": {
+      "redirect": "Vous avez été redirigé vers {{mainDomainTo}} car {{mainDomainFrom}} est un domaine lié à {{mainDomainTo}}"
+    }
+  },
   "ratings": "notes",
   "regenerate": "Régénérer",
   "resendEmail": "Relancer",

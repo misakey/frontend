@@ -65,7 +65,11 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
       items: [(
         <div className={classes.avatarParent} key="applicationAvatarParent">
           {application && (
-            <ApplicationAvatar application={application} displayRating={IS_PLUGIN} />
+            <ApplicationAvatar
+              application={application}
+              displayRating={IS_PLUGIN}
+              displayMainDomain={IS_PLUGIN}
+            />
           )}
         </div>
       )],
