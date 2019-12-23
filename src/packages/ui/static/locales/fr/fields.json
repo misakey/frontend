@@ -1,0 +1,111 @@
+{
+  "default": {
+    "label": "Exemple",
+    "placeholder": "Valeur d'exemple",
+    "error": {
+      "invalid": "Ce champ est incorrect",
+      "malformed": "Merci d'entrer une valeur valide",
+      "required": "Ce champ est obligatoire",
+      "unknown": "Une erreur inconnue est survenue"
+    }
+  },
+  "avatar": {
+    "title": "Photo",
+    "subtitle": "Votre photo de profil est visible par tous, sur l'ensemble des sites qui utilisent Misakey",
+    "success": "Votre photo de profil a été mise à jour",
+    "upload": {
+      "title": "Upload photo",
+      "subtitle": "Les fichiers .jpg .jpeg .png .tiff .gif de moins de 3mo sont acceptés"
+    },
+    "error": {
+      "size": "Taille maximale dépassée",
+      "format": "Format incorrect. Formats acceptés: .jpg .jpeg .png .tiff .gif"
+    }
+  },
+  "code": {
+    "label": "Code",
+    "helperText": "Remplissez le code à {{count}} chiffre que nous vous avons envoyé",
+    "helperText_plural": "Remplissez le code à {{count}} chiffres que nous vous avons envoyé",
+    "error": {
+      "invalid": "Ce code est incorrect",
+      "expired": "Le code a expiré. Veuillez en demander un nouveau",
+      "malformed": "Le code ne contient pas le bon nombre de chiffres ou est incorrect"
+    }
+  },
+  "codeInvitation": {
+    "label": "Code d'invitation",
+    "placeholder": "codePink"
+  },
+  "codeConfirmation": {
+    "label": "Code de confirmation",
+    "placeholder": "161803",
+    "error": {
+      "expired": "Le code de confirmation a expiré. Veuillez en demander un nouveau",
+      "invalid": "Le code de confirmation est incorrect",
+      "malformed": "Le code de confirmation doit contenir 6 chiffres"
+    }
+  },
+  "displayName": {
+    "label": "Nom public",
+    "placeholder": "Rose Flamingo",
+    "helperText": "Vous pouvez choisir un nom entre 3 et 25 caractères.",
+    "error": {
+      "invalid": "Le nom public doit comporter entre 3 et 20 caractères, composés de lettres, de chiffres et d'espaces",
+      "malformed": "Le nom public ne peut comporter que des lettres, des chiffres et des espaces"
+    }
+  },
+  "email": {
+    "label": "Adresse email",
+    "placeholder": "rose.flamingo@misakey.com",
+    "error": {
+      "conflict": "Un compte existe déjà avec cet email",
+      "malformed": "Merci d'entrer une adresse email valide",
+      "notfound": "Aucun compte lié à cet email"
+    }
+  },
+  "file": {
+    "label": "Déposer un fichier ici",
+    "subtitle": "ou si vous préférez",
+    "loading": "Importation en cours",
+    "button": {
+      "choose": {
+        "label": "Sélectionner un fichier"
+      }
+    }
+  },
+  "password": {
+    "label": "Mot de passe",
+    "placeholder": "********",
+    "error": {
+      "invalid": "Le mot de passe n'est pas le bon",
+      "malformed": "Le mot de passe doit contenir au moins 8 caractères"
+    }
+  },
+  "passwordConfirm": {
+    "error": {
+      "malformed": "Les mots de passe ne correspondent pas"
+    }
+  },
+  "passwordNew": {
+    "label": "Nouveau mot de passe",
+    "placeholder": "********",
+    "error": {
+      "conflict": "Identique à l'ancien mot de passe",
+      "malformed": "Le mot de passe doit contenir au moins 8 caractères"
+    }
+  },
+  "passwordOld": {
+    "label": "Ancien mot de passe",
+    "placeholder": "********",
+    "error": {
+      "invalid": "Le mot de passe n'est pas le bon",
+      "malformed": "Le mot de passe doit contenir au moins 8 caractères"
+    }
+  },
+  "tos": {
+    "label": "J'accepte les CGUs",
+    "error": {
+      "required": "Il vous faut accepter les CGUs"
+    }
+  }
+}

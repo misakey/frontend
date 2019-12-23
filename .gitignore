@@ -12,6 +12,8 @@ plugin/node_modules
 # production
 build
 build_*
+.generated
+size-snapshot.json
 
 /public/version.txt
 
@@ -23,6 +25,7 @@ build_*
 .env.production.local
 
 .idea
+.vscode
 
 npm-debug.log*
 yarn-debug.log*

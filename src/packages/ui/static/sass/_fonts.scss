@@ -1,0 +1,11 @@
+@font-face {
+  font-family: 'Futura Std Bold';
+  font-style: normal;
+  font-weight: 600;
+  src: url('~@misakey/ui/static/fonts/FuturaStdBold.eot');
+  src: local('Futura Std Bold'),
+       url('~@misakey/ui/static/fonts/FuturaStdBold.woff') format('woff'),
+       url('~@misakey/ui/static/fonts/FuturaStdBold.woff2') format('woff2'),
+       url('~@misakey/ui/static/fonts/FuturaStdBold.ttf') format('truetype'),
+       url('~@misakey/ui/static/fonts/FuturaStdBold.svg') format('svg');
+}

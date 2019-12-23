@@ -1,0 +1,41 @@
+{
+  "name": "@misakey/helpers",
+  "version": "3.2.2",
+  "private": true,
+  "license": "SEE LICENSE IN /LICENSE",
+  "author": "Misakey Team",
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/Misakey/js-common.git",
+    "directory": "packages/helpers"
+  },
+  "scripts": {
+    "generate": "node ../../../scripts/generate-helpers.js",
+    "build": "yarn build:cjs && yarn build:esm && yarn build:es && yarn build:copy-files",
+    "build:cjs": "cross-env NODE_ENV=production BABEL_ENV=cjs babel --config-file ../../../babel.config.js ./src --out-dir ./build --ignore \"**/*.test.js\"",
+    "build:esm": "cross-env NODE_ENV=production BABEL_ENV=esm babel --config-file ../../../babel.config.js ./src --out-dir ./build/esm --ignore \"**/*.test.js\"",
+    "build:es": "cross-env NODE_ENV=production BABEL_ENV=es babel --config-file ../../../babel.config.js ./src --out-dir ./build/es --ignore \"**/*.test.js\"",
+    "build:umd": "cross-env BABEL_ENV=production-umd rollup -c rollup.config.js",
+    "build:copy-files": "node ../../../scripts/copy-files.js",
+    "prebuild": "rimraf build",
+    "prepublish": "yarn build",
+    "release": "npm publish build --tag latest"
+  },
+  "peerDependencies": {
+    "normalizr": "^3.x"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.5.5",
+    "lodash": "^4.17.15",
+    "path-to-regexp": "^3.0.0",
+    "ramda": "^0.26.1",
+    "validator": "^11.1.0"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}

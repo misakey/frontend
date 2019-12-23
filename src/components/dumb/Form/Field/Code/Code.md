@@ -10,7 +10,7 @@ const initialValues = { [NAME]: '' };
 
 const FieldCodeExample = () => (
   <React.Suspense fallback="Loading...">
-    <Formik onSubmit={values => log(values[NAME])} initialValues={initialValues}>
+    <Formik onSubmit={(values) => log(values[NAME])} initialValues={initialValues}>
       <Form>
         <Field component={FieldCode} name="code" label="My super label" />
         <div><ButtonSubmit /></div>

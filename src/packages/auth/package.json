@@ -1,0 +1,66 @@
+{
+  "name": "@misakey/auth",
+  "version": "2.4.0",
+  "private": false,
+  "license": "SEE LICENSE IN /LICENSE",
+  "author": "Misakey Team",
+  "description": "Auth related stack to ship in.",
+  "keywords": [
+    "react",
+    "react-component",
+    "redux",
+    "middleware",
+    "auth"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/Misakey/js-common.git",
+    "directory": "packages/auth"
+  },
+  "homepage": "https://frontend.docs.misakey.dev",
+  "scripts": {
+    "build": "yarn build:cjs && yarn build:esm && yarn build:es && yarn build:copy-files",
+    "build:cjs": "cross-env NODE_ENV=production BABEL_ENV=cjs babel --config-file ../../../babel.config.js ./src --out-dir ./build --ignore \"**/*.test.js\"",
+    "build:esm": "cross-env NODE_ENV=production BABEL_ENV=esm babel --config-file ../../../babel.config.js ./src --out-dir ./build/esm --ignore \"**/*.test.js\"",
+    "build:es": "cross-env NODE_ENV=production BABEL_ENV=es babel --config-file ../../../babel.config.js ./src --out-dir ./build/es --ignore \"**/*.test.js\"",
+    "build:umd": "cross-env BABEL_ENV=production-umd rollup -c rollup.config.js",
+    "build:copy-files": "node ../../../scripts/copy-files.js",
+    "prebuild": "rimraf build",
+    "prepublish": "yarn build",
+    "release": "npm publish build --tag latest"
+  },
+  "peerDependencies": {
+    "@material-ui/core": "^4.3.0",
+    "@material-ui/icons": "^4.2.1",
+    "@misakey/api": "2.x",
+    "@misakey/helpers": "3.x",
+    "@misakey/hooks": "1.x",
+    "@misakey/store": "1.x",
+    "@misakey/ui": "3.x",
+    "formik": "^1.5.8",
+    "moment": "^2.x",
+    "notistack": "^0.x",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-redux": "^7.1.0",
+    "react-router-dom": "^5.0.1",
+    "redux": "^4.0.4",
+    "redux-logger": "^3.0.6",
+    "redux-persist": "^5.10.0",
+    "redux-thunk": "^2.3.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.5.5",
+    "clsx": "^1.0.4",
+    "oidc-client": "^1.9.1",
+    "prop-types": "^15.7.2",
+    "uuid": "^3.3.3"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}

@@ -1,6 +1,12 @@
-/node_modules
-/build
 /public
-.idea
+/node_modules
 /src/serviceWorker.js
+
+.generated
+.idea
+
+build
+docs
+examples
+node_modules
 README.md

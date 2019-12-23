@@ -33,7 +33,6 @@ const SignUpFormFields = ({ t, i18n, tReady, ...fields }) => {
   const tosCheckboxLabel = (
     <Typography>
       <Trans i18nKey="auth:signUp.form.privacyPolicyCheckboxLabel">
-        {/* eslint-disable-next-line react/jsx-curly-brace-presence */}
         {'J\'accepte les '}
         <Link
           href={t('footer.links.tos.href')}
@@ -43,8 +42,7 @@ const SignUpFormFields = ({ t, i18n, tReady, ...fields }) => {
         >
           CGUs
         </Link>
-        {/* eslint-disable-next-line react/jsx-curly-brace-presence */}
-        {', et la '}
+        , et la
         <Link
           href={t('footer.links.privacy.href')}
           color="secondary"
@@ -53,8 +51,7 @@ const SignUpFormFields = ({ t, i18n, tReady, ...fields }) => {
         >
           politique de confidentialité
         </Link>
-        {/* eslint-disable-next-line react/jsx-curly-brace-presence */}
-        {' de Misakey.'}
+         de Misakey.
       </Trans>
     </Typography>
   );

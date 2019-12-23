@@ -1,12 +1,25 @@
 {
+  "root": true,
   "extends": [
     "plugin:import/recommended",
     "airbnb",
     "airbnb/hooks"
   ],
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true,
+    "jest": true,
+    "webextensions": true
+  },
   "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 7,
+    "sourceType": "module"
+  },
   "plugins": [
-    "jest"
+    "jest",
+    "markdown"
   ],
   "settings": {
     "import/resolver": {
@@ -14,7 +27,17 @@
         "paths": [
           "src"
         ]
-      }
+      },
+      "alias": [
+        ["@misakey/api", "@misakey/api/src"],
+        ["@misakey/auth", "@misakey/auth/src"],
+        ["@misakey/helpers", "@misakey/helpers/src"],
+        ["@misakey/hooks", "@misakey/hooks/src"],
+        ["@misakey/ui/static", "@misakey/ui/static"],
+        ["@misakey/ui", "@misakey/ui/src"],
+        ["@misakey/store", "@misakey/store/src"],
+        ["@misakey/crypto", "@misakey/crypto/src"]
+      ]
     }
   },
   "rules": {
@@ -24,7 +47,8 @@
       {
         "extensions": [
           ".js",
-          ".jsx"
+          ".jsx",
+          ".md"
         ]
       }
     ],
@@ -37,17 +61,33 @@
         ]
       }
     ],
+    "import/no-extraneous-dependencies": "off", // It would be better to enable this rule.
+    "import/namespace": ["error", { "allowComputed": true }],
     "import/prefer-default-export": 0,
     "object-curly-newline": "off",
     // Strict, airbnb is using warn
     "no-console": "error",
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "error",
+    "react-hooks/exhaustive-deps": "error"
   },
-  "env": {
-    "browser": true,
-    "node": true,
-    "jest": true,
-    "webextensions": true
-  }
+  "overrides": [
+    {
+      "files": [
+        "**/test-utils/**/*.js",
+        "*.test.js",
+        "*.int-test.js"
+      ],
+      "rules": {
+        "import/named": "off",
+        "no-unused-expressions": "off"
+      }
+    },
+    {
+      "files": ["**/*.md"],
+      "rules": {
+        "no-console": "off",
+        "no-unused-expressions": "off"
+      }
+    }
+  ]
 }

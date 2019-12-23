@@ -1,0 +1,54 @@
+import createReducer from '@misakey/store/reducers/helpers/createReducer';
+
+import merge from '@misakey/helpers/merge';
+
+import {
+  AUTH_RESET,
+  LOAD_USER,
+  SIGN_OUT,
+  SIGN_IN,
+  UPDATE_PROFILE,
+  LOAD_USER_ROLES,
+} from '../../actions/auth';
+
+
+export const INITIAL_STATE = {
+  id: null,
+  authenticatedAt: null,
+  profile: null,
+  roles: null,
+  token: null,
+  expiresAt: null,
+  userId: null,
+};
+
+function resetCredentials() {
+  return INITIAL_STATE;
+}
+
+function updateCredentials(state, { type, ...rest }) {
+  return merge({}, state, rest);
+}
+
+function updateProfile(state, { profile }) {
+  return {
+    ...state,
+    profile: merge({}, state.profile, profile),
+  };
+}
+
+function updateRoles(state, { roles }) {
+  return {
+    ...state,
+    roles,
+  };
+}
+
+export default createReducer(INITIAL_STATE, {
+  [SIGN_OUT]: resetCredentials,
+  [AUTH_RESET]: resetCredentials,
+  [SIGN_IN]: updateCredentials,
+  [LOAD_USER]: updateCredentials,
+  [UPDATE_PROFILE]: updateProfile,
+  [LOAD_USER_ROLES]: updateRoles,
+});

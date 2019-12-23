@@ -133,7 +133,7 @@ const NavigationExample = () => {
   const [log, setLog] = useState(false);
 
   const onClick = useCallback(
-    () => setLog(isLog => !isLog),
+    () => setLog((isLog) => !isLog),
     [setLog],
   );
 

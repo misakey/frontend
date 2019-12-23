@@ -24,7 +24,6 @@ import { IS_PLUGIN } from 'constants/plugin';
 
 import Redirect from 'components/dumb/Redirect';
 
-
 import './App.scss';
 
 // LAZY
@@ -45,7 +44,6 @@ function App({ t }) {
   return (
     <ErrorBoundary component={Container} maxWidth="md" my={3}>
       <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
-
         {IS_PLUGIN && (
           <Switch>
             <Route exact path={routes.plugin} component={Plugin} />
@@ -60,8 +58,6 @@ function App({ t }) {
             <Route component={NotFound} />
           </Switch>
         )}
-
-
         {!IS_PLUGIN && (
           <Switch>
             <Route exact path={routes._} component={Landing} />
@@ -107,7 +103,6 @@ function App({ t }) {
             <Route component={NotFound} />
           </Switch>
         )}
-
       </SnackbarProvider>
     </ErrorBoundary>
   );

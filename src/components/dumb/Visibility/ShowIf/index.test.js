@@ -1,4 +1,4 @@
-import { isWidthBetween, isWidthOnly } from 'components/dumb/Visibility/ShowIf/index';
+import { isWidthBetween, isWidthOnly } from '.';
 
 describe('isWidthBetween', () => {
   it('matches when needed', () => {
