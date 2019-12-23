@@ -7,6 +7,8 @@ import fileDownload from 'js-file-download';
 import { withTranslation, Trans } from 'react-i18next';
 
 import ApplicationSchema from 'store/schemas/Application';
+import DataboxByProducerSchema from 'store/schemas/Databox/ByProducer';
+import { receiveDataboxesByProducer } from 'store/actions/databox';
 
 import API from '@misakey/api';
 
@@ -16,7 +18,9 @@ import MUILink from '@material-ui/core/Link';
 import deburr from '@misakey/helpers/deburr';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
+import prop from '@misakey/helpers/prop';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
 import withDialogConnect from 'components/smart/Dialog/Connect/with';
 import SplashScreen from 'components/dumb/SplashScreen';
@@ -40,6 +44,16 @@ import Card from 'components/dumb/Card';
 
 import { NoPassword } from 'constants/Errors/classes';
 
+// HELPERS
+const idProp = prop('id');
+const databoxesProp = prop('databoxes');
+
+const findDataboxes = (producerId) => API
+  .use(API.endpoints.application.box.find)
+  .build(null, null, objectToSnakeCase({ producerId }))
+  .send();
+
+// HOOKS
 const useStyles = makeStyles((theme) => ({
   initCryptoLink: {
     marginLeft: theme.spacing(1),
@@ -114,7 +128,7 @@ const useInitCrypto = (
       await loadBackupAndAskPassword();
     } catch (e) {
       if (e instanceof NoPassword) {
-      // do nothing
+        // do nothing
         return;
       }
       throw e;
@@ -130,11 +144,13 @@ const DialogConnectButton = withDialogConnect(Button);
 
 function ApplicationBox({
   application,
+  databoxesByProducer,
   match,
   t,
   userId,
   isAuthenticated,
   onContributionDpoEmailClick,
+  dispatchReceiveDataboxesByProducer,
 }) {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
@@ -159,6 +175,16 @@ function ApplicationBox({
     loadBackupAndAskPassword,
   );
 
+  const applicationID = useMemo(
+    () => idProp(application),
+    [application],
+  );
+
+  const databoxes = useMemo(
+    () => databoxesProp(databoxesByProducer),
+    [databoxesByProducer],
+  );
+
   function errorSnackBar(translationKey) {
     const text = t(translationKey);
     enqueueSnackbar(text, { variant: 'error' });
@@ -175,20 +201,23 @@ function ApplicationBox({
   }
 
   const fetchDatabox = useCallback(() => {
-    if (isAuthenticated && application && application.id) {
+    if (isAuthenticated && !isNil(applicationID)) {
       setError(false);
       setLoading(true);
 
-      API.use(API.endpoints.application.box.find)
-        .build(null, null, { producer_id: application.id })
-        .send()
-        .then((databoxes) => databoxes.forEach(({ id }) => {
-          fetchBlobs(id);
-        }))
+      (isNil(databoxes)
+        ? findDataboxes(applicationID)
+          .then((response) => {
+            const boxes = response.map(objectToCamelCase);
+            dispatchReceiveDataboxesByProducer(applicationID, boxes);
+            return boxes;
+          })
+        : Promise.resolve(databoxes))
+        .then((boxes) => Promise.all([boxes.map(({ id }) => fetchBlobs(id))]))
         .catch(({ httpStatus }) => setError(httpStatus))
         .finally(() => setLoading(false));
     }
-  }, [application, isAuthenticated]);
+  }, [applicationID, databoxes, dispatchReceiveDataboxesByProducer, isAuthenticated]);
 
   async function readBlob(id) {
     try {
@@ -285,7 +314,7 @@ function ApplicationBox({
           <ContactButton
             dpoEmail={application.dpoEmail}
             onContributionClick={onContributionDpoEmailClick}
-            applicationID={application.id}
+            applicationID={applicationID}
             mainDomain={application.mainDomain}
             buttonProps={{ variant: 'outlined' }}
           >
@@ -353,7 +382,6 @@ function ApplicationBox({
 }
 
 ApplicationBox.propTypes = {
-  application: PropTypes.shape(ApplicationSchema.propTypes),
   match: PropTypes.shape({
     params: PropTypes.shape({
       mainDomain: PropTypes.string.isRequired,
@@ -361,27 +389,50 @@ ApplicationBox.propTypes = {
   }).isRequired,
   onContributionDpoEmailClick: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
+  // CONNECT
+  application: PropTypes.shape(ApplicationSchema.propTypes),
+  databoxesByProducer: PropTypes.shape(DataboxByProducerSchema.propTypes),
   userId: PropTypes.string,
   isAuthenticated: PropTypes.bool,
+  dispatchReceiveDataboxesByProducer: PropTypes.func.isRequired,
 };
 
 ApplicationBox.defaultProps = {
   application: null,
+  databoxesByProducer: null,
   userId: null,
   isAuthenticated: false,
 };
 
-const ApplicationBoxComponent = connect(
-  (state, ownProps) => ({
-    application: denormalize(
-      ownProps.match.params.mainDomain,
-      ApplicationSchema.entity,
+// CONNECT
+const mapStateToProps = (state, ownProps) => {
+  const application = denormalize(
+    ownProps.match.params.mainDomain,
+    ApplicationSchema.entity,
+    state.entities,
+  );
+  const producerId = idProp(application);
+  return {
+    application,
+    databoxesByProducer: isNil(producerId) ? null : denormalize(
+      producerId,
+      DataboxByProducerSchema.entity,
       state.entities,
     ),
     userId: state.auth.userId,
     isAuthenticated: !!state.auth.token,
-  }),
-)(withTranslation(['common', 'screens'])(ApplicationBox));
+  };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  dispatchReceiveDataboxesByProducer: (producerId, databoxes) => dispatch(
+    receiveDataboxesByProducer({ producerId, databoxes }),
+  ),
+});
+
+const ApplicationBoxComponent = connect(mapStateToProps, mapDispatchToProps)(
+  withTranslation(['common', 'screens'])(ApplicationBox),
+);
 
 
 function ApplicationBoxWithPasswordPrompt({ ...props }) {

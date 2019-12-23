@@ -1,11 +1,14 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { denormalize } from 'normalizr';
 
 import API from '@misakey/api';
 import routes from 'routes';
 
 import { connect } from 'react-redux';
 import ApplicationSchema from 'store/schemas/Application';
+import DataboxByProducerSchema from 'store/schemas/Databox/ByProducer';
+import { receiveDataboxesByProducer } from 'store/actions/databox';
 import { contactDataboxURL } from 'store/actions/screens/contact';
 import { selectors as contactSelectors } from 'store/reducers/screens/contact';
 
@@ -14,10 +17,18 @@ import { useParams } from 'react-router-dom';
 import identity from '@misakey/helpers/identity';
 import isNil from '@misakey/helpers/isNil';
 import head from '@misakey/helpers/head';
+import prop from '@misakey/helpers/prop';
+import compose from '@misakey/helpers/compose';
+import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 
 // HELPERS
+const idProp = prop('id');
+const databoxProp = compose(
+  head,
+  prop('databoxes'),
+);
 const requestDataboxAccess = (id) => API.use(API.endpoints.application.box.requestAccess)
   .build({ id })
   .send();
@@ -32,7 +43,10 @@ const postDatabox = (payload) => API.use(API.endpoints.application.box.create)
 
 // COMPONENTS
 const withDataboxURL = (mapper = identity) => (Component) => {
-  const Wrapper = ({ dispatchContact, ...props }) => {
+  const Wrapper = ({
+    dispatchContact, dispatchReceiveDataboxesByProducer, databoxesByProducer,
+    ...props
+  }) => {
     const [error, setError] = useState();
     const [isFetching, setIsFetching] = useState();
 
@@ -57,14 +71,25 @@ const withDataboxURL = (mapper = identity) => (Component) => {
       [databoxURL, error, id, isAuthenticated, isFetching, mainDomain, mainDomainParam],
     );
 
+    const databox = useMemo(
+      () => databoxProp(databoxesByProducer),
+      [databoxesByProducer],
+    );
+
     const getDatabox = useCallback(
-      () => listDataboxes(id)
-        .then((databoxes) => head(databoxes)),
-      [id],
+      () => (isNil(databox)
+        ? listDataboxes(id)
+          .then((response) => {
+            const databoxes = response.map(objectToCamelCase);
+            dispatchReceiveDataboxesByProducer(id, databoxes);
+            return head(databoxes);
+          })
+        : databox),
+      [id, dispatchReceiveDataboxesByProducer, databox],
     );
 
     const onDatabox = useCallback(
-      (databox) => requestDataboxAccess(databox.id)
+      (box) => requestDataboxAccess(box.id)
         .then(({ token }) => {
           const nextDataboxURL = parseUrlFromLocation(`${routes.requests}#${token}`).href;
           dispatchContact(nextDataboxURL, mainDomain);
@@ -82,9 +107,9 @@ const withDataboxURL = (mapper = identity) => (Component) => {
         if (shouldFetch) {
           setIsFetching(true);
           getDatabox()
-            .then((databox) => {
-              if (!isNil(databox)) {
-                return onDatabox(databox);
+            .then((box) => {
+              if (!isNil(box)) {
+                return onDatabox(box);
               }
               return createDatabox()
                 .then((createdDatabox) => onDatabox(createdDatabox));
@@ -104,27 +129,43 @@ const withDataboxURL = (mapper = identity) => (Component) => {
   Wrapper.propTypes = {
     entity: PropTypes.shape(ApplicationSchema.propTypes),
     // CONNECT
+    databoxesByProducer: PropTypes.shape(DataboxByProducerSchema.propTypes),
     databoxURL: PropTypes.string,
     isAuthenticated: PropTypes.bool,
     userId: PropTypes.string,
     dispatchContact: PropTypes.func.isRequired,
+    dispatchReceiveDataboxesByProducer: PropTypes.func.isRequired,
   };
 
   Wrapper.defaultProps = {
     entity: null,
+    databoxesByProducer: null,
     databoxURL: null,
     isAuthenticated: false,
     userId: null,
   };
 
   // CONNECT
-  const mapStateToProps = (state, props) => ({
-    databoxURL: contactSelectors.getDataboxURL(state, props),
-    userId: state.auth.userId,
-    isAuthenticated: !!state.auth.token,
-  });
+  const mapStateToProps = (state, props) => {
+    const id = idProp(props.entity);
+    return {
+      databoxesByProducer: isNil(id)
+        ? null
+        : denormalize(
+          id,
+          DataboxByProducerSchema.entity,
+          state.entities,
+        ),
+      databoxURL: contactSelectors.getDataboxURL(state, props),
+      userId: state.auth.userId,
+      isAuthenticated: !!state.auth.token,
+    };
+  };
 
   const mapDispatchToProps = (dispatch) => ({
+    dispatchReceiveDataboxesByProducer: (producerId, databoxes) => dispatch(
+      receiveDataboxesByProducer({ producerId, databoxes }),
+    ),
     dispatchContact: (databoxURL, mainDomain) => {
       dispatch(contactDataboxURL(databoxURL, mainDomain));
     },

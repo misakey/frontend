@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { denormalize } from 'normalizr';
 import { withTranslation } from 'react-i18next';
 import { withRouter, generatePath } from 'react-router-dom';
 
@@ -7,14 +8,18 @@ import API from '@misakey/api';
 import routes from 'routes';
 
 import { connect } from 'react-redux';
-import { contactDataboxURL } from 'store/actions/screens/contact';
 
-import useAsync from '@misakey/hooks/useAsync';
+import DataboxByProducerSchema from 'store/schemas/Databox/ByProducer';
+import { contactDataboxURL } from 'store/actions/screens/contact';
+import { receiveDataboxesByProducer } from 'store/actions/databox';
 
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import log from '@misakey/helpers/log';
 import head from '@misakey/helpers/head';
+import prop from '@misakey/helpers/prop';
+import compose from '@misakey/helpers/compose';
+import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 import { redirectToApp } from 'helpers/plugin';
 import { IS_PLUGIN } from 'constants/plugin';
@@ -25,6 +30,11 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 // HELPERS
+const databoxProp = compose(
+  head,
+  prop('databoxes'),
+);
+
 const requestDataboxAccess = (id) => API.use(API.endpoints.application.box.requestAccess)
   .build({ id })
   .send();
@@ -38,11 +48,19 @@ const createDatabox = (payload) => API.use(API.endpoints.application.box.create)
   .send();
 
 // HOOKS
-const useGetDatabox = (applicationID, isAuthenticated) => useCallback(
+const useGetDatabox = (
+  applicationID,
+  isAuthenticated,
+  dispatchReceiveDataboxesByProducer,
+) => useCallback(
   () => ((!isAuthenticated || isEmpty(applicationID))
     ? Promise.resolve()
-    : listDataboxes(applicationID).then((databoxes) => head(databoxes))),
-  [applicationID, isAuthenticated],
+    : listDataboxes(applicationID).then((response) => {
+      const databoxes = response.map(objectToCamelCase);
+      dispatchReceiveDataboxesByProducer(applicationID, databoxes);
+      return head(databoxes);
+    })),
+  [applicationID, isAuthenticated, dispatchReceiveDataboxesByProducer],
 );
 
 const useOnMailTo = (mainDomain, dispatchContact, history) => useCallback(
@@ -128,19 +146,33 @@ const ContactButton = (
     dialogConnectProps,
     children,
     isAuthenticated,
+    databoxesByProducer,
     dispatchContact,
+    dispatchReceiveDataboxesByProducer,
     className,
   },
 ) => {
   const [loading, setLoading] = useState(false);
 
-  const getDatabox = useGetDatabox(applicationID, isAuthenticated);
+  const databox = useMemo(
+    () => databoxProp(databoxesByProducer),
+    [databoxesByProducer],
+  );
+
+  const shouldFetch = useMemo(
+    () => !isNil(applicationID) && isNil(databox),
+    [applicationID, databox],
+  );
+
+  const getDatabox = useGetDatabox(
+    applicationID,
+    isAuthenticated,
+    dispatchReceiveDataboxesByProducer,
+  );
 
   const onMailTo = useOnMailTo(mainDomain, dispatchContact, history);
   const onAccessRequest = useOnAccessRequest(onMailTo);
   const onAlreadyExists = useOnAlreadyExists(getDatabox);
-
-  const databox = useAsync(getDatabox, isAuthenticated);
 
   const onClick = useOnClick(
     databox,
@@ -167,6 +199,18 @@ const ContactButton = (
       redirectToApp(generatePath(routes.citizen.application._, { mainDomain }));
     },
     [mainDomain],
+  );
+
+  useEffect(
+    () => {
+      if (shouldFetch) {
+        setLoading(true);
+        getDatabox().finally(
+          () => { setLoading(false); },
+        );
+      }
+    },
+    [getDatabox, shouldFetch],
   );
 
   if (loading) {
@@ -235,13 +279,16 @@ ContactButton.propTypes = {
   // CONNECT
   isAuthenticated: PropTypes.bool,
   userId: PropTypes.string,
+  databoxesByProducer: PropTypes.shape(DataboxByProducerSchema.propTypes),
   dispatchContact: PropTypes.func.isRequired,
+  dispatchReceiveDataboxesByProducer: PropTypes.func.isRequired,
 };
 
 ContactButton.defaultProps = {
   dpoEmail: '',
   buttonProps: {},
   dialogConnectProps: {},
+  databoxesByProducer: null,
   userId: null,
   isAuthenticated: false,
   applicationID: null,
@@ -250,11 +297,25 @@ ContactButton.defaultProps = {
 };
 
 // CONNECT
-const mapStateToProps = (state) => ({
-  userId: state.auth.userId,
-  isAuthenticated: !!state.auth.token,
-});
+const mapStateToProps = (state, ownProps) => {
+  const { applicationID } = ownProps;
+  return {
+    databoxesByProducer: isNil(applicationID)
+      ? null
+      : denormalize(
+        applicationID,
+        DataboxByProducerSchema.entity,
+        state.entities,
+      ),
+    userId: state.auth.userId,
+    isAuthenticated: !!state.auth.token,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => ({
+  dispatchReceiveDataboxesByProducer: (producerId, databoxes) => dispatch(
+    receiveDataboxesByProducer({ producerId, databoxes }),
+  ),
   dispatchContact: (databoxURL, mainDomain, history) => {
     dispatch(contactDataboxURL(databoxURL, mainDomain));
     const pathname = generatePath(

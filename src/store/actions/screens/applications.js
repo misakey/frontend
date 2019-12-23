@@ -8,7 +8,6 @@ import mergeWith from '@misakey/helpers/mergeWith';
 export const APPLICATIONS_IDS_ADD = 'APPLICATIONS_IDS_ADD';
 export const APPLICATIONS_IDS_REMOVE = 'APPLICATIONS_IDS_REMOVE';
 export const APPLICATIONS_IDS_OVERRIDE = 'APPLICATIONS_IDS_OVERRIDE';
-export const APPLICATIONS_BOXES_ADD = 'APPLICATIONS_BOXES_ADD';
 export const APPLICATIONS_RESET = 'APPLICATIONS_RESET';
 
 // HELPERS
@@ -50,12 +49,5 @@ export function applicationsOnFetch(applications) {
       // could have multiple times same id if source has duplicates => uniq
       dispatch(applicationsIdsOverride(uniq(result))),
     ]);
-  };
-}
-
-export function screenApplicationsBoxesAdd(boxes) {
-  return {
-    type: APPLICATIONS_BOXES_ADD,
-    boxes,
   };
 }

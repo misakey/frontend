@@ -1,6 +1,5 @@
-import createReducer from '@misakey/store/reducers/helpers/createReducer';
+import createAuthReducer from 'store/reducers/helpers/createAuthReducer';
 
-import { SIGN_OUT } from '@misakey/auth/store/actions/auth';
 import { SSO_RESET, SSO_UPDATE } from 'store/actions/sso';
 
 const initialState = {
@@ -21,8 +20,7 @@ function update(state, { type, ...rest }) {
   };
 }
 
-export default createReducer(initialState, {
-  [SIGN_OUT]: reset,
+export default createAuthReducer(initialState, {
   [SSO_RESET]: reset,
   [SSO_UPDATE]: update,
 });

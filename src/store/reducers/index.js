@@ -7,10 +7,12 @@ import authReducers from '@misakey/auth/store/reducers';
 import reducers from '@misakey/store/reducers';
 import { makeReducer as makeEntities } from '@misakey/store/reducers/entities';
 
+import { wrapReducerWithAuth } from 'store/reducers/helpers/createAuthReducer';
 import access from './access';
 import Layout from './Layout';
 import screens from './screens';
 import sso from './sso';
+
 
 const appReducer = combineReducers({
   ...authReducers,
@@ -19,11 +21,13 @@ const appReducer = combineReducers({
   Layout,
   screens,
   sso,
-  entities: makeEntities({
+  entities: wrapReducerWithAuth({
     applications: {},
     users: {},
     services: {},
-  }),
+    databoxes: {},
+    databoxesByProducer: {},
+  }, makeEntities),
 });
 
 const rootReducer = (state, action) => {

@@ -7,7 +7,6 @@ import ApplicationSchema from 'store/schemas/Application';
 
 import routes from 'routes';
 
-import withApplication from 'components/smart/withApplication';
 import withDataboxURL from 'components/smart/withDataboxURL';
 
 // LAZY
@@ -48,4 +47,4 @@ Contact.defaultProps = {
   databoxURL: null,
 };
 
-export default withDataboxURL()(withApplication(Contact));
+export default withDataboxURL()(Contact);

@@ -1,4 +1,4 @@
-import createReducer from '@misakey/store/reducers/helpers/createReducer';
+import createAuthReducer from 'store/reducers/helpers/createAuthReducer';
 
 import {
   SCREEN_AUTH_RESET,
@@ -20,7 +20,7 @@ function reset() {
   return { ...initialState };
 }
 
-export default createReducer(initialState, {
+export default createAuthReducer(initialState, {
   [SCREEN_AUTH_RESET]: reset,
   [SCREEN_AUTH_SET_EMAIL]: setEmail,
   [SCREEN_AUTH_SET_PASSWORD]: setPassword,

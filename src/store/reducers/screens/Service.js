@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import createReducer from '@misakey/store/reducers/helpers/createReducer';
+import createAuthReducer from 'store/reducers/helpers/createAuthReducer';
 import { SCREEN_SERVICE_RESET, SCREEN_SERVICE_UPDATE } from 'store/actions/screens/Service';
 
 import prop from '@misakey/helpers/prop';
@@ -35,7 +35,7 @@ export const selectors = {
 
 
 // REDUCER
-export default createReducer(initialState, {
+export default createAuthReducer(initialState, {
   [SCREEN_SERVICE_RESET]: reset,
   [SCREEN_SERVICE_UPDATE]: update,
 });

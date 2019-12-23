@@ -1,4 +1,4 @@
-import createReducer from '@misakey/store/reducers/helpers/createReducer';
+import createAuthReducer from 'store/reducers/helpers/createAuthReducer';
 import {
   ACCESS_RESET,
   ACCESS_REQUEST_UPDATE, ACCESS_REQUEST_SET_PRODUCER_KEY,
@@ -35,7 +35,7 @@ const setProducerKey = (state, { producerKey }) => ({
   producerKey,
 });
 
-export default createReducer(initialState, {
+export default createAuthReducer(initialState, {
   [ACCESS_RESET]: reset,
   [ACCESS_REQUEST_UPDATE]: updateRequest,
   [ACCESS_TOKEN_UPDATE]: updateToken,

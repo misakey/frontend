@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import createReducer from '@misakey/store/reducers/helpers/createReducer';
+import createAuthReducer from 'store/reducers/helpers/createAuthReducer';
 
 import {
   CONTACT_DATABOX_URL,
@@ -41,6 +41,6 @@ const addDataboxURL = (state, { databoxURL, mainDomain }) => ({
   databoxURLs: { ...state.databoxURLs, [mainDomain]: databoxURL },
 });
 
-export default createReducer(initialState, {
+export default createAuthReducer(initialState, {
   [CONTACT_DATABOX_URL]: addDataboxURL,
 });

@@ -1,16 +1,20 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { denormalize } from 'normalizr';
 
 import errorTypes from 'constants/errorTypes';
 import API from '@misakey/api';
 
+import DataboxSchema from 'store/schemas/Databox';
 import { accessRequestUpdate } from 'store/actions/access';
+import { receiveDatabox } from 'store/actions/databox';
 
 import identity from '@misakey/helpers/identity';
 import path from '@misakey/helpers/path';
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
+import isObject from '@misakey/helpers/isObject';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
@@ -27,9 +31,15 @@ const DATABOX_READ = {
 };
 
 // HELPERS
-const mapDataboxAccessRequest = ({ owner, id, ...rest }) => ({
-  databoxId: id,
+const isValidDatabox = (databox) => isObject(databox) && !isNil(databox.owner);
+
+const mapDatabox = ({ owner, ...rest }) => ({
   owner: objectToCamelCase(owner),
+  ...rest,
+});
+
+const mapDataboxAccessRequest = ({ id, ...rest }) => ({
+  databoxId: id,
   ...rest,
 });
 
@@ -49,8 +59,8 @@ const databoxIdPath = path(['params', 'databoxId']);
 const withAccessRequest = (Component, mapper = identity) => {
   const Wrapper = ({
     match, location,
-    dispatchAccessRequestUpdate,
-    accessRequest, service,
+    dispatchAccessRequestUpdate, dispatchReceiveDatabox,
+    accessRequest, service, databox,
     ...props
   }) => {
     const [isFetching, setFetching] = useState(false);
@@ -112,12 +122,18 @@ const withAccessRequest = (Component, mapper = identity) => {
           return readAccessRequest(token);
         }
         if (!isNil(databoxId)) {
-          return readDatabox(databoxId)
-            .then(mapDataboxAccessRequest);
+          return (isValidDatabox(databox)
+            ? Promise.resolve(databox)
+            : readDatabox(databoxId))
+            .then((response) => {
+              const box = mapDatabox(response);
+              dispatchReceiveDatabox(box);
+              return mapDataboxAccessRequest(box);
+            });
         }
         throw new Error(errorTypes.notFound);
       },
-      [token, databoxId],
+      [token, databoxId, databox, dispatchReceiveDatabox],
     );
 
     const fetchAccessRequest = useCallback(() => {
@@ -164,21 +180,33 @@ const withAccessRequest = (Component, mapper = identity) => {
       producerId: PropTypes.string,
       token: PropTypes.string,
     }),
+    databox: PropTypes.shape(DataboxSchema.propTypes),
+    dispatchReceiveDatabox: PropTypes.func.isRequired,
     dispatchAccessRequestUpdate: PropTypes.func.isRequired,
   };
 
   Wrapper.defaultProps = {
     accessRequest: {},
     service: {},
+    databox: null,
   };
 
   // CONNECT
-  const mapStateToProps = (state) => ({
-    accessRequest: state.access.request,
-  });
+  const mapStateToProps = (state, ownProps) => {
+    const databoxId = databoxIdPath(ownProps.match);
+    return {
+      databox: denormalize(
+        databoxId,
+        DataboxSchema.entity,
+        state.entities,
+      ),
+      accessRequest: state.access.request,
+    };
+  };
 
   const mapDispatchToProps = (dispatch) => ({
     dispatchAccessRequestUpdate: (accessRequest) => dispatch(accessRequestUpdate(accessRequest)),
+    dispatchReceiveDatabox: (databox) => dispatch(receiveDatabox(databox)),
   });
 
   return connect(mapStateToProps, mapDispatchToProps)(Wrapper);

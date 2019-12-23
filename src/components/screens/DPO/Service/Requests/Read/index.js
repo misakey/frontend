@@ -186,7 +186,8 @@ FieldBlob.propTypes = {
 FieldBlob = withTranslation('fields')(withErrors(FieldBlob));
 
 function ServiceRequestsRead({
-  match: { params }, accessRequest, accessToken,
+  match: { params }, location: { hash },
+  accessRequest, accessToken,
   isLoading, isFetching, error, accessRequestError,
   appBarProps, t, ...rest
 }) {
@@ -217,14 +218,19 @@ function ServiceRequestsRead({
     [accessToken],
   );
 
+  const hashToken = useMemo(
+    () => (!isEmpty(hash) ? hash.substr(1) : null),
+    [hash],
+  );
+
   const databoxId = useMemo(
-    () => databoxIdProp(accessToken) || databoxIdProp(accessRequest) || params.databoxId,
-    [accessRequest, accessToken, params.databoxId],
+    () => databoxIdProp(accessRequest) || params.databoxId,
+    [accessRequest, params.databoxId],
   );
 
   const owner = useMemo(
-    () => ownerProp(accessToken) || ownerProp(accessRequest),
-    [accessToken, accessRequest],
+    () => ownerProp(accessRequest),
+    [accessRequest],
   );
 
   const handle = useMemo(
@@ -247,9 +253,22 @@ function ServiceRequestsRead({
 
   const [isUploading, setUploading] = useState(false);
 
+  const idMatches = useMemo(
+    () => {
+      if (!isNil(hashToken)) {
+        return accessRequest.token === hashToken;
+      }
+      if (!isNil(params.databoxId)) {
+        return accessRequest.databoxId === params.databoxId;
+      }
+      return false;
+    },
+    [hashToken, accessRequest, params.databoxId],
+  );
+
   const shouldFetch = useMemo(
-    () => !isFetchingBlobs && databoxId === params.databoxId && isNil(blobs),
-    [databoxId, isFetchingBlobs, params.databoxId, blobs],
+    () => !isFetchingBlobs && idMatches && isNil(blobs),
+    [isFetchingBlobs, idMatches, blobs],
   );
 
   const handleUpload = useCallback((form, { setFieldError }) => {
@@ -433,6 +452,7 @@ ServiceRequestsRead.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({ databoxId: PropTypes.string }),
   }).isRequired,
+  location: PropTypes.shape({ hash: PropTypes.string }).isRequired,
   t: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,
 };
