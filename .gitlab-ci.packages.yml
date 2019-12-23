@@ -1,0 +1,104 @@
+publish:api:
+  stage: deploy
+  image: node:10.15.3
+  tags:
+    - misakey_js
+  only:
+    refs:
+      - master
+    changes:
+      - src/packages/api/package.json
+  variables:
+    PACKAGE: api 
+  script:
+    - make deploy-package
+
+publish:auth:
+  stage: deploy
+  image: node:10.15.3
+  tags:
+    - misakey_js
+  only:
+    refs:
+      - master
+    changes:
+      - src/packages/auth/package.json
+  variables:
+    PACKAGE: auth 
+  script:
+    - make deploy-package
+
+publish:crypto:
+  stage: deploy
+  image: node:10.15.3
+  tags:
+    - misakey_js
+  only:
+    refs:
+      - master
+    changes:
+      - src/packages/crypto/package.json
+  variables:
+    PACKAGE: crypto 
+  script:
+    - make deploy-package
+
+publish:helpers:
+  stage: deploy
+  image: node:10.15.3
+  tags:
+    - misakey_js
+  only:
+    refs:
+      - master
+    changes:
+      - src/packages/helpers/package.json
+  variables:
+    PACKAGE: helpers 
+  script:
+    - make deploy-package
+
+publish:hooks:
+  stage: deploy
+  image: node:10.15.3
+  tags:
+    - misakey_js
+  only:
+    refs:
+      - master
+    changes:
+      - src/packages/hooks/package.json
+  variables:
+    PACKAGE: hooks 
+  script:
+    - make deploy-package
+
+publish:store:
+  stage: deploy
+  image: node:10.15.3
+  tags:
+    - misakey_js
+  only:
+    refs:
+      - master
+    changes:
+      - src/packages/store/package.json
+  variables:
+    PACKAGE: store 
+  script:
+    - make deploy-package
+
+publish:ui:
+  stage: deploy
+  image: node:10.15.3
+  tags:
+    - misakey_js
+  only:
+    refs:
+      - master
+    changes:
+      - src/packages/ui/package.json
+  variables:
+    PACKAGE: ui 
+  script:
+    - make deploy-package

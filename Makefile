@@ -103,6 +103,36 @@ clean-plugin:  ## Stop and remove dev container for plugin-dev
 deploy: ## Push image to the docker registry
 	@docker push $(DOCKER_IMAGE):$(CI_COMMIT_REF_NAME)
 
+.PHONY: build-package
+.ONESHELL:
+build-package:
+ifeq ($(PACKAGE),)
+	@echo "Should set a PACKAGE var"
+else
+	@cd src/packages/$(PACKAGE)
+	@yarn install
+	@yarn build
+endif
+
+
+.PHONY: deploy-package
+.ONESHELL:
+deploy-package: build-package npm-login ## Deploy package to NPM registry
+ifneq ($(PACKAGE),)
+	@cd src/packages/$(PACKAGE)
+	@sh ../../../scripts/publish_package.sh
+endif
+
+.PHONY: npm-login
+npm-login: ## Log in to the default registry
+ifneq ($(PACKAGE),)
+	@cd src/packages/$(PACKAGE)
+endif
+ifneq ($(NPM_TOKEN),)
+	@echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+endif
+
+
 .PHONY: clean
 clean: ## Remove all images related to the project
 	@docker images | grep $(DOCKER_IMAGE) | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi $(CI_REGISTRY_IMAGE):{}
