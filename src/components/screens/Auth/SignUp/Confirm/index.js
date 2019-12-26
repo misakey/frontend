@@ -27,7 +27,7 @@ AuthSignUpConfirm.defaultProps = {
 };
 
 export default connect((state) => ({
-  email: state.screens.auth.email,
-  password: state.screens.auth.password,
+  email: state.screens.auth.identifier,
+  password: state.screens.auth.secret,
   challenge: state.sso.loginChallenge,
 }))(AuthSignUpConfirm);

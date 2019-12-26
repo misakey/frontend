@@ -38,8 +38,8 @@ const FormCard = ({
 };
 
 FormCard.propTypes = {
-  primary: PropTypes.oneOf([PropTypes.node, PropTypes.object]).isRequired,
-  secondary: PropTypes.oneOf([PropTypes.node, PropTypes.object]),
+  primary: PropTypes.oneOfType([PropTypes.node, PropTypes.object]).isRequired,
+  secondary: PropTypes.oneOfType([PropTypes.node, PropTypes.object]),
   children: PropTypes.node.isRequired,
   subtitle: PropTypes.node,
   title: PropTypes.node,

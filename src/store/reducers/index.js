@@ -12,6 +12,7 @@ import access from './access';
 import Layout from './Layout';
 import screens from './screens';
 import sso from './sso';
+import warning from './warning';
 
 
 const appReducer = combineReducers({
@@ -21,6 +22,7 @@ const appReducer = combineReducers({
   Layout,
   screens,
   sso,
+  warning,
   entities: wrapReducerWithAuth({
     applications: {},
     users: {},

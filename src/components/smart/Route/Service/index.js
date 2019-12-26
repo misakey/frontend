@@ -7,6 +7,7 @@ import routes from 'routes';
 
 import parseJwt from '@misakey/helpers/parseJwt';
 import log from '@misakey/helpers/log';
+import isNil from '@misakey/helpers/isNil';
 import omit from '@misakey/helpers/omit';
 import generatePath from '@misakey/helpers/generatePath';
 
@@ -23,25 +24,56 @@ export const DEFAULT_SERVICE_ENTITY = { mainDomain: DEFAULT_DOMAIN };
 
 // CONSTANTS
 const INTERNAL_PROPS = ['isLoading', 'isAuthenticated'];
+const DEFAULT_SCOPE = 'openid user';
+
+// HOOKS
+const useSignAsSilent = (
+  setLoginInProgress,
+  userManager,
+  requiredScope,
+  setLoginAsScreen,
+  workspace,
+) => useCallback(() => {
+  setLoginInProgress(true);
+  userManager.signinSilent({ scope: `${DEFAULT_SCOPE} ${requiredScope}` })
+    .then(() => { log(`Signin silent as ${workspace} succeed`); })
+    .catch((err) => {
+      log(`Signin silent as ${workspace} failed ${err}`);
+      setLoginAsScreen(true);
+    })
+    .finally(() => { setLoginInProgress(false); });
+}, [requiredScope, setLoginAsScreen, setLoginInProgress, userManager, workspace]);
 
 function RouteService({
   component: Component, componentProps,
   dispatchUpdateRoles,
   isAuthenticated,
-  t,
   requiredScope,
   userHasRole,
   userScope,
+  userEmail,
   userId,
   userManager,
   mainDomain,
   workspace,
+  t,
   ...rest
 }) {
   const signIn = useCallback(() => userManager.signinRedirect(), [userManager]);
-  const signInAs = useCallback(() => userManager.signinRedirect({ scope: `openid user ${requiredScope}` }), [requiredScope, userManager]);
+  const signInAs = useCallback(() => userManager.signinRedirect({
+    ...(!isNil(userEmail) ? { login_hint: userEmail } : {}),
+    scope: `${DEFAULT_SCOPE} ${requiredScope}`,
+  }), [requiredScope, userEmail, userManager]);
+
   const [loginAsScreen, setLoginAsScreen] = useState(false);
   const [loginInProgress, setLoginInProgress] = useState(false);
+  const signInAsSilent = useSignAsSilent(
+    setLoginInProgress,
+    userManager,
+    requiredScope,
+    setLoginAsScreen,
+    workspace,
+  );
   const pathToClaim = useMemo(
     () => generatePath(routes[workspace].service.claim._, { mainDomain }), [mainDomain, workspace],
   );
@@ -85,7 +117,13 @@ function RouteService({
         />
       );
     }
-    if (userHasRole && !userScope.includes(requiredScope)) {
+
+    if (!userScope.includes(requiredScope) && userHasRole) {
+      if (window.env.AUTH.automaticSilentRenew === false) {
+        setLoginAsScreen(true);
+        return null;
+      }
+
       if (loginInProgress) {
         return (
           <Screen
@@ -102,23 +140,14 @@ function RouteService({
           </Screen>
         );
       }
-      setLoginInProgress(true);
-      userManager.signinSilent({ scope: `openid user ${requiredScope}` })
-        .then(() => {
-          log(`Signin silent as ${workspace} succeed`);
-        })
-        .catch((err) => {
-          log(`Signin silent as ${workspace} failed ${err}`);
-          setLoginAsScreen(true);
-        })
-        .finally(() => {
-          setLoginInProgress(false);
-        });
+
+      signInAsSilent();
       return null;
     }
+
     const { location } = props;
 
-    if (!userHasRole && location.pathname !== pathToClaim) {
+    if (!userScope.includes(requiredScope) && location.pathname !== pathToClaim) {
       return (
         <BoxAction
           title={name && t(`screens:Service.Actions.claim.${workspace}.description`)}
@@ -132,6 +161,7 @@ function RouteService({
         />
       );
     }
+
     return <Component {...renderProps} />;
   };
 
@@ -159,6 +189,7 @@ RouteService.propTypes = {
   userScope: PropTypes.string,
   userHasRole: PropTypes.bool,
   userId: PropTypes.string,
+  userEmail: PropTypes.string,
   userManager: PropTypes.object.isRequired,
   mainDomain: PropTypes.string.isRequired,
   workspace: PropTypes.string.isRequired,
@@ -168,6 +199,7 @@ RouteService.defaultProps = {
   componentProps: {},
   isAuthenticated: false,
   userScope: '',
+  userEmail: '',
   userId: null,
   userHasRole: false,
 };
@@ -175,10 +207,12 @@ RouteService.defaultProps = {
 // CONNECT
 const mapStateToProps = (state) => {
   const { sco } = state.auth.id ? parseJwt(state.auth.id) : {};
+  const { email } = state.auth.profile || {};
   return {
     isAuthenticated: !!state.auth.token,
     userRoles: state.auth.roles,
     userScope: sco,
+    userEmail: email,
     userId: state.auth.userId,
   };
 };

@@ -43,7 +43,6 @@ import BoxControls from 'components/dumb/Box/Controls';
 import FieldFile from 'components/dumb/Form/Field/File';
 import Alert from 'components/dumb/Alert';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import SplashScreen from 'components/dumb/SplashScreen';
 import Empty from 'components/dumb/Box/Empty';
 import ScreenAction from 'components/dumb/Screen/Action';
 import withAccessRequest from 'components/smart/withAccessRequest';
@@ -201,13 +200,18 @@ function ServiceRequestsRead({
 
   const [isFetchingDatabox] = useState(false);
   const [errorDatabox] = useState();
+  const [isFetchingBlobs, setFetchingBlobs] = useState(false);
 
   const state = useMemo(
     () => ({
       error: errorDatabox || error || accessRequestError,
-      isLoading: isFetchingDatabox || isLoading || isFetching,
+      isLoading: isFetchingDatabox || isLoading || isFetching || isFetchingBlobs,
     }),
-    [error, errorDatabox, accessRequestError, isFetching, isFetchingDatabox, isLoading],
+    [
+      errorDatabox, error, accessRequestError,
+      isFetchingDatabox, isLoading, isFetching,
+      isFetchingBlobs,
+    ],
   );
 
   const apiToken = useMemo(
@@ -249,7 +253,6 @@ function ServiceRequestsRead({
   );
 
   const [blobs, setBlobs] = useState(null);
-  const [isFetchingBlobs, setFetchingBlobs] = useState(false);
 
   const [isUploading, setUploading] = useState(false);
 
@@ -369,7 +372,6 @@ function ServiceRequestsRead({
           </Typography>
         </BoxMessage>
         <List>
-          {isFetchingBlobs && <SplashScreen />}
           {(!isFetchingBlobs && isEmpty(blobs)) && <Empty />}
           {!isEmpty(blobs) && blobs.map(({ id, ...props }) => <Blob key={id} id={id} {...props} />)}
         </List>

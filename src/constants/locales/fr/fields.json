@@ -26,8 +26,7 @@
   },
   "code": {
     "label": "Code",
-    "helperText": "Remplissez le code à {{count}} chiffre que nous vous avons envoyé",
-    "helperText_plural": "Remplissez le code à {{count}} chiffres que nous vous avons envoyé",
+    "helperText": "Remplissez le code que nous vous avons envoyé par email",
     "error": {
       "invalid": "Ce code est invalide. Vérifiez qu'il correspond au code que nous vous avons envoyé il y a moins de 30min ou redemandez-en un nouveau",
       "expired": "Le code a expiré. Veuillez en demander un nouveau",
@@ -38,13 +37,14 @@
     "label": "Code d'invitation",
     "placeholder": "codePink"
   },
-  "codeConfirmation": {
+  "confirmationCode_secret": {
     "label": "Code de confirmation",
-    "placeholder": "161803",
+    "helperText": "Remplissez le code que nous vous avons envoyé par email",
     "error": {
       "expired": "Le code de confirmation a expiré. Veuillez en demander un nouveau",
       "invalid": "Le code de confirmation est incorrect",
-      "malformed": "Le code de confirmation doit contenir 6 chiffres"
+      "malformed": "Le code de confirmation doit contenir 6 chiffres",
+      "conflict": "Nous vous avons déjà envoyé un code en cours de validité. Revérifiez vos mails ou réessayez dans quelques minutes."
     }
   },
   "displayName": {
@@ -66,6 +66,16 @@
       "not_found": "Aucun compte lié à cet email"
     }
   },
+  "email_identifier": {
+    "label": "Adresse email",
+    "placeholder": "rose.flamingo@misakey.com",
+    "error": {
+      "conflict": "Un compte existe déjà avec cet email",
+      "malformed": "Merci d'entrer une adresse email valide",
+      "not_found": "Aucun compte lié à cet email",
+      "seclevel_insufficient": "Vous avez besoin d'un mot de passe pour vous connecter par ici, ce compte n'a pas de mot de passe configuré."
+    }
+  },
   "file": {
     "label": "Déposer un fichier ici",
     "subtitle": "ou si vous préférez",
@@ -84,6 +94,13 @@
     "error": {
       "invalid": "Le mot de passe n'est pas le bon",
       "malformed": "Le mot de passe doit contenir au moins 8 caractères"
+    }
+  },
+  "password_secret": {
+    "label": "Mot de passe",
+    "placeholder": "********",
+    "error": {
+      "invalid": "Le mot de passe n'est pas le bon"
     }
   },
   "passwordVault": {
@@ -137,12 +154,6 @@
     "action": "Regénérer",
     "label": "Secret",
     "placeholder": "********"
-  },
-  "confirmationCode": {
-    "error": {
-      "expired": "Le code de confirmation a expiré. Nous vous en avons envoyé un nouveau",
-      "invalid": "Le code de confirmation est incorrect"
-    }
   },
   "customRoles": {
     "action": "Editer les rôles",

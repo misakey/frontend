@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
+import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
 import API from '@misakey/api';
 import { signIn } from '../../../store/actions/auth';
@@ -12,29 +13,36 @@ const useHandleSuccess = (
   enqueueSnackbar,
   t,
 ) => useCallback((user) => {
-  const credentials = {
-    expiresAt: user.expires_at,
-    id: user.id_token,
-    token: user.access_token,
-  };
+  const { idToken, accessToken, expiresAt } = objectToCamelCase(user);
+  const credentials = { expiresAt, id: idToken, token: accessToken };
   onSignIn(credentials);
   enqueueSnackbar(t('account.signIn.success'), { variant: 'success' });
 }, [onSignIn, enqueueSnackbar, t]);
 
 const useHandleError = (enqueueSnackbar, t) => useCallback(({ error, errorCode }) => {
+  // Errors from API
   if (error && error.httpStatus) {
     enqueueSnackbar(
       t(`httpStatus.error.${API.errors.filter(error.httpStatus)}`),
       { variant: 'error' },
     );
+    return;
   }
 
+  // Errors from hydra
   if (errorCode) {
     enqueueSnackbar(
       t('httpStatus.error.default'),
       { variant: 'error' },
     );
+    return;
   }
+
+  // Ohers errors (front))
+  enqueueSnackbar(
+    t('httpStatus.error.default'),
+    { variant: 'error' },
+  );
 }, [enqueueSnackbar, t]);
 
 // COMPONENTS
@@ -53,8 +61,8 @@ RedirectAuthCallbackWrapper.propTypes = {
 };
 
 // CONNECT
-const mapDispatchToProps = (onSignIn) => ({
-  onSignIn: (credentials) => onSignIn(signIn(credentials)),
+const mapDispatchToProps = (dispatch) => ({
+  onSignIn: (credentials) => dispatch(signIn(credentials)),
 });
 
 export default connect(null, mapDispatchToProps)(RedirectAuthCallbackWrapper);

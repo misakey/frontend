@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import MUILink from '@material-ui/core/Link';
 import ChipUser from 'components/dumb/Chip/User';
+import { STEP } from 'components/smart/Auth/SignIn/Form/constants';
 
 import routes from 'routes';
 
@@ -30,21 +31,21 @@ UserPublicChip.propTypes = {
   onDelete: PropTypes.func.isRequired,
   userPublicData: PropTypes.shape({
     displayName: PropTypes.string,
-    email: PropTypes.string.isRequired,
+    identifier: PropTypes.string.isRequired,
     avatarUri: PropTypes.string,
   }).isRequired,
 };
 
 const SignInFormCard = ({ fields, handlePrevious, step, t, userPublicData, values }) => {
   const classes = useStyles();
-  const displayChip = step === 'password';
+  const displayChip = step === STEP.secret;
 
   return (
     <div className="SignInFormCardContent">
       {displayChip && (
         <UserPublicChip
           onDelete={handlePrevious}
-          userPublicData={{ ...userPublicData, email: values.email }}
+          userPublicData={{ ...userPublicData, identifier: values.identifier }}
         />
       )}
       {fields}
@@ -67,13 +68,13 @@ const SignInFormCard = ({ fields, handlePrevious, step, t, userPublicData, value
 SignInFormCard.propTypes = {
   fields: PropTypes.node,
   handlePrevious: PropTypes.func.isRequired,
-  step: PropTypes.oneOf(['email', 'password']).isRequired,
+  step: PropTypes.oneOf([STEP.identifier, STEP.secret]).isRequired,
   t: PropTypes.func.isRequired,
   userPublicData: PropTypes.shape({
     displayName: PropTypes.string,
     avatarUri: PropTypes.string,
   }).isRequired,
-  values: PropTypes.shape({ email: PropTypes.string.isRequired }).isRequired,
+  values: PropTypes.shape({ identifier: PropTypes.string.isRequired }).isRequired,
 };
 
 SignInFormCard.defaultProps = {

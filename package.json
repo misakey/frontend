@@ -61,7 +61,7 @@
     "@material-ui/icons": "^4.4.1",
     "@material-ui/lab": "^4.0.0-alpha.26",
     "@misakey/api": "^2.1.2",
-    "@misakey/auth": "^2.3.1",
+    "@misakey/auth": "^2.4.0",
     "@misakey/crypto": "0.8.5",
     "@misakey/helpers": "^3.2.2",
     "@misakey/hooks": "^1.2.1",

@@ -2,18 +2,18 @@ import createAuthReducer from 'store/reducers/helpers/createAuthReducer';
 
 import {
   SCREEN_AUTH_RESET,
-  SCREEN_AUTH_SET_EMAIL,
-  SCREEN_AUTH_SET_PASSWORD,
+  SCREEN_AUTH_SET_IDENTIFIER,
+  SCREEN_AUTH_SET_SECRET,
 } from 'store/actions/screens/auth';
 
-const initialState = { email: '' };
+const initialState = { identifier: '' };
 
-function setEmail(state, { email }) {
-  return { ...state, email };
+function setIdentifier(state, { identifier }) {
+  return { ...state, identifier };
 }
 
-function setPassword(state, { password }) {
-  return { ...state, password };
+function setSecret(state, { secret }) {
+  return { ...state, secret };
 }
 
 function reset() {
@@ -22,6 +22,6 @@ function reset() {
 
 export default createAuthReducer(initialState, {
   [SCREEN_AUTH_RESET]: reset,
-  [SCREEN_AUTH_SET_EMAIL]: setEmail,
-  [SCREEN_AUTH_SET_PASSWORD]: setPassword,
+  [SCREEN_AUTH_SET_IDENTIFIER]: setIdentifier,
+  [SCREEN_AUTH_SET_SECRET]: setSecret,
 });

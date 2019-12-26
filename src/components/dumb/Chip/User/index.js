@@ -26,7 +26,7 @@ const useEvents = (onClick, onDelete) => useMemo(() => {
   return events;
 }, [onClick, onDelete]);
 
-const ChipUser = ({ email, displayName, avatarUri, onClick, onDelete }) => {
+const ChipUser = ({ identifier, displayName, avatarUri, onClick, onDelete }) => {
   const classes = useStyles();
 
   const events = useEvents(onClick, onDelete);
@@ -35,8 +35,8 @@ const ChipUser = ({ email, displayName, avatarUri, onClick, onDelete }) => {
     <Chip
       component="div"
       className={classes.chip}
-      avatar={<AvatarColorized text={displayName || email} image={avatarUri} />}
-      label={displayName || email}
+      avatar={<AvatarColorized text={displayName || identifier} image={avatarUri} />}
+      label={displayName || identifier}
       variant="outlined"
       {...events}
     />
@@ -44,7 +44,7 @@ const ChipUser = ({ email, displayName, avatarUri, onClick, onDelete }) => {
 };
 
 ChipUser.propTypes = {
-  email: PropTypes.string.isRequired,
+  identifier: PropTypes.string.isRequired,
   displayName: PropTypes.string,
   avatarUri: PropTypes.string,
 

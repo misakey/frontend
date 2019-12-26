@@ -1,8 +1,6 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import { withUserManager } from '@misakey/auth/components/OidcProvider';
 
 import path from '@misakey/helpers/path';
 import prop from '@misakey/helpers/prop';
@@ -10,7 +8,7 @@ import clsx from 'clsx';
 
 import ApplicationSchema from 'store/schemas/Application';
 
-import ButtonConnectNoToken from '@misakey/ui/Button/Connect/NoToken';
+import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
 import Title from 'components/dumb/Typography/Title';
 import Subtitle from 'components/dumb/Typography/Subtitle';
 import ScreenAction from 'components/dumb/Screen/Action';
@@ -18,6 +16,8 @@ import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import Card from 'components/dumb/Card';
 import Button from 'components/dumb/Button';
 import ListQuestions, { useQuestionsItems } from 'components/dumb/List/Questions';
+
+import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -35,13 +35,15 @@ const getOwnerEmail = path(['owner', 'email']);
 const getOwnerName = path(['owner', 'display_name']);
 const dpoEmailProp = prop('dpoEmail');
 const nameProp = prop('name');
+const idProp = prop('id');
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  buttonConnectNoToken: { padding: '5px 15px' },
+  buttonConnect: { padding: '5px 15px' },
   p: { marginBottom: theme.spacing(2) },
   justify: { textAlign: 'justify' },
   gridItemLeft: {
+    whiteSpace: 'pre-wrap',
     paddingTop: theme.spacing(2),
     paddingRight: theme.spacing(0),
     [theme.breakpoints.up('sm')]: {
@@ -64,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 
 // COMPONENTS
 const AccessRequestChoose = ({
-  accessRequest, error, isFetching, location, producer, userManager, t,
+  accessRequest, error, isFetching, producer, t,
 }) => {
   const classes = useStyles();
   const questionItems = useQuestionsItems(t, QUESTIONS_TRANS_KEY, 5);
@@ -111,29 +113,20 @@ const AccessRequestChoose = ({
     [accessRequest],
   );
 
-  const name = useMemo(
+  const applicationName = useMemo(
     () => nameProp(producer),
     [producer],
   );
 
-  const fallbackTo = useMemo(
-    () => {
-      const { search, hash } = location;
-      const nextSearch = new URLSearchParams(search);
-      nextSearch.set('noAuth', true);
-      return {
-        search: nextSearch.toString(),
-        hash,
-      };
-    },
-    [location],
+  const producerId = useMemo(
+    () => idProp(producer),
+    [producer],
   );
+  const workspace = 'dpo';
 
-  const signInAction = useCallback(
-    () => {
-      userManager.signinRedirect({ referrer: location });
-    },
-    [location, userManager],
+  const scope = useMemo(
+    () => `openid user ${ROLE_PREFIX_SCOPE}.${workspace}.${producerId}`,
+    [producerId, workspace],
   );
 
   return (
@@ -150,10 +143,10 @@ const AccessRequestChoose = ({
               {t('screens:accessRequest.choose.desc.0', { ownerName })}
             </Typography>
             <Typography className={clsx(classes.p, classes.justify)}>
-              {t('screens:accessRequest.choose.desc.1', { name })}
+              {t('screens:accessRequest.choose.desc.1', { ownerName })}
             </Typography>
             <Typography>
-              {t('screens:accessRequest.choose.desc.2')}
+              {t('screens:accessRequest.choose.desc.2', { applicationName, dpoEmail })}
             </Typography>
             <Grid container>
               <Grid
@@ -164,19 +157,19 @@ const AccessRequestChoose = ({
                 flexDirection="column"
                 justifyContent="space-between"
               >
-                <Typography className={clsx(classes.gridItemLeft, classes.justify)}>
-                  {t('screens:accessRequest.choose.desc.3', { dpoEmail, ownerName })}
-                </Typography>
                 <Box display="flex" justifyContent="center" mt={1}>
                   <Button
                     standing="enhanced"
                     color="secondary"
-                    to={fallbackTo}
-                    component={Link}
-                    text={t('screens:accessRequest.choose.noAuth.label')}
-                    aria-label={t('screens:accessRequest.choose.noAuth.label')}
+                    authProps={{ scope, acrValues: 1, loginHint: dpoEmail }}
+                    component={ButtonConnectSimple}
+                    text={t('screens:accessRequest.choose.defaultDpoAccount.label')}
+                    aria-label={t('screens:accessRequest.choose.defaultDpoAccount.label')}
                   />
                 </Box>
+                <Typography align="center" variant="body2" className={clsx(classes.gridItemLeft)}>
+                  {t('screens:accessRequest.choose.desc.3', { dpoEmail })}
+                </Typography>
               </Grid>
               <Grid
                 item
@@ -186,18 +179,18 @@ const AccessRequestChoose = ({
                 flexDirection="column"
                 justifyContent="space-between"
               >
-                <Typography className={clsx(classes.gridItemRight, classes.justify)}>
-                  {t('screens:accessRequest.choose.desc.4')}
-                </Typography>
                 <Box display="flex" justifyContent="center" mt={1}>
                   <Button
                     standing="main"
-                    signInAction={signInAction}
-                    className={classes.buttonConnectNoToken}
-                    component={ButtonConnectNoToken}
-                    text={t('screens:accessRequest.choose.auth.label')}
+                    authProps={{ scope }}
+                    className={classes.buttonConnect}
+                    component={ButtonConnectSimple}
+                    text={t('screens:accessRequest.choose.userAccount.label')}
                   />
                 </Box>
+                <Typography align="center" variant="body2" className={clsx(classes.gridItemRight)}>
+                  {t('screens:accessRequest.choose.desc.4')}
+                </Typography>
               </Grid>
             </Grid>
           </CardContent>
@@ -237,9 +230,6 @@ AccessRequestChoose.propTypes = {
   }).isRequired,
   producer: PropTypes.shape(ApplicationSchema.propTypes),
   t: PropTypes.func.isRequired,
-  userManager: PropTypes.shape({
-    signinRedirect: PropTypes.func.isRequired,
-  }).isRequired,
 };
 
 AccessRequestChoose.defaultProps = {
@@ -248,4 +238,4 @@ AccessRequestChoose.defaultProps = {
   producer: {},
 };
 
-export default withUserManager(withTranslation(['common', 'screens'])(AccessRequestChoose));
+export default withTranslation(['common', 'screens'])(AccessRequestChoose);

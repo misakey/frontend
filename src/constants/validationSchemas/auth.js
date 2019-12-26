@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import errorTypes from 'constants/errorTypes';
+import mapValues from '@misakey/helpers/mapValues';
 
 // CONSTANTS
 const { malformed, required, invalid } = errorTypes;
@@ -8,13 +9,21 @@ const noTrailingUnderscore = 'noTrailingUnderscore';
 
 const CONFIRM_REGEX = /^[0-9]{6}$/;
 
-export const signInValidationSchema = Yup.object().shape({
-  email: Yup.string()
-    .email(malformed)
-    .required(required),
-  password: Yup.string()
-    .required(required),
-});
+const signInValidationSchema = {
+  identifier: {
+    email: Yup.string()
+      .email(malformed)
+      .required(required),
+  },
+  secret: {
+    password: Yup.string().required(required),
+    confirmationCode: Yup.string().required(required),
+  },
+};
+
+export const getSignInValidationSchema = (fieldTypes) => Yup.object().shape(
+  mapValues(signInValidationSchema, (value, key) => value[fieldTypes[key]]),
+);
 
 
 export const openVaultValidationSchema = Yup.object().shape({

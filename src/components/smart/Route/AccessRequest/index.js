@@ -19,9 +19,7 @@ import withAccessRequest from 'components/smart/withAccessRequest';
 import AccessRequestError from 'components/smart/Route/AccessRequest/Error';
 import useUserHasRole from 'hooks/useUserHasRole';
 
-import { makeStyles } from '@material-ui/core/styles';
 import SplashScreen from 'components/dumb/SplashScreen';
-import ApplicationAvatar from 'components/dumb/Avatar/Application';
 
 import Fallback from './Fallback';
 import Choose from './Choose';
@@ -48,20 +46,6 @@ const producerIdProp = prop('producerId');
 const producerMainDomainProp = prop('mainDomain');
 const databoxIdProp = prop('databoxId');
 
-const hasNoAuth = (location) => {
-  const { search } = location;
-  const searchParams = new URLSearchParams(search);
-  return searchParams.has('noAuth');
-};
-
-// HOOKS
-const useStyles = makeStyles(() => ({
-  avatarParent: {
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-  },
-}));
 
 // COMPONENTS
 function RouteAccessRequest({
@@ -76,13 +60,12 @@ function RouteAccessRequest({
   const Render = ({
     location, match, history,
     accessRequest,
-    isAuthenticated, isConfirmed, userRoles, producer,
+    isAuthenticated, userRoles, producer,
     dispatchOnReceiveProducer,
     isFetching,
     error,
     ...props
   }) => {
-    const classes = useStyles();
     const [internalFetching, setInternalFetching] = useState(false);
     const [internalError, setInternalError] = useState();
 
@@ -97,25 +80,6 @@ function RouteAccessRequest({
       ...props,
       ...componentProps,
     };
-
-    const appBarProps = useMemo(
-      () => ({
-        withUser: false,
-        withSearchBar: false,
-        items: [(
-          // @FIXME Make a dumb component of it
-          <div className={classes.avatarParent} key="applicationAvatarParent">
-            <ApplicationAvatar application={producer} />
-          </div>
-        )],
-      }),
-      [classes.avatarParent, producer],
-    );
-
-    const noAuth = useMemo(
-      () => hasNoAuth(location),
-      [location],
-    );
 
     const producerId = useMemo(
       () => producerIdProp(accessRequest),
@@ -211,18 +175,7 @@ function RouteAccessRequest({
       return <Redirect to={requestReadTo} />;
     }
 
-
-    if (isConfirmed) {
-      return (
-        <Component
-          appBarProps={appBarProps}
-          isAuthenticated={isAuthenticated}
-          {...renderProps}
-        />
-      );
-    }
-
-    if (!isAuthenticated && !noAuth) {
+    if (!isAuthenticated) {
       return <Choose producer={producer} {...renderProps} />;
     }
 
@@ -249,16 +202,7 @@ function RouteAccessRequest({
       producerId: PropTypes.string,
       databoxId: PropTypes.string,
     }),
-    // CONNECT state
-    accessToken: PropTypes.shape({
-      token: PropTypes.string,
-      createdAt: PropTypes.string,
-      expiresAt: PropTypes.string,
-      subject: PropTypes.string,
-      scope: PropTypes.string,
-    }),
     isAuthenticated: PropTypes.bool,
-    isConfirmed: PropTypes.bool,
     userRoles: PropTypes.arrayOf(PropTypes.shape({
       roleLabel: PropTypes.string,
       applicationId: PropTypes.string,
@@ -270,10 +214,8 @@ function RouteAccessRequest({
 
   Render.defaultProps = {
     producer: null,
-    accessToken: {},
     accessRequest: {},
     isAuthenticated: false,
-    isConfirmed: false,
     userRoles: null,
     error: null,
   };
@@ -290,8 +232,6 @@ function RouteAccessRequest({
           ApplicationSchema.entity,
           state.entities,
         ),
-      accessToken: state.access.token,
-      isConfirmed: !!state.access.token.token,
       isAuthenticated: !!state.auth.token,
       userRoles: state.auth.roles,
     };

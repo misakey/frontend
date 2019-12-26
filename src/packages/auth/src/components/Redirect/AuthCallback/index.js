@@ -42,9 +42,9 @@ const useProcessRedirectCallback = (
       userManager.signinRedirect({ scope, referrer, acrValues, prompt: 'login' });
       return false;
     })
-    .catch(() => {
-      if (isFunction(handleSuccess)) {
-        handleError({ error: 'default' });
+    .catch((e) => {
+      if (isFunction(handleError)) {
+        handleError(e);
       }
       return true;
     });

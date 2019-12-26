@@ -8,11 +8,11 @@
     "choose": {
       "title": "Accès au coffre-fort de {{ownerName}} ({{ownerEmail}})",
       "desc": {
-        "0": "{{ownerName}} vous a fait une demande de portabilité RGPD, vous demandant de nous transférer les données que vous avez sur lui ou elle.",
-        "1": "Nous allons vous autoriser à ajouter des données à son coffre fort afin que vous puissiez effectuer ce transfert. Pour cela nous devons vérifier que vous êtes bien le ou la DPO de {{name}}.",
-        "2": "Nous vous proposons deux solutions :",
-        "3": "Ouvrir une session à usage unique : nous allons vous envoyer un email à l'adresse {{dpoEmail}} avec un code, en renseignant ce code sur l'écran suivant vous pourrez déposer des données dans le coffre fort de {{ownerName}}.",
-        "4": "Créer un compte Misakey en tant que DPO (ou vous connecter sur un compte existant) : cela vous permettra d'avoir accès en un seul endroit à toutes les requêtes des utilisateurs de votre service."
+        "0": "Ceci est l’interface de transfert chiffré des données personnelles de {{ownerName}}.",
+        "1": "{{ownerName}} souhaite récupérer ses données personnelles dans son coffre-fort Misakey afin d’assurer la chaîne de confiance lors du transfert.",
+        "2": "L’accès est exclusivement réservé à {{applicationName}} et contrôlé par l’envoi d’un code de confirmation à {{dpoEmail}}.",
+        "3": "Vous permet d’accéder ponctuellement à l’interface à l’aide d’un code de confirmation envoyé à l’e-mail \n {{dpoEmail}}",
+        "4": "Vous permet de vous connecter avec votre compte Misakey ou d’un créer un afin de retrouver sur une même interface toutes les demandes de vos utilisateurs utilisant un coffre-fort Misakey"
       },
       "questions": {
         "title": "Questions fréquentes",
@@ -32,11 +32,11 @@
           "4": "https://docs.misakey.com/#/dpo/?id=je-ne-veux-plus-traiter-toutes-ces-demandes-manuellement-comment-automatiser-ce-processus-"
         }
       },
-      "noAuth": {
-        "label": "Continuer sans compte"
+      "defaultDpoAccount": {
+        "label": "Continuer"
       },
-      "auth": {
-        "label": "J'ai un compte"
+      "userAccount": {
+        "label": "Me connecter"
       }
     },
     "email": {

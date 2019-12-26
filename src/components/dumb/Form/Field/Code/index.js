@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DEFAULT_NAME = 'code';
+const DEFAULT_NAME = 'confirmationCode';
 
 const FieldCode = ({
   autoFocus, className, displayError, errorKeys, field, form,
@@ -76,9 +76,10 @@ const FieldCode = ({
   const { values, setFieldValue } = form;
 
   const defaultLabel = React.useMemo(() => t(`fields:${name}.label`), [t, name]);
+  // @FIXME: use length of code in helperText (doesn't work with _plural and count)
   const helperTextOrTranslation = React.useMemo(() => (
-    helperText || t(`fields:${name}.helperText`, { count: length || 0 })),
-  [helperText, t, name, length]);
+    helperText || t(`fields:${name}.helperText`)),
+  [helperText, t, name]);
 
   const inputs = React.useMemo(() => {
     const response = [];
@@ -197,6 +198,7 @@ const FieldCode = ({
         <Box display="flex" flexDirection="row" alignItems="center">
           {inputs.map((n, i) => (
             <OutlinedInput
+              key={n}
               autoFocus={autoFocus && i === 0}
               className={clsx(classes.input, className)}
               error={displayError}
@@ -258,7 +260,7 @@ FieldCode.propTypes = {
 FieldCode.defaultProps = {
   autoFocus: false,
   className: '',
-  helperText: '',
+  helperText: null,
   helperTextProps: {},
   hidden: false,
   label: undefined,

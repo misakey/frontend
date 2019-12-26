@@ -21,10 +21,12 @@ import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 import APITokenMiddleware from '@misakey/auth/middlewares/APItoken';
 import invalidTokenMiddleware from 'middlewares/invalidToken';
+import invalidSeclevelMiddleware from 'middlewares/invalidSeclevel';
 import cryptoMiddleware from 'middlewares/crypto';
 // routing
 import { BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from 'serviceWorker';
+import routes from 'routes';
 // ui
 import MuiThemeProvider from 'components/smart/ThemeProvider';
 import theme from 'theme';
@@ -94,18 +96,23 @@ if (isSilentAuthIframe()) {
 
   // ADD MIDDLEWARE TO API
   API.addMiddleware(invalidTokenMiddleware(store.dispatch));
+  API.addMiddleware(invalidSeclevelMiddleware(store.dispatch));
   ReactDOM.render((
     <React.Suspense fallback={null}>
       <StoreProvider store={store}>
-        <OidcProvider store={store} config={window.env.AUTH}>
-          <PersistGate loading={<SplashScreen />} persistor={persistor}>
-            <MuiThemeProvider theme={theme}>
-              <Router>
+        <PersistGate loading={<SplashScreen />} persistor={persistor}>
+          <MuiThemeProvider theme={theme}>
+            <Router>
+              <OidcProvider
+                store={store}
+                config={window.env.AUTH}
+                preventSilentAuthFor={[routes.auth.callback]}
+              >
                 <App />
-              </Router>
-            </MuiThemeProvider>
-          </PersistGate>
-        </OidcProvider>
+              </OidcProvider>
+            </Router>
+          </MuiThemeProvider>
+        </PersistGate>
       </StoreProvider>
     </React.Suspense>
   ), document.getElementById('root'));

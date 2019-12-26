@@ -9,7 +9,8 @@ import { Route, Switch } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import RoutePrivate from '@misakey/auth/components/Route/Private';
 import RouteAccessRequest from 'components/smart/Route/AccessRequest';
-import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallback';
+import SeclevelWarningAlert from 'components/smart/Alert/SeclevelWarning';
+import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallbackWrapper';
 
 import ErrorBoundary from 'components/smart/ErrorBoundary';
 import Auth from 'components/screens/Auth';
@@ -59,49 +60,52 @@ function App({ t }) {
           </Switch>
         )}
         {!IS_PLUGIN && (
-          <Switch>
-            <Route exact path={routes._} component={Landing} />
-            {/* LEGALS */}
-            <Route
-              exact
-              path={routes.legals.tos}
-              render={(routerProps) => <Redirect to={t('footer.links.tos.href')} {...routerProps} />}
-            />
-            <Route
-              exact
-              path={routes.legals.privacy}
-              render={(routerProps) => <Redirect to={t('footer.links.privacy.href')} {...routerProps} />}
-            />
+          <>
+            <SeclevelWarningAlert />
+            <Switch>
+              <Route exact path={routes._} component={Landing} />
+              {/* LEGALS */}
+              <Route
+                exact
+                path={routes.legals.tos}
+                render={(routerProps) => <Redirect to={t('footer.links.tos.href')} {...routerProps} />}
+              />
+              <Route
+                exact
+                path={routes.legals.privacy}
+                render={(routerProps) => <Redirect to={t('footer.links.privacy.href')} {...routerProps} />}
+              />
 
-            {/* AUTH and ACCOUNT */}
-            <Route path={routes.auth._} component={Auth} />
-            <RoutePrivate path={routes.account._} component={Account} />
-            <Route
-              exact
-              path={routes.auth.callback}
-              render={(routerProps) => (
-                <TRedirectAuthCallback fallbackReferrers={REFERRERS} t={t} {...routerProps} />
-              )}
-            />
+              {/* AUTH and ACCOUNT */}
+              <Route path={routes.auth._} component={Auth} />
+              <RoutePrivate path={routes.account._} component={Account} />
+              <Route
+                exact
+                path={routes.auth.callback}
+                render={(routerProps) => (
+                  <TRedirectAuthCallback fallbackReferrers={REFERRERS} t={t} {...routerProps} />
+                )}
+              />
 
-            {/* ERRORS */}
-            <Route
-              exact
-              path={routes.errors.forbidden}
-              component={Forbidden}
-            />
+              {/* ERRORS */}
+              <Route
+                exact
+                path={routes.errors.forbidden}
+                component={Forbidden}
+              />
 
-            {/* WORKSPACES */}
-            <Route path={routes.admin._} component={Admin} />
-            <Route path={routes.citizen._} component={Citizen} />
-            <Route path={routes.dpo._} component={DPO} />
+              {/* WORKSPACES */}
+              <Route path={routes.admin._} component={Admin} />
+              <Route path={routes.citizen._} component={Citizen} />
+              <Route path={routes.dpo._} component={DPO} />
 
-            {/* REQUESTS */}
-            <RouteAccessRequest exact path={routes.requests} component={Requests} />
+              {/* REQUESTS */}
+              <RouteAccessRequest exact path={routes.requests} component={Requests} />
 
-            {/* DEFAULT */}
-            <Route component={NotFound} />
-          </Switch>
+              {/* DEFAULT */}
+              <Route component={NotFound} />
+            </Switch>
+          </>
         )}
       </SnackbarProvider>
     </ErrorBoundary>

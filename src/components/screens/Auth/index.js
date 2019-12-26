@@ -1,12 +1,13 @@
-import React, { lazy, useEffect } from 'react';
+import React, { lazy, useEffect, useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch } from 'react-router-dom';
+import API from '@misakey/api';
 
-import pick from '@misakey/helpers/pick';
-import every from '@misakey/helpers/every';
 import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
+import pickAll from '@misakey/helpers/pickAll';
+import every from '@misakey/helpers/every';
+import head from '@misakey/helpers/head';
 import difference from '@misakey/helpers/difference';
 import objectToQueryString from '@misakey/helpers/objectToQueryString';
 import getSearchParams from '@misakey/helpers/getSearchParams';
@@ -15,13 +16,14 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import compose from '@misakey/helpers/compose';
 import complement from '@misakey/helpers/complement';
 import anyPass from '@misakey/helpers/anyPass';
+import isArray from '@misakey/helpers/isArray';
 
 import routes from 'routes';
 
 import { ssoUpdate } from 'store/actions/sso';
 import Screen from 'components/dumb/Screen';
 
-import { screenAuthReset } from 'store/actions/screens/auth';
+import { screenAuthReset, screenAuthSetIdentifier } from 'store/actions/screens/auth';
 
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
 import AuthError from './Error';
@@ -33,13 +35,10 @@ import SignUp from './SignUp';
 const Forgot = lazy(() => import('./Forgot'));
 
 // CONSTANTS
-const SEARCH_PARAMS = ['client_id', 'client_name', 'login_challenge', 'logo_uri'];
+const SEARCH_PARAMS = ['login_challenge'];
 
-// HELPERS
-const pickSearchParams = pick(SEARCH_PARAMS);
-
-const LOGIN_REQUIRED_SEARCH_PARAMS = ['client_id', 'client_name', 'login_challenge', 'logo_uri'];
-const CONSENT_REQUIRED_SEARCH_PARAMS = ['client_id', 'client_name', 'consent_challenge', 'logo_uri'];
+const LOGIN_REQUIRED_SEARCH_PARAMS = ['login_challenge'];
+const CONSENT_REQUIRED_SEARCH_PARAMS = ['consent_challenge'];
 const ERROR_SEARCH_PARAMS = ['error_code', 'error_description'];
 
 const hasRequiredSearchParams = (requiredSearchParamsList) => (searchParams) => (
@@ -55,48 +54,109 @@ const shouldRedirectToLoginFlow = nonePass(
   [hasLoginRequiredParams, hasConsentRequiredParams, hasErrorRequiredParams],
 );
 
+// CONSTANTS
+const APPLICATION_ENDPOINT = {
+  method: 'GET',
+  path: '/application-info/:id',
+};
+
+const LOGIN_INFO_ENDPOINT = {
+  method: 'GET',
+  path: '/login/info',
+};
+
+const fetchApplication = (id) => API
+  .use(APPLICATION_ENDPOINT)
+  .build({ id })
+  .send();
+
+const fetchLoginInfo = (challenge) => API
+  .use(LOGIN_INFO_ENDPOINT)
+  .build(null, null, { login_challenge: challenge })
+  .send();
+
+// HOOKS
+
+const useGetLoginInfos = (challenge, dispatch, setIsFetching, setError) => useCallback(() => {
+  setIsFetching(true);
+  fetchLoginInfo(challenge)
+    .then((response) => {
+      const { clientId, acrValues, loginHint } = objectToCamelCase(response);
+      return fetchApplication(clientId)
+        .then((application) => {
+          const { id, name, logoUri } = objectToCamelCase(application);
+          dispatch(ssoUpdate({
+            clientId: id,
+            clientName: name,
+            logoUri,
+            loginChallenge: challenge,
+            acr: isArray(acrValues) ? parseInt(head(acrValues), 10) : null,
+          }));
+          dispatch(screenAuthSetIdentifier(loginHint));
+        });
+    })
+    .catch((e) => { setError(e); })
+    .finally(() => { setIsFetching(false); });
+}, [challenge, dispatch, setError, setIsFetching]);
 
 // COMPONENT
 function Auth({ dispatch, from, isAuthenticated, location, match, sso, userManager }) {
+  const [error, setError] = useState(null);
+  const [isFetching, setIsFetching] = useState(false);
+
   const searchParams = getSearchParams(location.search);
+  const shouldRedirectToLogin = useMemo(
+    () => shouldRedirectToLoginFlow(searchParams), [searchParams],
+  );
+  const shouldRedirectToErrorScreen = useMemo(
+    () => hasErrorRequiredParams(searchParams) && location.pathname !== routes.auth.error,
+    [location.pathname, searchParams],
+  );
+  const challenge = useMemo(
+    () => sso.loginChallenge || objectToCamelCase(searchParams).loginChallenge,
+    [searchParams, sso.loginChallenge],
+  );
+  const { hasRequiredSsoQueryParams, requiredSsoQueryParams } = useMemo(() => {
+    const ssoQueryParams = objectToSnakeCase(sso);
 
-  function onMount() {
-    if (!isEmpty(searchParams)) {
-      dispatch(ssoUpdate(objectToCamelCase(pickSearchParams(searchParams))));
-    }
+    const requiredParams = pickAll(SEARCH_PARAMS, ssoQueryParams);
+    const hasRequiredParams = every(requiredSsoQueryParams, (element) => !isNil(element));
 
-    return () => {
-      dispatch(screenAuthReset());
+    return {
+      hasRequiredSsoQueryParams: hasRequiredParams,
+      requiredSsoQueryParams: objectToQueryString(requiredParams),
     };
-  }
+  }, [sso]);
 
-  useEffect(onMount, []);
+  const getLoginInfos = useGetLoginInfos(challenge, dispatch, setIsFetching, setError);
 
-  const challenge = searchParams.login_challenge;
+  const state = useMemo(() => ({ isLoading: isFetching, error }), [error, isFetching]);
 
-  if (shouldRedirectToLoginFlow(searchParams)) {
+  useEffect(() => {
+    getLoginInfos();
+
+    return () => dispatch(screenAuthReset());
+  }, [dispatch, getLoginInfos]);
+
+  if (shouldRedirectToLogin) {
     if (isAuthenticated) {
       return <Redirect to={from || routes.account._} />;
     }
 
-    const ssoQueryParams = objectToSnakeCase(sso);
-
-    const hasSsoQueryParams = difference(SEARCH_PARAMS, Object.keys(ssoQueryParams)).length === 0;
-    if (hasSsoQueryParams && every(ssoQueryParams, (p) => !isNil(p))) {
-      const queryParams = objectToQueryString(ssoQueryParams);
-      return <Redirect to={`${location.pathname}?${queryParams}`} />;
+    if (hasRequiredSsoQueryParams) {
+      return <Redirect to={`${location.pathname}?${requiredSsoQueryParams}`} />;
     }
 
     userManager.signinRedirect();
   }
 
-  if (hasErrorRequiredParams(searchParams) && location.pathname !== routes.auth.error) {
+  if (shouldRedirectToErrorScreen) {
     const queryParams = objectToQueryString({ ...searchParams, error_location: location.pathname });
     return <Redirect to={`${routes.auth.error}?${queryParams}`} />;
   }
 
   return (
-    <Screen hideAppBar display="flex" justifyContent="center" alignItems="center">
+    <Screen hideAppBar state={state} display="flex" justifyContent="center" alignItems="center">
       <Switch>
         <Route path={routes.auth.error} component={AuthError} />
         <Route path={routes.auth.signUp._} component={SignUp} />
@@ -120,7 +180,7 @@ Auth.propTypes = {
   isAuthenticated: PropTypes.bool,
   location: PropTypes.shape({ search: PropTypes.string, pathname: PropTypes.string }).isRequired,
   match: PropTypes.shape({ path: PropTypes.string }).isRequired,
-  sso: PropTypes.shape({ loginChallenge: PropTypes.string }).isRequired,
+  sso: PropTypes.shape({ loginChallenge: PropTypes.string, clientId: PropTypes.string }).isRequired,
   userManager: PropTypes.object.isRequired,
 };
 

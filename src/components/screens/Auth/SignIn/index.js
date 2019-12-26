@@ -6,23 +6,23 @@ import DEFAULT_VALUES from 'components/smart/Auth/SignIn/values.json';
 
 import SignInComponent from 'components/smart/Auth/SignIn';
 
-function AuthSignIn({ challenge, email }) {
+function AuthSignIn({ challenge, identifier }) {
   return (
     <SignInComponent
       displayCard
       challenge={challenge}
-      initialValues={{ ...DEFAULT_VALUES, email }}
+      initialValues={{ ...DEFAULT_VALUES, identifier }}
     />
   );
 }
 
 AuthSignIn.propTypes = {
   challenge: PropTypes.string.isRequired,
-  email: PropTypes.string,
+  identifier: PropTypes.string,
 };
 
 AuthSignIn.defaultProps = {
-  email: '',
+  identifier: '',
 };
 
-export default connect((state) => ({ ...state.screens.auth }))(AuthSignIn);
+export default connect((state) => ({ identifier: state.screens.auth.identifier }))(AuthSignIn);

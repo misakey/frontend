@@ -228,7 +228,7 @@ const AuthForgot = ({ challenge, email, t, history, isAuthenticated }) => {
         >
           <Box alignItems="center" flexDirection="column" display="flex">
             <ChipUser
-              email={email}
+              identifier={email}
               {...userPublicData}
               onClick={onPrevious}
               onDelete={onPrevious}
@@ -271,7 +271,7 @@ AuthForgot.propTypes = {
 // CONNECT
 const mapStateToProps = (state) => ({
   challenge: state.sso.loginChallenge,
-  email: state.screens.auth.email,
+  email: state.screens.auth.identifier,
   isAuthenticated: !!state.auth.token,
 });
 

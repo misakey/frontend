@@ -30,8 +30,8 @@ const SignUpConfirmForm = ({ displayCard, fields, values, t, ...formProps }) => 
 
   const Card = displayCard && (
     <FormCard
-      primary={signUpConfirmSecondaryAction}
-      secondary={signUpConfirmPrimaryAction}
+      primary={signUpConfirmPrimaryAction}
+      secondary={signUpConfirmSecondaryAction}
       title={<AuthCardTitle name="signUpConfirm" />}
       subtitle={<AuthCardSubTitle name="signUpConfirm" email={values.email} />}
     >

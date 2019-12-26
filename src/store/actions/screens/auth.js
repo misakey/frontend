@@ -1,28 +1,28 @@
 
 export const SCREEN_AUTH_RESET = 'SCREEN_AUTH_RESET';
-export const SCREEN_AUTH_SET_EMAIL = 'SCREEN_AUTH_SET_EMAIL';
-export const SCREEN_AUTH_SET_PASSWORD = 'SCREEN_AUTH_SET_PASSWORD';
+export const SCREEN_AUTH_SET_IDENTIFIER = 'SCREEN_AUTH_SET_IDENTIFIER';
+export const SCREEN_AUTH_SET_SECRET = 'SCREEN_AUTH_SET_SECRET';
 
 export function screenAuthReset() {
   return {
     type: SCREEN_AUTH_RESET,
   };
 }
-export function screenAuthSetEmail(email) {
+export function screenAuthSetIdentifier(identifier) {
   return {
-    type: SCREEN_AUTH_SET_EMAIL,
-    email,
+    type: SCREEN_AUTH_SET_IDENTIFIER,
+    identifier,
   };
 }
-export function screenAuthSetPassword(password) {
+export function screenAuthSetSecret(secret) {
   return {
-    type: SCREEN_AUTH_SET_PASSWORD,
-    password,
+    type: SCREEN_AUTH_SET_SECRET,
+    secret,
   };
 }
-export function screenAuthSetCredentials(email, password) {
+export function screenAuthSetCredentials(identifier, secret) {
   return (dispatch) => Promise.all([
-    dispatch(screenAuthSetEmail(email)),
-    dispatch(screenAuthSetPassword(password)),
+    dispatch(screenAuthSetIdentifier(identifier)),
+    dispatch(screenAuthSetSecret(secret)),
   ]);
 }

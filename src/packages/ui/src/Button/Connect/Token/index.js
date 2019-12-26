@@ -36,7 +36,7 @@ const useHandleMenu = (setAnchorEl) => useCallback(
 const useHandleClose = (setAnchorEl) => useCallback(() => setAnchorEl(null), [setAnchorEl]);
 const useOpen = (anchorEl) => useMemo(() => Boolean(anchorEl), [anchorEl]);
 
-const useUserId = (id) => useMemo(() => (id ? parseJwt(id).sub : undefined), [id]);
+const useParseIdToken = (id) => useMemo(() => (id ? parseJwt(id) : {}), [id]);
 
 const useHandleSignOut = (onSignOut, handleClose, userId, enqueueSnackbar, t) => useCallback(
   (event) => {
@@ -122,7 +122,8 @@ const ButtonConnectToken = ({
   const handleMenu = useHandleMenu(setAnchorEl);
   const handleClose = useHandleClose(setAnchorEl);
 
-  const userId = useUserId(id);
+  const { sub: userId, acr } = useParseIdToken(id);
+  const seclevel = useMemo(() => parseInt(acr, 10), [acr]);
 
   const handleEnqueueSnackbar = useMemo(
     () => (isFunction(enqueueSnackbar) ? enqueueSnackbar : noop),
@@ -197,14 +198,16 @@ const ButtonConnectToken = ({
         open={open}
         onClose={handleClose}
       >
-        <MenuItem
-          button
-          component={AccountLink}
-          onClick={handleClose}
-        >
-          {t('account.profile', 'My profile')}
-        </MenuItem>
-        {profile && (
+        {seclevel > 1 && (
+          <MenuItem
+            button
+            component={AccountLink}
+            onClick={handleClose}
+          >
+            {t('account.profile', 'My profile')}
+          </MenuItem>
+        )}
+        {profile && seclevel > 1 && (
           <MenuItem
             button
             component="li"
