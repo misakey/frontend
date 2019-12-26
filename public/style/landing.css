@@ -1,31 +1,4 @@
-/* fallback */
-@font-face {
-  font-family: 'Material Icons';
-  font-style: normal;
-  font-weight: 400;
-  src: url(./materialicons.woff2) format('woff2');
-}
 
-/* roboto-regular - latin */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-  src: url('https://static.misakey.com/fonts/Roboto/roboto-latin-400.woff');
-  src: local('Roboto'), local('Roboto-Regular'),
-       url('https://static.misakey.com/fonts/Roboto/roboto-latin-400.woff2') format('woff2'), /* Super Modern Browsers */
-       url('https://static.misakey.com/fonts/Roboto/Roboto-Regular.ttf') format('truetype'); /* Safari, Android, iOS */
-}
-
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 500;
-  src: url('https://static.misakey.com/fonts/Roboto/roboto-latin-500.woff');
-  src: local('Roboto'), local('Roboto-Bold'),
-       url('https://static.misakey.com/fonts/Roboto/roboto-latin-500.woff2') format('woff2'), /* Super Modern Browsers */
-       url('https://static.misakey.com/fonts/Roboto/Roboto-Bold.ttf') format('truetype'); /* Safari, Android, iOS */
-}
 
 html {
   font-family: -apple-system, Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
@@ -37,22 +10,6 @@ optgroup,
 select,
 textarea {
   font-family: -apple-system, Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-}
-
-.material-icons {
-  font-family: 'Material Icons';
-  font-weight: normal;
-  font-style: normal;
-  font-size: 24px;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  display: inline-block;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  -moz-font-feature-settings: 'liga';
-  -moz-osx-font-smoothing: grayscale;
 }
 
 .pink-text {
