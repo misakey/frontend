@@ -94,25 +94,23 @@ if (isSilentAuthIframe()) {
   const store = createStore(persistedReducer, compose(applyMiddleware(...storeMiddleWares)));
   const persistor = persistStore(store);
 
+  const silentAuthBlacklist = [routes.auth.callback];
+
   // ADD MIDDLEWARE TO API
   API.addMiddleware(invalidTokenMiddleware(store.dispatch));
   API.addMiddleware(invalidSeclevelMiddleware(store.dispatch));
   ReactDOM.render((
     <React.Suspense fallback={null}>
       <StoreProvider store={store}>
-        <PersistGate loading={<SplashScreen />} persistor={persistor}>
-          <MuiThemeProvider theme={theme}>
-            <Router>
-              <OidcProvider
-                store={store}
-                config={window.env.AUTH}
-                preventSilentAuthFor={[routes.auth.callback]}
-              >
+        <OidcProvider store={store} config={window.env.AUTH} silentBlacklist={silentAuthBlacklist}>
+          <PersistGate loading={<SplashScreen />} persistor={persistor}>
+            <MuiThemeProvider theme={theme}>
+              <Router>
                 <App />
-              </OidcProvider>
-            </Router>
-          </MuiThemeProvider>
-        </PersistGate>
+              </Router>
+            </MuiThemeProvider>
+          </PersistGate>
+        </OidcProvider>
       </StoreProvider>
     </React.Suspense>
   ), document.getElementById('root'));

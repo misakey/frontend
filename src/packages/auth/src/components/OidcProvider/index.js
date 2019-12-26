@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
 import React, { useEffect, createContext, useCallback } from 'react';
 import log from '@misakey/helpers/log';
 import isNil from '@misakey/helpers/isNil';
@@ -12,7 +11,12 @@ export const UserManagerContext = createContext({
   userManager: null,
 });
 
-function OidcProvider({ store, children, config, location: { pathname }, preventSilentAuthFor }) {
+
+function shouldLaunchSilentAuth(silentAuthBlacklist) {
+  return !silentAuthBlacklist.includes(window.location.pathname);
+}
+
+function OidcProvider({ store, children, config, silentBlacklist }) {
   const userManager = createUserManager(config);
   const fetchUserRoles = useGetRoles((roles) => store.dispatch(loadUserRoles(roles)));
 
@@ -71,7 +75,7 @@ function OidcProvider({ store, children, config, location: { pathname }, prevent
       if (!isNil(user)) {
         onUserLoaded(user);
       } else if (userManager.settings.automaticSilentRenew) {
-        if (!preventSilentAuthFor.includes(pathname)) {
+        if (shouldLaunchSilentAuth(silentBlacklist)) {
           userManager.signinSilent()
             .then(() => {
               log('OidcProvider.initialSilentAuth: Silent auth successful');
@@ -81,7 +85,7 @@ function OidcProvider({ store, children, config, location: { pathname }, prevent
         }
       }
     });
-  }, [onUserLoaded, pathname, preventSilentAuthFor, userManager]);
+  }, [onUserLoaded, silentBlacklist, userManager]);
 
   useEffect(() => {
     // register the event callbacks
@@ -108,8 +112,6 @@ function OidcProvider({ store, children, config, location: { pathname }, prevent
     onSilentRenewError,
     onAccessTokenExpired,
     loadUserAtMount,
-    preventSilentAuthFor,
-    pathname,
   ]);
 
 
@@ -132,10 +134,7 @@ OidcProvider.propTypes = {
     scope: PropTypes.string,
   }),
   store: PropTypes.object,
-  location: PropTypes.shape({
-    pathname: PropTypes.string.isRequired,
-  }).isRequired,
-  preventSilentAuthFor: PropTypes.arrayOf(PropTypes.string),
+  silentBlacklist: PropTypes.arrayOf(PropTypes.string),
 };
 
 OidcProvider.defaultProps = {
@@ -147,7 +146,7 @@ OidcProvider.defaultProps = {
     loadUserInfo: false,
   },
   store: null,
-  preventSilentAuthFor: [],
+  silentBlacklist: [],
 };
 
 export const withUserManager = (Component) => (props) => (
@@ -156,4 +155,4 @@ export const withUserManager = (Component) => (props) => (
   </UserManagerContext.Consumer>
 );
 
-export default withRouter(OidcProvider);
+export default OidcProvider;
