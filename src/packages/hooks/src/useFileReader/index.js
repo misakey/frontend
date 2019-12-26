@@ -66,6 +66,14 @@ const useOnClearProgress = (setProgress) => useCallback(
   }, [setProgress],
 );
 
+const useOnReset = (setFile, setPreview) => useCallback(
+  () => {
+    setFile(undefined);
+    setPreview(undefined);
+  },
+  [setFile, setPreview],
+);
+
 
 export default ({ onLoadStart, onProgress, onLoad, onError }) => {
   const [progress, setProgress] = useState();
@@ -81,6 +89,7 @@ export default ({ onLoadStart, onProgress, onLoad, onError }) => {
 
   const onClearProgress = useOnClearProgress(setProgress);
   const onChange = useOnChange(handleLoadStart, handleProgress, handleLoad, handleFileError);
+  const onReset = useOnReset(setFile, setPreview);
 
-  return [{ file, preview, progress }, { onChange, onClearProgress }];
+  return [{ file, preview, progress }, { onChange, onClearProgress, onReset }];
 };

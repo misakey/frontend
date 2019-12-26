@@ -11,6 +11,7 @@ import tDefault from '@misakey/helpers/tDefault';
 import { makeStyles } from '@material-ui/core/styles';
 import useFileReader from '@misakey/hooks/useFileReader';
 import useDrag from '@misakey/hooks/useDrag';
+import usePropChanged from 'hooks/usePropChanged';
 
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -91,8 +92,17 @@ const useHandleError = (error, onError) => useEffect(() => {
   }
 }, [error, onError]);
 
+const useHandleFieldValue = (valueChanged, value, file, onReset) => useEffect(
+  () => {
+    if (valueChanged && !isNil(file) && file !== value) {
+      onReset();
+    }
+  },
+  [valueChanged, value, file, onReset],
+);
+
 // COMPONENTS
-const FileField = ({ className, t, onChange, onError, accept }) => {
+const FileField = ({ className, t, onChange, onError, accept, field: { value } }) => {
   const [error, setError] = useState();
   const [dragActive, dragEvents] = useDrag();
 
@@ -105,15 +115,18 @@ const FileField = ({ className, t, onChange, onError, accept }) => {
   const onFileError = useOnError(setError);
   const [
     { file, preview, progress },
-    { onChange: onFileChange },
+    { onChange: onFileChange, onReset },
   ] = useFileReader({ onError: onFileError });
 
   const onClick = useOnClick(inputRef);
 
   const acceptString = useAcceptString(accept);
 
+  const valueChanged = usePropChanged(value);
+
   useHandleError(error, onError);
   useHandleChange(file, preview, progress, onChange);
+  useHandleFieldValue(valueChanged, value, file, onReset);
 
   return (
     <div className={containerClassName} {...dragEvents}>
@@ -171,6 +184,9 @@ FileField.propTypes = {
   className: PropTypes.string,
   onChange: PropTypes.func,
   onError: PropTypes.func,
+  field: PropTypes.shape({
+    value: PropTypes.object,
+  }),
   t: PropTypes.func,
 };
 
@@ -179,6 +195,7 @@ FileField.defaultProps = {
   onChange: undefined,
   onError: undefined,
   accept: [],
+  field: {},
   t: tDefault,
 };
 

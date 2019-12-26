@@ -148,6 +148,7 @@ let FieldBlob = ({
   setFieldValue,
   setFieldTouched,
   t,
+  ...rest
 }) => {
   const onChange = useCallback(
     (file) => {
@@ -163,6 +164,7 @@ let FieldBlob = ({
         accept={['*']}
         className={className}
         onChange={onChange}
+        {...rest}
       />
       {displayError && (
         <FormHelperText error={displayError}>
@@ -274,7 +276,7 @@ function ServiceRequestsRead({
     [isFetchingBlobs, idMatches, blobs],
   );
 
-  const handleUpload = useCallback((form, { setFieldError }) => {
+  const handleUpload = useCallback((form, { setFieldError, resetForm }) => {
     handleClose();
     setUploading(true);
 
@@ -307,6 +309,7 @@ function ServiceRequestsRead({
                 setBlobs(nextBlobs);
                 const text = t('screens:Service.requests.read.upload.success', response);
                 enqueueSnackbar(text, { variant: 'success' });
+                resetForm(INITIAL_VALUES);
               });
           });
       })
