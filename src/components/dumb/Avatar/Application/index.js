@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import ApplicationSchema from 'store/schemas/Application';
 
 import isNil from '@misakey/helpers/isNil';
+import isNumber from '@misakey/helpers/isNumber';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -55,7 +56,6 @@ const ApplicationAvatar = ({ application, t, displayRating, displayMainDomain })
     [name, mainDomain],
   );
 
-
   return (
     <Box className={classes.appBlock}>
       <ApplicationImg
@@ -77,7 +77,7 @@ const ApplicationAvatar = ({ application, t, displayRating, displayMainDomain })
               {mainDomain}
             </Typography>
           )}
-          {displayRating && avgRating && (
+          {displayRating && isNumber(avgRating) && avgRating > 0 && (
             <Rating
               readOnly
               size="small"
