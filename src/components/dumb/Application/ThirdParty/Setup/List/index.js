@@ -67,11 +67,9 @@ function TrackerList({ entities, secondaryAction, title }) {
                   { [classes.letterAvatar]: isEmpty(entity.logoUri) },
                 ),
               }}
-              alt=""
+              applicationName={entity.name}
               src={!isEmpty(entity.logoUri) ? entity.logoUri : undefined}
-            >
-              {entity.name.slice(0, 3)}
-            </ApplicationImg>
+            />
           </ListItemAvatar>
           <ListItemText
             primary={entity.name}

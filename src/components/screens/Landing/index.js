@@ -5,6 +5,8 @@ import { withTranslation } from 'react-i18next';
 
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
+
+import LinkedApplicationsList from 'components/smart/List/LinkedApplications';
 import Footer from 'components/dumb/Footer';
 import Screen from 'components/dumb/Screen';
 import Title from 'components/dumb/Typography/Title';
@@ -17,7 +19,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
-    justifyContent: 'center',
   },
   containerRoot: {
     height: '100%',
@@ -58,6 +59,7 @@ const LandingScreen = ({ t }) => {
                 {t('screens:landing.subtitle')}
               </Title>
             </Box>
+            <LinkedApplicationsList />
           </div>
           <Footer />
         </div>

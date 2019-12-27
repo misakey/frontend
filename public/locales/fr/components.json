@@ -4,5 +4,10 @@
       "title": "Il n'y a rien dans cette liste pour l'instant",
       "text": ""
     }
+  },
+  "linkedApplications": {
+    "title": "Mes requêtes",
+    "noApp": "Vous n'avez encore contacté aucun site. Vous pouvez en chercher un pour le contacter.",
+    "error": "Une erreur est survenue lors de la récupération des applications"
   }
 }

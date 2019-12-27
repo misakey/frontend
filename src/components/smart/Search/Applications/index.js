@@ -6,7 +6,7 @@ import { generatePath, useHistory } from 'react-router-dom';
 
 import map from '@misakey/helpers/map';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import isNull from '@misakey/helpers/isNull';
+import isNil from '@misakey/helpers/isNil';
 import isObject from '@misakey/helpers/isObject';
 
 import API from '@misakey/api';
@@ -23,7 +23,6 @@ import useLocationWorkspace from 'hooks/useLocationWorkspace';
 import { ROLE_LABELS } from 'constants/Roles';
 
 import SearchAsync from 'components/dumb/Search/Async';
-import ApplicationImg from 'components/dumb/Application/Img';
 
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import AddIcon from '@material-ui/icons/Add';
@@ -34,6 +33,8 @@ import List from '@material-ui/core/List';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
+
+import ApplicationListItem from 'components/dumb/ListItem/Application';
 
 function getPopperListboxHeight(theme, media) {
   const toolbar = theme.mixins.toolbar[media] || theme.mixins.toolbar;
@@ -95,6 +96,7 @@ const useStyles = makeStyles((theme) => ({
   option: {
     color: 'inherit',
     textDecoration: 'none',
+    flexGrow: 1,
   },
   secondaryAction: {
     [theme.breakpoints.down('sm')]: {
@@ -140,44 +142,28 @@ NoOption.propTypes = {
 
 const NoOptionWithTranslation = withTranslation('screens')(NoOption);
 
-function Option({ classes, logoUri, mainDomain, name }) {
-  if (isNull(mainDomain)) { return <NoOptionWithTranslation classes={classes} />; }
+function Option({ classes, application }) {
+  if (isNil(application.mainDomain)) { return <NoOptionWithTranslation classes={classes} />; }
 
-  return (
-    <Box
-      position="relative"
-      display="flex"
-      alignItems="center"
-      width="100%"
-      className={classes.option}
-    >
-      <ListItemAvatar>
-        <ApplicationImg alt={mainDomain} src={logoUri} />
-      </ListItemAvatar>
-      <ListItemText
-        primary={name}
-        secondary={mainDomain}
-      />
-      <ListItemSecondaryAction className={classes.secondaryAction}>
-        <IconButton edge="end" aria-label="see">
-          <ArrowForwardIcon />
-        </IconButton>
-      </ListItemSecondaryAction>
-    </Box>
-  );
+  // @FIXME: find a way to make it work with a listItem and not a Box as component
+  // Or understand why it's broken with a ListItem (probably there is already a list item in the
+  // render used by the autocomplete component)
+  // It's possible we don't want to use autoocmplete for our usecase here, it seems to bring a lot
+  // of complexity and it's hard to reuse components.
+  return <ApplicationListItem application={application} isBox />;
 }
 
 Option.propTypes = {
   classes: PropTypes.object.isRequired,
-  logoUri: PropTypes.string,
-  mainDomain: PropTypes.string,
-  name: PropTypes.string,
+  application: PropTypes.object,
 };
 
 Option.defaultProps = {
-  logoUri: '',
-  mainDomain: null,
-  name: '',
+  application: {
+    logoUri: '',
+    mainDomain: null,
+    name: '',
+  },
 };
 
 function SearchApplications({ isAuthenticated, ...rest }) {
@@ -234,7 +220,9 @@ function SearchApplications({ isAuthenticated, ...rest }) {
       ListboxComponent={List}
       onGetOptions={getApplications}
       onSubmit={(e) => { e.preventDefault(); }}
-      renderOption={(props) => <Option {...props} classes={classes} role={role} />}
+      renderOption={
+        (application) => <Option application={application} classes={classes} role={role} />
+      }
       {...rest}
     />
   );

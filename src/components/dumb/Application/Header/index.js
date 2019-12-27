@@ -237,7 +237,7 @@ function ApplicationHeader({
       <Box display="flex" className={classes.flexWrap}>
         <Box display="flex" flexWrap="nowrap" alignItems="center" className={classes.flexGrow}>
           <ApplicationImg
-            alt={t('screens:application.info.logoAlt', { applicationName })}
+            applicationName={applicationName}
             component="a"
             target="_blank"
             rel="noopener noreferrer"
@@ -245,9 +245,7 @@ function ApplicationHeader({
             fontSize="large"
             src={!isEmpty(logoUri) ? logoUri : undefined}
             className={clsx(classes.avatar, { [classes.letterAvatar]: isEmpty(logoUri) })}
-          >
-            {applicationName.slice(0, 3)}
-          </ApplicationImg>
+          />
           <Box>
             {isLoading ? <OnLoading width={width} /> : (
               <GroupTitles

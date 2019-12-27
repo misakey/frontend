@@ -4,6 +4,9 @@ import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import Container from '@material-ui/core/Container';
+
+import omit from '@misakey/helpers/omit';
+
 import Card from 'components/dumb/Card';
 import ScreenAction from 'components/dumb/Screen/Action';
 import Subtitle from 'components/dumb/Typography/Subtitle';
@@ -57,7 +60,7 @@ const AccountAvatarDisplay = ({
           previewName={previewName}
           name={name}
           text={displayName}
-          {...rest}
+          {...omit(rest, ['i18n', 'tReady'])}
         />
       </Card>
     </Container>

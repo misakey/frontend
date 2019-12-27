@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ApplicationAvatar = ({ application, t, displayRating, displayMainDomain }) => {
+const ApplicationAvatar = ({ application, displayRating, displayMainDomain }) => {
   const classes = useStyles();
 
   const { name, logoUri, mainDomain, avgRating } = useMemo(
@@ -51,7 +51,7 @@ const ApplicationAvatar = ({ application, t, displayRating, displayMainDomain })
     [application],
   );
 
-  const displayName = useMemo(
+  const applicationName = useMemo(
     () => name || mainDomain,
     [name, mainDomain],
   );
@@ -61,14 +61,11 @@ const ApplicationAvatar = ({ application, t, displayRating, displayMainDomain })
       <ApplicationImg
         classes={{ root: classes.appImg }}
         src={logoUri}
-        alt={t('screens:application.info.logoAlt', { mainDomain: displayName })}
-      >
-        {/* @FIXME: this fallback behaviour should be handled inside ApplicationImg */}
-        {displayName.slice(0, 3)}
-      </ApplicationImg>
+        applicationName={applicationName}
+      />
       <div className={classes.appName}>
         <Typography noWrap color="textSecondary">
-          {displayName}
+          {applicationName}
         </Typography>
 
         <Box display="flex">
@@ -97,7 +94,6 @@ ApplicationAvatar.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes),
   displayRating: PropTypes.bool,
   displayMainDomain: PropTypes.bool,
-  t: PropTypes.func.isRequired,
 };
 
 ApplicationAvatar.defaultProps = {

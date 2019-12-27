@@ -15,6 +15,7 @@ import {
 import isNil from '@misakey/helpers/isNil';
 import isString from '@misakey/helpers/isString';
 import getSearchParams from '@misakey/helpers/getSearchParams';
+import omit from '@misakey/helpers/omit';
 
 import InputSearch from 'components/dumb/Input/Search';
 import ApplicationImg from 'components/dumb/Application/Img';
@@ -81,8 +82,6 @@ function ThirdPartySearchBar({
   const classes = useStyles();
   const queryParams = getSearchParams(location.search);
 
-  const initialsName = useMemo(() => (isNil(entity) ? '' : entity.name.slice(0, 3)), [entity]);
-
   const search = queryParams.search || '';
 
   const isSearchActive = useIsSearchActive(search);
@@ -95,7 +94,7 @@ function ThirdPartySearchBar({
   return (
     <InputSearch
       ref={inputRef}
-      {...rest}
+      {...omit(rest, ['i18n', 'tReady'])}
       autoFocus={isSearchActive}
       value={search}
       onChange={onSearchChange}
@@ -117,10 +116,8 @@ function ThirdPartySearchBar({
         <ApplicationImg
           className={classes.avatar}
           src={entity.logoUri}
-          alt={t('screens:application.thirdParty.filters.logoAlt', { mainDomain: entity.name })}
-        >
-          {initialsName}
-        </ApplicationImg>
+          applicationName={entity.name}
+        />
       )}
     </InputSearch>
   );
@@ -128,7 +125,11 @@ function ThirdPartySearchBar({
 
 ThirdPartySearchBar.propTypes = {
   dispatchApps: PropTypes.func.isRequired,
-  entity: PropTypes.shape({ name: PropTypes.string, logoUri: PropTypes.string }),
+  entity: PropTypes.shape({
+    name: PropTypes.string,
+    logoUri: PropTypes.string,
+    mainDomain: PropTypes.string,
+  }),
   location: PropTypes.shape({ pathname: PropTypes.string, search: PropTypes.string }).isRequired,
   onIconClick: PropTypes.func.isRequired,
   onFetching: PropTypes.func.isRequired,
