@@ -5,7 +5,7 @@
 replicaCount: 2
 
 image:
-  repository: registry.gitlab.com/misakey/frontend
+  repository: registry.misakey.dev/misakey/frontend
   tag:
   pullPolicy: IfNotPresent
 
