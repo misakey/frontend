@@ -2,8 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, generatePath, withRouter, matchPath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
+import clsx from 'clsx';
 
 import omit from '@misakey/helpers/omit';
+import isNil from '@misakey/helpers/isNil';
 import pickBy from '@misakey/helpers/pickBy';
 import useWidth from '@misakey/hooks/useWidth';
 
@@ -11,8 +13,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+
+import ElevationScroll from 'components/dumb/ElevationScroll';
+
 import routes from 'routes';
-import { IS_PLUGIN } from 'constants/plugin';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,7 +34,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ApplicationNavTabs({ location, mainDomain, scrollButtons, t, isAuthenticated, ...rest }) {
+function ApplicationNavTabs({
+  elevationScrollTarget, location, mainDomain, scrollButtons, t, isAuthenticated, className, ...rest
+}) {
   const classes = useStyles();
   const width = useWidth();
 
@@ -55,14 +61,14 @@ function ApplicationNavTabs({ location, mainDomain, scrollButtons, t, isAuthenti
     [isCurrent, applicationTabsLinks],
   );
 
-  return (
+
+  const render = (
     <AppBar
-      elevation={0}
+      position="static"
       color="inherit"
+      elevation={0}
       component="nav"
-      // @FIXME: should be sticky also on plugin
-      position={IS_PLUGIN ? 'static' : 'sticky'}
-      className={classes.root}
+      className={clsx(classes.root, className || {})}
       {...omit(rest, ['i18n', 'tReady', 'history', 'match', 'staticContext'])}
     >
       <Tabs
@@ -86,18 +92,26 @@ function ApplicationNavTabs({ location, mainDomain, scrollButtons, t, isAuthenti
       </Tabs>
     </AppBar>
   );
+
+  return !isNil(elevationScrollTarget)
+    ? <ElevationScroll target={elevationScrollTarget}>{render}</ElevationScroll>
+    : render;
 }
 
 ApplicationNavTabs.propTypes = {
   location: PropTypes.shape({ pathname: PropTypes.string, search: PropTypes.string }).isRequired,
+  className: PropTypes.string,
   mainDomain: PropTypes.string.isRequired,
   scrollButtons: PropTypes.string,
   t: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
+  elevationScrollTarget: PropTypes.instanceOf(Element),
 };
 
 ApplicationNavTabs.defaultProps = {
   scrollButtons: 'auto',
+  className: undefined,
+  elevationScrollTarget: null,
 };
 
 export default withRouter(withTranslation('screens')(ApplicationNavTabs));

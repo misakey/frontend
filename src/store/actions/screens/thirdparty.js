@@ -1,5 +1,5 @@
 export const SET_DETECTED_TRACKERS = Symbol('SET_DETECTED_TRACKERS');
-export const SET_WHITELIST = Symbol('SET_WHITELIST');
+export const SET_WHITELISTED_DOMAINS = Symbol('SET_WHITELISTED_DOMAINS');
 export const SET_APPS = Symbol('SET_APPS');
 export const TOGGLE_WHITELIST_FOR_APP = Symbol('TOGGLE_WHITELIST_FOR_APP');
 
@@ -10,10 +10,10 @@ export function setDetectedTrackers(detectedTrackers) {
   };
 }
 
-export function setWhitelist(whitelist) {
+export function setWhitelist(whitelistedDomains) {
   return {
-    type: SET_WHITELIST,
-    whitelist,
+    type: SET_WHITELISTED_DOMAINS,
+    whitelistedDomains,
   };
 }
 

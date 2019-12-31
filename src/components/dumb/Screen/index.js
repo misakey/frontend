@@ -23,7 +23,6 @@ import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import ErrorIcon from '@material-ui/icons/Error';
 
 import AppBar from 'components/dumb/AppBar';
-import { PLUGIN_HEIGHT, PLUGIN_WIDTH } from 'constants/ui/sizes';
 import { isDesktopDevice } from 'helpers/devices';
 import { IS_PLUGIN } from 'constants/plugin';
 
@@ -137,28 +136,23 @@ StateWrapper.defaultProps = {
   splashScreen: null,
 };
 
+const GUTTERS_SPACING = 3;
+
 function getRootStyle(theme, options = {}, hideAppBar = false) {
   const { media, gutters = false, fixedHeight = false } = options;
 
-  const spacing = theme.spacing(gutters ? 3 : 0);
+  const spacing = theme.spacing(gutters ? GUTTERS_SPACING : 0);
   const toolbar = theme.mixins.toolbar[media] || theme.mixins.toolbar;
 
   const isPopupPlugin = IS_PLUGIN && isDesktopDevice();
 
-  if (isPopupPlugin) {
-    const appBarHeight = 56;
-    return {
-      height: hideAppBar ? PLUGIN_HEIGHT + appBarHeight : PLUGIN_HEIGHT,
-      width: PLUGIN_WIDTH,
-      marginTop: hideAppBar ? 0 : appBarHeight,
-      overflowY: 'auto',
-    };
-  }
-
-  const height = '100vh';
   const minWidth = '100%';
-  const minHeight = `calc(${height} - ${hideAppBar ? 0 : toolbar.minHeight}px - ${2 * spacing}px)`;
+  const minHeight = `calc(100vh - ${hideAppBar ? 0 : toolbar.minHeight}px - ${2 * spacing}px)`;
   const paddingTop = `calc(${hideAppBar ? 0 : toolbar.minHeight}px + ${spacing}px)`;
+
+  if (isPopupPlugin) {
+    return { paddingTop, height: minHeight };
+  }
 
   return {
     minWidth,
@@ -167,6 +161,41 @@ function getRootStyle(theme, options = {}, hideAppBar = false) {
     width: '100%',
     paddingTop,
     paddingBottom: spacing,
+  };
+}
+
+function getToolbarHeight(theme, media = null, options = {}) {
+  const { gutters = false, hideAppBar = false } = options;
+  if (hideAppBar) { return 0; }
+  const spacing = theme.spacing(gutters ? GUTTERS_SPACING : 0);
+
+  const toolbarHeight = (theme.mixins.toolbar[media] || theme.mixins.toolbar).minHeight;
+  return gutters ? toolbarHeight + spacing : toolbarHeight;
+}
+
+export function getStyleForContainerScroll(
+  theme,
+  extraFixedSize = 0,
+  options = {},
+  media = [MIN_PX_0_LANDSCAPE, MIN_PX_600, 'main'],
+) {
+  const style = {
+    [MIN_PX_0_LANDSCAPE]: {
+      height: `calc(100vh - ${getToolbarHeight(theme, MIN_PX_0_LANDSCAPE, options)}px - ${extraFixedSize}px)`,
+    },
+    [MIN_PX_600]: {
+      height: `calc(100vh - ${getToolbarHeight(theme, MIN_PX_600, options)}px - ${extraFixedSize}px)`,
+    },
+    main: {
+      height: `calc(100vh - ${getToolbarHeight(theme, null, options)}px - ${extraFixedSize}px)`,
+      overflowY: 'auto',
+    },
+  };
+
+  return {
+    ...(media.includes(MIN_PX_0_LANDSCAPE) ? style[MIN_PX_0_LANDSCAPE] : {}),
+    ...(media.includes(MIN_PX_600) ? style[MIN_PX_600] : {}),
+    ...(media.includes('main') ? style.main : {}),
   };
 }
 

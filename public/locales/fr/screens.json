@@ -298,20 +298,16 @@
         "blocked": "Autres services tiers",
         "whitelisted": "Services tiers acceptés"
       },
-      "myConfig": {
+      "summary": {
         "title": "Ma configuration",
-        "description": "Paramétrer les catégories de cookies que vous acceptez sur ce site. Cliquer sur une catégorie pour ajouter des cookies que vous acceptez"
-      },
-      "detectedTrackers": "{{count}} tracker détecté",
-      "detectedTrackers_plural": "{{count}} trackers détectés",
-      "additionalDetectedTrackers": "+ {{count}} autre service",
-      "additionalDetectedTrackers_plural": "+ {{count}} autres services",
-      "trackers": {
-        "empty": "Aucun cookie détecté",
-        "detected": "{{count}} tracker détecté",
-        "detected_plural": "{{count}} trackers détectés",
-        "additionalDetected": "+ {{count}} autre service",
-        "additionalDetected_plural": "+ {{count}} autres services"
+        "description": "Cliquer sur une catégorie de cookies pour paramétrer vos préférences. Les cookies sont bloqués par défaut.",
+        "count": {
+          "detected": "{{count}} détecté",
+          "detected_plural": "{{count}} détectés",
+          "blocked": "{{count}} bloqué",
+          "blocked_plural": "{{count}} bloqués",
+          "empty": "Aucun cookie détecté"
+        }
       },
       "filters": {
         "mainPurpose": {

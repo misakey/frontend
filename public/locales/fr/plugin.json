@@ -6,14 +6,16 @@
     "minute_plural": "{{count}} minutes"
   },
   "pause": {
-    "title": "Pause",
-    "description": "Stopper momentanément le bloquage"
+    "description": "Stopper momentanément le bloquage",
+    "indeterminate": "Toujours"
   },
   "resume": {
-    "title": "Reprendre",
     "description": "Blocage stoppé",
     "plannedResume": "Reprise prévue le {{planned}}"
   },
-  "refresh": "Rafraîchir",
-  "refresh_warning": "Pour que les modifications que vous avez effectuées soient prises en compte, vous devez recharger l'onglet du navigateur"
+  "refresh_warning": {
+    "button": "Actualiser",
+    "tooltip": "Actualiser l'onglet courant",
+    "text": "Les modifications que vous avez effectuées seront effectives pour la suite de votre navigation. Si vous voulez qu'elles soient prises en compte pour les onglets déjà chargés, vous devrez les actualiser."
+  }
 }

@@ -19,7 +19,6 @@ import { redirectToApp } from 'helpers/plugin';
 import { IS_PLUGIN } from 'constants/plugin';
 import useAsync from '@misakey/hooks/useAsync';
 
-
 import { makeStyles } from '@material-ui/core/styles';
 import BoxSection from 'components/dumb/Box/Section';
 import Typography from '@material-ui/core/Typography';
@@ -65,10 +64,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(3),
   },
-  titleWithButton: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
   openInNew: {
     marginLeft: theme.spacing(1),
     display: 'none',
@@ -80,16 +75,6 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       display: 'none',
     },
-  },
-  button: {
-    borderRadius: 0,
-    borderTop: `1px solid ${theme.palette.grey.A100}`,
-    padding: theme.spacing(2, 3),
-  },
-  boxRoot: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
   },
   claimButtonRoot: {
     alignSelf: 'flex-end',
@@ -245,9 +230,11 @@ const ApplicationInfoContent = ({
   return (
     <Box mt={3}>
       {!entity.published && (
-        <BoxSection mb={3} p={3} classes={{ root: classes.boxRoot }}>
-          <Typography variant="h6" component="h5" className={classes.titleWithButton}>
-            {t('screens:application.info.desc.inProgress.title')}
+        <Card mb={3} p={2} display="flex" flexDirection="column" alignItems="flex-start">
+          <Box display="flex" justifyContent="space-between">
+            <Typography variant="h5">
+              {t('screens:application.info.desc.inProgress.title')}
+            </Typography>
             {homepage && (
               <>
                 <Button
@@ -272,19 +259,19 @@ const ApplicationInfoContent = ({
                 </IconButton>
               </>
             )}
-          </Typography>
+          </Box>
           <Box mt={1}>
             <Typography variant="body1" color="textSecondary" paragraph>
               {t('screens:application.info.desc.inProgress.text.contribute')}
             </Typography>
-            {/* @FIXME: uncomment when admin workspace is ready
-            <Typography variant="body1" color="textSecondary" paragraph>
+            {/* @FIXME: uncomment when admin workspace is ready */}
+            {/* <Typography variant="body1" color="textSecondary" paragraph>
               {t('screens:application.info.desc.inProgress.text.claim')}
             </Typography> */}
           </Box>
           {/* @FIXME: uncomment when admin workspace is ready
-              @FIXME: on plugin the button should redirect to web app in new tab
-            <Button
+              @FIXME: on plugin the button should redirect to web app in new tab */}
+          {/* <Button
             component={Link}
             to={adminClaimLink}
             variant="outlined"
@@ -294,38 +281,39 @@ const ApplicationInfoContent = ({
           >
             {t('common:claim.admin')}
           </Button> */}
-        </BoxSection>
+        </Card>
       )}
-      <BoxSection mb={3} p={0}>
-        <Box p={3}>
-          <Typography variant="h6" component="h5" className={classes.titleWithButton}>
+      <Card mb={3}>
+        <Box p={2} display="flex" justifyContent="space-between">
+          <Typography variant="h5">
             {t('screens:application.info.desc.title')}
-            {homepage && (
-              <>
-                <Button
-                  href={homepage}
-                  className={classes.openInNew}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Box component="span" mr={1}>
-                    {t('screens:application.info.desc.openInNew')}
-                  </Box>
-                  <OpenInNewIcon />
-                </Button>
-                <IconButton
-                  aria-label={t('screens:application.info.desc.openInNew')}
-                  href={homepage}
-                  className={classes.openInNewIconButton}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  edge="end"
-                >
-                  <OpenInNewIcon />
-                </IconButton>
-              </>
-            )}
           </Typography>
+
+          {homepage && (
+            <>
+              <Button
+                href={homepage}
+                className={classes.openInNew}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Box component="span" mr={1}>
+                  {t('screens:application.info.desc.openInNew')}
+                </Box>
+                <OpenInNewIcon />
+              </Button>
+              <IconButton
+                aria-label={t('screens:application.info.desc.openInNew')}
+                href={homepage}
+                className={classes.openInNewIconButton}
+                target="_blank"
+                rel="noopener noreferrer"
+                edge="end"
+              >
+                <OpenInNewIcon />
+              </IconButton>
+            </>
+          )}
         </Box>
         <Box px={3} pb={2}>
           <GridListKeyValue
@@ -342,7 +330,7 @@ const ApplicationInfoContent = ({
           />
         </Box>
         {renderDomains && <ApplicationInfoContentDomains entity={entity} />}
-      </BoxSection>
+      </Card>
       {entity.published && (
         <>
           <InfoContentSecurity

@@ -5,14 +5,16 @@ import { withTranslation } from 'react-i18next';
 
 import Typography from '@material-ui/core/Typography';
 import Screen from 'components/dumb/Screen';
-
-import 'components/screens/Plugin/DefaultScreen.scss';
+import Box from '@material-ui/core/Box';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
   title: {
     fontFamily: '"Futura Std Bold"',
     opacity: '0.1',
+  },
+  container: {
+    height: 'inherit',
   },
 }));
 
@@ -21,13 +23,13 @@ const DefaultScreen = ({ t }) => {
   const classes = useStyles();
 
   return (
-    <Screen className="DefaultScreen">
-      <div className="flexWrapper">
+    <Screen disableGutters>
+      <Box className={classes.container} display="flex" justifyContent="center" alignItems="center">
         <Typography variant="h3" className={classes.title} color="primary">
           {t('projectName', 'Misakey')}
         </Typography>
-      </div>
 
+      </Box>
     </Screen>
   );
 };

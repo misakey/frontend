@@ -61,8 +61,10 @@ if (window.env.ENV !== 'development' || window.env.SENTRY.debug === true) {
   Sentry.init(sentryConfig);
 }
 
+const rootNode = document.getElementById('root');
+
 if (IS_PLUGIN && isDesktopDevice()) {
-  document.documentElement.setAttribute(
+  rootNode.setAttribute(
     'data-plugin-controlsize',
     true,
   );
@@ -113,7 +115,7 @@ if (isSilentAuthIframe()) {
         </OidcProvider>
       </StoreProvider>
     </React.Suspense>
-  ), document.getElementById('root'));
+  ), rootNode);
 
   // If you want your app to work offline and load faster, you can change
   // unregister() to register() below. Note this comes with some pitfalls.

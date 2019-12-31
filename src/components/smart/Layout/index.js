@@ -19,8 +19,8 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import ButtonConnect from 'components/dumb/Button/Connect';
-import PausePluginButton from 'components/smart/PausePluginButton';
-import WarningDrawer from 'components/dumb/PluginWarningDrawer';
+import PausePluginButton from 'components/smart/Plugin/Button/Pause';
+import WarningDrawer from 'components/smart/Plugin/Warning/Refresh';
 
 import { DRAWER_WIDTH } from 'constants/ui/sizes';
 import ButtonBurger from 'components/dumb/Button/Burger';

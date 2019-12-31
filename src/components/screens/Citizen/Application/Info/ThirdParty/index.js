@@ -25,7 +25,6 @@ const ConnectLink = withDialogConnect(MUILink);
 const getMissingLinkCustomizer = (t, handleClick) => {
   const match = (value, key) => requiredLinksType.includes(key) && isNil(value);
 
-
   const format = () => (
     <ConnectLink onClick={handleClick} color="primary" component="button">
       {t('screens:application.info.userContribution.linkOpenDialog')}

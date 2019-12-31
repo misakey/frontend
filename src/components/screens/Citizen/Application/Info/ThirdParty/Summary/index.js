@@ -6,17 +6,15 @@ import { makeStyles } from '@material-ui/core/styles';
 import className from 'clsx';
 
 import orderBy from '@misakey/helpers/orderBy';
-import get from '@misakey/helpers/get';
-import set from '@misakey/helpers/set';
 import getNextSearch from 'helpers/getNextSearch';
+import isNil from '@misakey/helpers/isNil';
 
-import { setDetectedTrackers, setWhitelist } from 'store/actions/screens/thirdparty';
+import { setDetectedTrackers } from 'store/actions/screens/thirdparty';
 
 import TrackersSchema from 'store/schemas/Trackers';
-import TrackersWhitelistSchema from 'store/schemas/TrackersWhitelist';
 
 import { sendMessage, listenForBackground, stopListenerForBackground } from 'background';
-import { GET_BLOCKED_INFOS, REFRESH_BLOCKED_INFOS, UPDATE_WHITELIST } from 'background/messages';
+import { GET_BLOCKED_INFOS, REFRESH_BLOCKED_INFOS } from 'background/messages';
 
 import Typography from '@material-ui/core/Typography';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -26,9 +24,7 @@ import CardContent from '@material-ui/core/CardContent';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import Switch from 'components/dumb/Switch';
-import WarningDrawer from 'components/dumb/PluginWarningDrawer';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 import routes from 'routes';
 
@@ -44,61 +40,28 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
     cursor: 'pointer',
-    '&:not(.whitelisted)': {
-      backgroundColor: theme.palette.grey[100],
-      color: theme.palette.grey[700],
-      opacity: 0.5,
-      filter: 'grayscale(1)',
-    },
+  },
+  listItemEmpty: {
+    textAlign: 'center',
+  },
+  arrowIcon: {
+    marginLeft: '1rem',
   },
 }));
 
-function isWhitelisted(whitelist = {}, initiatorDomain, mainPurpose, target = null) {
-  const globalWhitelist = whitelist.apps || [];
 
-  if (target) {
-    return globalWhitelist.includes(target);
-  }
-
-  // Check if purpose has been accepted
-  const domainWhitelist = get(whitelist, ['mainPurposes', initiatorDomain], []);
-  return domainWhitelist.includes(mainPurpose);
-}
-
-const useFormatDetectedTrackers = (
-  whitelist,
-  initiatorDomain,
-) => useCallback((trackers, sort = false) => {
-  const formattedTrackers = trackers.map(({ name: mainPurpose, apps }) => {
-    const formattedApps = apps.map((app) => ({
-      ...app,
-      whitelisted: isWhitelisted(whitelist, initiatorDomain, mainPurpose, app.mainDomain),
-    }));
+const useFormatDetectedTrackers = () => useCallback((trackers, sort = false) => {
+  const formattedTrackers = trackers.map((tracker) => {
+    const { apps } = tracker;
+    const blockedApps = apps.filter(((app) => app.blocked));
     return {
-      name: mainPurpose,
-      apps: orderBy(formattedApps, ['whitelisted', 'name'], ['desc', 'asc']),
-      whitelisted: isWhitelisted(whitelist, initiatorDomain, mainPurpose),
+      ...tracker,
+      blockedApps,
+      isWhitelisted: blockedApps.length !== apps.length,
     };
   });
-  return sort ? orderBy(formattedTrackers, ['whitelisted', 'name'], ['desc', 'asc']) : formattedTrackers;
-}, [whitelist, initiatorDomain]);
-
-const useUpdateWhitelist = (
-  dispatchWhitelist,
-  setDisplayWarningDrawer,
-  whitelist,
-  mainDomain,
-) => useCallback((action, purpose) => {
-  const domainWhitelist = get(whitelist, ['mainPurposes', mainDomain], []);
-  const newWhitelist = { ...whitelist };
-  const newValue = action === 'add' ? [...domainWhitelist, purpose] : domainWhitelist.filter((val) => val !== purpose);
-  set(newWhitelist, ['mainPurposes', mainDomain], newValue);
-
-  sendMessage(UPDATE_WHITELIST, { whitelist: newWhitelist }).then((response) => {
-    dispatchWhitelist(response.whitelist);
-    setDisplayWarningDrawer(true);
-  });
-}, [dispatchWhitelist, setDisplayWarningDrawer, whitelist, mainDomain]);
+  return sort ? orderBy(formattedTrackers, ['isWhitelisted', 'name'], ['desc', 'asc']) : formattedTrackers;
+}, []);
 
 const useListenForBackgroundCb = (
   formatDetectedTrackers,
@@ -112,22 +75,18 @@ const useListenForBackgroundCb = (
 
 function ThirdPartyBlock({
   dispatchDetectedTrackers,
-  dispatchWhitelist,
   detectedTrackers,
   entity,
   history,
   location: { search },
   t,
-  whitelist,
 }) {
   const classes = useStyles();
   const [isFetching, setFetching] = React.useState(false);
-  const [displayWarningDrawer, setDisplayWarningDrawer] = React.useState(false);
-  const hideDrawer = useCallback(() => setDisplayWarningDrawer(false), []);
   const { mainDomain } = useMemo(() => (entity || { mainDomain: '' }), [entity]);
   const empty = useMemo(() => detectedTrackers.length === 0, [detectedTrackers]);
 
-  const formatDetectedTrackers = useFormatDetectedTrackers(whitelist, mainDomain);
+  const formatDetectedTrackers = useFormatDetectedTrackers();
   const listenForBackgroundCb = useListenForBackgroundCb(
     formatDetectedTrackers,
     dispatchDetectedTrackers,
@@ -145,7 +104,6 @@ function ThirdPartyBlock({
         .then((response) => {
           const sorted = formatDetectedTrackers(response.detectedTrackers, true);
           dispatchDetectedTrackers(sorted || []);
-          dispatchWhitelist(response.whitelist || {});
         })
         .finally(() => { setFetching(false); });
     }
@@ -155,21 +113,13 @@ function ThirdPartyBlock({
     return () => { stopListenerForBackground(listenForBackgroundCb); };
   }
 
-  const updateWhitelist = useUpdateWhitelist(
-    dispatchWhitelist,
-    setDisplayWarningDrawer,
-    whitelist,
-    mainDomain,
-  );
+  const setupAction = useCallback((purpose) => {
+    const nextParams = new Map([['mainDomain', mainDomain]]);
+    if (!isNil(purpose)) {
+      nextParams.set('mainPurpose', purpose);
+    }
 
-  const setupAction = useCallback((name) => {
-    const query = getNextSearch(
-      search,
-      new Map([
-        ['mainPurpose', name],
-        ['mainDomain', mainDomain],
-      ]),
-    );
+    const query = getNextSearch(search, nextParams);
     history.push({
       pathname: routes.account.thirdParty.setup,
       search: query,
@@ -178,78 +128,55 @@ function ThirdPartyBlock({
 
   useEffect(getData, []);
 
-  if (empty && !isFetching) {
-    return (
-      <Card
-        display="flex"
-        minHeight="30vh"
-        mt={3}
-        p={2}
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Typography>{t('screens:application.thirdParty.trackers.empty')}</Typography>
-      </Card>
-    );
-  }
-
   return (
     <Card
-      mt={3}
-      mb={1}
-      title={t('screens:application.thirdParty.myConfig.title')}
-      subtitle={t('screens:application.thirdParty.myConfig.description')}
+      my={2}
+      title={t('screens:application.thirdParty.summary.title')}
+      subtitle={t('screens:application.thirdParty.summary.description')}
     >
-      <CardContent
-        className={className('content', classes.content)}
-      >
-        {empty && isFetching && (
-          <List component="div" aria-labelledby="placeholder-list-apps">
-            <ListItem className={classes.listItem}>
-              <ListItemText
-                className="text"
-                primary={<Skeleton variant="text" style={{ margin: 0 }} />}
-              />
-            </ListItem>
-          </List>
-        )}
-        <List component="div" aria-labelledby="list-apps">
+      <CardContent className={classes.content}>
+        <List aria-labelledby="list-apps">
           {
-            formattedDetectedTrackers.map(({ name, apps, whitelisted }) => {
-              const whitelistedApps = apps.filter(((app) => !app.blocked));
-              return (
-                <ListItem
-                  key={name}
-                  className={className(classes.listItem, { whitelisted })}
-                  onClick={() => setupAction(name)}
-                >
-                  <ListItemText
-                    id={`switch-list-label-${name}`}
-                    primary={t(`screens:application.thirdParty.purposes.${name}`)}
-                  />
+            empty && (
+              <ListItem className={classes.listItem}>
+                <ListItemText
+                  primary={
+                    isFetching
+                      ? <Skeleton variant="text" style={{ margin: 0 }} />
+                      : t('screens:application.thirdParty.summary.count.empty')
+                  }
+                  className={classes.listItemEmpty}
+                  onClick={() => setupAction()}
+                />
+              </ListItem>
+            )
+          }
+          {
+            formattedDetectedTrackers.map(({ name, apps, blockedApps }) => (
+              <ListItem
+                key={name}
+                className={className(classes.listItem)}
+                onClick={() => setupAction(name)}
+              >
+                <ListItemText
+                  id={`switch-list-label-${name}`}
+                  primary={t(`screens:application.thirdParty.purposes.${name}`)}
+                />
 
-                  <Typography variant="body2" className={classes.typography}>
-                    {`${whitelistedApps.length}/${apps.length}`}
-                  </Typography>
+                <Typography variant="caption">
+                  {
+                  `${t('screens:application.thirdParty.summary.count.blocked', { count: blockedApps.length })} 
+                   /
+                   ${t('screens:application.thirdParty.summary.count.detected', { count: apps.length })}`
+                  }
+                </Typography>
+                <KeyboardArrowRight className={classes.arrowIcon} />
 
-                  <ListItemSecondaryAction>
-                    <Switch
-                      checked={whitelisted}
-                      value={name.toString()}
-                      inputProps={{ 'aria-label': 'secondary checkbox' }}
-                      onChange={whitelisted ? () => updateWhitelist('remove', name) : () => updateWhitelist('add', name)}
-                    />
-                  </ListItemSecondaryAction>
-
-                </ListItem>
-              );
-            })
+              </ListItem>
+            ))
           }
         </List>
-
       </CardContent>
-      {displayWarningDrawer && <WarningDrawer onHide={hideDrawer} />}
     </Card>
   );
 }
@@ -261,8 +188,6 @@ ThirdPartyBlock.propTypes = {
     apps: PropTypes.arrayOf(PropTypes.shape(TrackersSchema)),
   })).isRequired,
   entity: PropTypes.shape({ logoUri: PropTypes.string, mainDomain: PropTypes.string }),
-  whitelist: PropTypes.shape(TrackersWhitelistSchema).isRequired,
-  dispatchWhitelist: PropTypes.func.isRequired,
   dispatchDetectedTrackers: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   location: PropTypes.shape({
@@ -279,11 +204,9 @@ ThirdPartyBlock.defaultProps = {
 // CONNECT
 const mapStateToProps = (state) => ({
   detectedTrackers: state.screens.thirdparty.detectedTrackers,
-  whitelist: state.screens.thirdparty.whitelist,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchWhitelist: (data) => dispatch(setWhitelist(data)),
   dispatchDetectedTrackers: (data) => dispatch(setDetectedTrackers(data)),
 });
 

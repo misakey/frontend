@@ -33,21 +33,21 @@ function getBlockingResponse(engine, details) {
 
   // The request didn't match, no need to process the rest of the treatment
   if (redirect === undefined && match === false) {
-    return { blockingResponse: {}, rule: null };
+    return { blockingResponse: {}, mainPurpose: null };
   }
 
   const { initiator, target } = getRequestDetails(details);
 
   // @TODO: delete details.type === 'main_frame' when we will have associated domains info
   if (isRequestFirstParty(initiator, target) || details.type === 'main_frame') {
-    return { blockingResponse: {}, rule: null };
+    return { blockingResponse: {}, mainPurpose: null };
   }
 
   // Check if request has been whitelisted
   const ruleId = filter.getId();
   const mainPurpose = globals.rules[ruleId] || DEFAULT_PURPOSE;
 
-  if (globals.pausedBlocking || globals.isRequestWhitelisted(initiator, target, mainPurpose)) {
+  if (globals.pausedBlocking || globals.isRequestWhitelisted(target)) {
     return { blockingResponse: {}, mainPurpose };
   }
 

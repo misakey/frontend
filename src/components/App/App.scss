@@ -18,7 +18,7 @@
 }
 
 $plugin-width: 460px;
-$plugin-height: 444px;
+$plugin-height: 500px;
 
 :root {
   --primary-color: #{$primary-color};
@@ -37,10 +37,10 @@ html, body {
   color: $dark-grey !important;
 }
 
-html[data-plugin-controlsize='true'] body {
+#root[data-plugin-controlsize='true'] {
   width: $plugin-width;
   height: $plugin-height;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .router-link {

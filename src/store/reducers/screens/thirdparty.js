@@ -1,7 +1,7 @@
 import createReducer from '@misakey/store/reducers/helpers/createReducer';
 
 import {
-  SET_WHITELIST,
+  SET_WHITELISTED_DOMAINS,
   SET_DETECTED_TRACKERS,
   SET_APPS,
   TOGGLE_WHITELIST_FOR_APP,
@@ -9,12 +9,12 @@ import {
 
 const initialState = {
   detectedTrackers: [],
-  whitelist: {},
+  whitelistedDomains: [],
   apps: { whitelisted: [], blocked: [] },
 };
 
-function setWhitelist(state, { whitelist }) {
-  return { ...state, whitelist };
+function setWhitelistedDomains(state, { whitelistedDomains }) {
+  return { ...state, whitelistedDomains };
 }
 
 function setDetectedTrackers(state, { detectedTrackers }) {
@@ -32,9 +32,10 @@ function toggleWhitelistForApp(state, { mainDomain, listKey }) {
   return { ...state, apps: { ...state.apps, [listKey]: newList } };
 }
 
+
 export default createReducer(initialState, {
-  [SET_WHITELIST]: setWhitelist,
+  [SET_WHITELISTED_DOMAINS]: setWhitelistedDomains,
   [SET_DETECTED_TRACKERS]: setDetectedTrackers,
-  [SET_APPS]: setApps,
   [TOGGLE_WHITELIST_FOR_APP]: toggleWhitelistForApp,
+  [SET_APPS]: setApps,
 });

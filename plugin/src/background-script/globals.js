@@ -1,6 +1,5 @@
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
-import get from '@misakey/helpers/get';
 import log from '@misakey/helpers/log';
 import isEmpty from '@misakey/helpers/isEmpty';
 import unionBy from '@misakey/helpers/unionBy';
@@ -130,7 +129,7 @@ class Globals {
 
     newTabInfos.push(app);
     this.tabsInfos.set(tabId, newTabInfos);
-    this.updateActiveTrackerCounter(tabId, { incr: !blocked });
+    this.updateActiveTrackerCounter(tabId, { incr: blocked });
   }
 
   getTabInfosForPopup(tabId) {
@@ -268,14 +267,9 @@ class Globals {
     return setItem('whitelist', this.whitelist);
   }
 
-  isRequestWhitelisted(initiatorDomain, targetDomain, mainPurpose) {
+  isRequestWhitelisted(targetDomain) {
     const globalWhitelist = this.whitelist.apps || [];
-    const domainWhitelist = get(this.whitelist, ['mainPurposes', initiatorDomain], []);
-
-    const purposeIsWhitelisted = domainWhitelist.includes(mainPurpose);
-    const targetDomainIsWhitelisted = globalWhitelist.includes(targetDomain);
-
-    return purposeIsWhitelisted && targetDomainIsWhitelisted;
+    return globalWhitelist.includes(targetDomain);
   }
 }
 

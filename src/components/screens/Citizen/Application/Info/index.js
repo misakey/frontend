@@ -1,8 +1,10 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
 import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
+import clsx from 'clsx';
 
 import API from '@misakey/api';
 import ApplicationSchema from 'store/schemas/Application';
@@ -11,8 +13,10 @@ import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
 
 import Container from '@material-ui/core/Container';
+import Box from '@material-ui/core/Box';
 
 import ApplicationHeader from 'components/dumb/Application/Header';
+import { getStyleForContainerScroll } from 'components/dumb/Screen';
 import ApplicationNavTabs from 'components/screens/Citizen/Application/Info/Nav';
 import ApplicationBox from 'components/screens/Citizen/Application/Box';
 import UserContributionDialog from 'components/smart/UserContributionDialog';
@@ -22,6 +26,20 @@ import MyAccount from 'components/screens/Citizen/Application/Info/MyAccount';
 import ThirdParty from 'components/screens/Citizen/Application/Info/ThirdParty';
 
 import { IS_PLUGIN } from 'constants/plugin';
+
+const NAV_BAR_HEIGHT = 34;
+const NAV_BAR_STICKY = IS_PLUGIN;
+
+// STYLES
+const useStyles = makeStyles((theme) => ({
+  content: getStyleForContainerScroll(theme, NAV_BAR_HEIGHT, { gutters: !IS_PLUGIN }),
+  container: {
+    padding: 0,
+  },
+  nav: {
+    padding: '0 1rem',
+  },
+}));
 
 // CONSTANTS
 const APPLICATION_CONTRIBUTION_ENDPOINT = {
@@ -35,8 +53,10 @@ function ApplicationInfo({
   userId, entity, isAuthenticated,
   isFetching, match, t,
 }) {
+  const classes = useStyles();
   const [isOpenUserContributionDialog, setOpenUserContributionDialog] = useState(false);
   const [userContributionType, setUserContributionType] = useState('');
+  const [contentRef, setContentRef] = React.useState(null);
 
   const { mainDomain } = match.params;
   const { name, id, unknown } = useMemo(
@@ -86,7 +106,7 @@ function ApplicationInfo({
   );
 
   return (
-    <Container className="container" maxWidth="md">
+    <Container maxWidth="md" className={clsx({ [classes.container]: NAV_BAR_STICKY })}>
       <UserContributionDialog
         open={isOpenUserContributionDialog}
         onClose={closeUserContributionDialog}
@@ -105,50 +125,63 @@ function ApplicationInfo({
         />
       )}
       {!unknown && !isFetching && (
-        <ApplicationNavTabs mainDomain={mainDomain} isAuthenticated={isAuthenticated} />
+        <ApplicationNavTabs
+          className={clsx({ [classes.nav]: NAV_BAR_STICKY })}
+          elevationScrollTarget={contentRef}
+          mainDomain={mainDomain}
+          isAuthenticated={isAuthenticated}
+        />
       )}
 
-      <Switch>
-        <Route
-          exact
-          path={routes.citizen.application.vault}
-          render={(routerProps) => (
-            <ApplicationBox
-              onContributionDpoEmailClick={onContributionDpoEmailClick}
-              {...routerProps}
-            />
-          )}
-        />
-        <Route
-          exact
-          path={routes.citizen.application.thirdParty}
-          render={(routerProps) => (
-            <ThirdParty
-              entity={entity}
-              onContributionLinkClick={onContributionLinkClick}
-              {...routerProps}
-            />
-          )}
-        />
+      <Box
+        px={2}
+        className={clsx({ [classes.content]: NAV_BAR_STICKY })}
+        ref={(ref) => setContentRef(ref)}
+      >
+        <Switch>
+          <Route
+            exact
+            path={routes.citizen.application.vault}
+            render={(routerProps) => (
+              <ApplicationBox
+                onContributionDpoEmailClick={onContributionDpoEmailClick}
+                {...routerProps}
+              />
+            )}
+          />
+          <Route
+            exact
+            path={routes.citizen.application.thirdParty}
+            render={(routerProps) => (
+              <ThirdParty
+                entity={entity}
+                onContributionLinkClick={onContributionLinkClick}
+                {...routerProps}
+              />
+            )}
+          />
 
-        <Route
-          exact
-          path={routes.citizen.application.myAccount}
-          render={() => <MyAccount entity={entity} />}
-        />
-        <Route
-          exact
-          path={match.path}
-          render={() => (
-            <Content
-              entity={entity}
-              isLoading={isFetching}
-              onContributionDpoEmailClick={onContributionDpoEmailClick}
-              onContributionLinkClick={onContributionLinkClick}
-            />
-          )}
-        />
-      </Switch>
+          <Route
+            exact
+            path={routes.citizen.application.myAccount}
+            render={() => <MyAccount entity={entity} />}
+          />
+          <Route
+            exact
+            path={match.path}
+            render={() => (
+              <Content
+                entity={entity}
+                isLoading={isFetching}
+                onContributionDpoEmailClick={onContributionDpoEmailClick}
+                onContributionLinkClick={onContributionLinkClick}
+              />
+            )}
+          />
+        </Switch>
+      </Box>
+
+
     </Container>
   );
 }

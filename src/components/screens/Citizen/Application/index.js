@@ -78,7 +78,7 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
   );
 
   return (
-    <Screen state={state} appBarProps={appBarProps}>
+    <Screen state={state} appBarProps={appBarProps} disableGutters={IS_PLUGIN}>
       <Switch>
         <RoutePrivate
           path={routes.citizen.application.contact._}

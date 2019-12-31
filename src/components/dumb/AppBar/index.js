@@ -9,7 +9,7 @@ import map from '@misakey/helpers/map';
 
 import User from 'components/smart/User';
 import ElevationScroll from 'components/dumb/ElevationScroll';
-import PausePluginButton from 'components/smart/PausePluginButton';
+import PausePluginButton from 'components/smart/Plugin/Button/Pause';
 import SearchApplications from 'components/smart/Search/Applications';
 import { DRAWER_WIDTH } from 'constants/ui/sizes';
 import AppBarSearch from 'components/dumb/AppBar/Search';
@@ -149,7 +149,7 @@ AppBar.defaultProps = {
   className: '',
   drawerWidth: DRAWER_WIDTH,
   elevationScroll: true,
-  elevationScrollProps: {},
+  elevationScrollProps: IS_PLUGIN ? { target: document.getElementById('root') } : {},
   items: [],
   searchBarProps: {},
   shift: false,

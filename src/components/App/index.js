@@ -10,6 +10,7 @@ import Container from '@material-ui/core/Container';
 import RoutePrivate from '@misakey/auth/components/Route/Private';
 import RouteAccessRequest from 'components/smart/Route/AccessRequest';
 import SeclevelWarningAlert from 'components/smart/Alert/SeclevelWarning';
+import PluginRefreshWarning from 'components/smart/Plugin/Warning/Refresh';
 import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallbackWrapper';
 
 import ErrorBoundary from 'components/smart/ErrorBoundary';
@@ -46,18 +47,21 @@ function App({ t }) {
     <ErrorBoundary component={Container} maxWidth="md" my={3}>
       <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
         {IS_PLUGIN && (
-          <Switch>
-            <Route exact path={routes.plugin} component={Plugin} />
-            <Route path={routes.citizen._} component={Citizen} />
-            { /* @FIXME: move with other account routes when save profile will be implemented */}
-            <Route
-              exact
-              path={routes.account.thirdParty.setup}
-              render={(routerProps) => <ThirdPartySetup {...routerProps} />}
-            />
-            {/* DEFAULT */}
-            <Route component={NotFound} />
-          </Switch>
+          <>
+            <PluginRefreshWarning />
+            <Switch>
+              <Route exact path={routes.plugin} component={Plugin} />
+              <Route path={routes.citizen._} component={Citizen} />
+              { /* @FIXME: move with other account routes when save profile will be implemented */}
+              <Route
+                exact
+                path={routes.account.thirdParty.setup}
+                render={(routerProps) => <ThirdPartySetup {...routerProps} />}
+              />
+              {/* DEFAULT */}
+              <Route component={NotFound} />
+            </Switch>
+          </>
         )}
         {!IS_PLUGIN && (
           <>

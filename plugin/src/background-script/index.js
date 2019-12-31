@@ -6,6 +6,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 import log from '@misakey/helpers/log';
+import get from '@misakey/helpers/get';
+import groupBy from '@misakey/helpers/groupBy';
 import common from '@misakey/ui/colors/common';
 
 import globals from './globals';
@@ -151,23 +153,36 @@ function handleCommunication(engine) {
         });
       }
       case 'getCurrentTabResume':
-        return Promise.all([getCurrentTab(), getItem('whitelist')]).then(([{ id }, { whitelist }]) => ({
+        return getCurrentTab().then(({ id }) => ({
           detectedTrackers: globals.getTabInfosForPopup(id),
-          whitelist,
         }));
 
-      case 'getApps':
-        if (msg.getAllThirdParties) {
-          return globals.getAllThirdPartiesApps(msg.search, msg.mainPurpose);
-        }
-        return globals.getThirdPartyApps(msg.search, msg.mainPurpose);
+      case 'getApps': {
+        const getApps = msg.getAllThirdParties
+          ? globals.getAllThirdPartiesApps(msg.search, msg.mainPurpose)
+          : globals.getThirdPartyApps(msg.search, msg.mainPurpose);
+        return Promise.all([getApps, getItem('whitelist')]).then(([apps, { whitelist }]) => {
+          const whitelistedDomains = get(whitelist, 'apps', []);
+          const { whitelisted, blocked } = groupBy(apps, (app) => (whitelistedDomains.includes(app.mainDomain) ? 'whitelisted' : 'blocked'));
+          return { whitelisted: whitelisted || [], blocked: blocked || [] };
+        });
+      }
+      case 'getWhitelist':
+        return getItem('whitelist').then(({ whitelist }) => {
+          const { apps } = whitelist || {};
+          return apps || [];
+        });
 
       case 'togglePauseBlocker':
         return Promise.resolve(globals.onPauseBlocker(msg.time));
 
       case 'updateWhitelist': {
-        const success = globals.updateWhitelist(msg.whitelist);
-        return success ? getItem('whitelist') : Promise.reject(new Error('Could not save preferences!'));
+        const { whitelistedDomains } = msg;
+        const success = globals.updateWhitelist({ apps: whitelistedDomains });
+        if (success) {
+          return Promise.resolve(whitelistedDomains);
+        }
+        return Promise.reject(new Error('Could not save preferences!'));
       }
       default:
         // Start listening to messages coming from the content-script. Whenever a new
