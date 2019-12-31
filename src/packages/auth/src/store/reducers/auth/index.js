@@ -20,6 +20,7 @@ export const INITIAL_STATE = {
   token: null,
   expiresAt: null,
   userId: null,
+  acr: null,
 };
 
 function resetCredentials() {

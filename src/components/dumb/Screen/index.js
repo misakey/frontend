@@ -37,7 +37,7 @@ const BOX_PROPS = {
   textAlign: 'center',
 };
 
-function DefaultSplashScreen({ t }) {
+function DefaultSplashScreen({ t, text }) {
   const classes = useBoxStyles();
 
   return (
@@ -47,7 +47,7 @@ function DefaultSplashScreen({ t }) {
           <HourglassEmptyIcon fontSize="large" color="secondary" />
         </Box>
         <Typography variant="h5" component="h3" color="textSecondary">
-          {t('loading')}
+          {text || t('loading')}
         </Typography>
       </Container>
     </Box>
@@ -56,6 +56,11 @@ function DefaultSplashScreen({ t }) {
 
 DefaultSplashScreen.propTypes = {
   t: PropTypes.func.isRequired,
+  text: PropTypes.string,
+};
+
+DefaultSplashScreen.defaultProps = {
+  text: null,
 };
 
 const DefaultSplashScreenWithTranslation = withTranslation()(DefaultSplashScreen);
@@ -101,7 +106,9 @@ export const SCREEN_STATES = {
   OK: Symbol('OK'),
 };
 
-function StateWrapper({ children, error, isLoading, preventSplashScreen, splashScreen }) {
+function StateWrapper({
+  children, error, isLoading, splashScreenText, preventSplashScreen, splashScreen,
+}) {
   const currentState = useMemo(() => {
     if (isLoading && !preventSplashScreen) { return SCREEN_STATES.IS_INITIATING; }
     if (error instanceof Error) { return SCREEN_STATES.HAS_ERROR; }
@@ -111,7 +118,7 @@ function StateWrapper({ children, error, isLoading, preventSplashScreen, splashS
 
   switch (currentState) {
     case SCREEN_STATES.IS_INITIATING:
-      return splashScreen || <DefaultSplashScreenWithTranslation />;
+      return splashScreen || <DefaultSplashScreenWithTranslation text={splashScreenText} />;
     case SCREEN_STATES.HAS_ERROR:
       return <ScreenErrorWithTranslation error={error} />;
     default:
@@ -126,6 +133,7 @@ StateWrapper.propTypes = {
   metas: PropTypes.objectOf(PropTypes.any),
   preventSplashScreen: PropTypes.bool,
   splashScreen: PropTypes.node,
+  splashScreenText: PropTypes.string,
 };
 
 StateWrapper.defaultProps = {
@@ -134,6 +142,7 @@ StateWrapper.defaultProps = {
   metas: {},
   preventSplashScreen: false,
   splashScreen: null,
+  splashScreenText: null,
 };
 
 const GUTTERS_SPACING = 3;

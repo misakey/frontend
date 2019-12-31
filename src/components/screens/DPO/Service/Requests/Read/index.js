@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Formik, Form, Field } from 'formik';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
@@ -93,8 +92,8 @@ const handleProp = prop('handle');
 const ownerEmailProp = prop('email');
 const ownerNameProp = prop('display_name');
 
-const fetchPubkey = (handle, token) => API
-  .use(ENDPOINTS.pubkeys.list, token)
+const fetchPubkey = (handle) => API
+  .use(ENDPOINTS.pubkeys.list)
   .build(null, null, objectToSnakeCase({ handle }))
   .send();
 
@@ -188,7 +187,7 @@ FieldBlob = withTranslation('fields')(withErrors(FieldBlob));
 
 function ServiceRequestsRead({
   match: { params }, location: { hash },
-  accessRequest, accessToken,
+  accessRequest,
   isLoading, isFetching, error, accessRequestError,
   appBarProps, t, ...rest
 }) {
@@ -214,14 +213,6 @@ function ServiceRequestsRead({
       isFetchingDatabox, isLoading, isFetching,
       isFetchingBlobs,
     ],
-  );
-
-  const apiToken = useMemo(
-    () => {
-      const { token } = accessToken;
-      return isNil(token) ? undefined : token;
-    },
-    [accessToken],
   );
 
   const hashToken = useMemo(
@@ -282,7 +273,7 @@ function ServiceRequestsRead({
 
     const blob = form[FIELD_NAME];
 
-    fetchPubkey(handle, apiToken)
+    fetchPubkey(handle)
       .then((pubkeys) => {
         if (isEmpty(pubkeys)) { throw new Error(notFound); }
 
@@ -301,7 +292,7 @@ function ServiceRequestsRead({
             formData.append('encryption[ephemeral_producer_pub_key]', ephemeralProducerPubKey);
             formData.append('encryption[owner_pub_key]', pubkey);
 
-            return API.use(ENDPOINTS.blob.create, apiToken)
+            return API.use(ENDPOINTS.blob.create)
               .build(null, formData)
               .send({ contentType: null })
               .then((response) => {
@@ -324,14 +315,14 @@ function ServiceRequestsRead({
         }
       })
       .finally(() => { setUploading(false); });
-  }, [handleClose, handle, apiToken, databoxId, blobs, t, enqueueSnackbar]);
+  }, [handleClose, handle, databoxId, blobs, t, enqueueSnackbar]);
 
   const fetchBlobs = useCallback(() => {
     setFetchingBlobs(true);
 
     const queryParams = { databox_ids: [databoxId] };
 
-    API.use(ENDPOINTS.blobMetadata.list, apiToken)
+    API.use(ENDPOINTS.blobMetadata.list)
       .build(null, null, queryParams)
       .send()
       .then((response) => { setBlobs(response.map((blob) => objectToCamelCase(blob))); })
@@ -340,7 +331,7 @@ function ServiceRequestsRead({
         enqueueSnackbar(text, { variant: 'error' });
       })
       .finally(() => { setFetchingBlobs(false); });
-  }, [setFetchingBlobs, setBlobs, t, enqueueSnackbar, databoxId, apiToken]);
+  }, [setFetchingBlobs, setBlobs, t, enqueueSnackbar, databoxId]);
 
   useEffect(
     () => {
@@ -445,10 +436,6 @@ ServiceRequestsRead.propTypes = {
   accessRequestError: PropTypes.instanceOf(Error),
   error: PropTypes.instanceOf(Error),
   isFetching: PropTypes.bool.isRequired,
-  // CONNECT
-  accessToken: PropTypes.shape({
-    token: PropTypes.string,
-  }).isRequired,
   appBarProps: PropTypes.shape({
     shift: PropTypes.bool,
     items: PropTypes.arrayOf(PropTypes.node),
@@ -469,14 +456,9 @@ ServiceRequestsRead.defaultProps = {
   isLoading: false,
 };
 
-// CONNECT
-const mapStateToProps = (state) => ({
-  accessToken: state.access.token,
-});
-
-export default withTranslation(['common', 'screens'])(connect(mapStateToProps, {})(
+export default withTranslation(['common', 'screens'])(
   withAccessRequest(
     ServiceRequestsRead,
     ({ error, ...props }) => ({ accessRequestError: error, ...props }),
   ),
-));
+);

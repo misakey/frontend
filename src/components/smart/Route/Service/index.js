@@ -8,22 +8,18 @@ import routes from 'routes';
 import parseJwt from '@misakey/helpers/parseJwt';
 import log from '@misakey/helpers/log';
 import isNil from '@misakey/helpers/isNil';
-import omit from '@misakey/helpers/omit';
 import generatePath from '@misakey/helpers/generatePath';
 
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
 import { loadUserRoles } from '@misakey/auth/store/actions/auth';
 
 import BoxAction from 'components/dumb/Box/Action';
-import SplashScreen from 'components/dumb/SplashScreen';
-import Screen from 'components/dumb/Screen';
-import Container from '@material-ui/core/Container';
+import SplashScreen from 'components/dumb/Screen/Splash';
 
 export const DEFAULT_DOMAIN = 'intro';
 export const DEFAULT_SERVICE_ENTITY = { mainDomain: DEFAULT_DOMAIN };
 
 // CONSTANTS
-const INTERNAL_PROPS = ['isLoading', 'isAuthenticated'];
 const DEFAULT_SCOPE = 'openid user';
 
 // HOOKS
@@ -80,6 +76,7 @@ function RouteService({
   const { replace } = useHistory();
   const redirectToClaim = useCallback(() => { replace(pathToClaim); }, [pathToClaim, replace]);
 
+
   const render = (props) => {
     const renderProps = { ...props, ...componentProps };
     const { name } = componentProps;
@@ -125,20 +122,7 @@ function RouteService({
       }
 
       if (loginInProgress) {
-        return (
-          <Screen
-            className="boxAction"
-            fullHeight
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            {...omit(renderProps, INTERNAL_PROPS)}
-          >
-            <Container maxWidth="md">
-              <SplashScreen text={t(`screens:Service.Actions.loginAs.${workspace}.loading`)} />
-            </Container>
-          </Screen>
-        );
+        return <SplashScreen text={t(`screens:Service.Actions.loginAs.${workspace}.loading`)} />;
       }
 
       signInAsSilent();

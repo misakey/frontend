@@ -19,9 +19,8 @@ import withAccessRequest from 'components/smart/withAccessRequest';
 import AccessRequestError from 'components/smart/Route/AccessRequest/Error';
 import useUserHasRole from 'hooks/useUserHasRole';
 
-import SplashScreen from 'components/dumb/SplashScreen';
+import SplashScreen from 'components/dumb/Screen/Splash';
 
-import Fallback from './Fallback';
 import Choose from './Choose';
 
 // CONSTANTS
@@ -175,11 +174,7 @@ function RouteAccessRequest({
       return <Redirect to={requestReadTo} />;
     }
 
-    if (!isAuthenticated) {
-      return <Choose producer={producer} {...renderProps} />;
-    }
-
-    return <Fallback isAuthenticated={isAuthenticated} {...renderProps} />;
+    return <Choose producer={producer} {...renderProps} />;
   };
 
   Render.propTypes = {

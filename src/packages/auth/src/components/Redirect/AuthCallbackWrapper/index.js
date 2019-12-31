@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 
 import API from '@misakey/api';
 import { signIn } from '../../../store/actions/auth';
@@ -13,8 +15,14 @@ const useHandleSuccess = (
   enqueueSnackbar,
   t,
 ) => useCallback((user) => {
-  const { idToken, accessToken, expiresAt } = objectToCamelCase(user);
-  const credentials = { expiresAt, id: idToken, token: accessToken };
+  const { idToken, accessToken, expiresAt, profile } = objectToCamelCase(user);
+  const { acr } = profile;
+  const credentials = {
+    expiresAt,
+    id: idToken,
+    token: accessToken,
+    acr: !isNil(acr) && !isEmpty(acr) ? parseInt(acr, 10) : null,
+  };
   onSignIn(credentials);
   enqueueSnackbar(t('account.signIn.success'), { variant: 'success' });
 }, [onSignIn, enqueueSnackbar, t]);

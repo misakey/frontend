@@ -168,7 +168,7 @@ function ApplicationHeader({
   );
 
   const dpoClaimRoute = useMemo(
-    () => generatePath(routes.dpo.service.claim._, { mainDomain }),
+    () => generatePath(routes.dpo.service._, { mainDomain }),
     [mainDomain],
   );
 

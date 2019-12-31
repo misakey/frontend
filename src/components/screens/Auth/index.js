@@ -100,7 +100,7 @@ const useGetLoginInfos = (challenge, dispatch, setIsFetching, setError) => useCa
 }, [challenge, dispatch, setError, setIsFetching]);
 
 // COMPONENT
-function Auth({ dispatch, from, isAuthenticated, location, match, sso, userManager }) {
+function Auth({ dispatch, from, isAuthenticated, currentAcr, location, match, sso, userManager }) {
   const [error, setError] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
 
@@ -131,6 +131,7 @@ function Auth({ dispatch, from, isAuthenticated, location, match, sso, userManag
   const getLoginInfos = useGetLoginInfos(challenge, dispatch, setIsFetching, setError);
 
   const state = useMemo(() => ({ isLoading: isFetching, error }), [error, isFetching]);
+  const isAcrChange = useMemo(() => (currentAcr !== sso.acr), [currentAcr, sso.acr]);
 
   useEffect(() => {
     getLoginInfos();
@@ -139,8 +140,8 @@ function Auth({ dispatch, from, isAuthenticated, location, match, sso, userManag
   }, [dispatch, getLoginInfos]);
 
   if (shouldRedirectToLogin) {
-    if (isAuthenticated) {
-      return <Redirect to={from || routes.account._} />;
+    if (isAuthenticated && !isAcrChange) {
+      return <Redirect to={from} />;
     }
 
     if (hasRequiredSsoQueryParams) {
@@ -178,20 +179,27 @@ Auth.propTypes = {
   dispatch: PropTypes.func.isRequired,
   from: PropTypes.objectOf(PropTypes.any), // same origin referrer from PrivateRoute
   isAuthenticated: PropTypes.bool,
+  currentAcr: PropTypes.number,
   location: PropTypes.shape({ search: PropTypes.string, pathname: PropTypes.string }).isRequired,
   match: PropTypes.shape({ path: PropTypes.string }).isRequired,
-  sso: PropTypes.shape({ loginChallenge: PropTypes.string, clientId: PropTypes.string }).isRequired,
+  sso: PropTypes.shape({
+    loginChallenge: PropTypes.string,
+    clientId: PropTypes.string,
+    acr: PropTypes.number,
+  }).isRequired,
   userManager: PropTypes.object.isRequired,
 };
 
 Auth.defaultProps = {
   from: null,
   isAuthenticated: false,
+  currentAcr: null,
 };
 
 export default connect(
   (state) => ({
     isAuthenticated: !!state.auth.token,
+    currentAcr: state.auth.acr,
     sso: state.sso,
   }),
 )(withUserManager(Auth));

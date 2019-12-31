@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React, { useEffect, createContext, useCallback } from 'react';
 import log from '@misakey/helpers/log';
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
+import get from '@misakey/helpers/get';
 import parseJwt from '@misakey/helpers/parseJwt';
 import { loadUser, authReset, loadUserRoles } from '../../store/actions/auth';
 import createUserManager from '../../helpers/userManager';
@@ -27,12 +29,14 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
     if (user && !user.expired) {
       if (store) {
         const userId = parseJwt(user.id_token).sub;
+        const { acr } = get(user, 'profile', {});
         store.dispatch(loadUser({
           expiryAt: user.expires_at,
           token: user.access_token,
           id: user.id_token,
           authenticatedAt: user.profile.auth_time,
           userId,
+          acr: !isNil(acr) && !isEmpty(acr) ? parseInt(acr, 10) : null,
         }));
 
         const { auth } = store.getState();

@@ -5,18 +5,11 @@ import { receiveEntities } from '@misakey/store/actions/entities';
 
 export const ACCESS_RESET = Symbol('ACCESS_RESET');
 
-export const ACCESS_TOKEN_UPDATE = Symbol('ACCESS_TOKEN_UPDATE');
-
 export const ACCESS_REQUEST_UPDATE = Symbol('ACCESS_REQUEST_UPDATE');
 export const ACCESS_REQUEST_SET_PRODUCER_KEY = Symbol('ACCESS_REQUEST_SET_PRODUCER_KEY');
 
 export const accessReset = () => ({
   type: ACCESS_RESET,
-});
-
-export const accessTokenUpdate = (props) => ({
-  type: ACCESS_TOKEN_UPDATE,
-  ...props,
 });
 
 export const accessRequestUpdate = (props) => ({

@@ -38,7 +38,7 @@ import errorTypes from 'constants/errorTypes';
 import { serviceClaimValidationSchema } from 'constants/validationSchemas/dpo';
 
 // CONSTANTS
-const { conflict } = errorTypes;
+const { conflict, forbidden } = errorTypes;
 
 // @FIXME: add to @misakey/API
 const ENDPOINTS = {
@@ -186,7 +186,7 @@ function ServiceRoleClaim({
       .catch((e) => {
         if (e.code === conflict) {
           setErrorMessage(t(`fields:serviceRoleClaim.code.error.${conflict}`));
-        } else {
+        } else if (!(e.code === forbidden && e.origin === 'acr')) {
           const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
           enqueueSnackbar(text, { variant: 'error' });
         }

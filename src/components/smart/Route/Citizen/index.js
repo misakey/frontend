@@ -14,7 +14,7 @@ import isNil from '@misakey/helpers/isNil';
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
 import { IS_PLUGIN } from 'constants/plugin';
 
-import SplashScreen from 'components/dumb/SplashScreen';
+import SplashScreen from 'components/dumb/Screen/Splash';
 
 function RouteCitizen({
   component: Component, componentProps,
@@ -32,6 +32,18 @@ function RouteCitizen({
     () => userManager.signinRedirect(!isNil(userEmail) ? { login_hint: userEmail } : {}),
     [userEmail, userManager],
   );
+
+  const signInSilently = useCallback(() => {
+    setLoginInProgress(true);
+    userManager.signinSilent()
+      .then(() => { log('Silent auth as citizen succeed'); })
+      .catch((err) => {
+        log(`Silent auth as citizen failed ${err}`);
+        setLoginAsScreen(true);
+      })
+      .finally(() => { setLoginInProgress(false); });
+  }, [userManager]);
+
   const render = (props) => {
     const renderProps = { ...props, ...componentProps };
 
@@ -58,14 +70,7 @@ function RouteCitizen({
         return <SplashScreen text={t('screens:Citizen.Actions.loginAs.loading')} />;
       }
 
-      setLoginInProgress(true);
-      userManager.signinSilent()
-        .then(() => { log('Silent auth as citizen succeed'); })
-        .catch((err) => {
-          log(`Silent auth as citizen failed ${err}`);
-          setLoginAsScreen(true);
-        })
-        .finally(() => { setLoginInProgress(false); });
+      signInSilently();
       return null;
     }
 
