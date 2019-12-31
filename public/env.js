@@ -12,4 +12,21 @@ window.env = {
     dsn: 'https://63f724116593491aabcfefa591f19f00@sentry.io/1816689',
     environment: 'development',
   },
+  CATEGORIES: [
+    {
+      label: 'shops',
+      applicationsDomains: [
+        'rakuten.com',
+        'amazon.com',
+      ],
+    },
+    {
+      label: 'services',
+      applicationsDomains: [
+        'airbnb.com',
+        'ferdinand.com',
+        'vp.com',
+      ],
+    },
+  ],
 };

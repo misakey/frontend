@@ -209,6 +209,32 @@
     },
     "linkedDomain": {
       "redirect": "Vous avez été redirigé vers {{mainDomainTo}} car {{mainDomainFrom}} est un domaine lié à {{mainDomainTo}}"
+    },
+    "category": {
+      "shops": "eCommerces",
+      "telecom": "Opérateurs télécom",
+      "streaming": "Streaming",
+      "tv": "TV",
+      "banks": "Banques",
+      "estate_agency": "Agences immobilières",
+      "gym": "Salles de sport",
+      "gaming": "Jeux vidéo",
+      "insurance": "Assurances",
+      "transport": "Transport",
+      "mobility": "Mobilité",
+      "food": "Nourriture",
+      "energy": "Énergie",
+      "bet": "Paris en ligne",
+      "press": "Presse",
+      "retailers": "Grande distribution",
+      "travel": "Voyage",
+      "hr": "RH",
+      "public_service": "Service publique",
+      "misc": "Divers",
+      "tickets": "Billeteries",
+      "services": "Services divers",
+      "car_rental": "Location de voiture",
+      "crowdfunding": "Financement participatif"
     }
   },
   "ratings": "notes",

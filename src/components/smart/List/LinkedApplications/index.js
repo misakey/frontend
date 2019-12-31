@@ -11,9 +11,10 @@ import log from '@misakey/helpers/log';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
+import Box from '@material-ui/core/Box';
 import Card from 'components/dumb/Card';
-
-import CardContent from './CardContent';
+import Title from 'components/dumb/Typography/Title';
+import ApplicationsList from 'components/dumb/List/Applications';
 
 
 // CONSTANTS
@@ -41,8 +42,8 @@ function LinkedApplicationsList({ t, userId, isAuthenticated }) {
   const [isFetching, setIsFetching] = useState(false);
 
   const shouldFetch = useMemo(
-    () => !isFetching && isAuthenticated && isNil(list),
-    [isFetching, isAuthenticated, list],
+    () => !isFetching && isAuthenticated && isNil(list) && isNil(error),
+    [isFetching, isAuthenticated, list, error],
   );
 
   const fetchList = useCallback(() => {
@@ -63,8 +64,7 @@ function LinkedApplicationsList({ t, userId, isAuthenticated }) {
             const applications = applicationResponse.map(objectToCamelCase);
             setList(
               applicationLinks.map((applicationLink) => ({
-                ...applicationLink,
-                application: applications.find(
+                ...applications.find(
                   (application) => application.id === applicationLink.applicationId,
                 ),
               })),
@@ -84,18 +84,24 @@ function LinkedApplicationsList({ t, userId, isAuthenticated }) {
     }
   }, [shouldFetch, fetchList]);
 
-  if (!isAuthenticated) {
-    return null;
+  if (!isAuthenticated || (!isFetching && (isNil(list) || list.length === 0))) {
+    return (
+      <Box mb={3}>
+        <Title align="center">
+          {t('screens:landing.subtitle')}
+        </Title>
+      </Box>
+    );
   }
   return (
     <Card
       title={t('linkedApplications.title')}
+      mb={3}
     >
-      <CardContent
+      <ApplicationsList
         isFetching={isFetching}
         error={error}
-        list={list || []}
-        isAuthenticated={isAuthenticated}
+        applications={list || []}
       />
     </Card>
   );
@@ -103,8 +109,12 @@ function LinkedApplicationsList({ t, userId, isAuthenticated }) {
 
 LinkedApplicationsList.propTypes = {
   t: PropTypes.func.isRequired,
-  userId: PropTypes.string.isRequired,
+  userId: PropTypes.string,
   isAuthenticated: PropTypes.bool.isRequired,
+};
+
+LinkedApplicationsList.defaultProps = {
+  userId: null,
 };
 
 // CONNECT
@@ -113,4 +123,4 @@ const mapStateToProps = (state) => ({
   isAuthenticated: !!state.auth.token,
 });
 
-export default connect(mapStateToProps)(withTranslation(['components'])(LinkedApplicationsList));
+export default connect(mapStateToProps)(withTranslation(['components', 'screens'])(LinkedApplicationsList));

@@ -5,9 +5,6 @@ import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
 
-import isNil from '@misakey/helpers/isNil';
-
-
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 
@@ -16,32 +13,27 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import ApplicationListItem from 'components/dumb/ListItem/Application';
 import BoxMessage from 'components/dumb/Box/Message';
 
-function CardContent({ t, isFetching, error, list, isAuthenticated }) {
-  const applicationLinks = useMemo(
-    () => list.map((applicationLink) => ({
-      ...applicationLink,
+function ApplicationsList({ t, isFetching, error, applications, listLength, toRoute }) {
+  const applicationsWithPaths = useMemo(
+    () => applications.map((application) => ({
+      application,
       to: generatePath(
-        routes.citizen.application.vault,
-        { mainDomain: applicationLink.application.mainDomain },
+        toRoute,
+        { mainDomain: application.mainDomain },
       ),
     })),
-    [list],
+    [applications, toRoute],
   );
 
-  if (!isAuthenticated) {
-    return null;
-  }
   if (isFetching) {
     return (
       <>
-        <Skeleton
-          variant="text"
-          height={31}
-        />
-        <Skeleton
-          variant="text"
-          height={31}
-        />
+        {Array(listLength).map(() => (
+          <Skeleton
+            variant="text"
+            height={31}
+          />
+        ))}
       </>
     );
   }
@@ -54,21 +46,11 @@ function CardContent({ t, isFetching, error, list, isAuthenticated }) {
       </BoxMessage>
     );
   }
-  if (isNil(applicationLinks) || applicationLinks.length === 0) {
-    return (
-      <Typography>
-        {t('linkedApplications.noApp')}
-      </Typography>
-    );
-  }
+
   return (
     <List>
-      {applicationLinks.map((applicationLink) => {
-        const { application } = applicationLink;
-        const to = generatePath(
-          routes.citizen.application.vault,
-          { mainDomain: application.mainDomain },
-        );
+      {applicationsWithPaths.map((app) => {
+        const { application, to } = app;
         return (
           <ApplicationListItem
             key={application.mainDomain}
@@ -84,16 +66,19 @@ function CardContent({ t, isFetching, error, list, isAuthenticated }) {
   );
 }
 
-CardContent.propTypes = {
+ApplicationsList.propTypes = {
   t: PropTypes.func.isRequired,
   isFetching: PropTypes.bool.isRequired,
   error: PropTypes.object,
-  list: PropTypes.arrayOf(PropTypes.object).isRequired,
-  isAuthenticated: PropTypes.bool.isRequired,
+  applications: PropTypes.arrayOf(PropTypes.object).isRequired,
+  listLength: PropTypes.number,
+  toRoute: PropTypes.string,
 };
 
-CardContent.defaultProps = {
+ApplicationsList.defaultProps = {
   error: undefined,
+  listLength: 3,
+  toRoute: routes.citizen.application._,
 };
 
-export default withTranslation(['components'])(CardContent);
+export default withTranslation(['components'])(ApplicationsList);

@@ -1,15 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import { withTranslation } from 'react-i18next';
 
 import Container from '@material-ui/core/Container';
-import Box from '@material-ui/core/Box';
 
 import LinkedApplicationsList from 'components/smart/List/LinkedApplications';
+import ApplicationCategoriesList from 'components/smart/List/ApplicationCategories';
 import Footer from 'components/dumb/Footer';
 import Screen from 'components/dumb/Screen';
-import Title from 'components/dumb/Typography/Title';
 
 import 'components/screens/Landing/landing.scss';
 
@@ -41,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const LandingScreen = ({ t }) => {
+const LandingScreen = () => {
   const classes = useStyles();
 
   return (
@@ -54,12 +51,8 @@ const LandingScreen = ({ t }) => {
       <Container maxWidth="md" classes={{ root: classes.containerRoot }}>
         <div className={classes.content}>
           <div className={classes.body}>
-            <Box mb={3}>
-              <Title align="center">
-                {t('screens:landing.subtitle')}
-              </Title>
-            </Box>
             <LinkedApplicationsList />
+            <ApplicationCategoriesList />
           </div>
           <Footer />
         </div>
@@ -67,9 +60,5 @@ const LandingScreen = ({ t }) => {
     </Screen>
   );
 };
-LandingScreen.propTypes = {
-  t: PropTypes.func.isRequired,
-  history: PropTypes.shape({ push: PropTypes.func }).isRequired,
-};
 
-export default withTranslation(['common', 'screens'])(LandingScreen);
+export default LandingScreen;
