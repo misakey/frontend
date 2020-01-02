@@ -15,4 +15,86 @@ config: >-
       dsn: 'https://b9d357a41a2946f2b4d8c2b23f566a95@sentry.io/1817199',
       environment: 'production',
     },
+    CATEGORIES: [
+      {
+        label: 'shops',
+        applicationsDomains: [
+          'decathlon.fr',
+          'fnac.com',
+          'ldlc.fr',
+          'darty.com',
+          'cdiscount.com'
+        ],
+      },
+      {
+        label: 'music',
+        applicationsDomains: [
+          'deezer.fr',
+          'spotify.com',
+          'soundcloud.com',
+          'tidal.com',
+          'qobuz.fr'
+        ],
+      },
+      {
+        label: 'video',
+        applicationsDomains: [
+          'netflix.com',
+          'mycanal.fr',
+          'ocs.fr',
+          'molotov.tv',
+          'beinsports.fr'
+        ],
+      },
+      {
+        label: 'food',
+        applicationsDomains: [
+          'deliveroo.fr',
+          'justeat.fr',
+          'frichti.fr',
+          'livraisonresto.fr',
+          'seazon.fr'
+        ],
+      },
+      {
+        label: 'mobility',
+        applicationsDomains: [
+          'li.me',
+          'kapten.com',
+          'ridedott.com',
+          'bolt.eu',
+          'bird.co'
+        ],
+      },
+      {
+        label: 'retailers',
+        applicationsDomains: [
+          'auchan.fr',
+          'carrefour.fr',
+          'franprix.fr',
+          'e-leclerc.com',
+          'geantcasino.fr'
+        ],
+      },
+      {
+        label: 'tickets',
+        applicationsDomains: [
+          'billetreduc.com',
+          'digitick.com',
+          'fnacspectacles.fr',
+          'ticketac.com',
+          'ticketmaster.fr'
+        ],
+      },
+      {
+        label: 'transport',
+        applicationsDomains: [
+          'oui.sncf',
+          'blablacar.fr',
+          'trainline.fr',
+          'drivy.com',
+          'airfrance.fr'
+        ],
+      },
+    ],
   };

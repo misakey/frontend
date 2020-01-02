@@ -13,5 +13,24 @@ config: >-
       dsn: 'https://8d456528721649a39d8ec22794be3fad@sentry.io/1817198',
       environment: 'preprod',
     },
+    CATEGORIES: [
+      {
+        label: 'press',
+        applicationsDomains: [
+          'liberation.fr',
+          'lemonde.fr',
+          'mediapart.fr',
+        ],
+      },
+      {
+        label: 'bet',
+        applicationsDomains: [
+          'winamax.fr',
+          'betclic.fr',
+          'unibet.fr',
+        ],
+      },
+    ],
   };
-
+    
+  
