@@ -258,5 +258,13 @@
     "error": {
       "malformed": "Le lien est malformé. Vérifiez qu'il commence bien par http ou https"
     }
+  },
+  "ownerComment": {
+    "label": "Conclusion de votre requête",
+    "helperText": "Choisissez parmi ces propositions celle qui correspond le mieux à votre cas",
+    "error": {
+      "required": "Veuillez nous faire un retour sur votre requête",
+      "invalid": "Ce retour est incorrect"
+    }
   }
 }

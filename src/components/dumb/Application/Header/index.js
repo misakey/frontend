@@ -167,6 +167,11 @@ function ApplicationHeader({
     [setMoreMenuAnchorEl],
   );
 
+  const mailtoDpoHref = useMemo(
+    () => `mailto:${dpoEmail}`,
+    [dpoEmail],
+  );
+
   const dpoClaimRoute = useMemo(
     () => generatePath(routes.dpo.service._, { mainDomain }),
     [mainDomain],
@@ -335,6 +340,17 @@ function ApplicationHeader({
               >
                 {t('common:report')}
               </MenuItem>
+              {!isEmpty(dpoEmail) && (
+                <MenuItem
+                  component="a"
+                  onClick={onMoreMenuClose}
+                  href={mailtoDpoHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('common:contact.mailto')}
+                </MenuItem>
+              )}
             </Menu>
           </Box>
         )}

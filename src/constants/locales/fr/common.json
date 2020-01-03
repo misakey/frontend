@@ -4,8 +4,11 @@
   "back": "Précedent",
   "next": "Suivant",
   "done": "Terminer",
+  "skip": "Passer",
   "cancel": "Annuler",
   "retry": "Recommencer",
+  "reopen": "Réouvrir",
+  "close": "Archiver",
   "ok": "OK",
   "validate": "Valider",
   "reset": "Réinitialiser",
@@ -36,7 +39,11 @@
   "brand": "Logo de la marque {{brand}}",
   "links": {
     "docs": {
-      "dpo": "https://docs.misakey.com/#/dpo/"
+      "dpo": "https://docs.misakey.com/#/dpo/",
+      "citizen": {
+        "accessRequest": "https://docs.misakey.com/#/citizen/misakey",
+        "faq": "https://docs.misakey.com/#/citizen/faq"
+      }
     }
   },
   "account": {
@@ -65,6 +72,11 @@
         "description": "Veuillez renseigner votre adresse email ({{email}}) dans le champ ci-dessous avant de valider la suppression de votre compte."
       }
     }
+  },
+  "calendar": {
+    "sameDay": "aujourd'hui",
+    "nextDay": "demain",
+    "lastDay": "hier"
   },
   "httpStatus": {
     "success": {},
@@ -144,7 +156,11 @@
     "types": {
       "legal": "Légal",
       "friendly-legal": "Cordial légal",
-      "friendly": "Cordial"
+      "friendly": "Cordial",
+      "refused": "Refusé",
+      "other-channel": "Hors misakey",
+      "no-data": "Pas de données",
+      "no-answer": "Pas de réponse"
     }
   },
   "connectedOnly": "Vous devez etre connectés",
@@ -161,7 +177,8 @@
   "must": "Devoir",
   "contact": {
     "label": "Contacter",
-    "dpo": "Ajouter le DPO"
+    "dpo": "Ajouter le DPO",
+    "mailto": "Email au DPO"
   },
   "claim": {
     "admin": "Je suis admin",
@@ -178,6 +195,91 @@
     "edit": "Modifier mon avis",
     "submit": "Publier"
   },
+  "databox": {
+    "intro": "Liste des fichiers envoyés par le DPO de {{applicationName}}",
+    "details": {
+      "title": "Détails"
+    },
+    "empty": {
+      "open": "Votre demande de portabilité n'a pas encore été traitée par {{applicationName}}. Vous pouvez les relancer si nécessaire.",
+      "notOpen": "Aucun fichier"
+    },
+    "noResult": "Vous pouvez demander vos données afin de récupérer vos données personnelles dans votre coffre-fort. Vous serez ensuite libre d'en disposer comme bon vous semble. Vos données seront chiffrées afin que vous seul puissiez y accéder.",
+    "button": {
+      "label": {
+        "send": "Demander mes données",
+        "resend": "Relancer le DPO",
+        "close": "Archiver la demande",
+        "reopen": "Relancer le DPO"
+      }
+    },
+    "since": {
+      "open": "En cours",
+      "reopen": "Réouverte",
+      "done": "Complétée",
+      "closed": "Fermée",
+      "created": "Créée",
+      "updated": "Editée"
+    },
+    "dpoComment": {
+      "no_data": "Le site ne possède aucune donnée vous concernant",
+      "refused": "Votre demande a été rejetée",
+      "ok": "Vos données ont été déposées dans votre coffre-fort",
+      "other": "Vous pouvez contacter directement le DPO pour plus d'informations"
+    },
+    "ownerComment": {
+      "ok": "J'ai bien reçu mes données personnelles dans mon coffre-fort",
+      "other_channel": "J'ai reçu mes données personnelles via un autre canal (mail, service intégré, etc)",
+      "refused": "Le site a refusé de traiter ma demande",
+      "no_data": "Le site affirme n'avoir aucune donnée me concernant",
+      "other": "Autre"
+    },
+    "dialog": {
+      "reopen": {
+        "title": "Voulez-vous vraiment réouvrir la requête ?",
+        "description": "Le DPO a signifié que votre demande était traitée.\nVous pouvez le relancer en lui indiquant les raisons de votre désaccord."
+      },
+      "close": {
+        "title": "Voulez-vous vraiment archiver la requête ?",
+        "description": "Vous ne pourrez plus réouvrir cette requête et le DPO ne pourra plus y ajouter de fichier.\nNéanmoins, les fichiers seront toujours téléchargeables et vous pourrez ouvrir une nouvelle requête plus tard."
+      }
+    },
+    "archive": {
+      "title": "Archivée le {{updatedAt}}"
+    },
+    "blobs": {
+      "count": "{{count}} fichier",
+      "count_plural": "{{count}} fichiers"
+    },
+    "errors": {
+      "forbidden": "Action interdite",
+      "conflict": {
+        "open": {
+          "createdAt": "Impossible d'effectuer une nouvelle demande, la précédente date de moins de 30 jours.",
+          "status": "Impossible d'effectuer une nouvelle demande, il en existe déjà une ouverte."
+        },
+        "reopen": {
+          "createdAt": "Impossible de réouvrir la demande, une demande plus récente date de moins de 30 jours.",
+          "status": "Impossible de réouvrir la demande, il en existe déjà une ouverte."
+        },
+        "archive": {
+          "status": "Action impossible. La demande a déjà été archivée."
+        }
+      }
+    }
+  },
+  "dateSince": {
+    "past": {
+      "event": "il y a",
+      "duration": "depuis"
+    },
+    "future": {
+      "event": "dans",
+      "duration": "pendant"
+    },
+    "unit": "{{count}} jour",
+    "unit_plural": "{{count}} jours"
+  },
   "previous": "Précédent",
   "edit": "Modifier",
   "noContact": "Vous n'avez contacter aucune entreprise !",
@@ -187,7 +289,11 @@
   "emailBody": {
     "legal": "Madame, Monsieur,\n\nLes données à caractère personnel me concernant telles que mon adresse email sont protégées par les lois relatives aux données personnelles.\nDepuis Mai 2018, le Règlement Européen sur la Protection des Données (RGPD) s'applique au traitement de mon adresse email et toute autre information me concernant (http://www.privacy-regulation.eu/fr/).\n\nEn vertu de l'article 3 du RGPD, les règles prévues par ce texte s'appliquent à votre entreprise car le traitement de données personnelles est effectué sur le territoire de l'Union Européenne, y compris si votre société se situe en dehors de l'Union Européenne (http://www.privacy-regulation.eu/fr/3.htm).\nJe vous prie de bien vouloir m’indiquer si des données me concernant figurent dans vos fichiers informatisés.\n\nDans l’affirmative, je souhaiterais transférer à Misakey une copie de l’ensemble de ces données dans un format lisible par une machine, en application de l’article 20 du Règlement Général sur la Protection des Données (http://www.privacy-regulation.eu/fr/20.htm).\n\nVeuillez déposer directement les fichiers contenant mes données dans la boîte de dépôt sécurisée associée à mon compte afin qu’aucun autre service n’y ait accès : {{databoxURL}}\nVous devrez confirmer votre accès avec un code envoyé à l’adresse {{dpoEmail}}\n\nPour plus d’informations sur le service Misakey, vous pouvez vous rendre sur : https://docs.misakey.com/#/dpo/\n\nSelon l'article 12 (3), vous devez répondre à ma demande dans les meilleurs délais et en tout état de cause dans un délai d'un mois à compter de la réception de cette demande.\nPassé ce délai, je porterai plainte auprès de l'autorité compétente (http://www.privacy-regulation.eu/fr/12.htm).\n\nJe vous prie d’agréer, Madame, Monsieur, l’expression de mes salutations distinguées.",
     "friendly-legal": "Bonjour,\n\nJe possède un compte sur votre service et je souhaiterais connaître l’ensemble des données que vous conservez sur moi, conformément à ce que m’autorise le RGPD (http://www.privacy-regulation.eu/fr/).\n\nComme je ne souhaite pas recevoir ces informations par email pour des raisons de confidentialité et de sécurité (mon fournisseur d'email procède explicitement à la lecture de mes emails), je souhaiterais bénéficier d’une portabilité vers un service sécurisé, comme m’y autorise l’article (http://www.privacy-regulation.eu/fr/20.htm) du RGPD.\nJe vous demanderais donc de me communiquer mes données via la plateforme sécurisée Misakey, grâce à laquelle je peux regrouper toutes mes données de façon chiffrée à un seul endroit.\nVous pouvez déposer facilement mes données sur l’URL suivante : {{databoxURL}}\nUn code de confirmation vous sera envoyé à l’adresse {{dpoEmail}}.\n\nPour plus d’informations sur le service Misakey et mes droits RGPD, vous pouvez vous rendre sur : https://docs.misakey.com/#/dpo/\n\nJe me tiens bien entendu à votre disposition si vous désirez des informations complémentaires concernant ma demande.\n\nBien à vous.",
-    "friendly": "Bonjour,\n\nJe possède un compte sur votre service et je souhaiterais connaître l’ensemble des données que vous conservez sur moi, conformément à ce que m’autorise le RGPD.\n\nComme je ne souhaite pas recevoir cette copie par email pour des raisons de confidentialité et de sécurité (mon fournisseur d'email procède explicitement à la lecture de mes emails), je vous propose de me les communiquer via la plateforme sécurisée Misakey, qui me permet de regrouper toutes mes données de façon chiffrée.\nVous pouvez déposer facilement mes données sur l’URL suivante : {{databoxURL}}\nUn code de confirmation vous sera envoyé à l’adresse {{dpoEmail}}.\n\nPour plus d’informations sur le service Misakey et mes droits RGPD, vous pouvez vous rendre sur : https://docs.misakey.com/#/dpo/\n\nJe me tiens bien entendu à votre disposition si vous désirez des informations complémentaires concernant ma demande.\n\nBien à vous."
+    "friendly": "Bonjour,\n\nJe possède un compte sur votre service et je souhaiterais connaître l’ensemble des données que vous conservez sur moi, conformément à ce que m’autorise le RGPD.\n\nComme je ne souhaite pas recevoir cette copie par email pour des raisons de confidentialité et de sécurité (mon fournisseur d'email procède explicitement à la lecture de mes emails), je vous propose de me les communiquer via la plateforme sécurisée Misakey, qui me permet de regrouper toutes mes données de façon chiffrée.\nVous pouvez déposer facilement mes données sur l’URL suivante : {{databoxURL}}\nUn code de confirmation vous sera envoyé à l’adresse {{dpoEmail}}.\n\nPour plus d’informations sur le service Misakey et mes droits RGPD, vous pouvez vous rendre sur : https://docs.misakey.com/#/dpo/\n\nJe me tiens bien entendu à votre disposition si vous désirez des informations complémentaires concernant ma demande.\n\nBien à vous.",
+    "no-answer": "Bonjour,\n\nMa demande de portabilité, envoyée le {{createdAt}} n'a toujours pas été traitée par votre service.\nLe mois de délai prévu par le RGPD (http://www.privacy-regulations.eu/fr/12.htm) est désormais écoulé, aussi je me permets de vous relancer afin que ma demande soit traitée dans les meilleurs délais.\n\nPour rappel, je vous demande de déposer les données à caractère personnel me concernant, dans le cadre d'une demande de portabilité, sur la plateforme sécurisée Misakey: {{databoxURL}}\n\nDans le cas contraire, je me verrais dans l'obligation de porter une réclamation à la CNIL.\n\nJe me tiens à votre disposition si vous désirez des informations complémentaires concernant ma demande.\n\nBien à vous.",
+    "no-data": "Bonjour,\n\nVous avez signifié, dans le cadre de ma demande de portabilité envoyée le {{createdAt}}, que votre service ne possédait aucune de mes données personnelles.\nNéanmoins, possédant un compte sur votre service, je continue de penser que vous procédez au stockage et/ou au traitement de données personnelles me concernant.\n\nJe me permets donc de vous relancer afin que vous déposiez mes données personnelles, dans le cadre d’une demande de portabilité (http://www.privacy-regulation.eu/fr/20.htm), sur la plateforme sécurisée Misakey à l’adresse: {{databoxURL}}\n\nDans le cas contraire, je me verrais dans l’obligation de porter une réclamation à la CNIL.\n\nJe me tiens à votre disposition si vous désirez des informations complémentaires concernant ma demande.\n\nBien à vous.",
+    "refused": "Bonjour,\n\nVous avez signifié que votre service refusait de traiter ma demande de portabilité envoyée le {{createdAt}}.\nNéanmoins, je reste persuadé que ma démarche s’inscrit dans le cadre légal du RGPD, notamment de l’article 20 (http://www.privacy-regulation.eu/fr/20.htm), aussi je vous demande de bien vouloir procéder au traitement de cette demande dans les meilleurs délais.\n\nJe me permets donc de vous relancer afin que vous déposiez mes données personnelles, dans le cadre d’une demande de portabilité (http://www.privacy-regulation.eu/fr/20.htm), sur la plateforme sécurisée Misakey à l’adresse: {{databoxURL}}\n\nDans le cas contraire, je me verrais dans l’obligation de porter une réclamation à la CNIL.\n\nJe me tiens à votre disposition si vous désirez des informations complémentaires concernant ma demande.\n\nBien à vous.",
+    "other-channel": "Bonjour,\n\nJe vous remercie pour le traitement de ma demande du {{createdAt}}.\n\nCependant, votre réponse correspond à une demande d'accès (cf: Article 15 du RGPD http://www.privacy-regulation.eu/fr/15.htm).\nOr je vous ai fait une demande de portabilité.\nJe vous rappelle que dans ce cadre votre entreprise est dans l’obligation de transférer directement les données à une autre entreprise si ce transfert est possible, comme indiqué dans l’article 20 (http://www.privacy-regulation.eu/fr/20.htm), ou dans l’article de la CNIL https://www.cnil.fr/fr/le-droit-la-portabilite-obtenir-et-reutiliser-une-copie-de-vos-donnees.\n\nJe me permets donc de vous relancer afin que vous déposiez mes données personnelles, dans le cadre d’une demande de portabilité (http://www.privacy-regulation.eu/fr/20.htm), sur la plateforme sécurisée Misakey à l’adresse: {{databoxURL}}\n\nJe me tiens à votre disposition si vous désirez des informations complémentaires concernant ma demande.\n\nBien à vous."
   },
   "providers": {
     "error": "Veuillez désactiver votre bloqueur pour accéder à l'envoi avec Gmail",

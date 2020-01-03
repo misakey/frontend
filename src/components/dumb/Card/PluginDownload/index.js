@@ -17,8 +17,6 @@ function PluginDownloadCard({ t }) {
       my={2}
       title={t('screens:application.thirdParty.inApp.plugin.title')}
       primary={{
-        variant: 'outlined',
-        color: 'secondary',
         target: '_blank',
         rel: 'noopener noreferrer',
         href: pluginHrefToStore,

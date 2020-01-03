@@ -9,6 +9,7 @@ import propOr from '@misakey/helpers/propOr';
 
 import Typography from '@material-ui/core/Typography';
 import ContactButton from 'components/smart/ContactButton';
+import { BUTTON_STANDINGS } from 'components/dumb/Button';
 import Card from 'components/dumb/Card';
 import { openInNewTab } from 'helpers/plugin';
 import { IS_PLUGIN } from 'constants/plugin';
@@ -70,7 +71,7 @@ const InfoContentSecurity = ({
         onContributionClick={onContributionDpoEmailClick}
         applicationID={id}
         mainDomain={mainDomain}
-        buttonProps={{ variant: 'contained' }}
+        buttonProps={{ standing: BUTTON_STANDINGS.MAJOR }}
       >
         {t('screens:application.info.security.button.dpo')}
       </ContactButton>
@@ -88,7 +89,7 @@ const InfoContentSecurity = ({
           onContributionClick={onContributionDpoEmailClick}
           applicationID={id}
           mainDomain={mainDomain}
-          buttonProps={{ variant: 'outlined' }}
+          buttonProps={{ standing: BUTTON_STANDINGS.MINOR }}
         />
       )
       : undefined),

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Route, Switch } from 'react-router-dom';
 
 import ApplicationSchema from 'store/schemas/Application';
+import DataboxSchema from 'store/schemas/Databox';
 
 
 import routes from 'routes';
@@ -17,19 +18,30 @@ const ContactProviders = lazy(() => import('components/screens/Citizen/Applicati
 const Contact = ({
   entity,
   databoxURL,
+  databox,
 }) => (
   <Switch>
     <Route
       path={routes.citizen.application.contact.preview}
       render={(routerProps) => (
-        <ContactPreview entity={entity} databoxURL={databoxURL} {...routerProps} />
+        <ContactPreview
+          entity={entity}
+          databox={databox}
+          databoxURL={databoxURL}
+          {...routerProps}
+        />
       )}
     />
     <Route
       path={routes.citizen.application.contact.providers}
       exact
       render={(routerProps) => (
-        <ContactProviders entity={entity} databoxURL={databoxURL} {...routerProps} />
+        <ContactProviders
+          entity={entity}
+          databox={databox}
+          databoxURL={databoxURL}
+          {...routerProps}
+        />
       )}
     />
   </Switch>
@@ -38,12 +50,14 @@ const Contact = ({
 Contact.propTypes = {
   mainDomain: PropTypes.string,
   entity: PropTypes.shape(ApplicationSchema.propTypes),
+  databox: PropTypes.shape(DataboxSchema.propTypes),
   databoxURL: PropTypes.string,
 };
 
 Contact.defaultProps = {
   entity: null,
   mainDomain: null,
+  databox: null,
   databoxURL: null,
 };
 

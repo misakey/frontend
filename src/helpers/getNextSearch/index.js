@@ -13,7 +13,11 @@ export default (search = '', paramsMap = new Map()) => {
 
   const nextSearch = new URLSearchParams(search);
   paramsMap.forEach((value, key) => {
-    nextSearch.set(key, value);
+    if (value !== undefined) {
+      nextSearch.set(key, value);
+    } else {
+      nextSearch.delete(key);
+    }
   });
 
   return nextSearch.toString();

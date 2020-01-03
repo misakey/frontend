@@ -2,46 +2,29 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import Box from '@material-ui/core/Box';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
-import { CloudDownload as CloudDownloadIcon } from '@material-ui/icons';
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
+import FolderIcon from '@material-ui/icons/Folder';
 
 import includes from '@misakey/helpers/includes';
 
 import moment from 'moment';
 import * as numeral from 'numeral';
 
-import 'components/screens/Citizen/Application/Box/DataboxDisplay/databoxDisplay.scss';
-
-const DataboxDisplay = (props) => {
-  const {
-    application, blobs, t, downloadBlob,
-    publicKeysWeCanDecryptFrom,
-    isCryptoReadyToDecrypt,
-  } = props;
-
-  if (blobs.length === 0) {
-    return (
-      <div className="databoxDisplay">
-        <Typography className="databoxDescription">
-          {t('screens:databox.empty', { applicationName: application.name })}
-        </Typography>
-      </div>
-    );
-  }
-
-  return (
-    <div className="databoxDisplay">
-      <Typography className="databoxDescription">
-        {t('screens:databox.intro', { applicationName: application.name })}
-      </Typography>
-      <List disablePadding>
-        {
+const DataboxDisplay = ({
+  blobs, t, downloadBlob,
+  publicKeysWeCanDecryptFrom,
+  isCryptoReadyToDecrypt,
+}) => (
+  <List disablePadding>
+    {
           // "sort" method mutates the array
           // so we have to copy it with the "concat"
           // see https://stackoverflow.com/a/43572944/3025740
@@ -61,7 +44,12 @@ const DataboxDisplay = (props) => {
               const size = numeral(contentLength).format('0a') + t('units.bytes');
               const canBeDecrypted = includes(publicKeysWeCanDecryptFrom, ownerPubKey);
               return (
-                <ListItem key={blob.id} disableGutters>
+                <ListItem key={id} disableGutters>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <FolderIcon />
+                    </Avatar>
+                  </ListItemAvatar>
                   <ListItemText
                     primary={t('screens:databox.sendAt', { date })}
                     secondary={(
@@ -87,7 +75,7 @@ const DataboxDisplay = (props) => {
                       <IconButton
                         edge="end"
                         aria-label="Download"
-                        onClick={() => downloadBlob(id)}
+                        onClick={() => downloadBlob(blob)}
                       >
                         <CloudDownloadIcon />
                       </IconButton>
@@ -97,13 +85,10 @@ const DataboxDisplay = (props) => {
               );
             })
         }
-      </List>
-    </div>
-  );
-};
+  </List>
+);
 
 DataboxDisplay.propTypes = {
-  application: PropTypes.object.isRequired,
   blobs: PropTypes.arrayOf(PropTypes.object).isRequired,
   t: PropTypes.func.isRequired,
   downloadBlob: PropTypes.func.isRequired,

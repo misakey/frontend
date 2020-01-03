@@ -8,9 +8,11 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import routes from 'routes';
 import ApplicationSchema from 'store/schemas/Application';
+import DataboxSchema from 'store/schemas/Databox';
 // import { selectors as contactSelectors } from 'store/reducers/screens/contact';
 
 import { GMAIL } from 'constants/mail-providers';
+import RECONTACT_MAIL_TYPES, { NO_ANSWER, REFUSED } from 'constants/mailTypes/recontact';
 
 import useScript from 'hooks/useScript';
 
@@ -21,6 +23,8 @@ import prop from '@misakey/helpers/prop';
 import propOr from '@misakey/helpers/propOr';
 import noop from '@misakey/helpers/noop';
 import getSearchParams from '@misakey/helpers/getSearchParams';
+import getNextSearch from 'helpers/getNextSearch';
+import mapDates from 'helpers/mapDates';
 
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
@@ -74,6 +78,7 @@ const useOnSubmit = (mailProvider, mailto, subject, body, onSuccess) => useCallb
 const ContactPreview = ({
   history,
   databoxURL,
+  databox,
   entity,
   mailProvider,
   t,
@@ -82,9 +87,48 @@ const ContactPreview = ({
   const { enqueueSnackbar } = useSnackbar();
 
   const { search } = useLocation();
-  const mailType = useMemo(
-    () => getSearchParams(search).mailType,
+
+  const searchParams = useMemo(
+    () => getSearchParams(search),
     [search],
+  );
+
+  const recontact = useMemo(
+    () => (isNil(searchParams.recontact)
+      ? false
+      : Boolean(searchParams.recontact)),
+    [searchParams],
+  );
+
+  const reopen = useMemo(
+    () => (isNil(searchParams.reopen)
+      ? false
+      : Boolean(searchParams.reopen)),
+    [searchParams],
+  );
+
+  const groupMailTypeProps = useMemo(
+    () => {
+      if (reopen) {
+        return {
+          values: RECONTACT_MAIL_TYPES,
+          defaultValue: REFUSED,
+        };
+      }
+      if (recontact) {
+        return {
+          values: RECONTACT_MAIL_TYPES,
+          defaultValue: NO_ANSWER,
+        };
+      }
+      return {};
+    },
+    [recontact, reopen],
+  );
+
+  const mailType = useMemo(
+    () => searchParams.mailType,
+    [searchParams],
   );
 
   const [loaded, setLoaded] = useState();
@@ -111,8 +155,8 @@ const ContactPreview = ({
     [t],
   );
   const body = useMemo(
-    () => t(`common:emailBody.${mailType}`, { dpoEmail, databoxURL }),
-    [databoxURL, dpoEmail, mailType, t],
+    () => t(`common:emailBody.${mailType}`, { dpoEmail, databoxURL, ...mapDates(databox) }),
+    [databoxURL, databox, dpoEmail, mailType, t],
   );
 
   const nextTo = useMemo(
@@ -126,6 +170,19 @@ const ContactPreview = ({
         search,
       })),
     [mailType, mainDomain, search],
+  );
+
+  const skipTo = useMemo(
+    () => ((isNil(mainDomain))
+      ? null
+      : ({
+        pathname: generatePath(
+          routes.citizen.application.vault,
+          { mainDomain },
+        ),
+        search: getNextSearch(search, new Map([['recontact', undefined], ['mailType', undefined]])),
+      })),
+    [mainDomain, search],
   );
 
   const providerConfig = useMemo(() => PROVIDERS[mailProvider], [mailProvider]);
@@ -147,6 +204,17 @@ const ContactPreview = ({
         text: t('common:send'),
       }),
     [loaded, mailProvider, nextTo, onSubmit, t],
+  );
+
+  const secondary = useMemo(
+    () => (recontact
+      ? {
+        component: Link,
+        to: skipTo,
+        text: t('common:skip'),
+      }
+      : null),
+    [recontact, skipTo, t],
   );
 
   const onLoaded = useCallback(
@@ -193,13 +261,14 @@ const ContactPreview = ({
           {t('screens:contact.preview.subtitle')}
         </Subtitle>
         <Box mt={3}>
-          <ToggleButtonGroupMailType />
+          <ToggleButtonGroupMailType {...groupMailTypeProps} />
         </Box>
         <PreMail mailto={mailto} subject={subject} body={body} />
         {!isNil(nextTo) && (
           <BoxControls
             mt={2}
             primary={primary}
+            secondary={secondary}
           />
         )}
       </Container>
@@ -213,6 +282,7 @@ ContactPreview.propTypes = {
 
   entity: PropTypes.shape(ApplicationSchema.propTypes),
   databoxURL: PropTypes.string,
+  databox: PropTypes.shape(DataboxSchema.propTypes),
   // CONNECT
   mailProvider: PropTypes.string,
 };
@@ -220,6 +290,7 @@ ContactPreview.propTypes = {
 ContactPreview.defaultProps = {
   entity: null,
   databoxURL: null,
+  databox: null,
   mailProvider: null,
 };
 

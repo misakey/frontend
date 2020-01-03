@@ -10,11 +10,9 @@ import routes from 'routes';
 import propOr from '@misakey/helpers/propOr';
 import isNil from '@misakey/helpers/isNil';
 
-import Button from '@material-ui/core/Button';
 import Card from 'components/dumb/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
 import Rating from '@material-ui/lab/Rating';
 import Typography from '@material-ui/core/Typography';
 
@@ -50,9 +48,6 @@ const useStyles = makeStyles((theme) => ({
   ratingRoot: {
     fontSize: theme.typography.h2.fontSize,
   },
-  actionButton: {
-    marginLeft: 'auto',
-  },
 }));
 
 // COMPONENTS
@@ -82,7 +77,15 @@ const MyFeedbackCard = ({ mainDomain, rating, t }) => {
   );
 
   return (
-    <Card classes={{ root: classes.card }}>
+    <Card
+      classes={{ root: classes.card }}
+      primary={{
+        to: linkTo,
+        component: Link,
+        'aria-label': t(`common:feedback.${feedbackKey}`),
+        text: t(`common:feedback.${feedbackKey}`),
+      }}
+    >
       <CardHeader
         title={t('common:feedback.me')}
         action={(disabled) ? null : (
@@ -118,18 +121,6 @@ const MyFeedbackCard = ({ mainDomain, rating, t }) => {
           )}
         </div>
       </CardContent>
-      <CardActions>
-        <Button
-          variant="contained"
-          color="secondary"
-          to={linkTo}
-          component={Link}
-          aria-label={t(`common:feedback.${feedbackKey}`)}
-          classes={{ root: classes.actionButton }}
-        >
-          {t(`common:feedback.${feedbackKey}`)}
-        </Button>
-      </CardActions>
     </Card>
 
   );

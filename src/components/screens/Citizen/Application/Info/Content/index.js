@@ -367,8 +367,6 @@ const ApplicationInfoContent = ({
         my={2}
         title={t('screens:application.info.claimCallToAction.title')}
         primary={{
-          variant: 'outlined',
-          color: 'secondary',
           text: t('screens:application.info.claimCallToAction.button'),
           component: Link,
           ...dpoClaimButtonPrimaryProps,

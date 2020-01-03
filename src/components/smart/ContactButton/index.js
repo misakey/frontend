@@ -3,9 +3,12 @@ import PropTypes from 'prop-types';
 import { denormalize } from 'normalizr';
 import { withTranslation } from 'react-i18next';
 import { withRouter, generatePath } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 import API from '@misakey/api';
 import routes from 'routes';
+import errorTypes from 'constants/errorTypes';
+import { CLOSED, DONE } from 'constants/databox/status';
 
 import { connect } from 'react-redux';
 
@@ -18,22 +21,26 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import log from '@misakey/helpers/log';
 import head from '@misakey/helpers/head';
 import prop from '@misakey/helpers/prop';
-import compose from '@misakey/helpers/compose';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 import { redirectToApp } from 'helpers/plugin';
 import { IS_PLUGIN } from 'constants/plugin';
+import getNextSearch from 'helpers/getNextSearch';
+import { getCurrentDatabox } from 'helpers/databox';
+import { hasDetailKey, getDetailPairsHead } from 'helpers/apiError';
 
 import withDialogConnect from 'components/smart/Dialog/Connect/with';
-import Button from '@material-ui/core/Button';
+import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+// CONSTANTS
+const { conflict } = errorTypes;
 
 // HELPERS
-const databoxProp = compose(
-  head,
-  prop('databoxes'),
-);
+const databoxesProp = prop('databoxes');
+const hasStatusError = hasDetailKey('status');
+
+const canContact = ({ status }) => status !== CLOSED && status !== DONE;
 
 const requestDataboxAccess = (id) => API.use(API.endpoints.application.box.requestAccess)
   .build({ id })
@@ -63,18 +70,21 @@ const useGetDatabox = (
   [applicationID, isAuthenticated, dispatchReceiveDataboxesByProducer],
 );
 
-const useOnMailTo = (mainDomain, dispatchContact, history) => useCallback(
-  (token) => {
+const useOnMailTo = (mainDomain, dispatchContact, history, search) => useCallback(
+  (token, isRecontact) => {
     const databoxURL = parseUrlFromLocation(`${routes.requests}#${token}`).href;
-    dispatchContact(databoxURL, mainDomain, history);
+    const nextSearch = isRecontact === true
+      ? getNextSearch(search, new Map([['recontact', true]]))
+      : search;
+    dispatchContact(databoxURL, mainDomain, nextSearch, history);
   },
-  [mainDomain, dispatchContact, history],
+  [mainDomain, dispatchContact, history, search],
 );
 
 const useOnAlreadyExists = (getDatabox) => useCallback(
   (onAccessRequest) => getDatabox().then((databox) => {
     if (!isNil(databox)) {
-      return onAccessRequest(databox.id);
+      return onAccessRequest(databox, true);
     }
     throw new Error('databox not found');
   }),
@@ -82,18 +92,18 @@ const useOnAlreadyExists = (getDatabox) => useCallback(
 );
 
 const useOnAccessRequest = (onMailTo) => useCallback(
-  (id) => requestDataboxAccess(id)
-    .then((response) => onMailTo(response.token)),
+  (databox, isRecontact = false) => requestDataboxAccess(databox.id)
+    .then((response) => onMailTo(response.token, isRecontact)),
   [onMailTo],
 );
 
 const useOnClick = (
-  databox, onAccessRequest, onAlreadyExists, userId, applicationID, setLoading,
+  databox, onAccessRequest, onAlreadyExists, userId, applicationID, setLoading, enqueueSnackbar, t,
 ) => useCallback(
   () => {
     setLoading(true);
     if (!isNil(databox)) {
-      onAccessRequest(databox.id)
+      onAccessRequest(databox, true)
         .catch((error) => {
           log(error, 'error');
         })
@@ -107,18 +117,22 @@ const useOnClick = (
       };
       createDatabox(payload)
         .then(
-          (response) => onAccessRequest(response.id),
+          (response) => onAccessRequest(response),
           (error) => {
-            if (error.httpStatus === 409) {
-              onAlreadyExists(onAccessRequest)
-                .catch((err) => {
-                  log(err, 'error');
-                })
-                .finally(() => {
-                  setLoading(false);
-                });
+            if (error.code === conflict) {
+              if (hasStatusError(error)) {
+                return onAlreadyExists(onAccessRequest)
+                  .catch((err) => {
+                    log(err, 'error');
+                  });
+              }
+              const [key, errorType] = getDetailPairsHead(error);
+              if (errorType === conflict) {
+                return enqueueSnackbar(t(`common:databox.errors.conflict.open.${key}`), { variant: 'error' });
+              }
             }
             log(error, 'error');
+            return enqueueSnackbar(t('common:httpStatus.error.default'), { variant: 'error' });
           },
         )
         .finally(() => {
@@ -126,7 +140,16 @@ const useOnClick = (
         });
     }
   },
-  [databox, onAccessRequest, onAlreadyExists, userId, applicationID, setLoading],
+  [
+    databox,
+    onAccessRequest,
+    onAlreadyExists,
+    userId,
+    applicationID,
+    setLoading,
+    enqueueSnackbar,
+    t,
+  ],
 );
 
 
@@ -142,6 +165,7 @@ const ContactButton = (
     onContributionClick,
     t,
     history,
+    location: { search },
     buttonProps,
     dialogConnectProps,
     children,
@@ -154,9 +178,19 @@ const ContactButton = (
 ) => {
   const [loading, setLoading] = useState(false);
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const databox = useMemo(
-    () => databoxProp(databoxesByProducer),
+    () => {
+      const databoxes = databoxesProp(databoxesByProducer);
+      return getCurrentDatabox(databoxes);
+    },
     [databoxesByProducer],
+  );
+
+  const disabled = useMemo(
+    () => !isNil(databox) && !canContact(databox),
+    [databox],
   );
 
   const shouldFetch = useMemo(
@@ -170,7 +204,7 @@ const ContactButton = (
     dispatchReceiveDataboxesByProducer,
   );
 
-  const onMailTo = useOnMailTo(mainDomain, dispatchContact, history);
+  const onMailTo = useOnMailTo(mainDomain, dispatchContact, history, search);
   const onAccessRequest = useOnAccessRequest(onMailTo);
   const onAlreadyExists = useOnAlreadyExists(getDatabox);
 
@@ -179,6 +213,8 @@ const ContactButton = (
     onAccessRequest, onAlreadyExists,
     userId, applicationID,
     setLoading,
+    enqueueSnackbar,
+    t,
   );
 
   const dpoText = useMemo(
@@ -196,7 +232,10 @@ const ContactButton = (
   const openInNewTab = useCallback(
     () => {
       // @FIXME: remove when contact app in plugin is implemented
-      redirectToApp(generatePath(routes.citizen.application._, { mainDomain }));
+      const path = isNil(mainDomain)
+        ? null
+        : generatePath(routes.citizen.application._, { mainDomain });
+      redirectToApp(path);
     },
     [mainDomain],
   );
@@ -226,14 +265,12 @@ const ContactButton = (
     return (
       <DialogConnectButton
         className={className}
-        variant="contained"
-        color="secondary"
         onClick={onContributionClick}
+        text={noDpoText}
         dialogConnectProps={dialogConnectProps}
+        standing={BUTTON_STANDINGS.MAIN}
         {...buttonProps}
-      >
-        {noDpoText}
-      </DialogConnectButton>
+      />
     );
   }
 
@@ -241,25 +278,23 @@ const ContactButton = (
     return (
       <Button
         onClick={openInNewTab}
-        variant="contained"
-        color="secondary"
-      >
-        {t('screens:application.info.contact.goToApp')}
-      </Button>
+        text={t('screens:application.info.contact.goToApp')}
+        standing={BUTTON_STANDINGS.MAIN}
+        {...buttonProps}
+      />
     );
   }
 
   return (
     <DialogConnectButton
       className={className}
-      variant="contained"
-      color="secondary"
       onClick={onClick}
+      disabled={disabled}
+      text={dpoText}
       dialogConnectProps={dialogConnectProps}
+      standing={BUTTON_STANDINGS.MAIN}
       {...buttonProps}
-    >
-      {dpoText}
-    </DialogConnectButton>
+    />
   );
 };
 
@@ -270,7 +305,7 @@ ContactButton.propTypes = {
   onContributionClick: PropTypes.func.isRequired,
   children: PropTypes.node,
   applicationID: PropTypes.string,
-  mainDomain: PropTypes.string.isRequired,
+  mainDomain: PropTypes.string,
   t: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
@@ -292,6 +327,7 @@ ContactButton.defaultProps = {
   userId: null,
   isAuthenticated: false,
   applicationID: null,
+  mainDomain: null,
   children: null,
   className: '',
 };
@@ -316,13 +352,13 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchReceiveDataboxesByProducer: (producerId, databoxes) => dispatch(
     receiveDataboxesByProducer({ producerId, databoxes }),
   ),
-  dispatchContact: (databoxURL, mainDomain, history) => {
+  dispatchContact: (databoxURL, mainDomain, search, history) => {
     dispatch(contactDataboxURL(databoxURL, mainDomain));
     const pathname = generatePath(
       routes.citizen.application.contact.preview,
       { mainDomain },
     );
-    history.push({ pathname });
+    history.push({ pathname, search });
   },
 });
 

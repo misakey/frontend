@@ -6,6 +6,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { connect } from 'react-redux';
 
 import ApplicationSchema from 'store/schemas/Application';
+import DataboxSchema from 'store/schemas/Databox';
 import { mailProviderPreferencyUpdate } from 'store/actions/screens/contact';
 
 import routes from 'routes';
@@ -13,6 +14,7 @@ import routes from 'routes';
 import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
 import getSearchParams from '@misakey/helpers/getSearchParams';
+import mapDates from 'helpers/mapDates';
 
 import Container from '@material-ui/core/Container';
 import Subtitle from 'components/dumb/Typography/Subtitle';
@@ -54,6 +56,7 @@ const ContactProviders = ({
   history,
   entity,
   databoxURL,
+  databox,
   dispatchUpdateMailProvider,
   t,
 }) => {
@@ -87,8 +90,8 @@ const ContactProviders = ({
     [t],
   );
   const body = useMemo(
-    () => t(`common:emailBody.${mailType}`, { dpoEmail, databoxURL }),
-    [databoxURL, dpoEmail, mailType, t],
+    () => t(`common:emailBody.${mailType}`, { dpoEmail, databoxURL, ...mapDates(databox) }),
+    [databoxURL, databox, dpoEmail, mailType, t],
   );
 
   const mailtoProps = useMailtoProps(dpoEmail, name, subject, body);
@@ -162,6 +165,7 @@ ContactProviders.propTypes = {
   t: PropTypes.func.isRequired,
   entity: PropTypes.shape(ApplicationSchema.propTypes),
   databoxURL: PropTypes.string,
+  databox: PropTypes.shape(DataboxSchema.propTypes),
   // CONNECT
   dispatchUpdateMailProvider: PropTypes.func.isRequired,
 };
@@ -169,6 +173,7 @@ ContactProviders.propTypes = {
 ContactProviders.defaultProps = {
   entity: null,
   databoxURL: null,
+  databox: null,
 };
 
 // CONNECT

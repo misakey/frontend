@@ -54,9 +54,14 @@ const withDataboxURL = (mapper = identity) => (Component) => {
 
     const { mainDomain: mainDomainParam } = useParams();
 
+    const databox = useMemo(
+      () => databoxProp(databoxesByProducer),
+      [databoxesByProducer],
+    );
+
     const mappedProps = useMemo(
-      () => mapper({ ...props, isFetchingDatabox: isFetching, errorDatabox: error }),
-      [error, isFetching, props],
+      () => mapper({ ...props, databox, isFetchingDatabox: isFetching, errorDatabox: error }),
+      [databox, error, isFetching, props],
     );
 
     const shouldFetch = useMemo(
@@ -69,11 +74,6 @@ const withDataboxURL = (mapper = identity) => (Component) => {
         return validInternalState && validAuth && validEntity && defaultShouldFetch;
       },
       [databoxURL, error, id, isAuthenticated, isFetching, mainDomain, mainDomainParam],
-    );
-
-    const databox = useMemo(
-      () => databoxProp(databoxesByProducer),
-      [databoxesByProducer],
     );
 
     const getDatabox = useCallback(

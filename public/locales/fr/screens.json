@@ -263,19 +263,51 @@
       "mustUnlockVault": "Vous devez ouvrir votre coffre-fort pour télécharger les fichiers",
       "unlockVaultButton": "Cliquez ici",
       "title": "Récupérer vos données",
-      "button": {
-        "label": {
-          "send": "Demander mes données",
-          "resend": "Relancer le DPO"
-        }
+      "archives": {
+        "title": "Demandes archivées"
       },
-      "noResult": "Vous pouvez demander vos données afin de récupérer vos données personnelles dans votre coffre-fort. Vous serez ensuite libre d'en disposer comme bon vous semble. Vos données seront chiffrées afin que vous seul puissiez y accéder.",
       "info": {
         "title": "À propos de votre coffre-fort",
         "primaryButton": "Créer un coffre",
         "secondaryButton": "Ouvrir mon coffre-fort",
         "altIllu": "Personnage devant un coffre-fort",
         "details": "Votre coffre-fort est chiffré par une clé secrète, elle même protégée par votre mot de passe. Vous seul avez accès à cette clé qui permet de lire les données contenues dans votre coffre. Lorsqu’un site vous envoie des données, elles sont chiffrées avant d’être envoyées dans votre coffre afin que vous seul puissiez y accéder. Misakey ne peut pas lire vos données.<br/><br/>En cas de perte de votre mot de passe, vos données ne seront plus accessibles."
+      },
+      "questions": {
+        "title": "Questions fréquentes",
+        "subtitle": "Retrouvez toutes les réponses à vos questions sur notre FAQ pour les Citoyens.",
+        "text": {
+          "0": "Qu'est-ce que le RGPD ?",
+          "1": "Quels devoirs ont les sites ?",
+          "2": "Quels droits me procure le RGPD ?",
+          "3": "Qu'est-ce qu'un ou une DPO ?"
+        },
+        "href": {
+          "0": "https://docs.misakey.com/#/citizen/faq?id=quest-ce-que-le-rgpd-",
+          "1": "https://docs.misakey.com/#/citizen/faq?id=quels-devoirs-ont-les-sites-",
+          "2": "https://docs.misakey.com/#/citizen/faq?id=quels-droits-me-procure-le-rgpd-",
+          "3": "https://docs.misakey.com/#/citizen/faq?id=quest-ce-quun-ou-une-dpo-"
+        },
+        "open": {
+          "text": {
+            "0": "Que faire si un site ne me répond pas via le moyen demandé ?",
+            "1": "Que faire si un site ne m'a pas répondu dans les délais ?",
+            "2": "Que faire si un site me demande des informations pour vérifier mon identité ?"
+          },
+          "href": {
+            "0": "https://docs.misakey.com/#/citizen/faq?id=que-faire-si-un-site-ne-me-r%c3%a9pond-pas-via-le-moyen-demand%c3%a9-",
+            "1": "https://docs.misakey.com/#/citizen/faq?id=que-faire-si-un-site-ne-ma-pas-r%c3%a9pondu-dans-les-d%c3%a9lais-",
+            "2": "https://docs.misakey.com/#/citizen/faq?id=que-faire-si-un-site-me-demande-des-informations-pour-v%c3%a9rifier-mon-identit%c3%a9-"
+          }
+        },
+        "done": {
+          "text": {
+            "0": "Que faire si un site me répond négativement ?"
+          },
+          "href": {
+            "0": "https://docs.misakey.com/#/citizen/faq?id=que-faire-si-un-site-me-r%c3%a9pond-n%c3%a9gativement-"
+          }
+        }
       }
     },
     "thirdParty": {
@@ -356,9 +388,7 @@
     }
   },
   "databox": {
-    "empty": "Votre demande de portabilité n'a pas encore été traitée par {{applicationName}}. Vous pouvez les relancer si nécessaire.",
     "enterPassword": "Veuillez saisir votre mot de passe",
-    "intro": "Liste des fichiers envoyés par le DPO de {{applicationName}}",
     "sendAt": "Envoyé {{date}}",
     "size": "Envoyé {{size}}",
     "errors": {

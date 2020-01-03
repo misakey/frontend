@@ -1,6 +1,8 @@
 import { schema } from 'normalizr';
 import PropTypes from 'prop-types';
 
+import DATABOX_STATUSES from 'constants/databox/status';
+
 const entity = new schema.Entity('databoxes', {});
 const collection = [entity];
 
@@ -11,8 +13,11 @@ const DataboxSchema = {
     id: PropTypes.string.isRequired,
     ownerId: PropTypes.string,
     producerId: PropTypes.string.isRequired,
-    createdAt: PropTypes.string,
-    updatedAt: PropTypes.string,
+    createdAt: PropTypes.string.isRequired,
+    updatedAt: PropTypes.string.isRequired,
+    status: PropTypes.oneOf(DATABOX_STATUSES),
+    dpoComment: PropTypes.string,
+    ownerComment: PropTypes.string,
   },
 };
 

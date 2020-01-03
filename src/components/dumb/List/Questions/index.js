@@ -19,7 +19,7 @@ import Avatar from '@material-ui/core/Avatar';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 // HELPERS
-const getQuestionsItems = (t, transKey, nbOfQuestions) => {
+export const getQuestionsItems = (t, transKey, nbOfQuestions) => {
   const items = [];
 
   for (let i = 0; i < nbOfQuestions; i += 1) {
