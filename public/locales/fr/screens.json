@@ -475,6 +475,7 @@
       "read": {
         "title": "Coffre-fort de {{ownerName}} ({{ownerEmail}})",
         "subtitle": "Répondre à la demande de portabilité liée à l'email {{ownerEmail}}",
+        "archived": "Cette demande de portabilité est fermée",
         "upload": {
           "title": "Validez-vous l'envoi de ce fichier ?",
           "text": "Le fichier va être chiffré avec la clé de {{ownerEmail}} puis lui être envoyé. Cette opération est irréversible.",

@@ -33,9 +33,9 @@ const DATABOX_READ = {
 // HELPERS
 const isValidDatabox = (databox) => isObject(databox) && !isNil(databox.owner);
 
-const mapDatabox = ({ owner, ...rest }) => ({
+const mapAccessRequest = ({ owner, ...rest }) => ({
   owner: objectToCamelCase(owner),
-  ...rest,
+  ...objectToCamelCase(rest),
 });
 
 const mapDataboxAccessRequest = ({ id, ...rest }) => ({
@@ -76,6 +76,8 @@ const withAccessRequest = (Component, mapper = identity) => {
         location,
         service,
         accessRequest,
+        databox,
+        dispatchReceiveDatabox,
         isFetching,
         error,
       }),
@@ -85,6 +87,8 @@ const withAccessRequest = (Component, mapper = identity) => {
         location,
         service,
         accessRequest,
+        databox,
+        dispatchReceiveDatabox,
         isFetching,
         error,
       ],
@@ -119,14 +123,15 @@ const withAccessRequest = (Component, mapper = identity) => {
     const fetchCallback = useCallback(
       () => {
         if (!isNil(token)) {
-          return readAccessRequest(token);
+          return readAccessRequest(token)
+            .then(mapAccessRequest);
         }
         if (!isNil(databoxId)) {
           return (isValidDatabox(databox)
             ? Promise.resolve(databox)
             : readDatabox(databoxId))
             .then((response) => {
-              const box = mapDatabox(response);
+              const box = mapAccessRequest(response);
               dispatchReceiveDatabox(box);
               return mapDataboxAccessRequest(box);
             });
@@ -139,7 +144,7 @@ const withAccessRequest = (Component, mapper = identity) => {
     const fetchAccessRequest = useCallback(() => {
       setFetching(true);
       fetchCallback()
-        .then((response) => dispatchAccessRequestUpdate(objectToCamelCase(response)))
+        .then((response) => dispatchAccessRequestUpdate(response))
         .catch((e) => { setError(e); })
         .finally(() => { setFetching(false); });
     }, [fetchCallback, setError, setFetching, dispatchAccessRequestUpdate]);
@@ -193,14 +198,16 @@ const withAccessRequest = (Component, mapper = identity) => {
 
   // CONNECT
   const mapStateToProps = (state, ownProps) => {
-    const databoxId = databoxIdPath(ownProps.match);
+    const accessRequest = state.access.request;
+
+    const databoxId = databoxIdPath(ownProps.match) || accessRequest.databoxId;
     return {
       databox: denormalize(
         databoxId,
         DataboxSchema.entity,
         state.entities,
       ),
-      accessRequest: state.access.request,
+      accessRequest,
     };
   };
 

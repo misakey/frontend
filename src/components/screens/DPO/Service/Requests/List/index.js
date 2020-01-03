@@ -5,6 +5,8 @@ import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
 import API from '@misakey/api';
+import { OPEN } from 'constants/databox/status';
+
 import isNil from '@misakey/helpers/isNil';
 import noop from '@misakey/helpers/noop';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
@@ -188,6 +190,7 @@ function ServiceRequestsList({ appBarProps, service, t, isLoading, error }) {
       withUsers: true,
       limit: ITEM_PER_PAGE,
       offset,
+      statuses: OPEN,
     };
     return fetchList(payload);
   }, [service, offset, fetchList]);

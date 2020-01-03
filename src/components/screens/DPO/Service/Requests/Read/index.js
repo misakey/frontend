@@ -6,8 +6,11 @@ import { withTranslation } from 'react-i18next';
 import moment from 'moment';
 
 import API from '@misakey/api';
+import DataboxSchema from 'store/schemas/Databox';
+
 import { serviceRequestsReadValidationSchema } from 'constants/validationSchemas/dpo';
 import errorTypes from 'constants/errorTypes';
+import { OPEN } from 'constants/databox/status';
 
 import log from '@misakey/helpers/log';
 import prop from '@misakey/helpers/prop';
@@ -58,6 +61,13 @@ const FIELD_NAME = 'blob';
 const INTERNAL_PROPS = ['tReady', 'isAuthenticated'];
 const INITIAL_VALUES = { [FIELD_NAME]: null };
 const ENDPOINTS = {
+  databox: {
+    read: {
+      method: 'GET',
+      path: '/databoxes/:id',
+      auth: true,
+    },
+  },
   blob: {
     create: {
       method: 'PUT',
@@ -91,10 +101,16 @@ const ownerProp = prop('owner');
 const handleProp = prop('handle');
 const ownerEmailProp = prop('email');
 const ownerNameProp = prop('display_name');
+const statusProp = prop('status');
 
 const fetchPubkey = (handle) => API
   .use(ENDPOINTS.pubkeys.list)
   .build(null, null, objectToSnakeCase({ handle }))
+  .send();
+
+const fetchDatabox = (id) => API
+  .use(ENDPOINTS.databox.read)
+  .build(objectToSnakeCase({ id }))
   .send();
 
 // HOOKS
@@ -187,7 +203,7 @@ FieldBlob = withTranslation('fields')(withErrors(FieldBlob));
 
 function ServiceRequestsRead({
   match: { params }, location: { hash },
-  accessRequest,
+  accessRequest, databox, dispatchReceiveDatabox,
   isLoading, isFetching, error, accessRequestError,
   appBarProps, t, ...rest
 }) {
@@ -199,8 +215,8 @@ function ServiceRequestsRead({
   const handleOpen = useCallback(() => setOpen(true), []);
   const handleClose = useCallback(() => setOpen(false), []);
 
-  const [isFetchingDatabox] = useState(false);
-  const [errorDatabox] = useState();
+  const [isFetchingDatabox, setIsFetchingDatabox] = useState(false);
+  const [errorDatabox, setErrorDatabox] = useState();
   const [isFetchingBlobs, setFetchingBlobs] = useState(false);
 
   const state = useMemo(
@@ -262,9 +278,37 @@ function ServiceRequestsRead({
     [hashToken, accessRequest, params.databoxId],
   );
 
+  const status = useMemo(
+    () => statusProp(accessRequest) || statusProp(databox),
+    [accessRequest, databox],
+  );
+
+  const isArchived = useMemo(
+    () => (isNil(status) && !isFetchingDatabox) || status !== OPEN,
+    [status, isFetchingDatabox],
+  );
+
   const shouldFetch = useMemo(
-    () => !isFetchingBlobs && idMatches && isNil(blobs),
-    [isFetchingBlobs, idMatches, blobs],
+    () => !isFetchingBlobs && idMatches && !isArchived && isNil(blobs),
+    [isFetchingBlobs, idMatches, isArchived, blobs],
+  );
+
+  const shouldFetchDatabox = useMemo(
+    () => idMatches && isNil(status) && isNil(databox),
+    [databox, idMatches, status],
+  );
+
+  const getDatabox = useCallback(
+    () => {
+      setIsFetchingDatabox(true);
+      fetchDatabox(databoxId)
+        .then((response) => {
+          dispatchReceiveDatabox(objectToCamelCase(response));
+        })
+        .catch(setErrorDatabox)
+        .finally(() => { setIsFetchingDatabox(false); });
+    },
+    [databoxId, dispatchReceiveDatabox],
   );
 
   const handleUpload = useCallback((form, { setFieldError, resetForm }) => {
@@ -335,6 +379,16 @@ function ServiceRequestsRead({
 
   useEffect(
     () => {
+      // fetch databox if missing or conditions not fulfilled in withAccessRequest
+      if (shouldFetchDatabox) {
+        getDatabox();
+      }
+    },
+    [getDatabox, shouldFetchDatabox],
+  );
+
+  useEffect(
+    () => {
       if (shouldFetch) {
         fetchBlobs();
       }
@@ -365,43 +419,56 @@ function ServiceRequestsRead({
             </MUILink>
           </Typography>
         </BoxMessage>
-        <List>
-          {(!isFetchingBlobs && isEmpty(blobs)) && <Empty />}
-          {!isEmpty(blobs) && blobs.map(({ id, ...props }) => <Blob key={id} id={id} {...props} />)}
-        </List>
-        <Formik
-          validationSchema={serviceRequestsReadValidationSchema}
-          initialValues={INITIAL_VALUES}
-          onSubmit={handleOpen}
-        >
-          {({ values, isValid, setFieldValue, setFieldTouched, ...formikBag }) => (
-            <Form>
-              <Alert
-                open={open}
-                onClose={handleClose}
-                onOk={() => handleUpload(values, formikBag)}
-                title={t('screens:Service.requests.read.upload.title')}
-                text={t('screens:Service.requests.read.upload.text', { ownerEmail })}
-              />
-              <Field
-                name={FIELD_NAME}
-                component={FieldBlob}
-                className={classes.blob}
-                setFieldValue={setFieldValue}
-                setFieldTouched={setFieldTouched}
-              />
-              <BoxControls
-                mt={1}
-                primary={{
-                  type: 'submit',
-                  isLoading: isUploading,
-                  isValid,
-                  text: t('common:submit'),
-                }}
-              />
-            </Form>
+        {isArchived
+          ? (
+            <BoxMessage type="warning" mt={2}>
+              <Typography>
+                {t('screens:Service.requests.read.archived')}
+              </Typography>
+            </BoxMessage>
+          )
+          : (
+            <>
+              <List>
+                {(!isFetchingBlobs && isEmpty(blobs)) && <Empty />}
+                {!isEmpty(blobs)
+                  && blobs.map(({ id, ...props }) => <Blob key={id} id={id} {...props} />)}
+              </List>
+              <Formik
+                validationSchema={serviceRequestsReadValidationSchema}
+                initialValues={INITIAL_VALUES}
+                onSubmit={handleOpen}
+              >
+                {({ values, isValid, setFieldValue, setFieldTouched, ...formikBag }) => (
+                  <Form>
+                    <Alert
+                      open={open}
+                      onClose={handleClose}
+                      onOk={() => handleUpload(values, formikBag)}
+                      title={t('screens:Service.requests.read.upload.title')}
+                      text={t('screens:Service.requests.read.upload.text', { ownerEmail })}
+                    />
+                    <Field
+                      name={FIELD_NAME}
+                      component={FieldBlob}
+                      className={classes.blob}
+                      setFieldValue={setFieldValue}
+                      setFieldTouched={setFieldTouched}
+                    />
+                    <BoxControls
+                      mt={1}
+                      primary={{
+                        type: 'submit',
+                        isLoading: isUploading,
+                        isValid,
+                        text: t('common:submit'),
+                      }}
+                    />
+                  </Form>
+                )}
+              </Formik>
+            </>
           )}
-        </Formik>
         <Card mt={2}>
           <CardContent>
             <Title>{t('screens:Service.requests.read.questions.title')}</Title>
@@ -433,7 +500,10 @@ ServiceRequestsRead.propTypes = {
     ownerEmail: PropTypes.string,
     token: PropTypes.string,
   }).isRequired,
+  databox: PropTypes.shape(DataboxSchema.propTypes),
+  dispatchReceiveDatabox: PropTypes.func.isRequired,
   accessRequestError: PropTypes.instanceOf(Error),
+
   error: PropTypes.instanceOf(Error),
   isFetching: PropTypes.bool.isRequired,
   appBarProps: PropTypes.shape({
@@ -452,6 +522,7 @@ ServiceRequestsRead.propTypes = {
 ServiceRequestsRead.defaultProps = {
   appBarProps: null,
   accessRequestError: null,
+  databox: null,
   error: null,
   isLoading: false,
 };
