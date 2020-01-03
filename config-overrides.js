@@ -53,11 +53,12 @@ module.exports = {
       { from: 'public/favicon.ico', to: 'favicon.ico' },
       { from: 'public/locales', to: 'locales' },
       { from: 'public/libs', to: 'libs' },
-      { from: 'public/img', to: 'img' },
+      { from: 'public/img', to: 'img', ignore: ['about/**/*', 'illustrations/**/*', 'landing/**/*'] },
       { from: 'public/ico', to: 'ico' },
       { from: `plugin/config/env.${environment}.js`, to: 'env.js' },
+      { from: 'plugin/src/manifest/_locales', to: '_locales' },
       {
-        from: 'plugin/src/manifest.json',
+        from: 'plugin/src/manifest/manifest.json',
         to: 'manifest.json',
         transform(content) {
           return modify(content, targetBrowser, environment);

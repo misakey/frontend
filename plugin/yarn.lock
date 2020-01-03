@@ -137,31 +137,31 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@cliqz/adblocker-content@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-content/-/adblocker-content-1.0.2.tgz#4a6c64f6d05bdbd65fded42a0565ca42ba076c2b"
-  integrity sha512-vAghMMgzPIckPkGjMy0+3sD0MSS3WYVcSQfjiOHALZtmWMNmD5920e5kPL3mNOCFKMMko7fXitK2NZfm+diR4A==
+"@cliqz/adblocker-content@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-content/-/adblocker-content-1.4.1.tgz#39ed319aca4db43397efff98726362f03717e26e"
+  integrity sha512-qNNhJs7DjhnjIIwBSYG4mDo1kHKk/Yyxb6F1K6wxH5X1tHY6Ew0dTwbXH1o8mLBVzFf9Mt9CluVmicbcFyBd2g==
 
-"@cliqz/adblocker-webextension-cosmetics@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-webextension-cosmetics/-/adblocker-webextension-cosmetics-1.0.2.tgz#b7df2dd3c1e8675b574be4c09b1d4cb2ed4e417b"
-  integrity sha512-jS1SDojYp0QqOrtzzP7HCsd7rFTpWG/9NwZD82+v/5N4NWONBMjS9P8HtrRW7V0NjzBuDMvJciF925QvzYZ9lg==
+"@cliqz/adblocker-webextension-cosmetics@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-webextension-cosmetics/-/adblocker-webextension-cosmetics-1.4.1.tgz#bfc1de3fcbdfa3f13b4be8fc8b2dbfa867fc72ef"
+  integrity sha512-bejfGGupne9R5rmJphQa0lV1K4BKhDS5UXFBGjjLjbwDzyuEIOSFDvetCMPxSJi6gNyM0HAzlw2xsfe72v0SKw==
   dependencies:
-    "@cliqz/adblocker-content" "^1.0.2"
+    "@cliqz/adblocker-content" "^1.4.1"
 
-"@cliqz/adblocker-webextension@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-webextension/-/adblocker-webextension-1.0.2.tgz#a7d31c2aea453643e1780b3ac623a9cdacb1fec6"
-  integrity sha512-jzMB3Ny39Tlpve7cXdhEYslOksrj/Wj9qCWQEj0HffpZfD9BHomK/BQQiMdUKghWA3AbQfXqorJmGuCHkHweOA==
+"@cliqz/adblocker-webextension@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-webextension/-/adblocker-webextension-1.4.1.tgz#3c2c38b8bac109dd0e152d95cc9da442e58c9332"
+  integrity sha512-Jv/5yicaChwpvnOmcYCBSYEKrLjA/VF8T8gNzumSobFjn3DSCtDsnd/NhA160Po4quqsfRrabgp5nJQD8WRL4Q==
   dependencies:
-    "@cliqz/adblocker" "^1.0.2"
-    "@cliqz/adblocker-content" "^1.0.2"
+    "@cliqz/adblocker" "^1.4.1"
+    "@cliqz/adblocker-content" "^1.4.1"
     tldts-experimental "^5.3.0"
 
-"@cliqz/adblocker@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@cliqz/adblocker/-/adblocker-1.0.2.tgz#30c5b17f41013d10e4753c7ce909f2455e1cad4b"
-  integrity sha512-Z7GqYLC/tFm2GVWfQpzNXmxhMriBHpcWKvBZX/NdrrTWeGxpDgG7/zeNuF03vW3vskkDrB/tJp9D9wE1+q7U6Q==
+"@cliqz/adblocker@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@cliqz/adblocker/-/adblocker-1.4.1.tgz#3da6681d147f637a92242abacdcd91242a35988f"
+  integrity sha512-BMsWb4cFLNOkoyMIexAuQlTeDWVONiycT/PUmOZi0ngF0gEZ7H2P8117/oyDABbCJ/xfLCqOX7YP9T9a/u4v5g==
   dependencies:
     tldts-experimental "^5.3.0"
     tslib "^1.10.0"

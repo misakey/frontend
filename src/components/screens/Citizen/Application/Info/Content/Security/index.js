@@ -10,6 +10,8 @@ import propOr from '@misakey/helpers/propOr';
 import Typography from '@material-ui/core/Typography';
 import ContactButton from 'components/smart/ContactButton';
 import Card from 'components/dumb/Card';
+import { openInNewTab } from 'helpers/plugin';
+import { IS_PLUGIN } from 'constants/plugin';
 
 // CONSTANTS
 const DPO_CONTACT_TYPE = 'dpo_contact';
@@ -55,28 +57,32 @@ const InfoContentSecurity = ({
     [hasDpoEmail, hasDpoContact, isAuthenticated, t],
   );
 
-  return (
-    <Card
-      mb={3}
-      title={t('screens:application.info.security.title')}
-      primary={(!hasDpoEmail && hasDpoContact)
-        ? ({
-          href: dpoContact,
-          variant: 'contained',
-          text: t('screens:application.info.security.button.contactForm'),
-        })
-        : (
-          <ContactButton
-            dpoEmail={dpoEmail}
-            onContributionClick={onContributionDpoEmailClick}
-            applicationID={id}
-            mainDomain={mainDomain}
-            buttonProps={{ variant: 'contained' }}
-          >
-            {t('screens:application.info.security.button.dpo')}
-          </ContactButton>
-        )}
-      secondary={(!hasDpoEmail && hasDpoContact) ? (
+  const primary = useMemo(() => {
+    const buttonProps = {
+      variant: 'contained',
+      text: t('screens:application.info.security.button.contactForm'),
+      ...(IS_PLUGIN ? { onClick: () => openInNewTab(dpoContact) } : { href: dpoContact }),
+    };
+    if (!hasDpoEmail && hasDpoContact) { return buttonProps; }
+    return (
+      <ContactButton
+        dpoEmail={dpoEmail}
+        onContributionClick={onContributionDpoEmailClick}
+        applicationID={id}
+        mainDomain={mainDomain}
+        buttonProps={{ variant: 'contained' }}
+      >
+        {t('screens:application.info.security.button.dpo')}
+      </ContactButton>
+    );
+  }, [
+    dpoContact, dpoEmail, hasDpoContact, hasDpoEmail,
+    id, mainDomain, onContributionDpoEmailClick, t,
+  ]);
+
+  const secondary = useMemo(
+    () => ((!hasDpoEmail && hasDpoContact)
+      ? (
         <ContactButton
           dpoEmail={dpoEmail}
           onContributionClick={onContributionDpoEmailClick}
@@ -84,7 +90,17 @@ const InfoContentSecurity = ({
           mainDomain={mainDomain}
           buttonProps={{ variant: 'outlined' }}
         />
-      ) : undefined}
+      )
+      : undefined),
+    [dpoEmail, hasDpoContact, hasDpoEmail, id, mainDomain, onContributionDpoEmailClick],
+  );
+
+  return (
+    <Card
+      mb={3}
+      title={t('screens:application.info.security.title')}
+      primary={primary}
+      secondary={secondary}
     >
       <Typography color="textSecondary">
         {securityContent}

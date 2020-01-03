@@ -18,7 +18,5 @@ import { injectCosmetics } from '@cliqz/adblocker-webextension-cosmetics';
 
 
 browser.runtime.sendMessage({ action: 'getBlockerState' }).then(({ paused }) => {
-  if (!paused) {
-    injectCosmetics(window, true /* MutationObserver */);
-  }
+  if (!paused) { injectCosmetics(window, true /* MutationObserver */); }
 });

@@ -6,3 +6,4 @@ export const UPDATE_WHITELIST = 'updateWhitelist';
 export const GET_BLOCKER_STATE = 'getBlockerState';
 export const TOGGLE_BLOCKED_STATE = 'togglePauseBlocker';
 export const GET_WHITELIST = 'getWhitelist';
+export const RESTART_BG = 'restart';

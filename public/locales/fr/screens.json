@@ -309,6 +309,12 @@
           "empty": "Aucun cookie détecté"
         }
       },
+      "error": {
+        "description": "Une erreur s'est produite lors du lancement du bloqueur en arrière-plan. Vous pouvez essayer de le mettre à jour si vous n'êtes pas sur la dernière version ou de le redémarrer.",
+        "button": {
+          "restart": "Redémarrer le plugin",
+          "update": "Mettre à jour"
+        }      },
       "filters": {
         "mainPurpose": {
           "remove": {

@@ -14,11 +14,15 @@ import { setDetectedTrackers } from 'store/actions/screens/thirdparty';
 import TrackersSchema from 'store/schemas/Trackers';
 
 import { sendMessage, listenForBackground, stopListenerForBackground } from 'background';
-import { GET_BLOCKED_INFOS, REFRESH_BLOCKED_INFOS } from 'background/messages';
+import { GET_BLOCKED_INFOS, REFRESH_BLOCKED_INFOS, RESTART_BG } from 'background/messages';
+import { storeLinks } from 'constants/plugin';
+import { openInNewTab } from 'helpers/plugin';
+import { isChrome } from 'helpers/devices';
 
 import Typography from '@material-ui/core/Typography';
 import Skeleton from '@material-ui/lab/Skeleton';
 
+import BoxMessage from 'components/dumb/Box/Message';
 import Card from 'components/dumb/Card';
 import CardContent from '@material-ui/core/CardContent';
 import List from '@material-ui/core/List';
@@ -27,6 +31,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 import routes from 'routes';
+
+const LINK_TO_STORE = isChrome() ? storeLinks.chrome : storeLinks.firefox;
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -83,6 +89,7 @@ function ThirdPartyBlock({
 }) {
   const classes = useStyles();
   const [isFetching, setFetching] = React.useState(false);
+  const [error, setError] = React.useState(false);
   const { mainDomain } = useMemo(() => (entity || { mainDomain: '' }), [entity]);
   const empty = useMemo(() => detectedTrackers.length === 0, [detectedTrackers]);
 
@@ -104,6 +111,11 @@ function ThirdPartyBlock({
         .then((response) => {
           const sorted = formatDetectedTrackers(response.detectedTrackers, true);
           dispatchDetectedTrackers(sorted || []);
+        })
+        .catch((err) => {
+          if (err.message === 'not_launched') {
+            setError(true);
+          }
         })
         .finally(() => { setFetching(false); });
     }
@@ -127,6 +139,19 @@ function ThirdPartyBlock({
   }, [history, mainDomain, search]);
 
   useEffect(getData, []);
+
+  if (error) {
+    return (
+      <Card
+        my={2}
+        title={t('screens:application.thirdParty.summary.title')}
+        primary={{ onClick: () => sendMessage(RESTART_BG), text: t('screens:application.thirdParty.error.button.restart'), variant: 'contained' }}
+        secondary={{ onClick: () => openInNewTab(LINK_TO_STORE), text: t('screens:application.thirdParty.error.button.update') }}
+      >
+        <BoxMessage type="error" text={t('screens:application.thirdParty.error.description')} />
+      </Card>
+    );
+  }
 
   return (
     <Card

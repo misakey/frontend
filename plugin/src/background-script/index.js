@@ -9,6 +9,7 @@ import log from '@misakey/helpers/log';
 import get from '@misakey/helpers/get';
 import groupBy from '@misakey/helpers/groupBy';
 import common from '@misakey/ui/colors/common';
+import { Request } from '@cliqz/adblocker-webextension';
 
 import globals from './globals';
 import { setLocalStorage, initAuthIframe } from './auth';
@@ -79,12 +80,13 @@ function handleRequest(engine) {
   // Start listening to requests, and allow 'blocking' so that we can cancel
   // some of them (or redirect).
   browser.webRequest.onBeforeRequest.addListener((details) => {
-    const { blockingResponse, mainPurpose } = getBlockingResponse(engine, details);
+    const request = Request.fromRawDetails(details);
+    const { blockingResponse, mainPurpose } = getBlockingResponse(engine, request, details);
     const hasToBeBlocked = Boolean(blockingResponse.cancel || blockingResponse.redirectUrl);
 
-    const { type, tabId } = details;
+    const { tabId } = details;
     // Reset tab infos in case of reload or url changes
-    if (type === 'main_frame') {
+    if (request.isMainFrame()) {
       globals.initTabInfos(tabId);
       globals.updateActiveTrackerCounter(tabId, { reset: true });
     }
@@ -117,7 +119,8 @@ function handleRequest(engine) {
   }, { urls: URLS_PATTERNS });
 }
 
-function handleCommunication(engine) {
+
+function handleCommunication() {
   browser.runtime.onConnect.addListener((externalPort) => {
     // Follow a connection with the popup when it's opened in order to refresh information in popup
     // (cf. browser.webRequest.onErrorOccurred)
@@ -141,7 +144,9 @@ function handleCommunication(engine) {
       });
     }
   });
+}
 
+function handleEngineMessage(engine) {
   // Listener for other scripts messages. The main messages come from popup script
   browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     switch (msg.action) {
@@ -194,21 +199,34 @@ function handleCommunication(engine) {
   });
 }
 
+function handleErrorCommunication() {
+  browser.runtime.onMessage.addListener((msg) => {
+    if (msg.action === 'restart') {
+      return browser.runtime.reload();
+    }
+
+    return Promise.reject(new Error('not_launched'));
+  });
+}
+
 function handleConnexion() {
   initAuthIframe();
 }
 
 function launchExtension() {
+  handleCommunication();
+  handleConnexion();
+
   loadAdblocker()
     .then(((engine) => {
       handleTabs();
       handleConfig();
       handleRequest(engine);
-      handleCommunication(engine);
-      handleConnexion();
+      handleEngineMessage(engine);
     }))
     .catch((err) => {
       log(err);
+      handleErrorCommunication();
       toggleBadgeAndIconOnPaused(true);
     });
 }

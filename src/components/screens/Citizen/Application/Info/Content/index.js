@@ -284,7 +284,7 @@ const ApplicationInfoContent = ({
         </Card>
       )}
       <Card mb={3}>
-        <Box p={2} display="flex" justifyContent="space-between">
+        <Box p={2} display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h5">
             {t('screens:application.info.desc.title')}
           </Typography>
