@@ -182,8 +182,8 @@ const ContactButton = (
 
   const databox = useMemo(
     () => {
-      const databoxes = databoxesProp(databoxesByProducer);
-      return getCurrentDatabox(databoxes);
+      const databoxes = (databoxesProp(databoxesByProducer) || []);
+      return getCurrentDatabox(databoxes, true);
     },
     [databoxesByProducer],
   );

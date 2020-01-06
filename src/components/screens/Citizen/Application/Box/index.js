@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { denormalize } from 'normalizr';
 import { withTranslation, Trans } from 'react-i18next';
-import moment from 'moment';
 
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxByProducerSchema from 'store/schemas/Databox/ByProducer';
@@ -23,10 +22,9 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import prop from '@misakey/helpers/prop';
 import propEq from '@misakey/helpers/propEq';
 import tail from '@misakey/helpers/tail';
-import sort from '@misakey/helpers/sort';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import { getCurrentDatabox } from 'helpers/databox';
+import { getCurrentDatabox, sortDataboxes } from 'helpers/databox';
 
 import withDialogConnect from 'components/smart/Dialog/Connect/with';
 import ListQuestions, { useQuestionsItems, getQuestionsItems } from 'components/dumb/List/Questions';
@@ -59,19 +57,6 @@ const isDataboxDone = propEq('status', DONE);
 const isDataboxCommentKO = (databox) => !isNil(databox)
   && isDataboxDone(databox)
   && databox.dpoComment !== OK;
-
-const sortDataboxes = sort((databoxA, databoxB) => {
-  if (isDataboxOpen(databoxA)) {
-    return -1;
-  }
-  if (isDataboxOpen(databoxB)) {
-    return 1;
-  }
-  if (moment(databoxA.updatedAt).isAfter(databoxB.updatedAt)) {
-    return -1;
-  }
-  return 1;
-});
 
 const findDataboxes = (producerId) => API
   .use(API.endpoints.application.box.find)

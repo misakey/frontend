@@ -16,19 +16,16 @@ import { useParams } from 'react-router-dom';
 
 import identity from '@misakey/helpers/identity';
 import isNil from '@misakey/helpers/isNil';
-import head from '@misakey/helpers/head';
 import prop from '@misakey/helpers/prop';
-import compose from '@misakey/helpers/compose';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
+import { getCurrentDatabox } from 'helpers/databox';
 
 // HELPERS
 const idProp = prop('id');
-const databoxProp = compose(
-  head,
-  prop('databoxes'),
-);
+const databoxesProp = prop('databoxes');
+
 const requestDataboxAccess = (id) => API.use(API.endpoints.application.box.requestAccess)
   .build({ id })
   .send();
@@ -55,7 +52,7 @@ const withDataboxURL = (mapper = identity) => (Component) => {
     const { mainDomain: mainDomainParam } = useParams();
 
     const databox = useMemo(
-      () => databoxProp(databoxesByProducer),
+      () => getCurrentDatabox(databoxesProp(databoxesByProducer), true),
       [databoxesByProducer],
     );
 
@@ -80,11 +77,11 @@ const withDataboxURL = (mapper = identity) => (Component) => {
       () => (isNil(databox)
         ? listDataboxes(id)
           .then((response) => {
-            const databoxes = response.map(objectToCamelCase);
+            const databoxes = (response).map(objectToCamelCase);
             dispatchReceiveDataboxesByProducer(id, databoxes);
-            return head(databoxes);
+            return getCurrentDatabox(databoxes, true);
           })
-        : databox),
+        : Promise.resolve(databox)),
       [id, dispatchReceiveDataboxesByProducer, databox],
     );
 
