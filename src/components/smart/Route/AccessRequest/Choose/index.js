@@ -182,7 +182,6 @@ const AccessRequestChoose = ({
                 <Box display="flex" justifyContent="center" mt={1}>
                   <Button
                     standing="main"
-                    authProps={{ scope }}
                     className={classes.buttonConnect}
                     component={ButtonConnectSimple}
                     text={t('screens:accessRequest.choose.userAccount.label')}
