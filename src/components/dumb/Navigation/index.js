@@ -66,6 +66,7 @@ const Navigation = forwardRef(({
   history,
   location,
   goBackPath,
+  noWrap,
   pushPath,
   showGoBack,
   t,
@@ -151,6 +152,7 @@ const Navigation = forwardRef(({
             component="h1"
             variant="h5"
             className={classes.title}
+            noWrap={noWrap}
           >
             {title}
           </Typography>
@@ -171,6 +173,7 @@ Navigation.propTypes = {
   children: PropTypes.oneOfType([PropTypes.element, PropTypes.node]),
   className: PropTypes.string,
   goBackPath: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  noWrap: PropTypes.bool,
   gutterBottom: PropTypes.bool,
   history: PropTypes.shape({
     goBack: PropTypes.func,
@@ -198,6 +201,7 @@ Navigation.defaultProps = {
   history: null,
   location: null,
   goBackPath: '/',
+  noWrap: false,
   pushPath: null,
   showGoBack: true,
   title: '',

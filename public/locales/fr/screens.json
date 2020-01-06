@@ -20,7 +20,7 @@
         "text": {
           "0": "Comment utiliser la plateforme Misakey&nbsp;?",
           "1": "Qu’est-ce qu’une requête de portabilité&nbsp;?",
-          "2": "Quelles sont vos obligations&nbsp;?",
+          "2": "Quelles sont mes obligations&nbsp;?",
           "3": "Comment sont transférées les données&nbsp;?",
           "4": "Comment automatiser les réponses aux requêtes&nbsp;?"
         },
@@ -277,10 +277,10 @@
         "title": "Questions fréquentes",
         "subtitle": "Retrouvez toutes les réponses à vos questions sur notre FAQ pour les Citoyens.",
         "text": {
-          "0": "Qu'est-ce que le RGPD ?",
-          "1": "Quels devoirs ont les sites ?",
-          "2": "Quels droits me procure le RGPD ?",
-          "3": "Qu'est-ce qu'un ou une DPO ?"
+          "0": "Qu'est-ce que le RGPD&nbsp;?",
+          "1": "Quels devoirs ont les sites&nbsp;?",
+          "2": "Quels droits me procure le RGPD&nbsp;?",
+          "3": "Qu'est-ce qu'un ou une DPO&nbsp;?"
         },
         "href": {
           "0": "https://docs.misakey.com/#/citizen/faq?id=quest-ce-que-le-rgpd-",
@@ -290,9 +290,9 @@
         },
         "open": {
           "text": {
-            "0": "Que faire si un site ne me répond pas via le moyen demandé ?",
-            "1": "Que faire si un site ne m'a pas répondu dans les délais ?",
-            "2": "Que faire si un site me demande des informations pour vérifier mon identité ?"
+            "0": "Que faire si un site ne me répond pas via le moyen demandé&nbsp;?",
+            "1": "Que faire si un site ne m'a pas répondu dans les délais&nbsp;?",
+            "2": "Que faire si un site me demande des informations pour vérifier mon identité&nbsp;?"
           },
           "href": {
             "0": "https://docs.misakey.com/#/citizen/faq?id=que-faire-si-un-site-ne-me-r%c3%a9pond-pas-via-le-moyen-demand%c3%a9-",
@@ -302,7 +302,7 @@
         },
         "done": {
           "text": {
-            "0": "Que faire si un site me répond négativement ?"
+            "0": "Que faire si un site me répond négativement&nbsp;?"
           },
           "href": {
             "0": "https://docs.misakey.com/#/citizen/faq?id=que-faire-si-un-site-me-r%c3%a9pond-n%c3%a9gativement-"
@@ -346,7 +346,8 @@
         "button": {
           "restart": "Redémarrer le plugin",
           "update": "Mettre à jour"
-        }      },
+        }
+      },
       "filters": {
         "mainPurpose": {
           "remove": {
@@ -509,12 +510,24 @@
     },
     "requests": {
       "read": {
-        "title": "Coffre-fort de {{ownerName}} ({{ownerEmail}})",
+        "title": "Coffre-fort de {{ownerName}}",
         "subtitle": "Répondre à la demande de portabilité liée à l'email {{ownerEmail}}",
         "archived": "Cette demande de portabilité est fermée",
+        "user": {
+          "title": "Propriétaire",
+          "subtitle": "Informations sur le propriétaire du coffre-fort"
+        },
+        "vault": {
+          "title": "Données du coffre-fort",
+          "subtitle": "Les fichiers déjà mis à disposition de l'utilisateur",
+          "done": "Clore la demande"
+        },
         "upload": {
-          "title": "Validez-vous l'envoi de ce fichier ?",
-          "text": "Le fichier va être chiffré avec la clé de {{ownerEmail}} puis lui être envoyé. Cette opération est irréversible.",
+          "title": "Uploader les données",
+          "dialog": {
+            "title": "Validez-vous l'envoi de ce fichier ?",
+            "text": "Le fichier va être chiffré avec la clé de {{ownerEmail}} puis lui être envoyé. Cette opération est irréversible."
+          },
           "success": "Le fichier {{name}} a été envoyé avec succès !"
         },
         "mkAgent": {
@@ -527,11 +540,13 @@
           "subtitle": "Retrouvez toutes les réponses à vos questions sur notre FAQ pour les DPO.",
           "text": {
             "0": "Comment sont transférées les données&nbsp;?",
-            "1": "Je ne veux plus traiter toutes ces demandes manuellement, comment automatiser ce processus&nbsp;?"
+            "1": "Quelles sont mes obligations&nbsp;?",
+            "2": "Je ne veux plus traiter toutes ces demandes manuellement, comment automatiser ce processus&nbsp;?"
           },
           "href": {
             "0": "https://docs.misakey.com/#/dpo/?id=comment-sont-transf%c3%a9r%c3%a9es-les-donn%c3%a9es-",
-            "1": "https://docs.misakey.com/#/dpo/?id=je-ne-veux-plus-traiter-toutes-ces-demandes-manuellement-comment-automatiser-ce-processus-"
+            "1": "https://docs.misakey.com/#/dpo/?id=quelles-sont-mes-obligations-",
+            "2": "https://docs.misakey.com/#/dpo/?id=je-ne-veux-plus-traiter-toutes-ces-demandes-manuellement-comment-automatiser-ce-processus-"
           }
         }
       },

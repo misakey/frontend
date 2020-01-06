@@ -103,7 +103,7 @@ const ExpansionPanelSummaryDatabox = ({ databox, expanded, t, ...rest }) => {
             <ChipDataboxBlobs blobs={blobCount} />
           </Grid>
           <Grid item>
-            <ChipDataboxStatus databox={databox} />
+            <ChipDataboxStatus databox={databox} showIcon showDetails />
           </Grid>
         </Grid>
         )}

@@ -1,16 +1,15 @@
 import React, { useMemo, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import moment from 'moment';
 
 import { OPEN, REOPEN, DONE, CLOSED } from 'constants/databox/status';
 import DataboxSchema from 'store/schemas/Databox';
 
-import isObject from '@misakey/helpers/isObject';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 import prop from '@misakey/helpers/prop';
 import getDateFormat from 'helpers/getDateFormat';
+import { getStatus } from 'helpers/databox';
 
 import useCalendarDateSince from 'hooks/useCalendarDateSince';
 
@@ -52,25 +51,14 @@ const POPOVER_CONFIG = {
   },
 };
 
-// HELPERS
-const isReopen = ({
-  status,
-  createdAt,
-  updatedAt,
-}) => status === OPEN && moment(updatedAt).isAfter(createdAt);
-
-const getStatus = (databox) => {
-  if (!isObject(databox)) {
-    return null;
-  }
-  if (isReopen(databox)) {
-    return REOPEN;
-  }
-  return databox.status;
-};
-
 // HOOKS
 const useStyles = makeStyles((theme) => ({
+  chipRoot: {
+    cursor: 'inherit',
+  },
+  chipClickable: {
+    cursor: 'pointer',
+  },
   chipIcon: {
     color: ({ status }) => {
       if (status === DONE) {
@@ -85,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const ChipDataboxStatus = ({ databox, t }) => {
+const ChipDataboxStatus = ({ databox, t, showIcon, showDetails }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const popoverOpen = useMemo(
@@ -101,8 +89,8 @@ const ChipDataboxStatus = ({ databox, t }) => {
   const classes = useStyles({ status });
 
   const statusIcon = useMemo(
-    () => (isNil(status) ? null : STATUS_ICON[status]),
-    [status],
+    () => ((isNil(status) || !showIcon) ? null : STATUS_ICON[status]),
+    [showIcon, status],
   );
 
   const dateCreation = useMemo(
@@ -188,15 +176,26 @@ const ChipDataboxStatus = ({ databox, t }) => {
     [setAnchorEl],
   );
 
-  const onClick = useCallback(
+  const onDelete = useMemo(
+    () => (showDetails ? onPopoverOpen : null),
+    [showDetails, onPopoverOpen],
+  );
+
+  const onDeleteStopPropagation = useCallback(
     (event) => {
-      if (isFunction(onPopoverOpen)) {
-        onPopoverOpen(event);
+      if (isFunction(onDelete)) {
+        onDelete(event);
       }
       event.stopPropagation();
     },
-    [onPopoverOpen],
+    [onDelete],
   );
+
+  const onClick = useMemo(
+    () => (showDetails ? onDeleteStopPropagation : null),
+    [onDeleteStopPropagation, showDetails],
+  );
+
 
   if (isNil(databox)) {
     return null;
@@ -205,14 +204,18 @@ const ChipDataboxStatus = ({ databox, t }) => {
   return (
     <div>
       <ChipDateSince
-        classes={{ icon: classes.chipIcon }}
+        classes={{
+          icon: classes.chipIcon,
+          root: classes.chipRoot,
+          clickable: classes.chipClickable,
+        }}
         color="default"
         icon={statusIcon}
         date={date}
         text={t(`common:databox.since.${status}`)}
         deleteIcon={<InfoIcon color="primary" />}
         onClick={onClick}
-        onDelete={onPopoverOpen}
+        onDelete={onDelete}
       />
       <Popover
         id="chip-databox-status-popover"
@@ -256,10 +259,14 @@ const ChipDataboxStatus = ({ databox, t }) => {
 ChipDataboxStatus.propTypes = {
   databox: PropTypes.shape(DataboxSchema.propTypes),
   t: PropTypes.func.isRequired,
+  showIcon: PropTypes.bool,
+  showDetails: PropTypes.bool,
 };
 
 ChipDataboxStatus.defaultProps = {
   databox: null,
+  showIcon: false,
+  showDetails: false,
 };
 
 export default withTranslation('common')(ChipDataboxStatus);

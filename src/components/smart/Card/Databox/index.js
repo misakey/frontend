@@ -221,7 +221,7 @@ const CardDatabox = ({
   const titleWithMetadata = useMemo(
     () => (
       <Grid container>
-        <Grid item sm={databox ? 7 : 12} xs={12}>
+        <Grid item sm={databox ? 6 : 12} xs={12}>
           {title}
         </Grid>
         {databox && (
@@ -230,7 +230,7 @@ const CardDatabox = ({
               <ChipDataboxBlobs blobs={blobs} />
             </Grid>
             <Grid item>
-              <ChipDataboxStatus databox={databox} />
+              <ChipDataboxStatus databox={databox} showIcon showDetails />
             </Grid>
           </Grid>
         )}

@@ -222,9 +222,9 @@
       "updated": "Editée"
     },
     "dpoComment": {
-      "no_data": "Le site ne possède aucune donnée vous concernant",
+      "done": "Vos données ont été déposées dans votre coffre-fort",
       "refused": "Votre demande a été rejetée",
-      "ok": "Vos données ont été déposées dans votre coffre-fort",
+      "no_data": "Le site ne possède aucune donnée vous concernant",
       "other": "Vous pouvez contacter directement le DPO pour plus d'informations"
     },
     "ownerComment": {
@@ -242,6 +242,10 @@
       "close": {
         "title": "Voulez-vous vraiment archiver la requête ?",
         "description": "Vous ne pourrez plus réouvrir cette requête et le DPO ne pourra plus y ajouter de fichier.\nNéanmoins, les fichiers seront toujours téléchargeables et vous pourrez ouvrir une nouvelle requête plus tard."
+      },
+      "done": {
+        "title": "Voulez-vous vraiment clore la requête ?",
+        "description": "Vous ne pourrez plus visualiser la requête et l'utilisateur sera informé que vous l'avez clôturée.\nMerci d'indiquer à l'utilisateur la raison de cette clôture."
       }
     },
     "archive": {
@@ -264,6 +268,9 @@
         },
         "archive": {
           "status": "Action impossible. La demande a déjà été archivée."
+        },
+        "done": {
+          "status": "Action impossible. La demande a déjà été traitée."
         }
       }
     }

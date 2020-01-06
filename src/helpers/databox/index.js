@@ -1,9 +1,10 @@
 import moment from 'moment';
 
 import { DELAY_REOPEN_DAYS } from 'constants/databox/delay';
-import { CLOSED } from 'constants/databox/status';
+import { CLOSED, OPEN, REOPEN } from 'constants/databox/status';
 
 import isEmpty from '@misakey/helpers/isEmpty';
+import isObject from '@misakey/helpers/isObject';
 import head from '@misakey/helpers/head';
 
 export const isClosedDelayDone = (databox) => databox.status === CLOSED
@@ -19,4 +20,20 @@ export const getCurrentDatabox = (databoxes) => {
     return first;
   }
   return isClosedDelayDone(first) ? null : first;
+};
+
+export const isReopen = ({
+  status,
+  createdAt,
+  updatedAt,
+}) => status === OPEN && moment(updatedAt).isAfter(createdAt);
+
+export const getStatus = (databox) => {
+  if (!isObject(databox)) {
+    return null;
+  }
+  if (isReopen(databox)) {
+    return REOPEN;
+  }
+  return databox.status;
 };

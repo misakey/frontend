@@ -266,5 +266,13 @@
       "required": "Veuillez nous faire un retour sur votre requête",
       "invalid": "Ce retour est incorrect"
     }
+  },
+  "dpoComment": {
+    "label": "Message de clôture",
+    "helperText": "Choisissez parmi ces propositions celle qui correspond le mieux à votre décision",
+    "error": {
+      "required": "Veuillez choisir un message pour clore la requête",
+      "invalid": "Ce message est incorrect"
+    }
   }
 }

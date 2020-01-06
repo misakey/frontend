@@ -351,7 +351,7 @@ function Screen({
 
 Screen.propTypes = {
   appBarProps: PropTypes.objectOf(PropTypes.any),
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   className: PropTypes.string,
   description: PropTypes.string,
   disableGutters: PropTypes.bool,
@@ -372,6 +372,7 @@ Screen.propTypes = {
 
 Screen.defaultProps = {
   appBarProps: { items: [] },
+  children: null,
   className: '',
   description: '',
   disableGutters: false,

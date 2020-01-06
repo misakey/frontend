@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Formik, Form, Field } from 'formik';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
@@ -7,10 +8,11 @@ import moment from 'moment';
 
 import API from '@misakey/api';
 import DataboxSchema from 'store/schemas/Databox';
+import { updateDatabox } from 'store/actions/databox';
 
 import { serviceRequestsReadValidationSchema } from 'constants/validationSchemas/dpo';
 import errorTypes from 'constants/errorTypes';
-import { OPEN } from 'constants/databox/status';
+import { OPEN, DONE } from 'constants/databox/status';
 
 import log from '@misakey/helpers/log';
 import prop from '@misakey/helpers/prop';
@@ -22,16 +24,22 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import isArray from '@misakey/helpers/isArray';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+import { getDetailPairsHead } from 'helpers/apiError';
 
 import { encryptBlobFile } from '@misakey/crypto/databox/crypto';
+
+import useTheme from '@material-ui/core/styles/useTheme';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { makeStyles } from '@material-ui/core/styles/';
 import Container from '@material-ui/core/Container';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import MUILink from '@material-ui/core/Link/Link';
+import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -41,7 +49,6 @@ import CloudDoneIcon from '@material-ui/icons/CloudDone';
 
 import Subtitle from 'components/dumb/Typography/Subtitle';
 import BoxMessage from 'components/dumb/Box/Message';
-import BoxControls from 'components/dumb/Box/Controls';
 import FieldFile from 'components/dumb/Form/Field/File';
 import Alert from 'components/dumb/Alert';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -53,17 +60,32 @@ import CardContent from '@material-ui/core/CardContent';
 import Title from 'components/dumb/Typography/Title';
 import ListQuestions, { useQuestionsItems } from 'components/dumb/List/Questions';
 import Card from 'components/dumb/Card';
+import DialogDataboxDone from 'components/dumb/Dialog/Databox/Done';
+import ChipDataboxStatus from 'components/dumb/Chip/Databox/Status';
+
+import MailIcon from '@material-ui/icons/Mail';
 
 // CONSTANTS
 const QUESTIONS_TRANS_KEY = 'screens:Service.requests.read.questions';
-const { notFound } = errorTypes;
+const { notFound, forbidden, conflict } = errorTypes;
 const FIELD_NAME = 'blob';
 const INTERNAL_PROPS = ['tReady', 'isAuthenticated'];
 const INITIAL_VALUES = { [FIELD_NAME]: null };
+
+const DIALOGS = {
+  DONE: 'DONE',
+  ALERT: 'ALERT',
+};
+
 const ENDPOINTS = {
   databox: {
     read: {
       method: 'GET',
+      path: '/databoxes/:id',
+      auth: true,
+    },
+    update: {
+      method: 'PATCH',
       path: '/databoxes/:id',
       auth: true,
     },
@@ -100,7 +122,7 @@ const databoxIdProp = prop('databoxId');
 const ownerProp = prop('owner');
 const handleProp = prop('handle');
 const ownerEmailProp = prop('email');
-const ownerNameProp = prop('display_name');
+const ownerNameProp = prop('displayName');
 const statusProp = prop('status');
 
 const fetchPubkey = (handle) => API
@@ -111,6 +133,11 @@ const fetchPubkey = (handle) => API
 const fetchDatabox = (id) => API
   .use(ENDPOINTS.databox.read)
   .build(objectToSnakeCase({ id }))
+  .send();
+
+const setDataboxDone = (id, body) => API
+  .use(ENDPOINTS.databox.update)
+  .build({ id }, objectToSnakeCase(body))
   .send();
 
 // HOOKS
@@ -204,16 +231,26 @@ FieldBlob = withTranslation('fields')(withErrors(FieldBlob));
 function ServiceRequestsRead({
   match: { params }, location: { hash },
   accessRequest, databox, dispatchReceiveDatabox,
+  dispatchUpdateDatabox,
   isLoading, isFetching, error, accessRequestError,
   appBarProps, t, ...rest
 }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const questionItems = useQuestionsItems(t, QUESTIONS_TRANS_KEY, 2);
+  const questionItems = useQuestionsItems(t, QUESTIONS_TRANS_KEY, 3);
 
-  const [open, setOpen] = useState(false);
-  const handleOpen = useCallback(() => setOpen(true), []);
-  const handleClose = useCallback(() => setOpen(false), []);
+  const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.only('xs'));
+  const navigationProps = useMemo(
+    () => ({ noWrap: true }),
+    [],
+  );
+
+  // dialogs
+  const [openDialog, setOpenDialog] = useState(null);
+  const handleOpen = useCallback(() => setOpenDialog(DIALOGS.ALERT), []);
+
+  const onDialogClose = useCallback(() => setOpenDialog(null), []);
 
   const [isFetchingDatabox, setIsFetchingDatabox] = useState(false);
   const [errorDatabox, setErrorDatabox] = useState();
@@ -278,9 +315,25 @@ function ServiceRequestsRead({
     [hashToken, accessRequest, params.databoxId],
   );
 
+  const vaultTitle = t('screens:Service.requests.read.vault.title');
+
+  const vaultTitleWithMetadata = useMemo(
+    () => (
+      <Grid spacing={1} container>
+        <Grid item sm={7} xs={12}>
+          {vaultTitle}
+        </Grid>
+        <Grid container item xs justify={isXs ? 'center' : 'flex-end'}>
+          <ChipDataboxStatus databox={databox} showIcon showDetails />
+        </Grid>
+      </Grid>
+    ),
+    [vaultTitle, databox, isXs],
+  );
+
   const status = useMemo(
-    () => statusProp(accessRequest) || statusProp(databox),
-    [accessRequest, databox],
+    () => statusProp(databox),
+    [databox],
   );
 
   const isArchived = useMemo(
@@ -312,7 +365,7 @@ function ServiceRequestsRead({
   );
 
   const handleUpload = useCallback((form, { setFieldError, resetForm }) => {
-    handleClose();
+    onDialogClose();
     setUploading(true);
 
     const blob = form[FIELD_NAME];
@@ -359,7 +412,52 @@ function ServiceRequestsRead({
         }
       })
       .finally(() => { setUploading(false); });
-  }, [handleClose, handle, databoxId, blobs, t, enqueueSnackbar]);
+  }, [onDialogClose, handle, databoxId, blobs, t, enqueueSnackbar]);
+
+  const getOnReset = useCallback(
+    ({ resetForm }) => () => {
+      resetForm(INITIAL_VALUES);
+    },
+    [],
+  );
+
+  const onDoneDialog = useCallback(
+    () => {
+      setOpenDialog(DIALOGS.DONE);
+    },
+    [setOpenDialog],
+  );
+
+  const onError = useCallback(
+    (translationKey) => {
+      enqueueSnackbar(t(translationKey), { variant: 'error' });
+    },
+    [enqueueSnackbar, t],
+  );
+
+  const onDone = useCallback(
+    (form, { setSubmitting }) => {
+      const body = { status: DONE, ...form };
+      setDataboxDone(databoxId, body)
+        .then(() => dispatchUpdateDatabox(databoxId, body))
+        .catch((err) => {
+          const { code } = err;
+          if (code === forbidden) {
+            return onError(t(`common:databox.errors.${code}`));
+          }
+          const [key, errorType] = getDetailPairsHead(err);
+          if (errorType === conflict) {
+            return onError(t(`common:databox.errors.conflict.done.${key}`));
+          }
+          return onError(t('common:httpStatus.error.default'));
+        })
+        .finally(() => {
+          setSubmitting(false);
+          onDialogClose();
+        });
+    },
+    [databoxId, dispatchUpdateDatabox, onError, t, onDialogClose],
+  );
 
   const fetchBlobs = useCallback(() => {
     setFetchingBlobs(true);
@@ -389,6 +487,16 @@ function ServiceRequestsRead({
 
   useEffect(
     () => {
+      // fetch databox if missing or conditions not fulfilled in withAccessRequest
+      if (shouldFetchDatabox) {
+        getDatabox();
+      }
+    },
+    [getDatabox, shouldFetchDatabox],
+  );
+
+  useEffect(
+    () => {
       if (shouldFetch) {
         fetchBlobs();
       }
@@ -401,7 +509,8 @@ function ServiceRequestsRead({
       state={state}
       appBarProps={appBarProps}
       {...omit(rest, INTERNAL_PROPS)}
-      title={t('screens:Service.requests.read.title', { ownerName, ownerEmail })}
+      title={t('screens:Service.requests.read.title', { ownerName })}
+      navigationProps={navigationProps}
     >
       <Container maxWidth="md">
         <Subtitle>
@@ -419,6 +528,20 @@ function ServiceRequestsRead({
             </MUILink>
           </Typography>
         </BoxMessage>
+        <Card
+          my={3}
+          title={t('screens:Service.requests.read.user.title')}
+          subtitle={t('screens:Service.requests.read.user.subtitle')}
+        >
+          <List aria-label={t('screens:Service.requests.read.user.title')}>
+            <ListItem>
+              <ListItemIcon>
+                <MailIcon />
+              </ListItemIcon>
+              <ListItemText primary={ownerEmail} />
+            </ListItem>
+          </List>
+        </Card>
         {isArchived
           ? (
             <BoxMessage type="warning" mt={2}>
@@ -428,25 +551,57 @@ function ServiceRequestsRead({
             </BoxMessage>
           )
           : (
-            <>
-              <List>
-                {(!isFetchingBlobs && isEmpty(blobs)) && <Empty />}
-                {!isEmpty(blobs)
-                  && blobs.map(({ id, ...props }) => <Blob key={id} id={id} {...props} />)}
-              </List>
-              <Formik
-                validationSchema={serviceRequestsReadValidationSchema}
-                initialValues={INITIAL_VALUES}
-                onSubmit={handleOpen}
-              >
-                {({ values, isValid, setFieldValue, setFieldTouched, ...formikBag }) => (
-                  <Form>
+            <Formik
+              validationSchema={serviceRequestsReadValidationSchema}
+              initialValues={INITIAL_VALUES}
+              onSubmit={handleOpen}
+
+            >
+              {({ values, isValid, dirty, setFieldValue, setFieldTouched, ...formikBag }) => (
+                <>
+                  <Card
+                    my={3}
+                    title={vaultTitleWithMetadata}
+                    subtitle={(t('screens:Service.requests.read.vault.subtitle'))}
+                    primary={{
+                      disabled: dirty,
+                      onClick: onDoneDialog,
+                      text: t('screens:Service.requests.read.vault.done'),
+                    }}
+                  >
+                    <DialogDataboxDone
+                      open={openDialog === DIALOGS.DONE}
+                      onClose={onDialogClose}
+                      onSuccess={onDone}
+                    />
+                    <List>
+                      {(!isFetchingBlobs && isEmpty(blobs)) && <Empty />}
+                      {!isEmpty(blobs)
+                    && blobs.map(({ id, ...props }) => <Blob key={id} id={id} {...props} />)}
+                    </List>
+                  </Card>
+                  <Card
+                    my={3}
+                    component={Form}
+                    title={t('screens:Service.requests.read.upload.title')}
+                    primary={{
+                      type: 'submit',
+                      isLoading: isUploading,
+                      isValid,
+                      text: t('common:submit'),
+                    }}
+                    secondary={{
+                      text: t('common:cancel'),
+                      disabled: !dirty,
+                      onClick: getOnReset(formikBag),
+                    }}
+                  >
                     <Alert
-                      open={open}
-                      onClose={handleClose}
+                      open={openDialog === DIALOGS.ALERT}
+                      onClose={onDialogClose}
                       onOk={() => handleUpload(values, formikBag)}
-                      title={t('screens:Service.requests.read.upload.title')}
-                      text={t('screens:Service.requests.read.upload.text', { ownerEmail })}
+                      title={t('screens:Service.requests.read.upload.dialog.title')}
+                      text={t('screens:Service.requests.read.upload.dialog.text', { ownerEmail })}
                     />
                     <Field
                       name={FIELD_NAME}
@@ -455,19 +610,10 @@ function ServiceRequestsRead({
                       setFieldValue={setFieldValue}
                       setFieldTouched={setFieldTouched}
                     />
-                    <BoxControls
-                      mt={1}
-                      primary={{
-                        type: 'submit',
-                        isLoading: isUploading,
-                        isValid,
-                        text: t('common:submit'),
-                      }}
-                    />
-                  </Form>
-                )}
-              </Formik>
-            </>
+                  </Card>
+                </>
+              )}
+            </Formik>
           )}
         <Card mt={2}>
           <CardContent>
@@ -510,6 +656,9 @@ ServiceRequestsRead.propTypes = {
     shift: PropTypes.bool,
     items: PropTypes.arrayOf(PropTypes.node),
   }),
+  // CONNECT
+  dispatchUpdateDatabox: PropTypes.func.isRequired,
+
   history: PropTypes.object.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({ databoxId: PropTypes.string }),
@@ -527,9 +676,14 @@ ServiceRequestsRead.defaultProps = {
   isLoading: false,
 };
 
-export default withTranslation(['common', 'screens'])(
+// CONNECT
+const mapDispatchToProps = (dispatch) => ({
+  dispatchUpdateDatabox: (databoxId, changes) => dispatch(updateDatabox(databoxId, changes)),
+});
+
+export default connect(null, mapDispatchToProps)(withTranslation(['common', 'screens'])(
   withAccessRequest(
     ServiceRequestsRead,
     ({ error, ...props }) => ({ accessRequestError: error, ...props }),
   ),
-);
+));

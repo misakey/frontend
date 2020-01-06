@@ -1,3 +1,4 @@
+export const DONE = 'done';
 export const OK = 'ok';
 export const OTHER_CHANNEL = 'other_channel';
 export const NO_DATA = 'no_data';
@@ -9,5 +10,12 @@ export const OWNER_COMMENTS = [
   OTHER_CHANNEL,
   NO_DATA,
   REFUSED,
+  OTHER,
+];
+
+export const DPO_COMMENTS = [
+  DONE,
+  REFUSED,
+  NO_DATA,
   OTHER,
 ];

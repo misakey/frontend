@@ -5,20 +5,25 @@ import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
 import API from '@misakey/api';
-import { OPEN } from 'constants/databox/status';
+import { OPEN, REOPEN } from 'constants/databox/status';
 
 import isNil from '@misakey/helpers/isNil';
 import noop from '@misakey/helpers/noop';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+import { getStatus } from 'helpers/databox';
 
 import InfiniteLoader from 'react-virtualized/dist/commonjs/InfiniteLoader';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import VirtualizedList from 'react-virtualized/dist/commonjs/List';
 
+import useTheme from '@material-ui/core/styles/useTheme';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
@@ -27,14 +32,15 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
 import Skeleton from '@material-ui/lab/Skeleton';
-
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import InboxIcon from '@material-ui/icons/Inbox';
-
 import BoxSection from 'components/dumb/Box/Section';
 import Subtitle from 'components/dumb/Typography/Subtitle';
 import Empty from 'components/dumb/Box/Empty';
 import ScreenAction from 'components/dumb/Screen/Action';
+import ChipDataboxStatus from 'components/dumb/Chip/Databox/Status';
+
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import InboxIcon from '@material-ui/icons/Inbox';
+import RestoreIcon from '@material-ui/icons/Restore';
 
 
 // CONSTANTS
@@ -51,8 +57,16 @@ const ENDPOINTS = {
 const ROW_HEIGHT = 73;
 const ITEM_PER_PAGE = 50;
 
+const STATUS_ICON = {
+  [OPEN]: <InboxIcon />,
+  [REOPEN]: <RestoreIcon />,
+};
+
 // HELPERS
-const mapItem = ({ owner, ...rest }) => ({ owner: objectToCamelCase(owner), ...rest });
+const mapItem = ({ owner, ...rest }) => ({
+  owner: objectToCamelCase(owner),
+  ...objectToCamelCase(rest),
+});
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -81,6 +95,9 @@ const useStyles = makeStyles((theme) => ({
 const Row = ({ list, isRowLoaded, classes, service, index, style }) => {
   const item = list[index] || {};
 
+  const theme = useTheme();
+  const showChip = useMediaQuery(theme.breakpoints.up('sm'));
+
   const isLoaded = isRowLoaded({ index });
 
   if (!isLoaded) {
@@ -98,6 +115,9 @@ const Row = ({ list, isRowLoaded, classes, service, index, style }) => {
   }
 
   const { id, owner } = item;
+
+  const status = getStatus(item);
+  const icon = STATUS_ICON[status];
 
   return (
     <ListItem
@@ -118,13 +138,23 @@ const Row = ({ list, isRowLoaded, classes, service, index, style }) => {
       >
         <ListItemAvatar>
           <Avatar>
-            <InboxIcon />
+            {icon}
           </Avatar>
         </ListItemAvatar>
         <ListItemText
-          primary={owner.displayName}
           secondary={owner.email}
-        />
+        >
+          <Grid container>
+            <Grid item sm={7} xs={12}>
+              {owner.displayName}
+            </Grid>
+            {showChip && (
+              <Grid spacing={1} container item xs>
+                <ChipDataboxStatus databox={item} />
+              </Grid>
+            )}
+          </Grid>
+        </ListItemText>
         <ListItemSecondaryAction>
           <IconButton
             edge="end"
