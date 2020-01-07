@@ -14,4 +14,5 @@ window.env = {
     dsn: 'https://63f724116593491aabcfefa591f19f00@sentry.io/1816689',
     environment: 'development',
   },
+  BLOCKER_RESOURCE_URL: 'https://static.misakey.com/plugin/beta',
 };

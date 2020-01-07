@@ -8,7 +8,7 @@ import API from '@misakey/api';
 import parser from 'ua-parser-js';
 import { parse } from 'tldts';
 import { setItem, getItem } from './storage';
-import { getCurrentTab, mergeArrays, toggleBadgeAndIconOnPaused, filterAppsBy, markAsFetched } from './utils';
+import { getCurrentTab, assignApiInfo, toggleBadgeAndIconOnPaused, filterAppsBy, markAsFetched } from './utils';
 
 // HELPERS
 const DEFAULT_PURPOSE = 'other';
@@ -155,10 +155,9 @@ class Globals {
         })
         .send()
         .then((response) => {
-          const newTabInfos = mergeArrays(
+          const newTabInfos = assignApiInfo(
             markAsFetched(detected, domainsToFetch),
             response.map(objectToCamelCase),
-            'mainDomain',
           );
           this.tabsInfos.set(id, newTabInfos);
           return newTabInfos;
@@ -186,17 +185,16 @@ class Globals {
       })
       .send()
       .then((response) => {
-        const newWhitelistFormated = mergeArrays(
+        const newWhitelistFormated = assignApiInfo(
           whitelistFormated,
           response.map(objectToCamelCase),
-          'mainDomain',
         );
         this.whitelist.appsFormated = newWhitelistFormated;
         return newWhitelistFormated;
       })
       .catch((err) => {
         log(`Fetch application API returned and error in plugin background: ${err}`);
-        return mergeArrays(
+        return assignApiInfo(
           whitelistFormated,
           this.whitelist.apps.map((domain) => ({
             mainDomain: domain,
@@ -204,7 +202,6 @@ class Globals {
             name: domain,
             id: domain,
           })),
-          'mainDomain',
         );
       });
   }

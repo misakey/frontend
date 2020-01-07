@@ -1,9 +1,10 @@
 import isString from '@misakey/helpers/isString';
 import isEmpty from '@misakey/helpers/isEmpty';
 import assignInWith from '@misakey/helpers/assignInWith';
-import keyBy from '@misakey/helpers/keyBy';
 import log from '@misakey/helpers/log';
 import common from '@misakey/ui/colors/common';
+import unionBy from 'lodash/unionBy';
+import { getDomain, getHostname } from 'tldts';
 
 export async function getCurrentTab() {
   const tabs = await browser.tabs.query({ currentWindow: true, active: true });
@@ -60,19 +61,30 @@ export function toggleBadgeAndIconOnPaused(paused = false) {
   setIcon(path);
 }
 
-// @FIXME add to js-common helpers
-export function mergeArrays(array1, array2, key) {
-  const arrayAsObject = keyBy(array1, key);
-  array2.forEach((element) => {
-    arrayAsObject[element[key]] = assignInWith(
-      element,
-      arrayAsObject[element[key]],
-      (objValue, srcValue) => (isEmpty(objValue) ? srcValue : objValue),
-    );
-  });
-  return Object.values(arrayAsObject);
+function assignCustomizer(objValue, srcValue, key) {
+  if (key === 'mainDomain') { return srcValue; }
+  return isEmpty(objValue) ? srcValue : objValue;
 }
 
+export function assignApiInfo(apps, appsFromApi) {
+  const detected = apps.map((app) => app.mainDomain);
+
+  const foundApps = appsFromApi.reduce((mergedApps, application) => {
+    const { mainDomain } = application;
+    const detectedLinkedDomains = detected.filter(
+      (domain) => getHostname(domain) === mainDomain || getDomain(domain) === mainDomain,
+    );
+    return [
+      ...mergedApps,
+      ...detectedLinkedDomains.map((linked) => assignInWith(
+        { ...application },
+        { ...apps.find((app) => app.mainDomain === linked) },
+        assignCustomizer,
+      )),
+    ];
+  }, []);
+  return unionBy(foundApps, apps, 'mainDomain');
+}
 
 export function filterAppsBy(search, mainPurpose, apps) {
   let filteredApps = [...apps];
