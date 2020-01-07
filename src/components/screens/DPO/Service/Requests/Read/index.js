@@ -47,7 +47,6 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import FolderIcon from '@material-ui/icons/Folder';
 import CloudDoneIcon from '@material-ui/icons/CloudDone';
 
-import Subtitle from 'components/dumb/Typography/Subtitle';
 import BoxMessage from 'components/dumb/Box/Message';
 import FieldFile from 'components/dumb/Form/Field/File';
 import Alert from 'components/dumb/Alert';
@@ -56,8 +55,6 @@ import Empty from 'components/dumb/Box/Empty';
 import ScreenAction from 'components/dumb/Screen/Action';
 import withAccessRequest from 'components/smart/withAccessRequest';
 import withErrors from 'components/dumb/Form/Field/withErrors';
-import CardContent from '@material-ui/core/CardContent';
-import Title from 'components/dumb/Typography/Title';
 import ListQuestions, { useQuestionsItems } from 'components/dumb/List/Questions';
 import Card from 'components/dumb/Card';
 import DialogDataboxDone from 'components/dumb/Dialog/Databox/Done';
@@ -315,20 +312,22 @@ function ServiceRequestsRead({
     [hashToken, accessRequest, params.databoxId],
   );
 
-  const vaultTitle = t('screens:Service.requests.read.vault.title');
+  const requestTitle = t('screens:Service.requests.read.request.title');
 
-  const vaultTitleWithMetadata = useMemo(
+  const requestTitleWithMetadata = useMemo(
     () => (
       <Grid spacing={1} container>
         <Grid item sm={7} xs={12}>
-          {vaultTitle}
+          {requestTitle}
         </Grid>
         <Grid container item xs justify={isXs ? 'center' : 'flex-end'}>
-          <ChipDataboxStatus databox={databox} showIcon showDetails />
+          {databox && (
+            <ChipDataboxStatus databox={databox} showIcon showDetails />
+          )}
         </Grid>
       </Grid>
     ),
-    [vaultTitle, databox, isXs],
+    [requestTitle, databox, isXs],
   );
 
   const status = useMemo(
@@ -513,121 +512,114 @@ function ServiceRequestsRead({
       navigationProps={navigationProps}
     >
       <Container maxWidth="md">
-        <Subtitle>
-          {t('screens:Service.requests.read.subtitle', { ownerEmail })}
-        </Subtitle>
-        <BoxMessage type="info" mt={2}>
-          <Typography>
-            {t('screens:Service.requests.read.mkAgent.message')}
-            <MUILink
-              className={classes.mkAgentLink}
-              variant="body2"
-              href={`mailto:question.pro@misakey.com?subject=${t('screens:Service.requests.read.mkAgent.mailToSubject')}`}
-            >
-              {t('screens:Service.requests.read.mkAgent.link')}
-            </MUILink>
-          </Typography>
-        </BoxMessage>
+        <Formik
+          validationSchema={serviceRequestsReadValidationSchema}
+          initialValues={INITIAL_VALUES}
+          onSubmit={handleOpen}
+        >
+          {({ values, isValid, dirty, setFieldValue, setFieldTouched, ...formikBag }) => (
+            <>
+              <Card
+                my={3}
+                title={requestTitleWithMetadata}
+                primary={{
+                  disabled: dirty,
+                  onClick: onDoneDialog,
+                  text: t('screens:Service.requests.read.vault.done'),
+                }}
+                dense
+              >
+                <List dense disablePadding aria-label={t('screens:Service.requests.read.request.title')}>
+                  <ListItem>
+                    <ListItemIcon>
+                      <MailIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={ownerEmail} />
+                  </ListItem>
+                </List>
+              </Card>
+              {isArchived
+                ? (
+                  <BoxMessage type="warning" mt={2}>
+                    <Typography>
+                      {t('screens:Service.requests.read.archived')}
+                    </Typography>
+                  </BoxMessage>
+                )
+                : (
+                  <Form>
+                    <Card
+                      my={3}
+                      title={t('screens:Service.requests.read.vault.title')}
+                      primary={{
+                        type: 'submit',
+                        isLoading: isUploading,
+                        isValid,
+                        text: t('common:submit'),
+                      }}
+                      secondary={{
+                        text: t('common:cancel'),
+                        disabled: !dirty,
+                        onClick: getOnReset(formikBag),
+                      }}
+                    >
+                      <DialogDataboxDone
+                        open={openDialog === DIALOGS.DONE}
+                        onClose={onDialogClose}
+                        onSuccess={onDone}
+                      />
+                      <List>
+                        {(!isFetchingBlobs && isEmpty(blobs)) && <Empty />}
+                        {!isEmpty(blobs)
+                          && blobs.map(({ id, ...props }) => <Blob key={id} id={id} {...props} />)}
+                      </List>
+                      <Alert
+                        open={openDialog === DIALOGS.ALERT}
+                        onClose={onDialogClose}
+                        onOk={() => handleUpload(values, formikBag)}
+                        title={t('screens:Service.requests.read.upload.dialog.title')}
+                        text={t('screens:Service.requests.read.upload.dialog.text', { ownerEmail })}
+                      />
+                      <Field
+                        name={FIELD_NAME}
+                        component={FieldBlob}
+                        className={classes.blob}
+                        setFieldValue={setFieldValue}
+                        setFieldTouched={setFieldTouched}
+                      />
+                    </Card>
+                  </Form>
+                )}
+            </>
+          )}
+        </Formik>
+        {!isEmpty(blobs) && (
+          <BoxMessage type="info" mt={2}>
+            <Typography>
+              {t('screens:Service.requests.read.mkAgent.message')}
+              <MUILink
+                className={classes.mkAgentLink}
+                variant="body2"
+                href={`mailto:question.pro@misakey.com?subject=${t('screens:Service.requests.read.mkAgent.mailToSubject')}`}
+              >
+                {t('screens:Service.requests.read.mkAgent.link')}
+              </MUILink>
+            </Typography>
+          </BoxMessage>
+        )}
         <Card
           my={3}
-          title={t('screens:Service.requests.read.user.title')}
-          subtitle={t('screens:Service.requests.read.user.subtitle')}
-        >
-          <List aria-label={t('screens:Service.requests.read.user.title')}>
-            <ListItem>
-              <ListItemIcon>
-                <MailIcon />
-              </ListItemIcon>
-              <ListItemText primary={ownerEmail} />
-            </ListItem>
-          </List>
-        </Card>
-        {isArchived
-          ? (
-            <BoxMessage type="warning" mt={2}>
-              <Typography>
-                {t('screens:Service.requests.read.archived')}
-              </Typography>
-            </BoxMessage>
-          )
-          : (
-            <Formik
-              validationSchema={serviceRequestsReadValidationSchema}
-              initialValues={INITIAL_VALUES}
-              onSubmit={handleOpen}
-
+          title={t('screens:Service.requests.read.questions.title')}
+          subtitle={(
+            <MUILink
+              target="_blank"
+              rel="nooppener noreferrer"
+              href={t('links.docs.dpo')}
             >
-              {({ values, isValid, dirty, setFieldValue, setFieldTouched, ...formikBag }) => (
-                <>
-                  <Card
-                    my={3}
-                    title={vaultTitleWithMetadata}
-                    subtitle={(t('screens:Service.requests.read.vault.subtitle'))}
-                    primary={{
-                      disabled: dirty,
-                      onClick: onDoneDialog,
-                      text: t('screens:Service.requests.read.vault.done'),
-                    }}
-                  >
-                    <DialogDataboxDone
-                      open={openDialog === DIALOGS.DONE}
-                      onClose={onDialogClose}
-                      onSuccess={onDone}
-                    />
-                    <List>
-                      {(!isFetchingBlobs && isEmpty(blobs)) && <Empty />}
-                      {!isEmpty(blobs)
-                    && blobs.map(({ id, ...props }) => <Blob key={id} id={id} {...props} />)}
-                    </List>
-                  </Card>
-                  <Card
-                    my={3}
-                    component={Form}
-                    title={t('screens:Service.requests.read.upload.title')}
-                    primary={{
-                      type: 'submit',
-                      isLoading: isUploading,
-                      isValid,
-                      text: t('common:submit'),
-                    }}
-                    secondary={{
-                      text: t('common:cancel'),
-                      disabled: !dirty,
-                      onClick: getOnReset(formikBag),
-                    }}
-                  >
-                    <Alert
-                      open={openDialog === DIALOGS.ALERT}
-                      onClose={onDialogClose}
-                      onOk={() => handleUpload(values, formikBag)}
-                      title={t('screens:Service.requests.read.upload.dialog.title')}
-                      text={t('screens:Service.requests.read.upload.dialog.text', { ownerEmail })}
-                    />
-                    <Field
-                      name={FIELD_NAME}
-                      component={FieldBlob}
-                      className={classes.blob}
-                      setFieldValue={setFieldValue}
-                      setFieldTouched={setFieldTouched}
-                    />
-                  </Card>
-                </>
-              )}
-            </Formik>
+              {t('screens:Service.requests.read.questions.subtitle')}
+            </MUILink>
           )}
-        <Card mt={2}>
-          <CardContent>
-            <Title>{t('screens:Service.requests.read.questions.title')}</Title>
-            <Subtitle>
-              <MUILink
-                target="_blank"
-                rel="nooppener noreferrer"
-                href={t('links.docs.dpo')}
-              >
-                {t('screens:Service.requests.read.questions.subtitle')}
-              </MUILink>
-            </Subtitle>
-          </CardContent>
+        >
           <ListQuestions items={questionItems} breakpoints={{ xs: 12 }} />
         </Card>
       </Container>

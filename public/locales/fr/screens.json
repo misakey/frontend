@@ -511,19 +511,15 @@
     "requests": {
       "read": {
         "title": "Coffre-fort de {{ownerName}}",
-        "subtitle": "Répondre à la demande de portabilité liée à l'email {{ownerEmail}}",
         "archived": "Cette demande de portabilité est fermée",
-        "user": {
-          "title": "Propriétaire",
-          "subtitle": "Informations sur le propriétaire du coffre-fort"
+        "request": {
+          "title": "Requête de portabilité"
         },
         "vault": {
-          "title": "Données du coffre-fort",
-          "subtitle": "Les fichiers déjà mis à disposition de l'utilisateur",
+          "title": "Fichiers envoyés",
           "done": "Clore la demande"
         },
         "upload": {
-          "title": "Uploader les données",
           "dialog": {
             "title": "Validez-vous l'envoi de ce fichier ?",
             "text": "Le fichier va être chiffré avec la clé de {{ownerEmail}} puis lui être envoyé. Cette opération est irréversible."

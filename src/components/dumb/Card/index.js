@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
@@ -26,10 +26,17 @@ const Card = withStyles((theme) => ({
       borderRadius: 0,
     }, */
   },
+  denseContent: {
+    paddingBottom: 0,
+  },
+  denseActions: {
+    paddingTop: 0,
+  },
 }))(({
   children,
   classes,
   className,
+  dense,
   primary,
   secondary,
   subtitle,
@@ -37,15 +44,21 @@ const Card = withStyles((theme) => ({
   subtitleProps,
   titleProps,
   ...rest
-}) => (
-  <MuiCard
-    className={clsx(classes.root, className)}
-    component={Box}
-    elevation={0}
-    {...rest}
-  >
-    {title && (
-      <CardContent>
+}) => {
+  const hasActions = useMemo(
+    () => primary || secondary,
+    [primary, secondary],
+  );
+
+  return (
+    <MuiCard
+      className={clsx(classes.root, className)}
+      component={Box}
+      elevation={0}
+      {...rest}
+    >
+      {title && (
+      <CardContent className={clsx({ [classes.denseContent]: dense && hasActions })}>
         <GroupTitles
           title={title}
           subtitle={subtitle}
@@ -54,19 +67,21 @@ const Card = withStyles((theme) => ({
         />
         {children}
       </CardContent>
-    )}
-    {!title && children}
-    {(primary || secondary) && (
-      <CardActions>
-        <CardControls primary={primary} secondary={secondary} />
-      </CardActions>
-    )}
-  </MuiCard>
-));
+      )}
+      {!title && children}
+      {hasActions && (
+        <CardActions className={clsx({ [classes.denseActions]: dense })}>
+          <CardControls primary={primary} secondary={secondary} />
+        </CardActions>
+      )}
+    </MuiCard>
+  );
+});
 
 Card.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
+  dense: PropTypes.bool,
   title: PropTypes.node,
   primary: PropTypes.oneOfType([PropTypes.object, PropTypes.node]),
   secondary: PropTypes.object,
@@ -78,6 +93,7 @@ Card.propTypes = {
 Card.defaultProps = {
   children: null,
   className: '',
+  dense: false,
   primary: null,
   secondary: null,
   subtitleProps: {},
