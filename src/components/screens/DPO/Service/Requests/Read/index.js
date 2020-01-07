@@ -245,9 +245,13 @@ function ServiceRequestsRead({
 
   // dialogs
   const [openDialog, setOpenDialog] = useState(null);
-  const handleOpen = useCallback(() => setOpenDialog(DIALOGS.ALERT), []);
+  const handleOpen = useCallback(() => {
+    setOpenDialog(DIALOGS.ALERT);
+  }, []);
 
-  const onDialogClose = useCallback(() => setOpenDialog(null), []);
+  const onDialogClose = useCallback(() => {
+    setOpenDialog(null);
+  }, []);
 
   const [isFetchingDatabox, setIsFetchingDatabox] = useState(false);
   const [errorDatabox, setErrorDatabox] = useState();
@@ -512,21 +516,17 @@ function ServiceRequestsRead({
       navigationProps={navigationProps}
     >
       <Container maxWidth="md">
-        <Formik
-          validationSchema={serviceRequestsReadValidationSchema}
-          initialValues={INITIAL_VALUES}
-          onSubmit={handleOpen}
-        >
-          {({ values, isValid, dirty, setFieldValue, setFieldTouched, ...formikBag }) => (
+        {isArchived
+          ? (
             <>
+              <BoxMessage type="warning" mt={2}>
+                <Typography>
+                  {t('screens:Service.requests.read.archived')}
+                </Typography>
+              </BoxMessage>
               <Card
                 my={3}
                 title={requestTitleWithMetadata}
-                primary={{
-                  disabled: dirty,
-                  onClick: onDoneDialog,
-                  text: t('screens:Service.requests.read.vault.done'),
-                }}
                 dense
               >
                 <List dense disablePadding aria-label={t('screens:Service.requests.read.request.title')}>
@@ -538,16 +538,40 @@ function ServiceRequestsRead({
                   </ListItem>
                 </List>
               </Card>
-              {isArchived
-                ? (
-                  <BoxMessage type="warning" mt={2}>
-                    <Typography>
-                      {t('screens:Service.requests.read.archived')}
-                    </Typography>
-                  </BoxMessage>
-                )
-                : (
+            </>
+          ) : (
+            <>
+              <DialogDataboxDone
+                open={openDialog === DIALOGS.DONE}
+                onClose={onDialogClose}
+                onSuccess={onDone}
+              />
+              <Formik
+                validationSchema={serviceRequestsReadValidationSchema}
+                initialValues={INITIAL_VALUES}
+                onSubmit={handleOpen}
+              >
+                {({ values, isValid, dirty, setFieldValue, setFieldTouched, ...formikBag }) => (
                   <Form>
+                    <Card
+                      my={3}
+                      title={requestTitleWithMetadata}
+                      primary={{
+                        disabled: dirty,
+                        onClick: onDoneDialog,
+                        text: t('screens:Service.requests.read.vault.done'),
+                      }}
+                      dense
+                    >
+                      <List dense disablePadding aria-label={t('screens:Service.requests.read.request.title')}>
+                        <ListItem>
+                          <ListItemIcon>
+                            <MailIcon />
+                          </ListItemIcon>
+                          <ListItemText primary={ownerEmail} />
+                        </ListItem>
+                      </List>
+                    </Card>
                     <Card
                       my={3}
                       title={t('screens:Service.requests.read.vault.title')}
@@ -563,11 +587,6 @@ function ServiceRequestsRead({
                         onClick: getOnReset(formikBag),
                       }}
                     >
-                      <DialogDataboxDone
-                        open={openDialog === DIALOGS.DONE}
-                        onClose={onDialogClose}
-                        onSuccess={onDone}
-                      />
                       <List>
                         {(!isFetchingBlobs && isEmpty(blobs)) && <Empty />}
                         {!isEmpty(blobs)
@@ -590,9 +609,9 @@ function ServiceRequestsRead({
                     </Card>
                   </Form>
                 )}
+              </Formik>
             </>
           )}
-        </Formik>
         {!isEmpty(blobs) && (
           <BoxMessage type="info" mt={2}>
             <Typography>
