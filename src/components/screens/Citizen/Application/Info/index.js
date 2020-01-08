@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
@@ -12,6 +12,12 @@ import ApplicationSchema from 'store/schemas/Application';
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
 
+import compose from '@misakey/helpers/compose';
+import prop from '@misakey/helpers/prop';
+import head from '@misakey/helpers/head';
+import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+
+import isNil from '@misakey/helpers/isNil';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 
@@ -42,11 +48,45 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // CONSTANTS
-const APPLICATION_CONTRIBUTION_ENDPOINT = {
-  method: 'POST',
-  path: '/application-contributions',
-  auth: true,
+const ENDPOINTS = {
+  applicationContribution: {
+    create: {
+      method: 'POST',
+      path: '/application-contributions',
+      auth: true,
+    },
+  },
+  userApplication: {
+    read: {
+      method: 'GET',
+      path: '/user-applications',
+      auth: true,
+    },
+    create: {
+      method: 'POST',
+      path: '/user-applications',
+      auth: true,
+    },
+    delete: {
+      method: 'DELETE',
+      path: '/user-applications/:id',
+      auth: true,
+    },
+  },
 };
+
+// HELPERS
+
+const getUserApplicationId = compose(
+  prop('id'),
+  head,
+);
+
+const createUserApplication = (form) => API
+  .use(ENDPOINTS.userApplication.create)
+  .build(null, objectToSnakeCase(form))
+  .send();
+
 
 // COMPONENTS
 function ApplicationInfo({
@@ -55,8 +95,11 @@ function ApplicationInfo({
 }) {
   const classes = useStyles();
   const [isOpenUserContributionDialog, setOpenUserContributionDialog] = useState(false);
+  const [applicationLinkId, setApplicationLinkId] = useState(null);
   const [userContributionType, setUserContributionType] = useState('');
   const [contentRef, setContentRef] = React.useState(null);
+
+  const mounted = useRef(false);
 
   const { mainDomain } = match.params;
   const { name, id, unknown } = useMemo(
@@ -85,7 +128,7 @@ function ApplicationInfo({
   );
 
   const onUserContribute = useCallback(
-    (dpoEmail, link) => API.use(APPLICATION_CONTRIBUTION_ENDPOINT)
+    (dpoEmail, link) => API.use(ENDPOINTS.applicationContribution.create)
       .build(null, {
         user_id: userId,
         dpo_email: dpoEmail,
@@ -105,6 +148,63 @@ function ApplicationInfo({
     [userId, id, closeUserContributionDialog, t, enqueueSnackbar],
   );
 
+  const onToggleLinked = useCallback(
+    () => {
+      if (isNil(applicationLinkId)) {
+        createUserApplication({ userId, applicationId: id })
+          .then((userApplication) => {
+            setApplicationLinkId(userApplication.id);
+          })
+          .catch((e) => {
+            const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
+            enqueueSnackbar(text, { variant: 'error' });
+          });
+      } else {
+        API.use(ENDPOINTS.userApplication.delete)
+          .build({ id: applicationLinkId })
+          .send()
+          .then(() => { setApplicationLinkId(null); })
+          .catch((e) => {
+            const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
+            enqueueSnackbar(text, { variant: 'error' });
+          });
+      }
+    },
+    [userId, id, applicationLinkId, enqueueSnackbar, t],
+  );
+
+  const getCurrentApplicationLink = useCallback(
+    () => {
+      API.use(ENDPOINTS.userApplication.read)
+        .build(null, null, {
+          user_id: userId,
+          application_id: id,
+        })
+        .send()
+        .then((userApplications) => {
+          const userApplicationId = getUserApplicationId(userApplications);
+          if (!isNil(userApplicationId)) {
+            setApplicationLinkId(userApplicationId);
+          }
+        })
+        .catch((e) => {
+          const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
+          enqueueSnackbar(text, { variant: 'error' });
+        });
+    },
+    [userId, id, enqueueSnackbar, t],
+  );
+
+  useEffect(
+    () => {
+      if (mounted.current === false && !isNil(id) && !isNil(userId)) {
+        getCurrentApplicationLink();
+        mounted.current = true;
+      }
+    },
+    [mounted, getCurrentApplicationLink, id, userId],
+  );
+
   return (
     <Container maxWidth="md" className={clsx({ [classes.container]: NAV_BAR_STICKY })}>
       <UserContributionDialog
@@ -122,6 +222,9 @@ function ApplicationInfo({
           onContributionDpoEmailClick={onContributionDpoEmailClick}
           readOnly={unknown}
           mb={3}
+          isAuthenticated={isAuthenticated}
+          isLinked={!isNil(applicationLinkId)}
+          toggleLinked={onToggleLinked}
         />
       )}
       {!unknown && !isFetching && (

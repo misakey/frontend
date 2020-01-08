@@ -136,6 +136,9 @@ function ApplicationHeader({
   readOnly,
   t,
   wasContacted,
+  isAuthenticated,
+  isLinked,
+  toggleLinked,
   ...rest
 }) {
   const classes = useStyles();
@@ -351,6 +354,13 @@ function ApplicationHeader({
                   {t('common:contact.mailto')}
                 </MenuItem>
               )}
+              {isAuthenticated && (
+                <MenuItem
+                  onClick={toggleLinked}
+                >
+                  {t(`common:application.linkedApplication.${(isLinked) ? 'unlink' : 'link'}`)}
+                </MenuItem>
+              )}
             </Menu>
           </Box>
         )}
@@ -367,6 +377,9 @@ ApplicationHeader.propTypes = {
   wasContacted: PropTypes.bool,
   onContributionDpoEmailClick: PropTypes.func.isRequired,
   readOnly: PropTypes.bool,
+  isAuthenticated: PropTypes.bool,
+  isLinked: PropTypes.bool,
+  toggleLinked: PropTypes.func,
 };
 
 ApplicationHeader.defaultProps = {
@@ -375,6 +388,9 @@ ApplicationHeader.defaultProps = {
   isLoading: false,
   wasContacted: false,
   readOnly: false,
+  isAuthenticated: false,
+  isLinked: null,
+  toggleLinked: undefined,
 };
 
 export default withTranslation(['common', 'screens'])(ApplicationHeader);
