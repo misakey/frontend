@@ -16,6 +16,8 @@ import CardContent from '@material-ui/core/CardContent';
 import Rating from '@material-ui/lab/Rating';
 import Typography from '@material-ui/core/Typography';
 
+import DeleteMyFeedbackButton from './DeleteButton';
+
 // CONSTANTS
 const DISABLED_RATING = null;
 
@@ -51,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const MyFeedbackCard = ({ mainDomain, rating, t }) => {
+const MyFeedbackCard = ({ mainDomain, rating, t, deleteMyFeedback }) => {
   const disabled = useMemo(
     () => isNil(rating),
     [rating],
@@ -85,6 +87,9 @@ const MyFeedbackCard = ({ mainDomain, rating, t }) => {
         'aria-label': t(`common:feedback.${feedbackKey}`),
         text: t(`common:feedback.${feedbackKey}`),
       }}
+      secondary={(!isNil(value)) ? (
+        <DeleteMyFeedbackButton deleteMyFeedback={deleteMyFeedback} />
+      ) : null}
     >
       <CardHeader
         title={t('common:feedback.me')}
@@ -129,6 +134,7 @@ const MyFeedbackCard = ({ mainDomain, rating, t }) => {
 MyFeedbackCard.propTypes = {
   mainDomain: PropTypes.string.isRequired,
   rating: PropTypes.shape(RatingSchema.propTypes),
+  deleteMyFeedback: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
 };
 

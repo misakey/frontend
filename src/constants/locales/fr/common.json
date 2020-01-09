@@ -193,7 +193,12 @@
     "all": "Avis sur le respect des demandes",
     "give": "Donner mon avis",
     "edit": "Modifier mon avis",
-    "submit": "Publier"
+    "submit": "Publier",
+    "delete": {
+      "title": "Voulez-vous vraiment supprimer votre avis ?",
+      "message": "Une fois supprimé vous devrez en re-créer un nouveau",
+      "button": "Supprimer mon avis"
+    }
   },
   "databox": {
     "intro": "Liste des fichiers envoyés par le DPO de {{applicationName}}",

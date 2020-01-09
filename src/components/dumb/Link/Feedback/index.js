@@ -14,7 +14,7 @@ import withDialogConnect from 'components/smart/Dialog/Connect/with';
 import MUILink from '@material-ui/core/Link';
 
 // CONSTANTS
-const OMIT_PROPS = ['userId', 'tReady'];
+const OMIT_PROPS = ['userId', 'tReady', 'deleteMyFeedback'];
 
 // COMPONENTS
 const FeedbackLink = ({

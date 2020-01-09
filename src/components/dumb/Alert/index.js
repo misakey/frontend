@@ -9,6 +9,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import isNil from '@misakey/helpers/isNil';
 
+// @TODO: Remove the component and use DialogConfirm instead in the whole app
+
 function Alert({ children, dialogActions, dialogProps, onClose, onOk, open, t, text, title }) {
   return (
     <Dialog
