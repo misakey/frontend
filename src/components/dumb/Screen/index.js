@@ -1,15 +1,10 @@
 import React, { useEffect, useMemo } from 'react';
 import { withTranslation } from 'react-i18next';
-import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-import noop from '@misakey/helpers/noop';
 import omit from '@misakey/helpers/omit';
 import isEmpty from '@misakey/helpers/isEmpty';
-import debounce from '@misakey/helpers/debounce';
-import getSearchParams from '@misakey/helpers/getSearchParams';
-import objectToQueryString from '@misakey/helpers/objectToQueryString';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { MIN_PX_0_LANDSCAPE, MIN_PX_600 } from 'constants/ui/medias';
@@ -260,17 +255,6 @@ function updateHead(title, description) {
   };
 }
 
-function updateSearchParams(value, history, search, pathname) {
-  const searchParams = getSearchParams(search);
-  const newParams = { ...searchParams, search: value };
-
-  if (isEmpty(newParams.search)) { delete newParams.search; }
-
-  const query = objectToQueryString(newParams);
-
-  history.replace(`${pathname}?${query}`);
-}
-
 function Screen({
   appBarProps,
   children,
@@ -279,8 +263,6 @@ function Screen({
   disableGutters,
   fullHeight,
   hideAppBar,
-  history,
-  location: { search, pathname },
   preventSplashScreen,
   splashScreen,
   state,
@@ -292,18 +274,6 @@ function Screen({
   const isLoading = useMemo(
     () => state.isLoading || state.isFetching,
     [state.isLoading, state.isFetching],
-  );
-
-  const initialSearchBarValue = useMemo(
-    () => getSearchParams(search).search,
-    [search],
-  );
-
-  const handleSearchBarChange = useMemo(
-    () => debounce((value) => {
-      updateSearchParams(value, history, search, pathname);
-    }, 200),
-    [history, search, pathname],
   );
 
   useEffect(() => updateHead(title, description), [description, title]);
@@ -320,12 +290,6 @@ function Screen({
       {!hideAppBar && (
         <AppBar
           {...appBarProps}
-          searchBarProps={{
-            autoFocus: !isEmpty(initialSearchBarValue),
-            initialValue: initialSearchBarValue,
-            onChange: handleSearchBarChange,
-            ...appBarProps.searchBarProps,
-          }}
         />
       )}
       <Box
@@ -357,8 +321,6 @@ Screen.propTypes = {
   disableGutters: PropTypes.bool,
   fullHeight: PropTypes.bool,
   hideAppBar: PropTypes.bool,
-  history: PropTypes.shape({ replace: PropTypes.func }),
-  location: PropTypes.shape({ search: PropTypes.string, pathname: PropTypes.string }),
   preventSplashScreen: PropTypes.bool,
   splashScreen: PropTypes.node,
   state: PropTypes.shape({
@@ -378,12 +340,10 @@ Screen.defaultProps = {
   disableGutters: false,
   fullHeight: false,
   hideAppBar: false,
-  history: { replace: noop },
-  location: { search: '', pathname: '' },
   preventSplashScreen: false,
   splashScreen: null,
   state: {},
   title: '',
 };
 
-export default withRouter(Screen);
+export default Screen;

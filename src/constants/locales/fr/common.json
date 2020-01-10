@@ -290,7 +290,9 @@
       "duration": "pendant"
     },
     "unit": "{{count}} jour",
-    "unit_plural": "{{count}} jours"
+    "unit_plural": "{{count}} jours",
+    "max": "{{count}}+ jour",
+    "max_plural": "{{count}}+ jours"
   },
   "previous": "Précédent",
   "edit": "Modifier",

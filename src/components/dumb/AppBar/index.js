@@ -1,24 +1,27 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
+import { DRAWER_WIDTH } from 'constants/ui/sizes';
+import { IS_PLUGIN } from 'constants/plugin';
+
+import map from '@misakey/helpers/map';
+import omitTranslationProps from 'helpers/omit/translationProps';
+import { isDesktopDevice } from 'helpers/devices';
+
+import useTheme from '@material-ui/core/styles/useTheme';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { makeStyles } from '@material-ui/core/styles';
+
 import MuiAppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import map from '@misakey/helpers/map';
-
 import User from 'components/smart/User';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import PausePluginButton from 'components/smart/Plugin/Button/Pause';
 import SearchApplications from 'components/smart/Search/Applications';
-import { DRAWER_WIDTH } from 'constants/ui/sizes';
-import AppBarSearch from 'components/dumb/AppBar/Search';
-import useWidth from '@misakey/hooks/useWidth';
 import SearchIcon from '@material-ui/icons/Search';
 import IconButton from '@material-ui/core/IconButton';
-import { SMALL_BREAKPOINTS } from 'constants/ui/medias';
-import { isDesktopDevice } from 'helpers/devices';
-import { IS_PLUGIN } from 'constants/plugin';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -47,41 +50,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ResponsiveSearch({ onButtonClick, searchBarProps, shift }) {
-  const width = useWidth();
-
-  if (SMALL_BREAKPOINTS.includes(width) || shift) {
-    return (
-      <IconButton
-        color="inherit"
-        onClick={onButtonClick}
-      >
-        <SearchIcon />
-      </IconButton>
-    );
-  }
-
-  return <SearchApplications {...searchBarProps} />;
-}
-
-ResponsiveSearch.propTypes = {
-  onButtonClick: PropTypes.func.isRequired,
-  searchBarProps: PropTypes.object,
-  shift: PropTypes.bool.isRequired,
-};
-
-ResponsiveSearch.defaultProps = {
-  searchBarProps: {},
-};
 
 function AppBar({
   className, drawerWidth, elevationScroll, elevationScrollProps, items, searchBarProps,
-  shift, toolbarProps, withPausePluginButton, withSearchBar, withUser, ...rest
+  shift, toolbarProps, withPausePluginButton, withSearchBar, withUser, t, ...rest
 }) {
   const classes = useStyles(drawerWidth);
-  const [isSearchOpen, setSearchOpen] = useState(false);
-  const handleSearchClose = useCallback(() => setSearchOpen(false), [setSearchOpen]);
-  const handleSearchOpen = useCallback(() => setSearchOpen(true), [setSearchOpen]);
+  const theme = useTheme();
+  const isSmallLayout = useMediaQuery(theme.breakpoints.down('xs'));
+
   const isHeightFixed = useMemo(() => IS_PLUGIN && isDesktopDevice(), []);
 
   const rightAppBarItems = useMemo(() => {
@@ -91,6 +68,15 @@ function AppBar({
 
     return rightItems;
   }, [withPausePluginButton, withUser]);
+
+  const isSmallMode = useMemo(
+    () => (isSmallLayout || shift),
+    [isSmallLayout, shift],
+  );
+
+  const responsiveSearchProps = isSmallMode
+    ? { component: IconButton }
+    : {};
 
   const render = (
     <MuiAppBar
@@ -106,23 +92,21 @@ function AppBar({
         },
         className,
       )}
-      {...rest}
+      {...omitTranslationProps(rest)}
     >
-      {!isSearchOpen && (
-        <Toolbar {...toolbarProps} className={clsx(classes.toolbar, toolbarProps.className)}>
-          {map(items)}
-          <div className={classes.grow} />
-          {withSearchBar && (
-            <ResponsiveSearch
-              searchBarProps={searchBarProps}
-              onButtonClick={handleSearchOpen}
-              shift={shift}
-            />
-          )}
-          {map(rightAppBarItems)}
-        </Toolbar>
-      )}
-      <AppBarSearch open={isSearchOpen} onClose={handleSearchClose} {...searchBarProps} />
+      <Toolbar {...toolbarProps}>
+        {map(items)}
+        <div className={classes.grow} />
+        {withSearchBar && (
+          <SearchApplications {...responsiveSearchProps} {...searchBarProps}>
+            {isSmallMode
+              ? (
+                <SearchIcon />
+              ) : t('common:search')}
+          </SearchApplications>
+        )}
+        {map(rightAppBarItems)}
+      </Toolbar>
     </MuiAppBar>
   );
 
@@ -143,6 +127,7 @@ AppBar.propTypes = {
   withPausePluginButton: PropTypes.bool,
   withSearchBar: PropTypes.bool,
   withUser: PropTypes.bool,
+  t: PropTypes.func.isRequired,
 };
 
 AppBar.defaultProps = {
@@ -159,4 +144,4 @@ AppBar.defaultProps = {
   withUser: true,
 };
 
-export default AppBar;
+export default withTranslation('common')(AppBar);

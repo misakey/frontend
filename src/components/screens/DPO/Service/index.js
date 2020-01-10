@@ -23,7 +23,7 @@ import SplashScreen from 'components/dumb/SplashScreen';
 import useLocationWorkspace from 'hooks/useLocationWorkspace';
 import useUserHasRole from 'hooks/useUserHasRole';
 
-import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD } from 'components/smart/Search/Applications';
+import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD, SEARCH_WIDTH_SM } from 'constants/ui/sizes';
 import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
 
 export const DPO_SERVICE_SCREEN_NAMES = {
@@ -38,9 +38,12 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     marginLeft: theme.spacing(isDrawerOpen ? 0 : 2),
+    [theme.breakpoints.up('sm')]: {
+      maxWidth: `calc(50% - ${SEARCH_WIDTH_SM / 2}px - ${theme.spacing(2)}px - 48px)`,
+      '&.isDrawerOpen': { maxWidth: '100%' },
+    },
     [theme.breakpoints.up('md')]: {
       maxWidth: `calc(50% - ${SEARCH_WIDTH_MD / 2}px - ${theme.spacing(2)}px - 48px)`,
-      '&.isDrawerOpen': { maxWidth: '100%' },
     },
     [theme.breakpoints.up('lg')]: {
       maxWidth: `calc(50% - ${SEARCH_WIDTH_LG / 2}px - ${theme.spacing(2)}px - 48px)`,

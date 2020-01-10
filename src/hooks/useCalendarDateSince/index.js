@@ -11,41 +11,70 @@ export default (date, dateReference = null, options = {}) => {
     [options],
   );
 
+  const forceNoPrefix = useMemo(
+    () => options.forceNoPrefix === true,
+    [options],
+  );
+
   const labelType = useMemo(
     () => (options.duration === true ? 'duration' : 'event'),
     [options],
   );
 
-  const pastPrefix = useMemo(
-    () => (forcePrefix ? `${t(`common:dateSince.past.${labelType}`)} ` : ''),
+  const maxCount = useMemo(
+    () => options.maxCount,
+    [options],
+  );
+
+  const optionalPastPrefix = useMemo(
+    () => (forcePrefix ? `${t(`common:dateSince.past.${labelType}`)}` : ''),
     [forcePrefix, labelType, t],
   );
-  const futurePrefix = useMemo(
-    () => (forcePrefix ? `${t(`common:dateSince.future.${labelType}`)} ` : ''),
+  const optionalFuturePrefix = useMemo(
+    () => (forcePrefix ? `${t(`common:dateSince.future.${labelType}`)}` : ''),
     [forcePrefix, labelType, t],
+  );
+
+  const pastPrefix = useMemo(
+    () => (forceNoPrefix ? '' : `${t(`common:dateSince.past.${labelType}`)}`),
+    [forceNoPrefix, labelType, t],
+  );
+
+  const futurePrefix = useMemo(
+    () => (forceNoPrefix ? '' : `${t(`common:dateSince.future.${labelType}`)}`),
+    [forceNoPrefix, labelType, t],
   );
 
   const formats = useMemo(
     () => ({
-      sameDay: `[${pastPrefix}${t('common:calendar.sameDay')}]`,
-      nextDay: `[${futurePrefix}${t('common:calendar.nextDay')}]`,
-      lastDay: `[${pastPrefix}${t('common:calendar.lastDay')}]`,
+      sameDay: `[${optionalPastPrefix} ${t('common:calendar.sameDay')}]`,
+      nextDay: `[${optionalFuturePrefix} ${t('common:calendar.nextDay')}]`,
+      lastDay: `[${optionalPastPrefix} ${t('common:calendar.lastDay')}]`,
       nextWeek(reference) {
         const count = Math.abs(this.diff(reference, 'days'));
-        return `[${t(`common:dateSince.future.${labelType}`)} ${t('common:dateSince.unit', { count })}]`;
+        const countText = count > maxCount
+          ? t('common:dateSince.max', { count })
+          : t('common:dateSince.unit', { count });
+        return `[${futurePrefix} ${countText}]`;
       },
       lastWeek(reference) {
         const count = Math.abs(this.diff(reference, 'days'));
-        return `[${t(`common:dateSince.past.${labelType}`)} ${t('common:dateSince.unit', { count })}]`;
+        const countText = count > maxCount
+          ? t('common:dateSince.max', { count })
+          : t('common:dateSince.unit', { count });
+        return `[${pastPrefix} ${countText}]`;
       },
       sameElse(reference) {
         const difference = this.diff(reference, 'days');
         const count = Math.abs(difference);
-        const prefix = difference > 0 ? t(`common:dateSince.future.${labelType}`) : t(`common:dateSince.past.${labelType}`);
-        return `[${prefix} ${t('common:dateSince.unit', { count })}]`;
+        const countText = count > maxCount
+          ? t('common:dateSince.max', { count })
+          : t('common:dateSince.unit', { count });
+        const prefix = difference > 0 ? futurePrefix : pastPrefix;
+        return `[${prefix} ${countText}]`;
       },
     }),
-    [futurePrefix, labelType, pastPrefix, t],
+    [optionalPastPrefix, t, optionalFuturePrefix, maxCount, pastPrefix, futurePrefix],
   );
 
   const dateMoment = useMemo(

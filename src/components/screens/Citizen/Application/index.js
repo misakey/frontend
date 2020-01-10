@@ -20,7 +20,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 
 import Screen from 'components/dumb/Screen';
 
-import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD } from 'components/smart/Search/Applications';
+import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD, SEARCH_WIDTH_SM } from 'constants/ui/sizes';
 import { IS_PLUGIN } from 'constants/plugin';
 
 // CONSTANTS
@@ -36,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
+    [theme.breakpoints.up('sm')]: {
+      maxWidth: `calc(50% - ${SEARCH_WIDTH_SM / 2}px - ${theme.spacing(2)}px)`,
+    },
     [theme.breakpoints.up('md')]: {
       maxWidth: `calc(50% - ${SEARCH_WIDTH_MD / 2}px - ${theme.spacing(2)}px)`,
     },
