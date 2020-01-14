@@ -8,7 +8,6 @@ import { IS_PLUGIN } from 'constants/plugin';
 
 import map from '@misakey/helpers/map';
 import omitTranslationProps from 'helpers/omit/translationProps';
-import { isDesktopDevice } from 'helpers/devices';
 
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -30,9 +29,6 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-  },
-  appBarFixedHeight: {
-    height: 56,
   },
   appBarShift: (drawerWidth) => ({
     marginLeft: drawerWidth,
@@ -58,8 +54,6 @@ function AppBar({
   const classes = useStyles(drawerWidth);
   const theme = useTheme();
   const isSmallLayout = useMediaQuery(theme.breakpoints.down('xs'));
-
-  const isHeightFixed = useMemo(() => IS_PLUGIN && isDesktopDevice(), []);
 
   const rightAppBarItems = useMemo(() => {
     const rightItems = [];
@@ -88,7 +82,6 @@ function AppBar({
         classes.appBar,
         {
           [classes.appBarShift]: shift,
-          [classes.appBarFixedHeight]: isHeightFixed,
         },
         className,
       )}

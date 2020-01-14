@@ -19,6 +19,8 @@ import PrivateRoute from '@misakey/auth/components/Route/Private';
 import SplashScreen from 'components/dumb/SplashScreen';
 import ScreenError from 'components/dumb/Screen/Error';
 
+import Screen from 'components/dumb/Screen';
+
 import './index.scss';
 
 // LAZY
@@ -65,7 +67,11 @@ const useGetApplication = (
 );
 
 // COMPONENTS
-const FeedbackScreen = ({ application, isAuthenticated, match: { params }, dispatchReceive }) => {
+const FeedbackScreen = ({
+  application, isAuthenticated,
+  match: { params }, dispatchReceive,
+  screenProps,
+}) => {
   const [error, setError] = useState();
   const [isFetching, setFetching] = useState(false);
 
@@ -96,7 +102,7 @@ const FeedbackScreen = ({ application, isAuthenticated, match: { params }, dispa
   }
 
   return (
-    <div className="FeedbackScreen">
+    <Screen className="FeedbackScreen" {...screenProps}>
       <Suspense fallback={<SplashScreen />}>
         <Switch>
           <Route
@@ -115,7 +121,7 @@ const FeedbackScreen = ({ application, isAuthenticated, match: { params }, dispa
           />
         </Switch>
       </Suspense>
-    </div>
+    </Screen>
   );
 };
 
@@ -124,6 +130,7 @@ FeedbackScreen.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes),
   isAuthenticated: PropTypes.bool,
   dispatchReceive: PropTypes.func.isRequired,
+  screenProps: PropTypes.object.isRequired,
 };
 
 FeedbackScreen.defaultProps = {

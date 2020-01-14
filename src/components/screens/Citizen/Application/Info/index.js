@@ -22,7 +22,7 @@ import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 
 import ApplicationHeader from 'components/dumb/Application/Header';
-import { getStyleForContainerScroll } from 'components/dumb/Screen';
+import Screen, { getStyleForContainerScroll } from 'components/dumb/Screen';
 import ApplicationNavTabs from 'components/screens/Citizen/Application/Info/Nav';
 import ApplicationBox from 'components/screens/Citizen/Application/Box';
 import UserContributionDialog from 'components/smart/UserContributionDialog';
@@ -33,13 +33,23 @@ import ThirdParty from 'components/screens/Citizen/Application/Info/ThirdParty';
 
 import { IS_PLUGIN } from 'constants/plugin';
 
-const NAV_BAR_HEIGHT = 34;
-const NAV_BAR_STICKY = IS_PLUGIN;
+const NAV_BAR_HEIGHT = 45;
 
 // STYLES
 const useStyles = makeStyles((theme) => ({
-  content: getStyleForContainerScroll(theme, NAV_BAR_HEIGHT, { gutters: !IS_PLUGIN }),
+  content: {
+    padding: `0 ${theme.spacing(1)}px`,
+  },
+  pluginContent: getStyleForContainerScroll(
+    theme,
+    NAV_BAR_HEIGHT + theme.spacing(1),
+    { gutters: !IS_PLUGIN },
+  ),
+  pluginContainer: {
+    padding: 0,
+  },
   container: {
+    marginTop: NAV_BAR_HEIGHT,
     padding: 0,
   },
   nav: {
@@ -91,13 +101,13 @@ const createUserApplication = (form) => API
 // COMPONENTS
 function ApplicationInfo({
   userId, entity, isAuthenticated,
-  isFetching, match, t,
+  isFetching, match, t, screenProps,
 }) {
   const classes = useStyles();
   const [isOpenUserContributionDialog, setOpenUserContributionDialog] = useState(false);
   const [applicationLinkId, setApplicationLinkId] = useState(null);
   const [userContributionType, setUserContributionType] = useState('');
-  const [contentRef, setContentRef] = React.useState(null);
+  const [contentRef, setContentRef] = React.useState(undefined);
 
   const mounted = useRef(false);
 
@@ -206,86 +216,88 @@ function ApplicationInfo({
   );
 
   return (
-    <Container maxWidth="md" className={clsx({ [classes.container]: NAV_BAR_STICKY })}>
-      <UserContributionDialog
-        open={isOpenUserContributionDialog}
-        onClose={closeUserContributionDialog}
-        onSuccess={onUserContribute}
-        userContributionType={userContributionType}
-        appName={name}
-      />
-
-      {!IS_PLUGIN && (
-        <ApplicationHeader
-          application={entity}
-          isLoading={isFetching}
-          onContributionDpoEmailClick={onContributionDpoEmailClick}
-          readOnly={unknown}
-          mb={3}
-          isAuthenticated={isAuthenticated}
-          isLinked={!isNil(applicationLinkId)}
-          toggleLinked={onToggleLinked}
-        />
-      )}
-      {!unknown && !isFetching && (
-        <ApplicationNavTabs
-          className={clsx({ [classes.nav]: NAV_BAR_STICKY })}
-          elevationScrollTarget={contentRef}
-          mainDomain={mainDomain}
-          isAuthenticated={isAuthenticated}
-        />
-      )}
-
-      <Box
-        px={2}
-        className={clsx({ [classes.content]: NAV_BAR_STICKY })}
-        ref={(ref) => setContentRef(ref)}
+    <Screen {...screenProps}>
+      <Container
+        maxWidth="md"
+        className={classes.container}
       >
-        <Switch>
-          <Route
-            exact
-            path={routes.citizen.application.vault}
-            render={(routerProps) => (
-              <ApplicationBox
-                onContributionDpoEmailClick={onContributionDpoEmailClick}
-                {...routerProps}
-              />
-            )}
-          />
-          <Route
-            exact
-            path={routes.citizen.application.thirdParty}
-            render={(routerProps) => (
-              <ThirdParty
-                entity={entity}
-                onContributionLinkClick={onContributionLinkClick}
-                {...routerProps}
-              />
-            )}
-          />
+        <UserContributionDialog
+          open={isOpenUserContributionDialog}
+          onClose={closeUserContributionDialog}
+          onSuccess={onUserContribute}
+          userContributionType={userContributionType}
+          appName={name}
+        />
 
-          <Route
-            exact
-            path={routes.citizen.application.myAccount}
-            render={() => <MyAccount entity={entity} />}
+        {!unknown && !isFetching && (
+          <ApplicationNavTabs
+            className={clsx({ [classes.nav]: IS_PLUGIN })}
+            elevationScrollTarget={contentRef}
+            mainDomain={mainDomain}
+            isAuthenticated={isAuthenticated}
           />
-          <Route
-            exact
-            path={match.path}
-            render={() => (
-              <Content
-                entity={entity}
-                isLoading={isFetching}
-                onContributionDpoEmailClick={onContributionDpoEmailClick}
-                onContributionLinkClick={onContributionLinkClick}
-              />
-            )}
-          />
-        </Switch>
-      </Box>
+        )}
 
+        <Box
+          className={clsx(classes.content, { [classes.pluginContent]: IS_PLUGIN })}
+          ref={(ref) => IS_PLUGIN && setContentRef(ref)}
+        >
+          <Switch>
+            <Route
+              exact
+              path={routes.citizen.application.vault}
+              render={(routerProps) => (
+                <ApplicationBox
+                  onContributionDpoEmailClick={onContributionDpoEmailClick}
+                  {...routerProps}
+                />
+              )}
+            />
+            <Route
+              exact
+              path={routes.citizen.application.thirdParty}
+              render={(routerProps) => (
+                <ThirdParty
+                  entity={entity}
+                  onContributionLinkClick={onContributionLinkClick}
+                  {...routerProps}
+                />
+              )}
+            />
 
-    </Container>
+            <Route
+              exact
+              path={routes.citizen.application.myAccount}
+              render={() => <MyAccount entity={entity} />}
+            />
+            <Route
+              exact
+              path={match.path}
+              render={() => (
+                <>
+                  <ApplicationHeader
+                    application={entity}
+                    isLoading={isFetching}
+                    onContributionDpoEmailClick={onContributionDpoEmailClick}
+                    readOnly={unknown}
+                    mb={3}
+                    isAuthenticated={isAuthenticated}
+                    isLinked={!isNil(applicationLinkId)}
+                    toggleLinked={onToggleLinked}
+                  />
+                  <Content
+                    entity={entity}
+                    isLoading={isFetching}
+                    onContributionDpoEmailClick={onContributionDpoEmailClick}
+                    onContributionLinkClick={onContributionLinkClick}
+                  />
+                </>
+              )}
+            />
+          </Switch>
+        </Box>
+      </Container>
+    </Screen>
   );
 }
 
@@ -301,6 +313,7 @@ ApplicationInfo.propTypes = {
     path: PropTypes.string,
   }).isRequired,
   t: PropTypes.func.isRequired,
+  screenProps: PropTypes.object.isRequired,
 };
 
 ApplicationInfo.defaultProps = {

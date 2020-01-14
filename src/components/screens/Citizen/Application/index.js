@@ -18,8 +18,6 @@ import ApplicationFeedback from 'components/screens/Citizen/Application/Feedback
 
 import isEmpty from '@misakey/helpers/isEmpty';
 
-import Screen from 'components/dumb/Screen';
-
 import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD, SEARCH_WIDTH_SM } from 'constants/ui/sizes';
 import { IS_PLUGIN } from 'constants/plugin';
 
@@ -81,29 +79,67 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
   );
 
   return (
-    <Screen state={state} appBarProps={appBarProps} disableGutters={IS_PLUGIN}>
-      <Switch>
-        <RoutePrivate
-          path={routes.citizen.application.contact._}
-          component={ApplicationContact}
-          componentProps={{ entity: application, error, isFetching, mainDomain }}
-        />
-        <Route path={routes.citizen.application.feedback._} component={ApplicationFeedback} />
+    <Switch>
+      <RoutePrivate
+        path={routes.citizen.application.contact._}
+        component={ApplicationContact}
+        componentProps={{
+          entity: application,
+          error,
+          isFetching,
+          mainDomain,
+          screenProps: {
+            state,
+            disableGutters: IS_PLUGIN,
+            appBarProps,
+          },
+        }}
+      />
+      <Route
+        path={routes.citizen.application.feedback._}
+        render={(routerProps) => (
+          <ApplicationFeedback
+            screenProps={{
+              state,
+              disableGutters: IS_PLUGIN,
+              appBarProps,
+            }}
+            {...routerProps}
+          />
+        )}
+      />
 
-        <Route
-          path={routes.citizen.application.info}
-          render={(routerProps) => (
-            <ApplicationInfo
-              entity={application}
-              error={error}
-              isFetching={isFetching}
-              {...routerProps}
-            />
-          )}
-        />
-        <Route exact path={match.path} component={ApplicationNone} />
-      </Switch>
-    </Screen>
+      <Route
+        path={routes.citizen.application.info}
+        render={(routerProps) => (
+          <ApplicationInfo
+            entity={application}
+            error={error}
+            isFetching={isFetching}
+            screenProps={{
+              state,
+              disableGutters: IS_PLUGIN,
+              appBarProps: { ...appBarProps, elevationScroll: false },
+            }}
+            {...routerProps}
+          />
+        )}
+      />
+      <Route
+        exact
+        path={match.path}
+        render={(routerProps) => (
+          <ApplicationNone
+            screenProps={{
+              state,
+              disableGutters: IS_PLUGIN,
+              appBarProps,
+            }}
+            {...routerProps}
+          />
+        )}
+      />
+    </Switch>
   );
 }
 

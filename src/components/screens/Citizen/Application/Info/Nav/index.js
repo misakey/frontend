@@ -5,7 +5,6 @@ import { withTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import omit from '@misakey/helpers/omit';
-import isNil from '@misakey/helpers/isNil';
 import pickBy from '@misakey/helpers/pickBy';
 import useWidth from '@misakey/hooks/useWidth';
 
@@ -13,8 +12,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Container from '@material-ui/core/Container';
 
 import ElevationScroll from 'components/dumb/ElevationScroll';
+import { MIN_PX_0_LANDSCAPE, MIN_PX_600 } from 'constants/ui/medias';
 
 import routes from 'routes';
 
@@ -22,7 +23,13 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
-    borderBottom: `1px solid ${theme.palette.grey[100]}`,
+    top: theme.mixins.toolbar.minHeight,
+    [MIN_PX_0_LANDSCAPE]: {
+      top: theme.mixins.toolbar[MIN_PX_0_LANDSCAPE].minHeight,
+    },
+    [MIN_PX_600]: {
+      top: theme.mixins.toolbar[MIN_PX_600].minHeight,
+    },
   },
   linkTab: {
     fontSize: theme.typography.caption.fontSize,
@@ -62,40 +69,41 @@ function ApplicationNavTabs({
   );
 
 
-  const render = (
-    <AppBar
-      position="static"
-      color="inherit"
-      elevation={0}
-      component="nav"
-      className={clsx(classes.root, className || {})}
-      {...omit(rest, ['i18n', 'tReady', 'history', 'match', 'staticContext'])}
-    >
-      <Tabs
-        value={value}
-        className={classes.tabs}
-        variant={variant}
-        scrollButtons={scrollButtons}
-        indicatorColor="secondary"
-        textColor="secondary"
-        aria-label={t('screens:application.nav.label', { mainDomain })}
+  return (
+    <ElevationScroll target={elevationScrollTarget}>
+      <AppBar
+        position="fixed"
+        color="inherit"
+        elevation={0}
+        component="nav"
+        className={clsx(classes.root, className || {})}
+        {...omit(rest, ['i18n', 'tReady', 'history', 'match', 'staticContext'])}
       >
-        {applicationTabsLinks.map((link) => (
-          <Tab
-            key={`tab-${link}`}
-            className={classes.linkTab}
-            component={Link}
-            label={t(`screens:application.nav.${link}`)}
-            to={generatePath(routes.citizen.application[link], { mainDomain })}
-          />
-        ))}
-      </Tabs>
-    </AppBar>
-  );
+        <Container maxWidth="md">
+          <Tabs
+            value={value}
+            className={classes.tabs}
+            variant={variant}
+            scrollButtons={scrollButtons}
+            indicatorColor="secondary"
+            textColor="secondary"
+            aria-label={t('screens:application.nav.label', { mainDomain })}
+          >
+            {applicationTabsLinks.map((link) => (
+              <Tab
+                key={`tab-${link}`}
+                className={classes.linkTab}
+                component={Link}
+                label={t(`screens:application.nav.${link}`)}
+                to={generatePath(routes.citizen.application[link], { mainDomain })}
+              />
+            ))}
+          </Tabs>
+        </Container>
+      </AppBar>
+    </ElevationScroll>
 
-  return !isNil(elevationScrollTarget)
-    ? <ElevationScroll target={elevationScrollTarget}>{render}</ElevationScroll>
-    : render;
+  );
 }
 
 ApplicationNavTabs.propTypes = {
@@ -111,7 +119,7 @@ ApplicationNavTabs.propTypes = {
 ApplicationNavTabs.defaultProps = {
   scrollButtons: 'auto',
   className: undefined,
-  elevationScrollTarget: null,
+  elevationScrollTarget: undefined,
 };
 
 export default withRouter(withTranslation('screens')(ApplicationNavTabs));

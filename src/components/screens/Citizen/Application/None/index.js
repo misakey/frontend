@@ -11,9 +11,11 @@ import getSearchParams from '@misakey/helpers/getSearchParams';
 
 import routes from 'routes';
 
+import Screen from 'components/dumb/Screen';
+
 import 'components/screens/Citizen/Application/None/ApplicationNone.scss';
 
-function ApplicationNone({ isAuthenticated, location, t }) {
+function ApplicationNone({ isAuthenticated, location, t, screenProps }) {
   const searchParam = getSearchParams(location.search).search;
 
   if (!isAuthenticated && isNil(searchParam)) {
@@ -21,11 +23,13 @@ function ApplicationNone({ isAuthenticated, location, t }) {
   }
 
   return (
-    <section id="ApplicationNone" className="section hide-exact">
-      <Typography variant="h5" component="h3" align="center" color="textSecondary">
-        {t('screens:application.none.title', 'Please select an application.')}
-      </Typography>
-    </section>
+    <Screen {...screenProps}>
+      <section id="ApplicationNone" className="section hide-exact">
+        <Typography variant="h5" component="h3" align="center" color="textSecondary">
+          {t('screens:application.none.title', 'Please select an application.')}
+        </Typography>
+      </section>
+    </Screen>
   );
 }
 
@@ -33,6 +37,7 @@ ApplicationNone.propTypes = {
   isAuthenticated: PropTypes.bool,
   location: PropTypes.shape({ search: PropTypes.string }).isRequired,
   t: PropTypes.func.isRequired,
+  screenProps: PropTypes.object.isRequired,
 };
 
 ApplicationNone.defaultProps = {

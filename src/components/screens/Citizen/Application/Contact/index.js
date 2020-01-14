@@ -10,6 +10,8 @@ import routes from 'routes';
 
 import withDataboxURL from 'components/smart/withDataboxURL';
 
+import Screen from 'components/dumb/Screen';
+
 // LAZY
 const ContactPreview = lazy(() => import('components/screens/Citizen/Application/Contact/Preview'));
 const ContactProviders = lazy(() => import('components/screens/Citizen/Application/Contact/Providers'));
@@ -19,32 +21,35 @@ const Contact = ({
   entity,
   databoxURL,
   databox,
+  screenProps,
 }) => (
-  <Switch>
-    <Route
-      path={routes.citizen.application.contact.preview}
-      render={(routerProps) => (
-        <ContactPreview
-          entity={entity}
-          databox={databox}
-          databoxURL={databoxURL}
-          {...routerProps}
-        />
-      )}
-    />
-    <Route
-      path={routes.citizen.application.contact.providers}
-      exact
-      render={(routerProps) => (
-        <ContactProviders
-          entity={entity}
-          databox={databox}
-          databoxURL={databoxURL}
-          {...routerProps}
-        />
-      )}
-    />
-  </Switch>
+  <Screen {...screenProps}>
+    <Switch>
+      <Route
+        path={routes.citizen.application.contact.preview}
+        render={(routerProps) => (
+          <ContactPreview
+            entity={entity}
+            databox={databox}
+            databoxURL={databoxURL}
+            {...routerProps}
+          />
+        )}
+      />
+      <Route
+        path={routes.citizen.application.contact.providers}
+        exact
+        render={(routerProps) => (
+          <ContactProviders
+            entity={entity}
+            databox={databox}
+            databoxURL={databoxURL}
+            {...routerProps}
+          />
+        )}
+      />
+    </Switch>
+  </Screen>
 );
 
 Contact.propTypes = {
@@ -52,6 +57,7 @@ Contact.propTypes = {
   entity: PropTypes.shape(ApplicationSchema.propTypes),
   databox: PropTypes.shape(DataboxSchema.propTypes),
   databoxURL: PropTypes.string,
+  screenProps: PropTypes.object.isRequired,
 };
 
 Contact.defaultProps = {
