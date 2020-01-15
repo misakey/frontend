@@ -67,6 +67,9 @@ const routes = {
   },
   citizen: {
     _: '/citizen',
+    contact: {
+      _: '/citizen/contact',
+    },
     applications: {
       _: '/citizen/applications',
       create: '/citizen/applications/create',

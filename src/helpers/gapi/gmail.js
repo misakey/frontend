@@ -12,14 +12,19 @@ const GMAIL_PATH = ['gapi', 'client', 'gmail'];
 // HELPERS
 const gmailPath = path(GMAIL_PATH);
 
-const requestMessage = (raw, callback) => {
+const requestMessage = (raw, mailto) => {
   const request = window.gapi.client.gmail.users.messages.send({
     userId: 'me',
     resource: {
       raw,
     },
   });
-  request.execute(callback);
+  return request.then((jsonResponse) => {
+    if (jsonResponse === false) {
+      return { mailto, error: true };
+    }
+    return { mailto, jsonResponse };
+  });
 };
 
 export const onLoadSendMail = onGApiLoad('client:auth2', ['https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest'], 'https://www.googleapis.com/auth/gmail.send');
@@ -32,7 +37,7 @@ export const SEND_MAIL_CONFIG = {
   onAlreadyLoaded: onAlreadyLoadedSendMail,
 };
 
-export const sendMessage = (mailto, subject, body, callback) => {
+export const sendMessage = (mailto, subject, body) => {
   const email = `to: ${mailto}
 Subject: =?utf-8?B?${Base64.encodeURI(subject)}?=
 Content-Type: text/html; charset=UTF-8
@@ -40,8 +45,7 @@ Content-Type: text/html; charset=UTF-8
 ${body.replace(/\n/g, '<br/>')}`;
   const base64EncodedEmail = Base64.encodeURI(email);
   if (isNil(gmailPath(window))) {
-    window.gapi.client.load('gmail', 'v1', () => { requestMessage(base64EncodedEmail, callback); });
-  } else {
-    requestMessage(base64EncodedEmail, callback);
+    return window.gapi.client.load('gmail', 'v1', async () => requestMessage(base64EncodedEmail, mailto));
   }
+  return requestMessage(base64EncodedEmail, mailto);
 };

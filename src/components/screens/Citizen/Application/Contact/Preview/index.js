@@ -30,7 +30,7 @@ import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import BoxControls from 'components/dumb/Box/Controls';
 import Subtitle from 'components/dumb/Typography/Subtitle';
-import ToggleButtonGroupMailType from 'components/smart/ToggleButtonGroup/MailType';
+import ToggleButtonGroupMailType from 'components/smart/ToggleButtonGroup/MailType/WithSearchParams';
 import PreMail from 'components/dumb/Pre/Mail';
 
 import Navigation from 'components/dumb/Navigation';

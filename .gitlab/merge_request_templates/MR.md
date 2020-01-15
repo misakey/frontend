@@ -91,3 +91,10 @@
   * [ ] No refactor needed
 * [ ] `// @FIXME` code reviewed and changes are planned (if applicable)
 ```
+
+
+---
+## Post merge checklist
+```
+* [ ] I add the new features added in the QA sheet
+```

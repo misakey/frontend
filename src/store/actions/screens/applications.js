@@ -10,6 +10,9 @@ export const APPLICATIONS_IDS_REMOVE = 'APPLICATIONS_IDS_REMOVE';
 export const APPLICATIONS_IDS_OVERRIDE = 'APPLICATIONS_IDS_OVERRIDE';
 export const APPLICATIONS_RESET = 'APPLICATIONS_RESET';
 
+export const APPLICATIONS_SELECTED_TOGGLE = Symbol('APPLICATIONS_SELECTED_TOGGLE');
+export const APPLICATIONS_SELECTED_SET = Symbol('APPLICATIONS_SELECTED_SET');
+
 // HELPERS
 // do not override destination if source is empty
 const noEmptyOverride = (dest, src) => {
@@ -49,5 +52,19 @@ export function applicationsOnFetch(applications) {
       // could have multiple times same id if source has duplicates => uniq
       dispatch(applicationsIdsOverride(uniq(result))),
     ]);
+  };
+}
+
+export function toggleFromSelected(applicationId) {
+  return {
+    type: APPLICATIONS_SELECTED_TOGGLE,
+    applicationId,
+  };
+}
+
+export function setSelected(applicationIds) {
+  return {
+    type: APPLICATIONS_SELECTED_SET,
+    applicationIds,
   };
 }

@@ -15,7 +15,6 @@ import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallback
 
 import ErrorBoundary from 'components/smart/ErrorBoundary';
 import Auth from 'components/screens/Auth';
-import Landing from 'components/screens/Landing';
 import Citizen from 'components/screens/Citizen';
 import NotFound from 'components/screens/NotFound';
 import Requests from 'components/screens/DPO/Service/Requests/Read';
@@ -67,7 +66,7 @@ function App({ t }) {
           <>
             <SeclevelWarningAlert />
             <Switch>
-              <Route exact path={routes._} component={Landing} />
+              <Redirect exact from={routes._} to={routes.citizen._} />
               {/* LEGALS */}
               <Route
                 exact

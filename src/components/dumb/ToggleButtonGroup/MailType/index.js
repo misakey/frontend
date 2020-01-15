@@ -1,14 +1,9 @@
-import React, { useMemo, useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { Link, Redirect, useLocation } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 
 import MAIL_TYPES, { FRIENDLY_LEGAL } from 'constants/mailTypes';
-
-import isNil from '@misakey/helpers/isNil';
-import getNextSearch from 'helpers/getNextSearch';
-import getSearchParams from '@misakey/helpers/getSearchParams';
 
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
@@ -26,38 +21,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const ToggleButtonGroupMailType = ({ values, defaultValue, prefix, t }) => {
+const ToggleButtonGroupMailType = ({ values, currentValue, prefix, t }) => {
   const classes = useStyles();
-
-  const { search, pathname } = useLocation();
-  const mailType = useMemo(
-    () => getSearchParams(search).mailType,
-    [search],
-  );
-
-  const currentValue = useMemo(
-    () => mailType || defaultValue,
-    [defaultValue, mailType],
-  );
-
-  const getLinkTo = useCallback(
-    (type) => ({ search: getNextSearch(search, new Map([['mailType', type]])) }),
-    [search],
-  );
-
-  const hasNoMailType = useMemo(
-    () => isNil(mailType),
-    [mailType],
-  );
-
-  const defaultRedirectTo = useMemo(
-    () => ({ pathname, search: getNextSearch(search, new Map([['mailType', defaultValue]])) }),
-    [defaultValue, pathname, search],
-  );
-
-  if (hasNoMailType) {
-    return <Redirect to={defaultRedirectTo} />;
-  }
 
   return (
     <ToggleButtonGroup
@@ -66,15 +31,13 @@ const ToggleButtonGroupMailType = ({ values, defaultValue, prefix, t }) => {
       exclusive
       aria-label={t(`common:${prefix}.group`)}
     >
-      {values.map((type) => (
+      {values.map(({ type, ...props }) => (
         <ToggleButton
           key={type}
           classes={{ selected: classes.toggleButtonSelected }}
-          component={Link}
-          to={getLinkTo(type)}
-          replace
           value={type}
           aria-label={t(`common:${prefix}.types.${type}`)}
+          {...props}
         >
           {t(`common:${prefix}.types.${type}`)}
         </ToggleButton>
@@ -84,15 +47,15 @@ const ToggleButtonGroupMailType = ({ values, defaultValue, prefix, t }) => {
 };
 
 ToggleButtonGroupMailType.propTypes = {
-  values: PropTypes.arrayOf(PropTypes.string),
-  defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  values: PropTypes.arrayOf(PropTypes.shape({ type: PropTypes.string })),
+  currentValue: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   prefix: PropTypes.string,
   t: PropTypes.func.isRequired,
 };
 
 ToggleButtonGroupMailType.defaultProps = {
-  values: MAIL_TYPES,
-  defaultValue: FRIENDLY_LEGAL,
+  values: MAIL_TYPES.map((type) => ({ type })),
+  currentValue: FRIENDLY_LEGAL,
   prefix: 'mailType',
 };
 

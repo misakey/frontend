@@ -378,14 +378,18 @@
     "error": "Une erreur est survenue avec le flow de connexion, cela ne devrait pas arriver en production./nCet écran est destiné à du debug en développement"
   },
   "contact": {
-    "providers": {
-      "subtitle": "Connectez votre service d'email pour envoyer vos demandes de portabilité en un clic. Certains bloqueurs peuvent empêcher la configuration de l'envoi avec Gmail, pensez à l'autoriser",
-      "mailReminder": "Assurez-vous d'utiliser l'adresse email associée à votre compte client chez {{applicationName}}.\nPour des raisons de sécurité et d'authentification, celle-ci doit également être celle que vous utilisez pour votre compte Misakey.",
-      "title": "Portabilité de mes données"
-    },
     "preview": {
       "subtitle": "Validez la pré-visualisation pour envoyer votre email de demande de portabilité",
       "title": "E-mail de portabilité"
+    },
+    "bulk": {
+      "list": {
+        "title": "Contacter les applications",
+        "subtitle": "Un email sera envoyé à chacune des applications que vous avez sélectionnées.",
+        "empty": "Vous n'avez pas selectionné d'application à contacter. Recherchez des applications ou sélectionner-les depuis la page d'accueil."
+      },
+      "recontact": "Relance",
+      "closed": "L'email ne sera pas envoyé car la demande actuelle est fermée."
     }
   },
   "databox": {

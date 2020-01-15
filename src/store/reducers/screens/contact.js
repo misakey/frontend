@@ -3,6 +3,8 @@ import createAuthReducer from 'store/reducers/helpers/createAuthReducer';
 
 import {
   CONTACT_DATABOX_URL,
+  CONTACT_DATABOX_URL_BY_ID,
+  CLEAR_DATABOX_URL_BY_ID,
 } from 'store/actions/screens/contact';
 
 import path from '@misakey/helpers/path';
@@ -12,7 +14,7 @@ const pathParamMainDomain = path(['match', 'params', 'mainDomain']);
 const pathMailProviderPreferency = path(['profile', 'preferencies', 'mailProvider']);
 
 // INITIAL STATE
-const initialState = { databoxURLs: {} };
+const initialState = { databoxURLs: {}, databoxURLsById: {} };
 
 
 // SELECTORS
@@ -41,6 +43,18 @@ const addDataboxURL = (state, { databoxURL, mainDomain }) => ({
   databoxURLs: { ...state.databoxURLs, [mainDomain]: databoxURL },
 });
 
+const addDataboxURLById = (state, { databoxURL, id, alreadyContacted }) => ({
+  ...state,
+  databoxURLsById: { ...state.databoxURLsById, [id]: { databoxURL, alreadyContacted } },
+});
+
+const clearDataboxURLById = (state) => ({
+  ...state,
+  databoxURLsById: {},
+});
+
 export default createAuthReducer(initialState, {
   [CONTACT_DATABOX_URL]: addDataboxURL,
+  [CONTACT_DATABOX_URL_BY_ID]: addDataboxURLById,
+  [CLEAR_DATABOX_URL_BY_ID]: clearDataboxURLById,
 });

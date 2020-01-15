@@ -52,7 +52,7 @@ const TRANSFORM_ORIGIN = {
 const getApplications = (search, isAuthenticated) => {
   const endpoint = API.endpoints.application.find;
 
-  if (!isAuthenticated) { endpoint.auth = false; }
+  if (isAuthenticated) { endpoint.auth = true; }
 
   return API.use(endpoint)
     .build(undefined, undefined, { search, heavier_than: 99, published: true, limit: 10 })

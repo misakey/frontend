@@ -178,7 +178,22 @@
   "contact": {
     "label": "Contacter",
     "dpo": "Ajouter le DPO",
-    "mailto": "Email au DPO"
+    "mailto": "Email au DPO",
+    "providers": {
+      "subtitle": "Connectez votre service d'email pour envoyer vos demandes de portabilité en un clic. Certains bloqueurs peuvent empêcher la configuration de l'envoi avec Gmail, pensez à l'autoriser",
+      "mailReminder": "Assurez-vous d'utiliser l'adresse email associée à votre compte client chez {{applicationNames}}.\nPour des raisons de sécurité et d'authentification, celle-ci doit également être celle que vous utilisez pour votre compte Misakey.",
+      "mailReminder_plural": "Assurez-vous d'utiliser l'adresse email associée à vos comptes clients chez {{applicationNames}} et {{lastApplicationName}}.\nPour des raisons de sécurité et d'authentification, celle-ci doit également être celle que vous utilisez pour votre compte Misakey.",
+      "title": "Portabilité de mes données"
+    },
+    "bulk": {
+      "manual": {
+        "confirm": {
+          "title": "Envoyer manuellement"
+        },
+        "open": "Envoyer",
+        "retry": "Réessayer"
+      }
+    }
   },
   "claim": {
     "admin": "Je suis admin",
@@ -320,7 +335,12 @@
     },
     "send": {
       "success": "Email envoyé!",
+      "success_plural": "Emails envoyés!",
       "error": "Une erreur inconnue est survenue lors de l'envoi de l'email"
+    },
+    "bulkError": {
+      "content": "Une erreur s'est produite lors de l'envoi !",
+      "title": "Erreur lors de l'envoi d'emails"
     }
   },
   "application": {
