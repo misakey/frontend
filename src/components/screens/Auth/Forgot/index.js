@@ -4,6 +4,8 @@ import { Formik, Field } from 'formik';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
+import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+
 
 import routes from 'routes';
 import API from '@misakey/api';
@@ -28,7 +30,6 @@ import { ownerCryptoContext as cryptoContext } from '@misakey/crypto';
 import Box from '@material-ui/core/Box';
 import FieldText from 'components/dumb/Form/Field/Text';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
-import ScreenError from 'components/dumb/Screen/Error';
 import ChipUser from 'components/dumb/Chip/User';
 import AuthForgotSubtitle from 'components/screens/Auth/Forgot/Subtitle';
 
@@ -49,14 +50,13 @@ const INITIAL_VALUES = {
 // HELPERS
 const getOtpError = path(['details', 'otp']);
 
-const handleError = (setError, setFieldError, setStep) => (error) => {
+const handleError = (setFieldError, setStep, handleGenericHttpErrors) => (error) => {
   const errorOTP = getOtpError(error);
   if (error.code === forbidden && !isNil(errorOTP)) {
     setFieldError(CONFIRM_FIELD_NAME, errorOTP);
     setStep(STEP_CONFIRM);
   } else {
-    const { httpStatus } = error;
-    setError({ httpStatus });
+    handleGenericHttpErrors(error);
   }
 };
 
@@ -67,12 +67,15 @@ const convertForm = (form) => {
 };
 const isStepConfirm = (step) => step === STEP_CONFIRM;
 
-const fetchUserPublicData = (email) => API.use(API.endpoints.user.public.read)
+const fetchUserPublicData = (
+  email, handleGenericHttpErrors,
+) => API.use(API.endpoints.user.public.read)
   .build({ email })
   .send()
-  .then((response) => objectToCamelCase(response));
+  .then(objectToCamelCase)
+  .catch(handleGenericHttpErrors);
 
-const askResetPassword = (email, isAuthenticated) => {
+const askResetPassword = (email, isAuthenticated, handleGenericHttpErrors) => {
   const endpoint = API.endpoints.user.password.askReset;
 
   if (!isAuthenticated) { endpoint.auth = false; }
@@ -80,7 +83,8 @@ const askResetPassword = (email, isAuthenticated) => {
   return API
     .use(endpoint)
     .build(undefined, { email })
-    .send();
+    .send()
+    .catch(handleGenericHttpErrors);
 };
 
 const confirmCode = (email, form, isAuthenticated) => {
@@ -118,9 +122,9 @@ const resetPassword = async (email, code, form, isAuthenticated) => {
 };
 
 // HOOKS
-const useGetUserPublicData = (email) => useCallback(
-  () => (isEmpty(email) ? Promise.resolve() : fetchUserPublicData(email)),
-  [email],
+const useGetUserPublicData = (email, handleGenericHttpErrors) => useCallback(
+  () => (isEmpty(email) ? Promise.resolve() : fetchUserPublicData(email, handleGenericHttpErrors)),
+  [email, handleGenericHttpErrors],
 );
 const useValidationSchema = (step) => useMemo(() => {
   if (step === STEP_CONFIRM) {
@@ -130,20 +134,21 @@ const useValidationSchema = (step) => useMemo(() => {
   return forgotResetPasswordValidationSchema;
 }, [step]);
 
-const useOnNext = (email, setStep, setCode, setError, t, isAuthenticated) => useCallback(
+const useOnNext = (
+  email, setStep, setCode, isAuthenticated, handleGenericHttpErrors,
+) => useCallback(
   (form, { setSubmitting, setFieldError }) => confirmCode(email, form, isAuthenticated)
     .then(({ otp }) => {
       setStep(STEP_RESET);
       setCode(otp);
     })
-    .catch(handleError(setError, setFieldError, setStep))
+    .catch(handleError(setFieldError, setStep, handleGenericHttpErrors))
     .finally(() => { setSubmitting(false); }),
-  [email, setStep, setCode, setError, isAuthenticated],
+  [email, setStep, setCode, isAuthenticated, handleGenericHttpErrors],
 );
 
 const useOnReset = (
-  email, code, enqueueSnackbar, setError,
-  history, setStep, t, isAuthenticated, challenge,
+  email, code, enqueueSnackbar, setStep, t, isAuthenticated, challenge, handleGenericHttpErrors,
 ) => useCallback(
   (form, { setSubmitting, setFieldError }) => resetPassword(email, code, form, isAuthenticated)
     .then(() => {
@@ -154,9 +159,11 @@ const useOnReset = (
           window.location.replace(response.redirect_to);
         });
     })
-    .catch(handleError(setError, setFieldError, setStep))
+    .catch(handleError(setFieldError, setStep, handleGenericHttpErrors))
     .finally(() => { setSubmitting(false); }),
-  [email, code, enqueueSnackbar, setError, setStep, t, isAuthenticated, challenge],
+  [
+    email, code, enqueueSnackbar, setStep, t, isAuthenticated, challenge, handleGenericHttpErrors,
+  ],
 );
 
 const useOnPrevious = (history) => useCallback(() => {
@@ -165,40 +172,38 @@ const useOnPrevious = (history) => useCallback(() => {
   });
 }, [history]);
 
-const useAskResetPassword = (email, step, isAuthenticated) => useEffect(() => {
+const useAskResetPassword = (
+  email, step, isAuthenticated, handleGenericHttpErrors,
+) => useEffect(() => {
   if (!isEmpty(email) && isStepConfirm(step)) {
-    askResetPassword(email, isAuthenticated);
+    askResetPassword(email, isAuthenticated, handleGenericHttpErrors);
   }
-}, [email, step, isAuthenticated]);
+}, [email, step, isAuthenticated, handleGenericHttpErrors]);
 
 // COMPONENTS
 const AuthForgot = ({ challenge, email, t, history, isAuthenticated }) => {
   const [code, setCode] = useState();
   const [step, setStep] = useState(STEP_CONFIRM);
-  const [error, setError] = useState();
 
   const isEmptyEmail = useMemo(() => isEmpty(email), [email]);
 
   const { enqueueSnackbar } = useSnackbar();
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
 
   const validationSchema = useValidationSchema(step);
 
-  const getUserPublicData = useGetUserPublicData(email);
+  const getUserPublicData = useGetUserPublicData(email, handleGenericHttpErrors);
   const userPublicData = useAsync(getUserPublicData, email);
 
-  const onNext = useOnNext(email, setStep, setCode, setError, t, isAuthenticated);
+  const onNext = useOnNext(email, setStep, setCode, isAuthenticated, handleGenericHttpErrors);
   const onReset = useOnReset(
-    email, code, enqueueSnackbar, setError, history, setStep, t, isAuthenticated, challenge,
+    email, code, enqueueSnackbar, setStep, t, isAuthenticated, challenge, handleGenericHttpErrors,
   );
 
   const onSubmit = useMemo(() => (isStepConfirm(step) ? onNext : onReset), [step, onNext, onReset]);
   const onPrevious = useOnPrevious(history);
 
-  useAskResetPassword(email, step, isAuthenticated);
-
-  if (error) {
-    return <ScreenError httpStatus={error} />;
-  }
+  useAskResetPassword(email, step, isAuthenticated, handleGenericHttpErrors);
 
   if (isEmptyEmail) {
     return <Redirect to={routes.auth.signIn} />;

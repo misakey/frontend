@@ -52,30 +52,6 @@ export default {
       },
     },
   },
-  askReset: {
-    method: 'POST',
-    path: '/users/password/reset',
-    auth: true,
-    innerRules: {
-      naming: 'permissive',
-    },
-  },
-  confirmCode: {
-    method: 'POST',
-    path: '/users/password/otp/confirm',
-    auth: true,
-    innerRules: {
-      naming: 'permissive',
-    },
-  },
-  reset: {
-    method: 'PUT',
-    path: '/users/password/reset',
-    auth: true,
-    innerRules: {
-      naming: 'permissive',
-    },
-  },
   getSecretBackup: {
     method: 'GET',
     path: '/users/:id/backup',

@@ -17,6 +17,8 @@ import prop from '@misakey/helpers/prop';
 import head from '@misakey/helpers/head';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
+import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+
 import isNil from '@misakey/helpers/isNil';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
@@ -38,13 +40,9 @@ const NAV_BAR_HEIGHT = 45;
 // STYLES
 const useStyles = makeStyles((theme) => ({
   content: {
-    padding: `0 ${theme.spacing(1)}px`,
+    padding: theme.spacing(0, 2),
   },
-  pluginContent: getStyleForContainerScroll(
-    theme,
-    NAV_BAR_HEIGHT + theme.spacing(1),
-    { gutters: !IS_PLUGIN },
-  ),
+  pluginContent: getStyleForContainerScroll(theme, NAV_BAR_HEIGHT, { gutters: !IS_PLUGIN }),
   pluginContainer: {
     padding: 0,
   },
@@ -109,6 +107,8 @@ function ApplicationInfo({
   const [userContributionType, setUserContributionType] = useState('');
   const [contentRef, setContentRef] = React.useState(undefined);
 
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+
   const mounted = useRef(false);
 
   const { mainDomain } = match.params;
@@ -150,12 +150,9 @@ function ApplicationInfo({
         const text = t('application.info.userContribution.success');
         enqueueSnackbar(text, { variant: 'success' });
       })
-      .catch((e) => {
-        const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
-        enqueueSnackbar(text, { variant: 'error' });
-      })
+      .catch(handleGenericHttpErrors)
       .finally(closeUserContributionDialog),
-    [userId, id, closeUserContributionDialog, t, enqueueSnackbar],
+    [userId, id, closeUserContributionDialog, t, enqueueSnackbar, handleGenericHttpErrors],
   );
 
   const onToggleLinked = useCallback(
@@ -165,22 +162,16 @@ function ApplicationInfo({
           .then((userApplication) => {
             setApplicationLinkId(userApplication.id);
           })
-          .catch((e) => {
-            const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
-            enqueueSnackbar(text, { variant: 'error' });
-          });
+          .catch(handleGenericHttpErrors);
       } else {
         API.use(ENDPOINTS.userApplication.delete)
           .build({ id: applicationLinkId })
           .send()
           .then(() => { setApplicationLinkId(null); })
-          .catch((e) => {
-            const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
-            enqueueSnackbar(text, { variant: 'error' });
-          });
+          .catch(handleGenericHttpErrors);
       }
     },
-    [userId, id, applicationLinkId, enqueueSnackbar, t],
+    [userId, id, applicationLinkId, handleGenericHttpErrors],
   );
 
   const getCurrentApplicationLink = useCallback(
@@ -197,12 +188,9 @@ function ApplicationInfo({
             setApplicationLinkId(userApplicationId);
           }
         })
-        .catch((e) => {
-          const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
-          enqueueSnackbar(text, { variant: 'error' });
-        });
+        .catch(handleGenericHttpErrors);
     },
-    [userId, id, enqueueSnackbar, t],
+    [userId, id, handleGenericHttpErrors],
   );
 
   useEffect(

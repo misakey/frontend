@@ -26,6 +26,8 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import { getDetailPairsHead } from 'helpers/apiError';
 
+import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+
 import { encryptBlobFile } from '@misakey/crypto/databox/crypto';
 
 import useTheme from '@material-ui/core/styles/useTheme';
@@ -236,6 +238,9 @@ function ServiceRequestsRead({
   const { enqueueSnackbar } = useSnackbar();
   const questionItems = useQuestionsItems(t, QUESTIONS_TRANS_KEY, 3);
 
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+
+
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.only('xs'));
   const navigationProps = useMemo(
@@ -410,12 +415,11 @@ function ServiceRequestsRead({
         if (details) {
           setFieldError(FIELD_NAME, 'invalid');
         } else {
-          const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
-          enqueueSnackbar(text, { variant: 'error' });
+          handleGenericHttpErrors(e);
         }
       })
       .finally(() => { setUploading(false); });
-  }, [onDialogClose, handle, databoxId, blobs, t, enqueueSnackbar]);
+  }, [onDialogClose, handle, databoxId, blobs, t, enqueueSnackbar, handleGenericHttpErrors]);
 
   const getOnReset = useCallback(
     ({ resetForm }) => () => {
@@ -471,12 +475,9 @@ function ServiceRequestsRead({
       .build(null, null, queryParams)
       .send()
       .then((response) => { setBlobs(response.map((blob) => objectToCamelCase(blob))); })
-      .catch((e) => {
-        const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
-        enqueueSnackbar(text, { variant: 'error' });
-      })
+      .catch(handleGenericHttpErrors)
       .finally(() => { setFetchingBlobs(false); });
-  }, [setFetchingBlobs, setBlobs, t, enqueueSnackbar, databoxId]);
+  }, [setFetchingBlobs, setBlobs, databoxId, handleGenericHttpErrors]);
 
   useEffect(
     () => {

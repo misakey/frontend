@@ -2,9 +2,7 @@ import React from 'react';
 import { Formik } from 'formik';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { useSnackbar } from 'notistack';
 import { withRouter } from 'react-router-dom';
-import { withTranslation } from 'react-i18next';
 
 import API from '@misakey/api';
 import { FIELD_PROPTYPES } from 'components/dumb/Form/Fields';
@@ -14,14 +12,16 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isEmpty from '@misakey/helpers/isEmpty';
 import { ownerCryptoContext as crypto } from '@misakey/crypto';
 
+import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+
 import { screenAuthSetCredentials } from 'store/actions/screens/auth';
 
 import SignUpForm from 'components/smart/Auth/SignUp/Form';
 import DEFAULT_VALUES from 'components/smart/Auth/SignUp/values.json';
 import { signUpValidationSchema } from 'constants/validationSchemas/auth';
 
-const SignUp = ({ dispatch, displayCard, fields, history, initialValues, onSubmit, t }) => {
-  const { enqueueSnackbar } = useSnackbar();
+const SignUp = ({ dispatch, displayCard, fields, history, initialValues, onSubmit }) => {
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
 
   function afterCrypto({ email, password, handle, ...rest }, actions) {
     const payload = objectToSnakeCase({ email, password, displayName: handle, handle, ...rest });
@@ -34,10 +34,8 @@ const SignUp = ({ dispatch, displayCard, fields, history, initialValues, onSubmi
       .catch((e) => {
         actions.setErrors(e.details);
         actions.setSubmitting(false);
-
         if (isEmpty(e.details)) {
-          const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
-          enqueueSnackbar(text, { variant: 'error' });
+          handleGenericHttpErrors(e);
         }
       });
   }
@@ -81,8 +79,4 @@ SignUp.defaultProps = {
   onSubmit: null,
 };
 
-export default connect()(
-  withTranslation(['common', 'auth'])(
-    withRouter(SignUp),
-  ),
-);
+export default connect()(withRouter(SignUp));

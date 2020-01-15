@@ -10,6 +10,8 @@ import noop from '@misakey/helpers/noop';
 import isFunction from '@misakey/helpers/isFunction';
 import isObject from '@misakey/helpers/isObject';
 
+import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import IconButton from '@material-ui/core/IconButton';
@@ -38,17 +40,14 @@ const useOpen = (anchorEl) => useMemo(() => Boolean(anchorEl), [anchorEl]);
 
 const useParseIdToken = (id) => useMemo(() => (id ? parseJwt(id) : {}), [id]);
 
-const useHandleSignOut = (onSignOut, handleClose, userId, enqueueSnackbar, t) => useCallback(
+const useHandleSignOut = (onSignOut, handleClose, userId, handleGenericHttpErrors) => useCallback(
   (event) => {
     const proxyOnSignOut = isFunction(onSignOut) ? onSignOut : noop;
     if (userId) {
       API.use(API.endpoints.auth.signOut)
         .build(null, { user_id: userId })
         .send()
-        .catch((e) => {
-          const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
-          enqueueSnackbar(text, { variant: 'error' });
-        })
+        .catch(handleGenericHttpErrors)
         .finally(() => {
           proxyOnSignOut(event);
           handleClose();
@@ -61,8 +60,7 @@ const useHandleSignOut = (onSignOut, handleClose, userId, enqueueSnackbar, t) =>
     onSignOut,
     handleClose,
     userId,
-    enqueueSnackbar,
-    t,
+    handleGenericHttpErrors,
   ],
 );
 
@@ -72,6 +70,7 @@ const useOnDelete = (
   userId,
   t,
   enqueueSnackbar,
+  handleGenericHttpErrors,
 ) => useCallback(
   (event) => API.use(API.endpoints.user.delete)
     .build({ id: userId })
@@ -82,10 +81,7 @@ const useOnDelete = (
       const text = t('account.delete.success', 'Success !');
       enqueueSnackbar(text, { variant: 'success' });
     })
-    .catch((e) => {
-      const text = t(`httpStatus.error${API.errors.filter(e.httpStatus)}`);
-      enqueueSnackbar(text, { variant: 'error' });
-    })
+    .catch(handleGenericHttpErrors)
     .finally(closeDeleteAccountDialog),
   [
     handleSignOut,
@@ -93,6 +89,7 @@ const useOnDelete = (
     userId,
     t,
     enqueueSnackbar,
+    handleGenericHttpErrors,
   ],
 );
 
@@ -119,6 +116,7 @@ const ButtonConnectToken = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const [isOpenDeleteAccountDialog, setOpenDeleteAccountDialog] = useState(false);
 
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
   const handleMenu = useHandleMenu(setAnchorEl);
   const handleClose = useHandleClose(setAnchorEl);
 
@@ -129,7 +127,7 @@ const ButtonConnectToken = ({
     () => (isFunction(enqueueSnackbar) ? enqueueSnackbar : noop),
     [enqueueSnackbar],
   );
-  const handleSignOut = useHandleSignOut(onSignOut, handleClose, userId, handleEnqueueSnackbar, t);
+  const handleSignOut = useHandleSignOut(onSignOut, handleClose, userId, handleGenericHttpErrors);
 
   const openDeleteAccountDialog = useCallback(() => {
     setOpenDeleteAccountDialog(true);
@@ -152,6 +150,7 @@ const ButtonConnectToken = ({
     userId,
     t,
     handleEnqueueSnackbar,
+    handleGenericHttpErrors,
   );
 
   const open = useOpen(anchorEl);

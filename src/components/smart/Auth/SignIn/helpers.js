@@ -15,15 +15,19 @@ export const getApiErrors = (error) => {
 // @FIXME: see with backend team to use consistent errors (need errors details as object)
 export const handleLoginApiErrors = (error, { setStatus, setFieldTouched }) => {
   const { identifierErrors, secretErrors } = getApiErrors(error);
+  let isErrorManaged = false;
 
   if (!isEmpty(identifierErrors)) {
     const identifierError = head(Object.values(identifierErrors));
     setStatus({ [STEP.identifier]: identifierError });
     setFieldTouched([STEP.identifier], false);
+    isErrorManaged = true;
   }
   if (!isEmpty(secretErrors)) {
     const secretError = head(Object.values(secretErrors));
     setStatus({ [STEP.secret]: secretError });
     setFieldTouched([STEP.secret], false);
+    isErrorManaged = true;
   }
+  return isErrorManaged;
 };

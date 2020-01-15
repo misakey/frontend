@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 
 import API from '@misakey/api';
 import isNil from '@misakey/helpers/isNil';
+import isObject from '@misakey/helpers/isObject';
+
+import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
 
 import { FIELD_PROPTYPES } from 'components/dumb/Form/Fields';
 import DEFAULT_VALUES from 'components/smart/Auth/SignUp/Confirm/values.json';
@@ -13,6 +16,7 @@ import SignUpConfirmForm from 'components/smart/Auth/SignUp/Confirm/Form';
 import Redirect from 'components/dumb/Redirect';
 
 const SignUpConfirm = ({ displayCard, fields, initialValues, onSubmit }) => {
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
   const [redirectTo, setRedirectTo] = React.useState(null);
 
   function onSubmitSuccess({ email, password, challenge }) {
@@ -36,8 +40,11 @@ const SignUpConfirm = ({ displayCard, fields, initialValues, onSubmit }) => {
       .send()
       .then(() => onSubmitSuccess(values, actions))
       .catch((e) => {
-        actions.setSubmitting(false);
-        actions.setFieldError('code', e.details.otp);
+        if (isObject(e.details)) {
+          actions.setFieldError('code', e.details.otp);
+        } else {
+          handleGenericHttpErrors(e);
+        }
       })
       .finally(() => actions.setSubmitting(false));
   }

@@ -18,6 +18,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import isObject from '@misakey/helpers/isObject';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
+import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
 import useLocationWorkspace from 'hooks/useLocationWorkspace';
 import useGetRoles from '@misakey/auth/hooks/useGetRoles';
 
@@ -38,7 +39,7 @@ import errorTypes from 'constants/errorTypes';
 import { serviceClaimValidationSchema } from 'constants/validationSchemas/dpo';
 
 // CONSTANTS
-const { conflict, forbidden } = errorTypes;
+const { conflict } = errorTypes;
 
 // @FIXME: add to @misakey/API
 const ENDPOINTS = {
@@ -96,6 +97,7 @@ function ServiceRoleClaim({
 }) {
   const { enqueueSnackbar } = useSnackbar();
 
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
   const role = useLocationWorkspace();
 
   const [internalFetching, setInternalFetching] = useState(false);
@@ -184,15 +186,14 @@ function ServiceRoleClaim({
         enqueueSnackbar(text, { variant: 'success' });
       })
       .catch((e) => {
-        if (e.code === conflict) {
+        if (prop('code')(e) === conflict) {
           setErrorMessage(t(`fields:serviceRoleClaim.code.error.${conflict}`));
-        } else if (!(e.code === forbidden && e.origin === 'acr')) {
-          const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
-          enqueueSnackbar(text, { variant: 'error' });
+        } else {
+          handleGenericHttpErrors(e);
         }
       })
       .finally(() => setCreating(false));
-  }, [service, isCreating, userId, role, t, enqueueSnackbar]);
+  }, [service, isCreating, userId, role, t, enqueueSnackbar, handleGenericHttpErrors]);
 
   const handleSubmit = useCallback((values, { setErrors, setSubmitting }) => {
     if (isNil(claim) || isNil(claim.id)) { throw new Error('Cannot submit, claim is nil'); }
@@ -214,12 +215,11 @@ function ServiceRoleClaim({
         if (details) {
           setErrors({ code: details.value });
         } else {
-          const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
-          enqueueSnackbar(text, { variant: 'error' });
+          handleGenericHttpErrors(e);
         }
       })
       .finally(() => setSubmitting(false));
-  }, [claim, enqueueSnackbar, fetchRoleList, t, userId]);
+  }, [claim, fetchRoleList, userId, handleGenericHttpErrors]);
 
   const fetchClaim = useCallback(() => {
     setInternalFetching(true);

@@ -2,6 +2,8 @@ import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
 import BoxControls from 'components/dumb/Box/Controls';
+import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+
 
 import API from '@misakey/api';
 
@@ -11,22 +13,22 @@ export const useSignUpConfirmPrimaryAction = ({ isSubmitting, isValid }, t) => u
   text: t('auth:signUpConfirm.form.action.submit', 'next'),
 }), [isSubmitting, isValid, t]);
 
-export const useReSendConfirmCode = (email, enqueueSnackbar, setSending, t) => useCallback(() => {
-  setSending(true);
+export const useReSendConfirmCode = (email, enqueueSnackbar, setSending, t) => {
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  return useCallback(() => {
+    setSending(true);
 
-  API.use(API.endpoints.auth.askConfirm)
-    .build(undefined, { email })
-    .send()
-    .then(() => {
-      const text = t('auth:signUpConfirm.form.resend.success', { email });
-      enqueueSnackbar(text, { variant: 'success' });
-    })
-    .catch((e) => {
-      const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
-      enqueueSnackbar(text, { variant: 'error' });
-    })
-    .finally(() => setSending(false));
-}, [email, enqueueSnackbar, setSending, t]);
+    API.use(API.endpoints.auth.askConfirm)
+      .build(undefined, { email })
+      .send()
+      .then(() => {
+        const text = t('auth:signUpConfirm.form.resend.success', { email });
+        enqueueSnackbar(text, { variant: 'success' });
+      })
+      .catch(handleGenericHttpErrors)
+      .finally(() => setSending(false));
+  }, [email, enqueueSnackbar, setSending, t, handleGenericHttpErrors]);
+};
 
 export const useSignUpConfirmSecondaryAction = (reSendConfirmCode, isSending, t) => useMemo(() => ({
   onClick: reSendConfirmCode,

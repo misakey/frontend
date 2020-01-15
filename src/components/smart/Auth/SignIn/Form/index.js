@@ -7,6 +7,8 @@ import { withTranslation } from 'react-i18next';
 
 import API from '@misakey/api';
 import { screenAuthSetIdentifier } from 'store/actions/screens/auth';
+import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+
 
 import { FIELD_PROPTYPES } from 'components/dumb/Form/Fields';
 
@@ -28,12 +30,6 @@ import { handleLoginApiErrors, getApiErrors } from 'components/smart/Auth/SignIn
 
 const { conflict, required } = errorTypes;
 
-// HELPERS
-const handleApiErrors = (e) => ({
-  error: `httpStatus.error.${API.errors.filter(e.httpStatus)}`,
-  fields: e.details,
-});
-
 // HOOKS
 // @FIXME: better not use "value check" inside form but make profit of formik's validation
 const useDisableNext = (values, errors, isValid, isSubmitting, step) => useMemo(
@@ -44,22 +40,13 @@ const useDisableNext = (values, errors, isValid, isSubmitting, step) => useMemo(
   [values, errors, isValid, isSubmitting, step],
 );
 
-const useHandleErrors = (
-  enqueueSnackbar,
-  formProps,
-  t,
-) => useCallback((e) => {
-  const response = handleApiErrors(e);
-  if (response.fields) {
-    handleLoginApiErrors(response, formProps);
-    return;
+const useHandleErrors = (formProps, handleGenericHttpErrors) => useCallback((e) => {
+  if (!isEmpty(e.details)) {
+    handleLoginApiErrors({ fields: e.details }, formProps);
+  } else {
+    handleGenericHttpErrors(e);
   }
-
-  if (response.error && isEmpty(response.fields)) {
-    const text = t(response.error);
-    enqueueSnackbar(text, { variant: 'error' });
-  }
-}, [enqueueSnackbar, formProps, t]);
+}, [formProps, handleGenericHttpErrors]);
 
 const useRenewConfirmationCode = (
   enqueueSnackbar, formProps, initAuth, t, values,
@@ -147,6 +134,7 @@ const SignInForm = (
   { acr, dispatch, displayCard, fields, initAuth, initialStep, t, ...formProps },
 ) => {
   const { enqueueSnackbar } = useSnackbar();
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
 
   const { isValid, errors, isSubmitting, values, setTouched } = formProps;
   const [step, setStep] = React.useState(initialStep || STEP.identifier);
@@ -154,7 +142,7 @@ const SignInForm = (
   const secLevelConfig = useMemo(() => SECLEVEL_CONFIG[acr || DEFAULT_SECLEVEL], [acr]);
 
   const disableNext = useDisableNext(values, errors, isValid, isSubmitting, step);
-  const handleErrors = useHandleErrors(enqueueSnackbar, formProps, t);
+  const handleErrors = useHandleErrors(formProps, handleGenericHttpErrors);
   const fetchUser = useFetchUser(formProps, handleErrors, values.identifier, setUserPublicData);
   const handlePrevious = useHandlePrevious(setStep);
   const goToNextStep = useGoToNextStep(

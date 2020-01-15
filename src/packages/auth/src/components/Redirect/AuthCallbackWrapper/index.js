@@ -6,7 +6,8 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 
-import API from '@misakey/api';
+import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+
 import { signIn } from '../../../store/actions/auth';
 import AuthCallback from '../AuthCallback';
 
@@ -27,31 +28,31 @@ const useHandleSuccess = (
   enqueueSnackbar(t('account.signIn.success'), { variant: 'success' });
 }, [onSignIn, enqueueSnackbar, t]);
 
-const useHandleError = (enqueueSnackbar, t) => useCallback(({ error, errorCode }) => {
-  // Errors from API
-  if (error && error.httpStatus) {
-    enqueueSnackbar(
-      t(`httpStatus.error.${API.errors.filter(error.httpStatus)}`),
-      { variant: 'error' },
-    );
-    return;
-  }
+const useHandleError = (enqueueSnackbar, t) => {
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  return useCallback(({ error, errorCode }) => {
+    // Errors from API
+    if (error && error.httpStatus) {
+      handleGenericHttpErrors(error);
+      return;
+    }
 
-  // Errors from hydra
-  if (errorCode) {
+    // Errors from hydra
+    if (errorCode) {
+      enqueueSnackbar(
+        t('httpStatus.error.default'),
+        { variant: 'error' },
+      );
+      return;
+    }
+
+    // Ohers errors (front))
     enqueueSnackbar(
       t('httpStatus.error.default'),
       { variant: 'error' },
     );
-    return;
-  }
-
-  // Ohers errors (front))
-  enqueueSnackbar(
-    t('httpStatus.error.default'),
-    { variant: 'error' },
-  );
-}, [enqueueSnackbar, t]);
+  }, [enqueueSnackbar, t, handleGenericHttpErrors]);
+};
 
 // COMPONENTS
 const RedirectAuthCallbackWrapper = ({ onSignIn, t, ...rest }) => {

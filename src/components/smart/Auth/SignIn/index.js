@@ -9,7 +9,11 @@ import * as moment from 'moment';
 
 import API from '@misakey/api';
 import isNil from '@misakey/helpers/isNil';
+import isObject from '@misakey/helpers/isObject';
+
 import mapValues from '@misakey/helpers/mapValues';
+
+import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
 
 import { FIELD_PROPTYPES } from 'components/dumb/Form/Fields';
 import Redirect from 'components/dumb/Redirect';
@@ -41,12 +45,7 @@ const INIT_AUTH_ENDPOINT = {
 };
 
 const useInitAuth = (
-  challenge,
-  secLevelConfig,
-  enqueueSnackbar,
-  dispatch,
-  setRedirectTo,
-  t,
+  challenge, dispatch, secLevelConfig, setRedirectTo, handleGenericHttpErrors,
 ) => useCallback((values, formProps, onSuccess, onError) => API
   .use(INIT_AUTH_ENDPOINT)
   .build(null, {
@@ -62,7 +61,7 @@ const useInitAuth = (
   .send()
   .then(() => { if (isFunction(onSuccess)) { onSuccess(); } })
   .catch((e) => {
-    if (!isNil(e.details)) {
+    if (isObject(e.details)) {
       const { code } = e;
       const { channel, userId, renewalDate, password } = objectToCamelCase(e.details);
       if (code === conflict) {
@@ -79,58 +78,63 @@ const useInitAuth = (
     }
 
     if (isEmpty(e.details)) {
-      const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus || 'default')}`);
-      enqueueSnackbar(text, { variant: 'error' });
+      handleGenericHttpErrors(e);
     } else if (e.details.confirmed === conflict) {
       dispatch(screenAuthSetCredentials(values.identifier, values.secret));
       setRedirectTo(routes.auth.signUp.confirm);
     }
     if (isFunction(onError)) { onError(e); }
-  }), [challenge, dispatch, enqueueSnackbar, secLevelConfig, setRedirectTo, t]);
+  }), [challenge, dispatch, secLevelConfig, setRedirectTo, handleGenericHttpErrors]);
 
 const useHandleSubmitErrors = (
   enqueueSnackbar,
   dispatch,
   setRedirectTo,
-  t,
+  handleGenericHttpErrors,
 ) => useCallback(
   (e, values, formProps) => {
-    if (!isNil(e.details)) {
-      handleLoginApiErrors(e, formProps);
-    }
-    if (isEmpty(e.details)) {
-      const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus || 'default')}`);
-      enqueueSnackbar(text, { variant: 'error' });
-    } else if (e.details.confirmed === conflict) {
-      dispatch(screenAuthSetCredentials(values.identifier, values.secret));
-      setRedirectTo(routes.auth.signUp.confirm);
-    } else if (e.details.to_delete === conflict) {
-      const text = (
-        <Trans
-          i18nKey="auth:signIn.form.error.deletedAccount"
-          values={{ deletionDate: moment.parseZone(e.details.deletion_date).format('LL') }}
-        >
-        Votre compte est en cours de suppression, vous ne pouvez donc plus vous y connecter.
-          <br />
-          {'Sans action de votre part il sera supprimé le {{deletionDate}}.'}
-          <br />
-        Si vous voulez le récupérer envoyez nous un email à&nbsp;
-          <a href="mailto:question.perso@misakey.com">question.perso@misakey.com</a>
-        </Trans>
-      );
-      enqueueSnackbar(text, { variant: 'error' });
+    if (isObject(e.details)) {
+      if (!handleLoginApiErrors(e, formProps)) {
+        const details = objectToCamelCase(prop('details', e));
+        if (details.confirmed === conflict) {
+          dispatch(screenAuthSetCredentials(values.identifier, values.secret));
+          setRedirectTo(routes.auth.signUp.confirm);
+        } else if (details.toDelete === conflict) {
+          const text = (
+            <Trans
+              i18nKey="auth:signIn.form.error.deletedAccount"
+              values={{ deletionDate: moment(details.deletionDate).format('LL') }}
+            >
+            Votre compte est en cours de suppression, vous ne pouvez donc plus vous y connecter.
+              <br />
+              {'Sans action de votre part il sera supprimé le {{deletionDate}}.'}
+              <br />
+            Si vous voulez le récupérer envoyez nous un email à&nbsp;
+              <a href="mailto:question.perso@misakey.com">question.perso@misakey.com</a>
+            </Trans>
+          );
+          enqueueSnackbar(text, { variant: 'error' });
+        } else {
+          handleGenericHttpErrors(e);
+        }
+      }
+    } else {
+      handleGenericHttpErrors(e);
     }
   },
-  [dispatch, enqueueSnackbar, setRedirectTo, t],
+  [dispatch, enqueueSnackbar, setRedirectTo, handleGenericHttpErrors],
 );
 
-const SignIn = ({ challenge, dispatch, displayCard, fields, acr, initialValues, onSubmit, t }) => {
+const SignIn = ({ challenge, dispatch, displayCard, fields, acr, initialValues, onSubmit }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [redirectTo, setRedirectTo] = React.useState(null);
   const secLevelConfig = useMemo(() => SECLEVEL_CONFIG[acr || DEFAULT_SECLEVEL], [acr]);
-  const handleSubmitErrors = useHandleSubmitErrors(enqueueSnackbar, dispatch, setRedirectTo, t);
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleSubmitErrors = useHandleSubmitErrors(
+    enqueueSnackbar, dispatch, setRedirectTo, handleGenericHttpErrors,
+  );
   const initAuth = useInitAuth(
-    challenge, secLevelConfig, enqueueSnackbar, dispatch, setRedirectTo, t,
+    challenge, dispatch, secLevelConfig, setRedirectTo, handleGenericHttpErrors,
   );
   const validationSchema = useMemo(
     () => getSignInValidationSchema(secLevelConfig.fieldTypes),
@@ -153,7 +157,7 @@ const SignIn = ({ challenge, dispatch, displayCard, fields, acr, initialValues, 
         const redirection = response.redirect_to;
         if (!isNil(redirection)) { setRedirectTo(redirection); }
       })
-      .catch((e) => handleSubmitErrors(e, values, actions))
+      .catch((e) => { handleSubmitErrors(e, values, actions); })
       .finally(() => actions.setSubmitting(false));
   }, [challenge, handleSubmitErrors, secLevelConfig.api]);
 
@@ -190,7 +194,6 @@ SignIn.propTypes = {
     secret: PropTypes.string,
   }),
   onSubmit: PropTypes.func,
-  t: PropTypes.func.isRequired,
 };
 
 SignIn.defaultProps = {

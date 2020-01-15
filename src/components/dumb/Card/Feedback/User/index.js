@@ -62,7 +62,7 @@ const UserFeedbackCard = ({ isAuthenticated, rating, className }) => {
   );
 
   const createdAtText = useMemo(
-    () => (isNil(createdAt) ? '' : moment.parseZone(createdAt).format('ll')),
+    () => (isNil(createdAt) ? '' : moment(createdAt).format('ll')),
     [createdAt],
   );
 
