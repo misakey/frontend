@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   label: {
-    textTransform: 'capitalize',
+    textTransform: 'none',
   },
   contained: {
     backgroundColor: theme.palette.grey['200'],

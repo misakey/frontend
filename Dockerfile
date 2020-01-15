@@ -20,8 +20,6 @@ RUN yarn run build --env=prod
 
 FROM nginx:1.16.0-alpine
 COPY --from=builder /app/build /usr/share/nginx/html
-RUN mv /usr/share/nginx/html/index.html /usr/share/nginx/html/app.html
-RUN mv /usr/share/nginx/html/landing.html /usr/share/nginx/html/index.html
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d
 EXPOSE 80

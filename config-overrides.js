@@ -53,7 +53,7 @@ module.exports = {
       { from: 'public/favicon.ico', to: 'favicon.ico' },
       { from: 'public/locales', to: 'locales' },
       { from: 'public/libs', to: 'libs' },
-      { from: 'public/img', to: 'img', ignore: ['about/**/*', 'illustrations/**/*', 'landing/**/*'] },
+      { from: 'public/img', to: 'img', ignore: ['about/**/*', 'illustrations/**/*'] },
       { from: 'public/ico', to: 'ico' },
       { from: `plugin/config/env.${environment}.js`, to: 'env.js' },
       { from: 'plugin/src/manifest/_locales', to: '_locales' },

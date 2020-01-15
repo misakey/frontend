@@ -11,10 +11,9 @@ import log from '@misakey/helpers/log';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
-import Box from '@material-ui/core/Box';
 import Card from 'components/dumb/Card';
-import Title from 'components/dumb/Typography/Title';
 import ApplicationsList from 'components/dumb/List/Applications';
+import NoLinkedApplication from 'components/dumb/Application/NoLinked';
 
 
 // CONSTANTS
@@ -34,7 +33,6 @@ const ENDPOINTS = {
     },
   },
 };
-
 
 function LinkedApplicationsList({ t, userId, isAuthenticated }) {
   const [error, setError] = useState();
@@ -85,14 +83,9 @@ function LinkedApplicationsList({ t, userId, isAuthenticated }) {
   }, [shouldFetch, fetchList]);
 
   if (!isAuthenticated || (!isFetching && (isNil(list) || list.length === 0))) {
-    return (
-      <Box mb={3}>
-        <Title align="center">
-          {t('screens:landing.subtitle')}
-        </Title>
-      </Box>
-    );
+    return (<NoLinkedApplication isAuthenticated={isAuthenticated} />);
   }
+
   return (
     <Card
       title={t('linkedApplications.title')}

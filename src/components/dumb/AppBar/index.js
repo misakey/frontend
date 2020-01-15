@@ -95,7 +95,7 @@ function AppBar({
             {isSmallMode
               ? (
                 <SearchIcon />
-              ) : t('common:search')}
+              ) : t('nav:search.button.search')}
           </SearchApplications>
         )}
         {map(rightAppBarItems)}
@@ -137,4 +137,4 @@ AppBar.defaultProps = {
   withUser: true,
 };
 
-export default withTranslation('common')(AppBar);
+export default withTranslation('nav')(AppBar);

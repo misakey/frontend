@@ -409,7 +409,20 @@
     }
   },
   "landing": {
-    "subtitle": "Chercher un site internet pour récupérer vos données personnelles"
+    "subtitle": "Chercher un site internet pour récupérer vos données personnelles",
+    "unAuthenticated": {
+      "title": "Aidez-nous à habituer les sites à vous envoyer des données sans risque pour votre vie privée",
+      "1": "1. J'installe l'extension Misakey: sur <1>Firefox</1> ou <3>Chrome</3>",
+      "2": "2. Je crée mon compte gratuitement: <1>créer mon compte</1>",
+      "3": "3. Je demande mes données à mes sites en 2 clics"
+    },
+    "authenticated": {
+      "title": "Bienvenue, c'est parti pour habituer les sites à vous envoyer des données sans risque pour votre vie privée",
+      "1": "1. Je cherche mes sites",
+      "2": "2. Je demande mes données",
+      "3": "3. Je discute avec le DPO pour faire valoir <1>mes droits</1>.",
+      "myRights": "https://docs.misakey.com/#/citizen/faq?id=quels-droits-me-procure-le-rgpd-"
+    }
   },
   "Service": {
     "Actions": {
