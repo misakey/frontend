@@ -96,6 +96,14 @@
         "title": "Upload photo",
         "subtitle": "Les fichiers .jpg .jpeg .png .tiff .gif de moins de 3mo sont acceptés"
       }
+    },
+    "quota": {
+      "title": "Stockage",
+      "description": "{{currentUsage}} utilisé sur {{totalUsage}} gratuit"
+    },
+    "delete": {
+      "title": "Compte",
+      "label": "Supprimer mon compte"
     }
   },
   "applications": {

@@ -399,9 +399,6 @@
   "searchAppText": "Chercher un site pour le contacter et récupérer vos données",
   "seeMore": "Voir plus",
   "send": "Envoyer",
-  "units": {
-    "bytes": "o"
-  },
   "boolean": {
     "true": "Oui",
     "false": "Non"

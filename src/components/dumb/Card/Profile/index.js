@@ -18,6 +18,9 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AvatarColorized from 'components/dumb/Avatar/Colorized';
 import AvatarDetailed from 'components/dumb/Avatar/Detailed';
 
+import UserStorage from 'components/screens/Account/Home/UserStorage';
+import DeleteAccountListItem from 'components/screens/Account/Home/DeleteAccount';
+
 import 'components/dumb/Card/Profile/index.scss';
 
 // HOOKS
@@ -27,7 +30,8 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const CardProfile = ({ profile: { displayName, avatarUri, handle }, t }) => {
+const CardProfile = ({ profile, t }) => {
+  const { displayName, avatarUri, handle, email } = profile;
   const classes = useStyles();
 
   return (
@@ -39,7 +43,14 @@ const CardProfile = ({ profile: { displayName, avatarUri, handle }, t }) => {
         subtitle={`@${handle}`}
       />
       <List className="details">
-        <ListItem button to={routes.account.profile.name} component={Link} divider aria-label={t('fields:displayName.action')} classes={classes}>
+        <ListItem
+          button
+          to={routes.account.profile.name}
+          component={Link}
+          divider
+          aria-label={t('fields:displayName.action')}
+          classes={classes}
+        >
           <ListItemIcon className="title">
             <Typography>{t('fields:displayName.label')}</Typography>
           </ListItemIcon>
@@ -48,7 +59,14 @@ const CardProfile = ({ profile: { displayName, avatarUri, handle }, t }) => {
             <ChevronRightIcon className="icon" />
           </ListItemSecondaryAction>
         </ListItem>
-        <ListItem button to={routes.account.profile.avatar._} component={Link} divider aria-label={t('fields:avatar.action')} classes={classes}>
+        <ListItem
+          button
+          to={routes.account.profile.avatar._}
+          component={Link}
+          divider
+          aria-label={t('fields:avatar.action')}
+          classes={classes}
+        >
           <ListItemIcon className="title">
             <Typography>{t('fields:avatar.label')}</Typography>
           </ListItemIcon>
@@ -60,7 +78,14 @@ const CardProfile = ({ profile: { displayName, avatarUri, handle }, t }) => {
             />
           </ListItemSecondaryAction>
         </ListItem>
-        <ListItem button to={routes.account.profile.password} component={Link} aria-label={t('fields:password.action')} classes={classes}>
+        <ListItem
+          button
+          to={routes.account.profile.password}
+          component={Link}
+          divider
+          aria-label={t('fields:password.action')}
+          classes={classes}
+        >
           <ListItemIcon className="title">
             <Typography>{t('fields:password.label')}</Typography>
           </ListItemIcon>
@@ -69,6 +94,28 @@ const CardProfile = ({ profile: { displayName, avatarUri, handle }, t }) => {
             <ChevronRightIcon className="icon" />
           </ListItemSecondaryAction>
         </ListItem>
+        <ListItem
+          classes={classes}
+          divider
+        >
+          <ListItemIcon className="title">
+            <Typography>{t('fields:email.shortLabel')}</Typography>
+          </ListItemIcon>
+          <ListItemText primary={email} />
+        </ListItem>
+
+        <ListItem
+          classes={classes}
+          divider
+        >
+          <ListItemIcon className="title">
+            <Typography>{t('screens:account.quota.title')}</Typography>
+          </ListItemIcon>
+          <UserStorage />
+        </ListItem>
+        <DeleteAccountListItem
+          profile={profile}
+        />
       </List>
     </Container>
   );
@@ -79,8 +126,9 @@ CardProfile.propTypes = {
     displayName: PropTypes.string,
     avatarUri: PropTypes.string,
     handle: PropTypes.string,
+    email: PropTypes.string,
   }).isRequired,
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('fields')(CardProfile);
+export default withTranslation('fields', 'screens')(CardProfile);

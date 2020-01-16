@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
-import parseJwt from '@misakey/helpers/parseJwt';
 import tDefault from '@misakey/helpers/tDefault';
 import noop from '@misakey/helpers/noop';
 import isFunction from '@misakey/helpers/isFunction';
@@ -16,19 +15,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import red from '@material-ui/core/colors/red';
-import ColorizedAvatar from '../../../Avatar/Colorized';
-import DeleteAccountDialog from '../../../Dialog/Account/Delete';
 
-const useStyles = makeStyles(() => ({
-  deleteButton: {
-    color: red[500],
-    '&:hover': {
-      backgroundColor: red[50],
-    },
-  },
-}));
+import useParseIdToken from 'hooks/useParseIdToken';
+
+import ColorizedAvatar from '../../../Avatar/Colorized';
+
 
 // HOOKS
 const useHandleMenu = (setAnchorEl) => useCallback(
@@ -37,8 +28,6 @@ const useHandleMenu = (setAnchorEl) => useCallback(
 );
 const useHandleClose = (setAnchorEl) => useCallback(() => setAnchorEl(null), [setAnchorEl]);
 const useOpen = (anchorEl) => useMemo(() => Boolean(anchorEl), [anchorEl]);
-
-const useParseIdToken = (id) => useMemo(() => (id ? parseJwt(id) : {}), [id]);
 
 const useHandleSignOut = (onSignOut, handleClose, userId, handleGenericHttpErrors) => useCallback(
   (event) => {
@@ -64,41 +53,11 @@ const useHandleSignOut = (onSignOut, handleClose, userId, handleGenericHttpError
   ],
 );
 
-const useOnDelete = (
-  handleSignOut,
-  closeDeleteAccountDialog,
-  userId,
-  t,
-  enqueueSnackbar,
-  handleGenericHttpErrors,
-) => useCallback(
-  (event) => API.use(API.endpoints.user.delete)
-    .build({ id: userId })
-    .send()
-    .then(() => {
-      handleSignOut(event);
-
-      const text = t('account.delete.success', 'Success !');
-      enqueueSnackbar(text, { variant: 'success' });
-    })
-    .catch(handleGenericHttpErrors)
-    .finally(closeDeleteAccountDialog),
-  [
-    handleSignOut,
-    closeDeleteAccountDialog,
-    userId,
-    t,
-    enqueueSnackbar,
-    handleGenericHttpErrors,
-  ],
-);
-
 // COMPONENTS
 const ButtonConnectToken = ({
   AccountLink,
   className,
   classes,
-  enqueueSnackbar,
   id,
   onSignOut,
   profile,
@@ -106,51 +65,25 @@ const ButtonConnectToken = ({
   token,
   customAction,
 }) => {
-  const internalClasses = useStyles();
-
   const classProps = useMemo(
     () => (isObject(classes) ? { classes } : { className }),
     [classes, className],
   );
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const [isOpenDeleteAccountDialog, setOpenDeleteAccountDialog] = useState(false);
-
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
   const handleMenu = useHandleMenu(setAnchorEl);
   const handleClose = useHandleClose(setAnchorEl);
+
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
 
   const { sub: userId, acr } = useParseIdToken(id);
   const seclevel = useMemo(() => parseInt(acr, 10), [acr]);
 
-  const handleEnqueueSnackbar = useMemo(
-    () => (isFunction(enqueueSnackbar) ? enqueueSnackbar : noop),
-    [enqueueSnackbar],
-  );
   const handleSignOut = useHandleSignOut(onSignOut, handleClose, userId, handleGenericHttpErrors);
-
-  const openDeleteAccountDialog = useCallback(() => {
-    setOpenDeleteAccountDialog(true);
-    handleClose();
-  }, [handleClose, setOpenDeleteAccountDialog]);
-
-  const closeDeleteAccountDialog = useCallback(() => {
-    setOpenDeleteAccountDialog(false);
-    handleClose();
-  }, [handleClose, setOpenDeleteAccountDialog]);
 
   const iconButtonAction = useMemo(
     () => (isFunction(customAction) ? customAction : handleMenu),
     [customAction, handleMenu],
-  );
-
-  const onDelete = useOnDelete(
-    handleSignOut,
-    closeDeleteAccountDialog,
-    userId,
-    t,
-    handleEnqueueSnackbar,
-    handleGenericHttpErrors,
   );
 
   const open = useOpen(anchorEl);
@@ -159,14 +92,6 @@ const ButtonConnectToken = ({
 
   return (
     <>
-      {profile && (
-        <DeleteAccountDialog
-          open={isOpenDeleteAccountDialog}
-          onClose={closeDeleteAccountDialog}
-          onSuccess={onDelete}
-          profile={profile}
-        />
-      )}
       <IconButton
         aria-label={t('account.current', 'Account of current user')}
         aria-controls="menu-appbar"
@@ -204,16 +129,6 @@ const ButtonConnectToken = ({
             onClick={handleClose}
           >
             {t('account.profile', 'My profile')}
-          </MenuItem>
-        )}
-        {profile && seclevel > 1 && (
-          <MenuItem
-            button
-            component="li"
-            classes={{ root: internalClasses.deleteButton }}
-            onClick={openDeleteAccountDialog}
-          >
-            {t('account.delete.label', 'Delete my account')}
           </MenuItem>
         )}
         <Divider light />

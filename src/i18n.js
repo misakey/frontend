@@ -59,8 +59,6 @@ i18n
     },
   });
 
-moment.locale(DEFAULT_LNG);
-
 // This method may not working if locales
 // are explicit vs implicit (fr-FR != fr)
 // especially with common explicit languages like en-GB != en
@@ -68,6 +66,9 @@ const changeLocale = (lng) => {
   moment.locale(lng);
   numeral.locale(lng);
 };
+
+// Forcing default locale
+changeLocale(DEFAULT_LNG);
 
 i18n.on('languageChanged', changeLocale);
 

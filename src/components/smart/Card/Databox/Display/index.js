@@ -41,7 +41,7 @@ const DataboxDisplay = ({
                 },
               } = blob;
               const date = moment(createdAt).format('LLLL');
-              const size = numeral(contentLength).format('0a') + t('units.bytes');
+              const size = numeral(contentLength).format('0b');
               const canBeDecrypted = includes(publicKeysWeCanDecryptFrom, ownerPubKey);
               return (
                 <ListItem key={id} disableGutters>

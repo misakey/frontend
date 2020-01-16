@@ -59,6 +59,7 @@
   },
   "email": {
     "label": "Adresse email",
+    "shortLabel": "Email",
     "placeholder": "rose.flamingo@misakey.com",
     "error": {
       "conflict": "Un compte existe déjà avec cet email",
