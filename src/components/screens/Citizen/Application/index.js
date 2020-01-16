@@ -2,24 +2,22 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Route, Switch } from 'react-router-dom';
 
+import { IS_PLUGIN } from 'constants/plugin';
 import routes from 'routes';
 import ApplicationSchema from 'store/schemas/Application';
 
-import { makeStyles } from '@material-ui/core/styles';
-import ApplicationAvatar from 'components/dumb/Avatar/Application';
-import RoutePrivate from '@misakey/auth/components/Route/Private';
-import withApplication from 'components/smart/withApplication';
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 
+import withApplication from 'components/smart/withApplication';
+import RoutePrivate from '@misakey/auth/components/Route/Private';
 import ApplicationNone from 'components/screens/Citizen/Application/None';
 import ApplicationInfo from 'components/screens/Citizen/Application/Info';
 import ApplicationContact from 'components/screens/Citizen/Application/Contact';
 import ApplicationFeedback from 'components/screens/Citizen/Application/Feedback';
+import ApplicationAvatar from 'components/dumb/Avatar/Application';
+import BoxEllipsis from 'components/dumb/Box/Ellipsis';
 
-import isEmpty from '@misakey/helpers/isEmpty';
-
-import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD, SEARCH_WIDTH_SM } from 'constants/ui/sizes';
-import { IS_PLUGIN } from 'constants/plugin';
 
 // CONSTANTS
 const PAGES_ROSES_ENDPOINT = {
@@ -27,27 +25,8 @@ const PAGES_ROSES_ENDPOINT = {
   path: '/applications/:mainDomain',
 };
 
-// HOOKS
-const useStyles = makeStyles((theme) => ({
-  avatarParent: {
-    // Maybe this style should be more documented
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    [theme.breakpoints.up('sm')]: {
-      maxWidth: `calc(50% - ${SEARCH_WIDTH_SM / 2}px - ${theme.spacing(2)}px)`,
-    },
-    [theme.breakpoints.up('md')]: {
-      maxWidth: `calc(50% - ${SEARCH_WIDTH_MD / 2}px - ${theme.spacing(2)}px)`,
-    },
-    [theme.breakpoints.up('lg')]: {
-      maxWidth: `calc(50% - ${SEARCH_WIDTH_LG / 2}px - ${theme.spacing(2)}px)`,
-    },
-  },
-}));
-
+// COMPONENTS
 function Application({ entity, error, isFetching, mainDomain, match }) {
-  const classes = useStyles();
   const application = useMemo(
     () => ((isFetching || isNil(entity)) ? { mainDomain } : entity),
     [mainDomain, entity, isFetching],
@@ -61,21 +40,24 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
     [error, isFetching, entity],
   );
 
+  const items = useMemo(
+    () => (IS_PLUGIN ? [(
+      <BoxEllipsis key="applicationAvatarParent">
+        {application && (
+          <ApplicationAvatar
+            application={application}
+            displayRating
+            displayMainDomain
+          />
+        )}
+      </BoxEllipsis>
+    )] : []),
+    [application],
+  );
+
   const appBarProps = useMemo(
-    () => ({
-      items: [(
-        <div className={classes.avatarParent} key="applicationAvatarParent">
-          {application && (
-            <ApplicationAvatar
-              application={application}
-              displayRating={IS_PLUGIN}
-              displayMainDomain={IS_PLUGIN}
-            />
-          )}
-        </div>
-      )],
-    }),
-    [application, classes.avatarParent],
+    () => ({ items }),
+    [items],
   );
 
   return (

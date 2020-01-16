@@ -138,7 +138,7 @@ function Drawer({ children, location, mainDomain, onClose, open, t, userHasRole 
   }), [location]);
 
   const drawerVariant = React.useMemo(
-    () => (displayIn(width, ['xs', 'sm']) ? null : 'permanent'),
+    () => (displayIn(width, ['xs', 'sm']) ? 'temporary' : 'permanent'),
     [width],
   );
 
@@ -169,9 +169,11 @@ function Drawer({ children, location, mainDomain, onClose, open, t, userHasRole 
         open={open}
       >
         <div className={classes.toolbar}>
-          <IconButton onClick={onClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
+          {open && (
+            <IconButton onClick={onClose}>
+              {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            </IconButton>
+          )}
         </div>
         {open && <Divider />}
         <List>

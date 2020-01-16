@@ -1,13 +1,11 @@
 import React, { useMemo, Fragment } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
 import { DRAWER_WIDTH } from 'constants/ui/sizes';
 import { IS_PLUGIN } from 'constants/plugin';
 
 import map from '@misakey/helpers/map';
-import omitTranslationProps from 'helpers/omit/translationProps';
 
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -15,12 +13,14 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import MuiAppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import Avatar from '@material-ui/core/Avatar';
 import User from 'components/smart/User';
+import LinkHome from 'components/dumb/Link/Home';
+import Logo from 'components/dumb/Logo';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import PausePluginButton from 'components/smart/Plugin/Button/Pause';
 import SearchApplications from 'components/smart/Search/Applications';
-import SearchIcon from '@material-ui/icons/Search';
-import IconButton from '@material-ui/core/IconButton';
+import BoxFlexFill from 'components/dumb/Box/FlexFill';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -41,19 +41,24 @@ const useStyles = makeStyles((theme) => ({
       width: `calc(100% - ${drawerWidth}px)`,
     },
   }),
-  grow: {
-    flexGrow: 1,
+  searchBar: {
+    margin: 'auto',
   },
 }));
 
-
+// COMPONENTS
 function AppBar({
-  className, drawerWidth, elevationScroll, elevationScrollProps, items, searchBarProps,
-  shift, toolbarProps, withPausePluginButton, withSearchBar, withUser, t, ...rest
+  className, drawerWidth,
+  elevationScroll, shift,
+  items, leftItems,
+  searchBarProps, toolbarProps, elevationScrollProps,
+  withPausePluginButton, withHomeLink, withSearchBar, withUser,
+  ...rest
 }) {
   const classes = useStyles(drawerWidth);
   const theme = useTheme();
-  const isSmallLayout = useMediaQuery(theme.breakpoints.down('xs'));
+  const isXsLayout = useMediaQuery(theme.breakpoints.only('xs'));
+  const isSmLayout = useMediaQuery(theme.breakpoints.only('sm'));
 
   const rightAppBarItems = useMemo(() => {
     const rightItems = [];
@@ -64,14 +69,12 @@ function AppBar({
   }, [withPausePluginButton, withUser]);
 
   const isSmallMode = useMemo(
-    () => (isSmallLayout || shift),
-    [isSmallLayout, shift],
+    () => (isXsLayout || (shift && isSmLayout)),
+    [isSmLayout, isXsLayout, shift],
   );
 
-  const responsiveSearchProps = useMemo(
-    () => (isSmallMode
-      ? { component: IconButton }
-      : {}),
+  const logoProps = useMemo(
+    () => (isSmallMode ? { short: true, component: Avatar } : { width: 100 }),
     [isSmallMode],
   );
 
@@ -94,18 +97,20 @@ function AppBar({
           },
           className,
         )}
-        {...omitTranslationProps(rest)}
+        {...rest}
       >
         <Toolbar {...toolbarProps}>
+          {map(leftItems)}
+          {withHomeLink && (
+          <LinkHome>
+            <Logo {...logoProps} />
+          </LinkHome>
+          )}
           {map(items)}
-          <div className={classes.grow} />
-          {withSearchBar && (
-            <SearchApplications {...responsiveSearchProps} {...searchBarProps}>
-              {isSmallMode
-                ? (
-                  <SearchIcon />
-                ) : t('nav:search.button.search')}
-            </SearchApplications>
+          {withSearchBar ? (
+            <SearchApplications className={classes.searchBar} {...searchBarProps} />
+          ) : (
+            <BoxFlexFill />
           )}
           {map(rightAppBarItems)}
         </Toolbar>
@@ -120,13 +125,14 @@ AppBar.propTypes = {
   elevationScroll: PropTypes.bool,
   elevationScrollProps: PropTypes.objectOf(PropTypes.any),
   items: PropTypes.arrayOf(PropTypes.node),
+  leftItems: PropTypes.arrayOf(PropTypes.node),
   searchBarProps: PropTypes.objectOf(PropTypes.any),
   shift: PropTypes.bool,
   toolbarProps: PropTypes.objectOf(PropTypes.any),
   withPausePluginButton: PropTypes.bool,
+  withHomeLink: PropTypes.bool,
   withSearchBar: PropTypes.bool,
   withUser: PropTypes.bool,
-  t: PropTypes.func.isRequired,
 };
 
 AppBar.defaultProps = {
@@ -135,12 +141,14 @@ AppBar.defaultProps = {
   elevationScroll: true,
   elevationScrollProps: IS_PLUGIN ? { target: document.getElementById('root') } : {},
   items: [],
+  leftItems: [],
   searchBarProps: {},
   shift: false,
   toolbarProps: { className: '' },
   withPausePluginButton: IS_PLUGIN,
+  withHomeLink: !IS_PLUGIN,
   withSearchBar: !IS_PLUGIN,
   withUser: true,
 };
 
-export default withTranslation('nav')(AppBar);
+export default AppBar;

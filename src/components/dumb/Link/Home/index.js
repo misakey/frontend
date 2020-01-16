@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -6,13 +6,12 @@ import { Link } from 'react-router-dom';
 
 import routes from 'routes';
 
-import omit from '@misakey/helpers/omit';
+import omitTranslationProps from 'helpers/omit/translationProps';
+import isNil from '@misakey/helpers/isNil';
+
+import useLocationWorkspace from 'hooks/useLocationWorkspace';
 
 import MUILink from '@material-ui/core/Link';
-import Logo from 'components/dumb/Logo';
-
-// CONSTANTS
-const INTERNAL_PROPS = ['tReady'];
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -23,26 +22,34 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-const LinkHome = ({ t, ...rest }) => {
+const LinkHome = ({ t, children, ...rest }) => {
   const classes = useStyles();
+
+  const workspace = useLocationWorkspace(true);
+
+  const to = useMemo(
+    () => (isNil(workspace) ? routes._ : (routes[workspace]._ || routes._)),
+    [workspace],
+  );
 
   return (
     <MUILink
-      to={routes._}
+      to={to}
       component={Link}
       underline="none"
       classes={{ root: classes.linkRoot }}
       color="secondary"
       variant="subtitle1"
-      {...omit(rest, INTERNAL_PROPS)}
+      {...omitTranslationProps(rest)}
     >
-      <Logo width={100} />
+      {children}
     </MUILink>
   );
 };
 
 LinkHome.propTypes = {
   t: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 export default withTranslation('common')(LinkHome);

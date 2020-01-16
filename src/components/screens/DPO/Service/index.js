@@ -5,27 +5,26 @@ import { Switch } from 'react-router-dom';
 import routes from 'routes';
 import ApplicationSchema from 'store/schemas/Application';
 
-import clsx from 'clsx';
 import isNil from '@misakey/helpers/isNil';
+
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import withApplication from 'components/smart/withApplication';
 
 import RouteService, { DEFAULT_SERVICE_ENTITY } from 'components/smart/Route/Service';
 
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import ButtonBurger from 'components/dumb/Button/Burger';
 import Drawer from 'components/screens/DPO/Service/Drawer';
 import ServiceClaim from 'components/screens/DPO/Service/Claim';
 import ServiceRequests from 'components/screens/DPO/Service/Requests';
 import Redirect from 'components/dumb/Redirect';
-import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import SplashScreen from 'components/dumb/SplashScreen';
 import useLocationWorkspace from 'hooks/useLocationWorkspace';
 import useUserHasRole from 'hooks/useUserHasRole';
 
-import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD, SEARCH_WIDTH_SM } from 'constants/ui/sizes';
 import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
 
+// CONSTANTS
 export const DPO_SERVICE_SCREEN_NAMES = {
   CLAIM: 'DPOServiceClaim',
   REQUESTS: 'DPOServiceRequests',
@@ -33,29 +32,19 @@ export const DPO_SERVICE_SCREEN_NAMES = {
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  avatarParent: (isDrawerOpen) => ({
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    marginLeft: theme.spacing(isDrawerOpen ? 0 : 2),
-    [theme.breakpoints.up('sm')]: {
-      maxWidth: `calc(50% - ${SEARCH_WIDTH_SM / 2}px - ${theme.spacing(2)}px - 48px)`,
-      '&.isDrawerOpen': { maxWidth: '100%' },
-    },
-    [theme.breakpoints.up('md')]: {
-      maxWidth: `calc(50% - ${SEARCH_WIDTH_MD / 2}px - ${theme.spacing(2)}px - 48px)`,
-    },
-    [theme.breakpoints.up('lg')]: {
-      maxWidth: `calc(50% - ${SEARCH_WIDTH_LG / 2}px - ${theme.spacing(2)}px - 48px)`,
-    },
-  }),
+  burger: {
+    // DRAWER spacing - BUTTONBURGER width+padding - APPBAR padding + EDGE margin
+    marginRight: `calc(${theme.spacing(9) + 1}px - 48px - 24px + 12px)`,
+  },
 }));
 
+// COMPONENTS
 function Service({
   entity, isDefaultDomain, mainDomain, match, userId, isFetching, userRoles, ...rest
 }) {
+  const classes = useStyles();
+
   const [isDrawerOpen, setDrawerOpen] = useState(false);
-  const classes = useStyles(isDrawerOpen);
 
   const service = useMemo(
     () => (isDefaultDomain ? DEFAULT_SERVICE_ENTITY : entity),
@@ -72,14 +61,10 @@ function Service({
 
   const appBarProps = useMemo(() => ({
     shift: isDrawerOpen,
-    items: [!isDrawerOpen ? (
-      <ButtonBurger key="ButtonBurger" onClick={() => setDrawerOpen(true)} />
-    ) : null, (
-      <div className={clsx(classes.avatarParent, { isDrawerOpen })} key="serviceAvatarParent">
-        {!isDefaultDomain && service && <ApplicationAvatar application={service} />}
-      </div>
-    )],
-  }), [classes.avatarParent, isDefaultDomain, isDrawerOpen, service]);
+    leftItems: [!isDrawerOpen ? (
+      <ButtonBurger className={classes.burger} edge="start" key="ButtonBurger" onClick={() => setDrawerOpen(true)} />
+    ) : null],
+  }), [classes.burger, isDrawerOpen]);
 
   if (isNil(service)) {
     return <SplashScreen />;

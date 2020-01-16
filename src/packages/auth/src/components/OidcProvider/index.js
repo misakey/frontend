@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, createContext, useCallback } from 'react';
+import React, { useEffect, createContext, useCallback, forwardRef } from 'react';
 import log from '@misakey/helpers/log';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -153,10 +153,10 @@ OidcProvider.defaultProps = {
   silentBlacklist: [],
 };
 
-export const withUserManager = (Component) => (props) => (
+export const withUserManager = (Component) => forwardRef((props, ref) => (
   <UserManagerContext.Consumer>
-    {(store) => <Component {...props} {...store} />}
+    {(store) => <Component {...props} {...store} ref={ref} />}
   </UserManagerContext.Consumer>
-);
+));
 
 export default OidcProvider;

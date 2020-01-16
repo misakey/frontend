@@ -14,7 +14,6 @@ const useStyles = makeStyles({
     display: 'none',
     textTransform: 'uppercase',
     textDecoration: 'none',
-    borderRadius: '3px',
   },
   loaded: {
     display: 'flex',
@@ -59,6 +58,7 @@ function ApplicationImg({ children, className, fontSize, src, applicationName, t
         />
       )}
       <Avatar
+        variant="rounded"
         alt={t('application.info.logoAlt', { applicationName })}
         src={isBroken ? null : src}
         className={clsx(classes.root, {

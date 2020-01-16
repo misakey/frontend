@@ -6,6 +6,7 @@ const { required, malformed } = errorTypes;
 export const ratingValidationSchema = Yup.object().shape({
   value: Yup
     .number()
+    .nullable()
     .min(1, required)
     .max(5, malformed)
     .required(required),

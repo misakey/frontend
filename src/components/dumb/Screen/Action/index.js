@@ -32,7 +32,7 @@ function ScreenAction({
       title={title}
       disableGutters
       hideAppBar={hideAppBar}
-      appBarProps={{ position: 'absolute', elevationScroll: false, ...appBarProps }}
+      appBarProps={{ position: 'fixed', elevationScroll: false, ...appBarProps }}
       {...omit(rest, ['location', 'match', 'staticContext'])}
     >
       <ElevationScroll threshold={threshold}>

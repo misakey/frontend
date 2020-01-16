@@ -6,7 +6,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Screen from 'components/dumb/Screen';
 import Card from 'components/dumb/Card';
-import LinkHome from 'components/dumb/Link/Home';
 import { Typography } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
 
@@ -23,7 +22,8 @@ const AccessRequestError = ({ error, t }) => {
   const appBarProps = useMemo(
     () => ({
       withUser: false,
-      items: [<LinkHome key="linkHome" />],
+      withSearchBar: false,
+      items: [],
     }),
     [],
   );

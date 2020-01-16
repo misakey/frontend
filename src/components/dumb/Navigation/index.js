@@ -15,11 +15,11 @@ import merge from '@misakey/helpers/merge';
 
 import useWidth from '@misakey/hooks/useWidth';
 
+import Title from 'components/dumb/Typography/Title';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 
@@ -148,14 +148,12 @@ const Navigation = forwardRef(({
           </IconButton>
         )}
         {showTitle && (
-          <Typography
-            component="h1"
-            variant="h5"
-            className={classes.title}
+          <Title
             noWrap={noWrap}
+            className={classes.title}
           >
             {title}
-          </Typography>
+          </Title>
         )}
         {children}
       </Toolbar>

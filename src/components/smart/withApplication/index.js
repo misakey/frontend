@@ -15,6 +15,9 @@ import isString from '@misakey/helpers/isString';
 import isArray from '@misakey/helpers/isArray';
 import isFunction from '@misakey/helpers/isFunction';
 import omit from '@misakey/helpers/omit';
+import path from '@misakey/helpers/path';
+import prop from '@misakey/helpers/prop';
+import identity from '@misakey/helpers/identity';
 
 import API from '@misakey/api';
 import ApplicationSchema from 'store/schemas/Application';
@@ -33,6 +36,11 @@ const DEFAULT_ENDPOINT = {
 const INTERNAL_PROPS = ['dispatchReceive', 'dispatchReceivePlugin'];
 
 // HELPERS
+const getMainDomain = (props) => {
+  const routerPropMainDomain = path(['match', 'params', 'mainDomain'])(props);
+  return isNil(routerPropMainDomain) ? prop('mainDomain')(props) : routerPropMainDomain;
+};
+
 const defaultMapper = (props) => [
   null,
   null,
@@ -85,7 +93,13 @@ const useHandleReceive = (enqueueSnackbar, history, pathname, mainDomain, t) => 
 
 const withApplication = (Component, options = {}) => {
   // @FIXME simplify logic of the HOC: params, endpoint, schema
-  const { endpoint, paramMapper, getSpecificShouldFetch, schema = ApplicationSchema } = options;
+  const {
+    endpoint,
+    paramMapper,
+    propsMapper = identity,
+    getSpecificShouldFetch,
+    schema = ApplicationSchema,
+  } = options;
   const ComponentWithApplication = (props) => {
     const {
       isAuthenticated, isDefaultDomain, mainDomain,
@@ -149,10 +163,12 @@ const withApplication = (Component, options = {}) => {
 
     return (
       <Component
-        {...omit(props, INTERNAL_PROPS)}
-        error={error}
-        isFetching={isFetching}
-        mainDomain={mainDomain}
+        {...omit(propsMapper({
+          ...props,
+          error,
+          isFetching,
+          mainDomain,
+        }), INTERNAL_PROPS)}
       />
     );
   };
@@ -161,7 +177,7 @@ const withApplication = (Component, options = {}) => {
     isAuthenticated: PropTypes.bool.isRequired,
     isDefaultDomain: PropTypes.bool.isRequired,
     entity: PropTypes.shape(schema.propTypes),
-    mainDomain: PropTypes.string.isRequired,
+    mainDomain: PropTypes.string,
     dispatchReceive: PropTypes.func.isRequired,
     dispatchReceivePlugin: PropTypes.func.isRequired,
     userId: PropTypes.string,
@@ -171,6 +187,7 @@ const withApplication = (Component, options = {}) => {
   };
 
   ComponentWithApplication.defaultProps = {
+    mainDomain: null,
     entity: null,
     userId: null,
   };
@@ -178,7 +195,7 @@ const withApplication = (Component, options = {}) => {
   const isDefault = (mainDomain) => mainDomain === 'intro';
 
   const mapStateToProps = (state, ownProps) => {
-    const { mainDomain } = ownProps.match.params;
+    const mainDomain = getMainDomain(ownProps);
     return {
       isAuthenticated: !!state.auth.token,
       isDefaultDomain: isDefault(mainDomain),

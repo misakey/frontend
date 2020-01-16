@@ -14,6 +14,7 @@ import Subtitle from 'components/dumb/Typography/Subtitle';
 import ScreenAction from 'components/dumb/Screen/Action';
 import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import Card from 'components/dumb/Card';
+import BoxEllipsis from 'components/dumb/Box/Ellipsis';
 import Button from 'components/dumb/Button';
 import ListQuestions, { useQuestionsItems } from 'components/dumb/List/Questions';
 
@@ -58,9 +59,9 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   avatarParent: {
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
+    position: 'absolute',
+    left: '50%',
+    transform: 'translateX(-50%)',
   },
 }));
 
@@ -81,10 +82,9 @@ const AccessRequestChoose = ({
       withUser: false,
       withSearchBar: false,
       items: [(
-        // @FIXME Make a dumb component of it
-        <div className={classes.avatarParent} key="applicationAvatarParent">
+        <BoxEllipsis className={classes.avatarParent} key="applicationAvatarParent">
           <ApplicationAvatar application={producer} />
-        </div>
+        </BoxEllipsis>
       )],
     }),
     [classes.avatarParent, producer],

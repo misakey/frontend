@@ -25,9 +25,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  appImg: {
-    borderRadius: 5,
+    overflow: 'hidden',
   },
   appName: {
     marginLeft: theme.spacing(2),
@@ -43,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ApplicationAvatar = ({ application, displayRating, displayMainDomain }) => {
+const ApplicationAvatar = ({ application, displayRating, displayMainDomain, fullWidth }) => {
   const classes = useStyles();
 
   const { name, logoUri, mainDomain, avgRating } = useMemo(
@@ -56,10 +54,11 @@ const ApplicationAvatar = ({ application, displayRating, displayMainDomain }) =>
     [name, mainDomain],
   );
 
+  const sizingProps = fullWidth ? { width: 1 } : {};
+
   return (
-    <Box className={classes.appBlock}>
+    <Box className={classes.appBlock} {...sizingProps}>
       <ApplicationImg
-        classes={{ root: classes.appImg }}
         src={logoUri}
         applicationName={applicationName}
       />
@@ -94,12 +93,14 @@ ApplicationAvatar.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes),
   displayRating: PropTypes.bool,
   displayMainDomain: PropTypes.bool,
+  fullWidth: PropTypes.bool,
 };
 
 ApplicationAvatar.defaultProps = {
   application: null,
   displayRating: false,
   displayMainDomain: false,
+  fullWidth: false,
 };
 
 export default withTranslation(['screens'])(ApplicationAvatar);

@@ -60,7 +60,7 @@ function Service({
 
   const appBarProps = useMemo(() => ({
     shift: isDrawerOpen,
-    items: isDrawerOpen ? [] : [<ButtonBurger onClick={() => setDrawerOpen(true)} />],
+    leftItems: isDrawerOpen ? [] : [<ButtonBurger onClick={() => setDrawerOpen(true)} />],
   }), [isDrawerOpen, setDrawerOpen]);
 
   return (

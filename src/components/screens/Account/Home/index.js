@@ -7,7 +7,6 @@ import isEmpty from '@misakey/helpers/isEmpty';
 
 import CardProfile from 'components/dumb/Card/Profile';
 import Screen from 'components/dumb/Screen';
-import LinkHome from 'components/dumb/Link/Home';
 
 // COMPONENTS
 const AccountHome = ({ profile, error, isFetching }) => {
@@ -22,7 +21,7 @@ const AccountHome = ({ profile, error, isFetching }) => {
   );
 
   const appBarProps = useMemo(
-    () => ({ items: [<LinkHome key="LinkHome" />], withSearchBar: false }),
+    () => ({ items: [], withSearchBar: false }),
     [],
   );
 

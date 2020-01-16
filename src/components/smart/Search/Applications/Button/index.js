@@ -1,44 +1,71 @@
-import React, { forwardRef } from 'react';
+import React, { useMemo, forwardRef } from 'react';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
+
+import { IS_PLUGIN } from 'constants/plugin';
+import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD, SEARCH_WIDTH_SM, SEARCH_WIDTH_XS } from 'constants/ui/sizes';
+import ApplicationSchema from 'store/schemas/Application';
+
+import isNil from '@misakey/helpers/isNil';
+import omit from '@misakey/helpers/omit';
+import omitTranslationProps from 'helpers/omit/translationProps';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { withRouter } from 'react-router-dom';
 
-import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD, SEARCH_WIDTH_SM } from 'constants/ui/sizes';
-
+import withApplication from 'components/smart/withApplication';
 import Button from '@material-ui/core/Button';
-import SearchIcon from '@material-ui/icons/Search';
+import ApplicationAvatar from 'components/dumb/Avatar/Application';
+import SearchApplicationsButtonEmpty from 'components/smart/Search/Applications/Button/Empty';
+
+import ArrowDropdownIcon from '@material-ui/icons/ArrowDropDown';
+
+// CONSTANTS
+const WITH_APPLICATION_PROPS = [
+  'error',
+  'isFetching',
+  'mainDomain',
+  'userRoles',
+  'userId',
+  'isDefaultDomain',
+  'isAuthenticated',
+  'staticContext',
+];
+
+// HELPERS
+const omitWithApplication = (props) => omit(props, WITH_APPLICATION_PROPS);
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   root: {
+    flexGrow: 1,
     justifyContent: 'flex-start',
+    textAlign: 'left',
+    margin: 0,
+    maxWidth: SEARCH_WIDTH_XS,
     [theme.breakpoints.up('sm')]: {
-      width: SEARCH_WIDTH_SM,
-      position: 'absolute',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      margin: 0,
+      maxWidth: SEARCH_WIDTH_SM,
     },
     [theme.breakpoints.up('md')]: {
-      width: SEARCH_WIDTH_MD,
+      maxWidth: SEARCH_WIDTH_MD,
     },
     [theme.breakpoints.up('lg')]: {
-      width: SEARCH_WIDTH_LG,
+      maxWidth: SEARCH_WIDTH_LG,
     },
   },
   label: {
     textTransform: 'none',
   },
-  contained: {
-    backgroundColor: theme.palette.grey['200'],
-  },
-  startIcon: {
-    marginRight: theme.spacing(2),
-  },
 }));
 
 // COMPONENTS
-const SearchApplicationsButton = forwardRef((props, ref) => {
+const SearchApplicationsButton = forwardRef(({ entity, t, ...rest }, ref) => {
   const classes = useStyles();
+
+  const noEntity = useMemo(
+    () => isNil(entity),
+    [entity],
+  );
 
   return (
     <Button
@@ -46,15 +73,32 @@ const SearchApplicationsButton = forwardRef((props, ref) => {
       classes={{
         root: classes.root,
         label: classes.label,
-        contained: classes.contained,
-        startIcon: classes.startIcon,
       }}
-      variant="contained"
-      startIcon={<SearchIcon />}
-      disableElevation
-      {...props}
-    />
+      endIcon={<ArrowDropdownIcon />}
+      {...omitTranslationProps(rest)}
+    >
+      {noEntity
+        ? (
+          <SearchApplicationsButtonEmpty />
+        ) : (
+          <ApplicationAvatar
+            application={entity}
+            displayRating={IS_PLUGIN}
+            displayMainDomain={IS_PLUGIN}
+            fullWidth
+          />
+        )}
+    </Button>
   );
 });
 
-export default SearchApplicationsButton;
+SearchApplicationsButton.propTypes = {
+  entity: PropTypes.shape(ApplicationSchema.propTypes),
+  t: PropTypes.func.isRequired,
+};
+
+SearchApplicationsButton.defaultProps = {
+  entity: null,
+};
+
+export default withRouter(withApplication(withTranslation('common')(SearchApplicationsButton), { propsMapper: omitWithApplication }));

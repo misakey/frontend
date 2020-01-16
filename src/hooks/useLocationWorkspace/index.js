@@ -10,12 +10,17 @@ import propOr from '@misakey/helpers/propOr';
 const ROLE_REGEX = new RegExp(`^/(${Object.values(ROLE_LABELS).join('|')})`);
 const DEFAULT_ROLE = ROLE_LABELS.CITIZEN;
 
-export default () => {
+export default (noDefaultRole = false) => {
   const { pathname } = useLocation();
 
+  const defaultRole = useMemo(
+    () => (noDefaultRole ? null : DEFAULT_ROLE),
+    [noDefaultRole],
+  );
+
   const locationRole = useMemo(
-    () => propOr(DEFAULT_ROLE, '1', ROLE_REGEX.exec(pathname)),
-    [pathname],
+    () => propOr(defaultRole, '1', ROLE_REGEX.exec(pathname)),
+    [defaultRole, pathname],
   );
 
   return locationRole;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -54,20 +54,23 @@ const getDefaultProps = (standing) => {
 };
 
 // COMPONENTS
-const Button = ({ classes, isLoading, isValid, text, progressProps, standing, ...rest }) => (
-  <span className={classes.wrapper}>
-    <MUIButton
-      classes={{ root: classes.buttonRoot }}
-      {...getDefaultProps(standing)}
-      disabled={isLoading || !isValid}
-      {...rest}
-    >
-      {text}
-    </MUIButton>
-    {isLoading && (
+const Button = forwardRef(
+  ({ classes, isLoading, isValid, text, progressProps, standing, ...rest }, ref) => (
+    <span className={classes.wrapper}>
+      <MUIButton
+        ref={ref}
+        classes={{ root: classes.buttonRoot }}
+        {...getDefaultProps(standing)}
+        disabled={isLoading || !isValid}
+        {...rest}
+      >
+        {text}
+      </MUIButton>
+      {isLoading && (
       <CircularProgress size={24} className={classes.buttonProgress} {...progressProps} />
-    )}
-  </span>
+      )}
+    </span>
+  ),
 );
 
 Button.propTypes = {
