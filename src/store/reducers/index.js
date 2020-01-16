@@ -11,6 +11,7 @@ import { wrapReducerWithAuth } from 'store/reducers/helpers/createAuthReducer';
 import access from './access';
 import Layout from './Layout';
 import screens from './screens';
+import search from './search';
 import sso from './sso';
 import warning from './warning';
 
@@ -21,6 +22,7 @@ const appReducer = combineReducers({
   access,
   Layout,
   screens,
+  search,
   sso,
   warning,
   entities: wrapReducerWithAuth({

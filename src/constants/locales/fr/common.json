@@ -348,8 +348,20 @@
       "logoAlt": "Informations à propos de {{applicationName}}"
     },
     "linkedApplication": {
+      "citizen": {
+        "title": "Mes apps"
+      },
+      "dpo": {
+        "title": "Mes rôles DPO"
+      },
+      "admin": {
+        "title": "Mes rôles Admin"
+      },
       "link": "Ajouter à mes apps",
       "unlink": "Supprimer de mes apps"
+    },
+    "suggestedApplication": {
+      "title": "Suggestions"
     },
     "linkedDomain": {
       "redirect": "Vous avez été redirigé vers {{mainDomainTo}} car {{mainDomainFrom}} est un domaine lié à {{mainDomainTo}}"

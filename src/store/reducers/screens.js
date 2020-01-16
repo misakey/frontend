@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
-import applications from './screens/applications';
 import auth from './screens/auth';
+import applications from './screens/applications';
 import contact from './screens/contact';
 import landing from './screens/landing';
 import thirdparty from './screens/thirdparty';
@@ -12,8 +12,8 @@ import ServiceHome from './screens/Service/Home';
 
 export default combineReducers({
   // APP
-  applications,
   auth,
+  applications,
   contact,
   landing,
   thirdparty,

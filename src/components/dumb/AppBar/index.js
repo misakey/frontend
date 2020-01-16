@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, Fragment } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -68,44 +68,50 @@ function AppBar({
     [isSmallLayout, shift],
   );
 
-  const responsiveSearchProps = isSmallMode
-    ? { component: IconButton }
-    : {};
-
-  const render = (
-    <MuiAppBar
-      component="nav"
-      position="fixed"
-      color="inherit"
-      elevation={0}
-      className={clsx(
-        classes.appBar,
-        {
-          [classes.appBarShift]: shift,
-        },
-        className,
-      )}
-      {...omitTranslationProps(rest)}
-    >
-      <Toolbar {...toolbarProps}>
-        {map(items)}
-        <div className={classes.grow} />
-        {withSearchBar && (
-          <SearchApplications {...responsiveSearchProps} {...searchBarProps}>
-            {isSmallMode
-              ? (
-                <SearchIcon />
-              ) : t('nav:search.button.search')}
-          </SearchApplications>
-        )}
-        {map(rightAppBarItems)}
-      </Toolbar>
-    </MuiAppBar>
+  const responsiveSearchProps = useMemo(
+    () => (isSmallMode
+      ? { component: IconButton }
+      : {}),
+    [isSmallMode],
   );
 
-  return elevationScroll
-    ? <ElevationScroll {...elevationScrollProps}>{render}</ElevationScroll>
-    : render;
+  const ParentNode = useMemo(
+    () => (elevationScroll ? ElevationScroll : Fragment),
+    [elevationScroll],
+  );
+
+  return (
+    <ParentNode>
+      <MuiAppBar
+        component="nav"
+        position="fixed"
+        color="inherit"
+        elevation={0}
+        className={clsx(
+          classes.appBar,
+          {
+            [classes.appBarShift]: shift,
+          },
+          className,
+        )}
+        {...omitTranslationProps(rest)}
+      >
+        <Toolbar {...toolbarProps}>
+          {map(items)}
+          <div className={classes.grow} />
+          {withSearchBar && (
+            <SearchApplications {...responsiveSearchProps} {...searchBarProps}>
+              {isSmallMode
+                ? (
+                  <SearchIcon />
+                ) : t('nav:search.button.search')}
+            </SearchApplications>
+          )}
+          {map(rightAppBarItems)}
+        </Toolbar>
+      </MuiAppBar>
+    </ParentNode>
+  );
 }
 
 AppBar.propTypes = {

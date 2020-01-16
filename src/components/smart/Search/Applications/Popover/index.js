@@ -5,23 +5,24 @@ import { denormalize } from 'normalizr';
 import { withTranslation } from 'react-i18next';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 
-import API from '@misakey/api';
-
 import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD } from 'constants/ui/sizes';
+import { SUGGESTED_TYPE, LINKED_TYPE } from 'constants/search/application/type';
 
-import { applicationsOnFetch } from 'store/actions/screens/applications';
+import { searchApplications } from 'store/actions/search';
 import ApplicationSchema from 'store/schemas/Application';
 
 import isNil from '@misakey/helpers/isNil';
+import isArray from '@misakey/helpers/isArray';
+import isObject from '@misakey/helpers/isObject';
 import isEmpty from '@misakey/helpers/isEmpty';
 import debounce from '@misakey/helpers/debounce';
 import eventPreventDefault from '@misakey/helpers/event/preventDefault';
 import getNextSearch from 'helpers/getNextSearch';
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
 import useLocationSearchParams from 'hooks/useLocationSearchParams';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import useSearchApplications from 'hooks/useSearchApplications';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
@@ -31,8 +32,10 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Popover from '@material-ui/core/Popover';
 import List from '@material-ui/core/List';
-import Option from 'components/smart/Search/Applications/Popover/Option';
 import IconButton from '@material-ui/core/IconButton';
+import ApplicationListItemNotFound from 'components/dumb/ListItem/Application/NotFound';
+import Option from 'components/smart/Search/Applications/Popover/Option';
+import PopoverListSubheader from 'components/smart/Search/Applications/Popover/ListSubheader';
 
 import ClearIcon from '@material-ui/icons/Clear';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -48,20 +51,9 @@ const TRANSFORM_ORIGIN = {
   horizontal: 'center',
 };
 
-// HELPERS
-const getApplications = (search, isAuthenticated) => {
-  const endpoint = API.endpoints.application.find;
-
-  if (isAuthenticated) { endpoint.auth = true; }
-
-  return API.use(endpoint)
-    .build(undefined, undefined, { search, heavier_than: 99, published: true, limit: 10 })
-    .send();
-};
-
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  paper: {
+  popoverPaper: {
     [theme.breakpoints.down('xs')]: {
       maxWidth: '100%',
       maxHeight: '100%',
@@ -82,14 +74,34 @@ const useStyles = makeStyles((theme) => ({
   inputLabelShrink: {
     transform: 'translate(12px, 4px) scale(0.75) !important',
   },
+  searchBoxRoot: {
+    position: 'sticky',
+    top: 0,
+    zIndex: '1',
+    backgroundColor: theme.palette.background.paper,
+  },
+  listRoot: {
+    backgroundColor: theme.palette.background.paper,
+  },
+  listSubheaderRoot: {
+    top: theme.spacing(6),
+    textTransform: 'uppercase',
+  },
 }));
+
+// added this because there were weird errors with list containing undefined values
+const useCleanList = (list) => useMemo(
+  () => (isArray(list) ? list.filter(isObject) : []),
+  [list],
+);
 
 // COMPONENTS
 const SearchApplicationsPopover = ({
   id,
   anchorEl,
   onClose,
-  entities,
+  suggested,
+  linked,
   isAuthenticated,
   dispatchReceive,
   t,
@@ -134,14 +146,13 @@ const SearchApplicationsPopover = ({
   );
 
   const listLoading = useMemo(
-    () => loading || isNil(entities),
-    [loading, entities],
+    () => loading || isNil(suggested) || isNil(linked),
+    [loading, suggested, linked],
   );
 
-  const options = useMemo(
-    () => (entities || []).concat([{ mainDomain: null }]),
-    [entities],
-  );
+  const suggestedOptions = useCleanList(suggested);
+
+  const linkedOptions = useCleanList(linked);
 
   const updateRouter = useCallback(
     (value) => {
@@ -220,18 +231,18 @@ const SearchApplicationsPopover = ({
     [isEmptySearch, clearedSearchTo, classes.inputAdornmentRoot, loading, t, onMouseDown],
   );
 
+  const getApplications = useSearchApplications();
+
   const onGetOptions = useMemo(
     () => debounce((nextSearch, isAuth) => {
       if (!isNil(nextSearch)) {
         setLoading(true);
         getApplications(nextSearch, isAuth)
-          .then((response) => {
-            dispatchReceive(response.map(objectToCamelCase));
-          })
+          .then(dispatchReceive)
           .finally(() => { setLoading(false); });
       }
     }, 200),
-    [dispatchReceive, setLoading],
+    [dispatchReceive, getApplications, setLoading],
   );
 
   const onChange = useCallback((event) => {
@@ -240,12 +251,14 @@ const SearchApplicationsPopover = ({
   },
   [updateRouter]);
 
-  // update options anytime search or isAuthenticated change
+  // update options anytime search or isAuthenticated change if popover is open
   useEffect(
     () => {
-      onGetOptions(search, isAuthenticated);
+      if (open) {
+        onGetOptions(search, isAuthenticated);
+      }
     },
-    [isAuthenticated, onGetOptions, search],
+    [isAuthenticated, onGetOptions, open, search],
   );
 
   // update router when popover opens
@@ -266,11 +279,11 @@ const SearchApplicationsPopover = ({
       anchorOrigin={ANCHOR_ORIGIN}
       transformOrigin={TRANSFORM_ORIGIN}
       marginThreshold={0}
-      classes={{ paper: classes.paper }}
+      classes={{ paper: classes.popoverPaper }}
       {...popoverProps}
     >
       <Box>
-        <Box mx={1.5} my={1}>
+        <Box px={1.5} py={1} classes={{ root: classes.searchBoxRoot }}>
           <TextField
             autoFocus
             fullWidth
@@ -288,15 +301,38 @@ const SearchApplicationsPopover = ({
             }}
           />
         </Box>
-        <List disablePadding>
-          {options.map((option) => (
+        <List disablePadding classes={{ root: classes.listRoot }}>
+          {!isEmpty(linkedOptions) && (
+            <PopoverListSubheader
+              classes={{ root: classes.listSubheaderRoot }}
+              type={LINKED_TYPE}
+            />
+          )}
+          {linkedOptions.map((option) => (
             <Option
               key={option.mainDomain}
               application={option}
               disabled={listLoading}
               onClick={onClose}
+              type={LINKED_TYPE}
             />
           ))}
+          {!isEmpty(suggestedOptions) && (
+            <PopoverListSubheader
+              classes={{ root: classes.listSubheaderRoot }}
+              type={SUGGESTED_TYPE}
+            />
+          )}
+          {suggestedOptions.map((option) => (
+            <Option
+              key={option.mainDomain}
+              application={option}
+              disabled={listLoading}
+              onClick={onClose}
+              type={SUGGESTED_TYPE}
+            />
+          ))}
+          <ApplicationListItemNotFound disabled={listLoading} onClick={onClose} />
         </List>
       </Box>
     </Popover>
@@ -308,7 +344,8 @@ SearchApplicationsPopover.propTypes = {
   anchorEl: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   onClose: PropTypes.func.isRequired,
   // CONNECT
-  entities: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
+  suggested: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
+  linked: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
   isAuthenticated: PropTypes.bool,
   dispatchReceive: PropTypes.func.isRequired,
 
@@ -318,14 +355,20 @@ SearchApplicationsPopover.propTypes = {
 SearchApplicationsPopover.defaultProps = {
   id: null,
   anchorEl: null,
-  entities: null,
+  suggested: null,
+  linked: null,
   isAuthenticated: false,
 };
 
 // CONNECT
 const mapStateToProps = (state) => ({
-  entities: denormalize(
-    state.screens.applications.ids,
+  suggested: denormalize(
+    state.search.suggestedIds,
+    ApplicationSchema.collection,
+    state.entities,
+  ),
+  linked: denormalize(
+    state.search.linkedIds,
     ApplicationSchema.collection,
     state.entities,
   ),
@@ -333,7 +376,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchReceive: (applications) => dispatch(applicationsOnFetch(applications)),
+  dispatchReceive: (applications) => dispatch(searchApplications(applications)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('common')(SearchApplicationsPopover));

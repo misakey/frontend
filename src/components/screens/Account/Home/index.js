@@ -22,7 +22,7 @@ const AccountHome = ({ profile, error, isFetching }) => {
   );
 
   const appBarProps = useMemo(
-    () => ({ items: [<LinkHome />] }),
+    () => ({ items: [<LinkHome key="LinkHome" />], withSearchBar: false }),
     [],
   );
 
