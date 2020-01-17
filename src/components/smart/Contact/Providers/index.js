@@ -8,8 +8,6 @@ import { connect } from 'react-redux';
 import { mailProviderPreferencyUpdate } from 'store/actions/screens/contact';
 
 import isNil from '@misakey/helpers/isNil';
-import initial from '@misakey/helpers/tail';
-import last from '@misakey/helpers/head';
 import isFunction from '@misakey/helpers/isFunction';
 
 import Container from '@material-ui/core/Container';
@@ -36,24 +34,9 @@ const ContactProvidersBlock = ({
 
   const [contacted, setContacted] = useState(false);
 
-  const { applicationNames, lastApplicationName } = useMemo(
-    () => {
-      const appNames = mailtoProps.map((element) => element.applicationName);
-      return {
-        applicationNames: (appNames.length > 1 ? initial(appNames) : appNames).join(', '),
-        lastApplicationName: last(appNames),
-      };
-    },
-    [mailtoProps],
-  );
-
   const subtitle = useMemo(
     () => t('common:contact.providers.subtitle'),
     [t],
-  );
-  const mailReminder = useMemo(
-    () => t('common:contact.providers.mailReminder', { applicationNames, lastApplicationName, count: mailtoProps.length }),
-    [applicationNames, lastApplicationName, mailtoProps.length, t],
   );
 
   const onChange = useCallback(
@@ -99,7 +82,7 @@ const ContactProvidersBlock = ({
       <Subtitle>
         {subtitle}
       </Subtitle>
-      <BoxMessage text={mailReminder} my={2} type="info" classes={{ root: classes.subtitleRoot }} />
+      <BoxMessage text={t('common:contact.providers.mailReminder')} my={2} type="info" classes={{ root: classes.subtitleRoot }} />
       <ListMailProviders
         mailtoProps={mailtoProps}
         disabled={contacted}

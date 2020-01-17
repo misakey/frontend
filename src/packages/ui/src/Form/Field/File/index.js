@@ -134,11 +134,6 @@ const FileField = ({ className, t, onChange, onError, accept }) => {
       <Typography variant={dragActive ? 'h6' : 'body1'} color={dragActive ? 'secondary' : 'textPrimary'}>
         {t('fields:file.label', 'Drop a file here')}
       </Typography>
-      {!dragActive && (
-        <Typography variant="body2" color="textSecondary">
-          {t('fields:file.subtitle', 'or if you prefer')}
-        </Typography>
-      )}
 
       <label htmlFor="button-file">
         <input

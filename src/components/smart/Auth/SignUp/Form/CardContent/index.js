@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
 
 import Typography from '@material-ui/core/Typography';
 import MUILink from '@material-ui/core/Link';
@@ -13,26 +13,27 @@ const useStyles = makeStyles((theme) => ({
   moreTypography: { marginTop: theme.spacing(2) },
 }));
 
-const SignUpFormCardContent = ({ t, fields }) => (
+const SignUpFormCardContent = ({ fields }) => (
   <div className="SignUpFormCardContent">
     {fields}
     <Typography className={useStyles().moreTypography}>
-      {t('auth:signUp.card.more.text')}
-      <MUILink
-        color="secondary"
-        to={routes.legals.privacy}
-        component={Link}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {t('auth:signUp.card.more.link')}
-      </MUILink>
+      <Trans i18nKey="auth:signUp.card.more.text">
+        {'En savoir plus sur '}
+        <MUILink
+          color="secondary"
+          to={routes.legals.privacy}
+          component={Link}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          la sécurisation de mes connexions par Misakey
+        </MUILink>
+      </Trans>
     </Typography>
   </div>
 );
 
 SignUpFormCardContent.propTypes = {
-  t: PropTypes.func.isRequired,
   fields: PropTypes.node,
 };
 

@@ -321,7 +321,7 @@ const CardDatabox = ({
             onContributionClick={onContributionDpoEmailClick}
             applicationID={id}
             mainDomain={mainDomain}
-            buttonProps={{ standing: BUTTON_STANDINGS.MAJOR }}
+            buttonProps={{ standing: BUTTON_STANDINGS.MAIN }}
           >
             {t(`common:databox.button.label.${resend ? 'resend' : 'send'}`)}
           </ContactButton>

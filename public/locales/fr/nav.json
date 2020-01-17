@@ -3,9 +3,9 @@
     "toggle": "Basculer le menu",
     "select": {
       "service": {
-        "dropdown": "Basculer la liste des services",
+        "dropdown": "Basculer la liste des sites",
         "logo": {
-          "alt": "Logo du service : {{mainDomain}}",
+          "alt": "Logo du site : {{mainDomain}}",
           "title": "{{mainDomain}}"
         }
       }
@@ -18,13 +18,13 @@
         "users": "Utilisateurs",
         "data": "Mon coffre-fort",
         "requests": "Requêtes RGPD",
-        "claim": "Revendiquer ce service"
+        "claim": "Revendiquer ce site"
       }
     }
   },
   "search": {
     "label": "Chercher",
-    "placeholder": "Chercher un service",
+    "placeholder": "Chercher un site",
     "reset": {
       "label": "Réinitialiser"
     },

@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import MUILink from '@material-ui/core/Link';
+
 
 import ApplicationSchema from 'store/schemas/Application';
 
@@ -47,7 +50,23 @@ const InfoContentSecurity = ({
   const securityContent = useMemo(
     () => {
       if (!isAuthenticated || hasDpoEmail) {
-        return t('screens:application.info.security.dpo');
+        return (
+          <Trans i18nKey="screens:application.info.security.dpo.text">
+            {'Je demande mes données au site au travers d’une '}
+            <MUILink
+              color="secondary"
+              to={t('screens:application.info.security.dpo.faqPortabilityRequest')}
+              component={Link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              demande de portabilité
+            </MUILink>
+            .
+            <br />
+            Je pourrai les retrouver sur mon espace Misakey et en profiter comme bon me semble.
+          </Trans>
+        );
       }
       if (hasDpoContact) {
         return t('screens:application.info.security.contactForm');
@@ -71,7 +90,7 @@ const InfoContentSecurity = ({
         onContributionClick={onContributionDpoEmailClick}
         applicationID={id}
         mainDomain={mainDomain}
-        buttonProps={{ standing: BUTTON_STANDINGS.MAJOR }}
+        buttonProps={{ standing: BUTTON_STANDINGS.MAIN }}
       >
         {t('screens:application.info.security.button.dpo')}
       </ContactButton>
@@ -103,7 +122,7 @@ const InfoContentSecurity = ({
       primary={primary}
       secondary={secondary}
     >
-      <Typography color="textSecondary">
+      <Typography>
         {securityContent}
       </Typography>
     </Card>

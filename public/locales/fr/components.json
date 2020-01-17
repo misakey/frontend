@@ -6,12 +6,11 @@
     }
   },
   "linkedApplications": {
-    "title": "Mes requêtes",
-    "noApp": "Vous n'avez encore contacté aucun site. Vous pouvez en chercher un pour le contacter.",
+    "title": "Mes sites",
     "error": "Une erreur est survenue lors de la récupération des applications"
   },
   "bulkContact": {
-    "contact": "Contacter",
+    "contact": "Demander mes données",
     "unselect_all": "Annuler la sélection"
   }
 }

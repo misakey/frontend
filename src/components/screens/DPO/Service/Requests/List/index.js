@@ -33,7 +33,6 @@ import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
 import Skeleton from '@material-ui/lab/Skeleton';
 import BoxSection from 'components/dumb/Box/Section';
-import Subtitle from 'components/dumb/Typography/Subtitle';
 import Empty from 'components/dumb/Box/Empty';
 import ScreenAction from 'components/dumb/Screen/Action';
 import ChipDataboxStatus from 'components/dumb/Chip/Databox/Status';
@@ -269,9 +268,6 @@ function ServiceRequestsList({ appBarProps, service, t, isLoading, error }) {
       fullHeight
     >
       <Container maxWidth="md" className={classes.container}>
-        <Subtitle>
-          {t('screens:Service.requests.list.subtitle')}
-        </Subtitle>
         <BoxSection my={3} p={0} className={classes.box}>
           <List className={classes.list} disablePadding>
             {list.length === 0 && <Empty />}

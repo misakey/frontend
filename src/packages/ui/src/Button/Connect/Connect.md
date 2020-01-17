@@ -2,7 +2,6 @@
 ```js
 import React, { forwardRef, Suspense } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import '@misakey/ui/i18n';
 import { Link, BrowserRouter as Router } from 'react-router-dom';
 import ButtonConnect from './index';
 
@@ -45,7 +44,6 @@ const ButtonConnectExample = () => {
 #### Not connected with icon
 ```js
 import React, { forwardRef, Suspense } from 'react';
-import '@misakey/ui/i18n';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Link, BrowserRouter as Router } from 'react-router-dom';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';

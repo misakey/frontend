@@ -7,16 +7,11 @@
     },
     "choose": {
       "title": "Accès au coffre-fort de {{ownerName}} ({{ownerEmail}})",
-      "desc": {
-        "0": "Ceci est l’interface de transfert chiffré des données personnelles de {{ownerName}}.",
-        "1": "{{ownerName}} souhaite récupérer ses données personnelles dans son coffre-fort Misakey afin d’assurer la chaîne de confiance lors du transfert.",
-        "2": "L’accès est exclusivement réservé à {{applicationName}} et contrôlé par l’envoi d’un code de confirmation à {{dpoEmail}}.",
-        "3": "Vous permet d’accéder ponctuellement à l’interface à l’aide d’un code de confirmation envoyé à l’e-mail \n {{dpoEmail}}",
-        "4": "Vous permet de vous connecter avec votre compte Misakey ou d’un créer un afin de retrouver sur une même interface toutes les demandes de vos utilisateurs utilisant un coffre-fort Misakey"
-      },
+      "desc": "Ceci est l’interface de transfert chiffré des données personnelles de {{ownerName}}.<br/><br/>{{ownerName}} souhaite récupérer ses données personnelles dans son coffre-fort Misakey afin d’assurer la chaîne de confiance lors du transfert.<br/><br/>L’accès est exclusivement réservé à {{applicationName}} et contrôlé par l’envoi d’un code de confirmation à {{dpoEmail}}",
+      "passwordLess": "Je continue sans créer de compte. Un code de confirmation sera envoyé par e-mail à {{dpoEmail}}",
+      "password": "Je me connecte avec mon compte Misakey ou j'en crée un afin de retrouver sur une même interface toutes les demandes de mes utilisateurs possédant un coffre-fort Misakey",
       "questions": {
         "title": "Questions fréquentes",
-        "subtitle": "Retrouvez toutes les réponses à vos questions sur notre FAQ pour les DPO.",
         "text": {
           "0": "Comment utiliser la plateforme Misakey&nbsp;?",
           "1": "Qu’est-ce qu’une requête de portabilité&nbsp;?",
@@ -44,24 +39,24 @@
       "success": "L'email a été envoyé avec succès !"
     },
     "token": {
-      "success": "Vous avez maintenant accès à la demande de portabilité de {{ownerEmail}} !"
+      "success": "J'ai maintenant accès à la demande de portabilité de {{ownerEmail}} !"
     },
     "troubleshooting": {
       "title": "Un souci avec la connexion ?",
-      "subtitle": "Vérifiez bien votre boite email {{dpoEmail}} et votre dossier spam si vous ne recevez pas l'email.",
+      "subtitle": "Je vérifie ma boite email {{dpoEmail}} et mon dossier spam si je n'ai pas trouvé l'email",
       "desc": {
-        "1": "Le code que nous vous envoyons est à usage unique et valide 30 minutes. Après ce délai ou utilisation du premier code, vous devrez en demander un nouveau.",
-        "2": "Si vous rencontrez un problème, n'hésitez pas à nous contacter à <1>question.pro@misakey.com</1>, nous vous répondrons rapidement !"
+        "1": "Ce code que nous envoyons est à usage unique et valide 30 minutes. Après ce délai ou utilisation du premier code, je devrai en demander un nouveau",
+        "2": "Si je rencontre un problème, je peux envoyer un mail à <1>question.pro@misakey.com</1>, et m'attendre à une réponse rapide !"
       }
     },
     "error": {
       "404": {
         "title": "Demande de portabilité introuvable",
-        "desc": "La demande de portabilité que vous essayez de consulter n'existe pas. \nVeuillez vérifier que vous avez bien recopié le lien qui vous a été envoyé par email. Si cela ne fonctionne toujours pas, vous pouvez nous contacter à <1>question.pro@misakey.com</1>. \nPensez à nous joindre le lien qui ne fonctionne pas et le mail de l'utilisateur ayant fait la demande. \nVeuillez nous excuser de la gêne occasionnée."
+        "desc": "Aucune demande de portabilité en cours trouvée. \nEst-elle traitée ou introuvable ? \nEn cas de problème, je peux envoyer un mail à <1>question.pro@misakey.com</1> \nEn pensant à joindre le lien qui ne fonctionne pas et le mail de l'utilisateur ayant fait la demande. \nNos excuses pour la gêne occasionnée"
       },
       "default": {
         "title": "Demande de portabilité introuvable",
-        "desc": "La demande de portabilité que vous essayez de consulter n'existe pas. \nVeuillez vérifier que vous avez bien recopié le lien qui vous a été envoyé par email. Si cela ne fonctionne toujours pas, vous pouvez nous contacter à <1>question.pro@misakey.com</1>. \nPensez à nous joindre le lien qui ne fonctionne pas et le mail de l'utilisateur ayant fait la demande. \nVeuillez nous excuser de la gêne occasionnée."
+        "desc": "Aucune demande de portabilité en cours trouvée. \nEst-elle traitée ou introuvable ? \nEn cas de problème, je peux envoyer un mail à <1>question.pro@misakey.com</1>. \nEn pensant à joindre le lien qui ne fonctionne pas et le mail de l'utilisateur ayant fait la demande. \nNos excuses pour la gêne occasionnée"
       }
     }
   },
@@ -69,7 +64,7 @@
     "Actions": {
       "loginAs": {
         "button": "Connexion en tant que citoyen",
-        "description": "Vous ne pouvez pas accéder à cet espace en étant connecté en tant qu'administrateur ou DPO",
+        "description": "Je ne peux pas accéder à cet espace en étant connecté en tant qu'administrateur ou DPO",
         "loading": "Connexion en tant que citoyen en cours..."
       }
     }
@@ -80,18 +75,17 @@
     },
     "name": {
       "title": "Nom public",
-      "subtitle": "Le nom public est visible par tous. Votre email permet de l'obtenir",
-      "success": "Votre nom public a été mis à jour"
+      "subtitle": "Mon nom public sera visible par tous",
+      "success": "Mon nom public a été mis à jour"
     },
     "password": {
       "title": "Mot de passe",
-      "subtitle": "Si vous modifiez ce mot de passe, vous serez déconnecté de tous vos appareils, y compris votre téléphone. Vous devrez saisir le nouveau mot de passe sur tous ces appareils",
-      "success": "Votre mot de passe a été mis a jour"
+      "success": "Mon mot de passe a été mis a jour"
     },
     "avatar": {
       "title": "Photo",
-      "subtitle": "Votre photo de profil est visible par tous, sur l'ensemble des sites qui utilisent Misakey",
-      "success": "Votre photo de profil a été mise à jour",
+      "subtitle": "Ma photo de profil est visible par tous sur l’ensemble des sites qui utilisent Misakey",
+      "success": "Ma photo de profil a été mise à jour",
       "upload": {
         "title": "Upload photo",
         "subtitle": "Les fichiers .jpg .jpeg .png .tiff .gif de moins de 3mo sont acceptés"
@@ -114,16 +108,16 @@
       "subtitle": "Mes suggestions"
     },
     "empty": {
-      "subtitle": "Cherchez un service pour récupérer vos données"
+      "subtitle": "Je cherche un site pour récupérer mes données"
     },
     "notFound": {
-      "subtitle": "Votre service manque à la liste ?",
-      "button": "Créer le service"
+      "subtitle": "Mon site manque à la liste ?",
+      "button": "Créer le site"
     },
     "create": {
-      "title": "Créer un service",
-      "subtitle": "Indiquez l'adresse de votre service, nous nous occupons de rappatrier ses informations",
-      "success": "Demande de création d'application reçue!"
+      "title": "Créer un site",
+      "subtitle": "J'indique l'adresse de mon site, Misakey s'occupe de rappatrier ses informations !",
+      "success": "Demande de création d'application reçue !"
     }
   },
   "application": {
@@ -135,7 +129,7 @@
     },
     "info": {
       "logoAlt": "Informations à propos de {{applicationName}}",
-      "emailSignIn": "Connectez-vous pour voir l'email du DPO",
+      "emailSignIn": "Me connecter pour voir l'email du DPO",
       "ratingCount": "{{count}} note",
       "ratingCount_plural": "{{count}} notes",
       "desc": {
@@ -144,23 +138,26 @@
         "inProgress": {
           "title": "Fiche en cours de création",
           "text": {
-            "contribute": "La fiche du service est en cours de création. Vous pouvez ajouter l'email du dpo et les liens vers la politique de confidentialité et les conditions générales.",
-            "claim": "Si vous êtes administrateur du service, vous pouvez lancer le processus de récupération du rôle administrateur."
+            "contribute": "La fiche du site est en cours de création. Je peux déjà ajouter l'email du dpo et les liens vers la politique de confidentialité et les conditions générales",
+            "claim": "En tant qu'administrateur, je peux lancer le processus de récupération du rôle administrateur"
           }
         }
       },
       "security": {
-        "title": "Sécuriser mes données",
-        "default": "Vous connaissez l'email du DPO du site ? Envoyez le nous pour que nous puissions l'intégrer à la base de donnée collaborative !",
-        "dpo": "Demandez vos données au site au travers d'une demande de portabilité. Vous avez le droit de demander à n'importe quel site de transmettre vos données dans votre coffre-fort Misakey pour en profiter comme bon vous semble.",
-        "contactForm": "Ce site redirige vers un formulaire pour demander ses données personnelles. Si vous connaissez l'email du délégué à la protection des données, ajoutez le afin que nous puissions sécuriser la récupération des données personnelles",
+        "title": "Portabilité",
+        "default": "Si j'ai trouvé l'email DPO de ce site, je l'envoie à Misakey pour l'intégrer à la base de donnée collaborative !",
+        "dpo": {
+          "text": "Je demande mes données au site au travers d’une <1>demande de portabilité</1>.<br/>Je pourrai les retrouver sur mon espace Misakey et en profiter comme bon me semble",
+          "faqPortabilityRequest": "https://docs.misakey.com/#/citizen/misakey?id=la-demande-de-portabilit%c3%a9"
+        },
+        "contactForm": "Misakey ne connaît qu'un formulaire en ligne pour faire des requêtes de données personnelles à ce site. Si j'ai trouvé l'email DPO de ce site, je peux l'envoyer à Misakey pour l'intégrer à la base de données collaborative !",
         "button": {
           "contactForm": "Formulaire de contact",
           "dpo": "Demander mes données"
         }
       },
       "contact": {
-        "goToApp": "Contacter depuis l'application"
+        "goToApp": "Demander mes données depuis le site"
       },
       "userContribution": {
         "dpoEmailOpenDialog": "Je connais l'email du DPO !",
@@ -168,12 +165,12 @@
         "dialog": {
           "title": "Améliorer la fiche de {{appName}}",
           "intro": {
-            "dpoEmail": "Vous connaissez l'email du DPO de {{appName}} ? Envoyez le nous pour que nous puissions l'intégrer à la base de donnée collaborative !",
-            "link": "Vous connaissez une page légale de {{appName}} ? (politique de confidentialité, CGU, ...) Envoyez le nous pour que nous puissions l'intégrer à la base de donnée collaborative !"
+            "dpoEmail": "Si j'ai trouvé l'email DPO de {{appName}} je l'envoie à Misakey pour l'intégrer à la base de donnée collaborative !",
+            "link": "Si j'ai trouvé une page légale de {{appName}} (politique de confidentialité, CGU, ...) je l'envoie à Misakey pour l'intégrer à la base de donnée collaborative !"
           },
           "linkExplaination": {
-            "dpoEmail": "Donnez nous l'URL de la page sur laquelle vous avez trouvé l'email, pour qu'on ait un moyen de vérifier ce mail.",
-            "link": "Donnez nous l'URL de la page légale"
+            "dpoEmail": "Je renseigne l'URL de la page sur laquelle j'ai trouvé l'email, pour fournir un moyen de le vérifier ultérieurement",
+            "link": "Je renseigne l'URL de la page légale"
           },
           "fields": {
             "dpoEmail": "Email du DPO",
@@ -182,15 +179,15 @@
               "link": "URL de la page"
             }
           },
-          "outro": "Nous vérifions toutes les contributions à la main. Cela peut prendre plusieurs jours avant que la base de donnée soit mise à jour. N'hésitez pas à nous contacter si vous ne voyez pas votre contribution en ligne dans quelques semaines.",
+          "outro": "Nous vérifions toutes les contributions à la main. Cela peut prendre plusieurs jours avant que la base de données soit mise à jour. Merci de nous contacter si cette contribution n'est pas intégrée d'ici quelques semaines",
           "send": "Envoyer"
         },
-        "success": "Merci ! Votre contribution a bien été envoyée"
+        "success": "Merci, cette contribution a bien été envoyée !"
       },
       "primary": {
         "title": "Informations principales",
         "keys": {
-          "serviceType": "Type de service",
+          "serviceType": "Type de site",
           "privacyJuridiction": "Juridiction données personnelles",
           "mainIncome": "Principale source de revenue",
           "homeCountry": "Siège social",
@@ -224,7 +221,7 @@
       "secondary": {
         "title": "Informations secondaires",
         "keys": {
-          "isThirdParty": "Peut être utilisé en tant que tier parti",
+          "isThirdParty": "Peut être utilisé en tant que cookie tiers",
           "name": "Nom",
           "mainDomain": "Nom de domaine principal",
           "id": "Identifiant",
@@ -254,36 +251,36 @@
         "moreCount": "+ {{count}} domaine",
         "moreCount_plural": "+ {{count}} domaines"
       },
-      "databoxCount": "Vous avez contacté <1>{{count}}</1> site au total",
-      "databoxCount_plural": "Vous avez contacté <1>{{count}}</1> sites au total",
+      "databoxCount": "J'ai contacté <1>{{count}}</1> site",
+      "databoxCount_plural": "J'ai contacté <1>{{count}}</1> sites",
       "claimCallToAction": {
-        "title": "Plus d’informations sur ce site",
-        "subtitle": "Prenez la main sur les informations de cette fiche pour l’enrichir d’informations complémentaires sur votre politique de protection de la vie privée.",
+        "title": "Je suis le DPO de ce site",
+        "subtitle": "Je veux gérer les demandes de portabilité auprès de mon site via une interface sécurisée",
         "button": "Je suis DPO"
       }
     },
     "box": {
       "passwordPrompt": {
         "title": "Ouvrir mon coffre-fort",
-        "description": "Pour cette action nous avons besoin de votre mot de passe"
+        "description": "Pour cette action, je dois saisir mon mot de passe"
       },
-      "errorNotif": "Une erreur est survenue.",
-      "mustUnlockVault": "Vous devez ouvrir votre coffre-fort pour télécharger les fichiers",
-      "unlockVaultButton": "Cliquez ici",
-      "title": "Récupérer vos données",
+      "errorNotif": "Une erreur est survenue",
+      "mustUnlockVault": "Ouvrir mon coffre-fort pour accéder à mes fichiers",
+      "mustUnlockVaultBanner": "Ouvrir mon coffre-fort pour <1>accéder à mes fichiers</1>",
+      "title": "Récupérer mes données",
       "archives": {
         "title": "Demandes archivées"
       },
       "info": {
-        "title": "À propos de votre coffre-fort",
+        "title": "À propos de mon coffre-fort",
         "primaryButton": "Créer un coffre",
         "secondaryButton": "Ouvrir mon coffre-fort",
         "altIllu": "Personnage devant un coffre-fort",
-        "details": "Votre coffre-fort est chiffré par une clé secrète, elle même protégée par votre mot de passe. Vous seul avez accès à cette clé qui permet de lire les données contenues dans votre coffre. Lorsqu’un site vous envoie des données, elles sont chiffrées avant d’être envoyées dans votre coffre afin que vous seul puissiez y accéder. Misakey ne peut pas lire vos données.<br/><br/>En cas de perte de votre mot de passe, vos données ne seront plus accessibles."
+        "details": "Mon coffre-fort est chiffré par une clé secrète, elle-même protégée par mon mot de passe. Je suis le seul à pouvoir accéder à cette clé qui permet de lire les données contenues dans mon coffre. Lorsqu’un site m’envoie des données, elles sont chiffrées avant d’être envoyées dans mon coffre. Misakey ne peut pas lire mes données. <br /><br />Attention : En cas de perte de mon mot de passe, mes données ne seront plus accessibles"
       },
       "questions": {
         "title": "Questions fréquentes",
-        "subtitle": "Retrouvez toutes les réponses à vos questions sur notre FAQ pour les Citoyens.",
+        "subtitle": "Toutes les réponses à mes questions sont sur notre FAQ pour les Citoyens",
         "text": {
           "0": "Qu'est-ce que le RGPD&nbsp;?",
           "1": "Quels devoirs ont les sites&nbsp;?",
@@ -321,8 +318,8 @@
     "thirdParty": {
       "inApp": {
         "plugin": {
-          "title": "Bloquer les acteurs publicitaires",
-          "subtitle": "Vous en avez assez d’être forcé d’accepter les cookies… Supprimez les bandeaux \"j’accepte\" de tous les sites et imposez votre décision face aux acteurs publicitaires une bonne fois pour toutes.",
+          "title": "Je bloque les acteurs publicitaires",
+          "subtitle": "Grâce au plugin Misakey, je supprime les bandeaux « J’accepte » des sites et j’impose ma décision face aux acteurs publicitaires une bonne fois pour toutes",
           "button": "Télécharger le plugin"
         }
       },
@@ -340,7 +337,7 @@
       },
       "summary": {
         "title": "Ma configuration",
-        "description": "Cliquer sur une catégorie de cookies pour paramétrer vos préférences. Les cookies sont bloqués par défaut.",
+        "description": "Cliquer sur une catégorie de cookies pour paramétrer mes préférences. Les cookies sont bloqués par défaut",
         "count": {
           "detected": "{{count}} détecté",
           "detected_plural": "{{count}} détectés",
@@ -350,7 +347,7 @@
         }
       },
       "error": {
-        "description": "Une erreur s'est produite lors du lancement du bloqueur en arrière-plan. Vous pouvez essayer de le mettre à jour si vous n'êtes pas sur la dernière version ou de le redémarrer.",
+        "description": "Une erreur s'est produite lors du lancement du bloqueur en arrière-plan. Je peux essayer de le mettre à jour, s'il ne l'est pas, ou de le redémarrer",
         "button": {
           "restart": "Redémarrer le plugin",
           "update": "Mettre à jour"
@@ -387,25 +384,25 @@
   },
   "contact": {
     "preview": {
-      "subtitle": "Validez la pré-visualisation pour envoyer votre email de demande de portabilité",
+      "subtitle": "Je choisis l'e-mail que je souhaite envoyer au site pour faire ma demande",
       "title": "E-mail de portabilité"
     },
     "bulk": {
       "list": {
-        "title": "Contacter les applications",
-        "subtitle": "Un email sera envoyé à chacune des applications que vous avez sélectionnées.",
-        "empty": "Vous n'avez pas selectionné d'application à contacter. Recherchez des applications ou sélectionner-les depuis la page d'accueil."
+        "title": "Demander mes données aux applications",
+        "subtitle": "Un email sera envoyé à chacune des applications que j'ai sélectionnées",
+        "empty": "Je n'ai pas encore selectionné d'application à contacter. Je peux rechercher des applications ou en sélectionner depuis la page d'accueil"
       },
       "recontact": "Relance",
-      "closed": "L'email ne sera pas envoyé car la demande actuelle est fermée."
+      "closed": "L'email ne sera pas envoyé car la demande actuelle est fermée"
     }
   },
   "databox": {
-    "enterPassword": "Veuillez saisir votre mot de passe",
+    "enterPassword": "Je dois saisir mon mot de passe",
     "sendAt": "Envoyé {{date}}",
     "size": "Envoyé {{size}}",
     "errors": {
-      "missingSecretKey": "Vous n'avez pas accès à la clé de déchiffrement",
+      "missingSecretKey": "Je n'ai pas accès à la clé de déchiffrement",
       "getBlob": "Une erreur s'est produite lors de la récupération du fichier",
       "default": "Oops, impossible de télécharger le fichier !"
     }
@@ -414,62 +411,62 @@
     "me": {
       "title": "Mon avis global",
       "subtitle": "Avis posté en mode public",
-      "success": "Votre avis a été publié!"
+      "success": "Mon avis a été publié!"
     },
     "others": {
       "title": "Avis des utilisateurs"
     }
   },
   "landing": {
-    "subtitle": "Chercher un site internet pour récupérer vos données personnelles",
+    "subtitle": "Chercher un site internet pour récupérer mes données personnelles",
     "unAuthenticated": {
-      "title": "Aidez-nous à habituer les sites à vous envoyer des données sans risque pour votre vie privée",
-      "1": "1. J'installe l'extension Misakey: sur <1>Firefox</1> ou <3>Chrome</3>",
-      "2": "2. Je crée mon compte gratuitement: <1>créer mon compte</1>",
+      "title": "Aidez-nous a habituer les sites à vous envoyer VOS données !",
+      "1": "1. J'installe l'extension Misakey : sur <1>Firefox</1> ou <3>Chrome</3>",
+      "2": "2. Je crée mon compte gratuitement : <1>créer mon compte</1>",
       "3": "3. Je demande mes données à mes sites en 2 clics"
     },
     "authenticated": {
-      "title": "Bienvenue, c'est parti pour habituer les sites à vous envoyer des données sans risque pour votre vie privée",
+      "title": "Bienvenue ! Aidez-nous a habituer les sites à vous envoyer VOS données !",
       "1": "1. Je cherche mes sites",
       "2": "2. Je demande mes données",
-      "3": "3. Je discute avec le DPO pour faire valoir <1>mes droits</1>.",
+      "3": "3. Je discute avec le DPO pour faire valoir <1>mes droits</1>",
       "myRights": "https://docs.misakey.com/#/citizen/faq?id=quels-droits-me-procure-le-rgpd-"
     }
   },
   "Service": {
     "Actions": {
       "search_other": {
-        "button": "Chercher un autre service"
+        "button": "Chercher un autre site"
       },
       "claim": {
         "dpo": {
           "button": "Je suis DPO",
-          "description": "Vous n'êtes pas connecté en tant que DPO de ce service. Si vous êtes DPO du service, vous pouvez lancer le processus de récupération du rôle DPO. Sinon vous pouvez chercher un autre service."
+          "description": "Je ne suis pas connecté en tant que DPO de ce site, je peux lancer le processus de récupération du rôle DPO. Sinon je peux chercher un autre site"
         },
         "admin": {
           "button": "Je suis administrateur",
-          "description": "Vous n'êtes pas connecté en tant qu'administrateur de ce service. Si vous êtes administrateur du service, vous pouvez lancer le processus de récupération du rôle administrateur. Sinon vous pouvez chercher un autre service."
+          "description": "Je ne suis pas connecté en tant qu'administrateur de ce site, je peux lancer le processus de récupération du rôle administrateur. Sinon je peux chercher un autre site"
         }
       },
       "loginAs": {
         "dpo": {
           "button": "Connexion en tant que DPO",
-          "description": "Vous n'êtes pas connecté en tant que DPO",
+          "description": "Je ne suis pas connecté en tant que DPO",
           "loading": "Connexion en tant que DPO en cours..."
         },
         "admin": {
           "button": "Connexion en tant qu'administrateur",
-          "description": "Vous n'êtes pas connecté en tant qu'administrateur",
+          "description": "Je ne suis pas connecté en tant qu'administrateur",
           "loading": "Connexion en tant qu'administrateur en cours..."
         }
       }
     },
     "Intro": {
       "dpo": {
-        "description": "Bienvenue dans l'espace DPO. Pour commencer, veuillez chercher un service"
+        "description": "Bienvenue dans l'espace DPO. Pour commencer, je recherche un site"
       },
       "admin": {
-        "description": "Bienvenue dans l'espace administrateur. Pour commencer, veuillez chercher un service"
+        "description": "Bienvenue dans l'espace administrateur. Pour commencer, je recherche un site"
       }
     },
     "Menu": {
@@ -480,18 +477,18 @@
       "description": "",
       "body": {
         "title": "Confirmer {{mainDomain}}",
-        "subTitle": "Ajouter le fichier TXT_KEY ci-dessous à votre configuration DNS",
+        "subTitle": "Je dois ajouter le fichier TXT_KEY ci-dessous à ma configuration DNS",
         "steps": {
           "title": "Étapes de configuration",
           "label": {
-            "1": "Aller sur l’outil d’administration de votre DNS",
+            "1": "Aller sur l’outil d’administration de mon DNS",
             "2": "Ajouter un nouvel enregistrement DNS",
             "3": "Cliquer sur vérifier"
           },
           "content": {
-            "1": "Allez sur l'interface de gestion de la zone DNS de votre registrar (OVH, Gandi, Route 53, ...).",
-            "2": "Ajoutez une nouvelle entrée DNS, de Type \"TXT\".<br> De nom (sous-domaine) <2>_misakey.{{mainDomain}}</2><br> De valeur <4>{{key}}</4><br> Enregistrez.",
-            "3": "La diffusion DNS peut prendre de quelques secondes à plusieurs heures.<br> Si cela ne fonctionne pas tout de suite, réessayez plus tard.<br> Vous pouvez réessayer autant de fois que vous voulez en revenant sur cette page."
+            "1": "Me rendre sur l'interface de gestion de la zone DNS de mon registrar (OVH, Gandi, Route 53, ...)",
+            "2": "Ajouter une nouvelle entrée DNS, de Type \"TXT\".<br> De nom (sous-domaine) <2>_misakey.{{mainDomain}}</2><br> De valeur <4>{{key}}</4><br> Enregistrer",
+            "3": "La diffusion DNS peut prendre de quelques secondes à plusieurs heures.<br> Si cela ne fonctionne pas tout de suite, réessayer plus tard.<br> Je peux réessayer autant de fois que je le souhaite en revenant sur cette page"
           }
         },
         "txtKey": {
@@ -505,32 +502,32 @@
           },
           "copied": "Copié dans le presse papier !",
           "error": {
-            "notYet": "Nous n’avons pas trouvé l’enregistrement sur votre configuration DNS. Parfois la propagation prend du temps. Vous pouvez revenir vérifier plus tard.",
+            "notYet": "Nous n’avons pas trouvé l’enregistrement sur la configuration DNS. Parfois la propagation prend du temps. Je peux revenir vérifier plus tard",
             "notYetShort": "Nous n’avons pas trouvé l’enregistrement",
             "conflict": "Ce domaine est déjà validé"
           },
-          "success": "Le service dont le domaine de référence est {{mainDomain}} a été ajouté à votre console d’administration"
+          "success": "Le site {{mainDomain}} a été ajouté à ma console d’administration"
         }
       }
     },
     "role": {
       "claim": {
-        "title": "Revendiquez le rôle DPO sur {{mainDomain}}",
-        "subtitle": "Veuillez confirmer que vous êtes DPO de {{name}}. Pour cela demandez un code de confirmation en cliquant sur le bouton \"Envoyer le code\". Ensuite il vous suffit de renseigner le code reçu à l'adresse {{dpoEmail}}",
+        "title": "Revendiquer le rôle DPO sur {{mainDomain}}",
+        "subtitle": "Je confirme que je suis DPO de {{name}}. Pour cela je demande un code de confirmation en cliquant sur le bouton \"Envoyer le code\". Ensuite il me suffira de renseigner le code reçu à l'adresse {{dpoEmail}}",
         "email": {
           "submit": "Envoyer un code de confirmation",
           "success": "Un email a bien été envoyé à l'adresse du DPO de {{mainDomain}}"
         },
         "info": {
-          "alreadyDpo": "Vous possédez déjà le rôle {{role}} pour le service {{mainDomain}}"
+          "alreadyDpo": "Je possède déjà le rôle {{role}} pour le site {{mainDomain}}"
         },
         "errors": {
           "missingDpoEmail": {
-            "text": "Nous avons besoin de connaître l'adresse e-mail du DPO de {{mainDomain}} pour vous permettre de le confirmer. Si vous la connaissez, vous pouvez la communiquer.",
+            "text": "Nous avons besoin de connaître l'adresse e-mail du DPO de {{mainDomain}} pour autoriser sa revendication. Je peux la communiquer",
             "button": "Envoyer un mail à Misakey"
           }
         },
-        "success": "Le service dont le domaine de référence est {{mainDomain}} a été ajouté à votre console d’administration"
+        "success": "Le site dont le domaine de référence est {{mainDomain}} a été ajouté à ma console d’administration"
       }
     },
     "requests": {
@@ -546,19 +543,17 @@
         },
         "upload": {
           "dialog": {
-            "title": "Validez-vous l'envoi de ce fichier ?",
-            "text": "Le fichier va être chiffré avec la clé de {{ownerEmail}} puis lui être envoyé. Cette opération est irréversible."
+            "title": "Envoyer ce fichier ?",
+            "text": "Le fichier va être chiffré avec la clé de {{ownerEmail}} puis lui être envoyé. Cette opération est irréversible"
           },
           "success": "Le fichier {{name}} a été envoyé avec succès !"
         },
         "mkAgent": {
-          "message": "Fatigué de répondre manuellement ? Installez notre Agent !",
-          "link": "Contactez-nous pour plus d'informations.",
+          "message": "Je demande aux developpeurs de mon site d'<1>automatiser le traitement des demandes</1>",
           "mailToSubject": "Demande d'informations sur Misakey Agent"
         },
         "questions": {
           "title": "Questions fréquentes",
-          "subtitle": "Retrouvez toutes les réponses à vos questions sur notre FAQ pour les DPO.",
           "text": {
             "0": "Comment sont transférées les données&nbsp;?",
             "1": "Quelles sont mes obligations&nbsp;?",
@@ -572,8 +567,7 @@
         }
       },
       "list": {
-        "title": "Liste des requêtes de {{mainDomain}}",
-        "subtitle": "Retrouver les dernières demandes de portabilité"
+        "title": "Liste des requêtes du site {{mainDomain}}"
       }
     }
   },

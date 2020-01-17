@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Formik, Form, Field } from 'formik';
 import { useSnackbar } from 'notistack';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
 import moment from 'moment';
 
 import API from '@misakey/api';
@@ -146,7 +146,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3, 0),
   },
   mkAgentLink: {
-    marginLeft: theme.spacing(1),
     fontWeight: 'bold',
     color: 'inherit',
   },
@@ -616,29 +615,23 @@ function ServiceRequestsRead({
         {!isEmpty(blobs) && (
           <BoxMessage type="info" mt={2}>
             <Typography>
-              {t('screens:Service.requests.read.mkAgent.message')}
-              <MUILink
-                className={classes.mkAgentLink}
-                variant="body2"
-                href={`mailto:question.pro@misakey.com?subject=${t('screens:Service.requests.read.mkAgent.mailToSubject')}`}
-              >
-                {t('screens:Service.requests.read.mkAgent.link')}
-              </MUILink>
+              <Trans i18nKey="screens:Service.requests.read.mkAgent.message">
+                {'Je demande aux developpeurs de mon site d\''}
+                <MUILink
+                  className={classes.mkAgentLink}
+                  variant="body2"
+                  href={`mailto:question.pro@misakey.com?subject=${t('screens:Service.requests.read.mkAgent.mailToSubject')}`}
+                >
+                  automatiser le traitement des demandes
+                </MUILink>
+                .
+              </Trans>
             </Typography>
           </BoxMessage>
         )}
         <Card
           my={3}
           title={t('screens:Service.requests.read.questions.title')}
-          subtitle={(
-            <MUILink
-              target="_blank"
-              rel="nooppener noreferrer"
-              href={t('links.docs.dpo')}
-            >
-              {t('screens:Service.requests.read.questions.subtitle')}
-            </MUILink>
-          )}
         >
           <ListQuestions items={questionItems} breakpoints={{ xs: 12 }} />
         </Card>

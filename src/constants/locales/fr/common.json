@@ -49,7 +49,7 @@
   "account": {
     "delete": {
       "label": "Supprimer mon compte",
-      "success": "Votre compte a bien été supprimé !"
+      "success": "Mon compte a bien été supprimé !"
     },
     "signIn": {
       "label": "Connexion",
@@ -68,8 +68,8 @@
         "input": {
           "label": "Adresse email"
         },
-        "title": "Voulez-vous vraiment supprimer votre compte ?",
-        "description": "Veuillez renseigner votre adresse email ({{email}}) dans le champ ci-dessous avant de valider la suppression de votre compte."
+        "title": "Supprimer mon compte ?",
+        "description": "Je saisis mon adresse email ({{email}}) dans le champ ci-dessous avant de valider la suppression de mon compte."
       }
     }
   },
@@ -82,20 +82,20 @@
     "success": {},
     "error": {
       "default": "Nous sommes désolés, une erreur inconnue est survenue",
-      "400": "Oops, mauvaise requête",
-      "401": "Oops, veuillez d'abord vous connecter",
+      "400": "Nous sommes désolés, une erreur est survenue",
+      "401": "Je dois d'abord me connecter",
       "402": "Un paiement est requis",
-      "403": "Ce ne sont pas les droïdes que vous recherchez",
-      "404": "Oops, nous n'avons pas trouvé ce que vous recherchez",
-      "405": "Oops, mauvaise requête",
-      "408": "Aïe... la requête a échoué. Veuillez vérifier votre connexion internet",
-      "409": "Oops, mauvaise requête",
-      "413": "Poids maximum de la requête dépassé",
+      "403": "Je ne suis pas autorisé à effectuer cette action",
+      "404": "Ma recherche est introuvable",
+      "405": "Nous sommes désolés, une erreur est survenue",
+      "408": "Cette action a échoué. Merci de vérifier la connexion internet",
+      "409": "Nous sommes désolés, une erreur est survenue",
+      "413": "J'ai envoyé des données trop volumineuses",
       "415": "Ce type de media n'est pas supporté par nos serveurs",
-      "423": "Ces droits vous ont été retirés",
-      "429": "Vous avez effectué trop de requêtes",
-      "500": "Aïe... une erreur est survenue",
-      "503": "Aïe... nos services ne sont pas accessibles"
+      "423": "Ces droits m'ont été retirés",
+      "429": "J'ai effectué trop de requêtes",
+      "500": "Nous sommes désolés, une erreur est survenue",
+      "503": "Nous sommes désolés, nos services ne sont pas accessibles"
     }
   },
   "footer": {
@@ -121,9 +121,9 @@
       "toggle": "Basculer le menu",
       "select": {
         "service": {
-          "dropdown": "Basculer la liste des services",
+          "dropdown": "Basculer la liste des sites",
           "logo": {
-            "alt": "Logo du service : {{mainDomain}}",
+            "alt": "Logo du site : {{mainDomain}}",
             "title": "{{mainDomain}}"
           }
         }
@@ -149,7 +149,7 @@
   },
   "dialogConnect": {
     "title": "Bonjour,",
-    "subtitle": "Connectez-vous pour pouvoir publier du contenu et contacter les sites pour récupérer vos données"
+    "subtitle": "Je me connecte pour pouvoir publier du contenu et contacter les sites pour récupérer mes données"
   },
   "mailType": {
     "group": "Modèle d'email",
@@ -163,7 +163,7 @@
       "no-answer": "Pas de réponse"
     }
   },
-  "connectedOnly": "Vous devez etre connectés",
+  "connectedOnly": "Je dois être connecté",
   "ratingsAndComments": "Recommandations et avis",
   "ratingCount": "{{count}} note",
   "ratingCount_plural": "{{count}} notes",
@@ -176,13 +176,12 @@
   },
   "must": "Devoir",
   "contact": {
-    "label": "Contacter",
+    "label": "Demander mes données",
     "dpo": "Ajouter le DPO",
     "mailto": "Email au DPO",
     "providers": {
-      "subtitle": "Connectez votre service d'email pour envoyer vos demandes de portabilité en un clic. Certains bloqueurs peuvent empêcher la configuration de l'envoi avec Gmail, pensez à l'autoriser",
-      "mailReminder": "Assurez-vous d'utiliser l'adresse email associée à votre compte client chez {{applicationNames}}.\nPour des raisons de sécurité et d'authentification, celle-ci doit également être celle que vous utilisez pour votre compte Misakey.",
-      "mailReminder_plural": "Assurez-vous d'utiliser l'adresse email associée à vos comptes clients chez {{applicationNames}} et {{lastApplicationName}}.\nPour des raisons de sécurité et d'authentification, celle-ci doit également être celle que vous utilisez pour votre compte Misakey.",
+      "subtitle": "J’envoie mon e-mail en 1 clic. Attention : certains bloqueurs peuvent empêcher la configuration de l’envoi avec GMail.",
+      "mailReminder": "J'utilise l'e-mail de mon compte misakey pour que le site puisse rechercher mes données associées à ce compte.",
       "title": "Portabilité de mes données"
     },
     "bulk": {
@@ -205,13 +204,13 @@
   "see": "Voir",
   "feedback": {
     "me": "Mon avis global",
-    "all": "Avis sur le respect des demandes",
+    "all": "Avis des utilisateurs",
     "give": "Donner mon avis",
     "edit": "Modifier mon avis",
     "submit": "Publier",
     "delete": {
-      "title": "Voulez-vous vraiment supprimer votre avis ?",
-      "message": "Une fois supprimé vous devrez en re-créer un nouveau",
+      "title": "Supprimer mon avis ?",
+      "message": "Une fois supprimé, je devrai en créer un nouveau",
       "button": "Supprimer mon avis"
     }
   },
@@ -221,15 +220,15 @@
       "title": "Détails"
     },
     "empty": {
-      "open": "Votre demande de portabilité n'a pas encore été traitée par {{applicationName}}. Vous pouvez les relancer si nécessaire.",
+      "open": "Ma demande de portabilité n’a pas encore été traitée par {{applicationName}}.",
       "notOpen": "Aucun fichier"
     },
-    "noResult": "Vous pouvez demander vos données afin de récupérer vos données personnelles dans votre coffre-fort. Vous serez ensuite libre d'en disposer comme bon vous semble. Vos données seront chiffrées afin que vous seul puissiez y accéder.",
+    "noResult": "Je peux demander mes données personnelles afin de les récupérer dans mon coffre-fort. Je serai ensuite libre d'en disposer comme bon me semble. Mes données seront chiffrées afin que moi seul puisse y accéder.",
     "button": {
       "label": {
         "send": "Demander mes données",
         "resend": "Relancer le DPO",
-        "close": "Archiver la demande",
+        "close": "Archiver ma demande",
         "reopen": "Relancer le DPO"
       }
     },
@@ -242,10 +241,10 @@
       "updated": "Editée"
     },
     "dpoComment": {
-      "done": "Vos données ont été déposées dans votre coffre-fort",
-      "refused": "Votre demande a été rejetée",
-      "no_data": "Le site ne possède aucune donnée vous concernant",
-      "other": "Vous pouvez contacter directement le DPO pour plus d'informations"
+      "done": "Mes données ont été déposées dans mon coffre-fort",
+      "refused": "Ma demande a été rejetée",
+      "no_data": "Le site ne possède aucune donnée me concernant",
+      "other": "Je eux contacter directement le DPO pour plus d'informations"
     },
     "ownerComment": {
       "ok": "J'ai bien reçu mes données personnelles dans mon coffre-fort",
@@ -256,16 +255,16 @@
     },
     "dialog": {
       "reopen": {
-        "title": "Voulez-vous vraiment réouvrir la requête ?",
-        "description": "Le DPO a signifié que votre demande était traitée.\nVous pouvez le relancer en lui indiquant les raisons de votre désaccord."
+        "title": "Réouvrir la requête ?",
+        "description": "Le DPO a signifié que ma demande était traitée.\nJe peux le relancer en lui indiquant les raisons de mon désaccord."
       },
       "close": {
-        "title": "Voulez-vous vraiment archiver la requête ?",
-        "description": "Vous ne pourrez plus réouvrir cette requête et le DPO ne pourra plus y ajouter de fichier.\nNéanmoins, les fichiers seront toujours téléchargeables et vous pourrez ouvrir une nouvelle requête plus tard."
+        "title": "Archiver la requête ?",
+        "description": "Je ne pourrai plus réouvrir cette requête et le DPO ne pourra plus y ajouter de fichier.\nNéanmoins, les fichiers seront toujours téléchargeables et je pourrai ouvrir une nouvelle requête plus tard."
       },
       "done": {
-        "title": "Voulez-vous vraiment clore la requête ?",
-        "description": "Vous ne pourrez plus visualiser la requête et l'utilisateur sera informé que vous l'avez clôturée.\nMerci d'indiquer à l'utilisateur la raison de cette clôture."
+        "title": "Clore la requête ?",
+        "description": "Je ne pourrai plus visualiser la requête et l'utilisateur sera informé que je l'ai clôturée.\nJe dois indiquer à l'utilisateur la raison de cette clôture."
       }
     },
     "archive": {
@@ -311,7 +310,7 @@
   },
   "previous": "Précédent",
   "edit": "Modifier",
-  "noContact": "Vous n'avez contacter aucune entreprise !",
+  "noContact": "Je n'ai contacté aucune entreprise !",
   "emailTo": "DPO de {{applicationName}} <{{dpoEmail}}>",
   "emailToTrans": "DPO de {{applicationName}} <1>{{dpoEmail}}</1>",
   "emailSubject": "Demande de portabilité",
@@ -325,10 +324,10 @@
     "other-channel": "Bonjour,\n\nJe vous remercie pour le traitement de ma demande du {{createdAt}}.\n\nCependant, votre réponse correspond à une demande d'accès (cf: Article 15 du RGPD http://www.privacy-regulation.eu/fr/15.htm).\nOr je vous ai fait une demande de portabilité.\nJe vous rappelle que dans ce cadre votre entreprise est dans l’obligation de transférer directement les données à une autre entreprise si ce transfert est possible, comme indiqué dans l’article 20 (http://www.privacy-regulation.eu/fr/20.htm), ou dans l’article de la CNIL https://www.cnil.fr/fr/le-droit-la-portabilite-obtenir-et-reutiliser-une-copie-de-vos-donnees.\n\nJe me permets donc de vous relancer afin que vous déposiez mes données personnelles, dans le cadre d’une demande de portabilité (http://www.privacy-regulation.eu/fr/20.htm), sur la plateforme sécurisée Misakey à l’adresse: {{databoxURL}}\n\nJe me tiens à votre disposition si vous désirez des informations complémentaires concernant ma demande.\n\nBien à vous."
   },
   "providers": {
-    "error": "Veuillez désactiver votre bloqueur pour accéder à l'envoi avec Gmail",
+    "error": "Pour accéder à l'envoi avec Gmail, je dois désactiver mes bloqueurs",
     "manual": {
       "send": "Envoyer manuellement",
-      "notify": "Envoyez l’e-mail depuis la fenêtre ouverte dans votre gestionnaire d’e-mail. Si aucune fenêtre ne s’est ouverte, vérifiez que les pop-up ne sont pas bloquées par votre navigateur web"
+      "notify": "J'envoie l’e-mail depuis la fenêtre ouverte dans mon gestionnaire d’e-mail. Si aucune fenêtre ne s’est ouverte, je vérifie que les pop-up ne sont pas bloquées par mon navigateur web"
     },
     "configuration": {
       "success": "Configuration du service d'email réussie!"
@@ -364,7 +363,7 @@
       "title": "Suggestions"
     },
     "linkedDomain": {
-      "redirect": "Vous avez été redirigé vers {{mainDomainTo}} car {{mainDomainFrom}} est un domaine lié à {{mainDomainTo}}"
+      "redirect": "J'ai été redirigé vers {{mainDomainTo}} car {{mainDomainFrom}} est un domaine lié à {{mainDomainTo}}"
     },
     "category": {
       "shops": "eCommerces",
@@ -378,7 +377,7 @@
       "insurance": "Assurances",
       "transport": "Transport",
       "mobility": "Mobilité",
-      "food": "Nourriture",
+      "food": "Alimentation",
       "energy": "Énergie",
       "bet": "Paris en ligne",
       "press": "Presse",
@@ -396,7 +395,7 @@
   "ratings": "notes",
   "regenerate": "Régénérer",
   "resendEmail": "Relancer",
-  "searchAppText": "Chercher un site pour le contacter et récupérer vos données",
+  "searchAppText": "Chercher un site pour le contacter et récupérer mes données",
   "seeMore": "Voir plus",
   "send": "Envoyer",
   "boolean": {

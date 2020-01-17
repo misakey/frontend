@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
 
 import path from '@misakey/helpers/path';
 import prop from '@misakey/helpers/prop';
@@ -10,7 +10,6 @@ import ApplicationSchema from 'store/schemas/Application';
 
 import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
 import Title from 'components/dumb/Typography/Title';
-import Subtitle from 'components/dumb/Typography/Subtitle';
 import ScreenAction from 'components/dumb/Screen/Action';
 import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import Card from 'components/dumb/Card';
@@ -25,7 +24,6 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
-import MUILink from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
 
 // CONSTANTS
@@ -140,13 +138,18 @@ const AccessRequestChoose = ({
         <Card mb={2}>
           <CardContent>
             <Typography className={clsx(classes.p, classes.justify)}>
-              {t('screens:accessRequest.choose.desc.0', { ownerName })}
-            </Typography>
-            <Typography className={clsx(classes.p, classes.justify)}>
-              {t('screens:accessRequest.choose.desc.1', { ownerName })}
-            </Typography>
-            <Typography>
-              {t('screens:accessRequest.choose.desc.2', { applicationName, dpoEmail })}
+              <Trans
+                i18nKey="screens:accessRequest.choose.desc"
+                values={{ ownerName, applicationName, dpoEmail }}
+              >
+                {'Ceci est l’interface de transfert chiffré des données personnelles de {{ownerName}}.'}
+                <br />
+                <br />
+                {'{{ownerName}} souhaite récupérer ses données personnelles dans son coffre-fort Misakey afin d’assurer la chaîne de confiance lors du transfert.'}
+                <br />
+                <br />
+                {'L’accès est exclusivement réservé à {{applicationName}} et contrôlé par l’envoi d’un code de confirmation à {{dpoEmail}}.'}
+              </Trans>
             </Typography>
             <Grid container>
               <Grid
@@ -168,7 +171,7 @@ const AccessRequestChoose = ({
                   />
                 </Box>
                 <Typography align="center" variant="body2" className={clsx(classes.gridItemLeft)}>
-                  {t('screens:accessRequest.choose.desc.3', { dpoEmail })}
+                  {t('screens:accessRequest.choose.passwordLess', { dpoEmail })}
                 </Typography>
               </Grid>
               <Grid
@@ -188,7 +191,7 @@ const AccessRequestChoose = ({
                   />
                 </Box>
                 <Typography align="center" variant="body2" className={clsx(classes.gridItemRight)}>
-                  {t('screens:accessRequest.choose.desc.4')}
+                  {t('screens:accessRequest.choose.password')}
                 </Typography>
               </Grid>
             </Grid>
@@ -197,15 +200,6 @@ const AccessRequestChoose = ({
         <Card>
           <CardContent>
             <Title>{t('screens:accessRequest.choose.questions.title')}</Title>
-            <Subtitle>
-              <MUILink
-                target="_blank"
-                rel="nooppener noreferrer"
-                href={t('links.docs.dpo')}
-              >
-                {t('screens:accessRequest.choose.questions.subtitle')}
-              </MUILink>
-            </Subtitle>
           </CardContent>
           <ListQuestions items={questionItems} />
         </Card>

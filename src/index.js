@@ -36,10 +36,8 @@ import App from 'components/App';
 import SplashScreen from 'components/dumb/SplashScreen';
 import OidcProvider from '@misakey/auth/components/OidcProvider'; // OIDC provider
 // translations
-import i18n from 'i18n';
+import './i18n';
 import countries from 'i18n-iso-countries';
-import FRCommon from 'constants/locales/fr/common';
-import FRFields from 'constants/locales/fr/fields';
 // helpers
 import { isDesktopDevice } from 'helpers/devices';
 import { IS_PLUGIN } from 'constants/plugin';
@@ -81,12 +79,6 @@ if (isSilentAuthIframe()) {
 } else if (isSigninRedirect()) {
   processSigninRedirect();
 } else {
-  i18n.addResourceBundle('fr', 'common', FRCommon, true, true);
-  i18n.addResourceBundle('fr', 'fields', FRFields, true, true);
-  // If you want a helper to know what you should use as Trans component value in translate file
-  // Uncomment next line
-  // i18n.init({ debug: true });
-
   // STORE
   const storeMiddleWares = [thunk, APITokenMiddleware, cryptoMiddleware];
   if (window.env.ENV === 'development') { storeMiddleWares.push(createLogger()); }

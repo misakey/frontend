@@ -30,7 +30,6 @@ import Rating from '@material-ui/lab/Rating';
 import Skeleton from '@material-ui/lab/Skeleton';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
-import ContactButton from 'components/smart/ContactButton';
 import ApplicationImg from 'components/dumb/Application/Img';
 import FeedbackLink from 'components/dumb/Link/Feedback';
 import GroupTitles from 'components/dumb/Typography/GroupTitles';
@@ -291,16 +290,6 @@ function ApplicationHeader({
         </Box>
         {(!readOnly && !isLoading) && (
           <Box className={classes.boxButtons}>
-            {(
-              <ContactButton
-                dpoEmail={dpoEmail}
-                onContributionClick={onContributionDpoEmailClick}
-                applicationID={id}
-                mainDomain={mainDomain}
-                contactedView={wasContacted}
-                className={clsx(classes.button, classes.buttonFill)}
-              />
-            )}
             {/* @FIXME create a generic menu button */}
             <Button
               variant="outlined"

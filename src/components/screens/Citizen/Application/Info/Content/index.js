@@ -353,9 +353,9 @@ const ApplicationInfoContent = ({
               i18nKey="screens:application.info.databoxCount"
               count={databoxesCount}
             >
-              Vous avez contacté
+              {'J\'ai contacté'}
               <span className={classes.typographyEmphasis}>{'{{count}}'}</span>
-              sites au total
+              sites.
             </Trans>
           </Typography>
         </Card>

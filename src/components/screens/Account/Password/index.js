@@ -15,7 +15,6 @@ import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
 import ScreenAction from 'components/dumb/Screen/Action';
-import Subtitle from 'components/dumb/Typography/Subtitle';
 import BoxControls from 'components/dumb/Box/Controls';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
 import Container from '@material-ui/core/Container';
@@ -139,9 +138,6 @@ const AccountPassword = ({
       hideAppBar
     >
       <Container maxWidth="md">
-        <Subtitle>
-          {t('screens:account.password.subtitle')}
-        </Subtitle>
         <Formik
           validationSchema={passwordValidationSchema}
           onSubmit={onSubmit}

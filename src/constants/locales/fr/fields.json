@@ -12,7 +12,7 @@
   "avatar": {
     "label": "Photo",
     "action": "Modifier",
-    "helperText": "Une photo permet de personnaliser votre compte",
+    "helperText": "Une photo permet de personnaliser mon compte",
     "error": {
       "size": "Taille maximale de 3Mo. dépassée",
       "format": "Format incorrect. Formats acceptés: .jpg .jpeg .png .tiff .gif"
@@ -26,11 +26,11 @@
   },
   "code": {
     "label": "Code",
-    "helperText": "Remplissez le code que nous vous avons envoyé par email",
+    "helperText": "Je remplis le code que j'ai reçu par email",
     "error": {
-      "invalid": "Ce code est invalide. Vérifiez qu'il correspond au code que nous vous avons envoyé il y a moins de 30min ou redemandez-en un nouveau",
-      "expired": "Le code a expiré. Veuillez en demander un nouveau",
-      "malformed": "Le code ne contient pas le bon nombre de chiffres ou est incorrect"
+      "invalid": "Ce code est invalide. Je peux vérifier qu'il correspond au code que j'ai reçu par mail il y a moins de 30min ou j'en redemande un nouveau",
+      "expired": "Le code a expiré. Je dois en demander un nouveau",
+      "malformed": "Le code est incorrect"
     }
   },
   "codeInvitation": {
@@ -39,19 +39,19 @@
   },
   "confirmationCode_secret": {
     "label": "Code de confirmation",
-    "helperText": "Remplissez le code que nous vous avons envoyé par email",
+    "helperText": "Je remplis le code que j'ai reçu par email",
     "error": {
-      "expired": "Le code de confirmation a expiré. Veuillez en demander un nouveau",
+      "expired": "Le code a expiré. Je dois en demander un nouveau",
       "invalid": "Le code de confirmation est incorrect",
       "malformed": "Le code de confirmation doit contenir 6 chiffres",
-      "conflict": "Nous vous avons déjà envoyé un code en cours de validité. Revérifiez vos mails ou réessayez dans quelques minutes."
+      "conflict": "Nous avons déjà envoyé un code en cours de validité. Je revérifie mes mails ou je réessaie dans quelques minutes"
     }
   },
   "displayName": {
     "label": "Nom public",
     "action": "Editer",
     "placeholder": "Rose Flamingo",
-    "helperText": "Vous pouvez choisir un nom entre 3 et 21 caractères, composé de lettres, de chiffres et d'espaces.",
+    "helperText": "Je choisis un nom entre 3 et 21 caractères, composé de lettres, de chiffres et d'espaces",
     "error": {
       "invalid": "Le nom public doit comporter entre 3 et 21 caractères, composés de lettres, de chiffres et d'espaces",
       "malformed": "Le nom public ne peut comporter que des lettres, des chiffres et des espaces"
@@ -74,12 +74,11 @@
       "conflict": "Un compte existe déjà avec cet email",
       "malformed": "Merci d'entrer une adresse email valide",
       "not_found": "Aucun compte lié à cet email",
-      "seclevel_insufficient": "Vous avez besoin d'un mot de passe pour vous connecter par ici, ce compte n'a pas de mot de passe configuré."
+      "seclevel_insufficient": "J'ai besoin d'un mot de passe pour me connecter par ici, mon compte n'a pas de mot de passe configuré"
     }
   },
   "file": {
     "label": "Déposer un fichier ici",
-    "subtitle": "ou si vous préférez",
     "loading": "Importation en cours",
     "button": {
       "choose": {
@@ -91,9 +90,9 @@
     "label": "Mot de passe",
     "placeholder": "********",
     "action": "Editer",
-    "helperText": "Utilisez au moins huit caractères avec des lettres, des chiffres et des symboles",
+    "helperText": "J'utilise au moins huit caractères",
     "error": {
-      "invalid": "Le mot de passe n'est pas le bon",
+      "invalid": "Le mot de passe est erroné",
       "malformed": "Le mot de passe doit contenir au moins 8 caractères"
     }
   },
@@ -101,7 +100,7 @@
     "label": "Mot de passe",
     "placeholder": "********",
     "error": {
-      "invalid": "Le mot de passe n'est pas le bon"
+      "invalid": "Le mot de passe est erroné"
     }
   },
   "passwordVault": {
@@ -110,7 +109,7 @@
     "action": "Valider",
     "error": {
       "required": "Le mot de passe est requis",
-      "invalid": "Le mot de passe semble erroné, veuillez réessayer"
+      "invalid": "Le mot de passe est erroné"
     }
   },
   "passwordConfirm": {
@@ -131,14 +130,14 @@
     "label": "Ancien mot de passe",
     "placeholder": "********",
     "error": {
-      "invalid": "Le mot de passe n'est pas le bon",
+      "invalid": "Le mot de passe est erroné",
       "malformed": "Le mot de passe doit contenir au moins 8 caractères"
     }
   },
   "tos": {
     "label": "J'accepte les CGUs",
     "error": {
-      "required": "Il vous faut accepter les CGUs"
+      "required": "Je dois accepter les CGUs"
     }
   },
   "allowedCorsOrigins": {
@@ -159,7 +158,7 @@
   "customRoles": {
     "action": "Editer les rôles",
     "empty": {
-      "action": "Créer votre premier rôle",
+      "action": "Créer mon premier rôle",
       "label": "Créer un nouveau rôle custom"
     },
     "label": "Custom roles",
@@ -169,8 +168,8 @@
     "label": "Pseudo",
     "placeholder": "roseflam",
     "error": {
-      "noTrailingUnderscore": "Votre pseudo ne peut commencer ou terminer par un underscore",
-      "invalid": "Votre pseudo doit comporter entre 3 et 21 lettres minuscules, chiffres et underscore",
+      "noTrailingUnderscore": "Mon pseudo ne peut commencer ou terminer par un underscore",
+      "invalid": "Mon pseudo doit comporter entre 3 et 21 lettres minuscules, chiffres et underscore",
       "conflict": "Il existe déjà un compte avec ce pseudo. Merci d'en choisir un autre"
     }
   },
@@ -181,7 +180,7 @@
       "format": "Format incorrect. Formats acceptés: .jpg .jpeg .png .tiff .gif"
     },
     "label": "Logo",
-    "placeholder": "Vous pouvez ici renseigner le logo du service"
+    "placeholder": "Je peux ici renseigner le logo du site"
   },
   "longDesc": {
     "action": "Editer",
@@ -191,7 +190,7 @@
     "action": "Editer",
     "label": "Domaine principal",
     "altLabel": "Page d'accueil",
-    "helperText": "Indiquez l'adresse de la page d'accueil",
+    "helperText": "J'indique l'adresse de la page d'accueil",
     "error": {
       "malformed": "Merci d'entrer un nom de domaine valide"
     }
@@ -217,14 +216,14 @@
   "serviceRoleClaim": {
     "code": {
       "error": {
-        "conflict": "Nous vous avons envoyé un code il y a moins de 5 minutes. Revérifiez vos mails ou réessayez dans un petit instant."
+        "conflict": "J'ai déjà reçu un code il y a moins de 5 minutes. Je revérifie mes mails ou je réessaie dans un petit instant"
       }
     }
   },
   "signUpConfirm": {
     "code": {
       "error": {
-        "expired": "Le code de confirmation a expiré. Nous vous en avons envoyé un nouveau",
+        "expired": "Ce code de confirmation a expiré. J'en ai reçu un nouveau par email",
         "invalid": "Le code de confirmation est incorrect",
         "malformed": "Le code de confirmation doit contenir 6 chiffres"
       },
@@ -242,37 +241,37 @@
   },
   "value": {
     "error": {
-      "required": "Veuillez saisir une note",
+      "required": "Je dois saisir une note",
       "malformed": "Cette note est incorrecte"
     }
   },
   "comment": {
-    "placeholder": "Partager votre expérience concernant cette application",
+    "placeholder": "Partager mon expérience concernant cette application",
     "helperText": "10 caractères minimum requis",
     "error": {
-      "required": "Veuillez rédiger un avis",
-      "malformed": "Votre avis doit comporter entre 10 et 4096 caractères"
+      "required": "Je dois rédiger un avis",
+      "malformed": "Mon avis doit comporter entre 10 et 4096 caractères"
     }
   },
   "link": {
     "placeholder": "https://misakey.com",
     "error": {
-      "malformed": "Le lien est malformé. Vérifiez qu'il commence bien par http ou https"
+      "malformed": "Le lien est malformé. Je vérifie qu'il commence bien par http ou https"
     }
   },
   "ownerComment": {
-    "label": "Conclusion de votre requête",
-    "helperText": "Choisissez parmi ces propositions celle qui correspond le mieux à votre cas",
+    "label": "Conclusion de ma requête",
+    "helperText": "Je choisis parmi ces propositions celle qui correspond le mieux à mon cas",
     "error": {
-      "required": "Veuillez nous faire un retour sur votre requête",
+      "required": "Je dois faire un retour sur ma requête",
       "invalid": "Ce retour est incorrect"
     }
   },
   "dpoComment": {
     "label": "Message de clôture",
-    "helperText": "Choisissez parmi ces propositions celle qui correspond le mieux à votre décision",
+    "helperText": "Je choisis parmi ces propositions celle qui correspond le mieux à ma décision",
     "error": {
-      "required": "Veuillez choisir un message pour clore la requête",
+      "required": "Je dois choisir un message pour clore la requête",
       "invalid": "Ce message est incorrect"
     }
   }

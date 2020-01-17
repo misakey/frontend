@@ -42,7 +42,6 @@ import Hidden from '@material-ui/core/Hidden';
 import Card from 'components/dumb/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Title from 'components/dumb/Typography/Title';
-import Subtitle from 'components/dumb/Typography/Subtitle';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummaryDatabox from 'components/smart/ExpansionPanelSummary/Databox';
 
@@ -64,9 +63,8 @@ const findDataboxes = (producerId) => API
   .send();
 
 // HOOKS
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   initCryptoLink: {
-    marginLeft: theme.spacing(1),
     fontWeight: 'bold',
     color: 'inherit',
   },
@@ -279,17 +277,21 @@ function ApplicationBox({
     <>
       {(isAuthenticated && !isCryptoReadyToDecrypt && !isEmpty(databoxes)) && (
         <BoxMessage type="warning" my={2}>
-          <Typography>{t('screens:application.box.mustUnlockVault')}</Typography>
-          <MUILink
-            className={classes.initCryptoLink}
-            component="button"
-            variant="body2"
-            onClick={() => {
-              initCrypto();
-            }}
-          >
-            {t('screens:application.box.unlockVaultButton')}
-          </MUILink>
+          <Typography>
+            <Trans i18nKey="screens:application.box.mustUnlockVaultBanner">
+              {'Ouvrir mon coffre-fort pour '}
+              <MUILink
+                className={classes.initCryptoLink}
+                component="button"
+                variant="body2"
+                onClick={() => {
+                  initCrypto();
+                }}
+              >
+                accéder à mes fichiers
+              </MUILink>
+            </Trans>
+          </Typography>
         </BoxMessage>
       )}
       <CardDatabox
@@ -373,15 +375,6 @@ function ApplicationBox({
       <Card>
         <CardContent>
           <Title>{t(`${QUESTIONS_TRANS_KEY}.title`)}</Title>
-          <Subtitle>
-            <MUILink
-              target="_blank"
-              rel="nooppener noreferrer"
-              href={t('common:links.docs.citizen.faq')}
-            >
-              {t(`${QUESTIONS_TRANS_KEY}.subtitle`)}
-            </MUILink>
-          </Subtitle>
         </CardContent>
         <ListQuestions items={questionItems} breakpoints={{ sm: 6, xs: 12 }} />
         <ListQuestions items={conditionalQuestionItems} breakpoints={{ sm: 6, xs: 12 }} />

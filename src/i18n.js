@@ -21,8 +21,9 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next) // if not using I18nextProvider
   .init({
-    debug: false,
+    debug: false, // I18N TRANS HELP: turn true
     fallbackLng: DEFAULT_LNG,
+    ns: 'common',
     defaultNS: 'common',
     lng: DEFAULT_LNG, // 'fr', // language to use
     whitelist: ['fr'],
@@ -74,5 +75,6 @@ i18n.on('languageChanged', changeLocale);
 
 i18n.addResourceBundle('fr', 'common', fr, true, false);
 i18n.addResourceBundle('fr', 'fields', frFields, true, false);
+
 
 export default i18n;

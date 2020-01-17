@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -36,7 +36,7 @@ UserPublicChip.propTypes = {
   }).isRequired,
 };
 
-const SignInFormCard = ({ fields, handlePrevious, step, t, userPublicData, values }) => {
+const SignInFormCard = ({ fields, handlePrevious, step, userPublicData, values }) => {
   const classes = useStyles();
   const displayChip = step === STEP.secret;
 
@@ -50,16 +50,18 @@ const SignInFormCard = ({ fields, handlePrevious, step, t, userPublicData, value
       )}
       {fields}
       <Typography className={classes.moreTypography}>
-        {t('auth:signIn.card.more.text')}
-        <MUILink
-          color="secondary"
-          to={routes.legals.privacy}
-          component={Link}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t('auth:signIn.card.more.link')}
-        </MUILink>
+        <Trans i18nKey="auth:signIn.card.more">
+          {'En savoir plus sur '}
+          <MUILink
+            color="secondary"
+            to={routes.legals.privacy}
+            component={Link}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            la sécurisation de mes connexions par Misakey
+          </MUILink>
+        </Trans>
       </Typography>
     </div>
   );
@@ -69,7 +71,6 @@ SignInFormCard.propTypes = {
   fields: PropTypes.node,
   handlePrevious: PropTypes.func.isRequired,
   step: PropTypes.oneOf([STEP.identifier, STEP.secret]).isRequired,
-  t: PropTypes.func.isRequired,
   userPublicData: PropTypes.shape({
     displayName: PropTypes.string,
     avatarUri: PropTypes.string,

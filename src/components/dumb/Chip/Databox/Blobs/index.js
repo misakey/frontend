@@ -19,11 +19,11 @@ const ChipDataboxBlobs = ({ blobs, t, ...rest }) => {
     () => {
       if (isArray(blobs) && blobCount > 0) {
         const sum = blobs.reduce((acc, item) => acc + item.contentLength, 0);
-        return `(${numeral(sum).format('0a')}${t('common:units.bytes')})`;
+        return numeral(sum).format('0b');
       }
       return '';
     },
-    [blobs, blobCount, t],
+    [blobs, blobCount],
   );
 
   const label = useMemo(

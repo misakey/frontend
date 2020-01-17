@@ -16,6 +16,6 @@
   "refresh_warning": {
     "button": "Actualiser",
     "tooltip": "Actualiser l'onglet courant",
-    "text": "Les modifications que vous avez effectuées seront effectives pour la suite de votre navigation. Si vous voulez qu'elles soient prises en compte pour les onglets déjà chargés, vous devrez les actualiser."
+    "text": "Les modifications que j'ai effectuées seront effectives pour la suite de ma navigation. Si je veux qu'elles soient prises en compte pour les onglets déjà chargés, je dois les actualiser"
   }
 }
