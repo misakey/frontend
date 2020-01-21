@@ -186,6 +186,7 @@
       "title": "Portabilité de mes données"
     },
     "bulk": {
+      "ariaLabel": "Ajouter au contact groupé",
       "manual": {
         "confirm": {
           "title": "Envoyer manuellement"

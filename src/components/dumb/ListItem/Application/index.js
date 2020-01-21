@@ -1,30 +1,28 @@
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import useTheme from '@material-ui/core/styles/useTheme';
-
-import { Link } from 'react-router-dom';
+import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
+
+import { ROLE_LABELS } from 'constants/Roles';
+import ApplicationSchema from 'store/schemas/Application';
+
 import { toggleFromSelected } from 'store/actions/screens/applications';
 
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import omitTranslationProps from 'helpers/omit/translationProps';
+import isEmpty from '@misakey/helpers/isEmpty';
 
-import Checkbox from '@material-ui/core/Checkbox';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import useLocationWorkspace from 'hooks/useLocationWorkspace';
+
+import ApplicationImg from 'components/dumb/Application/Img';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 
-import ApplicationImg from 'components/dumb/Application/Img';
-import withLongPress from 'components/dumb/withLongPress';
-
-import isNil from '@misakey/helpers/isNil';
-import isFunction from '@misakey/helpers/isFunction';
-import { isTouchable } from 'helpers/devices';
-
-const IS_TOUCHABLE = isTouchable();
+import AddIcon from '@material-ui/icons/Add';
+import DoneIcon from '@material-ui/icons/Done';
 
 const useStyles = makeStyles(() => ({
   option: {
@@ -37,86 +35,38 @@ const useStyles = makeStyles(() => ({
 function ApplicationListItem({
   application,
   isSelectable,
-  secondaryLinkTo,
-  dispatch,
+  dispatchToggleFromSelected,
   selectedApplications,
-  onClick,
+  isAuthenticated,
+  t,
   ...rest
 }) {
   const classes = useStyles();
-  const theme = useTheme();
-  const isDownSm = useMediaQuery(theme.breakpoints.down('sm'));
-  const [isHovered, setIsHovered] = useState(false);
+  const workspace = useLocationWorkspace(true);
 
-  const { mainDomain, logoUri, name } = application;
+  const { mainDomain, logoUri, name, id, dpoEmail } = application;
 
-  const CustomButtonElement = useMemo(
-    () => (isNil(secondaryLinkTo) ? undefined : Link),
-    [secondaryLinkTo],
+  const onSelect = useCallback(
+    () => {
+      dispatchToggleFromSelected(id);
+    },
+    [id, dispatchToggleFromSelected],
   );
 
-  const selectedAppsNotEmpty = useMemo(
-    () => selectedApplications.length > 0, [selectedApplications.length],
+  const canSelect = useMemo(
+    () => workspace === ROLE_LABELS.CITIZEN && (!isEmpty(dpoEmail) || !isAuthenticated),
+    [dpoEmail, isAuthenticated, workspace],
   );
-
-  const isSelecting = useMemo(
-    () => selectedAppsNotEmpty && isSelectable && IS_TOUCHABLE,
-    [isSelectable, selectedAppsNotEmpty],
-  );
-
-  const toggleSelectApp = useCallback(() => {
-    dispatch(toggleFromSelected(application.id));
-  }, [application.id, dispatch]);
-
-  const onLongPress = useCallback(() => {
-    toggleSelectApp();
-  }, [toggleSelectApp]);
-
-  const handleClick = useCallback((event) => {
-    if (isSelecting) {
-      event.preventDefault();
-      event.stopPropagation();
-      toggleSelectApp();
-    } else if (isFunction(onClick)) {
-      onClick();
-    }
-  }, [isSelecting, onClick, toggleSelectApp]);
 
   const isSelected = useMemo(
-    () => selectedApplications.includes(application.id),
-    [application.id, selectedApplications],
-  );
-
-  const selectableProps = useMemo(
-    () => (IS_TOUCHABLE ? {
-      onLongPress,
-    } : {
-      onMouseEnter: () => setIsHovered(true),
-      onMouseLeave: () => setIsHovered(false),
-    }), [onLongPress],
-  );
-
-  const onClickCheckbox = useCallback((event) => {
-    event.stopPropagation();
-    event.preventDefault();
-    toggleSelectApp();
-  }, [toggleSelectApp]);
-
-  const ListElement = useMemo(
-    () => (isSelectable ? withLongPress(ListItem) : ListItem),
-    [isSelectable],
+    () => selectedApplications.includes(id),
+    [id, selectedApplications],
   );
 
   return (
-    <ListElement
-      position="relative"
-      display="flex"
-      alignItems="center"
-      width="100%"
+    <ListItem
       className={classes.option}
-      {...(isSelectable ? selectableProps : {})}
-      {...rest}
-      onClick={handleClick}
+      {...omitTranslationProps(rest)}
     >
       <ListItemAvatar>
         <ApplicationImg
@@ -128,52 +78,52 @@ function ApplicationListItem({
         primary={name}
         secondary={mainDomain}
       />
-      {isSelectable && (isSelected || isHovered) && (
-      <Checkbox
-        edge={isDownSm ? 'end' : null}
-        checked={isSelected}
-        disableRipple
-        onClick={IS_TOUCHABLE ? null : onClickCheckbox}
-        inputProps={{ 'aria-labelledby': 'selected-apps' }}
-      />
+      {isSelectable && canSelect && (
+        <ListItemSecondaryAction>
+          <IconButton
+            color="secondary"
+            edge="end"
+            aria-label={t('common:contact.bulk.ariaLabel')}
+            onClick={onSelect}
+          >
+            {isSelected
+              ? (
+                <DoneIcon />
+              ) : (
+                <AddIcon />
+              )}
+          </IconButton>
+        </ListItemSecondaryAction>
       )}
-      <ListItemSecondaryAction className={classes.secondaryAction}>
-        <IconButton
-          edge="end"
-          aria-label="see"
-          component={CustomButtonElement}
-          to={secondaryLinkTo}
-        >
-          <ArrowForwardIcon />
-        </IconButton>
-      </ListItemSecondaryAction>
-    </ListElement>
+    </ListItem>
   );
 }
 
 ApplicationListItem.propTypes = {
-  application: PropTypes.object,
-  dispatch: PropTypes.func.isRequired,
-  onClick: PropTypes.func,
-  secondaryLinkTo: PropTypes.string,
+  application: PropTypes.shape(ApplicationSchema.propTypes),
   isSelectable: PropTypes.bool,
+  // CONNECT
   selectedApplications: PropTypes.arrayOf(PropTypes.string),
+  isAuthenticated: PropTypes.bool,
+  dispatchToggleFromSelected: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 ApplicationListItem.defaultProps = {
-  application: {
-    logoUri: '',
-    mainDomain: null,
-    name: '',
-  },
-  secondaryLinkTo: null,
+  application: null,
   isSelectable: true,
   selectedApplications: [],
-  onClick: null,
+  isAuthenticated: false,
 };
 
+// CONNECT
 const mapStateToProps = (state) => ({
   selectedApplications: state.screens.applications.selected,
+  isAuthenticated: !!state.auth.token,
 });
 
-export default connect(mapStateToProps, null)(ApplicationListItem);
+const mapDispatchToProps = (dispatch) => ({
+  dispatchToggleFromSelected: (applicationId) => dispatch(toggleFromSelected(applicationId)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('common')(ApplicationListItem));

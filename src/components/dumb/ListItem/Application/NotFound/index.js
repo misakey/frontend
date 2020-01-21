@@ -12,12 +12,9 @@ import omitTranslationProps from 'helpers/omit/translationProps';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 
 import AddIcon from '@material-ui/icons/Add';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -25,11 +22,6 @@ const useStyles = makeStyles((theme) => ({
     color: 'inherit',
     textDecoration: 'none',
     flexGrow: 1,
-  },
-  secondaryAction: {
-    [theme.breakpoints.down('sm')]: {
-      display: 'none',
-    },
   },
   avatar: {
     backgroundColor: theme.palette.secondary.main,
@@ -63,15 +55,6 @@ const ListItemApplicationNotFound = ({ t, ...rest }) => {
         primary={t('screens:applications.notFound.button')}
         secondary={t('screens:applications.notFound.subtitle')}
       />
-      <ListItemSecondaryAction className={classes.secondaryAction}>
-        <IconButton
-          edge="end"
-          component={Link}
-          to={notFoundTo}
-        >
-          <ArrowForwardIcon />
-        </IconButton>
-      </ListItemSecondaryAction>
     </ListItem>
   );
 };

@@ -1,26 +1,17 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
-import API from '@misakey/api';
 import isNil from '@misakey/helpers/isNil';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import log from '@misakey/helpers/log';
+import { fetchApplicationsByMainDomains } from 'helpers/fetchApplications';
 
 import Card from 'components/dumb/Card';
 import ApplicationsList from 'components/dumb/List/Applications';
 
-// CONSTANTS
-const ENDPOINTS = {
-  applicationInfo: {
-    list: {
-      method: 'GET',
-      path: '/application-info',
-      auth: false,
-    },
-  },
-};
 
-const ApplicationsCategory = ({ categoryName, applicationsDomains }) => {
+const ApplicationsCategory = ({ categoryName, applicationsDomains, isAuthenticated }) => {
   const [error, setError] = useState();
   const [applicationsList, setList] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
@@ -35,9 +26,7 @@ const ApplicationsCategory = ({ categoryName, applicationsDomains }) => {
   const fetchApplicationsList = useCallback(() => {
     setIsFetching(true);
 
-    return API.use(ENDPOINTS.applicationInfo.list)
-      .build(null, null, { main_domains: applicationsDomains.join(',') })
-      .send()
+    return fetchApplicationsByMainDomains(applicationsDomains, isAuthenticated)
       .then((response) => {
         setList(response.map(objectToCamelCase));
       })
@@ -46,7 +35,7 @@ const ApplicationsCategory = ({ categoryName, applicationsDomains }) => {
         log(e);
       })
       .finally(() => setIsFetching(false));
-  }, [applicationsDomains]);
+  }, [applicationsDomains, isAuthenticated]);
 
   useEffect(() => {
     if (shouldFetch) {
@@ -71,6 +60,16 @@ const ApplicationsCategory = ({ categoryName, applicationsDomains }) => {
 ApplicationsCategory.propTypes = {
   categoryName: PropTypes.string.isRequired,
   applicationsDomains: PropTypes.arrayOf(PropTypes.string).isRequired,
+  isAuthenticated: PropTypes.bool,
 };
 
-export default ApplicationsCategory;
+ApplicationsCategory.defaultProps = {
+  isAuthenticated: false,
+};
+
+// CONNECT
+const mapStateToProps = (state) => ({
+  isAuthenticated: !!state.auth.token,
+});
+
+export default connect(mapStateToProps)(ApplicationsCategory);

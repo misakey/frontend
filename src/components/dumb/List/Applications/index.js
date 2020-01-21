@@ -49,19 +49,15 @@ function ApplicationsList({ t, isFetching, error, applications, listLength, toRo
 
   return (
     <List>
-      {applicationsWithPaths.map((app) => {
-        const { application, to } = app;
-        return (
-          <ApplicationListItem
-            key={application.mainDomain}
-            application={application}
-            button
-            component={Link}
-            to={to}
-            secondaryLinkTo={to}
-          />
-        );
-      })}
+      {applicationsWithPaths.map(({ application, to }) => (
+        <ApplicationListItem
+          key={application.mainDomain}
+          application={application}
+          button
+          component={Link}
+          to={to}
+        />
+      ))}
     </List>
   );
 }
@@ -78,7 +74,7 @@ ApplicationsList.propTypes = {
 ApplicationsList.defaultProps = {
   error: undefined,
   listLength: 3,
-  toRoute: routes.citizen.application._,
+  toRoute: routes.citizen.application.vault,
 };
 
 export default withTranslation(['components'])(ApplicationsList);

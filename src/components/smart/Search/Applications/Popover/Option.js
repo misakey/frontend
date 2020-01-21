@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { generatePath, Link } from 'react-router-dom';
 
 import routes from 'routes';
-import { SUGGESTED_TYPE, LINKED_TYPE } from 'constants/search/application/type';
 import { ROLE_LABELS } from 'constants/Roles';
 import ApplicationSchema from 'store/schemas/Application';
 
@@ -14,7 +13,7 @@ import useLocationWorkspace from 'hooks/useLocationWorkspace';
 
 import ApplicationListItem from 'components/dumb/ListItem/Application';
 
-const Option = ({ application, type, ...rest }) => {
+const Option = ({ application, ...rest }) => {
   const role = useLocationWorkspace();
 
   const mainDomain = useMemo(
@@ -22,17 +21,12 @@ const Option = ({ application, type, ...rest }) => {
     [application.mainDomain],
   );
 
-  const citizenLinkTo = useMemo(
-    () => (type === LINKED_TYPE ? routes.citizen.application.vault : routes.citizen.application._),
-    [type],
-  );
-
   const itemLinkTo = useMemo(
     () => {
       if (isNil(mainDomain)) {
         return null;
       }
-      let linkTo = citizenLinkTo;
+      let linkTo = routes.citizen.application.vault;
       if (role === ROLE_LABELS.DPO) {
         linkTo = routes.dpo.service._;
       } else if (role === ROLE_LABELS.ADMIN) {
@@ -40,7 +34,7 @@ const Option = ({ application, type, ...rest }) => {
       }
       return generatePath(linkTo, { mainDomain });
     },
-    [mainDomain, role, citizenLinkTo],
+    [mainDomain, role],
   );
 
   return (
@@ -48,7 +42,6 @@ const Option = ({ application, type, ...rest }) => {
       button
       component={Link}
       to={itemLinkTo}
-      secondaryLinkTo={itemLinkTo}
       application={application}
       {...rest}
     />
@@ -60,7 +53,6 @@ Option.propTypes = {
     ...ApplicationSchema.propTypes,
     mainDomain: PropTypes.string,
   }).isRequired,
-  type: PropTypes.oneOf([SUGGESTED_TYPE, LINKED_TYPE]).isRequired,
 };
 
 export default Option;

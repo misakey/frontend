@@ -314,22 +314,18 @@ const SearchApplicationsPopover = ({
               application={option}
               disabled={listLoading}
               onClick={onClose}
-              type={LINKED_TYPE}
             />
           ))}
-          {!isEmpty(suggestedOptions) && (
-            <PopoverListSubheader
-              classes={{ root: classes.listSubheaderRoot }}
-              type={SUGGESTED_TYPE}
-            />
-          )}
+          <PopoverListSubheader
+            classes={{ root: classes.listSubheaderRoot }}
+            type={SUGGESTED_TYPE}
+          />
           {suggestedOptions.map((option) => (
             <Option
               key={option.mainDomain}
               application={option}
               disabled={listLoading}
               onClick={onClose}
-              type={SUGGESTED_TYPE}
             />
           ))}
           <ApplicationListItemNotFound disabled={listLoading} onClick={onClose} />
