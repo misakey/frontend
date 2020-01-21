@@ -2,6 +2,7 @@ import API from '@misakey/api';
 
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import isEmpty from '@misakey/helpers/isEmpty';
 
 // CONSTANTS
 const ENDPOINTS = {
@@ -45,6 +46,6 @@ export const fetchLinkedApplications = (userId) => fetchLinks(userId)
       return applicationId;
     });
 
-    return fetchApplicationByIds(ids)
+    return isEmpty(ids) ? [] : fetchApplicationByIds(ids)
       .then((applications) => applications.map(objectToCamelCase));
   });
