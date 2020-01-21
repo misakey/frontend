@@ -28,6 +28,13 @@ const useStyles = makeStyles(() => ({
   container: {
     width: '100%',
   },
+  emailItem: {
+    maxWidth: '100%',
+  },
+  emailItemTypo: {
+    width: '100%',
+    display: 'inline-block',
+  },
 }));
 
 const CardProfile = ({ profile, t }) => {
@@ -101,9 +108,12 @@ const CardProfile = ({ profile, t }) => {
           <ListItemIcon className="title">
             <Typography>{t('fields:email.shortLabel')}</Typography>
           </ListItemIcon>
-          <ListItemText primary={email} />
+          <ListItemText
+            primary={email}
+            primaryTypographyProps={{ noWrap: true, className: classes.emailItemTypo }}
+            className={classes.emailItem}
+          />
         </ListItem>
-
         <ListItem
           classes={classes}
           divider

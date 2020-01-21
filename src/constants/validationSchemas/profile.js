@@ -5,7 +5,6 @@ import errorTypes from 'constants/errorTypes';
 
 
 // CONSTANTS
-const DISPLAY_NAME_REGEX = /^[\da-zA-Z ]+$/;
 const { invalid, malformed, required, conflict } = errorTypes;
 
 export const displayNameValidationSchema = Yup.object().shape({
@@ -13,7 +12,6 @@ export const displayNameValidationSchema = Yup.object().shape({
     .string()
     .min(3, invalid)
     .max(21, invalid)
-    .matches(DISPLAY_NAME_REGEX, { message: malformed, excludeEmptyString: true })
     .required(required),
 });
 

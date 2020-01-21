@@ -283,6 +283,22 @@ const ApplicationInfoContent = ({
           </Button> */}
         </Card>
       )}
+      {entity.published && (
+        <>
+          <InfoContentSecurity
+            onContributionDpoEmailClick={onContributionDpoEmailClick}
+            isAuthenticated={isAuthenticated}
+            entity={entity}
+          />
+          <Box mb={3}>
+            {isAuthenticated && <WithMyFeedbackCard application={entity} />}
+          </Box>
+          <Box mb={3}>
+            <SummaryFeedbackCard application={entity} />
+          </Box>
+        </>
+      )}
+
       <Card mb={3}>
         <Box p={2} display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h5">
@@ -331,21 +347,7 @@ const ApplicationInfoContent = ({
         </Box>
         {renderDomains && <ApplicationInfoContentDomains entity={entity} />}
       </Card>
-      {entity.published && (
-        <>
-          <InfoContentSecurity
-            onContributionDpoEmailClick={onContributionDpoEmailClick}
-            isAuthenticated={isAuthenticated}
-            entity={entity}
-          />
-          <Box mb={3}>
-            {isAuthenticated && <WithMyFeedbackCard application={entity} />}
-          </Box>
-          <Box mb={3}>
-            <SummaryFeedbackCard application={entity} />
-          </Box>
-        </>
-      )}
+
       {databoxesCount > 0 && (
         <Card py={5}>
           <Typography variant="h3" align="center">

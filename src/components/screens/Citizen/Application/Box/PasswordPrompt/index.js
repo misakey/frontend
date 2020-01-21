@@ -13,7 +13,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 
 import Button from 'components/dumb/Button';
 import ButtonSubmit from 'components/dumb/Button/Submit';
-import FieldText from 'components/dumb/Form/Field/Text';
+import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
 
 import { openVaultValidationSchema } from 'constants/validationSchemas/auth';
 
@@ -53,7 +53,7 @@ function PasswordPrompt({ onClose, onSubmit, firstAttempt, t, open }) {
                 name="password"
                 label={t('fields:passwordVault.label')}
                 placeholder={t('fields:passwordVault.placeholder')}
-                component={FieldText}
+                component={FieldTextPasswordRevealable}
                 type="password"
                 inputProps={{ 'data-matomo-ignore': true }}
               />

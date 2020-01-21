@@ -31,6 +31,7 @@ const GET_STORAGE_QUOTA_ENDPOINT = {
 
 const getUsedSpace = compose(
   prop('usedSpace'),
+  objectToCamelCase,
   head,
 );
 
@@ -52,7 +53,11 @@ const useFetchStorageQuota = (
     .build(null, null, objectToSnakeCase({ userId }))
     .send()
     .then((response) => {
-      setBoxUsage(getUsedSpace(objectToCamelCase(response)));
+      if (response.length > 0) {
+        setBoxUsage(getUsedSpace(response));
+      } else {
+        setBoxUsage(0);
+      }
     })
     .catch(handleGenericHttpErrors),
   [

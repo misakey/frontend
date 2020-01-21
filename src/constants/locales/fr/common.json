@@ -244,7 +244,7 @@
       "done": "Mes données ont été déposées dans mon coffre-fort",
       "refused": "Ma demande a été rejetée",
       "no_data": "Le site ne possède aucune donnée me concernant",
-      "other": "Je eux contacter directement le DPO pour plus d'informations"
+      "other": "Je peux contacter directement le DPO pour plus d'informations"
     },
     "ownerComment": {
       "ok": "J'ai bien reçu mes données personnelles dans mon coffre-fort",

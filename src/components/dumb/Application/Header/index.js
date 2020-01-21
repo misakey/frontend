@@ -298,6 +298,7 @@ function ApplicationHeader({
               aria-haspopup="true"
               onClick={onMoreMenuClick}
               className={classes.button}
+              fullWidth
             >
               {t('common:more')}
               <ArrowDropDownIcon />
