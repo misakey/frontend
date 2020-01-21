@@ -131,7 +131,9 @@ const ButtonConnectToken = ({
             {t('account.profile', 'My profile')}
           </MenuItem>
         )}
-        <Divider light />
+        {seclevel > 1 && ( // duplicated because Menu doesn't accept React.Fragment as a child
+          <Divider light />
+        )}
         <MenuItem button component="li" onClick={handleSignOut}>
           {t('account.signOut.label', 'Sign out')}
         </MenuItem>

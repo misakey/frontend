@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   hidden: {
     display: 'none',
   },
-  input: {
+  inputRoot: {
     marginRight: theme.spacing(0.5),
     width: INPUT_WIDTH,
     height: INPUT_WIDTH * 1.25,
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
       marginRight: theme.spacing(2),
     },
   },
-  inputProps: {
+  inputInput: {
     textAlign: 'center',
     '-webkit-appearance': 'textfield',
     '-moz-appearance': 'textfield',
@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
 const DEFAULT_NAME = 'confirmationCode';
 
 const FieldCode = ({
-  autoFocus, className, displayError, errorKeys, field, form,
+  autoFocus, displayError, errorKeys, field, form,
   hidden, helperText, helperTextProps, label, labelProps, length, reset, t, ...rest
 }) => {
   const classes = useStyles();
@@ -200,11 +200,11 @@ const FieldCode = ({
             <OutlinedInput
               key={n}
               autoFocus={autoFocus && i === 0}
-              className={clsx(classes.input, className)}
+              classes={{ root: classes.inputRoot, input: classes.inputInput }}
               error={displayError}
               id={n}
               inputRef={inputRefs[i]}
-              inputProps={{ className: classes.inputProps, min: 0, max: 9 }}
+              inputProps={{ min: 0, max: 9 }}
               labelWidth={(label === undefined && i === 0) ? LABEL_WIDTH : undefined}
               name={n}
               onChange={(e) => handleChange(e, i)}
@@ -236,7 +236,6 @@ const FieldCode = ({
 
 FieldCode.propTypes = {
   autoFocus: PropTypes.bool,
-  className: PropTypes.string,
   displayError: PropTypes.bool.isRequired,
   errorKeys: PropTypes.arrayOf(PropTypes.string).isRequired,
   field: PropTypes.shape({
@@ -259,7 +258,6 @@ FieldCode.propTypes = {
 
 FieldCode.defaultProps = {
   autoFocus: false,
-  className: '',
   helperText: null,
   helperTextProps: {},
   hidden: false,

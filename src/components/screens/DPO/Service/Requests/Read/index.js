@@ -657,10 +657,7 @@ ServiceRequestsRead.propTypes = {
 
   error: PropTypes.instanceOf(Error),
   isFetching: PropTypes.bool.isRequired,
-  appBarProps: PropTypes.shape({
-    shift: PropTypes.bool,
-    items: PropTypes.arrayOf(PropTypes.node),
-  }),
+  appBarProps: PropTypes.object,
   // CONNECT
   dispatchUpdateDatabox: PropTypes.func.isRequired,
 

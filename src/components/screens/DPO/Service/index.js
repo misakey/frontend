@@ -1,28 +1,30 @@
 import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Switch } from 'react-router-dom';
 
+import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
 import routes from 'routes';
 import ApplicationSchema from 'store/schemas/Application';
 
 import isNil from '@misakey/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import useParseIdToken from 'hooks/useParseIdToken';
+import useLocationWorkspace from 'hooks/useLocationWorkspace';
+import useUserHasRole from 'hooks/useUserHasRole';
 
 import withApplication from 'components/smart/withApplication';
 
 import RouteService, { DEFAULT_SERVICE_ENTITY } from 'components/smart/Route/Service';
-
 import ButtonBurger from 'components/dumb/Button/Burger';
 import Drawer from 'components/screens/DPO/Service/Drawer';
 import ServiceClaim from 'components/screens/DPO/Service/Claim';
 import ServiceRequests from 'components/screens/DPO/Service/Requests';
 import Redirect from 'components/dumb/Redirect';
 import SplashScreen from 'components/dumb/SplashScreen';
-import useLocationWorkspace from 'hooks/useLocationWorkspace';
-import useUserHasRole from 'hooks/useUserHasRole';
-
-import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
+import BoxEllipsis from 'components/dumb/Box/Ellipsis';
+import ApplicationAvatar from 'components/dumb/Avatar/Application';
 
 // CONSTANTS
 export const DPO_SERVICE_SCREEN_NAMES = {
@@ -36,11 +38,16 @@ const useStyles = makeStyles((theme) => ({
     // DRAWER spacing - BUTTONBURGER width+padding - APPBAR padding + EDGE margin
     marginRight: `calc(${theme.spacing(9) + 1}px - 48px - 24px + 12px)`,
   },
+  avatarParent: {
+    position: 'absolute',
+    left: '50%',
+    transform: 'translateX(-50%)',
+  },
 }));
 
 // COMPONENTS
 function Service({
-  entity, isDefaultDomain, mainDomain, match, userId, isFetching, userRoles, ...rest
+  entity, isDefaultDomain, mainDomain, match, userId, isFetching, userRoles, id, ...rest
 }) {
   const classes = useStyles();
 
@@ -59,12 +66,32 @@ function Service({
     [mainDomain, requiredScope, userHasRole, workspace],
   );
 
+  const { acr } = useParseIdToken(id);
+  const seclevel = useMemo(() => parseInt(acr, 10), [acr]);
+  const withSearchBar = useMemo(
+    () => seclevel !== 1, // we don't want dpo guests to use search feature for now
+    [seclevel],
+  );
+
+  const items = useMemo(
+    () => (withSearchBar
+      ? []
+      : [(
+        <BoxEllipsis className={classes.avatarParent} key="applicationAvatarParent">
+          <ApplicationAvatar application={service} />
+        </BoxEllipsis>
+      )]),
+    [classes.avatarParent, service, withSearchBar],
+  );
+
   const appBarProps = useMemo(() => ({
     shift: isDrawerOpen,
+    withSearchBar,
     leftItems: [!isDrawerOpen ? (
       <ButtonBurger className={classes.burger} edge="start" key="ButtonBurger" onClick={() => setDrawerOpen(true)} />
     ) : null],
-  }), [classes.burger, isDrawerOpen]);
+    items,
+  }), [classes.burger, isDrawerOpen, items, withSearchBar]);
 
   if (isNil(service)) {
     return <SplashScreen />;
@@ -114,6 +141,7 @@ function Service({
 }
 
 Service.propTypes = {
+  // withApplication
   entity: PropTypes.shape(ApplicationSchema.propTypes),
   isDefaultDomain: PropTypes.bool.isRequired,
   isFetching: PropTypes.bool.isRequired,
@@ -124,11 +152,19 @@ Service.propTypes = {
     roleLabel: PropTypes.string.isRequired,
     applicationId: PropTypes.string.isRequired,
   })).isRequired,
+  // CONNECT
+  id: PropTypes.string,
 };
 
 Service.defaultProps = {
   entity: null,
   userId: null,
+  id: null,
 };
 
-export default withApplication(Service);
+// CONNECT
+const mapStateToProps = (state) => ({
+  id: state.auth.id,
+});
+
+export default withApplication(connect(mapStateToProps, {})(Service));
