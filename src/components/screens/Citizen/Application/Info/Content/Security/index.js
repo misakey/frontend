@@ -91,9 +91,7 @@ const InfoContentSecurity = ({
         applicationID={id}
         mainDomain={mainDomain}
         buttonProps={{ standing: BUTTON_STANDINGS.MAIN }}
-      >
-        {t('screens:application.info.security.button.dpo')}
-      </ContactButton>
+      />
     );
   }, [
     dpoContact, dpoEmail, hasDpoContact, hasDpoEmail,

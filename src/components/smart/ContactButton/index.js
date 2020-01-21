@@ -26,7 +26,7 @@ import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 import { redirectToApp } from 'helpers/plugin';
 import { IS_PLUGIN } from 'constants/plugin';
 import getNextSearch from 'helpers/getNextSearch';
-import { getCurrentDatabox } from 'helpers/databox';
+import { getCurrentDatabox, getStatus } from 'helpers/databox';
 import { hasDetailKey, getDetailPairsHead } from 'helpers/apiError';
 
 import withDialogConnect from 'components/smart/Dialog/Connect/with';
@@ -40,7 +40,7 @@ const { conflict } = errorTypes;
 const databoxesProp = prop('databoxes');
 const hasStatusError = hasDetailKey('status');
 
-const canContact = ({ status }) => status !== CLOSED && status !== DONE;
+const canContact = (status) => status !== CLOSED && status !== DONE;
 
 const requestDataboxAccess = (id) => API.use(API.endpoints.application.box.requestAccess)
   .build({ id })
@@ -188,9 +188,14 @@ const ContactButton = (
     [databoxesByProducer],
   );
 
-  const disabled = useMemo(
-    () => !isNil(databox) && !canContact(databox),
+  const status = useMemo(
+    () => getStatus(databox),
     [databox],
+  );
+
+  const disabled = useMemo(
+    () => !isNil(status) && !canContact(status),
+    [status],
   );
 
   const shouldFetch = useMemo(
@@ -217,9 +222,19 @@ const ContactButton = (
     t,
   );
 
+  const contactText = useMemo(
+    () => {
+      if (isNil(status)) {
+        return t('common:contact.send');
+      }
+      return t('common:contact.resend');
+    },
+    [status, t],
+  );
+
   const dpoText = useMemo(
-    () => children || t('common:contact.label'),
-    [children, t],
+    () => children || contactText,
+    [children, contactText],
   );
 
   const noDpoText = useMemo(

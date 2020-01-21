@@ -10,7 +10,7 @@ import getSearchParams from '@misakey/helpers/getSearchParams';
 import ToggleButtonGroupMailType from 'components/dumb/ToggleButtonGroup/MailType';
 
 // COMPONENTS
-const ToggleButtonGroupMailTypeWithSearchParams = ({ values, defaultValue, prefix }) => {
+const ToggleButtonGroupMailTypeWithSearchParams = ({ values, defaultValue, prefix, ...rest }) => {
   const { search, pathname } = useLocation();
   const mailType = useMemo(
     () => getSearchParams(search).mailType,
@@ -51,6 +51,7 @@ const ToggleButtonGroupMailTypeWithSearchParams = ({ values, defaultValue, prefi
       values={valuesWithCustomProps}
       currentValue={currentValue}
       prefix={prefix}
+      {...rest}
     />
   );
 };

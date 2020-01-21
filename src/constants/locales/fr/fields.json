@@ -37,6 +37,15 @@
     "label": "Code d'invitation",
     "placeholder": "codePink"
   },
+  "confirmationCode": {
+    "label": "Code de confirmation",
+    "error": {
+      "expired": "Le code a expiré. Je dois en demander un nouveau",
+      "invalid": "Le code de confirmation est incorrect",
+      "malformed": "Le code de confirmation doit contenir 6 chiffres",
+      "conflict": "Nous avons déjà envoyé un code en cours de validité. Je revérifie mes mails ou je réessaie dans quelques minutes"
+    }
+  },
   "confirmationCode_secret": {
     "label": "Code de confirmation",
     "helperText": "Je remplis le code que j'ai reçu par email",

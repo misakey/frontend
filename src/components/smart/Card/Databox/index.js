@@ -208,11 +208,6 @@ const CardDatabox = ({
     [databox],
   );
 
-  const resend = useMemo(
-    () => !isNil(blobs),
-    [blobs],
-  );
-
   const status = useMemo(
     () => getStatus(databox),
     [databox],
@@ -322,9 +317,7 @@ const CardDatabox = ({
             applicationID={id}
             mainDomain={mainDomain}
             buttonProps={{ standing: BUTTON_STANDINGS.MAIN }}
-          >
-            {t(`common:databox.button.label.${resend ? 'resend' : 'send'}`)}
-          </ContactButton>
+          />
         );
       }
       if (status !== CLOSED) {
@@ -335,7 +328,7 @@ const CardDatabox = ({
       }
       return null;
     },
-    [dpoEmail, id, mainDomain, onArchiveDialog, onContributionDpoEmailClick, resend, status, t],
+    [dpoEmail, id, mainDomain, onArchiveDialog, onContributionDpoEmailClick, status, t],
   );
 
   const secondary = useMemo(
@@ -355,24 +348,12 @@ const CardDatabox = ({
             applicationID={id}
             mainDomain={mainDomain}
             buttonProps={{ standing: BUTTON_STANDINGS.MINOR }}
-          >
-            {t(`common:databox.button.label.${resend ? 'resend' : 'send'}`)}
-          </ContactButton>
+          />
         );
       }
       return null;
     },
-    [
-      application,
-      status,
-      onReopenDialog,
-      t,
-      dpoEmail,
-      onContributionDpoEmailClick,
-      id,
-      mainDomain,
-      resend,
-    ],
+    [application, status, onReopenDialog, t, dpoEmail, onContributionDpoEmailClick, id, mainDomain],
   );
 
   const shouldFetch = useMemo(

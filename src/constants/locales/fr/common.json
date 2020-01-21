@@ -176,7 +176,8 @@
   },
   "must": "Devoir",
   "contact": {
-    "label": "Demander mes données",
+    "send": "Demander mes données",
+    "resend": "Relancer le DPO",
     "dpo": "Ajouter le DPO",
     "mailto": "Email au DPO",
     "providers": {
@@ -226,8 +227,6 @@
     "noResult": "Je peux demander mes données personnelles afin de les récupérer dans mon coffre-fort. Je serai ensuite libre d'en disposer comme bon me semble. Mes données seront chiffrées afin que moi seul puisse y accéder.",
     "button": {
       "label": {
-        "send": "Demander mes données",
-        "resend": "Relancer le DPO",
         "close": "Archiver ma demande",
         "reopen": "Relancer le DPO"
       }

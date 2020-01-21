@@ -152,8 +152,7 @@
         },
         "contactForm": "Misakey ne connaît qu'un formulaire en ligne pour faire des requêtes de données personnelles à ce site. Si j'ai trouvé l'email DPO de ce site, je peux l'envoyer à Misakey pour l'intégrer à la base de données collaborative !",
         "button": {
-          "contactForm": "Formulaire de contact",
-          "dpo": "Demander mes données"
+          "contactForm": "Formulaire de contact"
         }
       },
       "contact": {
