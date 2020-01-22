@@ -46,6 +46,11 @@
       }
     }
   },
+  "workspaces": {
+    "citizen": "Citizen",
+    "dpo": "DPO",
+    "admin": "ADMIN"
+  },
   "account": {
     "delete": {
       "label": "Supprimer mon compte",

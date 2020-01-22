@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Switch } from 'react-router-dom';
@@ -17,8 +17,6 @@ import useUserHasRole from 'hooks/useUserHasRole';
 import withApplication from 'components/smart/withApplication';
 
 import RouteService, { DEFAULT_SERVICE_ENTITY } from 'components/smart/Route/Service';
-import ButtonBurger from 'components/dumb/Button/Burger';
-import Drawer from 'components/screens/DPO/Service/Drawer';
 import ServiceClaim from 'components/screens/DPO/Service/Claim';
 import ServiceRequests from 'components/screens/DPO/Service/Requests';
 import Redirect from 'components/dumb/Redirect';
@@ -51,8 +49,6 @@ function Service({
 }) {
   const classes = useStyles();
 
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
-
   const service = useMemo(
     () => (isDefaultDomain ? DEFAULT_SERVICE_ENTITY : entity),
     [isDefaultDomain, entity],
@@ -84,59 +80,43 @@ function Service({
     [classes.avatarParent, service, withSearchBar],
   );
 
-  const appBarProps = useMemo(() => ({
-    shift: isDrawerOpen,
-    withSearchBar,
-    leftItems: [!isDrawerOpen ? (
-      <ButtonBurger className={classes.burger} edge="start" key="ButtonBurger" onClick={() => setDrawerOpen(true)} />
-    ) : null],
-    items,
-  }), [classes.burger, isDrawerOpen, items, withSearchBar]);
-
   if (isNil(service)) {
     return <SplashScreen />;
   }
 
   return (
-    <Drawer
-      mainDomain={mainDomain}
-      onClose={() => setDrawerOpen(false)}
-      open={isDrawerOpen}
-      userHasRole={userHasRole}
-    >
-      <Switch>
-        <RouteService
-          path={routes.dpo.service.claim._}
-          component={ServiceClaim}
-          componentProps={{
-            appBarProps,
-            isLoading: isFetching,
-            name: DPO_SERVICE_SCREEN_NAMES.CLAIM,
-            service,
-            userId,
-            userRoles,
-            ...rest,
-          }}
-          {...routeServiceProps}
-        />
-        <RouteService
-          path={routes.dpo.service.requests._}
-          component={ServiceRequests}
-          componentProps={{
-            appBarProps,
-            isLoading: isFetching,
-            service,
-            name: DPO_SERVICE_SCREEN_NAMES.REQUESTS,
-            ...rest,
-          }}
-          {...routeServiceProps}
-        />
-        <Redirect
-          from={match.path}
-          to={routes.dpo.service.requests._}
-        />
-      </Switch>
-    </Drawer>
+    <Switch>
+      <RouteService
+        path={routes.dpo.service.claim._}
+        component={ServiceClaim}
+        componentProps={{
+          appBarProps: { withSearchBar, items },
+          isLoading: isFetching,
+          name: DPO_SERVICE_SCREEN_NAMES.CLAIM,
+          service,
+          userId,
+          userRoles,
+          ...rest,
+        }}
+        {...routeServiceProps}
+      />
+      <RouteService
+        path={routes.dpo.service.requests._}
+        component={ServiceRequests}
+        componentProps={{
+          appBarProps: { withSearchBar, items },
+          isLoading: isFetching,
+          service,
+          name: DPO_SERVICE_SCREEN_NAMES.REQUESTS,
+          ...rest,
+        }}
+        {...routeServiceProps}
+      />
+      <Redirect
+        from={match.path}
+        to={routes.dpo.service.requests._}
+      />
+    </Switch>
   );
 }
 

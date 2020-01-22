@@ -16,8 +16,9 @@ import MUILink from '@material-ui/core/Link';
 // HOOKS
 const useStyles = makeStyles(() => ({
   linkRoot: {
-    fontFamily: ['Futura Std Bold', 'Roboto', 'sans-serif'],
     display: 'flex',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
   },
 }));
 
@@ -38,8 +39,6 @@ const LinkHome = ({ t, children, ...rest }) => {
       component={Link}
       underline="none"
       classes={{ root: classes.linkRoot }}
-      color="secondary"
-      variant="subtitle1"
       {...omitTranslationProps(rest)}
     >
       {children}

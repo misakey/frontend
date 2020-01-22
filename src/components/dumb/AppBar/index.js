@@ -1,6 +1,7 @@
 import React, { useMemo, Fragment } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
 import { DRAWER_WIDTH } from 'constants/ui/sizes';
 import { IS_PLUGIN } from 'constants/plugin';
@@ -10,6 +11,7 @@ import map from '@misakey/helpers/map';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { makeStyles } from '@material-ui/core/styles';
+import useLocationWorkspace from 'hooks/useLocationWorkspace';
 
 import MuiAppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -21,6 +23,7 @@ import ElevationScroll from 'components/dumb/ElevationScroll';
 import PausePluginButton from 'components/smart/Plugin/Button/Pause';
 import SearchApplications from 'components/smart/Search/Applications';
 import BoxFlexFill from 'components/dumb/Box/FlexFill';
+import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -52,13 +55,15 @@ function AppBar({
   elevationScroll, shift,
   items, leftItems,
   searchBarProps, toolbarProps, elevationScrollProps,
-  withPausePluginButton, withHomeLink, withSearchBar, withUser,
+  withPausePluginButton, withHomeLink, withSearchBar, withUser, t,
   ...rest
 }) {
   const classes = useStyles(drawerWidth);
   const theme = useTheme();
   const isXsLayout = useMediaQuery(theme.breakpoints.only('xs'));
   const isSmLayout = useMediaQuery(theme.breakpoints.only('sm'));
+  const workspace = useLocationWorkspace();
+
 
   const rightAppBarItems = useMemo(() => {
     const rightItems = [];
@@ -104,6 +109,11 @@ function AppBar({
           {withHomeLink && (
           <LinkHome>
             <Logo {...logoProps} />
+            {(!isSmallMode) && (
+              <Typography variant="subtitle2">
+                {t(`common:workspaces.${workspace}`)}
+              </Typography>
+            )}
           </LinkHome>
           )}
           {map(items)}
@@ -120,6 +130,7 @@ function AppBar({
 }
 
 AppBar.propTypes = {
+  t: PropTypes.func.isRequired,
   className: PropTypes.string,
   drawerWidth: PropTypes.number,
   elevationScroll: PropTypes.bool,
@@ -151,4 +162,4 @@ AppBar.defaultProps = {
   withUser: true,
 };
 
-export default AppBar;
+export default withTranslation('common')(AppBar);
