@@ -11,8 +11,13 @@ import Screen from 'components/dumb/Screen';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
-  containerRoot: {
-    height: '100%',
+  screen: {
+    display: 'flex',
+  },
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
 }));
 
@@ -21,20 +26,13 @@ const LandingScreen = () => {
   const classes = useStyles();
 
   return (
-    <Screen
-      fullHeight
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-    >
-      <Container maxWidth="md" classes={{ root: classes.containerRoot }}>
-        <Box height="inherit" display="flex" flexDirection="column">
-          <Box display="flex" flexDirection="column" flexGrow={1}>
-            <LinkedApplicationsList />
-            <ApplicationCategoriesList />
-          </Box>
-          <Footer />
+    <Screen className={classes.screen}>
+      <Container maxWidth="md" className={classes.container}>
+        <Box>
+          <LinkedApplicationsList />
+          <ApplicationCategoriesList />
         </Box>
+        <Footer />
       </Container>
     </Screen>
   );

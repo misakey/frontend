@@ -1,15 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
 import { withTranslation } from 'react-i18next';
-import clsx from 'clsx';
 
-import 'components/dumb/Footer/index.scss';
+import Box from '@material-ui/core/Box';
+import Link from '@material-ui/core/Link';
+import Typography from '@material-ui/core/Typography';
 
-const Footer = ({ className, t }) => (
-  <div className={clsx(className, 'footer')}>
-    <Typography variant="body2">
+const Footer = ({ t }) => (
+  <Box mt={3}>
+    <Typography variant="body2" align="center">
       <Link
         href={t('footer.links.privacy.href')}
         color="secondary"
@@ -18,9 +17,7 @@ const Footer = ({ className, t }) => (
       >
         {t('footer.links.privacy.text')}
       </Link>
-    </Typography>
-    <span className="separator">-</span>
-    <Typography variant="body2">
+      {' - '}
       <Link
         href={t('footer.links.tos.href')}
         color="secondary"
@@ -30,16 +27,11 @@ const Footer = ({ className, t }) => (
         {t('footer.links.tos.text')}
       </Link>
     </Typography>
-  </div>
+  </Box>
 );
 
 Footer.propTypes = {
   t: PropTypes.func.isRequired,
-  className: PropTypes.string,
-};
-
-Footer.defaultProps = {
-  className: '',
 };
 
 export default withTranslation()(Footer);
