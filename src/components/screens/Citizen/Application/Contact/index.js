@@ -1,6 +1,6 @@
 import React, { lazy } from 'react';
 import PropTypes from 'prop-types';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';
@@ -25,6 +25,11 @@ const Contact = ({
 }) => (
   <Screen {...screenProps}>
     <Switch>
+      <Redirect
+        exact
+        from={routes.citizen.application.contact._}
+        to={routes.citizen.application.contact.preview}
+      />
       <Route
         path={routes.citizen.application.contact.preview}
         render={(routerProps) => (

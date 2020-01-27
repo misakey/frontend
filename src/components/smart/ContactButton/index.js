@@ -244,15 +244,18 @@ const ContactButton = (
     [isAuthenticated, dpoText, t],
   );
 
-  const openInNewTab = useCallback(
+  const contactInNewTab = useCallback(
     () => {
       // @FIXME: remove when contact app in plugin is implemented
-      const path = isNil(mainDomain)
+      let path = isNil(mainDomain)
         ? null
-        : generatePath(routes.citizen.application._, { mainDomain });
+        : generatePath(routes.citizen.application.contact.preview, { mainDomain });
+      if (!isNil(databox)) {
+        path = `${path}?recontact=true`;
+      }
       redirectToApp(path);
     },
-    [mainDomain],
+    [mainDomain, databox],
   );
 
   useEffect(
@@ -292,7 +295,7 @@ const ContactButton = (
   if (IS_PLUGIN) {
     return (
       <Button
-        onClick={openInNewTab}
+        onClick={contactInNewTab}
         text={t('screens:application.info.contact.goToApp')}
         standing={BUTTON_STANDINGS.MAIN}
         {...buttonProps}
