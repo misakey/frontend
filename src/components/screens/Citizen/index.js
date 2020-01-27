@@ -13,6 +13,9 @@ import Application from 'components/screens/Citizen/Application';
 const ApplicationsCreate = lazy(() => import('components/screens/Citizen/Applications/Create'));
 const Landing = lazy(() => import('components/screens/Landing'));
 const Contact = lazy(() => import('components/screens/Citizen/Contact'));
+const ApplicationsCategoryScreen = lazy(
+  () => import('components/screens/Citizen/Applications/Category'),
+);
 
 function Citizen({ match }) {
   return (
@@ -24,6 +27,10 @@ function Citizen({ match }) {
           isPrivate
           path={routes.citizen.applications.create}
           component={ApplicationsCreate}
+        />
+        <RouteCitizen
+          path={routes.citizen.applications.category}
+          component={ApplicationsCategoryScreen}
         />
         <RouteCitizen path={routes.citizen.application._} component={Application} />
         <RouteCitizen exact path={match.path} component={Landing} />

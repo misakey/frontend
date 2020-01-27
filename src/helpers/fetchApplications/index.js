@@ -29,6 +29,11 @@ export const fetchApplicationsByMainDomains = (mainDomains, isAuthenticated = fa
   .build(null, null, objectToSnakeCase({ mainDomains: mainDomains.join(',') }))
   .send();
 
+export const fetchApplicationsByCategory = (category, options = {}, isAuthenticated = false) => API
+  .use({ ...ENDPOINTS.applicationInfo.list, auth: isAuthenticated })
+  .build(null, null, objectToSnakeCase({ category, ...options }))
+  .send();
+
 const fetchLinks = (userId) => API
   .use(ENDPOINTS.linkedApplications.list)
   .build(null, null, objectToSnakeCase({ userId }))

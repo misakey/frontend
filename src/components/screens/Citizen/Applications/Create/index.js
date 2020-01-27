@@ -28,6 +28,8 @@ import Navigation from 'components/dumb/Navigation';
 import FieldText from 'components/dumb/Form/Field/Text';
 import ButtonSubmit from 'components/dumb/Button/Submit';
 import ScreenError from 'components/dumb/Screen/Error';
+import Screen from 'components/dumb/Screen';
+
 
 // CONSTANTS
 const { badRequest } = errorTypes;
@@ -143,7 +145,7 @@ const ApplicationsCreate = ({
   }
 
   return (
-    <>
+    <Screen>
       <Navigation
         toolbarProps={{ maxWidth: 'md' }}
         history={history}
@@ -179,7 +181,7 @@ const ApplicationsCreate = ({
           )}
         </Formik>
       </Container>
-    </>
+    </Screen>
   );
 };
 

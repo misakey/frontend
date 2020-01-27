@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 
 import log from '@misakey/helpers/log';
 import { fetchLinkedApplications } from 'helpers/fetchApplications';
@@ -42,7 +43,7 @@ function LinkedApplicationsList({ t, userId, isAuthenticated }) {
     }
   }, [shouldFetch, fetchList]);
 
-  if (!isAuthenticated || (!isFetching && (isNil(list) || list.length === 0))) {
+  if (!isAuthenticated || (!isFetching && isEmpty(list))) {
     return (<NoLinkedApplication isAuthenticated={isAuthenticated} />);
   }
 

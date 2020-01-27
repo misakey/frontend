@@ -2,23 +2,26 @@ import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
-import { Link, generatePath } from 'react-router-dom';
 
 import isNil from '@misakey/helpers/isNil';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import log from '@misakey/helpers/log';
 import { fetchApplicationsByCategory } from 'helpers/fetchApplications';
 
-import Card from 'components/dumb/Card';
+import Container from '@material-ui/core/Container';
+import Navigation from 'components/dumb/Navigation';
+
+
 import ApplicationsList from 'components/dumb/List/Applications';
+import Screen from 'components/dumb/Screen';
 
-import routes from 'routes';
 
-
-const ApplicationsCategory = ({ category, isAuthenticated, t }) => {
+const ApplicationsCategoryScreen = ({ isAuthenticated, t, match, history }) => {
   const [error, setError] = useState();
   const [applicationsList, setList] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
+
+  const { category } = match.params;
 
   const shouldFetch = useMemo(
     () => !isFetching && isNil(applicationsList) && isNil(error),
@@ -28,7 +31,7 @@ const ApplicationsCategory = ({ category, isAuthenticated, t }) => {
   const fetchApplicationsList = useCallback(() => {
     setIsFetching(true);
 
-    return fetchApplicationsByCategory(category, { limit: 5 }, isAuthenticated)
+    return fetchApplicationsByCategory(category, {}, isAuthenticated)
       .then((response) => {
         setList(response.map(objectToCamelCase));
       })
@@ -46,30 +49,33 @@ const ApplicationsCategory = ({ category, isAuthenticated, t }) => {
   }, [shouldFetch, fetchApplicationsList]);
 
   return (
-    <Card
-      title={t(`application.category.${category}`)}
-      primary={{
-        to: generatePath(routes.citizen.applications.category, { category }),
-        component: Link,
-        text: t('common:more'),
-      }}
-    >
-      <ApplicationsList
-        isFetching={isFetching}
-        error={error}
-        applications={applicationsList || []}
+    <Screen>
+      <Navigation
+        history={history}
+        toolbarProps={{ maxWidth: 'md' }}
+        title={t(`application.category.${category}`)}
       />
-    </Card>
+      <Container
+        maxWidth="md"
+      >
+        <ApplicationsList
+          isFetching={isFetching}
+          error={error}
+          applications={applicationsList || []}
+        />
+      </Container>
+    </Screen>
   );
 };
 
-ApplicationsCategory.propTypes = {
+ApplicationsCategoryScreen.propTypes = {
   t: PropTypes.func.isRequired,
-  category: PropTypes.string.isRequired,
+  match: PropTypes.object.isRequired,
   isAuthenticated: PropTypes.bool,
+  history: PropTypes.object.isRequired,
 };
 
-ApplicationsCategory.defaultProps = {
+ApplicationsCategoryScreen.defaultProps = {
   isAuthenticated: false,
 };
 
@@ -78,4 +84,4 @@ const mapStateToProps = (state) => ({
   isAuthenticated: !!state.auth.token,
 });
 
-export default withTranslation('common')(connect(mapStateToProps)(ApplicationsCategory));
+export default withTranslation('common')(connect(mapStateToProps)(ApplicationsCategoryScreen));

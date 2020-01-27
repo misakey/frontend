@@ -73,7 +73,7 @@ ApplicationsList.propTypes = {
 
 ApplicationsList.defaultProps = {
   error: undefined,
-  listLength: 3,
+  listLength: 5,
   toRoute: routes.citizen.application.vault,
 };
 

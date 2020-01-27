@@ -13,20 +13,7 @@ window.env = {
     environment: 'development',
   },
   CATEGORIES: [
-    {
-      label: 'shops',
-      applicationsDomains: [
-        'rakuten.com',
-        'amazon.com',
-      ],
-    },
-    {
-      label: 'services',
-      applicationsDomains: [
-        'airbnb.com',
-        'ferdinand.com',
-        'vp.com',
-      ],
-    },
+    'shops',
+    'gaming',
   ],
 };

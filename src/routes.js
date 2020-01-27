@@ -72,6 +72,7 @@ const routes = {
     },
     applications: {
       _: '/citizen/applications',
+      category: '/citizen/applications/:category',
       create: '/citizen/applications/create',
     },
     application: {
