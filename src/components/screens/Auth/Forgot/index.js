@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Formik, Field } from 'formik';
+import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
@@ -13,9 +14,12 @@ import errorTypes from 'constants/errorTypes';
 
 import { forgotConfirmValidationSchema, forgotResetPasswordValidationSchema } from 'constants/validationSchemas/auth';
 
+import { screenAuthSetCredentials } from 'store/actions/screens/auth';
+
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 import path from '@misakey/helpers/path';
+import join from '@misakey/helpers/join';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToSnakeCaseDeep from '@misakey/helpers/objectToSnakeCaseDeep';
@@ -23,16 +27,17 @@ import objectToSnakeCaseDeep from '@misakey/helpers/objectToSnakeCaseDeep';
 import useAsync from '@misakey/hooks/useAsync';
 
 import Redirect from 'components/dumb/Redirect';
-import FormCard from 'components/dumb/Form/Card';
+import FormCardAuth from 'components/dumb/Form/Card/Auth';
 
 import { ownerCryptoContext as cryptoContext } from '@misakey/crypto';
 
 import Box from '@material-ui/core/Box';
-import FieldText from 'components/dumb/Form/Field/Text';
+import FieldCode from 'components/dumb/Form/Field/Code';
+
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
 import ChipUser from 'components/dumb/Chip/User';
 import AuthForgotSubtitle from 'components/screens/Auth/Forgot/Subtitle';
-
+import CardHeaderAuth from 'components/smart/Card/Header/Auth';
 
 // CONSTANTS
 const { forbidden } = errorTypes;
@@ -46,6 +51,8 @@ const INITIAL_VALUES = {
   [CONFIRM_FIELD_NAME]: '',
   [PASSWORD_FIELD_NAME]: '',
 };
+
+const PARENT_TO = routes.auth.signIn;
 
 // HELPERS
 const getOtpError = path(['details', 'otp']);
@@ -121,6 +128,8 @@ const resetPassword = async (email, code, form, isAuthenticated) => {
     .send();
 };
 
+const formatFieldValue = (values) => join(values, '');
+
 // HOOKS
 const useGetUserPublicData = (email, handleGenericHttpErrors) => useCallback(
   () => (isEmpty(email) ? Promise.resolve() : fetchUserPublicData(email, handleGenericHttpErrors)),
@@ -166,12 +175,6 @@ const useOnReset = (
   ],
 );
 
-const useOnPrevious = (history) => useCallback(() => {
-  history.push({
-    pathname: routes.auth.signIn,
-  });
-}, [history]);
-
 const useAskResetPassword = (
   email, step, isAuthenticated, handleGenericHttpErrors,
 ) => useEffect(() => {
@@ -181,7 +184,14 @@ const useAskResetPassword = (
 }, [email, step, isAuthenticated, handleGenericHttpErrors]);
 
 // COMPONENTS
-const AuthForgot = ({ challenge, email, t, history, isAuthenticated }) => {
+const AuthForgot = ({
+  challenge,
+  email,
+  t,
+  history,
+  isAuthenticated,
+  dispatchClearCredentials,
+}) => {
   const [code, setCode] = useState();
   const [step, setStep] = useState(STEP_CONFIRM);
 
@@ -201,12 +211,21 @@ const AuthForgot = ({ challenge, email, t, history, isAuthenticated }) => {
   );
 
   const onSubmit = useMemo(() => (isStepConfirm(step) ? onNext : onReset), [step, onNext, onReset]);
-  const onPrevious = useOnPrevious(history);
+
+  const onClearUser = useCallback(
+    () => {
+      dispatchClearCredentials();
+      history.push({
+        pathname: PARENT_TO,
+      });
+    },
+    [dispatchClearCredentials, history],
+  );
 
   useAskResetPassword(email, step, isAuthenticated, handleGenericHttpErrors);
 
   if (isEmptyEmail) {
-    return <Redirect to={routes.auth.signIn} />;
+    return <Redirect to={PARENT_TO} />;
   }
 
   if (isNil(userPublicData)) {
@@ -220,23 +239,24 @@ const AuthForgot = ({ challenge, email, t, history, isAuthenticated }) => {
       initialValues={INITIAL_VALUES}
     >
       {({ isSubmitting, isValid }) => (
-        <FormCard
+        <FormCardAuth
           title={t('auth:forgotPassword.title')}
           subtitle={<AuthForgotSubtitle name={step} email={email} />}
-          secondary={{ onClick: onPrevious, text: t('common:previous') }}
+          secondary={{ text: t('common:previous'), component: Link, to: PARENT_TO }}
           primary={{
             type: 'submit',
             isLoading: isSubmitting,
             isValid,
             text: t(`auth:forgotPassword.form.action.${step}`),
           }}
+          Header={CardHeaderAuth}
         >
           <Box alignItems="center" flexDirection="column" display="flex">
             <ChipUser
               identifier={email}
               {...userPublicData}
-              onClick={onPrevious}
-              onDelete={onPrevious}
+              onClick={onClearUser}
+              onDelete={onClearUser}
             />
             {isStepConfirm(step)
               ? (
@@ -244,7 +264,9 @@ const AuthForgot = ({ challenge, email, t, history, isAuthenticated }) => {
                   className="field"
                   type="text"
                   name={CONFIRM_FIELD_NAME}
-                  component={FieldText}
+                  component={FieldCode}
+                  formatFieldValue={formatFieldValue}
+                  helperText=""
                   inputProps={{ 'data-matomo-ignore': true }}
                   label={t('auth:forgotPassword.form.field.confirm.label')}
                 />
@@ -259,18 +281,22 @@ const AuthForgot = ({ challenge, email, t, history, isAuthenticated }) => {
                 />
               )}
           </Box>
-        </FormCard>
+        </FormCardAuth>
       )}
     </Formik>
   );
 };
 
 AuthForgot.propTypes = {
+  // ROUTER
+  history: PropTypes.object.isRequired,
+  // withTranslation
+  t: PropTypes.func.isRequired,
+  // CONNECT
   challenge: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
-  history: PropTypes.object.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
-  t: PropTypes.func.isRequired,
+  dispatchClearCredentials: PropTypes.func.isRequired,
 };
 
 // CONNECT
@@ -280,4 +306,10 @@ const mapStateToProps = (state) => ({
   isAuthenticated: !!state.auth.token,
 });
 
-export default connect(mapStateToProps)(withTranslation(['auth', 'common'])(AuthForgot));
+const mapDispatchToProps = (dispatch) => ({
+  dispatchClearCredentials: () => dispatch(
+    screenAuthSetCredentials(),
+  ),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['auth', 'common'])(AuthForgot));

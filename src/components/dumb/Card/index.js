@@ -7,7 +7,7 @@ import MuiCard from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Box from '@material-ui/core/Box';
-
+import Divider from '@material-ui/core/Divider';
 import GroupTitles from 'components/dumb/Typography/GroupTitles';
 import CardControls from 'components/dumb/Card/Controls';
 
@@ -32,15 +32,26 @@ const Card = withStyles((theme) => ({
   denseActions: {
     paddingTop: 0,
   },
+  padded: {
+    padding: theme.spacing(3),
+  },
+  dividerPadded: {
+    margin: theme.spacing(0, -3),
+  },
+  headerPadded: {
+    margin: theme.spacing(-3, -3, 0, -3),
+  },
 }))(({
   children,
   classes,
   className,
   dense,
+  padded,
   primary,
   secondary,
   subtitle,
   title,
+  Header,
   subtitleProps,
   titleProps,
   ...rest
@@ -52,11 +63,17 @@ const Card = withStyles((theme) => ({
 
   return (
     <MuiCard
-      className={clsx(classes.root, className)}
+      className={clsx(classes.root, className, { [classes.padded]: padded })}
       component={Box}
       elevation={0}
       {...rest}
     >
+      {Header && (
+        <>
+          <Header className={clsx({ [classes.headerPadded]: padded })} />
+          <Divider className={clsx({ [classes.dividerPadded]: padded })} />
+        </>
+      )}
       {title && (
       <CardContent className={clsx({ [classes.denseContent]: dense && hasActions })}>
         <GroupTitles
@@ -82,6 +99,8 @@ Card.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   dense: PropTypes.bool,
+  padded: PropTypes.bool,
+  Header: PropTypes.elementType,
   title: PropTypes.node,
   primary: PropTypes.oneOfType([PropTypes.object, PropTypes.node]),
   secondary: PropTypes.object,
@@ -94,6 +113,7 @@ Card.defaultProps = {
   children: null,
   className: '',
   dense: false,
+  padded: false,
   primary: null,
   secondary: null,
   subtitleProps: {},

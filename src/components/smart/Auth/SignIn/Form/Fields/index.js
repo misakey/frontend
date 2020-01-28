@@ -8,8 +8,8 @@ import { STEP, SECLEVEL_CONFIG, DEFAULT_SECLEVEL } from 'components/smart/Auth/S
 
 
 const defaultProps = {
-  [STEP.identifier]: { component: FieldText, type: 'email', inputProps: { 'data-matomo-ignore': true } },
-  [STEP.secret]: { component: FieldText, type: 'password', inputProps: { 'data-matomo-ignore': true } },
+  [STEP.identifier]: { component: FieldText, type: 'email', inputProps: { 'data-matomo-ignore': true }, autoFocus: true },
+  [STEP.secret]: { component: FieldText, type: 'password', inputProps: { 'data-matomo-ignore': true }, autoFocus: true },
 };
 
 const SignInFormFields = ({ step, acr, ...fields }) => {

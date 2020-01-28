@@ -3,14 +3,23 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
-import ApplicationChip from 'components/dumb/Application/Chip';
+import Box from '@material-ui/core/Box';
+import AvatarApplicationSso from 'components/dumb/Avatar/Application/Sso';
 
+// CONSTANTS
+const TYPOGRAPHY_PROPS = {
+  variant: 'h6',
+};
+
+// COMPONENTS
 function AuthCardTitle({ name, sso, t }) {
   return (
-    <>
-      {t(`auth:${name}.card.title`)}
-      <ApplicationChip clientName={sso.clientName} logoUri={sso.logoUri} />
-    </>
+    <Box display="flex" alignItems="center" justifyContent="center">
+      <Box mr={1}>
+        {t(`auth:${name}.card.title`)}
+      </Box>
+      <AvatarApplicationSso sso={sso} typographyProps={TYPOGRAPHY_PROPS} />
+    </Box>
   );
 }
 

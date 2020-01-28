@@ -7,6 +7,7 @@ import { DRAWER_WIDTH } from 'constants/ui/sizes';
 import { IS_PLUGIN } from 'constants/plugin';
 
 import map from '@misakey/helpers/map';
+import omitTranslationProps from 'helpers/omit/translationProps';
 
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -102,7 +103,7 @@ function AppBar({
           },
           className,
         )}
-        {...rest}
+        {...omitTranslationProps(rest)}
       >
         <Toolbar {...toolbarProps}>
           {map(leftItems)}

@@ -1,26 +1,28 @@
 import React, { useMemo, useCallback, useEffect } from 'react';
-import { Form } from 'formik';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
 
 import API from '@misakey/api';
-import { screenAuthSetIdentifier } from 'store/actions/screens/auth';
+import { screenAuthSetIdentifier, screenAuthSetPublics } from 'store/actions/screens/auth';
 import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
 
 
 import { FIELD_PROPTYPES } from 'components/dumb/Form/Fields';
 
-import FormCard from 'components/dumb/Form/Card';
+import FormCardAuth from 'components/dumb/Form/Card/Auth';
 import AuthCardTitle from 'components/smart/Auth/Card/Title';
-import AuthCardSubTitle from 'components/smart/Auth/Card/SubTitle';
+import CardHeaderAuth from 'components/smart/Card/Header/Auth';
+import Button from 'components/dumb/Button';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isEmpty from '@misakey/helpers/isEmpty';
 
+import { useSignInFormPrimaryAction, useSignInFormContentAction, useSignInFormSecondaryAction } from 'hooks/useActions/signIn';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+
 import SignInFormFields from 'components/smart/Auth/SignIn/Form/Fields';
-import SignInFormActions, { useSignInFormPrimaryAction, useSignInFormSecondaryAction } from 'components/smart/Auth/SignIn/Form/Actions';
 import SignInCardContent from 'components/smart/Auth/SignIn/Form/CardContent';
 
 import errorTypes from 'constants/errorTypes';
@@ -31,6 +33,12 @@ import { handleLoginApiErrors, getApiErrors } from 'components/smart/Auth/SignIn
 const { conflict, required } = errorTypes;
 
 // HOOKS
+const useStyles = makeStyles(() => ({
+  buttonRoot: {
+    width: 'auto',
+  },
+}));
+
 // @FIXME: better not use "value check" inside form but make profit of formik's validation
 const useDisableNext = (values, errors, isValid, isSubmitting, step) => useMemo(
   () => (
@@ -58,7 +66,7 @@ const useRenewConfirmationCode = (
   [enqueueSnackbar, formProps, initAuth, t, values],
 );
 
-const useFetchUser = (formProps, handleErrors, identifier, setUserPublicData) => useCallback(
+const useFetchUser = (formProps, handleErrors, identifier, dispatch) => useCallback(
   (onSuccess) => {
     formProps.setSubmitting(true);
 
@@ -66,16 +74,20 @@ const useFetchUser = (formProps, handleErrors, identifier, setUserPublicData) =>
       .build({ email: identifier })
       .send()
       .then((response) => {
-        setUserPublicData(objectToCamelCase(response));
+        dispatch(screenAuthSetPublics(objectToCamelCase(response)));
         onSuccess();
       })
       .catch(handleErrors)
       .finally(() => formProps.setSubmitting(false));
   },
-  [formProps, handleErrors, identifier, setUserPublicData],
+  [formProps, handleErrors, identifier, dispatch],
 );
 
-const useHandlePrevious = (setStep) => useCallback(() => { setStep(STEP.identifier); }, [setStep]);
+const useHandlePrevious = (setStep, dispatch) => useCallback(() => {
+  setStep(STEP.identifier);
+  dispatch(screenAuthSetIdentifier(''));
+  dispatch(screenAuthSetPublics(null));
+}, [setStep, dispatch]);
 
 const useHandleNext = (
   dispatch,
@@ -131,20 +143,24 @@ const useHandleIdentifierKeyPress = (handleNext, disableNext, setTouched) => use
 );
 
 const SignInForm = (
-  { acr, dispatch, displayCard, fields, initAuth, initialStep, t, ...formProps },
+  { acr, publics, dispatch, fields, initAuth, initialStep, t, ...formProps },
 ) => {
+  const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
 
   const { isValid, errors, isSubmitting, values, setTouched } = formProps;
   const [step, setStep] = React.useState(initialStep || STEP.identifier);
-  const [userPublicData, setUserPublicData] = React.useState({ identifier: values.identifier });
+  const userPublicData = useMemo(
+    () => (publics || ({ identifier: values.identifier })),
+    [publics, values],
+  );
   const secLevelConfig = useMemo(() => SECLEVEL_CONFIG[acr || DEFAULT_SECLEVEL], [acr]);
 
   const disableNext = useDisableNext(values, errors, isValid, isSubmitting, step);
   const handleErrors = useHandleErrors(formProps, handleGenericHttpErrors);
-  const fetchUser = useFetchUser(formProps, handleErrors, values.identifier, setUserPublicData);
-  const handlePrevious = useHandlePrevious(setStep);
+  const fetchUser = useFetchUser(formProps, handleErrors, values.identifier, dispatch);
+  const handlePrevious = useHandlePrevious(setStep, dispatch);
   const goToNextStep = useGoToNextStep(
     fetchUser, formProps, initAuth, step, values, setStep,
   );
@@ -166,29 +182,14 @@ const SignInForm = (
 
   const Fields = <SignInFormFields {...newFields} step={step} acr={acr} />;
 
-  const signInFormSecondaryAction = useSignInFormSecondaryAction(
+  const signInFormContentAction = useSignInFormContentAction(
     step, acr, t, renewConfirmationCode,
   );
   const signInFormPrimaryAction = useSignInFormPrimaryAction(
     disableNext, isSubmitting, isValid, handleNext, step, t,
   );
 
-  const Card = displayCard && (
-    <FormCard
-      primary={signInFormPrimaryAction}
-      secondary={signInFormSecondaryAction}
-      title={<AuthCardTitle name="signIn" />}
-      subtitle={<AuthCardSubTitle name="signIn" />}
-    >
-      <SignInCardContent
-        fields={Fields}
-        handlePrevious={handlePrevious}
-        step={step}
-        userPublicData={userPublicData}
-        values={values}
-      />
-    </FormCard>
-  );
+  const secondary = useSignInFormSecondaryAction(step, acr, handlePrevious, t);
 
   const initStep = useCallback(() => {
     if (initialStep === STEP.secret) {
@@ -198,23 +199,31 @@ const SignInForm = (
 
   useEffect(initStep, []);
 
-  return Card || (
-    <Form>
-      {Fields}
-      <SignInFormActions
-        disableNext={disableNext}
-        onNext={handleNext}
-        renewConfirmationCode={renewConfirmationCode}
+  return (
+    <FormCardAuth
+      primary={signInFormPrimaryAction}
+      secondary={secondary}
+      title={<AuthCardTitle name="signIn" />}
+      subtitle={t('auth:signIn.card.subtitle.text')}
+      Header={CardHeaderAuth}
+    >
+      <SignInCardContent
+        fields={Fields}
+        actions={<Button classes={classes} {...signInFormContentAction} />}
+        handlePrevious={handlePrevious}
         step={step}
-        t={t}
-        {...formProps}
+        userPublicData={userPublicData}
+        values={values}
       />
-    </Form>
+    </FormCardAuth>
   );
 };
 
 SignInForm.propTypes = {
+  // CONNECT
+  acr: PropTypes.number,
   dispatch: PropTypes.func.isRequired,
+  publics: PropTypes.object,
   displayCard: PropTypes.bool,
   errors: PropTypes.objectOf(PropTypes.string),
   fields: PropTypes.objectOf(FIELD_PROPTYPES),
@@ -228,9 +237,19 @@ SignInForm.propTypes = {
 };
 
 SignInForm.defaultProps = {
+  acr: null,
   displayCard: false,
   fields: {},
+  errors: {},
+  values: {},
   initialStep: null,
+  publics: null,
 };
 
-export default connect((state) => ({ acr: state.sso.acr }))(withTranslation()(SignInForm));
+// CONNECT
+const mapStateToProps = (state) => ({
+  acr: state.sso.acr,
+  publics: state.screens.auth.publics,
+});
+
+export default connect(mapStateToProps)(withTranslation(['auth', 'common'])(SignInForm));

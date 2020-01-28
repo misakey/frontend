@@ -1,25 +1,15 @@
 import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
-import clsx from 'clsx';
-import omit from '@misakey/helpers/omit';
+import omitTranslationProps from 'helpers/omit/translationProps';
 
-import { makeStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import HomeIcon from '@material-ui/icons/Home';
+import Button from 'components/dumb/Button';
 
-// CONSTANTS
-const INTERNAL_PROPS = ['tReady'];
-
-// HOOKS
-const useStyles = makeStyles((theme) => ({
-  marginRight: theme.spacing(2),
-}));
-
-function ButtonGoBack({ className, history: { length, goBack, push }, homePath, t, ...props }) {
-  const classes = useStyles();
+// COMPONENTS
+function ButtonGoBack({ className, homePath, t, ...props }) {
+  const { length, goBack, push } = useHistory();
 
   const canGoBack = useMemo(
     () => length > 1,
@@ -41,27 +31,17 @@ function ButtonGoBack({ className, history: { length, goBack, push }, homePath, 
   );
 
   return (
-    <IconButton
-      edge="start"
-      className={clsx(className, classes)}
-      color="inherit"
-      aria-label={t('navigation:history.goBack', 'Go back')}
+    <Button
       onClick={canGoBack ? handleGoBack : handleGoHome}
-      onKeyPress={canGoBack ? handleGoBack : handleGoHome}
-      {...omit(props, INTERNAL_PROPS)}
-    >
-      {canGoBack ? <ArrowBackIcon /> : <HomeIcon />}
-    </IconButton>
+      className={className}
+      {...omitTranslationProps(props)}
+      text={t('common:navigation.history.goBack')}
+    />
   );
 }
 
 ButtonGoBack.propTypes = {
   className: PropTypes.string,
-  history: PropTypes.shape({
-    goBack: PropTypes.func.isRequired,
-    length: PropTypes.number.isRequired,
-    push: PropTypes.func.isRequired,
-  }).isRequired,
   homePath: PropTypes.string,
   t: PropTypes.func.isRequired,
 };
@@ -71,4 +51,4 @@ ButtonGoBack.defaultProps = {
   homePath: '/',
 };
 
-export default withTranslation()(ButtonGoBack);
+export default withTranslation('common')(ButtonGoBack);

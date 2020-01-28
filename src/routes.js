@@ -61,7 +61,12 @@ const routes = {
     signOut: '/logout',
     signUp: {
       _: '/auth/register',
+      preamble: '/auth/register/preamble',
+      identifier: '/auth/register/identifier',
+      handle: '/auth/register/handle',
+      password: '/auth/register/password',
       confirm: '/auth/register/confirm',
+      finale: '/auth/register/finale',
     },
     forgotPassword: '/auth/password/forgot',
   },

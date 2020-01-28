@@ -66,8 +66,7 @@
     }
   },
   "email": {
-    "label": "Adresse email",
-    "shortLabel": "Email",
+    "label": "Email",
     "placeholder": "rose.flamingo@misakey.com",
     "error": {
       "conflict": "Un compte existe déjà avec cet email",
@@ -76,7 +75,7 @@
     }
   },
   "email_identifier": {
-    "label": "Adresse email",
+    "label": "Email",
     "placeholder": "rose.flamingo@misakey.com",
     "error": {
       "conflict": "Un compte existe déjà avec cet email",
@@ -121,7 +120,7 @@
     }
   },
   "passwordConfirm": {
-    "label": "Confirmer",
+    "label": "Confirmer le mot de passe",
     "error": {
       "malformed": "Les mots de passe ne correspondent pas"
     }
@@ -175,6 +174,7 @@
   "handle": {
     "label": "Pseudo",
     "placeholder": "roseflam",
+    "helperText": "Je choisis un pseudo entre 3 et 21 lettres minuscules, chiffres et underscore",
     "error": {
       "noTrailingUnderscore": "Mon pseudo ne peut commencer ou terminer par un underscore",
       "invalid": "Mon pseudo doit comporter entre 3 et 21 lettres minuscules, chiffres et underscore",

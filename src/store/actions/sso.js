@@ -1,5 +1,5 @@
-export const SSO_RESET = 'SSO_RESET';
-export const SSO_UPDATE = 'SSO_UPDATE';
+export const SSO_RESET = Symbol('SSO_RESET');
+export const SSO_UPDATE = Symbol('SSO_UPDATE');
 
 export const ssoReset = () => ({
   type: SSO_RESET,

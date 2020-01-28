@@ -26,12 +26,13 @@ import Screen from 'components/dumb/Screen';
 import { screenAuthReset, screenAuthSetIdentifier } from 'store/actions/screens/auth';
 
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
-import AuthError from './Error';
 
-import SignIn from './SignIn';
-import SignUp from './SignUp';
+import Footer from 'components/dumb/Footer';
 
 // LAZY
+const AuthError = lazy(() => import('./Error'));
+const SignIn = lazy(() => import('./SignIn'));
+const SignUp = lazy(() => import('./SignUp'));
 const Forgot = lazy(() => import('./Forgot'));
 
 // CONSTANTS
@@ -120,7 +121,7 @@ function Auth({ dispatch, from, isAuthenticated, currentAcr, location, match, ss
     const ssoQueryParams = objectToSnakeCase(sso);
 
     const requiredParams = pickAll(SEARCH_PARAMS, ssoQueryParams);
-    const hasRequiredParams = every(requiredSsoQueryParams, (element) => !isNil(element));
+    const hasRequiredParams = every(requiredParams, (element) => !isNil(element));
 
     return {
       hasRequiredSsoQueryParams: hasRequiredParams,
@@ -157,10 +158,13 @@ function Auth({ dispatch, from, isAuthenticated, currentAcr, location, match, ss
   }
 
   return (
-    <Screen hideAppBar state={state} display="flex" justifyContent="center" alignItems="center">
+    <Screen hideAppBar state={state} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
       <Switch>
-        <Route path={routes.auth.error} component={AuthError} />
-        <Route path={routes.auth.signUp._} component={SignUp} />
+        <Route exact path={routes.auth.error} component={AuthError} />
+        <Route
+          path={routes.auth.signUp._}
+          render={(routerProps) => <SignUp {...routerProps} />}
+        />
         <Route
           path={routes.auth.signIn}
           render={(routerProps) => <SignIn {...routerProps} challenge={challenge} />}
@@ -171,6 +175,7 @@ function Auth({ dispatch, from, isAuthenticated, currentAcr, location, match, ss
         />
         <Redirect from={match.path} to={routes.auth.signIn} exact />
       </Switch>
+      <Footer mt={1} />
     </Screen>
   );
 }

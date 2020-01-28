@@ -36,7 +36,7 @@ UserPublicChip.propTypes = {
   }).isRequired,
 };
 
-const SignInFormCard = ({ fields, handlePrevious, step, userPublicData, values }) => {
+const SignInFormCard = ({ actions, fields, handlePrevious, step, userPublicData, values }) => {
   const classes = useStyles();
   const displayChip = step === STEP.secret;
 
@@ -49,6 +49,7 @@ const SignInFormCard = ({ fields, handlePrevious, step, userPublicData, values }
         />
       )}
       {fields}
+      {actions}
       <Typography className={classes.moreTypography}>
         <Trans i18nKey="auth:signIn.card.more">
           {'En savoir plus sur '}
@@ -69,6 +70,7 @@ const SignInFormCard = ({ fields, handlePrevious, step, userPublicData, values }
 
 SignInFormCard.propTypes = {
   fields: PropTypes.node,
+  actions: PropTypes.node,
   handlePrevious: PropTypes.func.isRequired,
   step: PropTypes.oneOf([STEP.identifier, STEP.secret]).isRequired,
   userPublicData: PropTypes.shape({
@@ -79,6 +81,7 @@ SignInFormCard.propTypes = {
 };
 
 SignInFormCard.defaultProps = {
+  actions: null,
   fields: null,
 };
 

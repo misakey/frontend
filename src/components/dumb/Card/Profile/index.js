@@ -106,7 +106,7 @@ const CardProfile = ({ profile, t }) => {
           divider
         >
           <ListItemIcon className="title">
-            <Typography>{t('fields:email.shortLabel')}</Typography>
+            <Typography>{t('fields:email.label')}</Typography>
           </ListItemIcon>
           <ListItemText
             primary={email}

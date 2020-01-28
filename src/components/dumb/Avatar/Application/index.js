@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
 import ApplicationSchema from 'store/schemas/Application';
 
@@ -103,4 +102,4 @@ ApplicationAvatar.defaultProps = {
   fullWidth: false,
 };
 
-export default withTranslation(['screens'])(ApplicationAvatar);
+export default ApplicationAvatar;

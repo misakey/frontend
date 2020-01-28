@@ -68,7 +68,7 @@ const SummaryFeedbackCard = ({ application, hideLink, hideTitle, t }) => {
   );
 
   return (
-    <Card classes={{ root: classes.card }}>
+    <Card>
       {(!hideTitle || !hideLink) && (
         <CardHeader
           title={title}

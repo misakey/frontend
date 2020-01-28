@@ -2,13 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import omitTranslationProps from 'helpers/omit/translationProps';
+
 import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 
-const Footer = ({ t }) => (
-  <Box mt={3}>
-    <Typography variant="body2" align="center">
+const Footer = ({ t, typographyProps, ...rest }) => (
+  <Box mt={3} {...omitTranslationProps(rest)}>
+    <Typography variant="body2" align="center" {...typographyProps}>
       <Link
         href={t('footer.links.privacy.href')}
         color="secondary"
@@ -32,6 +34,11 @@ const Footer = ({ t }) => (
 
 Footer.propTypes = {
   t: PropTypes.func.isRequired,
+  typographyProps: PropTypes.object,
+};
+
+Footer.defaultProps = {
+  typographyProps: {},
 };
 
 export default withTranslation()(Footer);

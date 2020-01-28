@@ -4,21 +4,20 @@ import { Route, Switch } from 'react-router-dom';
 
 import routes from 'routes';
 
-import SignUp from 'components/smart/Auth/SignUp';
-import DEFAULT_VALUES from 'components/smart/Auth/SignUp/values.json';
-
+import Create from 'components/screens/Auth/SignUp/Create';
 import Confirm from 'components/screens/Auth/SignUp/Confirm';
+import Finale from 'components/screens/Auth/SignUp/Finale';
 
 function AuthSignUp({ match }) {
-  function ExactPath() {
-    return <SignUp displayCard initialValues={{ ...DEFAULT_VALUES }} />;
-  }
-
   return (
     <div id="AuthSignUp">
       <Switch>
-        <Route path={routes.auth.signUp.confirm} component={Confirm} />
-        <Route path={match.path} exact component={ExactPath} />
+        <Route exact path={routes.auth.signUp.confirm} component={Confirm} />
+        <Route exact path={routes.auth.signUp.finale} component={Finale} />
+        <Route
+          path={match.path}
+          render={(routerProps) => <Create {...routerProps} />}
+        />
       </Switch>
     </div>
   );

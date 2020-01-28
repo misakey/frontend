@@ -12,7 +12,7 @@ export const useSignInFormSecondaryAction = (step, acr, t, renewConfirmationCode
     identifier: {
       email: {
         buttonProps: {
-          to: routes.auth.signUp._,
+          to: routes.auth.signUp.preamble,
           component: Link,
         },
         textKey: 'auth:signIn.form.action.signUp',

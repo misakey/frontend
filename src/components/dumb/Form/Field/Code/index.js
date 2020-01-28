@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import * as Yup from 'yup';
@@ -6,7 +6,10 @@ import clsx from 'clsx';
 
 import omit from '@misakey/helpers/omit';
 import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/helpers/isNil';
 import isArray from '@misakey/helpers/isArray';
+import isFunction from '@misakey/helpers/isFunction';
+import identity from '@misakey/helpers/identity';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -24,6 +27,7 @@ import withErrors from '../withErrors';
 
 const LABEL_WIDTH = 39;
 const INPUT_WIDTH = 56;
+const XS_INPUT_WIDTH = 40;
 
 const { invalid } = errorTypes;
 export const getValidationSchema = (length = 6) => Yup.string()
@@ -37,6 +41,10 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(0.5),
     width: INPUT_WIDTH,
     height: INPUT_WIDTH * 1.25,
+    [theme.breakpoints.only('xs')]: {
+      width: XS_INPUT_WIDTH,
+      height: XS_INPUT_WIDTH * 1.25,
+    },
     '&:nth-child(3)': {
       marginRight: theme.spacing(2),
     },
@@ -68,20 +76,20 @@ const useStyles = makeStyles((theme) => ({
 const DEFAULT_NAME = 'confirmationCode';
 
 const FieldCode = ({
-  autoFocus, displayError, errorKeys, field, form,
+  formatFieldValue,
+  autoFocus, displayError, errorKeys, field, form: { values, setFieldValue, setFieldTouched },
   hidden, helperText, helperTextProps, label, labelProps, length, reset, t, ...rest
 }) => {
   const classes = useStyles();
   const { name = DEFAULT_NAME, value } = field;
-  const { values, setFieldValue } = form;
 
-  const defaultLabel = React.useMemo(() => t(`fields:${name}.label`), [t, name]);
+  const defaultLabel = useMemo(() => t(`fields:${name}.label`), [t, name]);
   // @FIXME: use length of code in helperText (doesn't work with _plural and count)
-  const helperTextOrTranslation = React.useMemo(() => (
-    helperText || t(`fields:${name}.helperText`)),
+  const helperTextOrTranslation = useMemo(() => (
+    isNil(helperText) ? t(`fields:${name}.helperText`) : helperText),
   [helperText, t, name]);
 
-  const inputs = React.useMemo(() => {
+  const inputs = useMemo(() => {
     const response = [];
     for (let i = 0; i < length; i += 1) { response.push(`${name}-${i}`); }
 
@@ -93,9 +101,24 @@ const FieldCode = ({
 
   const inputRefs = [];
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  for (let i = 0; i < length; i += 1) { inputRefs.push(React.useRef()); }
+  for (let i = 0; i < length; i += 1) { inputRefs.push(useRef()); }
 
-  const handleChange = React.useCallback((e, inputIndex) => {
+  const formatValues = useMemo(
+    () => (isFunction(formatFieldValue) ? formatFieldValue : identity),
+    [formatFieldValue],
+  );
+
+  const updateValue = useCallback(
+    (newValue) => {
+      setFieldValue(name, formatValues(newValue));
+      if (newValue.length === length) {
+        setFieldTouched(name, true, false);
+      }
+    },
+    [setFieldValue, name, formatValues, length, setFieldTouched],
+  );
+
+  const handleChange = useCallback((e, inputIndex) => {
     const targetValue = e.target.value;
 
     const newValues = [...values[name]];
@@ -121,15 +144,15 @@ const FieldCode = ({
       }
     }
 
-    setFieldValue(name, newValues);
-  }, [inputRefs, length, name, setFieldValue, values]);
+    updateValue(newValues);
+  }, [inputRefs, length, name, updateValue, values]);
 
-  const handleReset = React.useCallback(() => {
-    setFieldValue(name, inputs.map(() => ''));
+  const handleReset = useCallback(() => {
+    updateValue(inputs.map(() => ''));
     inputRefs[0].current.focus();
-  }, [inputRefs, inputs, name, setFieldValue]);
+  }, [inputRefs, inputs, updateValue]);
 
-  const handleKeyPress = React.useCallback((e, i) => {
+  const handleKeyPress = useCallback((e, i) => {
     const blackList = ['e', 'E', '.', ',', '-', '+'];
     const targetValue = e.target.value;
     const newValues = [...values[name]];
@@ -140,7 +163,7 @@ const FieldCode = ({
 
     if (e.key === 'Backspace' && targetValue === '') {
       newValues[i - 1] = '';
-      setFieldValue(name, newValues);
+      updateValue(newValues);
 
       const prevRef = inputRefs[i - 1];
       if (prevRef) { prevRef.current.focus(); }
@@ -148,14 +171,14 @@ const FieldCode = ({
 
     if (e.key === 'Delete' && i + 1 < length && !isEmpty(newValues[i + 1])) {
       newValues[i + 1] = '';
-      setFieldValue(name, newValues);
+      updateValue(newValues);
 
       const nextRef = inputRefs[i + 1];
       if (nextRef) { nextRef.current.focus(); }
     }
-  }, [inputRefs, length, name, setFieldValue, values]);
+  }, [inputRefs, length, name, updateValue, values]);
 
-  const errorOrHelperText = React.useMemo(
+  const errorOrHelperText = useMemo(
     () => (displayError ? t(errorKeys) : helperTextOrTranslation),
     [displayError, t, errorKeys, helperTextOrTranslation],
   );
@@ -209,7 +232,7 @@ const FieldCode = ({
               name={n}
               onChange={(e) => handleChange(e, i)}
               onKeyDown={(e) => handleKeyPress(e, i)}
-              value={values[name][i]}
+              value={values[name][i] || ''}
               {...omit(rest, ['i18n', 'tReady', 'form', 'helperText'])}
             />
           ))}
@@ -235,6 +258,7 @@ const FieldCode = ({
 };
 
 FieldCode.propTypes = {
+  formatFieldValue: PropTypes.func,
   autoFocus: PropTypes.bool,
   displayError: PropTypes.bool.isRequired,
   errorKeys: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -244,6 +268,7 @@ FieldCode.propTypes = {
   }).isRequired,
   form: PropTypes.shape({
     setFieldValue: PropTypes.func.isRequired,
+    setFieldTouched: PropTypes.func.isRequired,
     values: PropTypes.object.isRequired,
   }).isRequired,
   helperText: PropTypes.string,
@@ -257,6 +282,7 @@ FieldCode.propTypes = {
 };
 
 FieldCode.defaultProps = {
+  formatFieldValue: null,
   autoFocus: false,
   helperText: null,
   helperTextProps: {},

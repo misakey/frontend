@@ -10,6 +10,7 @@
   "reopen": "Réouvrir",
   "close": "Archiver",
   "ok": "OK",
+  "gotIt": "J'ai compris",
   "validate": "Valider",
   "reset": "Réinitialiser",
   "search": "Rechercher",
@@ -36,7 +37,7 @@
   "signIn": "Connexion",
   "signOut": "Déconnexion",
   "report": "Signaler",
-  "brand": "Logo de la marque {{brand}}",
+  "brand": "Logo du site {{brand}}",
   "links": {
     "docs": {
       "dpo": "https://docs.misakey.com/#/dpo/",
