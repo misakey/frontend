@@ -17,6 +17,9 @@
 
     <script src="%PUBLIC_URL%/libs/argon2/argon2.js" charset="utf-8"></script>
     <script src="%PUBLIC_URL%/env.js"></script>
+    <script type="text/javascript">
+      window.bundleVersion = 'VERSION_TO_SET_ON_BUILD';
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -24,7 +27,6 @@
   </body>
 
   <script type="text/javascript">
-    window.bundleVersion = 'VERSION_TO_SET_ON_BUILD';
     if(window.env.ENV !== 'development') {
       var siteId;
       if (window.env.ENV === 'preprod') {

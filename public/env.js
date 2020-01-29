@@ -9,7 +9,7 @@ window.env = {
   },
   SENTRY: {
     debug: false,
-    dsn: 'https://63f724116593491aabcfefa591f19f00@sentry.io/1816689',
+    dsn: 'https://a695e1e73b004ad2bc1f82b581f072fe@sentry.io/2071584',
     environment: 'development',
   },
   CATEGORIES: [

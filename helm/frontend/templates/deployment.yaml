@@ -28,7 +28,7 @@ spec:
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           volumeMounts:
-            - mountPath: /usr/share/nginx/html/env.js
+            - mountPath: /app/build/env.js
               subPath: env.js
               name: config
           livenessProbe:
