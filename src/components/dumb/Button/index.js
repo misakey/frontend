@@ -6,27 +6,31 @@ import MUIButton from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 export const BUTTON_STANDINGS = {
+  MAIN: 'main',
+  OUTLINED: 'outlined',
+  TEXT: 'text',
+  CANCEL: 'cancel',
+
   MINOR: 'minor',
   MAJOR: 'major',
-  MAIN: 'main',
   ENHANCED: 'enhanced',
 };
 
 const BUTTON_PROPS_BY_STANDING = {
-  [BUTTON_STANDINGS.MINOR]: {
-    variant: 'text',
-    color: 'default',
-  },
-  [BUTTON_STANDINGS.MAJOR]: {
-    variant: 'text',
-    color: 'secondary',
-  },
   [BUTTON_STANDINGS.MAIN]: {
     variant: 'contained',
     color: 'secondary',
   },
-  [BUTTON_STANDINGS.ENHANCED]: {
+  [BUTTON_STANDINGS.OUTLINED]: {
     variant: 'outlined',
+    color: 'secondary',
+  },
+  [BUTTON_STANDINGS.TEXT]: {
+    variant: 'text',
+    color: 'secondary',
+  },
+  [BUTTON_STANDINGS.CANCEL]: {
+    variant: 'text',
     color: 'default',
   },
 };
@@ -87,7 +91,7 @@ Button.defaultProps = {
   isLoading: false,
   isValid: true,
   progressProps: {},
-  standing: BUTTON_STANDINGS.MINOR,
+  standing: BUTTON_STANDINGS.CANCEL,
 };
 
 export default withStyles(makeStyles)(Button);

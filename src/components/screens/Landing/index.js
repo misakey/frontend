@@ -1,41 +1,97 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom';
+import { withTranslation } from 'react-i18next';
 
-import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 
-import LinkedApplicationsList from 'components/smart/List/LinkedApplications';
-import ApplicationCategoriesList from 'components/smart/List/ApplicationCategories';
-import Footer from 'components/dumb/Footer';
-import Screen from 'components/dumb/Screen';
+import Logo from 'components/dumb/Logo';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+
+import routes from 'routes';
 
 // HOOKS
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   screen: {
     display: 'flex',
+    height: '100vh',
+    flexDirection: 'column',
   },
-  container: {
+  mainBlock: {
+    marginTop: 'auto',
+    marginBottom: 'auto',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  punchline: {
+    margin: theme.spacing(3),
+  },
+  logo: {
+    margin: theme.spacing(0, 3),
+    maxWidth: '400px',
+  },
+  buttonGroup: {
+    textAlign: 'center',
+  },
+  buttonGroupButton: {
+    margin: theme.spacing(1, 2),
+  },
+  moreButton: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: theme.spacing(2),
   },
 }));
 
 // COMPONENTS
-const LandingScreen = () => {
+const Landing = ({ t }) => {
   const classes = useStyles();
 
   return (
-    <Screen className={classes.screen}>
-      <Container maxWidth="md" className={classes.container}>
-        <Box>
-          <LinkedApplicationsList />
-          <ApplicationCategoriesList />
+    <Box className={classes.screen}>
+      <Box className={classes.mainBlock}>
+        <Logo className={classes.logo} />
+        <Typography variant="h5" align="center" className={classes.punchline}>
+          {t('common:landing.punchline')}
+        </Typography>
+        <Box className={classes.buttonGroup}>
+          <Button
+            variant="outlined"
+            color="secondary"
+            className={classes.buttonGroupButton}
+            component={Link}
+            to={routes.dpo._}
+            size="large"
+          >
+            {t('common:landing.dpo')}
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            className={classes.buttonGroupButton}
+            component={Link}
+            to={routes.citizen._}
+            size="large"
+          >
+            {t('common:landing.citizen')}
+          </Button>
         </Box>
-        <Footer />
-      </Container>
-    </Screen>
+      </Box>
+      <Box className={classes.moreButton}>
+        <Button color="secondary" size="large" component="a" href={t('footer.links.about.href')}>
+          {t('common:landing.more')}
+        </Button>
+      </Box>
+    </Box>
   );
 };
 
-export default LandingScreen;
+Landing.propTypes = {
+  t: PropTypes.func.isRequired,
+};
+
+export default withTranslation('common')(Landing);

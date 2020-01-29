@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter, matchPath } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,15 +11,12 @@ import useWidth from '@misakey/hooks/useWidth';
 import displayIn from '@misakey/helpers/displayIn';
 import { redirectToApp } from 'helpers/plugin';
 
-import routes from 'routes';
-
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import ButtonConnect from 'components/dumb/Button/Connect';
-import PausePluginButton from 'components/smart/Plugin/Button/Pause';
 import WarningDrawer from 'components/smart/Plugin/Warning/Refresh';
 
 import { DRAWER_WIDTH } from 'constants/ui/sizes';
@@ -116,9 +113,7 @@ function Layout({
   dispatch,
   displayAppBar,
   displayWarningDrawer,
-  pausePluginButton,
   shift,
-  location: { pathname },
 }) {
   const classes = useStyles();
   const width = useWidth();
@@ -146,14 +141,6 @@ function Layout({
     dispatch(layoutBurgerClicked());
   }, [dispatch]);
 
-  const isLanding = useMemo(
-    () => matchPath(pathname, {
-      path: routes._,
-      exact: true,
-    }),
-    [pathname],
-  );
-
   const signInActionForPlugin = useCallback(() => redirectToApp('/'), []);
   const redirectToWebAppAccount = useCallback(() => redirectToApp('/account'), []);
 
@@ -171,11 +158,10 @@ function Layout({
             <Toolbar className={classes.toolbar}>
               {burger && <ButtonBurger {...burgerProps} onClick={handleBurgerClick} />}
               <div id={LEFT_PORTAL_ID} className={classes.portal} />
-              {(!window.env.PLUGIN && !isLanding) && (
+              {(!window.env.PLUGIN) && (
                 <LayoutSearch />
               )}
               <div id={RIGHT_PORTAL_ID} />
-              {pausePluginButton && <PausePluginButton />}
               {buttonConnect && (
                 <ButtonConnect
                   noTokenIcon={noTokenIcon}
@@ -217,8 +203,6 @@ Layout.propTypes = {
     PropTypes.node,
   ]).isRequired,
   history: PropTypes.shape({ goBack: PropTypes.func, push: PropTypes.func }).isRequired,
-  location: PropTypes.shape({ pathname: PropTypes.string }).isRequired,
-  pausePluginButton: PropTypes.bool,
 };
 
 Layout.defaultProps = {
@@ -228,7 +212,6 @@ Layout.defaultProps = {
   displayAppBar: true,
   displayWarningDrawer: false,
   shift: false,
-  pausePluginButton: window.env.PLUGIN === true,
 };
 
 export default connect(

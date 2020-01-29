@@ -52,13 +52,13 @@ function ApplicationImg({ children, className, fontSize, src, applicationName, t
     <>
       {(src && !isLoaded && !isBroken) && (
         <Skeleton
-          variant="rect"
+          variant="circle"
           className={clsx(classes.skeleton, className)}
           {...omit(rest, ['i18n', 'tReady'])}
         />
       )}
       <Avatar
-        variant="rounded"
+        variant="circle"
         alt={t('application.info.logoAlt', { applicationName })}
         src={isBroken ? null : src}
         className={clsx(classes.root, {

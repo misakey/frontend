@@ -11,6 +11,7 @@ import { fetchApplicationsByCategory } from 'helpers/fetchApplications';
 
 import Card from 'components/dumb/Card';
 import ApplicationsList from 'components/dumb/List/Applications';
+import Title from 'components/dumb/Typography/Title';
 
 import routes from 'routes';
 
@@ -46,20 +47,25 @@ const ApplicationsCategory = ({ category, isAuthenticated, t }) => {
   }, [shouldFetch, fetchApplicationsList]);
 
   return (
-    <Card
-      title={t(`application.category.${category}`)}
-      primary={{
-        to: generatePath(routes.citizen.applications.category, { category }),
-        component: Link,
-        text: t('common:more'),
-      }}
-    >
-      <ApplicationsList
-        isFetching={isFetching}
-        error={error}
-        applications={applicationsList || []}
-      />
-    </Card>
+    <>
+      <Title>
+        {t(`application.category.${category}`)}
+      </Title>
+      <Card
+        dense
+        primary={{
+          to: generatePath(routes.citizen.applications.category, { category }),
+          component: Link,
+          text: t('common:more'),
+        }}
+      >
+        <ApplicationsList
+          isFetching={isFetching}
+          error={error}
+          applications={applicationsList || []}
+        />
+      </Card>
+    </>
   );
 };
 

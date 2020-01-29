@@ -199,7 +199,7 @@ Navigation.defaultProps = {
   history: null,
   location: null,
   goBackPath: '/',
-  noWrap: false,
+  noWrap: true,
   pushPath: null,
   showGoBack: true,
   title: '',

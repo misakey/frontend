@@ -5,8 +5,6 @@ import { withTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import omit from '@misakey/helpers/omit';
-import pickBy from '@misakey/helpers/pickBy';
-import useWidth from '@misakey/hooks/useWidth';
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -18,6 +16,13 @@ import ElevationScroll from 'components/dumb/ElevationScroll';
 import { MIN_PX_0_LANDSCAPE, MIN_PX_600 } from 'constants/ui/medias';
 
 import routes from 'routes';
+
+const APPLICATION_TABS = [
+  'vault',
+  'feedback',
+  'legal',
+  'more',
+];
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,20 +46,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ApplicationNavTabs({
+function ApplicationInfoNav({
   elevationScrollTarget, location, mainDomain, scrollButtons, t, isAuthenticated, className, ...rest
 }) {
   const classes = useStyles();
-  const width = useWidth();
-
-  const variant = React.useMemo(() => (['xs', 'sm'].includes(width) ? 'scrollable' : 'standard'), [width]);
-
-  const applicationTabsLinks = React.useMemo(() => Object.keys(pickBy({
-    info: true,
-    thirdParty: true,
-    vault: true,
-    myAccount: false,
-  }, (value) => value === true)), []);
 
   const isCurrent = React.useCallback((name) => !!matchPath(location.pathname, {
     path: routes.citizen.application[name],
@@ -62,10 +57,10 @@ function ApplicationNavTabs({
   }), [location.pathname]);
 
   const value = React.useMemo(
-    () => applicationTabsLinks.indexOf(
-      applicationTabsLinks.find((link) => isCurrent(link)),
+    () => APPLICATION_TABS.indexOf(
+      APPLICATION_TABS.find((link) => isCurrent(link)),
     ),
-    [isCurrent, applicationTabsLinks],
+    [isCurrent],
   );
 
 
@@ -83,13 +78,13 @@ function ApplicationNavTabs({
           <Tabs
             value={value}
             className={classes.tabs}
-            variant={variant}
+            variant="scrollable"
             scrollButtons={scrollButtons}
             indicatorColor="secondary"
             textColor="secondary"
             aria-label={t('screens:application.nav.label', { mainDomain })}
           >
-            {applicationTabsLinks.map((link) => (
+            {APPLICATION_TABS.map((link) => (
               <Tab
                 key={`tab-${link}`}
                 className={classes.linkTab}
@@ -106,7 +101,7 @@ function ApplicationNavTabs({
   );
 }
 
-ApplicationNavTabs.propTypes = {
+ApplicationInfoNav.propTypes = {
   location: PropTypes.shape({ pathname: PropTypes.string, search: PropTypes.string }).isRequired,
   className: PropTypes.string,
   mainDomain: PropTypes.string.isRequired,
@@ -116,10 +111,10 @@ ApplicationNavTabs.propTypes = {
   elevationScrollTarget: PropTypes.instanceOf(Element),
 };
 
-ApplicationNavTabs.defaultProps = {
+ApplicationInfoNav.defaultProps = {
   scrollButtons: 'auto',
   className: undefined,
   elevationScrollTarget: undefined,
 };
 
-export default withRouter(withTranslation('screens')(ApplicationNavTabs));
+export default withRouter(withTranslation('screens')(ApplicationInfoNav));

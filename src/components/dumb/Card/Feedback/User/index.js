@@ -16,12 +16,8 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import Rating from '@material-ui/lab/Rating';
 import ColorizedAvatar from 'components/dumb/Avatar/Colorized';
+import Box from '@material-ui/core/Box';
 
-// CONSTANTS
-const TITLE_TYPO_PROPS = {
-  variant: 'h6',
-  color: 'textSecondary',
-};
 
 const NO_USER_INFO = {};
 
@@ -30,25 +26,28 @@ const userInfoProp = propOr(NO_USER_INFO, 'user');
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  cardHeaderTitle: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-  },
-  cardHeaderAvatar: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  colorizedAvatarRoot: {
-    width: '25px',
-    height: '25px',
+  cardHeader: {
+    marginBottom: 0,
+    paddingBottom: 0,
   },
   ratingIconFilled: {
     color: theme.palette.primary.main,
   },
+  displayName: {
+    marginLeft: theme.spacing(1),
+  },
+  rating: {
+    marginRight: theme.spacing(1),
+  },
+  ratingAndDate: {
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
 }));
 
 // COMPONENTS
-const UserFeedbackCard = ({ isAuthenticated, rating, className }) => {
+const UserFeedbackCard = ({ isAuthenticated, rating, className, t }) => {
   const classes = useStyles();
 
   const { displayName, avatarUri } = useMemo(
@@ -62,14 +61,14 @@ const UserFeedbackCard = ({ isAuthenticated, rating, className }) => {
   );
 
   const createdAtText = useMemo(
-    () => (isNil(createdAt) ? '' : moment(createdAt).format('ll')),
+    () => (isNil(createdAt) ? '' : moment(createdAt).fromNow()),
     [createdAt],
   );
 
   return (
     <Card className={className}>
       <CardHeader
-        classes={{ title: classes.cardHeaderTitle, avatar: classes.cardHeaderAvatar }}
+        className={classes.cardHeader}
         avatar={(
           <>
             {isAuthenticated ? (
@@ -79,22 +78,27 @@ const UserFeedbackCard = ({ isAuthenticated, rating, className }) => {
                 classes={{ root: classes.colorizedAvatarRoot }}
               />
             ) : (
-              <AccountCircleIcon />
+              <AccountCircleIcon fontSize="large" />
             )}
-
+          </>
+        )}
+        title={(isAuthenticated) ? displayName : t('common:anonymousUser')}
+        subheader={(
+          <Box className={classes.ratingAndDate}>
             <Rating
               value={value}
               size="small"
               readOnly
               classes={{
+                root: classes.rating,
                 iconFilled: classes.ratingIconFilled,
               }}
             />
-          </>
+            <Typography color="textSecondary" noWrap>
+              {createdAtText}
+            </Typography>
+          </Box>
         )}
-        title={createdAtText}
-        titleTypographyProps={TITLE_TYPO_PROPS}
-
       />
       <CardContent>
         <Typography variant="body2" color="textPrimary">
@@ -109,6 +113,7 @@ UserFeedbackCard.propTypes = {
   isAuthenticated: PropTypes.bool,
   className: PropTypes.string,
   rating: PropTypes.shape(RatingSchema.propTypes).isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 UserFeedbackCard.defaultProps = {

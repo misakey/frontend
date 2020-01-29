@@ -7,12 +7,13 @@ import { DRAWER_WIDTH } from 'constants/ui/sizes';
 import { IS_PLUGIN } from 'constants/plugin';
 
 import map from '@misakey/helpers/map';
-import omitTranslationProps from 'helpers/omit/translationProps';
 
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { makeStyles } from '@material-ui/core/styles';
 import useLocationWorkspace from 'hooks/useLocationWorkspace';
+import omitTranslationProps from 'helpers/omit/translationProps';
+
 
 import MuiAppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -21,10 +22,9 @@ import User from 'components/smart/User';
 import LinkHome from 'components/dumb/Link/Home';
 import Logo from 'components/dumb/Logo';
 import ElevationScroll from 'components/dumb/ElevationScroll';
-import PausePluginButton from 'components/smart/Plugin/Button/Pause';
 import SearchApplications from 'components/smart/Search/Applications';
 import BoxFlexFill from 'components/dumb/Box/FlexFill';
-import { Typography } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -56,7 +56,7 @@ function AppBar({
   elevationScroll, shift,
   items, leftItems,
   searchBarProps, toolbarProps, elevationScrollProps,
-  withPausePluginButton, withHomeLink, withSearchBar, withUser, t,
+  withHomeLink, withSearchBar, withUser, t,
   ...rest
 }) {
   const classes = useStyles(drawerWidth);
@@ -68,11 +68,10 @@ function AppBar({
 
   const rightAppBarItems = useMemo(() => {
     const rightItems = [];
-    if (withPausePluginButton) { rightItems.push(<PausePluginButton key="pausePluginButton" />); }
     if (withUser) { rightItems.push(<User key="appBarUser" />); }
 
     return rightItems;
-  }, [withPausePluginButton, withUser]);
+  }, [withUser]);
 
   const isSmallMode = useMemo(
     () => (isXsLayout || (shift && isSmLayout)),
@@ -141,7 +140,6 @@ AppBar.propTypes = {
   searchBarProps: PropTypes.objectOf(PropTypes.any),
   shift: PropTypes.bool,
   toolbarProps: PropTypes.objectOf(PropTypes.any),
-  withPausePluginButton: PropTypes.bool,
   withHomeLink: PropTypes.bool,
   withSearchBar: PropTypes.bool,
   withUser: PropTypes.bool,
@@ -157,7 +155,6 @@ AppBar.defaultProps = {
   searchBarProps: {},
   shift: false,
   toolbarProps: { className: '' },
-  withPausePluginButton: IS_PLUGIN,
   withHomeLink: !IS_PLUGIN,
   withSearchBar: !IS_PLUGIN,
   withUser: true,

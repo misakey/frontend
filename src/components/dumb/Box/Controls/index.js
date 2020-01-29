@@ -10,9 +10,6 @@ import isNil from '@misakey/helpers/isNil';
 import isObject from '@misakey/helpers/isObject';
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 
-
-const { MINOR, MAJOR, MAIN, ENHANCED } = BUTTON_STANDINGS;
-
 const BoxControls = ({ primary, secondary, outlined, ...rest }) => {
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.only('xs'));
@@ -29,8 +26,8 @@ const BoxControls = ({ primary, secondary, outlined, ...rest }) => {
 
   const standings = useMemo(
     () => (outlined
-      ? { primary: MAIN, secondary: ENHANCED }
-      : { primary: MAJOR, secondary: MINOR }
+      ? { primary: BUTTON_STANDINGS.MAIN, secondary: BUTTON_STANDINGS.OUTLINED }
+      : { primary: BUTTON_STANDINGS.TEXT, secondary: BUTTON_STANDINGS.CANCEL }
     ),
     [outlined],
   );

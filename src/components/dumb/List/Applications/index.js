@@ -48,7 +48,7 @@ function ApplicationsList({ t, isFetching, error, applications, listLength, toRo
   }
 
   return (
-    <List>
+    <List disablePadding>
       {applicationsWithPaths.map(({ application, to }) => (
         <ApplicationListItem
           key={application.mainDomain}

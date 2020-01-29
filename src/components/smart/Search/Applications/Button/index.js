@@ -38,6 +38,7 @@ const omitWithApplication = (props) => omit(props, WITH_APPLICATION_PROPS);
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   root: {
+    border: `1px solid ${theme.palette.grey.A100}`,
     flexGrow: 1,
     justifyContent: 'flex-start',
     textAlign: 'left',
@@ -56,6 +57,9 @@ const useStyles = makeStyles((theme) => ({
   label: {
     textTransform: 'none',
   },
+  endIcon: {
+    marginRight: theme.spacing(0.5),
+  },
 }));
 
 // COMPONENTS
@@ -73,6 +77,7 @@ const SearchApplicationsButton = forwardRef(({ entity, t, ...rest }, ref) => {
       classes={{
         root: classes.root,
         label: classes.label,
+        endIcon: classes.endIcon,
       }}
       endIcon={<ArrowDropdownIcon />}
       {...omitTranslationProps(rest)}

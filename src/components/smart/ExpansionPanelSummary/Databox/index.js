@@ -35,7 +35,7 @@ const fetchBlobCount = (databoxId) => API
   .send({ rawRequest: true });
 
 // COMPONENTS
-const ExpansionPanelSummaryDatabox = ({ databox, expanded, t, ...rest }) => {
+const ExpansionPanelSummaryDatabox = ({ databox, t, ...rest }) => {
   const { id, updatedAt } = databox;
 
   const theme = useTheme();
@@ -88,16 +88,14 @@ const ExpansionPanelSummaryDatabox = ({ databox, expanded, t, ...rest }) => {
       expandIcon={<ExpandMoreIcon />}
       aria-controls={panelAriaControls}
       id={panelId}
-      expanded={expanded}
       {...omitTranslationProps(rest)}
     >
       <Grid container>
-        <Grid container item sm={expanded ? 12 : 7} xs={12} alignItems="center">
+        <Grid container item sm={7} xs={12} alignItems="center">
           <Typography>
             {t('common:databox.archive.title', { updatedAt: textUpdatedAt })}
           </Typography>
         </Grid>
-        {!expanded && (
         <Grid spacing={1} container item xs justify={isXs ? 'center' : 'flex-end'}>
           <Grid item>
             <ChipDataboxBlobs blobs={blobCount} />
@@ -106,7 +104,6 @@ const ExpansionPanelSummaryDatabox = ({ databox, expanded, t, ...rest }) => {
             <ChipDataboxStatus databox={databox} showIcon showDetails />
           </Grid>
         </Grid>
-        )}
       </Grid>
     </ExpansionPanelSummary>
   );
@@ -115,8 +112,6 @@ const ExpansionPanelSummaryDatabox = ({ databox, expanded, t, ...rest }) => {
 ExpansionPanelSummaryDatabox.propTypes = {
   databox: PropTypes.shape(DataboxSchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
-  // ExpansionPanel
-  expanded: PropTypes.bool.isRequired,
 };
 
 export default withTranslation('common')(ExpansionPanelSummaryDatabox);

@@ -2,7 +2,9 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-import withStyles from '@material-ui/core/styles/withStyles';
+import isNil from '@misakey/helpers/isNil';
+import { makeStyles } from '@material-ui/core/styles';
+
 import MuiCard from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
@@ -11,20 +13,14 @@ import Divider from '@material-ui/core/Divider';
 import GroupTitles from 'components/dumb/Typography/GroupTitles';
 import CardControls from 'components/dumb/Card/Controls';
 
-const Card = withStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     border: `1px solid ${theme.palette.grey.A100}`,
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
-
-    /* [theme.breakpoints.down('sm')]: {
-      marginLeft: theme.spacing(-2),
-      marginRight: theme.spacing(-2),
-      borderLeft: 0,
-      borderRight: 0,
-      borderBottom: 0,
-      borderRadius: 0,
-    }, */
+  },
+  denseRoot: {
+    padding: 0,
   },
   denseContent: {
     paddingBottom: 0,
@@ -41,11 +37,11 @@ const Card = withStyles((theme) => ({
   headerPadded: {
     margin: theme.spacing(-3, -3, 0, -3),
   },
-}))(({
+}));
+
+const Card = ({
   children,
-  classes,
   className,
-  dense,
   padded,
   primary,
   secondary,
@@ -56,6 +52,13 @@ const Card = withStyles((theme) => ({
   titleProps,
   ...rest
 }) => {
+  const classes = useStyles();
+
+  const hasTitle = useMemo(
+    () => !isNil(title),
+    [title],
+  );
+
   const hasActions = useMemo(
     () => primary || secondary,
     [primary, secondary],
@@ -63,7 +66,12 @@ const Card = withStyles((theme) => ({
 
   return (
     <MuiCard
-      className={clsx(classes.root, className, { [classes.padded]: padded })}
+      className={clsx(
+        classes.root,
+        className,
+        { [classes.padded]: padded },
+        { [classes.denseRoot]: !hasTitle },
+      )}
       component={Box}
       elevation={0}
       {...rest}
@@ -74,8 +82,8 @@ const Card = withStyles((theme) => ({
           <Divider className={clsx({ [classes.dividerPadded]: padded })} />
         </>
       )}
-      {title && (
-      <CardContent className={clsx({ [classes.denseContent]: dense && hasActions })}>
+      {hasTitle && (
+      <CardContent className={clsx({ [classes.denseContent]: !hasTitle && hasActions })}>
         <GroupTitles
           title={title}
           subtitle={subtitle}
@@ -87,18 +95,17 @@ const Card = withStyles((theme) => ({
       )}
       {!title && children}
       {hasActions && (
-        <CardActions className={clsx({ [classes.denseActions]: dense })}>
+        <CardActions className={clsx({ [classes.denseActions]: !hasTitle })}>
           <CardControls primary={primary} secondary={secondary} />
         </CardActions>
       )}
     </MuiCard>
   );
-});
+};
 
 Card.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
-  dense: PropTypes.bool,
   padded: PropTypes.bool,
   Header: PropTypes.elementType,
   title: PropTypes.node,
@@ -112,8 +119,10 @@ Card.propTypes = {
 Card.defaultProps = {
   children: null,
   className: '',
-  dense: false,
   padded: false,
+  Header: null,
+  title: null,
+  subtitle: null,
   primary: null,
   secondary: null,
   subtitleProps: {},

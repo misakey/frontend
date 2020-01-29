@@ -11,14 +11,17 @@
   "close": "Archiver",
   "ok": "OK",
   "gotIt": "J'ai compris",
+  "add": "Ajouter",
   "validate": "Valider",
   "reset": "Réinitialiser",
   "search": "Rechercher",
+  "download": "Télécharger",
   "submit": "Envoyer",
   "create": "Créer",
   "read": "Voir",
   "update": "Éditer",
   "delete": "Supprimer",
+  "remove": "Retirer",
   "copy": "Copier dans le presse papier",
   "copied": "Copié dans le presse papier!",
   "toggle": "Basculer",
@@ -26,6 +29,7 @@
   "hide": "Cacher",
   "more": "Plus",
   "less": "Moins",
+  "IKnowIt": "Je le connais",
   "loading": "Chargement ...",
   "fetching": "Récupération des données ...",
   "submitting": "Envoi en cours ...",
@@ -37,7 +41,8 @@
   "signIn": "Connexion",
   "signOut": "Déconnexion",
   "report": "Signaler",
-  "brand": "Logo du site {{brand}}",
+  "brand": "Logo de la marque {{brand}}",
+  "anonymousUser": "Un utilisateur Misakey",
   "links": {
     "docs": {
       "dpo": "https://docs.misakey.com/#/dpo/",
@@ -51,6 +56,12 @@
     "citizen": "Citizen",
     "dpo": "DPO",
     "admin": "ADMIN"
+  },
+  "landing": {
+    "punchline": "Recréer la confiance entre les sites et les utilisateurs pour la protection des informations privées",
+    "dpo": "Je gère un site",
+    "citizen": "Je suis utilisateur",
+    "more": "J'ai besoin d'en savoir plus"
   },
   "account": {
     "delete": {
@@ -113,6 +124,10 @@
       "tos": {
         "text": "Conditions d'utilisation",
         "href": "https://docs.misakey.com/#/legals/tos/"
+      },
+      "about": {
+        "text": "À propos",
+        "href": "https://docs.misakey.com/"
       }
     }
   },
@@ -361,9 +376,7 @@
       },
       "admin": {
         "title": "Mes rôles Admin"
-      },
-      "link": "Ajouter à mes apps",
-      "unlink": "Supprimer de mes apps"
+      }
     },
     "suggestedApplication": {
       "title": "Suggestions"

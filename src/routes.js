@@ -87,16 +87,13 @@ const routes = {
         preview: '/citizen/:mainDomain/contact/preview',
         providers: '/citizen/:mainDomain/contact/providers',
       },
-      info: '/citizen/:mainDomain',
-      comments: '/citizen/:mainDomain/comments',
+
       vault: '/citizen/:mainDomain/vault',
-      thirdParty: '/citizen/:mainDomain/third-party',
-      myAccount: '/citizen/:mainDomain/my-account',
-      feedback: {
-        _: '/citizen/:mainDomain/feedback',
-        others: '/citizen/:mainDomain/feedback/others',
-        me: '/citizen/:mainDomain/feedback/me',
-      },
+      feedback: '/citizen/:mainDomain/feedback',
+      legal: '/citizen/:mainDomain/legal',
+      more: '/citizen/:mainDomain/more',
+
+      myFeedback: '/citizen/:mainDomain/feedback/me',
     },
   },
   dpo: {

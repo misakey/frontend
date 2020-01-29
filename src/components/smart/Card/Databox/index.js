@@ -9,6 +9,7 @@ import API from '@misakey/api';
 import routes from 'routes';
 import errorTypes from 'constants/errorTypes';
 import { OPEN, DONE, CLOSED } from 'constants/databox/status';
+
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';
 import { updateDatabox } from 'store/actions/databox';
@@ -19,31 +20,36 @@ import fileDownload from 'js-file-download';
 import { NoPassword } from 'constants/Errors/classes';
 
 import deburr from '@misakey/helpers/deburr';
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import prop from '@misakey/helpers/prop';
 import { getDetailPairsHead } from 'helpers/apiError';
+import getNextSearch from 'helpers/getNextSearch';
+import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/helpers/isNil';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import omitTranslationProps from 'helpers/omit/translationProps';
-import getNextSearch from 'helpers/getNextSearch';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
+import prop from '@misakey/helpers/prop';
 
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import ContactButton from 'components/smart/ContactButton';
 import { BUTTON_STANDINGS } from 'components/dumb/Button';
+import Box from '@material-ui/core/Box';
 import Card from 'components/dumb/Card';
-import ChipDataboxStatus from 'components/dumb/Chip/Databox/Status';
+import CardContent from '@material-ui/core/CardContent';
 import ChipDataboxBlobs from 'components/dumb/Chip/Databox/Blobs';
-import ScreenError from 'components/dumb/Screen/Error';
-import SplashScreen from 'components/dumb/SplashScreen';
+import ChipDataboxStatus from 'components/dumb/Chip/Databox/Status';
+import ContactButton from 'components/smart/ContactButton';
 import DialogDataboxArchive from 'components/dumb/Dialog/Databox/Archive';
 import DialogDataboxReopen from 'components/dumb/Dialog/Databox/Reopen';
+import Grid from '@material-ui/core/Grid';
+import ScreenError from 'components/dumb/Screen/Error';
+import SplashScreen from 'components/dumb/SplashScreen';
+import Title from 'components/dumb/Typography/Title';
+import Typography from '@material-ui/core/Typography';
+
 import DataboxDisplay from './Display';
+
 
 // CONSTANTS
 const PATCH_DATABOX_ENDPOINT = {
@@ -159,6 +165,8 @@ const CardDatabox = ({
   isAuthenticated,
   dispatchUpdateDatabox,
   dispatchContact,
+  subCard,
+  initCrypto,
   t,
   ...props
 }) => {
@@ -214,7 +222,7 @@ const CardDatabox = ({
   );
 
   const titleWithMetadata = useMemo(
-    () => (
+    () => (isNil(title) ? null : (
       <Grid container>
         <Grid item sm={databox ? 6 : 12} xs={12}>
           {title}
@@ -230,7 +238,7 @@ const CardDatabox = ({
           </Grid>
         )}
       </Grid>
-    ),
+    )),
     [title, blobs, databox, isXs],
   );
 
@@ -307,6 +315,8 @@ const CardDatabox = ({
     [databoxId, dispatchUpdateDatabox, onDialogClose, onError, onReopenMailTo, t],
   );
 
+  const CardComponent = useMemo(() => ((subCard) ? Box : Card), [subCard]);
+
   const primary = useMemo(
     () => {
       if (isNil(status)) {
@@ -347,7 +357,7 @@ const CardDatabox = ({
             onContributionClick={onContributionDpoEmailClick}
             applicationID={id}
             mainDomain={mainDomain}
-            buttonProps={{ standing: BUTTON_STANDINGS.MINOR }}
+            buttonProps={{ standing: BUTTON_STANDINGS.CANCEL }}
           />
         );
       }
@@ -402,33 +412,38 @@ const CardDatabox = ({
         onClose={onDialogClose}
         onSuccess={onReopen}
       />
-      <Card
-        title={titleWithMetadata}
+      <Title>
+        {titleWithMetadata}
+      </Title>
+      <CardComponent
         subtitle={subtitle}
         primary={primary}
         secondary={secondary}
         {...omitTranslationProps(props)}
       >
-        {loading && <SplashScreen variant="default" />}
-        {isAuthenticated && !isNil(blobs) ? (
-          <>
-            {isEmpty(blobs) ? (
-              <Typography>
-                {blobsEmptyText}
-              </Typography>
-            ) : (
-              <DataboxDisplay
-                blobs={blobs}
-                downloadBlob={onDownload}
-                publicKeysWeCanDecryptFrom={publicKeysWeCanDecryptFrom}
-                isCryptoReadyToDecrypt={isCryptoReadyToDecrypt}
-              />
-            )}
-          </>
-        ) : (
-          <Typography>{ t('common:databox.noResult') }</Typography>
-        )}
-      </Card>
+        <CardContent>
+          {loading && <SplashScreen variant="default" />}
+          {isAuthenticated && !isNil(blobs) ? (
+            <>
+              {isEmpty(blobs) ? (
+                <Typography>
+                  {blobsEmptyText}
+                </Typography>
+              ) : (
+                <DataboxDisplay
+                  blobs={blobs}
+                  downloadBlob={onDownload}
+                  publicKeysWeCanDecryptFrom={publicKeysWeCanDecryptFrom}
+                  isCryptoReadyToDecrypt={isCryptoReadyToDecrypt}
+                  initCrypto={initCrypto}
+                />
+              )}
+            </>
+          ) : (
+            <Typography>{ t('common:databox.noResult') }</Typography>
+          )}
+        </CardContent>
+      </CardComponent>
     </>
   );
 };
@@ -442,10 +457,12 @@ CardDatabox.propTypes = {
   onAskPassword: PropTypes.func.isRequired,
   onContributionDpoEmailClick: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
+  initCrypto: PropTypes.func.isRequired,
   // CONNECT
   isAuthenticated: PropTypes.bool,
   dispatchUpdateDatabox: PropTypes.func.isRequired,
   dispatchContact: PropTypes.func.isRequired,
+  subCard: PropTypes.bool,
 };
 
 CardDatabox.defaultProps = {
@@ -453,6 +470,7 @@ CardDatabox.defaultProps = {
   databox: null,
   title: null,
   isAuthenticated: false,
+  subCard: false,
 };
 
 // CONNECT

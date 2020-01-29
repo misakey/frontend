@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Avatar } from '@material-ui/core';
+import Avatar from '@material-ui/core/Avatar';
 import getBackgroundAndColorFromString from '@misakey/helpers/getBackgroundAndColorFromString';
 
 // CONSTANTS

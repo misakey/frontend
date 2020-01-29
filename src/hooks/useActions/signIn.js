@@ -14,7 +14,7 @@ export const useSignInFormContentAction = (step, acr, t, renewConfirmationCode) 
       email: {
         buttonProps: {
           startIcon: <AddIcon />,
-          standing: BUTTON_STANDINGS.MAJOR,
+          standing: BUTTON_STANDINGS.TEXT,
           to: routes.auth.signUp.preamble,
           component: Link,
         },
@@ -24,7 +24,7 @@ export const useSignInFormContentAction = (step, acr, t, renewConfirmationCode) 
     secret: {
       password: {
         buttonProps: {
-          standing: BUTTON_STANDINGS.MAJOR,
+          standing: BUTTON_STANDINGS.TEXT,
           to: routes.auth.forgotPassword,
           component: Link,
         },

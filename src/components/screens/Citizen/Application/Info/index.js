@@ -10,7 +10,9 @@ import API from '@misakey/api';
 import ApplicationSchema from 'store/schemas/Application';
 
 import routes from 'routes';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect, generatePath } from 'react-router-dom';
+
+import { IS_PLUGIN } from 'constants/plugin';
 
 import compose from '@misakey/helpers/compose';
 import prop from '@misakey/helpers/prop';
@@ -23,32 +25,35 @@ import isNil from '@misakey/helpers/isNil';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 
-import ApplicationHeader from 'components/dumb/Application/Header';
 import Screen, { getStyleForContainerScroll } from 'components/dumb/Screen';
-import ApplicationNavTabs from 'components/screens/Citizen/Application/Info/Nav';
-import ApplicationBox from 'components/screens/Citizen/Application/Box';
+import ApplicationInfoNav from 'components/screens/Citizen/Application/Info/Nav';
+import ApplicationVault from 'components/screens/Citizen/Application/Info/Vault';
 import UserContributionDialog from 'components/smart/UserContributionDialog';
 
-import Content from 'components/screens/Citizen/Application/Info/Content';
-import MyAccount from 'components/screens/Citizen/Application/Info/MyAccount';
-import ThirdParty from 'components/screens/Citizen/Application/Info/ThirdParty';
+import Feedback from 'components/screens/Citizen/Application/Info/Feedback';
+import Legal from 'components/screens/Citizen/Application/Info/Legal';
+import More from 'components/screens/Citizen/Application/Info/More';
 
-import { IS_PLUGIN } from 'constants/plugin';
+import Footer from 'components/dumb/Footer';
 
-const NAV_BAR_HEIGHT = 45;
+const NAV_BAR_HEIGHT = 33;
 
 // STYLES
 const useStyles = makeStyles((theme) => ({
   content: {
     padding: theme.spacing(0, 2),
   },
-  pluginContent: getStyleForContainerScroll(theme, NAV_BAR_HEIGHT, { gutters: !IS_PLUGIN }),
-  pluginContainer: {
-    padding: 0,
+  pluginContent: getStyleForContainerScroll(theme, NAV_BAR_HEIGHT),
+  screen: {
+    display: 'flex',
+    justifyContent: 'center',
   },
   container: {
     marginTop: NAV_BAR_HEIGHT,
     padding: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   nav: {
     padding: '0 1rem',
@@ -204,7 +209,7 @@ function ApplicationInfo({
   );
 
   return (
-    <Screen {...screenProps}>
+    <Screen {...screenProps} className={classes.screen}>
       <Container
         maxWidth="md"
         className={classes.container}
@@ -216,9 +221,8 @@ function ApplicationInfo({
           userContributionType={userContributionType}
           appName={name}
         />
-
-        {!unknown && !isFetching && (
-          <ApplicationNavTabs
+        {!unknown && (
+          <ApplicationInfoNav
             className={clsx({ [classes.nav]: IS_PLUGIN })}
             elevationScrollTarget={contentRef}
             mainDomain={mainDomain}
@@ -235,55 +239,56 @@ function ApplicationInfo({
               exact
               path={routes.citizen.application.vault}
               render={(routerProps) => (
-                <ApplicationBox
+                <ApplicationVault
                   onContributionDpoEmailClick={onContributionDpoEmailClick}
+                  isLoading={isFetching}
+                  application={entity}
                   {...routerProps}
                 />
               )}
             />
             <Route
-              exact
-              path={routes.citizen.application.thirdParty}
+              path={routes.citizen.application.feedback}
               render={(routerProps) => (
-                <ThirdParty
-                  entity={entity}
+                <Feedback
+                  application={entity}
+                  isLoading={isFetching}
+                  {...routerProps}
+                />
+              )}
+            />
+            <Route
+              path={routes.citizen.application.legal}
+              render={(routerProps) => (
+                <Legal
+                  application={entity}
+                  isLoading={isFetching}
                   onContributionLinkClick={onContributionLinkClick}
                   {...routerProps}
                 />
               )}
             />
-
             <Route
-              exact
-              path={routes.citizen.application.myAccount}
-              render={() => <MyAccount entity={entity} />}
-            />
-            <Route
-              exact
-              path={match.path}
-              render={() => (
-                <>
-                  <ApplicationHeader
-                    application={entity}
-                    isLoading={isFetching}
-                    onContributionDpoEmailClick={onContributionDpoEmailClick}
-                    readOnly={unknown}
-                    mb={3}
-                    isAuthenticated={isAuthenticated}
-                    isLinked={!isNil(applicationLinkId)}
-                    toggleLinked={onToggleLinked}
-                  />
-                  <Content
-                    entity={entity}
-                    isLoading={isFetching}
-                    onContributionDpoEmailClick={onContributionDpoEmailClick}
-                    onContributionLinkClick={onContributionLinkClick}
-                  />
-                </>
+              path={routes.citizen.application.more}
+              render={(routerProps) => (
+                <More
+                  application={entity}
+                  isLoading={isFetching}
+                  isLinked={!isNil(applicationLinkId)}
+                  toggleLinked={onToggleLinked}
+                  isAuthenticated={isAuthenticated}
+                  {...routerProps}
+                />
               )}
+            />
+            <Redirect
+              from={routes.citizen.application._}
+              exact
+              to={generatePath(routes.citizen.application.vault, { mainDomain })}
             />
           </Switch>
         </Box>
+        {!IS_PLUGIN && <Footer />}
       </Container>
     </Screen>
   );

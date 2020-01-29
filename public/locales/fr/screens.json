@@ -111,8 +111,8 @@
       "subtitle": "Je cherche un site pour récupérer mes données"
     },
     "notFound": {
-      "subtitle": "Mon site manque à la liste ?",
-      "button": "Créer le site"
+      "subtitle": "J'ajoute un nouveau site",
+      "button": "Nouveau site"
     },
     "create": {
       "title": "Créer un site",
@@ -143,18 +143,6 @@
           }
         }
       },
-      "security": {
-        "title": "Portabilité",
-        "default": "Si j'ai trouvé l'email DPO de ce site, je l'envoie à Misakey pour l'intégrer à la base de donnée collaborative !",
-        "dpo": {
-          "text": "Je demande mes données au site au travers d’une <1>demande de portabilité</1>.<br/>Je pourrai les retrouver sur mon espace Misakey et en profiter comme bon me semble",
-          "faqPortabilityRequest": "https://docs.misakey.com/#/citizen/misakey?id=la-demande-de-portabilit%c3%a9"
-        },
-        "contactForm": "Misakey ne connaît qu'un formulaire en ligne pour faire des requêtes de données personnelles à ce site. Si j'ai trouvé l'email DPO de ce site, je peux l'envoyer à Misakey pour l'intégrer à la base de données collaborative !",
-        "button": {
-          "contactForm": "Formulaire de contact"
-        }
-      },
       "contact": {
         "goToApp": "Demander mes données depuis le site"
       },
@@ -182,6 +170,46 @@
           "send": "Envoyer"
         },
         "success": "Merci, cette contribution a bien été envoyée !"
+      },
+      "legal": {
+        "cookies": {
+          "text": "Accéder au plugin",
+          "button": "Installer"
+        },
+        "linksListTitle": "Documents légaux",
+        "links": {
+          "tos": "CGU",
+          "terms": "Conditions",
+          "home_page": "Page d'accueil",
+          "legal_notice": "Légalité",
+          "cookies": "Politique sur les cookies",
+          "personal_data": "Données personnelles",
+          "privacy_policy": "Protection des données",
+          "dpo_contact": "Contact du DPO",
+          "help": "Aide",
+          "social_facebook": "Facebook",
+          "social_twitter": "Twitter",
+          "social_linkedin": "Linkedin"
+        }
+      },
+      "more": {
+        "title": "À propos de ce site",
+        "dpo": {
+          "text": "Je suis DPO",
+          "button": "Revendiquer"
+        },
+        "report": {
+          "text": "Signaler un problème",
+          "button": "Signaler"
+        },
+        "domains": {
+          "text": "Domaines associés",
+          "count": "{{count}} domaine",
+          "count_plural": "{{count}} domaines"
+        },
+        "favorite": {
+          "text": "Ajouter à mes sites"
+        }
       },
       "primary": {
         "title": "Informations principales",
@@ -229,19 +257,7 @@
           "logoUri": "URI du logo",
           "dpoEmail": "Email du DPO",
           "weight": "Pondération",
-          "claimed": "Domaine approprié",
-          "tos": "CGU",
-          "terms": "Conditions",
-          "home_page": "Page d'accueil",
-          "legal_notice": "Légalité",
-          "cookies": "Politique sur les cookies",
-          "personal_data": "Données personnelles",
-          "privacy_policy": "Protection des données",
-          "dpo_contact": "Contact du DPD",
-          "help": "Aide",
-          "social_facebook": "Facebook",
-          "social_twitter": "Twitter",
-          "social_linkedin": "Linkedin"
+          "claimed": "Domaine revendiqué"
         }
       },
       "domains": {
@@ -265,8 +281,8 @@
       },
       "errorNotif": "Une erreur est survenue",
       "mustUnlockVault": "Ouvrir mon coffre-fort pour accéder à mes fichiers",
-      "mustUnlockVaultBanner": "Ouvrir mon coffre-fort pour <1>accéder à mes fichiers</1>",
       "title": "Récupérer mes données",
+      "openVault": "Ouvrir mon coffre-fort",
       "archives": {
         "title": "Demandes archivées"
       },
@@ -335,7 +351,7 @@
         "whitelisted": "Services tiers acceptés"
       },
       "summary": {
-        "title": "Ma configuration",
+        "title": "Gérer les cookies",
         "description": "Cliquer sur une catégorie de cookies pour paramétrer mes préférences. Les cookies sont bloqués par défaut",
         "count": {
           "detected": "{{count}} détecté",
@@ -371,11 +387,14 @@
     },
     "nav": {
       "label": "Navigation de {{mainDomain}}",
-      "info": "Informations",
-      "comments": "Commentaires",
-      "vault": "Mon coffre-fort",
+      "vault": "Coffre-fort",
+      "feedback": "Avis",
+      "legal": "Légal",
+      "more": "Plus",
+
       "thirdParty": "Cookies",
-      "myAccount": "Mon compte"
+      "myAccount": "Mon compte",
+      "info": "Informations"
     }
   },
   "auth": {
@@ -413,7 +432,9 @@
       "success": "Mon avis a été publié!"
     },
     "others": {
-      "title": "Avis des utilisateurs"
+      "title": "Avis",
+      "give": "Donner mon avis",
+      "edit": "Modifier mon avis"
     }
   },
   "landing": {

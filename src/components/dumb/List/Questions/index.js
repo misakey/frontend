@@ -59,7 +59,7 @@ function ListQuestions({ breakpoints, items, justify }) {
   const classes = useStyles();
 
   return (
-    <Grid component={List} container>
+    <Grid component={List} container disablePadding>
       {items.map(({ text, href }, i) => (
         <Grid
           item

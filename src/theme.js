@@ -18,6 +18,14 @@ export const themeOptions = {
   typography: {
     useNextVariants: true,
   },
+  overrides: {
+    MuiButton: {
+      root: {
+        boxShadow: 'none !important',
+        borderRadius: 50,
+      },
+    },
+  },
 };
 
 export default createMuiTheme(themeOptions);

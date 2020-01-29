@@ -13,8 +13,8 @@ import withApplication from 'components/smart/withApplication';
 import RoutePrivate from '@misakey/auth/components/Route/Private';
 import ApplicationNone from 'components/screens/Citizen/Application/None';
 import ApplicationInfo from 'components/screens/Citizen/Application/Info';
+import MyFeedback from 'components/screens/Citizen/Application/MyFeedback';
 import ApplicationContact from 'components/screens/Citizen/Application/Contact';
-import ApplicationFeedback from 'components/screens/Citizen/Application/Feedback';
 import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import BoxEllipsis from 'components/dumb/Box/Ellipsis';
 
@@ -77,18 +77,17 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
           },
         }}
       />
-      <Route
-        path={routes.citizen.application.feedback._}
-        render={(routerProps) => (
-          <ApplicationFeedback
-            screenProps={{
-              state,
-              disableGutters: IS_PLUGIN,
-              appBarProps,
-            }}
-            {...routerProps}
-          />
-        )}
+      <RoutePrivate
+        path={routes.citizen.application.myFeedback}
+        component={MyFeedback}
+        componentProps={{
+          application,
+          screenProps: {
+            state,
+            disableGutters: IS_PLUGIN,
+            appBarProps,
+          },
+        }}
       />
 
       <Route

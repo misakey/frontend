@@ -11,7 +11,7 @@ import Application from 'components/screens/Citizen/Application';
 
 // LAZY
 const ApplicationsCreate = lazy(() => import('components/screens/Citizen/Applications/Create'));
-const Landing = lazy(() => import('components/screens/Landing'));
+const Home = lazy(() => import('components/screens/Citizen/Home'));
 const Contact = lazy(() => import('components/screens/Citizen/Contact'));
 const ApplicationsCategoryScreen = lazy(
   () => import('components/screens/Citizen/Applications/Category'),
@@ -33,7 +33,7 @@ function Citizen({ match }) {
           component={ApplicationsCategoryScreen}
         />
         <RouteCitizen path={routes.citizen.application._} component={Application} />
-        <RouteCitizen exact path={match.path} component={Landing} />
+        <RouteCitizen exact path={match.path} component={Home} />
       </Switch>
     </>
   );

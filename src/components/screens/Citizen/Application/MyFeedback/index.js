@@ -7,6 +7,7 @@ import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 import { Formik, Field, Form } from 'formik';
 import { makeStyles } from '@material-ui/core/styles';
+import { red } from '@material-ui/core/colors';
 
 import API from '@misakey/api';
 import routes from 'routes';
@@ -21,6 +22,9 @@ import pick from '@misakey/helpers/pick';
 
 import ButtonSubmit from '@misakey/ui/Button/Submit';
 
+import BoxControls from 'components/dumb/Box/Controls';
+import SplashScreen from 'components/dumb/SplashScreen';
+import Screen from 'components/dumb/Screen';
 import Navigation from 'components/dumb/Navigation';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
@@ -28,10 +32,7 @@ import Button from '@material-ui/core/Button';
 import withMyFeedback from 'components/smart/withMyFeedback';
 import FieldText from 'components/dumb/Form/Field/Text';
 import FieldRating from 'components/dumb/Form/Field/Rating';
-import TypographySubtitle from 'components/dumb/Typography/Subtitle';
 import ScreenError from 'components/dumb/Screen/Error';
-
-import './index.scss';
 
 // CONSTANTS
 const VALUE_FIELD = 'value';
@@ -71,19 +72,26 @@ const postFeedback = (applicationId, userId, form, rating) => {
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  overflowContent: {
-    // view height - navigation gutter - navigation border - navigation height - appbar height
-    height: `calc(100vh - ${theme.spacing(3)}px - 1px - 4rem - 4rem)`,
-    overflow: 'auto',
-  },
   ratingRoot: {
     fontSize: theme.typography.h2.fontSize,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: theme.typography.h3.fontSize,
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: theme.typography.h4.fontSize,
+    },
   },
   ratingIconFilled: {
     color: theme.palette.secondary.main,
   },
   textInputMultiline: {
     overflow: 'hidden',
+  },
+  deleteButton: {
+    color: red[500],
+  },
+  form: {
+    textAlign: 'center',
   },
 }));
 
@@ -107,14 +115,17 @@ const useOnSubmit = (
 
 // COMPONENTS
 // @FIXME move to @misakey/ui
-const FeedbackMeScreen = ({
+const ApplicationMyFeedback = ({
   application,
   userId,
   rating,
+  isFetchingRating,
   history,
   match: { params },
   t,
+  deleteMyFeedback,
   dispatchClearAvgRating,
+  screenProps,
 }) => {
   const classes = useStyles();
 
@@ -127,7 +138,7 @@ const FeedbackMeScreen = ({
   const goBackPath = useMemo(
     () => (isNil(mainDomain)
       ? null
-      : generatePath(routes.citizen.application.info, { mainDomain })),
+      : generatePath(routes.citizen.application.feedback, { mainDomain })),
     [mainDomain],
   );
 
@@ -136,15 +147,18 @@ const FeedbackMeScreen = ({
     [rating],
   );
 
-  const onCancel = useCallback(
+  const onDelete = useCallback(
     () => {
-      if (history.length > 1) {
-        history.goBack();
-      } else {
-        history.push(goBackPath);
-      }
+      deleteMyFeedback()
+        .then(() => {
+          if (history.length > 1) {
+            history.goBack();
+          } else {
+            history.push(goBackPath);
+          }
+        });
     },
-    [goBackPath, history],
+    [goBackPath, history, deleteMyFeedback],
   );
 
   const onSubmit = useOnSubmit(
@@ -163,19 +177,16 @@ const FeedbackMeScreen = ({
   }
 
   return (
-    <div>
+    <Screen {...screenProps}>
       <Navigation
         history={history}
         toolbarProps={{ maxWidth: 'md' }}
         title={t('screens:feedback.me.title')}
       />
-      <div className={classes.overflowContent}>
-        <Container
-          maxWidth="md"
-        >
-          <TypographySubtitle>
-            {t('screens:feedback.me.subtitle')}
-          </TypographySubtitle>
+      {(isFetchingRating) ? (
+        <SplashScreen />
+      ) : (
+        <Container maxWidth="md">
           <Box my={3}>
             <Formik
               validationSchema={ratingValidationSchema}
@@ -184,7 +195,7 @@ const FeedbackMeScreen = ({
               enableReinitialize
             >
               {({ isSubmitting, isValid }) => (
-                <Form className="form">
+                <Form className={classes.form}>
                   <Field
                     classes={{ root: classes.ratingRoot, iconFilled: classes.ratingIconFilled }}
                     name={VALUE_FIELD}
@@ -199,28 +210,39 @@ const FeedbackMeScreen = ({
                     placeholder={t('fields:comment.placeholder')}
                     helperText={t('fields:comment.helperText')}
                   />
-                  <Box my={3} className="controls">
-                    <Button onClick={onCancel}>
-                      {t('cancel')}
-                    </Button>
-                    <ButtonSubmit Icon={null} text={t('feedback.submit')} isSubmitting={isSubmitting} isValid={isValid} />
-                  </Box>
+                  <BoxControls
+                    primary={(
+                      <ButtonSubmit
+                        Icon={null}
+                        text={t('feedback.submit')}
+                        isSubmitting={isSubmitting}
+                        isValid={isValid}
+                      />
+                    )}
+                    secondary={!isNil(rating) ? (
+                      <Button onClick={onDelete} className={classes.deleteButton}>
+                        {t('delete')}
+                      </Button>
+                    ) : undefined}
+                  />
                 </Form>
               )}
             </Formik>
           </Box>
         </Container>
-      </div>
-    </div>
+      )}
+    </Screen>
   );
 };
 
-FeedbackMeScreen.propTypes = {
+ApplicationMyFeedback.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes).isRequired,
   rating: PropTypes.shape({
     value: PropTypes.number,
     comment: PropTypes.string,
   }),
+  isFetchingRating: PropTypes.bool,
+  deleteMyFeedback: PropTypes.func.isRequired,
   userId: PropTypes.string,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
@@ -231,9 +253,11 @@ FeedbackMeScreen.propTypes = {
   t: PropTypes.func.isRequired,
   // CONNECT
   dispatchClearAvgRating: PropTypes.func.isRequired,
+  screenProps: PropTypes.object.isRequired,
 };
 
-FeedbackMeScreen.defaultProps = {
+ApplicationMyFeedback.defaultProps = {
+  isFetchingRating: true,
   rating: null,
   userId: null,
 };
@@ -244,8 +268,8 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchClearAvgRating: (mainDomain, history) => {
     const entities = [{ id: mainDomain, changes: { avgRating: null } }];
     dispatch(updateEntities(entities, ApplicationSchema.entity));
-    history.push(generatePath(routes.citizen.application.info, { mainDomain }));
+    history.push(generatePath(routes.citizen.application.feedback, { mainDomain }));
   },
 });
 
-export default connect(null, mapDispatchToProps)(withMyFeedback()(withTranslation(['common', 'screens', 'fields'])(FeedbackMeScreen)));
+export default connect(null, mapDispatchToProps)(withMyFeedback()(withTranslation(['common', 'screens', 'fields'])(ApplicationMyFeedback)));

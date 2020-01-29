@@ -51,9 +51,9 @@ const fetchMyFeedback = (applicationId, userId) => API
   .send();
 
 // HOOKS
-const useShouldFetch = (isAuthenticated, userId, id) => useMemo(
-  () => isAuthenticated && !isNil(userId) && !isNil(id),
-  [isAuthenticated, userId, id],
+const useShouldFetch = (isAuthenticated, userId, id, rating) => useMemo(
+  () => isAuthenticated && !isNil(userId) && !isNil(id) && isNil(rating),
+  [isAuthenticated, userId, id, rating],
 );
 
 const useGetMyFeedback = (
@@ -102,7 +102,7 @@ const withMyFeedback = (mapper = identity) => (Component) => {
     const [rating, setRating] = useState(null);
 
     const { application: { id }, isAuthenticated, userId } = props;
-    const shouldFetch = useShouldFetch(isAuthenticated, userId, id);
+    const shouldFetch = useShouldFetch(isAuthenticated, userId, id, rating);
     const getMyFeedback = useGetMyFeedback(
       id, userId, shouldFetch, setError, setIsFetching, setRating,
     );

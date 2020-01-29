@@ -111,7 +111,7 @@ const AuthSignUpPreamble = ({ t, setFieldValue, setFieldTouched, setTouched, isS
               href={t('common:footer.links.tos.href')}
               target="_blank"
               rel="noopener noreferrer"
-              standing={BUTTON_STANDINGS.MAJOR}
+              standing={BUTTON_STANDINGS.TEXT}
             />
           </ListItemSecondaryAction>
         </ListItem>
@@ -123,7 +123,7 @@ const AuthSignUpPreamble = ({ t, setFieldValue, setFieldTouched, setTouched, isS
               href={t('common:footer.links.privacy.href')}
               target="_blank"
               rel="noopener noreferrer"
-              standing={BUTTON_STANDINGS.MAJOR}
+              standing={BUTTON_STANDINGS.TEXT}
             />
           </ListItemSecondaryAction>
         </ListItem>

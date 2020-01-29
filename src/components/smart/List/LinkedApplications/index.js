@@ -12,6 +12,7 @@ import { fetchLinkedApplications } from 'helpers/fetchApplications';
 import Card from 'components/dumb/Card';
 import ApplicationsList from 'components/dumb/List/Applications';
 import NoLinkedApplication from 'components/dumb/Application/NoLinked';
+import Title from 'components/dumb/Typography/Title';
 
 // COMPONENTS
 function LinkedApplicationsList({ t, userId, isAuthenticated }) {
@@ -48,16 +49,18 @@ function LinkedApplicationsList({ t, userId, isAuthenticated }) {
   }
 
   return (
-    <Card
-      title={t('linkedApplications.title')}
-      mb={3}
-    >
-      <ApplicationsList
-        isFetching={isFetching}
-        error={error}
-        applications={list || []}
-      />
-    </Card>
+    <>
+      <Title>
+        {t('linkedApplications.title')}
+      </Title>
+      <Card mb={3}>
+        <ApplicationsList
+          isFetching={isFetching}
+          error={error}
+          applications={list || []}
+        />
+      </Card>
+    </>
   );
 }
 

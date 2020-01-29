@@ -168,7 +168,7 @@ function AuthSignUpConfirm({ email, password, challenge, t, dispatchClearCredent
             <SignUpConfirmFormFields />
           </Box>
           <Button
-            standing={BUTTON_STANDINGS.MAJOR}
+            standing={BUTTON_STANDINGS.TEXT}
             classes={{ buttonRoot: classes.buttonRoot }}
             {...signUpConfirmContentAction}
           />

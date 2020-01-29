@@ -20,6 +20,10 @@ const useStyles = makeStyles((theme) => ({
   typographyRoot: {
     marginLeft: theme.spacing(2),
   },
+  searchIcon: {
+    color: theme.palette.grey,
+    background: 'transparent',
+  },
 }));
 
 // COMPONENTS
@@ -32,8 +36,8 @@ const SearchApplicationsButtonEmpty = ({ t, ...props }) => {
       width={1}
       {...omitTranslationProps(props)}
     >
-      <Avatar variant="rounded">
-        <SearchIcon />
+      <Avatar variant="rounded" className={classes.searchIcon}>
+        <SearchIcon color="action" />
       </Avatar>
       <Typography
         noWrap

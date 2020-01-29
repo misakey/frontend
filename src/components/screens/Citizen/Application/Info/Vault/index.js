@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { denormalize } from 'normalizr';
-import { withTranslation, Trans } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxByProducerSchema from 'store/schemas/Databox/ByProducer';
@@ -10,7 +10,6 @@ import { receiveDataboxesByProducer } from 'store/actions/databox';
 
 import API from '@misakey/api';
 import { NoPassword } from 'constants/Errors/classes';
-import { makeStyles } from '@material-ui/core/styles';
 import { OPEN, DONE } from 'constants/databox/status';
 import { OK } from 'constants/databox/comment';
 
@@ -26,24 +25,23 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import { getCurrentDatabox, sortDataboxes } from 'helpers/databox';
 
-import withDialogConnect from 'components/smart/Dialog/Connect/with';
 import ListQuestions, { useQuestionsItems, getQuestionsItems } from 'components/dumb/List/Questions';
 import ScreenError from 'components/dumb/Screen/Error';
-import SplashScreen from 'components/dumb/SplashScreen';
-import BoxMessage from 'components/dumb/Box/Message';
-import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
-import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
 import Typography from '@material-ui/core/Typography';
-import MUILink from '@material-ui/core/Link';
 import CardDatabox from 'components/smart/Card/Databox';
-import { usePasswordPrompt, PasswordPromptProvider } from 'components/screens/Citizen/Application/Box/PasswordPrompt';
-import Grid from '@material-ui/core/Grid';
-import Hidden from '@material-ui/core/Hidden';
+import { usePasswordPrompt, PasswordPromptProvider } from 'components/screens/Citizen/Application/Info/Vault/PasswordPrompt';
 import Card from 'components/dumb/Card';
-import CardContent from '@material-ui/core/CardContent';
 import Title from 'components/dumb/Typography/Title';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummaryDatabox from 'components/smart/ExpansionPanelSummary/Databox';
+
+
+import Box from '@material-ui/core/Box';
+import BoxSection from 'components/dumb/Box/Section';
+import Skeleton from '@material-ui/lab/Skeleton';
+
+import NoDataboxInfoCard from './NoDataboxInfoCard';
+
 
 // CONSTANTS
 const QUESTIONS_TRANS_KEY = 'screens:application.box.questions';
@@ -63,16 +61,6 @@ const findDataboxes = (producerId) => API
   .send();
 
 // HOOKS
-const useStyles = makeStyles(() => ({
-  initCryptoLink: {
-    fontWeight: 'bold',
-    color: 'inherit',
-  },
-  portabilityIllu: {
-    width: '100%',
-  },
-}));
-
 const usePromptForPassword = (openPasswordPrompt) => useCallback(
   (previousAttemptFailed = false) => (
     openPasswordPrompt({ firstAttempt: !previousAttemptFailed })
@@ -148,7 +136,25 @@ const useInitCrypto = (
 );
 
 // COMPONENTS
-const DialogConnectButton = withDialogConnect(Button);
+function OnLoading(props) {
+  return (
+    <>
+      <BoxSection mb={3} p={0} {...props}>
+        <Box p={3}>
+          <Typography variant="h6" component="h5">
+            <Skeleton variant="text" style={{ marginTop: 0 }} />
+          </Typography>
+          <Box mt={1}>
+            <Skeleton variant="text" />
+          </Box>
+          <Box mt={2}>
+            <Skeleton variant="rect" height={120} />
+          </Box>
+        </Box>
+      </BoxSection>
+    </>
+  );
+}
 
 function ApplicationBox({
   application,
@@ -156,12 +162,11 @@ function ApplicationBox({
   t,
   userId,
   isAuthenticated,
+  isLoading,
   onContributionDpoEmailClick,
   dispatchReceiveDataboxesByProducer,
 }) {
-  const classes = useStyles();
-
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(isLoading);
   const [error, setError] = useState();
 
   const [expandedBox, setExpandedBox] = useState(null);
@@ -220,8 +225,9 @@ function ApplicationBox({
   );
 
   const shouldFetch = useMemo(
-    () => isAuthenticated && !isNil(applicationID) && isNil(databoxes) && isNil(error),
-    [isAuthenticated, applicationID, databoxes, error],
+    () => !isLoading && isAuthenticated && !isNil(applicationID)
+      && isNil(databoxes) && isNil(error),
+    [isAuthenticated, applicationID, databoxes, error, isLoading],
   );
 
   const questionItems = useQuestionsItems(t, QUESTIONS_TRANS_KEY, 4);
@@ -269,113 +275,61 @@ function ApplicationBox({
     return <ScreenError httpStatus={error} />;
   }
 
-  if (loading) {
-    return <SplashScreen variant="default" />;
-  }
-
   return (
     <>
-      {(isAuthenticated && !isCryptoReadyToDecrypt && !isEmpty(databoxes)) && (
-        <BoxMessage type="warning" my={2}>
-          <Typography>
-            <Trans i18nKey="screens:application.box.mustUnlockVaultBanner">
-              {'Ouvrir mon coffre-fort pour '}
-              <MUILink
-                className={classes.initCryptoLink}
-                component="button"
-                variant="body2"
-                onClick={() => {
-                  initCrypto();
-                }}
-              >
-                accéder à mes fichiers
-              </MUILink>
-            </Trans>
-          </Typography>
-        </BoxMessage>
-      )}
-      <CardDatabox
-        my={3}
-        title={t('screens:application.box.title')}
-        application={application}
-        databox={currentDatabox}
-        publicKeysWeCanDecryptFrom={publicKeysWeCanDecryptFrom}
-        isCryptoReadyToDecrypt={isCryptoReadyToDecrypt}
-        onAskPassword={loadBackupAndAskPassword}
-        onContributionDpoEmailClick={onContributionDpoEmailClick}
-      />
-      {!isEmpty(archivedDataboxes) && (
-        <Card
-          my={3}
-          title={t('screens:application.box.archives.title')}
-        >
-          {archivedDataboxes.map((databox) => (
-            <ExpansionPanel
-              key={databox.id}
-              expanded={expandedBox === databox.id}
-              TransitionProps={{ unmountOnExit: true }}
-              elevation={0}
-              onChange={onExpandedChange(databox.id)}
-            >
-              <ExpansionPanelSummaryDatabox databox={databox} />
-              <CardDatabox
-                application={application}
-                databox={databox}
-                publicKeysWeCanDecryptFrom={publicKeysWeCanDecryptFrom}
-                isCryptoReadyToDecrypt={isCryptoReadyToDecrypt}
-                onAskPassword={loadBackupAndAskPassword}
-                onContributionDpoEmailClick={onContributionDpoEmailClick}
-              />
-            </ExpansionPanel>
-          ))}
-        </Card>
-      )}
-      <Card
-        my={3}
-        title={t('screens:application.box.info.title')}
-        primary={!isAuthenticated ? (
-          <ButtonConnectSimple buttonProps={{ variant: 'contained' }}>
-            {t('screens:application.box.info.primaryButton')}
-          </ButtonConnectSimple>
-        ) : null}
-        secondary={!isAuthenticated ? (
-          <DialogConnectButton
-            standing={BUTTON_STANDINGS.ENHANCED}
-            text={t('screens:application.box.info.secondaryButton')}
+      {(loading && isAuthenticated) ? (
+        <OnLoading />
+      ) : (
+        <>
+          <CardDatabox
+            mb={3}
+            title={t('screens:application.box.title')}
+            application={application}
+            databox={currentDatabox}
+            publicKeysWeCanDecryptFrom={publicKeysWeCanDecryptFrom}
+            isCryptoReadyToDecrypt={isCryptoReadyToDecrypt}
+            onAskPassword={loadBackupAndAskPassword}
+            onContributionDpoEmailClick={onContributionDpoEmailClick}
+            initCrypto={initCrypto}
           />
-        ) : null}
-      >
-        <Grid container spacing={3}>
-          <Grid item sm={8} xs={12}>
-            <Typography>
-              <Trans i18nKey="screens:application.box.info.details">
-                Votre coffre-fort est chiffré par une clé secrète, elle même protégée par votre mot
-                de passe. Vous seul avez accès à cette clé qui permet de lire les données contenues
-                dans votre coffre. Lorsqu’un site vous envoie des données, elles sont chiffrées
-                avant d’être envoyées dans votre coffre afin que vous seul puissiez y accéder.
-                Misakey ne peut pas lire vos données.
-                <br />
-                <br />
-                En cas de perte de votre mot de passe, vos données ne seront plus accessibles.
-              </Trans>
-            </Typography>
-          </Grid>
-          <Hidden xsDown>
-            <Grid item sm={1} />
-            <Grid item sm={3}>
-              <img
-                src="/img/illustrations/portability.png"
-                className={classes.portabilityIllu}
-                alt={t('screens:application.box.info.altIllu')}
-              />
-            </Grid>
-          </Hidden>
-        </Grid>
-      </Card>
-      <Card>
-        <CardContent>
-          <Title>{t(`${QUESTIONS_TRANS_KEY}.title`)}</Title>
-        </CardContent>
+          {!isEmpty(archivedDataboxes) && (
+            <>
+              <Title>
+                {t('screens:application.box.archives.title')}
+              </Title>
+                {archivedDataboxes.map((databox) => (
+                  <Card mb={3}>
+                    <ExpansionPanel
+                      key={databox.id}
+                      expanded={expandedBox === databox.id}
+                      TransitionProps={{ unmountOnExit: true }}
+                      elevation={0}
+                      onChange={onExpandedChange(databox.id)}
+                    >
+                      <ExpansionPanelSummaryDatabox databox={databox} />
+                      <CardDatabox
+                        application={application}
+                        databox={databox}
+                        publicKeysWeCanDecryptFrom={publicKeysWeCanDecryptFrom}
+                        isCryptoReadyToDecrypt={isCryptoReadyToDecrypt}
+                        onAskPassword={loadBackupAndAskPassword}
+                        onContributionDpoEmailClick={onContributionDpoEmailClick}
+                        subCard
+                        initCrypto={initCrypto}
+                      />
+                    </ExpansionPanel>
+                  </Card>
+                ))}
+            </>
+          )}
+        </>
+      )}
+      {(isEmpty(databoxes) && !loading) && (
+        <NoDataboxInfoCard isAuthenticated={isAuthenticated} />
+      )}
+
+      <Title>{t(`${QUESTIONS_TRANS_KEY}.title`)}</Title>
+      <Card dense>
         <ListQuestions items={questionItems} breakpoints={{ sm: 6, xs: 12 }} />
         <ListQuestions items={conditionalQuestionItems} breakpoints={{ sm: 6, xs: 12 }} />
       </Card>
@@ -389,6 +343,7 @@ ApplicationBox.propTypes = {
       mainDomain: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
+  isLoading: PropTypes.bool,
   onContributionDpoEmailClick: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   // CONNECT
@@ -404,6 +359,7 @@ ApplicationBox.defaultProps = {
   databoxesByProducer: null,
   userId: null,
   isAuthenticated: false,
+  isLoading: false,
 };
 
 // CONNECT
@@ -415,7 +371,6 @@ const mapStateToProps = (state, ownProps) => {
   );
   const producerId = idProp(application);
   return {
-    application,
     databoxesByProducer: isNil(producerId) ? null : denormalize(
       producerId,
       DataboxByProducerSchema.entity,
@@ -433,7 +388,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const ApplicationBoxComponent = connect(mapStateToProps, mapDispatchToProps)(
-  withTranslation(['common', 'screens'])(ApplicationBox),
+  withTranslation(['common', 'screens', 'input'])(ApplicationBox),
 );
 
 

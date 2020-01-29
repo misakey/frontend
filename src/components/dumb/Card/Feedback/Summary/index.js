@@ -12,11 +12,10 @@ import ApplicationSchema from 'store/schemas/Application';
 
 import isNil from '@misakey/helpers/isNil';
 
-import MUILink from '@material-ui/core/Link';
-import Card from 'components/dumb/Card';
 import Box from '@material-ui/core/Box';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
+import MUILink from '@material-ui/core/Link';
 import RatingScore from 'components/dumb/Rating/Score';
 import Typography from '@material-ui/core/Typography';
 
@@ -68,7 +67,7 @@ const SummaryFeedbackCard = ({ application, hideLink, hideTitle, t }) => {
   );
 
   return (
-    <Card>
+    <Box>
       {(!hideTitle || !hideLink) && (
         <CardHeader
           title={title}
@@ -110,8 +109,7 @@ const SummaryFeedbackCard = ({ application, hideLink, hideTitle, t }) => {
           totalRating={totalRating}
         />
       </CardContent>
-    </Card>
-
+    </Box>
   );
 };
 

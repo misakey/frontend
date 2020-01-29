@@ -561,7 +561,6 @@ function ServiceRequestsRead({
                         onClick: onDoneDialog,
                         text: t('screens:Service.requests.read.vault.done'),
                       }}
-                      dense
                     >
                       <List dense disablePadding aria-label={t('screens:Service.requests.read.request.title')}>
                         <ListItem>

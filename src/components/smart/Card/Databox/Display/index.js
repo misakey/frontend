@@ -9,19 +9,20 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import IconButton from '@material-ui/core/IconButton';
-import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import FolderIcon from '@material-ui/icons/Folder';
 
 import includes from '@misakey/helpers/includes';
 
 import moment from 'moment';
 import * as numeral from 'numeral';
+import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
+
 
 const DataboxDisplay = ({
   blobs, t, downloadBlob,
   publicKeysWeCanDecryptFrom,
   isCryptoReadyToDecrypt,
+  initCrypto,
 }) => (
   <List disablePadding>
     {
@@ -72,13 +73,20 @@ const DataboxDisplay = ({
                   />
                   <ListItemSecondaryAction>
                     {(canBeDecrypted) && (
-                      <IconButton
-                        edge="end"
-                        aria-label="Download"
+                      <Button
                         onClick={() => downloadBlob(blob)}
-                      >
-                        <CloudDownloadIcon />
-                      </IconButton>
+                        standing={BUTTON_STANDINGS.OUTLINED}
+                        size="small"
+                        text={t('common:download')}
+                      />
+                    )}
+                    {(!isCryptoReadyToDecrypt) && (
+                      <Button
+                        onClick={initCrypto}
+                        standing={BUTTON_STANDINGS.OUTLINED}
+                        size="small"
+                        text={t('screens:application.box.openVault')}
+                      />
                     )}
                   </ListItemSecondaryAction>
                 </ListItem>
@@ -94,6 +102,7 @@ DataboxDisplay.propTypes = {
   downloadBlob: PropTypes.func.isRequired,
   publicKeysWeCanDecryptFrom: PropTypes.arrayOf(PropTypes.string).isRequired,
   isCryptoReadyToDecrypt: PropTypes.bool.isRequired,
+  initCrypto: PropTypes.func.isRequired,
 };
 
 export default withTranslation(['common', 'screens'])(DataboxDisplay);

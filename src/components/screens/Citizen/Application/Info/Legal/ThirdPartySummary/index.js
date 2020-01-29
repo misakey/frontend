@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
-import className from 'clsx';
 
 import orderBy from '@misakey/helpers/orderBy';
 import getNextSearch from 'helpers/getNextSearch';
@@ -22,36 +21,41 @@ import { isChrome } from 'helpers/devices';
 import Typography from '@material-ui/core/Typography';
 import Skeleton from '@material-ui/lab/Skeleton';
 
+import Box from '@material-ui/core/Box';
 import BoxMessage from 'components/dumb/Box/Message';
 import Card from 'components/dumb/Card';
 import CardContent from '@material-ui/core/CardContent';
+import Divider from '@material-ui/core/Divider';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import PausePluginButton from 'components/smart/Plugin/Button/Pause';
+import Title from 'components/dumb/Typography/Title';
+
 
 import routes from 'routes';
 
 const LINK_TO_STORE = isChrome() ? storeLinks.chrome : storeLinks.firefox;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   content: {
     padding: 0,
     '&:last-child': {
       paddingBottom: 0,
     },
   },
-  listItem: {
-    borderTop: `1px solid ${theme.palette.grey[400]}`,
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-    cursor: 'pointer',
-  },
   listItemEmpty: {
     textAlign: 'center',
   },
   arrowIcon: {
     marginLeft: '1rem',
+  },
+  titleWithPauseButton: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 }));
 
@@ -142,67 +146,85 @@ function ThirdPartyBlock({
 
   if (error) {
     return (
-      <Card
-        my={2}
-        title={t('screens:application.thirdParty.summary.title')}
-        primary={{ onClick: () => sendMessage(RESTART_BG), text: t('screens:application.thirdParty.error.button.restart'), variant: 'contained' }}
-        secondary={{ onClick: () => openInNewTab(LINK_TO_STORE), text: t('screens:application.thirdParty.error.button.update') }}
-      >
-        <BoxMessage type="error" text={t('screens:application.thirdParty.error.description')} />
-      </Card>
+      <>
+        <Box className={classes.titleWithPauseButton}>
+          <Title>
+            {t('screens:application.thirdParty.summary.title')}
+          </Title>
+          <PausePluginButton />
+        </Box>
+        <Card
+          mb={3}
+          primary={{ onClick: () => sendMessage(RESTART_BG), text: t('screens:application.thirdParty.error.button.restart'), variant: 'contained' }}
+          secondary={{ onClick: () => openInNewTab(LINK_TO_STORE), text: t('screens:application.thirdParty.error.button.update') }}
+        >
+          <BoxMessage type="error" text={t('screens:application.thirdParty.error.description')} />
+        </Card>
+      </>
     );
   }
 
   return (
-    <Card
-      my={2}
-      title={t('screens:application.thirdParty.summary.title')}
-      subtitle={t('screens:application.thirdParty.summary.description')}
-    >
-      <CardContent className={classes.content}>
-        <List aria-labelledby="list-apps">
-          {
-            empty && (
-              <ListItem className={classes.listItem}>
-                <ListItemText
-                  primary={
-                    isFetching
-                      ? <Skeleton variant="text" style={{ margin: 0 }} />
-                      : t('screens:application.thirdParty.summary.count.empty')
-                  }
-                  className={classes.listItemEmpty}
+    <>
+      <Box className={classes.titleWithPauseButton}>
+        <Title>
+          {t('screens:application.thirdParty.summary.title')}
+        </Title>
+        <PausePluginButton />
+      </Box>
+      <Card
+        mb={3}
+        subtitle={t('screens:application.thirdParty.summary.description')}
+      >
+        <CardContent className={classes.content}>
+          <List aria-labelledby="list-apps">
+            {
+              empty && (
+                <ListItem
                   onClick={() => setupAction()}
-                />
-              </ListItem>
-            )
-          }
-          {
-            formattedDetectedTrackers.map(({ name, apps, blockedApps }) => (
-              <ListItem
-                key={name}
-                className={className(classes.listItem)}
-                onClick={() => setupAction(name)}
-              >
-                <ListItemText
-                  id={`switch-list-label-${name}`}
-                  primary={t(`screens:application.thirdParty.purposes.${name}`)}
-                />
+                  button
+                >
+                  <ListItemText
+                    primary={
+                      isFetching
+                        ? <Skeleton variant="text" style={{ margin: 0 }} />
+                        : t('screens:application.thirdParty.summary.count.empty')
+                    }
+                    className={classes.listItemEmpty}
+                  />
+                </ListItem>
+              )
+            }
+            {
+              formattedDetectedTrackers.map(({ name, apps, blockedApps }, index) => (
+                <>
+                  {(index !== 0) && <Divider />}
+                  <ListItem
+                    key={name}
+                    onClick={() => setupAction(name)}
+                    button
+                  >
+                    <ListItemText
+                      id={`switch-list-label-${name}`}
+                      primary={t(`screens:application.thirdParty.purposes.${name}`)}
+                    />
 
-                <Typography variant="caption">
-                  {
-                  `${t('screens:application.thirdParty.summary.count.blocked', { count: blockedApps.length })} 
-                   /
-                   ${t('screens:application.thirdParty.summary.count.detected', { count: apps.length })}`
-                  }
-                </Typography>
-                <KeyboardArrowRight className={classes.arrowIcon} />
-
-              </ListItem>
-            ))
-          }
-        </List>
-      </CardContent>
-    </Card>
+                    <Typography variant="caption">
+                      {
+                      `${t('screens:application.thirdParty.summary.count.blocked', { count: blockedApps.length })} 
+                      /
+                      ${t('screens:application.thirdParty.summary.count.detected', { count: apps.length })}`
+                      }
+                    </Typography>
+                    <KeyboardArrowRight className={classes.arrowIcon} />
+                  </ListItem>
+                </>
+              ))
+            }
+          </List>
+        </CardContent>
+      </Card>
+    </>
   );
 }
 

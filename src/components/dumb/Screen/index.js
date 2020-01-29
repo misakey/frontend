@@ -197,6 +197,8 @@ export function getStyleForContainerScroll(
   };
 
   return {
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
     ...(media.includes(MIN_PX_0_LANDSCAPE) ? style[MIN_PX_0_LANDSCAPE] : {}),
     ...(media.includes(MIN_PX_600) ? style[MIN_PX_600] : {}),
     ...(media.includes('main') ? style.main : {}),

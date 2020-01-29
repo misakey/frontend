@@ -35,7 +35,7 @@ function Plugin() {
   }, []);
 
   if (pluginDomain) {
-    const path = generatePath(routes.citizen.application.thirdParty, { mainDomain: pluginDomain });
+    const path = generatePath(routes.citizen.application.vault, { mainDomain: pluginDomain });
     return <Redirect to={path} />;
   }
 
