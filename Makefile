@@ -16,14 +16,22 @@ ifndef CI_COMMIT_REF_NAME
 	CI_COMMIT_REF_NAME := $(shell git rev-parse --abbrev-ref HEAD)
 endif
 
-SERVICE_TAG_METADATA := $(shell echo '+frontend')
+REV := $(shell git rev-parse --short HEAD)
+RELEASE := "$(CI_COMMIT_REF_NAME)"
+SENTRY_ENV := "production-env"
+
 # remove `/` & `SERVICE_TAG_METADATA` from commit ref name
 ifneq (,$(findstring /,$(CI_COMMIT_REF_NAME)))
 	CI_COMMIT_REF_NAME := $(shell echo $(CI_COMMIT_REF_NAME) |  sed -n "s/^.*\/\(.*\)$$/\1/p")
+	RELEASE := "$(CI_COMMIT_REF_NAME)"
+	SENTRY_ENV := "local-env"
 endif
-ifneq (,$(findstring $(SERVICE_TAG_METADATA),$(CI_COMMIT_REF_NAME)))
-	CI_COMMIT_REF_NAME := $(shell echo $(CI_COMMIT_REF_NAME) |  sed 's/$(SERVICE_TAG_METADATA)//g')
+
+ifneq (,$(findstring master,$(CI_COMMIT_REF_NAME)))
+	RELEASE := "$(CI_COMMIT_REF_NAME)-$(REV)"
+	SENTRY_ENV := "preprod-env"
 endif
+
 
 # Set default goal (`make` without command)
 .DEFAULT_GOAL := help
@@ -34,7 +42,8 @@ endif
 
 .PHONY: echo
 echo:
-	@echo "$(CI_COMMIT_REF_NAME)"
+	@echo "CI_COMMIT_REF_NAME=$(CI_COMMIT_REF_NAME)"
+	@echo "RELEASE=$(RELEASE)"
 
 .PHONY: help
 help:
@@ -69,7 +78,7 @@ docker-login: ## Log in to the default registry
 
 .PHONY: build
 build: ## Build a docker image with the build folder and serve server
-	@docker build --build-arg VERSION=$(CI_COMMIT_REF_NAME) -t $(DOCKER_IMAGE):$(CI_COMMIT_REF_NAME) .
+	@docker build --build-arg VERSION=$(RELEASE) --build-arg SENTRY_ENV=$(SENTRY_ENV) --build-arg SENTRY_AUTH_TOKEN=$(SENTRY_AUTH_TOKEN) -t $(DOCKER_IMAGE):$(CI_COMMIT_REF_NAME) .
 
 PLUGIN_ENV ?= production
 .PHONY: build-plugin
