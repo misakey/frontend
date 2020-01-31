@@ -17,12 +17,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
   },
-  typographyRoot: {
-    marginLeft: theme.spacing(2),
-  },
   searchIcon: {
-    color: theme.palette.grey,
     background: 'transparent',
+    marginRight: theme.spacing(-0.5),
+    marginLeft: theme.spacing(-0.25),
   },
 }));
 
@@ -36,7 +34,7 @@ const SearchApplicationsButtonEmpty = ({ t, ...props }) => {
       width={1}
       {...omitTranslationProps(props)}
     >
-      <Avatar variant="rounded" className={classes.searchIcon}>
+      <Avatar className={classes.searchIcon}>
         <SearchIcon color="action" />
       </Avatar>
       <Typography
@@ -44,7 +42,6 @@ const SearchApplicationsButtonEmpty = ({ t, ...props }) => {
         component="span"
         variant="body2"
         color="textSecondary"
-        classes={{ root: classes.typographyRoot }}
       >
         {t('nav:search.button.search')}
       </Typography>

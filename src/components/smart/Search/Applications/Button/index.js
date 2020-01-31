@@ -58,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
     textTransform: 'none',
   },
   endIcon: {
+    marginLeft: theme.spacing(0),
     marginRight: theme.spacing(0.5),
   },
 }));
