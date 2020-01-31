@@ -158,7 +158,14 @@ function Auth({ dispatch, from, isAuthenticated, currentAcr, location, match, ss
   }
 
   return (
-    <Screen hideAppBar state={state} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+    <Screen
+      hideAppBar
+      state={state}
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+    >
       <Switch>
         <Route exact path={routes.auth.error} component={AuthError} />
         <Route

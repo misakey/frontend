@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 5,
   },
   appName: {
-    marginLeft: theme.spacing(2),
+    marginLeft: theme.spacing(1),
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',

@@ -32,7 +32,7 @@ const ColorizedAvatar = ({ text, image, ...rest }) => {
       }}
       {...rest}
     >
-      {text.charAt(0)}
+      {text.charAt(0).toUpperCase()}
     </Avatar>
   );
 };
