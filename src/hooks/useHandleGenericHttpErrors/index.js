@@ -17,7 +17,7 @@ export default () => {
         enqueueSnackbar(text, { variant: 'error' });
         return true;
       }
-      return false;
+      throw error; // if not handled, rethrow error
     },
     [enqueueSnackbar, t],
   );

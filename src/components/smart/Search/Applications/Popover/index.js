@@ -252,6 +252,7 @@ const SearchApplicationsPopover = ({
   [updateRouter]);
 
   // update options anytime search or isAuthenticated change if popover is open
+  // be careful not to use `useFetchEffect` as search can change more quickly than callback delay
   useEffect(
     () => {
       if (open) {

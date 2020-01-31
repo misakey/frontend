@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
@@ -12,6 +12,9 @@ import isNil from '@misakey/helpers/isNil';
 import head from '@misakey/helpers/head';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+
+import useFetchEffect from 'hooks/useFetch/effect';
+import useFetchCallback from 'hooks/useFetch/callback';
 
 import ScreenError from 'components/dumb/Screen/Error';
 
@@ -50,81 +53,72 @@ const fetchMyFeedback = (applicationId, userId) => API
   .build(null, null, objectToSnakeCase({ applicationId, userId }))
   .send();
 
+const deleteFeedback = (ratingId) => API
+  .use(ENDPOINTS.ratings.delete)
+  .build({ id: ratingId })
+  .send();
+
 // HOOKS
 const useShouldFetch = (isAuthenticated, userId, id, rating) => useMemo(
   () => isAuthenticated && !isNil(userId) && !isNil(id) && isNil(rating),
   [isAuthenticated, userId, id, rating],
 );
 
-const useGetMyFeedback = (
-  id, userId, shouldFetch, setError, setIsFetching, setRating,
-) => useCallback(
-  () => {
-    if (shouldFetch) {
-      setIsFetching(true);
-      return fetchMyFeedback(id, userId)
-        .then(
-          (response) => {
-            const data = response.map(objectToCamelCase);
-            setRating(head(data));
-          },
-        )
-        .catch(({ httpStatus }) => { setError(httpStatus); })
-        .finally(() => { setIsFetching(false); });
-    }
-    return Promise.resolve();
-  },
-  [shouldFetch, setIsFetching, id, userId, setError, setRating],
-);
-
-const useDeleteMyFeedback = (rating, setError, setRating) => useCallback(
-  () => {
-    const { id } = rating;
-    if (!isNil(id)) {
-      return API.use(ENDPOINTS.ratings.delete)
-        .build({ id })
-        .send()
-        .then(() => {
-          setRating(null);
-        })
-        .catch(({ httpStatus }) => { setError(httpStatus); });
-    }
-    return Promise.resolve();
-  },
-  [rating, setError, setRating],
-);
-
 // COMPONENTS
 const withMyFeedback = (mapper = identity) => (Component) => {
   const Wrapper = (props) => {
-    const [error, setError] = useState();
-    const [isFetching, setIsFetching] = useState();
     const [rating, setRating] = useState(null);
 
     const { application: { id }, isAuthenticated, userId } = props;
     const shouldFetch = useShouldFetch(isAuthenticated, userId, id, rating);
-    const getMyFeedback = useGetMyFeedback(
-      id, userId, shouldFetch, setError, setIsFetching, setRating,
-    );
 
-    useEffect(
-      () => {
-        if (shouldFetch) {
-          getMyFeedback();
-        }
+    const getMyFeedback = useCallback(
+      () => fetchMyFeedback(id, userId),
+      [id, userId],
+    );
+    const onGetFeedbackSuccess = useCallback(
+      (response) => {
+        const data = response.map(objectToCamelCase);
+        setRating(head(data));
       },
-      [shouldFetch, getMyFeedback],
+      [setRating],
     );
 
-    const deleteMyFeedback = useDeleteMyFeedback(rating, setError, setRating);
+    const { error, isFetching } = useFetchEffect(
+      getMyFeedback,
+      { shouldFetch },
+      { onSuccess: onGetFeedbackSuccess, onError: true },
+    );
+
+    const onDelete = useCallback(
+      () => {
+        const { id: ratingId } = rating;
+        return !isNil(ratingId)
+          ? deleteFeedback(ratingId)
+          : Promise.resolve();
+      },
+      [rating],
+    );
+
+    const onDeleteSuccess = useCallback(
+      () => {
+        setRating(null);
+      },
+      [setRating],
+    );
+
+    const { callback: deleteMyFeedback, error: deleteError } = useFetchCallback(
+      onDelete,
+      { onSuccess: onDeleteSuccess, onError: true },
+    );
 
     const mappedProps = useMemo(
       () => mapper({ ...props, rating, isFetchingRating: isFetching, deleteMyFeedback }),
       [isFetching, props, rating, deleteMyFeedback],
     );
 
-    if (error) {
-      return <ScreenError httpStatus={error} />;
+    if (error || deleteError) {
+      return <ScreenError httpStatus={error.httpStatus || deleteError.httpStatus} />;
     }
 
     return <Component {...mappedProps} />;

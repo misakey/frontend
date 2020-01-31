@@ -62,7 +62,7 @@ const handleError = (setFieldError, setStep, handleGenericHttpErrors) => (error)
   if (error.code === forbidden && !isNil(errorOTP)) {
     setFieldError(CONFIRM_FIELD_NAME, errorOTP);
     setStep(STEP_CONFIRM);
-  } else {
+  } else if (isEmpty(error.details)) {
     handleGenericHttpErrors(error);
   }
 };
