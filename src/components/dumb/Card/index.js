@@ -50,6 +50,7 @@ const Card = ({
   Header,
   subtitleProps,
   titleProps,
+  dense,
   ...rest
 }) => {
   const classes = useStyles();
@@ -74,6 +75,7 @@ const Card = ({
       )}
       component={Box}
       elevation={0}
+      dense={dense ? 'true' : undefined}
       {...rest}
     >
       {Header && (
@@ -107,6 +109,7 @@ Card.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   padded: PropTypes.bool,
+  dense: PropTypes.bool,
   Header: PropTypes.elementType,
   title: PropTypes.node,
   primary: PropTypes.oneOfType([PropTypes.object, PropTypes.node]),
@@ -120,6 +123,7 @@ Card.defaultProps = {
   children: null,
   className: '',
   padded: false,
+  dense: false,
   Header: null,
   title: null,
   subtitle: null,

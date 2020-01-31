@@ -166,7 +166,7 @@ function ApplicationBox({
   onContributionDpoEmailClick,
   dispatchReceiveDataboxesByProducer,
 }) {
-  const [loading, setLoading] = useState(isLoading);
+  const [localLoading, setLocalLoading] = useState(false);
   const [error, setError] = useState();
 
   const [expandedBox, setExpandedBox] = useState(null);
@@ -176,6 +176,11 @@ function ApplicationBox({
       setExpandedBox(isExpanded ? databoxId : null);
     },
     [setExpandedBox],
+  );
+
+  const loading = useMemo(
+    () => isLoading || localLoading,
+    [isLoading, localLoading],
   );
 
   const databoxes = useMemo(
@@ -245,7 +250,7 @@ function ApplicationBox({
   );
 
   const fetchDatabox = useCallback(() => {
-    setLoading(true);
+    setLocalLoading(true);
 
     findDataboxes(applicationID)
       .then((response) => {
@@ -253,7 +258,7 @@ function ApplicationBox({
         dispatchReceiveDataboxesByProducer(applicationID, boxes);
       })
       .catch(({ httpStatus }) => setError(httpStatus))
-      .finally(() => setLoading(false));
+      .finally(() => setLocalLoading(false));
   }, [applicationID, dispatchReceiveDataboxesByProducer]);
 
   React.useEffect(
