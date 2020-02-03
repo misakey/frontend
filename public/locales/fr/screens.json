@@ -97,7 +97,8 @@
     },
     "delete": {
       "title": "Compte",
-      "label": "Supprimer mon compte"
+      "label": "Supprimer mon compte",
+      "success": "Mon compte a bien été supprimé !"
     }
   },
   "applications": {

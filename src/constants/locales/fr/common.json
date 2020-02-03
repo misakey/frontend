@@ -64,10 +64,6 @@
     "more": "J'ai besoin d'en savoir plus"
   },
   "account": {
-    "delete": {
-      "label": "Supprimer mon compte",
-      "success": "Mon compte a bien été supprimé !"
-    },
     "signIn": {
       "label": "Connexion",
       "success": "Connecté !"

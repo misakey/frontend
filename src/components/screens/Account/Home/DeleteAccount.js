@@ -12,7 +12,8 @@ import UserSchema from 'store/schemas/User';
 import DeleteAccountDialog from '@misakey/ui/Dialog/Account/Delete';
 import { signOut } from '@misakey/auth/store/actions/auth';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-
+import { withUserManager } from '@misakey/auth/components/OidcProvider';
+import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -27,6 +28,7 @@ const useOnDelete = (
   userId,
   t,
   enqueueSnackbar,
+  handleGenericHttpErrors,
 ) => useCallback(
   (event) => API.use(API.endpoints.user.delete)
     .build({ id: userId })
@@ -34,57 +36,41 @@ const useOnDelete = (
     .then(() => {
       handleSignOut(event);
 
-      const text = t('account.delete.success', 'Success !');
+      const text = t('screens:account.delete.success', 'Success !');
       enqueueSnackbar(text, { variant: 'success' });
     })
-    .catch((e) => {
-      const text = t(`httpStatus.error${API.errors.filter(e.httpStatus)}`);
-      enqueueSnackbar(text, { variant: 'error' });
-    })
+    .catch(handleGenericHttpErrors)
     .finally(closeDeleteAccountDialog),
-  [
-    handleSignOut,
-    closeDeleteAccountDialog,
-    userId,
-    t,
-    enqueueSnackbar,
-  ],
+  [userId, handleGenericHttpErrors, closeDeleteAccountDialog, handleSignOut, t, enqueueSnackbar],
 );
 
 
-const useHandleSignOut = (onSignOut, userId, enqueueSnackbar, t) => useCallback(
+const useHandleSignOut = (onSignOut, userId, handleGenericHttpErrors, userManager) => useCallback(
   (event) => {
     if (userId) {
       API.use(API.endpoints.auth.signOut)
         .build(null, objectToSnakeCase({ userId }))
         .send()
-        .catch((e) => {
-          const text = t(`httpStatus.error.${API.errors.filter(e.httpStatus)}`);
-          enqueueSnackbar(text, { variant: 'error' });
-        })
+        .catch(handleGenericHttpErrors)
         .finally(() => {
-          onSignOut(event);
+          userManager.removeUser().then(() => {
+            onSignOut(event);
+          });
         });
     } else {
       onSignOut(event);
     }
-  }, [
-    onSignOut,
-    userId,
-    enqueueSnackbar,
-    t,
-  ],
+  }, [userId, handleGenericHttpErrors, userManager, onSignOut],
 );
 
 
 // COMPONENTS
-const DeleteAccount = ({ profile, t, onSignOut, seclevel, userId }) => {
+const DeleteAccount = ({ profile, t, onSignOut, seclevel, userId, userManager }) => {
   const [isOpenDeleteAccountDialog, setOpenDeleteAccountDialog] = useState(false);
 
-
-  const enqueueSnackbar = useSnackbar();
-  const handleSignOut = useHandleSignOut(onSignOut, userId, enqueueSnackbar, t);
-
+  const { enqueueSnackbar } = useSnackbar();
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleSignOut = useHandleSignOut(onSignOut, userId, handleGenericHttpErrors, userManager);
 
   const openDeleteAccountDialog = useCallback(() => {
     setOpenDeleteAccountDialog(true);
@@ -101,6 +87,7 @@ const DeleteAccount = ({ profile, t, onSignOut, seclevel, userId }) => {
     userId,
     t,
     enqueueSnackbar,
+    handleGenericHttpErrors,
   );
 
   if (!profile && seclevel <= 1) {
@@ -117,9 +104,9 @@ const DeleteAccount = ({ profile, t, onSignOut, seclevel, userId }) => {
       />
       <ListItem button aria-label={t('fields:deleteAccount.action')} onClick={openDeleteAccountDialog}>
         <ListItemIcon className="title">
-          <Typography>{t('account.delete.title')}</Typography>
+          <Typography>{t('screens:account.delete.title')}</Typography>
         </ListItemIcon>
-        <ListItemText primary={t('account.delete.label')} />
+        <ListItemText primary={t('screens:account.delete.label')} />
         <ListItemSecondaryAction>
           <ChevronRightIcon className="icon" />
         </ListItemSecondaryAction>
@@ -134,6 +121,7 @@ DeleteAccount.propTypes = {
   seclevel: PropTypes.number.isRequired,
   t: PropTypes.func.isRequired,
   onSignOut: PropTypes.func.isRequired,
+  userManager: PropTypes.object.isRequired,
 };
 
 DeleteAccount.defaultProps = {
@@ -153,4 +141,4 @@ const mapDispatchToProps = (dispatch) => ({
 
 export default connect(
   mapStateToProps, mapDispatchToProps,
-)(withTranslation('screens')(DeleteAccount));
+)(withTranslation(['screens', 'fields'])(withUserManager(DeleteAccount)));
