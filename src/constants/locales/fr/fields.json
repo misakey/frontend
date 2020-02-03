@@ -200,7 +200,7 @@
     "altLabel": "Page d'accueil",
     "helperText": "J'indique l'adresse de la page d'accueil",
     "error": {
-      "malformed": "Merci d'entrer un nom de domaine valide"
+      "malformed": "Merci d'entrer une url valide"
     }
   },
   "name": {

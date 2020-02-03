@@ -91,7 +91,7 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
       />
 
       <Route
-        path={routes.citizen.application.info}
+        path={routes.citizen.application._}
         render={(routerProps) => (
           <ApplicationInfo
             entity={application}

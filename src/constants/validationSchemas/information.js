@@ -6,7 +6,8 @@ import { ACCEPTED_TYPES } from 'constants/file/image';
 // CONSTANTS
 const { required, malformed } = errorTypes;
 // @FIXME using this basic regex instead of Yup.url because it does not allow protocol omition
-export const MAIN_DOMAIN_REGEX = /^(?:https?:\/\/)?(?:www\.)?([^.]+\.[a-zA-Z]+)$/;
+export const MAIN_DOMAIN_REGEX = /^(?:https?:\/\/)?(([-a-z0-9]+\.)+[a-z0-9]+).*$/;
+
 
 export const mainDomainValidationSchema = Yup.object().shape({
   mainDomain: Yup

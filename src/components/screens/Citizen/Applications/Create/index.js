@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
@@ -19,7 +19,6 @@ import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
 
 import ApplicationSchema from 'store/schemas/Application';
-import { layoutAppbarHide, layoutAppbarShow } from 'store/actions/Layout';
 import { receiveEntities } from '@misakey/store/actions/entities';
 
 import Container from '@material-ui/core/Container';
@@ -52,9 +51,9 @@ const createApplication = (form) => API
   .build(null, objectToSnakeCase(form))
   .send();
 
-const goToApplicationInfo = (application, history) => {
+const goToApplicationVault = (application, history) => {
   const { mainDomain } = application;
-  history.push(generatePath(routes.citizen.application.info, { mainDomain }));
+  history.push(generatePath(routes.citizen.application.vault, { mainDomain }));
 };
 
 // HOOKS
@@ -68,7 +67,6 @@ const useStyles = makeStyles(() => ({
 
 const useOnSubmit = (
   dispatchApplicationCreate,
-  dispatchLayoutAppBar,
   enqueueSnackbar,
   setError,
   history,
@@ -82,14 +80,12 @@ const useOnSubmit = (
         const application = objectToCamelCase(response);
         enqueueSnackbar(t('screens:applications.create.success'), { variant: 'success' });
         dispatchApplicationCreate(application);
-        // fix to ensure app bar is displayed before changing screen
-        dispatchLayoutAppBar(true);
-        goToApplicationInfo(application, history);
+
+        goToApplicationVault(application, history);
       })
       .catch(({ httpStatus, code, details }) => {
         if (httpStatus === 409) {
-          dispatchLayoutAppBar(true);
-          goToApplicationInfo(form, history);
+          goToApplicationVault(form, history);
         } else {
           const mainDomainError = getMainDomainError(details);
           if (code === badRequest && !isNil(mainDomainError)) {
@@ -103,7 +99,6 @@ const useOnSubmit = (
   },
   [
     dispatchApplicationCreate,
-    dispatchLayoutAppBar,
     enqueueSnackbar,
     setError,
     history,
@@ -115,7 +110,6 @@ const useOnSubmit = (
 const ApplicationsCreate = ({
   history,
   dispatchApplicationCreate,
-  dispatchLayoutAppBar,
   t,
 }) => {
   const [error, setError] = useState();
@@ -125,19 +119,10 @@ const ApplicationsCreate = ({
 
   const onSubmit = useOnSubmit(
     dispatchApplicationCreate,
-    dispatchLayoutAppBar,
     enqueueSnackbar,
     setError,
     history,
     t,
-  );
-
-  useEffect(
-    () => {
-      dispatchLayoutAppBar(false);
-      return () => { dispatchLayoutAppBar(true); };
-    },
-    [dispatchLayoutAppBar],
   );
 
   if (error) {
@@ -189,16 +174,11 @@ ApplicationsCreate.propTypes = {
   history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired,
   match: PropTypes.shape({ params: PropTypes.object }).isRequired,
   dispatchApplicationCreate: PropTypes.func.isRequired,
-  dispatchLayoutAppBar: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
 };
 
 // CONNECT
 const mapDispatchToProps = (dispatch) => ({
-  dispatchLayoutAppBar: (show) => {
-    const action = show ? layoutAppbarShow : layoutAppbarHide;
-    dispatch(action());
-  },
   dispatchApplicationCreate: (application) => {
     const normalized = normalize(application, ApplicationSchema.entity);
     const { entities } = normalized;

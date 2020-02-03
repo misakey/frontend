@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import RoutePrivate from '@misakey/auth/components/Route/Private';
 import BoxAction from 'components/dumb/Box/Action';
 import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
 
@@ -88,8 +87,18 @@ function RouteCitizen({
     }).isRequired,
   };
 
+  // @FIXME: copied code from `RoutePrivate` to solve bug https://gitlab.misakey.dev/misakey/frontend/issues/346
+  // seems like it was related to nested `withUserManager`
   if (isPrivate) {
-    return <RoutePrivate {...rest} component={render} />;
+    let RouteRender;
+
+    if (isAuthenticated) {
+      RouteRender = render;
+    } else {
+      userManager.signinRedirect();
+      RouteRender = null;
+    }
+    return <Route {...rest} render={RouteRender} />;
   }
 
   return <Route {...rest} render={render} />;
