@@ -32,6 +32,8 @@ import { SECLEVEL_CONFIG, DEFAULT_SECLEVEL, STEP } from 'components/smart/Auth/S
 import errorTypes from 'constants/errorTypes';
 import { handleLoginApiErrors } from 'components/smart/Auth/SignIn/helpers';
 
+import { DefaultSplashScreen } from 'components/dumb/Screen';
+
 const { conflict, required, forbidden } = errorTypes;
 
 // HELPERS
@@ -161,7 +163,16 @@ const SignIn = ({ challenge, dispatch, displayCard, fields, acr, initialValues, 
       .finally(() => actions.setSubmitting(false));
   }, [challenge, handleSubmitErrors, secLevelConfig.api]);
 
-  if (!isNil(redirectTo)) { return <Redirect to={redirectTo} />; }
+  if (!isNil(redirectTo)) {
+    return (
+      <Redirect
+        to={redirectTo}
+        manualRedirectPlaceholder={(
+          <DefaultSplashScreen />
+        )}
+      />
+    );
+  }
 
   return (
     <Formik

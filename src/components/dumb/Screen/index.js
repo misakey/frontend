@@ -60,6 +60,8 @@ DefaultSplashScreen.defaultProps = {
 
 const DefaultSplashScreenWithTranslation = withTranslation()(DefaultSplashScreen);
 
+export { DefaultSplashScreenWithTranslation as DefaultSplashScreen };
+
 // The string representing the message/name is lazily generated
 // when the error.message/name property is accessed.
 function ScreenError({ error, t }) {

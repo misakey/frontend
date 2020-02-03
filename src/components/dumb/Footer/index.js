@@ -9,7 +9,7 @@ import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 
 const Footer = ({ t, typographyProps, ...rest }) => (
-  <Box mt={2} {...omitTranslationProps(rest)}>
+  <Box mt={2} {...omitTranslationProps(rest)} mx={1}>
     <Typography variant="body2" align="center" {...typographyProps}>
       <Link
         href={t('footer.links.privacy.href')}

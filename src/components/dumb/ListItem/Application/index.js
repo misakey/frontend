@@ -77,6 +77,8 @@ function ApplicationListItem({
       <ListItemText
         primary={name}
         secondary={mainDomain}
+        primaryTypographyProps={{ noWrap: true, display: 'block' }}
+        secondaryTypographyProps={{ noWrap: true, display: 'block' }}
       />
       {isSelectable && canSelect && (
         <ListItemSecondaryAction>

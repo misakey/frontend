@@ -14,7 +14,7 @@ const TYPOGRAPHY_PROPS = {
 // COMPONENTS
 function AuthCardTitle({ name, sso, t }) {
   return (
-    <Box display="flex" alignItems="center" justifyContent="center">
+    <Box display="flex" alignItems="center" justifyContent="center" flexWrap="wrap">
       <Box mr={1}>
         {t(`auth:${name}.card.title`)}
       </Box>
