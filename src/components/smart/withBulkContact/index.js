@@ -46,7 +46,7 @@ const createDatabox = (payload) => API
 
 const useCurrentDataboxByProducer = (databoxes) => useMemo(() => {
   const databoxesByProducer = groupBy(databoxes, 'producerId');
-  return mapValues(databoxesByProducer, (values) => getCurrentDatabox(values));
+  return mapValues(databoxesByProducer, (values) => getCurrentDatabox(values, true));
 }, [databoxes]);
 
 // COMPONENTS
@@ -154,9 +154,9 @@ const withBulkContact = (mapper = identity) => (Component) => {
             if (status === 'fulfilled') {
               const boxes = value.map(objectToCamelCase);
               dispatchReceiveDataboxesByProducer(id, boxes);
-              const databoxe = getCurrentDatabox(boxes, true);
-              if (!isNil(databoxe)) {
-                return onDatabox(databoxe, id, true);
+              const databox = getCurrentDatabox(boxes, true);
+              if (!isNil(databox)) {
+                return onDatabox(databox, id, true);
               }
               return createDataboxForUser(id)
                 .then((createdDatabox) => onDatabox(createdDatabox, id));
@@ -197,16 +197,12 @@ const withBulkContact = (mapper = identity) => (Component) => {
 
   Wrapper.propTypes = {
     // CONNECT
-    applicationsByIds: PropTypes.shape({
-      [PropTypes.string]: PropTypes.shape(ApplicationSchema.propTypes),
-    }).isRequired,
-    databoxURLsById: PropTypes.shape({
-      [PropTypes.string]: PropTypes.shape({
-        databoxURL: PropTypes.string,
-        alreadyContacted: PropTypes.bool,
-      }),
-    }).isRequired,
-    databoxes: PropTypes.shape({ [PropTypes.string]: DataboxSchema.propTypes }).isRequired,
+    applicationsByIds: PropTypes.objectOf(PropTypes.shape(ApplicationSchema.propTypes)).isRequired,
+    databoxURLsById: PropTypes.objectOf(PropTypes.shape({
+      databoxURL: PropTypes.string,
+      alreadyContacted: PropTypes.bool,
+    })).isRequired,
+    databoxes: PropTypes.objectOf(PropTypes.shape(DataboxSchema.propTypes)).isRequired,
     selectedApplications: PropTypes.arrayOf(PropTypes.string).isRequired,
     isAuthenticated: PropTypes.bool,
     userId: PropTypes.string,

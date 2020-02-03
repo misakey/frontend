@@ -3,8 +3,13 @@ import PropTypes from 'prop-types';
 import routes from 'routes';
 import { connect } from 'react-redux';
 import { withTranslation, Trans } from 'react-i18next';
-import { makeStyles } from '@material-ui/core/styles';
 import { setSelected } from 'store/actions/screens/applications';
+
+import prop from '@misakey/helpers/prop';
+import propOr from '@misakey/helpers/propOr';
+
+import makeStyles from '@material-ui/core/styles/makeStyles';
+
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -19,8 +24,8 @@ import BoxSection from 'components/dumb/Box/Section';
 import PreMail from 'components/dumb/Pre/Mail';
 import Subtitle from 'components/dumb/Typography/Subtitle';
 import Box from '@material-ui/core/Box';
+import BoxMessage from 'components/dumb/Box/Message';
 import withBulkContact from 'components/smart/withBulkContact';
-import get from '@misakey/helpers/get';
 import ContactProvidersBlock from 'components/smart/Contact/Providers';
 import ToggleButtonGroupMailType from 'components/dumb/ToggleButtonGroup/MailType';
 
@@ -45,6 +50,10 @@ const STEP = {
   preview: 'preview',
   providers: 'providers',
 };
+
+// HELPERS
+const propOrEmptyObject = propOr({});
+const propOrNull = propOr(null);
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -73,12 +82,12 @@ const useGetEmailFor = (
   t,
   mailTypesByApp,
 ) => useCallback((id) => {
-  const { name, mainDomain, dpoEmail } = get(applicationsByIds, id, {});
-  const databox = get(currentDataboxesByProducer, id, {});
-  const { status, dpoComment } = databox;
+  const { name, mainDomain, dpoEmail } = propOrEmptyObject(id, applicationsByIds);
+  const databox = prop(id, currentDataboxesByProducer);
+  const { status, dpoComment } = databox || {};
 
-  const { databoxURL, alreadyContacted } = get(databoxURLsById, id, {});
-  const customMailType = get(mailTypesByApp, id, null);
+  const { databoxURL, alreadyContacted } = propOrEmptyObject(databoxURLsById, id);
+  const customMailType = propOrNull(mailTypesByApp, id);
   const defaultMailType = alreadyContacted ? getDefaultMailTypeRecontact(dpoComment) : LEGAL;
   const mailType = customMailType || defaultMailType;
   return {
@@ -193,79 +202,89 @@ const Contact = ({
           <Subtitle>
             {t('screens:contact.bulk.list.subtitle')}
           </Subtitle>
-          <BoxSection my={3} p={0} className={classes.box}>
-            {
-              selectedApplicationsWithEmails.map(({
-                application: { id, mainDomain },
-                databox: { status, alreadyContacted },
-                mailProps: { body, mailto, subject, applicationName },
-                mailType,
-              }) => (
-                <ExpansionPanel expanded={expanded === id} key={id} onChange={onChangePanel(id)}>
-                  <ExpansionPanelSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel-email-content"
-                    id="panel-email-header"
-                    classes={{ content: classes.panelSummary }}
-                  >
-                    {alreadyContacted && !isClosed(status) && (
-                      <Tooltip title={t('screens:contact.bulk.recontact')}>
-                        <NotificationImportant color="primary" />
-                      </Tooltip>
-                    )}
-                    {isClosed(status) && (
-                      <Tooltip title={t('screens:contact.bulk.closed')}>
-                        <IconError color="error" />
-                      </Tooltip>
-                    )}
-                    <Box display="flex" flexDirection="column" mx={1}>
-                      <Typography>{applicationName}</Typography>
-                      <Typography color="textSecondary">{mainDomain}</Typography>
-                    </Box>
-                    <Box flexGrow={1} />
-                    <Box display="flex" flexDirection="column">
-                      <Typography variant="caption">{t('common:mailType.group')}</Typography>
-                      <Typography>{t(`common:mailType.types.${mailType}`)}</Typography>
-                    </Box>
-                  </ExpansionPanelSummary>
-                  <ExpansionPanelDetails>
-                    <Container maxWidth="md">
-                      <ToggleButtonGroupMailType
-                        values={getValues(id, alreadyContacted)}
-                        currentValue={mailType}
-                      />
-
-                      <PreMail
-                        subject={subject}
-                        body={body}
-                        mailto={(
-                          <Trans
-                            values={{ applicationName, dpoEmail: mailto }}
-                            i18nKey="common:emailToTrans"
-                          >
-                            {'DPO de {{applicationName}}'}
-                            <span>{'{{dpoEmail}}'}</span>
-                          </Trans>
-                    )}
-                      />
-                    </Container>
-                  </ExpansionPanelDetails>
-                </ExpansionPanel>
-              ))
-            }
-            {selectionIsEmpty && (
-              <Box p={2}>
+          {selectionIsEmpty
+            ? (
+              <BoxMessage type="info" p={2}>
                 <Typography>{t('screens:contact.bulk.list.empty')}</Typography>
-              </Box>
+              </BoxMessage>
+            )
+            : (
+              <>
+                <BoxSection my={3} p={0} className={classes.box}>
+                  {
+                    selectedApplicationsWithEmails.map(({
+                      application: { id, mainDomain },
+                      databox: { status, alreadyContacted },
+                      mailProps: { body, mailto, subject, applicationName },
+                      mailType,
+                    }) => (
+                      <ExpansionPanel
+                        expanded={expanded === id}
+                        key={id}
+                        onChange={onChangePanel(id)}
+                      >
+                        <ExpansionPanelSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          aria-controls="panel-email-content"
+                          id="panel-email-header"
+                          classes={{ content: classes.panelSummary }}
+                        >
+                          {alreadyContacted && !isClosed(status) && (
+                          <Tooltip title={t('screens:contact.bulk.recontact')}>
+                            <NotificationImportant color="primary" />
+                          </Tooltip>
+                          )}
+                          {isClosed(status) && (
+                          <Tooltip title={t('screens:contact.bulk.closed')}>
+                            <IconError color="error" />
+                          </Tooltip>
+                          )}
+                          <Box display="flex" flexDirection="column" mx={1}>
+                            <Typography>{applicationName}</Typography>
+                            <Typography color="textSecondary">{mainDomain}</Typography>
+                          </Box>
+                          <Box flexGrow={1} />
+                          <Box display="flex" flexDirection="column">
+                            <Typography variant="caption">{t('common:mailType.group')}</Typography>
+                            <Typography>{t(`common:mailType.types.${mailType}`)}</Typography>
+                          </Box>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
+                          <Container maxWidth="md">
+                            <ToggleButtonGroupMailType
+                              values={getValues(id, alreadyContacted)}
+                              currentValue={mailType}
+                            />
+
+                            <PreMail
+                              subject={subject}
+                              body={body}
+                              mailto={(
+                                <Trans
+                                  values={{ applicationName, dpoEmail: mailto }}
+                                  i18nKey="common:emailToTrans"
+                                >
+                                  {'DPO de {{applicationName}}'}
+                                  <span>{'{{dpoEmail}}'}</span>
+                                </Trans>
+                                )}
+                            />
+                          </Container>
+                        </ExpansionPanelDetails>
+                      </ExpansionPanel>
+                    ))
+                  }
+                </BoxSection>
+                <BoxControls
+                  primary={{
+                    onClick: goToNextStep,
+                    text: t('common:next'),
+                    disabled: selectionIsEmpty,
+                  }}
+                />
+              </>
             )}
-          </BoxSection>
-          <BoxControls
-            primary={{
-              onClick: goToNextStep,
-              text: t('common:next'),
-              disabled: selectionIsEmpty,
-            }}
-          />
+
         </Container>
       )}
       {step === STEP.providers && (
@@ -281,13 +300,12 @@ const Contact = ({
 
 Contact.propTypes = {
   selectedApplications: PropTypes.arrayOf(PropTypes.string),
-  applicationsByIds: PropTypes.shape({
-    [PropTypes.string]: PropTypes.shape(ApplicationSchema.propTypes),
-  }),
-  currentDataboxesByProducer: PropTypes.shape({ [PropTypes.string]: DataboxSchema.propTypes }),
-  databoxURLsById: PropTypes.shape({
-    [PropTypes.string]: PropTypes.string,
-  }),
+  currentDataboxesByProducer: PropTypes.objectOf(PropTypes.shape(DataboxSchema.propTypes)),
+  applicationsByIds: PropTypes.objectOf(PropTypes.shape(ApplicationSchema.propTypes)),
+  databoxURLsById: PropTypes.objectOf(PropTypes.shape({
+    databoxURL: PropTypes.string,
+    alreadyContacted: PropTypes.bool,
+  })),
   isFetchingBulk: PropTypes.bool,
   errorBulk: PropTypes.object,
   t: PropTypes.func.isRequired,
