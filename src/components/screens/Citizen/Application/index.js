@@ -28,7 +28,7 @@ const PAGES_ROSES_ENDPOINT = {
 // COMPONENTS
 function Application({ entity, error, isFetching, mainDomain, match }) {
   const application = useMemo(
-    () => ((isFetching || isNil(entity)) ? { mainDomain } : entity),
+    () => ((isFetching || isNil(entity)) ? { mainDomain, isUnknown: true } : entity),
     [mainDomain, entity, isFetching],
   );
 
@@ -142,7 +142,7 @@ export default withApplication(Application, {
   endpoint: PAGES_ROSES_ENDPOINT,
   paramMapper: (props) => [props],
   getSpecificShouldFetch: (entity) => {
-    const { avgRating, unknown } = entity || {};
-    return isNil(avgRating) && unknown !== true;
+    const { avgRating, isUnknown } = entity || {};
+    return isNil(avgRating) && isUnknown !== true;
   },
 });

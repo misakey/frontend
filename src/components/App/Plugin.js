@@ -1,5 +1,4 @@
 import React, { lazy } from 'react';
-import PropTypes from 'prop-types';
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
 
@@ -29,9 +28,5 @@ const PluginApp = () => (
     </Switch>
   </>
 );
-
-PluginApp.propTypes = {
-  t: PropTypes.func.isRequired,
-};
 
 export default PluginApp;

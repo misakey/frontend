@@ -197,10 +197,9 @@ function ThirdPartyBlock({
             }
             {
               formattedDetectedTrackers.map(({ name, apps, blockedApps }, index) => (
-                <>
+                <Box key={name}>
                   {(index !== 0) && <Divider />}
                   <ListItem
-                    key={name}
                     onClick={() => setupAction(name)}
                     button
                   >
@@ -218,7 +217,7 @@ function ThirdPartyBlock({
                     </Typography>
                     <KeyboardArrowRight className={classes.arrowIcon} />
                   </ListItem>
-                </>
+                </Box>
               ))
             }
           </List>

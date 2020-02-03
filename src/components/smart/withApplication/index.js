@@ -223,7 +223,7 @@ const withApplication = (Component, options = {}) => {
       const { domainWithoutSuffix } = parse(mainDomain);
       const data = [{
         mainDomain,
-        unknown: true,
+        isUnknown: true,
         id: mainDomain,
         name: `${domainWithoutSuffix.charAt(0).toUpperCase()}${domainWithoutSuffix.slice(1)}`,
       }];

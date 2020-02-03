@@ -88,6 +88,7 @@ const ApplicationInfoLegal = ({
     [t, application, onContributionLinkClick],
   );
 
+  const { isUnknown } = useMemo(() => (application), [application]);
 
   if (isLoading) { return <OnLoading t={t} />; }
 
@@ -118,14 +119,16 @@ const ApplicationInfoLegal = ({
           />
         </Box>
       )}
-      <Box my={3}>
-        <Title>
-          {t('screens:application.info.legal.linksListTitle')}
-        </Title>
-        {links.map(({ key, label, button }) => (
-          <CardSimpleTextButton key={key} text={label} button={button} my={1} />
-        ))}
-      </Box>
+      {!isUnknown && (
+        <Box my={3}>
+          <Title>
+            {t('screens:application.info.legal.linksListTitle')}
+          </Title>
+          {links.map(({ key, label, button }) => (
+            <CardSimpleTextButton key={key} text={label} button={button} my={1} />
+          ))}
+        </Box>
+      )}
     </>
   );
 };

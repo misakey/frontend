@@ -1,7 +1,7 @@
 /* eslint-disable no-redeclare */
 /* global browser */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Redirect, generatePath } from 'react-router-dom';
 import routes from 'routes';
 import { parse } from 'tldts';
@@ -24,6 +24,10 @@ function getMainDomainWithoutPrefix(domain) {
 
 function Plugin() {
   const [pluginDomain, setPluginDomain] = useState(null);
+  const redirectPath = useMemo(
+    () => pluginDomain && generatePath(routes.citizen.application._, { mainDomain: pluginDomain }),
+    [pluginDomain],
+  );
 
   useEffect(() => {
     getCurrentTab().then(({ url }) => {
@@ -35,8 +39,7 @@ function Plugin() {
   }, []);
 
   if (pluginDomain) {
-    const path = generatePath(routes.citizen.application.vault, { mainDomain: pluginDomain });
-    return <Redirect to={path} />;
+    return <Redirect to={redirectPath} />;
   }
 
   return <DefaultScreen />;

@@ -21,6 +21,7 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import propOr from '@misakey/helpers/propOr';
 import withMyFeedback from 'components/smart/withMyFeedback';
+import withDialogConnect from 'components/smart/Dialog/Connect/with';
 
 import Box from '@material-ui/core/Box';
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
@@ -30,6 +31,8 @@ import SummaryFeedbackCard from 'components/dumb/Card/Feedback/Summary';
 import ScreenError from 'components/dumb/Screen/Error';
 import UserFeedbackCard from 'components/dumb/Card/Feedback/User';
 
+// COMPONENTS
+const LinkWithDialogConnect = withDialogConnect(Link);
 
 // CONSTANTS
 const EMPTY_RATINGS = [];
@@ -178,7 +181,7 @@ const OthersFeedbackScreen = ({
           <Button
             standing={BUTTON_STANDINGS.MAIN}
             text={t(`screens:feedback.others.${(hasAlreadyCommented) ? 'edit' : 'give'}`)}
-            component={Link}
+            component={LinkWithDialogConnect}
             to={generatePath(
               routes.citizen.application.myFeedback,
               { mainDomain: application.mainDomain },

@@ -1,23 +1,30 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { normalize } from 'normalizr';
+import { useSnackbar } from 'notistack';
 
 import { generatePath, Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { IS_PLUGIN } from 'constants/plugin';
 
-
 import routes from 'routes';
 
 import isNil from '@misakey/helpers/isNil';
 import { openInNewTab } from 'helpers/plugin';
+import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import { receiveEntities } from '@misakey/store/actions/entities';
 
 import ApplicationSchema from 'store/schemas/Application';
+import API from '@misakey/api';
 
 import Title from 'components/dumb/Typography/Title';
 import { BUTTON_STANDINGS } from 'components/dumb/Button';
 
+import Button from '@material-ui/core/Button';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -30,6 +37,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
 import CardSimpleTextButton from 'components/dumb/Card/Simple/TextButton';
+import withDialogConnect from 'components/smart/Dialog/Connect/with';
+import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
 
 const useStyles = makeStyles(() => ({
   summaryRoot: {
@@ -50,19 +59,53 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+
+// COMPONENTS
+const ButtonWithDialogConnect = withDialogConnect(Button);
+
+const APPLICATION_CREATE_ENDPOINT = {
+  method: 'POST',
+  path: '/application-info',
+  auth: true,
+};
+
+const createApplication = (mainDomain) => API
+  .use(APPLICATION_CREATE_ENDPOINT)
+  .build(null, objectToSnakeCase({ mainDomain }))
+  .send();
+
+const useOnCreateApplication = (
+  mainDomain,
+  dispatchApplicationCreate,
+  enqueueSnackbar,
+  handleGenericHttpErrors,
+  t,
+) => useCallback(() => createApplication(mainDomain)
+  .then((response) => {
+    const application = objectToCamelCase(response);
+    enqueueSnackbar(t('screens:applications.create.success'), { variant: 'success' });
+    dispatchApplicationCreate(application);
+  })
+  .catch(handleGenericHttpErrors),
+[dispatchApplicationCreate, enqueueSnackbar, handleGenericHttpErrors, mainDomain, t]);
+
 const ApplicationInfoMore = ({
   application,
+  dispatchApplicationCreate,
   t,
   toggleLinked,
   isLinked,
   isAuthenticated,
 }) => {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
   const domains = useMemo(
     () => (isNil(application.domains) ? [] : application.domains),
     [application],
   );
+
+  const { isUnknown } = useMemo(() => (application), [application]);
 
   const reportButton = useMemo(
     () => {
@@ -82,6 +125,38 @@ const ApplicationInfoMore = ({
     },
     [t],
   );
+
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const onCreateApplication = useOnCreateApplication(
+    application.mainDomain,
+    dispatchApplicationCreate,
+    enqueueSnackbar,
+    handleGenericHttpErrors,
+    t,
+  );
+
+  if (isUnknown) {
+    return (
+      <>
+        <Title>
+          {t('screens:application.info.more.title')}
+        </Title>
+
+        {isUnknown && (
+        <CardSimpleTextButton
+          text={t('screens:application.info.more.create.text')}
+          button={{
+            standing: BUTTON_STANDINGS.OUTLINED,
+            text: t('screens:application.info.more.create.button'),
+            component: ButtonWithDialogConnect,
+            onClick: onCreateApplication,
+          }}
+          my={2}
+        />
+        )}
+      </>
+    );
+  }
 
   return (
     <>
@@ -154,6 +229,7 @@ const ApplicationInfoMore = ({
 
 ApplicationInfoMore.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes).isRequired,
+  dispatchApplicationCreate: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
   toggleLinked: PropTypes.func.isRequired,
@@ -165,4 +241,13 @@ ApplicationInfoMore.defaultProps = {
   isLinked: false,
 };
 
-export default withTranslation(['common', 'screens'])(ApplicationInfoMore);
+// CONNECT
+const mapDispatchToProps = (dispatch) => ({
+  dispatchApplicationCreate: (application) => {
+    const normalized = normalize(application, ApplicationSchema.entity);
+    const { entities } = normalized;
+    dispatch(receiveEntities(entities));
+  },
+});
+
+export default connect(null, mapDispatchToProps)(withTranslation(['common', 'screens'])(ApplicationInfoMore));

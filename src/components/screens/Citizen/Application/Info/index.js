@@ -41,7 +41,7 @@ const NAV_BAR_HEIGHT = 33;
 // STYLES
 const useStyles = makeStyles((theme) => ({
   content: {
-    padding: theme.spacing(0, 2),
+    padding: theme.spacing(1, 2),
   },
   pluginContent: getStyleForContainerScroll(theme, NAV_BAR_HEIGHT),
   screen: {
@@ -117,8 +117,8 @@ function ApplicationInfo({
   const mounted = useRef(false);
 
   const { mainDomain } = match.params;
-  const { name, id, unknown } = useMemo(
-    () => entity || {},
+  const { name, id, isUnknown } = useMemo(
+    () => entity || { isUnknwon: true },
     [entity],
   );
 
@@ -198,14 +198,27 @@ function ApplicationInfo({
     [userId, id, handleGenericHttpErrors],
   );
 
+  const defaultRoute = useMemo(() => generatePath(
+    isUnknown ? routes.citizen.application.legal : routes.citizen.application.vault,
+    { mainDomain },
+  ),
+  [isUnknown, mainDomain]);
+
+  const isReady = useMemo(() => (!isFetching && !isNil(id)), [id, isFetching]);
+
+  const shouldFetch = useMemo(
+    () => !isNil(id) && !isNil(userId) && !isUnknown,
+    [id, isUnknown, userId],
+  );
+
   useEffect(
     () => {
-      if (mounted.current === false && !isNil(id) && !isNil(userId)) {
+      if (mounted.current === false && shouldFetch) {
         getCurrentApplicationLink();
         mounted.current = true;
       }
     },
-    [mounted, getCurrentApplicationLink, id, userId],
+    [mounted, getCurrentApplicationLink, shouldFetch],
   );
 
   return (
@@ -221,14 +234,13 @@ function ApplicationInfo({
           userContributionType={userContributionType}
           appName={name}
         />
-        {!unknown && (
-          <ApplicationInfoNav
-            className={clsx({ [classes.nav]: IS_PLUGIN })}
-            elevationScrollTarget={contentRef}
-            mainDomain={mainDomain}
-            isAuthenticated={isAuthenticated}
-          />
-        )}
+        <ApplicationInfoNav
+          className={clsx({ [classes.nav]: IS_PLUGIN })}
+          elevationScrollTarget={contentRef}
+          mainDomain={mainDomain}
+          isUnknown={isUnknown}
+          isAuthenticated={isAuthenticated}
+        />
 
         <Box
           className={clsx(classes.content, { [classes.pluginContent]: IS_PLUGIN })}
@@ -281,11 +293,13 @@ function ApplicationInfo({
                 />
               )}
             />
-            <Redirect
-              from={routes.citizen.application._}
-              exact
-              to={generatePath(routes.citizen.application.vault, { mainDomain })}
-            />
+            {isReady && (
+              <Redirect
+                from={routes.citizen.application._}
+                exact
+                to={defaultRoute}
+              />
+            )}
           </Switch>
         </Box>
         {!IS_PLUGIN && <Footer />}

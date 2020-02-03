@@ -24,6 +24,8 @@ const APPLICATION_TABS = [
   'more',
 ];
 
+const TABS_ALLOWED_FOR_UNKNOWN = ['legal', 'more'];
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -47,22 +49,26 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ApplicationInfoNav({
-  elevationScrollTarget, location, mainDomain, scrollButtons, t, isAuthenticated, className, ...rest
+  elevationScrollTarget, location, mainDomain, isUnknown, t, isAuthenticated, className, ...rest
 }) {
   const classes = useStyles();
 
   const isCurrent = React.useCallback((name) => !!matchPath(location.pathname, {
     path: routes.citizen.application[name],
-    exact: name === 'info',
   }), [location.pathname]);
 
-  const value = React.useMemo(
-    () => APPLICATION_TABS.indexOf(
-      APPLICATION_TABS.find((link) => isCurrent(link)),
-    ),
-    [isCurrent],
+  const applicationTabs = React.useMemo(
+    () => (isUnknown ? TABS_ALLOWED_FOR_UNKNOWN : APPLICATION_TABS),
+    [isUnknown],
   );
 
+  const value = React.useMemo(
+    () => {
+      const index = applicationTabs.findIndex((link) => isCurrent(link));
+      return index === -1 ? 0 : index;
+    },
+    [applicationTabs, isCurrent],
+  );
 
   return (
     <ElevationScroll target={elevationScrollTarget}>
@@ -79,12 +85,11 @@ function ApplicationInfoNav({
             value={value}
             className={classes.tabs}
             variant="scrollable"
-            scrollButtons={scrollButtons}
             indicatorColor="secondary"
             textColor="secondary"
             aria-label={t('screens:application.nav.label', { mainDomain })}
           >
-            {APPLICATION_TABS.map((link) => (
+            {applicationTabs.map((link) => (
               <Tab
                 key={`tab-${link}`}
                 className={classes.linkTab}
@@ -105,14 +110,14 @@ ApplicationInfoNav.propTypes = {
   location: PropTypes.shape({ pathname: PropTypes.string, search: PropTypes.string }).isRequired,
   className: PropTypes.string,
   mainDomain: PropTypes.string.isRequired,
-  scrollButtons: PropTypes.string,
+  isUnknown: PropTypes.bool,
   t: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
   elevationScrollTarget: PropTypes.instanceOf(Element),
 };
 
 ApplicationInfoNav.defaultProps = {
-  scrollButtons: 'auto',
+  isUnknown: false,
   className: undefined,
   elevationScrollTarget: undefined,
 };
