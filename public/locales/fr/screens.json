@@ -20,11 +20,11 @@
           "4": "Comment automatiser les réponses aux requêtes&nbsp;?"
         },
         "href": {
-          "0": "https://docs.misakey.com/#/dpo/?id=comment-utiliser-la-plateforme-misakey-",
-          "1": "https://docs.misakey.com/#/dpo/?id=quest-ce-quune-requ%c3%aate-de-portabilit%c3%a9-",
-          "2": "https://docs.misakey.com/#/dpo/?id=quelles-sont-mes-obligations- ",
-          "3": "https://docs.misakey.com/#/dpo/?id=comment-sont-transf%c3%a9r%c3%a9es-les-donn%c3%a9es-",
-          "4": "https://docs.misakey.com/#/dpo/?id=je-ne-veux-plus-traiter-toutes-ces-demandes-manuellement-comment-automatiser-ce-processus-"
+          "0": "https://docs.misakey.com/#/dpo/?id=envoyer-un-fichier-avec-misakey-",
+          "1": "https://docs.misakey.com/#/dpo/?id=la-demande-de-portabilité",
+          "2": "https://docs.misakey.com/#/dpo/?id=obligation-des-sites",
+          "3": "https://docs.misakey.com/#/dpo/?id=envoi-securisé",
+          "4": "https://docs.misakey.com/#/dpo/?id=automatisation"
         }
       },
       "defaultDpoAccount": {
@@ -304,14 +304,14 @@
         "text": {
           "0": "Qu'est-ce que le RGPD&nbsp;?",
           "1": "Quels devoirs ont les sites&nbsp;?",
-          "2": "Quels droits me procure le RGPD&nbsp;?",
+          "2": "Le RGPD, ça fonctionne&nbsp;?",
           "3": "Qu'est-ce qu'un ou une DPO&nbsp;?"
         },
         "href": {
-          "0": "https://docs.misakey.com/#/citizen/faq?id=quest-ce-que-le-rgpd-",
-          "1": "https://docs.misakey.com/#/citizen/faq?id=quels-devoirs-ont-les-sites-",
-          "2": "https://docs.misakey.com/#/citizen/faq?id=quels-droits-me-procure-le-rgpd-",
-          "3": "https://docs.misakey.com/#/citizen/faq?id=quest-ce-quun-ou-une-dpo-"
+          "0": "https://docs.misakey.com/#/citizen/?id=le-rgpd",
+          "1": "https://docs.misakey.com/#/citizen/?id=les-obligations-des-sites",
+          "2": "https://docs.misakey.com/#/citizen/?id=ca-fonctionne-",
+          "3": "https://docs.misakey.com/#/citizen/?id=les-dpo"
         },
         "open": {
           "text": {
@@ -320,9 +320,9 @@
             "2": "Que faire si un site me demande des informations pour vérifier mon identité&nbsp;?"
           },
           "href": {
-            "0": "https://docs.misakey.com/#/citizen/faq?id=que-faire-si-un-site-ne-me-r%c3%a9pond-pas-via-le-moyen-demand%c3%a9-",
-            "1": "https://docs.misakey.com/#/citizen/faq?id=que-faire-si-un-site-ne-ma-pas-r%c3%a9pondu-dans-les-d%c3%a9lais-",
-            "2": "https://docs.misakey.com/#/citizen/faq?id=que-faire-si-un-site-me-demande-des-informations-pour-v%c3%a9rifier-mon-identit%c3%a9-"
+            "0": "https://docs.misakey.com/#/citizen/?id=réponse-insatisfaisante-du-site",
+            "1": "https://docs.misakey.com/#/citizen/?id=délais-de-réponse-dépassé",
+            "2": "https://docs.misakey.com/#/citizen/?id=vérification-de-l39identité"
           }
         },
         "done": {
@@ -330,7 +330,7 @@
             "0": "Que faire si un site me répond négativement&nbsp;?"
           },
           "href": {
-            "0": "https://docs.misakey.com/#/citizen/faq?id=que-faire-si-un-site-me-r%c3%a9pond-n%c3%a9gativement-"
+            "0": "https://docs.misakey.com/#/citizen/?id=refus-du-site-de-répondre"
           }
         }
       }
@@ -585,9 +585,9 @@
             "2": "Je ne veux plus traiter toutes ces demandes manuellement, comment automatiser ce processus&nbsp;?"
           },
           "href": {
-            "0": "https://docs.misakey.com/#/dpo/?id=comment-sont-transf%c3%a9r%c3%a9es-les-donn%c3%a9es-",
-            "1": "https://docs.misakey.com/#/dpo/?id=quelles-sont-mes-obligations-",
-            "2": "https://docs.misakey.com/#/dpo/?id=je-ne-veux-plus-traiter-toutes-ces-demandes-manuellement-comment-automatiser-ce-processus-"
+            "0": "https://docs.misakey.com/#/dpo/?id=envoi-securisé",
+            "1": "https://docs.misakey.com/#/dpo/?id=obligation-des-sites",
+            "2": "https://docs.misakey.com/#/dpo/?id=automatisation"
           }
         }
       },

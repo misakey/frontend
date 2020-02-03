@@ -47,8 +47,8 @@
     "docs": {
       "dpo": "https://docs.misakey.com/#/dpo/",
       "citizen": {
-        "accessRequest": "https://docs.misakey.com/#/citizen/misakey",
-        "faq": "https://docs.misakey.com/#/citizen/faq"
+        "accessRequest": "https://docs.misakey.com/#/citizen/?id=demander-mes-donn%c3%a9es",
+        "faq": "https://docs.misakey.com/#/citizen/?id=questions-fréquentes"
       }
     }
   },
@@ -72,7 +72,7 @@
       "label": "Déconnexion",
       "success": "Déconnecté !"
     },
-    "profile": "Profil",
+    "profile": "Mon compte",
     "current": "Compte de l'utilisateur actuel",
     "dialog": {
       "delete": {
