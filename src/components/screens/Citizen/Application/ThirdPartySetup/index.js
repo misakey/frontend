@@ -132,6 +132,8 @@ function ThirdPartySetup({
   const appBarProps = useMemo(
     () => ({
       withUser: false,
+      withHomeLink: false,
+      withSearchBar: false,
       items: [(
         <ThirdPartySearchBar
           onIconClick={history.goBack}

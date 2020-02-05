@@ -152,11 +152,11 @@ AppBar.defaultProps = {
   elevationScrollProps: IS_PLUGIN ? { target: document.getElementById('root') } : {},
   items: [],
   leftItems: [],
-  searchBarProps: {},
+  searchBarProps: IS_PLUGIN ? { disabled: true } : {},
   shift: false,
   toolbarProps: { className: '' },
-  withHomeLink: !IS_PLUGIN,
-  withSearchBar: !IS_PLUGIN,
+  withHomeLink: true,
+  withSearchBar: true,
   withUser: true,
 };
 

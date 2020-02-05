@@ -1,13 +1,15 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Link } from 'react-router-dom';
 
 import routes from 'routes';
+import { IS_PLUGIN } from 'constants/plugin';
 
 import omitTranslationProps from 'helpers/omit/translationProps';
 import isNil from '@misakey/helpers/isNil';
+import { redirectToApp } from 'helpers/plugin';
 
 import useLocationWorkspace from 'hooks/useLocationWorkspace';
 
@@ -33,10 +35,21 @@ const LinkHome = ({ t, children, ...rest }) => {
     [workspace],
   );
 
+  const onClick = useCallback(
+    () => redirectToApp(to),
+    [to],
+  );
+
+  const routingProps = useMemo(
+    () => (IS_PLUGIN
+      ? { onClick, component: 'button' }
+      : { component: Link, to }),
+    [onClick, to],
+  );
+
   return (
     <MUILink
-      to={to}
-      component={Link}
+      {...routingProps}
       underline="none"
       classes={{ root: classes.linkRoot }}
       {...omitTranslationProps(rest)}

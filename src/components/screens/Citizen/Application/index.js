@@ -15,8 +15,6 @@ import ApplicationNone from 'components/screens/Citizen/Application/None';
 import ApplicationInfo from 'components/screens/Citizen/Application/Info';
 import MyFeedback from 'components/screens/Citizen/Application/MyFeedback';
 import ApplicationContact from 'components/screens/Citizen/Application/Contact';
-import ApplicationAvatar from 'components/dumb/Avatar/Application';
-import BoxEllipsis from 'components/dumb/Box/Ellipsis';
 
 
 // CONSTANTS
@@ -40,41 +38,21 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
     [error, isFetching, entity],
   );
 
-  const items = useMemo(
-    () => (IS_PLUGIN ? [(
-      <BoxEllipsis key="applicationAvatarParent">
-        {application && (
-          <ApplicationAvatar
-            application={application}
-            displayRating
-            displayMainDomain
-          />
-        )}
-      </BoxEllipsis>
-    )] : []),
-    [application],
-  );
-
-  const appBarProps = useMemo(
-    () => ({ items }),
-    [items],
-  );
 
   const screenProps = useMemo(
     () => ({
       state,
       disableGutters: IS_PLUGIN,
-      appBarProps,
     }),
-    [state, appBarProps],
+    [state],
   );
 
   const infoScreenProps = useMemo(
     () => ({
       ...screenProps,
-      appBarProps: { ...appBarProps, elevationScroll: false },
+      appBarProps: { elevationScroll: false },
     }),
-    [screenProps, appBarProps],
+    [screenProps],
   );
 
   return (

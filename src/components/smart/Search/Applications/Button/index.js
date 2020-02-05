@@ -2,7 +2,6 @@ import React, { useMemo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { IS_PLUGIN } from 'constants/plugin';
 import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD, SEARCH_WIDTH_SM, SEARCH_WIDTH_XS } from 'constants/ui/sizes';
 import ApplicationSchema from 'store/schemas/Application';
 
@@ -89,8 +88,6 @@ const SearchApplicationsButton = forwardRef(({ entity, t, ...rest }, ref) => {
         ) : (
           <ApplicationAvatar
             application={entity}
-            displayRating={IS_PLUGIN}
-            displayMainDomain={IS_PLUGIN}
             fullWidth
           />
         )}
