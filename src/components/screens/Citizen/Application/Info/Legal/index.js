@@ -79,7 +79,7 @@ const ApplicationInfoLegal = ({
         label: t(`screens:application.info.legal.links.${linkType}`),
         button: {
           standing: BUTTON_STANDINGS.OUTLINED,
-          text: t('common:IKnowIt'),
+          text: t('common:add'),
           onClick: onContributionLinkClick,
           component: ButtonWithDialogConnect,
         },

@@ -20,6 +20,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
+import Chip from '@material-ui/core/Chip';
 
 import AddIcon from '@material-ui/icons/Add';
 import DoneIcon from '@material-ui/icons/Done';
@@ -38,13 +39,14 @@ function ApplicationListItem({
   dispatchToggleFromSelected,
   selectedApplications,
   isAuthenticated,
+  withBlobCount,
   t,
   ...rest
 }) {
   const classes = useStyles();
   const workspace = useLocationWorkspace(true);
 
-  const { mainDomain, logoUri, name, id, dpoEmail } = application;
+  const { mainDomain, logoUri, name, id, dpoEmail, blobCount = 0 } = application;
 
   const onSelect = useCallback(
     () => {
@@ -80,7 +82,10 @@ function ApplicationListItem({
         primaryTypographyProps={{ noWrap: true, display: 'block' }}
         secondaryTypographyProps={{ noWrap: true, display: 'block' }}
       />
-      {isSelectable && canSelect && (
+      {(withBlobCount && blobCount > 0) && (
+        <Chip color="secondary" label={blobCount} size="small" clickable />
+      )}
+      {!withBlobCount && isSelectable && canSelect && (
         <ListItemSecondaryAction>
           <IconButton
             color="secondary"
@@ -109,6 +114,7 @@ ApplicationListItem.propTypes = {
   isAuthenticated: PropTypes.bool,
   dispatchToggleFromSelected: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
+  withBlobCount: PropTypes.bool,
 };
 
 ApplicationListItem.defaultProps = {
@@ -116,6 +122,7 @@ ApplicationListItem.defaultProps = {
   isSelectable: true,
   selectedApplications: [],
   isAuthenticated: false,
+  withBlobCount: false,
 };
 
 // CONNECT

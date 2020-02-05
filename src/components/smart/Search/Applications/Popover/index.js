@@ -315,6 +315,7 @@ const SearchApplicationsPopover = ({
               application={option}
               disabled={listLoading}
               onClick={onClose}
+              withBlobCount
             />
           ))}
           <PopoverListSubheader

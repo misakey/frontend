@@ -58,6 +58,7 @@ function LinkedApplicationsList({ t, userId, isAuthenticated }) {
           isFetching={isFetching}
           error={error}
           applications={list || []}
+          withBlobCount
         />
       </Card>
     </>

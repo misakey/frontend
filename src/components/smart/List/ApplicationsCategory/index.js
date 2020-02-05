@@ -13,6 +13,9 @@ import Card from 'components/dumb/Card';
 import ApplicationsList from 'components/dumb/List/Applications';
 import Title from 'components/dumb/Typography/Title';
 
+import { BUTTON_STANDINGS } from 'components/dumb/Button';
+
+
 import routes from 'routes';
 
 
@@ -53,9 +56,10 @@ const ApplicationsCategory = ({ category, isAuthenticated, t }) => {
       </Title>
       <Card
         dense
-        primary={{
+        secondary={{
           to: generatePath(routes.citizen.applications.category, { category }),
           component: Link,
+          standing: BUTTON_STANDINGS.TEXT,
           text: t('common:more'),
         }}
       >

@@ -36,12 +36,12 @@ export const fetchApplicationsByCategory = (category, options = {}, isAuthentica
 
 const fetchLinks = (userId) => API
   .use(ENDPOINTS.linkedApplications.list)
-  .build(null, null, objectToSnakeCase({ userId }))
+  .build(null, null, objectToSnakeCase({ userId, sortByDataboxDate: true }))
   .send();
 
-const fetchApplicationByIds = (ids) => API
+const fetchApplicationByIds = (ids, withBlobCount = false) => API
   .use(ENDPOINTS.applicationInfo.list)
-  .build(null, null, { ids: ids.join(',') })
+  .build(null, null, objectToSnakeCase({ ids: ids.join(','), withBlobCount }))
   .send();
 
 export const fetchLinkedApplications = (userId) => fetchLinks(userId)
@@ -51,6 +51,6 @@ export const fetchLinkedApplications = (userId) => fetchLinks(userId)
       return applicationId;
     });
 
-    return isEmpty(ids) ? [] : fetchApplicationByIds(ids)
+    return isEmpty(ids) ? [] : fetchApplicationByIds(ids, true)
       .then((applications) => applications.map(objectToCamelCase));
   });

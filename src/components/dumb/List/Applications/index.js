@@ -13,7 +13,9 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import ApplicationListItem from 'components/dumb/ListItem/Application';
 import BoxMessage from 'components/dumb/Box/Message';
 
-function ApplicationsList({ t, isFetching, error, applications, listLength, toRoute }) {
+function ApplicationsList({
+  t, isFetching, error, applications, listLength, toRoute, withBlobCount,
+}) {
   const applicationsWithPaths = useMemo(
     () => applications.map((application) => ({
       application,
@@ -56,6 +58,7 @@ function ApplicationsList({ t, isFetching, error, applications, listLength, toRo
           button
           component={Link}
           to={to}
+          withBlobCount={withBlobCount}
         />
       ))}
     </List>
@@ -69,12 +72,14 @@ ApplicationsList.propTypes = {
   applications: PropTypes.arrayOf(PropTypes.object).isRequired,
   listLength: PropTypes.number,
   toRoute: PropTypes.string,
+  withBlobCount: PropTypes.bool,
 };
 
 ApplicationsList.defaultProps = {
   error: undefined,
   listLength: 5,
   toRoute: routes.citizen.application.vault,
+  withBlobCount: false,
 };
 
 export default withTranslation(['components'])(ApplicationsList);
