@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import React, { Suspense, useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
@@ -25,7 +25,7 @@ import isNil from '@misakey/helpers/isNil';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 
-import Screen, { getStyleForContainerScroll } from 'components/dumb/Screen';
+import Screen, { getStyleForContainerScroll, DefaultSplashScreen } from 'components/dumb/Screen';
 import ApplicationInfoNav from 'components/screens/Citizen/Application/Info/Nav';
 import ApplicationVault from 'components/screens/Citizen/Application/Info/Vault';
 import UserContributionDialog from 'components/smart/UserContributionDialog';
@@ -36,12 +36,14 @@ import More from 'components/screens/Citizen/Application/Info/More';
 
 import Footer from 'components/dumb/Footer';
 
+// CONSTANTS
 const NAV_BAR_HEIGHT = 33;
 
 // STYLES
 const useStyles = makeStyles((theme) => ({
   content: {
     padding: theme.spacing(1, 2),
+    position: 'relative', // For DefaultSplashScreen not to take more than full height
   },
   pluginContent: getStyleForContainerScroll(theme, NAV_BAR_HEIGHT),
   screen: {
@@ -246,61 +248,63 @@ function ApplicationInfo({
           className={clsx(classes.content, { [classes.pluginContent]: IS_PLUGIN })}
           ref={(ref) => IS_PLUGIN && setContentRef(ref)}
         >
-          <Switch>
-            <Route
-              exact
-              path={routes.citizen.application.vault}
-              render={(routerProps) => (
-                <ApplicationVault
-                  onContributionDpoEmailClick={onContributionDpoEmailClick}
-                  isLoading={isFetching}
-                  application={entity}
-                  {...routerProps}
-                />
-              )}
-            />
-            <Route
-              path={routes.citizen.application.feedback}
-              render={(routerProps) => (
-                <Feedback
-                  application={entity}
-                  isLoading={isFetching}
-                  {...routerProps}
-                />
-              )}
-            />
-            <Route
-              path={routes.citizen.application.legal}
-              render={(routerProps) => (
-                <Legal
-                  application={entity}
-                  isLoading={isFetching}
-                  onContributionLinkClick={onContributionLinkClick}
-                  {...routerProps}
-                />
-              )}
-            />
-            <Route
-              path={routes.citizen.application.more}
-              render={(routerProps) => (
-                <More
-                  application={entity}
-                  isLoading={isFetching}
-                  isLinked={!isNil(applicationLinkId)}
-                  toggleLinked={onToggleLinked}
-                  isAuthenticated={isAuthenticated}
-                  {...routerProps}
-                />
-              )}
-            />
-            {isReady && (
-              <Redirect
-                from={routes.citizen.application._}
+          <Suspense fallback={<DefaultSplashScreen />}>
+            <Switch>
+              <Route
                 exact
-                to={defaultRoute}
+                path={routes.citizen.application.vault}
+                render={(routerProps) => (
+                  <ApplicationVault
+                    onContributionDpoEmailClick={onContributionDpoEmailClick}
+                    isLoading={isFetching}
+                    application={entity}
+                    {...routerProps}
+                  />
+                )}
               />
-            )}
-          </Switch>
+              <Route
+                path={routes.citizen.application.feedback}
+                render={(routerProps) => (
+                  <Feedback
+                    application={entity}
+                    isLoading={isFetching}
+                    {...routerProps}
+                  />
+                )}
+              />
+              <Route
+                path={routes.citizen.application.legal}
+                render={(routerProps) => (
+                  <Legal
+                    application={entity}
+                    isLoading={isFetching}
+                    onContributionLinkClick={onContributionLinkClick}
+                    {...routerProps}
+                  />
+                )}
+              />
+              <Route
+                path={routes.citizen.application.more}
+                render={(routerProps) => (
+                  <More
+                    application={entity}
+                    isLoading={isFetching}
+                    isLinked={!isNil(applicationLinkId)}
+                    toggleLinked={onToggleLinked}
+                    isAuthenticated={isAuthenticated}
+                    {...routerProps}
+                  />
+                )}
+              />
+              {isReady && (
+                <Redirect
+                  from={routes.citizen.application._}
+                  exact
+                  to={defaultRoute}
+                />
+              )}
+            </Switch>
+          </Suspense>
         </Box>
         {!IS_PLUGIN && <Footer />}
       </Container>
@@ -310,7 +314,6 @@ function ApplicationInfo({
 
 ApplicationInfo.propTypes = {
   userId: PropTypes.string,
-  dispatch: PropTypes.func.isRequired,
   entity: PropTypes.shape(ApplicationSchema.propTypes),
   history: PropTypes.shape({ replace: PropTypes.func }).isRequired,
   isAuthenticated: PropTypes.bool.isRequired,

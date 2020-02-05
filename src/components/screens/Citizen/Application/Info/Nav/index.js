@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link, generatePath, withRouter, matchPath } from 'react-router-dom';
+import { Link, generatePath, useLocation, matchPath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
@@ -49,13 +49,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ApplicationInfoNav({
-  elevationScrollTarget, location, mainDomain, isUnknown, t, isAuthenticated, className, ...rest
+  elevationScrollTarget, mainDomain, isUnknown, t, isAuthenticated, className, ...rest
 }) {
   const classes = useStyles();
 
-  const isCurrent = React.useCallback((name) => !!matchPath(location.pathname, {
+  const { pathname } = useLocation();
+
+  const isCurrent = React.useCallback((name) => !!matchPath(pathname, {
     path: routes.citizen.application[name],
-  }), [location.pathname]);
+  }), [pathname]);
 
   const applicationTabs = React.useMemo(
     () => (isUnknown ? TABS_ALLOWED_FOR_UNKNOWN : APPLICATION_TABS),
@@ -107,7 +109,6 @@ function ApplicationInfoNav({
 }
 
 ApplicationInfoNav.propTypes = {
-  location: PropTypes.shape({ pathname: PropTypes.string, search: PropTypes.string }).isRequired,
   className: PropTypes.string,
   mainDomain: PropTypes.string.isRequired,
   isUnknown: PropTypes.bool,
@@ -122,4 +123,4 @@ ApplicationInfoNav.defaultProps = {
   elevationScrollTarget: undefined,
 };
 
-export default withRouter(withTranslation('screens')(ApplicationInfoNav));
+export default withTranslation('screens')(ApplicationInfoNav);

@@ -60,6 +60,23 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
     [items],
   );
 
+  const screenProps = useMemo(
+    () => ({
+      state,
+      disableGutters: IS_PLUGIN,
+      appBarProps,
+    }),
+    [state, appBarProps],
+  );
+
+  const infoScreenProps = useMemo(
+    () => ({
+      ...screenProps,
+      appBarProps: { ...appBarProps, elevationScroll: false },
+    }),
+    [screenProps, appBarProps],
+  );
+
   return (
     <Switch>
       <RoutePrivate
@@ -70,11 +87,7 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
           error,
           isFetching,
           mainDomain,
-          screenProps: {
-            state,
-            disableGutters: IS_PLUGIN,
-            appBarProps,
-          },
+          screenProps,
         }}
       />
       <RoutePrivate
@@ -82,11 +95,7 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
         component={MyFeedback}
         componentProps={{
           application,
-          screenProps: {
-            state,
-            disableGutters: IS_PLUGIN,
-            appBarProps,
-          },
+          screenProps,
         }}
       />
 
@@ -97,11 +106,7 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
             entity={application}
             error={error}
             isFetching={isFetching}
-            screenProps={{
-              state,
-              disableGutters: IS_PLUGIN,
-              appBarProps: { ...appBarProps, elevationScroll: false },
-            }}
+            screenProps={infoScreenProps}
             {...routerProps}
           />
         )}
@@ -111,11 +116,7 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
         path={match.path}
         render={(routerProps) => (
           <ApplicationNone
-            screenProps={{
-              state,
-              disableGutters: IS_PLUGIN,
-              appBarProps,
-            }}
+            screenProps={screenProps}
             {...routerProps}
           />
         )}
