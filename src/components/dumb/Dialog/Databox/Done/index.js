@@ -69,16 +69,14 @@ const DialogDataboxDone = ({ onClose, onSuccess, open, t }) => {
                 select
                 name="dpoComment"
                 variant="outlined"
-                id="owner-comment"
+                id="dpo-comment"
                 fullWidth
                 label={t('fields:dpoComment.label')}
                 helperText={t('fields:dpoComment.helperText')}
               >
                 {DPO_COMMENTS.map((comment) => (
                   <MenuItem classes={{ root: classes.menuItemRoot }} key={comment} value={comment}>
-                    &quot;
                     {t(`common:databox.dpoComment.${comment}`)}
-                    &quot;
                   </MenuItem>
                 ))}
               </Field>

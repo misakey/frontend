@@ -279,6 +279,30 @@
         "button": "Je suis DPO"
       }
     },
+    "vault": {
+      "currentDatabox": {
+        "title": "Demande de portabilité en cours",
+        "none": "Aucune demande en cours",
+        "addDPO": "Ajouter l'email du DPO",
+        "contactForm": {
+          "text": "Demander directement sans chiffrement",
+          "button": "Accéder au formulaire"
+        },
+        "contact": "Demander mes données",
+        "openSince": "Ouverte {{since}}"
+      },
+      "databoxContent": {
+        "number": "{{count}} fichier reçu",
+        "number_plural": "{{count}} fichiers reçus"
+      },
+      "archivedDatabox": {
+        "title": "Demande de portabilité du {{date}}",
+        "closedBy": {
+          "user": "J'ai fermé la requête après {{duration}}",
+          "dpo": "Le|la DPO a fermé la requête après {{duration}}"
+        }
+      }
+    },
     "box": {
       "passwordPrompt": {
         "title": "Ouvrir mon coffre-fort",

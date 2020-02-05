@@ -22,13 +22,14 @@ const Contact = ({
   databoxURL,
   databox,
   screenProps,
+  location,
 }) => (
   <Screen {...screenProps}>
     <Switch>
       <Redirect
         exact
         from={routes.citizen.application.contact._}
-        to={routes.citizen.application.contact.preview}
+        to={{ ...location, pathname: routes.citizen.application.contact.preview }}
       />
       <Route
         path={routes.citizen.application.contact.preview}
@@ -63,6 +64,7 @@ Contact.propTypes = {
   databox: PropTypes.shape(DataboxSchema.propTypes),
   databoxURL: PropTypes.string,
   screenProps: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
 };
 
 Contact.defaultProps = {

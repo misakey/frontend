@@ -15,25 +15,41 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import AvatarColorized from 'components/dumb/Avatar/Colorized';
-import AvatarDetailed from 'components/dumb/Avatar/Detailed';
+import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
 
 import UserStorage from 'components/screens/Account/Home/UserStorage';
 import DeleteAccountListItem from 'components/screens/Account/Home/DeleteAccount';
 
-import 'components/dumb/Card/Profile/index.scss';
-
 // HOOKS
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   container: {
-    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
-  emailItem: {
-    maxWidth: '100%',
-  },
-  emailItemTypo: {
+  list: {
     width: '100%',
-    display: 'inline-block',
+    marginBottom: theme.spacing(2),
+  },
+  listItem: {
+    container: {
+      width: '100%',
+    },
+    emailItem: {
+      maxWidth: '100%',
+    },
+    emailItemTypo: {
+      width: '100%',
+      display: 'inline-block',
+    },
+  },
+  listItemIcon: {
+    textTransform: 'uppercase',
+    width: '8rem',
+  },
+  actionIcon: {
+    width: 40,
+    verticalAlign: 'middle',
   },
 }));
 
@@ -42,28 +58,28 @@ const CardProfile = ({ profile, t }) => {
   const classes = useStyles();
 
   return (
-    <Container className="card" maxWidth="sm">
+    <Container className={classes.container} maxWidth="sm">
       <AvatarDetailed
         text={displayName}
         image={avatarUri}
         title={displayName}
         subtitle={`@${handle}`}
       />
-      <List className="details">
+      <List className={classes.list}>
         <ListItem
           button
           to={routes.account.profile.name}
           component={Link}
           divider
           aria-label={t('fields:displayName.action')}
-          classes={classes}
+          classes={classes.listItem}
         >
-          <ListItemIcon className="title">
+          <ListItemIcon className={classes.listItemIcon}>
             <Typography>{t('fields:displayName.label')}</Typography>
           </ListItemIcon>
           <ListItemText primary={displayName} />
           <ListItemSecondaryAction>
-            <ChevronRightIcon className="icon" />
+            <ChevronRightIcon className={classes.actionIcon} />
           </ListItemSecondaryAction>
         </ListItem>
         <ListItem
@@ -72,17 +88,14 @@ const CardProfile = ({ profile, t }) => {
           component={Link}
           divider
           aria-label={t('fields:avatar.action')}
-          classes={classes}
+          classes={classes.listItem}
         >
-          <ListItemIcon className="title">
+          <ListItemIcon className={classes.listItemIcon}>
             <Typography>{t('fields:avatar.label')}</Typography>
           </ListItemIcon>
           <ListItemText primary={t('fields:avatar.helperText')} />
           <ListItemSecondaryAction>
-            <AvatarColorized
-              text={displayName}
-              image={avatarUri}
-            />
+            <ChevronRightIcon className={classes.actionIcon} />
           </ListItemSecondaryAction>
         </ListItem>
         <ListItem
@@ -91,21 +104,21 @@ const CardProfile = ({ profile, t }) => {
           component={Link}
           divider
           aria-label={t('fields:password.action')}
-          classes={classes}
+          classes={classes.listItem}
         >
-          <ListItemIcon className="title">
+          <ListItemIcon className={classes.listItemIcon}>
             <Typography>{t('fields:password.label')}</Typography>
           </ListItemIcon>
           <ListItemText primary={t('fields:password.placeholder')} />
           <ListItemSecondaryAction>
-            <ChevronRightIcon className="icon" />
+            <ChevronRightIcon className={classes.actionIcon} />
           </ListItemSecondaryAction>
         </ListItem>
         <ListItem
-          classes={classes}
+          classes={classes.listItem}
           divider
         >
-          <ListItemIcon className="title">
+          <ListItemIcon className={classes.listItemIcon}>
             <Typography>{t('fields:email.label')}</Typography>
           </ListItemIcon>
           <ListItemText
@@ -115,16 +128,17 @@ const CardProfile = ({ profile, t }) => {
           />
         </ListItem>
         <ListItem
-          classes={classes}
+          classes={classes.listItem}
           divider
         >
-          <ListItemIcon className="title">
+          <ListItemIcon className={classes.listItemIcon}>
             <Typography>{t('screens:account.quota.title')}</Typography>
           </ListItemIcon>
           <UserStorage />
         </ListItem>
         <DeleteAccountListItem
           profile={profile}
+          classes={{ listItemIcon: classes.listItemIcon, actionIcon: classes.actionIcon }}
         />
       </List>
     </Container>

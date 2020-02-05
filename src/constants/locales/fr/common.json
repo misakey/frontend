@@ -9,6 +9,7 @@
   "retry": "Recommencer",
   "reopen": "Réouvrir",
   "close": "Archiver",
+  "archive": "Archiver",
   "ok": "OK",
   "gotIt": "J'ai compris",
   "add": "Ajouter",
@@ -19,6 +20,10 @@
   "submit": "Envoyer",
   "create": "Créer",
   "read": "Voir",
+  "decrypt": "Déchiffrer",
+  "undecryptable": "Indéchiffrable",
+  "accept": "Accepter",
+  "refuse": "Refuser",
   "update": "Éditer",
   "delete": "Supprimer",
   "remove": "Retirer",
@@ -258,17 +263,14 @@
       "updated": "Editée"
     },
     "dpoComment": {
-      "done": "Mes données ont été déposées dans mon coffre-fort",
-      "refused": "Ma demande a été rejetée",
-      "no_data": "Le site ne possède aucune donnée me concernant",
-      "other": "Je peux contacter directement le DPO pour plus d'informations"
+      "done": "Demande traitée",
+      "no_data": "Aucune donnée trouvée",
+      "refused": "Demande invalide"
     },
     "ownerComment": {
-      "ok": "J'ai bien reçu mes données personnelles dans mon coffre-fort",
-      "other_channel": "J'ai reçu mes données personnelles via un autre canal (mail, service intégré, etc)",
-      "refused": "Le site a refusé de traiter ma demande",
-      "no_data": "Le site affirme n'avoir aucune donnée me concernant",
-      "other": "Autre"
+      "other_channel": "Fichiers reçus autrement",
+      "no_data": "Aucune donnée trouvée",
+      "refused": "Demande non traitée"
     },
     "dialog": {
       "reopen": {

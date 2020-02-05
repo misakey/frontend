@@ -10,13 +10,12 @@ import clsx from 'clsx';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import Avatar from '@material-ui/core/Avatar';
 
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 // HELPERS
 export const getQuestionsItems = (t, transKey, nbOfQuestions) => {
@@ -68,11 +67,9 @@ function ListQuestions({ breakpoints, items, justify }) {
           href={href}
           {...breakpoints}
         >
-          <ListItemAvatar>
-            <Avatar>
-              <OpenInNewIcon />
-            </Avatar>
-          </ListItemAvatar>
+          <ListItemIcon>
+            <HelpOutlineIcon />
+          </ListItemIcon>
           <ListItemText
             primary={<span dangerouslySetInnerHTML={{ __html: text }} />}
             className={clsx({ [classes.justify]: justify })}

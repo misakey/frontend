@@ -31,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
   padded: {
     padding: theme.spacing(3),
   },
+  highlight: {
+    borderColor: theme.palette.secondary.main,
+  },
   dividerPadded: {
     margin: theme.spacing(0, -3),
   },
@@ -51,6 +54,7 @@ const Card = ({
   subtitleProps,
   titleProps,
   dense,
+  highlight,
   ...rest
 }) => {
   const classes = useStyles();
@@ -70,6 +74,7 @@ const Card = ({
       className={clsx(
         classes.root,
         className,
+        { [classes.highlight]: highlight },
         { [classes.padded]: padded },
         { [classes.denseRoot]: !hasTitle },
       )}
@@ -110,6 +115,7 @@ Card.propTypes = {
   className: PropTypes.string,
   padded: PropTypes.bool,
   dense: PropTypes.bool,
+  highlight: PropTypes.bool,
   Header: PropTypes.elementType,
   title: PropTypes.node,
   primary: PropTypes.oneOfType([PropTypes.object, PropTypes.node]),
@@ -124,6 +130,7 @@ Card.defaultProps = {
   className: '',
   padded: false,
   dense: false,
+  highlight: false,
   Header: null,
   title: null,
   subtitle: null,

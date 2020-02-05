@@ -43,6 +43,9 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '32px',
     padding: '6px 9px',
   },
+  focusedTab: {
+    backgroundColor: 'rgba(0,0,0,0.2)',
+  },
   tabs: {
     minHeight: '32px',
   },
@@ -98,6 +101,8 @@ function ApplicationInfoNav({
                 component={Link}
                 label={t(`screens:application.nav.${link}`)}
                 to={generatePath(routes.citizen.application[link], { mainDomain })}
+                disableFocusRipple
+                focusVisibleClassName={classes.focusedTab}
               />
             ))}
           </Tabs>

@@ -36,9 +36,9 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import CardSimpleTextButton from 'components/dumb/Card/Simple/TextButton';
 import withDialogConnect from 'components/smart/Dialog/Connect/with';
 import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+import CardSimpleText from 'components/dumb/Card/Simple/Text';
 
 const useStyles = makeStyles(() => ({
   summaryRoot: {
@@ -143,7 +143,7 @@ const ApplicationInfoMore = ({
         </Title>
 
         {isUnknown && (
-        <CardSimpleTextButton
+        <CardSimpleText
           text={t('screens:application.info.more.create.text')}
           button={{
             standing: BUTTON_STANDINGS.OUTLINED,
@@ -165,7 +165,7 @@ const ApplicationInfoMore = ({
       </Title>
 
       {!IS_PLUGIN && (
-        <CardSimpleTextButton
+        <CardSimpleText
           text={t('screens:application.info.more.dpo.text')}
           button={{
             standing: BUTTON_STANDINGS.OUTLINED,
@@ -177,7 +177,7 @@ const ApplicationInfoMore = ({
         />
       )}
 
-      <CardSimpleTextButton
+      <CardSimpleText
         text={t('screens:application.info.more.report.text')}
         button={reportButton}
         my={2}
@@ -213,7 +213,7 @@ const ApplicationInfoMore = ({
       </Card>
 
       {isAuthenticated && (
-        <CardSimpleTextButton
+        <CardSimpleText
           text={t('screens:application.info.more.favorite.text')}
           button={{
             standing: BUTTON_STANDINGS.OUTLINED,

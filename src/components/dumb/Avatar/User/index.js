@@ -5,7 +5,7 @@ import any from '@misakey/helpers/any';
 import complement from '@misakey/helpers/complement';
 import isEmpty from '@misakey/helpers/isEmpty';
 
-import AvatarColorized from 'components/dumb/Avatar/Colorized';
+import AvatarColorized from '@misakey/ui/Avatar/Colorized';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 // HELPERS

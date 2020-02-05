@@ -12,5 +12,11 @@
   "bulkContact": {
     "contact": "Demander mes données",
     "unselect_all": "Annuler la sélection"
+  },
+  "blob": {
+    "fileTypes": {
+      "unclassified": "Fichier non classifié"
+    },
+    "received": "{{size}} reçu le {{date}}"
   }
 }

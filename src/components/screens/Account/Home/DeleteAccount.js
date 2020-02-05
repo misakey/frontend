@@ -65,7 +65,7 @@ const useHandleSignOut = (onSignOut, userId, handleGenericHttpErrors, userManage
 
 
 // COMPONENTS
-const DeleteAccount = ({ profile, t, onSignOut, seclevel, userId, userManager }) => {
+const DeleteAccount = ({ profile, t, onSignOut, seclevel, userId, userManager, classes }) => {
   const [isOpenDeleteAccountDialog, setOpenDeleteAccountDialog] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -103,12 +103,12 @@ const DeleteAccount = ({ profile, t, onSignOut, seclevel, userId, userManager })
         profile={profile}
       />
       <ListItem button aria-label={t('fields:deleteAccount.action')} onClick={openDeleteAccountDialog}>
-        <ListItemIcon className="title">
+        <ListItemIcon className={classes.listItemIcon}>
           <Typography>{t('screens:account.delete.title')}</Typography>
         </ListItemIcon>
         <ListItemText primary={t('screens:account.delete.label')} />
         <ListItemSecondaryAction>
-          <ChevronRightIcon className="icon" />
+          <ChevronRightIcon className={classes.actionIcon} />
         </ListItemSecondaryAction>
       </ListItem>
     </>
@@ -122,10 +122,12 @@ DeleteAccount.propTypes = {
   t: PropTypes.func.isRequired,
   onSignOut: PropTypes.func.isRequired,
   userManager: PropTypes.object.isRequired,
+  classes: PropTypes.object,
 };
 
 DeleteAccount.defaultProps = {
   profile: null,
+  classes: {},
 };
 
 // CONNECT

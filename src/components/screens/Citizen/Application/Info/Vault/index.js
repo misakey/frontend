@@ -7,11 +7,13 @@ import { withTranslation } from 'react-i18next';
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxByProducerSchema from 'store/schemas/Databox/ByProducer';
 import { receiveDataboxesByProducer } from 'store/actions/databox';
+import { makeStyles } from '@material-ui/core/styles';
+
 
 import API from '@misakey/api';
 import { NoPassword } from 'constants/Errors/classes';
 import { OPEN, DONE } from 'constants/databox/status';
-import { OK } from 'constants/databox/comment';
+import { DONE as COMMENT_DONE } from 'constants/databox/comment';
 
 import { ownerCryptoContext as crypto } from '@misakey/crypto';
 import { BackupDecryptionError } from '@misakey/crypto/Errors/classes';
@@ -28,13 +30,13 @@ import { getCurrentDatabox, sortDataboxes } from 'helpers/databox';
 import ListQuestions, { useQuestionsItems, getQuestionsItems } from 'components/dumb/List/Questions';
 import ScreenError from 'components/dumb/Screen/Error';
 import Typography from '@material-ui/core/Typography';
-import CardDatabox from 'components/smart/Card/Databox';
+import Divider from '@material-ui/core/Divider';
 import { usePasswordPrompt, PasswordPromptProvider } from 'components/screens/Citizen/Application/Info/Vault/PasswordPrompt';
 import Card from 'components/dumb/Card';
 import Title from 'components/dumb/Typography/Title';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummaryDatabox from 'components/smart/ExpansionPanelSummary/Databox';
 
+import CurrentDatabox from 'components/smart/Databox/Current';
+import ArchivedDatabox from 'components/smart/Databox/Archived';
 
 import Box from '@material-ui/core/Box';
 import BoxSection from 'components/dumb/Box/Section';
@@ -53,7 +55,7 @@ const isDataboxOpen = propEq('status', OPEN);
 const isDataboxDone = propEq('status', DONE);
 const isDataboxCommentKO = (databox) => !isNil(databox)
   && isDataboxDone(databox)
-  && databox.dpoComment !== OK;
+  && databox.dpoComment !== COMMENT_DONE;
 
 const findDataboxes = (producerId) => API
   .use(API.endpoints.application.box.find)
@@ -61,6 +63,15 @@ const findDataboxes = (producerId) => API
   .send();
 
 // HOOKS
+const useStyles = makeStyles((theme) => ({
+  divider: {
+    marginBottom: theme.spacing(1),
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    maxWidth: 300,
+  },
+}));
+
 const usePromptForPassword = (openPasswordPrompt) => useCallback(
   (previousAttemptFailed = false) => (
     openPasswordPrompt({ firstAttempt: !previousAttemptFailed })
@@ -166,17 +177,10 @@ function ApplicationBox({
   onContributionDpoEmailClick,
   dispatchReceiveDataboxesByProducer,
 }) {
+  const classes = useStyles();
+
   const [localLoading, setLocalLoading] = useState(false);
   const [error, setError] = useState();
-
-  const [expandedBox, setExpandedBox] = useState(null);
-
-  const onExpandedChange = useCallback(
-    (databoxId) => (event, isExpanded) => {
-      setExpandedBox(isExpanded ? databoxId : null);
-    },
-    [setExpandedBox],
-  );
 
   const loading = useMemo(
     () => isLoading || localLoading,
@@ -286,9 +290,8 @@ function ApplicationBox({
         <OnLoading />
       ) : (
         <>
-          <CardDatabox
+          <CurrentDatabox
             mb={3}
-            title={t('screens:application.box.title')}
             application={application}
             databox={currentDatabox}
             publicKeysWeCanDecryptFrom={publicKeysWeCanDecryptFrom}
@@ -299,32 +302,19 @@ function ApplicationBox({
           />
           {!isEmpty(archivedDataboxes) && (
             <>
-              <Title>
-                {t('screens:application.box.archives.title')}
-              </Title>
-                {archivedDataboxes.map((databox) => (
-                  <Card mb={3}>
-                    <ExpansionPanel
-                      key={databox.id}
-                      expanded={expandedBox === databox.id}
-                      TransitionProps={{ unmountOnExit: true }}
-                      elevation={0}
-                      onChange={onExpandedChange(databox.id)}
-                    >
-                      <ExpansionPanelSummaryDatabox databox={databox} />
-                      <CardDatabox
-                        application={application}
-                        databox={databox}
-                        publicKeysWeCanDecryptFrom={publicKeysWeCanDecryptFrom}
-                        isCryptoReadyToDecrypt={isCryptoReadyToDecrypt}
-                        onAskPassword={loadBackupAndAskPassword}
-                        onContributionDpoEmailClick={onContributionDpoEmailClick}
-                        subCard
-                        initCrypto={initCrypto}
-                      />
-                    </ExpansionPanel>
-                  </Card>
-                ))}
+              {archivedDataboxes.map((databox) => (
+                <ArchivedDatabox
+                  key={databox.id}
+                  databox={databox}
+                  application={application}
+                  publicKeysWeCanDecryptFrom={publicKeysWeCanDecryptFrom}
+                  isCryptoReadyToDecrypt={isCryptoReadyToDecrypt}
+                  onAskPassword={loadBackupAndAskPassword}
+                  onContributionDpoEmailClick={onContributionDpoEmailClick}
+                  initCrypto={initCrypto}
+                />
+              ))}
+              <Divider className={classes.divider} />
             </>
           )}
         </>

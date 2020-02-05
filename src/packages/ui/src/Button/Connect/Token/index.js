@@ -18,7 +18,7 @@ import Divider from '@material-ui/core/Divider';
 
 import useParseIdToken from 'hooks/useParseIdToken';
 
-import ColorizedAvatar from '../../../Avatar/Colorized';
+import AvatarColorized from '../../../Avatar/Colorized';
 
 
 // HOOKS
@@ -101,7 +101,7 @@ const ButtonConnectToken = ({
         edge="end"
         {...classProps}
       >
-        <ColorizedAvatar
+        <AvatarColorized
           // FIXME: replace displayName by handle
           text={profile ? profile.displayName : ''}
           image={profile ? profile.avatarUri : ''}

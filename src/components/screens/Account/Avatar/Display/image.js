@@ -9,7 +9,7 @@ import isString from '@misakey/helpers/isString';
 import isNil from '@misakey/helpers/isNil';
 
 import Box from '@material-ui/core/Box';
-import AvatarDetailed from 'components/dumb/Avatar/Detailed';
+import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import withErrors from 'components/dumb/Form/Field/withErrors';

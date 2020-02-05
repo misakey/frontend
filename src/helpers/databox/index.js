@@ -22,7 +22,7 @@ export const sortDataboxes = sort((databoxA, databoxB) => {
   if (databoxB.status === OPEN) {
     return 1;
   }
-  if (moment(databoxA.updatedAt).isAfter(databoxB.updatedAt)) {
+  if (moment(databoxA.createdAt).isAfter(databoxB.createdAt)) {
     return -1;
   }
   return 1;
@@ -32,7 +32,7 @@ export const isClosedDelayDone = (databox) => databox.status === CLOSED
   && moment().diff(databox.createdAt, 'days') > DELAY_REOPEN_DAYS;
 
 
-export const getCurrentDatabox = (databoxes, requiresSort = false) => {
+export const getCurrentDatabox = (databoxes, requiresSort = true) => {
   if (isEmpty(databoxes)) {
     return null;
   }
@@ -44,7 +44,7 @@ export const getCurrentDatabox = (databoxes, requiresSort = false) => {
   if (first.status !== CLOSED) {
     return first;
   }
-  return isClosedDelayDone(first) ? null : first;
+  return null;
 };
 
 export const isReopen = ({

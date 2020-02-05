@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
-import ColorizedAvatar from '../Colorized';
+import AvatarColorized from '../Colorized';
 
 // CONSTANTS
 
@@ -33,7 +33,7 @@ const AvatarDetailed = ({ text, image, title, subtitle }) => {
 
   return (
     <div className={classes.root}>
-      <ColorizedAvatar
+      <AvatarColorized
         className={classes.avatar}
         text={text}
         image={image}

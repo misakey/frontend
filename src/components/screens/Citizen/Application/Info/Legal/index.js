@@ -19,7 +19,7 @@ import withDialogConnect from 'components/smart/Dialog/Connect/with';
 import Title from 'components/dumb/Typography/Title';
 import { BUTTON_STANDINGS } from 'components/dumb/Button';
 
-import CardSimpleTextButton from 'components/dumb/Card/Simple/TextButton';
+import CardSimpleText from 'components/dumb/Card/Simple/Text';
 
 import DetectedTrackersSummary from 'components/screens/Citizen/Application/Info/Legal/ThirdPartySummary';
 
@@ -106,7 +106,7 @@ const ApplicationInfoLegal = ({
           <Title>
             {t('screens:application.thirdParty.summary.title')}
           </Title>
-          <CardSimpleTextButton
+          <CardSimpleText
             text={t('screens:application.info.legal.cookies.text')}
             button={{
               standing: BUTTON_STANDINGS.OUTLINED,
@@ -125,7 +125,7 @@ const ApplicationInfoLegal = ({
             {t('screens:application.info.legal.linksListTitle')}
           </Title>
           {links.map(({ key, label, button }) => (
-            <CardSimpleTextButton key={key} text={label} button={button} my={1} />
+            <CardSimpleText key={key} text={label} button={button} my={1} />
           ))}
         </Box>
       )}

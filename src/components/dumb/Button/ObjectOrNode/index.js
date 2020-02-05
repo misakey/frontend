@@ -1,13 +1,12 @@
 import React, { isValidElement } from 'react';
 import PropTypes from 'prop-types';
 
-import isNil from '@misakey/helpers/isNil';
 import isObject from '@misakey/helpers/isObject';
 
 import Button from 'components/dumb/Button';
 
 const ButtonFromObjectOrNode = ({ button }) => {
-  if (isValidElement(button) || isNil(button)) {
+  if (isValidElement(button)) {
     return button;
   }
   if (isObject(button)) {
@@ -17,7 +16,11 @@ const ButtonFromObjectOrNode = ({ button }) => {
 };
 
 ButtonFromObjectOrNode.propTypes = {
-  button: PropTypes.oneOfType([PropTypes.object, PropTypes.node]).isRequired,
+  button: PropTypes.oneOfType([PropTypes.object, PropTypes.node]),
+};
+
+ButtonFromObjectOrNode.defaultProps = {
+  button: null,
 };
 
 export default ButtonFromObjectOrNode;

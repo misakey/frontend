@@ -15,7 +15,7 @@ import Card from 'components/dumb/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import Rating from '@material-ui/lab/Rating';
-import ColorizedAvatar from 'components/dumb/Avatar/Colorized';
+import AvatarColorized from '@misakey/ui/Avatar/Colorized';
 import Box from '@material-ui/core/Box';
 
 
@@ -72,10 +72,9 @@ const UserFeedbackCard = ({ isAuthenticated, rating, className, t }) => {
         avatar={(
           <>
             {isAuthenticated ? (
-              <ColorizedAvatar
+              <AvatarColorized
                 image={avatarUri}
                 text={displayName}
-                classes={{ root: classes.colorizedAvatarRoot }}
               />
             ) : (
               <AccountCircleIcon fontSize="large" />
