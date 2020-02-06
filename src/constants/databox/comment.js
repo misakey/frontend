@@ -9,6 +9,7 @@ export const OWNER_COMMENTS = [
   OTHER_CHANNEL,
   NO_DATA,
   REFUSED,
+  DONE,
 ];
 
 export const DPO_COMMENTS = [

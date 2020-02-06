@@ -264,12 +264,18 @@
     "dpoComment": {
       "done": "Demande traitée",
       "no_data": "Aucune donnée trouvée",
-      "refused": "Demande invalide"
+      "refused": "Demande invalide",
+
+      "other": "Demande fermée"
     },
     "ownerComment": {
       "other_channel": "Fichiers reçus autrement",
       "no_data": "Aucune donnée trouvée",
-      "refused": "Demande non traitée"
+      "refused": "Demande non traitée",
+      "done": "Demande traitée",
+
+      "ok": "Demande traitée",
+      "other": "Demande fermée"
     },
     "dialog": {
       "reopen": {
