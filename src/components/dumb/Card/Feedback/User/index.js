@@ -55,14 +55,14 @@ const UserFeedbackCard = ({ isAuthenticated, rating, className, t }) => {
     [rating],
   );
 
-  const { value, comment, createdAt } = useMemo(
+  const { value, comment, updatedAt } = useMemo(
     () => rating,
     [rating],
   );
 
-  const createdAtText = useMemo(
-    () => (isNil(createdAt) ? '' : moment(createdAt).fromNow()),
-    [createdAt],
+  const updatedAtText = useMemo(
+    () => (isNil(updatedAt) ? '' : moment(updatedAt).fromNow()),
+    [updatedAt],
   );
 
   return (
@@ -94,7 +94,7 @@ const UserFeedbackCard = ({ isAuthenticated, rating, className, t }) => {
               }}
             />
             <Typography color="textSecondary" noWrap>
-              {createdAtText}
+              {updatedAtText}
             </Typography>
           </Box>
         )}
