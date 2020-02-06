@@ -5,6 +5,8 @@ import { withTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import omit from '@misakey/helpers/omit';
+import { IS_PLUGIN } from 'constants/plugin';
+
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -63,7 +65,7 @@ function ApplicationInfoNav({
   }), [pathname]);
 
   const applicationTabs = React.useMemo(
-    () => (isUnknown ? TABS_ALLOWED_FOR_UNKNOWN : APPLICATION_TABS),
+    () => (IS_PLUGIN && isUnknown ? TABS_ALLOWED_FOR_UNKNOWN : APPLICATION_TABS),
     [isUnknown],
   );
 

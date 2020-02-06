@@ -240,7 +240,7 @@ const CurrentDatabox = ({
     [databoxId, dispatchUpdateDatabox, onDialogClose, onError, onReopenMailTo, t],
   );
 
-  if (!isAuthenticated || isEmpty(databox)) {
+  if (!isAuthenticated || (isEmpty(databox) && !isEmpty(dpoEmail))) {
     return (
       <div {...omitTranslationProps(rest)}>
         <Title>

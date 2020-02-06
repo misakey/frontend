@@ -29,7 +29,6 @@ import { getCurrentDatabox, sortDataboxes } from 'helpers/databox';
 
 import ListQuestions, { useQuestionsItems, getQuestionsItems } from 'components/dumb/List/Questions';
 import ScreenError from 'components/dumb/Screen/Error';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import { usePasswordPrompt, PasswordPromptProvider } from 'components/screens/Citizen/Application/Info/Vault/PasswordPrompt';
 import Card from 'components/dumb/Card';
@@ -38,9 +37,7 @@ import Title from 'components/dumb/Typography/Title';
 import CurrentDatabox from 'components/smart/Databox/Current';
 import ArchivedDatabox from 'components/smart/Databox/Archived';
 
-import Box from '@material-ui/core/Box';
-import BoxSection from 'components/dumb/Box/Section';
-import Skeleton from '@material-ui/lab/Skeleton';
+import { DefaultSplashScreen } from 'components/dumb/Screen';
 
 import NoDataboxInfoCard from './NoDataboxInfoCard';
 
@@ -151,26 +148,6 @@ const useInitCrypto = (
 );
 
 // COMPONENTS
-function OnLoading(props) {
-  return (
-    <>
-      <BoxSection mb={3} p={0} {...props}>
-        <Box p={3}>
-          <Typography variant="h6" component="h5">
-            <Skeleton variant="text" style={{ marginTop: 0 }} />
-          </Typography>
-          <Box mt={1}>
-            <Skeleton variant="text" />
-          </Box>
-          <Box mt={2}>
-            <Skeleton variant="rect" height={120} />
-          </Box>
-        </Box>
-      </BoxSection>
-    </>
-  );
-}
-
 function ApplicationBox({
   application,
   databoxesByProducer,
@@ -291,7 +268,7 @@ function ApplicationBox({
   return (
     <>
       {(loading && isAuthenticated) ? (
-        <OnLoading />
+        <DefaultSplashScreen />
       ) : (
         <>
           <CurrentDatabox
@@ -321,19 +298,17 @@ function ApplicationBox({
               ))}
             </>
           )}
+          {(isEmpty(databoxes)) && (
+            <NoDataboxInfoCard />
+          )}
+          <Divider className={classes.divider} />
+          <Title>{t(`${QUESTIONS_TRANS_KEY}.title`)}</Title>
+          <Card dense>
+            <ListQuestions items={questionItems} breakpoints={{ sm: 6, xs: 12 }} />
+            <ListQuestions items={conditionalQuestionItems} breakpoints={{ sm: 6, xs: 12 }} />
+          </Card>
         </>
       )}
-      {(isEmpty(databoxes) && !loading) && (
-        <NoDataboxInfoCard />
-      )}
-
-      <Divider className={classes.divider} />
-
-      <Title>{t(`${QUESTIONS_TRANS_KEY}.title`)}</Title>
-      <Card dense>
-        <ListQuestions items={questionItems} breakpoints={{ sm: 6, xs: 12 }} />
-        <ListQuestions items={conditionalQuestionItems} breakpoints={{ sm: 6, xs: 12 }} />
-      </Card>
     </>
   );
 }
