@@ -106,27 +106,33 @@ const useGoToNextStep = (
   values,
   setStep,
 ) => useCallback(() => {
-  const onSuccess = () => fetchUser(() => setStep(STEP.secret));
+  fetchUser(
+    () => {
+      // @FIXME cleanup this code by using useCallback for onSuccess and onError
+      const onSuccess = () => setStep(STEP.secret);
 
-  const onError = (error) => {
-    const { identifierErrors, secretErrors: { password } } = getApiErrors(error);
+      const onError = (error) => {
+        const { identifierErrors, secretErrors: { password } } = getApiErrors(error);
 
-    // CASES: initalStep is secret as login_hint is passed
-    // or error password is required (seclevel insuffisent)
-    if ((!isEmpty(identifierErrors) || password === required) && step !== STEP.identifier) {
-      setStep(STEP.identifier);
-    }
+        // CASES: initalStep is secret as login_hint is passed
+        // or error password is required (seclevel insuffisent)
+        if ((!isEmpty(identifierErrors) || password === required) && step !== STEP.identifier) {
+          setStep(STEP.identifier);
+        }
 
-    // CASE: confirmation code is already sent (user click on goback)
-    if (error.code === conflict) {
-      const { channel, userId, renewalDate } = objectToCamelCase(error.details);
-      if ((channel === conflict && userId === conflict) && renewalDate && step !== STEP.secret) {
-        setStep(STEP.secret);
-      }
-    }
-  };
-
-  return initAuth(values, formProps, onSuccess, onError);
+        // CASE: confirmation code is already sent (user click on goback)
+        if (error.code === conflict) {
+          const { channel, userId, renewalDate } = objectToCamelCase(error.details);
+          if (
+            (channel === conflict && userId === conflict) && renewalDate && step !== STEP.secret
+          ) {
+            setStep(STEP.secret);
+          }
+        }
+      };
+      return initAuth(values, formProps, onSuccess, onError);
+    },
+  );
 }, [fetchUser, formProps, initAuth, setStep, step, values]);
 
 
