@@ -9,7 +9,7 @@ import API from '@misakey/api';
 
 import UserSchema from 'store/schemas/User';
 
-import DeleteAccountDialog from '@misakey/ui/Dialog/Account/Delete';
+import DeleteAccountDialog from 'components/dumb/Dialog/Account/Delete';
 import { signOut } from '@misakey/auth/store/actions/auth';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import { withUserManager } from '@misakey/auth/components/OidcProvider';

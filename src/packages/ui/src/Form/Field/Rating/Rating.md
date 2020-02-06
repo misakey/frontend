@@ -7,7 +7,6 @@ Form Field Rating example:
 import React, { useCallback } from 'react';
 import { Formik, Form, Field } from 'formik';
 import RatingField from '@misakey/ui/Form/Field/Rating';
-import ButtonSubmit from '@misakey/ui/Button/Submit';
 import log from '@misakey/helpers/log';
 
 const INITIAL_VALUES = {
@@ -26,9 +25,17 @@ const RatingFieldExample = () => {
         {({ isSubmitting, isValid }) => (
           <Form>
             <Field component={RatingField} name="value" />
-            <ButtonSubmit isSubmitting={isSubmitting} isValid={isValid}>
+            <div>
+submitting
+              {isSubmitting}
+            </div>
+            <div>
+valid
+              {isValid}
+            </div>
+            <button type="submit">
               Submit
-            </ButtonSubmit>
+            </button>
           </Form>
         )}
       </Formik>

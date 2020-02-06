@@ -4,7 +4,6 @@ import { withTranslation } from 'react-i18next';
 
 import { Formik, Form, Field } from 'formik';
 
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -12,7 +11,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import FieldText from 'components/dumb/Form/Field/Text';
-import ButtonSubmit from 'components/dumb/Button/Submit';
+import BoxControls from 'components/dumb/Box/Controls';
 
 import errorTypes from 'constants/errorTypes';
 
@@ -29,7 +28,7 @@ const DeleteAccountDialog = ({ onClose, onSuccess, open, profile, t }) => (
       onSubmit={onSuccess}
       values={{ email: '' }}
       validate={(values) => {
-        if (values.email !== profile.email) {
+        if (values.email.toLowerCase() !== profile.email.toLowerCase()) {
           return { email: invalid };
         }
         return {};
@@ -57,15 +56,19 @@ const DeleteAccountDialog = ({ onClose, onSuccess, open, profile, t }) => (
               />
             </DialogContent>
             <DialogActions>
-              <Button onClick={onClose}>
-                {t('account.dialog.delete.disagree', 'Disagree')}
-              </Button>
-              <ButtonSubmit
-                isSubmitting={isSubmitting}
-                disabled={isSubmitting || !isValid}
-              >
-                {t('account.dialog.delete.agree', 'Agree')}
-              </ButtonSubmit>
+              <BoxControls
+                primary={{
+                  type: 'submit',
+                  text: t('common:delete'),
+                  isValid,
+                  isLoading: isSubmitting,
+                }}
+                secondary={{
+                  text: t('common:cancel'),
+                  onClick: onClose,
+                }}
+                outlined={false}
+              />
             </DialogActions>
           </Form>
         )

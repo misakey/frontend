@@ -20,7 +20,7 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isNil from '@misakey/helpers/isNil';
 import pick from '@misakey/helpers/pick';
 
-import ButtonSubmit from '@misakey/ui/Button/Submit';
+import ButtonSubmit from 'components/dumb/Button/Submit';
 
 import BoxControls from 'components/dumb/Box/Controls';
 import SplashScreen from 'components/dumb/SplashScreen';
@@ -213,7 +213,6 @@ const ApplicationMyFeedback = ({
                   <BoxControls
                     primary={(
                       <ButtonSubmit
-                        Icon={null}
                         text={t('feedback.submit')}
                         isSubmitting={isSubmitting}
                         isValid={isValid}
