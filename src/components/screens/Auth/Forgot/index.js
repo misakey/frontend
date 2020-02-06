@@ -253,7 +253,7 @@ const AuthForgot = ({
         >
           <Box alignItems="center" flexDirection="column" display="flex">
             <ChipUser
-              identifier={email}
+              label={email}
               {...userPublicData}
               onClick={onClearUser}
               onDelete={onClearUser}

@@ -17,7 +17,7 @@ import join from '@misakey/helpers/join';
 import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import { screenAuthSetCredentials } from 'store/actions/screens/auth';
+import { screenAuthSetCredentials, screenAuthSetPublics } from 'store/actions/screens/auth';
 
 import Box from '@material-ui/core/Box';
 import FormCardAuth from 'components/dumb/Form/Card/Auth';
@@ -68,7 +68,15 @@ const SignUpConfirmFormFields = (fields) => (
 
 SignUpConfirmFormFields.defaultProps = DEFAULT_FIELDS;
 
-function AuthSignUpConfirm({ email, password, challenge, t, dispatchClearCredentials, history }) {
+function AuthSignUpConfirm({
+  email,
+  password,
+  publics,
+  challenge,
+  t,
+  dispatchClearCredentials,
+  history,
+}) {
   const classes = useStyles();
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
   const { enqueueSnackbar } = useSnackbar();
@@ -159,7 +167,8 @@ function AuthSignUpConfirm({ email, password, challenge, t, dispatchClearCredent
         >
           <Box display="flex" justifyContent="center" mb={1}>
             <ChipUser
-              identifier={email}
+              label={email}
+              {...publics}
               onClick={onClearUser}
               onDelete={onClearUser}
             />
@@ -188,6 +197,7 @@ AuthSignUpConfirm.propTypes = {
   // CONNECT
   email: PropTypes.string,
   password: PropTypes.string,
+  publics: PropTypes.object,
   challenge: PropTypes.string,
   dispatchClearCredentials: PropTypes.func.isRequired,
 };
@@ -195,6 +205,7 @@ AuthSignUpConfirm.propTypes = {
 AuthSignUpConfirm.defaultProps = {
   email: '',
   password: '',
+  publics: {},
   challenge: '',
 };
 
@@ -202,13 +213,15 @@ AuthSignUpConfirm.defaultProps = {
 const mapStateToProps = (state) => ({
   email: state.screens.auth.identifier,
   password: state.screens.auth.secret,
+  publics: state.screens.auth.publics,
   challenge: state.sso.loginChallenge,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchClearCredentials: () => dispatch(
-    screenAuthSetCredentials(),
-  ),
+  dispatchClearCredentials: () => Promise.all([
+    dispatch(screenAuthSetCredentials()),
+    dispatch(screenAuthSetPublics()),
+  ]),
 });
 
 
