@@ -16,6 +16,9 @@ const Contact = lazy(() => import('components/screens/Citizen/Contact'));
 const ApplicationsCategoryScreen = lazy(
   () => import('components/screens/Citizen/Applications/Category'),
 );
+const ApplicationsCategoriesScreen = lazy(
+  () => import('components/screens/Citizen/Applications/Categories'),
+);
 
 function Citizen({ match }) {
   return (
@@ -29,10 +32,15 @@ function Citizen({ match }) {
           component={ApplicationsCreate}
         />
         <RouteCitizen
+          path={routes.citizen.applications.categories}
+          component={ApplicationsCategoriesScreen}
+        />
+        <RouteCitizen
           path={routes.citizen.applications.category}
           component={ApplicationsCategoryScreen}
         />
         <RouteCitizen path={routes.citizen.application._} component={Application} />
+
         <RouteCitizen exact path={match.path} component={Home} />
       </Switch>
     </>

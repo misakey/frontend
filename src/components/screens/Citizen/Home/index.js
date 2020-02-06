@@ -8,6 +8,7 @@ import LinkedApplicationsList from 'components/smart/List/LinkedApplications';
 import ApplicationCategoriesList from 'components/smart/List/ApplicationCategories';
 import Footer from 'components/dumb/Footer';
 import Screen from 'components/dumb/Screen';
+import { IS_PLUGIN } from 'constants/plugin';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -26,11 +27,11 @@ const CitizenHome = () => {
   const classes = useStyles();
 
   return (
-    <Screen className={classes.screen}>
+    <Screen className={classes.screen} disableGutters={IS_PLUGIN}>
       <Container maxWidth="md" className={classes.container}>
         <Box>
           <LinkedApplicationsList />
-          <ApplicationCategoriesList />
+          {!IS_PLUGIN && <ApplicationCategoriesList />}
         </Box>
         <Footer />
       </Container>

@@ -7,7 +7,6 @@ import ApplicationSchema from 'store/schemas/Application';
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 import { IS_PLUGIN, storeLinks } from 'constants/plugin';
-import { isChrome } from 'helpers/devices';
 
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -20,15 +19,13 @@ import Title from 'components/dumb/Typography/Title';
 import { BUTTON_STANDINGS } from 'components/dumb/Button';
 
 import CardSimpleText from 'components/dumb/Card/Simple/Text';
-
+import CardSimpleDoubleButton from 'components/dumb/Card/Simple/DoubleButton';
 import DetectedTrackersSummary from 'components/screens/Citizen/Application/Info/Legal/ThirdPartySummary';
+import { isPluginDetected } from 'helpers/plugin';
 
 
 // CONSTANTS
 const linksType = ['privacy_policy', 'tos', 'cookies'];
-
-const LINK_TO_STORE = isChrome() ? storeLinks.chrome : storeLinks.firefox;
-
 
 // COMPONENTS
 const ButtonWithDialogConnect = withDialogConnect(Button);
@@ -89,6 +86,7 @@ const ApplicationInfoLegal = ({
   );
 
   const { isUnknown } = useMemo(() => (application), [application]);
+  const isPluginInstalled = useMemo(() => (isPluginDetected()), []);
 
   if (isLoading) { return <OnLoading t={t} />; }
 
@@ -101,18 +99,26 @@ const ApplicationInfoLegal = ({
       )}
 
       {/* @FIXME: add a hook to detect if plugin is installed, then don't display that */}
-      {!IS_PLUGIN && (
+      {!IS_PLUGIN && !isPluginInstalled && (
         <Box my={3}>
           <Title>
             {t('screens:application.thirdParty.summary.title')}
           </Title>
-          <CardSimpleText
+          <CardSimpleDoubleButton
             text={t('screens:application.info.legal.cookies.text')}
-            button={{
+            primary={{
               standing: BUTTON_STANDINGS.OUTLINED,
-              text: t('screens:application.info.legal.cookies.button'),
+              text: t('screens:application.info.legal.cookies.button.chrome'),
               component: 'a',
-              href: LINK_TO_STORE,
+              href: storeLinks.chrome,
+              target: '_blank',
+              rel: 'noreferrer noopener',
+            }}
+            secondary={{
+              standing: BUTTON_STANDINGS.OUTLINED,
+              text: t('screens:application.info.legal.cookies.button.firefox'),
+              component: 'a',
+              href: storeLinks.firefox,
               target: '_blank',
               rel: 'noreferrer noopener',
             }}

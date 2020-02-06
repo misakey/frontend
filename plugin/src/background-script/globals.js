@@ -8,7 +8,7 @@ import API from '@misakey/api';
 import parser from 'ua-parser-js';
 import { parse } from 'tldts';
 import { setItem, getItem } from './storage';
-import { getCurrentTab, assignApiInfo, toggleBadgeAndIconOnPaused, filterAppsBy, markAsFetched } from './utils';
+import { getCurrentTab, assignApiInfo, toggleBadgeAndIconOnPaused, filterAppsBy, markAsFetched, setBadgeText } from './utils';
 
 // HELPERS
 const DEFAULT_PURPOSE = 'other';
@@ -26,17 +26,26 @@ class Globals {
     this.tabsInitiator = new Map();
     this.counter = new Map();
 
-    this.pausedBlocking = false;
     this.pausedTime = null;
 
     this.popupOpened = null;
     this.getWhitelist();
+    this.getPaused();
     this.getBrowserInfo();
+  }
+
+  isBlockingActive() {
+    return this.pausedBlocking === false;
   }
 
   async getWhitelist() {
     const { whitelist } = await getItem('whitelist');
     this.whitelist = whitelist || { apps: [], appsFormated: [] };
+  }
+
+  async getPaused() {
+    const { pausedBlocking } = await getItem('pausedBlocking');
+    this.pausedBlocking = pausedBlocking || true;
   }
 
   async getBrowserInfo() {
@@ -83,12 +92,8 @@ class Globals {
     this.counter.set(tabId, newValue);
 
     getCurrentTab().then(({ id }) => {
-      if (tabId === id) {
-        try {
-          browser.browserAction.setBadgeText({
-            text: `${this.counter.get(tabId) || 0}`,
-          });
-        } catch (error) { log('Operation non supported on this device.'); }
+      if (tabId === id && this.isBlockingActive()) {
+        setBadgeText(`${this.counter.get(tabId) || 0}`);
       }
     });
   }
@@ -250,12 +255,13 @@ class Globals {
         globals.pausedBlocking = false;
         globals.pausedTime = null;
         toggleBadgeAndIconOnPaused(this.pausedBlocking);
+        setItem('pausedBlocking', globals.pausedBlocking);
       }, time - Date.now());
     } else if (this.pausedTime && !this.pausedBlocking) {
       this.pausedTime = null;
     }
     toggleBadgeAndIconOnPaused(this.pausedBlocking);
-
+    setItem('pausedBlocking', this.pausedBlocking);
     return { paused: this.pausedBlocking, pausedTime: this.pausedTime };
   }
 

@@ -28,7 +28,7 @@ function modify(buffer, targetBrowser, environment) {
   // replace template values depending on environment
   const newManifestString = JSON.stringify(targetManifest);
   // eslint-disable-next-line no-underscore-dangle
-  return newManifestString.replace('__configAppUrlTpl__', CONFIG.__configAppUrlTpl__[environment]);
+  return newManifestString.replace(/__configAppUrlTpl__/g, CONFIG.__configAppUrlTpl__[environment]);
 }
 
 module.exports = {

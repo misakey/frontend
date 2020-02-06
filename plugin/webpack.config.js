@@ -18,7 +18,8 @@ module.exports = {
   entry: {
     background: './src/background-script/index.js',
     content_script: './src/content-script/index.js',
-    content_script_misakey: './src/content-script/misakey.js',
+    content_script_misakey_sync: './src/content-script/misakey_sync.js',
+    content_script_misakey_check: './src/content-script/misakey_check.js',
   },
   output: {
     path: outputPath,

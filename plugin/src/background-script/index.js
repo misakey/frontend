@@ -15,7 +15,7 @@ import globals from './globals';
 import { setLocalStorage, initAuthIframe } from './auth';
 
 import { getBlockingResponse, deserializeEngine } from './engine';
-import { getItem } from './storage';
+import { getItem, setItem } from './storage';
 import {
   getCurrentTab,
   setBadgeBackgroundColor,
@@ -52,13 +52,13 @@ function handleConfig() {
 
 function handleTabs() {
   browser.tabs.onUpdated.addListener((tabId, changeInfo) => {
-    if (changeInfo.url) {
+    if (changeInfo.url && globals.isBlockingActive()) {
       globals.tabsInitiator.set(tabId, changeInfo.url);
     }
   });
 
   browser.tabs.onActivated.addListener(({ tabId }) => {
-    if (tabId > -1) {
+    if (tabId > -1 && globals.isBlockingActive()) {
       // Popup extension has a tab = -1 : we don't want
       // to update counter if it's the 'newTab' is the popup
       setBadgeText(`${globals.counter.get(tabId) || 0}`);
@@ -67,6 +67,19 @@ function handleTabs() {
 
   browser.tabs.onRemoved.addListener(({ tabId }) => {
     globals.removeTabsInfos(tabId);
+  });
+}
+
+function handleUpdate() {
+  browser.runtime.onInstalled.addListener(({ reason, previousVersion }) => {
+    if (reason === 'update' && previousVersion <= '1.4.0') {
+      globals.pausedBlocking = false;
+      setItem('pausedBlocking', false);
+      setItem('onBoardingDone', true);
+    } else if (reason === 'install') {
+      globals.pausedBlocking = true;
+      setItem('pausedBlocking', true);
+    }
   });
 }
 
@@ -214,21 +227,27 @@ function handleConnexion() {
 }
 
 function launchExtension() {
-  handleCommunication();
-  handleConnexion();
+  try {
+    handleCommunication();
+    handleConnexion();
+    handleUpdate();
+    handleConfig();
 
-  loadAdblocker()
-    .then(((engine) => {
-      handleTabs();
-      handleConfig();
-      handleRequest(engine);
-      handleEngineMessage(engine);
-    }))
-    .catch((err) => {
-      log(err);
-      handleErrorCommunication();
-      toggleBadgeAndIconOnPaused(true);
-    });
+    loadAdblocker()
+      .then(((engine) => {
+        handleTabs();
+        handleRequest(engine);
+        handleEngineMessage(engine);
+      }))
+      .catch((err) => {
+        log(err);
+        handleErrorCommunication();
+        toggleBadgeAndIconOnPaused(true);
+      });
+  } catch (err) {
+    handleErrorCommunication();
+    log(err);
+  }
 }
 
 launchExtension();

@@ -119,7 +119,8 @@
       "title": "Créer un site",
       "subtitle": "J'indique l'adresse de mon site, Misakey s'occupe de rappatrier ses informations !",
       "success": "Demande de création d'application reçue !"
-    }
+    },
+    "select": "Sélectionner mes sites"
   },
   "application": {
     "none": {
@@ -175,7 +176,10 @@
       "legal": {
         "cookies": {
           "text": "Accéder au plugin",
-          "button": "Installer"
+          "button": {
+            "chrome": "Chrome",
+            "firefox": "Firefox"
+          }
         },
         "linksListTitle": "Documents légaux",
         "links": {
@@ -467,19 +471,23 @@
     }
   },
   "landing": {
-    "subtitle": "Chercher un site internet pour récupérer mes données personnelles",
-    "unAuthenticated": {
-      "title": "Aidez-nous a habituer les sites à vous envoyer VOS données !",
-      "1": "1. J'installe l'extension Misakey : sur <1>Firefox</1> ou <3>Chrome</3>",
-      "2": "2. Je crée mon compte gratuitement : <1>créer mon compte</1>",
-      "3": "3. Je demande mes données à mes sites en 2 clics"
-    },
-    "authenticated": {
-      "title": "Bienvenue ! Aidez-nous a habituer les sites à vous envoyer VOS données !",
-      "1": "1. Je cherche mes sites",
-      "2": "2. Je demande mes données",
-      "3": "3. Je discute avec le DPO pour faire valoir <1>mes droits</1>",
-      "myRights": "https://docs.misakey.com/#/citizen/faq?id=quels-droits-me-procure-le-rgpd-"
+    "onboarding": {
+      "title": "<0>A partir de maintenant,</0>\nj'habitue les sites à me renvoyer mes données à l'abri des géants de la tech",
+      "steps": {
+        "1": {
+          "text": "1 - Je crée mon coffre-fort gratuitement",
+          "button": "Créer"
+        },
+        "2": {
+          "text": "2 - J'installe l'extension Misakey",
+          "firefox": "Firefox",
+          "chrome": "Chrome"
+        },
+        "3": {
+          "text": "3 - Je demande mes données en 2 clics",
+          "button": "Commencer"
+        }
+      }
     }
   },
   "Service": {

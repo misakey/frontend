@@ -77,6 +77,7 @@ const routes = {
     },
     applications: {
       _: '/citizen/applications',
+      categories: '/citizen/applications/categories',
       category: '/citizen/applications/:category',
       create: '/citizen/applications/create',
     },
@@ -112,7 +113,10 @@ const routes = {
     tos: '/legals/tos',
   },
   requests: '/requests',
-  plugin: '/index.html',
+  plugin: {
+    _: '/index.html',
+    blank: '/plugin-blank',
+  },
   errors: {
     forbidden: '/errors/forbidden',
   },
