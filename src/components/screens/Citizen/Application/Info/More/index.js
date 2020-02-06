@@ -112,12 +112,14 @@ const ApplicationInfoMore = ({
       if (IS_PLUGIN) {
         return {
           standing: BUTTON_STANDINGS.OUTLINED,
+          size: 'small',
           text: t('screens:application.info.more.report.button'),
           onClick: () => openInNewTab('mailto:feedback@misakey.com'),
         };
       }
       return {
         standing: BUTTON_STANDINGS.OUTLINED,
+        size: 'small',
         text: t('screens:application.info.more.report.button'),
         component: 'a',
         href: 'mailto:feedback@misakey.com',
@@ -147,6 +149,7 @@ const ApplicationInfoMore = ({
           text={t('screens:application.info.more.create.text')}
           button={{
             standing: BUTTON_STANDINGS.OUTLINED,
+            size: 'small',
             text: t('screens:application.info.more.create.button'),
             component: ButtonWithDialogConnect,
             onClick: onCreateApplication,
@@ -169,6 +172,7 @@ const ApplicationInfoMore = ({
           text={t('screens:application.info.more.dpo.text')}
           button={{
             standing: BUTTON_STANDINGS.OUTLINED,
+            size: 'small',
             text: t('screens:application.info.more.dpo.button'),
             component: Link,
             to: generatePath(routes.dpo.service._, { mainDomain: application.mainDomain }),
@@ -217,6 +221,7 @@ const ApplicationInfoMore = ({
           text={t('screens:application.info.more.favorite.text')}
           button={{
             standing: BUTTON_STANDINGS.OUTLINED,
+            size: 'small',
             text: t(`common:${(isLinked) ? 'remove' : 'add'}`),
             onClick: toggleLinked,
           }}

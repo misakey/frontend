@@ -1,18 +1,36 @@
 import React, { useMemo, isValidElement } from 'react';
 import PropTypes from 'prop-types';
 
+import isNil from '@misakey/helpers/isNil';
+import isObject from '@misakey/helpers/isObject';
+
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Box from '@material-ui/core/Box';
-
-import isNil from '@misakey/helpers/isNil';
-import isObject from '@misakey/helpers/isObject';
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 
+// HOOKS
+const useStyles = makeStyles((theme) => ({
+  boxRoot: {
+    [theme.breakpoints.down('xs')]: {
+      '& > *:not(:last-child)': {
+        marginBottom: theme.spacing(0.5),
+      },
+      '& > *:not(:first-child)': {
+        marginTop: theme.spacing(0.5),
+      },
+    },
+  },
+}));
+
+// COMPONENTS
 const BoxControls = ({ primary, secondary, outlined, ...rest }) => {
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.only('xs'));
+
+  const classes = useStyles();
 
   const flexDirection = useMemo(
     () => (isXs ? 'column' : 'row'),
@@ -64,6 +82,7 @@ const BoxControls = ({ primary, secondary, outlined, ...rest }) => {
       display="flex"
       flexDirection={flexDirection}
       justifyContent={justifyContent}
+      className={classes.boxRoot}
       {...rest}
     >
       {secondaryNode}

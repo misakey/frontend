@@ -11,16 +11,30 @@ const useStyles = makeStyles((theme) => ({
   typography: {
     padding: theme.spacing(1, 0),
   },
+  buttonGroup: {
+    [theme.breakpoints.up('sm')]: {
+      '& > *:not(:last-child)': {
+        marginRight: theme.spacing(0.5),
+      },
+      '& > *:not(:first-child)': {
+        marginLeft: theme.spacing(0.5),
+      },
+    },
+    [theme.breakpoints.down('xs')]: {
+      justifyContent: 'space-between',
+    },
+  },
 }));
 
 const CardSimpleDoubleButton = ({ text, primary, secondary, ...rest }) => {
   const classes = useStyles();
   return (
     <SimpleCard
+      classes={{ buttonGroup: classes.buttonGroup }}
       button={(
         <>
-          <ButtonFromObjectOrNode button={primary} />
           <ButtonFromObjectOrNode button={secondary} />
+          <ButtonFromObjectOrNode button={primary} />
         </>
       )}
       {...rest}

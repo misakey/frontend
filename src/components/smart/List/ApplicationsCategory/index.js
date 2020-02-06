@@ -10,11 +10,9 @@ import log from '@misakey/helpers/log';
 import { fetchApplicationsByCategory } from 'helpers/fetchApplications';
 
 import Card from 'components/dumb/Card';
+import { BUTTON_STANDINGS } from 'components/dumb/Button';
 import ApplicationsList from 'components/dumb/List/Applications';
 import Title from 'components/dumb/Typography/Title';
-
-import { BUTTON_STANDINGS } from 'components/dumb/Button';
-
 
 import routes from 'routes';
 

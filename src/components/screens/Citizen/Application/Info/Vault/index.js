@@ -65,10 +65,14 @@ const findDataboxes = (producerId) => API
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   divider: {
-    marginBottom: theme.spacing(1),
+    marginBottom: theme.spacing(3),
+    marginTop: theme.spacing(3),
     marginLeft: 'auto',
     marginRight: 'auto',
     maxWidth: 300,
+  },
+  box: {
+    marginBottom: theme.spacing(3),
   },
 }));
 
@@ -291,7 +295,7 @@ function ApplicationBox({
       ) : (
         <>
           <CurrentDatabox
-            mb={3}
+            className={classes.box}
             application={application}
             databox={currentDatabox}
             publicKeysWeCanDecryptFrom={publicKeysWeCanDecryptFrom}
@@ -304,6 +308,7 @@ function ApplicationBox({
             <>
               {archivedDataboxes.map((databox) => (
                 <ArchivedDatabox
+                  className={classes.box}
                   key={databox.id}
                   databox={databox}
                   application={application}
@@ -314,14 +319,15 @@ function ApplicationBox({
                   initCrypto={initCrypto}
                 />
               ))}
-              <Divider className={classes.divider} />
             </>
           )}
         </>
       )}
       {(isEmpty(databoxes) && !loading) && (
-        <NoDataboxInfoCard isAuthenticated={isAuthenticated} />
+        <NoDataboxInfoCard />
       )}
+
+      <Divider className={classes.divider} />
 
       <Title>{t(`${QUESTIONS_TRANS_KEY}.title`)}</Title>
       <Card dense>

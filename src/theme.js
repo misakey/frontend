@@ -25,6 +25,13 @@ export const themeOptions = {
         borderRadius: 50,
       },
     },
+    MuiCardContent: {
+      root: {
+        '&:last-child': {
+          paddingBottom: 'inherit',
+        },
+      },
+    },
   },
 };
 

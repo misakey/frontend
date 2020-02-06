@@ -21,24 +21,24 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonGroup: {
     display: 'flex',
-    flexDirection: 'row-reverse',
+    flexDirection: 'row',
     justifyContent: 'flex-end',
     [theme.breakpoints.down('xs')]: {
-      justifyContent: 'space-between',
+      justifyContent: 'center',
       width: '100%',
     },
   },
 }));
 
-const CardSimple = ({ children, button, className, ...rest }) => {
-  const classes = useStyles();
+const CardSimple = ({ classes, children, button, className, ...rest }) => {
+  const internalClasses = useStyles();
 
   return (
-    <Card className={clsx(className, classes.root)} {...rest}>
+    <Card className={clsx(className, internalClasses.root)} {...rest}>
       <div>
         {children}
       </div>
-      <div className={classes.buttonGroup}>
+      <div className={clsx(internalClasses.buttonGroup, classes.buttonGroup)}>
         {button}
       </div>
     </Card>
@@ -46,12 +46,18 @@ const CardSimple = ({ children, button, className, ...rest }) => {
 };
 
 CardSimple.propTypes = {
+  classes: PropTypes.shape({
+    buttonGroup: PropTypes.string,
+  }),
   children: PropTypes.node.isRequired,
   button: PropTypes.node,
   className: PropTypes.string,
 };
 
 CardSimple.defaultProps = {
+  classes: {
+    buttonGroup: '',
+  },
   button: null,
   className: '',
 };

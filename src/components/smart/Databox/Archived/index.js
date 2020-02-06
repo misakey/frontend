@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 import moment from 'moment';
 
 import isEmpty from '@misakey/helpers/isEmpty';
+import omitTranslationProps from 'helpers/omit/translationProps';
 
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';
@@ -22,6 +23,7 @@ const CardDatabox = ({
   onContributionDpoEmailClick,
   initCrypto,
   t,
+  ...rest
 }) => {
   const date = useMemo(
     () => {
@@ -52,7 +54,7 @@ const CardDatabox = ({
   );
 
   return (
-    <>
+    <div {...omitTranslationProps(rest)}>
       <Title>
         {t('screens:application.vault.archivedDatabox.title', { date })}
       </Title>
@@ -74,7 +76,7 @@ const CardDatabox = ({
         initCrypto={initCrypto}
       />
 
-    </>
+    </div>
   );
 };
 

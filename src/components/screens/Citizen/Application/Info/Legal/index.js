@@ -63,6 +63,7 @@ const ApplicationInfoLegal = ({
             label: t(`screens:application.info.legal.links.${linkType}`),
             button: {
               standing: BUTTON_STANDINGS.OUTLINED,
+              size: 'small',
               text: t('common:show'),
               component: 'a',
               href: link.value,
@@ -76,6 +77,7 @@ const ApplicationInfoLegal = ({
         label: t(`screens:application.info.legal.links.${linkType}`),
         button: {
           standing: BUTTON_STANDINGS.OUTLINED,
+          size: 'small',
           text: t('common:add'),
           onClick: onContributionLinkClick,
           component: ButtonWithDialogConnect,
@@ -109,6 +111,7 @@ const ApplicationInfoLegal = ({
             primary={{
               standing: BUTTON_STANDINGS.OUTLINED,
               text: t('screens:application.info.legal.cookies.button.chrome'),
+              size: 'small',
               component: 'a',
               href: storeLinks.chrome,
               target: '_blank',
@@ -117,6 +120,7 @@ const ApplicationInfoLegal = ({
             secondary={{
               standing: BUTTON_STANDINGS.OUTLINED,
               text: t('screens:application.info.legal.cookies.button.firefox'),
+              size: 'small',
               component: 'a',
               href: storeLinks.firefox,
               target: '_blank',

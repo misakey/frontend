@@ -15,6 +15,7 @@ import withDialogConnect from 'components/smart/Dialog/Connect/with';
 
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
+import omitTranslationProps from 'helpers/omit/translationProps';
 
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';
@@ -98,6 +99,7 @@ const CurrentDatabox = ({
   dispatchContact,
   initCrypto,
   t,
+  ...rest
 }) => {
   // dialogs
   const [openDialog, setOpenDialog] = useState(null);
@@ -240,7 +242,7 @@ const CurrentDatabox = ({
 
   if (!isAuthenticated || isEmpty(databox)) {
     return (
-      <>
+      <div {...omitTranslationProps(rest)}>
         <Title>
           {t('screens:application.vault.currentDatabox.title')}
         </Title>
@@ -258,13 +260,13 @@ const CurrentDatabox = ({
             />
           )}
         />
-      </>
+      </div>
     );
   }
 
   if (isEmpty(dpoEmail)) {
     return (
-      <>
+      <div {...omitTranslationProps(rest)}>
         <Title>
           {t('screens:application.vault.currentDatabox.title')}
         </Title>
@@ -295,12 +297,12 @@ const CurrentDatabox = ({
             }}
           />
         )}
-      </>
+      </div>
     );
   }
 
   return (
-    <>
+    <div {...omitTranslationProps(rest)}>
       <DialogDataboxArchive
         open={openDialog === DIALOGS.CLOSE}
         onClose={onDialogClose}
@@ -364,7 +366,7 @@ const CurrentDatabox = ({
         initCrypto={initCrypto}
       />
 
-    </>
+    </div>
   );
 };
 
