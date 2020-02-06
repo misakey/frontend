@@ -28,7 +28,7 @@ export const themeOptions = {
     MuiCardContent: {
       root: {
         '&:last-child': {
-          paddingBottom: 'inherit',
+          paddingBottom: null,
         },
       },
     },

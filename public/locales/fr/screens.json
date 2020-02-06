@@ -303,7 +303,7 @@
         "title": "Demande de portabilité du {{date}}",
         "closedBy": {
           "user": "J'ai fermé la requête après {{duration}}",
-          "dpo": "Le|la DPO a fermé la requête après {{duration}}"
+          "dpo": "Le·la DPO a fermé la requête après {{duration}}"
         }
       }
     },
