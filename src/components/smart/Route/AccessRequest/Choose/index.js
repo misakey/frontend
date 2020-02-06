@@ -30,8 +30,7 @@ import Box from '@material-ui/core/Box';
 const QUESTIONS_TRANS_KEY = 'screens:accessRequest.choose.questions';
 
 // HELPERS
-const getOwnerEmail = path(['owner', 'email']);
-const getOwnerName = path(['owner', 'display_name']);
+const getOwnerName = path(['owner', 'displayName']);
 const dpoEmailProp = prop('dpoEmail');
 const nameProp = prop('name');
 const idProp = prop('id');
@@ -96,11 +95,6 @@ const AccessRequestChoose = ({
     [error, isFetching],
   );
 
-  const ownerEmail = useMemo(
-    () => getOwnerEmail(accessRequest),
-    [accessRequest],
-  );
-
   const ownerName = useMemo(
     () => getOwnerName(accessRequest),
     [accessRequest],
@@ -129,7 +123,7 @@ const AccessRequestChoose = ({
 
   return (
     <ScreenAction
-      title={t('screens:accessRequest.choose.title', { ownerName, ownerEmail })}
+      title={t('screens:accessRequest.choose.title')}
       appBarProps={appBarProps}
       navigationProps={navigationProps}
       state={state}
@@ -142,13 +136,9 @@ const AccessRequestChoose = ({
                 i18nKey="screens:accessRequest.choose.desc"
                 values={{ ownerName, applicationName, dpoEmail }}
               >
-                {'Ceci est l’interface de transfert chiffré des données personnelles de {{ownerName}}.'}
+                {'Cette interface est exclusivement réservée aux responsables du traitement des données de {{applicationName}}.'}
                 <br />
-                <br />
-                {'{{ownerName}} souhaite récupérer ses données personnelles dans son coffre-fort Misakey afin d’assurer la chaîne de confiance lors du transfert.'}
-                <br />
-                <br />
-                {'L’accès est exclusivement réservé à {{applicationName}} et contrôlé par l’envoi d’un code de confirmation à {{dpoEmail}}.'}
+                {'Elle permet d’assurer la chaîne de confiance lors du transfert des données de {{ownerName}}.'}
               </Trans>
             </Typography>
             <Grid container>

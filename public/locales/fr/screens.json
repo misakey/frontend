@@ -1,14 +1,13 @@
 {
   "accessRequest": {
-    "title": "Accès au coffre-fort de {{ownerName}} ({{ownerEmail}})",
     "form": {
       "title": "Continuer sans compte",
       "subtitle": "Cliquer sur \"Demander un code\" pour recevoir un email à l'adresse {{dpoEmail}}"
     },
     "choose": {
-      "title": "Accès au coffre-fort de {{ownerName}} ({{ownerEmail}})",
-      "desc": "Ceci est l’interface de transfert chiffré des données personnelles de {{ownerName}}.<br/><br/>{{ownerName}} souhaite récupérer ses données personnelles dans son coffre-fort Misakey afin d’assurer la chaîne de confiance lors du transfert.<br/><br/>L’accès est exclusivement réservé à {{applicationName}} et contrôlé par l’envoi d’un code de confirmation à {{dpoEmail}}",
-      "passwordLess": "Je continue sans créer de compte. Un code de confirmation sera envoyé par e-mail à {{dpoEmail}}",
+      "title": "Interface de transfert sécurisée",
+      "desc": "Cette interface est exclusivement réservée aux responsables du traitement des données de {{applicationName}}.<br/>Elle permet d’assurer la chaîne de confiance lors du transfert des données de {{ownerName}}.",
+      "passwordLess": "J’accède ponctuellement à l’interface de transfert à l’aide d’un code de confirmation envoyé par e-mail à {{dpoEmail}}",
       "password": "Je me connecte avec mon compte Misakey ou j'en crée un afin de retrouver sur une même interface toutes les demandes de mes utilisateurs possédant un coffre-fort Misakey",
       "questions": {
         "title": "Questions fréquentes",
@@ -28,10 +27,10 @@
         }
       },
       "defaultDpoAccount": {
-        "label": "Continuer"
+        "label": "Accès par code"
       },
       "userAccount": {
-        "label": "Me connecter"
+        "label": "Connexion"
       }
     },
     "email": {
@@ -520,10 +519,10 @@
     },
     "Intro": {
       "dpo": {
-        "description": "Bienvenue dans l'espace DPO. Pour commencer, je recherche un site"
+        "description": "Bienvenue dans l'espace DPO. Pour commencer, je recherche un site."
       },
       "admin": {
-        "description": "Bienvenue dans l'espace administrateur. Pour commencer, je recherche un site"
+        "description": "Bienvenue dans l'espace administrateur. Pour commencer, je recherche un site."
       }
     },
     "Menu": {

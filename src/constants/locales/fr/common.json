@@ -203,7 +203,7 @@
     "mailto": "Email au DPO",
     "providers": {
       "subtitle": "J’envoie mon e-mail en 1 clic. Attention : certains bloqueurs peuvent empêcher la configuration de l’envoi avec GMail.",
-      "mailReminder": "J'utilise l'e-mail de mon compte misakey pour que le site puisse rechercher mes données associées à ce compte.",
+      "mailReminder": "J'utilise l'e-mail de mon compte Misakey pour que le site puisse rechercher mes données associées à ce compte.",
       "title": "Portabilité de mes données"
     },
     "bulk": {
