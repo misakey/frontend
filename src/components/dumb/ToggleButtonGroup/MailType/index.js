@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import MAIL_TYPES, { FRIENDLY_LEGAL } from 'constants/mailTypes';
+import MAIL_TYPES, { CORDIAL } from 'constants/mailTypes';
 
 import omitTranslationProps from 'helpers/omit/translationProps';
 
@@ -65,7 +65,7 @@ ToggleButtonGroupMailType.propTypes = {
 
 ToggleButtonGroupMailType.defaultProps = {
   values: MAIL_TYPES.map((type) => ({ type })),
-  currentValue: FRIENDLY_LEGAL,
+  currentValue: CORDIAL,
   prefix: 'mailType',
 };
 

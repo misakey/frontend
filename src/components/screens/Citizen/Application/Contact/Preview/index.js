@@ -155,8 +155,8 @@ const ContactPreview = ({
     [t],
   );
   const body = useMemo(
-    () => t(`common:emailBody.${mailType}`, { dpoEmail, databoxURL, ...mapDates(databox) }),
-    [databoxURL, databox, dpoEmail, mailType, t],
+    () => t(`common:emailBody.${mailType}`, { dpoEmail, databoxURL, mainDomain, ...mapDates(databox) }),
+    [databoxURL, databox, mainDomain, dpoEmail, mailType, t],
   );
 
   const nextTo = useMemo(

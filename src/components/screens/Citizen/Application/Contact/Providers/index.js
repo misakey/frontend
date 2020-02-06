@@ -44,7 +44,7 @@ const ContactProviders = ({
   databox,
   t,
 }) => {
-  const { dpoEmail, name } = useMemo(
+  const { dpoEmail, name, mainDomain } = useMemo(
     () => (isNil(entity) ? {} : entity),
     [entity],
   );
@@ -62,8 +62,11 @@ const ContactProviders = ({
     [t],
   );
   const body = useMemo(
-    () => t(`common:emailBody.${mailType}`, { dpoEmail, databoxURL, ...mapDates(databox) }),
-    [databoxURL, databox, dpoEmail, mailType, t],
+    () => t(
+      `common:emailBody.${mailType}`,
+      { dpoEmail, databoxURL, mainDomain, ...mapDates(databox) },
+    ),
+    [databoxURL, databox, dpoEmail, mailType, mainDomain, t],
   );
 
   const mailtoProps = useMailtoProps(dpoEmail, name, subject, body);

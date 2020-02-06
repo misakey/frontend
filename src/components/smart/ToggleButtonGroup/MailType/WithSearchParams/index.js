@@ -2,7 +2,7 @@ import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect, useLocation } from 'react-router-dom';
 
-import MAIL_TYPES, { FRIENDLY_LEGAL } from 'constants/mailTypes';
+import MAIL_TYPES, { CORDIAL } from 'constants/mailTypes';
 
 import isNil from '@misakey/helpers/isNil';
 import getNextSearch from 'helpers/getNextSearch';
@@ -64,7 +64,7 @@ ToggleButtonGroupMailTypeWithSearchParams.propTypes = {
 
 ToggleButtonGroupMailTypeWithSearchParams.defaultProps = {
   values: MAIL_TYPES,
-  defaultValue: FRIENDLY_LEGAL,
+  defaultValue: CORDIAL,
   prefix: 'mailType',
 };
 

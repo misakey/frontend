@@ -86,8 +86,8 @@ const useGetEmailFor = (
   const databox = prop(id, currentDataboxesByProducer);
   const { status, dpoComment } = databox || {};
 
-  const { databoxURL, alreadyContacted } = propOrEmptyObject(databoxURLsById, id);
-  const customMailType = propOrNull(mailTypesByApp, id);
+  const { databoxURL, alreadyContacted } = propOrEmptyObject(id, databoxURLsById);
+  const customMailType = propOrNull(id, mailTypesByApp);
   const defaultMailType = alreadyContacted ? getDefaultMailTypeRecontact(dpoComment) : LEGAL;
   const mailType = customMailType || defaultMailType;
   return {
@@ -106,6 +106,7 @@ const useGetEmailFor = (
       body: t(`common:emailBody.${mailType || defaultMailType}`, {
         dpoEmail,
         databoxURL,
+        mainDomain,
         ...mapDates(databox),
       }),
       subject: t('common:emailSubject'),
