@@ -21,6 +21,7 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 import { getCurrentDatabox } from 'helpers/databox';
+import { IS_PLUGIN } from 'constants/plugin';
 
 // HELPERS
 const idProp = prop('id');
@@ -88,7 +89,8 @@ const withDataboxURL = (mapper = identity) => (Component) => {
     const onDatabox = useCallback(
       (box) => requestDataboxAccess(box.id)
         .then(({ token }) => {
-          const nextDataboxURL = parseUrlFromLocation(`${routes.requests}#${token}`).href;
+          const href = IS_PLUGIN ? window.env.APP_URL : window.env.href;
+          const nextDataboxURL = parseUrlFromLocation(`${routes.requests}#${token}`, href).href;
           dispatchContact(nextDataboxURL, mainDomain);
         }),
       [dispatchContact, mainDomain],

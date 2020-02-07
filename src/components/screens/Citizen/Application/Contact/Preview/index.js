@@ -34,6 +34,9 @@ import ToggleButtonGroupMailType from 'components/smart/ToggleButtonGroup/MailTy
 import PreMail from 'components/dumb/Pre/Mail';
 
 import Navigation from 'components/dumb/Navigation';
+import clsx from 'clsx';
+import { IS_PLUGIN } from 'constants/plugin';
+import { getStyleForContainerScroll } from 'components/dumb/Screen';
 
 // CONSTANTS
 const PROVIDERS = {
@@ -44,15 +47,21 @@ const SEND_CONFIG = {
   [GMAIL.key]: sendGmailMessage,
 };
 
+const NAV_BAR_HEIGHT = 57;
+
 // HELPERS
 const scriptSrcProp = prop('scriptSrc');
 const scriptOnLoadProp = propOr(noop, 'onLoad');
 const scriptOnAlreadyLoadedProp = propOr(noop, 'onAlreadyLoaded');
 
 // HOOKS
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   spanNoWrap: {
     whiteSpace: 'nowrap',
+  },
+  container: {
+    ...getStyleForContainerScroll(theme, NAV_BAR_HEIGHT),
+    padding: theme.spacing(2),
   },
 }));
 
@@ -255,8 +264,9 @@ const ContactPreview = ({
         history={history}
         toolbarProps={{ maxWidth: 'md' }}
         title={t('screens:contact.preview.title')}
+        gutterBottom={!IS_PLUGIN}
       />
-      <Container maxWidth="md">
+      <Container maxWidth="md" className={clsx({ [classes.container]: IS_PLUGIN })}>
         <Subtitle>
           {t('screens:contact.preview.subtitle')}
         </Subtitle>

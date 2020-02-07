@@ -1,5 +1,5 @@
-function parseUrlFromLocation(url = '/') {
-  return new URL(url, window.location.href);
+function parseUrlFromLocation(url = '/', href = window.location.href) {
+  return new URL(url, href);
 }
 
 export default parseUrlFromLocation;

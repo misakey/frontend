@@ -11,6 +11,13 @@ export function openInNewTab(url) {
   browser.tabs.create({ url });
 }
 
+// @FIXME: improve
+export function openMailto(url) {
+  setTimeout(() => {
+    browser.tabs.create({ url });
+  }, 1000);
+}
+
 export function isPluginDetected() {
   return !isNil(document.getElementById('ExtensionCheck_Misakey'));
 }

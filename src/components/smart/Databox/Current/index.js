@@ -36,6 +36,7 @@ import Title from 'components/dumb/Typography/Title';
 import CardSimpleText from 'components/dumb/Card/Simple/Text';
 import CardSimpleDoubleButton from 'components/dumb/Card/Simple/DoubleButton';
 import DataboxContent from 'components/smart/Databox/Content';
+import { IS_PLUGIN } from 'constants/plugin';
 
 
 // CONSTANTS
@@ -76,7 +77,8 @@ const createdAtProp = prop('createdAt');
 // HOOKS
 const useOnReopenMailTo = (mainDomain, dispatchContact, history, search) => useCallback(
   (token) => {
-    const databoxURL = parseUrlFromLocation(`${routes.requests}#${token}`).href;
+    const href = IS_PLUGIN ? window.env.APP_URL : window.env.href;
+    const databoxURL = parseUrlFromLocation(`${routes.requests}#${token}`, href).href;
     const nextSearch = getNextSearch(search, new Map([['reopen', true]]));
     dispatchContact(databoxURL, mainDomain, nextSearch, history);
   },

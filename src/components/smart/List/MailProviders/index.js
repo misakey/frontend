@@ -32,6 +32,8 @@ import IconError from '@material-ui/icons/Error';
 import IconSuccess from '@material-ui/icons/Done';
 import DialogConfirm from 'components/dumb/Dialog/Confirm';
 import BulkMailToDialog from 'components/smart/List/MailProviders/BulkMailToDialog';
+import { IS_PLUGIN } from 'constants/plugin';
+import { openMailto } from 'helpers/plugin';
 
 // CONSTANTS
 const PROVIDERS = [
@@ -160,6 +162,7 @@ const ListMailProviders = ({
   onChange,
   disabled,
   allowManual,
+  allowProviders,
   mailtoProps,
   t,
 }) => {
@@ -228,8 +231,11 @@ const ListMailProviders = ({
     () => {
       onChange();
       displayMailToSnackbar();
+      if (IS_PLUGIN) {
+        openMailto(head(mailtoHrefs).href);
+      }
     },
-    [displayMailToSnackbar, onChange],
+    [displayMailToSnackbar, mailtoHrefs, onChange],
   );
 
   const bulkManualOnClick = useCallback(
@@ -241,17 +247,21 @@ const ListMailProviders = ({
   );
 
 
-  const manualButtonProps = useMemo(() => (
-    isBulk ? {
-      onClick: bulkManualOnClick,
-    } : {
+  const manualButtonProps = useMemo(() => {
+    if (isBulk) {
+      return { onClick: bulkManualOnClick };
+    }
+    if (IS_PLUGIN) {
+      return { onClick: simpleManualOnClick };
+    }
+    return {
       component: 'a',
       target: '_blank',
       rel: 'noopener noreferrer',
       href: head(mailtoHrefs).href,
       onClick: simpleManualOnClick,
-    }
-  ), [bulkManualOnClick, isBulk, mailtoHrefs, simpleManualOnClick]);
+    };
+  }, [bulkManualOnClick, isBulk, mailtoHrefs, simpleManualOnClick]);
 
   const onLoad = useMemo(
     () => scriptOnLoadProp(provider)(onConsentCheck, onConsentCatch),
@@ -314,7 +324,7 @@ const ListMailProviders = ({
         title={t('common:providers.bulkError.title')}
       />
       <List>
-        {PROVIDERS.map(({ key, alt, logoSrc }) => (
+        {allowProviders && PROVIDERS.map(({ key, alt, logoSrc }) => (
           <ListItem
             button
             disabled={disabled}
@@ -369,6 +379,7 @@ ListMailProviders.propTypes = {
   ]),
   disabled: PropTypes.bool,
   allowManual: PropTypes.bool,
+  allowProviders: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,
@@ -378,6 +389,7 @@ ListMailProviders.defaultProps = {
   mailtoProps: null,
   disabled: false,
   allowManual: false,
+  allowProviders: !IS_PLUGIN,
 };
 
 
