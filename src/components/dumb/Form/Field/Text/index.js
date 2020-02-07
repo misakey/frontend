@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import TextField from '@material-ui/core/TextField';
 import omit from '@misakey/helpers/omit';
+
 import withErrors from '../withErrors';
 
 const FieldText = ({

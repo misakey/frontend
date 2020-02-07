@@ -12,14 +12,16 @@ import routes from 'routes';
 import errorTypes from 'constants/errorTypes';
 import { mainDomainValidationSchema, MAIN_DOMAIN_REGEX } from 'constants/validationSchemas/information';
 
+import ApplicationSchema from 'store/schemas/Application';
+import { receiveEntities } from '@misakey/store/actions/entities';
+
 import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
 
-import ApplicationSchema from 'store/schemas/Application';
-import { receiveEntities } from '@misakey/store/actions/entities';
+import useSuspenseMaterialFix from 'hooks/useSuspenseMaterialFix';
 
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -117,6 +119,9 @@ const ApplicationsCreate = ({
 
   const classes = useStyles();
 
+  // WARNING: this is an ugly hook for workaround, use it with precaution
+  const { ref, key } = useSuspenseMaterialFix();
+
   const onSubmit = useOnSubmit(
     dispatchApplicationCreate,
     enqueueSnackbar,
@@ -150,6 +155,8 @@ const ApplicationsCreate = ({
               <Form className={classes.form}>
                 <Field
                   type="text"
+                  inputRef={ref}
+                  key={key}
                   name={MAIN_DOMAIN_FIELD_NAME}
                   inputProps={{
                     autoComplete: 'off',
@@ -159,7 +166,7 @@ const ApplicationsCreate = ({
                   helperText={t('fields:mainDomain.helperText')}
                 />
                 <ButtonSubmit isSubmitting={isSubmitting} isValid={isValid}>
-                  {t('submit')}
+                  {t('common:submit')}
                 </ButtonSubmit>
               </Form>
             </Container>
@@ -186,4 +193,4 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation('screens')(ApplicationsCreate));
+export default connect(null, mapDispatchToProps)(withTranslation(['screens', 'common', 'fields'])(ApplicationsCreate));
