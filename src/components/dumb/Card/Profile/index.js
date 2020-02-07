@@ -31,17 +31,15 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     marginBottom: theme.spacing(2),
   },
-  listItem: {
-    container: {
-      width: '100%',
-    },
-    emailItem: {
-      maxWidth: '100%',
-    },
-    emailItemTypo: {
-      width: '100%',
-      display: 'inline-block',
-    },
+  emailItem: {
+    maxWidth: '100%',
+  },
+  emailItemTypo: {
+    width: '100%',
+    display: 'inline-block',
+  },
+  listItemContainer: {
+    width: '100%',
   },
   listItemIcon: {
     textTransform: 'uppercase',
@@ -72,7 +70,7 @@ const CardProfile = ({ profile, t }) => {
           component={Link}
           divider
           aria-label={t('fields:displayName.action')}
-          classes={classes.listItem}
+          classes={{ container: classes.listItemContainer }}
         >
           <ListItemIcon className={classes.listItemIcon}>
             <Typography>{t('fields:displayName.label')}</Typography>
@@ -88,7 +86,7 @@ const CardProfile = ({ profile, t }) => {
           component={Link}
           divider
           aria-label={t('fields:avatar.action')}
-          classes={classes.listItem}
+          classes={{ container: classes.listItemContainer }}
         >
           <ListItemIcon className={classes.listItemIcon}>
             <Typography>{t('fields:avatar.label')}</Typography>
@@ -104,7 +102,7 @@ const CardProfile = ({ profile, t }) => {
           component={Link}
           divider
           aria-label={t('fields:password.action')}
-          classes={classes.listItem}
+          classes={{ container: classes.listItemContainer }}
         >
           <ListItemIcon className={classes.listItemIcon}>
             <Typography>{t('fields:password.label')}</Typography>
@@ -115,7 +113,7 @@ const CardProfile = ({ profile, t }) => {
           </ListItemSecondaryAction>
         </ListItem>
         <ListItem
-          classes={classes.listItem}
+          classes={{ container: classes.listItemContainer }}
           divider
         >
           <ListItemIcon className={classes.listItemIcon}>
@@ -128,7 +126,7 @@ const CardProfile = ({ profile, t }) => {
           />
         </ListItem>
         <ListItem
-          classes={classes.listItem}
+          classes={{ container: classes.listItemContainer }}
           divider
         >
           <ListItemIcon className={classes.listItemIcon}>

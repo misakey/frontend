@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { AVATAR_SIZE } from 'constants/ui/sizes';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
@@ -9,18 +11,20 @@ import AvatarColorized from '../Colorized';
 // CONSTANTS
 
 // HOOKS
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    margin: '3rem 0',
+    [theme.breakpoints.up('sm')]: {
+      margin: theme.spacing(6, 0),
+    },
   },
   avatar: {
-    width: '100px',
-    height: '100px',
-    fontSize: '3.25rem',
-    margin: '1rem 0',
+    width: `calc(2 * ${AVATAR_SIZE}px)`,
+    height: `calc(2 * ${AVATAR_SIZE}px)`,
+    fontSize: theme.typography.h3.fontSize,
+    margin: theme.spacing(2, 0),
   },
   title: {
     flexGrow: 1,
