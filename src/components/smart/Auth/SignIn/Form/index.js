@@ -50,7 +50,7 @@ const useDisableNext = (values, errors, isValid, isSubmitting, step) => useMemo(
 
 const useHandleErrors = (formProps, handleGenericHttpErrors) => useCallback((e) => {
   if (!isEmpty(e.details)) {
-    handleLoginApiErrors({ fields: e.details }, formProps);
+    handleLoginApiErrors(e, formProps);
   } else {
     handleGenericHttpErrors(e);
   }
