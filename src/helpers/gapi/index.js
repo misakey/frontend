@@ -28,10 +28,7 @@ export const askAuth = (libs, discoveryDocs, scope) => (
 ) => () => init(libs, discoveryDocs, scope)
   .then(() => {
     const AuthInstance = window.gapi.auth2.getAuthInstance();
-    const isSignedIn = AuthInstance.isSignedIn.get();
-    if (isSignedIn) { return Promise.resolve(isSignedIn); }
-
-    return AuthInstance.signIn();
+    return AuthInstance.signIn({ prompt: 'select_account' });
   })
   .then(callback, onError);
 
