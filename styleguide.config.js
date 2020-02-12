@@ -6,9 +6,6 @@ module.exports = {
   sections: [{
     name: 'Documentation',
     sections: [{
-      name: 'Sending requests',
-      content: 'src/packages/api/README.md',
-    }, {
       name: 'Auth bundle',
       content: 'src/packages/auth/README.md',
       components: 'src/packages/auth/src/components/**/+([A-Z]*)/*.js',
