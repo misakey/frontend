@@ -21,7 +21,7 @@ import { BUTTON_STANDINGS } from 'components/dumb/Button';
 import CardSimpleText from 'components/dumb/Card/Simple/Text';
 import CardSimpleDoubleButton from 'components/dumb/Card/Simple/DoubleButton';
 import DetectedTrackersSummary from 'components/screens/Citizen/Application/Info/Legal/ThirdPartySummary';
-import { isPluginDetected } from 'helpers/plugin';
+import { isPluginDetected } from '@misakey/helpers/plugin';
 
 
 // CONSTANTS

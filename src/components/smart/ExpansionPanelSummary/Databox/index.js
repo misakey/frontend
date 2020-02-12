@@ -7,9 +7,9 @@ import DataboxSchema from 'store/schemas/Databox';
 
 import isNil from '@misakey/helpers/isNil';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import omitTranslationProps from 'helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import { useDateFormatMemo } from 'hooks/useDateFormat';
+import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 

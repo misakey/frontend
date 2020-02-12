@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import * as numeral from 'numeral';
 
 import isArray from '@misakey/helpers/isArray';
-import omitTranslationProps from 'helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import Chip from '@material-ui/core/Chip';
 

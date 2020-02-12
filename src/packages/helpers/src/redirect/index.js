@@ -1,4 +1,4 @@
-import isSamePage from 'helpers/isSamePage';
+import isSamePage from '@misakey/helpers/isSamePage';
 import isSameHost from '@misakey/helpers/isSameHost';
 
 

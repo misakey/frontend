@@ -7,7 +7,7 @@ import omit from '@misakey/helpers/omit';
 import isEmpty from '@misakey/helpers/isEmpty';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { MIN_PX_0_LANDSCAPE, MIN_PX_600 } from 'constants/ui/medias';
+import { MIN_PX_0_LANDSCAPE, MIN_PX_600 } from '@misakey/ui/constants/medias';
 
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
@@ -18,7 +18,7 @@ import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import ErrorIcon from '@material-ui/icons/Error';
 
 import AppBar from 'components/dumb/AppBar';
-import { isDesktopDevice } from 'helpers/devices';
+import { isDesktopDevice } from '@misakey/helpers/devices';
 import { IS_PLUGIN } from 'constants/plugin';
 
 const useBoxStyles = makeStyles({

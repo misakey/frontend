@@ -11,9 +11,9 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 import prop from '@misakey/helpers/prop';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import redirect from 'helpers/redirect';
+import redirect from '@misakey/helpers/redirect';
 
-import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';

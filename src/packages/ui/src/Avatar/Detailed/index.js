@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { AVATAR_SIZE } from 'constants/ui/sizes';
+import { AVATAR_SIZE } from '@misakey/ui/constants/sizes';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';

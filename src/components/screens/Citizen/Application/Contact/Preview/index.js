@@ -14,17 +14,17 @@ import DataboxSchema from 'store/schemas/Databox';
 import { GMAIL } from 'constants/mail-providers';
 import RECONTACT_MAIL_TYPES, { NO_ANSWER, REFUSED } from 'constants/mailTypes/recontact';
 
-import useScript from 'hooks/useScript';
+import useScript from '@misakey/hooks/useScript';
 
-import { sendMessage as sendGmailMessage, SEND_MAIL_CONFIG as GMAIL_CONFIG } from 'helpers/gapi/gmail';
+import { sendMessage as sendGmailMessage, SEND_MAIL_CONFIG as GMAIL_CONFIG } from '@misakey/helpers/gapi/gmail';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 import prop from '@misakey/helpers/prop';
 import propOr from '@misakey/helpers/propOr';
 import noop from '@misakey/helpers/noop';
 import getSearchParams from '@misakey/helpers/getSearchParams';
-import getNextSearch from 'helpers/getNextSearch';
-import mapDates from 'helpers/mapDates';
+import getNextSearch from '@misakey/helpers/getNextSearch';
+import mapDates from '@misakey/helpers/mapDates';
 
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';

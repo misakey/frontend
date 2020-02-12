@@ -1,4 +1,4 @@
-import getDateFormat from 'helpers/getDateFormat';
+import getDateFormat from '@misakey/helpers/getDateFormat';
 
 import isObject from '@misakey/helpers/isObject';
 

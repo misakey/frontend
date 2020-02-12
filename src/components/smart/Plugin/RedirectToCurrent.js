@@ -7,7 +7,7 @@ import routes from 'routes';
 import { parse } from 'tldts';
 import isNil from '@misakey/helpers/isNil';
 import { DefaultSplashScreen } from 'components/dumb/Screen';
-import { isOnboardingDone } from 'helpers/plugin';
+import { isOnboardingDone } from '@misakey/helpers/plugin';
 
 // @FIXME add to js-common helpers
 async function getCurrentTab() {

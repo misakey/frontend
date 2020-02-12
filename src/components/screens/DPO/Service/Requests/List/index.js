@@ -11,7 +11,7 @@ import isNil from '@misakey/helpers/isNil';
 import noop from '@misakey/helpers/noop';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import { getStatus } from 'helpers/databox';
+import { getStatus } from '@misakey/helpers/databox';
 
 import InfiniteLoader from 'react-virtualized/dist/commonjs/InfiniteLoader';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';

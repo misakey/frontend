@@ -1,6 +1,6 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-import common from '../colors/common';
-import boulder from '../colors/boulder';
+import common from '@misakey/ui/colors/common';
+import boulder from '@misakey/ui/colors/boulder';
 
 export const themeOptions = {
   palette: {
@@ -19,9 +19,17 @@ export const themeOptions = {
     useNextVariants: true,
   },
   overrides: {
-    MuiLink: {
+    MuiButton: {
       root: {
-        color: common.secondary,
+        boxShadow: 'none !important',
+        borderRadius: 50,
+      },
+    },
+    MuiCardContent: {
+      root: {
+        '&:last-child': {
+          paddingBottom: null,
+        },
       },
     },
   },

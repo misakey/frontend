@@ -13,7 +13,7 @@ import isObject from '@misakey/helpers/isObject';
 
 import mapValues from '@misakey/helpers/mapValues';
 
-import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 import { FIELD_PROPTYPES } from 'components/dumb/Form/Fields';
 import Redirect from 'components/dumb/Redirect';

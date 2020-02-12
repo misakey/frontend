@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import routes from 'routes';
 
-import { redirectToApp } from 'helpers/plugin';
+import { redirectToApp } from '@misakey/helpers/plugin';
 import { IS_PLUGIN } from 'constants/plugin';
 
 import { withUserManager } from '@misakey/auth/components/OidcProvider';

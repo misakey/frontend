@@ -7,7 +7,7 @@ import {
 } from './classes';
 
 // code for the soon-to-be-retired MK Databox protocol
-// mostly copied from https://gitlab.com/Misakey/crypto-js-sdk/
+// mostly copied from https://gitlab.misakey.dev/misakey/crypto-js-sdk/
 // and re-using new code (code out of databox/)
 // only when strictly necessary
 import * as databox from './databox';

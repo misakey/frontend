@@ -7,9 +7,9 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import { GMAIL } from 'constants/mail-providers';
 
-import useScript from 'hooks/useScript';
+import useScript from '@misakey/hooks/useScript';
 
-import { sendMessage as sendGmailMessage, SEND_MAIL_CONFIG as GMAIL_CONFIG } from 'helpers/gapi/gmail';
+import { sendMessage as sendGmailMessage, SEND_MAIL_CONFIG as GMAIL_CONFIG } from '@misakey/helpers/gapi/gmail';
 import prop from '@misakey/helpers/prop';
 import isArray from '@misakey/helpers/isArray';
 import noop from '@misakey/helpers/noop';
@@ -33,7 +33,7 @@ import IconSuccess from '@material-ui/icons/Done';
 import DialogConfirm from 'components/dumb/Dialog/Confirm';
 import BulkMailToDialog from 'components/smart/List/MailProviders/BulkMailToDialog';
 import { IS_PLUGIN } from 'constants/plugin';
-import { openMailto } from 'helpers/plugin';
+import { openMailto } from '@misakey/helpers/plugin';
 
 // CONSTANTS
 const PROVIDERS = [

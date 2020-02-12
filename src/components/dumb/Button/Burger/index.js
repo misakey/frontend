@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import noop from '@misakey/helpers/noop';
-import omitTranslationProps from 'helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';

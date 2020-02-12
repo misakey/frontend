@@ -14,7 +14,7 @@ import CardSimpleText from 'components/dumb/Card/Simple/Text';
 import { FIREFOX_ADDON_URI, CHROME_ADDON_URI } from 'constants/links/addon';
 
 import routes from 'routes';
-import { redirectToApp, isPluginDetected } from 'helpers/plugin';
+import { redirectToApp, isPluginDetected } from '@misakey/helpers/plugin';
 import { BUTTON_STANDINGS } from 'components/dumb/Button';
 import CardSimpleDoubleButton from 'components/dumb/Card/Simple/DoubleButton';
 

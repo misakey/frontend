@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import isNil from '@misakey/helpers/isNil';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import log from '@misakey/helpers/log';
-import { fetchApplicationsByCategory } from 'helpers/fetchApplications';
+import { fetchApplicationsByCategory } from '@misakey/helpers/fetchApplications';
 
 import Container from '@material-ui/core/Container';
 import Navigation from 'components/dumb/Navigation';

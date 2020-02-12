@@ -14,16 +14,14 @@ const profile = {
   email: 'test@misakey.com',
 };
 const ButtonConnectTokenExample = () => (
-  <React.Suspense fallback="Loading...">
-    <Router>
-      <ButtonConnectToken
-        AccountLink={AccountLink}
-        enqueueSnackBar={enqueueSnackBar}
-        onSignOut={onSignOut}
-        profile={profile}
-      />
-    </Router>
-  </React.Suspense>
+  <Router>
+    <ButtonConnectToken
+      AccountLink={AccountLink}
+      enqueueSnackBar={enqueueSnackBar}
+      onSignOut={onSignOut}
+      profile={profile}
+    />
+  </Router>
 );
 
   <ButtonConnectTokenExample />;
@@ -55,19 +53,17 @@ const profile = {
 const ButtonConnectTokenExample = () => {
   const classes = useStyles();
   return (
-    <React.Suspense fallback="Loading...">
-      <Router>
-        <ButtonConnectToken
-          AccountLink={AccountLink}
-          enqueueSnackBar={enqueueSnackBar}
-          onSignOut={onSignOut}
-          profile={profile}
-          token={token}
-          id={id}
-          classes={{ root: classes.iconButtonRoot }}
-        />
-      </Router>
-    </React.Suspense>
+    <Router>
+      <ButtonConnectToken
+        AccountLink={AccountLink}
+        enqueueSnackBar={enqueueSnackBar}
+        onSignOut={onSignOut}
+        profile={profile}
+        token={token}
+        id={id}
+        classes={{ root: classes.iconButtonRoot }}
+      />
+    </Router>
   );
 };
 

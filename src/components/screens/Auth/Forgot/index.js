@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 
 import routes from 'routes';

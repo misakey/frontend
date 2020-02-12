@@ -15,7 +15,7 @@ import Tab from '@material-ui/core/Tab';
 import Container from '@material-ui/core/Container';
 
 import ElevationScroll from 'components/dumb/ElevationScroll';
-import { MIN_PX_0_LANDSCAPE, MIN_PX_600 } from 'constants/ui/medias';
+import { MIN_PX_0_LANDSCAPE, MIN_PX_600 } from '@misakey/ui/constants/medias';
 
 import routes from 'routes';
 

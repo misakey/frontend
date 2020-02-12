@@ -7,7 +7,7 @@ import routes from 'routes';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import omitTranslationProps from 'helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';

@@ -30,7 +30,7 @@ import StorageIcon from '@material-ui/icons/Storage';
 import CheckIcon from '@material-ui/icons/Check';
 
 import routes from 'routes';
-import { DRAWER_WIDTH } from 'constants/ui/sizes';
+import { DRAWER_WIDTH } from '@misakey/ui/constants/sizes';
 
 const iOS = isIOS();
 

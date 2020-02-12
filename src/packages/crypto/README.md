@@ -9,7 +9,7 @@ Provides cryptographic operations needed by in-browser applications
 at Misakey.
 
 For now the Misakey Crypto SDK can be used to run
-the MK Data protocol (documented [here](https://gitlab.com/Misakey/rfc/blob/master/mk-data-protocol.md))
+the MK Data protocol (documented [here](https://gitlab.misakey.dev/misakey/rfc/blob/master/mk-data-protocol.md))
 as well as the MK Databox protocol.
 
 
@@ -60,7 +60,7 @@ with `ownerCryptoContext.initialize(ownerId)`.
 An owner in MK Data and MK Databox protocols has *secrets*
 which are persisted in an encrypted backup
 stored on Misakey's servers
-(see https://gitlab.com/Misakey/rfc/blob/master/secrets-backup-protocol.md)
+(see https://gitlab.misakey.dev/misakey/rfc/blob/master/secrets-backup-protocol.md)
 During the creation of the user account,
 initial cryptographic values are created and returned by
 `ownerCryptoContext.createNewOwnerSecrets(password)`
@@ -110,7 +110,7 @@ a literal object as well,
 with attributes `datatype`, `dataTimestamp`, `producerApplicationId` and `inputSource`
 (See [the backend specification for cryptograms][]).
 
-[the backend specification for cryptograms]: https://gitlab.com/Misakey/consent-backend/blob/master/docs/swagger/cryptograms.yaml
+[the backend specification for cryptograms]: https://gitlab.misakey.dev/misakey/consent-backend/blob/master/docs/swagger/cryptograms.yaml
 
 Finally a owner can retrieve data points
 from channels they own with the method `ownerCryptoContext.getDataPoints(searchQuery)`.

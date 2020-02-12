@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import { AVATAR_SIZE } from 'constants/ui/sizes';
+import { AVATAR_SIZE } from '@misakey/ui/constants/sizes';
 
 import any from '@misakey/helpers/any';
 import complement from '@misakey/helpers/complement';

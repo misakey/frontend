@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 
 import { useHistory } from 'react-router-dom';
-import useLocationSearchParams from 'hooks/useLocationSearchParams';
-import useLocationWorkspace from 'hooks/useLocationWorkspace';
+import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
+import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 
 import SearchIcon from '@material-ui/icons/Search';
 import IconButton from '@material-ui/core/IconButton';

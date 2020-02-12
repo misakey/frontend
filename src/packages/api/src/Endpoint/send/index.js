@@ -25,7 +25,7 @@ export const getErrorDescriptor = (status, json) => {
 /**
  * Handles server responses
  *
- * https://gitlab.com/Misakey/dev-manifesto/blob/master/conventions.md#error-conventions
+ * https://gitlab.misakey.dev/misakey/dev-manifesto/blob/master/conventions.md#error-conventions
  * https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
  * Informational responses (100–199),
  * Successful responses (200–299),

@@ -25,7 +25,7 @@ import propEq from '@misakey/helpers/propEq';
 import tail from '@misakey/helpers/tail';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import { getCurrentDatabox, sortDataboxes } from 'helpers/databox';
+import { getCurrentDatabox, sortDataboxes } from '@misakey/helpers/databox';
 
 import ListQuestions, { useQuestionsItems, getQuestionsItems } from 'components/dumb/List/Questions';
 import ScreenError from 'components/dumb/Screen/Error';

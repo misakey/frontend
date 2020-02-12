@@ -4,9 +4,9 @@ import { withTranslation } from 'react-i18next';
 
 import { SUGGESTED_TYPE, LINKED_TYPE } from 'constants/search/application/type';
 
-import omitTranslationProps from 'helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import useLocationWorkspace from 'hooks/useLocationWorkspace';
+import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 
 import ListSubheader from '@material-ui/core/ListSubheader';
 

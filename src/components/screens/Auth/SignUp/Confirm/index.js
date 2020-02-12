@@ -14,7 +14,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import isObject from '@misakey/helpers/isObject';
 import join from '@misakey/helpers/join';
 
-import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import { screenAuthSetCredentials, screenAuthSetPublics } from 'store/actions/screens/auth';

@@ -17,7 +17,8 @@ import compose from '@misakey/helpers/compose';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
-import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';

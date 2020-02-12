@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import isNil from '@misakey/helpers/isNil';
-import omitTranslationProps from 'helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import useCalendarDateSince from 'hooks/useCalendarDateSince';
+import useCalendarDateSince from '@misakey/hooks/useCalendarDateSince';
 
 import Chip from '@material-ui/core/Chip';
 

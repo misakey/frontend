@@ -8,11 +8,9 @@ const ButtonGoBackExample = () => {
   const WrappedButtonGoBack = withRouter(ButtonGoBack);
 
   return (
-    <React.Suspense fallback="Loading...">
-      <Router>
-        <WrappedButtonGoBack />
-      </Router>
-    </React.Suspense>
+    <Router>
+      <WrappedButtonGoBack />
+    </Router>
   );
 };
 

@@ -21,7 +21,7 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
 
-import useSuspenseMaterialFix from 'hooks/useSuspenseMaterialFix';
+import useSuspenseMaterialFix from '@misakey/hooks/useSuspenseMaterialFix';
 
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';

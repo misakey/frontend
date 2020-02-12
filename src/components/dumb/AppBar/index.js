@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { DRAWER_WIDTH } from 'constants/ui/sizes';
+import { DRAWER_WIDTH } from '@misakey/ui/constants/sizes';
 import { IS_PLUGIN } from 'constants/plugin';
 
 import map from '@misakey/helpers/map';
@@ -11,8 +11,8 @@ import map from '@misakey/helpers/map';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { makeStyles } from '@material-ui/core/styles';
-import useLocationWorkspace from 'hooks/useLocationWorkspace';
-import omitTranslationProps from 'helpers/omit/translationProps';
+import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 
 import MuiAppBar from '@material-ui/core/AppBar';

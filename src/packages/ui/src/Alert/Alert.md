@@ -3,6 +3,8 @@ Alert example:
 ```js
 import React from 'react';
 import Button from '@material-ui/core/Button';
+
+
 import Alert from './index';
 
 const AlertExample = () => {
@@ -11,8 +13,8 @@ const AlertExample = () => {
   const handleClose = () => setOpen(false);
 
   return (
-    <React.Suspense fallback="Loading...">
-      <Button onClick={handleButtonClick} color="primary" variant="contained">
+    <>
+      <Button onClick={handleButtonClick} color="secondary" variant="contained">
         Show Alert
       </Button>
       <Alert
@@ -22,7 +24,7 @@ const AlertExample = () => {
         title="Hello World !"
         text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed fermentum eros a lobortis faucibus. Duis efficitur, libero ac facilisis placerat, nulla nunc finibus ante, et commodo neque lacus vel velit."
       />
-    </React.Suspense>
+    </>
   );
 };
 

@@ -13,7 +13,7 @@ import { IS_PLUGIN } from 'constants/plugin';
 import routes from 'routes';
 
 import isNil from '@misakey/helpers/isNil';
-import { openInNewTab } from 'helpers/plugin';
+import { openInNewTab } from '@misakey/helpers/plugin';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import { receiveEntities } from '@misakey/store/actions/entities';
@@ -37,7 +37,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
 import withDialogConnect from 'components/smart/Dialog/Connect/with';
-import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 import CardSimpleText from 'components/dumb/Card/Simple/Text';
 
 const useStyles = makeStyles(() => ({

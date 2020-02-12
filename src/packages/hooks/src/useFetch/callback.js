@@ -4,7 +4,7 @@ import { useSnackbar } from 'notistack';
 import isFunction from '@misakey/helpers/isFunction';
 import log from '@misakey/helpers/log';
 
-import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 // CONSTANTS
 const CALLED_WHILE_FETCHING = '[useFetchCallback] Warning: callback was called during fetching lifecycle';

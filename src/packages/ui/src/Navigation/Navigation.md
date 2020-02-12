@@ -6,11 +6,9 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 
 const NavigationExample = () => (
-  <React.Suspense fallback="Loading...">
-    <Router>
-      <Navigation pushPath="/navigated" title="Navigation" toolbarProps={{ maxWidth: 'lg' }} />
-    </Router>
-  </React.Suspense>
+  <Router>
+    <Navigation pushPath="/navigated" title="Navigation" toolbarProps={{ maxWidth: 'lg' }} />
+  </Router>
 );
 
   <NavigationExample />;
@@ -23,11 +21,9 @@ import Navigation from '@misakey/ui/Navigation';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 const NavigationExample = () => (
-  <React.Suspense fallback="Loading...">
-    <Router>
-      <Navigation goBackPath="/navigated" title="Navigation" toolbarProps={{ maxWidth: 'lg' }} />
-    </Router>
-  </React.Suspense>
+  <Router>
+    <Navigation goBackPath="/navigated" title="Navigation" toolbarProps={{ maxWidth: 'lg' }} />
+  </Router>
 );
 
   <NavigationExample />;
@@ -43,11 +39,9 @@ import Navigation from '@misakey/ui/Navigation';
 const WrappedNavigation = withRouter(Navigation);
 
 const NavigationExample = () => (
-  <React.Suspense fallback="Loading...">
-    <Router>
-      <WrappedNavigation pushPath="/navigated" title="Navigation" toolbarProps={{ maxWidth: 'lg' }} />
-    </Router>
-  </React.Suspense>
+  <Router>
+    <WrappedNavigation pushPath="/navigated" title="Navigation" toolbarProps={{ maxWidth: 'lg' }} />
+  </Router>
 );
 
   <NavigationExample />;
@@ -63,11 +57,9 @@ import Navigation from '@misakey/ui/Navigation';
 const WrappedNavigation = withRouter(Navigation);
 
 const NavigationExample = () => (
-  <React.Suspense fallback="Loading...">
-    <Router>
-      <WrappedNavigation goBackPath="/navigated" title="Navigation" toolbarProps={{ maxWidth: 'lg' }} />
-    </Router>
-  </React.Suspense>
+  <Router>
+    <WrappedNavigation goBackPath="/navigated" title="Navigation" toolbarProps={{ maxWidth: 'lg' }} />
+  </Router>
 );
 
   <NavigationExample />;
@@ -84,11 +76,9 @@ import Navigation from '@misakey/ui/Navigation';
 const WrappedNavigation = withRouter(Navigation);
 
 const NavigationExample = () => (
-  <React.Suspense fallback="Loading...">
-    <Router>
-      <WrappedNavigation title="Navigation" toolbarProps={{ maxWidth: 'lg' }} />
-    </Router>
-  </React.Suspense>
+  <Router>
+    <WrappedNavigation title="Navigation" toolbarProps={{ maxWidth: 'lg' }} />
+  </Router>
 );
 
   <NavigationExample />;
@@ -138,15 +128,13 @@ const NavigationExample = () => {
   );
 
   return (
-    <React.Suspense fallback="Loading...">
-      <Router>
-        <Button onClick={onClick} color="primary" variant="contained">
-          Log location state
-        </Button>
-        <Link to={LINK_PATH}>Go to /linked</Link>
-        <WrappedLogNavigation log={log} pushPath={PUSH_PATH} title="Navigation" toolbarProps={{ maxWidth: 'lg' }} />
-      </Router>
-    </React.Suspense>
+    <Router>
+      <Button onClick={onClick} color="secondary" variant="contained">
+        Log location state
+      </Button>
+      <Link to={LINK_PATH}>Go to /linked</Link>
+      <WrappedLogNavigation log={log} pushPath={PUSH_PATH} title="Navigation" toolbarProps={{ maxWidth: 'lg' }} />
+    </Router>
   );
 };
 
@@ -159,9 +147,7 @@ import React from 'react';
 import Navigation from '@misakey/ui/Navigation';
 
 const NavigationExample = () => (
-  <React.Suspense fallback="Loading...">
-    <Navigation showGoBack={false} title="Navigation" toolbarProps={{ maxWidth: 'lg' }} />
-  </React.Suspense>
+  <Navigation showGoBack={false} title="Navigation" toolbarProps={{ maxWidth: 'lg' }} />
 );
 
   <NavigationExample />;

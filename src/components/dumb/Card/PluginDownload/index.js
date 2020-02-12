@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import Typography from '@material-ui/core/Typography';
 import { storeLinks } from 'constants/plugin';
-import { isChrome } from 'helpers/devices';
+import { isChrome } from '@misakey/helpers/devices';
 import Card from 'components/dumb/Card';
 
 

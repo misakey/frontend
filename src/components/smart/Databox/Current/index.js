@@ -15,15 +15,15 @@ import withDialogConnect from 'components/smart/Dialog/Connect/with';
 
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
-import omitTranslationProps from 'helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';
 import { updateDatabox } from 'store/actions/databox';
 import { contactDataboxURL } from 'store/actions/screens/contact';
 
-import { getDetailPairsHead } from 'helpers/apiError';
-import getNextSearch from 'helpers/getNextSearch';
+import { getDetailPairsHead } from '@misakey/helpers/apiError';
+import getNextSearch from '@misakey/helpers/getNextSearch';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';

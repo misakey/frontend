@@ -9,14 +9,14 @@ import noop from '@misakey/helpers/noop';
 import isFunction from '@misakey/helpers/isFunction';
 import isObject from '@misakey/helpers/isObject';
 
-import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useParseIdToken from '@misakey/hooks/useParseIdToken';
 
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
 
-import useParseIdToken from 'hooks/useParseIdToken';
 
 import AvatarColorized from '../../../Avatar/Colorized';
 

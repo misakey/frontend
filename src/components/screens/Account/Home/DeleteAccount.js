@@ -13,7 +13,7 @@ import DeleteAccountDialog from 'components/dumb/Dialog/Account/Delete';
 import { signOut } from '@misakey/auth/store/actions/auth';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
-import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';

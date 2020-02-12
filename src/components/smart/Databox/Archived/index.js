@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import moment from 'moment';
 
 import isEmpty from '@misakey/helpers/isEmpty';
-import omitTranslationProps from 'helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';

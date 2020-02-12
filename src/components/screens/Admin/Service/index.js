@@ -18,8 +18,8 @@ import ServiceInformation from 'components/screens/Admin/Service/Information';
 import ServiceSSO from 'components/screens/Admin/Service/SSO';
 import ServiceUsers from 'components/screens/Admin/Service/Users';
 import ServiceData from 'components/screens/Admin/Service/Data';
-import useLocationWorkspace from 'hooks/useLocationWorkspace';
-import useUserHasRole from 'hooks/useUserHasRole';
+import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
+import useUserHasRole from '@misakey/hooks/useUserHasRole';
 import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
 
 import 'components/screens/Admin/Service/Service.scss';

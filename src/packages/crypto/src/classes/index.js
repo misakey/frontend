@@ -113,7 +113,7 @@ export class OwnerCryptoContext {
     };
     // @FIXME add a method to check consistency between secret channel keys we have
     // and public channel keys on server
-    // (see https://gitlab.com/Misakey/js-common/issues/38)
+    // (see https://gitlab.misakey.dev/misakey/js-common/issues/38)
     const [{ id: dataChannelId }] = await postChannels([channel]);
     this.store.channelsPublicInfo[datatype].id = dataChannelId;
   }

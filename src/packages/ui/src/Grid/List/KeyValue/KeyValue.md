@@ -22,11 +22,9 @@ const entity = {
 };
 
 const GridListKeyValueExample = () => (
-  <React.Suspense fallback="Loading...">
-    <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-      <GridListKeyValue object={entity} cols={2} />
-    </SnackbarProvider>
-  </React.Suspense>
+  <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+    <GridListKeyValue object={entity} cols={2} />
+  </SnackbarProvider>
 );
 
   <GridListKeyValueExample />;

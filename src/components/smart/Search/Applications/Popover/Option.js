@@ -8,7 +8,7 @@ import ApplicationSchema from 'store/schemas/Application';
 
 import isNil from '@misakey/helpers/isNil';
 
-import useLocationWorkspace from 'hooks/useLocationWorkspace';
+import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 
 
 import ApplicationListItem from 'components/dumb/ListItem/Application';

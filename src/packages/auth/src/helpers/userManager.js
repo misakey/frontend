@@ -19,7 +19,7 @@ class MisakeyUserManager extends UserManager {
         //   - we add the nonce params to the request, as it will be checked by signInCallback
         //     method in case of an auth `token` request
         //   - we remove the code_challenge and the code_challenge method as there is no way for the
-        //     backend to handle it for now (https://gitlab.com/Misakey/js-common/issues/61#note_231261546)
+        //     backend to handle it for now (https://gitlab.misakey.dev/misakey/js-common/issues/61#note_231261546)
         const [baseUrl, params] = signinRequest.url.split('?');
         const searchParams = new URLSearchParams(params || '');
         searchParams.set('nonce', nonce);

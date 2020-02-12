@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import useWidth from '@misakey/hooks/useWidth';
 
 import displayIn from '@misakey/helpers/displayIn';
-import { redirectToApp } from 'helpers/plugin';
+import { redirectToApp } from '@misakey/helpers/plugin';
 import { IS_PLUGIN } from 'constants/plugin';
 
 import ButtonConnect from 'components/dumb/Button/Connect';

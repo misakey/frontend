@@ -44,6 +44,7 @@
     "glob-gitignore": "^1.0.14",
     "react-app-rewire-build-dev": "^1.0.1",
     "react-app-rewired": "^2.1.5",
+    "react-styleguidist": "^10.6.1",
     "rimraf": "^3.0.0",
     "rollup": "^1.27.6",
     "rollup-plugin-babel": "^4.3.3",
@@ -104,11 +105,11 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
     "tldts": "^5.6.1",
+    "tweetnacl": "^1.0.1",
+    "tweetnacl-util": "^0.15.0",
     "typeface-roboto": "^0.0.75",
     "uuid": "^3.3.3",
     "validator": "^11.1.0",
-    "tweetnacl": "^1.0.1",
-    "tweetnacl-util": "^0.15.0",
     "yup": "^0.27.0"
   },
   "scripts": {
@@ -124,7 +125,9 @@
     "eject": "react-scripts eject",
     "lint": "eslint ./src/ ./plugin/src --cache --report-unused-disable-directives --ext .js,.md",
     "lint:ci": "eslint ./src/ ./plugin/src --report-unused-disable-directives --ext .js,.md",
-    "lint:fix": "eslint ./src/ ./plugin/src --cache --fix --ext .js,.md"
+    "lint:fix": "eslint ./src/ ./plugin/src --cache --fix --ext .js,.md",
+    "styleguide": "styleguidist server",
+    "styleguide:build": "styleguidist build"
   },
   "browserslist": {
     "production": [

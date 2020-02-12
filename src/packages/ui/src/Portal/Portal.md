@@ -17,16 +17,14 @@ const useStyles = makeStyles(() => ({
 const PortalExample = () => {
   const classes = useStyles();
   return (
-    <React.Suspense fallback="Loading...">
-      <div>
-        Before
-        <div id={PORTAL_ID} />
-        After
-        <Portal elementId={PORTAL_ID} className={classes.elem}>
-          Middle
-        </Portal>
-      </div>
-    </React.Suspense>
+    <div>
+      Before
+      <div id={PORTAL_ID} />
+      After
+      <Portal elementId={PORTAL_ID} className={classes.elem}>
+        Middle
+      </Portal>
+    </div>
   );
 };
 

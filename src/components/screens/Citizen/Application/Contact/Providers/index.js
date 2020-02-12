@@ -10,7 +10,7 @@ import routes from 'routes';
 import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
 import getSearchParams from '@misakey/helpers/getSearchParams';
-import mapDates from 'helpers/mapDates';
+import mapDates from '@misakey/helpers/mapDates';
 import ContactProvidersBlock from 'components/smart/Contact/Providers';
 import Navigation from 'components/dumb/Navigation';
 

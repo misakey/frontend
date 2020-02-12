@@ -17,7 +17,7 @@ import prop from '@misakey/helpers/prop';
 
 import withAccessRequest from 'components/smart/withAccessRequest';
 import AccessRequestError from 'components/smart/Route/AccessRequest/Error';
-import useUserHasRole from 'hooks/useUserHasRole';
+import useUserHasRole from '@misakey/hooks/useUserHasRole';
 
 import SplashScreen from 'components/dumb/Screen/Splash';
 

@@ -8,11 +8,11 @@ import ApplicationSchema from 'store/schemas/Application';
 
 import { toggleFromSelected } from 'store/actions/screens/applications';
 
-import omitTranslationProps from 'helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isEmpty from '@misakey/helpers/isEmpty';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useLocationWorkspace from 'hooks/useLocationWorkspace';
+import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 
 import ApplicationImg from 'components/dumb/Application/Img';
 import ListItem from '@material-ui/core/ListItem';

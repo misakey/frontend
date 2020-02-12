@@ -1,0 +1,37 @@
+module.exports = {
+  color: {
+    base: '#333',
+    light: '#767676',
+    lightest: '#ccc',
+    link: '#e32e73',
+    linkHover: '#A52153',
+    focus: 'rgba(22, 115, 177, 0.25)',
+    border: '#711739',
+    name: '#e32e73',
+    type: '#A52153',
+    error: '#c00',
+    baseBackground: '#fff',
+    codeBackground: '#272822',
+    sidebarBackground: '#272822',
+    logo: '#fff',
+    searchText: '#DDD',
+
+    // Based on default Prism theme
+    codeBase: '#FFFFFF',
+    codeComment: '#75715E',
+    codePunctuation: '#FFFFFF',
+    codeProperty: '#66D9EF',
+    codeDeleted: '#905',
+    codeString: '#E6DB74',
+    codeInserted: '#690',
+    codeOperator: '#F92672',
+    codeKeyword: '#1673b1',
+    codeFunction: '#66D9EF',
+    codeVariable: '#e90',
+  },
+  fontFamily: {
+    base: ['"Roboto"', '"Ubuntu"', '"Helvetica Neue"', 'sans-serif'],
+  },
+  sidebarWidth: 250,
+  maxWidth: 1000,
+};

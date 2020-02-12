@@ -6,7 +6,7 @@ import { parse } from 'tldts';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
 
-import usePropChanged from 'hooks/usePropChanged';
+import usePropChanged from '@misakey/hooks/usePropChanged';
 
 import isNil from '@misakey/helpers/isNil';
 import head from '@misakey/helpers/head';

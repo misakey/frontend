@@ -6,8 +6,8 @@
   "author": "Misakey Team",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/Misakey/js-common.git",
-    "directory": "packages/helpers"
+    "url": "https://gitlab.misakey.dev/misakey/frontend.git",
+    "directory": "src/packages/helpers"
   },
   "scripts": {
     "generate": "node ../../../scripts/generate-helpers.js",

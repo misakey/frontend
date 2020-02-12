@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 import routes from 'routes';
 
-import omitTranslationProps from 'helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import Button from 'components/dumb/Button';
 

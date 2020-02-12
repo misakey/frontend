@@ -9,7 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import useWidth from '@misakey/hooks/useWidth';
 
 import displayIn from '@misakey/helpers/displayIn';
-import { redirectToApp } from 'helpers/plugin';
+import { redirectToApp } from '@misakey/helpers/plugin';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -19,7 +19,7 @@ import ElevationScroll from 'components/dumb/ElevationScroll';
 import ButtonConnect from 'components/dumb/Button/Connect';
 import WarningDrawer from 'components/smart/Plugin/Warning/Refresh';
 
-import { DRAWER_WIDTH } from 'constants/ui/sizes';
+import { DRAWER_WIDTH } from '@misakey/ui/constants/sizes';
 import ButtonBurger from 'components/dumb/Button/Burger';
 
 import { layoutBurgerClicked } from 'store/actions/Layout';

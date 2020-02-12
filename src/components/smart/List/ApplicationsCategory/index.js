@@ -7,7 +7,7 @@ import { Link, generatePath } from 'react-router-dom';
 import isNil from '@misakey/helpers/isNil';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import log from '@misakey/helpers/log';
-import { fetchApplicationsByCategory } from 'helpers/fetchApplications';
+import { fetchApplicationsByCategory } from '@misakey/helpers/fetchApplications';
 
 import Card from 'components/dumb/Card';
 import { BUTTON_STANDINGS } from 'components/dumb/Button';

@@ -10,7 +10,7 @@ import Screen from 'components/dumb/Screen';
 import Navigation from 'components/dumb/Navigation';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 
-import { MIN_PX_0_LANDSCAPE, MIN_PX_600 } from 'constants/ui/medias';
+import { MIN_PX_0_LANDSCAPE, MIN_PX_600 } from '@misakey/ui/constants/medias';
 
 function ScreenAction({
   appBarProps, children, hideAppBar, history, navigation, navigationProps, pushPath, title, ...rest

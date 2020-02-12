@@ -5,7 +5,7 @@ import { denormalize } from 'normalizr';
 import { withTranslation } from 'react-i18next';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 
-import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD } from 'constants/ui/sizes';
+import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD } from '@misakey/ui/constants/sizes';
 import { SUGGESTED_TYPE, LINKED_TYPE } from 'constants/search/application/type';
 
 import { searchApplications } from 'store/actions/search';
@@ -17,12 +17,12 @@ import isObject from '@misakey/helpers/isObject';
 import isEmpty from '@misakey/helpers/isEmpty';
 import debounce from '@misakey/helpers/debounce';
 import eventPreventDefault from '@misakey/helpers/event/preventDefault';
-import getNextSearch from 'helpers/getNextSearch';
+import getNextSearch from '@misakey/helpers/getNextSearch';
 
-import useLocationSearchParams from 'hooks/useLocationSearchParams';
+import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import useSearchApplications from 'hooks/useSearchApplications';
+import useSearchApplications from '@misakey/hooks/useSearchApplications';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 

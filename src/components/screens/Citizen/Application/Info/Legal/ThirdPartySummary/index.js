@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 
 import orderBy from '@misakey/helpers/orderBy';
-import getNextSearch from 'helpers/getNextSearch';
+import getNextSearch from '@misakey/helpers/getNextSearch';
 import isNil from '@misakey/helpers/isNil';
 
 import { setDetectedTrackers } from 'store/actions/screens/thirdparty';
@@ -15,8 +15,8 @@ import TrackersSchema from 'store/schemas/Trackers';
 import { sendMessage, listenForBackground, stopListenerForBackground } from 'background';
 import { GET_BLOCKED_INFOS, REFRESH_BLOCKED_INFOS, RESTART_BG } from 'background/messages';
 import { storeLinks } from 'constants/plugin';
-import { openInNewTab } from 'helpers/plugin';
-import { isChrome } from 'helpers/devices';
+import { openInNewTab } from '@misakey/helpers/plugin';
+import { isChrome } from '@misakey/helpers/devices';
 
 import Typography from '@material-ui/core/Typography';
 import Skeleton from '@material-ui/lab/Skeleton';

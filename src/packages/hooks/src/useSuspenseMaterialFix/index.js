@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 
-import useMountEffect from 'hooks/useMountEffect';
+import useMountEffect from '@misakey/hooks/useMountEffect';
 
 import log from '@misakey/helpers/log';
 

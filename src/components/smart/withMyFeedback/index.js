@@ -13,8 +13,8 @@ import head from '@misakey/helpers/head';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
-import useFetchEffect from 'hooks/useFetch/effect';
-import useFetchCallback from 'hooks/useFetch/callback';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import useFetchCallback from '@misakey/hooks/useFetch/callback';
 
 import ScreenError from 'components/dumb/Screen/Error';
 

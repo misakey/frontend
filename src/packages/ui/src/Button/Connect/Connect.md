@@ -1,6 +1,6 @@
 #### Not connected
 ```js
-import React, { forwardRef, Suspense } from 'react';
+import React, { forwardRef } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Link, BrowserRouter as Router } from 'react-router-dom';
 import ButtonConnect from './index';
@@ -23,19 +23,17 @@ const useStyles = makeStyles((theme) => ({
 const ButtonConnectExample = () => {
   const classes = useStyles();
   return (
-    <Suspense fallback="Loading...">
-      <Router>
-        <ButtonConnect
-          application="app"
-          AccountLink={AccountLink}
-          enqueueSnackBar={enqueueSnackBar}
-          onSignIn={onSignIn}
-          onSignOut={onSignOut}
-          classes={{ noToken: { iconButton: { root: classes.iconButtonRoot } } }}
-          profile={profile}
-        />
-      </Router>
-    </Suspense>
+    <Router>
+      <ButtonConnect
+        application="app"
+        AccountLink={AccountLink}
+        enqueueSnackBar={enqueueSnackBar}
+        onSignIn={onSignIn}
+        onSignOut={onSignOut}
+        classes={{ noToken: { iconButton: { root: classes.iconButtonRoot } } }}
+        profile={profile}
+      />
+    </Router>
   );
 };
   <ButtonConnectExample />;
@@ -43,7 +41,7 @@ const ButtonConnectExample = () => {
 
 #### Not connected with icon
 ```js
-import React, { forwardRef, Suspense } from 'react';
+import React, { forwardRef } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Link, BrowserRouter as Router } from 'react-router-dom';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -68,20 +66,18 @@ const ButtonConnectExample = () => {
   const classes = useStyles();
 
   return (
-    <Suspense fallback="Loading...">
-      <Router>
-        <ButtonConnect
-          application="app"
-          AccountLink={AccountLink}
-          enqueueSnackBar={enqueueSnackBar}
-          onSignIn={onSignIn}
-          onSignOut={onSignOut}
-          profile={profile}
-          classes={{ noToken: { iconButton: { root: classes.iconButtonRoot } } }}
-          noTokenIcon={<AccountCircleIcon />}
-        />
-      </Router>
-    </Suspense>
+    <Router>
+      <ButtonConnect
+        application="app"
+        AccountLink={AccountLink}
+        enqueueSnackBar={enqueueSnackBar}
+        onSignIn={onSignIn}
+        onSignOut={onSignOut}
+        profile={profile}
+        classes={{ noToken: { iconButton: { root: classes.iconButtonRoot } } }}
+        noTokenIcon={<AccountCircleIcon />}
+      />
+    </Router>
   );
 };
   <ButtonConnectExample />;
@@ -105,20 +101,18 @@ const profile = {
   email: 'test@misakey.com',
 };
 const ButtonConnectExample = () => (
-  <React.Suspense fallback="Loading...">
-    <Router>
-      <ButtonConnect
-        application="app"
-        AccountLink={AccountLink}
-        enqueueSnackBar={enqueueSnackBar}
-        onSignIn={onSignIn}
-        onSignOut={onSignOut}
-        profile={profile}
-        token={token}
-        id={id}
-      />
-    </Router>
-  </React.Suspense>
+  <Router>
+    <ButtonConnect
+      application="app"
+      AccountLink={AccountLink}
+      enqueueSnackBar={enqueueSnackBar}
+      onSignIn={onSignIn}
+      onSignOut={onSignOut}
+      profile={profile}
+      token={token}
+      id={id}
+    />
+  </Router>
 );
 
   <ButtonConnectExample />;

@@ -7,11 +7,11 @@ import { Link } from 'react-router-dom';
 import routes from 'routes';
 import { IS_PLUGIN } from 'constants/plugin';
 
-import omitTranslationProps from 'helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isNil from '@misakey/helpers/isNil';
-import { redirectToApp } from 'helpers/plugin';
+import { redirectToApp } from '@misakey/helpers/plugin';
 
-import useLocationWorkspace from 'hooks/useLocationWorkspace';
+import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 
 import MUILink from '@material-ui/core/Link';
 

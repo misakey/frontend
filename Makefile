@@ -54,10 +54,6 @@ dep: ## Install all dependencies in the node_modules folder
 docs: ## Validate documentation
 	@echo "No documentation in frontend project. Doc is in js-common project"
 
-.PHONY: deploy-docs
-deploy-docs: ## Deploy documentation. USE ONLY ON PRODUCTION!
-	@echo "No documentation in frontend project. Doc is in js-common project"
-
 .PHONY: test
 test: ## Unit test code
 	@yarn test --passWithNoTests
@@ -72,6 +68,14 @@ strict-lint: ## Lint project code with eslint, return error if there is any sugg
 .PHONY: docker-login
 docker-login: ## Log in to the default registry
 	@docker login -u $(CI_REGISTRY_USER) -p $(CI_REGISTRY_PASSWORD) $(DOCKER_REGISTRY)
+
+.PHONY: docs
+docs: ## Validate documentation
+	@yarn run styleguide:build
+
+.PHONY: run-docs
+run-docs: ## Run devserver of documentation
+	@yarn run styleguide
 
 .PHONY: build
 build: ## Build a docker image with the build folder and serve server

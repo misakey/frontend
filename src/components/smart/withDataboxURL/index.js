@@ -20,7 +20,7 @@ import prop from '@misakey/helpers/prop';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
-import { getCurrentDatabox } from 'helpers/databox';
+import { getCurrentDatabox } from '@misakey/helpers/databox';
 import { IS_PLUGIN } from 'constants/plugin';
 
 // HELPERS

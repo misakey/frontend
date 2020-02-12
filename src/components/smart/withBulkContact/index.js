@@ -20,7 +20,7 @@ import mapValues from '@misakey/helpers/mapValues';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
-import { getCurrentDatabox } from 'helpers/databox';
+import { getCurrentDatabox } from '@misakey/helpers/databox';
 import { receiveEntities } from '@misakey/store/actions/entities';
 import DataboxSchema from 'store/schemas/Databox';
 

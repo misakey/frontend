@@ -7,7 +7,7 @@ yarn add @misakey/api
 An instance of Class **API** implements one method: `API.use()`.
 
 `use` accepts as parameter an endpoint Types Definition defined 
-[like this](https://gitlab.com/Misakey/js-common/blob/master/src/api/endpoints/application/index.js):
+[like this](https://gitlab.misakey.dev/misakey/frontend/blob/master/src/api/endpoints/application/index.js):
 <!-- eslint-skip -->
 ```js static
 export default {
@@ -57,4 +57,4 @@ myRequestPromise.then(response => console.log(response)); // { httpStatus: 200, 
 If a mock is implemented you can call `fakeReponse` method with an httpStatus code:
 `API.use(API.endpoints.application.read).fakeResponse(200).then(handleResponse);`
 
-*New endpoints need to compel with rules defined in [@`src/api/API.test.js`](https://gitlab.com/Misakey/js-common/blob/master/src/API/API.test.js)*
+*New endpoints need to compel with rules defined in [@`src/api/API.test.js`](https://gitlab.misakey.dev/misakey/js-common/blob/master/src/API/API.test.js)*

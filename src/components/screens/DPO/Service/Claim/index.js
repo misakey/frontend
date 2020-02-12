@@ -18,8 +18,8 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import isObject from '@misakey/helpers/isObject';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
-import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
-import useLocationWorkspace from 'hooks/useLocationWorkspace';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 import useGetRoles from '@misakey/auth/hooks/useGetRoles';
 
 import BoxControls from 'components/dumb/Box/Controls';

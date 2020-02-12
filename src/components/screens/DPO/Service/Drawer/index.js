@@ -25,7 +25,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChatIcon from '@material-ui/icons/Chat';
 
 import routes from 'routes';
-import { DRAWER_WIDTH } from 'constants/ui/sizes';
+import { DRAWER_WIDTH } from '@misakey/ui/constants/sizes';
 
 const iOS = isIOS();
 

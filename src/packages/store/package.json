@@ -11,8 +11,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/Misakey/js-common.git",
-    "directory": "packages/store"
+    "url": "https://gitlab.misakey.dev/misakey/frontend.git",
+    "directory": "src/packages/store"
   },
   "homepage": "https://frontend.docs.misakey.dev",
   "scripts": {

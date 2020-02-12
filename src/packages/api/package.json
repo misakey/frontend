@@ -6,8 +6,8 @@
   "author": "Misakey Team",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/Misakey/js-common.git",
-    "directory": "packages/api"
+    "url": "https://gitlab.misakey.dev/misakey/frontend.git",
+    "directory": "src/packages/api"
   },
   "scripts": {
     "build": "yarn build:cjs && yarn build:esm && yarn build:es && yarn build:copy-files",

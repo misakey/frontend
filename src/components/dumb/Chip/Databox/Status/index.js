@@ -8,10 +8,10 @@ import DataboxSchema from 'store/schemas/Databox';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 import prop from '@misakey/helpers/prop';
-import getDateFormat from 'helpers/getDateFormat';
-import { getStatus } from 'helpers/databox';
+import getDateFormat from '@misakey/helpers/getDateFormat';
+import { getStatus } from '@misakey/helpers/databox';
 
-import useCalendarDateSince from 'hooks/useCalendarDateSince';
+import useCalendarDateSince from '@misakey/hooks/useCalendarDateSince';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 

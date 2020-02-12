@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 
 import API from '@misakey/api';
 import { screenAuthSetIdentifier, screenAuthSetPublics } from 'store/actions/screens/auth';
-import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 
 import { FIELD_PROPTYPES } from 'components/dumb/Form/Fields';
@@ -19,7 +19,7 @@ import Button from 'components/dumb/Button';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isEmpty from '@misakey/helpers/isEmpty';
 
-import { useSignInFormPrimaryAction, useSignInFormContentAction, useSignInFormSecondaryAction } from 'hooks/useActions/signIn';
+import { useSignInFormPrimaryAction, useSignInFormContentAction, useSignInFormSecondaryAction } from '@misakey/hooks/useActions/signIn';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import SignInFormFields from 'components/smart/Auth/SignIn/Form/Fields';

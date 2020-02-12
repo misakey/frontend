@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import theme from 'theme';
+import theme from '@misakey/ui/theme';
 import { MuiThemeProvider } from '@material-ui/core';
 
 function ThemeProvider({ children }) {

@@ -29,7 +29,7 @@ import * as serviceWorker from 'serviceWorker';
 import routes from 'routes';
 // ui
 import MuiThemeProvider from 'components/smart/ThemeProvider';
-import theme from 'theme';
+import theme from '@misakey/ui/theme';
 import 'react-virtualized/styles.css';
 // components
 import App from 'components/App';
@@ -39,12 +39,12 @@ import OidcProvider from '@misakey/auth/components/OidcProvider'; // OIDC provid
 import './i18n';
 import countries from 'i18n-iso-countries';
 // helpers
-import { isDesktopDevice } from 'helpers/devices';
+import { isDesktopDevice } from '@misakey/helpers/devices';
 import { IS_PLUGIN } from 'constants/plugin';
 import isNil from '@misakey/helpers/isNil';
 import { isSilentAuthIframe, processSilentAuthCallbackInIframe } from '@misakey/auth/helpers'; // Silent auth
 
-import { isSigninRedirect, processSigninRedirect } from 'helpers/auth';
+import { isSigninRedirect, processSigninRedirect } from '@misakey/helpers/auth';
 
 /* END OF IMPORTS */
 

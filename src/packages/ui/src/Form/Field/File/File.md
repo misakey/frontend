@@ -15,12 +15,10 @@ const ACCEPTED_TYPES = [
 const onChange = console.log;
 
 const FileFieldExample = () => (
-  <React.Suspense fallback="Loading...">
-    <FileField
-      accept={ACCEPTED_TYPES}
-      onChange={onChange}
-    />
-  </React.Suspense>
+  <FileField
+    accept={ACCEPTED_TYPES}
+    onChange={onChange}
+  />
 );
 
   <FileFieldExample />;

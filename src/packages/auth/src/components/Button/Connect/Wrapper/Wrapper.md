@@ -16,17 +16,15 @@ const AccountLink = forwardRef((props, ref) => (
 const store = createStore(combineReducers(authReducers));
 
 const ButtonConnectExample = () => (
-  <React.Suspense fallback="Loading...">
-    <StoreProvider store={store}>
-      <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-        <Router>
-          <ButtonConnectWrapper
-            AccountLink={AccountLink}
-          />
-        </Router>
-      </SnackbarProvider>
-    </StoreProvider>
-  </React.Suspense>
+  <StoreProvider store={store}>
+    <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+      <Router>
+        <ButtonConnectWrapper
+          AccountLink={AccountLink}
+        />
+      </Router>
+    </SnackbarProvider>
+  </StoreProvider>
 );
 
   <ButtonConnectExample />;

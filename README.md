@@ -153,7 +153,7 @@ A Service is an entity associated to a domain's name that handles several
 aspects of like requests, sso, users...
 
 ### Run the project
-[With test-and-run](https://gitlab.com/Misakey/test-and-run?nav_source=navbar#run)
+[With test-and-run](https://gitlab.misakey.dev/misakey/test-and-run?nav_source=navbar#run)
 
 ### Lint and test
 ```shell

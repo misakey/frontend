@@ -113,7 +113,6 @@ if (isSilentAuthIframe()) {
           </PersistGate>
         </OidcProvider>
       </StoreProvider>
-    </React.Suspense>
   ), document.getElementById('root'));
 }
 ```

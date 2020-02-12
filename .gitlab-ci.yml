@@ -6,10 +6,10 @@ cache:
 variables:
   CI: "true"
 
-
 stages:
   - dep
   - test
+  - docs
   - build
   - deploy
 
@@ -26,8 +26,9 @@ lint_code:
   image: node:10.15.3
   tags:
     - misakey_js
-  script:
+  before_script:
     - make dep
+  script:
     - make strict-lint
   only:
     refs:
@@ -45,8 +46,9 @@ unit_tests:
   image: node:10.15.3
   tags:
     - misakey_js
-  script:
+  before_script:
     - make dep
+  script:
     - make test
   only:
     refs:
@@ -58,6 +60,18 @@ unit_tests:
     variables:
       - $CI_COMMIT_MESSAGE =~ /^wip:/
 
+docs:
+  stage: docs
+  image: node:10.15.3
+  tags:
+    - misakey_js
+  before_script:
+    - make dep
+  script:
+    - make docs
+  artifacts:
+    paths:
+      - styleguide
 
 build:
   stage: build
@@ -84,3 +98,19 @@ build:
 
 include:
   - .gitlab-ci.packages.yml
+
+pages:
+  stage: deploy
+  tags:
+    - misakey_js
+  script:
+    - mv public public_unpublished
+    - cp -r styleguide public
+  artifacts:
+    paths:
+      - public
+  only:
+    refs:
+      - master
+    changes:
+      - src/packages/*

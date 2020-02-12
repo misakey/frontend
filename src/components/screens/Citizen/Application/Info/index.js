@@ -19,7 +19,7 @@ import prop from '@misakey/helpers/prop';
 import head from '@misakey/helpers/head';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
-import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 import isNil from '@misakey/helpers/isNil';
 import Container from '@material-ui/core/Container';

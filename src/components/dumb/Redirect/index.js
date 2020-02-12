@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect as RouterRedirect } from 'react-router-dom';
 import isSameHost from '@misakey/helpers/isSameHost';
-import isSamePage from 'helpers/isSamePage';
+import isSamePage from '@misakey/helpers/isSamePage';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 
 

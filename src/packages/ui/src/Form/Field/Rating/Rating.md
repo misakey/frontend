@@ -20,26 +20,24 @@ const RatingFieldExample = () => {
   );
 
   return (
-    <React.Suspense fallback="Loading...">
-      <Formik initialValues={INITIAL_VALUES} onSubmit={onSubmit}>
-        {({ isSubmitting, isValid }) => (
-          <Form>
-            <Field component={RatingField} name="value" />
-            <div>
+    <Formik initialValues={INITIAL_VALUES} onSubmit={onSubmit}>
+      {({ isSubmitting, isValid }) => (
+        <Form>
+          <Field component={RatingField} name="value" />
+          <div>
 submitting
-              {isSubmitting}
-            </div>
-            <div>
+            {isSubmitting}
+          </div>
+          <div>
 valid
-              {isValid}
-            </div>
-            <button type="submit">
-              Submit
-            </button>
-          </Form>
-        )}
-      </Formik>
-    </React.Suspense>
+            {isValid}
+          </div>
+          <button type="submit">
+            Submit
+          </button>
+        </Form>
+      )}
+    </Formik>
   );
 };
   <RatingFieldExample />;

@@ -89,7 +89,7 @@ export function decryptToJSBlob(ciphertext, nonce, ephemeralProducerPubKey, owne
   // from NaCl specifications)
   // see:
   // - http://nacl.cr.yp.to/box.html
-  // - https://gitlab.com/Misakey/crypto-js-sdk/merge_requests/7/diffs
+  // - https://gitlab.misakey.dev/misakey/crypto-js-sdk/merge_requests/7/diffs
   const byteOffset = 16;
   return fileToUint8Array(ciphertext, byteOffset)
     .then((ciphertextUint8Array) => {

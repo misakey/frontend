@@ -24,9 +24,9 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import isArray from '@misakey/helpers/isArray';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import { getDetailPairsHead } from 'helpers/apiError';
+import { getDetailPairsHead } from '@misakey/helpers/apiError';
 
-import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 import { encryptBlobFile } from '@misakey/crypto/databox/crypto';
 

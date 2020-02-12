@@ -33,8 +33,8 @@ import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Skeleton from '@material-ui/lab/Skeleton';
-import useLocationWorkspace from 'hooks/useLocationWorkspace';
-import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 
 import SplashScreen from 'components/dumb/SplashScreen';

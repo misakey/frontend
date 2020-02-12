@@ -5,7 +5,7 @@ import { Link, Redirect, useLocation } from 'react-router-dom';
 import MAIL_TYPES, { CORDIAL } from 'constants/mailTypes';
 
 import isNil from '@misakey/helpers/isNil';
-import getNextSearch from 'helpers/getNextSearch';
+import getNextSearch from '@misakey/helpers/getNextSearch';
 import getSearchParams from '@misakey/helpers/getSearchParams';
 import ToggleButtonGroupMailType from 'components/dumb/ToggleButtonGroup/MailType';
 

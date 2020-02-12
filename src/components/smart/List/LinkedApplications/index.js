@@ -8,7 +8,7 @@ import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 
 import log from '@misakey/helpers/log';
-import { fetchLinkedApplications } from 'helpers/fetchApplications';
+import { fetchLinkedApplications } from '@misakey/helpers/fetchApplications';
 
 import Redirect from 'components/dumb/Redirect';
 import Card from 'components/dumb/Card';
@@ -16,7 +16,7 @@ import ApplicationsList from 'components/dumb/List/Applications';
 import Onboarding from 'components/dumb/Application/Onboarding';
 import Title from 'components/dumb/Typography/Title';
 import { IS_PLUGIN } from 'constants/plugin';
-import { setOnboardingDone } from 'helpers/plugin';
+import { setOnboardingDone } from '@misakey/helpers/plugin';
 
 // COMPONENTS
 function LinkedApplicationsList({ t, userId, isAuthenticated }) {

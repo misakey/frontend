@@ -6,7 +6,7 @@
 // (see https://developer.mozilla.org/en-US/docs/Web/API/Blob)
 // in the past we were speaking of "Blob" for encrypted data as well
 // but this has been changed
-// (see https://gitlab.com/Misakey/specifications/issues/175)
+// (see https://gitlab.misakey.dev/misakey/specifications/issues/175)
 
 import { box, secretbox, randomBytes } from 'tweetnacl';
 import { encodeHex } from '../helpers/encodeHex';

@@ -12,7 +12,7 @@ import Box from '@material-ui/core/Box';
 
 import isEmpty from '@misakey/helpers/isEmpty';
 import getSearchParams from '@misakey/helpers/getSearchParams';
-import getNextSearch from 'helpers/getNextSearch';
+import getNextSearch from '@misakey/helpers/getNextSearch';
 
 import ApplicationSchema from 'store/schemas/Application';
 import { setWhitelist, setApps } from 'store/actions/screens/thirdparty';

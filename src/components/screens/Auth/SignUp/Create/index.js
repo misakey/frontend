@@ -13,7 +13,7 @@ import { stepSignUpValidationSchemas } from 'constants/validationSchemas/auth';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import { ownerCryptoContext as crypto } from '@misakey/crypto';
 
-import useHandleGenericHttpErrors from 'hooks/useHandleGenericHttpErrors';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 import { screenAuthSetCredentials, screenAuthSetPublics } from 'store/actions/screens/auth';
 

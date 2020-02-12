@@ -10,9 +10,9 @@ import ApplicationSchema from 'store/schemas/Application';
 import isNil from '@misakey/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useParseIdToken from 'hooks/useParseIdToken';
-import useLocationWorkspace from 'hooks/useLocationWorkspace';
-import useUserHasRole from 'hooks/useUserHasRole';
+import useParseIdToken from '@misakey/hooks/useParseIdToken';
+import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
+import useUserHasRole from '@misakey/hooks/useUserHasRole';
 
 import withApplication from 'components/smart/withApplication';
 

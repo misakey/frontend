@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import MAIL_TYPES, { CORDIAL } from 'constants/mailTypes';
 
-import omitTranslationProps from 'helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
-import { isTouchable } from 'helpers/devices';
+import { isTouchable } from '@misakey/helpers/devices';
 
 const withLongPress = (Component) => {
   const ComponentWithLongPress = ({

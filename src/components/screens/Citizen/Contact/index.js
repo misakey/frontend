@@ -37,7 +37,7 @@ import RECONTACT_MAIL_TYPES, {
   OTHER_CHANNEL as OTHER_CHANNEL_MAIL_TYPE,
 } from 'constants/mailTypes/recontact';
 import { DONE, REFUSED, NO_DATA } from 'constants/databox/comment';
-import mapDates from 'helpers/mapDates';
+import mapDates from '@misakey/helpers/mapDates';
 import DataboxSchema from 'store/schemas/Databox';
 import { clearDataboxURLById } from 'store/actions/screens/contact';
 

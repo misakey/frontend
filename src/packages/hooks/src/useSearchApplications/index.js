@@ -3,7 +3,7 @@ import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
 import { useCallback } from 'react';
-import useLocationWorkspace from 'hooks/useLocationWorkspace';
+import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 
 
 // CONSTANTS

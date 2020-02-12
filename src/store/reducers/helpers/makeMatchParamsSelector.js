@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 import pick from '@misakey/helpers/pick';
 import prop from '@misakey/helpers/prop';
 
-import getMatchParams from 'helpers/getMatchParams';
+import getMatchParams from '@misakey/helpers/getMatchParams';
 
 export const makeMatchParamsSelector = (params) => createSelector(
   (state, props) => getMatchParams(props),

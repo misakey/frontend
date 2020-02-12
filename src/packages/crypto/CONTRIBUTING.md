@@ -23,7 +23,7 @@ like fetching some public info from the server when it is not available in store
 `src/databox` contains the code for the MK Databox protocol
 which is due to be discontinued when the MK Data will be able to fully replace it.
 This code was mainly copied from a previous project
-(https://gitlab.com/Misakey/crypto-js-sdk)
+(https://gitlab.misakey.dev/misakey/crypto-js-sdk)
 and was only modified to the minimum possible
 because it is only there for legacy reasons
 and is supposed to disappear soon.
