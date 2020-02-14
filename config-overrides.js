@@ -2,6 +2,7 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WebpackShellPlugin = require('webpack-shell-plugin');
 const WriteFileWebpackPlugin = require('react-app-rewire-build-dev/dist/write-file');
+const HtmlReplaceWebpackPlugin = require('html-replace-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 
@@ -50,11 +51,6 @@ module.exports = {
     let plugins = (config.plugins || []);
 
     plugins.push(new CopyWebpackPlugin([
-      { from: 'public/favicon.ico', to: 'favicon.ico' },
-      { from: 'public/locales', to: 'locales' },
-      { from: 'public/libs', to: 'libs' },
-      { from: 'public/img', to: 'img', ignore: ['about/**/*', 'illustrations/**/*'] },
-      { from: 'public/ico', to: 'ico' },
       { from: `plugin/config/env.${environment}.js`, to: 'env.js' },
       { from: 'plugin/src/manifest/_locales', to: '_locales' },
       {
@@ -63,6 +59,14 @@ module.exports = {
         transform(content) {
           return modify(content, targetBrowser, environment);
         },
+      },
+    ]));
+
+    // Replace specific scripts for webapp by specific script for plugin
+    plugins.push(new HtmlReplaceWebpackPlugin([
+      {
+        pattern: /bundleVersion.js/g,
+        replacement: 'polyfill/browser-polyfill.js',
       },
     ]));
 
@@ -91,8 +95,6 @@ module.exports = {
     const targetBrowser = process.env.TARGET_BROWSER;
     const environment = process.env.PLUGIN_ENV || 'production';
     paths.appBuild = `${paths.appBuild}_plugin/${environment}/${targetBrowser}`;
-    paths.appHtml = paths.appHtml.replace('public', 'plugin/popup');
-    paths.appPublic = paths.appPublic.replace('public', 'plugin/popup');
     return paths;
   },
 };

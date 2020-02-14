@@ -1,5 +1,9 @@
 window.env = {
   ENV: 'preprod',
+  MATOMO: {
+    SITEID: '7',
+    URL: 'https://analytics.misakey.com/',
+  },
   API_ENDPOINT: 'https://api.preprod.misakey.dev',
   PLUGIN: true,
   AUTH: {

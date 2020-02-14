@@ -26,4 +26,8 @@ config: >-
       'tickets',
       'transport',
     ],
+    MATOMO: {
+      URL: 'https://analytics.misakey.com/',
+      SITE_ID: '1'
+    }
   };

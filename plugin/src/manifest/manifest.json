@@ -10,7 +10,7 @@
     "icons": {
       "48": "ico/favicon-48x48.png"
     },
-
+    "content_security_policy": "script-src 'self' https://*.misakey.com; object-src 'self';",
     "permissions": [
       "webRequest",
       "webRequestBlocking",

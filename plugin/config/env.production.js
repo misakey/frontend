@@ -1,5 +1,9 @@
 window.env = {
   ENV: 'production',
+  MATOMO: {
+    SITEID: '6',
+    URL: 'https://analytics.misakey.com/',
+  },
   API_ENDPOINT: 'https://api.misakey.com',
   PLUGIN: true,
   AUTH: {

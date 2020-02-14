@@ -1,14 +1,21 @@
 FROM node:10.15.3
 
 COPY ./src /app/src
-COPY ./public /app/public
+# COPY only what we need for plugin from public
+COPY ./public/favicon.ico /app/public/favicon.ico
+COPY ./public/locales /app/public/locales
+COPY ./public/libs /app/public/libs
+COPY ./public/img /app/public/img
+COPY ./public/ico /app/public/ico
+COPY ./public/index.html /app/public/index.html
+COPY ./public/initMatomo.js /app/public/initMatomo.js
+
 COPY ./package.json /app/package.json
 COPY ./jsconfig.json /app/jsconfig.json
 COPY ./config-overrides.js /app/config-overrides.js
 COPY ./yarn.lock /app/yarn.lock
 
 COPY ./plugin/src /app/plugin/src
-COPY ./plugin/popup /app/plugin/popup
 COPY ./plugin/config /app/plugin/config
 COPY ./plugin/package.json /app/plugin/package.json
 COPY ./plugin/webpack.config.js /app/plugin/webpack.config.js

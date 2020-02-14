@@ -43,6 +43,8 @@
     "glob": "^7.1.6",
     "glob-gitignore": "^1.0.14",
     "jest": "24.9.0",
+    "html-replace-webpack-plugin": "^2.5.6",
+    "react-scripts": "3.2.x",
     "react-app-rewire-build-dev": "^1.0.1",
     "react-app-rewired": "^2.1.5",
     "react-styleguidist": "^10.6.1",
@@ -57,8 +59,6 @@
     "webpack-shell-plugin": "^0.5.0"
   },
   "dependencies": {
-    "@cliqz/adblocker-webextension": "^1.4.0",
-    "@cliqz/adblocker-webextension-cosmetics": "^1.4.0",
     "@material-ui/core": "^4.8.3",
     "@material-ui/icons": "^4.4.1",
     "@material-ui/lab": "4.0.0-alpha.39",
@@ -91,7 +91,6 @@
     "numeral": "^2.0.6",
     "oidc-client": "^1.9.1",
     "prop-types": "^15.7.2",
-    "query-string": "^6.8.1",
     "ramda": "^0.26.1",
     "react": "^16.12.0",
     "react-app-polyfill": "^1.0.4",
@@ -99,7 +98,6 @@
     "react-i18next": "^10.11.4",
     "react-redux": "^7.1.0",
     "react-router-dom": "^5.0.1",
-    "react-scripts": "3.2.x",
     "react-virtualized": "^9.21.1",
     "redux": "^4.0.4",
     "redux-logger": "^3.0.6",

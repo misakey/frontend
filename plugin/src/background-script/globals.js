@@ -45,7 +45,7 @@ class Globals {
 
   async getPaused() {
     const { pausedBlocking } = await getItem('pausedBlocking');
-    this.pausedBlocking = pausedBlocking || true;
+    this.pausedBlocking = !isNil(pausedBlocking) ? pausedBlocking : true;
   }
 
   async getBrowserInfo() {
