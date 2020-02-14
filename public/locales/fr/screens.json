@@ -422,11 +422,7 @@
       "vault": "Coffre-fort",
       "feedback": "Avis",
       "legal": "Légal",
-      "more": "Plus",
-
-      "thirdParty": "Cookies",
-      "myAccount": "Mon compte",
-      "info": "Informations"
+      "more": "Plus"
     }
   },
   "auth": {

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, lazy } from 'react';
+import React, { useMemo, lazy } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Formik, Form } from 'formik';
@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 
 import routes from 'routes';
+import API from '@misakey/api';
 import { avatarValidationSchema } from 'constants/validationSchemas/profile';
 import { userProfileUpdate } from 'store/actions/screens/account';
 
@@ -15,7 +16,7 @@ import pick from '@misakey/helpers/pick';
 import toFormData from '@misakey/helpers/toFormData';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
-import API from '@misakey/api';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 
 import 'components/screens/Account/Avatar/index.scss';
@@ -47,7 +48,7 @@ const fetchProfile = (id) => API
 
 // HOOKS
 const useOnSubmit = (
-  profile, dispatchUpdate, enqueueSnackbar, setInternalError, history, t,
+  profile, dispatchUpdate, enqueueSnackbar, handleGenericHttpErrors, history, t,
 ) => useMemo(
   () => (form, { setSubmitting }) => updateProfile(profile.id, pickForm(form))
     .then(() => fetchProfile(profile.id))
@@ -58,11 +59,9 @@ const useOnSubmit = (
       dispatchUpdate(profile.id, changes, history);
       history.push(routes.account._);
     })
-    .catch(({ httpStatus }) => {
-      setInternalError(httpStatus);
-    })
+    .catch(handleGenericHttpErrors)
     .finally(() => { setSubmitting(false); }),
-  [profile, dispatchUpdate, enqueueSnackbar, setInternalError, history, t],
+  [profile, dispatchUpdate, enqueueSnackbar, handleGenericHttpErrors, history, t],
 );
 
 // COMPONENTS
@@ -71,22 +70,22 @@ const AccountAvatar = ({
   profile,
   dispatchUpdate,
   history,
-  error,
   isFetching,
 }) => {
-  const [internalError, setInternalError] = useState();
   const { enqueueSnackbar } = useSnackbar();
 
   const state = useMemo(
-    () => ({ error: error || internalError, isLoading: isFetching }),
-    [error, internalError, isFetching],
+    () => ({ isLoading: isFetching }),
+    [isFetching],
   );
+
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
 
   const onSubmit = useOnSubmit(
     profile,
     dispatchUpdate,
     enqueueSnackbar,
-    setInternalError,
+    handleGenericHttpErrors,
     history,
     t,
   );

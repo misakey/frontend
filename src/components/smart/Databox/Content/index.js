@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
@@ -8,8 +8,6 @@ import * as numeral from 'numeral';
 import API from '@misakey/api';
 
 import moment from 'moment';
-
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';
@@ -24,6 +22,8 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import prop from '@misakey/helpers/prop';
+
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import CardSimpleDoubleText from 'components/dumb/Card/Simple/DoubleText';
 
@@ -111,11 +111,6 @@ const DataboxContent = ({
   initCrypto,
   t,
 }) => {
-  const [blobs, setBlobs] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
-
   const { enqueueSnackbar } = useSnackbar();
 
   const databoxId = useMemo(
@@ -131,8 +126,21 @@ const DataboxContent = ({
   );
 
   const shouldFetch = useMemo(
-    () => !isNil(databoxId) && isNil(blobs) && !loading,
-    [databoxId, blobs, loading],
+    () => !isNil(databoxId),
+    [databoxId],
+  );
+
+
+  const getBlobs = useCallback(
+    () => fetchBlobs(databox.id)
+      .then((response) => response.map(objectToCamelCase)),
+    [databox],
+  );
+
+
+  const { data: blobs } = useFetchEffect(
+    getBlobs,
+    { shouldFetch, fetchOnlyOnce: true },
   );
 
   const blobsCount = useMemo(
@@ -155,25 +163,6 @@ const DataboxContent = ({
     [application, onAskPassword, onError],
   );
 
-  const getBlobs = useCallback(
-    () => {
-      setLoading(true);
-      fetchBlobs(databox.id)
-        .then((response) => setBlobs(response.map(objectToCamelCase)))
-        .catch(handleGenericHttpErrors)
-        .finally(() => setLoading(false));
-    },
-    [databox, setLoading, setBlobs, handleGenericHttpErrors],
-  );
-
-  useEffect(
-    () => {
-      if (shouldFetch) {
-        getBlobs();
-      }
-    },
-    [getBlobs, shouldFetch],
-  );
 
   if (isEmpty(blobs)) {
     return null;

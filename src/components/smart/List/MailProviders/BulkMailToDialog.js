@@ -70,6 +70,7 @@ const BulkMailToDialog = ({
       dialogContent={content}
       title={t('common:contact.bulk.manual.confirm.title')}
       fullWidth
+      hideCancelButton
     />
   );
 };

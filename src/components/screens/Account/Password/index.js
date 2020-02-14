@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Formik, Field, Form } from 'formik';
 import { withTranslation } from 'react-i18next';
@@ -8,11 +8,13 @@ import routes from 'routes';
 import { passwordValidationSchema } from 'constants/validationSchemas/profile';
 import errorTypes from 'constants/errorTypes';
 
+import API from '@misakey/api';
+
+import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isNil from '@misakey/helpers/isNil';
 import log from '@misakey/helpers/log';
 
-import API from '@misakey/api';
-import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 import ScreenAction from 'components/dumb/Screen/Action';
 import BoxControls from 'components/dumb/Box/Controls';
@@ -83,7 +85,7 @@ async function updatePassword(
 
 // HOOKS
 const useOnSubmit = (
-  profile, enqueueSnackbar, setInternalError, history, t,
+  profile, enqueueSnackbar, handleGenericHttpErrors, history, t,
 ) => useMemo(
   () => (form, { setSubmitting, setFieldError }) => (
     updatePassword(profile.id, form, enqueueSnackbar, t)
@@ -96,13 +98,12 @@ const useOnSubmit = (
         if (error.code === errorTypes.forbidden) {
           setFieldError(OLD_PASSWORD_FIELD_NAME, errorTypes.invalid);
         } else {
-          const { httpStatus } = error;
-          setInternalError({ httpStatus });
+          handleGenericHttpErrors(error);
         }
       })
       .finally(() => { setSubmitting(false); })
   ),
-  [profile, enqueueSnackbar, setInternalError, history, t],
+  [profile.id, enqueueSnackbar, t, history, handleGenericHttpErrors],
 );
 
 // COMPONENTS
@@ -110,21 +111,21 @@ const AccountPassword = ({
   t,
   profile,
   history,
-  error,
   isFetching,
 }) => {
-  const [internalError, setInternalError] = useState();
   const { enqueueSnackbar } = useSnackbar();
 
   const state = useMemo(
-    () => ({ error: error || internalError, isLoading: isFetching }),
-    [error, internalError, isFetching],
+    () => ({ isLoading: isFetching }),
+    [isFetching],
   );
+
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
 
   const onSubmit = useOnSubmit(
     profile,
     enqueueSnackbar,
-    setInternalError,
+    handleGenericHttpErrors,
     history,
     t,
   );
@@ -189,7 +190,6 @@ const AccountPassword = ({
 
 AccountPassword.propTypes = {
   profile: PropTypes.shape({ id: PropTypes.string }),
-  error: PropTypes.instanceOf(Error),
   isFetching: PropTypes.bool,
   // router props
   history: PropTypes.object.isRequired,
@@ -200,7 +200,6 @@ AccountPassword.propTypes = {
 
 AccountPassword.defaultProps = {
   profile: null,
-  error: null,
   isFetching: false,
 };
 

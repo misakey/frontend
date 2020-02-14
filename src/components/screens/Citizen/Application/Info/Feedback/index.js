@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -11,7 +11,7 @@ import { updateEntities } from '@misakey/store/actions/entities';
 
 import ApplicationSchema from 'store/schemas/Application';
 
-import useAsync from '@misakey/hooks/useAsync';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import API from '@misakey/api';
 import isArray from '@misakey/helpers/isArray';
@@ -28,8 +28,10 @@ import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import Title from 'components/dumb/Typography/Title';
 import List from '@material-ui/core/List';
 import SummaryFeedbackCard from 'components/dumb/Card/Feedback/Summary';
+import SummaryFeedbackCardSkeleton from 'components/dumb/Card/Feedback/Summary/Skeleton';
 import ScreenError from 'components/dumb/Screen/Error';
 import UserFeedbackCard from 'components/dumb/Card/Feedback/User';
+import UserFeedbackCardSkeleton from 'components/dumb/Card/Feedback/User/Skeleton';
 
 // COMPONENTS
 const LinkWithDialogConnect = withDialogConnect(Link);
@@ -100,54 +102,45 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const useShouldFetch = (application, isFetching, isLoading) => useMemo(
-  () => {
-    if (isFetching || isLoading) { return false; }
-    return (!isNil(application) && !isNil(application.id) && isNil(application.ratings));
-  },
-  [application, isFetching, isLoading],
-);
-
-const useGetFeedback = (
-  application, isAuthenticated, shouldFetch, fetchFeedback, setFetching, setError, dispatchUpdate,
-) => useCallback(
-  () => {
-    if (shouldFetch) {
-      setFetching(true);
-      const withUsers = isAuthenticated;
-      return fetchFeedback(application.id, withUsers)
-        .then((response) => {
-          const ratings = response.map(mapRating);
-          dispatchUpdate(application.mainDomain, ratings);
-        })
-        .catch(({ httpStatus }) => {
-          setError(httpStatus);
-        })
-        .finally(() => {
-          setFetching(false);
-        });
-    }
-    return null;
-  },
-  [application, isAuthenticated, shouldFetch, fetchFeedback, setFetching, setError, dispatchUpdate],
+const useShouldFetch = (application) => useMemo(
+  () => (!isNil(application) && !isNil(application.id) && isNil(application.ratings)),
+  [application],
 );
 
 // COMPONENTS
-const OthersFeedbackScreen = ({
-  isAuthenticated, application, dispatchUpdate, t, isLoading, rating, isFetchingRating,
+const ApplicationInfoFeedback = ({
+  isAuthenticated, application, dispatchUpdate, t, rating, isFetchingFeedback,
 }) => {
   const classes = useStyles();
 
-  const [isFetching, setFetching] = useState(false);
-  const [error, setError] = useState();
-
-  const shouldFetch = useShouldFetch(application, isFetching, isLoading);
+  const shouldFetch = useShouldFetch(application);
   const fetchFeedback = useMemo(
     () => makeFetchFeedback(isAuthenticated),
     [isAuthenticated],
   );
-  const getFeedback = useGetFeedback(
-    application, isAuthenticated, shouldFetch, fetchFeedback, setFetching, setError, dispatchUpdate,
+
+  const feedbackTo = useMemo(
+    () => generatePath(
+      routes.citizen.application.myFeedback,
+      { mainDomain: application.mainDomain },
+    ),
+    [application.mainDomain],
+  );
+
+  const getFeedback = useCallback(
+    () => {
+      const withUsers = isAuthenticated;
+      return fetchFeedback(application.id, withUsers);
+    },
+    [isAuthenticated, application, fetchFeedback],
+  );
+
+  const onSuccess = useCallback(
+    (response) => {
+      const ratings = response.map(mapRating);
+      dispatchUpdate(application.mainDomain, ratings);
+    },
+    [application.mainDomain, dispatchUpdate],
   );
 
   const ratings = useMemo(
@@ -165,10 +158,20 @@ const OthersFeedbackScreen = ({
     [rating],
   );
 
-  useAsync(getFeedback, application);
+  // because we clear avgRating when changing user's feedback
+  const summaryLoading = useMemo(
+    () => isNil(application.avgRating),
+    [application],
+  );
+
+  const { isFetching, error } = useFetchEffect(
+    getFeedback,
+    { shouldFetch },
+    { onSuccess },
+  );
 
   if (error) {
-    return <ScreenError httpStatus={error} />;
+    return <ScreenError httpStatus={error.httpStatus} />;
   }
 
   return (
@@ -177,24 +180,32 @@ const OthersFeedbackScreen = ({
         <Title>
           {t('screens:feedback.others.title')}
         </Title>
-        {(!isFetchingRating) && (
-          <Button
-            standing={BUTTON_STANDINGS.MAIN}
-            text={t(`screens:feedback.others.${(hasAlreadyCommented) ? 'edit' : 'give'}`)}
-            component={LinkWithDialogConnect}
-            to={generatePath(
-              routes.citizen.application.myFeedback,
-              { mainDomain: application.mainDomain },
-            )}
+        <Button
+          standing={BUTTON_STANDINGS.MAIN}
+          text={t(`screens:feedback.others.${(hasAlreadyCommented) ? 'edit' : 'give'}`)}
+          component={LinkWithDialogConnect}
+          isLoading={isFetchingFeedback}
+          to={feedbackTo}
+        />
+      </Box>
+      {summaryLoading ? (
+        <SummaryFeedbackCardSkeleton
+          hideTitle
+        />
+      ) : (
+        <SummaryFeedbackCard
+          application={application}
+          hideLink
+          hideTitle
+        />
+      )}
+      <List>
+        {isFetching && (
+          <UserFeedbackCardSkeleton
+            count={application.totalRating}
+            className={classes.feedbackCardRoot}
           />
         )}
-      </Box>
-      <SummaryFeedbackCard
-        application={application}
-        hideLink
-        hideTitle
-      />
-      <List>
         {pairedRatings.map((pair) => {
           if (!isPair(pair)) { return null; }
           const [first, second] = pair;
@@ -221,22 +232,24 @@ const OthersFeedbackScreen = ({
   );
 };
 
-OthersFeedbackScreen.propTypes = {
-  t: PropTypes.func.isRequired,
+ApplicationInfoFeedback.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes).isRequired,
   isAuthenticated: PropTypes.bool,
+  // withTranslation
+  t: PropTypes.func.isRequired,
+  // ROUTER
   match: PropTypes.shape({ params: PropTypes.object }).isRequired,
+  // CONNECT
   dispatchUpdate: PropTypes.func.isRequired,
-  isFetchingRating: PropTypes.bool,
+  // withMyFeedback
   rating: PropTypes.object,
-  isLoading: PropTypes.bool,
+  isFetchingFeedback: PropTypes.bool,
 };
 
-OthersFeedbackScreen.defaultProps = {
+ApplicationInfoFeedback.defaultProps = {
   isAuthenticated: false,
-  isFetchingRating: true,
+  isFetchingFeedback: true,
   rating: null,
-  isLoading: false,
 };
 
 // CONNECT
@@ -254,4 +267,4 @@ const mapDispatchToProps = (dispatch) => ({
 
 export default connect(
   mapStateToProps, mapDispatchToProps,
-)(withTranslation('screens')(withMyFeedback()(OthersFeedbackScreen)));
+)(withTranslation('screens')(withMyFeedback()(ApplicationInfoFeedback)));

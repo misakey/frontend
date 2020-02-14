@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Formik, Form, Field } from 'formik';
@@ -32,6 +32,7 @@ import { encryptBlobFile } from '@misakey/crypto/databox/crypto';
 
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import { makeStyles } from '@material-ui/core/styles/';
 import Container from '@material-ui/core/Container';
@@ -230,7 +231,7 @@ function ServiceRequestsRead({
   match: { params }, location: { hash },
   accessRequest, databox, dispatchReceiveDatabox,
   dispatchUpdateDatabox,
-  isLoading, isFetching, error, accessRequestError,
+  isLoading, isFetching, error,
   appBarProps, t, ...rest
 }) {
   const classes = useStyles();
@@ -238,7 +239,6 @@ function ServiceRequestsRead({
   const questionItems = useQuestionsItems(t, QUESTIONS_TRANS_KEY, 3);
 
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
-
 
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.only('xs'));
@@ -257,21 +257,7 @@ function ServiceRequestsRead({
     setOpenDialog(null);
   }, []);
 
-  const [isFetchingDatabox, setIsFetchingDatabox] = useState(false);
-  const [errorDatabox, setErrorDatabox] = useState();
-  const [isFetchingBlobs, setFetchingBlobs] = useState(false);
-
-  const state = useMemo(
-    () => ({
-      error: errorDatabox || error || accessRequestError,
-      isLoading: isFetchingDatabox || isLoading || isFetching || isFetchingBlobs,
-    }),
-    [
-      errorDatabox, error, accessRequestError,
-      isFetchingDatabox, isLoading, isFetching,
-      isFetchingBlobs,
-    ],
-  );
+  const [blobs, setBlobs] = useState(null);
 
   const hashToken = useMemo(
     () => (!isEmpty(hash) ? hash.substr(1) : null),
@@ -302,10 +288,6 @@ function ServiceRequestsRead({
     () => ownerNameProp(owner),
     [owner],
   );
-
-  const [blobs, setBlobs] = useState(null);
-
-  const [isUploading, setUploading] = useState(false);
 
   const idMatches = useMemo(
     () => {
@@ -343,37 +325,23 @@ function ServiceRequestsRead({
     [databox],
   );
 
-  const isArchived = useMemo(
-    () => (isNil(status) && !isFetchingDatabox) || status !== OPEN,
-    [status, isFetchingDatabox],
-  );
-
-  const shouldFetch = useMemo(
-    () => !isFetchingBlobs && idMatches && !isArchived && isNil(blobs),
-    [isFetchingBlobs, idMatches, isArchived, blobs],
-  );
-
   const shouldFetchDatabox = useMemo(
-    () => idMatches && isNil(status) && isNil(databox),
-    [databox, idMatches, status],
+    () => idMatches && isNil(status),
+    [idMatches, status],
   );
 
   const getDatabox = useCallback(
-    () => {
-      setIsFetchingDatabox(true);
-      fetchDatabox(databoxId)
-        .then((response) => {
-          dispatchReceiveDatabox(objectToCamelCase(response));
-        })
-        .catch(setErrorDatabox)
-        .finally(() => { setIsFetchingDatabox(false); });
-    },
-    [databoxId, dispatchReceiveDatabox],
+    () => fetchDatabox(databoxId),
+    [databoxId],
   );
 
-  const handleUpload = useCallback((form, { setFieldError, resetForm }) => {
+  const onGetDataboxSuccess = useCallback(
+    (response) => dispatchReceiveDatabox(objectToCamelCase(response)),
+    [dispatchReceiveDatabox],
+  );
+
+  const handleUpload = useCallback((form, { setFieldError, resetForm, setSubmitting }) => {
     onDialogClose();
-    setUploading(true);
 
     const blob = form[FIELD_NAME];
 
@@ -417,7 +385,7 @@ function ServiceRequestsRead({
           handleGenericHttpErrors(e);
         }
       })
-      .finally(() => { setUploading(false); });
+      .finally(() => { setSubmitting(false); });
   }, [onDialogClose, handle, databoxId, blobs, t, enqueueSnackbar, handleGenericHttpErrors]);
 
   const getOnReset = useCallback(
@@ -466,45 +434,44 @@ function ServiceRequestsRead({
   );
 
   const fetchBlobs = useCallback(() => {
-    setFetchingBlobs(true);
-
     const queryParams = { databox_ids: [databoxId] };
 
-    API.use(ENDPOINTS.blobMetadata.list)
+    return API.use(ENDPOINTS.blobMetadata.list)
       .build(null, null, queryParams)
       .send()
-      .then((response) => { setBlobs(response.map((blob) => objectToCamelCase(blob))); })
-      .catch(handleGenericHttpErrors)
-      .finally(() => { setFetchingBlobs(false); });
-  }, [setFetchingBlobs, setBlobs, databoxId, handleGenericHttpErrors]);
+      .then((response) => response.map((blob) => objectToCamelCase(blob)));
+  },
+  [databoxId]);
 
-  useEffect(
-    () => {
-      // fetch databox if missing or conditions not fulfilled in withAccessRequest
-      if (shouldFetchDatabox) {
-        getDatabox();
-      }
-    },
-    [getDatabox, shouldFetchDatabox],
+  const { isFetching: isFetchingDatabox } = useFetchEffect(
+    getDatabox,
+    { shouldFetch: shouldFetchDatabox, fetchOnlyOnce: true },
+    { onSuccess: onGetDataboxSuccess },
   );
 
-  useEffect(
-    () => {
-      // fetch databox if missing or conditions not fulfilled in withAccessRequest
-      if (shouldFetchDatabox) {
-        getDatabox();
-      }
-    },
-    [getDatabox, shouldFetchDatabox],
+  const isArchived = useMemo(
+    () => (isNil(status) && !isFetchingDatabox) || status !== OPEN,
+    [status, isFetchingDatabox],
   );
 
-  useEffect(
-    () => {
-      if (shouldFetch) {
-        fetchBlobs();
-      }
-    },
-    [fetchBlobs, shouldFetch],
+  const shouldFetchBlobs = useMemo(
+    () => idMatches && !isArchived,
+    [idMatches, isArchived],
+  );
+
+
+  const { isFetching: isFetchingBlobs } = useFetchEffect(
+    fetchBlobs,
+    { shouldFetch: shouldFetchBlobs, fetchOnlyOnce: true },
+    { onSuccess: setBlobs },
+  );
+
+  const state = useMemo(
+    () => ({
+      error,
+      isLoading: isFetchingDatabox || isLoading || isFetching || isFetchingBlobs,
+    }),
+    [error, isFetchingDatabox, isLoading, isFetching, isFetchingBlobs],
   );
 
   return (
@@ -551,7 +518,9 @@ function ServiceRequestsRead({
                 initialValues={INITIAL_VALUES}
                 onSubmit={handleOpen}
               >
-                {({ values, isValid, dirty, setFieldValue, setFieldTouched, ...formikBag }) => (
+                {({
+                  values, isValid, isSubmitting, dirty, setFieldValue, setFieldTouched, ...formikBag
+                }) => (
                   <Form>
                     <Card
                       my={3}
@@ -576,7 +545,7 @@ function ServiceRequestsRead({
                       title={t('screens:Service.requests.read.vault.title')}
                       primary={{
                         type: 'submit',
-                        isLoading: isUploading,
+                        isLoading: isSubmitting,
                         isValid,
                         text: t('common:submit'),
                       }}
@@ -652,7 +621,6 @@ ServiceRequestsRead.propTypes = {
   }).isRequired,
   databox: PropTypes.shape(DataboxSchema.propTypes),
   dispatchReceiveDatabox: PropTypes.func.isRequired,
-  accessRequestError: PropTypes.instanceOf(Error),
 
   error: PropTypes.instanceOf(Error),
   isFetching: PropTypes.bool.isRequired,
@@ -671,7 +639,6 @@ ServiceRequestsRead.propTypes = {
 
 ServiceRequestsRead.defaultProps = {
   appBarProps: null,
-  accessRequestError: null,
   databox: null,
   error: null,
   isLoading: false,
@@ -683,8 +650,5 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(null, mapDispatchToProps)(withTranslation(['common', 'screens'])(
-  withAccessRequest(
-    ServiceRequestsRead,
-    ({ error, ...props }) => ({ accessRequestError: error, ...props }),
-  ),
+  withAccessRequest(ServiceRequestsRead, { snackbarError: true }),
 ));

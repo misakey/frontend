@@ -234,7 +234,8 @@
     "delete": {
       "title": "Supprimer mon avis ?",
       "message": "Une fois supprimé, je devrai en créer un nouveau",
-      "button": "Supprimer mon avis"
+      "button": "Supprimer mon avis",
+      "success": "Mon avis a été supprimé"
     }
   },
   "databox": {

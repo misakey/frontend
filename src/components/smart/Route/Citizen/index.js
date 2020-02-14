@@ -10,6 +10,8 @@ import parseJwt from '@misakey/helpers/parseJwt';
 import log from '@misakey/helpers/log';
 import isNil from '@misakey/helpers/isNil';
 
+import useFetchCallback from '@misakey/hooks/useFetch/callback';
+
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
 import { IS_PLUGIN } from 'constants/plugin';
 
@@ -26,22 +28,28 @@ function RouteCitizen({
   ...rest
 }) {
   const [loginAsScreen, setLoginAsScreen] = useState(false);
-  const [loginInProgress, setLoginInProgress] = useState(false);
   const signIn = useCallback(
     () => userManager.signinRedirect(!isNil(userEmail) ? { login_hint: userEmail } : {}),
     [userEmail, userManager],
   );
 
-  const signInSilently = useCallback(() => {
-    setLoginInProgress(true);
-    userManager.signinSilent()
-      .then(() => { log('Silent auth as citizen succeed'); })
-      .catch((err) => {
-        log(`Silent auth as citizen failed ${err}`);
-        setLoginAsScreen(true);
-      })
-      .finally(() => { setLoginInProgress(false); });
-  }, [userManager]);
+  const onSignInSilentlySuccess = useCallback(
+    () => { log('Silent auth as citizen succeed'); },
+    [],
+  );
+
+  const onSignInSilentlyError = useCallback(
+    (err) => {
+      log(`Silent auth as citizen failed ${err}`);
+      setLoginAsScreen(true);
+    },
+    [setLoginAsScreen],
+  );
+
+  const { isFetching: loginInProgress, wrappedFetch: signInSilently } = useFetchCallback(
+    userManager.signinSilent,
+    { onSuccess: onSignInSilentlySuccess, onError: onSignInSilentlyError },
+  );
 
   const render = (props) => {
     const renderProps = { ...props, ...componentProps };

@@ -9,10 +9,10 @@ import CardProfile from 'components/dumb/Card/Profile';
 import Screen from 'components/dumb/Screen';
 
 // COMPONENTS
-const AccountHome = ({ profile, error, isFetching }) => {
+const AccountHome = ({ profile, isFetching }) => {
   const state = useMemo(
-    () => ({ error, isLoading: isFetching || isEmpty(profile) }),
-    [error, isFetching, profile],
+    () => ({ isLoading: isFetching || isEmpty(profile) }),
+    [isFetching, profile],
   );
 
   const preventSplashScreen = useMemo(
@@ -34,12 +34,10 @@ const AccountHome = ({ profile, error, isFetching }) => {
 
 AccountHome.propTypes = {
   profile: PropTypes.shape(UserSchema.propTypes),
-  error: PropTypes.instanceOf(Error),
   isFetching: PropTypes.bool,
 };
 
 AccountHome.defaultProps = {
-  error: null,
   isFetching: false,
   profile: null,
 };

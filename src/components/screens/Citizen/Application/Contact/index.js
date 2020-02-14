@@ -1,4 +1,4 @@
-import React, { lazy } from 'react';
+import React, { lazy, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
@@ -10,7 +10,7 @@ import routes from 'routes';
 
 import withDataboxURL from 'components/smart/withDataboxURL';
 
-import Screen from 'components/dumb/Screen';
+import Screen, { SCREEN_STATE_PROPTYPES } from 'components/dumb/Screen';
 
 // LAZY
 const ContactPreview = lazy(() => import('components/screens/Citizen/Application/Contact/Preview'));
@@ -21,49 +21,68 @@ const Contact = ({
   entity,
   databoxURL,
   databox,
+  isFetchingDatabox,
   screenProps,
   location,
-}) => (
-  <Screen {...screenProps}>
-    <Switch>
-      <Redirect
-        exact
-        from={routes.citizen.application.contact._}
-        to={{ ...location, pathname: routes.citizen.application.contact.preview }}
-      />
-      <Route
-        path={routes.citizen.application.contact.preview}
-        render={(routerProps) => (
-          <ContactPreview
-            entity={entity}
-            databox={databox}
-            databoxURL={databoxURL}
-            {...routerProps}
-          />
-        )}
-      />
-      <Route
-        path={routes.citizen.application.contact.providers}
-        exact
-        render={(routerProps) => (
-          <ContactProviders
-            entity={entity}
-            databox={databox}
-            databoxURL={databoxURL}
-            {...routerProps}
-          />
-        )}
-      />
-    </Switch>
-  </Screen>
-);
+}) => {
+  const screenPropsWithDataboxURL = useMemo(
+    () => ({
+      ...screenProps,
+      state: {
+        ...screenProps.state,
+        isFetching: screenProps.state.isFetching || isFetchingDatabox,
+      },
+    }),
+    [screenProps, isFetchingDatabox],
+  );
+
+  return (
+    <Screen {...screenPropsWithDataboxURL}>
+      <Switch>
+        <Redirect
+          exact
+          from={routes.citizen.application.contact._}
+          to={{ ...location, pathname: routes.citizen.application.contact.preview }}
+        />
+        <Route
+          path={routes.citizen.application.contact.preview}
+          render={(routerProps) => (
+            <ContactPreview
+              entity={entity}
+              databox={databox}
+              databoxURL={databoxURL}
+              {...routerProps}
+            />
+          )}
+        />
+        <Route
+          path={routes.citizen.application.contact.providers}
+          exact
+          render={(routerProps) => (
+            <ContactProviders
+              entity={entity}
+              databox={databox}
+              databoxURL={databoxURL}
+              {...routerProps}
+            />
+          )}
+        />
+      </Switch>
+    </Screen>
+  );
+};
 
 Contact.propTypes = {
   mainDomain: PropTypes.string,
   entity: PropTypes.shape(ApplicationSchema.propTypes),
-  databox: PropTypes.shape(DataboxSchema.propTypes),
+  screenProps: PropTypes.shape({
+    state: SCREEN_STATE_PROPTYPES.isRequired,
+  }).isRequired,
+
+  // withDataboxURL
   databoxURL: PropTypes.string,
-  screenProps: PropTypes.object.isRequired,
+  databox: PropTypes.shape(DataboxSchema.propTypes),
+  isFetchingDatabox: PropTypes.bool.isRequired,
   location: PropTypes.object.isRequired,
 };
 

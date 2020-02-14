@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { denormalize } from 'normalizr';
 
@@ -13,6 +13,7 @@ import { contactDataboxURL } from 'store/actions/screens/contact';
 import { selectors as contactSelectors } from 'store/reducers/screens/contact';
 
 import { useParams } from 'react-router-dom';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import identity from '@misakey/helpers/identity';
 import isNil from '@misakey/helpers/isNil';
@@ -45,9 +46,6 @@ const withDataboxURL = (mapper = identity) => (Component) => {
     dispatchContact, dispatchReceiveDataboxesByProducer, databoxesByProducer,
     ...props
   }) => {
-    const [error, setError] = useState();
-    const [isFetching, setIsFetching] = useState();
-
     const { entity: { id, mainDomain }, isAuthenticated, userId, databoxURL } = props;
 
     const { mainDomain: mainDomainParam } = useParams();
@@ -57,21 +55,15 @@ const withDataboxURL = (mapper = identity) => (Component) => {
       [databoxesByProducer],
     );
 
-    const mappedProps = useMemo(
-      () => mapper({ ...props, databox, isFetchingDatabox: isFetching, errorDatabox: error }),
-      [databox, error, isFetching, props],
-    );
-
     const shouldFetch = useMemo(
       () => {
-        const validInternalState = !isFetching && isNil(error);
         const validAuth = isAuthenticated;
         const validEntity = !isNil(mainDomain) && !isNil(id) && mainDomain === mainDomainParam;
         const defaultShouldFetch = isNil(databoxURL);
 
-        return validInternalState && validAuth && validEntity && defaultShouldFetch;
+        return validAuth && validEntity && defaultShouldFetch;
       },
-      [databoxURL, error, id, isAuthenticated, isFetching, mainDomain, mainDomainParam],
+      [databoxURL, id, isAuthenticated, mainDomain, mainDomainParam],
     );
 
     const getDatabox = useCallback(
@@ -101,25 +93,26 @@ const withDataboxURL = (mapper = identity) => (Component) => {
       [id, userId],
     );
 
-    useEffect(
-      () => {
-        if (shouldFetch) {
-          setIsFetching(true);
-          getDatabox()
-            .then((box) => {
-              if (!isNil(box)) {
-                return onDatabox(box);
-              }
-              return createDatabox()
-                .then((createdDatabox) => onDatabox(createdDatabox));
-            })
-            .catch(setError)
-            .finally(() => {
-              setIsFetching(false);
-            });
-        }
-      },
-      [getDatabox, onDatabox, createDatabox, shouldFetch, setIsFetching, setError],
+    const databoxFetchCallback = useCallback(
+      () => getDatabox()
+        .then((box) => {
+          if (!isNil(box)) {
+            return onDatabox(box);
+          }
+          return createDatabox()
+            .then((createdDatabox) => onDatabox(createdDatabox));
+        }),
+      [getDatabox, onDatabox, createDatabox],
+    );
+
+    const { isFetching, error } = useFetchEffect(
+      databoxFetchCallback,
+      { shouldFetch },
+    );
+
+    const mappedProps = useMemo(
+      () => mapper({ ...props, databox, isFetchingDatabox: isFetching, errorDatabox: error }),
+      [databox, error, isFetching, props],
     );
 
     return <Component {...mappedProps} />;

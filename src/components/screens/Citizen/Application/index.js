@@ -47,12 +47,16 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
     [state],
   );
 
-  const infoScreenProps = useMemo(
+
+  const infoProps = useMemo(
     () => ({
-      ...screenProps,
-      appBarProps: { elevationScroll: false },
+      screenProps: {
+        ...screenProps,
+        appBarProps: { elevationScroll: false },
+      },
+      entity: application,
     }),
-    [screenProps],
+    [screenProps, application],
   );
 
   return (
@@ -81,10 +85,7 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
         path={routes.citizen.application._}
         render={(routerProps) => (
           <ApplicationInfo
-            entity={application}
-            error={error}
-            isFetching={isFetching}
-            screenProps={infoScreenProps}
+            {...infoProps}
             {...routerProps}
           />
         )}
@@ -104,10 +105,12 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
 }
 
 Application.propTypes = {
+  // withApplication
   entity: PropTypes.shape(ApplicationSchema.propTypes),
   error: PropTypes.object,
   isFetching: PropTypes.bool,
   mainDomain: PropTypes.string.isRequired,
+  // ROUTER
   match: PropTypes.shape({ path: PropTypes.string }).isRequired,
 };
 

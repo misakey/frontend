@@ -2,29 +2,13 @@ import { normalize } from 'normalizr';
 import ApplicationSchema from 'store/schemas/Application';
 import { receiveEntities } from '@misakey/store/actions/entities';
 
-import isEmpty from '@misakey/helpers/isEmpty';
-import mergeWith from '@misakey/helpers/mergeWith';
+import mergeEntitiesNoEmpty from 'helpers/mergeEntities/noEmpty';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
 export const RECEIVE_APPLICATIONS_LINKED_IDS = Symbol('RECEIVE_APPLICATIONS_LINKED_IDS');
 export const RECEIVE_APPLICATIONS_SUGGESTED_IDS = Symbol('RECEIVE_APPLICATIONS_SUGGESTED_IDS');
 
 // HELPERS
-// do not override destination if source is empty
-const noEmptyOverride = (dest, src) => {
-  if (isEmpty(src)) {
-    return dest;
-  }
-  return undefined;
-};
-
-const mergeEntitiesNoEmpty = (state, { entities }) => mergeWith(
-  {},
-  state,
-  { ...state.entities, ...entities },
-  noEmptyOverride,
-);
-
 const receiveApplicationsLinkedIds = (linkedIds) => ({
   type: RECEIVE_APPLICATIONS_LINKED_IDS,
   linkedIds,

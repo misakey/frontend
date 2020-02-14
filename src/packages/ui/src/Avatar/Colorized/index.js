@@ -32,7 +32,14 @@ const AvatarColorized = ({ text, image, className, ...rest }) => {
   const classes = useStyles({ backgroundColor });
 
   if (image) {
-    return <Avatar src={image} alt={text} className={className} {...rest} />;
+    return (
+      <Avatar
+        classes={{ root: className, colorDefault: classes.avatarColorized }}
+        src={image}
+        alt={text}
+        {...rest}
+      />
+    );
   }
 
   return (

@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Formik, Form } from 'formik';
@@ -21,10 +21,11 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 import useGetRoles from '@misakey/auth/hooks/useGetRoles';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import BoxControls from 'components/dumb/Box/Controls';
+import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import ScreenAction from 'components/dumb/Screen/Action';
 import FormFields from 'components/dumb/Form/Fields';
@@ -100,9 +101,6 @@ function ServiceRoleClaim({
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
   const role = useLocationWorkspace();
 
-  const [internalFetching, setInternalFetching] = useState(false);
-  const [internalError, setInternalError] = useState();
-
   const [errorMessage, setErrorMessage] = useState();
   const [claim, setClaim] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -150,17 +148,13 @@ function ServiceRoleClaim({
     [service, userRoles, role],
   );
 
-  const state = useMemo(
-    () => ({
-      error: error || internalError,
-      isLoading: isLoading || internalFetching,
-      preventSplashScreen: !isNil(service),
-    }),
-    [error, internalError, internalFetching, isLoading, service],
+
+  const shouldFetchClaim = useMemo(
+    () => !isNil(userRoleId),
+    [userRoleId],
   );
 
   const handleEmail = useCallback(() => {
-    if (isNil(service) || isCreating) { return; }
     setCreating(true);
     setErrorMessage();
 
@@ -193,12 +187,10 @@ function ServiceRoleClaim({
         }
       })
       .finally(() => setCreating(false));
-  }, [service, isCreating, userId, role, t, enqueueSnackbar, handleGenericHttpErrors]);
+  }, [service, userId, role, t, enqueueSnackbar, handleGenericHttpErrors]);
 
   const handleSubmit = useCallback((values, { setErrors, setSubmitting }) => {
     if (isNil(claim) || isNil(claim.id)) { throw new Error('Cannot submit, claim is nil'); }
-
-    setSubmitting(true);
 
     const query = { id: claim.id };
     const payload = { validated_at: moment.utc(Date.now()).format(), value: values.code.join('') };
@@ -221,29 +213,36 @@ function ServiceRoleClaim({
       .finally(() => setSubmitting(false));
   }, [claim, fetchRoleList, userId, handleGenericHttpErrors]);
 
-  const fetchClaim = useCallback(() => {
-    setInternalFetching(true);
-
-    API.use(ENDPOINTS.claim.list)
+  const fetchClaim = useCallback(
+    () => API.use(ENDPOINTS.claim.list)
       .build(null, null, { user_role_id: userRoleId })
-      .send()
-      .then((response) => {
-        const found = head(response);
-        if (isObject(found)) {
-          setClaim(objectToCamelCase(found));
-        }
-      })
-      .catch((e) => setInternalError(e.httpStatus || 500))
-      .finally(() => setInternalFetching(false));
-  }, [setInternalFetching, setInternalError, setClaim, userRoleId]);
+      .send(),
+    [userRoleId],
+  );
 
-  useEffect(
-    () => {
-      if (!isNil(userRoleId)) {
-        fetchClaim();
+  const onFetchClaimSuccess = useCallback(
+    (response) => {
+      const found = head(response);
+      if (isObject(found)) {
+        setClaim(objectToCamelCase(found));
       }
     },
-    [fetchClaim, userRoleId],
+    [setClaim],
+  );
+
+  const { isFetching: internalFetching } = useFetchEffect(
+    fetchClaim,
+    { shouldFetch: shouldFetchClaim },
+    { onSuccess: onFetchClaimSuccess },
+  );
+
+  const state = useMemo(
+    () => ({
+      error,
+      isLoading: isLoading || internalFetching,
+      preventSplashScreen: !isNil(service),
+    }),
+    [error, internalFetching, isLoading, service],
   );
 
 
@@ -293,15 +292,13 @@ function ServiceRoleClaim({
                   />
                   <Box align="right" mt={1}>
                     <Button
-                      variant="contained"
-                      color="secondary"
+                      standing={BUTTON_STANDINGS.MAIN}
                       target="_blank"
                       rel="noopener noreferrer"
                       component="a"
+                      text={t('screens:Service.role.claim.errors.missingDpoEmail.button')}
                       href="mailto:question.perso@misakey.com"
-                    >
-                      {t('screens:Service.role.claim.errors.missingDpoEmail.button')}
-                    </Button>
+                    />
                   </Box>
                 </>
               )}
@@ -337,7 +334,7 @@ function ServiceRoleClaim({
                         type: 'submit',
                       }}
                     secondary={{
-                      isValid: !success || !hasClaimId,
+                      isValid: !isNil(service) && (!success || !hasClaimId),
                       isLoading: isCreating,
                       onClick: handleEmail,
                       text: t('screens:Service.role.claim.email.submit'),

@@ -1,45 +1,47 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import isNil from '@misakey/helpers/isNil';
-import omit from '@misakey/helpers/omit';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+
+import useFetchCallback from '@misakey/hooks/useFetch/callback';
 
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
-import Button from '@material-ui/core/Button';
-
+import BoxControls from 'components/dumb/Box/Controls';
 import ConfirmDialogContent from './DialogContent';
 
 
 function ConfirmationDialog({
   onConfirm, isDialogOpen, setDialogOpen,
-  dialogContent, title, confirmButtonText, t,
+  dialogContent, title,
+  confirmButtonText, hideCancelButton,
+  t,
   ...rest
 }) {
-  const [isValidating, setValidating] = useState(false);
   const handleCancel = useCallback(
     () => { setDialogOpen(false); },
     [setDialogOpen],
   );
 
-  const handleOk = useCallback(
-    () => {
-      setValidating(true);
-      if (Promise.resolve(onConfirm) === onConfirm) {
-        Promise.resolve(onConfirm)
-          .then(() => {
-            setDialogOpen(false);
-            setValidating(false);
-          });
-      } else {
-        onConfirm();
-        setDialogOpen(false);
-        setValidating(false);
-      }
-    },
-    [setDialogOpen, onConfirm, setValidating],
+  const text = useMemo(
+    () => (isNil(confirmButtonText) ? t('common:ok') : confirmButtonText),
+    [confirmButtonText, t],
+  );
+
+  const secondary = useMemo(
+    () => (hideCancelButton ? null : {
+      onClick: handleCancel,
+      text: t('common:cancel'),
+    }),
+    [hideCancelButton, handleCancel, t],
+  );
+
+  const { wrappedFetch: handleOk, isFetching: isValidating } = useFetchCallback(
+    onConfirm,
+    { onSuccess: handleCancel },
   );
 
   return (
@@ -47,17 +49,21 @@ function ConfirmationDialog({
       maxWidth="sm"
       aria-labelledby="confirmation-dialog-title"
       open={isDialogOpen}
-      {...omit(rest, ['i18n', 'tReady'])}
+      {...omitTranslationProps(rest)}
     >
       <DialogTitle id="confirmation-dialog-title">{title}</DialogTitle>
       <ConfirmDialogContent content={dialogContent} />
       <DialogActions>
-        <Button onClick={handleCancel} color="primary">
-          {t('cancel')}
-        </Button>
-        <Button autoFocus onClick={handleOk} color="secondary" disabled={isValidating}>
-          {(isNil(confirmButtonText)) ? t('ok') : confirmButtonText }
-        </Button>
+        <BoxControls
+          primary={{
+            autoFocus: true,
+            onClick: handleOk,
+            isLoading: isValidating,
+            text,
+          }}
+          secondary={secondary}
+          outlined={false}
+        />
       </DialogActions>
     </Dialog>
   );
@@ -71,10 +77,12 @@ ConfirmationDialog.propTypes = {
   title: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
   confirmButtonText: PropTypes.string,
+  hideCancelButton: PropTypes.bool,
 };
 
 ConfirmationDialog.defaultProps = {
   confirmButtonText: null,
+  hideCancelButton: false,
 };
 
 export default withTranslation(['common'])(ConfirmationDialog);

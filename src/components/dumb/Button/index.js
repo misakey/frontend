@@ -43,6 +43,9 @@ const makeStyles = () => ({
   buttonRoot: {
     width: '100%',
   },
+  buttonLabel: ({ isLoading }) => (isLoading ? {
+    color: 'transparent',
+  } : {}),
   buttonProgress: {
     position: 'absolute',
     top: '50%',
@@ -63,7 +66,7 @@ const Button = forwardRef(
     <span className={classes.wrapper}>
       <MUIButton
         ref={ref}
-        classes={{ root: classes.buttonRoot }}
+        classes={{ root: classes.buttonRoot, label: classes.buttonLabel }}
         {...getDefaultProps(standing)}
         disabled={isLoading || !isValid}
         {...rest}
@@ -83,7 +86,7 @@ Button.propTypes = {
   isValid: PropTypes.bool,
   progressProps: PropTypes.object,
   standing: PropTypes.oneOf(Object.values(BUTTON_STANDINGS)),
-  text: PropTypes.string.isRequired,
+  text: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
 };
 
 Button.defaultProps = {

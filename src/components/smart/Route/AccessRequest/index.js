@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useMemo, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Redirect, generatePath } from 'react-router-dom';
@@ -14,6 +14,8 @@ import { denormalize } from 'normalizr';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
 import prop from '@misakey/helpers/prop';
+
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import withAccessRequest from 'components/smart/withAccessRequest';
 import AccessRequestError from 'components/smart/Route/AccessRequest/Error';
@@ -65,21 +67,6 @@ function RouteAccessRequest({
     error,
     ...props
   }) => {
-    const [internalFetching, setInternalFetching] = useState(false);
-    const [internalError, setInternalError] = useState();
-
-    const renderProps = {
-      history,
-      location,
-      match,
-      accessRequest,
-      producer,
-      isFetching: isFetching || internalFetching,
-      error: error || internalError,
-      ...props,
-      ...componentProps,
-    };
-
     const producerId = useMemo(
       () => producerIdProp(accessRequest),
       [accessRequest],
@@ -123,34 +110,27 @@ function RouteAccessRequest({
     );
 
     const shouldFetchApplication = useMemo(
-      () => isNil(producer) && !isNil(producerId) && !internalFetching && !internalError,
-      [producer, producerId, internalFetching, internalError],
+      () => isNil(producer) && !isNil(producerId),
+      [producer, producerId],
     );
 
     const fetchApplication = useCallback(
-      () => {
-        setInternalFetching(true);
-        getApplication(producerId, isAuthenticated)
-          .then((response) => dispatchOnReceiveProducer(objectToCamelCase(response)))
-          .catch((e) => { setInternalError(e); })
-          .finally(() => { setInternalFetching(false); });
-      },
+      () => getApplication(producerId, isAuthenticated),
       [
-        dispatchOnReceiveProducer,
         isAuthenticated,
         producerId,
-        setInternalFetching,
-        setInternalError,
       ],
     );
 
-    useEffect(
-      () => {
-        if (shouldFetchApplication) {
-          fetchApplication();
-        }
-      },
-      [shouldFetchApplication, fetchApplication],
+    const onFetchApplicationSuccess = useCallback(
+      (response) => dispatchOnReceiveProducer(objectToCamelCase(response)),
+      [dispatchOnReceiveProducer],
+    );
+
+    const { isFetching: internalFetching } = useFetchEffect(
+      fetchApplication,
+      { shouldFetch: shouldFetchApplication },
+      { onSuccess: onFetchApplicationSuccess },
     );
 
     useEffect(
@@ -161,6 +141,18 @@ function RouteAccessRequest({
       },
       [claimRedirectTo, isAuthenticated, redirectToClaim, userHasRole, userRoles],
     );
+
+    const renderProps = {
+      history,
+      location,
+      match,
+      accessRequest,
+      producer,
+      isFetching: isFetching || internalFetching,
+      error,
+      ...props,
+      ...componentProps,
+    };
 
     if (error) {
       return <AccessRequestError error={error} />;
@@ -190,9 +182,9 @@ function RouteAccessRequest({
     history: PropTypes.shape({
       replace: PropTypes.func.isRequired,
     }).isRequired,
+    // withAccessRequest
     isFetching: PropTypes.bool.isRequired,
     error: PropTypes.instanceOf(Error),
-    // withAccessRequest
     accessRequest: PropTypes.shape({
       producerId: PropTypes.string,
       databoxId: PropTypes.string,

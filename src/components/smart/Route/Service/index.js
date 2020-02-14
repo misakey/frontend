@@ -10,6 +10,8 @@ import log from '@misakey/helpers/log';
 import isNil from '@misakey/helpers/isNil';
 import generatePath from '@misakey/helpers/generatePath';
 
+import useFetchCallback from '@misakey/hooks/useFetch/callback';
+
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
 import { loadUserRoles } from '@misakey/auth/store/actions/auth';
 
@@ -22,24 +24,7 @@ export const DEFAULT_SERVICE_ENTITY = { mainDomain: DEFAULT_DOMAIN };
 // CONSTANTS
 const DEFAULT_SCOPE = 'openid user';
 
-// HOOKS
-const useSignAsSilent = (
-  setLoginInProgress,
-  userManager,
-  requiredScope,
-  setLoginAsScreen,
-  workspace,
-) => useCallback(() => {
-  setLoginInProgress(true);
-  userManager.signinSilent({ scope: `${DEFAULT_SCOPE} ${requiredScope}` })
-    .then(() => { log(`Signin silent as ${workspace} succeed`); })
-    .catch((err) => {
-      log(`Signin silent as ${workspace} failed ${err}`);
-      setLoginAsScreen(true);
-    })
-    .finally(() => { setLoginInProgress(false); });
-}, [requiredScope, setLoginAsScreen, setLoginInProgress, userManager, workspace]);
-
+// COMPONENTS
 function RouteService({
   component: Component, componentProps,
   dispatchUpdateRoles,
@@ -62,14 +47,30 @@ function RouteService({
   }), [requiredScope, userEmail, userManager]);
 
   const [loginAsScreen, setLoginAsScreen] = useState(false);
-  const [loginInProgress, setLoginInProgress] = useState(false);
-  const signInAsSilent = useSignAsSilent(
-    setLoginInProgress,
-    userManager,
-    requiredScope,
-    setLoginAsScreen,
-    workspace,
+
+  const signInSilent = useCallback(
+    () => userManager.signinSilent({ scope: `${DEFAULT_SCOPE} ${requiredScope}` }),
+    [userManager, requiredScope],
   );
+
+  const onSignInSilentSuccess = useCallback(
+    () => log(`Signin silent as ${workspace} succeeded`),
+    [workspace],
+  );
+
+  const onSignInSilentError = useCallback(
+    (err) => {
+      log(`Signin silent as ${workspace} failed ${err}`);
+      setLoginAsScreen(true);
+    },
+    [workspace, setLoginAsScreen],
+  );
+
+  const { isFetching: loginInProgress, wrappedFetch: signInAsSilent } = useFetchCallback(
+    signInSilent,
+    { onSucces: onSignInSilentSuccess, onError: onSignInSilentError },
+  );
+
   const pathToClaim = useMemo(
     () => generatePath(routes[workspace].service.claim._, { mainDomain }), [mainDomain, workspace],
   );

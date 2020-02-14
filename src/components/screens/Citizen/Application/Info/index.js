@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import React, { Suspense, lazy, useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
@@ -25,16 +25,18 @@ import isNil from '@misakey/helpers/isNil';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 
-import Screen, { getStyleForContainerScroll, DefaultSplashScreen } from 'components/dumb/Screen';
+import Screen, { getStyleForContainerScroll, DefaultSplashScreen, SCREEN_STATE_PROPTYPES } from 'components/dumb/Screen';
 import ApplicationInfoNav from 'components/screens/Citizen/Application/Info/Nav';
-import ApplicationVault from 'components/screens/Citizen/Application/Info/Vault';
 import UserContributionDialog from 'components/smart/UserContributionDialog';
 
-import Feedback from 'components/screens/Citizen/Application/Info/Feedback';
-import Legal from 'components/screens/Citizen/Application/Info/Legal';
-import More from 'components/screens/Citizen/Application/Info/More';
 
 import Footer from 'components/dumb/Footer';
+
+// LAZY
+const ApplicationVault = lazy(() => import('components/screens/Citizen/Application/Info/Vault'));
+const Feedback = lazy(() => import('components/screens/Citizen/Application/Info/Feedback'));
+const Legal = lazy(() => import('components/screens/Citizen/Application/Info/Legal'));
+const More = lazy(() => import('components/screens/Citizen/Application/Info/More'));
 
 // CONSTANTS
 const NAV_BAR_HEIGHT = 33;
@@ -106,7 +108,7 @@ const createUserApplication = (form) => API
 // COMPONENTS
 function ApplicationInfo({
   userId, entity, isAuthenticated,
-  isFetching, match, t, screenProps,
+  match, t, screenProps,
 }) {
   const classes = useStyles();
   const [isOpenUserContributionDialog, setOpenUserContributionDialog] = useState(false);
@@ -120,9 +122,11 @@ function ApplicationInfo({
 
   const { mainDomain } = match.params;
   const { name, id, isUnknown } = useMemo(
-    () => entity || { isUnknwon: true },
+    () => entity,
     [entity],
   );
+
+  const { isLoading } = useMemo(() => screenProps.state, [screenProps]);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -206,8 +210,6 @@ function ApplicationInfo({
   ),
   [isUnknown, mainDomain]);
 
-  const isReady = useMemo(() => (!isFetching && !isNil(id)), [id, isFetching]);
-
   const shouldFetch = useMemo(
     () => !isNil(id) && !isNil(userId) && !isUnknown,
     [id, isUnknown, userId],
@@ -224,7 +226,7 @@ function ApplicationInfo({
   );
 
   return (
-    <Screen {...screenProps} className={classes.screen}>
+    <Screen {...screenProps} preventSplashScreen className={classes.screen}>
       <Container
         maxWidth="md"
         className={classes.container}
@@ -249,61 +251,61 @@ function ApplicationInfo({
           ref={(ref) => IS_PLUGIN && setContentRef(ref)}
         >
           <Suspense fallback={<DefaultSplashScreen />}>
-            <Switch>
-              <Route
-                exact
-                path={routes.citizen.application.vault}
-                render={(routerProps) => (
-                  <ApplicationVault
-                    onContributionDpoEmailClick={onContributionDpoEmailClick}
-                    isLoading={isFetching}
-                    application={entity}
-                    {...routerProps}
-                  />
-                )}
-              />
-              <Route
-                path={routes.citizen.application.feedback}
-                render={(routerProps) => (
-                  <Feedback
-                    application={entity}
-                    isLoading={isFetching}
-                    {...routerProps}
-                  />
-                )}
-              />
-              <Route
-                path={routes.citizen.application.legal}
-                render={(routerProps) => (
-                  <Legal
-                    application={entity}
-                    isLoading={isFetching}
-                    onContributionLinkClick={onContributionLinkClick}
-                    {...routerProps}
-                  />
-                )}
-              />
-              <Route
-                path={routes.citizen.application.more}
-                render={(routerProps) => (
-                  <More
-                    application={entity}
-                    isLoading={isFetching}
-                    isLinked={!isNil(applicationLinkId)}
-                    toggleLinked={onToggleLinked}
-                    isAuthenticated={isAuthenticated}
-                    {...routerProps}
-                  />
-                )}
-              />
-              {isReady && (
-                <Redirect
-                  from={routes.citizen.application._}
+            {isLoading ? (
+              <DefaultSplashScreen />
+            ) : (
+              <Switch>
+                <Route
                   exact
-                  to={defaultRoute}
+                  path={routes.citizen.application.vault}
+                  render={(routerProps) => (
+                    <ApplicationVault
+                      onContributionDpoEmailClick={onContributionDpoEmailClick}
+                      application={entity}
+                      {...routerProps}
+                    />
+                  )}
                 />
-              )}
-            </Switch>
+                <Route
+                  path={routes.citizen.application.feedback}
+                  render={(routerProps) => (
+                    <Feedback
+                      application={entity}
+                      {...routerProps}
+                    />
+                  )}
+                />
+                <Route
+                  path={routes.citizen.application.legal}
+                  render={(routerProps) => (
+                    <Legal
+                      application={entity}
+                      onContributionLinkClick={onContributionLinkClick}
+                      {...routerProps}
+                    />
+                  )}
+                />
+                <Route
+                  path={routes.citizen.application.more}
+                  render={(routerProps) => (
+                    <More
+                      application={entity}
+                      isLinked={!isNil(applicationLinkId)}
+                      toggleLinked={onToggleLinked}
+                      isAuthenticated={isAuthenticated}
+                      {...routerProps}
+                    />
+                  )}
+                />
+                {!isNil(id) && (
+                  <Redirect
+                    from={routes.citizen.application._}
+                    exact
+                    to={defaultRoute}
+                  />
+                )}
+              </Switch>
+            )}
           </Suspense>
         </Box>
         {!IS_PLUGIN && <Footer />}
@@ -317,13 +319,14 @@ ApplicationInfo.propTypes = {
   entity: PropTypes.shape(ApplicationSchema.propTypes),
   history: PropTypes.shape({ replace: PropTypes.func }).isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
-  isFetching: PropTypes.bool.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({ mainDomain: PropTypes.string }),
     path: PropTypes.string,
   }).isRequired,
   t: PropTypes.func.isRequired,
-  screenProps: PropTypes.object.isRequired,
+  screenProps: PropTypes.shape({
+    state: SCREEN_STATE_PROPTYPES,
+  }).isRequired,
 };
 
 ApplicationInfo.defaultProps = {

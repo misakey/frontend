@@ -1,22 +1,24 @@
-import React, { useMemo, useCallback, useEffect } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-
 import { withTranslation } from 'react-i18next';
-
 import { connect } from 'react-redux';
 
 import { pluginRefreshWarningShow } from 'store/actions/warning';
+import { GET_BLOCKER_STATE, TOGGLE_BLOCKED_STATE } from 'background/messages';
 
-import Button from '@material-ui/core/Button';
+import { sendMessage } from 'background';
+
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import useFetchCallback from '@misakey/hooks/useFetch/callback';
+
+import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from '@material-ui/core/Tooltip';
 import Pause from '@material-ui/icons/Pause';
 import PlayArrow from '@material-ui/icons/PlayArrow';
 
-import { sendMessage } from 'background';
-import { GET_BLOCKER_STATE, TOGGLE_BLOCKED_STATE } from 'background/messages';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -54,21 +56,22 @@ const useAssignCallback = (
 
 const usePause = (assignCallback, dispatchShowWarning) => useCallback((time = null) => {
   const deadline = time ? Date.now() + (time * 60 * 1000) : null;
-  sendMessage(TOGGLE_BLOCKED_STATE, { time: deadline }).then((response) => {
+  return sendMessage(TOGGLE_BLOCKED_STATE, { time: deadline }).then((response) => {
     assignCallback(response);
     dispatchShowWarning();
   });
 }, [assignCallback, dispatchShowWarning]);
 
-const useHandleChoice = (pause, setAnchorEl) => useCallback((value) => {
-  pause(value);
+const useHandleChoice = (onPause, setAnchorEl) => useCallback((value) => {
+  onPause(value);
   setAnchorEl(null);
-}, [pause, setAnchorEl]);
+}, [onPause, setAnchorEl]);
 
-const useGetData = (assignCallback) => useCallback(() => {
-  sendMessage(GET_BLOCKER_STATE).then(assignCallback);
-}, [assignCallback]);
-
+const useGetData = (assignCallback) => useCallback(
+  () => sendMessage(GET_BLOCKER_STATE)
+    .then(assignCallback),
+  [assignCallback],
+);
 
 // HELPERS
 const getPlannedDate = (pausedTime) => {
@@ -86,14 +89,16 @@ function PausePluginButton({ t, dispatchShowWarning }) {
 
   const assignCallback = useAssignCallback(setPaused, setPausedTime);
   const pause = usePause(assignCallback, dispatchShowWarning);
-  const handleChoice = useHandleChoice(pause, setAnchorEl);
+  const { wrappedFetch: onPause, isFetching: isPausing } = useFetchCallback(pause);
+
+  const handleChoice = useHandleChoice(onPause, setAnchorEl);
   const getData = useGetData(assignCallback);
   const onClose = useCallback(() => { setAnchorEl(null); }, []);
   const onClick = useCallback(
-    (event) => (paused ? pause() : setAnchorEl(event.currentTarget)), [pause, paused],
+    (event) => (paused ? onPause() : setAnchorEl(event.currentTarget)), [onPause, paused],
   );
 
-  useEffect(getData, []);
+  const { isFetching } = useFetchEffect(getData, { fetchOnlyOnce: true });
 
   return (
     <>
@@ -102,16 +107,15 @@ function PausePluginButton({ t, dispatchShowWarning }) {
         : t('plugin:pause.description')}
       >
         <Button
-          color="secondary"
+          standing={BUTTON_STANDINGS.OUTLINED}
           size="small"
-          variant="outlined"
           className={classes.button}
           aria-owns={anchorEl ? 'menu-list-grow' : undefined}
           aria-haspopup="true"
           onClick={onClick}
-        >
-          {paused ? <PlayArrow /> : <Pause />}
-        </Button>
+          isLoading={isFetching || isPausing}
+          text={paused ? <PlayArrow /> : <Pause />}
+        />
       </Tooltip>
 
       <Menu

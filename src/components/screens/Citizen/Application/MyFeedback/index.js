@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -18,9 +18,15 @@ import { ratingValidationSchema } from 'constants/validationSchemas/ratings';
 
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 import pick from '@misakey/helpers/pick';
+import prop from '@misakey/helpers/prop';
+import compose from '@misakey/helpers/compose';
+
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 import ButtonSubmit from 'components/dumb/Button/Submit';
+import Button from 'components/dumb/Button';
 
 import BoxControls from 'components/dumb/Box/Controls';
 import SplashScreen from 'components/dumb/SplashScreen';
@@ -28,11 +34,9 @@ import Screen from 'components/dumb/Screen';
 import Navigation from 'components/dumb/Navigation';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
 import withMyFeedback from 'components/smart/withMyFeedback';
 import FieldText from 'components/dumb/Form/Field/Text';
 import FieldRating from 'components/dumb/Form/Field/Rating';
-import ScreenError from 'components/dumb/Screen/Error';
 
 // CONSTANTS
 const VALUE_FIELD = 'value';
@@ -56,6 +60,10 @@ const UPDATE_RATING_ENDPOINT = {
 
 // HELPERS
 const pickInitialValues = pick([VALUE_FIELD, COMMENT_FIELD]);
+const getErrorDetails = compose(
+  pickInitialValues,
+  prop('details'),
+);
 
 const postFeedback = (applicationId, userId, form, rating) => {
   if (isNil(rating)) {
@@ -96,51 +104,70 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const useOnSubmit = (
-  application, userId, enqueueSnackbar, setError, history, t, rating, dispatchClearAvgRating,
+  application,
+  userId,
+  enqueueSnackbar,
+  history,
+  t,
+  rating,
+  dispatchClearRatings,
+  handleGenericHttpErrors,
 ) => useCallback(
-  (form, { setSubmitting }) => {
+  (form, { setSubmitting, setFieldError }) => {
     const { id, mainDomain } = application;
     return postFeedback(id, userId, form, rating)
       .then(() => {
         enqueueSnackbar(t('screens:feedback.me.success'), { variant: 'success' });
-        dispatchClearAvgRating(mainDomain, history);
+        dispatchClearRatings(mainDomain, history);
       })
-      .catch(({ httpStatus }) => {
-        setError(httpStatus);
+      .catch((error) => {
+        const details = getErrorDetails(error);
+        if (isEmpty(details)) {
+          return handleGenericHttpErrors(error);
+        }
+        const { [VALUE_FIELD]: valueError, [COMMENT_FIELD]: commentError } = details;
+        if (!isNil(valueError)) {
+          setFieldError(valueError);
+        }
+        if (!isNil(commentError)) {
+          setFieldError(commentError);
+        }
+        return error;
       })
       .finally(() => { setSubmitting(false); });
   },
-  [application, userId, enqueueSnackbar, setError, history, t, rating, dispatchClearAvgRating],
+  [
+    application,
+    userId,
+    enqueueSnackbar,
+    history,
+    t,
+    rating,
+    dispatchClearRatings,
+    handleGenericHttpErrors,
+  ],
 );
 
 // COMPONENTS
-// @FIXME move to @misakey/ui
 const ApplicationMyFeedback = ({
   application,
   userId,
   rating,
-  isFetchingRating,
+  isFetchingFeedback,
   history,
   match: { params },
   t,
   deleteMyFeedback,
-  dispatchClearAvgRating,
+  isDeletingFeedback,
+  dispatchClearRatings,
   screenProps,
 }) => {
   const classes = useStyles();
 
   const { enqueueSnackbar } = useSnackbar();
-
-  const [error, setError] = useState();
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
 
   const { mainDomain } = params;
-
-  const goBackPath = useMemo(
-    () => (isNil(mainDomain)
-      ? null
-      : generatePath(routes.citizen.application.feedback, { mainDomain })),
-    [mainDomain],
-  );
 
   const initialValues = useMemo(
     () => (isNil(rating) ? INITIAL_VALUES : pickInitialValues(rating)),
@@ -150,31 +177,21 @@ const ApplicationMyFeedback = ({
   const onDelete = useCallback(
     () => {
       deleteMyFeedback()
-        .then(() => {
-          if (history.length > 1) {
-            history.goBack();
-          } else {
-            history.push(goBackPath);
-          }
-        });
+        .then(() => dispatchClearRatings(mainDomain, history));
     },
-    [goBackPath, history, deleteMyFeedback],
+    [deleteMyFeedback, dispatchClearRatings, mainDomain, history],
   );
 
   const onSubmit = useOnSubmit(
     application,
     userId,
     enqueueSnackbar,
-    setError,
     history,
     t,
     rating,
-    dispatchClearAvgRating,
+    dispatchClearRatings,
+    handleGenericHttpErrors,
   );
-
-  if (error) {
-    return <ScreenError httpStatus={error} />;
-  }
 
   return (
     <Screen {...screenProps}>
@@ -183,7 +200,7 @@ const ApplicationMyFeedback = ({
         toolbarProps={{ maxWidth: 'md' }}
         title={t('screens:feedback.me.title')}
       />
-      {(isFetchingRating) ? (
+      {(isFetchingFeedback) ? (
         <SplashScreen />
       ) : (
         <Container maxWidth="md">
@@ -213,15 +230,18 @@ const ApplicationMyFeedback = ({
                   <BoxControls
                     primary={(
                       <ButtonSubmit
-                        text={t('feedback.submit')}
+                        text={t('common:feedback.submit')}
                         isSubmitting={isSubmitting}
                         isValid={isValid}
                       />
                     )}
                     secondary={!isNil(rating) ? (
-                      <Button onClick={onDelete} className={classes.deleteButton}>
-                        {t('delete')}
-                      </Button>
+                      <Button
+                        isLoading={isDeletingFeedback}
+                        onClick={onDelete}
+                        className={classes.deleteButton}
+                        text={t('common:delete')}
+                      />
                     ) : undefined}
                   />
                 </Form>
@@ -236,27 +256,32 @@ const ApplicationMyFeedback = ({
 
 ApplicationMyFeedback.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes).isRequired,
+  // withMyFeedback
   rating: PropTypes.shape({
     value: PropTypes.number,
     comment: PropTypes.string,
   }),
-  isFetchingRating: PropTypes.bool,
+  isFetchingFeedback: PropTypes.bool,
   deleteMyFeedback: PropTypes.func.isRequired,
+  isDeletingFeedback: PropTypes.bool,
   userId: PropTypes.string,
+  // ROUTER
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
     goBack: PropTypes.func.isRequired,
     length: PropTypes.number.isRequired,
   }).isRequired,
   match: PropTypes.shape({ params: PropTypes.object }).isRequired,
+  // withTranslation
   t: PropTypes.func.isRequired,
   // CONNECT
-  dispatchClearAvgRating: PropTypes.func.isRequired,
+  dispatchClearRatings: PropTypes.func.isRequired,
   screenProps: PropTypes.object.isRequired,
 };
 
 ApplicationMyFeedback.defaultProps = {
-  isFetchingRating: true,
+  isFetchingFeedback: true,
+  isDeletingFeedback: false,
   rating: null,
   userId: null,
 };
@@ -264,10 +289,14 @@ ApplicationMyFeedback.defaultProps = {
 // CONNECT
 const mapDispatchToProps = (dispatch) => ({
   // @FIXME implement a less tricky way to force update of page rose screen
-  dispatchClearAvgRating: (mainDomain, history) => {
-    const entities = [{ id: mainDomain, changes: { avgRating: null } }];
+  dispatchClearRatings: (mainDomain, history) => {
+    const entities = [{ id: mainDomain, changes: { avgRating: null, ratings: null } }];
     dispatch(updateEntities(entities, ApplicationSchema.entity));
-    history.push(generatePath(routes.citizen.application.feedback, { mainDomain }));
+    if (history.length > 1) {
+      history.goBack();
+    } else {
+      history.push(generatePath(routes.citizen.application.feedback, { mainDomain }));
+    }
   },
 });
 

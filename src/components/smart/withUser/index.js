@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -9,7 +9,7 @@ import { normalize } from 'normalizr';
 import { receiveEntities } from '@misakey/store/actions/entities';
 import UserSchema from 'store/schemas/User';
 
-import useAsync from '@misakey/hooks/useAsync';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import any from '@misakey/helpers/any';
@@ -23,42 +23,30 @@ const fetchUser = (userId) => API
   .build({ id: userId })
   .send();
 
-// HOOKS
-const useGetUser = (userId, shouldFetch, onSignIn, setFetching, setError) => useCallback(
-  () => {
-    if (userId && shouldFetch) {
-      setFetching(true);
-
-      fetchUser(userId)
-        .then((response) => {
-          onSignIn(objectToCamelCase(response));
-        })
-        .catch((e) => { setError(e.status); })
-        .finally(() => { setFetching(false); });
-    }
-  }, [userId, shouldFetch, onSignIn, setFetching, setError],
-);
-
 // COMPONENTS
 const withUser = (Component) => {
   const ComponentWithUser = ({ id, token, profile, userId, onSignIn, ...props }) => {
-    const [isFetching, setFetching] = useState(false);
-    const [error, setError] = useState();
-
     const shouldFetch = useMemo(
-      () => isAnyEmpty([userId, token, profile]),
-      [userId, token, profile],
+      () => isAnyEmpty([token, profile]) && !isEmpty(userId),
+      [token, profile, userId],
     );
 
-    const getUser = useGetUser(userId, shouldFetch, onSignIn, setFetching, setError);
+    const getUser = useCallback(
+      () => fetchUser(userId),
+      [userId],
+    );
 
-    useAsync(getUser, shouldFetch);
+    const onSuccess = useCallback(
+      (response) => onSignIn(objectToCamelCase(response)),
+      [onSignIn],
+    );
+
+    const { isFetching } = useFetchEffect(getUser, { shouldFetch }, { onSuccess });
 
     return (
       <Component
         {...props}
         isFetching={isFetching}
-        error={error}
         id={id}
         token={token}
         profile={profile}

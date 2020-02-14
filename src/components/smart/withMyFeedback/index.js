@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-
+import { withTranslation } from 'react-i18next';
+import { useSnackbar } from 'notistack';
 import { connect } from 'react-redux';
 
 import API from '@misakey/api';
@@ -12,11 +13,10 @@ import isNil from '@misakey/helpers/isNil';
 import head from '@misakey/helpers/head';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
-
-import ScreenError from 'components/dumb/Screen/Error';
 
 // CONSTANTS
 // @FIXME add endpoint to js-common
@@ -69,7 +69,9 @@ const withMyFeedback = (mapper = identity) => (Component) => {
   const Wrapper = (props) => {
     const [rating, setRating] = useState(null);
 
-    const { application: { id }, isAuthenticated, userId } = props;
+    const { enqueueSnackbar } = useSnackbar();
+
+    const { application: { id }, isAuthenticated, userId, t } = props;
     const shouldFetch = useShouldFetch(isAuthenticated, userId, id, rating);
 
     const getMyFeedback = useCallback(
@@ -84,10 +86,10 @@ const withMyFeedback = (mapper = identity) => (Component) => {
       [setRating],
     );
 
-    const { error, isFetching } = useFetchEffect(
+    const { isFetching } = useFetchEffect(
       getMyFeedback,
       { shouldFetch },
-      { onSuccess: onGetFeedbackSuccess, onError: true },
+      { onSuccess: onGetFeedbackSuccess },
     );
 
     const onDelete = useCallback(
@@ -103,30 +105,36 @@ const withMyFeedback = (mapper = identity) => (Component) => {
     const onDeleteSuccess = useCallback(
       () => {
         setRating(null);
+        enqueueSnackbar(t('common:feedback.delete.success'), { variant: 'success' });
       },
-      [setRating],
+      [enqueueSnackbar, t],
     );
 
-    const { callback: deleteMyFeedback, error: deleteError } = useFetchCallback(
+    const { wrappedFetch: deleteMyFeedback, isFetching: isDeletingFeedback } = useFetchCallback(
       onDelete,
-      { onSuccess: onDeleteSuccess, onError: true },
+      { onSuccess: onDeleteSuccess },
     );
 
     const mappedProps = useMemo(
-      () => mapper({ ...props, rating, isFetchingRating: isFetching, deleteMyFeedback }),
-      [isFetching, props, rating, deleteMyFeedback],
+      () => mapper({
+        ...omitTranslationProps(props),
+        rating,
+        isFetchingFeedback: isFetching,
+        deleteMyFeedback,
+        isDeletingFeedback,
+      }),
+      [props, rating, isFetching, deleteMyFeedback, isDeletingFeedback],
     );
-
-    if (error || deleteError) {
-      return <ScreenError httpStatus={error.httpStatus || deleteError.httpStatus} />;
-    }
 
     return <Component {...mappedProps} />;
   };
 
-  Wrapper.propTypes = PROP_TYPES;
+  Wrapper.propTypes = {
+    ...PROP_TYPES,
+    t: PropTypes.func.isRequired,
+  };
 
-  Wrapper.defaultProps = DEFAULT_PROPS;
+  Wrapper.defaultProps = { ...DEFAULT_PROPS };
 
   // CONNECT
   const mapStateToProps = (state) => {
@@ -137,7 +145,7 @@ const withMyFeedback = (mapper = identity) => (Component) => {
     };
   };
 
-  return connect(mapStateToProps, {})(Wrapper);
+  return connect(mapStateToProps, {})(withTranslation('common')(Wrapper));
 };
 
 export default withMyFeedback;

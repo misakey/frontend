@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { denormalize } from 'normalizr';
@@ -17,6 +17,8 @@ import isNil from '@misakey/helpers/isNil';
 import isObject from '@misakey/helpers/isObject';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 // CONSTANTS
 const ACCESS_REQUEST_READ_TOKEN = {
@@ -56,18 +58,68 @@ const readDatabox = (id) => API
 const databoxIdPath = path(['params', 'databoxId']);
 
 // COMPONENTS
-const withAccessRequest = (Component, mapper = identity) => {
+const withAccessRequest = (Component, { mapper = identity, snackbarError = false } = {}) => {
   const Wrapper = ({
     match, location,
     dispatchAccessRequestUpdate, dispatchReceiveDatabox,
     accessRequest, service, databox,
     ...props
   }) => {
-    const [isFetching, setFetching] = useState(false);
-    const [error, setError] = useState(null);
-
     const hash = useMemo(() => location.hash, [location.hash]);
     const databoxId = useMemo(() => databoxIdPath(match), [match]);
+
+    const token = useMemo(
+      () => (!isEmpty(hash) ? hash.substr(1) : null),
+      [hash],
+    );
+
+    const idMatches = useMemo(
+      () => {
+        if (!isNil(token)) {
+          return accessRequest.token === token;
+        }
+        if (!isNil(databoxId)) {
+          return accessRequest.databoxId === databoxId;
+        }
+        return false;
+      },
+      [token, databoxId, accessRequest],
+    );
+
+    const shouldFetch = useMemo(
+      () => (
+        isEmpty(accessRequest)
+        || (!isEmpty(accessRequest) && !idMatches)
+      ),
+      [accessRequest, idMatches],
+    );
+
+    const fetchAccessRequest = useCallback(
+      () => {
+        if (!isNil(token)) {
+          return readAccessRequest(token)
+            .then(mapAccessRequest);
+        }
+        if (!isNil(databoxId)) {
+          return (isValidDatabox(databox)
+            ? Promise.resolve(databox)
+            : readDatabox(databoxId))
+            .then((response) => {
+              const box = mapAccessRequest(response);
+              dispatchReceiveDatabox(box);
+              return mapDataboxAccessRequest(box);
+            });
+        }
+        throw new Error(errorTypes.notFound);
+      },
+      [token, databoxId, databox, dispatchReceiveDatabox],
+    );
+
+    const { isFetching, error } = useFetchEffect(
+      fetchAccessRequest,
+      { shouldFetch },
+      { onSuccess: dispatchAccessRequestUpdate, onError: snackbarError },
+    );
 
     const mappedProps = useMemo(
       () => mapper({
@@ -93,67 +145,6 @@ const withAccessRequest = (Component, mapper = identity) => {
         error,
       ],
     );
-
-    const token = useMemo(
-      () => (!isEmpty(hash) ? hash.substr(1) : null),
-      [hash],
-    );
-
-    const idMatches = useMemo(
-      () => {
-        if (!isNil(token)) {
-          return accessRequest.token === token;
-        }
-        if (!isNil(databoxId)) {
-          return accessRequest.databoxId === databoxId;
-        }
-        return false;
-      },
-      [token, databoxId, accessRequest],
-    );
-
-    const shouldFetch = useMemo(
-      () => (
-        isEmpty(accessRequest)
-        || (!isEmpty(accessRequest) && !idMatches)
-      ) && isNil(error) && !isFetching,
-      [error, accessRequest, idMatches, isFetching],
-    );
-
-    const fetchCallback = useCallback(
-      () => {
-        if (!isNil(token)) {
-          return readAccessRequest(token)
-            .then(mapAccessRequest);
-        }
-        if (!isNil(databoxId)) {
-          return (isValidDatabox(databox)
-            ? Promise.resolve(databox)
-            : readDatabox(databoxId))
-            .then((response) => {
-              const box = mapAccessRequest(response);
-              dispatchReceiveDatabox(box);
-              return mapDataboxAccessRequest(box);
-            });
-        }
-        throw new Error(errorTypes.notFound);
-      },
-      [token, databoxId, databox, dispatchReceiveDatabox],
-    );
-
-    const fetchAccessRequest = useCallback(() => {
-      setFetching(true);
-      fetchCallback()
-        .then((response) => dispatchAccessRequestUpdate(response))
-        .catch((e) => { setError(e); })
-        .finally(() => { setFetching(false); });
-    }, [fetchCallback, setError, setFetching, dispatchAccessRequestUpdate]);
-
-    useEffect(() => {
-      if (shouldFetch) {
-        fetchAccessRequest();
-      }
-    }, [shouldFetch, fetchAccessRequest]);
 
     return (
       <Component

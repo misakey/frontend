@@ -88,7 +88,7 @@ function UserContributionDialog({
         initialValues={INITIAL_VALUES}
       >
         {
-          ({ isSubmitting }) => (
+          ({ isSubmitting, isValid }) => (
             <Form>
               <DialogTitle id="alert-dialog-title" onClose={onClose}>
                 {t('application.info.userContribution.dialog.title', { appName })}
@@ -128,7 +128,7 @@ function UserContributionDialog({
               </DialogContent>
               <DialogActions>
                 <ButtonSubmit
-                  disabled={isSubmitting}
+                  isValid={isValid}
                   isSubmitting={isSubmitting}
                 >
                   {t('application.info.userContribution.dialog.send')}

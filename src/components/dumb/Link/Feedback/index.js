@@ -20,13 +20,13 @@ const OMIT_PROPS = ['userId', 'tReady', 'deleteMyFeedback'];
 const FeedbackLink = ({
   rating,
   children,
-  isFetchingRating,
+  isFetchingFeedback,
   t,
   ...rest
 }) => {
   const translationKey = useMemo(() => (!isNil(rating) ? 'edit' : 'give'), [rating]);
 
-  if (isFetchingRating) {
+  if (isFetchingFeedback) {
     return null;
   }
 
@@ -42,8 +42,9 @@ const FeedbackLink = ({
 };
 
 FeedbackLink.propTypes = {
+  // withMyFeedback
   rating: PropTypes.shape(RatingSchema.propTypes),
-  isFetchingRating: PropTypes.bool,
+  isFetchingFeedback: PropTypes.bool,
   children: PropTypes.oneOfType([PropTypes.elementType, PropTypes.object]),
   onClick: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
@@ -53,7 +54,7 @@ FeedbackLink.propTypes = {
 FeedbackLink.defaultProps = {
   rating: null,
   children: null,
-  isFetchingRating: false,
+  isFetchingFeedback: false,
 };
 
 export default withTranslation(['common'])(withMyFeedback()(withDialogConnect(FeedbackLink)));

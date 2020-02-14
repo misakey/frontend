@@ -8,10 +8,12 @@ import { connect } from 'react-redux';
 
 import { pluginRefreshWarningHide } from 'store/actions/warning';
 
+import useFetchCallback from '@misakey/hooks/useFetch/callback';
+
+import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import Drawer from '@material-ui/core/Drawer';
 import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -28,14 +30,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const useRefreshTab = (dispatchHideWarning) => useCallback(() => {
-  browser.tabs.reload({ bypassCache: true });
   dispatchHideWarning();
+  return browser.tabs.reload({ bypassCache: true });
 }, [dispatchHideWarning]);
 
 // COMPONENTS
 const WarningDrawer = ({ displayWarning, dispatchHideWarning, t }) => {
   const classes = useStyles();
   const refreshTab = useRefreshTab(dispatchHideWarning);
+
+  const { isFetching, wrappedFetch: onRefreshTab } = useFetchCallback(refreshTab);
 
   return (
     <Drawer
@@ -49,12 +53,16 @@ const WarningDrawer = ({ displayWarning, dispatchHideWarning, t }) => {
           <CloseIcon fontSize="inherit" />
         </IconButton>
         <Typography variant="caption" style={{ width: '70%' }}>
-          {t('refresh_warning.text')}
+          {t('plugin:refresh_warning.text')}
         </Typography>
-        <Tooltip title={t('refresh_warning.tooltip')} placement="bottom">
-          <Button size="small" variant="contained" color="secondary" onClick={refreshTab}>
-            {t('refresh_warning.button')}
-          </Button>
+        <Tooltip title={t('plugin:refresh_warning.tooltip')} placement="bottom">
+          <Button
+            standing={BUTTON_STANDINGS.MAIN}
+            size="small"
+            onClick={onRefreshTab}
+            isLoading={isFetching}
+            text={t('plugin:refresh_warning.button')}
+          />
         </Tooltip>
       </Box>
     </Drawer>

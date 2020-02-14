@@ -11,8 +11,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
-import Button from 'components/dumb/Button';
-import ButtonSubmit from 'components/dumb/Button/Submit';
+import BoxControls from 'components/dumb/Box/Controls';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
 
 import { openVaultValidationSchema } from 'constants/validationSchemas/auth';
@@ -62,10 +61,19 @@ function PasswordPrompt({ onClose, onSubmit, firstAttempt, t, open }) {
               )}
             </DialogContent>
             <DialogActions>
-              <>
-                <Button onClick={onClose} text={t('common:cancel')} />
-                <ButtonSubmit disabled={isSubmitting || !isValid} text={t('common:validate')} />
-              </>
+              <BoxControls
+                primary={{
+                  type: 'submit',
+                  text: t('common:validate'),
+                  isValid,
+                  isLoading: isSubmitting,
+                }}
+                secondary={{
+                  text: t('common:cancel'),
+                  onClick: onClose,
+                }}
+                outlined={false}
+              />
             </DialogActions>
           </Form>
         )}

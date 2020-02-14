@@ -12,7 +12,7 @@ const AccountAvatar = lazy(() => import('components/screens/Account/Avatar'));
 const AccountPassword = lazy(() => import('components/screens/Account/Password'));
 
 // COMPONENTS
-const Account = ({ profile, isFetching, error, ...props }) => (
+const Account = ({ profile, isFetching, ...props }) => (
   <Switch>
     <Route
       exact
@@ -20,7 +20,6 @@ const Account = ({ profile, isFetching, error, ...props }) => (
       render={(routerProps) => (
         <AccountHome
           profile={profile}
-          error={error}
           isFetching={isFetching}
           {...props}
           {...routerProps}
@@ -33,7 +32,6 @@ const Account = ({ profile, isFetching, error, ...props }) => (
       render={(routerProps) => (
         <AccountName
           profile={profile}
-          error={error}
           isFetching={isFetching}
           {...props}
           {...routerProps}
@@ -45,7 +43,6 @@ const Account = ({ profile, isFetching, error, ...props }) => (
       render={(routerProps) => (
         <AccountAvatar
           profile={profile}
-          error={error}
           isFetching={isFetching}
           {...props}
           {...routerProps}
@@ -58,7 +55,6 @@ const Account = ({ profile, isFetching, error, ...props }) => (
       render={(routerProps) => (
         <AccountPassword
           profile={profile}
-          error={error}
           isFetching={isFetching}
           {...props}
           {...routerProps}
@@ -71,7 +67,6 @@ const Account = ({ profile, isFetching, error, ...props }) => (
 Account.propTypes = {
   // withUser
   isFetching: PropTypes.bool.isRequired,
-  error: PropTypes.instanceOf(Error),
   // CONNECT
   // - STATE
   profile: PropTypes.shape({
@@ -80,7 +75,6 @@ Account.propTypes = {
 };
 
 Account.defaultProps = {
-  error: null,
   profile: null,
 };
 

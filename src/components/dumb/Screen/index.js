@@ -315,6 +315,13 @@ function Screen({
   );
 }
 
+export const SCREEN_STATE_PROPTYPES = PropTypes.shape({
+  error: PropTypes.instanceOf(Error),
+  isFetching: PropTypes.bool,
+  isLoading: PropTypes.bool,
+  metas: PropTypes.objectOf(PropTypes.any),
+});
+
 Screen.propTypes = {
   appBarProps: PropTypes.objectOf(PropTypes.any),
   children: PropTypes.node,
@@ -325,12 +332,7 @@ Screen.propTypes = {
   hideAppBar: PropTypes.bool,
   preventSplashScreen: PropTypes.bool,
   splashScreen: PropTypes.node,
-  state: PropTypes.shape({
-    error: PropTypes.instanceOf(Error),
-    isFetching: PropTypes.bool,
-    isLoading: PropTypes.bool,
-    metas: PropTypes.objectOf(PropTypes.any),
-  }),
+  state: SCREEN_STATE_PROPTYPES,
   title: PropTypes.string,
 };
 

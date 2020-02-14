@@ -11,41 +11,41 @@ import useFetchCallback from '@misakey/hooks/useFetch/callback';
 * @param {Function<Promise>} fetchFn
  * @param {Object} [fetchConditions]
  * @param {boolean} [fetchConditions.shouldFetch=true]
- *   when true, triggers callback from `useFetchCallback`
+ *   when true, triggers wrappedFetch from `useFetchCallback`
  * @param {boolean} [fetchConditions.fetchOnlyOnce=false]
  *   when true, limit fetching to a single occurence
  *   usable as an optimization param, avoid when not needed
  *   it can lead to missing updates
- * @param {boolean} [fetchConditions.stopOnError=false]
- *   when true, do not triger callback if `useFetchCallback` errored
+ * @param {boolean} [fetchConditions.stopOnError=true]
+ *   when true, do not trigger wrappedFetch if `useFetchCallback` errored
  * @param {boolean} [fetchConditions.fetchWhileFetching=false]
- *   when false, do not trigger callback if `useFetchCallback` is still fetching
+ *   when false, do not trigger wrappedFetch if `useFetchCallback` is still fetching
  * @param {[]} props extra props passed down to `useFetchCallback`
  */
 export default (
   fetchFn,
-  { shouldFetch = true, fetchOnlyOnce = false, stopOnError = false, fetchWhileFetching = false },
+  { shouldFetch = true, fetchOnlyOnce = false, stopOnError = true, fetchWhileFetching = false },
   ...props
 ) => {
   const {
-    callback,
-    internalFetchingCount, internalErrorRef, // internal refs to fetch callback state
+    wrappedFetch,
+    internalFetchingCount, internalErrorRef, // internal refs to fetch wrappedFetch state
     ...callbackMeta
   } = useFetchCallback(fetchFn, ...props);
 
-  const callbackRef = useRef(callback);
+  const wrappedFetchRef = useRef(wrappedFetch);
 
   const fetchedOnce = useRef(false);
 
-  // safety measure as this effect runs everytime `callback` changes
+  // safety measure as this effect runs everytime `wrappedFetch` changes
   useEffect(
     () => {
-      callbackRef.current = callback;
+      wrappedFetchRef.current = wrappedFetch;
     },
-    [callbackRef, callback],
+    [wrappedFetchRef, wrappedFetch],
   );
 
-  // this effect will not be triggered by `callback` changes
+  // this effect will not be triggered by `wrappedFetch` changes
   useEffect(
     () => {
       const needToFetch = fetchOnlyOnce
@@ -58,13 +58,15 @@ export default (
       const internalErrorValid = stopOnError ? isNil(internalErrorRef.current) : true;
 
       if (needToFetch && internalFetchingValid && internalErrorValid) {
-        callbackRef.current();
-        fetchedOnce.current = true;
+        wrappedFetchRef.current();
+        if (fetchedOnce.current === false) {
+          fetchedOnce.current = true;
+        }
       }
     },
     [
       shouldFetch,
-      callbackRef,
+      wrappedFetchRef,
       fetchedOnce,
       fetchOnlyOnce,
       stopOnError,

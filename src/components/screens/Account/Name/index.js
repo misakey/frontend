@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Formik, Field, Form } from 'formik';
 import { withTranslation } from 'react-i18next';
@@ -15,6 +15,8 @@ import path from '@misakey/helpers/path';
 import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import snakeCase from '@misakey/helpers/snakeCase';
+
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 import Subtitle from 'components/dumb/Typography/Subtitle';
 import Container from '@material-ui/core/Container';
@@ -35,7 +37,7 @@ const updateProfile = (id, form) => API
 
 // HOOKS
 const useOnSubmit = (
-  profile, dispatchUpdateEntities, enqueueSnackbar, setInternalError, history, t,
+  profile, dispatchUpdateEntities, enqueueSnackbar, handleGenericHttpErrors, history, t,
 ) => useMemo(
   () => (form, { setSubmitting, setFieldError }) => updateProfile(profile.id, form)
     .then(() => {
@@ -48,11 +50,11 @@ const useOnSubmit = (
       if (fieldError) {
         setFieldError(FIELD_NAME, fieldError);
       } else {
-        setInternalError(e);
+        handleGenericHttpErrors(e);
       }
     })
     .finally(() => { setSubmitting(false); }),
-  [profile, dispatchUpdateEntities, enqueueSnackbar, setInternalError, history, t],
+  [profile, dispatchUpdateEntities, enqueueSnackbar, handleGenericHttpErrors, history, t],
 );
 
 // COMPONENTS
@@ -61,23 +63,22 @@ const AccountName = ({
   profile,
   dispatchUpdateEntities,
   history,
-  error,
   isFetching,
 }) => {
-  const [internalError, setInternalError] = useState();
   const { enqueueSnackbar } = useSnackbar();
 
   const state = useMemo(
-    () => ({ error: error || internalError, isLoading: isFetching }),
-    [error, internalError, isFetching],
+    () => ({ isLoading: isFetching }),
+    [isFetching],
   );
 
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
 
   const onSubmit = useOnSubmit(
     profile,
     dispatchUpdateEntities,
     enqueueSnackbar,
-    setInternalError,
+    handleGenericHttpErrors,
     history,
     t,
   );
@@ -134,7 +135,6 @@ const AccountName = ({
 
 AccountName.propTypes = {
   profile: PropTypes.shape({ displayName: PropTypes.string, id: PropTypes.string }),
-  error: PropTypes.instanceOf(Error),
   isFetching: PropTypes.bool,
   // router props
   history: PropTypes.object.isRequired,
@@ -146,7 +146,6 @@ AccountName.propTypes = {
 
 AccountName.defaultProps = {
   profile: null,
-  error: null,
   isFetching: false,
 };
 

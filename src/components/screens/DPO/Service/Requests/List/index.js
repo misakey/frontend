@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
@@ -19,6 +19,7 @@ import VirtualizedList from 'react-virtualized/dist/commonjs/List';
 
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -179,19 +180,8 @@ Row.propTypes = {
 function ServiceRequestsList({ appBarProps, service, t, isLoading, error }) {
   const classes = useStyles();
 
-  const [internalError, setInternalError] = useState();
   const [list, setList] = useState([]);
   const [offset, setOffset] = useState(0);
-  const [isInternalFetching, setInternalFetching] = useState(false);
-
-  const state = useMemo(
-    () => ({
-      error: internalError || error,
-      isLoading: isInternalFetching || isLoading,
-      preventSplashScreen: !isNil(service),
-    }),
-    [error, internalError, isLoading, isInternalFetching, service],
-  );
 
   const [isNextPageLoading, setNextPageLoading] = useState(false);
   const [hasNextPage, setHasNextPage] = useState(true);
@@ -206,7 +196,6 @@ function ServiceRequestsList({ appBarProps, service, t, isLoading, error }) {
         setList((prevList) => [...prevList, ...response.map(mapItem)]);
         if (response.length !== ITEM_PER_PAGE) { setHasNextPage(false); }
       })
-      .catch((e) => { setInternalError(e); })
       .finally(() => {
         setOffset(queryParams.offset + ITEM_PER_PAGE);
         setNextPageLoading(false);
@@ -246,16 +235,24 @@ function ServiceRequestsList({ appBarProps, service, t, isLoading, error }) {
     list, isRowLoaded, classes, service,
   }), [list, isRowLoaded, classes, service]);
 
-  const handleMount = useCallback(() => {
-    if (!isNil(service) && !isInternalFetching) {
-      setInternalFetching(true);
-      loadNextPage().finally(() => {
-        setInternalFetching(false);
-      });
-    }
-  }, [isInternalFetching, setInternalFetching, loadNextPage, service]);
+  const shouldFetch = useMemo(
+    () => !isNil(service),
+    [service],
+  );
 
-  useEffect(handleMount, [service]);
+  const { isFetching: isInternalFetching } = useFetchEffect(
+    loadNextPage,
+    { shouldFetch },
+  );
+
+  const state = useMemo(
+    () => ({
+      error,
+      isLoading: isInternalFetching || isLoading,
+      preventSplashScreen: !isNil(service),
+    }),
+    [error, isLoading, isInternalFetching, service],
+  );
 
   return (
     <ScreenAction

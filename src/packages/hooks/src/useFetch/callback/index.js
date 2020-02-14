@@ -3,14 +3,12 @@ import { useSnackbar } from 'notistack';
 
 import isFunction from '@misakey/helpers/isFunction';
 import log from '@misakey/helpers/log';
+import resolveAny from 'helpers/resolveAny';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 // CONSTANTS
 const CALLED_WHILE_FETCHING = '[useFetchCallback] Warning: callback was called during fetching lifecycle';
-
-// HELPERS
-const callPromise = (arg) => (isFunction(arg) ? Promise.resolve(arg()) : Promise.resolve(arg));
 
 // HOOKS
 /**
@@ -24,16 +22,18 @@ const callPromise = (arg) => (isFunction(arg) ? Promise.resolve(arg()) : Promise
  *   on error, call function and trigger snackbar with returned value as text
  * @param {Function<String>} [callbacks.snackbarSuccess]
  *   on success, call function and trigger snackbar returned value as text
- * @param {(Function<Promise>|Boolean)} [callbacks.onError]
- *   - when true, on error run `useHandleGenericHttpErrors` hook,
- *   - when function, on error run function
- *       catch possible rethrown errors with `useHandleGenericHttpErrors` hook
+ * @param {(Function<Promise>)} [callbacks.onError]
+ *   run function on error
+ *   catch possible rethrown errors with `useHandleGenericHttpErrors` hook
  * @param {Function} [callbacks.onSuccess] run function on success
  * @param {Function} [callbacks.onFinally] run function on finally
+ * @param {Boolean} [noGenericErrorHandling=false]
+ *   do not catch errors with useHandleGenericHttpErrors
  */
 export default (
   fetchFn,
   { snackbarError, snackbarSuccess, onError, onSuccess, onFinally } = {},
+  noGenericErrorHandling = false,
 ) => {
   const [data, setData] = useState();
   const [error, setError] = useState(null);
@@ -68,21 +68,28 @@ export default (
     [setIsFetching, internalFetchingCount],
   );
 
-  const onErrorWithGeneric = useCallback(
+  const onErrorFunction = useCallback(
     (e) => {
-      // handleGenericHttpErrors when asked
-      if (onError === true) {
-        return handleGenericHttpErrors(e);
-      }
-
-      // run handler
+      // run onError
       if (isFunction(onError)) {
         return onError(e);
       }
 
+      // rethrow error for next catch
       throw e;
     },
-    [handleGenericHttpErrors, onError],
+    [onError],
+  );
+
+  const onErrorGeneric = useCallback(
+    (e) => {
+      if (noGenericErrorHandling) {
+        throw e;
+      }
+      // handleGenericHttpErrors
+      return handleGenericHttpErrors(e);
+    },
+    [handleGenericHttpErrors, noGenericErrorHandling],
   );
 
   const handleError = useCallback(
@@ -97,9 +104,9 @@ export default (
         internalErrorRef.current = e;
       }
 
-      return onErrorWithGeneric(e);
+      return onErrorFunction(e);
     },
-    [isCanceled, enqueueSnackbar, setError, snackbarError, onErrorWithGeneric, internalErrorRef],
+    [snackbarError, onErrorFunction, enqueueSnackbar],
   );
 
   const handleSuccess = useCallback(
@@ -135,17 +142,17 @@ export default (
     [isCanceled, setIsFetching, internalFetchingCount, onFinally],
   );
 
-  const callback = useCallback(
+  const wrappedFetch = useCallback(
     () => {
       handleStart();
 
-      return callPromise(fetchFn)
+      return resolveAny(fetchFn)
         .then(handleSuccess)
         .catch(handleError)
-        .catch(handleGenericHttpErrors) // catch rethrown errors from handleError
+        .catch(onErrorGeneric) // catch rethrown errors from handleError
         .finally(handleFinally);
     },
-    [handleStart, fetchFn, handleSuccess, handleError, handleGenericHttpErrors, handleFinally],
+    [handleStart, fetchFn, handleSuccess, handleError, onErrorGeneric, handleFinally],
   );
 
   useEffect(
@@ -164,5 +171,5 @@ export default (
     [internalFetchingCount],
   );
 
-  return { data, error, isFetching, callback, internalFetchingCount, internalErrorRef };
+  return { data, error, isFetching, wrappedFetch, internalFetchingCount, internalErrorRef };
 };

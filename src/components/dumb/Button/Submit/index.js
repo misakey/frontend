@@ -5,13 +5,12 @@ import { withTranslation } from 'react-i18next';
 import omit from '@misakey/helpers/omit';
 import tDefault from '@misakey/helpers/tDefault';
 
-import Button from 'components/dumb/Button/index';
+import Button, { BUTTON_STANDINGS } from 'components/dumb/Button/index';
 
 const ButtonSubmit = ({ isSubmitting, t, text, ...rest }) => (
   <Button
     type="submit"
-    variant="contained"
-    color="secondary"
+    standing={BUTTON_STANDINGS.MAIN}
     isLoading={isSubmitting}
     text={text || t('submit', 'Submit')}
     {...omit(rest, ['i18n', 'tReady'])}

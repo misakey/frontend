@@ -13,7 +13,7 @@ import useFileReader from '@misakey/hooks/useFileReader';
 import useDrag from '@misakey/hooks/useDrag';
 import usePropChanged from '@misakey/hooks/usePropChanged';
 
-import Button from '@material-ui/core/Button';
+import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
@@ -157,14 +157,12 @@ const FileField = ({ className, t, onChange, onError, accept, field: { value } }
         />
         {!dragActive && (
           <Button
-            variant="contained"
-            color="secondary"
+            standing={BUTTON_STANDINGS.MAIN}
             type="button"
             aria-label={t('fields:file.button.choose.label', 'Choose a file')}
             onClick={onClick}
-          >
-            {t('fields:file.button.choose.label', 'Choose a file')}
-          </Button>
+            text={t('fields:file.button.choose.label', 'Choose a file')}
+          />
         )}
 
       </label>

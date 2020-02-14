@@ -1,5 +1,6 @@
 module.exports = {
   verbose: true,
+  moduleDirectories: ['node_modules', 'src'],
   modulePathIgnorePatterns: ['<rootDir>/src/packages/[^/]+/build/'],
   testPathIgnorePatterns: ['/node_modules/', '/build/'],
   moduleNameMapper: {

@@ -11,8 +11,6 @@ import { IS_PLUGIN, storeLinks } from 'constants/plugin';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 
-import Skeleton from '@material-ui/lab/Skeleton';
-import Card from 'components/dumb/Card';
 import withDialogConnect from 'components/smart/Dialog/Connect/with';
 
 import Title from 'components/dumb/Typography/Title';
@@ -30,24 +28,8 @@ const linksType = ['privacy_policy', 'tos', 'cookies'];
 // COMPONENTS
 const ButtonWithDialogConnect = withDialogConnect(Button);
 
-const OnLoading = ({ t }) => (
-  <Box mt={3}>
-    <Title>
-      {t('screens:application.info.legal.linksListTitle')}
-    </Title>
-    <Card><Skeleton variant="text" height={50} /></Card>
-    <Card><Skeleton variant="text" height={50} /></Card>
-    <Card><Skeleton variant="text" height={50} /></Card>
-  </Box>
-);
-
-OnLoading.propTypes = {
-  t: PropTypes.func.isRequired,
-};
-
 const ApplicationInfoLegal = ({
   application,
-  isLoading,
   t,
   history,
   location,
@@ -89,8 +71,6 @@ const ApplicationInfoLegal = ({
 
   const { isUnknown } = useMemo(() => (application), [application]);
   const isPluginInstalled = useMemo(() => (isPluginDetected()), []);
-
-  if (isLoading) { return <OnLoading t={t} />; }
 
   if (isEmpty(application)) { return null; }
 
@@ -145,15 +125,10 @@ const ApplicationInfoLegal = ({
 
 ApplicationInfoLegal.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes).isRequired,
-  isLoading: PropTypes.bool,
   onContributionLinkClick: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
-};
-
-ApplicationInfoLegal.defaultProps = {
-  isLoading: false,
 };
 
 export default withTranslation(['common', 'screens'])(ApplicationInfoLegal);

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { normalize, denormalize } from 'normalizr';
@@ -7,6 +7,7 @@ import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
 
 import usePropChanged from '@misakey/hooks/usePropChanged';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import isNil from '@misakey/helpers/isNil';
 import head from '@misakey/helpers/head';
@@ -18,6 +19,7 @@ import omit from '@misakey/helpers/omit';
 import path from '@misakey/helpers/path';
 import prop from '@misakey/helpers/prop';
 import identity from '@misakey/helpers/identity';
+import mergeEntitiesNoEmpty from 'helpers/mergeEntities/noEmpty';
 
 import API from '@misakey/api';
 import ApplicationSchema from 'store/schemas/Application';
@@ -34,6 +36,9 @@ const DEFAULT_ENDPOINT = {
 };
 
 const INTERNAL_PROPS = ['dispatchReceive', 'dispatchReceivePlugin'];
+
+const EMPTY_APPLICATION_ERROR = new Error();
+EMPTY_APPLICATION_ERROR.status = 404;
 
 // HELPERS
 const getMainDomain = (props) => {
@@ -59,15 +64,28 @@ const fetchApplication = (mainDomain, isAuthenticated, endpoint, paramMapper) =>
 };
 
 // HOOKS
+const useHandlePluginError = (dispatchReceivePlugin, mainDomain) => useCallback(
+  (e) => {
+    if (IS_PLUGIN) {
+      // We can display the basic information from plugin anyway
+      return Promise.resolve(dispatchReceivePlugin(mainDomain));
+    }
+    throw e;
+  },
+  [dispatchReceivePlugin, mainDomain],
+);
 
-const useHandleError = (dispatchReceivePlugin, mainDomain, setError) => useCallback((e) => {
-  if (IS_PLUGIN) {
-    // We can display the basic information from plugin anyway
-    dispatchReceivePlugin(mainDomain);
-  } else {
-    setError(e);
-  }
-}, [dispatchReceivePlugin, mainDomain, setError]);
+const useHandleError = (snackbarError) => useCallback(
+  (e) => {
+    // rethrow error to useFetchCallback
+    if (snackbarError) {
+      throw e;
+    }
+    // don't rethrow error
+    return e;
+  },
+  [snackbarError],
+);
 
 const useHandleReceive = (enqueueSnackbar, history, pathname, mainDomain, t) => useCallback(
   (data) => {
@@ -99,6 +117,7 @@ const withApplication = (Component, options = {}) => {
     propsMapper = identity,
     getSpecificShouldFetch,
     schema = ApplicationSchema,
+    snackbarError = false,
   } = options;
   const ComponentWithApplication = (props) => {
     const {
@@ -108,10 +127,10 @@ const withApplication = (Component, options = {}) => {
 
     const authChanged = usePropChanged(isAuthenticated);
 
-    const [isFetching, setIsFetching] = useState(false);
-    const [error, setError] = useState(null);
     const { enqueueSnackbar } = useSnackbar();
-    const handleError = useHandleError(dispatchReceivePlugin, mainDomain, setError);
+
+    const handleError = useHandleError(snackbarError);
+    const handlePluginError = useHandlePluginError(dispatchReceivePlugin, mainDomain);
     const handleReceive = useHandleReceive(
       enqueueSnackbar,
       history,
@@ -122,43 +141,36 @@ const withApplication = (Component, options = {}) => {
 
     const shouldFetch = useMemo(() => {
       const validDomain = isString(mainDomain) && !isDefaultDomain;
-      const validInternalState = !isFetching && isNil(error);
       const forceFetch = authChanged;
       const defaultShouldFetch = isNil(entity);
       const isFetchNeeded = (
         isNil(getSpecificShouldFetch)
       ) ? defaultShouldFetch : getSpecificShouldFetch(entity);
 
-      return validDomain && validInternalState && (isFetchNeeded || forceFetch);
-    }, [isDefaultDomain, isFetching, error, entity, mainDomain, authChanged]);
+      return validDomain && (isFetchNeeded || forceFetch);
+    }, [isDefaultDomain, entity, mainDomain, authChanged]);
 
     const startFetching = useCallback(
-      () => {
-        setIsFetching(true);
-
-        fetchApplication(mainDomain, isAuthenticated, endpoint, paramMapper)
-          .then((response) => {
-            if (isEmpty(response)) {
-              handleError({ status: 404 });
-            } else {
-              const data = (isArray(response) ? response : [response]).map(objectToCamelCase);
-              dispatchReceive(handleReceive(data));
-            }
-          })
-          .catch((e) => {
-            handleError(e);
-          })
-          .finally(() => { setIsFetching(false); });
-      },
-      [mainDomain, isAuthenticated, handleError, dispatchReceive, handleReceive],
+      () => fetchApplication(mainDomain, isAuthenticated, endpoint, paramMapper)
+        .catch(handlePluginError), // catch plugin errors not to set error value from useFetchEffect
+      [mainDomain, isAuthenticated, handlePluginError],
     );
 
-    useEffect(
-      () => {
-        if (shouldFetch) {
-          startFetching();
+    const onFetchApplicationSuccess = useCallback(
+      (response) => {
+        if (isEmpty(response)) {
+          return handlePluginError(EMPTY_APPLICATION_ERROR);
         }
-      }, [shouldFetch, startFetching],
+        const data = (isArray(response) ? response : [response]).map(objectToCamelCase);
+        return dispatchReceive(handleReceive(data));
+      },
+      [handlePluginError, dispatchReceive, handleReceive],
+    );
+
+    const { isFetching, error } = useFetchEffect(
+      startFetching,
+      { shouldFetch },
+      { onSuccess: onFetchApplicationSuccess, onError: handleError },
     );
 
     return (
@@ -217,7 +229,7 @@ const withApplication = (Component, options = {}) => {
         schema.collection,
       );
       const { entities } = normalized;
-      dispatch(receiveEntities(entities));
+      dispatch(receiveEntities(entities, mergeEntitiesNoEmpty));
     },
     dispatchReceivePlugin: (mainDomain) => {
       const { domainWithoutSuffix } = parse(mainDomain);
