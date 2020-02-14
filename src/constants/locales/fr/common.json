@@ -125,6 +125,10 @@
         "text": "Conditions d'utilisation",
         "href": "https://docs.misakey.com/#/legals/tos/"
       },
+      "sources": {
+        "text": "Code source",
+        "href": "https://gitlab.com/Misakey"
+      },
       "about": {
         "text": "À propos",
         "href": "https://docs.misakey.com/"

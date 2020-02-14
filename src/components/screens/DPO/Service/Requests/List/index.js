@@ -260,9 +260,6 @@ function ServiceRequestsList({ appBarProps, service, t, isLoading, error }) {
       appBarProps={appBarProps}
       navigationProps={{ showGoBack: false, noWrap: true }}
       title={t('screens:Service.requests.list.title', service)}
-      display="flex"
-      flexDirection="column"
-      fullHeight
     >
       <Container maxWidth="md" className={classes.container}>
         <BoxSection my={3} p={0} className={classes.box}>

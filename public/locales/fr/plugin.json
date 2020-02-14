@@ -18,5 +18,5 @@
     "tooltip": "Actualiser l'onglet courant",
     "text": "Les modifications que j'ai effectuées seront effectives pour la suite de ma navigation. Si je veux qu'elles soient prises en compte pour les onglets déjà chargés, je dois les actualiser"
   },
-  "invalid_website": "<0>Oups</0>\nL'adresse détectée ne correspond pas à un site internet"
+  "invalidWebsite": "<0>Oups</0>\nL'adresse détectée ne correspond pas à un site internet"
 }

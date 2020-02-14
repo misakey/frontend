@@ -9,7 +9,7 @@ import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 
 const Footer = ({ t, typographyProps, ...rest }) => (
-  <Box mt={2} {...omitTranslationProps(rest)} mx={1}>
+  <Box mt={2} mb={1} {...omitTranslationProps(rest)} mx={1}>
     <Typography variant="body2" align="center" {...typographyProps}>
       <Link
         href={t('footer.links.privacy.href')}
@@ -27,6 +27,15 @@ const Footer = ({ t, typographyProps, ...rest }) => (
         rel="noopener noreferrer"
       >
         {t('footer.links.tos.text')}
+      </Link>
+      {' - '}
+      <Link
+        href={t('footer.links.sources.href')}
+        color="secondary"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {t('footer.links.sources.text')}
       </Link>
       {' - '}
       <Link

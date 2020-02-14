@@ -196,7 +196,6 @@ const Contact = ({
       navigationProps={{
         goBackPath: routes.citizen._,
       }}
-      fullHeight
     >
       {step === STEP.preview && (
         <Container maxWidth="md" className={classes.container}>

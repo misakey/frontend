@@ -44,8 +44,8 @@ const useStyles = makeStyles((theme) => ({
     margin: '7px 4px',
   },
   trackerList: {
-    ...getStyleForContainerScroll(theme, PURPOSES_FILTER_HEIGHT, { gutters: false }),
-    '@media screen and (max-width: 410px)': getStyleForContainerScroll(theme, PURPOSES_FILTER_HEIGHT * 2, { gutters: false }, ['main']),
+    ...getStyleForContainerScroll(theme, PURPOSES_FILTER_HEIGHT),
+    '@media screen and (max-width: 410px)': getStyleForContainerScroll(theme, PURPOSES_FILTER_HEIGHT * 2),
   },
 }));
 
@@ -159,7 +159,7 @@ function ThirdPartySetup({
   }, [dispatchApps, enqueueSnackbar, searchParams, t]);
 
   return (
-    <Screen appBarProps={appBarProps} disableGutters>
+    <Screen appBarProps={appBarProps}>
       <ElevationScroll target={trackerListRef}>
         <Paper>
           <Box display="flex" justifyContent="center" flexWrap="wrap">

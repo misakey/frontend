@@ -42,7 +42,6 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
   const screenProps = useMemo(
     () => ({
       state,
-      disableGutters: IS_PLUGIN,
     }),
     [state],
   );

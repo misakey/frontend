@@ -30,8 +30,6 @@ import ApplicationInfoNav from 'components/screens/Citizen/Application/Info/Nav'
 import UserContributionDialog from 'components/smart/UserContributionDialog';
 
 
-import Footer from 'components/dumb/Footer';
-
 // LAZY
 const ApplicationVault = lazy(() => import('components/screens/Citizen/Application/Info/Vault'));
 const Feedback = lazy(() => import('components/screens/Citizen/Application/Info/Feedback'));
@@ -46,12 +44,9 @@ const useStyles = makeStyles((theme) => ({
   content: {
     padding: theme.spacing(1, 2),
     position: 'relative', // For DefaultSplashScreen not to take more than full height
+    boxSizing: 'border-box',
   },
   pluginContent: getStyleForContainerScroll(theme, NAV_BAR_HEIGHT),
-  screen: {
-    display: 'flex',
-    justifyContent: 'center',
-  },
   container: {
     marginTop: NAV_BAR_HEIGHT,
     padding: 0,
@@ -226,7 +221,7 @@ function ApplicationInfo({
   );
 
   return (
-    <Screen {...screenProps} preventSplashScreen className={classes.screen}>
+    <Screen {...screenProps} preventSplashScreen>
       <Container
         maxWidth="md"
         className={classes.container}
@@ -308,7 +303,6 @@ function ApplicationInfo({
             )}
           </Suspense>
         </Box>
-        {!IS_PLUGIN && <Footer />}
       </Container>
     </Screen>
   );

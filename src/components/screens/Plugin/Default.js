@@ -10,6 +10,7 @@ import Box from '@material-ui/core/Box';
 const useStyles = makeStyles((theme) => ({
   container: {
     height: 'inherit',
+    flexGrow: 1,
   },
   title: {
     whiteSpace: 'pre-wrap',
@@ -28,10 +29,10 @@ const DefaultScreen = () => {
   const appBarProps = useMemo(() => ({ withSearchBar: false }), []);
 
   return (
-    <Screen appBarProps={appBarProps} disableGutters>
+    <Screen appBarProps={appBarProps}>
       <Box className={classes.container} display="flex" justifyContent="center" alignItems="center">
         <Title className={classes.title}>
-          <Trans i18nKey="plugin:invalid_website">
+          <Trans i18nKey="plugin:invalidWebsite">
             <span className={classes.catchphrase}>Oups</span>
             {'L\'adresse détectée ne correspond pas à un site'}
           </Trans>

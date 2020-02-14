@@ -26,9 +26,12 @@ import SearchApplications from 'components/smart/Search/Applications';
 import BoxFlexFill from 'components/dumb/Box/FlexFill';
 import Typography from '@material-ui/core/Typography';
 
+export const APPBAR_HEIGHT = 64;
+
 const useStyles = makeStyles((theme) => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
+    minHeight: APPBAR_HEIGHT,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,

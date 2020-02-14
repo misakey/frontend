@@ -7,7 +7,6 @@ import Container from '@material-ui/core/Container';
 
 import ApplicationCategoriesList from 'components/smart/List/ApplicationCategories';
 import ScreenAction from 'components/dumb/Screen/Action';
-import Footer from 'components/dumb/Footer';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -23,10 +22,9 @@ const useStyles = makeStyles((theme) => ({
 const ApplicationsCategoriesScreen = ({ t }) => {
   const classes = useStyles();
   return (
-    <ScreenAction title={t('screens:applications.select')} disableGutters={false} fullHeight>
+    <ScreenAction title={t('screens:applications.select')}>
       <Container maxWidth="md" className={classes.container}>
         <ApplicationCategoriesList />
-        <Footer />
       </Container>
     </ScreenAction>
   );

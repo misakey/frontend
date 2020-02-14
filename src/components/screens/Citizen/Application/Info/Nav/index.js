@@ -10,12 +10,12 @@ import { IS_PLUGIN } from 'constants/plugin';
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
+import { APPBAR_HEIGHT } from 'components/dumb/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Container from '@material-ui/core/Container';
 
 import ElevationScroll from 'components/dumb/ElevationScroll';
-import { MIN_PX_0_LANDSCAPE, MIN_PX_600 } from '@misakey/ui/constants/medias';
 
 import routes from 'routes';
 
@@ -32,13 +32,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
-    top: theme.mixins.toolbar.minHeight,
-    [MIN_PX_0_LANDSCAPE]: {
-      top: theme.mixins.toolbar[MIN_PX_0_LANDSCAPE].minHeight,
-    },
-    [MIN_PX_600]: {
-      top: theme.mixins.toolbar[MIN_PX_600].minHeight,
-    },
+    top: APPBAR_HEIGHT,
   },
   linkTab: {
     fontSize: theme.typography.caption.fontSize,

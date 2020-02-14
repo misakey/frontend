@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import API from '@misakey/api';
 
+import { makeStyles } from '@material-ui/core/styles';
+
 import isNil from '@misakey/helpers/isNil';
 import pickAll from '@misakey/helpers/pickAll';
 import every from '@misakey/helpers/every';
@@ -26,8 +28,6 @@ import Screen from 'components/dumb/Screen';
 import { screenAuthReset, screenAuthSetIdentifier } from 'store/actions/screens/auth';
 
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
-
-import Footer from 'components/dumb/Footer';
 
 // LAZY
 const AuthError = lazy(() => import('./Error'));
@@ -78,6 +78,15 @@ const fetchLoginInfo = (challenge) => API
 
 // HOOKS
 
+const useStyles = makeStyles(() => ({
+  screen: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+}));
+
+
 const useGetLoginInfos = (challenge, dispatch, setIsFetching, setError) => useCallback(() => {
   setIsFetching(true);
   fetchLoginInfo(challenge)
@@ -102,6 +111,8 @@ const useGetLoginInfos = (challenge, dispatch, setIsFetching, setError) => useCa
 
 // COMPONENT
 function Auth({ dispatch, from, isAuthenticated, currentAcr, location, match, sso, userManager }) {
+  const classes = useStyles();
+
   const [error, setError] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
 
@@ -161,10 +172,8 @@ function Auth({ dispatch, from, isAuthenticated, currentAcr, location, match, ss
     <Screen
       hideAppBar
       state={state}
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
+      className={classes.screen}
+      disableGrow
     >
       <Switch>
         <Route exact path={routes.auth.error} component={AuthError} />
@@ -182,7 +191,6 @@ function Auth({ dispatch, from, isAuthenticated, currentAcr, location, match, ss
         />
         <Redirect from={match.path} to={routes.auth.signIn} exact />
       </Switch>
-      <Footer mt={1} />
     </Screen>
   );
 }

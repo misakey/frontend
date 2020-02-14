@@ -14,11 +14,9 @@ import Box from '@material-ui/core/Box';
 const SCREEN_PROPS = [
   'appBarProps',
   'description',
-  'disableGutters',
   'splashScreen',
   'preventSplashScreen',
   'hideAppBar',
-  'fullHeight',
 ];
 
 // HELPERS
@@ -31,7 +29,6 @@ const BoxAction = ({ buttonProps, actions, title, ...rest }) => {
   return (
     <Screen
       className="boxAction"
-      fullHeight
       display="flex"
       flexDirection="column"
       justifyContent="center"

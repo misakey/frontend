@@ -30,7 +30,6 @@ function ScreenAction({
   return (
     <Screen
       title={title}
-      disableGutters
       hideAppBar={hideAppBar}
       appBarProps={{ position: 'fixed', elevationScroll: false, ...appBarProps }}
       {...omit(rest, ['location', 'match', 'staticContext'])}
