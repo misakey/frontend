@@ -19,6 +19,7 @@ config: >-
       'shops',
       'music',
       'video',
+      'dating',
       'food',
       'mobility',
       'retailers',
