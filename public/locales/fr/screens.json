@@ -440,7 +440,8 @@
         "empty": "Je n'ai pas encore selectionné d'application à contacter. Je peux rechercher des applications ou en sélectionner depuis la page d'accueil"
       },
       "recontact": "Relance",
-      "closed": "L'email ne sera pas envoyé car la demande actuelle est fermée"
+      "closed": "L'email ne sera pas envoyé car la demande actuelle est fermée",
+      "databoxesErrors": "Une erreur s'est produite lors de la récupération des données nécessaires pour contacter {{ databoxesErrorsNames }}."
     }
   },
   "databox": {

@@ -47,6 +47,7 @@
   "report": "Signaler",
   "brand": "Logo de la marque {{brand}}",
   "anonymousUser": "Un utilisateur Misakey",
+  "incompatibleBrowser": "Cette fonctionnalité n'est pas disponible sur ce navigateur pour l'instant :(",
   "links": {
     "docs": {
       "dpo": "https://docs.misakey.com/#/dpo/",

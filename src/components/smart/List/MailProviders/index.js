@@ -100,8 +100,8 @@ const useOnProviderClick = (
 
 const useHandleBulkResponse = (setErrors, setSent) => useCallback(
   (responses) => {
-    const result = responses.reduce(({ errors, sent }, { status, value: { mailto, error } }) => {
-      if (status === 'rejected' || error) {
+    const result = responses.reduce(({ errors, sent }, { mailto, error }) => {
+      if (error) {
         return { errors: [...errors, mailto], sent };
       }
       return { errors, sent: [...sent, mailto] };
@@ -206,12 +206,18 @@ const ListMailProviders = ({
           const extendedMailto = t('common:emailTo', { applicationName, dpoEmail: mailto });
           return send(extendedMailto, subject, body);
         });
-        Promise.allSettled(sendPromises).then(handleBulkResponse);
+        try {
+          Promise.all(sendPromises).then(handleBulkResponse);
+        } catch (error) {
+          if (error instanceof TypeError) {
+            enqueueSnackbar(t('common:incompatibleBrowser'), { variant: 'warning' });
+          }
+        }
       } else {
         throw new Error(`Unknown send behaviour for provider ${providerKey}`);
       }
     },
-    [handleBulkResponse, mailsProps, t],
+    [enqueueSnackbar, handleBulkResponse, mailsProps, t],
   );
 
   const onConsentCheck = useOnConsentCheck(

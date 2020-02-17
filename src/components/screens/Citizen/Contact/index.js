@@ -7,6 +7,8 @@ import { setSelected } from 'store/actions/screens/applications';
 
 import prop from '@misakey/helpers/prop';
 import propOr from '@misakey/helpers/propOr';
+import pluck from '@misakey/helpers/pluck';
+import isEmpty from '@misakey/helpers/isEmpty';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
@@ -16,7 +18,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import NotificationImportant from '@material-ui/icons/NotificationImportant';
-import IconError from '@material-ui/icons/Error';
+import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Container from '@material-ui/core/Container';
 import ScreenAction from 'components/dumb/Screen/Action';
@@ -54,6 +56,7 @@ const STEP = {
 // HELPERS
 const propOrEmptyObject = propOr({});
 const propOrNull = propOr(null);
+const getMailProps = pluck('mailProps');
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -81,6 +84,7 @@ const useGetEmailFor = (
   databoxURLsById,
   t,
   mailTypesByApp,
+  cancelledRecontacts,
 ) => useCallback((id) => {
   const { name, mainDomain, dpoEmail } = propOrEmptyObject(id, applicationsByIds);
   const databox = prop(id, currentDataboxesByProducer);
@@ -88,7 +92,11 @@ const useGetEmailFor = (
 
   const { databoxURL, alreadyContacted } = propOrEmptyObject(id, databoxURLsById);
   const customMailType = propOrNull(id, mailTypesByApp);
-  const defaultMailType = alreadyContacted ? getDefaultMailTypeRecontact(dpoComment) : LEGAL;
+  // @FIXME: better implementation with `EMAIL_SENT` status
+  const recontactIsCancelled = cancelledRecontacts.includes(id);
+  const defaultMailType = alreadyContacted && !recontactIsCancelled
+    ? getDefaultMailTypeRecontact(dpoComment)
+    : LEGAL;
   const mailType = customMailType || defaultMailType;
   return {
     application: {
@@ -98,6 +106,7 @@ const useGetEmailFor = (
     databox: {
       status,
       alreadyContacted,
+      recontactIsCancelled,
     },
     mailType,
     mailProps: {
@@ -112,8 +121,14 @@ const useGetEmailFor = (
       subject: t('common:emailSubject'),
     },
   };
-},
-[applicationsByIds, currentDataboxesByProducer, databoxURLsById, mailTypesByApp, t]);
+}, [
+  applicationsByIds,
+  cancelledRecontacts,
+  currentDataboxesByProducer,
+  databoxURLsById,
+  mailTypesByApp,
+  t,
+]);
 
 // HELPERS
 const isClosed = (status) => status === CLOSED;
@@ -134,10 +149,7 @@ const Contact = ({
   const [expanded, setExpanded] = useState(null);
   const [step, setStep] = useState(STEP.preview);
   const [mailTypesByApp, setMailTypesByApp] = useState({});
-  const selectionIsEmpty = useMemo(
-    () => selectedApplications.length === 0,
-    [selectedApplications.length],
-  );
+  const [cancelledRecontacts, setCancelledRecontacts] = useState([]);
 
   const getEmailFor = useGetEmailFor(
     applicationsByIds,
@@ -145,25 +157,40 @@ const Contact = ({
     databoxURLsById,
     t,
     mailTypesByApp,
+    cancelledRecontacts,
   );
 
+  const { applicationsError, databoxesErrors } = useMemo(() => errorBulk, [errorBulk]);
+
+  const databoxesErrorsNames = useMemo(
+    () => Object.keys(databoxesErrors).map((id) => {
+      const { name } = propOrEmptyObject(id, applicationsByIds);
+      return name;
+    }).join(', '),
+    [applicationsByIds, databoxesErrors],
+  );
   const state = useMemo(
     () => ({
-      errorBulk,
+      error: applicationsError,
       isLoading: isFetchingBulk,
     }),
-    [errorBulk, isFetchingBulk],
+    [applicationsError, isFetchingBulk],
   );
 
   const selectedApplicationsWithEmails = useMemo(
-    () => selectedApplications.map((id) => (getEmailFor(id))),
-    [getEmailFor, selectedApplications],
+    () => selectedApplications
+      .filter((id) => !Object.keys(databoxesErrors).includes(id))
+      .map((id) => (getEmailFor(id))),
+    [databoxesErrors, getEmailFor, selectedApplications],
+  );
+
+  const selectionIsEmpty = useMemo(
+    () => selectedApplicationsWithEmails.length === 0,
+    [selectedApplicationsWithEmails.length],
   );
 
   const mailtoProps = useMemo(
-    () => selectedApplicationsWithEmails
-      .filter(({ databox: { status } }) => status !== CLOSED)
-      .map(({ mailProps }) => mailProps),
+    () => getMailProps(selectedApplicationsWithEmails),
     [selectedApplicationsWithEmails],
   );
 
@@ -181,6 +208,14 @@ const Contact = ({
   const onChangePanel = useCallback((panelId) => () => {
     setExpanded(expanded === panelId ? null : panelId);
   }, [expanded]);
+
+  const setRecontactFor = useCallback((id, value) => (event) => {
+    setCancelledRecontacts((previous) => (value === true
+      ? [...previous, id]
+      : previous.filter((elem) => elem !== id)));
+    event.preventDefault();
+    event.stopPropagation();
+  }, []);
 
   const onDone = useCallback(() => {
     dispatchClearSelection();
@@ -202,6 +237,11 @@ const Contact = ({
           <Subtitle>
             {t('screens:contact.bulk.list.subtitle')}
           </Subtitle>
+          {!isEmpty(databoxesErrorsNames) && (
+            <BoxMessage type="error" p={2}>
+              <Typography>{t('screens:contact.bulk.databoxesErrors', { databoxesErrorsNames })}</Typography>
+            </BoxMessage>
+          )}
           {selectionIsEmpty
             ? (
               <BoxMessage type="info" p={2}>
@@ -214,7 +254,7 @@ const Contact = ({
                   {
                     selectedApplicationsWithEmails.map(({
                       application: { id, mainDomain },
-                      databox: { status, alreadyContacted },
+                      databox: { status, alreadyContacted, recontactIsCancelled },
                       mailProps: { body, mailto, subject, applicationName },
                       mailType,
                     }) => (
@@ -223,6 +263,8 @@ const Contact = ({
                         key={id}
                         onChange={onChangePanel(id)}
                       >
+                        {/* FIXME: This should be functionnaly redesigned and
+                        wrapped in another component later */}
                         <ExpansionPanelSummary
                           expandIcon={<ExpandMoreIcon />}
                           aria-controls="panel-email-content"
@@ -231,12 +273,9 @@ const Contact = ({
                         >
                           {alreadyContacted && !isClosed(status) && (
                           <Tooltip title={t('screens:contact.bulk.recontact')}>
-                            <NotificationImportant color="primary" />
-                          </Tooltip>
-                          )}
-                          {isClosed(status) && (
-                          <Tooltip title={t('screens:contact.bulk.closed')}>
-                            <IconError color="error" />
+                            <IconButton onClick={setRecontactFor(id, !recontactIsCancelled)}>
+                              <NotificationImportant color={recontactIsCancelled ? 'primary' : 'secondary'} />
+                            </IconButton>
                           </Tooltip>
                           )}
                           <Box display="flex" flexDirection="column" mx={1}>
@@ -307,7 +346,10 @@ Contact.propTypes = {
     alreadyContacted: PropTypes.bool,
   })),
   isFetchingBulk: PropTypes.bool,
-  errorBulk: PropTypes.object,
+  errorBulk: PropTypes.shape({
+    applicationsError: PropTypes.string,
+    databoxesErrors: PropTypes.object,
+  }),
   t: PropTypes.func.isRequired,
   dispatchClearSelection: PropTypes.func.isRequired,
   dispatchClearDataboxUrlsByIds: PropTypes.func.isRequired,
@@ -319,7 +361,10 @@ Contact.defaultProps = {
   currentDataboxesByProducer: {},
   databoxURLsById: {},
   isFetchingBulk: false,
-  errorBulk: null,
+  errorBulk: {
+    applicationsError: null,
+    databoxesErrors: {},
+  },
 };
 
 

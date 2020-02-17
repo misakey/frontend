@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useSnackbar } from 'notistack';
 
 import API from '@misakey/api';
 import routes from 'routes';
@@ -23,6 +24,7 @@ import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 import { getCurrentDatabox } from '@misakey/helpers/databox';
 import { receiveEntities } from '@misakey/store/actions/entities';
 import DataboxSchema from 'store/schemas/Databox';
+import { withTranslation } from 'react-i18next';
 
 const fetchApplications = (ids) => API
   .use({ ...API.endpoints.application.find, auth: true })
@@ -55,14 +57,15 @@ const withBulkContact = (mapper = identity) => (Component) => {
     dispatchContact, dispatchReceiveDataboxesByProducer, dispatchReceive,
     ...props
   }) => {
-    const [databoxesErrors, setDataboxesErrors] = useState(null);
+    const [databoxesErrors, setDataboxesErrors] = useState({});
     const [applicationsError, setApplicationsError] = useState(null);
     const [isFetchingApplications, setIsFetchingApplications] = useState(false);
     const [isFetchingDataboxes, setIsFetchingDataboxes] = useState(false);
+    const { enqueueSnackbar } = useSnackbar();
 
     const {
       isAuthenticated, userId, selectedApplications,
-      databoxURLsById, applicationsByIds, databoxes,
+      databoxURLsById, applicationsByIds, databoxes, t,
     } = props;
 
     const currentDataboxesByProducer = useCurrentDataboxByProducer(databoxes);
@@ -76,59 +79,62 @@ const withBulkContact = (mapper = identity) => (Component) => {
       () => difference(selectedApplications, Object.keys(applicationsByIds)),
       [applicationsByIds, selectedApplications],
     );
+    const isFetchingApplicationBulk = useMemo(
+      () => (
+        isFetchingApplications || (!isEmpty(missingApplicationsInfo) && isNil(applicationsError))
+      ),
+      [applicationsError, isFetchingApplications, missingApplicationsInfo],
+    );
 
-    const isFetchingBulk = useMemo(() => (
-      isFetchingApplications || (!isEmpty(missingApplicationsInfo) && isNil(applicationsError)))
-      || (isFetchingDataboxes || (!isEmpty(missingDataboxeUrls) && isNil(databoxesErrors))
-      ), [
-      applicationsError,
-      databoxesErrors,
-      isFetchingApplications,
-      isFetchingDataboxes,
-      missingApplicationsInfo,
-      missingDataboxeUrls,
-    ]);
+    const isFetchingDataboxesBulk = useMemo(
+      () => (isFetchingDataboxes || (!isEmpty(missingDataboxeUrls) && isEmpty(databoxesErrors))),
+      [databoxesErrors, isFetchingDataboxes, missingDataboxeUrls],
+    );
+
+    const isFetchingBulk = useMemo(
+      () => isFetchingApplicationBulk || isFetchingDataboxesBulk,
+      [isFetchingApplicationBulk, isFetchingDataboxesBulk],
+    );
 
     const mappedProps = useMemo(
       () => mapper({
         ...props,
         isFetchingBulk,
-        errorBulk: applicationsError || databoxesErrors,
+        errorBulk: {
+          applicationsError,
+          databoxesErrors,
+        },
         selectedApplications,
         databoxURLsById,
         applicationsByIds,
         currentDataboxesByProducer,
       }),
       [
-        props,
-        isFetchingBulk,
-        applicationsError,
-        databoxesErrors,
-        selectedApplications,
-        databoxURLsById,
-        applicationsByIds,
-        currentDataboxesByProducer,
+        props, isFetchingBulk, applicationsError, databoxesErrors, selectedApplications,
+        databoxURLsById, applicationsByIds, currentDataboxesByProducer,
       ],
     );
 
     const shouldFetchDataboxes = useMemo(
       () => {
-        const validInternalState = missingDataboxeUrls.length > 0 && !isFetchingDataboxes;
+        const validInternalState = missingDataboxeUrls.length > 0
+          && !isFetchingDataboxes && isEmpty(databoxesErrors);
         const validAuth = isAuthenticated;
 
         return validInternalState && validAuth;
       },
-      [isAuthenticated, isFetchingDataboxes, missingDataboxeUrls.length],
+      [databoxesErrors, isAuthenticated, isFetchingDataboxes, missingDataboxeUrls.length],
     );
 
     const shouldFetchApplications = useMemo(
       () => {
-        const validInternalState = missingApplicationsInfo.length > 0 && !isFetchingApplications;
+        const validInternalState = missingApplicationsInfo.length > 0
+          && !isFetchingApplications && isNil(applicationsError);
         const validAuth = isAuthenticated;
 
         return validInternalState && validAuth;
       },
-      [isAuthenticated, isFetchingApplications, missingApplicationsInfo],
+      [applicationsError, isAuthenticated, isFetchingApplications, missingApplicationsInfo.length],
     );
 
     const onDatabox = useCallback(
@@ -146,27 +152,29 @@ const withBulkContact = (mapper = identity) => (Component) => {
     );
 
     const fetchDataboxes = useCallback(() => {
-      const promises = missingDataboxeUrls.map((id) => listDataboxes(id));
-      return Promise.allSettled(promises)
-        .then((responses) => Promise.allSettled(
-          responses.map(({ status, value, reason }, index) => {
-            const id = missingDataboxeUrls[index];
-            if (status === 'fulfilled') {
-              const boxes = value.map(objectToCamelCase);
-              dispatchReceiveDataboxesByProducer(id, boxes);
-              const databox = getCurrentDatabox(boxes, true);
-              if (!isNil(databox)) {
-                return onDatabox(databox, id, true);
-              }
-              return createDataboxForUser(id)
-                .then((createdDatabox) => onDatabox(createdDatabox, id));
-            }
-            setDataboxesErrors(reason);
-            return Promise.reject(reason);
-          }),
-        ));
-    },
-    [createDataboxForUser, dispatchReceiveDataboxesByProducer, missingDataboxeUrls, onDatabox]);
+      const fullPromises = missingDataboxeUrls.map((id) => listDataboxes(id)
+        .then((response) => {
+          const boxes = response.map(objectToCamelCase);
+          dispatchReceiveDataboxesByProducer(id, boxes);
+          const databox = getCurrentDatabox(boxes, true);
+          if (!isNil(databox)) {
+            return onDatabox(databox, id, true);
+          }
+          return createDataboxForUser(id)
+            .then((createdDatabox) => onDatabox(createdDatabox, id));
+        })
+        .catch((error) => setDataboxesErrors((errors) => ({ ...errors, [id]: error }))));
+
+      try {
+        return Promise.all(fullPromises);
+      } catch (error) {
+        if (error instanceof TypeError) {
+          enqueueSnackbar(t('common:incompatibleBrowser'), { variant: 'warning' });
+        }
+        return Promise.reject(error);
+      }
+    }, [createDataboxForUser, dispatchReceiveDataboxesByProducer,
+      enqueueSnackbar, missingDataboxeUrls, onDatabox, t]);
 
     useEffect(
       () => {
@@ -209,6 +217,7 @@ const withBulkContact = (mapper = identity) => (Component) => {
     dispatchReceive: PropTypes.func.isRequired,
     dispatchContact: PropTypes.func.isRequired,
     dispatchReceiveDataboxesByProducer: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired,
   };
 
   Wrapper.defaultProps = {
@@ -243,7 +252,7 @@ const withBulkContact = (mapper = identity) => (Component) => {
     ),
   });
 
-  return connect(mapStateToProps, mapDispatchToProps)(Wrapper);
+  return connect(mapStateToProps, mapDispatchToProps)(withTranslation(['common'])(Wrapper));
 };
 
 export default withBulkContact;
