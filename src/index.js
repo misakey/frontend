@@ -23,6 +23,7 @@ import APITokenMiddleware from '@misakey/auth/middlewares/APItoken';
 import invalidTokenMiddleware from 'middlewares/invalidToken';
 import invalidSeclevelMiddleware from 'middlewares/invalidSeclevel';
 import cryptoMiddleware from 'middlewares/crypto';
+import floodManagementAlertMiddleware from 'middlewares/floodManagement/alert';
 // routing
 import { BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from 'serviceWorker';
@@ -93,6 +94,7 @@ if (isSilentAuthIframe()) {
   // ADD MIDDLEWARE TO API
   API.addMiddleware(invalidTokenMiddleware(store.dispatch));
   API.addMiddleware(invalidSeclevelMiddleware(store.dispatch));
+  API.addMiddleware(floodManagementAlertMiddleware(100)); // 100ms delay
   ReactDOM.render((
     <React.Suspense fallback={null}>
       <StoreProvider store={store}>

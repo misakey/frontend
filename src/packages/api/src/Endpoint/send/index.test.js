@@ -39,39 +39,19 @@ export function receiveError() {
     .then((rawResponse) => handleResponse(rawResponse));
 }
 
-/**
- * When error and contentType different from application/json
- */
-export function receiveGatewayError(middlewares) {
-  const endpoint = API.use(API.endpoints.application.find).setMiddlewares(middlewares);
-
-  return endpoint.fakeResponse(401)
-    .then((rawResponse) => handleResponse(rawResponse, endpoint.middlewares));
-}
-
-describe('API send method', () => {
+describe('API handleResponse method', () => {
   it('throws when getting from nowhere', async () => {
     expect.assertions(1);
-    await getNowhere().catch((e) => expect(e).toBeTruthy());
+    await expect(getNowhere()).rejects.toBeTruthy();
   });
   it('handles responses with a success status', async () => {
     expect.assertions(1);
-    await receiveSuccess().then((data) => expect(data).toBeTruthy());
+    await expect(receiveSuccess()).resolves.not.toThrow();
   });
   it('handles responses with an error status', async () => {
     expect.assertions(1);
-    await receiveError().catch((e) => expect(e.code).toEqual('{Code}'));
-  });
-  it('calls middlewares', async () => {
-    expect.assertions(1);
-    let status = null;
-    const middleware = (rawResponse) => {
-      status = rawResponse.status;
-
-      return rawResponse;
-    };
-
-    await receiveGatewayError([middleware])
-      .then((rawResponse) => expect(status).toEqual(rawResponse.status));
+    await expect(receiveError()).rejects.toEqual(expect.objectContaining({
+      code: '{Code}',
+    }));
   });
 });

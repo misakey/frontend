@@ -34,27 +34,10 @@ export const getErrorDescriptor = (status, json) => {
  * and Server errors (500–599).
  *
  * @param rawResponse
- * @param middlewares
- * @param endpoint
  * @returns {Promise<Response>|Promise}
  */
-export function handleResponse(rawResponse, middlewares = [], endpoint) {
-  // From now, network errors should have already be thrown and caught
-
-  // Middlewares are good ways to handle specific response
-  // like a 401 unauthorized that removed the token locally
-  let middlewareResponse;
-  middlewares.some((middleware) => {
-    if (isFunction(middleware)) {
-      middlewareResponse = middleware(rawResponse, endpoint);
-
-      return !!middlewareResponse;
-    }
-
-    return false;
-  });
-
-  if (middlewareResponse !== undefined) { return middlewareResponse; }
+export function handleResponse(rawResponse) {
+  // From now, network errors should have already been thrown and caught
 
   const { status } = rawResponse;
   const contentType = rawResponse.headers.get('Content-Type') || '';
@@ -121,31 +104,26 @@ export function handleResponse(rawResponse, middlewares = [], endpoint) {
   return rawResponse;
 }
 
-/**
- * Send a request with fetch API and an instance of Endpoint
- * Commonly used like this: return `API.use(endpoint).build(params).send()`;
- * @param options
- * @param endpoint
- * @returns {Promise<Response>|Promise}
- */
-function send(options = {}, endpoint = this) {
-  const { rawRequest, contentType = 'application/json' } = options;
-  const { body, method, middlewares, initOptions, token } = endpoint;
+const applyMiddlewares = (requestOrResponse, endpoint) => {
+  const { middlewares } = endpoint;
+  let middlewareResult;
+  // @FIXME: be careful with this "stop once something is returned" implem of our middlewares
+  middlewares.some((middleware) => {
+    if (isFunction(middleware)) {
+      middlewareResult = middleware(requestOrResponse, endpoint);
 
-  let headers = new Headers();
-  if (options.headers instanceof Headers) {
-    headers = options.headers;
-  } else if (isObject(options.headers)) {
-    map(options.headers, (value, key) => { headers.set(key, value); });
-  }
+      return !!middlewareResult;
+    }
 
-  if (contentType) { headers.set('Content-Type', contentType); }
-  if (endpoint.auth) {
-    if (!token) { throw new Error(`${endpoint.path} requires token to be truthy`); }
-    headers.set('Authorization', `Bearer ${token}`);
-  }
+    return false;
+  });
 
-  const resource = endpoint.requestUri;
+  return middlewareResult;
+};
+
+const makeRequest = (headers, endpoint) => {
+  const { initOptions, method, requestUri, body } = endpoint;
+  const contentType = headers.get('Content-Type');
   const init = {
     ...DEFAULT_INIT_OPTIONS,
     ...initOptions,
@@ -154,17 +132,50 @@ function send(options = {}, endpoint = this) {
   };
 
   if (!isNil(body)) {
-    if (contentType === 'application/json') {
-      init.body = JSON.stringify(body);
-    } else { init.body = body; }
+    init.body = contentType === 'application/json'
+      ? JSON.stringify(body)
+      : body;
   }
 
-  const request = fetch(resource, init);
+  const middlewareRequest = applyMiddlewares({ requestUri, init }, endpoint);
+  return isNil(middlewareRequest)
+    ? fetch(requestUri, init)
+    : Promise.resolve(middlewareRequest);
+};
+
+/**
+ * Send a request with fetch API and an instance of Endpoint
+ * Commonly used like this: return `API.use(endpoint).build(params).send()`;
+ * @param options
+ * @param endpoint
+ * @returns {Promise<Response>|Promise}
+ */
+function send(options = {}, endpoint = this) {
+  const { rawRequest, contentType = 'application/json', headers: optionsHeaders } = options;
+  const { token, auth, path } = endpoint;
+
+  let headers = new Headers();
+  if (optionsHeaders instanceof Headers) {
+    headers = optionsHeaders;
+  } else if (isObject(optionsHeaders)) {
+    map(optionsHeaders, (value, key) => { headers.set(key, value); });
+  }
+
+  if (contentType) { headers.set('Content-Type', contentType); }
+  if (auth) {
+    if (!token) { throw new Error(`${path} requires token to be truthy`); }
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  const request = makeRequest(headers, endpoint);
 
   if (rawRequest === true) { return request; }
 
   return request
-    .then((rawResponse) => handleResponse(rawResponse, middlewares, endpoint))
+    .then((rawResponse) => {
+      const middlewareResponse = applyMiddlewares(rawResponse, endpoint);
+      return isNil(middlewareResponse) ? handleResponse(rawResponse) : middlewareResponse;
+    })
     .catch((error) => {
       log(error);
       throw error;
