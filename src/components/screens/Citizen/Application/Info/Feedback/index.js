@@ -3,7 +3,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
-import { Link, generatePath } from 'react-router-dom';
+import { generatePath } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import routes from 'routes';
 
@@ -21,7 +21,7 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import propOr from '@misakey/helpers/propOr';
 import withMyFeedback from 'components/smart/withMyFeedback';
-import withDialogConnect from 'components/smart/Dialog/Connect/with';
+import LinkWithDialogConnect from 'components/smart/Dialog/Connect/with/Link';
 
 import Box from '@material-ui/core/Box';
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
@@ -33,12 +33,8 @@ import ScreenError from 'components/dumb/Screen/Error';
 import UserFeedbackCard from 'components/dumb/Card/Feedback/User';
 import UserFeedbackCardSkeleton from 'components/dumb/Card/Feedback/User/Skeleton';
 
-// COMPONENTS
-const LinkWithDialogConnect = withDialogConnect(Link);
-
 // CONSTANTS
 const EMPTY_RATINGS = [];
-
 
 // @FIXME add endpoint to js-common
 const RATINGS_ENDPOINT = {

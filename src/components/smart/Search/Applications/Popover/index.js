@@ -330,7 +330,11 @@ const SearchApplicationsPopover = ({
               onClick={onClose}
             />
           ))}
-          <ApplicationListItemNotFound disabled={listLoading} onClick={onClose} />
+          <ApplicationListItemNotFound
+            disabled={listLoading}
+            searchValue={searchValue}
+            onClick={onClose}
+          />
         </List>
       </Box>
     </Popover>

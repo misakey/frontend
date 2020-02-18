@@ -2,12 +2,14 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { generatePath, Link } from 'react-router-dom';
+import { generatePath } from 'react-router-dom';
 import routes from 'routes';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import getNextSearch from '@misakey/helpers/getNextSearch';
+import isEmpty from '@misakey/helpers/isEmpty';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -15,6 +17,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 
 import AddIcon from '@material-ui/icons/Add';
+
+import LinkWithDialogConnect from 'components/smart/Dialog/Connect/with/Link';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -29,12 +33,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const ListItemApplicationNotFound = ({ t, ...rest }) => {
+const ListItemApplicationNotFound = ({ t, searchValue, ...rest }) => {
   const classes = useStyles();
 
   const notFoundTo = useMemo(
-    () => generatePath(routes.citizen.applications.create),
-    [],
+    () => {
+      const pathname = generatePath(routes.citizen.applications.create);
+      return isEmpty(searchValue) ? pathname : {
+        pathname,
+        search: getNextSearch('', new Map([['prefill', searchValue]])),
+      };
+    },
+    [searchValue],
   );
 
   return (
@@ -42,7 +52,7 @@ const ListItemApplicationNotFound = ({ t, ...rest }) => {
       button
       alignItems="center"
       className={classes.option}
-      component={Link}
+      component={LinkWithDialogConnect}
       to={notFoundTo}
       {...omitTranslationProps(rest)}
     >
@@ -61,6 +71,11 @@ const ListItemApplicationNotFound = ({ t, ...rest }) => {
 
 ListItemApplicationNotFound.propTypes = {
   t: PropTypes.func.isRequired,
+  searchValue: PropTypes.string,
+};
+
+ListItemApplicationNotFound.defaultProps = {
+  searchValue: '',
 };
 
 export default withTranslation('screens')(ListItemApplicationNotFound);

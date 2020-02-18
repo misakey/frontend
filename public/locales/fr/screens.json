@@ -126,7 +126,11 @@
       "title": "Sélectionner une organisation"
     },
     "notFound": {
-      "title": "Oops, nous n'avons rien trouvé concernant le domaine {{mainDomain}} :-("
+      "title": "Le site {{mainDomain}} est introuvable !",
+      "create": {
+        "text": "Je crée le site {{mainDomain}} pour demander mes données.",
+        "button": "Nouveau site"
+      }
     },
     "info": {
       "logoAlt": "Informations à propos de {{applicationName}}",

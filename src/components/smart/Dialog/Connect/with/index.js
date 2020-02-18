@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 
-import DialogConnect from './index';
+import DialogConnect from 'components/smart/Dialog/Connect';
 
 // COMPONENTS
 const withDialogConnect = (Component) => {

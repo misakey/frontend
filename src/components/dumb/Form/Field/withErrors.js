@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 
 const withErrors = (Component) => {
@@ -8,9 +7,10 @@ const withErrors = (Component) => {
     const { field, form: { touched, errors, status }, prefix } = props;
     const { name } = field;
 
-    const validationError = touched[name] && errors[name];
-    const statusError = !touched[name] && (!isNil(status) ? status[name] : null);
-    const displayError = !isEmpty(validationError) || !isEmpty(statusError);
+    const validationError = touched[name] ? errors[name] : null;
+    const statusError = !touched[name] || isNil(status) ? null : status[name];
+    const displayError = !isNil(validationError) || !isNil(statusError);
+
     const error = validationError || statusError;
     const errorKeys = [
       `fields:${prefix}${name}.error.${error}`,

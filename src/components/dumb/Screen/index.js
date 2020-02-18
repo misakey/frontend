@@ -22,7 +22,7 @@ import { IS_PLUGIN } from 'constants/plugin';
 
 const useBoxStyles = makeStyles({
   root: {
-    height: '100%',
+    flexGrow: 1,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -94,6 +94,7 @@ ScreenError.propTypes = {
 };
 
 const ScreenErrorWithTranslation = withTranslation()(ScreenError);
+export { ScreenErrorWithTranslation as ScreenError };
 
 export const SCREEN_STATES = {
   IS_INITIATING: Symbol('IS_INITIATING'),

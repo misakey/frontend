@@ -1,9 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { normalize } from 'normalizr';
-import { generatePath } from 'react-router-dom';
+import { generatePath, useLocation } from 'react-router-dom';
 import { Formik, Field, Form } from 'formik';
 import { useSnackbar } from 'notistack';
 import { makeStyles } from '@material-ui/core/styles';
@@ -20,6 +20,7 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
+import getSearchParams from '@misakey/helpers/getSearchParams';
 
 import useSuspenseMaterialFix from '@misakey/hooks/useSuspenseMaterialFix';
 
@@ -39,10 +40,6 @@ const APPLICATION_CREATE_ENDPOINT = {
   method: 'POST',
   path: '/application-info',
   auth: true,
-};
-
-const INITIAL_VALUES = {
-  [MAIN_DOMAIN_FIELD_NAME]: '',
 };
 
 // HELPERS
@@ -122,6 +119,23 @@ const ApplicationsCreate = ({
   // WARNING: this is an ugly hook for workaround, use it with precaution
   const { ref, key } = useSuspenseMaterialFix();
 
+  const { search } = useLocation();
+
+  const { prefill } = useMemo(
+    () => getSearchParams(search),
+    [search],
+  );
+
+  const initialValues = useMemo(
+    () => ({ [MAIN_DOMAIN_FIELD_NAME]: isNil(prefill) ? '' : prefill }),
+    [prefill],
+  );
+
+  const isInitialValid = useMemo(
+    () => (mainDomainValidationSchema.isValidSync(initialValues)),
+    [initialValues],
+  );
+
   const onSubmit = useOnSubmit(
     dispatchApplicationCreate,
     enqueueSnackbar,
@@ -148,7 +162,9 @@ const ApplicationsCreate = ({
         <Formik
           validationSchema={mainDomainValidationSchema}
           onSubmit={onSubmit}
-          initialValues={INITIAL_VALUES}
+          initialValues={initialValues}
+          isInitialValid={isInitialValid}
+          enableReinitialize
         >
           {({ isSubmitting, isValid }) => (
             <Container maxWidth="sm">

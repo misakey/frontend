@@ -11,11 +11,10 @@ import isEmpty from '@misakey/helpers/isEmpty';
 
 import withApplication from 'components/smart/withApplication';
 import RoutePrivate from '@misakey/auth/components/Route/Private';
-import ApplicationNone from 'components/screens/Citizen/Application/None';
+import ApplicationNotFound from 'components/screens/Citizen/Application/NotFound';
 import ApplicationInfo from 'components/screens/Citizen/Application/Info';
 import MyFeedback from 'components/screens/Citizen/Application/MyFeedback';
 import ApplicationContact from 'components/screens/Citizen/Application/Contact';
-
 
 // CONSTANTS
 const PAGES_ROSES_ENDPOINT = {
@@ -24,7 +23,7 @@ const PAGES_ROSES_ENDPOINT = {
 };
 
 // COMPONENTS
-function Application({ entity, error, isFetching, mainDomain, match }) {
+function Application({ entity, error, isFetching, mainDomain }) {
   const application = useMemo(
     () => ((isFetching || isNil(entity)) ? { mainDomain, isUnknown: true } : entity),
     [mainDomain, entity, isFetching],
@@ -32,10 +31,9 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
 
   const state = useMemo(
     () => ({
-      error,
       isLoading: !IS_PLUGIN && isFetching && isEmpty(entity),
     }),
-    [error, isFetching, entity],
+    [isFetching, entity],
   );
 
 
@@ -57,6 +55,10 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
     }),
     [screenProps, application],
   );
+
+  if (error && error.status === 404) {
+    return <ApplicationNotFound mainDomain={mainDomain} />;
+  }
 
   return (
     <Switch>
@@ -89,16 +91,6 @@ function Application({ entity, error, isFetching, mainDomain, match }) {
           />
         )}
       />
-      <Route
-        exact
-        path={match.path}
-        render={(routerProps) => (
-          <ApplicationNone
-            screenProps={screenProps}
-            {...routerProps}
-          />
-        )}
-      />
     </Switch>
   );
 }
@@ -109,8 +101,6 @@ Application.propTypes = {
   error: PropTypes.object,
   isFetching: PropTypes.bool,
   mainDomain: PropTypes.string.isRequired,
-  // ROUTER
-  match: PropTypes.shape({ path: PropTypes.string }).isRequired,
 };
 
 Application.defaultProps = {
