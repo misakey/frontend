@@ -46,8 +46,13 @@ function RouteCitizen({
     [setLoginAsScreen],
   );
 
+  const signinSilent = useCallback(
+    () => userManager.signinSilent(),
+    [userManager],
+  );
+
   const { isFetching: loginInProgress, wrappedFetch: signInSilently } = useFetchCallback(
-    userManager.signinSilent,
+    signinSilent,
     { onSuccess: onSignInSilentlySuccess, onError: onSignInSilentlyError },
   );
 

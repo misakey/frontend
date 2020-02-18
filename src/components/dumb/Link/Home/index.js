@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 import routes from 'routes';
 import { IS_PLUGIN } from 'constants/plugin';
+import { WORKSPACE } from 'constants/workspaces';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isNil from '@misakey/helpers/isNil';
@@ -30,9 +31,24 @@ const LinkHome = ({ t, children, ...rest }) => {
 
   const workspace = useLocationWorkspace(true);
 
-  const to = useMemo(
-    () => (isNil(workspace) ? routes._ : (routes[workspace]._ || routes._)),
+  // specific behaviour for account workspace
+  const isAccountWorkspace = useMemo(
+    () => workspace === WORKSPACE.ACCOUNT,
     [workspace],
+  );
+
+
+  const to = useMemo(
+    () => {
+      if (isAccountWorkspace) {
+        return routes.citizen._;
+      }
+      if (isNil(workspace)) {
+        return routes._;
+      }
+      return routes[workspace]._ || routes._;
+    },
+    [isAccountWorkspace, workspace],
   );
 
   const onClick = useCallback(

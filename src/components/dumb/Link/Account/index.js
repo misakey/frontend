@@ -1,9 +1,11 @@
 import React, { forwardRef } from 'react';
+
+import routes from 'routes';
+
 import { Link } from 'react-router-dom';
 
-// @FIXME temporary open a new tab for profile until account workspace is fully implemented
 const AccountLink = forwardRef((props, ref) => (
-  <Link ref={ref} to="/account" {...props} target="_blank" rel="noopener noreferrer" />
+  <Link ref={ref} to={routes.account._} {...props} />
 ));
 
 export default AccountLink;

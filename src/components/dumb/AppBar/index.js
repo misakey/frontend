@@ -17,6 +17,7 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import MuiAppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import User from 'components/smart/User';
 import LinkHome from 'components/dumb/Link/Home';
@@ -24,7 +25,7 @@ import Logo from 'components/dumb/Logo';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import SearchApplications from 'components/smart/Search/Applications';
 import BoxFlexFill from 'components/dumb/Box/FlexFill';
-import Typography from '@material-ui/core/Typography';
+import MenuWorkspace from 'components/smart/Menu/Workspace';
 
 export const APPBAR_HEIGHT = 64;
 
@@ -110,14 +111,19 @@ function AppBar({
         <Toolbar {...toolbarProps}>
           {map(leftItems)}
           {withHomeLink && (
-          <LinkHome>
-            <Logo {...logoProps} />
-            {(!isSmallMode) && (
-              <Typography variant="subtitle2">
-                {t(`common:workspaces.${workspace}`)}
-              </Typography>
-            )}
-          </LinkHome>
+            <>
+              <LinkHome>
+                <Logo {...logoProps} />
+                {(!isSmallMode) && (
+                  <Typography variant="subtitle2">
+                    {t(`common:workspaces.${workspace}`)}
+                  </Typography>
+                )}
+              </LinkHome>
+              {(!isSmallMode) && (
+              <MenuWorkspace />
+              )}
+            </>
           )}
           {map(items)}
           {withSearchBar ? (

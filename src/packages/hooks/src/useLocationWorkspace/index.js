@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 
-import { ROLE_LABELS } from 'constants/Roles';
+import { WORKSPACES, WORKSPACE } from 'constants/workspaces';
 
 import { useLocation } from 'react-router-dom';
 
 import propOr from '@misakey/helpers/propOr';
 
 // CONSTANTS
-const ROLE_REGEX = new RegExp(`^/(${Object.values(ROLE_LABELS).join('|')})`);
-const DEFAULT_ROLE = ROLE_LABELS.CITIZEN;
+const ROLE_REGEX = new RegExp(`^/(${WORKSPACES.join('|')})`);
+const DEFAULT_ROLE = WORKSPACE.CITIZEN;
 
 export default (noDefaultRole = false) => {
   const { pathname } = useLocation();

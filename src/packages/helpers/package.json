@@ -1,6 +1,6 @@
 {
   "name": "@misakey/helpers",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "private": true,
   "license": "SEE LICENSE IN /LICENSE",
   "author": "Misakey Team",
@@ -28,7 +28,7 @@
     "@babel/runtime": "^7.5.5",
     "lodash": "^4.17.15",
     "path-to-regexp": "^3.0.0",
-    "ramda": "^0.26.1",
+    "ramda": "^0.27.0",
     "validator": "^11.1.0"
   },
   "sideEffects": false,
