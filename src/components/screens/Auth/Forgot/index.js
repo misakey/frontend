@@ -29,7 +29,7 @@ import useAsync from '@misakey/hooks/useAsync';
 import Redirect from 'components/dumb/Redirect';
 import FormCardAuth from 'components/dumb/Form/Card/Auth';
 
-import { ownerCryptoContext as cryptoContext } from '@misakey/crypto';
+import { hardPasswordChange } from '@misakey/crypto';
 
 import Box from '@material-ui/core/Box';
 import FieldCode from 'components/dumb/Form/Field/Code';
@@ -112,7 +112,7 @@ const resetPassword = async (email, code, form, isAuthenticated) => {
 
   const newPassword = form[PASSWORD_FIELD_NAME];
 
-  const newCryptoValues = await cryptoContext.hardPasswordChange(newPassword);
+  const newCryptoValues = await hardPasswordChange(newPassword);
 
   return API
     .use(endpoint)

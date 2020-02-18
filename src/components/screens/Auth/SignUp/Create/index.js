@@ -11,7 +11,7 @@ import errorTypes from 'constants/errorTypes';
 import { stepSignUpValidationSchemas } from 'constants/validationSchemas/auth';
 
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import { ownerCryptoContext as crypto } from '@misakey/crypto';
+import { createNewOwnerSecrets } from '@misakey/crypto';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
@@ -62,7 +62,7 @@ const fetchUserHead = (payload) => API
 
 async function createSecrets(values, actions, afterCrypto) {
   const { password } = values;
-  const { backupData, pubkeyData } = await crypto.createNewOwnerSecrets(password);
+  const { backupData, pubkeyData } = await createNewOwnerSecrets(password);
 
   return afterCrypto({ ...values, pubkeyData, backupData }, actions);
 }

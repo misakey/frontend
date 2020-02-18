@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Formik, Field, Form } from 'formik';
 import { withTranslation } from 'react-i18next';
@@ -12,7 +12,6 @@ import API from '@misakey/api';
 
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isNil from '@misakey/helpers/isNil';
-import log from '@misakey/helpers/log';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
@@ -22,7 +21,7 @@ import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Passwor
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 
-import { ownerCryptoContext as cryptoContext } from '@misakey/crypto';
+import { usePreparePasswordChange } from '@misakey/crypto/store/hooks';
 import { BackupDecryptionError } from '@misakey/crypto/Errors/classes';
 
 // CONSTANTS
@@ -33,78 +32,6 @@ const INITIAL_VALUES = {
 };
 
 const OLD_PASSWORD_FIELD_NAME = 'passwordOld';
-
-// HELPERS
-async function updatePassword(
-  id,
-  { passwordOld, passwordNew, passwordConfirm },
-  enqueueSnackbar,
-  t,
-) {
-  let backupData;
-  let backupDecryptionError;
-  try {
-    ({ backupData } = await cryptoContext.preparePasswordChange(passwordNew, passwordOld, id));
-    backupDecryptionError = null;
-  } catch (e) {
-    if (e instanceof BackupDecryptionError || e instanceof TypeError) {
-      backupDecryptionError = e;
-    } else {
-      throw e;
-    }
-  }
-
-  let response;
-  try {
-    if (!isNil(backupDecryptionError)) {
-      backupDecryptionError.code = errorTypes.forbidden;
-      throw backupDecryptionError;
-    }
-    response = await API.use(API.endpoints.user.password.update)
-      .build({}, objectToSnakeCase({
-        userId: id,
-        oldPassword: passwordOld,
-        newPassword: passwordNew,
-        confirm: passwordConfirm,
-        backupData,
-      }))
-      .send();
-    return response;
-  } catch (e) {
-    if (e.error_code === 'invalid_password' && isNil(backupDecryptionError)) {
-      log('server indicated a bad password but backup decryption seems to have succeeded', 'error');
-      enqueueSnackbar(t('screens:account.password.backupDecryptionError'), { variant: 'error' });
-    }
-    // note that we do *not* display an "backupDecryptionError" error in the UI
-    // if the the backup did failed to decrypt
-    // but the HTTP error is something else than "invalid password".
-    // We don't want to scare the user without a reason.
-    throw e;
-  }
-}
-
-// HOOKS
-const useOnSubmit = (
-  profile, enqueueSnackbar, handleGenericHttpErrors, history, t,
-) => useMemo(
-  () => (form, { setSubmitting, setFieldError }) => (
-    updatePassword(profile.id, form, enqueueSnackbar, t)
-      .then(() => {
-        cryptoContext.commitPasswordChange();
-        enqueueSnackbar(t('screens:account.password.success'), { variant: 'success' });
-        history.push(routes.account._);
-      })
-      .catch((error) => {
-        if (error.code === errorTypes.forbidden) {
-          setFieldError(OLD_PASSWORD_FIELD_NAME, errorTypes.invalid);
-        } else {
-          handleGenericHttpErrors(error);
-        }
-      })
-      .finally(() => { setSubmitting(false); })
-  ),
-  [profile.id, enqueueSnackbar, t, history, handleGenericHttpErrors],
-);
 
 // COMPONENTS
 const AccountPassword = ({
@@ -120,14 +47,42 @@ const AccountPassword = ({
     [isFetching],
   );
 
+  const preparePasswordChange = usePreparePasswordChange();
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
 
-  const onSubmit = useOnSubmit(
-    profile,
-    enqueueSnackbar,
-    handleGenericHttpErrors,
-    history,
-    t,
+  const onSubmit = useCallback(
+    async (form, { setSubmitting, setFieldError }) => {
+      const { passwordNew, passwordOld } = form;
+
+      try {
+        const {
+          backupData,
+          commitPasswordChange,
+        } = await preparePasswordChange(passwordNew, passwordOld);
+
+        await API.use(API.endpoints.user.password.update)
+          .build({}, objectToSnakeCase({
+            userId: profile.id,
+            oldPassword: passwordOld,
+            newPassword: passwordNew,
+            backupData,
+          }))
+          .send();
+
+        commitPasswordChange();
+        enqueueSnackbar(t('screens:account.password.success'), { variant: 'success' });
+        history.push(routes.account._);
+      } catch (e) {
+        if (e instanceof BackupDecryptionError || e.code === errorTypes.forbidden) {
+          setFieldError(OLD_PASSWORD_FIELD_NAME, errorTypes.invalid);
+        } else if (e.httpStatus) {
+          handleGenericHttpErrors(e);
+        }
+      } finally {
+        setSubmitting(false);
+      }
+    },
+    [profile, enqueueSnackbar, handleGenericHttpErrors, history, t, preparePasswordChange],
   );
 
   if (isNil(profile)) { return null; }

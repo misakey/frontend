@@ -152,7 +152,7 @@ export async function updateSecretsBackup(ownerId, secretBackup) {
   await httpCallReturnBody(endpoint, httpRequestParams);
 }
 
-export async function getSecretsBackup(ownerId) {
+export async function getEncryptedSecretsBackup(ownerId) {
   assertNotAnyNil({ ownerId });
 
   const endpoint = {

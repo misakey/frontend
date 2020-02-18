@@ -22,7 +22,6 @@ import thunk from 'redux-thunk';
 import APITokenMiddleware from '@misakey/auth/middlewares/APItoken';
 import invalidTokenMiddleware from 'middlewares/invalidToken';
 import invalidSeclevelMiddleware from 'middlewares/invalidSeclevel';
-import cryptoMiddleware from 'middlewares/crypto';
 import floodManagementAlertMiddleware from 'middlewares/floodManagement/alert';
 // routing
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -81,7 +80,7 @@ if (isSilentAuthIframe()) {
   processSigninRedirect();
 } else {
   // STORE
-  const storeMiddleWares = [thunk, APITokenMiddleware, cryptoMiddleware];
+  const storeMiddleWares = [thunk, APITokenMiddleware];
   if (window.env.ENV === 'development') { storeMiddleWares.push(createLogger()); }
 
   const rootPersistConfig = { key: 'root', storage, whitelist: ['global'], blacklist: [] };

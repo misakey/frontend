@@ -7,15 +7,14 @@ import { withTranslation } from 'react-i18next';
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxByProducerSchema from 'store/schemas/Databox/ByProducer';
 import { receiveDataboxesByProducer } from 'store/actions/databox';
+import { loadSecretsBackup } from '@misakey/crypto/store/actions';
 import { makeStyles } from '@material-ui/core/styles';
-
 
 import API from '@misakey/api';
 import { NoPassword } from 'constants/Errors/classes';
 import { OPEN, DONE } from 'constants/databox/status';
 import { DONE as COMMENT_DONE } from 'constants/databox/comment';
 
-import { ownerCryptoContext as crypto } from '@misakey/crypto';
 import { BackupDecryptionError } from '@misakey/crypto/Errors/classes';
 
 import isNil from '@misakey/helpers/isNil';
@@ -84,7 +83,11 @@ const usePromptForPassword = (openPasswordPrompt) => useCallback(
 );
 
 
-const useLoadBackupAndAskPassword = (userId, promptForPassword) => useCallback(async () => {
+const useLoadBackupAndAskPassword = (
+  userId,
+  promptForPassword,
+  dispatchLoadSecretsBackup,
+) => useCallback(async () => {
   const promisedPassword = promptForPassword();
 
   const promisedBackupData = API.use(API.endpoints.user.getSecretBackup)
@@ -107,7 +110,7 @@ const useLoadBackupAndAskPassword = (userId, promptForPassword) => useCallback(a
   // eslint-disable-next-line no-constant-condition
   while (true) {
     try {
-      await crypto.loadSecretBackup(password, backupData);
+      await dispatchLoadSecretsBackup(password, backupData);
       break;
     } catch (e) {
       if (e instanceof BackupDecryptionError) {
@@ -118,20 +121,12 @@ const useLoadBackupAndAskPassword = (userId, promptForPassword) => useCallback(a
     }
   }
   /* eslint-enable no-await-in-loop */
-}, [promptForPassword, userId]);
+}, [promptForPassword, userId, dispatchLoadSecretsBackup]);
 
 const useInitCrypto = (
-  setPublicKeysWeCanDecryptFrom,
-  setIsCryptoReadyToDecrypt,
   loadBackupAndAskPassword,
 ) => useCallback(
   async () => {
-    if (crypto.databox.isReadyToDecrypt()) {
-      setIsCryptoReadyToDecrypt(true);
-      setPublicKeysWeCanDecryptFrom(crypto.databox.getPublicKeysWeCanDecryptFrom());
-      return;
-    }
-
     try {
       await loadBackupAndAskPassword();
     } catch (e) {
@@ -141,10 +136,8 @@ const useInitCrypto = (
       }
       throw e;
     }
-    setIsCryptoReadyToDecrypt(true);
-    setPublicKeysWeCanDecryptFrom(crypto.databox.getPublicKeysWeCanDecryptFrom());
   },
-  [loadBackupAndAskPassword, setIsCryptoReadyToDecrypt, setPublicKeysWeCanDecryptFrom],
+  [loadBackupAndAskPassword],
 );
 
 // COMPONENTS
@@ -157,6 +150,7 @@ function ApplicationBox({
   isLoading,
   onContributionDpoEmailClick,
   dispatchReceiveDataboxesByProducer,
+  dispatchLoadSecretsBackup,
 }) {
   const classes = useStyles();
 
@@ -195,17 +189,14 @@ function ApplicationBox({
     [databoxes, currentDatabox],
   );
 
-  const [isCryptoReadyToDecrypt, setIsCryptoReadyToDecrypt] = useState(
-    crypto.databox.isReadyToDecrypt(),
-  );
-  const [publicKeysWeCanDecryptFrom, setPublicKeysWeCanDecryptFrom] = useState([]);
-
   const openPasswordPrompt = usePasswordPrompt();
   const promptForPassword = usePromptForPassword(openPasswordPrompt);
-  const loadBackupAndAskPassword = useLoadBackupAndAskPassword(userId, promptForPassword);
+  const loadBackupAndAskPassword = useLoadBackupAndAskPassword(
+    userId,
+    promptForPassword,
+    dispatchLoadSecretsBackup,
+  );
   const initCrypto = useInitCrypto(
-    setPublicKeysWeCanDecryptFrom,
-    setIsCryptoReadyToDecrypt,
     loadBackupAndAskPassword,
   );
 
@@ -246,15 +237,6 @@ function ApplicationBox({
       .finally(() => setLocalLoading(false));
   }, [applicationID, dispatchReceiveDataboxesByProducer]);
 
-  React.useEffect(
-    () => {
-      if (isCryptoReadyToDecrypt) {
-        setPublicKeysWeCanDecryptFrom(crypto.databox.getPublicKeysWeCanDecryptFrom());
-      }
-    },
-    [isCryptoReadyToDecrypt],
-  );
-
   React.useEffect(() => {
     if (shouldFetch) {
       fetchDatabox();
@@ -275,8 +257,6 @@ function ApplicationBox({
             className={classes.box}
             application={application}
             databox={currentDatabox}
-            publicKeysWeCanDecryptFrom={publicKeysWeCanDecryptFrom}
-            isCryptoReadyToDecrypt={isCryptoReadyToDecrypt}
             onAskPassword={loadBackupAndAskPassword}
             onContributionDpoEmailClick={onContributionDpoEmailClick}
             initCrypto={initCrypto}
@@ -289,8 +269,6 @@ function ApplicationBox({
                   key={databox.id}
                   databox={databox}
                   application={application}
-                  publicKeysWeCanDecryptFrom={publicKeysWeCanDecryptFrom}
-                  isCryptoReadyToDecrypt={isCryptoReadyToDecrypt}
                   onAskPassword={loadBackupAndAskPassword}
                   onContributionDpoEmailClick={onContributionDpoEmailClick}
                   initCrypto={initCrypto}
@@ -328,6 +306,7 @@ ApplicationBox.propTypes = {
   userId: PropTypes.string,
   isAuthenticated: PropTypes.bool,
   dispatchReceiveDataboxesByProducer: PropTypes.func.isRequired,
+  dispatchLoadSecretsBackup: PropTypes.func.isRequired,
 };
 
 ApplicationBox.defaultProps = {
@@ -360,6 +339,9 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => ({
   dispatchReceiveDataboxesByProducer: (producerId, databoxes) => dispatch(
     receiveDataboxesByProducer({ producerId, databoxes }),
+  ),
+  dispatchLoadSecretsBackup: (password, backupData) => dispatch(
+    loadSecretsBackup(password, backupData),
   ),
 });
 

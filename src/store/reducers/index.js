@@ -7,6 +7,8 @@ import authReducers from '@misakey/auth/store/reducers';
 import reducers from '@misakey/store/reducers';
 import { makeReducer as makeEntities } from '@misakey/store/reducers/entities';
 
+import crypto from '@misakey/crypto/store/reducer';
+
 import { wrapReducerWithAuth } from 'store/reducers/helpers/createAuthReducer';
 import access from './access';
 import Layout from './Layout';
@@ -25,6 +27,7 @@ const appReducer = combineReducers({
   search,
   sso,
   warning,
+  crypto,
   entities: wrapReducerWithAuth({
     applications: {},
     users: {},

@@ -2,8 +2,6 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import includes from '@misakey/helpers/includes';
-
 import moment from 'moment';
 import * as numeral from 'numeral';
 
@@ -25,7 +23,7 @@ const BlobListItem = ({ blob, onDownload, publicKeysWeCanDecryptFrom, t }) => {
   const date = moment(createdAt).format('ll');
   const size = numeral(contentLength).format('0b');
 
-  const canBeDecrypted = includes(publicKeysWeCanDecryptFrom, ownerPubKey);
+  const canBeDecrypted = publicKeysWeCanDecryptFrom.has(ownerPubKey);
 
   const onClick = useCallback(
     () => onDownload(blob),

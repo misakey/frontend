@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
@@ -12,10 +13,9 @@ import moment from 'moment';
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';
 
-
-import { ownerCryptoContext as crypto } from '@misakey/crypto';
+import { decryptToJSBlob } from '@misakey/crypto/databox/crypto';
+import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
 import fileDownload from 'js-file-download';
-import { NoPassword } from 'constants/Errors/classes';
 
 import deburr from '@misakey/helpers/deburr';
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -32,7 +32,6 @@ import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 
 import BlobListItem from 'components/dumb/ListItem/Blob';
 
-
 // HELPERS
 const readBlob = async (id, onError) => {
   try {
@@ -47,25 +46,20 @@ const readBlob = async (id, onError) => {
   }
 };
 
-const downloadBlob = async (blobMetadata, application, onAskPassword, onError) => {
+const downloadBlob = async (
+  blobMetadata,
+  publicKeysWeCanDecryptFrom,
+  application,
+  onError,
+) => {
   try {
     const { fileExtension, id, createdAt } = blobMetadata;
     const {
       nonce,
-      ephemeral_producer_pub_key: ephemeralProducerPubKey,
-    } = blobMetadata.encryption;
+      ephemeralProducerPubKey,
+      ownerPubKey,
+    } = objectToCamelCase(blobMetadata.encryption);
 
-    if (!crypto.databox.isReadyToDecrypt()) {
-      try {
-        await onAskPassword();
-      } catch (e) {
-        if (e instanceof NoPassword) {
-          // do nothing
-          return;
-        }
-        throw e;
-      }
-    }
     const { blob: ciphertext } = await readBlob(id);
 
     if (!ciphertext || ciphertext.size === 0) {
@@ -73,10 +67,16 @@ const downloadBlob = async (blobMetadata, application, onAskPassword, onError) =
       return;
     }
 
-    const decryptedBlob = (
-      await crypto.databox.decryptBlob(ciphertext, nonce, ephemeralProducerPubKey)
-    );
+    const ownerSecretKey = publicKeysWeCanDecryptFrom.get(ownerPubKey);
 
+    const decryptedBlob = (
+      await decryptToJSBlob(
+        ciphertext,
+        nonce,
+        ephemeralProducerPubKey,
+        ownerSecretKey,
+      )
+    );
 
     const fileName = ''.concat(
       deburr(application.name).replace(/\s/g, ''),
@@ -98,15 +98,10 @@ const fetchBlobs = (id) => API
 
 const idProp = prop('id');
 
-// HOOKS
-
-
 // COMPONENTS
 const DataboxContent = ({
   application,
   databox,
-  publicKeysWeCanDecryptFrom,
-  isCryptoReadyToDecrypt,
   onAskPassword,
   initCrypto,
   t,
@@ -158,11 +153,18 @@ const DataboxContent = ({
     [blobs],
   );
 
+  const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
+
   const onDownload = useCallback(
-    (blob) => downloadBlob(blob, application, onAskPassword, onError),
-    [application, onAskPassword, onError],
+    (blob) => downloadBlob(blob, publicKeysWeCanDecryptFrom, application, onAskPassword, onError),
+    [application, publicKeysWeCanDecryptFrom, onAskPassword, onError],
   );
 
+
+  const vaultIsOpen = useMemo(
+    () => !isEmpty(publicKeysWeCanDecryptFrom),
+    [publicKeysWeCanDecryptFrom],
+  );
 
   if (isEmpty(blobs)) {
     return null;
@@ -174,7 +176,7 @@ const DataboxContent = ({
         my={2}
         primary={t('screens:application.vault.databoxContent.number', { count: blobsCount })}
         secondary={allBlobsSize}
-        button={(blobsCount > 0 && !isCryptoReadyToDecrypt) ? (
+        button={(blobsCount > 0 && !vaultIsOpen) ? (
           <Button
             onClick={initCrypto}
             standing={BUTTON_STANDINGS.OUTLINED}
@@ -183,7 +185,7 @@ const DataboxContent = ({
           />
         ) : null}
       />
-      {isCryptoReadyToDecrypt && (
+      {vaultIsOpen && (
         <List disablePadding dense>
           {blobs.map((blob) => (
             <BlobListItem
@@ -202,8 +204,6 @@ const DataboxContent = ({
 DataboxContent.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes),
   databox: PropTypes.shape(DataboxSchema.propTypes),
-  publicKeysWeCanDecryptFrom: PropTypes.arrayOf(PropTypes.string).isRequired,
-  isCryptoReadyToDecrypt: PropTypes.bool.isRequired,
   onAskPassword: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   initCrypto: PropTypes.func.isRequired,
@@ -214,5 +214,13 @@ DataboxContent.defaultProps = {
   databox: null,
 };
 
-// CONNECT
-export default withTranslation(['common', 'screens'])(DataboxContent);
+const mapStateToProps = (state) => ({
+  cryptoSecrets: state.crypto.secrets,
+});
+const mapDispatchToProps = null;
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withTranslation(['common', 'screens'])(
+    DataboxContent,
+  ),
+);

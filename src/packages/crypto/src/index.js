@@ -1,23 +1,46 @@
-/* the crypto package exports instances and not classes:
- * this is a singleton pattern
- */
-
 import {
-  OwnerCryptoContext,
-} from './classes';
+  generateAsymmetricKeyPair,
+  generateNewSaltedSymmetricKey,
+} from './crypto';
+import {
+  encryptSecretsBackup,
+} from './BackupEncryption';
 
-// code for the soon-to-be-retired MK Databox protocol
-// mostly copied from https://gitlab.misakey.dev/misakey/crypto-js-sdk/
-// and re-using new code (code out of databox/)
-// only when strictly necessary
-import * as databox from './databox';
 
-export const ownerCryptoContext = new OwnerCryptoContext();
-ownerCryptoContext.databox = new databox.OwnerCryptoContext(ownerCryptoContext.store);
+export async function createNewOwnerSecrets(password) {
+  const { secretKey, publicKey } = generateAsymmetricKeyPair();
 
-// For now no crypto context is available for producer operations in the MK Data protocol,
-// but we still create a producerCryptoContext
-// just to put the "databox" part in it
-// to mimick the API of the owner context
-export const producerCryptoContext = {};
-producerCryptoContext.databox = new databox.ProducerCryptoContext();
+  const secrets = {
+    secretKey,
+  };
+
+  const backupKey = await generateNewSaltedSymmetricKey(password);
+  const encryptedSecrets = encryptSecretsBackup(secrets, backupKey);
+
+  return {
+    backupKey,
+    backupData: encryptedSecrets,
+    pubkeyData: publicKey,
+  };
+}
+
+/**
+ * Returns the data related to crypto
+ * that must be sent to the backend for a "hard password reset" procedure.
+ * WARNING: for now this does not take the (unused) MK Data protocol into account.
+ *
+ * @param {string} newPassword
+ */
+export async function hardPasswordChange(newPassword) {
+  const {
+    backupData,
+    pubkeyData,
+  } = await createNewOwnerSecrets(newPassword);
+
+  return {
+    backupData,
+    pubkeys: {
+      userPubkey: pubkeyData,
+    },
+  };
+}
