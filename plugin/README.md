@@ -49,7 +49,36 @@ In the folder `popup/`, we find files which will help to generate the build outp
 
 #### Production build 
 
-As `react-scripts` don't enable to easily configure output build directory, we generate the production folder dist for the extension with a Dockerfile :
+
+To generate the zip files for publishing on store with docker and make (output: `build_plugin`):
+- `make build-plugin`
+
+To generate a clean zip of the source_code for reviewers of firefox addons store: (output: `build_plugin/source_code.zip`)
+- `make zip-plugin-source-code`
+
+To generate an output folder for the web extension use:
+- `yarn install && yarn --cwd plugin install && yarn build-plugin`
+
+To use different env files, use:
+- `PLUGIN_ENV=preproduction make build-plugin` or `PLUGIN_ENV=preproduction yarn build-plugin`
+- Values supported: `production`, `preproduction`, `development`
+-  Default value: `production`
+
+To add a version in the zip output name, add `VERSION=<version>`
+
+To generate a build only for Firefox, use:
+- `TARGET_BROWSER=firefox make build-plugin`
+  OR
+- `yarn install && yarn install --cwd plugin && yarn build-plugin-firefox`
+
+  To generate a build only for Chrome, use:
+- `TARGET_BROWSER=chrome make build-plugin`
+  OR
+- `yarn install && yarn install --cwd plugin && yarn build-plugin-chrome`
+
+##### How does it work ?
+
+As `react-scripts` doesn't allow to easily configure output build directory, we generate the production folder dist for the extension with a Dockerfile :
 
 - First, from src folder in `plugin/` it build the bundles for background.js and content-script.js and put them in a `/build/prod` folder
 - Then it generate the output `build` for `app-front` in a `/tmp` folder with specific ENV values: 
@@ -57,6 +86,7 @@ As `react-scripts` don't enable to easily configure output build directory, we g
 - Finally, we generate zip folder for each browser, rename it and expose it when docker image is running
 - We run it with docker and use docker cp to get the final folder (See Makefile on root of this project)
   - `make build-plugin`
+
 
 #### Development build
 

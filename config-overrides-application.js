@@ -1,3 +1,6 @@
+// This overrides file is used for the applicatioh only.
+// It's renamed in the Dockerfiles to match the real file name config-overrides.js
+
 const path = require('path');
 
 module.exports = function override(config) {

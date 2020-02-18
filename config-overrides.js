@@ -1,3 +1,7 @@
+// This overrides file is used for the plugin only.
+// It's generically named as the plugin can be used without docker (and we cannot change the file
+// name for react-app-rewired).
+
 /* eslint-disable import/no-extraneous-dependencies */
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WebpackShellPlugin = require('webpack-shell-plugin');
