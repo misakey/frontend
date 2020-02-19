@@ -8,6 +8,7 @@ import ApplicationSchema from 'store/schemas/Application';
 
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
+import prop from '@misakey/helpers/prop';
 
 import withApplication from 'components/smart/withApplication';
 import RoutePrivate from '@misakey/auth/components/Route/Private';
@@ -22,11 +23,16 @@ const PAGES_ROSES_ENDPOINT = {
   path: '/applications/:mainDomain',
 };
 
+// HELPERS
+const matchMainDomain = (entity, mainDomain) => prop('mainDomain', entity) === mainDomain;
+
 // COMPONENTS
 function Application({ entity, error, isFetching, mainDomain }) {
   const application = useMemo(
-    () => ((isFetching || isNil(entity)) ? { mainDomain, isUnknown: true } : entity),
-    [mainDomain, entity, isFetching],
+    () => ((!matchMainDomain(entity, mainDomain) || isNil(entity))
+      ? { mainDomain, isUnknown: true }
+      : entity),
+    [mainDomain, entity],
   );
 
   const state = useMemo(
@@ -113,7 +119,7 @@ export default withApplication(Application, {
   endpoint: PAGES_ROSES_ENDPOINT,
   paramMapper: (props) => [props],
   getSpecificShouldFetch: (entity) => {
-    const { avgRating, isUnknown } = entity || {};
+    const { avgRating, isUnknown } = entity || { isUnknown: true };
     return isNil(avgRating) && isUnknown !== true;
   },
 });

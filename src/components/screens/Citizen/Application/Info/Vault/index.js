@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { denormalize } from 'normalizr';
@@ -20,14 +20,16 @@ import { BackupDecryptionError } from '@misakey/crypto/Errors/classes';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import prop from '@misakey/helpers/prop';
+import propOr from '@misakey/helpers/propOr';
 import propEq from '@misakey/helpers/propEq';
 import tail from '@misakey/helpers/tail';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import { getCurrentDatabox, sortDataboxes } from '@misakey/helpers/databox';
 
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
+
 import ListQuestions, { useQuestionsItems, getQuestionsItems } from 'components/dumb/List/Questions';
-import ScreenError from 'components/dumb/Screen/Error';
 import Divider from '@material-ui/core/Divider';
 import { usePasswordPrompt, PasswordPromptProvider } from 'components/screens/Citizen/Application/Info/Vault/PasswordPrompt';
 import Card from 'components/dumb/Card';
@@ -43,9 +45,11 @@ import NoDataboxInfoCard from './NoDataboxInfoCard';
 
 // CONSTANTS
 const QUESTIONS_TRANS_KEY = 'screens:application.box.questions';
+const DEFAULT_KEY = 'key';
 
 // HELPERS
 const idProp = prop('id');
+const idPropOrDefaultKey = propOr(DEFAULT_KEY, 'id');
 const databoxesProp = prop('databoxes');
 const isDataboxOpen = propEq('status', OPEN);
 const isDataboxDone = propEq('status', DONE);
@@ -141,26 +145,17 @@ const useInitCrypto = (
 );
 
 // COMPONENTS
-function ApplicationBox({
+function ApplicationInfoVault({
   application,
   databoxesByProducer,
   t,
   userId,
   isAuthenticated,
-  isLoading,
   onContributionDpoEmailClick,
   dispatchReceiveDataboxesByProducer,
   dispatchLoadSecretsBackup,
 }) {
   const classes = useStyles();
-
-  const [localLoading, setLocalLoading] = useState(false);
-  const [error, setError] = useState();
-
-  const loading = useMemo(
-    () => isLoading || localLoading,
-    [isLoading, localLoading],
-  );
 
   const databoxes = useMemo(
     () => {
@@ -173,6 +168,11 @@ function ApplicationBox({
   const currentDatabox = useMemo(
     () => getCurrentDatabox(databoxes),
     [databoxes],
+  );
+
+  const currentDataboxKey = useMemo(
+    () => idPropOrDefaultKey(currentDatabox),
+    [currentDatabox],
   );
 
   const archivedDataboxes = useMemo(
@@ -206,9 +206,9 @@ function ApplicationBox({
   );
 
   const shouldFetch = useMemo(
-    () => !isLoading && isAuthenticated && !isNil(applicationID)
-      && isNil(databoxes) && isNil(error),
-    [isAuthenticated, applicationID, databoxes, error, isLoading],
+    () => isAuthenticated && !isNil(applicationID)
+      && isNil(databoxes),
+    [isAuthenticated, applicationID, databoxes],
   );
 
   const questionItems = useQuestionsItems(t, QUESTIONS_TRANS_KEY, 4);
@@ -225,35 +225,34 @@ function ApplicationBox({
     [currentDatabox, t],
   );
 
-  const fetchDatabox = useCallback(() => {
-    setLocalLoading(true);
+  const fetchDatabox = useCallback(
+    () => findDataboxes(applicationID),
+    [applicationID],
+  );
 
-    findDataboxes(applicationID)
-      .then((response) => {
-        const boxes = response.map(objectToCamelCase);
-        dispatchReceiveDataboxesByProducer(applicationID, boxes);
-      })
-      .catch(({ httpStatus }) => setError(httpStatus))
-      .finally(() => setLocalLoading(false));
-  }, [applicationID, dispatchReceiveDataboxesByProducer]);
+  const onSuccess = useCallback(
+    (response) => {
+      const boxes = response.map(objectToCamelCase);
+      dispatchReceiveDataboxesByProducer(applicationID, boxes);
+    },
+    [applicationID, dispatchReceiveDataboxesByProducer],
+  );
 
-  React.useEffect(() => {
-    if (shouldFetch) {
-      fetchDatabox();
-    }
-  }, [shouldFetch, fetchDatabox]);
 
-  if (error) {
-    return <ScreenError httpStatus={error} />;
-  }
+  const { isFetching } = useFetchEffect(
+    fetchDatabox,
+    { shouldFetch },
+    { onSuccess },
+  );
 
   return (
     <>
-      {(loading && isAuthenticated) ? (
+      {(isFetching && isAuthenticated) ? (
         <DefaultSplashScreen />
       ) : (
         <>
           <CurrentDatabox
+            key={currentDataboxKey}
             className={classes.box}
             application={application}
             databox={currentDatabox}
@@ -291,13 +290,12 @@ function ApplicationBox({
   );
 }
 
-ApplicationBox.propTypes = {
+ApplicationInfoVault.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
       mainDomain: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
-  isLoading: PropTypes.bool,
   onContributionDpoEmailClick: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   // CONNECT
@@ -309,12 +307,11 @@ ApplicationBox.propTypes = {
   dispatchLoadSecretsBackup: PropTypes.func.isRequired,
 };
 
-ApplicationBox.defaultProps = {
+ApplicationInfoVault.defaultProps = {
   application: null,
   databoxesByProducer: null,
   userId: null,
   isAuthenticated: false,
-  isLoading: false,
 };
 
 // CONNECT
@@ -345,17 +342,17 @@ const mapDispatchToProps = (dispatch) => ({
   ),
 });
 
-const ApplicationBoxComponent = connect(mapStateToProps, mapDispatchToProps)(
-  withTranslation(['common', 'screens', 'input'])(ApplicationBox),
+const ApplicationInfoVaultComponent = connect(mapStateToProps, mapDispatchToProps)(
+  withTranslation(['common', 'screens', 'input'])(ApplicationInfoVault),
 );
 
 
-function ApplicationBoxWithPasswordPrompt({ ...props }) {
+function ApplicationInfoVaultWithPasswordPrompt({ ...props }) {
   return (
     <PasswordPromptProvider>
-      <ApplicationBoxComponent {...props} />
+      <ApplicationInfoVaultComponent {...props} />
     </PasswordPromptProvider>
   );
 }
 
-export default ApplicationBoxWithPasswordPrompt;
+export default ApplicationInfoVaultWithPasswordPrompt;

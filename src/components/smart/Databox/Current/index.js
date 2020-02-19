@@ -92,8 +92,6 @@ const DialogConnectButton = withDialogConnect(Button);
 const CurrentDatabox = ({
   application,
   databox,
-  publicKeysWeCanDecryptFrom,
-  isCryptoReadyToDecrypt,
   onAskPassword,
   onContributionDpoEmailClick,
   isAuthenticated,
@@ -361,8 +359,6 @@ const CurrentDatabox = ({
       <DataboxContent
         databox={databox}
         application={application}
-        publicKeysWeCanDecryptFrom={publicKeysWeCanDecryptFrom}
-        isCryptoReadyToDecrypt={isCryptoReadyToDecrypt}
         onAskPassword={onAskPassword}
         onContributionDpoEmailClick={onContributionDpoEmailClick}
         initCrypto={initCrypto}
@@ -376,8 +372,6 @@ CurrentDatabox.propTypes = {
   t: PropTypes.func.isRequired,
   application: PropTypes.shape(ApplicationSchema.propTypes),
   databox: PropTypes.shape(DataboxSchema.propTypes),
-  publicKeysWeCanDecryptFrom: PropTypes.arrayOf(PropTypes.string).isRequired,
-  isCryptoReadyToDecrypt: PropTypes.bool.isRequired,
   onAskPassword: PropTypes.func.isRequired,
   onContributionDpoEmailClick: PropTypes.func.isRequired,
   initCrypto: PropTypes.func.isRequired,

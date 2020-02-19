@@ -18,6 +18,7 @@ import isFunction from '@misakey/helpers/isFunction';
 import omit from '@misakey/helpers/omit';
 import path from '@misakey/helpers/path';
 import prop from '@misakey/helpers/prop';
+import eqProps from '@misakey/helpers/eqProps';
 import identity from '@misakey/helpers/identity';
 import mergeEntitiesNoEmpty from 'helpers/mergeEntities/noEmpty';
 
@@ -41,6 +42,13 @@ const EMPTY_APPLICATION_ERROR = new Error();
 EMPTY_APPLICATION_ERROR.status = 404;
 
 // HELPERS
+const isSameApplicationAs = (model, other) => {
+  if (isNil(model)) {
+    return isNil(other);
+  }
+  return !isNil(model) && !isNil(other) && eqProps('mainDomain', model, other);
+};
+
 const getMainDomain = (props) => {
   const routerPropMainDomain = path(['match', 'params', 'mainDomain'])(props);
   return isNil(routerPropMainDomain) ? prop('mainDomain')(props) : routerPropMainDomain;
@@ -139,16 +147,21 @@ const withApplication = (Component, options = {}) => {
       t,
     );
 
+    const specificShouldFetch = useMemo(
+      () => (isFunction(getSpecificShouldFetch) ? getSpecificShouldFetch(entity) : null),
+      [entity],
+    );
+
     const shouldFetch = useMemo(() => {
       const validDomain = isString(mainDomain) && !isDefaultDomain;
       const forceFetch = authChanged;
       const defaultShouldFetch = isNil(entity);
       const isFetchNeeded = (
-        isNil(getSpecificShouldFetch)
-      ) ? defaultShouldFetch : getSpecificShouldFetch(entity);
+        isNil(specificShouldFetch)
+      ) ? defaultShouldFetch : specificShouldFetch;
 
       return validDomain && (isFetchNeeded || forceFetch);
-    }, [isDefaultDomain, entity, mainDomain, authChanged]);
+    }, [mainDomain, isDefaultDomain, authChanged, entity, specificShouldFetch]);
 
     const startFetching = useCallback(
       () => fetchApplication(mainDomain, isAuthenticated, endpoint, paramMapper)
@@ -167,18 +180,28 @@ const withApplication = (Component, options = {}) => {
       [handlePluginError, dispatchReceive, handleReceive],
     );
 
-    const { isFetching, error } = useFetchEffect(
+    const { isFetching, error, data } = useFetchEffect(
       startFetching,
-      { shouldFetch },
+      { shouldFetch, stopOnError: false },
       { onSuccess: onFetchApplicationSuccess, onError: handleError },
+    );
+
+    const fetchProps = useMemo(
+      () => {
+        const fetchedApp = isArray(data) ? head(data) : data;
+        if (isSameApplicationAs(entity, fetchedApp)) {
+          return { isFetching, error };
+        }
+        return {};
+      },
+      [data, isFetching, error, entity],
     );
 
     return (
       <Component
         {...omit(propsMapper({
           ...props,
-          error,
-          isFetching,
+          ...fetchProps,
           mainDomain,
         }), INTERNAL_PROPS)}
       />

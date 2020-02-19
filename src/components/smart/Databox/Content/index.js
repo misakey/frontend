@@ -24,6 +24,7 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import prop from '@misakey/helpers/prop';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import usePropChanged from '@misakey/hooks/usePropChanged';
 
 import CardSimpleDoubleText from 'components/dumb/Card/Simple/DoubleText';
 
@@ -113,6 +114,8 @@ const DataboxContent = ({
     [databox],
   );
 
+  const databoxIdChanged = usePropChanged(databoxId);
+
   const onError = useCallback(
     (translationKey) => {
       enqueueSnackbar(t(translationKey), { variant: 'error' });
@@ -121,17 +124,15 @@ const DataboxContent = ({
   );
 
   const shouldFetch = useMemo(
-    () => !isNil(databoxId),
-    [databoxId],
+    () => !isNil(databoxId) && databoxIdChanged,
+    [databoxId, databoxIdChanged],
   );
-
 
   const getBlobs = useCallback(
     () => fetchBlobs(databox.id)
       .then((response) => response.map(objectToCamelCase)),
     [databox],
   );
-
 
   const { data: blobs } = useFetchEffect(
     getBlobs,
@@ -160,11 +161,11 @@ const DataboxContent = ({
     [application, publicKeysWeCanDecryptFrom, onAskPassword, onError],
   );
 
-
   const vaultIsOpen = useMemo(
     () => !isEmpty(publicKeysWeCanDecryptFrom),
     [publicKeysWeCanDecryptFrom],
   );
+
 
   if (isEmpty(blobs)) {
     return null;
