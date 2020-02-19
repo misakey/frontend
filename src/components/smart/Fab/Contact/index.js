@@ -10,7 +10,7 @@ import Box from '@material-ui/core/Box';
 import Badge from '@material-ui/core/Badge';
 import Email from '@material-ui/icons/Email';
 import withDialogConnect from 'components/smart/Dialog/Connect/with';
-import { setSelected } from 'store/actions/screens/applications';
+import { bulkSelectionSetSelected } from 'store/actions/bulkSelection';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,11 +73,11 @@ MultipleContactButton.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  selectedApplications: state.screens.applications.selected,
+  selectedApplications: state.bulkSelection.selected,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchClearSelection: () => dispatch(setSelected([])),
+  dispatchClearSelection: () => dispatch(bulkSelectionSetSelected([])),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['components'])(MultipleContactButton));

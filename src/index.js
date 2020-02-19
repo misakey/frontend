@@ -83,7 +83,7 @@ if (isSilentAuthIframe()) {
   const storeMiddleWares = [thunk, APITokenMiddleware];
   if (window.env.ENV === 'development') { storeMiddleWares.push(createLogger()); }
 
-  const rootPersistConfig = { key: 'root', storage, whitelist: ['global'], blacklist: [] };
+  const rootPersistConfig = { key: 'root', storage, whitelist: ['global', 'bulkSelection'], blacklist: [] };
   const persistedReducer = persistReducer(rootPersistConfig, reducers);
   const store = createStore(persistedReducer, compose(applyMiddleware(...storeMiddleWares)));
   const persistor = persistStore(store);

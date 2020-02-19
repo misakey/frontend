@@ -11,17 +11,18 @@ import crypto from '@misakey/crypto/store/reducer';
 
 import { wrapReducerWithAuth } from 'store/reducers/helpers/createAuthReducer';
 import access from './access';
+import bulkSelection from './bulkSelection';
 import Layout from './Layout';
 import screens from './screens';
 import search from './search';
 import sso from './sso';
 import warning from './warning';
 
-
 const appReducer = combineReducers({
   ...authReducers,
   ...reducers,
   access,
+  bulkSelection,
   Layout,
   screens,
   search,

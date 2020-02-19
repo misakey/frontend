@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import routes from 'routes';
 import { connect } from 'react-redux';
 import { withTranslation, Trans } from 'react-i18next';
-import { setSelected } from 'store/actions/screens/applications';
+import { bulkSelectionSetSelected } from 'store/actions/bulkSelection';
 
 import prop from '@misakey/helpers/prop';
 import propOr from '@misakey/helpers/propOr';
@@ -11,7 +11,9 @@ import pluck from '@misakey/helpers/pluck';
 import isEmpty from '@misakey/helpers/isEmpty';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { useHistory } from 'react-router-dom';
 
+import { BUTTON_STANDINGS } from 'components/dumb/Button';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -146,6 +148,7 @@ const Contact = ({
   t,
 }) => {
   const classes = useStyles();
+  const { push } = useHistory();
   const [expanded, setExpanded] = useState(null);
   const [step, setStep] = useState(STEP.preview);
   const [mailTypesByApp, setMailTypesByApp] = useState({});
@@ -221,6 +224,14 @@ const Contact = ({
     dispatchClearSelection();
     dispatchClearDataboxUrlsByIds();
   }, [dispatchClearDataboxUrlsByIds, dispatchClearSelection]);
+
+  const onCancel = useCallback(
+    () => {
+      dispatchClearSelection();
+      push(routes.citizen._);
+    },
+    [dispatchClearSelection, push],
+  );
 
   return (
     <ScreenAction
@@ -320,6 +331,12 @@ const Contact = ({
                     text: t('common:next'),
                     disabled: selectionIsEmpty,
                   }}
+                  secondary={{
+                    onClick: onCancel,
+                    standing: BUTTON_STANDINGS.CANCEL,
+                    text: t('components:bulkContact.unselect_all'),
+                    disabled: selectionIsEmpty,
+                  }}
                 />
               </>
             )}
@@ -369,8 +386,8 @@ Contact.defaultProps = {
 
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchClearSelection: () => dispatch(setSelected([])),
+  dispatchClearSelection: () => dispatch(bulkSelectionSetSelected([])),
   dispatchClearDataboxUrlsByIds: () => dispatch(clearDataboxURLById()),
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['screens', 'common'])(withBulkContact()(Contact)));
+export default connect(null, mapDispatchToProps)(withTranslation(['screens', 'common', 'components'])(withBulkContact()(Contact)));

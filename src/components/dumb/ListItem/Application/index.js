@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { ROLE_LABELS } from 'constants/Roles';
 import ApplicationSchema from 'store/schemas/Application';
 
-import { toggleFromSelected } from 'store/actions/screens/applications';
+import { bulkSelectionToggleSelected } from 'store/actions/bulkSelection';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -36,7 +36,7 @@ const useStyles = makeStyles(() => ({
 function ApplicationListItem({
   application,
   isSelectable,
-  dispatchToggleFromSelected,
+  dispatchBulkContactToggleSelected,
   selectedApplications,
   isAuthenticated,
   withBlobCount,
@@ -50,9 +50,9 @@ function ApplicationListItem({
 
   const onSelect = useCallback(
     () => {
-      dispatchToggleFromSelected(id);
+      dispatchBulkContactToggleSelected(id);
     },
-    [id, dispatchToggleFromSelected],
+    [id, dispatchBulkContactToggleSelected],
   );
 
   const canSelect = useMemo(
@@ -112,7 +112,7 @@ ApplicationListItem.propTypes = {
   // CONNECT
   selectedApplications: PropTypes.arrayOf(PropTypes.string),
   isAuthenticated: PropTypes.bool,
-  dispatchToggleFromSelected: PropTypes.func.isRequired,
+  dispatchBulkContactToggleSelected: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   withBlobCount: PropTypes.bool,
 };
@@ -127,12 +127,13 @@ ApplicationListItem.defaultProps = {
 
 // CONNECT
 const mapStateToProps = (state) => ({
-  selectedApplications: state.screens.applications.selected,
+  selectedApplications: state.bulkSelection.selected,
   isAuthenticated: !!state.auth.token,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchToggleFromSelected: (applicationId) => dispatch(toggleFromSelected(applicationId)),
+  dispatchBulkContactToggleSelected:
+    (applicationId) => dispatch(bulkSelectionToggleSelected(applicationId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('common')(ApplicationListItem));

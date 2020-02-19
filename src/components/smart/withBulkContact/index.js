@@ -230,7 +230,7 @@ const withBulkContact = (mapper = identity) => (Component) => {
     databoxURLsById: state.screens.contact.databoxURLsById,
     databoxes: state.entities.databoxes,
     applicationsByIds: keyBy(Object.values(state.entities.applications), 'id'),
-    selectedApplications: state.screens.applications.selected,
+    selectedApplications: state.bulkSelection.selected,
     userId: state.auth.userId,
     isAuthenticated: !!state.auth.token,
   });
