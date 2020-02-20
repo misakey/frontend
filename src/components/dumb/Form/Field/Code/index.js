@@ -22,8 +22,8 @@ import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton';
 import ClearIcon from '@material-ui/icons/Clear';
 
-import errorTypes from 'constants/errorTypes';
-import withErrors from '../withErrors';
+import errorTypes from '@misakey/ui/constants/errorTypes';
+import withErrors from 'components/dumb/Form/Field/withErrors';
 
 const LABEL_WIDTH = 39;
 const INPUT_WIDTH = 56;

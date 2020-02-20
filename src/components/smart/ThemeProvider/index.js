@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import theme from '@misakey/ui/theme';
-import { MuiThemeProvider } from '@material-ui/core';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 
 function ThemeProvider({ children }) {
   return (

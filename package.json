@@ -68,7 +68,7 @@
     "@misakey/helpers": "^3.2.2",
     "@misakey/hooks": "^1.2.1",
     "@misakey/store": "^1.3.1",
-    "@misakey/ui": "^3.6.1",
+    "@misakey/ui": "^4.0.0",
     "@sentry/browser": "^5.8.0",
     "@testing-library/react-hooks": "3.2.1",
     "react-test-renderer": "16.12.0",

@@ -33,7 +33,7 @@ import theme from '@misakey/ui/theme';
 import 'react-virtualized/styles.css';
 // components
 import App from 'components/App';
-import SplashScreen from 'components/dumb/SplashScreen';
+import SplashScreen from '@misakey/ui/Screen/Splash';
 import OidcProvider from '@misakey/auth/components/OidcProvider'; // OIDC provider
 // translations
 import './i18n';

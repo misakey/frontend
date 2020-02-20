@@ -2,20 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import identity from '@misakey/helpers/identity';
-import tDefault from '@misakey/helpers/tDefault';
+import noop from '@misakey/helpers/noop';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 
-function ButtonBurger({ className, onClick, t }) {
+function ButtonBurger({ className, onClick, t, ...rest }) {
   return (
     <IconButton
       color="inherit"
-      aria-label={t('navigation.drawer.toggle')}
+      aria-label={t('common:navigation.drawer.toggle')}
       onClick={onClick}
-      edge="start"
       className={className}
+      {...omitTranslationProps(rest)}
     >
       <MenuIcon />
     </IconButton>
@@ -25,13 +25,12 @@ function ButtonBurger({ className, onClick, t }) {
 ButtonBurger.propTypes = {
   className: PropTypes.string,
   onClick: PropTypes.func,
-  t: PropTypes.func,
+  t: PropTypes.func.isRequired,
 };
 
 ButtonBurger.defaultProps = {
   className: '',
-  onClick: identity,
-  t: tDefault,
+  onClick: noop,
 };
 
-export default withTranslation()(ButtonBurger);
+export default withTranslation('common')(ButtonBurger);

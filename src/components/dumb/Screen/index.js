@@ -13,9 +13,9 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import ErrorIcon from '@material-ui/icons/Error';
 
+import SplashScreen from '@misakey/ui/Screen/Splash';
 import AppBar, { APPBAR_HEIGHT } from 'components/dumb/AppBar';
 import Footer from 'components/dumb/Footer';
 import { IS_PLUGIN } from 'constants/plugin';
@@ -29,36 +29,6 @@ const useBoxStyles = makeStyles({
     textAlign: 'center',
   },
 });
-
-function DefaultSplashScreen({ t, text }) {
-  const classes = useBoxStyles();
-
-  return (
-    <Box className={classes.root}>
-      <Container maxWidth="md">
-        <Box mb={1}>
-          <HourglassEmptyIcon fontSize="large" color="secondary" />
-        </Box>
-        <Typography variant="h5" component="h3" color="textSecondary">
-          {text || t('loading')}
-        </Typography>
-      </Container>
-    </Box>
-  );
-}
-
-DefaultSplashScreen.propTypes = {
-  t: PropTypes.func.isRequired,
-  text: PropTypes.string,
-};
-
-DefaultSplashScreen.defaultProps = {
-  text: null,
-};
-
-const DefaultSplashScreenWithTranslation = withTranslation()(DefaultSplashScreen);
-
-export { DefaultSplashScreenWithTranslation as DefaultSplashScreen };
 
 // The string representing the message/name is lazily generated
 // when the error.message/name property is accessed.
@@ -114,7 +84,7 @@ function StateWrapper({
 
   switch (currentState) {
     case SCREEN_STATES.IS_INITIATING:
-      return splashScreen || <DefaultSplashScreenWithTranslation text={splashScreenText} />;
+      return splashScreen || <SplashScreen text={splashScreenText} />;
     case SCREEN_STATES.HAS_ERROR:
       return <ScreenErrorWithTranslation error={error} />;
     default:

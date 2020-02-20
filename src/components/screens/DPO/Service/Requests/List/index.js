@@ -33,7 +33,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
 import Skeleton from '@material-ui/lab/Skeleton';
-import BoxSection from 'components/dumb/Box/Section';
+import BoxSection from '@misakey/ui/Box/Section';
 import Empty from 'components/dumb/Box/Empty';
 import ScreenAction from 'components/dumb/Screen/Action';
 import ChipDataboxStatus from 'components/dumb/Chip/Databox/Status';

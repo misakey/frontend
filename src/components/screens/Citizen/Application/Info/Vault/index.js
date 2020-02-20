@@ -38,7 +38,7 @@ import Title from 'components/dumb/Typography/Title';
 import CurrentDatabox from 'components/smart/Databox/Current';
 import ArchivedDatabox from 'components/smart/Databox/Archived';
 
-import { DefaultSplashScreen } from 'components/dumb/Screen';
+import DefaultSplashScreen from '@misakey/ui/Screen/Splash';
 
 import NoDataboxInfoCard from './NoDataboxInfoCard';
 

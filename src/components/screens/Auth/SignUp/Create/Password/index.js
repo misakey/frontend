@@ -15,7 +15,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Card from 'components/dumb/Card';
 import CardHeaderAuthSignUp from 'components/smart/Card/Header/Auth/SignUp';
 import ButtonGoBackTo from 'components/dumb/Button/GoBack/To';
-import FormFields from 'components/dumb/Form/Fields';
+import FormFields from '@misakey/ui/Form/Fields';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
 
 // CONSTANTS

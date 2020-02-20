@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { denormalize } from 'normalizr';
 
-import errorTypes from 'constants/errorTypes';
+import errorTypes from '@misakey/ui/constants/errorTypes';
 import API from '@misakey/api';
 
 import DataboxSchema from 'store/schemas/Databox';

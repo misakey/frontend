@@ -15,7 +15,7 @@ import mapValues from '@misakey/helpers/mapValues';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
-import { FIELD_PROPTYPES } from 'components/dumb/Form/Fields';
+import { FIELD_PROPTYPES } from '@misakey/ui/Form/Fields';
 import Redirect from 'components/dumb/Redirect';
 
 import prop from '@misakey/helpers/prop';
@@ -29,10 +29,10 @@ import { getSignInValidationSchema } from 'constants/validationSchemas/auth';
 import routes from 'routes';
 import { screenAuthSetCredentials } from 'store/actions/screens/auth';
 import { SECLEVEL_CONFIG, DEFAULT_SECLEVEL, STEP } from 'components/smart/Auth/SignIn/Form/constants';
-import errorTypes from 'constants/errorTypes';
+import errorTypes from '@misakey/ui/constants/errorTypes';
 import { handleLoginApiErrors } from 'components/smart/Auth/SignIn/helpers';
 
-import { DefaultSplashScreen } from 'components/dumb/Screen';
+import DefaultSplashScreen from '@misakey/ui/Screen/Splash';
 
 const { conflict, required, forbidden } = errorTypes;
 

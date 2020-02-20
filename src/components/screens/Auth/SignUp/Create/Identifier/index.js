@@ -16,7 +16,7 @@ import Card from 'components/dumb/Card';
 import CardHeaderAuthSignUp from 'components/smart/Card/Header/Auth/SignUp';
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import ButtonGoBackTo from 'components/dumb/Button/GoBack/To';
-import FormFields from 'components/dumb/Form/Fields';
+import FormFields from '@misakey/ui/Form/Fields';
 import FieldText from 'components/dumb/Form/Field/Text';
 
 // CONSTANTS

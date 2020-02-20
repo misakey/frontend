@@ -5,7 +5,7 @@ import { authSeclevelWarningHide } from 'store/actions/warning';
 import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';
-import Alert from 'components/dumb/Alert';
+import Alert from '@misakey/ui/Alert';
 import Button from 'components/dumb/Button';
 import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
 

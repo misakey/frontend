@@ -69,6 +69,7 @@ function LongText({ children, className, ltr, t, ...rest }) {
     // eslint-disable-next-line jsx-a11y/anchor-is-valid
     <Link
       ref={buttonRef}
+      color="secondary"
       variant="button"
       component="button"
       onClick={handleCollapse}

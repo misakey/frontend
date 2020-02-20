@@ -25,7 +25,8 @@ import isNil from '@misakey/helpers/isNil';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 
-import Screen, { getStyleForContainerScroll, DefaultSplashScreen, SCREEN_STATE_PROPTYPES } from 'components/dumb/Screen';
+import Screen, { getStyleForContainerScroll, SCREEN_STATE_PROPTYPES } from 'components/dumb/Screen';
+import DefaultSplashScreen from '@misakey/ui/Screen/Splash';
 import ApplicationInfoNav from 'components/screens/Citizen/Application/Info/Nav';
 import UserContributionDialog from 'components/smart/UserContributionDialog';
 

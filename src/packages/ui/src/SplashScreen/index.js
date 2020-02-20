@@ -44,11 +44,12 @@ const styles = (theme) => ({
   },
 });
 
+// @UNUSED
 const SplashScreen = ({ children, classes, t, text, variant }) => (
   <div className={clsx(classes.root, classes[variant])}>
     <div className={classes.svgContainer}>
       {children || <CircularProgress className={classes.svg} size={50} />}
-      <Typography>{!isEmpty(text) || t('loading')}</Typography>
+      <Typography>{!isEmpty(text) ? text : t('loading')}</Typography>
     </div>
   </div>
 );

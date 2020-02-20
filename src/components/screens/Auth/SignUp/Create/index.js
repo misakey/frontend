@@ -6,7 +6,7 @@ import { Switch } from 'react-router-dom';
 
 import routes from 'routes';
 import API from '@misakey/api';
-import errorTypes from 'constants/errorTypes';
+import errorTypes from '@misakey/ui/constants/errorTypes';
 
 import { stepSignUpValidationSchemas } from 'constants/validationSchemas/auth';
 

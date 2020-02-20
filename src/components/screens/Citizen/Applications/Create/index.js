@@ -9,7 +9,7 @@ import { useSnackbar } from 'notistack';
 import { makeStyles } from '@material-ui/core/styles';
 
 import routes from 'routes';
-import errorTypes from 'constants/errorTypes';
+import errorTypes from '@misakey/ui/constants/errorTypes';
 import { mainDomainValidationSchema, MAIN_DOMAIN_REGEX } from 'constants/validationSchemas/information';
 
 import ApplicationSchema from 'store/schemas/Application';

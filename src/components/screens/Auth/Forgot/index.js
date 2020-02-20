@@ -10,7 +10,7 @@ import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpError
 
 import routes from 'routes';
 import API from '@misakey/api';
-import errorTypes from 'constants/errorTypes';
+import errorTypes from '@misakey/ui/constants/errorTypes';
 
 import { forgotConfirmValidationSchema, forgotResetPasswordValidationSchema } from 'constants/validationSchemas/auth';
 

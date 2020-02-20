@@ -31,7 +31,7 @@ const ButtonCopy = ({ value, mode, t, ...props }) => {
 
   const handleCopy = useCallback(() => {
     copy(value);
-    const text = t('copied', 'Copied!');
+    const text = t('common:copied', 'Copied!');
     enqueueSnackbar(text, { variant: 'success' });
   }, [enqueueSnackbar, t, value]);
 
@@ -45,7 +45,7 @@ const ButtonCopy = ({ value, mode, t, ...props }) => {
       onClick={handleCopy}
       {...omit(props, ['i18n', 'tReady'])}
     >
-      {isIcon ? <CopyIcon /> : t('copy', 'Copy')}
+      {isIcon ? <CopyIcon /> : t('common:copy', 'Copy')}
     </Wrapper>
   );
 };
@@ -63,4 +63,4 @@ ButtonCopy.defaultProps = {
 
 };
 
-export default withTranslation()(ButtonCopy);
+export default withTranslation('common')(ButtonCopy);

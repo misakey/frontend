@@ -12,10 +12,10 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
-import BoxSection from 'components/dumb/Box/Section';
+import BoxSection from '@misakey/ui/Box/Section';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AvatarColorized from '@misakey/ui/Avatar/Colorized';
-import ListDataItem from 'components/dumb/List/Data/Item';
+import ListItemData from 'components/dumb/ListItem/Data';
 import LimitedList from 'components/dumb/List/Limited';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -33,7 +33,7 @@ const FieldItem = ({ field, mainDomain, t }) => {
   );
 
   return (
-    <ListDataItem
+    <ListItemData
       ariaAction={t(`fields:${key}.action`)}
       linkTo={linkTo}
       label={t(`fields:${key}.label`)}
@@ -83,20 +83,20 @@ const ServiceInformationHome = ({ appBarProps, service, t }) => {
             </Box>
             <List className="details">
               <FieldItem field={{ name }} mainDomain={mainDomain} t={t} />
-              <ListDataItem
+              <ListItemData
                 ariaAction={t('fields:logo.action')}
                 label={t('fields:logo.label')}
                 text={{ primary: t('fields:logo.placeholder') }}
                 action={(<AvatarColorized text={name} image={logoUri} />)}
                 linkTo={logoLinkTo}
               />
-              <ListDataItem
+              <ListItemData
                 ariaAction={t('fields:mainDomain.action')}
                 label={t('fields:mainDomain.label')}
                 text={{ primary: mainDomain }}
                 disabled
               />
-              <ListDataItem
+              <ListItemData
                 ariaAction={t('fields:otherDomains.action')}
                 label={t('fields:otherDomains.label')}
                 disabled
@@ -113,7 +113,7 @@ const ServiceInformationHome = ({ appBarProps, service, t }) => {
                     )
                   }
                 />
-              </ListDataItem>
+              </ListItemData>
               <FieldItem field={{ shortDesc }} mainDomain={mainDomain} t={t} />
               <FieldItem field={{ longDesc }} mainDomain={mainDomain} t={t} />
             </List>

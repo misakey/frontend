@@ -29,8 +29,9 @@ import ButtonSubmit from 'components/dumb/Button/Submit';
 import Button from 'components/dumb/Button';
 
 import BoxControls from 'components/dumb/Box/Controls';
-import SplashScreen from 'components/dumb/SplashScreen';
 import Screen from 'components/dumb/Screen';
+import SplashScreen from '@misakey/ui/Screen/Splash';
+
 import Navigation from 'components/dumb/Navigation';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';

@@ -9,7 +9,7 @@ import { screenAuthSetIdentifier, screenAuthSetPublics } from 'store/actions/scr
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 
-import { FIELD_PROPTYPES } from 'components/dumb/Form/Fields';
+import { FIELD_PROPTYPES } from '@misakey/ui/Form/Fields';
 
 import FormCardAuth from 'components/dumb/Form/Card/Auth';
 import AuthCardTitle from 'components/smart/Auth/Card/Title';
@@ -25,7 +25,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import SignInFormFields from 'components/smart/Auth/SignIn/Form/Fields';
 import SignInCardContent from 'components/smart/Auth/SignIn/Form/CardContent';
 
-import errorTypes from 'constants/errorTypes';
+import errorTypes from '@misakey/ui/constants/errorTypes';
 
 import { STEP, DEFAULT_SECLEVEL, SECLEVEL_CONFIG } from 'components/smart/Auth/SignIn/Form/constants';
 import { handleLoginApiErrors, getApiErrors } from 'components/smart/Auth/SignIn/helpers';

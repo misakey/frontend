@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { MAX_FILE_SIZE } from 'constants/file/size';
-import errorTypes from 'constants/errorTypes';
+import errorTypes from '@misakey/ui/constants/errorTypes';
 
 const { required } = errorTypes;
 

@@ -1,9 +1,11 @@
 ```js
 import React from 'react';
-import ButtonBurger from '@misakey/ui/Button/Burger';
+import ButtonBurger from './index';
 
 const ButtonBurgerExample = () => (
-  <ButtonBurger />
+  <React.Suspense fallback="Loading...">
+    <ButtonBurger />
+  </React.Suspense>
 );
 
   <ButtonBurgerExample />;

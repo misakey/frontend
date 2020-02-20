@@ -22,7 +22,7 @@ import Typography from '@material-ui/core/Typography';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import Box from '@material-ui/core/Box';
-import BoxMessage from 'components/dumb/Box/Message';
+import BoxMessage from '@misakey/ui/Box/Message';
 import Card from 'components/dumb/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';

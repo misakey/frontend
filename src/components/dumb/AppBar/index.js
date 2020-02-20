@@ -19,7 +19,7 @@ import MuiAppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
-import User from 'components/smart/User';
+import ButtonConnectUser from 'components/smart/Button/Connect/User';
 import LinkHome from 'components/dumb/Link/Home';
 import Logo from 'components/dumb/Logo';
 import ElevationScroll from 'components/dumb/ElevationScroll';
@@ -72,7 +72,7 @@ function AppBar({
 
   const rightAppBarItems = useMemo(() => {
     const rightItems = [];
-    if (withUser) { rightItems.push(<User key="appBarUser" />); }
+    if (withUser) { rightItems.push(<ButtonConnectUser key="appBarUser" />); }
 
     return rightItems;
   }, [withUser]);

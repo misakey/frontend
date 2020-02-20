@@ -14,9 +14,9 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
-import BoxSection from 'components/dumb/Box/Section';
+import BoxSection from '@misakey/ui/Box/Section';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ListDataItem from 'components/dumb/List/Data/Item';
+import ListItemData from 'components/dumb/ListItem/Data';
 import LimitedList from 'components/dumb/List/Limited';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -37,7 +37,7 @@ const FieldItem = ({ field, mainDomain, t, ...props }) => {
   const linkTo = useLinkTo(key, mainDomain);
 
   return (
-    <ListDataItem
+    <ListItemData
       ariaAction={t(`fields:${key}.action`)}
       linkTo={linkTo}
       label={t(`fields:${key}.label`)}
@@ -89,13 +89,13 @@ const ServiceSSOHome = ({ appBarProps, service, t }) => {
               </Typography>
             </Box>
             <List>
-              <ListDataItem
+              <ListItemData
                 ariaAction={t('fields:mainDomain.action')}
                 label={t('fields:mainDomain.label')}
                 text={{ primary: mainDomain }}
                 disabled
               />
-              <ListDataItem
+              <ListItemData
                 ariaAction={t('fields:allowedCorsOrigins.action')}
                 label={t('fields:allowedCorsOrigins.label')}
                 linkTo={linkToAllowedOrigins}
@@ -114,8 +114,8 @@ const ServiceSSOHome = ({ appBarProps, service, t }) => {
                     )
                   }
                 />
-              </ListDataItem>
-              <ListDataItem
+              </ListItemData>
+              <ListItemData
                 ariaAction={t('fields:redirectUris.action')}
                 label={t('fields:redirectUris.label')}
                 linkTo={linkToRedirectUris}
@@ -134,8 +134,8 @@ const ServiceSSOHome = ({ appBarProps, service, t }) => {
                     )
                   }
                 />
-              </ListDataItem>
-              <ListDataItem
+              </ListItemData>
+              <ListItemData
                 ariaAction={t('service:sso.productionSetup.action')}
                 label={t('service:sso.productionSetup.title')}
                 linkTo={linkToProductionSetup}
@@ -144,7 +144,7 @@ const ServiceSSOHome = ({ appBarProps, service, t }) => {
                 <Typography variant="body2" color="secondary">
                   {t('mode.setup', 'Setup mode')}
                 </Typography>
-              </ListDataItem>
+              </ListItemData>
               <FieldItem
                 field={{ customRoles: t('fields:customRoles.placeholder') }}
                 mainDomain={mainDomain}

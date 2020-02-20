@@ -11,7 +11,7 @@ import DataboxSchema from 'store/schemas/Databox';
 import { updateDatabox } from 'store/actions/databox';
 
 import { serviceRequestsReadValidationSchema } from 'constants/validationSchemas/dpo';
-import errorTypes from 'constants/errorTypes';
+import errorTypes from '@misakey/ui/constants/errorTypes';
 import { OPEN, DONE } from 'constants/databox/status';
 
 import log from '@misakey/helpers/log';
@@ -50,9 +50,9 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import FolderIcon from '@material-ui/icons/Folder';
 import CloudDoneIcon from '@material-ui/icons/CloudDone';
 
-import BoxMessage from 'components/dumb/Box/Message';
+import BoxMessage from '@misakey/ui/Box/Message';
 import FieldFile from 'components/dumb/Form/Field/File';
-import Alert from 'components/dumb/Alert';
+import Alert from '@misakey/ui/Alert';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Empty from 'components/dumb/Box/Empty';
 import ScreenAction from 'components/dumb/Screen/Action';

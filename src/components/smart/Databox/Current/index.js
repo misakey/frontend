@@ -8,7 +8,7 @@ import moment from 'moment';
 
 import API from '@misakey/api';
 import routes from 'routes';
-import errorTypes from 'constants/errorTypes';
+import errorTypes from '@misakey/ui/constants/errorTypes';
 import { OPEN, DONE, CLOSED } from 'constants/databox/status';
 
 import withDialogConnect from 'components/smart/Dialog/Connect/with';

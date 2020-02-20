@@ -13,7 +13,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import FieldText from 'components/dumb/Form/Field/Text';
 import BoxControls from 'components/dumb/Box/Controls';
 
-import errorTypes from 'constants/errorTypes';
+import errorTypes from '@misakey/ui/constants/errorTypes';
 
 const { invalid } = errorTypes;
 

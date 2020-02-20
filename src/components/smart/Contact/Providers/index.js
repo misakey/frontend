@@ -14,7 +14,7 @@ import Container from '@material-ui/core/Container';
 import Subtitle from 'components/dumb/Typography/Subtitle';
 import ListMailProviders from 'components/smart/List/MailProviders';
 import BoxControls from 'components/dumb/Box/Controls';
-import BoxMessage from 'components/dumb/Box/Message';
+import BoxMessage from '@misakey/ui/Box/Message';
 
 const useStyles = makeStyles(() => ({
   subtitleRoot: {

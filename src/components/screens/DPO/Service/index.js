@@ -20,7 +20,7 @@ import RouteService, { DEFAULT_SERVICE_ENTITY } from 'components/smart/Route/Ser
 import ServiceClaim from 'components/screens/DPO/Service/Claim';
 import ServiceRequests from 'components/screens/DPO/Service/Requests';
 import Redirect from 'components/dumb/Redirect';
-import SplashScreen from 'components/dumb/SplashScreen';
+import SplashScreen from '@misakey/ui/Screen/Splash';
 import BoxEllipsis from 'components/dumb/Box/Ellipsis';
 import ApplicationAvatar from 'components/dumb/Avatar/Application';
 

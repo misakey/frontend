@@ -28,14 +28,14 @@ import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import ScreenAction from 'components/dumb/Screen/Action';
-import FormFields from 'components/dumb/Form/Fields';
+import FormFields from '@misakey/ui/Form/Fields';
 import FieldCode from 'components/dumb/Form/Field/Code';
-import BoxMessage from 'components/dumb/Box/Message';
+import BoxMessage from '@misakey/ui/Box/Message';
 import Subtitle from 'components/dumb/Typography/Subtitle';
 import Redirect from 'components/dumb/Redirect';
 
 import routes from 'routes';
-import errorTypes from 'constants/errorTypes';
+import errorTypes from '@misakey/ui/constants/errorTypes';
 
 import { serviceClaimValidationSchema } from 'constants/validationSchemas/dpo';
 

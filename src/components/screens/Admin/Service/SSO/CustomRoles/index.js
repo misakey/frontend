@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
-import BoxSection from 'components/dumb/Box/Section';
+import BoxSection from '@misakey/ui/Box/Section';
 import ScreenAction from 'components/dumb/Screen/Action';
 
 const PARENT_ROUTE = routes.admin.service.sso._;

@@ -29,6 +29,8 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
+// @FIXME could be used / inspiration once we need virtualized application lists
+// @UNUSED
 const ApplicationListGroups = ({
   groups,
   BottomAction,

@@ -6,8 +6,8 @@ import routes from 'routes';
 import ApplicationSchema from 'store/schemas/Application';
 import withApplication from 'components/smart/withApplication';
 
-import ButtonBurger from 'components/dumb/Button/Burger';
-import ResponseHandlerWrapper from 'components/dumb/ResponseHandlerWrapper';
+import ButtonBurger from '@misakey/ui/Button/Burger';
+import ResponseHandlerWrapper from '@misakey/ui/ResponseHandlerWrapper';
 import RouteService, { DEFAULT_SERVICE_ENTITY } from 'components/smart/Route/Service';
 import NotFound from 'components/screens/NotFound';
 

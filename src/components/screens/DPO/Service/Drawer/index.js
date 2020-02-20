@@ -10,7 +10,6 @@ import noop from '@misakey/helpers/noop';
 import useWidth from '@misakey/hooks/useWidth';
 
 import { makeStyles, useTheme } from '@material-ui/core';
-import { menuButtonStyle } from 'components/smart/Layout';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
@@ -50,7 +49,6 @@ const useStyles = makeStyles((theme) => ({
     padding: '0 8px',
     ...theme.mixins.toolbar,
   },
-  menuButton: menuButtonStyle(theme),
   hide: {
     display: 'none',
   },

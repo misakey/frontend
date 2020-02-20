@@ -11,7 +11,7 @@ import List from '@material-ui/core/List';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import ApplicationListItem from 'components/dumb/ListItem/Application';
-import BoxMessage from 'components/dumb/Box/Message';
+import BoxMessage from '@misakey/ui/Box/Message';
 
 function ApplicationsList({
   t, isFetching, error, applications, listLength, toRoute, withBlobCount,

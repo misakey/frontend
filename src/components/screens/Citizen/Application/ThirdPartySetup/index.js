@@ -19,12 +19,13 @@ import { setWhitelist, setApps } from 'store/actions/screens/thirdparty';
 import { pluginRefreshWarningShow } from 'store/actions/warning';
 
 import TrackerList from 'components/dumb/Application/ThirdParty/Setup/List';
-import SplashScreen from 'components/dumb/SplashScreen';
+import Screen, { getStyleForContainerScroll } from 'components/dumb/Screen';
+import SplashScreen from '@misakey/ui/Screen/Splash';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import ThirdPartySearchBar from 'components/dumb/Application/ThirdParty/Setup/SearchBar';
 import FilterAction from 'components/dumb/Application/ThirdParty/Setup/FilterAction';
 import Switch from 'components/dumb/Switch';
-import Screen, { getStyleForContainerScroll } from 'components/dumb/Screen';
+
 
 import { sendMessage } from 'background';
 import { UPDATE_WHITELIST, GET_APPS, GET_WHITELIST } from 'background/messages';

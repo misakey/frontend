@@ -37,11 +37,11 @@ import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 
-import SplashScreen from 'components/dumb/SplashScreen';
-import BoxSection from 'components/dumb/Box/Section';
+import SplashScreen from '@misakey/ui/Screen/Splash';
+import BoxSection from '@misakey/ui/Box/Section';
 import ButtonSubmit from 'components/dumb/Button/Submit';
-import BoxMessage from 'components/dumb/Box/Message';
-import ErrorOverlay from 'components/dumb/Error/Overlay';
+import BoxMessage from '@misakey/ui/Box/Message';
+import ErrorOverlay from '@misakey/ui/Error/Overlay';
 import ScreenAction from 'components/dumb/Screen/Action';
 import Redirect from 'components/dumb/Redirect';
 

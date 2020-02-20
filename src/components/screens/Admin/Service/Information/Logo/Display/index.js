@@ -12,7 +12,7 @@ import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import ButtonSubmit from 'components/dumb/Button/Submit';
 import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
-import BoxSection from 'components/dumb/Box/Section';
+import BoxSection from '@misakey/ui/Box/Section';
 
 import routes from 'routes';
 

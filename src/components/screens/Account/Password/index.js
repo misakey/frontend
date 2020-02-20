@@ -6,7 +6,7 @@ import { useSnackbar } from 'notistack';
 
 import routes from 'routes';
 import { passwordValidationSchema } from 'constants/validationSchemas/profile';
-import errorTypes from 'constants/errorTypes';
+import errorTypes from '@misakey/ui/constants/errorTypes';
 
 import API from '@misakey/api';
 

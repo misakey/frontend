@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import FieldText from 'components/dumb/Form/Field/Text';
-import Fields, { FIELD_PROPTYPES } from 'components/dumb/Form/Fields';
+import Fields, { FIELD_PROPTYPES } from '@misakey/ui/Form/Fields';
 
 import { STEP, SECLEVEL_CONFIG, DEFAULT_SECLEVEL } from 'components/smart/Auth/SignIn/Form/constants';
 

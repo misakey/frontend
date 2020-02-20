@@ -36,7 +36,7 @@
     "@misakey/helpers": "3.x",
     "@misakey/hooks": "1.x",
     "@misakey/store": "1.x",
-    "@misakey/ui": "3.x",
+    "@misakey/ui": "4.x",
     "formik": "^1.5.8",
     "moment": "^2.x",
     "notistack": "^0.x",

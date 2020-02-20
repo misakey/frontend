@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import { MAX_AVATAR_SIZE } from 'constants/file/size';
 import { ACCEPTED_TYPES } from 'constants/file/image';
-import errorTypes from 'constants/errorTypes';
+import errorTypes from '@misakey/ui/constants/errorTypes';
 
 
 // CONSTANTS

@@ -22,7 +22,7 @@ import { screenAuthSetCredentials, screenAuthSetPublics } from 'store/actions/sc
 import Box from '@material-ui/core/Box';
 import FormCardAuth from 'components/dumb/Form/Card/Auth';
 import FieldCode from 'components/dumb/Form/Field/Code';
-import Fields from 'components/dumb/Form/Fields';
+import Fields from '@misakey/ui/Form/Fields';
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import ChipUser from 'components/dumb/Chip/User';
 import CardHeaderAuthSignUp from 'components/smart/Card/Header/Auth/SignUp';

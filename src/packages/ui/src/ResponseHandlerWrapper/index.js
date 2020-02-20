@@ -4,7 +4,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import isNumber from '@misakey/helpers/isNumber';
 import isString from '@misakey/helpers/isString';
 import ErrorOverlay from '@misakey/ui/Error/Overlay';
-import SplashScreen from '@misakey/ui/SplashScreen';
+import SplashScreen from '@misakey/ui/Screen/Splash';
 
 /**
  * @param children
@@ -14,6 +14,7 @@ import SplashScreen from '@misakey/ui/SplashScreen';
  * @returns {*}
  * @constructor
  */
+// @DEPRECATED
 function ResponseHandlerWrapper({ children, entity, error, isFetching }) {
   if (isString(error) || isNumber(error)) { return <ErrorOverlay httpStatus={error} />; }
   if (isFetching && isEmpty(entity)) { return <SplashScreen />; }

@@ -2,6 +2,7 @@ import { useMemo, useCallback, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
+// @UNUSED
 function Portal({ children, elementId, tagName, className }) {
   const root = useCallback(
     () => document.getElementById(elementId),
