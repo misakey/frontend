@@ -238,51 +238,48 @@ const AuthForgot = ({
       onSubmit={onSubmit}
       initialValues={INITIAL_VALUES}
     >
-      {({ isSubmitting, isValid }) => (
-        <FormCardAuth
-          title={t('auth:forgotPassword.title')}
-          subtitle={<AuthForgotSubtitle name={step} email={email} />}
-          secondary={{ text: t('common:previous'), component: Link, to: PARENT_TO }}
-          primary={{
-            type: 'submit',
-            isLoading: isSubmitting,
-            isValid,
-            text: t(`auth:forgotPassword.form.action.${step}`),
-          }}
-          Header={CardHeaderAuth}
-        >
-          <Box alignItems="center" flexDirection="column" display="flex">
-            <ChipUser
-              label={email}
-              {...userPublicData}
-              onClick={onClearUser}
-              onDelete={onClearUser}
-            />
-            {isStepConfirm(step)
-              ? (
-                <Field
-                  className="field"
-                  type="text"
-                  name={CONFIRM_FIELD_NAME}
-                  component={FieldCode}
-                  formatFieldValue={formatFieldValue}
-                  helperText=""
-                  inputProps={{ 'data-matomo-ignore': true }}
-                  label={t('auth:forgotPassword.form.field.confirm.label')}
-                />
-              )
-              : (
-                <Field
-                  className="field"
-                  type="password"
-                  name={PASSWORD_FIELD_NAME}
-                  component={FieldTextPasswordRevealable}
-                  label={t('auth:forgotPassword.form.field.password.label')}
-                />
-              )}
-          </Box>
-        </FormCardAuth>
-      )}
+      <FormCardAuth
+        title={t('auth:forgotPassword.title')}
+        subtitle={<AuthForgotSubtitle name={step} email={email} />}
+        secondary={{ text: t('common:previous'), component: Link, to: PARENT_TO }}
+        primary={{
+          type: 'submit',
+          text: t(`auth:forgotPassword.form.action.${step}`),
+        }}
+        Header={CardHeaderAuth}
+        formik
+      >
+        <Box alignItems="center" flexDirection="column" display="flex">
+          <ChipUser
+            label={email}
+            {...userPublicData}
+            onClick={onClearUser}
+            onDelete={onClearUser}
+          />
+          {isStepConfirm(step)
+            ? (
+              <Field
+                className="field"
+                type="text"
+                name={CONFIRM_FIELD_NAME}
+                component={FieldCode}
+                formatFieldValue={formatFieldValue}
+                helperText=""
+                inputProps={{ 'data-matomo-ignore': true }}
+                label={t('auth:forgotPassword.form.field.confirm.label')}
+              />
+            )
+            : (
+              <Field
+                className="field"
+                type="password"
+                name={PASSWORD_FIELD_NAME}
+                component={FieldTextPasswordRevealable}
+                label={t('auth:forgotPassword.form.field.password.label')}
+              />
+            )}
+        </Box>
+      </FormCardAuth>
     </Formik>
   );
 };

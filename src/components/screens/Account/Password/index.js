@@ -98,9 +98,8 @@ const AccountPassword = ({
           validationSchema={passwordValidationSchema}
           onSubmit={onSubmit}
           initialValues={INITIAL_VALUES}
-          isInitialValid
         >
-          {({ isSubmitting, isValid }) => (
+          {({ isSubmitting }) => (
             <Form>
               <Box mb={2}>
                 <Field
@@ -130,10 +129,10 @@ const AccountPassword = ({
                 primary={{
                   type: 'submit',
                   isLoading: isSubmitting,
-                  isValid,
                   'aria-label': t('common:submit'),
                   text: t('common:submit'),
                 }}
+                formik
               />
             </Form>
           )}

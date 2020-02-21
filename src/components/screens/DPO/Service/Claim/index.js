@@ -66,7 +66,7 @@ const ENDPOINTS = {
 };
 
 const DEFAULT_FIELDS = {
-  code: { component: FieldCode, label: undefined },
+  code: { component: FieldCode, label: undefined, autoFocus: true },
 };
 
 const INITIAL_VALUES = {
@@ -245,7 +245,6 @@ function ServiceRoleClaim({
     [error, internalFetching, isLoading, service],
   );
 
-
   if (userHasRole) {
     enqueueSnackbar(t(
       'screens:Service.role.claim.info.alreadyDpo',
@@ -275,35 +274,34 @@ function ServiceRoleClaim({
           validationSchema={serviceClaimValidationSchema}
           onSubmit={handleSubmit}
         >
-          {({ isValid, isSubmitting }) => (
-            <Box
-              component={Form}
-              mt={3}
-            >
-              {(service && isEmpty(service.dpoEmail)) && (
-                <>
-                  <BoxMessage
-                    mt={1}
-                    type="error"
-                    text={t(
-                      'screens:Service.role.claim.errors.missingDpoEmail.text',
-                      { mainDomain: service.mainDomain },
-                    )}
+          <Box
+            component={Form}
+            mt={3}
+          >
+            {(service && isEmpty(service.dpoEmail)) && (
+              <>
+                <BoxMessage
+                  mt={1}
+                  type="error"
+                  text={t(
+                    'screens:Service.role.claim.errors.missingDpoEmail.text',
+                    { mainDomain: service.mainDomain },
+                  )}
+                />
+                <Box align="right" mt={1}>
+                  <Button
+                    standing={BUTTON_STANDINGS.MAIN}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    component="a"
+                    text={t('screens:Service.role.claim.errors.missingDpoEmail.button')}
+                    href="mailto:question.perso@misakey.com"
                   />
-                  <Box align="right" mt={1}>
-                    <Button
-                      standing={BUTTON_STANDINGS.MAIN}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      component="a"
-                      text={t('screens:Service.role.claim.errors.missingDpoEmail.button')}
-                      href="mailto:question.perso@misakey.com"
-                    />
-                  </Box>
-                </>
-              )}
-              {(service && !isEmpty(service.dpoEmail)) && (
-                <>
+                </Box>
+              </>
+            )}
+            {(service && !isEmpty(service.dpoEmail)) && (
+              <>
                   {success && (
                     <BoxMessage
                       mt={1}
@@ -318,32 +316,31 @@ function ServiceRoleClaim({
                       text={errorMessage}
                     />
                   )}
-                  <ServiceRoleClaimFormFields />
-                  <BoxControls
-                    mt={2}
-                    primary={success
-                      ? {
-                        component: Link,
-                        to: nextTo,
-                        text: t('common:next'),
-                      }
-                      : {
-                        isValid: isValid && hasClaimId,
-                        isLoading: isSubmitting,
-                        text: t('common:submit'),
-                        type: 'submit',
-                      }}
-                    secondary={{
-                      isValid: !isNil(service) && (!success || !hasClaimId),
-                      isLoading: isCreating,
-                      onClick: handleEmail,
-                      text: t('screens:Service.role.claim.email.submit'),
+                <ServiceRoleClaimFormFields />
+                <BoxControls
+                  mt={2}
+                  primary={success
+                    ? {
+                      component: Link,
+                      to: nextTo,
+                      text: t('common:next'),
+                    }
+                    : {
+                      disabled: !hasClaimId,
+                      text: t('common:submit'),
+                      type: 'submit',
                     }}
-                  />
-                </>
-              )}
-            </Box>
-          )}
+                  secondary={{
+                    disabled: isNil(service) || (success && hasClaimId),
+                    isLoading: isCreating,
+                    onClick: handleEmail,
+                    text: t('screens:Service.role.claim.email.submit'),
+                  }}
+                  formik
+                />
+              </>
+            )}
+          </Box>
         </Formik>
       </Container>
     </ScreenAction>
@@ -363,7 +360,7 @@ ServiceRoleClaim.propTypes = {
   t: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
   error: PropTypes.instanceOf(Error),
-  isLoading: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool,
   dispatchUserRoles: PropTypes.func.isRequired,
   userRoles: PropTypes.arrayOf(PropTypes.shape({
     roleLabel: PropTypes.string.isRequired,
@@ -378,6 +375,7 @@ ServiceRoleClaim.defaultProps = {
   appBarProps: null,
   service: {},
   error: null,
+  isLoading: false,
 };
 
 const mapDispatchToProps = (dispatch) => ({

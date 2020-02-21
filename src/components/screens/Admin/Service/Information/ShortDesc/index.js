@@ -101,25 +101,23 @@ const ServiceShortDesc = ({ appBarProps, t, service, dispatchUpdateEntities, his
           onSubmit={onSubmit}
           initialValues={{ shortDesc }}
         >
-          {({ isSubmitting, isValid }) => (
-            <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
-              <Field
-                className="field"
-                type="text"
-                name="shortDesc"
-                autoFocus
-                component={FieldText}
-                label={t('fields:shortDesc.label')}
-                helperText={t('fields:shortDesc.helperText')}
-                t={t}
-              />
-              <Box mt={1}>
-                <ButtonSubmit disabled={isSubmitting || !isValid}>
-                  {t('common:submit')}
-                </ButtonSubmit>
-              </Box>
+          <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
+            <Field
+              className="field"
+              type="text"
+              name="shortDesc"
+              autoFocus
+              component={FieldText}
+              label={t('fields:shortDesc.label')}
+              helperText={t('fields:shortDesc.helperText')}
+              t={t}
+            />
+            <Box mt={1}>
+              <ButtonSubmit>
+                {t('common:submit')}
+              </ButtonSubmit>
             </Box>
-          )}
+          </Box>
         </Formik>
       </Container>
     </ScreenAction>

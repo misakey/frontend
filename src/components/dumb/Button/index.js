@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -62,28 +62,32 @@ const getDefaultProps = (standing) => {
 
 // COMPONENTS
 const Button = forwardRef(
-  ({ classes, isLoading, isValid, text, progressProps, standing, ...rest }, ref) => (
-    <span className={classes.wrapper}>
-      <MUIButton
-        ref={ref}
-        classes={{ root: classes.buttonRoot, label: classes.buttonLabel }}
-        {...getDefaultProps(standing)}
-        disabled={isLoading || !isValid}
-        {...rest}
-      >
-        {text}
-      </MUIButton>
-      {isLoading && (
-      <CircularProgress size={24} className={classes.buttonProgress} {...progressProps} />
-      )}
-    </span>
-  ),
+  ({ classes, isLoading, disabled, text, progressProps, standing, ...rest }, ref) => {
+    const disabledOrLoading = useMemo(() => disabled || isLoading, [disabled, isLoading]);
+
+    return (
+      <span className={classes.wrapper}>
+        <MUIButton
+          ref={ref}
+          classes={{ root: classes.buttonRoot, label: classes.buttonLabel }}
+          {...getDefaultProps(standing)}
+          disabled={disabledOrLoading}
+          {...rest}
+        >
+          {text}
+        </MUIButton>
+        {isLoading && (
+        <CircularProgress size={24} className={classes.buttonProgress} {...progressProps} />
+        )}
+      </span>
+    );
+  },
 );
 
 Button.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string),
   isLoading: PropTypes.bool,
-  isValid: PropTypes.bool,
+  disabled: PropTypes.bool,
   progressProps: PropTypes.object,
   standing: PropTypes.oneOf(Object.values(BUTTON_STANDINGS)),
   text: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
@@ -92,7 +96,7 @@ Button.propTypes = {
 Button.defaultProps = {
   classes: {},
   isLoading: false,
-  isValid: true,
+  disabled: false,
   progressProps: {},
   standing: BUTTON_STANDINGS.CANCEL,
 };

@@ -25,8 +25,7 @@ import compose from '@misakey/helpers/compose';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
-import ButtonSubmit from 'components/dumb/Button/Submit';
-import Button from 'components/dumb/Button';
+import { BUTTON_STANDINGS } from 'components/dumb/Button';
 
 import BoxControls from 'components/dumb/Box/Controls';
 import Screen from 'components/dumb/Screen';
@@ -212,41 +211,35 @@ const ApplicationMyFeedback = ({
               initialValues={initialValues}
               enableReinitialize
             >
-              {({ isSubmitting, isValid }) => (
-                <Form className={classes.form}>
-                  <Field
-                    classes={{ root: classes.ratingRoot, iconFilled: classes.ratingIconFilled }}
-                    name={VALUE_FIELD}
-                    component={FieldRating}
-                  />
-                  <Field
-                    type="text"
-                    InputProps={{ classes: { multiline: classes.textInputMultiline } }}
-                    name={COMMENT_FIELD}
-                    component={FieldText}
-                    multiline
-                    placeholder={t('fields:comment.placeholder')}
-                    helperText={t('fields:comment.helperText')}
-                  />
-                  <BoxControls
-                    primary={(
-                      <ButtonSubmit
-                        text={t('common:feedback.submit')}
-                        isSubmitting={isSubmitting}
-                        isValid={isValid}
-                      />
-                    )}
-                    secondary={!isNil(rating) ? (
-                      <Button
-                        isLoading={isDeletingFeedback}
-                        onClick={onDelete}
-                        className={classes.deleteButton}
-                        text={t('common:delete')}
-                      />
-                    ) : undefined}
-                  />
-                </Form>
-              )}
+              <Form className={classes.form}>
+                <Field
+                  classes={{ root: classes.ratingRoot, iconFilled: classes.ratingIconFilled }}
+                  name={VALUE_FIELD}
+                  component={FieldRating}
+                />
+                <Field
+                  type="text"
+                  InputProps={{ classes: { multiline: classes.textInputMultiline } }}
+                  name={COMMENT_FIELD}
+                  component={FieldText}
+                  multiline
+                  placeholder={t('fields:comment.placeholder')}
+                  helperText={t('fields:comment.helperText')}
+                />
+                <BoxControls
+                  primary={{
+                    text: t('common:feedback.submit'),
+                  }}
+                  secondary={!isNil(rating) ? {
+                    standing: BUTTON_STANDINGS.TEXT,
+                    isLoading: isDeletingFeedback,
+                    onClick: onDelete,
+                    className: classes.deleteButton,
+                    text: t('common:delete'),
+                  } : undefined}
+                  formik
+                />
+              </Form>
             </Formik>
           </Box>
         </Container>

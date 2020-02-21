@@ -61,8 +61,6 @@ AuthSignUpCreatePseudoFormFields.defaultProps = DEFAULT_FIELDS;
 
 const AuthSignUpCreatePseudo = ({
   t,
-  isSubmitting,
-  isValid,
   setTouched,
   location: { search },
   dispatchClearPublics,
@@ -89,11 +87,9 @@ const AuthSignUpCreatePseudo = ({
   const primary = useMemo(
     () => ({
       type: 'submit',
-      isLoading: isSubmitting,
-      isValid,
       text: t('common:next'),
     }),
-    [isSubmitting, isValid, t],
+    [t],
   );
 
   const parentTo = useMemo(
@@ -123,6 +119,7 @@ const AuthSignUpCreatePseudo = ({
       subtitle={t('auth:signUp.create.handle.subtitle')}
       subtitleProps={subtitleProps}
       Header={CardHeaderAuthSignUp}
+      formik
     >
       <AuthSignUpCreatePseudoFormFields />
       {/* <Box mt={2}>
@@ -147,8 +144,6 @@ AuthSignUpCreatePseudo.propTypes = {
   // ROUTER
   location: PropTypes.shape({ search: PropTypes.string }).isRequired,
   // FORMIK
-  isSubmitting: PropTypes.bool.isRequired,
-  isValid: PropTypes.bool.isRequired,
   setTouched: PropTypes.func.isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,

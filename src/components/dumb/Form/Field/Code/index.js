@@ -183,6 +183,16 @@ const FieldCode = ({
     [displayError, t, errorKeys, helperTextOrTranslation],
   );
 
+  const onBlur = useCallback(
+    (e) => {
+      const targetNotInput = inputRefs.every((inputRef) => inputRef.current !== e.relatedTarget);
+      if (targetNotInput) {
+        setFieldTouched(name);
+      }
+    },
+    [inputRefs, name, setFieldTouched],
+  );
+
   return (
     <>
       <TextField
@@ -232,6 +242,7 @@ const FieldCode = ({
               name={n}
               onChange={(e) => handleChange(e, i)}
               onKeyDown={(e) => handleKeyPress(e, i)}
+              onBlur={onBlur}
               value={values[name][i] || ''}
               {...omit(rest, ['i18n', 'tReady', 'form', 'helperText'])}
             />

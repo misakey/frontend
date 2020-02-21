@@ -3,30 +3,33 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import omit from '@misakey/helpers/omit';
-import tDefault from '@misakey/helpers/tDefault';
+
+import { useFormikContext } from 'formik';
 
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button/index';
 
-const ButtonSubmit = ({ isSubmitting, t, text, ...rest }) => (
-  <Button
-    type="submit"
-    standing={BUTTON_STANDINGS.MAIN}
-    isLoading={isSubmitting}
-    text={text || t('submit', 'Submit')}
-    {...omit(rest, ['i18n', 'tReady'])}
-  />
-);
+// NB: this component expects to be wrapped in a formik context
+const ButtonSubmit = ({ t, text, ...rest }) => {
+  const { isSubmitting } = useFormikContext();
+
+  return (
+    <Button
+      type="submit"
+      standing={BUTTON_STANDINGS.MAIN}
+      isLoading={isSubmitting}
+      text={text || t('common:submit', 'Submit')}
+      {...omit(rest, ['i18n', 'tReady'])}
+    />
+  );
+};
 
 ButtonSubmit.propTypes = {
-  isSubmitting: PropTypes.bool,
-  t: PropTypes.func,
+  t: PropTypes.func.isRequired,
   text: PropTypes.string,
 };
 
 ButtonSubmit.defaultProps = {
-  isSubmitting: false,
-  t: tDefault,
   text: '',
 };
 
-export default withTranslation()(ButtonSubmit);
+export default withTranslation('common')(ButtonSubmit);

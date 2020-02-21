@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -15,67 +15,71 @@ import BoxControls from 'components/dumb/Box/Controls';
 
 import errorTypes from '@misakey/ui/constants/errorTypes';
 
+// CONSTANTS
 const { invalid } = errorTypes;
+const INITIAL_VALUES = { email: '' };
+const NO_ERROR = {};
+const EMAIL_INVALID_ERROR = { email: invalid };
 
-const DeleteAccountDialog = ({ onClose, onSuccess, open, profile, t }) => (
-  <Dialog
-    open={open}
-    onClose={onClose}
-    aria-labelledby="alert-dialog-title"
-    aria-describedby="alert-dialog-description"
-  >
-    <Formik
-      onSubmit={onSuccess}
-      values={{ email: '' }}
-      validate={(values) => {
-        if (values.email.toLowerCase() !== profile.email.toLowerCase()) {
-          return { email: invalid };
-        }
-        return {};
-      }}
+// COMPONENTS
+const DeleteAccountDialog = ({ onClose, onSuccess, open, profile, t }) => {
+  const validate = useCallback(
+    (values) => (values.email.toLowerCase() !== profile.email.toLowerCase()
+      ? EMAIL_INVALID_ERROR
+      : NO_ERROR),
+    [profile],
+  );
+
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
     >
-      {
-        ({ isSubmitting, isValid }) => (
-          <Form>
-            <DialogTitle id="alert-dialog-title">
-              {t('account.dialog.delete.title', 'Delete my account')}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                {t('account.dialog.delete.description', { email: profile.email })}
-              </DialogContentText>
-              <Field
-                component={FieldText}
-                name="email"
-                variant="outlined"
-                autoFocus
-                id="email-address"
-                fullWidth
-                label={t('fields:email.label', 'Email')}
-                placeholder={profile.email || t('fields:email.placeHolder', 'love@misakey.com')}
-              />
-            </DialogContent>
-            <DialogActions>
-              <BoxControls
-                primary={{
-                  type: 'submit',
-                  text: t('common:delete'),
-                  isValid,
-                  isLoading: isSubmitting,
-                }}
-                secondary={{
-                  text: t('common:cancel'),
-                  onClick: onClose,
-                }}
-                outlined={false}
-              />
-            </DialogActions>
-          </Form>
-        )
-      }
-    </Formik>
-  </Dialog>
-);
+      <Formik
+        onSubmit={onSuccess}
+        initialValues={INITIAL_VALUES}
+        validate={validate}
+      >
+        <Form>
+          <DialogTitle id="alert-dialog-title">
+            {t('account.dialog.delete.title', 'Delete my account')}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {t('account.dialog.delete.description', { email: profile.email })}
+            </DialogContentText>
+            <Field
+              component={FieldText}
+              name="email"
+              variant="outlined"
+              autoFocus
+              id="email-address"
+              fullWidth
+              label={t('fields:email.label', 'Email')}
+              placeholder={profile.email || t('fields:email.placeHolder', 'love@misakey.com')}
+            />
+          </DialogContent>
+          <DialogActions>
+            <BoxControls
+              primary={{
+                type: 'submit',
+                text: t('common:delete'),
+              }}
+              secondary={{
+                text: t('common:cancel'),
+                onClick: onClose,
+              }}
+              outlined={false}
+              formik
+            />
+          </DialogActions>
+        </Form>
+      </Formik>
+    </Dialog>
+  );
+};
 
 DeleteAccountDialog.propTypes = {
   onClose: PropTypes.func.isRequired,

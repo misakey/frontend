@@ -25,7 +25,7 @@ export const usePasswordPrompt = () => React.useContext(PasswordPromptContext);
 function PasswordPrompt({ onClose, onSubmit, firstAttempt, t, open }) {
   const handleSubmit = useCallback((values, { resetForm, setSubmitting }) => {
     onSubmit(values);
-    resetForm(defaultValues);
+    resetForm({ values: defaultValues });
     setSubmitting(false);
   }, [onSubmit]);
 
@@ -39,7 +39,7 @@ function PasswordPrompt({ onClose, onSubmit, firstAttempt, t, open }) {
         initialValues={defaultValues}
         validationSchema={openVaultValidationSchema.password}
       >
-        {({ isValid, isSubmitting }) => (
+        {({ isValid }) => (
           <Form>
             <DialogTitle id="alert-dialog-title">
               {t('screens:application.box.passwordPrompt.title')}
@@ -65,14 +65,13 @@ function PasswordPrompt({ onClose, onSubmit, firstAttempt, t, open }) {
                 primary={{
                   type: 'submit',
                   text: t('common:validate'),
-                  isValid,
-                  isLoading: isSubmitting,
                 }}
                 secondary={{
                   text: t('common:cancel'),
                   onClick: onClose,
                 }}
                 outlined={false}
+                formik
               />
             </DialogActions>
           </Form>

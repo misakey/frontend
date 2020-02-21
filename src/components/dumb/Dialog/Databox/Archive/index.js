@@ -55,46 +55,43 @@ const DialogDataboxArchive = ({ onClose, onSuccess, open, t }) => {
         validationSchema={ownerCommentValidationSchema}
         initialValues={INITIAL_VALUES}
       >
-        {({ isSubmitting, isValid }) => (
-          <Form>
-            <DialogTitle id="databox-archive-dialog-title">
-              {t('common:databox.dialog.close.title')}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText classes={{ root: classes.dialogContentTextRoot }} id="databox-archive-dialog-description">
-                {t('common:databox.dialog.close.description')}
-              </DialogContentText>
-              <Field
-                component={FieldText}
-                select
-                name="ownerComment"
-                variant="outlined"
-                id="owner-comment"
-                fullWidth
-                label={t('fields:ownerComment.label')}
-                helperText={t('fields:ownerComment.helperText')}
-              >
-                {OWNER_COMMENTS.map((comment) => (
-                  <MenuItem classes={{ root: classes.menuItemRoot }} key={comment} value={comment}>
-                    {t(`common:databox.ownerComment.${comment}`)}
-                  </MenuItem>
-                ))}
-              </Field>
-            </DialogContent>
-            <DialogActions>
-              <BoxControls
-                primary={{
-                  type: 'submit',
-                  text: t('common:close'),
-                  isValid,
-                  isLoading: isSubmitting,
-                }}
-                secondary={secondary}
-                outlined={false}
-              />
-            </DialogActions>
-          </Form>
-        )}
+        <Form>
+          <DialogTitle id="databox-archive-dialog-title">
+            {t('common:databox.dialog.close.title')}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText classes={{ root: classes.dialogContentTextRoot }} id="databox-archive-dialog-description">
+              {t('common:databox.dialog.close.description')}
+            </DialogContentText>
+            <Field
+              component={FieldText}
+              select
+              name="ownerComment"
+              variant="outlined"
+              id="owner-comment"
+              fullWidth
+              label={t('fields:ownerComment.label')}
+              helperText={t('fields:ownerComment.helperText')}
+            >
+              {OWNER_COMMENTS.map((comment) => (
+                <MenuItem classes={{ root: classes.menuItemRoot }} key={comment} value={comment}>
+                  {t(`common:databox.ownerComment.${comment}`)}
+                </MenuItem>
+              ))}
+            </Field>
+          </DialogContent>
+          <DialogActions>
+            <BoxControls
+              primary={{
+                type: 'submit',
+                text: t('common:close'),
+              }}
+              secondary={secondary}
+              outlined={false}
+              formik
+            />
+          </DialogActions>
+        </Form>
       </Formik>
     </Dialog>
 

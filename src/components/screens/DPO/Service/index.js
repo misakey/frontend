@@ -124,7 +124,7 @@ Service.propTypes = {
   // withApplication
   entity: PropTypes.shape(ApplicationSchema.propTypes),
   isDefaultDomain: PropTypes.bool.isRequired,
-  isFetching: PropTypes.bool.isRequired,
+  isFetching: PropTypes.bool,
   mainDomain: PropTypes.string.isRequired,
   match: PropTypes.shape({ path: PropTypes.string }).isRequired,
   userId: PropTypes.string,
@@ -137,6 +137,7 @@ Service.propTypes = {
 };
 
 Service.defaultProps = {
+  isFetching: false,
   entity: null,
   userId: null,
   id: null,

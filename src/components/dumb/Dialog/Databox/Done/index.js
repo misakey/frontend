@@ -55,46 +55,43 @@ const DialogDataboxDone = ({ onClose, onSuccess, open, t }) => {
         validationSchema={dpoCommentValidationSchema}
         initialValues={INITIAL_VALUES}
       >
-        {({ isSubmitting, isValid }) => (
-          <Form>
-            <DialogTitle id="databox-done-dialog-title">
-              {t('common:databox.dialog.done.title')}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText classes={{ root: classes.dialogContentTextRoot }} id="databox-done-dialog-description">
-                {t('common:databox.dialog.done.description')}
-              </DialogContentText>
-              <Field
-                component={FieldText}
-                select
-                name="dpoComment"
-                variant="outlined"
-                id="dpo-comment"
-                fullWidth
-                label={t('fields:dpoComment.label')}
-                helperText={t('fields:dpoComment.helperText')}
-              >
-                {DPO_COMMENTS.map((comment) => (
-                  <MenuItem classes={{ root: classes.menuItemRoot }} key={comment} value={comment}>
-                    {t(`common:databox.dpoComment.${comment}`)}
-                  </MenuItem>
-                ))}
-              </Field>
-            </DialogContent>
-            <DialogActions>
-              <BoxControls
-                primary={{
-                  type: 'submit',
-                  text: t('common:done'),
-                  isValid,
-                  isLoading: isSubmitting,
-                }}
-                secondary={secondary}
-                outlined={false}
-              />
-            </DialogActions>
-          </Form>
-        )}
+        <Form>
+          <DialogTitle id="databox-done-dialog-title">
+            {t('common:databox.dialog.done.title')}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText classes={{ root: classes.dialogContentTextRoot }} id="databox-done-dialog-description">
+              {t('common:databox.dialog.done.description')}
+            </DialogContentText>
+            <Field
+              component={FieldText}
+              select
+              name="dpoComment"
+              variant="outlined"
+              id="dpo-comment"
+              fullWidth
+              label={t('fields:dpoComment.label')}
+              helperText={t('fields:dpoComment.helperText')}
+            >
+              {DPO_COMMENTS.map((comment) => (
+                <MenuItem classes={{ root: classes.menuItemRoot }} key={comment} value={comment}>
+                  {t(`common:databox.dpoComment.${comment}`)}
+                </MenuItem>
+              ))}
+            </Field>
+          </DialogContent>
+          <DialogActions>
+            <BoxControls
+              primary={{
+                type: 'submit',
+                text: t('common:done'),
+              }}
+              secondary={secondary}
+              outlined={false}
+              formik
+            />
+          </DialogActions>
+        </Form>
       </Formik>
     </Dialog>
 

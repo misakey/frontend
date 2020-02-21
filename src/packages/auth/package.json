@@ -1,6 +1,6 @@
 {
   "name": "@misakey/auth",
-  "version": "2.6.0",
+  "version": "2.7.1",
   "private": false,
   "license": "SEE LICENSE IN /LICENSE",
   "author": "Misakey Team",
@@ -37,7 +37,6 @@
     "@misakey/hooks": "1.x",
     "@misakey/store": "1.x",
     "@misakey/ui": "4.x",
-    "formik": "^1.5.8",
     "moment": "^2.x",
     "notistack": "^0.x",
     "react": "^16.8.6",

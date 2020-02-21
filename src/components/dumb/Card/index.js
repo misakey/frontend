@@ -55,6 +55,7 @@ const Card = ({
   titleProps,
   dense,
   highlight,
+  formik,
   ...rest
 }) => {
   const classes = useStyles();
@@ -103,7 +104,7 @@ const Card = ({
       {!title && children}
       {hasActions && (
         <CardActions className={clsx({ [classes.denseActions]: !hasTitle })}>
-          <CardControls primary={primary} secondary={secondary} />
+          <CardControls primary={primary} secondary={secondary} formik={formik} />
         </CardActions>
       )}
     </MuiCard>
@@ -123,6 +124,7 @@ Card.propTypes = {
   subtitle: PropTypes.node,
   subtitleProps: PropTypes.object,
   titleProps: PropTypes.object,
+  formik: PropTypes.bool,
 };
 
 Card.defaultProps = {
@@ -138,6 +140,7 @@ Card.defaultProps = {
   secondary: null,
   subtitleProps: {},
   titleProps: {},
+  formik: false,
 };
 
 export default Card;

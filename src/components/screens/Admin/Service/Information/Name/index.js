@@ -100,23 +100,21 @@ const ServiceName = ({ appBarProps, t, service, dispatchUpdateEntities, history 
           onSubmit={onSubmit}
           initialValues={{ name }}
         >
-          {({ isSubmitting, isValid }) => (
-            <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
-              <Field
-                className="field"
-                type="text"
-                name="name"
-                autoFocus
-                component={FieldText}
-                label={t('fields:name.label')}
-              />
-              <Box mt={1}>
-                <ButtonSubmit disabled={isSubmitting || !isValid}>
-                  {t('common:submit')}
-                </ButtonSubmit>
-              </Box>
+          <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
+            <Field
+              className="field"
+              type="text"
+              name="name"
+              autoFocus
+              component={FieldText}
+              label={t('fields:name.label')}
+            />
+            <Box mt={1}>
+              <ButtonSubmit>
+                {t('common:submit')}
+              </ButtonSubmit>
             </Box>
-          )}
+          </Box>
         </Formik>
       </Container>
     </ScreenAction>

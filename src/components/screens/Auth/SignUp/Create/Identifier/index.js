@@ -50,8 +50,6 @@ AuthSignUpCreateIdentifierFormFields.defaultProps = DEFAULT_FIELDS;
 
 const AuthSignUpCreateIdentifier = ({
   t,
-  isSubmitting,
-  isValid,
   setTouched,
   location: { search },
   dispatchSetCredentials,
@@ -77,12 +75,10 @@ const AuthSignUpCreateIdentifier = ({
 
   const primary = useMemo(
     () => ({
-      isLoading: isSubmitting,
-      isValid,
       type: 'submit',
       text: t('common:next'),
     }),
-    [isSubmitting, isValid, t],
+    [t],
   );
 
   const parentTo = useMemo(
@@ -112,6 +108,7 @@ const AuthSignUpCreateIdentifier = ({
       subtitle={t('auth:signUp.create.identifier.subtitle')}
       subtitleProps={subtitleProps}
       Header={CardHeaderAuthSignUp}
+      formik
     >
       <AuthSignUpCreateIdentifierFormFields />
       <Button
@@ -145,8 +142,6 @@ AuthSignUpCreateIdentifier.propTypes = {
   // ROUTER
   location: PropTypes.shape({ search: PropTypes.string }).isRequired,
   // FORMIK
-  isSubmitting: PropTypes.bool.isRequired,
-  isValid: PropTypes.bool.isRequired,
   setTouched: PropTypes.func.isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,

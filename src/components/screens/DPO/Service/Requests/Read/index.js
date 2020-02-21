@@ -372,7 +372,7 @@ function ServiceRequestsRead({
                 setBlobs(nextBlobs);
                 const text = t('screens:Service.requests.read.upload.success', response);
                 enqueueSnackbar(text, { variant: 'success' });
-                resetForm(INITIAL_VALUES);
+                resetForm({ values: INITIAL_VALUES });
               });
           });
       })
@@ -390,7 +390,7 @@ function ServiceRequestsRead({
 
   const getOnReset = useCallback(
     ({ resetForm }) => () => {
-      resetForm(INITIAL_VALUES);
+      resetForm({ values: INITIAL_VALUES });
     },
     [],
   );
@@ -519,7 +519,7 @@ function ServiceRequestsRead({
                 onSubmit={handleOpen}
               >
                 {({
-                  values, isValid, isSubmitting, dirty, setFieldValue, setFieldTouched, ...formikBag
+                  values, dirty, setFieldValue, setFieldTouched, ...formikBag
                 }) => (
                   <Form>
                     <Card
@@ -545,8 +545,6 @@ function ServiceRequestsRead({
                       title={t('screens:Service.requests.read.vault.title')}
                       primary={{
                         type: 'submit',
-                        isLoading: isSubmitting,
-                        isValid,
                         text: t('common:submit'),
                       }}
                       secondary={{
@@ -554,6 +552,7 @@ function ServiceRequestsRead({
                         disabled: !dirty,
                         onClick: getOnReset(formikBag),
                       }}
+                      formik
                     >
                       <List>
                         {(!isFetchingBlobs && isEmpty(blobs)) && <Empty />}

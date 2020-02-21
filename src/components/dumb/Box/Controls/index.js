@@ -10,6 +10,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Box from '@material-ui/core/Box';
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
+import ButtonSubmit from 'components/dumb/Button/Submit';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const BoxControls = ({ primary, secondary, outlined, ...rest }) => {
+const BoxControls = ({ primary, secondary, outlined, formik, ...rest }) => {
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.only('xs'));
 
@@ -50,13 +51,18 @@ const BoxControls = ({ primary, secondary, outlined, ...rest }) => {
     [outlined],
   );
 
+  const PrimaryButton = useMemo(
+    () => (formik ? ButtonSubmit : Button),
+    [formik],
+  );
+
   const primaryNode = useMemo(
     () => {
       if (isValidElement(primary) || isNil(primary)) {
         return primary;
       }
       if (isObject(primary)) {
-        return <Button standing={standings.primary} {...primary} />;
+        return <PrimaryButton standing={standings.primary} {...primary} />;
       }
       return null;
     },
@@ -93,12 +99,14 @@ const BoxControls = ({ primary, secondary, outlined, ...rest }) => {
 
 BoxControls.propTypes = {
   outlined: PropTypes.bool,
+  formik: PropTypes.bool,
   primary: PropTypes.oneOfType([PropTypes.object, PropTypes.node]),
   secondary: PropTypes.oneOfType([PropTypes.object, PropTypes.node]),
 };
 
 BoxControls.defaultProps = {
   outlined: true,
+  formik: false,
   primary: null,
   secondary: null,
 };

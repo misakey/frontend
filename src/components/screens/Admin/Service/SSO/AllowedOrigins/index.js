@@ -115,25 +115,23 @@ const SSOAllowedOrigins = ({ appBarProps, t, service, dispatchUpdateEntities, hi
           onSubmit={onSubmit}
           initialValues={{ allowedCorsOrigins }}
         >
-          {({ isSubmitting, isValid }) => (
-            <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
-              <Field
-                className="field"
-                type="url"
-                multiline
-                name="allowedCorsOrigins"
-                autoFocus
-                component={FieldText}
-                label={t('fields:allowedCorsOrigins.label')}
-                helperText={t('fields:allowedCorsOrigins.helperText')}
-              />
-              <Box mt={1}>
-                <ButtonSubmit disabled={isSubmitting || !isValid}>
-                  {t('common:submit')}
-                </ButtonSubmit>
-              </Box>
+          <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
+            <Field
+              className="field"
+              type="url"
+              multiline
+              name="allowedCorsOrigins"
+              autoFocus
+              component={FieldText}
+              label={t('fields:allowedCorsOrigins.label')}
+              helperText={t('fields:allowedCorsOrigins.helperText')}
+            />
+            <Box mt={1}>
+              <ButtonSubmit>
+                {t('common:submit')}
+              </ButtonSubmit>
             </Box>
-          )}
+          </Box>
         </Formik>
       </Container>
     </ScreenAction>

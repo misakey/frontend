@@ -166,7 +166,7 @@ const ApplicationsCreate = ({
           isInitialValid={isInitialValid}
           enableReinitialize
         >
-          {({ isSubmitting, isValid }) => (
+          {({ isSubmitting }) => (
             <Container maxWidth="sm">
               <Form className={classes.form}>
                 <Field
@@ -181,7 +181,7 @@ const ApplicationsCreate = ({
                   label={t('fields:mainDomain.altLabel')}
                   helperText={t('fields:mainDomain.helperText')}
                 />
-                <ButtonSubmit isSubmitting={isSubmitting} isValid={isValid}>
+                <ButtonSubmit isSubmitting={isSubmitting}>
                   {t('common:submit')}
                 </ButtonSubmit>
               </Form>

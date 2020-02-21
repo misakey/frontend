@@ -45,8 +45,6 @@ AuthSignUpCreatePasswordFormFields.defaultProps = DEFAULT_FIELDS;
 
 const AuthSignUpCreatePassword = ({
   t,
-  isSubmitting,
-  isValid,
   setTouched,
   location: { search },
 }) => {
@@ -72,11 +70,9 @@ const AuthSignUpCreatePassword = ({
   const primary = useMemo(
     () => ({
       type: 'submit',
-      isLoading: isSubmitting,
-      isValid,
       text: t('common:next'),
     }),
-    [isSubmitting, isValid, t],
+    [t],
   );
 
   const parentTo = useMemo(
@@ -113,6 +109,7 @@ const AuthSignUpCreatePassword = ({
       )}
       subtitleProps={subtitleProps}
       Header={CardHeaderAuthSignUp}
+      formik
     >
       <AuthSignUpCreatePasswordFormFields />
       {/* <Box mt={2}>
@@ -137,8 +134,6 @@ AuthSignUpCreatePassword.propTypes = {
   // ROUTER
   location: PropTypes.shape({ search: PropTypes.string }).isRequired,
   // FORMIK
-  isSubmitting: PropTypes.bool.isRequired,
-  isValid: PropTypes.bool.isRequired,
   setTouched: PropTypes.func.isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,

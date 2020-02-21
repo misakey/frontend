@@ -100,23 +100,21 @@ const ServiceLongDesc = ({ appBarProps, t, service, dispatchUpdateEntities, hist
           onSubmit={onSubmit}
           initialValues={{ longDesc }}
         >
-          {({ isSubmitting, isValid }) => (
-            <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
-              <Field
-                className="field"
-                name="longDesc"
-                autoFocus
-                multiline
-                component={FieldText}
-                label={t('fields:longDesc.label')}
-              />
-              <Box mt={1}>
-                <ButtonSubmit disabled={isSubmitting || !isValid}>
-                  {t('common:submit')}
-                </ButtonSubmit>
-              </Box>
+          <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
+            <Field
+              className="field"
+              name="longDesc"
+              autoFocus
+              multiline
+              component={FieldText}
+              label={t('fields:longDesc.label')}
+            />
+            <Box mt={1}>
+              <ButtonSubmit>
+                {t('common:submit')}
+              </ButtonSubmit>
             </Box>
-          )}
+          </Box>
         </Formik>
       </Container>
     </ScreenAction>

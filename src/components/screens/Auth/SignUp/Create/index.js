@@ -185,7 +185,6 @@ const AuthSignUpCreate = ({
 
   return (
     <Formik
-      isInitialValid
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={onSubmit}

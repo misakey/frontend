@@ -46,7 +46,7 @@ const isSameApplicationAs = (model, other) => {
   if (isNil(model)) {
     return isNil(other);
   }
-  return !isNil(model) && !isNil(other) && eqProps('mainDomain', model, other);
+  return !isNil(model) && !isNil(other) && eqProps('mainDomain', model, objectToCamelCase(other));
 };
 
 const getMainDomain = (props) => {
@@ -196,7 +196,6 @@ const withApplication = (Component, options = {}) => {
       },
       [data, isFetching, error, entity],
     );
-
     return (
       <Component
         {...omit(propsMapper({

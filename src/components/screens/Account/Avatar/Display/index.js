@@ -20,8 +20,6 @@ import 'components/screens/Account/Avatar/Display/index.scss';
 // COMPONENTS
 const AccountAvatarDisplay = ({
   t,
-  isSubmitting,
-  isValid,
   displayName,
   avatarUri,
   name,
@@ -44,8 +42,6 @@ const AccountAvatarDisplay = ({
       <Card
         primary={{
           type: 'submit',
-          isLoading: isSubmitting,
-          isValid,
           'aria-label': t('common:submit'),
           text: t('common:submit'),
         }}
@@ -69,8 +65,6 @@ const AccountAvatarDisplay = ({
 
 AccountAvatarDisplay.propTypes = {
   t: PropTypes.func.isRequired,
-  isSubmitting: PropTypes.bool.isRequired,
-  isValid: PropTypes.bool.isRequired,
   displayName: PropTypes.string,
   avatarUri: PropTypes.string,
   name: PropTypes.string.isRequired,

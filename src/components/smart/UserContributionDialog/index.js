@@ -83,60 +83,51 @@ function UserContributionDialog({
       <Formik
         onSubmit={onSubmit}
         validationSchema={validationSchema}
-
-        // validationSchema
         initialValues={INITIAL_VALUES}
       >
-        {
-          ({ isSubmitting, isValid }) => (
-            <Form>
-              <DialogTitle id="alert-dialog-title" onClose={onClose}>
-                {t('application.info.userContribution.dialog.title', { appName })}
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  {t(`application.info.userContribution.dialog.intro.${userContributionType}`, { appName })}
-                </DialogContentText>
-                {(userContributionType === 'dpoEmail') && (
-                  <Field
-                    component={FieldText}
-                    name="dpoEmail"
-                    variant="outlined"
-                    autoFocus
-                    id="dpo-email-address"
-                    fullWidth
-                    label={t('application.info.userContribution.dialog.fields.dpoEmail')}
-                  />
-                )}
+        <Form>
+          <DialogTitle id="alert-dialog-title" onClose={onClose}>
+            {t('application.info.userContribution.dialog.title', { appName })}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {t(`application.info.userContribution.dialog.intro.${userContributionType}`, { appName })}
+            </DialogContentText>
+            {(userContributionType === 'dpoEmail') && (
+            <Field
+              component={FieldText}
+              name="dpoEmail"
+              variant="outlined"
+              autoFocus
+              id="dpo-email-address"
+              fullWidth
+              label={t('application.info.userContribution.dialog.fields.dpoEmail')}
+            />
+            )}
 
-                <DialogContentText>
-                  {t(`application.info.userContribution.dialog.linkExplaination.${userContributionType}`)}
-                </DialogContentText>
-                <Field
-                  component={FieldText}
-                  name="link"
-                  variant="outlined"
-                  autoFocus={userContributionType === 'link'}
-                  id="link-address"
-                  type="text"
-                  fullWidth
-                  label={t(`application.info.userContribution.dialog.fields.link.${userContributionType}`)}
-                />
-                <DialogContentText>
-                  {t('application.info.userContribution.dialog.outro')}
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <ButtonSubmit
-                  isValid={isValid}
-                  isSubmitting={isSubmitting}
-                >
-                  {t('application.info.userContribution.dialog.send')}
-                </ButtonSubmit>
-              </DialogActions>
-            </Form>
-          )
-        }
+            <DialogContentText>
+              {t(`application.info.userContribution.dialog.linkExplaination.${userContributionType}`)}
+            </DialogContentText>
+            <Field
+              component={FieldText}
+              name="link"
+              variant="outlined"
+              autoFocus={userContributionType === 'link'}
+              id="link-address"
+              type="text"
+              fullWidth
+              label={t(`application.info.userContribution.dialog.fields.link.${userContributionType}`)}
+            />
+            <DialogContentText>
+              {t('application.info.userContribution.dialog.outro')}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <ButtonSubmit
+              text={t('application.info.userContribution.dialog.send')}
+            />
+          </DialogActions>
+        </Form>
       </Formik>
     </Dialog>
   );

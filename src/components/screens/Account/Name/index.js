@@ -104,28 +104,25 @@ const AccountName = ({
             onSubmit={onSubmit}
             initialValues={{ displayName }}
           >
-            {({ isSubmitting, isValid }) => (
-              <Form>
-                <Field
-                  type="text"
-                  name={FIELD_NAME}
-                  component={FieldText}
-                  label={t('fields:displayName.label')}
-                  helperText={t('fields:displayName.helperText')}
-                  inputProps={{ 'data-matomo-ignore': true }}
-                />
-                <BoxControls
-                  mt={3}
-                  primary={{
-                    type: 'submit',
-                    isLoading: isSubmitting,
-                    isValid,
-                    'aria-label': t('common:submit'),
-                    text: t('common:submit'),
-                  }}
-                />
-              </Form>
-            )}
+            <Form>
+              <Field
+                type="text"
+                name={FIELD_NAME}
+                component={FieldText}
+                label={t('fields:displayName.label')}
+                helperText={t('fields:displayName.helperText')}
+                inputProps={{ 'data-matomo-ignore': true }}
+              />
+              <BoxControls
+                mt={3}
+                primary={{
+                  type: 'submit',
+                  'aria-label': t('common:submit'),
+                  text: t('common:submit'),
+                }}
+                formik
+              />
+            </Form>
           </Formik>
         )}
       </Container>

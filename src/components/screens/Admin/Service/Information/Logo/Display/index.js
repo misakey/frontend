@@ -26,7 +26,7 @@ const FIELD_PATH = ['field', 'value'];
 const getPreview = path(FIELD_PATH);
 
 // COMPONENTS
-const ServiceLogoDisplay = ({ t, isSubmitting, isValid, errors, service, history }) => {
+const ServiceLogoDisplay = ({ t, errors, service, history }) => {
   const { logoUri, mainDomain, name } = useMemo(() => (isNil(service) ? {} : service), [service]);
 
   const linkTo = useMemo(
@@ -78,7 +78,6 @@ const ServiceLogoDisplay = ({ t, isSubmitting, isValid, errors, service, history
               {t('common:update')}
             </Button>
             <Box
-              disabled={isSubmitting || !isValid}
               component={ButtonSubmit}
               ml={1}
             >
@@ -93,8 +92,6 @@ const ServiceLogoDisplay = ({ t, isSubmitting, isValid, errors, service, history
 
 ServiceLogoDisplay.propTypes = {
   t: PropTypes.func.isRequired,
-  isSubmitting: PropTypes.bool.isRequired,
-  isValid: PropTypes.bool.isRequired,
   errors: PropTypes.objectOf(PropTypes.string),
   service: PropTypes.shape({
     logoUri: PropTypes.string,

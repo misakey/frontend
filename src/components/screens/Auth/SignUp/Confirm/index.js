@@ -153,36 +153,33 @@ function AuthSignUpConfirm({
       validationSchema={signUpConfirmValidationSchema}
       onSubmit={onSubmit}
     >
-      {({ isValid, isSubmitting }) => (
-        <FormCardAuth
-          primary={{
-            type: 'submit',
-            isValid,
-            isLoading: isSubmitting,
-            text: t('common:next'),
-          }}
-          title={t('auth:signUp.confirm.title')}
-          subtitle={t('auth:signUp.confirm.subtitle')}
-          Header={CardHeaderAuthSignUp}
-        >
-          <Box display="flex" justifyContent="center" mb={1}>
-            <ChipUser
-              label={email}
-              {...publics}
-              onClick={onClearUser}
-              onDelete={onClearUser}
-            />
-          </Box>
-          <Box display="flex" justifyContent="center">
-            <SignUpConfirmFormFields />
-          </Box>
-          <Button
-            standing={BUTTON_STANDINGS.TEXT}
-            classes={{ buttonRoot: classes.buttonRoot }}
-            {...signUpConfirmContentAction}
+      <FormCardAuth
+        primary={{
+          type: 'submit',
+          text: t('common:next'),
+        }}
+        title={t('auth:signUp.confirm.title')}
+        subtitle={t('auth:signUp.confirm.subtitle')}
+        Header={CardHeaderAuthSignUp}
+        formik
+      >
+        <Box display="flex" justifyContent="center" mb={1}>
+          <ChipUser
+            label={email}
+            {...publics}
+            onClick={onClearUser}
+            onDelete={onClearUser}
           />
-        </FormCardAuth>
-      )}
+        </Box>
+        <Box display="flex" justifyContent="center">
+          <SignUpConfirmFormFields />
+        </Box>
+        <Button
+          standing={BUTTON_STANDINGS.TEXT}
+          classes={{ buttonRoot: classes.buttonRoot }}
+          {...signUpConfirmContentAction}
+        />
+      </FormCardAuth>
     </Formik>
   );
 }
