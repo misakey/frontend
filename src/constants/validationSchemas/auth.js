@@ -26,7 +26,6 @@ export const getSignInValidationSchema = (fieldTypes) => Yup.object().shape(
   mapValues(signInValidationSchema, (value, key) => value[fieldTypes[key]]),
 );
 
-
 export const openVaultValidationSchema = Yup.object().shape({
   password: Yup.string()
     .required(required),
@@ -71,7 +70,7 @@ const signUpValidationSchemaSteps = {
 };
 
 export const stepSignUpValidationSchemas = [
-  Yup.object().shape(signUpValidationSchemaSteps.tos),
+  Yup.object().shape(pick(['tos'], signUpValidationSchemaSteps)),
   Yup.object().shape(pick(['tos', 'email'], signUpValidationSchemaSteps)),
   Yup.object().shape(pick(['tos', 'email', 'handle'], signUpValidationSchemaSteps)),
   Yup.object().shape(pick(['tos', 'email', 'handle', 'password', 'passwordConfirm'], signUpValidationSchemaSteps)),
