@@ -1,11 +1,9 @@
-export const REFUSED = 'refused';
-export const OTHER_CHANNEL = 'other-channel';
-export const NO_DATA = 'no-data';
-export const NO_ANSWER = 'no-answer';
+export const LEGAL_RECONTACT = 'legalRecontact';
+export const CORDIAL_RECONTACT = 'cordialRecontact';
+export const FRIENDLY_RECONTACT = 'friendlyRecontact';
 
 export default [
-  NO_ANSWER,
-  OTHER_CHANNEL,
-  REFUSED,
-  NO_DATA,
+  LEGAL_RECONTACT,
+  CORDIAL_RECONTACT,
+  FRIENDLY_RECONTACT,
 ];

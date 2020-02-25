@@ -435,7 +435,8 @@
   "contact": {
     "preview": {
       "subtitle": "Je choisis l'e-mail que je souhaite envoyer au site pour faire ma demande",
-      "title": "E-mail de portabilité"
+      "title": "E-mail de portabilité",
+      "exitRecontact": "Je n'ai pas envoyé le 1er email"
     },
     "bulk": {
       "list": {

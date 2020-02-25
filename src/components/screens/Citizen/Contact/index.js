@@ -33,14 +33,8 @@ import withBulkContact from 'components/smart/withBulkContact';
 import ContactProvidersBlock from 'components/smart/Contact/Providers';
 import ToggleButtonGroupMailType from 'components/dumb/ToggleButtonGroup/MailType';
 
-import MAIL_TYPES, { LEGAL } from 'constants/mailTypes';
-import RECONTACT_MAIL_TYPES, {
-  NO_ANSWER as NO_ANSWER_MAIL_TYPE,
-  REFUSED as REFUSED_MAIL_TYPE,
-  NO_DATA as NO_DATA_MAIL_TYPE,
-  OTHER_CHANNEL as OTHER_CHANNEL_MAIL_TYPE,
-} from 'constants/mailTypes/recontact';
-import { DONE, REFUSED, NO_DATA } from 'constants/databox/comment';
+import MAIL_TYPES, { LEGAL, CORDIAL, FRIENDLY } from 'constants/mailTypes';
+import RECONTACT_MAIL_TYPES, { LEGAL_RECONTACT, CORDIAL_RECONTACT, FRIENDLY_RECONTACT } from 'constants/mailTypes/recontact';
 import mapDates from '@misakey/helpers/mapDates';
 import DataboxSchema from 'store/schemas/Databox';
 import { clearDataboxURLById } from 'store/actions/screens/contact';
@@ -67,19 +61,6 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const getDefaultMailTypeRecontact = (dpoComment) => {
-  if (dpoComment === REFUSED) {
-    return REFUSED_MAIL_TYPE;
-  }
-  if (dpoComment === NO_DATA) {
-    return NO_DATA_MAIL_TYPE;
-  }
-  if (dpoComment === DONE) {
-    return OTHER_CHANNEL_MAIL_TYPE;
-  }
-  return NO_ANSWER_MAIL_TYPE;
-};
-
 const useGetEmailFor = (
   applicationsByIds,
   currentDataboxesByProducer,
@@ -90,14 +71,14 @@ const useGetEmailFor = (
 ) => useCallback((id) => {
   const { name, mainDomain, dpoEmail } = propOrEmptyObject(id, applicationsByIds);
   const databox = prop(id, currentDataboxesByProducer);
-  const { status, dpoComment } = databox || {};
+  const { status } = databox || {};
 
   const { databoxURL, alreadyContacted } = propOrEmptyObject(id, databoxURLsById);
   const customMailType = propOrNull(id, mailTypesByApp);
   // @FIXME: better implementation with `EMAIL_SENT` status
   const recontactIsCancelled = cancelledRecontacts.includes(id);
   const defaultMailType = alreadyContacted && !recontactIsCancelled
-    ? getDefaultMailTypeRecontact(dpoComment)
+    ? LEGAL_RECONTACT
     : LEGAL;
   const mailType = customMailType || defaultMailType;
   return {
@@ -216,9 +197,34 @@ const Contact = ({
     setCancelledRecontacts((previous) => (value === true
       ? [...previous, id]
       : previous.filter((elem) => elem !== id)));
+    let newMailType;
+    switch (mailTypesByApp[id]) {
+      case LEGAL:
+        newMailType = LEGAL_RECONTACT;
+        break;
+      case CORDIAL:
+        newMailType = CORDIAL_RECONTACT;
+        break;
+      case FRIENDLY:
+        newMailType = FRIENDLY_RECONTACT;
+        break;
+      case FRIENDLY_RECONTACT:
+        newMailType = FRIENDLY;
+        break;
+      case CORDIAL_RECONTACT:
+        newMailType = CORDIAL;
+        break;
+      case LEGAL_RECONTACT:
+        newMailType = LEGAL;
+        break;
+      default:
+        break;
+    }
+
+    setMailTypesByApp({ ...mailTypesByApp, [id]: newMailType });
     event.preventDefault();
     event.stopPropagation();
-  }, []);
+  }, [mailTypesByApp]);
 
   const onDone = useCallback(() => {
     dispatchClearSelection();
@@ -302,7 +308,7 @@ const Contact = ({
                         <ExpansionPanelDetails>
                           <Container maxWidth="md">
                             <ToggleButtonGroupMailType
-                              values={getValues(id, alreadyContacted)}
+                              values={getValues(id, alreadyContacted && !recontactIsCancelled)}
                               currentValue={mailType}
                             />
 

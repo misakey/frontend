@@ -12,7 +12,8 @@ import DataboxSchema from 'store/schemas/Databox';
 // import { selectors as contactSelectors } from 'store/reducers/screens/contact';
 
 import { GMAIL } from 'constants/mail-providers';
-import RECONTACT_MAIL_TYPES, { NO_ANSWER, REFUSED } from 'constants/mailTypes/recontact';
+import RECONTACT_MAIL_TYPES, { LEGAL_RECONTACT, CORDIAL_RECONTACT, FRIENDLY_RECONTACT } from 'constants/mailTypes/recontact';
+import { LEGAL, CORDIAL, FRIENDLY } from 'constants/mailTypes';
 
 import useScript from '@misakey/hooks/useScript';
 
@@ -32,6 +33,7 @@ import BoxControls from 'components/dumb/Box/Controls';
 import Subtitle from 'components/dumb/Typography/Subtitle';
 import ToggleButtonGroupMailType from 'components/smart/ToggleButtonGroup/MailType/WithSearchParams';
 import PreMail from 'components/dumb/Pre/Mail';
+import { BUTTON_STANDINGS } from 'components/dumb/Button';
 
 import Navigation from 'components/dumb/Navigation';
 import clsx from 'clsx';
@@ -95,7 +97,7 @@ const ContactPreview = ({
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { search } = useLocation();
+  const { search, pathname } = useLocation();
 
   const searchParams = useMemo(
     () => getSearchParams(search),
@@ -121,13 +123,13 @@ const ContactPreview = ({
       if (reopen) {
         return {
           values: RECONTACT_MAIL_TYPES,
-          defaultValue: REFUSED,
+          defaultValue: LEGAL_RECONTACT,
         };
       }
       if (recontact) {
         return {
           values: RECONTACT_MAIL_TYPES,
-          defaultValue: NO_ANSWER,
+          defaultValue: LEGAL_RECONTACT,
         };
       }
       return {};
@@ -159,6 +161,36 @@ const ContactPreview = ({
     ),
     [classes.spanNoWrap, dpoEmail, name],
   );
+
+  const exitRecontact = useMemo(
+    () => {
+      let newMailType;
+      switch (mailType) {
+        case LEGAL_RECONTACT:
+          newMailType = LEGAL;
+          break;
+        case FRIENDLY_RECONTACT:
+          newMailType = FRIENDLY;
+          break;
+        case CORDIAL_RECONTACT:
+          newMailType = CORDIAL;
+          break;
+        default:
+          return null;
+      }
+
+      return {
+        pathname,
+        search: getNextSearch(search, new Map([
+          ['recontact', undefined],
+          ['reopen', undefined],
+          ['mailType', newMailType],
+        ])),
+      };
+    },
+    [search, pathname, mailType],
+  );
+
   const subject = useMemo(
     () => t('common:emailSubject'),
     [t],
@@ -273,6 +305,19 @@ const ContactPreview = ({
         <Box mt={3}>
           <ToggleButtonGroupMailType {...groupMailTypeProps} />
         </Box>
+        {!isNil(exitRecontact) && (
+          <BoxControls
+            mt={2}
+            mb={-2}
+            primary={{
+              size: 'small',
+              standing: BUTTON_STANDINGS.TEXT,
+              text: t('screens:contact.preview.exitRecontact'),
+              component: Link,
+              to: exitRecontact,
+            }}
+          />
+        )}
         <PreMail mailto={mailto} subject={subject} body={body} />
         {!isNil(nextTo) && (
           <BoxControls
