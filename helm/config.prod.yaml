@@ -29,5 +29,18 @@ config: >-
     MATOMO: {
       URL: 'https://analytics.misakey.com/',
       SITE_ID: '1'
-    }
+    },
+    ACTIVE_SERVICES: [
+      'maif.fr',
+      'trainline.eu',
+      'decathlon.fr',
+      'mediapart.fr',
+      'framasoft.org',
+      'ulule.fr',
+      'edf.fr',
+      'alan.com',
+      'credit-cooperatif.coop',
+      'axa.fr',
+      'carrefour.fr',
+    ]
   };

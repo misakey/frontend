@@ -6,6 +6,7 @@ export const ROLE_IDS_BY_LABEL = {};
 export const ROLE_LABELS_BY_ROLE_IDS = {};
 
 export const ROLE_PREFIX_SCOPE = 'rol';
+export const DEFAULT_SCOPE = 'openid user';
 
 Object.keys(ROLE_IDS).forEach((key) => {
   ROLE_IDS_BY_LABEL[ROLE_LABELS[key]] = ROLE_IDS[key];

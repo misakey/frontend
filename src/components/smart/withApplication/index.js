@@ -134,7 +134,6 @@ const withApplication = (Component, options = {}) => {
     } = props;
 
     const authChanged = usePropChanged(isAuthenticated);
-
     const { enqueueSnackbar } = useSnackbar();
 
     const handleError = useHandleError(snackbarError);
@@ -171,13 +170,11 @@ const withApplication = (Component, options = {}) => {
 
     const onFetchApplicationSuccess = useCallback(
       (response) => {
-        if (isEmpty(response)) {
-          return handlePluginError(EMPTY_APPLICATION_ERROR);
-        }
+        if (isEmpty(response)) { throw EMPTY_APPLICATION_ERROR; }
         const data = (isArray(response) ? response : [response]).map(objectToCamelCase);
         return dispatchReceive(handleReceive(data));
       },
-      [handlePluginError, dispatchReceive, handleReceive],
+      [dispatchReceive, handleReceive],
     );
 
     const { isFetching, error, data } = useFetchEffect(
@@ -226,6 +223,7 @@ const withApplication = (Component, options = {}) => {
     userId: null,
   };
 
+  // @FIXME remove when admin workspace is reworked
   const isDefault = (mainDomain) => mainDomain === 'intro';
 
   const mapStateToProps = (state, ownProps) => {

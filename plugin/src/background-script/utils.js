@@ -3,7 +3,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import assignInWith from '@misakey/helpers/assignInWith';
 import log from '@misakey/helpers/log';
 import common from '@misakey/ui/colors/common';
-import unionBy from 'lodash/unionBy';
+import unionBy from '@misakey/helpers/unionBy';
 import { getDomain, getHostname } from 'tldts';
 
 export async function getCurrentTab() {

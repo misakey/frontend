@@ -99,6 +99,10 @@ const routes = {
   },
   dpo: {
     _: '/dpo',
+    services: {
+      _: '/dpo/services',
+      create: '/dpo/services/create',
+    },
     service: {
       _: '/dpo/:mainDomain',
       claim: { _: '/dpo/:mainDomain/claim' },

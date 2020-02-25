@@ -28,7 +28,7 @@
     "label": "Code",
     "helperText": "Je remplis le code que j'ai reçu par email",
     "error": {
-      "invalid": "Ce code est invalide. Je peux vérifier qu'il correspond au code que j'ai reçu par mail il y a moins de 30min ou j'en redemande un nouveau",
+      "invalid": "Ce code est invalide. Je peux vérifier qu'il correspond au code \nque j'ai reçu par mail il y a moins de 30min ou j'en redemande \nun nouveau",
       "expired": "Le code a expiré. Je dois en demander un nouveau",
       "malformed": "Le code est incorrect"
     }
@@ -43,7 +43,7 @@
       "expired": "Le code a expiré. Je dois en demander un nouveau",
       "invalid": "Le code de confirmation est incorrect",
       "malformed": "Le code de confirmation doit contenir 6 chiffres",
-      "conflict": "Nous avons déjà envoyé un code en cours de validité. Je revérifie mes mails ou je réessaie dans quelques minutes"
+      "conflict": "Nous avons déjà envoyé un code en cours de validité. \nJe revérifie mes mails ou je réessaie dans quelques minutes"
     }
   },
   "confirmationCode_secret": {
@@ -53,7 +53,7 @@
       "expired": "Le code a expiré. Je dois en demander un nouveau",
       "invalid": "Le code de confirmation est incorrect",
       "malformed": "Le code de confirmation doit contenir 6 chiffres",
-      "conflict": "Nous avons déjà envoyé un code en cours de validité. Je revérifie mes mails ou je réessaie dans quelques minutes"
+      "conflict": "Nous avons déjà envoyé un code en cours de validité. \nJe revérifie mes mails ou je réessaie dans quelques minutes"
     }
   },
   "displayName": {
@@ -224,7 +224,7 @@
   "serviceRoleClaim": {
     "code": {
       "error": {
-        "conflict": "J'ai déjà reçu un code il y a moins de 5 minutes. Je revérifie mes mails ou je réessaie dans un petit instant"
+        "conflict": "J'ai déjà reçu un code il y a moins de 5 minutes.\nJe revérifie mes mails ou je réessaie dans un petit instant"
       }
     }
   },

@@ -3,6 +3,7 @@ import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isEmpty from '@misakey/helpers/isEmpty';
+import pluck from '@misakey/helpers/pluck';
 
 // CONSTANTS
 const ENDPOINTS = {
@@ -24,6 +25,9 @@ const ENDPOINTS = {
 
 
 // HELPERS
+const getApplicationsIds = pluck('applicationId');
+
+
 export const fetchApplicationsByMainDomains = (mainDomains, isAuthenticated = false) => API
   .use({ ...ENDPOINTS.applicationInfo.list, auth: isAuthenticated })
   .build(null, null, objectToSnakeCase({ mainDomains: mainDomains.join(',') }))
@@ -52,5 +56,21 @@ export const fetchLinkedApplications = (userId) => fetchLinks(userId)
     });
 
     return isEmpty(ids) ? [] : fetchApplicationByIds(ids, true)
+      .then((applications) => applications.map(objectToCamelCase));
+  });
+
+
+export const fetchUserRoleApplications = (userId, roleLabel) => API
+  .use(API.endpoints.user.roles.read)
+  .build(undefined, undefined, objectToSnakeCase({ userId, roleLabel, valid: true }))
+  .send()
+  .then((response) => {
+    const roles = response.map(objectToCamelCase);
+    if (isEmpty(roles)) { return Promise.resolve([]); }
+    const applicationsIds = getApplicationsIds(roles);
+    return API
+      .use(API.endpoints.application.info.find)
+      .build(undefined, undefined, { ids: applicationsIds.join() })
+      .send()
       .then((applications) => applications.map(objectToCamelCase));
   });

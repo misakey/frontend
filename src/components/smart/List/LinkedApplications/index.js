@@ -1,56 +1,36 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
 import routes from 'routes';
 
-import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 
-import log from '@misakey/helpers/log';
-import { fetchLinkedApplications } from '@misakey/helpers/fetchApplications';
+import { setOnboardingDone } from '@misakey/helpers/plugin';
 
 import Redirect from 'components/dumb/Redirect';
 import Card from 'components/dumb/Card';
 import ApplicationsList from 'components/dumb/List/Applications';
-import Onboarding from 'components/dumb/Application/Onboarding';
+import Onboarding from 'components/dumb/Onboarding/Citizen';
 import Title from 'components/dumb/Typography/Title';
+import withMyApplications from 'components/smart/withMyApplications';
+
 import { IS_PLUGIN } from 'constants/plugin';
-import { setOnboardingDone } from '@misakey/helpers/plugin';
+import { WORKSPACE } from 'constants/workspaces';
+
+import ApplicationSchema from 'store/schemas/Application';
 
 // COMPONENTS
-function LinkedApplicationsList({ t, userId, isAuthenticated }) {
-  const [error, setError] = useState();
-  const [list, setList] = useState(null);
-  const [isFetching, setIsFetching] = useState(false);
+function LinkedApplicationsList({
+  t,
+  myApplications,
+  isAuthenticated,
+  isFetchingMyApplications,
+}) {
+  const { [WORKSPACE.CITIZEN]: applications } = myApplications;
 
-  const shouldFetch = useMemo(
-    () => !isFetching && isAuthenticated && isNil(list) && isNil(error),
-    [isFetching, isAuthenticated, list, error],
-  );
+  const userHasApps = useMemo(() => !isEmpty(applications), [applications]);
 
-  const userHasApps = useMemo(() => !isEmpty(list), [list]);
-
-  const fetchList = useCallback(() => {
-    setIsFetching(true);
-    return fetchLinkedApplications(userId)
-      .then((linkedApplications) => {
-        setList(linkedApplications);
-      })
-      .catch((e) => {
-        setError(e);
-        log(e);
-      })
-      .finally(() => setIsFetching(false));
-  }, [userId]);
-
-  useEffect(() => {
-    if (shouldFetch) {
-      fetchList();
-    }
-  }, [shouldFetch, fetchList]);
-
-  if (!isAuthenticated || (!isFetching && !userHasApps)) {
+  if (!isAuthenticated || (!isFetchingMyApplications && !userHasApps)) {
     return (<Onboarding isAuthenticated={isAuthenticated} />);
   }
 
@@ -66,9 +46,8 @@ function LinkedApplicationsList({ t, userId, isAuthenticated }) {
       </Title>
       <Card mb={3}>
         <ApplicationsList
-          isFetching={isFetching}
-          error={error}
-          applications={list || []}
+          isFetching={isFetchingMyApplications}
+          applications={applications}
           withBlobCount
         />
       </Card>
@@ -79,17 +58,21 @@ function LinkedApplicationsList({ t, userId, isAuthenticated }) {
 LinkedApplicationsList.propTypes = {
   t: PropTypes.func.isRequired,
   userId: PropTypes.string,
+  myApplications: PropTypes.shape({
+    [WORKSPACE.CITIZEN]: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
+  }),
   isAuthenticated: PropTypes.bool.isRequired,
+  isFetchingMyApplications: PropTypes.bool,
 };
 
 LinkedApplicationsList.defaultProps = {
   userId: null,
+  isFetchingMyApplications: false,
+  myApplications: {
+    [WORKSPACE.CITIZEN]: [],
+  },
 };
 
-// CONNECT
-const mapStateToProps = (state) => ({
-  userId: state.auth.userId,
-  isAuthenticated: !!state.auth.token,
-});
-
-export default connect(mapStateToProps)(withTranslation(['components', 'screens'])(LinkedApplicationsList));
+export default withMyApplications({ workspace: WORKSPACE.CITIZEN })(
+  withTranslation(['components', 'screens'])(LinkedApplicationsList),
+);

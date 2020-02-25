@@ -435,5 +435,54 @@
     "button": {
       "collapse": "Détails"
     }
+  },
+  "silentAuthScreen": {
+    "text": { 
+      "dpo": "Je me connecte en tant que DPO pour accéder à cet espace." ,
+      "citizen": "Je me connecte en tant que Citoyen pour accéder à cet espace." 
+    },
+    "button": "Connexion"
+  },
+  "activeServices": {
+    "title": "Ces sites répondent"
+  },
+  "onboarding": {
+    "dpo": {
+      "title": {
+        "catchphrase": "A partir de maintenant,",
+        "text": "je renvoie les données de mes utilisateurs à l’abri des géants de la tech"
+      },
+      "steps": {
+        "1": {
+          "text": "1 - Je crée mon compte gratuitement",
+          "button": "Créer"
+        },
+        "2": {
+          "text": "2 - J’active l’interface sécurisée pour mon site {{ mainDomain }}",
+          "button": "Activer"
+        }
+      }
+    },
+    "citizen": {
+      "title": {
+        "catchphrase": "A partir de maintenant,",
+        "text": "j'habitue les sites à me renvoyer mes données à l'abri des géants de la tech"
+      },
+      "steps": {
+        "1": {
+          "text": "1 - Je crée mon coffre-fort gratuitement",
+          "button": "Créer"
+        },
+        "2": {
+          "text": "2 - J'installe l'extension Misakey",
+          "firefox": "Firefox",
+          "chrome": "Chrome"
+        },
+        "3": {
+          "text": "3 - Je demande mes données en 2 clics",
+          "button": "Commencer"
+        }
+      }
+    }
   }
 }

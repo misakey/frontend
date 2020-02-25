@@ -29,13 +29,15 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
     if (user && !user.expired) {
       if (store) {
         const userId = parseJwt(user.id_token).sub;
-        const { acr } = get(user, 'profile', {});
+        const { acr, sco } = get(user, 'profile', {});
         store.dispatch(loadUser({
           expiryAt: user.expires_at,
           token: user.access_token,
           id: user.id_token,
           authenticatedAt: user.profile.auth_time,
           userId,
+          scope: sco,
+          isAuthenticated: !!user.access_token,
           acr: !isNil(acr) && !isEmpty(acr) ? parseInt(acr, 10) : null,
         }));
 

@@ -22,6 +22,11 @@ export default {
       method: 'GET',
       path: '/application-info/:id',
     },
+    search: {
+      method: 'GET',
+      path: '/application-info/search',
+      auth: true,
+    },
     update: {
       method: 'PATCH',
       path: '/application-info/:id',

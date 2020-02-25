@@ -1,7 +1,7 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useLocation } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import { Formik, Field, Form } from 'formik';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -20,7 +20,6 @@ import ButtonSubmit from 'components/dumb/Button/Submit';
 import Screen from 'components/dumb/Screen';
 import withApplicationCreate from 'components/smart/withApplicationCreate';
 
-
 // CONSTANTS
 const MAIN_DOMAIN_FIELD_NAME = 'mainDomain';
 
@@ -34,7 +33,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-const ApplicationsCreate = ({
+const ServicesCreate = ({
   history,
   onCreateApplication,
   t,
@@ -59,7 +58,7 @@ const ApplicationsCreate = ({
   );
 
   const onSubmit = useCallback(
-    (values, formikBag) => onCreateApplication(values, formikBag, t('screens:applications.create.success')),
+    (values, formikBag) => onCreateApplication(values, formikBag, t('screens:services.create.success')),
     [onCreateApplication, t],
   );
 
@@ -68,11 +67,11 @@ const ApplicationsCreate = ({
       <Navigation
         toolbarProps={{ maxWidth: 'md' }}
         history={history}
-        title={t('screens:applications.create.title')}
+        title={t('screens:services.create.title')}
       />
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" align="left">
-          {t('screens:applications.create.subtitle')}
+          {t('screens:services.create.subtitle')}
         </Typography>
         <Formik
           validationSchema={mainDomainValidationSchema}
@@ -95,7 +94,7 @@ const ApplicationsCreate = ({
                 label={t('fields:mainDomain.altLabel')}
                 helperText={t('fields:mainDomain.helperText')}
               />
-              <ButtonSubmit text={t('common:submit')} />
+              <ButtonSubmit text={t('common:next')} />
             </Form>
           </Container>
         </Formik>
@@ -104,12 +103,11 @@ const ApplicationsCreate = ({
   );
 };
 
-ApplicationsCreate.propTypes = {
+ServicesCreate.propTypes = {
   history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired,
   match: PropTypes.shape({ params: PropTypes.object }).isRequired,
   onCreateApplication: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
 };
 
-
-export default withApplicationCreate()(withTranslation(['screens', 'common', 'fields'])(ApplicationsCreate));
+export default withApplicationCreate()(withTranslation(['screens', 'common', 'fields'])(ServicesCreate));

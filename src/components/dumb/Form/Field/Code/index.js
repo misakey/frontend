@@ -71,6 +71,9 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
     cursor: 'pointer',
   },
+  helperText: {
+    whiteSpace: 'pre-wrap',
+  },
 }));
 
 const DEFAULT_NAME = 'confirmationCode';

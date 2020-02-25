@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import isEmpty from 'lodash/isEmpty';
+import isEmpty from '@misakey/helpers/isEmpty';
 
 import { makeStyles } from '@material-ui/core';
 import List from '@material-ui/core/List';

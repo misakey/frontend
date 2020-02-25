@@ -4,7 +4,6 @@ import { withTranslation, Trans } from 'react-i18next';
 
 import path from '@misakey/helpers/path';
 import prop from '@misakey/helpers/prop';
-import clsx from 'clsx';
 
 import ApplicationSchema from 'store/schemas/Application';
 
@@ -18,6 +17,7 @@ import Button from 'components/dumb/Button';
 import ListQuestions, { useQuestionsItems } from 'components/dumb/List/Questions';
 
 import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
+import { WORKSPACE } from 'constants/workspaces';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -25,9 +25,11 @@ import Typography from '@material-ui/core/Typography';
 import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
+import ChipUser from 'components/dumb/Chip/User';
 
 // CONSTANTS
 const QUESTIONS_TRANS_KEY = 'screens:accessRequest.choose.questions';
+const { DPO: DPO_WORKSPACE } = WORKSPACE;
 
 // HELPERS
 const getOwnerName = path(['owner', 'displayName']);
@@ -36,24 +38,10 @@ const nameProp = prop('name');
 const idProp = prop('id');
 
 // HOOKS
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   buttonConnect: { padding: '5px 15px' },
-  p: { marginBottom: theme.spacing(2) },
-  justify: { textAlign: 'justify' },
-  gridItemLeft: {
-    whiteSpace: 'pre-wrap',
-    paddingTop: theme.spacing(2),
-    paddingRight: theme.spacing(0),
-    [theme.breakpoints.up('sm')]: {
-      paddingRight: theme.spacing(1.5),
-    },
-  },
-  gridItemRight: {
-    paddingTop: theme.spacing(2),
-    paddingLeft: theme.spacing(0),
-    [theme.breakpoints.up('sm')]: {
-      paddingLeft: theme.spacing(1.5),
-    },
+  card: {
+    height: '100%',
   },
   avatarParent: {
     position: 'absolute',
@@ -114,11 +102,10 @@ const AccessRequestChoose = ({
     () => idProp(producer),
     [producer],
   );
-  const workspace = 'dpo';
 
   const scope = useMemo(
-    () => `openid user ${ROLE_PREFIX_SCOPE}.${workspace}.${producerId}`,
-    [producerId, workspace],
+    () => `openid user ${ROLE_PREFIX_SCOPE}.${DPO_WORKSPACE}.${producerId}`,
+    [producerId],
   );
 
   return (
@@ -129,27 +116,23 @@ const AccessRequestChoose = ({
       state={state}
     >
       <Container maxWidth="md">
-        <Card mb={2}>
-          <CardContent>
-            <Typography className={clsx(classes.p, classes.justify)}>
-              <Trans
-                i18nKey="screens:accessRequest.choose.desc"
-                values={{ ownerName, applicationName, dpoEmail }}
-              >
-                {'Cette interface est exclusivement réservée aux responsables du traitement des données de {{applicationName}}.'}
-                <br />
-                {'Elle permet d’assurer la chaîne de confiance lors du transfert des données de {{ownerName}}.'}
-              </Trans>
-            </Typography>
-            <Grid container>
-              <Grid
-                item
-                sm={6}
-                component={Box}
-                display="flex"
-                flexDirection="column"
-                justifyContent="space-between"
-              >
+        <Box mb={2} flexGrow={1} textAlign="justify">
+          <Typography align="justify">
+            <Trans
+              i18nKey="screens:accessRequest.choose.desc"
+              values={{ ownerName, applicationName, dpoEmail }}
+            >
+              {'Cette interface est exclusivement réservée aux responsables du traitement des données de {{applicationName}}.'}
+              <br />
+              {'Elle permet d’assurer la chaîne de confiance lors du transfert des données de {{ownerName}}.'}
+            </Trans>
+          </Typography>
+          <Box display="flex" justifyContent="center" mb={4}>
+            <ChipUser identifier={ownerName} />
+          </Box>
+          <Grid container spacing={1}>
+            <Grid item sm={6}>
+              <Card className={classes.card}>
                 <Box display="flex" justifyContent="center" mt={1}>
                   <Button
                     standing="enhanced"
@@ -160,18 +143,15 @@ const AccessRequestChoose = ({
                     aria-label={t('screens:accessRequest.choose.defaultDpoAccount.label')}
                   />
                 </Box>
-                <Typography align="center" variant="body2" className={clsx(classes.gridItemLeft)}>
-                  {t('screens:accessRequest.choose.passwordLess', { dpoEmail })}
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                sm={6}
-                component={Box}
-                display="flex"
-                flexDirection="column"
-                justifyContent="space-between"
-              >
+                <Box p={1}>
+                  <Typography align="center" variant="body2">
+                    {t('screens:accessRequest.choose.passwordLess', { dpoEmail })}
+                  </Typography>
+                </Box>
+              </Card>
+            </Grid>
+            <Grid item sm={6}>
+              <Card className={classes.card}>
                 <Box display="flex" justifyContent="center" mt={1}>
                   <Button
                     standing="main"
@@ -180,13 +160,15 @@ const AccessRequestChoose = ({
                     text={t('screens:accessRequest.choose.userAccount.label')}
                   />
                 </Box>
-                <Typography align="center" variant="body2" className={clsx(classes.gridItemRight)}>
-                  {t('screens:accessRequest.choose.password')}
-                </Typography>
-              </Grid>
+                <Box p={1}>
+                  <Typography align="center" variant="body2">
+                    {t('screens:accessRequest.choose.password')}
+                  </Typography>
+                </Box>
+              </Card>
             </Grid>
-          </CardContent>
-        </Card>
+          </Grid>
+        </Box>
         <Card>
           <CardContent>
             <Title>{t('screens:accessRequest.choose.questions.title')}</Title>

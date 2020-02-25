@@ -17,28 +17,22 @@ import InfiniteLoader from 'react-virtualized/dist/commonjs/InfiniteLoader';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import VirtualizedList from 'react-virtualized/dist/commonjs/List';
 
-import useTheme from '@material-ui/core/styles/useTheme';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
 import Skeleton from '@material-ui/lab/Skeleton';
 import BoxSection from '@misakey/ui/Box/Section';
 import Empty from 'components/dumb/Box/Empty';
 import ScreenAction from 'components/dumb/Screen/Action';
-import ChipDataboxStatus from 'components/dumb/Chip/Databox/Status';
+import TypographyDateSince from 'components/dumb/Typography/DateSince';
 
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import InboxIcon from '@material-ui/icons/Inbox';
 import RestoreIcon from '@material-ui/icons/Restore';
 
@@ -72,6 +66,7 @@ const mapItem = ({ owner, ...rest }) => ({
 const useStyles = makeStyles((theme) => ({
   container: {
     height: '100%',
+    flexGrow: 1,
   },
   titles: {
     whiteSpace: 'nowrap',
@@ -92,13 +87,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const Row = ({ list, isRowLoaded, classes, service, index, style }) => {
-  const item = list[index] || {};
-
-  const theme = useTheme();
-  const showChip = useMediaQuery(theme.breakpoints.up('sm'));
+const Row = ({ list, isRowLoaded, classes, service, index, style, t }) => {
+  const item = useMemo(() => list[index] || {}, [index, list]);
 
   const isLoaded = isRowLoaded({ index });
+  const { id, owner } = useMemo(() => item, [item]);
+
+  const to = useMemo(() => !isNil(id) && generatePath(routes.dpo.service.requests.read, {
+    databoxId: id,
+    mainDomain: service.mainDomain,
+  }), [id, service.mainDomain]);
 
   if (!isLoaded) {
     return (
@@ -114,9 +112,8 @@ const Row = ({ list, isRowLoaded, classes, service, index, style }) => {
     );
   }
 
-  const { id, owner } = item;
-
   const status = getStatus(item);
+  const { updatedAt } = item;
   const icon = STATUS_ICON[status];
 
   return (
@@ -125,10 +122,7 @@ const Row = ({ list, isRowLoaded, classes, service, index, style }) => {
       style={style}
       component={Link}
       button
-      to={generatePath(routes.dpo.service.requests.read, {
-        databoxId: id,
-        mainDomain: service.mainDomain,
-      })}
+      to={to}
     >
       <Box
         position="relative"
@@ -142,27 +136,15 @@ const Row = ({ list, isRowLoaded, classes, service, index, style }) => {
           </Avatar>
         </ListItemAvatar>
         <ListItemText
+          primary={owner.displayName}
+          primaryTypographyProps={{ noWrap: true }}
           secondary={owner.email}
-        >
-          <Grid container>
-            <Grid item sm={7} xs={12}>
-              {owner.displayName}
-            </Grid>
-            {showChip && (
-              <Grid spacing={1} container item xs>
-                <ChipDataboxStatus databox={item} />
-              </Grid>
-            )}
-          </Grid>
-        </ListItemText>
-        <ListItemSecondaryAction>
-          <IconButton
-            edge="end"
-            aria-label="see"
-          >
-            <ArrowForwardIcon />
-          </IconButton>
-        </ListItemSecondaryAction>
+          secondaryTypographyProps={{ noWrap: true }}
+        />
+        <TypographyDateSince
+          date={updatedAt}
+          text={t(`common:databox.since.${status}`)}
+        />
       </Box>
     </ListItem>
   );
@@ -175,7 +157,10 @@ Row.propTypes = {
   service: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,
   style: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired,
 };
+
+const RowWithTranslation = withTranslation('common')(Row);
 
 function ServiceRequestsList({ appBarProps, service, t, isLoading, error }) {
   const classes = useStyles();
@@ -259,7 +244,7 @@ function ServiceRequestsList({ appBarProps, service, t, isLoading, error }) {
       state={state}
       appBarProps={appBarProps}
       navigationProps={{ showGoBack: false, noWrap: true }}
-      title={t('screens:Service.requests.list.title', service)}
+      title={t('screens:Service.requests.list.title')}
     >
       <Container maxWidth="md" className={classes.container}>
         <BoxSection my={3} p={0} className={classes.box}>
@@ -282,7 +267,9 @@ function ServiceRequestsList({ appBarProps, service, t, isLoading, error }) {
                         onRowsRendered={onRowsRendered}
                         rowHeight={ROW_HEIGHT}
                         rowCount={rowCount}
-                        rowRenderer={(rowProps) => <Row {...listProps} {...rowProps} />}
+                        rowRenderer={(rowProps) => (
+                          <RowWithTranslation {...listProps} {...rowProps} />
+                        )}
                       />
                     )}
                   </AutoSizer>

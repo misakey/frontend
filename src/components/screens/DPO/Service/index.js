@@ -1,34 +1,40 @@
 import React, { useMemo } from 'react';
+import routes from 'routes';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Switch } from 'react-router-dom';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 
+import { WORKSPACE } from 'constants/workspaces';
 import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
-import routes from 'routes';
+
 import ApplicationSchema from 'store/schemas/Application';
 
-import isNil from '@misakey/helpers/isNil';
-
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useParseIdToken from '@misakey/hooks/useParseIdToken';
-import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
+import Container from '@material-ui/core/Container';
 import useUserHasRole from '@misakey/hooks/useUserHasRole';
+import isNil from '@misakey/helpers/isNil';
+import isObject from '@misakey/helpers/isObject';
 
 import withApplication from 'components/smart/withApplication';
+import ActiveServices from 'components/smart/List/ActiveServices';
 
-import RouteService, { DEFAULT_SERVICE_ENTITY } from 'components/smart/Route/Service';
+import Screen from 'components/dumb/Screen';
 import ServiceClaim from 'components/screens/DPO/Service/Claim';
 import ServiceRequests from 'components/screens/DPO/Service/Requests';
 import Redirect from 'components/dumb/Redirect';
-import SplashScreen from '@misakey/ui/Screen/Splash';
 import BoxEllipsis from 'components/dumb/Box/Ellipsis';
 import ApplicationAvatar from 'components/dumb/Avatar/Application';
+import ServiceNotFound from 'components/screens/DPO/Service/NotFound';
+import OnboardingDPO from 'components/dumb/Onboarding/DPO';
+import SilentAuthScreen from 'components/dumb/Screen/SilentAuth';
 
 // CONSTANTS
 export const DPO_SERVICE_SCREEN_NAMES = {
   CLAIM: 'DPOServiceClaim',
   REQUESTS: 'DPOServiceRequests',
 };
+
+const DPO_WORKSPACE = WORKSPACE.DPO;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -45,28 +51,39 @@ const useStyles = makeStyles((theme) => ({
 
 // COMPONENTS
 function Service({
-  entity, isDefaultDomain, mainDomain, match, userId, isFetching, userRoles, id, ...rest
+  seclevel,
+  entity,
+  error,
+  mainDomain,
+  match,
+  userId,
+  isFetching,
+  isAuthenticated,
+  userRoles,
+  userScope,
+  ...rest
 }) {
   const classes = useStyles();
-
-  const service = useMemo(
-    () => (isDefaultDomain ? DEFAULT_SERVICE_ENTITY : entity),
-    [isDefaultDomain, entity],
+  const claimRouteMatch = useRouteMatch(routes.dpo.service.claim._);
+  const isClaimRoute = !isNil(claimRouteMatch);
+  const requiredScope = useMemo(
+    () => (isObject(entity) ? `${ROLE_PREFIX_SCOPE}.${DPO_WORKSPACE}.${entity.id}` : null),
+    [entity],
   );
-
-  const workspace = useLocationWorkspace();
-  const requiredScope = useMemo(() => service && `${ROLE_PREFIX_SCOPE}.${workspace}.${service.id}`, [service, workspace]);
+  const userIsConnectedAs = useMemo(
+    () => (!isNil(userScope) && userScope.includes(requiredScope)),
+    [requiredScope, userScope],
+  );
   const userHasRole = useUserHasRole(userRoles, requiredScope);
-  const routeServiceProps = useMemo(
-    () => ({ requiredScope, workspace, mainDomain, userHasRole }),
-    [mainDomain, requiredScope, userHasRole, workspace],
-  );
 
-  const { acr } = useParseIdToken(id);
-  const seclevel = useMemo(() => parseInt(acr, 10), [acr]);
   const withSearchBar = useMemo(
     () => seclevel !== 1, // we don't want dpo guests to use search feature for now
     [seclevel],
+  );
+
+  const shouldDisplayOnboarding = useMemo(
+    () => (!isAuthenticated || (!userHasRole && !isClaimRoute)),
+    [isAuthenticated, isClaimRoute, userHasRole],
   );
 
   const items = useMemo(
@@ -74,45 +91,65 @@ function Service({
       ? []
       : [(
         <BoxEllipsis className={classes.avatarParent} key="applicationAvatarParent">
-          <ApplicationAvatar application={service} />
+          <ApplicationAvatar application={entity} />
         </BoxEllipsis>
       )]),
-    [classes.avatarParent, service, withSearchBar],
+    [classes.avatarParent, entity, withSearchBar],
   );
 
-  if (isNil(service)) {
-    return <SplashScreen />;
+  if (!isNil(error) && error.status === 404) {
+    return <ServiceNotFound mainDomain={mainDomain} />;
+  }
+
+  if (userHasRole && !userIsConnectedAs) {
+    return <SilentAuthScreen requiredScope={requiredScope} />;
+  }
+
+  if (shouldDisplayOnboarding) {
+    return (
+      <Screen appBarProps={{ withSearchBar, items }}>
+        <Container maxWidth="md">
+          <OnboardingDPO isAuthenticated={isAuthenticated} />
+          <ActiveServices />
+        </Container>
+      </Screen>
+    );
   }
 
   return (
     <Switch>
-      <RouteService
+      <Route
         path={routes.dpo.service.claim._}
-        component={ServiceClaim}
-        componentProps={{
-          appBarProps: { withSearchBar, items },
-          isLoading: isFetching,
-          name: DPO_SERVICE_SCREEN_NAMES.CLAIM,
-          service,
-          userId,
-          userRoles,
-          ...rest,
-        }}
-        {...routeServiceProps}
+        render={(renderProps) => (
+          <ServiceClaim
+            appBarProps={{ withSearchBar, items }}
+            isLoading={isFetching}
+            name={DPO_SERVICE_SCREEN_NAMES.CLAIM}
+            service={entity}
+            userId={userId}
+            userRoles={userRoles}
+            error={error}
+            {...rest}
+            {...renderProps}
+          />
+        )}
       />
-      <RouteService
+      <Route
         path={routes.dpo.service.requests._}
-        component={ServiceRequests}
-        componentProps={{
-          appBarProps: { withSearchBar, items },
-          isLoading: isFetching,
-          service,
-          name: DPO_SERVICE_SCREEN_NAMES.REQUESTS,
-          ...rest,
-        }}
-        {...routeServiceProps}
+        render={(renderProps) => (
+          <ServiceRequests
+            appBarProps={{ withSearchBar, items }}
+            isLoading={isFetching}
+            name={DPO_SERVICE_SCREEN_NAMES.REQUESTS}
+            service={entity}
+            error={error}
+            {...rest}
+            {...renderProps}
+          />
+        )}
       />
       <Redirect
+        exact
         from={match.path}
         to={routes.dpo.service.requests._}
       />
@@ -122,30 +159,38 @@ function Service({
 
 Service.propTypes = {
   // withApplication
+  isAuthenticated: PropTypes.bool,
+  userId: PropTypes.string,
   entity: PropTypes.shape(ApplicationSchema.propTypes),
-  isDefaultDomain: PropTypes.bool.isRequired,
   isFetching: PropTypes.bool,
+  error: PropTypes.object,
   mainDomain: PropTypes.string.isRequired,
   match: PropTypes.shape({ path: PropTypes.string }).isRequired,
-  userId: PropTypes.string,
+  // CONNECT
+  seclevel: PropTypes.number,
+  userScope: PropTypes.string,
   userRoles: PropTypes.arrayOf(PropTypes.shape({
     roleLabel: PropTypes.string.isRequired,
     applicationId: PropTypes.string.isRequired,
-  })).isRequired,
-  // CONNECT
-  id: PropTypes.string,
+  })),
 };
 
 Service.defaultProps = {
   isFetching: false,
+  seclevel: null,
+  error: null,
   entity: null,
   userId: null,
-  id: null,
+  userScope: null,
+  userRoles: [],
+  isAuthenticated: false,
 };
 
 // CONNECT
 const mapStateToProps = (state) => ({
-  id: state.auth.id,
+  userRoles: state.auth.roles,
+  userScope: state.auth.scope,
+  seclevel: state.auth.acr,
 });
 
-export default withApplication(connect(mapStateToProps, {})(Service));
+export default connect(mapStateToProps)(withApplication(Service));

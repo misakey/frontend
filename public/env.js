@@ -16,4 +16,5 @@ window.env = {
     'shops',
     'gaming',
   ],
+  ACTIVE_SERVICES: ['fnac.com', 'misakey.com.local']
 };

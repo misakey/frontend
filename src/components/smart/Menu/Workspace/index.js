@@ -18,6 +18,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import ArrowDropdownIcon from '@material-ui/icons/ArrowDropDown';
+import { MAIN_DOMAIN_REGEX } from 'constants/validationSchemas/information';
 
 // CONSTANTS
 const MENU_ID = 'menu-workspace';
@@ -55,7 +56,10 @@ const MenuItemWorkspace = forwardRef(({ appMatch, role, children, ...rest }, ref
   const to = useMemo(
     () => {
       if (!isNil(appMatch)) {
-        return generatePath(appPathTo, appMatch.params);
+        const { mainDomain } = appMatch.params;
+        if (MAIN_DOMAIN_REGEX.test(mainDomain)) {
+          return generatePath(appPathTo, appMatch.params);
+        }
       }
       return noAppPathTo;
     },

@@ -29,11 +29,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ApplicationNotFound({ mainDomain, t }) {
+function ServiceNotFound({ mainDomain, t }) {
   const classes = useStyles();
 
   const goToCreateApp = useMemo(() => ({
-    pathname: routes.citizen.applications.create,
+    pathname: routes.dpo.services.create,
     search: getNextSearch('', new Map([['prefill', mainDomain]])),
   }), [mainDomain]);
   return (
@@ -43,14 +43,14 @@ function ApplicationNotFound({ mainDomain, t }) {
           <Typography variant="h2" color="secondary">{404}</Typography>
         </Box>
         <Typography variant="h5" component="h3" color="textSecondary">
-          {t('screens:application.notFound.title', { mainDomain })}
+          {t('screens:service.notFound.title', { mainDomain })}
         </Typography>
         <Box my={4}>
           <CardSimpleText
             my={1}
-            text={t('screens:application.notFound.create.text', { mainDomain })}
+            text={t('screens:service.notFound.create.text', { mainDomain })}
             button={{
-              text: t('screens:application.notFound.create.button'),
+              text: t('screens:service.notFound.create.button'),
               standing: BUTTON_STANDINGS.MAIN,
               component: LinkWithDialogConnect,
               to: goToCreateApp,
@@ -62,9 +62,9 @@ function ApplicationNotFound({ mainDomain, t }) {
   );
 }
 
-ApplicationNotFound.propTypes = {
+ServiceNotFound.propTypes = {
   mainDomain: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
 };
 
-export default (withTranslation(['common', 'screens'])(ApplicationNotFound));
+export default (withTranslation(['common', 'screens'])(ServiceNotFound));

@@ -35,6 +35,8 @@ const appReducer = combineReducers({
     services: {},
     databoxes: {},
     databoxesByProducer: {},
+    userApplications: {},
+    applicationsByCategories: {},
   }, makeEntities),
 });
 

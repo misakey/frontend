@@ -4,14 +4,12 @@ import PropTypes from 'prop-types';
 import { Formik, Form } from 'formik';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
-import { Link, generatePath } from 'react-router-dom';
+import { generatePath } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import API from '@misakey/api';
-import { loadUserRoles } from '@misakey/auth/store/actions/auth';
 
 import prop from '@misakey/helpers/prop';
-import path from '@misakey/helpers/path';
 import head from '@misakey/helpers/head';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -20,7 +18,6 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
-import useGetRoles from '@misakey/auth/hooks/useGetRoles';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import BoxControls from 'components/dumb/Box/Controls';
@@ -33,11 +30,13 @@ import FieldCode from 'components/dumb/Form/Field/Code';
 import BoxMessage from '@misakey/ui/Box/Message';
 import Subtitle from 'components/dumb/Typography/Subtitle';
 import Redirect from 'components/dumb/Redirect';
+import CardSimpleText from 'components/dumb/Card/Simple/Text';
 
 import routes from 'routes';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 
 import { serviceClaimValidationSchema } from 'constants/validationSchemas/dpo';
+import { addRoleToUser } from 'packages/auth/src/store/actions/auth';
 
 // CONSTANTS
 const { conflict } = errorTypes;
@@ -76,7 +75,6 @@ const INITIAL_VALUES = {
 // HELPERS
 const idProp = prop('id');
 const mainDomainProp = prop('mainDomain');
-const referrerPath = path(['state', 'referrer']);
 
 // COMPONENTS
 const ServiceRoleClaimFormFields = (fields) => (
@@ -87,13 +85,12 @@ ServiceRoleClaimFormFields.defaultProps = DEFAULT_FIELDS;
 
 function ServiceRoleClaim({
   appBarProps,
-  location,
   service,
   t,
   userId,
   error,
   isLoading,
-  dispatchUserRoles,
+  dispatchAddRoleToUser,
   userRoles,
 }) {
   const { enqueueSnackbar } = useSnackbar();
@@ -101,14 +98,17 @@ function ServiceRoleClaim({
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
   const role = useLocationWorkspace();
 
-  const [errorMessage, setErrorMessage] = useState();
   const [claim, setClaim] = useState(null);
-  const [success, setSuccess] = useState(false);
   const [isCreating, setCreating] = useState(false);
 
   const hasClaimId = useMemo(
     () => !isNil(idProp(claim)),
     [claim],
+  );
+
+  const hasDpoEmail = useMemo(
+    () => service && !isEmpty(service.dpoEmail),
+    [service],
   );
 
   const mainDomain = useMemo(
@@ -123,17 +123,6 @@ function ServiceRoleClaim({
     [mainDomain],
   );
 
-  const nextTo = useMemo(
-    () => {
-      const referrer = referrerPath(location);
-      return isNil(referrer)
-        ? dpoRequestListTo
-        : referrer;
-    },
-    [dpoRequestListTo, location],
-  );
-
-  const fetchRoleList = useGetRoles(dispatchUserRoles);
   const { id: userRoleId, valid: userHasRole } = useMemo(
     () => {
       const invalid = { id: null, valid: false };
@@ -148,7 +137,6 @@ function ServiceRoleClaim({
     [service, userRoles, role],
   );
 
-
   const shouldFetchClaim = useMemo(
     () => !isNil(userRoleId),
     [userRoleId],
@@ -156,7 +144,6 @@ function ServiceRoleClaim({
 
   const handleEmail = useCallback(() => {
     setCreating(true);
-    setErrorMessage();
 
     const payload = {
       user_role: {
@@ -181,13 +168,13 @@ function ServiceRoleClaim({
       })
       .catch((e) => {
         if (prop('code')(e) === conflict) {
-          setErrorMessage(t(`fields:serviceRoleClaim.code.error.${conflict}`));
+          enqueueSnackbar(t('screens:Service.role.claim.errors.conflict'), { variant: 'error' });
         } else {
           handleGenericHttpErrors(e);
         }
       })
       .finally(() => setCreating(false));
-  }, [service, userId, role, t, enqueueSnackbar, handleGenericHttpErrors]);
+  }, [userId, service, role, t, enqueueSnackbar, handleGenericHttpErrors]);
 
   const handleSubmit = useCallback((values, { setErrors, setSubmitting }) => {
     if (isNil(claim) || isNil(claim.id)) { throw new Error('Cannot submit, claim is nil'); }
@@ -198,9 +185,10 @@ function ServiceRoleClaim({
     API.use(ENDPOINTS.claim.confirm.update)
       .build(query, payload)
       .send()
-      .then(() => {
-        setSuccess(true);
-        fetchRoleList(userId);
+      .then((response) => {
+        const { userRole } = objectToCamelCase(response);
+        enqueueSnackbar(t('screens:Service.role.claim.success', service), { variant: 'success' });
+        dispatchAddRoleToUser(objectToCamelCase(userRole));
       })
       .catch((e) => {
         const details = prop('details')(e);
@@ -211,7 +199,7 @@ function ServiceRoleClaim({
         }
       })
       .finally(() => setSubmitting(false));
-  }, [claim, fetchRoleList, userId, handleGenericHttpErrors]);
+  }, [claim, enqueueSnackbar, t, service, dispatchAddRoleToUser, handleGenericHttpErrors]);
 
   const fetchClaim = useCallback(
     () => API.use(ENDPOINTS.claim.list)
@@ -245,18 +233,11 @@ function ServiceRoleClaim({
     [error, internalFetching, isLoading, service],
   );
 
-  if (userHasRole) {
-    enqueueSnackbar(t(
-      'screens:Service.role.claim.info.alreadyDpo',
-      { mainDomain: service.mainDomain, role },
-    ),
-    { variant: 'info' });
-    return <Redirect to={dpoRequestListTo} />;
-  }
+  if (userHasRole) { return <Redirect to={dpoRequestListTo} />; }
 
   return (
     <ScreenAction
-      title={t('screens:Service.role.claim.title', service)}
+      title={t('screens:Service.role.claim.title')}
       state={state}
       appBarProps={appBarProps}
     >
@@ -278,67 +259,57 @@ function ServiceRoleClaim({
             component={Form}
             mt={3}
           >
-            {(service && isEmpty(service.dpoEmail)) && (
+            {!hasDpoEmail && (
               <>
                 <BoxMessage
-                  mt={1}
+                  my={1}
                   type="error"
                   text={t(
-                    'screens:Service.role.claim.errors.missingDpoEmail.text',
-                    { mainDomain: service.mainDomain },
+                    'screens:Service.role.claim.errors.missingDpoEmail.description',
+                    { mainDomain },
                   )}
                 />
-                <Box align="right" mt={1}>
-                  <Button
-                    standing={BUTTON_STANDINGS.MAIN}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    component="a"
-                    text={t('screens:Service.role.claim.errors.missingDpoEmail.button')}
-                    href="mailto:question.perso@misakey.com"
-                  />
-                </Box>
+                <CardSimpleText
+                  text={t(
+                    'screens:Service.role.claim.errors.missingDpoEmail.text',
+                    { mainDomain },
+                  )}
+                  button={{
+                    standing: BUTTON_STANDINGS.MAIN,
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                    component: 'a',
+                    text: t('screens:Service.role.claim.errors.missingDpoEmail.button'),
+                    href: 'mailto:question.perso@misakey.com',
+                  }}
+                />
               </>
             )}
-            {(service && !isEmpty(service.dpoEmail)) && (
-              <>
-                  {success && (
-                    <BoxMessage
-                      mt={1}
-                      type="success"
-                      text={t('screens:Service.role.claim.success', service)}
-                    />
-                  )}
-                  {errorMessage && (
-                    <BoxMessage
-                      mt={1}
-                      type="error"
-                      text={errorMessage}
-                    />
-                  )}
+            {hasDpoEmail && (
+            <Box display="flex" flexDirection="column" alignItems="center">
+              <Box display="flex" flexDirection="column">
                 <ServiceRoleClaimFormFields />
-                <BoxControls
-                  mt={2}
-                  primary={success
-                    ? {
-                      component: Link,
-                      to: nextTo,
-                      text: t('common:next'),
-                    }
-                    : {
-                      disabled: !hasClaimId,
-                      text: t('common:submit'),
-                      type: 'submit',
-                    }}
-                  secondary={{
-                    disabled: isNil(service) || (success && hasClaimId),
-                    isLoading: isCreating,
-                    onClick: handleEmail,
-                    text: t('screens:Service.role.claim.email.submit'),
-                  }}
-                  formik
-                />
-              </>
+                <Box display="flex">
+                  <Button
+                    standing={BUTTON_STANDINGS.TEXT}
+                    disabled={isNil(service)}
+                    isLoading={isCreating}
+                    onClick={handleEmail}
+                    text={t('screens:Service.role.claim.email.submit')}
+                  />
+                </Box>
+              </Box>
+
+              <BoxControls
+                mt={2}
+                primary={{
+                  disabled: !hasClaimId,
+                  text: t('common:next'),
+                  type: 'submit',
+                }}
+                formik
+              />
+            </Box>
             )}
           </Box>
         </Formik>
@@ -361,7 +332,7 @@ ServiceRoleClaim.propTypes = {
   userId: PropTypes.string.isRequired,
   error: PropTypes.instanceOf(Error),
   isLoading: PropTypes.bool,
-  dispatchUserRoles: PropTypes.func.isRequired,
+  dispatchAddRoleToUser: PropTypes.func.isRequired,
   userRoles: PropTypes.arrayOf(PropTypes.shape({
     roleLabel: PropTypes.string.isRequired,
     applicationId: PropTypes.string.isRequired,
@@ -379,7 +350,7 @@ ServiceRoleClaim.defaultProps = {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchUserRoles: (roles) => dispatch(loadUserRoles(roles)),
+  dispatchAddRoleToUser: (role) => dispatch(addRoleToUser(role)),
 });
 
 export default connect(null, mapDispatchToProps)(withTranslation(['common', 'screens', 'fields'])(ServiceRoleClaim));

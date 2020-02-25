@@ -5,14 +5,6 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import { useCallback } from 'react';
 import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 
-
-// CONSTANTS
-const ENDPOINT = {
-  method: 'GET',
-  path: '/application-info/search',
-  auth: true,
-};
-
 // HELPERS
 /**
  *
@@ -29,7 +21,7 @@ const getApplications = (
   workspace,
   params = {},
 ) => {
-  const endpoint = { ...ENDPOINT, auth: isAuthenticated };
+  const endpoint = { ...API.endpoints.application.info.search, auth: isAuthenticated };
 
   return API.use(endpoint)
     .build(undefined, undefined, objectToSnakeCase({

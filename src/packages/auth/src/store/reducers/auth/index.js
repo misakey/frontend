@@ -9,6 +9,7 @@ import {
   SIGN_IN,
   UPDATE_PROFILE,
   LOAD_USER_ROLES,
+  ADD_USER_ROLE,
 } from '../../actions/auth';
 
 
@@ -45,6 +46,13 @@ function updateRoles(state, { roles }) {
   };
 }
 
+function addUserRole(state, { role }) {
+  return {
+    ...state,
+    roles: [...state.roles, role],
+  };
+}
+
 export default createReducer(INITIAL_STATE, {
   [SIGN_OUT]: resetCredentials,
   [AUTH_RESET]: resetCredentials,
@@ -52,4 +60,5 @@ export default createReducer(INITIAL_STATE, {
   [LOAD_USER]: updateCredentials,
   [UPDATE_PROFILE]: updateProfile,
   [LOAD_USER_ROLES]: updateRoles,
+  [ADD_USER_ROLE]: addUserRole,
 });

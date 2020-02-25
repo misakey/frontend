@@ -59,15 +59,6 @@
       }
     }
   },
-  "Citizen": {
-    "Actions": {
-      "loginAs": {
-        "button": "Connexion en tant que citoyen",
-        "description": "Je ne peux pas accéder à cet espace en étant connecté en tant qu'administrateur ou DPO",
-        "loading": "Connexion en tant que citoyen en cours..."
-      }
-    }
-  },
   "account": {
     "home": {
       "title": "Profil"
@@ -471,26 +462,6 @@
       "edit": "Modifier mon avis"
     }
   },
-  "landing": {
-    "onboarding": {
-      "title": "<0>A partir de maintenant,</0>\nj'habitue les sites à me renvoyer mes données à l'abri des géants de la tech",
-      "steps": {
-        "1": {
-          "text": "1 - Je crée mon coffre-fort gratuitement",
-          "button": "Créer"
-        },
-        "2": {
-          "text": "2 - J'installe l'extension Misakey",
-          "firefox": "Firefox",
-          "chrome": "Chrome"
-        },
-        "3": {
-          "text": "3 - Je demande mes données en 2 clics",
-          "button": "Commencer"
-        }
-      }
-    }
-  },
   "Service": {
     "Actions": {
       "search_other": {
@@ -570,20 +541,22 @@
     },
     "role": {
       "claim": {
-        "title": "Revendiquer le rôle DPO sur {{mainDomain}}",
-        "subtitle": "Je confirme que je suis DPO de {{name}}. Pour cela je demande un code de confirmation en cliquant sur le bouton \"Envoyer le code\". Ensuite il me suffira de renseigner le code reçu à l'adresse {{dpoEmail}}",
+        "title": "Activer mon interface",
+        "subtitle": "Je demande un code de confirmation et je saisis le code reçu par e-mail à l’adresse {{dpoEmail}}",
         "email": {
-          "submit": "Envoyer un code de confirmation",
-          "success": "Un email a bien été envoyé à l'adresse du DPO de {{mainDomain}}"
+          "submit": "Envoyer un code",
+          "success": "Un email a été envoyé à l'adresse du DPO de {{mainDomain}}"
         },
         "info": {
           "alreadyDpo": "Je possède déjà le rôle {{role}} pour le site {{mainDomain}}"
         },
         "errors": {
           "missingDpoEmail": {
-            "text": "Nous avons besoin de connaître l'adresse e-mail du DPO de {{mainDomain}} pour autoriser sa revendication. Je peux la communiquer",
+            "description": "Nous avons besoin de connaître l'adresse e-mail du DPO de {{mainDomain}} pour autoriser sa revendication.",
+            "text": "Je communique l'adresse email du DPO de {{mainDomain}}",
             "button": "Envoyer un mail à Misakey"
-          }
+          },
+          "conflict": "J'ai déjà reçu un code il y a moins de 5 minutes. Je revérifie mes mails ou je réessaie dans un petit instant"
         },
         "success": "Le site dont le domaine de référence est {{mainDomain}} a été ajouté à ma console d’administration"
       }
@@ -625,7 +598,23 @@
         }
       },
       "list": {
-        "title": "Liste des requêtes du site {{mainDomain}}"
+        "title": "Mes requêtes"
+      }
+    }
+  },
+  "services": {
+    "create": {
+      "title": "Ajouter un site",
+      "subtitle": "Je copie-colle l’url de la page d’accueil de mon site pour confirmer son nom de domaine",
+      "success": "Demande de création de service reçue !"
+    }
+  },
+  "service": {
+    "notFound": {
+      "title": "Le service {{mainDomain}} est introuvable !",
+      "create": {
+        "text": "Je crée le service {{mainDomain}} pour gérer les données de mes utilisateurs.",
+        "button": "Nouveau service"
       }
     }
   },

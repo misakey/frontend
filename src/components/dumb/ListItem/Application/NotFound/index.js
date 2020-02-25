@@ -10,6 +10,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import getNextSearch from '@misakey/helpers/getNextSearch';
 import isEmpty from '@misakey/helpers/isEmpty';
+import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -19,6 +20,7 @@ import Avatar from '@material-ui/core/Avatar';
 import AddIcon from '@material-ui/icons/Add';
 
 import LinkWithDialogConnect from 'components/smart/Dialog/Connect/with/Link';
+import { WORKSPACE } from 'constants/workspaces';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -35,16 +37,23 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const ListItemApplicationNotFound = ({ t, searchValue, ...rest }) => {
   const classes = useStyles();
+  const workspace = useLocationWorkspace();
+  const toRoute = useMemo(
+    () => ((workspace === WORKSPACE.DPO)
+      ? routes.dpo.services.create
+      : routes.citizen.applications.create),
+    [workspace],
+  );
 
   const notFoundTo = useMemo(
     () => {
-      const pathname = generatePath(routes.citizen.applications.create);
+      const pathname = generatePath(toRoute);
       return isEmpty(searchValue) ? pathname : {
         pathname,
         search: getNextSearch('', new Map([['prefill', searchValue]])),
       };
     },
-    [searchValue],
+    [searchValue, toRoute],
   );
 
   return (
