@@ -14,7 +14,7 @@ import useSuspenseMaterialFix from '@misakey/hooks/useSuspenseMaterialFix';
 
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import Navigation from 'components/dumb/Navigation';
+import AppBarNavigation from 'components/dumb/AppBar/Navigation';
 import FieldText from 'components/dumb/Form/Field/Text';
 import ButtonSubmit from 'components/dumb/Button/Submit';
 import Screen from 'components/dumb/Screen';
@@ -34,7 +34,6 @@ const useStyles = makeStyles(() => ({
 
 // COMPONENTS
 const ServicesCreate = ({
-  history,
   onCreateApplication,
   t,
 }) => {
@@ -64,9 +63,8 @@ const ServicesCreate = ({
 
   return (
     <Screen>
-      <Navigation
+      <AppBarNavigation
         toolbarProps={{ maxWidth: 'md' }}
-        history={history}
         title={t('dpo__new:services.create.title')}
       />
       <Container maxWidth="md">
@@ -104,7 +102,6 @@ const ServicesCreate = ({
 };
 
 ServicesCreate.propTypes = {
-  history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired,
   match: PropTypes.shape({ params: PropTypes.object }).isRequired,
   onCreateApplication: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,

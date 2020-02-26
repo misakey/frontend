@@ -84,7 +84,7 @@ const ServiceName = ({ appBarProps, t, service, dispatchUpdateEntities, history 
     [name],
   );
 
-  const pushPath = useMemo(
+  const homePath = useMemo(
     () => (isNil(service) ? '' : generatePath(PARENT_ROUTE, { mainDomain: service.mainDomain })),
     [service],
   );
@@ -98,8 +98,7 @@ const ServiceName = ({ appBarProps, t, service, dispatchUpdateEntities, history 
   return (
     <ScreenAction
       id="ServiceInformationName"
-      history={history}
-      pushPath={pushPath}
+      navigationProps={{ homePath }}
       appBarProps={appBarProps}
       title={t('admin__new:information.name.title')}
     >

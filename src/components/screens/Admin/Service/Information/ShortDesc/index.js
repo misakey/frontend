@@ -85,7 +85,7 @@ const ServiceShortDesc = ({ appBarProps, t, service, dispatchUpdateEntities, his
     [shortDesc],
   );
 
-  const pushPath = useMemo(
+  const homePath = useMemo(
     () => (isNil(service) ? '' : generatePath(PARENT_ROUTE, { mainDomain: service.mainDomain })),
     [service],
   );
@@ -98,8 +98,7 @@ const ServiceShortDesc = ({ appBarProps, t, service, dispatchUpdateEntities, his
   return (
     <ScreenAction
       id="ServiceInformationShortDesc"
-      history={history}
-      pushPath={pushPath}
+      navigationProps={{ homePath }}
       appBarProps={appBarProps}
       title={t('admin__new:information.shortDesc.title')}
     >

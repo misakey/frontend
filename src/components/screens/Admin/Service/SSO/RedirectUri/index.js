@@ -102,7 +102,7 @@ const SSORedirectUri = ({ appBarProps, t, service, dispatchUpdateEntities, histo
     [redirectUris],
   );
 
-  const pushPath = useMemo(
+  const homePath = useMemo(
     () => (isNil(service) ? '' : generatePath(PARENT_ROUTE, { mainDomain: service.mainDomain })),
     [service],
   );
@@ -115,7 +115,7 @@ const SSORedirectUri = ({ appBarProps, t, service, dispatchUpdateEntities, histo
   return (
     <ScreenAction
       history={history}
-      pushPath={pushPath}
+      navigationProps={{ homePath }}
       appBarProps={appBarProps}
       title={t('admin__new:sso.redirectUri.title')}
     >

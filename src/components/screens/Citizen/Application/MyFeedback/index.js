@@ -31,7 +31,7 @@ import BoxControls from 'components/dumb/Box/Controls';
 import Screen from 'components/dumb/Screen';
 import SplashScreen from '@misakey/ui/Screen/Splash';
 
-import Navigation from 'components/dumb/Navigation';
+import AppBarNavigation from 'components/dumb/AppBar/Navigation';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import withMyFeedback from 'components/smart/withMyFeedback';
@@ -195,8 +195,7 @@ const ApplicationMyFeedback = ({
 
   return (
     <Screen {...screenProps}>
-      <Navigation
-        history={history}
+      <AppBarNavigation
         toolbarProps={{ maxWidth: 'md' }}
         title={t('citizen__new:application.feedback.title')}
       />

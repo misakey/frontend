@@ -7,7 +7,7 @@ import { Field } from 'formik';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Navigation from 'components/dumb/Navigation';
+import AppBarNavigation from 'components/dumb/AppBar/Navigation';
 import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import ButtonSubmit from 'components/dumb/Button/Submit';
@@ -26,7 +26,7 @@ const FIELD_PATH = ['field', 'value'];
 const getPreview = path(FIELD_PATH);
 
 // COMPONENTS
-const ServiceLogoDisplay = ({ t, errors, service, history }) => {
+const ServiceLogoDisplay = ({ t, errors, service }) => {
   const { logoUri, mainDomain, name } = useMemo(() => (isNil(service) ? {} : service), [service]);
 
   const linkTo = useMemo(
@@ -34,7 +34,7 @@ const ServiceLogoDisplay = ({ t, errors, service, history }) => {
     [mainDomain],
   );
 
-  const pushPath = useMemo(
+  const homePath = useMemo(
     () => generatePath(routes.admin.service.information._, { mainDomain }),
     [mainDomain],
   );
@@ -44,9 +44,8 @@ const ServiceLogoDisplay = ({ t, errors, service, history }) => {
   if (isNil(service)) { return null; }
   return (
     <div id="ServiceInformationLogoDisplay">
-      <Navigation
-        history={history}
-        pushPath={pushPath}
+      <AppBarNavigation
+        homePath={homePath}
         toolbarProps={{ maxWidth: 'md' }}
         title={t('admin__new:information.logo.title')}
       />
@@ -98,7 +97,6 @@ ServiceLogoDisplay.propTypes = {
     name: PropTypes.string,
     mainDomain: PropTypes.string,
   }),
-  history: PropTypes.object.isRequired,
 
 };
 

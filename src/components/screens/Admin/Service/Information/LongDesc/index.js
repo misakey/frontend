@@ -74,7 +74,7 @@ const ServiceLongDesc = ({ appBarProps, t, service, dispatchUpdateEntities, hist
     t,
   );
 
-  const pushPath = useMemo(
+  const homePath = useMemo(
     () => (isNil(service) ? '' : generatePath(PARENT_ROUTE, { mainDomain: service.mainDomain })),
     [service],
   );
@@ -98,8 +98,7 @@ const ServiceLongDesc = ({ appBarProps, t, service, dispatchUpdateEntities, hist
   return (
     <ScreenAction
       id="ServiceInformationLongDesc"
-      history={history}
-      pushPath={pushPath}
+      navigationProps={{ homePath }}
       appBarProps={appBarProps}
       title={t('admin__new:information.longDesc.title')}
     >

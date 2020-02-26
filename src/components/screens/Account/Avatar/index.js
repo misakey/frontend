@@ -58,7 +58,6 @@ const useOnSubmit = (
       const changes = { avatarUri };
       enqueueSnackbar(t('account__new:avatar.success'), { variant: 'success' });
       dispatchUpdate(profile.id, changes, history);
-      history.push(routes.account._);
     })
     .catch(handleGenericHttpErrors)
     .finally(() => { setSubmitting(false); }),

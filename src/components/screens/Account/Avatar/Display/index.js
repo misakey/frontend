@@ -15,8 +15,6 @@ import routes from 'routes';
 
 import FormImage from './image';
 
-import 'components/screens/Account/Avatar/Display/index.scss';
-
 // COMPONENTS
 const AccountAvatarDisplay = ({
   t,
@@ -30,10 +28,8 @@ const AccountAvatarDisplay = ({
   ...rest
 }) => (
   <ScreenAction
-    className="Display"
     title={t('account__new:avatar.title')}
     state={state}
-    pushPath={routes.account._}
     hideAppBar
   >
     <Container maxWidth="md" className="content">
@@ -49,6 +45,7 @@ const AccountAvatarDisplay = ({
         secondary={{
           to: routes.account.profile.avatar.upload,
           component: Link,
+          replace: true,
           'aria-label': t('common__new:edit'),
           text: t('common__new:edit'),
         }}

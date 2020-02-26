@@ -17,12 +17,12 @@ import ScreenAction from 'components/dumb/Screen/Action';
 const PARENT_ROUTE = routes.admin.service.sso._;
 
 // COMPONENTS
-const SSOCustomRoles = ({ appBarProps, t, service, history }) => {
+const SSOCustomRoles = ({ appBarProps, t, service }) => {
   const [roles] = useState([]);
 
   const rolesEmpty = useMemo(() => roles.length === 0, [roles]);
 
-  const pushPath = useMemo(
+  const homePath = useMemo(
     () => (isNil(service) ? '' : generatePath(PARENT_ROUTE, { mainDomain: service.mainDomain })),
     [service],
   );
@@ -31,8 +31,7 @@ const SSOCustomRoles = ({ appBarProps, t, service, history }) => {
 
   return (
     <ScreenAction
-      history={history}
-      pushPath={pushPath}
+      navigationProps={{ homePath }}
       appBarProps={appBarProps}
       title={t('admin__new:sso.customRoles.title')}
     >
@@ -68,8 +67,6 @@ SSOCustomRoles.propTypes = {
     items: PropTypes.arrayOf(PropTypes.node),
   }),
   service: PropTypes.shape({ mainDomain: PropTypes.string }),
-  // router props
-  history: PropTypes.object.isRequired,
   // withTranslation HOC
   t: PropTypes.func.isRequired,
   // CONNECT dispatch

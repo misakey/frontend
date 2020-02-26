@@ -21,7 +21,7 @@ const useOnChange = (name, previewName, setValues, setTouched, history) => useCa
       [name]: true,
       [previewName]: true,
     }, false);
-    history.push(routes.account.profile.avatar._);
+    history.replace(routes.account.profile.avatar._);
   },
   [history, name, previewName, setTouched, setValues],
 );
@@ -44,7 +44,6 @@ const AccountAvatarUpload = ({
     <ScreenAction
       title={t('account_new:avatar.upload.title')}
       state={state}
-      pushPath={routes.account._}
       hideAppBar
     >
       <Container maxWidth="md">

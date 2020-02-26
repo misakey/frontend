@@ -12,7 +12,7 @@ import isNil from '@misakey/helpers/isNil';
 import getSearchParams from '@misakey/helpers/getSearchParams';
 import mapDates from '@misakey/helpers/mapDates';
 import ContactProvidersBlock from 'components/smart/Contact/Providers';
-import Navigation from 'components/dumb/Navigation';
+import AppBarNavigation from 'components/dumb/AppBar/Navigation';
 
 // HELPERS
 const mainDomainProp = prop('mainDomain');
@@ -38,7 +38,6 @@ const useDoneTo = (entity) => useMemo(
 
 // COMPONENTS
 const ContactProviders = ({
-  history,
   entity,
   databoxURL,
   databox,
@@ -73,8 +72,7 @@ const ContactProviders = ({
 
   return (
     <div className="ContactProviders">
-      <Navigation
-        history={history}
+      <AppBarNavigation
         toolbarProps={{ maxWidth: 'md' }}
         title={t('citizen__new:contact.providers.title')}
       />
@@ -88,7 +86,6 @@ const ContactProviders = ({
 
 ContactProviders.propTypes = {
   match: PropTypes.shape({ params: PropTypes.object }).isRequired,
-  history: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   entity: PropTypes.shape(ApplicationSchema.propTypes),
   databoxURL: PropTypes.string,

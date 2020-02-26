@@ -9,14 +9,14 @@ import log from '@misakey/helpers/log';
 import { fetchApplicationsByCategory } from '@misakey/helpers/fetchApplications';
 
 import Container from '@material-ui/core/Container';
-import Navigation from 'components/dumb/Navigation';
+import AppBarNavigation from 'components/dumb/AppBar/Navigation';
 
 
 import ApplicationsList from 'components/dumb/List/Applications';
 import Screen from 'components/dumb/Screen';
 
 
-const ApplicationsCategoryScreen = ({ isAuthenticated, t, match, history }) => {
+const ApplicationsCategoryScreen = ({ isAuthenticated, t, match }) => {
   const [error, setError] = useState();
   const [applicationsList, setList] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
@@ -50,8 +50,7 @@ const ApplicationsCategoryScreen = ({ isAuthenticated, t, match, history }) => {
 
   return (
     <Screen>
-      <Navigation
-        history={history}
+      <AppBarNavigation
         toolbarProps={{ maxWidth: 'md' }}
         title={t(`common__new:application.category.${category}`)}
       />
@@ -72,7 +71,6 @@ ApplicationsCategoryScreen.propTypes = {
   t: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   isAuthenticated: PropTypes.bool,
-  history: PropTypes.object.isRequired,
 };
 
 ApplicationsCategoryScreen.defaultProps = {

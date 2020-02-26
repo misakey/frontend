@@ -35,7 +35,7 @@ import ToggleButtonGroupMailType from 'components/smart/ToggleButtonGroup/MailTy
 import PreMail from 'components/dumb/Pre/Mail';
 import { BUTTON_STANDINGS } from 'components/dumb/Button';
 
-import Navigation from 'components/dumb/Navigation';
+import AppBarNavigation from 'components/dumb/AppBar/Navigation';
 import clsx from 'clsx';
 import { IS_PLUGIN } from 'constants/plugin';
 import { getStyleForContainerScroll } from 'components/dumb/Screen';
@@ -87,7 +87,6 @@ const useOnSubmit = (mailProvider, mailto, subject, body, onSuccess) => useCallb
 
 // COMPONENTS
 const ContactPreview = ({
-  history,
   databoxURL,
   databox,
   entity,
@@ -292,8 +291,7 @@ const ContactPreview = ({
 
   return (
     <>
-      <Navigation
-        history={history}
+      <AppBarNavigation
         toolbarProps={{ maxWidth: 'md' }}
         title={t('citizen__new:contact.preview.title')}
         gutterBottom={!IS_PLUGIN}
@@ -332,7 +330,6 @@ const ContactPreview = ({
 };
 
 ContactPreview.propTypes = {
-  history: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
 
   entity: PropTypes.shape(ApplicationSchema.propTypes),

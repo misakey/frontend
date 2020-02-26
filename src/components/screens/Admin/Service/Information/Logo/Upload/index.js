@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import FileField from 'components/dumb/Form/Field/File';
 
-import Navigation from 'components/dumb/Navigation';
+import AppBarNavigation from 'components/dumb/AppBar/Navigation';
 
 const FIELD = 'logo';
 const PREVIEW = 'preview';
@@ -35,16 +35,15 @@ const useOnChange = (mainDomain, setValues, setTouched, history) => useCallback(
 const ServiceLogoUpload = ({ service, t, setValues, setTouched, history }) => {
   const onChange = useOnChange(service.mainDomain, setValues, setTouched, history);
 
-  const pushPath = useMemo(
+  const homePath = useMemo(
     () => generatePath(routes.admin.service.information.logo._, { mainDomain: service.mainDomain }),
     [service.mainDomain],
   );
 
   return (
     <div id="ServiceInformationLogoUpload">
-      <Navigation
-        history={history}
-        pushPath={pushPath}
+      <AppBarNavigation
+        homePath={homePath}
         toolbarProps={{ maxWidth: 'md' }}
         title={t('admin__new:information.logo.upload.title')}
       />

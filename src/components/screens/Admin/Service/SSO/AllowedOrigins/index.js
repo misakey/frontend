@@ -94,7 +94,7 @@ const SSOAllowedOrigins = ({ appBarProps, t, service, dispatchUpdateEntities, hi
     t,
   );
 
-  const pushPath = useMemo(
+  const homePath = useMemo(
     () => (isNil(service) ? '' : generatePath(PARENT_ROUTE, { mainDomain: service.mainDomain })),
     [service],
   );
@@ -106,8 +106,7 @@ const SSOAllowedOrigins = ({ appBarProps, t, service, dispatchUpdateEntities, hi
   }
   return (
     <ScreenAction
-      history={history}
-      pushPath={pushPath}
+      navigationProps={{ homePath }}
       appBarProps={appBarProps}
       title={t('admin__new:sso.allowedOrigins.title')}
     >

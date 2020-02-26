@@ -18,7 +18,6 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import Navigation from 'components/dumb/Navigation';
 import BoxSection from '@misakey/ui/Box/Section';
 import ButtonCopy from '@misakey/ui/Button/Copy';
 import ButtonSubmit from 'components/dumb/Button/Submit';
@@ -69,7 +68,7 @@ const useOnGenerateSecret = (
 
 
 // COMPONENTS
-const SSOProductionSetup = ({ appBarProps, t, service, history }) => {
+const SSOProductionSetup = ({ appBarProps, t, service }) => {
   const classes = useStyles();
 
   const [error, setError] = useState();
@@ -87,7 +86,7 @@ const SSOProductionSetup = ({ appBarProps, t, service, history }) => {
     enqueueSnackbar(t(`admin__new:sso.productionSetup.production.success.${!prodStatus}`), { variant: 'success' });
   }, [prodStatus, setProdStatus, enqueueSnackbar, t]);
 
-  const pushPath = useMemo(
+  const homePath = useMemo(
     () => (isNil(service) ? '' : generatePath(PARENT_ROUTE, { mainDomain: service.mainDomain })),
     [service],
   );
@@ -100,16 +99,10 @@ const SSOProductionSetup = ({ appBarProps, t, service, history }) => {
 
   return (
     <ScreenAction
-      history={history}
-      pushPath={pushPath}
+      navigationProps={{ homePath, toolbarProps: { maxWidth: 'md' } }}
       appBarProps={appBarProps}
       title={t('admin__new:sso.productionSetup.title')}
     >
-      <Navigation
-        history={history}
-        pushPath={pushPath}
-        toolbarProps={{ maxWidth: 'md' }}
-      />
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
           {t('admin__new:sso.productionSetup.subtitle')}
@@ -183,11 +176,8 @@ SSOProductionSetup.propTypes = {
     items: PropTypes.arrayOf(PropTypes.node),
   }),
   service: PropTypes.shape(ServiceSchema.propTypes),
-  // router props
-  history: PropTypes.object.isRequired,
   // withTranslation HOC
   t: PropTypes.func.isRequired,
-  // CONNECT dispatch
 };
 
 SSOProductionSetup.defaultProps = {
