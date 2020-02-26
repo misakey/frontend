@@ -13,6 +13,7 @@ import { updateEntities } from '@misakey/store/actions/entities';
 
 import generatePath from '@misakey/helpers/generatePath';
 import isNil from '@misakey/helpers/isNil';
+import propOr from '@misakey/helpers/propOr';
 
 import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
@@ -35,6 +36,8 @@ const INFO_UPDATE_ENDPOINT = {
 };
 
 // HELPERS
+const nameProp = propOr('', 'name');
+
 const updateApplicationInfo = (id, form) => API
   .use(INFO_UPDATE_ENDPOINT)
   .build({ id }, objectToSnakeCase(form))
@@ -71,6 +74,16 @@ const ServiceName = ({ appBarProps, t, service, dispatchUpdateEntities, history 
     t,
   );
 
+  const name = useMemo(
+    () => nameProp(service),
+    [service],
+  );
+
+  const initialValues = useMemo(
+    () => ({ name }),
+    [name],
+  );
+
   const pushPath = useMemo(
     () => (isNil(service) ? '' : generatePath(PARENT_ROUTE, { mainDomain: service.mainDomain })),
     [service],
@@ -78,7 +91,6 @@ const ServiceName = ({ appBarProps, t, service, dispatchUpdateEntities, history 
 
   if (isNil(service)) { return null; }
 
-  const { name } = service;
 
   if (error) {
     return <ScreenError httpStatus={error} />;
@@ -98,7 +110,7 @@ const ServiceName = ({ appBarProps, t, service, dispatchUpdateEntities, history 
         <Formik
           validationSchema={nameValidationSchema}
           onSubmit={onSubmit}
-          initialValues={{ name }}
+          initialValues={initialValues}
         >
           <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
             <Field

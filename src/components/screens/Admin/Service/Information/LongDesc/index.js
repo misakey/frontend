@@ -12,6 +12,7 @@ import ServiceSchema from 'store/schemas/Service';
 import { updateEntities } from '@misakey/store/actions/entities';
 
 import isNil from '@misakey/helpers/isNil';
+import propOr from '@misakey/helpers/propOr';
 import generatePath from '@misakey/helpers/generatePath';
 
 import API from '@misakey/api';
@@ -35,6 +36,8 @@ const INFO_UPDATE_ENDPOINT = {
 };
 
 // HELPERS
+const longDescProp = propOr('', 'longDesc');
+
 const updateApplicationInfo = (id, form) => API
   .use(INFO_UPDATE_ENDPOINT)
   .build({ id }, objectToSnakeCase(form))
@@ -76,9 +79,18 @@ const ServiceLongDesc = ({ appBarProps, t, service, dispatchUpdateEntities, hist
     [service],
   );
 
+  const longDesc = useMemo(
+    () => longDescProp(service),
+    [service],
+  );
+
+  const initialValues = useMemo(
+    () => ({ longDesc }),
+    [longDesc],
+  );
+
   if (isNil(service)) { return null; }
 
-  const { longDesc } = service;
 
   if (error) {
     return <ScreenError httpStatus={error} />;
@@ -98,7 +110,7 @@ const ServiceLongDesc = ({ appBarProps, t, service, dispatchUpdateEntities, hist
         <Formik
           validationSchema={longDescValidationSchema}
           onSubmit={onSubmit}
-          initialValues={{ longDesc }}
+          initialValues={initialValues}
         >
           <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
             <Field

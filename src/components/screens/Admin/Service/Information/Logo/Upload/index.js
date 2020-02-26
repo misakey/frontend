@@ -17,17 +17,23 @@ const FIELD = 'logo';
 const PREVIEW = 'preview';
 
 // HOOKS
-const useOnChange = (mainDomain, setFieldValue, history) => useCallback((file, preview) => {
-  setFieldValue(FIELD, file);
-  setFieldValue(PREVIEW, preview);
+const useOnChange = (mainDomain, setValues, setTouched, history) => useCallback((file, preview) => {
+  setValues({
+    [FIELD]: file,
+    [PREVIEW]: preview,
+  });
+  setTouched({
+    [FIELD]: true,
+    [PREVIEW]: true,
+  }, false);
   history.push(generatePath(routes.admin.service.information.logo._, { mainDomain }));
-}, [mainDomain, setFieldValue, history]);
+}, [setValues, setTouched, history, mainDomain]);
 
 // COMPONENTS
-// @FIXME: I used Formik#setFieldValue, because I couldn't trigger change with field#onChange
+// @FIXME: I used Formik#setValues, because I couldn't trigger change with field#onChange
 // find a way to use Field#onChange and trigger form change if possible
-const ServiceLogoUpload = ({ service, t, setFieldValue, history }) => {
-  const onChange = useOnChange(service.mainDomain, setFieldValue, history);
+const ServiceLogoUpload = ({ service, t, setValues, setTouched, history }) => {
+  const onChange = useOnChange(service.mainDomain, setValues, setTouched, history);
 
   const pushPath = useMemo(
     () => generatePath(routes.admin.service.information.logo._, { mainDomain: service.mainDomain }),
@@ -57,7 +63,9 @@ const ServiceLogoUpload = ({ service, t, setFieldValue, history }) => {
 ServiceLogoUpload.propTypes = {
   service: PropTypes.shape({ mainDomain: PropTypes.string }),
   t: PropTypes.func.isRequired,
-  setFieldValue: PropTypes.func.isRequired,
+  // formik
+  setValues: PropTypes.func.isRequired,
+  setTouched: PropTypes.func.isRequired,
   // ROUTER
   history: PropTypes.object.isRequired,
 };

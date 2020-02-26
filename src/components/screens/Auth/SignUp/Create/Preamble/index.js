@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const AuthSignUpPreamble = ({ t, setFieldValue, setFieldTouched, setTouched, isSubmitting }) => {
+const AuthSignUpPreamble = ({ t, setFieldValue, setFieldTouched, setTouched }) => {
   const theme = useTheme();
   const padded = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -61,11 +61,10 @@ const AuthSignUpPreamble = ({ t, setFieldValue, setFieldTouched, setTouched, isS
   const primary = useMemo(
     () => ({
       text: t('auth:signUp.create.preamble.action.accept'),
-      isLoading: isSubmitting,
       type: 'submit',
       onClick: onAccept,
     }),
-    [isSubmitting, onAccept, t],
+    [onAccept, t],
   );
 
   const titleProps = useMemo(
@@ -101,6 +100,7 @@ const AuthSignUpPreamble = ({ t, setFieldValue, setFieldTouched, setTouched, isS
       secondary={<ButtonGoBackTo to={routes.auth.signIn._} />}
       Header={CardHeaderAuthSignUp}
       padded={padded}
+      formik
     >
       <List>
         <ListItem classes={{ container: classes.listItemContainer }}>
@@ -151,7 +151,6 @@ AuthSignUpPreamble.propTypes = {
   t: PropTypes.func.isRequired,
   location: PropTypes.shape({ search: PropTypes.string }).isRequired,
   // FORMIK
-  isSubmitting: PropTypes.bool.isRequired,
   setFieldValue: PropTypes.func.isRequired,
   setFieldTouched: PropTypes.func.isRequired,
   setTouched: PropTypes.func.isRequired,

@@ -11,15 +11,19 @@ import Subtitle from 'components/dumb/Typography/Subtitle';
 import ScreenAction from 'components/dumb/Screen/Action';
 
 // HOOKS
-const useOnChange = (name, previewName, setFieldValue, setFieldTouched, history) => useCallback(
+const useOnChange = (name, previewName, setValues, setTouched, history) => useCallback(
   (file, preview) => {
-    setFieldValue(name, file);
-    setFieldTouched(name, true, false);
-    setFieldValue(previewName, preview);
-    setFieldTouched(previewName, true, false);
+    setValues({
+      [name]: file,
+      [previewName]: preview,
+    });
+    setTouched({
+      [name]: true,
+      [previewName]: true,
+    }, false);
     history.push(routes.account.profile.avatar._);
   },
-  [name, previewName, setFieldValue, setFieldTouched, history],
+  [history, name, previewName, setTouched, setValues],
 );
 
 // COMPONENTS
@@ -30,11 +34,11 @@ const AccountAvatarUpload = ({
   previewName,
   state,
   t,
-  setFieldValue,
-  setFieldTouched,
+  setValues,
+  setTouched,
   history,
 }) => {
-  const onChange = useOnChange(name, previewName, setFieldValue, setFieldTouched, history);
+  const onChange = useOnChange(name, previewName, setValues, setTouched, history);
 
   return (
     <ScreenAction
@@ -60,8 +64,8 @@ AccountAvatarUpload.propTypes = {
   previewName: PropTypes.string.isRequired,
   state: PropTypes.object,
   t: PropTypes.func.isRequired,
-  setFieldValue: PropTypes.func.isRequired,
-  setFieldTouched: PropTypes.func.isRequired,
+  setValues: PropTypes.func.isRequired,
+  setTouched: PropTypes.func.isRequired,
   // ROUTER
   history: PropTypes.object.isRequired,
 };

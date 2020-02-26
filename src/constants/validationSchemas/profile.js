@@ -3,6 +3,7 @@ import { MAX_AVATAR_SIZE } from 'constants/file/size';
 import { ACCEPTED_TYPES } from 'constants/file/image';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 
+import isNil from '@misakey/helpers/isNil';
 
 // CONSTANTS
 const { invalid, malformed, required, conflict } = errorTypes;
@@ -18,8 +19,8 @@ export const displayNameValidationSchema = Yup.object().shape({
 export const avatarValidationSchema = Yup.object().shape({
   avatar: Yup.mixed()
     .required(required)
-    .test('fileSize', 'size', ({ size }) => size <= MAX_AVATAR_SIZE)
-    .test('fileType', 'format', ({ type }) => ACCEPTED_TYPES.includes(type)),
+    .test('fileSize', 'size', (file) => !isNil(file) && file.size <= MAX_AVATAR_SIZE)
+    .test('fileType', 'format', (file) => !isNil(file) && ACCEPTED_TYPES.includes(file.type)),
 });
 
 export const passwordValidationSchema = Yup.object().shape({

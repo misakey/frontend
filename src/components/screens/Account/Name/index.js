@@ -11,6 +11,7 @@ import { userProfileUpdate } from 'store/actions/screens/account';
 
 import isNil from '@misakey/helpers/isNil';
 import path from '@misakey/helpers/path';
+import propOr from '@misakey/helpers/propOr';
 
 import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
@@ -28,6 +29,7 @@ import ScreenAction from 'components/dumb/Screen/Action';
 const FIELD_NAME = 'displayName';
 
 // HELPERS
+const displayNameProp = propOr('', FIELD_NAME);
 const getFieldError = path(['details', snakeCase(FIELD_NAME)]);
 
 const updateProfile = (id, form) => API
@@ -72,6 +74,16 @@ const AccountName = ({
     [isFetching],
   );
 
+  const displayName = useMemo(
+    () => displayNameProp(profile),
+    [profile],
+  );
+
+  const initialValues = useMemo(
+    () => ({ displayName }),
+    [displayName],
+  );
+
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
 
   const onSubmit = useOnSubmit(
@@ -84,9 +96,6 @@ const AccountName = ({
   );
 
   if (isNil(profile)) { return null; }
-
-  const { displayName } = profile;
-
 
   return (
     <ScreenAction
@@ -102,7 +111,7 @@ const AccountName = ({
           <Formik
             validationSchema={displayNameValidationSchema}
             onSubmit={onSubmit}
-            initialValues={{ displayName }}
+            initialValues={initialValues}
           >
             <Form>
               <Field

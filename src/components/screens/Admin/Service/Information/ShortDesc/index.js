@@ -13,6 +13,7 @@ import { updateEntities } from '@misakey/store/actions/entities';
 
 import generatePath from '@misakey/helpers/generatePath';
 import isNil from '@misakey/helpers/isNil';
+import propOr from '@misakey/helpers/propOr';
 
 import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
@@ -35,6 +36,8 @@ const INFO_UPDATE_ENDPOINT = {
 };
 
 // HELPERS
+const shortDescProp = propOr('', 'shortDesc');
+
 const updateApplicationInfo = (id, form) => API
   .use(INFO_UPDATE_ENDPOINT)
   .build({ id }, objectToSnakeCase(form))
@@ -72,14 +75,22 @@ const ServiceShortDesc = ({ appBarProps, t, service, dispatchUpdateEntities, his
     t,
   );
 
+  const shortDesc = useMemo(
+    () => shortDescProp(service),
+    [service],
+  );
+
+  const initialValues = useMemo(
+    () => ({ shortDesc }),
+    [shortDesc],
+  );
+
   const pushPath = useMemo(
     () => (isNil(service) ? '' : generatePath(PARENT_ROUTE, { mainDomain: service.mainDomain })),
     [service],
   );
 
   if (isNil(service)) { return null; }
-
-  const { shortDesc } = service;
 
   if (error) {
     return <ScreenError httpStatus={error} />;
@@ -99,7 +110,7 @@ const ServiceShortDesc = ({ appBarProps, t, service, dispatchUpdateEntities, his
         <Formik
           validationSchema={shortDescValidationSchema}
           onSubmit={onSubmit}
-          initialValues={{ shortDesc }}
+          initialValues={initialValues}
         >
           <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
             <Field

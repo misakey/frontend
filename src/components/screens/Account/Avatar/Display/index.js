@@ -26,6 +26,7 @@ const AccountAvatarDisplay = ({
   previewName,
   history,
   state,
+  dirty,
   ...rest
 }) => (
   <ScreenAction
@@ -40,22 +41,24 @@ const AccountAvatarDisplay = ({
         {t('screens:account.avatar.subtitle')}
       </Subtitle>
       <Card
-        primary={{
+        primary={dirty ? {
           type: 'submit',
           'aria-label': t('common:submit'),
           text: t('common:submit'),
-        }}
+        } : undefined}
         secondary={{
           to: routes.account.profile.avatar.upload,
           component: Link,
           'aria-label': t('common:edit'),
           text: t('common:edit'),
         }}
+        formik
       >
         <FormImage
           previewName={previewName}
           name={name}
           text={displayName}
+          dirty={dirty}
           {...omit(rest, ['i18n', 'tReady'])}
         />
       </Card>
@@ -71,6 +74,8 @@ AccountAvatarDisplay.propTypes = {
   previewName: PropTypes.string.isRequired,
   state: PropTypes.object,
   history: PropTypes.object.isRequired,
+  // formik
+  dirty: PropTypes.bool.isRequired,
 };
 
 AccountAvatarDisplay.defaultProps = {

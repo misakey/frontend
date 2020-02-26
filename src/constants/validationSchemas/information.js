@@ -3,6 +3,8 @@ import errorTypes from '@misakey/ui/constants/errorTypes';
 import { MAX_AVATAR_SIZE } from 'constants/file/size';
 import { ACCEPTED_TYPES } from 'constants/file/image';
 
+import isNil from '@misakey/helpers/isNil';
+
 // CONSTANTS
 const { required, malformed } = errorTypes;
 // @FIXME using this basic regex instead of Yup.url because it does not allow protocol omition
@@ -25,8 +27,8 @@ export const nameValidationSchema = Yup.object().shape({
 export const logoValidationSchema = Yup.object().shape({
   logo: Yup.mixed()
     .required(required)
-    .test('fileSize', 'size', ({ size }) => size <= MAX_AVATAR_SIZE)
-    .test('fileType', 'format', ({ type }) => ACCEPTED_TYPES.includes(type)),
+    .test('fileSize', 'size', (file) => !isNil(file) && file.size <= MAX_AVATAR_SIZE)
+    .test('fileType', 'format', (file) => !isNil(file) && ACCEPTED_TYPES.includes(file.type)),
 });
 
 export const shortDescValidationSchema = Yup.object().shape({

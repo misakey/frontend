@@ -109,7 +109,7 @@
     "typeface-roboto": "^0.0.75",
     "uuid": "^3.3.3",
     "validator": "^11.1.0",
-    "yup": "^0.27.0"
+    "yup": "^0.28.1"
   },
   "scripts": {
     "start": "react-app-rewired start",

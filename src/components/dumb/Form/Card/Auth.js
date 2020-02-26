@@ -36,6 +36,7 @@ const FormCardAuth = ({
         subtitleProps={subtitleProps}
         titleProps={titleProps}
         padded={padded}
+        formik
         {...rest}
       >
         {children}

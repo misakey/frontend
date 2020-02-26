@@ -97,6 +97,11 @@ const SSORedirectUri = ({ appBarProps, t, service, dispatchUpdateEntities, histo
     [service],
   );
 
+  const initialValues = useMemo(
+    () => ({ redirectUris }),
+    [redirectUris],
+  );
+
   const pushPath = useMemo(
     () => (isNil(service) ? '' : generatePath(PARENT_ROUTE, { mainDomain: service.mainDomain })),
     [service],
@@ -121,7 +126,7 @@ const SSORedirectUri = ({ appBarProps, t, service, dispatchUpdateEntities, histo
         <Formik
           validationSchema={redirectUriValidationSchema}
           onSubmit={onSubmit}
-          initialValues={{ redirectUris }}
+          initialValues={initialValues}
         >
           <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
             <Field

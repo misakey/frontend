@@ -80,6 +80,11 @@ const SSOAllowedOrigins = ({ appBarProps, t, service, dispatchUpdateEntities, hi
     [service],
   );
 
+  const initialValues = useMemo(
+    () => ({ allowedCorsOrigins }),
+    [allowedCorsOrigins],
+  );
+
   const onSubmit = useOnSubmit(
     service,
     dispatchUpdateEntities,
@@ -113,7 +118,7 @@ const SSOAllowedOrigins = ({ appBarProps, t, service, dispatchUpdateEntities, hi
         <Formik
           validationSchema={allowedOriginsValidationSchema}
           onSubmit={onSubmit}
-          initialValues={{ allowedCorsOrigins }}
+          initialValues={initialValues}
         >
           <Box display="flex" flexDirection="column" alignItems="flex-end" component={Form}>
             <Field

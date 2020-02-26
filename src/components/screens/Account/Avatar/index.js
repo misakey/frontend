@@ -32,6 +32,7 @@ const PREVIEW_NAME = 'preview';
 const INITIAL_VALUES = {
   [FIELD_NAME]: null,
 };
+const EMPTY_OBJECT = {};
 
 // HELPERS
 const pickForm = pick(Object.keys(INITIAL_VALUES));
@@ -79,6 +80,16 @@ const AccountAvatar = ({
     [isFetching],
   );
 
+  const { displayName, avatarUri } = useMemo(
+    () => profile || EMPTY_OBJECT,
+    [profile],
+  );
+
+  const initialValues = useMemo(
+    () => ({ avatar: avatarUri }),
+    [avatarUri],
+  );
+
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
 
   const onSubmit = useOnSubmit(
@@ -92,14 +103,12 @@ const AccountAvatar = ({
 
   if (isNil(profile)) { return null; }
 
-  const { displayName, avatarUri } = profile;
-
   return (
     <div className="Avatar">
       <Formik
         validationSchema={avatarValidationSchema}
         onSubmit={onSubmit}
-        initialValues={{ avatar: avatarUri }}
+        initialValues={initialValues}
       >
         {(formikProps) => (
           <Form className="form">
