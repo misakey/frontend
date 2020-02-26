@@ -52,7 +52,8 @@ const INITIAL_VALUES = {
   [PASSWORD_FIELD_NAME]: '',
 };
 
-const PARENT_TO = routes.auth.signIn;
+const PARENT_TO = routes.auth.signIn._;
+const PREVIOUS_TO = routes.auth.signIn.secret;
 
 // HELPERS
 const getOtpError = path(['details', 'otp']);
@@ -241,7 +242,7 @@ const AuthForgot = ({
       <FormCardAuth
         title={t('auth:forgotPassword.title')}
         subtitle={<AuthForgotSubtitle name={step} email={email} />}
-        secondary={{ text: t('common:previous'), component: Link, to: PARENT_TO }}
+        secondary={{ text: t('common:previous'), component: Link, to: PREVIOUS_TO }}
         primary={{
           type: 'submit',
           text: t(`auth:forgotPassword.form.action.${step}`),

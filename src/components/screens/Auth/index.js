@@ -182,14 +182,14 @@ function Auth({ dispatch, from, isAuthenticated, currentAcr, location, match, ss
           render={(routerProps) => <SignUp {...routerProps} />}
         />
         <Route
-          path={routes.auth.signIn}
+          path={routes.auth.signIn._}
           render={(routerProps) => <SignIn {...routerProps} challenge={challenge} />}
         />
         <Route
           path={routes.auth.forgotPassword}
           component={Forgot}
         />
-        <Redirect from={match.path} to={routes.auth.signIn} exact />
+        <Redirect from={match.path} to={routes.auth.signIn._} exact />
       </Switch>
     </Screen>
   );

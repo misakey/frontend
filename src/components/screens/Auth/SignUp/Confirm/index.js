@@ -37,7 +37,7 @@ const DEFAULT_FIELDS = {
   },
 };
 
-const PARENT_TO = routes.auth.signIn;
+const PARENT_TO = routes.auth.signIn._;
 
 // HELPERS
 const fetchConfirm = (payload) => API

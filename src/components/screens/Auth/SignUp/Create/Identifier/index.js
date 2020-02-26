@@ -113,7 +113,7 @@ const AuthSignUpCreateIdentifier = ({
       <AuthSignUpCreateIdentifierFormFields />
       <Button
         standing={BUTTON_STANDINGS.TEXT}
-        to={routes.auth.signIn}
+        to={routes.auth.signIn._}
         component={Link}
         text={t('auth:signUp.form.action.signIn')}
         classes={{ buttonRoot: classes.buttonRoot }}

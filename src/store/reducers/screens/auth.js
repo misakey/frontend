@@ -7,7 +7,7 @@ import {
   SCREEN_AUTH_SET_PUBLICS,
 } from 'store/actions/screens/auth';
 
-const initialState = { identifier: '', publics: null };
+const initialState = { identifier: '', secret: null, publics: null };
 
 function setIdentifier(state, { identifier }) {
   return { ...state, identifier };

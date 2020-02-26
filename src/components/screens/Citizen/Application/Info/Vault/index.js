@@ -11,7 +11,7 @@ import { loadSecretsBackup } from '@misakey/crypto/store/actions';
 import { makeStyles } from '@material-ui/core/styles';
 
 import API from '@misakey/api';
-import { NoPassword } from 'constants/Errors/classes';
+import NoPassword from 'constants/Errors/classes/NoPassword';
 import { OPEN, DONE } from 'constants/databox/status';
 import { DONE as COMMENT_DONE } from 'constants/databox/comment';
 

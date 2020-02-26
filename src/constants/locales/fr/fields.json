@@ -42,8 +42,7 @@
     "error": {
       "expired": "Le code a expiré. Je dois en demander un nouveau",
       "invalid": "Le code de confirmation est incorrect",
-      "malformed": "Le code de confirmation doit contenir 6 chiffres",
-      "conflict": "Nous avons déjà envoyé un code en cours de validité. \nJe revérifie mes mails ou je réessaie dans quelques minutes"
+      "malformed": "Le code de confirmation doit contenir 6 chiffres"
     }
   },
   "confirmationCode_secret": {
@@ -52,8 +51,7 @@
     "error": {
       "expired": "Le code a expiré. Je dois en demander un nouveau",
       "invalid": "Le code de confirmation est incorrect",
-      "malformed": "Le code de confirmation doit contenir 6 chiffres",
-      "conflict": "Nous avons déjà envoyé un code en cours de validité. \nJe revérifie mes mails ou je réessaie dans quelques minutes"
+      "malformed": "Le code de confirmation doit contenir 6 chiffres"
     }
   },
   "displayName": {

@@ -1,27 +1,51 @@
-import React, { useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { SECLEVEL_CONFIG, DEFAULT_SECLEVEL, STEP } from 'components/smart/Auth/SignIn/Form/constants';
-import { BUTTON_STANDINGS } from 'components/dumb/Button';
+import React, { useMemo, useCallback } from 'react';
+
+import { screenAuthSetIdentifier, screenAuthSetPublics } from 'store/actions/screens/auth';
+
 import routes from 'routes';
+
+import { useDispatch } from 'react-redux';
+
+import { Link, useHistory } from 'react-router-dom';
+import { SECLEVEL_CONFIG, DEFAULT_SECLEVEL, STEP } from 'constants/auth';
+import { BUTTON_STANDINGS } from 'components/dumb/Button';
 
 import AddIcon from '@material-ui/icons/Add';
 
-
-export const useSignInFormContentAction = (step, acr, t, renewConfirmationCode) => useMemo(() => {
-  const stepType = SECLEVEL_CONFIG[acr || DEFAULT_SECLEVEL].fieldTypes[step];
-  const secondaryActions = {
-    identifier: {
-      email: {
-        buttonProps: {
-          startIcon: <AddIcon />,
-          standing: BUTTON_STANDINGS.TEXT,
-          to: routes.auth.signUp.preamble,
-          component: Link,
-        },
-        textKey: 'auth:signIn.form.action.signUp',
-      },
+// CONSTANTS
+const IDENTIFIER_CONTENT_ACTIONS = {
+  email: {
+    buttonProps: {
+      startIcon: <AddIcon />,
+      standing: BUTTON_STANDINGS.TEXT,
+      to: routes.auth.signUp.preamble,
+      component: Link,
     },
-    secret: {
+    textKey: 'auth:signIn.form.action.signUp',
+  },
+};
+
+const IDENTIFIER_SECONDARY_ACTIONS = {
+  email: null,
+};
+
+// HOOKS
+export const useIdentifierContentAction = (acr, t) => useMemo(
+  () => {
+    const stepType = SECLEVEL_CONFIG[acr || DEFAULT_SECLEVEL].fieldTypes[STEP.identifier];
+    const { buttonProps, textKey } = IDENTIFIER_CONTENT_ACTIONS[stepType];
+    return {
+      ...buttonProps,
+      text: t(textKey),
+    };
+  },
+  [acr, t],
+);
+
+export const useSecretContentAction = (acr, t, renewConfirmationCode) => useMemo(
+  () => {
+    const stepType = SECLEVEL_CONFIG[acr || DEFAULT_SECLEVEL].fieldTypes[STEP.secret];
+    const contentActions = {
       password: {
         buttonProps: {
           standing: BUTTON_STANDINGS.TEXT,
@@ -36,56 +60,54 @@ export const useSignInFormContentAction = (step, acr, t, renewConfirmationCode) 
         },
         textKey: 'auth:signIn.form.action.getANewCode.button',
       },
-    },
-  };
-  const { buttonProps, textKey } = secondaryActions[step][stepType];
+    };
+    const { buttonProps, textKey } = contentActions[stepType];
+    return {
+      ...buttonProps,
+      text: t(textKey),
+    };
+  },
+  [acr, renewConfirmationCode, t],
+);
 
-  return {
-    ...buttonProps,
-    text: t(textKey),
-  };
-}, [acr, renewConfirmationCode, step, t]);
-
-export const useSignInFormSecondaryAction = (step, acr, handlePrevious, t) => useMemo(() => {
-  const stepType = SECLEVEL_CONFIG[acr || DEFAULT_SECLEVEL].fieldTypes[step];
-  const secondaryActions = {
-    identifier: {
-      email: null,
-    },
-    secret: {
-      password: { onClick: handlePrevious, text: t('common:navigation.history.goBack') },
-      confirmationCode: null,
-    },
-  };
-  return secondaryActions[step][stepType];
-}, [acr, handlePrevious, step, t]);
-
-const primaryActionsTextKey = {
-  identifier: 'auth:signIn.form.action.next',
-  secret: 'auth:signIn.form.action.submit',
+export const useIdentifierSecondaryAction = (acr) => {
+  const stepType = useMemo(
+    () => SECLEVEL_CONFIG[acr || DEFAULT_SECLEVEL].fieldTypes[STEP.identifier],
+    [acr],
+  );
+  return useMemo(() => IDENTIFIER_SECONDARY_ACTIONS[stepType], [stepType]);
 };
 
-export const useSignInFormPrimaryAction = (
-  disableNext,
-  isSubmitting,
-  isValid,
-  onNext,
-  step,
-  t,
-) => useMemo(() => {
-  if (step === STEP.identifier) {
-    return {
-      onClick: onNext,
-      disabled: disableNext,
-      text: t(primaryActionsTextKey[step]),
-    };
-  }
-  if (step === STEP.secret) {
-    return {
-      type: 'submit',
-      disabled: isSubmitting || !isValid,
-      text: t(primaryActionsTextKey[step]),
-    };
-  }
-  return {};
-}, [disableNext, isSubmitting, isValid, onNext, step, t]);
+export const useClearUser = () => {
+  const dispatch = useDispatch();
+  const { push } = useHistory();
+
+  return useCallback(
+    () => Promise.all([
+      dispatch(screenAuthSetIdentifier('')),
+      dispatch(screenAuthSetPublics(null)),
+    ]).then(() => {
+      push(routes.auth.signIn._);
+    }),
+    [dispatch, push],
+  );
+};
+
+export const useSecretSecondaryAction = (acr, t) => {
+  const stepType = useMemo(
+    () => SECLEVEL_CONFIG[acr || DEFAULT_SECLEVEL].fieldTypes[STEP.secret],
+    [acr],
+  );
+
+  const onClick = useClearUser();
+
+  const secondaryActions = useMemo(
+    () => ({
+      password: { onClick, text: t('common:navigation.history.goBack') },
+      confirmationCode: null,
+    }),
+    [onClick, t],
+  );
+
+  return useMemo(() => secondaryActions[stepType], [secondaryActions, stepType]);
+};

@@ -22,8 +22,8 @@ const signInValidationSchema = {
   },
 };
 
-export const getSignInValidationSchema = (fieldTypes) => Yup.object().shape(
-  mapValues(signInValidationSchema, (value, key) => value[fieldTypes[key]]),
+export const getSignInValidationSchema = (fieldTypes, step) => Yup.object().shape(
+  pick([step], mapValues(signInValidationSchema, (value, key) => value[fieldTypes[key]])),
 );
 
 export const openVaultValidationSchema = Yup.object().shape({

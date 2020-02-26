@@ -1,12 +1,18 @@
 import prop from '@misakey/helpers/prop';
+import propOr from '@misakey/helpers/propOr';
 import head from '@misakey/helpers/head';
 import compose from '@misakey/helpers/compose';
 import has from '@misakey/helpers/has';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
+// CONSTANTS
+const EMPTY_OBJ = {};
+
+export const getCode = prop('code');
+
 export const getDetails = compose(
   objectToCamelCase,
-  prop('details'),
+  propOr(EMPTY_OBJ, 'details'),
 );
 
 export const getDetailKeys = compose(

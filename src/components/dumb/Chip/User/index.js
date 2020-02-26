@@ -44,7 +44,7 @@ const ChipUser = ({ identifier, displayName, label, avatarUri, onClick, onDelete
 };
 
 ChipUser.propTypes = {
-  identifier: PropTypes.string.isRequired,
+  identifier: PropTypes.string,
   displayName: PropTypes.string,
   label: PropTypes.string,
   avatarUri: PropTypes.string,
@@ -54,6 +54,7 @@ ChipUser.propTypes = {
 };
 
 ChipUser.defaultProps = {
+  identifier: '',
   displayName: '',
   avatarUri: '',
   label: null,

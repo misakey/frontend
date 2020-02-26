@@ -56,9 +56,12 @@ const routes = {
     callback: '/callback',
     error: '/auth/error',
     recover: '/auth/recover',
-    signIn: '/auth/login',
     redirectToSignIn: '/login',
     signOut: '/logout',
+    signIn: {
+      _: '/auth/login',
+      secret: '/auth/login/secret',
+    },
     signUp: {
       _: '/auth/register',
       preamble: '/auth/register/preamble',

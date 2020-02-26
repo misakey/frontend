@@ -98,7 +98,7 @@ const AuthSignUpPreamble = ({ t, setFieldValue, setFieldTouched, setTouched, isS
       subtitle={t('auth:signUp.create.preamble.subtitle')}
       subtitleProps={subtitleProps}
       primary={primary}
-      secondary={<ButtonGoBackTo to={routes.auth.signIn} />}
+      secondary={<ButtonGoBackTo to={routes.auth.signIn._} />}
       Header={CardHeaderAuthSignUp}
       padded={padded}
     >

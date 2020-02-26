@@ -1,6 +1,6 @@
 {
   "name": "@misakey/hooks",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "license": "SEE LICENSE IN /LICENSE",
   "author": "Misakey Team",
@@ -21,10 +21,10 @@
     "release": "npm publish build --tag latest"
   },
   "peerDependencies": {
-    "@material-ui/core": "^4.3.0",
-    "@material-ui/icons": "^4.2.1",
+    "@material-ui/core": "^4.8.3",
+    "@material-ui/icons": "^4.4.1",
     "@misakey/helpers": "3.x",
-    "react": "^16.8.6"
+    "react": "^16.12.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5"

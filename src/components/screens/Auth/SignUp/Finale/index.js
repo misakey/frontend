@@ -25,7 +25,8 @@ import Card from 'components/dumb/Card';
 import CardHeaderAuthSignUp from 'components/smart/Card/Header/Auth/SignUp';
 
 // CONSTANTS
-const PARENT_TO = routes.auth.signIn;
+const PARENT_TO = routes.auth.signIn._;
+const EMPTY_SECRET_TO = routes.auth.signIn.secret;
 
 const INIT_AUTH_ENDPOINT = {
   method: 'POST',
@@ -110,7 +111,7 @@ const AuthSignUpFinale = ({
   const onClick = useCallback(
     () => {
       if (isEmpty(password)) {
-        return history.push(PARENT_TO);
+        return history.push(EMPTY_SECRET_TO);
       }
 
       setLoading(true);
