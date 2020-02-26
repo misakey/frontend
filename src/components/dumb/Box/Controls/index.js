@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const BoxControls = ({ primary, secondary, outlined, formik, ...rest }) => {
+const BoxControls = ({ primary, secondary, formik, ...rest }) => {
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.only('xs'));
 
@@ -43,14 +43,6 @@ const BoxControls = ({ primary, secondary, outlined, formik, ...rest }) => {
     [secondary],
   );
 
-  const standings = useMemo(
-    () => (outlined
-      ? { primary: BUTTON_STANDINGS.MAIN, secondary: BUTTON_STANDINGS.OUTLINED }
-      : { primary: BUTTON_STANDINGS.TEXT, secondary: BUTTON_STANDINGS.CANCEL }
-    ),
-    [outlined],
-  );
-
   const PrimaryButton = useMemo(
     () => (formik ? ButtonSubmit : Button),
     [formik],
@@ -62,11 +54,11 @@ const BoxControls = ({ primary, secondary, outlined, formik, ...rest }) => {
         return primary;
       }
       if (isObject(primary)) {
-        return <PrimaryButton standing={standings.primary} {...primary} />;
+        return <PrimaryButton standing={BUTTON_STANDINGS.MAIN} {...primary} />;
       }
       return null;
     },
-    [standings, primary],
+    [primary],
   );
 
   const secondaryNode = useMemo(
@@ -75,11 +67,11 @@ const BoxControls = ({ primary, secondary, outlined, formik, ...rest }) => {
         return secondary;
       }
       if (isObject(secondary)) {
-        return <Button standing={standings.secondary} {...secondary} />;
+        return <Button standing={BUTTON_STANDINGS.CANCEL} {...secondary} />;
       }
       return null;
     },
-    [standings, secondary],
+    [secondary],
   );
 
   return (
@@ -98,14 +90,12 @@ const BoxControls = ({ primary, secondary, outlined, formik, ...rest }) => {
 };
 
 BoxControls.propTypes = {
-  outlined: PropTypes.bool,
   formik: PropTypes.bool,
   primary: PropTypes.oneOfType([PropTypes.object, PropTypes.node]),
   secondary: PropTypes.oneOfType([PropTypes.object, PropTypes.node]),
 };
 
 BoxControls.defaultProps = {
-  outlined: true,
   formik: false,
   primary: null,
   secondary: null,

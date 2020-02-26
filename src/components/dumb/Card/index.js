@@ -11,7 +11,7 @@ import CardActions from '@material-ui/core/CardActions';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import GroupTitles from 'components/dumb/Typography/GroupTitles';
-import CardControls from 'components/dumb/Card/Controls';
+import BoxControls from 'components/dumb/Box/Controls';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -104,7 +104,7 @@ const Card = ({
       {!title && children}
       {hasActions && (
         <CardActions className={clsx({ [classes.denseActions]: !hasTitle })}>
-          <CardControls primary={primary} secondary={secondary} formik={formik} />
+          <BoxControls primary={primary} secondary={secondary} formik={formik} />
         </CardActions>
       )}
     </MuiCard>

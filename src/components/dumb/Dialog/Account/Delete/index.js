@@ -71,7 +71,6 @@ const DeleteAccountDialog = ({ onClose, onSuccess, open, profile, t }) => {
                 text: t('common__new:cancel'),
                 onClick: onClose,
               }}
-              outlined={false}
               formik
             />
           </DialogActions>

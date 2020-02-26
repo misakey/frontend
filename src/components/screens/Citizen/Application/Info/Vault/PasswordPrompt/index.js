@@ -70,7 +70,6 @@ function PasswordPrompt({ onClose, onSubmit, firstAttempt, t, open }) {
                   text: t('common__new:cancel'),
                   onClick: onClose,
                 }}
-                outlined={false}
                 formik
               />
             </DialogActions>

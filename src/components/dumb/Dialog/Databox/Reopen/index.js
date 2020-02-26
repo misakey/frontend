@@ -57,7 +57,6 @@ const DialogDataboxReopen = ({ onClose, onSuccess, open, t }) => {
         <BoxControls
           primary={primary}
           secondary={secondary}
-          outlined={false}
         />
       </DialogActions>
     </Dialog>

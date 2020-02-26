@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';
 import Alert from '@misakey/ui/Alert';
-import Button from 'components/dumb/Button';
+import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
 
 const SecLevelWarningAlert = ({
@@ -25,7 +25,7 @@ const SecLevelWarningAlert = ({
         <>
           <Button onClick={hideSeclevelWarning} text={t('common__new:cancel')} />
           <Button
-            standing="main"
+            standing={BUTTON_STANDINGS.MAIN}
             authProps={authProps}
             component={ButtonConnectSimple}
             text={t('common__new:signIn')}

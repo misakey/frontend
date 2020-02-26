@@ -87,7 +87,6 @@ const DialogDataboxDone = ({ onClose, onSuccess, open, t }) => {
                 text: t('common__new:done'),
               }}
               secondary={secondary}
-              outlined={false}
               formik
             />
           </DialogActions>

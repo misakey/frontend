@@ -62,7 +62,6 @@ function ConfirmationDialog({
             text,
           }}
           secondary={secondary}
-          outlined={false}
         />
       </DialogActions>
     </Dialog>

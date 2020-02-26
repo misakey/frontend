@@ -13,7 +13,7 @@ import ScreenAction from 'components/dumb/Screen/Action';
 import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import Card from 'components/dumb/Card';
 import BoxEllipsis from 'components/dumb/Box/Ellipsis';
-import Button from 'components/dumb/Button';
+import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import ListQuestions, { useQuestionsItems } from 'components/dumb/List/Questions';
 
 import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
@@ -135,8 +135,7 @@ const AccessRequestChoose = ({
               <Card className={classes.card}>
                 <Box display="flex" justifyContent="center" mt={1}>
                   <Button
-                    standing="enhanced"
-                    color="secondary"
+                    standing={BUTTON_STANDINGS.text}
                     authProps={{ scope, acrValues: 1, loginHint: dpoEmail }}
                     component={ButtonConnectSimple}
                     text={t('dpo__new:requests.access.passwordLess.button')}
@@ -154,7 +153,7 @@ const AccessRequestChoose = ({
               <Card className={classes.card}>
                 <Box display="flex" justifyContent="center" mt={1}>
                   <Button
-                    standing="main"
+                    standing={BUTTON_STANDINGS.MAIN}
                     className={classes.buttonConnect}
                     component={ButtonConnectSimple}
                     text={t('dpo__new:requests.access.password.button')}

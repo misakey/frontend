@@ -87,7 +87,6 @@ const DialogDataboxArchive = ({ onClose, onSuccess, open, t }) => {
                 text: t('common__new:archive'),
               }}
               secondary={secondary}
-              outlined={false}
               formik
             />
           </DialogActions>

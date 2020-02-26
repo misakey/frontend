@@ -10,10 +10,6 @@ export const BUTTON_STANDINGS = {
   OUTLINED: 'outlined',
   TEXT: 'text',
   CANCEL: 'cancel',
-
-  MINOR: 'minor',
-  MAJOR: 'major',
-  ENHANCED: 'enhanced',
 };
 
 const BUTTON_PROPS_BY_STANDING = {
