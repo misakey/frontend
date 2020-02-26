@@ -149,16 +149,16 @@ function ThirdPartyBlock({
       <>
         <Box className={classes.titleWithPauseButton}>
           <Title>
-            {t('screens:application.thirdParty.summary.title')}
+            {t('plugin__new:thirdParty.summary.title')}
           </Title>
           <PausePluginButton />
         </Box>
         <Card
           mb={3}
-          primary={{ onClick: () => sendMessage(RESTART_BG), text: t('screens:application.thirdParty.error.button.restart'), variant: 'contained' }}
-          secondary={{ onClick: () => openInNewTab(LINK_TO_STORE), text: t('screens:application.thirdParty.error.button.update') }}
+          primary={{ onClick: () => sendMessage(RESTART_BG), text: t('plugin__new:thirdParty.error.button.restart'), variant: 'contained' }}
+          secondary={{ onClick: () => openInNewTab(LINK_TO_STORE), text: t('plugin__new:thirdParty.error.button.update') }}
         >
-          <BoxMessage type="error" text={t('screens:application.thirdParty.error.description')} />
+          <BoxMessage type="error" text={t('plugin__new:thirdParty.error.description')} />
         </Card>
       </>
     );
@@ -168,13 +168,13 @@ function ThirdPartyBlock({
     <>
       <Box className={classes.titleWithPauseButton}>
         <Title>
-          {t('screens:application.thirdParty.summary.title')}
+          {t('plugin__new:thirdParty.summary.title')}
         </Title>
         <PausePluginButton />
       </Box>
       <Card
         mb={3}
-        subtitle={t('screens:application.thirdParty.summary.description')}
+        subtitle={t('plugin__new:thirdParty.summary.description')}
       >
         <CardContent className={classes.content}>
           <List aria-labelledby="list-apps">
@@ -188,7 +188,7 @@ function ThirdPartyBlock({
                     primary={
                       isFetching
                         ? <Skeleton variant="text" style={{ margin: 0 }} />
-                        : t('screens:application.thirdParty.summary.count.empty')
+                        : t('plugin__new:thirdParty.summary.count.empty')
                     }
                     className={classes.listItemEmpty}
                   />
@@ -205,14 +205,14 @@ function ThirdPartyBlock({
                   >
                     <ListItemText
                       id={`switch-list-label-${name}`}
-                      primary={t(`screens:application.thirdParty.purposes.${name}`)}
+                      primary={t(`plugin__new:thirdParty.purposes.${name}`)}
                     />
 
                     <Typography variant="caption">
                       {
-                      `${t('screens:application.thirdParty.summary.count.blocked', { count: blockedApps.length })} 
+                      `${t('plugin__new:thirdParty.summary.count.blocked', { count: blockedApps.length })} 
                       /
-                      ${t('screens:application.thirdParty.summary.count.detected', { count: apps.length })}`
+                      ${t('plugin__new:thirdParty.summary.count.detected', { count: apps.length })}`
                       }
                     </Typography>
                     <KeyboardArrowRight className={classes.arrowIcon} />
@@ -256,4 +256,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchDetectedTrackers: (data) => dispatch(setDetectedTrackers(data)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['screens'])(ThirdPartyBlock));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['plugin__new'])(ThirdPartyBlock));

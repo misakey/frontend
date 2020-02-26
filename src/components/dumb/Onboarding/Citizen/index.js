@@ -48,7 +48,7 @@ const OnboardingCitizen = ({ isAuthenticated, t }) => {
         workspace={WORKSPACE}
         button={{
           standing: BUTTON_STANDINGS.MAIN,
-          text: t(`common:onboarding.${WORKSPACE}.steps.1.button`),
+          text: t(`components__new:onboarding.${WORKSPACE}.steps.1.button`),
           component: ButtonConnectSimple,
         }}
       />
@@ -59,13 +59,13 @@ const OnboardingCitizen = ({ isAuthenticated, t }) => {
         component={CardSimpleDoubleButton}
         primary={{
           standing: BUTTON_STANDINGS.MAIN,
-          text: t(`common:onboarding.${WORKSPACE}.steps.2.firefox`),
+          text: t(`components__new:onboarding.${WORKSPACE}.steps.2.firefox`),
           href: FIREFOX_ADDON_URI,
           component: 'a',
         }}
         secondary={{
           standing: BUTTON_STANDINGS.MAIN,
-          text: t(`common:onboarding.${WORKSPACE}.steps.2.chrome`),
+          text: t(`components__new:onboarding.${WORKSPACE}.steps.2.chrome`),
           href: CHROME_ADDON_URI,
           component: 'a',
         }}
@@ -76,7 +76,7 @@ const OnboardingCitizen = ({ isAuthenticated, t }) => {
         workspace={WORKSPACE}
         button={{
           standing: BUTTON_STANDINGS.MAIN,
-          text: t(`common:onboarding.${WORKSPACE}.steps.3.button`),
+          text: t(`components__new:onboarding.${WORKSPACE}.steps.3.button`),
           component: Link,
           to: IS_PLUGIN ? routes.plugin._ : routes.citizen.applications.categories,
           onClick: redirectToAppForPlugin,
@@ -91,4 +91,4 @@ OnboardingCitizen.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('common')(OnboardingCitizen);
+export default withTranslation('components__new')(OnboardingCitizen);

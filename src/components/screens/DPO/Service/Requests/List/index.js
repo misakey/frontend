@@ -143,7 +143,7 @@ const Row = ({ list, isRowLoaded, classes, service, index, style, t }) => {
         />
         <TypographyDateSince
           date={updatedAt}
-          text={t(`common:databox.since.${status}`)}
+          text={t(`common__new:databox.since.${status}`)}
         />
       </Box>
     </ListItem>
@@ -160,7 +160,7 @@ Row.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-const RowWithTranslation = withTranslation('common')(Row);
+const RowWithTranslation = withTranslation('common__new')(Row);
 
 function ServiceRequestsList({ appBarProps, service, t, isLoading, error }) {
   const classes = useStyles();
@@ -244,7 +244,7 @@ function ServiceRequestsList({ appBarProps, service, t, isLoading, error }) {
       state={state}
       appBarProps={appBarProps}
       navigationProps={{ showGoBack: false, noWrap: true }}
-      title={t('screens:Service.requests.list.title')}
+      title={t('dpo_new:requests.list.title')}
     >
       <Container maxWidth="md" className={classes.container}>
         <BoxSection my={3} p={0} className={classes.box}>
@@ -303,4 +303,4 @@ ServiceRequestsList.defaultProps = {
   error: null,
 };
 
-export default withTranslation(['common', 'screens'])(ServiceRequestsList);
+export default withTranslation(['dpo_new'])(ServiceRequestsList);

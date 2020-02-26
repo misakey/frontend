@@ -90,7 +90,7 @@ function ApplicationListItem({
           <IconButton
             color="secondary"
             edge="end"
-            aria-label={t('common:contact.bulk.ariaLabel')}
+            aria-label={t('citizen__new:contact.bulk.ariaLabel')}
             onClick={onSelect}
           >
             {isSelected
@@ -136,4 +136,4 @@ const mapDispatchToProps = (dispatch) => ({
     (applicationId) => dispatch(bulkSelectionToggleSelected(applicationId)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('common')(ApplicationListItem));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('citizen__new')(ApplicationListItem));

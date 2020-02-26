@@ -13,10 +13,10 @@ const withErrors = (Component) => {
 
     const error = validationError || statusError;
     const errorKeys = [
-      `fields:${prefix}${name}.error.${error}`,
-      `fields:${name}.error.${error}`,
-      `fields:default.error.${error}`,
-      'fields:default.error.unknown',
+      `fields__new:${prefix}${name}.error.${error}`,
+      `fields__new:${name}.error.${error}`,
+      `fields__new:default.error.${error}`,
+      'fields__new:default.error.unknown',
     ];
 
     return <Component {...props} displayError={displayError} errorKeys={errorKeys} />;

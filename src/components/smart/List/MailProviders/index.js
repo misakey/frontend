@@ -130,7 +130,7 @@ const useMailtoHrefs = (mailsProps, t) => useMemo(
 const useErrorContent = (t, errors, sent) => useMemo(() => (
   <>
     <Typography>
-      {t('common:providers.bulkError.content')}
+      {t('citizen__new:contact.providers.bulkError.content')}
     </Typography>
     <List>
       {sent.map((email) => (
@@ -154,7 +154,7 @@ const useErrorContent = (t, errors, sent) => useMemo(() => (
 ), [errors, sent, t]);
 
 const useDisplayMailToSnackbar = (enqueueSnackbar, t) => useCallback(() => {
-  enqueueSnackbar(t('common:providers.manual.notify'), { variant: 'info' });
+  enqueueSnackbar(t('citizen__new:contact.providers.manual.notify'), { variant: 'info' });
 }, [enqueueSnackbar, t]);
 
 // COMPONENTS
@@ -203,14 +203,14 @@ const ListMailProviders = ({
       if (isFunction(send)) {
         const sendPromises = mailsProps.map((mail) => {
           const { mailto, applicationName, subject, body } = mail || {};
-          const extendedMailto = t('common:emailTo', { applicationName, dpoEmail: mailto });
+          const extendedMailto = t('citizen__new:contact.email.to', { applicationName, dpoEmail: mailto });
           return send(extendedMailto, subject, body);
         });
         try {
           Promise.all(sendPromises).then(handleBulkResponse);
         } catch (error) {
           if (error instanceof TypeError) {
-            enqueueSnackbar(t('common:incompatibleBrowser'), { variant: 'warning' });
+            enqueueSnackbar(t('common__new:incompatibleBrowser'), { variant: 'warning' });
           }
         }
       } else {
@@ -285,7 +285,7 @@ const ListMailProviders = ({
 
   const onError = useCallback(
     () => {
-      enqueueSnackbar(t('common:providers.error'), { variant: 'error' });
+      enqueueSnackbar(t('citizen__new:contact.providers.error'), { variant: 'error' });
     },
     [enqueueSnackbar, t],
   );
@@ -303,14 +303,14 @@ const ListMailProviders = ({
 
   useEffect(() => {
     if (showSuccess) {
-      enqueueSnackbar(t('common:providers.send.success', { count: sent.length }), { variant: 'success' });
+      enqueueSnackbar(t('citizen__new:contact.providers.send.success', { count: sent.length }), { variant: 'success' });
     }
 
     if (showError) {
       if (isBulk) {
         setShowErrorModal(true);
       } else {
-        enqueueSnackbar(t('common:providers.send.error'), { variant: 'error' });
+        enqueueSnackbar(t('citizen__new:contact.providers.send.error'), { variant: 'error' });
       }
     }
   }, [enqueueSnackbar, isBulk, sent, showError, showSuccess, t]);
@@ -327,7 +327,7 @@ const ListMailProviders = ({
         setDialogOpen={setShowErrorModal}
         isDialogOpen={showErrorModal}
         dialogContent={errorContent}
-        title={t('common:providers.bulkError.title')}
+        title={t('citizen__new:contact.providers.bulkError.title')}
       />
       <List>
         {allowProviders && PROVIDERS.map(({ key, alt, logoSrc }) => (
@@ -351,17 +351,17 @@ const ListMailProviders = ({
             button
             disabled={disabled}
             divider
-            aria-label={t('common:providers.manual.send', 'Send Manually')}
+            aria-label={t('citizen__new:contact.providers.manual.send', 'Send Manually')}
             {...manualButtonProps}
           >
             <ListItemAvatar>
-              <Avatar alt={t('common:providers.manual.send', 'Send Manually')}>
+              <Avatar alt={t('citizen__new:contact.providers.manual.send', 'Send Manually')}>
                 <MailIcon />
               </Avatar>
             </ListItemAvatar>
             <ListItemText>
               <Typography variant="button" color="textSecondary">
-                {t('common:providers.manual.send', 'Send Manually')}
+                {t('citizen__new:contact.providers.manual.send', 'Send Manually')}
               </Typography>
             </ListItemText>
           </ListItem>
@@ -399,4 +399,4 @@ ListMailProviders.defaultProps = {
 };
 
 
-export default withTranslation('common')(ListMailProviders);
+export default withTranslation('citizen__new')(ListMailProviders);

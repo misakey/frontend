@@ -32,7 +32,7 @@ const DefaultSplashScreen = ({ t, text }) => {
           <HourglassEmptyIcon fontSize="large" color="secondary" />
         </Box>
         <Typography variant="h5" component="h3" color="textSecondary">
-          {text || t('loading')}
+          {text || t('common__new:loading')}
         </Typography>
       </Container>
     </Box>
@@ -48,4 +48,4 @@ DefaultSplashScreen.defaultProps = {
   text: null,
 };
 
-export default withTranslation('common')(DefaultSplashScreen);
+export default withTranslation('common__new')(DefaultSplashScreen);

@@ -8,12 +8,12 @@ import isEmpty from '@misakey/helpers/isEmpty';
 
 export default () => {
   const { enqueueSnackbar } = useSnackbar();
-  const { t } = useTranslation('common');
+  const { t } = useTranslation('common__new');
 
   return useCallback(
     (error) => {
       if (isEmpty(error.details)) {
-        const text = t(`httpStatus.error.${API.errors.filter(error.status || 'default')}`);
+        const text = t(`common__new:httpStatus.error.${API.errors.filter(error.status || 'default')}`);
         enqueueSnackbar(text, { variant: 'error' });
         return true;
       }

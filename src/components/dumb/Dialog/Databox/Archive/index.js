@@ -38,7 +38,7 @@ const DialogDataboxArchive = ({ onClose, onSuccess, open, t }) => {
   const secondary = useMemo(
     () => ({
       onClick: onClose,
-      text: t('common:cancel'),
+      text: t('common__new:cancel'),
     }),
     [onClose, t],
   );
@@ -57,11 +57,11 @@ const DialogDataboxArchive = ({ onClose, onSuccess, open, t }) => {
       >
         <Form>
           <DialogTitle id="databox-archive-dialog-title">
-            {t('common:databox.dialog.close.title')}
+            {t('citizen__new:application.info.vault.closeDialog.title')}
           </DialogTitle>
           <DialogContent>
             <DialogContentText classes={{ root: classes.dialogContentTextRoot }} id="databox-archive-dialog-description">
-              {t('common:databox.dialog.close.description')}
+              {t('citizen__new:application.info.vault.closeDialog.description')}
             </DialogContentText>
             <Field
               component={FieldText}
@@ -70,12 +70,12 @@ const DialogDataboxArchive = ({ onClose, onSuccess, open, t }) => {
               variant="outlined"
               id="owner-comment"
               fullWidth
-              label={t('fields:ownerComment.label')}
-              helperText={t('fields:ownerComment.helperText')}
+              label={t('fields__new:ownerComment.label')}
+              helperText={t('fields__new:ownerComment.helperText')}
             >
               {OWNER_COMMENTS.map((comment) => (
                 <MenuItem classes={{ root: classes.menuItemRoot }} key={comment} value={comment}>
-                  {t(`common:databox.ownerComment.${comment}`)}
+                  {t(`common__new:databox.ownerComment.${comment}`)}
                 </MenuItem>
               ))}
             </Field>
@@ -84,7 +84,7 @@ const DialogDataboxArchive = ({ onClose, onSuccess, open, t }) => {
             <BoxControls
               primary={{
                 type: 'submit',
-                text: t('common:close'),
+                text: t('common__new:archive'),
               }}
               secondary={secondary}
               outlined={false}
@@ -105,4 +105,4 @@ DialogDataboxArchive.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['common', 'fields'])(DialogDataboxArchive);
+export default withTranslation(['common__new', 'fields__new', 'citizen__new'])(DialogDataboxArchive);

@@ -25,7 +25,7 @@ import FieldCode from 'components/dumb/Form/Field/Code';
 import Fields from '@misakey/ui/Form/Fields';
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import ChipUser from 'components/dumb/Chip/User';
-import CardHeaderAuthSignUp from 'components/smart/Card/Header/Auth/SignUp';
+import CardHeaderAuthSignUp from 'components/smart/Card/Auth/Header/SignUp';
 
 // CONSTANTS
 const DEFAULT_FIELDS = {
@@ -119,7 +119,7 @@ function AuthSignUpConfirm({
 
       fetchAskConfirm(email)
         .then(() => {
-          const text = t('auth:signUp.confirm.success.resend', { email });
+          const text = t('auth__new:signUp.confirm.success.resend', { email });
           enqueueSnackbar(text, { variant: 'success' });
         })
         .catch(handleGenericHttpErrors)
@@ -133,7 +133,7 @@ function AuthSignUpConfirm({
       onClick: reSendConfirmCode,
       isLoading: isSending,
       disabled: isSending,
-      text: t('auth:signUp.confirm.action.resend'),
+      text: t('auth__new:signUp.confirm.action.resend'),
     }),
     [isSending, reSendConfirmCode, t],
   );
@@ -156,10 +156,10 @@ function AuthSignUpConfirm({
       <FormCardAuth
         primary={{
           type: 'submit',
-          text: t('common:next'),
+          text: t('common__new:next'),
         }}
-        title={t('auth:signUp.confirm.title')}
-        subtitle={t('auth:signUp.confirm.subtitle')}
+        title={t('auth__new:signUp.confirm.title')}
+        subtitle={t('auth__new:signUp.confirm.subtitle')}
         Header={CardHeaderAuthSignUp}
         formik
       >
@@ -222,4 +222,4 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['auth', 'common'])(AuthSignUpConfirm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['auth__new', 'common__new'])(AuthSignUpConfirm));

@@ -1,0 +1,115 @@
+{
+  "requests": {
+    "access": {
+      "title": "Interface de transfert sécurisée",
+      "desc": "Cette interface est exclusivement réservée aux responsables du traitement des données de {{applicationName}}.<br/>Elle permet d’assurer la chaîne de confiance lors du transfert des données de {{ownerName}}.",
+      "error": {
+        "404": {
+          "title": "Demande de portabilité introuvable",
+          "desc": "Aucune demande de portabilité en cours trouvée. \nEst-elle traitée ou introuvable ? \nEn cas de problème, je peux envoyer un mail à <1>question.pro@misakey.com</1> \nEn pensant à joindre le lien qui ne fonctionne pas et le mail de l'utilisateur ayant fait la demande. \nNos excuses pour la gêne occasionnée"
+        },
+        "default": {
+          "title": "Demande de portabilité introuvable",
+          "desc": "Aucune demande de portabilité en cours trouvée. \nEst-elle traitée ou introuvable ? \nEn cas de problème, je peux envoyer un mail à <1>question.pro@misakey.com</1>. \nEn pensant à joindre le lien qui ne fonctionne pas et le mail de l'utilisateur ayant fait la demande. \nNos excuses pour la gêne occasionnée"
+        }
+      },
+      "password": {
+        "desc": "Je me connecte avec mon compte Misakey ou j'en crée un afin de retrouver sur une même interface toutes les demandes de mes utilisateurs possédant un coffre-fort Misakey",
+        "button": "Connexion"
+      },
+      "passwordLess": {
+        "desc": "J’accède ponctuellement à l’interface de transfert à l’aide d’un code de confirmation envoyé par e-mail à {{dpoEmail}}",
+        "button": "Accès par code"
+      },
+      "questions": {
+        "title": "Questions fréquentes",
+        "text": {
+          "0": "Comment utiliser la plateforme Misakey&nbsp;?",
+          "1": "Qu’est-ce qu’une requête de portabilité&nbsp;?",
+          "2": "Quelles sont mes obligations&nbsp;?",
+          "3": "Comment sont transférées les données&nbsp;?",
+          "4": "Comment automatiser les réponses aux requêtes&nbsp;?"
+        },
+        "href": {
+          "0": "https://docs.misakey.com/#/dpo/?id=envoyer-un-fichier-avec-misakey-",
+          "1": "https://docs.misakey.com/#/dpo/?id=la-demande-de-portabilité",
+          "2": "https://docs.misakey.com/#/dpo/?id=obligation-des-sites",
+          "3": "https://docs.misakey.com/#/dpo/?id=envoi-securisé",
+          "4": "https://docs.misakey.com/#/dpo/?id=automatisation"
+        }
+      }
+    },
+    "doneDialog": {
+      "title": "Clore la requête ?",
+      "description": "Je ne pourrai plus visualiser la requête et l'utilisateur sera informé que je l'ai clôturée.\nJe dois indiquer à l'utilisateur la raison de cette clôture."
+    },
+    "list": {
+      "title": "Mes requêtes"
+    },
+    "read": {
+      "archived": "Cette demande de portabilité est fermée",
+      "doneError": "Action impossible. La demande a déjà été traitée.",
+      "mkAgent": {
+        "message": "Je demande aux developpeurs de mon site d'<1>automatiser le traitement des demandes</1>",
+        "mailToSubject": "Demande d'informations sur Misakey Agent"
+      },
+      "portabilityRequest": "Requête de portabilité",
+      "questions": {
+        "title": "Questions fréquentes",
+        "text": {
+          "0": "Comment sont transférées les données&nbsp;?",
+          "1": "Quelles sont mes obligations&nbsp;?",
+          "2": "Je ne veux plus traiter toutes ces demandes manuellement, comment automatiser ce processus&nbsp;?"
+        },
+        "href": {
+          "0": "https://docs.misakey.com/#/dpo/?id=envoi-securisé",
+          "1": "https://docs.misakey.com/#/dpo/?id=obligation-des-sites",
+          "2": "https://docs.misakey.com/#/dpo/?id=automatisation"
+        }
+      },
+      "title": "Coffre-fort de {{ownerName}}",
+      "upload": {
+        "dialog": {
+          "title": "Envoyer ce fichier ?",
+          "text": "Le fichier va être chiffré avec la clé de {{ownerEmail}} puis lui être envoyé. Cette opération est irréversible"
+        },
+        "success": "Le fichier {{name}} a été envoyé avec succès !"
+      },
+      "vault": {
+        "title": "Fichiers envoyés",
+        "done": "Clore la demande"
+      }
+    }
+  },
+  "services": {
+    "active": "Ces sites répondent",
+    "claim": {
+      "email": {
+        "submit": "Envoyer un code",
+        "success": "Un email a été envoyé à l'adresse du DPO de {{mainDomain}}"
+      },
+      "errors": {
+        "missingDpoEmail": {
+          "description": "Nous avons besoin de connaître l'adresse e-mail du DPO de {{mainDomain}} pour autoriser sa revendication.",
+          "text": "Je communique l'adresse email du DPO de {{mainDomain}}",
+          "button": "Envoyer un mail à Misakey"
+        }
+      },
+      "title": "Activer mon interface",
+      "subtitle": "Je demande un code de confirmation et je saisis le code reçu par e-mail à l’adresse {{dpoEmail}}",
+      "success": "Le site dont le domaine de référence est {{mainDomain}} a été ajouté à ma console d’administration"
+    },
+    "create": {
+      "title": "Ajouter un site",
+      "subtitle": "Je copie-colle l’url de la page d’accueil de mon site pour confirmer son nom de domaine",
+      "success": "Demande de création de service reçue !"
+    },
+    "notFound": {
+      "title": "Le service {{mainDomain}} est introuvable !",
+      "create": {
+        "text": "Je crée le service {{mainDomain}} pour gérer les données de mes utilisateurs.",
+        "button": "Nouveau service"
+      }
+    }
+  }
+}

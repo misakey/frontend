@@ -1,0 +1,33 @@
+{
+  "avatar": {
+    "title": "Photo",
+    "subtitle": "Ma photo de profil est visible par tous sur l’ensemble des sites qui utilisent Misakey",
+    "success": "Ma photo de profil a été mise à jour",
+    "upload": {
+      "title": "Upload photo",
+      "subtitle": "Les fichiers .jpg .jpeg .png .tiff .gif de moins de 3mo sont acceptés"
+    }
+  },
+  "delete": {
+    "title": "Compte",
+    "label": "Supprimer mon compte",
+    "success": "Mon compte a bien été supprimé !",
+    "dialog": {
+      "title": "Supprimer mon compte ?",
+      "description": "Je saisis mon adresse email ({{email}}) dans le champ ci-dessous avant de valider la suppression de mon compte."
+    }
+  },
+  "name": {
+    "title": "Nom public",
+    "subtitle": "Mon nom public sera visible par tous",
+    "success": "Mon nom public a été mis à jour"
+  },
+  "password": {
+    "title": "Mot de passe",
+    "success": "Mon mot de passe a été mis a jour"
+  },
+  "quota": {
+    "title": "Stockage",
+    "description": "{{currentUsage}} utilisé sur {{totalUsage}} gratuit"
+  }
+}

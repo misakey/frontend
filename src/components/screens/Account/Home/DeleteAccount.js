@@ -36,7 +36,7 @@ const useOnDelete = (
     .then(() => {
       handleSignOut(event);
 
-      const text = t('screens:account.delete.success', 'Success !');
+      const text = t('account__new:delete.success', 'Success !');
       enqueueSnackbar(text, { variant: 'success' });
     })
     .catch(handleGenericHttpErrors)
@@ -102,11 +102,11 @@ const DeleteAccount = ({ profile, t, onSignOut, seclevel, userId, userManager, c
         onSuccess={onDelete}
         profile={profile}
       />
-      <ListItem button aria-label={t('fields:deleteAccount.action')} onClick={openDeleteAccountDialog}>
+      <ListItem button aria-label={t('account__new:delete.label')} onClick={openDeleteAccountDialog}>
         <ListItemIcon className={classes.listItemIcon}>
-          <Typography>{t('screens:account.delete.title')}</Typography>
+          <Typography>{t('account__new:delete.title')}</Typography>
         </ListItemIcon>
-        <ListItemText primary={t('screens:account.delete.label')} />
+        <ListItemText primary={t('account__new:delete.label')} />
         <ListItemSecondaryAction>
           <ChevronRightIcon className={classes.actionIcon} />
         </ListItemSecondaryAction>
@@ -143,4 +143,4 @@ const mapDispatchToProps = (dispatch) => ({
 
 export default connect(
   mapStateToProps, mapDispatchToProps,
-)(withTranslation(['screens', 'fields'])(withUserManager(DeleteAccount)));
+)(withTranslation(['account__new'])(withUserManager(DeleteAccount)));

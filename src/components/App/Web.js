@@ -30,7 +30,7 @@ const REFERRERS = {
 };
 
 // COMPONENTS
-const TRedirectAuthCallback = withTranslation('common')(RedirectAuthCallback);
+const TRedirectAuthCallback = withTranslation('common__new')(RedirectAuthCallback);
 
 const App = ({ t }) => (
   <>
@@ -41,12 +41,12 @@ const App = ({ t }) => (
       <Route
         exact
         path={routes.legals.tos}
-        render={(routerProps) => <Redirect to={t('footer.links.tos.href')} {...routerProps} />}
+        render={(routerProps) => <Redirect to={t('components__new:footer.links.tos.href')} {...routerProps} />}
       />
       <Route
         exact
         path={routes.legals.privacy}
-        render={(routerProps) => <Redirect to={t('footer.links.privacy.href')} {...routerProps} />}
+        render={(routerProps) => <Redirect to={t('components__new:footer.links.privacy.href')} {...routerProps} />}
       />
       {/* AUTH and ACCOUNT */}
       <Route path={routes.auth._} component={Auth} />
@@ -84,4 +84,4 @@ App.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(App);
+export default withTranslation('components__new')(App);

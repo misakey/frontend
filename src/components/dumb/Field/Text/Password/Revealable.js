@@ -52,7 +52,7 @@ const useInputProps = (
     <InputAdornment position={adornmentPosition}>
       <IconButton
         edge={adornmentPosition}
-        aria-label={t('fields:password.toggle.visibility', 'Toggle')}
+        aria-label={t('fields__new:password.toggle.visibility', 'Toggle')}
         onClick={onToggleVisible}
         onMouseDown={eventPreventDefault}
         disabled={disabled}
@@ -127,4 +127,4 @@ FieldTextPasswordRevealable.defaultProps = {
   adornmentPosition: ADORNMENT_POSITION.end,
 };
 
-export default withTranslation(['common', 'fields'])(FieldTextPasswordRevealable);
+export default withTranslation(['fields__new'])(FieldTextPasswordRevealable);

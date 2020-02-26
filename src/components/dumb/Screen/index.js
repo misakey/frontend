@@ -44,9 +44,9 @@ function ScreenError({ error, t }) {
         </Box>
         <Typography variant="h5" component="h3" color="textSecondary">
           {t([
-            `${error.name}.${error.message}`,
-            `httpStatus.error.${error.status}`,
-            'httpStatus.error.default',
+            `common__new:${error.name}.${error.message}`,
+            `common__new:httpStatus.error.${error.status}`,
+            'common__new:httpStatus.error.default',
           ])}
         </Typography>
       </Container>
@@ -63,7 +63,7 @@ ScreenError.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-const ScreenErrorWithTranslation = withTranslation()(ScreenError);
+const ScreenErrorWithTranslation = withTranslation('common__new')(ScreenError);
 export { ScreenErrorWithTranslation as ScreenError };
 
 export const SCREEN_STATES = {

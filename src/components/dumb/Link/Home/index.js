@@ -1,6 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Link } from 'react-router-dom';
 
@@ -8,7 +7,6 @@ import routes from 'routes';
 import { IS_PLUGIN } from 'constants/plugin';
 import { WORKSPACE } from 'constants/workspaces';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isNil from '@misakey/helpers/isNil';
 import { redirectToApp } from '@misakey/helpers/plugin';
 
@@ -26,7 +24,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-const LinkHome = ({ t, children, ...rest }) => {
+const LinkHome = ({ children, ...rest }) => {
   const classes = useStyles();
 
   const workspace = useLocationWorkspace(true);
@@ -68,7 +66,7 @@ const LinkHome = ({ t, children, ...rest }) => {
       {...routingProps}
       underline="none"
       classes={{ root: classes.linkRoot }}
-      {...omitTranslationProps(rest)}
+      {...rest}
     >
       {children}
     </MUILink>
@@ -76,8 +74,7 @@ const LinkHome = ({ t, children, ...rest }) => {
 };
 
 LinkHome.propTypes = {
-  t: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,
 };
 
-export default withTranslation('common')(LinkHome);
+export default LinkHome;

@@ -59,7 +59,7 @@ const useOnSubmit = (
     : createApplicationSSO(service.id, form))
     .then((response) => {
       const update = isNil(response) ? form : { ...form, ...objectToCamelCase(response) };
-      enqueueSnackbar(t('service:sso.allowedOrigins.success'), { variant: 'success' });
+      enqueueSnackbar(t('admin__new:sso.allowedOrigins.success'), { variant: 'success' });
       dispatchUpdateEntities(service.mainDomain, update, history);
     })
     .catch((error) => {
@@ -109,11 +109,11 @@ const SSOAllowedOrigins = ({ appBarProps, t, service, dispatchUpdateEntities, hi
       history={history}
       pushPath={pushPath}
       appBarProps={appBarProps}
-      title={t('service:sso.allowedOrigins.title')}
+      title={t('admin__new:sso.allowedOrigins.title')}
     >
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
-          {t('service:sso.allowedOrigins.subtitle')}
+          {t('admin__new:sso.allowedOrigins.subtitle')}
         </Typography>
         <Formik
           validationSchema={allowedOriginsValidationSchema}
@@ -128,12 +128,12 @@ const SSOAllowedOrigins = ({ appBarProps, t, service, dispatchUpdateEntities, hi
               name="allowedCorsOrigins"
               autoFocus
               component={FieldText}
-              label={t('fields:allowedCorsOrigins.label')}
-              helperText={t('fields:allowedCorsOrigins.helperText')}
+              label={t('fields__new:allowedCorsOrigins.label')}
+              helperText={t('fields__new:allowedCorsOrigins.helperText')}
             />
             <Box mt={1}>
               <ButtonSubmit>
-                {t('common:submit')}
+                {t('common__new:submit')}
               </ButtonSubmit>
             </Box>
           </Box>
@@ -171,4 +171,6 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['service', 'fields', 'common'])(SSOAllowedOrigins));
+export default connect(null, mapDispatchToProps)(
+  withTranslation(['admin__new', 'fields__new', 'common__new'])(SSOAllowedOrigins),
+);

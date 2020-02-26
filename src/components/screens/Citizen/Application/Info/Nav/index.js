@@ -88,14 +88,14 @@ function ApplicationInfoNav({
             variant="scrollable"
             indicatorColor="secondary"
             textColor="secondary"
-            aria-label={t('screens:application.nav.label', { mainDomain })}
+            aria-label={t('citizen__new:application.info.nav.label', { mainDomain })}
           >
             {applicationTabs.map((link) => (
               <Tab
                 key={`tab-${link}`}
                 className={classes.linkTab}
                 component={Link}
-                label={t(`screens:application.nav.${link}`)}
+                label={t(`citizen__new:application.info.nav.${link}`)}
                 to={generatePath(routes.citizen.application[link], { mainDomain })}
                 disableFocusRipple
                 focusVisibleClassName={classes.focusedTab}
@@ -124,4 +124,4 @@ ApplicationInfoNav.defaultProps = {
   elevationScrollTarget: undefined,
 };
 
-export default withTranslation('screens')(ApplicationInfoNav);
+export default withTranslation('citizen__new')(ApplicationInfoNav);

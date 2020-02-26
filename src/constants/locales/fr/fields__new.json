@@ -9,6 +9,16 @@
       "unknown": "Une erreur inconnue est survenue"
     }
   },
+  "allowedCorsOrigins": {
+    "action": "Editer",
+    "empty": "Aucun",
+    "error": {
+      "malformed": "Merci d'enter une liste d'adresses absolues séparées par des points virgule ';'"
+    },
+    "helperText": "Une liste d'adresses absolues séparées par des points virgule ';'",
+    "label": "CORS authorisés",
+    "placeholder": "autres domaines"
+  },
   "avatar": {
     "label": "Photo",
     "action": "Modifier",
@@ -37,6 +47,14 @@
     "label": "Code d'invitation",
     "placeholder": "codePink"
   },
+  "comment": {
+    "placeholder": "Partager mon expérience concernant cette application",
+    "helperText": "10 caractères minimum requis",
+    "error": {
+      "required": "Je dois rédiger un avis",
+      "malformed": "Mon avis doit comporter entre 10 et 4096 caractères"
+    }
+  },
   "confirmationCode": {
     "label": "Code de confirmation",
     "error": {
@@ -52,6 +70,28 @@
       "expired": "Le code a expiré. Je dois en demander un nouveau",
       "invalid": "Le code de confirmation est incorrect",
       "malformed": "Le code de confirmation doit contenir 6 chiffres"
+    }
+  },
+  "clientSecret": {
+    "action": "Regénérer",
+    "label": "Secret",
+    "placeholder": "********"
+  },
+  "customRoles": {
+    "action": "Editer les rôles",
+    "empty": {
+      "action": "Créer mon premier rôle",
+      "label": "Créer un nouveau rôle custom"
+    },
+    "label": "Custom roles",
+    "placeholder": "Aucun"
+  },
+  "dpoComment": {
+    "label": "Message de clôture",
+    "helperText": "Je choisis parmi ces propositions celle qui correspond le mieux à ma décision",
+    "error": {
+      "required": "Je dois choisir un message pour clore la requête",
+      "invalid": "Ce message est incorrect"
     }
   },
   "displayName": {
@@ -91,6 +131,61 @@
       }
     }
   },
+  "handle": {
+    "label": "Pseudo",
+    "placeholder": "roseflam",
+    "helperText": "Je choisis un pseudo entre 3 et 21 lettres minuscules, chiffres et underscore",
+    "error": {
+      "noTrailingUnderscore": "Mon pseudo ne peut commencer ou terminer par un underscore",
+      "invalid": "Mon pseudo doit comporter entre 3 et 21 lettres minuscules, chiffres et underscore",
+      "conflict": "Il existe déjà un compte avec ce pseudo. Merci d'en choisir un autre"
+    }
+  },
+  "link": {
+    "placeholder": "https://misakey.com",
+    "error": {
+      "malformed": "Le lien est malformé. Je vérifie qu'il commence bien par http ou https"
+    }
+  },
+  "logo": {
+    "label": "Logo",
+    "action": "Modifier",
+    "error": {
+      "size": "Taille maximale dépassée",
+      "format": "Format incorrect. Formats acceptés: .jpg .jpeg .png .tiff .gif"
+    },
+    "placeholder": "Je peux ici renseigner le logo du site"
+  },
+  "longDesc": {
+    "action": "Editer",
+    "label": "Desc. longue"
+  },
+  "mainDomain": {
+    "label": "Domaine principal",
+    "action": "Editer",
+    "altLabel": "Page d'accueil",
+    "helperText": "J'indique l'adresse de la page d'accueil",
+    "error": {
+      "malformed": "Merci d'entrer une url valide"
+    }
+  },
+  "name": {
+    "action": "Editer",
+    "label": "Nom"
+  },
+  "otherDomains": {
+    "action": "Editer",
+    "label": "Autres domaines",
+    "placeholder": "autres domaines"
+  },
+  "ownerComment": {
+    "label": "Conclusion de ma requête",
+    "helperText": "Je choisis parmi ces propositions celle qui correspond le mieux à mon cas",
+    "error": {
+      "required": "Je dois faire un retour sur ma requête",
+      "invalid": "Ce retour est incorrect"
+    }
+  },
   "password": {
     "label": "Mot de passe",
     "placeholder": "********",
@@ -99,22 +194,6 @@
     "error": {
       "invalid": "Le mot de passe est erroné",
       "malformed": "Le mot de passe doit contenir au moins 8 caractères"
-    }
-  },
-  "password_secret": {
-    "label": "Mot de passe",
-    "placeholder": "********",
-    "error": {
-      "invalid": "Le mot de passe est erroné"
-    }
-  },
-  "passwordVault": {
-    "label": "Mot de passe",
-    "placeholder": "********",
-    "action": "Valider",
-    "error": {
-      "required": "Le mot de passe est requis",
-      "invalid": "Le mot de passe est erroné"
     }
   },
   "passwordConfirm": {
@@ -139,76 +218,12 @@
       "malformed": "Le mot de passe doit contenir au moins 8 caractères"
     }
   },
-  "tos": {
-    "label": "J'accepte les CGUs",
+  "password_secret": {
+    "label": "Mot de passe",
+    "placeholder": "********",
     "error": {
-      "required": "Je dois accepter les CGUs"
+      "invalid": "Le mot de passe est erroné"
     }
-  },
-  "allowedCorsOrigins": {
-    "action": "Editer",
-    "empty": "Aucun",
-    "error": {
-      "malformed": "Merci d'enter une liste d'adresses absolues séparées par des points virgule ';'"
-    },
-    "helperText": "Une liste d'adresses absolues séparées par des points virgule ';'",
-    "label": "CORS authorisés",
-    "placeholder": "autres domaines"
-  },
-  "clientSecret": {
-    "action": "Regénérer",
-    "label": "Secret",
-    "placeholder": "********"
-  },
-  "customRoles": {
-    "action": "Editer les rôles",
-    "empty": {
-      "action": "Créer mon premier rôle",
-      "label": "Créer un nouveau rôle custom"
-    },
-    "label": "Custom roles",
-    "placeholder": "Aucun"
-  },
-  "handle": {
-    "label": "Pseudo",
-    "placeholder": "roseflam",
-    "helperText": "Je choisis un pseudo entre 3 et 21 lettres minuscules, chiffres et underscore",
-    "error": {
-      "noTrailingUnderscore": "Mon pseudo ne peut commencer ou terminer par un underscore",
-      "invalid": "Mon pseudo doit comporter entre 3 et 21 lettres minuscules, chiffres et underscore",
-      "conflict": "Il existe déjà un compte avec ce pseudo. Merci d'en choisir un autre"
-    }
-  },
-  "logo": {
-    "action": "Modifier",
-    "error": {
-      "size": "Taille maximale dépassée",
-      "format": "Format incorrect. Formats acceptés: .jpg .jpeg .png .tiff .gif"
-    },
-    "label": "Logo",
-    "placeholder": "Je peux ici renseigner le logo du site"
-  },
-  "longDesc": {
-    "action": "Editer",
-    "label": "Desc. longue"
-  },
-  "mainDomain": {
-    "action": "Editer",
-    "label": "Domaine principal",
-    "altLabel": "Page d'accueil",
-    "helperText": "J'indique l'adresse de la page d'accueil",
-    "error": {
-      "malformed": "Merci d'entrer une url valide"
-    }
-  },
-  "name": {
-    "action": "Editer",
-    "label": "Nom"
-  },
-  "otherDomains": {
-    "action": "Editer",
-    "label": "Autres domaines",
-    "placeholder": "autres domaines"
   },
   "redirectUris": {
     "action": "Editer",
@@ -226,6 +241,14 @@
       }
     }
   },
+  "shortDesc": {
+    "action": "Editer",
+    "error": {
+      "malformed": "Maximum de 40 caractères"
+    },
+    "helperText": "Un nombre maximum de 40 caractères est attendu",
+    "label": "Desc. courte"
+  },
   "signUpConfirm": {
     "code": {
       "error": {
@@ -237,48 +260,16 @@
       "placeholder": "161803"
     }
   },
-  "shortDesc": {
-    "action": "Editer",
+  "tos": {
+    "label": "J'accepte les CGUs",
     "error": {
-      "malformed": "Maximum de 40 caractères"
-    },
-    "helperText": "Un nombre maximum de 40 caractères est attendu",
-    "label": "Desc. courte"
+      "required": "Je dois accepter les CGUs"
+    }
   },
   "value": {
     "error": {
       "required": "Je dois saisir une note",
       "malformed": "Cette note est incorrecte"
-    }
-  },
-  "comment": {
-    "placeholder": "Partager mon expérience concernant cette application",
-    "helperText": "10 caractères minimum requis",
-    "error": {
-      "required": "Je dois rédiger un avis",
-      "malformed": "Mon avis doit comporter entre 10 et 4096 caractères"
-    }
-  },
-  "link": {
-    "placeholder": "https://misakey.com",
-    "error": {
-      "malformed": "Le lien est malformé. Je vérifie qu'il commence bien par http ou https"
-    }
-  },
-  "ownerComment": {
-    "label": "Conclusion de ma requête",
-    "helperText": "Je choisis parmi ces propositions celle qui correspond le mieux à mon cas",
-    "error": {
-      "required": "Je dois faire un retour sur ma requête",
-      "invalid": "Ce retour est incorrect"
-    }
-  },
-  "dpoComment": {
-    "label": "Message de clôture",
-    "helperText": "Je choisis parmi ces propositions celle qui correspond le mieux à ma décision",
-    "error": {
-      "required": "Je dois choisir un message pour clore la requête",
-      "invalid": "Ce message est incorrect"
     }
   }
 }

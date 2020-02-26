@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 
 import omit from '@misakey/helpers/omit';
@@ -40,7 +40,7 @@ const OnboardingStep = ({ isActive, workspace, step, component, t, ...props }) =
       my={1}
       key={step}
       component={component}
-      text={t(`common:onboarding.${workspace}.steps.${step}.text`)}
+      text={t(`components__new:onboarding.${workspace}.steps.${step}.text`)}
       {...stepProps}
     />
   );
@@ -59,18 +59,20 @@ OnboardingStep.defaultProps = {
   component: CardSimpleText,
 };
 
-const OnboardingStepWithTranslation = withTranslation('common')(OnboardingStep);
+const OnboardingStepWithTranslation = withTranslation('components__new')(OnboardingStep);
 export { OnboardingStepWithTranslation as OnboardingStep };
 
-const Onboarding = ({ children, workspace, t }) => {
+const Onboarding = ({ children, workspace }) => {
   const classes = useStyles();
   return (
     <Box my={5}>
       <Title className={classes.title}>
-        <span className={classes.catchphrase}>
-          {t(`common:onboarding.${workspace}.title.catchphrase`)}
-        </span>
-        <span>{t(`common:onboarding.${workspace}.title.text`)}</span>
+        <Trans i18nKey={`components__new:onboarding.${workspace}.title`}>
+          <span className={classes.catchphrase}>A partir de maintenant,</span>
+          <span>
+            {'j\'habitue les sites à me renvoyer mes données à l\'abri des géants de la tech'}
+          </span>
+        </Trans>
       </Title>
       {children}
     </Box>
@@ -78,9 +80,8 @@ const Onboarding = ({ children, workspace, t }) => {
 };
 
 Onboarding.propTypes = {
-  t: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,
   workspace: PropTypes.oneOf(WORKSPACES).isRequired,
 };
 
-export default withTranslation('common')(Onboarding);
+export default withTranslation('components__new')(Onboarding);

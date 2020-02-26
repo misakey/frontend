@@ -141,7 +141,7 @@ const Navigation = forwardRef(({
             edge="start"
             color="inherit"
             className={classes.backButton}
-            aria-label={t('navigation.backButton', 'Go back')}
+            aria-label={t('common__new:goBack')}
             {...linkProps}
           >
             <ArrowBack />
@@ -206,4 +206,4 @@ Navigation.defaultProps = {
   toolbarProps: {},
 };
 
-export default withTranslation('common', { withRef: true })(Navigation);
+export default withTranslation('common__new', { withRef: true })(Navigation);

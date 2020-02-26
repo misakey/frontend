@@ -137,13 +137,13 @@ const FileField = ({ className, t, onChange, onError, accept, field: { value } }
         <div className={classes.progress}>
           <LinearProgress variant="determinate" value={progress} className={classes.progressBar} />
           <Typography variant="body1" color="textSecondary">
-            {t('fields:file.loading', 'Import in progress')}
+            {t('fields__new:file.loading', 'Import in progress')}
           </Typography>
         </div>
       )}
 
       <Typography variant={dragActive ? 'h6' : 'body1'} color={dragActive ? 'secondary' : 'textPrimary'}>
-        {t('fields:file.label', 'Drop a file here')}
+        {t('fields__new:file.label', 'Drop a file here')}
       </Typography>
 
       <label htmlFor="button-file">
@@ -159,9 +159,9 @@ const FileField = ({ className, t, onChange, onError, accept, field: { value } }
           <Button
             standing={BUTTON_STANDINGS.MAIN}
             type="button"
-            aria-label={t('fields:file.button.choose.label', 'Choose a file')}
+            aria-label={t('fields__new:file.button.choose.label', 'Choose a file')}
             onClick={onClick}
-            text={t('fields:file.button.choose.label', 'Choose a file')}
+            text={t('fields__new:file.button.choose.label', 'Choose a file')}
           />
         )}
 
@@ -190,4 +190,4 @@ FileField.defaultProps = {
   t: tDefault,
 };
 
-export default withTranslation(['common', 'fields'])(FileField);
+export default withTranslation(['fields__new'])(FileField);

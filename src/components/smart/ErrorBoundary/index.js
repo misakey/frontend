@@ -54,7 +54,7 @@ class ErrorBoundary extends Component {
           {...omit(rest, ['tReady', 'i18n'])}
         >
           <BoxMessage
-            text={t([`error.title.${error}`, 'error.title.default'])}
+            text={t([`components__new:errorBoundary.title.${error}`, 'components__new:errorBoundary.title.default'])}
             type="error"
             mb={1}
           />
@@ -63,7 +63,7 @@ class ErrorBoundary extends Component {
               <Box display="flex" justifyContent="flex-end">
                 <Button size="small" onClick={() => this.handleCollapse()}>
                   <ExpandMoreIcon className={clsx('icon', { collapsed })} />
-                  {t('error.button.collapse')}
+                  {t('components__new:errorBoundary.button.collapse')}
                 </Button>
               </Box>
               <Collapse in={collapsed}>
@@ -97,4 +97,4 @@ ErrorBoundary.defaultProps = {
   component: undefined,
 };
 
-export default withTranslation()(ErrorBoundary);
+export default withTranslation('components__new')(ErrorBoundary);

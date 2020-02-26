@@ -69,11 +69,11 @@ const CardProfile = ({ profile, t }) => {
           to={routes.account.profile.name}
           component={Link}
           divider
-          aria-label={t('fields:displayName.action')}
+          aria-label={t('fields__new:displayName.action')}
           classes={{ container: classes.listItemContainer }}
         >
           <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('fields:displayName.label')}</Typography>
+            <Typography>{t('fields__new:displayName.label')}</Typography>
           </ListItemIcon>
           <ListItemText primary={displayName} />
           <ListItemSecondaryAction>
@@ -85,13 +85,13 @@ const CardProfile = ({ profile, t }) => {
           to={routes.account.profile.avatar._}
           component={Link}
           divider
-          aria-label={t('fields:avatar.action')}
+          aria-label={t('fields__new:avatar.action')}
           classes={{ container: classes.listItemContainer }}
         >
           <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('fields:avatar.label')}</Typography>
+            <Typography>{t('fields__new:avatar.label')}</Typography>
           </ListItemIcon>
-          <ListItemText primary={t('fields:avatar.helperText')} />
+          <ListItemText primary={t('fields__new:avatar.helperText')} />
           <ListItemSecondaryAction>
             <ChevronRightIcon className={classes.actionIcon} />
           </ListItemSecondaryAction>
@@ -101,13 +101,13 @@ const CardProfile = ({ profile, t }) => {
           to={routes.account.profile.password}
           component={Link}
           divider
-          aria-label={t('fields:password.action')}
+          aria-label={t('fields__new:password.action')}
           classes={{ container: classes.listItemContainer }}
         >
           <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('fields:password.label')}</Typography>
+            <Typography>{t('fields__new:password.label')}</Typography>
           </ListItemIcon>
-          <ListItemText primary={t('fields:password.placeholder')} />
+          <ListItemText primary={t('fields__new:password.placeholder')} />
           <ListItemSecondaryAction>
             <ChevronRightIcon className={classes.actionIcon} />
           </ListItemSecondaryAction>
@@ -117,7 +117,7 @@ const CardProfile = ({ profile, t }) => {
           divider
         >
           <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('fields:email.label')}</Typography>
+            <Typography>{t('fields__new:email.label')}</Typography>
           </ListItemIcon>
           <ListItemText
             primary={email}
@@ -130,7 +130,7 @@ const CardProfile = ({ profile, t }) => {
           divider
         >
           <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('screens:account.quota.title')}</Typography>
+            <Typography>{t('account__new:quota.title')}</Typography>
           </ListItemIcon>
           <UserStorage />
         </ListItem>
@@ -153,4 +153,4 @@ CardProfile.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('fields', 'screens')(CardProfile);
+export default withTranslation('fields__new', 'account__new')(CardProfile);

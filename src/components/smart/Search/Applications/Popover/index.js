@@ -178,7 +178,7 @@ const SearchApplicationsPopover = ({
         <IconButton
           edge="start"
           color="inherit"
-          aria-label={t('common:back')}
+          aria-label={t('common__new:back')}
           onClick={onSearchClose}
         >
           <ArrowBackIcon />
@@ -218,7 +218,7 @@ const SearchApplicationsPopover = ({
             <IconButton
               edge="end"
               color="inherit"
-              aria-label={t('common:search')}
+              aria-label={t('common__new:search')}
               onMouseDown={onMouseDown}
               {...endAdornmentProps}
             >
@@ -288,7 +288,7 @@ const SearchApplicationsPopover = ({
           <TextField
             autoFocus
             fullWidth
-            placeholder={t('common:search')}
+            placeholder={t('common__new:search')}
             onChange={onChange}
             value={searchValue}
             InputProps={{
@@ -381,4 +381,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchReceive: (applications) => dispatch(searchApplications(applications)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('common')(SearchApplicationsPopover));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('common__new')(SearchApplicationsPopover));

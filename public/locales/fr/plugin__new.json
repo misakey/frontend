@@ -1,0 +1,77 @@
+{
+  "time": {
+    "hour": "{{count}} heure",
+    "hour_plural": "{{count}} heures",
+    "minute": "{{count}} minute",
+    "minute_plural": "{{count}} minutes"
+  },
+  "pause": {
+    "description": "Stopper momentanément le bloquage",
+    "indeterminate": "Toujours"
+  },
+  "resume": {
+    "description": "Blocage stoppé",
+    "plannedResume": "Reprise prévue le {{planned}}"
+  },
+  "refresh_warning": {
+    "button": "Actualiser",
+    "tooltip": "Actualiser l'onglet courant",
+    "text": "Les modifications que j'ai effectuées seront effectives pour la suite de ma navigation. Si je veux qu'elles soient prises en compte pour les onglets déjà chargés, je dois les actualiser"
+  },
+  "invalidWebsite": "<0>Oups</0>\nL'adresse détectée ne correspond pas à un site internet",
+  "thirdParty": {
+    "inApp": {
+      "plugin": {
+        "title": "Je bloque les acteurs publicitaires",
+        "subtitle": "Grâce au plugin Misakey, je supprime les bandeaux « J’accepte » des sites et j’impose ma décision face aux acteurs publicitaires une bonne fois pour toutes",
+        "button": "Télécharger le plugin"
+      }
+    },
+    "purposes": {
+      "essentials": "Essentiels",
+      "advertising": "Publicité",
+      "social_interaction": "Social",
+      "analytics": "Analyse",
+      "personalization": "Personnalisation",
+      "other": "Autres"
+    },
+    "categories": {
+      "blocked": "Autres services tiers",
+      "whitelisted": "Services tiers acceptés"
+    },
+    "summary": {
+      "title": "Gérer les cookies",
+      "description": "Cliquer sur une catégorie de cookies pour paramétrer mes préférences. Les cookies sont bloqués par défaut",
+      "count": {
+        "detected": "{{count}} détecté",
+        "detected_plural": "{{count}} détectés",
+        "blocked": "{{count}} bloqué",
+        "blocked_plural": "{{count}} bloqués",
+        "empty": "Aucun cookie détecté"
+      }
+    },
+    "error": {
+      "description": "Une erreur s'est produite lors du lancement du bloqueur en arrière-plan. Je peux essayer de le mettre à jour, s'il ne l'est pas, ou de le redémarrer",
+      "button": {
+        "restart": "Redémarrer le plugin",
+        "update": "Mettre à jour"
+      }
+    },
+    "filters": {
+      "mainPurpose": {
+        "remove": {
+          "text": "La liste des services tiers utilisés par <1>{{ mainDomain }}</1> pour la catégorie <3>{{ mainPurpose }}</3> est terminée",
+          "button": "Voir toutes les catégories"
+        }
+      },
+      "mainDomain": {
+        "logoAlt": "Univers de {{mainDomain}}",
+        "remove": {
+          "text": "La liste des services tiers utilisés par <1>{{ mainDomain }}</1> est terminée",
+          "button": "Voir tous mes services tiers"
+        }
+      },
+      "empty": "La liste des services tiers connus par <1>Misakey</1> est terminée"
+    }
+  },
+}

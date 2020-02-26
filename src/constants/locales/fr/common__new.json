@@ -1,0 +1,154 @@
+{
+  "accept": "Accepter",
+  "add": "Ajouter",
+  "anonymousUser": "Un utilisateur Misakey",
+  "archive": "Archiver",
+  "back": "Précedent",
+  "cancel": "Annuler",
+  "copy": "Copier dans le presse papier",
+  "copied": "Copié dans le presse papier!",
+  "decrypt": "Déchiffrer",
+  "delete": "Supprimer",
+  "details": "Détails",
+  "done": "Terminer",
+  "download": "Télécharger",
+  "edit": "Modifier",
+  "emptyRating": "N/A",
+  "goBack": "Retour",
+  "gotIt": "J'ai compris",
+  "incompatibleBrowser": "Cette fonctionnalité n'est pas disponible sur ce navigateur pour l'instant :(",
+  "loading": "Chargement",
+  "more": "Plus",
+  "next": "Suivant",
+  "ok": "OK",
+  "on": "Sur",
+  "previous": "Précédent",
+  "publish": "Publier",
+  "redirectedToLinkedDomain": "J'ai été redirigé vers {{mainDomainTo}} car {{mainDomainFrom}} est un domaine lié à {{mainDomainTo}}",
+  "refuse": "Refuser",
+  "regenerate": "Régénérer",
+  "remove": "Retirer",
+  "reopen": "Réouvrir",
+  "resendEmail": "Relancer",
+  "retry": "Recommencer",
+  "search": "Rechercher",
+  "see": "Voir",
+  "send": "Envoyer",
+  "show": "Voir",
+  "signIn": "Connexion",
+  "signedIn": "Connecté !",
+  "skip": "Passer",
+  "submit": "Envoyer",
+  "undecryptable": "Indéchiffrable",
+  "update": "Éditer",
+  "validate": "Valider",
+
+  "account": {
+    "current": "Compte de l'utilisateur actuel",
+    "profile": "Mon compte"
+  },
+
+  "application": {
+    "category": {
+      "shops": "eCommerces",
+      "telecom": "Opérateurs télécom",
+      "music": "Musique",
+      "video": "Vidéo",
+      "banks": "Banques",
+      "estate_agency": "Agences immobilières",
+      "gym": "Salles de sport",
+      "gaming": "Jeux vidéo",
+      "insurance": "Assurances",
+      "transport": "Transport",
+      "mobility": "Mobilité",
+      "food": "Alimentation",
+      "energy": "Énergie",
+      "bet": "Paris en ligne",
+      "press": "Presse",
+      "retailers": "Grande distribution",
+      "travel": "Voyage",
+      "hr": "RH",
+      "public_service": "Service public",
+      "misc": "Divers",
+      "tickets": "Billeteries",
+      "services": "Services divers",
+      "car_rental": "Location de voiture",
+      "dating": "Sites de rencontre",
+      "crowdfunding": "Financement participatif"
+    }
+  },
+
+  "databox": {
+    "dpoComment": {
+      "done": "Demande traitée",
+      "no_data": "Aucune donnée trouvée",
+      "refused": "Demande invalide",
+      "other": "Demande fermée"
+    },
+    "ownerComment": {
+      "other_channel": "Fichiers reçus autrement",
+      "no_data": "Aucune donnée trouvée",
+      "refused": "Demande non traitée",
+      "done": "Demande traitée",
+      "ok": "Demande traitée",
+      "other": "Demande fermée"
+    },
+    "since": {
+      "open": "En cours",
+      "reopen": "Réouverte",
+      "done": "Complétée",
+      "closed": "Fermée",
+      "created": "Créée",
+      "updated": "Editée"
+    }
+  },
+
+  "date": {
+    "calendar": {
+      "sameDay": "aujourd'hui",
+      "nextDay": "demain",
+      "lastDay": "hier"
+    },
+    "since": {
+      "past": {
+        "event": "il y a",
+        "duration": "depuis"
+      },
+      "future": {
+        "event": "dans",
+        "duration": "pendant"
+      },
+      "unit": "{{count}} jour",
+      "unit_plural": "{{count}} jours",
+      "max": "{{count}}+ jour",
+      "max_plural": "{{count}}+ jours"
+    }
+  },
+
+  "httpStatus": {
+    "error": {
+      "default": "Nous sommes désolés, une erreur inconnue est survenue",
+      "400": "Nous sommes désolés, une erreur est survenue",
+      "401": "Je dois d'abord me connecter",
+      "402": "Un paiement est requis",
+      "403": "Je ne suis pas autorisé à effectuer cette action",
+      "404": "Ma recherche est introuvable",
+      "405": "Nous sommes désolés, une erreur est survenue",
+      "408": "Cette action a échoué. Merci de vérifier la connexion internet",
+      "409": "Nous sommes désolés, une erreur est survenue",
+      "413": "J'ai envoyé des données trop volumineuses",
+      "415": "Ce type de media n'est pas supporté par nos serveurs",
+      "423": "Ces droits m'ont été retirés",
+      "429": "J'ai effectué trop de requêtes",
+      "500": "Nous sommes désolés, une erreur est survenue",
+      "503": "Nous sommes désolés, nos services ne sont pas accessibles"
+    }
+  },
+
+  "workspaces": {
+    "citizen": "citizen",
+    "dpo": "dpo",
+    "admin": "admin",
+    "account": "account"
+  }
+}

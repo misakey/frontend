@@ -169,7 +169,7 @@ const withBulkContact = (mapper = identity) => (Component) => {
         return Promise.all(fullPromises);
       } catch (error) {
         if (error instanceof TypeError) {
-          enqueueSnackbar(t('common:incompatibleBrowser'), { variant: 'warning' });
+          enqueueSnackbar(t('common__new:incompatibleBrowser'), { variant: 'warning' });
         }
         return Promise.reject(error);
       }
@@ -252,7 +252,7 @@ const withBulkContact = (mapper = identity) => (Component) => {
     ),
   });
 
-  return connect(mapStateToProps, mapDispatchToProps)(withTranslation(['common'])(Wrapper));
+  return connect(mapStateToProps, mapDispatchToProps)(withTranslation(['common__new'])(Wrapper));
 };
 
 export default withBulkContact;

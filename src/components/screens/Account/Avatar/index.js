@@ -56,7 +56,7 @@ const useOnSubmit = (
     .then((response) => {
       const { avatarUri } = objectToCamelCase(response);
       const changes = { avatarUri };
-      enqueueSnackbar(t('screens:account.avatar.success'), { variant: 'success' });
+      enqueueSnackbar(t('account__new:avatar.success'), { variant: 'success' });
       dispatchUpdate(profile.id, changes, history);
       history.push(routes.account._);
     })
@@ -182,4 +182,4 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['screens'])(AccountAvatar));
+export default connect(null, mapDispatchToProps)(withTranslation(['account__new'])(AccountAvatar));

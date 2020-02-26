@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import FieldText from '../index';
+import FieldText from 'components/dumb/Field/Text';
 
 // COMPONENTS
 // @FIXME: update @misakey/ui component

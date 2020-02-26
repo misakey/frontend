@@ -14,7 +14,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Typography from '@material-ui/core/Typography';
 import Card from 'components/dumb/Card';
-import CardHeaderAuthSignUp from 'components/smart/Card/Header/Auth/SignUp';
+import CardHeaderAuthSignUp from 'components/smart/Card/Auth/Header/SignUp';
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import ButtonGoBackTo from 'components/dumb/Button/GoBack/To';
 import MUILink from '@material-ui/core/Link';
@@ -60,7 +60,7 @@ const AuthSignUpPreamble = ({ t, setFieldValue, setFieldTouched, setTouched }) =
 
   const primary = useMemo(
     () => ({
-      text: t('auth:signUp.create.preamble.action.accept'),
+      text: t('auth__new:signUp.create.preamble.action.accept'),
       type: 'submit',
       onClick: onAccept,
     }),
@@ -92,9 +92,9 @@ const AuthSignUpPreamble = ({ t, setFieldValue, setFieldTouched, setTouched }) =
   return (
     <Card
       className={classes.cardRoot}
-      title={t('auth:signUp.create.preamble.title')}
+      title={t('auth__new:signUp.create.preamble.title')}
       titleProps={titleProps}
-      subtitle={t('auth:signUp.create.preamble.subtitle')}
+      subtitle={t('auth__new:signUp.create.preamble.subtitle')}
       subtitleProps={subtitleProps}
       primary={primary}
       secondary={<ButtonGoBackTo to={routes.auth.signIn._} />}
@@ -104,11 +104,11 @@ const AuthSignUpPreamble = ({ t, setFieldValue, setFieldTouched, setTouched }) =
     >
       <List>
         <ListItem classes={{ container: classes.listItemContainer }}>
-          <ListItemText primary={t('auth:signUp.create.preamble.tos.text')} />
+          <ListItemText primary={t('auth__new:signUp.create.preamble.tos.text')} />
           <ListItemSecondaryAction>
             <Button
-              text={t('auth:signUp.create.preamble.tos.button')}
-              href={t('common:footer.links.tos.href')}
+              text={t('auth__new:signUp.create.preamble.tos.button')}
+              href={t('components__new:footer.links.tos.href')}
               target="_blank"
               rel="noopener noreferrer"
               standing={BUTTON_STANDINGS.TEXT}
@@ -116,11 +116,11 @@ const AuthSignUpPreamble = ({ t, setFieldValue, setFieldTouched, setTouched }) =
           </ListItemSecondaryAction>
         </ListItem>
         <ListItem classes={{ container: classes.listItemContainer }}>
-          <ListItemText primary={t('auth:signUp.create.preamble.privacy.text')} />
+          <ListItemText primary={t('auth__new:signUp.create.preamble.privacy.text')} />
           <ListItemSecondaryAction>
             <Button
-              text={t('auth:signUp.create.preamble.privacy.button')}
-              href={t('common:footer.links.privacy.href')}
+              text={t('auth__new:signUp.create.preamble.privacy.button')}
+              href={t('components__new:footer.links.privacy.href')}
               target="_blank"
               rel="noopener noreferrer"
               standing={BUTTON_STANDINGS.TEXT}
@@ -128,10 +128,10 @@ const AuthSignUpPreamble = ({ t, setFieldValue, setFieldTouched, setTouched }) =
           </ListItemSecondaryAction>
         </ListItem>
       </List>
-      <Typography className={classes.contentTitleTypography} variant="body2">{t('auth:signUp.create.preamble.content.title')}</Typography>
+      <Typography className={classes.contentTitleTypography} variant="body2">{t('auth__new:signUp.create.preamble.content.title')}</Typography>
       <Typography className={classes.contentTextTypography} variant="body2">
         <Trans
-          i18nKey="auth:signUp.create.preamble.content.text"
+          i18nKey="auth__new:signUp.create.preamble.content.text"
         >
           {"Misakey connaît les sites avec lesquels je peux intéragir.<br/>Misakey n'a pas accès au contenu de mes échanges avec les sites.<br/><br/>Je peux envoyer mes questions et suggestions d'amélioration à "}
           <MUILink
@@ -156,4 +156,4 @@ AuthSignUpPreamble.propTypes = {
   setTouched: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['auth', 'common'])(AuthSignUpPreamble);
+export default withTranslation(['auth__new', 'components__new'])(AuthSignUpPreamble);

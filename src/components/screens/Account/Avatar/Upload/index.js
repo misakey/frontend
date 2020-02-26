@@ -42,14 +42,14 @@ const AccountAvatarUpload = ({
 
   return (
     <ScreenAction
-      title={t('screens:account.avatar.upload.title')}
+      title={t('account_new:avatar.upload.title')}
       state={state}
       pushPath={routes.account._}
       hideAppBar
     >
       <Container maxWidth="md">
         <Subtitle>
-          {t('screens:account.avatar.upload.subtitle')}
+          {t('account_new:avatar.upload.subtitle')}
         </Subtitle>
         <FileField
           accept={ACCEPTED_TYPES}
@@ -74,4 +74,4 @@ AccountAvatarUpload.defaultProps = {
   state: {},
 };
 
-export default withTranslation('screens')(AccountAvatarUpload);
+export default withTranslation('account_new')(AccountAvatarUpload);

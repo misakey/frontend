@@ -35,7 +35,7 @@ function ButtonGoBack({ className, homePath, t, ...props }) {
       onClick={canGoBack ? handleGoBack : handleGoHome}
       className={className}
       {...omitTranslationProps(props)}
-      text={t('common:navigation.history.goBack')}
+      text={t('common__new:goBack')}
     />
   );
 }
@@ -51,4 +51,4 @@ ButtonGoBack.defaultProps = {
   homePath: '/',
 };
 
-export default withTranslation('common')(ButtonGoBack);
+export default withTranslation('common__new')(ButtonGoBack);

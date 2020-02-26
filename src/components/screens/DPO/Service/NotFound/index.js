@@ -43,14 +43,14 @@ function ServiceNotFound({ mainDomain, t }) {
           <Typography variant="h2" color="secondary">{404}</Typography>
         </Box>
         <Typography variant="h5" component="h3" color="textSecondary">
-          {t('screens:service.notFound.title', { mainDomain })}
+          {t('dpo__new:services.notFound.title', { mainDomain })}
         </Typography>
         <Box my={4}>
           <CardSimpleText
             my={1}
-            text={t('screens:service.notFound.create.text', { mainDomain })}
+            text={t('dpo__new:services.notFound.create.text', { mainDomain })}
             button={{
-              text: t('screens:service.notFound.create.button'),
+              text: t('dpo__new:services.notFound.create.button'),
               standing: BUTTON_STANDINGS.MAIN,
               component: LinkWithDialogConnect,
               to: goToCreateApp,
@@ -67,4 +67,4 @@ ServiceNotFound.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default (withTranslation(['common', 'screens'])(ServiceNotFound));
+export default (withTranslation(['dpo__new'])(ServiceNotFound));

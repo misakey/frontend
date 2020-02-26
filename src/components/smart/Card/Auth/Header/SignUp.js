@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Box from '@material-ui/core/Box';
-import CardHeaderAuth from 'components/smart/Card/Header/Auth';
+import CardHeaderAuth from 'components/smart/Card/Auth/Header';
 import ProgressSignUp from 'components/smart/Progress/SignUp';
 
 const CardHeaderAuthSignUp = ({ className, ...props }) => (

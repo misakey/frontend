@@ -49,7 +49,7 @@ const SplashScreen = ({ children, classes, t, text, variant }) => (
   <div className={clsx(classes.root, classes[variant])}>
     <div className={classes.svgContainer}>
       {children || <CircularProgress className={classes.svg} size={50} />}
-      <Typography>{!isEmpty(text) ? text : t('loading')}</Typography>
+      <Typography>{!isEmpty(text) ? text : `${t('common__new:loading')}...`}</Typography>
     </div>
   </div>
 );
@@ -71,4 +71,4 @@ SplashScreen.defaultProps = {
   variant: 'backdrop',
 };
 
-export default withTranslation()(withStyles(styles)(SplashScreen));
+export default withTranslation('common__new')(withStyles(styles)(SplashScreen));

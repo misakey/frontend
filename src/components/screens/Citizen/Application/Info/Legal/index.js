@@ -42,11 +42,11 @@ const ApplicationInfoLegal = ({
         if (!isNil(link)) {
           return {
             key: linkType,
-            label: t(`screens:application.info.legal.links.${linkType}`),
+            label: t(`citizen__new:application.info.legal.links.${linkType}`),
             button: {
               standing: BUTTON_STANDINGS.OUTLINED,
               size: 'small',
-              text: t('common:show'),
+              text: t('common__new:show'),
               component: 'a',
               href: link.value,
               target: '_blank',
@@ -56,11 +56,11 @@ const ApplicationInfoLegal = ({
       }
       return {
         key: linkType,
-        label: t(`screens:application.info.legal.links.${linkType}`),
+        label: t(`citizen__new:application.info.legal.links.${linkType}`),
         button: {
           standing: BUTTON_STANDINGS.OUTLINED,
           size: 'small',
-          text: t('common:add'),
+          text: t('common__new:add'),
           onClick: onContributionLinkClick,
           component: ButtonWithDialogConnect,
         },
@@ -84,13 +84,13 @@ const ApplicationInfoLegal = ({
       {!IS_PLUGIN && !isPluginInstalled && (
         <Box my={3}>
           <Title>
-            {t('screens:application.thirdParty.summary.title')}
+            {t('citizen__new:application.info.legal.cookies.title')}
           </Title>
           <CardSimpleDoubleButton
-            text={t('screens:application.info.legal.cookies.text')}
+            text={t('citizen__new:application.info.legal.cookies.text')}
             primary={{
               standing: BUTTON_STANDINGS.OUTLINED,
-              text: t('screens:application.info.legal.cookies.button.chrome'),
+              text: t('citizen__new:application.info.legal.cookies.button.chrome'),
               size: 'small',
               component: 'a',
               href: storeLinks.chrome,
@@ -99,7 +99,7 @@ const ApplicationInfoLegal = ({
             }}
             secondary={{
               standing: BUTTON_STANDINGS.OUTLINED,
-              text: t('screens:application.info.legal.cookies.button.firefox'),
+              text: t('citizen__new:application.info.legal.cookies.button.firefox'),
               size: 'small',
               component: 'a',
               href: storeLinks.firefox,
@@ -112,7 +112,7 @@ const ApplicationInfoLegal = ({
       {!isUnknown && (
         <Box my={3}>
           <Title>
-            {t('screens:application.info.legal.linksListTitle')}
+            {t('citizen__new:application.info.legal.linksListTitle')}
           </Title>
           {links.map(({ key, label, button }) => (
             <CardSimpleText key={key} text={label} button={button} my={1} />
@@ -131,4 +131,4 @@ ApplicationInfoLegal.propTypes = {
   location: PropTypes.object.isRequired,
 };
 
-export default withTranslation(['common', 'screens'])(ApplicationInfoLegal);
+export default withTranslation(['common__new', 'citizen__new'])(ApplicationInfoLegal);

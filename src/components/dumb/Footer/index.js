@@ -12,39 +12,39 @@ const Footer = ({ t, typographyProps, ...rest }) => (
   <Box mt={2} mb={1} {...omitTranslationProps(rest)} mx={1}>
     <Typography variant="body2" align="center" {...typographyProps}>
       <Link
-        href={t('footer.links.privacy.href')}
+        href={t('components__new:footer.links.privacy.href')}
         color="secondary"
         target="_blank"
         rel="noopener noreferrer"
       >
-        {t('footer.links.privacy.text')}
+        {t('components__new:footer.links.privacy.text')}
       </Link>
       {' - '}
       <Link
-        href={t('footer.links.tos.href')}
+        href={t('components__new:footer.links.tos.href')}
         color="secondary"
         target="_blank"
         rel="noopener noreferrer"
       >
-        {t('footer.links.tos.text')}
+        {t('components__new:footer.links.tos.text')}
       </Link>
       {' - '}
       <Link
-        href={t('footer.links.sources.href')}
+        href={t('components__new:footer.links.sources.href')}
         color="secondary"
         target="_blank"
         rel="noopener noreferrer"
       >
-        {t('footer.links.sources.text')}
+        {t('components__new:footer.links.sources.text')}
       </Link>
       {' - '}
       <Link
-        href={t('footer.links.about.href')}
+        href={t('components__new:footer.links.about.href')}
         color="secondary"
         target="_blank"
         rel="noopener noreferrer"
       >
-        {t('footer.links.about.text')}
+        {t('components__new:footer.links.about.text')}
       </Link>
     </Typography>
   </Box>
@@ -59,4 +59,4 @@ Footer.defaultProps = {
   typographyProps: {},
 };
 
-export default withTranslation()(Footer);
+export default withTranslation('components__new')(Footer);

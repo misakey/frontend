@@ -1,4 +1,5 @@
 {
+  "debugError": "Une erreur est survenue avec le flow de connexion, cela ne devrait pas arriver en production./nCet écran est destiné à du debug en développement",
   "forgotPassword": {
     "form": {
       "field": {
@@ -50,17 +51,7 @@
         "conflict": "Nous avons déjà envoyé un code en cours de validité. Je revérifie mes mails ou je réessaie dans quelques minutes"
       }
     },
-    "title": "Je me connecte",
-    "titleByComponentName": {
-      "AdminServiceClaim": "Je me connecte pour commencer les étapes d'appropriation de domaine",
-      "AdminServiceHome": "Une fois connecté, je pourrai consulter le tableau de bord de mon site",
-      "AdminServiceInformation": "Une fois connecté, je pourrai modifier les informations de la fiche de mon site",
-      "AdminServiceSSO": "Une fois connecté, je pourrai configurer le SSO Misakey pour mon site",
-      "AdminServiceUsers": "Une fois connecté, je pourrai ajouter des utilisateurs pour administrer mon site",
-      "AdminServiceData": "Je me connecte pour créer des demandes de partage de données",
-      "DPOServiceRequests": "Je me connecte pour consulter les requêtes RGPD des utilisateurs de mon site",
-      "DPOServiceClaim": "Je me connecte pour me déclarer en tant que DPO"
-    }
+    "title": "Je me connecte"
   },
   "signUp": {
     "create": {
@@ -146,11 +137,5 @@
       "privacyPolicyCheckboxLabel": "J'accepte les <1>CGUs</1> et la <3>politique de confidentialité</3> de Misakey"
     },
     "success": "Compte créé avec succès !"
-  },
-  "alert": {
-    "insufficientSeclevel": {
-      "title": "Cette fonctionnalité requiert un compte plus sécurisé",
-      "text": "Je suis connecté sur une session temporaire qui ne me permet pas d'accéder à cette fonctionnalité. Pour effectuer cette action, je peux créer un compte Misakey"
-    }
   }
 }

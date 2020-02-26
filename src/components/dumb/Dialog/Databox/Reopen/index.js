@@ -25,7 +25,7 @@ const DialogDataboxReopen = ({ onClose, onSuccess, open, t }) => {
   const primary = useMemo(
     () => ({
       onClick: onSuccess,
-      text: t('common:reopen'),
+      text: t('common__new:reopen'),
     }),
     [onSuccess, t],
   );
@@ -33,7 +33,7 @@ const DialogDataboxReopen = ({ onClose, onSuccess, open, t }) => {
   const secondary = useMemo(
     () => ({
       onClick: onClose,
-      text: t('common:cancel'),
+      text: t('common__new:cancel'),
     }),
     [onClose, t],
   );
@@ -46,11 +46,11 @@ const DialogDataboxReopen = ({ onClose, onSuccess, open, t }) => {
       aria-describedby="databox-reopen-dialog-description"
     >
       <DialogTitle id="databox-reopen-dialog-title">
-        {t('common:databox.dialog.reopen.title')}
+        {t('citizen__new:application.info.vault.reopenDialog.title')}
       </DialogTitle>
       <DialogContent>
         <DialogContentText classes={{ root: classes.dialogContentTextRoot }} id="databox-reopen-dialog-description">
-          {t('common:databox.dialog.reopen.description')}
+          {t('citizen__new:application.info.vault.reopenDialog.description')}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
@@ -71,4 +71,4 @@ DialogDataboxReopen.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('common')(DialogDataboxReopen);
+export default withTranslation(['common__new', 'citizen__new'])(DialogDataboxReopen);

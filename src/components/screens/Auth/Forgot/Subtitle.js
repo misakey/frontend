@@ -9,7 +9,7 @@ import routes from 'routes';
 
 const AuthForgotSubtitle = ({ name, t, email }) => (
   <>
-    {t(`auth:forgotPassword.subtitle.${name}`, { email })}
+    {t(`auth__new:forgotPassword.subtitle.${name}`, { email })}
     <MUILink
       to={routes._}
       component={Link}
@@ -18,7 +18,7 @@ const AuthForgotSubtitle = ({ name, t, email }) => (
       underline="none"
       className="misakey-brand"
     >
-      {t('auth:forgotPassword.link')}
+      {t('auth__new:forgotPassword.link')}
     </MUILink>
   </>
 );
@@ -29,4 +29,4 @@ AuthForgotSubtitle.propTypes = {
   email: PropTypes.string.isRequired,
 };
 
-export default withTranslation('auth')(AuthForgotSubtitle);
+export default withTranslation('auth__new')(AuthForgotSubtitle);

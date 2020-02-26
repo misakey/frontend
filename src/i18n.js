@@ -11,22 +11,47 @@ import 'moment/locale/fr';
 import numeral from 'numeral';
 import 'numeral/locales/fr';
 
-import fr from 'constants/locales/fr/common';
-import frFields from 'constants/locales/fr/fields';
+// FR namespaces
+import frCommonNew from 'constants/locales/fr/common__new';
+import frComponentsNew from 'constants/locales/fr/components__new';
+import frFieldsNew from 'constants/locales/fr/fields__new';
+import frLandingNew from 'constants/locales/fr/landing__new';
 
-const DEFAULT_LNG = 'fr';
+const DEFAULT_LANGUAGE = 'fr';
+const AVAILABLE_LANGUAGES = ['fr'];
+
+const COMMONS_NAMESPACES = {
+  fr: [
+    {
+      name: 'common__new',
+      ressources: frCommonNew,
+    },
+    {
+      name: 'components__new',
+      ressources: frComponentsNew,
+    },
+    {
+      name: 'fields__new',
+      ressources: frFieldsNew,
+    },
+    {
+      name: 'landing__new',
+      ressources: frLandingNew,
+    },
+  ],
+};
 
 i18n
   .use(XHR)
   .use(LanguageDetector)
   .use(initReactI18next) // if not using I18nextProvider
   .init({
-    debug: false, // I18N TRANS HELP: turn true
-    fallbackLng: DEFAULT_LNG,
-    ns: 'common',
-    defaultNS: 'common',
-    lng: DEFAULT_LNG, // 'fr', // language to use
-    whitelist: ['fr'],
+    debug: true, // I18N TRANS HELP: turn true
+    fallbackLng: DEFAULT_LANGUAGE,
+    ns: 'common__new',
+    defaultNS: 'common__new',
+    lng: DEFAULT_LANGUAGE, // 'fr', // language to use
+    whitelist: AVAILABLE_LANGUAGES,
     nonExplicitWhitelist: true, // if true will pass eg. en-US if finding en in whitelist
 
     detection: {
@@ -69,12 +94,15 @@ const changeLocale = (lng) => {
 };
 
 // Forcing default locale
-changeLocale(DEFAULT_LNG);
+changeLocale(DEFAULT_LANGUAGE);
 
 i18n.on('languageChanged', changeLocale);
 
-i18n.addResourceBundle('fr', 'common', fr, true, false);
-i18n.addResourceBundle('fr', 'fields', frFields, true, false);
 
+AVAILABLE_LANGUAGES.forEach((lng) => {
+  COMMONS_NAMESPACES[lng].forEach((bundle) => {
+    i18n.addResourceBundle(lng, bundle.name, bundle.ressources, true, false);
+  });
+});
 
 export default i18n;

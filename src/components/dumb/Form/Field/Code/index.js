@@ -86,10 +86,10 @@ const FieldCode = ({
   const classes = useStyles();
   const { name = DEFAULT_NAME, value } = field;
 
-  const defaultLabel = useMemo(() => t(`fields:${name}.label`), [t, name]);
+  const defaultLabel = useMemo(() => t(`fields__new:${name}.label`), [t, name]);
   // @FIXME: use length of code in helperText (doesn't work with _plural and count)
   const helperTextOrTranslation = useMemo(() => (
-    isNil(helperText) ? t(`fields:${name}.helperText`) : helperText),
+    isNil(helperText) ? t(`fields__new:${name}.helperText`) : helperText),
   [helperText, t, name]);
 
   const inputs = useMemo(() => {
@@ -307,4 +307,4 @@ FieldCode.defaultProps = {
   reset: false,
 };
 
-export default withTranslation('fields')(withErrors(FieldCode));
+export default withTranslation('fields__new')(withErrors(FieldCode));

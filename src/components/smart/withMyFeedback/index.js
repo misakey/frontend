@@ -105,7 +105,7 @@ const withMyFeedback = (mapper = identity) => (Component) => {
     const onDeleteSuccess = useCallback(
       () => {
         setRating(null);
-        enqueueSnackbar(t('common:feedback.delete.success'), { variant: 'success' });
+        enqueueSnackbar(t('common__new:feedback.deleted'), { variant: 'success' });
       },
       [enqueueSnackbar, t],
     );
@@ -145,7 +145,7 @@ const withMyFeedback = (mapper = identity) => (Component) => {
     };
   };
 
-  return connect(mapStateToProps, {})(withTranslation('common')(Wrapper));
+  return connect(mapStateToProps, {})(withTranslation('common__new')(Wrapper));
 };
 
 export default withMyFeedback;

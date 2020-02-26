@@ -174,11 +174,11 @@ const ApplicationInfoFeedback = ({
     <Box>
       <Box className={classes.titleWithAction}>
         <Title>
-          {t('screens:feedback.others.title')}
+          {t('citizen__new:application.info.feedback.title')}
         </Title>
         <Button
           standing={BUTTON_STANDINGS.MAIN}
-          text={t(`screens:feedback.others.${(hasAlreadyCommented) ? 'edit' : 'give'}`)}
+          text={t(`citizen__new:application.info.feedback.${(hasAlreadyCommented) ? 'edit' : 'give'}`)}
           component={LinkWithDialogConnect}
           isLoading={isFetchingFeedback}
           to={feedbackTo}
@@ -263,4 +263,4 @@ const mapDispatchToProps = (dispatch) => ({
 
 export default connect(
   mapStateToProps, mapDispatchToProps,
-)(withTranslation('screens')(withMyFeedback()(ApplicationInfoFeedback)));
+)(withTranslation('citizen__new')(withMyFeedback()(ApplicationInfoFeedback)));

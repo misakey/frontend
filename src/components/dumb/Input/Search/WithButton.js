@@ -47,7 +47,7 @@ const InputSearchButton = ({ t, value, onSubmit, Icon, iconButtonProps, ...props
       <InputSearch value={value} Icon={Icon} {...props}>
         <IconButton
           className={classes.searchButton}
-          aria-label="Search"
+          aria-label={t('common__new:search')}
           disabled={isSearchEmpty}
           type="submit"
           {...iconButtonProps}
@@ -74,4 +74,4 @@ InputSearchButton.defaultProps = {
   iconButtonProps: {},
 };
 
-export default withTranslation()(InputSearchButton);
+export default withTranslation('common__new')(InputSearchButton);

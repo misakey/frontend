@@ -39,4 +39,4 @@ FieldText.defaultProps = {
   hidden: false,
 };
 
-export default withTranslation('fields')(withErrors(FieldText));
+export default withTranslation('fields__new')(withErrors(FieldText));

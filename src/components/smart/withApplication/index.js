@@ -36,7 +36,7 @@ const DEFAULT_ENDPOINT = {
   path: '/application-info',
 };
 
-const INTERNAL_PROPS = ['dispatchReceive', 'dispatchReceivePlugin'];
+const INTERNAL_PROPS = ['dispatchReceive', 'dispatchReceivePlugin', 't'];
 
 const EMPTY_APPLICATION_ERROR = new Error();
 EMPTY_APPLICATION_ERROR.status = 404;
@@ -105,7 +105,7 @@ const useHandleReceive = (enqueueSnackbar, history, pathname, mainDomain, t) => 
         data.push({ ...application, mainDomain, name: domainWithoutSuffix });
       } else {
         enqueueSnackbar(
-          t('common:application.linkedDomain.redirect',
+          t('common__new:redirectedToLinkedDomain',
             { mainDomainTo: application.mainDomain, mainDomainFrom: mainDomain }),
           { variant: 'info' },
         );
@@ -265,7 +265,7 @@ const withApplication = (Component, options = {}) => {
     },
   });
 
-  return withTranslation('common')((connect(mapStateToProps, mapDispatchToProps)(ComponentWithApplication)));
+  return withTranslation('common__new')((connect(mapStateToProps, mapDispatchToProps)(ComponentWithApplication)));
 };
 
 export default withApplication;

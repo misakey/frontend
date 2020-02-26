@@ -1,0 +1,309 @@
+{
+  "application": {
+    "feedback": {
+      "title": "Mon avis global",
+      "success": "Mon avis a été publié!",
+      "deleted": "Mon avis a été supprimé"
+    },
+    "info": {
+      "feedback": {
+        "title": "Avis",
+        "all": "Avis des utilisateurs",
+        "give": "Donner mon avis",
+        "edit": "Modifier mon avis",
+        "ratingCount": "{{count}} note",
+        "ratingCount_plural": "{{count}} notes"
+      },
+      "legal": {
+        "cookies": {
+          "title": "Gérer les cookies",
+          "text": "Accéder au plugin",
+          "button": {
+            "chrome": "Chrome",
+            "firefox": "Firefox"
+          }
+        },
+        "linksListTitle": "Documents légaux",
+        "links": {
+          "tos": "CGU",
+          "terms": "Conditions",
+          "home_page": "Page d'accueil",
+          "legal_notice": "Légalité",
+          "cookies": "Politique sur les cookies",
+          "personal_data": "Données personnelles",
+          "privacy_policy": "Protection des données",
+          "dpo_contact": "Contact du DPO",
+          "help": "Aide",
+          "social_facebook": "Facebook",
+          "social_twitter": "Twitter",
+          "social_linkedin": "Linkedin"
+        }
+      },
+      "more": {
+        "title": "À propos de ce site",
+        "dpo": {
+          "text": "Je suis DPO",
+          "button": "Revendiquer"
+        },
+        "report": {
+          "text": "Signaler un problème",
+          "button": "Signaler"
+        },
+        "domains": {
+          "text": "Domaines associés",
+          "count": "{{count}} domaine",
+          "count_plural": "{{count}} domaines"
+        },
+        "favorite": {
+          "text": "Ajouter à mes sites"
+        },
+        "create": {
+          "title": "Créer un site",
+          "subtitle": "J'indique l'adresse de mon site, Misakey s'occupe de rappatrier ses informations !",
+          "success": "Demande de création d'application reçue !",
+          "text": "Ce site ne se trouve pas dans la base de données de Misakey. Je peux le créer afin de récupérer mes données.",
+          "button": "Créer"
+        }
+      },
+      "nav": {
+        "label": "Navigation de {{mainDomain}}",
+        "vault": "Coffre-fort",
+        "feedback": "Avis",
+        "legal": "Légal",
+        "more": "Plus"
+      },
+      "userContribution": {
+        "dpoEmailOpenDialog": "Je connais l'email du DPO !",
+        "linkOpenDialog": "Ajouter",
+        "dialog": {
+          "title": "Améliorer la fiche de {{appName}}",
+          "intro": {
+            "dpoEmail": "Si j'ai trouvé l'email DPO de {{appName}} je l'envoie à Misakey pour l'intégrer à la base de donnée collaborative !",
+            "link": "Si j'ai trouvé une page légale de {{appName}} (politique de confidentialité, CGU, ...) je l'envoie à Misakey pour l'intégrer à la base de donnée collaborative !"
+          },
+          "linkExplaination": {
+            "dpoEmail": "Je renseigne l'URL de la page sur laquelle j'ai trouvé l'email, pour fournir un moyen de le vérifier ultérieurement",
+            "link": "Je renseigne l'URL de la page légale"
+          },
+          "fields": {
+            "dpoEmail": "Email du DPO",
+            "link": {
+              "dpoEmail": "Page où est renseigné l'email",
+              "link": "URL de la page"
+            }
+          },
+          "outro": "Nous vérifions toutes les contributions à la main. Cela peut prendre plusieurs jours avant que la base de données soit mise à jour. Merci de nous contacter si cette contribution n'est pas intégrée d'ici quelques semaines",
+          "send": "Envoyer"
+        },
+        "success": "Merci, cette contribution a bien été envoyée !"
+      },
+      "vault": {
+        "archivedDatabox": {
+          "title": "Demande de portabilité du {{date}}",
+          "closedBy": {
+            "user": "J'ai fermé la requête après {{duration}}",
+            "dpo": "Le·la DPO a fermé la requête après {{duration}}"
+          }
+        },
+        "archives": {
+          "title": "Demandes archivées"
+        },
+        "currentDatabox": {
+          "title": "Demande de portabilité en cours",
+          "none": "Aucune demande en cours",
+          "addDPO": "Ajouter l'email du DPO",
+          "contactForm": {
+            "text": "Demander directement sans chiffrement",
+            "button": "Accéder au formulaire"
+          },
+          "contact": "Demander mes données",
+          "openSince": "Ouverte {{since}}"
+        },
+        "closeDialog": {
+          "title": "Archiver la requête ?",
+          "description": "Je ne pourrai plus réouvrir cette requête et le DPO ne pourra plus y ajouter de fichier.\nNéanmoins, les fichiers seront toujours téléchargeables et je pourrai ouvrir une nouvelle requête plus tard."
+        },
+        "reopenDialog": {
+          "title": "Réouvrir la requête ?",
+          "description": "Le DPO a signifié que ma demande était traitée.\nJe peux le relancer en lui indiquant les raisons de mon désaccord."
+        },
+        "databoxContent": {
+          "number": "{{count}} fichier reçu",
+          "number_plural": "{{count}} fichiers reçus"
+        },
+        "errors": {
+          "conflict": {
+            "open": {
+              "createdAt": "Impossible d'effectuer une nouvelle demande, la précédente date de moins de 30 jours.",
+              "status": "Impossible d'effectuer une nouvelle demande, il en existe déjà une ouverte."
+            },
+            "reopen": {
+              "createdAt": "Impossible de réouvrir la demande, une demande plus récente date de moins de 30 jours.",
+              "status": "Impossible de réouvrir la demande, il en existe déjà une ouverte."
+            },
+            "archive": {
+              "status": "Action impossible. La demande a déjà été archivée."
+            },
+            "done": {
+              "status": "Action impossible. La demande a déjà été traitée."
+            }
+          },
+          "downloadBlob": {
+            "missingSecretKey": "Je n'ai pas accès à la clé de déchiffrement",
+            "getBlob": "Une erreur s'est produite lors de la récupération du fichier",
+            "default": "Oops, impossible de télécharger le fichier !"
+          }
+        },
+        "info": {
+          "title": "À propos de mon coffre-fort",
+          "primaryButton": "Créer un coffre",
+          "secondaryButton": "Ouvrir mon coffre-fort",
+          "altIllu": "Personnage devant un coffre-fort",
+          "details": "Mon coffre-fort est chiffré par une clé secrète, elle-même protégée par mon mot de passe. Je suis le seul à pouvoir accéder à cette clé qui permet de lire les données contenues dans mon coffre. Lorsqu’un site m’envoie des données, elles sont chiffrées avant d’être envoyées dans mon coffre. Misakey ne peut pas lire mes données. <br /><br />Attention : En cas de perte de mon mot de passe, mes données ne seront plus accessibles"
+        },
+        "mustUnlockVault": "Ouvrir mon coffre-fort pour accéder à mes fichiers",
+        "openVault": "Ouvrir mon coffre-fort",
+        "passwordPrompt": {
+          "title": "Ouvrir mon coffre-fort",
+          "description": "Pour cette action, je dois saisir mon mot de passe"
+        },
+        "questions": {
+          "title": "Questions fréquentes",
+          "subtitle": "Toutes les réponses à mes questions sont sur notre FAQ pour les Citoyens",
+          "text": {
+            "0": "Qu'est-ce que le RGPD&nbsp;?",
+            "1": "Quels devoirs ont les sites&nbsp;?",
+            "2": "Le RGPD, ça fonctionne&nbsp;?",
+            "3": "Qu'est-ce qu'un ou une DPO&nbsp;?"
+          },
+          "href": {
+            "0": "https://docs.misakey.com/#/citizen/?id=le-rgpd",
+            "1": "https://docs.misakey.com/#/citizen/?id=les-obligations-des-sites",
+            "2": "https://docs.misakey.com/#/citizen/?id=ca-fonctionne-",
+            "3": "https://docs.misakey.com/#/citizen/?id=les-dpo"
+          },
+          "open": {
+            "text": {
+              "0": "Que faire si un site ne me répond pas via le moyen demandé&nbsp;?",
+              "1": "Que faire si un site ne m'a pas répondu dans les délais&nbsp;?",
+              "2": "Que faire si un site me demande des informations pour vérifier mon identité&nbsp;?"
+            },
+            "href": {
+              "0": "https://docs.misakey.com/#/citizen/?id=réponse-insatisfaisante-du-site",
+              "1": "https://docs.misakey.com/#/citizen/?id=délais-de-réponse-dépassé",
+              "2": "https://docs.misakey.com/#/citizen/?id=vérification-de-l39identité"
+            }
+          },
+          "done": {
+            "text": {
+              "0": "Que faire si un site me répond négativement&nbsp;?"
+            },
+            "href": {
+              "0": "https://docs.misakey.com/#/citizen/?id=refus-du-site-de-répondre"
+            }
+          }
+        },
+        "title": "Récupérer mes données"
+      }
+    },
+    "notFound": {
+      "title": "Le site {{mainDomain}} est introuvable !",
+      "subtitle": "J'ajoute un nouveau site",
+      "create": {
+        "text": "Je crée le site {{mainDomain}} pour demander mes données.",
+        "button": "Nouveau site"
+      }
+    }
+  },
+  "applications": {
+    "linked": {
+      "subtitle": "Mes Services"
+    },
+    "suggested": {
+      "subtitle": "Mes suggestions"
+    },
+    "empty": {
+      "subtitle": "Je cherche un site pour récupérer mes données"
+    },
+    "create": {
+      "title": "Créer un site",
+      "subtitle": "J'indique l'adresse de mon site, Misakey s'occupe de rappatrier ses informations !",
+      "success": "Demande de création d'application reçue !"
+    },
+    "select": "Sélectionner mes sites"
+  },
+  "contact": {
+    "bulk": {
+      "ariaLabel": "Ajouter au contact groupé",
+      "contact": "Demander mes données",
+      "databoxesErrors": "Une erreur s'est produite lors de la récupération des données nécessaires pour contacter {{ databoxesErrorsNames }}.",
+      "list": {
+        "title": "Demander mes données aux applications",
+        "subtitle": "Un email sera envoyé à chacune des applications que j'ai sélectionnées",
+        "empty": "Je n'ai pas encore selectionné d'application à contacter. Je peux rechercher des applications ou en sélectionner depuis la page d'accueil"
+      },
+      "manual": {
+        "confirm": {
+          "title": "Envoyer manuellement"
+        },
+        "open": "Envoyer",
+        "retry": "Réessayer"
+      },
+      "recontact": "Relance",
+      "unselectAll": "Annuler la sélection"
+    },
+    "email": {
+      "body": {
+        "legal": "Bonjour,\n\nJe cherche à joindre le délégué à la protection des données de {{mainDomain}}.\n\nJ'aimerais récupérer mes données dans mon coffre-fort personnel (article 20 du RGPD - demande de portabilité des données) et m’assurer qu’aucune de mes informations privées ne transitent via mon email.\n\nPourriez-vous déposer mes fichiers dans ma boîte de dépôt prévue à cet effet via cette interface s’il vous plaît : {{databoxURL}}\nUn code vous sera envoyé par email à {{dpoEmail}} pour sécuriser l’accès à ma boîte de dépôt.\n\nMa demande de portabilité (différente d’une demande d’accès ou suppression) s’inscrit dans le cadre de l’article 20 du Règlement Général pour la Protection des Données (http://www.privacy-regulation.eu/fr/20.htm).\n\nAinsi, pourriez-vous vous assurer que :\n1. mes données soient transmises dans un format lisible par machine (JSON de préférence - article 20),\n2. mes données soient transmises dans les meilleurs délais (article 12.3),\n3. mes données soient transmises uniquement à Misakey via mon coffre-fort. (article 20).\n\nN'hésitez si vous avez besoin d'éléments complémentaires,\n\nCordialement,\n\n\nPS : pour plus d’informations sur mon coffre-fort et la portabilité des données, vous pouvez consulter : https://docs.misakey.com/#/dpo/",
+        "cordial": "Bonjour,\n\nJe cherche à joindre le délégué à la protection des données de {{mainDomain}}.\n\nJ'aimerais récupérer mes données dans mon coffre-fort personnel (demande de portabilité des données) et m’assurer qu’aucune de mes informations privées ne transitent via mon email.\n\nPourriez-vous déposer mes fichiers dans ma boîte de dépôt prévue à cet effet via cette interface s’il vous plaît : {{databoxURL}}\nUn code vous sera envoyé par email à {{dpoEmail}} pour sécuriser l’accès à ma boîte de dépôt.\n\nMa demande de portabilité (différente d’une demande d’accès ou suppression) s’inscrit dans le cadre des nouveaux droits issus du Règlement Général pour la Protection des Données.\n\nN'hésitez si vous avez besoin d'éléments complémentaires, \n\nCordialement,\n\n\nPS : pour plus d’informations sur mon coffre-fort et la portabilité des données, vous pouvez consulter : https://docs.misakey.com/#/dpo/",
+        "friendly": "Bonjour,\n\nJe cherche à joindre le délégué à la protection des données de {{mainDomain}}.\n\nJ'aimerais récupérer mes données dans mon coffre-fort personnel (via la portabilité des données).\nVous pouvez facilement déposer mes fichiers dans ma boîte de dépôt prévue à cet effet via cette interface : {{databoxURL}}\n\nN'hésitez pas si vous avez besoin d'éléments complémentaires,\n\nCordialement,\n",
+        "legalRecontact": "Bonjour,\n\nJe me permet de vous relancer au sujet de ma demande de portabilité de mes données personnelles (ci-dessous).\nIl ne me semble pas que ma requête ait encore reçu un traitement conforme au Règlement Général pour la Protection des Données.\nJe vous prie de faire le nécessaire pour que l’ensemble de mes données soient transférées dans ma boîte de dépôt  dans un format lisible par machine (article 20) et dans les meilleurs délais (article 12.3) .\n\nMa boîte de dépôt sécurisée : {{databoxURL}}\n\nCordialement\n\n-----\n\n> Bonjour,\n> \n> Je cherche à joindre le délégué à la protection des données de {{mainDomain}}.\n> \n> J'aimerais récupérer mes données dans mon coffre-fort personnel (article 20 du RGPD - demande de portabilité des données) et m’assurer qu’aucune de mes informations privées ne transitent via mon email.\n> \n> Pourriez-vous déposer mes fichiers dans ma boîte de dépôt prévue à cet effet via cette interface s’il vous plaît : {{databoxURL}}\n> Un code vous sera envoyé par email à {{dpoEmail}} pour sécuriser l’accès à ma boîte de dépôt.\n> \n> Ma demande de portabilité (différente d’une demande d’accès ou suppression) s’inscrit dans le cadre de l’article 20 du Règlement Général pour la Protection des Données (http://www.privacy-regulation.eu/fr/20.htm).\n> \n> Ainsi, pourriez-vous vous assurer que :\n> 1. mes données soient transmises dans un format lisible par machine (JSON de préférence - article 20),\n> 2. mes données soient transmises dans les meilleurs délais (article 12.3),\n> 3. mes données soient transmises uniquement à Misakey via mon coffre-fort. (article 20).\n> \n> N'hésitez si vous avez besoin d'éléments complémentaires,\n> \n> Cordialement,\n> \n> \n> PS : pour plus d’informations sur mon coffre-fort et la portabilité des données, vous pouvez consulter : https://docs.misakey.com/#/dpo/",
+        "cordialRecontact": "Bonjour,\n\nJe me permets de vous relancer au sujet de ma demande de portabilité de mes données (ci-dessous).\nIl ne me semble pas que ma requête ait encore reçu le traitement qu’elle méritait.\nPourriez-vous faire le nécessaire pour que l’ensemble de mes données concernées par le droit à la portabilité soient transférées dans ma boîte de dépôt s’il vous plaît.\n\nMa boîte de dépôt sécurisée : {{databoxURL}}\n\nCordialement\n\n-----\n\n> Bonjour,\n> \n> Je cherche à joindre le délégué à la protection des données de {{mainDomain}}.\n> \n> J'aimerais récupérer mes données dans mon coffre-fort personnel (demande de portabilité des données) et m’assurer qu’aucune de mes informations privées ne transitent via mon email.\n> \n> Pourriez-vous déposer mes fichiers dans ma boîte de dépôt prévue à cet effet via cette interface s’il vous plaît : {{databoxURL}}\n> Un code vous sera envoyé par email à {{dpoEmail}} pour sécuriser l’accès à ma boîte de dépôt.\n> \n> Ma demande de portabilité (différente d’une demande d’accès ou suppression) s’inscrit dans le cadre des nouveaux droits issus du Règlement Général pour la Protection des Données.\n> \n> N'hésitez si vous avez besoin d'éléments complémentaires, \n> \n> Cordialement,\n> \n> \n> PS : pour plus d’informations sur mon coffre-fort et la portabilité des données, vous pouvez consulter : https://docs.misakey.com/#/dpo/",
+        "friendlyRecontact": "Bonjour,\n\nJe me permets de vous relancer au sujet de ma demande pour récupérer mes données (ci-dessous).\nPourriez-vous faire le nécessaire pour que l’ensemble de mes données concernées par le droit à la portabilité soient transférées dans ma boîte de dépôt s’il vous plaît.\n\nMa boîte de dépôt sécurisée : {{databoxURL}}\n\nCordialement\n\n-----\n\n> Bonjour,\n> \n> Je cherche à joindre le délégué à la protection des données de {{mainDomain}}.> \n> \n> J'aimerais récupérer mes données dans mon coffre-fort personnel (via la portabilité des données).\n> Vous pouvez facilement déposer mes fichiers dans ma boîte de dépôt prévue à cet effet via cette interface : {{databoxURL}}\n> \n> N'hésitez pas si vous avez besoin d'éléments complémentaires,\n> \n> Cordialement,\n"
+      },
+      "model": "Modèle d'email",
+      "subject": "Demande de portabilité",
+      "to": "DPO de {{applicationName}} <{{dpoEmail}}>",
+      "toTrans": "DPO de {{applicationName}} <1>{{dpoEmail}}</1>",
+      "type": {
+        "legal": "Légal",
+        "cordial": "Cordial",
+        "friendly": "Amical",
+        "legalRecontact": "Relance légale",
+        "cordialRecontact": "Relance cordiale",
+        "friendlyRecontact": "Relance amicale"
+      }
+    },
+    "preview": {
+      "exitRecontact": "Je n'ai pas envoyé le 1er email",
+      "subtitle": "Je choisis l'e-mail que je souhaite envoyer au site pour faire ma demande",
+      "title": "E-mail de portabilité"
+    },
+    "providers": {
+      "error": "Pour accéder à l'envoi avec Gmail, je dois désactiver mes bloqueurs",
+      "manual": {
+        "send": "Envoyer manuellement",
+        "notify": "J'envoie l’e-mail depuis la fenêtre ouverte dans mon gestionnaire d’e-mail. Si aucune fenêtre ne s’est ouverte, je vérifie que les pop-up ne sont pas bloquées par mon navigateur web"
+      },
+      "configuration": {
+        "success": "Configuration du service d'email réussie!"
+      },
+      "send": {
+        "success": "Email envoyé!",
+        "success_plural": "Emails envoyés!",
+        "error": "Une erreur inconnue est survenue lors de l'envoi de l'email"
+      },
+      "bulkError": {
+        "content": "Une erreur s'est produite lors de l'envoi !",
+        "title": "Erreur lors de l'envoi d'emails"
+      }
+    }
+  },
+  "route": {
+    "loginAs": {
+      "button": "Connexion en tant que citoyen",
+      "description": "Je ne peux pas accéder à cet espace en étant connecté en tant qu'administrateur ou DPO",
+      "loading": "Connexion en tant que citoyen en cours..."
+    }
+  }
+}

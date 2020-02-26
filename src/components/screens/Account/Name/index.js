@@ -43,7 +43,7 @@ const useOnSubmit = (
 ) => useMemo(
   () => (form, { setSubmitting, setFieldError }) => updateProfile(profile.id, form)
     .then(() => {
-      enqueueSnackbar(t('screens:account.name.success'), { variant: 'success' });
+      enqueueSnackbar(t('account__new:name.success'), { variant: 'success' });
       dispatchUpdateEntities(profile.id, form, history);
       history.push(routes.account._);
     })
@@ -99,13 +99,13 @@ const AccountName = ({
 
   return (
     <ScreenAction
-      title={t('screens:account.name.title')}
+      title={t('account__new:name.title')}
       state={state}
       hideAppBar
     >
       <Container maxWidth="md">
         <Subtitle>
-          {t('screens:account.name.subtitle')}
+          {t('account__new:name.subtitle')}
         </Subtitle>
         {displayName && (
           <Formik
@@ -118,16 +118,16 @@ const AccountName = ({
                 type="text"
                 name={FIELD_NAME}
                 component={FieldText}
-                label={t('fields:displayName.label')}
-                helperText={t('fields:displayName.helperText')}
+                label={t('fields__new:displayName.label')}
+                helperText={t('fields__new:displayName.helperText')}
                 inputProps={{ 'data-matomo-ignore': true }}
               />
               <BoxControls
                 mt={3}
                 primary={{
                   type: 'submit',
-                  'aria-label': t('common:submit'),
-                  text: t('common:submit'),
+                  'aria-label': t('common__new:submit'),
+                  text: t('common__new:submit'),
                 }}
                 formik
               />
@@ -166,4 +166,4 @@ const mapDispatchToProps = (dispatch) => ({
 export default connect(
   null,
   mapDispatchToProps,
-)(withTranslation(['common', 'screens', 'fields'])(AccountName));
+)(withTranslation(['common__new', 'account__new', 'fields__new'])(AccountName));

@@ -33,8 +33,8 @@ const BlobListItem = ({ blob, onDownload, publicKeysWeCanDecryptFrom, t }) => {
   return (
     <ListItem>
       <ListItemText
-        primary={t('components:blob.fileTypes.unclassified')}
-        secondary={t('components:blob.received', { size, date })}
+        primary={t('components__new:blob.fileTypes.unclassified')}
+        secondary={t('components__new:blob.received', { size, date })}
         primaryTypographyProps={{ noWrap: true, display: 'block' }}
         secondaryTypographyProps={{ noWrap: true, display: 'block' }}
       />
@@ -42,13 +42,13 @@ const BlobListItem = ({ blob, onDownload, publicKeysWeCanDecryptFrom, t }) => {
         {(canBeDecrypted) ? (
           <Button
             standing={BUTTON_STANDINGS.TEXT}
-            text={t('common:download')}
+            text={t('common__new:download')}
             onClick={onClick}
           />
         ) : (
           <Button
             disabled
-            text={t('common:undecryptable')}
+            text={t('common__new:undecryptable')}
           />
         )}
       </ListItemSecondaryAction>
@@ -64,4 +64,4 @@ BlobListItem.propTypes = {
 };
 
 
-export default withTranslation(['common', 'components'])(BlobListItem);
+export default withTranslation(['common__new', 'components__new'])(BlobListItem);

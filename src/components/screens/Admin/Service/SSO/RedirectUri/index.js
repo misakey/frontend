@@ -66,7 +66,7 @@ const useOnSubmit = (
       : createApplicationSSO(service.id, form))
       .then((response) => {
         const update = isNil(response) ? form : { ...form, ...objectToCamelCase(response) };
-        enqueueSnackbar(t('service:sso.redirectUri.success'), { variant: 'success' });
+        enqueueSnackbar(t('admin__new:sso.redirectUri.success'), { variant: 'success' });
         dispatchUpdateEntities(service.mainDomain, update, history);
       })
       .catch((error) => {
@@ -117,11 +117,11 @@ const SSORedirectUri = ({ appBarProps, t, service, dispatchUpdateEntities, histo
       history={history}
       pushPath={pushPath}
       appBarProps={appBarProps}
-      title={t('service:sso.redirectUri.title')}
+      title={t('admin__new:sso.redirectUri.title')}
     >
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
-          {t('service:sso.redirectUri.subtitle')}
+          {t('admin__new:sso.redirectUri.subtitle')}
         </Typography>
         <Formik
           validationSchema={redirectUriValidationSchema}
@@ -135,11 +135,11 @@ const SSORedirectUri = ({ appBarProps, t, service, dispatchUpdateEntities, histo
               name="redirectUris"
               autoFocus
               component={FieldText}
-              label={t('fields:redirectUris.label')}
+              label={t('fields__new:redirectUris.label')}
             />
             <Box mt={1}>
               <ButtonSubmit>
-                {t('common:submit')}
+                {t('common__new:submit')}
               </ButtonSubmit>
             </Box>
           </Box>
@@ -177,4 +177,6 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['service', 'fields', 'common'])(SSORedirectUri));
+export default connect(null, mapDispatchToProps)(
+  withTranslation(['admin__new', 'fields__new', 'common__new'])(SSORedirectUri),
+);

@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
 
 const useOnSuccess = (enqueueSnackbar, t) => useCallback(
   () => {
-    enqueueSnackbar(t('common:providers.send.success'), { variant: 'success' });
+    enqueueSnackbar(t('citizen__new:contact.providers.send.success'), { variant: 'success' });
   },
   [enqueueSnackbar, t],
 );
@@ -153,7 +153,7 @@ const ContactPreview = ({
     () => (
       <Trans
         values={{ applicationName: name, dpoEmail }}
-        i18nKey="common:emailToTrans"
+        i18nKey="citizen__new:contact.email.toTrans"
       >
         {'DPO de {{applicationName}}'}
         <span className={classes.spanNoWrap}>{'{{dpoEmail}}'}</span>
@@ -192,11 +192,11 @@ const ContactPreview = ({
   );
 
   const subject = useMemo(
-    () => t('common:emailSubject'),
+    () => t('citizen__new:contact.email.subject'),
     [t],
   );
   const body = useMemo(
-    () => t(`common:emailBody.${mailType}`, { dpoEmail, databoxURL, mainDomain, ...mapDates(databox) }),
+    () => t(`citizen__new:contact.email.body.${mailType}`, { dpoEmail, databoxURL, mainDomain, ...mapDates(databox) }),
     [databoxURL, databox, mainDomain, dpoEmail, mailType, t],
   );
 
@@ -237,12 +237,12 @@ const ContactPreview = ({
       ? {
         component: Link,
         to: nextTo,
-        text: t('common:next'),
+        text: t('common__new:next'),
       }
       : {
         onClick: onSubmit,
         isValid: loaded,
-        text: t('common:send'),
+        text: t('common__new:send'),
       }),
     [loaded, mailProvider, nextTo, onSubmit, t],
   );
@@ -252,7 +252,7 @@ const ContactPreview = ({
       ? {
         component: Link,
         to: skipTo,
-        text: t('common:skip'),
+        text: t('common__new:skip'),
       }
       : null),
     [recontact, skipTo, t],
@@ -278,7 +278,7 @@ const ContactPreview = ({
 
   const onError = useCallback(
     () => {
-      enqueueSnackbar(t('common:providers.error'), { variant: 'error' });
+      enqueueSnackbar(t('citizen__new:contact.providers.error'), { variant: 'error' });
     },
     [enqueueSnackbar, t],
   );
@@ -295,12 +295,12 @@ const ContactPreview = ({
       <Navigation
         history={history}
         toolbarProps={{ maxWidth: 'md' }}
-        title={t('screens:contact.preview.title')}
+        title={t('citizen__new:contact.preview.title')}
         gutterBottom={!IS_PLUGIN}
       />
       <Container maxWidth="md" className={clsx({ [classes.container]: IS_PLUGIN })}>
         <Subtitle>
-          {t('screens:contact.preview.subtitle')}
+          {t('citizen__new:contact.preview.subtitle')}
         </Subtitle>
         <Box mt={3}>
           <ToggleButtonGroupMailType {...groupMailTypeProps} />
@@ -312,7 +312,7 @@ const ContactPreview = ({
             primary={{
               size: 'small',
               standing: BUTTON_STANDINGS.TEXT,
-              text: t('screens:contact.preview.exitRecontact'),
+              text: t('citizen__new:contact.preview.exitRecontact'),
               component: Link,
               to: exitRecontact,
             }}
@@ -349,10 +349,4 @@ ContactPreview.defaultProps = {
   mailProvider: null,
 };
 
-// @FIXME use mail provider preferency once we can configure it in account
-// CONNECT
-// const mapStateToProps = (state) => ({
-//   mailProvider: contactSelectors.getMailProviderPreferency(state),
-// });
-
-export default withTranslation(['common', 'screens'])(ContactPreview);
+export default withTranslation(['common__new', 'citizen__new'])(ContactPreview);

@@ -38,7 +38,7 @@ const ToggleButtonGroupMailType = ({ values, currentValue, prefix, t, ...rest })
       classes={{ root: classes.toggleButtonGroupRoot, grouped: classes.toggleButtonGroupGrouped }}
       value={currentValue}
       exclusive
-      aria-label={t(`common:${prefix}.group`)}
+      aria-label={t(`citizen__new:${prefix}.model`)}
       {...omitTranslationProps(rest)}
     >
       {values.map(({ type, ...props }) => (
@@ -46,10 +46,10 @@ const ToggleButtonGroupMailType = ({ values, currentValue, prefix, t, ...rest })
           key={type}
           classes={{ selected: classes.toggleButtonSelected }}
           value={type}
-          aria-label={t(`common:${prefix}.types.${type}`)}
+          aria-label={t(`citizen__new:${prefix}.type.${type}`)}
           {...props}
         >
-          {t(`common:${prefix}.types.${type}`)}
+          {t(`citizen__new:${prefix}.type.${type}`)}
         </ToggleButton>
       ))}
     </ToggleButtonGroup>
@@ -66,7 +66,7 @@ ToggleButtonGroupMailType.propTypes = {
 ToggleButtonGroupMailType.defaultProps = {
   values: MAIL_TYPES.map((type) => ({ type })),
   currentValue: CORDIAL,
-  prefix: 'mailType',
+  prefix: 'contact.email',
 };
 
-export default withTranslation('common')(ToggleButtonGroupMailType);
+export default withTranslation('citizen__new')(ToggleButtonGroupMailType);

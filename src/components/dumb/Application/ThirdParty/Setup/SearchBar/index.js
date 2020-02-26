@@ -1,7 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -15,7 +14,6 @@ import {
 import isNil from '@misakey/helpers/isNil';
 import isString from '@misakey/helpers/isString';
 import getSearchParams from '@misakey/helpers/getSearchParams';
-import omit from '@misakey/helpers/omit';
 
 import InputSearch from 'components/dumb/Input/Search';
 import ApplicationImg from 'components/dumb/Application/Img';
@@ -74,7 +72,6 @@ function ThirdPartySearchBar({
   onFetching,
   onSearch,
   onFiltersChange,
-  t,
   ...rest
 }) {
   const inputRef = useRef();
@@ -94,7 +91,7 @@ function ThirdPartySearchBar({
   return (
     <InputSearch
       ref={inputRef}
-      {...omit(rest, ['i18n', 'tReady'])}
+      {...rest}
       autoFocus={isSearchActive}
       value={search}
       onChange={onSearchChange}
@@ -135,7 +132,6 @@ ThirdPartySearchBar.propTypes = {
   onFetching: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
   onFiltersChange: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
 };
 
 ThirdPartySearchBar.defaultProps = {
@@ -148,7 +144,4 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(
-  null,
-  mapDispatchToProps,
-)(withTranslation(['screens'])(ThirdPartySearchBar));
+export default connect(null, mapDispatchToProps)(ThirdPartySearchBar);

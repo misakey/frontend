@@ -43,7 +43,7 @@ function ApplicationsList({
     return (
       <BoxMessage type="error" mt={2}>
         <Typography>
-          {t('linkedApplications.error')}
+          {t('components__new:list.applications.error')}
         </Typography>
       </BoxMessage>
     );
@@ -82,4 +82,4 @@ ApplicationsList.defaultProps = {
   withBlobCount: false,
 };
 
-export default withTranslation(['components'])(ApplicationsList);
+export default withTranslation(['components__new'])(ApplicationsList);

@@ -58,7 +58,7 @@ const ServicesCreate = ({
   );
 
   const onSubmit = useCallback(
-    (values, formikBag) => onCreateApplication(values, formikBag, t('screens:services.create.success')),
+    (values, formikBag) => onCreateApplication(values, formikBag, t('dpo__new:services.create.success')),
     [onCreateApplication, t],
   );
 
@@ -67,11 +67,11 @@ const ServicesCreate = ({
       <Navigation
         toolbarProps={{ maxWidth: 'md' }}
         history={history}
-        title={t('screens:services.create.title')}
+        title={t('dpo__new:services.create.title')}
       />
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" align="left">
-          {t('screens:services.create.subtitle')}
+          {t('dpo__new:services.create.subtitle')}
         </Typography>
         <Formik
           validationSchema={mainDomainValidationSchema}
@@ -91,10 +91,10 @@ const ServicesCreate = ({
                   autoComplete: 'off',
                 }}
                 component={FieldText}
-                label={t('fields:mainDomain.altLabel')}
-                helperText={t('fields:mainDomain.helperText')}
+                label={t('fields__new:mainDomain.altLabel')}
+                helperText={t('fields__new:mainDomain.helperText')}
               />
-              <ButtonSubmit text={t('common:next')} />
+              <ButtonSubmit text={t('common__new:next')} />
             </Form>
           </Container>
         </Formik>
@@ -110,4 +110,4 @@ ServicesCreate.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withApplicationCreate()(withTranslation(['screens', 'common', 'fields'])(ServicesCreate));
+export default withApplicationCreate()(withTranslation(['dpo__new', 'common__new', 'fields__new'])(ServicesCreate));

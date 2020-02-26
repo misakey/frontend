@@ -161,14 +161,14 @@ function ServiceRoleClaim({
         setClaim(objectToCamelCase(response));
 
         const text = t(
-          'screens:Service.role.claim.email.success',
+          'dpo__new:services.claim.email.success',
           { mainDomain: service.mainDomain },
         );
         enqueueSnackbar(text, { variant: 'success' });
       })
       .catch((e) => {
         if (prop('code')(e) === conflict) {
-          enqueueSnackbar(t('screens:Service.role.claim.errors.conflict'), { variant: 'error' });
+          enqueueSnackbar(t('fields__new:serviceRoleClaim.code.error.conflict'), { variant: 'error' });
         } else {
           handleGenericHttpErrors(e);
         }
@@ -187,7 +187,7 @@ function ServiceRoleClaim({
       .send()
       .then((response) => {
         const { userRole } = objectToCamelCase(response);
-        enqueueSnackbar(t('screens:Service.role.claim.success', service), { variant: 'success' });
+        enqueueSnackbar(t('dpo__new:services.claim.success', service), { variant: 'success' });
         dispatchAddRoleToUser(objectToCamelCase(userRole));
       })
       .catch((e) => {
@@ -237,7 +237,7 @@ function ServiceRoleClaim({
 
   return (
     <ScreenAction
-      title={t('screens:Service.role.claim.title')}
+      title={t('dpo__new:services.claim.title')}
       state={state}
       appBarProps={appBarProps}
     >
@@ -248,7 +248,7 @@ function ServiceRoleClaim({
           color="textSecondary"
           gutterBottom
         >
-          {t('screens:Service.role.claim.subtitle', service)}
+          {t('dpo__new:services.claim.subtitle', service)}
         </Subtitle>
         <Formik
           initialValues={INITIAL_VALUES}
@@ -265,13 +265,13 @@ function ServiceRoleClaim({
                   my={1}
                   type="error"
                   text={t(
-                    'screens:Service.role.claim.errors.missingDpoEmail.description',
+                    'dpo__new:services.claim.errors.missingDpoEmail.description',
                     { mainDomain },
                   )}
                 />
                 <CardSimpleText
                   text={t(
-                    'screens:Service.role.claim.errors.missingDpoEmail.text',
+                    'dpo__new:services.claim.errors.missingDpoEmail.text',
                     { mainDomain },
                   )}
                   button={{
@@ -279,7 +279,7 @@ function ServiceRoleClaim({
                     target: '_blank',
                     rel: 'noopener noreferrer',
                     component: 'a',
-                    text: t('screens:Service.role.claim.errors.missingDpoEmail.button'),
+                    text: t('dpo__new:services.claim.errors.missingDpoEmail.button'),
                     href: 'mailto:question.perso@misakey.com',
                   }}
                 />
@@ -295,7 +295,7 @@ function ServiceRoleClaim({
                     disabled={isNil(service)}
                     isLoading={isCreating}
                     onClick={handleEmail}
-                    text={t('screens:Service.role.claim.email.submit')}
+                    text={t('dpo__new:services.claim.email.submit')}
                   />
                 </Box>
               </Box>
@@ -304,7 +304,7 @@ function ServiceRoleClaim({
                 mt={2}
                 primary={{
                   disabled: !hasClaimId,
-                  text: t('common:next'),
+                  text: t('common__new:next'),
                   type: 'submit',
                 }}
                 formik
@@ -353,4 +353,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchAddRoleToUser: (role) => dispatch(addRoleToUser(role)),
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['common', 'screens', 'fields'])(ServiceRoleClaim));
+export default connect(null, mapDispatchToProps)(withTranslation(['common__new', 'dpo__new', 'fields__new'])(ServiceRoleClaim));

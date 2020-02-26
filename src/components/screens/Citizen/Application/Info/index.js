@@ -111,7 +111,7 @@ function ApplicationInfo({
   const classes = useStyles();
   const [isOpenUserContributionDialog, setOpenUserContributionDialog] = useState(false);
   const [applicationLinkId, setApplicationLinkId] = useState(null);
-  const [userContributionType, setUserContributionType] = useState('');
+  const [userContributionType, setUserContributionType] = useState(undefined);
   const [contentRef, setContentRef] = React.useState(undefined);
 
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
@@ -156,7 +156,7 @@ function ApplicationInfo({
       })
       .send()
       .then(() => {
-        const text = t('application.info.userContribution.success');
+        const text = t('citizen__new:application.info.userContribution.success');
         enqueueSnackbar(text, { variant: 'success' });
       })
       .catch(handleGenericHttpErrors)
@@ -339,4 +339,4 @@ ApplicationInfo.defaultProps = {
 export default connect((state) => ({
   userId: state.auth.userId,
   isAuthenticated: !!state.auth.token,
-}))(withTranslation(['screens'])(ApplicationInfo));
+}))(withTranslation(['citizen__new'])(ApplicationInfo));

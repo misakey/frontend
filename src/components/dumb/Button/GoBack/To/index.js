@@ -9,16 +9,13 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import Button from 'components/dumb/Button';
 
-// CONSTANTS
-const DEFAULT_TEXT_KEY = 'common:navigation.history.goBack';
-
 // COMPONENTS
 const ButtonGoBackTo = ({ className, to, t, text, ...props }) => (
   <Button
     component={Link}
     to={to}
     className={className}
-    text={text || t(DEFAULT_TEXT_KEY)}
+    text={text || t('common__new:goBack')}
     {...omitTranslationProps(props)}
   />
 );
@@ -36,4 +33,4 @@ ButtonGoBackTo.defaultProps = {
   text: null,
 };
 
-export default withTranslation('common')(ButtonGoBackTo);
+export default withTranslation('common__new')(ButtonGoBackTo);

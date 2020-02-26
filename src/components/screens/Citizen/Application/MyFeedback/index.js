@@ -117,7 +117,7 @@ const useOnSubmit = (
     const { id, mainDomain } = application;
     return postFeedback(id, userId, form, rating)
       .then(() => {
-        enqueueSnackbar(t('screens:feedback.me.success'), { variant: 'success' });
+        enqueueSnackbar(t('citizen__new:application.feedback.success'), { variant: 'success' });
         dispatchClearRatings(mainDomain, history);
       })
       .catch((error) => {
@@ -198,7 +198,7 @@ const ApplicationMyFeedback = ({
       <Navigation
         history={history}
         toolbarProps={{ maxWidth: 'md' }}
-        title={t('screens:feedback.me.title')}
+        title={t('citizen__new:application.feedback.title')}
       />
       {(isFetchingFeedback) ? (
         <SplashScreen />
@@ -223,19 +223,19 @@ const ApplicationMyFeedback = ({
                   name={COMMENT_FIELD}
                   component={FieldText}
                   multiline
-                  placeholder={t('fields:comment.placeholder')}
-                  helperText={t('fields:comment.helperText')}
+                  placeholder={t('fields__new:comment.placeholder')}
+                  helperText={t('fields__new:comment.helperText')}
                 />
                 <BoxControls
                   primary={{
-                    text: t('common:feedback.submit'),
+                    text: t('common__new:publish'),
                   }}
                   secondary={!isNil(rating) ? {
                     standing: BUTTON_STANDINGS.TEXT,
                     isLoading: isDeletingFeedback,
                     onClick: onDelete,
                     className: classes.deleteButton,
-                    text: t('common:delete'),
+                    text: t('common__new:delete'),
                   } : undefined}
                   formik
                 />
@@ -294,4 +294,4 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(null, mapDispatchToProps)(withMyFeedback()(withTranslation(['common', 'screens', 'fields'])(ApplicationMyFeedback)));
+export default connect(null, mapDispatchToProps)(withMyFeedback()(withTranslation(['common__new', 'citizen__new', 'fields__new'])(ApplicationMyFeedback)));

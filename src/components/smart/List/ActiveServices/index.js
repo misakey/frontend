@@ -28,7 +28,7 @@ function ActiveServices({
     <>
       <Box display="flex" justifyContent="space-between">
         <Title>
-          {t('activeServices.title')}
+          {t('dpo__new:services.active')}
         </Title>
       </Box>
       <Card mb={3}>
@@ -53,4 +53,4 @@ ActiveServices.defaultProps = {
   isFetchingActiveServices: false,
 };
 
-export default withActiveServices()(withTranslation(['common'])(ActiveServices));
+export default withActiveServices()(withTranslation(['dpo__new'])(ActiveServices));

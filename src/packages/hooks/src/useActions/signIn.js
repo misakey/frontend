@@ -21,7 +21,7 @@ const IDENTIFIER_CONTENT_ACTIONS = {
       to: routes.auth.signUp.preamble,
       component: Link,
     },
-    textKey: 'auth:signIn.form.action.signUp',
+    textKey: 'auth__new:signIn.form.action.signUp',
   },
 };
 
@@ -52,13 +52,13 @@ export const useSecretContentAction = (acr, t, renewConfirmationCode) => useMemo
           to: routes.auth.forgotPassword,
           component: Link,
         },
-        textKey: 'auth:signIn.form.action.forgotPassword',
+        textKey: 'auth__new:signIn.form.action.forgotPassword',
       },
       confirmationCode: {
         buttonProps: {
           onClick: renewConfirmationCode,
         },
-        textKey: 'auth:signIn.form.action.getANewCode.button',
+        textKey: 'auth__new:signIn.form.action.getANewCode.button',
       },
     };
     const { buttonProps, textKey } = contentActions[stepType];
@@ -103,7 +103,7 @@ export const useSecretSecondaryAction = (acr, t) => {
 
   const secondaryActions = useMemo(
     () => ({
-      password: { onClick, text: t('common:navigation.history.goBack') },
+      password: { onClick, text: t('common__new:goBack') },
       confirmationCode: null,
     }),
     [onClick, t],

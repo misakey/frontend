@@ -1,14 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import TextField from '@material-ui/core/TextField';
-import omit from '@misakey/helpers/omit';
 
 // @FIXME refactor @misaey/ui
 const FieldText = (props) => {
   const {
-    className, helperText, t, ...rest
+    className, helperText, ...rest
   } = props;
 
   return (
@@ -17,7 +15,7 @@ const FieldText = (props) => {
       fullWidth
       variant="outlined"
       className={clsx('FieldText', className)}
-      {...omit(rest, ['i18n', 'tReady'])}
+      {...rest}
       helperText={helperText}
     />
   );
@@ -34,4 +32,4 @@ FieldText.defaultProps = {
   helperText: '',
 };
 
-export default withTranslation('fields')(FieldText);
+export default FieldText;

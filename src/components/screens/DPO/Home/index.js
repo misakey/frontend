@@ -54,7 +54,7 @@ function Home({
           <>
             <Box display="flex" justifyContent="space-between">
               <Title>
-                {t('linkedApplications.title')}
+                {t('components__new:list.applications.linked.title')}
               </Title>
               <IconButton
                 to={routes.dpo.services.create}
@@ -94,4 +94,4 @@ Home.defaultProps = {
   isFetchingMyApplications: false,
 };
 
-export default withMyApplications({ workspace: WORKSPACE.DPO })(withTranslation(['components'])(Home));
+export default withMyApplications({ workspace: WORKSPACE.DPO })(withTranslation(['components__new'])(Home));

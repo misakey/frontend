@@ -71,6 +71,17 @@ We use [React App Rewired](https://github.com/timarney/react-app-rewired) to be 
 The config for the webapp is `config-overrides-application.js`. It contains config to make the packages
 usable in the app directly.
 
+### I18N
+
+Locale file organization:
+- in `public/locales` we have one locale file per workspace (`account`, `admin`, `auth`, `citizen`, `dpo`, `plugin`).
+Those translation files are loaded by XHR request. We did that to optimize the size of loaded locales.
+- in `src/constants/locales` we have all common locales, they are loaded everywhere in the app.
+    - `fields`: for all fields translations. It only contains translation used by Field component
+    - `landing`: the landing translations. I didn't put it in XHR to limit XHR call in landing loading. The perf impact is minor (very few translation keys) but that reduce by one the number of XHR call on the landing page
+    - `commons`: for transversal non component-specific translation (little words, HTTP error codes, inter-workspace infos)
+    - `components`: For components specific translations (drawer, appbar, ...). Only for components that are not workspace specific
+
 ### Lint and test
 
 ```shell

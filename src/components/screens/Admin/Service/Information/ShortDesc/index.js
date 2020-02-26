@@ -50,7 +50,7 @@ const useOnSubmit = (
 ) => useMemo(
   () => (form, { setSubmitting }) => updateApplicationInfo(service.id, form)
     .then(() => {
-      enqueueSnackbar(t('service:information.shortDesc.success'), { variant: 'success' });
+      enqueueSnackbar(t('admin__new:information.shortDesc.success'), { variant: 'success' });
       dispatchUpdateEntities(service.mainDomain, form, history);
     })
     .catch((error) => {
@@ -101,11 +101,11 @@ const ServiceShortDesc = ({ appBarProps, t, service, dispatchUpdateEntities, his
       history={history}
       pushPath={pushPath}
       appBarProps={appBarProps}
-      title={t('service:information.shortDesc.title')}
+      title={t('admin__new:information.shortDesc.title')}
     >
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
-          {t('service:information.shortDesc.subtitle')}
+          {t('admin__new:information.shortDesc.subtitle')}
         </Typography>
         <Formik
           validationSchema={shortDescValidationSchema}
@@ -119,13 +119,13 @@ const ServiceShortDesc = ({ appBarProps, t, service, dispatchUpdateEntities, his
               name="shortDesc"
               autoFocus
               component={FieldText}
-              label={t('fields:shortDesc.label')}
-              helperText={t('fields:shortDesc.helperText')}
+              label={t('fields__new:shortDesc.label')}
+              helperText={t('fields__new:shortDesc.helperText')}
               t={t}
             />
             <Box mt={1}>
               <ButtonSubmit>
-                {t('common:submit')}
+                {t('common__new:submit')}
               </ButtonSubmit>
             </Box>
           </Box>
@@ -163,4 +163,6 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['service', 'fields', 'common'])(ServiceShortDesc));
+export default connect(null, mapDispatchToProps)(
+  withTranslation(['admin__new', 'fields__new', 'common__new'])(ServiceShortDesc),
+);

@@ -79,7 +79,7 @@ FormImageField.defaultProps = {
   showImage: false,
 };
 
-FormImageField = withTranslation('fields')(withErrors(FormImageField));
+FormImageField = withTranslation('fields__new')(withErrors(FormImageField));
 
 const FormImage = ({
   className,

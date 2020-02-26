@@ -16,7 +16,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 // import Typography from '@material-ui/core/Typography';
 // import Box from '@material-ui/core/Box';
 import Card from 'components/dumb/Card';
-import CardHeaderAuthSignUp from 'components/smart/Card/Header/Auth/SignUp';
+import CardHeaderAuthSignUp from 'components/smart/Card/Auth/Header/SignUp';
 import ButtonGoBackTo from 'components/dumb/Button/GoBack/To';
 import FormFields from '@misakey/ui/Form/Fields';
 import FieldText from 'components/dumb/Form/Field/Text';
@@ -87,7 +87,7 @@ const AuthSignUpCreatePseudo = ({
   const primary = useMemo(
     () => ({
       type: 'submit',
-      text: t('common:next'),
+      text: t('common__new:next'),
     }),
     [t],
   );
@@ -114,9 +114,9 @@ const AuthSignUpCreatePseudo = ({
       padded={padded}
       primary={primary}
       secondary={<ButtonGoBackTo to={parentTo} />}
-      title={t('auth:signUp.create.handle.title')}
+      title={t('auth__new:signUp.create.handle.title')}
       titleProps={titleProps}
-      subtitle={t('auth:signUp.create.handle.subtitle')}
+      subtitle={t('auth__new:signUp.create.handle.subtitle')}
       subtitleProps={subtitleProps}
       Header={CardHeaderAuthSignUp}
       formik
@@ -124,7 +124,7 @@ const AuthSignUpCreatePseudo = ({
       <AuthSignUpCreatePseudoFormFields />
       {/* <Box mt={2}>
         <Typography>
-          {t('auth:signUp.create.handle.more.text')}
+          {t('auth__new:signUp.create.handle.more.text')}
           <MUILink
             color="secondary"
             to={routes.legals.privacy}
@@ -132,7 +132,7 @@ const AuthSignUpCreatePseudo = ({
             target="_blank"
             rel="noopener noreferrer"
           >
-            {t('auth:signUp.create.handle.more.link')}
+            {t('auth__new:signUp.create.handle.more.link')}
           </MUILink>
         </Typography>
       </Box> */}
@@ -156,4 +156,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchClearPublics: () => dispatch(screenAuthSetPublics()),
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['auth', 'common'])(AuthSignUpCreatePseudo));
+export default connect(null, mapDispatchToProps)(withTranslation(['auth__signup', 'common__new'])(AuthSignUpCreatePseudo));

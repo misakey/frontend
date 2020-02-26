@@ -29,8 +29,8 @@ function Alert({ children, dialogActions, dialogProps, onClose, onOk, open, t, t
         {dialogActions}
         {dialogActions.length === 0 && (
           <>
-            <Button onClick={onClose}>{t('cancel', 'Cancel')}</Button>
-            <Button onClick={onOk} color="secondary" autoFocus>{t('ok', 'OK')}</Button>
+            <Button onClick={onClose}>{t('common__new:cancel')}</Button>
+            <Button onClick={onOk} color="secondary" autoFocus>{t('common__new:ok')}</Button>
           </>
         )}
       </DialogActions>
@@ -60,4 +60,4 @@ Alert.defaultProps = {
   title: '',
 };
 
-export default withTranslation()(Alert);
+export default withTranslation('common__new')(Alert);

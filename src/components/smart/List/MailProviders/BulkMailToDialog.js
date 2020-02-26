@@ -37,11 +37,11 @@ const BulkMailToDialog = ({
           const isDisabled = disabled.includes(index);
           const buttonProps = isDisabled ? {
             color: 'primary',
-            text: t('common:contact.bulk.manual.retry'),
+            text: t('citizen__new:contact.bulk.manual.retry'),
             onClick: () => removeFromDisabled(index),
           } : {
             color: 'secondary',
-            text: t('common:contact.bulk.manual.open'),
+            text: t('citizen__new:contact.bulk.manual.open'),
             disabled: isDisabled,
             component: 'a',
             target: '_blank',
@@ -68,7 +68,7 @@ const BulkMailToDialog = ({
       setDialogOpen={setOpenBulkMailToDialog}
       isDialogOpen={openBulkMailToDialog}
       dialogContent={content}
-      title={t('common:contact.bulk.manual.confirm.title')}
+      title={t('citizen__new:contact.bulk.manual.confirm.title')}
       fullWidth
       hideCancelButton
     />
@@ -86,4 +86,4 @@ BulkMailToDialog.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('common')(BulkMailToDialog);
+export default withTranslation('citizen__new')(BulkMailToDialog);

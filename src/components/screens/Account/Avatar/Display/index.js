@@ -31,26 +31,26 @@ const AccountAvatarDisplay = ({
 }) => (
   <ScreenAction
     className="Display"
-    title={t('screens:account.avatar.title')}
+    title={t('account__new:avatar.title')}
     state={state}
     pushPath={routes.account._}
     hideAppBar
   >
     <Container maxWidth="md" className="content">
       <Subtitle>
-        {t('screens:account.avatar.subtitle')}
+        {t('account__new:avatar.subtitle')}
       </Subtitle>
       <Card
         primary={dirty ? {
           type: 'submit',
-          'aria-label': t('common:submit'),
-          text: t('common:submit'),
+          'aria-label': t('common__new:submit'),
+          text: t('common__new:submit'),
         } : undefined}
         secondary={{
           to: routes.account.profile.avatar.upload,
           component: Link,
-          'aria-label': t('common:edit'),
-          text: t('common:edit'),
+          'aria-label': t('common__new:edit'),
+          text: t('common__new:edit'),
         }}
         formik
       >
@@ -84,4 +84,4 @@ AccountAvatarDisplay.defaultProps = {
   state: {},
 };
 
-export default withTranslation(['common', 'screens'])(AccountAvatarDisplay);
+export default withTranslation(['common__new', 'account__new'])(AccountAvatarDisplay);

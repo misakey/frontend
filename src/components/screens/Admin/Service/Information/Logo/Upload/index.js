@@ -46,11 +46,11 @@ const ServiceLogoUpload = ({ service, t, setValues, setTouched, history }) => {
         history={history}
         pushPath={pushPath}
         toolbarProps={{ maxWidth: 'md' }}
-        title={t('service:information.logo.upload.title')}
+        title={t('admin__new:information.logo.upload.title')}
       />
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
-          {t('service:information.logo.upload.subtitle')}
+          {t('admin__new:information.logo.upload.subtitle')}
         </Typography>
         <FileField
           accept={ACCEPTED_TYPES}
@@ -74,4 +74,4 @@ ServiceLogoUpload.defaultProps = {
   service: null,
 };
 
-export default withTranslation('service')(ServiceLogoUpload);
+export default withTranslation('admin__new')(ServiceLogoUpload);

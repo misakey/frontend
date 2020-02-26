@@ -65,7 +65,7 @@ ToggleButtonGroupMailTypeWithSearchParams.propTypes = {
 ToggleButtonGroupMailTypeWithSearchParams.defaultProps = {
   values: MAIL_TYPES,
   defaultValue: CORDIAL,
-  prefix: 'mailType',
+  prefix: undefined,
 };
 
 export default ToggleButtonGroupMailTypeWithSearchParams;

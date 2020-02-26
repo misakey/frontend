@@ -27,14 +27,14 @@ function ConfirmationDialog({
   );
 
   const text = useMemo(
-    () => (isNil(confirmButtonText) ? t('common:ok') : confirmButtonText),
+    () => (isNil(confirmButtonText) ? t('common__new:ok') : confirmButtonText),
     [confirmButtonText, t],
   );
 
   const secondary = useMemo(
     () => (hideCancelButton ? null : {
       onClick: handleCancel,
-      text: t('common:cancel'),
+      text: t('common__new:cancel'),
     }),
     [hideCancelButton, handleCancel, t],
   );
@@ -85,4 +85,4 @@ ConfirmationDialog.defaultProps = {
   hideCancelButton: false,
 };
 
-export default withTranslation(['common'])(ConfirmationDialog);
+export default withTranslation(['common__new'])(ConfirmationDialog);

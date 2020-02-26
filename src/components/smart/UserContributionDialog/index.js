@@ -87,11 +87,11 @@ function UserContributionDialog({
       >
         <Form>
           <DialogTitle id="alert-dialog-title" onClose={onClose}>
-            {t('application.info.userContribution.dialog.title', { appName })}
+            {t('citizen__new:application.info.userContribution.dialog.title', { appName })}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {t(`application.info.userContribution.dialog.intro.${userContributionType}`, { appName })}
+              {t(`citizen__new:application.info.userContribution.dialog.intro.${userContributionType}`, { appName })}
             </DialogContentText>
             {(userContributionType === 'dpoEmail') && (
             <Field
@@ -101,12 +101,12 @@ function UserContributionDialog({
               autoFocus
               id="dpo-email-address"
               fullWidth
-              label={t('application.info.userContribution.dialog.fields.dpoEmail')}
+              label={t('citizen__new:application.info.userContribution.dialog.fields.dpoEmail')}
             />
             )}
 
             <DialogContentText>
-              {t(`application.info.userContribution.dialog.linkExplaination.${userContributionType}`)}
+              {t(`citizen__new:application.info.userContribution.dialog.linkExplaination.${userContributionType}`)}
             </DialogContentText>
             <Field
               component={FieldText}
@@ -116,15 +116,15 @@ function UserContributionDialog({
               id="link-address"
               type="text"
               fullWidth
-              label={t(`application.info.userContribution.dialog.fields.link.${userContributionType}`)}
+              label={t(`citizen__new:application.info.userContribution.dialog.fields.link.${userContributionType}`)}
             />
             <DialogContentText>
-              {t('application.info.userContribution.dialog.outro')}
+              {t('citizen__new:application.info.userContribution.dialog.outro')}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <ButtonSubmit
-              text={t('application.info.userContribution.dialog.send')}
+              text={t('citizen__new:application.info.userContribution.dialog.send')}
             />
           </DialogActions>
         </Form>
@@ -144,8 +144,8 @@ UserContributionDialog.propTypes = {
 };
 
 UserContributionDialog.defaultProps = {
-  userContributionType: 'all',
+  userContributionType: 'dpoEmail',
   appName: '',
 };
 
-export default withWidth()(withTranslation('screens')(UserContributionDialog));
+export default withWidth()(withTranslation('citizen__new')(UserContributionDialog));

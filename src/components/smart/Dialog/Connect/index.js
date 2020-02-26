@@ -38,16 +38,16 @@ const DialogConnect = ({ open, onClose, t, buttonConnectProps, ...rest }) => {
       onClose={onCancel}
       {...omit(rest, ['tReady'])}
     >
-      <DialogTitle>{t('common:dialogConnect.title')}</DialogTitle>
+      <DialogTitle>{t('components__new:dialogConnect.title')}</DialogTitle>
       <DialogContent>
-        <DialogContentText>{t('common:dialogConnect.subtitle')}</DialogContentText>
+        <DialogContentText>{t('components__new:dialogConnect.subtitle')}</DialogContentText>
       </DialogContent>
       <DialogActions classes={{ root: classes.dialogActionsRoot }}>
         <Button onClick={onCancel} color="primary">
-          {t('common:cancel')}
+          {t('common__new:cancel')}
         </Button>
         <ButtonConnectSimple {...buttonConnectProps} buttonProps={{ variant: 'contained' }}>
-          {t('common:signIn')}
+          {t('common__new:signIn')}
         </ButtonConnectSimple>
       </DialogActions>
     </Dialog>
@@ -66,4 +66,4 @@ DialogConnect.defaultProps = {
   buttonConnectProps: {},
 };
 
-export default withTranslation('common')(DialogConnect);
+export default withTranslation('common__new', 'components__new')(DialogConnect);

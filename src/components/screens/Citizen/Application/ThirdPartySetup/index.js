@@ -156,7 +156,7 @@ function ThirdPartySetup({
       .then((response) => {
         dispatchApps(response);
       })
-      .catch(() => { enqueueSnackbar(t('httpStatus.error.default'), { variant: 'error' }); });
+      .catch(() => { enqueueSnackbar(t('common__new:httpStatus.error.default'), { variant: 'error' }); });
   }, [dispatchApps, enqueueSnackbar, searchParams, t]);
 
   return (
@@ -168,7 +168,7 @@ function ThirdPartySetup({
               <Chip
                 key={purpose}
                 classes={{ labelSmall: classes.labelSmall, root: classes.chip }}
-                label={t(`screens:application.thirdParty.purposes.${purpose}`)}
+                label={t(`plugin__new:thirdParty.purposes.${purpose}`)}
                 color={mainPurpose === purpose ? 'secondary' : 'primary'}
                 onClick={() => (mainPurpose === purpose
                   ? setParams(search, null, mainDomain)
@@ -186,7 +186,7 @@ function ThirdPartySetup({
           <>
             {whitelisted.length > 0 && (
               <TrackerList
-                title={t('screens:application.thirdParty.categories.whitelisted')}
+                title={t('plugin__new:thirdParty.categories.whitelisted')}
                 entities={whitelisted}
                 secondaryAction={listSecondaryAction}
               />
@@ -194,7 +194,7 @@ function ThirdPartySetup({
 
             {blocked.length > 0 && (
               <TrackerList
-                title={t('screens:application.thirdParty.categories.blocked')}
+                title={t('plugin__new:thirdParty.categories.blocked')}
                 entities={blocked}
                 secondaryAction={listSecondaryAction}
               />
@@ -202,16 +202,16 @@ function ThirdPartySetup({
             {mainPurpose && (
               <FilterAction
                 description={(
-                  <Trans i18nKey="screens:application.thirdParty.filters.mainPurpose.remove.text">
+                  <Trans i18nKey="plugin__new:thirdParty.filters.mainPurpose.remove.text">
                       La liste des services tiers utilisés par
                     <b>{{ mainDomain: entity.name }}</b>
                       pour la catégorie
-                    <b>{{ mainPurpose: t(`screens:application.thirdParty.purposes.${mainPurpose}`) }}</b>
+                    <b>{{ mainPurpose: t(`plugin__new:thirdParty.purposes.${mainPurpose}`) }}</b>
                       est terminée
                   </Trans>
                 )}
                 buttonProps={{
-                  text: t('screens:application.thirdParty.filters.mainPurpose.remove.button'),
+                  text: t('plugin__new:thirdParty.filters.mainPurpose.remove.button'),
                   action: removeMainPurpose,
                 }}
               />
@@ -220,14 +220,14 @@ function ThirdPartySetup({
             {!mainPurpose && mainDomain && (
               <FilterAction
                 description={(
-                  <Trans i18nKey="screens:application.thirdParty.filters.mainDomain.remove.text">
+                  <Trans i18nKey="plugin__new:thirdParty.filters.mainDomain.remove.text">
                     La liste des services tiers utilisés par
                     <b>{{ mainDomain: entity.name }}</b>
                     est terminée
                   </Trans>
                 )}
                 buttonProps={{
-                  text: t('screens:application.thirdParty.filters.mainDomain.remove.button'),
+                  text: t('plugin__new:thirdParty.filters.mainDomain.remove.button'),
                   action: removeMainDomain,
                 }}
               />
@@ -236,7 +236,7 @@ function ThirdPartySetup({
             {!mainPurpose && !mainDomain && (
               <FilterAction
                 description={(
-                  <Trans i18nKey="screens:application.thirdParty.filters.empty">
+                  <Trans i18nKey="plugin__new:thirdParty.filters.empty">
                     La liste des services tiers connus par
                     <b>Misakey</b>
                     est terminée
@@ -294,4 +294,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchShowWarning: () => dispatch(pluginRefreshWarningShow()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['common', 'screens'])(ThirdPartySetup));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['common__new', 'plugin__new'])(ThirdPartySetup));

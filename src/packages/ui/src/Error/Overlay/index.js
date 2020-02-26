@@ -38,8 +38,8 @@ const styles = (theme) => ({
 
 function ErrorOverlay({ classes, error, httpStatus, t, variant }) {
   const getText = React.useMemo(() => error
-    || (httpStatus && API.errors.httpStatus.includes(httpStatus) && t(`httpStatus.error.${httpStatus}`))
-    || t('httpStatus.error.default'),
+    || (httpStatus && API.errors.httpStatus.includes(httpStatus) && t(`common__new:httpStatus.error.${httpStatus}`))
+    || t('common__new:httpStatus.error.default'),
   [error, httpStatus, t]);
 
   return (
@@ -71,4 +71,4 @@ ErrorOverlay.defaultProps = {
   variant: 'default',
 };
 
-export default withTranslation()(withStyles(styles)(ErrorOverlay));
+export default withTranslation('common__new')(withStyles(styles)(ErrorOverlay));

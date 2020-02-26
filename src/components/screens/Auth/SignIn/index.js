@@ -94,7 +94,7 @@ function AuthSignIn({ challenge, identifier, acr, dispatchSetCredentials, match,
         dispatchSetCredentials(identifier, null);
         replace({ pathname: routes.auth.signUp.confirm, search });
       } else if (isAuthPrepareCodeConflict(error)) {
-        enqueueSnackbar(t('auth:signIn.form.error.conflict'), { variant: 'error' });
+        enqueueSnackbar(t('auth__new:signIn.form.error.conflict'), { variant: 'error' });
         push({ pathname: routes.auth.signIn.secret, search });
       } else if (!isAuthSeclevelInsufficient(error)) {
         // handle only other errors because previous one is already handled
@@ -174,8 +174,8 @@ AuthSignIn.propTypes = {
 };
 
 AuthSignIn.defaultProps = {
-  identifier: '',
   acr: null,
+  identifier: '',
 };
 
 // CONNECT
@@ -190,4 +190,4 @@ const mapDispatchToProps = (dispatch) => ({
   ),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('auth')(AuthSignIn));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('auth__new')(AuthSignIn));

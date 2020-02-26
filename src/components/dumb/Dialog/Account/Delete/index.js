@@ -44,11 +44,11 @@ const DeleteAccountDialog = ({ onClose, onSuccess, open, profile, t }) => {
       >
         <Form>
           <DialogTitle id="alert-dialog-title">
-            {t('account.dialog.delete.title', 'Delete my account')}
+            {t('account__new:delete.dialog.title')}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {t('account.dialog.delete.description', { email: profile.email })}
+              {t('account__new:delete.dialog.description', { email: profile.email })}
             </DialogContentText>
             <Field
               component={FieldText}
@@ -57,18 +57,18 @@ const DeleteAccountDialog = ({ onClose, onSuccess, open, profile, t }) => {
               autoFocus
               id="email-address"
               fullWidth
-              label={t('fields:email.label', 'Email')}
-              placeholder={profile.email || t('fields:email.placeHolder', 'love@misakey.com')}
+              label={t('fields__new:email.label')}
+              placeholder={profile.email || t('fields__new:email.placeHolder')}
             />
           </DialogContent>
           <DialogActions>
             <BoxControls
               primary={{
                 type: 'submit',
-                text: t('common:delete'),
+                text: t('common__new:delete'),
               }}
               secondary={{
-                text: t('common:cancel'),
+                text: t('common__new:cancel'),
                 onClick: onClose,
               }}
               outlined={false}
@@ -89,4 +89,4 @@ DeleteAccountDialog.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['common', 'fields'])(DeleteAccountDialog);
+export default withTranslation(['common__new', 'fields__new'])(DeleteAccountDialog);

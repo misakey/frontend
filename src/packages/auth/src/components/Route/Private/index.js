@@ -26,7 +26,7 @@ function RoutePrivate({
 }
 
 RoutePrivate.propTypes = {
-  component: PropTypes.func.isRequired,
+  component: PropTypes.elementType.isRequired,
   componentProps: PropTypes.objectOf(PropTypes.any),
   isAuthenticated: PropTypes.bool,
   isValid: PropTypes.func,

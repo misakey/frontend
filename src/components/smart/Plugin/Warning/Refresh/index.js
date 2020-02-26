@@ -53,15 +53,15 @@ const WarningDrawer = ({ displayWarning, dispatchHideWarning, t }) => {
           <CloseIcon fontSize="inherit" />
         </IconButton>
         <Typography variant="caption" style={{ width: '70%' }}>
-          {t('plugin:refresh_warning.text')}
+          {t('plugin__new:refresh_warning.text')}
         </Typography>
-        <Tooltip title={t('plugin:refresh_warning.tooltip')} placement="bottom">
+        <Tooltip title={t('plugin__new:refresh_warning.tooltip')} placement="bottom">
           <Button
             standing={BUTTON_STANDINGS.MAIN}
             size="small"
             onClick={onRefreshTab}
             isLoading={isFetching}
-            text={t('plugin:refresh_warning.button')}
+            text={t('plugin__new:refresh_warning.button')}
           />
         </Tooltip>
       </Box>
@@ -86,4 +86,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchHideWarning: () => dispatch(pluginRefreshWarningHide()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['plugin'])(WarningDrawer));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['plugin__new'])(WarningDrawer));

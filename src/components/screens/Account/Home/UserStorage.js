@@ -102,7 +102,7 @@ const UserStorage = ({ userId }) => {
       <LinearProgress variant="determinate" value={boxUsagePercent} color="secondary" />
       <Typography>
         <Trans
-          i18nKey="screens:account.quota.description"
+          i18nKey="account__new:quota.description"
           values={{
             currentUsage: boxCurrentUsage,
             totalUsage: boxTotalUsage,
@@ -125,4 +125,4 @@ const mapStateToProps = (state) => ({
 });
 
 
-export default connect(mapStateToProps)(withTranslation('screens')(UserStorage));
+export default connect(mapStateToProps)(withTranslation('account__new')(UserStorage));

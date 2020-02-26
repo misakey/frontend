@@ -22,10 +22,10 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 import { useIdentifierContentAction, useIdentifierSecondaryAction } from '@misakey/hooks/useActions/signIn';
 
-import SignInFormFields from 'components/smart/Auth/SignIn/Form/Fields';
+import SignInFormFields from 'components/screens/Auth/SignIn/Form/Fields';
 import FormCardAuth from 'components/dumb/Form/Card/Auth';
-import AuthCardTitle from 'components/smart/Auth/Card/Title';
-import CardHeaderAuth from 'components/smart/Card/Header/Auth';
+import AuthCardTitle from 'components/smart/Card/Auth/Title';
+import CardHeaderAuth from 'components/smart/Card/Auth/Header';
 import Button from 'components/dumb/Button';
 import LinkMore from 'components/dumb/Link/More';
 
@@ -107,7 +107,7 @@ const AuthSignInIdentifier = ({
   const contentAction = useIdentifierContentAction(acr, t);
 
   const primary = useMemo(() => ({
-    text: t('auth:signIn.form.action.next'),
+    text: t('auth__new:signIn.form.action.next'),
   }),
   [t]);
 
@@ -126,7 +126,7 @@ const AuthSignInIdentifier = ({
         primary={primary}
         secondary={secondary}
         title={<AuthCardTitle name="signIn" />}
-        subtitle={t('auth:signIn.card.subtitle.text')}
+        subtitle={t('auth__new:signIn.card.subtitle.text')}
         Header={CardHeaderAuth}
         formik
       >
@@ -160,4 +160,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchSetPublics: (publics) => dispatch(screenAuthSetPublics(publics)),
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['auth', 'common'])(AuthSignInIdentifier));
+export default connect(null, mapDispatchToProps)(withTranslation(['auth__new', 'common__new'])(AuthSignInIdentifier));

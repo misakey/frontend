@@ -37,7 +37,7 @@ import FieldCode from 'components/dumb/Form/Field/Code';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
 import ChipUser from 'components/dumb/Chip/User';
 import AuthForgotSubtitle from 'components/screens/Auth/Forgot/Subtitle';
-import CardHeaderAuth from 'components/smart/Card/Header/Auth';
+import CardHeaderAuth from 'components/smart/Card/Auth/Header';
 
 // CONSTANTS
 const { forbidden } = errorTypes;
@@ -53,7 +53,6 @@ const INITIAL_VALUES = {
 };
 
 const PARENT_TO = routes.auth.signIn._;
-const PREVIOUS_TO = routes.auth.signIn.secret;
 
 // HELPERS
 const getOtpError = path(['details', 'otp']);
@@ -165,7 +164,7 @@ const useOnReset = (
       const payload = { email, password: form.passwordNew, challenge };
       return API.use(API.endpoints.auth.signIn)
         .build(undefined, payload).send().then((response) => {
-          enqueueSnackbar(t('auth:forgotPassword.success'), { variant: 'success' });
+          enqueueSnackbar(t('auth__new:forgotPassword.success'), { variant: 'success' });
           window.location.replace(response.redirect_to);
         });
     })
@@ -240,12 +239,12 @@ const AuthForgot = ({
       initialValues={INITIAL_VALUES}
     >
       <FormCardAuth
-        title={t('auth:forgotPassword.title')}
+        title={t('auth__new:forgotPassword.title')}
         subtitle={<AuthForgotSubtitle name={step} email={email} />}
-        secondary={{ text: t('common:previous'), component: Link, to: PREVIOUS_TO }}
+        secondary={{ text: t('common__new:previous'), component: Link, to: PARENT_TO }}
         primary={{
           type: 'submit',
-          text: t(`auth:forgotPassword.form.action.${step}`),
+          text: t(`auth__new:forgotPassword.form.action.${step}`),
         }}
         Header={CardHeaderAuth}
         formik
@@ -267,7 +266,7 @@ const AuthForgot = ({
                 formatFieldValue={formatFieldValue}
                 helperText=""
                 inputProps={{ 'data-matomo-ignore': true }}
-                label={t('auth:forgotPassword.form.field.confirm.label')}
+                label={t('auth__new:forgotPassword.form.field.confirm.label')}
               />
             )
             : (
@@ -276,7 +275,7 @@ const AuthForgot = ({
                 type="password"
                 name={PASSWORD_FIELD_NAME}
                 component={FieldTextPasswordRevealable}
-                label={t('auth:forgotPassword.form.field.password.label')}
+                label={t('auth__new:forgotPassword.form.field.password.label')}
               />
             )}
         </Box>
@@ -310,4 +309,4 @@ const mapDispatchToProps = (dispatch) => ({
   ),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['auth', 'common'])(AuthForgot));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['auth__new', 'common__new'])(AuthForgot));

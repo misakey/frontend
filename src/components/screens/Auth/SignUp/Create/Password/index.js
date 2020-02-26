@@ -13,7 +13,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 // import Typography from '@material-ui/core/Typography';
 // import Box from '@material-ui/core/Box';
 import Card from 'components/dumb/Card';
-import CardHeaderAuthSignUp from 'components/smart/Card/Header/Auth/SignUp';
+import CardHeaderAuthSignUp from 'components/smart/Card/Auth/Header/SignUp';
 import ButtonGoBackTo from 'components/dumb/Button/GoBack/To';
 import FormFields from '@misakey/ui/Form/Fields';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
@@ -70,7 +70,7 @@ const AuthSignUpCreatePassword = ({
   const primary = useMemo(
     () => ({
       type: 'submit',
-      text: t('common:next'),
+      text: t('common__new:next'),
     }),
     [t],
   );
@@ -96,11 +96,11 @@ const AuthSignUpCreatePassword = ({
       padded={padded}
       primary={primary}
       secondary={<ButtonGoBackTo to={parentTo} />}
-      title={t('auth:signUp.create.password.title')}
+      title={t('auth__new:signUp.create.password.title')}
       titleProps={titleProps}
       subtitle={(
         <Trans
-          i18nKey="auth:signUp.create.password.subtitle"
+          i18nKey="auth__new:signUp.create.password.subtitle"
         >
           Je choisis un mot de passe fort pour protéger la clé secrète de mon coffre-fort.
           <strong>Une longue succession de mots simples aléatoires</strong>
@@ -114,7 +114,7 @@ const AuthSignUpCreatePassword = ({
       <AuthSignUpCreatePasswordFormFields />
       {/* <Box mt={2}>
         <Typography>
-          {t('auth:signUp.create.password.more.text')}
+          {t('auth__new:signUp.create.password.more.text')}
           <MUILink
             color="secondary"
             to={routes.legals.privacy}
@@ -122,7 +122,7 @@ const AuthSignUpCreatePassword = ({
             target="_blank"
             rel="noopener noreferrer"
           >
-            {t('auth:signUp.create.password.more.link')}
+            {t('auth__new:signUp.create.password.more.link')}
           </MUILink>
         </Typography>
       </Box> */}
@@ -140,4 +140,4 @@ AuthSignUpCreatePassword.propTypes = {
 };
 
 
-export default withTranslation(['auth', 'common'])(AuthSignUpCreatePassword);
+export default withTranslation(['auth__new', 'common__new'])(AuthSignUpCreatePassword);

@@ -83,7 +83,7 @@ const useOnCreateApplication = (
 ) => useCallback(() => createApplication(mainDomain)
   .then((response) => {
     const application = objectToCamelCase(response);
-    enqueueSnackbar(t('screens:applications.create.success'), { variant: 'success' });
+    enqueueSnackbar(t('citizen__new:application.create.success'), { variant: 'success' });
     dispatchApplicationCreate(application);
   })
   .catch(handleGenericHttpErrors),
@@ -113,14 +113,14 @@ const ApplicationInfoMore = ({
         return {
           standing: BUTTON_STANDINGS.OUTLINED,
           size: 'small',
-          text: t('screens:application.info.more.report.button'),
+          text: t('citizen__new:application.info.more.report.button'),
           onClick: () => openInNewTab('mailto:feedback@misakey.com'),
         };
       }
       return {
         standing: BUTTON_STANDINGS.OUTLINED,
         size: 'small',
-        text: t('screens:application.info.more.report.button'),
+        text: t('citizen__new:application.info.more.report.button'),
         component: 'a',
         href: 'mailto:feedback@misakey.com',
       };
@@ -141,16 +141,16 @@ const ApplicationInfoMore = ({
     return (
       <>
         <Title>
-          {t('screens:application.info.more.title')}
+          {t('citizen__new:application.info.more.title')}
         </Title>
 
         {isUnknown && (
         <CardSimpleText
-          text={t('screens:application.info.more.create.text')}
+          text={t('citizen__new:application.info.more.create.text')}
           button={{
             standing: BUTTON_STANDINGS.OUTLINED,
             size: 'small',
-            text: t('screens:application.info.more.create.button'),
+            text: t('citizen__new:application.info.more.create.button'),
             component: ButtonWithDialogConnect,
             onClick: onCreateApplication,
           }}
@@ -164,16 +164,16 @@ const ApplicationInfoMore = ({
   return (
     <>
       <Title>
-        {t('screens:application.info.more.title')}
+        {t('citizen__new:application.info.more.title')}
       </Title>
 
       {!IS_PLUGIN && (
         <CardSimpleText
-          text={t('screens:application.info.more.dpo.text')}
+          text={t('citizen__new:application.info.more.dpo.text')}
           button={{
             standing: BUTTON_STANDINGS.OUTLINED,
             size: 'small',
-            text: t('screens:application.info.more.dpo.button'),
+            text: t('citizen__new:application.info.more.dpo.button'),
             component: Link,
             to: generatePath(routes.dpo.service._, { mainDomain: application.mainDomain }),
           }}
@@ -182,7 +182,7 @@ const ApplicationInfoMore = ({
       )}
 
       <CardSimpleText
-        text={t('screens:application.info.more.report.text')}
+        text={t('citizen__new:application.info.more.report.text')}
         button={reportButton}
         my={2}
       />
@@ -198,9 +198,9 @@ const ApplicationInfoMore = ({
               content: classes.summaryContent,
             }}
           >
-            <Typography>{t('screens:application.info.more.domains.text')}</Typography>
+            <Typography>{t('citizen__new:application.info.more.domains.text')}</Typography>
             <Chip
-              label={t('screens:application.info.more.domains.count', { count: domains.length })}
+              label={t('citizen__new:application.info.more.domains.count', { count: domains.length })}
               variant="outlined"
             />
           </ExpansionPanelSummary>
@@ -218,11 +218,11 @@ const ApplicationInfoMore = ({
 
       {isAuthenticated && (
         <CardSimpleText
-          text={t('screens:application.info.more.favorite.text')}
+          text={t('citizen__new:application.info.more.favorite.text')}
           button={{
             standing: BUTTON_STANDINGS.OUTLINED,
             size: 'small',
-            text: t(`common:${(isLinked) ? 'remove' : 'add'}`),
+            text: t(`common__new:${(isLinked) ? 'remove' : 'add'}`),
             onClick: toggleLinked,
           }}
           my={2}
@@ -255,4 +255,4 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['common', 'screens'])(ApplicationInfoMore));
+export default connect(null, mapDispatchToProps)(withTranslation(['common__new', 'citizen__new'])(ApplicationInfoMore));

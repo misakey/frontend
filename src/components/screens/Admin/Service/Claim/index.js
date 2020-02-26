@@ -136,7 +136,7 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
 
-  const i18nKey = useCallback((step) => `screens:Service.Claim.body.steps.content.${step}`, []);
+  const i18nKey = useCallback((step) => `admin__new:service.claim.body.steps.content.${step}`, []);
   const fetchRoleList = useGetRoles(dispatchUserRoles);
   const pathToAdminHome = useMemo(
     () => generatePath(routes.admin.service._, { mainDomain: service.mainDomain }),
@@ -153,7 +153,7 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
 
   const handleCopy = useCallback(() => {
     copy(claim.value);
-    const text = t('screens:Service.Claim.body.txtKey.copied');
+    const text = t('admin__new:service.claim.body.txtKey.copied');
     enqueueSnackbar(text, { variant: 'success' });
   }, [claim, enqueueSnackbar, t]);
 
@@ -197,7 +197,7 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
         if (e.httpStatus === 403) {
           setError(VERIFY_ERROR);
         } else if (e.httpStatus === 409) {
-          const text = t('screens:Service.Claim.body.txtKey.error.conflict');
+          const text = t('admin__new:service.claim.body.txtKey.error.conflict');
           enqueueSnackbar(text, { variant: 'warning' });
         } else {
           handleGenericHttpErrors(e);
@@ -213,19 +213,19 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
   if (isInteger(error)) { return <ErrorOverlay httpStatus={error} />; }
 
   if (userHasRole) {
-    enqueueSnackbar(t('screens:Service.role.claim.info.alreadyDpo', { mainDomain: service.mainDomain, role }), { variant: 'info' });
+    enqueueSnackbar(t('admin__new:service.claim.alreadyRole', { mainDomain: service.mainDomain, role }), { variant: 'info' });
     return <Redirect to={pathToAdminHome} />;
   }
 
   const again = error === VERIFY_ERROR;
-  const submitText = t(`screens:Service.Claim.body.txtKey.actions.submit${again ? 'Again' : ''}`);
+  const submitText = t(`admin__new:service.claim.body.txtKey.actions.submit${again ? 'Again' : ''}`);
 
   return (
     <ScreenAction
       id="ServiceClaim"
       history={history}
       appBarProps={appBarProps}
-      title={t('screens:Service.Claim.body.title', service)}
+      title={t('admin__new:service.claim.body.title', service)}
     >
       <Container maxWidth="md">
         <Typography
@@ -233,15 +233,15 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
           color="textSecondary"
           gutterBottom
         >
-          {t('screens:Service.Claim.body.subTitle')}
+          {t('admin__new:service.claim.body.subTitle')}
         </Typography>
 
         <BoxSection my={3}>
           <Typography variant="h5" component="h4">
-            {t('screens:Service.Claim.body.txtKey.title')}
+            {t('admin__new:service.claim.body.txtKey.title')}
           </Typography>
           <TextField
-            label={t('screens:Service.Claim.body.txtKey.label', { mainDomain: service.mainDomain })}
+            label={t('admin__new:service.claim.body.txtKey.label', { mainDomain: service.mainDomain })}
             multiline
             rowsMax="4"
             value={claim.value}
@@ -256,14 +256,14 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
               type="success"
               my={1}
               mx={0}
-              text={t('screens:Service.Claim.body.txtKey.success', service)}
+              text={t('admin__new:service.claim.body.txtKey.success', service)}
             />
           )}
           {error === VERIFY_ERROR && (
             <BoxMessage
               type="error"
               className={classes.boxMessage}
-              text={t(`screens:Service.Claim.body.txtKey.error.notYet${width === 'xs' ? 'Short' : ''}`)}
+              text={t(`admin__new:service.claim.body.txtKey.error.notYet${width === 'xs' ? 'Short' : ''}`)}
             />
           )}
           {(error === RETRY_ERROR && isSubmitting) && (
@@ -271,7 +271,7 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
           )}
           <Typography className={classes.txtKeyActions}>
             <Button onClick={handleCopy}>
-              {t('screens:Service.Claim.body.txtKey.actions.copy')}
+              {t('admin__new:service.claim.body.txtKey.actions.copy')}
             </Button>
             {!success && (
               <span>
@@ -281,7 +281,7 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
                     to={routes.admin.service.list}
                     className={classes.submitLater}
                   >
-                    {t('screens:Service.Claim.body.txtKey.actions.submitLater')}
+                    {t('admin__new:service.claim.body.txtKey.actions.submitLater')}
                   </Button>
                 )}
                 <ButtonSubmit
@@ -298,7 +298,7 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
                 component={Link}
                 to={generatePath(routes.admin.service._, { mainDomain: service.mainDomain })}
               >
-                {t('next')}
+                {t('common__new:next')}
               </Button>
             )}
           </Typography>
@@ -306,12 +306,12 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
 
         <BoxSection mb={3}>
           <Typography variant="h5" component="h4">
-            {t('screens:Service.Claim.body.steps.title')}
+            {t('admin__new:service.claim.body.steps.title')}
           </Typography>
           <Stepper activeStep={activeStep - 1} orientation="vertical" className={classes.stepper}>
             {STEPS.map((step) => (
               <Step key={step}>
-                <StepLabel>{t(`screens:Service.Claim.body.steps.label.${step}`)}</StepLabel>
+                <StepLabel>{t(`admin__new:service.claim.body.steps.label.${step}`)}</StepLabel>
                 <StepContent>
                   <Typography>
                     {step === STEPS[1] ? (
@@ -341,7 +341,7 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
                       onClick={handleBack}
                       className={classes.stepButton}
                     >
-                      {t('back')}
+                      {t('common__new:back')}
                     </Button>
                     {activeStep !== STEPS.length && (
                       <Button
@@ -350,7 +350,7 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
                         onClick={handleNext}
                         className={classes.stepButton}
                       >
-                        {t('next')}
+                        {t('common__new:next')}
                       </Button>
                     )}
                     {activeStep === STEPS.length && (
@@ -400,4 +400,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchUserRoles: (roles) => dispatch(loadUserRoles(roles)),
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['common', 'screens'])(ServiceClaim));
+export default connect(null, mapDispatchToProps)(withTranslation(['common__new', 'admin__new'])(ServiceClaim));

@@ -26,10 +26,13 @@ const AuthError = ({ location, t }) => {
     return <Redirect to={routes.errors.forbidden} />;
   }
 
+  if (window.env.ENV === 'production') {
+    return null;
+  }
   return (
     <Paper className="Error">
       <Typography className="initialDescription">
-        {t('screens:auth.error')}
+        {t('auth__new:debugError')}
       </Typography>
       <Button
         variant="contained"
@@ -78,4 +81,4 @@ AuthError.propTypes = {
 };
 
 
-export default withTranslation('screens')(AuthError);
+export default withTranslation('auth__new')(AuthError);

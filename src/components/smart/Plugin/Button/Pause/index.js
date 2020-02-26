@@ -29,19 +29,19 @@ const useStyles = makeStyles(() => ({
 
 const useOptions = (t) => useMemo(() => [
   {
-    label: t('plugin:time.minute', { count: 30 }),
+    label: t('plugin__new:time.minute', { count: 30 }),
     value: 30,
   },
   {
-    label: t('plugin:time.hour', { count: 1 }),
+    label: t('plugin__new:time.hour', { count: 1 }),
     value: 60,
   },
   {
-    label: t('plugin:time.hour', { count: 24 }),
+    label: t('plugin__new:time.hour', { count: 24 }),
     value: 1440,
   },
   {
-    label: t('plugin:pause.indeterminate'),
+    label: t('plugin__new:pause.indeterminate'),
     value: null,
   },
 ], [t]);
@@ -103,8 +103,8 @@ function PausePluginButton({ t, dispatchShowWarning }) {
   return (
     <>
       <Tooltip title={paused
-        ? `${pausedTime ? t('plugin:resume.plannedResume', { planned: getPlannedDate(pausedTime) }) : t('plugin:resume.description')}`
-        : t('plugin:pause.description')}
+        ? `${pausedTime ? t('plugin__new:resume.plannedResume', { planned: getPlannedDate(pausedTime) }) : t('plugin__new:resume.description')}`
+        : t('plugin__new:pause.description')}
       >
         <Button
           standing={BUTTON_STANDINGS.OUTLINED}
@@ -154,4 +154,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchShowWarning: () => dispatch(pluginRefreshWarningShow()),
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['plugin'])(PausePluginButton));
+export default connect(null, mapDispatchToProps)(withTranslation(['plugin__new'])(PausePluginButton));

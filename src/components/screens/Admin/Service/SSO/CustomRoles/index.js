@@ -34,16 +34,16 @@ const SSOCustomRoles = ({ appBarProps, t, service, history }) => {
       history={history}
       pushPath={pushPath}
       appBarProps={appBarProps}
-      title={t('service:sso.customRoles.title')}
+      title={t('admin__new:sso.customRoles.title')}
     >
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
-          {t('service:sso.customRoles.subtitle')}
+          {t('admin__new:sso.customRoles.subtitle')}
         </Typography>
         {rolesEmpty && (
           <BoxSection className="box" mt={3}>
             <Typography variant="h6" color="textPrimary" className="title" gutterBottom>
-              {t('fields:customRoles.empty.label')}
+              {t('fields__new:customRoles.empty.label')}
             </Typography>
             <Box mt={3} display="flex" justifyContent="center">
               <Button
@@ -52,7 +52,7 @@ const SSOCustomRoles = ({ appBarProps, t, service, history }) => {
                 color="secondary"
                 disabled
               >
-                {t('fields:customRoles.empty.action')}
+                {t('fields__new:customRoles.empty.action')}
               </Button>
             </Box>
           </BoxSection>
@@ -80,4 +80,4 @@ SSOCustomRoles.defaultProps = {
   service: null,
 };
 
-export default withTranslation(['service', 'fields', 'common'])(SSOCustomRoles);
+export default withTranslation(['admin__new', 'fields__new'])(SSOCustomRoles);

@@ -140,7 +140,7 @@ const MenuWorkspace = ({ t }) => {
             appMatch={appMatch}
             selected={role === workspace}
           >
-            {t(`common:workspaces.${role}`)}
+            {t(`common__new:workspaces.${role}`)}
           </MenuItemWorkspace>
         ))}
       </Menu>
@@ -152,4 +152,4 @@ MenuWorkspace.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('common')(MenuWorkspace);
+export default withTranslation('common__new')(MenuWorkspace);

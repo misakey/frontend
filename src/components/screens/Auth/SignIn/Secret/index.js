@@ -29,10 +29,10 @@ import { useSecretContentAction, useSecretSecondaryAction } from '@misakey/hooks
 
 import Box from '@material-ui/core/Box';
 import DefaultSplashScreen from '@misakey/ui/Screen/Splash';
-import SignInFormFields from 'components/smart/Auth/SignIn/Form/Fields';
+import SignInFormFields from 'components/screens/Auth/SignIn/Form/Fields';
 import FormCardAuth from 'components/dumb/Form/Card/Auth';
-import AuthCardTitle from 'components/smart/Auth/Card/Title';
-import CardHeaderAuth from 'components/smart/Card/Header/Auth';
+import AuthCardTitle from 'components/smart/Card/Auth/Title';
+import CardHeaderAuth from 'components/smart/Card/Auth/Header';
 import Button from 'components/dumb/Button';
 import LinkMore from 'components/dumb/Link/More';
 import Redirect from 'components/dumb/Redirect';
@@ -152,7 +152,7 @@ const AuthSignInSecret = ({
           } else if (details.toDelete === conflict) {
             const text = (
               <Trans
-                i18nKey="auth:signIn.form.error.deletedAccount"
+                i18nKey="auth__new:signIn.form.error.deletedAccount"
                 values={{ deletionDate: moment(details.deletionDate).format('LL') }}
               >
                 Votre compte est en cours de suppression, vous ne pouvez donc plus vous y connecter.
@@ -188,11 +188,11 @@ const AuthSignInSecret = ({
   const renewConfirmationCode = useCallback(
     () => onFetchInitAuth()
       .then(() => {
-        enqueueSnackbar(t('auth:signIn.form.action.getANewCode.success'), { variant: 'success' });
+        enqueueSnackbar(t('auth__new:signIn.form.action.getANewCode.success'), { variant: 'success' });
       })
       .catch((error) => {
         if (isAuthPrepareCodeConflict(error)) {
-          enqueueSnackbar(t('auth:signIn.form.error.conflict'), { variant: 'error' });
+          enqueueSnackbar(t('auth__new:signIn.form.error.conflict'), { variant: 'error' });
         } else {
           handleGenericHttpErrors(error);
         }
@@ -205,7 +205,7 @@ const AuthSignInSecret = ({
   );
   const primary = useMemo(
     () => ({
-      text: t('auth:signIn.form.action.submit'),
+      text: t('auth__new:signIn.form.action.submit'),
     }),
     [t],
   );
@@ -246,7 +246,7 @@ const AuthSignInSecret = ({
         primary={primary}
         secondary={secondary}
         title={<AuthCardTitle name="signIn" />}
-        subtitle={t('auth:signIn.card.subtitle.text')}
+        subtitle={t('auth__new:signIn.card.subtitle.text')}
         Header={CardHeaderAuth}
         formik
       >
@@ -292,4 +292,4 @@ const mapDispatchToProps = (dispatch) => ({
   ),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['common', 'auth'])(AuthSignInSecret));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['common__new', 'auth__new'])(AuthSignInSecret));

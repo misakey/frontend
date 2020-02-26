@@ -80,7 +80,7 @@ let InputSearch = ({
       {/* autoFocus doesn't seem to spread to InputBase */}
       <InputBase
         inputRef={ref}
-        placeholder={t('navigation.search.placeholder', 'Search...')}
+        placeholder={t('common__new:search')}
         classes={{
           root: clsx(classes.inputRoot, inputClassesRoot),
           input: clsx(classes.inputInput, inputClassesInput),
@@ -112,4 +112,4 @@ InputSearch.defaultProps = {
   dark: false,
 };
 
-export default withTranslation('common', { withRef: true })(InputSearch);
+export default withTranslation('common__new', { withRef: true })(InputSearch);

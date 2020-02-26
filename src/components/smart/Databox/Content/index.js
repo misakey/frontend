@@ -42,7 +42,7 @@ const readBlob = async (id, onError) => {
         .send()
     );
   } catch (e) {
-    onError('screens:databox.errors.getBlob');
+    onError('citizen__new:application.info.vault.errors.downloadBlob.getBlob');
     return {};
   }
 };
@@ -64,7 +64,7 @@ const downloadBlob = async (
     const { blob: ciphertext } = await readBlob(id);
 
     if (!ciphertext || ciphertext.size === 0) {
-      onError('screens:databox.errors.default');
+      onError('citizen__new:application.info.vault.errors.downloadBlob.default');
       return;
     }
 
@@ -88,7 +88,7 @@ const downloadBlob = async (
     fileDownload(decryptedBlob, fileName);
   } catch (e) {
     log(e);
-    onError('screens:databox.errors.default');
+    onError('citizen__new:application.info.vault.errors.downloadBlob.default');
   }
 };
 
@@ -175,14 +175,14 @@ const DataboxContent = ({
     <>
       <CardSimpleDoubleText
         my={2}
-        primary={t('screens:application.vault.databoxContent.number', { count: blobsCount })}
+        primary={t('citizen__new:application.info.vault.databoxContent.number', { count: blobsCount })}
         secondary={allBlobsSize}
         button={(blobsCount > 0 && !vaultIsOpen) ? (
           <Button
             onClick={initCrypto}
             standing={BUTTON_STANDINGS.OUTLINED}
             size="small"
-            text={t('common:decrypt')}
+            text={t('common__new:decrypt')}
           />
         ) : null}
       />
@@ -221,7 +221,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = null;
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  withTranslation(['common', 'screens'])(
+  withTranslation(['common__new', 'citizen__new'])(
     DataboxContent,
   ),
 );

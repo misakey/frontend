@@ -13,7 +13,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 // import Typography from '@material-ui/core/Typography';
 // import Box from '@material-ui/core/Box';
 import Card from 'components/dumb/Card';
-import CardHeaderAuthSignUp from 'components/smart/Card/Header/Auth/SignUp';
+import CardHeaderAuthSignUp from 'components/smart/Card/Auth/Header/SignUp';
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import ButtonGoBackTo from 'components/dumb/Button/GoBack/To';
 import FormFields from '@misakey/ui/Form/Fields';
@@ -76,7 +76,7 @@ const AuthSignUpCreateIdentifier = ({
   const primary = useMemo(
     () => ({
       type: 'submit',
-      text: t('common:next'),
+      text: t('common__new:next'),
     }),
     [t],
   );
@@ -103,9 +103,9 @@ const AuthSignUpCreateIdentifier = ({
       padded={padded}
       primary={primary}
       secondary={<ButtonGoBackTo to={parentTo} />}
-      title={t('auth:signUp.create.identifier.title')}
+      title={t('auth__new:signUp.create.identifier.title')}
       titleProps={titleProps}
-      subtitle={t('auth:signUp.create.identifier.subtitle')}
+      subtitle={t('auth__new:signUp.create.identifier.subtitle')}
       subtitleProps={subtitleProps}
       Header={CardHeaderAuthSignUp}
       formik
@@ -115,12 +115,12 @@ const AuthSignUpCreateIdentifier = ({
         standing={BUTTON_STANDINGS.TEXT}
         to={routes.auth.signIn._}
         component={Link}
-        text={t('auth:signUp.form.action.signIn')}
+        text={t('auth__new:signUp.form.action.signIn')}
         classes={{ buttonRoot: classes.buttonRoot }}
       />
       {/* <Box mt={2}>
         <Typography>
-          {t('auth:signUp.create.identifier.more.text')}
+          {t('auth__new:signUp.create.identifier.more.text')}
           <MUILink
             color="secondary"
             to={routes.legals.privacy}
@@ -128,7 +128,7 @@ const AuthSignUpCreateIdentifier = ({
             target="_blank"
             rel="noopener noreferrer"
           >
-            {t('auth:signUp.create.identifier.more.link')}
+            {t('auth__new:signUp.create.identifier.more.link')}
           </MUILink>
         </Typography>
       </Box> */}
@@ -148,4 +148,4 @@ AuthSignUpCreateIdentifier.propTypes = {
 };
 
 
-export default withTranslation(['auth', 'common'])(AuthSignUpCreateIdentifier);
+export default withTranslation(['auth__new', 'common__new'])(AuthSignUpCreateIdentifier);
