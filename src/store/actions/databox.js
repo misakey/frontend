@@ -3,7 +3,9 @@ import DataboxByProducerSchema from 'store/schemas/Databox/ByProducer';
 import DataboxSchema from 'store/schemas/Databox';
 import { receiveEntities, updateEntities } from '@misakey/store/actions/entities';
 import merge from '@misakey/helpers/merge';
-
+import mapValues from '@misakey/helpers/mapValues';
+import propOr from '@misakey/helpers/propOr';
+import isNil from '@misakey/helpers/isNil';
 
 // HELPERS
 const mergeEntitiesDataboxes = (state, { entities }) => merge(
@@ -11,10 +13,52 @@ const mergeEntitiesDataboxes = (state, { entities }) => merge(
   state,
   { ...state.entities, ...entities },
 );
+
+const propOrNull = propOr(null);
+const propOrEmpty = propOr({});
+
+const mergeEntitiesDataboxesByProducer = (state, { entities }) => {
+  const { databoxesByProducer, ...otherEntities } = entities;
+  const newDataboxesByProducer = mapValues(
+    databoxesByProducer,
+    ({ databoxes, ...rest }, producerId) => {
+      const databoxesOfProducer = propOrNull('databoxes', state.databoxesByProducer[producerId]);
+      // if databoxesOfProducer haven't been fetched yet, we don't update them
+      if (!isNil(databoxesOfProducer)) {
+        return {
+          databoxes: [...databoxesOfProducer, ...databoxes],
+          ...rest,
+        };
+      }
+      return state.databoxesByProducer[producerId];
+    },
+  );
+
+  const newState = mapValues(otherEntities, (entity, entityName) => ({
+    ...propOrEmpty(entityName, state),
+    ...entity,
+  }));
+
+  return {
+    ...state,
+    ...newState,
+    databoxesByProducer: newDataboxesByProducer,
+  };
+};
+
 export const receiveDataboxesByProducer = (databoxesByProducer) => (dispatch) => {
   const normalized = normalize(databoxesByProducer, DataboxByProducerSchema.entity);
   const { entities } = normalized;
   return Promise.resolve(dispatch(receiveEntities(entities)));
+};
+
+export const addDataboxByProducer = ({ producerId, databox }) => (dispatch) => {
+  const normalized = normalize(
+    { producerId, databoxes: [databox] },
+    DataboxByProducerSchema.entity,
+  );
+  const { entities } = normalized;
+  return Promise.resolve(dispatch(receiveEntities(entities, mergeEntitiesDataboxesByProducer)));
 };
 
 export const receiveDatabox = (databox) => (dispatch) => {

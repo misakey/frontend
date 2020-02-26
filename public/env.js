@@ -16,5 +16,17 @@ window.env = {
     'shops',
     'gaming',
   ],
-  ACTIVE_SERVICES: ['fnac.com', 'misakey.com.local']
+  ACTIVE_SERVICES: [
+    'fnac.com',
+    'misakey.com.local',
+    'vp.com',
+    'darty.com',
+    'veepee.fr',
+    'showroomprive.com',
+    'rakuten.com',
+    'yves-rocher.fr',
+    'leroymerlin.fr',
+    'auchan.fr',
+    'conforama.fr'
+  ]
 };

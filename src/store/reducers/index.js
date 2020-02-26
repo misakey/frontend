@@ -17,6 +17,7 @@ import screens from './screens';
 import search from './search';
 import sso from './sso';
 import warning from './warning';
+import { userApplicationsReducers, userApplicationsInitialState } from './applications/userApplications';
 
 const appReducer = combineReducers({
   ...authReducers,
@@ -35,9 +36,10 @@ const appReducer = combineReducers({
     services: {},
     databoxes: {},
     databoxesByProducer: {},
-    userApplications: {},
     applicationsByCategories: {},
-  }, makeEntities),
+    // FIXME: create a combineReducers once we need to passe more custom reducers
+    ...userApplicationsInitialState,
+  }, userApplicationsReducers, makeEntities),
 });
 
 const rootReducer = (state, action) => {

@@ -29,6 +29,8 @@ import Screen, { getStyleForContainerScroll, SCREEN_STATE_PROPTYPES } from 'comp
 import DefaultSplashScreen from '@misakey/ui/Screen/Splash';
 import ApplicationInfoNav from 'components/screens/Citizen/Application/Info/Nav';
 import UserContributionDialog from 'components/smart/UserContributionDialog';
+import { addToUserApplications, removeFromUserApplications } from 'store/actions/applications/userApplications';
+import { WORKSPACE } from 'constants/workspaces';
 
 
 // LAZY
@@ -104,7 +106,7 @@ const createUserApplication = (form) => API
 // COMPONENTS
 function ApplicationInfo({
   userId, entity, isAuthenticated,
-  match, t, screenProps,
+  match, t, screenProps, dispatch,
 }) {
   const classes = useStyles();
   const [isOpenUserContributionDialog, setOpenUserContributionDialog] = useState(false);
@@ -168,17 +170,21 @@ function ApplicationInfo({
         createUserApplication({ userId, applicationId: id })
           .then((userApplication) => {
             setApplicationLinkId(userApplication.id);
+            dispatch(addToUserApplications(WORKSPACE.CITIZEN, mainDomain));
           })
           .catch(handleGenericHttpErrors);
       } else {
         API.use(ENDPOINTS.userApplication.delete)
           .build({ id: applicationLinkId })
           .send()
-          .then(() => { setApplicationLinkId(null); })
+          .then(() => {
+            setApplicationLinkId(null);
+            dispatch(removeFromUserApplications(WORKSPACE.CITIZEN, mainDomain));
+          })
           .catch(handleGenericHttpErrors);
       }
     },
-    [userId, id, applicationLinkId, handleGenericHttpErrors],
+    [applicationLinkId, userId, id, handleGenericHttpErrors, dispatch, mainDomain],
   );
 
   const getCurrentApplicationLink = useCallback(
@@ -311,6 +317,7 @@ function ApplicationInfo({
 
 ApplicationInfo.propTypes = {
   userId: PropTypes.string,
+  dispatch: PropTypes.func.isRequired,
   entity: PropTypes.shape(ApplicationSchema.propTypes),
   history: PropTypes.shape({ replace: PropTypes.func }).isRequired,
   isAuthenticated: PropTypes.bool.isRequired,

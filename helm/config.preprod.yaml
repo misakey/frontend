@@ -21,7 +21,20 @@ config: >-
       URL: 'https://analytics.misakey.com/',
       SITE_ID: '4'
     },
-    ACTIVE_SERVICES: ['mortdu.fun', 'preprod.misakey.dev', 'toupy.fr']
+    ACTIVE_SERVICES: [
+      'mortdu.fun',
+      't0nio.com',
+      'cedricvanrompay.fr',
+      'preprod.misakey.dev',
+      'toupy.fr',
+      'misadmin.preprod.misakey.dev',
+      'twitter.com',
+      'google.fr',
+      'liberation.fr',
+      'facebook.com',
+      'lemonde.fr',
+      'rdvsimple.com'
+    ]
   };
     
   

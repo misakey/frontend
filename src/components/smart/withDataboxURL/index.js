@@ -8,9 +8,10 @@ import routes from 'routes';
 import { connect } from 'react-redux';
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxByProducerSchema from 'store/schemas/Databox/ByProducer';
-import { receiveDataboxesByProducer } from 'store/actions/databox';
+import { receiveDataboxesByProducer, addDataboxByProducer } from 'store/actions/databox';
 import { contactDataboxURL } from 'store/actions/screens/contact';
 import { selectors as contactSelectors } from 'store/reducers/screens/contact';
+import { addToUserApplications } from 'store/actions/applications/userApplications';
 
 import { useParams } from 'react-router-dom';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
@@ -23,6 +24,7 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 import { getCurrentDatabox } from '@misakey/helpers/databox';
 import { IS_PLUGIN } from 'constants/plugin';
+import { WORKSPACE } from 'constants/workspaces';
 
 // HELPERS
 const idProp = prop('id');
@@ -43,7 +45,8 @@ const postDatabox = (payload) => API.use(API.endpoints.application.box.create)
 // COMPONENTS
 const withDataboxURL = (mapper = identity) => (Component) => {
   const Wrapper = ({
-    dispatchContact, dispatchReceiveDataboxesByProducer, databoxesByProducer,
+    dispatchContact, dispatchReceiveDataboxesByProducer, dispatchAddToUserApplications,
+    databoxesByProducer, dispatchAddDataboxByProducer,
     ...props
   }) => {
     const { entity: { id, mainDomain }, isAuthenticated, userId, databoxURL } = props;
@@ -100,9 +103,17 @@ const withDataboxURL = (mapper = identity) => (Component) => {
             return onDatabox(box);
           }
           return createDatabox()
-            .then((createdDatabox) => onDatabox(createdDatabox));
+            .then((createdDatabox) => Promise.all([
+              dispatchAddToUserApplications({ mainDomain, workspace: WORKSPACE.CITIZEN }),
+              dispatchAddDataboxByProducer(id, objectToCamelCase(createdDatabox)),
+              onDatabox(createdDatabox),
+            ]));
         }),
-      [getDatabox, onDatabox, createDatabox],
+      [
+        getDatabox, createDatabox, onDatabox,
+        dispatchAddToUserApplications, dispatchAddDataboxByProducer,
+        mainDomain, id,
+      ],
     );
 
     const { isFetching, error } = useFetchEffect(
@@ -126,7 +137,9 @@ const withDataboxURL = (mapper = identity) => (Component) => {
     isAuthenticated: PropTypes.bool,
     userId: PropTypes.string,
     dispatchContact: PropTypes.func.isRequired,
+    dispatchAddDataboxByProducer: PropTypes.func.isRequired,
     dispatchReceiveDataboxesByProducer: PropTypes.func.isRequired,
+    dispatchAddToUserApplications: PropTypes.func.isRequired,
   };
 
   Wrapper.defaultProps = {
@@ -155,8 +168,14 @@ const withDataboxURL = (mapper = identity) => (Component) => {
   };
 
   const mapDispatchToProps = (dispatch) => ({
+    dispatchAddToUserApplications: ({ mainDomain, workspace }) => dispatch(
+      addToUserApplications(workspace, mainDomain),
+    ),
     dispatchReceiveDataboxesByProducer: (producerId, databoxes) => dispatch(
       receiveDataboxesByProducer({ producerId, databoxes }),
+    ),
+    dispatchAddDataboxByProducer: (producerId, databox) => dispatch(
+      addDataboxByProducer({ producerId, databox }),
     ),
     dispatchContact: (databoxURL, mainDomain) => {
       dispatch(contactDataboxURL(databoxURL, mainDomain));

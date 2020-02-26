@@ -42,5 +42,7 @@ config: >-
       'credit-cooperatif.coop',
       'axa.fr',
       'carrefour.fr',
+      'gandi.net',
+      'gog.com'
     ]
   };

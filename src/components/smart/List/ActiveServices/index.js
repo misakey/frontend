@@ -5,6 +5,8 @@ import { withTranslation } from 'react-i18next';
 
 import Box from '@material-ui/core/Box';
 
+import sampleSize from '@misakey/helpers/sampleSize';
+
 import ApplicationsList from 'components/dumb/List/Applications';
 import Card from 'components/dumb/Card';
 import Title from 'components/dumb/Typography/Title';
@@ -12,6 +14,7 @@ import withActiveServices from 'components/smart/withActiveServices';
 
 import ApplicationSchema from 'store/schemas/Application';
 
+const MAX_ITEMS = 7;
 
 function ActiveServices({
   activeServices,
@@ -19,6 +22,7 @@ function ActiveServices({
   t,
 }) {
   const toRoute = useMemo(() => routes.dpo.service._, []);
+  const list = useMemo(() => sampleSize(activeServices, MAX_ITEMS), [activeServices]);
 
   return (
     <>
@@ -30,7 +34,7 @@ function ActiveServices({
       <Card mb={3}>
         <ApplicationsList
           isFetching={isFetchingActiveServices}
-          applications={activeServices}
+          applications={list}
           toRoute={toRoute}
         />
       </Card>

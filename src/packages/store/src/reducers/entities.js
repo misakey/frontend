@@ -87,11 +87,15 @@ function updateEntities(state, action) {
   };
 }
 
-export const makeReducer = (initialState = initialEntitiesState) => createReducer(initialState, {
+export const makeReducer = (
+  initialState = initialEntitiesState,
+  extraReducers = {},
+) => createReducer(initialState, {
   [RECEIVE_ENTITIES]: receiveEntities,
   [REMOVE_ENTITIES]: removeEntities,
   [RESET_ENTITIES]: resetEntities,
   [UPDATE_ENTITIES]: updateEntities,
+  ...extraReducers,
 });
 
 export default makeReducer();

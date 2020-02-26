@@ -12,8 +12,8 @@ export default function createAuthReducer(initialState, handlers, scope) {
   };
 }
 
-export const wrapReducerWithAuth = (initialState, createFn) => {
-  const reducer = createFn(initialState);
+export const wrapReducerWithAuth = (initialState, extraReducers = {}, createFn) => {
+  const reducer = createFn(initialState, extraReducers);
   return (state, action) => {
     if (action.type === SIGN_OUT) {
       return initialState;
