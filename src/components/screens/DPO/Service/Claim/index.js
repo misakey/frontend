@@ -72,8 +72,9 @@ const INITIAL_VALUES = {
   code: '',
 };
 
+const NOT_SENT_ERROR = 'notSent';
+
 // HELPERS
-const idProp = prop('id');
 const mainDomainProp = prop('mainDomain');
 
 // COMPONENTS
@@ -100,11 +101,6 @@ function ServiceRoleClaim({
 
   const [claim, setClaim] = useState(null);
   const [isCreating, setCreating] = useState(false);
-
-  const hasClaimId = useMemo(
-    () => !isNil(idProp(claim)),
-    [claim],
-  );
 
   const hasDpoEmail = useMemo(
     () => service && !isEmpty(service.dpoEmail),
@@ -177,7 +173,11 @@ function ServiceRoleClaim({
   }, [userId, service, role, t, enqueueSnackbar, handleGenericHttpErrors]);
 
   const handleSubmit = useCallback((values, { setErrors, setSubmitting }) => {
-    if (isNil(claim) || isNil(claim.id)) { throw new Error('Cannot submit, claim is nil'); }
+    if (isNil(claim) || isNil(claim.id)) {
+      setErrors({ code: NOT_SENT_ERROR });
+      setSubmitting(false);
+      return;
+    }
 
     const query = { id: claim.id };
     const payload = { validated_at: moment.utc(Date.now()).format(), value: values.code.join('') };
@@ -303,7 +303,6 @@ function ServiceRoleClaim({
               <BoxControls
                 mt={2}
                 primary={{
-                  disabled: !hasClaimId,
                   text: t('common__new:next'),
                   type: 'submit',
                 }}

@@ -40,6 +40,7 @@
     "error": {
       "invalid": "Ce code est invalide. Je peux vérifier qu'il correspond au code \nque j'ai reçu par mail il y a moins de 30min ou j'en redemande \nun nouveau",
       "expired": "Le code a expiré. Je dois en demander un nouveau",
+      "notSent": "Je dois d'abord demander un code en cliquant sur \"Envoyer un code\".",
       "malformed": "Le code est incorrect"
     }
   },
