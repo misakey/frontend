@@ -16,7 +16,7 @@ export const DEFAULT_SECLEVEL = 2;
 export const SECLEVEL_CONFIG = {
   1: {
     fieldTypes: { [STEP.identifier]: 'email', [STEP.secret]: 'confirmationCode' },
-    fieldProps: { [STEP.secret]: { component: FieldCode, type: 'text', inputProps: { 'data-matomo-ignore': true }, autoFocus: true } },
+    fieldProps: { [STEP.secret]: { component: FieldCode, helperText: '', type: 'text', inputProps: { 'data-matomo-ignore': true }, autoFocus: true } },
     api: {
       [STEP.identifier]: {
         kind: 'email',

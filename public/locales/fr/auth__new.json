@@ -32,7 +32,15 @@
       "title": "Connexion à ",
       "subtitle": {
         "link": "Misakey",
-        "text": "Je saisis mon email pour continuer avec Misakey"
+        "text": {
+          "identifier": {
+            "email": "Je saisis mon email pour continuer avec Misakey"
+          },
+          "secret": {
+            "password": "Je saisis mon mot de passe pour continuer avec Misakey",
+            "confirmationCode": "Je saisis le code de confirmation que j'ai reçu par email"
+          }
+        }
       }
     },
     "form": {

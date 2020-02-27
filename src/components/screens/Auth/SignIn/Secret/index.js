@@ -100,6 +100,7 @@ const AuthSignInSecret = ({
   );
   const secLevelConfig = useMemo(() => SECLEVEL_CONFIG[secLevel], [secLevel]);
   const initialValues = useMemo(() => INITIAL_VALUES[CURRENT_STEP], []);
+  const fieldType = useMemo(() => SECLEVEL_CONFIG[secLevel].fieldTypes[STEP.secret], [secLevel]);
 
   const validationSchema = useMemo(
     () => getSignInValidationSchema(secLevelConfig.fieldTypes, CURRENT_STEP),
@@ -246,7 +247,7 @@ const AuthSignInSecret = ({
         primary={primary}
         secondary={secondary}
         title={<AuthCardTitle name="signIn" />}
-        subtitle={t('auth__new:signIn.card.subtitle.text')}
+        subtitle={t(`auth__new:signIn.card.subtitle.text.secret.${fieldType}`)}
         Header={CardHeaderAuth}
         formik
       >

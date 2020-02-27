@@ -126,7 +126,7 @@ const AuthSignInIdentifier = ({
         primary={primary}
         secondary={secondary}
         title={<AuthCardTitle name="signIn" />}
-        subtitle={t('auth__new:signIn.card.subtitle.text')}
+        subtitle={t('auth__new:signIn.card.subtitle.text.identifier.email')}
         Header={CardHeaderAuth}
         formik
       >
