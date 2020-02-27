@@ -205,6 +205,11 @@ const withApplication = (Component, options = {}) => {
 
     const fetchProps = useMemo(
       () => {
+        if (IS_PLUGIN) {
+          // Never return error to plugin to prevent 404 screen to display
+          // @FIXME: unify app and plugin behavior after plugins are splitted
+          return { isFetching };
+        }
         const fetchedApp = isArray(data) ? head(data) : data;
         if (isSameApplicationAs(entity, fetchedApp)) {
           return { isFetching, error };
