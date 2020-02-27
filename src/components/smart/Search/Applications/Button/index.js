@@ -64,12 +64,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const SearchApplicationsButton = forwardRef(({ entity, ...rest }, ref) => {
+const SearchApplicationsButton = forwardRef(({ entity, disabled, ...rest }, ref) => {
   const classes = useStyles();
 
   const noEntity = useMemo(
     () => isNil(entity),
     [entity],
+  );
+
+  const EndIcon = useMemo(
+    () => (disabled ? null : <ArrowDropdownIcon />),
+    [disabled],
   );
 
   return (
@@ -80,7 +85,8 @@ const SearchApplicationsButton = forwardRef(({ entity, ...rest }, ref) => {
         label: classes.label,
         endIcon: classes.endIcon,
       }}
-      endIcon={<ArrowDropdownIcon />}
+      endIcon={EndIcon}
+      disabled={disabled}
       {...omitTranslationProps(rest)}
     >
       {noEntity
@@ -98,10 +104,12 @@ const SearchApplicationsButton = forwardRef(({ entity, ...rest }, ref) => {
 
 SearchApplicationsButton.propTypes = {
   entity: PropTypes.shape(ApplicationSchema.propTypes),
+  disabled: PropTypes.bool,
 };
 
 SearchApplicationsButton.defaultProps = {
   entity: null,
+  disabled: false,
 };
 
 export default withRouter(
