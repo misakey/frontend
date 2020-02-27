@@ -22,13 +22,10 @@ import 'components/screens/Auth/Error/index.scss';
 const AuthError = ({ location, t }) => {
   const searchParams = getSearchParams(location.search);
 
-  if (searchParams.error_code === 'forbidden_role') {
-    return <Redirect to={routes.errors.forbidden} />;
+  if (window.env.ENV === 'production') {
+    return <Redirect to={`${routes.errors.forbidden}${location.search}`} />;
   }
 
-  if (window.env.ENV === 'production') {
-    return null;
-  }
   return (
     <Paper className="Error">
       <Typography className="initialDescription">
@@ -47,7 +44,7 @@ const AuthError = ({ location, t }) => {
           <ListItemText primary={(
             <Typography>
               <strong>Error code: </strong>
-              {searchParams.error_code}
+              {searchParams.error}
             </Typography>
           )}
           />

@@ -40,7 +40,7 @@ const SEARCH_PARAMS = ['login_challenge'];
 
 const LOGIN_REQUIRED_SEARCH_PARAMS = ['login_challenge'];
 const CONSENT_REQUIRED_SEARCH_PARAMS = ['consent_challenge'];
-const ERROR_SEARCH_PARAMS = ['error_code', 'error_description'];
+const ERROR_SEARCH_PARAMS = ['error', 'error_description'];
 
 const hasRequiredSearchParams = (requiredSearchParamsList) => (searchParams) => (
   difference(requiredSearchParamsList, Object.keys(searchParams)).length === 0
@@ -88,6 +88,9 @@ const useStyles = makeStyles(() => ({
 
 
 const useGetLoginInfos = (challenge, dispatch, setIsFetching, setError) => useCallback(() => {
+  if (isNil(challenge)) {
+    return;
+  }
   setIsFetching(true);
   fetchLoginInfo(challenge)
     .then((response) => {
