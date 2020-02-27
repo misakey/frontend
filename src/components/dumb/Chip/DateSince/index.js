@@ -23,7 +23,6 @@ const ChipDateSince = ({ date, text, ...rest }) => {
 ChipDateSince.propTypes = {
   date: PropTypes.string,
   text: PropTypes.string.isRequired,
-  t: PropTypes.func.isRequired,
 };
 
 ChipDateSince.defaultProps = {

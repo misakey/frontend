@@ -41,7 +41,27 @@ const INTERNAL_PROPS = ['dispatchReceive', 'dispatchReceivePlugin', 't'];
 const EMPTY_APPLICATION_ERROR = new Error();
 EMPTY_APPLICATION_ERROR.status = 404;
 
+const WITH_APPLICATION_PROPS = [
+  'isAuthenticated',
+  'isDefaultDomain',
+  'entity',
+  'mainDomain',
+  'dispatchReceive',
+  'dispatchReceivePlugin',
+  'userId',
+  'history',
+  'location',
+  'tReady',
+  'isFetching',
+  'error',
+  'userRoles',
+  'dispatch',
+  'staticContext',
+];
+
 // HELPERS
+export const omitWithApplication = (props) => omit(props, WITH_APPLICATION_PROPS);
+
 const isSameApplicationAs = (model, other) => {
   if (isNil(model)) {
     return isNil(other);

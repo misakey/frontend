@@ -5,35 +5,16 @@ import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD, SEARCH_WIDTH_SM, SEARCH_WIDTH_XS } fr
 import ApplicationSchema from 'store/schemas/Application';
 
 import isNil from '@misakey/helpers/isNil';
-import omit from '@misakey/helpers/omit';
-
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { withRouter } from 'react-router-dom';
 
-import withApplication from 'components/smart/withApplication';
+import withApplication, { omitWithApplication } from 'components/smart/withApplication';
 import Button from '@material-ui/core/Button';
 import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import SearchApplicationsButtonEmpty from 'components/smart/Search/Applications/Button/Empty';
 
 import ArrowDropdownIcon from '@material-ui/icons/ArrowDropDown';
-
-// CONSTANTS
-const WITH_APPLICATION_PROPS = [
-  'error',
-  'isFetching',
-  'mainDomain',
-  'userRoles',
-  'userId',
-  'isDefaultDomain',
-  'isAuthenticated',
-  'staticContext',
-];
-
-// HELPERS
-const omitWithApplication = (props) => omit(props, WITH_APPLICATION_PROPS);
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -87,7 +68,7 @@ const SearchApplicationsButton = forwardRef(({ entity, disabled, ...rest }, ref)
       }}
       endIcon={EndIcon}
       disabled={disabled}
-      {...omitTranslationProps(rest)}
+      {...omitWithApplication(rest)}
     >
       {noEntity
         ? (
@@ -113,5 +94,5 @@ SearchApplicationsButton.defaultProps = {
 };
 
 export default withRouter(
-  withApplication(SearchApplicationsButton, { propsMapper: omitWithApplication }),
+  withApplication(SearchApplicationsButton),
 );

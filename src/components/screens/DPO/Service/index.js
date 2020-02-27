@@ -15,7 +15,7 @@ import useUserHasRole from '@misakey/hooks/useUserHasRole';
 import isNil from '@misakey/helpers/isNil';
 import isObject from '@misakey/helpers/isObject';
 
-import withApplication from 'components/smart/withApplication';
+import withApplication, { omitWithApplication } from 'components/smart/withApplication';
 import ActiveServices from 'components/smart/List/ActiveServices';
 
 import Screen from 'components/dumb/Screen';
@@ -129,7 +129,7 @@ function Service({
             userId={userId}
             userRoles={userRoles}
             error={error}
-            {...rest}
+            {...omitWithApplication(rest)}
             {...renderProps}
           />
         )}
@@ -143,7 +143,7 @@ function Service({
             name={DPO_SERVICE_SCREEN_NAMES.REQUESTS}
             service={entity}
             error={error}
-            {...rest}
+            {...omitWithApplication(rest)}
             {...renderProps}
           />
         )}
