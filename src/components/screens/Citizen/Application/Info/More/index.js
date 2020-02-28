@@ -83,7 +83,7 @@ const useOnCreateApplication = (
 ) => useCallback(() => createApplication(mainDomain)
   .then((response) => {
     const application = objectToCamelCase(response);
-    enqueueSnackbar(t('citizen__new:application.create.success'), { variant: 'success' });
+    enqueueSnackbar(t('citizen__new:applications.create.success'), { variant: 'success' });
     dispatchApplicationCreate(application);
   })
   .catch(handleGenericHttpErrors),
