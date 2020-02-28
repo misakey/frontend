@@ -46,7 +46,7 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next) // if not using I18nextProvider
   .init({
-    debug: true, // I18N TRANS HELP: turn true
+    debug: false, // I18N TRANS HELP: turn true
     fallbackLng: DEFAULT_LANGUAGE,
     ns: 'common__new',
     defaultNS: 'common__new',

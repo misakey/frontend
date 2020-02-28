@@ -1,7 +1,4 @@
-/* eslint-disable react/no-array-index-key, react/no-danger */
-// react/no-danger because it is our own html but ins translation files (&nbsp;)
-// this is actually the cleaner way to do it
-// https://stackoverflow.com/questions/16038458/html-tags-in-i18next-translation
+/* eslint-disable react/no-array-index-key */
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
@@ -23,8 +20,8 @@ export const getQuestionsItems = (t, transKey, nbOfQuestions) => {
 
   for (let i = 0; i < nbOfQuestions; i += 1) {
     items.push({
-      href: t(`${transKey}.href.${i}`, { interpolation: { escapeValue: false } }),
-      text: t(`${transKey}.text.${i}`, { interpolation: { escapeValue: false } }),
+      href: t(`${transKey}.href.${i}`),
+      text: t(`${transKey}.text.${i}`),
     });
   }
 
@@ -71,7 +68,7 @@ function ListQuestions({ breakpoints, items, justify }) {
             <HelpOutlineIcon />
           </ListItemIcon>
           <ListItemText
-            primary={<span dangerouslySetInnerHTML={{ __html: text }} />}
+            primary={text}
             className={clsx({ [classes.justify]: justify })}
           />
         </Grid>

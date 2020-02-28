@@ -20,7 +20,7 @@
       "confirm": "Je confirme mon email en saisissant le code de validation envoyé à {{email}} par ",
       "resetPassword": "Plus qu'une étape: définir mon nouveau mot de passe "
     },
-    "success": "Mot de passe modifié avec succès !",
+    "success": "Mot de passe modifié avec succès\u00a0!",
     "title": "Récupération de compte"
   },
   "signIn": {
@@ -136,6 +136,6 @@
       },
       "privacyPolicyCheckboxLabel": "J'accepte les <1>CGUs</1> et la <3>politique de confidentialité</3> de Misakey"
     },
-    "success": "Compte créé avec succès !"
+    "success": "Compte créé avec succès\u00a0!"
   }
 }

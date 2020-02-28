@@ -6,11 +6,11 @@
       "error": {
         "404": {
           "title": "Demande de portabilité introuvable",
-          "desc": "Aucune demande de portabilité en cours trouvée. \nEst-elle traitée ou introuvable ? \nEn cas de problème, je peux envoyer un mail à <1>question.pro@misakey.com</1> \nEn pensant à joindre le lien qui ne fonctionne pas et le mail de l'utilisateur ayant fait la demande. \nNos excuses pour la gêne occasionnée"
+          "desc": "Aucune demande de portabilité en cours trouvée. \nEst-elle traitée ou introuvable\u00a0? \nEn cas de problème, je peux envoyer un mail à <1>question.pro@misakey.com</1> \nEn pensant à joindre le lien qui ne fonctionne pas et le mail de l'utilisateur ayant fait la demande. \nNos excuses pour la gêne occasionnée"
         },
         "default": {
           "title": "Demande de portabilité introuvable",
-          "desc": "Aucune demande de portabilité en cours trouvée. \nEst-elle traitée ou introuvable ? \nEn cas de problème, je peux envoyer un mail à <1>question.pro@misakey.com</1>. \nEn pensant à joindre le lien qui ne fonctionne pas et le mail de l'utilisateur ayant fait la demande. \nNos excuses pour la gêne occasionnée"
+          "desc": "Aucune demande de portabilité en cours trouvée. \nEst-elle traitée ou introuvable\u00a0? \nEn cas de problème, je peux envoyer un mail à <1>question.pro@misakey.com</1>. \nEn pensant à joindre le lien qui ne fonctionne pas et le mail de l'utilisateur ayant fait la demande. \nNos excuses pour la gêne occasionnée"
         }
       },
       "password": {
@@ -24,11 +24,11 @@
       "questions": {
         "title": "Questions fréquentes",
         "text": {
-          "0": "Comment utiliser la plateforme Misakey&nbsp;?",
-          "1": "Qu’est-ce qu’une requête de portabilité&nbsp;?",
-          "2": "Quelles sont mes obligations&nbsp;?",
-          "3": "Comment sont transférées les données&nbsp;?",
-          "4": "Comment automatiser les réponses aux requêtes&nbsp;?"
+          "0": "Comment utiliser la plateforme Misakey\u00a0?",
+          "1": "Qu’est-ce qu’une requête de portabilité\u00a0?",
+          "2": "Quelles sont mes obligations\u00a0?",
+          "3": "Comment sont transférées les données\u00a0?",
+          "4": "Comment automatiser les réponses aux requêtes\u00a0?"
         },
         "href": {
           "0": "https://docs.misakey.com/#/dpo/?id=envoyer-un-fichier-avec-misakey-",
@@ -40,7 +40,7 @@
       }
     },
     "doneDialog": {
-      "title": "Clore la requête ?",
+      "title": "Clore la requête\u00a0?",
       "description": "Je ne pourrai plus visualiser la requête et l'utilisateur sera informé que je l'ai clôturée.\nJe dois indiquer à l'utilisateur la raison de cette clôture."
     },
     "list": {
@@ -57,9 +57,9 @@
       "questions": {
         "title": "Questions fréquentes",
         "text": {
-          "0": "Comment sont transférées les données&nbsp;?",
-          "1": "Quelles sont mes obligations&nbsp;?",
-          "2": "Je ne veux plus traiter toutes ces demandes manuellement, comment automatiser ce processus&nbsp;?"
+          "0": "Comment sont transférées les données\u00a0?",
+          "1": "Quelles sont mes obligations\u00a0?",
+          "2": "Je ne veux plus traiter toutes ces demandes manuellement, comment automatiser ce processus\u00a0?"
         },
         "href": {
           "0": "https://docs.misakey.com/#/dpo/?id=envoi-securisé",
@@ -70,10 +70,10 @@
       "title": "Coffre-fort de {{ownerName}}",
       "upload": {
         "dialog": {
-          "title": "Envoyer ce fichier ?",
-          "text": "Le fichier va être chiffré avec la clé de {{ownerEmail}} puis lui être envoyé. Cette opération est irréversible"
+          "title": "Envoyer ce fichier\u00a0?",
+          "text": "Le fichier va être chiffré avec la clé de {{ownerEmail}} puis lui être envoyé. Cette opération est irréversible."
         },
-        "success": "Le fichier {{name}} a été envoyé avec succès !"
+        "success": "Le fichier {{name}} a été envoyé avec succès\u00a0!"
       },
       "vault": {
         "title": "Fichiers envoyés",
@@ -97,15 +97,15 @@
       },
       "title": "Activer mon interface",
       "subtitle": "Je demande un code de confirmation et je saisis le code reçu par e-mail à l’adresse {{dpoEmail}}",
-      "success": "Le site dont le domaine de référence est {{mainDomain}} a été ajouté à ma console d’administration"
+      "success": "Le site dont le domaine de référence est {{mainDomain}} a été ajouté à ma console DPO"
     },
     "create": {
       "title": "Ajouter un site",
       "subtitle": "Je copie-colle l’url de la page d’accueil de mon site pour confirmer son nom de domaine",
-      "success": "Demande de création de service reçue !"
+      "success": "Demande de création de service reçue\u00a0!"
     },
     "notFound": {
-      "title": "Le service {{mainDomain}} est introuvable !",
+      "title": "Le service {{mainDomain}} est introuvable\u00a0!",
       "create": {
         "text": "Je crée le service {{mainDomain}} pour gérer les données de mes utilisateurs.",
         "button": "Nouveau service"

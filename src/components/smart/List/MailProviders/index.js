@@ -118,7 +118,7 @@ const useMailtoHrefs = (mailsProps, t) => useMemo(
       return '';
     }
     const { applicationName, mailto, subject, body } = mail;
-    const formatedMailto = t('emailTo', { applicationName, dpoEmail: mailto });
+    const formatedMailto = t('citizen__new:contact.emailTo', { applicationName, dpoEmail: mailto });
     return {
       href: `mailto:${encodeURIComponent(formatedMailto)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`,
       mailto: formatedMailto,

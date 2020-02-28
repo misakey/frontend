@@ -28,7 +28,7 @@
             "submitAgain": "Revérifier",
             "submitLater": "Vérifier plus tard"
           },
-          "copied": "Copié dans le presse papier !",
+          "copied": "Copié dans le presse papier\u00a0!",
           "error": {
             "notYet": "Nous n’avons pas trouvé l’enregistrement sur la configuration DNS. Parfois la propagation prend du temps. Je peux revenir vérifier plus tard",
             "notYetShort": "Nous n’avons pas trouvé l’enregistrement",

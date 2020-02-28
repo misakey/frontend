@@ -280,7 +280,7 @@ function ServiceRoleClaim({
                     rel: 'noopener noreferrer',
                     component: 'a',
                     text: t('dpo__new:services.claim.errors.missingDpoEmail.button'),
-                    href: 'mailto:question.perso@misakey.com',
+                    href: 'mailto:question.pro@misakey.com',
                   }}
                 />
               </>

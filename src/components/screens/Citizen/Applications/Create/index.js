@@ -58,7 +58,7 @@ const ApplicationsCreate = ({
   );
 
   const onSubmit = useCallback(
-    (values, formikBag) => onCreateApplication(values, formikBag, t('citizen__new:application.create.success')),
+    (values, formikBag) => onCreateApplication(values, formikBag, t('citizen__new:applications.create.success')),
     [onCreateApplication, t],
   );
 
@@ -66,11 +66,11 @@ const ApplicationsCreate = ({
     <Screen>
       <AppBarNavigation
         toolbarProps={{ maxWidth: 'md' }}
-        title={t('citizen__new:application.create.title')}
+        title={t('citizen__new:applications.create.title')}
       />
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" align="left">
-          {t('citizen__new:application.create.subtitle')}
+          {t('citizen__new:applications.create.subtitle')}
         </Typography>
         <Formik
           validationSchema={mainDomainValidationSchema}

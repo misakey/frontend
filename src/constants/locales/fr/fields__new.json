@@ -226,6 +226,15 @@
       "invalid": "Le mot de passe est erroné"
     }
   },
+  "passwordVault": {
+    "label": "Mot de passe",
+    "placeholder": "********",
+    "action": "Valider",
+    "error": {
+      "required": "Le mot de passe est requis",
+      "invalid": "Le mot de passe est erroné"
+    }
+  },
   "redirectUris": {
     "action": "Editer",
     "empty": "Aucune",

@@ -30,7 +30,7 @@
       "service": {
         "dropdown": "Basculer la liste des sites",
         "logo": {
-          "alt": "Logo du site : {{mainDomain}}",
+          "alt": "Logo du site\u00a0: {{mainDomain}}",
           "title": "{{mainDomain}}"
         }
       }
@@ -49,7 +49,7 @@
   },
   "errorBoundary": {
     "title": {
-      "default": "Aïe ! Une erreur est survenue..."
+      "default": "Aïe\u00a0! Une erreur est survenue..."
     },
     "button": {
       "collapse": "Détails"
@@ -180,8 +180,8 @@
   },
   "silentAuth": {
     "text": { 
-      "dpo": "Je me connecte en tant que DPO pour accéder à cet espace." ,
-      "citizen": "Je me connecte en tant que Citoyen pour accéder à cet espace." 
+      "dpo": "Je me connecte en tant que DPO pour accéder à cet espace.",
+      "citizen": "Je me connecte en tant que Citoyen pour accéder à cet espace."
     },
     "button": "Connexion"
   }

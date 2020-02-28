@@ -28,7 +28,7 @@ config: >-
     ],
     MATOMO: {
       URL: 'https://analytics.misakey.com/',
-      SITE_ID: '1'
+      SITEID: '1'
     },
     ACTIVE_SERVICES: [
       'maif.fr',

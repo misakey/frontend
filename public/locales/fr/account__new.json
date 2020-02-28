@@ -11,9 +11,9 @@
   "delete": {
     "title": "Compte",
     "label": "Supprimer mon compte",
-    "success": "Mon compte a bien été supprimé !",
+    "success": "Mon compte a bien été supprimé\u00a0!",
     "dialog": {
-      "title": "Supprimer mon compte ?",
+      "title": "Supprimer mon compte\u00a0?",
       "description": "Je saisis mon adresse email ({{email}}) dans le champ ci-dessous avant de valider la suppression de mon compte."
     }
   },
