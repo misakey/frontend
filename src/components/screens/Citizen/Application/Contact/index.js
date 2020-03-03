@@ -8,7 +8,11 @@ import DataboxSchema from 'store/schemas/Databox';
 
 import routes from 'routes';
 
+import isNil from '@misakey/helpers/isNil';
+import getNextSearch from '@misakey/helpers/getNextSearch';
 import withDataboxURL from 'components/smart/withDataboxURL';
+
+import DefaultSplashScreen from '@misakey/ui/Screen/Splash';
 
 import Screen, { SCREEN_STATE_PROPTYPES } from 'components/dumb/Screen';
 
@@ -21,6 +25,7 @@ const Contact = ({
   entity,
   databoxURL,
   databox,
+  isNewDatabox,
   isFetchingDatabox,
   screenProps,
   location,
@@ -36,14 +41,47 @@ const Contact = ({
     [screenProps, isFetchingDatabox],
   );
 
+  const isLoading = useMemo(
+    () => {
+      const searchParams = new URLSearchParams(location.search);
+      // if we have searchParams recontact defined we don't need to check isNewDatabox
+      // and we can have isNewDatabox to null
+      return isNil(searchParams.get('recontact')) && isNil(isNewDatabox);
+    },
+    [isNewDatabox, location],
+  );
+
+  const rootRouteTo = useMemo(
+    () => {
+      if (isLoading) {
+        return null;
+      }
+      const newLocation = { ...location, pathname: routes.citizen.application.contact.preview };
+      const searchParams = new URLSearchParams(location.search);
+
+      if (isNil(searchParams.get('recontact'))) {
+        return {
+          ...newLocation,
+          search: getNextSearch(location.search, new Map([
+            ['recontact', !isNewDatabox],
+          ])),
+        };
+      }
+      return newLocation;
+    },
+    [isNewDatabox, location, isLoading],
+  );
+
   return (
     <Screen {...screenPropsWithDataboxURL}>
       <Switch>
-        <Redirect
-          exact
-          from={routes.citizen.application.contact._}
-          to={{ ...location, pathname: routes.citizen.application.contact.preview }}
-        />
+        {!isLoading ? (
+          <Redirect
+            exact
+            from={routes.citizen.application.contact._}
+            to={rootRouteTo}
+          />
+        ) : <DefaultSplashScreen />}
         <Route
           path={routes.citizen.application.contact.preview}
           render={(routerProps) => (
@@ -82,6 +120,7 @@ Contact.propTypes = {
   // withDataboxURL
   databoxURL: PropTypes.string,
   databox: PropTypes.shape(DataboxSchema.propTypes),
+  isNewDatabox: PropTypes.bool,
   isFetchingDatabox: PropTypes.bool.isRequired,
   location: PropTypes.object.isRequired,
 };
@@ -90,6 +129,7 @@ Contact.defaultProps = {
   entity: null,
   mainDomain: null,
   databox: null,
+  isNewDatabox: null,
   databoxURL: null,
 };
 

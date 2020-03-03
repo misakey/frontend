@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { denormalize } from 'normalizr';
 
@@ -53,6 +53,8 @@ const withDataboxURL = (mapper = identity) => (Component) => {
 
     const { mainDomain: mainDomainParam } = useParams();
 
+    const [isNewDatabox, setIsNewDatabox] = useState(null);
+
     const databox = useMemo(
       () => getCurrentDatabox(databoxesProp(databoxesByProducer), true),
       [databoxesByProducer],
@@ -62,11 +64,11 @@ const withDataboxURL = (mapper = identity) => (Component) => {
       () => {
         const validAuth = isAuthenticated;
         const validEntity = !isNil(mainDomain) && !isNil(id) && mainDomain === mainDomainParam;
-        const defaultShouldFetch = isNil(databoxURL);
+        const defaultShouldFetch = isNil(databoxURL) || isNil(databox);
 
         return validAuth && validEntity && defaultShouldFetch;
       },
-      [databoxURL, id, isAuthenticated, mainDomain, mainDomainParam],
+      [databoxURL, id, isAuthenticated, mainDomain, mainDomainParam, databox],
     );
 
     const getDatabox = useCallback(
@@ -100,8 +102,10 @@ const withDataboxURL = (mapper = identity) => (Component) => {
       () => getDatabox()
         .then((box) => {
           if (!isNil(box)) {
+            setIsNewDatabox(false);
             return onDatabox(box);
           }
+          setIsNewDatabox(true);
           return createDatabox()
             .then((createdDatabox) => Promise.all([
               dispatchAddToUserApplications({ mainDomain, workspace: WORKSPACE.CITIZEN }),
@@ -116,14 +120,29 @@ const withDataboxURL = (mapper = identity) => (Component) => {
       ],
     );
 
+    useEffect(
+      () => {
+        if (!shouldFetch && isNil(isNewDatabox)) {
+          setIsNewDatabox(false);
+        }
+      },
+      [shouldFetch, isNewDatabox],
+    );
+
     const { isFetching, error } = useFetchEffect(
       databoxFetchCallback,
       { shouldFetch },
     );
 
     const mappedProps = useMemo(
-      () => mapper({ ...props, databox, isFetchingDatabox: isFetching, errorDatabox: error }),
-      [databox, error, isFetching, props],
+      () => mapper({
+        ...props,
+        databox,
+        isNewDatabox,
+        isFetchingDatabox: isFetching,
+        errorDatabox: error,
+      }),
+      [databox, isNewDatabox, error, isFetching, props],
     );
 
     return <Component {...mappedProps} />;

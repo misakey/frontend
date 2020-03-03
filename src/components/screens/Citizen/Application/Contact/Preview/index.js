@@ -104,27 +104,12 @@ const ContactPreview = ({
   );
 
   const recontact = useMemo(
-    () => (isNil(searchParams.recontact)
-      ? false
-      : Boolean(searchParams.recontact)),
-    [searchParams],
-  );
-
-  const reopen = useMemo(
-    () => (isNil(searchParams.reopen)
-      ? false
-      : Boolean(searchParams.reopen)),
+    () => searchParams.recontact === 'true' || searchParams.reopen === 'true',
     [searchParams],
   );
 
   const groupMailTypeProps = useMemo(
     () => {
-      if (reopen) {
-        return {
-          values: RECONTACT_MAIL_TYPES,
-          defaultValue: LEGAL_RECONTACT,
-        };
-      }
       if (recontact) {
         return {
           values: RECONTACT_MAIL_TYPES,
@@ -133,7 +118,7 @@ const ContactPreview = ({
       }
       return {};
     },
-    [recontact, reopen],
+    [recontact],
   );
 
   const mailType = useMemo(

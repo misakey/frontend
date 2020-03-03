@@ -1,7 +1,10 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
+
+import routes from 'routes';
 
 import { ROLE_LABELS } from 'constants/Roles';
 import ApplicationSchema from 'store/schemas/Application';
@@ -22,8 +25,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import Chip from '@material-ui/core/Chip';
 
-import AddIcon from '@material-ui/icons/Add';
-import DoneIcon from '@material-ui/icons/Done';
+import MailOutlineIcon from '@material-ui/icons/MailOutline';
 
 const useStyles = makeStyles(() => ({
   option: {
@@ -46,23 +48,19 @@ function ApplicationListItem({
   const classes = useStyles();
   const workspace = useLocationWorkspace(true);
 
-  const { mainDomain, logoUri, name, id, dpoEmail, blobCount = 0 } = application;
-
-  const onSelect = useCallback(
-    () => {
-      dispatchBulkContactToggleSelected(id);
-    },
-    [id, dispatchBulkContactToggleSelected],
-  );
+  const { mainDomain, logoUri, name, dpoEmail, blobCount = 0 } = application;
 
   const canSelect = useMemo(
     () => workspace === ROLE_LABELS.CITIZEN && (!isEmpty(dpoEmail) || !isAuthenticated),
     [dpoEmail, isAuthenticated, workspace],
   );
 
-  const isSelected = useMemo(
-    () => selectedApplications.includes(id),
-    [id, selectedApplications],
+  const contactTo = useMemo(
+    () => generatePath(
+      routes.citizen.application.contact._,
+      { mainDomain: application.mainDomain },
+    ),
+    [application],
   );
 
   return (
@@ -85,20 +83,17 @@ function ApplicationListItem({
       {(withBlobCount && blobCount > 0) && (
         <Chip color="secondary" label={blobCount} size="small" clickable />
       )}
+      {/* @FIXME: when refacto the bulk contact, mayebe those namings are not relevant anymore */}
       {!withBlobCount && isSelectable && canSelect && (
         <ListItemSecondaryAction>
           <IconButton
             color="secondary"
             edge="end"
-            aria-label={t('citizen__new:contact.bulk.ariaLabel')}
-            onClick={onSelect}
+            aria-label={t('common__new:send')}
+            component={Link}
+            to={contactTo}
           >
-            {isSelected
-              ? (
-                <DoneIcon />
-              ) : (
-                <AddIcon />
-              )}
+            <MailOutlineIcon />
           </IconButton>
         </ListItemSecondaryAction>
       )}
@@ -136,4 +131,4 @@ const mapDispatchToProps = (dispatch) => ({
     (applicationId) => dispatch(bulkSelectionToggleSelected(applicationId)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('citizen__new')(ApplicationListItem));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('common__new')(ApplicationListItem));
