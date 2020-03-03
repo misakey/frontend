@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { IS_PLUGIN } from 'constants/plugin';
 
-import { FIREFOX_ADDON_URI, CHROME_ADDON_URI } from 'constants/links/addon';
+// import { FIREFOX_ADDON_URI, CHROME_ADDON_URI } from 'constants/links/addon';
 
 import routes from 'routes';
 import { redirectToApp, isPluginDetected } from '@misakey/helpers/plugin';
 import { BUTTON_STANDINGS } from 'components/dumb/Button';
-import CardSimpleDoubleButton from 'components/dumb/Card/Simple/DoubleButton';
+// import CardSimpleDoubleButton from 'components/dumb/Card/Simple/DoubleButton';
 import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
 import Onboarding, { OnboardingStep } from 'components/dumb/Onboarding';
 
@@ -33,8 +33,8 @@ const OnboardingCitizen = ({ isAuthenticated, t }) => {
   useEffect(() => {
     if (!isAuthenticated) {
       setActiveStep(1);
-    } else if (!isPluginInstalled && !IS_PLUGIN) {
-      setActiveStep(2);
+    // } else if (!isPluginInstalled && !IS_PLUGIN) {
+    //   setActiveStep(2);
     } else {
       setActiveStep(3);
     }
@@ -52,7 +52,7 @@ const OnboardingCitizen = ({ isAuthenticated, t }) => {
           component: ButtonConnectSimple,
         }}
       />
-      <OnboardingStep
+      {/* <OnboardingStep
         isActive={activeStep === 2}
         step={2}
         workspace={WORKSPACE}
@@ -69,7 +69,7 @@ const OnboardingCitizen = ({ isAuthenticated, t }) => {
           href: CHROME_ADDON_URI,
           component: 'a',
         }}
-      />
+      /> */}
       <OnboardingStep
         isActive={activeStep === 3}
         step={3}
