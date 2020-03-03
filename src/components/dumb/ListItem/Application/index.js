@@ -25,8 +25,10 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import Chip from '@material-ui/core/Chip';
 import LinkwithDialogConnect from 'components/smart/Dialog/Connect/with/Link';
+import Badge from '@material-ui/core/Badge';
 
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
+import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 
 const useStyles = makeStyles(() => ({
   option: {
@@ -49,7 +51,7 @@ function ApplicationListItem({
   const classes = useStyles();
   const workspace = useLocationWorkspace(true);
 
-  const { mainDomain, logoUri, name, dpoEmail, blobCount = 0 } = application;
+  const { mainDomain, logoUri, name, dpoEmail, blobCount = 0, published } = application;
 
   const canSelect = useMemo(
     () => workspace === ROLE_LABELS.CITIZEN && (!isEmpty(dpoEmail) || !isAuthenticated),
@@ -64,20 +66,39 @@ function ApplicationListItem({
     [application],
   );
 
+  const secondaryText = useMemo(
+    () => (published ? mainDomain : t('components__new:list.applications.pending')),
+    [published, mainDomain, t],
+  );
+
   return (
     <ListItem
       className={classes.option}
       {...omitTranslationProps(rest)}
     >
       <ListItemAvatar>
-        <ApplicationImg
-          src={logoUri}
-          applicationName={name}
-        />
+        { published ? (
+          <ApplicationImg
+            src={logoUri}
+            applicationName={name}
+          />
+        ) : (
+          <Badge
+            badgeContent={<HourglassEmptyIcon color="primary" />}
+            color="default"
+            overlap="circle"
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          >
+            <ApplicationImg
+              src={logoUri}
+              applicationName={name}
+            />
+          </Badge>
+        )}
       </ListItemAvatar>
       <ListItemText
         primary={name}
-        secondary={mainDomain}
+        secondary={secondaryText}
         primaryTypographyProps={{ noWrap: true, display: 'block' }}
         secondaryTypographyProps={{ noWrap: true, display: 'block' }}
       />

@@ -18,7 +18,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import ArrowDropdownIcon from '@material-ui/icons/ArrowDropDown';
-import { MAIN_DOMAIN_REGEX } from 'constants/validationSchemas/information';
+import { MAIN_DOMAIN_REGEX } from 'constants/regex';
 
 // CONSTANTS
 const MENU_ID = 'menu-workspace';

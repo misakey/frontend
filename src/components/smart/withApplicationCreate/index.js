@@ -14,11 +14,16 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import prop from '@misakey/helpers/prop';
 
+import { addToUserApplications } from 'store/actions/applications/userApplications';
+
+
 import API from '@misakey/api';
+import { fetchApplicationByMainDomain } from '@misakey/helpers/fetchApplications';
+
 
 import errorTypes from '@misakey/ui/constants/errorTypes';
 
-import { MAIN_DOMAIN_REGEX } from 'constants/validationSchemas/information';
+import { MAIN_DOMAIN_REGEX } from 'constants/regex';
 import { WORKSPACE } from 'constants/workspaces';
 
 import ApplicationSchema from 'store/schemas/Application';
@@ -27,11 +32,28 @@ import { receiveEntities } from '@misakey/store/actions/entities';
 // CONSTANTS
 const { badRequest } = errorTypes;
 const MAIN_DOMAIN_FIELD_NAME = 'mainDomain';
+
 const APPLICATION_CREATE_ENDPOINT = {
   method: 'POST',
   path: '/application-info',
   auth: true,
 };
+
+const APPLICATION_CONTRIBUTION_CREATE_ENDPOINT = {
+  method: 'POST',
+  path: '/application-contributions',
+  auth: true,
+};
+
+const USER_APPLICATION_CREATE_ENDPOINT = {
+  method: 'POST',
+  path: '/user-applications',
+  auth: true,
+};
+
+const CHAIN_BREAKER_ERROR = new Error('Block next calls');
+CHAIN_BREAKER_ERROR.isAlreadyTreated = true;
+
 
 // HELPERS
 const getMainDomainError = prop('main_domain');
@@ -41,13 +63,23 @@ const createApplication = (form) => API
   .build(null, objectToSnakeCase(form))
   .send();
 
+const createApplicationContribution = (applicationId, userId, mainDomain, dpoEmail) => API
+  .use(APPLICATION_CONTRIBUTION_CREATE_ENDPOINT)
+  .build(null, objectToSnakeCase({ applicationId, userId, dpoEmail, mainDomain }))
+  .send();
+
+const createUserApplication = (applicationId, userId) => API
+  .use(USER_APPLICATION_CREATE_ENDPOINT)
+  .build(null, objectToSnakeCase({ applicationId, userId }))
+  .send();
+
 // COMPONENTS
 const withApplicationsCreate = (mapper = identity) => (Component) => {
   const Wrapper = (props) => {
     const handleGenericHttpErrors = useHandleGenericHttpErrors();
     const history = useHistory();
     const { enqueueSnackbar } = useSnackbar();
-    const { dispatchApplicationCreate, ...rest } = props;
+    const { dispatchApplicationCreate, dispatchAddToUserApplications, userId, ...rest } = props;
 
     const workspace = useLocationWorkspace();
     const redirectRoute = useMemo(
@@ -57,40 +89,69 @@ const withApplicationsCreate = (mapper = identity) => (Component) => {
       [workspace],
     );
 
-    const redirectOnSuccess = useCallback((application) => {
-      const { mainDomain } = application;
+    const redirectOnSuccess = useCallback((createApplicationFormValues) => {
+      const { mainDomain } = createApplicationFormValues;
       history.push(generatePath(redirectRoute, { mainDomain }));
     }, [history, redirectRoute]);
 
     const onCreateApplication = useCallback(
-      ({ mainDomain }, { setSubmitting, setFieldError }, successText) => {
+      ({ mainDomain, dpoEmail }, { setSubmitting, setFieldError }, successText) => {
         const matchedRegex = MAIN_DOMAIN_REGEX.exec(mainDomain);
         const form = { mainDomain: matchedRegex[1] };
         return createApplication(form)
           .then((response) => {
             const application = objectToCamelCase(response);
-            if (!isNil(successText)) {
-              enqueueSnackbar(successText, { variant: 'success' });
-            }
             dispatchApplicationCreate(application);
-            redirectOnSuccess(application);
+            return application;
           })
           .catch((error) => {
             const { httpStatus, code, details } = error;
             if (httpStatus === 409) {
-              redirectOnSuccess(form);
+              return fetchApplicationByMainDomain(mainDomain);
+            }
+            const mainDomainError = getMainDomainError(details);
+            if (code === badRequest && !isNil(mainDomainError)) {
+              setFieldError(MAIN_DOMAIN_FIELD_NAME, mainDomainError);
             } else {
-              const mainDomainError = getMainDomainError(details);
-              if (code === badRequest && !isNil(mainDomainError)) {
-                setFieldError(MAIN_DOMAIN_FIELD_NAME, mainDomainError);
-              } else {
-                handleGenericHttpErrors(error);
+              handleGenericHttpErrors(error);
+            }
+            throw CHAIN_BREAKER_ERROR;
+          })
+          .then((application) => createApplicationContribution(
+            application.id, userId, mainDomain, dpoEmail,
+          ).then(() => application))
+          .then((application) => {
+            if (workspace === WORKSPACE.CITIZEN) {
+              createUserApplication(application.id, userId);
+              dispatchAddToUserApplications(WORKSPACE.CITIZEN, mainDomain);
+            }
+          })
+          .catch((error) => {
+            if (error.isAlreadyTreated !== true) {
+              const { httpStatus } = error;
+              if (httpStatus === 409) {
+                return null;
               }
+            }
+            throw error;
+          })
+          .then(() => {
+            if (!isNil(successText)) {
+              enqueueSnackbar(successText, { variant: 'success' });
+            }
+            redirectOnSuccess(form);
+          })
+          .catch((error) => {
+            if (error.isAlreadyTreated !== true) {
+              throw error;
             }
           })
           .finally(() => { setSubmitting(false); });
       },
-      [dispatchApplicationCreate, enqueueSnackbar, handleGenericHttpErrors, redirectOnSuccess],
+      [
+        dispatchApplicationCreate, dispatchAddToUserApplications, enqueueSnackbar,
+        redirectOnSuccess, userId, workspace, handleGenericHttpErrors,
+      ],
     );
 
     const mappedProps = useMemo(
@@ -106,19 +167,28 @@ const withApplicationsCreate = (mapper = identity) => (Component) => {
 
   Wrapper.propTypes = {
     // CONNECT
+    userId: PropTypes.string.isRequired,
     dispatchApplicationCreate: PropTypes.func.isRequired,
+    dispatchAddToUserApplications: PropTypes.func.isRequired,
   };
 
   // CONNECT
+  const mapStateToProps = (state) => ({
+    userId: state.auth.userId,
+  });
+
   const mapDispatchToProps = (dispatch) => ({
     dispatchApplicationCreate: (application) => {
       const normalized = normalize(application, ApplicationSchema.entity);
       const { entities } = normalized;
       dispatch(receiveEntities(entities));
     },
+    dispatchAddToUserApplications: (workspace, mainDomain) => dispatch(
+      addToUserApplications(workspace, mainDomain),
+    ),
   });
 
-  return connect(null, mapDispatchToProps)(Wrapper);
+  return connect(mapStateToProps, mapDispatchToProps)(Wrapper);
 };
 
 export default withApplicationsCreate;

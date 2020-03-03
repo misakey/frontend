@@ -90,7 +90,7 @@
       },
       "errors": {
         "missingDpoEmail": {
-          "description": "Nous avons besoin de connaître l'adresse e-mail du DPO de {{mainDomain}} pour autoriser sa revendication.",
+          "description": "Nous avons besoin de connaître l'adresse e-mail du DPO de {{mainDomain}} pour autoriser sa revendication. Il nous faut ensuite quelques jours pour le valider.",
           "text": "Je communique l'adresse email du DPO de {{mainDomain}}",
           "button": "Envoyer un mail à Misakey"
         }

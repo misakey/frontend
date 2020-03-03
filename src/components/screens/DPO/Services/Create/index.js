@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { Formik, Field, Form } from 'formik';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { mainDomainValidationSchema } from 'constants/validationSchemas/information';
+import { mainDomainDpoSchema } from 'constants/validationSchemas/contribution';
 
 import isNil from '@misakey/helpers/isNil';
 import getSearchParams from '@misakey/helpers/getSearchParams';
@@ -22,6 +22,7 @@ import withApplicationCreate from 'components/smart/withApplicationCreate';
 
 // CONSTANTS
 const MAIN_DOMAIN_FIELD_NAME = 'mainDomain';
+const DPO_EMAIL_FIELD_NAME = 'dpoEmail';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -52,7 +53,7 @@ const ServicesCreate = ({
   const isPrefilled = useMemo(() => !isNil(prefill), [prefill]);
 
   const initialValues = useMemo(
-    () => ({ [MAIN_DOMAIN_FIELD_NAME]: isPrefilled ? prefill : '' }),
+    () => ({ [MAIN_DOMAIN_FIELD_NAME]: isPrefilled ? prefill : '', dpoEmail: '' }),
     [isPrefilled, prefill],
   );
 
@@ -72,7 +73,7 @@ const ServicesCreate = ({
           {t('dpo__new:services.create.subtitle')}
         </Typography>
         <Formik
-          validationSchema={mainDomainValidationSchema}
+          validationSchema={mainDomainDpoSchema}
           onSubmit={onSubmit}
           initialValues={initialValues}
           validateOnMount={isPrefilled}
@@ -91,6 +92,16 @@ const ServicesCreate = ({
                 component={FieldText}
                 label={t('fields__new:mainDomain.altLabel')}
                 helperText={t('fields__new:mainDomain.helperText')}
+              />
+              <Field
+                type="text"
+                name={DPO_EMAIL_FIELD_NAME}
+                inputProps={{
+                  autoComplete: 'off',
+                }}
+                component={FieldText}
+                label={t('fields__new:dpoEmail.label')}
+                helperText={t('fields__new:dpoEmail.helperText')}
               />
               <ButtonSubmit text={t('common__new:next')} />
             </Form>

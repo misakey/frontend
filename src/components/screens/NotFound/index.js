@@ -5,7 +5,7 @@ import routes from 'routes';
 import Screen from 'components/dumb/Screen';
 import Redirect from 'components/dumb/Redirect';
 
-import { MAIN_DOMAIN_REGEX } from 'constants/validationSchemas/information';
+import { MAIN_DOMAIN_REGEX } from 'constants/regex';
 
 function NotFound({ location: { pathname } }) {
   const slug = useMemo(() => pathname.substring(1), [pathname]);

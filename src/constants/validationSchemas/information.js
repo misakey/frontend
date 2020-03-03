@@ -2,14 +2,12 @@ import * as Yup from 'yup';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import { MAX_AVATAR_SIZE } from 'constants/file/size';
 import { ACCEPTED_TYPES } from 'constants/file/image';
+import { MAIN_DOMAIN_REGEX } from 'constants/regex';
 
 import isNil from '@misakey/helpers/isNil';
 
 // CONSTANTS
 const { required, malformed } = errorTypes;
-// @FIXME using this basic regex instead of Yup.url because it does not allow protocol omition
-export const MAIN_DOMAIN_REGEX = /^(?:https?:\/\/)?(([-a-z0-9]+\.)+[a-z0-9]+).*$/;
-
 
 export const mainDomainValidationSchema = Yup.object().shape({
   mainDomain: Yup

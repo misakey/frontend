@@ -2,6 +2,7 @@ import API from '@misakey/api';
 
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import head from '@misakey/helpers/head';
 import isEmpty from '@misakey/helpers/isEmpty';
 import pluck from '@misakey/helpers/pluck';
 
@@ -27,6 +28,11 @@ const ENDPOINTS = {
 // HELPERS
 const getApplicationsIds = pluck('applicationId');
 
+export const fetchApplicationByMainDomain = (mainDomain, isAuthenticated = false) => API
+  .use({ ...ENDPOINTS.applicationInfo.list, auth: isAuthenticated })
+  .build(null, null, objectToSnakeCase({ mainDomain, includeRelatedDomains: true }))
+  .send()
+  .then(head);
 
 export const fetchApplicationsByMainDomains = (mainDomains, isAuthenticated = false) => API
   .use({ ...ENDPOINTS.applicationInfo.list, auth: isAuthenticated })

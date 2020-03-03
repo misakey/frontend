@@ -267,12 +267,8 @@ const CurrentDatabox = ({
     return (
       <div {...omitTranslationProps(rest)}>
         <Title>
-          {t('citizen__new:application.info.vault.currentDatabox.title')}
+          {t('citizen__new:application.info.vault.currentDatabox.titleNoDpo')}
         </Title>
-        <CardSimpleText
-          text={t('citizen__new:application.info.vault.currentDatabox.none')}
-          my={2}
-        />
         <CardSimpleText
           text={t('citizen__new:application.info.vault.currentDatabox.addDPO')}
           my={2}

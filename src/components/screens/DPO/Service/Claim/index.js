@@ -263,7 +263,7 @@ function ServiceRoleClaim({
               <>
                 <BoxMessage
                   my={1}
-                  type="error"
+                  type="info"
                   text={t(
                     'dpo__new:services.claim.errors.missingDpoEmail.description',
                     { mainDomain },

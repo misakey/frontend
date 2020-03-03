@@ -110,6 +110,7 @@
         },
         "currentDatabox": {
           "title": "Demande de portabilité en cours",
+          "titleNoDpo": "Nous cherchons l'email du DPO pour valider la fiche de l'application",
           "none": "Aucune demande en cours",
           "addDPO": "Ajouter l'email du DPO",
           "contactForm": {

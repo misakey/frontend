@@ -95,6 +95,10 @@
       "invalid": "Ce message est incorrect"
     }
   },
+  "dpoEmail": {
+    "label": "Email du DPO",
+    "helperText": "J'indique l'email publique du DPO pour être joignable par les utilisateurs"
+  },
   "displayName": {
     "label": "Nom public",
     "action": "Editer",

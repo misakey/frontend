@@ -13,7 +13,6 @@ import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
  * @param {string} params.linkOffset
  * @param {string} params.sugLimit
  * @param {string} params.sugOffset
- * @param {string} params.sugPublished
  */
 const getApplications = (
   searchQuery,
@@ -27,7 +26,6 @@ const getApplications = (
     .build(undefined, undefined, objectToSnakeCase({
       searchQuery,
       workspace,
-      sugPublished: true,
       ...params,
     }))
     .send();
