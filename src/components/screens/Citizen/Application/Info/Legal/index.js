@@ -18,7 +18,6 @@ import { BUTTON_STANDINGS } from 'components/dumb/Button';
 
 import CardSimpleText from 'components/dumb/Card/Simple/Text';
 import CardSimpleDoubleButton from 'components/dumb/Card/Simple/DoubleButton';
-import DetectedTrackersSummary from 'components/screens/Citizen/Application/Info/Legal/ThirdPartySummary';
 import { isPluginDetected } from '@misakey/helpers/plugin';
 
 
@@ -31,8 +30,6 @@ const ButtonWithDialogConnect = withDialogConnect(Button);
 const ApplicationInfoLegal = ({
   application,
   t,
-  history,
-  location,
   onContributionLinkClick,
 }) => {
   const links = useMemo(
@@ -69,18 +66,12 @@ const ApplicationInfoLegal = ({
     [t, application, onContributionLinkClick],
   );
 
-  const { isUnknown } = useMemo(() => (application), [application]);
   const isPluginInstalled = useMemo(() => (isPluginDetected()), []);
 
   if (isEmpty(application)) { return null; }
 
   return (
     <>
-      {IS_PLUGIN && (
-        <DetectedTrackersSummary entity={application} history={history} location={location} />
-      )}
-
-      {/* @FIXME: add a hook to detect if plugin is installed, then don't display that */}
       {!IS_PLUGIN && !isPluginInstalled && (
         <Box my={3}>
           <Title>
@@ -109,16 +100,14 @@ const ApplicationInfoLegal = ({
           />
         </Box>
       )}
-      {!isUnknown && (
-        <Box my={3}>
-          <Title>
-            {t('citizen__new:application.info.legal.linksListTitle')}
-          </Title>
-          {links.map(({ key, label, button }) => (
-            <CardSimpleText key={key} text={label} button={button} my={1} />
-          ))}
-        </Box>
-      )}
+      <Box my={3}>
+        <Title>
+          {t('citizen__new:application.info.legal.linksListTitle')}
+        </Title>
+        {links.map(({ key, label, button }) => (
+          <CardSimpleText key={key} text={label} button={button} my={1} />
+        ))}
+      </Box>
     </>
   );
 };
@@ -127,8 +116,6 @@ ApplicationInfoLegal.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes).isRequired,
   onContributionLinkClick: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
 };
 
 export default withTranslation(['common__new', 'citizen__new'])(ApplicationInfoLegal);

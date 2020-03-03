@@ -15,7 +15,7 @@ import DataboxSchema from 'store/schemas/Databox';
 
 import { decryptToJSBlob } from '@misakey/crypto/databox/crypto';
 import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
-import fileDownload from 'js-file-download';
+import downloadFile from '@misakey/helpers/downloadFile';
 
 import deburr from '@misakey/helpers/deburr';
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -30,6 +30,7 @@ import CardSimpleDoubleText from 'components/dumb/Card/Simple/DoubleText';
 
 import List from '@material-ui/core/List';
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
+import { IS_PLUGIN } from 'constants/plugin';
 
 import BlobListItem from 'components/dumb/ListItem/Blob';
 
@@ -47,12 +48,12 @@ const readBlob = async (id, onError) => {
   }
 };
 
-const downloadBlob = async (
-  blobMetadata,
+const useDownloadBlob = (
   publicKeysWeCanDecryptFrom,
   application,
   onError,
-) => {
+  onSuccess,
+) => useCallback(async (blobMetadata) => {
   try {
     const { fileExtension, id, createdAt } = blobMetadata;
     const {
@@ -85,12 +86,12 @@ const downloadBlob = async (
       moment(createdAt).format('YYYY-MM-DD-HH-mm-ss'),
       fileExtension,
     );
-    fileDownload(decryptedBlob, fileName);
+    downloadFile(decryptedBlob, fileName).then(onSuccess);
   } catch (e) {
     log(e);
     onError('citizen__new:application.info.vault.errors.downloadBlob.default');
   }
-};
+}, [application.name, onError, onSuccess, publicKeysWeCanDecryptFrom]);
 
 const fetchBlobs = (id) => API
   .use(API.endpoints.application.box.blob.find)
@@ -103,7 +104,6 @@ const idProp = prop('id');
 const DataboxContent = ({
   application,
   databox,
-  onAskPassword,
   initCrypto,
   t,
 }) => {
@@ -119,6 +119,18 @@ const DataboxContent = ({
   const onError = useCallback(
     (translationKey) => {
       enqueueSnackbar(t(translationKey), { variant: 'error' });
+    },
+    [enqueueSnackbar, t],
+  );
+
+  const onSuccess = useCallback(
+    () => {
+      if (IS_PLUGIN) {
+        enqueueSnackbar(
+          t('citizen__new:application.info.vault.downloadBlob.success'),
+          { variant: 'success' },
+        );
+      }
     },
     [enqueueSnackbar, t],
   );
@@ -155,11 +167,13 @@ const DataboxContent = ({
   );
 
   const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
-
-  const onDownload = useCallback(
-    (blob) => downloadBlob(blob, publicKeysWeCanDecryptFrom, application, onAskPassword, onError),
-    [application, publicKeysWeCanDecryptFrom, onAskPassword, onError],
+  const downloadBlob = useDownloadBlob(
+    publicKeysWeCanDecryptFrom,
+    application,
+    onError,
+    onSuccess,
   );
+  const onDownload = useCallback((blob) => downloadBlob(blob), [downloadBlob]);
 
   const vaultIsOpen = useMemo(
     () => !isEmpty(publicKeysWeCanDecryptFrom),
@@ -205,7 +219,6 @@ const DataboxContent = ({
 DataboxContent.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes),
   databox: PropTypes.shape(DataboxSchema.propTypes),
-  onAskPassword: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   initCrypto: PropTypes.func.isRequired,
 };

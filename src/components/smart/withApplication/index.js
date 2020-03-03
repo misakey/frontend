@@ -36,7 +36,7 @@ const DEFAULT_ENDPOINT = {
   path: '/application-info',
 };
 
-const INTERNAL_PROPS = ['dispatchReceive', 'dispatchReceivePlugin', 't'];
+const INTERNAL_PROPS = ['dispatchReceive', 't'];
 
 const EMPTY_APPLICATION_ERROR = new Error();
 EMPTY_APPLICATION_ERROR.status = 404;
@@ -47,7 +47,6 @@ const WITH_APPLICATION_PROPS = [
   'entity',
   'mainDomain',
   'dispatchReceive',
-  'dispatchReceivePlugin',
   'userId',
   'history',
   'location',
@@ -92,17 +91,6 @@ const fetchApplication = (mainDomain, isAuthenticated, endpoint, paramMapper) =>
 };
 
 // HOOKS
-const useHandlePluginError = (dispatchReceivePlugin, mainDomain) => useCallback(
-  (e) => {
-    if (IS_PLUGIN) {
-      // We can display the basic information from plugin anyway
-      return Promise.resolve(dispatchReceivePlugin(mainDomain));
-    }
-    throw e;
-  },
-  [dispatchReceivePlugin, mainDomain],
-);
-
 const useHandleError = (snackbarError) => useCallback(
   (e) => {
     // rethrow error to useFetchCallback
@@ -150,14 +138,13 @@ const withApplication = (Component, options = {}) => {
   const ComponentWithApplication = (props) => {
     const {
       isAuthenticated, isDefaultDomain, mainDomain,
-      entity, dispatchReceive, dispatchReceivePlugin, history, location, t,
+      entity, dispatchReceive, history, location, t,
     } = props;
 
     const authChanged = usePropChanged(isAuthenticated);
     const { enqueueSnackbar } = useSnackbar();
 
     const handleError = useHandleError(snackbarError);
-    const handlePluginError = useHandlePluginError(dispatchReceivePlugin, mainDomain);
     const handleReceive = useHandleReceive(
       enqueueSnackbar,
       history,
@@ -183,9 +170,8 @@ const withApplication = (Component, options = {}) => {
     }, [mainDomain, isDefaultDomain, authChanged, entity, specificShouldFetch]);
 
     const startFetching = useCallback(
-      () => fetchApplication(mainDomain, isAuthenticated, endpoint, paramMapper)
-        .catch(handlePluginError), // catch plugin errors not to set error value from useFetchEffect
-      [mainDomain, isAuthenticated, handlePluginError],
+      () => fetchApplication(mainDomain, isAuthenticated, endpoint, paramMapper),
+      [mainDomain, isAuthenticated],
     );
 
     const onFetchApplicationSuccess = useCallback(
@@ -205,11 +191,6 @@ const withApplication = (Component, options = {}) => {
 
     const fetchProps = useMemo(
       () => {
-        if (IS_PLUGIN) {
-          // Never return error to plugin to prevent 404 screen to display
-          // @FIXME: unify app and plugin behavior after plugins are splitted
-          return { isFetching };
-        }
         const fetchedApp = isArray(data) ? head(data) : data;
         if (isSameApplicationAs(entity, fetchedApp)) {
           return { isFetching, error };
@@ -235,7 +216,6 @@ const withApplication = (Component, options = {}) => {
     entity: PropTypes.shape(schema.propTypes),
     mainDomain: PropTypes.string,
     dispatchReceive: PropTypes.func.isRequired,
-    dispatchReceivePlugin: PropTypes.func.isRequired,
     userId: PropTypes.string,
     history: PropTypes.shape({ replace: PropTypes.func }).isRequired,
     location: PropTypes.shape({ search: PropTypes.string, pathname: PropTypes.string }).isRequired,
@@ -275,18 +255,6 @@ const withApplication = (Component, options = {}) => {
       );
       const { entities } = normalized;
       dispatch(receiveEntities(entities, mergeEntitiesNoEmpty));
-    },
-    dispatchReceivePlugin: (mainDomain) => {
-      const { domainWithoutSuffix } = parse(mainDomain);
-      const data = [{
-        mainDomain,
-        isUnknown: true,
-        id: mainDomain,
-        name: `${domainWithoutSuffix.charAt(0).toUpperCase()}${domainWithoutSuffix.slice(1)}`,
-      }];
-      const normalized = normalize(data, schema.collection);
-      const { entities } = normalized;
-      dispatch(receiveEntities(entities));
     },
   });
 

@@ -5,10 +5,7 @@ This folder contains the source code of the Misakey Webextension.
 * Dev mode: `TARGET_BROWSER=firefox make start-plugin`.
 If `TARGET_BROWSER` is omitted, it will build for firefox by default
 * Production mode:
-     - `yarn build_plugin` --> it builds folders for both chrome and firefox
-     - `yarn build_plugin_firefox`
-     - `yarn build_plugin_chrome`
-     - `make build_plugin` --> directly generate the zips in `build_plugin`
+     - `make build-plugin` --> directly generate the zips in `build_plugin`
      - `make zip-plugin-source-code` --> generate a zip of the source_code for reviewers in `build_plugin/source_code.zip`
 
 ### Main parts:
@@ -56,25 +53,12 @@ To generate the zip files for publishing on store with docker and make (output: 
 To generate a clean zip of the source_code for reviewers of firefox addons store: (output: `build_plugin/source_code.zip`)
 - `make zip-plugin-source-code`
 
-To generate an output folder for the web extension use:
-- `yarn install && yarn --cwd plugin install && yarn build-plugin`
-
 To use different env files, use:
-- `PLUGIN_ENV=preproduction make build-plugin` or `PLUGIN_ENV=preproduction yarn build-plugin`
+- `PLUGIN_ENV=preproduction make build-plugin`
 - Values supported: `production`, `preproduction`, `development`
 -  Default value: `production`
 
 To add a version in the zip output name, add `VERSION=<version>`
-
-To generate a build only for Firefox, use:
-- `TARGET_BROWSER=firefox make build-plugin`
-  OR
-- `yarn install && yarn install --cwd plugin && yarn build-plugin-firefox`
-
-  To generate a build only for Chrome, use:
-- `TARGET_BROWSER=chrome make build-plugin`
-  OR
-- `yarn install && yarn install --cwd plugin && yarn build-plugin-chrome`
 
 ##### How does it work ?
 

@@ -17,7 +17,6 @@ module.exports = {
   devtool: 'source-map',
   entry: {
     background: './src/background-script/index.js',
-    content_script: './src/content-script/index.js',
     content_script_misakey_sync: './src/content-script/misakey_sync.js',
     content_script_misakey_check: './src/content-script/misakey_check.js',
   },

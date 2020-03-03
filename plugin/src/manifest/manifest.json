@@ -3,7 +3,7 @@
     "manifest_version": 2,
     "name": "__MSG_extensionName__",
     "short_name": "Misakey",
-    "version": "1.6.0",
+    "version": "1.7.0",
     "author": "Misakey",
     "description": "__MSG_extensionDescription__", 
     "default_locale": "fr",   
@@ -12,12 +12,10 @@
     },
     "content_security_policy": "script-src 'self' https://*.misakey.com; object-src 'self';",
     "permissions": [
-      "webRequest",
-      "webRequestBlocking",
+      "storage", 
       "tabs",
-      "storage",
-      "http://*/*",
-      "https://*/*"
+      "downloads",
+      "__configApiUrlTpl__"
     ],
 
     "background": {
@@ -29,19 +27,6 @@
     },
 
     "content_scripts": [
-      {
-        "match_about_blank": true,
-        "all_frames": true,
-        "js": [
-          "polyfill/browser-polyfill.js",
-          "content_script.bundle.js"
-        ],
-        "matches": [
-          "http://*/*",
-          "https://*/*"
-        ],
-        "run_at": "document_start"
-      },
       {
         "matches": [
           "__configAppUrlTpl__"

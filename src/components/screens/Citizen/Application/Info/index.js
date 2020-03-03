@@ -119,7 +119,7 @@ function ApplicationInfo({
   const mounted = useRef(false);
 
   const { mainDomain } = match.params;
-  const { name, id, isUnknown } = useMemo(
+  const { name, id } = useMemo(
     () => entity,
     [entity],
   );
@@ -207,14 +207,14 @@ function ApplicationInfo({
   );
 
   const defaultRoute = useMemo(() => generatePath(
-    isUnknown ? routes.citizen.application.legal : routes.citizen.application.vault,
+    routes.citizen.application.vault,
     { mainDomain },
   ),
-  [isUnknown, mainDomain]);
+  [mainDomain]);
 
   const shouldFetch = useMemo(
-    () => !isNil(id) && !isNil(userId) && !isUnknown,
-    [id, isUnknown, userId],
+    () => !isNil(id) && !isNil(userId),
+    [id, userId],
   );
 
   useEffect(
@@ -244,7 +244,6 @@ function ApplicationInfo({
           className={clsx({ [classes.nav]: IS_PLUGIN })}
           elevationScrollTarget={contentRef}
           mainDomain={mainDomain}
-          isUnknown={isUnknown}
           isAuthenticated={isAuthenticated}
         />
 

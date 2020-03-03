@@ -1,13 +1,27 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
+
+import { connect } from 'react-redux';
+import { normalize } from 'normalizr';
 
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
+import Button from '@material-ui/core/Button';
+
+import API from '@misakey/api';
+
+import { IS_PLUGIN } from 'constants/plugin';
 
 import getNextSearch from '@misakey/helpers/getNextSearch';
+import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import { receiveEntities } from '@misakey/store/actions/entities';
+import ApplicationSchema from 'store/schemas/Application';
 
 import routes from 'routes';
 
@@ -15,6 +29,7 @@ import Screen from 'components/dumb/Screen';
 import { BUTTON_STANDINGS } from 'components/dumb/Button';
 import CardSimpleText from 'components/dumb/Card/Simple/Text';
 import LinkWithDialogConnect from 'components/smart/Dialog/Connect/with/Link';
+import withDialogConnect from 'components/smart/Dialog/Connect/with';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -29,13 +44,65 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ApplicationNotFound({ mainDomain, t }) {
+
+// COMPONENTS
+const ButtonWithDialogConnect = withDialogConnect(Button);
+
+const APPLICATION_CREATE_ENDPOINT = {
+  method: 'POST',
+  path: '/application-info',
+  auth: true,
+};
+
+const createApplication = (mainDomain) => API
+  .use(APPLICATION_CREATE_ENDPOINT)
+  .build(null, objectToSnakeCase({ mainDomain }))
+  .send();
+
+const useOnCreateApplication = (
+  mainDomain,
+  dispatchApplicationCreate,
+  enqueueSnackbar,
+  handleGenericHttpErrors,
+  t,
+) => useCallback(() => createApplication(mainDomain)
+  .then((response) => {
+    const application = objectToCamelCase(response);
+    enqueueSnackbar(t('citizen__new:applications.create.success'), { variant: 'success' });
+    dispatchApplicationCreate(application);
+  })
+  .catch(handleGenericHttpErrors),
+[dispatchApplicationCreate, enqueueSnackbar, handleGenericHttpErrors, mainDomain, t]);
+
+
+function ApplicationNotFound({ mainDomain, dispatchApplicationCreate, t }) {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
+  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const onCreateApplication = useOnCreateApplication(
+    mainDomain,
+    dispatchApplicationCreate,
+    enqueueSnackbar,
+    handleGenericHttpErrors,
+    t,
+  );
 
   const goToCreateApp = useMemo(() => ({
     pathname: routes.citizen.applications.create,
     search: getNextSearch('', new Map([['prefill', mainDomain]])),
   }), [mainDomain]);
+
+  const buttonProps = useMemo(
+    () => (IS_PLUGIN ? {
+      component: ButtonWithDialogConnect,
+      onClick: onCreateApplication,
+    } : {
+      component: LinkWithDialogConnect,
+      to: goToCreateApp,
+    }),
+    [goToCreateApp, onCreateApplication],
+  );
+
   return (
     <Screen>
       <Container maxWidth="md" className={classes.container}>
@@ -52,8 +119,7 @@ function ApplicationNotFound({ mainDomain, t }) {
             button={{
               text: t('citizen__new:application.notFound.create.button'),
               standing: BUTTON_STANDINGS.MAIN,
-              component: LinkWithDialogConnect,
-              to: goToCreateApp,
+              ...buttonProps,
             }}
           />
         </Box>
@@ -64,7 +130,16 @@ function ApplicationNotFound({ mainDomain, t }) {
 
 ApplicationNotFound.propTypes = {
   mainDomain: PropTypes.string.isRequired,
+  dispatchApplicationCreate: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
 };
+// CONNECT
+const mapDispatchToProps = (dispatch) => ({
+  dispatchApplicationCreate: (application) => {
+    const normalized = normalize(application, ApplicationSchema.entity);
+    const { entities } = normalized;
+    dispatch(receiveEntities(entities));
+  },
+});
 
-export default withTranslation(['citizen__new'])(ApplicationNotFound);
+export default connect(null, mapDispatchToProps)(withTranslation(['citizen__new'])(ApplicationNotFound));

@@ -1,7 +1,7 @@
 // This overrides file is used for the plugin only.
 // It's generically named as the plugin can be used without docker (and we cannot change the file
 // name for react-app-rewired).
-
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable import/no-extraneous-dependencies */
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WebpackShellPlugin = require('webpack-shell-plugin');
@@ -18,6 +18,11 @@ const CONFIG = {
     preproduction: 'https://www.preprod.misakey.dev/',
     development: 'https://misakey.com.local/',
   },
+  __configApiUrlTpl__: {
+    production: 'https://*.misakey.com/*',
+    preproduction: 'https://*.preprod.misakey.dev/*',
+    development: 'https://*.misakey.com.local/*',
+  },
 };
 
 function modify(buffer, targetBrowser, environment) {
@@ -32,8 +37,9 @@ function modify(buffer, targetBrowser, environment) {
 
   // replace template values depending on environment
   const newManifestString = JSON.stringify(targetManifest);
-  // eslint-disable-next-line no-underscore-dangle
-  return newManifestString.replace(/__configAppUrlTpl__/g, CONFIG.__configAppUrlTpl__[environment]);
+  return newManifestString
+    .replace(/__configAppUrlTpl__/g, CONFIG.__configAppUrlTpl__[environment])
+    .replace(/__configApiUrlTpl__/g, CONFIG.__configApiUrlTpl__[environment]);
 }
 
 module.exports = {
@@ -57,6 +63,11 @@ module.exports = {
     plugins.push(new CopyWebpackPlugin([
       { from: `plugin/config/env.${environment}.js`, to: 'env.js' },
       { from: 'plugin/src/manifest/_locales', to: '_locales' },
+      { from: 'public/locales', to: 'locales' },
+      { from: 'public/libs', to: 'libs' },
+      { from: 'public/img', to: 'img' },
+      { from: 'public/ico', to: 'ico' },
+      { from: 'public/initMatomo.js', to: 'initMatomo.js' },
       {
         from: 'plugin/src/manifest/manifest.json',
         to: 'manifest.json',

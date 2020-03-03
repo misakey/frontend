@@ -154,6 +154,9 @@
             "default": "Oops, impossible de télécharger le fichier\u00a0!"
           }
         },
+        "downloadBlob": {
+          "success": "Le fichier a été téléchargé avec succès \u00a0!"
+        },
         "info": {
           "title": "À propos de mon coffre-fort",
           "primaryButton": "Créer un coffre",

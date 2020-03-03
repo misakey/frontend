@@ -66,7 +66,7 @@ const SummaryFeedbackCardSkeleton = ({ hideTitle, t }) => {
           </Box>
           <Box ml="auto">
             <Typography variant="subtitle1" color="textPrimary" noWrap>
-              {t('citizen__new:application.info.feedback', { count: '' })}
+              {t('citizen__new:application.info.feedback.ratingCount', { count: '' })}
             </Typography>
           </Box>
         </Box>

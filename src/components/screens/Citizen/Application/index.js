@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Route, Switch } from 'react-router-dom';
 
-import { IS_PLUGIN } from 'constants/plugin';
 import routes from 'routes';
 import ApplicationSchema from 'store/schemas/Application';
 
@@ -30,14 +29,14 @@ const matchMainDomain = (entity, mainDomain) => prop('mainDomain', entity) === m
 function Application({ entity, error, isFetching, mainDomain }) {
   const application = useMemo(
     () => ((!matchMainDomain(entity, mainDomain) || isNil(entity))
-      ? { mainDomain, isUnknown: true }
+      ? { mainDomain }
       : entity),
     [mainDomain, entity],
   );
 
   const state = useMemo(
     () => ({
-      isLoading: !IS_PLUGIN && isFetching && isEmpty(entity),
+      isLoading: isFetching && isEmpty(entity),
     }),
     [isFetching, entity],
   );
@@ -119,7 +118,7 @@ export default withApplication(Application, {
   endpoint: PAGES_ROSES_ENDPOINT,
   paramMapper: (props) => [props],
   getSpecificShouldFetch: (entity) => {
-    const { avgRating, isUnknown } = entity || { isUnknown: true };
-    return isNil(avgRating) && isUnknown !== true;
+    const { avgRating } = entity || {};
+    return isNil(avgRating);
   },
 });

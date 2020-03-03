@@ -18,6 +18,19 @@ export function openMailto(url) {
   }, 1000);
 }
 
+export function downloadFileFromPlugin(blobURL, filename, onRevoke) {
+  const onRevokeBlob = (delta) => {
+    if (delta.state && delta.state.current === 'complete') {
+      onRevoke(blobURL);
+    }
+  };
+  if (!browser.downloads.onChanged.hasListener(onRevokeBlob)) {
+    browser.downloads.onChanged.addListener(onRevokeBlob);
+  }
+
+  return browser.downloads.download({ url: blobURL, filename });
+}
+
 export function isPluginDetected() {
   return !isNil(document.getElementById('ExtensionCheck_Misakey'));
 }

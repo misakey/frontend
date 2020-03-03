@@ -7,6 +7,7 @@ import routes from 'routes';
 import { parse } from 'tldts';
 import isNil from '@misakey/helpers/isNil';
 import DefaultSplashScreen from '@misakey/ui/Screen/Splash';
+import Screen from 'components/dumb/Screen';
 import { isOnboardingDone } from '@misakey/helpers/plugin';
 
 // @FIXME add to js-common helpers
@@ -56,7 +57,11 @@ function PluginRedirectToCurrent() {
   }, []);
 
   if (step === STEPS.loading) {
-    return <DefaultSplashScreen />;
+    return (
+      <Screen hideAppBar>
+        <DefaultSplashScreen />
+      </Screen>
+    );
   }
 
   if (step === STEPS.onboarding) {

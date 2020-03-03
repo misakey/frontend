@@ -5,8 +5,6 @@ import { withTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import omit from '@misakey/helpers/omit';
-import { IS_PLUGIN } from 'constants/plugin';
-
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -25,8 +23,6 @@ const APPLICATION_TABS = [
   'legal',
   'more',
 ];
-
-const TABS_ALLOWED_FOR_UNKNOWN = ['legal', 'more'];
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ApplicationInfoNav({
-  elevationScrollTarget, mainDomain, isUnknown, t, isAuthenticated, className, ...rest
+  elevationScrollTarget, mainDomain, t, isAuthenticated, className, ...rest
 }) {
   const classes = useStyles();
 
@@ -58,17 +54,12 @@ function ApplicationInfoNav({
     path: routes.citizen.application[name],
   }), [pathname]);
 
-  const applicationTabs = React.useMemo(
-    () => (IS_PLUGIN && isUnknown ? TABS_ALLOWED_FOR_UNKNOWN : APPLICATION_TABS),
-    [isUnknown],
-  );
-
   const value = React.useMemo(
     () => {
-      const index = applicationTabs.findIndex((link) => isCurrent(link));
+      const index = APPLICATION_TABS.findIndex((link) => isCurrent(link));
       return index === -1 ? 0 : index;
     },
-    [applicationTabs, isCurrent],
+    [isCurrent],
   );
 
   return (
@@ -90,7 +81,7 @@ function ApplicationInfoNav({
             textColor="secondary"
             aria-label={t('citizen__new:application.info.nav.label', { mainDomain })}
           >
-            {applicationTabs.map((link) => (
+            {APPLICATION_TABS.map((link) => (
               <Tab
                 key={`tab-${link}`}
                 className={classes.linkTab}
@@ -112,14 +103,12 @@ function ApplicationInfoNav({
 ApplicationInfoNav.propTypes = {
   className: PropTypes.string,
   mainDomain: PropTypes.string.isRequired,
-  isUnknown: PropTypes.bool,
   t: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
   elevationScrollTarget: PropTypes.instanceOf(Element),
 };
 
 ApplicationInfoNav.defaultProps = {
-  isUnknown: false,
   className: undefined,
   elevationScrollTarget: undefined,
 };
