@@ -34,7 +34,8 @@ config: >-
       'facebook.com',
       'lemonde.fr',
       'rdvsimple.com'
-    ]
+    ],
+    TYPEFORM_URL: 'https://misakey.typeform.com/to/hfR198'
   };
     
   

@@ -28,5 +28,6 @@ window.env = {
     'leroymerlin.fr',
     'auchan.fr',
     'conforama.fr'
-  ]
+  ],
+  TYPEFORM_URL: 'https://misakey.typeform.com/to/hfR198'
 };

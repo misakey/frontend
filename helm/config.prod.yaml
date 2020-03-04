@@ -44,5 +44,6 @@ config: >-
       'carrefour.fr',
       'gandi.net',
       'gog.com'
-    ]
+    ],
+    TYPEFORM_URL: 'https://misakey.typeform.com/to/yNWbZB'
   };

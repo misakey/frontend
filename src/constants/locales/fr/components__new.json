@@ -72,6 +72,9 @@
       "about": {
         "text": "À propos",
         "href": "https://docs.misakey.com/"
+      },
+      "feedback": {
+        "text": "Quelque chose à nous dire ?"
       }
     }
   },

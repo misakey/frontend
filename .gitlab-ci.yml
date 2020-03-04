@@ -6,7 +6,6 @@ cache:
     - plugin/node_modules
   policy: pull
 
-
 variables:
   CI: "true"
 
@@ -30,6 +29,9 @@ install_mod:
     paths:
       - node_modules/
     policy: push
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /^wip:/
 
 lint_code:
   stage: test
@@ -82,6 +84,9 @@ docs:
   artifacts:
     paths:
       - styleguide
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /^wip:/
 
 build:
   stage: build

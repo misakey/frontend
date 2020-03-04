@@ -35,6 +35,7 @@ import DialogDataboxReopen from 'components/dumb/Dialog/Databox/Reopen';
 import Title from 'components/dumb/Typography/Title';
 import CardSimpleText from 'components/dumb/Card/Simple/Text';
 import CardSimpleDoubleButton from 'components/dumb/Card/Simple/DoubleButton';
+import CardSimpleDoubleTextDoubleButton from 'components/dumb/Card/Simple/DoubleTextDoubleButton';
 import DataboxContent from 'components/smart/Databox/Content';
 import { IS_PLUGIN } from 'constants/plugin';
 
@@ -73,6 +74,7 @@ const requestDataboxAccess = (id) => API
 
 const idProp = prop('id');
 const createdAtProp = prop('createdAt');
+const updatedAtProp = prop('updatedAt');
 
 // HOOKS
 const useOnReopenMailTo = (mainDomain, dispatchContact, history, search) => useCallback(
@@ -157,6 +159,11 @@ const CurrentDatabox = ({
 
   const openSince = useMemo(
     () => moment(createdAtProp(databox)).fromNow(),
+    [databox],
+  );
+
+  const durationOfTheRequest = useMemo(
+    () => moment(updatedAtProp(databox)).to(createdAtProp(databox), true),
     [databox],
   );
 
@@ -333,19 +340,25 @@ const CurrentDatabox = ({
         } : null}
       />
       {(status === DONE) && (
-        <CardSimpleDoubleButton
+        <CardSimpleDoubleTextDoubleButton
           my={2}
           highlight
-          text={t(`common__new:databox.dpoComment.${databox.dpoComment}`)}
+
+
+          primaryText={t(`common__new:databox.dpoComment.${databox.dpoComment}`)}
+          secondaryText={t(
+            'citizen__new:application.info.vault.archivedDatabox.closedBy.dpo',
+            { duration: durationOfTheRequest },
+          )}
           secondary={{
             standing: BUTTON_STANDINGS.CANCEL,
-            text: t('common__new:refuse'),
+            text: t('common__new:reopen'),
             onClick: onReopenDialog,
             size: 'small',
           }}
           primary={{
             standing: BUTTON_STANDINGS.MAIN,
-            text: t('common__new:accept'),
+            text: t('common__new:archive'),
             onClick: onAcceptDpoReason,
             size: 'small',
           }}

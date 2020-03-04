@@ -6,6 +6,7 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link';
+import LinkFeedback from 'components/smart/Link/Feedback';
 import Typography from '@material-ui/core/Typography';
 
 const Footer = ({ t, typographyProps, ...rest }) => (
@@ -46,6 +47,11 @@ const Footer = ({ t, typographyProps, ...rest }) => (
       >
         {t('components__new:footer.links.about.text')}
       </Link>
+      {' - '}
+      <LinkFeedback
+        text={t('components__new:footer.links.feedback.text')}
+        color="secondary"
+      />
     </Typography>
   </Box>
 );
