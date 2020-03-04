@@ -9,7 +9,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -20,16 +19,15 @@ import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
 import UserStorage from 'components/screens/Account/Home/UserStorage';
 import DeleteAccountListItem from 'components/screens/Account/Home/DeleteAccount';
 
+import Header from './Header';
+import CardProfileList from '../List';
+
 // HOOKS
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-  },
-  list: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
   },
   emailItem: {
     maxWidth: '100%',
@@ -63,7 +61,7 @@ const CardProfile = ({ profile, t }) => {
         title={displayName}
         subtitle={`@${handle}`}
       />
-      <List className={classes.list}>
+      <CardProfileList>
         <ListItem
           button
           to={routes.account.profile.name}
@@ -114,7 +112,6 @@ const CardProfile = ({ profile, t }) => {
         </ListItem>
         <ListItem
           classes={{ container: classes.listItemContainer }}
-          divider
         >
           <ListItemIcon className={classes.listItemIcon}>
             <Typography>{t('fields__new:email.label')}</Typography>
@@ -125,6 +122,9 @@ const CardProfile = ({ profile, t }) => {
             className={classes.emailItem}
           />
         </ListItem>
+      </CardProfileList>
+      <Header>{t('account__new:sections.myVault')}</Header>
+      <CardProfileList>
         <ListItem
           classes={{ container: classes.listItemContainer }}
           divider
@@ -134,11 +134,28 @@ const CardProfile = ({ profile, t }) => {
           </ListItemIcon>
           <UserStorage />
         </ListItem>
+        <ListItem
+          classes={{ container: classes.listItemContainer }}
+          button
+          component={Link}
+          to={routes.account.profile.exportCrypto}
+        >
+          <ListItemIcon className={classes.listItemIcon}>
+            <Typography>{t('account__new:exportCrypto.title')}</Typography>
+          </ListItemIcon>
+          <ListItemText primary={t('account__new:exportCrypto.helperText')} />
+          <ListItemSecondaryAction>
+            <ChevronRightIcon className={classes.actionIcon} />
+          </ListItemSecondaryAction>
+        </ListItem>
+      </CardProfileList>
+      <Header>{t('account__new:sections.myAccount')}</Header>
+      <CardProfileList>
         <DeleteAccountListItem
           profile={profile}
           classes={{ listItemIcon: classes.listItemIcon, actionIcon: classes.actionIcon }}
         />
-      </List>
+      </CardProfileList>
     </Container>
   );
 };

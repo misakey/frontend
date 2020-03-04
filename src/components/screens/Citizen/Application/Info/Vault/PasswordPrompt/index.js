@@ -50,14 +50,14 @@ function PasswordPrompt({ onClose, onSubmit, firstAttempt, t, open }) {
               </DialogContentText>
               <Field
                 name="password"
-                label={t('fields__new:passwordVault.label')}
-                placeholder={t('fields__new:passwordVault.placeholder')}
+                label={t('fields__new:password.label')}
+                placeholder={t('fields__new:password.placeholder')}
                 component={FieldTextPasswordRevealable}
                 type="password"
                 inputProps={{ 'data-matomo-ignore': true }}
               />
-              {!firstAttempt && !isValid && (
-              <FormHelperText error>{t('fields__new:passwordVault.error.invalid')}</FormHelperText>
+              {(!firstAttempt || !isValid) && (
+              <FormHelperText error>{t('fields__new:password.error.invalid')}</FormHelperText>
               )}
             </DialogContent>
             <DialogActions>

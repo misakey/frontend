@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Formik, Field, Form } from 'formik';
 import { withTranslation } from 'react-i18next';
@@ -21,7 +22,7 @@ import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Passwor
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 
-import { usePreparePasswordChange } from '@misakey/crypto/store/hooks';
+import preparePasswordChange from '@misakey/crypto/store/actions/preparePasswordChange';
 import { BackupDecryptionError } from '@misakey/crypto/Errors/classes';
 
 // CONSTANTS
@@ -47,8 +48,9 @@ const AccountPassword = ({
     [isFetching],
   );
 
-  const preparePasswordChange = usePreparePasswordChange();
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
+
+  const dispatch = useDispatch();
 
   const onSubmit = useCallback(
     async (form, { setSubmitting, setFieldError }) => {
@@ -58,7 +60,7 @@ const AccountPassword = ({
         const {
           backupData,
           commitPasswordChange,
-        } = await preparePasswordChange(passwordNew, passwordOld);
+        } = await dispatch(preparePasswordChange(passwordNew, passwordOld));
 
         await API.use(API.endpoints.user.password.update)
           .build({}, objectToSnakeCase({
@@ -82,7 +84,7 @@ const AccountPassword = ({
         setSubmitting(false);
       }
     },
-    [profile, enqueueSnackbar, handleGenericHttpErrors, history, t, preparePasswordChange],
+    [profile, enqueueSnackbar, handleGenericHttpErrors, dispatch, history, t],
   );
 
   if (isNil(profile)) { return null; }

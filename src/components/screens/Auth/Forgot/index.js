@@ -29,7 +29,7 @@ import useAsync from '@misakey/hooks/useAsync';
 import Redirect from 'components/dumb/Redirect';
 import FormCardAuth from 'components/dumb/Form/Card/Auth';
 
-import { hardPasswordChange } from '@misakey/crypto';
+import hardPasswordChange from '@misakey/crypto/store/actions/hardPasswordChange';
 
 import Box from '@material-ui/core/Box';
 import FieldCode from 'components/dumb/Form/Field/Code';
@@ -105,14 +105,14 @@ const confirmCode = (email, form, isAuthenticated) => {
     .send();
 };
 
-const resetPassword = async (email, code, form, isAuthenticated) => {
+const resetPassword = async (email, code, form, isAuthenticated, dispatchHardPasswordChange) => {
   const endpoint = API.endpoints.user.password.reset;
 
   if (!isAuthenticated) { endpoint.auth = false; }
 
   const newPassword = form[PASSWORD_FIELD_NAME];
 
-  const newCryptoValues = await hardPasswordChange(newPassword);
+  const newCryptoValues = await dispatchHardPasswordChange(newPassword);
 
   return API
     .use(endpoint)
@@ -157,9 +157,23 @@ const useOnNext = (
 );
 
 const useOnReset = (
-  email, code, enqueueSnackbar, setStep, t, isAuthenticated, challenge, handleGenericHttpErrors,
+  email,
+  code,
+  enqueueSnackbar,
+  setStep,
+  t,
+  isAuthenticated,
+  challenge,
+  handleGenericHttpErrors,
+  dispatchHardPasswordChange,
 ) => useCallback(
-  (form, { setSubmitting, setFieldError }) => resetPassword(email, code, form, isAuthenticated)
+  (form, { setSubmitting, setFieldError }) => resetPassword(
+    email,
+    code,
+    form,
+    isAuthenticated,
+    dispatchHardPasswordChange,
+  )
     .then(() => {
       const payload = { email, password: form.passwordNew, challenge };
       return API.use(API.endpoints.auth.signIn)
@@ -171,7 +185,15 @@ const useOnReset = (
     .catch(handleError(setFieldError, setStep, handleGenericHttpErrors))
     .finally(() => { setSubmitting(false); }),
   [
-    email, code, enqueueSnackbar, setStep, t, isAuthenticated, challenge, handleGenericHttpErrors,
+    email,
+    code,
+    enqueueSnackbar,
+    setStep,
+    t,
+    isAuthenticated,
+    challenge,
+    handleGenericHttpErrors,
+    dispatchHardPasswordChange,
   ],
 );
 
@@ -191,6 +213,7 @@ const AuthForgot = ({
   history,
   isAuthenticated,
   dispatchClearCredentials,
+  dispatchHardPasswordChange,
 }) => {
   const [code, setCode] = useState();
   const [step, setStep] = useState(STEP_CONFIRM);
@@ -208,6 +231,7 @@ const AuthForgot = ({
   const onNext = useOnNext(email, setStep, setCode, isAuthenticated, handleGenericHttpErrors);
   const onReset = useOnReset(
     email, code, enqueueSnackbar, setStep, t, isAuthenticated, challenge, handleGenericHttpErrors,
+    dispatchHardPasswordChange,
   );
 
   const onSubmit = useMemo(() => (isStepConfirm(step) ? onNext : onReset), [step, onNext, onReset]);
@@ -294,6 +318,7 @@ AuthForgot.propTypes = {
   email: PropTypes.string.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
   dispatchClearCredentials: PropTypes.func.isRequired,
+  dispatchHardPasswordChange: PropTypes.func.isRequired,
 };
 
 // CONNECT
@@ -307,6 +332,7 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchClearCredentials: () => dispatch(
     screenAuthSetCredentials(),
   ),
+  dispatchHardPasswordChange: (newPassword) => dispatch(hardPasswordChange(newPassword)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['auth__new', 'common__new'])(AuthForgot));

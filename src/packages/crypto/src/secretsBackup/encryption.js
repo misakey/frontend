@@ -6,12 +6,12 @@ import {
 import {
   saltedSymmetricEncrypt,
   saltedSymmetricDecrypt,
-} from './crypto';
+} from '../crypto';
 
 import {
   DecryptionError,
   BackupDecryptionError,
-} from './Errors/classes';
+} from '../Errors/classes';
 
 // Note that decryption is asynchronous while encryption is not;
 // this is because decryption derives the backup key from the password

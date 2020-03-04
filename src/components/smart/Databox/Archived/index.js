@@ -17,7 +17,6 @@ import DataboxContent from 'components/smart/Databox/Content';
 const CardDatabox = ({
   application,
   databox,
-  onAskPassword,
   onContributionDpoEmailClick,
   initCrypto,
   t,
@@ -67,7 +66,6 @@ const CardDatabox = ({
       <DataboxContent
         databox={databox}
         application={application}
-        onAskPassword={onAskPassword}
         onContributionDpoEmailClick={onContributionDpoEmailClick}
         initCrypto={initCrypto}
       />
@@ -80,7 +78,6 @@ CardDatabox.propTypes = {
   t: PropTypes.func.isRequired,
   application: PropTypes.shape(ApplicationSchema.propTypes),
   databox: PropTypes.shape(DataboxSchema.propTypes),
-  onAskPassword: PropTypes.func.isRequired,
   onContributionDpoEmailClick: PropTypes.func.isRequired,
   initCrypto: PropTypes.func.isRequired,
 };

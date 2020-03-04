@@ -48,12 +48,13 @@ const readBlob = async (id, onError) => {
   }
 };
 
-const useDownloadBlob = (
+const downloadBlob = async (
+  blobMetadata,
   publicKeysWeCanDecryptFrom,
   application,
   onError,
   onSuccess,
-) => useCallback(async (blobMetadata) => {
+) => {
   try {
     const { fileExtension, id, createdAt } = blobMetadata;
     const {
@@ -91,7 +92,7 @@ const useDownloadBlob = (
     log(e);
     onError('citizen__new:application.info.vault.errors.downloadBlob.default');
   }
-}, [application.name, onError, onSuccess, publicKeysWeCanDecryptFrom]);
+};
 
 const fetchBlobs = (id) => API
   .use(API.endpoints.application.box.blob.find)
@@ -167,13 +168,11 @@ const DataboxContent = ({
   );
 
   const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
-  const downloadBlob = useDownloadBlob(
-    publicKeysWeCanDecryptFrom,
-    application,
-    onError,
-    onSuccess,
+
+  const onDownload = useCallback(
+    (blob) => downloadBlob(blob, publicKeysWeCanDecryptFrom, application, onError, onSuccess),
+    [publicKeysWeCanDecryptFrom, application, onError, onSuccess],
   );
-  const onDownload = useCallback((blob) => downloadBlob(blob), [downloadBlob]);
 
   const vaultIsOpen = useMemo(
     () => !isEmpty(publicKeysWeCanDecryptFrom),

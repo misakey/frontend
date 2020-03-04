@@ -9,6 +9,7 @@ const routes = {
       },
       name: '/account/profile/name',
       password: '/account/profile/password',
+      exportCrypto: '/account/profile/export-crypto',
     },
     mailProvider: { _: '/account/mail-provider' },
     thirdParty: { setup: '/account/third-party/setup' },

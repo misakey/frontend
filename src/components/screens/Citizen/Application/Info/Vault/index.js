@@ -1,21 +1,18 @@
 import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { denormalize } from 'normalizr';
 import { withTranslation } from 'react-i18next';
 
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxByProducerSchema from 'store/schemas/Databox/ByProducer';
 import { receiveDataboxesByProducer } from 'store/actions/databox';
-import { loadSecretsBackup } from '@misakey/crypto/store/actions';
+import ensureSecretsLoaded from '@misakey/crypto/store/actions/ensureSecretsLoaded';
 import { makeStyles } from '@material-ui/core/styles';
 
 import API from '@misakey/api';
-import NoPassword from 'constants/Errors/classes/NoPassword';
 import { OPEN, DONE } from 'constants/databox/status';
 import { DONE as COMMENT_DONE } from 'constants/databox/comment';
-
-import { BackupDecryptionError } from '@misakey/crypto/Errors/classes';
 
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -75,84 +72,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const usePromptForPassword = (openPasswordPrompt) => useCallback(
-  (previousAttemptFailed = false) => (
-    openPasswordPrompt({ firstAttempt: !previousAttemptFailed })
-      .then(({ password }) => {
-        if (isNil(password)) { throw new NoPassword(); }
-        return password;
-      })),
-  [openPasswordPrompt],
-);
-
-
-const useLoadBackupAndAskPassword = (
-  userId,
-  promptForPassword,
-  dispatchLoadSecretsBackup,
-) => useCallback(async () => {
-  const promisedPassword = promptForPassword();
-
-  const promisedBackupData = API.use(API.endpoints.user.getSecretBackup)
-    .build({ id: userId })
-    .send()
-    .then((response) => response.data);
-
-  // we cannot use 'const backupData' because of destructuration
-  /* eslint-disable prefer-const */
-  let [
-    password,
-    backupData,
-  ] = await Promise.all([promisedPassword, promisedBackupData]);
-  /* eslint-enable prefer-const */
-
-  // this ESLint rule is about loops where iterations are independent from one another,
-  // which is not the case here (next loop is executed if previous loop failed)
-  // @FIXME consider using recursion instead?
-  /* eslint-disable no-await-in-loop */
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    try {
-      await dispatchLoadSecretsBackup(password, backupData);
-      break;
-    } catch (e) {
-      if (e instanceof BackupDecryptionError) {
-        password = await promptForPassword(/* previousAttemptFailed = */true);
-      } else {
-        throw e;
-      }
-    }
-  }
-  /* eslint-enable no-await-in-loop */
-}, [promptForPassword, userId, dispatchLoadSecretsBackup]);
-
-const useInitCrypto = (
-  loadBackupAndAskPassword,
-) => useCallback(
-  async () => {
-    try {
-      await loadBackupAndAskPassword();
-    } catch (e) {
-      if (e instanceof NoPassword) {
-        // do nothing
-        return;
-      }
-      throw e;
-    }
-  },
-  [loadBackupAndAskPassword],
-);
-
 // COMPONENTS
 function ApplicationInfoVault({
   application,
   databoxesByProducer,
   t,
-  userId,
   isAuthenticated,
   onContributionDpoEmailClick,
   dispatchReceiveDataboxesByProducer,
-  dispatchLoadSecretsBackup,
 }) {
   const classes = useStyles();
 
@@ -188,15 +115,12 @@ function ApplicationInfoVault({
     [databoxes, currentDatabox],
   );
 
+  const dispatch = useDispatch();
   const openPasswordPrompt = usePasswordPrompt();
-  const promptForPassword = usePromptForPassword(openPasswordPrompt);
-  const loadBackupAndAskPassword = useLoadBackupAndAskPassword(
-    userId,
-    promptForPassword,
-    dispatchLoadSecretsBackup,
-  );
-  const initCrypto = useInitCrypto(
-    loadBackupAndAskPassword,
+
+  const initCrypto = useCallback(
+    () => dispatch(ensureSecretsLoaded({ openPasswordPrompt })),
+    [dispatch, openPasswordPrompt],
   );
 
   const applicationID = useMemo(
@@ -255,7 +179,6 @@ function ApplicationInfoVault({
             className={classes.box}
             application={application}
             databox={currentDatabox}
-            onAskPassword={loadBackupAndAskPassword}
             onContributionDpoEmailClick={onContributionDpoEmailClick}
             initCrypto={initCrypto}
           />
@@ -267,7 +190,6 @@ function ApplicationInfoVault({
                   key={databox.id}
                   databox={databox}
                   application={application}
-                  onAskPassword={loadBackupAndAskPassword}
                   onContributionDpoEmailClick={onContributionDpoEmailClick}
                   initCrypto={initCrypto}
                 />
@@ -300,16 +222,13 @@ ApplicationInfoVault.propTypes = {
   // CONNECT
   application: PropTypes.shape(ApplicationSchema.propTypes),
   databoxesByProducer: PropTypes.shape(DataboxByProducerSchema.propTypes),
-  userId: PropTypes.string,
   isAuthenticated: PropTypes.bool,
   dispatchReceiveDataboxesByProducer: PropTypes.func.isRequired,
-  dispatchLoadSecretsBackup: PropTypes.func.isRequired,
 };
 
 ApplicationInfoVault.defaultProps = {
   application: null,
   databoxesByProducer: null,
-  userId: null,
   isAuthenticated: false,
 };
 
@@ -335,9 +254,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => ({
   dispatchReceiveDataboxesByProducer: (producerId, databoxes) => dispatch(
     receiveDataboxesByProducer({ producerId, databoxes }),
-  ),
-  dispatchLoadSecretsBackup: (password, backupData) => dispatch(
-    loadSecretsBackup(password, backupData),
   ),
 });
 

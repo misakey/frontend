@@ -47,6 +47,8 @@ although it is very similar
 
 `store/` contains everything related to state management through the Redux store.
 
+`hooks/` contains React hooks that can be used in application code.
+
 `BackupEncryption.js` provides the functions to encrypt/decrypt the user secrets backup.
 It is a thin overlay on top of the functions in `crypto/`.
 

@@ -92,7 +92,6 @@ const DialogConnectButton = withDialogConnect(Button);
 const CurrentDatabox = ({
   application,
   databox,
-  onAskPassword,
   onContributionDpoEmailClick,
   isAuthenticated,
   dispatchUpdateDatabox,
@@ -359,7 +358,6 @@ const CurrentDatabox = ({
       <DataboxContent
         databox={databox}
         application={application}
-        onAskPassword={onAskPassword}
         onContributionDpoEmailClick={onContributionDpoEmailClick}
         initCrypto={initCrypto}
       />
@@ -372,7 +370,6 @@ CurrentDatabox.propTypes = {
   t: PropTypes.func.isRequired,
   application: PropTypes.shape(ApplicationSchema.propTypes),
   databox: PropTypes.shape(DataboxSchema.propTypes),
-  onAskPassword: PropTypes.func.isRequired,
   onContributionDpoEmailClick: PropTypes.func.isRequired,
   initCrypto: PropTypes.func.isRequired,
 

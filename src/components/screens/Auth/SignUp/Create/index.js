@@ -11,7 +11,7 @@ import errorTypes from '@misakey/ui/constants/errorTypes';
 import { stepSignUpValidationSchemas } from 'constants/validationSchemas/auth';
 
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import { createNewOwnerSecrets } from '@misakey/crypto';
+import { createNewOwnerSecrets } from '@misakey/crypto/store/actions/concrete';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
@@ -62,9 +62,9 @@ const fetchUserHead = (payload) => API
   .send();
 
 
-async function createSecrets(values, actions, afterCrypto) {
+async function createSecrets(values, actions, afterCrypto, dispatchCreateNewOwnerSecrets) {
   const { password } = values;
-  const { backupData, pubkeyData } = await createNewOwnerSecrets(password);
+  const { backupData, pubkeyData } = await dispatchCreateNewOwnerSecrets(password);
 
   return afterCrypto({ ...values, pubkeyData, backupData }, actions);
 }
@@ -73,6 +73,7 @@ async function createSecrets(values, actions, afterCrypto) {
 const AuthSignUpCreate = ({
   dispatchSetCredentials,
   dispatchSetDisplayName,
+  dispatchCreateNewOwnerSecrets,
   identifier,
   history,
   location: { pathname, search },
@@ -167,7 +168,7 @@ const AuthSignUpCreate = ({
       } else if (pathname === routes.auth.signUp.handle) {
         promise = onPseudoSubmit(values, actions);
       } else {
-        promise = createSecrets(values, actions, afterCrypto);
+        promise = createSecrets(values, actions, afterCrypto, dispatchCreateNewOwnerSecrets);
       }
       promise
         .catch((e) => {
@@ -182,6 +183,7 @@ const AuthSignUpCreate = ({
       onPreambleSubmit,
       onPseudoSubmit,
       pathname,
+      dispatchCreateNewOwnerSecrets,
     ],
   );
 
@@ -248,6 +250,7 @@ AuthSignUpCreate.propTypes = {
   identifier: PropTypes.string,
   dispatchSetCredentials: PropTypes.func.isRequired,
   dispatchSetDisplayName: PropTypes.func.isRequired,
+  dispatchCreateNewOwnerSecrets: PropTypes.func.isRequired,
 };
 
 AuthSignUpCreate.defaultProps = {
@@ -265,6 +268,7 @@ const mapDispatchToProps = (dispatch) => ({
     screenAuthSetCredentials(identifier, secret),
   ),
   dispatchSetDisplayName: (displayName) => dispatch(screenAuthSetPublics({ displayName })),
+  dispatchCreateNewOwnerSecrets: (password) => dispatch(createNewOwnerSecrets(password)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthSignUpCreate);
