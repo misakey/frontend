@@ -65,7 +65,10 @@
     "create": {
       "preamble": {
         "title": "Avant de commencer",
-        "subtitle": "Je confirme que je suis d'accord avec nos règles",
+        "subtitle": "Je confirme que je suis d'accord avec les règles de Misakey",
+        "misakeyKnow": "J'accepte que Misakey connaisse les sites avec qui j'interagis",
+        "misakeyCrypto": "J'ai compris que Misakey chiffre mes échanges et n'aura jamais accès à leur contenu",
+        "legalIntro": "Pour tout savoir sur les CGU et la politique de confidentialité de Misakey",
         "privacy": {
           "text": "Politique de confidentialité",
           "button": "Lire"
@@ -73,10 +76,6 @@
         "tos": {
           "text": "Conditions générales d'utilisation",
           "button": "Lire"
-        },
-        "content": {
-          "title": "Important",
-          "text": "Misakey connaît les sites avec lesquels je peux intéragir.<br/>Misakey n'a pas accès au contenu de mes échanges avec les sites.<br/><br/>Je peux envoyer mes questions et suggestions d'amélioration à <1>question.perso@misakey.com</1>"
         },
         "action": {
           "accept": "J'accepte"

@@ -28,6 +28,8 @@ const { notFound, conflict } = errorTypes;
 
 const INITIAL_VALUES = {
   tos: false,
+  misakeyKnow: false,
+  misakeyCrypto: false,
   email: '',
   handle: '',
   password: '',

@@ -47,6 +47,10 @@ export const signUpValidationSchema = Yup.object().shape({
 
   tos: Yup.boolean()
     .oneOf([true], required),
+  misakeyKnow: Yup.boolean()
+    .oneOf([true], required),
+  misakeyCrypto: Yup.boolean()
+    .oneOf([true], required),
 });
 
 const signUpValidationSchemaSteps = {
@@ -67,10 +71,14 @@ const signUpValidationSchemaSteps = {
     .required(required),
   tos: Yup.boolean()
     .oneOf([true], required),
+  misakeyKnow: Yup.boolean()
+    .oneOf([true], required),
+  misakeyCrypto: Yup.boolean()
+    .oneOf([true], required),
 };
 
 export const stepSignUpValidationSchemas = [
-  Yup.object().shape(pick(['tos'], signUpValidationSchemaSteps)),
+  Yup.object().shape(pick(['tos', 'misakeyKnow', 'misakeyCrypto'], signUpValidationSchemaSteps)),
   Yup.object().shape(pick(['tos', 'email'], signUpValidationSchemaSteps)),
   Yup.object().shape(pick(['tos', 'email', 'handle'], signUpValidationSchemaSteps)),
   Yup.object().shape(pick(['tos', 'email', 'handle', 'password', 'passwordConfirm'], signUpValidationSchemaSteps)),

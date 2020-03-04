@@ -1,8 +1,12 @@
 import React, { useMemo, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation, Trans } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
+
+import clsx from 'clsx';
+
+import isNil from '@misakey/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useTheme from '@material-ui/core/styles/useTheme';
@@ -12,15 +16,16 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import Typography from '@material-ui/core/Typography';
 import Card from 'components/dumb/Card';
 import CardHeaderAuthSignUp from 'components/smart/Card/Auth/Header/SignUp';
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import ButtonGoBackTo from 'components/dumb/Button/GoBack/To';
-import MUILink from '@material-ui/core/Link';
+import Switch from 'components/dumb/Switch';
 
 // CONSTANTS
-const FIELD = 'tos';
+const TOS_FIELD = 'tos';
+const MISAKEY_KNOW_FIELD = 'misakeyKnow';
+const MISAKEY_CRYPTO_FIELD = 'misakeyCrypto';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -41,10 +46,18 @@ const useStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.divider}`,
     borderRadius: theme.shape.borderRadius,
   },
+  listItemContainerWithError: {
+    borderColor: theme.palette.secondary.main,
+  },
+  listItemWithSwitch: {
+    paddingRight: 66,
+  },
 }));
 
 // COMPONENTS
-const AuthSignUpPreamble = ({ t, setFieldValue, setFieldTouched, setTouched }) => {
+const AuthSignUpPreamble = ({
+  t, setFieldValue, setTouched, values, errors, touched,
+}) => {
   const theme = useTheme();
   const padded = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -52,10 +65,14 @@ const AuthSignUpPreamble = ({ t, setFieldValue, setFieldTouched, setTouched }) =
 
   const onAccept = useCallback(
     () => {
-      setFieldValue(FIELD, true);
-      setFieldTouched(FIELD, true, false);
+      setFieldValue(TOS_FIELD, true);
+      setTouched({
+        [TOS_FIELD]: true,
+        [MISAKEY_CRYPTO_FIELD]: true,
+        [MISAKEY_KNOW_FIELD]: true,
+      }, false);
     },
-    [setFieldTouched, setFieldValue],
+    [setTouched, setFieldValue],
   );
 
   const primary = useMemo(
@@ -82,6 +99,26 @@ const AuthSignUpPreamble = ({ t, setFieldValue, setFieldTouched, setTouched }) =
     [],
   );
 
+  const hasKnowFieldError = useMemo(
+    () => touched[MISAKEY_KNOW_FIELD] && !isNil(errors[MISAKEY_KNOW_FIELD]),
+    [touched, errors],
+  );
+
+  const hasCryptoFieldError = useMemo(
+    () => touched[MISAKEY_KNOW_FIELD] && !isNil(errors[MISAKEY_KNOW_FIELD]),
+    [touched, errors],
+  );
+
+  const toggleMisakeyKnow = useCallback(
+    (e) => setFieldValue(MISAKEY_KNOW_FIELD, e.target.checked),
+    [setFieldValue],
+  );
+
+  const toggleMisakeyCrypto = useCallback(
+    (e) => setFieldValue(MISAKEY_CRYPTO_FIELD, e.target.checked),
+    [setFieldValue],
+  );
+
   useEffect(
     () => {
       setTouched({});
@@ -102,6 +139,52 @@ const AuthSignUpPreamble = ({ t, setFieldValue, setFieldTouched, setTouched }) =
       padded={padded}
       formik
     >
+      <List>
+        <ListItem
+          classes={{
+            container: clsx(
+              classes.listItemContainer,
+              { [classes.listItemContainerWithError]: hasKnowFieldError },
+            ),
+            root: classes.listItemWithSwitch,
+          }}
+        >
+          <ListItemText
+            primary={t('auth__new:signUp.create.preamble.misakeyKnow')}
+            primaryTypographyProps={{ variant: 'subtitle2' }}
+          />
+          <ListItemSecondaryAction>
+            <Switch
+              color="secondary"
+              edge="end"
+              onChange={toggleMisakeyKnow}
+              checked={values[MISAKEY_KNOW_FIELD]}
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <ListItem
+          classes={{
+            container: clsx(
+              classes.listItemContainer,
+              { [classes.listItemContainerWithError]: hasCryptoFieldError },
+            ),
+            root: classes.listItemWithSwitch,
+          }}
+        >
+          <ListItemText
+            primary={t('auth__new:signUp.create.preamble.misakeyCrypto')}
+            primaryTypographyProps={{ variant: 'subtitle2' }}
+          />
+          <ListItemSecondaryAction>
+            <Switch
+              color="secondary"
+              edge="end"
+              onChange={toggleMisakeyCrypto}
+              checked={values[MISAKEY_CRYPTO_FIELD]}
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+      </List>
       <List>
         <ListItem classes={{ container: classes.listItemContainer }}>
           <ListItemText primary={t('auth__new:signUp.create.preamble.tos.text')} />
@@ -128,21 +211,6 @@ const AuthSignUpPreamble = ({ t, setFieldValue, setFieldTouched, setTouched }) =
           </ListItemSecondaryAction>
         </ListItem>
       </List>
-      <Typography className={classes.contentTitleTypography} variant="body2">{t('auth__new:signUp.create.preamble.content.title')}</Typography>
-      <Typography className={classes.contentTextTypography} variant="body2">
-        <Trans
-          i18nKey="auth__new:signUp.create.preamble.content.text"
-        >
-          {"Misakey connaît les sites avec lesquels je peux intéragir.<br/>Misakey n'a pas accès au contenu de mes échanges avec les sites.<br/><br/>Je peux envoyer mes questions et suggestions d'amélioration à "}
-          <MUILink
-            component="a"
-            href="mailto:question.perso@misakey.com"
-            color="secondary"
-          >
-            question.perso@misakey.com
-          </MUILink>
-        </Trans>
-      </Typography>
     </Card>
   );
 };
@@ -152,8 +220,10 @@ AuthSignUpPreamble.propTypes = {
   location: PropTypes.shape({ search: PropTypes.string }).isRequired,
   // FORMIK
   setFieldValue: PropTypes.func.isRequired,
-  setFieldTouched: PropTypes.func.isRequired,
   setTouched: PropTypes.func.isRequired,
+  values: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired,
+  touched: PropTypes.object.isRequired,
 };
 
 export default withTranslation(['auth__new', 'components__new'])(AuthSignUpPreamble);
