@@ -8,29 +8,6 @@ If `TARGET_BROWSER` is omitted, it will build for firefox by default
      - `make build-plugin` --> directly generate the zips in `build_plugin`
      - `make zip-plugin-source-code` --> generate a zip of the source_code for reviewers in `build_plugin/source_code.zip`
 
-### Main parts:
-
-#### Background script (/src/background-script/index.js)
-
-The main purpose of this script is to block unwanted requests before they are launched in the client browser. 
-It is based on the `@cliqz/adblocker` library 
-
-#### Content script (/src/content-script/index.js)
-
-The main purpose of this script is to hide cookies banners and other annoying content on the current page of the browser. 
-It is also based on the `@cliqz/adblocker library`.
-
-#### Popup
-
-This folder stands for what is displayed in the extension popup in the browser. 
-This is the react app of `app-frontend`, also used in Misakey webapp (pages roses). So, in the plugin folder, we only have the `env.js` file, as the rest of the source code is in the root folder of the project.
-
-#### Manifest
-
-The file `manifest.json` indicates to the browser where to find each resources to execute. 
-It also handle permissions of the web extension and other configuration keys.
-It has to be at the root of the final folder (dist).
-
 
 ### Architecture 
 

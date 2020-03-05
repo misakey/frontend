@@ -4,7 +4,6 @@ import common from '@misakey/ui/colors/common';
 import globals from './globals';
 import { setLocalStorage, initAuthIframe } from './auth';
 
-import { setItem } from './storage';
 import {
   setBadgeBackgroundColor,
   setBadgeTextColor,
@@ -17,19 +16,6 @@ function handleConfig() {
   if (name === 'firefox' && version >= 63) {
     setBadgeTextColor(common.white);
   }
-}
-
-function handleUpdate() {
-  browser.runtime.onInstalled.addListener(({ reason, previousVersion }) => {
-    if (reason === 'update' && previousVersion <= '1.4.0') {
-      globals.pausedBlocking = false;
-      setItem('pausedBlocking', false);
-      setItem('onBoardingDone', true);
-    } else if (reason === 'install') {
-      globals.pausedBlocking = true;
-      setItem('pausedBlocking', true);
-    }
-  });
 }
 
 function handleCommunication() {
@@ -56,7 +42,6 @@ function launchExtension() {
   try {
     handleCommunication();
     handleConnexion();
-    handleUpdate();
     handleConfig();
   } catch (err) {
     log(err);

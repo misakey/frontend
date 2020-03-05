@@ -9,43 +9,6 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
-"@cliqz/adblocker-content@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-content/-/adblocker-content-1.4.1.tgz#39ed319aca4db43397efff98726362f03717e26e"
-  integrity sha512-qNNhJs7DjhnjIIwBSYG4mDo1kHKk/Yyxb6F1K6wxH5X1tHY6Ew0dTwbXH1o8mLBVzFf9Mt9CluVmicbcFyBd2g==
-
-"@cliqz/adblocker-webextension-cosmetics@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-webextension-cosmetics/-/adblocker-webextension-cosmetics-1.4.1.tgz#bfc1de3fcbdfa3f13b4be8fc8b2dbfa867fc72ef"
-  integrity sha512-bejfGGupne9R5rmJphQa0lV1K4BKhDS5UXFBGjjLjbwDzyuEIOSFDvetCMPxSJi6gNyM0HAzlw2xsfe72v0SKw==
-  dependencies:
-    "@cliqz/adblocker-content" "^1.4.1"
-
-"@cliqz/adblocker-webextension@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@cliqz/adblocker-webextension/-/adblocker-webextension-1.4.1.tgz#3c2c38b8bac109dd0e152d95cc9da442e58c9332"
-  integrity sha512-Jv/5yicaChwpvnOmcYCBSYEKrLjA/VF8T8gNzumSobFjn3DSCtDsnd/NhA160Po4quqsfRrabgp5nJQD8WRL4Q==
-  dependencies:
-    "@cliqz/adblocker" "^1.4.1"
-    "@cliqz/adblocker-content" "^1.4.1"
-    tldts-experimental "^5.3.0"
-
-"@cliqz/adblocker@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@cliqz/adblocker/-/adblocker-1.4.1.tgz#3da6681d147f637a92242abacdcd91242a35988f"
-  integrity sha512-BMsWb4cFLNOkoyMIexAuQlTeDWVONiycT/PUmOZi0ngF0gEZ7H2P8117/oyDABbCJ/xfLCqOX7YP9T9a/u4v5g==
-  dependencies:
-    tldts-experimental "^5.3.0"
-    tslib "^1.10.0"
-    tsmaz "^1.3.0"
-
-"@misakey/api@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@misakey/api/-/api-2.1.1.tgz#8809c648ca21af864ff0ac66efbd9b93e9c6dbfc"
-  integrity sha512-hvSTyaMQnEjHQPlQzeB8tWz9/8X3FCk6Zt4pD1RXIhA6MUPoTVpO/D7r4psMvWidWFZTHD9Lu9I6UCroMUrlNQ==
-  dependencies:
-    http-status-codes "^1.3.2"
-
 "@misakey/helpers@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@misakey/helpers/-/helpers-2.0.0.tgz#f1c59d6bac506ed4e59633897dccfd7ff0328917"
@@ -1368,11 +1331,6 @@ homedir-polyfill@^1.0.1:
   integrity sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==
   dependencies:
     parse-passwd "^1.0.0"
-
-http-status-codes@^1.3.2:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/http-status-codes/-/http-status-codes-1.4.0.tgz#6e4c15d16ff3a9e2df03b89f3a55e1aae05fb477"
-  integrity sha512-JrT3ua+WgH8zBD3HEJYbeEgnuQaAnUeRRko/YojPAJjGmIfGD3KPU/asLdsLwKjfxOmQe5nXMQ0pt/7MyapVbQ==
 
 https-browserify@^1.0.0:
   version "1.0.0"
@@ -2842,30 +2800,6 @@ timers-browserify@^2.0.4:
   dependencies:
     setimmediate "^1.0.4"
 
-tldts-core@^5.3.2:
-  version "5.3.2"
-  resolved "https://registry.yarnpkg.com/tldts-core/-/tldts-core-5.3.2.tgz#3823653310c2dc6e51d00998098a72a3cc203ea9"
-  integrity sha512-bGI7MvrFXnbNhSkKEKAjiRo+eoIuIsuzF/hOtpI7HLMLWamIGtrLuNv2nlBOdN/h6iB6B32B4MxmwPWTZ70TaQ==
-
-tldts-core@^5.4.0:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/tldts-core/-/tldts-core-5.4.0.tgz#bd69ca3ad96a78ab675c74684c6d0717929777ec"
-  integrity sha512-kfDnB7fcNgNUcn5k21TPM/MbXqJNt2bBGQRfGyE39H334Qk+qNcSqw9It3YPxvrA7msl7DQ8wvcIsa0y55auug==
-
-tldts-experimental@^5.3.0:
-  version "5.3.2"
-  resolved "https://registry.yarnpkg.com/tldts-experimental/-/tldts-experimental-5.3.2.tgz#2b3ed4178345ebdc4f0aed6595ab6f2ef11c63ee"
-  integrity sha512-TJKbNzsOwzYQcOC3C18/0wot7WpJHw2R3MYHKzn4q69l5fgDO5Gu+/wqUGXFB5ps7ezKk8QTqwlqKOa+gqJbNg==
-  dependencies:
-    tldts-core "^5.3.2"
-
-tldts@^5.4.0:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/tldts/-/tldts-5.4.0.tgz#ded769383615341660243acf547f197eb48f6795"
-  integrity sha512-S1CmstJxRb6KK+uLHhMUXXkI/zjA20RGM9QYkLgDEj42C9Zmr+OLjzEqf4Id/EWppuLi1z9FdNsz8/qi/pLCGA==
-  dependencies:
-    tldts-core "^5.4.0"
-
 to-arraybuffer@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/to-arraybuffer/-/to-arraybuffer-1.0.1.tgz#7d229b1fcc637e466ca081180836a7aabff83f43"
@@ -2896,15 +2830,10 @@ to-regex@^3.0.1, to-regex@^3.0.2:
     regex-not "^1.0.2"
     safe-regex "^1.1.0"
 
-tslib@^1.10.0, tslib@^1.9.0:
+tslib@^1.9.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
-
-tsmaz@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/tsmaz/-/tsmaz-1.3.0.tgz#389196d6ac36b641079892e729b9160f4a1dd382"
-  integrity sha512-vcU8dokp/QecvbTldQIE9Y4MD+ObU8VOpkwKCvhwhLv+yVdLMyjq7vTuc/haLLclRFRtMRj2z+qR7IjN+fnpiQ==
 
 tty-browserify@0.0.0:
   version "0.0.0"

@@ -3,13 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@cliqz/adblocker": "^1.4.1",
-    "@cliqz/adblocker-webextension": "^1.4.1",
-    "@cliqz/adblocker-webextension-cosmetics": "^1.4.1",
-    "@misakey/api": "^2.1.1",
     "@misakey/helpers": "^2.0.0",
     "@misakey/ui": "^1.4.1",
-    "tldts": "^5.4.0",
     "ua-parser-js": "^0.7.20",
     "webextension-polyfill": "^0.4.0"
   },
