@@ -99,6 +99,19 @@ A pre-commit hook is available to automatically run the linter before any commit
 
 To install it go to the `devtools/git` folder and run `./pre-commit-install.sh`
 
+### CI
+
+We had some troubles with the GitlabCI (pipelines that take 30min, many crashes, ...).
+
+Here some info we got to try to make it better:
+- Adding policy to cache, to only push it in first stage and only pull it after
+- Increase yarn timeout, because CI server can be overloaded, so with a reduced bandwidth
+
+Other improvement possibilities for later:
+- Using MinIO for having a shared cache ([blog article](https://www.enovate.co.uk/blog/2019/12/11/distributed-gitlab-runner-caching-with-minio))
+- Followup this [Gitlab issue](https://gitlab.com/gitlab-org/gitlab-runner/issues/1151#note_284331761)
+- Followup of [Gitlab workspaces for CI](https://gitlab.com/groups/gitlab-org/-/epics/1418)
+
 ## License
 
 The code is published under BSL. More info in the [LICENSE](LICENSE) file.

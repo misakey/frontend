@@ -16,7 +16,7 @@ WORKDIR /app
 RUN echo $VERSION >> public/version.txt
 RUN sed -i "s/VERSION_TO_SET_ON_BUILD/$VERSION/g" /app/public/bundleVersion.js
 
-RUN yarn install
+RUN yarn install --network-timeout 100000
 RUN yarn run build --env=prod
 
 RUN /app/scripts/sentry_release.sh

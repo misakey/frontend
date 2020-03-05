@@ -4,6 +4,8 @@
 
 replicaCount: 2
 
+maintenance: false
+
 image:
   repository: registry.misakey.dev/misakey/frontend
   tag:
@@ -30,9 +32,4 @@ tolerations: []
 
 affinity: {}
 
-config: >-
-  window.env = {
-    ENV: 'production',
-    PLEASE: 'override-me: I am not configured',
-  };
-  
+config: 

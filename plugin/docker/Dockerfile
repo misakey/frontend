@@ -27,7 +27,7 @@ ENV INLINE_RUNTIME_CHUNK false
 ARG plugin_env=production
 ARG plugin_version
 
-RUN yarn install
+RUN yarn install --network-timeout 100000
 RUN yarn --cwd plugin install
 RUN PLUGIN_ENV=${plugin_env} yarn build-plugin
 

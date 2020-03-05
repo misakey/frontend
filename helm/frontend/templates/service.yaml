@@ -15,5 +15,8 @@ spec:
       protocol: TCP
       name: http
   selector:
+    {{- if .Values.maintenance }}
+    app: maintenance
+    {{- else}}
     app: {{ template "frontend.name" . }}
-    release: {{ .Release.Name }}
+    {{- end }}

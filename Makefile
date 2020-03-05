@@ -48,11 +48,7 @@ help:
 
 .PHONY: dep
 dep: ## Install all dependencies in the node_modules folder
-	@yarn install && yarn --cwd plugin install
-
-.PHONY: docs
-docs: ## Validate documentation
-	@echo "No documentation in frontend project. Doc is in js-common project"
+	@yarn install --network-timeout 100000 && yarn --cwd plugin install --network-timeout 100000
 
 .PHONY: test
 test: ## Unit test code
@@ -80,6 +76,14 @@ run-docs: ## Run devserver of documentation
 .PHONY: build
 build: ## Build a docker image with the build folder and serve server
 	@docker build --build-arg VERSION="$(RELEASE)" --build-arg SENTRY_AUTH_TOKEN=$(SENTRY_AUTH_TOKEN) -t $(DOCKER_IMAGE):$(CI_COMMIT_REF_NAME) .
+
+.PHONY: build-maintenance
+build-maintenance:
+	@docker build -f maintenance/Dockerfile -t $(DOCKER_IMAGE)/maintenance:$(CI_COMMIT_REF_NAME) maintenance
+
+.PHONY: deploy-maintenance
+deploy-maintenance:
+	@docker push $(DOCKER_IMAGE)/maintenance:$(CI_COMMIT_REF_NAME)
 
 PLUGIN_ENV ?= production
 .PHONY: build-plugin
@@ -120,10 +124,9 @@ ifeq ($(PACKAGE),)
 	@echo "Should set a PACKAGE var"
 else
 	@cd src/packages/$(PACKAGE)
-	@yarn install
+	@yarn install --network-timeout 100000
 	@yarn build
 endif
-
 
 .PHONY: deploy-package
 .ONESHELL:

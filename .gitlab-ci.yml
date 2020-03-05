@@ -1,7 +1,11 @@
 cache:
   key: frontend-${CI_COMMIT_REF_NAME}
+  untracked: true
   paths:
     - node_modules/
+    - plugin/node_modules
+  policy: pull
+
 
 variables:
   CI: "true"
@@ -20,6 +24,12 @@ install_mod:
     - misakey_js
   script:
     - make dep
+  cache:
+    key: frontend-${CI_COMMIT_REF_NAME}
+    untracked: true
+    paths:
+      - node_modules/
+    policy: push
 
 lint_code:
   stage: test
@@ -95,6 +105,24 @@ build:
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /^wip:/
+
+build_maintenance:
+  stage: build
+  image: docker:stable
+  tags:
+    - misakey_docker
+  before_script:
+    - apk add make
+    - apk add git
+    - make docker-login
+  script:
+    - make build-maintenance
+    - make deploy-maintenance
+  only:
+    refs:
+      - master
+    changes:
+      - maintenance/*
 
 include:
   - .gitlab-ci.packages.yml
