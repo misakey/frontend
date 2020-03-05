@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Link, generatePath } from 'react-router-dom';
+import { generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 
@@ -24,6 +24,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import Chip from '@material-ui/core/Chip';
+import LinkwithDialogConnect from 'components/smart/Dialog/Connect/with/Link';
 
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 
@@ -90,7 +91,7 @@ function ApplicationListItem({
             color="secondary"
             edge="end"
             aria-label={t('common__new:send')}
-            component={Link}
+            component={LinkwithDialogConnect}
             to={contactTo}
           >
             <MailOutlineIcon />
