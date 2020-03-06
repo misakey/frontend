@@ -3,14 +3,13 @@
     "manifest_version": 2,
     "name": "__MSG_extensionName__",
     "short_name": "Misakey",
-    "version": "1.7.0",
+    "version": "2.0.0",
     "author": "Misakey",
     "description": "__MSG_extensionDescription__", 
     "default_locale": "fr",   
     "icons": {
       "48": "ico/favicon-48x48.png"
     },
-    "content_security_policy": "script-src 'self' https://*.misakey.com; object-src 'self';",
     "permissions": [
       "storage", 
       "tabs",

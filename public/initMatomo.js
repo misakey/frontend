@@ -1,4 +1,4 @@
-if(window.env.ENV !== 'development') {
+if(window.env.ENV !== 'development' && !window.env.PLUGIN) {
   var siteId = window.env.MATOMO.SITEID;
   var _paq = window._paq || [];
 
