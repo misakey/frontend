@@ -55,7 +55,7 @@ const isDataboxCommentKO = (databox) => !isNil(databox)
 
 const findDataboxes = (producerId) => API
   .use(API.endpoints.application.box.find)
-  .build(null, null, objectToSnakeCase({ producerId }))
+  .build(null, null, objectToSnakeCase({ producerId, withUsers: true }))
   .send();
 
 // HOOKS

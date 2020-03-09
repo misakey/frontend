@@ -21,6 +21,7 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import identity from '@misakey/helpers/identity';
 import isNil from '@misakey/helpers/isNil';
+import isFunction from '@misakey/helpers/isFunction';
 import prop from '@misakey/helpers/prop';
 import head from '@misakey/helpers/head';
 import compose from '@misakey/helpers/compose';
@@ -54,7 +55,13 @@ const postDatabox = (payload) => API.use(API.endpoints.application.box.create)
   .send();
 
 // COMPONENTS
-const withDataboxURL = ({ mapper = identity, params = {} } = {}) => (Component) => {
+const withDataboxURL = (
+  {
+    mapper = identity,
+    params = {},
+    getExtraShouldFetch,
+  } = {},
+) => (Component) => {
   const Wrapper = ({
     isFetchingUserEmails,
     dispatchContact, dispatchReceiveDataboxesByProducer, dispatchAddToUserApplications,
@@ -82,9 +89,15 @@ const withDataboxURL = ({ mapper = identity, params = {} } = {}) => (Component) 
         const validAuth = isAuthenticated;
         const validUserEmailId = !isNil(userEmailId);
         const validEntity = !isNil(mainDomain) && !isNil(id) && mainDomain === mainDomainParam;
+        const valid = validAuth && validUserEmailId && validEntity;
+
         const defaultShouldFetch = isNil(databoxURL) || isNil(databox);
 
-        return validAuth && validUserEmailId && validEntity && defaultShouldFetch;
+        const extraShouldFetch = isFunction(getExtraShouldFetch)
+          ? getExtraShouldFetch(databox)
+          : false;
+
+        return valid && (defaultShouldFetch || extraShouldFetch);
       },
       [isAuthenticated, userEmailId, mainDomain, id, mainDomainParam, databoxURL, databox],
     );

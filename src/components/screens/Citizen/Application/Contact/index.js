@@ -19,6 +19,8 @@ import getSearchParams from '@misakey/helpers/getSearchParams';
 import getNextSearch from '@misakey/helpers/getNextSearch';
 import mapDates from '@misakey/helpers/mapDates';
 import propEq from '@misakey/helpers/propEq';
+import prop from '@misakey/helpers/prop';
+import compose from '@misakey/helpers/compose';
 import encodeMailto from 'helpers/encodeMailto';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -47,6 +49,10 @@ const CONFIRM_KEY = 'confirm';
 const databoxHasProducerId = propEq('producerId');
 const isUserEmailActive = propEq('active', true);
 const getOwnerEmail = path(['owner', 'email']);
+const hasMissingOwner = compose(
+  isNil,
+  prop('owner'),
+);
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -350,5 +356,8 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, {})(
-  withDataboxURL({ params: { withUsers: true } })(withTranslation(['common__new', 'citizen__new'])(ContactPreview)),
+  withDataboxURL({
+    params: { withUsers: true },
+    getExtraShouldFetch: hasMissingOwner,
+  })(withTranslation(['common__new', 'citizen__new'])(ContactPreview)),
 );
