@@ -26,8 +26,8 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
+import ListItemMailProvidersManual from 'components/dumb/ListItem/MailProviders/Manual';
 
-import MailIcon from '@material-ui/icons/Mail';
 import IconError from '@material-ui/icons/Error';
 import IconSuccess from '@material-ui/icons/Done';
 import DialogConfirm from 'components/dumb/Dialog/Confirm';
@@ -112,19 +112,18 @@ const useHandleBulkResponse = (setErrors, setSent) => useCallback(
   [setErrors, setSent],
 );
 
-const useMailtoHrefs = (mailsProps, t) => useMemo(
+const useMailtoHrefs = (mailsProps) => useMemo(
   () => mailsProps.map((mail) => {
     if (!isObject(mail) || isEmpty(mail)) {
       return '';
     }
-    const { applicationName, mailto, subject, body } = mail;
-    const formatedMailto = t('citizen__new:contact.emailTo', { applicationName, dpoEmail: mailto });
+    const { mailto, subject, body } = mail;
     return {
-      href: `mailto:${encodeURIComponent(formatedMailto)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`,
-      mailto: formatedMailto,
+      href: `mailto:${encodeURIComponent(mailto)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`,
+      mailto,
     };
   }),
-  [mailsProps, t],
+  [mailsProps],
 );
 
 const useErrorContent = (t, errors, sent) => useMemo(() => (
@@ -191,7 +190,7 @@ const ListMailProviders = ({
     [mailsProps.length, sent],
   );
   const onProviderSelect = useOnProviderSelect(setProvider);
-  const mailtoHrefs = useMailtoHrefs(mailsProps, t);
+  const mailtoHrefs = useMailtoHrefs(mailsProps);
   const errorContent = useErrorContent(t, errors, sent);
   const displayMailToSnackbar = useDisplayMailToSnackbar(enqueueSnackbar, t);
   const handleBulkResponse = useHandleBulkResponse(setErrors, setSent);
@@ -202,9 +201,8 @@ const ListMailProviders = ({
       const send = SEND_CONFIG[providerKey];
       if (isFunction(send)) {
         const sendPromises = mailsProps.map((mail) => {
-          const { mailto, applicationName, subject, body } = mail || {};
-          const extendedMailto = t('citizen__new:contact.email.to', { applicationName, dpoEmail: mailto });
-          return send(extendedMailto, subject, body);
+          const { mailto, subject, body } = mail || {};
+          return send(mailto, subject, body);
         });
         try {
           Promise.all(sendPromises).then(handleBulkResponse);
@@ -347,24 +345,10 @@ const ListMailProviders = ({
           </ListItem>
         ))}
         {allowManual && (
-          <ListItem
-            button
+          <ListItemMailProvidersManual
             disabled={disabled}
-            divider
-            aria-label={t('citizen__new:contact.providers.manual.send', 'Send Manually')}
             {...manualButtonProps}
-          >
-            <ListItemAvatar>
-              <Avatar alt={t('citizen__new:contact.providers.manual.send', 'Send Manually')}>
-                <MailIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText>
-              <Typography variant="button" color="textSecondary">
-                {t('citizen__new:contact.providers.manual.send', 'Send Manually')}
-              </Typography>
-            </ListItemText>
-          </ListItem>
+          />
         )}
       </List>
     </>

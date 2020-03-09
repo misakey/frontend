@@ -58,7 +58,7 @@ const DeleteAccountDialog = ({ onClose, onSuccess, open, profile, t }) => {
               id="email-address"
               fullWidth
               label={t('fields__new:email.label')}
-              placeholder={profile.email || t('fields__new:email.placeHolder')}
+              placeholder={profile.email || t('fields__new:email.placeholder')}
             />
           </DialogContent>
           <DialogActions>

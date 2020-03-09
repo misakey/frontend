@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { CONFIRM_REGEX } from 'constants/auth';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import mapValues from '@misakey/helpers/mapValues';
 import pick from '@misakey/helpers/pick';
@@ -7,8 +8,6 @@ import pick from '@misakey/helpers/pick';
 const { malformed, required, invalid } = errorTypes;
 const noTrailingUnderscore = 'noTrailingUnderscore';
 
-
-const CONFIRM_REGEX = /^[0-9]{6}$/;
 
 const signInValidationSchema = {
   identifier: {

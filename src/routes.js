@@ -90,7 +90,6 @@ const routes = {
       contact: {
         _: '/citizen/:mainDomain/contact',
         preview: '/citizen/:mainDomain/contact/preview',
-        providers: '/citizen/:mainDomain/contact/providers',
       },
 
       vault: '/citizen/:mainDomain/vault',

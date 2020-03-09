@@ -5,6 +5,7 @@ import {
   CONTACT_DATABOX_URL,
   CONTACT_DATABOX_URL_BY_ID,
   CLEAR_DATABOX_URL_BY_ID,
+  SET_CONTACT_EMAIL,
 } from 'store/actions/screens/contact';
 
 import path from '@misakey/helpers/path';
@@ -14,7 +15,7 @@ const pathParamMainDomain = path(['match', 'params', 'mainDomain']);
 const pathMailProviderPreferency = path(['profile', 'preferencies', 'mailProvider']);
 
 // INITIAL STATE
-const initialState = { databoxURLs: {}, databoxURLsById: {} };
+const initialState = { databoxURLs: {}, databoxURLsById: {}, contactEmail: null };
 
 
 // SELECTORS
@@ -53,8 +54,14 @@ const clearDataboxURLById = (state) => ({
   databoxURLsById: {},
 });
 
+const setContactEmail = (state, { contactEmail }) => ({
+  ...state,
+  contactEmail,
+});
+
 export default createAuthReducer(initialState, {
   [CONTACT_DATABOX_URL]: addDataboxURL,
   [CONTACT_DATABOX_URL_BY_ID]: addDataboxURLById,
   [CLEAR_DATABOX_URL_BY_ID]: clearDataboxURLById,
+  [SET_CONTACT_EMAIL]: setContactEmail,
 });

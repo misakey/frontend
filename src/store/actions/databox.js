@@ -3,6 +3,7 @@ import DataboxByProducerSchema from 'store/schemas/Databox/ByProducer';
 import DataboxSchema from 'store/schemas/Databox';
 import { receiveEntities, updateEntities } from '@misakey/store/actions/entities';
 import merge from '@misakey/helpers/merge';
+import path from '@misakey/helpers/path';
 import mapValues from '@misakey/helpers/mapValues';
 import propOr from '@misakey/helpers/propOr';
 import isNil from '@misakey/helpers/isNil';
@@ -73,6 +74,19 @@ export const receiveDatabox = (databox) => (dispatch) => {
   return Promise.all([
     dispatch(receiveEntities(entities, mergeEntitiesDataboxes)),
   ]);
+};
+
+export const setDataboxMeta = (id, meta) => (dispatch) => {
+  const entities = [{ id, changes: meta }];
+  return Promise.resolve(dispatch(updateEntities(entities, DataboxSchema.entity)));
+};
+
+export const setDataboxOwnerEmail = (id, ownerEmail) => (dispatch, getState) => {
+  const store = getState();
+  const prevOwner = path(['entities', 'databoxes', id, 'owner'], store);
+  const nextOwner = { ...prevOwner, email: ownerEmail };
+  const entities = [{ id, changes: { owner: nextOwner } }];
+  return Promise.resolve(dispatch(updateEntities(entities, DataboxSchema.entity)));
 };
 
 export const updateDatabox = (id, changes) => (dispatch) => {

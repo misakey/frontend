@@ -1,6 +1,8 @@
 import FieldCode from 'components/dumb/Form/Field/Code';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
 
+export const CONFIRM_REGEX = /^[0-9]{6}$/;
+
 export const STEP = {
   identifier: 'identifier',
   secret: 'secret',

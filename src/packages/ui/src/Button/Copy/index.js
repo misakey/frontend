@@ -4,7 +4,7 @@ import copy from 'copy-to-clipboard';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
 
-import omit from '@misakey/helpers/omit';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import tDefault from '@misakey/helpers/tDefault';
 import isNil from '@misakey/helpers/isNil';
 
@@ -20,30 +20,33 @@ export const MODE = {
 export const MODES = Object.values(MODE);
 
 // COMPONENTS
-const ContainedButton = Button;
-ContainedButton.defaultProps = {
-  variant: 'contained',
-  color: 'secondary',
-};
 
-const ButtonCopy = ({ value, mode, t, ...props }) => {
+const ButtonCopy = ({ value, format, mode, t, ...props }) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const handleCopy = useCallback(() => {
-    copy(value);
+    copy(value, { format });
     const text = t('common__new:copied');
     enqueueSnackbar(text, { variant: 'success' });
-  }, [enqueueSnackbar, t, value]);
+  }, [enqueueSnackbar, format, t, value]);
 
   const hasNoValue = useMemo(() => isNil(value), [value]);
   const isIcon = useMemo(() => mode === MODE.icon, [mode]);
-  const Wrapper = useMemo(() => (mode === MODE.icon ? IconButton : ContainedButton), [mode]);
+  const Wrapper = useMemo(() => (isIcon ? IconButton : Button), [isIcon]);
+
+  const buttonProps = useMemo(
+    () => (isIcon
+      ? {}
+      : { variant: 'outlined', color: 'secondary' }),
+    [isIcon],
+  );
 
   return (
     <Wrapper
       disabled={hasNoValue}
       onClick={handleCopy}
-      {...omit(props, ['i18n', 'tReady'])}
+      {...buttonProps}
+      {...omitTranslationProps(props)}
     >
       {isIcon ? <CopyIcon /> : t('common__new:copy')}
     </Wrapper>
@@ -52,12 +55,14 @@ const ButtonCopy = ({ value, mode, t, ...props }) => {
 
 ButtonCopy.propTypes = {
   mode: PropTypes.oneOf(MODES),
+  format: PropTypes.string,
   t: PropTypes.func,
   value: PropTypes.string,
 };
 
 ButtonCopy.defaultProps = {
   value: null,
+  format: 'text/plain',
   mode: MODE.text,
   t: tDefault,
 

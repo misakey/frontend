@@ -29,6 +29,7 @@ const useWithLocationState = (path, locationState) => useMemo(
 const AppBarNavigationLink = forwardRef(({
   children,
   homePath,
+  replace,
   ...rest
 }, ref) => {
   const { state } = useLocation();
@@ -39,8 +40,9 @@ const AppBarNavigationLink = forwardRef(({
     () => ({
       component: Link,
       to: homePathWithState,
+      replace,
     }),
-    [homePathWithState],
+    [homePathWithState, replace],
   );
 
   return (
@@ -57,11 +59,13 @@ const AppBarNavigationLink = forwardRef(({
 AppBarNavigationLink.propTypes = {
   children: PropTypes.oneOfType([PropTypes.element, PropTypes.node]),
   homePath: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  replace: PropTypes.bool,
 };
 
 AppBarNavigationLink.defaultProps = {
   children: null,
   homePath: null,
+  replace: false,
 };
 
 export default AppBarNavigationLink;

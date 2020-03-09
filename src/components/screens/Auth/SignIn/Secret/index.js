@@ -279,7 +279,7 @@ AuthSignInSecret.propTypes = {
 AuthSignInSecret.defaultProps = {
   identifier: '',
   acr: null,
-  publics: null,
+  publics: {},
 };
 
 // CONNECT

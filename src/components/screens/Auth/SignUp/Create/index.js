@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Formik, Form } from 'formik';
 import { Switch } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { withTranslation } from 'react-i18next';
+
 
 import routes from 'routes';
 import API from '@misakey/api';
@@ -11,6 +14,7 @@ import errorTypes from '@misakey/ui/constants/errorTypes';
 import { stepSignUpValidationSchemas } from 'constants/validationSchemas/auth';
 
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+import { getCode, getDetails } from '@misakey/helpers/apiError';
 import { createNewOwnerSecrets } from '@misakey/crypto/store/actions/concrete';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
@@ -21,7 +25,7 @@ import Preamble from 'components/screens/Auth/SignUp/Create/Preamble';
 import Identifier from 'components/screens/Auth/SignUp/Create/Identifier';
 import Pseudo from 'components/screens/Auth/SignUp/Create/Pseudo';
 import Password from 'components/screens/Auth/SignUp/Create/Password';
-import RouteSignUp from 'components/smart/Route/SignUp';
+import RouteFormik from 'components/smart/Route/Formik';
 
 // CONSTANTS
 const { notFound, conflict } = errorTypes;
@@ -77,7 +81,9 @@ const AuthSignUpCreate = ({
   identifier,
   history,
   location: { pathname, search },
+  t,
 }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
 
   const validationSchema = useMemo(
@@ -172,17 +178,29 @@ const AuthSignUpCreate = ({
       }
       promise
         .catch((e) => {
-          handleGenericHttpErrors(e);
+          const errorCode = getCode(e);
+          const { email } = getDetails(e);
+          // NB: error can happen if we passed the pseudo submit step
+          // and someone activated that email in the meantime
+          if (errorCode === conflict && email === conflict) {
+            history.push({
+              pathname: routes.auth.signUp.identifier,
+              search,
+            });
+            // @FIXME for now the implementation clears touched status when mounting a subscreen
+            // thus it hides the errors in the subscreen which disappear as they're only from API
+            enqueueSnackbar(t('fields__new:email.error.conflict'), { variant: 'error' });
+          } else {
+            handleGenericHttpErrors(e);
+          }
         })
         .finally(() => { setSubmitting(false); });
     },
     [
-      afterCrypto,
-      handleGenericHttpErrors,
-      onIdentifierSubmit,
-      onPreambleSubmit,
-      onPseudoSubmit,
-      pathname,
+      afterCrypto, enqueueSnackbar, handleGenericHttpErrors,
+      history,
+      onIdentifierSubmit, onPreambleSubmit, onPseudoSubmit,
+      pathname, search, t,
       dispatchCreateNewOwnerSecrets,
     ],
   );
@@ -196,18 +214,16 @@ const AuthSignUpCreate = ({
       {(formProps) => (
         <Form>
           <Switch>
-            <RouteSignUp
+            <RouteFormik
               start={SIGNUP_START}
-              dirty={formProps.dirty}
               path={routes.auth.signUp.preamble}
               exact
               render={(routerProps) => (
                 <Preamble {...formProps} {...routerProps} />
               )}
             />
-            <RouteSignUp
+            <RouteFormik
               start={SIGNUP_START}
-              dirty={formProps.dirty}
               path={routes.auth.signUp.identifier}
               exact
               render={(routerProps) => (
@@ -218,18 +234,16 @@ const AuthSignUpCreate = ({
                 />
               )}
             />
-            <RouteSignUp
+            <RouteFormik
               start={SIGNUP_START}
-              dirty={formProps.dirty}
               path={routes.auth.signUp.handle}
               exact
               render={(routerProps) => (
                 <Pseudo {...formProps} {...routerProps} />
               )}
             />
-            <RouteSignUp
+            <RouteFormik
               start={SIGNUP_START}
-              dirty={formProps.dirty}
               path={routes.auth.signUp.password}
               exact
               render={(routerProps) => (
@@ -246,6 +260,7 @@ const AuthSignUpCreate = ({
 AuthSignUpCreate.propTypes = {
   location: PropTypes.shape({ pathname: PropTypes.string, search: PropTypes.string }).isRequired,
   history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired,
+  t: PropTypes.func.isRequired,
   // CONNECT
   identifier: PropTypes.string,
   dispatchSetCredentials: PropTypes.func.isRequired,
@@ -271,4 +286,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchCreateNewOwnerSecrets: (password) => dispatch(createNewOwnerSecrets(password)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AuthSignUpCreate);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('fields__new')(AuthSignUpCreate));

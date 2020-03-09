@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import routes from 'routes';
 import { connect } from 'react-redux';
-import { withTranslation, Trans } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import { bulkSelectionSetSelected } from 'store/actions/bulkSelection';
 
 import prop from '@misakey/helpers/prop';
@@ -25,7 +25,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Container from '@material-ui/core/Container';
 import ScreenAction from 'components/dumb/Screen/Action';
 import BoxSection from '@misakey/ui/Box/Section';
-import PreMail from 'components/dumb/Pre/Mail';
+import PreMail from 'components/dumb/Pre/Contact';
 import Subtitle from 'components/dumb/Typography/Subtitle';
 import Box from '@material-ui/core/Box';
 import BoxMessage from '@misakey/ui/Box/Message';
@@ -315,15 +315,7 @@ const Contact = ({
                             <PreMail
                               subject={subject}
                               body={body}
-                              mailto={(
-                                <Trans
-                                  values={{ applicationName, dpoEmail: mailto }}
-                                  i18nKey="citizen__new:contact.email.toTrans"
-                                >
-                                  {'DPO de {{applicationName}}'}
-                                  <span>{'{{dpoEmail}}'}</span>
-                                </Trans>
-                                )}
+                              mailto={mailto}
                             />
                           </Container>
                         </ExpansionPanelDetails>

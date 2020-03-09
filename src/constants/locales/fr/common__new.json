@@ -5,7 +5,7 @@
   "archive": "Archiver",
   "back": "Précedent",
   "cancel": "Annuler",
-  "copy": "Copier dans le presse papier",
+  "copy": "Copier",
   "copied": "Copié dans le presse papier!",
   "decrypt": "Déchiffrer",
   "delete": "Supprimer",
@@ -26,6 +26,7 @@
   "publish": "Publier",
   "redirectedToLinkedDomain": "J'ai été redirigé vers {{mainDomainTo}} car {{mainDomainFrom}} est un domaine lié à {{mainDomainTo}}",
   "refuse": "Refuser",
+  "confirm": "Confirmer",
   "regenerate": "Régénérer",
   "remove": "Retirer",
   "reopen": "Réouvrir",
@@ -42,12 +43,10 @@
   "undecryptable": "Indéchiffrable",
   "update": "Éditer",
   "validate": "Valider",
-
   "account": {
     "current": "Compte de l'utilisateur actuel",
     "profile": "Mon compte"
   },
-
   "application": {
     "category": {
       "shops": "eCommerces",
@@ -77,7 +76,6 @@
       "crowdfunding": "Financement participatif"
     }
   },
-
   "databox": {
     "dpoComment": {
       "done": "Demande traitée",
@@ -102,7 +100,6 @@
       "updated": "Editée"
     }
   },
-
   "date": {
     "calendar": {
       "sameDay": "aujourd'hui",
@@ -124,7 +121,6 @@
       "max_plural": "{{count}}+ jours"
     }
   },
-
   "httpStatus": {
     "error": {
       "default": "Nous sommes désolés, une erreur inconnue est survenue",
@@ -144,7 +140,6 @@
       "503": "Nous sommes désolés, nos services ne sont pas accessibles"
     }
   },
-
   "workspaces": {
     "citizen": "citizen",
     "dpo": "dpo",
