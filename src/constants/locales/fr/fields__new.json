@@ -258,7 +258,7 @@
   "contactConfigConfirm": {
     "code": {
       "error": {
-        "conflict": "J'ai déjà reçu un code il y a moins de 2 minutes.\nJe revérifie mes mails ou je réessaie dans un petit instant"
+        "conflict": "J'ai déjà reçu un code il y a moins de 5 minutes.\nJe revérifie mes mails ou je réessaie dans un petit instant"
       }
     }
   },
