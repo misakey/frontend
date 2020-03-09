@@ -55,6 +55,7 @@ function PasswordPrompt({ onClose, onSubmit, firstAttempt, t, open }) {
                 component={FieldTextPasswordRevealable}
                 type="password"
                 inputProps={{ 'data-matomo-ignore': true }}
+                autoFocus
               />
               {(!firstAttempt || !isValid) && (
               <FormHelperText error>{t('fields__new:password.error.invalid')}</FormHelperText>
