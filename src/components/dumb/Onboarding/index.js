@@ -66,8 +66,8 @@ const Onboarding = ({ children, workspace }) => {
   const classes = useStyles();
   return (
     <Box my={5}>
-      <Title className={classes.title}>
-        <Trans i18nKey={`components__new:onboarding.${workspace}.title`}>
+      <Title>
+        <Trans className={classes.title} i18nKey={`components__new:onboarding.${workspace}.title`}>
           <span className={classes.catchphrase}>A partir de maintenant,</span>
           <span>
             {'j\'habitue les sites à me renvoyer mes données à l\'abri des géants de la tech'}

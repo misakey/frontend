@@ -93,7 +93,7 @@
   },
   "onboarding": {
     "dpo": {
-      "title": "<0>A partir de maintenant,</0>\nje renvoie les données de mes utilisateurs à l’abri des géants de la tech",
+      "title": "<0>A partir de maintenant,</0>\nje rends le contrôle à mes utilisateurs·trices sur leurs données personnelles.",
       "steps": {
         "1": {
           "text": "1 - Je crée mon compte gratuitement",
@@ -106,7 +106,7 @@
       }
     },
     "citizen": {
-      "title": "<0>A partir de maintenant,</0>\nj'habitue les sites à me renvoyer mes données à l'abri des géants de la tech",
+      "title": "<0>A partir de maintenant,</0>\nje contrôle mes données personnelles.",
       "steps": {
         "1": {
           "text": "1 - Je crée mon coffre-fort gratuitement",
