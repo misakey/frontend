@@ -73,7 +73,7 @@ const ApplicationInfoLegal = ({
   return (
     <>
       {!IS_PLUGIN && !isPluginInstalled && (
-        <Box my={3}>
+        <Box>
           <Title>
             {t('citizen__new:application.info.legal.cookies.title')}
           </Title>

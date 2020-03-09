@@ -58,10 +58,30 @@ CHAIN_BREAKER_ERROR.isAlreadyTreated = true;
 // HELPERS
 const getMainDomainError = prop('main_domain');
 
-const createApplication = (form) => API
+const createApplication = (
+  form, dispatchApplicationCreate, mainDomain, setFieldError, handleGenericHttpErrors,
+) => API
   .use(APPLICATION_CREATE_ENDPOINT)
   .build(null, objectToSnakeCase(form))
-  .send();
+  .send()
+  .then((response) => {
+    const application = objectToCamelCase(response);
+    dispatchApplicationCreate(application);
+    return application;
+  })
+  .catch((error) => {
+    const { httpStatus, code, details } = error;
+    if (httpStatus === 409) {
+      return fetchApplicationByMainDomain(mainDomain);
+    }
+    const mainDomainError = getMainDomainError(details);
+    if (code === badRequest && !isNil(mainDomainError)) {
+      setFieldError(MAIN_DOMAIN_FIELD_NAME, mainDomainError);
+    } else {
+      handleGenericHttpErrors(error);
+    }
+    throw CHAIN_BREAKER_ERROR;
+  });
 
 const createApplicationContribution = (applicationId, userId, mainDomain, dpoEmail) => API
   .use(APPLICATION_CONTRIBUTION_CREATE_ENDPOINT)
@@ -71,7 +91,14 @@ const createApplicationContribution = (applicationId, userId, mainDomain, dpoEma
 const createUserApplication = (applicationId, userId) => API
   .use(USER_APPLICATION_CREATE_ENDPOINT)
   .build(null, objectToSnakeCase({ applicationId, userId }))
-  .send();
+  .send()
+  .catch((error) => {
+    const { httpStatus } = error;
+    if (httpStatus === 409) {
+      return null;
+    }
+    throw error;
+  });
 
 // COMPONENTS
 const withApplicationsCreate = (mapper = identity) => (Component) => {
@@ -98,42 +125,16 @@ const withApplicationsCreate = (mapper = identity) => (Component) => {
       ({ mainDomain, dpoEmail }, { setSubmitting, setFieldError }, successText) => {
         const matchedRegex = MAIN_DOMAIN_REGEX.exec(mainDomain);
         const form = { mainDomain: matchedRegex[1] };
-        return createApplication(form)
-          .then((response) => {
-            const application = objectToCamelCase(response);
-            dispatchApplicationCreate(application);
-            return application;
-          })
-          .catch((error) => {
-            const { httpStatus, code, details } = error;
-            if (httpStatus === 409) {
-              return fetchApplicationByMainDomain(mainDomain);
-            }
-            const mainDomainError = getMainDomainError(details);
-            if (code === badRequest && !isNil(mainDomainError)) {
-              setFieldError(MAIN_DOMAIN_FIELD_NAME, mainDomainError);
-            } else {
-              handleGenericHttpErrors(error);
-            }
-            throw CHAIN_BREAKER_ERROR;
-          })
-          .then((application) => createApplicationContribution(
-            application.id, userId, mainDomain, dpoEmail,
-          ).then(() => application))
+        return createApplication(
+          form, dispatchApplicationCreate, mainDomain, setFieldError, handleGenericHttpErrors,
+        ).then((application) => createApplicationContribution(
+          application.id, userId, mainDomain, dpoEmail,
+        ).then(() => application))
           .then((application) => {
             if (workspace === WORKSPACE.CITIZEN) {
               createUserApplication(application.id, userId);
               dispatchAddToUserApplications(WORKSPACE.CITIZEN, mainDomain);
             }
-          })
-          .catch((error) => {
-            if (error.isAlreadyTreated !== true) {
-              const { httpStatus } = error;
-              if (httpStatus === 409) {
-                return null;
-              }
-            }
-            throw error;
           })
           .then(() => {
             if (!isNil(successText)) {

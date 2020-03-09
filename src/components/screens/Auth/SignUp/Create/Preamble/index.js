@@ -20,7 +20,7 @@ import Card from 'components/dumb/Card';
 import CardHeaderAuthSignUp from 'components/smart/Card/Auth/Header/SignUp';
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import ButtonGoBackTo from 'components/dumb/Button/GoBack/To';
-import Switch from 'components/dumb/Switch';
+import Switch from '@material-ui/core/Switch';
 
 // CONSTANTS
 const TOS_FIELD = 'tos';

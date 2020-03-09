@@ -19,6 +19,7 @@ const ExportCrypto = ({ t }) => (
   <PasswordPromptProvider>
     <ScreenAction
       title={t('account__new:exportCrypto.title')}
+      hideAppBar
     >
       <Container maxWidth="md">
         <Typography>{t('account__new:exportCrypto.info.general')}</Typography>

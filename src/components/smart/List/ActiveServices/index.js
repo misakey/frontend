@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import routes from 'routes';
 import { withTranslation } from 'react-i18next';
 
 import Box from '@material-ui/core/Box';
@@ -21,7 +20,6 @@ function ActiveServices({
   isFetchingActiveServices,
   t,
 }) {
-  const toRoute = useMemo(() => routes.dpo.service._, []);
   const list = useMemo(() => sampleSize(activeServices, MAX_ITEMS), [activeServices]);
 
   return (
@@ -35,7 +33,7 @@ function ActiveServices({
         <ApplicationsList
           isFetching={isFetchingActiveServices}
           applications={list}
-          toRoute={toRoute}
+          toRoute={null}
         />
       </Card>
     </>

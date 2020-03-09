@@ -273,8 +273,9 @@
   "signUpConfirm": {
     "code": {
       "error": {
-        "expired": "Ce code de confirmation a expiré. J'en ai reçu un nouveau par email",
+        "expired": "Ce code de confirmation a expiré. Je peux en demander un nouveau",
         "invalid": "Le code de confirmation est incorrect",
+        "conflict": "L'email a déjà été revendiqué sur un autre compte",
         "malformed": "Le code de confirmation doit contenir 6 chiffres"
       },
       "label": "Code de confirmation",

@@ -79,7 +79,7 @@ const ContactConfigConfirm = ({ t, profile }) => {
 
       fetchAskConfirm({ userEmailId })
         .then(() => {
-          const text = t('citizen__new:contact.configure.confirm.resend.success', { userEmailId });
+          const text = t('citizen__new:contact.configure.confirm.resend.success', { email });
           enqueueSnackbar(text, { variant: 'success' });
         })
         .catch((e) => {
@@ -92,7 +92,7 @@ const ContactConfigConfirm = ({ t, profile }) => {
         })
         .finally(() => setSending(false));
     },
-    [userEmailId, handleGenericHttpErrors, t, enqueueSnackbar],
+    [userEmailId, email, handleGenericHttpErrors, t, enqueueSnackbar],
   );
 
   const signUpConfirmContentAction = useMemo(

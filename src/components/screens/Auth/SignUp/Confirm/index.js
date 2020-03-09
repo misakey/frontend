@@ -7,11 +7,13 @@ import { Formik } from 'formik';
 import { Redirect } from 'react-router-dom';
 
 import API from '@misakey/api';
+
 import routes from 'routes';
 import { signUpConfirmValidationSchema } from 'constants/validationSchemas/auth';
 
 import isEmpty from '@misakey/helpers/isEmpty';
-import isObject from '@misakey/helpers/isObject';
+import isNil from '@misakey/helpers/isNil';
+import path from '@misakey/helpers/path';
 import join from '@misakey/helpers/join';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
@@ -49,6 +51,10 @@ const fetchAskConfirm = (email) => API
   .use(API.endpoints.auth.askConfirm)
   .build(undefined, { email })
   .send();
+
+const getOtpError = path(['details', 'otp']);
+const getEmailError = path(['details', 'email']);
+
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -100,8 +106,13 @@ function AuthSignUpConfirm({
       return fetchConfirm(payload)
         .then(() => { history.push(routes.auth.signUp.finale); })
         .catch((e) => {
-          if (isObject(e.details)) {
-            setFieldError('code', e.details.otp);
+          const otpError = getOtpError(e);
+          const emailError = getEmailError(e);
+
+          if (!isNil(otpError)) {
+            setFieldError('code', otpError);
+          } else if (!isNil(emailError)) {
+            setFieldError('code', emailError);
           } else {
             handleGenericHttpErrors(e);
           }

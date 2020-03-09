@@ -4,6 +4,7 @@ import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
+import isNil from '@misakey/helpers/isNil';
 
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
@@ -19,10 +20,10 @@ function ApplicationsList({
   const applicationsWithPaths = useMemo(
     () => applications.map((application) => ({
       application,
-      to: generatePath(
+      to: (isNil(toRoute) ? null : generatePath(
         toRoute,
         { mainDomain: application.mainDomain },
-      ),
+      )),
     })),
     [applications, toRoute],
   );
@@ -51,16 +52,18 @@ function ApplicationsList({
 
   return (
     <List disablePadding>
-      {applicationsWithPaths.map(({ application, to }) => (
-        <ApplicationListItem
-          key={application.mainDomain}
-          application={application}
-          button
-          component={Link}
-          to={to}
-          withBlobCount={withBlobCount}
-        />
-      ))}
+      {applicationsWithPaths.map(({ application, to }) => {
+        const listItemProps = isNil(to) ? {} : { button: true, component: Link };
+        return (
+          <ApplicationListItem
+            key={application.mainDomain}
+            application={application}
+            to={to}
+            withBlobCount={withBlobCount}
+            {...listItemProps}
+          />
+        );
+      })}
     </List>
   );
 }
