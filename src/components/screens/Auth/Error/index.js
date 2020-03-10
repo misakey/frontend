@@ -6,8 +6,7 @@ import { Link } from 'react-router-dom';
 
 import getSearchParams from '@misakey/helpers/getSearchParams';
 
-import Redirect from 'components/dumb/Redirect';
-
+import ScreenForbidden from 'components/dumb/Screen/Forbidden';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -19,11 +18,13 @@ import routes from 'routes';
 
 import 'components/screens/Auth/Error/index.scss';
 
+// COMPONENTS
 const AuthError = ({ location, t }) => {
   const searchParams = getSearchParams(location.search);
 
+
   if (window.env.ENV === 'production') {
-    return <Redirect to={`${routes.errors.forbidden}${location.search}`} />;
+    return <ScreenForbidden />;
   }
 
   return (

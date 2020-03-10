@@ -124,9 +124,6 @@ const routes = {
     _: '/index.html',
     blank: '/plugin-blank',
   },
-  errors: {
-    forbidden: '/errors/forbidden',
-  },
 };
 
 export default routes;

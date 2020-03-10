@@ -20,6 +20,10 @@ import AppBar, { APPBAR_HEIGHT } from 'components/dumb/AppBar';
 import Footer from 'components/dumb/Footer';
 import { IS_PLUGIN } from 'constants/plugin';
 
+// HELPERS
+const isError = (error) => error instanceof Error;
+
+// HOOKS
 const useBoxStyles = makeStyles({
   root: {
     flexGrow: 1,
@@ -77,7 +81,7 @@ function StateWrapper({
 }) {
   const currentState = useMemo(() => {
     if (isLoading && !preventSplashScreen) { return SCREEN_STATES.IS_INITIATING; }
-    if (error instanceof Error) { return SCREEN_STATES.HAS_ERROR; }
+    if (isError(error)) { return SCREEN_STATES.HAS_ERROR; }
 
     return SCREEN_STATES.OK;
   }, [error, isLoading, preventSplashScreen]);
@@ -173,7 +177,37 @@ function Screen({
   disableGrow,
   ...rest
 }) {
-  const classes = useScreenStyles({ hideAppBar, disableGrow });
+  const hasError = useMemo(
+    () => isError(state.error),
+    [state],
+  );
+
+  // FORCE showing appbar in case of error state
+  const hideAppBarExError = useMemo(
+    () => (hasError
+      ? false
+      : hideAppBar),
+    [hasError, hideAppBar],
+  );
+
+  // FORCE appbar props in case of error state
+  const appBarPropsExError = useMemo(
+    () => {
+      const forcedAppBarProps = hideAppBar
+        ? { withSearchBar: false, withUser: false } // hide initially unexpected elements
+        : {};
+      return (hasError
+        ? {
+          ...appBarProps,
+          ...forcedAppBarProps,
+          withHomeLink: true, // always display home link to allow easy leave of error screen
+        }
+        : appBarProps);
+    },
+    [appBarProps, hasError, hideAppBar],
+  );
+
+  const classes = useScreenStyles({ hideAppBar: hideAppBarExError, disableGrow });
 
   const isLoading = useMemo(
     () => state.isLoading || state.isFetching,
@@ -191,9 +225,9 @@ function Screen({
           variant="query"
         />
       )}
-      {!hideAppBar && (
+      {!hideAppBarExError && (
         <AppBar
-          {...appBarProps}
+          {...appBarPropsExError}
         />
       )}
       <Box

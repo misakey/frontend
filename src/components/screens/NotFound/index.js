@@ -7,21 +7,25 @@ import Redirect from 'components/dumb/Redirect';
 
 import { MAIN_DOMAIN_REGEX } from 'constants/regex';
 
+// CONSTANTS
+const NOT_FOUND_ERROR = new Error();
+NOT_FOUND_ERROR.status = 404;
+
+const ERROR_STATE = {
+  error: NOT_FOUND_ERROR,
+};
+
+// COMPONENTS
 function NotFound({ location: { pathname } }) {
   const slug = useMemo(() => pathname.substring(1), [pathname]);
   const isMainDomain = useMemo(() => MAIN_DOMAIN_REGEX.test(slug), [slug]);
-  const error = useMemo(() => {
-    const e = new Error();
-    e.status = 404;
-    return e;
-  }, []);
 
   if (isMainDomain) {
     return <Redirect to={generatePath(routes.citizen.application._, { mainDomain: slug })} />;
   }
 
   return (
-    <Screen state={{ error }} />
+    <Screen state={ERROR_STATE} />
   );
 }
 

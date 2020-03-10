@@ -5,7 +5,6 @@ import { withTranslation } from 'react-i18next';
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
 
-import Forbidden from 'components/screens/Forbidden';
 import Landing from 'components/screens/Landing';
 import NotFound from 'components/screens/NotFound';
 import Requests from 'components/screens/DPO/Service/Requests/Read';
@@ -57,13 +56,6 @@ const App = ({ t }) => (
         render={(routerProps) => (
           <TRedirectAuthCallback fallbackReferrers={REFERRERS} t={t} {...routerProps} />
         )}
-      />
-
-      {/* ERRORS */}
-      <Route
-        exact
-        path={routes.errors.forbidden}
-        component={Forbidden}
       />
 
       {/* WORKSPACES */}
