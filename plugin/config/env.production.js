@@ -15,7 +15,7 @@ window.env = {
   APP_URL: 'https://www.misakey.com',
   SENTRY: {
     debug: false,
-    dsn: 'https://b9d357a41a2946f2b4d8c2b23f566a95@sentry.io/1817199',
+    dsn: 'https://a695e1e73b004ad2bc1f82b581f072fe@sentry.io/2071584',
     environment: 'production',
   },
 };

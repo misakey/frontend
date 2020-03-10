@@ -15,7 +15,7 @@ window.env = {
   APP_URL: 'https://www.preprod.misakey.dev',
   SENTRY: {
     debug: false,
-    dsn: 'https://8d456528721649a39d8ec22794be3fad@sentry.io/1817198',
+    dsn: 'https://a695e1e73b004ad2bc1f82b581f072fe@sentry.io/2071584',
     environment: 'preprod',
   },
 };
