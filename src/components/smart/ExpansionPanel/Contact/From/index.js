@@ -176,8 +176,10 @@ const ExpansionPanelContactFrom = ({
       if (!isNil(initialEmail)) {
         const initialOption = options
           .find(({ email: optionEmail }) => initialEmail === optionEmail);
-        onInitUserEmail(initialOption);
-        onDone();
+        if (!isNil(initialOption)) {
+          onInitUserEmail(initialOption);
+          onDone();
+        }
       }
     },
     [selected, onSelectUserEmail],
