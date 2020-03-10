@@ -122,9 +122,11 @@ const withApplicationsCreate = (mapper = identity) => (Component) => {
     }, [history, redirectRoute]);
 
     const onCreateApplication = useCallback(
-      ({ mainDomain, dpoEmail }, { setSubmitting, setFieldError }, successText) => {
-        const matchedRegex = MAIN_DOMAIN_REGEX.exec(mainDomain);
-        const form = { mainDomain: matchedRegex[1] };
+      ({ mainDomain: homepage, dpoEmail }, { setSubmitting, setFieldError }, successText) => {
+        const matchedRegex = MAIN_DOMAIN_REGEX.exec(homepage);
+        const mainDomain = matchedRegex[1];
+        const form = { mainDomain };
+
         return createApplication(
           form, dispatchApplicationCreate, mainDomain, setFieldError, handleGenericHttpErrors,
         ).then((application) => createApplicationContribution(
