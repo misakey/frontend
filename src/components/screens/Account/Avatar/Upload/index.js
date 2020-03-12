@@ -44,7 +44,7 @@ const AccountAvatarUpload = ({
     <ScreenAction
       title={t('account:avatar.upload.title')}
       state={state}
-      hideAppBar
+      appBarProps={{ withSearchBar: false }}
     >
       <Container maxWidth="md">
         <Subtitle>

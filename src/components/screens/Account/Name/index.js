@@ -101,7 +101,7 @@ const AccountName = ({
     <ScreenAction
       title={t('account:name.title')}
       state={state}
-      hideAppBar
+      appBarProps={{ withSearchBar: false }}
     >
       <Container maxWidth="md">
         <Subtitle>

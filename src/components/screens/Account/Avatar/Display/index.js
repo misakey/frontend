@@ -30,7 +30,7 @@ const AccountAvatarDisplay = ({
   <ScreenAction
     title={t('account:avatar.title')}
     state={state}
-    hideAppBar
+    appBarProps={{ withSearchBar: false }}
   >
     <Container maxWidth="md" className="content">
       <Subtitle>

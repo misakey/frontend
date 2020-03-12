@@ -93,7 +93,7 @@ const AccountPassword = ({
     <ScreenAction
       title={t('account:password.title')}
       state={state}
-      hideAppBar
+      appBarProps={{ withSearchBar: false }}
     >
       <Container maxWidth="md">
         <Formik
