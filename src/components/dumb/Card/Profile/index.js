@@ -67,11 +67,11 @@ const CardProfile = ({ profile, t }) => {
           to={routes.account.profile.name}
           component={Link}
           divider
-          aria-label={t('fields__new:displayName.action')}
+          aria-label={t('fields:displayName.action')}
           classes={{ container: classes.listItemContainer }}
         >
           <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('fields__new:displayName.label')}</Typography>
+            <Typography>{t('fields:displayName.label')}</Typography>
           </ListItemIcon>
           <ListItemText primary={displayName} />
           <ListItemSecondaryAction>
@@ -83,13 +83,13 @@ const CardProfile = ({ profile, t }) => {
           to={routes.account.profile.avatar._}
           component={Link}
           divider
-          aria-label={t('fields__new:avatar.action')}
+          aria-label={t('fields:avatar.action')}
           classes={{ container: classes.listItemContainer }}
         >
           <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('fields__new:avatar.label')}</Typography>
+            <Typography>{t('fields:avatar.label')}</Typography>
           </ListItemIcon>
-          <ListItemText primary={t('fields__new:avatar.helperText')} />
+          <ListItemText primary={t('fields:avatar.helperText')} />
           <ListItemSecondaryAction>
             <ChevronRightIcon className={classes.actionIcon} />
           </ListItemSecondaryAction>
@@ -99,13 +99,13 @@ const CardProfile = ({ profile, t }) => {
           to={routes.account.profile.password}
           component={Link}
           divider
-          aria-label={t('fields__new:password.action')}
+          aria-label={t('fields:password.action')}
           classes={{ container: classes.listItemContainer }}
         >
           <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('fields__new:password.label')}</Typography>
+            <Typography>{t('fields:password.label')}</Typography>
           </ListItemIcon>
-          <ListItemText primary={t('fields__new:password.placeholder')} />
+          <ListItemText primary={t('fields:password.placeholder')} />
           <ListItemSecondaryAction>
             <ChevronRightIcon className={classes.actionIcon} />
           </ListItemSecondaryAction>
@@ -114,7 +114,7 @@ const CardProfile = ({ profile, t }) => {
           classes={{ container: classes.listItemContainer }}
         >
           <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('fields__new:email.label')}</Typography>
+            <Typography>{t('fields:email.label')}</Typography>
           </ListItemIcon>
           <ListItemText
             primary={email}
@@ -123,14 +123,14 @@ const CardProfile = ({ profile, t }) => {
           />
         </ListItem>
       </CardProfileList>
-      <Header>{t('account__new:sections.myVault')}</Header>
+      <Header>{t('account:sections.myVault')}</Header>
       <CardProfileList>
         <ListItem
           classes={{ container: classes.listItemContainer }}
           divider
         >
           <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('account__new:quota.title')}</Typography>
+            <Typography>{t('account:quota.title')}</Typography>
           </ListItemIcon>
           <UserStorage />
         </ListItem>
@@ -141,15 +141,15 @@ const CardProfile = ({ profile, t }) => {
           to={routes.account.profile.exportCrypto}
         >
           <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('account__new:exportCrypto.title')}</Typography>
+            <Typography>{t('account:exportCrypto.title')}</Typography>
           </ListItemIcon>
-          <ListItemText primary={t('account__new:exportCrypto.helperText')} />
+          <ListItemText primary={t('account:exportCrypto.helperText')} />
           <ListItemSecondaryAction>
             <ChevronRightIcon className={classes.actionIcon} />
           </ListItemSecondaryAction>
         </ListItem>
       </CardProfileList>
-      <Header>{t('account__new:sections.myAccount')}</Header>
+      <Header>{t('account:sections.myAccount')}</Header>
       <CardProfileList>
         <DeleteAccountListItem
           profile={profile}
@@ -170,4 +170,4 @@ CardProfile.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('fields__new', 'account__new')(CardProfile);
+export default withTranslation('fields', 'account')(CardProfile);

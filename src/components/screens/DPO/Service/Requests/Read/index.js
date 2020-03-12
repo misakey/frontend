@@ -66,7 +66,7 @@ import ChipDataboxStatus from 'components/dumb/Chip/Databox/Status';
 import MailIcon from '@material-ui/icons/Mail';
 
 // CONSTANTS
-const QUESTIONS_TRANS_KEY = 'dpo__new:requests.read.questions';
+const QUESTIONS_TRANS_KEY = 'dpo:requests.read.questions';
 const { notFound, forbidden, conflict } = errorTypes;
 const FIELD_NAME = 'blob';
 const INTERNAL_PROPS = ['tReady', 'isAuthenticated'];
@@ -225,7 +225,7 @@ FieldBlob.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-FieldBlob = withTranslation('fields__new')(withErrors(FieldBlob));
+FieldBlob = withTranslation('fields')(withErrors(FieldBlob));
 
 function ServiceRequestsRead({
   match: { params }, location: { hash },
@@ -302,7 +302,7 @@ function ServiceRequestsRead({
     [hashToken, accessRequest, params.databoxId],
   );
 
-  const requestTitle = t('dpo__new:requests.read.portabilityRequest');
+  const requestTitle = t('dpo:requests.read.portabilityRequest');
 
   const requestTitleWithMetadata = useMemo(
     () => (
@@ -370,7 +370,7 @@ function ServiceRequestsRead({
               .then((response) => {
                 const nextBlobs = (isArray(blobs) ? blobs : []).concat(objectToCamelCase(response));
                 setBlobs(nextBlobs);
-                const text = t('dpo__new:requests.read.upload.success', response);
+                const text = t('dpo:requests.read.upload.success', response);
                 enqueueSnackbar(text, { variant: 'success' });
                 resetForm({ values: INITIAL_VALUES });
               });
@@ -417,13 +417,13 @@ function ServiceRequestsRead({
         .catch((err) => {
           const { code } = err;
           if (code === forbidden) {
-            return onError(t('common__new:httpStatus.error.403'));
+            return onError(t('common:httpStatus.error.403'));
           }
           const [, errorType] = getDetailPairsHead(err);
           if (errorType === conflict) {
-            return onError(t('dpo__new:requests.read.doneError'));
+            return onError(t('dpo:requests.read.doneError'));
           }
-          return onError(t('common__new:httpStatus.error.default'));
+          return onError(t('common:httpStatus.error.default'));
         })
         .finally(() => {
           setSubmitting(false);
@@ -479,7 +479,7 @@ function ServiceRequestsRead({
       state={state}
       appBarProps={appBarProps}
       {...omit(rest, INTERNAL_PROPS)}
-      title={t('dpo__new:requests.read.title', { ownerName })}
+      title={t('dpo:requests.read.title', { ownerName })}
       navigationProps={navigationProps}
     >
       <Container maxWidth="md">
@@ -488,7 +488,7 @@ function ServiceRequestsRead({
             <>
               <BoxMessage type="warning" mt={2}>
                 <Typography>
-                  {t('dpo__new:requests.read.archived')}
+                  {t('dpo:requests.read.archived')}
                 </Typography>
               </BoxMessage>
               <Card
@@ -496,7 +496,7 @@ function ServiceRequestsRead({
                 title={requestTitleWithMetadata}
                 dense
               >
-                <List dense disablePadding aria-label={t('dpo__new:requests.read.portabilityRequest')}>
+                <List dense disablePadding aria-label={t('dpo:requests.read.portabilityRequest')}>
                   <ListItem>
                     <ListItemIcon>
                       <MailIcon />
@@ -528,10 +528,10 @@ function ServiceRequestsRead({
                       primary={{
                         disabled: dirty,
                         onClick: onDoneDialog,
-                        text: t('dpo__new:requests.read.vault.done'),
+                        text: t('dpo:requests.read.vault.done'),
                       }}
                     >
-                      <List dense disablePadding aria-label={t('dpo__new:requests.read.portabilityRequest')}>
+                      <List dense disablePadding aria-label={t('dpo:requests.read.portabilityRequest')}>
                         <ListItem>
                           <ListItemIcon>
                             <MailIcon />
@@ -542,13 +542,13 @@ function ServiceRequestsRead({
                     </Card>
                     <Card
                       my={3}
-                      title={t('dpo__new:requests.read.vault.title')}
+                      title={t('dpo:requests.read.vault.title')}
                       primary={{
                         type: 'submit',
-                        text: t('common__new:submit'),
+                        text: t('common:submit'),
                       }}
                       secondary={{
-                        text: t('common__new:cancel'),
+                        text: t('common:cancel'),
                         disabled: !dirty,
                         onClick: getOnReset(formikBag),
                       }}
@@ -563,8 +563,8 @@ function ServiceRequestsRead({
                         open={openDialog === DIALOGS.ALERT}
                         onClose={onDialogClose}
                         onOk={() => handleUpload(values, formikBag)}
-                        title={t('dpo__new:requests.read.upload.dialog.title')}
-                        text={t('dpo__new:requests.read.upload.dialog.text', { ownerEmail })}
+                        title={t('dpo:requests.read.upload.dialog.title')}
+                        text={t('dpo:requests.read.upload.dialog.text', { ownerEmail })}
                       />
                       <Field
                         name={FIELD_NAME}
@@ -582,12 +582,12 @@ function ServiceRequestsRead({
         {!isEmpty(blobs) && (
           <BoxMessage type="info" mt={2}>
             <Typography>
-              <Trans i18nKey="dpo__new:requests.read.mkAgent.message">
+              <Trans i18nKey="dpo:requests.read.mkAgent.message">
                 {'Je demande aux developpeurs de mon site d\''}
                 <MUILink
                   className={classes.mkAgentLink}
                   variant="body2"
-                  href={`mailto:question.pro@misakey.com?subject=${t('dpo__new:requests.read.mkAgent.mailToSubject')}`}
+                  href={`mailto:question.pro@misakey.com?subject=${t('dpo:requests.read.mkAgent.mailToSubject')}`}
                 >
                   automatiser le traitement des demandes
                 </MUILink>
@@ -598,7 +598,7 @@ function ServiceRequestsRead({
         )}
         <Card
           my={3}
-          title={t('dpo__new:requests.read.questions.title')}
+          title={t('dpo:requests.read.questions.title')}
         >
           <ListQuestions items={questionItems} breakpoints={{ xs: 12 }} />
         </Card>
@@ -648,6 +648,6 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchUpdateDatabox: (databoxId, changes) => dispatch(updateDatabox(databoxId, changes)),
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['common__new', 'dpo__new'])(
+export default connect(null, mapDispatchToProps)(withTranslation(['common', 'dpo'])(
   withAccessRequest(ServiceRequestsRead, { snackbarError: true }),
 ));

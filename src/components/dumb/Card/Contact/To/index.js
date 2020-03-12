@@ -46,7 +46,7 @@ const CardContactTo = ({ application, t, ...rest }) => {
       >
         <Box mr={1}>
           <Typography>
-            {t('citizen__new:contact.email.to.label')}
+            {t('citizen:contact.email.to.label')}
           </Typography>
         </Box>
         <ApplicationImg
@@ -79,4 +79,4 @@ CardContactTo.defaultProps = {
   application: null,
 };
 
-export default withTranslation('citizen__new')(CardContactTo);
+export default withTranslation('citizen')(CardContactTo);

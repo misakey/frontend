@@ -45,7 +45,7 @@ const SummaryFeedbackCard = ({ application, hideLink, hideTitle, t }) => {
   );
 
   const actualAvgRating = useMemo(
-    () => (totalRating === 0 || isNil(avgRating) ? t('common__new:emptyRating') : numeral(avgRating).format('0.0')),
+    () => (totalRating === 0 || isNil(avgRating) ? t('common:emptyRating') : numeral(avgRating).format('0.0')),
     [totalRating, avgRating, t],
   );
 
@@ -57,7 +57,7 @@ const SummaryFeedbackCard = ({ application, hideLink, hideTitle, t }) => {
   );
 
   const title = useMemo(
-    () => (hideTitle ? null : t('citizen__new:application.info.feedback.all')),
+    () => (hideTitle ? null : t('citizen:application.info.feedback.all')),
     [hideTitle, t],
   );
 
@@ -79,7 +79,7 @@ const SummaryFeedbackCard = ({ application, hideLink, hideTitle, t }) => {
               variant="h6"
               underline="none"
             >
-              {t('common__new:see')}
+              {t('common:see')}
             </MUILink>
           ) : null}
         />
@@ -93,13 +93,13 @@ const SummaryFeedbackCard = ({ application, hideLink, hideTitle, t }) => {
           </Box>
           <Box mr={2}>
             <Typography variant="h6" color="textPrimary" noWrap>
-              {t('common__new:on')}
+              {t('common:on')}
               {' 5'}
             </Typography>
           </Box>
           <Box ml="auto">
             <Typography variant="subtitle1" color="textPrimary" noWrap>
-              {t('citizen__new:application.info.feedback.ratingCount', { count: totalRating })}
+              {t('citizen:application.info.feedback.ratingCount', { count: totalRating })}
             </Typography>
           </Box>
         </Box>
@@ -126,4 +126,4 @@ SummaryFeedbackCard.defaultProps = {
   hideTitle: false,
 };
 
-export default withTranslation('common__new', 'citizen__new')(SummaryFeedbackCard);
+export default withTranslation('common', 'citizen')(SummaryFeedbackCard);

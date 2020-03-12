@@ -40,7 +40,7 @@ const OnboardingStep = ({ isActive, workspace, step, component, t, ...props }) =
       my={1}
       key={step}
       component={component}
-      text={t(`components__new:onboarding.${workspace}.steps.${step}.text`)}
+      text={t(`components:onboarding.${workspace}.steps.${step}.text`)}
       {...stepProps}
     />
   );
@@ -59,7 +59,7 @@ OnboardingStep.defaultProps = {
   component: CardSimpleText,
 };
 
-const OnboardingStepWithTranslation = withTranslation('components__new')(OnboardingStep);
+const OnboardingStepWithTranslation = withTranslation('components')(OnboardingStep);
 export { OnboardingStepWithTranslation as OnboardingStep };
 
 const Onboarding = ({ children, workspace }) => {
@@ -67,7 +67,7 @@ const Onboarding = ({ children, workspace }) => {
   return (
     <Box my={5}>
       <Title>
-        <Trans className={classes.title} i18nKey={`components__new:onboarding.${workspace}.title`}>
+        <Trans className={classes.title} i18nKey={`components:onboarding.${workspace}.title`}>
           <span className={classes.catchphrase}>A partir de maintenant,</span>
           <span>
             {'j\'habitue les sites à me renvoyer mes données à l\'abri des géants de la tech'}
@@ -84,4 +84,4 @@ Onboarding.propTypes = {
   workspace: PropTypes.oneOf(WORKSPACES).isRequired,
 };
 
-export default withTranslation('components__new')(Onboarding);
+export default withTranslation('components')(Onboarding);

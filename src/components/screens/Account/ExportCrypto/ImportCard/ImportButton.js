@@ -51,18 +51,18 @@ const ImportButton = ({ t }) => {
 
         await dispatch(importSecrets(file, openPasswordPrompt));
         enqueueSnackbar(
-          t('account__new:exportCrypto.importButton.success'),
+          t('account:exportCrypto.importButton.success'),
           { variant: 'success' },
         );
       } catch (error) {
         if (error instanceof NoNewSecretKeys) {
           enqueueSnackbar(
-            t('account__new:exportCrypto.importButton.noNewSecretKeys'),
+            t('account:exportCrypto.importButton.noNewSecretKeys'),
             { variant: 'info' },
           );
         } else {
           enqueueSnackbar(
-            t('account__new:exportCrypto.importButton.error'),
+            t('account:exportCrypto.importButton.error'),
             { variant: 'error' },
           );
           log(error, 'error');
@@ -86,7 +86,7 @@ const ImportButton = ({ t }) => {
         standing={BUTTON_STANDINGS.TEXT}
         type="button"
         onClick={onClick}
-        text={t('account__new:exportCrypto.importButton.text')}
+        text={t('account:exportCrypto.importButton.text')}
       />
     </label>
   );
@@ -96,4 +96,4 @@ ImportButton.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['account__new'])(ImportButton);
+export default withTranslation(['account'])(ImportButton);

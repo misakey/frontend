@@ -178,7 +178,7 @@ const useOnReset = (
       const payload = { email, password: form.passwordNew, challenge };
       return API.use(API.endpoints.auth.signIn)
         .build(undefined, payload).send().then((response) => {
-          enqueueSnackbar(t('auth__new:forgotPassword.success'), { variant: 'success' });
+          enqueueSnackbar(t('auth:forgotPassword.success'), { variant: 'success' });
           window.location.replace(response.redirect_to);
         });
     })
@@ -263,12 +263,12 @@ const AuthForgot = ({
       initialValues={INITIAL_VALUES}
     >
       <FormCardAuth
-        title={t('auth__new:forgotPassword.title')}
+        title={t('auth:forgotPassword.title')}
         subtitle={<AuthForgotSubtitle name={step} email={email} />}
-        secondary={{ text: t('common__new:previous'), component: Link, to: PARENT_TO }}
+        secondary={{ text: t('common:previous'), component: Link, to: PARENT_TO }}
         primary={{
           type: 'submit',
-          text: t(`auth__new:forgotPassword.form.action.${step}`),
+          text: t(`auth:forgotPassword.form.action.${step}`),
         }}
         Header={CardHeaderAuth}
         formik
@@ -290,7 +290,7 @@ const AuthForgot = ({
                 formatFieldValue={formatFieldValue}
                 helperText=""
                 inputProps={{ 'data-matomo-ignore': true }}
-                label={t('auth__new:forgotPassword.form.field.confirm.label')}
+                label={t('auth:forgotPassword.form.field.confirm.label')}
               />
             )
             : (
@@ -299,7 +299,7 @@ const AuthForgot = ({
                 type="password"
                 name={PASSWORD_FIELD_NAME}
                 component={FieldTextPasswordRevealable}
-                label={t('auth__new:forgotPassword.form.field.password.label')}
+                label={t('auth:forgotPassword.form.field.password.label')}
               />
             )}
         </Box>
@@ -335,4 +335,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchHardPasswordChange: (newPassword) => dispatch(hardPasswordChange(newPassword)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['auth__new', 'common__new'])(AuthForgot));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['auth', 'common'])(AuthForgot));

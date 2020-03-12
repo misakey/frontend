@@ -49,7 +49,7 @@ const ApplicationAvatarSso = ({ sso, t, className, typographyProps, ...rest }) =
   );
 
   const alt = useMemo(
-    () => t('components__new:application.logoAlt', { brand: clientName }),
+    () => t('components:application.logoAlt', { brand: clientName }),
     [clientName, t],
   );
 
@@ -87,4 +87,4 @@ ApplicationAvatarSso.defaultProps = {
   typographyProps: {},
 };
 
-export default withTranslation('components__new')(ApplicationAvatarSso);
+export default withTranslation('components')(ApplicationAvatarSso);

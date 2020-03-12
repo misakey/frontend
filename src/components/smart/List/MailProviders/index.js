@@ -129,7 +129,7 @@ const useMailtoHrefs = (mailsProps) => useMemo(
 const useErrorContent = (t, errors, sent) => useMemo(() => (
   <>
     <Typography>
-      {t('citizen__new:contact.providers.bulkError.content')}
+      {t('citizen:contact.providers.bulkError.content')}
     </Typography>
     <List>
       {sent.map((email) => (
@@ -153,7 +153,7 @@ const useErrorContent = (t, errors, sent) => useMemo(() => (
 ), [errors, sent, t]);
 
 const useDisplayMailToSnackbar = (enqueueSnackbar, t) => useCallback(() => {
-  enqueueSnackbar(t('citizen__new:contact.providers.manual.notify'), { variant: 'info' });
+  enqueueSnackbar(t('citizen:contact.providers.manual.notify'), { variant: 'info' });
 }, [enqueueSnackbar, t]);
 
 // COMPONENTS
@@ -208,7 +208,7 @@ const ListMailProviders = ({
           Promise.all(sendPromises).then(handleBulkResponse);
         } catch (error) {
           if (error instanceof TypeError) {
-            enqueueSnackbar(t('common__new:incompatibleBrowser'), { variant: 'warning' });
+            enqueueSnackbar(t('common:incompatibleBrowser'), { variant: 'warning' });
           }
         }
       } else {
@@ -283,7 +283,7 @@ const ListMailProviders = ({
 
   const onError = useCallback(
     () => {
-      enqueueSnackbar(t('citizen__new:contact.providers.error'), { variant: 'error' });
+      enqueueSnackbar(t('citizen:contact.providers.error'), { variant: 'error' });
     },
     [enqueueSnackbar, t],
   );
@@ -301,14 +301,14 @@ const ListMailProviders = ({
 
   useEffect(() => {
     if (showSuccess) {
-      enqueueSnackbar(t('citizen__new:contact.providers.send.success', { count: sent.length }), { variant: 'success' });
+      enqueueSnackbar(t('citizen:contact.providers.send.success', { count: sent.length }), { variant: 'success' });
     }
 
     if (showError) {
       if (isBulk) {
         setShowErrorModal(true);
       } else {
-        enqueueSnackbar(t('citizen__new:contact.providers.send.error'), { variant: 'error' });
+        enqueueSnackbar(t('citizen:contact.providers.send.error'), { variant: 'error' });
       }
     }
   }, [enqueueSnackbar, isBulk, sent, showError, showSuccess, t]);
@@ -325,7 +325,7 @@ const ListMailProviders = ({
         setDialogOpen={setShowErrorModal}
         isDialogOpen={showErrorModal}
         dialogContent={errorContent}
-        title={t('citizen__new:contact.providers.bulkError.title')}
+        title={t('citizen:contact.providers.bulkError.title')}
       />
       <List>
         {allowProviders && PROVIDERS.map(({ key, alt, logoSrc }) => (
@@ -383,4 +383,4 @@ ListMailProviders.defaultProps = {
 };
 
 
-export default withTranslation('citizen__new')(ListMailProviders);
+export default withTranslation('citizen')(ListMailProviders);

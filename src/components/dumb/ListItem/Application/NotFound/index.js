@@ -71,8 +71,8 @@ const ListItemApplicationNotFound = ({ t, searchValue, ...rest }) => {
         </Avatar>
       </ListItemAvatar>
       <ListItemText
-        primary={t('citizen__new:application.notFound.create.button')}
-        secondary={t('citizen__new:application.notFound.subtitle')}
+        primary={t('citizen:application.notFound.create.button')}
+        secondary={t('citizen:application.notFound.subtitle')}
       />
     </ListItem>
   );
@@ -87,4 +87,4 @@ ListItemApplicationNotFound.defaultProps = {
   searchValue: '',
 };
 
-export default withTranslation('citizen__new')(ListItemApplicationNotFound);
+export default withTranslation('citizen')(ListItemApplicationNotFound);

@@ -45,11 +45,11 @@ const ServiceLogoUpload = ({ service, t, setValues, setTouched, history }) => {
       <AppBarNavigation
         homePath={homePath}
         toolbarProps={{ maxWidth: 'md' }}
-        title={t('admin__new:information.logo.upload.title')}
+        title={t('admin:information.logo.upload.title')}
       />
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
-          {t('admin__new:information.logo.upload.subtitle')}
+          {t('admin:information.logo.upload.subtitle')}
         </Typography>
         <FileField
           accept={ACCEPTED_TYPES}
@@ -73,4 +73,4 @@ ServiceLogoUpload.defaultProps = {
   service: null,
 };
 
-export default withTranslation('admin__new')(ServiceLogoUpload);
+export default withTranslation('admin')(ServiceLogoUpload);

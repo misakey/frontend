@@ -77,7 +77,7 @@ const AuthSignUpPreamble = ({
 
   const primary = useMemo(
     () => ({
-      text: t('auth__new:signUp.create.preamble.action.accept'),
+      text: t('auth:signUp.create.preamble.action.accept'),
       type: 'submit',
       onClick: onAccept,
     }),
@@ -129,9 +129,9 @@ const AuthSignUpPreamble = ({
   return (
     <Card
       className={classes.cardRoot}
-      title={t('auth__new:signUp.create.preamble.title')}
+      title={t('auth:signUp.create.preamble.title')}
       titleProps={titleProps}
-      subtitle={t('auth__new:signUp.create.preamble.subtitle')}
+      subtitle={t('auth:signUp.create.preamble.subtitle')}
       subtitleProps={subtitleProps}
       primary={primary}
       secondary={<ButtonGoBackTo to={routes.auth.signIn._} />}
@@ -150,7 +150,7 @@ const AuthSignUpPreamble = ({
           }}
         >
           <ListItemText
-            primary={t('auth__new:signUp.create.preamble.misakeyKnow')}
+            primary={t('auth:signUp.create.preamble.misakeyKnow')}
             primaryTypographyProps={{ variant: 'subtitle2' }}
           />
           <ListItemSecondaryAction>
@@ -172,7 +172,7 @@ const AuthSignUpPreamble = ({
           }}
         >
           <ListItemText
-            primary={t('auth__new:signUp.create.preamble.misakeyCrypto')}
+            primary={t('auth:signUp.create.preamble.misakeyCrypto')}
             primaryTypographyProps={{ variant: 'subtitle2' }}
           />
           <ListItemSecondaryAction>
@@ -187,11 +187,11 @@ const AuthSignUpPreamble = ({
       </List>
       <List>
         <ListItem classes={{ container: classes.listItemContainer }}>
-          <ListItemText primary={t('auth__new:signUp.create.preamble.tos.text')} />
+          <ListItemText primary={t('auth:signUp.create.preamble.tos.text')} />
           <ListItemSecondaryAction>
             <Button
-              text={t('auth__new:signUp.create.preamble.tos.button')}
-              href={t('components__new:footer.links.tos.href')}
+              text={t('auth:signUp.create.preamble.tos.button')}
+              href={t('components:footer.links.tos.href')}
               target="_blank"
               rel="noopener noreferrer"
               standing={BUTTON_STANDINGS.TEXT}
@@ -199,11 +199,11 @@ const AuthSignUpPreamble = ({
           </ListItemSecondaryAction>
         </ListItem>
         <ListItem classes={{ container: classes.listItemContainer }}>
-          <ListItemText primary={t('auth__new:signUp.create.preamble.privacy.text')} />
+          <ListItemText primary={t('auth:signUp.create.preamble.privacy.text')} />
           <ListItemSecondaryAction>
             <Button
-              text={t('auth__new:signUp.create.preamble.privacy.button')}
-              href={t('components__new:footer.links.privacy.href')}
+              text={t('auth:signUp.create.preamble.privacy.button')}
+              href={t('components:footer.links.privacy.href')}
               target="_blank"
               rel="noopener noreferrer"
               standing={BUTTON_STANDINGS.TEXT}
@@ -226,4 +226,4 @@ AuthSignUpPreamble.propTypes = {
   touched: PropTypes.object.isRequired,
 };
 
-export default withTranslation(['auth__new', 'components__new'])(AuthSignUpPreamble);
+export default withTranslation(['auth', 'components'])(AuthSignUpPreamble);

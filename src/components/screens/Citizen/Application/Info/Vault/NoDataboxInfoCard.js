@@ -23,14 +23,14 @@ function NoDataboxInfoCard({ t }) {
   return (
     <>
       <Title>
-        {t('citizen__new:application.info.vault.info.title')}
+        {t('citizen:application.info.vault.info.title')}
       </Title>
       <Card mb={3} dense>
         <CardContent>
           <Grid container spacing={3}>
             <Grid item sm={8} xs={12}>
               <Typography>
-                <Trans i18nKey="citizen__new:application.info.vault.info.details">
+                <Trans i18nKey="citizen:application.info.vault.info.details">
                   Votre coffre-fort est chiffré par une clé secrète, elle même protégée par votre
                   mot de passe. Vous seul avez accès à cette clé qui permet de lire les données
                   contenues dans votre coffre. Lorsqu’un site vous envoie des données, elles sont
@@ -48,7 +48,7 @@ function NoDataboxInfoCard({ t }) {
                 <img
                   src="/img/illustrations/portability.png"
                   className={classes.portabilityIllu}
-                  alt={t('citizen__new:application.info.vault.info.altIllu')}
+                  alt={t('citizen:application.info.vault.info.altIllu')}
                 />
               </Grid>
             </Hidden>
@@ -63,4 +63,4 @@ NoDataboxInfoCard.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['citizen__new'])(NoDataboxInfoCard);
+export default withTranslation(['citizen'])(NoDataboxInfoCard);

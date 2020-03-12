@@ -52,7 +52,7 @@ const ApplicationsCategoryScreen = ({ isAuthenticated, t, match }) => {
     <Screen>
       <AppBarNavigation
         toolbarProps={{ maxWidth: 'md' }}
-        title={t(`common__new:application.category.${category}`)}
+        title={t(`common:application.category.${category}`)}
       />
       <Container
         maxWidth="md"
@@ -82,4 +82,4 @@ const mapStateToProps = (state) => ({
   isAuthenticated: !!state.auth.token,
 });
 
-export default withTranslation('common__new')(connect(mapStateToProps)(ApplicationsCategoryScreen));
+export default withTranslation('common')(connect(mapStateToProps)(ApplicationsCategoryScreen));

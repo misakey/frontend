@@ -10,10 +10,10 @@ const FormFields = ({
   <Field
     name={name}
     prefix={prefix}
-    key={[`fields__new:${prefix}${name}`, `fields__new:${name}`]}
-    label={t([`fields__new:${prefix}${name}.label`, `fields__new:${name}.label`])}
-    placeholder={t([`fields__new:${prefix}${name}.placeholder`, `fields__new:${name}.placeholder`], '')}
-    helperText={t([`fields__new:${prefix}${name}.helperText`, `fields__new:${name}.helperText`], '')}
+    key={[`fields:${prefix}${name}`, `fields:${name}`]}
+    label={t([`fields:${prefix}${name}.label`, `fields:${name}.label`])}
+    placeholder={t([`fields:${prefix}${name}.placeholder`, `fields:${name}.placeholder`], '')}
+    helperText={t([`fields:${prefix}${name}.helperText`, `fields:${name}.helperText`], '')}
     {...defaultFields[name]}
     {...props}
   />
@@ -32,7 +32,7 @@ FormFields.defaultProps = {
   prefix: '',
 };
 
-export default withTranslation(['fields__new'])(FormFields);
+export default withTranslation(['fields'])(FormFields);
 
 export const FIELD_PROPTYPES = PropTypes.shape({
   component: PropTypes.function,

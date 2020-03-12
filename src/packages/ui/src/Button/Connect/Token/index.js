@@ -93,7 +93,7 @@ const ButtonConnectToken = ({
   return (
     <>
       <IconButton
-        aria-label={t('components__new:buttonConnect.currentUser')}
+        aria-label={t('components:buttonConnect.currentUser')}
         aria-controls="menu-appbar"
         aria-haspopup="true"
         onClick={iconButtonAction}
@@ -128,14 +128,14 @@ const ButtonConnectToken = ({
             component={AccountLink}
             onClick={handleClose}
           >
-            {t('components__new:buttonConnect.profile')}
+            {t('components:buttonConnect.profile')}
           </MenuItem>
         )}
         {seclevel > 1 && ( // duplicated because Menu doesn't accept React.Fragment as a child
           <Divider light />
         )}
         <MenuItem button component="li" onClick={handleSignOut}>
-          {t('components__new:buttonConnect.signOut')}
+          {t('components:buttonConnect.signOut')}
         </MenuItem>
       </Menu>
     </>
@@ -176,4 +176,4 @@ ButtonConnectToken.defaultProps = {
   customAction: null,
 };
 
-export default withTranslation('components__new')(ButtonConnectToken);
+export default withTranslation('components')(ButtonConnectToken);

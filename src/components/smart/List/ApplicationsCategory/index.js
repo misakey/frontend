@@ -46,7 +46,7 @@ const ApplicationsCategory = ({ applicationsList, category, dispatch, isAuthenti
   return (
     <>
       <Title>
-        {t(`common__new:application.category.${category}`)}
+        {t(`common:application.category.${category}`)}
       </Title>
       <Card
         dense
@@ -54,7 +54,7 @@ const ApplicationsCategory = ({ applicationsList, category, dispatch, isAuthenti
           to: generatePath(routes.citizen.applications.category, { category }),
           component: Link,
           standing: BUTTON_STANDINGS.TEXT,
-          text: t('common__new:more'),
+          text: t('common:more'),
         }}
       >
         <ApplicationsList
@@ -94,4 +94,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default withTranslation('common__new')(connect(mapStateToProps)(ApplicationsCategory));
+export default withTranslation('common')(connect(mapStateToProps)(ApplicationsCategory));

@@ -24,7 +24,7 @@ const ContactConfirmEnsure = ({ searchKey, contactEmail, profile, doneTo, t }) =
     () => ({
       component: Link,
       to: doneTo,
-      text: t('common__new:confirm'),
+      text: t('common:confirm'),
       replace: true,
     }),
     [doneTo, t],
@@ -40,7 +40,7 @@ const ContactConfirmEnsure = ({ searchKey, contactEmail, profile, doneTo, t }) =
         ])),
       },
       replace: true,
-      text: t('citizen__new:contact.confirmation.ensure.failure.button'),
+      text: t('citizen:contact.confirmation.ensure.failure.button'),
     }),
     [pathname, search, searchKey, t],
   );
@@ -49,7 +49,7 @@ const ContactConfirmEnsure = ({ searchKey, contactEmail, profile, doneTo, t }) =
     <>
       <DialogContent>
         <Subtitle>
-          {t('citizen__new:contact.confirmation.ensure.subtitle')}
+          {t('citizen:contact.confirmation.ensure.subtitle')}
         </Subtitle>
         <Box display="flex" justifyContent="center" mb={1}>
           <ChipUser
@@ -91,4 +91,4 @@ const mapStateToProps = (state) => ({
   profile: state.auth.profile,
 });
 
-export default connect(mapStateToProps, {})(withTranslation(['citizen__new', 'common__new'])(ContactConfirmEnsure));
+export default connect(mapStateToProps, {})(withTranslation(['citizen', 'common'])(ContactConfirmEnsure));

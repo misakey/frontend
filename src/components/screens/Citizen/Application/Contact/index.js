@@ -163,12 +163,12 @@ const ContactPreview = ({
   );
 
   const subject = useMemo(
-    () => t('citizen__new:contact.email.subject.value'),
+    () => t('citizen:contact.email.subject.value'),
     [t],
   );
 
   const body = useMemo(
-    () => t(`citizen__new:contact.email.body.${mailType}`, { dpoEmail, databoxURL, mainDomain, ...mapDates(databox) }),
+    () => t(`citizen:contact.email.body.${mailType}`, { dpoEmail, databoxURL, mainDomain, ...mapDates(databox) }),
     [databoxURL, databox, mainDomain, dpoEmail, mailType, t],
   );
 
@@ -241,7 +241,7 @@ const ContactPreview = ({
     () => ({
       ...mailtoProps,
       standing: BUTTON_STANDINGS.MAIN,
-      text: t('common__new:send'),
+      text: t('common:send'),
     }),
     [mailtoProps, t],
   );
@@ -257,7 +257,7 @@ const ContactPreview = ({
   return (
     <ScreenAction
       {...screenPropsWithDataboxURL}
-      title={t('citizen__new:contact.preview.title')}
+      title={t('citizen:contact.preview.title')}
       navigationProps={{
         toolbarProps: { maxWidth: 'md' },
         gutterBottom: !IS_PLUGIN,
@@ -279,7 +279,7 @@ const ContactPreview = ({
             <Button
               startIcon={<AddIcon />}
               standing={BUTTON_STANDINGS.TEXT}
-              text={t('citizen__new:contact.email.add')}
+              text={t('citizen:contact.email.add')}
               component={Link}
               to={addEmailTo}
               replace
@@ -293,7 +293,7 @@ const ContactPreview = ({
             <Button
               size="small"
               standing={BUTTON_STANDINGS.TEXT}
-              text={t('citizen__new:contact.preview.exitRecontact')}
+              text={t('citizen:contact.preview.exitRecontact')}
               component={Link}
               to={exitRecontact}
               replace
@@ -359,5 +359,5 @@ export default connect(mapStateToProps, {})(
   withDataboxURL({
     params: { withUsers: true },
     getExtraShouldFetch: hasMissingOwner,
-  })(withTranslation(['common__new', 'citizen__new'])(ContactPreview)),
+  })(withTranslation(['common', 'citizen'])(ContactPreview)),
 );

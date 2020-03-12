@@ -58,7 +58,7 @@ const ServicesCreate = ({
   );
 
   const onSubmit = useCallback(
-    (values, formikBag) => onCreateApplication(values, formikBag, t('dpo__new:services.create.success')),
+    (values, formikBag) => onCreateApplication(values, formikBag, t('dpo:services.create.success')),
     [onCreateApplication, t],
   );
 
@@ -66,11 +66,11 @@ const ServicesCreate = ({
     <Screen>
       <AppBarNavigation
         toolbarProps={{ maxWidth: 'md' }}
-        title={t('dpo__new:services.create.title')}
+        title={t('dpo:services.create.title')}
       />
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" align="left">
-          {t('dpo__new:services.create.subtitle')}
+          {t('dpo:services.create.subtitle')}
         </Typography>
         <Formik
           validationSchema={mainDomainDpoSchema}
@@ -90,8 +90,8 @@ const ServicesCreate = ({
                   autoComplete: 'off',
                 }}
                 component={FieldText}
-                label={t('fields__new:mainDomain.altLabel')}
-                helperText={t('fields__new:mainDomain.helperText')}
+                label={t('fields:mainDomain.altLabel')}
+                helperText={t('fields:mainDomain.helperText')}
               />
               <Field
                 type="text"
@@ -100,10 +100,10 @@ const ServicesCreate = ({
                   autoComplete: 'off',
                 }}
                 component={FieldText}
-                label={t('fields__new:dpoEmail.label')}
-                helperText={t('fields__new:dpoEmail.helperText')}
+                label={t('fields:dpoEmail.label')}
+                helperText={t('fields:dpoEmail.helperText')}
               />
-              <ButtonSubmit text={t('common__new:next')} />
+              <ButtonSubmit text={t('common:next')} />
             </Form>
           </Container>
         </Formik>
@@ -118,4 +118,4 @@ ServicesCreate.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withApplicationCreate()(withTranslation(['dpo__new', 'common__new', 'fields__new'])(ServicesCreate));
+export default withApplicationCreate()(withTranslation(['dpo', 'common', 'fields'])(ServicesCreate));

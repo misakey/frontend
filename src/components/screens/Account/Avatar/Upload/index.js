@@ -42,13 +42,13 @@ const AccountAvatarUpload = ({
 
   return (
     <ScreenAction
-      title={t('account__new:avatar.upload.title')}
+      title={t('account:avatar.upload.title')}
       state={state}
       hideAppBar
     >
       <Container maxWidth="md">
         <Subtitle>
-          {t('account__new:avatar.upload.subtitle')}
+          {t('account:avatar.upload.subtitle')}
         </Subtitle>
         <FileField
           accept={ACCEPTED_TYPES}

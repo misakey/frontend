@@ -86,9 +86,9 @@ function RouteService({
     if (!isAuthenticated) {
       return (
         <BoxAction
-          title={name && t(`components__new:route.service.titleByComponentName.${name}`)}
+          title={name && t(`components:route.service.titleByComponentName.${name}`)}
           actions={[{
-            buttonText: t('common__new:signIn'),
+            buttonText: t('common:signIn'),
             onClick: signIn,
           }]}
           {...renderProps}
@@ -99,9 +99,9 @@ function RouteService({
     if (loginAsScreen) {
       return (
         <BoxAction
-          title={t(`components__new:route.service.loginAs.${workspace}.description`)}
+          title={t(`components:route.service.loginAs.${workspace}.description`)}
           actions={[{
-            buttonText: t(`components__new:route.service.loginAs.${workspace}.button`),
+            buttonText: t(`components:route.service.loginAs.${workspace}.button`),
             onClick: signInAs,
           }]}
           {...renderProps}
@@ -112,7 +112,7 @@ function RouteService({
     if (mainDomain === DEFAULT_DOMAIN) {
       return (
         <BoxAction
-          title={t(`components__new:route.service.intro.${workspace}.description`)}
+          title={t(`components:route.service.intro.${workspace}.description`)}
           {...renderProps}
         />
       );
@@ -125,7 +125,7 @@ function RouteService({
       }
 
       if (loginInProgress) {
-        return <SplashScreen text={t(`components__new:route.service.loginAs.${workspace}.loading`)} />;
+        return <SplashScreen text={t(`components:route.service.loginAs.${workspace}.loading`)} />;
       }
 
       signInAsSilent();
@@ -137,10 +137,10 @@ function RouteService({
     if (!userScope.includes(requiredScope) && location.pathname !== pathToClaim) {
       return (
         <BoxAction
-          title={name && t(`components__new:route.service.claim.${workspace}.description`)}
+          title={name && t(`components:route.service.claim.${workspace}.description`)}
           actions={[
             {
-              buttonText: t(`components__new:route.service.claim.${workspace}.button`),
+              buttonText: t(`components:route.service.claim.${workspace}.button`),
               onClick: redirectToClaim,
             },
           ]}
@@ -208,5 +208,5 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default withUserManager(
-  withTranslation(['components__new', 'common__new'])(connect(mapStateToProps, mapDispatchToProps)(RouteService)),
+  withTranslation(['components', 'common'])(connect(mapStateToProps, mapDispatchToProps)(RouteService)),
 );

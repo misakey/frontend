@@ -38,7 +38,7 @@ const useInputProps = (visible, onToggleVisible, t) => useMemo(() => ({
     <InputAdornment position="end">
       <IconButton
         edge="end"
-        aria-label={t('fields__new:password.toggle.visibility')}
+        aria-label={t('fields:password.toggle.visibility')}
         onClick={onToggleVisible}
         onMouseDown={eventPreventDefault}
       >
@@ -78,4 +78,4 @@ FieldTextPasswordRevealable.defaultProps = {
   type: 'password',
 };
 
-export default withTranslation('fields__new')(FieldTextPasswordRevealable);
+export default withTranslation('fields')(FieldTextPasswordRevealable);

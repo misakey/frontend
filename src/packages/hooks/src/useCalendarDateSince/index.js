@@ -5,7 +5,7 @@ import moment from 'moment';
 // @FIXME Should refactor that component to work with multiple language structure
 // It has been designed only for french
 export default (date, dateReference = null, options = {}) => {
-  const { t } = useTranslation('common__new');
+  const { t } = useTranslation('common');
 
   const forcePrefix = useMemo(
     () => options.forcePrefix === true,
@@ -28,49 +28,49 @@ export default (date, dateReference = null, options = {}) => {
   );
 
   const optionalPastPrefix = useMemo(
-    () => (forcePrefix ? `${t(`common__new:date.since.past.${labelType}`)}` : ''),
+    () => (forcePrefix ? `${t(`common:date.since.past.${labelType}`)}` : ''),
     [forcePrefix, labelType, t],
   );
   const optionalFuturePrefix = useMemo(
-    () => (forcePrefix ? `${t(`common__new:date.since.future.${labelType}`)}` : ''),
+    () => (forcePrefix ? `${t(`common:date.since.future.${labelType}`)}` : ''),
     [forcePrefix, labelType, t],
   );
 
   const pastPrefix = useMemo(
-    () => (forceNoPrefix ? '' : `${t(`common__new:date.since.past.${labelType}`)}`),
+    () => (forceNoPrefix ? '' : `${t(`common:date.since.past.${labelType}`)}`),
     [forceNoPrefix, labelType, t],
   );
 
   const futurePrefix = useMemo(
-    () => (forceNoPrefix ? '' : `${t(`common__new:date.since.future.${labelType}`)}`),
+    () => (forceNoPrefix ? '' : `${t(`common:date.since.future.${labelType}`)}`),
     [forceNoPrefix, labelType, t],
   );
 
   const formats = useMemo(
     () => ({
-      sameDay: `[${optionalPastPrefix} ${t('common__new:date.calendar.sameDay')}]`,
-      nextDay: `[${optionalFuturePrefix} ${t('common__new:date.calendar.nextDay')}]`,
-      lastDay: `[${optionalPastPrefix} ${t('common__new:date.calendar.lastDay')}]`,
+      sameDay: `[${optionalPastPrefix} ${t('common:date.calendar.sameDay')}]`,
+      nextDay: `[${optionalFuturePrefix} ${t('common:date.calendar.nextDay')}]`,
+      lastDay: `[${optionalPastPrefix} ${t('common:date.calendar.lastDay')}]`,
       nextWeek(reference) {
         const count = Math.abs(this.diff(reference, 'days'));
         const countText = count > maxCount
-          ? t('common__new:date.since.max', { count })
-          : t('common__new:date.since.unit', { count });
+          ? t('common:date.since.max', { count })
+          : t('common:date.since.unit', { count });
         return `[${futurePrefix} ${countText}]`;
       },
       lastWeek(reference) {
         const count = Math.abs(this.diff(reference, 'days'));
         const countText = count > maxCount
-          ? t('common__new:date.since.max', { count })
-          : t('common__new:date.since.unit', { count });
+          ? t('common:date.since.max', { count })
+          : t('common:date.since.unit', { count });
         return `[${pastPrefix} ${countText}]`;
       },
       sameElse(reference) {
         const difference = this.diff(reference, 'days');
         const count = Math.abs(difference);
         const countText = count > maxCount
-          ? t('common__new:date.since.max', { count })
-          : t('common__new:date.since.unit', { count });
+          ? t('common:date.since.max', { count })
+          : t('common:date.since.unit', { count });
         const prefix = difference > 0 ? futurePrefix : pastPrefix;
         return `[${prefix} ${countText}]`;
       },

@@ -50,7 +50,7 @@ const useOnSubmit = (
 ) => useMemo(
   () => (form, { setSubmitting }) => updateApplicationInfo(service.id, form)
     .then(() => {
-      enqueueSnackbar(t('admin__new:information.shortDesc.success'), { variant: 'success' });
+      enqueueSnackbar(t('admin:information.shortDesc.success'), { variant: 'success' });
       dispatchUpdateEntities(service.mainDomain, form, history);
     })
     .catch((error) => {
@@ -100,11 +100,11 @@ const ServiceShortDesc = ({ appBarProps, t, service, dispatchUpdateEntities, his
       id="ServiceInformationShortDesc"
       navigationProps={{ homePath }}
       appBarProps={appBarProps}
-      title={t('admin__new:information.shortDesc.title')}
+      title={t('admin:information.shortDesc.title')}
     >
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
-          {t('admin__new:information.shortDesc.subtitle')}
+          {t('admin:information.shortDesc.subtitle')}
         </Typography>
         <Formik
           validationSchema={shortDescValidationSchema}
@@ -118,13 +118,13 @@ const ServiceShortDesc = ({ appBarProps, t, service, dispatchUpdateEntities, his
               name="shortDesc"
               autoFocus
               component={FieldText}
-              label={t('fields__new:shortDesc.label')}
-              helperText={t('fields__new:shortDesc.helperText')}
+              label={t('fields:shortDesc.label')}
+              helperText={t('fields:shortDesc.helperText')}
               t={t}
             />
             <Box mt={1}>
               <ButtonSubmit>
-                {t('common__new:submit')}
+                {t('common:submit')}
               </ButtonSubmit>
             </Box>
           </Box>
@@ -163,5 +163,5 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(null, mapDispatchToProps)(
-  withTranslation(['admin__new', 'fields__new', 'common__new'])(ServiceShortDesc),
+  withTranslation(['admin', 'fields', 'common'])(ServiceShortDesc),
 );

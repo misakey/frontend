@@ -72,7 +72,7 @@ const AccountPassword = ({
           .send();
 
         commitPasswordChange();
-        enqueueSnackbar(t('account__new:password.success'), { variant: 'success' });
+        enqueueSnackbar(t('account:password.success'), { variant: 'success' });
         history.push(routes.account._);
       } catch (e) {
         if (e instanceof BackupDecryptionError || e.code === errorTypes.forbidden) {
@@ -91,7 +91,7 @@ const AccountPassword = ({
 
   return (
     <ScreenAction
-      title={t('account__new:password.title')}
+      title={t('account:password.title')}
       state={state}
       hideAppBar
     >
@@ -108,7 +108,7 @@ const AccountPassword = ({
                   type="password"
                   name={OLD_PASSWORD_FIELD_NAME}
                   component={FieldTextPasswordRevealable}
-                  label={t('fields__new:passwordOld.label')}
+                  label={t('fields:passwordOld.label')}
                 />
               </Box>
               <Box mb={2}>
@@ -116,23 +116,23 @@ const AccountPassword = ({
                   type="password"
                   name="passwordNew"
                   component={FieldTextPasswordRevealable}
-                  label={t('fields__new:password.label')}
-                  helperText={t('fields__new:password.helperText')}
+                  label={t('fields:password.label')}
+                  helperText={t('fields:password.helperText')}
                 />
               </Box>
               <Field
                 type="password"
                 name="passwordConfirm"
                 component={FieldTextPasswordRevealable}
-                label={t('fields__new:passwordConfirm.label')}
+                label={t('fields:passwordConfirm.label')}
               />
               <BoxControls
                 mt={3}
                 primary={{
                   type: 'submit',
                   isLoading: isSubmitting,
-                  'aria-label': t('common__new:submit'),
-                  text: t('common__new:submit'),
+                  'aria-label': t('common:submit'),
+                  text: t('common:submit'),
                 }}
                 formik
               />
@@ -159,4 +159,4 @@ AccountPassword.defaultProps = {
   isFetching: false,
 };
 
-export default withTranslation(['common__new', 'account__new', 'fields__new'])(AccountPassword);
+export default withTranslation(['common', 'account', 'fields'])(AccountPassword);

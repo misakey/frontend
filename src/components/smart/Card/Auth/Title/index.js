@@ -16,7 +16,7 @@ function AuthCardTitle({ name, sso, t }) {
   return (
     <Box display="flex" alignItems="center" justifyContent="center" flexWrap="wrap">
       <Box mr={1}>
-        {t(`auth__new:${name}.card.title`)}
+        {t(`auth:${name}.card.title`)}
       </Box>
       <AvatarApplicationSso sso={sso} typographyProps={TYPOGRAPHY_PROPS} />
     </Box>
@@ -35,4 +35,4 @@ AuthCardTitle.defaultProps = {
 
 export default connect(
   (state) => ({ sso: state.sso }),
-)(withTranslation('auth__new')(AuthCardTitle));
+)(withTranslation('auth')(AuthCardTitle));

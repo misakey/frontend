@@ -189,7 +189,7 @@ const AuthSignUpCreate = ({
             });
             // @FIXME for now the implementation clears touched status when mounting a subscreen
             // thus it hides the errors in the subscreen which disappear as they're only from API
-            enqueueSnackbar(t('fields__new:email.error.conflict'), { variant: 'error' });
+            enqueueSnackbar(t('fields:email.error.conflict'), { variant: 'error' });
           } else {
             handleGenericHttpErrors(e);
           }
@@ -286,4 +286,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchCreateNewOwnerSecrets: (password) => dispatch(createNewOwnerSecrets(password)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('fields__new')(AuthSignUpCreate));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('fields')(AuthSignUpCreate));

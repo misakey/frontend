@@ -69,14 +69,14 @@ const ApplicationInfoMore = ({
         return {
           standing: BUTTON_STANDINGS.OUTLINED,
           size: 'small',
-          text: t('citizen__new:application.info.more.report.button'),
+          text: t('citizen:application.info.more.report.button'),
           onClick: () => openInNewTab('mailto:feedback@misakey.com'),
         };
       }
       return {
         standing: BUTTON_STANDINGS.OUTLINED,
         size: 'small',
-        text: t('citizen__new:application.info.more.report.button'),
+        text: t('citizen:application.info.more.report.button'),
         component: 'a',
         href: 'mailto:feedback@misakey.com',
       };
@@ -87,16 +87,16 @@ const ApplicationInfoMore = ({
   return (
     <>
       <Title>
-        {t('citizen__new:application.info.more.title')}
+        {t('citizen:application.info.more.title')}
       </Title>
 
       {!IS_PLUGIN && (
         <CardSimpleText
-          text={t('citizen__new:application.info.more.dpo.text')}
+          text={t('citizen:application.info.more.dpo.text')}
           button={{
             standing: BUTTON_STANDINGS.OUTLINED,
             size: 'small',
-            text: t('citizen__new:application.info.more.dpo.button'),
+            text: t('citizen:application.info.more.dpo.button'),
             component: Link,
             to: generatePath(routes.dpo.service._, { mainDomain: application.mainDomain }),
           }}
@@ -105,7 +105,7 @@ const ApplicationInfoMore = ({
       )}
 
       <CardSimpleText
-        text={t('citizen__new:application.info.more.report.text')}
+        text={t('citizen:application.info.more.report.text')}
         button={reportButton}
         my={2}
       />
@@ -121,9 +121,9 @@ const ApplicationInfoMore = ({
               content: classes.summaryContent,
             }}
           >
-            <Typography>{t('citizen__new:application.info.more.domains.text')}</Typography>
+            <Typography>{t('citizen:application.info.more.domains.text')}</Typography>
             <Chip
-              label={t('citizen__new:application.info.more.domains.count', { count: domains.length })}
+              label={t('citizen:application.info.more.domains.count', { count: domains.length })}
               variant="outlined"
             />
           </ExpansionPanelSummary>
@@ -141,11 +141,11 @@ const ApplicationInfoMore = ({
 
       {isAuthenticated && (
         <CardSimpleText
-          text={t('citizen__new:application.info.more.favorite.text')}
+          text={t('citizen:application.info.more.favorite.text')}
           button={{
             standing: BUTTON_STANDINGS.OUTLINED,
             size: 'small',
-            text: t(`common__new:${(isLinked) ? 'remove' : 'add'}`),
+            text: t(`common:${(isLinked) ? 'remove' : 'add'}`),
             onClick: toggleLinked,
           }}
           my={2}
@@ -168,4 +168,4 @@ ApplicationInfoMore.defaultProps = {
   isLinked: false,
 };
 
-export default withTranslation(['common__new', 'citizen__new'])(ApplicationInfoMore);
+export default withTranslation(['common', 'citizen'])(ApplicationInfoMore);

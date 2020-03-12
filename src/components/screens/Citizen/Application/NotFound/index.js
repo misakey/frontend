@@ -68,7 +68,7 @@ const useOnCreateApplication = (
 ) => useCallback(() => createApplication(mainDomain)
   .then((response) => {
     const application = objectToCamelCase(response);
-    enqueueSnackbar(t('citizen__new:applications.create.success'), { variant: 'success' });
+    enqueueSnackbar(t('citizen:applications.create.success'), { variant: 'success' });
     dispatchApplicationCreate(application);
   })
   .catch(handleGenericHttpErrors),
@@ -110,14 +110,14 @@ function ApplicationNotFound({ mainDomain, dispatchApplicationCreate, t }) {
           <Typography variant="h2" color="secondary">{404}</Typography>
         </Box>
         <Typography variant="h5" component="h3" color="textSecondary">
-          {t('citizen__new:application.notFound.title', { mainDomain })}
+          {t('citizen:application.notFound.title', { mainDomain })}
         </Typography>
         <Box my={4}>
           <CardSimpleText
             my={1}
-            text={t('citizen__new:application.notFound.create.text', { mainDomain })}
+            text={t('citizen:application.notFound.create.text', { mainDomain })}
             button={{
-              text: t('citizen__new:application.notFound.create.button'),
+              text: t('citizen:application.notFound.create.button'),
               standing: BUTTON_STANDINGS.MAIN,
               ...buttonProps,
             }}
@@ -142,4 +142,4 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['citizen__new'])(ApplicationNotFound));
+export default connect(null, mapDispatchToProps)(withTranslation(['citizen'])(ApplicationNotFound));

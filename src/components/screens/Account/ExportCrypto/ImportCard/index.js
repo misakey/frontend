@@ -8,7 +8,7 @@ import ImportButton from './ImportButton';
 
 const ImportCard = ({ t }) => (
   <CardSimpleText
-    text={t('account__new:exportCrypto.importButton.info')}
+    text={t('account:exportCrypto.importButton.info')}
     button={<ImportButton />}
   />
 );
@@ -17,4 +17,4 @@ ImportCard.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['account__new'])(ImportCard);
+export default withTranslation(['account'])(ImportCard);

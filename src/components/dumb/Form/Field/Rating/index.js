@@ -60,4 +60,4 @@ RatingField.defaultProps = {
   helperText: '',
 };
 
-export default withTranslation('fields__new')(withErrors(RatingField));
+export default withTranslation('fields')(withErrors(RatingField));

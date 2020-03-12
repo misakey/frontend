@@ -38,7 +38,7 @@ const DialogDataboxDone = ({ onClose, onSuccess, open, t }) => {
   const secondary = useMemo(
     () => ({
       onClick: onClose,
-      text: t('common__new:cancel'),
+      text: t('common:cancel'),
     }),
     [onClose, t],
   );
@@ -57,11 +57,11 @@ const DialogDataboxDone = ({ onClose, onSuccess, open, t }) => {
       >
         <Form>
           <DialogTitle id="databox-done-dialog-title">
-            {t('dpo__new:requests.doneDialog.title')}
+            {t('dpo:requests.doneDialog.title')}
           </DialogTitle>
           <DialogContent>
             <DialogContentText classes={{ root: classes.dialogContentTextRoot }} id="databox-done-dialog-description">
-              {t('dpo__new:requests.doneDialog.description')}
+              {t('dpo:requests.doneDialog.description')}
             </DialogContentText>
             <Field
               component={FieldText}
@@ -70,12 +70,12 @@ const DialogDataboxDone = ({ onClose, onSuccess, open, t }) => {
               variant="outlined"
               id="dpo-comment"
               fullWidth
-              label={t('fields__new:dpoComment.label')}
-              helperText={t('fields__new:dpoComment.helperText')}
+              label={t('fields:dpoComment.label')}
+              helperText={t('fields:dpoComment.helperText')}
             >
               {DPO_COMMENTS.map((comment) => (
                 <MenuItem classes={{ root: classes.menuItemRoot }} key={comment} value={comment}>
-                  {t(`common__new:databox.dpoComment.${comment}`)}
+                  {t(`common:databox.dpoComment.${comment}`)}
                 </MenuItem>
               ))}
             </Field>
@@ -84,7 +84,7 @@ const DialogDataboxDone = ({ onClose, onSuccess, open, t }) => {
             <BoxControls
               primary={{
                 type: 'submit',
-                text: t('common__new:done'),
+                text: t('common:done'),
               }}
               secondary={secondary}
               formik
@@ -104,4 +104,4 @@ DialogDataboxDone.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['common__new', 'fields__new', 'dpo__new'])(DialogDataboxDone);
+export default withTranslation(['common', 'fields', 'dpo'])(DialogDataboxDone);

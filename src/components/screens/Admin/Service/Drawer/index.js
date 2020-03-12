@@ -211,7 +211,7 @@ function Drawer({ children, location, mainDomain, onClose, open, t, userHasRole 
                   className={clsx(classes.icon, listItemsClasses[name].icon)}
                 />
               </ListItemIcon>
-              <ListItemText primary={t(`components__new:drawer.list.items.${name}`)} />
+              <ListItemText primary={t(`components:drawer.list.items.${name}`)} />
             </ListItem>
           ))}
         </List>
@@ -238,4 +238,4 @@ Drawer.defaultProps = {
   userHasRole: false,
 };
 
-export default withRouter(withTranslation('components__new')(Drawer));
+export default withRouter(withTranslation('components')(Drawer));

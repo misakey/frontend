@@ -58,12 +58,12 @@ const ContactProviders = ({
   );
 
   const subject = useMemo(
-    () => t('citizen__new:contact.email.subject'),
+    () => t('citizen:contact.email.subject'),
     [t],
   );
   const body = useMemo(
     () => t(
-      `citizen__new:contact.email.body.${mailType}`,
+      `citizen:contact.email.body.${mailType}`,
       { dpoEmail, databoxURL, mainDomain, ...mapDates(databox) },
     ),
     [databoxURL, databox, dpoEmail, mailType, mainDomain, t],
@@ -75,7 +75,7 @@ const ContactProviders = ({
     <div className="ContactProviders">
       <AppBarNavigation
         toolbarProps={{ maxWidth: 'md' }}
-        title={t('citizen__new:contact.providers.title')}
+        title={t('citizen:contact.providers.title')}
       />
       <ContactProvidersBlock
         doneTo={doneTo}
@@ -99,4 +99,4 @@ ContactProviders.defaultProps = {
   databox: null,
 };
 
-export default (withTranslation(['citizen__new'])(ContactProviders));
+export default (withTranslation(['citizen'])(ContactProviders));

@@ -107,7 +107,7 @@ const AuthSignInIdentifier = ({
   const contentAction = useIdentifierContentAction(acr, t);
 
   const primary = useMemo(() => ({
-    text: t('auth__new:signIn.form.action.next'),
+    text: t('auth:signIn.form.action.next'),
   }),
   [t]);
 
@@ -126,7 +126,7 @@ const AuthSignInIdentifier = ({
         primary={primary}
         secondary={secondary}
         title={<AuthCardTitle name="signIn" />}
-        subtitle={t('auth__new:signIn.card.subtitle.text.identifier.email')}
+        subtitle={t('auth:signIn.card.subtitle.text.identifier.email')}
         Header={CardHeaderAuth}
         formik
       >
@@ -160,4 +160,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchSetPublics: (publics) => dispatch(screenAuthSetPublics(publics)),
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['auth__new', 'common__new'])(AuthSignInIdentifier));
+export default connect(null, mapDispatchToProps)(withTranslation(['auth', 'common'])(AuthSignInIdentifier));

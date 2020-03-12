@@ -90,7 +90,7 @@ const ButtonConnect = ({
           Icon={noTokenIcon}
           signInAction={signInAction}
         >
-          {t('components__new:buttonConnect.signIn')}
+          {t('components:buttonConnect.signIn')}
         </ButtonConnectNoToken>
       )}
       {isFetchingUser && <CircularProgress size={14} className={className} />}
@@ -156,4 +156,4 @@ ButtonConnect.defaultProps = {
   customAction: null,
 };
 
-export default withTranslation('components__new')(ButtonConnect);
+export default withTranslation('components')(ButtonConnect);

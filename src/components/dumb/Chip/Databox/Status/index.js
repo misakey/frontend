@@ -104,7 +104,7 @@ const ChipDataboxStatus = ({ databox, t, showIcon, showDetails }) => {
   const calendarDateSinceUpdated = useCalendarDateSince(databox.updatedAt);
 
   const textSinceCreated = useMemo(
-    () => `${t('common__new:databox.since.created')} ${calendarDateSinceCreated} (${dateCreation})`,
+    () => `${t('common:databox.since.created')} ${calendarDateSinceCreated} (${dateCreation})`,
     [calendarDateSinceCreated, dateCreation, t],
   );
 
@@ -130,7 +130,7 @@ const ChipDataboxStatus = ({ databox, t, showIcon, showDetails }) => {
 
   const textSinceUpdated = useMemo(
     () => (hasUpdate
-      ? `${t('common__new:databox.since.updated')} ${calendarDateSinceUpdated} (${getDateFormat(databox.updatedAt)})`
+      ? `${t('common:databox.since.updated')} ${calendarDateSinceUpdated} (${getDateFormat(databox.updatedAt)})`
       : null),
     [hasUpdate, t, calendarDateSinceUpdated, databox.updatedAt],
   );
@@ -212,7 +212,7 @@ const ChipDataboxStatus = ({ databox, t, showIcon, showDetails }) => {
         color="default"
         icon={statusIcon}
         date={date}
-        text={t(`common__new:databox.since.${status}`)}
+        text={t(`common:databox.since.${status}`)}
         deleteIcon={<InfoIcon color="primary" />}
         onClick={onClick}
         onDelete={onDelete}
@@ -225,8 +225,8 @@ const ChipDataboxStatus = ({ databox, t, showIcon, showDetails }) => {
         {...POPOVER_CONFIG}
       >
         <Box p={2}>
-          <Title>{t('common__new:details')}</Title>
-          <List aria-label={t('common__new:details')}>
+          <Title>{t('common:details')}</Title>
+          <List aria-label={t('common:details')}>
             <ListItem>
               <ListItemIcon>
                 <EventIcon />
@@ -246,7 +246,7 @@ const ChipDataboxStatus = ({ databox, t, showIcon, showDetails }) => {
                 <ListItemIcon>
                   <NotesIcon />
                 </ListItemIcon>
-                <ListItemText primary={t(`common__new:databox.${commentType}.${comment}`)} />
+                <ListItemText primary={t(`common:databox.${commentType}.${comment}`)} />
               </ListItem>
             )}
           </List>
@@ -269,4 +269,4 @@ ChipDataboxStatus.defaultProps = {
   showDetails: false,
 };
 
-export default withTranslation('common__new')(ChipDataboxStatus);
+export default withTranslation('common')(ChipDataboxStatus);

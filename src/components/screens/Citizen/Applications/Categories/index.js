@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 const ApplicationsCategoriesScreen = ({ t }) => {
   const classes = useStyles();
   return (
-    <ScreenAction title={t('citizen__new:applications.select')}>
+    <ScreenAction title={t('citizen:applications.select')}>
       <Container maxWidth="md" className={classes.container}>
         <ApplicationCategoriesList />
       </Container>
@@ -34,4 +34,4 @@ ApplicationsCategoriesScreen.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('citizen__new')(ApplicationsCategoriesScreen);
+export default withTranslation('citizen')(ApplicationsCategoriesScreen);

@@ -33,10 +33,10 @@ const AccessRequestError = ({ error, t }) => {
       <Container maxWidth="md">
         <Card
           mt={2}
-          title={t(`dpo__new.requests.acces.error.${errorStatus}.title`)}
+          title={t(`dpo.requests.acces.error.${errorStatus}.title`)}
         >
           <Typography classes={{ root: classes.typographyRoot }}>
-            <Trans i18nKey={`dpo__new.requests.acces.error.${errorStatus}.desc`}>
+            <Trans i18nKey={`dpo.requests.acces.error.${errorStatus}.desc`}>
               {'La demande de portabilité que vous essayez de consulter n\'existe pas. Veuillez vérifier que vous avez bien recopié le lien qui vous a été envoyé par email. Si cela ne fonctionne toujours pas, vous pouvez nous contacter à '}
               <Link href="mailto:question.pro@misakey.com">question.pro@misakey.com</Link>
               {'. Pensez à nous joindre le lien qui ne fonctionne pas et le mail de l\'utilisateur ayant fait la demande. Veuillez-nous excuser de la gène occasionnée.'}
@@ -58,4 +58,4 @@ AccessRequestError.defaultProps = {
 };
 
 
-export default withTranslation(['dpo__new'])(AccessRequestError);
+export default withTranslation(['dpo'])(AccessRequestError);

@@ -49,7 +49,7 @@ const useOnSubmit = (
 ) => useMemo(
   () => (form, { setSubmitting }) => updateApplicationInfo(service.id, form)
     .then(() => {
-      enqueueSnackbar(t('admin__new:information.longDesc.success'), { variant: 'success' });
+      enqueueSnackbar(t('admin:information.longDesc.success'), { variant: 'success' });
       dispatchUpdateEntities(service.mainDomain, form, history);
     })
     .catch((error) => {
@@ -100,11 +100,11 @@ const ServiceLongDesc = ({ appBarProps, t, service, dispatchUpdateEntities, hist
       id="ServiceInformationLongDesc"
       navigationProps={{ homePath }}
       appBarProps={appBarProps}
-      title={t('admin__new:information.longDesc.title')}
+      title={t('admin:information.longDesc.title')}
     >
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" align="left" gutterBottom>
-          {t('admin__new:information.longDesc.subtitle')}
+          {t('admin:information.longDesc.subtitle')}
         </Typography>
         <Formik
           validationSchema={longDescValidationSchema}
@@ -118,11 +118,11 @@ const ServiceLongDesc = ({ appBarProps, t, service, dispatchUpdateEntities, hist
               autoFocus
               multiline
               component={FieldText}
-              label={t('fields__new:longDesc.label')}
+              label={t('fields:longDesc.label')}
             />
             <Box mt={1}>
               <ButtonSubmit>
-                {t('common__new:submit')}
+                {t('common:submit')}
               </ButtonSubmit>
             </Box>
           </Box>
@@ -160,4 +160,4 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['admin__new', 'fields__new', 'common__new'])(ServiceLongDesc));
+export default connect(null, mapDispatchToProps)(withTranslation(['admin', 'fields', 'common'])(ServiceLongDesc));

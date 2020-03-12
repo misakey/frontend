@@ -40,7 +40,7 @@ const SummaryFeedbackCardSkeleton = ({ hideTitle, t }) => {
   const classes = useStyles();
 
   const title = useMemo(
-    () => (hideTitle ? null : t('citizen__new:application.info.feedback.all')),
+    () => (hideTitle ? null : t('citizen:application.info.feedback.all')),
     [hideTitle, t],
   );
 
@@ -60,13 +60,13 @@ const SummaryFeedbackCardSkeleton = ({ hideTitle, t }) => {
           </Box>
           <Box mr={2}>
             <Typography variant="h6" color="textPrimary" noWrap>
-              {t('common__new:on')}
+              {t('common:on')}
               5
             </Typography>
           </Box>
           <Box ml="auto">
             <Typography variant="subtitle1" color="textPrimary" noWrap>
-              {t('citizen__new:application.info.feedback.ratingCount', { count: '' })}
+              {t('citizen:application.info.feedback.ratingCount', { count: '' })}
             </Typography>
           </Box>
         </Box>
@@ -88,4 +88,4 @@ SummaryFeedbackCardSkeleton.defaultProps = {
   hideTitle: false,
 };
 
-export default withTranslation(['citizen__new', 'common__new'])(SummaryFeedbackCardSkeleton);
+export default withTranslation(['citizen', 'common'])(SummaryFeedbackCardSkeleton);

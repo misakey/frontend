@@ -54,4 +54,4 @@ FieldCheckbox.defaultProps = {
   label: '',
 };
 
-export default withTranslation('fields__new')(withErrors(FieldCheckbox));
+export default withTranslation('fields')(withErrors(FieldCheckbox));

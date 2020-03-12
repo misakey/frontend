@@ -134,14 +134,14 @@ function ApplicationInfoVault({
     [isAuthenticated, applicationID, databoxes],
   );
 
-  const questionItems = useQuestionsItems(t, 'citizen__new:application.info.vault.questions', 4);
+  const questionItems = useQuestionsItems(t, 'citizen:application.info.vault.questions', 4);
   const conditionalQuestionItems = useMemo(
     () => {
       if (!isNil(currentDatabox) && isDataboxOpen(currentDatabox)) {
-        return getQuestionsItems(t, 'citizen__new:application.info.vault.questions.open', 3);
+        return getQuestionsItems(t, 'citizen:application.info.vault.questions.open', 3);
       }
       if (isDataboxCommentKO(currentDatabox)) {
-        return getQuestionsItems(t, 'citizen__new:application.info.vault.questions.done', 1);
+        return getQuestionsItems(t, 'citizen:application.info.vault.questions.done', 1);
       }
       return [];
     },
@@ -200,7 +200,7 @@ function ApplicationInfoVault({
             <NoDataboxInfoCard />
           )}
           <Divider className={classes.divider} />
-          <Title>{t('citizen__new:application.info.vault.questions.title')}</Title>
+          <Title>{t('citizen:application.info.vault.questions.title')}</Title>
           <Card dense>
             <ListQuestions items={questionItems} breakpoints={{ sm: 6, xs: 12 }} />
             <ListQuestions items={conditionalQuestionItems} breakpoints={{ sm: 6, xs: 12 }} />
@@ -258,7 +258,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const ApplicationInfoVaultComponent = connect(mapStateToProps, mapDispatchToProps)(
-  withTranslation(['citizen__new'])(ApplicationInfoVault),
+  withTranslation(['citizen'])(ApplicationInfoVault),
 );
 
 

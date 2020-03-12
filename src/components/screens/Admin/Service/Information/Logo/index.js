@@ -54,7 +54,7 @@ const useOnSubmit = (
 ) => useMemo(
   () => (form, { setSubmitting }) => updateLogo(service.id, pickForm(form))
     .then(() => {
-      enqueueSnackbar(t('admin__new:information.logo.success'), { variant: 'success' });
+      enqueueSnackbar(t('admin:information.logo.success'), { variant: 'success' });
       const changes = { logoUri: form.preview };
       dispatchUpdate(service.mainDomain, changes, history);
     })
@@ -157,4 +157,4 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation('admin__new')(ServiceLogo));
+export default connect(null, mapDispatchToProps)(withTranslation('admin')(ServiceLogo));

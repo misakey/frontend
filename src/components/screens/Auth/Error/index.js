@@ -30,7 +30,7 @@ const AuthError = ({ location, t }) => {
   return (
     <Paper className="Error">
       <Typography className="initialDescription">
-        {t('auth__new:debugError')}
+        {t('auth:debugError')}
       </Typography>
       <Button
         variant="contained"
@@ -79,4 +79,4 @@ AuthError.propTypes = {
 };
 
 
-export default withTranslation('auth__new')(AuthError);
+export default withTranslation('auth')(AuthError);

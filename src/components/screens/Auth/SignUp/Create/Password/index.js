@@ -70,7 +70,7 @@ const AuthSignUpCreatePassword = ({
   const primary = useMemo(
     () => ({
       type: 'submit',
-      text: t('common__new:next'),
+      text: t('common:next'),
     }),
     [t],
   );
@@ -96,11 +96,11 @@ const AuthSignUpCreatePassword = ({
       padded={padded}
       primary={primary}
       secondary={<ButtonGoBackTo to={parentTo} />}
-      title={t('auth__new:signUp.create.password.title')}
+      title={t('auth:signUp.create.password.title')}
       titleProps={titleProps}
       subtitle={(
         <Trans
-          i18nKey="auth__new:signUp.create.password.subtitle"
+          i18nKey="auth:signUp.create.password.subtitle"
         >
           Je choisis un mot de passe fort pour protéger la clé secrète de mon coffre-fort.
           <strong>Une longue succession de mots simples aléatoires</strong>
@@ -114,7 +114,7 @@ const AuthSignUpCreatePassword = ({
       <AuthSignUpCreatePasswordFormFields />
       {/* <Box mt={2}>
         <Typography>
-          {t('auth__new:signUp.create.password.more.text')}
+          {t('auth:signUp.create.password.more.text')}
           <MUILink
             color="secondary"
             to={routes.legals.privacy}
@@ -122,7 +122,7 @@ const AuthSignUpCreatePassword = ({
             target="_blank"
             rel="noopener noreferrer"
           >
-            {t('auth__new:signUp.create.password.more.link')}
+            {t('auth:signUp.create.password.more.link')}
           </MUILink>
         </Typography>
       </Box> */}
@@ -140,4 +140,4 @@ AuthSignUpCreatePassword.propTypes = {
 };
 
 
-export default withTranslation(['auth__new', 'common__new'])(AuthSignUpCreatePassword);
+export default withTranslation(['auth', 'common'])(AuthSignUpCreatePassword);

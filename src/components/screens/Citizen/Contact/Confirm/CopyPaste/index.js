@@ -37,7 +37,7 @@ const ContactConfirmCopyPaste = ({
     () => ({
       component: Link,
       to: doneTo,
-      text: t('citizen__new:contact.confirmation.copyPaste.confirm.button'),
+      text: t('citizen:contact.confirmation.copyPaste.confirm.button'),
       replace: true,
     }),
     [doneTo, t],
@@ -52,7 +52,7 @@ const ContactConfirmCopyPaste = ({
     <>
       <DialogContent>
         <Subtitle>
-          {t('citizen__new:contact.confirmation.copyPaste.subtitle')}
+          {t('citizen:contact.confirmation.copyPaste.subtitle')}
         </Subtitle>
         <Box display="flex" justifyContent="center" mb={1}>
           <ChipUser
@@ -65,7 +65,7 @@ const ContactConfirmCopyPaste = ({
             divider
           >
             <ListItemText
-              primary={t('citizen__new:contact.email.to.label')}
+              primary={t('citizen:contact.email.to.label')}
               primaryTypographyProps={{
                 variant: 'h6',
                 color: 'textSecondary',
@@ -84,7 +84,7 @@ const ContactConfirmCopyPaste = ({
             divider
           >
             <ListItemText
-              primary={t('citizen__new:contact.email.subject.label')}
+              primary={t('citizen:contact.email.subject.label')}
               primaryTypographyProps={{
                 variant: 'h6',
                 color: 'textSecondary',
@@ -103,7 +103,7 @@ const ContactConfirmCopyPaste = ({
             divider
           >
             <ListItemText
-              primary={t('citizen__new:contact.email.body.label')}
+              primary={t('citizen:contact.email.body.label')}
               primaryTypographyProps={{
                 variant: 'h6',
                 color: 'textSecondary',
@@ -158,4 +158,4 @@ const mapStateToProps = (state) => ({
   profile: state.auth.profile,
 });
 
-export default connect(mapStateToProps, {})(withTranslation(['citizen__new', 'common__new'])(ContactConfirmCopyPaste));
+export default connect(mapStateToProps, {})(withTranslation(['citizen', 'common'])(ContactConfirmCopyPaste));

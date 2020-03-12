@@ -38,7 +38,7 @@ const ContactConfigProvider = ({ t }) => {
   return (
     <DialogContent>
       <Subtitle>
-        {t('citizen__new:contact.configure.provider.subtitle')}
+        {t('citizen:contact.configure.provider.subtitle')}
       </Subtitle>
       <Box mt={2} mb={6}>
         <List disablePadding>
@@ -61,4 +61,4 @@ ContactConfigProvider.propTypes = {
 ContactConfigProvider.defaultProps = {
 };
 
-export default withTranslation('citizen__new')(ContactConfigProvider);
+export default withTranslation('citizen')(ContactConfigProvider);

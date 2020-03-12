@@ -52,14 +52,14 @@ function MultipleContactButton({ t, selectedApplications, dispatchClearSelection
         className={classes.button}
         onClick={dispatchClearSelection}
       >
-        {t('citizen__new:contact.bulk.unselectAll')}
+        {t('citizen:contact.bulk.unselectAll')}
       </Fab>
 
       <AuthRequiredFab variant="extended" color="secondary" className={classes.button} onClick={contact}>
         <Badge badgeContent={count} color="primary" className={classes.badge}>
           <Email />
         </Badge>
-        {t('citizen__new:contact.bulk.contact')}
+        {t('citizen:contact.bulk.contact')}
       </AuthRequiredFab>
     </Box>
 
@@ -80,4 +80,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchClearSelection: () => dispatch(bulkSelectionSetSelected([])),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['citizen__new'])(MultipleContactButton));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['citizen'])(MultipleContactButton));

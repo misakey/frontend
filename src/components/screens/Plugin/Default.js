@@ -32,7 +32,7 @@ const DefaultScreen = () => {
     <Screen appBarProps={appBarProps}>
       <Box className={classes.container} display="flex" justifyContent="center" alignItems="center">
         <Title className={classes.title}>
-          <Trans i18nKey="plugin__new:invalidWebsite">
+          <Trans i18nKey="plugin:invalidWebsite">
             <span className={classes.catchphrase}>Oups</span>
             {'L\'adresse détectée ne correspond pas à un site'}
           </Trans>
@@ -42,4 +42,4 @@ const DefaultScreen = () => {
   );
 };
 
-export default withTranslation(['plugin__new'])(DefaultScreen);
+export default withTranslation(['plugin'])(DefaultScreen);

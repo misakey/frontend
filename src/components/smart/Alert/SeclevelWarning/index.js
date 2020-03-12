@@ -23,19 +23,19 @@ const SecLevelWarningAlert = ({
     <Alert
       dialogActions={(
         <>
-          <Button onClick={hideSeclevelWarning} text={t('common__new:cancel')} />
+          <Button onClick={hideSeclevelWarning} text={t('common:cancel')} />
           <Button
             standing={BUTTON_STANDINGS.MAIN}
             authProps={authProps}
             component={ButtonConnectSimple}
-            text={t('common__new:signIn')}
+            text={t('common:signIn')}
           />
         </>
       )}
       onClose={hideSeclevelWarning}
       open={seclevelWarningShow}
-      text={t('components__new:alert.seclevel.text')}
-      title={t('components__new:alert.seclevel.title')}
+      text={t('components:alert.seclevel.text')}
+      title={t('components:alert.seclevel.title')}
     />
   );
 };
@@ -62,4 +62,4 @@ const mapStateToProps = (state) => ({ ...state.warning });
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(withTranslation(['common__new', 'components__new'])(SecLevelWarningAlert));
+)(withTranslation(['common', 'components'])(SecLevelWarningAlert));

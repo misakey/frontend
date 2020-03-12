@@ -79,13 +79,13 @@ const ContactConfigConfirm = ({ t, profile }) => {
 
       fetchAskConfirm({ userEmailId })
         .then(() => {
-          const text = t('citizen__new:contact.configure.confirm.resend.success', { email });
+          const text = t('citizen:contact.configure.confirm.resend.success', { email });
           enqueueSnackbar(text, { variant: 'success' });
         })
         .catch((e) => {
           const errorCode = getCode(e);
           if (errorCode === conflict) {
-            enqueueSnackbar(t('fields__new:contactConfigConfirm.code.error.conflict'), { variant: 'error' });
+            enqueueSnackbar(t('fields:contactConfigConfirm.code.error.conflict'), { variant: 'error' });
           } else {
             handleGenericHttpErrors(e);
           }
@@ -100,7 +100,7 @@ const ContactConfigConfirm = ({ t, profile }) => {
       onClick: reSendConfirmCode,
       isLoading: isSending,
       disabled: isSending,
-      text: t('citizen__new:contact.configure.confirm.resend.button'),
+      text: t('citizen:contact.configure.confirm.resend.button'),
     }),
     [isSending, reSendConfirmCode, t],
   );
@@ -116,7 +116,7 @@ const ContactConfigConfirm = ({ t, profile }) => {
     <>
       <DialogContent>
         <Subtitle>
-          {t('citizen__new:contact.configure.confirm.subtitle')}
+          {t('citizen:contact.configure.confirm.subtitle')}
         </Subtitle>
         <Box display="flex" justifyContent="center" mb={1}>
           <ChipUser
@@ -137,7 +137,7 @@ const ContactConfigConfirm = ({ t, profile }) => {
         <BoxControls
           primary={{
             type: 'submit',
-            text: t('common__new:next'),
+            text: t('common:next'),
           }}
           formik
         />
@@ -163,4 +163,4 @@ const mapStateToProps = (state) => ({
   profile: state.auth.profile,
 });
 
-export default connect(mapStateToProps, {})(withTranslation(['citizen__new', 'fields__new'])(ContactConfigConfirm));
+export default connect(mapStateToProps, {})(withTranslation(['citizen', 'fields'])(ContactConfigConfirm));

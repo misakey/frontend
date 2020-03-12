@@ -71,7 +71,7 @@ const AppBarNavigationBase = forwardRef(({
             edge="start"
             color="inherit"
             className={classes.backButton}
-            aria-label={t('common__new:navigation.backButton', 'Go back')}
+            aria-label={t('common:navigation.backButton', 'Go back')}
             {...buttonProps}
           >
             <ArrowBack />
@@ -118,4 +118,4 @@ AppBarNavigationBase.defaultProps = {
   buttonProps: {},
 };
 
-export default withTranslation('common__new', { withRef: true })(AppBarNavigationBase);
+export default withTranslation('common', { withRef: true })(AppBarNavigationBase);

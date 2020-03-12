@@ -42,7 +42,7 @@ function LinkedApplicationsList({
   return (
     <>
       <Title>
-        {t('components__new:list.applications.linked.title')}
+        {t('components:list.applications.linked.title')}
       </Title>
       <Card mb={3}>
         <ApplicationsList
@@ -74,5 +74,5 @@ LinkedApplicationsList.defaultProps = {
 };
 
 export default withMyApplications({ workspace: WORKSPACE.CITIZEN })(
-  withTranslation(['components__new'])(LinkedApplicationsList),
+  withTranslation(['components'])(LinkedApplicationsList),
 );

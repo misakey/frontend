@@ -116,7 +116,7 @@ function AppBar({
                 <Logo {...logoProps} />
                 {(!isSmallMode) && (
                   <Typography variant="subtitle2">
-                    {t(`common__new:workspaces.${workspace}`)}
+                    {t(`common:workspaces.${workspace}`)}
                   </Typography>
                 )}
               </LinkHome>
@@ -169,4 +169,4 @@ AppBar.defaultProps = {
   withUser: true,
 };
 
-export default withTranslation('common__new')(AppBar);
+export default withTranslation('common')(AppBar);

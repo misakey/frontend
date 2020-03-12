@@ -139,7 +139,7 @@ const AuthSignUpFinale = ({
     () => ({
       onClick,
       isLoading,
-      text: t('common__new:gotIt'),
+      text: t('common:gotIt'),
     }),
     [isLoading, onClick, t],
   );
@@ -153,18 +153,18 @@ const AuthSignUpFinale = ({
       className={classes.cardRoot}
       padded={padded}
       primary={primary}
-      title={t('auth__new:signUp.finale.title', { displayName })}
+      title={t('auth:signUp.finale.title', { displayName })}
       titleProps={titleProps}
-      subtitle={t('auth__new:signUp.finale.subtitle')}
+      subtitle={t('auth:signUp.finale.subtitle')}
       subtitleProps={subtitleProps}
       Header={CardHeaderAuthSignUp}
     >
-      <Typography className={classes.contentTitleTypography} variant="body2">{t('auth__new:signUp.finale.content.title')}</Typography>
-      <Typography className={classes.contentTextTypography} variant="body2">{t('auth__new:signUp.finale.content.text')}</Typography>
+      <Typography className={classes.contentTitleTypography} variant="body2">{t('auth:signUp.finale.content.title')}</Typography>
+      <Typography className={classes.contentTextTypography} variant="body2">{t('auth:signUp.finale.content.text')}</Typography>
 
       {/* <Box mt={2}>
         <Typography>
-          {t('auth__new:signUp.finale.more.text')}
+          {t('auth:signUp.finale.more.text')}
           <MUILink
             color="secondary"
             to={routes.legals.privacy}
@@ -172,7 +172,7 @@ const AuthSignUpFinale = ({
             target="_blank"
             rel="noopener noreferrer"
           >
-            {t('auth__new:signUp.finale.more.link')}
+            {t('auth:signUp.finale.more.link')}
           </MUILink>
         </Typography>
       </Box> */}
@@ -213,4 +213,4 @@ const mapStateToProps = (state) => ({
   publics: state.screens.auth.publics,
 });
 
-export default connect(mapStateToProps, {})(withTranslation(['auth__new', 'common__new'])(AuthSignUpFinale));
+export default connect(mapStateToProps, {})(withTranslation(['auth', 'common'])(AuthSignUpFinale));

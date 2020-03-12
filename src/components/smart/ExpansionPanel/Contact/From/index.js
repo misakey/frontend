@@ -139,7 +139,7 @@ const ExpansionPanelContactFrom = ({
 
   const getTypeTranslation = useCallback(
     (contactType) => (contactType === MANUAL_TYPE
-      ? t('citizen__new:contact.providers.manual.label')
+      ? t('citizen:contact.providers.manual.label')
       : contactType),
     [t],
   );
@@ -220,7 +220,7 @@ const ExpansionPanelContactFrom = ({
       </ExpansionPanel>
       <Fade in={!expanded && !isNil(appName)}>
         <Subtitle gutterBottom={false}>
-          {t('citizen__new:contact.email.from.subtitle', { appName })}
+          {t('citizen:contact.email.from.subtitle', { appName })}
         </Subtitle>
       </Fade>
     </>
@@ -259,4 +259,4 @@ const mapDispatchToProps = (dispatch) => ({
   ),
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation('citizen__new')(ExpansionPanelContactFrom));
+export default connect(null, mapDispatchToProps)(withTranslation('citizen')(ExpansionPanelContactFrom));

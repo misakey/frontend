@@ -58,7 +58,7 @@ const ApplicationsCreate = ({
   );
 
   const onSubmit = useCallback(
-    (values, formikBag) => onCreateApplication(values, formikBag, t('citizen__new:applications.create.success')),
+    (values, formikBag) => onCreateApplication(values, formikBag, t('citizen:applications.create.success')),
     [onCreateApplication, t],
   );
 
@@ -66,11 +66,11 @@ const ApplicationsCreate = ({
     <Screen>
       <AppBarNavigation
         toolbarProps={{ maxWidth: 'md' }}
-        title={t('citizen__new:applications.create.title')}
+        title={t('citizen:applications.create.title')}
       />
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" align="left">
-          {t('citizen__new:applications.create.subtitle')}
+          {t('citizen:applications.create.subtitle')}
         </Typography>
         <Formik
           validationSchema={mainDomainValidationSchema}
@@ -90,10 +90,10 @@ const ApplicationsCreate = ({
                   autoComplete: 'off',
                 }}
                 component={FieldText}
-                label={t('fields__new:mainDomain.altLabel')}
-                helperText={t('fields__new:mainDomain.helperText')}
+                label={t('fields:mainDomain.altLabel')}
+                helperText={t('fields:mainDomain.helperText')}
               />
-              <ButtonSubmit text={t('common__new:submit')} />
+              <ButtonSubmit text={t('common:submit')} />
             </Form>
           </Container>
         </Formik>
@@ -109,4 +109,4 @@ ApplicationsCreate.propTypes = {
 };
 
 
-export default withApplicationCreate()(withTranslation(['citizen__new', 'common__new', 'fields__new'])(ApplicationsCreate));
+export default withApplicationCreate()(withTranslation(['citizen', 'common', 'fields'])(ApplicationsCreate));

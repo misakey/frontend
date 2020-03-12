@@ -67,7 +67,7 @@ function ApplicationListItem({
   );
 
   const secondaryText = useMemo(
-    () => (published ? mainDomain : t('components__new:list.applications.pending')),
+    () => (published ? mainDomain : t('components:list.applications.pending')),
     [published, mainDomain, t],
   );
 
@@ -111,7 +111,7 @@ function ApplicationListItem({
           <IconButton
             color="secondary"
             edge="end"
-            aria-label={t('common__new:send')}
+            aria-label={t('common:send')}
             component={LinkwithDialogConnect}
             to={contactTo}
           >
@@ -153,4 +153,4 @@ const mapDispatchToProps = (dispatch) => ({
     (applicationId) => dispatch(bulkSelectionToggleSelected(applicationId)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('common__new')(ApplicationListItem));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('common')(ApplicationListItem));

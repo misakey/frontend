@@ -18,21 +18,21 @@ import ImportCard from './ImportCard';
 const ExportCrypto = ({ t }) => (
   <PasswordPromptProvider>
     <ScreenAction
-      title={t('account__new:exportCrypto.title')}
+      title={t('account:exportCrypto.title')}
       hideAppBar
     >
       <Container maxWidth="md">
-        <Typography>{t('account__new:exportCrypto.info.general')}</Typography>
+        <Typography>{t('account:exportCrypto.info.general')}</Typography>
         <Box my={3}>
-          <Title>{t('account__new:exportCrypto.info.myKeyTitle')}</Title>
-          <Typography>{t('account__new:exportCrypto.info.exportInfo')}</Typography>
+          <Title>{t('account:exportCrypto.info.myKeyTitle')}</Title>
+          <Typography>{t('account:exportCrypto.info.exportInfo')}</Typography>
           <Box my={1}>
             <ExportButton />
           </Box>
         </Box>
         <Box my={3}>
-          <Title>{t('account__new:exportCrypto.importKey.title')}</Title>
-          <Typography>{t('account__new:exportCrypto.importKey.helperText')}</Typography>
+          <Title>{t('account:exportCrypto.importKey.title')}</Title>
+          <Typography>{t('account:exportCrypto.importKey.helperText')}</Typography>
           <Box my={1}>
             <ImportCard />
           </Box>

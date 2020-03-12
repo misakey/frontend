@@ -49,7 +49,7 @@ const useOnSubmit = (
 ) => useMemo(
   () => (form, { setSubmitting }) => updateApplicationInfo(service.id, form)
     .then(() => {
-      enqueueSnackbar(t('admin__new:information.name.success'), { variant: 'success' });
+      enqueueSnackbar(t('admin:information.name.success'), { variant: 'success' });
       dispatchUpdateEntities(service.mainDomain, form, history);
     })
     .catch((error) => {
@@ -100,11 +100,11 @@ const ServiceName = ({ appBarProps, t, service, dispatchUpdateEntities, history 
       id="ServiceInformationName"
       navigationProps={{ homePath }}
       appBarProps={appBarProps}
-      title={t('admin__new:information.name.title')}
+      title={t('admin:information.name.title')}
     >
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
-          {t('admin__new:information.name.subtitle')}
+          {t('admin:information.name.subtitle')}
         </Typography>
         <Formik
           validationSchema={nameValidationSchema}
@@ -118,11 +118,11 @@ const ServiceName = ({ appBarProps, t, service, dispatchUpdateEntities, history 
               name="name"
               autoFocus
               component={FieldText}
-              label={t('fields__new:name.label')}
+              label={t('fields:name.label')}
             />
             <Box mt={1}>
               <ButtonSubmit>
-                {t('common__new:submit')}
+                {t('common:submit')}
               </ButtonSubmit>
             </Box>
           </Box>
@@ -161,5 +161,5 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(null, mapDispatchToProps)(
-  withTranslation(['admin__new', 'fields__new', 'common__new'])(ServiceName),
+  withTranslation(['admin', 'fields', 'common'])(ServiceName),
 );

@@ -12,7 +12,7 @@ function ButtonBurger({ className, onClick, t, ...rest }) {
   return (
     <IconButton
       color="inherit"
-      aria-label={t('components__new:drawer.toggle')}
+      aria-label={t('components:drawer.toggle')}
       onClick={onClick}
       className={className}
       {...omitTranslationProps(rest)}
@@ -33,4 +33,4 @@ ButtonBurger.defaultProps = {
   onClick: noop,
 };
 
-export default withTranslation('components__new')(ButtonBurger);
+export default withTranslation('components')(ButtonBurger);

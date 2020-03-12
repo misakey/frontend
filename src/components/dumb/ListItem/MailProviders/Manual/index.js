@@ -15,21 +15,21 @@ const ListItemMailProvidersManual = ({ t, icon, ...rest }) => (
   <ListItem
     button
     divider
-    aria-label={t('citizen__new:contact.providers.manual.send', 'Send Manually')}
+    aria-label={t('citizen:contact.providers.manual.send', 'Send Manually')}
     {...omitTranslationProps(rest)}
   >
     <ListItemAvatar>
-      <Avatar alt={t('citizen__new:contact.providers.manual.send', 'Send Manually')}>
+      <Avatar alt={t('citizen:contact.providers.manual.send', 'Send Manually')}>
         <MailIcon />
       </Avatar>
     </ListItemAvatar>
     <ListItemText
-      primary={t('citizen__new:contact.providers.manual.title')}
+      primary={t('citizen:contact.providers.manual.title')}
       primaryTypographyProps={{
         variant: 'h6',
         color: 'textSecondary',
       }}
-      secondary={t('citizen__new:contact.providers.manual.subtitle')}
+      secondary={t('citizen:contact.providers.manual.subtitle')}
       secondaryTypographyProps={{
         variant: 'subtitle1',
         color: 'textSecondary',
@@ -48,4 +48,4 @@ ListItemMailProvidersManual.defaultProps = {
   icon: null,
 };
 
-export default withTranslation('citizen__new')(ListItemMailProvidersManual);
+export default withTranslation('citizen')(ListItemMailProvidersManual);

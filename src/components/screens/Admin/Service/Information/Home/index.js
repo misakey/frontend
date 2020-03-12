@@ -34,9 +34,9 @@ const FieldItem = ({ field, mainDomain, t }) => {
 
   return (
     <ListItemData
-      ariaAction={t(`fields__new:${key}.action`)}
+      ariaAction={t(`fields:${key}.action`)}
       linkTo={linkTo}
-      label={t(`fields__new:${key}.label`)}
+      label={t(`fields:${key}.label`)}
       text={{ primary: value }}
       action={<ChevronRightIcon className="icon" />}
     />
@@ -70,41 +70,41 @@ const ServiceInformationHome = ({ appBarProps, service, t }) => {
       <Screen appBarProps={appBarProps}>
         <Container maxWidth="md">
           <Typography variant="h4" component="h3" align="center">
-            {t('admin__new:information.title')}
+            {t('admin:information.title')}
           </Typography>
           <BoxSection my={3} p={0}>
             <Box p={3}>
               <Typography variant="h6">
-                {t('admin__new:information.home.title')}
+                {t('admin:information.home.title')}
               </Typography>
               <Typography variant="body2" color="textSecondary" className="subtitle">
-                {t('admin__new:information.home.subtitle')}
+                {t('admin:information.home.subtitle')}
               </Typography>
             </Box>
             <List className="details">
               <FieldItem field={{ name }} mainDomain={mainDomain} t={t} />
               <ListItemData
-                ariaAction={t('fields__new:logo.action')}
-                label={t('fields__new:logo.label')}
-                text={{ primary: t('fields__new:logo.placeholder') }}
+                ariaAction={t('fields:logo.action')}
+                label={t('fields:logo.label')}
+                text={{ primary: t('fields:logo.placeholder') }}
                 action={(<AvatarColorized text={name} image={logoUri} />)}
                 linkTo={logoLinkTo}
               />
               <ListItemData
-                ariaAction={t('fields__new:mainDomain.action')}
-                label={t('fields__new:mainDomain.label')}
+                ariaAction={t('fields:mainDomain.action')}
+                label={t('fields:mainDomain.label')}
                 text={{ primary: mainDomain }}
                 disabled
               />
               <ListItemData
-                ariaAction={t('fields__new:otherDomains.action')}
-                label={t('fields__new:otherDomains.label')}
+                ariaAction={t('fields:otherDomains.action')}
+                label={t('fields:otherDomains.label')}
                 disabled
               >
                 <LimitedList
                   items={domainsList}
                   limit={MAX_DOMAIN}
-                  extraText={t('fields__new:otherDomains.placeholder')}
+                  extraText={t('fields:otherDomains.placeholder')}
                   renderListItem={
                     (domainItem) => (
                       <ListItem key={domainItem.id} dense disableGutters>
@@ -148,4 +148,4 @@ ServiceInformationHome.defaultProps = {
   service: null,
 };
 
-export default withTranslation(['admin__new', 'fields__new'])(ServiceInformationHome);
+export default withTranslation(['admin', 'fields'])(ServiceInformationHome);

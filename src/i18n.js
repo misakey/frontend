@@ -12,10 +12,10 @@ import numeral from 'numeral';
 import 'numeral/locales/fr';
 
 // FR namespaces
-import frCommonNew from 'constants/locales/fr/common__new';
-import frComponentsNew from 'constants/locales/fr/components__new';
-import frFieldsNew from 'constants/locales/fr/fields__new';
-import frLandingNew from 'constants/locales/fr/landing__new';
+import frCommonNew from 'constants/locales/fr/common';
+import frComponentsNew from 'constants/locales/fr/components';
+import frFieldsNew from 'constants/locales/fr/fields';
+import frLandingNew from 'constants/locales/fr/landing';
 
 const DEFAULT_LANGUAGE = 'fr';
 const AVAILABLE_LANGUAGES = ['fr'];
@@ -23,19 +23,19 @@ const AVAILABLE_LANGUAGES = ['fr'];
 const COMMONS_NAMESPACES = {
   fr: [
     {
-      name: 'common__new',
+      name: 'common',
       ressources: frCommonNew,
     },
     {
-      name: 'components__new',
+      name: 'components',
       ressources: frComponentsNew,
     },
     {
-      name: 'fields__new',
+      name: 'fields',
       ressources: frFieldsNew,
     },
     {
-      name: 'landing__new',
+      name: 'landing',
       ressources: frLandingNew,
     },
   ],
@@ -48,8 +48,8 @@ i18n
   .init({
     debug: false, // I18N TRANS HELP: turn true
     fallbackLng: DEFAULT_LANGUAGE,
-    ns: 'common__new',
-    defaultNS: 'common__new',
+    ns: 'common',
+    defaultNS: 'common',
     lng: DEFAULT_LANGUAGE, // 'fr', // language to use
     whitelist: AVAILABLE_LANGUAGES,
     nonExplicitWhitelist: true, // if true will pass eg. en-US if finding en in whitelist

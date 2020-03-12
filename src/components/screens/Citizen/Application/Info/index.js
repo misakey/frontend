@@ -156,7 +156,7 @@ function ApplicationInfo({
       })
       .send()
       .then(() => {
-        const text = t('citizen__new:application.info.userContribution.success');
+        const text = t('citizen:application.info.userContribution.success');
         enqueueSnackbar(text, { variant: 'success' });
       })
       .catch(handleGenericHttpErrors)
@@ -338,4 +338,4 @@ ApplicationInfo.defaultProps = {
 export default connect((state) => ({
   userId: state.auth.userId,
   isAuthenticated: !!state.auth.token,
-}))(withTranslation(['citizen__new'])(ApplicationInfo));
+}))(withTranslation(['citizen'])(ApplicationInfo));

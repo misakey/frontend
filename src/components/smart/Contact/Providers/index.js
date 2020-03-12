@@ -35,7 +35,7 @@ const ContactProvidersBlock = ({
   const [contacted, setContacted] = useState(false);
 
   const subtitle = useMemo(
-    () => t('citizen__new:contact.providers.subtitle'),
+    () => t('citizen:contact.providers.subtitle'),
     [t],
   );
 
@@ -62,7 +62,7 @@ const ContactProvidersBlock = ({
       component: Link,
       to: doneTo,
       onClick: isFunction(onDone) ? onDone : undefined,
-      text: t('common__new:done'),
+      text: t('common:done'),
       disabled: !contacted,
     }),
     [contacted, doneTo, onDone, t],
@@ -71,7 +71,7 @@ const ContactProvidersBlock = ({
   const secondary = useMemo(
     () => ({
       onClick: onReset,
-      text: t('common__new:retry'),
+      text: t('common:retry'),
       disabled: !contacted,
     }),
     [contacted, onReset, t],
@@ -82,7 +82,7 @@ const ContactProvidersBlock = ({
       <Subtitle>
         {subtitle}
       </Subtitle>
-      <BoxMessage text={t('citizen__new:contact.providers.mailReminder')} my={2} type="info" classes={{ root: classes.subtitleRoot }} />
+      <BoxMessage text={t('citizen:contact.providers.mailReminder')} my={2} type="info" classes={{ root: classes.subtitleRoot }} />
       <ListMailProviders
         mailtoProps={mailtoProps}
         disabled={contacted}
@@ -123,4 +123,4 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['common__new', 'citizen__new'])(ContactProvidersBlock));
+export default connect(null, mapDispatchToProps)(withTranslation(['common', 'citizen'])(ContactProvidersBlock));

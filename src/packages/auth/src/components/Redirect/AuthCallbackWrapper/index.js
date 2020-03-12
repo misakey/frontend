@@ -25,7 +25,7 @@ const useHandleSuccess = (
     acr: !isNil(acr) && !isEmpty(acr) ? parseInt(acr, 10) : null,
   };
   onSignIn(credentials);
-  enqueueSnackbar(t('common__new:signedIn'), { variant: 'success' });
+  enqueueSnackbar(t('common:signedIn'), { variant: 'success' });
 }, [onSignIn, enqueueSnackbar, t]);
 
 const useHandleError = (enqueueSnackbar, t) => {
@@ -40,7 +40,7 @@ const useHandleError = (enqueueSnackbar, t) => {
     // Errors from hydra
     if (errorCode) {
       enqueueSnackbar(
-        t('common__new:httpStatus.error.default'),
+        t('common:httpStatus.error.default'),
         { variant: 'error' },
       );
       return;
@@ -48,7 +48,7 @@ const useHandleError = (enqueueSnackbar, t) => {
 
     // Ohers errors (front))
     enqueueSnackbar(
-      t('common__new:httpStatus.error.default'),
+      t('common:httpStatus.error.default'),
       { variant: 'error' },
     );
   }, [enqueueSnackbar, t, handleGenericHttpErrors]);

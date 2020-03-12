@@ -26,7 +26,7 @@ const SearchApplicationsPopoverListSubheader = ({
   );
 
   return (
-    <ListSubheader component="div" {...omitTranslationProps(rest)}>{t(`components__new:search.subHeader.${transPath}`)}</ListSubheader>
+    <ListSubheader component="div" {...omitTranslationProps(rest)}>{t(`components:search.subHeader.${transPath}`)}</ListSubheader>
   );
 };
 
@@ -35,4 +35,4 @@ SearchApplicationsPopoverListSubheader.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('components__new')(SearchApplicationsPopoverListSubheader);
+export default withTranslation('components')(SearchApplicationsPopoverListSubheader);

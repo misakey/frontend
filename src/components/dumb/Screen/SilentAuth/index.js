@@ -85,10 +85,10 @@ function SilentAuthScreen({ requiredScope, userEmail, userManager, t }) {
       <Screen state={{ isLoading: loginInProgress }}>
         <Container className={classes.container} maxWidth="md">
           <CardSimpleText
-            text={t(`components__new:silentAuth.text.${workspace}`)}
+            text={t(`components:silentAuth.text.${workspace}`)}
             button={{
               standing: BUTTON_STANDINGS.MAIN,
-              text: t('components__new:silentAuth.button'),
+              text: t('components:silentAuth.button'),
               onClick: signInAs,
             }}
           />
@@ -124,4 +124,4 @@ const mapStateToProps = (state) => {
   return { userEmail: email };
 };
 
-export default connect(mapStateToProps, {})(withTranslation('components__new')(withUserManager(SilentAuthScreen)));
+export default connect(mapStateToProps, {})(withTranslation('components')(withUserManager(SilentAuthScreen)));

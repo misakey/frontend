@@ -38,7 +38,7 @@ const ContactConfirm = ({ searchKey, t, ...rest }) => {
   );
 
   const navigationTitle = useMemo(
-    () => t(`citizen__new:contact.confirmation.${searchKeySearchParam}.title`),
+    () => t(`citizen:contact.confirmation.${searchKeySearchParam}.title`),
     [searchKeySearchParam, t],
   );
 
@@ -129,4 +129,4 @@ ContactConfirm.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('citizen__new')(ContactConfirm);
+export default withTranslation('citizen')(ContactConfirm);

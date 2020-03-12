@@ -53,13 +53,13 @@ const CardDatabox = ({
   return (
     <div {...omitTranslationProps(rest)}>
       <Title>
-        {t('citizen__new:application.info.vault.archivedDatabox.title', { date })}
+        {t('citizen:application.info.vault.archivedDatabox.title', { date })}
       </Title>
       <CardSimpleDoubleText
         my={2}
-        primary={t(`common__new:databox.${isClosedByDPO ? 'dpoComment' : 'ownerComment'}.${status}`)}
+        primary={t(`common:databox.${isClosedByDPO ? 'dpoComment' : 'ownerComment'}.${status}`)}
         secondary={t(
-          `citizen__new:application.info.vault.archivedDatabox.closedBy.${isClosedByDPO ? 'dpo' : 'user'}`,
+          `citizen:application.info.vault.archivedDatabox.closedBy.${isClosedByDPO ? 'dpo' : 'user'}`,
           { duration: durationOfTheRequest },
         )}
       />
@@ -88,4 +88,4 @@ CardDatabox.defaultProps = {
 };
 
 
-export default (withTranslation(['common__new', 'citizen__new'])(CardDatabox));
+export default (withTranslation(['common', 'citizen'])(CardDatabox));

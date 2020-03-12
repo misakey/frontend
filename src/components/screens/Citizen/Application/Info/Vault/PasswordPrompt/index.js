@@ -42,33 +42,33 @@ function PasswordPrompt({ onClose, onSubmit, firstAttempt, t, open }) {
         {({ isValid }) => (
           <Form>
             <DialogTitle id="alert-dialog-title">
-              {t('citizen__new:application.info.vault.passwordPrompt.title')}
+              {t('citizen:application.info.vault.passwordPrompt.title')}
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                {t('citizen__new:application.info.vault.passwordPrompt.description')}
+                {t('citizen:application.info.vault.passwordPrompt.description')}
               </DialogContentText>
               <Field
                 name="password"
-                label={t('fields__new:password.label')}
-                placeholder={t('fields__new:password.placeholder')}
+                label={t('fields:password.label')}
+                placeholder={t('fields:password.placeholder')}
                 component={FieldTextPasswordRevealable}
                 type="password"
                 inputProps={{ 'data-matomo-ignore': true }}
                 autoFocus
               />
               {(!firstAttempt || !isValid) && (
-              <FormHelperText error>{t('fields__new:password.error.invalid')}</FormHelperText>
+              <FormHelperText error>{t('fields:password.error.invalid')}</FormHelperText>
               )}
             </DialogContent>
             <DialogActions>
               <BoxControls
                 primary={{
                   type: 'submit',
-                  text: t('common__new:validate'),
+                  text: t('common:validate'),
                 }}
                 secondary={{
-                  text: t('common__new:cancel'),
+                  text: t('common:cancel'),
                   onClick: onClose,
                 }}
                 formik
@@ -81,7 +81,7 @@ function PasswordPrompt({ onClose, onSubmit, firstAttempt, t, open }) {
   );
 }
 
-const TPasswordPrompt = withTranslation(['common__new', 'citizen__new', 'fields__new'])(PasswordPrompt);
+const TPasswordPrompt = withTranslation(['common', 'citizen', 'fields'])(PasswordPrompt);
 
 PasswordPrompt.propTypes = {
   onSubmit: PropTypes.func.isRequired,

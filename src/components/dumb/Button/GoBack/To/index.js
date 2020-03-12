@@ -15,7 +15,7 @@ const ButtonGoBackTo = ({ className, to, t, text, ...props }) => (
     component={Link}
     to={to}
     className={className}
-    text={text || t('common__new:goBack')}
+    text={text || t('common:goBack')}
     {...omitTranslationProps(props)}
   />
 );
@@ -33,4 +33,4 @@ ButtonGoBackTo.defaultProps = {
   text: null,
 };
 
-export default withTranslation('common__new')(ButtonGoBackTo);
+export default withTranslation('common')(ButtonGoBackTo);

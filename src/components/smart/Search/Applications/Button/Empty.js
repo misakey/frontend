@@ -43,7 +43,7 @@ const SearchApplicationsButtonEmpty = ({ t, ...props }) => {
         variant="body2"
         color="textSecondary"
       >
-        {t('components__new:search.application.button')}
+        {t('components:search.application.button')}
       </Typography>
     </Box>
   );
@@ -53,4 +53,4 @@ SearchApplicationsButtonEmpty.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('components__new')(SearchApplicationsButtonEmpty);
+export default withTranslation('components')(SearchApplicationsButtonEmpty);

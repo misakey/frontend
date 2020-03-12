@@ -59,7 +59,7 @@ function ApplicationImg({ children, className, fontSize, src, applicationName, t
       )}
       <Avatar
         variant="circle"
-        alt={t('components__new:application.logoAlt', { applicationName })}
+        alt={t('components:application.logoAlt', { applicationName })}
         src={isBroken ? null : src}
         className={clsx(classes.root, {
           [classes.fontSizeSmall]: fontSize === 'small',
@@ -93,4 +93,4 @@ ApplicationImg.defaultProps = {
   applicationName: '',
 };
 
-export default withTranslation(['components__new'])(ApplicationImg);
+export default withTranslation(['components'])(ApplicationImg);

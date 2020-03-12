@@ -44,7 +44,7 @@ const OnboardingDPO = ({ isAuthenticated, t }) => {
         workspace={WORKSPACE}
         button={{
           standing: BUTTON_STANDINGS.MAIN,
-          text: t(`components__new:onboarding.${WORKSPACE}.steps.1.button`),
+          text: t(`components:onboarding.${WORKSPACE}.steps.1.button`),
           component: ButtonConnectSimple,
         }}
       />
@@ -54,7 +54,7 @@ const OnboardingDPO = ({ isAuthenticated, t }) => {
         workspace={WORKSPACE}
         button={{
           standing: BUTTON_STANDINGS.MAIN,
-          text: t(`components__new:onboarding.${WORKSPACE}.steps.2.button`),
+          text: t(`components:onboarding.${WORKSPACE}.steps.2.button`),
           component: Link,
           to: redirectToActivate,
         }}
@@ -68,4 +68,4 @@ OnboardingDPO.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('components__new')(OnboardingDPO);
+export default withTranslation('components')(OnboardingDPO);

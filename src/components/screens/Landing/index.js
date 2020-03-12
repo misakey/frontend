@@ -56,7 +56,7 @@ const Landing = ({ t }) => {
       <Box className={classes.mainBlock}>
         <Logo className={classes.logo} />
         <Typography variant="h5" align="center" className={classes.punchline}>
-          {t('landing__new:punchline')}
+          {t('landing:punchline')}
         </Typography>
         <Box className={classes.buttonGroup}>
           <Button
@@ -67,7 +67,7 @@ const Landing = ({ t }) => {
             to={routes.dpo._}
             size="large"
           >
-            {t('landing__new:dpo')}
+            {t('landing:dpo')}
           </Button>
           <Button
             variant="contained"
@@ -77,13 +77,13 @@ const Landing = ({ t }) => {
             to={routes.citizen._}
             size="large"
           >
-            {t('landing__new:citizen')}
+            {t('landing:citizen')}
           </Button>
         </Box>
       </Box>
       <Box className={classes.moreButton}>
-        <Button color="secondary" size="large" component="a" href={t('landing__new:moreLink')}>
-          {t('landing__new:more')}
+        <Button color="secondary" size="large" component="a" href={t('landing:moreLink')}>
+          {t('landing:more')}
         </Button>
       </Box>
     </Box>
@@ -94,4 +94,4 @@ Landing.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('landing__new')(Landing);
+export default withTranslation('landing')(Landing);

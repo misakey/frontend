@@ -182,13 +182,13 @@ const CurrentDatabox = ({
         .catch((err) => {
           const { code } = err;
           if (code === forbidden) {
-            return onError(t('common__new:httpStatus.error.forbidden'));
+            return onError(t('common:httpStatus.error.forbidden'));
           }
           const [key, errorType] = getDetailPairsHead(err);
           if (errorType === conflict) {
-            return onError(t(`citizen__new:application.info.vault.errors.conflict.archive.${key}`));
+            return onError(t(`citizen:application.info.vault.errors.conflict.archive.${key}`));
           }
-          return onError(t('common__new:httpStatus.error.default'));
+          return onError(t('common:httpStatus.error.default'));
         })
         .finally(() => {
           setSubmitting(false);
@@ -206,13 +206,13 @@ const CurrentDatabox = ({
         .catch((err) => {
           const { code } = err;
           if (code === forbidden) {
-            return onError(t('common__new:httpStatus.error.forbidden'));
+            return onError(t('common:httpStatus.error.forbidden'));
           }
           const [key, errorType] = getDetailPairsHead(err);
           if (errorType === conflict) {
-            return onError(t(`citizen__new:application.info.vault.errors.conflict.archive.${key}`));
+            return onError(t(`citizen:application.info.vault.errors.conflict.archive.${key}`));
           }
-          return onError(t('common__new:httpStatus.error.default'));
+          return onError(t('common:httpStatus.error.default'));
         });
     },
     [databoxId, dispatchUpdateDatabox, onError, t],
@@ -231,13 +231,13 @@ const CurrentDatabox = ({
         .catch((err) => {
           const { code } = err;
           if (code === forbidden) {
-            return onError(t('common__new:httpStatus.error.forbidden'));
+            return onError(t('common:httpStatus.error.forbidden'));
           }
           const [key, errorType] = getDetailPairsHead(err);
           if (errorType === conflict) {
-            return onError(t(`citizen__new:application.info.vault.errors.conflict.reopen.${key}`));
+            return onError(t(`citizen:application.info.vault.errors.conflict.reopen.${key}`));
           }
-          return onError(t('common__new:httpStatus.error.default'));
+          return onError(t('common:httpStatus.error.default'));
         })
         .finally(() => {
           onDialogClose();
@@ -250,16 +250,16 @@ const CurrentDatabox = ({
     return (
       <div {...omitTranslationProps(rest)}>
         <Title>
-          {t('citizen__new:application.info.vault.currentDatabox.title')}
+          {t('citizen:application.info.vault.currentDatabox.title')}
         </Title>
         <CardSimpleText
-          text={t('citizen__new:application.info.vault.currentDatabox.none')}
+          text={t('citizen:application.info.vault.currentDatabox.none')}
           highlight
           my={2}
           button={(
             <DialogConnectButton
               component={Link}
-              text={t('citizen__new:application.info.vault.currentDatabox.contact')}
+              text={t('citizen:application.info.vault.currentDatabox.contact')}
               standing={BUTTON_STANDINGS.MAIN}
               size="small"
               to={generatePath(routes.citizen.application.contact._, { mainDomain })}
@@ -274,23 +274,23 @@ const CurrentDatabox = ({
     return (
       <div {...omitTranslationProps(rest)}>
         <Title>
-          {t('citizen__new:application.info.vault.currentDatabox.titleNoDpo')}
+          {t('citizen:application.info.vault.currentDatabox.titleNoDpo')}
         </Title>
         <CardSimpleText
-          text={t('citizen__new:application.info.vault.currentDatabox.addDPO')}
+          text={t('citizen:application.info.vault.currentDatabox.addDPO')}
           my={2}
           button={{
-            text: t('common__new:add'),
+            text: t('common:add'),
             standing: BUTTON_STANDINGS.MAIN,
             onClick: onContributionDpoEmailClick,
           }}
         />
         {!isNil(dpoContactLink) && (
           <CardSimpleText
-            text={t('citizen__new:application.info.vault.currentDatabox.contactForm.text')}
+            text={t('citizen:application.info.vault.currentDatabox.contactForm.text')}
             my={2}
             button={{
-              text: t('citizen__new:application.info.vault.currentDatabox.contactForm.button'),
+              text: t('citizen:application.info.vault.currentDatabox.contactForm.button'),
               standing: BUTTON_STANDINGS.OUTLINED,
               component: 'a',
               rel: 'noreferrer noopener',
@@ -316,15 +316,15 @@ const CurrentDatabox = ({
         onSuccess={onReopen}
       />
       <Title>
-        {t('citizen__new:application.info.vault.currentDatabox.title')}
+        {t('citizen:application.info.vault.currentDatabox.title')}
       </Title>
       <CardSimpleDoubleButton
         my={2}
         highlight={status !== DONE}
-        text={t('citizen__new:application.info.vault.currentDatabox.openSince', { since: openSince })}
+        text={t('citizen:application.info.vault.currentDatabox.openSince', { since: openSince })}
         primary={(status !== DONE) ? {
           standing: BUTTON_STANDINGS.MAIN,
-          text: t('common__new:resendEmail'),
+          text: t('common:resendEmail'),
           size: 'small',
           component: Link,
           to: {
@@ -334,7 +334,7 @@ const CurrentDatabox = ({
         } : null}
         secondary={(status !== DONE) ? {
           standing: BUTTON_STANDINGS.CANCEL,
-          text: t('common__new:archive'),
+          text: t('common:archive'),
           onClick: onArchiveDialog,
           size: 'small',
         } : null}
@@ -345,20 +345,20 @@ const CurrentDatabox = ({
           highlight
 
 
-          primaryText={t(`common__new:databox.dpoComment.${databox.dpoComment}`)}
+          primaryText={t(`common:databox.dpoComment.${databox.dpoComment}`)}
           secondaryText={t(
-            'citizen__new:application.info.vault.archivedDatabox.closedBy.dpo',
+            'citizen:application.info.vault.archivedDatabox.closedBy.dpo',
             { duration: durationOfTheRequest },
           )}
           secondary={{
             standing: BUTTON_STANDINGS.CANCEL,
-            text: t('common__new:reopen'),
+            text: t('common:reopen'),
             onClick: onReopenDialog,
             size: 'small',
           }}
           primary={{
             standing: BUTTON_STANDINGS.MAIN,
-            text: t('common__new:archive'),
+            text: t('common:archive'),
             onClick: onAcceptDpoReason,
             size: 'small',
           }}
@@ -412,5 +412,5 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  withTranslation(['common__new', 'citizen__new'])(CurrentDatabox),
+  withTranslation(['common', 'citizen'])(CurrentDatabox),
 );

@@ -38,9 +38,9 @@ const FieldItem = ({ field, mainDomain, t, ...props }) => {
 
   return (
     <ListItemData
-      ariaAction={t(`fields__new:${key}.action`)}
+      ariaAction={t(`fields:${key}.action`)}
       linkTo={linkTo}
-      label={t(`fields__new:${key}.label`)}
+      label={t(`fields:${key}.label`)}
       text={{ primary: value }}
       action={<ChevronRightIcon className="icon" />}
       {...props}
@@ -77,35 +77,35 @@ const ServiceSSOHome = ({ appBarProps, service, t }) => {
       <Screen appBarProps={appBarProps}>
         <Container maxWidth="md" id="ServiceSSOHome">
           <Typography variant="h4" component="h3" align="center">
-            {t('admin__new:sso.title')}
+            {t('admin:sso.title')}
           </Typography>
           <BoxSection my={3} p={0}>
             <Box p={3}>
               <Typography variant="h6">
-                {t('admin__new:sso.home.title')}
+                {t('admin:sso.home.title')}
               </Typography>
               <Typography variant="body2" color="textSecondary" className="subtitle">
-                {t('admin__new:sso.home.subtitle')}
+                {t('admin:sso.home.subtitle')}
               </Typography>
             </Box>
             <List>
               <ListItemData
-                ariaAction={t('fields__new:mainDomain.action')}
-                label={t('fields__new:mainDomain.label')}
+                ariaAction={t('fields:mainDomain.action')}
+                label={t('fields:mainDomain.label')}
                 text={{ primary: mainDomain }}
                 disabled
               />
               <ListItemData
-                ariaAction={t('fields__new:allowedCorsOrigins.action')}
-                label={t('fields__new:allowedCorsOrigins.label')}
+                ariaAction={t('fields:allowedCorsOrigins.action')}
+                label={t('fields:allowedCorsOrigins.label')}
                 linkTo={linkToAllowedOrigins}
                 action={<ChevronRightIcon className="icon" />}
               >
                 <LimitedList
                   items={allowedCorsOriginsList}
                   limit={MAX_LIST_ITEMS}
-                  emptyText={t('fields__new:allowedCorsOrigins.empty')}
-                  extraText={t('fields__new:allowedCorsOrigins.placeholder')}
+                  emptyText={t('fields:allowedCorsOrigins.empty')}
+                  extraText={t('fields:allowedCorsOrigins.placeholder')}
                   renderListItem={
                     (corsItem) => (
                       <ListItem key={corsItem} dense disableGutters>
@@ -116,16 +116,16 @@ const ServiceSSOHome = ({ appBarProps, service, t }) => {
                 />
               </ListItemData>
               <ListItemData
-                ariaAction={t('fields__new:redirectUris.action')}
-                label={t('fields__new:redirectUris.label')}
+                ariaAction={t('fields:redirectUris.action')}
+                label={t('fields:redirectUris.label')}
                 linkTo={linkToRedirectUris}
                 action={<ChevronRightIcon className="icon" />}
               >
                 <LimitedList
                   items={redirectUriList}
                   limit={MAX_LIST_ITEMS}
-                  emptyText={t('fields__new:redirectUris.empty')}
-                  extraText={t('fields__new:redirectUris.placeholder')}
+                  emptyText={t('fields:redirectUris.empty')}
+                  extraText={t('fields:redirectUris.placeholder')}
                   renderListItem={
                     (uriItem) => (
                       <ListItem key={uriItem} dense disableGutters>
@@ -136,17 +136,17 @@ const ServiceSSOHome = ({ appBarProps, service, t }) => {
                 />
               </ListItemData>
               <ListItemData
-                ariaAction={t('admin__new:sso.productionSetup.action')}
-                label={t('admin__new:sso.productionSetup.title')}
+                ariaAction={t('admin:sso.productionSetup.action')}
+                label={t('admin:sso.productionSetup.title')}
                 linkTo={linkToProductionSetup}
                 action={<ChevronRightIcon className="icon" />}
               >
                 <Typography variant="body2" color="secondary">
-                  {t('admin__new:sso.home.modeSetup')}
+                  {t('admin:sso.home.modeSetup')}
                 </Typography>
               </ListItemData>
               <FieldItem
-                field={{ customRoles: t('fields__new:customRoles.placeholder') }}
+                field={{ customRoles: t('fields:customRoles.placeholder') }}
                 mainDomain={mainDomain}
                 t={t}
               />
@@ -175,4 +175,4 @@ ServiceSSOHome.defaultProps = {
   service: null,
 };
 
-export default withTranslation(['admin__new', 'fields__new'])(ServiceSSOHome);
+export default withTranslation(['admin', 'fields'])(ServiceSSOHome);

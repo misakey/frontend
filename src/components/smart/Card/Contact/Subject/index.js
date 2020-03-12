@@ -33,8 +33,8 @@ const CardContactSubject = ({ t, subject, ...rest }) => {
 
   const title = useMemo(
     () => {
-      const start = t('citizen__new:contact.email.subject.label');
-      const suffix = recontact || reopen ? ` ${t('citizen__new:contact.email.subject.re.label')}` : '';
+      const start = t('citizen:contact.email.subject.label');
+      const suffix = recontact || reopen ? ` ${t('citizen:contact.email.subject.re.label')}` : '';
       return `${start}${suffix} ${subject}`;
     },
     [recontact, reopen, subject, t],
@@ -85,4 +85,4 @@ CardContactSubject.propTypes = {
   subject: PropTypes.string.isRequired,
 };
 
-export default withTranslation('citizen__new')(CardContactSubject);
+export default withTranslation('citizen')(CardContactSubject);

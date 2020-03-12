@@ -75,7 +75,7 @@ function LongText({ children, className, ltr, t, ...rest }) {
       onClick={handleCollapse}
       className={clsx(classes.button, { [classes.hidden]: !displayAsLong })}
     >
-      {t('common__new:more')}
+      {t('common:more')}
     </Link>
   );
 
@@ -124,4 +124,4 @@ LongText.defaultProps = {
   t: tDefault,
 };
 
-export default withTranslation('common__new')(LongText);
+export default withTranslation('common')(LongText);

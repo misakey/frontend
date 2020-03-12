@@ -17,7 +17,7 @@ const ButtonSubmit = ({ t, text, ...rest }) => {
       type="submit"
       standing={BUTTON_STANDINGS.MAIN}
       isLoading={isSubmitting}
-      text={text || t('common__new:submit', 'Submit')}
+      text={text || t('common:submit', 'Submit')}
       {...omit(rest, ['i18n', 'tReady'])}
     />
   );
@@ -32,4 +32,4 @@ ButtonSubmit.defaultProps = {
   text: '',
 };
 
-export default withTranslation('common__new')(ButtonSubmit);
+export default withTranslation('common')(ButtonSubmit);

@@ -24,7 +24,7 @@ const ContactConfigIdentifier = ({ t }) => {
     <>
       <DialogContent>
         <Subtitle>
-          {t('citizen__new:contact.configure.identifier.subtitle')}
+          {t('citizen:contact.configure.identifier.subtitle')}
         </Subtitle>
         <Field
           component={FieldText}
@@ -33,15 +33,15 @@ const ContactConfigIdentifier = ({ t }) => {
           autoFocus
           id="email-address"
           fullWidth
-          label={t('fields__new:email.label')}
-          placeholder={t('fields__new:email.placeholder')}
+          label={t('fields:email.label')}
+          placeholder={t('fields:email.placeholder')}
         />
       </DialogContent>
       <DialogActions>
         <BoxControls
           primary={{
             type: 'submit',
-            text: t('common__new:next'),
+            text: t('common:next'),
           }}
           formik
         />
@@ -55,4 +55,4 @@ ContactConfigIdentifier.propTypes = {
 };
 
 
-export default withTranslation(['citizen__new', 'common__new', 'fields__new'])(ContactConfigIdentifier);
+export default withTranslation(['citizen', 'common', 'fields'])(ContactConfigIdentifier);

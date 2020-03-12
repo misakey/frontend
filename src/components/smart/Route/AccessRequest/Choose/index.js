@@ -28,7 +28,7 @@ import Box from '@material-ui/core/Box';
 import ChipUser from 'components/dumb/Chip/User';
 
 // CONSTANTS
-const QUESTIONS_TRANS_KEY = 'dpo__new:requests.access.questions';
+const QUESTIONS_TRANS_KEY = 'dpo:requests.access.questions';
 const { DPO: DPO_WORKSPACE } = WORKSPACE;
 
 // HELPERS
@@ -110,7 +110,7 @@ const AccessRequestChoose = ({
 
   return (
     <ScreenAction
-      title={t('dpo__new:requests.access.title')}
+      title={t('dpo:requests.access.title')}
       appBarProps={appBarProps}
       navigationProps={navigationProps}
       state={state}
@@ -119,7 +119,7 @@ const AccessRequestChoose = ({
         <Box mb={2} flexGrow={1} textAlign="justify">
           <Typography align="justify">
             <Trans
-              i18nKey="dpo__new:requests.access.desc"
+              i18nKey="dpo:requests.access.desc"
               values={{ ownerName, applicationName, dpoEmail }}
             >
               {'Cette interface est exclusivement réservée aux responsables du traitement des données de {{applicationName}}.'}
@@ -138,13 +138,13 @@ const AccessRequestChoose = ({
                     standing={BUTTON_STANDINGS.text}
                     authProps={{ scope, acrValues: 1, loginHint: dpoEmail }}
                     component={ButtonConnectSimple}
-                    text={t('dpo__new:requests.access.passwordLess.button')}
-                    aria-label={t('dpo__new:requests.access.passwordLess.button')}
+                    text={t('dpo:requests.access.passwordLess.button')}
+                    aria-label={t('dpo:requests.access.passwordLess.button')}
                   />
                 </Box>
                 <Box p={1}>
                   <Typography align="center" variant="body2">
-                    {t('dpo__new:requests.access.passwordLess.desc', { dpoEmail })}
+                    {t('dpo:requests.access.passwordLess.desc', { dpoEmail })}
                   </Typography>
                 </Box>
               </Card>
@@ -156,13 +156,13 @@ const AccessRequestChoose = ({
                     standing={BUTTON_STANDINGS.MAIN}
                     className={classes.buttonConnect}
                     component={ButtonConnectSimple}
-                    text={t('dpo__new:requests.access.password.button')}
-                    aria-label={t('dpo__new:requests.access.password.button')}
+                    text={t('dpo:requests.access.password.button')}
+                    aria-label={t('dpo:requests.access.password.button')}
                   />
                 </Box>
                 <Box p={1}>
                   <Typography align="center" variant="body2">
-                    {t('dpo__new:requests.access.password.desc')}
+                    {t('dpo:requests.access.password.desc')}
                   </Typography>
                 </Box>
               </Card>
@@ -171,7 +171,7 @@ const AccessRequestChoose = ({
         </Box>
         <Card>
           <CardContent>
-            <Title>{t('dpo__new:requests.access.questions.title')}</Title>
+            <Title>{t('dpo:requests.access.questions.title')}</Title>
           </CardContent>
           <ListQuestions items={questionItems} />
         </Card>
@@ -203,4 +203,4 @@ AccessRequestChoose.defaultProps = {
   producer: {},
 };
 
-export default withTranslation(['dpo__new'])(AccessRequestChoose);
+export default withTranslation(['dpo'])(AccessRequestChoose);

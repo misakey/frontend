@@ -47,11 +47,11 @@ const ServiceLogoDisplay = ({ t, errors, service }) => {
       <AppBarNavigation
         homePath={homePath}
         toolbarProps={{ maxWidth: 'md' }}
-        title={t('admin__new:information.logo.title')}
+        title={t('admin:information.logo.title')}
       />
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
-          {t('admin__new:information.logo.subtitle')}
+          {t('admin:information.logo.subtitle')}
         </Typography>
         <BoxSection>
           {/* @FIXME create a standard component based on material-ui for field */}
@@ -66,7 +66,7 @@ const ServiceLogoDisplay = ({ t, errors, service }) => {
           />
           {errorList.map(([field, error]) => (
           // @FIXME use standard error display with a new Material Field
-            <FormHelperText className="error" key={error} error>{t(`fields__new:${field}.error.${error}`)}</FormHelperText>
+            <FormHelperText className="error" key={error} error>{t(`fields:${field}.error.${error}`)}</FormHelperText>
           ))}
           <Box display="flex" justifyContent="center">
             <Button
@@ -74,13 +74,13 @@ const ServiceLogoDisplay = ({ t, errors, service }) => {
               color="secondary"
               component={Link}
             >
-              {t('common__new:update')}
+              {t('common:update')}
             </Button>
             <Box
               component={ButtonSubmit}
               ml={1}
             >
-              {t('common__new:submit')}
+              {t('common:submit')}
             </Box>
           </Box>
         </BoxSection>
@@ -105,4 +105,4 @@ ServiceLogoDisplay.defaultProps = {
   errors: {},
 };
 
-export default withTranslation(['common__new', 'admin__new', 'fields__new'])(ServiceLogoDisplay);
+export default withTranslation(['common', 'admin', 'fields'])(ServiceLogoDisplay);

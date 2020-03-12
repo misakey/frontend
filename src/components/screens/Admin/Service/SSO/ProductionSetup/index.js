@@ -55,7 +55,7 @@ const useOnGenerateSecret = (
   () => createSSOSecret(service.id)
     .then((responseBody) => {
       const { clientSecret } = objectToCamelCase(responseBody);
-      enqueueSnackbar(t('admin__new:sso.productionSetup.clientSecret.success'), { variant: 'success' });
+      enqueueSnackbar(t('admin:sso.productionSetup.clientSecret.success'), { variant: 'success' });
       setClientSecret(clientSecret);
     })
     .catch((error) => {
@@ -83,7 +83,7 @@ const SSOProductionSetup = ({ appBarProps, t, service }) => {
 
   const onSwitchProdStatus = useCallback(() => {
     setProdStatus((status) => !status);
-    enqueueSnackbar(t(`admin__new:sso.productionSetup.production.success.${!prodStatus}`), { variant: 'success' });
+    enqueueSnackbar(t(`admin:sso.productionSetup.production.success.${!prodStatus}`), { variant: 'success' });
   }, [prodStatus, setProdStatus, enqueueSnackbar, t]);
 
   const homePath = useMemo(
@@ -101,31 +101,31 @@ const SSOProductionSetup = ({ appBarProps, t, service }) => {
     <ScreenAction
       navigationProps={{ homePath, toolbarProps: { maxWidth: 'md' } }}
       appBarProps={appBarProps}
-      title={t('admin__new:sso.productionSetup.title')}
+      title={t('admin:sso.productionSetup.title')}
     >
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
-          {t('admin__new:sso.productionSetup.subtitle')}
+          {t('admin:sso.productionSetup.subtitle')}
         </Typography>
         <BoxSection className={clsx(classes.box, 'box')} bgcolor={prodStatus ? 'text.disabled' : 'inherit'}>
           <Typography variant="h6" color="textPrimary" align="left" className="title">
-            {t('admin__new:sso.productionSetup.clientSecret.title')}
+            {t('admin:sso.productionSetup.clientSecret.title')}
           </Typography>
           {prodStatus ? (
             <Typography variant="body2" color="textSecondary" align="left" gutterBottom>
-              {t('admin__new:sso.productionSetup.clientSecret.disabled.subtitle')}
+              {t('admin:sso.productionSetup.clientSecret.disabled.subtitle')}
             </Typography>
           )
             : (
               <Typography variant="body2" color="textSecondary" align="left" className="subtitle">
-                {t('admin__new:sso.productionSetup.clientSecret.subtitle')}
+                {t('admin:sso.productionSetup.clientSecret.subtitle')}
               </Typography>
             )}
           <Box mt={3}>
             <FieldTextPasswordRevealable
               className="field"
               name="clientSecret"
-              label={t('fields__new:clientSecret.label')}
+              label={t('fields:clientSecret.label')}
               adornmentPosition={ADORNMENT_POSITION.start}
               disabled={prodStatus}
               forceHide={prodStatus}
@@ -151,7 +151,7 @@ const SSOProductionSetup = ({ appBarProps, t, service }) => {
                 isSubmitting={isSubmitting}
                 onClick={onGenerateSecret}
                 disabled={prodStatus}
-                text={t('common__new:regenerate', 'Regenerate')}
+                text={t('common:regenerate', 'Regenerate')}
               />
               <Box
                 ml={1}
@@ -159,8 +159,8 @@ const SSOProductionSetup = ({ appBarProps, t, service }) => {
                 isSubmitting={isSubmitting}
                 onClick={onSwitchProdStatus}
                 text={prodStatus
-                  ? t('admin__new:sso.productionSetup.leaveFromProd', 'Leave from production')
-                  : t('admin__new:sso.productionSetup.goToProd', 'Go to production')}
+                  ? t('admin:sso.productionSetup.leaveFromProd', 'Leave from production')
+                  : t('admin:sso.productionSetup.goToProd', 'Go to production')}
               />
             </Box>
           </Box>
@@ -185,4 +185,4 @@ SSOProductionSetup.defaultProps = {
   service: null,
 };
 
-export default withTranslation(['admin__new', 'fields__new', 'common__new'])(SSOProductionSetup);
+export default withTranslation(['admin', 'fields', 'common'])(SSOProductionSetup);

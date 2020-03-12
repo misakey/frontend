@@ -56,7 +56,7 @@ const SignInFormCard = ({ actions, fields, handlePrevious, step, userPublicData,
       {fields}
       {actions}
       <Typography className={classes.moreTypography}>
-        <Trans i18nKey="auth__new:signIn.card.more">
+        <Trans i18nKey="auth:signIn.card.more">
           {'En savoir plus sur '}
           <MUILink
             color="secondary"
@@ -90,4 +90,4 @@ SignInFormCard.defaultProps = {
   fields: null,
 };
 
-export default withTranslation(['auth__new'])(SignInFormCard);
+export default withTranslation(['auth'])(SignInFormCard);

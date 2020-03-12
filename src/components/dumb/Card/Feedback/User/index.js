@@ -81,7 +81,7 @@ const UserFeedbackCard = ({ isAuthenticated, rating, className, t }) => {
             )}
           </>
         )}
-        title={(isAuthenticated) ? displayName : t('common__new:anonymousUser')}
+        title={(isAuthenticated) ? displayName : t('common:anonymousUser')}
         subheader={(
           <Box className={classes.ratingAndDate}>
             <Rating
@@ -120,4 +120,4 @@ UserFeedbackCard.defaultProps = {
   className: '',
 };
 
-export default withTranslation('common__new')(UserFeedbackCard);
+export default withTranslation('common')(UserFeedbackCard);

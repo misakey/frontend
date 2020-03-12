@@ -87,7 +87,7 @@ const AuthSignUpCreatePseudo = ({
   const primary = useMemo(
     () => ({
       type: 'submit',
-      text: t('common__new:next'),
+      text: t('common:next'),
     }),
     [t],
   );
@@ -114,9 +114,9 @@ const AuthSignUpCreatePseudo = ({
       padded={padded}
       primary={primary}
       secondary={<ButtonGoBackTo to={parentTo} />}
-      title={t('auth__new:signUp.create.handle.title')}
+      title={t('auth:signUp.create.handle.title')}
       titleProps={titleProps}
-      subtitle={t('auth__new:signUp.create.handle.subtitle')}
+      subtitle={t('auth:signUp.create.handle.subtitle')}
       subtitleProps={subtitleProps}
       Header={CardHeaderAuthSignUp}
       formik
@@ -124,7 +124,7 @@ const AuthSignUpCreatePseudo = ({
       <AuthSignUpCreatePseudoFormFields />
       {/* <Box mt={2}>
         <Typography>
-          {t('auth__new:signUp.create.handle.more.text')}
+          {t('auth:signUp.create.handle.more.text')}
           <MUILink
             color="secondary"
             to={routes.legals.privacy}
@@ -132,7 +132,7 @@ const AuthSignUpCreatePseudo = ({
             target="_blank"
             rel="noopener noreferrer"
           >
-            {t('auth__new:signUp.create.handle.more.link')}
+            {t('auth:signUp.create.handle.more.link')}
           </MUILink>
         </Typography>
       </Box> */}
@@ -156,4 +156,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchClearPublics: () => dispatch(screenAuthSetPublics()),
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['auth__signup', 'common__new'])(AuthSignUpCreatePseudo));
+export default connect(null, mapDispatchToProps)(withTranslation(['auth__signup', 'common'])(AuthSignUpCreatePseudo));

@@ -140,7 +140,7 @@ const ContactConfig = ({
 
 
   const navigationTitle = useMemo(
-    () => t(`citizen__new:contact.configure.${searchKeySearchParam}.title`),
+    () => t(`citizen:contact.configure.${searchKeySearchParam}.title`),
     [searchKeySearchParam, t],
   );
 
@@ -188,7 +188,7 @@ const ContactConfig = ({
           .catch((e) => {
             const errorCode = getCode(e);
             if (errorCode === conflict) {
-              enqueueSnackbar(t('fields__new:contactConfigConfirm.code.error.conflict'), { variant: 'error' });
+              enqueueSnackbar(t('fields:contactConfigConfirm.code.error.conflict'), { variant: 'error' });
             } else {
               handleGenericHttpErrors(e);
             }
@@ -438,4 +438,4 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation('citizen__new')(ContactConfig));
+export default connect(null, mapDispatchToProps)(withTranslation('citizen')(ContactConfig));

@@ -57,7 +57,7 @@ const ExpansionPanelSummaryContactFrom = ({ email, type, t, ...rest }) => {
       <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between" flexGrow={1} overflow="hidden">
         <Box display="flex" overflow="hidden">
           <Typography classes={{ root: classes.typographyFromLabelRoot }}>
-            {t('citizen__new:contact.email.from.label')}
+            {t('citizen:contact.email.from.label')}
           </Typography>
           <Fade in={!isNil(email)}>
             <Typography noWrap>
@@ -87,4 +87,4 @@ ExpansionPanelSummaryContactFrom.defaultProps = {
   type: null,
 };
 
-export default withTranslation('citizen__new')(ExpansionPanelSummaryContactFrom);
+export default withTranslation('citizen')(ExpansionPanelSummaryContactFrom);

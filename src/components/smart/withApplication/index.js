@@ -113,7 +113,7 @@ const useHandleReceive = (enqueueSnackbar, history, pathname, mainDomain, t) => 
         data.push({ ...application, mainDomain, name: domainWithoutSuffix });
       } else {
         enqueueSnackbar(
-          t('common__new:redirectedToLinkedDomain',
+          t('common:redirectedToLinkedDomain',
             { mainDomainTo: application.mainDomain, mainDomainFrom: mainDomain }),
           { variant: 'info' },
         );
@@ -258,7 +258,7 @@ const withApplication = (Component, options = {}) => {
     },
   });
 
-  return withTranslation('common__new')((connect(mapStateToProps, mapDispatchToProps)(ComponentWithApplication)));
+  return withTranslation('common')((connect(mapStateToProps, mapDispatchToProps)(ComponentWithApplication)));
 };
 
 export default withApplication;

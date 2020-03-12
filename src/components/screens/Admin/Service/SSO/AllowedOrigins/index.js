@@ -59,7 +59,7 @@ const useOnSubmit = (
     : createApplicationSSO(service.id, form))
     .then((response) => {
       const update = isNil(response) ? form : { ...form, ...objectToCamelCase(response) };
-      enqueueSnackbar(t('admin__new:sso.allowedOrigins.success'), { variant: 'success' });
+      enqueueSnackbar(t('admin:sso.allowedOrigins.success'), { variant: 'success' });
       dispatchUpdateEntities(service.mainDomain, update, history);
     })
     .catch((error) => {
@@ -108,11 +108,11 @@ const SSOAllowedOrigins = ({ appBarProps, t, service, dispatchUpdateEntities, hi
     <ScreenAction
       navigationProps={{ homePath }}
       appBarProps={appBarProps}
-      title={t('admin__new:sso.allowedOrigins.title')}
+      title={t('admin:sso.allowedOrigins.title')}
     >
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" gutterBottom>
-          {t('admin__new:sso.allowedOrigins.subtitle')}
+          {t('admin:sso.allowedOrigins.subtitle')}
         </Typography>
         <Formik
           validationSchema={allowedOriginsValidationSchema}
@@ -127,12 +127,12 @@ const SSOAllowedOrigins = ({ appBarProps, t, service, dispatchUpdateEntities, hi
               name="allowedCorsOrigins"
               autoFocus
               component={FieldText}
-              label={t('fields__new:allowedCorsOrigins.label')}
-              helperText={t('fields__new:allowedCorsOrigins.helperText')}
+              label={t('fields:allowedCorsOrigins.label')}
+              helperText={t('fields:allowedCorsOrigins.helperText')}
             />
             <Box mt={1}>
               <ButtonSubmit>
-                {t('common__new:submit')}
+                {t('common:submit')}
               </ButtonSubmit>
             </Box>
           </Box>
@@ -171,5 +171,5 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(null, mapDispatchToProps)(
-  withTranslation(['admin__new', 'fields__new', 'common__new'])(SSOAllowedOrigins),
+  withTranslation(['admin', 'fields', 'common'])(SSOAllowedOrigins),
 );

@@ -95,13 +95,13 @@ const useGetEmailFor = (
     mailProps: {
       mailto: dpoEmail,
       applicationName: name,
-      body: t(`citizen__new:contact.email.body.${mailType || defaultMailType}`, {
+      body: t(`citizen:contact.email.body.${mailType || defaultMailType}`, {
         dpoEmail,
         databoxURL,
         mainDomain,
         ...mapDates(databox),
       }),
-      subject: t('citizen__new:contact.email.subject'),
+      subject: t('citizen:contact.email.subject'),
     },
   };
 }, [
@@ -241,7 +241,7 @@ const Contact = ({
 
   return (
     <ScreenAction
-      title={t('citizen__new:contact.bulk.list.title')}
+      title={t('citizen:contact.bulk.list.title')}
       display="flex"
       flexDirection="column"
       state={state}
@@ -252,17 +252,17 @@ const Contact = ({
       {step === STEP.preview && (
         <Container maxWidth="md" className={classes.container}>
           <Subtitle>
-            {t('citizen__new:contact.bulk.list.subtitle')}
+            {t('citizen:contact.bulk.list.subtitle')}
           </Subtitle>
           {!isEmpty(databoxesErrorsNames) && (
             <BoxMessage type="error" p={2}>
-              <Typography>{t('citizen__new:contact.bulk.databoxesErrors', { databoxesErrorsNames })}</Typography>
+              <Typography>{t('citizen:contact.bulk.databoxesErrors', { databoxesErrorsNames })}</Typography>
             </BoxMessage>
           )}
           {selectionIsEmpty
             ? (
               <BoxMessage type="info" p={2}>
-                <Typography>{t('citizen__new:contact.bulk.list.empty')}</Typography>
+                <Typography>{t('citizen:contact.bulk.list.empty')}</Typography>
               </BoxMessage>
             )
             : (
@@ -289,7 +289,7 @@ const Contact = ({
                           classes={{ content: classes.panelSummary }}
                         >
                           {alreadyContacted && !isClosed(status) && (
-                          <Tooltip title={t('citizen__new:contact.bulk.recontact')}>
+                          <Tooltip title={t('citizen:contact.bulk.recontact')}>
                             <IconButton onClick={setRecontactFor(id, !recontactIsCancelled)}>
                               <NotificationImportant color={recontactIsCancelled ? 'primary' : 'secondary'} />
                             </IconButton>
@@ -301,8 +301,8 @@ const Contact = ({
                           </Box>
                           <Box flexGrow={1} />
                           <Box display="flex" flexDirection="column">
-                            <Typography variant="caption">{t('citizen__new:contact.email.model')}</Typography>
-                            <Typography>{t(`citizen__new:contact.email.type.${mailType}`)}</Typography>
+                            <Typography variant="caption">{t('citizen:contact.email.model')}</Typography>
+                            <Typography>{t(`citizen:contact.email.type.${mailType}`)}</Typography>
                           </Box>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails>
@@ -326,13 +326,13 @@ const Contact = ({
                 <BoxControls
                   primary={{
                     onClick: goToNextStep,
-                    text: t('common__new:next'),
+                    text: t('common:next'),
                     disabled: selectionIsEmpty,
                   }}
                   secondary={{
                     onClick: onCancel,
                     standing: BUTTON_STANDINGS.CANCEL,
-                    text: t('citizen__new:contact.bulk.unselectAll'),
+                    text: t('citizen:contact.bulk.unselectAll'),
                     disabled: selectionIsEmpty,
                   }}
                 />
@@ -388,4 +388,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchClearDataboxUrlsByIds: () => dispatch(clearDataboxURLById()),
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation(['citizen__new', 'common__new'])(withBulkContact()(Contact)));
+export default connect(null, mapDispatchToProps)(withTranslation(['citizen', 'common'])(withBulkContact()(Contact)));

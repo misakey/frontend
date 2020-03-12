@@ -43,7 +43,7 @@ const readBlob = async (id, onError) => {
         .send()
     );
   } catch (e) {
-    onError('citizen__new:application.info.vault.errors.downloadBlob.getBlob');
+    onError('citizen:application.info.vault.errors.downloadBlob.getBlob');
     return {};
   }
 };
@@ -66,7 +66,7 @@ const downloadBlob = async (
     const { blob: ciphertext } = await readBlob(id);
 
     if (!ciphertext || ciphertext.size === 0) {
-      onError('citizen__new:application.info.vault.errors.downloadBlob.default');
+      onError('citizen:application.info.vault.errors.downloadBlob.default');
       return;
     }
 
@@ -90,7 +90,7 @@ const downloadBlob = async (
     downloadFile(decryptedBlob, fileName).then(onSuccess);
   } catch (e) {
     log(e);
-    onError('citizen__new:application.info.vault.errors.downloadBlob.default');
+    onError('citizen:application.info.vault.errors.downloadBlob.default');
   }
 };
 
@@ -128,7 +128,7 @@ const DataboxContent = ({
     () => {
       if (IS_PLUGIN) {
         enqueueSnackbar(
-          t('citizen__new:application.info.vault.downloadBlob.success'),
+          t('citizen:application.info.vault.downloadBlob.success'),
           { variant: 'success' },
         );
       }
@@ -188,14 +188,14 @@ const DataboxContent = ({
     <>
       <CardSimpleDoubleText
         my={2}
-        primary={t('citizen__new:application.info.vault.databoxContent.number', { count: blobsCount })}
+        primary={t('citizen:application.info.vault.databoxContent.number', { count: blobsCount })}
         secondary={allBlobsSize}
         button={(blobsCount > 0 && !vaultIsOpen) ? (
           <Button
             onClick={initCrypto}
             standing={BUTTON_STANDINGS.OUTLINED}
             size="small"
-            text={t('common__new:decrypt')}
+            text={t('common:decrypt')}
           />
         ) : null}
       />
@@ -233,7 +233,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = null;
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  withTranslation(['common__new', 'citizen__new'])(
+  withTranslation(['common', 'citizen'])(
     DataboxContent,
   ),
 );

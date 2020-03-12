@@ -130,7 +130,7 @@ function AuthSignUpConfirm({
 
       fetchAskConfirm(email)
         .then(() => {
-          const text = t('auth__new:signUp.confirm.success.resend', { email });
+          const text = t('auth:signUp.confirm.success.resend', { email });
           enqueueSnackbar(text, { variant: 'success' });
         })
         .catch(handleGenericHttpErrors)
@@ -144,7 +144,7 @@ function AuthSignUpConfirm({
       onClick: reSendConfirmCode,
       isLoading: isSending,
       disabled: isSending,
-      text: t('auth__new:signUp.confirm.action.resend'),
+      text: t('auth:signUp.confirm.action.resend'),
     }),
     [isSending, reSendConfirmCode, t],
   );
@@ -167,10 +167,10 @@ function AuthSignUpConfirm({
       <FormCardAuth
         primary={{
           type: 'submit',
-          text: t('common__new:next'),
+          text: t('common:next'),
         }}
-        title={t('auth__new:signUp.confirm.title')}
-        subtitle={t('auth__new:signUp.confirm.subtitle')}
+        title={t('auth:signUp.confirm.title')}
+        subtitle={t('auth:signUp.confirm.subtitle')}
         Header={CardHeaderAuthSignUp}
         formik
       >
@@ -233,4 +233,4 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['auth__new', 'common__new'])(AuthSignUpConfirm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['auth', 'common'])(AuthSignUpConfirm));

@@ -11,7 +11,7 @@ import exportCrypto from '@misakey/crypto/store/actions/exportCrypto';
 import { usePasswordPrompt } from 'components/screens/Citizen/Application/Info/Vault/PasswordPrompt';
 
 const ExportButton = ({ t }) => {
-  const fileNamePrefix = t('account__new:exportCrypto.exportButton.fileName');
+  const fileNamePrefix = t('account:exportCrypto.exportButton.fileName');
 
   const openPasswordPrompt = usePasswordPrompt();
   const dispatch = useDispatch();
@@ -23,10 +23,10 @@ const ExportButton = ({ t }) => {
 
   return (
     <CardSimpleText
-      text={t('account__new:exportCrypto.exportButton.info')}
+      text={t('account:exportCrypto.exportButton.info')}
       button={{
         standing: BUTTON_STANDINGS.TEXT,
-        text: t('common__new:download'),
+        text: t('common:download'),
         onClick,
       }}
     />
@@ -37,4 +37,4 @@ ExportButton.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['account__new', 'common__new'])(ExportButton);
+export default withTranslation(['account', 'common'])(ExportButton);
