@@ -339,7 +339,7 @@ describe('testing useFetchCallback', () => {
     // avoid using jest features for timers
     test('should be in fetching state', async () => {
       const TIMEOUT = 1;
-      const { result, wait } = renderHook(
+      const { result, waitForNextUpdate } = renderHook(
         () => useFetchCallback(delayedFetchFn(TIMEOUT)),
         { wrapper: Wrapper },
       );
@@ -355,14 +355,13 @@ describe('testing useFetchCallback', () => {
       expect(result.current.internalFetchingCount.current).toBe(1);
       expect(result.current.internalErrorRef.current).toBeUndefined();
 
-      await wait(() => {
-        expect(result.current.data).toBe(OK);
-        expect(result.current.error).toBeNull();
-        expect(result.current.isFetching).toBe(false);
-        expect(result.current.wrappedFetch).toEqual(expect.any(Function));
-        expect(result.current.internalFetchingCount.current).toBe(0);
-        expect(result.current.internalErrorRef.current).toBeUndefined();
-      }, { timeout: TIMEOUT });
+      await waitForNextUpdate();
+      expect(result.current.data).toBe(OK);
+      expect(result.current.error).toBeNull();
+      expect(result.current.isFetching).toBe(false);
+      expect(result.current.wrappedFetch).toEqual(expect.any(Function));
+      expect(result.current.internalFetchingCount.current).toBe(0);
+      expect(result.current.internalErrorRef.current).toBeUndefined();
     });
 
     test('should stay in fetching state if wrappedFetch resolves after unmount', async () => {
@@ -373,7 +372,7 @@ describe('testing useFetchCallback', () => {
         { wrapper: Wrapper },
       );
 
-      act(() => {
+      await act(async () => {
         result.current.wrappedFetch();
       });
 
