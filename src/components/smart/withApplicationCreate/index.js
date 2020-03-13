@@ -23,8 +23,8 @@ import { fetchApplicationByMainDomain } from '@misakey/helpers/fetchApplications
 
 import errorTypes from '@misakey/ui/constants/errorTypes';
 
-import { MAIN_DOMAIN_REGEX } from 'constants/regex';
 import { WORKSPACE } from 'constants/workspaces';
+import { mainDomainFieldValidation } from 'constants/fieldValidations';
 
 import ApplicationSchema from 'store/schemas/Application';
 import { receiveEntities } from '@misakey/store/actions/entities';
@@ -122,8 +122,12 @@ const withApplicationsCreate = (mapper = identity) => (Component) => {
     }, [history, redirectRoute]);
 
     const onCreateApplication = useCallback(
-      ({ mainDomain: homepage, dpoEmail }, { setSubmitting, setFieldError }, successText) => {
-        const matchedRegex = MAIN_DOMAIN_REGEX.exec(homepage);
+      (
+        { mainDomain: homepage, dpoEmail },
+        { setSubmitting, setFieldError },
+        successText,
+      ) => {
+        const matchedRegex = mainDomainFieldValidation.regex.exec(homepage);
         const mainDomain = matchedRegex[1];
         const form = { mainDomain };
 

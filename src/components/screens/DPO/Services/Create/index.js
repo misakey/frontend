@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { Formik, Field, Form } from 'formik';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { mainDomainDpoSchema } from 'constants/validationSchemas/contribution';
+import { createApplicationDpoValidationSchema } from 'constants/validationSchemas/contribution';
 
 import isNil from '@misakey/helpers/isNil';
 import getSearchParams from '@misakey/helpers/getSearchParams';
@@ -73,7 +73,7 @@ const ServicesCreate = ({
           {t('dpo:services.create.subtitle')}
         </Typography>
         <Formik
-          validationSchema={mainDomainDpoSchema}
+          validationSchema={createApplicationDpoValidationSchema}
           onSubmit={onSubmit}
           initialValues={initialValues}
           validateOnMount={isPrefilled}

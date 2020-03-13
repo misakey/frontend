@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { Formik, Field, Form } from 'formik';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { mainDomainValidationSchema } from 'constants/validationSchemas/information';
+import { createApplicationCitizenValidationSchema } from 'constants/validationSchemas/contribution';
 
 import isNil from '@misakey/helpers/isNil';
 import getSearchParams from '@misakey/helpers/getSearchParams';
@@ -73,7 +73,7 @@ const ApplicationsCreate = ({
           {t('citizen:applications.create.subtitle')}
         </Typography>
         <Formik
-          validationSchema={mainDomainValidationSchema}
+          validationSchema={createApplicationCitizenValidationSchema}
           onSubmit={onSubmit}
           initialValues={initialValues}
           validateOnMount={isPrefilled}

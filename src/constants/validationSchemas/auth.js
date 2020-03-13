@@ -1,23 +1,20 @@
 import * as Yup from 'yup';
-import { CONFIRM_REGEX } from 'constants/auth';
-import errorTypes from '@misakey/ui/constants/errorTypes';
 import mapValues from '@misakey/helpers/mapValues';
 import pick from '@misakey/helpers/pick';
 
-// CONSTANTS
-const { malformed, required, invalid } = errorTypes;
-const noTrailingUnderscore = 'noTrailingUnderscore';
+import {
+  emailFieldValidation, passwordFieldValidation, codeFieldValidation,
+  handleFieldValidation, switchFieldValidation,
+} from 'constants/fieldValidations';
 
 
 const signInValidationSchema = {
   identifier: {
-    email: Yup.string()
-      .email(malformed)
-      .required(required),
+    email: emailFieldValidation.schema,
   },
   secret: {
-    password: Yup.string().required(required),
-    confirmationCode: Yup.string().required(required),
+    password: passwordFieldValidation.schema,
+    confirmationCode: codeFieldValidation.schema,
   },
 };
 
@@ -26,54 +23,28 @@ export const getSignInValidationSchema = (fieldTypes, step) => Yup.object().shap
 );
 
 export const openVaultValidationSchema = Yup.object().shape({
-  password: Yup.string()
-    .required(required),
+  password: passwordFieldValidation.schema,
 });
 
 export const signUpValidationSchema = Yup.object().shape({
-  handle: Yup.string()
-    .required(required)
-    .min(3, invalid)
-    .max(21, invalid)
-    .matches(/^[a-z0-9_]*$/, { message: invalid, excludeEmptyString: true })
-    .matches(/^[^_].*[^_]$/, { message: noTrailingUnderscore, excludeEmptyString: true }),
-  email: Yup.string()
-    .email(malformed)
-    .required(required),
-  password: Yup.string()
-    .required(required)
-    .min(8, malformed),
+  handle: handleFieldValidation.setSchema,
+  email: emailFieldValidation.schema,
+  password: passwordFieldValidation.setSchema,
 
-  tos: Yup.boolean()
-    .oneOf([true], required),
-  misakeyKnow: Yup.boolean()
-    .oneOf([true], required),
-  misakeyCrypto: Yup.boolean()
-    .oneOf([true], required),
+  tos: switchFieldValidation.requiredSchema,
+  misakeyKnow: switchFieldValidation.requiredSchema,
+  misakeyCrypto: switchFieldValidation.requiredSchema,
 });
 
 const signUpValidationSchemaSteps = {
-  handle: Yup.string()
-    .required(required)
-    .min(3, invalid)
-    .max(21, invalid)
-    .matches(/^[a-z0-9_]*$/, { message: invalid, excludeEmptyString: true })
-    .matches(/^[^_].*[^_]$/, { message: noTrailingUnderscore, excludeEmptyString: true }),
-  email: Yup.string()
-    .email(malformed)
-    .required(required),
-  password: Yup.string()
-    .required(required)
-    .min(8, malformed),
-  passwordConfirm: Yup.string()
-    .oneOf([Yup.ref('password'), null], malformed)
-    .required(required),
-  tos: Yup.boolean()
-    .oneOf([true], required),
-  misakeyKnow: Yup.boolean()
-    .oneOf([true], required),
-  misakeyCrypto: Yup.boolean()
-    .oneOf([true], required),
+  handle: handleFieldValidation.setSchema,
+  email: emailFieldValidation.schema,
+  password: passwordFieldValidation.setSchema,
+  passwordConfirm: passwordFieldValidation.requiredSchema,
+
+  tos: switchFieldValidation.requiredSchema,
+  misakeyKnow: switchFieldValidation.requiredSchema,
+  misakeyCrypto: switchFieldValidation.requiredSchema,
 };
 
 export const stepSignUpValidationSchemas = [
@@ -84,30 +55,19 @@ export const stepSignUpValidationSchemas = [
 ];
 
 export const signUpConfirmValidationSchema = Yup.object().shape({
-  code: Yup
-    .string()
-    .matches(CONFIRM_REGEX, { message: malformed })
-    .required(required),
+  code: codeFieldValidation.strictSchema,
 });
 
 export const forgotConfirmValidationSchema = Yup.object().shape({
-  confirmationCode: Yup
-    .string()
-    .matches(CONFIRM_REGEX, { message: malformed })
-    .required(required),
+  confirmationCode: codeFieldValidation.strictSchema,
 });
 
 export const forgotResetPasswordValidationSchema = forgotConfirmValidationSchema.concat(
   Yup.object().shape({
-    passwordNew: Yup
-      .string()
-      .min(8, 'malformed')
-      .required('required'),
+    passwordNew: passwordFieldValidation.setSchema,
   }),
 );
 
 export const accessRequestValidationSchema = Yup.object().shape({
-  code: Yup.string()
-    // .matches(/^[0-9]{6}$/, { message: invalid })
-    .required(required),
+  code: codeFieldValidation.schema,
 });

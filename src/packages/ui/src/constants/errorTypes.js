@@ -8,6 +8,7 @@ const errorTypes = {
   required: 'required',
   unknown: 'unknown',
   badRequest: 'bad_request',
+  noTrailingUnderscore: 'noTrailingUnderscore',
 };
 
 export default errorTypes;
