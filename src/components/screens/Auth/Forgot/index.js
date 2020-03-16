@@ -19,7 +19,6 @@ import { screenAuthSetCredentials } from 'store/actions/screens/auth';
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 import path from '@misakey/helpers/path';
-import join from '@misakey/helpers/join';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToSnakeCaseDeep from '@misakey/helpers/objectToSnakeCaseDeep';
@@ -128,7 +127,6 @@ const resetPassword = async (email, code, form, isAuthenticated, dispatchHardPas
     .send();
 };
 
-const formatFieldValue = (values) => join(values, '');
 
 // HOOKS
 const useGetUserPublicData = (email, handleGenericHttpErrors) => useCallback(
@@ -283,19 +281,15 @@ const AuthForgot = ({
           {isStepConfirm(step)
             ? (
               <Field
-                className="field"
                 type="text"
                 name={CONFIRM_FIELD_NAME}
                 component={FieldCode}
-                formatFieldValue={formatFieldValue}
-                helperText=""
-                inputProps={{ 'data-matomo-ignore': true }}
                 label={t('auth:forgotPassword.form.field.confirm.label')}
+                autoFocus
               />
             )
             : (
               <Field
-                className="field"
                 type="password"
                 name={PASSWORD_FIELD_NAME}
                 component={FieldTextPasswordRevealable}

@@ -65,7 +65,10 @@ const ENDPOINTS = {
 };
 
 const DEFAULT_FIELDS = {
-  code: { component: FieldCode, label: undefined, autoFocus: true },
+  code: {
+    component: FieldCode,
+    autoFocus: true,
+  },
 };
 
 const INITIAL_VALUES = {
@@ -180,7 +183,7 @@ function ServiceRoleClaim({
     }
 
     const query = { id: claim.id };
-    const payload = { validated_at: moment.utc(Date.now()).format(), value: values.code.join('') };
+    const payload = { validated_at: moment.utc(Date.now()).format(), value: values.code };
 
     API.use(ENDPOINTS.claim.confirm.update)
       .build(query, payload)

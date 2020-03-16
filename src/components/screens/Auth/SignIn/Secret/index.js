@@ -131,9 +131,7 @@ const AuthSignInSecret = ({
     ({ secret }, { setFieldError, setSubmitting }) => {
       const payload = mapValues({ secret, identifier }, (value, key) => ({
         kind: secLevelConfig.api[key].kind,
-        value: isFunction(secLevelConfig.api[key].formatValue)
-          ? secLevelConfig.api[key].formatValue(value)
-          : value,
+        value,
       }));
       setRedirectTo(null);
 
@@ -251,13 +249,13 @@ const AuthSignInSecret = ({
         Header={CardHeaderAuth}
         formik
       >
-        <Box textAlign="center">
+        <Box alignItems="center" flexDirection="column" display="flex">
           <ChipUser
             {...chipActions}
             {...userPublicData}
           />
+          <SignInFormFields acr={acr} step={CURRENT_STEP} />
         </Box>
-        <SignInFormFields acr={acr} step={CURRENT_STEP} />
         <Button classes={{ buttonRoot: classes.buttonRoot }} {...signInFormContentAction} />
         <LinkMore />
       </FormCardAuth>

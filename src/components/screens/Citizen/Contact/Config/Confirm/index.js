@@ -8,7 +8,6 @@ import { useFormikContext } from 'formik';
 import API from '@misakey/api';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 
-import join from '@misakey/helpers/join';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import { getCode } from '@misakey/helpers/apiError';
 
@@ -29,8 +28,6 @@ import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 const DEFAULT_FIELDS = {
   code: {
     component: FieldCode,
-    inputProps: { 'data-matomo-ignore': true, placeholder: '' },
-    formatFieldValue: (values) => join(values, ''),
     autoFocus: true,
   },
 };

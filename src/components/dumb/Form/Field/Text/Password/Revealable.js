@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import omit from '@misakey/helpers/omit';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import eventPreventDefault from '@misakey/helpers/event/preventDefault';
 
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -14,7 +14,6 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import FieldTextPassword from './index';
 
 // CONSTANTS
-const INTERNAL_PROPS = ['i18n', 'tReady'];
 const HIDDEN_TYPE = 'password';
 const VISIBLE_DEFAULT = 'text';
 
@@ -60,7 +59,7 @@ const FieldTextPasswordRevealable = ({ initialVisible, type, t, ...props }) => {
 
   return (
     <FieldTextPassword
-      {...omit(props, INTERNAL_PROPS)}
+      {...omitTranslationProps(props)}
       type={actualType}
       InputProps={InputProps}
     />

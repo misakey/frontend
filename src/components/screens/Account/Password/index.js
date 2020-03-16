@@ -34,6 +34,11 @@ const INITIAL_VALUES = {
 
 const OLD_PASSWORD_FIELD_NAME = 'passwordOld';
 
+// from https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion#Preventing_autofilling_with_autocompletenew-password
+const NEW_PASSWORD_INPUT_PROPS = {
+  autocomplete: 'new-password',
+};
+
 // COMPONENTS
 const AccountPassword = ({
   t,
@@ -118,6 +123,7 @@ const AccountPassword = ({
                   component={FieldTextPasswordRevealable}
                   label={t('fields:password.label')}
                   helperText={t('fields:password.helperText')}
+                  inputProps={NEW_PASSWORD_INPUT_PROPS}
                 />
               </Box>
               <Field

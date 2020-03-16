@@ -14,7 +14,6 @@ import { signUpConfirmValidationSchema } from 'constants/validationSchemas/auth'
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 import path from '@misakey/helpers/path';
-import join from '@misakey/helpers/join';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -33,8 +32,6 @@ import CardHeaderAuthSignUp from 'components/smart/Card/Auth/Header/SignUp';
 const DEFAULT_FIELDS = {
   code: {
     component: FieldCode,
-    inputProps: { 'data-matomo-ignore': true, placeholder: '' },
-    formatFieldValue: (values) => join(values, ''),
     autoFocus: true,
   },
 };
