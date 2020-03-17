@@ -28,10 +28,9 @@ import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpError
 import { BUTTON_STANDINGS } from 'components/dumb/Button';
 
 import BoxControls from 'components/dumb/Box/Controls';
-import Screen from 'components/dumb/Screen';
+import ScreenAction from 'components/dumb/Screen/Action';
 import SplashScreen from '@misakey/ui/Screen/Splash';
 
-import AppBarNavigation from 'components/dumb/AppBar/Navigation';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import withMyFeedback from 'components/smart/withMyFeedback';
@@ -167,7 +166,17 @@ const ApplicationMyFeedback = ({
   const { enqueueSnackbar } = useSnackbar();
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
 
-  const { mainDomain } = params;
+  const mainDomain = useMemo(
+    () => params.mainDomain,
+    [params],
+  );
+
+  const navigationProps = useMemo(
+    () => ({
+      homePath: generatePath(routes.citizen.application.feedback, { mainDomain }),
+    }),
+    [mainDomain],
+  );
 
   const initialValues = useMemo(
     () => (isNil(rating) ? INITIAL_VALUES : pickInitialValues(rating)),
@@ -194,11 +203,11 @@ const ApplicationMyFeedback = ({
   );
 
   return (
-    <Screen {...screenProps}>
-      <AppBarNavigation
-        toolbarProps={{ maxWidth: 'md' }}
-        title={t('citizen:application.feedback.title')}
-      />
+    <ScreenAction
+      {...screenProps}
+      title={t('citizen:application.feedback.title')}
+      navigationProps={navigationProps}
+    >
       {(isFetchingFeedback) ? (
         <SplashScreen />
       ) : (
@@ -243,7 +252,7 @@ const ApplicationMyFeedback = ({
           </Box>
         </Container>
       )}
-    </Screen>
+    </ScreenAction>
   );
 };
 

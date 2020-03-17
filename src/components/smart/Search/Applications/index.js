@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, Suspense } from 'react';
 import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';
@@ -38,11 +38,13 @@ const SearchApplications = ({ component: Component, children, ...rest }) => {
       >
         {children}
       </Component>
-      <SearchApplicationsPopover
-        id={id}
-        anchorEl={anchorEl}
-        onClose={onClose}
-      />
+      <Suspense fallback={null}>
+        <SearchApplicationsPopover
+          id={id}
+          anchorEl={anchorEl}
+          onClose={onClose}
+        />
+      </Suspense>
     </>
   );
 };

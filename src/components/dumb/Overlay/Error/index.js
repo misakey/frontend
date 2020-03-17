@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -9,6 +9,7 @@ import boulder from '@misakey/ui/colors/boulder';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
+import LinkFeedback from 'components/smart/Link/Feedback';
 
 const styles = (theme) => ({
   root: {
@@ -37,10 +38,12 @@ const styles = (theme) => ({
 });
 
 function ErrorOverlay({ classes, error, httpStatus, t, variant }) {
-  const getText = React.useMemo(() => error
+  const getText = useMemo(
+    () => error
     || (httpStatus && API.errors.httpStatus.includes(httpStatus) && t(`common:httpStatus.error.${httpStatus}`))
     || t('common:httpStatus.error.default'),
-  [error, httpStatus, t]);
+    [error, httpStatus, t],
+  );
 
   return (
     <div className={clsx(classes.root, classes[variant])}>
@@ -51,6 +54,12 @@ function ErrorOverlay({ classes, error, httpStatus, t, variant }) {
       )}
       <Typography className={classes.h3} variant="h5" component="h3" align="center" color="textSecondary">
         {getText}
+      </Typography>
+      <Typography variant="body2" align="center">
+        <LinkFeedback
+          text={t('components:errorOverlay.feedback.text')}
+          color="secondary"
+        />
       </Typography>
     </div>
   );
@@ -71,4 +80,4 @@ ErrorOverlay.defaultProps = {
   variant: 'default',
 };
 
-export default withTranslation('common')(withStyles(styles)(ErrorOverlay));
+export default withTranslation(['common', 'components'])(withStyles(styles)(ErrorOverlay));

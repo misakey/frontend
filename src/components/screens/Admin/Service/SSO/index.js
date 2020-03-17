@@ -1,4 +1,4 @@
-import React, { useState, lazy, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, lazy, useEffect, useCallback /* useMemo */ } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -10,12 +10,11 @@ import ServiceSchema from 'store/schemas/Service';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import prop from '@misakey/helpers/prop';
+// import prop from '@misakey/helpers/prop';
 import props from '@misakey/helpers/props';
 import compose from '@misakey/helpers/compose';
 import includes from '@misakey/helpers/includes';
 
-import ResponseHandlerWrapper from '@misakey/ui/ResponseHandlerWrapper';
 
 // LAZY
 const SSOHome = lazy(() => import('components/screens/Admin/Service/SSO/Home'));
@@ -47,7 +46,7 @@ const fetchApplicationSSO = (id) => API
 // COMPONENTS
 const ServiceSSO = ({ service, dispatchUpdate, ...rest }) => {
   const [isFetching, setFetching] = useState(false);
-  const [error, setError] = useState();
+  const [/* error */, setError] = useState();
 
   const fetchData = useCallback(() => {
     if (!isFetching && missingSSOProps(service)) {
@@ -67,53 +66,53 @@ const ServiceSSO = ({ service, dispatchUpdate, ...rest }) => {
 
   useEffect(fetchData, [service]);
 
-  // TODO rework error status ResponseHandlerWrapper
-  const handledError = useMemo(() => prop('status')(error) || null, [error]);
+  // TODO rework error status
+  // const handledError = useMemo(() => prop('status')(error) || null, [error]);
 
   return (
-    <ResponseHandlerWrapper
-      error={handledError}
-      entity={service}
-      isFetching={isFetching}
-    >
-      <Switch>
-        <Route
-          exact
-          path={routes.admin.service.sso._}
-          render={(routerProps) => (
-            <SSOHome service={service} {...routerProps} {...rest} />
-          )}
-        />
-        <Route
-          exact
-          path={routes.admin.service.sso.allowedOrigins}
-          render={(routerProps) => (
-            <SSOAllowedOrigins service={service} {...routerProps} {...rest} />
-          )}
-        />
-        <Route
-          exact
-          path={routes.admin.service.sso.redirectUri}
-          render={(routerProps) => (
-            <SSORedirectUri service={service} {...routerProps} {...rest} />
-          )}
-        />
-        <Route
-          exact
-          path={routes.admin.service.sso.productionSetup}
-          render={(routerProps) => (
-            <SSOProductionSetup service={service} {...routerProps} {...rest} />
-          )}
-        />
-        <Route
-          exact
-          path={routes.admin.service.sso.customRoles}
-          render={(routerProps) => (
-            <SSOCustomRoles service={service} {...routerProps} {...rest} />
-          )}
-        />
-      </Switch>
-    </ResponseHandlerWrapper>
+  // <ResponseHandlerWrapper
+  //   error={handledError}
+  //   entity={service}
+  //   isFetching={isFetching}
+  // >
+    <Switch>
+      <Route
+        exact
+        path={routes.admin.service.sso._}
+        render={(routerProps) => (
+          <SSOHome service={service} {...routerProps} {...rest} />
+        )}
+      />
+      <Route
+        exact
+        path={routes.admin.service.sso.allowedOrigins}
+        render={(routerProps) => (
+          <SSOAllowedOrigins service={service} {...routerProps} {...rest} />
+        )}
+      />
+      <Route
+        exact
+        path={routes.admin.service.sso.redirectUri}
+        render={(routerProps) => (
+          <SSORedirectUri service={service} {...routerProps} {...rest} />
+        )}
+      />
+      <Route
+        exact
+        path={routes.admin.service.sso.productionSetup}
+        render={(routerProps) => (
+          <SSOProductionSetup service={service} {...routerProps} {...rest} />
+        )}
+      />
+      <Route
+        exact
+        path={routes.admin.service.sso.customRoles}
+        render={(routerProps) => (
+          <SSOCustomRoles service={service} {...routerProps} {...rest} />
+        )}
+      />
+    </Switch>
+  // </ResponseHandlerWrapper>
   );
 };
 

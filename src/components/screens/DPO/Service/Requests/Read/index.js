@@ -1,12 +1,14 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { generatePath } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { useSnackbar } from 'notistack';
 import { withTranslation, Trans } from 'react-i18next';
 import moment from 'moment';
 
 import API from '@misakey/api';
+import routes from 'routes';
 import DataboxSchema from 'store/schemas/Databox';
 import { updateDatabox } from 'store/actions/databox';
 
@@ -242,10 +244,6 @@ function ServiceRequestsRead({
 
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.only('xs'));
-  const navigationProps = useMemo(
-    () => ({ noWrap: true }),
-    [],
-  );
 
   // dialogs
   const [openDialog, setOpenDialog] = useState(null);
@@ -262,6 +260,16 @@ function ServiceRequestsRead({
   const hashToken = useMemo(
     () => (!isEmpty(hash) ? hash.substr(1) : null),
     [hash],
+  );
+
+  const homePath = useMemo(
+    () => generatePath(routes.dpo.service.requests._, { mainDomain: params.mainDomain }),
+    [params],
+  );
+
+  const navigationProps = useMemo(
+    () => ({ noWrap: true, homePath }),
+    [homePath],
   );
 
   const databoxId = useMemo(
@@ -629,7 +637,7 @@ ServiceRequestsRead.propTypes = {
 
   history: PropTypes.object.isRequired,
   match: PropTypes.shape({
-    params: PropTypes.shape({ databoxId: PropTypes.string }),
+    params: PropTypes.shape({ databoxId: PropTypes.string, mainDomain: PropTypes.string }),
   }).isRequired,
   location: PropTypes.shape({ hash: PropTypes.string }).isRequired,
   t: PropTypes.func.isRequired,

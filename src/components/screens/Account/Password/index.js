@@ -36,7 +36,11 @@ const OLD_PASSWORD_FIELD_NAME = 'passwordOld';
 
 // from https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion#Preventing_autofilling_with_autocompletenew-password
 const NEW_PASSWORD_INPUT_PROPS = {
-  autocomplete: 'new-password',
+  autoComplete: 'new-password',
+};
+
+const NAVIGATION_PROPS = {
+  homePath: routes.account._,
 };
 
 // COMPONENTS
@@ -99,6 +103,7 @@ const AccountPassword = ({
       title={t('account:password.title')}
       state={state}
       appBarProps={{ withSearchBar: false }}
+      navigationProps={NAVIGATION_PROPS}
     >
       <Container maxWidth="md">
         <Formik

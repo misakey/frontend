@@ -15,6 +15,11 @@ import routes from 'routes';
 
 import FormImage from './image';
 
+// CONSTANTS
+const NAVIGATION_PROPS = {
+  homePath: routes.account._,
+};
+
 // COMPONENTS
 const AccountAvatarDisplay = ({
   t,
@@ -31,6 +36,7 @@ const AccountAvatarDisplay = ({
     title={t('account:avatar.title')}
     state={state}
     appBarProps={{ withSearchBar: false }}
+    navigationProps={NAVIGATION_PROPS}
   >
     <Container maxWidth="md" className="content">
       <Subtitle>
@@ -45,7 +51,6 @@ const AccountAvatarDisplay = ({
         secondary={{
           to: routes.account.profile.avatar.upload,
           component: Link,
-          replace: true,
           'aria-label': t('common:edit'),
           text: t('common:edit'),
         }}

@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 
+import API from '@misakey/api';
 import routes from 'routes';
 import { displayNameValidationSchema } from 'constants/validationSchemas/profile';
 import { userProfileUpdate } from 'store/actions/screens/account';
@@ -13,7 +14,6 @@ import isNil from '@misakey/helpers/isNil';
 import path from '@misakey/helpers/path';
 import propOr from '@misakey/helpers/propOr';
 
-import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import snakeCase from '@misakey/helpers/snakeCase';
 
@@ -27,6 +27,10 @@ import ScreenAction from 'components/dumb/Screen/Action';
 
 // CONSTANTS
 const FIELD_NAME = 'displayName';
+
+const NAVIGATION_PROPS = {
+  homePath: routes.account._,
+};
 
 // HELPERS
 const displayNameProp = propOr('', FIELD_NAME);
@@ -102,6 +106,7 @@ const AccountName = ({
       title={t('account:name.title')}
       state={state}
       appBarProps={{ withSearchBar: false }}
+      navigationProps={NAVIGATION_PROPS}
     >
       <Container maxWidth="md">
         <Subtitle>

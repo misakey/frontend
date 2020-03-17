@@ -3,19 +3,23 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
+import routes from 'routes';
+
 import isNil from '@misakey/helpers/isNil';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import log from '@misakey/helpers/log';
 import { fetchApplicationsByCategory } from '@misakey/helpers/fetchApplications';
 
 import Container from '@material-ui/core/Container';
-import AppBarNavigation from 'components/dumb/AppBar/Navigation';
-
-
 import ApplicationsList from 'components/dumb/List/Applications';
-import Screen from 'components/dumb/Screen';
+import ScreenAction from 'components/dumb/Screen/Action';
 
+// CONSTANTS
+const NAVIGATION_PROPS = {
+  homePath: routes.citizen._,
+};
 
+// COMPONENTS
 const ApplicationsCategoryScreen = ({ isAuthenticated, t, match }) => {
   const [error, setError] = useState();
   const [applicationsList, setList] = useState(null);
@@ -49,11 +53,10 @@ const ApplicationsCategoryScreen = ({ isAuthenticated, t, match }) => {
   }, [shouldFetch, fetchApplicationsList]);
 
   return (
-    <Screen>
-      <AppBarNavigation
-        toolbarProps={{ maxWidth: 'md' }}
-        title={t(`common:application.category.${category}`)}
-      />
+    <ScreenAction
+      title={t(`common:application.category.${category}`)}
+      navigationProps={NAVIGATION_PROPS}
+    >
       <Container
         maxWidth="md"
       >
@@ -63,7 +66,7 @@ const ApplicationsCategoryScreen = ({ isAuthenticated, t, match }) => {
           applications={applicationsList || []}
         />
       </Container>
-    </Screen>
+    </ScreenAction>
   );
 };
 

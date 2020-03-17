@@ -6,7 +6,7 @@ import useWidth from '@misakey/hooks/useWidth';
 import AppBarNavigation from 'components/dumb/AppBar/Navigation';
 
 import './Error.scss';
-import ErrorOverlay from '@misakey/ui/Error/Overlay';
+import ErrorOverlay from 'components/dumb/Overlay/Error';
 
 /**
  * @param error
@@ -14,6 +14,7 @@ import ErrorOverlay from '@misakey/ui/Error/Overlay';
  * @returns {*}
  * @constructor
  */
+// @DEPRECATED
 function ScreenError({ error, httpStatus }) {
   const width = useWidth();
 

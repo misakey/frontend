@@ -10,6 +10,11 @@ import FileField from 'components/dumb/Form/Field/File';
 import Subtitle from 'components/dumb/Typography/Subtitle';
 import ScreenAction from 'components/dumb/Screen/Action';
 
+// CONSTANTS
+const NAVIGATION_PROPS = {
+  homePath: routes.account._,
+};
+
 // HOOKS
 const useOnChange = (name, previewName, setValues, setTouched, history) => useCallback(
   (file, preview) => {
@@ -21,7 +26,7 @@ const useOnChange = (name, previewName, setValues, setTouched, history) => useCa
       [name]: true,
       [previewName]: true,
     }, false);
-    history.replace(routes.account.profile.avatar._);
+    history.push(routes.account.profile.avatar._);
   },
   [history, name, previewName, setTouched, setValues],
 );
@@ -45,6 +50,7 @@ const AccountAvatarUpload = ({
       title={t('account:avatar.upload.title')}
       state={state}
       appBarProps={{ withSearchBar: false }}
+      navigationProps={NAVIGATION_PROPS}
     >
       <Container maxWidth="md">
         <Subtitle>

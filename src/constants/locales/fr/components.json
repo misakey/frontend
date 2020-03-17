@@ -55,6 +55,11 @@
       "collapse": "Détails"
     }
   },
+  "errorOverlay": {
+    "feedback": {
+      "text": "Contactez-nous\u00a0!"
+    }
+  },
   "footer": {
     "links": {
       "privacy": {
@@ -74,7 +79,7 @@
         "href": "https://docs.misakey.com/"
       },
       "feedback": {
-        "text": "Quelque chose à nous dire ?"
+        "text": "Quelque chose à nous dire\u00a0?"
       }
     }
   },
@@ -156,7 +161,6 @@
           "loading": "Connexion en tant qu'administrateur en cours..."
         }
       },
-
       "titleByComponentName": {
         "AdminServiceClaim": "Je me connecte pour commencer les étapes d'appropriation de domaine",
         "AdminServiceHome": "Une fois connecté, je pourrai consulter le tableau de bord de mon site",
@@ -183,7 +187,7 @@
     }
   },
   "silentAuth": {
-    "text": { 
+    "text": {
       "dpo": "Je me connecte en tant que DPO pour accéder à cet espace.",
       "citizen": "Je me connecte en tant que Citoyen pour accéder à cet espace."
     },

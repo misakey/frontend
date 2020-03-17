@@ -7,7 +7,6 @@ import ApplicationSchema from 'store/schemas/Application';
 import withApplication from 'components/smart/withApplication';
 
 import ButtonBurger from '@misakey/ui/Button/Burger';
-import ResponseHandlerWrapper from '@misakey/ui/ResponseHandlerWrapper';
 import RouteService, { DEFAULT_SERVICE_ENTITY } from 'components/smart/Route/Service';
 import NotFound from 'components/screens/NotFound';
 
@@ -35,9 +34,9 @@ export const ADMIN_SERVICE_SCREEN_NAMES = {
 
 function Service({
   entity,
-  error,
+  // error,
   isDefaultDomain,
-  isFetching,
+  // isFetching,
   mainDomain,
   match,
   userId,
@@ -65,89 +64,89 @@ function Service({
 
   return (
     <div className="Service">
-      <ResponseHandlerWrapper
+      {/* <ResponseHandlerWrapper
         error={error}
         entity={service}
         isFetching={isFetching}
+      > */}
+      <Drawer
+        mainDomain={mainDomain}
+        open={isDrawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        userHasRole={userHasRole}
       >
-        <Drawer
-          mainDomain={mainDomain}
-          open={isDrawerOpen}
-          onClose={() => setDrawerOpen(false)}
-          userHasRole={userHasRole}
-        >
-          <Switch>
-            <RouteService
-              path={routes.admin.service.claim._}
-              component={ServiceClaim}
-              componentProps={{
-                appBarProps,
-                service,
-                name: ADMIN_SERVICE_SCREEN_NAMES.CLAIM,
-                userId,
-                userRoles,
-              }}
-              {...routeServiceProps}
-            />
-            <RouteService
-              path={routes.admin.service.information._}
-              component={ServiceInformation}
-              componentProps={{
-                appBarProps,
-                service,
-                name: ADMIN_SERVICE_SCREEN_NAMES.INFORMATION,
-              }}
-              {...routeServiceProps}
-            />
-            <RouteService
-              path={routes.admin.service.sso._}
-              component={ServiceSSO}
-              componentProps={{
-                appBarProps,
-                service,
-                name: ADMIN_SERVICE_SCREEN_NAMES.SSO,
-              }}
-              {...routeServiceProps}
-            />
-            <RouteService
-              path={routes.admin.service.users._}
-              component={ServiceUsers}
-              componentProps={{
-                appBarProps,
-                service,
-                name: ADMIN_SERVICE_SCREEN_NAMES.USERS,
-              }}
-              {...routeServiceProps}
-            />
-            <RouteService
-              path={routes.admin.service.data._}
-              component={ServiceData}
-              componentProps={{
-                appBarProps,
-                service,
-                name: ADMIN_SERVICE_SCREEN_NAMES.DATA,
-              }}
-              {...routeServiceProps}
-            />
-            <RouteService
-              exact
-              path={routes.admin.service.home._}
-              component={ServiceHome}
-              componentProps={{
-                appBarProps,
-                service,
-                name: ADMIN_SERVICE_SCREEN_NAMES.HOME,
-              }}
-              {...routeServiceProps}
-            />
-            <Route
-              exact
-              path={match.path}
-              render={(routerProps) => <NotFound {...routerProps} appBarProps={appBarProps} />}
-            />
-          </Switch>
-        </Drawer>
-      </ResponseHandlerWrapper>
+        <Switch>
+          <RouteService
+            path={routes.admin.service.claim._}
+            component={ServiceClaim}
+            componentProps={{
+              appBarProps,
+              service,
+              name: ADMIN_SERVICE_SCREEN_NAMES.CLAIM,
+              userId,
+              userRoles,
+            }}
+            {...routeServiceProps}
+          />
+          <RouteService
+            path={routes.admin.service.information._}
+            component={ServiceInformation}
+            componentProps={{
+              appBarProps,
+              service,
+              name: ADMIN_SERVICE_SCREEN_NAMES.INFORMATION,
+            }}
+            {...routeServiceProps}
+          />
+          <RouteService
+            path={routes.admin.service.sso._}
+            component={ServiceSSO}
+            componentProps={{
+              appBarProps,
+              service,
+              name: ADMIN_SERVICE_SCREEN_NAMES.SSO,
+            }}
+            {...routeServiceProps}
+          />
+          <RouteService
+            path={routes.admin.service.users._}
+            component={ServiceUsers}
+            componentProps={{
+              appBarProps,
+              service,
+              name: ADMIN_SERVICE_SCREEN_NAMES.USERS,
+            }}
+            {...routeServiceProps}
+          />
+          <RouteService
+            path={routes.admin.service.data._}
+            component={ServiceData}
+            componentProps={{
+              appBarProps,
+              service,
+              name: ADMIN_SERVICE_SCREEN_NAMES.DATA,
+            }}
+            {...routeServiceProps}
+          />
+          <RouteService
+            exact
+            path={routes.admin.service.home._}
+            component={ServiceHome}
+            componentProps={{
+              appBarProps,
+              service,
+              name: ADMIN_SERVICE_SCREEN_NAMES.HOME,
+            }}
+            {...routeServiceProps}
+          />
+          <Route
+            exact
+            path={match.path}
+            render={(routerProps) => <NotFound {...routerProps} appBarProps={appBarProps} />}
+          />
+        </Switch>
+      </Drawer>
+      {/* </ResponseHandlerWrapper> */}
     </div>
   );
 }

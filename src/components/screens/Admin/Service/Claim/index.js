@@ -41,7 +41,7 @@ import SplashScreen from '@misakey/ui/Screen/Splash';
 import BoxSection from '@misakey/ui/Box/Section';
 import ButtonSubmit from 'components/dumb/Button/Submit';
 import BoxMessage from '@misakey/ui/Box/Message';
-import ErrorOverlay from '@misakey/ui/Error/Overlay';
+import ErrorOverlay from 'components/dumb/Overlay/Error';
 import ScreenAction from 'components/dumb/Screen/Action';
 import Redirect from 'components/dumb/Redirect';
 

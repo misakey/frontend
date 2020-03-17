@@ -14,15 +14,17 @@ import useSuspenseMaterialFix from '@misakey/hooks/useSuspenseMaterialFix';
 
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import AppBarNavigation from 'components/dumb/AppBar/Navigation';
 import FieldText from 'components/dumb/Form/Field/Text';
 import ButtonSubmit from 'components/dumb/Button/Submit';
-import Screen from 'components/dumb/Screen';
+import ScreenAction from 'components/dumb/Screen/Action';
 import withApplicationCreate from 'components/smart/withApplicationCreate';
 
 
 // CONSTANTS
 const MAIN_DOMAIN_FIELD_NAME = 'mainDomain';
+const NAVIGATION_PROPS = {
+  showGoBack: false,
+};
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -63,11 +65,11 @@ const ApplicationsCreate = ({
   );
 
   return (
-    <Screen>
-      <AppBarNavigation
-        toolbarProps={{ maxWidth: 'md' }}
-        title={t('citizen:applications.create.title')}
-      />
+
+    <ScreenAction
+      title={t('citizen:applications.create.title')}
+      navigationProps={NAVIGATION_PROPS}
+    >
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" align="left">
           {t('citizen:applications.create.subtitle')}
@@ -98,7 +100,7 @@ const ApplicationsCreate = ({
           </Container>
         </Formik>
       </Container>
-    </Screen>
+    </ScreenAction>
   );
 };
 

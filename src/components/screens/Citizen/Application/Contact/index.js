@@ -191,6 +191,15 @@ const ContactPreview = ({
     [mainDomain],
   );
 
+  const navigationProps = useMemo(
+    () => ({
+      homePath: doneTo,
+      toolbarProps: { maxWidth: 'md' },
+      gutterBottom: !IS_PLUGIN,
+    }),
+    [doneTo],
+  );
+
   const mailto = useMemo(
     () => encodeMailto(dpoEmail, subject, body),
     [dpoEmail, subject, body],
@@ -258,10 +267,7 @@ const ContactPreview = ({
     <ScreenAction
       {...screenPropsWithDataboxURL}
       title={t('citizen:contact.preview.title')}
-      navigationProps={{
-        toolbarProps: { maxWidth: 'md' },
-        gutterBottom: !IS_PLUGIN,
-      }}
+      navigationProps={navigationProps}
       navigation={(
         <Button
           {...primary}

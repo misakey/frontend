@@ -1,18 +1,17 @@
-import React, { useEffect, useState, lazy, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, lazy, useCallback /* useMemo */ } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import prop from '@misakey/helpers/prop';
+// import prop from '@misakey/helpers/prop';
 
 import routes from 'routes';
 import API from '@misakey/api';
 import { updateEntities } from '@misakey/store/actions/entities';
 import ServiceSchema from 'store/schemas/Service';
 
-import ResponseHandlerWrapper from '@misakey/ui/ResponseHandlerWrapper';
 
 // LAZY
 const InformationHome = lazy(() => import('components/screens/Admin/Service/Information/Home'));
@@ -38,7 +37,7 @@ const fetchApplicationDomains = (applicationId) => API
 // COMPONENTS
 const ServiceInformation = ({ service, dispatchUpdate, ...rest }) => {
   const [isFetching, setIsFetching] = useState(false);
-  const [error, setError] = useState();
+  const [/* error */, setError] = useState();
 
   const fetchData = useCallback(() => {
     if (!isFetching) {
@@ -54,52 +53,52 @@ const ServiceInformation = ({ service, dispatchUpdate, ...rest }) => {
 
   useEffect(fetchData, [service]);
 
-  // TODO rework error status ResponseHandlerWrapper
-  const handledError = useMemo(() => prop('status')(error) || null, [error]);
+  // TODO rework error status
+  // const handledError = useMemo(() => prop('status')(error) || null, [error]);
 
   return (
-    <ResponseHandlerWrapper
-      error={handledError}
-      entity={service}
-      isFetching={isFetching}
-    >
-      <Switch>
-        <Route
-          exact
-          path={routes.admin.service.information._}
-          render={(routerProps) => (
-            <InformationHome service={service} {...routerProps} {...rest} />
-          )}
-        />
-        <Route
-          exact
-          path={routes.admin.service.information.name}
-          render={(routerProps) => (
-            <InformationName service={service} {...routerProps} {...rest} />
-          )}
-        />
-        <Route
-          path={routes.admin.service.information.logo._}
-          render={(routerProps) => (
-            <InformationLogo service={service} {...routerProps} {...rest} />
-          )}
-        />
-        <Route
-          exact
-          path={routes.admin.service.information.shortDesc}
-          render={(routerProps) => (
-            <InformationShortDesc service={service} {...routerProps} {...rest} />
-          )}
-        />
-        <Route
-          exact
-          path={routes.admin.service.information.longDesc}
-          render={(routerProps) => (
-            <InformationLongDesc service={service} {...routerProps} {...rest} />
-          )}
-        />
-      </Switch>
-    </ResponseHandlerWrapper>
+  // <ResponseHandlerWrapper
+  //   error={handledError}
+  //   entity={service}
+  //   isFetching={isFetching}
+  // >
+    <Switch>
+      <Route
+        exact
+        path={routes.admin.service.information._}
+        render={(routerProps) => (
+          <InformationHome service={service} {...routerProps} {...rest} />
+        )}
+      />
+      <Route
+        exact
+        path={routes.admin.service.information.name}
+        render={(routerProps) => (
+          <InformationName service={service} {...routerProps} {...rest} />
+        )}
+      />
+      <Route
+        path={routes.admin.service.information.logo._}
+        render={(routerProps) => (
+          <InformationLogo service={service} {...routerProps} {...rest} />
+        )}
+      />
+      <Route
+        exact
+        path={routes.admin.service.information.shortDesc}
+        render={(routerProps) => (
+          <InformationShortDesc service={service} {...routerProps} {...rest} />
+        )}
+      />
+      <Route
+        exact
+        path={routes.admin.service.information.longDesc}
+        render={(routerProps) => (
+          <InformationLongDesc service={service} {...routerProps} {...rest} />
+        )}
+      />
+    </Switch>
+  // </ResponseHandlerWrapper>
   );
 };
 

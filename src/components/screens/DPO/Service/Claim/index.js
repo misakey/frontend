@@ -115,6 +115,20 @@ function ServiceRoleClaim({
     [service],
   );
 
+  const homePath = useMemo(
+    () => (isNil(mainDomain)
+      ? null
+      : generatePath(routes.dpo.service._, { mainDomain })),
+    [mainDomain],
+  );
+
+  const navigationProps = useMemo(
+    () => ({
+      homePath,
+    }),
+    [homePath],
+  );
+
   const dpoRequestListTo = useMemo(
     () => (isNil(mainDomain)
       ? null
@@ -243,6 +257,7 @@ function ServiceRoleClaim({
       title={t('dpo:services.claim.title')}
       state={state}
       appBarProps={appBarProps}
+      navigationProps={navigationProps}
     >
       <Container maxWidth="md">
         <Subtitle

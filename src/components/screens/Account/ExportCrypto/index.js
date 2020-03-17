@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import routes from 'routes';
+
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -15,11 +17,18 @@ import { PasswordPromptProvider } from 'components/screens/Citizen/Application/I
 import ExportButton from './ExportButton';
 import ImportCard from './ImportCard';
 
+// CONSTANTS
+const NAVIGATION_PROPS = {
+  homePath: routes.account._,
+};
+
+// COMPONENTS
 const ExportCrypto = ({ t }) => (
   <PasswordPromptProvider>
     <ScreenAction
       title={t('account:exportCrypto.title')}
       appBarProps={{ withSearchBar: false }}
+      navigationProps={NAVIGATION_PROPS}
     >
       <Container maxWidth="md">
         <Typography>{t('account:exportCrypto.info.general')}</Typography>

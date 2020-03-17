@@ -29,7 +29,7 @@ import Title from 'components/dumb/Typography/Title';
 import List from '@material-ui/core/List';
 import SummaryFeedbackCard from 'components/dumb/Card/Feedback/Summary';
 import SummaryFeedbackCardSkeleton from 'components/dumb/Card/Feedback/Summary/Skeleton';
-import ScreenError from 'components/dumb/Screen/Error';
+import ErrorOverlay from 'components/dumb/Overlay/Error';
 import UserFeedbackCard from 'components/dumb/Card/Feedback/User';
 import UserFeedbackCardSkeleton from 'components/dumb/Card/Feedback/User/Skeleton';
 
@@ -167,7 +167,7 @@ const ApplicationInfoFeedback = ({
   );
 
   if (error) {
-    return <ScreenError httpStatus={error.httpStatus} />;
+    return <ErrorOverlay httpStatus={error.httpStatus} />;
   }
 
   return (
