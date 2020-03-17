@@ -48,7 +48,10 @@
     },
     "read": {
       "archived": "Cette demande de portabilité est fermée",
-      "doneError": "Action impossible. La demande a déjà été traitée.",
+      "done": {
+        "error": "Action impossible. La demande a déjà été traitée.",
+        "success": "Vous avez bien traité la demande de {{ownerName}}\u00a0! Merci de votre coopération\u00a0!"
+      },
       "mkAgent": {
         "message": "Je demande aux developpeurs de mon site d'<1>automatiser le traitement des demandes</1>",
         "mailToSubject": "Demande d'informations sur Misakey Agent"

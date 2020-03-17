@@ -421,7 +421,16 @@ function ServiceRequestsRead({
     (form, { setSubmitting }) => {
       const body = { status: DONE, ...form };
       setDataboxDone(databoxId, body)
-        .then(() => dispatchUpdateDatabox(databoxId, body))
+        .then(() => {
+          const text = (
+            <Typography>
+              {t('dpo:requests.read.done.success', { ownerName })}
+              &nbsp;&#x1F642;
+            </Typography>
+          );
+          enqueueSnackbar(text, { variant: 'success' });
+          return dispatchUpdateDatabox(databoxId, body);
+        })
         .catch((err) => {
           const { code } = err;
           if (code === forbidden) {
@@ -429,7 +438,7 @@ function ServiceRequestsRead({
           }
           const [, errorType] = getDetailPairsHead(err);
           if (errorType === conflict) {
-            return onError(t('dpo:requests.read.doneError'));
+            return onError(t('dpo:requests.read.done.error'));
           }
           return onError(t('common:httpStatus.error.default'));
         })
@@ -438,7 +447,7 @@ function ServiceRequestsRead({
           onDialogClose();
         });
     },
-    [databoxId, dispatchUpdateDatabox, onError, t, onDialogClose],
+    [databoxId, ownerName, enqueueSnackbar, dispatchUpdateDatabox, onError, t, onDialogClose],
   );
 
   const fetchBlobs = useCallback(() => {
@@ -494,7 +503,7 @@ function ServiceRequestsRead({
         {isArchived
           ? (
             <>
-              <BoxMessage type="warning" mt={2}>
+              <BoxMessage type="info" mt={2}>
                 <Typography>
                   {t('dpo:requests.read.archived')}
                 </Typography>
