@@ -61,7 +61,7 @@ if (window.env.ENV !== 'development' || window.env.SENTRY.debug === true) {
 
 const rootNode = document.getElementById('root');
 
-if (IS_PLUGIN && isDesktopDevice()) {
+if (IS_PLUGIN && isDesktopDevice) {
   rootNode.setAttribute(
     'data-plugin-controlsize',
     true,

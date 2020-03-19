@@ -1,13 +1,12 @@
-export function isDesktopDevice() {
-  return !(navigator.userAgent.toLowerCase().includes('mobile')
-    || navigator.userAgent.toLowerCase().includes('tablet'));
-}
+import parser from 'ua-parser-js';
 
+const userAgent = parser(navigator.userAgent);
 
-export function isChrome() {
-  return navigator.userAgent.indexOf('Chrome') !== -1;
-}
+export const isDesktopDevice = (userAgent.device.type === undefined);
 
+export const isChrome = (userAgent.engine.name === 'Blink');
+
+export const isFirefox = (userAgent.engine.name === 'Gecko');
 
 export function isTouchable() {
   try {
