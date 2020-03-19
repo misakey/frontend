@@ -108,12 +108,12 @@
     },
     "since": {
       "past": {
-        "event": "il y a",
-        "duration": "depuis"
+        "event": "il y a {{numberOfDays}}",
+        "duration": "depuis {{numberOfDays}}"
       },
       "future": {
-        "event": "dans",
-        "duration": "pendant"
+        "event": "dans {{numberOfDays}}",
+        "duration": "pendant {{numberOfDays}}"
       },
       "unit": "{{count}} jour",
       "unit_plural": "{{count}} jours",

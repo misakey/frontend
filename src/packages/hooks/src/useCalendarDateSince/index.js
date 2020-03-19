@@ -7,13 +7,8 @@ import moment from 'moment';
 export default (date, dateReference = null, options = {}) => {
   const { t } = useTranslation('common');
 
-  const forcePrefix = useMemo(
-    () => options.forcePrefix === true,
-    [options],
-  );
-
-  const forceNoPrefix = useMemo(
-    () => options.forceNoPrefix === true,
+  const onlyNumberOfDays = useMemo(
+    () => options.onlyNumberOfDays === true,
     [options],
   );
 
@@ -27,55 +22,56 @@ export default (date, dateReference = null, options = {}) => {
     [options],
   );
 
-  const optionalPastPrefix = useMemo(
-    () => (forcePrefix ? `${t(`common:date.since.past.${labelType}`)}` : ''),
-    [forcePrefix, labelType, t],
-  );
-  const optionalFuturePrefix = useMemo(
-    () => (forcePrefix ? `${t(`common:date.since.future.${labelType}`)}` : ''),
-    [forcePrefix, labelType, t],
-  );
-
-  const pastPrefix = useMemo(
-    () => (forceNoPrefix ? '' : `${t(`common:date.since.past.${labelType}`)}`),
-    [forceNoPrefix, labelType, t],
-  );
-
-  const futurePrefix = useMemo(
-    () => (forceNoPrefix ? '' : `${t(`common:date.since.future.${labelType}`)}`),
-    [forceNoPrefix, labelType, t],
-  );
-
   const formats = useMemo(
     () => ({
-      sameDay: `[${optionalPastPrefix} ${t('common:date.calendar.sameDay')}]`,
-      nextDay: `[${optionalFuturePrefix} ${t('common:date.calendar.nextDay')}]`,
-      lastDay: `[${optionalPastPrefix} ${t('common:date.calendar.lastDay')}]`,
+      sameDay: t('common:date.calendar.sameDay'),
+      nextDay: t('common:date.calendar.nextDay'),
+      lastDay: t('common:date.calendar.lastDay'),
       nextWeek(reference) {
         const count = Math.abs(this.diff(reference, 'days'));
-        const countText = count > maxCount
+        const numberOfDays = count > maxCount
           ? t('common:date.since.max', { count })
           : t('common:date.since.unit', { count });
-        return `[${futurePrefix} ${countText}]`;
+
+        const translatedDate = (onlyNumberOfDays
+          ? numberOfDays
+          : t(`common:date.since.future.${labelType}`, { numberOfDays }));
+
+        return `[${translatedDate}]`;
       },
       lastWeek(reference) {
         const count = Math.abs(this.diff(reference, 'days'));
-        const countText = count > maxCount
+        const numberOfDays = count > maxCount
           ? t('common:date.since.max', { count })
           : t('common:date.since.unit', { count });
-        return `[${pastPrefix} ${countText}]`;
+
+        const translatedDate = (onlyNumberOfDays
+          ? numberOfDays
+          : t(`common:date.since.past.${labelType}`, { numberOfDays }));
+
+        return `[${translatedDate}]`;
       },
       sameElse(reference) {
         const difference = this.diff(reference, 'days');
         const count = Math.abs(difference);
-        const countText = count > maxCount
-          ? t('common:date.since.max', { count })
+        const numberOfDays = count > maxCount
+          ? t('common:date.since.max', { maxCount })
           : t('common:date.since.unit', { count });
-        const prefix = difference > 0 ? futurePrefix : pastPrefix;
-        return `[${prefix} ${countText}]`;
+
+        let translatedDate;
+        if (difference > 0) {
+          translatedDate = (onlyNumberOfDays
+            ? numberOfDays
+            : t(`common:date.since.future.${labelType}`, { numberOfDays }));
+        } else {
+          translatedDate = (onlyNumberOfDays
+            ? numberOfDays
+            : t(`common:date.since.past.${labelType}`, { numberOfDays }));
+        }
+        return `[${translatedDate}]`;
       },
     }),
-    [optionalPastPrefix, t, optionalFuturePrefix, maxCount, pastPrefix, futurePrefix],
+    [t, maxCount, labelType, onlyNumberOfDays],
   );
 
   const dateMoment = useMemo(
