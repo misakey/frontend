@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 
+import SearchApplications from 'components/smart/Search/Applications';
 import LinkedApplicationsList from 'components/smart/List/LinkedApplications';
 import ApplicationCategoriesList from 'components/smart/List/ApplicationCategories';
 import Screen from 'components/dumb/Screen';
@@ -30,6 +31,7 @@ const CitizenHome = () => {
           {!IS_PLUGIN && <ApplicationCategoriesList />}
         </Box>
       </Container>
+      <SearchApplications />
     </Screen>
   );
 };

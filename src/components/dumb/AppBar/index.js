@@ -24,6 +24,7 @@ import LinkHome from 'components/dumb/Link/Home';
 import Logo from 'components/dumb/Logo';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import SearchApplications from 'components/smart/Search/Applications';
+import SearchApplicationsButton from 'components/smart/Search/Applications/Button';
 import BoxFlexFill from 'components/dumb/Box/FlexFill';
 import MenuWorkspace from 'components/smart/Menu/Workspace';
 
@@ -127,7 +128,11 @@ function AppBar({
           )}
           {map(items)}
           {withSearchBar ? (
-            <SearchApplications className={classes.searchBar} {...searchBarProps} />
+            <SearchApplications
+              className={classes.searchBar}
+              component={SearchApplicationsButton}
+              {...searchBarProps}
+            />
           ) : (
             <BoxFlexFill />
           )}
@@ -161,11 +166,25 @@ AppBar.defaultProps = {
   elevationScrollProps: IS_PLUGIN ? { target: document.getElementById('root') } : {},
   items: [],
   leftItems: [],
-  searchBarProps: IS_PLUGIN ? { disabled: true } : {},
+  searchBarProps: IS_PLUGIN
+    ? { disabled: true }
+    : {
+      popoverProps: {
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'right',
+        },
+        transformOrigin: {
+          vertical: 'bottom',
+          horizontal: 'right',
+        },
+        noTopMargin: true,
+      },
+    },
   shift: false,
   toolbarProps: { className: '' },
   withHomeLink: true,
-  withSearchBar: true,
+  withSearchBar: false,
   withUser: true,
 };
 

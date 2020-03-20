@@ -26,6 +26,7 @@ const Option = ({ application, ...rest }) => {
       if (isNil(mainDomain)) {
         return null;
       }
+      // This default route is going to change with https://gitlab.misakey.dev/misakey/frontend/issues/484
       let linkTo = routes.citizen.application.vault;
       if (role === ROLE_LABELS.DPO) {
         linkTo = routes.dpo.service._;

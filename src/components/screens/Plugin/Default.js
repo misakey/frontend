@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { withTranslation, Trans } from 'react-i18next';
 
@@ -26,10 +26,9 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const DefaultScreen = () => {
   const classes = useStyles();
-  const appBarProps = useMemo(() => ({ withSearchBar: false }), []);
 
   return (
-    <Screen appBarProps={appBarProps}>
+    <Screen>
       <Box className={classes.container} display="flex" justifyContent="center" alignItems="center">
         <Title className={classes.title}>
           <Trans i18nKey="plugin:invalidWebsite">

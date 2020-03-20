@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';
 
-import SearchApplicationsButton from './Button';
+import SearchApplicationsFab from './Fab';
 import SearchApplicationsPopover from './Popover';
 
 // COMPONENTS
-const SearchApplications = ({ component: Component, children, ...rest }) => {
+const SearchApplications = ({ component: Component, children, popoverProps, ...rest }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const id = useMemo(
@@ -43,6 +43,7 @@ const SearchApplications = ({ component: Component, children, ...rest }) => {
           id={id}
           anchorEl={anchorEl}
           onClose={onClose}
+          {...popoverProps}
         />
       </Suspense>
     </>
@@ -52,10 +53,12 @@ const SearchApplications = ({ component: Component, children, ...rest }) => {
 SearchApplications.propTypes = {
   component: PropTypes.elementType,
   children: PropTypes.node,
+  popoverProps: PropTypes.object,
 };
 
 SearchApplications.defaultProps = {
-  component: SearchApplicationsButton,
+  component: SearchApplicationsFab,
+  popoverProps: {},
   children: null,
 };
 

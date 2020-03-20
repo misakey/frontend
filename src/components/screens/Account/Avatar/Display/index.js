@@ -35,7 +35,6 @@ const AccountAvatarDisplay = ({
   <ScreenAction
     title={t('account:avatar.title')}
     state={state}
-    appBarProps={{ withSearchBar: false }}
     navigationProps={NAVIGATION_PROPS}
   >
     <Container maxWidth="md" className="content">

@@ -102,7 +102,6 @@ const AccountPassword = ({
     <ScreenAction
       title={t('account:password.title')}
       state={state}
-      appBarProps={{ withSearchBar: false }}
       navigationProps={NAVIGATION_PROPS}
     >
       <Container maxWidth="md">

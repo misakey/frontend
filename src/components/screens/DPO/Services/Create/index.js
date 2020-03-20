@@ -27,6 +27,10 @@ const NAVIGATION_PROPS = {
   showGoBack: false,
 };
 
+const APP_BAR_PROPS = {
+  withSearchBar: true,
+};
+
 // HOOKS
 const useStyles = makeStyles(() => ({
   form: {
@@ -69,6 +73,7 @@ const ServicesCreate = ({
     <ScreenAction
       title={t('dpo:services.create.title')}
       navigationProps={NAVIGATION_PROPS}
+      appBarProps={APP_BAR_PROPS}
     >
       <Container maxWidth="md">
         <Typography variant="body2" color="textSecondary" align="left">

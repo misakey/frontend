@@ -27,7 +27,6 @@ const ExportCrypto = ({ t }) => (
   <PasswordPromptProvider>
     <ScreenAction
       title={t('account:exportCrypto.title')}
-      appBarProps={{ withSearchBar: false }}
       navigationProps={NAVIGATION_PROPS}
     >
       <Container maxWidth="md">

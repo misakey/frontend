@@ -21,6 +21,10 @@ import IconButton from '@material-ui/core/IconButton';
 import IconAdd from '@material-ui/icons/Add';
 import Box from '@material-ui/core/Box';
 
+const APP_BAR_PROPS = {
+  withSearchBar: true,
+};
+
 function Home({
   isAuthenticated,
   myApplications,
@@ -42,7 +46,7 @@ function Home({
   );
 
   return (
-    <Screen state={state}>
+    <Screen state={state} appBarProps={APP_BAR_PROPS}>
       <Container maxWidth="md">
         {displayOnboarding && (
           <>

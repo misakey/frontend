@@ -105,7 +105,6 @@ const AccountName = ({
     <ScreenAction
       title={t('account:name.title')}
       state={state}
-      appBarProps={{ withSearchBar: false }}
       navigationProps={NAVIGATION_PROPS}
     >
       <Container maxWidth="md">

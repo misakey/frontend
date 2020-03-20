@@ -42,23 +42,25 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import SearchIcon from '@material-ui/icons/Search';
 
 const ANCHOR_ORIGIN = {
-  vertical: 'top',
-  horizontal: 'center',
+  vertical: 'bottom',
+  horizontal: 'right',
 };
 
 const TRANSFORM_ORIGIN = {
-  vertical: 'top',
-  horizontal: 'center',
+  vertical: 'bottom',
+  horizontal: 'right',
 };
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  popoverPaper: {
+  popoverPaper: ({ noTopMargin }) => ({
+    marginTop: noTopMargin ? 0 : theme.spacing(2),
     [theme.breakpoints.down('xs')]: {
       maxWidth: '100%',
       maxHeight: '100%',
       width: '100%',
       height: '100%',
+      marginTop: 0,
     },
     [theme.breakpoints.up('sm')]: {
       minWidth: SEARCH_WIDTH_MD,
@@ -70,14 +72,14 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('lg')]: {
       width: SEARCH_WIDTH_LG,
     },
-  },
+  }),
   inputLabelShrink: {
     transform: 'translate(12px, 4px) scale(0.75) !important',
   },
   searchBoxRoot: {
     position: 'sticky',
     top: 0,
-    zIndex: '1',
+    zIndex: 2,
     backgroundColor: theme.palette.background.paper,
   },
   listRoot: {
@@ -86,6 +88,7 @@ const useStyles = makeStyles((theme) => ({
   listSubheaderRoot: {
     top: theme.spacing(6),
     textTransform: 'uppercase',
+    zIndex: 2,
   },
 }));
 
@@ -99,19 +102,22 @@ const useCleanList = (list) => useMemo(
 const SearchApplicationsPopover = ({
   id,
   anchorEl,
+  anchorOrigin,
   onClose,
   suggested,
   linked,
   isAuthenticated,
   dispatchReceive,
   t,
+  transformOrigin,
+  noTopMargin,
 }) => {
   const [loading, setLoading] = useState(false);
 
   const theme = useTheme();
   const isFull = useMediaQuery(theme.breakpoints.down('xs'));
 
-  const classes = useStyles();
+  const classes = useStyles({ noTopMargin });
 
   const { search: locationSearch, pathname } = useLocation();
   const { replace } = useHistory();
@@ -126,7 +132,7 @@ const SearchApplicationsPopover = ({
     [pathname, locationSearch],
   );
 
-  const popoverProps = useMemo(
+  const popoverDefaultProps = useMemo(
     () => (isFull
       ? {
         marginThreshold: 0,
@@ -139,6 +145,12 @@ const SearchApplicationsPopover = ({
       }),
     [anchorEl, isFull],
   );
+
+  const popoverProps = useMemo(() => ({
+    ...popoverDefaultProps,
+    anchorOrigin,
+    transformOrigin,
+  }), [popoverDefaultProps, anchorOrigin, transformOrigin]);
 
   const open = useMemo(
     () => !isNil(anchorEl),
@@ -277,8 +289,6 @@ const SearchApplicationsPopover = ({
       id={id}
       open={open}
       onClose={onSearchClose}
-      anchorOrigin={ANCHOR_ORIGIN}
-      transformOrigin={TRANSFORM_ORIGIN}
       marginThreshold={0}
       classes={{ paper: classes.popoverPaper }}
       {...popoverProps}
@@ -345,6 +355,9 @@ SearchApplicationsPopover.propTypes = {
   id: PropTypes.string,
   anchorEl: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   onClose: PropTypes.func.isRequired,
+  anchorOrigin: PropTypes.string,
+  transformOrigin: PropTypes.string,
+  noTopMargin: PropTypes.bool,
   // CONNECT
   suggested: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
   linked: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
@@ -360,6 +373,9 @@ SearchApplicationsPopover.defaultProps = {
   suggested: null,
   linked: null,
   isAuthenticated: false,
+  anchorOrigin: ANCHOR_ORIGIN,
+  transformOrigin: TRANSFORM_ORIGIN,
+  noTopMargin: false,
 };
 
 // CONNECT

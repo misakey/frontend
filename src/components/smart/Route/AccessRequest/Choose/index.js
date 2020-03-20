@@ -65,7 +65,6 @@ const AccessRequestChoose = ({
   const appBarProps = useMemo(
     () => ({
       withUser: false,
-      withSearchBar: false,
       items: [(
         <BoxEllipsis className={classes.avatarParent} key="applicationAvatarParent">
           <ApplicationAvatar application={producer} />
