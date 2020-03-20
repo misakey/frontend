@@ -5,10 +5,11 @@ import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 import log from '@misakey/helpers/log';
 
-import * as numeral from 'numeral';
 import API from '@misakey/api';
 
 import moment from 'moment';
+import numbro from 'numbro';
+import { FILE_SIZE_FORMAT } from 'constants/formats/numbers';
 
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';
@@ -162,7 +163,7 @@ const DataboxContent = ({
       const allContentLength = isEmpty(blobs)
         ? 0
         : blobs.reduce((acc, val) => (acc + val.contentLength), 0);
-      return numeral(allContentLength).format('0b');
+      return numbro(allContentLength).format(FILE_SIZE_FORMAT);
     },
     [blobs],
   );

@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import * as numeral from 'numeral';
+import numbro from 'numbro';
+
 import { withTranslation } from 'react-i18next';
 import { Link, generatePath } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -45,7 +46,9 @@ const SummaryFeedbackCard = ({ application, hideLink, hideTitle, t }) => {
   );
 
   const actualAvgRating = useMemo(
-    () => (totalRating === 0 || isNil(avgRating) ? t('common:emptyRating') : numeral(avgRating).format('0.0')),
+    () => (totalRating === 0 || isNil(avgRating)
+      ? t('common:emptyRating')
+      : numbro(avgRating).format({ mantissa: 1 })),
     [totalRating, avgRating, t],
   );
 

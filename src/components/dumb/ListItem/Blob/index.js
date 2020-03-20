@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import moment from 'moment';
-import * as numeral from 'numeral';
+import numbro from 'numbro';
+import { FILE_SIZE_FORMAT } from 'constants/formats/numbers';
+
 
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 
@@ -21,7 +23,7 @@ const BlobListItem = ({ blob, onDownload, publicKeysWeCanDecryptFrom, t }) => {
     },
   } = blob;
   const date = moment(createdAt).format('ll');
-  const size = numeral(contentLength).format('0b');
+  const size = numbro(contentLength).format(FILE_SIZE_FORMAT);
 
   const canBeDecrypted = publicKeysWeCanDecryptFrom.has(ownerPubKey);
 

@@ -1,7 +1,8 @@
 import React, { useMemo, useCallback, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
-import * as numeral from 'numeral';
+import numbro from 'numbro';
+import { FILE_SIZE_FORMAT } from 'constants/formats/numbers';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -71,7 +72,7 @@ const useFetchStorageQuota = (
 const UserStorage = ({ userId }) => {
   const classes = useStyles();
   const mounted = useRef(false);
-  const [boxUsage, setBoxUsage] = useState(null);
+  const [boxUsage, setBoxUsage] = useState(0);
 
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
   const fetchStorageQuota = useFetchStorageQuota(setBoxUsage, userId, handleGenericHttpErrors);
@@ -81,9 +82,9 @@ const UserStorage = ({ userId }) => {
     [boxUsage],
   );
 
-  const boxCurrentUsage = useMemo(() => numeral(boxUsage).format('0b'), [boxUsage]);
+  const boxCurrentUsage = useMemo(() => numbro(boxUsage).format(FILE_SIZE_FORMAT), [boxUsage]);
   const boxTotalUsage = useMemo(
-    () => numeral(TOTAL_STORAGE_SPACE_AVAILABLE).format('0b'),
+    () => numbro(TOTAL_STORAGE_SPACE_AVAILABLE).format(FILE_SIZE_FORMAT),
     [],
   );
 

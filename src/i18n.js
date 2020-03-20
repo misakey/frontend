@@ -8,8 +8,8 @@ import isObject from '@misakey/helpers/isObject';
 import moment from 'moment';
 import 'moment/locale/fr';
 
-import numeral from 'numeral';
-import 'numeral/locales/fr';
+import numbro from 'numbro';
+import numbroFR from 'numbro/languages/fr-FR';
 
 // FR namespaces
 import frCommonNew from 'constants/locales/fr/common';
@@ -40,6 +40,10 @@ const COMMONS_NAMESPACES = {
     },
   ],
 };
+
+// We should explicitly register languages to numbro to them to be available
+// If we don't, en-US is the fallback for every languages
+numbro.registerLanguage(numbroFR);
 
 i18n
   .use(XHR)
@@ -90,7 +94,9 @@ i18n
 // especially with common explicit languages like en-GB != en
 const changeLocale = (lng) => {
   moment.locale(lng);
-  numeral.locale(lng);
+  if (lng === 'fr') {
+    numbro.setLanguage('fr-FR');
+  }
 };
 
 // Forcing default locale

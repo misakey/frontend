@@ -85,7 +85,7 @@
     "node-sass": "^4.12.0",
     "normalizr": "^3.4.0",
     "notistack": "^0.8.9",
-    "numeral": "^2.0.6",
+    "numbro": "^2.2.0",
     "oidc-client": "^1.9.1",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
