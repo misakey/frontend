@@ -431,7 +431,7 @@ const mapDispatchToProps = (dispatch) => ({
     const entities = [{ id: userEmailId, changes: { active: true } }];
 
     return Promise.all([
-      dispatch(updateEntities(entities, UserEmailSchema.entity)),
+      dispatch(updateEntities(entities, UserEmailSchema)),
       dispatch(setDataboxOwnerEmail(databoxId, email)),
       dispatch(setContactEmail(email)),
     ]);

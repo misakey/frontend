@@ -2,7 +2,7 @@ import { normalize } from 'normalizr';
 import ApplicationSchema from 'store/schemas/Application';
 import { receiveEntities } from '@misakey/store/actions/entities';
 
-import mergeEntitiesNoEmpty from 'helpers/mergeEntities/noEmpty';
+import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
 export const RECEIVE_APPLICATIONS_LINKED_IDS = Symbol('RECEIVE_APPLICATIONS_LINKED_IDS');
@@ -37,7 +37,7 @@ export function searchApplications(searchResponse) {
     const entities = { applications };
 
     return Promise.all([
-      dispatch(receiveEntities(entities, mergeEntitiesNoEmpty)),
+      dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
       // could have multiple times same id if source has duplicates => uniq ?
       dispatch(receiveApplicationsLinkedIds(linkedResult)),
       dispatch(receiveApplicationsSuggestedIds(suggestedResult)),

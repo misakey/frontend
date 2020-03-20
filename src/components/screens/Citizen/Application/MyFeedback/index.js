@@ -293,7 +293,7 @@ const mapDispatchToProps = (dispatch) => ({
   // @FIXME implement a less tricky way to force update of page rose screen
   dispatchClearRatings: (mainDomain, history) => {
     const entities = [{ id: mainDomain, changes: { avgRating: null, ratings: null } }];
-    dispatch(updateEntities(entities, ApplicationSchema.entity));
+    dispatch(updateEntities(entities, ApplicationSchema));
     if (history.length > 1) {
       history.goBack();
     } else {

@@ -152,7 +152,7 @@ ServiceLogo.defaultProps = {
 const mapDispatchToProps = (dispatch) => ({
   dispatchUpdate: (mainDomain, changes, history) => {
     const entities = [{ id: mainDomain, changes }];
-    dispatch(updateEntities(entities, ServiceSchema.entity));
+    dispatch(updateEntities(entities, ServiceSchema));
     history.push(generatePath(PARENT_ROUTE, { mainDomain }));
   },
 });

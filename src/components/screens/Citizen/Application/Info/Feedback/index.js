@@ -256,7 +256,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   dispatchUpdate: (mainDomain, ratings) => {
     const entities = [{ id: mainDomain, changes: { ratings } }];
-    dispatch(updateEntities(entities, ApplicationSchema.entity));
+    dispatch(updateEntities(entities, ApplicationSchema));
   },
 });
 

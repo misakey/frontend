@@ -20,7 +20,7 @@ import path from '@misakey/helpers/path';
 import prop from '@misakey/helpers/prop';
 import eqProps from '@misakey/helpers/eqProps';
 import identity from '@misakey/helpers/identity';
-import mergeEntitiesNoEmpty from 'helpers/mergeEntities/noEmpty';
+import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 
 import API from '@misakey/api';
 import ApplicationSchema from 'store/schemas/Application';
@@ -254,7 +254,7 @@ const withApplication = (Component, options = {}) => {
         schema.collection,
       );
       const { entities } = normalized;
-      dispatch(receiveEntities(entities, mergeEntitiesNoEmpty));
+      dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
     },
   });
 

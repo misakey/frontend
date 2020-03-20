@@ -1,9 +1,18 @@
+import {
+  overrideReceive,
+  mergeReceive,
+  overrideUpdate,
+  mergeUpdate,
+} from '@misakey/store/reducers/helpers/processStrategies';
+
+// ACTIONS
 export const RECEIVE_ENTITIES = Symbol('RECEIVE_ENTITIES');
 export const REMOVE_ENTITIES = Symbol('REMOVE_ENTITIES');
 export const RESET_ENTITIES = Symbol('RESET_ENTITIES');
 export const UPDATE_ENTITIES = Symbol('UPDATE_ENTITIES');
 
-export function receiveEntities(entities, processStrategy) {
+// ACTION CREATORS
+export function receiveEntities(entities = [], processStrategy = overrideReceive) {
   return {
     type: RECEIVE_ENTITIES,
     entities,
@@ -11,11 +20,13 @@ export function receiveEntities(entities, processStrategy) {
   };
 }
 
-export function removeEntities(entities = [{ id: null }], entityType) {
+export const receiveEntitiesMerge = (entities = []) => receiveEntities(entities, mergeReceive);
+
+export function removeEntities(entities = [], entitySchema) {
   return {
     type: REMOVE_ENTITIES,
     entities,
-    entityType,
+    entitySchema,
   };
 }
 
@@ -23,8 +34,18 @@ export const resetEntities = () => ({
   type: RESET_ENTITIES,
 });
 
-export const updateEntities = (entities = [{ id: null, changes: {} }], entityType) => ({
+export const updateEntities = (
+  entities = [],
+  entitySchema,
+  processStrategy = mergeUpdate,
+) => ({
   type: UPDATE_ENTITIES,
   entities,
-  entityType,
+  entitySchema,
+  processStrategy,
 });
+
+export const updateEntitiesOverride = (
+  entities = [],
+  entitySchema,
+) => updateEntities(entities, entitySchema, overrideUpdate);

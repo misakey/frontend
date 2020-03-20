@@ -114,7 +114,7 @@ ServiceInformation.defaultProps = {
 const mapDispatchToProps = (dispatch) => ({
   dispatchUpdate: (id, changes) => {
     const entities = [{ id, changes }];
-    dispatch(updateEntities(entities, ServiceSchema.entity));
+    dispatch(updateEntities(entities, ServiceSchema));
   },
 });
 

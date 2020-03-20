@@ -155,7 +155,7 @@ ServiceName.defaultProps = {
 const mapDispatchToProps = (dispatch) => ({
   dispatchUpdateEntities: (mainDomain, changes, history) => {
     const entities = [{ id: mainDomain, changes }];
-    dispatch(updateEntities(entities, ServiceSchema.entity));
+    dispatch(updateEntities(entities, ServiceSchema));
     history.push(generatePath(PARENT_ROUTE, { mainDomain }));
   },
 });

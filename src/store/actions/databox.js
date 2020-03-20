@@ -78,7 +78,7 @@ export const receiveDatabox = (databox) => (dispatch) => {
 
 export const setDataboxMeta = (id, meta) => (dispatch) => {
   const entities = [{ id, changes: meta }];
-  return Promise.resolve(dispatch(updateEntities(entities, DataboxSchema.entity)));
+  return Promise.resolve(dispatch(updateEntities(entities, DataboxSchema)));
 };
 
 export const setDataboxOwnerEmail = (id, ownerEmail) => (dispatch, getState) => {
@@ -86,12 +86,12 @@ export const setDataboxOwnerEmail = (id, ownerEmail) => (dispatch, getState) => 
   const prevOwner = path(['entities', 'databoxes', id, 'owner'], store);
   const nextOwner = { ...prevOwner, email: ownerEmail };
   const entities = [{ id, changes: { owner: nextOwner } }];
-  return Promise.resolve(dispatch(updateEntities(entities, DataboxSchema.entity)));
+  return Promise.resolve(dispatch(updateEntities(entities, DataboxSchema)));
 };
 
 export const updateDatabox = (id, changes) => (dispatch) => {
   const updatedAt = changes.updatedAt || new Date().toISOString();
   const entities = [{ id, changes: { ...changes, updatedAt } }];
 
-  return Promise.resolve(dispatch(updateEntities(entities, DataboxSchema.entity)));
+  return Promise.resolve(dispatch(updateEntities(entities, DataboxSchema)));
 };

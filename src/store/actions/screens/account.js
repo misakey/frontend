@@ -17,7 +17,7 @@ export const userProfileReceive = (profile) => (dispatch) => {
 export const userProfileUpdate = (id, changes) => (dispatch) => {
   const entities = [{ id, changes }];
   return Promise.all([
-    dispatch(updateEntities(entities, UserSchema.entity)),
+    dispatch(updateEntities(entities, UserSchema)),
     dispatch(updateProfile(changes)),
   ]);
 };
