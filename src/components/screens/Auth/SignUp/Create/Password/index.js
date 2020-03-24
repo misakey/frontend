@@ -77,7 +77,7 @@ const AuthSignUpCreatePassword = ({
 
   const parentTo = useMemo(
     () => ({
-      pathname: routes.auth.signUp.handle,
+      pathname: routes.auth.signUp.notifications,
       search,
     }),
     [search],
@@ -85,7 +85,7 @@ const AuthSignUpCreatePassword = ({
 
   useEffect(
     () => {
-      setTouched({ tos: true, email: true, handle: true });
+      setTouched({ tos: true, email: true, handle: true, notifications: true });
     },
     [setTouched],
   );

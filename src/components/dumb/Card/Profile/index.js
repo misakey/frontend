@@ -4,21 +4,19 @@ import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import routes from 'routes';
+import UserSchema from 'store/schemas/User';
 
 import { makeStyles } from '@material-ui/core/styles';
 
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
-
 import UserStorage from 'components/screens/Account/Home/UserStorage';
 import DeleteAccountListItem from 'components/screens/Account/Home/DeleteAccount';
-
 import Header from './Header';
 import CardProfileList from '../List';
 
@@ -50,7 +48,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const CardProfile = ({ profile, t }) => {
-  const { displayName, avatarUri, handle, email } = profile;
+  const { displayName, avatarUri, handle, email, notifications } = profile;
   const classes = useStyles();
 
   return (
@@ -74,9 +72,7 @@ const CardProfile = ({ profile, t }) => {
             <Typography>{t('fields:displayName.label')}</Typography>
           </ListItemIcon>
           <ListItemText primary={displayName} />
-          <ListItemSecondaryAction>
-            <ChevronRightIcon className={classes.actionIcon} />
-          </ListItemSecondaryAction>
+          <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
         <ListItem
           button
@@ -90,9 +86,7 @@ const CardProfile = ({ profile, t }) => {
             <Typography>{t('fields:avatar.label')}</Typography>
           </ListItemIcon>
           <ListItemText primary={t('fields:avatar.helperText')} />
-          <ListItemSecondaryAction>
-            <ChevronRightIcon className={classes.actionIcon} />
-          </ListItemSecondaryAction>
+          <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
         <ListItem
           button
@@ -106,9 +100,36 @@ const CardProfile = ({ profile, t }) => {
             <Typography>{t('fields:password.label')}</Typography>
           </ListItemIcon>
           <ListItemText primary={t('fields:password.placeholder')} />
-          <ListItemSecondaryAction>
-            <ChevronRightIcon className={classes.actionIcon} />
-          </ListItemSecondaryAction>
+          <ChevronRightIcon className={classes.actionIcon} />
+        </ListItem>
+        <ListItem
+          classes={{ container: classes.listItemContainer }}
+        >
+          <ListItemIcon className={classes.listItemIcon}>
+            <Typography>{t('fields:email.label')}</Typography>
+          </ListItemIcon>
+          <ListItemText
+            primary={email}
+            primaryTypographyProps={{ noWrap: true, className: classes.emailItemTypo }}
+            className={classes.emailItem}
+          />
+        </ListItem>
+      </CardProfileList>
+      <Header>{t('account:sections.myNotifications')}</Header>
+      <CardProfileList>
+        <ListItem
+          button
+          to={routes.account.profile.notifications}
+          component={Link}
+          divider
+          aria-label={t('fields:notifications.action')}
+          classes={{ container: classes.listItemContainer }}
+        >
+          <ListItemIcon className={classes.listItemIcon}>
+            <Typography>{t('fields:notifications.label')}</Typography>
+          </ListItemIcon>
+          <ListItemText primary={t(`fields:notifications.${notifications}`)} />
+          <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
         <ListItem
           classes={{ container: classes.listItemContainer }}
@@ -144,9 +165,7 @@ const CardProfile = ({ profile, t }) => {
             <Typography>{t('account:exportCrypto.title')}</Typography>
           </ListItemIcon>
           <ListItemText primary={t('account:exportCrypto.helperText')} />
-          <ListItemSecondaryAction>
-            <ChevronRightIcon className={classes.actionIcon} />
-          </ListItemSecondaryAction>
+          <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
       </CardProfileList>
       <Header>{t('account:sections.myAccount')}</Header>
@@ -161,12 +180,7 @@ const CardProfile = ({ profile, t }) => {
 };
 
 CardProfile.propTypes = {
-  profile: PropTypes.shape({
-    displayName: PropTypes.string,
-    avatarUri: PropTypes.string,
-    handle: PropTypes.string,
-    email: PropTypes.string,
-  }).isRequired,
+  profile: PropTypes.shape(UserSchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
 };
 

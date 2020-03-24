@@ -94,6 +94,20 @@
     "empty": {
       "title": "Il n'y a rien dans cette liste pour l'instant",
       "text": ""
+    },
+    "notificationConfig": {
+      "minimal": {
+        "title": "Minimale",
+        "subtitle": "Je souhaite recevoir des communications uniquement lorsque cela est nécessaire"
+      },
+      "moderate": {
+        "title": "Modérée",
+        "subtitle": "Je souhaite recevoir des communications avec modération pour me faciliter l'usage du service"
+      },
+      "frequent": {
+        "title": "Elevée",
+        "subtitle": "Je souhaite recevoir des communications dès que de nouvelles informations sont disponibles"
+      }
     }
   },
   "onboarding": {

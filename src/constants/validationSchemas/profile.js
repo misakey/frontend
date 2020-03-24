@@ -8,6 +8,7 @@ import pick from '@misakey/helpers/pick';
 import {
   codeFieldValidation, stringFieldValidation, emailFieldValidation,
   passwordFieldValidation, displayNameFieldValidation, fileFieldValidation,
+  notificationFieldValidation,
 } from 'constants/fieldValidations';
 
 
@@ -17,6 +18,10 @@ const { malformed, required } = errorTypes;
 
 export const displayNameValidationSchema = Yup.object().shape({
   displayName: displayNameFieldValidation.schema,
+});
+
+export const notificationsValidationSchema = Yup.object().shape({
+  notifications: notificationFieldValidation.requiredSchema,
 });
 
 export const avatarValidationSchema = Yup.object().shape({

@@ -1,5 +1,6 @@
 {
   "sections": {
+    "myNotifications": "Mes communications",
     "myVault": "Mon coffre-fort",
     "myAccount": "Mon compte"
   },
@@ -25,6 +26,11 @@
     "title": "Nom public",
     "subtitle": "Mon nom public sera visible par tous",
     "success": "Mon nom public a été mis à jour"
+  },
+  "notifications": {
+    "title": "Fréquence des communications",
+    "subtitle": "Je définis la fréquence des communications par email",
+    "success": "La fréquence des communications a été mise à jour"
   },
   "password": {
     "title": "Mot de passe",

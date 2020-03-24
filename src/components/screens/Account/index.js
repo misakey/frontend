@@ -10,6 +10,7 @@ const AccountHome = lazy(() => import('components/screens/Account/Home'));
 const AccountName = lazy(() => import('components/screens/Account/Name'));
 const AccountAvatar = lazy(() => import('components/screens/Account/Avatar'));
 const AccountPassword = lazy(() => import('components/screens/Account/Password'));
+const AccountNotifications = lazy(() => import('components/screens/Account/Notifications'));
 const ExportCrypto = lazy(() => import('components/screens/Account/ExportCrypto'));
 
 // COMPONENTS
@@ -55,6 +56,18 @@ const Account = ({ profile, isFetching, ...props }) => (
       path={routes.account.profile.password}
       render={(routerProps) => (
         <AccountPassword
+          profile={profile}
+          isFetching={isFetching}
+          {...props}
+          {...routerProps}
+        />
+      )}
+    />
+    <Route
+      exact
+      path={routes.account.profile.notifications}
+      render={(routerProps) => (
+        <AccountNotifications
           profile={profile}
           isFetching={isFetching}
           {...props}

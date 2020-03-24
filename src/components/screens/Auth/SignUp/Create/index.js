@@ -24,6 +24,7 @@ import { screenAuthSetCredentials, screenAuthSetPublics } from 'store/actions/sc
 import Preamble from 'components/screens/Auth/SignUp/Create/Preamble';
 import Identifier from 'components/screens/Auth/SignUp/Create/Identifier';
 import Pseudo from 'components/screens/Auth/SignUp/Create/Pseudo';
+import Notifications from 'components/screens/Auth/SignUp/Create/Notifications';
 import Password from 'components/screens/Auth/SignUp/Create/Password';
 import RouteFormik from 'components/smart/Route/Formik';
 
@@ -36,6 +37,7 @@ const INITIAL_VALUES = {
   misakeyCrypto: false,
   email: '',
   handle: '',
+  notifications: '',
   password: '',
   passwordConfirm: '',
 };
@@ -46,7 +48,8 @@ const PATH_VALIDATION_SCHEMA = {
   [routes.auth.signUp.preamble]: stepSignUpValidationSchemas[0],
   [routes.auth.signUp.identifier]: stepSignUpValidationSchemas[1],
   [routes.auth.signUp.handle]: stepSignUpValidationSchemas[2],
-  [routes.auth.signUp.password]: stepSignUpValidationSchemas[3],
+  [routes.auth.signUp.notifications]: stepSignUpValidationSchemas[3],
+  [routes.auth.signUp.password]: stepSignUpValidationSchemas[4],
 };
 
 const USER_HEAD_ENDPOINT = {
@@ -97,10 +100,17 @@ const AuthSignUpCreate = ({
   );
 
   const afterCrypto = useCallback(
-    ({ email, password, handle, passwordConfirm, ...rest }) => {
+    ({ email, password, handle, notifications, passwordConfirm, ...rest }) => {
       dispatchSetCredentials(email, password);
 
-      const payload = { email, password, displayName: handle, handle, ...rest };
+      const payload = {
+        email,
+        password,
+        displayName: handle,
+        handle,
+        notifications,
+        ...rest,
+      };
 
       return fetchSignUp(payload)
         .then(() => {
@@ -151,7 +161,7 @@ const AuthSignUpCreate = ({
         if (e.code === notFound) {
           dispatchSetDisplayName(handle);
           history.push({
-            pathname: routes.auth.signUp.password,
+            pathname: routes.auth.signUp.notifications,
             search,
           });
         } else {
@@ -159,6 +169,16 @@ const AuthSignUpCreate = ({
         }
       }),
     [dispatchSetDisplayName, history, search],
+  );
+
+  const onNotificationsSubmit = useCallback(
+    () => Promise.resolve(
+      history.push({
+        pathname: routes.auth.signUp.password,
+        search,
+      }),
+    ),
+    [history, search],
   );
 
   const onSubmit = useCallback(
@@ -173,6 +193,8 @@ const AuthSignUpCreate = ({
         promise = onIdentifierSubmit(values, actions);
       } else if (pathname === routes.auth.signUp.handle) {
         promise = onPseudoSubmit(values, actions);
+      } else if (pathname === routes.auth.signUp.notifications) {
+        promise = onNotificationsSubmit();
       } else {
         promise = createSecrets(values, actions, afterCrypto, dispatchCreateNewOwnerSecrets);
       }
@@ -196,12 +218,10 @@ const AuthSignUpCreate = ({
         })
         .finally(() => { setSubmitting(false); });
     },
-    [
-      afterCrypto, enqueueSnackbar, handleGenericHttpErrors,
-      history,
-      onIdentifierSubmit, onPreambleSubmit, onPseudoSubmit,
-      pathname, search, t,
+    [pathname,
+      onPreambleSubmit, onIdentifierSubmit, onPseudoSubmit, onNotificationsSubmit, afterCrypto,
       dispatchCreateNewOwnerSecrets,
+      history, search, enqueueSnackbar, t, handleGenericHttpErrors,
     ],
   );
 
@@ -240,6 +260,14 @@ const AuthSignUpCreate = ({
               exact
               render={(routerProps) => (
                 <Pseudo {...formProps} {...routerProps} />
+              )}
+            />
+            <RouteFormik
+              start={SIGNUP_START}
+              path={routes.auth.signUp.notifications}
+              exact
+              render={(routerProps) => (
+                <Notifications {...formProps} {...routerProps} />
               )}
             />
             <RouteFormik

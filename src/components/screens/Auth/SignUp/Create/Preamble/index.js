@@ -105,7 +105,7 @@ const AuthSignUpPreamble = ({
   );
 
   const hasCryptoFieldError = useMemo(
-    () => touched[MISAKEY_KNOW_FIELD] && !isNil(errors[MISAKEY_KNOW_FIELD]),
+    () => touched[MISAKEY_CRYPTO_FIELD] && !isNil(errors[MISAKEY_CRYPTO_FIELD]),
     [touched, errors],
   );
 

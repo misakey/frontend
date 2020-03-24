@@ -271,6 +271,13 @@
     "helperText": "Un nombre maximum de 40 caractères est attendu",
     "label": "Desc. courte"
   },
+  "notifications": {
+    "label": "Fréquence",
+    "action": "Editer",
+    "minimal": "Minimale",
+    "moderate": "Modérée",
+    "frequent": "Elevée"
+  },
   "signUpConfirm": {
     "code": {
       "error": {

@@ -3,6 +3,7 @@ import errorTypes from '@misakey/ui/constants/errorTypes';
 import { MAIN_DOMAIN_REGEX } from 'constants/regex';
 import { MAX_FILE_SIZE, MAX_AVATAR_SIZE } from 'constants/file/size';
 import { ACCEPTED_TYPES } from 'constants/file/image';
+import { NOTIFICATIONS } from 'constants/notifications';
 
 import isString from '@misakey/helpers/isString';
 import isNil from '@misakey/helpers/isNil';
@@ -39,6 +40,12 @@ export const handleFieldValidation = {
 
 export const switchFieldValidation = {
   requiredSchema: Yup.boolean().oneOf([true], required),
+};
+
+export const notificationFieldValidation = {
+  requiredSchema: Yup.string()
+    .required(required)
+    .oneOf(NOTIFICATIONS),
 };
 
 export const linkFieldValidation = {

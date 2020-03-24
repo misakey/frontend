@@ -4,7 +4,7 @@ import pick from '@misakey/helpers/pick';
 
 import {
   emailFieldValidation, passwordFieldValidation, codeFieldValidation,
-  handleFieldValidation, switchFieldValidation,
+  handleFieldValidation, switchFieldValidation, notificationFieldValidation,
 } from 'constants/fieldValidations';
 
 
@@ -28,6 +28,7 @@ export const openVaultValidationSchema = Yup.object().shape({
 
 export const signUpValidationSchema = Yup.object().shape({
   handle: handleFieldValidation.setSchema,
+  notifications: notificationFieldValidation.requiredSchema,
   email: emailFieldValidation.schema,
   password: passwordFieldValidation.setSchema,
 
@@ -38,6 +39,7 @@ export const signUpValidationSchema = Yup.object().shape({
 
 const signUpValidationSchemaSteps = {
   handle: handleFieldValidation.setSchema,
+  notifications: notificationFieldValidation.requiredSchema,
   email: emailFieldValidation.schema,
   password: passwordFieldValidation.setSchema,
   passwordConfirm: passwordFieldValidation.requiredSchema,
@@ -51,7 +53,8 @@ export const stepSignUpValidationSchemas = [
   Yup.object().shape(pick(['tos', 'misakeyKnow', 'misakeyCrypto'], signUpValidationSchemaSteps)),
   Yup.object().shape(pick(['tos', 'email'], signUpValidationSchemaSteps)),
   Yup.object().shape(pick(['tos', 'email', 'handle'], signUpValidationSchemaSteps)),
-  Yup.object().shape(pick(['tos', 'email', 'handle', 'password', 'passwordConfirm'], signUpValidationSchemaSteps)),
+  Yup.object().shape(pick(['tos', 'email', 'handle', 'notifications'], signUpValidationSchemaSteps)),
+  Yup.object().shape(pick(['tos', 'email', 'handle', 'notifications', 'password', 'passwordConfirm'], signUpValidationSchemaSteps)),
 ];
 
 export const signUpConfirmValidationSchema = Yup.object().shape({

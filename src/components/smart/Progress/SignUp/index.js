@@ -8,12 +8,15 @@ import isNil from '@misakey/helpers/isNil';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 // CONSTANTS
+const STEP_VALUE = 100 / 6;
+
 const SIGNUP_STEPS = {
   [routes.auth.signUp.preamble]: 0,
-  [routes.auth.signUp.identifier]: 20,
-  [routes.auth.signUp.handle]: 40,
-  [routes.auth.signUp.password]: 60,
-  [routes.auth.signUp.confirm]: 80,
+  [routes.auth.signUp.identifier]: STEP_VALUE,
+  [routes.auth.signUp.handle]: 2 * STEP_VALUE,
+  [routes.auth.signUp.notifications]: 3 * STEP_VALUE,
+  [routes.auth.signUp.password]: 4 * STEP_VALUE,
+  [routes.auth.signUp.confirm]: 5 * STEP_VALUE,
   [routes.auth.signUp.finale]: 100,
 };
 

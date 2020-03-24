@@ -32,6 +32,16 @@ export const themeOptions = {
         },
       },
     },
+    MuiListItem: {
+      root: {
+        '&.Mui-selected': {
+          borderLeft: `3px solid ${common.secondary}`,
+          '&.MuiListItem-gutters': {
+            paddingLeft: 13,
+          },
+        },
+      },
+    },
   },
 };
 

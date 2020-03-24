@@ -15,10 +15,13 @@ describe('testing useNotDoneEffect', () => {
 
   test('should call once', async () => {
     const { rerender } = renderHook(
-      () => useNotDoneEffect((onDone) => {
-        fetchFn();
-        onDone();
-      }),
+      () => useNotDoneEffect(
+        (onDone) => {
+          fetchFn();
+          onDone();
+        },
+        [fetchFn],
+      ),
       {
         initialProps: { counter: 0 },
       },
@@ -36,12 +39,15 @@ describe('testing useNotDoneEffect', () => {
 
   test.each(REPEATS)('should stop calling after %p repeats', async (times) => {
     const { rerender } = renderHook(
-      ({ counter }) => useNotDoneEffect((onDone) => {
-        fetchFn();
-        if (counter === times) {
-          onDone();
-        }
-      }),
+      ({ counter }) => useNotDoneEffect(
+        (onDone) => {
+          fetchFn();
+          if (counter === times) {
+            onDone();
+          }
+        },
+        [fetchFn, counter, times],
+      ),
       {
         initialProps: { counter: 1 },
       },
