@@ -9,7 +9,7 @@ import Chip from '@material-ui/core/Chip';
 
 // COMPONENTS
 const ChipDateSince = ({ date, text, ...rest }) => {
-  const calendarDateSince = useCalendarDateSince(date, null, { forcePrefix: true, duration: true });
+  const calendarDateSince = useCalendarDateSince(date);
 
   const label = `${text} ${calendarDateSince}`;
 

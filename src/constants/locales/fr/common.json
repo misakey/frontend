@@ -92,7 +92,7 @@
       "other": "Demande fermée"
     },
     "since": {
-      "open": "En cours",
+      "open": "Ouverte",
       "reopen": "Réouverte",
       "done": "Complétée",
       "closed": "Fermée",
@@ -104,7 +104,15 @@
     "calendar": {
       "sameDay": "aujourd'hui",
       "nextDay": "demain",
-      "lastDay": "hier"
+      "lastDay": "hier",
+      "past": {
+        "event": "{{calendarDay}}",
+        "duration": "depuis {{calendarDay}}"
+      },
+      "future": {
+        "event": "{{calendarDay}}",
+        "duration": "d'ici {{calendarDay}}"
+      }
     },
     "since": {
       "past": {

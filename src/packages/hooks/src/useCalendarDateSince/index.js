@@ -24,9 +24,15 @@ export default (date, dateReference = null, options = {}) => {
 
   const formats = useMemo(
     () => ({
-      sameDay: t('common:date.calendar.sameDay'),
-      nextDay: t('common:date.calendar.nextDay'),
-      lastDay: t('common:date.calendar.lastDay'),
+      sameDay: onlyNumberOfDays
+        ? `[${t('common:date.calendar.sameDay')}]`
+        : `[${t(`common:date.calendar.past.${labelType}`, { calendarDay: t('common:date.calendar.sameDay') })}]`,
+      nextDay: onlyNumberOfDays
+        ? `[${t('common:date.calendar.nextDay')}]`
+        : `[${t(`common:date.calendar.future.${labelType}`, { calendarDay: t('common:date.calendar.nextDay') })}]`,
+      lastDay: onlyNumberOfDays
+        ? `[${t('common:date.calendar.lastDay')}]`
+        : `[${t(`common:date.calendar.past.${labelType}`, { calendarDay: t('common:date.calendar.lastDay') })}]`,
       nextWeek(reference) {
         const count = Math.abs(this.diff(reference, 'days'));
         const numberOfDays = count > maxCount

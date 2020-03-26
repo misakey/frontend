@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 
 // COMPONENTS
 const TypographyDateSince = ({ date, text }) => {
-  const calendarDateSince = useCalendarDateSince(date, null, { forcePrefix: true, duration: true });
+  const calendarDateSince = useCalendarDateSince(date);
 
   const label = `${text} ${calendarDateSince}`;
 
