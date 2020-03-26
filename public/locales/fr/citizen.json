@@ -357,6 +357,20 @@
   "requests": {
     "create": "Nouvelle requête"
   },
+  "dataviz": {
+    "title": "Historique d'utilisation",
+    "trainline": {
+      "topStations": "Top gares",
+      "topSearches": "Top recherches",
+      "visits": "visites",
+      "searches": "recherches",
+      "ofTrain": "de train",
+      "travelled": "parcourus",
+      "spent": "dépensés",
+      "travels": "trajets",
+      "emitCo2": "de CO2 émis"
+    }
+  },
   "route": {
     "loginAs": {
       "button": "Connexion en tant que citoyen",

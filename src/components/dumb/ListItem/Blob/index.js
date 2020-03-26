@@ -14,7 +14,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 
 
-const BlobListItem = ({ blob, onDownload, publicKeysWeCanDecryptFrom, t }) => {
+const BlobListItem = ({ blob, onDownload, publicKeysWeCanDecryptFrom, t, datavizEnabled }) => {
   const {
     createdAt,
     contentLength,
@@ -44,7 +44,7 @@ const BlobListItem = ({ blob, onDownload, publicKeysWeCanDecryptFrom, t }) => {
         {(canBeDecrypted) ? (
           <Button
             standing={BUTTON_STANDINGS.TEXT}
-            text={t('common:download')}
+            text={datavizEnabled ? t('common:view') : t('common:download')}
             onClick={onClick}
           />
         ) : (
@@ -61,8 +61,13 @@ const BlobListItem = ({ blob, onDownload, publicKeysWeCanDecryptFrom, t }) => {
 BlobListItem.propTypes = {
   blob: PropTypes.object.isRequired,
   onDownload: PropTypes.func.isRequired,
-  publicKeysWeCanDecryptFrom: PropTypes.arrayOf(PropTypes.string).isRequired,
+  publicKeysWeCanDecryptFrom: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
+  datavizEnabled: PropTypes.bool,
+};
+
+BlobListItem.defaultProps = {
+  datavizEnabled: false,
 };
 
 

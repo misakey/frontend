@@ -25,18 +25,24 @@ export default function (data, filename, mime, bom) {
   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE */
 
-  const blobData = (typeof bom !== 'undefined') ? [bom, data] : [data];
-  const blob = new Blob(blobData, { type: mime || 'application/octet-stream' });
-  if (typeof window.navigator.msSaveBlob !== 'undefined') {
-    // IE workaround for "HTML7007: One or more blob URLs were
-    // revoked by closing the blob for which they were created.
-    // These URLs will no longer resolve as the data backing
-    // the URL has been freed."
-    window.navigator.msSaveBlob(blob, filename);
-    return Promise.resolve();
+  let blobURL;
+  if (typeof data === 'string' && data.slice(0, 5) === 'data:') {
+    blobURL = data;
+  } else {
+    const blobData = (typeof bom !== 'undefined') ? [bom, data] : [data];
+    const blob = new Blob(blobData, { type: mime || 'application/octet-stream' });
+    if (typeof window.navigator.msSaveBlob !== 'undefined') {
+      // IE workaround for "HTML7007: One or more blob URLs were
+      // revoked by closing the blob for which they were created.
+      // These URLs will no longer resolve as the data backing
+      // the URL has been freed."
+      window.navigator.msSaveBlob(blob, filename);
+      return Promise.resolve();
+    }
+
+    blobURL = (window.URL || window.webkitURL).createObjectURL(blob);
   }
 
-  const blobURL = (window.URL || window.webkitURL).createObjectURL(blob);
   if (window.env.PLUGIN) {
     return downloadFileFromPlugin(blobURL, filename, revokeBlob);
   }

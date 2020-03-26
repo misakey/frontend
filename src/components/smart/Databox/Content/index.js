@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -30,8 +30,13 @@ import usePropChanged from '@misakey/hooks/usePropChanged';
 import CardSimpleDoubleText from 'components/dumb/Card/Simple/DoubleText';
 
 import List from '@material-ui/core/List';
+
+import DatavizDialog from 'components/dumb/Dialog/Dataviz';
+
+
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import { IS_PLUGIN } from 'constants/plugin';
+import AVAILABLE_DATAVIZ_DOMAINS from 'components/dumb/Dataviz/availableDatavizDomains.json';
 
 import BlobListItem from 'components/dumb/ListItem/Blob';
 
@@ -49,12 +54,13 @@ const readBlob = async (id, onError) => {
   }
 };
 
-const downloadBlob = async (
+const decryptBlob = async (
   blobMetadata,
   publicKeysWeCanDecryptFrom,
   application,
   onError,
   onSuccess,
+  shouldDownload = false,
 ) => {
   try {
     const { fileExtension, id, createdAt } = blobMetadata;
@@ -88,7 +94,11 @@ const downloadBlob = async (
       moment(createdAt).format('YYYY-MM-DD-HH-mm-ss'),
       fileExtension,
     );
-    downloadFile(decryptedBlob, fileName).then(onSuccess);
+    if (shouldDownload) {
+      downloadFile(decryptedBlob, fileName).then(onSuccess);
+    } else {
+      onSuccess(decryptedBlob, fileName, fileExtension);
+    }
   } catch (e) {
     log(e);
     onError('citizen:application.info.vault.errors.downloadBlob.default');
@@ -110,13 +120,22 @@ const DataboxContent = ({
   t,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
+  const { mainDomain } = application;
 
   const databoxId = useMemo(
     () => idProp(databox),
     [databox],
   );
 
+  const [decryptedBlob, setDecryptedBlob] = useState(null);
+  const [isDatavizDialogOpen, setIsDatavizDialogOpen] = useState(false);
+
   const databoxIdChanged = usePropChanged(databoxId);
+
+  const onCloseDatavizDialog = useCallback(
+    () => setIsDatavizDialogOpen(false),
+    [setIsDatavizDialogOpen],
+  );
 
   const onError = useCallback(
     (translationKey) => {
@@ -125,7 +144,7 @@ const DataboxContent = ({
     [enqueueSnackbar, t],
   );
 
-  const onSuccess = useCallback(
+  const onDownloadSuccess = useCallback(
     () => {
       if (IS_PLUGIN) {
         enqueueSnackbar(
@@ -135,6 +154,14 @@ const DataboxContent = ({
       }
     },
     [enqueueSnackbar, t],
+  );
+
+  const onDecryptForDatavizSuccess = useCallback(
+    (blob, filename, fileExtension) => {
+      setDecryptedBlob({ blob, filename, fileExtension });
+      setIsDatavizDialogOpen(true);
+    },
+    [setIsDatavizDialogOpen, setDecryptedBlob],
   );
 
   const shouldFetch = useMemo(
@@ -168,11 +195,25 @@ const DataboxContent = ({
     [blobs],
   );
 
+  const isDatavizEnabled = useMemo(
+    () => AVAILABLE_DATAVIZ_DOMAINS.includes(mainDomain),
+    [mainDomain],
+  );
+
   const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
 
   const onDownload = useCallback(
-    (blob) => downloadBlob(blob, publicKeysWeCanDecryptFrom, application, onError, onSuccess),
-    [publicKeysWeCanDecryptFrom, application, onError, onSuccess],
+    (blob) => decryptBlob(
+      blob, publicKeysWeCanDecryptFrom, application, onError, onDownloadSuccess, true,
+    ),
+    [publicKeysWeCanDecryptFrom, application, onError, onDownloadSuccess],
+  );
+
+  const onDisplayDataviz = useCallback(
+    (encryptedBlob) => decryptBlob(
+      encryptedBlob, publicKeysWeCanDecryptFrom, application, onError, onDecryptForDatavizSuccess,
+    ),
+    [application, onError, publicKeysWeCanDecryptFrom, onDecryptForDatavizSuccess],
   );
 
   const vaultIsOpen = useMemo(
@@ -187,6 +228,13 @@ const DataboxContent = ({
 
   return (
     <>
+      <DatavizDialog
+        mainDomain={mainDomain}
+        open={isDatavizDialogOpen}
+        onClose={onCloseDatavizDialog}
+        decryptedBlob={decryptedBlob}
+        onDownloadSuccess={onDownloadSuccess}
+      />
       <CardSimpleDoubleText
         my={2}
         primary={t('citizen:application.info.vault.databoxContent.number', { count: blobsCount })}
@@ -206,8 +254,9 @@ const DataboxContent = ({
             <BlobListItem
               key={blob.id}
               blob={blob}
-              onDownload={onDownload}
+              onDownload={(isDatavizEnabled) ? onDisplayDataviz : onDownload}
               publicKeysWeCanDecryptFrom={publicKeysWeCanDecryptFrom}
+              datavizEnabled={isDatavizEnabled}
             />
           ))}
         </List>
