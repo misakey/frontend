@@ -40,6 +40,8 @@ import ContactConfirm from 'components/screens/Citizen/Contact/Confirm';
 
 import AddIcon from '@material-ui/icons/Add';
 
+// @DEPRECIATED: replaced by new request view
+
 // CONSTANTS
 const NAV_BAR_HEIGHT = 57;
 const CONFIG_KEY = 'config';

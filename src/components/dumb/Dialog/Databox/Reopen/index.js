@@ -46,11 +46,11 @@ const DialogDataboxReopen = ({ onClose, onSuccess, open, t }) => {
       aria-describedby="databox-reopen-dialog-description"
     >
       <DialogTitle id="databox-reopen-dialog-title">
-        {t('citizen:application.info.vault.reopenDialog.title')}
+        {t('citizen:requests.read.reopenDialog.title')}
       </DialogTitle>
       <DialogContent>
         <DialogContentText classes={{ root: classes.dialogContentTextRoot }} id="databox-reopen-dialog-description">
-          {t('citizen:application.info.vault.reopenDialog.description')}
+          {t('citizen:requests.read.reopenDialog.description')}
         </DialogContentText>
       </DialogContent>
       <DialogActions>

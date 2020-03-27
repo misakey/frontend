@@ -57,11 +57,11 @@ const DialogDataboxArchive = ({ onClose, onSuccess, open, t }) => {
       >
         <Form>
           <DialogTitle id="databox-archive-dialog-title">
-            {t('citizen:application.info.vault.closeDialog.title')}
+            {t('citizen:requests.read.closeDialog.title')}
           </DialogTitle>
           <DialogContent>
             <DialogContentText classes={{ root: classes.dialogContentTextRoot }} id="databox-archive-dialog-description">
-              {t('citizen:application.info.vault.closeDialog.description')}
+              {t('citizen:requests.read.closeDialog.description')}
             </DialogContentText>
             <Field
               component={FieldText}

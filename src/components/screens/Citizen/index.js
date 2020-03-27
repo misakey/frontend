@@ -9,6 +9,7 @@ import ContactMultipleButton from 'components/smart/Fab/Contact';
 import routes from 'routes';
 
 import Application from 'components/screens/Citizen/Application';
+import Requests from 'components/screens/Citizen/Requests';
 import SilentAuthScreen from 'components/dumb/Screen/SilentAuth';
 import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
 import { connect } from 'react-redux';
@@ -50,6 +51,7 @@ function Citizen({ match, isAuthenticated, userScope }) {
           path={routes.citizen.applications.category}
           component={ApplicationsCategoryScreen}
         />
+        <Route path={routes.citizen.requests._} component={Requests} />
         <Route path={routes.citizen.application._} component={Application} />
 
         <Route exact path={match.path} component={Home} />

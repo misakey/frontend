@@ -98,66 +98,6 @@
         "success": "Merci, cette contribution a bien été envoyée\u00a0!"
       },
       "vault": {
-        "archivedDatabox": {
-          "title": "Demande de portabilité du {{date}}",
-          "closedBy": {
-            "user": "J'ai fermé la requête après {{duration}}",
-            "dpo": "Le·la DPO a fermé la requête après {{duration}}"
-          }
-        },
-        "archives": {
-          "title": "Demandes archivées"
-        },
-        "currentDatabox": {
-          "title": "Demande de portabilité en cours",
-          "titleNoDpo": "Nous cherchons l'email du DPO pour valider la fiche de l'application",
-          "none": "Aucune demande en cours",
-          "addDPO": "Ajouter l'email du DPO",
-          "contactForm": {
-            "text": "Demander directement sans chiffrement",
-            "button": "Accéder au formulaire"
-          },
-          "contact": "Demander mes données",
-          "openSince": "Ouverte {{since}}"
-        },
-        "closeDialog": {
-          "title": "Archiver la requête\u00a0?",
-          "description": "Je ne pourrai plus réouvrir cette requête et le DPO ne pourra plus y ajouter de fichier.\nNéanmoins, les fichiers seront toujours téléchargeables et je pourrai ouvrir une nouvelle requête plus tard."
-        },
-        "reopenDialog": {
-          "title": "Réouvrir la requête\u00a0?",
-          "description": "Le DPO a signifié que ma demande était traitée.\nJe peux le relancer en lui indiquant les raisons de mon désaccord."
-        },
-        "databoxContent": {
-          "number": "{{count}} fichier reçu",
-          "number_plural": "{{count}} fichiers reçus"
-        },
-        "errors": {
-          "conflict": {
-            "open": {
-              "createdAt": "Impossible d'effectuer une nouvelle demande, la précédente date de moins de 30 jours.",
-              "status": "Impossible d'effectuer une nouvelle demande, il en existe déjà une ouverte."
-            },
-            "reopen": {
-              "createdAt": "Impossible de réouvrir la demande, une demande plus récente date de moins de 30 jours.",
-              "status": "Impossible de réouvrir la demande, il en existe déjà une ouverte."
-            },
-            "archive": {
-              "status": "Action impossible. La demande a déjà été archivée."
-            },
-            "done": {
-              "status": "Action impossible. La demande a déjà été traitée."
-            }
-          },
-          "downloadBlob": {
-            "missingSecretKey": "Je n'ai pas accès à la clé de déchiffrement",
-            "getBlob": "Une erreur s'est produite lors de la récupération du fichier",
-            "default": "Oops, impossible de télécharger le fichier\u00a0!"
-          }
-        },
-        "downloadBlob": {
-          "success": "Le fichier a été téléchargé avec succès \u00a0!"
-        },
         "info": {
           "title": "À propos de mon coffre-fort",
           "primaryButton": "Créer un coffre",
@@ -165,49 +105,10 @@
           "altIllu": "Personnage devant un coffre-fort",
           "details": "Mon coffre-fort est chiffré par une clé secrète, elle-même protégée par mon mot de passe. Je suis le seul à pouvoir accéder à cette clé qui permet de lire les données contenues dans mon coffre. Lorsqu’un site m’envoie des données, elles sont chiffrées avant d’être envoyées dans mon coffre. Misakey ne peut pas lire mes données. <br /><br />Attention : En cas de perte de mon mot de passe, mes données ne seront plus accessibles"
         },
-        "mustUnlockVault": "Ouvrir mon coffre-fort pour accéder à mes fichiers",
-        "openVault": "Ouvrir mon coffre-fort",
-        "passwordPrompt": {
-          "title": "Ouvrir mon coffre-fort",
-          "description": "Pour cette action, je dois saisir mon mot de passe"
-        },
-        "questions": {
-          "title": "Questions fréquentes",
-          "subtitle": "Toutes les réponses à mes questions sont sur notre FAQ pour les Citoyens",
-          "text": {
-            "0": "Qu'est-ce que le RGPD\u00a0?",
-            "1": "Quels devoirs ont les sites\u00a0?",
-            "2": "Le RGPD, ça fonctionne\u00a0?",
-            "3": "Qu'est-ce qu'un ou une DPO\u00a0?"
-          },
-          "href": {
-            "0": "https://docs.misakey.com/#/citizen/?id=le-rgpd",
-            "1": "https://docs.misakey.com/#/citizen/?id=les-obligations-des-sites",
-            "2": "https://docs.misakey.com/#/citizen/?id=ca-fonctionne-",
-            "3": "https://docs.misakey.com/#/citizen/?id=les-dpo"
-          },
-          "open": {
-            "text": {
-              "0": "Que faire si un site ne me répond pas via le moyen demandé\u00a0?",
-              "1": "Que faire si un site ne m'a pas répondu dans les délais\u00a0?",
-              "2": "Que faire si un site me demande des informations pour vérifier mon identité\u00a0?"
-            },
-            "href": {
-              "0": "https://docs.misakey.com/#/citizen/?id=réponse-insatisfaisante-du-site",
-              "1": "https://docs.misakey.com/#/citizen/?id=délais-de-réponse-dépassé",
-              "2": "https://docs.misakey.com/#/citizen/?id=vérification-de-l39identité"
-            }
-          },
-          "done": {
-            "text": {
-              "0": "Que faire si un site me répond négativement\u00a0?"
-            },
-            "href": {
-              "0": "https://docs.misakey.com/#/citizen/?id=refus-du-site-de-répondre"
-            }
-          }
-        },
-        "title": "Récupérer mes données"
+        "contact": {
+          "text": "Mes données personnelles",
+          "button": "Demander mes données"
+        }
       }
     },
     "notFound": {
@@ -355,7 +256,110 @@
     }
   },
   "requests": {
-    "create": "Nouvelle requête"
+    "create": "Nouvelle requête",
+    "type": {
+      "portability": "Portabilité"
+    },
+    "read": {
+      "title": "{{ type }} du {{ date }}",
+      "from": {
+        "label": "De : {{ ownerEmail }}"
+      },
+      "move": {
+        "fromDraftToOpen": "J'ai déjà envoyé l'email"
+      },
+      "delete": {
+        "text": "Supprimer cette requête",
+        "success": "La requête a bien été supprimée\u00a0!"
+      },
+      "closed": {
+        "by": {
+          "user": "Fermée par Vous",
+          "dpo": "Fermée par le Dpo"
+        },
+        "subtitle": "{{status}} après {{duration}}"
+      },
+      "archived": {
+        "title": "Archivée par Vous",
+        "subtitle": "Le {{at}}"
+      },
+      "current": {
+        "openSince": "Ouverte {{since}}"
+      },
+      "closeDialog": {
+        "title": "Archiver la requête\u00a0?",
+        "description": "Je ne pourrai plus réouvrir cette requête et le DPO ne pourra plus y ajouter de fichier.\nNéanmoins, les fichiers seront toujours téléchargeables et je pourrai ouvrir une nouvelle requête plus tard."
+      },
+      "reopenDialog": {
+        "title": "Réouvrir la requête\u00a0?",
+        "description": "Le DPO a signifié que ma demande était traitée.\nJe peux le relancer en lui indiquant les raisons de mon désaccord."
+      },
+      "content": {
+        "number": "{{count}} fichier reçu",
+        "number_plural": "{{count}} fichiers reçus"
+      },
+      "errors": {
+        "conflict": {
+          "open": {
+            "status": "Impossible de créer la requête, il en existe déjà une ouverte pour cette application."
+          },
+          "reopen": {
+            "createdAt": "Impossible de réouvrir la demande, une demande plus récente date de moins de 30 jours.",
+            "status": "Impossible de réouvrir la demande, il en existe déjà une ouverte."
+          },
+          "archive": {
+            "status": "Action impossible. La demande a déjà été archivée."
+          },
+          "done": {
+            "status": "Action impossible. La demande a déjà été traitée."
+          }
+        },
+        "downloadBlob": {
+          "missingSecretKey": "Je n'ai pas accès à la clé de déchiffrement",
+          "getBlob": "Une erreur s'est produite lors de la récupération du fichier",
+          "default": "Oops, impossible de télécharger le fichier\u00a0!"
+        }
+      },
+      "downloadBlob": {
+        "success": "Le fichier a été téléchargé avec succès \u00a0!"
+      },
+      "questions": {
+        "title": "Questions fréquentes",
+        "subtitle": "Toutes les réponses à mes questions sont sur notre FAQ pour les Citoyens",
+        "text": {
+          "0": "Qu'est-ce que le RGPD\u00a0?",
+          "1": "Quels devoirs ont les sites\u00a0?",
+          "2": "Le RGPD, ça fonctionne\u00a0?",
+          "3": "Qu'est-ce qu'un ou une DPO\u00a0?"
+        },
+        "href": {
+          "0": "https://docs.misakey.com/#/citizen/?id=le-rgpd",
+          "1": "https://docs.misakey.com/#/citizen/?id=les-obligations-des-sites",
+          "2": "https://docs.misakey.com/#/citizen/?id=ca-fonctionne-",
+          "3": "https://docs.misakey.com/#/citizen/?id=les-dpo"
+        },
+        "open": {
+          "text": {
+            "0": "Que faire si un site ne me répond pas via le moyen demandé\u00a0?",
+            "1": "Que faire si un site ne m'a pas répondu dans les délais\u00a0?",
+            "2": "Que faire si un site me demande des informations pour vérifier mon identité\u00a0?"
+          },
+          "href": {
+            "0": "https://docs.misakey.com/#/citizen/?id=réponse-insatisfaisante-du-site",
+            "1": "https://docs.misakey.com/#/citizen/?id=délais-de-réponse-dépassé",
+            "2": "https://docs.misakey.com/#/citizen/?id=vérification-de-l39identité"
+          }
+        },
+        "done": {
+          "text": {
+            "0": "Que faire si un site me répond négativement\u00a0?"
+          },
+          "href": {
+            "0": "https://docs.misakey.com/#/citizen/?id=refus-du-site-de-répondre"
+          }
+        }
+      }
+    }
   },
   "dataviz": {
     "title": "Historique d'utilisation",

@@ -9,7 +9,6 @@ import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
 
 import ApplicationSchema from 'store/schemas/Application';
 
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import Container from '@material-ui/core/Container';
 import useUserHasRole from '@misakey/hooks/useUserHasRole';
 import isNil from '@misakey/helpers/isNil';
@@ -22,8 +21,7 @@ import Screen from 'components/dumb/Screen';
 import ServiceClaim from 'components/screens/DPO/Service/Claim';
 import ServiceRequests from 'components/screens/DPO/Service/Requests';
 import Redirect from 'components/dumb/Redirect';
-import BoxEllipsis from 'components/dumb/Box/Ellipsis';
-import ApplicationAvatar from 'components/dumb/Avatar/Application';
+import BoxEllipsisApplication from 'components/dumb/Box/Ellipsis/Application';
 import ServiceNotFound from 'components/screens/DPO/Service/NotFound';
 import OnboardingDPO from 'components/dumb/Onboarding/DPO';
 import SilentAuthScreen from 'components/dumb/Screen/SilentAuth';
@@ -35,19 +33,6 @@ export const DPO_SERVICE_SCREEN_NAMES = {
 };
 
 const DPO_WORKSPACE = WORKSPACE.DPO;
-
-// HOOKS
-const useStyles = makeStyles((theme) => ({
-  burger: {
-    // DRAWER spacing - BUTTONBURGER width+padding - APPBAR padding + EDGE margin
-    marginRight: `calc(${theme.spacing(9) + 1}px - 48px - 24px + 12px)`,
-  },
-  avatarParent: {
-    position: 'absolute',
-    left: '50%',
-    transform: 'translateX(-50%)',
-  },
-}));
 
 // COMPONENTS
 function Service({
@@ -63,7 +48,6 @@ function Service({
   userScope,
   ...rest
 }) {
-  const classes = useStyles();
   const claimRouteMatch = useRouteMatch(routes.dpo.service.claim._);
   const isClaimRoute = !isNil(claimRouteMatch);
   const requiredScope = useMemo(
@@ -89,12 +73,8 @@ function Service({
   const items = useMemo(
     () => (withSearchBar
       ? []
-      : [(
-        <BoxEllipsis className={classes.avatarParent} key="applicationAvatarParent">
-          <ApplicationAvatar application={entity} />
-        </BoxEllipsis>
-      )]),
-    [classes.avatarParent, entity, withSearchBar],
+      : [<BoxEllipsisApplication application={entity} key="applicationAvatar" />]),
+    [entity, withSearchBar],
   );
 
   if (!isNil(error) && error.status === 404) {

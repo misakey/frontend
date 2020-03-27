@@ -101,6 +101,10 @@ const routes = {
 
       myFeedback: '/citizen/:mainDomain/feedback/me',
     },
+    requests: {
+      _: '/citizen/requests',
+      read: '/citizen/requests/:id',
+    },
   },
   dpo: {
     _: '/dpo',

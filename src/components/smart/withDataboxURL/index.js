@@ -32,6 +32,8 @@ import { getCurrentDatabox } from '@misakey/helpers/databox';
 
 import withUserEmails from 'components/smart/withUserEmails';
 
+// @DEPRECIATED: used on old page roses
+
 // HELPERS
 const idProp = prop('id');
 const databoxesProp = prop('databoxes');

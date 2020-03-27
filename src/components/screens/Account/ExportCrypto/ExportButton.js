@@ -8,7 +8,7 @@ import { BUTTON_STANDINGS } from 'components/dumb/Button';
 
 import exportCrypto from '@misakey/crypto/store/actions/exportCrypto';
 
-import { usePasswordPrompt } from 'components/screens/Citizen/Application/Info/Vault/PasswordPrompt';
+import { usePasswordPrompt } from 'components/dumb/PasswordPrompt';
 
 const ExportButton = ({ t }) => {
   const fileNamePrefix = t('account:exportCrypto.exportButton.fileName');

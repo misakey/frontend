@@ -51,7 +51,8 @@ export const isReopen = ({
   status,
   createdAt,
   updatedAt,
-}) => status === OPEN && moment(updatedAt).isAfter(createdAt);
+  sentAt,
+}) => status === OPEN && moment(updatedAt).isAfter(sentAt || createdAt);
 
 export const getStatus = (databox) => {
   if (!isObject(databox)) {

@@ -49,7 +49,7 @@ const readBlob = async (id, onError) => {
         .send()
     );
   } catch (e) {
-    onError('citizen:application.info.vault.errors.downloadBlob.getBlob');
+    onError('citizen:requests.read.errors.downloadBlob.getBlob');
     return {};
   }
 };
@@ -73,7 +73,7 @@ const decryptBlob = async (
     const { blob: ciphertext } = await readBlob(id);
 
     if (!ciphertext || ciphertext.size === 0) {
-      onError('citizen:application.info.vault.errors.downloadBlob.default');
+      onError('citizen:requests.read.errors.downloadBlob.default');
       return;
     }
 
@@ -101,7 +101,7 @@ const decryptBlob = async (
     }
   } catch (e) {
     log(e);
-    onError('citizen:application.info.vault.errors.downloadBlob.default');
+    onError('citizen:requests.read.errors.downloadBlob.default');
   }
 };
 
@@ -148,7 +148,7 @@ const DataboxContent = ({
     () => {
       if (IS_PLUGIN) {
         enqueueSnackbar(
-          t('citizen:application.info.vault.downloadBlob.success'),
+          t('citizen:requests.read.downloadBlob.success'),
           { variant: 'success' },
         );
       }
@@ -237,7 +237,7 @@ const DataboxContent = ({
       />
       <CardSimpleDoubleText
         my={2}
-        primary={t('citizen:application.info.vault.databoxContent.number', { count: blobsCount })}
+        primary={t('citizen:requests.read.content.number', { count: blobsCount })}
         secondary={allBlobsSize}
         button={(blobsCount > 0 && !vaultIsOpen) ? (
           <Button

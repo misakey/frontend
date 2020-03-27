@@ -14,7 +14,7 @@ import {
 } from '@misakey/crypto/Errors/classes';
 
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
-import { usePasswordPrompt } from 'components/screens/Citizen/Application/Info/Vault/PasswordPrompt';
+import { usePasswordPrompt } from 'components/dumb/PasswordPrompt';
 import { useDispatch } from 'react-redux';
 
 

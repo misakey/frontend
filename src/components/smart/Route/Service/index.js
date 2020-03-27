@@ -21,7 +21,7 @@ import SplashScreen from 'components/dumb/Screen/Splash';
 export const DEFAULT_DOMAIN = 'intro';
 export const DEFAULT_SERVICE_ENTITY = { mainDomain: DEFAULT_DOMAIN };
 
-// DEPRECIATED: only used in admin workspace
+// @DEPRECIATED: only used in admin workspace
 
 // CONSTANTS
 const DEFAULT_SCOPE = 'openid user';

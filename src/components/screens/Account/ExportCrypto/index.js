@@ -12,7 +12,7 @@ import ScreenAction from 'components/dumb/Screen/Action';
 import Title from 'components/dumb/Typography/Title';
 
 // Export and import buttons need to be provided a password prompt function
-import { PasswordPromptProvider } from 'components/screens/Citizen/Application/Info/Vault/PasswordPrompt';
+import { PasswordPromptProvider } from 'components/dumb/PasswordPrompt';
 
 import ExportButton from './ExportButton';
 import ImportCard from './ImportCard';

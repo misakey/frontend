@@ -3,41 +3,34 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 import { connect } from 'react-redux';
-import { useHistory, useLocation, generatePath, Link } from 'react-router-dom';
+import { useHistory, useLocation, Link } from 'react-router-dom';
 import moment from 'moment';
 
 import API from '@misakey/api';
-import routes from 'routes';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import { OPEN, DONE, CLOSED } from 'constants/databox/status';
 
-import withDialogConnect from 'components/smart/Dialog/Connect/with';
-
-import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';
-import { updateDatabox } from 'store/actions/databox';
-import { contactDataboxURL } from 'store/actions/screens/contact';
+import { updateDatabox, setUrlAccessRequest } from 'store/actions/databox';
 
 import { getDetailPairsHead } from '@misakey/helpers/apiError';
 import getNextSearch from '@misakey/helpers/getNextSearch';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 import prop from '@misakey/helpers/prop';
 
-import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
+import { BUTTON_STANDINGS } from 'components/dumb/Button';
 import DialogDataboxArchive from 'components/dumb/Dialog/Databox/Archive';
 import DialogDataboxReopen from 'components/dumb/Dialog/Databox/Reopen';
-import Title from 'components/dumb/Typography/Title';
 import CardSimpleText from 'components/dumb/Card/Simple/Text';
 import CardSimpleDoubleButton from 'components/dumb/Card/Simple/DoubleButton';
 import CardSimpleDoubleTextDoubleButton from 'components/dumb/Card/Simple/DoubleTextDoubleButton';
 import DataboxContent from 'components/smart/Databox/Content';
-import { IS_PLUGIN } from 'constants/plugin';
 
 
 // CONSTANTS
@@ -74,30 +67,26 @@ const requestDataboxAccess = (id) => API
 
 const idProp = prop('id');
 const createdAtProp = prop('createdAt');
+const sentAtProp = prop('sentAt');
 const updatedAtProp = prop('updatedAt');
+const getOwner = prop('owner');
+const getDpoComment = prop('dpoComment');
 
 // HOOKS
-const useOnReopenMailTo = (mainDomain, dispatchContact, history, search) => useCallback(
+const useOnReopenMailTo = (id, dispatchSetUrlAccessRequest, history, search) => useCallback(
   (token) => {
-    const href = IS_PLUGIN ? window.env.APP_URL : window.env.href;
-    const databoxURL = parseUrlFromLocation(`${routes.requests}#${token}`, href).href;
     const nextSearch = getNextSearch(search, new Map([['reopen', true]]));
-    dispatchContact(databoxURL, mainDomain, nextSearch, history);
+    dispatchSetUrlAccessRequest(id, token, nextSearch, history);
   },
-  [mainDomain, dispatchContact, history, search],
+  [search, dispatchSetUrlAccessRequest, id, history],
 );
-
-// COMPONENTS
-const DialogConnectButton = withDialogConnect(Button);
-
 
 const CurrentDatabox = ({
   application,
   databox,
-  onContributionDpoEmailClick,
   isAuthenticated,
   dispatchUpdateDatabox,
-  dispatchContact,
+  dispatchSetUrlAccessRequest,
   initCrypto,
   t,
   ...rest
@@ -106,7 +95,7 @@ const CurrentDatabox = ({
   const [openDialog, setOpenDialog] = useState(null);
 
   const history = useHistory();
-  const { search } = useLocation();
+  const { search, pathname } = useLocation();
 
   const onArchiveDialog = useCallback(
     () => {
@@ -131,22 +120,6 @@ const CurrentDatabox = ({
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { dpoEmail, mainDomain, links } = useMemo(
-    () => application || {},
-    [application],
-  );
-
-  const dpoContactLink = useMemo(
-    () => {
-      if (isEmpty(links)) {
-        return null;
-      }
-      const linkObject = links.find((link) => link.type === 'dpo_contact');
-      return (isNil(linkObject) ? null : linkObject.value);
-    },
-    [links],
-  );
-
   const databoxId = useMemo(
     () => idProp(databox),
     [databox],
@@ -157,14 +130,29 @@ const CurrentDatabox = ({
     [databox],
   );
 
-  const openSince = useMemo(
-    () => moment(createdAtProp(databox)).fromNow(),
+  const dpoComment = useMemo(
+    () => getDpoComment(databox),
     [databox],
   );
 
-  const durationOfTheRequest = useMemo(
-    () => moment(updatedAtProp(databox)).to(createdAtProp(databox), true),
+  const openedAt = useMemo(
+    () => sentAtProp(databox) || createdAtProp(databox),
     [databox],
+  );
+
+  const { email: ownerEmail } = useMemo(
+    () => getOwner(databox),
+    [databox],
+  );
+
+  const openSince = useMemo(
+    () => moment(openedAt).fromNow(),
+    [openedAt],
+  );
+
+  const durationOfTheRequest = useMemo(
+    () => moment(updatedAtProp(databox)).to(openedAt, true),
+    [databox, openedAt],
   );
 
   const onError = useCallback(
@@ -186,7 +174,7 @@ const CurrentDatabox = ({
           }
           const [key, errorType] = getDetailPairsHead(err);
           if (errorType === conflict) {
-            return onError(t(`citizen:application.info.vault.errors.conflict.archive.${key}`));
+            return onError(t(`citizen:requests.read.errors.conflict.archive.${key}`));
           }
           return onError(t('common:httpStatus.error.default'));
         })
@@ -210,7 +198,7 @@ const CurrentDatabox = ({
           }
           const [key, errorType] = getDetailPairsHead(err);
           if (errorType === conflict) {
-            return onError(t(`citizen:application.info.vault.errors.conflict.archive.${key}`));
+            return onError(t(`citizen:requests.read.errors.conflict.archive.${key}`));
           }
           return onError(t('common:httpStatus.error.default'));
         });
@@ -218,7 +206,7 @@ const CurrentDatabox = ({
     [databoxId, dispatchUpdateDatabox, onError, t],
   );
 
-  const onReopenMailTo = useOnReopenMailTo(mainDomain, dispatchContact, history, search);
+  const onReopenMailTo = useOnReopenMailTo(databoxId, dispatchSetUrlAccessRequest, history, search);
 
   const onReopen = useCallback(
     () => {
@@ -235,7 +223,7 @@ const CurrentDatabox = ({
           }
           const [key, errorType] = getDetailPairsHead(err);
           if (errorType === conflict) {
-            return onError(t(`citizen:application.info.vault.errors.conflict.reopen.${key}`));
+            return onError(t(`citizen:requests.read.errors.conflict.reopen.${key}`));
           }
           return onError(t('common:httpStatus.error.default'));
         })
@@ -246,62 +234,65 @@ const CurrentDatabox = ({
     [databoxId, dispatchUpdateDatabox, onDialogClose, onError, onReopenMailTo, t],
   );
 
-  if (!isAuthenticated || (isEmpty(databox) && !isEmpty(dpoEmail))) {
-    return (
-      <div {...omitTranslationProps(rest)}>
-        <Title>
-          {t('citizen:application.info.vault.currentDatabox.title')}
-        </Title>
-        <CardSimpleText
-          text={t('citizen:application.info.vault.currentDatabox.none')}
-          highlight
-          my={2}
-          button={(
-            <DialogConnectButton
-              component={Link}
-              text={t('citizen:application.info.vault.currentDatabox.contact')}
-              standing={BUTTON_STANDINGS.MAIN}
-              size="small"
-              to={generatePath(routes.citizen.application.contact._, { mainDomain })}
-            />
-          )}
-        />
-      </div>
-    );
-  }
+  const dpoHasAnswered = useMemo(
+    () => !isNil(dpoComment) && !isEmpty(dpoComment),
+    [dpoComment],
+  );
 
-  if (isEmpty(dpoEmail)) {
-    return (
-      <div {...omitTranslationProps(rest)}>
-        <Title>
-          {t('citizen:application.info.vault.currentDatabox.titleNoDpo')}
-        </Title>
-        <CardSimpleText
-          text={t('citizen:application.info.vault.currentDatabox.addDPO')}
-          my={2}
-          button={{
-            text: t('common:add'),
-            standing: BUTTON_STANDINGS.MAIN,
-            onClick: onContributionDpoEmailClick,
-          }}
-        />
-        {!isNil(dpoContactLink) && (
-          <CardSimpleText
-            text={t('citizen:application.info.vault.currentDatabox.contactForm.text')}
-            my={2}
-            button={{
-              text: t('citizen:application.info.vault.currentDatabox.contactForm.button'),
-              standing: BUTTON_STANDINGS.OUTLINED,
-              component: 'a',
-              rel: 'noreferrer noopener',
-              target: '_blank',
-              href: dpoContactLink,
-            }}
-          />
-        )}
-      </div>
-    );
-  }
+  const isUserActionAllowed = useMemo(
+    () => status !== CLOSED,
+    [status],
+  );
+
+  // It can exist a dpo answer but on status not closed (reopening request)
+  const waitingForAnwser = useMemo(
+    () => (isNil(dpoComment) || ![DONE, CLOSED].includes(status)),
+    [dpoComment, status],
+  );
+
+  const primaryWaitingForAnswer = useMemo(
+    () => ((status !== DONE) ? {
+      standing: BUTTON_STANDINGS.MAIN,
+      text: t('common:resendEmail'),
+      size: 'small',
+      component: Link,
+      to: {
+        pathname,
+        search: getNextSearch(search, new Map([['recontact', true]])),
+      },
+    } : null),
+    [pathname, search, status, t],
+  );
+
+  const secondaryWaitingForAnswer = useMemo(
+    () => ((status !== DONE) ? {
+      standing: BUTTON_STANDINGS.CANCEL,
+      text: t('common:archive'),
+      onClick: onArchiveDialog,
+      size: 'small',
+    } : null),
+    [onArchiveDialog, status, t],
+  );
+
+  const primaryDpoHasAnswered = useMemo(
+    () => (isUserActionAllowed ? {
+      standing: BUTTON_STANDINGS.MAIN,
+      text: t('common:archive'),
+      onClick: onAcceptDpoReason,
+      size: 'small',
+    } : null),
+    [isUserActionAllowed, onAcceptDpoReason, t],
+  );
+
+  const secondaryDpoHasAnswered = useMemo(
+    () => (isUserActionAllowed ? {
+      standing: BUTTON_STANDINGS.CANCEL,
+      text: t('common:reopen'),
+      onClick: onReopenDialog,
+      size: 'small',
+    } : null),
+    [isUserActionAllowed, onReopenDialog, t],
+  );
 
   return (
     <div {...omitTranslationProps(rest)}>
@@ -315,62 +306,40 @@ const CurrentDatabox = ({
         onClose={onDialogClose}
         onSuccess={onReopen}
       />
-      <Title>
-        {t('citizen:application.info.vault.currentDatabox.title')}
-      </Title>
-      <CardSimpleDoubleButton
-        my={2}
-        highlight={status !== DONE}
-        text={t('citizen:application.info.vault.currentDatabox.openSince', { since: openSince })}
-        primary={(status !== DONE) ? {
-          standing: BUTTON_STANDINGS.MAIN,
-          text: t('common:resendEmail'),
-          size: 'small',
-          component: Link,
-          to: {
-            pathname: generatePath(routes.citizen.application.contact._, { mainDomain }),
-            search: getNextSearch(search, new Map([['recontact', true]])),
-          },
-        } : null}
-        secondary={(status !== DONE) ? {
-          standing: BUTTON_STANDINGS.CANCEL,
-          text: t('common:archive'),
-          onClick: onArchiveDialog,
-          size: 'small',
-        } : null}
+      <CardSimpleText
+        text={t('citizen:requests.read.from.label', { ownerEmail })}
       />
-      {(status === DONE) && (
-        <CardSimpleDoubleTextDoubleButton
-          my={2}
-          highlight
-
-
-          primaryText={t(`common:databox.dpoComment.${databox.dpoComment}`)}
-          secondaryText={t(
-            'citizen:application.info.vault.archivedDatabox.closedBy.dpo',
-            { duration: durationOfTheRequest },
-          )}
-          secondary={{
-            standing: BUTTON_STANDINGS.CANCEL,
-            text: t('common:reopen'),
-            onClick: onReopenDialog,
-            size: 'small',
-          }}
-          primary={{
-            standing: BUTTON_STANDINGS.MAIN,
-            text: t('common:archive'),
-            onClick: onAcceptDpoReason,
-            size: 'small',
-          }}
-        />
-      )}
       <DataboxContent
         databox={databox}
         application={application}
-        onContributionDpoEmailClick={onContributionDpoEmailClick}
         initCrypto={initCrypto}
       />
-
+      {waitingForAnwser && (
+        <CardSimpleDoubleButton
+          my={2}
+          text={t('citizen:requests.read.current.openSince', { since: openSince })}
+          primary={primaryWaitingForAnswer}
+          secondary={secondaryWaitingForAnswer}
+        />
+      )}
+      {dpoHasAnswered && (
+        <CardSimpleDoubleTextDoubleButton
+          my={2}
+          highlight={isUserActionAllowed}
+          primaryText={t('citizen:requests.read.closed.by.dpo')}
+          secondaryText={
+            t(
+              'citizen:requests.read.closed.subtitle',
+              {
+                status: t(`common:databox.dpoComment.${databox.dpoComment}`),
+                duration: durationOfTheRequest,
+              },
+            )
+          }
+          secondary={secondaryDpoHasAnswered}
+          primary={primaryDpoHasAnswered}
+        />
+      )}
     </div>
   );
 };
@@ -379,13 +348,12 @@ CurrentDatabox.propTypes = {
   t: PropTypes.func.isRequired,
   application: PropTypes.shape(ApplicationSchema.propTypes),
   databox: PropTypes.shape(DataboxSchema.propTypes),
-  onContributionDpoEmailClick: PropTypes.func.isRequired,
   initCrypto: PropTypes.func.isRequired,
 
   // CONNECT
   isAuthenticated: PropTypes.bool,
   dispatchUpdateDatabox: PropTypes.func.isRequired,
-  dispatchContact: PropTypes.func.isRequired,
+  dispatchSetUrlAccessRequest: PropTypes.func.isRequired,
 };
 
 CurrentDatabox.defaultProps = {
@@ -399,15 +367,11 @@ const mapStateToProps = (state) => ({
   isAuthenticated: !!state.auth.token,
 });
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch, ownProps) => ({
   dispatchUpdateDatabox: (databoxId, changes) => dispatch(updateDatabox(databoxId, changes)),
-  dispatchContact: (databoxURL, mainDomain, search, history) => {
-    dispatch(contactDataboxURL(databoxURL, mainDomain));
-    const pathname = generatePath(
-      routes.citizen.application.contact.preview,
-      { mainDomain },
-    );
-    history.push({ pathname, search });
+  dispatchSetUrlAccessRequest: (id, url, search, history) => {
+    Promise.resolve(dispatch(setUrlAccessRequest(id, url)))
+      .then(() => history.replace({ pathname: ownProps.pathname, search }));
   },
 });
 

@@ -1,3 +1,4 @@
+import routes from 'routes';
 import { normalize } from 'normalizr';
 import DataboxByProducerSchema from 'store/schemas/Databox/ByProducer';
 import DataboxSchema from 'store/schemas/Databox';
@@ -7,6 +8,8 @@ import path from '@misakey/helpers/path';
 import mapValues from '@misakey/helpers/mapValues';
 import propOr from '@misakey/helpers/propOr';
 import isNil from '@misakey/helpers/isNil';
+import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
+import { IS_PLUGIN } from 'constants/plugin';
 
 // HELPERS
 const mergeEntitiesDataboxes = (state, { entities }) => merge(
@@ -87,6 +90,13 @@ export const setDataboxOwnerEmail = (id, ownerEmail) => (dispatch, getState) => 
   const nextOwner = { ...prevOwner, email: ownerEmail };
   const entities = [{ id, changes: { owner: nextOwner } }];
   return Promise.resolve(dispatch(updateEntities(entities, DataboxSchema)));
+};
+
+export const setUrlAccessRequest = (id, token) => (dispatch) => {
+  const href = IS_PLUGIN ? window.env.APP_URL : window.env.href;
+  const url = parseUrlFromLocation(`${routes.requests}#${token}`, href).href;
+  const entities = [{ id, changes: { urlAccess: url } }];
+  Promise.resolve(dispatch(updateEntities(entities, DataboxSchema)));
 };
 
 export const updateDatabox = (id, changes) => (dispatch) => {

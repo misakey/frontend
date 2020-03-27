@@ -6,15 +6,24 @@ import ApplicationSchema from 'store/schemas/Application';
 
 import isNil from '@misakey/helpers/isNil';
 
+import path from '@misakey/helpers/path';
+import prop from '@misakey/helpers/prop';
+
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { withRouter } from 'react-router-dom';
 
-import withApplication, { omitWithApplication } from 'components/smart/withApplication';
 import Button from '@material-ui/core/Button';
 import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import SearchApplicationsButtonEmpty from 'components/smart/Search/Applications/Button/Empty';
 
 import ArrowDropdownIcon from '@material-ui/icons/ArrowDropDown';
+import { denormalize } from 'normalizr';
+import { connect } from 'react-redux';
+
+const getMainDomain = (props) => {
+  const mainDomainProp = prop('mainDomain')(props);
+  return isNil(mainDomainProp) ? path(['match', 'params', 'mainDomain'])(props) : mainDomainProp;
+};
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -68,7 +77,7 @@ const SearchApplicationsButton = forwardRef(({ entity, disabled, ...rest }, ref)
       }}
       endIcon={EndIcon}
       disabled={disabled}
-      {...omitWithApplication(rest)}
+      {...rest}
     >
       {noEntity
         ? (
@@ -93,6 +102,16 @@ SearchApplicationsButton.defaultProps = {
   disabled: false,
 };
 
-export default withRouter(
-  withApplication(SearchApplicationsButton),
-);
+// CONNECT
+const mapStateToProps = (state, ownProps) => {
+  const mainDomain = getMainDomain(ownProps);
+  return {
+    entity: denormalize(
+      mainDomain,
+      ApplicationSchema.entity,
+      state.entities,
+    ),
+  };
+};
+
+export default withRouter(connect(mapStateToProps)(SearchApplicationsButton));

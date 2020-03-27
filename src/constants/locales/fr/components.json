@@ -143,6 +143,10 @@
       }
     }
   },
+  "passwordPrompt": {
+    "title": "Ouvrir mon coffre-fort",
+    "description": "Pour cette action, je dois saisir mon mot de passe"
+  },
   "route": {
     "service": {
       "claim": {

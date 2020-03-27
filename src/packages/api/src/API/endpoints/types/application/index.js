@@ -58,6 +58,11 @@ export default {
       path: '/databoxes',
       auth: true,
     },
+    read: {
+      method: 'GET',
+      path: '/databoxes/:id',
+      auth: true,
+    },
     requestAccess: {
       method: 'GET',
       path: '/databoxes/:id/access-request',
@@ -71,7 +76,16 @@ export default {
       path: '/databoxes',
       auth: true,
     },
-
+    update: {
+      method: 'PATCH',
+      path: '/databoxes/:id',
+      auth: true,
+    },
+    delete: {
+      method: 'DELETE',
+      path: '/databoxes/:id',
+      auth: true,
+    },
     blob: {
       find: {
         method: 'GET',

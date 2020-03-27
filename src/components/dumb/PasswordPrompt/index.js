@@ -42,11 +42,11 @@ function PasswordPrompt({ onClose, onSubmit, firstAttempt, t, open }) {
         {({ isValid }) => (
           <Form>
             <DialogTitle id="alert-dialog-title">
-              {t('citizen:application.info.vault.passwordPrompt.title')}
+              {t('components:passwordPrompt.title')}
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                {t('citizen:application.info.vault.passwordPrompt.description')}
+                {t('components:passwordPrompt.description')}
               </DialogContentText>
               <Field
                 name="password"

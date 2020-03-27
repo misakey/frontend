@@ -15,6 +15,7 @@ const DataboxSchema = {
     producerId: PropTypes.string.isRequired,
     createdAt: PropTypes.string.isRequired,
     updatedAt: PropTypes.string.isRequired,
+    sentAt: PropTypes.string,
     status: PropTypes.oneOf(DATABOX_STATUSES),
     dpoComment: PropTypes.string,
     ownerComment: PropTypes.string,

@@ -3,43 +3,29 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { denormalize } from 'normalizr';
 import { withTranslation } from 'react-i18next';
-import { Link, useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 
 import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD } from '@misakey/ui/constants/sizes';
-import { SUGGESTED_TYPE, LINKED_TYPE } from 'constants/search/application/type';
 
 import { searchApplications } from 'store/actions/search';
 import ApplicationSchema from 'store/schemas/Application';
 
 import isNil from '@misakey/helpers/isNil';
+import getNextSearch from '@misakey/helpers/getNextSearch';
+import debounce from '@misakey/helpers/debounce';
 import isArray from '@misakey/helpers/isArray';
 import isObject from '@misakey/helpers/isObject';
-import isEmpty from '@misakey/helpers/isEmpty';
-import debounce from '@misakey/helpers/debounce';
-import eventPreventDefault from '@misakey/helpers/event/preventDefault';
-import getNextSearch from '@misakey/helpers/getNextSearch';
 
-import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import useSearchApplications from '@misakey/hooks/useSearchApplications';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-
-import Box from '@material-ui/core/Box';
-import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Popover from '@material-ui/core/Popover';
-import List from '@material-ui/core/List';
-import IconButton from '@material-ui/core/IconButton';
-import ApplicationListItemNotFound from 'components/dumb/ListItem/Application/NotFound';
-import Option from 'components/smart/Search/Applications/Popover/Option';
-import PopoverListSubheader from 'components/smart/Search/Applications/Popover/ListSubheader';
-
-import ClearIcon from '@material-ui/icons/Clear';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import SearchIcon from '@material-ui/icons/Search';
+import PopoverApplicationsList from 'components/smart/Search/Applications/Popover/Steps/ApplicationsList';
+import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
+import useSearchApplications from '@misakey/hooks/useSearchApplications';
+import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
+import { WORKSPACE } from 'constants/workspaces';
 
 const ANCHOR_ORIGIN = {
   vertical: 'bottom',
@@ -73,30 +59,20 @@ const useStyles = makeStyles((theme) => ({
       width: SEARCH_WIDTH_LG,
     },
   }),
-  inputLabelShrink: {
-    transform: 'translate(12px, 4px) scale(0.75) !important',
-  },
-  searchBoxRoot: {
-    position: 'sticky',
-    top: 0,
-    zIndex: 2,
-    backgroundColor: theme.palette.background.paper,
-  },
-  listRoot: {
-    backgroundColor: theme.palette.background.paper,
-  },
-  listSubheaderRoot: {
-    top: theme.spacing(6),
-    textTransform: 'uppercase',
-    zIndex: 2,
-  },
 }));
 
-// added this because there were weird errors with list containing undefined values
+const STEPS = {
+  APPLICATIONS_LIST: 'applications_list',
+  REQUEST_CREATION: 'request_creation',
+};
+
+
+// @FIXME added this because there were weird errors with list containing undefined values
 const useCleanList = (list) => useMemo(
   () => (isArray(list) ? list.filter(isObject) : []),
   [list],
 );
+
 
 // COMPONENTS
 const SearchApplicationsPopover = ({
@@ -104,14 +80,14 @@ const SearchApplicationsPopover = ({
   anchorEl,
   anchorOrigin,
   onClose,
-  suggested,
-  linked,
-  isAuthenticated,
   dispatchReceive,
-  t,
+  isAuthenticated,
   transformOrigin,
   noTopMargin,
+  suggested,
+  linked,
 }) => {
+  const [step, setStep] = useState(STEPS.APPLICATIONS_LIST);
   const [loading, setLoading] = useState(false);
 
   const theme = useTheme();
@@ -119,18 +95,11 @@ const SearchApplicationsPopover = ({
 
   const classes = useStyles({ noTopMargin });
 
-  const { search: locationSearch, pathname } = useLocation();
-  const { replace } = useHistory();
-  const { search } = useLocationSearchParams();
-  const searchValue = useMemo(
-    () => search || '',
-    [search],
-  );
+  const { search: locationSearch } = useLocation();
+  const { search = '' } = useLocationSearchParams();
 
-  const clearedSearchTo = useMemo(
-    () => ({ pathname, search: getNextSearch(locationSearch, new Map([['search', '']])) }),
-    [pathname, locationSearch],
-  );
+  const { replace } = useHistory();
+  const workspace = useLocationWorkspace();
 
   const popoverDefaultProps = useMemo(
     () => (isFull
@@ -157,15 +126,6 @@ const SearchApplicationsPopover = ({
     [anchorEl],
   );
 
-  const listLoading = useMemo(
-    () => loading || isNil(suggested) || isNil(linked),
-    [loading, suggested, linked],
-  );
-
-  const suggestedOptions = useCleanList(suggested);
-
-  const linkedOptions = useCleanList(linked);
-
   const updateRouter = useCallback(
     (value) => {
       const nextSearch = getNextSearch(locationSearch, new Map([['search', value]]));
@@ -178,70 +138,17 @@ const SearchApplicationsPopover = ({
     () => {
       updateRouter(undefined);
       onClose();
+      setStep(STEPS.APPLICATIONS_LIST);
     },
     [updateRouter, onClose],
   );
 
-  const startAdornment = useMemo(
-    () => (
-      <InputAdornment
-        position="start"
-      >
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label={t('common:back')}
-          onClick={onSearchClose}
-        >
-          <ArrowBackIcon />
-        </IconButton>
-      </InputAdornment>
-    ),
-    [onSearchClose, t],
-  );
-
-  const onMouseDown = useCallback(
-    (event) => {
-      eventPreventDefault(event);
-    },
-    [],
-  );
-
-  const isEmptySearch = useMemo(
-    () => isEmpty(search),
-    [search],
-  );
-
-  const endAdornment = useMemo(
-    () => {
-      const endAdornmentProps = isEmptySearch
-        ? {}
-        : {
-          component: Link,
-          replace: true,
-          to: clearedSearchTo,
-        };
-      return (
-        <InputAdornment
-          position="end"
-          classes={{ root: classes.inputAdornmentRoot }}
-        >
-          {loading ? <CircularProgress color="inherit" size={20} /> : (
-            <IconButton
-              edge="end"
-              color="inherit"
-              aria-label={t('common:search')}
-              onMouseDown={onMouseDown}
-              {...endAdornmentProps}
-            >
-              {isEmptySearch ? <SearchIcon /> : <ClearIcon />}
-            </IconButton>
-          )}
-        </InputAdornment>
-      );
-    },
-    [isEmptySearch, clearedSearchTo, classes.inputAdornmentRoot, loading, t, onMouseDown],
-  );
+  const onSelect = useCallback(() => () => {
+    if (workspace !== WORKSPACE.CITIZEN) {
+      onClose();
+    }
+  },
+  [onClose, workspace]);
 
   const getApplications = useSearchApplications();
 
@@ -257,11 +164,9 @@ const SearchApplicationsPopover = ({
     [dispatchReceive, getApplications, setLoading],
   );
 
-  const onChange = useCallback((event) => {
-    const nextSearch = event.target.value;
-    updateRouter(nextSearch);
-  },
-  [updateRouter]);
+  const suggestedOptions = useCleanList(suggested);
+
+  const linkedOptions = useCleanList(linked);
 
   // update options anytime search or isAuthenticated change if popover is open
   // be careful not to use `useFetchEffect` as search can change more quickly than callback delay
@@ -278,10 +183,10 @@ const SearchApplicationsPopover = ({
   useEffect(
     () => {
       if (isNil(search) && open) {
-        updateRouter(searchValue);
+        updateRouter(search);
       }
     },
-    [open, search, searchValue, updateRouter],
+    [open, search, updateRouter],
   );
 
   return (
@@ -293,60 +198,21 @@ const SearchApplicationsPopover = ({
       classes={{ paper: classes.popoverPaper }}
       {...popoverProps}
     >
-      <Box>
-        <Box px={1.5} py={1} classes={{ root: classes.searchBoxRoot }}>
-          <TextField
-            autoFocus
-            fullWidth
-            placeholder={t('common:search')}
-            onChange={onChange}
-            value={searchValue}
-            InputProps={{
-              startAdornment,
-              endAdornment,
-              disableUnderline: true,
-            }}
-            InputLabelProps={{
-              classes: { shrink: classes.inputLabelShrink },
-              disableAnimation: true,
-            }}
-          />
-        </Box>
-        <List disablePadding classes={{ root: classes.listRoot }}>
-          {!isEmpty(linkedOptions) && (
-            <PopoverListSubheader
-              classes={{ root: classes.listSubheaderRoot }}
-              type={LINKED_TYPE}
-            />
-          )}
-          {linkedOptions.map((option) => (
-            <Option
-              key={option.mainDomain}
-              application={option}
-              disabled={listLoading}
-              onClick={onClose}
-              withBlobCount
-            />
-          ))}
-          <PopoverListSubheader
-            classes={{ root: classes.listSubheaderRoot }}
-            type={SUGGESTED_TYPE}
-          />
-          {suggestedOptions.map((option) => (
-            <Option
-              key={option.mainDomain}
-              application={option}
-              disabled={listLoading}
-              onClick={onClose}
-            />
-          ))}
-          <ApplicationListItemNotFound
-            disabled={listLoading}
-            searchValue={searchValue}
-            onClick={onClose}
-          />
-        </List>
-      </Box>
+      {step === STEPS.APPLICATIONS_LIST && (
+        <PopoverApplicationsList
+          open={open}
+          onClose={onClose}
+          onSelect={onSelect}
+          onSearchClose={onSearchClose}
+          updateRouter={updateRouter}
+          suggested={suggested}
+          linked={linked}
+          loading={loading}
+          search={search}
+          suggestedOptions={suggestedOptions}
+          linkedOptions={linkedOptions}
+        />
+      )}
     </Popover>
   );
 };
@@ -355,27 +221,32 @@ SearchApplicationsPopover.propTypes = {
   id: PropTypes.string,
   anchorEl: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   onClose: PropTypes.func.isRequired,
-  anchorOrigin: PropTypes.string,
-  transformOrigin: PropTypes.string,
+  anchorOrigin: PropTypes.shape({
+    vertical: PropTypes.string,
+    horizontal: PropTypes.string,
+  }),
+  transformOrigin: PropTypes.shape({
+    vertical: PropTypes.string,
+    horizontal: PropTypes.string,
+  }),
   noTopMargin: PropTypes.bool,
+  t: PropTypes.func.isRequired,
   // CONNECT
   suggested: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
   linked: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
   isAuthenticated: PropTypes.bool,
   dispatchReceive: PropTypes.func.isRequired,
-
-  t: PropTypes.func.isRequired,
 };
 
 SearchApplicationsPopover.defaultProps = {
   id: null,
   anchorEl: null,
-  suggested: null,
-  linked: null,
-  isAuthenticated: false,
   anchorOrigin: ANCHOR_ORIGIN,
   transformOrigin: TRANSFORM_ORIGIN,
   noTopMargin: false,
+  suggested: null,
+  linked: null,
+  isAuthenticated: false,
 };
 
 // CONNECT

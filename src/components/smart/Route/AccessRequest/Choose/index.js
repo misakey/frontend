@@ -10,9 +10,8 @@ import ApplicationSchema from 'store/schemas/Application';
 import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
 import Title from 'components/dumb/Typography/Title';
 import ScreenAction from 'components/dumb/Screen/Action';
-import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import Card from 'components/dumb/Card';
-import BoxEllipsis from 'components/dumb/Box/Ellipsis';
+import BoxEllipsisApplication from 'components/dumb/Box/Ellipsis/Application';
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import ListQuestions, { useQuestionsItems } from 'components/dumb/List/Questions';
 
@@ -43,11 +42,6 @@ const useStyles = makeStyles(() => ({
   card: {
     height: '100%',
   },
-  avatarParent: {
-    position: 'absolute',
-    left: '50%',
-    transform: 'translateX(-50%)',
-  },
 }));
 
 // COMPONENTS
@@ -65,13 +59,9 @@ const AccessRequestChoose = ({
   const appBarProps = useMemo(
     () => ({
       withUser: false,
-      items: [(
-        <BoxEllipsis className={classes.avatarParent} key="applicationAvatarParent">
-          <ApplicationAvatar application={producer} />
-        </BoxEllipsis>
-      )],
+      items: [<BoxEllipsisApplication application={producer} key="applicationAvatar" />],
     }),
-    [classes.avatarParent, producer],
+    [producer],
   );
 
   const state = useMemo(

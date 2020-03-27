@@ -1,12 +1,8 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 
-import routes from 'routes';
-
-import { ROLE_LABELS } from 'constants/Roles';
 import ApplicationSchema from 'store/schemas/Application';
 
 import { bulkSelectionToggleSelected } from 'store/actions/bulkSelection';
@@ -24,11 +20,12 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import Chip from '@material-ui/core/Chip';
-import LinkwithDialogConnect from 'components/smart/Dialog/Connect/with/Link';
+import IconButtonWithRequestCreation from 'components/smart/Requests/New/with/IconButton';
 import Badge from '@material-ui/core/Badge';
 
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
+import { WORKSPACE } from 'constants/workspaces';
 
 const useStyles = makeStyles(() => ({
   option: {
@@ -51,19 +48,11 @@ function ApplicationListItem({
   const classes = useStyles();
   const workspace = useLocationWorkspace(true);
 
-  const { mainDomain, logoUri, name, dpoEmail, blobCount = 0, published } = application;
+  const { id, mainDomain, logoUri, dpoEmail, name, blobCount = 0, published } = application;
 
-  const canSelect = useMemo(
-    () => workspace === ROLE_LABELS.CITIZEN && (!isEmpty(dpoEmail) || !isAuthenticated),
+  const displayQuickContact = useMemo(
+    () => workspace === WORKSPACE.CITIZEN && (!isEmpty(dpoEmail) || !isAuthenticated),
     [dpoEmail, isAuthenticated, workspace],
-  );
-
-  const contactTo = useMemo(
-    () => generatePath(
-      routes.citizen.application.contact._,
-      { mainDomain: application.mainDomain },
-    ),
-    [application],
   );
 
   const secondaryText = useMemo(
@@ -105,18 +94,18 @@ function ApplicationListItem({
       {(withBlobCount && blobCount > 0) && (
         <Chip color="secondary" label={blobCount} size="small" clickable />
       )}
-      {/* @FIXME: when refacto the bulk contact, mayebe those namings are not relevant anymore */}
-      {!withBlobCount && isSelectable && canSelect && (
+      {/* @FIXME: when refacto the bulk contact, maybe those namings are not relevant anymore */}
+      {!withBlobCount && isSelectable && displayQuickContact && (
         <ListItemSecondaryAction>
-          <IconButton
+          <IconButtonWithRequestCreation
             color="secondary"
             edge="end"
             aria-label={t('common:send')}
-            component={LinkwithDialogConnect}
-            to={contactTo}
+            component={IconButton}
+            producerId={id}
           >
             <MailOutlineIcon />
-          </IconButton>
+          </IconButtonWithRequestCreation>
         </ListItemSecondaryAction>
       )}
     </ListItem>

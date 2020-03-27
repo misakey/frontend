@@ -3,48 +3,61 @@ import PropTypes from 'prop-types';
 import { generatePath, Link } from 'react-router-dom';
 
 import routes from 'routes';
-import { ROLE_LABELS } from 'constants/Roles';
 import ApplicationSchema from 'store/schemas/Application';
 
 import isNil from '@misakey/helpers/isNil';
 
 import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 
-
 import ApplicationListItem from 'components/dumb/ListItem/Application';
+import { PORTABILITY } from 'constants/databox/type';
+import withRequestCreation from 'components/smart/Requests/New/with';
+import { WORKSPACE } from 'constants/workspaces';
+
+const ApplicationListItemWithRequestCreation = withRequestCreation(ApplicationListItem);
 
 const Option = ({ application, ...rest }) => {
-  const role = useLocationWorkspace();
+  const workspace = useLocationWorkspace();
 
   const mainDomain = useMemo(
     () => application.mainDomain,
     [application.mainDomain],
   );
 
-  const itemLinkTo = useMemo(
+  const propsSimpleSearch = useMemo(
     () => {
-      if (isNil(mainDomain)) {
-        return null;
+      if (workspace === WORKSPACE.DPO || workspace === WORKSPACE.ADMIN) {
+        if (isNil(mainDomain)) {
+          return {};
+        }
+        return {
+          to: generatePath(routes[workspace].service._, { mainDomain }),
+          component: Link,
+        };
       }
-      // This default route is going to change with https://gitlab.misakey.dev/misakey/frontend/issues/484
-      let linkTo = routes.citizen.application.vault;
-      if (role === ROLE_LABELS.DPO) {
-        linkTo = routes.dpo.service._;
-      } else if (role === ROLE_LABELS.ADMIN) {
-        linkTo = routes.admin.service._;
-      }
-      return generatePath(linkTo, { mainDomain });
+      return {};
     },
-    [mainDomain, role],
+    [mainDomain, workspace],
   );
+
+  if (workspace === WORKSPACE.CITIZEN) {
+    return (
+      <ApplicationListItemWithRequestCreation
+        button
+        application={application}
+        producerId={application.id}
+        type={PORTABILITY}
+        {...rest}
+      />
+    );
+  }
 
   return (
     <ApplicationListItem
       button
-      component={Link}
-      to={itemLinkTo}
       application={application}
       {...rest}
+      {...propsSimpleSearch}
     />
   );
 };
@@ -52,6 +65,7 @@ const Option = ({ application, ...rest }) => {
 Option.propTypes = {
   application: PropTypes.shape({
     ...ApplicationSchema.propTypes,
+    id: PropTypes.string,
     mainDomain: PropTypes.string,
   }).isRequired,
 };

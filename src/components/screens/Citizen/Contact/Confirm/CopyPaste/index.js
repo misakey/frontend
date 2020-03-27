@@ -7,6 +7,9 @@ import { Link } from 'react-router-dom';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
+import isNil from '@misakey/helpers/isNil';
+import isFunction from '@misakey/helpers/isFunction';
+
 import Box from '@material-ui/core/Box';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -28,19 +31,28 @@ const ContactConfirmCopyPaste = ({
   subject,
   body,
   doneTo,
+  onDone,
   t,
 }) => {
   const theme = useTheme();
   const isXsLayout = useMediaQuery(theme.breakpoints.only('xs'));
 
   const primary = useMemo(
-    () => ({
-      component: Link,
-      to: doneTo,
-      text: t('citizen:contact.confirmation.copyPaste.confirm.button'),
-      replace: true,
-    }),
-    [doneTo, t],
+    () => {
+      const linkProps = !isNil(doneTo) ? {
+        component: Link,
+        to: doneTo,
+        replace: true,
+      } : {};
+      const onClickProps = isFunction(onDone) ? { onClick: onDone } : {};
+
+      return {
+        text: t('citizen:contact.confirmation.copyPaste.confirm.button'),
+        ...linkProps,
+        ...onClickProps,
+      };
+    },
+    [doneTo, onDone, t],
   );
 
   const mode = useMemo(
@@ -135,7 +147,8 @@ ContactConfirmCopyPaste.propTypes = {
   mailto: PropTypes.string,
   subject: PropTypes.string,
   body: PropTypes.string,
-  doneTo: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  doneTo: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  onDone: PropTypes.func,
   // withTranslation
   t: PropTypes.func.isRequired,
   // CONNECT
@@ -150,6 +163,8 @@ ContactConfirmCopyPaste.defaultProps = {
   mailto: null,
   subject: null,
   body: null,
+  doneTo: null,
+  onDone: null,
 };
 
 

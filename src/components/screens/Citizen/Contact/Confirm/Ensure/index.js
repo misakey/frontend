@@ -5,6 +5,8 @@ import { withTranslation } from 'react-i18next';
 import { useLocation, Link } from 'react-router-dom';
 
 import getNextSearch from '@misakey/helpers/getNextSearch';
+import isNil from '@misakey/helpers/isNil';
+import isFunction from '@misakey/helpers/isFunction';
 
 import Box from '@material-ui/core/Box';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -17,17 +19,26 @@ import { STEP as CP_STEP } from 'components/screens/Citizen/Contact/Confirm/Copy
 // CONSTANTS
 export const STEP = 'ensure';
 
-const ContactConfirmEnsure = ({ searchKey, contactEmail, profile, doneTo, t }) => {
+const ContactConfirmEnsure = ({ searchKey, contactEmail, profile, doneTo, onDone, t }) => {
   const { pathname, search } = useLocation();
 
+  // @FIXME factorize the bahavior with ContactConfirmCopyPaste
   const primary = useMemo(
-    () => ({
-      component: Link,
-      to: doneTo,
-      text: t('common:confirm'),
-      replace: true,
-    }),
-    [doneTo, t],
+    () => {
+      const linkProps = !isNil(doneTo) ? {
+        component: Link,
+        to: doneTo,
+        replace: true,
+      } : {};
+      const onClickProps = isFunction(onDone) ? { onClick: onDone } : {};
+
+      return {
+        text: t('common:confirm'),
+        ...linkProps,
+        ...onClickProps,
+      };
+    },
+    [doneTo, onDone, t],
   );
 
   const secondary = useMemo(
@@ -71,7 +82,8 @@ const ContactConfirmEnsure = ({ searchKey, contactEmail, profile, doneTo, t }) =
 ContactConfirmEnsure.propTypes = {
   searchKey: PropTypes.string.isRequired,
   contactEmail: PropTypes.string.isRequired,
-  doneTo: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  doneTo: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  onDone: PropTypes.func,
   // withTranslation
   t: PropTypes.func.isRequired,
   // CONNECT
@@ -83,6 +95,8 @@ ContactConfirmEnsure.propTypes = {
 
 ContactConfirmEnsure.defaultProps = {
   profile: {},
+  onDone: null,
+  doneTo: null,
 };
 
 
