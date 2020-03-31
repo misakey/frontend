@@ -174,6 +174,7 @@ function Auth({ dispatch, from, isAuthenticated, currentAcr, location, match, ss
   return (
     <Screen
       hideAppBar
+      hideFooter
       state={state}
       className={classes.screen}
       disableGrow

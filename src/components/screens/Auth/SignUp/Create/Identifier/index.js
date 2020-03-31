@@ -12,7 +12,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 // import MUILink from '@material-ui/core/Link';
 // import Typography from '@material-ui/core/Typography';
 // import Box from '@material-ui/core/Box';
-import Card from 'components/dumb/Card';
+import CardAuth from 'components/dumb/Card/Auth';
 import CardHeaderAuthSignUp from 'components/smart/Card/Auth/Header/SignUp';
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import ButtonGoBackTo from 'components/dumb/Button/GoBack/To';
@@ -98,7 +98,7 @@ const AuthSignUpCreateIdentifier = ({
   );
 
   return (
-    <Card
+    <CardAuth
       className={classes.cardRoot}
       padded={padded}
       primary={primary}
@@ -132,7 +132,7 @@ const AuthSignUpCreateIdentifier = ({
           </MUILink>
         </Typography>
       </Box> */}
-    </Card>
+    </CardAuth>
   );
 };
 

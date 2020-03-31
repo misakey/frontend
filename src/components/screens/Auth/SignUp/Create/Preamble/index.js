@@ -16,7 +16,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import Card from 'components/dumb/Card';
+import CardAuth from 'components/dumb/Card/Auth';
 import CardHeaderAuthSignUp from 'components/smart/Card/Auth/Header/SignUp';
 import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
 import ButtonGoBackTo from 'components/dumb/Button/GoBack/To';
@@ -127,7 +127,7 @@ const AuthSignUpPreamble = ({
   );
 
   return (
-    <Card
+    <CardAuth
       className={classes.cardRoot}
       title={t('auth:signUp.create.preamble.title')}
       titleProps={titleProps}
@@ -211,7 +211,7 @@ const AuthSignUpPreamble = ({
           </ListItemSecondaryAction>
         </ListItem>
       </List>
-    </Card>
+    </CardAuth>
   );
 };
 

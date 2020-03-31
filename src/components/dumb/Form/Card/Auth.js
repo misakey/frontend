@@ -2,37 +2,26 @@ import React from 'react';
 import { Form } from 'formik';
 import PropTypes from 'prop-types';
 
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import Card from 'components/dumb/Card';
-
-const useStyles = makeStyles(() => ({
-  card: {
-    maxWidth: 500,
-  },
-}));
-
+import CardAuth from 'components/dumb/Card/Auth';
 
 const FormCardAuth = ({
   children, primary, secondary, subtitle, title,
   subtitleProps, titleProps,
   ...rest
 }) => {
-  const classes = useStyles();
-
   const theme = useTheme();
   const padded = useMediaQuery(theme.breakpoints.up('sm'));
 
   return (
     <Form>
-      <Card
+      <CardAuth
         title={title}
         subtitle={subtitle}
         primary={primary}
         secondary={secondary}
-        className={classes.card}
         subtitleProps={subtitleProps}
         titleProps={titleProps}
         padded={padded}
@@ -40,7 +29,7 @@ const FormCardAuth = ({
         {...rest}
       >
         {children}
-      </Card>
+      </CardAuth>
     </Form>
   );
 };

@@ -10,7 +10,7 @@ import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import Card from 'components/dumb/Card';
+import CardAuth from 'components/dumb/Card/Auth';
 import CardHeaderAuthSignUp from 'components/smart/Card/Auth/Header/SignUp';
 import ButtonGoBackTo from 'components/dumb/Button/GoBack/To';
 import ChipUser from 'components/dumb/Chip/User';
@@ -73,7 +73,7 @@ const AuthSignUpCreateNotifications = ({
   );
 
   return (
-    <Card
+    <CardAuth
       className={classes.cardRoot}
       padded={padded}
       secondary={<ButtonGoBackTo to={parentTo} />}
@@ -100,7 +100,7 @@ const AuthSignUpCreateNotifications = ({
           />
         )}
       </Field>
-    </Card>
+    </CardAuth>
   );
 };
 

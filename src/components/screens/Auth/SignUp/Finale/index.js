@@ -21,7 +21,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 // import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 // import MUILink from '@material-ui/core/Link';
-import Card from 'components/dumb/Card';
+import CardAuth from 'components/dumb/Card/Auth';
 import CardHeaderAuthSignUp from 'components/smart/Card/Auth/Header/SignUp';
 
 // CONSTANTS
@@ -149,7 +149,7 @@ const AuthSignUpFinale = ({
   }
 
   return (
-    <Card
+    <CardAuth
       className={classes.cardRoot}
       padded={padded}
       primary={primary}
@@ -176,7 +176,7 @@ const AuthSignUpFinale = ({
           </MUILink>
         </Typography>
       </Box> */}
-    </Card>
+    </CardAuth>
   );
 };
 

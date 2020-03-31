@@ -61,25 +61,30 @@
     }
   },
   "footer": {
+    "title": "A propos de",
     "links": {
       "privacy": {
-        "text": "Confidentialité",
+        "text": "Politique de confidentialité",
         "href": "https://docs.misakey.com/#/legals/privacy-policy/"
       },
       "tos": {
-        "text": "Conditions d'utilisation",
+        "text": "Conditions générales d'utilisation",
         "href": "https://docs.misakey.com/#/legals/tos/"
       },
       "sources": {
-        "text": "Code source",
+        "text": "Code source de l'application",
         "href": "https://gitlab.com/Misakey"
       },
       "about": {
         "text": "À propos",
         "href": "https://docs.misakey.com/"
       },
+      "blog": {
+        "text": "Blog",
+        "href": "https://blog.misakey.com"
+      },
       "feedback": {
-        "text": "Quelque chose à nous dire\u00a0?"
+        "text": "Nous contacter"
       }
     }
   },

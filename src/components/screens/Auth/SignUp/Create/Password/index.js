@@ -12,7 +12,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 // import MUILink from '@material-ui/core/Link';
 // import Typography from '@material-ui/core/Typography';
 // import Box from '@material-ui/core/Box';
-import Card from 'components/dumb/Card';
+import CardAuth from 'components/dumb/Card/Auth';
 import CardHeaderAuthSignUp from 'components/smart/Card/Auth/Header/SignUp';
 import ButtonGoBackTo from 'components/dumb/Button/GoBack/To';
 import FormFields from '@misakey/ui/Form/Fields';
@@ -91,7 +91,7 @@ const AuthSignUpCreatePassword = ({
   );
 
   return (
-    <Card
+    <CardAuth
       className={classes.cardRoot}
       padded={padded}
       primary={primary}
@@ -126,7 +126,7 @@ const AuthSignUpCreatePassword = ({
           </MUILink>
         </Typography>
       </Box> */}
-    </Card>
+    </CardAuth>
   );
 };
 

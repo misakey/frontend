@@ -147,6 +147,10 @@ const useScreenStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
   }),
+  footer: {
+    borderLeft: 'none',
+    borderRight: 'none',
+  },
 }));
 
 /**
@@ -166,10 +170,12 @@ function updateHead(title, description) {
 
 function Screen({
   appBarProps,
+  footerProps,
   children,
   className,
   description,
   hideAppBar,
+  hideFooter,
   preventSplashScreen,
   splashScreen,
   state,
@@ -209,6 +215,19 @@ function Screen({
 
   const classes = useScreenStyles({ hideAppBar: hideAppBarExError, disableGrow });
 
+  const footerPropsWithContainerProps = useMemo(
+    () => ({
+      containerProps: {
+        maxWidth: 'md',
+      },
+      className: classes.footer,
+      square: true,
+      ...footerProps,
+    }),
+    [classes.footer, footerProps],
+  );
+
+
   const isLoading = useMemo(
     () => state.isLoading || state.isFetching,
     [state.isLoading, state.isFetching],
@@ -245,7 +264,11 @@ function Screen({
             {children}
           </div>
         </StateWrapper>
-        { !IS_PLUGIN && (<Footer />) }
+        { !hideFooter && (
+          <Box mt={2}>
+            <Footer ContainerComponent={Container} {...footerPropsWithContainerProps} />
+          </Box>
+        ) }
       </Box>
     </>
   );
@@ -260,10 +283,12 @@ export const SCREEN_STATE_PROPTYPES = PropTypes.shape({
 
 Screen.propTypes = {
   appBarProps: PropTypes.objectOf(PropTypes.any),
+  footerProps: PropTypes.object,
   children: PropTypes.node,
   className: PropTypes.string,
   description: PropTypes.string,
   hideAppBar: PropTypes.bool,
+  hideFooter: PropTypes.bool,
   preventSplashScreen: PropTypes.bool,
   splashScreen: PropTypes.node,
   state: SCREEN_STATE_PROPTYPES,
@@ -273,10 +298,12 @@ Screen.propTypes = {
 
 Screen.defaultProps = {
   appBarProps: { items: [] },
+  footerProps: {},
   children: null,
   className: '',
   description: '',
   hideAppBar: false,
+  hideFooter: IS_PLUGIN,
   preventSplashScreen: false,
   splashScreen: null,
   state: {},

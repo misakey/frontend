@@ -14,6 +14,9 @@ import { IS_PLUGIN } from 'constants/plugin';
 const POPOVER_PROPS = {
   fixedHeight: true,
 };
+const FOOTER_PROPS = {
+  FABPadded: true,
+};
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -29,7 +32,7 @@ const CitizenHome = () => {
   const classes = useStyles();
 
   return (
-    <Screen>
+    <Screen footerProps={FOOTER_PROPS}>
       <Container maxWidth="md" className={classes.container}>
         <Box>
           <LinkedApplicationsList />

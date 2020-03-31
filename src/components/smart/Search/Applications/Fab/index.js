@@ -11,19 +11,24 @@ import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import Tooltip from '@material-ui/core/Tooltip';
 
-const AuthRequiredFab = withDialogConnect(Fab);
+// CONSTANTS
+export const FAB_WIDTH = 56;
+export const FAB_BOTTOM = 4;
+export const FAB_RIGHT = 4;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'fixed',
-    bottom: theme.spacing(4),
-    right: theme.spacing(4),
+    bottom: theme.spacing(FAB_BOTTOM),
+    right: theme.spacing(FAB_RIGHT),
     zIndex: 1,
   },
 }));
 
 // COMPONENTS
+const AuthRequiredFab = withDialogConnect(Fab);
+
 const SearchApplicationsFab = ({ t, ...props }) => {
   const classes = useStyles();
 
