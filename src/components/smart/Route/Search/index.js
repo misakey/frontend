@@ -1,23 +1,12 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Route, useLocation } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
-import getSearchParams from '@misakey/helpers/getSearchParams';
-import whereEq from '@misakey/helpers/whereEq';
+import useSearchMatch from 'hooks/useSearchMatch';
 
 // COMPONENTS
 const RouteSearch = ({ route: RouteComponent, searchParams, ...rest }) => {
-  const { search } = useLocation();
-
-  const locationSearchParams = useMemo(
-    () => getSearchParams(search),
-    [search],
-  );
-
-  const match = useMemo(
-    () => whereEq(searchParams, locationSearchParams),
-    [searchParams, locationSearchParams],
-  );
+  const match = useSearchMatch(searchParams);
 
   if (match) {
     return <RouteComponent {...rest} />;
@@ -27,7 +16,10 @@ const RouteSearch = ({ route: RouteComponent, searchParams, ...rest }) => {
 
 RouteSearch.propTypes = {
   route: PropTypes.elementType,
-  searchParams: PropTypes.objectOf(PropTypes.string),
+  searchParams: PropTypes.oneOfType([
+    PropTypes.objectOf(PropTypes.string),
+    PropTypes.arrayOf(PropTypes.string),
+  ]),
 };
 
 RouteSearch.defaultProps = {

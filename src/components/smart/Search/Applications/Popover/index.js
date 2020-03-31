@@ -3,30 +3,38 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { denormalize } from 'normalizr';
 import { withTranslation } from 'react-i18next';
-import { useLocation, useHistory } from 'react-router-dom';
 
 import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD } from '@misakey/ui/constants/sizes';
-
+import { WORKSPACE } from 'constants/workspaces';
+import STEPS_SEARCH_PARAMS, { SEARCH, REQUEST } from 'constants/search/application/params';
 import { searchApplications } from 'store/actions/search';
 import ApplicationSchema from 'store/schemas/Application';
 
 import isNil from '@misakey/helpers/isNil';
+import isArray from '@misakey/helpers/isArray';
+import compose from '@misakey/helpers/compose';
+import any from '@misakey/helpers/any';
+import props from '@misakey/helpers/props';
 import getNextSearch from '@misakey/helpers/getNextSearch';
 import debounce from '@misakey/helpers/debounce';
-import isArray from '@misakey/helpers/isArray';
-import isObject from '@misakey/helpers/isObject';
+import fromPairs from '@misakey/helpers/fromPairs';
+import getSearchParams from '@misakey/helpers/getSearchParams';
 
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Popover from '@material-ui/core/Popover';
-import PopoverApplicationsList from 'components/smart/Search/Applications/Popover/Steps/ApplicationsList';
+import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 import useSearchApplications from '@misakey/hooks/useSearchApplications';
-import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
-import { WORKSPACE } from 'constants/workspaces';
+import { useLocation, useHistory, useRouteMatch } from 'react-router-dom';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
+import RouteSearch from 'components/smart/Route/Search';
+import SwitchSearch from 'components/smart/Switch/Search';
+import Popover from '@material-ui/core/Popover';
+import SearchApplicationsPopoverList from 'components/smart/Search/Applications/Popover/List';
+import SearchApplicationsPopoverRequest from 'components/smart/Search/Applications/Popover/Request';
+
+// CONSTANTS
 const ANCHOR_ORIGIN = {
   vertical: 'bottom',
   horizontal: 'right',
@@ -37,10 +45,24 @@ const TRANSFORM_ORIGIN = {
   horizontal: 'right',
 };
 
+// HELPERS
+const isNotNil = (elem) => !isNil(elem);
+
+const hasStepsSearchParam = compose(
+  any(isNotNil),
+  props(STEPS_SEARCH_PARAMS),
+);
+
+const getCleanList = (list) => (isArray(list)
+  ? list.filter(isNotNil) // remove nil elements from list
+  : list);
+
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  popoverPaper: ({ noTopMargin }) => ({
-    marginTop: noTopMargin ? 0 : theme.spacing(2),
+  popoverPaper: ({ noTopMargin, fixedHeight }) => ({
+    marginTop: noTopMargin ? 0 : theme.spacing(1),
+    maxHeight: noTopMargin ? null : `calc(100% - 32px - ${theme.spacing(1)}px)`,
+    minHeight: fixedHeight ? `calc(100% - 32px - ${noTopMargin ? 0 : theme.spacing(1)}px)` : null,
     [theme.breakpoints.down('xs')]: {
       maxWidth: '100%',
       maxHeight: '100%',
@@ -61,19 +83,6 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-const STEPS = {
-  APPLICATIONS_LIST: 'applications_list',
-  REQUEST_CREATION: 'request_creation',
-};
-
-
-// @FIXME added this because there were weird errors with list containing undefined values
-const useCleanList = (list) => useMemo(
-  () => (isArray(list) ? list.filter(isObject) : []),
-  [list],
-);
-
-
 // COMPONENTS
 const SearchApplicationsPopover = ({
   id,
@@ -84,19 +93,32 @@ const SearchApplicationsPopover = ({
   isAuthenticated,
   transformOrigin,
   noTopMargin,
+  fixedHeight,
   suggested,
   linked,
 }) => {
-  const [step, setStep] = useState(STEPS.APPLICATIONS_LIST);
   const [loading, setLoading] = useState(false);
 
   const theme = useTheme();
   const isFull = useMediaQuery(theme.breakpoints.down('xs'));
 
-  const classes = useStyles({ noTopMargin });
+  const classes = useStyles({ noTopMargin, fixedHeight });
 
+  const { path } = useRouteMatch();
   const { search: locationSearch } = useLocation();
-  const { search = '' } = useLocationSearchParams();
+  const locationSearchParams = useLocationSearchParams();
+
+  const { search } = locationSearchParams;
+  const searchValue = useMemo(
+    () => search || '',
+    [search],
+  );
+
+  // popover is active once one of its steps is part of location search
+  const popoverActive = useMemo(
+    () => hasStepsSearchParam(locationSearchParams),
+    [locationSearchParams],
+  );
 
   const { replace } = useHistory();
   const workspace = useLocationWorkspace();
@@ -126,9 +148,24 @@ const SearchApplicationsPopover = ({
     [anchorEl],
   );
 
+  const searchParamsByStep = useMemo(
+    () => {
+      const searchParamPairs = STEPS_SEARCH_PARAMS
+        .map((value) => ([
+          value,
+          [value],
+        ]));
+      return fromPairs(searchParamPairs);
+    },
+    [],
+  );
+
   const updateRouter = useCallback(
     (value) => {
-      const nextSearch = getNextSearch(locationSearch, new Map([['search', value]]));
+      const nextSearch = getNextSearch(locationSearch, new Map([
+        [SEARCH, value],
+        [REQUEST, undefined],
+      ]));
       replace({ search: nextSearch });
     },
     [locationSearch, replace],
@@ -138,7 +175,6 @@ const SearchApplicationsPopover = ({
     () => {
       updateRouter(undefined);
       onClose();
-      setStep(STEPS.APPLICATIONS_LIST);
     },
     [updateRouter, onClose],
   );
@@ -164,10 +200,6 @@ const SearchApplicationsPopover = ({
     [dispatchReceive, getApplications, setLoading],
   );
 
-  const suggestedOptions = useCleanList(suggested);
-
-  const linkedOptions = useCleanList(linked);
-
   // update options anytime search or isAuthenticated change if popover is open
   // be careful not to use `useFetchEffect` as search can change more quickly than callback delay
   useEffect(
@@ -179,14 +211,14 @@ const SearchApplicationsPopover = ({
     [isAuthenticated, onGetOptions, open, search],
   );
 
-  // update router when popover opens
+  // update router when popover opens and no param is set
   useEffect(
     () => {
-      if (isNil(search) && open) {
-        updateRouter(search);
+      if (!popoverActive && open) {
+        updateRouter(searchValue);
       }
     },
-    [open, search, updateRouter],
+    [open, popoverActive, search, searchValue, updateRouter],
   );
 
   return (
@@ -198,21 +230,42 @@ const SearchApplicationsPopover = ({
       classes={{ paper: classes.popoverPaper }}
       {...popoverProps}
     >
-      {step === STEPS.APPLICATIONS_LIST && (
-        <PopoverApplicationsList
-          open={open}
-          onClose={onClose}
-          onSelect={onSelect}
-          onSearchClose={onSearchClose}
-          updateRouter={updateRouter}
-          suggested={suggested}
-          linked={linked}
-          loading={loading}
-          search={search}
-          suggestedOptions={suggestedOptions}
-          linkedOptions={linkedOptions}
+      <SwitchSearch>
+        <RouteSearch
+          path={path}
+          exact
+          searchParams={searchParamsByStep[REQUEST]}
+          render={({ location, ...rest }) => {
+            const { request } = getSearchParams(location.search);
+            return (
+              <SearchApplicationsPopoverRequest
+                mainDomain={request}
+                location={location}
+                {...rest}
+              />
+            );
+          }}
         />
-      )}
+        <RouteSearch
+          path={path}
+          exact
+          searchParams={searchParamsByStep[SEARCH]}
+          render={(routerProps) => (
+            <SearchApplicationsPopoverList
+              open={open}
+              onClose={onClose}
+              onSelect={onSelect}
+              onSearchClose={onSearchClose}
+              updateRouter={updateRouter}
+              suggested={suggested}
+              linked={linked}
+              loading={loading}
+              search={search}
+              {...routerProps}
+            />
+          )}
+        />
+      </SwitchSearch>
     </Popover>
   );
 };
@@ -229,6 +282,7 @@ SearchApplicationsPopover.propTypes = {
     vertical: PropTypes.string,
     horizontal: PropTypes.string,
   }),
+  fixedHeight: PropTypes.bool,
   noTopMargin: PropTypes.bool,
   t: PropTypes.func.isRequired,
   // CONNECT
@@ -243,6 +297,7 @@ SearchApplicationsPopover.defaultProps = {
   anchorEl: null,
   anchorOrigin: ANCHOR_ORIGIN,
   transformOrigin: TRANSFORM_ORIGIN,
+  fixedHeight: false,
   noTopMargin: false,
   suggested: null,
   linked: null,
@@ -251,16 +306,16 @@ SearchApplicationsPopover.defaultProps = {
 
 // CONNECT
 const mapStateToProps = (state) => ({
-  suggested: denormalize(
+  suggested: getCleanList(denormalize(
     state.search.suggestedIds,
     ApplicationSchema.collection,
     state.entities,
-  ),
-  linked: denormalize(
+  )),
+  linked: getCleanList(denormalize(
     state.search.linkedIds,
     ApplicationSchema.collection,
     state.entities,
-  ),
+  )),
   isAuthenticated: !!state.auth.token,
 });
 

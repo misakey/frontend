@@ -22,7 +22,7 @@ const useStyles = makeStyles(() => ({
 
 // COMPONENTS
 const withRequestCreation = (Component) => {
-  const Wrapper = ({ onClick, producerId, type, ...props }) => {
+  const Wrapper = ({ onClick, producerId, type, redirectProps, ...props }) => {
     const classes = useStyles();
     const [display, setDisplay] = useState(false);
 
@@ -42,6 +42,7 @@ const withRequestCreation = (Component) => {
             producerId={producerId}
             onCreateError={handleError}
             onCreateSuccess={handleSuccess}
+            {...redirectProps}
           />
         )}
         <Component
@@ -57,12 +58,14 @@ const withRequestCreation = (Component) => {
     producerId: PropTypes.string.isRequired,
     children: PropTypes.oneOfType([PropTypes.element, PropTypes.node]),
     type: PropTypes.string,
+    redirectProps: PropTypes.object,
   };
 
   Wrapper.defaultProps = {
     onClick: null,
     type: PORTABILITY,
     children: null,
+    redirectProps: {},
   };
 
   return Wrapper;

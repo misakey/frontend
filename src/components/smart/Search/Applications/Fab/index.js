@@ -2,7 +2,10 @@ import React from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+
 import makeStyles from '@material-ui/core/styles/makeStyles';
+
 import withDialogConnect from 'components/smart/Dialog/Connect/with';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
@@ -30,7 +33,7 @@ const SearchApplicationsFab = ({ t, ...props }) => {
         className={classes.root}
         color="secondary"
         aria-label={t('citizen:requests.create')}
-        {...props}
+        {...omitTranslationProps(props)}
       >
         <AddIcon />
       </AuthRequiredFab>

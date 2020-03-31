@@ -8,6 +8,7 @@ import { withTranslation } from 'react-i18next';
 
 import usePropChanged from '@misakey/hooks/usePropChanged';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import isNil from '@misakey/helpers/isNil';
 import head from '@misakey/helpers/head';
@@ -48,8 +49,6 @@ const WITH_APPLICATION_PROPS = [
   'mainDomain',
   'dispatchReceive',
   'userId',
-  'history',
-  'location',
   'tReady',
   'isFetching',
   'error',
@@ -61,6 +60,9 @@ const WITH_APPLICATION_PROPS = [
 // HELPERS
 export const omitWithApplication = (props) => omit(props, WITH_APPLICATION_PROPS);
 
+const mainDomainProp = prop('mainDomain');
+const routerMainDomainPath = path(['match', 'params', 'mainDomain']);
+
 const isSameApplicationAs = (model, other) => {
   if (isNil(model)) {
     return isNil(other);
@@ -69,8 +71,8 @@ const isSameApplicationAs = (model, other) => {
 };
 
 const getMainDomain = (props) => {
-  const routerPropMainDomain = path(['match', 'params', 'mainDomain'])(props);
-  return isNil(routerPropMainDomain) ? prop('mainDomain')(props) : routerPropMainDomain;
+  const mainDomain = mainDomainProp(props);
+  return isNil(mainDomain) ? routerMainDomainPath(props) : mainDomain;
 };
 
 const defaultMapper = (props) => [
@@ -138,8 +140,11 @@ const withApplication = (Component, options = {}) => {
   const ComponentWithApplication = (props) => {
     const {
       isAuthenticated, isDefaultDomain, mainDomain,
-      entity, dispatchReceive, history, location, t,
+      entity, dispatchReceive, t,
     } = props;
+
+    const history = useHistory();
+    const { pathname } = useLocation();
 
     const authChanged = usePropChanged(isAuthenticated);
     const { enqueueSnackbar } = useSnackbar();
@@ -148,7 +153,7 @@ const withApplication = (Component, options = {}) => {
     const handleReceive = useHandleReceive(
       enqueueSnackbar,
       history,
-      location.pathname,
+      pathname,
       mainDomain,
       t,
     );

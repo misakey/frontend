@@ -8,24 +8,16 @@ import ApplicationSchema from 'store/schemas/Application';
 import { bulkSelectionToggleSelected } from 'store/actions/bulkSelection';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import isEmpty from '@misakey/helpers/isEmpty';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 
 import ApplicationImg from 'components/dumb/Application/Img';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import IconButton from '@material-ui/core/IconButton';
-import Chip from '@material-ui/core/Chip';
-import IconButtonWithRequestCreation from 'components/smart/Requests/New/with/IconButton';
 import Badge from '@material-ui/core/Badge';
 
-import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
-import { WORKSPACE } from 'constants/workspaces';
 
 const useStyles = makeStyles(() => ({
   option: {
@@ -37,23 +29,15 @@ const useStyles = makeStyles(() => ({
 
 function ApplicationListItem({
   application,
-  isSelectable,
+  secondaryAction,
   dispatchBulkContactToggleSelected,
   selectedApplications,
-  isAuthenticated,
-  withBlobCount,
   t,
   ...rest
 }) {
   const classes = useStyles();
-  const workspace = useLocationWorkspace(true);
 
-  const { id, mainDomain, logoUri, dpoEmail, name, blobCount = 0, published } = application;
-
-  const displayQuickContact = useMemo(
-    () => workspace === WORKSPACE.CITIZEN && (!isEmpty(dpoEmail) || !isAuthenticated),
-    [dpoEmail, isAuthenticated, workspace],
-  );
+  const { mainDomain, logoUri, name, published } = application;
 
   const secondaryText = useMemo(
     () => (published ? mainDomain : t('components:list.applications.pending')),
@@ -91,50 +75,29 @@ function ApplicationListItem({
         primaryTypographyProps={{ noWrap: true, display: 'block' }}
         secondaryTypographyProps={{ noWrap: true, display: 'block' }}
       />
-      {(withBlobCount && blobCount > 0) && (
-        <Chip color="secondary" label={blobCount} size="small" clickable />
-      )}
-      {/* @FIXME: when refacto the bulk contact, maybe those namings are not relevant anymore */}
-      {!withBlobCount && isSelectable && displayQuickContact && (
-        <ListItemSecondaryAction>
-          <IconButtonWithRequestCreation
-            color="secondary"
-            edge="end"
-            aria-label={t('common:send')}
-            component={IconButton}
-            producerId={id}
-          >
-            <MailOutlineIcon />
-          </IconButtonWithRequestCreation>
-        </ListItemSecondaryAction>
-      )}
+      {secondaryAction}
     </ListItem>
   );
 }
 
 ApplicationListItem.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes),
-  isSelectable: PropTypes.bool,
+  secondaryAction: PropTypes.node,
   // CONNECT
   selectedApplications: PropTypes.arrayOf(PropTypes.string),
-  isAuthenticated: PropTypes.bool,
   dispatchBulkContactToggleSelected: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  withBlobCount: PropTypes.bool,
 };
 
 ApplicationListItem.defaultProps = {
   application: null,
-  isSelectable: true,
+  secondaryAction: null,
   selectedApplications: [],
-  isAuthenticated: false,
-  withBlobCount: false,
 };
 
 // CONNECT
 const mapStateToProps = (state) => ({
   selectedApplications: state.bulkSelection.selected,
-  isAuthenticated: !!state.auth.token,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -142,4 +105,4 @@ const mapDispatchToProps = (dispatch) => ({
     (applicationId) => dispatch(bulkSelectionToggleSelected(applicationId)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('common')(ApplicationListItem));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('components')(ApplicationListItem));

@@ -42,6 +42,7 @@ const NewRequest = ({
   type,
   onCreateSuccess,
   onCreateError,
+  push,
   t,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -92,7 +93,7 @@ const NewRequest = ({
   );
 
   if (!isNil(redirectToRequest)) {
-    return <Redirect to={redirectToRequest} />;
+    return <Redirect to={redirectToRequest} push={push} />;
   }
 
   return children;
@@ -109,6 +110,7 @@ NewRequest.propTypes = {
   type: PropTypes.string.isRequired,
   onCreateSuccess: PropTypes.func,
   onCreateError: PropTypes.func,
+  push: PropTypes.bool,
   t: PropTypes.func.isRequired,
 };
 
@@ -118,6 +120,7 @@ NewRequest.defaultProps = {
   userEmails: null,
   onCreateSuccess: null,
   onCreateError: null,
+  push: false,
 };
 
 export default withUserEmails(withTranslation('citizen')(NewRequest));

@@ -4,19 +4,25 @@ import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
+import { WORKSPACE } from 'constants/workspaces';
+
 import isNil from '@misakey/helpers/isNil';
+
+import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
-
 import Skeleton from '@material-ui/lab/Skeleton';
-
 import ApplicationListItem from 'components/dumb/ListItem/Application';
+import ApplicationListItemQuickContact from 'components/dumb/ListItem/Application/QuickContact';
+import ApplicationListItemBlobCount from 'components/dumb/ListItem/Application/BlobCount';
 import BoxMessage from '@misakey/ui/Box/Message';
 
 function ApplicationsList({
   t, isFetching, error, applications, listLength, toRoute, withBlobCount,
 }) {
+  const workspace = useLocationWorkspace(true);
+
   const applicationsWithPaths = useMemo(
     () => applications.map((application) => ({
       application,
@@ -26,6 +32,19 @@ function ApplicationsList({
       )),
     })),
     [applications, toRoute],
+  );
+
+  const ListItemComponent = useMemo(
+    () => {
+      if (withBlobCount) {
+        return ApplicationListItemBlobCount;
+      }
+      if (workspace === WORKSPACE.CITIZEN) {
+        return ApplicationListItemQuickContact;
+      }
+      return ApplicationListItem;
+    },
+    [withBlobCount, workspace],
   );
 
   if (isFetching) {
@@ -55,11 +74,10 @@ function ApplicationsList({
       {applicationsWithPaths.map(({ application, to }) => {
         const listItemProps = isNil(to) ? {} : { button: true, component: Link };
         return (
-          <ApplicationListItem
+          <ListItemComponent
             key={application.mainDomain}
             application={application}
             to={to}
-            withBlobCount={withBlobCount}
             {...listItemProps}
           />
         );

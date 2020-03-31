@@ -10,6 +10,11 @@ import ApplicationCategoriesList from 'components/smart/List/ApplicationCategori
 import Screen from 'components/dumb/Screen';
 import { IS_PLUGIN } from 'constants/plugin';
 
+// CONSTANTS
+const POPOVER_PROPS = {
+  fixedHeight: true,
+};
+
 // HOOKS
 const useStyles = makeStyles(() => ({
   container: {
@@ -31,7 +36,7 @@ const CitizenHome = () => {
           {!IS_PLUGIN && <ApplicationCategoriesList />}
         </Box>
       </Container>
-      <SearchApplications />
+      <SearchApplications popoverProps={POPOVER_PROPS} />
     </Screen>
   );
 };

@@ -23,7 +23,7 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import { getDetails, getCode } from '@misakey/helpers/apiError';
 import getSearchParams from '@misakey/helpers/getSearchParams';
 import getNextSearch from '@misakey/helpers/getNextSearch';
-import fromPairs from '@misakey/helpers/fromPairs';
+import objectValuesToSearchParams from 'helpers/objectValuesToSearchParams';
 import isNil from '@misakey/helpers/isNil';
 import uniqBy from '@misakey/helpers/uniqBy';
 import pick from '@misakey/helpers/pick';
@@ -163,14 +163,7 @@ const ContactConfig = ({
   );
 
   const searchParamsByStep = useMemo(
-    () => {
-      const modalStepConfigPairs = Object.values(MODAL_STEPS)
-        .map((modalStep) => ([
-          modalStep,
-          { [searchKey]: modalStep },
-        ]));
-      return fromPairs(modalStepConfigPairs);
-    },
+    () => objectValuesToSearchParams(MODAL_STEPS, searchKey),
     [searchKey],
   );
 

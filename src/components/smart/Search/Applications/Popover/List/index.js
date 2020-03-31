@@ -8,6 +8,8 @@ import { SUGGESTED_TYPE, LINKED_TYPE } from 'constants/search/application/type';
 import ApplicationSchema from 'store/schemas/Application';
 
 import isNil from '@misakey/helpers/isNil';
+import isArray from '@misakey/helpers/isArray';
+import isObject from '@misakey/helpers/isObject';
 import isEmpty from '@misakey/helpers/isEmpty';
 import eventPreventDefault from '@misakey/helpers/event/preventDefault';
 import getNextSearch from '@misakey/helpers/getNextSearch';
@@ -21,8 +23,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import List from '@material-ui/core/List';
 import IconButton from '@material-ui/core/IconButton';
 import ApplicationListItemNotFound from 'components/dumb/ListItem/Application/NotFound';
-import Option from 'components/smart/Search/Applications/Popover/Option';
-import PopoverListSubheader from 'components/smart/Search/Applications/Popover/ListSubheader';
+import Option from 'components/smart/Search/Applications/Popover/List/Option';
+import PopoverListSubheader from 'components/smart/Search/Applications/Popover/List/ListSubheader';
 
 import ClearIcon from '@material-ui/icons/Clear';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -49,16 +51,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// added this because there were weird errors with list containing undefined values
+const useCleanList = (list) => useMemo(
+  () => (isArray(list) ? list.filter(isObject) : []),
+  [list],
+);
+
 // COMPONENTS
-const PopoverApplicationsList = ({
+const SearchApplicationsPopoverList = ({
   onClose,
   onSelect,
   onSearchClose,
   updateRouter,
   suggested,
   linked,
-  suggestedOptions,
-  linkedOptions,
   loading,
   search,
   t,
@@ -76,6 +82,10 @@ const PopoverApplicationsList = ({
     () => loading || isNil(suggested) || isNil(linked),
     [loading, suggested, linked],
   );
+
+  const suggestedOptions = useCleanList(suggested);
+
+  const linkedOptions = useCleanList(linked);
 
   const startAdornment = useMemo(
     () => (
@@ -177,7 +187,6 @@ const PopoverApplicationsList = ({
             application={option}
             disabled={listLoading}
             onClick={onSelect(option.id)}
-            withBlobCount
           />
         ))}
         <PopoverListSubheader
@@ -202,7 +211,7 @@ const PopoverApplicationsList = ({
   );
 };
 
-PopoverApplicationsList.propTypes = {
+SearchApplicationsPopoverList.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSelect: PropTypes.func,
@@ -213,20 +222,16 @@ PopoverApplicationsList.propTypes = {
   // CONNECT
   suggested: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
   linked: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
-  suggestedOptions: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
-  linkedOptions: PropTypes.arrayOf(PropTypes.shape(ApplicationSchema.propTypes)),
 
   t: PropTypes.func.isRequired,
 };
 
-PopoverApplicationsList.defaultProps = {
+SearchApplicationsPopoverList.defaultProps = {
   suggested: null,
   linked: null,
   onSelect: null,
   loading: false,
   search: '',
-  suggestedOptions: [],
-  linkedOptions: [],
 };
 
-export default withTranslation('common')(PopoverApplicationsList);
+export default withTranslation('common')(SearchApplicationsPopoverList);

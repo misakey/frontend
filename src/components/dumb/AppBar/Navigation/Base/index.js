@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
-
 import omit from '@misakey/helpers/omit';
-import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/helpers/isNil';
 import isBoolean from '@misakey/helpers/isBoolean';
 
 import useTheme from '@material-ui/core/styles/useTheme';
@@ -37,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 
 const AppBarNavigationBase = forwardRef(({
   children,
+  classes,
   className,
   gutterBottom,
   noWrap,
@@ -47,10 +47,10 @@ const AppBarNavigationBase = forwardRef(({
   buttonProps,
   ...rest
 }, ref) => {
-  const classes = useStyles();
+  const internalClasses = useStyles();
   const theme = useTheme();
   const isXsLayout = useMediaQuery(theme.breakpoints.only('xs'));
-  const showTitle = useMemo(() => !isEmpty(title), [title]);
+  const showTitle = useMemo(() => !isNil(title), [title]);
 
   return (
     <AppBar
@@ -60,8 +60,8 @@ const AppBarNavigationBase = forwardRef(({
       color="inherit"
       className={clsx(
         className,
-        classes.root,
-        { [classes.gutterBottom]: gutterBottom },
+        internalClasses.root,
+        { [internalClasses.gutterBottom]: gutterBottom },
       )}
       {...omit(rest, ['i18n', 'tReady'])}
     >
@@ -70,7 +70,7 @@ const AppBarNavigationBase = forwardRef(({
           <IconButton
             edge="start"
             color="inherit"
-            className={classes.backButton}
+            className={clsx(internalClasses.backButton, classes.backButton)}
             aria-label={t('common:navigation.backButton', 'Go back')}
             {...buttonProps}
           >
@@ -80,7 +80,7 @@ const AppBarNavigationBase = forwardRef(({
         {showTitle && (
           <Title
             noWrap={noWrap}
-            className={classes.title}
+            className={internalClasses.title}
             gutterBottom={false}
           >
             {title}
@@ -94,6 +94,9 @@ const AppBarNavigationBase = forwardRef(({
 
 AppBarNavigationBase.propTypes = {
   children: PropTypes.oneOfType([PropTypes.element, PropTypes.node]),
+  classes: PropTypes.shape({
+    backButton: PropTypes.string,
+  }),
   className: PropTypes.string,
   noWrap: PropTypes.bool,
   gutterBottom: PropTypes.bool,
@@ -102,18 +105,21 @@ AppBarNavigationBase.propTypes = {
    */
   showGoBack: PropTypes.oneOf([true, false, null]),
   t: PropTypes.func.isRequired,
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   toolbarProps: PropTypes.object,
   buttonProps: PropTypes.object,
 };
 
 AppBarNavigationBase.defaultProps = {
   children: null,
+  classes: {
+    backButton: '',
+  },
   className: '',
   gutterBottom: true,
   noWrap: true,
   showGoBack: true,
-  title: '',
+  title: null,
   toolbarProps: {},
   buttonProps: {},
 };
