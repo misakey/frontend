@@ -14,7 +14,8 @@ import SplashScreen from '@misakey/ui/Screen/Splash';
 import DatavizHeader from 'components/dumb/Dataviz/Header';
 
 const Dataviz = ({ decryptedBlob, mainDomain, application, user, id }) => {
-  const SpecificDataviz = lazy(() => import(`./ForDomain/${mainDomain}`));
+  const importName = `./ForDomain/${mainDomain}`;
+  const SpecificDataviz = lazy(() => import(importName));
 
   return (
     <div id={id}>
