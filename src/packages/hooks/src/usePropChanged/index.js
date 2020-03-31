@@ -1,20 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 export default (prop) => {
-  const [prevProp, setPrevProp] = useState();
+  const prevProp = useRef(prop);
 
   const [propChanged, setPropChanged] = useState(false);
 
   useEffect(
     () => {
-      if (prop !== prevProp) {
+      if (prop !== prevProp.current) {
         setPropChanged(true);
-        setPrevProp(prop);
+        prevProp.current = prop;
       } else {
         setPropChanged(false);
       }
     },
-    [prop, prevProp, setPropChanged, setPrevProp],
+    [prop, prevProp, setPropChanged],
   );
 
   return propChanged;

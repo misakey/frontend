@@ -8,6 +8,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 
 import withApplication from 'components/smart/withApplication';
 import SearchApplicationsPopoverNavigation from 'components/smart/Search/Applications/Popover/Navigation';
+import SearchApplicationsPopoverNoContact from 'components/smart/Search/Applications/Popover/NoContact';
 
 // HELPERS
 const dpoEmailProp = prop('dpoEmail');
@@ -21,7 +22,7 @@ const SearchApplicationsPopoverRequest = ({ entity }) => {
 
   if (isEmpty(dpoEmail)) {
     // GAFAM
-    return <SearchApplicationsPopoverNavigation />;
+    return <SearchApplicationsPopoverNoContact entity={entity} />;
   }
   // REQUEST
   return <SearchApplicationsPopoverNavigation />;

@@ -20,6 +20,14 @@ import ButtonSubmit from 'components/dumb/Button/Submit';
 
 import { privacyLinkSchema, dpoEmailSchema } from 'constants/validationSchemas/contribution';
 
+// CONSTANTS
+export const USER_CONTRIBUTION_TYPE = {
+  dpoEmail: 'dpoEmail',
+  link: 'link',
+};
+
+export const USER_CONTRIBUTION_TYPES = Object.values(USER_CONTRIBUTION_TYPE);
+
 const INITIAL_VALUES = {
   link: '',
   dpoEmail: '',
@@ -61,10 +69,10 @@ function UserContributionDialog({
 
   const validationSchema = useMemo(
     () => {
-      if (userContributionType === 'dpoEmail') {
+      if (userContributionType === USER_CONTRIBUTION_TYPE.dpoEmail) {
         return dpoEmailSchema;
       }
-      if (userContributionType === 'link') {
+      if (userContributionType === USER_CONTRIBUTION_TYPE.link) {
         return privacyLinkSchema;
       }
       return null;
@@ -87,13 +95,13 @@ function UserContributionDialog({
       >
         <Form>
           <DialogTitle id="alert-dialog-title" onClose={onClose}>
-            {t('citizen:application.info.userContribution.dialog.title', { appName })}
+            {t('citizen:userContribution.dialog.title', { appName })}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {t(`citizen:application.info.userContribution.dialog.intro.${userContributionType}`, { appName })}
+              {t(`citizen:userContribution.dialog.intro.${userContributionType}`, { appName })}
             </DialogContentText>
-            {(userContributionType === 'dpoEmail') && (
+            {(userContributionType === USER_CONTRIBUTION_TYPE.dpoEmail) && (
             <Field
               component={FieldText}
               name="dpoEmail"
@@ -101,30 +109,30 @@ function UserContributionDialog({
               autoFocus
               id="dpo-email-address"
               fullWidth
-              label={t('citizen:application.info.userContribution.dialog.fields.dpoEmail')}
+              label={t('citizen:userContribution.dialog.fields.dpoEmail')}
             />
             )}
 
             <DialogContentText>
-              {t(`citizen:application.info.userContribution.dialog.linkExplaination.${userContributionType}`)}
+              {t(`citizen:userContribution.dialog.linkExplaination.${userContributionType}`)}
             </DialogContentText>
             <Field
               component={FieldText}
               name="link"
               variant="outlined"
-              autoFocus={userContributionType === 'link'}
+              autoFocus={userContributionType === USER_CONTRIBUTION_TYPE.link}
               id="link-address"
               type="text"
               fullWidth
-              label={t(`citizen:application.info.userContribution.dialog.fields.link.${userContributionType}`)}
+              label={t(`citizen:userContribution.dialog.fields.link.${userContributionType}`)}
             />
             <DialogContentText>
-              {t('citizen:application.info.userContribution.dialog.outro')}
+              {t('citizen:userContribution.dialog.outro')}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <ButtonSubmit
-              text={t('citizen:application.info.userContribution.dialog.send')}
+              text={t('citizen:userContribution.dialog.send')}
             />
           </DialogActions>
         </Form>
@@ -139,12 +147,12 @@ UserContributionDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
   width: PropTypes.string.isRequired,
-  userContributionType: PropTypes.string,
+  userContributionType: PropTypes.oneOf(USER_CONTRIBUTION_TYPES),
   appName: PropTypes.string,
 };
 
 UserContributionDialog.defaultProps = {
-  userContributionType: 'dpoEmail',
+  userContributionType: USER_CONTRIBUTION_TYPE.dpoEmail,
   appName: '',
 };
 

@@ -1,25 +1,26 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { generatePath, Link /* useLocation */ } from 'react-router-dom';
+import { generatePath, Link, useLocation } from 'react-router-dom';
 
 import routes from 'routes';
 import { WORKSPACE } from 'constants/workspaces';
+import { REQUEST } from 'constants/search/application/params';
 import { PORTABILITY } from 'constants/databox/type';
-// import { REQUEST } from 'constants/search/application/params';
 import ApplicationSchema from 'store/schemas/Application';
 
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import prop from '@misakey/helpers/prop';
 import compose from '@misakey/helpers/compose';
-// import getNextSearch from '@misakey/helpers/getNextSearch';
+import getNextSearch from '@misakey/helpers/getNextSearch';
 
 import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 
-import withRequestCreation from 'components/smart/Requests/New/with';
 import ApplicationListItem from 'components/dumb/ListItem/Application';
+import withRequestCreation from 'components/smart/Requests/New/with';
 
-// import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import WarningIcon from '@material-ui/icons/Warning';
 
 // CONSTANTS
 const REDIRECT_PROPS = { push: true };
@@ -34,7 +35,7 @@ const hasDpoEmail = compose(
 const ApplicationListItemWithRequestCreation = withRequestCreation(ApplicationListItem);
 
 const Option = ({ application, disabled, ...rest }) => {
-  // const { search: locationSearch, pathname } = useLocation();
+  const { search: locationSearch, pathname } = useLocation();
 
   const workspace = useLocationWorkspace();
 
@@ -53,34 +54,51 @@ const Option = ({ application, disabled, ...rest }) => {
     [workspace],
   );
 
-  const itemLinkTo = useMemo(
+  const itemProps = useMemo(
     () => {
       if (isNil(mainDomain)) {
-        return null;
+        return {};
       }
 
       if (isCitizenWorkspace) {
-        return {};
-      // @FIXME use instead, when implementing request and gafam
-      //   return {
-      //     pathname,
-      //     search: getNextSearch(locationSearch, new Map([
-      //       [REQUEST, mainDomain],
-      //     ])),
-      //   };
+        return {
+          to: {
+            pathname,
+            search: getNextSearch(locationSearch, new Map([
+              [REQUEST, mainDomain],
+            ])),
+          },
+          replace: true,
+          secondaryAction: disabled
+            ? null
+            : (
+              <>
+                {
+                /* @FIXME: can be used or removed when request erasure is done
+                 {!applicationHasDpoEmail && (<WarningIcon />)} */
+                }
+                <WarningIcon />
+                <ChevronRightIcon />
+              </>
+            ),
+        };
       }
       if (workspace === WORKSPACE.DPO) {
-        return generatePath(routes.dpo.service._, { mainDomain });
+        return { to: generatePath(routes.dpo.service._, { mainDomain }) };
       } if (workspace === WORKSPACE.ADMIN) {
-        return generatePath(routes.admin.service._, { mainDomain });
+        return { to: generatePath(routes.admin.service._, { mainDomain }) };
       }
-      return null;
+      return {};
     },
-    [mainDomain, isCitizenWorkspace, workspace],
+    [
+      mainDomain,
+      isCitizenWorkspace, workspace,
+      pathname, locationSearch, disabled,
+    ],
   );
 
-  // @FIXME remove this condition once we use second step
-  if (isCitizenWorkspace) {
+  // @FIXME remove this condition once we use second step for request
+  if (isCitizenWorkspace && applicationHasDpoEmail) {
     return (
       <ApplicationListItemWithRequestCreation
         button
@@ -89,9 +107,6 @@ const Option = ({ application, disabled, ...rest }) => {
         producerId={id}
         type={PORTABILITY}
         redirectProps={REDIRECT_PROPS}
-        // secondaryAction={applicationHasDpoEmail ? (
-        //   <ChevronRightIcon />
-        // ) : null}
         {...rest}
       />
     );
@@ -100,10 +115,9 @@ const Option = ({ application, disabled, ...rest }) => {
   return (
     <ApplicationListItem
       button
-      disabled={disabled || !applicationHasDpoEmail}
+      disabled={disabled}
       component={Link}
-      to={itemLinkTo}
-      // replace={isCitizenWorkspace}
+      {...itemProps}
       application={application}
       {...rest}
     />

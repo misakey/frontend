@@ -28,7 +28,7 @@ import Box from '@material-ui/core/Box';
 import Screen, { getStyleForContainerScroll, SCREEN_STATE_PROPTYPES } from 'components/dumb/Screen';
 import DefaultSplashScreen from '@misakey/ui/Screen/Splash';
 import ApplicationInfoNav from 'components/screens/Citizen/Application/Info/Nav';
-import UserContributionDialog from 'components/smart/UserContributionDialog';
+import UserContributionDialog from 'components/smart/Dialog/UserContribution';
 import { addToUserApplications, removeFromUserApplications } from 'store/actions/applications/userApplications';
 import { WORKSPACE } from 'constants/workspaces';
 
@@ -156,7 +156,7 @@ function ApplicationInfo({
       })
       .send()
       .then(() => {
-        const text = t('citizen:application.info.userContribution.success');
+        const text = t('citizen:userContribution.success');
         enqueueSnackbar(text, { variant: 'success' });
       })
       .catch(handleGenericHttpErrors)

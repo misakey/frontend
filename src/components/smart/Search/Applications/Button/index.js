@@ -8,6 +8,7 @@ import isNil from '@misakey/helpers/isNil';
 
 import path from '@misakey/helpers/path';
 import prop from '@misakey/helpers/prop';
+import omit from '@misakey/helpers/omit';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { withRouter } from 'react-router-dom';
@@ -19,6 +20,18 @@ import SearchApplicationsButtonEmpty from 'components/smart/Search/Applications/
 import ArrowDropdownIcon from '@material-ui/icons/ArrowDropDown';
 import { denormalize } from 'normalizr';
 import { connect } from 'react-redux';
+
+// CONSTANTS
+const INTERNAL_PROPS = [
+  // props
+  'mainDomain',
+  // withRouter
+  'match',
+  'staticContext',
+];
+
+// HELPERS
+const omitInternalProps = (props) => omit(props, INTERNAL_PROPS);
 
 const getMainDomain = (props) => {
   const mainDomainProp = prop('mainDomain')(props);
@@ -77,7 +90,7 @@ const SearchApplicationsButton = forwardRef(({ entity, disabled, ...rest }, ref)
       }}
       endIcon={EndIcon}
       disabled={disabled}
-      {...rest}
+      {...omitInternalProps(rest)}
     >
       {noEntity
         ? (
@@ -114,4 +127,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default withRouter(connect(mapStateToProps)(SearchApplicationsButton));
+export default withRouter(connect(mapStateToProps, {})(SearchApplicationsButton));

@@ -72,31 +72,6 @@
         "legal": "Légal",
         "more": "Plus"
       },
-      "userContribution": {
-        "dpoEmailOpenDialog": "Je connais l'email du DPO\u00a0!",
-        "linkOpenDialog": "Ajouter",
-        "dialog": {
-          "title": "Améliorer la fiche de {{appName}}",
-          "intro": {
-            "dpoEmail": "Si j'ai trouvé l'email DPO de {{appName}} je l'envoie à Misakey pour l'intégrer à la base de donnée collaborative\u00a0!",
-            "link": "Si j'ai trouvé une page légale de {{appName}} (politique de confidentialité, CGU, ...) je l'envoie à Misakey pour l'intégrer à la base de donnée collaborative\u00a0!"
-          },
-          "linkExplaination": {
-            "dpoEmail": "Je renseigne l'URL de la page sur laquelle j'ai trouvé l'email, pour fournir un moyen de le vérifier ultérieurement",
-            "link": "Je renseigne l'URL de la page légale"
-          },
-          "fields": {
-            "dpoEmail": "Email du DPO",
-            "link": {
-              "dpoEmail": "Page où est renseigné l'email",
-              "link": "URL de la page"
-            }
-          },
-          "outro": "Nous vérifions toutes les contributions à la main. Cela peut prendre plusieurs jours avant que la base de données soit mise à jour. Merci de nous contacter si cette contribution n'est pas intégrée d'ici quelques semaines",
-          "send": "Envoyer"
-        },
-        "success": "Merci, cette contribution a bien été envoyée\u00a0!"
-      },
       "vault": {
         "info": {
           "title": "À propos de mon coffre-fort",
@@ -136,6 +111,42 @@
       "success": "Demande de création d'application reçue\u00a0!"
     },
     "select": "Sélectionner mes sites"
+  },
+  "userContribution": {
+    "button": {
+      "title": "Ajouter un contact",
+      "subtitle": "Je connais l'email du DPO"
+    },
+    "linkOpenDialog": "Ajouter",
+    "dialog": {
+      "title": "Améliorer la fiche de {{appName}}",
+      "intro": {
+        "dpoEmail": "Si j'ai trouvé l'email DPO de {{appName}} je l'envoie à Misakey pour l'intégrer à la base de donnée collaborative\u00a0!",
+        "link": "Si j'ai trouvé une page légale de {{appName}} (politique de confidentialité, CGU, ...) je l'envoie à Misakey pour l'intégrer à la base de donnée collaborative\u00a0!"
+      },
+      "linkExplaination": {
+        "dpoEmail": "Je renseigne l'URL de la page sur laquelle j'ai trouvé l'email, pour fournir un moyen de le vérifier ultérieurement",
+        "link": "Je renseigne l'URL de la page légale"
+      },
+      "fields": {
+        "dpoEmail": "Email du DPO",
+        "link": {
+          "dpoEmail": "Page où est renseigné l'email",
+          "link": "URL de la page"
+        }
+      },
+      "outro": "Nous vérifions toutes les contributions à la main. Cela peut prendre plusieurs jours avant que la base de données soit mise à jour. Merci de nous contacter si cette contribution n'est pas intégrée d'ici quelques semaines",
+      "send": "Envoyer"
+    },
+    "success": "Merci, cette contribution a bien été envoyée\u00a0!"
+  },
+  "noContact": {
+    "title": "Aucun contact associé",
+    "subtitle": "Le transfert confidentiel nécessite un contact",
+    "external": {
+      "title": "Contacter sans Misakey",
+      "subtitle": "Je souhaite contacter {{appName}} autrement"
+    }
   },
   "contact": {
     "bulk": {
