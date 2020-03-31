@@ -6,9 +6,9 @@ import Endpoint from '@misakey/api/Endpoint';
 import Mock from '@misakey/api/Mock';
 import API from '@misakey/api';
 
-const matchingMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
+const matchingMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD'];
 
-const matchingNaming = ['create', 'read', 'update', 'delete', 'find', 'search'];
+const matchingNaming = ['create', 'read', 'update', 'delete', 'find', 'search', 'count'];
 
 const authExtendedNamings = [
   'signIn', 'signOut', 'signUp',

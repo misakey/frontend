@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useMemo } from 'react';
 import routes from 'routes';
+import { normalize } from 'normalizr';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { generatePath } from 'react-router-dom';
@@ -8,7 +9,7 @@ import { useSnackbar } from 'notistack';
 
 import Redirect from 'components/dumb/Redirect';
 import withUserEmails from 'components/smart/withUserEmails';
-import { addToUserApplications } from 'store/actions/applications/userApplications';
+import { addToAllRequestIdsForStatus } from 'store/actions/screens/allRequestIds';
 import UserEmailSchema from 'store/schemas/UserEmail';
 
 import API from '@misakey/api';
@@ -22,6 +23,9 @@ import isFunction from '@misakey/helpers/isFunction';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import DataboxSchema from 'store/schemas/Databox';
+import { receiveEntities } from '@misakey/store/actions/entities';
+import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 
 const { conflict } = errorTypes;
 
@@ -59,14 +63,21 @@ const NewRequest = ({
   );
 
   const onSuccess = useCallback((createdRequest) => {
-    const { id } = createdRequest;
+    const newRequest = objectToCamelCase(createdRequest);
+    const { id, status } = newRequest;
+    const normalized = normalize(
+      newRequest,
+      DataboxSchema.entity,
+    );
+    const { entities } = normalized;
     return Promise.all([
-      dispatch(addToUserApplications(producerId, objectToCamelCase(createdRequest))),
+      dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
+      dispatch(addToAllRequestIdsForStatus(id, status)),
       onCreateSuccess(),
     ]).then(() => {
       setRedirectToRequest(generatePath(routes.citizen.requests.read, { id }));
     });
-  }, [dispatch, onCreateSuccess, producerId]);
+  }, [dispatch, onCreateSuccess]);
 
 
   const onError = useCallback((e) => {

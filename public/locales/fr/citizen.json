@@ -258,7 +258,30 @@
   "requests": {
     "create": "Nouvelle requête",
     "type": {
-      "portability": "Portabilité"
+      "portability": "Portabilité des données"
+    },
+    "list": {
+      "title": "Mes requêtes",
+      "filters": {
+        "status": {
+          "draft": "Brouillons",
+          "open": "Envoyées",
+          "done": "Répondues",
+          "closed": "Archivées"
+        }
+      },
+      "primary": "{{appName}} - {{ type }}",
+      "secondary": {
+        "draft": "<0>Vous :\u00a0</0>À envoyer",
+        "open": "<0>Vous :\u00a0</0>Envoyé le {{sentAt}}",
+        "blobsReceived": "<0>Dpo :\u00a0</0>{{count}} fichier reçu après {{duration}}",
+        "blobsReceived_plural": "<0>Dpo :\u00a0</0>{{count}} fichiers reçus après {{duration}}",
+        "done": "<0>Dpo :\u00a0</0>{{comment}} après {{duration}}",
+        "closed": {
+          "owner": "<0>Vous :\u00a0</0>{{comment}} après {{duration}}",
+          "dpo": "<0>Dpo :\u00a0</0>{{comment}} après {{duration}}"
+        }
+      }
     },
     "read": {
       "title": "{{ type }} du {{ date }}",

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import routes from 'routes';
 import { connect, useDispatch } from 'react-redux';
@@ -11,13 +11,13 @@ import Container from '@material-ui/core/Container';
 
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxByProducerSchema from 'store/schemas/Databox/ByProducer';
+import ApplicationByIdSchema from 'store/schemas/Application/ById';
 
 import ensureSecretsLoaded from '@misakey/crypto/store/actions/ensureSecretsLoaded';
 
 import API from '@misakey/api';
 
 import isNil from '@misakey/helpers/isNil';
-import find from '@misakey/helpers/find';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import getDateFormat from '@misakey/helpers/getDateFormat';
@@ -122,6 +122,8 @@ function RequestsRead({
   t,
 }) {
   const classes = useStyles();
+  // Used to prevent refetch on delete request
+  const [preventFetching, setPreventFetching] = useState(false);
 
   const { status, producerId, sentAt } = useMemo(() => request || {}, [request]);
 
@@ -150,8 +152,8 @@ function RequestsRead({
   );
 
   const shouldFetchRequest = useMemo(
-    () => isAuthenticated && isNil(request) && !isNil(params.id),
-    [isAuthenticated, params.id, request],
+    () => isAuthenticated && isNil(request) && !isNil(params.id) && !preventFetching,
+    [isAuthenticated, params.id, preventFetching, request],
   );
 
   const shouldFetchApplication = useMemo(
@@ -215,11 +217,14 @@ function RequestsRead({
     [items, state],
   );
 
+  const onDelete = useCallback(() => { setPreventFetching(true); }, []);
+
   if (shouldDisplayContactScreen) {
     return (
       <DraftRequest
         request={request}
         application={application}
+        onPreventRefetch={onDelete}
         isFetchingRequest={isFetchingRequest}
         isFetchingApplication={isFetchingApplication}
       />
@@ -286,11 +291,13 @@ const mapStateToProps = (state, ownProps) => {
     DataboxSchema.entity,
     state.entities,
   );
-  const application = !isNil(request)
-    ? find(Object.values(state.entities[ApplicationSchema.entity.key]), ['id', request.producerId])
-    : null;
+
+  const { application } = !isNil(request)
+    ? denormalize(request.producerId, ApplicationByIdSchema.entity, state.entities) || {}
+    : {};
+
   return {
-    request: isNil(request) ? null : request,
+    request,
     application,
     userId: state.auth.userId,
     isAuthenticated: !!state.auth.token,
@@ -306,10 +313,10 @@ const mapDispatchToProps = (dispatch) => ({
     const { entities } = normalized;
     dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
   },
-  dispatchReceiveApplication: (application) => {
+  dispatchReceiveApplication: ({ id, ...rest }) => {
     const normalized = normalize(
-      application,
-      ApplicationSchema.entity,
+      { id, application: { id, ...rest } },
+      ApplicationByIdSchema.entity,
     );
     const { entities } = normalized;
     dispatch(receiveEntities(entities, mergeReceiveNoEmpty));

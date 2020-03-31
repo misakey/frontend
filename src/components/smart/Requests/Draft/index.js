@@ -15,11 +15,11 @@ import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';
 import UserEmailSchema from 'store/schemas/UserEmail';
 import { setDataboxMeta, setUrlAccessRequest } from 'store/actions/databox';
+import { removeFromAllRequestIdsForStatus } from 'store/actions/screens/allRequestIds';
 
 import isNil from '@misakey/helpers/isNil';
 import getSearchParams from '@misakey/helpers/getSearchParams';
 import getNextSearch from '@misakey/helpers/getNextSearch';
-import mapDates from '@misakey/helpers/mapDates';
 import propEq from '@misakey/helpers/propEq';
 import prop from '@misakey/helpers/prop';
 import find from '@misakey/helpers/find';
@@ -94,6 +94,7 @@ const DraftRequest = ({
   dispatch,
   request,
   application,
+  onPreventRefetch,
   userEmails,
   userId,
   contactEmail,
@@ -139,10 +140,9 @@ const DraftRequest = ({
         dpoEmail,
         databoxURL: urlAccess,
         mainDomain,
-        ...mapDates(request),
       },
     ),
-    [t, mailType, dpoEmail, urlAccess, mainDomain, request],
+    [t, mailType, dpoEmail, urlAccess, mainDomain],
   );
 
   const initialEmail = useMemo(
@@ -193,13 +193,17 @@ const DraftRequest = ({
   const onDeleteSuccess = useCallback(
     () => {
       const entities = [{ id }];
-      return Promise.resolve(dispatch(removeEntities(entities, DataboxSchema)))
+      onPreventRefetch();
+      return Promise.resolve(
+        dispatch(removeEntities(entities, DataboxSchema)),
+        dispatch(removeFromAllRequestIdsForStatus(id, DRAFT)),
+      )
         .then(() => {
           enqueueSnackbar(t('citizen:requests.read.delete.success'), { variant: 'success' });
           replace({ pathname: HOME_PATH });
         });
     },
-    [dispatch, enqueueSnackbar, id, replace, t],
+    [dispatch, enqueueSnackbar, id, onPreventRefetch, replace, t],
   );
 
   const { wrappedFetch: handleDelete } = useFetchCallback(
@@ -354,6 +358,7 @@ DraftRequest.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes),
   request: PropTypes.shape(DataboxSchema.propTypes),
   isFetchingRequest: PropTypes.bool.isRequired,
+  onPreventRefetch: PropTypes.func.isRequired,
   // withUserEmails
   userEmails: PropTypes.arrayOf(PropTypes.shape(UserEmailSchema.propTypes)),
   userId: PropTypes.string,

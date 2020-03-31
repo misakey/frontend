@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import auth from './screens/auth';
 import contact from './screens/contact';
 import landing from './screens/landing';
+import allRequestIds from './screens/allRequestIds';
 
 import Service from './screens/Service';
 import ServiceDrawer from './screens/Service/Drawer';
@@ -13,6 +14,7 @@ export default combineReducers({
   auth,
   contact,
   landing,
+  allRequestIds,
 
   // ADMIN
   Service,

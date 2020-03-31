@@ -1,9 +1,22 @@
 import { schema } from 'normalizr';
 import PropTypes from 'prop-types';
 
-import DATABOX_STATUSES from 'constants/databox/status';
+import DATABOX_STATUSES, { DRAFT } from 'constants/databox/status';
+import isNil from '@misakey/helpers/isNil';
+import has from '@misakey/helpers/has';
 
-const entity = new schema.Entity('databoxes', {});
+const entity = new schema.Entity('databoxes', {}, {
+  processStrategy: (item) => {
+    if (has(item, 'sentAt') && isNil(item.sentAt) && item.status !== DRAFT && !isNil(item.createdAt)) {
+      return {
+        ...item,
+        sentAt: item.createdAt,
+      };
+    }
+    return item;
+  },
+});
+
 const collection = [entity];
 
 const DataboxSchema = {

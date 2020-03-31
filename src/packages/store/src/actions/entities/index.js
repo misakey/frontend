@@ -30,8 +30,9 @@ export function removeEntities(entities = [], entitySchema) {
   };
 }
 
-export const resetEntities = () => ({
+export const resetEntities = (entitySchema) => ({
   type: RESET_ENTITIES,
+  entitySchema,
 });
 
 export const updateEntities = (

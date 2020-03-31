@@ -66,7 +66,6 @@ const requestDataboxAccess = (id) => API
   .send();
 
 const idProp = prop('id');
-const createdAtProp = prop('createdAt');
 const sentAtProp = prop('sentAt');
 const updatedAtProp = prop('updatedAt');
 const getOwner = prop('owner');
@@ -135,8 +134,8 @@ const CurrentDatabox = ({
     [databox],
   );
 
-  const openedAt = useMemo(
-    () => sentAtProp(databox) || createdAtProp(databox),
+  const sentAt = useMemo(
+    () => sentAtProp(databox),
     [databox],
   );
 
@@ -146,13 +145,13 @@ const CurrentDatabox = ({
   );
 
   const openSince = useMemo(
-    () => moment(openedAt).fromNow(),
-    [openedAt],
+    () => moment(sentAt).fromNow(),
+    [sentAt],
   );
 
   const durationOfTheRequest = useMemo(
-    () => moment(updatedAtProp(databox)).to(openedAt, true),
-    [databox, openedAt],
+    () => moment(updatedAtProp(databox)).to(sentAt, true),
+    [databox, sentAt],
   );
 
   const onError = useCallback(

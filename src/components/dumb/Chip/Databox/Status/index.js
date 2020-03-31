@@ -9,7 +9,6 @@ import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 import prop from '@misakey/helpers/prop';
 import getDateFormat from '@misakey/helpers/getDateFormat';
-import { getStatus } from '@misakey/helpers/databox';
 
 import useCalendarDateSince from '@misakey/hooks/useCalendarDateSince';
 
@@ -81,8 +80,8 @@ const ChipDataboxStatus = ({ databox, t, showIcon, showDetails }) => {
     [anchorEl],
   );
 
-  const status = useMemo(
-    () => getStatus(databox),
+  const { sentAt, updatedAt, status } = useMemo(
+    () => databox || {},
     [databox],
   );
 
@@ -93,19 +92,19 @@ const ChipDataboxStatus = ({ databox, t, showIcon, showDetails }) => {
     [showIcon, status],
   );
 
-  const dateCreation = useMemo(
-    () => (isNil(databox)
+  const openingDate = useMemo(
+    () => (isNil(sentAt)
       ? null
-      : getDateFormat(databox.createdAt)),
-    [databox],
+      : getDateFormat(sentAt)),
+    [sentAt],
   );
 
-  const calendarDateSinceCreated = useCalendarDateSince(databox.createdAt);
-  const calendarDateSinceUpdated = useCalendarDateSince(databox.updatedAt);
+  const calendarDateSinceCreated = useCalendarDateSince(sentAt);
+  const calendarDateSinceUpdated = useCalendarDateSince(updatedAt);
 
   const textSinceCreated = useMemo(
-    () => `${t('common:databox.since.created')} ${calendarDateSinceCreated} (${dateCreation})`,
-    [calendarDateSinceCreated, dateCreation, t],
+    () => `${t('common:databox.since.created')} ${calendarDateSinceCreated} (${openingDate})`,
+    [calendarDateSinceCreated, openingDate, t],
   );
 
   const date = useMemo(
@@ -114,25 +113,25 @@ const ChipDataboxStatus = ({ databox, t, showIcon, showDetails }) => {
         return null;
       }
       if (status === OPEN) {
-        return databox.createdAt;
+        return sentAt;
       }
-      return databox.updatedAt;
+      return updatedAt;
     },
-    [databox, status],
+    [databox, sentAt, status, updatedAt],
   );
 
   const hasUpdate = useMemo(
-    () => !isNil(databox.createdAt)
-      && !isNil(databox.updatedAt)
-      && databox.createdAt !== databox.updatedAt,
-    [databox],
+    () => !isNil(sentAt)
+      && !isNil(updatedAt)
+      && sentAt !== updatedAt,
+    [sentAt, updatedAt],
   );
 
   const textSinceUpdated = useMemo(
     () => (hasUpdate
-      ? `${t('common:databox.since.updated')} ${calendarDateSinceUpdated} (${getDateFormat(databox.updatedAt)})`
+      ? `${t('common:databox.since.updated')} ${calendarDateSinceUpdated} (${getDateFormat(updatedAt)})`
       : null),
-    [hasUpdate, t, calendarDateSinceUpdated, databox.updatedAt],
+    [hasUpdate, t, calendarDateSinceUpdated, updatedAt],
   );
 
   const commentType = useMemo(
@@ -140,15 +139,15 @@ const ChipDataboxStatus = ({ databox, t, showIcon, showDetails }) => {
       if (isNil(databox)) {
         return null;
       }
-      if (databox.status === DONE) {
+      if (status === DONE) {
         return 'dpoComment';
       }
-      if (databox.status === CLOSED) {
+      if (status === CLOSED) {
         return 'ownerComment';
       }
       return null;
     },
-    [databox],
+    [databox, status],
   );
 
   const comment = useMemo(

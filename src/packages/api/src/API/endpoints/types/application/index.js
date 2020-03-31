@@ -86,6 +86,11 @@ export default {
       path: '/databoxes/:id',
       auth: true,
     },
+    count: {
+      method: 'HEAD',
+      path: '/databoxes',
+      auth: true,
+    },
     blob: {
       find: {
         method: 'GET',
@@ -95,6 +100,11 @@ export default {
       read: {
         method: 'GET',
         path: '/blobs/:id',
+        auth: true,
+      },
+      count: {
+        method: 'HEAD',
+        path: '/blobs',
         auth: true,
       },
     },

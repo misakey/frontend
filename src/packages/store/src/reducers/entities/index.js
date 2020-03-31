@@ -74,7 +74,16 @@ function removeEntities(state, { entities, entitySchema }) {
   };
 }
 
-const makeResetEntities = (initialState) => () => initialState;
+const makeResetEntities = (initialState) => (state, { entitySchema }) => {
+  if (isObject(entitySchema) && isSchemaEntity(entitySchema.entity)) {
+    const { key } = entitySchema.entity;
+    return {
+      ...state,
+      [key]: {},
+    };
+  }
+  return initialState;
+};
 
 /**
  *

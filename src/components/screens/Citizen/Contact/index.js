@@ -35,7 +35,6 @@ import ToggleButtonGroupMailType from 'components/dumb/ToggleButtonGroup/MailTyp
 
 import MAIL_TYPES, { LEGAL, CORDIAL, FRIENDLY } from 'constants/mailTypes';
 import RECONTACT_MAIL_TYPES, { LEGAL_RECONTACT, CORDIAL_RECONTACT, FRIENDLY_RECONTACT } from 'constants/mailTypes/recontact';
-import mapDates from '@misakey/helpers/mapDates';
 import DataboxSchema from 'store/schemas/Databox';
 import { clearDataboxURLById } from 'store/actions/screens/contact';
 
@@ -99,7 +98,6 @@ const useGetEmailFor = (
         dpoEmail,
         databoxURL,
         mainDomain,
-        ...mapDates(databox),
       }),
       subject: t('citizen:contact.email.subject'),
     },

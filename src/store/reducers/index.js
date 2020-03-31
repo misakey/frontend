@@ -37,6 +37,7 @@ const appReducer = combineReducers({
     databoxes: {},
     databoxesByProducer: {},
     applicationsByCategories: {},
+    applicationsById: {},
     userEmails: {},
     // FIXME: create a combineReducers once we need to passe more custom reducers
     ...userApplicationsInitialState,

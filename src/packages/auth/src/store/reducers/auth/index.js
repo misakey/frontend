@@ -16,12 +16,14 @@ import {
 export const INITIAL_STATE = {
   id: null,
   authenticatedAt: null,
+  isAuthenticated: null,
   profile: null,
   roles: null,
   token: null,
   expiresAt: null,
   userId: null,
   acr: null,
+  scope: null,
 };
 
 function resetCredentials() {
