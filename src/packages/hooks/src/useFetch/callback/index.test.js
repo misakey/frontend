@@ -33,6 +33,8 @@ Wrapper.propTypes = {
 };
 
 describe('testing useFetchCallback', () => {
+  jest.useFakeTimers();
+
   describe('immediate promise resolution', () => {
     test('should return metadata in a pristine state', () => {
       const { result } = renderHook(
@@ -355,7 +357,10 @@ describe('testing useFetchCallback', () => {
       expect(result.current.internalFetchingCount.current).toBe(1);
       expect(result.current.internalErrorRef.current).toBeUndefined();
 
+      jest.advanceTimersByTime(TIMEOUT);
+
       await waitForNextUpdate();
+
       expect(result.current.data).toBe(OK);
       expect(result.current.error).toBeNull();
       expect(result.current.isFetching).toBe(false);
@@ -367,7 +372,7 @@ describe('testing useFetchCallback', () => {
     test('should stay in fetching state if wrappedFetch resolves after unmount', async () => {
       const FETCH_TIMEOUT = 2;
       const WAIT_TIMEOUT = 1;
-      const { result, wait, unmount } = renderHook(
+      const { result, unmount } = renderHook(
         () => useFetchCallback(delayedFetchFn(FETCH_TIMEOUT)),
         { wrapper: Wrapper },
       );
@@ -383,11 +388,12 @@ describe('testing useFetchCallback', () => {
       expect(result.current.internalFetchingCount.current).toBe(1);
       expect(result.current.internalErrorRef.current).toBeUndefined();
 
-      await wait(() => {
-        act(() => {
-          unmount();
-        });
-      }, { timeout: WAIT_TIMEOUT });
+
+      jest.advanceTimersByTime(WAIT_TIMEOUT);
+
+      act(() => {
+        unmount();
+      });
 
       expect(result.current.data).toBeUndefined();
       expect(result.current.error).toBeNull();
@@ -396,14 +402,14 @@ describe('testing useFetchCallback', () => {
       expect(result.current.internalFetchingCount.current).toBe(1);
       expect(result.current.internalErrorRef.current).toBeUndefined();
 
-      await wait(() => {
-        expect(result.current.data).toBeUndefined();
-        expect(result.current.error).toBeNull();
-        expect(result.current.isFetching).toBe(true);
-        expect(result.current.wrappedFetch).toEqual(expect.any(Function));
-        expect(result.current.internalFetchingCount.current).toBe(1);
-        expect(result.current.internalErrorRef.current).toBeUndefined();
-      }, { timeout: FETCH_TIMEOUT });
+      jest.advanceTimersByTime(FETCH_TIMEOUT);
+
+      expect(result.current.data).toBeUndefined();
+      expect(result.current.error).toBeNull();
+      expect(result.current.isFetching).toBe(true);
+      expect(result.current.wrappedFetch).toEqual(expect.any(Function));
+      expect(result.current.internalFetchingCount.current).toBe(1);
+      expect(result.current.internalErrorRef.current).toBeUndefined();
     });
   });
 });

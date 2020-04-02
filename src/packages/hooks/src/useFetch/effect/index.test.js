@@ -36,6 +36,8 @@ Wrapper.propTypes = {
 };
 
 describe('testing useFetchEffect', () => {
+  jest.useFakeTimers();
+
   beforeEach(() => {
     fetchFn.mockClear();
     fecthErrorFn.mockClear();
@@ -78,7 +80,7 @@ describe('testing useFetchEffect', () => {
     test('should call fetchFn only once until fetchFn resolved', async () => {
       const TIMEOUT = 1000;
       const delayedFetchFn = makeDelayedFetchFn(TIMEOUT);
-      const { rerender, result, wait } = renderHook(
+      const { rerender, result, waitForNextUpdate } = renderHook(
         (props) => useFetchEffect(delayedFetchFn, props),
         {
           wrapper: Wrapper,
@@ -101,10 +103,12 @@ describe('testing useFetchEffect', () => {
 
       expect(result.current.isFetching).toBe(true);
 
-      await wait(() => {
-        expect(delayedFetchFn).toHaveBeenCalledTimes(1);
-        expect(result.current.isFetching).toBe(false);
-      }, TIMEOUT);
+      jest.advanceTimersByTime(TIMEOUT);
+
+      await waitForNextUpdate();
+
+      expect(delayedFetchFn).toHaveBeenCalledTimes(1);
+      expect(result.current.isFetching).toBe(false);
     });
 
     test('should call fetchFn once and stopOnError', async () => {
@@ -186,7 +190,7 @@ describe('testing useFetchEffect', () => {
     test('should call fetchFn twice', async () => {
       const TIMEOUT = 1000;
       const delayedFetchFn = makeDelayedFetchFn(TIMEOUT);
-      const { rerender, result, wait } = renderHook(
+      const { rerender, result, waitForNextUpdate } = renderHook(
         (props) => useFetchEffect(delayedFetchFn, props),
         {
           wrapper: Wrapper,
@@ -209,10 +213,12 @@ describe('testing useFetchEffect', () => {
 
       expect(result.current.isFetching).toBe(true);
 
-      await wait(() => {
-        expect(delayedFetchFn).toHaveBeenCalledTimes(2);
-        expect(result.current.isFetching).toBe(false);
-      }, TIMEOUT);
+      jest.advanceTimersByTime(TIMEOUT);
+
+      await waitForNextUpdate();
+
+      expect(delayedFetchFn).toHaveBeenCalledTimes(2);
+      expect(result.current.isFetching).toBe(false);
     });
   });
 });
