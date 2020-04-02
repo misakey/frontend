@@ -7,7 +7,7 @@ import routes from 'routes';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import Button from 'components/dumb/Button';
+import Button from '@misakey/ui/Button';
 
 // COMPONENTS
 const ButtonGoBackTo = ({ className, to, t, text, ...props }) => (

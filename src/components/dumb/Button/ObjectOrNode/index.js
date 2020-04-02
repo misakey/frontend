@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import isObject from '@misakey/helpers/isObject';
 
-import Button from 'components/dumb/Button';
+import Button from '@misakey/ui/Button';
 
 const ButtonFromObjectOrNode = ({ button }) => {
   if (isValidElement(button)) {

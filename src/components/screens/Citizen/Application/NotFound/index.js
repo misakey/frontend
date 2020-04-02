@@ -26,7 +26,7 @@ import ApplicationSchema from 'store/schemas/Application';
 import routes from 'routes';
 
 import Screen from 'components/dumb/Screen';
-import { BUTTON_STANDINGS } from 'components/dumb/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import CardSimpleText from 'components/dumb/Card/Simple/Text';
 import LinkWithDialogConnect from 'components/smart/Dialog/Connect/with/Link';
 import withDialogConnect from 'components/smart/Dialog/Connect/with';

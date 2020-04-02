@@ -6,7 +6,7 @@ import omit from '@misakey/helpers/omit';
 
 import { useFormikContext } from 'formik';
 
-import Button, { BUTTON_STANDINGS } from 'components/dumb/Button/index';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 // NB: this component expects to be wrapped in a formik context
 const ButtonSubmit = ({ t, text, ...rest }) => {

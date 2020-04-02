@@ -13,7 +13,7 @@ import {
   NoNewSecretKeys,
 } from '@misakey/crypto/Errors/classes';
 
-import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import { usePasswordPrompt } from 'components/dumb/PasswordPrompt';
 import { useDispatch } from 'react-redux';
 

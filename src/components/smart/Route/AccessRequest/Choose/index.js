@@ -12,7 +12,7 @@ import Title from 'components/dumb/Typography/Title';
 import ScreenAction from 'components/dumb/Screen/Action';
 import Card from 'components/dumb/Card';
 import BoxEllipsisApplication from 'components/dumb/Box/Ellipsis/Application';
-import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import ListQuestions, { useQuestionsItems } from 'components/dumb/List/Questions';
 
 import { ROLE_PREFIX_SCOPE } from 'constants/Roles';

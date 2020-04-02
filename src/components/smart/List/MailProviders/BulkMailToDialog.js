@@ -7,7 +7,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import DialogConfirm from 'components/dumb/Dialog/Confirm';
-import Button from 'components/dumb/Button';
+import Button from '@misakey/ui/Button';
 
 // COMPONENTS
 const BulkMailToDialog = ({

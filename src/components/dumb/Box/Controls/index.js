@@ -9,8 +9,8 @@ import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Box from '@material-ui/core/Box';
-import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
-import ButtonSubmit from 'components/dumb/Button/Submit';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import ButtonSubmit from '@misakey/ui/Button/Submit';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({

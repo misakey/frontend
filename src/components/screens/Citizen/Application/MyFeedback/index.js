@@ -25,7 +25,7 @@ import compose from '@misakey/helpers/compose';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
-import { BUTTON_STANDINGS } from 'components/dumb/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import BoxControls from 'components/dumb/Box/Controls';
 import ScreenAction from 'components/dumb/Screen/Action';

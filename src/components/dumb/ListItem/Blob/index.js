@@ -7,7 +7,7 @@ import numbro from 'numbro';
 import { FILE_SIZE_FORMAT } from 'constants/formats/numbers';
 
 
-import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';

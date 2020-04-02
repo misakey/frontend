@@ -24,7 +24,7 @@ import Box from '@material-ui/core/Box';
 import FormCardAuth from 'components/dumb/Form/Card/Auth';
 import FieldCode from 'components/dumb/Form/Field/Code';
 import Fields from '@misakey/ui/Form/Fields';
-import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import ChipUser from 'components/dumb/Chip/User';
 import CardHeaderAuthSignUp from 'components/smart/Card/Auth/Header/SignUp';
 

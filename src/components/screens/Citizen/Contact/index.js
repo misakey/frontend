@@ -13,7 +13,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useHistory } from 'react-router-dom';
 
-import { BUTTON_STANDINGS } from 'components/dumb/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';

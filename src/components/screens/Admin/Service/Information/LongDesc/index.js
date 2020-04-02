@@ -22,7 +22,7 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import FieldText from 'components/dumb/Form/Field/Text';
-import ButtonSubmit from 'components/dumb/Button/Submit';
+import ButtonSubmit from '@misakey/ui/Button/Submit';
 import ScreenError from 'components/dumb/Screen/Error';
 import ScreenAction from 'components/dumb/Screen/Action';
 

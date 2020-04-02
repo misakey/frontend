@@ -24,7 +24,7 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import prop from '@misakey/helpers/prop';
 
-import { BUTTON_STANDINGS } from 'components/dumb/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import DialogDataboxArchive from 'components/dumb/Dialog/Databox/Archive';
 import DialogDataboxReopen from 'components/dumb/Dialog/Databox/Reopen';
 import CardSimpleText from 'components/dumb/Card/Simple/Text';

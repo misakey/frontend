@@ -39,7 +39,7 @@ import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpError
 
 import SplashScreen from '@misakey/ui/Screen/Splash';
 import BoxSection from '@misakey/ui/Box/Section';
-import ButtonSubmit from 'components/dumb/Button/Submit';
+import ButtonSubmit from '@misakey/ui/Button/Submit';
 import BoxMessage from '@misakey/ui/Box/Message';
 import ErrorOverlay from 'components/dumb/Overlay/Error';
 import ScreenAction from 'components/dumb/Screen/Action';

@@ -34,7 +34,7 @@ import List from '@material-ui/core/List';
 import DatavizDialog from 'components/dumb/Dialog/Dataviz';
 
 
-import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import { IS_PLUGIN } from 'constants/plugin';
 import AVAILABLE_DATAVIZ_DOMAINS from 'components/dumb/Dataviz/availableDatavizDomains.json';
 

@@ -15,7 +15,7 @@ import useSuspenseMaterialFix from '@misakey/hooks/useSuspenseMaterialFix';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import FieldText from 'components/dumb/Form/Field/Text';
-import ButtonSubmit from 'components/dumb/Button/Submit';
+import ButtonSubmit from '@misakey/ui/Button/Submit';
 import ScreenAction from 'components/dumb/Screen/Action';
 import withApplicationCreate from 'components/smart/withApplicationCreate';
 

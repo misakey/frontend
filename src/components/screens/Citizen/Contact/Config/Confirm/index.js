@@ -22,7 +22,7 @@ import FieldCode from 'components/dumb/Form/Field/Code';
 import Fields from '@misakey/ui/Form/Fields';
 import ChipUser from 'components/dumb/Chip/User';
 import Box from '@material-ui/core/Box';
-import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 // CONSTANTS
 const DEFAULT_FIELDS = {

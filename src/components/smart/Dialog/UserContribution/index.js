@@ -16,7 +16,7 @@ import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import { withStyles } from '@material-ui/core/styles';
 
 import FieldText from 'components/dumb/Form/Field/Text';
-import ButtonSubmit from 'components/dumb/Button/Submit';
+import ButtonSubmit from '@misakey/ui/Button/Submit';
 
 import { privacyLinkSchema, dpoEmailSchema } from 'constants/validationSchemas/contribution';
 

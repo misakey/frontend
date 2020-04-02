@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 
 import CardSimpleText from 'components/dumb/Card/Simple/Text';
-import { BUTTON_STANDINGS } from 'components/dumb/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import exportCrypto from '@misakey/crypto/store/actions/exportCrypto';
 

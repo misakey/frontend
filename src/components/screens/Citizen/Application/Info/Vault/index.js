@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import CardSimpleText from 'components/dumb/Card/Simple/Text';
 import ApplicationSchema from 'store/schemas/Application';
 import { PORTABILITY } from 'constants/databox/type';
-import { BUTTON_STANDINGS } from 'components/dumb/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import ButtonWithRequestCreation from 'components/smart/Requests/New/with/Button';
 
 // COMPONENTS

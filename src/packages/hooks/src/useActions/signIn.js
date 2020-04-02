@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 
 import { Link, useHistory } from 'react-router-dom';
 import { SECLEVEL_CONFIG, DEFAULT_SECLEVEL, STEP } from 'constants/auth';
-import { BUTTON_STANDINGS } from 'components/dumb/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import AddIcon from '@material-ui/icons/Add';
 

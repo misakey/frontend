@@ -7,7 +7,7 @@ Form Field Rating example:
 import React, { useCallback } from 'react';
 import { Formik, Form, Field } from 'formik';
 import RatingField from 'components/dumb/Form/Field/Rating';
-import ButtonSubmit from 'components/dumb/Button/Submit';
+import ButtonSubmit from '@misakey/ui/Button/Submit';
 import log from '@misakey/helpers/log';
 
 const INITIAL_VALUES = {

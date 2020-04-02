@@ -10,7 +10,7 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import { fetchApplicationsByCategory } from '@misakey/helpers/fetchApplications';
 
 import Card from 'components/dumb/Card';
-import { BUTTON_STANDINGS } from 'components/dumb/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import ApplicationsList from 'components/dumb/List/Applications';
 import Title from 'components/dumb/Typography/Title';
 

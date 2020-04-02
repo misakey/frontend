@@ -26,7 +26,7 @@ import SignInFormFields from 'components/screens/Auth/SignIn/Form/Fields';
 import FormCardAuth from 'components/dumb/Form/Card/Auth';
 import AuthCardTitle from 'components/smart/Card/Auth/Title';
 import CardHeaderAuth from 'components/smart/Card/Auth/Header';
-import Button from 'components/dumb/Button';
+import Button from '@misakey/ui/Button';
 import LinkMore from 'components/dumb/Link/More';
 
 // CONSTANTS

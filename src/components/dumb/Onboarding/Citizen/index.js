@@ -8,7 +8,7 @@ import { IS_PLUGIN } from 'constants/plugin';
 
 import routes from 'routes';
 import { redirectToApp, isPluginDetected } from '@misakey/helpers/plugin';
-import { BUTTON_STANDINGS } from 'components/dumb/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 // import CardSimpleDoubleButton from 'components/dumb/Card/Simple/DoubleButton';
 import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
 import Onboarding, { OnboardingStep } from 'components/dumb/Onboarding';

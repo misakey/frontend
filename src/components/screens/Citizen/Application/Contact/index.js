@@ -32,7 +32,7 @@ import ExpansionPanelContactFrom from 'components/smart/ExpansionPanel/Contact/F
 import CardContactTo from 'components/dumb/Card/Contact/To';
 import CardContactSubject from 'components/smart/Card/Contact/Subject';
 import CardContactBody from 'components/dumb/Card/Contact/Body';
-import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import { SCREEN_STATE_PROPTYPES, getStyleForContainerScroll } from 'components/dumb/Screen';
 import ScreenAction from 'components/dumb/Screen/Action';
 import ContactConfig from 'components/screens/Citizen/Contact/Config';

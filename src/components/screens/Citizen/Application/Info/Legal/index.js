@@ -14,7 +14,7 @@ import Button from '@material-ui/core/Button';
 import withDialogConnect from 'components/smart/Dialog/Connect/with';
 
 import Title from 'components/dumb/Typography/Title';
-import { BUTTON_STANDINGS } from 'components/dumb/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import CardSimpleText from 'components/dumb/Card/Simple/Text';
 import CardSimpleDoubleButton from 'components/dumb/Card/Simple/DoubleButton';

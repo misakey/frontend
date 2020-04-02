@@ -15,7 +15,7 @@ import { openInNewTab } from '@misakey/helpers/plugin';
 import ApplicationSchema from 'store/schemas/Application';
 
 import Title from 'components/dumb/Typography/Title';
-import { BUTTON_STANDINGS } from 'components/dumb/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';

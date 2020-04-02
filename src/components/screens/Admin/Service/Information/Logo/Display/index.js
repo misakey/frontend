@@ -10,7 +10,7 @@ import Container from '@material-ui/core/Container';
 import AppBarNavigation from 'components/dumb/AppBar/Navigation';
 import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import ButtonSubmit from 'components/dumb/Button/Submit';
+import ButtonSubmit from '@misakey/ui/Button/Submit';
 import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
 import BoxSection from '@misakey/ui/Box/Section';
 

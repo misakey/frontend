@@ -22,13 +22,13 @@ module.exports = {
   require: [
     path.join(__dirname, '/public/env.js'),
   ],
-  styles: './styleguide/style.js',
-  theme: './styleguide/theme.js',
+  styles: './styleguide_config/style.js',
+  theme: './styleguide_config/theme.js',
   template: {
     favicon: 'https://www.misakey.com/favicon.ico',
   },
   styleguideComponents: {
-    Wrapper: path.join(__dirname, 'styleguide/components/Wrapper'),
+    Wrapper: path.join(__dirname, 'styleguide_config/components/Wrapper'),
   },
   webpackConfig: {
     context: path.resolve(__dirname),

@@ -21,7 +21,7 @@ import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import BoxControls from 'components/dumb/Box/Controls';
-import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import ScreenAction from 'components/dumb/Screen/Action';

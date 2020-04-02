@@ -14,7 +14,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 // import Box from '@material-ui/core/Box';
 import CardAuth from 'components/dumb/Card/Auth';
 import CardHeaderAuthSignUp from 'components/smart/Card/Auth/Header/SignUp';
-import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import ButtonGoBackTo from 'components/dumb/Button/GoBack/To';
 import FormFields from '@misakey/ui/Form/Fields';
 import FieldText from 'components/dumb/Form/Field/Text';

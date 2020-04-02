@@ -24,7 +24,7 @@ import withMyFeedback from 'components/smart/withMyFeedback';
 import LinkWithDialogConnect from 'components/smart/Dialog/Connect/with/Link';
 
 import Box from '@material-ui/core/Box';
-import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import Title from 'components/dumb/Typography/Title';
 import List from '@material-ui/core/List';
 import SummaryFeedbackCard from 'components/dumb/Card/Feedback/Summary';

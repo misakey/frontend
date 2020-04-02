@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 
 import isNil from '@misakey/helpers/isNil';
 
-import { BUTTON_STANDINGS } from 'components/dumb/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
 import Onboarding, { OnboardingStep } from 'components/dumb/Onboarding';
 

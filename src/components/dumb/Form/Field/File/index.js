@@ -13,7 +13,7 @@ import useFileReader from '@misakey/hooks/useFileReader';
 import useDrag from '@misakey/hooks/useDrag';
 import usePropChanged from '@misakey/hooks/usePropChanged';
 
-import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
 

@@ -19,7 +19,7 @@ import Container from '@material-ui/core/Container';
 
 import Screen from 'components/dumb/Screen';
 import CardSimpleText from 'components/dumb/Card/Simple/Text';
-import { BUTTON_STANDINGS } from 'components/dumb/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import { DEFAULT_SCOPE } from 'constants/Roles';
 import { IS_PLUGIN } from 'constants/plugin';
 

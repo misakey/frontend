@@ -32,10 +32,15 @@ export default (callback, { delay, immediateRun } = {}, ...effects) => {
 
   const actualDelay = useDelay(delay, immediateRun);
 
-  return useEffect(() => {
-    const timeout = setTimeout(() => {
-      callCbFn(callbackRef);
-    }, actualDelay);
-    return () => clearTimeout(timeout);
-  }, [...effects, immediateRun]); // eslint-disable-line react-hooks/exhaustive-deps
+  return useEffect(
+    () => {
+      const timeout = setTimeout(() => {
+        callCbFn(callbackRef);
+      }, actualDelay);
+      return () => clearTimeout(timeout);
+    }, [
+      ...effects, // eslint-disable-line react-hooks/exhaustive-deps
+      callbackRef, actualDelay, immediateRun,
+    ],
+  );
 };

@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';
 import Alert from '@misakey/ui/Alert';
-import Button, { BUTTON_STANDINGS } from 'components/dumb/Button';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
 
 const SecLevelWarningAlert = ({
