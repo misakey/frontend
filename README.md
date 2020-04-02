@@ -114,7 +114,7 @@ Other improvement possibilities for later:
 
 ## License
 
-The code is published under BSL. More info in the [LICENSE](LICENSE) file.
+The code is published under AGPLv3. More info in the [LICENSE](LICENSE) file.
 
 ## Cryptography notice
 
