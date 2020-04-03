@@ -2,8 +2,6 @@ import React, { Suspense, lazy, useState, useCallback, useMemo, useEffect, useRe
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { withTranslation } from 'react-i18next';
-import { useSnackbar } from 'notistack';
 import clsx from 'clsx';
 
 import API from '@misakey/api';
@@ -28,7 +26,7 @@ import Box from '@material-ui/core/Box';
 import Screen, { getStyleForContainerScroll, SCREEN_STATE_PROPTYPES } from 'components/dumb/Screen';
 import DefaultSplashScreen from '@misakey/ui/Screen/Splash';
 import ApplicationInfoNav from 'components/screens/Citizen/Application/Info/Nav';
-import UserContributionDialog from 'components/smart/Dialog/UserContribution';
+import UserContributionContextProvider from 'components/smart/Dialog/UserContribution/Context/Provider';
 import { addToUserApplications, removeFromUserApplications } from 'store/actions/applications/userApplications';
 import { WORKSPACE } from 'constants/workspaces';
 
@@ -106,12 +104,10 @@ const createUserApplication = (form) => API
 // COMPONENTS
 function ApplicationInfo({
   userId, entity, isAuthenticated,
-  match, t, screenProps, dispatch,
+  match, screenProps, dispatch,
 }) {
   const classes = useStyles();
-  const [isOpenUserContributionDialog, setOpenUserContributionDialog] = useState(false);
   const [applicationLinkId, setApplicationLinkId] = useState(null);
-  const [userContributionType, setUserContributionType] = useState(undefined);
   const [contentRef, setContentRef] = React.useState(undefined);
 
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
@@ -119,50 +115,12 @@ function ApplicationInfo({
   const mounted = useRef(false);
 
   const { mainDomain } = match.params;
-  const { name, id } = useMemo(
+  const { id } = useMemo(
     () => entity,
     [entity],
   );
 
   const { isLoading } = useMemo(() => screenProps.state, [screenProps]);
-
-  const { enqueueSnackbar } = useSnackbar();
-
-  const closeUserContributionDialog = useCallback(() => {
-    setOpenUserContributionDialog(false);
-  }, [setOpenUserContributionDialog]);
-
-  const openUserContributionDialog = useCallback((type) => {
-    setUserContributionType(type);
-    setOpenUserContributionDialog(true);
-  }, [setOpenUserContributionDialog, setUserContributionType]);
-
-  const onContributionDpoEmailClick = useCallback(
-    () => openUserContributionDialog('dpoEmail'),
-    [openUserContributionDialog],
-  );
-  const onContributionLinkClick = useCallback(
-    () => openUserContributionDialog('link'),
-    [openUserContributionDialog],
-  );
-
-  const onUserContribute = useCallback(
-    (dpoEmail, link) => API.use(ENDPOINTS.applicationContribution.create)
-      .build(null, {
-        user_id: userId,
-        dpo_email: dpoEmail,
-        link,
-        application_id: id,
-      })
-      .send()
-      .then(() => {
-        const text = t('citizen:userContribution.success');
-        enqueueSnackbar(text, { variant: 'success' });
-      })
-      .catch(handleGenericHttpErrors)
-      .finally(closeUserContributionDialog),
-    [userId, id, closeUserContributionDialog, t, enqueueSnackbar, handleGenericHttpErrors],
-  );
 
   const onToggleLinked = useCallback(
     () => {
@@ -233,13 +191,6 @@ function ApplicationInfo({
         maxWidth="md"
         className={classes.container}
       >
-        <UserContributionDialog
-          open={isOpenUserContributionDialog}
-          onClose={closeUserContributionDialog}
-          onSuccess={onUserContribute}
-          userContributionType={userContributionType}
-          appName={name}
-        />
         <ApplicationInfoNav
           className={clsx({ [classes.nav]: IS_PLUGIN })}
           elevationScrollTarget={contentRef}
@@ -251,63 +202,63 @@ function ApplicationInfo({
           className={clsx(classes.content, { [classes.pluginContent]: IS_PLUGIN })}
           ref={(ref) => IS_PLUGIN && setContentRef(ref)}
         >
-          <Suspense fallback={<DefaultSplashScreen />}>
-            {isLoading ? (
-              <DefaultSplashScreen />
-            ) : (
-              <Switch>
-                <Route
-                  exact
-                  path={routes.citizen.application.vault}
-                  render={(routerProps) => (
-                    <ApplicationVault
-                      onContributionDpoEmailClick={onContributionDpoEmailClick}
-                      application={entity}
-                      {...routerProps}
-                    />
-                  )}
-                />
-                <Route
-                  path={routes.citizen.application.feedback}
-                  render={(routerProps) => (
-                    <Feedback
-                      application={entity}
-                      {...routerProps}
-                    />
-                  )}
-                />
-                <Route
-                  path={routes.citizen.application.legal}
-                  render={(routerProps) => (
-                    <Legal
-                      application={entity}
-                      onContributionLinkClick={onContributionLinkClick}
-                      {...routerProps}
-                    />
-                  )}
-                />
-                <Route
-                  path={routes.citizen.application.more}
-                  render={(routerProps) => (
-                    <More
-                      application={entity}
-                      isLinked={!isNil(applicationLinkId)}
-                      toggleLinked={onToggleLinked}
-                      isAuthenticated={isAuthenticated}
-                      {...routerProps}
-                    />
-                  )}
-                />
-                {!isNil(id) && (
+          <UserContributionContextProvider defaultEntity={entity}>
+            <Suspense fallback={<DefaultSplashScreen />}>
+              {isLoading ? (
+                <DefaultSplashScreen />
+              ) : (
+                <Switch>
+                  <Route
+                    exact
+                    path={routes.citizen.application.vault}
+                    render={(routerProps) => (
+                      <ApplicationVault
+                        application={entity}
+                        {...routerProps}
+                      />
+                    )}
+                  />
+                  <Route
+                    path={routes.citizen.application.feedback}
+                    render={(routerProps) => (
+                      <Feedback
+                        application={entity}
+                        {...routerProps}
+                      />
+                    )}
+                  />
+                  <Route
+                    path={routes.citizen.application.legal}
+                    render={(routerProps) => (
+                      <Legal
+                        application={entity}
+                        {...routerProps}
+                      />
+                    )}
+                  />
+                  <Route
+                    path={routes.citizen.application.more}
+                    render={(routerProps) => (
+                      <More
+                        application={entity}
+                        isLinked={!isNil(applicationLinkId)}
+                        toggleLinked={onToggleLinked}
+                        isAuthenticated={isAuthenticated}
+                        {...routerProps}
+                      />
+                    )}
+                  />
+                  {!isNil(id) && (
                   <Redirect
                     from={routes.citizen.application._}
                     exact
                     to={defaultRoute}
                   />
-                )}
-              </Switch>
-            )}
-          </Suspense>
+                  )}
+                </Switch>
+              )}
+            </Suspense>
+          </UserContributionContextProvider>
         </Box>
       </Container>
     </Screen>
@@ -324,7 +275,6 @@ ApplicationInfo.propTypes = {
     params: PropTypes.shape({ mainDomain: PropTypes.string }),
     path: PropTypes.string,
   }).isRequired,
-  t: PropTypes.func.isRequired,
   screenProps: PropTypes.shape({
     state: SCREEN_STATE_PROPTYPES,
   }).isRequired,
@@ -338,4 +288,4 @@ ApplicationInfo.defaultProps = {
 export default connect((state) => ({
   userId: state.auth.userId,
   isAuthenticated: !!state.auth.token,
-}))(withTranslation(['citizen'])(ApplicationInfo));
+}))(ApplicationInfo);

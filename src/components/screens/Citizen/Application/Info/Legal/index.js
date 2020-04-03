@@ -3,34 +3,33 @@ import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
 import ApplicationSchema from 'store/schemas/Application';
+import { IS_PLUGIN, storeLinks } from 'constants/plugin';
 
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
-import { IS_PLUGIN, storeLinks } from 'constants/plugin';
+import { isPluginDetected } from '@misakey/helpers/plugin';
 
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-
 import withDialogConnect from 'components/smart/Dialog/Connect/with';
-
 import Title from 'components/dumb/Typography/Title';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
-
 import CardSimpleText from 'components/dumb/Card/Simple/Text';
 import CardSimpleDoubleButton from 'components/dumb/Card/Simple/DoubleButton';
-import { isPluginDetected } from '@misakey/helpers/plugin';
-
+import withUserContributionContextConsumer from 'components/smart/Dialog/UserContribution/Context/Consumer/with';
+import { USER_CONTRIBUTION_TYPE } from 'components/smart/Dialog/UserContribution';
 
 // CONSTANTS
 const linksType = ['privacy_policy', 'tos', 'cookies'];
 
 // COMPONENTS
-const ButtonWithDialogConnect = withDialogConnect(Button);
+const ButtonWithUserContributionWithDialogConnect = withUserContributionContextConsumer(
+  withDialogConnect(Button),
+);
 
 const ApplicationInfoLegal = ({
   application,
   t,
-  onContributionLinkClick,
 }) => {
   const links = useMemo(
     () => linksType.map((linkType) => {
@@ -58,12 +57,12 @@ const ApplicationInfoLegal = ({
           standing: BUTTON_STANDINGS.OUTLINED,
           size: 'small',
           text: t('common:add'),
-          onClick: onContributionLinkClick,
-          component: ButtonWithDialogConnect,
+          dialogProps: { userContributionType: USER_CONTRIBUTION_TYPE.link },
+          component: ButtonWithUserContributionWithDialogConnect,
         },
       };
     }),
-    [t, application, onContributionLinkClick],
+    [t, application],
   );
 
   const isPluginInstalled = useMemo(() => (isPluginDetected()), []);
@@ -114,7 +113,6 @@ const ApplicationInfoLegal = ({
 
 ApplicationInfoLegal.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes).isRequired,
-  onContributionLinkClick: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
 };
 
