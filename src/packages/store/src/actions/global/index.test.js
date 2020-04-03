@@ -5,7 +5,7 @@ describe('testing global actions', () => {
   it('should create an UPDATE_GLOBAL_STATE action', () => {
     expect(updateGlobals(globals)).toEqual({
       type: UPDATE_GLOBAL_STATE,
-      ...globals,
+      globals,
     });
   });
 });

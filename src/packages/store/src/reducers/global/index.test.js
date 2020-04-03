@@ -10,6 +10,7 @@ describe('testing global reducer', () => {
   });
   it('should handle UPDATE_GLOBAL_STATE', () => {
     const nextState = { isBetaDisclaimerApproved: true };
-    expect(reducer(initialState, { type: UPDATE_GLOBAL_STATE, ...nextState })).toEqual(nextState);
+    expect(reducer(initialState, { type: UPDATE_GLOBAL_STATE, globals: nextState }))
+      .toEqual(nextState);
   });
 });

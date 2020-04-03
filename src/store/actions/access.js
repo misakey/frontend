@@ -12,9 +12,9 @@ export const accessReset = () => ({
   type: ACCESS_RESET,
 });
 
-export const accessRequestUpdate = (props) => ({
+export const accessRequestUpdate = (accessRequest) => ({
   type: ACCESS_REQUEST_UPDATE,
-  ...props,
+  accessRequest,
 });
 
 const accessRequestSetProducerKey = (producerKey) => ({

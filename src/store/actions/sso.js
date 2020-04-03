@@ -5,7 +5,7 @@ export const ssoReset = () => ({
   type: SSO_RESET,
 });
 
-export const ssoUpdate = (params) => ({
+export const ssoUpdate = (sso) => ({
   type: SSO_UPDATE,
-  ...params,
+  sso,
 });

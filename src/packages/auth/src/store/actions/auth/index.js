@@ -14,13 +14,15 @@ export const authReset = () => ({
 
 export const signIn = (credentials) => ({
   type: SIGN_IN,
-  ...credentials,
-  authenticatedAt: moment().toISOString(),
+  credentials: {
+    ...credentials,
+    authenticatedAt: moment().toISOString(),
+  },
 });
 
 export const loadUser = (credentials) => ({
   type: LOAD_USER,
-  ...credentials,
+  credentials,
 });
 
 export const signOut = () => ({

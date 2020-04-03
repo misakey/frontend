@@ -5,8 +5,8 @@ export default () => (next) => (action) => {
   switch (action.type) {
     case SIGN_IN:
     case LOAD_USER:
-      if (action.token) {
-        API.setToken(action.token);
+      if (action.credentials.token) {
+        API.setToken(action.credentials.token);
       }
       break;
     case AUTH_RESET:

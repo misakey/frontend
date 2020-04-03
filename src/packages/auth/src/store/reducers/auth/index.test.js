@@ -20,14 +20,14 @@ describe('testing auth reducer', () => {
     const credentials = { token: 'hey', id: 'ho' };
 
     it('should handle SIGN_IN, initial state', () => {
-      expect(reducer(INITIAL_STATE, { type: SIGN_IN, ...credentials })).toEqual({
+      expect(reducer(INITIAL_STATE, { type: SIGN_IN, credentials })).toEqual({
         ...INITIAL_STATE,
         ...credentials,
       });
     });
 
     it('should handle SIGN_IN, any state', () => {
-      expect(reducer({}, { type: SIGN_IN, ...credentials })).toEqual({
+      expect(reducer({}, { type: SIGN_IN, credentials })).toEqual({
         ...credentials,
       });
     });
@@ -37,14 +37,14 @@ describe('testing auth reducer', () => {
     const credentials = { token: 'hey', id: 'ho', authenticatedAt: 'date' };
 
     it('should handle LOAD_USER, initial state', () => {
-      expect(reducer(INITIAL_STATE, { type: LOAD_USER, ...credentials })).toEqual({
+      expect(reducer(INITIAL_STATE, { type: LOAD_USER, credentials })).toEqual({
         ...INITIAL_STATE,
         ...credentials,
       });
     });
 
     it('should handle LOAD_USER, any state', () => {
-      expect(reducer({}, { type: LOAD_USER, ...credentials })).toEqual({
+      expect(reducer({}, { type: LOAD_USER, credentials })).toEqual({
         ...credentials,
       });
     });

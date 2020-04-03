@@ -11,15 +11,17 @@ describe('testing auth actions', () => {
     const credentials = { token: 'hey', id: 'ho' };
     expect(signIn(credentials)).toEqual({
       type: SIGN_IN,
-      ...credentials,
-      authenticatedAt: expect.any(String),
+      credentials: {
+        ...credentials,
+        authenticatedAt: expect.any(String),
+      },
     });
   });
   it('should create a LOAD_USER action', () => {
     const credentials = { token: 'hey', id: 'ho', authenticatedAt: 'date' };
     expect(loadUser(credentials)).toEqual({
       type: LOAD_USER,
-      ...credentials,
+      credentials,
     });
   });
   it('should create a SIGN_OUT action', () => {

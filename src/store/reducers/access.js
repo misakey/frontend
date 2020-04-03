@@ -15,10 +15,10 @@ function reset() {
 }
 
 
-function updateRequest(state, { type, ...rest }) {
+function updateRequest(state, { accessRequest }) {
   return {
     ...state,
-    request: { ...state.request, ...rest },
+    request: { ...state.request, ...accessRequest },
   };
 }
 const setProducerKey = (state, { producerKey }) => ({

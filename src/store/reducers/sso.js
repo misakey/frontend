@@ -13,10 +13,10 @@ function reset() {
   return initialState;
 }
 
-function update(state, { type, ...rest }) {
+function update(state, { sso }) {
   return {
     ...state,
-    ...rest,
+    ...sso,
   };
 }
 

@@ -30,8 +30,8 @@ function resetCredentials() {
   return INITIAL_STATE;
 }
 
-function updateCredentials(state, { type, ...rest }) {
-  return merge({}, state, rest);
+function updateCredentials(state, { credentials }) {
+  return { ...state, ...credentials };
 }
 
 function updateProfile(state, { profile }) {

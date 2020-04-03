@@ -5,10 +5,10 @@ const initialState = {
   isBetaDisclaimerApproved: null,
 };
 
-function update(state, { type, ...rest }) {
+function update(state, { globals }) {
   return {
     ...state,
-    ...rest,
+    ...globals,
   };
 }
 
