@@ -9,13 +9,12 @@ import RatingSchema from 'store/schemas/Rating';
 import propOr from '@misakey/helpers/propOr';
 import isNil from '@misakey/helpers/isNil';
 
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Typography from '@material-ui/core/Typography';
 import Card from 'components/dumb/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import Rating from '@material-ui/lab/Rating';
-import AvatarUser from 'components/dumb/Avatar/User';
+import AvatarUser from '@misakey/ui/Avatar/User';
 import Box from '@material-ui/core/Box';
 
 
@@ -70,16 +69,11 @@ const UserFeedbackCard = ({ isAuthenticated, rating, className, t }) => {
       <CardHeader
         className={classes.cardHeader}
         avatar={(
-          <>
-            {isAuthenticated ? (
-              <AvatarUser
-                avatarUri={avatarUri}
-                displayName={displayName}
-              />
-            ) : (
-              <AccountCircleIcon fontSize="large" />
-            )}
-          </>
+          <AvatarUser
+            avatarUri={avatarUri}
+            displayName={displayName}
+            fontSize="large"
+          />
         )}
         title={(isAuthenticated) ? displayName : t('common:anonymousUser')}
         subheader={(

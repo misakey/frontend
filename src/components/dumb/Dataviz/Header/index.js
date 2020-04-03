@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import Typography from '@material-ui/core/Typography';
 
-import UserAvatar from 'components/dumb/Avatar/User';
+import UserAvatar from '@misakey/ui/Avatar/User';
 import ApplicationImg from 'components/dumb/Application/Img';
 
 // HOOKS

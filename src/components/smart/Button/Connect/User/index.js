@@ -10,7 +10,7 @@ import { redirectToApp } from '@misakey/helpers/plugin';
 import { IS_PLUGIN } from 'constants/plugin';
 
 import ButtonConnect from 'components/dumb/Button/Connect';
-import AccountCircle from '@material-ui/icons/AccountCircle';
+import AvatarUser from '@misakey/ui/Avatar/User';
 
 const SMALL_BREAKPOINTS = ['xs'];
 const useStyles = makeStyles((theme) => ({
@@ -22,12 +22,11 @@ const useStyles = makeStyles((theme) => ({
     },
     whiteSpace: 'nowrap',
   },
+  buttonConnectIconButton: {
+    marginRight: theme.spacing(-1.5),
+  },
   buttonTextRounded: {
     borderRadius: '200px',
-  },
-  iconRoot: {
-    width: '40px',
-    height: '40px',
   },
 }));
 
@@ -46,8 +45,8 @@ function ButtonConnectUser() {
   );
 
   const noTokenIcon = useMemo(
-    () => (isSmallDisplay ? <AccountCircle classes={{ root: classes.iconRoot }} /> : null),
-    [classes.iconRoot, isSmallDisplay],
+    () => (isSmallDisplay ? <AvatarUser color="secondary" /> : null),
+    [isSmallDisplay],
   );
 
   const signInActionForPlugin = useCallback(() => redirectToApp(routes.auth.redirectToSignIn), []);
@@ -63,6 +62,7 @@ function ButtonConnectUser() {
         classes.buttonConnect,
         { [classes.buttonTextRounded]: !isSmallDisplay },
       )}
+      classes={{ noToken: { iconButton: { root: classes.buttonConnectIconButton } } }}
     />
   );
 }

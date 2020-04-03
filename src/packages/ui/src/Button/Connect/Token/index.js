@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
-import tDefault from '@misakey/helpers/tDefault';
 import noop from '@misakey/helpers/noop';
 import isFunction from '@misakey/helpers/isFunction';
 import isObject from '@misakey/helpers/isObject';
+import pick from '@misakey/helpers/pick';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 import useParseIdToken from '@misakey/hooks/useParseIdToken';
@@ -17,9 +17,11 @@ import Menu from '@material-ui/core/Menu';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
 
+import AvatarUser from '../../../Avatar/User';
 
-import AvatarColorized from '../../../Avatar/Colorized';
 
+// HELPERS
+const pickAvatarUserProps = pick(['avatarUri', 'displayName']);
 
 // HOOKS
 const useHandleMenu = (setAnchorEl) => useCallback(
@@ -81,6 +83,11 @@ const ButtonConnectToken = ({
 
   const handleSignOut = useHandleSignOut(onSignOut, handleClose, userId, handleGenericHttpErrors);
 
+  const avatarUserProps = useMemo(
+    () => (isObject(profile) ? pickAvatarUserProps(profile) : {}),
+    [profile],
+  );
+
   const iconButtonAction = useMemo(
     () => (isFunction(customAction) ? customAction : handleMenu),
     [customAction, handleMenu],
@@ -101,10 +108,8 @@ const ButtonConnectToken = ({
         edge="end"
         {...classProps}
       >
-        <AvatarColorized
-          // FIXME: replace displayName by handle
-          text={profile ? profile.displayName : ''}
-          image={profile ? profile.avatarUri : ''}
+        <AvatarUser
+          {...avatarUserProps}
         />
       </IconButton>
       <Menu
@@ -159,7 +164,7 @@ ButtonConnectToken.propTypes = {
     displayName: PropTypes.string,
     email: PropTypes.string,
   }),
-  t: PropTypes.func,
+  t: PropTypes.func.isRequired,
   token: PropTypes.string,
 };
 
@@ -171,7 +176,6 @@ ButtonConnectToken.defaultProps = {
   id: null,
   onSignOut: null,
   profile: null,
-  t: tDefault,
   token: null,
   customAction: null,
 };

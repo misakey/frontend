@@ -8,7 +8,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 
 import LinkHome from 'components/dumb/Link/Home';
 import Logo from 'components/dumb/Logo';
-import AvatarUser from 'components/dumb/Avatar/User';
+import AvatarUser from '@misakey/ui/Avatar/User';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import AvatarUserSkeleton from 'components/dumb/Avatar/User/Skeleton';
+import AvatarUserSkeleton from '@misakey/ui/Avatar/User/Skeleton';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Card from 'components/dumb/Card';
 import CardHeader from '@material-ui/core/CardHeader';
