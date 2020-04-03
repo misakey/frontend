@@ -25,7 +25,6 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import prop from '@misakey/helpers/prop';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import usePropChanged from '@misakey/hooks/usePropChanged';
 
 import CardSimpleDoubleText from 'components/dumb/Card/Simple/DoubleText';
 
@@ -130,8 +129,6 @@ const DataboxContent = ({
   const [decryptedBlob, setDecryptedBlob] = useState(null);
   const [isDatavizDialogOpen, setIsDatavizDialogOpen] = useState(false);
 
-  const databoxIdChanged = usePropChanged(databoxId);
-
   const onCloseDatavizDialog = useCallback(
     () => setIsDatavizDialogOpen(false),
     [setIsDatavizDialogOpen],
@@ -165,14 +162,14 @@ const DataboxContent = ({
   );
 
   const shouldFetch = useMemo(
-    () => !isNil(databoxId) && databoxIdChanged,
-    [databoxId, databoxIdChanged],
+    () => !isNil(databoxId),
+    [databoxId],
   );
 
   const getBlobs = useCallback(
-    () => fetchBlobs(databox.id)
+    () => fetchBlobs(databoxId)
       .then((response) => response.map(objectToCamelCase)),
-    [databox],
+    [databoxId],
   );
 
   const { data: blobs } = useFetchEffect(
