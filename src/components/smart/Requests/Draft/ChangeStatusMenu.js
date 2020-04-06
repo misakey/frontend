@@ -6,7 +6,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
-function MenuChangeStatus({ t, onPassToOpen, onDelete }) {
+function MenuChangeStatus({ t, isValidRequest, onPassToOpen, onDelete }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = useMemo(() => Boolean(anchorEl), [anchorEl]);
 
@@ -34,9 +34,11 @@ function MenuChangeStatus({ t, onPassToOpen, onDelete }) {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem key="draftToOpen" onClick={onPassToOpen}>
-          {t('citizen:requests.read.move.fromDraftToOpen')}
-        </MenuItem>
+        {isValidRequest && (
+          <MenuItem key="draftToOpen" onClick={onPassToOpen}>
+            {t('citizen:requests.read.move.fromDraftToOpen')}
+          </MenuItem>
+        )}
         <MenuItem key="deleteRequest" onClick={onDelete}>
           {t('citizen:requests.read.delete.text')}
         </MenuItem>
@@ -48,6 +50,7 @@ function MenuChangeStatus({ t, onPassToOpen, onDelete }) {
 
 MenuChangeStatus.propTypes = {
   t: PropTypes.func.isRequired,
+  isValidRequest: PropTypes.bool.isRequired,
   onPassToOpen: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };

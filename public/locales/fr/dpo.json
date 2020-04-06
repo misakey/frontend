@@ -5,12 +5,12 @@
       "desc": "Cette interface est exclusivement réservée aux responsables du traitement des données de {{applicationName}}.<br/>Elle permet d’assurer la chaîne de confiance lors du transfert des données de {{ownerName}}.",
       "error": {
         "404": {
-          "title": "Demande de portabilité introuvable",
-          "desc": "Aucune demande de portabilité en cours trouvée. \nEst-elle traitée ou introuvable\u00a0? \nEn cas de problème, je peux envoyer un mail à <1>question.pro@misakey.com</1> \nEn pensant à joindre le lien qui ne fonctionne pas et le mail de l'utilisateur ayant fait la demande. \nNos excuses pour la gêne occasionnée"
+          "title": "Requête introuvable",
+          "desc": "Aucune requête en cours trouvée. \nEst-elle traitée ou introuvable\u00a0? \nEn cas de problème, je peux envoyer un mail à <1>question.pro@misakey.com</1> \nEn pensant à joindre le lien qui ne fonctionne pas et le mail de l'utilisateur ayant fait la demande. \nNos excuses pour la gêne occasionnée"
         },
         "default": {
-          "title": "Demande de portabilité introuvable",
-          "desc": "Aucune demande de portabilité en cours trouvée. \nEst-elle traitée ou introuvable\u00a0? \nEn cas de problème, je peux envoyer un mail à <1>question.pro@misakey.com</1>. \nEn pensant à joindre le lien qui ne fonctionne pas et le mail de l'utilisateur ayant fait la demande. \nNos excuses pour la gêne occasionnée"
+          "title": "Requête introuvable",
+          "desc": "Aucune requête en cours trouvée. \nEst-elle traitée ou introuvable\u00a0? \nEn cas de problème, je peux envoyer un mail à <1>question.pro@misakey.com</1>. \nEn pensant à joindre le lien qui ne fonctionne pas et le mail de l'utilisateur ayant fait la demande. \nNos excuses pour la gêne occasionnée"
         }
       },
       "password": {
@@ -47,7 +47,7 @@
       "title": "Mes requêtes"
     },
     "read": {
-      "archived": "Cette demande de portabilité est fermée",
+      "archived": "Cette requête est fermée",
       "done": {
         "error": "Action impossible. La demande a déjà été traitée.",
         "success": "Vous avez bien traité la demande de {{ownerName}}\u00a0! Merci de votre coopération\u00a0!"
@@ -56,7 +56,10 @@
         "message": "Je demande aux developpeurs de mon site d'<1>automatiser le traitement des demandes</1>",
         "mailToSubject": "Demande d'informations sur Misakey Agent"
       },
-      "portabilityRequest": "Requête de portabilité",
+      "request": {
+        "portability": "Requête de portabilité",
+        "erasure": "Requête de suppression"
+      },
       "questions": {
         "title": "Questions fréquentes",
         "text": {

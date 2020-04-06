@@ -35,7 +35,7 @@ import DatavizDialog from 'components/dumb/Dialog/Dataviz';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import { IS_PLUGIN } from 'constants/plugin';
-import AVAILABLE_DATAVIZ_DOMAINS from 'components/dumb/Dataviz/availableDatavizDomains.json';
+import { AVAILABLE_DATAVIZ_DOMAINS } from 'components/dumb/Dataviz';
 
 import BlobListItem from 'components/dumb/ListItem/Blob';
 

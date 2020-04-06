@@ -15,7 +15,7 @@ import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';
 import UserEmailSchema from 'store/schemas/UserEmail';
 import { setDataboxMeta, setUrlAccessRequest } from 'store/actions/databox';
-import { removeFromAllRequestIdsForStatus } from 'store/actions/screens/allRequestIds';
+import { removeFromAllRequestIdsForStatus, addToAllRequestIdsForStatus } from 'store/actions/screens/allRequestIds';
 
 import isNil from '@misakey/helpers/isNil';
 import getSearchParams from '@misakey/helpers/getSearchParams';
@@ -28,15 +28,19 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import encodeMailto from 'helpers/encodeMailto';
 import { updateEntities, removeEntities } from '@misakey/store/actions/entities';
+
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { ThemeProvider } from '@material-ui/core/styles';
 import useMailtoProps from 'hooks/useMailtoProps';
 
 import Container from '@material-ui/core/Container';
 import ExpansionPanelContactFrom from 'components/smart/ExpansionPanel/Contact/From';
+import ExpansionPanelContactRequestType from 'components/smart/ExpansionPanel/Contact/RequestType';
+
 import CardContactTo from 'components/dumb/Card/Contact/To';
-import CardContactSubject from 'components/smart/Card/Contact/Subject';
+import BoxContactMailType from 'components/smart/Box/Contact/MailType';
 import CardContactBody from 'components/dumb/Card/Contact/Body';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import { getStyleForContainerScroll } from 'components/dumb/Screen';
@@ -48,6 +52,7 @@ import BoxEllipsisApplicationLink from 'components/dumb/Box/Ellipsis/Application
 import AddIcon from '@material-ui/icons/Add';
 import withUserEmails from 'components/smart/withUserEmails';
 import { OPEN, DRAFT } from 'constants/databox/status';
+import { UNKNOWN } from 'constants/databox/type';
 import MenuChangeStatus from './ChangeStatusMenu';
 
 // CONSTANTS
@@ -72,7 +77,6 @@ const fetchAccessRequest = (id) => API.use(API.endpoints.application.box.request
 
 // HELPERS
 const isUserEmailActive = propEq('active', true);
-const getEmailId = prop('userEmailId');
 const getDataboxMeta = compose(
   ({ dpoEmail, owner }) => ({ dpoEmail, owner: objectToCamelCase(owner) }),
   objectToCamelCase,
@@ -99,6 +103,7 @@ const DraftRequest = ({
   userId,
   contactEmail,
   isFetchingRequest,
+  themeforType,
   t,
 }) => {
   const classes = useStyles();
@@ -111,7 +116,18 @@ const DraftRequest = ({
     [search],
   );
 
-  const { urlAccess, id, status } = useMemo(() => request || {}, [request]);
+  const {
+    urlAccess,
+    id,
+    status,
+    type,
+    owner,
+    userEmailId,
+  } = useMemo(() => request || {}, [request]);
+
+  const userEmail = useMemo(() => prop('email')(owner), [owner]);
+  const isTypeUnknown = useMemo(() => type === UNKNOWN, [type]);
+  const isDraft = useMemo(() => status === DRAFT, [status]);
 
   const options = useMemo(
     () => (userEmails || []).filter(isUserEmailActive),
@@ -129,31 +145,32 @@ const DraftRequest = ({
   );
 
   const subject = useMemo(
-    () => t('citizen:contact.email.subject.value'),
-    [t],
+    () => (!isTypeUnknown ? t(`citizen:contact.email.subject.value.${type}`) : null),
+    [isTypeUnknown, t, type],
   );
 
   const body = useMemo(
     () => t(
-      `citizen:contact.email.body.${mailType}`,
+      `citizen:contact.email.body.${type}.${mailType}`,
       {
         dpoEmail,
         databoxURL: urlAccess,
         mainDomain,
+        userEmail,
       },
     ),
-    [t, mailType, dpoEmail, urlAccess, mainDomain],
+    [t, type, mailType, dpoEmail, urlAccess, mainDomain, userEmail],
   );
 
   const initialEmail = useMemo(
     () => {
       if (!isNil(userEmails)) {
-        const { email } = find(userEmails, ['id', getEmailId(request)]) || {};
+        const { email } = find(userEmails, ['id', userEmailId]) || {};
         return email;
       }
       return null;
     },
-    [userEmails, request],
+    [userEmails, userEmailId],
   );
 
   const onPassToOpen = useCallback(
@@ -165,7 +182,11 @@ const DraftRequest = ({
     () => {
       const sentAt = moment().toISOString();
       const entities = [{ id, changes: { status: OPEN, sentAt } }];
-      dispatch(updateEntities(entities, DataboxSchema));
+      return Promise.resolve([
+        dispatch(updateEntities(entities, DataboxSchema)),
+        dispatch(addToAllRequestIdsForStatus(id, OPEN)),
+        dispatch(removeFromAllRequestIdsForStatus(id, DRAFT)),
+      ]);
     },
     [dispatch, id],
   );
@@ -177,12 +198,12 @@ const DraftRequest = ({
 
   const onDone = useCallback(
     async () => {
-      if (status === DRAFT) {
+      if (isDraft) {
         await handlePassToOpen();
       }
       replace({ pathname });
     },
-    [handlePassToOpen, pathname, replace, status],
+    [handlePassToOpen, isDraft, pathname, replace],
   );
 
   const onDelete = useCallback(
@@ -211,9 +232,8 @@ const DraftRequest = ({
     { onSuccess: onDeleteSuccess },
   );
 
-  // @FIXME add type portability only when erasing is implemented
   const shouldFetchAccessRequest = useMemo(
-    () => (!isNil(id) && isNil(urlAccess) /* && type === PORTABILITY */),
+    () => !isNil(id) && isNil(urlAccess),
     [id, urlAccess],
   );
 
@@ -303,52 +323,65 @@ const DraftRequest = ({
       title={t('citizen:contact.preview.title')}
       navigationProps={navigationProps}
       navigation={(
-        <>
-          {status === DRAFT && (
-            <MenuChangeStatus onPassToOpen={handlePassToOpen} onDelete={handleDelete} />
-          )}
-          <Button {...primary} />
-        </>
-      )}
-    >
-      <Container maxWidth="md" className={clsx({ [classes.container]: IS_PLUGIN })}>
-        <ExpansionPanelContactFrom
-          databox={request}
-          appName={name}
-          initialEmail={initialEmail}
-          contactEmail={contactEmail}
-          options={options}
-          addButton={(
-            <Button
-              startIcon={<AddIcon />}
-              standing={BUTTON_STANDINGS.TEXT}
-              text={t('citizen:contact.email.add')}
-              component={Link}
-              to={addEmailTo}
-              replace
+        <ThemeProvider theme={themeforType}>
+          {isDraft && (
+            <MenuChangeStatus
+              isValidRequest={!isTypeUnknown}
+              onPassToOpen={handlePassToOpen}
+              onDelete={handleDelete}
             />
           )}
-        />
-        <CardContactTo application={application} my={2} />
-        <CardContactSubject my={2} subject={subject} />
-        <CardContactBody>
-          {body}
-        </CardContactBody>
-        <ContactConfig
-          searchKey={CONFIG_KEY}
-          userId={userId}
-          userEmails={userEmails}
-          databox={request}
-        />
-        <ContactConfirm
-          searchKey={CONFIRM_KEY}
-          contactEmail={contactEmail}
-          mailto={dpoEmail}
-          subject={subject}
-          body={body}
-          onDone={onDone}
-        />
-      </Container>
+          {!isTypeUnknown && <Button {...primary} />}
+        </ThemeProvider>
+      )}
+    >
+      <ThemeProvider theme={themeforType}>
+        <Container maxWidth="md" className={clsx({ [classes.container]: IS_PLUGIN })}>
+          <ExpansionPanelContactFrom
+            databox={request}
+            appName={name}
+            initialEmail={initialEmail}
+            contactEmail={contactEmail}
+            options={options}
+            addButton={(
+              <Button
+                startIcon={<AddIcon />}
+                standing={BUTTON_STANDINGS.TEXT}
+                text={t('citizen:contact.email.add')}
+                component={Link}
+                to={addEmailTo}
+                replace
+              />
+          )}
+          />
+          <CardContactTo application={application} my={2} />
+          <ExpansionPanelContactRequestType request={request} disabled={!isDraft} />
+          {!isTypeUnknown && (
+            <>
+              <BoxContactMailType my={2} />
+              <CardContactBody>
+                {body}
+              </CardContactBody>
+              <ContactConfig
+                searchKey={CONFIG_KEY}
+                userId={userId}
+                userEmails={userEmails}
+                databox={request}
+              />
+              <ContactConfirm
+                searchKey={CONFIRM_KEY}
+                contactEmail={contactEmail}
+                mailto={dpoEmail}
+                subject={subject}
+                body={body}
+                onDone={onDone}
+              />
+            </>
+          )}
+        </Container>
+
+      </ThemeProvider>
+
     </ScreenAction>
   );
 };
@@ -359,6 +392,7 @@ DraftRequest.propTypes = {
   request: PropTypes.shape(DataboxSchema.propTypes),
   isFetchingRequest: PropTypes.bool.isRequired,
   onPreventRefetch: PropTypes.func.isRequired,
+  themeforType: PropTypes.func.isRequired,
   // withUserEmails
   userEmails: PropTypes.arrayOf(PropTypes.shape(UserEmailSchema.propTypes)),
   userId: PropTypes.string,

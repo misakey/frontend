@@ -1,5 +1,5 @@
 export const PORTABILITY = 'portability';
+export const ERASURE = 'erasure';
+export const UNKNOWN = 'unknown';
 
-export const REQUEST_TYPES = {
-  [PORTABILITY]: PORTABILITY,
-};
+export default [PORTABILITY, ERASURE, UNKNOWN];

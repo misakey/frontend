@@ -2,37 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { MIN_CARD_HEIGHT } from '@misakey/ui/constants/sizes';
-
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isNil from '@misakey/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelSummaryContact from 'components/dumb/ExpansionPanelSummary/Contact';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Fade from '@material-ui/core/Fade';
 
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  expansionPanelSummaryRoot: {
-    border: `1px solid ${theme.palette.secondary.main}`,
-    borderRadius: theme.shape.borderRadius,
-    minHeight: MIN_CARD_HEIGHT,
-    boxSizing: 'border-box',
-  },
-  expansionPanelSummaryContent: {
-    overflow: 'hidden',
-    margin: 'auto 0',
-    // fix for weird logic of expansion panel classes
-    // classes.expanded doesn't work because default style uses content.Mui-expanded
-    '&.Mui-expanded': {
-      margin: 'auto 0',
-    },
-  },
   typographyFromLabelRoot: {
     marginRight: theme.spacing(1),
     whiteSpace: 'nowrap',
@@ -44,12 +25,7 @@ const ExpansionPanelSummaryContactFrom = ({ email, type, t, ...rest }) => {
   const classes = useStyles();
 
   return (
-    <ExpansionPanelSummary
-      classes={{
-        root: classes.expansionPanelSummaryRoot,
-        content: classes.expansionPanelSummaryContent,
-      }}
-      expandIcon={<ExpandMoreIcon />}
+    <ExpansionPanelSummaryContact
       aria-controls="panel-contact-content"
       id="panel-contact-header"
       {...omitTranslationProps(rest)}
@@ -71,7 +47,7 @@ const ExpansionPanelSummaryContactFrom = ({ email, type, t, ...rest }) => {
           </Typography>
         </Fade>
       </Box>
-    </ExpansionPanelSummary>
+    </ExpansionPanelSummaryContact>
   );
 };
 

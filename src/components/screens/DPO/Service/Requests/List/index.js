@@ -5,7 +5,8 @@ import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
 import API from '@misakey/api';
-import { OPEN, REOPEN } from 'constants/databox/status';
+import { OPEN } from 'constants/databox/status';
+import REQUEST_TYPES from 'constants/databox/type';
 
 import isNil from '@misakey/helpers/isNil';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
@@ -19,7 +20,6 @@ import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 import BoxSection from '@misakey/ui/Box/Section';
@@ -27,8 +27,7 @@ import Empty from 'components/dumb/Box/Empty';
 import ScreenAction from 'components/dumb/Screen/Action';
 import TypographyDateSince from 'components/dumb/Typography/DateSince';
 
-import InboxIcon from '@material-ui/icons/Inbox';
-import RestoreIcon from '@material-ui/icons/Restore';
+import RequestTypeAvatar from 'components/dumb/Avatar/RequestType';
 
 
 // CONSTANTS
@@ -40,11 +39,6 @@ const ENDPOINTS = {
       auth: true,
     },
   },
-};
-
-const STATUS_ICON = {
-  [OPEN]: <InboxIcon />,
-  [REOPEN]: <RestoreIcon />,
 };
 
 // HELPERS
@@ -71,9 +65,8 @@ const useStyles = makeStyles(() => ({
 
 // COMPONENTS
 const RequestRow = ({ item, classes, service, t }) => {
-  const { id, owner, updatedAt } = item;
+  const { id, owner, updatedAt, type } = useMemo(() => item, [item]);
   const status = useMemo(() => getStatus(item), [item]);
-  const icon = useMemo(() => STATUS_ICON[status], [status]);
 
   const to = useMemo(() => !isNil(id) && generatePath(routes.dpo.service.requests.read, {
     databoxId: id,
@@ -94,9 +87,7 @@ const RequestRow = ({ item, classes, service, t }) => {
         className={classes.itemContainer}
       >
         <ListItemAvatar>
-          <Avatar>
-            {icon}
-          </Avatar>
+          <RequestTypeAvatar type={type} />
         </ListItemAvatar>
         <ListItemText
           primary={owner.displayName}
@@ -121,6 +112,7 @@ RequestRow.propTypes = {
       email: PropTypes.string.isRequired,
     }).isRequired,
     updatedAt: PropTypes.string.isRequired,
+    type: PropTypes.oneOf(REQUEST_TYPES),
   }).isRequired,
   classes: PropTypes.object.isRequired,
   service: PropTypes.object.isRequired,

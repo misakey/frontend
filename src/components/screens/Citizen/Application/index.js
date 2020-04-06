@@ -14,7 +14,6 @@ import RoutePrivate from '@misakey/auth/components/Route/Private';
 import ApplicationNotFound from 'components/screens/Citizen/Application/NotFound';
 import ApplicationInfo from 'components/screens/Citizen/Application/Info';
 import MyFeedback from 'components/screens/Citizen/Application/MyFeedback';
-import ApplicationContact from 'components/screens/Citizen/Application/Contact';
 
 import BoxEllipsisApplication from 'components/dumb/Box/Ellipsis/Application';
 
@@ -73,17 +72,6 @@ function Application({ entity, error, isFetching, mainDomain }) {
 
   return (
     <Switch>
-      <RoutePrivate
-        path={routes.citizen.application.contact._}
-        component={ApplicationContact}
-        componentProps={{
-          entity: application,
-          error,
-          isFetching,
-          mainDomain,
-          screenProps,
-        }}
-      />
       <RoutePrivate
         path={routes.citizen.application.myFeedback}
         component={MyFeedback}

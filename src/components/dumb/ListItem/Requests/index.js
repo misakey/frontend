@@ -5,10 +5,12 @@ import { generatePath, Link } from 'react-router-dom';
 
 import DataboxSchema from 'store/schemas/Databox';
 
+import Box from '@material-ui/core/Box';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Chip from '@material-ui/core/Chip';
+import Badge from '@material-ui/core/Badge';
 
 import ApplicationImg from 'components/dumb/Application/Img';
 import TypographyDateSince from 'components/dumb/Typography/DateSince';
@@ -17,10 +19,11 @@ import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import capitalize from '@misakey/helpers/capitalize';
 import { DRAFT, OPEN, DONE, CLOSED } from 'constants/databox/status';
-import { Box } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import moment from 'moment';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { PORTABILITY } from 'constants/databox/type';
+import RequestTypeAvatar from 'components/dumb/Avatar/RequestType';
+import { UNKNOWN } from 'constants/databox/type';
 
 
 export const RequestListItemSkeleton = () => (
@@ -57,26 +60,35 @@ export const RequestListItemSkeleton = () => (
   </ListItem>
 );
 
+const useStyles = makeStyles(() => ({
+  anchorOriginBottomRightRectangle: {
+    bottom: 5,
+    right: 5,
+  },
+}));
+
 function RequestListItem({ request, toRoute, t, isFetchingApplication }) {
+  const classes = useStyles();
+
   const {
     application,
     id,
     status,
     dpoComment,
     ownerComment,
-    type = PORTABILITY,
+    type,
     sentAt,
     updatedAt,
     blobCount = 0,
   } = useMemo(() => request || {}, [request]);
 
   const linkProps = useMemo(
-    () => (isNil(toRoute) ? {} : {
+    () => (isNil(toRoute) || isFetchingApplication ? {} : {
       to: generatePath(toRoute, { id }),
       button: true,
       component: Link,
     }),
-    [id, toRoute],
+    [id, isFetchingApplication, toRoute],
   );
 
   const duration = useMemo(
@@ -99,9 +111,12 @@ function RequestListItem({ request, toRoute, t, isFetchingApplication }) {
           />
         );
       }
+
+      const noTypeSelected = type === UNKNOWN;
       return t('citizen:requests.list.primary', {
         appName: capitalize(name),
-        type: t(`citizen:requests.type.${type}`),
+        type: noTypeSelected ? null : t(`citizen:requests.type.${type}`),
+        separator: noTypeSelected ? '' : '-',
       });
     },
     [isFetchingApplication, mainDomain, name, t, type],
@@ -173,10 +188,19 @@ function RequestListItem({ request, toRoute, t, isFetchingApplication }) {
   return (
     <ListItem key={id} {...linkProps}>
       <ListItemAvatar>
-        <ApplicationImg
-          src={logoUri}
-          applicationName={name}
-        />
+        <Badge
+          classes={{ anchorOriginBottomRightRectangle: classes.anchorOriginBottomRightRectangle }}
+          badgeContent={<RequestTypeAvatar isSmall type={type} />}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+        >
+          <ApplicationImg
+            src={logoUri}
+            applicationName={name}
+          />
+        </Badge>
       </ListItemAvatar>
       <ListItemText
         primary={primary}

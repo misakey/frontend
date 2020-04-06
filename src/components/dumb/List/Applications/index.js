@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Link, generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
-import routes from 'routes';
 import { WORKSPACE } from 'constants/workspaces';
 
 import isNil from '@misakey/helpers/isNil';
@@ -99,7 +98,7 @@ ApplicationsList.propTypes = {
 ApplicationsList.defaultProps = {
   error: undefined,
   listLength: 5,
-  toRoute: routes.citizen.application.vault,
+  toRoute: null,
   withBlobCount: false,
 };
 

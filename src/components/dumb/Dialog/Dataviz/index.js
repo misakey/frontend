@@ -22,9 +22,7 @@ import CloudDownloadOutlinedIcon from '@material-ui/icons/CloudDownloadOutlined'
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
-import Dataviz from 'components/dumb/Dataviz';
-
-import AVAILABLE_DATAVIZ_DOMAINS from 'components/dumb/Dataviz/availableDatavizDomains.json';
+import Dataviz, { AVAILABLE_DATAVIZ_DOMAINS } from 'components/dumb/Dataviz';
 
 const DatavizDialog = ({
   mainDomain, open, onClose, decryptedBlob, width, t, onDownloadSuccess,

@@ -3,11 +3,8 @@ import PropTypes from 'prop-types';
 import { generatePath, useHistory } from 'react-router-dom';
 
 import routes from 'routes';
-import { PORTABILITY } from 'constants/databox/type';
-
 
 import isFunction from '@misakey/helpers/isFunction';
-
 import NewRequestRedirect from 'components/smart/Requests/New';
 
 // COMPONENTS
@@ -87,7 +84,7 @@ const withRequestCreation = (Component) => {
   Wrapper.defaultProps = {
     onClick: null,
     onSuccess: null,
-    type: PORTABILITY,
+    type: null,
     children: null,
     redirectProps: {},
     disabled: false,

@@ -5,7 +5,7 @@ import { connect, useDispatch } from 'react-redux';
 import { denormalize, normalize } from 'normalizr';
 import { withTranslation } from 'react-i18next';
 import { useRouteMatch, useLocation } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 
 import Container from '@material-ui/core/Container';
 
@@ -32,7 +32,6 @@ import { usePasswordPrompt, PasswordPromptProvider } from 'components/dumb/Passw
 
 import { DRAFT, CLOSED, DONE, OPEN } from 'constants/databox/status';
 import { DONE as COMMENT_DONE } from 'constants/databox/comment';
-import { PORTABILITY } from 'constants/databox/type';
 import DataboxSchema from 'store/schemas/Databox';
 
 import CurrentDatabox from 'components/smart/Databox/Current';
@@ -48,6 +47,7 @@ import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStra
 
 import ScreenAction from 'components/dumb/Screen/Action';
 import BoxEllipsisApplicationLink from 'components/dumb/Box/Ellipsis/Application/Link';
+import useGetThemeForRequestType from 'hooks/useGetThemeForRequestType';
 
 // CONSTANTS
 const NAVIGATION_PROPS = {
@@ -125,7 +125,7 @@ function RequestsRead({
   // Used to prevent refetch on delete request
   const [preventFetching, setPreventFetching] = useState(false);
 
-  const { status, producerId, sentAt } = useMemo(() => request || {}, [request]);
+  const { status, producerId, sentAt, type } = useMemo(() => request || {}, [request]);
 
   const { params } = useRouteMatch();
   const { search } = useLocation();
@@ -185,9 +185,9 @@ function RequestsRead({
   const title = useMemo(
     () => t('citizen:requests.read.title', {
       date: getDateFormat(sentAt, 'll'),
-      type: t(`citizen:requests.type.${PORTABILITY}`),
+      type: t(`citizen:requests.type.${type}`),
     }),
-    [sentAt, t],
+    [sentAt, t, type],
   );
 
   const questionItems = useQuestionsItems(t, 'citizen:requests.read.questions', 4);
@@ -218,10 +218,12 @@ function RequestsRead({
   );
 
   const onDelete = useCallback(() => { setPreventFetching(true); }, []);
+  const themeforType = useGetThemeForRequestType(type);
 
   if (shouldDisplayContactScreen) {
     return (
       <DraftRequest
+        themeforType={themeforType}
         request={request}
         application={application}
         onPreventRefetch={onDelete}
@@ -237,8 +239,9 @@ function RequestsRead({
       navigationProps={NAVIGATION_PROPS}
       {...screenProps}
     >
-      <Container maxWidth="md">
-        {!isNil(request) && (
+      <ThemeProvider theme={themeforType}>
+        <Container maxWidth="md">
+          {!isNil(request) && (
           <CurrentDatabox
             key={request.id}
             className={classes.box}
@@ -246,8 +249,8 @@ function RequestsRead({
             databox={request}
             initCrypto={initCrypto}
           />
-        )}
-        {isClosed && (
+          )}
+          {isClosed && (
           <ArchivedDatabox
             className={classes.box}
             key={request.id}
@@ -255,14 +258,15 @@ function RequestsRead({
             application={application}
             initCrypto={initCrypto}
           />
-        )}
-        <Divider className={classes.divider} />
-        <Title>{t('citizen:requests.read.questions.title')}</Title>
-        <Card dense>
-          <ListQuestions items={questionItems} breakpoints={{ sm: 6, xs: 12 }} />
-          <ListQuestions items={conditionalQuestionItems} breakpoints={{ sm: 6, xs: 12 }} />
-        </Card>
-      </Container>
+          )}
+          <Divider className={classes.divider} />
+          <Title>{t('citizen:requests.read.questions.title')}</Title>
+          <Card dense>
+            <ListQuestions items={questionItems} breakpoints={{ sm: 6, xs: 12 }} />
+            <ListQuestions items={conditionalQuestionItems} breakpoints={{ sm: 6, xs: 12 }} />
+          </Card>
+        </Container>
+      </ThemeProvider>
 
     </ScreenAction>
   );

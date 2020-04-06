@@ -66,6 +66,7 @@ import DialogDataboxDone from 'components/dumb/Dialog/Databox/Done';
 import ChipDataboxStatus from 'components/dumb/Chip/Databox/Status';
 
 import MailIcon from '@material-ui/icons/Mail';
+import { ERASURE } from 'constants/databox/type';
 
 // CONSTANTS
 const QUESTIONS_TRANS_KEY = 'dpo:requests.read.questions';
@@ -126,6 +127,7 @@ const handleProp = prop('handle');
 const ownerEmailProp = prop('email');
 const ownerNameProp = prop('displayName');
 const statusProp = prop('status');
+const requestTypeProp = prop('type');
 
 const fetchPubkey = (handle) => API
   .use(ENDPOINTS.pubkeys.list)
@@ -282,6 +284,11 @@ function ServiceRequestsRead({
     [accessRequest],
   );
 
+  const requestType = useMemo(
+    () => requestTypeProp(accessRequest),
+    [accessRequest],
+  );
+
   const handle = useMemo(
     () => handleProp(owner),
     [owner],
@@ -310,7 +317,7 @@ function ServiceRequestsRead({
     [hashToken, accessRequest, params.databoxId],
   );
 
-  const requestTitle = t('dpo:requests.read.portabilityRequest');
+  const requestTitle = t(`dpo:requests.read.request.${requestType}`);
 
   const requestTitleWithMetadata = useMemo(
     () => (
@@ -325,7 +332,7 @@ function ServiceRequestsRead({
         </Grid>
       </Grid>
     ),
-    [requestTitle, databox, isXs],
+    [requestTitle, isXs, databox],
   );
 
   const status = useMemo(
@@ -471,6 +478,8 @@ function ServiceRequestsRead({
     [status, isFetchingDatabox],
   );
 
+  const isErasure = useMemo(() => requestType === ERASURE, [requestType]);
+
   const shouldFetchBlobs = useMemo(
     () => idMatches && !isArchived,
     [idMatches, isArchived],
@@ -513,7 +522,7 @@ function ServiceRequestsRead({
                 title={requestTitleWithMetadata}
                 dense
               >
-                <List dense disablePadding aria-label={t('dpo:requests.read.portabilityRequest')}>
+                <List dense disablePadding aria-label={requestTitle}>
                   <ListItem>
                     <ListItemIcon>
                       <MailIcon />
@@ -548,7 +557,7 @@ function ServiceRequestsRead({
                         text: t('dpo:requests.read.vault.done'),
                       }}
                     >
-                      <List dense disablePadding aria-label={t('dpo:requests.read.portabilityRequest')}>
+                      <List dense disablePadding aria-label={requestTitle}>
                         <ListItem>
                           <ListItemIcon>
                             <MailIcon />
@@ -557,40 +566,42 @@ function ServiceRequestsRead({
                         </ListItem>
                       </List>
                     </Card>
-                    <Card
-                      my={3}
-                      title={t('dpo:requests.read.vault.title')}
-                      primary={{
-                        type: 'submit',
-                        text: t('common:submit'),
-                      }}
-                      secondary={{
-                        text: t('common:cancel'),
-                        disabled: !dirty,
-                        onClick: getOnReset(formikBag),
-                      }}
-                      formik
-                    >
-                      <List>
-                        {(!isFetchingBlobs && isEmpty(blobs)) && <Empty />}
-                        {!isEmpty(blobs)
+                    {!isErasure && (
+                      <Card
+                        my={3}
+                        title={t('dpo:requests.read.vault.title')}
+                        primary={{
+                          type: 'submit',
+                          text: t('common:submit'),
+                        }}
+                        secondary={{
+                          text: t('common:cancel'),
+                          disabled: !dirty,
+                          onClick: getOnReset(formikBag),
+                        }}
+                        formik
+                      >
+                        <List>
+                          {(!isFetchingBlobs && isEmpty(blobs)) && <Empty />}
+                          {!isEmpty(blobs)
                           && blobs.map(({ id, ...props }) => <Blob key={id} id={id} {...props} />)}
-                      </List>
-                      <Alert
-                        open={openDialog === DIALOGS.ALERT}
-                        onClose={onDialogClose}
-                        onOk={() => handleUpload(values, formikBag)}
-                        title={t('dpo:requests.read.upload.dialog.title')}
-                        text={t('dpo:requests.read.upload.dialog.text', { ownerEmail })}
-                      />
-                      <Field
-                        name={FIELD_NAME}
-                        component={FieldBlob}
-                        className={classes.blob}
-                        setFieldValue={setFieldValue}
-                        setFieldTouched={setFieldTouched}
-                      />
-                    </Card>
+                        </List>
+                        <Alert
+                          open={openDialog === DIALOGS.ALERT}
+                          onClose={onDialogClose}
+                          onOk={() => handleUpload(values, formikBag)}
+                          title={t('dpo:requests.read.upload.dialog.title')}
+                          text={t('dpo:requests.read.upload.dialog.text', { ownerEmail })}
+                        />
+                        <Field
+                          name={FIELD_NAME}
+                          component={FieldBlob}
+                          className={classes.blob}
+                          setFieldValue={setFieldValue}
+                          setFieldTouched={setFieldTouched}
+                        />
+                      </Card>
+                    )}
                   </Form>
                 )}
               </Formik>

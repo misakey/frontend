@@ -60,6 +60,7 @@ const ApplicationsCategory = ({ applicationsList, category, dispatch, isAuthenti
         <ApplicationsList
           isFetching={isFetching}
           error={error}
+          toRoute={null}
           applications={applicationsList || []}
         />
       </Card>

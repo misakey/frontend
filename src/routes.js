@@ -89,11 +89,6 @@ const routes = {
     },
     application: {
       _: '/citizen/:mainDomain',
-      contact: {
-        _: '/citizen/:mainDomain/contact',
-        preview: '/citizen/:mainDomain/contact/preview',
-      },
-
       vault: '/citizen/:mainDomain/vault',
       feedback: '/citizen/:mainDomain/feedback',
       legal: '/citizen/:mainDomain/legal',

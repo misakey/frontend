@@ -13,7 +13,6 @@ import CardSimpleDoubleText from 'components/dumb/Card/Simple/DoubleText';
 const CardDatabox = ({
   application,
   databox,
-  onContributionDpoEmailClick,
   initCrypto,
   t,
   ...rest
@@ -41,7 +40,6 @@ CardDatabox.propTypes = {
   t: PropTypes.func.isRequired,
   application: PropTypes.shape(ApplicationSchema.propTypes),
   databox: PropTypes.shape(DataboxSchema.propTypes),
-  onContributionDpoEmailClick: PropTypes.func.isRequired,
   initCrypto: PropTypes.func.isRequired,
 };
 

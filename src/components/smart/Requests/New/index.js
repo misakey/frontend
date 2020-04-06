@@ -53,7 +53,10 @@ const NewRequest = ({
   const dispatch = useDispatch();
 
   const createRequest = useCallback(
-    () => postRequest({ ownerId: userId, producerId, userEmailId, type }),
+    () => {
+      const requiredParams = { ownerId: userId, producerId, userEmailId };
+      return postRequest(isNil(type) ? requiredParams : { ...requiredParams, type });
+    },
     [producerId, type, userEmailId, userId],
   );
 
@@ -78,17 +81,18 @@ const NewRequest = ({
     const { code } = e;
     if (code === conflict) {
       enqueueSnackbar(t('citizen:requests.read.errors.conflict.open.status'), { variant: 'error' });
-    } else {
-      handleGenericHttpErrors();
+      return;
     }
+    handleGenericHttpErrors(e);
+
     if (isFunction(onCreateError)) {
       onCreateError(e);
     }
   }, [enqueueSnackbar, handleGenericHttpErrors, onCreateError, t]);
 
   const shouldFetch = useMemo(
-    () => !isNil(userEmailId) && !isNil(type) && !isNil(producerId),
-    [producerId, type, userEmailId],
+    () => !isNil(userEmailId) && !isNil(producerId),
+    [producerId, userEmailId],
   );
 
   useFetchEffect(
@@ -108,7 +112,7 @@ NewRequest.propTypes = {
   // props
   children: PropTypes.oneOfType([PropTypes.element, PropTypes.node]),
   producerId: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   onCreateSuccess: PropTypes.func,
   onCreateError: PropTypes.func,
   // withTranslation
@@ -121,6 +125,7 @@ NewRequest.defaultProps = {
   userEmails: null,
   onCreateSuccess: null,
   onCreateError: null,
+  type: null,
 };
 
 export default withUserEmails(withTranslation('citizen')(NewRequest));

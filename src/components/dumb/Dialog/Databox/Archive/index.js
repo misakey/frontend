@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { OWNER_COMMENTS } from 'constants/databox/comment';
-import { ownerCommentValidationSchema } from 'constants/validationSchemas/comment';
+import { getOwnerCommentValidationSchema } from 'constants/validationSchemas/comment';
 
 import { Formik, Form, Field } from 'formik';
 import FieldText from 'components/dumb/Form/Field/Text';
@@ -32,7 +32,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-const DialogDataboxArchive = ({ onClose, onSuccess, open, t }) => {
+const DialogDataboxArchive = ({ onClose, onSuccess, open, options, t }) => {
   const classes = useStyles();
 
   const secondary = useMemo(
@@ -41,6 +41,11 @@ const DialogDataboxArchive = ({ onClose, onSuccess, open, t }) => {
       text: t('common:cancel'),
     }),
     [onClose, t],
+  );
+
+  const ownerCommentValidationSchema = useMemo(
+    () => getOwnerCommentValidationSchema(options),
+    [options],
   );
 
   return (
@@ -73,7 +78,7 @@ const DialogDataboxArchive = ({ onClose, onSuccess, open, t }) => {
               label={t('fields:ownerComment.label')}
               helperText={t('fields:ownerComment.helperText')}
             >
-              {OWNER_COMMENTS.map((comment) => (
+              {options.map((comment) => (
                 <MenuItem classes={{ root: classes.menuItemRoot }} key={comment} value={comment}>
                   {t(`common:databox.ownerComment.${comment}`)}
                 </MenuItem>
@@ -101,7 +106,12 @@ DialogDataboxArchive.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
+  options: PropTypes.arrayOf(PropTypes.string),
   t: PropTypes.func.isRequired,
+};
+
+DialogDataboxArchive.defaultProps = {
+  options: OWNER_COMMENTS,
 };
 
 export default withTranslation(['common', 'fields', 'citizen'])(DialogDataboxArchive);

@@ -63,6 +63,7 @@ const ApplicationsCategoryScreen = ({ isAuthenticated, t, match }) => {
         <ApplicationsList
           isFetching={isFetching}
           error={error}
+          toRoute={null}
           applications={applicationsList || []}
         />
       </Container>

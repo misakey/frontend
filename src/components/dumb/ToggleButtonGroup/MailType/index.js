@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
   toggleButtonSelected: {
     color: `${theme.palette.secondary.main} !important`,
+    fontWeight: 700,
     backgroundColor: 'transparent !important',
   },
 }));

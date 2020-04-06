@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
@@ -13,9 +13,24 @@ import isNil from '@misakey/helpers/isNil';
 import SplashScreen from '@misakey/ui/Screen/Splash';
 import DatavizHeader from 'components/dumb/Dataviz/Header';
 
+// Webpack require that we don't do import with variables. So we should declare explicitly
+// all dataviz here.
+// Maybe there is another way to manage that ?
+
+export const AVAILABLE_DATAVIZ_DOMAINS = [
+  'trainline.fr',
+];
+
+const ENABLED_DATAVIZ = {
+  'trainline.fr': lazy(() => import('./ForDomain/trainline.fr')),
+};
+
+
 const Dataviz = ({ decryptedBlob, mainDomain, application, user, id }) => {
-  const importName = `./ForDomain/${mainDomain}`;
-  const SpecificDataviz = lazy(() => import(importName));
+  const SpecificDataviz = useMemo(
+    () => ENABLED_DATAVIZ[mainDomain],
+    [mainDomain],
+  );
 
   return (
     <div id={id}>

@@ -5,7 +5,6 @@ import { generatePath, Link, useLocation } from 'react-router-dom';
 import routes from 'routes';
 import { WORKSPACE } from 'constants/workspaces';
 import { REQUEST } from 'constants/search/application/params';
-import { PORTABILITY } from 'constants/databox/type';
 import ApplicationSchema from 'store/schemas/Application';
 
 import isNil from '@misakey/helpers/isNil';
@@ -86,7 +85,6 @@ const Option = ({ application, disabled, ...rest }) => {
         disabled={disabled || !applicationHasDpoEmail}
         application={application}
         producerId={id}
-        type={PORTABILITY}
         {...rest}
       />
     );

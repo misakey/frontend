@@ -23,14 +23,18 @@ import getNextSearch from '@misakey/helpers/getNextSearch';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import prop from '@misakey/helpers/prop';
+import propOr from '@misakey/helpers/propOr';
 
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import DialogDataboxArchive from 'components/dumb/Dialog/Databox/Archive';
 import DialogDataboxReopen from 'components/dumb/Dialog/Databox/Reopen';
-import CardSimpleText from 'components/dumb/Card/Simple/Text';
+import Card from 'components/dumb/Card';
 import CardSimpleDoubleButton from 'components/dumb/Card/Simple/DoubleButton';
 import CardSimpleDoubleTextDoubleButton from 'components/dumb/Card/Simple/DoubleTextDoubleButton';
 import DataboxContent from 'components/smart/Databox/Content';
+import RequestTypeAvatar from 'components/dumb/Avatar/RequestType';
+import { Box, Typography } from '@material-ui/core';
+import { OWNER_COMMENTS } from 'constants/databox/comment';
 
 
 // CONSTANTS
@@ -69,6 +73,7 @@ const idProp = prop('id');
 const sentAtProp = prop('sentAt');
 const updatedAtProp = prop('updatedAt');
 const getOwner = prop('owner');
+const getType = prop('type');
 const getDpoComment = prop('dpoComment');
 
 // HOOKS
@@ -126,6 +131,11 @@ const CurrentDatabox = ({
 
   const status = useMemo(
     () => getStatus(databox),
+    [databox],
+  );
+
+  const type = useMemo(
+    () => getType(databox),
     [databox],
   );
 
@@ -243,6 +253,8 @@ const CurrentDatabox = ({
     [status],
   );
 
+  const closingReasons = useMemo(() => propOr([], type)(OWNER_COMMENTS), [type]);
+
   // It can exist a dpo answer but on status not closed (reopening request)
   const waitingForAnwser = useMemo(
     () => (isNil(dpoComment) || ![DONE, CLOSED].includes(status)),
@@ -297,6 +309,7 @@ const CurrentDatabox = ({
     <div {...omitTranslationProps(rest)}>
       <DialogDataboxArchive
         open={openDialog === DIALOGS.CLOSE}
+        options={closingReasons}
         onClose={onDialogClose}
         onSuccess={onArchive}
       />
@@ -305,9 +318,12 @@ const CurrentDatabox = ({
         onClose={onDialogClose}
         onSuccess={onReopen}
       />
-      <CardSimpleText
-        text={t('citizen:requests.read.from.label', { ownerEmail })}
-      />
+      <Card>
+        <Box py={1.5} px={2} display="flex" alignItems="center">
+          <RequestTypeAvatar type={type} />
+          <Typography>{t('citizen:requests.read.from.label', { ownerEmail })}</Typography>
+        </Box>
+      </Card>
       <DataboxContent
         databox={databox}
         application={application}
