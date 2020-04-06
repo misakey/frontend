@@ -12,6 +12,7 @@ import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD, SEARCH_WIDTH_SM, SEARCH_WIDTH_XS } fr
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'absolute',
+    textDecoration: 'none',
     left: '50%',
     transform: 'translateX(-50%)',
     border: `1px solid ${theme.palette.grey.A100}`,
@@ -33,11 +34,11 @@ const useStyles = makeStyles((theme) => ({
 
 // COMPONENTS
 // @FIXME: consider replacing this component by disabled search
-const BoxEllipsisApplication = ({ application }) => {
+const BoxEllipsisApplication = ({ application, ...rest }) => {
   const classes = useStyles();
 
   return (
-    <BoxEllipsis className={classes.root}>
+    <BoxEllipsis className={classes.root} {...rest}>
       <ApplicationAvatar application={application} />
     </BoxEllipsis>
   );

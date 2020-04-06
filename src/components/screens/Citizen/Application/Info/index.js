@@ -165,7 +165,7 @@ function ApplicationInfo({
   );
 
   const defaultRoute = useMemo(() => generatePath(
-    routes.citizen.application.vault,
+    routes.citizen.application.feedback,
     { mainDomain },
   ),
   [mainDomain]);

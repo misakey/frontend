@@ -47,7 +47,7 @@ import Title from 'components/dumb/Typography/Title';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 
 import ScreenAction from 'components/dumb/Screen/Action';
-import BoxEllipsisApplication from 'components/dumb/Box/Ellipsis/Application';
+import BoxEllipsisApplicationLink from 'components/dumb/Box/Ellipsis/Application/Link';
 
 // CONSTANTS
 const NAVIGATION_PROPS = {
@@ -205,7 +205,7 @@ function RequestsRead({
   );
 
   const items = useMemo(
-    () => ([<BoxEllipsisApplication key="application" application={application} />]),
+    () => ([<BoxEllipsisApplicationLink key="application" application={application} />]),
     [application],
   );
 

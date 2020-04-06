@@ -18,7 +18,6 @@ import ElevationScroll from 'components/dumb/ElevationScroll';
 import routes from 'routes';
 
 const APPLICATION_TABS = [
-  'vault',
   'feedback',
   'legal',
   'more',

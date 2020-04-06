@@ -16,6 +16,8 @@ import ApplicationInfo from 'components/screens/Citizen/Application/Info';
 import MyFeedback from 'components/screens/Citizen/Application/MyFeedback';
 import ApplicationContact from 'components/screens/Citizen/Application/Contact';
 
+import BoxEllipsisApplication from 'components/dumb/Box/Ellipsis/Application';
+
 // CONSTANTS
 const PAGES_ROSES_ENDPOINT = {
   method: 'GET',
@@ -49,16 +51,20 @@ function Application({ entity, error, isFetching, mainDomain }) {
     [state],
   );
 
+  const items = useMemo(
+    () => ([<BoxEllipsisApplication key="application" application={application} />]),
+    [application],
+  );
 
   const infoProps = useMemo(
     () => ({
       screenProps: {
         ...screenProps,
-        appBarProps: { elevationScroll: false },
+        appBarProps: { elevationScroll: false, items },
       },
       entity: application,
     }),
-    [screenProps, application],
+    [screenProps, application, items],
   );
 
   if (error && error.status === 404) {

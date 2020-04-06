@@ -43,7 +43,7 @@ import { getStyleForContainerScroll } from 'components/dumb/Screen';
 import ScreenAction from 'components/dumb/Screen/Action';
 import ContactConfig from 'components/screens/Citizen/Contact/Config';
 import ContactConfirm from 'components/screens/Citizen/Contact/Confirm';
-import BoxEllipsisApplication from 'components/dumb/Box/Ellipsis/Application';
+import BoxEllipsisApplicationLink from 'components/dumb/Box/Ellipsis/Application/Link';
 
 import AddIcon from '@material-ui/icons/Add';
 import withUserEmails from 'components/smart/withUserEmails';
@@ -285,7 +285,7 @@ const DraftRequest = ({
   );
 
   const items = useMemo(
-    () => ([<BoxEllipsisApplication application={application} key="applicationAvatar" />]),
+    () => ([<BoxEllipsisApplicationLink application={application} key="applicationAvatar" />]),
     [application],
   );
 
