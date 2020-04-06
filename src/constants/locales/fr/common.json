@@ -154,5 +154,8 @@
     "dpo": "dpo",
     "admin": "admin",
     "account": "account"
+  },
+  "quickDraft": {
+    "success": "Nouveau brouillon créé\u00a0!"
   }
 }

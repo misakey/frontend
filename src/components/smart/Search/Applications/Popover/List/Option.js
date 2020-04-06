@@ -16,14 +16,9 @@ import getNextSearch from '@misakey/helpers/getNextSearch';
 
 import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 
+import ApplicationListItemQuickDraft from 'components/dumb/ListItem/Application/QuickDraft';
 import ApplicationListItem from 'components/dumb/ListItem/Application';
 import withRequestCreation from 'components/smart/Requests/New/with';
-
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import WarningIcon from '@material-ui/icons/Warning';
-
-// CONSTANTS
-const REDIRECT_PROPS = { push: true };
 
 // HELPERS
 const hasDpoEmail = compose(
@@ -32,7 +27,9 @@ const hasDpoEmail = compose(
 );
 
 // COMPONENTS
-const ApplicationListItemWithRequestCreation = withRequestCreation(ApplicationListItem);
+const ApplicationListItemQuickDraftWithRequestCreation = withRequestCreation(
+  ApplicationListItemQuickDraft,
+);
 
 const Option = ({ application, disabled, ...rest }) => {
   const { search: locationSearch, pathname } = useLocation();
@@ -69,18 +66,6 @@ const Option = ({ application, disabled, ...rest }) => {
             ])),
           },
           replace: true,
-          secondaryAction: disabled
-            ? null
-            : (
-              <>
-                {
-                /* @FIXME: can be used or removed when request erasure is done
-                 {!applicationHasDpoEmail && (<WarningIcon />)} */
-                }
-                <WarningIcon />
-                <ChevronRightIcon />
-              </>
-            ),
         };
       }
       if (workspace === WORKSPACE.DPO) {
@@ -90,23 +75,18 @@ const Option = ({ application, disabled, ...rest }) => {
       }
       return {};
     },
-    [
-      mainDomain,
-      isCitizenWorkspace, workspace,
-      pathname, locationSearch, disabled,
-    ],
+    [mainDomain, isCitizenWorkspace, workspace, pathname, locationSearch],
   );
 
   // @FIXME remove this condition once we use second step for request
   if (isCitizenWorkspace && applicationHasDpoEmail) {
     return (
-      <ApplicationListItemWithRequestCreation
+      <ApplicationListItemQuickDraftWithRequestCreation
         button
         disabled={disabled || !applicationHasDpoEmail}
         application={application}
         producerId={id}
         type={PORTABILITY}
-        redirectProps={REDIRECT_PROPS}
         {...rest}
       />
     );

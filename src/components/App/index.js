@@ -11,7 +11,7 @@ const Web = lazy(() => import('components/App/Web'));
 
 const App = () => (
   <ErrorBoundary maxWidth="md" my={3}>
-    <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+    <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
       {(IS_PLUGIN) ? <Plugin /> : <Web />}
     </SnackbarProvider>
   </ErrorBoundary>

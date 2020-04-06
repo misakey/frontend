@@ -1,43 +1,41 @@
-import React, { useCallback, useState, useMemo } from 'react';
-import routes from 'routes';
-import { normalize } from 'normalizr';
+import { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { normalize } from 'normalizr';
 import { useDispatch } from 'react-redux';
-import { generatePath } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import Redirect from 'components/dumb/Redirect';
-import withUserEmails from 'components/smart/withUserEmails';
 import { addToAllRequestIdsForStatus } from 'store/actions/screens/allRequestIds';
+import { receiveEntities } from '@misakey/store/actions/entities';
+import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import UserEmailSchema from 'store/schemas/UserEmail';
 
 import API from '@misakey/api';
+import errorTypes from '@misakey/ui/constants/errorTypes';
 
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import prop from '@misakey/helpers/prop';
-import head from '@misakey/helpers/head';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
-import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import errorTypes from '@misakey/ui/constants/errorTypes';
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
-import DataboxSchema from 'store/schemas/Databox';
-import { receiveEntities } from '@misakey/store/actions/entities';
-import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
+import { getFirstUserEmailId } from 'helpers/userEmail';
 
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+
+import withUserEmails from 'components/smart/withUserEmails';
+import DataboxSchema from 'store/schemas/Databox';
+
+// CONSTANTS
 const { conflict } = errorTypes;
 
 // HELPERS
-const idProp = prop('id');
-const getUserEmailId = (userEmails) => idProp(head(userEmails || []));
-
 const postRequest = (payload) => API.use(API.endpoints.application.box.create)
   .build(null, objectToSnakeCase(payload))
   .send();
 
 // COMPONENTS
+// @FIXME transform into a hook as it is not a real component anymore
+// @TODO: rework (dependency on) withUserEmails
 const NewRequest = ({
   children,
   userEmails,
@@ -46,14 +44,11 @@ const NewRequest = ({
   type,
   onCreateSuccess,
   onCreateError,
-  push,
   t,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
 
-  const [redirectToRequest, setRedirectToRequest] = useState(null);
-
-  const userEmailId = useMemo(() => getUserEmailId(userEmails), [userEmails]);
+  const userEmailId = useMemo(() => getFirstUserEmailId(userEmails), [userEmails]);
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
   const dispatch = useDispatch();
 
@@ -73,9 +68,8 @@ const NewRequest = ({
     return Promise.all([
       dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
       dispatch(addToAllRequestIdsForStatus(id, status)),
-      onCreateSuccess(),
     ]).then(() => {
-      setRedirectToRequest(generatePath(routes.citizen.requests.read, { id }));
+      onCreateSuccess(newRequest);
     });
   }, [dispatch, onCreateSuccess]);
 
@@ -103,10 +97,6 @@ const NewRequest = ({
     { onSuccess, onError },
   );
 
-  if (!isNil(redirectToRequest)) {
-    return <Redirect to={redirectToRequest} push={push} />;
-  }
-
   return children;
 };
 
@@ -121,7 +111,7 @@ NewRequest.propTypes = {
   type: PropTypes.string.isRequired,
   onCreateSuccess: PropTypes.func,
   onCreateError: PropTypes.func,
-  push: PropTypes.bool,
+  // withTranslation
   t: PropTypes.func.isRequired,
 };
 
@@ -131,7 +121,6 @@ NewRequest.defaultProps = {
   userEmails: null,
   onCreateSuccess: null,
   onCreateError: null,
-  push: false,
 };
 
 export default withUserEmails(withTranslation('citizen')(NewRequest));

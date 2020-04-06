@@ -2,23 +2,26 @@ import React, { useMemo, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import routes from 'routes';
 import { connect } from 'react-redux';
-import { makeStyles } from '@material-ui/core/styles';
-import { setOnboardingDone } from '@misakey/helpers/plugin';
-import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import isNull from '@misakey/helpers/isNull';
 
-import Container from '@material-ui/core/Container';
-import Box from '@material-ui/core/Box';
+import { IS_PLUGIN } from 'constants/plugin';
+import { USER_REQUEST_STATUS } from 'constants/search/request/params';
+
 import API from '@misakey/api';
+
+import isNull from '@misakey/helpers/isNull';
+import { setOnboardingDone } from '@misakey/helpers/plugin';
+
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import Redirect from 'components/dumb/Redirect';
 import SearchApplications from 'components/smart/Search/Applications';
-import UserRequestsList from 'components/smart/List/UserRequests';
+import UserRequests from 'components/smart/UserRequests';
 import ApplicationCategoriesList from 'components/smart/List/ApplicationCategories';
 import Screen from 'components/dumb/Screen';
 import Onboarding from 'components/dumb/Onboarding/Citizen';
-import { IS_PLUGIN } from 'constants/plugin';
-import { DONE } from 'constants/databox/status';
+import Container from '@material-ui/core/Container';
+import Box from '@material-ui/core/Box';
 
 // CONSTANTS
 const POPOVER_PROPS = {
@@ -46,7 +49,6 @@ const countRequests = () => API.use(API.endpoints.application.box.count)
 const CitizenHome = ({ isAuthenticated }) => {
   const classes = useStyles();
   const [userRequestCount, setUserRequestCount] = useState(null);
-  const [activeStatus, setActiveStatus] = useState(DONE);
 
   const shouldFetch = useMemo(
     () => isAuthenticated && isNull(userRequestCount),
@@ -85,7 +87,7 @@ const CitizenHome = ({ isAuthenticated }) => {
           {shouldDisplayOnboarding ? (
             <Onboarding isAuthenticated={isAuthenticated} />
           ) : (
-            <UserRequestsList activeStatus={activeStatus} setActiveStatus={setActiveStatus} />
+            <UserRequests searchKey={USER_REQUEST_STATUS} />
           )}
           {!IS_PLUGIN && <ApplicationCategoriesList />}
         </Box>
@@ -96,7 +98,11 @@ const CitizenHome = ({ isAuthenticated }) => {
 };
 
 CitizenHome.propTypes = {
-  isAuthenticated: PropTypes.bool.isRequired,
+  isAuthenticated: PropTypes.bool,
+};
+
+CitizenHome.defaultProps = {
+  isAuthenticated: false,
 };
 
 const mapStateToProps = (state) => ({

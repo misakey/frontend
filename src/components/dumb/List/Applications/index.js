@@ -14,7 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import Skeleton from '@material-ui/lab/Skeleton';
 import ApplicationListItem from 'components/dumb/ListItem/Application';
-import ApplicationListItemQuickContact from 'components/dumb/ListItem/Application/QuickContact';
+import ApplicationListItemQuickDraft from 'components/dumb/ListItem/Application/QuickDraft';
 import ApplicationListItemBlobCount from 'components/dumb/ListItem/Application/BlobCount';
 import BoxMessage from '@misakey/ui/Box/Message';
 
@@ -40,7 +40,7 @@ function ApplicationsList({
         return ApplicationListItemBlobCount;
       }
       if (workspace === WORKSPACE.CITIZEN) {
-        return ApplicationListItemQuickContact;
+        return ApplicationListItemQuickDraft;
       }
       return ApplicationListItem;
     },

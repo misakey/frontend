@@ -16,19 +16,19 @@ import { contactDataboxURL } from 'store/actions/screens/contact';
 import { selectors as contactSelectors } from 'store/reducers/screens/contact';
 import { addToUserApplications } from 'store/actions/applications/userApplications';
 
-import { useParams } from 'react-router-dom';
-import useFetchEffect from '@misakey/hooks/useFetch/effect';
-
 import identity from '@misakey/helpers/identity';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 import prop from '@misakey/helpers/prop';
-import head from '@misakey/helpers/head';
 import compose from '@misakey/helpers/compose';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 import { getCurrentDatabox } from '@misakey/helpers/databox';
+import { getFirstUserEmailId } from 'helpers/userEmail';
+
+import { useParams } from 'react-router-dom';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import withUserEmails from 'components/smart/withUserEmails';
 
@@ -37,7 +37,6 @@ import withUserEmails from 'components/smart/withUserEmails';
 // HELPERS
 const idProp = prop('id');
 const databoxesProp = prop('databoxes');
-const getUserEmailId = (userEmails) => idProp(head(userEmails || []));
 
 const getDataboxMeta = compose(
   ({ dpoEmail, owner }) => ({ dpoEmail, owner: objectToCamelCase(owner) }),
@@ -82,7 +81,7 @@ const withDataboxURL = (
     );
 
     const userEmailId = useMemo(
-      () => getUserEmailId(userEmails),
+      () => getFirstUserEmailId(userEmails),
       [userEmails],
     );
 

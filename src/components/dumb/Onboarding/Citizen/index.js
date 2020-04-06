@@ -87,8 +87,12 @@ const OnboardingCitizen = ({ isAuthenticated, t }) => {
 };
 
 OnboardingCitizen.propTypes = {
-  isAuthenticated: PropTypes.bool.isRequired,
+  isAuthenticated: PropTypes.bool,
   t: PropTypes.func.isRequired,
+};
+
+OnboardingCitizen.defaultProps = {
+  isAuthenticated: false,
 };
 
 export default withTranslation('components')(OnboardingCitizen);

@@ -8,7 +8,7 @@ import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 
 // COMPONENTS
 function Redirect({ forceRefresh, to, manualRedirectPlaceholder, ...props }) {
-  const { href, search, pathname } = parseUrlFromLocation(to);
+  const { href } = parseUrlFromLocation(to);
 
   if (forceRefresh && isSamePage(href)) {
     window.location.reload();
@@ -20,7 +20,7 @@ function Redirect({ forceRefresh, to, manualRedirectPlaceholder, ...props }) {
     return manualRedirectPlaceholder;
   }
 
-  return <RouterRedirect {...props} to={`${pathname}${search}`} />;
+  return <RouterRedirect {...props} to={to} />;
 }
 
 Redirect.propTypes = {
