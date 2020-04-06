@@ -16,7 +16,6 @@ import isEmpty from '@misakey/helpers/isEmpty';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
-import usePropChanged from '@misakey/hooks/usePropChanged';
 import { useSnackbar } from 'notistack';
 
 import { Route, Switch, Redirect, useHistory, useLocation } from 'react-router-dom';
@@ -50,7 +49,6 @@ function AuthSignIn({ challenge, identifier, acr, dispatchSetCredentials, match,
 
   const { enqueueSnackbar } = useSnackbar();
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
-  const identifierPropChanged = usePropChanged(identifier);
 
   const secLevelConfig = useMemo(() => SECLEVEL_CONFIG[acr || DEFAULT_SECLEVEL], [acr]);
 
@@ -114,8 +112,8 @@ function AuthSignIn({ challenge, identifier, acr, dispatchSetCredentials, match,
   );
 
   const shouldFetch = useMemo(
-    () => !isEmpty(identifier) && identifierPropChanged,
-    [identifier, identifierPropChanged],
+    () => !isEmpty(identifier),
+    [identifier],
   );
 
   const { isFetching, error } = useFetchEffect(

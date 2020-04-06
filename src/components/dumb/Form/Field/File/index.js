@@ -92,7 +92,8 @@ const useHandleError = (error, onError) => useEffect(() => {
 
 const useHandleFieldValue = (valueChanged, value, file, onReset) => useEffect(
   () => {
-    if (valueChanged && !isNil(file) && file !== value) {
+    // when value changed to nil but file didn't yet, call onReset
+    if (valueChanged && isNil(value) && !isNil(file)) {
       onReset();
     }
   },
@@ -120,7 +121,7 @@ const FileField = ({ className, t, onChange, onError, accept, field: { value } }
 
   const acceptString = useAcceptString(accept);
 
-  const valueChanged = usePropChanged(value);
+  const valueChanged = usePropChanged(value, [file]);
 
   useHandleError(error, onError);
   useHandleChange(file, preview, progress, onChange);
