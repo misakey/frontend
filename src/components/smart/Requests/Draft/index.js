@@ -362,22 +362,22 @@ const DraftRequest = ({
               <CardContactBody>
                 {body}
               </CardContactBody>
-              <ContactConfig
-                searchKey={CONFIG_KEY}
-                userId={userId}
-                userEmails={userEmails}
-                databox={request}
-              />
-              <ContactConfirm
-                searchKey={CONFIRM_KEY}
-                contactEmail={contactEmail}
-                mailto={dpoEmail}
-                subject={subject}
-                body={body}
-                onDone={onDone}
-              />
             </>
           )}
+          <ContactConfig
+            searchKey={CONFIG_KEY}
+            userId={userId}
+            userEmails={userEmails}
+            databox={request}
+          />
+          <ContactConfirm
+            searchKey={CONFIRM_KEY}
+            contactEmail={contactEmail}
+            mailto={dpoEmail}
+            subject={subject}
+            body={body}
+            onDone={onDone}
+          />
         </Container>
 
       </ThemeProvider>
