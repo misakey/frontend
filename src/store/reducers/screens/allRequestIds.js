@@ -5,7 +5,10 @@ import {
   ADD_TO_ALL_REQUEST_IDS_FOR_STATUS,
   REMOVE_FROM_ALL_REQUEST_IDS_FOR_STATUS,
 } from 'store/actions/screens/allRequestIds';
+import any from '@misakey/helpers/any';
+import isEmpty from '@misakey/helpers/isEmpty';
 import get from '@misakey/helpers/get';
+import { createSelector } from 'reselect';
 
 // @FIXME: this could be refactored inside entities store to follow the `byIds` pattern
 // from https://redux.js.org/recipes/structuring-reducers/normalizing-state-shape#designing-a-normalized-state
@@ -39,3 +42,13 @@ export default createReducer(initialState, {
   [ADD_TO_ALL_REQUEST_IDS_FOR_STATUS]: addToAllRequestIdsForStatus,
   [REMOVE_FROM_ALL_REQUEST_IDS_FOR_STATUS]: removeFromAllRequestIdsForStatus,
 });
+
+const allRequestIdsSelector = (state) => state.screens.allRequestIds;
+
+export const requestsByStatusNotEmptySelector = createSelector(
+  allRequestIdsSelector,
+  (normalizedRequestIdsByStatus) => any(
+    (requestIdsByStatus) => !isEmpty(requestIdsByStatus),
+    Object.values(normalizedRequestIdsByStatus),
+  ),
+);

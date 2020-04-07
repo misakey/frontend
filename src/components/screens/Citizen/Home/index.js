@@ -22,6 +22,7 @@ import Screen from 'components/dumb/Screen';
 import Onboarding from 'components/dumb/Onboarding/Citizen';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
+import { requestsByStatusNotEmptySelector } from 'store/reducers/screens/allRequestIds';
 
 // CONSTANTS
 const POPOVER_PROPS = {
@@ -46,13 +47,13 @@ const countRequests = () => API.use(API.endpoints.application.box.count)
   .send();
 
 // COMPONENTS
-const CitizenHome = ({ isAuthenticated }) => {
+const CitizenHome = ({ isAuthenticated, hasRequestsByStatus }) => {
   const classes = useStyles();
   const [userRequestCount, setUserRequestCount] = useState(null);
 
   const shouldFetch = useMemo(
-    () => isAuthenticated && isNull(userRequestCount),
-    [isAuthenticated, userRequestCount],
+    () => isAuthenticated && isNull(userRequestCount) && !hasRequestsByStatus,
+    [hasRequestsByStatus, isAuthenticated, userRequestCount],
   );
 
   const onSuccess = useCallback((response) => {
@@ -65,14 +66,19 @@ const CitizenHome = ({ isAuthenticated }) => {
     { onSuccess },
   );
 
+  const userHasRequests = useMemo(
+    () => hasRequestsByStatus || userRequestCount > 0,
+    [hasRequestsByStatus, userRequestCount],
+  );
+
   const state = useMemo(
     () => ({ isLoading: isFetching }),
     [isFetching],
   );
 
   const shouldDisplayOnboarding = useMemo(
-    () => !isAuthenticated || userRequestCount === 0,
-    [isAuthenticated, userRequestCount],
+    () => !isAuthenticated || !userHasRequests,
+    [isAuthenticated, userHasRequests],
   );
 
   if (IS_PLUGIN && !shouldDisplayOnboarding) {
@@ -99,14 +105,17 @@ const CitizenHome = ({ isAuthenticated }) => {
 
 CitizenHome.propTypes = {
   isAuthenticated: PropTypes.bool,
+  hasRequestsByStatus: PropTypes.bool,
 };
 
 CitizenHome.defaultProps = {
   isAuthenticated: false,
+  hasRequestsByStatus: false,
 };
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  hasRequestsByStatus: requestsByStatusNotEmptySelector(state),
 });
 
 export default connect(mapStateToProps)(CitizenHome);
