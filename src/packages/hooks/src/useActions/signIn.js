@@ -56,6 +56,7 @@ export const useSecretContentAction = (acr, t, renewConfirmationCode) => useMemo
       },
       confirmationCode: {
         buttonProps: {
+          standing: BUTTON_STANDINGS.TEXT,
           onClick: renewConfirmationCode,
         },
         textKey: 'auth:signIn.form.action.getANewCode.button',

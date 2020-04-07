@@ -285,8 +285,8 @@ function ServiceRequestsRead({
   );
 
   const requestType = useMemo(
-    () => requestTypeProp(accessRequest),
-    [accessRequest],
+    () => requestTypeProp(databox),
+    [databox],
   );
 
   const handle = useMemo(
