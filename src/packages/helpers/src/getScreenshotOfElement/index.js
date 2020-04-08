@@ -7,6 +7,7 @@ export default (element) => {
   return html2canvas(element, {
     width,
     height,
+    scale: 1,
   }).then((canvas) => {
     const context = canvas.getContext('2d');
     const imageData = context.getImageData(0, 0, width, height).data;

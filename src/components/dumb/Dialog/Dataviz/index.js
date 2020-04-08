@@ -1,5 +1,7 @@
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useMemo, useCallback, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
+
+import { makeStyles } from '@material-ui/core/styles';
 
 import downloadFile from '@misakey/helpers/downloadFile';
 import isNil from '@misakey/helpers/isNil';
@@ -24,10 +26,33 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import Dataviz, { AVAILABLE_DATAVIZ_DOMAINS } from 'components/dumb/Dataviz';
 
+
+const useStyles = makeStyles((theme) => ({
+  disableContent: {
+    position: 'relative',
+    overflow: 'hidden',
+
+    '&:before': {
+      display: 'block',
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+      background: 'rgba(0, 0, 0, 0.5)',
+      zIndex: theme.zIndex.modal,
+      content: '""',
+    },
+  },
+}));
+
 const DatavizDialog = ({
   mainDomain, open, onClose, decryptedBlob, width, t, onDownloadSuccess,
 }) => {
+  const classes = useStyles();
+
   const [isSharing, setIsSharing] = useState(false);
+  const scrollContainerRef = useRef(null);
 
   const canDataviz = useMemo(
     () => !isNil(mainDomain) && AVAILABLE_DATAVIZ_DOMAINS.includes(mainDomain),
@@ -42,13 +67,21 @@ const DatavizDialog = ({
   const onShare = useCallback(
     () => {
       setIsSharing(true);
+      const top = scrollContainerRef.current.scrollTop;
+      const left = scrollContainerRef.current.scrollLeft;
+      scrollContainerRef.current.scrollTop = 0;
+      scrollContainerRef.current.scrollLeft = 0;
       getScreenshotOfElement(document.getElementById('datavizcontent'))
         .then(
           (dataUri) => {
             downloadFile(dataUri, `${decryptedBlob.filename}.png`);
           },
         )
-        .finally(() => setIsSharing(false));
+        .finally(() => {
+          scrollContainerRef.current.scrollTop = top;
+          scrollContainerRef.current.scrollLeft = left;
+          setIsSharing(false);
+        });
     },
     [decryptedBlob],
   );
@@ -85,7 +118,11 @@ const DatavizDialog = ({
           </IconButton>
         </Toolbar>
       </DialogTitle>
-      <DialogContent dividers>
+      <DialogContent
+        dividers
+        ref={scrollContainerRef}
+        className={(isSharing) ? classes.disableContent : null}
+      >
         <Dataviz decryptedBlob={decryptedBlob} mainDomain={mainDomain} id="datavizcontent" />
       </DialogContent>
     </Dialog>

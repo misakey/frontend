@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'sticky',
     top: -theme.spacing(2),
     backgroundColor: 'white',
-    zIndex: 500,
+    zIndex: theme.zIndex.mobileStepper,
   },
 }));
 
