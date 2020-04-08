@@ -23,8 +23,15 @@ const BoxEllipsisApplicationLink = ({ application }) => {
     [mainDomain],
   );
 
+  const linkProps = useMemo(
+    () => (isNil(to)
+      ? {}
+      : { component: Link, to }),
+    [to],
+  );
+
   return (
-    <BoxEllipsisApplication component={Link} to={to} application={application} />
+    <BoxEllipsisApplication {...linkProps} application={application} />
   );
 };
 

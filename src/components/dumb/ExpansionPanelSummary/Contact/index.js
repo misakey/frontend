@@ -22,12 +22,6 @@ const useStyles = makeStyles((theme) => ({
   },
   expansionPanelSummaryContent: {
     overflow: 'hidden',
-    margin: 'auto 0',
-    // fix for weird logic of expansion panel classes
-    // classes.expanded doesn't work because default style uses content.Mui-expanded
-    '&.Mui-expanded': {
-      margin: 'auto 0',
-    },
   },
 }));
 

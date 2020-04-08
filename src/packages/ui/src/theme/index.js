@@ -29,6 +29,9 @@ export const themeOptions = {
   typography: {
     useNextVariants: true,
   },
+  zIndex: {
+    max: 2000,
+  },
   overrides: {
     MuiButton: {
       root: {
@@ -46,7 +49,9 @@ export const themeOptions = {
     MuiListItem: {
       root: {
         '&.Mui-selected': {
-          borderLeft: `3px solid ${common.secondary}`,
+          borderLeftWidth: 3,
+          borderLeftStyle: 'solid',
+          borderLeftColor: common.secondary,
           '&.MuiListItem-gutters': {
             paddingLeft: 13,
           },
@@ -55,10 +60,32 @@ export const themeOptions = {
     },
     MuiExpansionPanel: {
       root: {
+        '&::before': {
+          display: 'none',
+        },
         // https://github.com/mui-org/material-ui/issues/20058#issuecomment-601777593
         '&.Mui-disabled': {
           backgroundColor: 'unset',
         },
+      },
+    },
+    MuiExpansionPanelDetails: {
+      root: {
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        padding: 0,
+        '& > ul': {
+          width: '100%',
+        },
+      },
+    },
+    MuiExpansionPanelSummary: {
+      content: {
+        margin: 'auto 0',
+        '&.Mui-expanded': {
+          margin: 'auto 0',
+        },
+        alignItems: 'center',
       },
     },
   },

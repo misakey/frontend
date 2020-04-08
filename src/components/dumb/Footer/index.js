@@ -65,14 +65,7 @@ const useStyles = makeStyles((theme) => ({
         : null),
     },
   },
-  expansionPanelSummaryContent: {
-    '&.Mui-expanded': {
-      margin: 'auto 0',
-    },
-  },
   expansionPanelDetailsRoot: ({ FABPadded }) => ({
-    padding: theme.spacing(0),
-
     // marginRight = right spacing of FAB + FAB_WIDTH - CONTAINER_SPACING
     [theme.breakpoints.only('xs')]: {
       marginRight: FABPadded ? theme.spacing(FAB_RIGHT) + FAB_WIDTH - XS_CONTAINER_SPACING : null,
@@ -125,7 +118,6 @@ const Footer = ({ t, typographyProps, FABPadded, ContainerComponent, containerPr
         <ExpansionPanelSummary
           classes={{
             root: classes.expansionPanelSummaryRoot,
-            content: classes.expansionPanelSummaryContent,
           }}
           expandIcon={<ExpandMoreIcon />}
         >

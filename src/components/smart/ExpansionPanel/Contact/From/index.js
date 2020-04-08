@@ -37,12 +37,6 @@ const idProp = prop('id');
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  expansionPanelRoot: {
-    '&::before': {
-      display: 'none',
-    },
-    marginBottom: theme.spacing(1),
-  },
   expansionPanelExpanded: {
     marginBottom: theme.spacing(-2.5),
     // fix for weird logic of expansion panel classes
@@ -51,13 +45,8 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: theme.spacing(-2.5),
     },
   },
-  expansionPanelDetailsRoot: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    padding: theme.spacing(1),
-  },
   listRoot: {
-    width: '100%',
+    marginBottom: theme.spacing(1),
   },
 }));
 
@@ -199,13 +188,17 @@ const ExpansionPanelContactFrom = ({
       <ExpansionPanel
         expanded={expanded}
         onChange={onChange}
-        classes={{ root: classes.expansionPanelRoot, expanded: classes.expansionPanelExpanded }}
+        classes={{ expanded: classes.expansionPanelExpanded }}
         elevation={0}
         {...omitTranslationProps(rest)}
       >
         <ExpansionPanelSummaryContactFrom email={email} type={selectedType} />
-        <ExpansionPanelDetails classes={{ root: classes.expansionPanelDetailsRoot }}>
-          <List key={notSelectedOptions.length} classes={{ root: classes.listRoot }}>
+        <ExpansionPanelDetails>
+          <List
+            classes={{ root: classes.listRoot }}
+            key={notSelectedOptions.length}
+            disablePadding
+          >
             {notSelectedOptions.map((userEmail) => (
               <ListItemEmail
                 key={userEmail.id}
