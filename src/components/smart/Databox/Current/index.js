@@ -221,7 +221,7 @@ const CurrentDatabox = ({
     () => {
       reopenDatabox(databoxId)
         .then(() => {
-          dispatchUpdateDatabox(databoxId, { status: OPEN });
+          dispatchUpdateDatabox(databoxId, { status: OPEN, dpoComment: '' });
           return requestDataboxAccess(databoxId)
             .then((response) => onReopenMailTo(response.token));
         })
