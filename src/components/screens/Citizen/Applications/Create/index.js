@@ -106,7 +106,9 @@ const ApplicationsCreate = ({
 
 ApplicationsCreate.propTypes = {
   match: PropTypes.shape({ params: PropTypes.object }).isRequired,
+  // withApplicationCreate
   onCreateApplication: PropTypes.func.isRequired,
+  // withTranslation
   t: PropTypes.func.isRequired,
 };
 

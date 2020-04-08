@@ -112,7 +112,7 @@ const withApplicationsCreate = (mapper = identity) => (Component) => {
     const redirectRoute = useMemo(
       () => ((workspace === WORKSPACE.DPO)
         ? routes.dpo.service.claim._
-        : routes.citizen.application.vault),
+        : routes.citizen._),
       [workspace],
     );
 

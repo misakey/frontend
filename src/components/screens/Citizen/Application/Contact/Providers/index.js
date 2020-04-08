@@ -31,7 +31,7 @@ const useMailtoProps = (dpoEmail, name, subject, body) => useMemo(
 const useDoneTo = (entity) => useMemo(
   () => {
     const mainDomain = mainDomainProp(entity);
-    return generatePath(routes.citizen.application.vault, { mainDomain });
+    return generatePath(routes.citizen._, { mainDomain });
   },
   [entity],
 );

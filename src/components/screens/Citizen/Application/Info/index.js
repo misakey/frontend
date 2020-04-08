@@ -32,7 +32,7 @@ import { WORKSPACE } from 'constants/workspaces';
 
 
 // LAZY
-const ApplicationVault = lazy(() => import('components/screens/Citizen/Application/Info/Vault'));
+// const ApplicationVault = lazy(() => import('components/screens/Citizen/Application/Info/Vault'));
 const Feedback = lazy(() => import('components/screens/Citizen/Application/Info/Feedback'));
 const Legal = lazy(() => import('components/screens/Citizen/Application/Info/Legal'));
 const More = lazy(() => import('components/screens/Citizen/Application/Info/More'));
@@ -208,6 +208,7 @@ function ApplicationInfo({
                 <DefaultSplashScreen />
               ) : (
                 <Switch>
+                  {/* @FIXME: rework vault before putting that route back
                   <Route
                     exact
                     path={routes.citizen.application.vault}
@@ -217,7 +218,7 @@ function ApplicationInfo({
                         {...routerProps}
                       />
                     )}
-                  />
+                  /> */}
                   <Route
                     path={routes.citizen.application.feedback}
                     render={(routerProps) => (

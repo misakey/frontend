@@ -18,6 +18,7 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 import { getFirstUserEmailId } from 'helpers/userEmail';
+import { getCode, getDetails } from '@misakey/helpers/apiError';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
@@ -77,18 +78,20 @@ const NewRequest = ({
   }, [dispatch, onCreateSuccess]);
 
 
-  const onError = useCallback((e) => {
-    const { code } = e;
-    if (code === conflict) {
-      enqueueSnackbar(t('citizen:requests.read.errors.conflict.open.status'), { variant: 'error' });
-      return;
-    }
-    handleGenericHttpErrors(e);
+  const onError = useCallback(
+    (e) => {
+      const code = getCode(e);
+      const { status } = getDetails(e);
+      if (code === conflict && status === conflict) {
+        return enqueueSnackbar(t('citizen:requests.read.errors.conflict.open.status'), { variant: 'error' });
+      }
+      if (isFunction(onCreateError)) {
+        onCreateError(e);
+      }
 
-    if (isFunction(onCreateError)) {
-      onCreateError(e);
-    }
-  }, [enqueueSnackbar, handleGenericHttpErrors, onCreateError, t]);
+      return handleGenericHttpErrors(e);
+    }, [enqueueSnackbar, handleGenericHttpErrors, onCreateError, t],
+  );
 
   const shouldFetch = useMemo(
     () => !isNil(userEmailId) && !isNil(producerId),
