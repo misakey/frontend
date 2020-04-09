@@ -72,7 +72,9 @@ function UserRequestsList({
   );
 
   const missingApplicationsInfoIds = useMemo(
-    () => getProducerIds(requestsList.filter(({ application }) => isNil(application))),
+    () => getProducerIds(
+      requestsList.filter(({ producer: { application } }) => isNil(application)),
+    ),
     [requestsList],
   );
 
@@ -184,24 +186,9 @@ const mapStateToProps = (state, ownProps) => {
   const requestsIds = propOr(null, activeStatus)(state.screens.allRequestIds);
   return {
     isAuthenticated: state.auth.isAuthenticated,
-    requests: isNil(requestsIds) ? null : denormalize(
-      requestsIds,
-      DataboxSchema.collection,
-      state.entities,
-    )
-      .map(({ producerId, ...rest }) => {
-        // @FIXME: use specific schema
-        const applicationById = denormalize(
-          producerId,
-          ApplicationByIdSchema.entity,
-          state.entities,
-        ) || {};
-        return {
-          ...rest,
-          producerId,
-          application: applicationById.application,
-        };
-      }),
+    requests: isNil(requestsIds)
+      ? null
+      : denormalize(requestsIds, DataboxSchema.collection, state.entities),
   };
 };
 

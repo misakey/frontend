@@ -73,7 +73,7 @@ function RequestListItem({ request, toRoute, t, isFetchingApplication }) {
   const classes = useStyles();
 
   const {
-    application,
+    producer: { application },
     id,
     status,
     dpoComment,

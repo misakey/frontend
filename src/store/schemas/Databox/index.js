@@ -4,16 +4,26 @@ import PropTypes from 'prop-types';
 import DATABOX_STATUSES, { DRAFT } from 'constants/databox/status';
 import isNil from '@misakey/helpers/isNil';
 import has from '@misakey/helpers/has';
+import ApplicationByIdSchema from 'store/schemas/Application/ById';
 
-const entity = new schema.Entity('databoxes', {}, {
+const entity = new schema.Entity('databoxes', { producer: ApplicationByIdSchema.entity }, {
   processStrategy: (item) => {
-    if (has(item, 'sentAt') && isNil(item.sentAt) && item.status !== DRAFT && !isNil(item.createdAt)) {
-      return {
-        ...item,
-        sentAt: item.createdAt,
-      };
+    const { producer, producerId } = item;
+    const newItem = (isNil(producer) && !isNil(producerId))
+      ? { ...item, producer: { id: producerId } }
+      : item;
+
+    // handle case sentAt is null and provided by API
+    if (has(newItem, 'sentAt')) {
+      const { status, sentAt, createdAt } = newItem;
+      if (isNil(sentAt) && status !== DRAFT && !isNil(createdAt)) {
+        return {
+          ...newItem,
+          sentAt: newItem.createdAt,
+        };
+      }
     }
-    return item;
+    return newItem;
   },
 });
 
@@ -26,6 +36,8 @@ const DataboxSchema = {
     id: PropTypes.string.isRequired,
     ownerId: PropTypes.string,
     producerId: PropTypes.string.isRequired,
+    // eslint-disable-next-line react/forbid-foreign-prop-types
+    producer: PropTypes.shape(ApplicationByIdSchema.propTypes),
     createdAt: PropTypes.string.isRequired,
     updatedAt: PropTypes.string.isRequired,
     sentAt: PropTypes.string,

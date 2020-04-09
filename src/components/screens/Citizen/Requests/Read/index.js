@@ -9,7 +9,6 @@ import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 
 import Container from '@material-ui/core/Container';
 
-import ApplicationSchema from 'store/schemas/Application';
 import DataboxByProducerSchema from 'store/schemas/Databox/ByProducer';
 import ApplicationByIdSchema from 'store/schemas/Application/ById';
 
@@ -114,7 +113,6 @@ const useOnSuccessApplication = (dispatchReceiveApplication) => useCallback(
 
 // COMPONENTS
 function RequestsRead({
-  application,
   request,
   isAuthenticated,
   dispatchReceiveApplication,
@@ -125,7 +123,8 @@ function RequestsRead({
   // Used to prevent refetch on delete request
   const [preventFetching, setPreventFetching] = useState(false);
 
-  const { status, producerId, sentAt, type } = useMemo(() => request || {}, [request]);
+  const { status, producerId, sentAt, type, producer } = useMemo(() => request || {}, [request]);
+  const { application } = useMemo(() => producer || {}, [producer]);
 
   const { params } = useRouteMatch();
   const { search } = useLocation();
@@ -273,7 +272,6 @@ function RequestsRead({
 RequestsRead.propTypes = {
   t: PropTypes.func.isRequired,
   // CONNECT
-  application: PropTypes.shape(ApplicationSchema.propTypes),
   request: PropTypes.shape(DataboxByProducerSchema.propTypes),
   isAuthenticated: PropTypes.bool,
   dispatchReceiveApplication: PropTypes.func.isRequired,
@@ -281,30 +279,20 @@ RequestsRead.propTypes = {
 };
 
 RequestsRead.defaultProps = {
-  application: null,
   request: null,
   isAuthenticated: false,
 };
 
 // CONNECT
-const mapStateToProps = (state, ownProps) => {
-  const request = denormalize(
+const mapStateToProps = (state, ownProps) => ({
+  request: denormalize(
     ownProps.match.params.id,
     DataboxSchema.entity,
     state.entities,
-  );
-
-  const { application } = !isNil(request)
-    ? denormalize(request.producerId, ApplicationByIdSchema.entity, state.entities) || {}
-    : {};
-
-  return {
-    request,
-    application,
-    userId: state.auth.userId,
-    isAuthenticated: !!state.auth.token,
-  };
-};
+  ),
+  userId: state.auth.userId,
+  isAuthenticated: !!state.auth.token,
+});
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchReceiveRequest: (data) => {
