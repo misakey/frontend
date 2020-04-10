@@ -10,6 +10,7 @@ import propOr from '@misakey/helpers/propOr';
 import isNil from '@misakey/helpers/isNil';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 import { IS_PLUGIN } from 'constants/plugin';
+import { updateAllRequestIdsForStatus } from './screens/allRequestIds';
 
 // HELPERS
 const mergeEntitiesDataboxes = (state, { entities }) => merge(
@@ -102,6 +103,13 @@ export const setUrlAccessRequest = (id, token) => (dispatch) => {
 export const updateDatabox = (id, changes) => (dispatch) => {
   const updatedAt = changes.updatedAt || new Date().toISOString();
   const entities = [{ id, changes: { ...changes, updatedAt } }];
+
+  if (changes.status) {
+    return Promise.resolve(
+      dispatch(updateEntities(entities, DataboxSchema)),
+      dispatch(updateAllRequestIdsForStatus(id, changes.status)),
+    );
+  }
 
   return Promise.resolve(dispatch(updateEntities(entities, DataboxSchema)));
 };

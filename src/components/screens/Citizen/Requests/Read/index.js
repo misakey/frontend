@@ -243,7 +243,6 @@ function RequestsRead({
         <Container maxWidth="md">
           {!isNil(request) && (
           <CurrentDatabox
-            key={request.id}
             className={classes.box}
             application={application}
             databox={request}
@@ -253,7 +252,6 @@ function RequestsRead({
           {isClosed && (
           <ArchivedDatabox
             className={classes.box}
-            key={request.id}
             databox={request}
             application={application}
             initCrypto={initCrypto}

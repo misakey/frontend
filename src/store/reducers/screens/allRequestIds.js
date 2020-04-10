@@ -2,12 +2,13 @@ import createReducer from '@misakey/store/reducers/helpers/createReducer';
 
 import {
   SET_ALL_REQUEST_IDS_FOR_STATUS,
-  ADD_TO_ALL_REQUEST_IDS_FOR_STATUS,
+  UPDATE_ALL_REQUEST_IDS_FOR_STATUS,
   REMOVE_FROM_ALL_REQUEST_IDS_FOR_STATUS,
 } from 'store/actions/screens/allRequestIds';
 import any from '@misakey/helpers/any';
 import isEmpty from '@misakey/helpers/isEmpty';
-import get from '@misakey/helpers/get';
+import mapValues from '@misakey/helpers/mapValues';
+import propOr from '@misakey/helpers/propOr';
 import { createSelector } from 'reselect';
 
 // @FIXME: this could be refactored inside entities store to follow the `byIds` pattern
@@ -19,17 +20,22 @@ function setAllRequestIdsForStatus(state, { ids, status }) {
   return { ...state, [status]: ids };
 }
 
-function addToAllRequestIdsForStatus(state, { id, status, head }) {
-  const currentStateForStatus = get(state, status, []);
-  const newStateForStatus = head ? [id, ...currentStateForStatus] : [...currentStateForStatus, id];
-  return {
-    ...state,
-    [status]: newStateForStatus,
-  };
+function updateAllRequestIdsForStatus(state, { id, status, head }) {
+  return mapValues(state, (value, key) => {
+    // add to new status list
+    if (key === status) {
+      return head ? [id, ...value] : [...value, id];
+    }
+    // remove from old status list
+    if (value.includes(id)) {
+      return value.filter((element) => element !== id);
+    }
+    return value;
+  });
 }
 
 function removeFromAllRequestIdsForStatus(state, { id, status }) {
-  const currentStateForStatus = get(state, status, []);
+  const currentStateForStatus = propOr([], status)(state);
   const newStateForStatus = currentStateForStatus.filter((element) => element !== id);
   return {
     ...state,
@@ -39,7 +45,7 @@ function removeFromAllRequestIdsForStatus(state, { id, status }) {
 
 export default createReducer(initialState, {
   [SET_ALL_REQUEST_IDS_FOR_STATUS]: setAllRequestIdsForStatus,
-  [ADD_TO_ALL_REQUEST_IDS_FOR_STATUS]: addToAllRequestIdsForStatus,
+  [UPDATE_ALL_REQUEST_IDS_FOR_STATUS]: updateAllRequestIdsForStatus,
   [REMOVE_FROM_ALL_REQUEST_IDS_FOR_STATUS]: removeFromAllRequestIdsForStatus,
 });
 

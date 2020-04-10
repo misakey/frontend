@@ -15,7 +15,7 @@ import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';
 import UserEmailSchema from 'store/schemas/UserEmail';
 import { setDataboxMeta, setUrlAccessRequest } from 'store/actions/databox';
-import { removeFromAllRequestIdsForStatus, addToAllRequestIdsForStatus } from 'store/actions/screens/allRequestIds';
+import { removeFromAllRequestIdsForStatus, updateAllRequestIdsForStatus } from 'store/actions/screens/allRequestIds';
 
 import isNil from '@misakey/helpers/isNil';
 import getSearchParams from '@misakey/helpers/getSearchParams';
@@ -184,8 +184,7 @@ const DraftRequest = ({
       const entities = [{ id, changes: { status: OPEN, sentAt } }];
       return Promise.resolve([
         dispatch(updateEntities(entities, DataboxSchema)),
-        dispatch(addToAllRequestIdsForStatus(id, OPEN)),
-        dispatch(removeFromAllRequestIdsForStatus(id, DRAFT)),
+        dispatch(updateAllRequestIdsForStatus(id, OPEN)),
       ]);
     },
     [dispatch, id],
