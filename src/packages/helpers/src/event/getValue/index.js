@@ -1,11 +1,11 @@
 import getTargetOrCurrentTarget from '@misakey/helpers/event/targetOrCurrentTarget/get';
-import path from '@misakey/helpers/path';
+import prop from '@misakey/helpers/prop';
 import compose from '@misakey/helpers/compose';
 
 // HELPERS
-const filePath = path(['files', '0']);
+const valueProp = prop('value');
 
 export default compose(
-  filePath,
+  valueProp,
   getTargetOrCurrentTarget,
 );

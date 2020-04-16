@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
-import { Field } from 'formik';
+import { Field, useFormikContext } from 'formik';
 
 import prop from '@misakey/helpers/prop';
 import isString from '@misakey/helpers/isString';
@@ -86,14 +86,15 @@ const FormImage = ({
   name,
   previewName,
   text,
-  values,
   ...rest
 }) => {
   const classes = useStyles();
 
+  const { status } = useFormikContext();
+
   const preview = useMemo(
-    () => prop(previewName, values),
-    [values, previewName],
+    () => prop(previewName, status),
+    [status, previewName],
   );
 
   const hasPreview = useMemo(
@@ -119,7 +120,6 @@ FormImage.propTypes = {
   className: PropTypes.string,
   text: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  values: PropTypes.objectOf(PropTypes.any).isRequired,
   previewName: PropTypes.string.isRequired,
 };
 

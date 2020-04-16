@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useState, useMemo, useEffect } from 'react';
+import React, { useRef, useCallback, useMemo, useEffect } from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -6,7 +6,6 @@ import clsx from 'clsx';
 import isNil from '@misakey/helpers/isNil';
 import isArray from '@misakey/helpers/isArray';
 import isFunction from '@misakey/helpers/isFunction';
-import tDefault from '@misakey/helpers/tDefault';
 
 import { makeStyles } from '@material-ui/core/styles';
 import useFileReader from '@misakey/hooks/useFileReader';
@@ -62,10 +61,6 @@ const useClassNames = (defaultClass, className, dragActive) => useMemo(
   [defaultClass, className, dragActive],
 );
 
-const useOnError = (setError) => useCallback((file) => (event) => {
-  setError({ message: '', payload: { file, event } });
-}, [setError]);
-
 const useOnClick = (inputRef) => useCallback((event) => {
   const { current } = inputRef;
   if (current) {
@@ -78,18 +73,6 @@ const useAcceptString = (accept) => useMemo(
   [accept],
 );
 
-const useHandleChange = (file, preview, progress, onChange) => useEffect(() => {
-  if (!isNil(file) && !isNil(preview) && isNil(progress) && isFunction(onChange)) {
-    onChange(file, preview);
-  }
-}, [file, preview, progress, onChange]);
-
-const useHandleError = (error, onError) => useEffect(() => {
-  if (!isNil(error) && isFunction(onError)) {
-    onError(error);
-  }
-}, [error, onError]);
-
 const useHandleFieldValue = (valueChanged, value, file, onReset) => useEffect(
   () => {
     // when value changed to nil but file didn't yet, call onReset
@@ -101,8 +84,16 @@ const useHandleFieldValue = (valueChanged, value, file, onReset) => useEffect(
 );
 
 // COMPONENTS
-const FileField = ({ className, t, onChange, onError, accept, field: { value } }) => {
-  const [error, setError] = useState();
+const FileField = ({
+  className,
+  t,
+  onError,
+  onUpload,
+  accept,
+  previewName,
+  field: { value, onChange, name },
+  form: { setStatus },
+}) => {
   const [dragActive, dragEvents] = useDrag();
 
   const classes = useStyles();
@@ -111,11 +102,26 @@ const FileField = ({ className, t, onChange, onError, accept, field: { value } }
 
   const inputRef = useRef();
 
-  const onFileError = useOnError(setError);
+  const onFileError = useCallback(
+    (e) => onError(e),
+    [onError],
+  );
+
+  const onLoad = useCallback(
+    (e, { preview }) => {
+      onChange(e);
+      setStatus({ [previewName]: preview });
+      if (isFunction(onUpload)) {
+        onUpload(e);
+      }
+    },
+    [onChange, onUpload, previewName, setStatus],
+  );
+
   const [
-    { file, preview, progress },
+    { file, progress },
     { onChange: onFileChange, onReset },
-  ] = useFileReader({ onError: onFileError });
+  ] = useFileReader({ onError: onFileError, onLoad });
 
   const onClick = useOnClick(inputRef);
 
@@ -123,8 +129,6 @@ const FileField = ({ className, t, onChange, onError, accept, field: { value } }
 
   const valueChanged = usePropChanged(value, [file]);
 
-  useHandleError(error, onError);
-  useHandleChange(file, preview, progress, onChange);
   useHandleFieldValue(valueChanged, value, file, onReset);
 
   return (
@@ -151,6 +155,7 @@ const FileField = ({ className, t, onChange, onError, accept, field: { value } }
         <input
           id="button-file"
           type="file"
+          name={name}
           accept={acceptString}
           ref={inputRef}
           className={classes.input}
@@ -174,21 +179,28 @@ const FileField = ({ className, t, onChange, onError, accept, field: { value } }
 FileField.propTypes = {
   accept: PropTypes.arrayOf(PropTypes.string),
   className: PropTypes.string,
-  onChange: PropTypes.func,
+  onUpload: PropTypes.func,
   onError: PropTypes.func,
+  previewName: PropTypes.string,
+  // Formik Field
   field: PropTypes.shape({
     value: PropTypes.object,
-  }),
-  t: PropTypes.func,
+    name: PropTypes.string,
+    onChange: PropTypes.func.isRequired,
+  }).isRequired,
+  form: PropTypes.shape({
+    setStatus: PropTypes.func.isRequired,
+  }).isRequired,
+  // withTranslation
+  t: PropTypes.func.isRequired,
 };
 
 FileField.defaultProps = {
   className: '',
-  onChange: undefined,
+  onUpload: undefined,
   onError: undefined,
   accept: [],
-  field: {},
-  t: tDefault,
+  previewName: 'preview',
 };
 
 export default withTranslation(['fields'])(FileField);

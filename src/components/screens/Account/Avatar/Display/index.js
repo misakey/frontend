@@ -59,7 +59,6 @@ const AccountAvatarDisplay = ({
           previewName={previewName}
           name={name}
           text={displayName}
-          dirty={dirty}
           {...omit(rest, ['i18n', 'tReady'])}
         />
       </Card>
