@@ -13,6 +13,7 @@ import { getSignInValidationSchema } from 'constants/validationSchemas/auth';
 import { screenAuthSetCredentials } from 'store/actions/screens/auth';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import { isAuthPrepareCodeConflict, handleAuthPrepareCodeConflict } from 'constants/Errors/classes/AuthPrepareCodeConflict';
+import { DATE_FULL } from 'constants/formats/dates';
 
 import mapValues from '@misakey/helpers/mapValues';
 import isFunction from '@misakey/helpers/isFunction';
@@ -152,7 +153,9 @@ const AuthSignInSecret = ({
             const text = (
               <Trans
                 i18nKey="auth:signIn.form.error.deletedAccount"
-                values={{ deletionDate: moment(details.deletionDate).format('LL') }}
+                values={{
+                  deletionDate: moment(details.deletionDate).format(DATE_FULL),
+                }}
               >
                 Votre compte est en cours de suppression, vous ne pouvez donc plus vous y connecter.
                 <br />

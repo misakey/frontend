@@ -187,7 +187,7 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
     if (error) { setError(RETRY_ERROR); }
 
     const query = { id };
-    const payload = { validated_at: moment.utc(Date.now()).format() };
+    const payload = { validated_at: moment.utc(Date.now()).toISOString() };
 
     API.use(ENDPOINTS.claim.verify.update)
       .build(query, payload)

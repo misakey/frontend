@@ -10,6 +10,7 @@ import API from '@misakey/api';
 import moment from 'moment';
 import numbro from 'numbro';
 import { FILE_SIZE_FORMAT } from 'constants/formats/numbers';
+import { DATETIME_FILE_HUMAN_READABLE } from 'constants/formats/dates';
 
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';
@@ -90,7 +91,7 @@ const decryptBlob = async (
     const fileName = ''.concat(
       deburr(application.name).replace(/\s/g, ''),
       '.',
-      moment(createdAt).format('YYYY-MM-DD-HH-mm-ss'),
+      moment(createdAt).format(DATETIME_FILE_HUMAN_READABLE),
       fileExtension,
     );
     if (shouldDownload) {

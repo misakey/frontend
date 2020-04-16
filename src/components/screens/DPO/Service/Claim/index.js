@@ -197,7 +197,7 @@ function ServiceRoleClaim({
     }
 
     const query = { id: claim.id };
-    const payload = { validated_at: moment.utc(Date.now()).format(), value: values.code };
+    const payload = { validated_at: moment.utc(Date.now()).toISOString(), value: values.code };
 
     API.use(ENDPOINTS.claim.confirm.update)
       .build(query, payload)

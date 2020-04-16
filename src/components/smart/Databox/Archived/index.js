@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import moment from 'moment';
 
+import { DATE_SHORT } from 'constants/formats/dates';
+
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import ApplicationSchema from 'store/schemas/Application';
@@ -20,7 +22,7 @@ const CardDatabox = ({
   const archivedAt = useMemo(
     () => {
       const { updatedAt } = databox;
-      return moment(updatedAt).format('ll');
+      return moment(updatedAt).format(DATE_SHORT);
     },
     [databox],
   );

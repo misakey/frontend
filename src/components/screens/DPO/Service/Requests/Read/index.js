@@ -15,6 +15,7 @@ import { updateDatabox } from 'store/actions/databox';
 import { serviceRequestsReadValidationSchema } from 'constants/validationSchemas/dpo';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import { OPEN, DONE } from 'constants/databox/status';
+import { DATETIME_FULL } from 'constants/formats/dates';
 
 import log from '@misakey/helpers/log';
 import prop from '@misakey/helpers/prop';
@@ -159,7 +160,10 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 function Blob({ id, fileExtension, createdAt }) {
   const primary = useMemo(() => id + fileExtension, [id, fileExtension]);
-  const secondary = useMemo(() => moment(createdAt).format('LLL'), [createdAt]);
+  const secondary = useMemo(
+    () => moment(createdAt).format(DATETIME_FULL),
+    [createdAt],
+  );
 
   return (
     <ListItem disableGutters divider alignItems="flex-start">

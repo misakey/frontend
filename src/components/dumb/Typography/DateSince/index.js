@@ -2,6 +2,8 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
+import { DATETIME_SHORT } from 'constants/formats/dates';
+
 import isNil from '@misakey/helpers/isNil';
 
 import useCalendarDateSince from '@misakey/hooks/useCalendarDateSince';
@@ -18,7 +20,7 @@ const TypographyDateSince = ({ date, text }) => {
     [calendarDateSince, text],
   );
   const dateFormated = useMemo(
-    () => moment(date).format('lll'),
+    () => moment(date).format(DATETIME_SHORT),
     [date],
   );
 

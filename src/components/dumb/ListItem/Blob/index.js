@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import moment from 'moment';
 import numbro from 'numbro';
 import { FILE_SIZE_FORMAT } from 'constants/formats/numbers';
+import { DATE_SHORT } from 'constants/formats/dates';
 
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
@@ -22,7 +23,7 @@ const BlobListItem = ({ blob, onDownload, publicKeysWeCanDecryptFrom, t, dataviz
       owner_pub_key: ownerPubKey,
     },
   } = blob;
-  const date = moment(createdAt).format('ll');
+  const date = moment(createdAt).format(DATE_SHORT);
   const size = numbro(contentLength).format(FILE_SIZE_FORMAT);
 
   const canBeDecrypted = publicKeysWeCanDecryptFrom.has(ownerPubKey);

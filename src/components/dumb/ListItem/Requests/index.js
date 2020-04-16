@@ -2,30 +2,39 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation, Trans } from 'react-i18next';
 import { generatePath, Link } from 'react-router-dom';
+import moment from 'moment';
 
 import DataboxSchema from 'store/schemas/Databox';
+import { UNKNOWN } from 'constants/databox/type';
+import { DATE_SHORT } from 'constants/formats/dates';
+import { DRAFT, OPEN, DONE, CLOSED } from 'constants/databox/status';
 
+import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
+import capitalize from '@misakey/helpers/capitalize';
+
+import makeStyles from '@material-ui/core/styles/makeStyles';
+
+import Skeleton from '@material-ui/lab/Skeleton';
+import RequestTypeAvatar from 'components/dumb/Avatar/RequestType';
 import Box from '@material-ui/core/Box';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Chip from '@material-ui/core/Chip';
 import Badge from '@material-ui/core/Badge';
-
 import ApplicationImg from 'components/dumb/Application/Img';
 import TypographyDateSince from 'components/dumb/Typography/DateSince';
 
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import capitalize from '@misakey/helpers/capitalize';
-import { DRAFT, OPEN, DONE, CLOSED } from 'constants/databox/status';
-import { makeStyles } from '@material-ui/core';
-import moment from 'moment';
-import Skeleton from '@material-ui/lab/Skeleton';
-import RequestTypeAvatar from 'components/dumb/Avatar/RequestType';
-import { UNKNOWN } from 'constants/databox/type';
+// HOOKS
+const useStyles = makeStyles(() => ({
+  anchorOriginBottomRightRectangle: {
+    bottom: 5,
+    right: 5,
+  },
+}));
 
-
+// COMPONENTS
 export const RequestListItemSkeleton = () => (
   <ListItem>
     <ListItemAvatar>
@@ -59,13 +68,6 @@ export const RequestListItemSkeleton = () => (
     </Box>
   </ListItem>
 );
-
-const useStyles = makeStyles(() => ({
-  anchorOriginBottomRightRectangle: {
-    bottom: 5,
-    right: 5,
-  },
-}));
 
 function RequestListItem({ request, toRoute, t, isFetchingApplication }) {
   const classes = useStyles();
@@ -143,7 +145,7 @@ function RequestListItem({ request, toRoute, t, isFetchingApplication }) {
             </Trans>
           );
         case OPEN: {
-          const formatedSentAt = moment(sentAt).format('ll');
+          const formatedSentAt = moment(sentAt).format(DATE_SHORT);
           return (
             <Trans i18nKey="citizen:requests.list.secondary.open" values={{ sentAt: formatedSentAt }}>
               <strong>{'Vous :\u00a0'}</strong>
