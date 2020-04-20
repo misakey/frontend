@@ -42,7 +42,7 @@ const signUpValidationSchemaSteps = {
   notifications: notificationFieldValidation.requiredSchema,
   email: emailFieldValidation.schema,
   password: passwordFieldValidation.setSchema,
-  passwordConfirm: passwordFieldValidation.requiredSchema,
+  passwordConfirm: passwordFieldValidation.confirmSchema('password'),
 
   tos: switchFieldValidation.requiredSchema,
   misakeyKnow: switchFieldValidation.requiredSchema,

@@ -14,7 +14,7 @@ import {
 
 // CONSTANTS
 const MAIL_TYPES = [...Object.keys(MAIL_PROVIDERS), MANUAL_TYPE];
-const { malformed, required } = errorTypes;
+const { required } = errorTypes;
 
 export const displayNameValidationSchema = Yup.object().shape({
   displayName: displayNameFieldValidation.schema,
@@ -31,10 +31,7 @@ export const avatarValidationSchema = Yup.object().shape({
 export const passwordValidationSchema = Yup.object().shape({
   passwordOld: passwordFieldValidation.schema,
   passwordNew: passwordFieldValidation.setSchema,
-  passwordConfirm: Yup
-    .string()
-    .oneOf([Yup.ref('passwordNew'), null], malformed)
-    .required(required),
+  passwordConfirm: passwordFieldValidation.confirmSchema('passwordNew'),
 });
 
 const addEmailValidationSchemaSteps = {

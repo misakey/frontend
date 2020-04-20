@@ -19,7 +19,7 @@ export const emailFieldValidation = {
 export const passwordFieldValidation = {
   schema: Yup.string().required(required),
   setSchema: Yup.string().required(required).min(8, malformed),
-  confirmSchema: Yup.string().oneOf([Yup.ref('password'), null], malformed).required(required),
+  confirmSchema: (ref) => Yup.string().oneOf([Yup.ref(ref), null], malformed).required(required),
 };
 
 
