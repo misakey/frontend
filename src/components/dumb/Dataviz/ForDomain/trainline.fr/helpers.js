@@ -29,23 +29,26 @@ const getTopDestinations = (travels) => {
     .sort((a, b) => b.totalVisit - a.totalVisit);
 };
 
-const getTopSearches = (searches) => {
-  const searchesWithTotalVisit = searches.reduce((acc, val) => {
-    const arrivalStation = val.arrival;
-    return {
-      ...acc,
-      [arrivalStation.public_id]: (isNil(acc[arrivalStation.public_id]))
-        ? { ...arrivalStation, totalSearch: 1 }
-        : {
-          ...acc[arrivalStation.public_id],
-          totalSearch: acc[arrivalStation.public_id].totalSearch + 1,
-        },
-    };
-  }, {});
-  return Object
-    .values(searchesWithTotalVisit)
-    .sort((a, b) => b.totalSearch - a.totalSearch);
-};
+// The search is not anymore in the data we show to user. But the work to clean up has been done
+// I comment this to keep a trace (if we update soon the dataviz)
+// If you see this comment far from now, you can delete the code
+// const getTopSearches = (searches) => {
+//   const searchesWithTotalVisit = searches.reduce((acc, val) => {
+//     const arrivalStation = val.arrival;
+//     return {
+//       ...acc,
+//       [arrivalStation.public_id]: (isNil(acc[arrivalStation.public_id]))
+//         ? { ...arrivalStation, totalSearch: 1 }
+//         : {
+//           ...acc[arrivalStation.public_id],
+//           totalSearch: acc[arrivalStation.public_id].totalSearch + 1,
+//         },
+//     };
+//   }, {});
+//   return Object
+//     .values(searchesWithTotalVisit)
+//     .sort((a, b) => b.totalSearch - a.totalSearch);
+// };
 
 const getTimeInTrain = (travels) => travels.reduce(
   (acc, travel) => {
@@ -83,7 +86,12 @@ const getCost = (travels) => travels.reduce(
 );
 
 export const getDataPerYear = (data) => {
-  const { account, searches, pnrs } = data;
+  const { account, pnrs } = data;
+
+  if (isNil(account) || isNil(pnrs)) {
+    return null;
+  }
+
 
   const years = getYears(account);
 
@@ -96,13 +104,15 @@ export const getDataPerYear = (data) => {
     return [year, travelsOfTheYear];
   }));
 
-
-  const searchesPerYear = Object.fromEntries(years.map((year) => {
-    const searchesOfTheYear = searches.filter(
-      (search) => moment(search.searched_at).year() === year,
-    );
-    return [year, searchesOfTheYear];
-  }));
+  // The search is not anymore in the data we show to user. But the work to clean up has been done
+  // I comment this to keep a trace (if we update soon the dataviz)
+  // If you see this comment far from now, you can delete the code
+  // const searchesPerYear = Object.fromEntries(years.map((year) => {
+  //   const searchesOfTheYear = searches.filter(
+  //     (search) => moment(search.searched_at).year() === year,
+  //   );
+  //   return [year, searchesOfTheYear];
+  // }));
 
   return years.map((year) => {
     const travelsOfTheYear = travelsPerYear[year];
@@ -110,7 +120,6 @@ export const getDataPerYear = (data) => {
     return {
       year,
       topDestination: getTopDestinations(travelsOfTheYear).slice(0, 3),
-      topSearches: getTopSearches(searchesPerYear[year]).slice(0, 3),
       timeInTrain: getTimeInTrain(travelsOfTheYear),
       distance: Math.round(getDistance(travelsOfTheYear)),
       co2: Math.round(getCo2(travelsOfTheYear) / 1000),

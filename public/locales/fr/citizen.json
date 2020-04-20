@@ -413,16 +413,25 @@
     }
   },
   "dataviz": {
-    "title": "Historique d'utilisation",
+    "title": "Historique d'activité",
+    "incompatibleData": "<0>Oups,</0><1>Votre fichier de portabilité semble avoir un format nouveau.</1><2>Prévenez nous par e-mail afin qu’on le prenne en compte : <1>{{contactEmail}}</1></2>",
+    "socialCardFooter": "Fait avec ♥ par Misakey",
+    "sourceFile": "Fichier source",
+    "yourHistoryByYear": "Votre histoire {{year}}",
     "trainline": {
       "topStations": "Top gares",
       "topSearches": "Top recherches",
-      "visits": "visites",
-      "searches": "recherches",
+      "visit": "{{count}} visite",
+      "visit_plural": "{{count}} visites",
+      "searches": "recherche",
+      "searches_plural": "recherches",
       "ofTrain": "de train",
-      "travelled": "parcourus",
-      "spent": "dépensés",
-      "travels": "trajets",
+      "travelled": "parcouru",
+      "travelled_pluroal": "parcourus",
+      "spent": "dépensé",
+      "spent_plural": "dépensés",
+      "travels": "trajet",
+      "travels_plural": "trajets",
       "emitCo2": "de CO2 émis"
     }
   },

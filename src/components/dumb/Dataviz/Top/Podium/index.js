@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 
 import { common } from '@misakey/ui/colors';
 
-import laurel from './laurel.svg';
+import laurel from '../laurel.svg';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: 'white',
+    color: theme.palette.common.white,
   }),
   stepTitle: {
     fontWeight: 'bold',

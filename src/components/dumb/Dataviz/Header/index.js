@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 
 import UserAvatar from '@misakey/ui/Avatar/User';
@@ -10,27 +11,27 @@ import ApplicationImg from 'components/dumb/Application/Img';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  logos: {
-    display: 'flex',
-    justifyContent: 'center',
-  },
   userLogo: {
     marginRight: -theme.spacing(1),
   },
   appLogo: {
     marginLeft: -theme.spacing(1),
+    border: '1px solid white',
+  },
+  typo: {
+    color: theme.palette.common.white,
   },
 }));
 
-const DatavizHeader = ({ application, user }) => {
+const DatavizHeader = ({ application, user, subtitle }) => {
   const classes = useStyles();
 
   const { avatarUri, displayName } = user;
   const { logoUri, name: applicationName } = application;
 
   return (
-    <div>
-      <div className={classes.logos}>
+    <Box p={2} display="flex" justifyContent="left">
+      <Box display="flex" justifyContent="center">
         <UserAvatar
           avatarUri={avatarUri}
           displayName={displayName}
@@ -41,11 +42,14 @@ const DatavizHeader = ({ application, user }) => {
           applicationName={applicationName}
           className={classes.appLogo}
         />
-      </div>
-      <Typography align="center">
-        {`${user.displayName} & ${applicationName}`}
-      </Typography>
-    </div>
+      </Box>
+      <Box display="flex" flexDirection="column" ml={1}>
+        <Typography className={classes.typo}>{`${user.displayName} & ${applicationName}`}</Typography>
+        { subtitle && (
+          <Typography className={classes.typo} variant="caption">{subtitle}</Typography>
+        )}
+      </Box>
+    </Box>
   );
 };
 
@@ -58,6 +62,11 @@ DatavizHeader.propTypes = {
     logoUri: PropTypes.string,
     name: PropTypes.string,
   }).isRequired,
+  subtitle: PropTypes.string,
+};
+
+DatavizHeader.defaultProps = {
+  subtitle: null,
 };
 
 export default DatavizHeader;

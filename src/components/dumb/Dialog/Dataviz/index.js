@@ -1,58 +1,42 @@
-import React, { useMemo, useCallback, useState, useRef } from 'react';
+import React, { useMemo, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 
-import { makeStyles } from '@material-ui/core/styles';
+import { connect } from 'react-redux';
+import { denormalize } from 'normalizr';
+import ApplicationSchema from 'store/schemas/Application';
+
+import { ThemeProvider } from '@material-ui/core/styles';
 
 import downloadFile from '@misakey/helpers/downloadFile';
 import isNil from '@misakey/helpers/isNil';
+import prop from '@misakey/helpers/prop';
+
 
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import { withTranslation } from 'react-i18next';
 
-import getScreenshotOfElement from '@misakey/helpers/getScreenshotOfElement';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import ShareOutlinedIcon from '@material-ui/icons/ShareOutlined';
-import CloudDownloadOutlinedIcon from '@material-ui/icons/CloudDownloadOutlined';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import Dataviz, { AVAILABLE_DATAVIZ_DOMAINS } from 'components/dumb/Dataviz';
+import useGetThemeForDataviz from 'hooks/useGetThemeForDataviz';
 
-
-const useStyles = makeStyles((theme) => ({
-  disableContent: {
-    position: 'relative',
-    overflow: 'hidden',
-
-    '&:before': {
-      display: 'block',
-      position: 'absolute',
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-      background: 'rgba(0, 0, 0, 0.5)',
-      zIndex: theme.zIndex.modal,
-      content: '""',
-    },
-  },
-}));
 
 const DatavizDialog = ({
-  mainDomain, open, onClose, decryptedBlob, width, t, onDownloadSuccess,
+  mainDomain, open, onClose, decryptedBlob, width, t, onDownloadSuccess, application,
 }) => {
-  const classes = useStyles();
-
-  const [isSharing, setIsSharing] = useState(false);
   const scrollContainerRef = useRef(null);
+
+  const { mainColor } = application;
 
   const canDataviz = useMemo(
     () => !isNil(mainDomain) && AVAILABLE_DATAVIZ_DOMAINS.includes(mainDomain),
@@ -64,68 +48,45 @@ const DatavizDialog = ({
     [decryptedBlob, onDownloadSuccess],
   );
 
-  const onShare = useCallback(
-    () => {
-      setIsSharing(true);
-      const top = scrollContainerRef.current.scrollTop;
-      const left = scrollContainerRef.current.scrollLeft;
-      scrollContainerRef.current.scrollTop = 0;
-      scrollContainerRef.current.scrollLeft = 0;
-      getScreenshotOfElement(document.getElementById('datavizcontent'))
-        .then(
-          (dataUri) => {
-            downloadFile(dataUri, `${decryptedBlob.filename}.png`);
-          },
-        )
-        .finally(() => {
-          scrollContainerRef.current.scrollTop = top;
-          scrollContainerRef.current.scrollLeft = left;
-          setIsSharing(false);
-        });
-    },
-    [decryptedBlob],
-  );
+  const themeforType = useGetThemeForDataviz(mainColor);
+
 
   if (!canDataviz) {
     return null;
   }
 
   return (
-    <Dialog
-      onClose={onClose}
-      aria-labelledby="dataviz-dialog"
-      open={open}
-      fullWidth
-      fullScreen={isWidthDown('xs', width)}
-    >
-      <DialogTitle>
-        <Toolbar disableGutters variant="dense">
-          <IconButton edge="start" color="inherit" onClick={onClose} aria-label="close">
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography variant="h6" style={{ flex: 1 }}>
-            {t('citizen:dataviz.title')}
-          </Typography>
-          {isSharing ? (
-            <CircularProgress color="secondary" />
-          ) : (
-            <IconButton onClick={onShare}>
-              <ShareOutlinedIcon />
-            </IconButton>
-          )}
-          <IconButton onClick={onDownload}>
-            <CloudDownloadOutlinedIcon />
-          </IconButton>
-        </Toolbar>
-      </DialogTitle>
-      <DialogContent
-        dividers
-        ref={scrollContainerRef}
-        className={(isSharing) ? classes.disableContent : null}
+    <ThemeProvider theme={themeforType}>
+      <Dialog
+        onClose={onClose}
+        aria-labelledby="dataviz-dialog"
+        open={open}
+        fullWidth
+        fullScreen={isWidthDown('xs', width)}
       >
-        <Dataviz decryptedBlob={decryptedBlob} mainDomain={mainDomain} id="datavizcontent" />
-      </DialogContent>
-    </Dialog>
+        <DialogTitle>
+          <Toolbar disableGutters variant="dense">
+            <IconButton edge="start" color="inherit" onClick={onClose} aria-label="close">
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography variant="h6" style={{ flex: 1 }}>
+              {t('citizen:dataviz.title')}
+            </Typography>
+            <Button
+              text={t('citizen:dataviz:sourceFile')}
+              onClick={onDownload}
+              standing={BUTTON_STANDINGS.TEXT}
+            />
+          </Toolbar>
+        </DialogTitle>
+        <DialogContent
+          dividers
+          ref={scrollContainerRef}
+        >
+          <Dataviz decryptedBlob={decryptedBlob} mainDomain={mainDomain} id="datavizcontent" />
+        </DialogContent>
+      </Dialog>
+    </ThemeProvider>
   );
 };
 
@@ -137,6 +98,7 @@ DatavizDialog.propTypes = {
   width: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
   onDownloadSuccess: PropTypes.func.isRequired,
+  application: ApplicationSchema.propTypes.isRequired,
 };
 
 DatavizDialog.defaultProps = {
@@ -144,4 +106,16 @@ DatavizDialog.defaultProps = {
   decryptedBlob: null,
 };
 
-export default withWidth()(withTranslation(['citizen'])(DatavizDialog));
+const mapStateToProps = (state, ownProps) => {
+  const mainDomain = prop('mainDomain')(ownProps);
+  return {
+    application: denormalize(
+      mainDomain,
+      ApplicationSchema.entity,
+      state.entities,
+    ),
+  };
+};
+
+
+export default connect(mapStateToProps)(withWidth()(withTranslation(['citizen'])(DatavizDialog)));

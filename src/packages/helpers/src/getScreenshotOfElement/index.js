@@ -8,6 +8,8 @@ export default (element) => {
     width,
     height,
     scale: 1,
+    useCORS: true,
+    allowTaint: true,
   }).then((canvas) => {
     const context = canvas.getContext('2d');
     const imageData = context.getImageData(0, 0, width, height).data;

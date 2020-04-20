@@ -11,7 +11,6 @@ import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
 
 import SplashScreen from '@misakey/ui/Screen/Splash';
-import DatavizHeader from 'components/dumb/Dataviz/Header';
 
 // Webpack require that we don't do import with variables. So we should declare explicitly
 // all dataviz here.
@@ -34,7 +33,6 @@ const Dataviz = ({ decryptedBlob, mainDomain, application, user, id }) => {
 
   return (
     <div id={id}>
-      <DatavizHeader application={application} user={user} />
       <Suspense fallback={<SplashScreen />}>
         {isNil(decryptedBlob) ? null : (
           <SpecificDataviz decryptedBlob={decryptedBlob} application={application} user={user} />
