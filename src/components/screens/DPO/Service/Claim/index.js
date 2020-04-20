@@ -21,7 +21,8 @@ import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import BoxControls from 'components/dumb/Box/Controls';
-import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import ButtonWithLogInMatomo from 'components/smart/withLogInMatomo/Button';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import ScreenAction from 'components/dumb/Screen/Action';
@@ -36,6 +37,7 @@ import routes from 'routes';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 
 import { serviceClaimValidationSchema } from 'constants/validationSchemas/dpo';
+import { DPO_CLAIM_GET_EMAIL, DPO_CLAIM_NEXT } from 'constants/matomo';
 import { addRoleToUser } from 'packages/auth/src/store/actions/auth';
 
 // CONSTANTS
@@ -308,8 +310,9 @@ function ServiceRoleClaim({
               <Box display="flex" flexDirection="column">
                 <ServiceRoleClaimFormFields />
                 <Box display="flex">
-                  <Button
+                  <ButtonWithLogInMatomo
                     standing={BUTTON_STANDINGS.TEXT}
+                    matomoProps={DPO_CLAIM_GET_EMAIL}
                     disabled={isNil(service)}
                     isLoading={isCreating}
                     onClick={handleEmail}
@@ -320,10 +323,14 @@ function ServiceRoleClaim({
 
               <BoxControls
                 mt={2}
-                primary={{
-                  text: t('common:next'),
-                  type: 'submit',
-                }}
+                primary={(
+                  <ButtonWithLogInMatomo
+                    matomoProps={DPO_CLAIM_NEXT}
+                    standing={BUTTON_STANDINGS.MAIN}
+                    text={t('common:next')}
+                    type="submit"
+                  />
+                )}
                 formik
               />
             </Box>

@@ -18,6 +18,7 @@ config: >-
       'bet'
     ],
     MATOMO: {
+      ENABLED: true,
       URL: 'https://analytics.misakey.com/',
       SITEID: '4'
     },

@@ -27,6 +27,7 @@ config: >-
       'transport',
     ],
     MATOMO: {
+      ENABLED: true,
       URL: 'https://analytics.misakey.com/',
       SITEID: '1'
     },

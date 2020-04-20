@@ -19,9 +19,12 @@ import Container from '@material-ui/core/Container';
 
 import Screen from 'components/dumb/Screen';
 import CardSimpleText from 'components/dumb/Card/Simple/Text';
+import ButtonWithLogInMatomo from 'components/smart/withLogInMatomo/Button';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import { DEFAULT_SCOPE } from 'constants/Roles';
 import { IS_PLUGIN } from 'constants/plugin';
+import { WORKSPACE } from 'constants/workspaces';
+import { DPO_CONNECT_AS } from 'constants/matomo';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -80,17 +83,31 @@ function SilentAuthScreen({ requiredScope, userEmail, userManager, t }) {
     { onSucces: onSignInSilentSuccess, onError: onSignInSilentError },
   );
 
+  const buttonLoginAs = useMemo(() => {
+    if (workspace === WORKSPACE.DPO) {
+      return (
+        <ButtonWithLogInMatomo
+          matomoProps={DPO_CONNECT_AS}
+          standing={BUTTON_STANDINGS.MAIN}
+          text={t('components:silentAuth.button')}
+          onClick={signInAs}
+        />
+      );
+    }
+    return {
+      standing: BUTTON_STANDINGS.MAIN,
+      text: t('components:silentAuth.button'),
+      onClick: signInAs,
+    };
+  }, [signInAs, t, workspace]);
+
   if (loginAsScreen || loginInProgress) {
     return (
       <Screen state={{ isLoading: loginInProgress }}>
         <Container className={classes.container} maxWidth="md">
           <CardSimpleText
             text={t(`components:silentAuth.text.${workspace}`)}
-            button={{
-              standing: BUTTON_STANDINGS.MAIN,
-              text: t('components:silentAuth.button'),
-              onClick: signInAs,
-            }}
+            button={buttonLoginAs}
           />
         </Container>
       </Screen>

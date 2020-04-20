@@ -13,6 +13,9 @@ window.env = {
     dsn: 'https://a695e1e73b004ad2bc1f82b581f072fe@sentry.io/2071584',
     environment: 'development',
   },
+  MATOMO: {
+    ENABLED: false,
+  },
   CATEGORIES: [
     'shops',
     'gaming',

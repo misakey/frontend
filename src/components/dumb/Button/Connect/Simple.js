@@ -1,5 +1,6 @@
 import React, { useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
 
@@ -8,38 +9,44 @@ import { IS_PLUGIN } from 'constants/plugin';
 
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+import isFunction from '@misakey/helpers/isFunction';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import ButtonConnectNoToken from '@misakey/ui/Button/Connect/NoToken';
-
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 // COMPONENTS
 // @FIXME create a wrapper in auth package for this logic
 const ButtonConnectSimple = forwardRef(
-  ({ userManager, authProps, children, ...props }, ref) => {
-    const signInAction = useCallback(
-      () => {
+  ({ userManager, authProps, children, onClick, t, ...props }, ref) => {
+    const onButtonClick = useCallback(
+      (...args) => {
+        if (isFunction(onClick)) {
+          onClick(...args);
+        }
         if (IS_PLUGIN) {
           redirectToApp(routes.auth.redirectToSignIn);
-        } else {
-          userManager.signinRedirect(objectToSnakeCase(authProps));
+          return;
         }
+        userManager.signinRedirect(objectToSnakeCase(authProps));
       },
-      [authProps, userManager],
+      [authProps, onClick, userManager],
     );
 
     return (
-      <ButtonConnectNoToken
+      <Button
         ref={ref}
-        signInAction={signInAction}
-        {...props}
-      >
-        {children}
-      </ButtonConnectNoToken>
+        onClick={onButtonClick}
+        text={t('components:buttonConnect.signIn')}
+        standing={BUTTON_STANDINGS.MAIN}
+        {...omitTranslationProps(props)}
+      />
     );
   },
 );
 
 ButtonConnectSimple.propTypes = {
+  t: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   userManager: PropTypes.shape({
     signinRedirect: PropTypes.func.isRequired,
   }).isRequired,
@@ -56,7 +63,8 @@ ButtonConnectSimple.propTypes = {
 
 ButtonConnectSimple.defaultProps = {
   children: null,
+  onClick: null,
   authProps: {},
 };
 
-export default withUserManager(ButtonConnectSimple);
+export default withUserManager(withTranslation('components')(ButtonConnectSimple));

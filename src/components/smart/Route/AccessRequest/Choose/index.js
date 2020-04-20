@@ -7,16 +7,18 @@ import prop from '@misakey/helpers/prop';
 
 import ApplicationSchema from 'store/schemas/Application';
 
-import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
 import Title from 'components/dumb/Typography/Title';
 import ScreenAction from 'components/dumb/Screen/Action';
 import Card from 'components/dumb/Card';
 import BoxEllipsisApplication from 'components/dumb/Box/Ellipsis/Application';
-import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
 import ListQuestions, { useQuestionsItems } from 'components/dumb/List/Questions';
+import withLogInMatomo from 'components/smart/withLogInMatomo';
 
 import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
 import { WORKSPACE } from 'constants/workspaces';
+import { REQUESTS_CONNECT_AS_GUEST, REQUESTS_CONNECT_AS_USER } from 'constants/matomo';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -45,6 +47,8 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
+const ButtonConnectWithLogInMatomo = withLogInMatomo(ButtonConnectSimple);
+
 const AccessRequestChoose = ({
   accessRequest, error, isFetching, producer, t,
 }) => {
@@ -123,10 +127,10 @@ const AccessRequestChoose = ({
             <Grid item sm={6}>
               <Card className={classes.card}>
                 <Box display="flex" justifyContent="center" mt={1}>
-                  <Button
+                  <ButtonConnectWithLogInMatomo
+                    matomoProps={REQUESTS_CONNECT_AS_GUEST}
                     standing={BUTTON_STANDINGS.text}
                     authProps={{ scope, acrValues: 1, loginHint: dpoEmail }}
-                    component={ButtonConnectSimple}
                     text={t('dpo:requests.access.passwordLess.button')}
                     aria-label={t('dpo:requests.access.passwordLess.button')}
                   />
@@ -141,10 +145,10 @@ const AccessRequestChoose = ({
             <Grid item sm={6}>
               <Card className={classes.card}>
                 <Box display="flex" justifyContent="center" mt={1}>
-                  <Button
+                  <ButtonConnectWithLogInMatomo
+                    matomoProps={REQUESTS_CONNECT_AS_USER}
                     standing={BUTTON_STANDINGS.MAIN}
                     className={classes.buttonConnect}
-                    component={ButtonConnectSimple}
                     text={t('dpo:requests.access.password.button')}
                     aria-label={t('dpo:requests.access.password.button')}
                   />
