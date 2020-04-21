@@ -87,6 +87,8 @@ const TrainlineDataviz = ({ decryptedBlob, application, user, t, width }) => {
         });
       } else if (fileExtension === '.zip') {
         extractDataFromZipBlob(blob, setData);
+      } else {
+        setData({});
       }
     },
     [decryptedBlob],

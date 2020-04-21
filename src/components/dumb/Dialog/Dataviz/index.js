@@ -50,7 +50,6 @@ const DatavizDialog = ({
 
   const themeforType = useGetThemeForDataviz(mainColor);
 
-
   if (!canDataviz) {
     return null;
   }
