@@ -24,7 +24,7 @@ const OnboardingCitizen = ({ isAuthenticated, t }) => {
 
   const redirectToAppForPlugin = useCallback(() => {
     if (IS_PLUGIN) {
-      redirectToApp(routes.citizen.applications.categories);
+      redirectToApp(routes.citizen.applications._);
       window.close();
     }
   }, []);
@@ -78,7 +78,7 @@ const OnboardingCitizen = ({ isAuthenticated, t }) => {
           standing: BUTTON_STANDINGS.MAIN,
           text: t(`components:onboarding.${WORKSPACE}.steps.3.button`),
           component: Link,
-          to: IS_PLUGIN ? routes.plugin._ : routes.citizen.applications.categories,
+          to: IS_PLUGIN ? routes.plugin._ : routes.citizen.applications._,
           onClick: redirectToAppForPlugin,
         }}
       />

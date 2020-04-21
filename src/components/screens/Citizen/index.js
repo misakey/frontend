@@ -4,8 +4,6 @@ import { Switch, Route } from 'react-router-dom';
 import RoutePrivate from '@misakey/auth/components/Route/Private';
 import isNil from '@misakey/helpers/isNil';
 
-import ContactMultipleButton from 'components/smart/Fab/Contact';
-
 import routes from 'routes';
 
 import Application from 'components/screens/Citizen/Application';
@@ -15,14 +13,10 @@ import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
 import { connect } from 'react-redux';
 
 // LAZY
-const ApplicationsCreate = lazy(() => import('components/screens/Citizen/Applications/Create'));
 const Home = lazy(() => import('components/screens/Citizen/Home'));
 const Contact = lazy(() => import('components/screens/Citizen/Contact'));
-const ApplicationsCategoryScreen = lazy(
-  () => import('components/screens/Citizen/Applications/Category'),
-);
-const ApplicationsCategoriesScreen = lazy(
-  () => import('components/screens/Citizen/Applications/Categories'),
+const ApplicationsCategories = lazy(
+  () => import('components/screens/Citizen/Applications'),
 );
 
 function Citizen({ match, isAuthenticated, userScope }) {
@@ -36,20 +30,11 @@ function Citizen({ match, isAuthenticated, userScope }) {
 
   return (
     <>
-      <ContactMultipleButton />
       <Switch>
         <RoutePrivate path={routes.citizen.contact._} component={Contact} />
-        <RoutePrivate
-          path={routes.citizen.applications.create}
-          component={ApplicationsCreate}
-        />
         <Route
-          path={routes.citizen.applications.categories}
-          component={ApplicationsCategoriesScreen}
-        />
-        <Route
-          path={routes.citizen.applications.category}
-          component={ApplicationsCategoryScreen}
+          path={routes.citizen.applications._}
+          component={ApplicationsCategories}
         />
         <Route path={routes.citizen.requests._} component={Requests} />
         <Route path={routes.citizen.application._} component={Application} />

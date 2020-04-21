@@ -25,7 +25,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 import useSearchApplications from '@misakey/hooks/useSearchApplications';
-import { useLocation, useHistory, useRouteMatch } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import RouteSearch from 'components/smart/Route/Search';
@@ -104,7 +104,6 @@ const SearchApplicationsPopover = ({
 
   const classes = useStyles({ noTopMargin, fixedHeight });
 
-  const { path } = useRouteMatch();
   const { search: locationSearch } = useLocation();
   const locationSearchParams = useLocationSearchParams();
 
@@ -232,8 +231,6 @@ const SearchApplicationsPopover = ({
     >
       <SwitchSearch>
         <RouteSearch
-          path={path}
-          exact
           searchParams={searchParamsByStep[REQUEST]}
           render={({ location, ...rest }) => {
             const { request } = getSearchParams(location.search);
@@ -247,8 +244,6 @@ const SearchApplicationsPopover = ({
           }}
         />
         <RouteSearch
-          path={path}
-          exact
           searchParams={searchParamsByStep[SEARCH]}
           render={(routerProps) => (
             <SearchApplicationsPopoverList

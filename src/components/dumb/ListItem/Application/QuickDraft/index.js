@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { useLocation } from 'react-router-dom';
+import routes from 'routes';
 
 import { USER_REQUEST_STATUS } from 'constants/search/request/params';
 import { DRAFT } from 'constants/databox/status';
@@ -38,12 +39,12 @@ const ListItemApplicationQuickDraft = ({
 
   const draftsTo = useMemo(
     () => ({
-      pathname,
+      pathname: routes.citizen._,
       search: getNextSearch(search, new Map([
         [USER_REQUEST_STATUS, DRAFT],
       ])),
     }),
-    [pathname, search],
+    [search],
   );
 
   const onDraftSuccess = useCallback(

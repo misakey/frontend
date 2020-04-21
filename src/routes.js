@@ -83,8 +83,7 @@ const routes = {
     },
     applications: {
       _: '/citizen/applications',
-      categories: '/citizen/applications/categories',
-      category: '/citizen/applications/:category',
+      category: '/citizen/applications/category/:category',
       create: '/citizen/applications/create',
     },
     application: {
