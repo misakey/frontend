@@ -23,7 +23,6 @@ import getNextSearch from '@misakey/helpers/getNextSearch';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import prop from '@misakey/helpers/prop';
-import propOr from '@misakey/helpers/propOr';
 
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import DialogDataboxArchive from 'components/dumb/Dialog/Databox/Archive';
@@ -34,7 +33,7 @@ import CardSimpleDoubleTextDoubleButton from 'components/dumb/Card/Simple/Double
 import DataboxContent from 'components/smart/Databox/Content';
 import RequestTypeAvatar from 'components/dumb/Avatar/RequestType';
 import { Box, Typography } from '@material-ui/core';
-import { OWNER_COMMENTS } from 'constants/databox/comment';
+import { NEW_OWNER_COMMENTS } from 'constants/databox/comment';
 
 
 // CONSTANTS
@@ -253,8 +252,6 @@ const CurrentDatabox = ({
     [status],
   );
 
-  const closingReasons = useMemo(() => propOr([], type)(OWNER_COMMENTS), [type]);
-
   // It can exist a dpo answer but on status not closed (reopening request)
   const waitingForAnwser = useMemo(
     () => (isNil(dpoComment) || ![DONE, CLOSED].includes(status)),
@@ -309,7 +306,7 @@ const CurrentDatabox = ({
     <div {...omitTranslationProps(rest)}>
       <DialogDataboxArchive
         open={openDialog === DIALOGS.CLOSE}
-        options={closingReasons}
+        options={NEW_OWNER_COMMENTS}
         onClose={onDialogClose}
         onSuccess={onArchive}
       />

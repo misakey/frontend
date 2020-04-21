@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { OWNER_COMMENTS } from 'constants/databox/comment';
+import { NEW_OWNER_COMMENTS } from 'constants/databox/comment';
 import { getOwnerCommentValidationSchema } from 'constants/validationSchemas/comment';
 
 import { Formik, Form, Field } from 'formik';
@@ -111,7 +111,7 @@ DialogDataboxArchive.propTypes = {
 };
 
 DialogDataboxArchive.defaultProps = {
-  options: OWNER_COMMENTS,
+  options: NEW_OWNER_COMMENTS,
 };
 
 export default withTranslation(['common', 'fields', 'citizen'])(DialogDataboxArchive);

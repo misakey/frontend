@@ -98,7 +98,7 @@ DatavizDialog.propTypes = {
   width: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
   onDownloadSuccess: PropTypes.func.isRequired,
-  application: ApplicationSchema.propTypes.isRequired,
+  application: PropTypes.shape(ApplicationSchema.propTypes).isRequired,
 };
 
 DatavizDialog.defaultProps = {

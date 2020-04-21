@@ -83,15 +83,22 @@
       "done": "Demande traitée",
       "no_data": "Aucune donnée trouvée",
       "refused": "Demande invalide",
-      "other": "Demande fermée"
+      "other": "Autres raisons"
     },
     "ownerComment": {
-      "other_channel": "Fichiers reçus autrement",
+      "done": "Ma demande a été traitée via Misakey",
+      "ok": "Ma demande a été traitée via Misakey",
+      "other_channel_satisfied": "Ma demande a été traitée autrement et je suis satisfait",
+      "other_channel_unsatisfied": "Ma demande a été traitée autrement et j'aurais préféré obtenir une réponse via Misakey",
       "no_data": "Aucune donnée trouvée",
-      "refused": "Demande non traitée",
-      "done": "Demande traitée",
-      "ok": "Demande traitée",
-      "other": "Demande fermée"
+      "identification_clarification_unwished": "Ma demande n'a pas été traitée. Je ne souhaite pas envoyer plus d'informations personnelles au site",
+      "procedure_unwished": "Ma demande n'a pas été traitée. Je ne souhaite pas suivre la procédure du site",
+      "misunderstood": "Ma demande n'a pas été traitée. Le site n'a pas compris ma demande",
+      "not_answered": "Ma demande n'a pas été traitée. Le site ne m'a pas répondu",
+      "undisclosed": "Je ne souhaite pas préciser de motif",
+      "other": "Autres raisons",
+      "refused": "Ma demande n'a pas été traitée",
+      "other_channel": "Ma demande a été traitée autrement"
     },
     "since": {
       "open": "Ouverte",
