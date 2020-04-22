@@ -18,11 +18,10 @@ import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';
 import { updateDatabox, setUrlAccessRequest } from 'store/actions/databox';
 
-import { getDetailPairsHead } from '@misakey/helpers/apiError';
+import { getDetailPairsHead, getCode } from '@misakey/helpers/apiError';
 import getNextSearch from '@misakey/helpers/getNextSearch';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import prop from '@misakey/helpers/prop';
 
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import DialogDataboxArchive from 'components/dumb/Dialog/Databox/Archive';
@@ -51,8 +50,6 @@ const DIALOGS = {
 const { forbidden, conflict } = errorTypes;
 
 // HELPERS
-const getStatus = prop('status');
-
 const closeDatabox = (id, body) => API
   .use(PATCH_DATABOX_ENDPOINT)
   .build({ id }, body)
@@ -67,13 +64,6 @@ const requestDataboxAccess = (id) => API
   .use(API.endpoints.application.box.requestAccess)
   .build({ id })
   .send();
-
-const idProp = prop('id');
-const sentAtProp = prop('sentAt');
-const updatedAtProp = prop('updatedAt');
-const getOwner = prop('owner');
-const getType = prop('type');
-const getDpoComment = prop('dpoComment');
 
 // HOOKS
 const useOnReopenMailTo = (id, dispatchSetUrlAccessRequest, history, search) => useCallback(
@@ -123,34 +113,14 @@ const CurrentDatabox = ({
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const databoxId = useMemo(
-    () => idProp(databox),
-    [databox],
-  );
-
-  const status = useMemo(
-    () => getStatus(databox),
-    [databox],
-  );
-
-  const type = useMemo(
-    () => getType(databox),
-    [databox],
-  );
-
-  const dpoComment = useMemo(
-    () => getDpoComment(databox),
-    [databox],
-  );
-
-  const sentAt = useMemo(
-    () => sentAtProp(databox),
+  const { id: databoxId, status, type, dpoComment, sentAt, updatedAt, owner } = useMemo(
+    () => databox || {},
     [databox],
   );
 
   const { email: ownerEmail } = useMemo(
-    () => getOwner(databox),
-    [databox],
+    () => owner || {},
+    [owner],
   );
 
   const openSince = useMemo(
@@ -159,8 +129,8 @@ const CurrentDatabox = ({
   );
 
   const durationOfTheRequest = useMemo(
-    () => moment(updatedAtProp(databox)).to(sentAt, true),
-    [databox, sentAt],
+    () => moment(updatedAt).to(sentAt, true),
+    [sentAt, updatedAt],
   );
 
   const onError = useCallback(
@@ -176,7 +146,7 @@ const CurrentDatabox = ({
       closeDatabox(databoxId, body)
         .then(() => dispatchUpdateDatabox(databoxId, objectToCamelCase(body)))
         .catch((err) => {
-          const { code } = err;
+          const code = getCode(err);
           if (code === forbidden) {
             return onError(t('common:httpStatus.error.forbidden'));
           }
@@ -200,7 +170,7 @@ const CurrentDatabox = ({
       closeDatabox(databoxId, body)
         .then(() => dispatchUpdateDatabox(databoxId, objectToCamelCase(body)))
         .catch((err) => {
-          const { code } = err;
+          const code = getCode(err);
           if (code === forbidden) {
             return onError(t('common:httpStatus.error.forbidden'));
           }
@@ -225,7 +195,7 @@ const CurrentDatabox = ({
             .then((response) => onReopenMailTo(response.token));
         })
         .catch((err) => {
-          const { code } = err;
+          const code = getCode(err);
           if (code === forbidden) {
             return onError(t('common:httpStatus.error.forbidden'));
           }
