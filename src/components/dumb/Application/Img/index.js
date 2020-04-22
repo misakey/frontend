@@ -31,7 +31,9 @@ const useStyles = makeStyles({
 });
 
 // @FIXME @misakey/ui
-function ApplicationImg({ children, className, fontSize, src, applicationName, t, ...rest }) {
+function ApplicationImg({
+  children, className, fontSize, src, applicationName, t, ...rest
+}) {
   const classes = useStyles();
 
   const [isLoaded, setLoaded] = React.useState(false);

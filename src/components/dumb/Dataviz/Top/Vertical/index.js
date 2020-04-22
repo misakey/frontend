@@ -53,7 +53,7 @@ const VerticalTop = ({ data }) => {
   return (
     <List dense disablePadding>
       {data.map(({ title, subtitle }, index) => (
-        <ListItem className={classes.listItem}>
+        <ListItem className={classes.listItem} key={title}>
           <ListItemIcon className={(index === 0) ? classes.firstPositionIcon : undefined}>
             <Typography variant="h5" className={classes.order} align="center">
               {index + 1}

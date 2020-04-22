@@ -36,11 +36,13 @@ const DatavizHeader = ({ application, user, subtitle }) => {
           avatarUri={avatarUri}
           displayName={displayName}
           className={classes.userLogo}
+          imgProps={{ crossorigin: 'anonymous' }}
         />
         <ApplicationImg
           src={logoUri}
           applicationName={applicationName}
           className={classes.appLogo}
+          imgProps={{ crossorigin: 'anonymous' }}
         />
       </Box>
       <Box display="flex" flexDirection="column" ml={1}>
