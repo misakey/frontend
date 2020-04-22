@@ -103,22 +103,21 @@ const TrainlineDataviz = ({ decryptedBlob, application, user, t, width }) => {
 
   const onShare = useCallback(
     (year) => {
-      const setIsSharingForYear = (value) => setIsSharing({ ...isSharing, [year]: value });
+      const setIsSharingForYear = (value) => setIsSharing((prevIsSharing) => ({
+        ...prevIsSharing,
+        [year]: value,
+      }));
       return () => {
         setIsSharingForYear(true);
 
         getScreenshotOfElement(document.getElementById(`datavizcontent-${year}`))
-          .then(
-            (dataUri) => {
-              downloadFile(dataUri, `${applicationName}-${year}.png`);
-            },
-          )
+          .then((dataUri) => downloadFile(dataUri, `${applicationName}-${year}.png`))
           .finally(() => {
             setIsSharingForYear(false);
           });
       };
     },
-    [applicationName, setIsSharing, isSharing],
+    [applicationName, setIsSharing],
   );
 
   const isXsScreen = useMemo(
