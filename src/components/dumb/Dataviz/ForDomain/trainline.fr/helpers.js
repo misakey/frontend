@@ -7,7 +7,14 @@ import rangeRight from '@misakey/helpers/rangeRight';
 
 const getYears = (account) => {
   const thisYear = moment().year();
-  const signupYear = moment(account.signed_up_at).year();
+  let signupYear;
+  if (!isNil(account.signed_up_at)) {
+    signupYear = moment(account.signed_up_at).year();
+  } else if (account.sessions.length > 0) {
+    signupYear = moment(account.sessions[account.sessions.length - 1].started_at).year();
+  } else {
+    signupYear = thisYear;
+  }
   return rangeRight(signupYear, thisYear + 1);
 };
 
@@ -126,5 +133,5 @@ export const getDataPerYear = (data) => {
       totalTravels: travelsOfTheYear.length,
       moneySpent: Math.round(getCost(travelsOfTheYear) / 100),
     };
-  });
+  }).filter(({ topDestination }) => (topDestination.length > 0));
 };

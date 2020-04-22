@@ -7,6 +7,7 @@ import { withTranslation } from 'react-i18next';
 
 import Typography from '@material-ui/core/Typography';
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 
 import extractDataFromJsonBlob from '@misakey/helpers/extractDataFromBlob/Json';
 import extractDataFromZipBlob from '@misakey/helpers/extractDataFromBlob/Zip';
@@ -22,7 +23,8 @@ import SplashScreen from '@misakey/ui/Screen/Splash';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
-import IncompatibleData from 'components/dumb/Dataviz/IncompatibleData';
+import IncompatibleData from 'components/dumb/Dataviz/DefaultContent/IncompatibleData';
+import EmptyData from 'components/dumb/Dataviz/DefaultContent/EmptyData';
 import DatavizHeader from 'components/dumb/Dataviz/Header';
 import DatavizFooter from 'components/dumb/Dataviz/Footer';
 import SocialMediaCard from 'components/dumb/Dataviz/Card/SocialMedia';
@@ -131,6 +133,10 @@ const TrainlineDataviz = ({ decryptedBlob, application, user, t, width }) => {
 
   if (isNil(dataPerYear)) {
     return <IncompatibleData application={application} />;
+  }
+
+  if (isEmpty(dataPerYear)) {
+    return <EmptyData application={application} />;
   }
 
   return (

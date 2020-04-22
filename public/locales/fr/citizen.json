@@ -414,7 +414,8 @@
   },
   "dataviz": {
     "title": "Historique d'activité",
-    "incompatibleData": "<0>Oups,</0><1>Votre fichier de portabilité semble avoir un format nouveau.</1><2>Prévenez nous par e-mail afin qu’on le prenne en compte : <1>{{contactEmail}}</1></2>",
+    "incompatibleData": "<0>Oups,</0><1>Votre fichier de portabilité semble avoir un format nouveau.</1><2>Prévenez nous par e-mail afin qu’on le prenne en compte\u00a0: <1>{{contactEmail}}</1></2>",
+    "emptyData": "<0>Oups,</0><1>Votre fichier de portabilité semble ne pas contenir de données que nous pouvons afficher.</1><2>Si vous pensez avoir des données exploitables dans votre fichier, prévenez nous par e-mail\u00a0: <1>{{contactEmail}}</1></2>",
     "socialCardFooter": "Fait avec ♥ par Misakey",
     "sourceFile": "Fichier source",
     "yourHistoryByYear": "Votre histoire {{year}}",
