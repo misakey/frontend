@@ -16,7 +16,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import isObject from '@misakey/helpers/isObject';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
@@ -101,7 +101,7 @@ function ServiceRoleClaim({
 }) {
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
   const role = useLocationWorkspace();
 
   const [claim, setClaim] = useState(null);
@@ -185,11 +185,11 @@ function ServiceRoleClaim({
         if (prop('code')(e) === conflict) {
           enqueueSnackbar(t('fields:serviceRoleClaim.code.error.conflict'), { variant: 'error' });
         } else {
-          handleGenericHttpErrors(e);
+          handleHttpErrors(e);
         }
       })
       .finally(() => setCreating(false));
-  }, [userId, service, role, t, enqueueSnackbar, handleGenericHttpErrors]);
+  }, [userId, service, role, t, enqueueSnackbar, handleHttpErrors]);
 
   const handleSubmit = useCallback((values, { setErrors, setSubmitting }) => {
     if (isNil(claim) || isNil(claim.id)) {
@@ -214,11 +214,11 @@ function ServiceRoleClaim({
         if (details) {
           setErrors({ code: details.value });
         } else {
-          handleGenericHttpErrors(e);
+          handleHttpErrors(e);
         }
       })
       .finally(() => setSubmitting(false));
-  }, [claim, enqueueSnackbar, t, service, dispatchAddRoleToUser, handleGenericHttpErrors]);
+  }, [claim, enqueueSnackbar, t, service, dispatchAddRoleToUser, handleHttpErrors]);
 
   const fetchClaim = useCallback(
     () => API.use(ENDPOINTS.claim.list)

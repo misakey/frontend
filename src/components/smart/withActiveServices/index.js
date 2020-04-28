@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import API from '@misakey/api';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import identity from '@misakey/helpers/identity';
 import isNil from '@misakey/helpers/isNil';
 import propOr from '@misakey/helpers/propOr';
@@ -26,7 +26,7 @@ const propOrNull = propOr(null);
 // COMPONENTS
 const withActiveServices = (mapper = identity) => (Component) => {
   const Wrapper = (props) => {
-    const handleGenericHttpErrors = useHandleGenericHttpErrors();
+    const handleHttpErrors = useHandleHttpErrors();
     const { isAuthenticated, activeServices, dispatch, ...rest } = props;
 
     const shouldFetch = useMemo(() => isNil(activeServices), [activeServices]);
@@ -40,8 +40,8 @@ const withActiveServices = (mapper = identity) => (Component) => {
           identifier: 'active',
           applications: applications.map(objectToCamelCase),
         })))
-        .catch(handleGenericHttpErrors),
-      [dispatch, handleGenericHttpErrors, isAuthenticated],
+        .catch(handleHttpErrors),
+      [dispatch, handleHttpErrors, isAuthenticated],
     );
 
     const { isFetching } = useFetchEffect(

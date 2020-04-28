@@ -1,6 +1,6 @@
 import HttpStatus from 'http-status-codes';
 
-export const whitelist = [
+export const HTTP_ERROR_STATUSES = [
   HttpStatus.BAD_REQUEST,
   HttpStatus.CONFLICT,
   HttpStatus.FORBIDDEN,
@@ -17,4 +17,4 @@ export const whitelist = [
   HttpStatus.UNSUPPORTED_MEDIA_TYPE,
 ];
 
-export const filterHttpStatus = (s) => (whitelist.includes(s) ? s : 'default');
+export const filterHttpStatus = (s) => (HTTP_ERROR_STATUSES.includes(s) ? s : 'default');

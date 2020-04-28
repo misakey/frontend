@@ -34,7 +34,7 @@ import StepContent from '@material-ui/core/StepContent';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Skeleton from '@material-ui/lab/Skeleton';
 import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 
 import SplashScreen from '@misakey/ui/Screen/Splash';
@@ -115,7 +115,7 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
   const width = useWidth();
   const { enqueueSnackbar } = useSnackbar();
   const role = useLocationWorkspace();
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
 
   const { id: userRoleId, valid: userHasRole } = useMemo(
     () => {
@@ -200,11 +200,11 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
           const text = t('admin:service.claim.body.txtKey.error.conflict');
           enqueueSnackbar(text, { variant: 'warning' });
         } else {
-          handleGenericHttpErrors(e);
+          handleHttpErrors(e);
         }
       })
       .finally(() => setSubmitting(false));
-  }, [claim, error, fetchRoleList, userId, t, enqueueSnackbar, handleGenericHttpErrors]);
+  }, [claim, error, fetchRoleList, userId, t, enqueueSnackbar, handleHttpErrors]);
 
   useEffect(fetchClaim, [service]);
 

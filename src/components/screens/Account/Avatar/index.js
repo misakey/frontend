@@ -16,7 +16,7 @@ import pick from '@misakey/helpers/pick';
 import toFormData from '@misakey/helpers/toFormData';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 
 import 'components/screens/Account/Avatar/index.scss';
@@ -49,7 +49,7 @@ const fetchProfile = (id) => API
 
 // HOOKS
 const useOnSubmit = (
-  profile, dispatchUpdate, enqueueSnackbar, handleGenericHttpErrors, history, t,
+  profile, dispatchUpdate, enqueueSnackbar, handleHttpErrors, history, t,
 ) => useMemo(
   () => (form, { setSubmitting }) => updateProfile(profile.id, pickForm(form))
     .then(() => fetchProfile(profile.id))
@@ -59,9 +59,9 @@ const useOnSubmit = (
       enqueueSnackbar(t('account:avatar.success'), { variant: 'success' });
       dispatchUpdate(profile.id, changes, history);
     })
-    .catch(handleGenericHttpErrors)
+    .catch(handleHttpErrors)
     .finally(() => { setSubmitting(false); }),
-  [profile, dispatchUpdate, enqueueSnackbar, handleGenericHttpErrors, history, t],
+  [profile, dispatchUpdate, enqueueSnackbar, handleHttpErrors, history, t],
 );
 
 // COMPONENTS
@@ -89,13 +89,13 @@ const AccountAvatar = ({
     [avatarUri],
   );
 
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
 
   const onSubmit = useOnSubmit(
     profile,
     dispatchUpdate,
     enqueueSnackbar,
-    handleGenericHttpErrors,
+    handleHttpErrors,
     history,
     t,
   );

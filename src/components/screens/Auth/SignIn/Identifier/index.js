@@ -19,7 +19,7 @@ import compose from '@misakey/helpers/compose';
 import { getDetails } from '@misakey/helpers/apiError';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useIdentifierContentAction, useIdentifierSecondaryAction } from '@misakey/hooks/useActions/signIn';
 
 import SignInFormFields from 'components/screens/Auth/SignIn/Form/Fields';
@@ -61,7 +61,7 @@ const AuthSignInIdentifier = ({
   t,
 }) => {
   const classes = useStyles();
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
 
   const secLevelConfig = useMemo(() => SECLEVEL_CONFIG[acr || DEFAULT_SECLEVEL], [acr]);
 
@@ -97,10 +97,10 @@ const AuthSignInIdentifier = ({
         if (!isNil(identifierError)) {
           setFieldError(STEP.identifier, identifierError);
         } else {
-          handleGenericHttpErrors(e);
+          handleHttpErrors(e);
         }
       }),
-    [dispatchSetIdentifier, dispatchSetPublics, handleGenericHttpErrors],
+    [dispatchSetIdentifier, dispatchSetPublics, handleHttpErrors],
   );
 
 

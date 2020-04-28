@@ -19,7 +19,7 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
 
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 const useFetchStorageQuota = (
   setBoxUsage,
   userId,
-  handleGenericHttpErrors,
+  handleHttpErrors,
 ) => useCallback(
   () => API.use(GET_STORAGE_QUOTA_ENDPOINT)
     .build(null, null, objectToSnakeCase({ userId }))
@@ -61,11 +61,11 @@ const useFetchStorageQuota = (
         setBoxUsage(0);
       }
     })
-    .catch(handleGenericHttpErrors),
+    .catch(handleHttpErrors),
   [
     setBoxUsage,
     userId,
-    handleGenericHttpErrors,
+    handleHttpErrors,
   ],
 );
 
@@ -74,8 +74,8 @@ const UserStorage = ({ userId }) => {
   const mounted = useRef(false);
   const [boxUsage, setBoxUsage] = useState(0);
 
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
-  const fetchStorageQuota = useFetchStorageQuota(setBoxUsage, userId, handleGenericHttpErrors);
+  const handleHttpErrors = useHandleHttpErrors();
+  const fetchStorageQuota = useFetchStorageQuota(setBoxUsage, userId, handleHttpErrors);
 
   const boxUsagePercent = useMemo(
     () => ((isNil(boxUsage)) ? -1 : Math.round((100 * boxUsage) / TOTAL_STORAGE_SPACE_AVAILABLE)),

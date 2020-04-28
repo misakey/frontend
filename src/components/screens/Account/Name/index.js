@@ -17,7 +17,7 @@ import propOr from '@misakey/helpers/propOr';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import snakeCase from '@misakey/helpers/snakeCase';
 
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import Subtitle from 'components/dumb/Typography/Subtitle';
 import Container from '@material-ui/core/Container';
@@ -43,7 +43,7 @@ const updateProfile = (id, form) => API
 
 // HOOKS
 const useOnSubmit = (
-  profile, dispatchUpdateEntities, enqueueSnackbar, handleGenericHttpErrors, history, t,
+  profile, dispatchUpdateEntities, enqueueSnackbar, handleHttpErrors, history, t,
 ) => useMemo(
   () => (form, { setSubmitting, setFieldError }) => updateProfile(profile.id, form)
     .then(() => {
@@ -56,11 +56,11 @@ const useOnSubmit = (
       if (fieldError) {
         setFieldError(FIELD_NAME, fieldError);
       } else {
-        handleGenericHttpErrors(e);
+        handleHttpErrors(e);
       }
     })
     .finally(() => { setSubmitting(false); }),
-  [profile, dispatchUpdateEntities, enqueueSnackbar, handleGenericHttpErrors, history, t],
+  [profile, dispatchUpdateEntities, enqueueSnackbar, handleHttpErrors, history, t],
 );
 
 // COMPONENTS
@@ -88,13 +88,13 @@ const AccountName = ({
     [displayName],
   );
 
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
 
   const onSubmit = useOnSubmit(
     profile,
     dispatchUpdateEntities,
     enqueueSnackbar,
-    handleGenericHttpErrors,
+    handleHttpErrors,
     history,
     t,
   );

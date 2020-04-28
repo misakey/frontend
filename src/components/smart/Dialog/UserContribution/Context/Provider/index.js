@@ -10,7 +10,7 @@ import ApplicationSchema from 'store/schemas/Application';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isNil from '@misakey/helpers/isNil';
 
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import DialogUserContribution from 'components/smart/Dialog/UserContribution';
 
@@ -31,7 +31,7 @@ export const UserContributionContext = createContext({
 // COMPONENTS
 const UserContributionDialogConsumerRender = ({ t, userId, ...rest }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
 
   const {
     open,
@@ -53,9 +53,9 @@ const UserContributionDialogConsumerRender = ({ t, userId, ...rest }) => {
         const text = t('citizen:userContribution.success');
         enqueueSnackbar(text, { variant: 'success' });
       })
-      .catch(handleGenericHttpErrors)
+      .catch(handleHttpErrors)
       .finally(onClose),
-    [enqueueSnackbar, handleGenericHttpErrors, id, onClose, t, userId],
+    [enqueueSnackbar, handleHttpErrors, id, onClose, t, userId],
   );
 
   return (

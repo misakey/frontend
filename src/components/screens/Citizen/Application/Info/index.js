@@ -17,7 +17,7 @@ import prop from '@misakey/helpers/prop';
 import head from '@misakey/helpers/head';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import isNil from '@misakey/helpers/isNil';
 import Container from '@material-ui/core/Container';
@@ -110,7 +110,7 @@ function ApplicationInfo({
   const [applicationLinkId, setApplicationLinkId] = useState(null);
   const [contentRef, setContentRef] = React.useState(undefined);
 
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
 
   const mounted = useRef(false);
 
@@ -130,7 +130,7 @@ function ApplicationInfo({
             setApplicationLinkId(userApplication.id);
             dispatch(addToUserApplications(WORKSPACE.CITIZEN, mainDomain));
           })
-          .catch(handleGenericHttpErrors);
+          .catch(handleHttpErrors);
       } else {
         API.use(ENDPOINTS.userApplication.delete)
           .build({ id: applicationLinkId })
@@ -139,10 +139,10 @@ function ApplicationInfo({
             setApplicationLinkId(null);
             dispatch(removeFromUserApplications(WORKSPACE.CITIZEN, mainDomain));
           })
-          .catch(handleGenericHttpErrors);
+          .catch(handleHttpErrors);
       }
     },
-    [applicationLinkId, userId, id, handleGenericHttpErrors, dispatch, mainDomain],
+    [applicationLinkId, userId, id, handleHttpErrors, dispatch, mainDomain],
   );
 
   const getCurrentApplicationLink = useCallback(
@@ -159,9 +159,9 @@ function ApplicationInfo({
             setApplicationLinkId(userApplicationId);
           }
         })
-        .catch(handleGenericHttpErrors);
+        .catch(handleHttpErrors);
     },
-    [userId, id, handleGenericHttpErrors],
+    [userId, id, handleHttpErrors],
   );
 
   const defaultRoute = useMemo(() => generatePath(

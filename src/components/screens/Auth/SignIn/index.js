@@ -15,7 +15,7 @@ import { screenAuthSetCredentials } from 'store/actions/screens/auth';
 import isEmpty from '@misakey/helpers/isEmpty';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useSnackbar } from 'notistack';
 
 import { Route, Switch, Redirect, useHistory, useLocation } from 'react-router-dom';
@@ -48,7 +48,7 @@ function AuthSignIn({ challenge, identifier, acr, dispatchSetCredentials, match,
   const { search } = useLocation();
 
   const { enqueueSnackbar } = useSnackbar();
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
 
   const secLevelConfig = useMemo(() => SECLEVEL_CONFIG[acr || DEFAULT_SECLEVEL], [acr]);
 
@@ -96,13 +96,13 @@ function AuthSignIn({ challenge, identifier, acr, dispatchSetCredentials, match,
         push({ pathname: routes.auth.signIn.secret, search });
       } else if (!isAuthSeclevelInsufficient(error)) {
         // handle only other errors because previous one is already handled
-        handleGenericHttpErrors(error);
+        handleHttpErrors(error);
       }
     },
     [
       dispatchSetCredentials,
       enqueueSnackbar,
-      handleGenericHttpErrors,
+      handleHttpErrors,
       identifier,
       push,
       replace,

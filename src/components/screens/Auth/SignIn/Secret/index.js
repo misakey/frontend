@@ -25,7 +25,7 @@ import isNil from '@misakey/helpers/isNil';
 import { getDetails } from '@misakey/helpers/apiError';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useSecretContentAction, useSecretSecondaryAction } from '@misakey/hooks/useActions/signIn';
 
 import Box from '@material-ui/core/Box';
@@ -91,7 +91,7 @@ const AuthSignInSecret = ({
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
 
   const [redirectTo, setRedirectTo] = useState(null);
 
@@ -167,14 +167,14 @@ const AuthSignInSecret = ({
             );
             enqueueSnackbar(text, { variant: 'error' });
           } else {
-            handleGenericHttpErrors(e);
+            handleHttpErrors(e);
           }
         })
         .finally(() => { setSubmitting(false); });
     },
     [
       challenge, dispatchSetCredentials, enqueueSnackbar,
-      handleGenericHttpErrors, identifier, secLevelConfig,
+      handleHttpErrors, identifier, secLevelConfig,
     ],
   );
 
@@ -196,10 +196,10 @@ const AuthSignInSecret = ({
         if (isAuthPrepareCodeConflict(error)) {
           enqueueSnackbar(t('auth:signIn.form.error.conflict'), { variant: 'error' });
         } else {
-          handleGenericHttpErrors(error);
+          handleHttpErrors(error);
         }
       }),
-    [onFetchInitAuth, enqueueSnackbar, t, handleGenericHttpErrors],
+    [onFetchInitAuth, enqueueSnackbar, t, handleHttpErrors],
   );
 
   const signInFormContentAction = useSecretContentAction(

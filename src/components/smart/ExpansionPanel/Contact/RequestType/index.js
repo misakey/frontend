@@ -7,7 +7,7 @@ import { updateEntities } from '@misakey/store/actions/entities';
 import API from '@misakey/api';
 import REQUEST_TYPES, { UNKNOWN } from 'constants/databox/type';
 
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -23,7 +23,7 @@ const updateRequest = (id, type) => API
 
 const ExpansionPanelContactRequestType = ({ request, ...rest }) => {
   const dispatch = useDispatch();
-  const handleGenericErrors = useHandleGenericHttpErrors();
+  const handleGenericErrors = useHandleHttpErrors();
   const { type, id } = useMemo(() => request || {}, [request]);
 
   const [expanded, setExpanded] = useState(type === UNKNOWN);

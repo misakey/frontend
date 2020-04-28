@@ -14,7 +14,7 @@ import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isNil from '@misakey/helpers/isNil';
 
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import ScreenAction from 'components/dumb/Screen/Action';
 import BoxControls from 'components/dumb/Box/Controls';
@@ -57,7 +57,7 @@ const AccountPassword = ({
     [isFetching],
   );
 
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
 
   const dispatch = useDispatch();
 
@@ -87,13 +87,13 @@ const AccountPassword = ({
         if (e instanceof BackupDecryptionError || e.code === errorTypes.forbidden) {
           setFieldError(OLD_PASSWORD_FIELD_NAME, errorTypes.invalid);
         } else if (e.httpStatus) {
-          handleGenericHttpErrors(e);
+          handleHttpErrors(e);
         }
       } finally {
         setSubmitting(false);
       }
     },
-    [profile, enqueueSnackbar, handleGenericHttpErrors, dispatch, history, t],
+    [profile, enqueueSnackbar, handleHttpErrors, dispatch, history, t],
   );
 
   if (isNil(profile)) { return null; }

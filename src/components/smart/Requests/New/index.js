@@ -21,7 +21,7 @@ import { getFirstUserEmailId } from 'helpers/userEmail';
 import { getCode, getDetails } from '@misakey/helpers/apiError';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import withUserEmails from 'components/smart/withUserEmails';
 import DataboxSchema from 'store/schemas/Databox';
@@ -50,7 +50,7 @@ const NewRequest = ({
   const { enqueueSnackbar } = useSnackbar();
 
   const userEmailId = useMemo(() => getFirstUserEmailId(userEmails), [userEmails]);
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
   const dispatch = useDispatch();
 
   const createRequest = useCallback(
@@ -89,8 +89,8 @@ const NewRequest = ({
         onCreateError(e);
       }
 
-      return handleGenericHttpErrors(e);
-    }, [enqueueSnackbar, handleGenericHttpErrors, onCreateError, t],
+      return handleHttpErrors(e);
+    }, [enqueueSnackbar, handleHttpErrors, onCreateError, t],
   );
 
   const shouldFetch = useMemo(

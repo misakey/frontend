@@ -32,7 +32,7 @@ import always from '@misakey/helpers/always';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import { patchDataboxUserEmail } from 'helpers/fetchDatabox';
 
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import Dialog from '@material-ui/core/Dialog';
 import RouteFormik from 'components/smart/Route/Formik';
@@ -120,7 +120,7 @@ const ContactConfig = ({
   const { path } = useRouteMatch();
   const { pathname, search } = useLocation();
   const { replace } = useHistory();
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
   const { enqueueSnackbar } = useSnackbar();
 
   const start = useMemo(
@@ -183,14 +183,14 @@ const ContactConfig = ({
             if (errorCode === conflict) {
               enqueueSnackbar(t('fields:contactConfigConfirm.code.error.conflict'), { variant: 'error' });
             } else {
-              handleGenericHttpErrors(e);
+              handleHttpErrors(e);
             }
             return userEmail;
           });
       }
       return Promise.resolve(userEmail);
     },
-    [enqueueSnackbar, handleGenericHttpErrors, t],
+    [enqueueSnackbar, handleHttpErrors, t],
   );
 
   const onUpdateDataboxUserEmail = useCallback(
@@ -321,12 +321,12 @@ const ContactConfig = ({
       }
       promise
         .catch((e) => {
-          handleGenericHttpErrors(e);
+          handleHttpErrors(e);
         })
         .finally(() => { setSubmitting(false); });
     },
     [
-      handleGenericHttpErrors,
+      handleHttpErrors,
       onConfirmSubmit,
       onIdentifierSubmit,
       onProviderSubmit,

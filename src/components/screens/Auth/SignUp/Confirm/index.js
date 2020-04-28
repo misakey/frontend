@@ -15,7 +15,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 import path from '@misakey/helpers/path';
 
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import { screenAuthSetCredentials, screenAuthSetPublics } from 'store/actions/screens/auth';
@@ -81,7 +81,7 @@ function AuthSignUpConfirm({
   history,
 }) {
   const classes = useStyles();
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
   const { enqueueSnackbar } = useSnackbar();
 
   const [isSending, setSending] = useState(false);
@@ -111,14 +111,14 @@ function AuthSignUpConfirm({
           } else if (!isNil(emailError)) {
             setFieldError('code', emailError);
           } else {
-            handleGenericHttpErrors(e);
+            handleHttpErrors(e);
           }
         })
         .finally(() => {
           setSubmitting(false);
         });
     },
-    [handleGenericHttpErrors, history],
+    [handleHttpErrors, history],
   );
 
   const reSendConfirmCode = useCallback(
@@ -130,10 +130,10 @@ function AuthSignUpConfirm({
           const text = t('auth:signUp.confirm.success.resend', { email });
           enqueueSnackbar(text, { variant: 'success' });
         })
-        .catch(handleGenericHttpErrors)
+        .catch(handleHttpErrors)
         .finally(() => setSending(false));
     },
-    [email, enqueueSnackbar, setSending, t, handleGenericHttpErrors],
+    [email, enqueueSnackbar, setSending, t, handleHttpErrors],
   );
 
   const signUpConfirmContentAction = useMemo(

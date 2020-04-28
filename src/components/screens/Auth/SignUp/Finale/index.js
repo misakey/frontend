@@ -13,7 +13,7 @@ import prop from '@misakey/helpers/prop';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import redirect from '@misakey/helpers/redirect';
 
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -84,7 +84,7 @@ const AuthSignUpFinale = ({
   const theme = useTheme();
   const padded = useMediaQuery(theme.breakpoints.up('sm'));
 
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
 
   const [isLoading, setLoading] = useState(false);
 
@@ -129,10 +129,10 @@ const AuthSignUpFinale = ({
               }
             }),
         )
-        .catch(handleGenericHttpErrors)
+        .catch(handleHttpErrors)
         .finally(() => { setLoading(false); });
     },
-    [challenge, email, handleGenericHttpErrors, history, password],
+    [challenge, email, handleHttpErrors, history, password],
   );
 
   const primary = useMemo(

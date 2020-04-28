@@ -19,7 +19,7 @@ import { IS_PLUGIN } from 'constants/plugin';
 import getNextSearch from '@misakey/helpers/getNextSearch';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { receiveEntities } from '@misakey/store/actions/entities';
 import ApplicationSchema from 'store/schemas/Application';
 
@@ -63,7 +63,7 @@ const useOnCreateApplication = (
   mainDomain,
   dispatchApplicationCreate,
   enqueueSnackbar,
-  handleGenericHttpErrors,
+  handleHttpErrors,
   t,
 ) => useCallback(() => createApplication(mainDomain)
   .then((response) => {
@@ -71,19 +71,19 @@ const useOnCreateApplication = (
     enqueueSnackbar(t('citizen:applications.create.success'), { variant: 'success' });
     dispatchApplicationCreate(application);
   })
-  .catch(handleGenericHttpErrors),
-[dispatchApplicationCreate, enqueueSnackbar, handleGenericHttpErrors, mainDomain, t]);
+  .catch(handleHttpErrors),
+[dispatchApplicationCreate, enqueueSnackbar, handleHttpErrors, mainDomain, t]);
 
 
 function ApplicationNotFound({ mainDomain, dispatchApplicationCreate, t }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
   const onCreateApplication = useOnCreateApplication(
     mainDomain,
     dispatchApplicationCreate,
     enqueueSnackbar,
-    handleGenericHttpErrors,
+    handleHttpErrors,
     t,
   );
 

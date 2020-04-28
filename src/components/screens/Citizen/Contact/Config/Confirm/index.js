@@ -11,7 +11,7 @@ import errorTypes from '@misakey/ui/constants/errorTypes';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import { getCode } from '@misakey/helpers/apiError';
 
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import DialogContent from '@material-ui/core/DialogContent';
@@ -63,7 +63,7 @@ ContactConfigConfirmFormFields.defaultProps = DEFAULT_FIELDS;
 
 const ContactConfigConfirm = ({ t, profile }) => {
   const classes = useStyles();
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
   const { enqueueSnackbar } = useSnackbar();
 
   const [isSending, setSending] = useState(false);
@@ -84,12 +84,12 @@ const ContactConfigConfirm = ({ t, profile }) => {
           if (errorCode === conflict) {
             enqueueSnackbar(t('fields:contactConfigConfirm.code.error.conflict'), { variant: 'error' });
           } else {
-            handleGenericHttpErrors(e);
+            handleHttpErrors(e);
           }
         })
         .finally(() => setSending(false));
     },
-    [userEmailId, email, handleGenericHttpErrors, t, enqueueSnackbar],
+    [userEmailId, email, handleHttpErrors, t, enqueueSnackbar],
   );
 
   const signUpConfirmContentAction = useMemo(

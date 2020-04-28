@@ -3,7 +3,7 @@ import isArray from '@misakey/helpers/isArray';
 
 import endpoints from './endpoints';
 import Endpoint from '../Endpoint';
-import { whitelist, filterHttpStatus } from './errors';
+import { HTTP_ERROR_STATUSES, filterHttpStatus } from './errors';
 
 function toFormErrors({ details = {} }) {
   return details;
@@ -13,7 +13,7 @@ class API {
   constructor() {
     this.endpoints = endpoints;
     this.errors = {
-      httpStatus: whitelist,
+      httpStatus: HTTP_ERROR_STATUSES,
       filter: filterHttpStatus,
       toFormErrors,
     };

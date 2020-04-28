@@ -13,7 +13,7 @@ import DeleteAccountDialog from 'components/dumb/Dialog/Account/Delete';
 import { signOut } from '@misakey/auth/store/actions/auth';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -28,7 +28,7 @@ const useOnDelete = (
   userId,
   t,
   enqueueSnackbar,
-  handleGenericHttpErrors,
+  handleHttpErrors,
 ) => useCallback(
   (event) => API.use(API.endpoints.user.delete)
     .build({ id: userId })
@@ -39,19 +39,19 @@ const useOnDelete = (
       const text = t('account:delete.success', 'Success !');
       enqueueSnackbar(text, { variant: 'success' });
     })
-    .catch(handleGenericHttpErrors)
+    .catch(handleHttpErrors)
     .finally(closeDeleteAccountDialog),
-  [userId, handleGenericHttpErrors, closeDeleteAccountDialog, handleSignOut, t, enqueueSnackbar],
+  [userId, handleHttpErrors, closeDeleteAccountDialog, handleSignOut, t, enqueueSnackbar],
 );
 
 
-const useHandleSignOut = (onSignOut, userId, handleGenericHttpErrors, userManager) => useCallback(
+const useHandleSignOut = (onSignOut, userId, handleHttpErrors, userManager) => useCallback(
   (event) => {
     if (userId) {
       API.use(API.endpoints.auth.signOut)
         .build(null, objectToSnakeCase({ userId }))
         .send()
-        .catch(handleGenericHttpErrors)
+        .catch(handleHttpErrors)
         .finally(() => {
           userManager.removeUser().then(() => {
             onSignOut(event);
@@ -60,7 +60,7 @@ const useHandleSignOut = (onSignOut, userId, handleGenericHttpErrors, userManage
     } else {
       onSignOut(event);
     }
-  }, [userId, handleGenericHttpErrors, userManager, onSignOut],
+  }, [userId, handleHttpErrors, userManager, onSignOut],
 );
 
 
@@ -69,8 +69,8 @@ const DeleteAccount = ({ profile, t, onSignOut, seclevel, userId, userManager, c
   const [isOpenDeleteAccountDialog, setOpenDeleteAccountDialog] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
-  const handleSignOut = useHandleSignOut(onSignOut, userId, handleGenericHttpErrors, userManager);
+  const handleHttpErrors = useHandleHttpErrors();
+  const handleSignOut = useHandleSignOut(onSignOut, userId, handleHttpErrors, userManager);
 
   const openDeleteAccountDialog = useCallback(() => {
     setOpenDeleteAccountDialog(true);
@@ -87,7 +87,7 @@ const DeleteAccount = ({ profile, t, onSignOut, seclevel, userId, userManager, c
     userId,
     t,
     enqueueSnackbar,
-    handleGenericHttpErrors,
+    handleHttpErrors,
   );
 
   if (!profile && seclevel <= 1) {

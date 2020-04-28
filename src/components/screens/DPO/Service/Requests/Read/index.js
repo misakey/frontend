@@ -29,7 +29,7 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import { getDetailPairsHead } from '@misakey/helpers/apiError';
 
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import { encryptBlobFile } from '@misakey/crypto/databox/crypto';
 
@@ -246,7 +246,7 @@ function ServiceRequestsRead({
   const { enqueueSnackbar } = useSnackbar();
   const questionItems = useQuestionsItems(t, QUESTIONS_TRANS_KEY, 3);
 
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
 
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.only('xs'));
@@ -401,11 +401,11 @@ function ServiceRequestsRead({
         if (details) {
           setFieldError(FIELD_NAME, 'invalid');
         } else {
-          handleGenericHttpErrors(e);
+          handleHttpErrors(e);
         }
       })
       .finally(() => { setSubmitting(false); });
-  }, [onDialogClose, handle, databoxId, blobs, t, enqueueSnackbar, handleGenericHttpErrors]);
+  }, [onDialogClose, handle, databoxId, blobs, t, enqueueSnackbar, handleHttpErrors]);
 
   const getOnReset = useCallback(
     ({ resetForm }) => () => {

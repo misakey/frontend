@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 
 import routes from 'routes';
@@ -56,13 +56,13 @@ const PARENT_TO = routes.auth.signIn._;
 // HELPERS
 const getOtpError = path(['details', 'otp']);
 
-const handleError = (setFieldError, setStep, handleGenericHttpErrors) => (error) => {
+const handleError = (setFieldError, setStep, handleHttpErrors) => (error) => {
   const errorOTP = getOtpError(error);
   if (error.code === forbidden && !isNil(errorOTP)) {
     setFieldError(CONFIRM_FIELD_NAME, errorOTP);
     setStep(STEP_CONFIRM);
   } else if (isEmpty(error.details)) {
-    handleGenericHttpErrors(error);
+    handleHttpErrors(error);
   }
 };
 
@@ -74,14 +74,14 @@ const convertForm = (form) => {
 const isStepConfirm = (step) => step === STEP_CONFIRM;
 
 const fetchUserPublicData = (
-  email, handleGenericHttpErrors,
+  email, handleHttpErrors,
 ) => API.use(API.endpoints.user.public.read)
   .build({ email })
   .send()
   .then(objectToCamelCase)
-  .catch(handleGenericHttpErrors);
+  .catch(handleHttpErrors);
 
-const askResetPassword = (email, isAuthenticated, handleGenericHttpErrors) => {
+const askResetPassword = (email, isAuthenticated, handleHttpErrors) => {
   const endpoint = API.endpoints.user.password.askReset;
 
   if (!isAuthenticated) { endpoint.auth = false; }
@@ -90,7 +90,7 @@ const askResetPassword = (email, isAuthenticated, handleGenericHttpErrors) => {
     .use(endpoint)
     .build(undefined, { email })
     .send()
-    .catch(handleGenericHttpErrors);
+    .catch(handleHttpErrors);
 };
 
 const confirmCode = (email, form, isAuthenticated) => {
@@ -129,9 +129,9 @@ const resetPassword = async (email, code, form, isAuthenticated, dispatchHardPas
 
 
 // HOOKS
-const useGetUserPublicData = (email, handleGenericHttpErrors) => useCallback(
-  () => (isEmpty(email) ? Promise.resolve() : fetchUserPublicData(email, handleGenericHttpErrors)),
-  [email, handleGenericHttpErrors],
+const useGetUserPublicData = (email, handleHttpErrors) => useCallback(
+  () => (isEmpty(email) ? Promise.resolve() : fetchUserPublicData(email, handleHttpErrors)),
+  [email, handleHttpErrors],
 );
 const useValidationSchema = (step) => useMemo(() => {
   if (step === STEP_CONFIRM) {
@@ -142,16 +142,16 @@ const useValidationSchema = (step) => useMemo(() => {
 }, [step]);
 
 const useOnNext = (
-  email, setStep, setCode, isAuthenticated, handleGenericHttpErrors,
+  email, setStep, setCode, isAuthenticated, handleHttpErrors,
 ) => useCallback(
   (form, { setSubmitting, setFieldError }) => confirmCode(email, form, isAuthenticated)
     .then(({ otp }) => {
       setStep(STEP_RESET);
       setCode(otp);
     })
-    .catch(handleError(setFieldError, setStep, handleGenericHttpErrors))
+    .catch(handleError(setFieldError, setStep, handleHttpErrors))
     .finally(() => { setSubmitting(false); }),
-  [email, setStep, setCode, isAuthenticated, handleGenericHttpErrors],
+  [email, setStep, setCode, isAuthenticated, handleHttpErrors],
 );
 
 const useOnReset = (
@@ -162,7 +162,7 @@ const useOnReset = (
   t,
   isAuthenticated,
   challenge,
-  handleGenericHttpErrors,
+  handleHttpErrors,
   dispatchHardPasswordChange,
 ) => useCallback(
   (form, { setSubmitting, setFieldError }) => resetPassword(
@@ -180,7 +180,7 @@ const useOnReset = (
           window.location.replace(response.redirect_to);
         });
     })
-    .catch(handleError(setFieldError, setStep, handleGenericHttpErrors))
+    .catch(handleError(setFieldError, setStep, handleHttpErrors))
     .finally(() => { setSubmitting(false); }),
   [
     email,
@@ -190,18 +190,18 @@ const useOnReset = (
     t,
     isAuthenticated,
     challenge,
-    handleGenericHttpErrors,
+    handleHttpErrors,
     dispatchHardPasswordChange,
   ],
 );
 
 const useAskResetPassword = (
-  email, step, isAuthenticated, handleGenericHttpErrors,
+  email, step, isAuthenticated, handleHttpErrors,
 ) => useEffect(() => {
   if (!isEmpty(email) && isStepConfirm(step)) {
-    askResetPassword(email, isAuthenticated, handleGenericHttpErrors);
+    askResetPassword(email, isAuthenticated, handleHttpErrors);
   }
-}, [email, step, isAuthenticated, handleGenericHttpErrors]);
+}, [email, step, isAuthenticated, handleHttpErrors]);
 
 // COMPONENTS
 const AuthForgot = ({
@@ -219,16 +219,16 @@ const AuthForgot = ({
   const isEmptyEmail = useMemo(() => isEmpty(email), [email]);
 
   const { enqueueSnackbar } = useSnackbar();
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
 
   const validationSchema = useValidationSchema(step);
 
-  const getUserPublicData = useGetUserPublicData(email, handleGenericHttpErrors);
+  const getUserPublicData = useGetUserPublicData(email, handleHttpErrors);
   const userPublicData = useAsync(getUserPublicData, email);
 
-  const onNext = useOnNext(email, setStep, setCode, isAuthenticated, handleGenericHttpErrors);
+  const onNext = useOnNext(email, setStep, setCode, isAuthenticated, handleHttpErrors);
   const onReset = useOnReset(
-    email, code, enqueueSnackbar, setStep, t, isAuthenticated, challenge, handleGenericHttpErrors,
+    email, code, enqueueSnackbar, setStep, t, isAuthenticated, challenge, handleHttpErrors,
     dispatchHardPasswordChange,
   );
 
@@ -244,7 +244,7 @@ const AuthForgot = ({
     [dispatchClearCredentials, history],
   );
 
-  useAskResetPassword(email, step, isAuthenticated, handleGenericHttpErrors);
+  useAskResetPassword(email, step, isAuthenticated, handleHttpErrors);
 
   if (isEmptyEmail) {
     return <Redirect to={PARENT_TO} />;

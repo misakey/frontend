@@ -1,4 +1,9 @@
+import HttpStatus from 'http-status-codes';
+
 import prop from '@misakey/helpers/prop';
+import props from '@misakey/helpers/props';
+import any from '@misakey/helpers/any';
+import equals from '@misakey/helpers/equals';
 import propOr from '@misakey/helpers/propOr';
 import head from '@misakey/helpers/head';
 import compose from '@misakey/helpers/compose';
@@ -9,6 +14,11 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 const EMPTY_OBJ = {};
 
 export const getCode = prop('code');
+
+export const isInternalError = compose(
+  any(equals(HttpStatus.INTERNAL_SERVER_ERROR)),
+  props(['code', 'status']),
+);
 
 export const getDetails = compose(
   objectToCamelCase,

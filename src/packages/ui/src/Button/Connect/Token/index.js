@@ -9,7 +9,7 @@ import isFunction from '@misakey/helpers/isFunction';
 import isObject from '@misakey/helpers/isObject';
 import pick from '@misakey/helpers/pick';
 
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useParseIdToken from '@misakey/hooks/useParseIdToken';
 
 import MenuItem from '@material-ui/core/MenuItem';
@@ -31,14 +31,14 @@ const useHandleMenu = (setAnchorEl) => useCallback(
 const useHandleClose = (setAnchorEl) => useCallback(() => setAnchorEl(null), [setAnchorEl]);
 const useOpen = (anchorEl) => useMemo(() => Boolean(anchorEl), [anchorEl]);
 
-const useHandleSignOut = (onSignOut, handleClose, userId, handleGenericHttpErrors) => useCallback(
+const useHandleSignOut = (onSignOut, handleClose, userId, handleHttpErrors) => useCallback(
   (event) => {
     const proxyOnSignOut = isFunction(onSignOut) ? onSignOut : noop;
     if (userId) {
       API.use(API.endpoints.auth.signOut)
         .build(null, { user_id: userId })
         .send()
-        .catch(handleGenericHttpErrors)
+        .catch(handleHttpErrors)
         .finally(() => {
           proxyOnSignOut(event);
           handleClose();
@@ -51,7 +51,7 @@ const useHandleSignOut = (onSignOut, handleClose, userId, handleGenericHttpError
     onSignOut,
     handleClose,
     userId,
-    handleGenericHttpErrors,
+    handleHttpErrors,
   ],
 );
 
@@ -76,12 +76,12 @@ const ButtonConnectToken = ({
   const handleMenu = useHandleMenu(setAnchorEl);
   const handleClose = useHandleClose(setAnchorEl);
 
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
 
   const { sub: userId, acr } = useParseIdToken(id);
   const seclevel = useMemo(() => parseInt(acr, 10), [acr]);
 
-  const handleSignOut = useHandleSignOut(onSignOut, handleClose, userId, handleGenericHttpErrors);
+  const handleSignOut = useHandleSignOut(onSignOut, handleClose, userId, handleHttpErrors);
 
   const avatarUserProps = useMemo(
     () => (isObject(profile) ? pickAvatarUserProps(profile) : {}),

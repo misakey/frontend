@@ -23,7 +23,7 @@ import pick from '@misakey/helpers/pick';
 import prop from '@misakey/helpers/prop';
 import compose from '@misakey/helpers/compose';
 
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
@@ -110,7 +110,7 @@ const useOnSubmit = (
   t,
   rating,
   dispatchClearRatings,
-  handleGenericHttpErrors,
+  handleHttpErrors,
 ) => useCallback(
   (form, { setSubmitting, setFieldError }) => {
     const { id, mainDomain } = application;
@@ -122,7 +122,7 @@ const useOnSubmit = (
       .catch((error) => {
         const details = getErrorDetails(error);
         if (isEmpty(details)) {
-          return handleGenericHttpErrors(error);
+          return handleHttpErrors(error);
         }
         const { [VALUE_FIELD]: valueError, [COMMENT_FIELD]: commentError } = details;
         if (!isNil(valueError)) {
@@ -143,7 +143,7 @@ const useOnSubmit = (
     t,
     rating,
     dispatchClearRatings,
-    handleGenericHttpErrors,
+    handleHttpErrors,
   ],
 );
 
@@ -164,7 +164,7 @@ const ApplicationMyFeedback = ({
   const classes = useStyles();
 
   const { enqueueSnackbar } = useSnackbar();
-  const handleGenericHttpErrors = useHandleGenericHttpErrors();
+  const handleHttpErrors = useHandleHttpErrors();
 
   const mainDomain = useMemo(
     () => params.mainDomain,
@@ -199,7 +199,7 @@ const ApplicationMyFeedback = ({
     t,
     rating,
     dispatchClearRatings,
-    handleGenericHttpErrors,
+    handleHttpErrors,
   );
 
   return (
