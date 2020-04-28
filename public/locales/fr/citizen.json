@@ -259,7 +259,7 @@
       "manual": {
         "label": "Manuel",
         "title": "Configuration manuelle",
-        "subtitle": "Pour envoyer avec mon application email",
+        "subtitle": "Pour envoyer avec mon application d'emails",
         "notify": "J'envoie l’e-mail depuis la fenêtre ouverte dans mon gestionnaire d’e-mail. Si aucune fenêtre ne s’est ouverte, je vérifie que les pop-up ne sont pas bloquées par mon navigateur web"
       },
       "configuration": {
