@@ -3,15 +3,15 @@ import storage from 'redux-persist/lib/storage';
 
 import { RESET_APP } from '@misakey/store/actions/app';
 
-import authReducers from '@misakey/auth/store/reducers';
-import reducers from '@misakey/store/reducers';
+import { authPersistedReducers } from '@misakey/auth/store/reducers';
+import storeReducers from '@misakey/store/reducers';
 import { makeReducer as makeEntities } from '@misakey/store/reducers/entities';
 
 import crypto from '@misakey/crypto/store/reducer';
 
-import { wrapReducerWithAuth } from 'store/reducers/helpers/createAuthReducer';
+import { wrapReducerWithAuth } from '@misakey/auth/store/reducers/helpers/createAuthReducer';
 import access from './access';
-import bulkSelection from './bulkSelection';
+// import bulkSelection from './bulkSelection';
 import Layout from './Layout';
 import screens from './screens';
 import search from './search';
@@ -20,10 +20,10 @@ import warning from './warning';
 import { userApplicationsReducers, userApplicationsInitialState } from './applications/userApplications';
 
 const appReducer = combineReducers({
-  ...authReducers,
-  ...reducers,
+  ...authPersistedReducers,
+  ...storeReducers,
   access,
-  bulkSelection,
+  // bulkSelection, unused for now
   Layout,
   screens,
   search,
@@ -48,6 +48,9 @@ const rootReducer = (state, action) => {
   let newState = state;
 
   if (action.type === RESET_APP) {
+    // @FIXME we could use persistor.purge instead of this very specific implem
+    // It highly depends on external settings, namely "persist:key"
+    // https://github.com/rt2zz/redux-persist/blob/master/docs/api.md#type-persistor
     if (storage && storage.removeItem) {
       Object.keys(state).forEach((key) => {
         if (key !== 'global') {

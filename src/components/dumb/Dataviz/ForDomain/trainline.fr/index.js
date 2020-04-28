@@ -19,7 +19,7 @@ import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
 import Grid from '@material-ui/core/Grid';
 
 
-import SplashScreen from '@misakey/ui/Screen/Splash';
+import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 

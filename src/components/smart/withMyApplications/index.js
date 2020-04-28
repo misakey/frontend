@@ -7,7 +7,7 @@ import identity from '@misakey/helpers/identity';
 import isNil from '@misakey/helpers/isNil';
 import propOr from '@misakey/helpers/propOr';
 
-import { fetchUserRoleApplications, fetchLinkedApplications } from '@misakey/helpers/fetchApplications';
+import { fetchUserRoleApplications, fetchLinkedApplications } from '@misakey/helpers/builder/applications';
 
 import { ROLE_LABELS } from 'constants/Roles';
 import { WORKSPACE } from 'constants/workspaces';

@@ -1,8 +1,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter, Link } from 'react-router-dom';
-import { useSnackbar } from 'notistack';
+import { Link } from 'react-router-dom';
 
 import isFunction from '@misakey/helpers/isFunction';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
@@ -12,8 +11,6 @@ import { withUserManager } from '../../../OidcProvider';
 
 // COMPONENTS
 const Wrapper = ({ AccountLink, userManager, onSignOut, signInAction, authProps, ...props }) => {
-  const { enqueueSnackbar } = useSnackbar();
-
   const handleSignOut = useCallback(
     () => {
       userManager.removeUser().then(() => {
@@ -36,7 +33,6 @@ const Wrapper = ({ AccountLink, userManager, onSignOut, signInAction, authProps,
       {...props}
       signInAction={handleSignIn}
       onSignOut={handleSignOut}
-      enqueueSnackbar={enqueueSnackbar}
       AccountLink={AccountLink}
     />
   );
@@ -75,7 +71,7 @@ const mapDispatchToProps = (dispatch) => ({
   onSignIn: (profile) => dispatch(signIn({ profile })),
 });
 
-export default withUserManager(connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(withRouter(Wrapper)));
+)(withUserManager(Wrapper));

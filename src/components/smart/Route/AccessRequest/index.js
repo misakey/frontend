@@ -219,7 +219,7 @@ function RouteAccessRequest({
           ApplicationSchema.entity,
           state.entities,
         ),
-      isAuthenticated: !!state.auth.token,
+      isAuthenticated: state.auth.isAuthenticated,
       userRoles: state.auth.roles,
     };
   };

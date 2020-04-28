@@ -1,15 +1,13 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import routes from 'routes';
 
 import { makeStyles } from '@material-ui/core/styles';
 import useWidth from '@misakey/hooks/useWidth';
 
 import displayIn from '@misakey/helpers/displayIn';
-import { redirectToApp } from '@misakey/helpers/plugin';
-import { IS_PLUGIN } from 'constants/plugin';
 
-import ButtonConnect from 'components/dumb/Button/Connect';
+import ButtonConnect from '@misakey/ui/Button/Connect';
 import AvatarUser from '@misakey/ui/Avatar/User';
 
 const SMALL_BREAKPOINTS = ['xs'];
@@ -30,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ButtonConnectUser() {
+const ButtonConnectUser = ({ component: Component, ...rest }) => {
   const classes = useStyles();
   const width = useWidth();
 
@@ -49,22 +47,26 @@ function ButtonConnectUser() {
     [isSmallDisplay],
   );
 
-  const signInActionForPlugin = useCallback(() => redirectToApp(routes.auth.redirectToSignIn), []);
-  const redirectToWebAppAccount = useCallback(() => redirectToApp(routes.account._), []);
-
   return (
-    <ButtonConnect
+    <Component
       noTokenIcon={noTokenIcon}
       buttonProps={buttonProps}
-      signInAction={IS_PLUGIN ? signInActionForPlugin : null}
-      customAction={IS_PLUGIN ? redirectToWebAppAccount : null}
       className={clsx(
         classes.buttonConnect,
         { [classes.buttonTextRounded]: !isSmallDisplay },
       )}
       classes={{ noToken: { iconButton: { root: classes.buttonConnectIconButton } } }}
+      {...rest}
     />
   );
-}
+};
+
+ButtonConnectUser.propTypes = {
+  component: PropTypes.elementType,
+};
+
+ButtonConnectUser.defaultProps = {
+  component: ButtonConnect,
+};
 
 export default ButtonConnectUser;

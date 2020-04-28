@@ -19,13 +19,14 @@ import MuiAppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
-import ButtonConnectUser from 'components/smart/Button/Connect/User';
+import ButtonConnect from 'components/smart/Button/Connect';
+import ButtonConnectUser from '@misakey/ui/Button/Connect/User';
 import LinkHome from 'components/dumb/Link/Home';
 import Logo from 'components/dumb/Logo';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import SearchApplications from 'components/smart/Search/Applications';
 import SearchApplicationsButton from 'components/smart/Search/Applications/Button';
-import BoxFlexFill from 'components/dumb/Box/FlexFill';
+import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import MenuWorkspace from 'components/smart/Menu/Workspace';
 
 export const APPBAR_HEIGHT = 64;
@@ -73,7 +74,7 @@ function AppBar({
 
   const rightAppBarItems = useMemo(() => {
     const rightItems = [];
-    if (withUser) { rightItems.push(<ButtonConnectUser key="appBarUser" />); }
+    if (withUser) { rightItems.push(<ButtonConnectUser component={ButtonConnect} key="appBarUser" />); }
 
     return rightItems;
   }, [withUser]);

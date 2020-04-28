@@ -222,7 +222,7 @@ Auth.defaultProps = {
 
 export default connect(
   (state) => ({
-    isAuthenticated: !!state.auth.token,
+    isAuthenticated: state.auth.isAuthenticated,
     currentAcr: state.auth.acr,
     sso: state.sso,
   }),

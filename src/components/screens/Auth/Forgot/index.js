@@ -319,7 +319,7 @@ AuthForgot.propTypes = {
 const mapStateToProps = (state) => ({
   challenge: state.sso.loginChallenge,
   email: state.screens.auth.identifier,
-  isAuthenticated: !!state.auth.token,
+  isAuthenticated: state.auth.isAuthenticated,
 });
 
 const mapDispatchToProps = (dispatch) => ({

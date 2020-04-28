@@ -291,7 +291,7 @@ const mapStateToProps = (state, ownProps) => ({
     state.entities,
   ),
   userId: state.auth.userId,
-  isAuthenticated: !!state.auth.token,
+  isAuthenticated: state.auth.isAuthenticated,
 });
 
 const mapDispatchToProps = (dispatch) => ({

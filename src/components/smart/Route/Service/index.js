@@ -196,7 +196,7 @@ const mapStateToProps = (state) => {
   const { sco } = state.auth.id ? parseJwt(state.auth.id) : {};
   const { email } = state.auth.profile || {};
   return {
-    isAuthenticated: !!state.auth.token,
+    isAuthenticated: state.auth.isAuthenticated,
     userRoles: state.auth.roles,
     userScope: sco,
     userEmail: email,
@@ -207,6 +207,5 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchUpdateRoles: (roles) => dispatch(loadUserRoles(roles)),
 });
 
-export default withUserManager(
-  withTranslation(['components', 'common'])(connect(mapStateToProps, mapDispatchToProps)(RouteService)),
-);
+export default
+withTranslation(['components', 'common'])(connect(mapStateToProps, mapDispatchToProps)(withUserManager(RouteService)));

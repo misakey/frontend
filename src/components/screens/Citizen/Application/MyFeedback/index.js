@@ -29,7 +29,7 @@ import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import BoxControls from 'components/dumb/Box/Controls';
 import ScreenAction from 'components/dumb/Screen/Action';
-import SplashScreen from '@misakey/ui/Screen/Splash';
+import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';

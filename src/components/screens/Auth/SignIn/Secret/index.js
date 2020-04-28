@@ -29,7 +29,7 @@ import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useSecretContentAction, useSecretSecondaryAction } from '@misakey/hooks/useActions/signIn';
 
 import Box from '@material-ui/core/Box';
-import DefaultSplashScreen from '@misakey/ui/Screen/Splash';
+import DefaultSplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import SignInFormFields from 'components/screens/Auth/SignIn/Form/Fields';
 import FormCardAuth from 'components/dumb/Form/Card/Auth';
 import AuthCardTitle from 'components/smart/Card/Auth/Title';

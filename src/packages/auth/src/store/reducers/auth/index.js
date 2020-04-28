@@ -1,11 +1,11 @@
-import createReducer from '@misakey/store/reducers/helpers/createReducer';
+import createAuthReducer from '@misakey/auth/store/reducers/helpers/createAuthReducer';
 
 import merge from '@misakey/helpers/merge';
+import isNil from '@misakey/helpers/isNil';
 
 import {
   AUTH_RESET,
   LOAD_USER,
-  SIGN_OUT,
   SIGN_IN,
   UPDATE_PROFILE,
   LOAD_USER_ROLES,
@@ -13,6 +13,13 @@ import {
 } from '../../actions/auth';
 
 
+// HELPERS
+const mergeProfile = (state, profile) => (isNil(profile)
+  ? state.profile
+  : merge({}, state.profile, profile)
+);
+
+// INITIAL_STATE
 export const INITIAL_STATE = {
   id: null,
   authenticatedAt: null,
@@ -30,16 +37,21 @@ function resetCredentials() {
   return INITIAL_STATE;
 }
 
-function updateCredentials(state, { credentials }) {
-  return { ...state, ...credentials };
-}
-
 function updateProfile(state, { profile }) {
   return {
     ...state,
-    profile: merge({}, state.profile, profile),
+    profile: mergeProfile(state, profile),
   };
 }
+
+function updateCredentials(state, { credentials: { profile, ...rest } }) {
+  return {
+    ...state,
+    profile: mergeProfile(state, profile),
+    ...rest,
+  };
+}
+
 
 function updateRoles(state, { roles }) {
   return {
@@ -55,8 +67,7 @@ function addUserRole(state, { role }) {
   };
 }
 
-export default createReducer(INITIAL_STATE, {
-  [SIGN_OUT]: resetCredentials,
+export default createAuthReducer(INITIAL_STATE, {
   [AUTH_RESET]: resetCredentials,
   [SIGN_IN]: updateCredentials,
   [LOAD_USER]: updateCredentials,

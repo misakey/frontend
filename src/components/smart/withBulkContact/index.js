@@ -232,7 +232,7 @@ const withBulkContact = (mapper = identity) => (Component) => {
     applicationsByIds: keyBy(Object.values(state.entities.applications), 'id'),
     selectedApplications: state.bulkSelection.selected,
     userId: state.auth.userId,
-    isAuthenticated: !!state.auth.token,
+    isAuthenticated: state.auth.isAuthenticated,
   });
 
   const mapDispatchToProps = (dispatch) => ({

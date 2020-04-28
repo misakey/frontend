@@ -8,6 +8,7 @@ import noop from '@misakey/helpers/noop';
 import isFunction from '@misakey/helpers/isFunction';
 import isObject from '@misakey/helpers/isObject';
 import pick from '@misakey/helpers/pick';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useParseIdToken from '@misakey/hooks/useParseIdToken';
@@ -60,12 +61,14 @@ const ButtonConnectToken = ({
   AccountLink,
   className,
   classes,
+  customAction,
+  disabled,
   id,
   onSignOut,
   profile,
   t,
   token,
-  customAction,
+  ...rest
 }) => {
   const classProps = useMemo(
     () => (isObject(classes) ? { classes } : { className }),
@@ -106,43 +109,47 @@ const ButtonConnectToken = ({
         onClick={iconButtonAction}
         color="inherit"
         edge="end"
+        disabled={disabled}
         {...classProps}
+        {...omitTranslationProps(rest)}
       >
         <AvatarUser
           {...avatarUserProps}
         />
       </IconButton>
-      <Menu
-        id="menu-appbar"
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        keepMounted
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        open={open}
-        onClose={handleClose}
-      >
-        {seclevel > 1 && (
-          <MenuItem
-            button
-            component={AccountLink}
-            onClick={handleClose}
-          >
-            {t('components:buttonConnect.profile')}
+      {!disabled && (
+        <Menu
+          id="menu-appbar"
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={open}
+          onClose={handleClose}
+        >
+          {seclevel > 1 && (
+            <MenuItem
+              button
+              component={AccountLink}
+              onClick={handleClose}
+            >
+              {t('components:buttonConnect.profile')}
+            </MenuItem>
+          )}
+          {seclevel > 1 && ( // duplicated because Menu doesn't accept React.Fragment as a child
+            <Divider light />
+          )}
+          <MenuItem button component="li" onClick={handleSignOut}>
+            {t('components:buttonConnect.signOut')}
           </MenuItem>
-        )}
-        {seclevel > 1 && ( // duplicated because Menu doesn't accept React.Fragment as a child
-          <Divider light />
-        )}
-        <MenuItem button component="li" onClick={handleSignOut}>
-          {t('components:buttonConnect.signOut')}
-        </MenuItem>
-      </Menu>
+        </Menu>
+      )}
     </>
   );
 };
@@ -154,8 +161,8 @@ ButtonConnectToken.propTypes = {
   classes: PropTypes.object,
   className: PropTypes.string,
   customAction: PropTypes.func,
-  enqueueSnackbar: PropTypes.func,
-  // CALLBACKS
+  disabled: PropTypes.bool,
+
   id: PropTypes.string,
 
   onSignOut: PropTypes.func,
@@ -172,12 +179,12 @@ ButtonConnectToken.defaultProps = {
   AccountLink: Link,
   className: '',
   classes: null,
-  enqueueSnackbar: null,
+  customAction: null,
+  disabled: false,
   id: null,
   onSignOut: null,
   profile: null,
   token: null,
-  customAction: null,
 };
 
 export default withTranslation('components')(ButtonConnectToken);

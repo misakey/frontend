@@ -7,7 +7,6 @@ import { Link, generatePath } from 'react-router-dom';
 import { Trans, withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 
-import useGetRoles from '@misakey/auth/hooks/useGetRoles';
 import { loadUserRoles } from '@misakey/auth/store/actions/auth';
 
 import routes from 'routes';
@@ -20,6 +19,8 @@ import isInteger from '@misakey/helpers/isInteger';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import head from '@misakey/helpers/head';
+import { getRolesBuilder } from '@misakey/helpers/builder/roles';
+
 import useWidth from '@misakey/hooks/useWidth';
 
 import Box from '@material-ui/core/Box';
@@ -37,7 +38,7 @@ import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 
-import SplashScreen from '@misakey/ui/Screen/Splash';
+import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import BoxSection from '@misakey/ui/Box/Section';
 import ButtonSubmit from '@misakey/ui/Button/Submit';
 import BoxMessage from '@misakey/ui/Box/Message';
@@ -137,7 +138,11 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
   const [error, setError] = useState(null);
 
   const i18nKey = useCallback((step) => `admin:service.claim.body.steps.content.${step}`, []);
-  const fetchRoleList = useGetRoles(dispatchUserRoles);
+  const fetchRoleList = useCallback(
+    () => getRolesBuilder({ userId })
+      .then(dispatchUserRoles),
+    [dispatchUserRoles, userId],
+  );
   const pathToAdminHome = useMemo(
     () => generatePath(routes.admin.service._, { mainDomain: service.mainDomain }),
     [service.mainDomain],
@@ -192,7 +197,7 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
     API.use(ENDPOINTS.claim.verify.update)
       .build(query, payload)
       .send()
-      .then(() => { setSuccess(true); fetchRoleList(userId); })
+      .then(() => { setSuccess(true); fetchRoleList(); })
       .catch((e) => {
         if (e.httpStatus === 403) {
           setError(VERIFY_ERROR);
@@ -204,7 +209,7 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
         }
       })
       .finally(() => setSubmitting(false));
-  }, [claim, error, fetchRoleList, userId, t, enqueueSnackbar, handleHttpErrors]);
+  }, [claim, error, fetchRoleList, t, enqueueSnackbar, handleHttpErrors]);
 
   useEffect(fetchClaim, [service]);
 

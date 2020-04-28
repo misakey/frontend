@@ -24,7 +24,7 @@ import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 
 import Screen, { getStyleForContainerScroll, SCREEN_STATE_PROPTYPES } from 'components/dumb/Screen';
-import DefaultSplashScreen from '@misakey/ui/Screen/Splash';
+import DefaultSplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import ApplicationInfoNav from 'components/screens/Citizen/Application/Info/Nav';
 import UserContributionContextProvider from 'components/smart/Dialog/UserContribution/Context/Provider';
 import { addToUserApplications, removeFromUserApplications } from 'store/actions/applications/userApplications';
@@ -288,5 +288,5 @@ ApplicationInfo.defaultProps = {
 
 export default connect((state) => ({
   userId: state.auth.userId,
-  isAuthenticated: !!state.auth.token,
+  isAuthenticated: state.auth.isAuthenticated,
 }))(ApplicationInfo);

@@ -8,7 +8,7 @@ import routes from 'routes';
 import isNil from '@misakey/helpers/isNil';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import log from '@misakey/helpers/log';
-import { fetchApplicationsByCategory } from '@misakey/helpers/fetchApplications';
+import { fetchApplicationsByCategory } from '@misakey/helpers/builder/applications';
 
 import Container from '@material-ui/core/Container';
 import ApplicationsList from 'components/dumb/List/Applications';
@@ -83,7 +83,7 @@ ApplicationsCategoryScreen.defaultProps = {
 
 // CONNECT
 const mapStateToProps = (state) => ({
-  isAuthenticated: !!state.auth.token,
+  isAuthenticated: state.auth.isAuthenticated,
 });
 
 export default withTranslation('common')(connect(mapStateToProps)(ApplicationsCategoryScreen));

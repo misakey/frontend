@@ -3,7 +3,7 @@ import { useSnackbar } from 'notistack';
 
 import isFunction from '@misakey/helpers/isFunction';
 import log from '@misakey/helpers/log';
-import resolveAny from 'helpers/resolveAny';
+import resolveAny from '@misakey/helpers/resolveAny';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 

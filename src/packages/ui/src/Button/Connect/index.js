@@ -1,48 +1,39 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import API from '@misakey/api';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import parseJwt from '@misakey/helpers/parseJwt';
-import tDefault from '@misakey/helpers/tDefault';
 import isFunction from '@misakey/helpers/isFunction';
+import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 import isObject from '@misakey/helpers/isObject';
+import any from '@misakey/helpers/any';
+import props from '@misakey/helpers/props';
+import compose from '@misakey/helpers/compose';
 import nestedClasses from '@misakey/helpers/nestedClasses';
+import { getUserBuilder } from '@misakey/helpers/builder/users';
+
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ButtonConnectNoToken from './NoToken';
 import ButtonConnectToken from './Token';
 
+// CONSTANTS
+const PROFILE_PROPS = ['avatarUri', 'displayName', 'email'];
+
 // HELPERS
 const getTokenClasses = (classes) => nestedClasses(classes, 'token', 'noToken');
-
 const getNoTokenClasses = (classes) => nestedClasses(classes, 'noToken', 'token');
 
-// HOOKS
-const useUserId = (id) => useMemo(() => (id ? parseJwt(id).sub : undefined), [id]);
+const isAnyEmpty = any(isEmpty);
+const isMissingProfileProps = compose(
+  isAnyEmpty,
+  props(PROFILE_PROPS),
+);
 
-const useHandleSignIn = (onSignIn) => useCallback((event) => {
-  if (isFunction(onSignIn)) {
-    onSignIn(event);
-  }
-}, [onSignIn]);
-
-const useUserData = (userId, setFetchingUser, handleSignIn) => useEffect(() => {
-  if (userId) {
-    setFetchingUser(true);
-
-    API.use(API.endpoints.user.read)
-      .build({ id: userId })
-      .send()
-      .then((response) => {
-        handleSignIn(objectToCamelCase(response));
-        setFetchingUser(false);
-      })
-      .catch(() => setFetchingUser(false));
-  }
-}, [userId, setFetchingUser, handleSignIn]);
 
 // COMPONENTS
 const ButtonConnect = ({
@@ -50,7 +41,6 @@ const ButtonConnect = ({
   buttonProps,
   className,
   classes,
-  enqueueSnackbar,
   id,
   noTokenIcon,
   onSignIn,
@@ -60,10 +50,20 @@ const ButtonConnect = ({
   t,
   token,
   customAction,
+  ...rest
 }) => {
-  const [isFetchingUser, setFetchingUser] = useState(false);
+  const userId = useMemo(
+    () => (id
+      ? parseJwt(id).sub
+      : undefined
+    ),
+    [id],
+  );
 
-  const userId = useUserId(id);
+  const shouldFetch = useMemo(
+    () => !isNil(userId) && isMissingProfileProps(profile),
+    [profile, userId],
+  );
 
   const tokenClasses = useMemo(
     () => (isObject(classes) ? getTokenClasses(classes) : null),
@@ -75,9 +75,28 @@ const ButtonConnect = ({
     [classes],
   );
 
-  const handleSignIn = useHandleSignIn(onSignIn);
+  const noTokenProps = useMemo(
+    () => (isFunction(signInAction) ? { onClick: signInAction } : {}),
+    [signInAction],
+  );
 
-  useUserData(userId, setFetchingUser, handleSignIn);
+  const handleSignIn = useCallback((event) => {
+    if (isFunction(onSignIn)) {
+      onSignIn(event);
+    }
+  }, [onSignIn]);
+
+
+  const getUserData = useCallback(
+    () => getUserBuilder(userId),
+    [userId],
+  );
+
+  const { isFetching: isFetchingUser } = useFetchEffect(
+    getUserData,
+    { shouldFetch },
+    { onSuccess: handleSignIn },
+  );
 
   return (
     <>
@@ -88,7 +107,8 @@ const ButtonConnect = ({
           classes={noTokenClasses}
           buttonProps={buttonProps}
           Icon={noTokenIcon}
-          signInAction={signInAction}
+          {...noTokenProps}
+          {...omitTranslationProps(rest)}
         >
           {t('components:buttonConnect.signIn')}
         </ButtonConnectNoToken>
@@ -99,12 +119,12 @@ const ButtonConnect = ({
           AccountLink={AccountLink}
           className={className}
           classes={tokenClasses}
-          enqueueSnackbar={enqueueSnackbar}
           id={id}
           onSignOut={onSignOut}
           profile={profile}
           token={token}
           customAction={customAction}
+          {...omitTranslationProps(rest)}
         />
       )}
     </>
@@ -122,7 +142,6 @@ ButtonConnect.propTypes = {
   }),
   className: PropTypes.string,
   customAction: PropTypes.func,
-  enqueueSnackbar: PropTypes.func,
   id: PropTypes.string,
 
   // CALLBACKS
@@ -135,8 +154,8 @@ ButtonConnect.propTypes = {
     displayName: PropTypes.string,
     email: PropTypes.string,
   }),
-  signInAction: PropTypes.func.isRequired,
-  t: PropTypes.func,
+  signInAction: PropTypes.func,
+  t: PropTypes.func.isRequired,
   token: PropTypes.string,
 };
 
@@ -145,13 +164,12 @@ ButtonConnect.defaultProps = {
   buttonProps: { color: 'secondary' },
   className: '',
   classes: null,
-  enqueueSnackbar: null,
   id: null,
   noTokenIcon: null,
   onSignIn: null,
   onSignOut: null,
   profile: null,
-  t: tDefault,
+  signInAction: null,
   token: null,
   customAction: null,
 };

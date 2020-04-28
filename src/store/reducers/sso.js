@@ -1,4 +1,4 @@
-import createAuthReducer from 'store/reducers/helpers/createAuthReducer';
+import createAuthReducer from '@misakey/auth/store/reducers/helpers/createAuthReducer';
 
 import { SSO_RESET, SSO_UPDATE } from 'store/actions/sso';
 

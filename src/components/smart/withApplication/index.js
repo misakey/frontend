@@ -239,7 +239,7 @@ const withApplication = (Component, options = {}) => {
   const mapStateToProps = (state, ownProps) => {
     const mainDomain = getMainDomain(ownProps);
     return {
-      isAuthenticated: !!state.auth.token,
+      isAuthenticated: state.auth.isAuthenticated,
       isDefaultDomain: isDefault(mainDomain),
       entity: denormalize(
         mainDomain,

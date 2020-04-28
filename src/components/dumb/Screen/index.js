@@ -15,7 +15,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 import ErrorIcon from '@material-ui/icons/Error';
 
-import SplashScreen from '@misakey/ui/Screen/Splash';
+import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import AppBar, { APPBAR_HEIGHT } from 'components/dumb/AppBar';
 import Footer from 'components/dumb/Footer';
 import { IS_PLUGIN } from 'constants/plugin';

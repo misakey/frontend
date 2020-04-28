@@ -1,57 +1,111 @@
+import React, { useMemo, useEffect, createContext, useCallback, useState, forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import React, { useEffect, createContext, useCallback, forwardRef } from 'react';
+
+import { loadUserThunk, authReset, loadUserRolesThunk } from '@misakey/auth/store/actions/auth';
+
 import log from '@misakey/helpers/log';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
-import get from '@misakey/helpers/get';
+import pick from '@misakey/helpers/pick';
 import parseJwt from '@misakey/helpers/parseJwt';
-import { loadUser, authReset, loadUserRoles } from '../../store/actions/auth';
-import createUserManager from '../../helpers/userManager';
-import useGetRoles from '../../hooks/useGetRoles';
+import { getRolesBuilder } from '@misakey/helpers/builder/roles';
+import createUserManager from '@misakey/auth/helpers/userManager';
 
+import OidcProviderSplash from '@misakey/auth/components/OidcProvider/Splash';
+
+// HELPERS
+const pickUserProps = pick(['token', 'id']);
+
+const getUser = ({
+  profile: { acr, sco: scope, auth_time: authenticatedAt } = {},
+  expires_at: expiryAt,
+  access_token: token,
+  id_token: id,
+}) => ({
+  expiryAt,
+  token,
+  id,
+  authenticatedAt,
+  scope,
+  isAuthenticated: !!token,
+  acr: !isEmpty(acr) ? parseInt(acr, 10) : null,
+});
+
+// CONTEXT
 export const UserManagerContext = createContext({
   userManager: null,
 });
 
+// COMPONENTS
+function OidcProvider({ store, children, config }) {
+  const userManager = useMemo(
+    () => createUserManager(config),
+    [config],
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [tempUser, setTempUser] = useState();
 
-function shouldLaunchSilentAuth(silentAuthBlacklist) {
-  return !silentAuthBlacklist.includes(window.location.pathname);
-}
+  const userProps = useMemo(
+    () => (isNil(tempUser)
+      ? {}
+      : pickUserProps(tempUser)),
+    [tempUser],
+  );
 
-function OidcProvider({ store, children, config, silentBlacklist }) {
-  const userManager = createUserManager(config);
-  const fetchUserRoles = useGetRoles((roles) => store.dispatch(loadUserRoles(roles)));
+  const fetchUserRoles = useCallback(
+    (userId) => getRolesBuilder({ userId })
+      .then((roles) => store.dispatch(loadUserRolesThunk(roles))),
+    [store],
+  );
+
+  const dispatchWindowStorageEvent = useCallback(
+    () => {
+      const userHasChangedEvent = new StorageEvent('userHasChanged', { bubbles: true });
+      window.dispatchEvent(userHasChangedEvent);
+    },
+    [],
+  );
+
+  const dispatchLoadUser = useCallback(
+    (user, userId) => store.dispatch(loadUserThunk({
+      ...getUser(user),
+      userId,
+    })),
+    [store],
+  );
+
+  const dispatchStoreUpdate = useCallback(
+    (user) => {
+      if (isNil(store)) {
+        return Promise.resolve();
+      }
+
+      const { auth: { roles } } = store.getState();
+
+      const userId = parseJwt(user.id_token).sub;
+      return isNil(roles)
+        ? Promise.all([
+          dispatchLoadUser(user, userId),
+          fetchUserRoles(userId),
+        ])
+        : Promise.resolve(dispatchLoadUser(user, userId));
+    },
+    [dispatchLoadUser, fetchUserRoles, store],
+  );
 
   // event callback when the user has been loaded (on silent renew or redirect)
   const onUserLoaded = useCallback((user) => {
     log('User is loaded !');
+
     // the access_token is still valid so we load the user in the store
     if (user && !user.expired) {
-      if (store) {
-        const userId = parseJwt(user.id_token).sub;
-        const { acr, sco } = get(user, 'profile', {});
-        store.dispatch(loadUser({
-          expiryAt: user.expires_at,
-          token: user.access_token,
-          id: user.id_token,
-          authenticatedAt: user.profile.auth_time,
-          userId,
-          scope: sco,
-          isAuthenticated: !!user.access_token,
-          acr: !isNil(acr) && !isEmpty(acr) ? parseInt(acr, 10) : null,
-        }));
+      // PLUGIN
+      dispatchWindowStorageEvent();
 
-        const { auth } = store.getState();
-
-        if (isNil(auth.roles)) {
-          fetchUserRoles(userId);
-        }
-      }
-
-      const userHasChangedEvent = new StorageEvent('userHasChanged', { bubbles: true });
-      window.dispatchEvent(userHasChangedEvent);
+      return dispatchStoreUpdate(user);
     }
-  }, [fetchUserRoles, store]);
+    return Promise.resolve();
+  }, [dispatchStoreUpdate, dispatchWindowStorageEvent]);
 
   // event callback when silent renew errored
   const onSilentRenewError = useCallback(() => {
@@ -76,22 +130,23 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
   }, [userManager]);
 
   const loadUserAtMount = useCallback(() => {
+    setIsLoading(true);
+
     // Load user on store when the app is opening
-    userManager.getUser().then((user) => {
-      if (!isNil(user)) {
-        onUserLoaded(user);
-      } else if (userManager.settings.automaticSilentRenew) {
-        if (shouldLaunchSilentAuth(silentBlacklist)) {
-          userManager.signinSilent()
-            .then(() => {
-              log('OidcProvider.initialSilentAuth: Silent auth successful');
-            }, (err) => {
-              log(`OidcProvider.initialSilentAuth: Error from signinSilent: ${err}`);
-            });
+    userManager.getUser()
+      .then((user) => {
+        if (!isNil(user)) {
+          setTempUser(getUser(user));
+          return onUserLoaded(user);
         }
-      }
-    });
-  }, [onUserLoaded, silentBlacklist, userManager]);
+
+        return Promise.resolve();
+      })
+      .finally(() => {
+        setIsLoading(false);
+        setTempUser();
+      });
+  }, [onUserLoaded, userManager]);
 
   useEffect(() => {
     // register the event callbacks
@@ -123,7 +178,9 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
 
   return (
     <UserManagerContext.Provider value={{ userManager }}>
-      {children}
+      {isLoading ? (
+        <OidcProviderSplash userProps={userProps} />
+      ) : children}
     </UserManagerContext.Provider>
   );
 }
@@ -140,7 +197,6 @@ OidcProvider.propTypes = {
     scope: PropTypes.string,
   }),
   store: PropTypes.object,
-  silentBlacklist: PropTypes.arrayOf(PropTypes.string),
 };
 
 OidcProvider.defaultProps = {
@@ -152,12 +208,11 @@ OidcProvider.defaultProps = {
     loadUserInfo: false,
   },
   store: null,
-  silentBlacklist: [],
 };
 
 export const withUserManager = (Component) => forwardRef((props, ref) => (
   <UserManagerContext.Consumer>
-    {(store) => <Component {...props} {...store} ref={ref} />}
+    {(context) => <Component {...props} {...context} ref={ref} />}
   </UserManagerContext.Consumer>
 ));
 

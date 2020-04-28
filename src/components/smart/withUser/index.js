@@ -2,8 +2,6 @@ import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import API from '@misakey/api';
-
 import { signIn } from '@misakey/auth/store/actions/auth';
 import { normalize } from 'normalizr';
 import { receiveEntities } from '@misakey/store/actions/entities';
@@ -11,17 +9,12 @@ import UserSchema from 'store/schemas/User';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import any from '@misakey/helpers/any';
 import isEmpty from '@misakey/helpers/isEmpty';
+import { getUserBuilder } from '@misakey/helpers/builder/users';
 
 // HELPERS
 const isAnyEmpty = any(isEmpty);
-
-const fetchUser = (userId) => API
-  .use(API.endpoints.user.read)
-  .build({ id: userId })
-  .send();
 
 // COMPONENTS
 const withUser = (Component) => {
@@ -32,12 +25,12 @@ const withUser = (Component) => {
     );
 
     const getUser = useCallback(
-      () => fetchUser(userId),
+      () => getUserBuilder(userId),
       [userId],
     );
 
     const onSuccess = useCallback(
-      (response) => onSignIn(objectToCamelCase(response)),
+      (user) => onSignIn(user),
       [onSignIn],
     );
 

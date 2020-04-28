@@ -250,7 +250,7 @@ ApplicationInfoFeedback.defaultProps = {
 
 // CONNECT
 const mapStateToProps = (state) => ({
-  isAuthenticated: !!state.auth.token,
+  isAuthenticated: state.auth.isAuthenticated,
 });
 
 const mapDispatchToProps = (dispatch) => ({

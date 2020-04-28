@@ -1,9 +1,7 @@
 import createReducer from '../helpers/createReducer';
 import { UPDATE_GLOBAL_STATE } from '../../actions/global';
 
-const initialState = {
-  isBetaDisclaimerApproved: null,
-};
+const initialState = {};
 
 function update(state, { globals }) {
   return {

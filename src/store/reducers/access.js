@@ -1,4 +1,4 @@
-import createAuthReducer from 'store/reducers/helpers/createAuthReducer';
+import createAuthReducer from '@misakey/auth/store/reducers/helpers/createAuthReducer';
 import {
   ACCESS_RESET,
   ACCESS_REQUEST_UPDATE, ACCESS_REQUEST_SET_PRODUCER_KEY,

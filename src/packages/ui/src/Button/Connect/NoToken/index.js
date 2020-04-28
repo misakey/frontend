@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, forwardRef } from 'react';
+import React, { useMemo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';
@@ -21,13 +21,8 @@ const ButtonConnectNoToken = forwardRef(({
   buttonProps,
   Icon,
   children,
-  signInAction,
+  ...rest
 }, ref) => {
-  const onClick = useCallback(
-    () => { signInAction(); },
-    [signInAction],
-  );
-
   const iconButtonClassProps = useMemo(
     () => (isObject(classes) ? { classes: getIconButtonClasses(classes) } : { className }),
     [classes, className],
@@ -41,13 +36,13 @@ const ButtonConnectNoToken = forwardRef(({
   if (token) { return null; }
   if (!isNil(Icon)) {
     return (
-      <IconButton ref={ref} color="secondary" {...buttonProps} {...iconButtonClassProps} onClick={onClick}>
+      <IconButton ref={ref} color="secondary" {...buttonProps} {...iconButtonClassProps} {...rest}>
         {Icon}
       </IconButton>
     );
   }
   return (
-    <Button ref={ref} className={className} color="secondary" {...buttonProps} {...buttonClassProps} onClick={onClick}>
+    <Button ref={ref} className={className} color="secondary" {...buttonProps} {...buttonClassProps} {...rest}>
       {children}
     </Button>
   );
@@ -63,16 +58,15 @@ ButtonConnectNoToken.propTypes = {
   className: PropTypes.string,
   // ROUTER
   Icon: PropTypes.node,
-  signInAction: PropTypes.func.isRequired,
   token: PropTypes.string,
 };
 
 ButtonConnectNoToken.defaultProps = {
   buttonProps: {},
   children: null,
-  Icon: null,
   className: '',
   classes: null,
+  Icon: null,
   token: null,
 };
 

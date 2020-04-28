@@ -5,6 +5,7 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import head from '@misakey/helpers/head';
 import isEmpty from '@misakey/helpers/isEmpty';
 import pluck from '@misakey/helpers/pluck';
+import { getRolesBuilder } from '@misakey/helpers/builder/roles';
 
 // CONSTANTS
 const ENDPOINTS = {
@@ -66,12 +67,12 @@ export const fetchLinkedApplications = (userId) => fetchLinks(userId)
   });
 
 
-export const fetchUserRoleApplications = (userId, roleLabel) => API
-  .use(API.endpoints.user.roles.read)
-  .build(undefined, undefined, objectToSnakeCase({ userId, roleLabel, valid: true }))
-  .send()
-  .then((response) => {
-    const roles = response.map(objectToCamelCase);
+export const fetchUserRoleApplications = (userId, roleLabel) => getRolesBuilder({
+  userId,
+  roleLabel,
+  valid: true,
+})
+  .then((roles) => {
     if (isEmpty(roles)) { return Promise.resolve([]); }
     const applicationsIds = getApplicationsIds(roles);
     return API

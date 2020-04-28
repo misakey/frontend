@@ -26,15 +26,17 @@ import floodManagementAlertMiddleware from 'middlewares/floodManagement/alert';
 // routing
 import { BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from 'serviceWorker';
-import routes from 'routes';
 // ui
 import MuiThemeProvider from 'components/smart/ThemeProvider';
 import theme from '@misakey/ui/theme';
 import 'react-virtualized/styles.css';
 // components
 import App from 'components/App';
+
 import SplashScreen from '@misakey/ui/Screen/Splash';
+import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 import OidcProvider from '@misakey/auth/components/OidcProvider'; // OIDC provider
+import { SnackbarProvider } from 'notistack';
 // translations
 import './i18n';
 import countries from 'i18n-iso-countries';
@@ -83,29 +85,40 @@ if (isSilentAuthIframe()) {
   const storeMiddleWares = [thunk, APITokenMiddleware];
   if (window.env.ENV === 'development') { storeMiddleWares.push(createLogger()); }
 
-  const rootPersistConfig = { key: 'root', storage, whitelist: ['global', 'bulkSelection'], blacklist: [] };
+  const rootPersistConfig = { key: 'root', storage, whitelist: ['global'], blacklist: [] };
   const persistedReducer = persistReducer(rootPersistConfig, reducers);
   const store = createStore(persistedReducer, compose(applyMiddleware(...storeMiddleWares)));
   const persistor = persistStore(store);
-
-  const silentAuthBlacklist = [routes.auth.callback];
 
   // ADD MIDDLEWARE TO API
   API.addMiddleware(invalidTokenMiddleware(store.dispatch));
   API.addMiddleware(invalidSeclevelMiddleware(store.dispatch));
   API.addMiddleware(floodManagementAlertMiddleware(100)); // 100ms delay
+
+  // SPLASH SCREEN CONFIG
+  const SPLASH_SCREEN_PROPS = { height: '100vh', width: '100vw' };
+
   ReactDOM.render((
-    <React.Suspense fallback={null}>
+    <React.Suspense fallback={<SplashScreen {...SPLASH_SCREEN_PROPS} />}>
       <StoreProvider store={store}>
-        <OidcProvider store={store} config={window.env.AUTH} silentBlacklist={silentAuthBlacklist}>
-          <PersistGate loading={<SplashScreen />} persistor={persistor}>
-            <MuiThemeProvider theme={theme}>
-              <Router>
-                <App />
-              </Router>
-            </MuiThemeProvider>
-          </PersistGate>
-        </OidcProvider>
+        <PersistGate
+          loading={(
+            <SplashScreenWithTranslation {...SPLASH_SCREEN_PROPS} />)}
+          persistor={persistor}
+        >
+          <MuiThemeProvider theme={theme}>
+            <Router>
+              <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
+                <OidcProvider
+                  store={store}
+                  config={window.env.AUTH}
+                >
+                  <App />
+                </OidcProvider>
+              </SnackbarProvider>
+            </Router>
+          </MuiThemeProvider>
+        </PersistGate>
       </StoreProvider>
     </React.Suspense>
   ), rootNode);

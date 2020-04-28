@@ -3,7 +3,6 @@ import reducer from './index';
 
 describe('testing global reducer', () => {
   const initialState = {
-    isBetaDisclaimerApproved: null,
   };
   it('should return initial state', () => {
     expect(reducer(undefined, {})).toEqual(initialState);

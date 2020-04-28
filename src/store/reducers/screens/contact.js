@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import createAuthReducer from 'store/reducers/helpers/createAuthReducer';
+import createAuthReducer from '@misakey/auth/store/reducers/helpers/createAuthReducer';
 
 import {
   CONTACT_DATABOX_URL,

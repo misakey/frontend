@@ -10,7 +10,7 @@ import UserSchema from 'store/schemas/User';
 import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
 
-import SplashScreen from '@misakey/ui/Screen/Splash';
+import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 
 // Webpack require that we don't do import with variables. So we should declare explicitly
 // all dataviz here.

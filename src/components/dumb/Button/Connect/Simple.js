@@ -67,4 +67,4 @@ ButtonConnectSimple.defaultProps = {
   authProps: {},
 };
 
-export default withUserManager(withTranslation('components')(ButtonConnectSimple));
+export default withTranslation('components', { withRef: true })(withUserManager(ButtonConnectSimple));

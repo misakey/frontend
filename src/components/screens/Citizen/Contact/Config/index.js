@@ -37,7 +37,7 @@ import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import Dialog from '@material-ui/core/Dialog';
 import RouteFormik from 'components/smart/Route/Formik';
 import RouteSearch from 'components/smart/Route/Search';
-import SplashScreen from '@misakey/ui/Screen/Splash';
+import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import Navigation from 'components/dumb/AppBar/Navigation';
 
 // LAZY

@@ -18,7 +18,7 @@ import { addToUserApplications } from 'store/actions/applications/userApplicatio
 
 
 import API from '@misakey/api';
-import { fetchApplicationByMainDomain } from '@misakey/helpers/fetchApplications';
+import { fetchApplicationByMainDomain } from '@misakey/helpers/builder/applications';
 
 
 import errorTypes from '@misakey/ui/constants/errorTypes';

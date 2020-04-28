@@ -220,7 +220,7 @@ const withDataboxURL = (
           state.entities,
         ),
       databoxURL: contactSelectors.getDataboxURL(state, props),
-      isAuthenticated: !!state.auth.token,
+      isAuthenticated: state.auth.isAuthenticated,
     };
   };
 

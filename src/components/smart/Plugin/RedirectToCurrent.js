@@ -6,7 +6,7 @@ import { Redirect, generatePath } from 'react-router-dom';
 import routes from 'routes';
 import { parse } from 'tldts';
 import isNil from '@misakey/helpers/isNil';
-import DefaultSplashScreen from '@misakey/ui/Screen/Splash';
+import DefaultSplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import Screen from 'components/dumb/Screen';
 import { isOnboardingDone } from '@misakey/helpers/plugin';
 

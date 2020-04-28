@@ -7,7 +7,7 @@ import { denormalize } from 'normalizr';
 
 import isNil from '@misakey/helpers/isNil';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import { fetchApplicationsByCategory } from '@misakey/helpers/fetchApplications';
+import { fetchApplicationsByCategory } from '@misakey/helpers/builder/applications';
 
 import Card from 'components/dumb/Card';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';

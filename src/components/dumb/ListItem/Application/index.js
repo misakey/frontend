@@ -1,11 +1,8 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
 
 import ApplicationSchema from 'store/schemas/Application';
-
-import { bulkSelectionToggleSelected } from 'store/actions/bulkSelection';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
@@ -30,8 +27,6 @@ const useStyles = makeStyles(() => ({
 function ApplicationListItem({
   application,
   secondaryAction,
-  dispatchBulkContactToggleSelected,
-  selectedApplications,
   t,
   ...rest
 }) {
@@ -84,25 +79,13 @@ ApplicationListItem.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes),
   secondaryAction: PropTypes.node,
   // CONNECT
-  selectedApplications: PropTypes.arrayOf(PropTypes.string),
-  dispatchBulkContactToggleSelected: PropTypes.func.isRequired,
+  // withTranslation
   t: PropTypes.func.isRequired,
 };
 
 ApplicationListItem.defaultProps = {
   application: null,
   secondaryAction: null,
-  selectedApplications: [],
 };
 
-// CONNECT
-const mapStateToProps = (state) => ({
-  selectedApplications: state.bulkSelection.selected,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  dispatchBulkContactToggleSelected:
-    (applicationId) => dispatch(bulkSelectionToggleSelected(applicationId)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('components')(ApplicationListItem));
+export default withTranslation('components')(ApplicationListItem);

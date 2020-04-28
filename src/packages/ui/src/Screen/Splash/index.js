@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
@@ -22,30 +21,29 @@ const useBoxStyles = makeStyles({
   },
 });
 
-const DefaultSplashScreen = ({ t, text }) => {
+const ScreenSplash = ({ text, ...rest }) => {
   const classes = useBoxStyles();
 
   return (
-    <Box className={classes.root}>
+    <Box className={classes.root} {...rest}>
       <Container maxWidth="md">
         <Box mb={1}>
           <HourglassEmptyIcon fontSize="large" color="secondary" />
         </Box>
         <Typography variant="h5" component="h3" color="textSecondary">
-          {text || t('common:loading')}
+          {text}
         </Typography>
       </Container>
     </Box>
   );
 };
 
-DefaultSplashScreen.propTypes = {
-  t: PropTypes.func.isRequired,
+ScreenSplash.propTypes = {
   text: PropTypes.string,
 };
 
-DefaultSplashScreen.defaultProps = {
+ScreenSplash.defaultProps = {
   text: null,
 };
 
-export default withTranslation('common')(DefaultSplashScreen);
+export default ScreenSplash;

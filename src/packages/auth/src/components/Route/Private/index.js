@@ -40,5 +40,5 @@ RoutePrivate.defaultProps = {
 };
 
 export default connect(
-  (state) => ({ isAuthenticated: !!state.auth.token }),
+  (state) => ({ isAuthenticated: state.auth.isAuthenticated }),
 )(withUserManager(RoutePrivate));
