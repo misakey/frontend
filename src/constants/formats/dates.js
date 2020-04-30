@@ -1,3 +1,5 @@
+export const DATE_FULL_NUMERAL = 'L';
+
 export const DATE_FULL = 'LL';
 export const DATE_SHORT = 'll';
 

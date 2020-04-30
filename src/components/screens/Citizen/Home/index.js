@@ -42,7 +42,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 // HELPERS
-const countRequests = () => API.use(API.endpoints.application.box.count)
+const countRequests = () => API.use(API.endpoints.request.count)
   .build()
   .send();
 

@@ -87,7 +87,7 @@ function RouteAccessRequest({
         ? null
         : generatePath(routes.dpo.service.requests.read, {
           mainDomain,
-          databoxId: databoxIdProp(accessRequest),
+          id: databoxIdProp(accessRequest),
         })),
       [mainDomain, accessRequest],
     );

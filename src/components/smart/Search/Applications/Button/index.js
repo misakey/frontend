@@ -14,7 +14,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { withRouter } from 'react-router-dom';
 
 import Button from '@material-ui/core/Button';
-import ApplicationAvatar from 'components/dumb/Avatar/Application';
+import ApplicationSummary from 'components/dumb/Application/Summary';
 import SearchApplicationsButtonEmpty from 'components/smart/Search/Applications/Button/Empty';
 
 import ArrowDropdownIcon from '@material-ui/icons/ArrowDropDown';
@@ -96,7 +96,7 @@ const SearchApplicationsButton = forwardRef(({ entity, disabled, ...rest }, ref)
         ? (
           <SearchApplicationsButtonEmpty />
         ) : (
-          <ApplicationAvatar
+          <ApplicationSummary
             application={entity}
             fullWidth
           />

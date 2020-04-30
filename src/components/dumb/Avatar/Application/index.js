@@ -1,105 +1,98 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
+import { withTranslation } from 'react-i18next';
 
-import ApplicationSchema from 'store/schemas/Application';
+import Avatar from '@material-ui/core/Avatar';
+import Skeleton from '@material-ui/lab/Skeleton';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import isNil from '@misakey/helpers/isNil';
-import isNumber from '@misakey/helpers/isNumber';
+import omit from '@misakey/helpers/omit';
 
-import { makeStyles } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
-import ApplicationImg from 'components/dumb/Application/Img';
-import Typography from '@material-ui/core/Typography';
-import Rating from '@material-ui/lab/Rating';
-
-// HOOKS
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   root: {
-    flexGrow: 1,
+    display: 'none',
+    textTransform: 'uppercase',
+    textDecoration: 'none',
   },
-  toolbar: {
-    justifyContent: 'space-between',
-  },
-  appBlock: {
+  loaded: {
     display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    overflow: 'hidden',
   },
-  appName: {
-    marginLeft: theme.spacing(2),
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
+  skeleton: {
+    width: '40px', // default MUI Avatar width
+    height: '40px',
   },
-  mainDomain: {
-    marginRight: theme.spacing(1),
+  fontSizeSmall: {
+    fontSize: '14px',
   },
-  ratingIcon: {
-    color: theme.palette.primary.main,
+  fontSizeLarge: {
+    fontSize: '30px',
   },
-}));
+});
 
-const ApplicationAvatar = ({ application, displayRating, displayMainDomain, fullWidth }) => {
+// @FIXME @misakey/ui
+function ApplicationAvatar({
+  children, className, fontSize, src, name, t, ...rest
+}) {
   const classes = useStyles();
 
-  const { name, logoUri, mainDomain, avgRating } = useMemo(
-    () => (isNil(application) ? {} : application),
-    [application],
-  );
+  const [isLoaded, setLoaded] = React.useState(false);
+  const handleLoaded = React.useCallback(() => { setLoaded(true); }, [setLoaded]);
 
-  const applicationName = useMemo(
-    () => name || mainDomain,
-    [name, mainDomain],
-  );
+  const [isBroken, setBroken] = React.useState(false);
+  const handleError = React.useCallback(() => {
+    setBroken(true);
+    handleLoaded();
+  }, [setBroken, handleLoaded]);
 
-  const sizingProps = fullWidth ? { width: 1 } : {};
+  React.useEffect(() => {
+    setLoaded(false);
+    setBroken(false);
+  }, [src]);
 
   return (
-    <Box className={classes.appBlock} {...sizingProps}>
-      <ApplicationImg
-        src={logoUri}
-        applicationName={applicationName}
-      />
-      <div className={classes.appName}>
-        <Typography noWrap color="textSecondary">
-          {applicationName}
-        </Typography>
-
-        <Box display="flex">
-          {displayMainDomain && (
-            <Typography noWrap variant="body2" color="textSecondary" className={classes.mainDomain}>
-              {mainDomain}
-            </Typography>
-          )}
-          {displayRating && isNumber(avgRating) && avgRating > 0 && (
-            <Rating
-              readOnly
-              size="small"
-              value={avgRating}
-              classes={{ iconFilled: classes.ratingIcon }}
-            />
-          )}
-        </Box>
-
-      </div>
-
-    </Box>
+    <>
+      {(src && !isLoaded && !isBroken) && (
+        <Skeleton
+          variant="circle"
+          className={clsx(classes.skeleton, className)}
+          {...omit(rest, ['i18n', 'tReady'])}
+        />
+      )}
+      <Avatar
+        variant="circle"
+        alt={t('components:application.logoAlt', { applicationName: name })}
+        src={isBroken ? null : src}
+        className={clsx(classes.root, {
+          [classes.fontSizeSmall]: fontSize === 'small',
+          [classes.fontSizeLarge]: fontSize === 'large',
+          [classes.loaded]: isLoaded || !src,
+        }, className)}
+        onError={handleError}
+        onLoad={handleLoaded}
+        {...omit(rest, ['i18n', 'tReady'])}
+      >
+        {(isBroken || !src) && name.slice(0, 3)}
+      </Avatar>
+    </>
   );
-};
+}
 
 ApplicationAvatar.propTypes = {
-  application: PropTypes.shape(ApplicationSchema.propTypes),
-  displayRating: PropTypes.bool,
-  displayMainDomain: PropTypes.bool,
-  fullWidth: PropTypes.bool,
+  children: PropTypes.node,
+  className: PropTypes.string,
+  fontSize: PropTypes.oneOf(['small', 'large']),
+  src: PropTypes.string,
+  name: PropTypes.string,
+  t: PropTypes.func.isRequired,
 };
 
 ApplicationAvatar.defaultProps = {
-  application: null,
-  displayRating: false,
-  displayMainDomain: false,
-  fullWidth: false,
+  children: undefined,
+  className: '',
+  fontSize: 'small',
+  src: undefined,
+  name: '',
 };
 
-export default ApplicationAvatar;
+export default withTranslation(['components'])(ApplicationAvatar);

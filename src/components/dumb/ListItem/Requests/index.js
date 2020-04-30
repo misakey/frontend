@@ -13,8 +13,6 @@ import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import capitalize from '@misakey/helpers/capitalize';
 
-import makeStyles from '@material-ui/core/styles/makeStyles';
-
 import Skeleton from '@material-ui/lab/Skeleton';
 import RequestTypeAvatar from 'components/dumb/Avatar/RequestType';
 import Box from '@material-ui/core/Box';
@@ -22,17 +20,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Chip from '@material-ui/core/Chip';
-import Badge from '@material-ui/core/Badge';
-import ApplicationImg from 'components/dumb/Application/Img';
+import BadgeForAvatar from 'components/dumb/Badge/ForAvatar';
+import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import TypographyDateSince from 'components/dumb/Typography/DateSince';
-
-// HOOKS
-const useStyles = makeStyles(() => ({
-  anchorOriginBottomRightRectangle: {
-    bottom: 5,
-    right: 5,
-  },
-}));
 
 // COMPONENTS
 export const RequestListItemSkeleton = () => (
@@ -70,8 +60,6 @@ export const RequestListItemSkeleton = () => (
 );
 
 function RequestListItem({ request, toRoute, t, isFetchingApplication }) {
-  const classes = useStyles();
-
   const {
     producer: { application },
     id,
@@ -190,19 +178,12 @@ function RequestListItem({ request, toRoute, t, isFetchingApplication }) {
   return (
     <ListItem key={id} {...linkProps}>
       <ListItemAvatar>
-        <Badge
-          classes={{ anchorOriginBottomRightRectangle: classes.anchorOriginBottomRightRectangle }}
-          badgeContent={<RequestTypeAvatar isSmall type={type} />}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-        >
-          <ApplicationImg
+        <BadgeForAvatar badgeContent={<RequestTypeAvatar isSmall type={type} />}>
+          <ApplicationAvatar
             src={logoUri}
-            applicationName={name}
+            name={name}
           />
-        </Badge>
+        </BadgeForAvatar>
       </ListItemAvatar>
       <ListItemText
         primary={primary}

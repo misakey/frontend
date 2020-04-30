@@ -10,7 +10,7 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import SimpleCard from 'components/dumb/Card/Simple';
-import ApplicationImg from 'components/dumb/Application/Img';
+import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import Subtitle from 'components/dumb/Typography/Subtitle';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -49,9 +49,9 @@ const CardContactTo = ({ application, t, ...rest }) => {
             {t('citizen:contact.email.to.label')}
           </Typography>
         </Box>
-        <ApplicationImg
+        <ApplicationAvatar
           src={logoUri}
-          applicationName={applicationName}
+          name={applicationName}
         />
         <Box
           ml={2}

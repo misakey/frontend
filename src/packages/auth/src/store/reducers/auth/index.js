@@ -1,4 +1,5 @@
 import createAuthReducer from '@misakey/auth/store/reducers/helpers/createAuthReducer';
+import { createSelector } from 'reselect';
 
 import merge from '@misakey/helpers/merge';
 import isNil from '@misakey/helpers/isNil';
@@ -67,6 +68,14 @@ function addUserRole(state, { role }) {
   };
 }
 
+
+// SELECTORS
+export const getCurrentUserSelector = createSelector(
+  (state) => state.auth,
+  (items) => items.profile,
+);
+
+// REDUCER
 export default createAuthReducer(INITIAL_STATE, {
   [AUTH_RESET]: resetCredentials,
   [SIGN_IN]: updateCredentials,

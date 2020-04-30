@@ -47,7 +47,6 @@
       "title": "Mes requêtes"
     },
     "read": {
-      "archived": "Cette requête est fermée",
       "done": {
         "error": "Action impossible. La demande a déjà été traitée.",
         "success": "Vous avez bien traité la demande de {{ownerName}}\u00a0! Merci de votre coopération\u00a0!"
@@ -55,10 +54,6 @@
       "mkAgent": {
         "message": "Je demande aux developpeurs de mon site d'<1>automatiser le traitement des demandes</1>",
         "mailToSubject": "Demande d'informations sur Misakey Agent"
-      },
-      "request": {
-        "portability": "Requête de portabilité",
-        "erasure": "Requête de suppression"
       },
       "questions": {
         "title": "Questions fréquentes",
@@ -76,14 +71,35 @@
       "title": "Coffre-fort de {{ownerName}}",
       "upload": {
         "dialog": {
-          "title": "Envoyer ce fichier\u00a0?",
+          "title": "Envoyer un fichier",
           "text": "Le fichier va être chiffré avec la clé de {{ownerEmail}} puis lui être envoyé. Cette opération est irréversible."
         },
         "success": "Le fichier {{name}} a été envoyé avec succès\u00a0!"
       },
-      "vault": {
-        "title": "Fichiers envoyés",
-        "done": "Clore la demande"
+      "actions": {
+        "encrypt": "Chiffrer des fichiers",
+        "setAsDone": "Terminer",
+        "contact": "Envoyer un email à {{ownerName}}",
+        "mailto": {
+          "closed":{
+            "subject": "Requête fermée",
+            "body": "Bonjour,\n\nVous avez fermé la requête {{requestUrl}}.\n\nJe ferme le sujet de mon coté aussi."
+          },
+          "answering": {
+            "refused": {
+              "subject": "Fermeture de la requête",
+              "body": "Bonjour,\n\nJe ne peux pas traiter la requête {{requestUrl}}.\n\nVous pouvez confirmer la fermeture sur {{requestUrl}} ou la re-ouvrir pour apporter les éléments manquants."
+            },
+            "done": {
+              "subject": "Fermeture de la requête",
+              "body": "Bonjour,\n\nJ'ai traité votre requête.\n\nVous pouvez retrouver vos données sur {{requestUrl}}."
+            },
+            "no_data": {
+              "subject": "Fermeture de la requête",
+              "body": "Bonjour,\n\nJe ne peux pas traiter la requête {{requestUrl}}.\n\nVous pouvez confirmer la fermeture sur {{requestUrl}} ou la re-ouvrir pour apporter les éléments manquants."
+            }
+          }
+        }
       }
     }
   },

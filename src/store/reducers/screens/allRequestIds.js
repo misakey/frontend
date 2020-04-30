@@ -7,7 +7,6 @@ import {
 } from 'store/actions/screens/allRequestIds';
 import any from '@misakey/helpers/any';
 import isEmpty from '@misakey/helpers/isEmpty';
-import isNil from '@misakey/helpers/isNil';
 import mapValues from '@misakey/helpers/mapValues';
 import propOr from '@misakey/helpers/propOr';
 import { createSelector } from 'reselect';
@@ -22,8 +21,7 @@ function setAllRequestIdsForStatus(state, { ids, status }) {
 }
 
 function updateAllRequestIdsForStatus(state, { id, status, head }) {
-  const newState = isNil(state[status]) ? { ...state, [status]: [] } : { ...state };
-  return mapValues(newState, (value, key) => {
+  return mapValues(state, (value, key) => {
     // add to new status list
     if (key === status) {
       return head ? [id, ...value] : [...value, id];

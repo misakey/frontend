@@ -32,17 +32,17 @@ const fetchApplications = (ids) => API
   .send();
 
 const requestDataboxAccess = (id) => API
-  .use(API.endpoints.application.box.requestAccess)
+  .use(API.endpoints.request.requestAccess)
   .build({ id })
   .send();
 
 const listDataboxes = (producerId) => API
-  .use(API.endpoints.application.box.find)
+  .use(API.endpoints.request.find)
   .build(null, null, objectToSnakeCase({ producerId }))
   .send();
 
 const createDatabox = (payload) => API
-  .use(API.endpoints.application.box.create)
+  .use(API.endpoints.request.create)
   .build(null, objectToSnakeCase(payload))
   .send();
 

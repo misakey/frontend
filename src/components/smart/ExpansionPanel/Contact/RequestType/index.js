@@ -17,7 +17,7 @@ import ListItemRequestType from 'components/dumb/ListItem/RequestType';
 
 // HELPERS
 const updateRequest = (id, type) => API
-  .use(API.endpoints.application.box.update)
+  .use(API.endpoints.request.update)
   .build({ id }, { type })
   .send();
 

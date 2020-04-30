@@ -109,6 +109,32 @@
       "updated": "Editée"
     }
   },
+  "requests": {
+    "type": {
+      "erasure": "Suppression",
+      "portability": "Portabilité"
+    },
+    "events": {
+      "author": {
+        "misakey": "Agent Misakey"
+      },
+      "textMessage": {
+        "confirm_email": "J’ai confirmé l’adresse e-mail {{ownerEmail}} avec un code.",
+        "sending": {
+          "erasure": "Bonjour, j’ai envoyé une requête de suppression par email pour {{ownerEmail}}",
+          "portability": "Bonjour, j’ai envoyé une requête de portabilité par email pour {{ownerEmail}}"
+        },
+        "reopening": "J’ai ré-ouvert la requête",
+        "accepting": "J’ai fermé la requête",
+        "terminating": "J’ai fermé la requête",
+        "answering": {
+          "refused": "Je ne peux pas traiter la requête",
+          "done": "J’ai traité la requête",
+          "no_data": "Je ne peux pas traiter la requête"
+        }
+      }
+    }
+  },
   "date": {
     "calendar": {
       "sameDay": "aujourd'hui",
@@ -136,7 +162,8 @@
       "unit_plural": "{{count}} jours",
       "max": "{{count}}+ jour",
       "max_plural": "{{count}}+ jours"
-    }
+    },
+    "of": "du {{date}}"
   },
   "httpStatus": {
     "error": {

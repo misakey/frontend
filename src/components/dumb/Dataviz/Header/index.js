@@ -7,7 +7,7 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 
 import UserAvatar from '@misakey/ui/Avatar/User';
-import ApplicationImg from 'components/dumb/Application/Img';
+import ApplicationAvatar from 'components/dumb/Avatar/Application';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -27,7 +27,7 @@ const DatavizHeader = ({ application, user, subtitle }) => {
   const classes = useStyles();
 
   const { avatarUri, displayName } = user;
-  const { logoUri, name: applicationName } = application;
+  const { logoUri, name } = application;
 
   return (
     <Box p={2} display="flex" justifyContent="left">
@@ -38,15 +38,15 @@ const DatavizHeader = ({ application, user, subtitle }) => {
           className={classes.userLogo}
           imgProps={{ crossorigin: 'anonymous' }}
         />
-        <ApplicationImg
+        <ApplicationAvatar
           src={logoUri}
-          applicationName={applicationName}
+          name={name}
           className={classes.appLogo}
           imgProps={{ crossorigin: 'anonymous' }}
         />
       </Box>
       <Box display="flex" flexDirection="column" ml={1}>
-        <Typography className={classes.typo}>{`${user.displayName} & ${applicationName}`}</Typography>
+        <Typography className={classes.typo}>{`${user.displayName} & ${name}`}</Typography>
         { subtitle && (
           <Typography className={classes.typo} variant="caption">{subtitle}</Typography>
         )}

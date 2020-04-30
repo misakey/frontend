@@ -32,7 +32,7 @@ const SKELETON_KEYS = [1, 2, 3];
 const getProducerIds = pluck('producerId');
 const getRequestIds = pluck('id');
 
-const fetchRequests = (payload) => API.use(API.endpoints.application.box.find)
+const fetchRequests = (payload) => API.use(API.endpoints.request.find)
   .build(null, null, objectToSnakeCase({
     withUsers: true,
     orderBy: 'updated_at DESC',
@@ -45,7 +45,7 @@ const fetchApplicationsInfos = (ids) => API
   .build(null, null, objectToSnakeCase({ ids }))
   .send();
 
-const countBlobs = (id) => API.use(API.endpoints.application.box.blob.count)
+const countBlobs = (id) => API.use(API.endpoints.request.blob.count)
   .build(null, null, objectToSnakeCase({
     databoxIds: [id],
   }))

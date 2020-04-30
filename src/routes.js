@@ -111,7 +111,7 @@ const routes = {
       claim: { _: '/dpo/:mainDomain/claim' },
       requests: {
         _: '/dpo/:mainDomain/requests',
-        read: '/dpo/:mainDomain/requests/:databoxId',
+        read: '/dpo/:mainDomain/requests/:id',
       },
     },
   },

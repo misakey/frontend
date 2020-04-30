@@ -39,6 +39,8 @@ const appReducer = combineReducers({
     applicationsByCategories: {},
     applicationsById: {},
     userEmails: {},
+    blobs: {},
+    activityLogs: {},
     // FIXME: create a combineReducers once we need to passe more custom reducers
     ...userApplicationsInitialState,
   }, userApplicationsReducers, makeEntities),

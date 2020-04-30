@@ -8,7 +8,7 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import ApplicationImg from 'components/dumb/Application/Img';
+import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -46,9 +46,9 @@ function ApplicationListItem({
     >
       <ListItemAvatar>
         { published ? (
-          <ApplicationImg
+          <ApplicationAvatar
             src={logoUri}
-            applicationName={name}
+            name={name}
           />
         ) : (
           <Badge
@@ -57,9 +57,9 @@ function ApplicationListItem({
             overlap="circle"
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           >
-            <ApplicationImg
+            <ApplicationAvatar
               src={logoUri}
-              applicationName={name}
+              name={name}
             />
           </Badge>
         )}

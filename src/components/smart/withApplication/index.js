@@ -24,6 +24,7 @@ import identity from '@misakey/helpers/identity';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 
 import API from '@misakey/api';
+import ApplicationByIdSchema from 'store/schemas/Application/ById';
 import ApplicationSchema from 'store/schemas/Application';
 import { receiveEntities } from '@misakey/store/actions/entities';
 
@@ -255,8 +256,8 @@ const withApplication = (Component, options = {}) => {
   const mapDispatchToProps = (dispatch) => ({
     dispatchReceive: (data) => {
       const normalized = normalize(
-        data,
-        schema.collection,
+        data.map(({ id, ...rest }) => ({ id, application: { id, ...rest } })),
+        ApplicationByIdSchema.collection,
       );
       const { entities } = normalized;
       dispatch(receiveEntities(entities, mergeReceiveNoEmpty));

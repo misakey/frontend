@@ -5,8 +5,12 @@ import DATABOX_STATUSES, { DRAFT } from 'constants/databox/status';
 import isNil from '@misakey/helpers/isNil';
 import has from '@misakey/helpers/has';
 import ApplicationByIdSchema from 'store/schemas/Application/ById';
+import ActivityLogsSchema from 'store/schemas/Databox/ActivityLogs';
 
-const entity = new schema.Entity('databoxes', { producer: ApplicationByIdSchema.entity }, {
+const entity = new schema.Entity('databoxes', {
+  producer: ApplicationByIdSchema.entity,
+  logs: ActivityLogsSchema.collection,
+}, {
   processStrategy: (item) => {
     const { producer, producerId } = item;
     const newItem = (isNil(producer) && !isNil(producerId))
@@ -44,6 +48,8 @@ const DataboxSchema = {
     status: PropTypes.oneOf(DATABOX_STATUSES),
     dpoComment: PropTypes.string,
     ownerComment: PropTypes.string,
+    // eslint-disable-next-line react/forbid-foreign-prop-types
+    logs: PropTypes.arrayOf(PropTypes.shape(ActivityLogsSchema.propTypes)),
   },
 };
 

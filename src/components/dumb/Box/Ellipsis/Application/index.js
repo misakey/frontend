@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import ApplicationSchema from 'store/schemas/Application';
-import ApplicationAvatar from 'components/dumb/Avatar/Application';
+import ApplicationSummary from 'components/dumb/Application/Summary';
 import BoxEllipsis from 'components/dumb/Box/Ellipsis';
 import { SEARCH_WIDTH_LG, SEARCH_WIDTH_MD, SEARCH_WIDTH_SM, SEARCH_WIDTH_XS } from '@misakey/ui/constants/sizes';
 
@@ -39,7 +39,7 @@ const BoxEllipsisApplication = ({ application, ...rest }) => {
 
   return (
     <BoxEllipsis className={classes.root} {...rest}>
-      <ApplicationAvatar application={application} />
+      <ApplicationSummary application={application} />
     </BoxEllipsis>
   );
 };

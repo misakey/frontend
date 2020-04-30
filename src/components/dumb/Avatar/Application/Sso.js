@@ -7,7 +7,7 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import ApplicationImg from 'components/dumb/Application/Img';
+import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import Typography from '@material-ui/core/Typography';
 
 // HOOKS
@@ -55,10 +55,10 @@ const ApplicationAvatarSso = ({ sso, t, className, typographyProps, ...rest }) =
 
   return (
     <Box className={clsx(className, classes.appBlock)} {...omitTranslationProps(rest)}>
-      <ApplicationImg
+      <ApplicationAvatar
         classes={{ root: classes.appImg }}
         src={logoUri}
-        applicationName={clientName}
+        name={clientName}
         alt={alt}
       />
       <div className={classes.appName}>

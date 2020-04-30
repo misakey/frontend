@@ -30,7 +30,7 @@ import DataboxSchema from 'store/schemas/Databox';
 const { conflict } = errorTypes;
 
 // HELPERS
-const postRequest = (payload) => API.use(API.endpoints.application.box.create)
+const postRequest = (payload) => API.use(API.endpoints.request.create)
   .build(null, objectToSnakeCase(payload))
   .send();
 

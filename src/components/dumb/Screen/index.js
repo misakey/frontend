@@ -5,6 +5,7 @@ import clsx from 'clsx';
 
 import omit from '@misakey/helpers/omit';
 import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/helpers/isNil';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -159,8 +160,8 @@ const useScreenStyles = makeStyles((theme) => ({
  * @param description
  */
 function updateHead(title, description) {
-  if (!isEmpty(title)) { document.title = title; }
-  if (!isEmpty(description)) { document.description = description; }
+  if (!isEmpty(title) && !isNil(title)) { document.title = title; }
+  if (!isEmpty(description) && !isNil(title)) { document.description = description; }
 
   return () => {
     document.title = 'Misakey';
@@ -307,7 +308,7 @@ Screen.defaultProps = {
   preventSplashScreen: false,
   splashScreen: null,
   state: {},
-  title: '',
+  title: null,
   disableGrow: false,
 };
 

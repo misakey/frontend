@@ -8,8 +8,14 @@ import path from '@misakey/helpers/path';
 import mapValues from '@misakey/helpers/mapValues';
 import propOr from '@misakey/helpers/propOr';
 import isNil from '@misakey/helpers/isNil';
+import pick from '@misakey/helpers/pick';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 import { IS_PLUGIN } from 'constants/plugin';
+import { METADATA } from 'constants/databox/event';
+import ActivityLogsSchema from 'store/schemas/Databox/ActivityLogs';
+import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
+import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import { getRequestById } from 'store/reducers/request';
 import { updateAllRequestIdsForStatus } from './screens/allRequestIds';
 
 // HELPERS
@@ -51,12 +57,14 @@ const mergeEntitiesDataboxesByProducer = (state, { entities }) => {
   };
 };
 
+// used in `withBulkContact`
 export const receiveDataboxesByProducer = (databoxesByProducer) => (dispatch) => {
   const normalized = normalize(databoxesByProducer, DataboxByProducerSchema.entity);
   const { entities } = normalized;
   return Promise.resolve(dispatch(receiveEntities(entities)));
 };
 
+// UNUSED
 export const addDataboxByProducer = ({ producerId, databox }) => (dispatch) => {
   const normalized = normalize(
     { producerId, databoxes: [databox] },
@@ -100,16 +108,50 @@ export const setUrlAccessRequest = (id, token) => (dispatch) => {
   Promise.resolve(dispatch(updateEntities(entities, DataboxSchema)));
 };
 
-export const updateDatabox = (id, changes) => (dispatch) => {
-  const updatedAt = changes.updatedAt || new Date().toISOString();
-  const entities = [{ id, changes: { ...changes, updatedAt } }];
 
-  if (changes.status) {
-    return Promise.resolve(
-      dispatch(updateEntities(entities, DataboxSchema)),
-      dispatch(updateAllRequestIdsForStatus(id, changes.status)),
-    );
+export const updateDatabox = (id, changes, event = null) => (dispatch, getState) => {
+  const now = new Date().toISOString();
+  const updatedAt = changes.updatedAt || new Date().toISOString();
+  const databoxChanges = { ...changes, updatedAt };
+  const actions = [];
+
+  if (!isNil(event)) {
+    const { action, role, metadata } = event || {};
+
+    const currentDatabox = getRequestById(getState(), id);
+    const currentUser = getCurrentUserSelector(getState());
+    const { logs = [] } = currentDatabox;
+
+    // unique id generation
+    const newLogId = new Date().getUTCMilliseconds();
+    const metadataPaths = METADATA[action];
+    const logMetadata = !isNil(metadataPaths)
+      ? pick(metadataPaths, { ...changes, ...metadata })
+      : null;
+
+    const newLog = {
+      id: newLogId,
+      databoxId: id,
+      authorRole: role,
+      action,
+      metadata: logMetadata,
+      createdAt: now,
+      author: {
+        displayName: currentUser.displayName,
+        avatarUri: currentUser.avatarUri,
+      },
+    };
+
+    const normalized = normalize(newLog, ActivityLogsSchema.entity);
+    const { entities } = normalized;
+    databoxChanges.logs = [...logs, newLog];
+    actions.push(receiveEntities(entities, mergeReceiveNoEmpty));
   }
 
-  return Promise.resolve(dispatch(updateEntities(entities, DataboxSchema)));
+  if (changes.status) {
+    actions.push(updateAllRequestIdsForStatus(id, changes.status));
+  }
+  actions.push(updateEntities([{ id, changes: databoxChanges }], DataboxSchema));
+
+  return Promise.all(actions.map(dispatch));
 };

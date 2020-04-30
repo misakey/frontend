@@ -69,7 +69,7 @@ const RequestRow = ({ item, classes, service, t }) => {
   const status = useMemo(() => getStatus(item), [item]);
 
   const to = useMemo(() => !isNil(id) && generatePath(routes.dpo.service.requests.read, {
-    databoxId: id,
+    id,
     mainDomain: service.mainDomain,
   }), [id, service.mainDomain]);
 

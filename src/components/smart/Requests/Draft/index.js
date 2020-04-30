@@ -14,8 +14,8 @@ import routes from 'routes';
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';
 import UserEmailSchema from 'store/schemas/UserEmail';
-import { setDataboxMeta, setUrlAccessRequest } from 'store/actions/databox';
-import { removeFromAllRequestIdsForStatus, updateAllRequestIdsForStatus } from 'store/actions/screens/allRequestIds';
+import { setDataboxMeta, setUrlAccessRequest, updateDatabox } from 'store/actions/databox';
+import { removeFromAllRequestIdsForStatus } from 'store/actions/screens/allRequestIds';
 
 import isNil from '@misakey/helpers/isNil';
 import getSearchParams from '@misakey/helpers/getSearchParams';
@@ -27,7 +27,7 @@ import compose from '@misakey/helpers/compose';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import encodeMailto from 'helpers/encodeMailto';
-import { updateEntities, removeEntities } from '@misakey/store/actions/entities';
+import { removeEntities } from '@misakey/store/actions/entities';
 
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
 
@@ -53,6 +53,7 @@ import AddIcon from '@material-ui/icons/Add';
 import withUserEmails from 'components/smart/withUserEmails';
 import { OPEN, DRAFT } from 'constants/databox/status';
 import { UNKNOWN } from 'constants/databox/type';
+import { SENDING } from 'constants/databox/event';
 import MenuChangeStatus from './ChangeStatusMenu';
 
 // CONSTANTS
@@ -62,16 +63,16 @@ const CONFIRM_KEY = 'confirm';
 const HOME_PATH = routes.citizen._;
 
 const patchRequest = (id) => API
-  .use(API.endpoints.application.box.update)
+  .use(API.endpoints.request.update)
   .build({ id }, { status: OPEN })
   .send();
 
 const deleteRequest = (id) => API
-  .use(API.endpoints.application.box.delete)
+  .use(API.endpoints.request.delete)
   .build({ id })
   .send();
 
-const fetchAccessRequest = (id) => API.use(API.endpoints.application.box.requestAccess)
+const fetchAccessRequest = (id) => API.use(API.endpoints.request.requestAccess)
   .build({ id })
   .send();
 
@@ -181,11 +182,7 @@ const DraftRequest = ({
   const onPassToOpenSuccess = useCallback(
     () => {
       const sentAt = moment().toISOString();
-      const entities = [{ id, changes: { status: OPEN, sentAt } }];
-      return Promise.resolve([
-        dispatch(updateEntities(entities, DataboxSchema)),
-        dispatch(updateAllRequestIdsForStatus(id, OPEN)),
-      ]);
+      return dispatch(updateDatabox(id, { status: OPEN, sentAt }, { action: SENDING, role: 'owner' }));
     },
     [dispatch, id],
   );
