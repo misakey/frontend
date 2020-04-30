@@ -13,7 +13,7 @@ const matchingNaming = ['create', 'read', 'update', 'delete', 'find', 'search', 
 const authExtendedNamings = [
   'signIn', 'signOut', 'signUp',
   'resetPassword', 'forgotPassword', 'confirm',
-  'askConfirm',
+  'askConfirm', 'init',
 ];
 
 window.env = {

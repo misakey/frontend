@@ -21,9 +21,11 @@ import isNil from '@misakey/helpers/isNil';
 import path from '@misakey/helpers/path';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import objectToSnakeCaseDeep from '@misakey/helpers/objectToSnakeCaseDeep';
-
 import useAsync from '@misakey/hooks/useAsync';
+
+import resetPassword from '@misakey/auth/api/resetPassword';
+import signIn from '@misakey/auth/api/signIn';
+import fetchPwdHashParams from '@misakey/auth/api/fetchPwdHashParams';
 
 import Redirect from 'components/dumb/Redirect';
 import FormCardAuth from 'components/dumb/Form/Card/Auth';
@@ -104,30 +106,6 @@ const confirmCode = (email, form, isAuthenticated) => {
     .send();
 };
 
-const resetPassword = async (email, code, form, isAuthenticated, dispatchHardPasswordChange) => {
-  const endpoint = API.endpoints.user.password.reset;
-
-  if (!isAuthenticated) { endpoint.auth = false; }
-
-  const newPassword = form[PASSWORD_FIELD_NAME];
-
-  const newCryptoValues = await dispatchHardPasswordChange(newPassword);
-
-  return API
-    .use(endpoint)
-    .build(
-      undefined,
-      objectToSnakeCaseDeep({
-        email,
-        ...convertForm(form),
-        otp: code,
-        ...newCryptoValues,
-      }),
-    )
-    .send();
-};
-
-
 // HOOKS
 const useGetUserPublicData = (email, handleHttpErrors) => useCallback(
   () => (isEmpty(email) ? Promise.resolve() : fetchUserPublicData(email, handleHttpErrors)),
@@ -165,23 +143,34 @@ const useOnReset = (
   handleHttpErrors,
   dispatchHardPasswordChange,
 ) => useCallback(
-  (form, { setSubmitting, setFieldError }) => resetPassword(
-    email,
-    code,
-    form,
-    isAuthenticated,
-    dispatchHardPasswordChange,
-  )
-    .then(() => {
-      const payload = { email, password: form.passwordNew, challenge };
-      return API.use(API.endpoints.auth.signIn)
-        .build(undefined, payload).send().then((response) => {
-          enqueueSnackbar(t('auth:forgotPassword.success'), { variant: 'success' });
-          window.location.replace(response.redirect_to);
-        });
-    })
-    .catch(handleError(setFieldError, setStep, handleHttpErrors))
-    .finally(() => { setSubmitting(false); }),
+  async (form, { setSubmitting, setFieldError }) => {
+    const newPassword = form[PASSWORD_FIELD_NAME];
+    try {
+      await resetPassword({
+        email,
+        confirmationCode: code,
+        newPassword,
+        dispatchHardPasswordChange,
+        auth: isAuthenticated,
+      });
+
+      const pwdHashParams = await fetchPwdHashParams({ email });
+
+      const signInResponse = await signIn({
+        challenge,
+        email,
+        secret: newPassword,
+        acr: 2,
+        pwdHashParams,
+      });
+      enqueueSnackbar(t('auth:forgotPassword.success'), { variant: 'success' });
+      window.location.replace(signInResponse.redirect_to);
+    } catch (e) {
+      handleError(setFieldError, setStep, handleHttpErrors)(e);
+    } finally {
+      setSubmitting(false);
+    }
+  },
   [
     email,
     code,

@@ -20,4 +20,8 @@ export default {
     method: 'POST',
     path: '/users',
   },
+  init: {
+    method: 'POST',
+    path: '/login/method',
+  },
 };

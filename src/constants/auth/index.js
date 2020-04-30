@@ -13,7 +13,9 @@ export const INITIAL_VALUES = {
   [STEP.secret]: { [STEP.secret]: '' },
 };
 
-export const DEFAULT_SECLEVEL = 2;
+export const CONFIRMATION_CODE_SECLEVEL = 1;
+export const PASSWORD_SECLEVEL = 2;
+export const DEFAULT_SECLEVEL = PASSWORD_SECLEVEL;
 
 export const SECLEVEL_CONFIG = {
   1: {

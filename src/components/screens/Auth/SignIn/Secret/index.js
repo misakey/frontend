@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import { Formik } from 'formik';
 import moment from 'moment';
 
-import API from '@misakey/api';
 import routes from 'routes';
 import { DEFAULT_SECLEVEL, SECLEVEL_CONFIG, STEP, INITIAL_VALUES, ERROR_KEYS } from 'constants/auth';
 import { getSignInValidationSchema } from 'constants/validationSchemas/auth';
@@ -15,14 +14,16 @@ import errorTypes from '@misakey/ui/constants/errorTypes';
 import { isAuthPrepareCodeConflict, handleAuthPrepareCodeConflict } from 'constants/Errors/classes/AuthPrepareCodeConflict';
 import { DATE_FULL } from 'constants/formats/dates';
 
-import mapValues from '@misakey/helpers/mapValues';
 import isFunction from '@misakey/helpers/isFunction';
 import compose from '@misakey/helpers/compose';
 import head from '@misakey/helpers/head';
 import props from '@misakey/helpers/props';
+import path from '@misakey/helpers/path';
 import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 import { getDetails } from '@misakey/helpers/apiError';
+import log from '@misakey/helpers/log';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
@@ -39,14 +40,12 @@ import LinkMore from 'components/dumb/Link/More';
 import Redirect from 'components/dumb/Redirect';
 import ChipUser from 'components/dumb/Chip/User';
 
+import fetchInitAuth from '@misakey/auth/api/initAuth';
+import fetchSignIn from '@misakey/auth/api/signIn';
+
 // CONSTANTS
 const { conflict } = errorTypes;
 const CURRENT_STEP = STEP.secret;
-
-const INIT_AUTH_ENDPOINT = {
-  method: 'POST',
-  path: '/login/method',
-};
 
 // HELPERS
 const onClickProp = prop('onClick');
@@ -57,20 +56,6 @@ const getSecretError = compose(
   (errors) => errors.filter((error) => !isNil(error)),
   props(ERROR_KEYS[STEP.secret]),
 );
-
-const fetchInitAuth = (challenge, identifier, secret) => API
-  .use(INIT_AUTH_ENDPOINT)
-  .build(null, {
-    challenge,
-    identifier,
-    secret,
-  })
-  .send();
-
-const fetchSignIn = (payload, challenge) => API
-  .use(API.endpoints.auth.signIn)
-  .build(undefined, { ...payload, challenge })
-  .send();
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -83,7 +68,7 @@ const useStyles = makeStyles(() => ({
 // COMPONENTS
 const AuthSignInSecret = ({
   identifier,
-  publics,
+  publicInfo,
   challenge,
   acr,
   t,
@@ -108,35 +93,24 @@ const AuthSignInSecret = ({
     [secLevelConfig.fieldTypes],
   );
 
-  const authIdentifier = useMemo(
-    () => ({
-      kind: secLevelConfig.api.identifier.kind,
-      value: identifier,
-    }),
-    [identifier, secLevelConfig.api.identifier.kind],
-  );
-
-  const authSecret = useMemo(
-    () => ({
-      kind: secLevelConfig.api.secret.kind,
-    }),
-    [secLevelConfig.api.secret.kind],
-  );
-
   const userPublicData = useMemo(
-    () => ({ ...publics, identifier }),
-    [identifier, publics],
+    () => ({ ...publicInfo, identifier }),
+    [identifier, publicInfo],
   );
 
   const onSubmit = useCallback(
     ({ secret }, { setFieldError, setSubmitting }) => {
-      const payload = mapValues({ secret, identifier }, (value, key) => ({
-        kind: secLevelConfig.api[key].kind,
-        value,
-      }));
       setRedirectTo(null);
 
-      fetchSignIn(payload, challenge)
+      const pwdHashParams = path(['argon2Params'], publicInfo);
+
+      fetchSignIn({
+        challenge,
+        email: identifier,
+        secret,
+        acr: (acr || DEFAULT_SECLEVEL),
+        pwdHashParams,
+      })
         .then((response) => {
           const redirection = response.redirect_to;
           if (!isNil(redirection)) { setRedirectTo(redirection); }
@@ -167,24 +141,41 @@ const AuthSignInSecret = ({
             );
             enqueueSnackbar(text, { variant: 'error' });
           } else {
+            log(e, 'error');
+            // @FIXME It is false to assume that error must be a HTTP error
             handleHttpErrors(e);
           }
         })
         .finally(() => { setSubmitting(false); });
     },
     [
-      challenge, dispatchSetCredentials, enqueueSnackbar,
-      handleHttpErrors, identifier, secLevelConfig,
+      challenge, acr, identifier, publicInfo,
+      dispatchSetCredentials, enqueueSnackbar,
+      handleHttpErrors,
     ],
   );
 
+  const serverRelief = useMemo(
+    () => !isEmpty(publicInfo) && !isEmpty(publicInfo.argon2Params),
+    [publicInfo],
+  );
+
+
   const onFetchInitAuth = useCallback(
-    () => fetchInitAuth(challenge, authIdentifier, authSecret)
-      .catch((e) => {
+    async () => {
+      try {
+        return fetchInitAuth({
+          challenge,
+          email: identifier,
+          acr: (acr || DEFAULT_SECLEVEL),
+          serverRelief,
+        });
+      } catch (e) {
         handleSecretPrepareCodeConflict(e);
         throw e;
-      }),
-    [authIdentifier, authSecret, challenge],
+      }
+    },
+    [challenge, identifier, acr, serverRelief],
   );
 
   const renewConfirmationCode = useCallback(
@@ -273,19 +264,19 @@ AuthSignInSecret.propTypes = {
   // withTranslation
   t: PropTypes.func.isRequired,
   // CONNECT
-  publics: PropTypes.object,
+  publicInfo: PropTypes.object,
   dispatchSetCredentials: PropTypes.func.isRequired,
 };
 
 AuthSignInSecret.defaultProps = {
   identifier: '',
   acr: null,
-  publics: {},
+  publicInfo: {},
 };
 
 // CONNECT
 const mapStateToProps = (state) => ({
-  publics: state.screens.auth.publics,
+  publicInfo: state.screens.auth.publics,
 });
 
 const mapDispatchToProps = (dispatch) => ({

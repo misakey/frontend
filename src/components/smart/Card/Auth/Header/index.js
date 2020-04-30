@@ -6,6 +6,8 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import CardHeader from '@material-ui/core/CardHeader';
 
+import pick from '@misakey/helpers/pick';
+
 import LinkHome from 'components/dumb/Link/Home';
 import Logo from 'components/dumb/Logo';
 import AvatarUser from '@misakey/ui/Avatar/User';
@@ -24,7 +26,7 @@ const CardHeaderAuth = ({ publics, ...props }) => {
   return (
     <CardHeader
       action={(
-        <AvatarUser {...publics} />
+        <AvatarUser {...pick(['identifier', 'displayName', 'avatarUri'], publics || {})} />
       )}
       avatar={(
         <LinkHome>

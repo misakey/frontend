@@ -13,11 +13,12 @@ import errorTypes from '@misakey/ui/constants/errorTypes';
 
 import { stepSignUpValidationSchemas } from 'constants/validationSchemas/auth';
 
-import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import { getCode, getDetails } from '@misakey/helpers/apiError';
 import { createNewOwnerSecrets } from '@misakey/crypto/store/actions/concrete';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+
+import fetchSignUp from '@misakey/auth/api/signUp';
 
 import { screenAuthSetCredentials, screenAuthSetPublics } from 'store/actions/screens/auth';
 
@@ -58,23 +59,10 @@ const USER_HEAD_ENDPOINT = {
 };
 
 // HELPERS
-const fetchSignUp = (payload) => API
-  .use(API.endpoints.auth.signUp)
-  .build(undefined, objectToSnakeCase(payload))
-  .send();
-
 const fetchUserHead = (payload) => API
   .use(USER_HEAD_ENDPOINT)
   .build(undefined, undefined, payload)
   .send();
-
-
-async function createSecrets(values, actions, afterCrypto, dispatchCreateNewOwnerSecrets) {
-  const { password } = values;
-  const { backupData, pubkeyData } = await dispatchCreateNewOwnerSecrets(password);
-
-  return afterCrypto({ ...values, pubkeyData, backupData }, actions);
-}
 
 // COMPONENTS
 const AuthSignUpCreate = ({
@@ -97,30 +85,6 @@ const AuthSignUpCreate = ({
   const initialValues = useMemo(
     () => ({ ...INITIAL_VALUES, email: identifier }),
     [identifier],
-  );
-
-  const afterCrypto = useCallback(
-    ({ email, password, handle, notifications, passwordConfirm, ...rest }) => {
-      dispatchSetCredentials(email, password);
-
-      const payload = {
-        email,
-        password,
-        displayName: handle,
-        handle,
-        notifications,
-        ...rest,
-      };
-
-      return fetchSignUp(payload)
-        .then(() => {
-          history.push({
-            pathname: routes.auth.signUp.confirm,
-            search,
-          });
-        });
-    },
-    [dispatchSetCredentials, history, search],
   );
 
   const onPreambleSubmit = useCallback(
@@ -181,6 +145,21 @@ const AuthSignUpCreate = ({
     [history, search],
   );
 
+  const onPasswordSubmit = useCallback(
+    async (values) => {
+      await fetchSignUp({ dispatchCreateNewOwnerSecrets, ...values });
+
+      const { email, password } = values;
+      dispatchSetCredentials(email, password);
+
+      history.push({
+        pathname: routes.auth.signUp.confirm,
+        search,
+      });
+    },
+    [dispatchCreateNewOwnerSecrets, history, search, dispatchSetCredentials],
+  );
+
   const onSubmit = useCallback(
     (values, actions) => {
       const { setSubmitting } = actions;
@@ -196,7 +175,7 @@ const AuthSignUpCreate = ({
       } else if (pathname === routes.auth.signUp.notifications) {
         promise = onNotificationsSubmit();
       } else {
-        promise = createSecrets(values, actions, afterCrypto, dispatchCreateNewOwnerSecrets);
+        promise = onPasswordSubmit(values);
       }
       promise
         .catch((e) => {
@@ -219,8 +198,8 @@ const AuthSignUpCreate = ({
         .finally(() => { setSubmitting(false); });
     },
     [pathname,
-      onPreambleSubmit, onIdentifierSubmit, onPseudoSubmit, onNotificationsSubmit, afterCrypto,
-      dispatchCreateNewOwnerSecrets,
+      onPreambleSubmit, onIdentifierSubmit, onPseudoSubmit, onNotificationsSubmit,
+      onPasswordSubmit,
       history, search, enqueueSnackbar, t, handleGenericHttpErrors,
     ],
   );

@@ -4,7 +4,6 @@ import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
-import API from '@misakey/api';
 import routes from 'routes';
 
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -18,41 +17,22 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
+import fetchPwdHashParams from '@misakey/auth/api/fetchPwdHashParams';
+import initAuth from '@misakey/auth/api/initAuth';
+import signIn from '@misakey/auth/api/signIn';
+
 // import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 // import MUILink from '@material-ui/core/Link';
 import CardAuth from 'components/dumb/Card/Auth';
 import CardHeaderAuthSignUp from 'components/smart/Card/Auth/Header/SignUp';
+import { DEFAULT_SECLEVEL } from 'constants/auth';
 
 // CONSTANTS
 const PARENT_TO = routes.auth.signIn._;
 const EMPTY_SECRET_TO = routes.auth.signIn.secret;
 
-const INIT_AUTH_ENDPOINT = {
-  method: 'POST',
-  path: '/login/method',
-};
-
 // HELPERS
-const initSignIn = (challenge, email) => API
-  .use(INIT_AUTH_ENDPOINT)
-  .build(null, {
-    challenge,
-    identifier: {
-      kind: 'email',
-      value: email,
-    },
-    secret: {
-      kind: 'password',
-    },
-  })
-  .send();
-
-const fetchSignIn = (credentials) => API
-  .use(API.endpoints.auth.signIn)
-  .build(undefined, credentials)
-  .send();
-
 const displayNameProp = prop('displayName');
 
 // HOOKS
@@ -75,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
 const AuthSignUpFinale = ({
   email,
   password,
+  acr,
   challenge,
   publics,
   t,
@@ -109,30 +90,42 @@ const AuthSignUpFinale = ({
   );
 
   const onClick = useCallback(
-    () => {
+    async () => {
       if (isEmpty(password)) {
-        return history.push(EMPTY_SECRET_TO);
+        history.push(EMPTY_SECRET_TO);
+        return;
       }
 
       setLoading(true);
-      return initSignIn(challenge, email)
-        .then(
-          () => fetchSignIn({
-            challenge,
-            identifier: { kind: 'email', value: email },
-            secret: { kind: 'password', value: password },
-          })
-            .then((response) => {
-              const { redirectTo } = objectToCamelCase(response);
-              if (!isNil(redirectTo)) {
-                redirect(redirectTo);
-              }
-            }),
-        )
-        .catch(handleHttpErrors)
-        .finally(() => { setLoading(false); });
+
+      try {
+        const pwdHashParams = await fetchPwdHashParams({ email });
+        await initAuth({
+          challenge,
+          email,
+          acr: (acr || DEFAULT_SECLEVEL),
+          serverRelief: true,
+        });
+        const signInResponse = await signIn({
+          challenge,
+          email,
+          secret: password,
+          acr: (acr || DEFAULT_SECLEVEL),
+          pwdHashParams,
+        });
+
+        const { redirectTo } = objectToCamelCase(signInResponse);
+        if (!isNil(redirectTo)) {
+          redirect(redirectTo);
+        }
+      } catch (error) {
+        handleHttpErrors(error);
+        throw error;
+      } finally {
+        setLoading(false);
+      }
     },
-    [challenge, email, handleHttpErrors, history, password],
+    [challenge, email, handleHttpErrors, history, password, acr],
   );
 
   const primary = useMemo(
@@ -195,6 +188,7 @@ AuthSignUpFinale.propTypes = {
     displayName: PropTypes.string,
     avatarUri: PropTypes.string,
   }),
+  acr: PropTypes.number.isRequired,
 };
 
 AuthSignUpFinale.defaultProps = {
@@ -211,6 +205,7 @@ const mapStateToProps = (state) => ({
   password: state.screens.auth.secret,
   challenge: state.sso.loginChallenge,
   publics: state.screens.auth.publics,
+  acr: state.sso.acr,
 });
 
 export default connect(mapStateToProps, {})(withTranslation(['auth', 'common'])(AuthSignUpFinale));

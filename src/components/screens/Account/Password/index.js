@@ -9,12 +9,11 @@ import routes from 'routes';
 import { passwordValidationSchema } from 'constants/validationSchemas/profile';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 
-import API from '@misakey/api';
-
-import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isNil from '@misakey/helpers/isNil';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+
+import changePassword from '@misakey/auth/api/changePassword';
 
 import ScreenAction from 'components/dumb/Screen/Action';
 import BoxControls from 'components/dumb/Box/Controls';
@@ -44,12 +43,7 @@ const NAVIGATION_PROPS = {
 };
 
 // COMPONENTS
-const AccountPassword = ({
-  t,
-  profile,
-  history,
-  isFetching,
-}) => {
+const AccountPassword = ({ t, profile, history, isFetching }) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const state = useMemo(
@@ -71,14 +65,12 @@ const AccountPassword = ({
           commitPasswordChange,
         } = await dispatch(preparePasswordChange(passwordNew, passwordOld));
 
-        await API.use(API.endpoints.user.password.update)
-          .build({}, objectToSnakeCase({
-            userId: profile.id,
-            oldPassword: passwordOld,
-            newPassword: passwordNew,
-            backupData,
-          }))
-          .send();
+        await changePassword({
+          profile,
+          oldPassword: passwordOld,
+          newPassword: passwordNew,
+          backupData,
+        });
 
         commitPasswordChange();
         enqueueSnackbar(t('account:password.success'), { variant: 'success' });
