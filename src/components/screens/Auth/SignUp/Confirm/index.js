@@ -7,10 +7,13 @@ import { Formik } from 'formik';
 import { Redirect } from 'react-router-dom';
 
 import API from '@misakey/api';
+import errorTypes from '@misakey/ui/constants/errorTypes';
+
 
 import routes from 'routes';
 import { signUpConfirmValidationSchema } from 'constants/validationSchemas/auth';
 
+import { getCode } from '@misakey/helpers/apiError';
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 import path from '@misakey/helpers/path';
@@ -36,6 +39,8 @@ const DEFAULT_FIELDS = {
   },
 };
 
+const { conflict } = errorTypes;
+
 const PARENT_TO = routes.auth.signIn._;
 
 // HELPERS
@@ -49,7 +54,7 @@ const fetchAskConfirm = (email) => API
   .build(undefined, { email })
   .send();
 
-const getOtpError = path(['details', 'otp']);
+const getCodeError = path(['details', 'code']);
 const getEmailError = path(['details', 'email']);
 
 
@@ -103,11 +108,11 @@ function AuthSignUpConfirm({
       return fetchConfirm(payload)
         .then(() => { history.push(routes.auth.signUp.finale); })
         .catch((e) => {
-          const otpError = getOtpError(e);
+          const codeError = getCodeError(e);
           const emailError = getEmailError(e);
 
-          if (!isNil(otpError)) {
-            setFieldError('code', otpError);
+          if (!isNil(codeError)) {
+            setFieldError('code', codeError);
           } else if (!isNil(emailError)) {
             setFieldError('code', emailError);
           } else {
@@ -130,7 +135,14 @@ function AuthSignUpConfirm({
           const text = t('auth:signUp.confirm.success.resend', { email });
           enqueueSnackbar(text, { variant: 'success' });
         })
-        .catch(handleHttpErrors)
+        .catch((e) => {
+          const errorCode = getCode(e);
+          if (errorCode === conflict) {
+            enqueueSnackbar(t('auth:signUp.confirm.error.conflict'), { variant: 'error' });
+          } else {
+            handleHttpErrors(e);
+          }
+        })
         .finally(() => setSending(false));
     },
     [email, enqueueSnackbar, setSending, t, handleHttpErrors],
