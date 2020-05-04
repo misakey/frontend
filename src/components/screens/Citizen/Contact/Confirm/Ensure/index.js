@@ -1,8 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 import { useLocation, Link } from 'react-router-dom';
+
+import { updateMailer } from 'store/actions/devicePreferences';
+
 
 import getNextSearch from '@misakey/helpers/getNextSearch';
 import isNil from '@misakey/helpers/isNil';
@@ -19,8 +22,26 @@ import { STEP as CP_STEP } from 'components/screens/Citizen/Contact/Confirm/Copy
 // CONSTANTS
 export const STEP = 'ensure';
 
-const ContactConfirmEnsure = ({ searchKey, contactEmail, profile, doneTo, onDone, t }) => {
+const ContactConfirmEnsure = ({
+  searchKey, contactEmail, profile, doneTo, onDone, t, dispatchUpdateMailer,
+}) => {
   const { pathname, search } = useLocation();
+
+  const setMailerToCopyPaste = useCallback(
+    () => dispatchUpdateMailer('copyPaste'),
+    [dispatchUpdateMailer],
+  );
+
+  const onConfirm = useCallback(
+    (e) => {
+      dispatchUpdateMailer('mailto');
+      if (isFunction(onDone)) {
+        return onDone(e);
+      }
+      return null;
+    },
+    [onDone, dispatchUpdateMailer],
+  );
 
   // @FIXME factorize the bahavior with ContactConfirmCopyPaste
   const primary = useMemo(
@@ -30,20 +51,20 @@ const ContactConfirmEnsure = ({ searchKey, contactEmail, profile, doneTo, onDone
         to: doneTo,
         replace: true,
       } : {};
-      const onClickProps = isFunction(onDone) ? { onClick: onDone } : {};
 
       return {
         text: t('common:confirm'),
         ...linkProps,
-        ...onClickProps,
+        onClick: onConfirm,
       };
     },
-    [doneTo, onDone, t],
+    [doneTo, onConfirm, t],
   );
 
   const secondary = useMemo(
     () => ({
       component: Link,
+      onClick: setMailerToCopyPaste,
       to: {
         pathname,
         search: getNextSearch(search, new Map([
@@ -53,7 +74,7 @@ const ContactConfirmEnsure = ({ searchKey, contactEmail, profile, doneTo, onDone
       replace: true,
       text: t('citizen:contact.confirmation.ensure.failure.button'),
     }),
-    [pathname, search, searchKey, t],
+    [pathname, search, searchKey, t, setMailerToCopyPaste],
   );
 
   return (
@@ -91,6 +112,7 @@ ContactConfirmEnsure.propTypes = {
     avatarUri: PropTypes.string,
     displayName: PropTypes.string,
   }),
+  dispatchUpdateMailer: PropTypes.func.isRequired,
 };
 
 ContactConfirmEnsure.defaultProps = {
@@ -105,4 +127,8 @@ const mapStateToProps = (state) => ({
   profile: state.auth.profile,
 });
 
-export default connect(mapStateToProps, {})(withTranslation(['citizen', 'common'])(ContactConfirmEnsure));
+const mapDispatchToProps = (dispatch) => ({
+  dispatchUpdateMailer: (mailer) => dispatch(updateMailer(mailer)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['citizen', 'common'])(ContactConfirmEnsure));

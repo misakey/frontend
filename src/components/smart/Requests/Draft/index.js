@@ -103,6 +103,7 @@ const DraftRequest = ({
   userEmails,
   userId,
   contactEmail,
+  mailer,
   isFetchingRequest,
   themeforType,
   t,
@@ -260,7 +261,7 @@ const DraftRequest = ({
     [dpoEmail, subject, body],
   );
 
-  const onClick = useCallback(
+  const onClickMailto = useCallback(
     () => {
       replace({
         pathname,
@@ -272,7 +273,19 @@ const DraftRequest = ({
     [pathname, replace, search],
   );
 
-  const mailtoProps = useMailtoProps(mailto, onClick);
+  const onClickCopyPaste = useCallback(
+    () => {
+      replace({
+        pathname,
+        search: getNextSearch(search, new Map([
+          [CONFIRM_KEY, 'copyPaste'],
+        ])),
+      });
+    },
+    [pathname, replace, search],
+  );
+
+  const mailtoProps = useMailtoProps(mailto, onClickMailto);
 
   const addEmailTo = useMemo(
     () => ({
@@ -286,12 +299,24 @@ const DraftRequest = ({
   );
 
   const primary = useMemo(
-    () => ({
-      ...mailtoProps,
-      standing: BUTTON_STANDINGS.MAIN,
-      text: t('common:send'),
-    }),
-    [mailtoProps, t],
+    () => {
+      const basePrimaryProps = {
+        standing: BUTTON_STANDINGS.MAIN,
+        text: t('common:send'),
+      };
+
+      if (mailer === 'mailto') {
+        return ({
+          ...mailtoProps,
+          ...basePrimaryProps,
+        });
+      }
+      return {
+        ...basePrimaryProps,
+        onClick: onClickCopyPaste,
+      };
+    },
+    [mailtoProps, mailer, t, onClickCopyPaste],
   );
 
   const { isFetching: isFetchingAccessRequest } = useFetchEffect(
@@ -394,6 +419,7 @@ DraftRequest.propTypes = {
   userId: PropTypes.string,
   // CONNECT
   contactEmail: PropTypes.string,
+  mailer: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
@@ -408,6 +434,7 @@ DraftRequest.defaultProps = {
 // CONNECT
 const mapStateToProps = (state) => ({
   contactEmail: state.screens.contact.contactEmail,
+  mailer: state.devicePreferences.mailer,
 });
 
 export default connect(mapStateToProps)(

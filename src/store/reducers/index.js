@@ -12,6 +12,7 @@ import crypto from '@misakey/crypto/store/reducer';
 import { wrapReducerWithAuth } from '@misakey/auth/store/reducers/helpers/createAuthReducer';
 import access from './access';
 // import bulkSelection from './bulkSelection';
+import devicePreferences from './devicePreferences';
 import Layout from './Layout';
 import screens from './screens';
 import search from './search';
@@ -24,6 +25,7 @@ const appReducer = combineReducers({
   ...storeReducers,
   access,
   // bulkSelection, unused for now
+  ...devicePreferences,
   Layout,
   screens,
   search,
