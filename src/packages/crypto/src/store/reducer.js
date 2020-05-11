@@ -4,11 +4,14 @@ import assocPath from '@misakey/helpers/assocPath';
 // WARNING this "pick" from Ramda, not from Lodash!
 import pick from '@misakey/helpers/pick';
 
+import { SIGN_OUT } from '@misakey/auth/store/actions/auth';
+
 import {
   CRYPTO_LOAD_SECRETS,
   CRYPTO_SET_BACKUP_KEY,
   CRYPTO_IMPORT_SECRET_KEYS,
   CRYPTO_INITIALIZE,
+  CRYPTO_SET_BACKUP_VERSION,
 } from './actions/concrete';
 
 // HELPERS
@@ -28,6 +31,7 @@ const concatToPath = (values, destObject, path) => (
 
 const initialState = {
   backupKey: null,
+  backupVersion: null,
   secrets: {
     secretKey: null,
     passive: {
@@ -40,10 +44,17 @@ export default function (currentState = initialState, action) {
   let newState = { ...currentState };
 
   switch (action.type) {
+    case SIGN_OUT:
+      return initialState;
     case CRYPTO_SET_BACKUP_KEY:
       return {
         ...newState,
         backupKey: action.backupKey,
+      };
+    case CRYPTO_SET_BACKUP_VERSION:
+      return {
+        ...newState,
+        backupVersion: action.version,
       };
     case CRYPTO_INITIALIZE:
       newState.secrets.secretKey = action.secretKey;
@@ -52,7 +63,7 @@ export default function (currentState = initialState, action) {
     case CRYPTO_LOAD_SECRETS:
       return merge(
         { ...initialState },
-        pick(['secrets', 'backupKey'], action),
+        pick(['secrets', 'backupKey', 'backupVersion'], action),
       );
     case CRYPTO_IMPORT_SECRET_KEYS:
       // the reducer does not perform any checks:

@@ -49,6 +49,11 @@
     "current": "Compte de l'utilisateur actuel",
     "profile": "Mon compte"
   },
+  "crypto": {
+    "errors": {
+      "shouldRefresh": "Erreur: l'application semble avoir été utilisée dans un autre navigateur et doit être re-synchronisée. Vous devriez rafraîchir la page"
+    }
+  },
   "application": {
     "category": {
       "shops": "eCommerces",

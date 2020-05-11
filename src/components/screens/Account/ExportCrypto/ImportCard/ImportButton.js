@@ -11,6 +11,7 @@ import log from '@misakey/helpers/log';
 import importSecrets from '@misakey/crypto/store/actions/importSecrets';
 import {
   NoNewSecretKeys,
+  BadBackupVersion,
 } from '@misakey/crypto/Errors/classes';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
@@ -60,6 +61,15 @@ const ImportButton = ({ t }) => {
             t('account:exportCrypto.importButton.noNewSecretKeys'),
             { variant: 'info' },
           );
+        } else if (error instanceof BadBackupVersion) {
+          enqueueSnackbar(
+            t('common:crypto.errors.shouldRefresh'),
+            {
+              variant: 'error',
+              autoHideDuration: 8000,
+            },
+          );
+          log(error, 'error');
         } else {
           enqueueSnackbar(
             t('account:exportCrypto.importButton.error'),
@@ -96,4 +106,4 @@ ImportButton.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['account'])(ImportButton);
+export default withTranslation(['account', 'common'])(ImportButton);

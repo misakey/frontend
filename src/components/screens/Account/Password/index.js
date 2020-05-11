@@ -10,6 +10,7 @@ import { passwordValidationSchema } from 'constants/validationSchemas/profile';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 
 import isNil from '@misakey/helpers/isNil';
+import log from '@misakey/helpers/log';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
@@ -22,7 +23,10 @@ import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 
 import preparePasswordChange from '@misakey/crypto/store/actions/preparePasswordChange';
-import { BackupDecryptionError } from '@misakey/crypto/Errors/classes';
+import {
+  BackupDecryptionError,
+  BadBackupVersion,
+} from '@misakey/crypto/Errors/classes';
 
 // CONSTANTS
 const INITIAL_VALUES = {
@@ -62,6 +66,7 @@ const AccountPassword = ({ t, profile, history, isFetching }) => {
       try {
         const {
           backupData,
+          backupVersion,
           commitPasswordChange,
         } = await dispatch(preparePasswordChange(passwordNew, passwordOld));
 
@@ -70,6 +75,7 @@ const AccountPassword = ({ t, profile, history, isFetching }) => {
           oldPassword: passwordOld,
           newPassword: passwordNew,
           backupData,
+          backupVersion,
         });
 
         commitPasswordChange();
@@ -78,8 +84,19 @@ const AccountPassword = ({ t, profile, history, isFetching }) => {
       } catch (e) {
         if (e instanceof BackupDecryptionError || e.code === errorTypes.forbidden) {
           setFieldError(OLD_PASSWORD_FIELD_NAME, errorTypes.invalid);
+        } else if (e instanceof BadBackupVersion) {
+          enqueueSnackbar(
+            t('common:crypto.errors.shouldRefresh'),
+            {
+              variant: 'error',
+              autoHideDuration: 8000,
+            },
+          );
+          log(e, 'error');
         } else if (e.httpStatus) {
           handleHttpErrors(e);
+        } else {
+          log(e, 'error');
         }
       } finally {
         setSubmitting(false);

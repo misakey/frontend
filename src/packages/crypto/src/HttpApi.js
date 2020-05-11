@@ -135,7 +135,7 @@ export async function getCryptograms(ownerId, datatypes, fromDatetime, toDatetim
   return objectToCamelCase(responseBody);
 }
 
-export async function updateSecretsBackup(ownerId, secretBackup) {
+export async function updateSecretsBackup(ownerId, secretBackup, version) {
   assertNotAnyNil({ ownerId, secretBackup });
 
   const endpoint = {
@@ -147,9 +147,10 @@ export async function updateSecretsBackup(ownerId, secretBackup) {
     params: { ownerId },
     payload: {
       data: secretBackup,
+      version,
     },
   };
-  await httpCallReturnBody(endpoint, httpRequestParams);
+  return httpCallReturnBody(endpoint, httpRequestParams);
 }
 
 export async function getEncryptedSecretsBackup(ownerId) {
@@ -164,6 +165,5 @@ export async function getEncryptedSecretsBackup(ownerId) {
     params: { ownerId },
   };
 
-  const responseBody = await httpCallReturnBody(endpoint, httpRequestParams);
-  return responseBody.data;
+  return httpCallReturnBody(endpoint, httpRequestParams);
 }

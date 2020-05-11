@@ -6,16 +6,19 @@ import {
   secretsAreLoaded,
 } from './helpers';
 
-const bindTryPassword = (encryptedBackupData, dispatch) => async (password) => {
+const bindTryPassword = (encryptedSecretsBackup, dispatch) => async (password) => {
+  const { data, version: backupVersion } = encryptedSecretsBackup;
+
   const {
     backupKey,
     secretBackup: secrets,
-  } = await decryptSecretsBackup(encryptedBackupData, password);
+  } = await decryptSecretsBackup(data, password);
 
   dispatch({
     type: CRYPTO_LOAD_SECRETS,
     secrets,
     backupKey,
+    backupVersion,
   });
 };
 
@@ -28,9 +31,9 @@ export default function ensureSecretsLoaded({ password, openPasswordPrompt }) {
     }
 
     const userId = store.auth.profile.id;
-    const encryptedBackupData = await getEncryptedSecretsBackup(userId);
+    const encryptedSecretsBackup = await getEncryptedSecretsBackup(userId);
 
-    const tryPassword = bindTryPassword(encryptedBackupData, dispatch);
+    const tryPassword = bindTryPassword(encryptedSecretsBackup, dispatch);
 
     if (password) {
       await tryPassword(password);

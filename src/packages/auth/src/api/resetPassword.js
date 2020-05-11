@@ -10,6 +10,7 @@ export default async function resetPassword({
   confirmationCode,
   newPassword,
   dispatchHardPasswordChange,
+  dispatchSetBackupVersion,
   auth = false,
 }) {
   const [
@@ -36,5 +37,9 @@ export default async function resetPassword({
 
   const endpoint = API.endpoints.user.password.reset;
   if (!auth) { endpoint.auth = false; }
-  return API.use(endpoint).build(undefined, payload).send();
+  const responseBody = API.use(endpoint).build(undefined, payload).send();
+
+  dispatchSetBackupVersion(responseBody.version);
+
+  return responseBody;
 }

@@ -31,6 +31,7 @@ import Redirect from 'components/dumb/Redirect';
 import FormCardAuth from 'components/dumb/Form/Card/Auth';
 
 import hardPasswordChange from '@misakey/crypto/store/actions/hardPasswordChange';
+import { setBackupVersion } from '@misakey/crypto/store/actions/concrete';
 
 import Box from '@material-ui/core/Box';
 import FieldCode from 'components/dumb/Form/Field/Code';
@@ -142,6 +143,7 @@ const useOnReset = (
   challenge,
   handleHttpErrors,
   dispatchHardPasswordChange,
+  dispatchSetBackupVersion,
 ) => useCallback(
   async (form, { setSubmitting, setFieldError }) => {
     const newPassword = form[PASSWORD_FIELD_NAME];
@@ -151,6 +153,7 @@ const useOnReset = (
         confirmationCode: code,
         newPassword,
         dispatchHardPasswordChange,
+        dispatchSetBackupVersion,
         auth: isAuthenticated,
       });
 
@@ -181,6 +184,7 @@ const useOnReset = (
     challenge,
     handleHttpErrors,
     dispatchHardPasswordChange,
+    dispatchSetBackupVersion,
   ],
 );
 
@@ -201,6 +205,7 @@ const AuthForgot = ({
   isAuthenticated,
   dispatchClearCredentials,
   dispatchHardPasswordChange,
+  dispatchSetBackupVersion,
 }) => {
   const [code, setCode] = useState();
   const [step, setStep] = useState(STEP_CONFIRM);
@@ -218,7 +223,7 @@ const AuthForgot = ({
   const onNext = useOnNext(email, setStep, setCode, isAuthenticated, handleHttpErrors);
   const onReset = useOnReset(
     email, code, enqueueSnackbar, setStep, t, isAuthenticated, challenge, handleHttpErrors,
-    dispatchHardPasswordChange,
+    dispatchHardPasswordChange, dispatchSetBackupVersion,
   );
 
   const onSubmit = useMemo(() => (isStepConfirm(step) ? onNext : onReset), [step, onNext, onReset]);
@@ -302,6 +307,7 @@ AuthForgot.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,
   dispatchClearCredentials: PropTypes.func.isRequired,
   dispatchHardPasswordChange: PropTypes.func.isRequired,
+  dispatchSetBackupVersion: PropTypes.func.isRequired,
 };
 
 // CONNECT
@@ -316,6 +322,7 @@ const mapDispatchToProps = (dispatch) => ({
     screenAuthSetCredentials(),
   ),
   dispatchHardPasswordChange: (newPassword) => dispatch(hardPasswordChange(newPassword)),
+  dispatchSetBackupVersion: (version) => dispatch(setBackupVersion(version)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['auth', 'common'])(AuthForgot));

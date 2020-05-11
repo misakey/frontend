@@ -1,7 +1,8 @@
 /**
  * We call "concrete" actions
  * actions that either return or dispatch "actual" actions,
- * an actual action being an object with an action type.
+ * an actual action being an object with an action type
+ * (that is, not a thunk action).
  *
  * CAUTION: *Most* of the concrete actions
  * require the remote secret backup to be updated after they have been dispatched.
@@ -26,6 +27,7 @@ import {
 } from '../../crypto';
 import {
   NoNewSecretKeys,
+  BadBackupVersion,
 } from '../../Errors/classes';
 
 // HELPERS
@@ -46,42 +48,68 @@ const listSecretKeys = (secrets) => [
   ...filter(get(secrets, 'passive.secretKeys', []), isString),
 ];
 
-/**
- * Decorates an action builder
- * and returns a thunk that will dispatch the action
- * then update the remote secrets backup.
- *
- * Almost all actions related to crypto should be made using this decorator
- * @param {function} actionBuilder
- */
-const withBackupUpdater = (actionBuilder) => (...args) => (
-  async (dispatch, getState) => {
-    // @FIXME not sure we need an "await" here,
-    // The dispatch used by the thunk is probably the normal, synchronous redux dispatch.
-    await dispatch(actionBuilder(...args));
-
-    const state = getState();
-    const userId = state.auth.profile.id;
-    const { secrets, backupKey } = state.crypto;
-    return updateSecretsBackup(userId, secrets, backupKey);
-  }
-);
-
 // ACTION TYPES
 export const CRYPTO_LOAD_SECRETS = Symbol('CRYPTO_LOAD_SECRETS');
 export const CRYPTO_SET_BACKUP_KEY = Symbol('CRYPTO_SET_BACKUP_KEY');
 export const CRYPTO_IMPORT_SECRET_KEYS = Symbol('CRYPTO_IMPORT_SECRET_KEYS');
 export const CRYPTO_INITIALIZE = Symbol('CRYPTO_INITIALIZE');
+export const CRYPTO_SET_BACKUP_VERSION = Symbol('CRYPTO_SET_BACKUP_VERSION');
 
 // ACTION BUILDERS
 // @FIXME maybe apply "withBackupUpdater" later
 // to make it more obvious that it is required?
 // I am not sure how I would name the non-exported entities, though
 
-export const setBackupKey = withBackupUpdater((backupKey) => ({
+export const setBackupVersion = (version) => ({
+  type: CRYPTO_SET_BACKUP_VERSION,
+  version,
+});
+
+/**
+ * Decorates an action builder
+ * and returns a thunk that will dispatch the action
+ * then update the remote secrets backup.
+ *
+ * Almost all actions related to crypto should be made using this decorator
+ *
+ * TODO find a way to add a parameter for action caller to disable backup updater?
+ * This would be useful for instance for "setBackupKey".
+ * @param {function} actionBuilder
+ */
+const withBackupUpdater = (actionBuilder) => (...args) => (
+  async (dispatch, getState) => {
+    try {
+      await dispatch(actionBuilder(...args));
+
+      const state = getState();
+      const userId = state.auth.profile.id;
+      const { secrets, backupKey, backupVersion } = state.crypto;
+
+      const response = await updateSecretsBackup(userId, secrets, backupKey, backupVersion);
+
+      dispatch(setBackupVersion(response.version));
+    } catch (e) {
+      if (e.details && (e.details.version === 'invalid')) {
+        throw new BadBackupVersion();
+      } else {
+        throw e;
+      }
+    }
+  }
+);
+
+/**
+ * This action has **no automatic backup update**
+ * because right now it is only called by password change
+ * where backup is updated through the "PUT password" call.
+ * There *shouldn't be* any other parts of the code dispatching this action
+ * but if one day there is we must be careful to see if auto backup update is needed or not.
+ * See also comment on "withBackupUpdater".
+ */
+export const setBackupKey = (backupKey) => ({
   type: CRYPTO_SET_BACKUP_KEY,
   backupKey,
-}));
+});
 
 export const importKeys = withBackupUpdater((secretsToImport) => (
   async (dispatch, getState) => {
