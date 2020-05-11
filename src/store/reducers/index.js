@@ -9,7 +9,8 @@ import { makeReducer as makeEntities } from '@misakey/store/reducers/entities';
 
 import crypto from '@misakey/crypto/store/reducer';
 
-import { wrapReducerWithAuth } from '@misakey/auth/store/reducers/helpers/createAuthReducer';
+import { wrapReducerWithResetOnSignOut } from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
+import userRequestPagination from 'store/reducers/userRequests/pagination';
 import access from './access';
 // import bulkSelection from './bulkSelection';
 import devicePreferences from './devicePreferences';
@@ -32,12 +33,14 @@ const appReducer = combineReducers({
   sso,
   warning,
   crypto,
-  entities: wrapReducerWithAuth({
+  ...userRequestPagination,
+  entities: wrapReducerWithResetOnSignOut({
     applications: {},
     users: {},
     services: {},
     databoxes: {},
     databoxesByProducer: {},
+    databoxesByStatus: {},
     applicationsByCategories: {},
     applicationsById: {},
     userEmails: {},

@@ -5,15 +5,20 @@ import { withTranslation } from 'react-i18next';
 import REQUEST_STATUSES, { DONE } from 'constants/databox/status';
 
 import isNil from '@misakey/helpers/isNil';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 
-import UserRequestsList from 'components/smart/List/UserRequests';
+import List from '@material-ui/core/List';
+import WindowedListUserRequests from 'components/smart/WindowedList/UserRequests';
 import ChipLinkUserRequests from 'components/smart/Chip/UserRequests/Link';
 import ChipUserRequests from 'components/smart/Chip/UserRequests';
 import Title from 'components/dumb/Typography/Title';
-import Box from '@material-ui/core/Box';
 import Card from 'components/dumb/Card';
+import Box from '@material-ui/core/Box';
+
+// CONSTANTS
+export const HEADER_HEIGHT = 72;
 
 // HELPERS
 const getActiveStatus = (param, defaultActiveStatus) => {
@@ -26,6 +31,8 @@ const UserRequests = ({
   searchKey,
   defaultActiveStatus,
   t,
+  listProps,
+  ...rest
 }) => {
   const [localActiveStatus, setLocalActiveStatus] = useState(defaultActiveStatus);
 
@@ -67,7 +74,7 @@ const UserRequests = ({
   );
 
   return (
-    <>
+    <Box {...omitTranslationProps(rest)}>
       <Title>
         {t('citizen:requests.list.title')}
       </Title>
@@ -84,10 +91,15 @@ const UserRequests = ({
           />
         ))}
       </Box>
-      <Card mb={3}>
-        <UserRequestsList activeStatus={activeStatus} />
+      <Card>
+        <List
+          component={WindowedListUserRequests}
+          disablePadding
+          activeStatus={activeStatus}
+          {...listProps}
+        />
       </Card>
-    </>
+    </Box>
   );
 };
 
@@ -96,6 +108,7 @@ UserRequests.propTypes = {
   defaultActiveStatus: PropTypes.oneOf(REQUEST_STATUSES),
   // withTranslation
   t: PropTypes.func.isRequired,
+  listProps: PropTypes.object,
 };
 
 UserRequests.defaultProps = {
@@ -103,6 +116,7 @@ UserRequests.defaultProps = {
   // else, activates route search dependant mode
   searchKey: null,
   defaultActiveStatus: DONE,
+  listProps: {},
 };
 
 export default withTranslation('citizen')(UserRequests);

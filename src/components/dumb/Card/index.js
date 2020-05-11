@@ -90,18 +90,17 @@ const Card = ({
           <Divider className={clsx({ [classes.dividerPadded]: padded })} />
         </>
       )}
-      {hasTitle && (
-      <CardContent className={clsx({ [classes.denseContent]: !hasTitle && hasActions })}>
-        <GroupTitles
-          title={title}
-          subtitle={subtitle}
-          subtitleProps={subtitleProps}
-          titleProps={titleProps}
-        />
-        {children}
-      </CardContent>
-      )}
-      {!title && children}
+      {hasTitle ? (
+        <CardContent className={clsx({ [classes.denseContent]: !hasTitle && hasActions })}>
+          <GroupTitles
+            title={title}
+            subtitle={subtitle}
+            subtitleProps={subtitleProps}
+            titleProps={titleProps}
+          />
+          {children}
+        </CardContent>
+      ) : children}
       {hasActions && (
         <CardActions className={clsx({ [classes.denseActions]: !hasTitle })}>
           <BoxControls primary={primary} secondary={secondary} formik={formik} />

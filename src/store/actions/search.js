@@ -1,8 +1,7 @@
 import { normalize } from 'normalizr';
 import ApplicationSchema from 'store/schemas/Application';
-import { receiveEntities } from '@misakey/store/actions/entities';
 
-import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
+import { receiveApplications } from 'store/actions/applications';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
 export const RECEIVE_APPLICATIONS_LINKED_IDS = Symbol('RECEIVE_APPLICATIONS_LINKED_IDS');
@@ -21,23 +20,28 @@ const receiveApplicationsSuggestedIds = (suggestedIds) => ({
 
 export function searchApplications(searchResponse) {
   return (dispatch) => {
-    const { linkedApplications, suggestedApplications } = objectToCamelCase(searchResponse);
+    const {
+      linkedApplications: linked,
+      suggestedApplications: suggested,
+    } = objectToCamelCase(searchResponse);
 
-    const { result: linkedResult, entities: linkedEntities } = normalize(
-      linkedApplications.map(objectToCamelCase),
+    const linkedApplications = linked.map(objectToCamelCase);
+    const suggestedApplications = suggested.map(objectToCamelCase);
+
+    const { result: linkedResult } = normalize(
+      linkedApplications,
       ApplicationSchema.collection,
     );
 
-    const { result: suggestedResult, entities: suggestedEntities } = normalize(
-      suggestedApplications.map(objectToCamelCase),
+    const { result: suggestedResult } = normalize(
+      suggestedApplications,
       ApplicationSchema.collection,
     );
 
-    const applications = { ...linkedEntities.applications, ...suggestedEntities.applications };
-    const entities = { applications };
+    const applications = linkedApplications.concat(suggestedApplications);
 
     return Promise.all([
-      dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
+      dispatch(receiveApplications(applications)),
       // could have multiple times same id if source has duplicates => uniq ?
       dispatch(receiveApplicationsLinkedIds(linkedResult)),
       dispatch(receiveApplicationsSuggestedIds(suggestedResult)),

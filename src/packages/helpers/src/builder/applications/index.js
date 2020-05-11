@@ -66,6 +66,11 @@ export const fetchLinkedApplications = (userId) => fetchLinks(userId)
       .then((applications) => applications.map(objectToCamelCase));
   });
 
+export const getApplicationsByIdsBuilder = (ids) => API
+  .use(API.endpoints.application.info.find)
+  .build(undefined, undefined, { ids })
+  .send()
+  .then((applications) => applications.map(objectToCamelCase));
 
 export const fetchUserRoleApplications = (userId, roleLabel) => getRolesBuilder({
   userId,
@@ -75,9 +80,5 @@ export const fetchUserRoleApplications = (userId, roleLabel) => getRolesBuilder(
   .then((roles) => {
     if (isEmpty(roles)) { return Promise.resolve([]); }
     const applicationsIds = getApplicationsIds(roles);
-    return API
-      .use(API.endpoints.application.info.find)
-      .build(undefined, undefined, { ids: applicationsIds.join() })
-      .send()
-      .then((applications) => applications.map(objectToCamelCase));
+    return getApplicationsByIdsBuilder(applicationsIds.join());
   });

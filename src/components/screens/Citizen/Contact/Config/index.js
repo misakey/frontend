@@ -30,7 +30,7 @@ import pick from '@misakey/helpers/pick';
 import prop from '@misakey/helpers/prop';
 import always from '@misakey/helpers/always';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import { patchDataboxUserEmail } from 'helpers/fetchDatabox';
+import { patchRequestUserEmailBuilder } from '@misakey/helpers/builder/requests';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
@@ -195,7 +195,7 @@ const ContactConfig = ({
 
   const onUpdateDataboxUserEmail = useCallback(
     (email, userEmailId) => Promise.all([
-      patchDataboxUserEmail(databoxId, userEmailId),
+      patchRequestUserEmailBuilder(databoxId, userEmailId),
       dispatchActivateUserEmail(email, userEmailId, databoxId),
     ]),
     [databoxId, dispatchActivateUserEmail],

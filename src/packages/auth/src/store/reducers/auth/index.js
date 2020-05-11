@@ -1,4 +1,4 @@
-import createAuthReducer from '@misakey/auth/store/reducers/helpers/createAuthReducer';
+import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
 import { createSelector } from 'reselect';
 
 import merge from '@misakey/helpers/merge';
@@ -76,7 +76,7 @@ export const getCurrentUserSelector = createSelector(
 );
 
 // REDUCER
-export default createAuthReducer(INITIAL_STATE, {
+export default createResetOnSignOutReducer(INITIAL_STATE, {
   [AUTH_RESET]: resetCredentials,
   [SIGN_IN]: updateCredentials,
   [LOAD_USER]: updateCredentials,

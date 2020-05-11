@@ -29,7 +29,6 @@ import * as serviceWorker from 'serviceWorker';
 // ui
 import MuiThemeProvider from 'components/smart/ThemeProvider';
 import theme from '@misakey/ui/theme';
-import 'react-virtualized/styles.css';
 // components
 import App from 'components/App';
 

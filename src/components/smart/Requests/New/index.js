@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import { updateAllRequestIdsForStatus } from 'store/actions/screens/allRequestIds';
+import { updatePaginationsToStatus } from 'store/reducers/userRequests/pagination';
 import { receiveEntities } from '@misakey/store/actions/entities';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import UserEmailSchema from 'store/schemas/UserEmail';
@@ -71,7 +71,7 @@ const NewRequest = ({
     const { entities } = normalized;
     return Promise.all([
       dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
-      dispatch(updateAllRequestIdsForStatus(id, status)),
+      dispatch(updatePaginationsToStatus(id, status)),
     ]).then(() => {
       onCreateSuccess(newRequest);
     });

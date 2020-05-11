@@ -18,8 +18,12 @@ import ErrorIcon from '@material-ui/icons/Error';
 
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import AppBar, { APPBAR_HEIGHT } from 'components/dumb/AppBar';
-import Footer from 'components/dumb/Footer';
+import Footer, { FOOTER_HEIGHT } from 'components/dumb/Footer';
 import { IS_PLUGIN } from 'constants/plugin';
+
+// CONSTANTS
+// footer height + margintop
+export const FOOTER_SPACE = FOOTER_HEIGHT + 16;
 
 // HELPERS
 const isError = (error) => error instanceof Error;

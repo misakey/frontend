@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import createAuthReducer from '@misakey/auth/store/reducers/helpers/createAuthReducer';
+import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
 
 import {
   CONTACT_DATABOX_URL,
@@ -59,7 +59,7 @@ const setContactEmail = (state, { contactEmail }) => ({
   contactEmail,
 });
 
-export default createAuthReducer(initialState, {
+export default createResetOnSignOutReducer(initialState, {
   [CONTACT_DATABOX_URL]: addDataboxURL,
   [CONTACT_DATABOX_URL_BY_ID]: addDataboxURLById,
   [CLEAR_DATABOX_URL_BY_ID]: clearDataboxURLById,

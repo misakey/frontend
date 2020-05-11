@@ -4,16 +4,13 @@ import { withTranslation } from 'react-i18next';
 
 import last from '@misakey/helpers/last';
 import pluck from '@misakey/helpers/pluck';
-import sort from '@misakey/helpers/sort';
 import prop from '@misakey/helpers/prop';
+import sortNumbersAsc from '@misakey/helpers/sort/numbers/asc';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import FieldSlider from 'components/dumb/Form/Field/Slider';
 
 // HELPERS
-const sortNumbersAsc = sort(
-  (a, b) => a - b,
-);
 const pluckValue = pluck('value');
 const nameProp = prop('name');
 

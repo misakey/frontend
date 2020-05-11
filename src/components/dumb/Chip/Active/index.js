@@ -9,11 +9,8 @@ import Chip from '@material-ui/core/Chip';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  chip: {
+  chipRoot: {
     margin: theme.spacing(1, 0.5),
-    '& > *': {
-      margin: theme.spacing(0.5),
-    },
   },
 }));
 
@@ -32,7 +29,7 @@ const ChipActive = ({
 
   return (
     <Chip
-      className={classes.chip}
+      classes={{ root: classes.chipRoot }}
       color={isActive ? 'secondary' : 'primary'}
       {...rest}
     />

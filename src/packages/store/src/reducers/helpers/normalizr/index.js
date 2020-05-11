@@ -2,6 +2,7 @@ import { denormalize as normalizrDenormalize } from 'normalizr';
 
 import hasPath from '@misakey/helpers/hasPath';
 
+// @UNUSED
 export const denormalize = (identifier, entitySchema, entities) => {
   const { key } = entitySchema;
   if (hasPath([key, identifier], entities)) {

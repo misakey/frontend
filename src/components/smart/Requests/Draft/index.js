@@ -15,7 +15,7 @@ import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';
 import UserEmailSchema from 'store/schemas/UserEmail';
 import { setDataboxMeta, setUrlAccessRequest, updateDatabox } from 'store/actions/databox';
-import { removeFromAllRequestIdsForStatus } from 'store/actions/screens/allRequestIds';
+import { draftActionCreators } from 'store/reducers/userRequests/pagination';
 
 import isNil from '@misakey/helpers/isNil';
 import getSearchParams from '@misakey/helpers/getSearchParams';
@@ -214,7 +214,7 @@ const DraftRequest = ({
       onPreventRefetch();
       return Promise.resolve(
         dispatch(removeEntities(entities, DataboxSchema)),
-        dispatch(removeFromAllRequestIdsForStatus(id, DRAFT)),
+        dispatch(draftActionCreators.removePaginatedId(id)),
       )
         .then(() => {
           enqueueSnackbar(t('citizen:requests.read.delete.success'), { variant: 'success' });

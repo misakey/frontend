@@ -5,7 +5,7 @@ import { IS_PLUGIN } from 'constants/plugin';
 
 import { redirectToApp } from '@misakey/helpers/plugin';
 
-import ComponentProxy from 'components/dumb/ComponentProxy';
+import ComponentProxy from '@misakey/ui/Component/Proxy';
 import ButtonConnectWrapper from '@misakey/auth/components/Button/Connect/Wrapper';
 import AccountLink from 'components/dumb/Link/Account';
 

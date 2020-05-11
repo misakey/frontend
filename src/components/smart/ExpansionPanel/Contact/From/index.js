@@ -13,7 +13,7 @@ import isNil from '@misakey/helpers/isNil';
 import prop from '@misakey/helpers/prop';
 import without from '@misakey/helpers/without';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import { patchDataboxUserEmail } from 'helpers/fetchDatabox';
+import { patchRequestUserEmailBuilder } from '@misakey/helpers/builder/requests';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useNotDoneEffect from 'hooks/useNotDoneEffect';
@@ -147,7 +147,7 @@ const ExpansionPanelContactFrom = ({
 
   const onSelectUserEmail = useCallback(
     ({ email: selectedEmail, id }) => Promise.all([
-      patchDataboxUserEmail(databoxId, id),
+      patchRequestUserEmailBuilder(databoxId, id),
       dispatchSetDataboxOwnerEmail(databoxId, selectedEmail),
       dispatchSetContactEmail(selectedEmail),
     ]),

@@ -27,6 +27,10 @@ const MD_CONTAINER_SPACING = 32;
 // @FIXME: remove dependency on Container + FAB
 const FAB_OUT = 960 + FAB_WIDTH;
 
+const FOOTER_MIN_HEIGHT = 48;
+// min height + border
+export const FOOTER_HEIGHT = FOOTER_MIN_HEIGHT + 2;
+
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   logoRoot: {
@@ -45,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   expansionPanelSummaryRoot: {
     padding: theme.spacing(0),
     '&.Mui-expanded': {
-      minHeight: 8 * 6,
+      minHeight: FOOTER_MIN_HEIGHT,
     },
     // marginRight = right spacing of FAB + FAB_WIDTH - CONTAINER_SPACING
     [theme.breakpoints.only('xs')]: {

@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import createAuthReducer from '@misakey/auth/store/reducers/helpers/createAuthReducer';
+import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
 import { SCREEN_SERVICE_RESET, SCREEN_SERVICE_UPDATE } from 'store/actions/screens/Service';
 
 import prop from '@misakey/helpers/prop';
@@ -35,7 +35,7 @@ export const selectors = {
 
 
 // REDUCER
-export default createAuthReducer(initialState, {
+export default createResetOnSignOutReducer(initialState, {
   [SCREEN_SERVICE_RESET]: reset,
   [SCREEN_SERVICE_UPDATE]: update,
 });

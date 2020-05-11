@@ -1,4 +1,4 @@
-import createAuthReducer from '@misakey/auth/store/reducers/helpers/createAuthReducer';
+import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
 
 import {
   RECEIVE_APPLICATIONS_LINKED_IDS,
@@ -19,7 +19,7 @@ const applicationsSuggestedIds = (state, { suggestedIds }) => ({
 });
 
 
-export default createAuthReducer(initialState, {
+export default createResetOnSignOutReducer(initialState, {
   [RECEIVE_APPLICATIONS_LINKED_IDS]: applicationsLinkedIds,
   [RECEIVE_APPLICATIONS_SUGGESTED_IDS]: applicationsSuggestedIds,
 });

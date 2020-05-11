@@ -11,6 +11,7 @@ import { DRAFT, OPEN, DONE, CLOSED } from 'constants/databox/status';
 
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import capitalize from '@misakey/helpers/capitalize';
 
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -25,8 +26,8 @@ import ApplicationAvatar from 'components/dumb/Avatar/Application';
 import TypographyDateSince from 'components/dumb/Typography/DateSince';
 
 // COMPONENTS
-export const RequestListItemSkeleton = () => (
-  <ListItem>
+export const RequestListItemSkeleton = (props) => (
+  <ListItem {...props}>
     <ListItemAvatar>
       <Skeleton
         variant="circle"
@@ -59,9 +60,9 @@ export const RequestListItemSkeleton = () => (
   </ListItem>
 );
 
-function RequestListItem({ request, toRoute, t, isFetchingApplication }) {
+function RequestListItem({ request, toRoute, t, isFetchingApplication, ...rest }) {
   const {
-    producer: { application },
+    producer: { application } = {},
     id,
     status,
     dpoComment,
@@ -176,7 +177,7 @@ function RequestListItem({ request, toRoute, t, isFetchingApplication }) {
   );
 
   return (
-    <ListItem key={id} {...linkProps}>
+    <ListItem key={id} {...linkProps} {...omitTranslationProps(rest)}>
       <ListItemAvatar>
         <BadgeForAvatar badgeContent={<RequestTypeAvatar isSmall type={type} />}>
           <ApplicationAvatar
