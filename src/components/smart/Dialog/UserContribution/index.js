@@ -8,14 +8,10 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
-import { withStyles } from '@material-ui/core/styles';
 
 import FieldText from 'components/dumb/Form/Field/Text';
+import DialogTitleWithClose from 'components/dumb/Dialog/Title/WithCloseIcon';
 import ButtonSubmit from '@misakey/ui/Button/Submit';
 
 import { privacyLinkSchema, dpoEmailSchema } from 'constants/validationSchemas/contribution';
@@ -32,31 +28,6 @@ const INITIAL_VALUES = {
   link: '',
   dpoEmail: '',
 };
-
-
-const styles = (theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(2),
-  },
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-});
-
-const DialogTitle = withStyles(styles)(({ children, classes, onClose }) => (
-  <MuiDialogTitle disableTypography className={classes.root}>
-    <Typography variant="h6">{children}</Typography>
-    {onClose ? (
-      <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
-        <CloseIcon />
-      </IconButton>
-    ) : null}
-  </MuiDialogTitle>
-));
 
 function UserContributionDialog({
   onClose, onSuccess, open, t,
@@ -94,9 +65,13 @@ function UserContributionDialog({
         initialValues={INITIAL_VALUES}
       >
         <Form>
-          <DialogTitle id="alert-dialog-title" onClose={onClose}>
+          <DialogTitleWithClose
+            id="alert-dialog-title"
+            onClose={onClose}
+          >
             {t('citizen:userContribution.dialog.title', { appName })}
-          </DialogTitle>
+          </DialogTitleWithClose>
+
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               {t(`citizen:userContribution.dialog.intro.${userContributionType}`, { appName })}

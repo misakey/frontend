@@ -21,7 +21,7 @@ import Typography from '@material-ui/core/Typography';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import DialogDataboxDone from 'components/dumb/Dialog/Databox/Done';
 import DataboxSchema from 'store/schemas/Databox';
-import DpoRequestReadUploadDialog from 'components/screens/DPO/Service/Requests/Read/Actions/UploadModal';
+import DpoRequestReadUploadDialog from 'components/smart/Dialog/Upload';
 import RequestActions from 'components/smart/Request/Actions';
 
 import { ERASURE } from 'constants/databox/type';
@@ -60,9 +60,12 @@ const DpoRequestReadActions = ({ request, dispatchUpdateRequest, dispatchReceive
   const openDoneModal = useCallback(() => { setOpenedDialog(DIALOGS.DONE); }, []);
 
   const onDone = useCallback(
-    (form, { setSubmitting }) => {
-      const body = { status: DONE, ...form };
-      setDataboxDone(id, body)
+    (comment) => {
+      const body = {
+        status: DONE,
+        dpoComment: comment,
+      };
+      return setDataboxDone(id, body)
         .then(() => {
           const text = (
             <Typography>
@@ -85,7 +88,6 @@ const DpoRequestReadActions = ({ request, dispatchUpdateRequest, dispatchReceive
           return enqueueSnackbar(t('common:httpStatus.error.default', { variant: 'error' }));
         })
         .finally(() => {
-          setSubmitting(false);
           onClose();
         });
     },
@@ -109,7 +111,6 @@ const DpoRequestReadActions = ({ request, dispatchUpdateRequest, dispatchReceive
     () => ({
       key: 'setAsDone',
       text: t('dpo:requests.read.actions.setAsDone'),
-      standing: BUTTON_STANDINGS.OUTLINED,
       onClick: openDoneModal,
     }),
     [openDoneModal, t],
@@ -136,7 +137,6 @@ const DpoRequestReadActions = ({ request, dispatchUpdateRequest, dispatchReceive
 
   const mailtoPropsForDone = useMailtoProps(mailtoForDone);
 
-
   const mailtoForClosed = useMemo(
     () => encodeMailto(
       ownerEmail,
@@ -158,7 +158,6 @@ const DpoRequestReadActions = ({ request, dispatchUpdateRequest, dispatchReceive
     [mailtoPropsForDone, ownerName, t],
   );
 
-
   const openMailToForClosedStatus = useMemo(
     () => ({
       key: 'openMailToForClosed',
@@ -174,11 +173,14 @@ const DpoRequestReadActions = ({ request, dispatchUpdateRequest, dispatchReceive
       if (status === OPEN) {
         if (!isErasure) {
           return {
-            secondary: setAsDoneButtonProps,
+            secondary: {
+              ...setAsDoneButtonProps,
+              standing: BUTTON_STANDINGS.OUTLINED,
+            },
             primary: openEncryptModalButtonProps,
           };
         }
-        return [setAsDoneButtonProps];
+        return { primary: setAsDoneButtonProps };
       }
 
       if (status === DONE) {
@@ -204,7 +206,7 @@ const DpoRequestReadActions = ({ request, dispatchUpdateRequest, dispatchReceive
         <DialogDataboxDone
           open={openedDialog === DIALOGS.DONE}
           onClose={onClose}
-          onSuccess={onDone}
+          onSelect={onDone}
         />
         <DpoRequestReadUploadDialog
           request={request}

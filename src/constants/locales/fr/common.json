@@ -85,9 +85,9 @@
   },
   "databox": {
     "dpoComment": {
-      "done": "Demande traitée",
+      "done": "J'ai traité la demande",
+      "refused": "Je ne peux pas traiter la demande",
       "no_data": "Aucune donnée trouvée",
-      "refused": "Demande invalide",
       "other": "Autres raisons"
     },
     "ownerComment": {

@@ -42,6 +42,5 @@ export const OWNER_COMMENTS = [
 
 export const DPO_COMMENTS = [
   DONE,
-  NO_DATA,
   REFUSED,
 ];

@@ -40,8 +40,7 @@
       }
     },
     "doneDialog": {
-      "title": "Clore la requête\u00a0?",
-      "description": "Je ne pourrai plus visualiser la requête et l'utilisateur sera informé que je l'ai clôturée.\nJe dois indiquer à l'utilisateur la raison de cette clôture."
+      "description": "Pour quel motif souhaitez vous clore la requête ?"
     },
     "list": {
       "title": "Mes requêtes"
@@ -71,10 +70,21 @@
       "title": "Coffre-fort de {{ownerName}}",
       "upload": {
         "dialog": {
-          "title": "Envoyer un fichier",
-          "text": "Le fichier va être chiffré avec la clé de {{ownerEmail}} puis lui être envoyé. Cette opération est irréversible."
+          "text": "Quel fichier souhaitez vous chiffrer ?",
+          "label": "Nouveau fichier à chiffrer",
+          "helperText": "Déposer le fichier que vous souhaitez chiffrer pour {{userEmail}}. <1>En savoir plus</1>",
+          "errors": {
+            "blobs": {
+              "api": {
+                "notSent": "Une erreur inconnue s'est produite lors de l'envoi des fichiers\u00a0:{{filenamesErrors}}.\nVous pouvez vérifier leur format et réessayer.\n",
+                "sent": "Les fichiers\u00a0:{{filenamesSent}} ont été envoyés avec succès."
+              },
+              "required": "Vous devez envoyer au moins 1 fichier",
+              "max": "Vous ne pouvez envoyer que 10 fichiers à la fois"
+            }  
+          }
         },
-        "success": "Le fichier {{name}} a été envoyé avec succès\u00a0!"
+        "success": "Les fichiers ont été envoyé avec succès\u00a0!"
       },
       "actions": {
         "encrypt": "Chiffrer des fichiers",

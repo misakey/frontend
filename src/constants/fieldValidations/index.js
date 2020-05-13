@@ -62,9 +62,8 @@ export const mainDomainFieldValidation = {
 
 export const fileFieldValidation = {
   blobSchema: Yup.mixed()
-    .required(required)
-    .test('fileSize', 'size', (file) => !isNil(file) && file.size <= MAX_FILE_SIZE)
-    .test('fileExtension', 'extension', (file) => !isNil(file) && isString(file.name) && file.name.includes('.')),
+    .test('fileSize', 'size', (file) => isNil(file) || file.size <= MAX_FILE_SIZE)
+    .test('fileExtension', 'extension', (file) => isNil(file) || (isString(file.name) && file.name.includes('.'))),
   // .test('fileType', 'format', ({ type }) => ACCEPTED_TYPES.includes(type)),
   avatarSchema: Yup.mixed()
     .required(required)

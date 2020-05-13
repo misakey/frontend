@@ -1,59 +1,88 @@
-import React, { useCallback } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import moment from 'moment';
 import numbro from 'numbro';
 import { FILE_SIZE_FORMAT } from 'constants/formats/numbers';
-import { DATE_SHORT } from 'constants/formats/dates';
 
-
-import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
-
+import { makeStyles } from '@material-ui/core/styles/';
+import IconButton from '@material-ui/core/IconButton';
+import Avatar from '@material-ui/core/Avatar';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import LockIcon from '@material-ui/icons/Lock';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+
+import isNil from '@misakey/helpers/isNil';
+
+// HOOKS
+const useStyles = makeStyles((theme) => ({
+  root: {
+    border: `1px solid ${theme.palette.grey[300]}`,
+    borderRadius: '5px',
+    margin: theme.spacing(1, 0),
+  },
+  paper: {
+    border: `1px solid ${theme.palette.grey[300]}`,
+  },
+  list: {
+    padding: 0,
+  },
+  avatar: {
+    backgroundColor: 'unset',
+    color: theme.palette.primary.main,
+  },
+}));
 
 
-const BlobListItem = ({ blob, onDownload, publicKeysWeCanDecryptFrom, t, datavizEnabled }) => {
-  const {
-    createdAt,
-    contentLength,
-    encryption: {
-      owner_pub_key: ownerPubKey,
-    },
-  } = blob;
-  const date = moment(createdAt).format(DATE_SHORT);
-  const size = numbro(contentLength).format(FILE_SIZE_FORMAT);
-
-  const canBeDecrypted = publicKeysWeCanDecryptFrom.has(ownerPubKey);
+const BlobListItem = ({ blob, onRemove, isEncrypted, t }) => {
+  const classes = useStyles();
+  const { name, lastModified } = useMemo(() => blob, [blob]);
+  const size = useMemo(() => numbro(blob.size).format(FILE_SIZE_FORMAT), [blob.size]);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const onClick = useCallback(
-    () => onDownload(blob),
-    [blob, onDownload],
+    (event) => { setAnchorEl(event.currentTarget); }, [],
+  );
+
+  const onClose = useCallback(
+    () => { setAnchorEl(null); }, [],
   );
 
   return (
-    <ListItem>
+    <ListItem className={classes.root}>
+      <ListItemAvatar>
+        <Avatar className={classes.avatar}>
+          {isEncrypted ? <LockIcon /> : <LockOpenIcon />}
+        </Avatar>
+      </ListItemAvatar>
       <ListItemText
-        primary={t('components:blob.fileTypes.unclassified')}
-        secondary={t('components:blob.received', { size, date })}
+        primary={name}
+        secondary={size}
         primaryTypographyProps={{ noWrap: true, display: 'block' }}
         secondaryTypographyProps={{ noWrap: true, display: 'block' }}
       />
       <ListItemSecondaryAction>
-        {(canBeDecrypted) ? (
-          <Button
-            standing={BUTTON_STANDINGS.TEXT}
-            text={datavizEnabled ? t('common:view') : t('common:download')}
-            onClick={onClick}
-          />
-        ) : (
-          <Button
-            disabled
-            text={t('common:undecryptable')}
-          />
-        )}
+        <IconButton onClick={onClick} edge="end" aria-label="menu-more">
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          id={`menu-remove-blob-${lastModified}`}
+          anchorEl={anchorEl}
+          keepMounted
+          open={!isNil((anchorEl))}
+          onClose={onClose}
+          classes={{ paper: classes.paper, list: classes.list }}
+          elevation={0}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+          <MenuItem onClick={onRemove}>{t('common:delete')}</MenuItem>
+        </Menu>
       </ListItemSecondaryAction>
     </ListItem>
   );
@@ -61,15 +90,14 @@ const BlobListItem = ({ blob, onDownload, publicKeysWeCanDecryptFrom, t, dataviz
 
 BlobListItem.propTypes = {
   blob: PropTypes.object.isRequired,
-  onDownload: PropTypes.func.isRequired,
-  publicKeysWeCanDecryptFrom: PropTypes.object.isRequired,
+  onRemove: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  datavizEnabled: PropTypes.bool,
+  isEncrypted: PropTypes.bool,
 };
 
 BlobListItem.defaultProps = {
-  datavizEnabled: false,
+  isEncrypted: false,
 };
 
 
-export default withTranslation(['common', 'components'])(BlobListItem);
+export default withTranslation(['common'])(BlobListItem);

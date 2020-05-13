@@ -46,6 +46,11 @@ export const themeOptions = {
         },
       },
     },
+    MuiDialog: {
+      paper: {
+        borderRadius: '10px',
+      },
+    },
     MuiListItem: {
       root: {
         '&.Mui-selected': {

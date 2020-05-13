@@ -1,97 +1,93 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { DPO_COMMENTS } from 'constants/databox/comment';
-import { dpoCommentValidationSchema } from 'constants/validationSchemas/comment';
+import { DPO_COMMENTS, DONE } from 'constants/databox/comment';
 
-import { Formik, Form, Field } from 'formik';
-import FieldText from 'components/dumb/Form/Field/Text';
-import MenuItem from '@material-ui/core/MenuItem';
-import BoxControls from 'components/dumb/Box/Controls';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Avatar from '@material-ui/core/Avatar';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitleWithClose from 'components/dumb/Dialog/Title/WithCloseIcon';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-
-// CONSTANTS
-const INITIAL_VALUES = {
-  dpoComment: '',
-};
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import ThumbDownIcon from '@material-ui/icons/ThumbDown';
+import useTheme from '@material-ui/core/styles/useTheme';
 
 // HOOKS
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
+  dialogContentRoot: {
+    padding: theme.spacing(3),
+  },
   dialogContentTextRoot: {
-    whiteSpace: 'pre-wrap',
+    textAlign: 'center',
   },
-  menuItemRoot: {
-    whiteSpace: 'pre-wrap',
-  },
+  avatar: ({ isDone }) => ({
+    backgroundColor: isDone ? theme.palette.secondary.main : theme.palette.primary.main,
+  }),
 }));
 
-// COMPONENTS
-const DialogDataboxDone = ({ onClose, onSuccess, open, t }) => {
-  const classes = useStyles();
+const CommentListItem = ({ comment, onSelect, t }) => {
+  const isDone = useMemo(() => comment === DONE, [comment]);
+  const classes = useStyles({ isDone });
+  const onClick = useCallback(() => onSelect(comment), [comment, onSelect]);
 
-  const secondary = useMemo(
-    () => ({
-      onClick: onClose,
-      text: t('common:cancel'),
-    }),
-    [onClose, t],
+  return (
+    <ListItem button divider onClick={onClick}>
+      <ListItemAvatar>
+        <Avatar className={classes.avatar}>
+          {isDone ? <ThumbUpIcon /> : <ThumbDownIcon />}
+        </Avatar>
+      </ListItemAvatar>
+      <ListItemText primary={t(`common:databox.dpoComment.${comment}`)} />
+      <ChevronRightIcon />
+    </ListItem>
   );
+};
+
+CommentListItem.propTypes = {
+  comment: PropTypes.oneOf(DPO_COMMENTS).isRequired,
+  onSelect: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
+};
+
+const CommentItem = withTranslation('common')(CommentListItem);
+
+// COMPONENTS
+const DialogDataboxDone = ({ onClose, onSelect, open, t }) => {
+  const classes = useStyles();
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
+      fullScreen={fullScreen}
+      fullWidth
       aria-labelledby="databox-done-dialog-title"
       aria-describedby="databox-done-dialog-description"
     >
-      <Formik
-        onSubmit={onSuccess}
-        validationSchema={dpoCommentValidationSchema}
-        initialValues={INITIAL_VALUES}
-      >
-        <Form>
-          <DialogTitle id="databox-done-dialog-title">
-            {t('dpo:requests.doneDialog.title')}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText classes={{ root: classes.dialogContentTextRoot }} id="databox-done-dialog-description">
-              {t('dpo:requests.doneDialog.description')}
-            </DialogContentText>
-            <Field
-              component={FieldText}
-              select
-              name="dpoComment"
-              variant="outlined"
-              id="dpo-comment"
-              fullWidth
-              label={t('fields:dpoComment.label')}
-              helperText={t('fields:dpoComment.helperText')}
-            >
-              {DPO_COMMENTS.map((comment) => (
-                <MenuItem classes={{ root: classes.menuItemRoot }} key={comment} value={comment}>
-                  {t(`common:databox.dpoComment.${comment}`)}
-                </MenuItem>
-              ))}
-            </Field>
-          </DialogContent>
-          <DialogActions>
-            <BoxControls
-              primary={{
-                type: 'submit',
-                text: t('common:done'),
-              }}
-              secondary={secondary}
-              formik
-            />
-          </DialogActions>
-        </Form>
-      </Formik>
+      <DialogTitleWithClose id="databox-done-dialog-title" onClose={onClose} />
+      <DialogContent className={classes.dialogContentRoot}>
+        <DialogContentText
+          classes={{ root: classes.dialogContentTextRoot }}
+          id="databox-done-dialog-description"
+        >
+          {t('dpo:requests.doneDialog.description')}
+        </DialogContentText>
+        <List>
+          {DPO_COMMENTS.map((comment) => (
+            <CommentItem key={comment} comment={comment} onSelect={onSelect} />
+          ))}
+        </List>
+      </DialogContent>
     </Dialog>
 
   );
@@ -99,9 +95,9 @@ const DialogDataboxDone = ({ onClose, onSuccess, open, t }) => {
 
 DialogDataboxDone.propTypes = {
   onClose: PropTypes.func.isRequired,
-  onSuccess: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['common', 'fields', 'dpo'])(DialogDataboxDone);
+export default withTranslation(['dpo'])(DialogDataboxDone);

@@ -15,6 +15,7 @@ import usePropChanged from '@misakey/hooks/usePropChanged';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Box from '@material-ui/core/Box';
 
 // CONSTANTS
 const ACTIVE_CLASS = 'active';
@@ -33,24 +34,22 @@ const useStyles = makeStyles((theme) => ({
       border: `1px solid ${theme.palette.secondary.main}`,
     },
   },
-  progress: {
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column',
-    width: '100 %',
-    boxSizing: 'border-box',
-    padding: '2rem',
-  },
   progressBar: {
     width: '100%',
   },
   input: {
+    cursor: 'pointer',
     opacity: '0',
     width: '100%',
     height: '100%',
     position: 'absolute',
     left: '0',
     top: '0',
+  },
+  label: {
+    color: theme.palette.grey[300],
+    textTransform: 'uppercase',
+    textAlign: 'center',
   },
 }));
 
@@ -91,6 +90,7 @@ const FileField = ({
   onUpload,
   accept,
   previewName,
+  labelText,
   field: { value, onChange, name },
   form: { setStatus },
 }) => {
@@ -108,8 +108,8 @@ const FileField = ({
   );
 
   const onLoad = useCallback(
-    (e, { preview }) => {
-      onChange(e);
+    (e, { preview, file }) => {
+      onChange(e, { file, preview });
       setStatus({ [previewName]: preview });
       if (isFunction(onUpload)) {
         onUpload(e);
@@ -121,7 +121,7 @@ const FileField = ({
   const [
     { file, progress },
     { onChange: onFileChange, onReset },
-  ] = useFileReader({ onError: onFileError, onLoad });
+  ] = useFileReader({ onError: onFileError, onLoad, inputRef });
 
   const onClick = useOnClick(inputRef);
 
@@ -134,22 +134,29 @@ const FileField = ({
   return (
     <div className={containerClassName} {...dragEvents}>
       {file && (
-        <Typography variant="h6" color="textPrimary">
+        <Typography variant="h6" color="textPrimary" noWrap>
           {file.name}
         </Typography>
       )}
-      {!isNil(progress) && (
-        <div className={classes.progress}>
-          <LinearProgress variant="determinate" value={progress} className={classes.progressBar} />
-          <Typography variant="body1" color="textSecondary">
-            {t('fields:file.loading', 'Import in progress')}
+      <Box
+        display="flex"
+        alignItems="center"
+        flexDirection="column"
+        p={3}
+      >
+        {!isNil(progress) ? (
+          <>
+            <LinearProgress variant="determinate" value={progress} className={classes.progressBar} />
+            <Typography variant="body1" color="textSecondary">
+              {t('fields:file.loading', 'Import in progress')}
+            </Typography>
+          </>
+        ) : (
+          <Typography variant="h5" className={classes.label}>
+            {labelText || t('fields:file.label', 'Drop a file here')}
           </Typography>
-        </div>
-      )}
-
-      <Typography variant={dragActive ? 'h6' : 'body1'} color={dragActive ? 'secondary' : 'textPrimary'}>
-        {t('fields:file.label', 'Drop a file here')}
-      </Typography>
+        )}
+      </Box>
 
       <label htmlFor="button-file">
         <input
@@ -163,7 +170,7 @@ const FileField = ({
         />
         {!dragActive && (
           <Button
-            standing={BUTTON_STANDINGS.MAIN}
+            standing={BUTTON_STANDINGS.TEXT}
             type="button"
             aria-label={t('fields:file.button.choose.label', 'Choose a file')}
             onClick={onClick}
@@ -182,6 +189,7 @@ FileField.propTypes = {
   onUpload: PropTypes.func,
   onError: PropTypes.func,
   previewName: PropTypes.string,
+  labelText: PropTypes.string,
   // Formik Field
   field: PropTypes.shape({
     value: PropTypes.object,
@@ -201,6 +209,7 @@ FileField.defaultProps = {
   onError: undefined,
   accept: [],
   previewName: 'preview',
+  labelText: null,
 };
 
 export default withTranslation(['fields'])(FileField);

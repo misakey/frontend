@@ -50,16 +50,21 @@ const useOnClearProgress = (setProgress) => useCallback(
   }, [setProgress],
 );
 
-const useOnReset = (setFile, setPreview) => useCallback(
+const useOnReset = (setFile, setPreview, inputRef) => useCallback(
   () => {
     setFile(undefined);
     setPreview(undefined);
+    if (inputRef && inputRef.current) {
+      // Fix for chrome https://stackoverflow.com/questions/9155136/chrome-file-upload-bug-on-change-event-wont-be-executed-twice-with-the-same-fi
+      // eslint-disable-next-line no-param-reassign
+      inputRef.current.value = null;
+    }
   },
-  [setFile, setPreview],
+  [inputRef, setFile, setPreview],
 );
 
 
-export default ({ onLoadStart, onProgress, onLoad, onError }) => {
+export default ({ onLoadStart, onProgress, onLoad, onError, inputRef }) => {
   const [progress, setProgress] = useState();
   const [file, setFile] = useState();
   const [preview, setPreview] = useState();
@@ -99,7 +104,7 @@ export default ({ onLoadStart, onProgress, onLoad, onError }) => {
     [setFile],
   );
 
-  const onReset = useOnReset(setFile, setPreview);
+  const onReset = useOnReset(setFile, setPreview, inputRef);
 
   useEffect(
     () => {
