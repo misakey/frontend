@@ -25,7 +25,6 @@ import DatavizDialog from 'components/dumb/Dialog/Dataviz';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import { IS_PLUGIN } from 'constants/plugin';
-import { AVAILABLE_DATAVIZ_DOMAINS } from 'components/dumb/Dataviz';
 import BlobSchema from 'store/schemas/Databox/Blob';
 import { usePasswordPrompt } from 'components/dumb/PasswordPrompt';
 
@@ -108,6 +107,7 @@ const decryptBlob = async (
 const ButtonDownloadBlob = ({
   application,
   blob,
+  isDatavizEnabled,
   t,
 }) => {
   const classes = useStyles();
@@ -161,11 +161,6 @@ const ButtonDownloadBlob = ({
       setIsDatavizDialogOpen(true);
     },
     [],
-  );
-
-  const isDatavizEnabled = useMemo(
-    () => AVAILABLE_DATAVIZ_DOMAINS.includes(mainDomain),
-    [mainDomain],
   );
 
   const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
@@ -243,11 +238,13 @@ const ButtonDownloadBlob = ({
 ButtonDownloadBlob.propTypes = {
   application: PropTypes.shape(ApplicationSchema.propTypes),
   blob: PropTypes.shape(BlobSchema.propTypes),
+  isDatavizEnabled: PropTypes.bool,
   t: PropTypes.func.isRequired,
 };
 
 ButtonDownloadBlob.defaultProps = {
   application: null,
+  isDatavizEnabled: false,
   blob: null,
 };
 

@@ -419,6 +419,7 @@
     "socialCardFooter": "Fait avec ♥ par Misakey",
     "sourceFile": "Fichier source",
     "yourHistoryByYear": "Votre histoire {{year}}",
+    "fileCardTitle": "Les aventures de {{userName}} & {{appName}}",
     "trainline": {
       "topStations": "Top gares",
       "topSearches": "Top recherches",

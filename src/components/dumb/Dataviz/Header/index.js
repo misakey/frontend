@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DatavizHeader = ({ application, user, subtitle }) => {
+const DatavizHeader = ({ application, user, title, subtitle }) => {
   const classes = useStyles();
 
   const { avatarUri, displayName } = user;
@@ -45,9 +45,9 @@ const DatavizHeader = ({ application, user, subtitle }) => {
           imgProps={{ crossorigin: 'anonymous' }}
         />
       </Box>
-      <Box display="flex" flexDirection="column" ml={1}>
-        <Typography className={classes.typo}>{`${user.displayName} & ${name}`}</Typography>
-        { subtitle && (
+      <Box display="flex" flexDirection="column" justifyContent="center" ml={1}>
+        <Typography className={classes.typo}>{title || `${user.displayName} & ${name}`}</Typography>
+        {subtitle && (
           <Typography className={classes.typo} variant="caption">{subtitle}</Typography>
         )}
       </Box>
@@ -64,10 +64,12 @@ DatavizHeader.propTypes = {
     logoUri: PropTypes.string,
     name: PropTypes.string,
   }).isRequired,
+  title: PropTypes.string,
   subtitle: PropTypes.string,
 };
 
 DatavizHeader.defaultProps = {
+  title: null,
   subtitle: null,
 };
 

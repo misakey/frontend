@@ -46,7 +46,7 @@ const RequestSimpleCardEvent = ({
     [authorRole, fromWorkspace],
   );
 
-  const titleProps = useMemo(
+  const titleTypographyProps = useMemo(
     () => (authorRole === MISAKEY ? { color: 'secondary' } : {}),
     [authorRole],
   );
@@ -56,7 +56,7 @@ const RequestSimpleCardEvent = ({
       author={author}
       isFromCurrentUser={isFromCurrentUser}
       text={text}
-      titleProps={titleProps}
+      titleTypographyProps={titleTypographyProps}
       {...omitTranslationProps(rest)}
     />
   );

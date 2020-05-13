@@ -51,6 +51,7 @@ const EventCard = ({
   text,
   actions,
   titleProps,
+  titleTypographyProps,
   ...rest
 }) => {
   const classes = useStyles();
@@ -77,9 +78,10 @@ const EventCard = ({
             titleTypographyProps={{
               variant: 'subtitle1',
               classes: { root: classes.headerTypography },
-              ...titleProps,
+              ...titleTypographyProps,
             }}
             classes={{ root: classes.header }}
+            {...titleProps}
           />
         )}
         <CardContent classes={{ root: classes.content }}>
@@ -108,7 +110,12 @@ EventCard.propTypes = {
     avatarUri: PropTypes.string,
   }),
   titleProps: PropTypes.object,
-  actions: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.object, PropTypes.node])),
+  titleTypographyProps: PropTypes.object,
+  actions: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.object, PropTypes.node])),
+    PropTypes.object,
+    PropTypes.node,
+  ]),
 };
 
 EventCard.defaultProps = {
@@ -120,6 +127,7 @@ EventCard.defaultProps = {
   },
   text: null,
   titleProps: {},
+  titleTypographyProps: {},
   isFromCurrentUser: false,
   actions: null,
 
