@@ -17,7 +17,7 @@ import { getUserRequestsBuilder, countUserRequestsBuilder } from '@misakey/helpe
 import { getApplicationsByIdsBuilder } from '@misakey/helpers/builder/applications';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
-
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useMemo, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -58,6 +58,7 @@ const getMissingIndexes = (paginatedMap) => Object.entries(paginatedMap)
     return acc;
   }, []);
 
+// do not use denormalize for less computations
 const applicationsByIdSelector = path(['entities', 'applicationsById']);
 
 // HOOKS
@@ -71,6 +72,7 @@ const applicationsByIdSelector = path(['entities', 'applicationsById']);
  * - loadMoreItems is a function to call to ask for more items
  */
 export default (status) => {
+  const handleHttpErrors = useHandleHttpErrors();
   // payload for API
   const payload = useMemo(
     () => ({ statuses: [status] }),
@@ -129,6 +131,20 @@ export default (status) => {
     [dispatch, receivePaginationAction],
   );
 
+  // @TODO logic should be reused
+  const getMissingApplications = useCallback(
+    (applicationIds) => {
+      const storedApplications = pickAll(applicationIds, applicationsByIdState);
+      const missingApplicationsIds = getMissingIndexes(storedApplications);
+      if (!isEmpty(missingApplicationsIds)) {
+        return getApplicationsByIdsBuilder(missingApplicationsIds)
+          .then((applications) => dispatch(receiveApplications(applications)));
+      }
+      return Promise.resolve();
+    },
+    [applicationsByIdState, dispatch],
+  );
+
   // API data fetching:
   // get requests
   // check missing applications in store
@@ -137,16 +153,11 @@ export default (status) => {
     (pagination) => getUserRequestsBuilder({ ...payload, ...pagination })
       .then((response) => dispatchReceiveRequests(response.map(objectToCamelCase), pagination))
       .then(([{ entities: { applicationsById } }]) => {
-        const applicationsIds = Object.keys(applicationsById);
-        const storedApplications = pickAll(applicationsIds, applicationsByIdState);
-        const missingApplicationsIds = getMissingIndexes(storedApplications);
+        const applicationIds = Object.keys(applicationsById);
         // do not return promise so that list is loaded during this fetch
-        if (!isEmpty(missingApplicationsIds)) {
-          getApplicationsByIdsBuilder(missingApplicationsIds)
-            .then((applications) => dispatch(receiveApplications(applications)));
-        }
+        getMissingApplications(applicationIds);
       }),
-    [applicationsByIdState, dispatch, dispatchReceiveRequests, payload],
+    [dispatchReceiveRequests, getMissingApplications, payload],
   );
 
   const getCount = useCallback(
@@ -178,10 +189,11 @@ export default (status) => {
     () => {
       if (isNil(itemCount)) {
         getCount()
-          .then((result) => dispatch(receiveItemCountAction(result)));
+          .then((result) => dispatch(receiveItemCountAction(result)))
+          .catch((e) => handleHttpErrors(e));
       }
     },
-    [dispatch, getCount, itemCount, receiveItemCountAction],
+    [dispatch, getCount, handleHttpErrors, itemCount, receiveItemCountAction],
   );
 
   // extra memoization layer because of object format

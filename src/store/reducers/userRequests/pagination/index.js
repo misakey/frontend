@@ -13,7 +13,7 @@ import all from '@misakey/helpers/all';
 import isNil from '@misakey/helpers/isNil';
 
 // CONSTANTS
-const REDUCER_KEY = 'userRequestsPagination';
+export const REDUCER_KEY = 'userRequestsPagination';
 
 // HELPERS
 export const getState = (status) => path([REDUCER_KEY, status]);
@@ -88,7 +88,7 @@ export const updatePaginationsToStatus = (id, status) => (dispatch) => {
   const { [status]: toStatusActionCreators, ...otherStatusesActionCreators } = actionCreators;
 
   if (isNil(toStatusActionCreators)) {
-    throw new Error(`Unhandled status ${status}`);
+    return Promise.reject(new Error(`Unhandled status ${status}`));
   }
   const { addPaginatedId } = toStatusActionCreators;
 

@@ -11,5 +11,5 @@ export const receiveApplications = (applications) => (dispatch) => {
     ApplicationByIdSchema.collection,
   );
   const { entities } = normalized;
-  dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
+  return dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
 };
