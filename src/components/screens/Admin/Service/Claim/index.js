@@ -289,7 +289,7 @@ function ServiceClaim({ appBarProps, service, t, userId, history, dispatchUserRo
                     {t('admin:service.claim.body.txtKey.actions.submitLater')}
                   </Button>
                 )}
-                <ButtonSubmit
+                <Button
                   text={submitText}
                   onClick={handleSubmit}
                   isSubmitting={isSubmitting}

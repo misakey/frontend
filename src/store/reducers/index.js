@@ -14,7 +14,6 @@ import userRequestPagination from 'store/reducers/userRequests/pagination';
 import access from './access';
 // import bulkSelection from './bulkSelection';
 import devicePreferences from './devicePreferences';
-import Layout from './Layout';
 import screens from './screens';
 import search from './search';
 import sso from './sso';
@@ -27,7 +26,6 @@ const appReducer = combineReducers({
   access,
   // bulkSelection, unused for now
   ...devicePreferences,
-  Layout,
   screens,
   search,
   sso,
