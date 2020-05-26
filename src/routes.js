@@ -1,5 +1,20 @@
 const routes = {
   _: '/',
+  boxes: {
+    _: '/boxes',
+    read: {
+      _: '/boxes/:id',
+      details: '/boxes/:id/details',
+      files: '/boxes/:id/files',
+    },
+    invitation: '/invitation',
+  },
+  accounts: {
+    _: '/accounts',
+    read: {
+      _: '/accounts/:id',
+    },
+  },
   account: {
     _: '/account',
     profile: {

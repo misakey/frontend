@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
 
-import Landing from 'components/screens/Landing';
+import Home from 'components/newScreens/Home';
 import NotFound from 'components/screens/NotFound';
 import Requests from 'components/screens/DPO/Service/Requests/Read';
 
@@ -14,6 +14,7 @@ import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallback
 import RoutePrivate from '@misakey/auth/components/Route/Private';
 import RouteAccessRequest from 'components/smart/Route/AccessRequest';
 import SeclevelWarningAlert from 'components/smart/Alert/SeclevelWarning';
+import Landing from 'components/screens/Landing';
 
 // LAZY
 const Account = lazy(() => import('components/screens/Account'));
@@ -62,6 +63,8 @@ const App = ({ t }) => (
       <Route path={routes.admin._} component={Admin} />
       <Route path={routes.citizen._} component={Citizen} />
       <Route path={routes.dpo._} component={DPO} />
+
+      <Route path={[routes.boxes._, routes.accounts._]} component={Home} />
 
       {/* REQUESTS */}
       <RouteAccessRequest exact path={routes.requests} component={Requests} />

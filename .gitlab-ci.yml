@@ -90,7 +90,7 @@ docs:
 
 build:
   stage: build
-  image: docker:stable
+  image: docker:19.03.8 #Fixme: put back stable when gitlab is updated
   tags:
     - misakey_docker
   before_script:
@@ -113,7 +113,7 @@ build:
 
 build_maintenance:
   stage: build
-  image: docker:stable
+  image: docker:19.03.8 #Fixme: put back stable when gitlab is updated
   tags:
     - misakey_docker
   before_script:
