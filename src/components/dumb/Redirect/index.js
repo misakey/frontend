@@ -15,7 +15,7 @@ function Redirect({ forceRefresh, to, manualRedirectPlaceholder, ...props }) {
     return manualRedirectPlaceholder;
   }
 
-  if (!isSameHost(href)) {
+  if (!isSameHost(href) || forceRefresh) {
     window.location.replace(href);
     return manualRedirectPlaceholder;
   }

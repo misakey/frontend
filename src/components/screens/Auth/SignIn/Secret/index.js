@@ -222,6 +222,7 @@ const AuthSignInSecret = ({
     return (
       <Redirect
         to={redirectTo}
+        forceRefresh
         manualRedirectPlaceholder={(
           <DefaultSplashScreen />
         )}
