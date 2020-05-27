@@ -32,8 +32,6 @@ import IconError from '@material-ui/icons/Error';
 import IconSuccess from '@material-ui/icons/Done';
 import DialogConfirm from 'components/dumb/Dialog/Confirm';
 import BulkMailToDialog from 'components/smart/List/MailProviders/BulkMailToDialog';
-import { IS_PLUGIN } from 'constants/plugin';
-import { openMailto } from '@misakey/helpers/plugin';
 
 // CONSTANTS
 const PROVIDERS = [
@@ -235,11 +233,8 @@ const ListMailProviders = ({
     () => {
       onChange();
       displayMailToSnackbar();
-      if (IS_PLUGIN) {
-        openMailto(head(mailtoHrefs).href);
-      }
     },
-    [displayMailToSnackbar, mailtoHrefs, onChange],
+    [displayMailToSnackbar, onChange],
   );
 
   const bulkManualOnClick = useCallback(
@@ -254,9 +249,6 @@ const ListMailProviders = ({
   const manualButtonProps = useMemo(() => {
     if (isBulk) {
       return { onClick: bulkManualOnClick };
-    }
-    if (IS_PLUGIN) {
-      return { onClick: simpleManualOnClick };
     }
     return {
       component: 'a',
@@ -379,7 +371,7 @@ ListMailProviders.defaultProps = {
   mailtoProps: null,
   disabled: false,
   allowManual: false,
-  allowProviders: !IS_PLUGIN,
+  allowProviders: true,
 };
 
 

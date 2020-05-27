@@ -1,5 +1,3 @@
-import { downloadFileFromPlugin } from '@misakey/helpers/plugin';
-
 function revokeBlob(blobURL) {
   window.URL.revokeObjectURL(blobURL);
 }
@@ -41,10 +39,6 @@ export default function (data, filename, mime, bom) {
     }
 
     blobURL = (window.URL || window.webkitURL).createObjectURL(blob);
-  }
-
-  if (window.env.PLUGIN) {
-    return downloadFileFromPlugin(blobURL, filename, revokeBlob);
   }
 
   const tempLink = document.createElement('a');

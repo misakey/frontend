@@ -5,7 +5,7 @@ Misakey frontend
 [![CI](https://img.shields.io/gitlab/pipeline/Misakey/frontend)](https://gitlab.com/Misakey/frontend/pipelines/)
 
 
-This project is the frontend repository of [Misakey](https://misakey.com/). It contains the code of the webapp and the plugin.
+This project is the frontend repository of [Misakey](https://misakey.com/).
 
 For more info about Misakey, you can see our [presentation page](https://docs.misakey.com).
 
@@ -17,18 +17,10 @@ the licensing philosophy or a more global overview of the project, please go on 
 
 ## Overview 
 
-This project contains the source code of the Misakey webapp and the Misakey web extension.
-The source code for the webapp and the popup of the web extension are the same (so we will talk of
-webapp for the plugin popup from now on)
+This project contains the source code of the Misakey webapp.
 
 The webapp is based on [CRA](https://github.com/facebook/create-react-app).
 
-The webextension specific code (background and content scripts) is generated with webpack.
-
-The extension use [mozilla/webextension-polyfill](https://github.com/mozilla/webextension-polyfill) as it is intended to work with Chrome, Firefox, Opera, Edge and Safari.
-
-The rest of this readme will focus on the webapp. For plugin specific information go on the specific
-[README](plugin/README.md).
 
 ## How to run it ?
 
@@ -51,8 +43,7 @@ You can create a production image with the command `make build`
 
 * [/devtools](./devtools): contains some tools useful for the developers.
 * [/helm](./helm): contains deployment material
-* [/plugin](./plugin): contains plugin specific material (build, content & background script, ...)
-* [/public](./public): contains the public part of the app (html files, static ressources, locales for XHR loading)
+* [/public](./public): contains the public part of the app (html files, static resources, locales for XHR loading)
 * [/scripts](./scripts): contains scripts used by the CI and other tools
 * [/src](./src): contains the sources of the app
 
@@ -74,7 +65,7 @@ usable in the app directly.
 ### I18N
 
 Locale file organization:
-- in `public/locales` we have one locale file per workspace (`account`, `admin`, `auth`, `citizen`, `dpo`, `plugin`).
+- in `public/locales` we have one locale file per workspace (`account`, `admin`, `auth`, `citizen`, `dpo`).
 Those translation files are loaded by XHR request. We did that to optimize the size of loaded locales.
 - in `src/constants/locales` we have all common locales, they are loaded everywhere in the app.
     - `fields`: for all fields translations. It only contains translation used by Field component

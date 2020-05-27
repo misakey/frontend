@@ -19,7 +19,6 @@ import ErrorIcon from '@material-ui/icons/Error';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import AppBar, { APPBAR_HEIGHT } from 'components/dumb/AppBar';
 import Footer, { FOOTER_HEIGHT } from 'components/dumb/Footer';
-import { IS_PLUGIN } from 'constants/plugin';
 
 // CONSTANTS
 // footer height + margintop
@@ -120,15 +119,7 @@ StateWrapper.defaultProps = {
   splashScreenText: null,
 };
 
-const GUTTERS_SPACING = IS_PLUGIN ? 0 : 3;
-
-export const getStyleForContainerScroll = (
-  theme,
-  extraFixedSize = 0,
-) => ({
-  height: `calc(100vh - ${APPBAR_HEIGHT}px - ${theme.spacing(GUTTERS_SPACING)}px - ${extraFixedSize}px)`,
-  overflowY: 'auto',
-});
+const GUTTERS_SPACING = 3;
 
 const useScreenStyles = makeStyles((theme) => ({
   root: ({ hideAppBar }) => ({
@@ -308,7 +299,7 @@ Screen.defaultProps = {
   className: '',
   description: '',
   hideAppBar: false,
-  hideFooter: IS_PLUGIN,
+  hideFooter: false,
   preventSplashScreen: false,
   splashScreen: null,
   state: {},

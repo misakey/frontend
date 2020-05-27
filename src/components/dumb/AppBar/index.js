@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { DRAWER_WIDTH } from '@misakey/ui/constants/sizes';
-import { IS_PLUGIN } from 'constants/plugin';
 
 import map from '@misakey/helpers/map';
 
@@ -164,24 +163,22 @@ AppBar.defaultProps = {
   className: '',
   drawerWidth: DRAWER_WIDTH,
   elevationScroll: true,
-  elevationScrollProps: IS_PLUGIN ? { target: document.getElementById('root') } : {},
+  elevationScrollProps: {},
   items: [],
   leftItems: [],
-  searchBarProps: IS_PLUGIN
-    ? { disabled: true }
-    : {
-      popoverProps: {
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'right',
-        },
-        transformOrigin: {
-          vertical: 'bottom',
-          horizontal: 'right',
-        },
-        noTopMargin: true,
+  searchBarProps: {
+    popoverProps: {
+      anchorOrigin: {
+        vertical: 'bottom',
+        horizontal: 'right',
       },
+      transformOrigin: {
+        vertical: 'bottom',
+        horizontal: 'right',
+      },
+      noTopMargin: true,
     },
+  },
   shift: false,
   toolbarProps: { className: '' },
   withHomeLink: true,

@@ -30,44 +30,6 @@ const routes = {
     mailProvider: { _: '/account/mail-provider' },
     thirdParty: { setup: '/account/third-party/setup' },
   },
-  admin: {
-    _: '/admin',
-    services: '/admin/services',
-    service: {
-      _: '/admin/:mainDomain',
-      home: { _: '/admin/:mainDomain' },
-      create: {
-        _: '/admin/service/create',
-        mainDomain: '/admin/service/create/:mainDomain',
-      },
-      list: { _: '/admin/service/list' },
-      claim: { _: '/admin/:mainDomain/claim' },
-      information: {
-        _: '/admin/:mainDomain/information',
-        name: '/admin/:mainDomain/information/name',
-        logo: {
-          _: '/admin/:mainDomain/information/logo',
-          upload: '/admin/:mainDomain/information/logo/upload',
-        },
-        mainDomain: '/admin/:mainDomain/information/mainDomain',
-        otherDomains: '/admin/:mainDomain/information/otherDomains',
-        shortDesc: '/admin/:mainDomain/information/shortDesc',
-        longDesc: '/admin/:mainDomain/information/longDesc',
-      },
-      sso: {
-        _: '/admin/:mainDomain/sso',
-        allowedOrigins: '/admin/:mainDomain/sso/allowedOrigins',
-        redirectUri: '/admin/:mainDomain/sso/redirectUri',
-        productionSetup: '/admin/:mainDomain/sso/productionSetup',
-        customRoles: '/admin/:mainDomain/sso/customRoles',
-      },
-      users: {
-        _: '/admin/:mainDomain/users',
-        edit: '/admin/:mainDomain/users/edit',
-      },
-      data: { _: '/admin/:mainDomain/data' },
-    },
-  },
   auth: {
     _: '/auth',
     callback: '/callback',
@@ -95,20 +57,6 @@ const routes = {
     _: '/citizen',
     contact: {
       _: '/citizen/contact',
-    },
-    applications: {
-      _: '/citizen/applications',
-      category: '/citizen/applications/category/:category',
-      create: '/citizen/applications/create',
-    },
-    application: {
-      _: '/citizen/:mainDomain',
-      vault: '/citizen/:mainDomain/vault',
-      feedback: '/citizen/:mainDomain/feedback',
-      legal: '/citizen/:mainDomain/legal',
-      more: '/citizen/:mainDomain/more',
-
-      myFeedback: '/citizen/:mainDomain/feedback/me',
     },
     requests: {
       _: '/citizen/requests',

@@ -6,7 +6,6 @@ import isNil from '@misakey/helpers/isNil';
 
 import routes from 'routes';
 
-import Application from 'components/screens/Citizen/Application';
 import Requests from 'components/screens/Citizen/Requests';
 import SilentAuthScreen from 'components/dumb/Screen/SilentAuth';
 import { ROLE_PREFIX_SCOPE } from 'constants/Roles';
@@ -15,9 +14,7 @@ import { connect } from 'react-redux';
 // LAZY
 const Home = lazy(() => import('components/screens/Citizen/Home'));
 const Contact = lazy(() => import('components/screens/Citizen/Contact'));
-const ApplicationsCategories = lazy(
-  () => import('components/screens/Citizen/Applications'),
-);
+
 
 function Citizen({ match, isAuthenticated, userScope }) {
   const scopeIsAllowed = useMemo(
@@ -32,13 +29,7 @@ function Citizen({ match, isAuthenticated, userScope }) {
     <>
       <Switch>
         <RoutePrivate path={routes.citizen.contact._} component={Contact} />
-        <Route
-          path={routes.citizen.applications._}
-          component={ApplicationsCategories}
-        />
         <Route path={routes.citizen.requests._} component={Requests} />
-        <Route path={routes.citizen.application._} component={Application} />
-
         <Route exact path={match.path} component={Home} />
       </Switch>
     </>

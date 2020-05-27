@@ -2,11 +2,6 @@ import React, { useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import routes from 'routes';
-
-import { redirectToApp } from '@misakey/helpers/plugin';
-import { IS_PLUGIN } from 'constants/plugin';
-
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isFunction from '@misakey/helpers/isFunction';
@@ -22,10 +17,6 @@ const ButtonConnectSimple = forwardRef(
       (...args) => {
         if (isFunction(onClick)) {
           onClick(...args);
-        }
-        if (IS_PLUGIN) {
-          redirectToApp(routes.auth.redirectToSignIn);
-          return;
         }
         userManager.signinRedirect(objectToSnakeCase(authProps));
       },

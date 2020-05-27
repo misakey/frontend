@@ -2,7 +2,6 @@ import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { normalize, denormalize } from 'normalizr';
-import { parse } from 'tldts';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
 
@@ -30,7 +29,6 @@ import { receiveEntities } from '@misakey/store/actions/entities';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import { IS_PLUGIN } from 'constants/plugin';
 
 // CONSTANTS
 const DEFAULT_ENDPOINT = {
@@ -111,17 +109,12 @@ const useHandleReceive = (enqueueSnackbar, history, pathname, mainDomain, t) => 
     const application = head(data);
     const isLinkedDomain = application.mainDomain !== mainDomain;
     if (isLinkedDomain) {
-      if (IS_PLUGIN) {
-        const { domainWithoutSuffix } = parse(mainDomain);
-        data.push({ ...application, mainDomain, name: domainWithoutSuffix });
-      } else {
-        enqueueSnackbar(
-          t('common:redirectedToLinkedDomain',
-            { mainDomainTo: application.mainDomain, mainDomainFrom: mainDomain }),
-          { variant: 'info' },
-        );
-        history.replace(pathname.replace(mainDomain, application.mainDomain));
-      }
+      enqueueSnackbar(
+        t('common:redirectedToLinkedDomain',
+          { mainDomainTo: application.mainDomain, mainDomainFrom: mainDomain }),
+        { variant: 'info' },
+      );
+      history.replace(pathname.replace(mainDomain, application.mainDomain));
     }
     return data;
   },

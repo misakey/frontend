@@ -10,7 +10,6 @@ import propOr from '@misakey/helpers/propOr';
 import isNil from '@misakey/helpers/isNil';
 import pick from '@misakey/helpers/pick';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
-import { IS_PLUGIN } from 'constants/plugin';
 import { METADATA } from 'constants/databox/event';
 import ActivityLogsSchema from 'store/schemas/Databox/ActivityLogs';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
@@ -103,7 +102,7 @@ export const setDataboxOwnerEmail = (id, ownerEmail) => (dispatch, getState) => 
 };
 
 export const setUrlAccessRequest = (id, token) => (dispatch) => {
-  const href = IS_PLUGIN ? window.env.APP_URL : window.env.href;
+  const href = window.env;
   const url = parseUrlFromLocation(`${routes.requests}#${token}`, href).href;
   const entities = [{ id, changes: { urlAccess: url } }];
   Promise.resolve(dispatch(updateEntities(entities, DataboxSchema)));

@@ -1,14 +1,12 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Link } from 'react-router-dom';
 
 import routes from 'routes';
-import { IS_PLUGIN } from 'constants/plugin';
 import { WORKSPACE } from 'constants/workspaces';
 
 import isNil from '@misakey/helpers/isNil';
-import { redirectToApp } from '@misakey/helpers/plugin';
 
 import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 
@@ -49,16 +47,9 @@ const LinkHome = ({ children, ...rest }) => {
     [isAccountWorkspace, workspace],
   );
 
-  const onClick = useCallback(
-    () => redirectToApp(to),
-    [to],
-  );
-
   const routingProps = useMemo(
-    () => (IS_PLUGIN
-      ? { onClick, component: 'button' }
-      : { component: Link, to }),
-    [onClick, to],
+    () => ({ component: Link, to }),
+    [to],
   );
 
   return (

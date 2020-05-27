@@ -17,6 +17,7 @@ import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWe
 import downloadFile from '@misakey/helpers/downloadFile';
 import ensureSecretsLoaded from '@misakey/crypto/store/actions/ensureSecretsLoaded';
 
+import noop from '@misakey/helpers/noop';
 import deburr from '@misakey/helpers/deburr';
 import isEmpty from '@misakey/helpers/isEmpty';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
@@ -24,7 +25,6 @@ import DatavizDialog from 'components/dumb/Dialog/Dataviz';
 
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import { IS_PLUGIN } from 'constants/plugin';
 import BlobSchema from 'store/schemas/Databox/Blob';
 import { usePasswordPrompt } from 'components/dumb/PasswordPrompt';
 
@@ -143,18 +143,6 @@ const ButtonDownloadBlob = ({
     [enqueueSnackbar, t],
   );
 
-  const onDownloadSuccess = useCallback(
-    () => {
-      if (IS_PLUGIN) {
-        enqueueSnackbar(
-          t('citizen:requests.read.downloadBlob.success'),
-          { variant: 'success' },
-        );
-      }
-    },
-    [enqueueSnackbar, t],
-  );
-
   const onDecryptForDatavizSuccess = useCallback(
     (file, filename, fileExtension) => {
       setDecryptedBlob({ blob: file, filename, fileExtension });
@@ -167,9 +155,9 @@ const ButtonDownloadBlob = ({
 
   const onDownload = useCallback(
     () => decryptBlob(
-      blob, publicKeysWeCanDecryptFrom, application, onError, onDownloadSuccess, true,
+      blob, publicKeysWeCanDecryptFrom, application, onError, noop, true,
     ),
-    [blob, publicKeysWeCanDecryptFrom, application, onError, onDownloadSuccess],
+    [blob, publicKeysWeCanDecryptFrom, application, onError],
   );
 
   const onDisplayDataviz = useCallback(
@@ -221,7 +209,6 @@ const ButtonDownloadBlob = ({
         open={isDatavizDialogOpen}
         onClose={onCloseDatavizDialog}
         decryptedBlob={decryptedBlob}
-        onDownloadSuccess={onDownloadSuccess}
       />
       <Button
         className={classes.buttonRoot}

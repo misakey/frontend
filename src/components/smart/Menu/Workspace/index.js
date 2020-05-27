@@ -10,7 +10,7 @@ import isNil from '@misakey/helpers/isNil';
 import __ from '@misakey/helpers/__';
 import propOr from '@misakey/helpers/propOr';
 
-import { useRouteMatch, Link, generatePath } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 
 import IconButton from '@material-ui/core/IconButton';
@@ -18,15 +18,9 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import ArrowDropdownIcon from '@material-ui/icons/ArrowDropDown';
-import { MAIN_DOMAIN_REGEX } from 'constants/regex';
 
 // CONSTANTS
 const MENU_ID = 'menu-workspace';
-
-const APPLICATION_TO = {
-  [WORKSPACE.CITIZEN]: routes.citizen.application._,
-  [WORKSPACE.DPO]: routes.dpo.service._,
-};
 
 const NO_APPLICATION_TO = {
   [WORKSPACE.CITIZEN]: routes.citizen._,
@@ -38,39 +32,20 @@ const ROLES = [WORKSPACE.CITIZEN, WORKSPACE.DPO];
 // HELPERS
 // this is a bit surprising when not used to ramda,
 // do not hesitate to ask what it does or check: https://ramdajs.com/docs/#__
-const applicationToOrEmpty = propOr('', __, APPLICATION_TO);
 const noApplicationToOrEmpty = propOr('', __, NO_APPLICATION_TO);
 
 // COMPONENTS
-const MenuItemWorkspace = forwardRef(({ appMatch, role, children, ...rest }, ref) => {
-  const appPathTo = useMemo(
-    () => applicationToOrEmpty(role),
-    [role],
-  );
-
+const MenuItemWorkspace = forwardRef(({ role, children, ...rest }, ref) => {
   const noAppPathTo = useMemo(
     () => noApplicationToOrEmpty(role),
     [role],
-  );
-
-  const to = useMemo(
-    () => {
-      if (!isNil(appMatch)) {
-        const { mainDomain } = appMatch.params;
-        if (MAIN_DOMAIN_REGEX.test(mainDomain)) {
-          return generatePath(appPathTo, appMatch.params);
-        }
-      }
-      return noAppPathTo;
-    },
-    [appMatch, appPathTo, noAppPathTo],
   );
 
   return (
     <MenuItem
       ref={ref}
       component={Link}
-      to={to}
+      to={noAppPathTo}
       {...omitTranslationProps(rest)}
     >
       {children}
@@ -79,15 +54,11 @@ const MenuItemWorkspace = forwardRef(({ appMatch, role, children, ...rest }, ref
 });
 
 MenuItemWorkspace.propTypes = {
-  appMatch: PropTypes.shape({
-    params: PropTypes.object,
-  }),
   role: PropTypes.string.isRequired,
   children: PropTypes.node,
 };
 
 MenuItemWorkspace.defaultProps = {
-  appMatch: false,
   children: null,
 };
 
@@ -104,14 +75,6 @@ const MenuWorkspace = ({ t }) => {
   const onClose = useCallback(
     () => { setAnchorEl(null); },
     [setAnchorEl],
-  );
-
-  const appCitizenMatch = useRouteMatch(routes.citizen.application._);
-  const appDpoMatch = useRouteMatch(routes.dpo.service._);
-
-  const appMatch = useMemo(
-    () => appCitizenMatch || appDpoMatch,
-    [appCitizenMatch, appDpoMatch],
   );
 
   if (isNil(workspace)) {
@@ -137,7 +100,6 @@ const MenuWorkspace = ({ t }) => {
           <MenuItemWorkspace
             key={role}
             role={role}
-            appMatch={appMatch}
             selected={role === workspace}
           >
             {t(`common:workspaces.${role}`)}

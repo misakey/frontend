@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import routes from 'routes';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core';
@@ -13,7 +12,6 @@ import useLocationWorkspace from '@misakey/hooks/useLocationWorkspace';
 import isNil from '@misakey/helpers/isNil';
 import log from '@misakey/helpers/log';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import { redirectToApp } from '@misakey/helpers/plugin';
 
 import Container from '@material-ui/core/Container';
 
@@ -22,7 +20,6 @@ import CardSimpleText from 'components/dumb/Card/Simple/Text';
 import ButtonWithLogInMatomo from 'components/smart/withLogInMatomo/Button';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import { DEFAULT_SCOPE } from 'constants/Roles';
-import { IS_PLUGIN } from 'constants/plugin';
 import { WORKSPACE } from 'constants/workspaces';
 import { DPO_CONNECT_AS } from 'constants/matomo';
 
@@ -53,10 +50,7 @@ function SilentAuthScreen({ requiredScope, userEmail, userManager, t }) {
   );
 
   const signInAs = useCallback(
-    () => {
-      if (IS_PLUGIN) { return redirectToApp(routes.auth.redirectToSignIn); }
-      return userManager.signinRedirect(authProps);
-    },
+    () => userManager.signinRedirect(authProps),
     [authProps, userManager],
   );
 

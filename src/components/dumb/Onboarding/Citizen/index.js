@@ -1,13 +1,11 @@
-import React, { useCallback, useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import { IS_PLUGIN } from 'constants/plugin';
 
 // import { FIREFOX_ADDON_URI, CHROME_ADDON_URI } from 'constants/links/addon';
 
 import routes from 'routes';
-import { redirectToApp, isPluginDetected } from '@misakey/helpers/plugin';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 // import CardSimpleDoubleButton from 'components/dumb/Card/Simple/DoubleButton';
 import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
@@ -20,25 +18,15 @@ const WORKSPACE = ROLE_LABELS.CITIZEN;
 const OnboardingCitizen = ({ isAuthenticated, t }) => {
   const [activeStep, setActiveStep] = useState(1);
 
-  const isPluginInstalled = useMemo(() => isPluginDetected(), []);
-
-  const redirectToAppForPlugin = useCallback(() => {
-    if (IS_PLUGIN) {
-      redirectToApp(routes.citizen.applications._);
-      window.close();
-    }
-  }, []);
 
   // compute user`s step for onboarding
   useEffect(() => {
     if (!isAuthenticated) {
       setActiveStep(1);
-    // } else if (!isPluginInstalled && !IS_PLUGIN) {
-    //   setActiveStep(2);
     } else {
       setActiveStep(3);
     }
-  }, [isAuthenticated, isPluginInstalled]);
+  }, [isAuthenticated]);
 
   return (
     <Onboarding workspace={ROLE_LABELS.CITIZEN}>
@@ -78,8 +66,7 @@ const OnboardingCitizen = ({ isAuthenticated, t }) => {
           standing: BUTTON_STANDINGS.MAIN,
           text: t(`components:onboarding.${WORKSPACE}.steps.3.button`),
           component: Link,
-          to: IS_PLUGIN ? routes.plugin._ : routes.citizen.applications._,
-          onClick: redirectToAppForPlugin,
+          to: routes.citizen._,
         }}
       />
     </Onboarding>

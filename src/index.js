@@ -1,5 +1,3 @@
-/* global browser */ // eslint-disable-line no-redeclare
-
 import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
 
@@ -40,8 +38,6 @@ import { SnackbarProvider } from 'notistack';
 import './i18n';
 import countries from 'i18n-iso-countries';
 // helpers
-import { isDesktopDevice } from '@misakey/helpers/devices';
-import { IS_PLUGIN } from 'constants/plugin';
 import isNil from '@misakey/helpers/isNil';
 import { isSilentAuthIframe, processSilentAuthCallbackInIframe } from '@misakey/auth/helpers'; // Silent auth
 
@@ -54,20 +50,10 @@ if (window.env.ENV !== 'development' || window.env.SENTRY.debug === true) {
   if (!isNil(window.bundleVersion)) {
     sentryConfig.release = `frontend@${window.bundleVersion}`;
   }
-  if (IS_PLUGIN) {
-    sentryConfig.release = `plugin@${browser.runtime.getManifest().version}`;
-  }
   Sentry.init(sentryConfig);
 }
 
 const rootNode = document.getElementById('root');
-
-if (IS_PLUGIN && isDesktopDevice) {
-  rootNode.setAttribute(
-    'data-plugin-controlsize',
-    true,
-  );
-}
 
 countries.registerLocale(require('i18n-iso-countries/langs/fr.json'));
 

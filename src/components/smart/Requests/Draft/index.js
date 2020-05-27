@@ -1,7 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import clsx from 'clsx';
 import { withTranslation } from 'react-i18next';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
@@ -9,7 +8,6 @@ import moment from 'moment';
 
 import API from '@misakey/api';
 
-import { IS_PLUGIN } from 'constants/plugin';
 import routes from 'routes';
 import ApplicationSchema from 'store/schemas/Application';
 import DataboxSchema from 'store/schemas/Databox';
@@ -31,7 +29,6 @@ import { removeEntities } from '@misakey/store/actions/entities';
 
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
 
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { ThemeProvider } from '@material-ui/core/styles';
 import useMailtoProps from 'hooks/useMailtoProps';
 
@@ -43,7 +40,6 @@ import CardContactTo from 'components/dumb/Card/Contact/To';
 import BoxContactMailType from 'components/smart/Box/Contact/MailType';
 import CardContactBody from 'components/dumb/Card/Contact/Body';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
-import { getStyleForContainerScroll } from 'components/dumb/Screen';
 import ScreenAction from 'components/dumb/Screen/Action';
 import ContactConfig from 'components/screens/Citizen/Contact/Config';
 import ContactConfirm from 'components/screens/Citizen/Contact/Confirm';
@@ -57,7 +53,6 @@ import { SENDING } from 'constants/databox/event';
 import MenuChangeStatus from './ChangeStatusMenu';
 
 // CONSTANTS
-const NAV_BAR_HEIGHT = 57;
 const CONFIG_KEY = 'config';
 const CONFIRM_KEY = 'confirm';
 const HOME_PATH = routes.citizen._;
@@ -83,17 +78,6 @@ const getDataboxMeta = compose(
   objectToCamelCase,
 );
 
-// HOOKS
-const useStyles = makeStyles((theme) => ({
-  spanNoWrap: {
-    whiteSpace: 'nowrap',
-  },
-  container: {
-    ...getStyleForContainerScroll(theme, NAV_BAR_HEIGHT),
-    padding: theme.spacing(2),
-  },
-}));
-
 // COMPONENTS
 const DraftRequest = ({
   dispatch,
@@ -108,7 +92,6 @@ const DraftRequest = ({
   themeforType,
   t,
 }) => {
-  const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const { search, pathname, ...locationRest } = useLocation();
   const { replace } = useHistory();
@@ -251,7 +234,7 @@ const DraftRequest = ({
     () => ({
       homePath: HOME_PATH,
       toolbarProps: { maxWidth: 'md' },
-      gutterBottom: !IS_PLUGIN,
+      gutterBottom: true,
     }),
     [],
   );
@@ -357,7 +340,7 @@ const DraftRequest = ({
       )}
     >
       <ThemeProvider theme={themeforType}>
-        <Container maxWidth="md" className={clsx({ [classes.container]: IS_PLUGIN })}>
+        <Container maxWidth="md">
           <ExpansionPanelContactFrom
             databox={request}
             appName={name}

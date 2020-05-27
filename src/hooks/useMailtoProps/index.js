@@ -1,6 +1,4 @@
 import { useMemo, useCallback } from 'react';
-import { IS_PLUGIN } from 'constants/plugin';
-import { openMailto } from '@misakey/helpers/plugin';
 import noop from '@misakey/helpers/noop';
 import { isFirefox, isDesktopDevice } from '@misakey/helpers/devices';
 
@@ -18,14 +16,6 @@ export default (mailto, onClick = noop) => {
     [mailto],
   );
 
-  const pluginOnClick = useCallback(
-    (e) => Promise.all([
-      onClick(e),
-      openMailto(mailto),
-    ]),
-    [mailto, onClick],
-  );
-
   const linkOnClick = useCallback(
     (event) => {
       if (isFirefoxDesktop) {
@@ -40,11 +30,6 @@ export default (mailto, onClick = noop) => {
     [onClick, mailto],
   );
 
-  if (IS_PLUGIN) {
-    return {
-      onClick: pluginOnClick,
-    };
-  }
   return {
     ...linkProps,
     onClick: linkOnClick,
