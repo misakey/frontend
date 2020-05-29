@@ -7,7 +7,7 @@ const ButtonConnectNoTokenExample = () => (
   <ButtonConnectNoToken
     application="app"
   >
-        Sign In
+    Sign In
   </ButtonConnectNoToken>
 );
 
@@ -75,7 +75,7 @@ const ButtonConnectNoTokenExample = () => (
     application="app"
     token={token}
   >
-        Sign In
+    Sign In
   </ButtonConnectNoToken>
 );
 

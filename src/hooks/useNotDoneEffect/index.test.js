@@ -20,7 +20,7 @@ describe('testing useNotDoneEffect', () => {
           fetchFn();
           onDone();
         },
-        [fetchFn],
+        [],
       ),
       {
         initialProps: { counter: 0 },
@@ -46,7 +46,7 @@ describe('testing useNotDoneEffect', () => {
             onDone();
           }
         },
-        [fetchFn, counter, times],
+        [counter],
       ),
       {
         initialProps: { counter: 1 },

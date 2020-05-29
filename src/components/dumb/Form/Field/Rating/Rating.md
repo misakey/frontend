@@ -26,7 +26,7 @@ const RatingFieldExample = () => {
         <Form>
           <Field component={RatingField} name="value" />
           <ButtonSubmit>
-              Submit
+            Submit
           </ButtonSubmit>
         </Form>
       </Formik>

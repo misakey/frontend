@@ -171,7 +171,7 @@ const ExpansionPanelContactFrom = ({
         }
       }
     },
-    [selected, onSelectUserEmail],
+    [selected, onSelectUserEmail, initialEmail, onInitUserEmail, options],
   );
 
   useEffect(
