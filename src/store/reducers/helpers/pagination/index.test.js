@@ -16,7 +16,9 @@ describe('testing pagination reducers helpers', () => {
         makePaginationReducer(TEST, getState),
         expect.objectContaining({
           getByPagination: expect.any(Function),
+          getBySearchPagination: expect.any(Function),
           getItemCount: expect.any(Function),
+          getSearch: expect.any(Function),
         }),
       ],
     ];
@@ -70,6 +72,7 @@ describe('testing pagination reducers helpers', () => {
             offset,
             limit,
             ids,
+            search: null,
           });
         });
         it('should create action ADD_PAGINATED_ID', () => {
@@ -77,6 +80,7 @@ describe('testing pagination reducers helpers', () => {
           expect(addPaginatedId(id)).toEqual({
             type: ADD_PAGINATED_ID,
             id,
+            search: null,
           });
         });
         it('should create action REMOVE_PAGINATED_ID', () => {
@@ -84,6 +88,7 @@ describe('testing pagination reducers helpers', () => {
           expect(removePaginatedId(id)).toEqual({
             type: REMOVE_PAGINATED_ID,
             id,
+            search: null,
           });
         });
       });
@@ -159,6 +164,7 @@ describe('testing pagination reducers helpers', () => {
               const limit = 3;
               const nextState = {
                 ...otherState,
+                search: null,
                 byPagination: {
                   ...otherState.byPagination,
                   3: ids[0],
@@ -203,6 +209,7 @@ describe('testing pagination reducers helpers', () => {
               const nextState = {
                 ...otherState,
                 itemCount: otherState.itemCount + 1,
+                search: null,
                 byPagination: {
                   0: id,
                   1: otherState.byPagination[0],
@@ -241,6 +248,7 @@ describe('testing pagination reducers helpers', () => {
               const nextState = {
                 ...otherState,
                 itemCount: otherState.itemCount - 1,
+                search: null,
                 byPagination: {
                   0: otherState.byPagination[0],
                   1: otherState.byPagination[1],
@@ -250,6 +258,7 @@ describe('testing pagination reducers helpers', () => {
               };
               expect(reducer(otherState, {
                 type: REMOVE_PAGINATED_ID,
+                search: null,
                 id,
               }))
                 .toEqual(nextState);

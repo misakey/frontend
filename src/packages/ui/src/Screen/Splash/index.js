@@ -18,6 +18,7 @@ const useBoxStyles = makeStyles({
     flexDirection: 'column',
     justifyContent: 'center',
     textAlign: 'center',
+    height: 'inherit',
   },
 });
 

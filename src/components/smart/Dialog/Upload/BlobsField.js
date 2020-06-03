@@ -71,9 +71,9 @@ const FieldBlobs = ({ push, remove, newBlob, setNewBlob, t }) => {
       {isEmpty(fieldValue) && (
         <DialogContentText
           classes={{ root: classes.dialogContentTextRoot }}
-          id="dpo-request-upload-dialog-description"
+          id="upload-dialog-description"
         >
-          {t('dpo:requests.read.upload.dialog.text')}
+          {t('boxes:read.upload.dialog.text')}
         </DialogContentText>
       )}
       {fieldValue.map(
@@ -89,9 +89,9 @@ const FieldBlobs = ({ push, remove, newBlob, setNewBlob, t }) => {
       {!isNil(fieldStatus) && (
         <BoxMessage type="error" p={2} className={classes.textError}>
           <Typography>
-            {t('dpo:requests.read.upload.dialog.errors.blobs.api.notSent', { filenamesErrors })}
+            {t('boxes:read.upload.dialog.errors.blobs.api.notSent', { filenamesErrors })}
             {!isEmpty(filenamesSent) && (
-              t('dpo:requests.read.upload.dialog.errors.blobs.api.sent', { filenamesSent })
+              t('boxes:read.upload.dialog.errors.blobs.api.sent', { filenamesSent })
             )}
           </Typography>
 
@@ -99,7 +99,7 @@ const FieldBlobs = ({ push, remove, newBlob, setNewBlob, t }) => {
       )}
       {displayError && (
         <FormHelperText error className={classes.textError}>
-          {t(`dpo:requests.read.upload.dialog.errors.blobs.${fieldError}`)}
+          {t(`boxes:read.upload.dialog.errors.blobs.${fieldError}`)}
         </FormHelperText>
       )}
     </List>
@@ -119,4 +119,4 @@ FieldBlobs.defaultProps = {
   newBlob: null,
 };
 
-export default withTranslation('dpo')(FieldBlobs);
+export default withTranslation('boxes')(FieldBlobs);

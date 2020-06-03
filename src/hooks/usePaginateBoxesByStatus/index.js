@@ -1,0 +1,202 @@
+import BoxesSchema from 'store/schemas/Boxes';
+import { receiveEntities } from '@misakey/store/actions/entities';
+import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
+import { actionCreators, selectors } from 'store/reducers/userBoxes/pagination';
+
+import propOr from '@misakey/helpers/propOr';
+import pickAll from '@misakey/helpers/pickAll';
+import noop from '@misakey/helpers/noop';
+import isNil from '@misakey/helpers/isNil';
+import __ from '@misakey/helpers/__';
+import min from '@misakey/helpers/min';
+import range from '@misakey/helpers/range';
+import { getUserBoxesBuilder, countUserBoxesBuilder } from '@misakey/helpers/builder/boxes';
+import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import debounce from '@misakey/helpers/debounce';
+
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import { useMemo, useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { normalize } from 'normalizr';
+
+// CONSTANTS
+const EMPTY_OBJ = {};
+
+// HELPERS
+const actionCreatorsProp = propOr(EMPTY_OBJ, __, actionCreators);
+const selectorsProp = propOr(EMPTY_OBJ, __, selectors);
+
+const makeRangeFromOffsetLimit = ({ offset, limit }) => range(offset, offset + limit);
+const makeOffsetLimitFromRange = (rangeList) => {
+  const offset = min(rangeList);
+  const limit = rangeList.length;
+  return {
+    offset,
+    limit,
+  };
+};
+
+const getReceiveItemCountActionCreator = (status) => {
+  const statusActionCreators = actionCreatorsProp(status);
+  return statusActionCreators.receivePaginatedItemCount || noop;
+};
+
+const getReceiveActionCreator = (status) => {
+  const statusActionCreators = actionCreatorsProp(status);
+  return statusActionCreators.receivePaginatedIds || noop;
+};
+
+const getMissingIndexes = (paginatedMap) => Object.entries(paginatedMap)
+  .reduce((acc, [key, value]) => {
+    if (isNil(value)) {
+      acc.push(key);
+    }
+    return acc;
+  }, []);
+
+// HOOKS
+/**
+ * @param {String} status one of possible box statuses
+ * @see src/constants/app/boxes/statuses.js
+ * @returns {{byPagination: Object, itemCount: Number, loadMoreItems: Function}}
+ * where:
+ * - byPagination is a map of paginated elements
+ * - itemCount is the total number of elements
+ * - loadMoreItems is a function to call to ask for more items
+ */
+export default (status, newSearch = null) => {
+  const handleHttpErrors = useHandleHttpErrors();
+
+  const hasSearch = useMemo(() => !isNil(newSearch), [newSearch]);
+
+  // payload for API
+  const payload = useMemo(
+    () => (hasSearch ? ({ search: newSearch, statuses: [status] }) : { statuses: [status] }),
+    [hasSearch, newSearch, status],
+  );
+
+  // ACTIONS
+  const receiveItemCountAction = useMemo(
+    () => getReceiveItemCountActionCreator(status),
+    [status],
+  );
+
+  const receivePaginationAction = useMemo(
+    () => getReceiveActionCreator(status),
+    [status],
+  );
+  // ---
+
+  const dispatch = useDispatch();
+
+  // SELECTORS
+  const statusSelectors = useMemo(
+    () => selectorsProp(status),
+    [status],
+  );
+
+  const byPaginationSelector = useMemo(
+    () => (hasSearch ? statusSelectors.getBySearchPagination : statusSelectors.getByPagination),
+    [hasSearch, statusSelectors.getByPagination, statusSelectors.getBySearchPagination],
+  );
+
+  const itemCountSelector = useMemo(
+    () => statusSelectors.getItemCount,
+    [statusSelectors.getItemCount],
+  );
+
+  const searchSelector = useMemo(
+    () => statusSelectors.getSearch,
+    [statusSelectors.getSearch],
+  );
+
+  // ---
+
+  // SELECTORS hooks with memoization layer
+  const byPagination = useSelector(byPaginationSelector);
+  const itemCount = useSelector(itemCountSelector);
+  const currentSearch = useSelector(searchSelector);
+
+  // ---
+
+  const dispatchReceiveBoxes = useCallback(
+    (data, { offset, limit }) => {
+      const normalized = normalize(
+        data,
+        BoxesSchema.collection,
+      );
+      const { entities, result } = normalized;
+      return Promise.all([
+        dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
+        dispatch(receivePaginationAction(offset, limit, result, newSearch)),
+      ]);
+    },
+    [dispatch, newSearch, receivePaginationAction],
+  );
+
+  // API data fetching:
+  // get boxes
+  // check missing applications in store
+  // get applications
+  const get = useCallback(
+    (pagination) => getUserBoxesBuilder({ ...payload, ...pagination })
+      .then((response) => dispatchReceiveBoxes(response.map(objectToCamelCase), pagination)),
+    [dispatchReceiveBoxes, payload],
+  );
+
+  const getCount = useCallback(
+    () => countUserBoxesBuilder(payload),
+    [payload],
+  );
+
+  const onGetSearch = useMemo(
+    () => debounce(async (pagination) => get(pagination), 200, { leading: true }),
+    [get],
+  );
+
+  // called by react-window lists
+  // decides whenever API calls are needed
+  const loadMoreItems = useCallback(
+    (pagination) => {
+      const askedPagination = makeRangeFromOffsetLimit(pagination);
+      const pickedIndexes = pickAll(askedPagination, byPagination);
+      const paginatedIds = Object.values(pickedIndexes)
+        .filter((pickedIndex) => !isNil(pickedIndex));
+      // if search has changed, we want to replace all data in bySearchPagination
+      if ((currentSearch !== newSearch) && (!isNil(currentSearch) || !isNil(newSearch))) {
+        return onGetSearch(pagination);
+      }
+      // when asked data is already in store
+      if (askedPagination.length === paginatedIds.length) {
+        return Promise.resolve();
+      }
+      const missingIndexes = getMissingIndexes(pickedIndexes).map(((index) => parseInt(index, 10)));
+      // call API
+      return get(makeOffsetLimitFromRange(missingIndexes));
+    },
+    [byPagination, currentSearch, get, newSearch, onGetSearch],
+  );
+
+  // update itemCount whenever it is nil
+  useEffect(
+    () => {
+      if (isNil(itemCount)) {
+        getCount()
+          .then((result) => dispatch(receiveItemCountAction(result)))
+          .catch((e) => handleHttpErrors(e));
+      }
+    },
+    [dispatch, getCount, handleHttpErrors, itemCount, receiveItemCountAction],
+  );
+
+  // extra memoization layer because of object format
+  return useMemo(
+    () => ({
+      byPagination,
+      itemCount,
+      loadMoreItems,
+    }),
+    [byPagination, itemCount, loadMoreItems],
+  );
+};

@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function DpoRequestReadUploadDialog({
+function UploadDialog({
   request,
   t,
   onClose,
@@ -110,7 +110,7 @@ function DpoRequestReadUploadDialog({
       resetForm();
 
       if (isEmpty(errors)) {
-        const text = t('dpo:requests.read.upload.success');
+        const text = t('boxes:read.upload.success');
         enqueueSnackbar(text, { variant: 'success' });
         onClose();
       } else {
@@ -125,8 +125,8 @@ function DpoRequestReadUploadDialog({
       fullWidth
       open={open}
       onClose={onClose}
-      aria-labelledby="dpo-request-upload-dialog-title"
-      aria-describedby="dpo-request-upload-dialog-description"
+      aria-labelledby="upload-dialog-title"
+      aria-describedby="upload-dialog-description"
     >
       <Formik
         validationSchema={serviceRequestsReadValidationSchema}
@@ -175,7 +175,7 @@ function DpoRequestReadUploadDialog({
   );
 }
 
-DpoRequestReadUploadDialog.propTypes = {
+UploadDialog.propTypes = {
   request: PropTypes.shape(DataboxSchema.propTypes),
   open: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
@@ -183,9 +183,9 @@ DpoRequestReadUploadDialog.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-DpoRequestReadUploadDialog.defaultProps = {
+UploadDialog.defaultProps = {
   request: null,
   open: false,
 };
 
-export default withTranslation(['common', 'dpo'])(DpoRequestReadUploadDialog);
+export default withTranslation(['common', 'boxes'])(UploadDialog);

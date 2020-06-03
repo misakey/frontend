@@ -9,5 +9,5 @@ export function isSigninRedirect() {
 
 export function processSigninRedirect() {
   const userManager = createUserManager(window.env.AUTH);
-  userManager.signinRedirect({ referrer: routes.citizen._ });
+  userManager.signinRedirect({ referrer: routes.boxes._ });
 }

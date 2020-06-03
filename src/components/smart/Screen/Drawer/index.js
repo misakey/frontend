@@ -87,16 +87,20 @@ function ScreenDrawer({ drawerChildren, children, isFullWidth, ...props }) {
     [isXsDown, searchParams],
   );
 
+  const selectedDrawer = useMemo(
+    () => searchParams[TMP_DRAWER] || searchParams[DRAWER], [searchParams],
+  );
+
   const getNextDrawerSearch = useCallback((value, isTmp = isXsDown) => ({
     pathname,
     search: getNextSearch(search, new Map([[isTmp ? TMP_DRAWER : DRAWER, value]])),
   }), [isXsDown, pathname, search]);
 
   const toggleDrawer = useCallback(
-    () => {
-      const newParameter = !isNil(searchParams[TMP_DRAWER]) ? undefined : DEFAULT;
-      history.replace(getNextDrawerSearch(newParameter, true));
-    }, [getNextDrawerSearch, history, searchParams],
+    (e, value = DEFAULT, isTmp = isXsDown) => {
+      const newParameter = !isNil(selectedDrawer) ? undefined : value;
+      history.replace(getNextDrawerSearch(newParameter, isTmp));
+    }, [getNextDrawerSearch, history, isXsDown, selectedDrawer],
   );
 
   const onClose = useCallback(
@@ -104,10 +108,6 @@ function ScreenDrawer({ drawerChildren, children, isFullWidth, ...props }) {
       history.replace(getNextDrawerSearch(undefined, true));
     },
     [getNextDrawerSearch, history],
-  );
-
-  const selectedDrawer = useMemo(
-    () => searchParams[TMP_DRAWER] || searchParams[DRAWER], [searchParams],
   );
 
   const drawerProps = useMemo(

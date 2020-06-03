@@ -9,7 +9,14 @@ import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 
 // CONSTANTS
-export const INITIAL_STATE = { byPagination: {}, itemCount: null };
+export const BY_PAGINATION = 'byPagination';
+export const BY_SEARCH_PAGINATION = 'bySearchPagination';
+export const INITIAL_STATE = {
+  [BY_PAGINATION]: {},
+  [BY_SEARCH_PAGINATION]: {},
+  itemCount: null,
+  search: null,
+};
 
 // HELPERS
 const getIdPaginatedIndex = (pagination, id) => invertObj(pagination)[id];
@@ -21,8 +28,9 @@ const onReceivePaginatedItemCount = (state, { itemCount }) => ({
   itemCount,
 });
 
-const onReceivePaginatedIds = (state, { offset, limit, ids }) => {
+const onReceivePaginatedIds = (state, { offset, limit, ids, search = null }) => {
   const paginatedRange = range(offset, offset + limit);
+  const stateKey = !isNil(search) ? BY_SEARCH_PAGINATION : BY_PAGINATION;
 
   const nextByPagination = paginatedRange.reduce((aggr, key, index) => ({
     ...aggr,
@@ -31,15 +39,17 @@ const onReceivePaginatedIds = (state, { offset, limit, ids }) => {
 
   return {
     ...state,
-    byPagination: {
-      ...state.byPagination,
+    search,
+    [stateKey]: {
+      ...state[stateKey],
       ...nextByPagination,
     },
   };
 };
 
-const onAddPaginatedId = (state, { id }) => {
-  const nextByPagination = Object.entries(state.byPagination)
+const onAddPaginatedId = (state, { id, search = null }) => {
+  const stateKey = !isNil(search) ? BY_SEARCH_PAGINATION : BY_PAGINATION;
+  const nextByPagination = Object.entries(state[stateKey])
     .reduce((aggr, [key, value]) => ({
       ...aggr,
       [parseInt(key, 10) + 1]: value,
@@ -47,22 +57,24 @@ const onAddPaginatedId = (state, { id }) => {
 
   return {
     ...state,
-    byPagination: nextByPagination,
+    search,
+    [stateKey]: nextByPagination,
     itemCount: (state.itemCount || 0) + 1,
   };
 };
 
-const onRemovePaginatedId = (state, { id }) => {
-  const paginatedIndex = getIdPaginatedIndex(state.byPagination, id);
+const onRemovePaginatedId = (state, { id, search = null }) => {
+  const stateKey = !isNil(search) ? BY_SEARCH_PAGINATION : BY_PAGINATION;
+  const paginatedIndex = getIdPaginatedIndex(state[stateKey], id);
 
   if (isNil(paginatedIndex)) {
     return state;
   }
 
   const unchangedRanged = range(0, paginatedIndex);
-  const unchangedByPagination = pick(unchangedRanged, state.byPagination);
+  const unchangedByPagination = pick(unchangedRanged, state[stateKey]);
 
-  const nextByPagination = Object.entries(state.byPagination)
+  const nextByPagination = Object.entries(state[stateKey])
     .reduce((aggr, [key, value]) => {
       const intKey = parseInt(key, 10);
       if (intKey > paginatedIndex) {
@@ -77,7 +89,8 @@ const onRemovePaginatedId = (state, { id }) => {
 
   return {
     ...state,
-    byPagination: nextByPagination,
+    search,
+    [stateKey]: nextByPagination,
     itemCount: state.itemCount - 1,
   };
 };
@@ -103,28 +116,39 @@ export const makePaginationReducer = (prefix, getState) => {
     itemCount,
   });
 
-  const receivePaginatedIds = (offset, limit, ids) => ({
+  const receivePaginatedIds = (offset, limit, ids, search = null) => ({
     type: RECEIVE_PAGINATED_IDS,
     offset,
     limit,
     ids,
+    search,
   });
 
-  const addPaginatedId = (id) => ({
+  const addPaginatedId = (id, search = null) => ({
     type: ADD_PAGINATED_ID,
     id,
+    search,
   });
 
-  const removePaginatedId = (id) => ({
+  const removePaginatedId = (id, search = null) => ({
     type: REMOVE_PAGINATED_ID,
     id,
+    search,
   });
 
   // SELECTORS
   const selectors = isFunction(getState) ? {
     getByPagination: createSelector(
       getState,
-      prop('byPagination'),
+      prop(BY_PAGINATION),
+    ),
+    getSearch: createSelector(
+      getState,
+      prop('search'),
+    ),
+    getBySearchPagination: createSelector(
+      getState,
+      prop(BY_SEARCH_PAGINATION),
     ),
     getItemCount: createSelector(
       getState,

@@ -15,7 +15,7 @@ import ActivityLogsSchema from 'store/schemas/Databox/ActivityLogs';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 import { getRequestById } from 'store/reducers/request';
-import { updatePaginationsToStatus } from 'store/reducers/userRequests/pagination';
+// import { updatePaginationsToStatus } from 'store/reducers/userRequests/pagination';
 
 
 // HELPERS
@@ -148,9 +148,9 @@ export const updateDatabox = (id, changes, event = null) => (dispatch, getState)
     actions.push(receiveEntities(entities, mergeReceiveNoEmpty));
   }
 
-  if (changes.status) {
-    actions.push(updatePaginationsToStatus(id, changes.status));
-  }
+  // if (changes.status) {
+  //   actions.push(updatePaginationsToStatus(id, changes.status));
+  // }
   actions.push(updateEntities([{ id, changes: databoxChanges }], DataboxSchema));
 
   return Promise.all(actions.map(dispatch));

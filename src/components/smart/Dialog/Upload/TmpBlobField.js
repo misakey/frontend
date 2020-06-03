@@ -60,7 +60,7 @@ const FieldBlobTmp = ({
       <FieldFile
         accept={['*']}
         className={classes.blob}
-        labelText={t('dpo:requests.read.upload.dialog.label')}
+        labelText={t('boxes:read.upload.dialog.label')}
         field={{
           ...field,
           onChange,
@@ -73,11 +73,10 @@ const FieldBlobTmp = ({
         </FormHelperText>
       ) : (
         <FormHelperText>
-          <Trans i18nKey={t('dpo:requests.read.upload.dialog.helperText')} values={{ userEmail }}>
-            {'Déposer le fichier que vous souhaitez chiffrer pour'}
+          <Trans i18nKey={t('boxes:read.upload.dialog.helperText')}>
+            Déposer le fichier que vous souhaitez chiffrer.
             {' '}
-            {userEmail}
-            {'. '}
+            {/* @FIXME: change link to doc */}
             <Link href={t('dpo:requests.read.questions.href.0')} color="secondary">En savoir plus</Link>
           </Trans>
         </FormHelperText>
@@ -100,4 +99,4 @@ FieldBlobTmp.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['dpo', 'fields'])(withErrors(FieldBlobTmp));
+export default withTranslation(['boxes', 'dpo', 'fields'])(withErrors(FieldBlobTmp));
