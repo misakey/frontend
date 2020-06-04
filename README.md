@@ -7,7 +7,7 @@ Misakey frontend
 
 This project is the frontend repository of [Misakey](https://misakey.com/).
 
-For more info about Misakey, you can see our [presentation page](https://docs.misakey.com).
+For more info about Misakey, you can see our [presentation page](https://about.misakey.com).
 
 On this README you will only find technical information about the frontend code.
 For more global information about Misakey, the contribution guide, the community, 

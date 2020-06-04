@@ -31,11 +31,11 @@
           "4": "Comment automatiser les réponses aux requêtes\u00a0?"
         },
         "href": {
-          "0": "https://docs.misakey.com/#/dpo/?id=envoyer-un-fichier-avec-misakey-",
-          "1": "https://docs.misakey.com/#/dpo/?id=la-demande-de-portabilité",
-          "2": "https://docs.misakey.com/#/dpo/?id=obligation-des-sites",
-          "3": "https://docs.misakey.com/#/dpo/?id=envoi-securisé",
-          "4": "https://docs.misakey.com/#/dpo/?id=automatisation"
+          "0": "https://about.misakey.com/#/dpo/?id=envoyer-un-fichier-avec-misakey-",
+          "1": "https://about.misakey.com/#/dpo/?id=la-demande-de-portabilité",
+          "2": "https://about.misakey.com/#/dpo/?id=obligation-des-sites",
+          "3": "https://about.misakey.com/#/dpo/?id=envoi-securisé",
+          "4": "https://about.misakey.com/#/dpo/?id=automatisation"
         }
       }
     },
@@ -62,9 +62,9 @@
           "2": "Je ne veux plus traiter toutes ces demandes manuellement, comment automatiser ce processus\u00a0?"
         },
         "href": {
-          "0": "https://docs.misakey.com/#/dpo/?id=envoi-securisé",
-          "1": "https://docs.misakey.com/#/dpo/?id=obligation-des-sites",
-          "2": "https://docs.misakey.com/#/dpo/?id=automatisation"
+          "0": "https://about.misakey.com/#/dpo/?id=envoi-securisé",
+          "1": "https://about.misakey.com/#/dpo/?id=obligation-des-sites",
+          "2": "https://about.misakey.com/#/dpo/?id=automatisation"
         }
       },
       "title": "Coffre-fort de {{ownerName}}",
