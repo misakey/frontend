@@ -35,7 +35,7 @@ const REFERRERS = {
 // COMPONENTS
 const TRedirectAuthCallback = withTranslation('common')(RedirectAuthCallback);
 
-const App = ({ t, isAuthenticated }) => (
+const App = ({ t /* , isAuthenticated */ }) => (
   <ErrorBoundary maxWidth="md" my={3}>
     <Suspense fallback={<ScreenSplash />}>
       <SeclevelWarningAlert />
@@ -62,9 +62,11 @@ const App = ({ t, isAuthenticated }) => (
           )}
         />
         <Redirect
-          exact
-          path={routes._}
-          to={isAuthenticated ? routes.boxes._ : routes.auth.redirectToSignIn}
+          // @fixme: remove me when developping back in boxes
+          // exact
+          // path={routes._}
+          to="https://www.misakey.com"
+          // to={isAuthenticated ? routes.boxes._ : routes.auth.redirectToSignIn}
         />
         <Route path={[routes.boxes._, routes.accounts._]} component={Home} />
         <Route
