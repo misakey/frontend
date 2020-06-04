@@ -18,6 +18,8 @@ import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallback
 import RoutePrivate from '@misakey/auth/components/Route/Private';
 import SeclevelWarningAlert from 'components/smart/Alert/SeclevelWarning';
 
+import { processSigninRedirect } from '@misakey/helpers/auth';
+
 import './App.scss';
 
 // LAZY
@@ -65,6 +67,14 @@ const App = ({ t, isAuthenticated }) => (
           to={isAuthenticated ? routes.boxes._ : routes.auth.redirectToSignIn}
         />
         <Route path={[routes.boxes._, routes.accounts._]} component={Home} />
+        <Route
+          exact
+          path={routes.auth.redirectToSignIn}
+          render={() => {
+            processSigninRedirect();
+            return null;
+          }}
+        />
 
         {/* DEFAULT */}
         <Route component={NotFound} />
