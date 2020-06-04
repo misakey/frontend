@@ -20,7 +20,7 @@ config: >-
     MATOMO: {
       ENABLED: true,
       URL: 'https://analytics.misakey.com/',
-      SITEID: '4'
+      SITEID: '2'
     },
     ACTIVE_SERVICES: [
       'mortdu.fun',
