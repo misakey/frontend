@@ -90,7 +90,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const Footer = ({ t, typographyProps, FABPadded, ContainerComponent, containerProps, ...rest }) => {
+const Footer = ({
+  t, title, typographyProps,
+  FABPadded,
+  ContainerComponent, containerProps,
+  ...rest
+}) => {
   const classes = useStyles({ FABPadded });
 
   const [expanded, setExpanded] = useState(false);
@@ -126,7 +131,7 @@ const Footer = ({ t, typographyProps, FABPadded, ContainerComponent, containerPr
           expandIcon={<ExpandMoreIcon />}
         >
           <Subtitle noWrap>
-            {t('components:footer.title')}
+            {title || t('components:footer.title')}
           </Subtitle>
           <Logo className={classes.logoRoot} />
         </ExpansionPanelSummary>
@@ -248,6 +253,7 @@ const Footer = ({ t, typographyProps, FABPadded, ContainerComponent, containerPr
 
 Footer.propTypes = {
   t: PropTypes.func.isRequired,
+  title: PropTypes.string,
   typographyProps: PropTypes.object,
   FABPadded: PropTypes.bool,
   ContainerComponent: PropTypes.elementType,
@@ -255,6 +261,7 @@ Footer.propTypes = {
 };
 
 Footer.defaultProps = {
+  title: '',
   typographyProps: {},
   FABPadded: false,
   ContainerComponent: Box,

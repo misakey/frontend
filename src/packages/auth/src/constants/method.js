@@ -1,0 +1,21 @@
+import { CONFIRMATION_CODE_SECLEVEL, PASSWORD_SECLEVEL } from '@misakey/auth/constants/seclevel';
+
+export const EMAILED_CODE = 'emailed_code';
+export const PASSWORD = 'password';
+
+export const SECLEVEL_METHOD = {
+  [CONFIRMATION_CODE_SECLEVEL]: EMAILED_CODE,
+  [PASSWORD_SECLEVEL]: PASSWORD,
+};
+
+export const METHODS = [EMAILED_CODE, PASSWORD];
+
+export const EMAILED_CODE_METADATA_KEY = 'code';
+export const PASSWORD_METADATA_KEY = 'password';
+
+export const METADATA_KEYS = [EMAILED_CODE_METADATA_KEY, PASSWORD_METADATA_KEY];
+
+export const METHOD_METADATA_KEY = {
+  [EMAILED_CODE]: EMAILED_CODE_METADATA_KEY,
+  [PASSWORD]: PASSWORD_METADATA_KEY,
+};

@@ -10,10 +10,13 @@ const matchingMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD'];
 
 const matchingNaming = ['create', 'read', 'update', 'delete', 'find', 'search', 'count'];
 
+// @FIXME to cleanup
 const authExtendedNamings = [
   'signIn', 'signOut', 'signUp',
   'resetPassword', 'forgotPassword', 'confirm',
   'askConfirm', 'init',
+  // @FIXME latest to validate
+  'checkAuthable', 'info', 'loginAuthStep', 'renewAuthStep',
 ];
 
 window.env = {

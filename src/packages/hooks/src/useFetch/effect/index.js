@@ -24,7 +24,12 @@ import useFetchCallback from '@misakey/hooks/useFetch/callback';
  */
 export default (
   fetchFn,
-  { shouldFetch = true, fetchOnlyOnce = false, stopOnError = true, fetchWhileFetching = false },
+  {
+    shouldFetch = true,
+    fetchOnlyOnce = false,
+    stopOnError = true,
+    fetchWhileFetching = false,
+  } = {},
   ...props
 ) => {
   const {

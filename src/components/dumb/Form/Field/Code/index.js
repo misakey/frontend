@@ -15,6 +15,9 @@ import TextField from '@material-ui/core/TextField';
 import withErrors from '../withErrors';
 
 // CONSTANTS
+const OUTLINED = 'outlined';
+const STANDARD = 'standard';
+
 // copied padding of outlined input
 const LETTER_WIDTH = '1rem';
 const LETTER_SPACING = '2rem';
@@ -35,38 +38,39 @@ const useStyles = makeStyles((theme) => ({
     },
   }),
   formHelperTextRoot: {
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
   },
-  inputInput: {
+  inputInput: ({ variant }) => ({
     boxSizing: 'border-box',
     height: 'auto',
     // removes padding right, bottom padding to insert ::before element instead
-    padding: theme.spacing(2, 0, 0, 1.5),
+    padding: theme.spacing(2, 0, 0, variant === STANDARD ? 0 : 1.5),
     // arbitrary choice of typography
     ...theme.typography.h5,
     // @FIXME use a more fancy font? We simply need a monospaced font
     // Roboto Mono has issues with monospace
     fontFamily: 'monospace',
     letterSpacing: LETTER_SPACING,
-    width: '100%',
     [theme.breakpoints.only('xs')]: {
       letterSpacing: XS_LETTER_SPACING,
     },
-  },
-  inputRoot: {
+  }),
+  inputRoot: ({ variant, content }) => ({
     display: 'flex',
     flexDirection: 'column-reverse',
     alignItems: 'flex-start',
-    paddingLeft: LETTER_SPACING,
+    paddingLeft: variant === STANDARD ? theme.spacing(0) : LETTER_SPACING,
     [theme.breakpoints.only('xs')]: {
-      paddingLeft: XS_LETTER_SPACING,
+      paddingLeft: variant === STANDARD ? theme.spacing(0) : XS_LETTER_SPACING,
     },
     '&::before': {
-      content: ({ content }) => `'${content}'`,
+      position: 'static', // force behaviour when variant standard
+      // borderBottom: 'none !important', // force behaviour when variant standard
+      content: `'${content}'`,
       // arbitrary choice of typography
       ...theme.typography.h5,
       fontFamily: 'monospace',
-      padding: theme.spacing(0, 1.5),
+      padding: variant === STANDARD ? theme.spacing(0) : theme.spacing(0, 1.5),
       letterSpacing: LETTER_SPACING,
       [theme.breakpoints.only('xs')]: {
         letterSpacing: XS_LETTER_SPACING,
@@ -74,25 +78,31 @@ const useStyles = makeStyles((theme) => ({
       // forcing lineHeight 0 for display purpose
       lineHeight: 0,
       // height comes from padding of outlined input
-      height: '18.5px',
+      height: variant === OUTLINED ? '18.5px' : '18.5px',
       // extra margin to make the text caret visible inside input even when full
-      marginRight: '0.25rem',
+      marginRight: variant === OUTLINED ? '0.25rem' : null,
     },
-  },
+  }),
 }));
 
 // COMPONENTS
 const FieldCode = ({
   className, displayError, errorKeys, field, form: { setFieldValue, setFieldTouched },
   helperText, label, inputProps,
+  variant,
   t, length,
   ...rest
 }) => {
+  const isOutlined = useMemo(
+    () => variant === OUTLINED,
+    [variant],
+  );
+
   const content = useMemo(
     () => repeatUnderline(length),
     [length],
   );
-  const classes = useStyles({ length, content });
+  const classes = useStyles({ length, content, variant });
 
   const { name } = field;
   const defaultLabel = useMemo(() => t(`fields:${name}.label`), [t, name]);
@@ -114,7 +124,7 @@ const FieldCode = ({
   return (
     <TextField
       margin="normal"
-      variant="outlined"
+      variant={variant}
       label={label || defaultLabel}
       className={clsx(className, classes.textFieldRoot)}
       inputProps={{
@@ -132,6 +142,7 @@ const FieldCode = ({
           input: classes.inputInput,
           root: classes.inputRoot,
         },
+        disableUnderline: !isOutlined,
         onChange,
       }}
       FormHelperTextProps={{
@@ -160,6 +171,7 @@ FieldCode.propTypes = {
   helperText: PropTypes.string,
   length: PropTypes.number,
   inputProps: PropTypes.object,
+  variant: PropTypes.oneOf([OUTLINED, STANDARD, 'filled']),
   t: PropTypes.func.isRequired,
 };
 
@@ -169,6 +181,7 @@ FieldCode.defaultProps = {
   helperText: '',
   length: 6,
   inputProps: {},
+  variant: STANDARD,
 };
 
 export default withTranslation('fields')(withErrors(FieldCode));

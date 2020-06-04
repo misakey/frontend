@@ -7,7 +7,7 @@ import omit from '@misakey/helpers/omit';
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
@@ -18,7 +18,8 @@ import ErrorIcon from '@material-ui/icons/Error';
 
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import AppBar, { APPBAR_HEIGHT } from 'components/dumb/AppBar';
-import Footer, { FOOTER_HEIGHT } from 'components/dumb/Footer';
+import { FOOTER_HEIGHT } from 'components/dumb/Footer';
+import FooterFullScreen from 'components/dumb/Footer/FullScreen';
 
 // CONSTANTS
 // footer height + margintop
@@ -143,10 +144,6 @@ const useScreenStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
   }),
-  footer: {
-    borderLeft: 'none',
-    borderRight: 'none',
-  },
 }));
 
 /**
@@ -169,6 +166,7 @@ function Screen({
   footerProps,
   children,
   className,
+  classes,
   description,
   hideAppBar,
   hideFooter,
@@ -209,20 +207,7 @@ function Screen({
     [appBarProps, hasError, hideAppBar],
   );
 
-  const classes = useScreenStyles({ hideAppBar: hideAppBarExError, disableGrow });
-
-  const footerPropsWithContainerProps = useMemo(
-    () => ({
-      containerProps: {
-        maxWidth: 'md',
-      },
-      className: classes.footer,
-      square: true,
-      ...footerProps,
-    }),
-    [classes.footer, footerProps],
-  );
-
+  const internalClasses = useScreenStyles({ hideAppBar: hideAppBarExError, disableGrow });
 
   const isLoading = useMemo(
     () => state.isLoading || state.isFetching,
@@ -235,7 +220,7 @@ function Screen({
     <>
       {isLoading && (
         <LinearProgress
-          className={classes.progress}
+          className={internalClasses.progress}
           color="secondary"
           variant="query"
         />
@@ -247,7 +232,7 @@ function Screen({
       )}
       <Box
         component="div"
-        className={clsx(classes.root, className)}
+        className={clsx(internalClasses.root, className)}
         {...omit(rest, ['staticContext', 'match'])}
       >
         <StateWrapper
@@ -256,15 +241,11 @@ function Screen({
           {...state}
           isLoading={isLoading}
         >
-          <div className={classes.content}>
+          <div className={clsx(internalClasses.content, classes.content)}>
             {children}
           </div>
         </StateWrapper>
-        { !hideFooter && (
-          <Box mt={2}>
-            <Footer ContainerComponent={Container} {...footerPropsWithContainerProps} />
-          </Box>
-        ) }
+        {!hideFooter && <FooterFullScreen />}
       </Box>
     </>
   );
@@ -282,6 +263,9 @@ Screen.propTypes = {
   footerProps: PropTypes.object,
   children: PropTypes.node,
   className: PropTypes.string,
+  classes: PropTypes.shape({
+    content: PropTypes.string,
+  }),
   description: PropTypes.string,
   hideAppBar: PropTypes.bool,
   hideFooter: PropTypes.bool,
@@ -297,6 +281,9 @@ Screen.defaultProps = {
   footerProps: {},
   children: null,
   className: '',
+  classes: {
+    content: '',
+  },
   description: '',
   hideAppBar: false,
   hideFooter: false,

@@ -22,7 +22,7 @@ import ButtonConnectNoToken from './NoToken';
 import ButtonConnectToken from './Token';
 
 // CONSTANTS
-const PROFILE_PROPS = ['avatarUri', 'displayName', 'email'];
+const PROFILE_PROPS = ['avatarUrl', 'displayName', 'email'];
 
 // HELPERS
 const getTokenClasses = (classes) => nestedClasses(classes, 'token', 'noToken');
@@ -150,7 +150,7 @@ ButtonConnect.propTypes = {
 
   onSignOut: PropTypes.func,
   profile: PropTypes.shape({
-    avatarUri: PropTypes.string,
+    avatarUrl: PropTypes.string,
     displayName: PropTypes.string,
     email: PropTypes.string,
   }),

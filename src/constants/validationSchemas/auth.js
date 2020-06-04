@@ -1,20 +1,35 @@
 import * as Yup from 'yup';
-import mapValues from '@misakey/helpers/mapValues';
-import pick from '@misakey/helpers/pick';
 
 import {
   emailFieldValidation, passwordFieldValidation, codeFieldValidation,
   handleFieldValidation, switchFieldValidation, notificationFieldValidation,
 } from 'constants/fieldValidations';
 
+import { EMAILED_CODE, PASSWORD } from '@misakey/auth/constants/method';
+
+import mapValues from '@misakey/helpers/mapValues';
+import pick from '@misakey/helpers/pick';
+
+export const identifierValidationSchema = Yup.object().shape({
+  identifier: emailFieldValidation.schema,
+});
+
+const secretValidationSchemas = {
+  [EMAILED_CODE]: codeFieldValidation.schema,
+  [PASSWORD]: passwordFieldValidation.schema,
+};
+
+export const getSecretValidationSchema = (methodName) => Yup.object().shape({
+  secret: secretValidationSchemas[methodName],
+});
 
 const signInValidationSchema = {
   identifier: {
     email: emailFieldValidation.schema,
   },
   secret: {
-    password: passwordFieldValidation.schema,
-    confirmationCode: codeFieldValidation.schema,
+    [PASSWORD]: passwordFieldValidation.schema,
+    [EMAILED_CODE]: codeFieldValidation.schema,
   },
 };
 

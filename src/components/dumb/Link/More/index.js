@@ -21,7 +21,7 @@ const LinkMore = (props) => {
   const classes = useStyles();
   return (
     <Typography className={classes.moreTypography} {...props}>
-      <Trans i18nKey="auth:signIn.card.more">
+      <Trans i18nKey="auth:login.card.more">
         {'En savoir plus sur '}
         <MUILink
           color="secondary"

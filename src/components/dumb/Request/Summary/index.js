@@ -60,7 +60,7 @@ const RequestSummary = ({ request, isFetching, t, ...rest }) => {
     () => {
       if (workspace === WORKSPACE.DPO) {
         return {
-          avatarUri: owner.avatarUri,
+          avatarUrl: owner.avatarUrl,
           displayName: owner.displayName,
           component: AvatarUser,
         };

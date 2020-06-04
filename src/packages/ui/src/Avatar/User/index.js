@@ -27,18 +27,18 @@ const useStyles = makeStyles(() => ({
 const AvatarUser = ({
   identifier,
   displayName,
-  avatarUri,
+  avatarUrl,
   ...rest
 }) => {
   const classes = useStyles();
 
   const isNotEmpty = useMemo(
-    () => isNotEmptyUser([identifier, displayName, avatarUri]),
-    [identifier, displayName, avatarUri],
+    () => isNotEmptyUser([identifier, displayName, avatarUrl]),
+    [identifier, displayName, avatarUrl],
   );
 
   if (isNotEmpty) {
-    return <AvatarColorized text={displayName || identifier} image={avatarUri} {...rest} />;
+    return <AvatarColorized text={displayName || identifier} image={avatarUrl} {...rest} />;
   }
 
   return <AccountCircleIcon classes={{ root: classes.iconRoot }} color="disabled" {...rest} />;
@@ -48,13 +48,13 @@ const AvatarUser = ({
 AvatarUser.propTypes = {
   identifier: PropTypes.string,
   displayName: PropTypes.string,
-  avatarUri: PropTypes.string,
+  avatarUrl: PropTypes.string,
 };
 
 AvatarUser.defaultProps = {
   identifier: '',
   displayName: '',
-  avatarUri: '',
+  avatarUrl: '',
 };
 
 export default AvatarUser;

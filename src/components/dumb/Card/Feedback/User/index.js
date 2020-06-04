@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 const UserFeedbackCard = ({ isAuthenticated, rating, className, t }) => {
   const classes = useStyles();
 
-  const { displayName, avatarUri } = useMemo(
+  const { displayName, avatarUrl } = useMemo(
     () => userInfoProp(rating),
     [rating],
   );
@@ -70,7 +70,7 @@ const UserFeedbackCard = ({ isAuthenticated, rating, className, t }) => {
         className={classes.cardHeader}
         avatar={(
           <AvatarUser
-            avatarUri={avatarUri}
+            avatarUrl={avatarUrl}
             displayName={displayName}
             fontSize="large"
           />

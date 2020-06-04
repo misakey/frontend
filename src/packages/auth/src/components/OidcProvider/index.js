@@ -203,7 +203,7 @@ OidcProvider.defaultProps = {
   children: null,
   config: {
     response_type: 'code',
-    scope: 'openid user',
+    scope: 'openid',
     automaticSilentRenew: true,
     loadUserInfo: false,
   },

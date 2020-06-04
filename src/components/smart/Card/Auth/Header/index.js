@@ -26,7 +26,7 @@ const CardHeaderAuth = ({ publics, ...props }) => {
   return (
     <CardHeader
       action={(
-        <AvatarUser {...pick(['identifier', 'displayName', 'avatarUri'], publics || {})} />
+        <AvatarUser {...pick(['identifier', 'displayName', 'avatarUrl'], publics || {})} />
       )}
       avatar={(
         <LinkHome>
@@ -42,7 +42,7 @@ const CardHeaderAuth = ({ publics, ...props }) => {
 CardHeaderAuth.propTypes = {
   publics: PropTypes.shape({
     displayName: PropTypes.string,
-    avatarUri: PropTypes.string,
+    avatarUrl: PropTypes.string,
   }),
 };
 

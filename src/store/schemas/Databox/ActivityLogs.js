@@ -37,7 +37,7 @@ const ActivityLogsSchema = {
     createdAt: PropTypes.string.isRequired,
     author: PropTypes.shape({
       display_name: PropTypes.string,
-      avatarUri: PropTypes.string,
+      avatarUrl: PropTypes.string,
     }),
   },
 };

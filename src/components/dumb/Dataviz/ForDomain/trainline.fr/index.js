@@ -236,7 +236,7 @@ TrainlineDataviz.propTypes = {
     name: PropTypes.string,
   }).isRequired,
   user: PropTypes.shape({
-    avatarUri: PropTypes.string,
+    avatarUrl: PropTypes.string,
     displayName: PropTypes.string,
   }).isRequired,
   t: PropTypes.func.isRequired,

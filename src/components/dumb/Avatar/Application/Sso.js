@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withTranslation } from 'react-i18next';
 
+import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
+
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -40,17 +42,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ApplicationAvatarSso = ({ sso, t, className, typographyProps, ...rest }) => {
+const ApplicationAvatarSso = ({ client, t, className, typographyProps, ...rest }) => {
   const classes = useStyles();
 
-  const { clientName, logoUri } = useMemo(
-    () => sso || {},
-    [sso],
+  const { name, logoUri } = useMemo(
+    () => client || {},
+    [client],
   );
 
   const alt = useMemo(
-    () => t('components:application.logoAlt', { brand: clientName }),
-    [clientName, t],
+    () => t('components:application.logoAlt', { brand: name }),
+    [name, t],
   );
 
   return (
@@ -58,12 +60,12 @@ const ApplicationAvatarSso = ({ sso, t, className, typographyProps, ...rest }) =
       <ApplicationAvatar
         classes={{ root: classes.appImg }}
         src={logoUri}
-        name={clientName}
+        name={name}
         alt={alt}
       />
       <div className={classes.appName}>
         <Typography noWrap color="textSecondary" {...typographyProps}>
-          {clientName}
+          {name}
         </Typography>
       </div>
 
@@ -73,17 +75,13 @@ const ApplicationAvatarSso = ({ sso, t, className, typographyProps, ...rest }) =
 
 ApplicationAvatarSso.propTypes = {
   className: PropTypes.string,
-  sso: PropTypes.shape({
-    clientName: PropTypes.string.isRequired,
-    logoUri: PropTypes.string.isRequired,
-  }),
+  client: SSO_PROP_TYPES.client.isRequired,
   t: PropTypes.func.isRequired,
   typographyProps: PropTypes.object,
 };
 
 ApplicationAvatarSso.defaultProps = {
   className: '',
-  sso: null,
   typographyProps: {},
 };
 

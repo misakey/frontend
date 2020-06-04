@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import routes from 'routes';
 import { DEFAULT_SECLEVEL, STEP } from 'constants/auth';
 import { isAuthSeclevelInsufficient, handleAuthSeclevelInsufficient } from 'constants/Errors/classes/AuthSeclevelInsufficient';
-import { isAuthPrepareCodeConflict, handleAuthPrepareCodeConflict } from 'constants/Errors/classes/AuthPrepareCodeConflict';
+import AuthStepAlreadyExistsConflict, { handleAuthStepAlreadyExistsConflict } from 'constants/Errors/classes/AuthStepAlreadyExistsConflict';
 import { isAuthNotConfirmedConflict, handleAuthNotConfirmedConflict } from 'constants/Errors/classes/AuthNotConfirmedConflict';
 
 import { screenAuthSetCredentials } from 'store/actions/screens/auth';
@@ -15,7 +15,7 @@ import log from '@misakey/helpers/log';
 
 import isEmpty from '@misakey/helpers/isEmpty';
 
-import fetchInitAuth from '@misakey/auth/api/initAuth';
+import fetchInitAuth from '@misakey/auth/builder/initAuth';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
@@ -26,7 +26,7 @@ import SignInIdentifier from 'components/screens/Auth/SignIn/Identifier';
 import SignInSecret from 'components/screens/Auth/SignIn/Secret';
 
 // HELPERS
-const handleSecretPrepareCodeConflict = handleAuthPrepareCodeConflict(STEP.secret);
+const handleSecretPrepareCodeConflict = handleAuthStepAlreadyExistsConflict(STEP.secret);
 const handleIdentifierNotConfirmedConflict = handleAuthNotConfirmedConflict(STEP.identifier);
 const handleIdentifierSeclevelInsufficient = handleAuthSeclevelInsufficient(STEP.identifier);
 
@@ -75,8 +75,8 @@ function AuthSignIn({ challenge, identifier, publicInfo, acr, dispatchSetCredent
       if (isAuthNotConfirmedConflict(error)) {
         dispatchSetCredentials(identifier, null);
         replace({ pathname: routes.auth.signUp.confirm, search });
-      } else if (isAuthPrepareCodeConflict(error)) {
-        enqueueSnackbar(t('auth:signIn.form.error.conflict'), { variant: 'error' });
+      } else if (error instanceof AuthStepAlreadyExistsConflict) {
+        enqueueSnackbar(t('auth:login.form.error.conflict'), { variant: 'error' });
         push({ pathname: routes.auth.signIn.secret, search });
       } else if (!isAuthSeclevelInsufficient(error)) {
         // handle only other errors because previous one is already handled

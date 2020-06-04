@@ -14,7 +14,7 @@ const UserSchema = {
     email: PropTypes.string.isRequired,
     displayName: PropTypes.string.isRequired,
     handle: PropTypes.string.isRequired,
-    avatarUri: PropTypes.string,
+    avatarUrl: PropTypes.string,
     notifications: PropTypes.oneOf(NOTIFICATIONS),
   },
 };

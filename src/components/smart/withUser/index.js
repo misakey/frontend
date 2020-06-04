@@ -52,7 +52,7 @@ const withUser = (Component) => {
     id: PropTypes.string,
     token: PropTypes.string,
     profile: PropTypes.shape({
-      avatarUri: PropTypes.string,
+      avatarUrl: PropTypes.string,
       displayName: PropTypes.string,
       email: PropTypes.string,
     }),

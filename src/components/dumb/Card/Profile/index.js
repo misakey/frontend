@@ -48,14 +48,14 @@ const useStyles = makeStyles(() => ({
 }));
 
 const CardProfile = ({ profile, t }) => {
-  const { displayName, avatarUri, handle, email, notifications } = profile;
+  const { displayName, avatarUrl, handle, email, notifications } = profile;
   const classes = useStyles();
 
   return (
     <Container className={classes.container} maxWidth="sm">
       <AvatarDetailed
         text={displayName}
-        image={avatarUri}
+        image={avatarUrl}
         title={displayName}
         subtitle={`@${handle}`}
       />

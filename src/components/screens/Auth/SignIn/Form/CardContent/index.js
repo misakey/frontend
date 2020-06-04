@@ -32,7 +32,7 @@ UserPublicChip.propTypes = {
   userPublicData: PropTypes.shape({
     displayName: PropTypes.string,
     identifier: PropTypes.string.isRequired,
-    avatarUri: PropTypes.string,
+    avatarUrl: PropTypes.string,
   }).isRequired,
 };
 
@@ -56,7 +56,7 @@ const SignInFormCard = ({ actions, fields, handlePrevious, step, userPublicData,
       {fields}
       {actions}
       <Typography className={classes.moreTypography}>
-        <Trans i18nKey="auth:signIn.card.more">
+        <Trans i18nKey="auth:login.card.more">
           {'En savoir plus sur '}
           <MUILink
             color="secondary"
@@ -80,7 +80,7 @@ SignInFormCard.propTypes = {
   step: PropTypes.oneOf([STEP.identifier, STEP.secret]).isRequired,
   userPublicData: PropTypes.shape({
     displayName: PropTypes.string,
-    avatarUri: PropTypes.string,
+    avatarUrl: PropTypes.string,
   }).isRequired,
   values: PropTypes.shape({ identifier: PropTypes.string.isRequired }).isRequired,
 };

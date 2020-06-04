@@ -54,8 +54,8 @@ const useOnSubmit = (
   () => (form, { setSubmitting }) => updateProfile(profile.id, pickForm(form))
     .then(() => fetchProfile(profile.id))
     .then((response) => {
-      const { avatarUri } = objectToCamelCase(response);
-      const changes = { avatarUri };
+      const { avatarUrl } = objectToCamelCase(response);
+      const changes = { avatarUrl };
       enqueueSnackbar(t('account:avatar.success'), { variant: 'success' });
       dispatchUpdate(profile.id, changes, history);
     })
@@ -79,14 +79,14 @@ const AccountAvatar = ({
     [isFetching],
   );
 
-  const { displayName, avatarUri } = useMemo(
+  const { displayName, avatarUrl } = useMemo(
     () => profile || EMPTY_OBJECT,
     [profile],
   );
 
   const initialValues = useMemo(
-    () => ({ avatar: avatarUri }),
-    [avatarUri],
+    () => ({ avatar: avatarUrl }),
+    [avatarUrl],
   );
 
   const handleHttpErrors = useHandleHttpErrors();
@@ -117,7 +117,7 @@ const AccountAvatar = ({
                 path={routes.account.profile.avatar._}
                 render={(routerProps) => (
                   <AccountAvatarDisplay
-                    avatarUri={avatarUri}
+                    avatarUrl={avatarUrl}
                     displayName={displayName}
                     name={FIELD_NAME}
                     previewName={PREVIEW_NAME}
@@ -152,7 +152,7 @@ const AccountAvatar = ({
 AccountAvatar.propTypes = {
   profile: PropTypes.shape({
     id: PropTypes.string,
-    avatarUri: PropTypes.string,
+    avatarUrl: PropTypes.string,
     displayName: PropTypes.string,
   }),
   error: PropTypes.instanceOf(Error),

@@ -11,7 +11,7 @@ import { DEFAULT_SECLEVEL, SECLEVEL_CONFIG, STEP, INITIAL_VALUES, ERROR_KEYS } f
 import { getSignInValidationSchema } from 'constants/validationSchemas/auth';
 import { screenAuthSetCredentials } from 'store/actions/screens/auth';
 import errorTypes from '@misakey/ui/constants/errorTypes';
-import { isAuthPrepareCodeConflict, handleAuthPrepareCodeConflict } from 'constants/Errors/classes/AuthPrepareCodeConflict';
+import AuthStepAlreadyExistsConflict, { handleAuthStepAlreadyExistsConflict } from 'constants/Errors/classes/AuthStepAlreadyExistsConflict';
 import { DATE_FULL } from 'constants/formats/dates';
 
 import isFunction from '@misakey/helpers/isFunction';
@@ -40,8 +40,8 @@ import LinkMore from 'components/dumb/Link/More';
 import Redirect from 'components/dumb/Redirect';
 import ChipUser from 'components/dumb/Chip/User';
 
-import fetchInitAuth from '@misakey/auth/api/initAuth';
-import fetchSignIn from '@misakey/auth/api/signIn';
+import fetchInitAuth from '@misakey/auth/builder/initAuth';
+import fetchSignIn from '@misakey/auth/builder/signIn';
 
 // CONSTANTS
 const { conflict } = errorTypes;
@@ -49,7 +49,7 @@ const CURRENT_STEP = STEP.secret;
 
 // HELPERS
 const onClickProp = prop('onClick');
-const handleSecretPrepareCodeConflict = handleAuthPrepareCodeConflict(STEP.secret);
+const handleSecretPrepareCodeConflict = handleAuthStepAlreadyExistsConflict(STEP.secret);
 
 const getSecretError = compose(
   head,
@@ -126,7 +126,7 @@ const AuthSignInSecret = ({
           } else if (details.toDelete === conflict) {
             const text = (
               <Trans
-                i18nKey="auth:signIn.form.error.deletedAccount"
+                i18nKey="auth:login.form.error.deletedAccount"
                 values={{
                   deletionDate: moment(details.deletionDate).format(DATE_FULL),
                 }}
@@ -181,11 +181,11 @@ const AuthSignInSecret = ({
   const renewConfirmationCode = useCallback(
     () => onFetchInitAuth()
       .then(() => {
-        enqueueSnackbar(t('auth:signIn.form.action.getANewCode.success'), { variant: 'success' });
+        enqueueSnackbar(t('auth:login.form.action.getANewCode.success'), { variant: 'success' });
       })
       .catch((error) => {
-        if (isAuthPrepareCodeConflict(error)) {
-          enqueueSnackbar(t('auth:signIn.form.error.conflict'), { variant: 'error' });
+        if (error instanceof AuthStepAlreadyExistsConflict) {
+          enqueueSnackbar(t('auth:login.form.error.conflict'), { variant: 'error' });
         } else {
           handleHttpErrors(error);
         }
@@ -198,7 +198,7 @@ const AuthSignInSecret = ({
   );
   const primary = useMemo(
     () => ({
-      text: t('auth:signIn.form.action.submit'),
+      text: t('auth:login.form.action.submit'),
     }),
     [t],
   );
@@ -240,7 +240,7 @@ const AuthSignInSecret = ({
         primary={primary}
         secondary={secondary}
         title={<AuthCardTitle name="signIn" />}
-        subtitle={t(`auth:signIn.card.subtitle.text.secret.${fieldType}`)}
+        subtitle={t(`auth:login.card.subtitle.text.secret.${fieldType}`)}
         Header={CardHeaderAuth}
         formik
       >

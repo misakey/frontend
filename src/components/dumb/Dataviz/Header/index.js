@@ -26,14 +26,14 @@ const useStyles = makeStyles((theme) => ({
 const DatavizHeader = ({ application, user, title, subtitle }) => {
   const classes = useStyles();
 
-  const { avatarUri, displayName } = user;
+  const { avatarUrl, displayName } = user;
   const { logoUri, name } = application;
 
   return (
     <Box p={2} display="flex" justifyContent="left">
       <Box display="flex" justifyContent="center">
         <UserAvatar
-          avatarUri={avatarUri}
+          avatarUrl={avatarUrl}
           displayName={displayName}
           className={classes.userLogo}
           imgProps={{ crossorigin: 'anonymous' }}
@@ -57,7 +57,7 @@ const DatavizHeader = ({ application, user, title, subtitle }) => {
 
 DatavizHeader.propTypes = {
   user: PropTypes.shape({
-    avatarUri: PropTypes.string,
+    avatarUrl: PropTypes.string,
     displayName: PropTypes.string,
   }).isRequired,
   application: PropTypes.shape({

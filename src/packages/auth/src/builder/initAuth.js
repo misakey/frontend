@@ -1,12 +1,13 @@
 import API from '@misakey/api';
 
-import { CONFIRMATION_CODE_SECLEVEL, PASSWORD_SECLEVEL } from 'constants/auth';
+import { CONFIRMATION_CODE_SECLEVEL, PASSWORD_SECLEVEL } from '@misakey/auth/constants/seclevel';
 
 
 /**
  * Performs the API call for authentication initialization.
  * for now the only kind of identifier we support is "email".
  */
+// @DEPRECATED
 export default async function initAuth({ challenge, email, acr, serverRelief }) {
   const payload = {
     challenge,

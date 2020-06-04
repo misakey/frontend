@@ -22,7 +22,7 @@ import './App.scss';
 
 // LAZY
 const Account = lazy(() => import('components/screens/Account'));
-const Auth = lazy(() => import('components/screens/Auth'));
+const Auth = lazy(() => import('components/newScreens/Auth'));
 
 // CONSTANTS
 const REFERRERS = {

@@ -17,9 +17,9 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import fetchPwdHashParams from '@misakey/auth/api/fetchPwdHashParams';
-import initAuth from '@misakey/auth/api/initAuth';
-import signIn from '@misakey/auth/api/signIn';
+import fetchPwdHashParams from '@misakey/auth/builder/fetchPwdHashParams';
+import initAuth from '@misakey/auth/builder/initAuth';
+import loginAuthStep from '@misakey/auth/builder/loginAuthStep';
 
 // import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -106,7 +106,7 @@ const AuthSignUpFinale = ({
           acr: (acr || DEFAULT_SECLEVEL),
           serverRelief: true,
         });
-        const signInResponse = await signIn({
+        const signInResponse = await loginAuthStep({
           challenge,
           email,
           secret: password,
@@ -186,7 +186,7 @@ AuthSignUpFinale.propTypes = {
   challenge: PropTypes.string,
   publics: PropTypes.shape({
     displayName: PropTypes.string,
-    avatarUri: PropTypes.string,
+    avatarUrl: PropTypes.string,
   }),
   acr: PropTypes.number.isRequired,
 };

@@ -16,7 +16,6 @@ import access from './access';
 import devicePreferences from './devicePreferences';
 import screens from './screens';
 import search from './search';
-import sso from './sso';
 import warning from './warning';
 import { userApplicationsReducers, userApplicationsInitialState } from './applications/userApplications';
 
@@ -28,7 +27,6 @@ const appReducer = combineReducers({
   ...devicePreferences,
   screens,
   search,
-  sso,
   warning,
   crypto,
   ...userBoxesPagination,

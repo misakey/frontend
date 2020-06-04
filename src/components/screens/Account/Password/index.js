@@ -14,7 +14,7 @@ import log from '@misakey/helpers/log';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
-import changePassword from '@misakey/auth/api/changePassword';
+import changePassword from '@misakey/auth/builder/changePassword';
 
 import ScreenAction from 'components/dumb/Screen/Action';
 import BoxControls from 'components/dumb/Box/Controls';

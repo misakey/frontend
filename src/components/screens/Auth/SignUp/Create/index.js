@@ -18,7 +18,7 @@ import { createNewOwnerSecrets } from '@misakey/crypto/store/actions/concrete';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
-import fetchSignUp from '@misakey/auth/api/signUp';
+import fetchSignUp from '@misakey/auth/builder/signUp';
 
 import { screenAuthSetCredentials, screenAuthSetPublics } from 'store/actions/screens/auth';
 

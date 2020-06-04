@@ -22,7 +22,7 @@ import isArray from '@misakey/helpers/isArray';
 
 import routes from 'routes';
 
-import { ssoUpdate } from 'store/actions/sso';
+import { ssoUpdate } from '@misakey/auth/store/actions/sso';
 import Screen from 'components/dumb/Screen';
 
 import { screenAuthReset, screenAuthSetIdentifier } from 'store/actions/screens/auth';

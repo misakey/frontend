@@ -22,7 +22,7 @@ import AvatarUser from '../../../Avatar/User';
 
 
 // HELPERS
-const pickAvatarUserProps = pick(['avatarUri', 'displayName']);
+const pickAvatarUserProps = pick(['avatarUrl', 'displayName']);
 
 // HOOKS
 const useHandleMenu = (setAnchorEl) => useCallback(
@@ -167,7 +167,7 @@ ButtonConnectToken.propTypes = {
 
   onSignOut: PropTypes.func,
   profile: PropTypes.shape({
-    avatarUri: PropTypes.string,
+    avatarUrl: PropTypes.string,
     displayName: PropTypes.string,
     email: PropTypes.string,
   }),

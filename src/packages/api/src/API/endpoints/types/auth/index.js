@@ -1,4 +1,12 @@
 export default {
+  checkAuthable: {
+    method: 'PUT',
+    path: '/identities/authable',
+  },
+  info: {
+    method: 'GET',
+    path: '/auth/login/info',
+  },
   confirm: {
     method: 'POST',
     path: '/users/confirm',
@@ -7,9 +15,13 @@ export default {
     method: 'POST',
     path: '/users/confirm/ask',
   },
-  signIn: {
+  loginAuthStep: {
     method: 'POST',
-    path: '/login',
+    path: '/auth/login/authn-step',
+  },
+  renewAuthStep: {
+    method: 'POST',
+    path: '/authn-steps',
   },
   signOut: {
     method: 'POST',

@@ -24,7 +24,7 @@ const NAVIGATION_PROPS = {
 const AccountAvatarDisplay = ({
   t,
   displayName,
-  avatarUri,
+  avatarUrl,
   name,
   previewName,
   history,
@@ -69,7 +69,7 @@ const AccountAvatarDisplay = ({
 AccountAvatarDisplay.propTypes = {
   t: PropTypes.func.isRequired,
   displayName: PropTypes.string,
-  avatarUri: PropTypes.string,
+  avatarUrl: PropTypes.string,
   name: PropTypes.string.isRequired,
   previewName: PropTypes.string.isRequired,
   state: PropTypes.object,
@@ -80,7 +80,7 @@ AccountAvatarDisplay.propTypes = {
 
 AccountAvatarDisplay.defaultProps = {
   displayName: '',
-  avatarUri: '',
+  avatarUrl: '',
   state: {},
 };
 

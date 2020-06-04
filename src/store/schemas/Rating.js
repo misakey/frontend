@@ -16,7 +16,7 @@ const RatingSchema = {
     updatedAt: PropTypes.string.isRequired,
     user: PropTypes.shape({
       displayName: PropTypes.string,
-      avatarUri: PropTypes.string,
+      avatarUrl: PropTypes.string,
     }),
   },
 };

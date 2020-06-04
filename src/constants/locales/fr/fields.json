@@ -36,7 +36,7 @@
   },
   "code": {
     "label": "Code",
-    "helperText": "Je remplis le code que j'ai reçu par email",
+    "helperText": "Je saisis le code reçu par e-mail",
     "error": {
       "invalid": "Ce code est invalide. Je peux vérifier qu'il correspond au code \nque j'ai reçu par mail il y a moins de 30min ou j'en redemande \nun nouveau",
       "expired": "Le code a expiré. Je dois en demander un nouveau",
@@ -56,7 +56,7 @@
       "malformed": "Mon avis doit comporter entre 10 et 4096 caractères"
     }
   },
-  "confirmationCode": {
+  "emailed_code": {
     "label": "Code de confirmation",
     "error": {
       "expired": "Le code a expiré. Je dois en demander un nouveau",
@@ -64,9 +64,9 @@
       "malformed": "Le code de confirmation doit contenir 6 chiffres"
     }
   },
-  "confirmationCode_secret": {
+  "emailed_code_secret": {
     "label": "Code de confirmation",
-    "helperText": "Je remplis le code que j'ai reçu par email",
+    "helperText": "Je saisis le code reçu par e-mail",
     "error": {
       "expired": "Le code a expiré. Je dois en demander un nouveau",
       "invalid": "Le code de confirmation est incorrect",

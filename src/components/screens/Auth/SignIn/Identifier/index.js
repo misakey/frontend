@@ -107,7 +107,7 @@ const AuthSignInIdentifier = ({
   const contentAction = useIdentifierContentAction(acr, t);
 
   const primary = useMemo(() => ({
-    text: t('auth:signIn.form.action.next'),
+    text: t('auth:login.form.action.next'),
   }),
   [t]);
 
@@ -126,7 +126,7 @@ const AuthSignInIdentifier = ({
         primary={primary}
         secondary={secondary}
         title={<AuthCardTitle name="signIn" />}
-        subtitle={t('auth:signIn.card.subtitle.text.identifier.email')}
+        subtitle={t('auth:login.card.subtitle.text.identifier.email')}
         Header={CardHeaderAuth}
         formik
       >

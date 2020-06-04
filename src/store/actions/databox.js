@@ -138,7 +138,7 @@ export const updateDatabox = (id, changes, event = null) => (dispatch, getState)
       createdAt: now,
       author: {
         displayName: currentUser.displayName,
-        avatarUri: currentUser.avatarUri,
+        avatarUrl: currentUser.avatarUrl,
       },
     };
 

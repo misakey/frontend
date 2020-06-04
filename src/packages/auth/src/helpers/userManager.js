@@ -78,7 +78,7 @@ export default function createUserManager(config) {
       userinfo_endpoint: `${authority}/userinfo`,
     },
     response_type: 'code',
-    scope: 'openid user',
+    scope: 'openid',
     automaticSilentRenew: true,
     loadUserInfo: false,
     userStore: new WebStorageStateStore({ store: window.localStorage }),

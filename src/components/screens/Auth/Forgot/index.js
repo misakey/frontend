@@ -23,9 +23,9 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import useAsync from '@misakey/hooks/useAsync';
 
-import resetPassword from '@misakey/auth/api/resetPassword';
-import signIn from '@misakey/auth/api/signIn';
-import fetchPwdHashParams from '@misakey/auth/api/fetchPwdHashParams';
+import resetPassword from '@misakey/auth/builder/resetPassword';
+import loginAuthStep from '@misakey/auth/builder/loginAuthStep';
+import fetchPwdHashParams from '@misakey/auth/builder/fetchPwdHashParams';
 
 import Redirect from 'components/dumb/Redirect';
 import FormCardAuth from 'components/dumb/Form/Card/Auth';
@@ -159,7 +159,7 @@ const useOnReset = (
 
       const pwdHashParams = await fetchPwdHashParams({ email });
 
-      const signInResponse = await signIn({
+      const signInResponse = await loginAuthStep({
         challenge,
         email,
         secret: newPassword,

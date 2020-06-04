@@ -1,0 +1,2 @@
+export const CONFIRMATION_CODE_SECLEVEL = 1;
+export const PASSWORD_SECLEVEL = 2;

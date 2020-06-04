@@ -2,7 +2,7 @@ import API from '@misakey/api';
 
 import isEmpty from '@misakey/helpers/isEmpty';
 
-import { CONFIRMATION_CODE_SECLEVEL, PASSWORD_SECLEVEL } from 'constants/auth';
+import { CONFIRMATION_CODE_SECLEVEL, PASSWORD_SECLEVEL } from '@misakey/auth/constants/seclevel';
 
 import hashPassword from '../passwordHashing/hashPassword';
 import genParams from '../passwordHashing/genParams';

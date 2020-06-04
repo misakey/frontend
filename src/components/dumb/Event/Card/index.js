@@ -56,7 +56,7 @@ const EventCard = ({
 }) => {
   const classes = useStyles();
 
-  const { displayName, avatarUri } = useMemo(() => author, [author]);
+  const { displayName, avatarUrl } = useMemo(() => author, [author]);
 
   return (
     <Box
@@ -66,7 +66,7 @@ const EventCard = ({
       py={1}
       className={classes.root}
     >
-      {!isFromCurrentUser && <Avatar avatarUri={avatarUri} displayName={displayName} />}
+      {!isFromCurrentUser && <Avatar avatarUrl={avatarUrl} displayName={displayName} />}
       <MuiCard
         className={clsx(classes.card, className)}
         elevation={0}
@@ -107,7 +107,7 @@ EventCard.propTypes = {
   text: PropTypes.string,
   author: PropTypes.shape({
     displayName: PropTypes.string,
-    avatarUri: PropTypes.string,
+    avatarUrl: PropTypes.string,
   }),
   titleProps: PropTypes.object,
   titleTypographyProps: PropTypes.object,
