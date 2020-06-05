@@ -7,9 +7,11 @@ import isObject from '@misakey/helpers/isObject';
 
 import moment from 'moment';
 import 'moment/locale/fr';
+import 'moment/locale/en-gb';
 
 import numbro from 'numbro';
 import numbroFR from 'numbro/languages/fr-FR';
+import numbroEN from 'numbro/languages/en-GB';
 
 // FR namespaces
 import frCommonNew from 'constants/locales/fr/common';
@@ -17,8 +19,13 @@ import frComponentsNew from 'constants/locales/fr/components';
 import frFieldsNew from 'constants/locales/fr/fields';
 import frLandingNew from 'constants/locales/fr/landing';
 
-const DEFAULT_LANGUAGE = 'fr';
-const AVAILABLE_LANGUAGES = ['fr'];
+// FR namespaces
+import enCommonNew from 'constants/locales/en/common';
+import enComponentsNew from 'constants/locales/en/components';
+import enFieldsNew from 'constants/locales/en/fields';
+
+const DEFAULT_LANGUAGE = 'en';
+const AVAILABLE_LANGUAGES = ['fr', 'en'];
 
 const COMMONS_NAMESPACES = {
   fr: [
@@ -39,11 +46,26 @@ const COMMONS_NAMESPACES = {
       ressources: frLandingNew,
     },
   ],
+  en: [
+    {
+      name: 'common',
+      ressources: enCommonNew,
+    },
+    {
+      name: 'components',
+      ressources: enComponentsNew,
+    },
+    {
+      name: 'fields',
+      ressources: enFieldsNew,
+    },
+  ],
 };
 
 // We should explicitly register languages to numbro to them to be available
 // If we don't, en-US is the fallback for every languages
 numbro.registerLanguage(numbroFR);
+numbro.registerLanguage(numbroEN);
 
 i18n
   .use(XHR)
@@ -54,7 +76,6 @@ i18n
     fallbackLng: DEFAULT_LANGUAGE,
     ns: 'common',
     defaultNS: 'common',
-    lng: DEFAULT_LANGUAGE, // 'fr', // language to use
     whitelist: AVAILABLE_LANGUAGES,
     nonExplicitWhitelist: true, // if true will pass eg. en-US if finding en in whitelist
 
@@ -93,17 +114,17 @@ i18n
 // are explicit vs implicit (fr-FR != fr)
 // especially with common explicit languages like en-GB != en
 const changeLocale = (lng) => {
-  moment.locale(lng);
   if (lng === 'fr') {
+    moment.locale('fr');
     numbro.setLanguage('fr-FR');
+  }
+  if (lng === 'en') {
+    moment.locale('en-gb');
+    numbro.setLanguage('en-GB');
   }
 };
 
-// Forcing default locale
-changeLocale(DEFAULT_LANGUAGE);
-
 i18n.on('languageChanged', changeLocale);
-
 
 AVAILABLE_LANGUAGES.forEach((lng) => {
   COMMONS_NAMESPACES[lng].forEach((bundle) => {

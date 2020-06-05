@@ -1,0 +1,99 @@
+{
+  "accept": "Accept",
+  "add": "Add",
+  "archive": "Archive",
+  "back": "Back",
+  "cancel": "Cancel",
+  "copy": "Copy",
+  "copied": "Copied to clipboard!",
+  "decrypt": "Decrypt",
+  "delete": "Delete",
+  "details": "Details",
+  "done": "Done",
+  "download": "Download",
+  "edit": "Edit",
+  "emptyRating": "N/A",
+  "goBack": "Back",
+  "gotIt": "Got it",
+  "loading": "Loading",
+  "more": "More",
+  "next": "Next",
+  "ok": "OK",
+  "on": "On",
+  "previous": "Previous",
+  "refuse": "Refuse",
+  "confirm": "Confirm",
+  "remove": "Remove",
+  "retry": "Retry",
+  "search": "Search",
+  "see": "See",
+  "send": "Send",
+  "share": "Share",
+  "show": "Show",
+  "signIn": "Connection",
+  "signedIn": "Connected\u00a0!",
+  "skip": "Skip",
+  "submit": "Submit",
+  "undecryptable": "Undecryptable",
+  "update": "Update",
+  "validate": "Validate",
+  "view": "View",
+  "account": {
+    "current": "Current account",
+    "profile": "My profile"
+  },
+  "crypto": {
+    "errors": {
+      "shouldRefresh": "Error: app requires a re-sync. You should refresh your page"
+    }
+  },
+  "date": {
+    "calendar": {
+      "sameDay": "today",
+      "nextDay": "tomorrow",
+      "lastDay": "yesterday",
+      "past": {
+        "event": "{{calendarDay}}",
+        "duration": "since {{calendarDay}}"
+      },
+      "future": {
+        "event": "{{calendarDay}}",
+        "duration": "until {{calendarDay}}"
+      }
+    },
+    "since": {
+      "past": {
+        "event": "{{numberOfDays}} ago",
+        "duration": "since {{numberOfDays}}"
+      },
+      "future": {
+        "event": "in {{numberOfDays}}",
+        "duration": "during {{numberOfDays}}"
+      },
+      "unit": "{{count}} day",
+      "unit_plural": "{{count}} days",
+      "max": "{{count}}+ day",
+      "max_plural": "{{count}}+ days"
+    },
+    "of": "on {{date}}"
+  },
+  "httpStatus": {
+    "error": {
+      "default": "Sorry, an unknown error occurred",
+      "400": "Sorry, an error occurred",
+      "401": "I need to be connected",
+      "402": "A payment is required",
+      "403": "I'm not authorized to do that",
+      "404": "Not found",
+      "405": "Sorry an error occurred",
+      "408": "This action failed. Please check your Internet connection",
+      "409": "Sorry, an error occurred",
+      "413": "I sent too large payload",
+      "415": "Unsupported file type",
+      "423": "I don't have those rights anymore",
+      "429": "I sent too many requests",
+      "500": "Sorry, an unknown error occurred",
+      "503": "Sorry, our services are not available"
+    }
+  }
+}

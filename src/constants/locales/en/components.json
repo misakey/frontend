@@ -1,0 +1,67 @@
+{
+  "application": {
+    "logoAlt": "{{applicationName}}'s logo"
+  },
+  "blob": {
+    "fileTypes": {
+      "unclassified": "Unclassified file"
+    },
+    "received": "{{size}} received on {{date}}"
+  },
+  "errorBoundary": {
+    "title": {
+      "default": "Oopsy\u00a0! An unknown error occurred..."
+    },
+    "button": {
+      "collapse": "Details"
+    }
+  },
+  "errorOverlay": {
+    "feedback": {
+      "text": "Contact us\u00a0!"
+    }
+  },
+  "footer": {
+    "title": "Secured by",
+    "links": {
+      "privacy": {
+        "text": "Privacy policy",
+        "href": "https://about.misakey.com/#/legals/privacy-policy/"
+      },
+      "tos": {
+        "text": "Terms of service",
+        "href": "https://about.misakey.com/#/legals/tos/"
+      },
+      "sources": {
+        "text": "Source code",
+        "href": "https://gitlab.com/Misakey"
+      },
+      "about": {
+        "text": "About",
+        "href": "https://about.misakey.com/"
+      },
+      "blog": {
+        "text": "Blog",
+        "href": "https://blog.misakey.com"
+      },
+      "feedback": {
+        "text": "Contact us"
+      }
+    }
+  },
+  "list": {
+    "empty": {
+      "title": "This list is empty for now",
+      "text": ""
+    }
+  },
+  "passwordPrompt": {
+    "title": "Unlock my vault",
+    "description": "I have to type my password to do that"
+  },
+  "search": {
+    "application": {
+      "button": "Search a site"
+    }
+  }
+}

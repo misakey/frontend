@@ -1,0 +1,116 @@
+{
+  "default": {
+    "label": "Example",
+    "placeholder": "Example value",
+    "error": {
+      "invalid": "Incorrect input",
+      "malformed": "Please enter a valid value",
+      "required": "This field is required",
+      "unknown": "An unknown error occurred"
+    }
+  },
+  "blob": {
+    "error": {
+      "size": "Max size 9MB",
+      "extension": "Incorrect file format. Extension is required"
+    }
+  },
+  "codeInvitation": {
+    "label": "Invitation code",
+    "placeholder": "codePink"
+  },
+  "emailed_code": {
+    "label": "Confirmation code",
+    "error": {
+      "expired": "Code has expired. I can ask for a new one",
+      "invalid": "Incorrect confirmation code",
+      "malformed": "Confirmation code should contain 6 digits"
+    }
+  },
+  "emailed_code_secret": {
+    "label": "Confirmation code",
+    "helperText": "I type the confirmation code I received by email",
+    "error": {
+      "expired": "Code is expired. I can ask for a new one",
+      "invalid": "Incorrect confirmation code",
+      "malformed": "Confirmation code should contain 6 digits"
+    }
+  },
+  "email": {
+    "label": "Email",
+    "placeholder": "rose.flamingo@misakey.com",
+    "error": {
+      "malformed": "Please enter a valid email address"
+    }
+  },
+  "email_identifier": {
+    "label": "Email",
+    "placeholder": "rose.flamingo@misakey.com",
+    "error": {
+      "malformed": "Please enter a valid email address"
+    }
+  },
+  "file": {
+    "label": "Drop a file here",
+    "loading": "Import in progress",
+    "button": {
+      "choose": {
+        "label": "Select"
+      }
+    }
+  },
+  "password": {
+    "label": "Password",
+    "placeholder": "********",
+    "action": "Edit",
+    "helperText": "At least 8 characters",
+    "error": {
+      "invalid": "Invalid password",
+      "malformed": "Password should be at least 8 characters long"
+    }
+  },
+  "passwordConfirm": {
+    "label": "Confirm password",
+    "error": {
+      "malformed": "Passwords don't match"
+    }
+  },
+  "passwordNew": {
+    "label": "New password",
+    "placeholder": "********",
+    "error": {
+      "conflict": "Can't be same as old password",
+      "malformed": "Password should be at least 8 characters long"
+    }
+  },
+  "passwordOld": {
+    "label": "Old password",
+    "placeholder": "********",
+    "error": {
+      "invalid": "Wrong password",
+      "malformed": "Password should be at least 8 characters long"
+    }
+  },
+  "password_secret": {
+    "label": "Password",
+    "placeholder": "********",
+    "error": {
+      "invalid": "Wrong password"
+    }
+  },
+  "passwordVault": {
+    "label": "Password",
+    "placeholder": "********",
+    "action": "Confirm",
+    "error": {
+      "required": "Password is required",
+      "invalid": "Wrong password"
+    }
+  },
+  "tos": {
+    "label": "I accept TOS",
+    "error": {
+      "required": "I have to accept TOS"
+    }
+  }
+}

@@ -182,14 +182,6 @@ function Screen({
     [state],
   );
 
-  // FORCE showing appbar in case of error state
-  const hideAppBarExError = useMemo(
-    () => (hasError
-      ? false
-      : hideAppBar),
-    [hasError, hideAppBar],
-  );
-
   // FORCE appbar props in case of error state
   const appBarPropsExError = useMemo(
     () => {
@@ -207,7 +199,7 @@ function Screen({
     [appBarProps, hasError, hideAppBar],
   );
 
-  const internalClasses = useScreenStyles({ hideAppBar: hideAppBarExError, disableGrow });
+  const internalClasses = useScreenStyles({ hideAppBar, disableGrow });
 
   const isLoading = useMemo(
     () => state.isLoading || state.isFetching,
@@ -225,7 +217,7 @@ function Screen({
           variant="query"
         />
       )}
-      {!hideAppBarExError && (
+      {!hideAppBar && (
         <AppBar
           {...appBarPropsExError}
         />
