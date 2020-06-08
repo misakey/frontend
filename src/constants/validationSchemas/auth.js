@@ -15,7 +15,7 @@ export const identifierValidationSchema = Yup.object().shape({
 });
 
 const secretValidationSchemas = {
-  [EMAILED_CODE]: codeFieldValidation.schema,
+  [EMAILED_CODE]: codeFieldValidation.strictSchema,
   [PASSWORD]: passwordFieldValidation.schema,
 };
 

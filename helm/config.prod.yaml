@@ -8,7 +8,7 @@ config: >-
     AUTH: {
       authority: 'https://auth.misakey.com/_',
       client_id: 'f27effe1-5d57-4b70-bf73-939feef50f71',
-      redirect_uri: 'https://api.misakey.com/app/auth/callback',
+      redirect_uri: 'https://api.misakey.com/auth/callback',
     },
     SENTRY: {
       debug: false,

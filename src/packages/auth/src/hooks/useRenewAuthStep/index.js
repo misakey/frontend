@@ -29,7 +29,7 @@ export default (params) => {
       })
       .catch((error) => {
         if (isAuthStepAlreadyExistsConflict(error)) {
-          enqueueSnackbar(t('auth:login.form.error.conflict'), { variant: 'error' });
+          enqueueSnackbar(t('auth:login.form.error.conflict'), { variant: 'warning' });
         } else {
           handleHttpErrors(error);
         }

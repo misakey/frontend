@@ -29,7 +29,6 @@
   },
   "emailed_code_secret": {
     "label": "Confirmation code",
-    "helperText": "I type the confirmation code I received by email",
     "error": {
       "expired": "Code is expired. I can ask for a new one",
       "invalid": "Incorrect confirmation code",
@@ -47,7 +46,8 @@
     "label": "Email",
     "placeholder": "rose.flamingo@misakey.com",
     "error": {
-      "malformed": "Please enter a valid email address"
+      "required": "Oops, you forgot to enter an identifier",
+      "malformed": "Oops, this email is not valid"
     }
   },
   "file": {

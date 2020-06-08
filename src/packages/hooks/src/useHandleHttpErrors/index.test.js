@@ -65,6 +65,6 @@ describe('testing useHandleHttpErrors', () => {
       const error = new Error();
       error.status = status;
       handleHttpErrors.current(error);
-      expect(mockEnqueueSnackbar).toHaveBeenCalledWith(`common:httpStatus.error.${status}`, { variant: 'error' });
+      expect(mockEnqueueSnackbar).toHaveBeenCalledWith(`common:httpStatus.error.${status}`, { variant: 'warning' });
     });
 });

@@ -15,7 +15,7 @@ export default () => {
     (error) => {
       if (!isNil(error.status)) {
         const text = t(`common:httpStatus.error.${API.errors.filter(error.status || 'default')}`);
-        enqueueSnackbar(text, { variant: 'error' });
+        enqueueSnackbar(text, { variant: 'warning' });
       } else {
         throw error;
       }

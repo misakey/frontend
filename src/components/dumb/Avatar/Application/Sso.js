@@ -10,7 +10,8 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import ApplicationAvatar from 'components/dumb/Avatar/Application';
-import Typography from '@material-ui/core/Typography';
+import Title from 'components/dumb/Typography/Title';
+
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ApplicationAvatarSso = ({ client, t, className, typographyProps, ...rest }) => {
+const ApplicationAvatarSso = ({ client, t, className, ...rest }) => {
   const classes = useStyles();
 
   const { name, logoUri } = useMemo(
@@ -64,9 +65,7 @@ const ApplicationAvatarSso = ({ client, t, className, typographyProps, ...rest }
         alt={alt}
       />
       <div className={classes.appName}>
-        <Typography noWrap color="textSecondary" {...typographyProps}>
-          {name}
-        </Typography>
+        <Title noWrap>{name}</Title>
       </div>
 
     </Box>
@@ -77,12 +76,10 @@ ApplicationAvatarSso.propTypes = {
   className: PropTypes.string,
   client: SSO_PROP_TYPES.client.isRequired,
   t: PropTypes.func.isRequired,
-  typographyProps: PropTypes.object,
 };
 
 ApplicationAvatarSso.defaultProps = {
   className: '',
-  typographyProps: {},
 };
 
 export default withTranslation('components')(ApplicationAvatarSso);

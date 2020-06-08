@@ -184,7 +184,7 @@
       "413": "J'ai envoyé des données trop volumineuses",
       "415": "Ce type de media n'est pas supporté par nos serveurs",
       "423": "Ces droits m'ont été retirés",
-      "429": "J'ai effectué trop de requêtes",
+      "429": "Vous pourrez ré-essayer dans quelques instants",
       "500": "Nous sommes désolés, une erreur est survenue",
       "503": "Nous sommes désolés, nos services ne sont pas accessibles"
     }

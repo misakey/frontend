@@ -91,7 +91,7 @@
       "413": "I sent too large payload",
       "415": "Unsupported file type",
       "423": "I don't have those rights anymore",
-      "429": "I sent too many requests",
+      "429": "You'll be able to try again in a few seconds",
       "500": "Sorry, an unknown error occurred",
       "503": "Sorry, our services are not available"
     }

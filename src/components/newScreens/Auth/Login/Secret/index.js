@@ -12,6 +12,8 @@ import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import { DATE_FULL } from 'constants/formats/dates';
 
+import { EMAILED_CODE } from '@misakey/auth/constants/method';
+
 import compose from '@misakey/helpers/compose';
 import head from '@misakey/helpers/head';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
@@ -92,7 +94,7 @@ const AuthLoginSecret = ({
   );
 
   const onSubmit = useCallback(
-    ({ secret }, { setFieldError, setSubmitting }) => {
+    ({ secret }, { setFieldError, setSubmitting, setFieldValue }) => {
       setRedirectTo(null);
 
       const pwdHashParams = path(['argon2Params'], authnStep);
@@ -112,6 +114,9 @@ const AuthLoginSecret = ({
           const details = getDetails(e);
           const secretError = getSecretError(details);
           if (!isNil(secretError)) {
+            if (methodName === EMAILED_CODE) {
+              setFieldValue(STEP.secret, '');
+            }
             setFieldError(STEP.secret, secretError);
           } else if (details.toDelete === conflict) {
           // @FIXME should we remove that part as it's not implemented in latest version ?
@@ -158,7 +163,6 @@ const AuthLoginSecret = ({
 
   const chipActions = useMemo(
     () => ({
-      onClick: onClearUser,
       onDelete: onClearUser,
     }),
     [onClearUser],
@@ -181,6 +185,7 @@ const AuthLoginSecret = ({
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={onSubmit}
+      validateOnChange={false}
     >
       <Box component={Form} display="flex" flexDirection="column" alignItems="center">
         <Title>
@@ -191,7 +196,7 @@ const AuthLoginSecret = ({
             component={Trans}
             i18nKey={`auth:login.secret.${methodName}.title`}
           >
-            <Box display="flex" flexWrap="nowrap">Quel est votre identifiant pour</Box>
+            <Box display="flex" flexWrap="nowrap">Quel est le code de confirmation envoyé à </Box>
             <Box ml={1} display="flex" flexWrap="nowrap">
               <ChipUser
                 {...chipActions}
@@ -201,7 +206,7 @@ const AuthLoginSecret = ({
             </Box>
           </Box>
         </Title>
-        <Box justifyContent="center" flexDirection="column" display="flex">
+        <Box justifyContent="flex-startpp" flexDirection="column" display="flex" width="100%">
           <SecretFormFields methodName={methodName} />
           {!isXsLayout && (
             <Button

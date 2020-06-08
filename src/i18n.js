@@ -24,7 +24,7 @@ import enCommonNew from 'constants/locales/en/common';
 import enComponentsNew from 'constants/locales/en/components';
 import enFieldsNew from 'constants/locales/en/fields';
 
-const DEFAULT_LANGUAGE = 'en';
+const DEFAULT_LANGUAGE = 'fr';
 const AVAILABLE_LANGUAGES = ['fr', 'en'];
 
 const COMMONS_NAMESPACES = {
@@ -81,7 +81,7 @@ i18n
 
     detection: {
       // order and from where user language should be detected
-      order: ['querystring', 'cookie', 'localStorage', 'htmlTag', 'path', 'subdomain', 'navigator'],
+      order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
 
       // cache user language on
       caches: ['localStorage', 'cookie'],
@@ -114,11 +114,11 @@ i18n
 // are explicit vs implicit (fr-FR != fr)
 // especially with common explicit languages like en-GB != en
 const changeLocale = (lng) => {
-  if (lng === 'fr') {
+  if (lng.startsWith('fr')) {
     moment.locale('fr');
     numbro.setLanguage('fr-FR');
   }
-  if (lng === 'en') {
+  if (lng.startsWith('en')) {
     moment.locale('en-gb');
     numbro.setLanguage('en-GB');
   }

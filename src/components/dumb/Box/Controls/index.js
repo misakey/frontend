@@ -5,8 +5,6 @@ import isNil from '@misakey/helpers/isNil';
 import isObject from '@misakey/helpers/isObject';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useTheme from '@material-ui/core/styles/useTheme';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Box from '@material-ui/core/Box';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
@@ -28,15 +26,7 @@ const useStyles = makeStyles((theme) => ({
 
 // COMPONENTS
 const BoxControls = ({ primary, secondary, formik, ...rest }) => {
-  const theme = useTheme();
-  const isXs = useMediaQuery(theme.breakpoints.only('xs'));
-
   const classes = useStyles();
-
-  const flexDirection = useMemo(
-    () => (isXs ? 'column' : 'row'),
-    [isXs],
-  );
 
   const justifyContent = useMemo(
     () => (secondary ? 'space-between' : 'flex-end'),
@@ -78,7 +68,7 @@ const BoxControls = ({ primary, secondary, formik, ...rest }) => {
     <Box
       width="100%"
       display="flex"
-      flexDirection={flexDirection}
+      flexDirection="row"
       justifyContent={justifyContent}
       className={classes.boxRoot}
       {...rest}

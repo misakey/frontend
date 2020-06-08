@@ -60,13 +60,12 @@
     "label": "Code de confirmation",
     "error": {
       "expired": "Le code a expiré. Je dois en demander un nouveau",
-      "invalid": "Le code de confirmation est incorrect",
+      "invalid": "Le code saisi n'est pas le bon",
       "malformed": "Le code de confirmation doit contenir 6 chiffres"
     }
   },
   "emailed_code_secret": {
     "label": "Code de confirmation",
-    "helperText": "Je saisis le code reçu par e-mail",
     "error": {
       "expired": "Le code a expiré. Je dois en demander un nouveau",
       "invalid": "Le code de confirmation est incorrect",
@@ -121,9 +120,8 @@
     "label": "Email",
     "placeholder": "rose.flamingo@misakey.com",
     "error": {
-      "conflict": "Un compte existe déjà avec cet email",
-      "malformed": "Merci d'entrer une adresse email valide",
-      "not_found": "Aucun compte lié à cet email",
+      "required": "Oops, vous avez oublié de saisir un identifiant",
+      "malformed": "Oops, cet email n'est pas valide",
       "seclevel_insufficient": "J'ai besoin d'un mot de passe pour me connecter par ici, mon compte n'a pas de mot de passe configuré"
     }
   },
