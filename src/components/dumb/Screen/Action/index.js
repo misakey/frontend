@@ -12,7 +12,7 @@ import ElevationScroll from 'components/dumb/ElevationScroll';
 import { MIN_PX_0_LANDSCAPE, MIN_PX_600 } from '@misakey/ui/constants/medias';
 
 function ScreenAction({
-  appBarProps, children, hideAppBar, navigation, navigationProps, title, hideTitle, ...rest
+  children, hideAppBar, navigation, navigationProps, title, hideTitle, ...rest
 }) {
   const theme = useTheme();
   const width = useWidth();
@@ -30,7 +30,6 @@ function ScreenAction({
     <Screen
       title={title}
       hideAppBar={hideAppBar}
-      appBarProps={{ position: 'fixed', elevationScroll: false, ...appBarProps }}
       {...omit(rest, ['location', 'match', 'staticContext'])}
     >
       <ElevationScroll threshold={threshold}>
@@ -49,7 +48,6 @@ function ScreenAction({
 }
 
 ScreenAction.propTypes = {
-  appBarProps: PropTypes.objectOf(PropTypes.any),
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.node, PropTypes.element]).isRequired,
   hideAppBar: PropTypes.bool,
   hideTitle: PropTypes.bool,
@@ -59,7 +57,6 @@ ScreenAction.propTypes = {
 };
 
 ScreenAction.defaultProps = {
-  appBarProps: {},
   hideAppBar: false,
   hideTitle: false,
   navigation: null,

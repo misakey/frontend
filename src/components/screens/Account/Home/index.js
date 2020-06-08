@@ -20,13 +20,8 @@ const AccountHome = ({ profile, isFetching }) => {
     [profile],
   );
 
-  const appBarProps = useMemo(
-    () => ({ items: [], withSearchBar: false }),
-    [],
-  );
-
   return (
-    <Screen appBarProps={appBarProps} state={state} preventSplashScreen={preventSplashScreen}>
+    <Screen state={state} preventSplashScreen={preventSplashScreen}>
       <CardProfile profile={profile} />
     </Screen>
   );

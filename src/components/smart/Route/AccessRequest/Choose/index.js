@@ -10,7 +10,6 @@ import ApplicationSchema from 'store/schemas/Application';
 import Title from 'components/dumb/Typography/Title';
 import ScreenAction from 'components/dumb/Screen/Action';
 import Card from 'components/dumb/Card';
-import BoxEllipsisApplication from 'components/dumb/Box/Ellipsis/Application';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
 import ListQuestions, { useQuestionsItems } from 'components/dumb/List/Questions';
@@ -60,14 +59,6 @@ const AccessRequestChoose = ({
     [],
   );
 
-  const appBarProps = useMemo(
-    () => ({
-      withUser: false,
-      items: [<BoxEllipsisApplication application={producer} key="applicationAvatar" />],
-    }),
-    [producer],
-  );
-
   const state = useMemo(
     () => ({
       error,
@@ -104,7 +95,6 @@ const AccessRequestChoose = ({
   return (
     <ScreenAction
       title={t('dpo:requests.access.title')}
-      appBarProps={appBarProps}
       navigationProps={navigationProps}
       state={state}
     >

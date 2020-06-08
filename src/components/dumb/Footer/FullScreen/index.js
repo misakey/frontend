@@ -16,6 +16,10 @@ const useStyles = makeStyles(() => ({
   footer: {
     borderLeft: 'none',
     borderRight: 'none',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
 }));
 
@@ -24,7 +28,7 @@ const FooterFullScreen = (props) => {
   const classes = useStyles();
 
   return (
-    <Box mt={2} width="100%">
+    <Box mt={2}>
       <Footer
         className={classes.footer}
         ContainerComponent={Container}

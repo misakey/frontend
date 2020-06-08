@@ -17,7 +17,6 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import ErrorIcon from '@material-ui/icons/Error';
 
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
-import AppBar, { APPBAR_HEIGHT } from 'components/dumb/AppBar';
 import { FOOTER_HEIGHT } from 'components/dumb/Footer';
 import FooterFullScreen from 'components/dumb/Footer/FullScreen';
 
@@ -123,10 +122,10 @@ StateWrapper.defaultProps = {
 const GUTTERS_SPACING = 3;
 
 const useScreenStyles = makeStyles((theme) => ({
-  root: ({ hideAppBar }) => ({
+  root: () => ({
     width: '100%',
-    minHeight: `calc(100vh - ${hideAppBar ? 0 : APPBAR_HEIGHT}px - ${theme.spacing(GUTTERS_SPACING)}px)`,
-    paddingTop: `calc(${hideAppBar ? 0 : APPBAR_HEIGHT}px + ${theme.spacing(GUTTERS_SPACING)}px)`,
+    minHeight: `calc(100vh - ${theme.spacing(GUTTERS_SPACING)}px)`,
+    paddingTop: theme.spacing(GUTTERS_SPACING),
     paddingBottom: 0,
     display: 'flex',
     flexDirection: 'column',
@@ -162,14 +161,10 @@ function updateHead(title, description) {
 }
 
 function Screen({
-  appBarProps,
-  footerProps,
   children,
   className,
   classes,
   description,
-  hideAppBar,
-  hideFooter,
   preventSplashScreen,
   splashScreen,
   state,
@@ -177,29 +172,7 @@ function Screen({
   disableGrow,
   ...rest
 }) {
-  const hasError = useMemo(
-    () => isError(state.error),
-    [state],
-  );
-
-  // FORCE appbar props in case of error state
-  const appBarPropsExError = useMemo(
-    () => {
-      const forcedAppBarProps = hideAppBar
-        ? { withSearchBar: false, withUser: false } // hide initially unexpected elements
-        : {};
-      return (hasError
-        ? {
-          ...appBarProps,
-          ...forcedAppBarProps,
-          withHomeLink: true, // always display home link to allow easy leave of error screen
-        }
-        : appBarProps);
-    },
-    [appBarProps, hasError, hideAppBar],
-  );
-
-  const internalClasses = useScreenStyles({ hideAppBar, disableGrow });
+  const internalClasses = useScreenStyles({ disableGrow });
 
   const isLoading = useMemo(
     () => state.isLoading || state.isFetching,
@@ -217,11 +190,6 @@ function Screen({
           variant="query"
         />
       )}
-      {!hideAppBar && (
-        <AppBar
-          {...appBarPropsExError}
-        />
-      )}
       <Box
         component="div"
         className={clsx(internalClasses.root, className)}
@@ -237,8 +205,8 @@ function Screen({
             {children}
           </div>
         </StateWrapper>
-        {!hideFooter && <FooterFullScreen />}
       </Box>
+      <FooterFullScreen />
     </>
   );
 }
@@ -251,16 +219,13 @@ export const SCREEN_STATE_PROPTYPES = PropTypes.shape({
 });
 
 Screen.propTypes = {
-  appBarProps: PropTypes.objectOf(PropTypes.any),
-  footerProps: PropTypes.object,
   children: PropTypes.node,
   className: PropTypes.string,
   classes: PropTypes.shape({
     content: PropTypes.string,
+    footer: PropTypes.string,
   }),
   description: PropTypes.string,
-  hideAppBar: PropTypes.bool,
-  hideFooter: PropTypes.bool,
   preventSplashScreen: PropTypes.bool,
   splashScreen: PropTypes.node,
   state: SCREEN_STATE_PROPTYPES,
@@ -269,16 +234,12 @@ Screen.propTypes = {
 };
 
 Screen.defaultProps = {
-  appBarProps: { items: [] },
-  footerProps: {},
   children: null,
   className: '',
   classes: {
     content: '',
   },
   description: '',
-  hideAppBar: false,
-  hideFooter: false,
   preventSplashScreen: false,
   splashScreen: null,
   state: {},

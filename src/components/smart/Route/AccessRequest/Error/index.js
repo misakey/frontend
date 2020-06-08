@@ -19,16 +19,9 @@ const useStyles = makeStyles(() => ({
 const AccessRequestError = ({ error, t }) => {
   const errorStatus = useMemo(() => error.status || 'default', [error.status]);
   const classes = useStyles();
-  const appBarProps = useMemo(
-    () => ({
-      withUser: false,
-      items: [],
-    }),
-    [],
-  );
 
   return (
-    <Screen appBarProps={appBarProps}>
+    <Screen>
       <Container maxWidth="md">
         <Card
           mt={2}
