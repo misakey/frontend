@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import EventCard from 'components/dumb/Event/Card';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import EventSchema from 'store/schemas/Boxes/Events';
 import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
@@ -27,7 +28,7 @@ const BoxMessageTextEvent = ({ event, isFromCurrentUser, t, ...rest }) => {
       author={sender}
       isFromCurrentUser={isFromCurrentUser}
       text={text}
-      {...rest}
+      {...omitTranslationProps(rest)}
     />
   );
 };

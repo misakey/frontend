@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link, useLocation, useHistory } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { withTranslation } from 'react-i18next';
 import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import TabsMenu from 'components/dumb/Tabs/DrawerMenu';
+import CreateBoxDialog from 'components/smart/Dialog/Boxes/Create';
 import UserAccountAvatar from 'components/smart/Avatar/CurrentUser';
 import getNextSearch from '@misakey/helpers/getNextSearch';
 import Box from '@material-ui/core/Box';
@@ -37,6 +38,7 @@ function ListHeader({ drawerWidth, getNextDrawerSearch, t }) {
   const classes = useStyles();
   const { search: locationSearch, pathname } = useLocation();
   const { push } = useHistory();
+  const [isDialogCreateOpen, setIsDialogCreateOpen] = useState(false);
 
   const openSearch = useCallback(
     () => push({ pathname, search: getNextSearch(locationSearch, new Map([['search', '']])) }),
@@ -45,6 +47,10 @@ function ListHeader({ drawerWidth, getNextDrawerSearch, t }) {
   const openAccountDrawer = useCallback(
     () => getNextDrawerSearch(ACCOUNT, true),
     [getNextDrawerSearch],
+  );
+
+  const toggleIsDialogCreateOpen = useCallback(
+    () => { setIsDialogCreateOpen((current) => !current); }, [],
   );
 
   return (
@@ -63,9 +69,11 @@ function ListHeader({ drawerWidth, getNextDrawerSearch, t }) {
           aria-label="create-box"
           edge="end"
           color="secondary"
+          onClick={toggleIsDialogCreateOpen}
         >
           <AddIcon />
         </IconButtonAppBar>
+        <CreateBoxDialog open={isDialogCreateOpen} onClose={toggleIsDialogCreateOpen} />
       </AppBarDrawer>
       <Box m={1}>
         <FilledInput
@@ -74,7 +82,6 @@ function ListHeader({ drawerWidth, getNextDrawerSearch, t }) {
           placeholder={t('search')}
           disableUnderline
           fullWidth
-          hiddenLabel
           size="small"
           readOnly
         />

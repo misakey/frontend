@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import Typography from '@material-ui/core/Typography';
 
-import ActivityLogsSchema from 'store/schemas/Databox/ActivityLogs';
+import BoxEventsSchema from 'store/schemas/Boxes/Events';
 
 import isNil from '@misakey/helpers/isNil';
 
@@ -39,7 +39,7 @@ const BoxInformationEvent = ({
 };
 
 BoxInformationEvent.propTypes = {
-  event: PropTypes.shape(ActivityLogsSchema.propTypes).isRequired,
+  event: PropTypes.shape(BoxEventsSchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
 };
 

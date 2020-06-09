@@ -299,5 +299,12 @@
       "required": "Je dois saisir une note",
       "malformed": "Cette note est incorrecte"
     }
+  },
+  "boxes": {
+    "name": {
+      "error": {
+        "malformed": "L'usage doit contenir entre 3 et 100 caractères"
+      }
+    }
   }
 }

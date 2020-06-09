@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles/';
 import FieldFile from 'components/dumb/Form/Field/File';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import withErrors from 'components/dumb/Form/Field/withErrors';
-import { TMP_BLOB_FIELD_NAME } from 'components/smart/Dialog/Upload';
+import { TMP_BLOB_FIELD_NAME } from 'components/smart/Dialog/Boxes/Upload';
 import { fileFieldValidation } from 'constants/fieldValidations';
 import Link from '@material-ui/core/Link';
 

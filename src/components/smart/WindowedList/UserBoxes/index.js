@@ -56,8 +56,6 @@ function WindowedListBoxes({ activeStatus, ...props }) {
 
 WindowedListBoxes.propTypes = {
   activeStatus: PropTypes.oneOf(STATUSES),
-  // CONNECT
-  isAuthenticated: PropTypes.bool.isRequired,
 };
 
 WindowedListBoxes.defaultProps = {

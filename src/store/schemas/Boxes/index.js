@@ -14,10 +14,9 @@ const BoxesSchema = {
   propTypes: {
     id: PropTypes.string.isRequired,
     ownerId: PropTypes.string,
-    createdAt: PropTypes.string.isRequired,
-    updatedAt: PropTypes.string.isRequired,
+    createdAt: PropTypes.string,
+    updatedAt: PropTypes.string,
     status: PropTypes.oneOf(STATUSES),
-    purpose: PropTypes.string,
     // eslint-disable-next-line react/forbid-foreign-prop-types
     events: PropTypes.arrayOf(PropTypes.shape(EventSchema.propTypes)),
   },

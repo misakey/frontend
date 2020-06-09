@@ -22,8 +22,8 @@ import DialogTitleWithClose from 'components/dumb/Dialog/Title/WithCloseIcon';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 
-import FieldBlobs from 'components/smart/Dialog/Upload/BlobsField';
-import FieldBlobTmp from 'components/smart/Dialog/Upload/TmpBlobField';
+import FieldBlobs from 'components/smart/Dialog/Boxes/Upload/BlobsField';
+import FieldBlobTmp from 'components/smart/Dialog/Boxes/Upload/TmpBlobField';
 import BoxControls from 'components/dumb/Box/Controls';
 
 export const TMP_BLOB_FIELD_NAME = 'blob';

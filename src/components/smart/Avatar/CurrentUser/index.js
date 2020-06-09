@@ -3,19 +3,23 @@ import PropTypes from 'prop-types';
 
 import AvatarUser from '@misakey/ui/Avatar/User';
 import withUser from 'components/smart/withUser';
+import omit from '@misakey/helpers/omit';
+
+const WITH_USER_PROPS = ['isFetching', 'id', 'token', 'userId'];
 
 const UserAvatar = ({ profile, ...props }) => {
-  const { displayName, avatarUri } = useMemo(() => profile || {}, [profile]);
-  return <AvatarUser displayName={displayName} avatarUri={avatarUri} {...props} />;
+  const { displayName, avatarUrl } = useMemo(() => profile || {}, [profile]);
+  return (
+    <AvatarUser displayName={displayName} avatarUrl={avatarUrl} {...omit(props, WITH_USER_PROPS)} />
+  );
 };
 
 
 UserAvatar.propTypes = {
-  t: PropTypes.func.isRequired,
   isFetching: PropTypes.bool,
   profile: PropTypes.shape({
     displayName: PropTypes.string,
-    avatarUri: PropTypes.string,
+    avatarUrl: PropTypes.string,
   }),
 };
 

@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import API from '@misakey/api';
+import uuid4 from 'uuid/v4';
 
 import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
@@ -14,7 +15,6 @@ export const getBoxBuilder = (id, body, queryParams = {}) => Promise.resolve({
   status: 'open',
   createdAt: '2020-05-07T14:40:55.08361Z',
   updatedAt: '2020-05-07T14:40:55.08361Z',
-  purpose: 'unknown',
   title: 'Ma box',
   events: [
     {
@@ -62,7 +62,6 @@ export const getBoxBuilder = (id, body, queryParams = {}) => Promise.resolve({
     // @FIXME: keep only response when endpoints will exist
     ...response,
     title: response.type,
-    purpose: response.type,
   }));
 
 // API
@@ -136,7 +135,6 @@ export const getUserBoxesBuilder = (payload) => Promise.resolve([
     status: 'open',
     createdAt: '2020-05-07T14:40:55.08361Z',
     updatedAt: '2020-05-07T14:40:55.08361Z',
-    purpose: 'unknown',
     title: 'Ma box',
     events: [
       {
@@ -187,7 +185,6 @@ export const getUserBoxesBuilder = (payload) => Promise.resolve([
     title: 'Ma box 2',
     createdAt: '2020-05-07T14:40:40.544907Z',
     updatedAt: '2020-05-07T14:40:40.544907Z',
-    purpose: 'unknown',
     events: [{
       id: 'a7201b2b-a0b7-482b-92c4-ffd29df71511',
       type: 'create',
@@ -208,6 +205,24 @@ export const getUserBoxesBuilder = (payload) => Promise.resolve([
 export const countUserBoxesBuilder = (payload) => {
   // const query = isNil(payload) ? {} : objectToSnakeCase(payload);
   return Promise.resolve(2);
+  // return API
+  //   .use(API.endpoints.boxes.count)
+  //   .build(null, null, query)
+  //   .send()
+  //   .then((response) => parseInt(response.headers.get('X-Total-Count'), 10));
+};
+
+
+// eslint-disable-next-line arrow-body-style
+export const createBoxBuilder = (payload) => {
+  // const query = isNil(payload) ? {} : objectToSnakeCase(payload);
+  return Promise.resolve({
+    id: uuid4(),
+    status: 'open',
+    createdAt: new Date().toUTCString(),
+    updatedAt: new Date().toUTCString(),
+    ...payload,
+  });
   // return API
   //   .use(API.endpoints.boxes.count)
   //   .build(null, null, query)

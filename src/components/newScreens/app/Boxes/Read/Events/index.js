@@ -7,7 +7,7 @@ import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import BoxAvatar from 'components/dumb/Avatar/Box';
 import Title from 'components/dumb/Typography/Title';
-import Subtitle from 'components/dumb/Typography/Subtitle';
+// import Subtitle from 'components/dumb/Typography/Subtitle';
 import BoxMessageEvent from 'components/dumb/Event/Box/Message';
 import BoxInformationEvent from 'components/dumb/Event/Box/Information';
 import ElevationScroll from 'components/dumb/ElevationScroll';
@@ -50,7 +50,7 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box }) {
     [box.id],
   );
 
-  const { avatarUri, title, purpose, events: boxEvents } = useMemo(() => box, [box]);
+  const { avatarUri, title, events: boxEvents } = useMemo(() => box, [box]);
 
   const eventsByDate = useGroupEventsByDate(boxEvents);
 
@@ -78,9 +78,9 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box }) {
             <Title gutterBottom={false}>
               {title}
             </Title>
-            <Subtitle>
-              {purpose}
-            </Subtitle>
+            {/* <Subtitle>
+              nb of members or last message
+            </Subtitle> */}
           </Box>
 
           <IconButtonAppBar
@@ -105,10 +105,10 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box }) {
             {
               events.map((event) => {
                 if (EVENTS_TYPE.information.includes(event.type)) {
-                  return <BoxInformationEvent event={event} />;
+                  return <BoxInformationEvent key={event.id} event={event} />;
                 }
                 if (EVENTS_TYPE.message.includes(event.type)) {
-                  return <BoxMessageEvent event={event} />;
+                  return <BoxMessageEvent key={event.id} event={event} />;
                 }
                 return null;
               })

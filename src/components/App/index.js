@@ -5,7 +5,6 @@ import ErrorBoundary from 'components/smart/ErrorBoundary';
 import ScreenSplash from 'components/dumb/Screen/Splash';
 
 import { withTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
 
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
@@ -35,7 +34,7 @@ const REFERRERS = {
 // COMPONENTS
 const TRedirectAuthCallback = withTranslation('common')(RedirectAuthCallback);
 
-const App = ({ t, isAuthenticated }) => (
+const App = ({ t }) => (
   <ErrorBoundary maxWidth="md" my={3}>
     <Suspense fallback={<ScreenSplash />}>
       <SeclevelWarningAlert />
@@ -61,11 +60,7 @@ const App = ({ t, isAuthenticated }) => (
             <TRedirectAuthCallback fallbackReferrers={REFERRERS} t={t} {...routerProps} />
           )}
         />
-        <Redirect
-          exact
-          path={routes._}
-          to={isAuthenticated ? routes.boxes._ : routes.auth.redirectToSignIn}
-        />
+        <Redirect exact from={routes._} to={routes.boxes._} />
         <Route path={[routes.boxes._, routes.accounts._]} component={Home} />
         <Route
           exact
@@ -84,19 +79,7 @@ const App = ({ t, isAuthenticated }) => (
 );
 
 App.propTypes = {
-  // CONNECT
-  isAuthenticated: PropTypes.bool,
-
   t: PropTypes.func.isRequired,
 };
 
-App.defaultProps = {
-  isAuthenticated: false,
-};
-
-// CONNECT
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
-});
-
-export default connect(mapStateToProps)(withTranslation('components')(App));
+export default withTranslation('components')(App);

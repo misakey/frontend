@@ -1,14 +1,13 @@
 import React, { useMemo, useEffect, createContext, useCallback, useState, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
-import { loadUserThunk, authReset, loadUserRolesThunk } from '@misakey/auth/store/actions/auth';
+import { loadUserThunk, authReset } from '@misakey/auth/store/actions/auth';
 
 import log from '@misakey/helpers/log';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import pick from '@misakey/helpers/pick';
 import parseJwt from '@misakey/helpers/parseJwt';
-import { getRolesBuilder } from '@misakey/helpers/builder/roles';
 import createUserManager from '@misakey/auth/helpers/userManager';
 
 import OidcProviderSplash from '@misakey/auth/components/OidcProvider/Splash';
@@ -52,12 +51,6 @@ function OidcProvider({ store, children, config }) {
     [tempUser],
   );
 
-  const fetchUserRoles = useCallback(
-    (userId) => getRolesBuilder({ userId })
-      .then((roles) => store.dispatch(loadUserRolesThunk(roles))),
-    [store],
-  );
-
   const dispatchWindowStorageEvent = useCallback(
     () => {
       const userHasChangedEvent = new StorageEvent('userHasChanged', { bubbles: true });
@@ -80,17 +73,10 @@ function OidcProvider({ store, children, config }) {
         return Promise.resolve();
       }
 
-      const { auth: { roles } } = store.getState();
-
       const userId = parseJwt(user.id_token).sub;
-      return isNil(roles)
-        ? Promise.all([
-          dispatchLoadUser(user, userId),
-          fetchUserRoles(userId),
-        ])
-        : Promise.resolve(dispatchLoadUser(user, userId));
+      return Promise.resolve(dispatchLoadUser(user, userId));
     },
-    [dispatchLoadUser, fetchUserRoles, store],
+    [dispatchLoadUser, store],
   );
 
   // event callback when the user has been loaded (on silent renew or redirect)

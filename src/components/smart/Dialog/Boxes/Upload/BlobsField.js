@@ -17,7 +17,7 @@ import BoxMessage from '@misakey/ui/Box/Message';
 import BlobListItem from 'components/dumb/ListItem/Blob';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
-import { TMP_BLOB_FIELD_NAME, BLOBS_FIELD_NAME, INITIAL_VALUES } from 'components/smart/Dialog/Upload';
+import { TMP_BLOB_FIELD_NAME, BLOBS_FIELD_NAME, INITIAL_VALUES } from 'components/smart/Dialog/Boxes/Upload';
 
 // HOOKS
 const useStyles = makeStyles(() => ({

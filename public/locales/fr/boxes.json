@@ -35,5 +35,14 @@
             },
             "success": "Les fichiers ont été envoyé avec succès\u00a0!"
         }
+    },
+    "create": {
+      "dialog": {
+        "content": "Quel est le sujet de cette nouvelle conversation\u00a0?",
+        "success": "La box a été créée avec succès\u00a0!",
+        "fields": {
+          "name": "Usage"
+        }
+      }
     }
 }
