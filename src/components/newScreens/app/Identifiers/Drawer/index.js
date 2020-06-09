@@ -4,12 +4,16 @@ import { Link, generatePath } from 'react-router-dom';
 import routes from 'routes';
 
 import Button from '@misakey/ui/Button';
+import ButtonSignOut from '@misakey/auth/components/Button/SignOut';
+import CardProfileThumbnail from 'components/dumb/Card/Profile/Thumbnail';
 import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import Divider from '@material-ui/core/Divider';
 
+// COMPONENTS
 function IdentifierList({ drawerWidth, getNextDrawerSearch }) {
   const goBack = useMemo(
     () => getNextDrawerSearch(undefined, true),
@@ -35,6 +39,7 @@ function IdentifierList({ drawerWidth, getNextDrawerSearch }) {
           Mes identifiants !
         </Typography>
       </AppBarDrawer>
+      <CardProfileThumbnail />
       <Box p={2}>
         <Typography>Listes des identifiants</Typography>
         <Button
@@ -48,6 +53,11 @@ function IdentifierList({ drawerWidth, getNextDrawerSearch }) {
           onClick={() => { console.log('WIP!'); }}
         />
       </Box>
+      <Divider />
+      <Box mx={4} my={2}>
+        <ButtonSignOut />
+      </Box>
+      <Divider />
     </>
   );
 }

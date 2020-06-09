@@ -1,6 +1,7 @@
 #### Not connected
 ```js
 import React, { forwardRef } from 'react';
+import { SnackbarProvider } from 'notistack';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Link, BrowserRouter as Router } from 'react-router-dom';
 import ButtonConnect from './index';
@@ -23,17 +24,19 @@ const useStyles = makeStyles((theme) => ({
 const ButtonConnectExample = () => {
   const classes = useStyles();
   return (
-    <Router>
-      <ButtonConnect
-        application="app"
-        AccountLink={AccountLink}
-        enqueueSnackBar={enqueueSnackBar}
-        onSignIn={onSignIn}
-        onSignOut={onSignOut}
-        classes={{ noToken: { iconButton: { root: classes.iconButtonRoot } } }}
-        profile={profile}
-      />
-    </Router>
+    <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+      <Router>
+        <ButtonConnect
+          application="app"
+          AccountLink={AccountLink}
+          enqueueSnackBar={enqueueSnackBar}
+          onSignIn={onSignIn}
+          onSignOut={onSignOut}
+          classes={{ noToken: { iconButton: { root: classes.iconButtonRoot } } }}
+          profile={profile}
+        />
+      </Router>
+    </SnackbarProvider>
   );
 };
   <ButtonConnectExample />;
@@ -42,6 +45,7 @@ const ButtonConnectExample = () => {
 #### Not connected with icon
 ```js
 import React, { forwardRef } from 'react';
+import { SnackbarProvider } from 'notistack';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Link, BrowserRouter as Router } from 'react-router-dom';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -66,18 +70,20 @@ const ButtonConnectExample = () => {
   const classes = useStyles();
 
   return (
-    <Router>
-      <ButtonConnect
-        application="app"
-        AccountLink={AccountLink}
-        enqueueSnackBar={enqueueSnackBar}
-        onSignIn={onSignIn}
-        onSignOut={onSignOut}
-        profile={profile}
-        classes={{ noToken: { iconButton: { root: classes.iconButtonRoot } } }}
-        noTokenIcon={<AccountCircleIcon />}
-      />
-    </Router>
+    <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+      <Router>
+        <ButtonConnect
+          application="app"
+          AccountLink={AccountLink}
+          enqueueSnackBar={enqueueSnackBar}
+          onSignIn={onSignIn}
+          onSignOut={onSignOut}
+          profile={profile}
+          classes={{ noToken: { iconButton: { root: classes.iconButtonRoot } } }}
+          noTokenIcon={<AccountCircleIcon />}
+        />
+      </Router>
+    </SnackbarProvider>
   );
 };
   <ButtonConnectExample />;
@@ -88,6 +94,7 @@ const ButtonConnectExample = () => {
 #### Connected
 ```js
 import React, { forwardRef } from 'react';
+import { SnackbarProvider } from 'notistack';
 import { Link, BrowserRouter as Router } from 'react-router-dom';
 import ButtonConnect from './index';
 import { token, id } from './auth.json';
@@ -101,18 +108,20 @@ const profile = {
   email: 'test@misakey.com',
 };
 const ButtonConnectExample = () => (
-  <Router>
-    <ButtonConnect
-      application="app"
-      AccountLink={AccountLink}
-      enqueueSnackBar={enqueueSnackBar}
-      onSignIn={onSignIn}
-      onSignOut={onSignOut}
-      profile={profile}
-      token={token}
-      id={id}
-    />
-  </Router>
+  <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+    <Router>
+      <ButtonConnect
+        application="app"
+        AccountLink={AccountLink}
+        enqueueSnackBar={enqueueSnackBar}
+        onSignIn={onSignIn}
+        onSignOut={onSignOut}
+        profile={profile}
+        token={token}
+        id={id}
+      />
+    </Router>
+  </SnackbarProvider>
 );
 
   <ButtonConnectExample />;

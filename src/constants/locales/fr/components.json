@@ -20,6 +20,9 @@
     "signIn": "Connexion",
     "signOut": "Déconnexion"
   },
+  "buttonAccount": {
+    "profile": "Gérer mon compte"
+  },
   "dialogConnect": {
     "title": "Bonjour,",
     "subtitle": "Je me connecte pour pouvoir publier du contenu et contacter les sites pour récupérer mes données"

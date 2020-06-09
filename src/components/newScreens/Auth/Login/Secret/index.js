@@ -206,7 +206,7 @@ const AuthLoginSecret = ({
             </Box>
           </Box>
         </Title>
-        <Box justifyContent="flex-startpp" flexDirection="column" display="flex" width="100%">
+        <Box justifyContent="flex-start" flexDirection="column" display="flex" width="100%">
           <SecretFormFields methodName={methodName} />
           {!isXsLayout && (
             <Button

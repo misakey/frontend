@@ -25,7 +25,7 @@ export default {
   },
   signOut: {
     method: 'POST',
-    path: '/logout',
+    path: '/auth/logout',
     auth: true,
   },
   signUp: {

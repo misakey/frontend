@@ -5,6 +5,7 @@ import ErrorBoundary from 'components/smart/ErrorBoundary';
 import ScreenSplash from 'components/dumb/Screen/Splash';
 
 import { withTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
 
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
@@ -34,7 +35,7 @@ const REFERRERS = {
 // COMPONENTS
 const TRedirectAuthCallback = withTranslation('common')(RedirectAuthCallback);
 
-const App = ({ t }) => (
+const App = ({ t, isAuthenticated }) => (
   <ErrorBoundary maxWidth="md" my={3}>
     <Suspense fallback={<ScreenSplash />}>
       <SeclevelWarningAlert />
@@ -57,11 +58,10 @@ const App = ({ t }) => (
           exact
           path={routes.auth.callback}
           render={(routerProps) => (
-            <TRedirectAuthCallback fallbackReferrers={REFERRERS} t={t} {...routerProps} />
+            <TRedirectAuthCallback fallbackReferrers={REFERRERS} {...routerProps} />
           )}
         />
-        <Redirect exact from={routes._} to={routes.boxes._} />
-        <Route path={[routes.boxes._, routes.accounts._]} component={Home} />
+        {/* REDIRECT TO SIGN IN */}
         <Route
           exact
           path={routes.auth.redirectToSignIn}
@@ -70,6 +70,23 @@ const App = ({ t }) => (
             return null;
           }}
         />
+        {!isAuthenticated && (
+          <Redirect
+            from={routes._}
+            to={routes.auth.redirectToSignIn}
+          />
+        )}
+
+        {/* REDIRECT TO BOXES */}
+        <Redirect
+          exact
+          from={routes._}
+          to={routes.boxes._}
+        />
+
+        {/* OTHERS */}
+        <Route path={[routes.boxes._, routes.accounts._]} component={Home} />
+
 
         {/* DEFAULT */}
         <Route component={NotFound} />
@@ -79,7 +96,19 @@ const App = ({ t }) => (
 );
 
 App.propTypes = {
+  // CONNECT
+  isAuthenticated: PropTypes.bool,
+
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('components')(App);
+App.defaultProps = {
+  isAuthenticated: false,
+};
+
+// CONNECT
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps)(withTranslation('components')(App));

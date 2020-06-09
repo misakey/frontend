@@ -8,6 +8,9 @@
     },
     "received": "{{size}} received on {{date}}"
   },
+  "buttonAccount": {
+    "profile": "Manage my account"
+  },
   "errorBoundary": {
     "title": {
       "default": "Oopsy\u00a0! An unknown error occurred..."

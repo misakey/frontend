@@ -81,7 +81,12 @@ const Button = forwardRef(
 );
 
 Button.propTypes = {
-  classes: PropTypes.objectOf(PropTypes.string),
+  classes: PropTypes.shape({
+    wrapper: PropTypes.string,
+    buttonRoot: PropTypes.string,
+    buttonLabel: PropTypes.string,
+    buttonProgress: PropTypes.string,
+  }),
   isLoading: PropTypes.bool,
   disabled: PropTypes.bool,
   progressProps: PropTypes.object,
@@ -90,7 +95,12 @@ Button.propTypes = {
 };
 
 Button.defaultProps = {
-  classes: {},
+  classes: {
+    wrapper: '',
+    buttonRoot: '',
+    buttonLabel: '',
+    buttonProgress: '',
+  },
   isLoading: false,
   disabled: false,
   progressProps: {},
