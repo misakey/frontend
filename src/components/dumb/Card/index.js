@@ -11,7 +11,7 @@ import CardActions from '@material-ui/core/CardActions';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import GroupTitles from 'components/dumb/Typography/GroupTitles';
-import BoxControls from 'components/dumb/Box/Controls';
+import BoxControls from '@misakey/ui/Box/Controls';
 
 const useStyles = makeStyles((theme) => ({
   root: {

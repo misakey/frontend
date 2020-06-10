@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import REQUEST_TYPES from 'constants/databox/type';
 
 import { ThemeProvider, makeStyles } from '@material-ui/core/styles';
-import BoxControls from 'components/dumb/Box/Controls';
+import BoxControls from '@misakey/ui/Box/Controls';
 
 import useGetThemeForRequestType from 'hooks/useGetThemeForRequestType';
 

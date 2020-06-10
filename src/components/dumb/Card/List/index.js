@@ -13,7 +13,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 
-const CardProfileList = ({ children }) => {
+const CardList = ({ children }) => {
   const classes = useStyles();
 
   return (
@@ -30,8 +30,8 @@ const CardProfileList = ({ children }) => {
   );
 };
 
-CardProfileList.propTypes = {
+CardList.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default CardProfileList;
+export default CardList;

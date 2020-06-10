@@ -131,7 +131,7 @@ SilentAuthScreen.defaultProps = {
 
 // CONNECT
 const mapStateToProps = (state) => {
-  const { email } = state.auth.profile || {};
+  const { email } = state.auth.identity || {};
   return { userEmail: email };
 };
 

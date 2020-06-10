@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Formik, Form, Field } from 'formik';
+import { Form, Field } from 'formik';
+import Formik from '@misakey/ui/Formik';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
 import { normalize } from 'normalizr';
@@ -14,17 +15,17 @@ import { receiveEntities } from '@misakey/store/actions/entities';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 
 import { makeStyles } from '@material-ui/core/styles/';
 import Dialog from '@material-ui/core/Dialog';
-import DialogTitleWithClose from 'components/dumb/Dialog/Title/WithCloseIcon';
+import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import ArrowBack from '@material-ui/icons/ArrowBack';
 
-import BoxControls from 'components/dumb/Box/Controls';
+import BoxControls from '@misakey/ui/Box/Controls';
 import FieldText from 'components/dumb/Form/Field/Text';
 import { boxNameFieldValidationSchema } from 'constants/validationSchemas/boxes';
 import { createBoxBuilder } from '@misakey/helpers/builder/boxes';
@@ -63,6 +64,7 @@ function CreateBoxDialog({
   open,
 }) {
   const classes = useStyles();
+  const fullScreen = useDialogFullScreen();
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -108,6 +110,7 @@ function CreateBoxDialog({
   return (
     <Dialog
       fullWidth
+      fullScreen={fullScreen}
       open={open}
       onClose={onClose}
       aria-labelledby="create-box-dialog-title"
@@ -120,7 +123,7 @@ function CreateBoxDialog({
       >
         {({ resetForm }) => (
           <Form>
-            <DialogTitleWithClose onClose={getOnReset(resetForm)} closeIcon={ArrowBack} />
+            <DialogTitleWithClose onClose={getOnReset(resetForm)} />
             <DialogContent className={classes.dialogContentRoot}>
               <Typography>{t('boxes:create.dialog.content')}</Typography>
               <Box display="flex" justifyContent="center">

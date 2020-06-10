@@ -37,7 +37,7 @@ export default async function resetPassword({
 
   const endpoint = API.endpoints.user.password.reset;
   if (!auth) { endpoint.auth = false; }
-  const responseBody = API.use(endpoint).build(undefined, payload).send();
+  const responseBody = await API.use(endpoint).build(undefined, payload).send();
 
   dispatchSetBackupVersion(responseBody.version);
 

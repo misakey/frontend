@@ -2,7 +2,7 @@ import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
-import { Formik } from 'formik';
+import Formik from '@misakey/ui/Formik';
 
 import { DEFAULT_SECLEVEL, SECLEVEL_CONFIG, STEP, INITIAL_VALUES, ERROR_KEYS } from 'constants/auth';
 import API from '@misakey/api';

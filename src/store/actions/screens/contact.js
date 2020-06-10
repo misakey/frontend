@@ -1,4 +1,4 @@
-import { updateProfile } from '@misakey/auth/store/actions/auth';
+import { updateIdentity } from '@misakey/auth/store/actions/auth';
 
 
 export const CONTACT_DATABOX_URL = Symbol('CONTACT_DATABOX_URL');
@@ -6,7 +6,7 @@ export const CONTACT_DATABOX_URL_BY_ID = Symbol('CONTACT_DATABOX_URL_BY_ID');
 export const CLEAR_DATABOX_URL_BY_ID = Symbol('CLEAR_DATABOX_URL_BY_ID');
 export const SET_CONTACT_EMAIL = Symbol('SET_CONTACT_EMAIL');
 
-export const mailProviderPreferencyUpdate = (mailProvider) => updateProfile(
+export const mailProviderPreferencyUpdate = (mailProvider) => updateIdentity(
   { preferencies: { mailProvider } },
 );
 

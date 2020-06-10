@@ -33,6 +33,8 @@
     "success": "La fréquence des communications a été mise à jour"
   },
   "password": {
+    "existing": "Quel est le mot de passe\u00a0?",
+    "new": "Quel mot de passe souhaitez-vous utiliser\u00a0?",
     "title": "Mot de passe",
     "success": "Mon mot de passe a été mis a jour"
   },

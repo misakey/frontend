@@ -82,10 +82,10 @@ const withBackupUpdater = (actionBuilder) => (...args) => (
       await dispatch(actionBuilder(...args));
 
       const state = getState();
-      const userId = state.auth.profile.id;
+      const identityId = state.auth.identity.id;
       const { secrets, backupKey, backupVersion } = state.crypto;
 
-      const response = await updateSecretsBackup(userId, secrets, backupKey, backupVersion);
+      const response = await updateSecretsBackup(identityId, secrets, backupKey, backupVersion);
 
       dispatch(setBackupVersion(response.version));
     } catch (e) {

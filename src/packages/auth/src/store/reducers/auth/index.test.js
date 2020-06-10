@@ -1,12 +1,12 @@
 import moment from 'moment';
-import { SIGN_IN, SIGN_OUT, AUTH_RESET, UPDATE_PROFILE, LOAD_USER, LOAD_USER_ROLES } from '../../actions/auth';
+import { SIGN_IN, SIGN_OUT, AUTH_RESET, UPDATE_IDENTITY, LOAD_USER, LOAD_USER_ROLES } from '../../actions/auth';
 import reducer, { INITIAL_STATE } from './index';
 
 describe('testing auth reducer', () => {
   const dirtyState = {
     id: '226',
     authenticatedAt: moment().toISOString(),
-    profile: {},
+    identity: {},
     token: '152852sdfr.efrgt.dre',
     expiresAt: '2020-10-15',
   };
@@ -54,23 +54,23 @@ describe('testing auth reducer', () => {
     expect(reducer(dirtyState, { type: SIGN_OUT })).toEqual(INITIAL_STATE);
   });
 
-  describe('UPDATE_PROFILE', () => {
-    const profile = {
+  describe('UPDATE_IDENTITY', () => {
+    const identity = {
       name: 'john',
     };
 
-    it('should handle UPDATE_PROFILE, initial state', () => {
-      expect(reducer(INITIAL_STATE, { type: UPDATE_PROFILE, profile })).toEqual({
+    it('should handle UPDATE_IDENTITY, initial state', () => {
+      expect(reducer(INITIAL_STATE, { type: UPDATE_IDENTITY, identity })).toEqual({
         ...INITIAL_STATE,
-        profile,
+        identity,
       });
     });
 
-    it('should handle UPDATE_PROFILE, any state', () => {
-      const state = { profile: { name: 'julius', avatar: '' } };
-      expect(reducer(state, { type: UPDATE_PROFILE, profile })).toEqual({
+    it('should handle UPDATE_IDENTITY, any state', () => {
+      const state = { identity: { name: 'julius', avatar: '' } };
+      expect(reducer(state, { type: UPDATE_IDENTITY, identity })).toEqual({
         ...state,
-        profile: { ...state.profile, ...profile },
+        identity: { ...state.identity, ...identity },
       });
     });
   });
@@ -80,7 +80,7 @@ describe('testing auth reducer', () => {
       {
         roleLabel: 'dpo',
         applicationId: '8b88d48-ad48-43b9-a323-eab1de68b280',
-        userId: '54rfde2-ad48-43b9-a323-iyhk7868b280',
+        identityId: '54rfde2-ad48-43b9-a323-iyhk7868b280',
       },
     ];
 
@@ -97,7 +97,7 @@ describe('testing auth reducer', () => {
           {
             roleLabel: 'admin',
             applicationId: '8b88d48-ad48-43b9-a323-eab1de68b280',
-            userId: '54rfde2-ad48-43b9-a323-iyhk7868b280',
+            identityId: '54rfde2-ad48-43b9-a323-iyhk7868b280',
           },
         ],
       };

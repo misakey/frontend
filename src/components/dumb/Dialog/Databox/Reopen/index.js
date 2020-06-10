@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import BoxControls from 'components/dumb/Box/Controls';
+import BoxControls from '@misakey/ui/Box/Controls';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';

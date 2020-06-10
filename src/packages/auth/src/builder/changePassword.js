@@ -9,13 +9,13 @@ import genParams from '../passwordHashing/genParams';
 import hashPassword from '../passwordHashing/hashPassword';
 
 export default async function changePassword({
-  profile,
+  identity,
   oldPassword,
   newPassword,
   backupData,
   backupVersion,
 }) {
-  const { email, id: userId } = profile;
+  const { displayName: email, id: identityId } = identity;
 
   const publicInfo = objectToCamelCase(
     await API.use(API.endpoints.user.public.read).build({ email }).send(),
@@ -23,7 +23,7 @@ export default async function changePassword({
   const pwdHashParams = publicInfo.argon2Params;
 
   const payload = {
-    userId,
+    identityId,
     backupData,
     backupVersion,
     // rest of the content set below

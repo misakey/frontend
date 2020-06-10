@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Formik, Field } from 'formik';
+import { Field } from 'formik';
+import Formik from '@misakey/ui/Formik';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';

@@ -1,8 +1,4 @@
 export default {
-  checkAuthable: {
-    method: 'PUT',
-    path: '/identities/authable',
-  },
   info: {
     method: 'GET',
     path: '/auth/login/info',

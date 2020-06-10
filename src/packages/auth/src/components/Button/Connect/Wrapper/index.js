@@ -64,11 +64,11 @@ Wrapper.defaultProps = {
 const mapStateToProps = (state) => ({
   id: state.auth.id,
   token: state.auth.token,
-  profile: state.auth.profile,
+  identity: state.auth.identity,
 });
 const mapDispatchToProps = (dispatch) => ({
   onSignOut: () => dispatch(signOut()),
-  onSignIn: (profile) => dispatch(signIn({ profile })),
+  onSignIn: (identity) => dispatch(signIn({ identity })),
 });
 
 export default connect(

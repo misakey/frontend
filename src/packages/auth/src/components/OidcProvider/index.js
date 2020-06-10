@@ -60,9 +60,9 @@ function OidcProvider({ store, children, config }) {
   );
 
   const dispatchLoadUser = useCallback(
-    (user, userId) => store.dispatch(loadUserThunk({
+    (user, identityId) => store.dispatch(loadUserThunk({
       ...getUser(user),
-      userId,
+      identityId,
     })),
     [store],
   );
@@ -73,8 +73,8 @@ function OidcProvider({ store, children, config }) {
         return Promise.resolve();
       }
 
-      const userId = parseJwt(user.id_token).sub;
-      return Promise.resolve(dispatchLoadUser(user, userId));
+      const identityId = parseJwt(user.id_token).sub;
+      return Promise.resolve(dispatchLoadUser(user, identityId));
     },
     [dispatchLoadUser, store],
   );

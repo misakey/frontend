@@ -2,8 +2,9 @@ import React, { lazy } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
 import routes from 'routes';
+import IdentitySchema from 'store/schemas/Identity';
 
-import withUser from 'components/smart/withUser';
+import withIdentity from 'components/smart/withIdentity';
 
 // LAZY
 const AccountHome = lazy(() => import('components/screens/Account/Home'));
@@ -14,14 +15,14 @@ const AccountNotifications = lazy(() => import('components/screens/Account/Notif
 const ExportCrypto = lazy(() => import('components/screens/Account/ExportCrypto'));
 
 // COMPONENTS
-const Account = ({ profile, isFetching, ...props }) => (
+const Account = ({ identity, isFetching, ...props }) => (
   <Switch>
     <Route
       exact
       path={routes.account._}
       render={(routerProps) => (
         <AccountHome
-          profile={profile}
+          identity={identity}
           isFetching={isFetching}
           {...props}
           {...routerProps}
@@ -33,7 +34,7 @@ const Account = ({ profile, isFetching, ...props }) => (
       path={routes.account.profile.name}
       render={(routerProps) => (
         <AccountName
-          profile={profile}
+          identity={identity}
           isFetching={isFetching}
           {...props}
           {...routerProps}
@@ -44,7 +45,7 @@ const Account = ({ profile, isFetching, ...props }) => (
       path={routes.account.profile.avatar._}
       render={(routerProps) => (
         <AccountAvatar
-          profile={profile}
+          identity={identity}
           isFetching={isFetching}
           {...props}
           {...routerProps}
@@ -56,7 +57,7 @@ const Account = ({ profile, isFetching, ...props }) => (
       path={routes.account.profile.password}
       render={(routerProps) => (
         <AccountPassword
-          profile={profile}
+          identity={identity}
           isFetching={isFetching}
           {...props}
           {...routerProps}
@@ -68,7 +69,7 @@ const Account = ({ profile, isFetching, ...props }) => (
       path={routes.account.profile.notifications}
       render={(routerProps) => (
         <AccountNotifications
-          profile={profile}
+          identity={identity}
           isFetching={isFetching}
           {...props}
           {...routerProps}
@@ -89,17 +90,15 @@ const Account = ({ profile, isFetching, ...props }) => (
 );
 
 Account.propTypes = {
-  // withUser
+  // withIdentity
   isFetching: PropTypes.bool.isRequired,
   // CONNECT
   // - STATE
-  profile: PropTypes.shape({
-    id: PropTypes.string,
-  }),
+  identity: PropTypes.shape(IdentitySchema.propTypes),
 };
 
 Account.defaultProps = {
-  profile: null,
+  identity: null,
 };
 
-export default withUser(Account);
+export default withIdentity(Account);

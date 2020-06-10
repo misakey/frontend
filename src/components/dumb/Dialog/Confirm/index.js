@@ -10,7 +10,7 @@ import useFetchCallback from '@misakey/hooks/useFetch/callback';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
-import BoxControls from 'components/dumb/Box/Controls';
+import BoxControls from '@misakey/ui/Box/Controls';
 import ConfirmDialogContent from './DialogContent';
 
 

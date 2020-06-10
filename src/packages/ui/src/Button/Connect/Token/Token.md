@@ -9,7 +9,7 @@ import ButtonConnectToken from './index';
 
 const AccountLink = forwardRef((props, ref) => <Link ref={ref} to="/account" {...props} />);
 const onSignOut = console.log;
-const profile = {
+const identity = {
   displayName: 'test',
   email: 'test@misakey.com',
 };
@@ -19,7 +19,7 @@ const ButtonConnectTokenExample = () => (
       <ButtonConnectToken
         AccountLink={AccountLink}
         onSignOut={onSignOut}
-        profile={profile}
+        identity={identity}
       />
     </Router>
   </SnackbarProvider>
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 const AccountLink = forwardRef((props, ref) => <Link ref={ref} to="/account" {...props} />);
 const enqueueSnackBar = console.log;
 const onSignOut = console.log;
-const profile = {
+const identity = {
   displayName: 'test',
   email: 'test@misakey.com',
 };
@@ -61,7 +61,7 @@ const ButtonConnectTokenExample = () => {
           AccountLink={AccountLink}
           enqueueSnackBar={enqueueSnackBar}
           onSignOut={onSignOut}
-          profile={profile}
+          identity={identity}
           token={token}
           id={id}
           classes={{ root: classes.iconButtonRoot }}

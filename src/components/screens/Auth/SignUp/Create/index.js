@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Formik, Form } from 'formik';
+import { Form } from 'formik';
+import Formik from '@misakey/ui/Formik';
 import { Switch } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';

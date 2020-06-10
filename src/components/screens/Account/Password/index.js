@@ -1,12 +1,14 @@
 import React, { useMemo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Formik, Field, Form } from 'formik';
+import { Field, Form } from 'formik';
+import Formik from '@misakey/ui/Formik';
 import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
+import IdentitySchema from 'store/schemas/Identity';
 import routes from 'routes';
-import { passwordValidationSchema } from 'constants/validationSchemas/profile';
+import { passwordValidationSchema } from 'constants/validationSchemas/identity';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 
 import isNil from '@misakey/helpers/isNil';
@@ -17,7 +19,7 @@ import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import changePassword from '@misakey/auth/builder/changePassword';
 
 import ScreenAction from 'components/dumb/Screen/Action';
-import BoxControls from 'components/dumb/Box/Controls';
+import BoxControls from '@misakey/ui/Box/Controls';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
@@ -47,7 +49,7 @@ const NAVIGATION_PROPS = {
 };
 
 // COMPONENTS
-const AccountPassword = ({ t, profile, history, isFetching }) => {
+const AccountPassword = ({ t, identity, history, isFetching }) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const state = useMemo(
@@ -71,7 +73,7 @@ const AccountPassword = ({ t, profile, history, isFetching }) => {
         } = await dispatch(preparePasswordChange(passwordNew, passwordOld));
 
         await changePassword({
-          profile,
+          identity,
           oldPassword: passwordOld,
           newPassword: passwordNew,
           backupData,
@@ -102,10 +104,10 @@ const AccountPassword = ({ t, profile, history, isFetching }) => {
         setSubmitting(false);
       }
     },
-    [profile, enqueueSnackbar, handleHttpErrors, dispatch, history, t],
+    [identity, enqueueSnackbar, handleHttpErrors, dispatch, history, t],
   );
 
-  if (isNil(profile)) { return null; }
+  if (isNil(identity)) { return null; }
 
   return (
     <ScreenAction
@@ -164,7 +166,7 @@ const AccountPassword = ({ t, profile, history, isFetching }) => {
 };
 
 AccountPassword.propTypes = {
-  profile: PropTypes.shape({ id: PropTypes.string }),
+  identity: PropTypes.shape(IdentitySchema.propTypes),
   isFetching: PropTypes.bool,
   // router props
   history: PropTypes.object.isRequired,
@@ -174,7 +176,7 @@ AccountPassword.propTypes = {
 };
 
 AccountPassword.defaultProps = {
-  profile: null,
+  identity: null,
   isFetching: false,
 };
 

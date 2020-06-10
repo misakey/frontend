@@ -2,7 +2,8 @@ import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTranslation, Trans } from 'react-i18next';
-import { Formik, Form } from 'formik';
+import { Form } from 'formik';
+import Formik from '@misakey/ui/Formik';
 
 import { STEP, INITIAL_VALUES } from 'constants/auth';
 import routes from 'routes';
@@ -11,14 +12,14 @@ import { screenAuthSetIdentifier } from 'store/actions/screens/auth';
 import { ssoUpdate } from '@misakey/auth/store/actions/sso';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
 
-import requireAuthable from '@misakey/auth/builder/requireAuthable';
+import { requireAuthable } from '@misakey/auth/builder/identities';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import Title from 'components/dumb/Typography/Title';
 import LoginFormFields from 'components/newScreens/Auth/Login/Identifier/Form/Fields';
-import BoxControls from 'components/dumb/Box/Controls';
+import BoxControls from '@misakey/ui/Box/Controls';
 import AvatarApplicationSso from 'components/dumb/Avatar/Application/Sso';
 import Box from '@material-ui/core/Box';
 

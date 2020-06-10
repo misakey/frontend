@@ -26,18 +26,18 @@ const useStyles = makeStyles((theme) => ({
 
 const OidcProviderSplash = ({
   userProps,
-  profile,
+  identity,
 }) => {
   const classes = useStyles();
 
   const userPropsWithProfile = useMemo(
-    () => (isEmpty(profile)
+    () => (isEmpty(identity)
       ? userProps
       : {
         ...userProps,
-        profile,
+        identity,
       }),
-    [profile, userProps],
+    [identity, userProps],
   );
 
   return (
@@ -55,17 +55,17 @@ const OidcProviderSplash = ({
 
 OidcProviderSplash.propTypes = {
   userProps: PropTypes.object,
-  profile: PropTypes.object,
+  identity: PropTypes.object,
 };
 
 OidcProviderSplash.defaultProps = {
   userProps: {},
-  profile: {},
+  identity: {},
 };
 
 // CONNECT
 const mapStateToProps = (state) => ({
-  profile: state.auth.profile,
+  identity: state.auth.identity,
 });
 
 export default connect(mapStateToProps, {})(OidcProviderSplash);

@@ -10,7 +10,7 @@ const AccountLink = forwardRef((props, ref) => <Link ref={ref} to="/account" {..
 const enqueueSnackBar = console.log;
 const onSignIn = console.log;
 const onSignOut = console.log;
-const profile = {
+const identity = {
   displayName: 'test',
   email: 'test@misakey.com',
 };
@@ -33,7 +33,7 @@ const ButtonConnectExample = () => {
           onSignIn={onSignIn}
           onSignOut={onSignOut}
           classes={{ noToken: { iconButton: { root: classes.iconButtonRoot } } }}
-          profile={profile}
+          identity={identity}
         />
       </Router>
     </SnackbarProvider>
@@ -55,7 +55,7 @@ const AccountLink = forwardRef((props, ref) => <Link ref={ref} to="/account" {..
 const enqueueSnackBar = console.log;
 const onSignIn = console.log;
 const onSignOut = console.log;
-const profile = {
+const identity = {
   displayName: 'test',
   email: 'test@misakey.com',
 };
@@ -78,7 +78,7 @@ const ButtonConnectExample = () => {
           enqueueSnackBar={enqueueSnackBar}
           onSignIn={onSignIn}
           onSignOut={onSignOut}
-          profile={profile}
+          identity={identity}
           classes={{ noToken: { iconButton: { root: classes.iconButtonRoot } } }}
           noTokenIcon={<AccountCircleIcon />}
         />
@@ -103,7 +103,7 @@ const AccountLink = forwardRef((props, ref) => <Link ref={ref} to="/account" {..
 const enqueueSnackBar = console.log;
 const onSignIn = console.log;
 const onSignOut = console.log;
-const profile = {
+const identity = {
   displayName: 'test',
   email: 'test@misakey.com',
 };
@@ -116,7 +116,7 @@ const ButtonConnectExample = () => (
         enqueueSnackBar={enqueueSnackBar}
         onSignIn={onSignIn}
         onSignOut={onSignOut}
-        profile={profile}
+        identity={identity}
         token={token}
         id={id}
       />

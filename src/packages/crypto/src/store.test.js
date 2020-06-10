@@ -28,7 +28,7 @@ test('crypto store handles creation, reset and import correctly', async () => {
   const storeMiddleWares = [thunk];
   const reducer = combineReducers({
     crypto: cryptoReducer,
-    auth: () => ({ profile: { id: 'fake-test-id' } }),
+    auth: () => ({ identity: { id: 'fake-test-id' } }),
   });
 
   const store = createStore(reducer, compose(applyMiddleware(...storeMiddleWares)));
@@ -68,7 +68,7 @@ test('crypto store handles states from previous versions', async () => {
   const storeMiddleWares = [thunk];
   const reducer = combineReducers({
     crypto: cryptoReducer,
-    auth: () => ({ profile: { id: 'fake-test-id' } }),
+    auth: () => ({ identity: { id: 'fake-test-id' } }),
   });
 
   const store = createStore(reducer, compose(applyMiddleware(...storeMiddleWares)));

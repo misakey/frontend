@@ -1,23 +1,23 @@
 import { normalize } from 'normalizr';
 
 import { receiveEntities, updateEntities } from '@misakey/store/actions/entities';
-import { updateProfile } from '@misakey/auth/store/actions/auth';
-import UserSchema from 'store/schemas/User';
+import { updateIdentity } from '@misakey/auth/store/actions/auth';
+import IdentitySchema from 'store/schemas/Identity';
 
 
-export const userProfileReceive = (profile) => (dispatch) => {
-  const normalized = normalize(profile, UserSchema.entity);
+export const userIdentityReceive = (identity) => (dispatch) => {
+  const normalized = normalize(identity, IdentitySchema.entity);
   const { entities } = normalized;
   return Promise.all([
     dispatch(receiveEntities(entities)),
-    dispatch(updateProfile(profile)),
+    dispatch(updateIdentity(identity)),
   ]);
 };
 
-export const userProfileUpdate = (id, changes) => (dispatch) => {
+export const userIdentityUpdate = (id, changes) => (dispatch) => {
   const entities = [{ id, changes }];
   return Promise.all([
-    dispatch(updateEntities(entities, UserSchema)),
-    dispatch(updateProfile(changes)),
+    dispatch(updateEntities(entities, IdentitySchema)),
+    dispatch(updateIdentity(changes)),
   ]);
 };

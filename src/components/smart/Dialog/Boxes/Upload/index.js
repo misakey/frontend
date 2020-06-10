@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Formik, Form, Field, FieldArray } from 'formik';
+import { Form, Field, FieldArray } from 'formik';
+import Formik from '@misakey/ui/Formik';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
 
@@ -14,17 +15,19 @@ import isNil from '@misakey/helpers/isNil';
 import last from '@misakey/helpers/last';
 import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
 
+import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
+
 import { encryptBlobFile } from '@misakey/crypto/databox/crypto';
 
 import { makeStyles } from '@material-ui/core/styles/';
 import Dialog from '@material-ui/core/Dialog';
-import DialogTitleWithClose from 'components/dumb/Dialog/Title/WithCloseIcon';
+import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 
 import FieldBlobs from 'components/smart/Dialog/Boxes/Upload/BlobsField';
 import FieldBlobTmp from 'components/smart/Dialog/Boxes/Upload/TmpBlobField';
-import BoxControls from 'components/dumb/Box/Controls';
+import BoxControls from '@misakey/ui/Box/Controls';
 
 export const TMP_BLOB_FIELD_NAME = 'blob';
 export const BLOBS_FIELD_NAME = 'blobs';
@@ -55,6 +58,8 @@ function UploadDialog({
   open,
 }) {
   const classes = useStyles();
+  const fullScreen = useDialogFullScreen();
+
   const { enqueueSnackbar } = useSnackbar();
   const [newBlob, setNewBlob] = useState(null);
 
@@ -123,6 +128,7 @@ function UploadDialog({
   return (
     <Dialog
       fullWidth
+      fullScreen={fullScreen}
       open={open}
       onClose={onClose}
       aria-labelledby="upload-dialog-title"

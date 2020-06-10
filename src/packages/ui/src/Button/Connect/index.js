@@ -13,7 +13,7 @@ import any from '@misakey/helpers/any';
 import props from '@misakey/helpers/props';
 import compose from '@misakey/helpers/compose';
 import nestedClasses from '@misakey/helpers/nestedClasses';
-import { getUserBuilder } from '@misakey/helpers/builder/users';
+import { getIdentity as getIdentityBuilder } from '@misakey/auth/builder/identities';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
@@ -22,16 +22,16 @@ import ButtonConnectNoToken from './NoToken';
 import ButtonConnectToken from './Token';
 
 // CONSTANTS
-const PROFILE_PROPS = ['avatarUrl', 'displayName', 'email'];
+const IDENTITY_PROPS = ['avatarUrl', 'displayName', 'id'];
 
 // HELPERS
 const getTokenClasses = (classes) => nestedClasses(classes, 'token', 'noToken');
 const getNoTokenClasses = (classes) => nestedClasses(classes, 'noToken', 'token');
 
 const isAnyEmpty = any(isEmpty);
-const isMissingProfileProps = compose(
+const isMissingIdentityProps = compose(
   isAnyEmpty,
-  props(PROFILE_PROPS),
+  props(IDENTITY_PROPS),
 );
 
 
@@ -45,14 +45,14 @@ const ButtonConnect = ({
   noTokenIcon,
   onSignIn,
   onSignOut,
-  profile,
+  identity,
   signInAction,
   t,
   token,
   customAction,
   ...rest
 }) => {
-  const userId = useMemo(
+  const identityId = useMemo(
     () => (id
       ? parseJwt(id).sub
       : undefined
@@ -61,8 +61,8 @@ const ButtonConnect = ({
   );
 
   const shouldFetch = useMemo(
-    () => !isNil(userId) && isMissingProfileProps(profile),
-    [profile, userId],
+    () => !isNil(identityId) && isMissingIdentityProps(identity),
+    [identity, identityId],
   );
 
   const tokenClasses = useMemo(
@@ -88,8 +88,8 @@ const ButtonConnect = ({
 
 
   const getUserData = useCallback(
-    () => getUserBuilder(userId),
-    [userId],
+    () => getIdentityBuilder(identityId),
+    [identityId],
   );
 
   const { isFetching: isFetchingUser } = useFetchEffect(
@@ -121,7 +121,7 @@ const ButtonConnect = ({
           classes={tokenClasses}
           id={id}
           onSignOut={onSignOut}
-          profile={profile}
+          identity={identity}
           token={token}
           customAction={customAction}
           {...omitTranslationProps(rest)}
@@ -149,10 +149,10 @@ ButtonConnect.propTypes = {
   onSignIn: PropTypes.func,
 
   onSignOut: PropTypes.func,
-  profile: PropTypes.shape({
+  identity: PropTypes.shape({
     avatarUrl: PropTypes.string,
     displayName: PropTypes.string,
-    email: PropTypes.string,
+    id: PropTypes.string,
   }),
   signInAction: PropTypes.func,
   t: PropTypes.func.isRequired,
@@ -168,7 +168,7 @@ ButtonConnect.defaultProps = {
   noTokenIcon: null,
   onSignIn: null,
   onSignOut: null,
-  profile: null,
+  identity: null,
   signInAction: null,
   token: null,
   customAction: null,

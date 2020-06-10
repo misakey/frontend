@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import routes from 'routes';
-import UserSchema from 'store/schemas/User';
+import IdentitySchema from 'store/schemas/Identity';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -17,8 +17,8 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
 import UserStorage from 'components/screens/Account/Home/UserStorage';
 import DeleteAccountListItem from 'components/screens/Account/Home/DeleteAccount';
-import Header from './Header';
-import CardProfileList from '../List';
+import CardIdentityHeader from 'components/dumb/Card/Identity/Header';
+import CardList from 'components/dumb/Card/List';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -47,8 +47,8 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const CardProfile = ({ profile, t }) => {
-  const { displayName, avatarUrl, handle, email, notifications } = profile;
+const CardIdentity = ({ identity, t }) => {
+  const { displayName, avatarUrl, handle, email, notifications } = identity;
   const classes = useStyles();
 
   return (
@@ -59,7 +59,7 @@ const CardProfile = ({ profile, t }) => {
         title={displayName}
         subtitle={`@${handle}`}
       />
-      <CardProfileList>
+      <CardList>
         <ListItem
           button
           to={routes.account.profile.name}
@@ -114,9 +114,9 @@ const CardProfile = ({ profile, t }) => {
             className={classes.emailItem}
           />
         </ListItem>
-      </CardProfileList>
-      <Header>{t('account:sections.myNotifications')}</Header>
-      <CardProfileList>
+      </CardList>
+      <CardIdentityHeader>{t('account:sections.myNotifications')}</CardIdentityHeader>
+      <CardList>
         <ListItem
           button
           to={routes.account.profile.notifications}
@@ -143,9 +143,9 @@ const CardProfile = ({ profile, t }) => {
             className={classes.emailItem}
           />
         </ListItem>
-      </CardProfileList>
-      <Header>{t('account:sections.myVault')}</Header>
-      <CardProfileList>
+      </CardList>
+      <CardIdentityHeader>{t('account:sections.myVault')}</CardIdentityHeader>
+      <CardList>
         <ListItem
           classes={{ container: classes.listItemContainer }}
           divider
@@ -167,21 +167,21 @@ const CardProfile = ({ profile, t }) => {
           <ListItemText primary={t('account:exportCrypto.helperText')} />
           <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
-      </CardProfileList>
-      <Header>{t('account:sections.myAccount')}</Header>
-      <CardProfileList>
+      </CardList>
+      <CardIdentityHeader>{t('account:sections.myAccount')}</CardIdentityHeader>
+      <CardList>
         <DeleteAccountListItem
-          profile={profile}
+          identity={identity}
           classes={{ listItemIcon: classes.listItemIcon, actionIcon: classes.actionIcon }}
         />
-      </CardProfileList>
+      </CardList>
     </Container>
   );
 };
 
-CardProfile.propTypes = {
-  profile: PropTypes.shape(UserSchema.propTypes).isRequired,
+CardIdentity.propTypes = {
+  identity: PropTypes.shape(IdentitySchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('fields', 'account')(CardProfile);
+export default withTranslation('fields', 'account')(CardIdentity);

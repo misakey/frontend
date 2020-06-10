@@ -1,15 +1,17 @@
 import React, { useMemo, lazy } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Formik, Form } from 'formik';
+import { Form } from 'formik';
+import Formik from '@misakey/ui/Formik';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 
+import IdentitySchema from 'store/schemas/Identity';
 import routes from 'routes';
 import API from '@misakey/api';
-import { avatarValidationSchema } from 'constants/validationSchemas/profile';
-import { userProfileUpdate } from 'store/actions/screens/account';
+import { avatarValidationSchema } from 'constants/validationSchemas/identity';
+import { userIdentityUpdate } from 'store/actions/screens/account';
 
 import isNil from '@misakey/helpers/isNil';
 import pick from '@misakey/helpers/pick';
@@ -49,25 +51,25 @@ const fetchProfile = (id) => API
 
 // HOOKS
 const useOnSubmit = (
-  profile, dispatchUpdate, enqueueSnackbar, handleHttpErrors, history, t,
+  identity, dispatchUpdate, enqueueSnackbar, handleHttpErrors, history, t,
 ) => useMemo(
-  () => (form, { setSubmitting }) => updateProfile(profile.id, pickForm(form))
-    .then(() => fetchProfile(profile.id))
+  () => (form, { setSubmitting }) => updateProfile(identity.id, pickForm(form))
+    .then(() => fetchProfile(identity.id))
     .then((response) => {
       const { avatarUrl } = objectToCamelCase(response);
       const changes = { avatarUrl };
       enqueueSnackbar(t('account:avatar.success'), { variant: 'success' });
-      dispatchUpdate(profile.id, changes, history);
+      dispatchUpdate(identity.id, changes, history);
     })
     .catch(handleHttpErrors)
     .finally(() => { setSubmitting(false); }),
-  [profile, dispatchUpdate, enqueueSnackbar, handleHttpErrors, history, t],
+  [identity, dispatchUpdate, enqueueSnackbar, handleHttpErrors, history, t],
 );
 
 // COMPONENTS
 const AccountAvatar = ({
   t,
-  profile,
+  identity,
   dispatchUpdate,
   history,
   isFetching,
@@ -80,8 +82,8 @@ const AccountAvatar = ({
   );
 
   const { displayName, avatarUrl } = useMemo(
-    () => profile || EMPTY_OBJECT,
-    [profile],
+    () => identity || EMPTY_OBJECT,
+    [identity],
   );
 
   const initialValues = useMemo(
@@ -92,7 +94,7 @@ const AccountAvatar = ({
   const handleHttpErrors = useHandleHttpErrors();
 
   const onSubmit = useOnSubmit(
-    profile,
+    identity,
     dispatchUpdate,
     enqueueSnackbar,
     handleHttpErrors,
@@ -100,7 +102,7 @@ const AccountAvatar = ({
     t,
   );
 
-  if (isNil(profile)) { return null; }
+  if (isNil(identity)) { return null; }
 
   return (
     <div className="Avatar">
@@ -150,11 +152,7 @@ const AccountAvatar = ({
 };
 
 AccountAvatar.propTypes = {
-  profile: PropTypes.shape({
-    id: PropTypes.string,
-    avatarUrl: PropTypes.string,
-    displayName: PropTypes.string,
-  }),
+  identity: PropTypes.shape(IdentitySchema.propTypes),
   error: PropTypes.instanceOf(Error),
   isFetching: PropTypes.bool,
   // router props
@@ -167,7 +165,7 @@ AccountAvatar.propTypes = {
 };
 
 AccountAvatar.defaultProps = {
-  profile: null,
+  identity: null,
   error: null,
   isFetching: false,
 };
@@ -175,7 +173,7 @@ AccountAvatar.defaultProps = {
 // CONNECT
 const mapDispatchToProps = (dispatch) => ({
   dispatchUpdate: (id, changes, history) => {
-    dispatch(userProfileUpdate(id, changes)).then(() => {
+    dispatch(userIdentityUpdate(id, changes)).then(() => {
       history.push(routes.account._);
     });
   },

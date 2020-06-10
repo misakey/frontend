@@ -5,7 +5,7 @@ import React, { useState, useCallback } from 'react';
 import Button from '@material-ui/core/Button';
 import DialogAccountDelete from './index';
 
-const profile = { email: 'sidialaflemmedetapperunemailtroplong@pourvaliderlecomposant.gnagnagna' };
+const identity = { displayName: 'sidialaflemmedetapperunemailtroplong@pourvaliderlecomposant.gnagnagna' };
 
 const DialogAccountDeleteExample = () => {
   const [open, setOpen] = useState(false);
@@ -37,7 +37,7 @@ const DialogAccountDeleteExample = () => {
         onClose={onClose}
         onSuccess={onSuccess}
         open={open}
-        profile={profile}
+        identity={identity}
       />
       <Button onClick={onClick} color="primary" variant="contained">
         Show dialog

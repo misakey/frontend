@@ -2,16 +2,18 @@ import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { Formik, Form, Field } from 'formik';
+import { Form, Field } from 'formik';
+import Formik from '@misakey/ui/Formik';
+
+import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 
 import FieldText from 'components/dumb/Form/Field/Text';
-import DialogTitleWithClose from 'components/dumb/Dialog/Title/WithCloseIcon';
+import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import ButtonSubmit from '@misakey/ui/Button/Submit';
 
 import { privacyLinkSchema, dpoEmailSchema } from 'constants/validationSchemas/contribution';
@@ -31,8 +33,10 @@ const INITIAL_VALUES = {
 
 function UserContributionDialog({
   onClose, onSuccess, open, t,
-  width, userContributionType, appName,
+  userContributionType, appName,
 }) {
+  const fullScreen = useDialogFullScreen();
+
   const onSubmit = useCallback(
     ({ dpoEmail, link }) => onSuccess(dpoEmail, link),
     [onSuccess],
@@ -54,7 +58,7 @@ function UserContributionDialog({
   return (
     <Dialog
       open={open}
-      fullScreen={isWidthDown('xs', width)}
+      fullScreen={fullScreen}
       onClose={onClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
@@ -121,7 +125,6 @@ UserContributionDialog.propTypes = {
   onSuccess: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
-  width: PropTypes.string.isRequired,
   userContributionType: PropTypes.oneOf(USER_CONTRIBUTION_TYPES),
   appName: PropTypes.string,
 };
@@ -131,4 +134,4 @@ UserContributionDialog.defaultProps = {
   appName: '',
 };
 
-export default withWidth()(withTranslation('citizen')(UserContributionDialog));
+export default withTranslation('citizen')(UserContributionDialog);

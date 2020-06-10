@@ -8,16 +8,16 @@ import {
   AUTH_RESET,
   LOAD_USER,
   SIGN_IN,
-  UPDATE_PROFILE,
+  UPDATE_IDENTITY,
   LOAD_USER_ROLES,
   ADD_USER_ROLE,
 } from '../../actions/auth';
 
 
 // HELPERS
-const mergeProfile = (state, profile) => (isNil(profile)
-  ? state.profile
-  : merge({}, state.profile, profile)
+const mergeIdentity = (state, identity) => (isNil(identity)
+  ? (state.identity)
+  : merge({}, (state.identity || {}), identity)
 );
 
 // INITIAL_STATE
@@ -25,11 +25,11 @@ export const INITIAL_STATE = {
   id: null,
   authenticatedAt: null,
   isAuthenticated: null,
-  profile: null,
+  identityId: null,
+  identity: null,
   roles: null,
   token: null,
   expiresAt: null,
-  userId: null,
   acr: null,
   scope: null,
 };
@@ -38,17 +38,17 @@ function resetCredentials() {
   return INITIAL_STATE;
 }
 
-function updateProfile(state, { profile }) {
+function updateIdentity(state, { identity }) {
   return {
     ...state,
-    profile: mergeProfile(state, profile),
+    identity: mergeIdentity(state, identity),
   };
 }
 
-function updateCredentials(state, { credentials: { profile, ...rest } }) {
+function updateCredentials(state, { credentials: { identity, ...rest } }) {
   return {
     ...state,
-    profile: mergeProfile(state, profile),
+    identity: mergeIdentity(state, identity),
     ...rest,
   };
 }
@@ -72,7 +72,7 @@ function addUserRole(state, { role }) {
 // SELECTORS
 export const getCurrentUserSelector = createSelector(
   (state) => state.auth,
-  (items) => items.profile,
+  (items) => items.identity,
 );
 
 // REDUCER
@@ -80,7 +80,7 @@ export default createResetOnSignOutReducer(INITIAL_STATE, {
   [AUTH_RESET]: resetCredentials,
   [SIGN_IN]: updateCredentials,
   [LOAD_USER]: updateCredentials,
-  [UPDATE_PROFILE]: updateProfile,
+  [UPDATE_IDENTITY]: updateIdentity,
   [LOAD_USER_ROLES]: updateRoles,
   [ADD_USER_ROLE]: addUserRole,
 });

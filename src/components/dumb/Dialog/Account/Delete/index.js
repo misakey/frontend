@@ -2,7 +2,11 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { Formik, Form, Field } from 'formik';
+import errorTypes from '@misakey/ui/constants/errorTypes';
+import IdentitySchema from 'store/schemas/Identity';
+
+import { Form, Field } from 'formik';
+import Formik from '@misakey/ui/Formik';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -11,9 +15,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import FieldText from 'components/dumb/Form/Field/Text';
-import BoxControls from 'components/dumb/Box/Controls';
+import BoxControls from '@misakey/ui/Box/Controls';
 
-import errorTypes from '@misakey/ui/constants/errorTypes';
 
 // CONSTANTS
 const { invalid } = errorTypes;
@@ -22,12 +25,12 @@ const NO_ERROR = {};
 const EMAIL_INVALID_ERROR = { email: invalid };
 
 // COMPONENTS
-const DeleteAccountDialog = ({ onClose, onSuccess, open, profile, t }) => {
+const DeleteAccountDialog = ({ onClose, onSuccess, open, identity, t }) => {
   const validate = useCallback(
-    (values) => (values.email.toLowerCase() !== profile.email.toLowerCase()
+    (values) => (values.email.toLowerCase() !== identity.displayName.toLowerCase()
       ? EMAIL_INVALID_ERROR
       : NO_ERROR),
-    [profile],
+    [identity],
   );
 
   return (
@@ -48,7 +51,7 @@ const DeleteAccountDialog = ({ onClose, onSuccess, open, profile, t }) => {
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {t('account:delete.dialog.description', { email: profile.email })}
+              {t('account:delete.dialog.description', { email: identity.displayName })}
             </DialogContentText>
             <Field
               component={FieldText}
@@ -58,7 +61,7 @@ const DeleteAccountDialog = ({ onClose, onSuccess, open, profile, t }) => {
               id="email-address"
               fullWidth
               label={t('fields:email.label')}
-              placeholder={profile.email || t('fields:email.placeholder')}
+              placeholder={identity.displayName || t('fields:email.placeholder')}
             />
           </DialogContent>
           <DialogActions>
@@ -84,7 +87,7 @@ DeleteAccountDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
-  profile: PropTypes.shape({ email: PropTypes.string.isRequired }).isRequired,
+  identity: PropTypes.shape(IdentitySchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
 };
 

@@ -5,28 +5,28 @@ import { connect } from 'react-redux';
 import { signIn } from '@misakey/auth/store/actions/auth';
 import { normalize } from 'normalizr';
 import { receiveEntities } from '@misakey/store/actions/entities';
-import UserSchema from 'store/schemas/User';
+import IdentitySchema from 'store/schemas/Identity';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import any from '@misakey/helpers/any';
 import isEmpty from '@misakey/helpers/isEmpty';
-import { getUserBuilder } from '@misakey/helpers/builder/users';
+import { getIdentity as getIdentityBuilder } from '@misakey/auth/builder/identities';
 
 // HELPERS
 const isAnyEmpty = any(isEmpty);
 
 // COMPONENTS
-const withUser = (Component) => {
-  const ComponentWithUser = ({ id, token, profile, userId, onSignIn, ...props }) => {
+const withIdentity = (Component) => {
+  const ComponentWithIdentity = ({ id, token, identity, identityId, onSignIn, ...props }) => {
     const shouldFetch = useMemo(
-      () => isAnyEmpty([token, profile]) && !isEmpty(userId),
-      [token, profile, userId],
+      () => isAnyEmpty([token, identity]) && !isEmpty(identityId),
+      [token, identity, identityId],
     );
 
-    const getUser = useCallback(
-      () => getUserBuilder(userId),
-      [userId],
+    const getIdentity = useCallback(
+      () => getIdentityBuilder(identityId),
+      [identityId],
     );
 
     const onSuccess = useCallback(
@@ -34,7 +34,7 @@ const withUser = (Component) => {
       [onSignIn],
     );
 
-    const { isFetching } = useFetchEffect(getUser, { shouldFetch }, { onSuccess });
+    const { isFetching } = useFetchEffect(getIdentity, { shouldFetch }, { onSuccess });
 
     return (
       <Component
@@ -42,45 +42,41 @@ const withUser = (Component) => {
         isFetching={isFetching}
         id={id}
         token={token}
-        profile={profile}
-        userId={userId}
+        identity={identity}
+        identityId={identityId}
       />
     );
   };
 
-  ComponentWithUser.propTypes = {
+  ComponentWithIdentity.propTypes = {
     id: PropTypes.string,
     token: PropTypes.string,
-    profile: PropTypes.shape({
-      avatarUrl: PropTypes.string,
-      displayName: PropTypes.string,
-      email: PropTypes.string,
-    }),
-    userId: PropTypes.string,
+    identity: PropTypes.shape(IdentitySchema.propTypes),
+    identityId: PropTypes.string,
     onSignIn: PropTypes.func.isRequired,
   };
 
-  ComponentWithUser.defaultProps = {
+  ComponentWithIdentity.defaultProps = {
     id: null,
     token: null,
-    profile: null,
-    userId: null,
+    identity: null,
+    identityId: null,
   };
 
   // CONNECT
   const mapStateToProps = (state) => ({
     id: state.auth.id,
     token: state.auth.token,
-    profile: state.auth.profile,
-    userId: state.auth.userId,
+    identity: state.auth.identity,
+    identityId: state.auth.identityId,
   });
 
   const mapDispatchToProps = (dispatch) => ({
-    onSignIn: (profile) => {
-      const normalized = normalize(profile, UserSchema.entity);
+    onSignIn: (identity) => {
+      const normalized = normalize(identity, IdentitySchema.entity);
       const { entities } = normalized;
       return Promise.all([
-        dispatch(signIn({ profile })),
+        dispatch(signIn({ identity })),
         dispatch(receiveEntities(entities)),
       ]);
     },
@@ -89,8 +85,8 @@ const withUser = (Component) => {
   return connect(
     mapStateToProps,
     mapDispatchToProps,
-  )(ComponentWithUser);
+  )(ComponentWithIdentity);
 };
 
 
-export default withUser;
+export default withIdentity;

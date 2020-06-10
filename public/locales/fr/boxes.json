@@ -1,48 +1,51 @@
 {
-    "read": {
-        "actions": {
-            "upload": "Envoyer un fichier",
-            "confirmIdentity": "Confirmer mon identité",
-            "more": "Plus d'actions"
-        },
-        "events": {
-            "information": {
-                "close": {
-                    "they": "{{displayName}} a fermé la boîte",
-                    "you": "Vous avez fermé la boîte"
-                },
-                "create": {
-                    "they": "{{displayName}} a créé la boîte",
-                    "you": "Vous avez créé la boîte"
-                }
-            }
-        },
-        "upload": {
-            "dialog": {
-              "text": "Quel fichier souhaitez vous chiffrer ?",
-              "label": "Nouveau fichier à chiffrer",
-              "helperText": "Déposer le fichier que vous souhaitez chiffrer. <1>En savoir plus</1>",
-              "errors": {
-                "blobs": {
-                  "api": {
-                    "notSent": "Une erreur inconnue s'est produite lors de l'envoi des fichiers\u00a0:{{filenamesErrors}}.\nVous pouvez vérifier leur format et réessayer.\n",
-                    "sent": "Les fichiers\u00a0:{{filenamesSent}} ont été envoyés avec succès."
-                  },
-                  "required": "Vous devez envoyer au moins 1 fichier",
-                  "max": "Vous ne pouvez envoyer que 10 fichiers à la fois"
-                }  
-              }
-            },
-            "success": "Les fichiers ont été envoyé avec succès\u00a0!"
-        }
+  "list": {
+    "open": "Ouvre ton coffre-fort pour accéder à tous tes chats"
+  },
+  "read": {
+    "actions": {
+      "upload": "Envoyer un fichier",
+      "confirmIdentity": "Confirmer mon identité",
+      "more": "Plus d'actions"
     },
-    "create": {
-      "dialog": {
-        "content": "Quel est le sujet de cette nouvelle conversation\u00a0?",
-        "success": "La box a été créée avec succès\u00a0!",
-        "fields": {
-          "name": "Usage"
+    "events": {
+      "information": {
+        "close": {
+          "they": "{{displayName}} a fermé la boîte",
+          "you": "Vous avez fermé la boîte"
+        },
+        "create": {
+          "they": "{{displayName}} a créé la boîte",
+          "you": "Vous avez créé la boîte"
         }
       }
+    },
+    "upload": {
+      "dialog": {
+        "text": "Quel fichier souhaitez vous chiffrer ?",
+        "label": "Nouveau fichier à chiffrer",
+        "helperText": "Déposer le fichier que vous souhaitez chiffrer. <1>En savoir plus</1>",
+        "errors": {
+          "blobs": {
+            "api": {
+              "notSent": "Une erreur inconnue s'est produite lors de l'envoi des fichiers\u00a0:{{filenamesErrors}}.\nVous pouvez vérifier leur format et réessayer.\n",
+              "sent": "Les fichiers\u00a0:{{filenamesSent}} ont été envoyés avec succès."
+            },
+            "required": "Vous devez envoyer au moins 1 fichier",
+            "max": "Vous ne pouvez envoyer que 10 fichiers à la fois"
+          }
+        }
+      },
+      "success": "Les fichiers ont été envoyé avec succès\u00a0!"
     }
+  },
+  "create": {
+    "dialog": {
+      "content": "Quel est le sujet de cette nouvelle conversation\u00a0?",
+      "success": "La box a été créée avec succès\u00a0!",
+      "fields": {
+        "name": "Usage"
+      }
+    }
+  }
 }

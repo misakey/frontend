@@ -12,7 +12,7 @@ import path from '@misakey/helpers/path';
 
 // HELPERS
 const pathParamMainDomain = path(['match', 'params', 'mainDomain']);
-const pathMailProviderPreferency = path(['profile', 'preferencies', 'mailProvider']);
+const pathMailProviderPreferency = path(['identity', 'preferencies', 'mailProvider']);
 
 // INITIAL STATE
 const initialState = { databoxURLs: {}, databoxURLsById: {}, contactEmail: null };

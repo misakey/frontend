@@ -1,14 +1,16 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Formik, Field, Form } from 'formik';
+import { Field, Form } from 'formik';
+import Formik from '@misakey/ui/Formik';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 
+import IdentitySchema from 'store/schemas/Identity';
 import API from '@misakey/api';
 import routes from 'routes';
-import { notificationsValidationSchema } from 'constants/validationSchemas/profile';
-import { userProfileUpdate } from 'store/actions/screens/account';
+import { notificationsValidationSchema } from 'constants/validationSchemas/identity';
+import { userIdentityUpdate } from 'store/actions/screens/account';
 
 import isNil from '@misakey/helpers/isNil';
 import path from '@misakey/helpers/path';
@@ -43,12 +45,12 @@ const updateProfile = (id, form) => API
 
 // HOOKS
 const useOnSubmit = (
-  profile, dispatchUpdateEntities, enqueueSnackbar, handleHttpErrors, history, t,
+  identity, dispatchUpdateEntities, enqueueSnackbar, handleHttpErrors, history, t,
 ) => useMemo(
-  () => (form, { setSubmitting, setFieldError }) => updateProfile(profile.id, form)
+  () => (form, { setSubmitting, setFieldError }) => updateProfile(identity.id, form)
     .then(() => {
       enqueueSnackbar(t('account:notifications.success'), { variant: 'success' });
-      dispatchUpdateEntities(profile.id, form, history);
+      dispatchUpdateEntities(identity.id, form, history);
       history.push(routes.account._);
     })
     .catch((e) => {
@@ -60,13 +62,13 @@ const useOnSubmit = (
       }
     })
     .finally(() => { setSubmitting(false); }),
-  [profile, dispatchUpdateEntities, enqueueSnackbar, handleHttpErrors, history, t],
+  [identity, dispatchUpdateEntities, enqueueSnackbar, handleHttpErrors, history, t],
 );
 
 // COMPONENTS
 const AccountNotifications = ({
   t,
-  profile,
+  identity,
   dispatchUpdateEntities,
   history,
   isFetching,
@@ -79,8 +81,8 @@ const AccountNotifications = ({
   );
 
   const notifications = useMemo(
-    () => notificationsProp(profile),
-    [profile],
+    () => notificationsProp(identity),
+    [identity],
   );
 
   const initialValues = useMemo(
@@ -91,7 +93,7 @@ const AccountNotifications = ({
   const handleHttpErrors = useHandleHttpErrors();
 
   const onSubmit = useOnSubmit(
-    profile,
+    identity,
     dispatchUpdateEntities,
     enqueueSnackbar,
     handleHttpErrors,
@@ -99,7 +101,7 @@ const AccountNotifications = ({
     t,
   );
 
-  if (isNil(profile)) { return null; }
+  if (isNil(identity)) { return null; }
 
   return (
     <ScreenAction
@@ -137,7 +139,7 @@ const AccountNotifications = ({
 };
 
 AccountNotifications.propTypes = {
-  profile: PropTypes.shape({ notifications: PropTypes.string, id: PropTypes.string }),
+  identity: PropTypes.shape(IdentitySchema.propTypes),
   isFetching: PropTypes.bool,
   // router props
   history: PropTypes.object.isRequired,
@@ -148,14 +150,14 @@ AccountNotifications.propTypes = {
 };
 
 AccountNotifications.defaultProps = {
-  profile: null,
+  identity: null,
   isFetching: false,
 };
 
 // CONNECT
 const mapDispatchToProps = (dispatch) => ({
   dispatchUpdateEntities: (id, changes, history) => {
-    dispatch(userProfileUpdate(id, changes));
+    dispatch(userIdentityUpdate(id, changes));
     history.push(routes.account._);
   },
 });

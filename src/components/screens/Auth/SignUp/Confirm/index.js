@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 import { connect } from 'react-redux';
-import { Formik } from 'formik';
+import Formik from '@misakey/ui/Formik';
 import { Redirect } from 'react-router-dom';
 
 import API from '@misakey/api';

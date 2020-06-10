@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
 import { withTranslation, Trans } from 'react-i18next';
 import { connect } from 'react-redux';
-import { Formik, Form } from 'formik';
+import { Form } from 'formik';
+import Formik from '@misakey/ui/Formik';
 import moment from 'moment';
 
 import { STEP, INITIAL_VALUES, ERROR_KEYS } from 'constants/auth';
@@ -37,7 +38,7 @@ import Button from '@misakey/ui/Button';
 import Redirect from 'components/dumb/Redirect';
 import ChipUser from 'components/dumb/Chip/User';
 import Title from 'components/dumb/Typography/Title';
-import BoxControls from 'components/dumb/Box/Controls';
+import BoxControls from '@misakey/ui/Box/Controls';
 
 import loginAuthStep from '@misakey/auth/builder/loginAuthStep';
 

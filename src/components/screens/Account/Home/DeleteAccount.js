@@ -7,7 +7,7 @@ import { useSnackbar } from 'notistack';
 
 import API from '@misakey/api';
 
-import UserSchema from 'store/schemas/User';
+import IdentitySchema from 'store/schemas/Identity';
 
 import DeleteAccountDialog from 'components/dumb/Dialog/Account/Delete';
 import { signOut } from '@misakey/auth/store/actions/auth';
@@ -65,7 +65,7 @@ const useHandleSignOut = (onSignOut, userId, handleHttpErrors, userManager) => u
 
 
 // COMPONENTS
-const DeleteAccount = ({ profile, t, onSignOut, seclevel, userId, userManager, classes }) => {
+const DeleteAccount = ({ identity, t, onSignOut, seclevel, userId, userManager, classes }) => {
   const [isOpenDeleteAccountDialog, setOpenDeleteAccountDialog] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -90,7 +90,7 @@ const DeleteAccount = ({ profile, t, onSignOut, seclevel, userId, userManager, c
     handleHttpErrors,
   );
 
-  if (!profile && seclevel <= 1) {
+  if (!identity && seclevel <= 1) {
     return null;
   }
 
@@ -100,7 +100,7 @@ const DeleteAccount = ({ profile, t, onSignOut, seclevel, userId, userManager, c
         open={isOpenDeleteAccountDialog}
         onClose={closeDeleteAccountDialog}
         onSuccess={onDelete}
-        profile={profile}
+        identity={identity}
       />
       <ListItem button aria-label={t('account:delete.label')} onClick={openDeleteAccountDialog}>
         <ListItemIcon className={classes.listItemIcon}>
@@ -116,7 +116,7 @@ const DeleteAccount = ({ profile, t, onSignOut, seclevel, userId, userManager, c
 };
 
 DeleteAccount.propTypes = {
-  profile: PropTypes.shape(UserSchema.propTypes),
+  identity: PropTypes.shape(IdentitySchema.propTypes),
   userId: PropTypes.string.isRequired,
   seclevel: PropTypes.number.isRequired,
   t: PropTypes.func.isRequired,
@@ -126,7 +126,7 @@ DeleteAccount.propTypes = {
 };
 
 DeleteAccount.defaultProps = {
-  profile: null,
+  identity: null,
   classes: {},
 };
 

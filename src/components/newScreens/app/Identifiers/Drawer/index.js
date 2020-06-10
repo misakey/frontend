@@ -5,15 +5,18 @@ import routes from 'routes';
 
 import Button from '@misakey/ui/Button';
 import ButtonSignOut from '@misakey/auth/components/Button/SignOut';
-import CardProfileThumbnail from 'components/dumb/Card/Profile/Thumbnail';
+import CardIdentityThumbnail from 'components/dumb/Card/Identity/Thumbnail';
 import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
+import withIdentity from 'components/smart/withIdentity';
 
 // COMPONENTS
+const CardIdentityThumbnailWithIdentity = withIdentity(CardIdentityThumbnail);
+
 function IdentifierList({ drawerWidth, getNextDrawerSearch }) {
   const goBack = useMemo(
     () => getNextDrawerSearch(undefined, true),
@@ -39,7 +42,7 @@ function IdentifierList({ drawerWidth, getNextDrawerSearch }) {
           Mes identifiants !
         </Typography>
       </AppBarDrawer>
-      <CardProfileThumbnail />
+      <CardIdentityThumbnailWithIdentity />
       <Box p={2}>
         <Typography>Listes des identifiants</Typography>
         <Button

@@ -65,7 +65,7 @@ const ButtonConnectToken = ({
   disabled,
   id,
   onSignOut,
-  profile,
+  identity,
   t,
   token,
   ...rest
@@ -87,8 +87,8 @@ const ButtonConnectToken = ({
   const handleSignOut = useHandleSignOut(onSignOut, handleClose, userId, handleHttpErrors);
 
   const avatarUserProps = useMemo(
-    () => (isObject(profile) ? pickAvatarUserProps(profile) : {}),
-    [profile],
+    () => (isObject(identity) ? pickAvatarUserProps(identity) : {}),
+    [identity],
   );
 
   const iconButtonAction = useMemo(
@@ -166,7 +166,7 @@ ButtonConnectToken.propTypes = {
   id: PropTypes.string,
 
   onSignOut: PropTypes.func,
-  profile: PropTypes.shape({
+  identity: PropTypes.shape({
     avatarUrl: PropTypes.string,
     displayName: PropTypes.string,
     email: PropTypes.string,
@@ -183,7 +183,7 @@ ButtonConnectToken.defaultProps = {
   disabled: false,
   id: null,
   onSignOut: null,
-  profile: null,
+  identity: null,
   token: null,
 };
 

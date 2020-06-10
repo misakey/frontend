@@ -179,7 +179,6 @@ const Auth = ({
       className={classes.screen}
       classes={{ content: classes.screenContent }}
       state={state}
-      hideAppBar
       disableGrow
     >
       <Container maxWidth="md">

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { denormalize } from 'normalizr';
 import ApplicationSchema from 'store/schemas/Application';
-import UserSchema from 'store/schemas/User';
+import IdentitySchema from 'store/schemas/Identity';
 
 
 import prop from '@misakey/helpers/prop';
@@ -45,7 +45,7 @@ const Dataviz = ({ decryptedBlob, mainDomain, application, user, id }) => {
 Dataviz.propTypes = {
   decryptedBlob: PropTypes.object,
   application: PropTypes.shape(ApplicationSchema.propTypes).isRequired,
-  user: PropTypes.shape(UserSchema.propTypes).isRequired,
+  user: PropTypes.shape(IdentitySchema.propTypes).isRequired,
   mainDomain: PropTypes.string.isRequired,
   id: PropTypes.string,
 };
@@ -63,7 +63,7 @@ const mapStateToProps = (state, ownProps) => {
       ApplicationSchema.entity,
       state.entities,
     ),
-    user: state.auth.profile,
+    user: state.auth.identity,
   };
 };
 

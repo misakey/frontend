@@ -2,7 +2,7 @@ ButtonSubmit example:
 
 ```js
 import React from 'react';
-import { Formik } from 'formik';
+import Formik from '@misakey/ui/Formik';
 import ButtonSubmit from './index';
 
 const ButtonSubmitExample = () => (

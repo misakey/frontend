@@ -1,6 +1,6 @@
 import {
-  AUTH_RESET, LOAD_USER, SIGN_IN, SIGN_OUT, UPDATE_PROFILE, LOAD_USER_ROLES,
-  authReset, loadUser, signIn, signOut, updateProfile, loadUserRoles,
+  AUTH_RESET, LOAD_USER, SIGN_IN, SIGN_OUT, UPDATE_IDENTITY, LOAD_USER_ROLES,
+  authReset, loadUser, signIn, signOut, updateIdentity, loadUserRoles,
   loadUserThunk, loadUserRolesThunk,
 } from './index';
 
@@ -30,11 +30,11 @@ describe('testing auth actions', () => {
       expect(signOut()).toEqual({ type: SIGN_OUT });
     });
 
-    it('should create a UPDATE_PROFILE action', () => {
-      const profile = {
-        name: 'john',
+    it('should create a UPDATE_IDENTITY action', () => {
+      const identity = {
+        displayName: 'john',
       };
-      expect(updateProfile(profile)).toEqual({ type: UPDATE_PROFILE, profile });
+      expect(updateIdentity(identity)).toEqual({ type: UPDATE_IDENTITY, identity });
     });
 
     it('should LOAD_USER_ROLES action', () => {

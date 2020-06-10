@@ -3,22 +3,21 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 import { DPO_COMMENTS, DONE } from 'constants/databox/comment';
 
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Dialog from '@material-ui/core/Dialog';
-import DialogTitleWithClose from 'components/dumb/Dialog/Title/WithCloseIcon';
+import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
-import useTheme from '@material-ui/core/styles/useTheme';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -62,8 +61,7 @@ const CommentItem = withTranslation('common')(CommentListItem);
 // COMPONENTS
 const DialogDataboxDone = ({ onClose, onSelect, open, t }) => {
   const classes = useStyles();
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const fullScreen = useDialogFullScreen();
 
   return (
     <Dialog

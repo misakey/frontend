@@ -6,10 +6,11 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { NEW_OWNER_COMMENTS } from 'constants/databox/comment';
 import { getOwnerCommentValidationSchema } from 'constants/validationSchemas/comment';
 
-import { Formik, Form, Field } from 'formik';
+import { Form, Field } from 'formik';
+import Formik from '@misakey/ui/Formik';
 import FieldText from 'components/dumb/Form/Field/Text';
 import MenuItem from '@material-ui/core/MenuItem';
-import BoxControls from 'components/dumb/Box/Controls';
+import BoxControls from '@misakey/ui/Box/Controls';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';

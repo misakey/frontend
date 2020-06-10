@@ -4,7 +4,7 @@ import storage from 'redux-persist/lib/storage';
 import auth from '@misakey/auth/store/reducers/auth';
 import sso from '@misakey/auth/store/reducers/sso';
 
-const authPersistConfig = { key: 'auth', storage, whitelist: ['profile'], blacklist: [] };
+const authPersistConfig = { key: 'auth', storage, whitelist: ['identity'], blacklist: [] };
 export const authPersistedReducers = {
   auth: persistReducer(authPersistConfig, auth),
   sso,
