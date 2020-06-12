@@ -33,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
   content: {
     padding: theme.spacing(1),
   },
+  text: {
+    whiteSpace: 'pre-wrap',
+  },
   footer: {
     padding: theme.spacing(0),
     borderTop: `1px solid ${theme.palette.grey[300]}`,
@@ -85,7 +88,7 @@ const EventCard = ({
           />
         )}
         <CardContent classes={{ root: classes.content }}>
-          {!isNil(text) && <Typography>{text}</Typography>}
+          {!isNil(text) && <Typography className={classes.text}>{text}</Typography>}
           {children}
         </CardContent>
         {!isNil(actions) && (

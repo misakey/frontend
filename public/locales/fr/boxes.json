@@ -6,17 +6,18 @@
     "actions": {
       "upload": "Envoyer un fichier",
       "confirmIdentity": "Confirmer mon identité",
-      "more": "Plus d'actions"
+      "more": "Plus d'actions",
+      "send": "Envoyer"
     },
     "events": {
       "information": {
         "close": {
-          "they": "{{displayName}} a fermé la boîte",
+          "they": "{{displayName}} a fermé la box",
           "you": "Vous avez fermé la boîte"
         },
         "create": {
-          "they": "{{displayName}} a créé la boîte",
-          "you": "Vous avez créé la boîte"
+          "they": "{{displayName}} a créé la box",
+          "you": "Vous avez créé la box"
         }
       }
     },
@@ -37,7 +38,41 @@
         }
       },
       "success": "Les fichiers ont été envoyé avec succès\u00a0!"
+    },
+    "details": {
+      "menu": {
+        "title": "Nom de la box",
+        "files": "Fichiers de la box",
+        "encryption": {
+          "primary": "Chiffrement",
+          "secondary": "Les informations envoyées dans cet espace sont protégés avec le chiffrement de bout en bout."
+        },
+        "members": {
+          "title": "Membres de la box",
+          "count": "{{count}} membre",
+          "count_plural": "{{count}} membre"
+        },
+        "createdAt": "Créée le {{date}}"
+      }
     }
+  },
+  "upload": {
+    "dialog": {
+      "text": "Quel fichier souhaitez vous chiffrer ?",
+      "label": "Nouveau fichier à chiffrer",
+      "helperText": "Déposer le fichier que vous souhaitez chiffrer. <1>En savoir plus</1>",
+      "errors": {
+        "blobs": {
+          "api": {
+            "notSent": "Une erreur inconnue s'est produite lors de l'envoi des fichiers\u00a0:{{filenamesErrors}}.\nVous pouvez vérifier leur format et réessayer.\n",
+            "sent": "Les fichiers\u00a0:{{filenamesSent}} ont été envoyés avec succès."
+          },
+          "required": "Vous devez envoyer au moins 1 fichier",
+          "max": "Vous ne pouvez envoyer que 10 fichiers à la fois"
+        }
+      }
+    },
+    "success": "Les fichiers ont été envoyé avec succès\u00a0!"
   },
   "create": {
     "dialog": {

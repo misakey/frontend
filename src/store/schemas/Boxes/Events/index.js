@@ -11,7 +11,7 @@ const EventSchema = {
   propTypes: {
     id: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
-    serverTimestamp: PropTypes.string.isRequired,
+    serverEventCreatedAt: PropTypes.string.isRequired,
     content: PropTypes.object.isRequired,
     sender: PropTypes.shape({
       displayName: PropTypes.string,

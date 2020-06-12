@@ -1,8 +1,10 @@
 import merge from '@misakey/helpers/merge';
 import ramdaPath from '@misakey/helpers/path';
 import assocPath from '@misakey/helpers/assocPath';
+import { createSelector } from 'reselect';
 // WARNING this "pick" from Ramda, not from Lodash!
 import pick from '@misakey/helpers/pick';
+import isNil from '@misakey/helpers/isNil';
 
 import { SIGN_OUT } from '@misakey/auth/store/actions/auth';
 
@@ -77,7 +79,13 @@ export default function (currentState = initialState, action) {
 }
 
 // SELECTORS
+const getState = (state) => state.crypto;
+
+const isCryptoLoaded = createSelector(
+  getState,
+  (state) => !isNil(state.backupKey),
+);
 
 export const selectors = {
-  cryptoIsLoaded: (cryptoStore) => (cryptoStore.backupKey != null),
+  isCryptoLoaded,
 };

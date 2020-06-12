@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import routes from 'routes';
-import { Link, generatePath } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
@@ -9,9 +9,10 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Title from 'components/dumb/Typography/Title';
+import useGeneratePathKeepingSearch from '@misakey/hooks/useGeneratePathKeepingSearch';
 
 function BoxFiles({ drawerWidth, box }) {
-  const goBack = useMemo(() => generatePath(routes.boxes.read.details, { id: box.id }), [box.id]);
+  const goBack = useGeneratePathKeepingSearch(routes.boxes.read.details, { id: box.id });
 
   return (
     <>

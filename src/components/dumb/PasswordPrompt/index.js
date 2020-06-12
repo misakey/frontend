@@ -1,102 +1,21 @@
 
-import React, { useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { Form, Field } from 'formik';
-import Formik from '@misakey/ui/Formik';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import FormHelperText from '@material-ui/core/FormHelperText';
-
-import BoxControls from '@misakey/ui/Box/Controls';
-import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
-
-import { openVaultValidationSchema } from 'constants/validationSchemas/auth';
-
+import DialogPassword from 'components/smart/Dialog/Password';
 
 const PasswordPromptContext = React.createContext(null);
-const defaultValues = { password: '' };
 
 export const usePasswordPrompt = () => React.useContext(PasswordPromptContext);
 
-function PasswordPrompt({ onClose, onSubmit, firstAttempt, t, open }) {
-  const handleSubmit = useCallback((values, { resetForm, setSubmitting }) => {
-    onSubmit(values);
-    resetForm({ values: defaultValues });
-    setSubmitting(false);
-  }, [onSubmit]);
-
-  return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-    >
-      <Formik
-        onSubmit={handleSubmit}
-        initialValues={defaultValues}
-        validationSchema={openVaultValidationSchema.password}
-      >
-        {({ isValid }) => (
-          <Form>
-            <DialogTitle id="alert-dialog-title">
-              {t('components:passwordPrompt.title')}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                {t('components:passwordPrompt.description')}
-              </DialogContentText>
-              <Field
-                name="password"
-                label={t('fields:password.label')}
-                placeholder={t('fields:password.placeholder')}
-                component={FieldTextPasswordRevealable}
-                type="password"
-                inputProps={{ 'data-matomo-ignore': true }}
-                autoFocus
-              />
-              {(!firstAttempt || !isValid) && (
-              <FormHelperText error>{t('fields:password.error.invalid')}</FormHelperText>
-              )}
-            </DialogContent>
-            <DialogActions>
-              <BoxControls
-                primary={{
-                  type: 'submit',
-                  text: t('common:validate'),
-                }}
-                secondary={{
-                  text: t('common:cancel'),
-                  onClick: onClose,
-                }}
-                formik
-              />
-            </DialogActions>
-          </Form>
-        )}
-      </Formik>
-    </Dialog>
-  );
-}
-
-const TPasswordPrompt = withTranslation(['common', 'citizen', 'fields'])(PasswordPrompt);
-
-PasswordPrompt.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-  firstAttempt: PropTypes.bool,
-  open: PropTypes.bool,
-  t: PropTypes.func.isRequired,
-};
-
-PasswordPrompt.defaultProps = {
-  firstAttempt: true,
-  open: false,
-};
-
+const PasswordPrompt = withTranslation(['account'])(({ t, ...props }) => (
+  <DialogPassword
+    title={t('account:password.existing')}
+    formikProps={{ enableReinitialize: true }}
+    {...props}
+  />
+));
 
 export const PasswordPromptProvider = ({ children }) => {
   const [
@@ -106,8 +25,8 @@ export const PasswordPromptProvider = ({ children }) => {
 
   const awaitingPromiseRef = React.useRef();
 
-  const openConfirmation = ({ firstAttempt }) => {
-    setConfirmationState({ open: true, firstAttempt });
+  const openConfirmation = (result) => {
+    setConfirmationState({ open: true, ...result });
     return new Promise((resolve, reject) => {
       awaitingPromiseRef.current = { resolve, reject };
     });
@@ -137,7 +56,7 @@ export const PasswordPromptProvider = ({ children }) => {
         {children}
       </PasswordPromptContext.Provider>
 
-      <TPasswordPrompt
+      <PasswordPrompt
         open={Boolean(confirmationState)}
         onSubmit={handleSubmit}
         onClose={handleClose}

@@ -16,7 +16,9 @@ export async function promptForPasswordUntilOK(tryPassword, openPasswordPrompt) 
   /* eslint-disable no-await-in-loop */
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    ({ password } = await openPasswordPrompt({ firstAttempt }));
+    ({ password } = await openPasswordPrompt({
+      initialPasswordError: firstAttempt ? null : 'invalid',
+    }));
     try {
       await tryPassword(password);
       return;

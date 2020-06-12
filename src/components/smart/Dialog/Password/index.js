@@ -1,5 +1,5 @@
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -30,13 +30,19 @@ const INITIAL_VALUES = {
 };
 
 // COMPONENTS
-// @FIXME merge with PasswordPrompt
 const DialogPassword = ({
   title, contentText,
   onClose, onSubmit, open,
+  initialPasswordError,
+  formikProps,
   t, ...rest
 }) => {
   const fullScreen = useDialogFullScreen();
+
+  // Used with PromptPasswordProvider
+  const initialErrors = useMemo(
+    () => ({ [PASSWORD_KEY]: initialPasswordError }), [initialPasswordError],
+  );
 
   const handleSubmit = useCallback(
     (values, { setFieldError }) => resolveAny(onSubmit(values))
@@ -56,7 +62,9 @@ const DialogPassword = ({
       <Formik
         onSubmit={handleSubmit}
         initialValues={INITIAL_VALUES}
+        initialErrors={initialErrors}
         validationSchema={openVaultValidationSchema.password}
+        {...formikProps}
       >
         <Form>
           <DialogTitleWithCloseIcon onClose={onClose}>
@@ -71,6 +79,7 @@ const DialogPassword = ({
               label={t('fields:password.label')}
               placeholder={t('fields:password.placeholder')}
               component={FieldTextPasswordRevealable}
+              inputProps={{ 'data-matomo-ignore': true }}
               autoFocus
             />
           </DialogContent>
@@ -95,6 +104,8 @@ DialogPassword.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   open: PropTypes.bool,
+  initialPasswordError: PropTypes.string,
+  formikProps: PropTypes.object,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
@@ -103,6 +114,8 @@ DialogPassword.defaultProps = {
   title: null,
   contentText: null,
   open: false,
+  initialPasswordError: null,
+  formikProps: {},
 };
 
 export default withTranslation(['fields', 'common'])(DialogPassword);

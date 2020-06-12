@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { Link, generatePath } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import routes from 'routes';
 
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
@@ -11,6 +11,7 @@ import Title from 'components/dumb/Typography/Title';
 import BoxMessageEvent from 'components/dumb/Event/Box/Message';
 import BoxInformationEvent from 'components/dumb/Event/Box/Information';
 import ElevationScroll from 'components/dumb/ElevationScroll';
+import withIdentity from 'components/smart/withIdentity';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import Box from '@material-ui/core/Box';
@@ -18,8 +19,10 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 import useGroupEventsByDate from 'hooks/useGroupEventsByDate';
+import useGeneratePathKeepingSearch from '@misakey/hooks/useGeneratePathKeepingSearch';
 
 import BoxesSchema from 'store/schemas/Boxes';
+import IdentitySchema from 'store/schemas/Identity';
 
 import EVENTS_TYPE from 'constants/app/boxes/events';
 import BoxEventsFooter from './Footer';
@@ -40,17 +43,18 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box }) {
+function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, identity }) {
   const contentRef = useRef();
   const [footerHeight, setFooterHeight] = useState(64);
   const classes = useStyles({ footerHeight });
 
-  const routeDetails = useMemo(
-    () => generatePath(routes.boxes.read.details, { id: box.id }),
-    [box.id],
-  );
+  const routeDetails = useGeneratePathKeepingSearch(routes.boxes.read.details, { id: box.id });
 
   const { avatarUri, title, events: boxEvents } = useMemo(() => box, [box]);
+  const isFromCurrentUser = useCallback(
+    (eventIdentifier) => identity.identifier.value === eventIdentifier.value,
+    [identity.identifier],
+  );
 
   const eventsByDate = useGroupEventsByDate(boxEvents);
 
@@ -74,8 +78,8 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box }) {
               <MenuIcon />
             </IconButtonAppBar>
           )}
-          <Box display="flex" flexDirection="column" flexGrow={1}>
-            <Title gutterBottom={false}>
+          <Box display="flex" flexDirection="column" flexGrow={1} overflow="hidden">
+            <Title gutterBottom={false} noWrap>
               {title}
             </Title>
             {/* <Subtitle>
@@ -105,10 +109,22 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box }) {
             {
               events.map((event) => {
                 if (EVENTS_TYPE.information.includes(event.type)) {
-                  return <BoxInformationEvent key={event.id} event={event} />;
+                  return (
+                    <BoxInformationEvent
+                      key={event.id}
+                      event={event}
+                      getIsFromCurrentUser={isFromCurrentUser}
+                    />
+                  );
                 }
                 if (EVENTS_TYPE.message.includes(event.type)) {
-                  return <BoxMessageEvent key={event.id} event={event} />;
+                  return (
+                    <BoxMessageEvent
+                      key={event.id}
+                      event={event}
+                      getIsFromCurrentUser={isFromCurrentUser}
+                    />
+                  );
                 }
                 return null;
               })
@@ -132,6 +148,13 @@ BoxEvents.propTypes = {
   isDrawerOpen: PropTypes.bool.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
+  identity: PropTypes.shape(IdentitySchema.propTypes),
+
 };
 
-export default BoxEvents;
+BoxEvents.defaultProps = {
+  identity: null,
+};
+
+
+export default withIdentity((BoxEvents));

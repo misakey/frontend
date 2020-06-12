@@ -9,10 +9,10 @@ import pipe from '@misakey/helpers/pipe';
 import groupBy from '@misakey/helpers/groupBy';
 import sortBy from '@misakey/helpers/sortBy';
 
-const groupByDay = (events) => groupBy(events, ({ createdAt }) => moment(createdAt).startOf('day').format());
+const groupByDay = (events) => groupBy(events, ({ serverEventCreatedAt }) => moment(serverEventCreatedAt).startOf('day').format());
 const mapEventsGrouped = (days) => map(days, ([day, events]) => ({
   day,
-  events: sortBy(events, 'createdAt'),
+  events: sortBy(events, 'serverEventCreatedAt'),
   date: moment(day).format(DATE_FULL_NUMERAL),
 }));
 const sortByDay = (events) => sortBy(events, 'day');

@@ -3,17 +3,16 @@ import PropTypes from 'prop-types';
 
 import BoxMessageFileEvent from 'components/dumb/Event/Box/Message/File';
 import BoxMessageTextEvent from 'components/dumb/Event/Box/Message/Text';
-import isNil from '@misakey/helpers/isNil';
 
 import EventSchema from 'store/schemas/Boxes/Events';
 import { MSG_FILE, MSG_TXT } from 'constants/app/boxes/events';
 
-const BoxMessageEvent = ({ event }) => {
+const BoxMessageEvent = ({ event, getIsFromCurrentUser }) => {
   const { sender, type } = useMemo(() => event, [event]);
 
   const isFromCurrentUser = useMemo(
-    () => !isNil(sender.id),
-    [sender.id],
+    () => getIsFromCurrentUser(sender.identifier),
+    [getIsFromCurrentUser, sender.identifier],
   );
 
   if (type === MSG_FILE) {
@@ -29,6 +28,7 @@ const BoxMessageEvent = ({ event }) => {
 
 BoxMessageEvent.propTypes = {
   event: PropTypes.shape(EventSchema.propTypes).isRequired,
+  getIsFromCurrentUser: PropTypes.func.isRequired,
 };
 
 export default BoxMessageEvent;

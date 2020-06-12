@@ -1,12 +1,14 @@
 import React, { useState, useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
+import { usePasswordPrompt, PasswordPromptProvider } from 'components/dumb/PasswordPrompt';
 
 import hardPasswordChange from '@misakey/crypto/store/actions/hardPasswordChange';
 import { updateIdentity } from '@misakey/auth/store/actions/auth';
 import IdentitySchema from 'store/schemas/Identity';
+import ensureSecretsLoaded from '@misakey/crypto/store/actions/ensureSecretsLoaded';
 
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
@@ -33,8 +35,10 @@ const withDialogPassword = (Component) => {
   }, ref) => {
     const { enqueueSnackbar } = useSnackbar();
     const handleHttpErrors = useHandleHttpErrors();
+    const dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);
+    const openPasswordPrompt = usePasswordPrompt();
 
     const { accountId } = useMemo(
       () => identity || {},
@@ -46,21 +50,23 @@ const withDialogPassword = (Component) => {
       [accountId],
     );
 
-    const title = useMemo(
-      () => (hasAccountId
-        ? t('account:password.existing')
-        : t('account:password.new')),
-      [hasAccountId, t],
+    const initCrypto = useCallback(
+      () => dispatch(ensureSecretsLoaded({ openPasswordPrompt })),
+      [dispatch, openPasswordPrompt],
     );
 
     const onWrapperClick = useCallback(
       (...args) => {
-        setOpen(true);
+        if (!hasAccountId) {
+          setOpen(true);
+        } else {
+          initCrypto();
+        }
         if (isFunction(onClick)) {
           onClick(...args);
         }
       },
-      [onClick, setOpen],
+      [hasAccountId, initCrypto, onClick],
     );
 
     const onClose = useCallback(
@@ -69,21 +75,15 @@ const withDialogPassword = (Component) => {
     );
 
     const onPasswordSubmit = useCallback(
-      (password) => {
-        if (!hasAccountId) {
-          return createAccount({
-            password,
-            identityId,
-            dispatchHardPasswordChange,
-          }).then((response) => {
-            const { id } = objectToCamelCase(response);
-            return dispatchUpdateIdentity({ accountId: id });
-          });
-        }
-        // @FIXME to implement
-        return Promise.resolve();
-      },
-      [dispatchHardPasswordChange, dispatchUpdateIdentity, hasAccountId, identityId],
+      (password) => createAccount({
+        password,
+        identityId,
+        dispatchHardPasswordChange,
+      }).then((response) => {
+        const { id } = objectToCamelCase(response);
+        return dispatchUpdateIdentity({ accountId: id });
+      }),
+      [dispatchHardPasswordChange, dispatchUpdateIdentity, identityId],
     );
 
     const onSubmit = useCallback(
@@ -100,7 +100,7 @@ const withDialogPassword = (Component) => {
     return (
       <>
         <DialogPassword
-          title={title}
+          title={t('account:password.new')}
           open={open}
           onClose={onClose}
           onSubmit={onSubmit}
@@ -145,7 +145,13 @@ const withDialogPassword = (Component) => {
     dispatchUpdateIdentity: (identity) => dispatch(updateIdentity(identity)),
   });
 
-  return connect(null, mapDispatchToProps, null, { forwardRef: true })(withTranslation('account')(Wrapper));
+  Wrapper = connect(null, mapDispatchToProps, null, { forwardRef: true })(withTranslation('account')(Wrapper));
+
+  return ({ ...props }) => (
+    <PasswordPromptProvider>
+      <Wrapper {...props} />
+    </PasswordPromptProvider>
+  );
 };
 
 export default withDialogPassword;

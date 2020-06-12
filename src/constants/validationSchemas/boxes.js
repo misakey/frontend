@@ -5,5 +5,5 @@ import errorTypes from '@misakey/ui/constants/errorTypes';
 const { required, malformed } = errorTypes;
 
 export const boxNameFieldValidationSchema = Yup.object().shape({
-  name: Yup.string().min(3, malformed).max(100, malformed).required(required),
+  name: Yup.string().min(5, malformed).max(50, malformed).required(required),
 });

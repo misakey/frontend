@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FieldText from 'components/dumb/Field/Text';
+import withErrors from 'components/dumb/Form/Field/withErrors';
 
 // COMPONENTS
 // @FIXME: update @misakey/ui component
@@ -14,4 +15,4 @@ FieldTextPassword.defaultProps = {
   type: 'password',
 };
 
-export default FieldTextPassword;
+export default withErrors(FieldTextPassword);

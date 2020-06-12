@@ -8,14 +8,15 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import EventSchema from 'store/schemas/Boxes/Events';
 import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
 
-// @FIXME: implement
+// @FIXME crypto: implement
 // eslint-disable-next-line no-unused-vars
-const decryptText = (publicKeysWeCanDecryptFrom, encrypted, recipientPublicKey) => 'decrypted !';
+const decryptText = (publicKeysWeCanDecryptFrom, encrypted, recipientPublicKey) => atob(encrypted);
 
 const BoxMessageTextEvent = ({ event, isFromCurrentUser, t, ...rest }) => {
   const { sender, content: { encrypted, recipientPublicKey } } = useMemo(() => event, [event]);
   const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
-  const canBeDecrypted = publicKeysWeCanDecryptFrom.has(recipientPublicKey);
+  // @FIXME crypto
+  const canBeDecrypted = publicKeysWeCanDecryptFrom.has(recipientPublicKey) || true;
   const text = useMemo(() => {
     if (canBeDecrypted) {
       return decryptText(publicKeysWeCanDecryptFrom, encrypted, recipientPublicKey);

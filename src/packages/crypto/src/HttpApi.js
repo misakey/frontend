@@ -135,16 +135,16 @@ export async function getCryptograms(ownerId, datatypes, fromDatetime, toDatetim
   return objectToCamelCase(responseBody);
 }
 
-export async function updateSecretsBackup(ownerId, secretBackup, version) {
-  assertNotAnyNil({ ownerId, secretBackup });
+export async function updateSecretsBackup(id, secretBackup, version) {
+  assertNotAnyNil({ id, secretBackup });
 
   const endpoint = {
     method: 'PUT',
-    path: '/users/:ownerId/backup',
+    path: '/accounts/:id/backup',
     auth: true,
   };
   const httpRequestParams = {
-    params: { ownerId },
+    params: { id },
     payload: {
       data: secretBackup,
       version,
@@ -153,17 +153,24 @@ export async function updateSecretsBackup(ownerId, secretBackup, version) {
   return httpCallReturnBody(endpoint, httpRequestParams);
 }
 
-export async function getEncryptedSecretsBackup(ownerId) {
-  assertNotAnyNil({ ownerId });
+export async function getEncryptedSecretsBackup(id) {
+  assertNotAnyNil({ id });
 
   const endpoint = {
     method: 'GET',
-    path: '/users/:ownerId/backup',
+    path: '/accounts/:id/backup',
     auth: true,
   };
   const httpRequestParams = {
-    params: { ownerId },
+    params: { id },
   };
+
+  // @FIXME uncomment while Log as seclevel 2 is not implemented yet (endpoint return error)
+  // return Promise.resolve({
+  //   version: 0,
+  // eslint-disable-next-line max-len
+  //   data: '{"nonce":{"type":"Uint8Array","encoding":"base64","value":"yzIyAAhnQ6dHZuvxPuC5ivuXxqTAH1HK"},"salt":"ad2db56c05d64cd7f52ddd159d8c1ac0","ciphertext":{"type":"Uint8Array","encoding":"base64","value":"1NufzwjjCtjuaO1gJ5UwUrmwO+8vWNrIxz+DhBDGG7I/lLN9+4ktc53bRAeO1vUMAw1Nvb1edcY6RNMdpQtJSIhwS7etQTu2UtlPV7hMckG4xtE0iELw5L0DhoTgrGj0k2cK+snilnk="}}',
+  // });
 
   return httpCallReturnBody(endpoint, httpRequestParams);
 }

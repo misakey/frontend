@@ -14,7 +14,7 @@ const BoxesSchema = {
   propTypes: {
     id: PropTypes.string.isRequired,
     ownerId: PropTypes.string,
-    createdAt: PropTypes.string,
+    serverCreatedAt: PropTypes.string,
     updatedAt: PropTypes.string,
     status: PropTypes.oneOf(STATUSES),
     // eslint-disable-next-line react/forbid-foreign-prop-types

@@ -303,7 +303,7 @@
   "boxes": {
     "name": {
       "error": {
-        "malformed": "L'usage doit contenir entre 3 et 100 caractères"
+        "malformed": "L'usage doit contenir entre 5 et 50 caractères"
       }
     }
   }

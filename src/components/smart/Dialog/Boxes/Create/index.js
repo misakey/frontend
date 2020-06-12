@@ -16,6 +16,7 @@ import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStra
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
+// import { generateAsymmetricKeyPair } from '@misakey/crypto/crypto';
 
 import { makeStyles } from '@material-ui/core/styles/';
 import Dialog from '@material-ui/core/Dialog';
@@ -71,16 +72,16 @@ function CreateBoxDialog({
   const handleHttpErrors = useHandleHttpErrors();
 
   const onSuccess = useCallback(
-    async (newBox) => {
+    // eslint-disable-next-line no-unused-vars
+    async (newBox, secretKey) => {
       const { id, status = OPEN } = newBox;
-      const normalized = normalize(
-        newBox,
-        BoxesSchema.entity,
-      );
+      const normalized = normalize(newBox, BoxesSchema.entity);
       const { entities } = normalized;
       await Promise.all([
         dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
         dispatch(updatePaginationsToStatus(id, status)),
+        // @FIXME crypto: implement save key in vault
+        // dispatch(addSecretKey(secretKey)),
       ]);
       enqueueSnackbar(t('boxes:create.dialog.success'), { variant: 'success' });
       const nextTo = generatePath(routes.boxes.read._, { id });
@@ -91,10 +92,14 @@ function CreateBoxDialog({
   );
 
   const onSubmit = useCallback((form, { setSubmitting }) => {
-    // @FIXME: generate public key
-    const publicKey = 'test';
+    // @FIXME crypto: generate public key
+    // API return error "public_key: must be in a valid format."
+    // const { secretKey, publicKey } = generateAsymmetricKeyPair();
+    const publicKey = 'ShouldBeUnpaddedUrlSafeBase64';
+    const secretKey = 'ShouldBeUnpaddedUrlSafeBase64';
+
     return createBoxBuilder({ title: form[FIELD_NAME], publicKey })
-      .then(onSuccess)
+      .then((response) => onSuccess(response, secretKey))
       .catch(handleHttpErrors)
       .finally(() => { setSubmitting(false); });
   }, [handleHttpErrors, onSuccess]);

@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 
 import Box from '@material-ui/core/Box';
 import Grow from '@material-ui/core/Grow';
@@ -12,11 +13,17 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
+import SendIcon from '@material-ui/icons/Send';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
-import BoxesSchema from 'store/schemas/Boxes';
+import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import isEmpty from '@misakey/helpers/isEmpty';
 
+import BoxesSchema from 'store/schemas/Boxes';
+import { addBoxEvents } from 'store/reducers/box';
+
+import { MSG_TXT } from 'constants/app/boxes/events';
 import FooterMenuActions from './Menu';
 
 const BOX_PADDING_SPACING = 1;
@@ -30,10 +37,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// @FIXME crypto
+const encrypt = (value) => btoa(value);
+
 function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange, t }) {
   const classes = useStyles({ drawerWidth, isDrawerOpen });
   const [isMenuActionOpen, setIsMenuActionOpen] = useState(false);
   const [value, setValue] = React.useState();
+  const dispatch = useDispatch();
 
   const anchorRef = useRef(null);
   const footerRef = (ref) => {
@@ -51,6 +62,19 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
   const onChange = useCallback((event) => {
     setValue(event.target.value);
   }, []);
+
+  const sendMessage = useCallback(
+    () => {
+      if (!isEmpty(value)) {
+        createBoxEventBuilder(box.id, { type: MSG_TXT, content: { encrypted: encrypt(value) } })
+          .then((response) => {
+            dispatch(addBoxEvents(box.id, response));
+            setValue('');
+          });
+      }
+    },
+    [box.id, dispatch, value],
+  );
 
   return (
     <Box p={BOX_PADDING_SPACING} ref={footerRef}>
@@ -92,6 +116,11 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
               value={value}
               onChange={onChange}
             />
+            <Tooltip title={t('boxes:read.actions.send')}>
+              <IconButton aria-label="menu-list-actions" color="secondary" onClick={sendMessage}>
+                <SendIcon />
+              </IconButton>
+            </Tooltip>
           </>
         )}
       </Box>

@@ -7,8 +7,6 @@ import Typography from '@material-ui/core/Typography';
 
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
 
-import isNil from '@misakey/helpers/isNil';
-
 const useStyles = makeStyles((theme) => ({
   root: {
     border: `1px solid ${theme.palette.grey[300]}`,
@@ -21,14 +19,21 @@ const useStyles = makeStyles((theme) => ({
 
 const BoxInformationEvent = ({
   event,
+  getIsFromCurrentUser,
   t,
 }) => {
   const classes = useStyles();
   const { sender, type } = useMemo(() => event, [event]);
-  const { displayName, id } = useMemo(() => sender, [sender]);
+  const { displayName } = useMemo(() => sender, [sender]);
+
+  const isFromCurrentUser = useMemo(
+    () => getIsFromCurrentUser(sender.identifier),
+    [getIsFromCurrentUser, sender.identifier],
+  );
+
   const author = useMemo(
-    () => (!isNil(id) ? 'you' : 'they'),
-    [id],
+    () => (isFromCurrentUser ? 'you' : 'they'),
+    [isFromCurrentUser],
   );
 
   return (
@@ -40,6 +45,7 @@ const BoxInformationEvent = ({
 
 BoxInformationEvent.propTypes = {
   event: PropTypes.shape(BoxEventsSchema.propTypes).isRequired,
+  getIsFromCurrentUser: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
 };
 

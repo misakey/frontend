@@ -1,28 +1,33 @@
 export default {
   find: {
     method: 'GET',
-    path: '/databoxes',
+    path: '/boxes',
     auth: true,
   },
   read: {
     method: 'GET',
-    path: '/databoxes/:id',
+    path: '/boxes/:id',
     auth: true,
   },
   create: {
     method: 'POST',
-    path: '/databoxes',
+    path: '/boxes',
     auth: true,
   },
   count: {
     method: 'HEAD',
-    path: '/databoxes',
+    path: '/boxes',
     auth: true,
   },
   events: {
     find: {
       method: 'GET',
-      path: '/databox-logs',
+      path: '/boxes/:id/events',
+      auth: true,
+    },
+    create: {
+      method: 'POST',
+      path: '/boxes/:id/events',
       auth: true,
     },
   },
