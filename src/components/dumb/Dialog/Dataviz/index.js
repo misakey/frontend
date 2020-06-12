@@ -1,15 +1,15 @@
 import React, { useMemo, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 
-import { connect } from 'react-redux';
-import { denormalize } from 'normalizr';
-import ApplicationSchema from 'store/schemas/Application';
+// import { connect } from 'react-redux';
+// import { denormalize } from 'normalizr';
+// import ApplicationSchema from 'store/schemas/Application';
 
 import { ThemeProvider } from '@material-ui/core/styles';
 
 import downloadFile from '@misakey/helpers/downloadFile';
 import isNil from '@misakey/helpers/isNil';
-import prop from '@misakey/helpers/prop';
+// import prop from '@misakey/helpers/prop';
 
 
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
@@ -97,7 +97,7 @@ DatavizDialog.propTypes = {
   width: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
   onDownloadSuccess: PropTypes.func.isRequired,
-  application: PropTypes.shape(ApplicationSchema.propTypes).isRequired,
+  application: PropTypes.object.isRequired,
 };
 
 DatavizDialog.defaultProps = {
@@ -105,16 +105,16 @@ DatavizDialog.defaultProps = {
   decryptedBlob: null,
 };
 
-const mapStateToProps = (state, ownProps) => {
-  const mainDomain = prop('mainDomain')(ownProps);
-  return {
-    application: denormalize(
-      mainDomain,
-      ApplicationSchema.entity,
-      state.entities,
-    ),
-  };
-};
+// const mapStateToProps = (state, ownProps) => {
+//   const mainDomain = prop('mainDomain')(ownProps);
+//   return {
+//     application: denormalize(
+//       mainDomain,
+//       ApplicationSchema.entity,
+//       state.entities,
+//     ),
+//   };
+// };
 
 
-export default connect(mapStateToProps)(withWidth()(withTranslation(['citizen'])(DatavizDialog)));
+export default /* connect(mapStateToProps) */(withWidth()(withTranslation(['citizen'])(DatavizDialog)));

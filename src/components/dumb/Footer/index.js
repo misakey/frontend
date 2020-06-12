@@ -15,17 +15,8 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import { FAB_WIDTH, FAB_RIGHT } from 'components/smart/Search/Applications/Fab';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
-// CONSTANTS
-const XS_CONTAINER_SPACING = 16;
-const SM_CONTAINER_SPACING = 24;
-const MD_CONTAINER_SPACING = 32;
-
-// @FIXME: remove dependency on Container + FAB
-const FAB_OUT = 960 + FAB_WIDTH;
 
 const FOOTER_MIN_HEIGHT = 48;
 // min height + border
@@ -51,39 +42,7 @@ const useStyles = makeStyles((theme) => ({
     '&.Mui-expanded': {
       minHeight: FOOTER_MIN_HEIGHT,
     },
-    // marginRight = right spacing of FAB + FAB_WIDTH - CONTAINER_SPACING
-    [theme.breakpoints.only('xs')]: {
-      marginRight: ({ FABPadded }) => (FABPadded
-        ? theme.spacing(FAB_RIGHT) + FAB_WIDTH - XS_CONTAINER_SPACING
-        : null),
-    },
-    [theme.breakpoints.only('sm')]: {
-      marginRight: ({ FABPadded }) => (FABPadded
-        ? theme.spacing(FAB_RIGHT) + FAB_WIDTH - SM_CONTAINER_SPACING
-        : null),
-    },
-    // specific breakpoint when there is a FAB, to add padding when FAB floats over footer
-    [theme.breakpoints.between('md', FAB_OUT)]: {
-      marginRight: ({ FABPadded }) => (FABPadded
-        ? theme.spacing(FAB_RIGHT) + FAB_WIDTH - MD_CONTAINER_SPACING
-        : null),
-    },
   },
-  expansionPanelDetailsRoot: ({ FABPadded }) => ({
-    // marginRight = right spacing of FAB + FAB_WIDTH - CONTAINER_SPACING
-    [theme.breakpoints.only('xs')]: {
-      marginRight: FABPadded ? theme.spacing(FAB_RIGHT) + FAB_WIDTH - XS_CONTAINER_SPACING : null,
-    },
-    [theme.breakpoints.only('sm')]: {
-      marginRight: FABPadded ? theme.spacing(FAB_RIGHT) + FAB_WIDTH - SM_CONTAINER_SPACING : null,
-    },
-    // specific breakpoint when there is a FAB, to add padding when FAB floats over footer
-    [theme.breakpoints.between('md', FAB_OUT)]: {
-      marginRight: FABPadded
-        ? theme.spacing(FAB_RIGHT) + FAB_WIDTH - MD_CONTAINER_SPACING
-        : null,
-    },
-  }),
   itemSpaced: {
     margin: theme.spacing(1, 0),
   },
@@ -92,11 +51,10 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const Footer = ({
   t, title, typographyProps,
-  FABPadded,
   ContainerComponent, containerProps,
   ...rest
 }) => {
-  const classes = useStyles({ FABPadded });
+  const classes = useStyles();
 
   const [expanded, setExpanded] = useState(false);
 
@@ -136,9 +94,7 @@ const Footer = ({
           <Logo className={classes.logoRoot} />
         </ExpansionPanelSummary>
       </ContainerComponent>
-      <ExpansionPanelDetails
-        classes={{ root: classes.expansionPanelDetailsRoot }}
-      >
+      <ExpansionPanelDetails>
         <ContainerComponent {...containerProps}>
           <Grid container>
             <Grid container item xs={12}>
@@ -255,7 +211,6 @@ Footer.propTypes = {
   t: PropTypes.func.isRequired,
   title: PropTypes.string,
   typographyProps: PropTypes.object,
-  FABPadded: PropTypes.bool,
   ContainerComponent: PropTypes.elementType,
   containerProps: PropTypes.object,
 };
@@ -263,7 +218,6 @@ Footer.propTypes = {
 Footer.defaultProps = {
   title: '',
   typographyProps: {},
-  FABPadded: false,
   ContainerComponent: Box,
   containerProps: {},
 };

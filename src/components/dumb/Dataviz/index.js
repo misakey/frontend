@@ -1,13 +1,13 @@
 import React, { lazy, Suspense, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import { connect } from 'react-redux';
-import { denormalize } from 'normalizr';
-import ApplicationSchema from 'store/schemas/Application';
+// import { connect } from 'react-redux';
+// import { denormalize } from 'normalizr';
+// import ApplicationSchema from 'store/schemas/Application';
 import IdentitySchema from 'store/schemas/Identity';
 
 
-import prop from '@misakey/helpers/prop';
+// import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
 
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
@@ -44,7 +44,7 @@ const Dataviz = ({ decryptedBlob, mainDomain, application, user, id }) => {
 
 Dataviz.propTypes = {
   decryptedBlob: PropTypes.object,
-  application: PropTypes.shape(ApplicationSchema.propTypes).isRequired,
+  application: PropTypes.object.isRequired,
   user: PropTypes.shape(IdentitySchema.propTypes).isRequired,
   mainDomain: PropTypes.string.isRequired,
   id: PropTypes.string,
@@ -55,16 +55,16 @@ Dataviz.defaultProps = {
   id: 'datavizcontent',
 };
 
-const mapStateToProps = (state, ownProps) => {
-  const mainDomain = prop('mainDomain')(ownProps);
-  return {
-    application: denormalize(
-      mainDomain,
-      ApplicationSchema.entity,
-      state.entities,
-    ),
-    user: state.auth.identity,
-  };
-};
+// const mapStateToProps = (state, ownProps) => {
+//   const mainDomain = prop('mainDomain')(ownProps);
+//   return {
+//     application: denormalize(
+//       mainDomain,
+//       ApplicationSchema.entity,
+//       state.entities,
+//     ),
+//     user: state.auth.identity,
+//   };
+// };
 
-export default connect(mapStateToProps)(Dataviz);
+export default /* connect(mapStateToProps) */(Dataviz);

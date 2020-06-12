@@ -11,22 +11,16 @@ import crypto from '@misakey/crypto/store/reducer';
 
 import { wrapReducerWithResetOnSignOut } from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
 import userBoxesPagination from 'store/reducers/userBoxes/pagination';
-import access from './access';
-// import bulkSelection from './bulkSelection';
+
 import devicePreferences from './devicePreferences';
 import screens from './screens';
-import search from './search';
 import warning from './warning';
-import { userApplicationsReducers, userApplicationsInitialState } from './applications/userApplications';
 
 const appReducer = combineReducers({
   ...authPersistedReducers,
   ...storeReducers,
-  access,
-  // bulkSelection, unused for now
   ...devicePreferences,
   screens,
-  search,
   warning,
   crypto,
   ...userBoxesPagination,
@@ -38,17 +32,8 @@ const appReducer = combineReducers({
     applications: {},
     users: {},
     services: {},
-    databoxes: {},
-    databoxesByProducer: {},
-    databoxesByStatus: {},
-    applicationsByCategories: {},
-    applicationsById: {},
-    userEmails: {},
     blobs: {},
-    activityLogs: {},
-    // FIXME: create a combineReducers once we need to passe more custom reducers
-    ...userApplicationsInitialState,
-  }, userApplicationsReducers, makeEntities),
+  }, {}, makeEntities),
 });
 
 const rootReducer = (state, action) => {

@@ -10,8 +10,8 @@ import { connect } from 'react-redux';
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
 
-import Home from 'components/newScreens/app/Home';
-import NotFound from 'components/screens/NotFound';
+import Home from 'components/screens/app/Home';
+import NotFound from 'components/oldScreens/NotFound';
 
 import Redirect from 'components/dumb/Redirect';
 import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallbackWrapper';
@@ -23,8 +23,8 @@ import { processSigninRedirect } from '@misakey/helpers/auth';
 import './App.scss';
 
 // LAZY
-const Account = lazy(() => import('components/screens/Account'));
-const Auth = lazy(() => import('components/newScreens/Auth'));
+const Account = lazy(() => import('components/oldScreens/Account'));
+const Auth = lazy(() => import('components/screens/Auth'));
 
 // CONSTANTS
 const REFERRERS = {

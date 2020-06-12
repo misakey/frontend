@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -10,22 +10,18 @@ import API from '@misakey/api';
 import moment from 'moment';
 import { DATETIME_FILE_HUMAN_READABLE } from 'constants/formats/dates';
 
-import ApplicationSchema from 'store/schemas/Application';
-
 import { decryptToJSBlob } from '@misakey/crypto/databox/crypto';
 import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
 import downloadFile from '@misakey/helpers/downloadFile';
 import ensureSecretsLoaded from '@misakey/crypto/store/actions/ensureSecretsLoaded';
 
 import noop from '@misakey/helpers/noop';
-import deburr from '@misakey/helpers/deburr';
 import isEmpty from '@misakey/helpers/isEmpty';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import DatavizDialog from 'components/dumb/Dialog/Dataviz';
 
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import BlobSchema from 'store/schemas/Databox/Blob';
+import BlobSchema from 'store/schemas/Boxes/Blob';
 import { usePasswordPrompt } from 'components/dumb/PasswordPrompt';
 
 
@@ -54,7 +50,6 @@ const useStyles = makeStyles(() => ({
 const decryptBlob = async (
   blobMetadata,
   publicKeysWeCanDecryptFrom,
-  application,
   onError,
   onSuccess,
   shouldDownload = false,
@@ -86,7 +81,7 @@ const decryptBlob = async (
     );
 
     const fileName = ''.concat(
-      deburr(application.name).replace(/\s/g, ''),
+      'File',
       '.',
       moment(createdAt).format(DATETIME_FILE_HUMAN_READABLE),
       fileExtension,
@@ -105,14 +100,11 @@ const decryptBlob = async (
 
 // COMPONENTS
 const ButtonDownloadBlob = ({
-  application,
   blob,
-  isDatavizEnabled,
   t,
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const { mainDomain } = application;
 
   const dispatch = useDispatch();
   const openPasswordPrompt = usePasswordPrompt();
@@ -123,17 +115,9 @@ const ButtonDownloadBlob = ({
     },
   } = blob;
 
-  const [decryptedBlob, setDecryptedBlob] = useState(null);
-  const [isDatavizDialogOpen, setIsDatavizDialogOpen] = useState(false);
-
   const initCrypto = useCallback(
     () => dispatch(ensureSecretsLoaded({ openPasswordPrompt })),
     [dispatch, openPasswordPrompt],
-  );
-
-  const onCloseDatavizDialog = useCallback(
-    () => setIsDatavizDialogOpen(false),
-    [setIsDatavizDialogOpen],
   );
 
   const onError = useCallback(
@@ -143,28 +127,13 @@ const ButtonDownloadBlob = ({
     [enqueueSnackbar, t],
   );
 
-  const onDecryptForDatavizSuccess = useCallback(
-    (file, filename, fileExtension) => {
-      setDecryptedBlob({ blob: file, filename, fileExtension });
-      setIsDatavizDialogOpen(true);
-    },
-    [],
-  );
-
   const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
 
   const onDownload = useCallback(
     () => decryptBlob(
-      blob, publicKeysWeCanDecryptFrom, application, onError, noop, true,
+      blob, publicKeysWeCanDecryptFrom, onError, noop, true,
     ),
-    [blob, publicKeysWeCanDecryptFrom, application, onError],
-  );
-
-  const onDisplayDataviz = useCallback(
-    () => decryptBlob(
-      blob, publicKeysWeCanDecryptFrom, application, onError, onDecryptForDatavizSuccess,
-    ),
-    [blob, publicKeysWeCanDecryptFrom, application, onError, onDecryptForDatavizSuccess],
+    [blob, publicKeysWeCanDecryptFrom, onError],
   );
 
   const vaultIsOpen = useMemo(
@@ -174,21 +143,13 @@ const ButtonDownloadBlob = ({
 
   const canBeDecrypted = publicKeysWeCanDecryptFrom.has(ownerPubKey);
 
-  const onClick = useCallback(
-    () => (isDatavizEnabled ? onDisplayDataviz() : onDownload()),
-    [isDatavizEnabled, onDisplayDataviz, onDownload],
-  );
-
   const text = useMemo(() => {
     if (!canBeDecrypted) {
       return t('common:undecryptable');
     }
-    if (isDatavizEnabled) {
-      return t('common:view');
-    }
     return t('common:download');
   },
-  [canBeDecrypted, isDatavizEnabled, t]);
+  [canBeDecrypted, t]);
 
   if (!vaultIsOpen) {
     return (
@@ -203,35 +164,23 @@ const ButtonDownloadBlob = ({
   }
 
   return (
-    <>
-      <DatavizDialog
-        mainDomain={mainDomain}
-        open={isDatavizDialogOpen}
-        onClose={onCloseDatavizDialog}
-        decryptedBlob={decryptedBlob}
-      />
-      <Button
-        className={classes.buttonRoot}
-        color="secondary"
-        onClick={onClick}
-        disabled={!canBeDecrypted}
-      >
-        {text}
-      </Button>
-    </>
+    <Button
+      className={classes.buttonRoot}
+      color="secondary"
+      onClick={onDownload}
+      disabled={!canBeDecrypted}
+    >
+      {text}
+    </Button>
   );
 };
 
 ButtonDownloadBlob.propTypes = {
-  application: PropTypes.shape(ApplicationSchema.propTypes),
   blob: PropTypes.shape(BlobSchema.propTypes),
-  isDatavizEnabled: PropTypes.bool,
   t: PropTypes.func.isRequired,
 };
 
 ButtonDownloadBlob.defaultProps = {
-  application: null,
-  isDatavizEnabled: false,
   blob: null,
 };
 

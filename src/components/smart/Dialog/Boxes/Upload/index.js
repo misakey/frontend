@@ -6,9 +6,8 @@ import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
 
 import API from '@misakey/api';
-import DataboxSchema from 'store/schemas/Databox';
 
-import { serviceRequestsReadValidationSchema } from 'constants/validationSchemas/dpo';
+// import { serviceRequestsReadValidationSchema } from 'constants/validationSchemas/dpo';
 
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
@@ -51,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function UploadDialog({
+  // eslint-disable-next-line react/prop-types
   request,
   t,
   onClose,
@@ -135,7 +135,7 @@ function UploadDialog({
       aria-describedby="upload-dialog-description"
     >
       <Formik
-        validationSchema={serviceRequestsReadValidationSchema}
+        // validationSchema={serviceRequestsReadValidationSchema}
         initialValues={INITIAL_VALUES}
         initialStatus={INITIAL_STATUS}
         onSubmit={onSubmit}
@@ -182,7 +182,7 @@ function UploadDialog({
 }
 
 UploadDialog.propTypes = {
-  request: PropTypes.shape(DataboxSchema.propTypes),
+  // request: PropTypes.shape(DataboxSchema.propTypes),
   open: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func.isRequired,
@@ -190,7 +190,7 @@ UploadDialog.propTypes = {
 };
 
 UploadDialog.defaultProps = {
-  request: null,
+  // request: null,
   open: false,
 };
 

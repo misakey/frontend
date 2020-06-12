@@ -15,8 +15,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
-import UserStorage from 'components/screens/Account/Home/UserStorage';
-import DeleteAccountListItem from 'components/screens/Account/Home/DeleteAccount';
+import UserStorage from 'components/oldScreens/Account/Home/UserStorage';
+import DeleteAccountListItem from 'components/oldScreens/Account/Home/DeleteAccount';
 import CardIdentityHeader from 'components/dumb/Card/Identity/Header';
 import CardList from 'components/dumb/Card/List';
 
