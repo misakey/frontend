@@ -42,6 +42,7 @@ import isNil from '@misakey/helpers/isNil';
 import { isSilentAuthIframe, processSilentAuthCallbackInIframe } from '@misakey/auth/helpers'; // Silent auth
 
 import { isSigninRedirect, processSigninRedirect } from '@misakey/helpers/auth';
+import SnackbarActionHide from 'components/dumb/Snackbar/Action/Hide';
 
 /* END OF IMPORTS */
 
@@ -93,7 +94,11 @@ if (isSilentAuthIframe()) {
         >
           <MuiThemeProvider theme={theme}>
             <Router>
-              <SnackbarProvider maxSnack={6} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
+              <SnackbarProvider
+                action={(key) => <SnackbarActionHide id={key} />}
+                maxSnack={60}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+              >
                 <OidcProvider
                   store={store}
                   config={window.env.AUTH}
