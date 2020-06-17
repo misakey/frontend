@@ -7,7 +7,11 @@ export function isSigninRedirect() {
   return window.location.pathname === routes.auth.redirectToSignIn;
 }
 
-export function processSigninRedirect() {
+export function processSigninRedirect(useDefaultReferrer = true) {
   const userManager = createUserManager(window.env.AUTH);
-  userManager.signinRedirect({ referrer: routes.boxes._ });
+  if (useDefaultReferrer) {
+    userManager.signinRedirect({ referrer: routes.boxes._ });
+  } else {
+    userManager.signinRedirect();
+  }
 }

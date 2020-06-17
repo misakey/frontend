@@ -7,7 +7,7 @@ import AvatarUser from '@misakey/ui/Avatar/User';
 import withIdentity from 'components/smart/withIdentity';
 import omit from '@misakey/helpers/omit';
 
-const WITH_USER_PROPS = ['isFetching', 'id', 'token', 'identityId'];
+const WITH_USER_PROPS = ['isFetchingIdentity', 'id', 'token', 'identityId'];
 
 const UserAvatar = ({ identity, ...props }) => {
   const { displayName, avatarUrl } = useMemo(() => identity || {}, [identity]);

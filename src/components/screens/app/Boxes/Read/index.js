@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import routes from 'routes';
 
 import BoxesSchema from 'store/schemas/Boxes';
+import IdentitySchema from 'store/schemas/Identity';
 
+import withIdentity from 'components/smart/withIdentity';
 import withBoxDetails from 'components/smart/withBoxDetails';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 
@@ -13,8 +15,10 @@ import BoxEvents from './Events';
 import BoxFiles from './Files';
 
 
-function BoxRead({ match, toggleDrawer, isDrawerOpen, drawerWidth, box, isFetching }) {
-  if (isFetching.box) {
+function BoxRead({
+  match, toggleDrawer, isDrawerOpen, drawerWidth, box, isFetching, identity, isFetchingIdentity,
+}) {
+  if (isFetching.box || isFetchingIdentity || identity === null) {
     return <SplashScreenWithTranslation />;
   }
 
@@ -36,6 +40,7 @@ function BoxRead({ match, toggleDrawer, isDrawerOpen, drawerWidth, box, isFetchi
             <BoxEvents
               box={box}
               isFetching={isFetching.events}
+              identity={identity}
               toggleDrawer={toggleDrawer}
               isDrawerOpen={isDrawerOpen}
               drawerWidth={drawerWidth}
@@ -65,6 +70,9 @@ BoxRead.propTypes = {
   toggleDrawer: PropTypes.func.isRequired,
   isDrawerOpen: PropTypes.bool,
   drawerWidth: PropTypes.string.isRequired,
+
+  identity: PropTypes.shape(IdentitySchema.propTypes),
+  isFetchingIdentity: PropTypes.bool.isRequired,
 };
 
 BoxRead.defaultProps = {
@@ -74,6 +82,7 @@ BoxRead.defaultProps = {
     events: false,
   },
   box: null,
+  identity: null,
 };
 
-export default withBoxDetails()(BoxRead);
+export default withBoxDetails()(withIdentity(BoxRead));

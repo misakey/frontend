@@ -66,6 +66,7 @@ const RedirectAuthCallback = ({
   const authRequestDetails = useGetAuthRequestDetails(state);
   const { referrer } = authRequestDetails;
 
+
   const processRedirectCallback = useProcessRedirectCallback(
     handleSuccess,
     handleError,

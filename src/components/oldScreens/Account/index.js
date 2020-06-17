@@ -15,7 +15,7 @@ const AccountNotifications = lazy(() => import('components/oldScreens/Account/No
 const ExportCrypto = lazy(() => import('components/oldScreens/Account/ExportCrypto'));
 
 // COMPONENTS
-const Account = ({ identity, isFetching, ...props }) => (
+const Account = ({ identity, isFetchingIdentity, ...props }) => (
   <Switch>
     <Route
       exact
@@ -23,7 +23,7 @@ const Account = ({ identity, isFetching, ...props }) => (
       render={(routerProps) => (
         <AccountHome
           identity={identity}
-          isFetching={isFetching}
+          isFetching={isFetchingIdentity}
           {...props}
           {...routerProps}
         />
@@ -35,7 +35,7 @@ const Account = ({ identity, isFetching, ...props }) => (
       render={(routerProps) => (
         <AccountName
           identity={identity}
-          isFetching={isFetching}
+          isFetching={isFetchingIdentity}
           {...props}
           {...routerProps}
         />
@@ -46,7 +46,7 @@ const Account = ({ identity, isFetching, ...props }) => (
       render={(routerProps) => (
         <AccountAvatar
           identity={identity}
-          isFetching={isFetching}
+          isFetching={isFetchingIdentity}
           {...props}
           {...routerProps}
         />
@@ -58,7 +58,7 @@ const Account = ({ identity, isFetching, ...props }) => (
       render={(routerProps) => (
         <AccountPassword
           identity={identity}
-          isFetching={isFetching}
+          isFetching={isFetchingIdentity}
           {...props}
           {...routerProps}
         />
@@ -70,7 +70,7 @@ const Account = ({ identity, isFetching, ...props }) => (
       render={(routerProps) => (
         <AccountNotifications
           identity={identity}
-          isFetching={isFetching}
+          isFetching={isFetchingIdentity}
           {...props}
           {...routerProps}
         />
@@ -91,7 +91,7 @@ const Account = ({ identity, isFetching, ...props }) => (
 
 Account.propTypes = {
   // withIdentity
-  isFetching: PropTypes.bool.isRequired,
+  isFetchingIdentity: PropTypes.bool.isRequired,
   // CONNECT
   // - STATE
   identity: PropTypes.shape(IdentitySchema.propTypes),

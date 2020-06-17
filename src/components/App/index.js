@@ -71,9 +71,11 @@ const App = ({ t, isAuthenticated }) => (
           }}
         />
         {!isAuthenticated && (
-          <Redirect
-            from={routes._}
-            to={routes.auth.redirectToSignIn}
+          <Route
+            render={() => {
+              processSigninRedirect(false);
+              return null;
+            }}
           />
         )}
 

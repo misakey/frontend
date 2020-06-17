@@ -12,7 +12,6 @@ import Subtitle from 'components/dumb/Typography/Subtitle';
 import BoxMessageEvent from 'components/dumb/Event/Box/Message';
 import BoxInformationEvent from 'components/dumb/Event/Box/Information';
 import ElevationScroll from 'components/dumb/ElevationScroll';
-import withIdentity from 'components/smart/withIdentity';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
@@ -176,11 +175,10 @@ BoxEvents.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   identity: PropTypes.shape(IdentitySchema.propTypes),
   t: PropTypes.func.isRequired,
-
 };
 
 BoxEvents.defaultProps = {
   identity: null,
 };
 
-export default withIdentity(withTranslation('boxes')(BoxEvents));
+export default withTranslation('boxes')(BoxEvents);

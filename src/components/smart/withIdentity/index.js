@@ -39,7 +39,7 @@ const withIdentity = (Component) => {
     return (
       <Component
         {...props}
-        isFetching={isFetching}
+        isFetchingIdentity={isFetching || shouldFetch}
         id={id}
         token={token}
         identity={identity}
