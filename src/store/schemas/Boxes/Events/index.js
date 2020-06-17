@@ -1,7 +1,10 @@
 import { schema } from 'normalizr';
 import PropTypes from 'prop-types';
+import SenderSchema from 'store/schemas/Boxes/Sender';
 
-const entity = new schema.Entity('events', {}, {});
+const entity = new schema.Entity('events', {
+  sender: SenderSchema.entity,
+}, {});
 
 const collection = [entity];
 
@@ -13,10 +16,8 @@ const EventSchema = {
     type: PropTypes.string.isRequired,
     serverEventCreatedAt: PropTypes.string.isRequired,
     content: PropTypes.object.isRequired,
-    sender: PropTypes.shape({
-      displayName: PropTypes.string,
-      avatarUri: PropTypes.string,
-    }),
+    // eslint-disable-next-line react/forbid-foreign-prop-types
+    sender: SenderSchema.propTypes,
   },
 };
 

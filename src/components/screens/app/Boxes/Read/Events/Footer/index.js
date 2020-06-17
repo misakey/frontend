@@ -68,8 +68,8 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
       if (!isEmpty(value)) {
         createBoxEventBuilder(box.id, { type: MSG_TXT, content: { encrypted: encrypt(value) } })
           .then((response) => {
-            dispatch(addBoxEvents(box.id, response));
             setValue('');
+            dispatch(addBoxEvents(box.id, response));
           });
       }
     },

@@ -12,10 +12,11 @@ import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpError
 import BoxesSchema from 'store/schemas/Boxes';
 import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 // import BlobSchema from 'store/schemas/Databox/Blob';
 import EventsSchema from 'store/schemas/Boxes/Events';
+import { getBoxMembersIds } from 'store/reducers/box';
 
 // COMPONENTS
 const withBoxDetails = (mapper = identity) => (Component) => {
@@ -34,6 +35,7 @@ const withBoxDetails = (mapper = identity) => (Component) => {
     } = props;
 
     const { id, events } = useMemo(() => box || {}, [box]);
+    const members = useSelector((state) => getBoxMembersIds(state, id));
 
     const { params } = useRouteMatch();
     const history = useHistory();
@@ -117,7 +119,7 @@ const withBoxDetails = (mapper = identity) => (Component) => {
 
     const mappedProps = useMemo(
       () => (mapper({
-        box: box || { id: params.id },
+        box: { ...box || { id: params.id }, members },
         isFetching: {
           box: isFetching,
           events: isFetchingEvents,
@@ -127,7 +129,7 @@ const withBoxDetails = (mapper = identity) => (Component) => {
         isAuthenticated,
         ...rest,
       })),
-      [box, isAuthenticated, isFetching, isFetchingEvents, onDelete, params.id, rest],
+      [box, isAuthenticated, isFetching, isFetchingEvents, members, onDelete, params.id, rest],
     );
 
     return <Component {...mappedProps} />;
@@ -186,7 +188,6 @@ const withBoxDetails = (mapper = identity) => (Component) => {
     //   dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
     // },
   });
-
 
   return connect(mapStateToProps, mapDispatchToProps)(Wrapper);
 };

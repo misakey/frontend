@@ -15,7 +15,7 @@ function ElevationScroll({ children, threshold, target }) {
   });
 
   return React.cloneElement(children, {
-    elevation: trigger ? 4 : 0,
+    elevation: trigger ? 1 : 0,
   });
 }
 

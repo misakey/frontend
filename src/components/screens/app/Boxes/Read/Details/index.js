@@ -1,10 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import routes from 'routes';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
-import moment from 'moment';
 
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
@@ -15,10 +14,16 @@ import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import BoxAvatar from 'components/dumb/Avatar/Box';
+import ElevationScroll from 'components/dumb/ElevationScroll';
+import AvatarUser from '@misakey/ui/Avatar/User';
 import useGeneratePathKeepingSearch from '@misakey/hooks/useGeneratePathKeepingSearch';
 import { AVATAR_SIZE } from '@misakey/ui/constants/sizes';
-import { DATETIME_SHORT } from 'constants/formats/dates';
+
+// CONSTANTS
+const CONTENT_SPACING = 2;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -28,42 +33,46 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.typography.h4.fontSize,
     margin: theme.spacing(2, 0),
   },
+  content: {
+    maxHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - ${theme.spacing(CONTENT_SPACING) * 2}px)`,
+    overflow: 'auto',
+  },
 }));
 
 function BoxDetails({ drawerWidth, box, t }) {
   const classes = useStyles();
+  // useRef seems buggy with ElevationScroll
+  const [contentRef, setContentRef] = useState();
   const goBack = useGeneratePathKeepingSearch(routes.boxes.read._, { id: box.id });
   const routeFiles = useGeneratePathKeepingSearch(routes.boxes.read.files, { id: box.id });
-  const { avatarUrl, title, serverCreatedAt } = useMemo(() => box, [box]);
-  const date = useMemo(() => moment(serverCreatedAt).format(DATETIME_SHORT), [serverCreatedAt]);
-
+  const { avatarUrl: boxAvatarUrl, title, members } = useMemo(() => box, [box]);
   return (
     <>
-      <AppBarDrawer drawerWidth={drawerWidth}>
-        <IconButtonAppBar
-          color="inherit"
-          aria-label="open drawer"
-          edge="start"
-          component={Link}
-          to={goBack}
-        >
-          <ArrowBack />
-        </IconButtonAppBar>
-      </AppBarDrawer>
-      <Box p={2}>
+      <ElevationScroll target={contentRef}>
+        <AppBarDrawer drawerWidth={drawerWidth}>
+          <IconButtonAppBar
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            component={Link}
+            to={goBack}
+          >
+            <ArrowBack />
+          </IconButtonAppBar>
+        </AppBarDrawer>
+      </ElevationScroll>
+      <Box p={CONTENT_SPACING} ref={(ref) => setContentRef(ref)} className={classes.content}>
         <Box display="flex" flexDirection="column" alignItems="center">
           <BoxAvatar
             classes={{ root: classes.avatar }}
-            src={avatarUrl}
+            src={boxAvatarUrl}
             title={title || ''}
           />
           <Typography variant="h6" align="center">
             {title}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-
-            {/* {t('boxes:read.details.menu.members.count', { count: members.length })} */}
-            {t('boxes:read.details.menu.createdAt', { date })}
+            {t('boxes:read.details.menu.members.count', { count: members.length })}
           </Typography>
         </Box>
 
@@ -110,14 +119,26 @@ function BoxDetails({ drawerWidth, box, t }) {
             />
             {/* <ChevronRightIcon /> */}
           </ListItem>
-          {/* <ListItem>
-            <ListItemText
-              primary={t('boxes:read.details.menu.members.title')}
-              secondary={t('boxes:read.details.menu.members.count', { count: members.length })}
-              primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
-              secondaryTypographyProps={{ noWrap: true, color: 'textPrimary' }}
-            />
-          </ListItem> */}
+          <List subheader={(
+            <ListSubheader>
+              <Typography noWrap variant="overline" color="textSecondary">
+                {t('boxes:read.details.menu.members.title')}
+              </Typography>
+            </ListSubheader>
+          )}
+          >
+            {members.map(({ displayName, avatarUrl, identifier }) => (
+              <ListItem key={identifier.value}>
+                <ListItemAvatar>
+                  <AvatarUser src={avatarUrl} />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={displayName}
+                  secondary={identifier.value}
+                />
+              </ListItem>
+            ))}
+          </List>
         </List>
       </Box>
     </>

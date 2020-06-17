@@ -1,25 +1,28 @@
-import React, { useMemo, useState, useCallback, useRef } from 'react';
+import React, { useMemo, useState, useCallback, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import routes from 'routes';
+import { withTranslation } from 'react-i18next';
 
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import BoxAvatar from 'components/dumb/Avatar/Box';
 import Title from 'components/dumb/Typography/Title';
-// import Subtitle from 'components/dumb/Typography/Subtitle';
+import Subtitle from 'components/dumb/Typography/Subtitle';
 import BoxMessageEvent from 'components/dumb/Event/Box/Message';
 import BoxInformationEvent from 'components/dumb/Event/Box/Information';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import withIdentity from 'components/smart/withIdentity';
 
 import MenuIcon from '@material-ui/icons/Menu';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 import useGroupEventsByDate from 'hooks/useGroupEventsByDate';
 import useGeneratePathKeepingSearch from '@misakey/hooks/useGeneratePathKeepingSearch';
+import isNil from '@misakey/helpers/isNil';
 
 import BoxesSchema from 'store/schemas/Boxes';
 import IdentitySchema from 'store/schemas/Identity';
@@ -29,6 +32,7 @@ import BoxEventsFooter from './Footer';
 
 const CONTENT_SPACING = 2;
 const APPBAR_HEIGHT = 64;
+const FOOTER_HEIGHT = 64;
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -43,14 +47,16 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, identity }) {
-  const contentRef = useRef();
-  const [footerHeight, setFooterHeight] = useState(64);
+function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, identity, t }) {
+  // useRef seems buggy with ElevationScroll
+  const [contentRef, setContentRef] = useState();
+  const lastEventRef = useRef(null);
+  const [footerHeight, setFooterHeight] = useState(FOOTER_HEIGHT);
   const classes = useStyles({ footerHeight });
 
   const routeDetails = useGeneratePathKeepingSearch(routes.boxes.read.details, { id: box.id });
 
-  const { avatarUri, title, events: boxEvents } = useMemo(() => box, [box]);
+  const { avatarUri, title, events: boxEvents, members } = useMemo(() => box, [box]);
   const isFromCurrentUser = useCallback(
     (eventIdentifier) => identity.identifier.value === eventIdentifier.value,
     [identity.identifier],
@@ -64,9 +70,17 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, identity }) {
     );
   }, []);
 
+  const scrollToBottom = useCallback(() => {
+    if (!isNil(lastEventRef) && !isNil(lastEventRef.current)) {
+      lastEventRef.current.scrollIntoView();
+    }
+  }, []);
+
+  useEffect(scrollToBottom, [eventsByDate]);
+
   return (
     <>
-      <ElevationScroll target={contentRef.current}>
+      <ElevationScroll target={contentRef}>
         <AppBarDrawer drawerWidth={drawerWidth}>
           {!isDrawerOpen && (
             <IconButtonAppBar
@@ -78,13 +92,24 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, identity }) {
               <MenuIcon />
             </IconButtonAppBar>
           )}
-          <Box display="flex" flexDirection="column" flexGrow={1} overflow="hidden">
-            <Title gutterBottom={false} noWrap>
-              {title}
-            </Title>
-            {/* <Subtitle>
-              nb of members or last message
-            </Subtitle> */}
+          <Box display="flex" flexGrow={1} overflow="hidden" alignItems="center">
+            <Box display="flex" flexDirection="column">
+              <Title gutterBottom={false} noWrap>
+                {title}
+              </Title>
+              <Subtitle>
+                {t('boxes:read.details.menu.members.count', { count: members.length })}
+              </Subtitle>
+            </Box>
+            <IconButtonAppBar
+              aria-label="box-details"
+              aria-controls="menu-appbar"
+              component={Link}
+              to={routeDetails}
+            >
+              <KeyboardArrowDownIcon />
+            </IconButtonAppBar>
+
           </Box>
 
           <IconButtonAppBar
@@ -102,7 +127,7 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, identity }) {
           </IconButtonAppBar>
         </AppBarDrawer>
       </ElevationScroll>
-      <Box ref={contentRef} p={2} className={classes.content}>
+      <Box ref={(ref) => setContentRef(ref)} p={2} className={classes.content}>
         {eventsByDate.map(({ date, events }) => (
           <Box display="flex" flexDirection="column" py={1} key={date}>
             <Typography component={Box} alignSelf="center">{date}</Typography>
@@ -129,6 +154,7 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, identity }) {
                 return null;
               })
             }
+            <div ref={lastEventRef} />
           </Box>
         ))}
       </Box>
@@ -149,6 +175,7 @@ BoxEvents.propTypes = {
   toggleDrawer: PropTypes.func.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   identity: PropTypes.shape(IdentitySchema.propTypes),
+  t: PropTypes.func.isRequired,
 
 };
 
@@ -156,5 +183,4 @@ BoxEvents.defaultProps = {
   identity: null,
 };
 
-
-export default withIdentity((BoxEvents));
+export default withIdentity(withTranslation('boxes')(BoxEvents));

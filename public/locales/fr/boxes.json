@@ -50,7 +50,7 @@
         "members": {
           "title": "Membres de la box",
           "count": "{{count}} membre",
-          "count_plural": "{{count}} membre"
+          "count_plural": "{{count}} membres"
         },
         "createdAt": "Créée le {{date}}"
       }
