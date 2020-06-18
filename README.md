@@ -1,18 +1,19 @@
 Misakey frontend
 ================
 
-[![License BSL](https://img.shields.io/static/v1?label=License&message=BSL&color=e32e72)](./LICENSE)
-[![CI](https://img.shields.io/gitlab/pipeline/Misakey/frontend)](https://gitlab.com/Misakey/frontend/pipelines/)
+[![License AGPLv3](https://img.shields.io/static/v1?label=License&message=AGPLv3&color=e32e72)](./LICENSE)
 
+Misakey is the user account solution for people and applications who
+value privacy and simplicity. And it’s open source.
 
 This project is the frontend repository of [Misakey](https://misakey.com/).
 
-For more info about Misakey, you can see our [presentation page](https://about.misakey.com).
+You can find more info about Misakey in our [website](https://www.misakey.com) and our [about page](https://about.misakey.com/).
 
 On this README you will only find technical information about the frontend code.
 For more global information about Misakey, the contribution guide, the community, 
 the licensing philosophy or a more global overview of the project, please go on the 
-[README of the backend monorepo](https://gitlab.com/Misakey/misakey/).
+[README of the backend monorepo](https://gitlab.com/Misakey/backend/).
 
 
 ## Overview 
@@ -106,6 +107,10 @@ Other improvement possibilities for later:
 ## License
 
 The code is published under AGPLv3. More info in the [LICENSE](LICENSE) file.
+
+## Source management disclaimer
+
+Misakey uses GitLab for the development of its free softwares. Our Github repositories are only mirrors. If you want to work with us, fork us on gitlab.com (no registration needed, you can sign in with your Github account)
 
 ## Cryptography notice
 
