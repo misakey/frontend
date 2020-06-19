@@ -1,3 +1,10 @@
+image:
+  pullPolicy: Always
+  tag: master
+env: production
+ingressRoute:
+  domain: app.preprod.misakey.dev
+  contentSecurityPolicy: "default-src 'self' https://*.preprod.misakey.dev https://*.misakey.com https://sentry.io; frame-src 'self' https://*.preprod.misakey.dev https://misakey.typeform.com https://content.googleapis.com https://accounts.google.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.misakey.com https://embed.typeform.com https://apis.google.com; style-src 'self' 'unsafe-inline'; object-src 'none'; img-src data: https://*.preprod.misakey.dev https://*.misakey.com 'self'"
 config: >-
   window.env = {
     ENV: 'preprod',

@@ -2,6 +2,8 @@
 
 To deploy the project, we do use [Helm](https://helm.sh/). 
 
+We use helm **3.2.2**.
+
 The Helm chart is in this folder. 
 
 As all frontend configurations are public, we have decided to commit it here:
@@ -19,10 +21,10 @@ When you want to deploy the application for the first time, clone the repo, chec
 
 ```shell
 # For preproduction
-helm install --name frontend helm/frontend -f helm/config.preprod.yaml --set env=production --set image.tag=master --set image.pullPolicy=Always
+helm install frontend helm/frontend -f helm/config.preprod.yaml
 
 # For production
-helm install --name frontend helm/frontend -f helm/config.prod.yaml --set env=production --set image.tag=`git describe --tags --always`
+helm install frontend helm/frontend -f helm/config.prod.yaml --set image.tag=`git describe --tags --always`
 ```
 
 ## Upgrading
@@ -32,10 +34,11 @@ If you just need to upgrade the application version, then run:
 
 ```shell
 # For preproduction
-helm upgrade frontend helm/frontend -f helm/config.preprod.yaml --set env=production --set image.tag=master  --set image.pullPolicy=Always
+helm upgrade frontend helm/frontend -f helm/config.preprod.yaml
+
 
 # For production
-helm upgrade frontend helm/frontend -f helm/config.prod.yaml --set env=production --set image.tag=`git describe --tags --always`
+helm upgrade frontend helm/frontend -f helm/config.prod.yaml --set image.tag=`git describe --tags --always`
 ```
 
 :information_source: **Tip** on preprod env, if you don't have any modification to the config file,
