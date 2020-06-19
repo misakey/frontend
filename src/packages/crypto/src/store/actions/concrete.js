@@ -15,6 +15,7 @@ import values from '@misakey/helpers/values';
 import difference from '@misakey/helpers/difference';
 import isEmpty from '@misakey/helpers/isEmpty';
 import filter from '@misakey/helpers/filter';
+import path from '@misakey/helpers/path';
 import isString from '@misakey/helpers/isString';
 
 import { updateSecretsBackup } from '../../secretsBackup';
@@ -54,6 +55,7 @@ export const CRYPTO_SET_BACKUP_KEY = Symbol('CRYPTO_SET_BACKUP_KEY');
 export const CRYPTO_IMPORT_SECRET_KEYS = Symbol('CRYPTO_IMPORT_SECRET_KEYS');
 export const CRYPTO_INITIALIZE = Symbol('CRYPTO_INITIALIZE');
 export const CRYPTO_SET_BACKUP_VERSION = Symbol('CRYPTO_SET_BACKUP_VERSION');
+export const CRYPTO_ADD_BOX_SECRET_KEY = Symbol('CRYPTO_ADD_BOX_SECRET_KEY');
 
 // ACTION BUILDERS
 // @FIXME maybe apply "withBackupUpdater" later
@@ -82,9 +84,17 @@ const withBackupUpdater = (actionBuilder) => (...args) => (
       await dispatch(actionBuilder(...args));
 
       const state = getState();
+
+      // @FIXME declare a "selector" in auth package in charge of retrieving the identity?
+      if (isEmpty(path(['auth', 'identity', 'accountId'], state))) {
+        // no account => no backup possible
+        return;
+      }
+
       const identityId = state.auth.identity.id;
       const { secrets, backupKey, backupVersion } = state.crypto;
 
+      // @FIXME backup update uses the *account* ID now
       const response = await updateSecretsBackup(identityId, secrets, backupKey, backupVersion);
 
       dispatch(setBackupVersion(response.version));
@@ -180,5 +190,18 @@ export function createNewOwnerSecrets(password) {
       backupData: encryptedSecrets,
       pubkeyData: publicKey,
     };
+  };
+}
+
+/**
+ * add a new secret key for a data owner.
+ *
+ * @param {string} secretKey
+ */
+export function addBoxSecretKey(secretKey) {
+  // @FIXME crypto: should we regenerate the backup key?
+  return {
+    type: CRYPTO_ADD_BOX_SECRET_KEY,
+    secretKey,
   };
 }

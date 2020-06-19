@@ -16,7 +16,7 @@ import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStra
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
-// import { generateAsymmetricKeyPair } from '@misakey/crypto/crypto';
+import { generateAsymmetricKeyPair } from '@misakey/crypto/crypto';
 
 import { makeStyles } from '@material-ui/core/styles/';
 import Dialog from '@material-ui/core/Dialog';
@@ -31,6 +31,7 @@ import FieldText from 'components/dumb/Form/Field/Text';
 import { boxNameFieldValidationSchema } from 'constants/validationSchemas/boxes';
 import { createBoxBuilder } from '@misakey/helpers/builder/boxes';
 import { ALL } from 'constants/app/boxes/statuses';
+import { addBoxSecretKey } from '@misakey/crypto/store/actions/concrete';
 
 export const FIELD_NAME = 'name';
 export const INITIAL_VALUES = { [FIELD_NAME]: '' };
@@ -72,7 +73,6 @@ function CreateBoxDialog({
   const handleHttpErrors = useHandleHttpErrors();
 
   const onSuccess = useCallback(
-    // eslint-disable-next-line no-unused-vars
     async (newBox, secretKey) => {
       const { id } = newBox;
       const normalized = normalize(newBox, BoxesSchema.entity);
@@ -80,8 +80,7 @@ function CreateBoxDialog({
       await Promise.all([
         dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
         dispatch(updatePaginationsToStatus(id, ALL)),
-        // @FIXME crypto: implement save key in vault
-        // dispatch(addSecretKey(secretKey)),
+        dispatch(addBoxSecretKey(secretKey)),
       ]);
       enqueueSnackbar(t('boxes:create.dialog.success'), { variant: 'success' });
       const nextTo = generatePath(routes.boxes.read._, { id });
@@ -92,12 +91,9 @@ function CreateBoxDialog({
   );
 
   const onSubmit = useCallback((form, { setSubmitting }) => {
-    // @FIXME crypto: generate public key
-    // API return error "public_key: must be in a valid format."
-    // const { secretKey, publicKey } = generateAsymmetricKeyPair();
-    const publicKey = 'ShouldBeUnpaddedUrlSafeBase64';
-    const secretKey = 'ShouldBeUnpaddedUrlSafeBase64';
-
+    // @FIXME a component should not have to call such low-level functions,
+    // see about moving part of the box creation logic to actions
+    const { secretKey, publicKey } = generateAsymmetricKeyPair();
     return createBoxBuilder({ title: form[FIELD_NAME], publicKey })
       .then((response) => onSuccess(response, secretKey))
       .catch(handleHttpErrors)

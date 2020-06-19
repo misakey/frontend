@@ -64,7 +64,8 @@
           "count": "{{count}} membre",
           "count_plural": "{{count}} membres"
         },
-        "createdAt": "Créée le {{date}}"
+        "createdAt": "Créée le {{date}}",
+        "shareLink": "Obtenir le lien de partage"
       }
     }
   },

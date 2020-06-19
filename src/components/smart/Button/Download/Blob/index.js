@@ -10,7 +10,6 @@ import API from '@misakey/api';
 import moment from 'moment';
 import { DATETIME_FILE_HUMAN_READABLE } from 'constants/formats/dates';
 
-import { decryptToJSBlob } from '@misakey/crypto/databox/crypto';
 import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
 import downloadFile from '@misakey/helpers/downloadFile';
 import ensureSecretsLoaded from '@misakey/crypto/store/actions/ensureSecretsLoaded';
@@ -24,6 +23,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import BlobSchema from 'store/schemas/Boxes/Blob';
 import { usePasswordPrompt } from 'components/dumb/PasswordPrompt';
 
+
+function decryptToJSBlob() {
+  // eslint-disable-next-line no-console
+  console.error('TODO IMPLEMENT DECRYPTION TO JS BLOB');
+}
 
 // HELPERS
 const readBlob = async (id, onError) => {

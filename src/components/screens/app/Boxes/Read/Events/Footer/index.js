@@ -24,6 +24,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 import { addBoxEvents } from 'store/reducers/box';
 
 import { MSG_TXT } from 'constants/app/boxes/events';
+import encryptText from '@misakey/crypto/box/encryptText';
 import FooterMenuActions from './Menu';
 
 const BOX_PADDING_SPACING = 1;
@@ -36,9 +37,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 10,
   },
 }));
-
-// @FIXME crypto
-const encrypt = (value) => btoa(value);
 
 function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange, t }) {
   const classes = useStyles({ drawerWidth, isDrawerOpen });
@@ -66,14 +64,20 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
   const sendMessage = useCallback(
     () => {
       if (!isEmpty(value)) {
-        createBoxEventBuilder(box.id, { type: MSG_TXT, content: { encrypted: encrypt(value) } })
+        createBoxEventBuilder(box.id, {
+          type: MSG_TXT,
+          content: {
+            encrypted: encryptText(value, box.publicKey),
+            recipientPublicKey: box.publicKey,
+          },
+        })
           .then((response) => {
             setValue('');
             dispatch(addBoxEvents(box.id, response));
           });
       }
     },
-    [box.id, dispatch, value],
+    [box.id, box.publicKey, dispatch, value],
   );
 
   return (
@@ -132,6 +136,8 @@ BoxEventsFooter.propTypes = {
   drawerWidth: PropTypes.string.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
   onTextareaSizeChange: PropTypes.func.isRequired,
+  // @FIXME BoxesSchema doesn't match props
+  // (from https://gitlab.misakey.dev/misakey/frontend/-/merge_requests/413#note_51320)
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
 };

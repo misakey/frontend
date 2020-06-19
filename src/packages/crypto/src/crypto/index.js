@@ -19,27 +19,38 @@ import * as core from './core';
 
 const ASYMMETRIC_PACKING_VERSION = 2;
 
+// Asymmetric keys are encoded using unpadded url-safe base64
+
 export function generateAsymmetricKeyPair() {
   const { secretKey, publicKey } = core.generateAsymmetricKeyPair();
   return {
-    secretKey: encodeBase64(secretKey),
-    publicKey: encodeBase64(publicKey),
+    secretKey: encodeBase64(secretKey, { urlSafe: true }),
+    publicKey: encodeBase64(publicKey, { urlSafe: true }),
   };
 }
 
 export function keyPairFromSecretKey(secretKey) {
-  const keyPair = core.keyPairFromSecretKey(decodeBase64(secretKey));
+  const keyPair = core.keyPairFromSecretKey(decodeBase64(secretKey, { urlSafe: true }));
   return {
-    secretKey: encodeBase64(keyPair.secretKey),
-    publicKey: encodeBase64(keyPair.publicKey),
+    secretKey: encodeBase64(keyPair.secretKey, { urlSafe: true }),
+    publicKey: encodeBase64(keyPair.publicKey, { urlSafe: true }),
   };
 }
 
-export function asymmetricEncrypt(plaintext, recipientPublicKey, options = {}) {
+export function asymmetricEncrypt(
+  plaintext,
+  recipientPublicKey,
+  options = {
+    includeRecipientPublicKey: false,
+  },
+) {
   assertNotAnyNil({ plaintext, recipientPublicKey });
-  const cryptogram = core.asymmetricEncrypt(plaintext, decodeBase64(recipientPublicKey));
+  const cryptogram = core.asymmetricEncrypt(
+    plaintext,
+    decodeBase64(recipientPublicKey, { urlSafe: true }),
+  );
   if (options.includeRecipientPublicKey) {
-    cryptogram.recipientPublicKey = decodeBase64(recipientPublicKey);
+    cryptogram.recipientPublicKey = decodeBase64(recipientPublicKey, { urlSafe: true });
   }
   return serializeObjectToJson(cryptogram);
 }
@@ -63,6 +74,7 @@ export function asymmetricDecrypt(cryptogram, recipientSecretKey) {
       ephemeralSenderPublicKey,
     } = deserializeJsonToObject(cryptogram));
   } catch (e) {
+    // @FIXME this legacy code could be removed
     const unpacker = new BitFieldUnpacker(decodeBase64(cryptogram));
     const packingVersion = unpacker.getPackingVersion();
     if (packingVersion !== ASYMMETRIC_PACKING_VERSION) {
@@ -81,7 +93,7 @@ export function asymmetricDecrypt(cryptogram, recipientSecretKey) {
   return core.asymmetricDecrypt(
     ciphertext,
     nonce,
-    decodeBase64(recipientSecretKey),
+    decodeBase64(recipientSecretKey, { urlSafe: true }),
     recipientPublicKey,
     ephemeralSenderPublicKey,
   );

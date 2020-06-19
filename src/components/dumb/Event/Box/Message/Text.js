@@ -4,22 +4,24 @@ import { withTranslation } from 'react-i18next';
 
 import EventCard from 'components/dumb/Event/Card';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import decryptText from '@misakey/crypto/box/decryptText';
 
 import EventSchema from 'store/schemas/Boxes/Events';
 import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
 
-// @FIXME crypto: implement
-// eslint-disable-next-line no-unused-vars
-const decryptText = (publicKeysWeCanDecryptFrom, encrypted, recipientPublicKey) => atob(encrypted);
+// HELPERS
+const decryptMessage = (publicKeysWeCanDecryptFrom, encrypted, recipientPublicKey) => {
+  const secretKey = publicKeysWeCanDecryptFrom.get(recipientPublicKey);
+  return decryptText(encrypted, secretKey);
+};
 
 const BoxMessageTextEvent = ({ event, isFromCurrentUser, preview, t, ...rest }) => {
   const { sender, content: { encrypted, recipientPublicKey } } = useMemo(() => event, [event]);
   const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
-  // @FIXME crypto
-  const canBeDecrypted = publicKeysWeCanDecryptFrom.has(recipientPublicKey) || true;
+  const canBeDecrypted = publicKeysWeCanDecryptFrom.has(recipientPublicKey);
   const text = useMemo(() => {
     if (canBeDecrypted) {
-      return decryptText(publicKeysWeCanDecryptFrom, encrypted, recipientPublicKey);
+      return decryptMessage(publicKeysWeCanDecryptFrom, encrypted, recipientPublicKey);
     }
     return t('common:undecryptable');
   }, [canBeDecrypted, encrypted, publicKeysWeCanDecryptFrom, recipientPublicKey, t]);

@@ -16,7 +16,7 @@ const RANDOM_BYTES = Uint8Array.from([
 
 const TEST_VALUE_NEW_SERIALIZATION = {
   cryptogram: '{"ephemeralSenderPublicKey":{"type":"Uint8Array","encoding":"base64","value":"XSxGlilqwD1HhTXLVdLYkfl5ZxKl439RPSaCp2Sbgyk="},"recipientPublicKey":{"type":"Uint8Array","encoding":"base64","value":"MjfzQRH3pibVoGjeXoLUcuX8n6jY00JPqLzIl5KuOmg="},"nonce":{"type":"Uint8Array","encoding":"base64","value":"yfwKqHYbK3ZJaAz4F/nfvM++Rh0A+dgU"},"ciphertext":{"type":"Uint8Array","encoding":"base64","value":"sN8CHgw4/hnQXNlM4PE+U0aJj2eFzhHmVaTdjHCeymfeDqGUut0z1JxMrQdUUexr"}}',
-  recipientSecretKey: '/MgRlLvKpqc0K65xhp2FV53kaCiahgTf0WMcN5PPaP8=',
+  recipientSecretKey: '_MgRlLvKpqc0K65xhp2FV53kaCiahgTf0WMcN5PPaP8',
 };
 
 it('encrypts and decrypts asymmetrically', () => {

@@ -14,6 +14,7 @@ import {
   CRYPTO_IMPORT_SECRET_KEYS,
   CRYPTO_INITIALIZE,
   CRYPTO_SET_BACKUP_VERSION,
+  CRYPTO_ADD_BOX_SECRET_KEY,
 } from './actions/concrete';
 
 // HELPERS
@@ -35,9 +36,15 @@ const initialState = {
   backupKey: null,
   backupVersion: null,
   secrets: {
+    // @FIXME rename "secretKey" to "userDecryptionKey"
     secretKey: null,
+    boxDecryptionKeys: [],
+    // "passive" encryption keys are keys that must not be used any more for encrypting data;
+    // they are only kept for decrypting data that was encrypted for them in the past.
+    // This is typically used when recovering old keys that were retired after being lost.
     passive: {
       secretKeys: [],
+      boxDecryptionKeys: [],
     },
   },
 };
@@ -67,6 +74,13 @@ export default function (currentState = initialState, action) {
         { ...initialState },
         pick(['secrets', 'backupKey', 'backupVersion'], action),
       );
+
+    case CRYPTO_ADD_BOX_SECRET_KEY:
+      newState.secrets.boxDecryptionKeys = [
+        ...newState.secrets.boxDecryptionKeys,
+        action.secretKey,
+      ];
+      return newState;
     case CRYPTO_IMPORT_SECRET_KEYS:
       // the reducer does not perform any checks:
       // it is the action that is responsible

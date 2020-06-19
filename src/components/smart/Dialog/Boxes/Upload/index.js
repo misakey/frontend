@@ -16,8 +16,6 @@ import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
 
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 
-import { encryptBlobFile } from '@misakey/crypto/databox/crypto';
-
 import { makeStyles } from '@material-ui/core/styles/';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
@@ -32,6 +30,11 @@ export const TMP_BLOB_FIELD_NAME = 'blob';
 export const BLOBS_FIELD_NAME = 'blobs';
 export const INITIAL_VALUES = { [TMP_BLOB_FIELD_NAME]: null, [BLOBS_FIELD_NAME]: [] };
 export const INITIAL_STATUS = {};
+
+function encryptBlobFile() {
+  // eslint-disable-next-line no-console
+  console.error('TODO IMPLEMENT ENCRYPTION TO JS BLOB');
+}
 
 // HELPERS
 function getFileExtension(fileName) {

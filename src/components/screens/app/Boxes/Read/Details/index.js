@@ -5,6 +5,11 @@ import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 
+import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
+import isEmpty from '@misakey/helpers/isEmpty';
+import useGeneratePathKeepingSearch from '@misakey/hooks/useGeneratePathKeepingSearch';
+import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
+
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
@@ -19,7 +24,9 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import BoxAvatar from 'components/dumb/Avatar/Box';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import AvatarUser from '@misakey/ui/Avatar/User';
-import useGeneratePathKeepingSearch from '@misakey/hooks/useGeneratePathKeepingSearch';
+
+import { ListItemSecondaryAction } from '@material-ui/core';
+import ButtonCopy from '@misakey/ui/Button/Copy';
 import { AVATAR_SIZE } from '@misakey/ui/constants/sizes';
 
 // CONSTANTS
@@ -45,7 +52,24 @@ function BoxDetails({ drawerWidth, box, t }) {
   const [contentRef, setContentRef] = useState();
   const goBack = useGeneratePathKeepingSearch(routes.boxes.read._, { id: box.id });
   const routeFiles = useGeneratePathKeepingSearch(routes.boxes.read.files, { id: box.id });
-  const { avatarUrl: boxAvatarUrl, title, members } = useMemo(() => box, [box]);
+  const { id, avatarUrl: boxAvatarUrl, title, publicKey, members } = useMemo(() => box, [box]);
+  const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
+
+  const secretKey = useMemo(
+    () => publicKeysWeCanDecryptFrom.get(publicKey),
+    [publicKey, publicKeysWeCanDecryptFrom],
+  );
+
+  // @FIXME crypto: should split the secretKey and upload one part on backend
+  const shareLink = useMemo(
+    () => (
+      isEmpty(secretKey)
+        ? undefined
+        : parseUrlFromLocation(`${routes.boxes.invitation}#${id}&${secretKey}`).href
+    ),
+    [id, secretKey],
+  );
+
   return (
     <>
       <ElevationScroll target={contentRef}>
@@ -139,6 +163,24 @@ function BoxDetails({ drawerWidth, box, t }) {
               </ListItem>
             ))}
           </List>
+          {/* @FIXME display something else (an error, or nothing at all)
+          if for some reason shareLink is empty */}
+          <ListItem
+            divider
+            aria-label={t('boxes:read.details.menu.shareLink')}
+          >
+            <ListItemText
+              primary={t('boxes:read.details.menu.shareLink')}
+              primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
+              secondaryTypographyProps={{ noWrap: true, color: 'textPrimary' }}
+            />
+            <ListItemSecondaryAction>
+              <ButtonCopy
+                mode="icon"
+                value={shareLink}
+              />
+            </ListItemSecondaryAction>
+          </ListItem>
         </List>
       </Box>
     </>
@@ -149,6 +191,8 @@ function BoxDetails({ drawerWidth, box, t }) {
 BoxDetails.propTypes = {
   drawerWidth: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
+  // @FIXME isn't it a BoxSchema ? props don't match the ones used inside component.
+  // (from https://gitlab.misakey.dev/misakey/frontend/-/merge_requests/413#note_51319)
   box: PropTypes.shape({ id: PropTypes.string.isRequired }).isRequired,
 };
 

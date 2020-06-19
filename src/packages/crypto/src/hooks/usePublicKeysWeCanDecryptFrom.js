@@ -24,13 +24,15 @@ function publicKeyFromSecretKey(secretKey) {
 /**
  * This should not be imported in application code,
  * it is only exported for tests
- * @param {object} cryptoSecrets
+ * @param {object} cryptoSecrets must be a list of asymetric secret keys
  */
 export function publicKeysWeCanDecryptFrom(cryptoSecrets) {
   // "compact" removes falsey values
   const secretKeys = compact([
     cryptoSecrets.secretKey,
+    ...cryptoSecrets.boxDecryptionKeys,
     ...cryptoSecrets.passive.secretKeys,
+    ...cryptoSecrets.passive.boxDecryptionKeys,
   ]);
 
   return new Map(secretKeys.map(
@@ -46,8 +48,6 @@ export function publicKeysWeCanDecryptFrom(cryptoSecrets) {
  * It uses two layers of memoization:
  * one regarding the entire set of secret keys in the store,
  * and a second one for the individual computation of public keys.
- *
- * @param {object} cryptoSecrets part "crypto.secrets" of the Redux store
  */
 export default function usePublicKeysWeCanDecryptFrom() {
   const cryptoSecrets = useSelector((store) => store.crypto.secrets);

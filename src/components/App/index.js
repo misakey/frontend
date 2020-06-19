@@ -12,6 +12,7 @@ import { Route, Switch } from 'react-router-dom';
 
 import Home from 'components/screens/app/Home';
 import NotFound from 'components/oldScreens/NotFound';
+import Invitation from 'components/screens/app/Invitation';
 
 import Redirect from 'components/dumb/Redirect';
 import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallbackWrapper';
@@ -88,7 +89,10 @@ const App = ({ t, isAuthenticated }) => (
 
         {/* OTHERS */}
         <Route path={[routes.boxes._, routes.accounts._]} component={Home} />
-
+        <Route
+          path={routes.boxes.invitation}
+          component={Invitation}
+        />
 
         {/* DEFAULT */}
         <Route component={NotFound} />
