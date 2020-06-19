@@ -58,17 +58,19 @@ function BoxesList({ t, ...props }) {
         : <ListHeader {...omitTranslationProps(props)} />}
       {isCryptoLoaded ? (
         <>
-          <Box m={1}>
-            <FilledInput
-              classes={{ root: classes.search, input: classes.input }}
-              onFocus={openSearch}
-              placeholder={t('search')}
-              disableUnderline
-              fullWidth
-              size="small"
-              readOnly
-            />
-          </Box>
+          {isNil(search) && (
+            <Box m={1}>
+              <FilledInput
+                classes={{ root: classes.search, input: classes.input }}
+                onFocus={openSearch}
+                placeholder={t('search')}
+                disableUnderline
+                fullWidth
+                size="small"
+                readOnly
+              />
+            </Box>
+          )}
           <List
             component={WindowedListBoxes}
             key={search}

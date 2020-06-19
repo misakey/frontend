@@ -16,6 +16,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Chip from '@material-ui/core/Chip';
 import BoxAvatar from 'components/dumb/Avatar/Box';
 import TypographyDateSince from 'components/dumb/Typography/DateSince';
+import BoxEventsAccordingToType from 'components/smart/Box/Event';
 
 // COMPONENTS
 export const BoxListItemSkeleton = (props) => (
@@ -55,21 +56,30 @@ export const BoxListItemSkeleton = (props) => (
 function BoxListItem({ box, toRoute, t, ...rest }) {
   const {
     id,
-    purpose,
-    updatedAt,
     logoUri,
     title,
+    lastEvent = {},
     blobCount = 0,
   } = useMemo(() => box || {}, [box]);
 
   const linkProps = useMemo(
-    () => (isNil(toRoute) ? {} : {
+    () => (isNil(toRoute) || isNil(id) ? {} : {
       to: generatePath(toRoute, { id }),
       button: true,
       component: Link,
     }),
     [id, toRoute],
   );
+
+  const secondary = useMemo(
+    () => (
+      <BoxEventsAccordingToType event={lastEvent} preview />
+    ), [lastEvent],
+  );
+
+  if (isNil(id)) {
+    return null;
+  }
 
   return (
     <ListItem key={id} {...linkProps} {...omitTranslationProps(rest)}>
@@ -81,7 +91,7 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
       </ListItemAvatar>
       <ListItemText
         primary={title}
-        secondary={purpose}
+        secondary={secondary}
         primaryTypographyProps={{ noWrap: true, display: 'block' }}
         secondaryTypographyProps={{ noWrap: true, display: 'block' }}
       />
@@ -91,7 +101,7 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
             <Chip color="secondary" label={blobCount} size="small" clickable />
           </Box>
         )}
-        <TypographyDateSince date={updatedAt} variant="caption" color="textSecondary" />
+        <TypographyDateSince date={lastEvent.serverEventCreatedAt} variant="caption" color="textSecondary" />
       </Box>
 
     </ListItem>

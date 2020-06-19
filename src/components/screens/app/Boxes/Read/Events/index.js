@@ -9,8 +9,6 @@ import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import BoxAvatar from 'components/dumb/Avatar/Box';
 import Title from 'components/dumb/Typography/Title';
 import Subtitle from 'components/dumb/Typography/Subtitle';
-import BoxMessageEvent from 'components/dumb/Event/Box/Message';
-import BoxInformationEvent from 'components/dumb/Event/Box/Information';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 
 import MenuIcon from '@material-ui/icons/Menu';
@@ -24,9 +22,8 @@ import useGeneratePathKeepingSearch from '@misakey/hooks/useGeneratePathKeepingS
 import isNil from '@misakey/helpers/isNil';
 
 import BoxesSchema from 'store/schemas/Boxes';
-import IdentitySchema from 'store/schemas/Identity';
 
-import EVENTS_TYPE from 'constants/app/boxes/events';
+import BoxEventsAccordingToType from 'components/smart/Box/Event';
 import BoxEventsFooter from './Footer';
 
 const CONTENT_SPACING = 2;
@@ -46,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, identity, t }) {
+function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
   const lastEventRef = useRef(null);
@@ -56,10 +53,6 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, identity, t }
   const routeDetails = useGeneratePathKeepingSearch(routes.boxes.read.details, { id: box.id });
 
   const { avatarUri, title, events: boxEvents, members } = useMemo(() => box, [box]);
-  const isFromCurrentUser = useCallback(
-    (eventIdentifier) => identity.identifier.value === eventIdentifier.value,
-    [identity.identifier],
-  );
 
   const eventsByDate = useGroupEventsByDate(boxEvents);
 
@@ -131,27 +124,9 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, identity, t }
           <Box display="flex" flexDirection="column" py={1} key={date}>
             <Typography component={Box} alignSelf="center">{date}</Typography>
             {
-              events.map((event) => {
-                if (EVENTS_TYPE.information.includes(event.type)) {
-                  return (
-                    <BoxInformationEvent
-                      key={event.id}
-                      event={event}
-                      getIsFromCurrentUser={isFromCurrentUser}
-                    />
-                  );
-                }
-                if (EVENTS_TYPE.message.includes(event.type)) {
-                  return (
-                    <BoxMessageEvent
-                      key={event.id}
-                      event={event}
-                      getIsFromCurrentUser={isFromCurrentUser}
-                    />
-                  );
-                }
-                return null;
-              })
+              events.map((event) => (
+                <BoxEventsAccordingToType event={event} />
+              ))
             }
             <div ref={lastEventRef} />
           </Box>
@@ -173,12 +148,7 @@ BoxEvents.propTypes = {
   isDrawerOpen: PropTypes.bool.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
-  identity: PropTypes.shape(IdentitySchema.propTypes),
   t: PropTypes.func.isRequired,
-};
-
-BoxEvents.defaultProps = {
-  identity: null,
 };
 
 export default withTranslation('boxes')(BoxEvents);

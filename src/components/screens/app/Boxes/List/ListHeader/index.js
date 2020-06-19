@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
@@ -7,10 +7,11 @@ import { withTranslation } from 'react-i18next';
 import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import TabsMenu from 'components/dumb/Tabs/DrawerMenu';
-import CreateBoxDialog from 'components/smart/Dialog/Boxes/Create';
 import UserAccountAvatar from 'components/smart/Avatar/CurrentUser';
 import AddIcon from '@material-ui/icons/Add';
+import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
 
+const IconButtonCreate = withDialogCreate(IconButtonAppBar);
 const ACCOUNT = 'account';
 
 const useStyles = makeStyles((theme) => ({
@@ -27,15 +28,10 @@ const useStyles = makeStyles((theme) => ({
 
 function ListHeader({ drawerWidth, getNextDrawerSearch }) {
   const classes = useStyles();
-  const [isDialogCreateOpen, setIsDialogCreateOpen] = useState(false);
 
   const openAccountDrawer = useCallback(
     () => getNextDrawerSearch(ACCOUNT, true),
     [getNextDrawerSearch],
-  );
-
-  const toggleIsDialogCreateOpen = useCallback(
-    () => { setIsDialogCreateOpen((current) => !current); }, [],
   );
 
   return (
@@ -50,15 +46,13 @@ function ListHeader({ drawerWidth, getNextDrawerSearch }) {
           <UserAccountAvatar classes={{ root: classes.avatar }} />
         </IconButtonAppBar>
         <TabsMenu />
-        <IconButtonAppBar
+        <IconButtonCreate
           aria-label="create-box"
           edge="end"
           color="secondary"
-          onClick={toggleIsDialogCreateOpen}
         >
           <AddIcon />
-        </IconButtonAppBar>
-        <CreateBoxDialog open={isDialogCreateOpen} onClose={toggleIsDialogCreateOpen} />
+        </IconButtonCreate>
       </AppBarDrawer>
     </>
   );

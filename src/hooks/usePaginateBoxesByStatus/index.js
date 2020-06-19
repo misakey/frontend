@@ -19,6 +19,7 @@ import { useMemo, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { normalize } from 'normalizr';
+import { ALL } from 'constants/app/boxes/statuses';
 
 // CONSTANTS
 const EMPTY_OBJ = {};
@@ -57,23 +58,27 @@ const getMissingIndexes = (paginatedMap) => Object.entries(paginatedMap)
 
 // HOOKS
 /**
- * @param {String} status one of possible box statuses
+ * @param {String} [status = 'all'] one of possible box statuses
  * @see src/constants/app/boxes/statuses.js
+ * @param {String} [search=null]
  * @returns {{byPagination: Object, itemCount: Number, loadMoreItems: Function}}
  * where:
  * - byPagination is a map of paginated elements
  * - itemCount is the total number of elements
  * - loadMoreItems is a function to call to ask for more items
  */
-export default (status, newSearch = null) => {
+export default (status = ALL, search = null) => {
   const handleHttpErrors = useHandleHttpErrors();
 
-  const hasSearch = useMemo(() => !isNil(newSearch), [newSearch]);
+  const hasSearch = useMemo(() => !isNil(search), [search]);
 
   // payload for API
   const payload = useMemo(
-    () => (hasSearch ? ({ search: newSearch, statuses: [status] }) : { statuses: [status] }),
-    [hasSearch, newSearch, status],
+    () => ({
+      ...(hasSearch ? { search } : {}),
+      ...(status !== ALL ? { statuses: [status] } : {}),
+    }),
+    [hasSearch, search, status],
   );
 
   // ACTIONS
@@ -129,10 +134,10 @@ export default (status, newSearch = null) => {
       const { entities, result } = normalized;
       return Promise.all([
         dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
-        dispatch(receivePaginationAction(offset, limit, result, newSearch)),
+        dispatch(receivePaginationAction(offset, limit, result, search)),
       ]);
     },
-    [dispatch, newSearch, receivePaginationAction],
+    [dispatch, search, receivePaginationAction],
   );
 
   // API data fetching:
@@ -164,7 +169,7 @@ export default (status, newSearch = null) => {
       const paginatedIds = Object.values(pickedIndexes)
         .filter((pickedIndex) => !isNil(pickedIndex));
       // if search has changed, we want to replace all data in bySearchPagination
-      if ((currentSearch !== newSearch) && (!isNil(currentSearch) || !isNil(newSearch))) {
+      if ((currentSearch !== search) && (!isNil(currentSearch) || !isNil(search))) {
         return onGetSearch(pagination);
       }
       // when asked data is already in store
@@ -175,7 +180,7 @@ export default (status, newSearch = null) => {
       // call API
       return get(makeOffsetLimitFromRange(missingIndexes));
     },
-    [byPagination, currentSearch, get, newSearch, onGetSearch],
+    [byPagination, currentSearch, get, search, onGetSearch],
   );
 
   // update itemCount whenever it is nil

@@ -6,6 +6,7 @@ import BoxEventsSchema from 'store/schemas/Boxes/Events';
 import { receiveEntities, updateEntities } from '@misakey/store/actions/entities';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import pluck from '@misakey/helpers/pluck';
+import { moveBackUpId } from 'store/reducers/userBoxes/pagination';
 
 // SELECTORS
 const getBoxSelector = createSelector(
@@ -25,7 +26,10 @@ export const getBoxById = (state, id) => getBoxSelector(state)(id);
 export const getBoxMembersIds = (state, id) => getBoxMembersIdsSelector(state)(id);
 
 export const addBoxEvents = (id, event) => (dispatch, getState) => {
-  const changes = { updatedAt: event.serverEventCreatedAt };
+  const changes = {
+    updatedAt: event.serverEventCreatedAt,
+    lastEvent: event,
+  };
   const actions = [];
 
   const currentBox = getBoxById(getState(), id);
@@ -37,6 +41,7 @@ export const addBoxEvents = (id, event) => (dispatch, getState) => {
 
   actions.push(receiveEntities(entities, mergeReceiveNoEmpty));
   actions.push(updateEntities([{ id, changes }], BoxesSchema));
+  actions.push(moveBackUpId(id));
 
   return Promise.all(actions.map(dispatch));
 };

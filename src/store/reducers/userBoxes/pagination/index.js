@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { createSelector } from 'reselect';
 
-import { OPEN, CLOSED } from 'constants/app/boxes/statuses';
+import { OPEN, CLOSED, ALL } from 'constants/app/boxes/statuses';
 
 import { makePaginationReducer } from 'store/reducers/helpers/pagination';
 
@@ -43,17 +43,28 @@ export const {
   reducer: closedReducer,
 } = makePaginationReducer(`USER_BOXES_${CLOSED}`, getState(CLOSED));
 
+export const {
+  actions: allActions,
+  actionCreators: allActionCreators,
+  selectors: allSelectors,
+  reducer: allReducer,
+} = makePaginationReducer(`USER_BOXES_${ALL}`, getState(ALL));
+
+
 export const actions = {
+  [ALL]: allActions,
   [OPEN]: openActions,
   [CLOSED]: closedActions,
 };
 
 export const actionCreators = {
+  [ALL]: allActionCreators,
   [OPEN]: openActionCreators,
   [CLOSED]: closedActionCreators,
 };
 
 export const selectors = {
+  [ALL]: allSelectors,
   [OPEN]: openSelectors,
   [CLOSED]: closedSelectors,
   isEmpty: createSelector(
@@ -79,9 +90,23 @@ export const updatePaginationsToStatus = (id, status) => (dispatch) => {
   ]);
 };
 
+export const moveBackUpId = (id, status = ALL) => (dispatch) => {
+  const { [status]: toStatusActionCreators } = actionCreators;
+
+  if (isNil(toStatusActionCreators)) {
+    return Promise.reject(new Error(`Unhandled status ${status}`));
+  }
+  const { addPaginatedId, removePaginatedId } = toStatusActionCreators;
+  return Promise.all([
+    dispatch(removePaginatedId(id)),
+    dispatch(addPaginatedId(id)),
+  ]);
+};
+
 // REDUCER
 export default {
   [REDUCER_KEY]: combineReducers({
+    [ALL]: allReducer,
     [OPEN]: openReducer,
     [CLOSED]: closedReducer,
   }),

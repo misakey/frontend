@@ -1,6 +1,18 @@
 {
   "list": {
-    "open": "Ouvre ton coffre-fort pour accéder à tous tes chats"
+    "open": "Ouvre ton coffre-fort pour accéder à tous tes chats",
+    "events": {
+      "preview": {
+        "message": {
+          "you": "Vous\u00a0: {{text}}",
+          "they": "{{displayName}}\u00a0: {{text}}"
+        }
+      }
+    },
+    "empty": {
+      "text": "Votre liste de box est vide",
+      "create": "Créer une box"
+    }
   },
   "read": {
     "actions": {
@@ -11,7 +23,7 @@
     },
     "events": {
       "information": {
-        "close": {
+        "lifecycle": {
           "they": "{{displayName}} a fermé la box",
           "you": "Vous avez fermé la boîte"
         },
@@ -23,7 +35,7 @@
     },
     "upload": {
       "dialog": {
-        "text": "Quel fichier souhaitez vous chiffrer ?",
+        "text": "Quel fichier souhaitez vous chiffrer\u00a0?",
         "label": "Nouveau fichier à chiffrer",
         "helperText": "Déposer le fichier que vous souhaitez chiffrer. <1>En savoir plus</1>",
         "errors": {

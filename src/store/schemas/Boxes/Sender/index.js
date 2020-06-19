@@ -11,13 +11,12 @@ const SenderSchema = {
   entity,
   collection,
   propTypes: {
-    id: PropTypes.string.isRequired,
     displayName: PropTypes.string.isRequired,
     avatarUrl: PropTypes.string,
     identifier: PropTypes.shape({
       value: PropTypes.string.isRequired,
       kind: PropTypes.string,
-    }),
+    }).isRequired,
   },
 };
 

@@ -12,7 +12,7 @@ import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWe
 // eslint-disable-next-line no-unused-vars
 const decryptText = (publicKeysWeCanDecryptFrom, encrypted, recipientPublicKey) => atob(encrypted);
 
-const BoxMessageTextEvent = ({ event, isFromCurrentUser, t, ...rest }) => {
+const BoxMessageTextEvent = ({ event, isFromCurrentUser, preview, t, ...rest }) => {
   const { sender, content: { encrypted, recipientPublicKey } } = useMemo(() => event, [event]);
   const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
   // @FIXME crypto
@@ -23,6 +23,13 @@ const BoxMessageTextEvent = ({ event, isFromCurrentUser, t, ...rest }) => {
     }
     return t('common:undecryptable');
   }, [canBeDecrypted, encrypted, publicKeysWeCanDecryptFrom, recipientPublicKey, t]);
+
+  if (preview) {
+    return t(
+      `boxes:list.events.preview.message.${isFromCurrentUser ? 'you' : 'they'}`,
+      { displayName: sender.displayName, text },
+    );
+  }
 
   return (
     <EventCard
@@ -37,11 +44,13 @@ const BoxMessageTextEvent = ({ event, isFromCurrentUser, t, ...rest }) => {
 BoxMessageTextEvent.propTypes = {
   isFromCurrentUser: PropTypes.bool,
   event: PropTypes.shape(EventSchema.propTypes).isRequired,
+  preview: PropTypes.bool,
   t: PropTypes.func.isRequired,
 };
 
 BoxMessageTextEvent.defaultProps = {
   isFromCurrentUser: false,
+  preview: false,
 };
 
 export default withTranslation('common')(BoxMessageTextEvent);

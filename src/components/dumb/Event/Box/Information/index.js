@@ -19,22 +19,22 @@ const useStyles = makeStyles((theme) => ({
 
 const BoxInformationEvent = ({
   event,
-  getIsFromCurrentUser,
+  isFromCurrentUser,
+  preview,
   t,
 }) => {
   const classes = useStyles();
   const { sender, type } = useMemo(() => event, [event]);
   const { displayName } = useMemo(() => sender, [sender]);
 
-  const isFromCurrentUser = useMemo(
-    () => getIsFromCurrentUser(sender.identifier),
-    [getIsFromCurrentUser, sender.identifier],
-  );
-
   const author = useMemo(
     () => (isFromCurrentUser ? 'you' : 'they'),
     [isFromCurrentUser],
   );
+
+  if (preview) {
+    return t(`boxes:read.events.information.${type}.${author}`, { displayName });
+  }
 
   return (
     <Typography variant="caption" color="textSecondary" className={classes.root}>
@@ -45,8 +45,14 @@ const BoxInformationEvent = ({
 
 BoxInformationEvent.propTypes = {
   event: PropTypes.shape(BoxEventsSchema.propTypes).isRequired,
-  getIsFromCurrentUser: PropTypes.func.isRequired,
+  isFromCurrentUser: PropTypes.bool,
   t: PropTypes.func.isRequired,
+  preview: PropTypes.bool,
+};
+
+BoxInformationEvent.defaultProps = {
+  preview: false,
+  isFromCurrentUser: false,
 };
 
 export default withTranslation('boxes')(BoxInformationEvent);

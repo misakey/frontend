@@ -30,7 +30,7 @@ import BoxControls from '@misakey/ui/Box/Controls';
 import FieldText from 'components/dumb/Form/Field/Text';
 import { boxNameFieldValidationSchema } from 'constants/validationSchemas/boxes';
 import { createBoxBuilder } from '@misakey/helpers/builder/boxes';
-import { OPEN } from 'constants/app/boxes/statuses';
+import { ALL } from 'constants/app/boxes/statuses';
 
 export const FIELD_NAME = 'name';
 export const INITIAL_VALUES = { [FIELD_NAME]: '' };
@@ -74,12 +74,12 @@ function CreateBoxDialog({
   const onSuccess = useCallback(
     // eslint-disable-next-line no-unused-vars
     async (newBox, secretKey) => {
-      const { id, status = OPEN } = newBox;
+      const { id } = newBox;
       const normalized = normalize(newBox, BoxesSchema.entity);
       const { entities } = normalized;
       await Promise.all([
         dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
-        dispatch(updatePaginationsToStatus(id, status)),
+        dispatch(updatePaginationsToStatus(id, ALL)),
         // @FIXME crypto: implement save key in vault
         // dispatch(addSecretKey(secretKey)),
       ]);
@@ -138,7 +138,7 @@ function CreateBoxDialog({
                   label={t('boxes:create.dialog.fields.name')}
                   prefix="boxes."
                   className={classes.inputField}
-                  // autoFocus
+                  autoFocus
                   id="BoxName"
                   type="text"
                   fullWidth={false}
