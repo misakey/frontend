@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { STEP } from 'constants/auth';
-import { EMAILED_CODE, PASSWORD, METHODS } from '@misakey/auth/constants/method';
+import { EMAILED_CODE, PREHASHED_PASSWORD, METHODS } from '@misakey/auth/constants/method';
 
 import prop from '@misakey/helpers/prop';
 
@@ -21,7 +21,7 @@ const DEFAULT_FIELDS = {
       },
     },
   },
-  [PASSWORD]: {
+  [PREHASHED_PASSWORD]: {
     [STEP.secret]: {
       component: FieldTextPasswordRevealable,
       variant: 'standard',
@@ -29,7 +29,7 @@ const DEFAULT_FIELDS = {
       autoFocus: true,
       inputProps: {
         'data-matomo-ignore': true,
-        id: `${PASSWORD}_${STEP.secret}`,
+        id: `${PREHASHED_PASSWORD}_${STEP.secret}`,
       },
     },
   },

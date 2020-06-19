@@ -1,4 +1,4 @@
-import { PASSWORD } from '@misakey/auth/constants/method';
+import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 
 import {
   SSO_RESET, SSO_UPDATE,
@@ -24,7 +24,7 @@ describe('testing sso actions', () => {
         },
         authnStep: {
           identityId: 'djifdrelktjklfs',
-          methodName: PASSWORD,
+          methodName: PREHASHED_PASSWORD,
         },
         loginChallenge: 'dsfopkzklf',
         loginHint: '',

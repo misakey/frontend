@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
 import { usePasswordPrompt, PasswordPromptProvider } from 'components/dumb/PasswordPrompt';
 
+import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 import hardPasswordChange from '@misakey/crypto/store/actions/hardPasswordChange';
 import { updateIdentity } from '@misakey/auth/store/actions/auth';
 import IdentitySchema from 'store/schemas/Identity';
@@ -28,14 +29,22 @@ const withDialogPassword = (Component) => {
     identity,
     identityId,
     dialogProps,
-    dispatchHardPasswordChange,
-    dispatchUpdateIdentity,
     t,
     ...props
   }, ref) => {
     const { enqueueSnackbar } = useSnackbar();
     const handleHttpErrors = useHandleHttpErrors();
     const dispatch = useDispatch();
+
+    const dispatchHardPasswordChange = useCallback(
+      (newPassword) => dispatch(hardPasswordChange(newPassword)),
+      [dispatch],
+    );
+
+    const dispatchUpdateIdentity = useCallback(
+      (newIdentity) => dispatch(updateIdentity(newIdentity)),
+      [dispatch],
+    );
 
     const [open, setOpen] = useState(false);
     const openPasswordPrompt = usePasswordPrompt();
@@ -74,6 +83,7 @@ const withDialogPassword = (Component) => {
       [setOpen],
     );
 
+    // @FIXME could be a prop to have a more generic component
     const onPasswordSubmit = useCallback(
       (password) => createAccount({
         password,
@@ -87,7 +97,7 @@ const withDialogPassword = (Component) => {
     );
 
     const onSubmit = useCallback(
-      ({ password }) => onPasswordSubmit(password)
+      ({ [PREHASHED_PASSWORD]: password }) => onPasswordSubmit(password)
         .then(() => {
           const text = t('account:password.success');
           enqueueSnackbar(text, { variant: 'success' });
@@ -125,9 +135,6 @@ const withDialogPassword = (Component) => {
     // withIdentity
     identity: PropTypes.shape(IdentitySchema.propTypes),
     identityId: PropTypes.string,
-    // CONNECT
-    dispatchHardPasswordChange: PropTypes.func.isRequired,
-    dispatchUpdateIdentity: PropTypes.func.isRequired,
   };
 
   Wrapper.defaultProps = {
@@ -139,13 +146,7 @@ const withDialogPassword = (Component) => {
 
   Wrapper = withIdentity(Wrapper);
 
-  // CONNECT
-  const mapDispatchToProps = (dispatch) => ({
-    dispatchHardPasswordChange: (newPassword) => dispatch(hardPasswordChange(newPassword)),
-    dispatchUpdateIdentity: (identity) => dispatch(updateIdentity(identity)),
-  });
-
-  Wrapper = connect(null, mapDispatchToProps, null, { forwardRef: true })(withTranslation('account')(Wrapper));
+  Wrapper = withTranslation('account')(Wrapper);
 
   return ({ ...props }) => (
     <PasswordPromptProvider>

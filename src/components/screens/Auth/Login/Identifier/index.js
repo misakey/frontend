@@ -5,14 +5,19 @@ import { withTranslation, Trans } from 'react-i18next';
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 
-import { STEP, INITIAL_VALUES } from 'constants/auth';
+import { STEP, INITIAL_VALUES, ERROR_KEYS } from 'constants/auth';
 import routes from 'routes';
 import { identifierValidationSchema } from 'constants/validationSchemas/auth';
 import { screenAuthSetIdentifier } from 'store/actions/screens/auth';
 import { ssoUpdate } from '@misakey/auth/store/actions/sso';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
 
+import compose from '@misakey/helpers/compose';
+import head from '@misakey/helpers/head';
+import isNil from '@misakey/helpers/isNil';
+import props from '@misakey/helpers/props';
 import { requireAuthable } from '@misakey/auth/builder/identities';
+import { getDetails } from '@misakey/helpers/apiError';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -25,6 +30,14 @@ import Box from '@material-ui/core/Box';
 
 // CONSTANTS
 const CURRENT_STEP = STEP.identifier;
+
+// HELPERS
+const getIdentifierError = compose(
+  head,
+  (errors) => errors.filter((error) => !isNil(error)),
+  props(ERROR_KEYS[CURRENT_STEP]),
+);
+
 
 // COMPONENTS
 const AuthLoginIdentifier = ({
@@ -47,7 +60,7 @@ const AuthLoginIdentifier = ({
   );
 
   const onSubmit = useCallback(
-    ({ identifier }) => requireAuthable(loginChallenge, identifier)
+    ({ identifier }, { setFieldError }) => requireAuthable(loginChallenge, identifier)
       .then((response) => Promise.all([
         dispatchSsoUpdate(response),
         dispatchSetIdentifier(identifier),
@@ -58,8 +71,17 @@ const AuthLoginIdentifier = ({
           search,
         });
       })
-      .catch(handleHttpErrors),
-    [loginChallenge, handleHttpErrors, dispatchSsoUpdate, dispatchSetIdentifier, push, search],
+      .catch((e) => {
+        const details = getDetails(e);
+        const identifierError = getIdentifierError(details);
+
+        if (!isNil(identifierError)) {
+          setFieldError(CURRENT_STEP, identifierError);
+        } else {
+          handleHttpErrors(e);
+        }
+      }),
+    [loginChallenge, dispatchSsoUpdate, dispatchSetIdentifier, push, search, handleHttpErrors],
   );
 
   const primary = useMemo(() => ({

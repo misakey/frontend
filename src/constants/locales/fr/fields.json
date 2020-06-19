@@ -58,6 +58,7 @@
   },
   "emailed_code": {
     "label": "Code de confirmation",
+    "helperText": "Je saisis le code reçu par e-mail",
     "error": {
       "expired": "Le code a expiré. Je dois en demander un nouveau",
       "invalid": "Le code saisi n'est pas le bon",
@@ -65,7 +66,8 @@
     }
   },
   "emailed_code_secret": {
-    "label": "Code de confirmation",
+    "placeholder": "123456",
+    "helperText": "Je saisis le code reçu par e-mail",
     "error": {
       "expired": "Le code a expiré. Je dois en demander un nouveau",
       "invalid": "Le code de confirmation est incorrect",
@@ -117,7 +119,7 @@
     }
   },
   "email_identifier": {
-    "label": "Email",
+    "label": "",
     "placeholder": "rose.flamingo@misakey.com",
     "error": {
       "required": "Oops, vous avez oublié de saisir un identifiant",
@@ -189,9 +191,8 @@
       "invalid": "Ce retour est incorrect"
     }
   },
-  "password": {
+  "prehashed_password": {
     "label": "Mot de passe",
-    "placeholder": "********",
     "action": "Editer",
     "helperText": "J'utilise au moins huit caractères",
     "error": {
@@ -221,9 +222,9 @@
       "malformed": "Le mot de passe doit contenir au moins 8 caractères"
     }
   },
-  "password_secret": {
-    "label": "Mot de passe",
-    "placeholder": "********",
+  "prehashed_password_secret": {
+    "label": "",
+    "placeholder": "Super Password",
     "error": {
       "invalid": "Le mot de passe est erroné"
     }

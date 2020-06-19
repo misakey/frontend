@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from 'react';
 
-import { EMAILED_CODE, PASSWORD } from '@misakey/auth/constants/method';
+import { EMAILED_CODE, PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 
 import { screenAuthSetIdentifier, screenAuthSetPublics } from 'store/actions/screens/auth';
 import routes from 'routes';
@@ -27,7 +27,7 @@ export const useSecretContentAction = (methodName, t, renewConfirmationCode) => 
         },
         textKey: 'auth:login.form.action.getANewCode.button',
       },
-      [PASSWORD]: {
+      [PREHASHED_PASSWORD]: {
         buttonProps: {
           standing: BUTTON_STANDINGS.TEXT,
           to: routes.auth.forgotPassword,

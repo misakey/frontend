@@ -26,7 +26,7 @@ import useAsync from '@misakey/hooks/useAsync';
 
 import resetPassword from '@misakey/auth/builder/resetPassword';
 import loginAuthStep from '@misakey/auth/builder/loginAuthStep';
-import fetchPwdHashParams from '@misakey/auth/builder/fetchPwdHashParams';
+import { fetchPwdHashParams } from '@misakey/auth/builder/accounts';
 
 import Redirect from 'components/dumb/Redirect';
 import FormCardAuth from 'components/dumb/Form/Card/Auth';

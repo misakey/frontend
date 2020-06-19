@@ -19,17 +19,15 @@ import compose from '@misakey/helpers/compose';
 import head from '@misakey/helpers/head';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import props from '@misakey/helpers/props';
-import path from '@misakey/helpers/path';
 import isNil from '@misakey/helpers/isNil';
 import { getDetails } from '@misakey/helpers/apiError';
 import log from '@misakey/helpers/log';
+import loginAuthStep from '@misakey/auth/builder/loginAuthStep';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useSecretContentAction, useClearUser } from '@misakey/hooks/useActions/loginSecret';
 import useRenewAuthStep from '@misakey/auth/hooks/useRenewAuthStep';
-import useTheme from '@material-ui/core/styles/useTheme';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Box from '@material-ui/core/Box';
 import DefaultSplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
@@ -40,8 +38,6 @@ import ChipUser from 'components/dumb/Chip/User';
 import Title from 'components/dumb/Typography/Title';
 import BoxControls from '@misakey/ui/Box/Controls';
 
-import loginAuthStep from '@misakey/auth/builder/loginAuthStep';
-
 // CONSTANTS
 const { conflict } = errorTypes;
 const CURRENT_STEP = STEP.secret;
@@ -50,7 +46,7 @@ const CURRENT_STEP = STEP.secret;
 const getSecretError = compose(
   head,
   (errors) => errors.filter((error) => !isNil(error)),
-  props(ERROR_KEYS[STEP.secret]),
+  props(ERROR_KEYS[CURRENT_STEP]),
 );
 
 // HOOKS
@@ -69,8 +65,6 @@ const AuthLoginSecret = ({
   loginChallenge,
   t,
 }) => {
-  const theme = useTheme();
-  const isXsLayout = useMediaQuery(theme.breakpoints.only('xs'));
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const handleHttpErrors = useHandleHttpErrors();
@@ -79,7 +73,7 @@ const AuthLoginSecret = ({
 
   const initialValues = useMemo(() => INITIAL_VALUES[CURRENT_STEP], []);
 
-  const { methodName, identityId } = useMemo(
+  const { methodName, identityId, metadata: pwdHashParams } = useMemo(
     () => authnStep || {},
     [authnStep],
   );
@@ -98,8 +92,6 @@ const AuthLoginSecret = ({
     ({ secret }, { setFieldError, setSubmitting, setFieldValue }) => {
       setRedirectTo(null);
 
-      const pwdHashParams = path(['argon2Params'], authnStep);
-
       loginAuthStep({
         loginChallenge,
         identityId,
@@ -116,9 +108,9 @@ const AuthLoginSecret = ({
           const secretError = getSecretError(details);
           if (!isNil(secretError)) {
             if (methodName === EMAILED_CODE) {
-              setFieldValue(STEP.secret, '');
+              setFieldValue(CURRENT_STEP, '');
             }
-            setFieldError(STEP.secret, secretError);
+            setFieldError(CURRENT_STEP, secretError);
           } else if (details.toDelete === conflict) {
             // @FIXME should we remove that part as it's not implemented in latest version ?
             const text = (
@@ -145,7 +137,7 @@ const AuthLoginSecret = ({
         })
         .finally(() => { setSubmitting(false); });
     },
-    [loginChallenge, identityId, methodName, authnStep, enqueueSnackbar, handleHttpErrors],
+    [loginChallenge, identityId, methodName, pwdHashParams, enqueueSnackbar, handleHttpErrors],
   );
 
   const onRenewAuthStep = useRenewAuthStep({ loginChallenge, identityId, methodName });
@@ -197,8 +189,8 @@ const AuthLoginSecret = ({
             component={Trans}
             i18nKey={`auth:login.secret.${methodName}.title`}
           >
-            <Box display="flex" flexWrap="nowrap">Quel est le code de confirmation envoyé à </Box>
-            <Box ml={1} display="flex" flexWrap="nowrap">
+            <Box mr={1} display="flex" flexWrap="nowrap">Quel est le code de confirmation envoyé à </Box>
+            <Box display="flex" flexWrap="nowrap">
               <ChipUser
                 {...chipActions}
                 {...userPublicData}
@@ -209,17 +201,14 @@ const AuthLoginSecret = ({
         </Title>
         <Box justifyContent="flex-start" flexDirection="column" display="flex" width="100%">
           <SecretFormFields methodName={methodName} />
-          {!isXsLayout && (
-            <Button
-              classes={{ buttonRoot: classes.buttonRoot }}
-              {...signInFormContentAction}
-            />
-          )}
+          <Button
+            classes={{ buttonRoot: classes.buttonRoot }}
+            {...signInFormContentAction}
+          />
         </Box>
         <BoxControls
           formik
           primary={primary}
-          secondary={isXsLayout ? signInFormContentAction : null}
         />
       </Box>
     </Formik>

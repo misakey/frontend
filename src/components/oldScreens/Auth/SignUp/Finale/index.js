@@ -17,7 +17,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import fetchPwdHashParams from '@misakey/auth/builder/fetchPwdHashParams';
+import { fetchPwdHashParams } from '@misakey/auth/builder/accounts';
 import initAuth from '@misakey/auth/builder/initAuth';
 import loginAuthStep from '@misakey/auth/builder/loginAuthStep';
 

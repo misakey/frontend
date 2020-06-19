@@ -1,19 +1,18 @@
 import React from 'react';
-import { Field } from 'formik';
 import PropTypes from 'prop-types';
-import map from '@misakey/helpers/map';
-import { withTranslation } from 'react-i18next';
 
+import map from '@misakey/helpers/map';
+
+import FormField from '@misakey/ui/Form/Field';
+
+// COMPONENTS
 const FormFields = ({
-  defaultFields, fields, prefix, t,
+  defaultFields, fields, prefix,
 }) => map(fields, (props, name) => (
-  <Field
+  <FormField
+    key={`${prefix}${name}`}
     name={name}
     prefix={prefix}
-    key={[`fields:${prefix}${name}`, `fields:${name}`]}
-    label={t([`fields:${prefix}${name}.label`, `fields:${name}.label`])}
-    placeholder={t([`fields:${prefix}${name}.placeholder`, `fields:${name}.placeholder`], '')}
-    helperText={t([`fields:${prefix}${name}.helperText`, `fields:${name}.helperText`], '')}
     {...defaultFields[name]}
     {...props}
   />
@@ -23,7 +22,6 @@ FormFields.propTypes = {
   defaultFields: PropTypes.objectOf(PropTypes.object),
   fields: PropTypes.objectOf(PropTypes.object),
   prefix: PropTypes.string,
-  t: PropTypes.func.isRequired,
 };
 
 FormFields.defaultProps = {
@@ -32,7 +30,7 @@ FormFields.defaultProps = {
   prefix: '',
 };
 
-export default withTranslation(['fields'])(FormFields);
+export default FormFields;
 
 export const FIELD_PROPTYPES = PropTypes.shape({
   component: PropTypes.function,

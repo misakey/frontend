@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 
 import { METHODS } from '@misakey/auth/constants/method';
-
+import { PROP_TYPES as PWD_HASH_PROP_TYPES } from '@misakey/auth/passwordHashing/constants';
 import head from '@misakey/helpers/head';
 import isArray from '@misakey/helpers/isArray';
 import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
@@ -15,6 +15,7 @@ export const PROP_TYPES = {
     name: PropTypes.string,
     logoUri: PropTypes.string,
   }),
+  // not an identity schema because we didn't pass auth flow yet
   identity: PropTypes.shape({
     displayName: PropTypes.string,
     avatarUrl: PropTypes.string,
@@ -22,6 +23,7 @@ export const PROP_TYPES = {
   authnStep: PropTypes.shape({
     identityId: PropTypes.string,
     methodName: PropTypes.oneOf(METHODS),
+    metadata: PropTypes.shape(PWD_HASH_PROP_TYPES),
   }),
   loginChallenge: PropTypes.string,
   loginHint: PropTypes.string,

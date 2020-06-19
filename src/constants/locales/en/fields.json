@@ -21,6 +21,7 @@
   },
   "emailed_code": {
     "label": "Confirmation code",
+    "helperText": "Type code received by email",
     "error": {
       "expired": "Code has expired. I can ask for a new one",
       "invalid": "Incorrect confirmation code",
@@ -28,9 +29,10 @@
     }
   },
   "emailed_code_secret": {
-    "label": "Confirmation code",
+    "placeholder": "123456",
+    "helperText": "Type code received by email",
     "error": {
-      "expired": "Code is expired. I can ask for a new one",
+      "expired": "Code has expired. I can ask for a new one",
       "invalid": "Incorrect confirmation code",
       "malformed": "Confirmation code should contain 6 digits"
     }
@@ -43,7 +45,7 @@
     }
   },
   "email_identifier": {
-    "label": "Email",
+    "label": "",
     "placeholder": "rose.flamingo@misakey.com",
     "error": {
       "required": "Oops, you forgot to enter an identifier",
@@ -59,7 +61,7 @@
       }
     }
   },
-  "password": {
+  "prehashed_password": {
     "label": "Password",
     "placeholder": "********",
     "action": "Edit",
@@ -91,9 +93,9 @@
       "malformed": "Password should be at least 8 characters long"
     }
   },
-  "password_secret": {
-    "label": "Password",
-    "placeholder": "********",
+  "prehashed_password_secret": {
+    "label": "",
+    "placeholder": "Super Password",
     "error": {
       "invalid": "Wrong password"
     }

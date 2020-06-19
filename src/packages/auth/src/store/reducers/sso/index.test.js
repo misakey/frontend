@@ -1,4 +1,4 @@
-import { EMAILED_CODE, PASSWORD } from '@misakey/auth/constants/method';
+import { EMAILED_CODE, PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 import { SSO_RESET, SSO_UPDATE } from '../../actions/sso';
 
 import reducer, { INITIAL_STATE } from '.';
@@ -51,7 +51,7 @@ describe('testing sso reducer', () => {
       },
       authnStep: {
         identityId: 'djifdrelktjklfs',
-        methodName: PASSWORD,
+        methodName: PREHASHED_PASSWORD,
       },
       loginChallenge: 'dsfopkzklf',
       loginHint: '',

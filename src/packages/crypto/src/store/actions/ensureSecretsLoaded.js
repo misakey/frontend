@@ -30,8 +30,8 @@ export default function ensureSecretsLoaded({ password, openPasswordPrompt }) {
       return;
     }
 
-    const identityId = store.auth.identity.id;
-    const encryptedSecretsBackup = await getEncryptedSecretsBackup(identityId);
+    const { accountId } = store.auth.identity;
+    const encryptedSecretsBackup = await getEncryptedSecretsBackup(accountId);
 
     const tryPassword = bindTryPassword(encryptedSecretsBackup, dispatch);
 

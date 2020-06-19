@@ -5,14 +5,16 @@ import { withTranslation } from 'react-i18next';
 
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import { openVaultValidationSchema } from 'constants/validationSchemas/auth';
+import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 
 import resolveAny from '@misakey/helpers/resolveAny';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 
-import { Form, Field } from 'formik';
+import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
+import FormField from '@misakey/ui/Form/Field';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -23,10 +25,9 @@ import BoxControls from '@misakey/ui/Box/Controls';
 
 // CONSTANTS
 const { invalid } = errorTypes;
-const PASSWORD_KEY = 'password';
 
 const INITIAL_VALUES = {
-  [PASSWORD_KEY]: '',
+  [PREHASHED_PASSWORD]: '',
 };
 
 // COMPONENTS
@@ -41,13 +42,13 @@ const DialogPassword = ({
 
   // Used with PromptPasswordProvider
   const initialErrors = useMemo(
-    () => ({ [PASSWORD_KEY]: initialPasswordError }), [initialPasswordError],
+    () => ({ [PREHASHED_PASSWORD]: initialPasswordError }), [initialPasswordError],
   );
 
   const handleSubmit = useCallback(
     (values, { setFieldError }) => resolveAny(onSubmit(values))
       .catch(() => {
-        setFieldError(PASSWORD_KEY, invalid);
+        setFieldError(PREHASHED_PASSWORD, invalid);
       }),
     [onSubmit],
   );
@@ -63,7 +64,7 @@ const DialogPassword = ({
         onSubmit={handleSubmit}
         initialValues={INITIAL_VALUES}
         initialErrors={initialErrors}
-        validationSchema={openVaultValidationSchema.password}
+        validationSchema={openVaultValidationSchema}
         {...formikProps}
       >
         <Form>
@@ -74,10 +75,8 @@ const DialogPassword = ({
             <DialogContentText id="alert-dialog-description">
               {contentText}
             </DialogContentText>
-            <Field
-              name="password"
-              label={t('fields:password.label')}
-              placeholder={t('fields:password.placeholder')}
+            <FormField
+              name={PREHASHED_PASSWORD}
               component={FieldTextPasswordRevealable}
               inputProps={{ 'data-matomo-ignore': true }}
               autoFocus

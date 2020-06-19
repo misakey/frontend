@@ -19,8 +19,8 @@ const OUTLINED = 'outlined';
 const STANDARD = 'standard';
 
 // copied padding of outlined input
-const LETTER_WIDTH = '1rem';
 const LETTER_SPACING = '2rem';
+const LETTER_SIZE = '1ch';
 
 const XS_LETTER_SPACING = '1.5rem';
 
@@ -31,28 +31,21 @@ const repeatUnderline = (length) => repeat(UNDERLINE_CHAR, length);
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  textFieldRoot: ({ length }) => ({
-    width: `calc(${length} * (${LETTER_WIDTH} + ${LETTER_SPACING}) + ${LETTER_SPACING} + .5rem)`,
-    [theme.breakpoints.only('xs')]: {
-      width: `calc(${length} * (${LETTER_WIDTH} + ${XS_LETTER_SPACING}) + ${XS_LETTER_SPACING} + .5rem)`,
-    },
-  }),
-  formHelperTextRoot: {
-    alignSelf: 'center',
-  },
-  inputInput: ({ variant }) => ({
+  inputInput: ({ length, variant }) => ({
     boxSizing: 'border-box',
     height: 'auto',
     // removes padding right, bottom padding to insert ::before element instead
     padding: theme.spacing(2, 0, 0, variant === STANDARD ? 0 : 1.5),
     // arbitrary choice of typography
-    ...theme.typography.h5,
+    ...theme.typography.h3,
     // @FIXME use a more fancy font? We simply need a monospaced font
     // Roboto Mono has issues with monospace
     fontFamily: 'monospace',
     letterSpacing: LETTER_SPACING,
+    width: `calc(${length} * (${LETTER_SIZE} + ${LETTER_SPACING}) + ${LETTER_SIZE})`,
     [theme.breakpoints.only('xs')]: {
       letterSpacing: XS_LETTER_SPACING,
+      width: `calc(${length} * (${LETTER_SIZE} + ${XS_LETTER_SPACING}) + ${LETTER_SIZE})`,
     },
   }),
   inputRoot: ({ variant, content }) => ({
@@ -68,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
       // borderBottom: 'none !important', // force behaviour when variant standard
       content: `'${content}'`,
       // arbitrary choice of typography
-      ...theme.typography.h5,
+      ...theme.typography.h3,
       fontFamily: 'monospace',
       padding: variant === STANDARD ? theme.spacing(0) : theme.spacing(0, 1.5),
       letterSpacing: LETTER_SPACING,
@@ -78,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
       // forcing lineHeight 0 for display purpose
       lineHeight: 0,
       // height comes from padding of outlined input
-      height: variant === OUTLINED ? '18.5px' : '18.5px',
+      height: LETTER_SIZE,
       // extra margin to make the text caret visible inside input even when full
       marginRight: variant === OUTLINED ? '0.25rem' : null,
     },
@@ -88,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const FieldCode = ({
   className, displayError, errorKeys, field, form: { setFieldValue, setFieldTouched },
-  helperText, label, inputProps,
+  helperText, inputProps,
   variant,
   t, length,
   ...rest
@@ -105,7 +98,6 @@ const FieldCode = ({
   const classes = useStyles({ length, content, variant });
 
   const { name } = field;
-  const defaultLabel = useMemo(() => t(`fields:${name}.label`), [t, name]);
 
   const onChange = useCallback(
     (event) => {
@@ -125,8 +117,7 @@ const FieldCode = ({
     <TextField
       margin="normal"
       variant={variant}
-      label={label || defaultLabel}
-      className={clsx(className, classes.textFieldRoot)}
+      className={clsx(className)}
       inputProps={{
         type: 'text',
         maxLength: length,
@@ -145,11 +136,6 @@ const FieldCode = ({
         disableUnderline: !isOutlined,
         onChange,
       }}
-      FormHelperTextProps={{
-        classes: {
-          root: classes.formHelperTextRoot,
-        },
-      }}
       {...field}
       {...omit(rest, ['i18n', 'tReady', 'prefix'])}
       error={displayError}
@@ -167,7 +153,6 @@ FieldCode.propTypes = {
     setFieldTouched: PropTypes.func.isRequired,
     setFieldValue: PropTypes.func.isRequired,
   }).isRequired,
-  label: PropTypes.string,
   helperText: PropTypes.string,
   length: PropTypes.number,
   inputProps: PropTypes.object,
@@ -177,7 +162,6 @@ FieldCode.propTypes = {
 
 FieldCode.defaultProps = {
   className: '',
-  label: null,
   helperText: '',
   length: 6,
   inputProps: {},

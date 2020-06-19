@@ -1,15 +1,17 @@
-import { SECLEVEL_METHOD, EMAILED_CODE, METHOD_METADATA_KEY } from '@misakey/auth/constants/method';
+import { SECLEVEL_METHOD, EMAILED_CODE, PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
+
+import hashPassword from '@misakey/auth/passwordHashing/hashPassword';
 
 export const makeSeclevelMethod = (seclevel) => SECLEVEL_METHOD[seclevel] || EMAILED_CODE;
 
-export const makeMethodMetadata = (value, method) => {
-  const metadataKey = METHOD_METADATA_KEY[method];
-  return {
-    [metadataKey]: value,
-  };
-};
+export const makeMetadata = ({ secret, methodName, pwdHashParams }) => {
+  if (methodName === EMAILED_CODE) {
+    return { code: secret };
+  }
 
-export const makeSeclevelMetadata = (value, seclevel) => {
-  const method = makeSeclevelMethod(seclevel);
-  return makeMethodMetadata(value, method);
+  if (methodName === PREHASHED_PASSWORD) {
+    return hashPassword({ password: secret, pwdHashParams });
+  }
+
+  throw new Error(`unknown methodName ${methodName}`);
 };
