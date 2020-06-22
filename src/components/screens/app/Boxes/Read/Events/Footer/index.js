@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
@@ -25,6 +25,7 @@ import { addBoxEvents } from 'store/reducers/box';
 
 import { MSG_TXT } from 'constants/app/boxes/events';
 import encryptText from '@misakey/crypto/box/encryptText';
+import { CLOSED } from 'constants/app/boxes/statuses';
 import FooterMenuActions from './Menu';
 
 const BOX_PADDING_SPACING = 1;
@@ -41,8 +42,11 @@ const useStyles = makeStyles((theme) => ({
 function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange, t }) {
   const classes = useStyles({ drawerWidth, isDrawerOpen });
   const [isMenuActionOpen, setIsMenuActionOpen] = useState(false);
-  const [value, setValue] = React.useState();
+  const [value, setValue] = useState();
   const dispatch = useDispatch();
+
+  const { lifecycle, id, publicKey } = useMemo(() => box || {}, [box]);
+  const disabled = useMemo(() => lifecycle === CLOSED, [lifecycle]);
 
   const anchorRef = useRef(null);
   const footerRef = (ref) => {
@@ -64,20 +68,20 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
   const sendMessage = useCallback(
     () => {
       if (!isEmpty(value)) {
-        createBoxEventBuilder(box.id, {
+        createBoxEventBuilder(id, {
           type: MSG_TXT,
           content: {
-            encrypted: encryptText(value, box.publicKey),
-            recipientPublicKey: box.publicKey,
+            encrypted: encryptText(value, publicKey),
+            recipientPublicKey: publicKey,
           },
         })
           .then((response) => {
             setValue('');
-            dispatch(addBoxEvents(box.id, response));
+            dispatch(addBoxEvents(id, response));
           });
       }
     },
-    [box.id, box.publicKey, dispatch, value],
+    [dispatch, id, publicKey, value],
   );
 
   return (
@@ -105,7 +109,12 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
         ) : (
           <>
             <Tooltip title={t('boxes:read.actions.more')}>
-              <IconButton aria-label="menu-list-actions" color="secondary" onClick={onOpen}>
+              <IconButton
+                aria-label="menu-list-actions"
+                color="secondary"
+                onClick={onOpen}
+                disabled={disabled}
+              >
                 <AddIcon />
               </IconButton>
             </Tooltip>
@@ -119,9 +128,15 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
               fullWidth
               value={value}
               onChange={onChange}
+              disabled={disabled}
             />
             <Tooltip title={t('boxes:read.actions.send')}>
-              <IconButton aria-label="menu-list-actions" color="secondary" onClick={sendMessage}>
+              <IconButton
+                aria-label="menu-list-actions"
+                color="secondary"
+                onClick={sendMessage}
+                disabled={disabled}
+              >
                 <SendIcon />
               </IconButton>
             </Tooltip>

@@ -15,6 +15,9 @@
     }
   },
   "read": {
+    "closed": {
+      "info": "{{displayName}} a fermé la box «\u00a0{{title}}\u00a0» le {{date}}."
+    },
     "actions": {
       "upload": "Envoyer un fichier",
       "confirmIdentity": "Confirmer mon identité",
@@ -24,12 +27,18 @@
     "events": {
       "information": {
         "lifecycle": {
-          "they": "{{displayName}} a fermé la box",
-          "you": "Vous avez fermé la boîte"
+          "closed": {
+            "they": "{{displayName}} a fermé la box",
+            "you": "Vous avez fermé la box"
+          },
+          "open": {
+            "they": "{{displayName}} a ré-ouvert la box",
+            "you": "Vous avez ré-ouvert la box"
+          }
         },
         "create": {
-          "they": "{{displayName}} a créé la box",
-          "you": "Vous avez créé la box"
+          "they": "{{displayName}} a créé la box «\u00a0{{title}}\u00a0»",
+          "you": "Vous avez créé la box «\u00a0{{title}}\u00a0»"
         }
       }
     },
@@ -65,7 +74,15 @@
           "count_plural": "{{count}} membres"
         },
         "createdAt": "Créée le {{date}}",
-        "shareLink": "Obtenir le lien de partage"
+        "shareLink": "Obtenir le lien de partage",
+        "close": {
+          "primary": "Fermer la box",
+          "secondary": "En fermant la box, les autres membres n'auront plus accès à son contenu.",
+          "confirmDialog": {
+            "text": "Voulez-vous vraiment fermer cette box\u00a0?\nLes autres membres n'auront plus accès à son contenu et vous ne pourrez plus la réouvrir.\nEn tant que créateur·trice, vous aurez toujours accès au contenu."
+          }
+
+        }
       }
     }
   },

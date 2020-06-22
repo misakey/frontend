@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
+import { LIFECYCLE } from 'constants/app/boxes/events';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,7 +25,7 @@ const BoxInformationEvent = ({
   t,
 }) => {
   const classes = useStyles();
-  const { sender, type } = useMemo(() => event, [event]);
+  const { sender, type, content } = useMemo(() => event, [event]);
   const { displayName } = useMemo(() => sender, [sender]);
 
   const author = useMemo(
@@ -32,13 +33,22 @@ const BoxInformationEvent = ({
     [isFromCurrentUser],
   );
 
+  const text = useMemo(
+    () => {
+      if (type === LIFECYCLE) {
+        return t(`boxes:read.events.information.lifecycle.${content.state}.${author}`, { displayName });
+      }
+      return t(`boxes:read.events.information.${type}.${author}`, { displayName, ...content });
+    }, [author, content, displayName, t, type],
+  );
+
   if (preview) {
-    return t(`boxes:read.events.information.${type}.${author}`, { displayName });
+    return text;
   }
 
   return (
     <Typography variant="caption" color="textSecondary" className={classes.root}>
-      {t(`boxes:read.events.information.${type}.${author}`, { displayName })}
+      {text}
     </Typography>
   );
 };

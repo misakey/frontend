@@ -7,6 +7,7 @@ import { receiveEntities, updateEntities } from '@misakey/store/actions/entities
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import pluck from '@misakey/helpers/pluck';
 import { moveBackUpId } from 'store/reducers/userBoxes/pagination';
+import { LIFECYCLE } from 'constants/app/boxes/events';
 
 // SELECTORS
 const getBoxSelector = createSelector(
@@ -27,8 +28,8 @@ export const getBoxMembersIds = (state, id) => getBoxMembersIdsSelector(state)(i
 
 export const addBoxEvents = (id, event) => (dispatch, getState) => {
   const changes = {
-    updatedAt: event.serverEventCreatedAt,
     lastEvent: event,
+    ...(event.type === LIFECYCLE ? { lifecycle: event.content.state } : {}),
   };
   const actions = [];
 

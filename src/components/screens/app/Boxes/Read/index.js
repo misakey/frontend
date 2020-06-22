@@ -1,25 +1,43 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import routes from 'routes';
 
 import BoxesSchema from 'store/schemas/Boxes';
-import IdentitySchema from 'store/schemas/Identity';
 
-import withIdentity from 'components/smart/withIdentity';
 import withBoxDetails from 'components/smart/withBoxDetails';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 
+import { CLOSED } from 'constants/app/boxes/statuses';
+
+import BoxClosed from './Closed';
 import BoxDetails from './Details';
 import BoxEvents from './Events';
 import BoxFiles from './Files';
 
 
 function BoxRead({
-  match, toggleDrawer, isDrawerOpen, drawerWidth, box, isFetching, identity, isFetchingIdentity,
+  match, toggleDrawer, isDrawerOpen, drawerWidth, box, isFetching, belongsToCurrentUser,
 }) {
-  if (isFetching.box || isFetchingIdentity || identity === null) {
+  const { lifecycle } = useMemo(() => box, [box]);
+  const shouldDisplayContent = useMemo(
+    () => lifecycle === CLOSED && !belongsToCurrentUser,
+    [belongsToCurrentUser, lifecycle],
+  );
+
+  if (isFetching.box || isFetching.identity) {
     return <SplashScreenWithTranslation />;
+  }
+
+  if (shouldDisplayContent) {
+    return (
+      <BoxClosed
+        box={box}
+        toggleDrawer={toggleDrawer}
+        isDrawerOpen={isDrawerOpen}
+        drawerWidth={drawerWidth}
+      />
+    );
   }
 
   return (
@@ -27,7 +45,13 @@ function BoxRead({
       <Switch>
         <Route
           path={routes.boxes.read.details}
-          render={() => <BoxDetails box={box} drawerWidth={drawerWidth} />}
+          render={() => (
+            <BoxDetails
+              box={box}
+              drawerWidth={drawerWidth}
+              belongsToCurrentUser={belongsToCurrentUser}
+            />
+          )}
         />
         <Route
           path={routes.boxes.read.files}
@@ -40,7 +64,6 @@ function BoxRead({
             <BoxEvents
               box={box}
               isFetching={isFetching.events}
-              identity={identity}
               toggleDrawer={toggleDrawer}
               isDrawerOpen={isDrawerOpen}
               drawerWidth={drawerWidth}
@@ -65,14 +88,13 @@ BoxRead.propTypes = {
   isFetching: PropTypes.shape({
     box: PropTypes.bool.isRequired,
     events: PropTypes.bool.isRequired,
+    identity: PropTypes.bool.isRequired,
   }),
+  belongsToCurrentUser: PropTypes.bool.isRequired,
   // DRAWER
   toggleDrawer: PropTypes.func.isRequired,
   isDrawerOpen: PropTypes.bool,
   drawerWidth: PropTypes.string.isRequired,
-
-  identity: PropTypes.shape(IdentitySchema.propTypes),
-  isFetchingIdentity: PropTypes.bool.isRequired,
 };
 
 BoxRead.defaultProps = {
@@ -80,9 +102,9 @@ BoxRead.defaultProps = {
   isFetching: {
     box: false,
     events: false,
+    identity: false,
   },
   box: null,
-  identity: null,
 };
 
-export default withBoxDetails()(withIdentity(BoxRead));
+export default withBoxDetails()(BoxRead);

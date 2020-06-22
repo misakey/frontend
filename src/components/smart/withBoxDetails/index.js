@@ -6,7 +6,7 @@ import routes from 'routes';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import isNil from '@misakey/helpers/isNil';
 import identity from '@misakey/helpers/identity';
-import { getBoxEventsBuilder, getBoxWithEventsBuilder } from '@misakey/helpers/builder/boxes';
+import { getBoxEventsBuilder, getBoxWithEventsBuilder, getBoxBuilder } from '@misakey/helpers/builder/boxes';
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 import BoxesSchema from 'store/schemas/Boxes';
@@ -17,6 +17,9 @@ import { useRouteMatch, useHistory } from 'react-router-dom';
 // import BlobSchema from 'store/schemas/Databox/Blob';
 import EventsSchema from 'store/schemas/Boxes/Events';
 import { getBoxMembersIds } from 'store/reducers/box';
+import withIdentity from 'components/smart/withIdentity';
+import { OPEN } from 'constants/app/boxes/statuses';
+import IdentitySchema from 'store/schemas/Identity';
 
 // COMPONENTS
 const withBoxDetails = (mapper = identity) => (Component) => {
@@ -28,14 +31,24 @@ const withBoxDetails = (mapper = identity) => (Component) => {
     const {
       isAuthenticated,
       box,
+      identity: userIdentity,
+      isFetchingIdentity,
       dispatchReceiveBox,
       // dispatchReceiveBlobs,
       dispatchReceiveBoxEvents,
       ...rest
     } = props;
 
-    const { id, events } = useMemo(() => box || {}, [box]);
+    const { id, events, lifecycle, creator } = useMemo(() => box || {}, [box]);
     const members = useSelector((state) => getBoxMembersIds(state, id));
+    const isOpen = useMemo(() => lifecycle === OPEN, [lifecycle]);
+    const belongsToCurrentUser = useMemo(
+      () => (!isNil(userIdentity) && !isNil(creator)
+        ? creator.identifier.value === userIdentity.identifier.value
+        : false
+      ),
+      [creator, userIdentity],
+    );
 
     const { params } = useRouteMatch();
     const history = useHistory();
@@ -50,9 +63,14 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       [isAllowedToFetch, box],
     );
 
+    const isAllowedToFetchContent = useMemo(
+      () => !shouldFetchBox && isAllowedToFetch && (isOpen || belongsToCurrentUser),
+      [belongsToCurrentUser, isAllowedToFetch, isOpen, shouldFetchBox],
+    );
+
     const shouldFetchEvents = useMemo(
-      () => !shouldFetchBox && isAllowedToFetch && isNil(events),
-      [isAllowedToFetch, events, shouldFetchBox],
+      () => !shouldFetchBox && isAllowedToFetchContent && isNil(events),
+      [shouldFetchBox, isAllowedToFetchContent, events],
     );
 
     // // Get blobIds from logs for which we need to fetch info (blobUrl, fileExtension...)
@@ -67,13 +85,16 @@ const withBoxDetails = (mapper = identity) => (Component) => {
     // }, [logs]);
 
     // const shouldFetchBlobs = useMemo(
-    //   () => !shouldFetchLogs && !isEmpty(missingBlobsInfo),
+    //   () => !shouldFetchEvents && isAllowedToFetchContent && !isEmpty(missingBlobsInfo),
     //   [missingBlobsInfo, shouldFetchLogs],
     // );
 
     const getBoxWithEvents = useCallback(
-      () => getBoxWithEventsBuilder(params.id),
-      [params.id],
+      () => (isAllowedToFetchContent
+        ? getBoxWithEventsBuilder(params.id)
+        : getBoxBuilder(params.id)
+      ),
+      [isAllowedToFetchContent, params.id],
     );
 
     const getBoxEvents = useCallback(
@@ -120,16 +141,19 @@ const withBoxDetails = (mapper = identity) => (Component) => {
     const mappedProps = useMemo(
       () => (mapper({
         box: { ...box || { id: params.id }, members },
+        belongsToCurrentUser,
         isFetching: {
           box: isFetching,
           events: isFetchingEvents,
+          identity: isFetchingIdentity,
           // blobs: isFetchingBlobs,
         },
         onDelete,
         isAuthenticated,
         ...rest,
       })),
-      [box, isAuthenticated, isFetching, isFetchingEvents, members, onDelete, params.id, rest],
+      [belongsToCurrentUser, box, isAuthenticated, isFetching,
+        isFetchingEvents, isFetchingIdentity, members, onDelete, params.id, rest],
     );
 
     return <Component {...mappedProps} />;
@@ -142,11 +166,15 @@ const withBoxDetails = (mapper = identity) => (Component) => {
     dispatchReceiveBox: PropTypes.func.isRequired,
     // dispatchReceiveBlobs: PropTypes.func.isRequired,
     dispatchReceiveBoxEvents: PropTypes.func.isRequired,
+    // withIdentity
+    isFetchingIdentity: PropTypes.bool.isRequired,
+    identity: PropTypes.shape(IdentitySchema.propTypes),
   };
 
   Wrapper.defaultProps = {
     box: null,
     isAuthenticated: null,
+    identity: null,
   };
 
   // CONNECT
@@ -189,7 +217,7 @@ const withBoxDetails = (mapper = identity) => (Component) => {
     // },
   });
 
-  return connect(mapStateToProps, mapDispatchToProps)(Wrapper);
+  return connect(mapStateToProps, mapDispatchToProps)(withIdentity(Wrapper));
 };
 
 export default withBoxDetails;
