@@ -165,12 +165,5 @@ export async function getEncryptedSecretsBackup(id) {
     params: { id },
   };
 
-  // @FIXME uncomment while Log as seclevel 2 is not implemented yet (endpoint return error)
-  // return Promise.resolve({
-  //   version: 0,
-  // eslint-disable-next-line max-len
-  //   data: '{"nonce":{"type":"Uint8Array","encoding":"base64","value":"yzIyAAhnQ6dHZuvxPuC5ivuXxqTAH1HK"},"salt":"ad2db56c05d64cd7f52ddd159d8c1ac0","ciphertext":{"type":"Uint8Array","encoding":"base64","value":"1NufzwjjCtjuaO1gJ5UwUrmwO+8vWNrIxz+DhBDGG7I/lLN9+4ktc53bRAeO1vUMAw1Nvb1edcY6RNMdpQtJSIhwS7etQTu2UtlPV7hMckG4xtE0iELw5L0DhoTgrGj0k2cK+snilnk="}}',
-  // });
-
   return httpCallReturnBody(endpoint, httpRequestParams);
 }

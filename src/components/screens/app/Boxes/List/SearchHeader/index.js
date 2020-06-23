@@ -112,20 +112,18 @@ function SearchHeader({ drawerWidth, t }) {
   );
 
   return (
-    <>
-      <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth} classes={{ root: classes.appBar }}>
-        <TextField
-          autoFocus
-          fullWidth
-          placeholder={t('search')}
-          onChange={onChange}
-          value={search}
-          InputProps={{
-            startAdornment, endAdornment, disableUnderline: true,
-          }}
-        />
-      </AppBarDrawer>
-    </>
+    <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth} classes={{ root: classes.appBar }}>
+      <TextField
+        autoFocus
+        fullWidth
+        placeholder={t('search')}
+        onChange={onChange}
+        value={search}
+        InputProps={{
+          startAdornment, endAdornment, disableUnderline: true,
+        }}
+      />
+    </AppBarDrawer>
   );
 }
 

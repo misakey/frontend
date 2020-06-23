@@ -29,7 +29,8 @@ function publicKeyFromSecretKey(secretKey) {
 export function publicKeysWeCanDecryptFrom(cryptoSecrets) {
   // "compact" removes falsey values
   const secretKeys = compact([
-    cryptoSecrets.secretKey,
+    // @FIXME: secretKey is not urlSafe. Cf: https://gitlab.misakey.dev/misakey/frontend/-/issues/609
+    // cryptoSecrets.secretKey,
     ...cryptoSecrets.boxDecryptionKeys,
     ...cryptoSecrets.passive.secretKeys,
     ...cryptoSecrets.passive.boxDecryptionKeys,

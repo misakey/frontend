@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import DialogPassword from 'components/smart/Dialog/Password';
+import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 
 const PasswordPromptContext = React.createContext(null);
 
@@ -40,9 +41,9 @@ export const PasswordPromptProvider = ({ children }) => {
     setConfirmationState(null);
   };
 
-  const handleSubmit = (value) => {
+  const handleSubmit = ({ [PREHASHED_PASSWORD]: password }) => {
     if (awaitingPromiseRef.current) {
-      awaitingPromiseRef.current.resolve(value);
+      awaitingPromiseRef.current.resolve({ password });
     }
 
     setConfirmationState(null);

@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 
 import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
-import TabsMenu from 'components/dumb/Tabs/DrawerMenu';
+// import TabsMenu from 'components/dumb/Tabs/DrawerMenu';
 import UserAccountAvatar from 'components/smart/Avatar/CurrentUser';
 import AddIcon from '@material-ui/icons/Add';
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
@@ -15,7 +15,7 @@ const IconButtonCreate = withDialogCreate(IconButtonAppBar);
 const ACCOUNT = 'account';
 
 const useStyles = makeStyles((theme) => ({
-  title: {
+  flexGrow: {
     flexGrow: 1,
   },
   avatar: {
@@ -26,35 +26,34 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ListHeader({ drawerWidth, getNextDrawerSearch }) {
+function ListHeader({ drawerWidth, getNextDrawerSearch, ...props }) {
   const classes = useStyles();
-
   const openAccountDrawer = useCallback(
     () => getNextDrawerSearch(ACCOUNT, true),
     [getNextDrawerSearch],
   );
 
   return (
-    <>
-      <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth}>
-        <IconButtonAppBar
-          aria-label="user-account"
-          component={Link}
-          to={openAccountDrawer}
-          edge="start"
-        >
-          <UserAccountAvatar classes={{ root: classes.avatar }} />
-        </IconButtonAppBar>
-        <TabsMenu />
-        <IconButtonCreate
-          aria-label="create-box"
-          edge="end"
-          color="secondary"
-        >
-          <AddIcon />
-        </IconButtonCreate>
-      </AppBarDrawer>
-    </>
+    <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth} {...props}>
+      <IconButtonAppBar
+        aria-label="user-account"
+        component={Link}
+        to={openAccountDrawer}
+        edge="start"
+      >
+        <UserAccountAvatar classes={{ root: classes.avatar }} />
+      </IconButtonAppBar>
+      {/* Uncomment when accounts are implemented */}
+      {/* <TabsMenu /> */}
+      <div className={classes.flexGrow} />
+      <IconButtonCreate
+        aria-label="create-box"
+        edge="end"
+        color="secondary"
+      >
+        <AddIcon />
+      </IconButtonCreate>
+    </AppBarDrawer>
   );
 }
 
