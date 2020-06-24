@@ -10,8 +10,9 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Title from 'components/dumb/Typography/Title';
 import useGeneratePathKeepingSearch from '@misakey/hooks/useGeneratePathKeepingSearch';
+import { withTranslation } from 'react-i18next';
 
-function BoxFiles({ drawerWidth, box }) {
+function BoxFiles({ drawerWidth, box, t }) {
   const goBack = useGeneratePathKeepingSearch(routes.boxes.read.details, { id: box.id });
 
   return (
@@ -19,7 +20,7 @@ function BoxFiles({ drawerWidth, box }) {
       <AppBarDrawer drawerWidth={drawerWidth}>
         <IconButtonAppBar
           color="inherit"
-          aria-label="open drawer"
+          aria-label={t('common:openAccountDrawer')}
           edge="start"
           component={Link}
           to={goBack}
@@ -39,8 +40,9 @@ function BoxFiles({ drawerWidth, box }) {
 }
 
 BoxFiles.propTypes = {
+  t: PropTypes.func.isRequired,
   drawerWidth: PropTypes.string.isRequired,
   box: PropTypes.shape({ id: PropTypes.string.isRequired }).isRequired,
 };
 
-export default BoxFiles;
+export default withTranslation('common')(BoxFiles);

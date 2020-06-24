@@ -1,17 +1,18 @@
 import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import BoxMessageEvent from 'components/dumb/Event/Box/Message';
 import BoxInformationEvent from 'components/dumb/Event/Box/Information';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
-import withIdentity from 'components/smart/withIdentity';
 
 import EVENTS_TYPE from 'constants/app/boxes/events';
-import IdentitySchema from 'store/schemas/Identity';
+import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
-function BoxEvents({ event, identity, preview }) {
+function BoxEvents({ event, preview }) {
+  const { identifier } = useSelector(getCurrentUserSelector) || {};
   const isFromCurrentUser = useMemo(
-    () => identity.identifier.value === event.sender.identifier.value,
-    [event.sender.identifier.value, identity.identifier.value],
+    () => identifier.value === event.sender.identifier.value,
+    [event.sender.identifier.value, identifier.value],
   );
 
   if (EVENTS_TYPE.information.includes(event.type)) {
@@ -39,15 +40,13 @@ function BoxEvents({ event, identity, preview }) {
 
 BoxEvents.propTypes = {
   preview: PropTypes.bool,
-  identity: PropTypes.shape(IdentitySchema.propTypes),
   event: PropTypes.shape(BoxEventsSchema.propTypes).isRequired,
 
 };
 
 BoxEvents.defaultProps = {
   preview: false,
-  identity: null,
 };
 
 
-export default withIdentity(BoxEvents);
+export default BoxEvents;

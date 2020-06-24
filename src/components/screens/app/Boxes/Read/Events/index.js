@@ -77,7 +77,7 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
           {!isDrawerOpen && (
             <IconButtonAppBar
               color="inherit"
-              aria-label="open drawer"
+              aria-label={t('common:openAccountDrawer')}
               edge="start"
               onClick={toggleDrawer}
             >
@@ -94,7 +94,7 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
               </Subtitle>
             </Box>
             <IconButtonAppBar
-              aria-label="box-details"
+              aria-label={t('boxes:read.details.open')}
               aria-controls="menu-appbar"
               component={Link}
               to={routeDetails}
@@ -105,7 +105,7 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
           </Box>
 
           <IconButtonAppBar
-            aria-label="box-details"
+            aria-label={t('boxes:read.details.open')}
             aria-controls="menu-appbar"
             component={Link}
             to={routeDetails}
@@ -125,7 +125,7 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
             <Typography component={Box} alignSelf="center">{date}</Typography>
             {
               events.map((event) => (
-                <BoxEventsAccordingToType event={event} />
+                <BoxEventsAccordingToType event={event} key={event.id} />
               ))
             }
             <div ref={lastEventRef} />
@@ -151,4 +151,4 @@ BoxEvents.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('boxes')(BoxEvents);
+export default withTranslation(['common', 'boxes'])(BoxEvents);

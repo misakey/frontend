@@ -1,5 +1,5 @@
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -34,19 +34,15 @@ const INITIAL_VALUES = {
 const DialogPassword = ({
   title, contentText,
   onClose, onSubmit, open,
-  initialPasswordError,
   formikProps,
   t, ...rest
 }) => {
   const fullScreen = useDialogFullScreen();
 
-  // Used with PromptPasswordProvider
-  const initialErrors = useMemo(
-    () => ({ [PREHASHED_PASSWORD]: initialPasswordError }), [initialPasswordError],
-  );
-
   const handleSubmit = useCallback(
-    (values, { setFieldError }) => resolveAny(onSubmit(values))
+    (values, { setFieldError, ...props }) => resolveAny(
+      onSubmit(values, { setFieldError, ...props }),
+    )
       .catch(() => {
         setFieldError(PREHASHED_PASSWORD, invalid);
       }),
@@ -63,7 +59,6 @@ const DialogPassword = ({
       <Formik
         onSubmit={handleSubmit}
         initialValues={INITIAL_VALUES}
-        initialErrors={initialErrors}
         validationSchema={openVaultValidationSchema}
         {...formikProps}
       >
@@ -103,7 +98,6 @@ DialogPassword.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   open: PropTypes.bool,
-  initialPasswordError: PropTypes.string,
   formikProps: PropTypes.object,
   // withTranslation
   t: PropTypes.func.isRequired,
@@ -113,7 +107,6 @@ DialogPassword.defaultProps = {
   title: null,
   contentText: null,
   open: false,
-  initialPasswordError: null,
   formikProps: {},
 };
 

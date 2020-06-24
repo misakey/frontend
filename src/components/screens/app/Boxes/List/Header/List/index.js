@@ -10,8 +10,9 @@ import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import UserAccountAvatar from 'components/smart/Avatar/CurrentUser';
 import AddIcon from '@material-ui/icons/Add';
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
+import withDialogPassword from 'components/smart/Dialog/Password/with';
 
-const IconButtonCreate = withDialogCreate(IconButtonAppBar);
+const IconButtonCreate = withDialogCreate(withDialogPassword(IconButtonAppBar));
 const ACCOUNT = 'account';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ListHeader({ drawerWidth, getNextDrawerSearch, ...props }) {
+function ListHeader({ drawerWidth, getNextDrawerSearch, t }) {
   const classes = useStyles();
   const openAccountDrawer = useCallback(
     () => getNextDrawerSearch(ACCOUNT, true),
@@ -34,9 +35,9 @@ function ListHeader({ drawerWidth, getNextDrawerSearch, ...props }) {
   );
 
   return (
-    <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth} {...props}>
+    <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth}>
       <IconButtonAppBar
-        aria-label="user-account"
+        aria-label={t('common:openAccountDrawer')}
         component={Link}
         to={openAccountDrawer}
         edge="start"
@@ -47,7 +48,7 @@ function ListHeader({ drawerWidth, getNextDrawerSearch, ...props }) {
       {/* <TabsMenu /> */}
       <div className={classes.flexGrow} />
       <IconButtonCreate
-        aria-label="create-box"
+        aria-label={t('boxes:list.empty.create')}
         edge="end"
         color="secondary"
       >
@@ -61,6 +62,7 @@ ListHeader.propTypes = {
   // DRAWER
   drawerWidth: PropTypes.string.isRequired,
   getNextDrawerSearch: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['common'])(ListHeader);
+export default withTranslation(['common', 'boxes'])(ListHeader);

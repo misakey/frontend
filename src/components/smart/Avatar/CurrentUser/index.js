@@ -18,12 +18,10 @@ const UserAvatar = ({ identity, ...props }) => {
 
 
 UserAvatar.propTypes = {
-  isFetching: PropTypes.bool,
   identity: PropTypes.shape(IdentitySchema.propTypes),
 };
 
 UserAvatar.defaultProps = {
-  isFetching: false,
   identity: null,
 };
 

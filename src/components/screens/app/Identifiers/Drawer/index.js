@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Link, generatePath } from 'react-router-dom';
 import routes from 'routes';
+import { withTranslation } from 'react-i18next';
 
 import Button from '@misakey/ui/Button';
 import ButtonSignOut from '@misakey/auth/components/Button/SignOut';
@@ -17,7 +18,7 @@ import withIdentity from 'components/smart/withIdentity';
 // COMPONENTS
 const CardIdentityThumbnailWithIdentity = withIdentity(CardIdentityThumbnail);
 
-function IdentifierList({ drawerWidth, getNextDrawerSearch }) {
+function IdentifierList({ drawerWidth, getNextDrawerSearch, t }) {
   const goBack = useMemo(
     () => getNextDrawerSearch(undefined, true),
     [getNextDrawerSearch],
@@ -31,7 +32,7 @@ function IdentifierList({ drawerWidth, getNextDrawerSearch }) {
       <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth}>
         <IconButtonAppBar
           color="inherit"
-          aria-label="open drawer"
+          aria-label={t('common:goBack')}
           edge="start"
           component={Link}
           to={goBack}
@@ -69,6 +70,7 @@ IdentifierList.propTypes = {
   // DRAWER
   drawerWidth: PropTypes.string.isRequired,
   getNextDrawerSearch: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default IdentifierList;
+export default withTranslation('common')(IdentifierList);

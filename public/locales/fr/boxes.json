@@ -1,6 +1,10 @@
 {
   "list": {
     "open": "Ouvre ton coffre-fort pour accéder à tous tes chats",
+    "pasteUrl": {
+      "title": "Colle l’URL d’un chat 💬 pour le déchiffrer",
+      "placeholder": "https://app.misakey.com/invitation/9e944b29-b94f-417a-8980...."
+    },
     "events": {
       "preview": {
         "message": {
@@ -12,7 +16,8 @@
     "empty": {
       "text": "Votre liste de box est vide",
       "create": "Créer une box"
-    }
+    },
+    "select": "Sélectionner un chat 💬 pour commencer"
   },
   "read": {
     "closed": {
@@ -61,6 +66,7 @@
       "success": "Les fichiers ont été envoyé avec succès\u00a0!"
     },
     "details": {
+      "open": "Voir les détails",
       "menu": {
         "title": "Nom de la box",
         "files": "Fichiers de la box",

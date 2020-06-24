@@ -38,7 +38,7 @@ function BoxClosed({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
         {!isDrawerOpen && (
         <IconButtonAppBar
           color="inherit"
-          aria-label="open drawer"
+          aria-label={t('common:openAccountDrawer')}
           edge="start"
           onClick={toggleDrawer}
         >
@@ -81,4 +81,4 @@ BoxClosed.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('boxes')(BoxClosed);
+export default withTranslation(['common', 'boxes'])(BoxClosed);

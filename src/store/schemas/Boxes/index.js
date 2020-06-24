@@ -18,14 +18,14 @@ const BoxesSchema = {
   collection,
   propTypes: {
     id: PropTypes.string.isRequired,
-    serverCreatedAt: PropTypes.string.isRequired,
-    lifecycle: PropTypes.oneOf(STATUSES).isRequired,
+    serverCreatedAt: PropTypes.string,
+    lifecycle: PropTypes.oneOf(STATUSES),
     // eslint-disable-next-line react/forbid-foreign-prop-types
     events: PropTypes.arrayOf(PropTypes.shape(EventSchema.propTypes)),
     // eslint-disable-next-line react/forbid-foreign-prop-types
-    creator: PropTypes.shape(SenderSchema.propTypes).isRequired,
+    creator: PropTypes.shape(SenderSchema.propTypes),
     // eslint-disable-next-line react/forbid-foreign-prop-types
-    lastEvent: PropTypes.shape(EventSchema.propTypes).isRequired,
+    lastEvent: PropTypes.shape(EventSchema.propTypes),
   },
 };
 

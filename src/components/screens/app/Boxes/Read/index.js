@@ -25,7 +25,7 @@ function BoxRead({
     [belongsToCurrentUser, lifecycle],
   );
 
-  if (isFetching.box || isFetching.identity) {
+  if (isFetching.box) {
     return <SplashScreenWithTranslation />;
   }
 
@@ -88,7 +88,6 @@ BoxRead.propTypes = {
   isFetching: PropTypes.shape({
     box: PropTypes.bool.isRequired,
     events: PropTypes.bool.isRequired,
-    identity: PropTypes.bool.isRequired,
   }),
   belongsToCurrentUser: PropTypes.bool.isRequired,
   // DRAWER
@@ -102,7 +101,6 @@ BoxRead.defaultProps = {
   isFetching: {
     box: false,
     events: false,
-    identity: false,
   },
   box: null,
 };

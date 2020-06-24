@@ -1,25 +1,27 @@
 import React, { useMemo, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { denormalize, normalize } from 'normalizr';
+import { connect, useSelector } from 'react-redux';
+import { useRouteMatch, useHistory } from 'react-router-dom';
 import routes from 'routes';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+
 import isNil from '@misakey/helpers/isNil';
 import identity from '@misakey/helpers/identity';
 import { getBoxEventsBuilder, getBoxWithEventsBuilder, getBoxBuilder } from '@misakey/helpers/builder/boxes';
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
+import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+
+import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import BoxesSchema from 'store/schemas/Boxes';
 import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
-import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
-import { connect, useSelector } from 'react-redux';
-import { useRouteMatch, useHistory } from 'react-router-dom';
 // import BlobSchema from 'store/schemas/Databox/Blob';
 import EventsSchema from 'store/schemas/Boxes/Events';
 import { getBoxMembersIds } from 'store/reducers/box';
-import withIdentity from 'components/smart/withIdentity';
+
 import { OPEN } from 'constants/app/boxes/statuses';
-import IdentitySchema from 'store/schemas/Identity';
 
 // COMPONENTS
 const withBoxDetails = (mapper = identity) => (Component) => {
@@ -31,8 +33,6 @@ const withBoxDetails = (mapper = identity) => (Component) => {
     const {
       isAuthenticated,
       box,
-      identity: userIdentity,
-      isFetchingIdentity,
       dispatchReceiveBox,
       // dispatchReceiveBlobs,
       dispatchReceiveBoxEvents,
@@ -42,12 +42,13 @@ const withBoxDetails = (mapper = identity) => (Component) => {
     const { id, events, lifecycle, creator } = useMemo(() => box || {}, [box]);
     const members = useSelector((state) => getBoxMembersIds(state, id));
     const isOpen = useMemo(() => lifecycle === OPEN, [lifecycle]);
+    const { identifier } = useSelector(getCurrentUserSelector) || {};
     const belongsToCurrentUser = useMemo(
-      () => (!isNil(userIdentity) && !isNil(creator)
-        ? creator.identifier.value === userIdentity.identifier.value
+      () => (!isNil(identifier) && !isNil(creator)
+        ? creator.identifier.value === identifier.value
         : false
       ),
-      [creator, userIdentity],
+      [creator, identifier],
     );
 
     const { params } = useRouteMatch();
@@ -145,7 +146,6 @@ const withBoxDetails = (mapper = identity) => (Component) => {
         isFetching: {
           box: isFetching,
           events: isFetchingEvents,
-          identity: isFetchingIdentity,
           // blobs: isFetchingBlobs,
         },
         onDelete,
@@ -153,7 +153,7 @@ const withBoxDetails = (mapper = identity) => (Component) => {
         ...rest,
       })),
       [belongsToCurrentUser, box, isAuthenticated, isFetching,
-        isFetchingEvents, isFetchingIdentity, members, onDelete, params.id, rest],
+        isFetchingEvents, members, onDelete, params.id, rest],
     );
 
     return <Component {...mappedProps} />;
@@ -166,15 +166,11 @@ const withBoxDetails = (mapper = identity) => (Component) => {
     dispatchReceiveBox: PropTypes.func.isRequired,
     // dispatchReceiveBlobs: PropTypes.func.isRequired,
     dispatchReceiveBoxEvents: PropTypes.func.isRequired,
-    // withIdentity
-    isFetchingIdentity: PropTypes.bool.isRequired,
-    identity: PropTypes.shape(IdentitySchema.propTypes),
   };
 
   Wrapper.defaultProps = {
     box: null,
     isAuthenticated: null,
-    identity: null,
   };
 
   // CONNECT
@@ -217,7 +213,7 @@ const withBoxDetails = (mapper = identity) => (Component) => {
     // },
   });
 
-  return connect(mapStateToProps, mapDispatchToProps)(withIdentity(Wrapper));
+  return connect(mapStateToProps, mapDispatchToProps)(Wrapper);
 };
 
 export default withBoxDetails;

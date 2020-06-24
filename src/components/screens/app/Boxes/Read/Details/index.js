@@ -116,7 +116,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
         <AppBarDrawer drawerWidth={drawerWidth}>
           <IconButtonAppBar
             color="inherit"
-            aria-label="open drawer"
+            aria-label={t('common:openAccountDrawer')}
             edge="start"
             component={Link}
             to={goBack}
@@ -264,4 +264,4 @@ BoxDetails.defaultProps = {
   belongsToCurrentUser: false,
 };
 
-export default withTranslation('boxes')(BoxDetails);
+export default withTranslation(['common', 'boxes'])(BoxDetails);

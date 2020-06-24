@@ -23,7 +23,7 @@ const BoxMessageTextEvent = ({ event, isFromCurrentUser, preview, t, ...rest }) 
     if (canBeDecrypted) {
       return decryptMessage(publicKeysWeCanDecryptFrom, encrypted, recipientPublicKey);
     }
-    return t('common:undecryptable');
+    return t('common:encrypted');
   }, [canBeDecrypted, encrypted, publicKeysWeCanDecryptFrom, recipientPublicKey, t]);
 
   if (preview) {

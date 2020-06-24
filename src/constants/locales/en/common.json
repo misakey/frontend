@@ -20,6 +20,7 @@
   "next": "Next",
   "ok": "OK",
   "on": "On",
+  "or": "or",
   "previous": "Previous",
   "refuse": "Refuse",
   "confirm": "Confirm",
@@ -35,9 +36,11 @@
   "skip": "Skip",
   "submit": "Submit",
   "undecryptable": "Undecryptable",
+  "encrypted": "Encrypted content",
   "update": "Update",
   "validate": "Validate",
   "view": "View",
+  "openAccountDrawer": "See account",
   "account": {
     "current": "Current account",
     "profile": "My profile"

@@ -17,6 +17,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import filter from '@misakey/helpers/filter';
 import path from '@misakey/helpers/path';
 import isString from '@misakey/helpers/isString';
+import isNil from '@misakey/helpers/isNil';
 
 import { updateSecretsBackup } from '../../secretsBackup';
 import {
@@ -91,13 +92,12 @@ const withBackupUpdater = (actionBuilder) => (...args) => (
         return;
       }
 
-      const identityId = state.auth.identity.id;
+      const { accountId } = state.auth.identity;
       const { secrets, backupKey, backupVersion } = state.crypto;
-
-      // @FIXME backup update uses the *account* ID now
-      const response = await updateSecretsBackup(identityId, secrets, backupKey, backupVersion);
-
-      dispatch(setBackupVersion(response.version));
+      if (!isNil(backupKey)) {
+        const response = await updateSecretsBackup(accountId, secrets, backupKey, backupVersion);
+        dispatch(setBackupVersion(response.version));
+      }
     } catch (e) {
       if (e.details && (e.details.version === 'invalid')) {
         throw new BadBackupVersion();
@@ -198,10 +198,7 @@ export function createNewOwnerSecrets(password) {
  *
  * @param {string} secretKey
  */
-export function addBoxSecretKey(secretKey) {
-  // @FIXME crypto: should we regenerate the backup key?
-  return {
-    type: CRYPTO_ADD_BOX_SECRET_KEY,
-    secretKey,
-  };
-}
+export const addBoxSecretKey = withBackupUpdater((secretKey) => ({
+  type: CRYPTO_ADD_BOX_SECRET_KEY,
+  secretKey,
+}));

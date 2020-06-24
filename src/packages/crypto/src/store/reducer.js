@@ -80,6 +80,7 @@ export default function (currentState = initialState, action) {
         ...newState.secrets.boxDecryptionKeys,
         action.secretKey,
       ];
+      newState.backupVersion += 1;
       return newState;
     case CRYPTO_IMPORT_SECRET_KEYS:
       // the reducer does not perform any checks:
@@ -100,6 +101,12 @@ const isCryptoLoaded = createSelector(
   (state) => !isNil(state.backupKey),
 );
 
+const areSecretsLoaded = createSelector(
+  getState,
+  (state) => !isNil(state.secrets.secretKey),
+);
+
 export const selectors = {
   isCryptoLoaded,
+  areSecretsLoaded,
 };

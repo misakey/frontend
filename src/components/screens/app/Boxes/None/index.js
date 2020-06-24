@@ -6,10 +6,11 @@ import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import MenuIcon from '@material-ui/icons/Menu';
 import Button from '@misakey/ui/Button';
 import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
+import Title from 'components/dumb/Typography/Title';
+import { withTranslation } from 'react-i18next';
 
 
-function BoxNone({ drawerWidth, isDrawerOpen, toggleDrawer }) {
+function BoxNone({ drawerWidth, isDrawerOpen, toggleDrawer, t }) {
   return (
     <Box
       display="flex"
@@ -22,7 +23,7 @@ function BoxNone({ drawerWidth, isDrawerOpen, toggleDrawer }) {
         {!isDrawerOpen && (
         <IconButtonAppBar
           color="inherit"
-          aria-label="open drawer"
+          aria-label={t('common:openAccountDrawer')}
           edge="start"
           onClick={toggleDrawer}
         >
@@ -31,7 +32,7 @@ function BoxNone({ drawerWidth, isDrawerOpen, toggleDrawer }) {
         )}
       </AppBarDrawer>
 
-      <Typography>Sélectionner une boîte pour commencer</Typography>
+      <Title>{t('boxes:list.select')}</Title>
       {!isDrawerOpen && <Button text="Sélectionner" onClick={toggleDrawer} />}
     </Box>
 
@@ -42,6 +43,7 @@ BoxNone.propTypes = {
   drawerWidth: PropTypes.string.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default BoxNone;
+export default withTranslation(['common', 'boxes'])(BoxNone);

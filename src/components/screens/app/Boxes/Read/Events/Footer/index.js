@@ -26,6 +26,7 @@ import { addBoxEvents } from 'store/reducers/box';
 import { MSG_TXT } from 'constants/app/boxes/events';
 import encryptText from '@misakey/crypto/box/encryptText';
 import { CLOSED } from 'constants/app/boxes/statuses';
+import usePublicKeysWeCanDecryptFrom from 'packages/crypto/src/hooks/usePublicKeysWeCanDecryptFrom';
 import FooterMenuActions from './Menu';
 
 const BOX_PADDING_SPACING = 1;
@@ -46,7 +47,12 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
   const dispatch = useDispatch();
 
   const { lifecycle, id, publicKey } = useMemo(() => box || {}, [box]);
-  const disabled = useMemo(() => lifecycle === CLOSED, [lifecycle]);
+  const publicKeysWeCanEncryptWith = usePublicKeysWeCanDecryptFrom();
+
+  const disabled = useMemo(
+    () => lifecycle === CLOSED || !publicKeysWeCanEncryptWith.has(publicKey),
+    [lifecycle, publicKey, publicKeysWeCanEncryptWith],
+  );
 
   const anchorRef = useRef(null);
   const footerRef = (ref) => {
@@ -110,7 +116,7 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
           <>
             <Tooltip title={t('boxes:read.actions.more')}>
               <IconButton
-                aria-label="menu-list-actions"
+                aria-label={t('boxes:read.actions.more')}
                 color="secondary"
                 onClick={onOpen}
                 disabled={disabled}
@@ -132,7 +138,7 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
             />
             <Tooltip title={t('boxes:read.actions.send')}>
               <IconButton
-                aria-label="menu-list-actions"
+                aria-label={t('boxes:read.actions.send')}
                 color="secondary"
                 onClick={sendMessage}
                 disabled={disabled}

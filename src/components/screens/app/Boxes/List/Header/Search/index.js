@@ -69,7 +69,7 @@ function SearchHeader({ drawerWidth, t }) {
       >
         <IconButtonAppBar
           color="inherit"
-          aria-label="open drawer"
+          aria-label={t('common:goBack')}
           edge="start"
           component={Link}
           to={goBack}
@@ -78,7 +78,7 @@ function SearchHeader({ drawerWidth, t }) {
         </IconButtonAppBar>
       </InputAdornment>
     ),
-    [goBack],
+    [goBack, t],
   );
 
   const isEmptySearch = useMemo(

@@ -23,6 +23,7 @@
   "next": "Suivant",
   "ok": "OK",
   "on": "Sur",
+  "or": "ou",
   "previous": "Précédent",
   "publish": "Publier",
   "redirectedToLinkedDomain": "J'ai été redirigé vers {{mainDomainTo}} car {{mainDomainFrom}} est un domaine lié à {{mainDomainTo}}",
@@ -44,9 +45,11 @@
   "skip": "Passer",
   "submit": "Envoyer",
   "undecryptable": "Indéchiffrable",
+  "encrypted": "Contenu chiffré",
   "update": "Éditer",
   "validate": "Valider",
   "view": "Voir",
+  "openAccountDrawer": "Voir le compte",
   "account": {
     "current": "Compte de l'utilisateur actuel",
     "profile": "Mon compte"

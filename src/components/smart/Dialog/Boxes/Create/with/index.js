@@ -20,6 +20,7 @@ const withDialogCreate = (Component) => {
     const onWrapperClick = useCallback(
       (...args) => {
         setIsDialogCreateOpen(true);
+
         if (isFunction(onClick)) {
           onClick(...args);
         }

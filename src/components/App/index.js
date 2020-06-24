@@ -10,9 +10,7 @@ import { connect } from 'react-redux';
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
 
-import Home from 'components/screens/app/Home';
-import NotFound from 'components/oldScreens/NotFound';
-import Invitation from 'components/screens/app/Invitation';
+import BoxesApp from 'components/screens/app';
 
 import Redirect from 'components/dumb/Redirect';
 import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallbackWrapper';
@@ -79,23 +77,8 @@ const App = ({ t, isAuthenticated }) => (
             }}
           />
         )}
-
-        {/* REDIRECT TO BOXES */}
-        <Redirect
-          exact
-          from={routes._}
-          to={routes.boxes._}
-        />
-
-        {/* OTHERS */}
-        <Route path={[routes.boxes._, routes.accounts._]} component={Home} />
-        <Route
-          path={routes.boxes.invitation}
-          component={Invitation}
-        />
-
-        {/* DEFAULT */}
-        <Route component={NotFound} />
+        {/* BOXES APP */}
+        <Route component={BoxesApp} />
       </Switch>
     </Suspense>
   </ErrorBoundary>
