@@ -1,5 +1,5 @@
 import { PASSWORD_SECLEVEL, CONFIRMATION_CODE_SECLEVEL } from '@misakey/auth/constants/seclevel';
-import { SECLEVEL_METHOD, METADATA_KEY, VALUE_KEY } from '@misakey/auth/constants/method';
+import { SECLEVEL_METHOD, METADATA_KEYS, VALUE_KEY } from '@misakey/auth/constants/method';
 
 import FieldCode from 'components/dumb/Form/Field/Code';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
@@ -33,5 +33,5 @@ export const SECLEVEL_CONFIG = {
 
 export const ERROR_KEYS = {
   [STEP.identifier]: [VALUE_KEY, STEP.identifier],
-  [STEP.secret]: [METADATA_KEY, STEP.secret],
+  [STEP.secret]: [...METADATA_KEYS, STEP.secret],
 };

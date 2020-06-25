@@ -29,7 +29,6 @@ import { withUserManager } from '@misakey/auth/components/OidcProvider';
 // LAZY
 const AuthError = lazy(() => import('components/oldScreens/Auth/Error'));
 const Login = lazy(() => import('components/screens/Auth/Login'));
-const Forgot = lazy(() => import('components/oldScreens/Auth/Forgot'));
 const Consent = lazy(() => import('components/screens/Auth/Consent'));
 
 // CONSTANTS
@@ -198,10 +197,6 @@ const Auth = ({
           <Route
             path={routes.auth.signIn._}
             render={(routerProps) => <Login {...routerProps} loginChallenge={loginChallenge} />}
-          />
-          <Route
-            path={routes.auth.forgotPassword}
-            component={Forgot}
           />
           <Redirect from={match.path} to={routes.auth.signIn._} exact />
         </Switch>

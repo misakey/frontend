@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { isAuthStepAlreadyExistsConflict } from 'constants/Errors/classes/AuthStepAlreadyExistsConflict';
+import { isAuthStepAlreadyExistsConflict } from '@misakey/auth/helpers/errors';
 import renewAuthStepBuilder from '@misakey/auth/builder/renewAuthStep';
 
 import { useSnackbar } from 'notistack';
@@ -21,7 +21,7 @@ export default (params) => {
   const handleHttpErrors = useHandleHttpErrors();
 
   return useCallback(
-    () => renewAuthStepBuilder(params)
+    (cbArgs) => renewAuthStepBuilder({ ...params, ...cbArgs })
       .then(() => {
         enqueueSnackbar(
           t('auth:login.form.action.getANewCode.success'), { variant: 'success' },

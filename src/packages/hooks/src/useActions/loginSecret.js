@@ -17,6 +17,7 @@ import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 const propOrEmptyObj = propOr({});
 
 // HOOKS
+// @DEPRECATED
 export const useSecretContentAction = (methodName, t, renewConfirmationCode) => useMemo(
   () => {
     const contentActions = {

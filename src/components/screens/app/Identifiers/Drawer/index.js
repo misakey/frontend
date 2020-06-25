@@ -39,9 +39,6 @@ function IdentifierList({ drawerWidth, getNextDrawerSearch, t }) {
         >
           <ArrowBack />
         </IconButtonAppBar>
-        <Typography variant="h6" noWrap>
-          Mes identifiants !
-        </Typography>
       </AppBarDrawer>
       <CardIdentityThumbnailWithIdentity />
       <Box p={2}>

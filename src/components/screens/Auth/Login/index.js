@@ -12,8 +12,6 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import LoginIdentifier from 'components/screens/Auth/Login/Identifier';
 import LoginSecret from 'components/screens/Auth/Login/Secret';
 
-// HELPERS
-
 // COMPONENTS
 const AuthLogin = ({ identifier, match, ...props }) => (
   <Switch>

@@ -76,15 +76,11 @@ export const signUpConfirmValidationSchema = Yup.object().shape({
   code: codeFieldValidation.strictSchema,
 });
 
-export const forgotConfirmValidationSchema = Yup.object().shape({
-  confirmationCode: codeFieldValidation.strictSchema,
+export const createPasswordValidationSchema = Yup.object().shape({
+  [PREHASHED_PASSWORD]: passwordFieldValidation.setSchema,
 });
 
-export const forgotResetPasswordValidationSchema = forgotConfirmValidationSchema.concat(
-  Yup.object().shape({
-    passwordNew: passwordFieldValidation.setSchema,
-  }),
-);
+export const resetPasswordValidationSchema = createPasswordValidationSchema;
 
 export const accessRequestValidationSchema = Yup.object().shape({
   code: codeFieldValidation.schema,

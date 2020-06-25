@@ -4,7 +4,8 @@ export const EMAILED_CODE = 'emailed_code';
 export const PREHASHED_PASSWORD = 'prehashed_password';
 
 export const VALUE_KEY = 'value';
-export const METADATA_KEY = 'metadata';
+export const METADATA_KEYS = ['metadata', 'code'];
+export const PASSWORD_RESET_KEY = 'passwordReset';
 
 export const SECLEVEL_METHOD = {
   [CONFIRMATION_CODE_SECLEVEL]: EMAILED_CODE,

@@ -1,30 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 
 import { AVATAR_SIZE } from '@misakey/ui/constants/sizes';
 
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
 
-import AvatarColorized from '../Colorized';
+import AvatarColorized from '@misakey/ui/Avatar/Colorized';
 
 // CONSTANTS
+export const RADIUS = 2 * AVATAR_SIZE;
 
 // HOOKS
-const useStyles = makeStyles((theme) => ({
+export const useLayoutStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    margin: theme.spacing(1, 0),
     [theme.breakpoints.up('sm')]: {
-      margin: theme.spacing(6, 0),
+      margin: theme.spacing(4, 0),
     },
   },
   avatar: {
-    width: `calc(2 * ${AVATAR_SIZE}px)`,
-    height: `calc(2 * ${AVATAR_SIZE}px)`,
-    fontSize: theme.typography.h3.fontSize,
     margin: theme.spacing(2, 0),
+  },
+}));
+
+const useStyles = makeStyles((theme) => ({
+  avatar: {
+    width: RADIUS,
+    height: RADIUS,
+    fontSize: theme.typography.h3.fontSize,
   },
   title: {
     flexGrow: 1,
@@ -32,13 +40,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// COMPONENTS
 const AvatarDetailed = ({ text, image, title, subtitle }) => {
   const classes = useStyles();
+  const layoutClasses = useLayoutStyles();
 
   return (
-    <div className={classes.root}>
+    <div className={layoutClasses.root}>
       <AvatarColorized
-        className={classes.avatar}
+        className={clsx(classes.avatar, layoutClasses.avatar)}
         text={text}
         image={image}
       />

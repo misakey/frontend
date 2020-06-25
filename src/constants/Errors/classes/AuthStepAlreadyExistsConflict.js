@@ -1,6 +1,6 @@
 import errorTypes from '@misakey/ui/constants/errorTypes';
 
-import { getDetails, getCode } from '@misakey/helpers/apiError';
+import { isAuthStepAlreadyExistsConflict } from '@misakey/auth/helpers/errors';
 
 // CONSTANTS
 const { conflict } = errorTypes;
@@ -14,13 +14,6 @@ export default class AuthStepAlreadyExistsConflict extends Error {
 }
 
 // HELPERS
-export const isAuthStepAlreadyExistsConflict = (error) => {
-  const details = getDetails(error);
-  const code = getCode(error);
-  const { identityId, methodName } = details;
-  return code === conflict && identityId === conflict && methodName === conflict;
-};
-
 export const handleAuthStepAlreadyExistsConflict = (message) => (apiError) => {
   if (isAuthStepAlreadyExistsConflict(apiError)) {
     throw new AuthStepAlreadyExistsConflict(message);

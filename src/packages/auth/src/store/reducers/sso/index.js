@@ -4,7 +4,9 @@ import { METHODS } from '@misakey/auth/constants/method';
 import { PROP_TYPES as PWD_HASH_PROP_TYPES } from '@misakey/auth/passwordHashing/constants';
 import head from '@misakey/helpers/head';
 import isArray from '@misakey/helpers/isArray';
+import prop from '@misakey/helpers/prop';
 import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
+import { createSelector } from 'reselect';
 
 import { SSO_RESET, SSO_UPDATE } from '@misakey/auth/store/actions/sso';
 
@@ -42,6 +44,15 @@ export const INITIAL_STATE = {
   scope: [],
   acr: null,
   acrValues: [],
+};
+
+const getState = prop('sso');
+
+export const selectors = {
+  getAuthnStep: createSelector(
+    getState,
+    prop('authnStep'),
+  ),
 };
 
 // ACTION HANDLERS

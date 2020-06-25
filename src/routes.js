@@ -54,7 +54,6 @@ const routes = {
       confirm: '/auth/register/confirm',
       finale: '/auth/register/finale',
     },
-    forgotPassword: '/auth/password/forgot',
   },
   citizen: {
     _: '/citizen',

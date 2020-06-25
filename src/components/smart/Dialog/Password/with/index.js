@@ -7,6 +7,7 @@ import { withTranslation } from 'react-i18next';
 import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 import hardPasswordChange from '@misakey/crypto/store/actions/hardPasswordChange';
 import { updateIdentity } from '@misakey/auth/store/actions/auth';
+import { createPasswordValidationSchema, openVaultValidationSchema } from 'constants/validationSchemas/auth';
 
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
@@ -56,6 +57,13 @@ const withDialogPassword = (Component) => {
     const title = useMemo(
       () => (hasAccountId ? t('account:password.existing') : t('account:password.new')),
       [hasAccountId, t],
+    );
+
+    const formikProps = useMemo(
+      () => (hasAccountId
+        ? { validationSchema: openVaultValidationSchema }
+        : { validationSchema: createPasswordValidationSchema }),
+      [hasAccountId],
     );
 
     const isCryptoLoadedSelector = useMemo(
@@ -130,6 +138,7 @@ const withDialogPassword = (Component) => {
           open={open}
           onClose={onClose}
           onSubmit={onSubmit}
+          formikProps={formikProps}
           {...dialogProps}
         />
         <Component ref={ref} onClick={onWrapperClick} {...omitTranslationProps(props)} />

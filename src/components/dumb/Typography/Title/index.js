@@ -1,7 +1,15 @@
-import React from 'react';
-import Typography from '@material-ui/core/Typography';
+import PropTypes from 'prop-types';
 
-const Title = (props) => <Typography {...props} />;
+import Typography from '@material-ui/core/Typography';
+import ComponentProxy from '@misakey/ui/Component/Proxy';
+
+const Title = ComponentProxy(Typography);
+
+Title.propTypes = {
+  component: PropTypes.oneOfType([PropTypes.string, PropTypes.elementType]),
+  variant: PropTypes.string,
+  gutterBottom: PropTypes.bool,
+};
 
 Title.defaultProps = {
   component: 'h2',

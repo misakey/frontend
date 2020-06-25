@@ -5,6 +5,7 @@ import objectToSnakeCaseDeep from '@misakey/helpers/objectToSnakeCaseDeep';
 import hashPassword from '../passwordHashing/hashPassword';
 import genParams from '../passwordHashing/genParams';
 
+// @DEPRECATED prefer resetPassword in src/packages/auth/src/builder/accounts.js
 export default async function resetPassword({
   email,
   confirmationCode,
