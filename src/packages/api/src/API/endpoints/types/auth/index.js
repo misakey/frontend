@@ -19,6 +19,10 @@ export default {
     method: 'POST',
     path: '/authn-steps',
   },
+  consent: {
+    method: 'POST',
+    path: '/auth/consent',
+  },
   signOut: {
     method: 'POST',
     path: '/auth/logout',

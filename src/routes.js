@@ -37,6 +37,9 @@ const routes = {
     recover: '/auth/recover',
     redirectToSignIn: '/login',
     signOut: '/logout',
+    consent: {
+      _: '/auth/consent',
+    },
     signIn: {
       _: '/auth/login',
       secret: '/auth/login/secret',

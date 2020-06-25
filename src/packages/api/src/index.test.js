@@ -15,7 +15,7 @@ const authExtendedNamings = [
   'signIn', 'signOut', 'signUp',
   'resetPassword', 'forgotPassword', 'confirm',
   'askConfirm', 'init',
-  // @FIXME latest to validate
+  'consent',
   'checkAuthable', 'info', 'loginAuthStep', 'renewAuthStep',
 ];
 

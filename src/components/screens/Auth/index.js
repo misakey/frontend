@@ -30,6 +30,7 @@ import { withUserManager } from '@misakey/auth/components/OidcProvider';
 const AuthError = lazy(() => import('components/oldScreens/Auth/Error'));
 const Login = lazy(() => import('components/screens/Auth/Login'));
 const Forgot = lazy(() => import('components/oldScreens/Auth/Forgot'));
+const Consent = lazy(() => import('components/screens/Auth/Consent'));
 
 // CONSTANTS
 const LOGIN_REQUIRED_SEARCH_PARAMS = ['loginChallenge'];
@@ -103,6 +104,12 @@ const Auth = ({
     [searchParams, sso],
   );
 
+  // Do not fetch when handling consent flow
+  const shouldFetch = useMemo(
+    () => !hasConsentRequiredParams(searchParams),
+    [searchParams],
+  );
+
   const requiredSsoParams = useMemo(
     () => pickAll(SSO_REQUIRED_SEARCH_PARAMS, sso),
     [sso],
@@ -149,7 +156,7 @@ const Auth = ({
 
   const { isFetching, error } = useFetchEffect(
     onLoadLoginInfo,
-    undefined,
+    { shouldFetch },
     { onSuccess, onError },
   );
 
@@ -184,6 +191,10 @@ const Auth = ({
       <Container maxWidth="md">
         <Switch>
           <Route exact path={routes.auth.error} component={AuthError} />
+          <Route
+            path={routes.auth.consent._}
+            component={Consent}
+          />
           <Route
             path={routes.auth.signIn._}
             render={(routerProps) => <Login {...routerProps} loginChallenge={loginChallenge} />}
