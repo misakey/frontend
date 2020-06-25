@@ -136,7 +136,31 @@ export async function saltedSymmetricDecrypt(cryptogram, lowEntropySecret) {
   return core.saltedSymmetricDecrypt(nonce, salt, ciphertext, lowEntropySecret);
 }
 
-// symmetric keys are never sent over the network
+// Symmetric encryption is mostly used to encrypt large files
+// which the application layer sends in binary form, not in base64 form,
+// so the ciphertext is kept as bytes (i.e. Uint8Array)
+
+export const generateSymmetricKey = () => encodeBase64(core.generateSymmetricKey());
+
+export function symmetricEncrypt(plaintext, symmetricKey) {
+  assertNotAnyNil({ plaintext, symmetricKey });
+  const { nonce, ciphertext } = core.symmetricEncrypt(plaintext, decodeBase64(symmetricKey));
+  return {
+    nonce: encodeBase64(nonce),
+    ciphertext,
+  };
+}
+
+export function symmetricDecrypt(ciphertext, nonce, symmetricKey) {
+  assertNotAnyNil({ ciphertext, nonce, symmetricKey });
+  return core.symmetricDecrypt(
+    ciphertext,
+    decodeBase64(nonce),
+    decodeBase64(symmetricKey),
+  );
+}
+
+// *salted* symmetric keys are never sent over the network
 // so we don't base64-encode them,
 // although we could (bytes are not nice to console.log)
 export const {

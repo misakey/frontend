@@ -139,7 +139,7 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
             <Typography component={Box} alignSelf="center">{date}</Typography>
             {
               events.map((event) => (
-                <BoxEventsAccordingToType event={event} key={event.id} />
+                <BoxEventsAccordingToType event={event} key={event.id} boxID={box.id} />
               ))
             }
             <div ref={lastEventRef} />

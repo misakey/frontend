@@ -1,18 +1,16 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { Form, Field, FieldArray } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
 
-import API from '@misakey/api';
-
 // import { serviceRequestsReadValidationSchema } from 'constants/validationSchemas/dpo';
 
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
-import last from '@misakey/helpers/last';
-import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
+import log from '@misakey/helpers/log';
 
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 
@@ -22,24 +20,20 @@ import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 
+import encryptFile from '@misakey/crypto/box/encryptFile';
+
 import FieldBlobs from 'components/smart/Dialog/Boxes/Upload/BlobsField';
 import FieldBlobTmp from 'components/smart/Dialog/Boxes/Upload/TmpBlobField';
 import BoxControls from '@misakey/ui/Box/Controls';
+import { createBoxEncryptedFileBuilder } from '@misakey/helpers/builder/boxes';
+
+import { addBoxEvents } from 'store/reducers/box';
+import BoxesSchema from 'store/schemas/Boxes';
 
 export const TMP_BLOB_FIELD_NAME = 'blob';
 export const BLOBS_FIELD_NAME = 'blobs';
 export const INITIAL_VALUES = { [TMP_BLOB_FIELD_NAME]: null, [BLOBS_FIELD_NAME]: [] };
 export const INITIAL_STATUS = {};
-
-function encryptBlobFile() {
-  // eslint-disable-next-line no-console
-  console.error('TODO IMPLEMENT ENCRYPTION TO JS BLOB');
-}
-
-// HELPERS
-function getFileExtension(fileName) {
-  return `.${last(fileName.split('.'))}`;
-}
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -53,8 +47,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function UploadDialog({
-  // eslint-disable-next-line react/prop-types
-  request,
+  box,
   t,
   onClose,
   onSuccess,
@@ -66,33 +59,30 @@ function UploadDialog({
   const { enqueueSnackbar } = useSnackbar();
   const [newBlob, setNewBlob] = useState(null);
 
-  const { id: requestId, owner } = useMemo(() => request || {}, [request]);
+  const dispatch = useDispatch();
 
-  const { pubkeyData, email: userEmail } = useMemo(
-    () => owner || {},
-    [owner],
-  );
+  const { publicKey, id: boxId } = box;
 
   const handleUpload = useCallback(
-    (blob) => encryptBlobFile(blob, pubkeyData)
-      .then(({ ciphertext, nonce, ephemeralProducerPubKey }) => {
-        const formData = new FormData();
-        formData.append('transaction_id', Math.floor(Math.random() * 10000000000));
-        formData.append('databox_id', requestId);
-        formData.append('data_type', 'all');
-        formData.append('file_extension', getFileExtension(blob.name));
-        formData.append('blob', ciphertext);
-        formData.append('encryption[algorithm]', 'com.misakey.nacl-box');
-        formData.append('encryption[nonce]', nonce);
-        formData.append('encryption[ephemeral_producer_pub_key]', ephemeralProducerPubKey);
-        formData.append('encryption[owner_pub_key]', pubkeyData);
+    async (file) => {
+      const { encryptedFile, encryptedMessageContent } = await encryptFile(file, publicKey);
 
-        return API.use(API.endpoints.request.blob.create)
-          .build(null, formData)
-          .send({ contentType: null })
-          .then((response) => onSuccess(objectToCamelCaseDeep(response)));
-      }),
-    [onSuccess, pubkeyData, requestId],
+      const formData = new FormData();
+      formData.append('encrypted_file', encryptedFile);
+      formData.append('msg_encrypted_content', encryptedMessageContent);
+      formData.append('msg_public_key', publicKey);
+
+      const response = await createBoxEncryptedFileBuilder(boxId, formData);
+
+      dispatch(addBoxEvents(boxId, response));
+
+      if (onSuccess) {
+        return onSuccess(response);
+      }
+
+      return response;
+    },
+    [onSuccess, publicKey, boxId, dispatch],
   );
 
   const getOnReset = useCallback(
@@ -111,7 +101,10 @@ function UploadDialog({
       const newBlobList = await Promise.all(blobs.map(
         ({ blob, ...rest }) => handleUpload(blob)
           .then(() => ({ ...rest, blob, isSent: true }))
-          .catch((e) => ({ ...rest, blob, error: e })),
+          .catch((e) => {
+            log(e, 'error');
+            return { ...rest, blob, error: e };
+          }),
       ));
 
       const errors = newBlobList.filter(({ error }) => !isNil(error));
@@ -163,7 +156,6 @@ function UploadDialog({
                 name={TMP_BLOB_FIELD_NAME}
                 component={FieldBlobTmp}
                 setNewBlob={setNewBlob}
-                userEmail={userEmail}
               />
 
             </DialogContent>
@@ -185,7 +177,7 @@ function UploadDialog({
 }
 
 UploadDialog.propTypes = {
-  // request: PropTypes.shape(DataboxSchema.propTypes),
+  box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   open: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func.isRequired,

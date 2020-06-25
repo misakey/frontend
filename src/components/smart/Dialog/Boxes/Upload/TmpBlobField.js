@@ -28,7 +28,6 @@ const FieldBlobTmp = ({
   displayError,
   errorKeys,
   field,
-  userEmail,
   t,
   ...rest
 }) => {
@@ -86,7 +85,6 @@ const FieldBlobTmp = ({
 };
 
 FieldBlobTmp.propTypes = {
-  userEmail: PropTypes.string.isRequired,
   // Formik Field
   field: PropTypes.shape({
     value: PropTypes.object,

@@ -65,6 +65,29 @@ export function asymmetricDecrypt(
   return decrypted;
 }
 
+// Symmetric Encryption (using high-entropy keys)
+// ========================================================
+//
+// For symmetric encryption using a low-entropy secret (password),
+// see next section.
+
+export const generateSymmetricKey = () => randomBytes(secretbox.keyLength);
+
+export function symmetricEncrypt(plaintext, symmetricKey) {
+  const nonce = randomBytes(secretbox.nonceLength);
+  const ciphertext = secretbox(plaintext, nonce, symmetricKey);
+
+  return { nonce, ciphertext };
+}
+
+export function symmetricDecrypt(ciphertext, nonce, symmetricKey) {
+  const decrypted = secretbox.open(ciphertext, nonce, symmetricKey);
+
+  if (!decrypted) { throw new DecryptionError(); }
+
+  return decrypted;
+}
+
 // Symmetric Key Encryption from Low-Entropy Secrets
 // ============================================================================
 //
@@ -98,8 +121,8 @@ export async function generateNewSaltedSymmetricKey(lowEntropySecret) {
 
 export function saltedSymmetricEncrypt(plaintext, saltedSymmetricKey) {
   const { symmetricKey, salt } = saltedSymmetricKey;
-  const nonce = randomBytes(secretbox.nonceLength);
-  const ciphertext = secretbox(plaintext, nonce, symmetricKey);
+
+  const { nonce, ciphertext } = symmetricEncrypt(plaintext, symmetricKey);
 
   return { nonce, salt, ciphertext };
 }
@@ -107,9 +130,7 @@ export function saltedSymmetricEncrypt(plaintext, saltedSymmetricKey) {
 export async function saltedSymmetricDecrypt(nonce, salt, ciphertext, lowEntropySecret) {
   const symmetricKey = await deriveSymmetricKeyFromLowEntropySecret(lowEntropySecret, salt);
 
-  const decrypted = secretbox.open(ciphertext, nonce, symmetricKey);
-
-  if (!decrypted) { throw new DecryptionError(); }
+  const decrypted = symmetricDecrypt(ciphertext, nonce, symmetricKey);
 
   return {
     plaintext: decrypted,

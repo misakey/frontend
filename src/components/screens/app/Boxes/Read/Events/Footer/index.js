@@ -78,7 +78,7 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
           type: MSG_TXT,
           content: {
             encrypted: encryptText(value, publicKey),
-            recipientPublicKey: publicKey,
+            publicKey,
           },
         })
           .then((response) => {

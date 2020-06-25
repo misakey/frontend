@@ -10,21 +10,22 @@ import EventSchema from 'store/schemas/Boxes/Events';
 import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
 
 // HELPERS
-const decryptMessage = (publicKeysWeCanDecryptFrom, encrypted, recipientPublicKey) => {
-  const secretKey = publicKeysWeCanDecryptFrom.get(recipientPublicKey);
+const decryptMessage = (publicKeysWeCanDecryptFrom, encrypted, publicKey) => {
+  const secretKey = publicKeysWeCanDecryptFrom.get(publicKey);
   return decryptText(encrypted, secretKey);
 };
 
 const BoxMessageTextEvent = ({ event, isFromCurrentUser, preview, t, ...rest }) => {
-  const { sender, content: { encrypted, recipientPublicKey } } = useMemo(() => event, [event]);
+  const { sender, content: { encrypted, publicKey } } = useMemo(() => event, [event]);
   const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
-  const canBeDecrypted = publicKeysWeCanDecryptFrom.has(recipientPublicKey);
+  const canBeDecrypted = publicKeysWeCanDecryptFrom.has(publicKey);
+
   const text = useMemo(() => {
     if (canBeDecrypted) {
-      return decryptMessage(publicKeysWeCanDecryptFrom, encrypted, recipientPublicKey);
+      return decryptMessage(publicKeysWeCanDecryptFrom, encrypted, publicKey);
     }
     return t('common:encrypted');
-  }, [canBeDecrypted, encrypted, publicKeysWeCanDecryptFrom, recipientPublicKey, t]);
+  }, [canBeDecrypted, encrypted, publicKeysWeCanDecryptFrom, publicKey, t]);
 
   if (preview) {
     return t(

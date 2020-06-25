@@ -31,6 +31,19 @@ export default {
       auth: true,
     },
   },
+  encryptedFiles: {
+    create: {
+      method: 'POST',
+      path: '/boxes/:id/encrypted-files',
+      auth: true,
+    },
+    read: {
+      method: 'GET',
+      path: '/boxes/:id/encrypted-files/:fileId',
+      auth: true,
+    },
+  },
+  // @FIXME is this still used at all?
   blob: {
     find: {
       method: 'GET',

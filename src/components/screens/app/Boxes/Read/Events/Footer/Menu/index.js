@@ -40,9 +40,8 @@ function FooterMenuActions({ box, t }) {
   return (
     <>
       <UploadDialog
-        request={box}
+        box={box}
         open={isUploadDialogOpen}
-        onSuccess={() => { /* update store */ }}
         onClose={onClose}
       />
 

@@ -2,6 +2,8 @@ import API from '@misakey/api';
 
 import isNil from '@misakey/helpers/isNil';
 import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
+import objectToSnakeCaseDeep from '@misakey/helpers/objectToSnakeCaseDeep';
+// @FIXME shouldn't we just use "objectToSnakeCaseDeep" everywhere?
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
 export const getBoxBuilder = (id, body, queryParams = {}) => API
@@ -53,6 +55,17 @@ export const createBoxBuilder = (payload) => API
 
 export const createBoxEventBuilder = (id, payload) => API
   .use(API.endpoints.boxes.events.create)
-  .build({ id }, objectToSnakeCase(payload))
+  .build({ id }, objectToSnakeCaseDeep(payload))
   .send()
   .then(objectToCamelCaseDeep);
+
+export const createBoxEncryptedFileBuilder = (boxID, formData) => API
+  .use(API.endpoints.boxes.encryptedFiles.create)
+  .build({ id: boxID }, formData)
+  .send({ contentType: null }) // so that browser set content type automatically
+  .then(objectToCamelCaseDeep);
+
+export const getBoxEncryptedFileBuilder = (boxID, encryptedFileId) => API
+  .use(API.endpoints.boxes.encryptedFiles.read)
+  .build({ id: boxID, fileId: encryptedFileId })
+  .send();

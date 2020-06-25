@@ -17,6 +17,7 @@ const BoxesSchema = {
   entity,
   collection,
   propTypes: {
+    publicKey: PropTypes.string,
     id: PropTypes.string.isRequired,
     serverCreatedAt: PropTypes.string,
     lifecycle: PropTypes.oneOf(STATUSES),
