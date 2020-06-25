@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -6,8 +6,9 @@ import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
+import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 
-import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
 import BoxControls from '@misakey/ui/Box/Controls';
@@ -15,33 +16,22 @@ import ConfirmDialogContent from './DialogContent';
 
 
 function ConfirmationDialog({
-  onConfirm, isDialogOpen, setDialogOpen,
+  onConfirm, isDialogOpen, onClose,
   dialogContent, title,
-  confirmButtonText, hideCancelButton,
+  confirmButtonText,
   t,
   ...rest
 }) {
-  const handleCancel = useCallback(
-    () => { setDialogOpen(false); },
-    [setDialogOpen],
-  );
+  const fullScreen = useDialogFullScreen();
 
   const text = useMemo(
     () => (isNil(confirmButtonText) ? t('common:ok') : confirmButtonText),
     [confirmButtonText, t],
   );
 
-  const secondary = useMemo(
-    () => (hideCancelButton ? null : {
-      onClick: handleCancel,
-      text: t('common:cancel'),
-    }),
-    [hideCancelButton, handleCancel, t],
-  );
-
   const { wrappedFetch: handleOk, isFetching: isValidating } = useFetchCallback(
     onConfirm,
-    { onSuccess: handleCancel },
+    { onSuccess: onClose },
   );
 
   return (
@@ -49,9 +39,12 @@ function ConfirmationDialog({
       maxWidth="sm"
       aria-labelledby="confirmation-dialog-title"
       open={isDialogOpen}
+      fullScreen={fullScreen}
       {...omitTranslationProps(rest)}
     >
-      <DialogTitle id="confirmation-dialog-title">{title}</DialogTitle>
+      <DialogTitleWithClose onClose={onClose}>
+        {title}
+      </DialogTitleWithClose>
       <ConfirmDialogContent content={dialogContent} />
       <DialogActions>
         <BoxControls
@@ -61,7 +54,6 @@ function ConfirmationDialog({
             isLoading: isValidating,
             text,
           }}
-          secondary={secondary}
         />
       </DialogActions>
     </Dialog>
@@ -70,18 +62,17 @@ function ConfirmationDialog({
 
 ConfirmationDialog.propTypes = {
   onConfirm: PropTypes.func.isRequired,
-  setDialogOpen: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
   isDialogOpen: PropTypes.bool.isRequired,
   dialogContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   t: PropTypes.func.isRequired,
   confirmButtonText: PropTypes.string,
-  hideCancelButton: PropTypes.bool,
 };
 
 ConfirmationDialog.defaultProps = {
   confirmButtonText: null,
-  hideCancelButton: false,
+  title: null,
 };
 
 export default withTranslation(['common'])(ConfirmationDialog);

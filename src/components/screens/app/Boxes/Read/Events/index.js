@@ -41,6 +41,19 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     height: `calc(100vh - ${APPBAR_HEIGHT}px - ${footerHeight}px - ${theme.spacing(CONTENT_SPACING) * 2}px)`,
   }),
+  menuButton: {
+    margin: theme.spacing(0, 1),
+  },
+  title: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: theme.typography.subtitle1.fontSize,
+    },
+  },
+  subtitle: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: theme.typography.subtitle2.fontSize,
+    },
+  },
 }));
 
 function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
@@ -80,16 +93,17 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
               aria-label={t('common:openAccountDrawer')}
               edge="start"
               onClick={toggleDrawer}
+              className={classes.menuButton}
             >
               <MenuIcon />
             </IconButtonAppBar>
           )}
           <Box display="flex" flexGrow={1} overflow="hidden" alignItems="center">
             <Box display="flex" flexDirection="column">
-              <Title gutterBottom={false} noWrap>
+              <Title className={classes.title} gutterBottom={false} noWrap>
                 {title}
               </Title>
-              <Subtitle>
+              <Subtitle className={classes.subtitle}>
                 {t('boxes:read.details.menu.members.count', { count: members.length })}
               </Subtitle>
             </Box>

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import routes from 'routes';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
@@ -33,7 +34,6 @@ import { CLOSED, OPEN } from 'constants/app/boxes/statuses';
 import { LIFECYCLE } from 'constants/app/boxes/events';
 import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import { addBoxEvents } from 'store/reducers/box';
-import { useDispatch } from 'react-redux';
 
 // CONSTANTS
 const CONTENT_SPACING = 2;
@@ -69,7 +69,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
   } = useMemo(() => box, [box]);
 
   const goBack = useGeneratePathKeepingSearch(routes.boxes.read._, { id });
-  const routeFiles = useGeneratePathKeepingSearch(routes.boxes.read.files, { id });
+  // const routeFiles = useGeneratePathKeepingSearch(routes.boxes.read.files, { id });
 
   const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
 
@@ -93,20 +93,13 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
     [belongsToCurrentUser, lifecycle],
   );
 
-  const openCloseDialog = useCallback(
-    () => { setIsCloseDialogOpen(true); }, [],
+  const toggleCloseDialog = useCallback(
+    () => { setIsCloseDialogOpen((current) => !current); }, [setIsCloseDialogOpen],
   );
 
   const onCloseBox = useCallback(
-    () => createBoxEventBuilder(id, {
-      type: LIFECYCLE,
-      content: {
-        state: CLOSED,
-      },
-    })
-      .then((response) => {
-        dispatch(addBoxEvents(id, response));
-      }),
+    () => createBoxEventBuilder(id, { type: LIFECYCLE, content: { state: CLOSED } })
+      .then((response) => dispatch(addBoxEvents(id, response))),
     [dispatch, id],
   );
 
@@ -154,7 +147,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
             />
             {/* <ChevronRightIcon /> */}
           </ListItem>
-          <ListItem
+          {/* <ListItem
             button
             to={routeFiles}
             component={Link}
@@ -167,7 +160,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
               secondaryTypographyProps={{ noWrap: true, color: 'textPrimary' }}
             />
             <ChevronRightIcon />
-          </ListItem>
+          </ListItem> */}
           <ListItem
             // button
             // to={}
@@ -187,7 +180,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
             <ListItem
               button
               divider
-              onClick={openCloseDialog}
+              onClick={toggleCloseDialog}
               aria-label={t('boxes:read.details.menu.close.primary')}
             >
               <ListItemText
@@ -199,7 +192,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
               <ConfirmationDialog
                 onConfirm={onCloseBox}
                 isDialogOpen={isCloseDialogOpen}
-                setDialogOpen={setIsCloseDialogOpen}
+                onClose={toggleCloseDialog}
                 dialogContent={t('boxes:read.details.menu.close.confirmDialog.text')}
               />
               <ChevronRightIcon />
