@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/helpers/isNil';
 import useGeneratePathKeepingSearch from '@misakey/hooks/useGeneratePathKeepingSearch';
 import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
 
@@ -26,6 +27,8 @@ import BoxAvatar from 'components/dumb/Avatar/Box';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import ConfirmationDialog from 'components/dumb/Dialog/Confirm';
 import AvatarUser from '@misakey/ui/Avatar/User';
+import IconButton from '@material-ui/core/IconButton';
+import ShareIcon from '@material-ui/icons/Share';
 
 import { ListItemSecondaryAction } from '@material-ui/core';
 import ButtonCopy from '@misakey/ui/Button/Copy';
@@ -34,6 +37,7 @@ import { CLOSED, OPEN } from 'constants/app/boxes/statuses';
 import { LIFECYCLE } from 'constants/app/boxes/events';
 import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import { addBoxEvents } from 'store/reducers/box';
+import BoxesSchema from 'store/schemas/Boxes';
 
 // CONSTANTS
 const CONTENT_SPACING = 2;
@@ -87,6 +91,16 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
     ),
     [id, secretKey],
   );
+
+  const canShare = useMemo(() => !isNil(navigator.share), []);
+
+  const onShare = useCallback(() => {
+    navigator.share({
+      title: t('boxes:read.details.menu.share.title', { title }),
+      text: t('boxes:read.details.menu.share.text', { title }),
+      url: shareLink,
+    });
+  }, [shareLink, t, title]);
 
   const isAllowedToClose = useMemo(
     () => belongsToCurrentUser && lifecycle === OPEN,
@@ -147,6 +161,41 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
             />
             {/* <ChevronRightIcon /> */}
           </ListItem>
+          {belongsToCurrentUser && (
+            <>
+              {canShare && (
+                <ListItem
+                  divider
+                  aria-label={t('boxes:read.details.menu.share.menuTitle')}
+                >
+                  <ListItemText
+                    primary={t('boxes:read.details.menu.share.menuTitle')}
+                    primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
+                  />
+                  <ListItemSecondaryAction>
+                    <IconButton onClick={onShare} disabled={isNil(shareLink)}>
+                      <ShareIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              )}
+              <ListItem
+                divider
+                aria-label={t('boxes:read.details.menu.copyLink')}
+              >
+                <ListItemText
+                  primary={t('boxes:read.details.menu.copyLink')}
+                  primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
+                />
+                <ListItemSecondaryAction>
+                  <ButtonCopy
+                    mode="icon"
+                    value={shareLink}
+                  />
+                </ListItemSecondaryAction>
+              </ListItem>
+            </>
+          )}
           {/* <ListItem
             button
             to={routeFiles}
@@ -218,25 +267,6 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
               </ListItem>
             ))}
           </List>
-          {/* @FIXME display something else (an error, or nothing at all)
-          if for some reason shareLink is empty */}
-          {belongsToCurrentUser && (
-            <ListItem
-              divider
-              aria-label={t('boxes:read.details.menu.shareLink')}
-            >
-              <ListItemText
-                primary={t('boxes:read.details.menu.shareLink')}
-                primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
-              />
-              <ListItemSecondaryAction>
-                <ButtonCopy
-                  mode="icon"
-                  value={shareLink}
-                />
-              </ListItemSecondaryAction>
-            </ListItem>
-          )}
         </List>
       </Box>
     </>
@@ -247,9 +277,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
 BoxDetails.propTypes = {
   drawerWidth: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
-  // @FIXME isn't it a BoxSchema ? props don't match the ones used inside component.
-  // (from https://gitlab.misakey.dev/misakey/frontend/-/merge_requests/413#note_51319)
-  box: PropTypes.shape({ id: PropTypes.string.isRequired }).isRequired,
+  box: PropTypes.shape(BoxesSchema).isRequired,
   belongsToCurrentUser: PropTypes.bool,
 };
 

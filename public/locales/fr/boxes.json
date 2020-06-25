@@ -80,7 +80,12 @@
           "count_plural": "{{count}} membres"
         },
         "createdAt": "Créée le {{date}}",
-        "shareLink": "Obtenir le lien de partage",
+        "share": {
+          "menuTitle": "Partager",
+          "title": "Conversation sécurisée | {{title}}",
+          "text": "Rejoins la conversation sécurisée «\u00a0{{title}}\u00a0»"
+        },
+        "copyLink": "Copier le lien de partage",
         "close": {
           "primary": "Fermer la box",
           "secondary": "En fermant la box, les autres membres n'auront plus accès à son contenu.",
