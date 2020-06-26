@@ -1,12 +1,16 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+
+import { authReset } from '@misakey/auth/store/actions/auth';
 
 import getSearchParams from '@misakey/helpers/getSearchParams';
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import { getUrlForOidcCallback } from '../../../helpers';
+
 import { withUserManager } from '../../OidcProvider';
 
 // HOOKS
@@ -19,36 +23,6 @@ const useGetAuthRequestDetails = (state) => useMemo(
   () => (isNil(state) ? {} : objectToCamelCase(JSON.parse(localStorage.getItem(`oidc.${state}`) || '{}'))),
   [state],
 );
-
-const useProcessRedirectCallback = (
-  handleSuccess,
-  handleError,
-  userManager,
-  hash,
-  callbackParams,
-  authRequestDetails,
-) => useCallback(() => {
-  const callbackUrl = getUrlForOidcCallback(hash, callbackParams);
-  const { scope, referrer, acrValues } = authRequestDetails;
-  return userManager.signinRedirectCallback(callbackUrl)
-    .then((user) => {
-      // No specific acr was specified or if specified acr match received acr
-      if (isNil(acrValues) || (user.profile.acr.toString() === acrValues.toString())) {
-        if (isFunction(handleSuccess)) {
-          handleSuccess(user);
-        }
-        return true;
-      }
-      userManager.signinRedirect({ scope, referrer, acrValues, prompt: 'login' });
-      return false;
-    })
-    .catch((e) => {
-      if (isFunction(handleError)) {
-        handleError(e);
-      }
-      return true;
-    });
-}, [authRequestDetails, callbackParams, handleError, handleSuccess, hash, userManager]);
 
 // COMPONENTS
 const RedirectAuthCallback = ({
@@ -64,16 +38,43 @@ const RedirectAuthCallback = ({
 
   const { state } = callbackParams;
   const authRequestDetails = useGetAuthRequestDetails(state);
-  const { referrer } = authRequestDetails;
+  const { referrer, scope, acrValues } = useMemo(() => authRequestDetails, [authRequestDetails]);
 
+  const dispatch = useDispatch();
 
-  const processRedirectCallback = useProcessRedirectCallback(
-    handleSuccess,
-    handleError,
-    userManager,
-    hash,
-    callbackParams,
-    authRequestDetails,
+  const dispatchAuthReset = useCallback(
+    () => Promise.resolve(dispatch(authReset())),
+    [dispatch],
+  );
+
+  const processRedirectCallback = useCallback(
+    () => {
+      const callbackUrl = getUrlForOidcCallback(hash, callbackParams);
+      return dispatchAuthReset()
+        .then(() => userManager.signinRedirectCallback(callbackUrl)
+          .then((user) => {
+            // No specific acr was specified or if specified acr match received acr
+            if (isNil(acrValues) || (user.profile.acr.toString() === acrValues.toString())) {
+              if (isFunction(handleSuccess)) {
+                handleSuccess(user);
+              }
+              return true;
+            }
+            userManager.signinRedirect({ scope, referrer, acrValues, prompt: 'login' });
+            return false;
+          })
+          .catch((e) => {
+            if (isFunction(handleError)) {
+              handleError(e);
+            }
+            return true;
+          }));
+    },
+    [
+      hash, callbackParams, acrValues, scope, referrer,
+      dispatchAuthReset, userManager,
+      handleSuccess, handleError,
+    ],
   );
 
   const fallbackReferrer = useMemo(

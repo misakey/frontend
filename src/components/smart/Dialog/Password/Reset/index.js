@@ -44,7 +44,7 @@ const DialogPasswordReset = forwardRef(({
   return (
     <DialogPassword
       ref={ref}
-      title={t('account:password.new')}
+      title={t('auth:resetPassword')}
       onClose={handleClose}
       onSubmit={handleSubmit}
       formikProps={formikProps}
@@ -65,5 +65,5 @@ DialogPasswordReset.defaultProps = {
   open: false,
 };
 
-export default withTranslation('account')(DialogPasswordReset);
+export default withTranslation('auth')(DialogPasswordReset);
 
