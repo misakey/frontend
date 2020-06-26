@@ -1,0 +1,109 @@
+{
+  "list": {
+    "open": "Open your vault to access your chats",
+    "pasteUrl": {
+      "title": "Paste a chat URL 💬 to decrypt it",
+      "placeholder": "https://app.misakey.com/invitation/9e944b29-b94f-417a-8980...."
+    },
+    "events": {
+      "preview": {
+        "message": {
+          "you": "You: {{text}}",
+          "they": "{{displayName}}: {{text}}"
+        }
+      }
+    },
+    "empty": {
+      "text": "Your box list is empty",
+      "create": "Create a box"
+    },
+    "select": "Select a chat 💬 to start"
+  },
+  "read": {
+    "closed": {
+      "info": "{{displayName}} closed the box «\u00a0{{title}}\u00a0» on {{date}}."
+    },
+    "actions": {
+      "upload": "Upload a file",
+      "confirmIdentity": "Confirm your identity",
+      "more": "More actions",
+      "send": "Send"
+    },
+    "events": {
+      "information": {
+        "lifecycle": {
+          "closed": {
+            "they": "{{displayName}} closed the box",
+            "you": "You closed the box"
+          },
+          "open": {
+            "they": "{{displayName}} reopened the box",
+            "you": "You reopened the box"
+          }
+        },
+        "create": {
+          "they": "{{displayName}} created the box «\u00a0{{title}}\u00a0»",
+          "you": "You created the box «\u00a0{{title}}\u00a0»"
+        }
+      }
+    },
+    "upload": {
+      "dialog": {
+        "text": "What file do you want to encrypt?",
+        "label": "New file to encrypt",
+        "helperText": "Drop the file you want to encrypt. <1>Learn more</1>",
+        "errors": {
+          "blobs": {
+            "api": {
+              "notSent": "An error occurred while sending the files: {{filenamesErrors}}.\nYou can check their format and retry.\n",
+              "sent": "Files:{{filenamesSent}} have been successfully sent."
+            },
+            "required": "You must send at least one file",
+            "max": "You can not send more than 10 files at a time"
+          }
+        }
+      },
+      "success": "Files have been sent successfully\u00a0!"
+    },
+    "details": {
+      "open": "See details",
+      "menu": {
+        "title": "Name of the box",
+        "files": "Files of the box",
+        "encryption": {
+          "primary": "Encryption",
+          "secondary": "Information sent in this workspace are protected with end-to-end encryption."
+        },
+        "members": {
+          "title": "Members of the box",
+          "count": "{{count}} member",
+          "count_plural": "{{count}} members"
+        },
+        "createdAt": "Created on {{date}}",
+        "share": {
+          "menuTitle": "Share",
+          "title": "Secure conversation | {{title}}",
+          "text": "Join the secure conversation «\u00a0{{title}}\u00a0»"
+        },
+        "copyLink": "Copy sharing link",
+
+        "close": {
+          "primary": "Close the box",
+          "secondary": "By closing the box, other members will not have access to its content anymore.",
+          "confirmDialog": {
+            "text": "Do you really want to close the box?\nOther members will not have access to its content anymore and you won't be able to reopen it.\nAs the box creator, you will still have access to the content."
+          }
+        }
+      }
+    }
+  },
+  "create": {
+    "dialog": {
+      "content": "What is the subject of the box?",
+      "success": "Box has been successfully created!",
+      "fields": {
+        "name": "Subject"
+      }
+    }
+  }
+}
