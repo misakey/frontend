@@ -1,16 +1,16 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Link, generatePath } from 'react-router-dom';
-import routes from 'routes';
+import { Link } from 'react-router-dom';
+// import routes from 'routes';
 import { withTranslation } from 'react-i18next';
 
-import Button from '@misakey/ui/Button';
+// import Button from '@misakey/ui/Button';
 import ButtonSignOut from '@misakey/auth/components/Button/SignOut';
 import CardIdentityThumbnail from 'components/dumb/Card/Identity/Thumbnail';
 import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import ArrowBack from '@material-ui/icons/ArrowBack';
-import Typography from '@material-ui/core/Typography';
+// import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import withIdentity from 'components/smart/withIdentity';
@@ -23,10 +23,10 @@ function IdentifierList({ drawerWidth, getNextDrawerSearch, t }) {
     () => getNextDrawerSearch(undefined, true),
     [getNextDrawerSearch],
   );
-  const handleAccountRoute = useMemo(
-    () => generatePath(routes.accounts.read._, { id: 'misakey' }),
-    [],
-  );
+  // const handleAccountRoute = useMemo(
+  //   () => generatePath(routes.accounts.read._, { id: 'misakey' }),
+  //   [],
+  // );
   return (
     <>
       <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth}>
@@ -40,8 +40,9 @@ function IdentifierList({ drawerWidth, getNextDrawerSearch, t }) {
           <ArrowBack />
         </IconButtonAppBar>
       </AppBarDrawer>
-      <CardIdentityThumbnailWithIdentity />
-      <Box p={2}>
+      <Box display="flex" flexDirection="column" alignItems="center">
+        <CardIdentityThumbnailWithIdentity />
+        {/* <Box p={2}>
         <Typography>Listes des identifiants</Typography>
         <Button
           component={Link}
@@ -53,6 +54,7 @@ function IdentifierList({ drawerWidth, getNextDrawerSearch, t }) {
           // eslint-disable-next-line no-console
           onClick={() => { console.log('WIP!'); }}
         />
+      </Box> */}
       </Box>
       <Divider />
       <Box mx={4} my={2}>

@@ -20,29 +20,11 @@ config: >-
       dsn: 'https://a695e1e73b004ad2bc1f82b581f072fe@sentry.io/2071584',
       environment: 'preprod',
     },
-    CATEGORIES: [
-      'press',
-      'bet'
-    ],
     MATOMO: {
       ENABLED: true,
       URL: 'https://analytics.misakey.com/',
       SITEID: '2'
     },
-    ACTIVE_SERVICES: [
-      'mortdu.fun',
-      't0nio.com',
-      'cedricvanrompay.fr',
-      'preprod.misakey.dev',
-      'toupy.fr',
-      'misadmin.preprod.misakey.dev',
-      'twitter.com',
-      'google.fr',
-      'liberation.fr',
-      'facebook.com',
-      'lemonde.fr',
-      'rdvsimple.com'
-    ],
     TYPEFORM_URL: 'https://misakey.typeform.com/to/hfR198'
   };
     

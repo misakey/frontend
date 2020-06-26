@@ -17,36 +17,10 @@ config: >-
       dsn: 'https://a695e1e73b004ad2bc1f82b581f072fe@sentry.io/2071584',
       environment: 'production',
     },
-    CATEGORIES: [
-      'shops',
-      'music',
-      'video',
-      'dating',
-      'food',
-      'mobility',
-      'retailers',
-      'tickets',
-      'transport',
-    ],
     MATOMO: {
       ENABLED: true,
       URL: 'https://analytics.misakey.com/',
       SITEID: '1'
     },
-    ACTIVE_SERVICES: [
-      'maif.fr',
-      'trainline.eu',
-      'decathlon.fr',
-      'mediapart.fr',
-      'framasoft.org',
-      'ulule.fr',
-      'edf.fr',
-      'alan.com',
-      'credit-cooperatif.coop',
-      'axa.fr',
-      'carrefour.fr',
-      'gandi.net',
-      'gog.com'
-    ],
     TYPEFORM_URL: 'https://misakey.typeform.com/to/yNWbZB'
   };

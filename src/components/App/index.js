@@ -2,7 +2,6 @@ import React, { lazy, Suspense } from 'react';
 import PropTypes from 'prop-types';
 
 import ErrorBoundary from 'components/smart/ErrorBoundary';
-import ScreenSplash from 'components/dumb/Screen/Splash';
 
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
@@ -16,6 +15,7 @@ import Redirect from 'components/dumb/Redirect';
 import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallbackWrapper';
 import RoutePrivate from '@misakey/auth/components/Route/Private';
 import SeclevelWarningAlert from 'components/smart/Alert/SeclevelWarning';
+import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 
 import { processSigninRedirect } from '@misakey/helpers/auth';
 
@@ -36,7 +36,7 @@ const TRedirectAuthCallback = withTranslation('common')(RedirectAuthCallback);
 
 const App = ({ t, isAuthenticated }) => (
   <ErrorBoundary maxWidth="md" my={3}>
-    <Suspense fallback={<ScreenSplash />}>
+    <Suspense fallback={<SplashScreenWithTranslation />}>
       <SeclevelWarningAlert />
       <Switch>
         {/* LEGALS */}
