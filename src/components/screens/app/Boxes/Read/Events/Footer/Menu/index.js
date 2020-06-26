@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function FooterMenuActions({ box, t }) {
+function FooterMenuActions({ box, t, onCloseMenuActions }) {
   const classes = useStyles();
   const [isUploadDialogOpen, setIsUploadDialogOpen] = React.useState(false);
 
@@ -41,6 +41,7 @@ function FooterMenuActions({ box, t }) {
     <>
       <UploadDialog
         box={box}
+        onSuccess={onCloseMenuActions}
         open={isUploadDialogOpen}
         onClose={onClose}
       />
@@ -62,6 +63,7 @@ function FooterMenuActions({ box, t }) {
 FooterMenuActions.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
+  onCloseMenuActions: PropTypes.func.isRequired,
 };
 
 export default withTranslation(['boxes'])(FooterMenuActions);

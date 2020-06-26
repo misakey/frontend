@@ -106,7 +106,7 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
               {({ TransitionProps }) => (
                 <Grow {...TransitionProps} style={{ transformOrigin: 'center top' }}>
                   <Paper variant="outlined" className={classes.paper}>
-                    <FooterMenuActions box={box} />
+                    <FooterMenuActions box={box} onCloseMenuActions={onClose} />
                   </Paper>
                 </Grow>
               )}

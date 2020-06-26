@@ -34,7 +34,7 @@ const BoxMessageFileEvent = ({ event, boxID, isFromCurrentUser, preview, t, ...r
       if (isEmpty(secretKey)) {
         return {
           canBeDecrypted: false,
-          text: t('common:undecryptable'),
+          text: t('common:encrypted'),
         };
       }
 
