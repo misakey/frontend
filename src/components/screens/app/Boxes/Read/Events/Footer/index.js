@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
@@ -89,6 +89,11 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
     },
     [dispatch, id, publicKey, value],
   );
+
+  useEffect(() => {
+    // Reset to initialState when box changes
+    setIsMenuActionOpen(false);
+  }, [id]);
 
   return (
     <Box p={BOX_PADDING_SPACING} ref={footerRef}>

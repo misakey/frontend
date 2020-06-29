@@ -42,8 +42,10 @@ const useStyles = makeStyles((theme) => ({
 
 const BlobListItem = ({ blob, onRemove, isEncrypted, t }) => {
   const classes = useStyles();
-  const { name, lastModified } = useMemo(() => blob, [blob]);
-  const size = useMemo(() => numbro(blob.size).format(FILE_SIZE_FORMAT), [blob.size]);
+  const { name, lastModified, size } = useMemo(() => blob, [blob]);
+  const formattedSize = useMemo(
+    () => (size ? numbro(size).format(FILE_SIZE_FORMAT) : null), [size],
+  );
   const [anchorEl, setAnchorEl] = useState(null);
 
   const onClick = useCallback(
@@ -63,7 +65,7 @@ const BlobListItem = ({ blob, onRemove, isEncrypted, t }) => {
       </ListItemAvatar>
       <ListItemText
         primary={name}
-        secondary={size}
+        secondary={formattedSize}
         primaryTypographyProps={{ noWrap: true, display: 'block' }}
         secondaryTypographyProps={{ noWrap: true, display: 'block' }}
       />

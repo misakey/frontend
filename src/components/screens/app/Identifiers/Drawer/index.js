@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 // import routes from 'routes';
 import { withTranslation } from 'react-i18next';
 
@@ -14,11 +14,13 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import withIdentity from 'components/smart/withIdentity';
+import routes from 'routes';
 
 // COMPONENTS
 const CardIdentityThumbnailWithIdentity = withIdentity(CardIdentityThumbnail);
 
 function IdentifierList({ drawerWidth, getNextDrawerSearch, t }) {
+  const history = useHistory();
   const goBack = useMemo(
     () => getNextDrawerSearch(undefined, true),
     [getNextDrawerSearch],
@@ -27,6 +29,9 @@ function IdentifierList({ drawerWidth, getNextDrawerSearch, t }) {
   //   () => generatePath(routes.accounts.read._, { id: 'misakey' }),
   //   [],
   // );
+
+  const onSignedOut = useCallback(() => history.replace(routes._), [history]);
+
   return (
     <>
       <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth}>
@@ -58,7 +63,7 @@ function IdentifierList({ drawerWidth, getNextDrawerSearch, t }) {
       </Box>
       <Divider />
       <Box mx={4} my={2}>
-        <ButtonSignOut />
+        <ButtonSignOut onSuccess={onSignedOut} />
       </Box>
       <Divider />
     </>

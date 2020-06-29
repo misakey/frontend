@@ -1,8 +1,8 @@
 {
   "list": {
-    "open": "Open your vault to access your chats",
+    "open": "Type your password to decrypt all your chats",
     "pasteUrl": {
-      "title": "Paste a chat URL 💬 to decrypt it",
+      "title": "Paste a chat URL to decrypt it",
       "placeholder": "https://app.misakey.com/invitation/9e944b29-b94f-417a-8980...."
     },
     "events": {
@@ -14,10 +14,10 @@
       }
     },
     "empty": {
-      "text": "Your box list is empty",
-      "create": "Create a box"
+      "text": "No secured chat at the moment",
+      "create": "Start a chat"
     },
-    "select": "Select a chat 💬 to start"
+    "select": "Join a secure chat 💬 to start"
   },
   "read": {
     "closed": {

@@ -21,11 +21,13 @@ const WindowedListAutoSized = forwardRef(({
 
   const computeBestHeight = useCallback(
     ({ height }) => {
-      const computed = Math.min(itemsSize, height);
-      setBestHeight((prevBestHeight) => (isNumber(prevBestHeight)
-        ? Math.min(prevBestHeight, computed)
-        : computed
-      ));
+      if (height > 0) {
+        const computed = Math.min(itemsSize, height);
+        setBestHeight((prevBestHeight) => (isNumber(prevBestHeight)
+          ? Math.min(prevBestHeight, computed)
+          : computed
+        ));
+      }
     },
     [itemsSize],
   );

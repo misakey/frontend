@@ -61,7 +61,7 @@ function VaultLocked({ t }) {
       <Title>{t('common:or')}</Title>
       <Title align="center">{t('boxes:list.open')}</Title>
       <Box>
-        <ButtonWithDialogPassword text={t('common:open')} />
+        <ButtonWithDialogPassword text={t('common:decrypt')} />
       </Box>
     </Box>
   );
