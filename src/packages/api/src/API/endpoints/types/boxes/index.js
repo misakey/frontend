@@ -43,6 +43,18 @@ export default {
       auth: true,
     },
   },
+  keyShares: {
+    create: {
+      method: 'POST',
+      path: '/key-shares',
+      auth: true,
+    },
+    read: {
+      method: 'GET',
+      path: '/key-shares/:invitationHash',
+      auth: true,
+    },
+  },
   // @FIXME is this still used at all?
   blob: {
     find: {

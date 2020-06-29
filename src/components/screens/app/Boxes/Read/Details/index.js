@@ -4,10 +4,11 @@ import routes from 'routes';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
+import copy from 'copy-to-clipboard';
+import { useSnackbar } from 'notistack';
 import { makeStyles } from '@material-ui/core/styles';
 
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
-import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 import useGeneratePathKeepingSearch from '@misakey/hooks/useGeneratePathKeepingSearch';
 import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
@@ -29,15 +30,16 @@ import ConfirmationDialog from 'components/dumb/Dialog/Confirm';
 import AvatarUser from '@misakey/ui/Avatar/User';
 import IconButton from '@material-ui/core/IconButton';
 import ShareIcon from '@material-ui/icons/Share';
+import CopyIcon from '@material-ui/icons/FilterNone';
 
 import { ListItemSecondaryAction } from '@material-ui/core';
-import ButtonCopy from '@misakey/ui/Button/Copy';
 import { AVATAR_SIZE } from '@misakey/ui/constants/sizes';
 import { CLOSED, OPEN } from 'constants/app/boxes/statuses';
 import { LIFECYCLE } from 'constants/app/boxes/events';
-import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import { createBoxEventBuilder, createKeyShareBuilder } from '@misakey/helpers/builder/boxes';
 import { addBoxEvents } from 'store/reducers/box';
 import BoxesSchema from 'store/schemas/Boxes';
+import { splitBoxSecretKey } from '@misakey/crypto/box/keySplitting';
 
 // CONSTANTS
 const CONTENT_SPACING = 2;
@@ -62,6 +64,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
   const [contentRef, setContentRef] = useState();
   const [isCloseDialogOpen, setIsCloseDialogOpen] = useState(false);
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
   const {
     id,
@@ -77,30 +80,47 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
 
   const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
 
-  const secretKey = useMemo(
-    () => publicKeysWeCanDecryptFrom.get(publicKey),
+  const canInvite = useMemo(
+    () => publicKeysWeCanDecryptFrom.has(publicKey),
     [publicKey, publicKeysWeCanDecryptFrom],
   );
 
-  // @FIXME crypto: should split the secretKey and upload one part on backend
-  const shareLink = useMemo(
-    () => (
-      isEmpty(secretKey)
-        ? undefined
-        : parseUrlFromLocation(`${routes.boxes.invitation}#${id}&${secretKey}`).href
-    ),
-    [id, secretKey],
+  const canShare = useMemo(() => canInvite && !isNil(navigator.share), [canInvite]);
+
+  const createInvitation = useCallback(
+    // @FIXME move this logic in a dedicated function
+    // outside of the component?
+    async () => {
+      const secretKey = publicKeysWeCanDecryptFrom.get(publicKey);
+
+      const { invitationKeyShare, misakeyKeyShare } = splitBoxSecretKey(secretKey);
+
+      await createKeyShareBuilder(misakeyKeyShare);
+
+      const invitationURL = parseUrlFromLocation(`${routes.boxes.invitation}#${id}&${invitationKeyShare}`).href;
+
+      return invitationURL;
+    },
+    [id, publicKey, publicKeysWeCanDecryptFrom],
   );
 
-  const canShare = useMemo(() => !isNil(navigator.share), []);
-
-  const onShare = useCallback(() => {
+  const onShare = useCallback(async () => {
+    const invitationURL = await createInvitation();
     navigator.share({
       title: t('boxes:read.details.menu.share.title', { title }),
       text: t('boxes:read.details.menu.share.text', { title }),
-      url: shareLink,
+      url: invitationURL,
     });
-  }, [shareLink, t, title]);
+  }, [t, title, createInvitation]);
+
+  const onInvite = useCallback(
+    async () => {
+      const invitationURL = await createInvitation();
+      copy(invitationURL);
+      enqueueSnackbar(t('common:copied'), { variant: 'success' });
+    },
+    [createInvitation, enqueueSnackbar, t],
+  );
 
   const isAllowedToClose = useMemo(
     () => belongsToCurrentUser && lifecycle === OPEN,
@@ -173,7 +193,11 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
                     primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
                   />
                   <ListItemSecondaryAction>
-                    <IconButton onClick={onShare} disabled={isNil(shareLink)}>
+                    <IconButton
+                      onClick={onShare}
+                      disabled={isNil(canShare)}
+                      aria-label={t('common:share')}
+                    >
                       <ShareIcon />
                     </IconButton>
                   </ListItemSecondaryAction>
@@ -188,10 +212,13 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
                   primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
                 />
                 <ListItemSecondaryAction>
-                  <ButtonCopy
-                    mode="icon"
-                    value={shareLink}
-                  />
+                  <IconButton
+                    onClick={onInvite}
+                    disabled={!canInvite}
+                    aria-label={t('common:copy')}
+                  >
+                    <CopyIcon />
+                  </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
             </>

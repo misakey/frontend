@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo, useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { generatePath, Redirect } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,17 +12,21 @@ import { selectors } from '@misakey/crypto/store/reducer';
 import { addBoxSecretKey } from '@misakey/crypto/store/actions/concrete';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import { getKeyShareBuilder } from '@misakey/helpers/builder/boxes';
+import { computeInvitationHash, combineShares } from '@misakey/crypto/box/keySplitting';
 
 function Invitation({ location: { hash }, onClick }) {
   const [isReadyToRedirect, setIsReadyToRedirect] = useState(false);
   const dispatch = useDispatch();
 
-  const [id, secretKey] = useMemo(() => hash.substr(1).split('&'), [hash]);
+  const [id, invitationShare] = useMemo(() => hash.substr(1).split('&'), [hash]);
   const redirectTo = useMemo(() => generatePath(routes.boxes.read._, { id }), [id]);
 
   const { accountId, id: identityId } = useSelector(getCurrentUserSelector) || {};
   const isCryptoLoadedSelector = useMemo(() => selectors.isCryptoLoaded, []);
   const isCryptoLoaded = useSelector(isCryptoLoadedSelector);
+
+  const [secretKey, setSecretKey] = useState();
 
   // if user has a backup they must wait for backup to be loaded in order to add the new key
   // if user has no backup they can keep forward
@@ -40,14 +44,30 @@ function Invitation({ location: { hash }, onClick }) {
     [isCryptoReady, isReadyToRedirect, secretKey],
   );
 
+  const rebuildSecretKey = useCallback(
+    async () => {
+      const invitationHash = computeInvitationHash(invitationShare);
+      const misakeyKeyShare = await getKeyShareBuilder(invitationHash);
+      setSecretKey(combineShares(invitationShare, misakeyKeyShare));
+    },
+    [invitationShare],
+  );
+
   useEffect(() => {
     if (shouldOpenVault) { onClick(); }
   }, [onClick, shouldOpenVault]);
 
   useEffect(
     () => {
-      // @FIXME crypto: should fetch other part of key on backend
-      // (see https://gitlab.misakey.dev/misakey/frontend/-/issues/603)
+      if (!shouldStoreSecretAndRedirect) {
+        rebuildSecretKey();
+      }
+    },
+    [shouldStoreSecretAndRedirect, rebuildSecretKey],
+  );
+
+  useEffect(
+    () => {
       if (shouldStoreSecretAndRedirect) {
         dispatch(addBoxSecretKey(secretKey));
         setIsReadyToRedirect(true);
