@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 
 import { METHODS } from '@misakey/auth/constants/method';
 import { PROP_TYPES as PWD_HASH_PROP_TYPES } from '@misakey/auth/passwordHashing/constants';
-import head from '@misakey/helpers/head';
-import isArray from '@misakey/helpers/isArray';
+import isNil from '@misakey/helpers/isNil';
 import prop from '@misakey/helpers/prop';
+import { parseAcrValues, parseAcr } from '@misakey/helpers/parseAcr';
 import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
 import { createSelector } from 'reselect';
 
@@ -60,11 +60,17 @@ function onReset() {
   return INITIAL_STATE;
 }
 
-function onUpdate(state, { sso: { acrValues, ...rest } }) {
+function onUpdate(state, { sso: { acrValues, acr, ...rest } }) {
+  let nextAcr = parseAcr(acr);
+
+  if (isNil(nextAcr)) {
+    nextAcr = parseAcrValues(acrValues);
+  }
+
   return {
     ...state,
     ...rest,
-    acr: isArray(acrValues) ? parseInt(head(acrValues), 10) : null,
+    acr: nextAcr,
     acrValues,
   };
 }

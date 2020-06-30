@@ -5,9 +5,9 @@ import { loadUserThunk, authReset } from '@misakey/auth/store/actions/auth';
 
 import log from '@misakey/helpers/log';
 import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
 import pick from '@misakey/helpers/pick';
 import parseJwt from '@misakey/helpers/parseJwt';
+import { parseAcr } from '@misakey/helpers/parseAcr';
 import createUserManager from '@misakey/auth/helpers/userManager';
 
 import OidcProviderSplash from '@misakey/auth/components/OidcProvider/Splash';
@@ -27,7 +27,7 @@ const getUser = ({
   authenticatedAt,
   scope,
   isAuthenticated: !!token,
-  acr: !isEmpty(acr) ? parseInt(acr, 10) : null,
+  acr: parseAcr(acr),
 });
 
 // CONTEXT

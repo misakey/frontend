@@ -15,7 +15,6 @@ const authExtendedNamings = [
   'signIn', 'signOut', 'signUp',
   'resetPassword', 'forgotPassword', 'confirm',
   'askConfirm', 'init',
-  'consent',
   'checkAuthable', 'info', 'loginAuthStep', 'renewAuthStep',
 ];
 

@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
+import { parseAcr } from '@misakey/helpers/parseAcr';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
@@ -22,7 +21,7 @@ const useHandleSuccess = (
     expiresAt,
     id: idToken,
     token: accessToken,
-    acr: !isNil(acr) && !isEmpty(acr) ? parseInt(acr, 10) : null,
+    acr: parseAcr(acr),
   };
   onSignIn(credentials);
   enqueueSnackbar(t('common:signedIn'), { variant: 'success' });

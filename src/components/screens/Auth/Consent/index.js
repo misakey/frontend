@@ -9,11 +9,13 @@ import { CONSENTED_SCOPES_KEY, CONSENT_SCOPES } from '@misakey/auth/constants/co
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
 import { getDetails } from '@misakey/helpers/apiError';
-import consent from '@misakey/auth/builder/consent';
+import { consent } from '@misakey/auth/builder/consent';
 
 import { useSnackbar } from 'notistack';
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import useGetConsentInfo from '@misakey/hooks/useGetConsentInfo';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import ListConsent from '@misakey/auth/components/List/Consent';
 import Title from 'components/dumb/Typography/Title';
@@ -44,7 +46,8 @@ const AuthConsent = ({
 
   const { identityId } = useMemo(() => authnStep || {}, [authnStep]);
 
-  const primary = useMemo(() => ({ text: t('common:accept') }), [t]);
+
+  const getConsentInfo = useGetConsentInfo(consentChallenge);
 
   const onSubmit = useCallback(
     (values, { setSubmitting }) => {
@@ -65,6 +68,15 @@ const AuthConsent = ({
     },
     [consentChallenge, enqueueSnackbar, handleHttpErrors, identityId, t],
   );
+
+  const shouldFetch = useMemo(
+    () => isNil(identityId),
+    [identityId],
+  );
+
+  const { isFetching } = useFetchEffect(getConsentInfo, { shouldFetch });
+
+  const primary = useMemo(() => ({ text: t('common:accept'), isLoading: isFetching }), [isFetching, t]);
 
   if (!isNil(redirectTo)) {
     return (

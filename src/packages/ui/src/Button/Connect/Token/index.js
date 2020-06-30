@@ -8,6 +8,7 @@ import noop from '@misakey/helpers/noop';
 import isFunction from '@misakey/helpers/isFunction';
 import isObject from '@misakey/helpers/isObject';
 import pick from '@misakey/helpers/pick';
+import { parseAcr } from '@misakey/helpers/parseAcr';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
@@ -82,7 +83,7 @@ const ButtonConnectToken = ({
   const handleHttpErrors = useHandleHttpErrors();
 
   const { sub: userId, acr } = useParseIdToken(id);
-  const seclevel = useMemo(() => parseInt(acr, 10), [acr]);
+  const seclevel = useMemo(() => parseAcr(acr), [acr]);
 
   const handleSignOut = useHandleSignOut(onSignOut, handleClose, userId, handleHttpErrors);
 

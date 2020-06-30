@@ -9,7 +9,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import isNil from '@misakey/helpers/isNil';
 import pickAll from '@misakey/helpers/pickAll';
 import every from '@misakey/helpers/every';
-import head from '@misakey/helpers/head';
 import difference from '@misakey/helpers/difference';
 import objectToQueryString from '@misakey/helpers/objectToQueryString';
 import getSearchParams from '@misakey/helpers/getSearchParams';
@@ -18,7 +17,7 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import compose from '@misakey/helpers/compose';
 import complement from '@misakey/helpers/complement';
 import anyPass from '@misakey/helpers/anyPass';
-import isArray from '@misakey/helpers/isArray';
+import { parseAcrValues } from '@misakey/helpers/parseAcr';
 
 import routes from 'routes';
 
@@ -103,7 +102,7 @@ const useGetLoginInfos = (challenge, dispatch, setIsFetching, setError) => useCa
             clientName: name,
             logoUri,
             loginChallenge: challenge,
-            acr: isArray(acrValues) ? parseInt(head(acrValues), 10) : null,
+            acr: parseAcrValues(acrValues),
           }));
           dispatch(screenAuthSetIdentifier(loginHint));
         });
