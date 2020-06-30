@@ -40,6 +40,7 @@ function ConfirmationDialog({
       aria-labelledby="confirmation-dialog-title"
       open={isDialogOpen}
       fullScreen={fullScreen}
+      onClose={onClose}
       {...omitTranslationProps(rest)}
     >
       <DialogTitleWithClose onClose={onClose}>

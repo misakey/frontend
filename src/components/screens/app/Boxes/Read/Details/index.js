@@ -138,7 +138,9 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
   );
 
   const toggleCloseDialog = useCallback(
-    () => { setIsCloseDialogOpen((current) => !current); }, [setIsCloseDialogOpen],
+    () => {
+      setIsCloseDialogOpen((current) => !current);
+    }, [setIsCloseDialogOpen],
   );
 
   const onCloseBox = useCallback(
@@ -187,7 +189,6 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
             {t('boxes:read.details.menu.members.count', { count: members.length })}
           </Typography>
         </Box>
-
         <List>
           <ListItem
             // button
@@ -274,26 +275,28 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
             {/* <ChevronRightIcon /> */}
           </ListItem>
           {isAllowedToClose && (
-            <ListItem
-              button
-              divider
-              onClick={toggleCloseDialog}
-              aria-label={t('boxes:read.details.menu.close.primary')}
-            >
-              <ListItemText
-                primary={t('boxes:read.details.menu.close.primary')}
-                secondary={t('boxes:read.details.menu.close.secondary')}
-                primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
-                secondaryTypographyProps={{ color: 'textPrimary' }}
-              />
+            <>
+              <ListItem
+                button
+                divider
+                onClick={toggleCloseDialog}
+                aria-label={t('boxes:read.details.menu.close.primary')}
+              >
+                <ListItemText
+                  primary={t('boxes:read.details.menu.close.primary')}
+                  secondary={t('boxes:read.details.menu.close.secondary')}
+                  primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
+                  secondaryTypographyProps={{ color: 'textPrimary' }}
+                />
+                <ChevronRightIcon />
+              </ListItem>
               <ConfirmationDialog
                 onConfirm={onCloseBox}
                 isDialogOpen={isCloseDialogOpen}
                 onClose={toggleCloseDialog}
                 dialogContent={t('boxes:read.details.menu.close.confirmDialog.text')}
               />
-              <ChevronRightIcon />
-            </ListItem>
+            </>
           )}
           <List subheader={(
             <ListSubheader>
@@ -325,7 +328,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
 BoxDetails.propTypes = {
   drawerWidth: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
-  box: PropTypes.shape(BoxesSchema).isRequired,
+  box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   belongsToCurrentUser: PropTypes.bool,
 };
 

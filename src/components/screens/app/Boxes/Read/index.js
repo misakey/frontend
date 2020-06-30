@@ -41,38 +41,35 @@ function BoxRead({
   }
 
   return (
-    <>
-      <Switch>
-        <Route
-          path={routes.boxes.read.details}
-          render={() => (
-            <BoxDetails
-              box={box}
-              drawerWidth={drawerWidth}
-              belongsToCurrentUser={belongsToCurrentUser}
-            />
-          )}
-        />
-        <Route
-          path={routes.boxes.read.files}
-          render={() => <BoxFiles box={box} drawerWidth={drawerWidth} />}
-        />
-        <Route
-          exact
-          path={match.path}
-          render={() => (
-            <BoxEvents
-              box={box}
-              isFetching={isFetching.events}
-              toggleDrawer={toggleDrawer}
-              isDrawerOpen={isDrawerOpen}
-              drawerWidth={drawerWidth}
-            />
-          )}
-        />
-      </Switch>
-    </>
-
+    <Switch>
+      <Route
+        path={routes.boxes.read.details}
+        render={() => (
+          <BoxDetails
+            box={box}
+            drawerWidth={drawerWidth}
+            belongsToCurrentUser={belongsToCurrentUser}
+          />
+        )}
+      />
+      <Route
+        path={routes.boxes.read.files}
+        render={() => <BoxFiles box={box} drawerWidth={drawerWidth} />}
+      />
+      <Route
+        exact
+        path={match.path}
+        render={() => (
+          <BoxEvents
+            box={box}
+            isFetching={isFetching.events}
+            toggleDrawer={toggleDrawer}
+            isDrawerOpen={isDrawerOpen}
+            drawerWidth={drawerWidth}
+          />
+        )}
+      />
+    </Switch>
   );
 }
 
