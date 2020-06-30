@@ -15,6 +15,7 @@ import {
   CRYPTO_INITIALIZE,
   CRYPTO_SET_BACKUP_VERSION,
   CRYPTO_ADD_BOX_SECRET_KEY,
+  CRYPTO_SET_ENCRYPTED_BACKUP_DATA,
 } from './actions/concrete';
 
 // HELPERS
@@ -35,6 +36,7 @@ const concatToPath = (values, destObject, path) => (
 const initialState = {
   backupKey: null,
   backupVersion: null,
+  data: null,
   secrets: {
     // @FIXME rename "secretKey" to "userDecryptionKey"
     secretKey: null,
@@ -59,6 +61,12 @@ export default function (currentState = initialState, action) {
       return {
         ...newState,
         backupKey: action.backupKey,
+      };
+    case CRYPTO_SET_ENCRYPTED_BACKUP_DATA:
+      return {
+        ...newState,
+        data: action.data,
+        backupVersion: action.backupVersion,
       };
     case CRYPTO_SET_BACKUP_VERSION:
       return {
@@ -111,8 +119,14 @@ const currentBoxSecrets = createSelector(
   (state) => state.secrets.boxDecryptionKeys,
 );
 
+const getEncryptedBackupData = createSelector(
+  getState,
+  (state) => ({ data: state.data, backupVersion: state.backupVersion }),
+);
+
 export const selectors = {
   isCryptoLoaded,
   areSecretsLoaded,
   currentBoxSecrets,
+  getEncryptedBackupData,
 };

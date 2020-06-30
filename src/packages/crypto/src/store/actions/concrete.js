@@ -57,6 +57,7 @@ export const CRYPTO_IMPORT_SECRET_KEYS = Symbol('CRYPTO_IMPORT_SECRET_KEYS');
 export const CRYPTO_INITIALIZE = Symbol('CRYPTO_INITIALIZE');
 export const CRYPTO_SET_BACKUP_VERSION = Symbol('CRYPTO_SET_BACKUP_VERSION');
 export const CRYPTO_ADD_BOX_SECRET_KEY = Symbol('CRYPTO_ADD_BOX_SECRET_KEY');
+export const CRYPTO_SET_ENCRYPTED_BACKUP_DATA = Symbol('CRYPTO_SET_ENCRYPTED_BACKUP_DATA');
 
 // ACTION BUILDERS
 // @FIXME maybe apply "withBackupUpdater" later
@@ -233,5 +234,11 @@ export const loadSecrets = ({
   type: CRYPTO_LOAD_SECRETS,
   secrets,
   backupKey,
+  backupVersion,
+});
+
+export const storeEncryptedBackupData = ({ data, backupVersion }) => ({
+  type: CRYPTO_SET_ENCRYPTED_BACKUP_DATA,
+  data,
   backupVersion,
 });

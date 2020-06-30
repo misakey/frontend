@@ -1,17 +1,17 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
-import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
-import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import { getEncryptedSecretsBackup } from '../HttpApi';
 import { decryptSecretsBackup } from '../secretsBackup/encryption';
 import { loadSecrets, loadSecretsAndUpdateBackup } from '../store/actions/concrete';
 import { selectors } from '../store/reducer';
+import useFetchSecretBackup from './useFetchSecretBackup';
 
 const useTryPassword = (encryptedSecretsBackup, dispatch, currentBoxSecrets) => useCallback(
   (password) => {
-    const { data, version: backupVersion } = encryptedSecretsBackup;
+    if (isNil(encryptedSecretsBackup)) {
+      return () => Promise.resolve();
+    }
+    const { data, backupVersion } = encryptedSecretsBackup;
 
     return decryptSecretsBackup(data, password)
       .then(({ backupKey, secretBackup: secrets }) => {
@@ -36,29 +36,10 @@ const useTryPassword = (encryptedSecretsBackup, dispatch, currentBoxSecrets) => 
 );
 
 export default (() => {
-  const [encryptedSecretsBackup, setEncryptedSecretBackup] = useState({});
-  const areSecretsLoaded = useSelector(selectors.areSecretsLoaded);
   const dispatch = useDispatch();
 
-  const { accountId } = useSelector(getCurrentUserSelector) || {};
   const currentBoxSecrets = useSelector(selectors.currentBoxSecrets) || [];
+  const encryptedSecretsBackup = useFetchSecretBackup();
 
-  const tryPassword = useTryPassword(encryptedSecretsBackup, dispatch, currentBoxSecrets);
-
-  const onGetEncryptedSecretsBackup = useCallback(
-    () => getEncryptedSecretsBackup(accountId), [accountId],
-  );
-  const shouldFetch = useMemo(
-    () => !areSecretsLoaded && isEmpty(encryptedSecretsBackup) && !isNil(accountId),
-    [accountId, areSecretsLoaded, encryptedSecretsBackup],
-  );
-  const onSuccess = useCallback((result) => setEncryptedSecretBackup(result), []);
-
-  useFetchEffect(
-    onGetEncryptedSecretsBackup,
-    { shouldFetch },
-    { onSuccess },
-  );
-
-  return areSecretsLoaded ? () => Promise.resolve() : tryPassword;
+  return useTryPassword(encryptedSecretsBackup, dispatch, currentBoxSecrets);
 });

@@ -12,11 +12,15 @@ import Invitation from 'components/screens/app/Invitation';
 
 import Redirect from 'components/dumb/Redirect';
 import withIdentity from 'components/smart/withIdentity';
+import useFetchSecretBackup from '@misakey/crypto/hooks/useFetchSecretBackup';
 
 const BoxesApp = ({ isFetchingIdentity }) => {
-  if (isFetchingIdentity) {
+  const { isReady } = useFetchSecretBackup();
+
+  if (isFetchingIdentity || !isReady) {
     return <SplashScreenWithTranslation />;
   }
+
   return (
     <Switch>
       {/* REDIRECT TO BOXES */}
