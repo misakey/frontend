@@ -30,6 +30,11 @@
       "send": "Send"
     },
     "events": {
+      "create": {
+        "error": {
+          "lifecycle": "Chat is closed, this action is not allowed anymore."
+        }
+      },
       "information": {
         "lifecycle": {
           "closed": {

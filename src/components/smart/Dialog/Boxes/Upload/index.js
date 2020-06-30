@@ -29,11 +29,14 @@ import { createBoxEncryptedFileBuilder } from '@misakey/helpers/builder/boxes';
 
 import { addBoxEvents } from 'store/reducers/box';
 import BoxesSchema from 'store/schemas/Boxes';
+import errorTypes from '@misakey/ui/constants/errorTypes';
+import { removeEntities } from '@misakey/store/actions/entities';
 
 export const TMP_BLOB_FIELD_NAME = 'blob';
 export const BLOBS_FIELD_NAME = 'blobs';
 export const INITIAL_VALUES = { [TMP_BLOB_FIELD_NAME]: null, [BLOBS_FIELD_NAME]: [] };
 export const INITIAL_STATUS = {};
+const { conflict } = errorTypes;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -72,17 +75,28 @@ function UploadDialog({
       formData.append('msg_encrypted_content', encryptedMessageContent);
       formData.append('msg_public_key', publicKey);
 
-      const response = await createBoxEncryptedFileBuilder(boxId, formData);
+      try {
+        const response = await createBoxEncryptedFileBuilder(boxId, formData);
 
-      dispatch(addBoxEvents(boxId, response));
+        dispatch(addBoxEvents(boxId, response));
 
-      if (onSuccess) {
-        return onSuccess(response);
+        if (onSuccess) {
+          return onSuccess(response);
+        }
+
+        return response;
+      } catch (error) {
+        if (error.code === conflict) {
+          const { details = {} } = error;
+          if (details.lifecycle === conflict) {
+            dispatch(removeEntities([{ id: boxId }], BoxesSchema));
+            enqueueSnackbar(t('boxes:read.events.create.error.lifecycle'), { variant: 'error' });
+          }
+        }
+        throw error;
       }
-
-      return response;
     },
-    [onSuccess, publicKey, boxId, dispatch],
+    [publicKey, boxId, dispatch, onSuccess, enqueueSnackbar, t],
   );
 
   const getOnReset = useCallback(

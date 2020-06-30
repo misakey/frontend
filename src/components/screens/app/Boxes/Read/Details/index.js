@@ -40,8 +40,12 @@ import { createBoxEventBuilder, createKeyShareBuilder } from '@misakey/helpers/b
 import { addBoxEvents } from 'store/reducers/box';
 import BoxesSchema from 'store/schemas/Boxes';
 import { splitBoxSecretKey } from '@misakey/crypto/box/keySplitting';
+import errorTypes from '@misakey/ui/constants/errorTypes';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import { removeEntities } from '@misakey/store/actions/entities';
 
 // CONSTANTS
+const { conflict } = errorTypes;
 const CONTENT_SPACING = 2;
 
 // HOOKS
@@ -65,6 +69,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
   const [isCloseDialogOpen, setIsCloseDialogOpen] = useState(false);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
+  const handleHttpErrors = useHandleHttpErrors();
 
   const {
     id,
@@ -85,7 +90,12 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
     [publicKey, publicKeysWeCanDecryptFrom],
   );
 
-  const canShare = useMemo(() => canInvite && !isNil(navigator.share), [canInvite]);
+  const canShare = useMemo(() => !isNil(navigator.share), []);
+
+  const displaySharingOptions = useMemo(
+    () => canInvite && belongsToCurrentUser,
+    [belongsToCurrentUser, canInvite],
+  );
 
   const createInvitation = useCallback(
     // @FIXME move this logic in a dedicated function
@@ -133,8 +143,19 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
 
   const onCloseBox = useCallback(
     () => createBoxEventBuilder(id, { type: LIFECYCLE, content: { state: CLOSED } })
-      .then((response) => dispatch(addBoxEvents(id, response))),
-    [dispatch, id],
+      .then((response) => dispatch(addBoxEvents(id, response)))
+      .catch((error) => {
+        if (error.code === conflict) {
+          const { details = {} } = error;
+          if (details.lifecycle === conflict) {
+            dispatch(removeEntities([{ id }], BoxesSchema));
+            enqueueSnackbar(t('boxes:read.events.create.error.lifecycle'), { variant: 'error' });
+          }
+        } else {
+          handleHttpErrors(error);
+        }
+      }),
+    [dispatch, enqueueSnackbar, handleHttpErrors, id, t],
   );
 
   return (
@@ -181,7 +202,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
             />
             {/* <ChevronRightIcon /> */}
           </ListItem>
-          {belongsToCurrentUser && (
+          {displaySharingOptions && (
             <>
               {canShare && (
                 <ListItem

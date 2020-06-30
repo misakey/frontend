@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react'
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
+import { useSnackbar } from 'notistack';
 
 import Box from '@material-ui/core/Box';
 import Grow from '@material-ui/core/Grow';
@@ -22,13 +23,19 @@ import isEmpty from '@misakey/helpers/isEmpty';
 
 import BoxesSchema from 'store/schemas/Boxes';
 import { addBoxEvents } from 'store/reducers/box';
+import { removeEntities } from '@misakey/store/actions/entities';
 
 import { MSG_TXT } from 'constants/app/boxes/events';
 import encryptText from '@misakey/crypto/box/encryptText';
 import { CLOSED } from 'constants/app/boxes/statuses';
 import usePublicKeysWeCanDecryptFrom from 'packages/crypto/src/hooks/usePublicKeysWeCanDecryptFrom';
+import errorTypes from '@misakey/ui/constants/errorTypes';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+
 import FooterMenuActions from './Menu';
 
+// CONSTANTS
+const { conflict } = errorTypes;
 const BOX_PADDING_SPACING = 1;
 
 const useStyles = makeStyles((theme) => ({
@@ -45,6 +52,8 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
   const [isMenuActionOpen, setIsMenuActionOpen] = useState(false);
   const [value, setValue] = useState();
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+  const handleHttpErrors = useHandleHttpErrors();
 
   const { lifecycle, id, publicKey } = useMemo(() => box || {}, [box]);
   const publicKeysWeCanEncryptWith = usePublicKeysWeCanDecryptFrom();
@@ -84,10 +93,21 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
           .then((response) => {
             setValue('');
             dispatch(addBoxEvents(id, response));
+          })
+          .catch((error) => {
+            if (error.code === conflict) {
+              const { details = {} } = error;
+              if (details.lifecycle === conflict) {
+                dispatch(removeEntities([{ id }], BoxesSchema));
+                enqueueSnackbar(t('boxes:read.events.create.error.lifecycle'), { variant: 'error' });
+              }
+            } else {
+              handleHttpErrors(error);
+            }
           });
       }
     },
-    [dispatch, id, publicKey, value],
+    [dispatch, enqueueSnackbar, handleHttpErrors, id, publicKey, t, value],
   );
 
   useEffect(() => {

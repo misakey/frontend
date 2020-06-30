@@ -30,6 +30,11 @@
       "send": "Envoyer"
     },
     "events": {
+      "create": {
+        "error": {
+          "lifecycle": "Le chat est fermé, vous ne pouvez pas effectuer cette action."
+        }
+      },
       "information": {
         "lifecycle": {
           "closed": {
