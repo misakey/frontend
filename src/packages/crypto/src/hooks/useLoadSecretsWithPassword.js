@@ -6,23 +6,34 @@ import isNil from '@misakey/helpers/isNil';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { getEncryptedSecretsBackup } from '../HttpApi';
 import { decryptSecretsBackup } from '../secretsBackup/encryption';
-import { CRYPTO_LOAD_SECRETS } from '../store/actions/concrete';
+import { loadSecrets, loadSecretsAndUpdateBackup } from '../store/actions/concrete';
 import { selectors } from '../store/reducer';
 
-const useTryPassword = (encryptedSecretsBackup, dispatch) => (password) => {
-  const { data, version: backupVersion } = encryptedSecretsBackup;
+const useTryPassword = (encryptedSecretsBackup, dispatch, currentBoxSecrets) => useCallback(
+  (password) => {
+    const { data, version: backupVersion } = encryptedSecretsBackup;
 
-  return decryptSecretsBackup(data, password).then(({
-    backupKey,
-    secretBackup: secrets,
-    // @FIXME refactor to use pattern where we import action creators to dispatch actions
-  }) => dispatch({
-    type: CRYPTO_LOAD_SECRETS,
-    secrets,
-    backupKey,
-    backupVersion,
-  }));
-};
+    return decryptSecretsBackup(data, password)
+      .then(({ backupKey, secretBackup: secrets }) => {
+        // If user has add boxes from link with vault closed, we save the keys in their backup
+        const shouldMerge = !currentBoxSecrets.every(
+          (key) => secrets.boxDecryptionKeys.includes(key),
+        );
+        if (shouldMerge) {
+          return dispatch(loadSecretsAndUpdateBackup({
+            secrets: {
+              ...secrets,
+              boxDecryptionKeys: [...new Set(secrets.boxDecryptionKeys.concat(currentBoxSecrets))],
+            },
+            backupKey,
+            backupVersion: backupVersion + 1,
+          }));
+        }
+        return dispatch(loadSecrets({ secrets, backupKey, backupVersion }));
+      });
+  },
+  [currentBoxSecrets, dispatch, encryptedSecretsBackup],
+);
 
 export default (() => {
   const [encryptedSecretsBackup, setEncryptedSecretBackup] = useState({});
@@ -30,8 +41,9 @@ export default (() => {
   const dispatch = useDispatch();
 
   const { accountId } = useSelector(getCurrentUserSelector) || {};
+  const currentBoxSecrets = useSelector(selectors.currentBoxSecrets) || [];
 
-  const tryPassword = useTryPassword(encryptedSecretsBackup, dispatch);
+  const tryPassword = useTryPassword(encryptedSecretsBackup, dispatch, currentBoxSecrets);
 
   const onGetEncryptedSecretsBackup = useCallback(
     () => getEncryptedSecretsBackup(accountId), [accountId],

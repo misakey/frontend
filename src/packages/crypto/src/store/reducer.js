@@ -106,7 +106,13 @@ const areSecretsLoaded = createSelector(
   (state) => !isNil(state.secrets.secretKey),
 );
 
+const currentBoxSecrets = createSelector(
+  getState,
+  (state) => state.secrets.boxDecryptionKeys,
+);
+
 export const selectors = {
   isCryptoLoaded,
   areSecretsLoaded,
+  currentBoxSecrets,
 };

@@ -29,6 +29,11 @@
       "more": "Plus d'actions",
       "send": "Envoyer"
     },
+    "warning": {
+      "saveInBackup": "Entrez votre mot de passe pour mettre à jour votre sauvegarde de clés de déchiffrement.",
+      "vaultClosed": "Il semble que vous n'ayez pas accès à la clé de déchiffrement de ce chat. Vous pouvez la récupérer en collant le lien d'invitation ou en renseignant votre mot de passe pour accéder à toutes vos clés de déchiffement.",
+      "undecryptable": "Il semble que vous n'ayez pas accès à la clé de déchiffrement de ce chat. Vous pouvez la récupérer en collant le lien d'invitation."
+    },
     "events": {
       "create": {
         "error": {

@@ -79,7 +79,7 @@ export const setBackupVersion = (version) => ({
  * This would be useful for instance for "setBackupKey".
  * @param {function} actionBuilder
  */
-const withBackupUpdater = (actionBuilder) => (...args) => (
+export const withBackupUpdater = (actionBuilder) => (...args) => (
   async (dispatch, getState) => {
     try {
       await dispatch(actionBuilder(...args));
@@ -95,8 +95,7 @@ const withBackupUpdater = (actionBuilder) => (...args) => (
       const { accountId } = state.auth.identity;
       const { secrets, backupKey, backupVersion } = state.crypto;
       if (!isNil(backupKey)) {
-        const response = await updateSecretsBackup(accountId, secrets, backupKey, backupVersion);
-        dispatch(setBackupVersion(response.version));
+        await updateSecretsBackup(accountId, secrets, backupKey, backupVersion);
       }
     } catch (e) {
       if (e.details && (e.details.version === 'invalid')) {
@@ -202,3 +201,37 @@ export const addBoxSecretKey = withBackupUpdater((secretKey) => ({
   type: CRYPTO_ADD_BOX_SECRET_KEY,
   secretKey,
 }));
+
+
+/**
+ * loads secrets and update backup for a data owner.
+ *
+ * @param {string} secretKey
+ */
+export const loadSecretsAndUpdateBackup = withBackupUpdater(({
+  secrets,
+  backupKey,
+  backupVersion,
+}) => ({
+  type: CRYPTO_LOAD_SECRETS,
+  secrets,
+  backupKey,
+  backupVersion,
+}));
+
+
+/**
+ * loads secrets for a data owner.
+ *
+ * @param {string} secretKey
+ */
+export const loadSecrets = ({
+  secrets,
+  backupKey,
+  backupVersion,
+}) => ({
+  type: CRYPTO_LOAD_SECRETS,
+  secrets,
+  backupKey,
+  backupVersion,
+});

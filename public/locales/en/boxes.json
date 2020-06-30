@@ -29,6 +29,11 @@
       "more": "More actions",
       "send": "Send"
     },
+    "warning": {
+      "saveInBackup": "Type your password to update your decryption keys backup.",
+      "vaultClosed": "It seems that you do not have access to the decryption key of this chat. You can get it by pasting the invitation link or by typing your password to access all your decryption keys.",
+      "undecryptable": "You seem not to have access to the decryption key of this chat. You can get it by pasting the invitation link."
+    },
     "events": {
       "create": {
         "error": {

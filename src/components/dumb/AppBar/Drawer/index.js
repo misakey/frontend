@@ -25,11 +25,15 @@ const useStyles = makeStyles((theme) => ({
       right: 'auto',
     }),
   // necessary for content to be below app bar
-  offset: theme.mixins.toolbar,
+  offset: ({ offsetHeight }) => ({
+    ...theme.mixins.toolbar,
+    ...(offsetHeight ? { height: `${offsetHeight}px` } : {}),
+  }),
 }));
 
-function AppBarDrawer({ drawerWidth, children, side, toolbarProps, ...props }) {
-  const classes = useStyles({ drawerWidth, side });
+function AppBarDrawer({ drawerWidth, children, side, toolbarProps, offsetHeight, ...props }) {
+  const classes = useStyles({ drawerWidth, side, offsetHeight });
+
   return (
     <>
       <AppBar
@@ -52,12 +56,14 @@ AppBarDrawer.propTypes = {
   children: PropTypes.oneOfType([PropTypes.element, PropTypes.node]),
   drawerWidth: PropTypes.string.isRequired,
   toolbarProps: PropTypes.object,
+  offsetHeight: PropTypes.number,
   side: PropTypes.oneOf(Object.values(SIDES)),
 };
 
 AppBarDrawer.defaultProps = {
   children: null,
   toolbarProps: {},
+  offsetHeight: null,
   side: SIDES.RIGHT,
 };
 
