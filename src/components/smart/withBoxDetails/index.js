@@ -9,6 +9,7 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 import isNil from '@misakey/helpers/isNil';
+import pluck from '@misakey/helpers/pluck';
 import identity from '@misakey/helpers/identity';
 import { getBoxEventsBuilder, getBoxWithEventsBuilder, getBoxBuilder } from '@misakey/helpers/builder/boxes';
 
@@ -17,11 +18,13 @@ import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import BoxesSchema from 'store/schemas/Boxes';
 import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
-// import BlobSchema from 'store/schemas/Databox/Blob';
 import EventsSchema from 'store/schemas/Boxes/Events';
 import { getBoxMembersIds } from 'store/reducers/box';
 
 import { OPEN } from 'constants/app/boxes/statuses';
+
+// HELPERS
+const pluckIds = pluck('id');
 
 // COMPONENTS
 const withBoxDetails = (mapper = identity) => (Component) => {
@@ -34,12 +37,11 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       isAuthenticated,
       box,
       dispatchReceiveBox,
-      // dispatchReceiveBlobs,
       dispatchReceiveBoxEvents,
       ...rest
     } = props;
 
-    const { id, events, lifecycle, creator } = useMemo(() => box || {}, [box]);
+    const { id, events, lifecycle, creator, lastEvent } = useMemo(() => box || {}, [box]);
     const members = useSelector((state) => getBoxMembersIds(state, id));
     const isOpen = useMemo(() => lifecycle === OPEN, [lifecycle]);
     const { identifier } = useSelector(getCurrentUserSelector) || {};
@@ -69,26 +71,21 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       [belongsToCurrentUser, isAllowedToFetch, isOpen, shouldFetchBox],
     );
 
-    const shouldFetchEvents = useMemo(
-      () => !shouldFetchBox && isAllowedToFetchContent && isNil(events),
-      [shouldFetchBox, isAllowedToFetchContent, events],
+    const isLastEventNew = useMemo(
+      () => {
+        if (!isNil(events) && !isNil(lastEvent)) {
+          const eventIds = pluckIds(events);
+          return !eventIds.includes(lastEvent.id);
+        }
+        return false;
+      },
+      [events, lastEvent],
     );
 
-    // // Get blobIds from logs for which we need to fetch info (blobUrl, fileExtension...)
-    // const missingBlobsInfo = useMemo(() => {
-    //   if (isNil(events)) { return []; }
-    //   return logs.reduce((blobIds, log) => {
-    //     const { action, metadata } = log || {};
-    //     if (isNil(metadata) || action !== UPLOADING) { return blobIds; }
-    //     const { blob: { blobUrl } = {}, blobId } = metadata;
-    //     return isNil(blobUrl) ? [...blobIds, blobId] : blobIds;
-    //   }, []);
-    // }, [logs]);
-
-    // const shouldFetchBlobs = useMemo(
-    //   () => !shouldFetchEvents && isAllowedToFetchContent && !isEmpty(missingBlobsInfo),
-    //   [missingBlobsInfo, shouldFetchLogs],
-    // );
+    const shouldFetchEvents = useMemo(
+      () => !shouldFetchBox && isAllowedToFetchContent && (isNil(events) || isLastEventNew),
+      [shouldFetchBox, isAllowedToFetchContent, events, isLastEventNew],
+    );
 
     const getBoxWithEvents = useCallback(
       () => (isAllowedToFetchContent
@@ -102,8 +99,6 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       () => getBoxEventsBuilder(params.id),
       [params.id],
     );
-
-    // const getRequestBlobs = useCallback(() => getRequestBlobsBuilder(id), [id]);
 
     const onReceiveBoxEvents = useCallback(
       (data) => dispatchReceiveBoxEvents(id, data),
@@ -131,12 +126,6 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       { onSuccess: onReceiveBoxEvents },
     );
 
-    // const { isFetching: isFetchingBlobs } = useFetchEffect(
-    //   getRequestBlobs,
-    //   { shouldFetch: shouldFetchBlobs },
-    //   { onSuccess: dispatchReceiveBlobs },
-    // );
-
     const onDelete = useCallback(() => { setPreventFetching(true); }, []);
 
     const mappedProps = useMemo(
@@ -146,7 +135,6 @@ const withBoxDetails = (mapper = identity) => (Component) => {
         isFetching: {
           box: isFetching,
           events: isFetchingEvents,
-          // blobs: isFetchingBlobs,
         },
         onDelete,
         isAuthenticated,
@@ -164,7 +152,6 @@ const withBoxDetails = (mapper = identity) => (Component) => {
     box: PropTypes.shape(BoxesSchema.propTypes),
     isAuthenticated: PropTypes.bool,
     dispatchReceiveBox: PropTypes.func.isRequired,
-    // dispatchReceiveBlobs: PropTypes.func.isRequired,
     dispatchReceiveBoxEvents: PropTypes.func.isRequired,
   };
 
@@ -203,14 +190,6 @@ const withBoxDetails = (mapper = identity) => (Component) => {
         dispatch(updateEntities([{ id, changes: { events: result } }], BoxesSchema)),
       ]);
     },
-    // dispatchReceiveBlobs: (blobs) => {
-    //   const normalized = normalize(
-    //     blobs,
-    //     BlobSchema.collection,
-    //   );
-    //   const { entities } = normalized;
-    //   dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
-    // },
   });
 
   return connect(mapStateToProps, mapDispatchToProps)(Wrapper);
