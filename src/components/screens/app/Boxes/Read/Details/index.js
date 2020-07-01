@@ -92,11 +92,6 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
 
   const canShare = useMemo(() => !isNil(navigator.share), []);
 
-  const displaySharingOptions = useMemo(
-    () => canInvite && belongsToCurrentUser,
-    [belongsToCurrentUser, canInvite],
-  );
-
   const createInvitation = useCallback(
     // @FIXME move this logic in a dedicated function
     // outside of the component?
@@ -203,7 +198,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
             />
             {/* <ChevronRightIcon /> */}
           </ListItem>
-          {displaySharingOptions && (
+          {canInvite && (
             <>
               {canShare && (
                 <ListItem

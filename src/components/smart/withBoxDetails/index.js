@@ -6,7 +6,7 @@ import { useRouteMatch, useHistory } from 'react-router-dom';
 import routes from 'routes';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import isNil from '@misakey/helpers/isNil';
 import pluck from '@misakey/helpers/pluck';
@@ -31,7 +31,7 @@ const withBoxDetails = (mapper = identity) => (Component) => {
   const Wrapper = (props) => {
     // Used to prevent refetch on delete box
     const [preventFetching, setPreventFetching] = useState(false);
-    const handleGenericHttpErrors = useHandleGenericHttpErrors();
+    const handleHttpErrors = useHandleHttpErrors();
 
     const {
       isAuthenticated,
@@ -107,11 +107,11 @@ const withBoxDetails = (mapper = identity) => (Component) => {
 
     const onError = useCallback(
       (error) => {
-        handleGenericHttpErrors(error);
+        handleHttpErrors(error);
         // View is broken without box
         history.replace(routes._);
       },
-      [handleGenericHttpErrors, history],
+      [handleHttpErrors, history],
     );
 
     const { isFetching } = useFetchEffect(

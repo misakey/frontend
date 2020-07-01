@@ -75,8 +75,14 @@ const FieldBlobTmp = ({
           <Trans i18nKey={t('boxes:read.upload.dialog.helperText')}>
             Déposer le fichier que vous souhaitez chiffrer.
             {' '}
-            {/* @FIXME: change link to doc */}
-            <Link href={t('dpo:requests.read.questions.href.0')} color="secondary">En savoir plus</Link>
+            <Link
+              href={t('boxes:read.upload.dialog.helperLink')}
+              target="_blank"
+              rel="noopener noreferrer"
+              color="secondary"
+            >
+              En savoir plus
+            </Link>
           </Trans>
         </FormHelperText>
       )}

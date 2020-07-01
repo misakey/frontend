@@ -62,6 +62,7 @@
         "text": "Quel fichier souhaitez vous chiffrer\u00a0?",
         "label": "Nouveau fichier à chiffrer",
         "helperText": "Déposer le fichier que vous souhaitez chiffrer. <1>En savoir plus</1>",
+        "helperLink": "https://docs.misakey.com/#/fr/",
         "errors": {
           "blobs": {
             "api": {

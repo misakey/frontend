@@ -1,6 +1,5 @@
 import * as Yup from 'yup';
 import errorTypes from '@misakey/ui/constants/errorTypes';
-import { MAIN_DOMAIN_REGEX } from 'constants/regex';
 import { MAX_FILE_SIZE, MAX_AVATAR_SIZE } from 'constants/file/size';
 import { ACCEPTED_TYPES } from 'constants/file/image';
 import { NOTIFICATIONS } from 'constants/notifications';
@@ -51,13 +50,6 @@ export const notificationFieldValidation = {
 export const linkFieldValidation = {
   optionalSchema: Yup.string().url(malformed),
   schema: Yup.string().url(malformed).required(required),
-};
-
-export const mainDomainFieldValidation = {
-  schema: Yup.string()
-    .matches(MAIN_DOMAIN_REGEX, { message: malformed, excludeEmptyString: true })
-    .required(required),
-  regex: MAIN_DOMAIN_REGEX,
 };
 
 export const fileFieldValidation = {

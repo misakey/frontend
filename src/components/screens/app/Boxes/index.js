@@ -5,15 +5,19 @@ import routes from 'routes';
 
 import BoxRead from 'components/screens/app/Boxes/Read';
 import BoxNone from 'components/screens/app/Boxes/None';
+import { UUID4_REGEX } from 'constants/regex';
 
 function Boxes({ match, ...props }) {
   return (
     <Switch>
       <Route
         path={routes.boxes.read._}
-        render={(renderProps) => (
-          <BoxRead {...props} {...renderProps} />
-        )}
+        render={(renderProps) => {
+          if (!UUID4_REGEX.test(renderProps.match.params.id)) {
+            return <BoxNone {...props} {...renderProps} />;
+          }
+          return <BoxRead {...props} {...renderProps} />;
+        }}
       />
       <Route
         exact

@@ -55,39 +55,9 @@ const routes = {
       finale: '/auth/register/finale',
     },
   },
-  citizen: {
-    _: '/citizen',
-    contact: {
-      _: '/citizen/contact',
-    },
-    requests: {
-      _: '/citizen/requests',
-      read: '/citizen/requests/:id',
-    },
-  },
-  dpo: {
-    _: '/dpo',
-    services: {
-      _: '/dpo/services',
-      create: '/dpo/services/create',
-    },
-    service: {
-      _: '/dpo/:mainDomain',
-      claim: { _: '/dpo/:mainDomain/claim' },
-      requests: {
-        _: '/dpo/:mainDomain/requests',
-        read: '/dpo/:mainDomain/requests/:id',
-      },
-    },
-  },
   legals: {
     privacy: '/legals/privacy',
     tos: '/legals/tos',
-  },
-  requests: '/requests',
-  plugin: {
-    _: '/index.html',
-    blank: '/plugin-blank',
   },
 };
 

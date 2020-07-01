@@ -117,7 +117,7 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
 
   return (
     <Box p={BOX_PADDING_SPACING} ref={footerRef}>
-      <Box ref={anchorRef} display="flex" alignContent="center" alignItems="center">
+      <Box ref={anchorRef} display="flex" alignContent="center" alignItems="flex-end">
         {isMenuActionOpen ? (
           <Box width="100%" py={1}>
             <Button text={t('common:cancel')} onClick={onClose} standing={BUTTON_STANDINGS.CANCEL} />
@@ -157,6 +157,7 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
               size="small"
               margin="none"
               fullWidth
+              rowsMax={20}
               value={value}
               onChange={onChange}
               disabled={disabled}

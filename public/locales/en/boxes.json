@@ -62,6 +62,7 @@
         "text": "What file do you want to encrypt?",
         "label": "New file to encrypt",
         "helperText": "Drop the file you want to encrypt. <1>Learn more</1>",
+        "helperLink": "https://docs.misakey.com/#/en/",
         "errors": {
           "blobs": {
             "api": {
