@@ -2,6 +2,8 @@ import React, { useMemo } from 'react';
 
 import routes from 'routes';
 
+import path from '@misakey/helpers/path';
+
 import { useRouteMatch } from 'react-router-dom';
 // import { useLocation, useHistory } from 'react-router-dom';
 // import { makeStyles } from '@material-ui/core/styles';
@@ -13,6 +15,8 @@ import List from '@material-ui/core/List';
 import WindowedListBoxes from 'components/smart/WindowedList/UserBoxes';
 // import FilledInput from '@material-ui/core/FilledInput';
 
+// HELPERS
+const paramsIdPath = path(['params', 'id']);
 
 // const useStyles = makeStyles((theme) => ({
 //   search: {
@@ -28,10 +32,10 @@ function VaultOpen() {
   // const classes = useStyles();
   const locationSearchParams = useLocationSearchParams();
 
-  const { params } = useRouteMatch(routes.boxes.read._);
-  const { id: selectedId } = useMemo(
-    () => params || {},
-    [params],
+  const match = useRouteMatch(routes.boxes.read._);
+  const selectedId = useMemo(
+    () => paramsIdPath(match),
+    [match],
   );
   const { search } = locationSearchParams;
   // const { search: locationSearch, pathname } = useLocation();
