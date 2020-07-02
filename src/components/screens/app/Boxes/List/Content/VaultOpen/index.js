@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import routes from 'routes';
 
@@ -28,7 +28,11 @@ function VaultOpen() {
   // const classes = useStyles();
   const locationSearchParams = useLocationSearchParams();
 
-  const { params: { id } } = useRouteMatch(routes.boxes.read._);
+  const { params } = useRouteMatch(routes.boxes.read._);
+  const { id: selectedId } = useMemo(
+    () => params || {},
+    [params],
+  );
   const { search } = locationSearchParams;
   // const { search: locationSearch, pathname } = useLocation();
   // const { push } = useHistory();
@@ -57,7 +61,7 @@ function VaultOpen() {
       <List
         component={WindowedListBoxes}
         key={search}
-        selectedId={id}
+        selectedId={selectedId}
         disablePadding
       />
     </>
