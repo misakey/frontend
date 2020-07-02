@@ -22,7 +22,7 @@ import Title from 'components/dumb/Typography/Title';
 const ButtonCreate = withDialogCreate(Button);
 
 // COMPONENTS
-function WindowedListBoxes({ activeStatus, t, ...props }) {
+function WindowedListBoxes({ activeStatus, selectedId, t, ...props }) {
   const locationSearchParams = useLocationSearchParams();
 
   const { search } = locationSearchParams;
@@ -37,8 +37,9 @@ function WindowedListBoxes({ activeStatus, t, ...props }) {
     () => ({
       toRoute: routes.boxes.read._,
       byPagination,
+      selectedId,
     }),
-    [byPagination],
+    [byPagination, selectedId],
   );
 
   if (isNil(itemCount) || itemCount === 0) {
@@ -69,11 +70,13 @@ function WindowedListBoxes({ activeStatus, t, ...props }) {
 
 WindowedListBoxes.propTypes = {
   activeStatus: PropTypes.oneOf(STATUSES),
+  selectedId: PropTypes.string,
   t: PropTypes.func.isRequired,
 };
 
 WindowedListBoxes.defaultProps = {
   activeStatus: ALL,
+  selectedId: null,
 };
 
 export default withTranslation('boxes')(WindowedListBoxes);

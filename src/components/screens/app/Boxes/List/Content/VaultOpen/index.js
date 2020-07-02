@@ -1,4 +1,8 @@
 import React from 'react';
+
+import routes from 'routes';
+
+import { useRouteMatch } from 'react-router-dom';
 // import { useLocation, useHistory } from 'react-router-dom';
 // import { makeStyles } from '@material-ui/core/styles';
 
@@ -24,6 +28,7 @@ function VaultOpen() {
   // const classes = useStyles();
   const locationSearchParams = useLocationSearchParams();
 
+  const { params: { id } } = useRouteMatch(routes.boxes.read._);
   const { search } = locationSearchParams;
   // const { search: locationSearch, pathname } = useLocation();
   // const { push } = useHistory();
@@ -52,6 +57,7 @@ function VaultOpen() {
       <List
         component={WindowedListBoxes}
         key={search}
+        selectedId={id}
         disablePadding
       />
     </>

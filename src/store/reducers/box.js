@@ -10,6 +10,12 @@ import { moveBackUpId } from 'store/reducers/userBoxes/pagination';
 import { LIFECYCLE } from 'constants/app/boxes/events';
 
 // SELECTORS
+export const makeDenormalizeBoxSelector = () => createSelector(
+  (state) => state.entities,
+  (_, id) => id,
+  (entities, id) => denormalize(id, BoxesSchema.entity, entities),
+);
+
 const getBoxSelector = createSelector(
   (state) => state.entities.boxes,
   (items) => (id) => propOr(null, id)(items),

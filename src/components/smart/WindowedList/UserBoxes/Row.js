@@ -12,8 +12,9 @@ import BoxListItem, { BoxListItemSkeleton } from 'components/dumb/ListItem/Boxes
 import { ROW_PROP_TYPES } from 'components/smart/WindowedList';
 
 // CONSTANTS
-const INTERNAL_DATA = ['byPagination'];
+const INTERNAL_DATA = ['byPagination', 'selectedId'];
 
+// HELPERS
 const omitInternalData = (props) => omit(props, INTERNAL_DATA);
 
 // COMPONENTS
@@ -25,6 +26,10 @@ export const Skeleton = ({ index, style, data, ...rest }) => (
 );
 
 Skeleton.propTypes = ROW_PROP_TYPES;
+
+Skeleton.defaultProps = {
+  selected: false,
+};
 
 
 const Row = ({ style, data, ...rest }) => (
@@ -38,19 +43,27 @@ const Row = ({ style, data, ...rest }) => (
 Row.propTypes = {
   ...ROW_PROP_TYPES,
   data: PropTypes.object,
+  selected: PropTypes.bool,
+  // CONNECT
+  box: PropTypes.shape(BoxesSchema.propTypes),
 };
 
 Row.defaultProps = {
   data: {},
+  box: null,
+  selected: false,
 };
 
 // CONNECT
-const mapStateToProps = (state, { index, data: { byPagination } }) => {
+const mapStateToProps = (state, { index, data: { byPagination, selectedId } }) => {
   const id = byPagination[index];
   const box = isNil(id)
     ? null
     : denormalize(id, BoxesSchema.entity, state.entities);
-  return { box };
+  return {
+    box,
+    selected: !isNil(selectedId) && selectedId === id,
+  };
 };
 
 export default connect(mapStateToProps, {})(Row);
