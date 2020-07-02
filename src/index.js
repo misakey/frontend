@@ -51,6 +51,11 @@ if (window.env.ENV !== 'development' || window.env.SENTRY.debug === true) {
   if (!isNil(window.bundleVersion)) {
     sentryConfig.release = `frontend@${window.bundleVersion}`;
   }
+
+  sentryConfig.beforeSend = (event) => (
+    { ...event, request: { ...event.request, url: event.request.url.split('#')[0] } }
+  );
+
   Sentry.init(sentryConfig);
 }
 
