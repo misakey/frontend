@@ -20,3 +20,7 @@ export const boxInvitationLinkFieldValidationSchema = Yup.object().shape({
     .matches(`${makeInvitationUrl()}#${UUID4_REGEX}&${KEY_REGEX}`, { message: malformed })
     .required(required),
 });
+
+export const boxMessageValidationSchema = Yup.object().shape({
+  message: Yup.string().trim().required(required),
+});

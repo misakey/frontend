@@ -9,7 +9,10 @@ import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 
-import TextField from '@material-ui/core/TextField';
+import Formik from '@misakey/ui/Formik';
+import { Form } from 'formik';
+import FormField from '@misakey/ui/Form/Field';
+import FieldTextMultiline from 'components/dumb/Form/Field/Text/Multiline';
 import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -19,9 +22,9 @@ import SendIcon from '@material-ui/icons/Send';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
-import isEmpty from '@misakey/helpers/isEmpty';
 
 import BoxesSchema from 'store/schemas/Boxes';
+import { boxMessageValidationSchema } from 'constants/validationSchemas/boxes';
 import { addBoxEvents } from 'store/reducers/box';
 import { removeEntities } from '@misakey/store/actions/entities';
 
@@ -35,8 +38,13 @@ import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import FooterMenuActions from './Menu';
 
 // CONSTANTS
+const FIELD = 'message';
 const { conflict } = errorTypes;
 const BOX_PADDING_SPACING = 1;
+
+const INITIAL_VALUES = {
+  [FIELD]: '',
+};
 
 const useStyles = makeStyles((theme) => ({
   popper: ({ drawerWidth, isDrawerOpen }) => ({
@@ -47,10 +55,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange, t }) {
+function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, t }) {
   const classes = useStyles({ drawerWidth, isDrawerOpen });
   const [isMenuActionOpen, setIsMenuActionOpen] = useState(false);
-  const [value, setValue] = useState();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const handleHttpErrors = useHandleHttpErrors();
@@ -64,9 +71,6 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
   );
 
   const anchorRef = useRef(null);
-  const footerRef = (ref) => {
-    if (ref) { onTextareaSizeChange(ref.clientHeight); }
-  };
 
   const onOpen = useCallback(() => {
     setIsMenuActionOpen(true);
@@ -76,38 +80,33 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
     setIsMenuActionOpen(false);
   }, []);
 
-  const onChange = useCallback((event) => {
-    setValue(event.target.value);
-  }, []);
-
-  const sendMessage = useCallback(
-    () => {
-      if (!isEmpty(value)) {
-        createBoxEventBuilder(id, {
-          type: MSG_TXT,
-          content: {
-            encrypted: encryptText(value, publicKey),
-            publicKey,
-          },
+  const handleSubmit = useCallback(
+    ({ [FIELD]: value }, { setSubmitting, resetForm }) => {
+      resetForm();
+      return createBoxEventBuilder(id, {
+        type: MSG_TXT,
+        content: {
+          encrypted: encryptText(value, publicKey),
+          publicKey,
+        },
+      })
+        .then((response) => {
+          dispatch(addBoxEvents(id, response));
         })
-          .then((response) => {
-            setValue('');
-            dispatch(addBoxEvents(id, response));
-          })
-          .catch((error) => {
-            if (error.code === conflict) {
-              const { details = {} } = error;
-              if (details.lifecycle === conflict) {
-                dispatch(removeEntities([{ id }], BoxesSchema));
-                enqueueSnackbar(t('boxes:read.events.create.error.lifecycle'), { variant: 'error' });
-              }
-            } else {
-              handleHttpErrors(error);
+        .catch((error) => {
+          if (error.code === conflict) {
+            const { details = {} } = error;
+            if (details.lifecycle === conflict) {
+              dispatch(removeEntities([{ id }], BoxesSchema));
+              enqueueSnackbar(t('boxes:read.events.create.error.lifecycle'), { variant: 'error' });
             }
-          });
-      }
+          } else {
+            handleHttpErrors(error);
+          }
+        })
+        .finally(() => { setSubmitting(false); });
     },
-    [dispatch, enqueueSnackbar, handleHttpErrors, id, publicKey, t, value],
+    [dispatch, enqueueSnackbar, handleHttpErrors, id, publicKey, t],
   );
 
   useEffect(() => {
@@ -116,7 +115,7 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
   }, [id]);
 
   return (
-    <Box p={BOX_PADDING_SPACING} ref={footerRef}>
+    <Box p={BOX_PADDING_SPACING}>
       <Box ref={anchorRef} display="flex" alignContent="center" alignItems="flex-end">
         {isMenuActionOpen ? (
           <Box width="100%" py={1}>
@@ -149,29 +148,35 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
                 <AddIcon />
               </IconButton>
             </Tooltip>
-
-            <TextField
-              id="new-message-textarea"
-              multiline
-              variant="outlined"
-              size="small"
-              margin="none"
-              fullWidth
-              rowsMax={20}
-              value={value}
-              onChange={onChange}
-              disabled={disabled}
-            />
-            <Tooltip title={t('boxes:read.actions.send')}>
-              <IconButton
-                aria-label={t('boxes:read.actions.send')}
-                color="secondary"
-                onClick={sendMessage}
-                disabled={disabled}
-              >
-                <SendIcon />
-              </IconButton>
-            </Tooltip>
+            <Formik
+              initialValues={INITIAL_VALUES}
+              onSubmit={handleSubmit}
+              validationSchema={boxMessageValidationSchema}
+            >
+              <Box component={Form} display="flex" flexGrow="1" alignItems="center">
+                <FormField
+                  component={FieldTextMultiline}
+                  name={FIELD}
+                  id="new-message-textarea"
+                  variant="outlined"
+                  size="small"
+                  margin="none"
+                  fullWidth
+                  rowsMax={20}
+                  disabled={disabled}
+                />
+                <Tooltip title={t('boxes:read.actions.send')}>
+                  <IconButton
+                    type="submit"
+                    aria-label={t('boxes:read.actions.send')}
+                    color="secondary"
+                    disabled={disabled}
+                  >
+                    <SendIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            </Formik>
           </>
         )}
       </Box>
@@ -182,7 +187,6 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, onTextareaSizeChange,
 BoxEventsFooter.propTypes = {
   drawerWidth: PropTypes.string.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
-  onTextareaSizeChange: PropTypes.func.isRequired,
   // @FIXME BoxesSchema doesn't match props
   // (from https://gitlab.misakey.dev/misakey/frontend/-/merge_requests/413#note_51320)
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,

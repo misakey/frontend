@@ -31,9 +31,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 import BoxEventsAccordingToType from 'components/smart/Box/Event';
 import BoxEventsFooter from './Footer';
 
-const CONTENT_SPACING = 2;
 const APPBAR_HEIGHT = 64;
-const FOOTER_HEIGHT = 64;
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -42,10 +40,14 @@ const useStyles = makeStyles((theme) => ({
       width: '35px',
     },
   },
-  content: ({ footerHeight, headerHeight }) => ({
-    overflow: 'auto',
-    height: `calc(100vh - ${headerHeight}px - ${footerHeight}px - ${theme.spacing(CONTENT_SPACING) * 2}px)`,
+  content: ({ headerHeight }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    height: `calc(100vh - ${headerHeight}px)`,
   }),
+  thread: {
+    overflow: 'auto',
+  },
   menuButton: {
     margin: theme.spacing(0, 1),
   },
@@ -66,8 +68,7 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
   const [contentRef, setContentRef] = useState();
   const lastEventRef = useRef(null);
   const [headerHeight, setHeaderHeight] = useState(APPBAR_HEIGHT);
-  const [footerHeight, setFooterHeight] = useState(FOOTER_HEIGHT);
-  const classes = useStyles({ footerHeight, headerHeight });
+  const classes = useStyles({ headerHeight });
 
   const routeDetails = useGeneratePathKeepingSearch(routes.boxes.read.details, { id: box.id });
 
@@ -86,11 +87,6 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
     if (ref) { setHeaderHeight(ref.clientHeight); }
   };
 
-  const onChange = useCallback((newHeight) => {
-    setFooterHeight(
-      (current) => (current !== newHeight ? newHeight : current),
-    );
-  }, []);
 
   const scrollToBottom = useCallback(() => {
     if (!isNil(lastEventRef) && !isNil(lastEventRef.current)) {
@@ -121,7 +117,7 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
                   <MenuIcon />
                 </IconButtonAppBar>
               )}
-              <Box display="flex" flexGrow={1} overflow="hidden" alignItems="center">
+              <Box display="flex" flexGrow={1} overflow="hidden" alignItems="flex-end">
                 <Box display="flex" flexDirection="column">
                   <Title className={classes.title} gutterBottom={false} noWrap>
                     {title}
@@ -180,25 +176,26 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
           </Box>
         </AppBarDrawer>
       </ElevationScroll>
-      <Box ref={(ref) => setContentRef(ref)} p={2} className={classes.content}>
-        {eventsByDate.map(({ date, events }) => (
-          <Box display="flex" flexDirection="column" py={1} key={date}>
-            <Typography component={Box} alignSelf="center">{date}</Typography>
-            {
+      <Box className={classes.content}>
+        <Box p={2} ref={(ref) => setContentRef(ref)} display="flex" flexGrow="1" flexDirection="column" className={classes.thread}>
+          {eventsByDate.map(({ date, events }) => (
+            <Box display="flex" flexDirection="column" py={1} key={date}>
+              <Typography component={Box} alignSelf="center">{date}</Typography>
+              {
               events.map((event) => (
                 <BoxEventsAccordingToType event={event} key={event.id} boxID={box.id} />
               ))
             }
-            <div ref={lastEventRef} />
-          </Box>
-        ))}
+              <div ref={lastEventRef} />
+            </Box>
+          ))}
+        </Box>
+        <BoxEventsFooter
+          box={box}
+          drawerWidth={drawerWidth}
+          isDrawerOpen={isDrawerOpen}
+        />
       </Box>
-      <BoxEventsFooter
-        box={box}
-        drawerWidth={drawerWidth}
-        isDrawerOpen={isDrawerOpen}
-        onTextareaSizeChange={onChange}
-      />
     </>
 
   );
