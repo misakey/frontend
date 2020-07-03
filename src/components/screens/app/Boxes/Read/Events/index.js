@@ -1,19 +1,13 @@
 import React, { useMemo, useState, useCallback, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import routes from 'routes';
 import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
-import BoxAvatar from 'components/dumb/Avatar/Box';
-import Title from 'components/dumb/Typography/Title';
-import Subtitle from 'components/dumb/Typography/Subtitle';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 
 import MenuIcon from '@material-ui/icons/Menu';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Alert from '@material-ui/lab/Alert';
@@ -23,23 +17,17 @@ import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWe
 import ButtonWithDialogPassword from 'components/smart/Dialog/Password/with/Button';
 
 import useGroupEventsByDate from 'hooks/useGroupEventsByDate';
-import useGeneratePathKeepingSearch from '@misakey/hooks/useGeneratePathKeepingSearch';
 import isNil from '@misakey/helpers/isNil';
 
 import BoxesSchema from 'store/schemas/Boxes';
 
 import BoxEventsAccordingToType from 'components/smart/Box/Event';
+import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import BoxEventsFooter from './Footer';
 
 const APPBAR_HEIGHT = 64;
 
-const useStyles = makeStyles((theme) => ({
-  avatar: {
-    [theme.breakpoints.down('sm')]: {
-      height: '35px',
-      width: '35px',
-    },
-  },
+const useStyles = makeStyles(() => ({
   content: ({ headerHeight }) => ({
     display: 'flex',
     flexDirection: 'column',
@@ -47,19 +35,6 @@ const useStyles = makeStyles((theme) => ({
   }),
   thread: {
     overflow: 'auto',
-  },
-  menuButton: {
-    margin: theme.spacing(0, 1),
-  },
-  title: {
-    [theme.breakpoints.down('sm')]: {
-      fontSize: theme.typography.subtitle1.fontSize,
-    },
-  },
-  subtitle: {
-    [theme.breakpoints.down('sm')]: {
-      fontSize: theme.typography.subtitle2.fontSize,
-    },
   },
 }));
 
@@ -70,9 +45,7 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
   const [headerHeight, setHeaderHeight] = useState(APPBAR_HEIGHT);
   const classes = useStyles({ headerHeight });
 
-  const routeDetails = useGeneratePathKeepingSearch(routes.boxes.read.details, { id: box.id });
-
-  const { avatarUri, title, events: boxEvents, members, publicKey } = useMemo(() => box, [box]);
+  const { events: boxEvents, publicKey } = useMemo(() => box, [box]);
   const isCryptoLoadedSelector = useMemo(
     () => selectors.isCryptoLoaded,
     [],
@@ -105,51 +78,20 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
           offsetHeight={headerHeight}
         >
           <Box ref={headerRef} display="flex" flexDirection="column" width="100%">
-            <Box px={2} display="flex">
+            <Box display="flex">
               {!isDrawerOpen && (
-                <IconButtonAppBar
-                  color="inherit"
-                  aria-label={t('common:openAccountDrawer')}
-                  edge="start"
-                  onClick={toggleDrawer}
-                  className={classes.menuButton}
-                >
-                  <MenuIcon />
-                </IconButtonAppBar>
-              )}
-              <Box display="flex" flexGrow={1} overflow="hidden" alignItems="flex-end">
-                <Box display="flex" flexDirection="column">
-                  <Title className={classes.title} gutterBottom={false} noWrap>
-                    {title}
-                  </Title>
-                  <Subtitle className={classes.subtitle}>
-                    {t('boxes:read.details.menu.members.count', { count: members.length })}
-                  </Subtitle>
+                <Box display="flex" pl={2} pr={1}>
+                  <IconButtonAppBar
+                    color="inherit"
+                    aria-label={t('common:openAccountDrawer')}
+                    edge="start"
+                    onClick={toggleDrawer}
+                  >
+                    <MenuIcon />
+                  </IconButtonAppBar>
                 </Box>
-                <IconButtonAppBar
-                  aria-label={t('boxes:read.details.open')}
-                  aria-controls="menu-appbar"
-                  component={Link}
-                  to={routeDetails}
-                >
-                  <KeyboardArrowDownIcon />
-                </IconButtonAppBar>
-
-              </Box>
-
-              <IconButtonAppBar
-                aria-label={t('boxes:read.details.open')}
-                aria-controls="menu-appbar"
-                component={Link}
-                to={routeDetails}
-                edge="end"
-              >
-                <BoxAvatar
-                  classes={{ root: classes.avatar }}
-                  src={avatarUri}
-                  title={title || ''}
-                />
-              </IconButtonAppBar>
+              )}
+              <BoxEventsAppBar box={box} />
             </Box>
 
             {!isCryptoLoaded && canBeDecrypted && (
