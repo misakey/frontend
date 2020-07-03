@@ -47,6 +47,7 @@ import { removeEntities } from '@misakey/store/actions/entities';
 // CONSTANTS
 const { conflict } = errorTypes;
 const CONTENT_SPACING = 2;
+const APPBAR_HEIGHT = 64;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -57,8 +58,12 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2, 0),
   },
   content: {
-    maxHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - ${theme.spacing(CONTENT_SPACING) * 2}px)`,
+    boxSizing: 'border-box',
+    maxHeight: `calc(100vh - ${APPBAR_HEIGHT}px)`,
     overflow: 'auto',
+  },
+  subheader: {
+    backgroundColor: theme.palette.common.white,
   },
 }));
 
@@ -170,7 +175,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
           </IconButtonAppBar>
         </AppBarDrawer>
       </ElevationScroll>
-      <Box p={CONTENT_SPACING} ref={(ref) => setContentRef(ref)} className={classes.content}>
+      <Box p={CONTENT_SPACING} pt={0} ref={(ref) => setContentRef(ref)} className={classes.content}>
         <Box display="flex" flexDirection="column" alignItems="center">
           <BoxAvatar
             classes={{ root: classes.avatar }}
@@ -294,7 +299,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
             </>
           )}
           <List subheader={(
-            <ListSubheader>
+            <ListSubheader className={classes.subheader}>
               <Typography noWrap variant="overline" color="textSecondary">
                 {t('boxes:read.details.menu.members.title')}
               </Typography>

@@ -101,7 +101,11 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
             <Chip color="secondary" label={blobCount} size="small" clickable />
           </Box>
         )}
-        <TypographyDateSince date={lastEvent.serverEventCreatedAt} variant="caption" color="textSecondary" />
+        <TypographyDateSince
+          noWrap
+          date={lastEvent.serverEventCreatedAt}
+          color="textSecondary"
+        />
       </Box>
 
     </ListItem>

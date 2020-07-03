@@ -14,7 +14,7 @@ export const SIDES = {
 const useStyles = makeStyles((theme) => ({
   appBar: ({ drawerWidth, side }) => (side === SIDES.RIGHT
     ? {
-      [theme.breakpoints.up('sm')]: {
+      [theme.breakpoints.up('md')]: {
         width: `calc(100% - ${drawerWidth})`,
         marginLeft: drawerWidth,
       },

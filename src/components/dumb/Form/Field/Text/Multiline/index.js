@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import FieldText from 'components/dumb/Form/Field/Text';
 
@@ -12,10 +12,23 @@ const ENTER_KEY = 'Enter';
 const FormFieldTextMultiline = (props) => {
   const { submitForm, dirty } = useFormikContext();
 
+  const [isTouch, setIsTouch] = useState(false);
+
+  const onTouchStart = useCallback(
+    () => {
+      setIsTouch(true);
+    },
+    [setIsTouch],
+  );
+
   const onKeyDown = useCallback(
     (e) => {
       if (e.key === ENTER_KEY) {
-        if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) {
+        // do not submit when alt, meta, shift, or touch was used, except for ctrl + Enter
+        // touch device : ctrl + enter can submit
+        // non-touch device : enter, ctrl + enter can submit
+        // @FIXME a device with a mouse and a virtual keyboard wll have issues adding line jumps
+        if (e.altKey || e.metaKey || e.shiftKey || (isTouch && !e.ctrlKey)) {
           return;
         }
         if (dirty) {
@@ -24,11 +37,11 @@ const FormFieldTextMultiline = (props) => {
         e.preventDefault();
       }
     },
-    [dirty, submitForm],
+    [dirty, isTouch, submitForm],
   );
 
   return (
-    <FieldText onKeyDown={onKeyDown} {...props} />
+    <FieldText onTouchStart={onTouchStart} onKeyDown={onKeyDown} {...props} />
   );
 };
 

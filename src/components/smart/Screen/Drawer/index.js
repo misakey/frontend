@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   }),
   main: ({ drawerWidth }) => ({
     height: 'inherit',
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
     },
@@ -61,17 +61,17 @@ const useStyles = makeStyles((theme) => ({
 
 function ScreenDrawer({ drawerChildren, children, isFullWidth, ...props }) {
   const theme = useTheme();
-  const isXsDown = useMediaQuery(theme.breakpoints.only('xs'));
+  const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
   const { pathname, search } = useLocation();
   const history = useHistory();
   const searchParams = getSearchParams(search);
 
   const drawerWidth = useMemo(
     () => {
-      if (isXsDown) { return isFullWidth ? '100%' : '90%'; }
+      if (isSmDown) { return isFullWidth ? '100%' : '90%'; }
       return '30%';
     },
-    [isXsDown, isFullWidth],
+    [isSmDown, isFullWidth],
   );
   const classes = useStyles({ drawerWidth });
 
@@ -83,24 +83,24 @@ function ScreenDrawer({ drawerChildren, children, isFullWidth, ...props }) {
   const [isTmpDrawerOpen, setIsTmpDrawerOpen] = useState(false);
 
   const displayTempDrawer = useMemo(
-    () => !isNil(searchParams[TMP_DRAWER]) || isXsDown,
-    [isXsDown, searchParams],
+    () => !isNil(searchParams[TMP_DRAWER]) || isSmDown,
+    [isSmDown, searchParams],
   );
 
   const selectedDrawer = useMemo(
     () => searchParams[TMP_DRAWER] || searchParams[DRAWER], [searchParams],
   );
 
-  const getNextDrawerSearch = useCallback((value, isTmp = isXsDown) => ({
+  const getNextDrawerSearch = useCallback((value, isTmp = isSmDown) => ({
     pathname,
     search: getNextSearch(search, new Map([[isTmp ? TMP_DRAWER : DRAWER, value]])),
-  }), [isXsDown, pathname, search]);
+  }), [isSmDown, pathname, search]);
 
   const toggleDrawer = useCallback(
-    (e, value = DEFAULT, isTmp = isXsDown) => {
+    (e, value = DEFAULT, isTmp = isSmDown) => {
       const newParameter = !isNil(selectedDrawer) ? undefined : value;
       history.replace(getNextDrawerSearch(newParameter, isTmp));
-    }, [getNextDrawerSearch, history, isXsDown, selectedDrawer],
+    }, [getNextDrawerSearch, history, isSmDown, selectedDrawer],
   );
 
   const onClose = useCallback(
@@ -112,13 +112,13 @@ function ScreenDrawer({ drawerChildren, children, isFullWidth, ...props }) {
 
   const drawerProps = useMemo(
     () => ({
-      isDrawerOpen: isTmpDrawerOpen || !isXsDown,
+      isDrawerOpen: isTmpDrawerOpen || !isSmDown,
       toggleDrawer,
       drawerWidth,
       getNextDrawerSearch,
       selectedDrawer,
     }),
-    [drawerWidth, getNextDrawerSearch, isTmpDrawerOpen, isXsDown, selectedDrawer, toggleDrawer],
+    [drawerWidth, getNextDrawerSearch, isTmpDrawerOpen, isSmDown, selectedDrawer, toggleDrawer],
   );
 
   const drawerContent = useMemo(() => {
@@ -136,7 +136,7 @@ function ScreenDrawer({ drawerChildren, children, isFullWidth, ...props }) {
 
   return (
     <>
-      {!isXsDown && (
+      {!isSmDown && (
         <Drawer
           variant="permanent"
           anchor="left"

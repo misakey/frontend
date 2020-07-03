@@ -29,6 +29,7 @@ const APPBAR_HEIGHT = 64;
 
 const useStyles = makeStyles(() => ({
   content: ({ headerHeight }) => ({
+    boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
     height: `calc(100vh - ${headerHeight}px)`,

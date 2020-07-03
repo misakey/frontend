@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 
 // COMPONENTS
-const TypographyDateSince = ({ date, text }) => {
+const TypographyDateSince = ({ date, text, ...props }) => {
   const calendarDateSince = useCalendarDateSince(date);
 
   const label = useMemo(
@@ -30,7 +30,7 @@ const TypographyDateSince = ({ date, text }) => {
 
   return (
     <Tooltip title={dateFormated}>
-      <Typography variant="caption">{label}</Typography>
+      <Typography variant="caption" {...props}>{label}</Typography>
     </Tooltip>
   );
 };
