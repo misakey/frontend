@@ -11,6 +11,7 @@ import { parseAcr } from '@misakey/helpers/parseAcr';
 import createUserManager from '@misakey/auth/helpers/userManager';
 
 import OidcProviderSplash from '@misakey/auth/components/OidcProvider/Splash';
+import { matchPath } from 'react-router-dom';
 
 // HELPERS
 const pickUserProps = pick(['token', 'id']);
@@ -36,7 +37,7 @@ export const UserManagerContext = createContext({
 });
 
 // COMPONENTS
-function OidcProvider({ store, children, config }) {
+function OidcProvider({ store, children, config, silentBlacklist }) {
   const userManager = useMemo(
     () => createUserManager(config),
     [config],
@@ -65,6 +66,12 @@ function OidcProvider({ store, children, config }) {
       identityId,
     })),
     [store],
+  );
+
+
+  const isAllowedToLaunchSilentAuth = useCallback(
+    () => silentBlacklist.every((route) => !matchPath(window.location.pathname, route)),
+    [silentBlacklist],
   );
 
   const dispatchStoreUpdate = useCallback(
@@ -106,14 +113,14 @@ function OidcProvider({ store, children, config }) {
     log('User token is expired !');
     // @TODO could be removed when https://github.com/IdentityModel/oidc-client-js/issues/787
     // will be implemented
-    if (userManager.settings.automaticSilentRenew) {
+    if (userManager.settings.automaticSilentRenew && isAllowedToLaunchSilentAuth()) {
       userManager.signinSilent().then(() => {
         log('OidcProvider.onAccessTokenExpired: Silent token renewal successful');
       }, (err) => {
         log(`OidcProvider.onAccessTokenExpired: Error from signinSilent: ${err.message}`);
       });
     }
-  }, [userManager]);
+  }, [isAllowedToLaunchSilentAuth, userManager]);
 
   const loadUserAtMount = useCallback(() => {
     setIsLoading(true);
@@ -183,17 +190,19 @@ OidcProvider.propTypes = {
     scope: PropTypes.string,
   }),
   store: PropTypes.object,
+  silentBlacklist: PropTypes.arrayOf(PropTypes.object),
 };
 
 OidcProvider.defaultProps = {
   children: null,
   config: {
     response_type: 'code',
-    scope: 'openid',
+    scope: 'openid tos privacy_policy',
     automaticSilentRenew: true,
     loadUserInfo: false,
   },
   store: null,
+  silentBlacklist: [],
 };
 
 export const withUserManager = (Component) => forwardRef((props, ref) => (
