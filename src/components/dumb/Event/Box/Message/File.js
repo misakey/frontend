@@ -1,18 +1,19 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import numbro from 'numbro';
 import { withTranslation } from 'react-i18next';
 
 import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/helpers/isNil';
 
 import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
 import decryptFileMsg from '@misakey/crypto/box/decryptFileMsg';
 
-import { FILE_SIZE_FORMAT } from 'constants/formats/numbers';
 import EventCard from 'components/dumb/Event/Card';
 import ButtonDownloadBlob from 'components/smart/Button/Download/Blob';
 
 import EventSchema from 'store/schemas/Boxes/Events';
+import formatFileSize from 'helpers/formatFileSize';
+
 
 const BoxMessageFileEvent = ({ event, boxID, isFromCurrentUser, preview, t, ...rest }) => {
   const {
@@ -42,11 +43,12 @@ const BoxMessageFileEvent = ({ event, boxID, isFromCurrentUser, preview, t, ...r
       // eslint-disable-next-line no-shadow
       const decryptedContent = decryptFileMsg(encrypted, secretKey);
       const { fileName, fileSize } = decryptedContent;
+      const formattedSize = formatFileSize(fileSize);
 
       return {
         canBeDecrypted: true,
         decryptedContent,
-        text: `${fileName} (${numbro(fileSize).format(FILE_SIZE_FORMAT)})`,
+        text: !isNil(formattedSize) ? `${fileName} (${formattedSize})` : fileName,
       };
     },
     [publicKeysWeCanDecryptFrom, publicKey, encrypted, t],

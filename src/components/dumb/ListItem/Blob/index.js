@@ -2,9 +2,6 @@ import React, { useMemo, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import numbro from 'numbro';
-import { FILE_SIZE_FORMAT } from 'constants/formats/numbers';
-
 import { makeStyles } from '@material-ui/core/styles/';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
@@ -19,6 +16,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import isNil from '@misakey/helpers/isNil';
+import formatFileSize from 'helpers/formatFileSize';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -39,12 +37,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const BlobListItem = ({ blob, onRemove, isEncrypted, t }) => {
   const classes = useStyles();
   const { name, lastModified, size } = useMemo(() => blob, [blob]);
   const formattedSize = useMemo(
-    () => (size ? numbro(size).format(FILE_SIZE_FORMAT) : null), [size],
+    () => formatFileSize(size), [size],
   );
   const [anchorEl, setAnchorEl] = useState(null);
 
