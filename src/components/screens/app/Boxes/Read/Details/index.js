@@ -4,14 +4,10 @@ import routes from 'routes';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
-import copy from 'copy-to-clipboard';
 import { useSnackbar } from 'notistack';
 import { makeStyles } from '@material-ui/core/styles';
 
-import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
-import isNil from '@misakey/helpers/isNil';
 import useGeneratePathKeepingSearch from '@misakey/hooks/useGeneratePathKeepingSearch';
-import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
 
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
@@ -36,13 +32,13 @@ import { ListItemSecondaryAction } from '@material-ui/core';
 import { AVATAR_SIZE } from '@misakey/ui/constants/sizes';
 import { CLOSED, OPEN } from 'constants/app/boxes/statuses';
 import { LIFECYCLE } from 'constants/app/boxes/events';
-import { createBoxEventBuilder, createKeyShareBuilder } from '@misakey/helpers/builder/boxes';
+import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import { addBoxEvents } from 'store/reducers/box';
 import BoxesSchema from 'store/schemas/Boxes';
-import { splitBoxSecretKey } from '@misakey/crypto/box/keySplitting';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { removeEntities } from '@misakey/store/actions/entities';
+import useCreateBoxInvitationLink from 'hooks/useCreateBoxInvitationLink';
 
 // CONSTANTS
 const { conflict } = errorTypes;
@@ -88,49 +84,12 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
   const goBack = useGeneratePathKeepingSearch(routes.boxes.read._, { id });
   // const routeFiles = useGeneratePathKeepingSearch(routes.boxes.read.files, { id });
 
-  const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
-
-  const canInvite = useMemo(
-    () => publicKeysWeCanDecryptFrom.has(publicKey),
-    [publicKey, publicKeysWeCanDecryptFrom],
-  );
-
-  const canShare = useMemo(() => !isNil(navigator.share), []);
-
-  const createInvitation = useCallback(
-    // @FIXME move this logic in a dedicated function
-    // outside of the component?
-    async () => {
-      const secretKey = publicKeysWeCanDecryptFrom.get(publicKey);
-
-      const { invitationKeyShare, misakeyKeyShare } = splitBoxSecretKey(secretKey);
-
-      await createKeyShareBuilder(misakeyKeyShare);
-
-      const invitationURL = parseUrlFromLocation(`${routes.boxes.invitation}#${id}&${invitationKeyShare}`).href;
-
-      return invitationURL;
-    },
-    [id, publicKey, publicKeysWeCanDecryptFrom],
-  );
-
-  const onShare = useCallback(async () => {
-    const invitationURL = await createInvitation();
-    navigator.share({
-      title: t('boxes:read.details.menu.share.title', { title }),
-      text: t('boxes:read.details.menu.share.text', { title }),
-      url: invitationURL,
-    });
-  }, [t, title, createInvitation]);
-
-  const onInvite = useCallback(
-    async () => {
-      const invitationURL = await createInvitation();
-      copy(invitationURL);
-      enqueueSnackbar(t('common:copied'), { variant: 'success' });
-    },
-    [createInvitation, enqueueSnackbar, t],
-  );
+  const {
+    canShare,
+    canInvite,
+    onShare,
+    onCopyLink,
+  } = useCreateBoxInvitationLink(id, title, publicKey, t);
 
   const isAllowedToClose = useMemo(
     () => belongsToCurrentUser && lifecycle === OPEN,
@@ -217,7 +176,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
                   <ListItemSecondaryAction>
                     <IconButton
                       onClick={onShare}
-                      disabled={isNil(canShare)}
+                      disabled={!canShare}
                       aria-label={t('common:share')}
                     >
                       <ShareIcon />
@@ -235,7 +194,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
                 />
                 <ListItemSecondaryAction>
                   <IconButton
-                    onClick={onInvite}
+                    onClick={onCopyLink}
                     disabled={!canInvite}
                     aria-label={t('common:copy')}
                   >

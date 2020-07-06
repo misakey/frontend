@@ -75,15 +75,17 @@ function ScreenDrawer({ drawerChildren, children, isFullWidth, ...props }) {
   );
   const classes = useStyles({ drawerWidth });
 
+  const tmpDrawerValue = useMemo(() => searchParams[TMP_DRAWER], [searchParams]);
+
   const initialTmpDrawerOpen = useMemo(
-    () => !isNil(searchParams[TMP_DRAWER]) || isFullWidth,
-    [isFullWidth, searchParams],
+    () => (!isNil(tmpDrawerValue) && !(tmpDrawerValue === DEFAULT && !isSmDown)) || isFullWidth,
+    [isFullWidth, isSmDown, tmpDrawerValue],
   );
 
   const [isTmpDrawerOpen, setIsTmpDrawerOpen] = useState(false);
 
   const displayTempDrawer = useMemo(
-    () => !isNil(searchParams[TMP_DRAWER]) || isSmDown,
+    () => (!isNil(searchParams[TMP_DRAWER])) || isSmDown,
     [isSmDown, searchParams],
   );
 

@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import ElevationScroll from 'components/dumb/ElevationScroll';
-import { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import Box from '@material-ui/core/Box';
@@ -17,6 +17,7 @@ import ButtonWithDialogPassword from 'components/smart/Dialog/Password/with/Butt
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
 import useGroupEventsByDate from 'hooks/useGroupEventsByDate';
+import useCreateBoxInvitationLink from 'hooks/useCreateBoxInvitationLink';
 import isNil from '@misakey/helpers/isNil';
 
 import BoxesSchema from 'store/schemas/Boxes';
@@ -48,10 +49,21 @@ function BoxEvents({
   const [headerHeight, setHeaderHeight] = useState(APPBAR_HEIGHT);
   const classes = useStyles({ headerHeight });
 
-  const { events: boxEvents } = useMemo(() => box, [box]);
+  const { events: boxEvents, members, title, publicKey, id } = useMemo(() => box, [box]);
   const { accountId } = useSelector(getCurrentUserSelector) || {};
+  const {
+    canShare,
+    canInvite,
+    onShare,
+    onCopyLink,
+  } = useCreateBoxInvitationLink(id, title, publicKey, t);
 
   const eventsByDate = useGroupEventsByDate(boxEvents);
+
+  const isTheOnlyMember = useMemo(
+    () => members.length === 1 && belongsToCurrentUser,
+    [belongsToCurrentUser, members.length],
+  );
 
   const headerRef = (ref) => {
     if (ref) { setHeaderHeight(ref.clientHeight); }
@@ -103,6 +115,21 @@ function BoxEvents({
                 )}
               >
                 {t('boxes:read.warning.saveInBackup')}
+              </Alert>
+            )}
+
+            {isTheOnlyMember && canInvite && (
+              <Alert
+                severity="info"
+                action={(
+                  <Button
+                    onClick={canShare ? onShare : onCopyLink}
+                    standing={BUTTON_STANDINGS.TEXT}
+                    text={t('common:share')}
+                  />
+                )}
+              >
+                {t('boxes:read.info.share')}
               </Alert>
             )}
           </Box>

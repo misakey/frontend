@@ -37,6 +37,9 @@
     "warning": {
       "saveInBackup": "Save this secure chat"
     },
+    "info": {
+      "share": "Share this chat"
+    },
     "events": {
       "create": {
         "error": {

@@ -37,6 +37,9 @@
     "warning": {
       "saveInBackup": "Sauvegarder ce chat dans mes chats sécurisés."
     },
+    "info": {
+      "share": "Partager ce chat"
+    },
     "events": {
       "create": {
         "error": {
