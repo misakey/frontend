@@ -1,9 +1,14 @@
 {
   "list": {
-    "open": "Saisis ton mot de passe pour déchiffrer tous tes chats",
-    "pasteUrl": {
-      "title": "Colle l’URL d’un chat pour le déchiffrer",
-      "placeholder": "https://app.misakey.com/invitation/9e944b29-b94f-417a-8980...."
+    "closedVault": {
+      "default": {
+        "open": "Saisis ton mot de passe pour déchiffrer tous tes chats",
+        "create": "Crée un coffre-fort avec un mot de passe pour déchiffrer tous tes chats"
+      },
+      "selected":{
+        "open": "Saisis ton mot de passe pour enregistrer ce chat",
+        "create": "Crée un coffre-fort avec un mot de passe pour enregistrer ce chat"
+      }
     },
     "events": {
       "preview": {
@@ -14,7 +19,7 @@
       }
     },
     "empty": {
-      "text": "Aucun chat sécurisé en cours",
+      "text": "Commencer un chat sécurisé en cliquant sur <1>+</1> ou",
       "create": "Commencer un chat"
     },
     "select": "Rejoins un chat sécurisé 💬 pour commencer"
@@ -30,9 +35,7 @@
       "send": "Envoyer"
     },
     "warning": {
-      "saveInBackup": "Entrez votre mot de passe pour mettre à jour votre sauvegarde de clés de déchiffrement.",
-      "vaultClosed": "Il semble que vous n'ayez pas accès à la clé de déchiffrement de ce chat. Vous pouvez la récupérer en collant le lien d'invitation ou en renseignant votre mot de passe pour accéder à toutes vos clés de déchiffement.",
-      "undecryptable": "Il semble que vous n'ayez pas accès à la clé de déchiffrement de ce chat. Vous pouvez la récupérer en collant le lien d'invitation."
+      "saveInBackup": "Sauvegarder ce chat dans mes chats sécurisés."
     },
     "events": {
       "create": {
@@ -87,6 +90,7 @@
         },
         "members": {
           "title": "Membres de la box",
+          "creator": "Vous êtes le seul participant",
           "count": "{{count}} membre",
           "count_plural": "{{count}} membres"
         },
@@ -103,7 +107,6 @@
           "confirmDialog": {
             "text": "Voulez-vous vraiment fermer cette box\u00a0?\nLes autres membres n'auront plus accès à son contenu et vous ne pourrez plus la réouvrir.\nEn tant que créateur·trice, vous aurez toujours accès au contenu."
           }
-
         }
       }
     }
@@ -111,10 +114,20 @@
   "create": {
     "dialog": {
       "content": "Quel est le sujet de cette nouvelle conversation\u00a0?",
-      "success": "La box a été créée avec succès\u00a0!",
+      "success": "Le chat a été créé avec succès\u00a0!",
       "fields": {
-        "name": "Usage"
+        "name": "Nouveau chat"
       }
+    }
+  },
+  "pasteLink": {
+    "dialog": {
+      "content": "La clé pour sécuriser ce chat semble avoir été supprimée pendant la navigation. Pourriez-vous copier/coller le lien que vous avez reçu\u00a0?"
+    }
+  },
+  "vault": {
+    "dialog": {
+      "text": "Votre coffre-fort est verrouillé. Tapez votre mot de passe pour accéder à vos chats sécurisés."
     }
   }
 }

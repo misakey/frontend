@@ -27,11 +27,11 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 
 import BoxControls from '@misakey/ui/Box/Controls';
-import FieldText from 'components/dumb/Form/Field/Text';
 import { boxNameFieldValidationSchema } from 'constants/validationSchemas/boxes';
 import { createBoxBuilder } from '@misakey/helpers/builder/boxes';
 import { ALL } from 'constants/app/boxes/statuses';
 import { addBoxSecretKey } from '@misakey/crypto/store/actions/concrete';
+import FieldTextStandard from 'components/dumb/Form/Field/Text/Standard';
 
 export const FIELD_NAME = 'name';
 export const INITIAL_VALUES = { [FIELD_NAME]: '' };
@@ -46,18 +46,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
   },
   inputField: { width: '70%', margin: theme.spacing(2, 0) },
-  inputLabelRoot: {
-    width: '100%',
-    textAlign: 'center',
-    '&:not(.Mui-focused)': {
-      fontSize: '1.5rem',
-      transform: 'translate(0, 12px) scale(1)',
-    },
-  },
-  inputLabelShrink: { transformOrigin: 'top center' },
-  input: {
-    textAlign: 'center',
-  },
 }));
 
 function CreateBoxDialog({
@@ -129,23 +117,15 @@ function CreateBoxDialog({
               <Typography>{t('boxes:create.dialog.content')}</Typography>
               <Box display="flex" justifyContent="center">
                 <Field
-                  component={FieldText}
+                  component={FieldTextStandard}
+                  className={classes.inputField}
                   name={FIELD_NAME}
                   label={t('boxes:create.dialog.fields.name')}
                   prefix="boxes."
-                  className={classes.inputField}
                   autoFocus
                   id="BoxName"
                   type="text"
                   fullWidth={false}
-                  variant="standard"
-                  InputLabelProps={{
-                    classes: {
-                      root: classes.inputLabelRoot,
-                      shrink: classes.inputLabelShrink,
-                    },
-                  }}
-                  InputProps={{ classes: { root: classes.input } }}
                 />
               </Box>
             </DialogContent>

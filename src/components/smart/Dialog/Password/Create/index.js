@@ -8,6 +8,7 @@ import hardPasswordChange from '@misakey/crypto/store/actions/hardPasswordChange
 import { updateIdentity } from '@misakey/auth/store/actions/auth';
 import IdentitySchema from 'store/schemas/Identity';
 import { createPasswordValidationSchema } from 'constants/validationSchemas/auth';
+import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
@@ -55,7 +56,7 @@ const DialogPasswordCreate = forwardRef(({
   );
 
   const onSubmit = useCallback(
-    ({ password }) => onPasswordSubmit(password)
+    ({ [PREHASHED_PASSWORD]: password }) => onPasswordSubmit(password)
       .then(() => {
         const text = t('account:password.success');
         enqueueSnackbar(text, { variant: 'success' });

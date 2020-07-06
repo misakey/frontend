@@ -304,8 +304,11 @@
   "boxes": {
     "name": {
       "error": {
-        "malformed": "L'usage doit contenir entre 5 et 50 caractères"
+        "malformed": "Le nom doit contenir entre 5 et 50 caractères"
       }
+    },
+    "invitationLink": {
+      "label": "Lien d'invitation"
     }
   }
 }

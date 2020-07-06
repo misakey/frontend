@@ -1,9 +1,14 @@
 {
   "list": {
-    "open": "Type your password to decrypt all your chats",
-    "pasteUrl": {
-      "title": "Paste a chat URL to decrypt it",
-      "placeholder": "https://app.misakey.com/invitation/9e944b29-b94f-417a-8980...."
+    "closedVault": {
+      "default": {
+        "open": "Type your password to decrypt all your chats",
+        "create": "Create a vault with a password to decrypt all your chats"
+      },
+      "selected":{
+        "open": "Type your password to save this chat",
+        "create": "Create a vault with a password to save this chat"
+      }
     },
     "events": {
       "preview": {
@@ -14,10 +19,10 @@
       }
     },
     "empty": {
-      "text": "No secured chat at the moment",
+      "text": "Start a secured chat by clicking <1>+</1> or",
       "create": "Start a chat"
     },
-    "select": "Join a secure chat 💬 to start"
+    "select": "Select a chat 💬 to start"
   },
   "read": {
     "closed": {
@@ -30,9 +35,7 @@
       "send": "Send"
     },
     "warning": {
-      "saveInBackup": "Type your password to update your decryption keys backup.",
-      "vaultClosed": "It seems that you do not have access to the decryption key of this chat. You can get it by pasting the invitation link or by typing your password to access all your decryption keys.",
-      "undecryptable": "You seem not to have access to the decryption key of this chat. You can get it by pasting the invitation link."
+      "saveInBackup": "Save this secure chat"
     },
     "events": {
       "create": {
@@ -87,6 +90,7 @@
         },
         "members": {
           "title": "Members of the box",
+          "creator": "You are the only member",
           "count": "{{count}} member",
           "count_plural": "{{count}} members"
         },
@@ -110,11 +114,21 @@
   },
   "create": {
     "dialog": {
-      "content": "What is the subject of the box?",
-      "success": "Box has been successfully created!",
+      "content": "What is the new chat about?",
+      "success": "Chat has been successfully created!",
       "fields": {
-        "name": "Subject"
+        "name": "New chat"
       }
+    }
+  },
+  "pasteLink": {
+    "dialog": {
+      "content": "The key to secure this chat seems to have been deleted during navigation. Could you copy/paste the link you received?"
+    }
+  },
+  "vault": {
+    "dialog": {
+      "text": "Your vault is locked. Type your password to access your secured chats."
     }
   }
 }

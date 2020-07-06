@@ -49,9 +49,12 @@
   "undecryptable": "Indéchiffrable",
   "encrypted": "Contenu chiffré",
   "update": "Éditer",
+  "unlock": "Déverrouiller",
   "validate": "Valider",
   "view": "Voir",
   "openAccountDrawer": "Voir le compte",
+  "createVault": "Créer un coffre-fort",
+  "openVault": "Ouvrir mon coffre-fort",
   "account": {
     "current": "Compte de l'utilisateur actuel",
     "profile": "Mon compte"

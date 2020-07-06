@@ -114,5 +114,15 @@
     "error": {
       "required": "I have to accept TOS"
     }
+  },
+  "boxes": {
+    "name": {
+      "error": {
+        "malformed": "Name must be between 5 and 50 characters long"
+      }
+    },
+    "invitationLink": {
+      "label": "Invitation link"
+    }
   }
 }

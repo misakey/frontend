@@ -41,9 +41,12 @@
   "undecryptable": "Undecryptable",
   "encrypted": "Encrypted content",
   "update": "Update",
+  "unlock": "Unlock",
   "validate": "Validate",
   "view": "View",
   "openAccountDrawer": "See account",
+  "createVault": "Create a vault",
+  "openVault": "Open my vault",
   "account": {
     "current": "Current account",
     "profile": "My profile"

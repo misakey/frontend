@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import routes from 'routes';
 import STATUSES, { ALL } from 'constants/app/boxes/statuses';
@@ -19,11 +20,18 @@ import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import { Box } from '@material-ui/core';
 import Title from 'components/dumb/Typography/Title';
 
+const useStyles = makeStyles((theme) => ({
+  secondary: {
+    color: theme.palette.secondary.main,
+  },
+}));
+
 const ButtonCreate = withDialogCreate(Button);
 
 // COMPONENTS
 function WindowedListBoxes({ activeStatus, selectedId, t, ...props }) {
   const locationSearchParams = useLocationSearchParams();
+  const classes = useStyles();
 
   const { search } = locationSearchParams;
 
@@ -45,7 +53,13 @@ function WindowedListBoxes({ activeStatus, selectedId, t, ...props }) {
   if (isNil(itemCount) || itemCount === 0) {
     return (
       <Box m={2} display="flex" flexDirection="column" height="100%" justifyContent="center" alignItems="center">
-        <Title align="center">{t('boxes:list.empty.text')}</Title>
+        <Title align="center">
+          <Trans i18nKey="boxes:list.empty.text">
+            Commencer un chat sécurisé en cliquant sur
+            <strong className={classes.secondary}>+</strong>
+            ou
+          </Trans>
+        </Title>
         <Box>
           <ButtonCreate standing={BUTTON_STANDINGS.MAIN} text={t('boxes:list.empty.create')} />
         </Box>

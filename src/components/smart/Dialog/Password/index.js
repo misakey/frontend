@@ -2,6 +2,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import { openVaultValidationSchema } from 'constants/validationSchemas/auth';
@@ -9,6 +10,7 @@ import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 
 import resolveAny from '@misakey/helpers/resolveAny';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import isFunction from '@misakey/helpers/isFunction';
 
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 
@@ -22,6 +24,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitleWithCloseIcon from '@misakey/ui/DialogTitle/WithCloseIcon';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
 import BoxControls from '@misakey/ui/Box/Controls';
+import Box from '@material-ui/core/Box';
 
 // CONSTANTS
 const { invalid } = errorTypes;
@@ -29,15 +32,21 @@ const { invalid } = errorTypes;
 const INITIAL_VALUES = {
   [PREHASHED_PASSWORD]: '',
 };
+// HOOKS
+const useStyles = makeStyles((theme) => ({
+  inputField: { width: '70%', margin: theme.spacing(2, 0) },
+}));
 
 // COMPONENTS
 const DialogPassword = ({
   title, contentText,
   onClose, onSubmit, open,
+  submitText,
   formikProps,
   t, ...rest
 }) => {
   const fullScreen = useDialogFullScreen();
+  const classes = useStyles();
 
   const handleSubmit = useCallback(
     (values, { setFieldError, ...props }) => resolveAny(
@@ -63,25 +72,31 @@ const DialogPassword = ({
         {...formikProps}
       >
         <Form>
-          <DialogTitleWithCloseIcon onClose={onClose}>
-            {title}
-          </DialogTitleWithCloseIcon>
+          {isFunction(onClose) && (
+            <DialogTitleWithCloseIcon onClose={onClose}>
+              {title}
+            </DialogTitleWithCloseIcon>
+          )}
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               {contentText}
             </DialogContentText>
-            <FormField
-              name={PREHASHED_PASSWORD}
-              component={FieldTextPasswordRevealable}
-              inputProps={{ 'data-matomo-ignore': true }}
-              autoFocus
-            />
+            <Box display="flex" justifyContent="center">
+              <FormField
+                name={PREHASHED_PASSWORD}
+                component={FieldTextPasswordRevealable}
+                className={classes.inputField}
+                inputProps={{ 'data-matomo-ignore': true }}
+                fullWidth={false}
+                autoFocus
+              />
+            </Box>
           </DialogContent>
           <DialogActions>
             <BoxControls
               primary={{
                 type: 'submit',
-                text: t('common:validate'),
+                text: submitText || t('common:validate'),
               }}
               formik
             />
@@ -99,6 +114,7 @@ DialogPassword.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   open: PropTypes.bool,
   formikProps: PropTypes.object,
+  submitText: PropTypes.string,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
@@ -107,6 +123,7 @@ DialogPassword.defaultProps = {
   title: null,
   contentText: null,
   open: false,
+  submitText: null,
   formikProps: {},
 };
 

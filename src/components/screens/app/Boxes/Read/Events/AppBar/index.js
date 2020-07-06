@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const EventsAppBar = ({ box, t, ...props }) => {
+const EventsAppBar = ({ box, t, belongsToCurrentUser, ...props }) => {
   const classes = useStyles();
   const { avatarUri, title, members } = useMemo(() => box, [box]);
 
@@ -64,6 +64,16 @@ const EventsAppBar = ({ box, t, ...props }) => {
 
   const theme = useTheme();
   const isDownSm = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const membersText = useMemo(
+    () => {
+      if (members.length === 1 && belongsToCurrentUser) {
+        return t('boxes:read.details.menu.members.creator');
+      }
+      return t('boxes:read.details.menu.members.count', { count: members.length });
+    },
+    [belongsToCurrentUser, members.length, t],
+  );
 
   const primaryTypographyProps = useMemo(
     () => (isDownSm
@@ -95,7 +105,7 @@ const EventsAppBar = ({ box, t, ...props }) => {
         }}
         primary={title}
         primaryTypographyProps={primaryTypographyProps}
-        secondary={t('boxes:read.details.menu.members.count', { count: members.length })}
+        secondary={membersText}
         secondaryTypographyProps={secondaryTypographyProps}
       />
       <BoxAvatar
@@ -111,6 +121,7 @@ const EventsAppBar = ({ box, t, ...props }) => {
 
 EventsAppBar.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
+  belongsToCurrentUser: PropTypes.bool.isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,
 };

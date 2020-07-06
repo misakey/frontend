@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import FieldText from 'components/dumb/Form/Field/Text';
+import FieldTextStandard from 'components/dumb/Form/Field/Text/Standard';
 
 // CONSTANTS
 const DEFAULT_INPUT_PROPS = {
@@ -19,7 +19,7 @@ const FieldTextPassword = ({ type, inputProps, ...props }) => {
   );
 
   return (
-    <FieldText {...props} type={type} inputProps={mergedInputProps} />
+    <FieldTextStandard {...props} type={type} inputProps={mergedInputProps} />
   );
 };
 

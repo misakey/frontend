@@ -6,15 +6,15 @@ import { useSelector } from 'react-redux';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import ElevationScroll from 'components/dumb/ElevationScroll';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
-import { selectors } from '@misakey/crypto/store/reducer';
-import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
 import ButtonWithDialogPassword from 'components/smart/Dialog/Password/with/Button';
+import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
 import useGroupEventsByDate from 'hooks/useGroupEventsByDate';
 import isNil from '@misakey/helpers/isNil';
@@ -39,28 +39,23 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
+function BoxEvents({
+  drawerWidth, isDrawerOpen, toggleDrawer, box, t, showWarning, belongsToCurrentUser,
+}) {
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
   const lastEventRef = useRef(null);
   const [headerHeight, setHeaderHeight] = useState(APPBAR_HEIGHT);
   const classes = useStyles({ headerHeight });
 
-  const { events: boxEvents, publicKey } = useMemo(() => box, [box]);
-  const isCryptoLoadedSelector = useMemo(
-    () => selectors.isCryptoLoaded,
-    [],
-  );
-  const isCryptoLoaded = useSelector(isCryptoLoadedSelector);
-  const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
-  const canBeDecrypted = publicKeysWeCanDecryptFrom.has(publicKey);
+  const { events: boxEvents } = useMemo(() => box, [box]);
+  const { accountId } = useSelector(getCurrentUserSelector) || {};
 
   const eventsByDate = useGroupEventsByDate(boxEvents);
 
   const headerRef = (ref) => {
     if (ref) { setHeaderHeight(ref.clientHeight); }
   };
-
 
   const scrollToBottom = useCallback(() => {
     if (!isNil(lastEventRef) && !isNil(lastEventRef.current)) {
@@ -92,28 +87,22 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
                   </IconButtonAppBar>
                 </Box>
               )}
-              <BoxEventsAppBar box={box} />
+              <BoxEventsAppBar box={box} belongsToCurrentUser={belongsToCurrentUser} />
             </Box>
 
-            {!isCryptoLoaded && canBeDecrypted && (
+            {showWarning && (
               <Alert
                 severity="warning"
-                action={<ButtonWithDialogPassword text={t('common:save')} />}
+                action={(
+                  <ButtonWithDialogPassword
+                    standing={BUTTON_STANDINGS.TEXT}
+                    text={isNil(accountId)
+                      ? t('common:createVault')
+                      : t('common:openVault')}
+                  />
+                )}
               >
                 {t('boxes:read.warning.saveInBackup')}
-              </Alert>
-            )}
-            {!isCryptoLoaded && !canBeDecrypted && (
-              <Alert
-                severity="warning"
-                action={<ButtonWithDialogPassword text={t('common:decrypt')} />}
-              >
-                {t('boxes:read.warning.vaultClosed')}
-              </Alert>
-            )}
-            {isCryptoLoaded && !canBeDecrypted && (
-              <Alert severity="warning">
-                {t('boxes:read.warning.undecryptable')}
               </Alert>
             )}
           </Box>
@@ -125,10 +114,10 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
             <Box display="flex" flexDirection="column" py={1} key={date}>
               <Typography component={Box} alignSelf="center">{date}</Typography>
               {
-              events.map((event) => (
-                <BoxEventsAccordingToType event={event} key={event.id} boxID={box.id} />
-              ))
-            }
+                events.map((event) => (
+                  <BoxEventsAccordingToType event={event} key={event.id} boxID={box.id} />
+                ))
+              }
               <div ref={lastEventRef} />
             </Box>
           ))}
@@ -147,9 +136,15 @@ function BoxEvents({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
 BoxEvents.propTypes = {
   drawerWidth: PropTypes.string.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
+  belongsToCurrentUser: PropTypes.bool.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
+  showWarning: PropTypes.func,
+};
+
+BoxEvents.defaultProps = {
+  showWarning: false,
 };
 
 export default withTranslation(['common', 'boxes'])(BoxEvents);
