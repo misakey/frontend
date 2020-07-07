@@ -4,6 +4,15 @@ import isTypedArray from '@misakey/helpers/isTypedArray';
 import isEmpty from '@misakey/helpers/isEmpty';
 import trimEnd from '@misakey/helpers/trimEnd';
 
+export const makeSafeForUrl = (string) => trimEnd(string.replace(/\//g, '_').replace(/\+/g, '-'), '=');
+
+// From https://gist.github.com/catwell/3046205
+export const getFromUrlSafe = (string) => {
+  const paddingLength = string.length % 4;
+  const padding = (paddingLength !== 0) ? ('===').slice(0, 4 - paddingLength) : '';
+  return `${string.replace(/_/g, '/').replace(/-/g, '+')}${padding}`;
+};
+
 export function encodeBase64(data, { urlSafe = false } = {}) {
   if (isEmpty(data)) { throw Error('cannot encode empty data'); }
   if (!isTypedArray(data)) {
@@ -12,12 +21,7 @@ export function encodeBase64(data, { urlSafe = false } = {}) {
 
   const encoded = tweetnaclUtil.encodeBase64(data);
   // Unpadded URL-safe base64 (https://github.com/dchest/tweetnacl-util-js/issues/6)
-  return urlSafe
-    ? trimEnd(
-      encoded.replace(/\//g, '_').replace(/\+/g, '-'),
-      '=',
-    )
-    : encoded;
+  return urlSafe ? makeSafeForUrl(encoded) : encoded;
 }
 
 export function decodeBase64(string, { urlSafe = false } = {}) {
@@ -25,7 +29,7 @@ export function decodeBase64(string, { urlSafe = false } = {}) {
 
   try {
     // Unpadded URL-safe base64 (https://github.com/dchest/tweetnacl-util-js/issues/6)
-    const toDecode = urlSafe ? `${string.replace(/_/g, '/').replace(/-/g, '+')}=` : string;
+    const toDecode = urlSafe ? getFromUrlSafe(string) : string;
     return tweetnaclUtil.decodeBase64(toDecode);
   } catch (e) {
     if (e instanceof TypeError) {
