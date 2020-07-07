@@ -9,36 +9,18 @@ variables:
   CI: "true"
 
 stages:
-  - dep
   - test
   - docs
   - build
   - deploy
 
-install_mod:
-  stage: dep
-  image: node:10.15.3
-  tags:
-    - misakey_js
-  script:
-    - make dep
-  cache:
-    key: frontend-${CI_COMMIT_REF_NAME}
-    untracked: true
-    paths:
-      - node_modules/
-    policy: push
-  except:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /^wip:/
-
 lint_code:
   stage: test
-  image: node:10.15.3
+  image: registry.misakey.dev/misakey/frontend/base-image:latest
   tags:
     - misakey_js
   before_script:
-    - make dep
+    - ln -s /app/node_modules ./node_modules
   script:
     - make strict-lint
   only:
@@ -51,14 +33,13 @@ lint_code:
     variables:
       - $CI_COMMIT_MESSAGE =~ /^wip:/
 
-
 unit_tests:
   stage: test
-  image: node:10.15.3
+  image: registry.misakey.dev/misakey/frontend/base-image:latest
   tags:
     - misakey_js
   before_script:
-    - make dep
+    - ln -s /app/node_modules ./node_modules
   script:
     - make test
   only:
@@ -73,11 +54,11 @@ unit_tests:
 
 docs:
   stage: docs
-  image: node:10.15.3
+  image: registry.misakey.dev/misakey/frontend/base-image:latest
   tags:
     - misakey_js
   before_script:
-    - make dep
+    - ln -s /app/node_modules ./node_modules
   script:
     - make docs
   artifacts:

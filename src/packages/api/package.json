@@ -23,9 +23,6 @@
   "dependencies": {
     "http-status-codes": "^1.3.2"
   },
-  "peerDependencies": {
-    "@misakey/helpers": "3.x"
-  },
   "sideEffects": false,
   "publishConfig": {
     "access": "public"

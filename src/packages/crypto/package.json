@@ -24,8 +24,6 @@
     "@babel/runtime": "^7.5.5"
   },
   "peerDependencies": {
-    "@misakey/api": "2.x",
-    "@misakey/helpers": "3.x",
     "tweetnacl": "^1.0.1",
     "tweetnacl-util": "^0.15.0"
   },

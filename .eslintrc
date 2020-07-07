@@ -29,14 +29,14 @@
         ]
       },
       "alias": [
-        ["@misakey/api", "@misakey/api/src"],
-        ["@misakey/auth", "@misakey/auth/src"],
-        ["@misakey/helpers", "@misakey/helpers/src"],
-        ["@misakey/hooks", "@misakey/hooks/src"],
-        ["@misakey/ui/static", "@misakey/ui/static"],
-        ["@misakey/ui", "@misakey/ui/src"],
-        ["@misakey/store", "@misakey/store/src"],
-        ["@misakey/crypto", "@misakey/crypto/src"]
+        ["@misakey/api", "./src/packages/api/src"],
+        ["@misakey/auth", "./src/packages/auth/src"],
+        ["@misakey/helpers", "./src/packages/helpers/src"],
+        ["@misakey/hooks", "./src/packages/hooks/src"],
+        ["@misakey/ui/static", "./src/packages/ui/static"],
+        ["@misakey/ui", "./src/packages/ui/src"],
+        ["@misakey/store", "./src/packages/store/src"],
+        ["@misakey/crypto", "./src/packages/crypto/src"]
       ]
     }
   },

@@ -40,6 +40,24 @@ you can work on.
 
 You can create a production image with the command `make build`
 
+### Dependencies management
+
+To make the CI lighter and don't use too much ressources in our docker images, 
+we're building a base image used by the CI and to build the production image of the app
+that contains the npm dependencies of the app.
+
+This mean that if you want to add some dependencies to the project you have to update this base image. 
+
+#### Building a new image, with new dependencies
+
+`make build-base` will build a new image base. Once you tested it locally (with a `make build`),
+you can publish it with a `make deploy-base`.
+
+:warning: The base is used for your branches and for master branch too (we didn't do a different image per branch for now). This imply two things:
+- You cannot do breaking changes in the image (remove a dependency until your branch is merged)
+- You have to be careful when updating dependencies to publish your new base image not too early, as it may create broken images !
+- You should communicate to the team when you'll deploy a new image, as it may break WIP branches. We need to improve this part of the process when we'll experienced it
+
 ## Folder architecture
 
 * [/devtools](./devtools): contains some tools useful for the developers.

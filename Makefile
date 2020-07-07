@@ -100,6 +100,16 @@ else
 	@yarn build
 endif
 
+.PHONY: build-base
+.ONESHELL:
+build-base:
+	@docker build -f base-image.Dockerfile -t $(DOCKER_IMAGE)/base-image:latest .
+
+.PHONY: deploy-base
+.ONESHELL:
+deploy-base:
+	@docker push $(DOCKER_IMAGE)/base-image:latest
+
 .PHONY: deploy-package
 .ONESHELL:
 deploy-package: build-package npm-login ## Deploy package to NPM registry

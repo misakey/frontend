@@ -32,11 +32,6 @@
   "peerDependencies": {
     "@material-ui/core": "^4.3.0",
     "@material-ui/icons": "^4.2.1",
-    "@misakey/api": "2.x",
-    "@misakey/helpers": "3.x",
-    "@misakey/hooks": "1.x",
-    "@misakey/store": "1.x",
-    "@misakey/ui": "4.x",
     "moment": "^2.x",
     "notistack": "^0.x",
     "react": "^16.13.1",
