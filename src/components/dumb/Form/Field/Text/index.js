@@ -1,21 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import clsx from 'clsx';
-import TextField from '@material-ui/core/TextField';
+import TextField from 'components/dumb/Field/Text';
 import omit from '@misakey/helpers/omit';
 
 import withErrors from '../withErrors';
 
 const FieldText = ({
-  className, displayError, errorKeys, field,
+  displayError, errorKeys, field,
   helperText, hidden, t, ...rest
 }) => (
   <TextField
-    margin="normal"
-    fullWidth
-    variant="outlined"
-    className={clsx('FieldText', className)}
     {...field}
     {...omit(rest, ['i18n', 'tReady', 'form', 'prefix'])}
     error={displayError}

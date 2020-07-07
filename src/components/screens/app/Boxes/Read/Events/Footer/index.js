@@ -53,6 +53,9 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     borderRadius: 10,
   },
+  textField: {
+    alignSelf: 'center',
+  },
 }));
 
 function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, t }) {
@@ -153,16 +156,18 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, t }) {
               onSubmit={handleSubmit}
               validationSchema={boxMessageValidationSchema}
             >
-              <Box component={Form} display="flex" flexGrow="1" alignItems="center">
+              <Box component={Form} display="flex" flexGrow="1" alignItems="flex-end">
                 <FormField
                   component={FieldTextMultiline}
                   name={FIELD}
+                  className={classes.textField}
                   id="new-message-textarea"
                   variant="outlined"
                   size="small"
                   margin="none"
                   fullWidth
-                  rowsMax={20}
+                  rowsMax={8}
+                  displayError={false}
                   disabled={disabled}
                 />
                 <Tooltip title={t('boxes:read.actions.send')}>

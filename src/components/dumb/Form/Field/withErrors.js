@@ -19,7 +19,7 @@ const withErrors = (Component) => {
       'fields:default.error.unknown',
     ];
 
-    return <Component {...props} displayError={displayError} errorKeys={errorKeys} />;
+    return <Component displayError={displayError} errorKeys={errorKeys} {...props} />;
   };
 
   Field.propTypes = {
