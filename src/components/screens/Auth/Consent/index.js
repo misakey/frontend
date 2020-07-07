@@ -59,7 +59,7 @@ const AuthConsent = ({
         })
         .catch((e) => {
           const details = getDetails(e);
-          if (!isNil(details.tos) || !isNil(details.privacyPolicy)) {
+          if (!isNil(details.consentedLegalScope) || !isNil(details.requestedLegalScope)) {
             return enqueueSnackbar(t('auth:consent.error', { variant: 'error' }));
           }
           return handleHttpErrors(e);
