@@ -8,7 +8,7 @@ function invitationHash(invitationShare) {
   return encodeBase64(hash(invitationShare), { urlSafe: true });
 }
 
-export function splitBoxSecretKey(key) {
+export function splitBoxSecretKey(key, { boxId }) {
   // @FIXME there should only be one place
   // where we declare the encoding used for a box secret key
   // (or for any other type).
@@ -25,6 +25,7 @@ export function splitBoxSecretKey(key) {
     misakeyKeyShare: {
       share: encodeBase64(shareTwo, { urlSafe: false }),
       invitationHash: invitationHash(shareOne),
+      boxId,
     },
   };
 }

@@ -27,7 +27,7 @@ export default (id, title, publicKey, t) => {
     () => {
       const secretKey = publicKeysWeCanDecryptFrom.get(publicKey);
 
-      const { invitationKeyShare, misakeyKeyShare } = splitBoxSecretKey(secretKey);
+      const { invitationKeyShare, misakeyKeyShare } = splitBoxSecretKey(secretKey, { boxId: id });
       return createKeyShareBuilder(misakeyKeyShare)
         .then(() => {
           const invitationURL = parseUrlFromLocation(`${routes.boxes.invitation}#${id}&${invitationKeyShare}`).href;

@@ -8,7 +8,7 @@ import {
 test('key splitting is correct', () => {
   const { secretKey } = generateAsymmetricKeyPair();
 
-  const { invitationKeyShare, misakeyKeyShare } = splitBoxSecretKey(secretKey);
+  const { invitationKeyShare, misakeyKeyShare } = splitBoxSecretKey(secretKey, { boxId: 'fake' });
 
   const invitationHash = computeInvitationHash(invitationKeyShare);
 
