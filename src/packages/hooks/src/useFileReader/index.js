@@ -2,9 +2,10 @@ import { useState, useMemo, useCallback, useEffect } from 'react';
 
 import eventGetFile from '@misakey/helpers/event/getFile';
 import isNil from '@misakey/helpers/isNil';
+import log from '@misakey/helpers/log';
 import isFunction from '@misakey/helpers/isFunction';
 import debounce from '@misakey/helpers/debounce';
-import assocPathTargetOrCurrentTarget from '@misakey/helpers/event/targetOrCurrentTarget/assocPath';
+import hasTarget from '@misakey/helpers/event/hasTarget';
 
 // CONSTANTS
 const FILE_READER = new FileReader();
@@ -16,8 +17,19 @@ const PROGRESS_MAX = 100;
 const computeProgress = ({ loaded, total }) => (loaded / total) * PROGRESS_MAX;
 
 const storeChangeEvent = (changeEvent, file) => {
-  CHANGE_EVENT = assocPathTargetOrCurrentTarget(['value'], file, changeEvent);
-  CHANGE_EVENT.persist();
+  try {
+    CHANGE_EVENT = changeEvent;
+    if (hasTarget(CHANGE_EVENT)) {
+      CHANGE_EVENT.target.value = file;
+    } else {
+      CHANGE_EVENT.currentTarget.value = file;
+    }
+  } catch (e) {
+    // ignore error
+    log(e);
+    // simulate event with target prop
+    CHANGE_EVENT = new Event('change', { ...changeEvent, target: { value: file } });
+  }
 };
 
 const eventMatchFile = (event, { name }) => {
@@ -94,9 +106,10 @@ export default ({ onLoadStart, onProgress, onLoad, onError, inputRef }) => {
   const onClearProgress = useOnClearProgress(setProgress);
   const onChange = useCallback(
     (event) => {
+      event.persist();
       const eventFile = eventGetFile(event);
-      storeChangeEvent(event, eventFile);
       if (!isNil(eventFile)) {
+        storeChangeEvent(event, eventFile);
         setFile(eventFile);
         FILE_READER.readAsDataURL(eventFile);
       }
