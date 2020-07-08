@@ -82,29 +82,30 @@ export const setBackupVersion = (version) => ({
  */
 export const withBackupUpdater = (actionBuilder) => (...args) => (
   async (dispatch, getState) => {
-    try {
-      await dispatch(actionBuilder(...args));
+    await dispatch(actionBuilder(...args));
 
-      const state = getState();
+    const state = getState();
 
-      // @FIXME declare a "selector" in auth package in charge of retrieving the identity?
-      if (isEmpty(path(['auth', 'identity', 'accountId'], state))) {
-        // no account => no backup possible
-        return;
-      }
-
-      const { accountId } = state.auth.identity;
-      const { secrets, backupKey, backupVersion } = state.crypto;
-      if (!isNil(backupKey)) {
-        await updateSecretsBackup(accountId, secrets, backupKey, backupVersion);
-      }
-    } catch (e) {
-      if (e.details && (e.details.version === 'invalid')) {
-        throw new BadBackupVersion();
-      } else {
-        throw e;
-      }
+    // @FIXME declare a "selector" in auth package in charge of retrieving the identity?
+    if (isEmpty(path(['auth', 'identity', 'accountId'], state))) {
+      // no account => no backup possible
+      return null;
     }
+
+    const { accountId } = state.auth.identity;
+    const { secrets, backupKey, backupVersion } = state.crypto;
+    if (!isNil(backupKey)) {
+      const newBackupVersion = backupVersion + 1;
+      return updateSecretsBackup(accountId, secrets, backupKey, newBackupVersion)
+        .then(() => Promise.resolve(dispatch(setBackupVersion(newBackupVersion))))
+        .catch((e) => {
+          if (e.details && (e.details.version === 'invalid')) {
+            throw new BadBackupVersion();
+          }
+          throw e;
+        });
+    }
+    return null;
   }
 );
 

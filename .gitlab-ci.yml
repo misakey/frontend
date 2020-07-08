@@ -109,9 +109,6 @@ build_maintenance:
     changes:
       - maintenance/*
 
-include:
-  - .gitlab-ci.packages.yml
-
 pages:
   stage: deploy
   tags:

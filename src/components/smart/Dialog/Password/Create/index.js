@@ -13,6 +13,7 @@ import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import { createAccount } from '@misakey/auth/builder/identities';
+import { setBackupVersion } from '@misakey/crypto/store/actions/concrete';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
@@ -49,10 +50,13 @@ const DialogPasswordCreate = forwardRef(({
       identityId,
       dispatchHardPasswordChange,
     }).then((response) => {
-      const { id } = objectToCamelCase(response);
-      return dispatchUpdateIdentity({ accountId: id });
+      const { id, backupVersion } = objectToCamelCase(response);
+      return Promise.resolve([
+        dispatchUpdateIdentity({ accountId: id }),
+        dispatch(setBackupVersion(backupVersion)),
+      ]);
     }),
-    [dispatchHardPasswordChange, dispatchUpdateIdentity, identityId],
+    [dispatch, dispatchHardPasswordChange, dispatchUpdateIdentity, identityId],
   );
 
   const onSubmit = useCallback(

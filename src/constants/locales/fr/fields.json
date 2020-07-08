@@ -31,7 +31,8 @@
   "blob": {
     "error": {
       "size": "Taille maximale de 9Mo. dépassée",
-      "extension": "Format incorrect. Fichier sans extension"
+      "extension": "Format incorrect. Fichier sans extension",
+      "name": "Format incorrect. Fichier sans nom"
     }
   },
   "code": {

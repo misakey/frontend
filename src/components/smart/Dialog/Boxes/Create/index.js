@@ -68,12 +68,17 @@ function CreateBoxDialog({
       await Promise.all([
         dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
         dispatch(updatePaginationsToStatus(id, ALL)),
-        dispatch(addBoxSecretKey(secretKey)),
       ]);
-      enqueueSnackbar(t('boxes:create.dialog.success'), { variant: 'success' });
-      const nextTo = generatePath(routes.boxes.read._, { id });
-      history.push(nextTo);
-      onClose();
+      return Promise.resolve(dispatch(addBoxSecretKey(secretKey)))
+        .catch(() => {
+          enqueueSnackbar(t('boxes:create.dialog.error.updateBackup'), { variant: 'error' });
+        })
+        .finally(() => {
+          enqueueSnackbar(t('boxes:create.dialog.success'), { variant: 'success' });
+          const nextTo = generatePath(routes.boxes.read._, { id });
+          history.push(nextTo);
+          onClose();
+        });
     },
     [dispatch, enqueueSnackbar, history, onClose, t],
   );

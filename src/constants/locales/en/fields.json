@@ -12,7 +12,8 @@
   "blob": {
     "error": {
       "size": "Max size 9MB",
-      "extension": "Incorrect file format. Extension is required"
+      "extension": "Incorrect file format. Extension is required",
+      "name": "Incorrect file format. Name is required"
     }
   },
   "codeInvitation": {

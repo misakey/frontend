@@ -15,7 +15,7 @@ const useTryPassword = (encryptedSecretsBackup, dispatch, currentBoxSecrets) => 
 
     return decryptSecretsBackup(data, password)
       .then(({ backupKey, secretBackup: secrets }) => {
-        // If user has add boxes from link with vault closed, we save the keys in their backup
+        // If user has added boxes from link with vault closed, we save the keys in their backup
         const shouldMerge = !currentBoxSecrets.every(
           (key) => secrets.boxDecryptionKeys.includes(key),
         );

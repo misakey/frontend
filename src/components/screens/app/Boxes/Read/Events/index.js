@@ -109,8 +109,8 @@ function BoxEvents({
                   <ButtonWithDialogPassword
                     standing={BUTTON_STANDINGS.TEXT}
                     text={isNil(accountId)
-                      ? t('common:createVault')
-                      : t('common:openVault')}
+                      ? t('common:save')
+                      : t('common:add')}
                   />
                 )}
               >

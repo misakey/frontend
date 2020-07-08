@@ -6,6 +6,7 @@ import { NOTIFICATIONS } from 'constants/notifications';
 
 import isString from '@misakey/helpers/isString';
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 
 
 // CONSTANTS
@@ -55,7 +56,8 @@ export const linkFieldValidation = {
 export const fileFieldValidation = {
   blobSchema: Yup.mixed()
     .test('fileSize', 'size', (file) => isNil(file) || file.size <= MAX_FILE_SIZE)
-    .test('fileExtension', 'extension', (file) => isNil(file) || (isString(file.name) && file.name.includes('.'))),
+    .test('fileExtension', 'extension', (file) => isNil(file) || (isString(file.name) && file.name.split('.').length > 1))
+    .test('fileName', 'name', (file) => isNil(file) || (isString(file.name) && !isEmpty(file.name.split('.').shift()))),
   // .test('fileType', 'format', ({ type }) => ACCEPTED_TYPES.includes(type)),
   avatarSchema: Yup.mixed()
     .required(required)

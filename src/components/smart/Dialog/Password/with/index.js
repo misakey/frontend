@@ -46,8 +46,13 @@ const withDialogPassword = (Component) => {
     );
 
     const onClose = useCallback(
-      () => { setOpen(false); },
-      [setOpen],
+      () => {
+        setOpen(false);
+        if (isFunction(onClick)) {
+          onClick();
+        }
+      },
+      [onClick],
     );
 
     return (

@@ -35,7 +35,7 @@
       "send": "Send"
     },
     "warning": {
-      "saveInBackup": "Save this secure chat"
+      "saveInBackup": "Save this secure chat to my vault"
     },
     "info": {
       "share": "Share this chat"
@@ -119,6 +119,9 @@
     "dialog": {
       "content": "What is the new chat about?",
       "success": "Chat has been successfully created!",
+      "error": {
+        "updateBackup": "An error occurred while updating the vault, be sure to keep your invitation link to avoid loosing access to your chat."
+      },
       "fields": {
         "name": "New chat"
       }
