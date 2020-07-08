@@ -20,7 +20,6 @@ spec:
           port: {{ .Values.service.port }}
       middlewares:
         - name: web-headers
-        - name: frontend-security-headers
   tls:
     certResolver: le
 ---
@@ -30,23 +29,15 @@ metadata:
   name: web-headers
 spec:
   headers:
-    contentSecurityPolicy: "{{ .Values.ingressRoute.contentSecurityPolicy }}"
-    customFrameOptionsValue: "SAMEORIGIN"
-    contentTypeNosniff: true
-    featurePolicy: "autoplay 'none'; camera 'none'"
-    customBrowserXssValue: "1; mode=block"
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: frontend-security-headers
-spec:
-  headers:
-    frameDeny: true
     sslRedirect: true
     referrerPolicy: "origin"
     stsSeconds: 31536000
     stsIncludeSubdomains: true
     stsPreload: true
     forceSTSHeader: true
+    contentSecurityPolicy: "{{ .Values.ingressRoute.contentSecurityPolicy }}"
+    customFrameOptionsValue: "SAMEORIGIN"
+    contentTypeNosniff: true
+    featurePolicy: "autoplay 'none'; camera 'none'"
+    customBrowserXssValue: "1; mode=block"
 {{- end }}
