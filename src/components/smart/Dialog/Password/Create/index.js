@@ -11,6 +11,7 @@ import { createPasswordValidationSchema } from 'constants/validationSchemas/auth
 import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import isFunction from '@misakey/helpers/isFunction';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import { createAccount } from '@misakey/auth/builder/identities';
 import { setBackupVersion } from '@misakey/crypto/store/actions/concrete';
@@ -22,6 +23,7 @@ import DialogPassword from 'components/smart/Dialog/Password';
 
 const DialogPasswordCreate = forwardRef(({
   onClose,
+  onSuccess,
   identityId,
   t,
   ...props
@@ -64,10 +66,13 @@ const DialogPasswordCreate = forwardRef(({
       .then(() => {
         const text = t('account:password.success');
         enqueueSnackbar(text, { variant: 'success' });
+        if (isFunction(onSuccess)) {
+          onSuccess();
+        }
       })
       .catch(handleHttpErrors)
       .finally(onClose),
-    [enqueueSnackbar, handleHttpErrors, onClose, onPasswordSubmit, t],
+    [enqueueSnackbar, handleHttpErrors, onClose, onPasswordSubmit, onSuccess, t],
   );
 
   return (
@@ -85,6 +90,7 @@ const DialogPasswordCreate = forwardRef(({
 DialogPasswordCreate.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func,
   // withTranslation
   t: PropTypes.func.isRequired,
   // withIdentity
@@ -94,6 +100,7 @@ DialogPasswordCreate.propTypes = {
 
 DialogPasswordCreate.defaultProps = {
   open: false,
+  onSuccess: null,
   identity: null,
   identityId: null,
 };

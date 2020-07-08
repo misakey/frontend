@@ -7,15 +7,21 @@ import { withTranslation } from 'react-i18next';
 
 import useLoadSecretsWithPassword from '@misakey/crypto/hooks/useLoadSecretsWithPassword';
 import DialogPassword from 'components/smart/Dialog/Password';
+import isFunction from '@misakey/helpers/isFunction';
 
 // COMPONENTS
-const DialogPasswordOpenVault = ({ t, open, onClose, ...props }) => {
+const DialogPasswordOpenVault = ({ t, open, onClose, onSuccess, ...props }) => {
   const openVaultWithPassword = useLoadSecretsWithPassword();
 
   const onSubmit = useCallback(
     ({ [PREHASHED_PASSWORD]: password }) => openVaultWithPassword(password)
-      .then(() => { onClose(); }),
-    [openVaultWithPassword, onClose],
+      .then(() => {
+        onClose();
+        if (isFunction(onSuccess)) {
+          onSuccess();
+        }
+      }),
+    [openVaultWithPassword, onClose, onSuccess],
   );
 
   return (
@@ -35,6 +41,7 @@ const DialogPasswordOpenVault = ({ t, open, onClose, ...props }) => {
 DialogPasswordOpenVault.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
+  onSuccess: PropTypes.func,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
@@ -42,6 +49,7 @@ DialogPasswordOpenVault.propTypes = {
 DialogPasswordOpenVault.defaultProps = {
   open: false,
   onClose: null,
+  onSuccess: null,
 };
 
 export default withTranslation(['boxes', 'common'])(DialogPasswordOpenVault);

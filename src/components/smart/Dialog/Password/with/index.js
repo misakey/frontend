@@ -46,21 +46,26 @@ const withDialogPassword = (Component) => {
     );
 
     const onClose = useCallback(
-      () => {
-        setOpen(false);
-        if (isFunction(onClick)) {
-          onClick();
-        }
-      },
-      [onClick],
+      () => { setOpen(false); },
+      [],
     );
 
     return (
       <>
         {hasAccountId ? (
-          <DialogOpenVault open={open} onClose={onClose} {...dialogProps} />
+          <DialogOpenVault
+            open={open}
+            onClose={onClose}
+            onSuccess={onClick}
+            {...dialogProps}
+          />
         ) : (
-          <DialogCreatePassword open={open} onClose={onClose} {...dialogProps} />
+          <DialogCreatePassword
+            open={open}
+            onClose={onClose}
+            onSuccess={onClick}
+            {...dialogProps}
+          />
         )}
         <Component ref={ref} onClick={onWrapperClick} {...omitTranslationProps(props)} />
       </>
