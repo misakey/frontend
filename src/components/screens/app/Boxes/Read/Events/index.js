@@ -136,7 +136,7 @@ function BoxEvents({
         </AppBarDrawer>
       </ElevationScroll>
       <Box className={classes.content}>
-        <Box p={2} ref={(ref) => setContentRef(ref)} display="flex" flexGrow="1" flexDirection="column" className={classes.thread}>
+        <Box p={2} ref={(ref) => setContentRef(ref)} flexGrow="1" className={classes.thread}>
           {eventsByDate.map(({ date, events }) => (
             <Box display="flex" flexDirection="column" py={1} key={date}>
               <Typography component={Box} alignSelf="center">{date}</Typography>
