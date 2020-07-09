@@ -24,7 +24,7 @@ export function splitBoxSecretKey(key, { boxId }) {
     invitationKeyShare: encodeBase64(shareOne, { urlSafe: true }),
     misakeyKeyShare: {
       share: encodeBase64(shareTwo, { urlSafe: false }),
-      invitationHash: invitationHash(shareOne),
+      otherShareHash: invitationHash(shareOne),
       boxId,
     },
   };

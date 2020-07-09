@@ -12,7 +12,7 @@ test('key splitting is correct', () => {
 
   const invitationHash = computeInvitationHash(invitationKeyShare);
 
-  expect(invitationHash).toEqual(misakeyKeyShare.invitationHash);
+  expect(invitationHash).toEqual(misakeyKeyShare.otherShareHash);
 
   const rebuiltSecretKey = combineShares(invitationKeyShare, misakeyKeyShare);
 

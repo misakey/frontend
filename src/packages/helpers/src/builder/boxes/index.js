@@ -76,8 +76,8 @@ export const createKeyShareBuilder = (misakeyKeyShare) => API
   .send()
   .then(objectToCamelCaseDeep);
 
-export const getKeyShareBuilder = (invitationHash) => API
+export const getKeyShareBuilder = (otherShareHash) => API
   .use(API.endpoints.boxes.keyShares.read)
-  .build({ invitationHash })
+  .build({ otherShareHash })
   .send()
   .then(objectToCamelCaseDeep);

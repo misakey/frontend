@@ -37,6 +37,9 @@
     "warning": {
       "saveInBackup": "Save this secure chat to my vault"
     },
+    "errors": {
+      "incorrectLink": "Impossible to decrypt from invitation link, it seems incorrect."
+    },
     "info": {
       "share": "Share this chat"
     },
@@ -60,6 +63,12 @@
         "create": {
           "they": "{{displayName}} created the box «\u00a0{{title}}\u00a0»",
           "you": "You created the box «\u00a0{{title}}\u00a0»"
+        }
+      },
+      "download": {
+        "errors": {
+          "get": "An error occured while retrieving the file !",
+          "default": "An error occured during file decryption !"
         }
       }
     },

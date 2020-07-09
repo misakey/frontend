@@ -46,12 +46,12 @@ export default {
   keyShares: {
     create: {
       method: 'POST',
-      path: '/key-shares',
+      path: '/box-key-shares',
       auth: true,
     },
     read: {
       method: 'GET',
-      path: '/key-shares/:invitationHash',
+      path: '/box-key-shares/:otherShareHash',
       auth: true,
     },
   },

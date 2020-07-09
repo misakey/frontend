@@ -37,6 +37,9 @@
     "warning": {
       "saveInBackup": "Enregistrer ce chat dans mon coffre-fort"
     },
+    "errors": {
+      "incorrectLink": "Impossible de déchiffrer à partir du lien d'invitation, il semble incorrect."
+    },
     "info": {
       "share": "Partager ce chat"
     },
@@ -60,6 +63,12 @@
         "create": {
           "they": "{{displayName}} a créé la box «\u00a0{{title}}\u00a0»",
           "you": "Vous avez créé la box «\u00a0{{title}}\u00a0»"
+        }
+      },
+      "download": {
+        "errors": {
+          "get": "Un erreur s'est produite lors de la récupération du fichier\u00a0!",
+          "default": "Une erreur s'est produite lors du déchiffrement du fichier\u00a0 !"
         }
       }
     },

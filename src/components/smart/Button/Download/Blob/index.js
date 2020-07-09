@@ -25,8 +25,9 @@ async function downloadAndDecryptFile({ boxID, encryptedFileId, decryptedContent
     const response = await getBoxEncryptedFileBuilder(boxID, encryptedFileId);
     encryptedFile = response.blob;
   } catch (error) {
-    onError('citizen:requests.read.errors.downloadBlob.getBlob');
+    onError('boxes:read.events.download.errors.get');
     log(error, 'error');
+    return;
   }
 
   const file = await decryptFile(encryptedFile, decryptedContent);
@@ -52,7 +53,7 @@ const ButtonDownloadBlob = ({ boxID, encryptedFileId, decryptedContent, t }) => 
         await downloadAndDecryptFile({ boxID, encryptedFileId, decryptedContent, onError });
       } catch (e) {
         log(e);
-        onError('citizen:requests.read.errors.downloadBlob.default');
+        onError('boxes:read.events.download.errors.default');
       }
     },
     [boxID, encryptedFileId, decryptedContent, onError],
@@ -76,6 +77,6 @@ ButtonDownloadBlob.propTypes = {
   decryptedContent: PropTypes.object.isRequired,
 };
 
-export default withTranslation(['common', 'citizen'])(
+export default withTranslation(['common', 'boxes'])(
   ButtonDownloadBlob,
 );
