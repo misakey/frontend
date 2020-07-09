@@ -1,36 +1,17 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 
 import eventGetFile from '@misakey/helpers/event/getFile';
 import isNil from '@misakey/helpers/isNil';
-import log from '@misakey/helpers/log';
 import isFunction from '@misakey/helpers/isFunction';
 import debounce from '@misakey/helpers/debounce';
-import hasTarget from '@misakey/helpers/event/hasTarget';
 
 // CONSTANTS
 const FILE_READER = new FileReader();
-let CHANGE_EVENT;
 
 const PROGRESS_MAX = 100;
 
 // HELPERS
 const computeProgress = ({ loaded, total }) => (loaded / total) * PROGRESS_MAX;
-
-const storeChangeEvent = (changeEvent, file) => {
-  try {
-    CHANGE_EVENT = changeEvent;
-    if (hasTarget(CHANGE_EVENT)) {
-      CHANGE_EVENT.target.value = file;
-    } else {
-      CHANGE_EVENT.currentTarget.value = file;
-    }
-  } catch (e) {
-    // ignore error
-    log(e);
-    // simulate event with target prop
-    CHANGE_EVENT = new Event('change', { ...changeEvent, target: { value: file } });
-  }
-};
 
 const eventMatchFile = (event, { name }) => {
   const { name: eventFileName } = eventGetFile(event);
@@ -80,6 +61,7 @@ export default ({ onLoadStart, onProgress, onLoad, onError, inputRef }) => {
   const [progress, setProgress] = useState();
   const [file, setFile] = useState();
   const [preview, setPreview] = useState();
+  const changeEvent = useRef();
 
   const endProgress = useEndProgress(setProgress);
 
@@ -91,10 +73,12 @@ export default ({ onLoadStart, onProgress, onLoad, onError, inputRef }) => {
       const { result } = FILE_READER;
       setPreview(result);
       endProgress();
-      if (!isNil(CHANGE_EVENT) && eventMatchFile(CHANGE_EVENT, file)) {
-        onLoad(CHANGE_EVENT, { file, preview: result });
+      const { current } = changeEvent;
+      if (!isNil(current) && eventMatchFile(current, file)) {
+        onLoad(current, { file, preview: result });
       }
-    }, [endProgress, file, onLoad],
+    },
+    [endProgress, file, onLoad, changeEvent],
   );
 
   const handleFileError = useCallback((event) => {
@@ -109,12 +93,12 @@ export default ({ onLoadStart, onProgress, onLoad, onError, inputRef }) => {
       event.persist();
       const eventFile = eventGetFile(event);
       if (!isNil(eventFile)) {
-        storeChangeEvent(event, eventFile);
+        changeEvent.current = event;
         setFile(eventFile);
         FILE_READER.readAsDataURL(eventFile);
       }
     },
-    [setFile],
+    [setFile, changeEvent],
   );
 
   const onReset = useOnReset(setFile, setPreview, inputRef);
