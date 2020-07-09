@@ -72,11 +72,12 @@ export default (id, title, publicKey, t) => {
     async () => {
       const invitationURL = await createInvitation();
       if (!isNil(invitationURL)) {
-        copy(invitationURL, {
-          format: 'text/html',
-          onCopy: onCopySuccess,
+        const success = copy(invitationURL, {
           message: t('common:copyInvitationLink'),
         });
+        if (success) {
+          onCopySuccess();
+        }
       }
     },
     [createInvitation, onCopySuccess, t],
