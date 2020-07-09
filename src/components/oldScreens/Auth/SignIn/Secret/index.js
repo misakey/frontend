@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import Formik from '@misakey/ui/Formik';
 import moment from 'moment';
 
+import { QUESTIONS } from 'constants/emails';
 import routes from 'routes';
 import { DEFAULT_SECLEVEL, SECLEVEL_CONFIG, STEP, INITIAL_VALUES, ERROR_KEYS } from 'constants/auth';
 import { getSignInValidationSchema } from 'constants/validationSchemas/auth';
@@ -136,7 +137,7 @@ const AuthSignInSecret = ({
                 {'Sans action de votre part il sera supprimé le {{deletionDate}}.'}
                 <br />
                 Si vous voulez le récupérer envoyez nous un email à&nbsp;
-                <a href="mailto:question.perso@misakey.com">question.perso@misakey.com</a>
+                <a href={`mailto:${QUESTIONS}`}>{QUESTIONS}</a>
               </Trans>
             );
             enqueueSnackbar(text, { variant: 'error' });

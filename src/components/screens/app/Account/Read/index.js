@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import MenuIcon from '@material-ui/icons/Menu';
-import Title from 'components/dumb/Typography/Title';
+import Title from '@misakey/ui/Typography/Title';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 

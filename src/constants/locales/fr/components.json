@@ -5,8 +5,8 @@
       "text": "Je suis connecté sur une session temporaire qui ne me permet pas d'accéder à cette fonctionnalité. Pour effectuer cette action, je peux créer un compte Misakey"
     }
   },
-  "application": {
-    "logoAlt": "Logo de {{applicationName}}"
+  "client": {
+    "logoAlt": "Logo de {{clientName}}"
   },
   "blob": {
     "fileTypes": {

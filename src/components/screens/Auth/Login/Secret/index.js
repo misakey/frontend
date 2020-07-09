@@ -7,6 +7,7 @@ import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import moment from 'moment';
 
+import { QUESTIONS } from 'constants/emails';
 import { STEP, INITIAL_VALUES, ERROR_KEYS } from 'constants/auth';
 import { getSecretValidationSchema } from 'constants/validationSchemas/auth';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
@@ -34,7 +35,7 @@ import DefaultSplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import SecretFormFields from 'components/screens/Auth/Login/Secret/Form/Fields';
 import Redirect from 'components/dumb/Redirect';
 import ChipUser from 'components/dumb/Chip/User';
-import TitleWithCancelIcon from 'components/dumb/Typography/Title/WithCancelIcon';
+import TitleWithCancelIcon from '@misakey/ui/Typography/Title/WithCancelIcon';
 import BoxControls from '@misakey/ui/Box/Controls';
 import ButtonForgotPassword from '@misakey/auth/components/Button/ForgotPassword';
 import ButtonRenewAuthStep from '@misakey/auth/components/Button/RenewAuthStep';
@@ -175,7 +176,7 @@ const AuthLoginSecret = ({
                 {'Sans action de votre part il sera supprimé le {{deletionDate}}.'}
                 <br />
                 Si vous voulez le récupérer envoyez nous un email à&nbsp;
-                <a href="mailto:question.perso@misakey.com">question.perso@misakey.com</a>
+                <a href={`mailto:${QUESTIONS}`}>{QUESTIONS}</a>
               </Trans>
             );
             enqueueSnackbar(text, { variant: 'error' });

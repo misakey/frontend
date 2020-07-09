@@ -1,23 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import isNil from '@misakey/helpers/isNil';
+import { getErrors } from '@misakey/helpers/formikError';
 
+// COMPONENTS
+// NB: withErrors expects to be wrapped by a Formik#Field component
 const withErrors = (Component) => {
   const Field = (props) => {
-    const { field, form: { touched, errors, status }, prefix } = props;
-    const { name } = field;
-
-    const validationError = touched[name] ? errors[name] : null;
-    const statusError = !touched[name] || isNil(status) ? null : status[name];
-    const displayError = !isNil(validationError) || !isNil(statusError);
-
-    const error = validationError || statusError;
-    const errorKeys = [
-      `fields:${prefix}${name}.error.${error}`,
-      `fields:${name}.error.${error}`,
-      `fields:default.error.${error}`,
-      'fields:default.error.unknown',
-    ];
+    const { displayError, errorKeys } = getErrors(props);
 
     return <Component displayError={displayError} errorKeys={errorKeys} {...props} />;
   };

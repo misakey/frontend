@@ -9,7 +9,7 @@ import routes from 'routes';
 
 import Container from '@material-ui/core/Container';
 import FileField from 'components/dumb/Form/Field/File';
-import Subtitle from 'components/dumb/Typography/Subtitle';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
 import ScreenAction from 'components/dumb/Screen/Action';
 
 // CONSTANTS

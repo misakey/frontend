@@ -1,7 +1,7 @@
-import React from 'react';
 import Typography from '@material-ui/core/Typography';
+import ComponentProxy from '@misakey/ui/Component/Proxy';
 
-const Subtitle = (props) => <Typography {...props} />;
+const Subtitle = ComponentProxy(Typography);
 
 Subtitle.defaultProps = {
   component: 'h3',

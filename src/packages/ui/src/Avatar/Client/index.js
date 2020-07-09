@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withTranslation } from 'react-i18next';
 
-import Avatar from '@material-ui/core/Avatar';
-import Skeleton from '@material-ui/lab/Skeleton';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import omit from '@misakey/helpers/omit';
+import Avatar from '@material-ui/core/Avatar';
+import MuiSkeleton from '@material-ui/lab/Skeleton';
 
+// HOOKS
 const useStyles = makeStyles({
   root: {
     display: 'none',
@@ -18,10 +20,6 @@ const useStyles = makeStyles({
   loaded: {
     display: 'flex',
   },
-  skeleton: {
-    width: '40px', // default MUI Avatar width
-    height: '40px',
-  },
   fontSizeSmall: {
     fontSize: '14px',
   },
@@ -30,8 +28,18 @@ const useStyles = makeStyles({
   },
 });
 
-// @FIXME @misakey/ui
-function ApplicationAvatar({
+
+// COMPONENTS
+export const Skeleton = (props) => (
+  <MuiSkeleton
+    width={40}
+    height={40}
+    variant="circle"
+    {...props}
+  />
+);
+
+function ClientAvatar({
   children, className, fontSize, src, name, t, ...rest
 }) {
   const classes = useStyles();
@@ -54,14 +62,12 @@ function ApplicationAvatar({
     <>
       {(src && !isLoaded && !isBroken) && (
         <Skeleton
-          variant="circle"
-          className={clsx(classes.skeleton, className)}
-          {...omit(rest, ['i18n', 'tReady'])}
+          {...omitTranslationProps(rest)}
         />
       )}
       <Avatar
         variant="circle"
-        alt={t('components:application.logoAlt', { applicationName: name })}
+        alt={t('components:client.logoAlt', { clientName: name })}
         src={isBroken ? null : src}
         className={clsx(classes.root, {
           [classes.fontSizeSmall]: fontSize === 'small',
@@ -70,7 +76,7 @@ function ApplicationAvatar({
         }, className)}
         onError={handleError}
         onLoad={handleLoaded}
-        {...omit(rest, ['i18n', 'tReady'])}
+        {...omitTranslationProps(rest)}
       >
         {(isBroken || !src) && name.slice(0, 3)}
       </Avatar>
@@ -78,7 +84,7 @@ function ApplicationAvatar({
   );
 }
 
-ApplicationAvatar.propTypes = {
+ClientAvatar.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   fontSize: PropTypes.oneOf(['small', 'large']),
@@ -87,7 +93,7 @@ ApplicationAvatar.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-ApplicationAvatar.defaultProps = {
+ClientAvatar.defaultProps = {
   children: undefined,
   className: '',
   fontSize: 'small',
@@ -95,4 +101,4 @@ ApplicationAvatar.defaultProps = {
   name: '',
 };
 
-export default withTranslation(['components'])(ApplicationAvatar);
+export default withTranslation(['components'])(ClientAvatar);

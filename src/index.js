@@ -2,7 +2,7 @@ import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
 
 /* IMPORTS */
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 // metrics
 import * as Sentry from '@sentry/browser';
@@ -92,7 +92,7 @@ if (isSilentAuthIframe()) {
   const silentAuthBlacklist = [{ path: '/auth' }, { path: routes.auth.callback, exact: true }];
 
   ReactDOM.render((
-    <React.Suspense fallback={<SplashScreen {...SPLASH_SCREEN_PROPS} />}>
+    <Suspense fallback={<SplashScreen {...SPLASH_SCREEN_PROPS} />}>
       <StoreProvider store={store}>
         <PersistGate
           loading={(
@@ -118,7 +118,7 @@ if (isSilentAuthIframe()) {
           </MuiThemeProvider>
         </PersistGate>
       </StoreProvider>
-    </React.Suspense>
+    </Suspense>
   ), rootNode);
 
   // If you want your app to work offline and load faster, you can change

@@ -6,7 +6,7 @@ import moment from 'moment';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import BoxAvatar from 'components/dumb/Avatar/Box';
-import Title from 'components/dumb/Typography/Title';
+import Title from '@misakey/ui/Typography/Title';
 import MenuIcon from '@material-ui/icons/Menu';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';

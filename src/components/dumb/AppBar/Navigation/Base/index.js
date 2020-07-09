@@ -12,7 +12,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import Title from 'components/dumb/Typography/Title';
+import Title from '@misakey/ui/Typography/Title';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Container from '@material-ui/core/Container';

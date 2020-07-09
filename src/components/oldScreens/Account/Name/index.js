@@ -21,7 +21,7 @@ import snakeCase from '@misakey/helpers/snakeCase';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
-import Subtitle from 'components/dumb/Typography/Subtitle';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Container from '@material-ui/core/Container';
 import BoxControls from '@misakey/ui/Box/Controls';
 import FieldText from 'components/dumb/Form/Field/Text';

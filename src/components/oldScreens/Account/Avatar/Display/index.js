@@ -9,7 +9,7 @@ import omit from '@misakey/helpers/omit';
 
 import Card from 'components/dumb/Card';
 import ScreenAction from 'components/dumb/Screen/Action';
-import Subtitle from 'components/dumb/Typography/Subtitle';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
 
 import routes from 'routes';
 

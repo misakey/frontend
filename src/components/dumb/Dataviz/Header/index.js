@@ -7,7 +7,7 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 
 import UserAvatar from '@misakey/ui/Avatar/User';
-import ApplicationAvatar from 'components/dumb/Avatar/Application';
+import AvatarClient from '@misakey/ui/Avatar/Client';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -38,7 +38,7 @@ const DatavizHeader = ({ application, user, title, subtitle }) => {
           className={classes.userLogo}
           imgProps={{ crossorigin: 'anonymous' }}
         />
-        <ApplicationAvatar
+        <AvatarClient
           src={logoUri}
           name={name}
           className={classes.appLogo}

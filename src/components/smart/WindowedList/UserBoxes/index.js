@@ -18,7 +18,7 @@ import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
 
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import { Box } from '@material-ui/core';
-import Title from 'components/dumb/Typography/Title';
+import Title from '@misakey/ui/Typography/Title';
 
 const useStyles = makeStyles((theme) => ({
   secondary: {

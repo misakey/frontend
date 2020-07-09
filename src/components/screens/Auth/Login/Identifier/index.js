@@ -22,10 +22,10 @@ import { getDetails } from '@misakey/helpers/apiError';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useHistory, useLocation } from 'react-router-dom';
 
-import Title from 'components/dumb/Typography/Title';
+import Title from '@misakey/ui/Typography/Title';
 import LoginFormFields from 'components/screens/Auth/Login/Identifier/Form/Fields';
 import BoxControls from '@misakey/ui/Box/Controls';
-import AvatarApplicationSso from 'components/dumb/Avatar/Application/Sso';
+import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
 import Box from '@material-ui/core/Box';
 
 // CONSTANTS
@@ -101,7 +101,7 @@ const AuthLoginIdentifier = ({
           <Box display="flex" overflow="hidden" flexWrap="wrap" component={Trans} i18nKey="auth:login.identifier.title">
             <Box display="flex" flexWrap="nowrap">Quel est votre identifiant pour</Box>
             <Box ml={1} display="flex" flexWrap="nowrap">
-              <AvatarApplicationSso client={client} />
+              <AvatarClientSso client={client} />
               &nbsp;?
             </Box>
           </Box>

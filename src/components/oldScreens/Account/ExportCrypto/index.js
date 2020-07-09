@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 import ScreenAction from 'components/dumb/Screen/Action';
-import Title from 'components/dumb/Typography/Title';
+import Title from '@misakey/ui/Typography/Title';
 
 // Export and import buttons need to be provided a password prompt function
 import { PasswordPromptProvider } from 'components/dumb/PasswordPrompt';

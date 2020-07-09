@@ -10,7 +10,7 @@ import ButtonWithDialogPassword from 'components/smart/Dialog/Password/with/Butt
 import Box from '@material-ui/core/Box';
 import ListItemBoxesCurrent from 'components/smart/ListItem/Boxes/Current';
 import { Route, useRouteMatch } from 'react-router-dom';
-import Title from 'components/dumb/Typography/Title';
+import Title from '@misakey/ui/Typography/Title';
 import isNil from '@misakey/helpers/isNil';
 
 // HELPERS

@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { FEEDBACK } from 'constants/emails';
+
 import { withTranslation, Trans } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -19,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-const FEEDBACK_EMAIL = 'feedback@misakey.com';
 
 const IncompatibleData = ({ application }) => {
   const { mainColor } = application;
@@ -28,7 +29,7 @@ const IncompatibleData = ({ application }) => {
 
   return (
     <Box className={classes.box}>
-      <Trans i18nKey="citizen:dataviz.incompatibleData" values={{ contactEmail: FEEDBACK_EMAIL }}>
+      <Trans i18nKey="citizen:dataviz.incompatibleData" values={{ contactEmail: FEEDBACK }}>
         <Typography align="center" variant="h3" paragraph>
           Oups,
         </Typography>
@@ -37,7 +38,7 @@ const IncompatibleData = ({ application }) => {
         </Typography>
         <Typography align="center" variant="body1">
           Prévenez nous par e-mail afin qu’on le prenne en compte&nbsp;:
-          <Link href={`mailto:${FEEDBACK_EMAIL}`} color="inherit">{'{{contactEmail}}'}</Link>
+          <Link href={`mailto:${FEEDBACK}`} color="inherit">{'{{contactEmail}}'}</Link>
         </Typography>
       </Trans>
     </Box>

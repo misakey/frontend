@@ -4,8 +4,8 @@ import clsx from 'clsx';
 
 import isEmpty from '@misakey/helpers/isEmpty';
 
-import Title from 'components/dumb/Typography/Title';
-import Subtitle from 'components/dumb/Typography/Subtitle';
+import Title from '@misakey/ui/Typography/Title';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({

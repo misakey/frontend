@@ -18,7 +18,7 @@ import useGetConsentInfo from '@misakey/hooks/useGetConsentInfo';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import ListConsent from '@misakey/auth/components/List/Consent';
-import Title from 'components/dumb/Typography/Title';
+import Title from '@misakey/ui/Typography/Title';
 import Box from '@material-ui/core/Box';
 import BoxControls from '@misakey/ui/Box/Controls';
 import DefaultSplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';

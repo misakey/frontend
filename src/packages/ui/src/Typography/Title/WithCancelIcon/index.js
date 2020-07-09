@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import isFunction from '@misakey/helpers/isFunction';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import Title from 'components/dumb/Typography/Title';
+import Title from '@misakey/ui/Typography/Title';
 import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
 

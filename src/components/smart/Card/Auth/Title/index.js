@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
 import Box from '@material-ui/core/Box';
-import AvatarApplicationSso from 'components/dumb/Avatar/Application/Sso';
+import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
 
 // CONSTANTS
 const TYPOGRAPHY_PROPS = {
@@ -18,7 +18,7 @@ function AuthCardTitle({ name, sso, t }) {
       <Box mr={1}>
         {t(`auth:${name}.card.title`)}
       </Box>
-      <AvatarApplicationSso sso={sso} typographyProps={TYPOGRAPHY_PROPS} />
+      <AvatarClientSso sso={sso} typographyProps={TYPOGRAPHY_PROPS} />
     </Box>
   );
 }

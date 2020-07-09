@@ -6,7 +6,7 @@ import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import MenuIcon from '@material-ui/icons/Menu';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import Box from '@material-ui/core/Box';
-import Title from 'components/dumb/Typography/Title';
+import Title from '@misakey/ui/Typography/Title';
 import { withTranslation } from 'react-i18next';
 
 

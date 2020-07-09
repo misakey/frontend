@@ -8,7 +8,7 @@ import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import Title from 'components/dumb/Typography/Title';
+import Title from '@misakey/ui/Typography/Title';
 import useGeneratePathKeepingSearch from '@misakey/hooks/useGeneratePathKeepingSearch';
 import { withTranslation } from 'react-i18next';
 
