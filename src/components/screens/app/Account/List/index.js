@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
+
 import { Link } from 'react-router-dom';
 
 import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
@@ -15,9 +16,6 @@ import AddIcon from '@material-ui/icons/Add';
 import TabsMenu from 'components/dumb/Tabs/DrawerMenu';
 
 const useStyles = makeStyles((theme) => ({
-  title: {
-    flexGrow: 1,
-  },
   avatar: {
     [theme.breakpoints.down('sm')]: {
       height: '35px',

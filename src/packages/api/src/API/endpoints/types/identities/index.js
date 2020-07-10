@@ -8,6 +8,18 @@ export default {
     path: '/identities/:id',
     auth: true,
   },
+  update: {
+    method: 'PATCH',
+    path: '/identities/:id',
+    auth: true,
+  },
+  avatar: {
+    update: {
+      method: 'PUT',
+      path: '/identities/:id/avatar',
+      auth: true,
+    },
+  },
   account: {
     create: {
       method: 'POST',

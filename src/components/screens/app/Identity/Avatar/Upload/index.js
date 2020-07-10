@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
-import { Field } from 'formik';
+import { useHistory, useParams, generatePath } from 'react-router-dom';
+import FormField from '@misakey/ui/Form/Field';
 import { withTranslation } from 'react-i18next';
 
 import { ACCEPTED_TYPES } from 'constants/file/image';
@@ -12,11 +12,6 @@ import FileField from 'components/dumb/Form/Field/File';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import ScreenAction from 'components/dumb/Screen/Action';
 
-// CONSTANTS
-const NAVIGATION_PROPS = {
-  homePath: routes.account._,
-};
-
 // COMPONENTS
 const AccountAvatarUpload = ({
   name,
@@ -25,25 +20,38 @@ const AccountAvatarUpload = ({
   t,
 }) => {
   const { push } = useHistory();
+  const { id } = useParams();
+
+  const homePath = useMemo(
+    () => generatePath(routes.accounts._, { id }),
+    [id],
+  );
+
+  const navigationProps = useMemo(
+    () => ({
+      homePath,
+    }),
+    [homePath],
+  );
 
   const onUpload = useCallback(
     () => {
-      push(routes.account.profile.avatar._);
+      push(generatePath(routes.accounts.avatar._, { id }));
     },
-    [push],
+    [id, push],
   );
 
   return (
     <ScreenAction
       title={t('account:avatar.upload.title')}
       state={state}
-      navigationProps={NAVIGATION_PROPS}
+      navigationProps={navigationProps}
     >
       <Container maxWidth="md">
         <Subtitle>
           {t('account:avatar.upload.subtitle')}
         </Subtitle>
-        <Field
+        <FormField
           component={FileField}
           accept={ACCEPTED_TYPES}
           name={name}
@@ -58,6 +66,7 @@ AccountAvatarUpload.propTypes = {
   name: PropTypes.string.isRequired,
   previewName: PropTypes.string.isRequired,
   state: PropTypes.object,
+  // withTranslation
   t: PropTypes.func.isRequired,
 };
 
@@ -65,4 +74,4 @@ AccountAvatarUpload.defaultProps = {
   state: {},
 };
 
-export default withTranslation('account_new')(AccountAvatarUpload);
+export default withTranslation('account')(AccountAvatarUpload);

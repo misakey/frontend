@@ -5,13 +5,17 @@ import { Switch, Route, Redirect, useParams, generatePath } from 'react-router-d
 import routes from 'routes';
 import { MISAKEY_ACCOUNT_ID } from 'constants/account';
 
-import AppBarDrawer from 'components/dumb/AppBar/Drawer';
+import useIdentity from 'hooks/useIdentity';
+import useAccountId from 'hooks/useAccountId';
+
+import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import MenuIcon from '@material-ui/icons/Menu';
 import CardIdentity from 'components/dumb/Card/Identity';
 import AccountReadPassword from 'components/screens/app/Account/Read/Password';
-import useIdentity from 'hooks/useIdentity';
-import useAccountId from 'hooks/useAccountId';
+import IdentityDisplayName from 'components/screens/app/Identity/DisplayName';
+import IdentityNotifications from 'components/screens/app/Identity/Notifications';
+import IdentityAvatar from 'components/screens/app/Identity/Avatar';
 
 // COMPONENTS
 function AccountRead({ match: { path }, toggleDrawer, isDrawerOpen, drawerWidth }) {
@@ -40,7 +44,7 @@ function AccountRead({ match: { path }, toggleDrawer, isDrawerOpen, drawerWidth 
         path={path}
         render={() => (
           <>
-            <AppBarDrawer drawerWidth={drawerWidth}>
+            <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth}>
               {!isDrawerOpen && (
               <IconButtonAppBar
                 color="inherit"
@@ -53,7 +57,7 @@ function AccountRead({ match: { path }, toggleDrawer, isDrawerOpen, drawerWidth 
               )}
             </AppBarDrawer>
             {id && (
-            <CardIdentity {...identityMetadata} />
+              <CardIdentity {...identityMetadata} />
             )}
           </>
         )}
@@ -62,6 +66,20 @@ function AccountRead({ match: { path }, toggleDrawer, isDrawerOpen, drawerWidth 
         exact
         path={routes.accounts.password}
         render={(routerProps) => <AccountReadPassword {...routerProps} {...identityMetadata} />}
+      />
+      <Route
+        exact
+        path={routes.accounts.displayName}
+        render={(routerProps) => <IdentityDisplayName {...routerProps} {...identityMetadata} />}
+      />
+      <Route
+        exact
+        path={routes.accounts.notifications}
+        render={(routerProps) => <IdentityNotifications {...routerProps} {...identityMetadata} />}
+      />
+      <Route
+        path={routes.accounts.avatar._}
+        render={(routerProps) => <IdentityAvatar {...routerProps} {...identityMetadata} />}
       />
     </Switch>
   );

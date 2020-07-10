@@ -91,8 +91,8 @@ const FileField = ({
   accept,
   previewName,
   labelText,
-  field: { value, onChange, name },
-  form: { setStatus },
+  field: { value, name },
+  form: { setStatus, setFieldError, setFieldValue, setFieldTouched },
 }) => {
   const [dragActive, dragEvents] = useDrag();
 
@@ -109,13 +109,15 @@ const FileField = ({
 
   const onLoad = useCallback(
     (e, { preview, file }) => {
-      onChange(e, { file, preview });
+      setFieldError(name, null);
+      setFieldValue(name, file);
+      setFieldTouched(name, true);
       setStatus({ [previewName]: preview });
       if (isFunction(onUpload)) {
         onUpload(e);
       }
     },
-    [onChange, onUpload, previewName, setStatus],
+    [onUpload, previewName, name, setFieldError, setFieldValue, setFieldTouched, setStatus],
   );
 
   const [
@@ -192,11 +194,14 @@ FileField.propTypes = {
   labelText: PropTypes.string,
   // Formik Field
   field: PropTypes.shape({
-    value: PropTypes.object,
+    value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     name: PropTypes.string,
     onChange: PropTypes.func.isRequired,
   }).isRequired,
   form: PropTypes.shape({
+    setFieldError: PropTypes.func.isRequired,
+    setFieldValue: PropTypes.func.isRequired,
+    setFieldTouched: PropTypes.func.isRequired,
     setStatus: PropTypes.func.isRequired,
   }).isRequired,
   // withTranslation

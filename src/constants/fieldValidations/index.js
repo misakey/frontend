@@ -70,7 +70,7 @@ export const stringFieldValidation = {
 };
 
 export const displayNameFieldValidation = {
-  schema: Yup.string().min(3, invalid).max(21, invalid).required(required),
+  schema: Yup.string().min(3, invalid).max(254, invalid).required(required),
 };
 
 export const ratingFieldValidation = {

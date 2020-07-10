@@ -105,9 +105,9 @@
     "label": "Nom public",
     "action": "Editer",
     "placeholder": "Rose Flamingo",
-    "helperText": "Je choisis un nom entre 3 et 21 caractères",
+    "helperText": "Je choisis un nom entre 3 et 254 caractères",
     "error": {
-      "invalid": "Le nom public doit comporter entre 3 et 21 caractères"
+      "invalid": "Le nom public doit comporter entre 3 et 254 caractères"
     }
   },
   "email": {

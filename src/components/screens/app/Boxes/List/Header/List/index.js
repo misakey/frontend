@@ -16,9 +16,6 @@ const IconButtonCreate = withDialogCreate(withDialogPassword(IconButtonAppBar));
 const ACCOUNT = 'account';
 
 const useStyles = makeStyles((theme) => ({
-  flexGrow: {
-    flexGrow: 1,
-  },
   avatar: {
     [theme.breakpoints.down('sm')]: {
       height: '35px',
@@ -45,7 +42,6 @@ function ListHeader({ drawerWidth, getNextDrawerSearch, t }) {
         <UserAccountAvatar classes={{ root: classes.avatar }} />
       </IconButtonAppBar>
       <TabsMenu />
-      <div className={classes.flexGrow} />
       <IconButtonCreate
         aria-label={t('boxes:list.empty.create')}
         edge="end"

@@ -2,13 +2,14 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
-import { Field, useFormikContext } from 'formik';
+import { useFormikContext } from 'formik';
 
 import prop from '@misakey/helpers/prop';
 import isString from '@misakey/helpers/isString';
 import isNil from '@misakey/helpers/isNil';
 
 import Box from '@material-ui/core/Box';
+import FormField from '@misakey/ui/Form/Field';
 import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -105,7 +106,7 @@ const FormImage = ({
   return (
     <Box my={2} className={classes.box}>
       {hasPreview && <AvatarDetailed image={preview} text={text} />}
-      <Field
+      <FormField
         name={name}
         text={text}
         component={FormImageField}

@@ -29,7 +29,7 @@
       "description": "Je saisis mon adresse email ({{email}}) dans le champ ci-dessous avant de valider la suppression de mon compte."
     }
   },
-  "name": {
+  "displayName": {
     "title": "Nom public",
     "subtitle": "Mon nom public sera visible par tous",
     "success": "Mon nom public a été mis à jour"

@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { generatePath } from 'react-router-dom';
+import { generatePath, Link } from 'react-router-dom';
 
 import routes from 'routes';
 import IdentitySchema from 'store/schemas/Identity';
+import { MISAKEY_ACCOUNT_ID } from 'constants/account';
 
 import isNil from '@misakey/helpers/isNil';
 
@@ -54,6 +55,21 @@ const CardIdentity = ({ identity, t }) => {
   const { accountId } = useMemo(() => identity || {}, [identity]);
   const hasAccountId = useMemo(() => !isNil(accountId), [accountId]);
 
+  const listItemDisplayNameTo = useMemo(
+    () => generatePath(routes.accounts.displayName, { id: accountId || MISAKEY_ACCOUNT_ID }),
+    [accountId],
+  );
+
+  const listItemNotificationsTo = useMemo(
+    () => generatePath(routes.accounts.notifications, { id: accountId || MISAKEY_ACCOUNT_ID }),
+    [accountId],
+  );
+
+  const listItemAvatarTo = useMemo(
+    () => generatePath(routes.accounts.avatar._, { id: accountId || MISAKEY_ACCOUNT_ID }),
+    [accountId],
+  );
+
   const listItemPasswordTo = useMemo(
     () => (hasAccountId ? generatePath(routes.accounts.password, { id: accountId }) : null),
     [accountId, hasAccountId],
@@ -69,9 +85,8 @@ const CardIdentity = ({ identity, t }) => {
       <CardList>
         <ListItem
           button
-          disabled
-          // to={routes.accounts.name}
-          // component={Link}
+          to={listItemDisplayNameTo}
+          component={Link}
           divider
           aria-label={t('fields:displayName.action')}
           classes={{ container: classes.listItemContainer }}
@@ -84,9 +99,8 @@ const CardIdentity = ({ identity, t }) => {
         </ListItem>
         <ListItem
           button
-          disabled
-          // to={routes.accounts.avatar._}
-          // component={Link}
+          to={listItemAvatarTo}
+          component={Link}
           divider
           aria-label={t('fields:avatar.action')}
           classes={{ container: classes.listItemContainer }}
@@ -113,9 +127,8 @@ const CardIdentity = ({ identity, t }) => {
       <CardList>
         <ListItem
           button
-          disabled
-          // to={routes.accounts.notifications}
-          // component={Link}
+          to={listItemNotificationsTo}
+          component={Link}
           divider
           aria-label={t('fields:notifications.action')}
           classes={{ container: classes.listItemContainer }}
