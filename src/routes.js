@@ -10,23 +10,18 @@ const routes = {
     invitation: '/invitation',
   },
   accounts: {
-    _: '/accounts',
-    read: {
-      _: '/accounts/:id',
+    _: '/accounts/:id?',
+    avatar: {
+      _: '/accounts/:id/avatar',
+      upload: '/accounts/:id/avatar/upload',
     },
+    name: '/accounts/:id/name',
+    password: '/accounts/:id/password',
+    notifications: '/accounts/:id/notifications',
+    exportCrypto: '/accounts/:id/export-crypto',
   },
   account: {
     _: '/account',
-    profile: {
-      avatar: {
-        _: '/account/profile/avatar',
-        upload: '/account/profile/avatar/upload',
-      },
-      name: '/account/profile/name',
-      password: '/account/profile/password',
-      notifications: '/account/profile/notifications',
-      exportCrypto: '/account/profile/export-crypto',
-    },
     mailProvider: { _: '/account/mail-provider' },
     thirdParty: { setup: '/account/third-party/setup' },
   },

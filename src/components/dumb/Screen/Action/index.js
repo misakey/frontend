@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import omit from '@misakey/helpers/omit';
-import useWidth from '@misakey/hooks/useWidth';
+import useXsMediaQuery from '@misakey/hooks/useXsMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 
 import Screen from 'components/dumb/Screen';
@@ -12,24 +12,22 @@ import ElevationScroll from 'components/dumb/ElevationScroll';
 import { MIN_PX_0_LANDSCAPE, MIN_PX_600 } from '@misakey/ui/constants/medias';
 
 function ScreenAction({
-  children, hideAppBar, navigation, navigationProps, title, hideTitle, ...rest
+  children, navigation, navigationProps, title, hideTitle, ...rest
 }) {
   const theme = useTheme();
-  const width = useWidth();
+  const isXs = useXsMediaQuery();
   const landscape = useMemo(() => window.innerHeight > window.innerWidth, []);
 
   const threshold = useMemo(() => {
-    if (hideAppBar) { return 0; }
     if (landscape) { return theme.mixins.toolbar[MIN_PX_0_LANDSCAPE].minHeight; }
-    if (width !== 'xs') { return theme.mixins.toolbar[MIN_PX_600].minHeight; }
+    if (isXs) { return theme.mixins.toolbar[MIN_PX_600].minHeight; }
 
     return theme.mixins.toolbar.minHeight;
-  }, [hideAppBar, theme, width, landscape]);
+  }, [theme, isXs, landscape]);
 
   return (
     <Screen
       title={title}
-      hideAppBar={hideAppBar}
       {...omit(rest, ['location', 'match', 'staticContext'])}
     >
       <ElevationScroll threshold={threshold}>
@@ -49,7 +47,6 @@ function ScreenAction({
 
 ScreenAction.propTypes = {
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.node, PropTypes.element]).isRequired,
-  hideAppBar: PropTypes.bool,
   hideTitle: PropTypes.bool,
   navigation: PropTypes.node,
   navigationProps: PropTypes.objectOf(PropTypes.any),
@@ -57,7 +54,6 @@ ScreenAction.propTypes = {
 };
 
 ScreenAction.defaultProps = {
-  hideAppBar: false,
   hideTitle: false,
   navigation: null,
   navigationProps: {},

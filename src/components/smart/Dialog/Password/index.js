@@ -43,6 +43,7 @@ const DialogPassword = ({
   onClose, onSubmit, open,
   submitText,
   formikProps,
+  isLoading,
   t, ...rest
 }) => {
   const fullScreen = useDialogFullScreen();
@@ -97,6 +98,7 @@ const DialogPassword = ({
               primary={{
                 type: 'submit',
                 text: submitText || t('common:validate'),
+                isLoading,
               }}
               formik
             />
@@ -115,6 +117,7 @@ DialogPassword.propTypes = {
   open: PropTypes.bool,
   formikProps: PropTypes.object,
   submitText: PropTypes.string,
+  isLoading: PropTypes.bool,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
@@ -125,6 +128,7 @@ DialogPassword.defaultProps = {
   open: false,
   submitText: null,
   formikProps: {},
+  isLoading: false,
 };
 
 export default withTranslation(['fields', 'common'])(DialogPassword);

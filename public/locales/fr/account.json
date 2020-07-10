@@ -1,8 +1,15 @@
 {
+  "misakey": "Misakey",
   "sections": {
-    "myNotifications": "Mes communications",
-    "myVault": "Mon coffre-fort",
-    "myAccount": "Mon compte"
+    "myNotifications": {
+      "title": "Mes communications"
+    },
+    "myVault": {
+      "title": "Mon coffre-fort"
+    },
+    "myAccount": {
+      "title": "Mon compte"
+    }
   },
   "avatar": {
     "title": "Photo",

@@ -10,7 +10,7 @@ function Account({ match, ...props }) {
   return (
     <Switch>
       <Route
-        path={routes.accounts.read._}
+        path={routes.accounts._}
         render={(renderProps) => (
           <AccountRead {...props} {...renderProps} />
         )}

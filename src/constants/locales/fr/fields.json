@@ -192,6 +192,12 @@
       "invalid": "Ce retour est incorrect"
     }
   },
+  "password": {
+    "label": "Mot de passe",
+    "action": "Editer",
+    "placeholder": "********",
+    "none": "Aucun"
+  },
   "prehashed_password": {
     "label": "Mot de passe",
     "action": "Editer",
@@ -207,7 +213,7 @@
       "malformed": "Les mots de passe ne correspondent pas"
     }
   },
-  "passwordNew": {
+  "newPassword": {
     "label": "Nouveau mot de passe",
     "placeholder": "********",
     "error": {
@@ -215,7 +221,7 @@
       "malformed": "Le mot de passe doit contenir au moins 8 caractères"
     }
   },
-  "passwordOld": {
+  "oldPassword": {
     "label": "Ancien mot de passe",
     "placeholder": "********",
     "error": {

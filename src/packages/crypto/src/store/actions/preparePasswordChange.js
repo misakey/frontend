@@ -13,15 +13,16 @@ export default function preparePasswordChange(newPassword, oldPassword) {
     await dispatch(ensureSecretsLoaded({ password: oldPassword }));
 
     const { secrets, backupVersion } = getState().crypto;
+    const newBackupVersion = backupVersion + 1;
     const newBackupKey = await generateNewSaltedSymmetricKey(newPassword);
     const newEncryptedSecretsBackup = encryptSecretsBackup(secrets, newBackupKey);
 
     return {
       backupData: newEncryptedSecretsBackup,
-      backupVersion,
+      backupVersion: newBackupVersion,
       commitPasswordChange: async () => Promise.all([
         dispatch(setBackupKey(newBackupKey)),
-        dispatch(setBackupVersion(backupVersion + 1)),
+        dispatch(setBackupVersion(newBackupVersion)),
       ]),
     };
   };

@@ -1,63 +1,75 @@
-import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { Switch, Route, Redirect, useParams, generatePath } from 'react-router-dom';
+
+import routes from 'routes';
+import { MISAKEY_ACCOUNT_ID } from 'constants/account';
 
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import MenuIcon from '@material-ui/icons/Menu';
-import Title from '@misakey/ui/Typography/Title';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
+import CardIdentity from 'components/dumb/Card/Identity';
+import AccountReadPassword from 'components/screens/app/Account/Read/Password';
+import useIdentity from 'hooks/useIdentity';
+import useAccountId from 'hooks/useAccountId';
 
-function AccountRead({ match, toggleDrawer, isDrawerOpen, drawerWidth }) {
-  const account = { id: match.params.id };
+// COMPONENTS
+function AccountRead({ match: { path }, toggleDrawer, isDrawerOpen, drawerWidth }) {
+  const identityMetadata = useIdentity();
+  const accountId = useAccountId(identityMetadata.identity);
+
+  const { id } = useParams();
+
+  const shouldRedirect = useMemo(
+    () => accountId !== id && id === MISAKEY_ACCOUNT_ID,
+    [accountId, id],
+  );
+
+  const redirectTo = useMemo(
+    () => generatePath(path, { id: accountId }),
+    [accountId, path],
+  );
+
   return (
-    <>
-      <Switch>
-        <Route
-          exact
-          path={match.path}
-          render={() => (
-            <>
-              <AppBarDrawer drawerWidth={drawerWidth}>
-                {!isDrawerOpen && (
-                  <IconButtonAppBar
-                    color="inherit"
-                    aria-label="open drawer"
-                    edge="start"
-                    onClick={toggleDrawer}
-                  >
-                    <MenuIcon />
-                  </IconButtonAppBar>
-                )}
-                <Title gutterBottom={false}>
-                  Account view
-                </Title>
-              </AppBarDrawer>
-              <Box p={2}>
-                <Typography>
-                  Enjoy
-                  {' '}
-                  {account.id}
-                </Typography>
-              </Box>
-            </>
-          )}
-        />
-      </Switch>
-    </>
-
+    <Switch>
+      {shouldRedirect && (
+        <Redirect from={path} to={redirectTo} />
+      )}
+      <Route
+        exact
+        path={path}
+        render={() => (
+          <>
+            <AppBarDrawer drawerWidth={drawerWidth}>
+              {!isDrawerOpen && (
+              <IconButtonAppBar
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={toggleDrawer}
+              >
+                <MenuIcon />
+              </IconButtonAppBar>
+              )}
+            </AppBarDrawer>
+            {id && (
+            <CardIdentity {...identityMetadata} />
+            )}
+          </>
+        )}
+      />
+      <Route
+        exact
+        path={routes.accounts.password}
+        render={(routerProps) => <AccountReadPassword {...routerProps} {...identityMetadata} />}
+      />
+    </Switch>
   );
 }
 
 AccountRead.propTypes = {
-  match: PropTypes.shape({
-    path: PropTypes.string,
-    params: PropTypes.shape({
-      id: PropTypes.string,
-    }),
-  }).isRequired,
-  account: PropTypes.shape({ id: PropTypes.string.isRequired }),
+  // ROUTER
+  match: PropTypes.shape({ path: PropTypes.string }).isRequired,
   // DRAWER
   toggleDrawer: PropTypes.func.isRequired,
   isDrawerOpen: PropTypes.bool,
@@ -66,7 +78,6 @@ AccountRead.propTypes = {
 
 AccountRead.defaultProps = {
   isDrawerOpen: false,
-  account: null,
 };
 
 export default AccountRead;

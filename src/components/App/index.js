@@ -13,7 +13,6 @@ import BoxesApp from 'components/screens/app';
 
 import Redirect from 'components/dumb/Redirect';
 import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallbackWrapper';
-import RoutePrivate from '@misakey/auth/components/Route/Private';
 import SeclevelWarningAlert from 'components/smart/Alert/SeclevelWarning';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 
@@ -22,7 +21,6 @@ import { processSigninRedirect } from '@misakey/helpers/auth';
 import './App.scss';
 
 // LAZY
-const Account = lazy(() => import('components/oldScreens/Account'));
 const Auth = lazy(() => import('components/screens/Auth'));
 
 // CONSTANTS
@@ -52,7 +50,6 @@ const App = ({ t, isAuthenticated }) => (
         />
         {/* AUTH and ACCOUNT */}
         <Route path={routes.auth._} component={Auth} />
-        <RoutePrivate path={routes.account._} component={Account} />
         <Route
           exact
           path={routes.auth.callback}

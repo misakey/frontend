@@ -3,6 +3,7 @@ import { createSelector } from 'reselect';
 
 import merge from '@misakey/helpers/merge';
 import isNil from '@misakey/helpers/isNil';
+import prop from '@misakey/helpers/prop';
 
 import {
   AUTH_RESET,
@@ -70,10 +71,31 @@ function addUserRole(state, { role }) {
 
 
 // SELECTORS
+const getState = ({ auth }) => auth;
+
 export const getCurrentUserSelector = createSelector(
   (state) => state.auth,
   (items) => items.identity,
 );
+
+export const selectors = {
+  id: createSelector(
+    getState,
+    prop('id'),
+  ),
+  token: createSelector(
+    getState,
+    prop('token'),
+  ),
+  identity: createSelector(
+    getState,
+    prop('identity'),
+  ),
+  identityId: createSelector(
+    getState,
+    prop('identityId'),
+  ),
+};
 
 // REDUCER
 export default createResetOnSignOutReducer(INITIAL_STATE, {

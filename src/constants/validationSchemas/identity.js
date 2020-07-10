@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 
+import { OLD_PASSWORD_KEY, NEW_PASSWORD_KEY, PASSWORD_CONFIRM_KEY } from 'constants/account';
 import {
   codeFieldValidation, stringFieldValidation,
   passwordFieldValidation, displayNameFieldValidation, fileFieldValidation,
@@ -20,9 +21,9 @@ export const avatarValidationSchema = Yup.object().shape({
 });
 
 export const passwordValidationSchema = Yup.object().shape({
-  passwordOld: passwordFieldValidation.schema,
-  passwordNew: passwordFieldValidation.setSchema,
-  passwordConfirm: passwordFieldValidation.confirmSchema('passwordNew'),
+  [OLD_PASSWORD_KEY]: passwordFieldValidation.schema,
+  [NEW_PASSWORD_KEY]: passwordFieldValidation.setSchema,
+  [PASSWORD_CONFIRM_KEY]: passwordFieldValidation.confirmSchema(NEW_PASSWORD_KEY),
 });
 
 export const confirmEmailValidationSchema = Yup.object().shape({

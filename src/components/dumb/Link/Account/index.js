@@ -1,11 +1,28 @@
-import React, { forwardRef } from 'react';
+import React, { useMemo, forwardRef } from 'react';
+import PropTypes from 'prop-types';
 
 import routes from 'routes';
 
-import { Link } from 'react-router-dom';
+import { Link, generatePath } from 'react-router-dom';
 
-const AccountLink = forwardRef((props, ref) => (
-  <Link ref={ref} to={routes.accounts._} {...props} />
-));
+// COMPONENTS
+const AccountLink = forwardRef(({ id, ...props }, ref) => {
+  const to = useMemo(
+    () => generatePath(routes.accounts._, { id }),
+    [id],
+  );
+
+  return (
+    <Link ref={ref} to={to} {...props} />
+  );
+});
+
+AccountLink.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};
+
+AccountLink.defaultProps = {
+  id: null,
+};
 
 export default AccountLink;

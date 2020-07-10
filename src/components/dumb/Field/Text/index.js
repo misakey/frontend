@@ -24,7 +24,6 @@ const FieldText = (props) => {
 FieldText.propTypes = {
   className: PropTypes.string,
   helperText: PropTypes.string,
-  t: PropTypes.func.isRequired,
 };
 
 FieldText.defaultProps = {

@@ -10,7 +10,6 @@ import LinkAccount from 'components/dumb/Link/Account';
 
 const ButtonAccount = forwardRef(({ t, ...props }, ref) => (
   <Button
-    component={LinkAccount}
     ref={ref}
     text={t('components:buttonAccount.profile')}
     {...omitTranslationProps(props)}
@@ -18,7 +17,12 @@ const ButtonAccount = forwardRef(({ t, ...props }, ref) => (
 ));
 
 ButtonAccount.propTypes = {
+  component: PropTypes.elementType,
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('components')(ButtonAccount);
+ButtonAccount.defaultProps = {
+  component: LinkAccount,
+};
+
+export default withTranslation('components', { withRef: true })(ButtonAccount);

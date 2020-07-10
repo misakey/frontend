@@ -5,4 +5,11 @@ export default {
       path: '/accounts/:id/pwd-params',
     },
   },
+  password: {
+    update: {
+      method: 'PUT',
+      path: '/accounts/:id/password',
+      auth: true,
+    },
+  },
 };

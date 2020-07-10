@@ -25,6 +25,7 @@ const DialogPasswordCreate = forwardRef(({
   onClose,
   onSuccess,
   identityId,
+  isFetchingIdentity,
   t,
   ...props
 }, ref) => {
@@ -38,11 +39,11 @@ const DialogPasswordCreate = forwardRef(({
   );
 
   const dispatchHardPasswordChange = useCallback(
-    (newPassword) => dispatch(hardPasswordChange(newPassword)),
+    (newPassword) => Promise.resolve(dispatch(hardPasswordChange(newPassword))),
     [dispatch],
   );
   const dispatchUpdateIdentity = useCallback(
-    (identity) => dispatch(updateIdentity(identity)),
+    (identity) => Promise.resolve(dispatch(updateIdentity(identity))),
     [dispatch],
   );
 
@@ -82,6 +83,7 @@ const DialogPasswordCreate = forwardRef(({
       onClose={onClose}
       onSubmit={onSubmit}
       formikProps={formikProps}
+      isLoading={isFetchingIdentity}
       {...omitTranslationProps(props)}
     />
   );
@@ -96,6 +98,7 @@ DialogPasswordCreate.propTypes = {
   // withIdentity
   identity: PropTypes.shape(IdentitySchema.propTypes),
   identityId: PropTypes.string,
+  isFetchingIdentity: PropTypes.bool.isRequired,
 };
 
 DialogPasswordCreate.defaultProps = {

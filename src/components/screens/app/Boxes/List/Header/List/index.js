@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 
 import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
-// import TabsMenu from 'components/dumb/Tabs/DrawerMenu';
+import TabsMenu from 'components/dumb/Tabs/DrawerMenu';
 import UserAccountAvatar from 'components/smart/Avatar/CurrentUser';
 import AddIcon from '@material-ui/icons/Add';
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
@@ -44,8 +44,7 @@ function ListHeader({ drawerWidth, getNextDrawerSearch, t }) {
       >
         <UserAccountAvatar classes={{ root: classes.avatar }} />
       </IconButtonAppBar>
-      {/* Uncomment when accounts are implemented */}
-      {/* <TabsMenu /> */}
+      <TabsMenu />
       <div className={classes.flexGrow} />
       <IconButtonCreate
         aria-label={t('boxes:list.empty.create')}

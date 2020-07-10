@@ -1,12 +1,13 @@
 
 import React, { useMemo } from 'react';
 import routes from 'routes';
-import { useRouteMatch, useLocation, Link } from 'react-router-dom';
+
+import { useRouteMatch, useLocation, Link, generatePath } from 'react-router-dom';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
-import { makeStyles } from '@material-ui/core/styles';
 
 const TABS = [{
   label: 'Chat',
@@ -45,7 +46,7 @@ const TabsMenu = () => {
             className={classes.tab}
             component={Link}
             key={rest.value}
-            to={{ pathname, search }}
+            to={{ pathname: generatePath(pathname), search }}
             {...rest}
           />
         ),

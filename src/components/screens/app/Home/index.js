@@ -13,7 +13,7 @@ import Accounts from 'components/screens/app/Account';
 
 function Home(props) {
   const matchBoxSelected = useRouteMatch(routes.boxes.read._);
-  const matchAccountSelected = useRouteMatch(routes.accounts.read._);
+  const matchAccountSelected = useRouteMatch(routes.accounts._);
   const { params: { id } } = useMemo(
     () => matchBoxSelected || matchAccountSelected || { params: {} },
     [matchAccountSelected, matchBoxSelected],

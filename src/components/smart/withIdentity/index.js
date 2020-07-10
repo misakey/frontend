@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -10,6 +10,7 @@ import IdentitySchema from 'store/schemas/Identity';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import any from '@misakey/helpers/any';
+import identityFn from '@misakey/helpers/identity';
 import isEmpty from '@misakey/helpers/isEmpty';
 import { getIdentity as getIdentityBuilder } from '@misakey/auth/builder/identities';
 
@@ -17,8 +18,12 @@ import { getIdentity as getIdentityBuilder } from '@misakey/auth/builder/identit
 const isAnyEmpty = any(isEmpty);
 
 // COMPONENTS
-const withIdentity = (Component) => {
-  const ComponentWithIdentity = ({ id, token, identity, identityId, onSignIn, ...props }) => {
+const withIdentity = (Component, mapProps = identityFn) => {
+  const ComponentWithIdentity = forwardRef(({
+    id, token, identity, identityId,
+    onSignIn,
+    ...props
+  }, ref) => {
     const shouldFetch = useMemo(
       () => isAnyEmpty([token, identity]) && !isEmpty(identityId),
       [token, identity, identityId],
@@ -36,17 +41,25 @@ const withIdentity = (Component) => {
 
     const { isFetching } = useFetchEffect(getIdentity, { shouldFetch }, { onSuccess });
 
+    const mappedProps = useMemo(
+      () => mapProps({
+        ...props,
+        isFetchingIdentity: isFetching || shouldFetch,
+        id,
+        token,
+        identity,
+        identityId,
+      }),
+      [id, identity, identityId, isFetching, props, shouldFetch, token],
+    );
+
     return (
       <Component
-        {...props}
-        isFetchingIdentity={isFetching || shouldFetch}
-        id={id}
-        token={token}
-        identity={identity}
-        identityId={identityId}
+        ref={ref}
+        {...mappedProps}
       />
     );
-  };
+  });
 
   ComponentWithIdentity.propTypes = {
     id: PropTypes.string,

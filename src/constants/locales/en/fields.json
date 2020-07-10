@@ -62,6 +62,12 @@
       }
     }
   },
+  "password": {
+    "label": "Password",
+    "action": "Edit",
+    "placeholder": "********",
+    "none": "None"
+  },
   "prehashed_password": {
     "label": "Password",
     "placeholder": "********",
@@ -78,7 +84,7 @@
       "malformed": "Passwords don't match"
     }
   },
-  "passwordNew": {
+  "newPassword": {
     "label": "New password",
     "placeholder": "********",
     "error": {
@@ -86,7 +92,7 @@
       "malformed": "Password should be at least 8 characters long"
     }
   },
-  "passwordOld": {
+  "oldPassword": {
     "label": "Old password",
     "placeholder": "********",
     "error": {

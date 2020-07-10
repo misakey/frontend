@@ -1,22 +1,25 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { generatePath } from 'react-router-dom';
 
 import routes from 'routes';
 import IdentitySchema from 'store/schemas/Identity';
+
+import isNil from '@misakey/helpers/isNil';
 
 import { makeStyles } from '@material-ui/core/styles';
 
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemPassword from 'components/smart/ListItem/Password';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
-import UserStorage from 'components/oldScreens/Account/Home/UserStorage';
-import DeleteAccountListItem from 'components/oldScreens/Account/Home/DeleteAccount';
+// import UserStorage from 'components/oldScreens/Account/Home/UserStorage';
+// import DeleteAccountListItem from 'components/oldScreens/Account/Home/DeleteAccount';
 import CardIdentityHeader from 'components/dumb/Card/Identity/Header';
 import CardList from 'components/dumb/Card/List';
 
@@ -27,12 +30,8 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  emailItem: {
-    maxWidth: '100%',
-  },
-  emailItemTypo: {
-    width: '100%',
-    display: 'inline-block',
+  listItemTextBreak: {
+    overflowWrap: 'break-word',
   },
   listItemContainer: {
     width: '100%',
@@ -47,9 +46,18 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+// COMPONENTS
 const CardIdentity = ({ identity, t }) => {
-  const { displayName, avatarUrl, handle, email, notifications } = identity;
   const classes = useStyles();
+
+  const { displayName, avatarUrl, notifications } = useMemo(() => identity || {}, [identity]);
+  const { accountId } = useMemo(() => identity || {}, [identity]);
+  const hasAccountId = useMemo(() => !isNil(accountId), [accountId]);
+
+  const listItemPasswordTo = useMemo(
+    () => (hasAccountId ? generatePath(routes.accounts.password, { id: accountId }) : null),
+    [accountId, hasAccountId],
+  );
 
   return (
     <Container className={classes.container} maxWidth="sm">
@@ -57,13 +65,13 @@ const CardIdentity = ({ identity, t }) => {
         text={displayName}
         image={avatarUrl}
         title={displayName}
-        subtitle={`@${handle}`}
       />
       <CardList>
         <ListItem
           button
-          to={routes.account.profile.name}
-          component={Link}
+          disabled
+          // to={routes.accounts.name}
+          // component={Link}
           divider
           aria-label={t('fields:displayName.action')}
           classes={{ container: classes.listItemContainer }}
@@ -71,13 +79,14 @@ const CardIdentity = ({ identity, t }) => {
           <ListItemIcon className={classes.listItemIcon}>
             <Typography>{t('fields:displayName.label')}</Typography>
           </ListItemIcon>
-          <ListItemText primary={displayName} />
+          <ListItemText primary={displayName} className={classes.listItemTextBreak} />
           <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
         <ListItem
           button
-          to={routes.account.profile.avatar._}
-          component={Link}
+          disabled
+          // to={routes.accounts.avatar._}
+          // component={Link}
           divider
           aria-label={t('fields:avatar.action')}
           classes={{ container: classes.listItemContainer }}
@@ -88,39 +97,25 @@ const CardIdentity = ({ identity, t }) => {
           <ListItemText primary={t('fields:avatar.helperText')} />
           <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
-        <ListItem
+        <ListItemPassword
+          classes={{
+            container: classes.listItemContainer,
+            icon: classes.listItemIcon,
+            actionIcon: classes.actionIcon,
+          }}
           button
-          to={routes.account.profile.password}
-          component={Link}
           divider
-          aria-label={t('fields:password.action')}
-          classes={{ container: classes.listItemContainer }}
-        >
-          <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('fields:password.label')}</Typography>
-          </ListItemIcon>
-          <ListItemText primary={t('fields:password.placeholder')} />
-          <ChevronRightIcon className={classes.actionIcon} />
-        </ListItem>
-        <ListItem
-          classes={{ container: classes.listItemContainer }}
-        >
-          <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('fields:email.label')}</Typography>
-          </ListItemIcon>
-          <ListItemText
-            primary={email}
-            primaryTypographyProps={{ noWrap: true, className: classes.emailItemTypo }}
-            className={classes.emailItem}
-          />
-        </ListItem>
+          to={listItemPasswordTo}
+          hasPassword={hasAccountId}
+        />
       </CardList>
-      <CardIdentityHeader>{t('account:sections.myNotifications')}</CardIdentityHeader>
+      <CardIdentityHeader>{t('account:sections.myNotifications.title')}</CardIdentityHeader>
       <CardList>
         <ListItem
           button
-          to={routes.account.profile.notifications}
-          component={Link}
+          disabled
+          // to={routes.accounts.notifications}
+          // component={Link}
           divider
           aria-label={t('fields:notifications.action')}
           classes={{ container: classes.listItemContainer }}
@@ -131,20 +126,8 @@ const CardIdentity = ({ identity, t }) => {
           <ListItemText primary={t(`fields:notifications.${notifications}`)} />
           <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
-        <ListItem
-          classes={{ container: classes.listItemContainer }}
-        >
-          <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('fields:email.label')}</Typography>
-          </ListItemIcon>
-          <ListItemText
-            primary={email}
-            primaryTypographyProps={{ noWrap: true, className: classes.emailItemTypo }}
-            className={classes.emailItem}
-          />
-        </ListItem>
       </CardList>
-      <CardIdentityHeader>{t('account:sections.myVault')}</CardIdentityHeader>
+      {/* <CardIdentityHeader>{t('account:sections.myVault.title')}</CardIdentityHeader>
       <CardList>
         <ListItem
           classes={{ container: classes.listItemContainer }}
@@ -159,7 +142,8 @@ const CardIdentity = ({ identity, t }) => {
           classes={{ container: classes.listItemContainer }}
           button
           component={Link}
-          to={routes.account.profile.exportCrypto}
+          disabled
+          // to={routes.accounts.exportCrypto}
         >
           <ListItemIcon className={classes.listItemIcon}>
             <Typography>{t('account:exportCrypto.title')}</Typography>
@@ -167,21 +151,25 @@ const CardIdentity = ({ identity, t }) => {
           <ListItemText primary={t('account:exportCrypto.helperText')} />
           <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
-      </CardList>
-      <CardIdentityHeader>{t('account:sections.myAccount')}</CardIdentityHeader>
+      </CardList> */}
+      {/* <CardIdentityHeader>{t('account:sections.myAccount.title')}</CardIdentityHeader>
       <CardList>
         <DeleteAccountListItem
           identity={identity}
           classes={{ listItemIcon: classes.listItemIcon, actionIcon: classes.actionIcon }}
         />
-      </CardList>
+      </CardList> */}
     </Container>
   );
 };
 
 CardIdentity.propTypes = {
-  identity: PropTypes.shape(IdentitySchema.propTypes).isRequired,
+  identity: PropTypes.shape(IdentitySchema.propTypes),
   t: PropTypes.func.isRequired,
+};
+
+CardIdentity.defaultProps = {
+  identity: null,
 };
 
 export default withTranslation('fields', 'account')(CardIdentity);
