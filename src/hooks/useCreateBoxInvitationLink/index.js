@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import routes from 'routes';
 import { useSnackbar } from 'notistack';
-import copy from 'copy-to-clipboard';
+import copy from '@misakey/helpers/copy';
 import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
 import { createKeyShareBuilder } from '@misakey/helpers/builder/boxes';
 import { splitBoxSecretKey } from '@misakey/crypto/box/keySplitting';

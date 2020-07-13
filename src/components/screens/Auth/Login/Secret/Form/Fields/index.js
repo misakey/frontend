@@ -7,14 +7,14 @@ import { EMAILED_CODE, PREHASHED_PASSWORD, METHODS } from '@misakey/auth/constan
 import prop from '@misakey/helpers/prop';
 
 import Fields from '@misakey/ui/Form/Fields';
-import FieldCode from 'components/dumb/Form/Field/Code';
+import FieldCodePasteButton from 'components/dumb/Form/Field/Code/WithPasteButton';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
 
 // CONSTANTS
 const DEFAULT_FIELDS = {
   [EMAILED_CODE]: {
     [STEP.secret]: {
-      component: FieldCode,
+      component: FieldCodePasteButton,
       autoFocus: true,
       inputProps: {
         id: `${EMAILED_CODE}_${STEP.secret}`,

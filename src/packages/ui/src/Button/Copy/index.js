@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import copy from 'copy-to-clipboard';
+import copy from '@misakey/helpers/copy';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
 

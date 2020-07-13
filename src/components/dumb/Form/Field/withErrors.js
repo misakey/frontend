@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { getErrors } from '@misakey/helpers/formikError';
 
 // COMPONENTS
 // NB: withErrors expects to be wrapped by a Formik#Field component
 const withErrors = (Component) => {
-  const Field = (props) => {
+  const Field = forwardRef((props, ref) => {
     const { displayError, errorKeys } = getErrors(props);
 
-    return <Component displayError={displayError} errorKeys={errorKeys} {...props} />;
-  };
+    return <Component ref={ref} displayError={displayError} errorKeys={errorKeys} {...props} />;
+  });
 
   Field.propTypes = {
     field: PropTypes.shape({

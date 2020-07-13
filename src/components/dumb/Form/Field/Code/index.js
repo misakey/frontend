@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import clsx from 'clsx';
@@ -79,13 +79,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const FieldCode = ({
+const FieldCode = forwardRef(({
   className, displayError, errorKeys, field, form: { setFieldValue, setFieldTouched },
   helperText, inputProps,
   variant,
   t, length,
   ...rest
-}) => {
+}, ref) => {
   const isOutlined = useMemo(
     () => variant === OUTLINED,
     [variant],
@@ -115,6 +115,7 @@ const FieldCode = ({
 
   return (
     <TextField
+      ref={ref}
       margin="normal"
       variant={variant}
       className={clsx(className)}
@@ -142,7 +143,7 @@ const FieldCode = ({
       helperText={displayError ? t(errorKeys) : helperText}
     />
   );
-};
+});
 
 FieldCode.propTypes = {
   className: PropTypes.string,
@@ -168,4 +169,4 @@ FieldCode.defaultProps = {
   variant: STANDARD,
 };
 
-export default withTranslation('fields')(withErrors(FieldCode));
+export default withTranslation('fields', { withRef: true })(withErrors(FieldCode));
