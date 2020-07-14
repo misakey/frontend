@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
+import STATUSES, { ALL } from 'constants/app/boxes/statuses';
+
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import { selectors } from '@misakey/crypto/store/reducer';
 
@@ -31,13 +33,20 @@ function BoxesList({ t, ...props }) {
       {!isNil(search)
         ? <SearchHeader {...omitTranslationProps(props)} />
         : <ListHeader {...omitTranslationProps(props)} />}
-      {isCryptoLoaded ? <VaultOpen /> : <VaultLocked />}
+      {isCryptoLoaded
+        ? <VaultOpen {...omitTranslationProps(props)} />
+        : <VaultLocked {...omitTranslationProps(props)} />}
     </>
   );
 }
 
 BoxesList.propTypes = {
   t: PropTypes.func.isRequired,
+  activeStatus: PropTypes.oneOf(STATUSES),
+};
+
+BoxesList.defaultProps = {
+  activeStatus: ALL,
 };
 
 export default withTranslation(['common', 'boxes'])(BoxesList);

@@ -1,30 +1,35 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import routes from 'routes';
 import { useSelector } from 'react-redux';
 
+import { CLOSED } from 'constants/app/boxes/statuses';
 import BoxesSchema from 'store/schemas/Boxes';
-
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
-import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 import { selectors } from '@misakey/crypto/store/reducer';
-import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
+
 import isNil from '@misakey/helpers/isNil';
 
-import { CLOSED } from 'constants/app/boxes/statuses';
+import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import useMountEffect from '@misakey/hooks/useMountEffect';
+import usePropChanged from '@misakey/hooks/usePropChanged';
+import useResetBoxCount from 'hooks/useResetBoxCount';
 
 import PasteLinkDialog from 'components/smart/Dialog/Boxes/PasteLink';
+import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 import DialogPasswordOpenVault from 'components/smart/Dialog/Password/OpenVault';
 import withBoxDetails from 'components/smart/withBoxDetails';
+import withIdentity from 'components/smart/withIdentity';
 import BoxClosed from './Closed';
 import BoxDetails from './Details';
 import BoxEvents from './Events';
 import BoxFiles from './Files';
 
-
 function BoxRead({
   match, toggleDrawer, isDrawerOpen, drawerWidth, box, isFetching, belongsToCurrentUser,
+  identityId,
 }) {
   const { lifecycle, publicKey, id: boxId } = useMemo(() => box, [box]);
   const shouldDisplayContent = useMemo(
@@ -56,6 +61,26 @@ function BoxRead({
     () => (canBeDecrypted && !isCryptoLoaded),
     [canBeDecrypted, isCryptoLoaded],
   );
+
+  const [boxIdChanged, resetBoxIdChanged] = usePropChanged(boxId);
+
+  const shouldFetch = useMemo(
+    () => !isNil(boxId) && !isNil(identityId) && boxIdChanged,
+    [boxId, identityId, boxIdChanged],
+  );
+
+  const resetBoxCount = useResetBoxCount();
+
+  const onResetBoxCount = useCallback(
+    () => {
+      resetBoxIdChanged();
+      return resetBoxCount({ boxId, identityId });
+    },
+    [boxId, identityId, resetBoxIdChanged, resetBoxCount],
+  );
+
+  useMountEffect(() => { onResetBoxCount(); });
+  useFetchEffect(onResetBoxCount, { shouldFetch });
 
   if (isFetching.box) {
     return <SplashScreenWithTranslation />;
@@ -122,6 +147,8 @@ BoxRead.propTypes = {
       id: PropTypes.string,
     }),
   }).isRequired,
+  // withIdentity
+  identityId: PropTypes.string,
   // withBoxDetails
   box: PropTypes.shape(BoxesSchema.propTypes),
   isFetching: PropTypes.shape({
@@ -137,6 +164,7 @@ BoxRead.propTypes = {
 
 BoxRead.defaultProps = {
   isDrawerOpen: false,
+  identityId: null,
   isFetching: {
     box: false,
     events: false,
@@ -144,4 +172,4 @@ BoxRead.defaultProps = {
   box: null,
 };
 
-export default withBoxDetails()(BoxRead);
+export default withBoxDetails()(withIdentity(BoxRead));

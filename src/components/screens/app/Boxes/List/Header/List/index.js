@@ -1,20 +1,27 @@
-import React, { useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
+import STATUSES from 'constants/app/boxes/statuses';
+
+import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
+import usePaginateBoxesByStatusRefresh from 'hooks/usePaginateBoxesByStatus/refresh';
+
 import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import TabsMenu from 'components/dumb/Tabs/DrawerMenu';
 import UserAccountAvatar from 'components/smart/Avatar/CurrentUser';
-import AddIcon from '@material-ui/icons/Add';
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
 import withDialogPassword from 'components/smart/Dialog/Password/with';
 
-const IconButtonCreate = withDialogCreate(withDialogPassword(IconButtonAppBar));
+import AddIcon from '@material-ui/icons/Add';
+
+// CONSTANTS
 const ACCOUNT = 'account';
 
+// HOOKS
 const useStyles = makeStyles((theme) => ({
   avatar: {
     [theme.breakpoints.down('sm')]: {
@@ -24,11 +31,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ListHeader({ drawerWidth, getNextDrawerSearch, t }) {
+// COMPONENTS
+const IconButtonCreate = withDialogCreate(withDialogPassword(IconButtonAppBar));
+
+function ListHeader({ drawerWidth, getNextDrawerSearch, activeStatus, t }) {
   const classes = useStyles();
   const openAccountDrawer = useCallback(
     () => getNextDrawerSearch(ACCOUNT, true),
     [getNextDrawerSearch],
+  );
+  const { search } = useLocationSearchParams();
+
+  const onCreateSuccess = usePaginateBoxesByStatusRefresh(activeStatus, search);
+
+  const dialogProps = useMemo(
+    () => ({
+      onSuccess: onCreateSuccess,
+    }),
+    [onCreateSuccess],
   );
 
   return (
@@ -46,6 +66,7 @@ function ListHeader({ drawerWidth, getNextDrawerSearch, t }) {
         aria-label={t('boxes:list.empty.create')}
         edge="end"
         color="secondary"
+        dialogProps={dialogProps}
       >
         <AddIcon />
       </IconButtonCreate>
@@ -54,9 +75,11 @@ function ListHeader({ drawerWidth, getNextDrawerSearch, t }) {
 }
 
 ListHeader.propTypes = {
+  activeStatus: PropTypes.oneOf(STATUSES).isRequired,
   // DRAWER
   drawerWidth: PropTypes.string.isRequired,
   getNextDrawerSearch: PropTypes.func.isRequired,
+  // withTranslation
   t: PropTypes.func.isRequired,
 };
 

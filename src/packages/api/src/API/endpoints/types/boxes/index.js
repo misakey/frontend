@@ -20,6 +20,13 @@ export default {
     auth: true,
   },
   events: {
+    newCount: {
+      update: {
+        method: 'PUT',
+        path: '/boxes/:id/new-events-count/ack',
+        auth: true,
+      },
+    },
     find: {
       method: 'GET',
       path: '/boxes/:id/events',

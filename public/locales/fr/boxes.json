@@ -5,7 +5,7 @@
         "open": "Saisis ton mot de passe pour déchiffrer tous tes chats",
         "create": "Crée un coffre-fort avec un mot de passe pour déchiffrer tous tes chats"
       },
-      "selected":{
+      "selected": {
         "open": "Saisis ton mot de passe pour enregistrer ce chat",
         "create": "Crée un coffre-fort avec un mot de passe pour enregistrer ce chat"
       }
@@ -22,7 +22,8 @@
       "text": "Commencer un chat sécurisé en cliquant sur <1>+</1> ou",
       "create": "Commencer un chat"
     },
-    "select": "Rejoins un chat sécurisé 💬 pour commencer"
+    "select": "Rejoins un chat sécurisé 💬 pour commencer",
+    "refresh": "Rafraîchir"
   },
   "read": {
     "closed": {

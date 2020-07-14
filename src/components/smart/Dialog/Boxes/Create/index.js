@@ -14,6 +14,8 @@ import { updatePaginationsToStatus } from 'store/reducers/userBoxes/pagination';
 import { receiveEntities } from '@misakey/store/actions/entities';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 
+import isFunction from '@misakey/helpers/isFunction';
+
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 import { generateAsymmetricKeyPair } from '@misakey/crypto/crypto';
@@ -51,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
 function CreateBoxDialog({
   t,
   onClose,
+  onSuccess,
   open,
 }) {
   const classes = useStyles();
@@ -60,7 +63,7 @@ function CreateBoxDialog({
   const history = useHistory();
   const handleHttpErrors = useHandleHttpErrors();
 
-  const onSuccess = useCallback(
+  const onSubmitSuccess = useCallback(
     async (newBox, secretKey) => {
       const { id } = newBox;
       const normalized = normalize(newBox, BoxesSchema.entity);
@@ -70,6 +73,11 @@ function CreateBoxDialog({
         dispatch(updatePaginationsToStatus(id, ALL)),
       ]);
       return Promise.resolve(dispatch(addBoxSecretKey(secretKey)))
+        .then(() => {
+          if (isFunction(onSuccess)) {
+            onSuccess();
+          }
+        })
         .catch(() => {
           enqueueSnackbar(t('boxes:create.dialog.error.updateBackup'), { variant: 'error' });
         })
@@ -80,7 +88,7 @@ function CreateBoxDialog({
           onClose();
         });
     },
-    [dispatch, enqueueSnackbar, history, onClose, t],
+    [dispatch, enqueueSnackbar, history, onClose, onSuccess, t],
   );
 
   const onSubmit = useCallback((form, { setSubmitting }) => {
@@ -88,10 +96,10 @@ function CreateBoxDialog({
     // see about moving part of the box creation logic to actions
     const { secretKey, publicKey } = generateAsymmetricKeyPair();
     return createBoxBuilder({ title: form[FIELD_NAME], publicKey })
-      .then((response) => onSuccess(response, secretKey))
+      .then((response) => onSubmitSuccess(response, secretKey))
       .catch(handleHttpErrors)
       .finally(() => { setSubmitting(false); });
-  }, [handleHttpErrors, onSuccess]);
+  }, [handleHttpErrors, onSubmitSuccess]);
 
   const getOnReset = useCallback(
     (resetForm) => () => {
@@ -154,11 +162,13 @@ function CreateBoxDialog({
 CreateBoxDialog.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func,
   t: PropTypes.func.isRequired,
 };
 
 CreateBoxDialog.defaultProps = {
   open: false,
+  onSuccess: null,
 };
 
 export default withTranslation(['common', 'boxes'])(CreateBoxDialog);

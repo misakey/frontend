@@ -21,6 +21,7 @@ const BoxesSchema = {
     id: PropTypes.string.isRequired,
     serverCreatedAt: PropTypes.string,
     lifecycle: PropTypes.oneOf(STATUSES),
+    eventsCount: PropTypes.number,
     // eslint-disable-next-line react/forbid-foreign-prop-types
     events: PropTypes.arrayOf(PropTypes.shape(EventSchema.propTypes)),
     // eslint-disable-next-line react/forbid-foreign-prop-types

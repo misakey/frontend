@@ -16,10 +16,10 @@ const callCbFn = (callbackRef) => {
  * @param {Function} callback call function on each interval
  * @param {Object} [options = {}]
  * @param {Number} [options.delay] delay in ms between each interval
- * @param {Boolean} [options.runAtStart] immediately run callback
+ * @param {Boolean} [options.runAtStart = false] immediately run callback
  * @param {Boolean} [options.shouldStart = true] set to true when interval should start
  */
-export default (callback, { delay, runAtStart, shouldStart = true } = {}, ...effects) => {
+export default (callback, { delay, runAtStart = false, shouldStart = true } = {}, ...effects) => {
   const callbackRef = useRef();
   callbackRef.current = callback;
 

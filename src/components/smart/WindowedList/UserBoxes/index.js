@@ -17,7 +17,7 @@ import Row, { Skeleton } from 'components/smart/WindowedList/UserBoxes/Row';
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
 
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
-import { Box } from '@material-ui/core';
+import Box from '@material-ui/core/Box';
 import Title from '@misakey/ui/Typography/Title';
 
 const useStyles = makeStyles((theme) => ({
@@ -40,6 +40,7 @@ function WindowedListBoxes({ activeStatus, selectedId, t, ...props }) {
     itemCount,
     loadMoreItems,
   } = usePaginateBoxesByStatus(activeStatus, search);
+
 
   const itemData = useMemo(
     () => ({

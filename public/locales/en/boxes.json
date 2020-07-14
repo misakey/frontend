@@ -5,7 +5,7 @@
         "open": "Type your password to decrypt all your chats",
         "create": "Create a vault with a password to decrypt all your chats"
       },
-      "selected":{
+      "selected": {
         "open": "Type your password to save this chat",
         "create": "Create a vault with a password to save this chat"
       }
@@ -22,7 +22,8 @@
       "text": "Start a secured chat by clicking <1>+</1> or",
       "create": "Start a chat"
     },
-    "select": "Select a chat 💬 to start"
+    "select": "Select a chat 💬 to start",
+    "refresh": "Refresh"
   },
   "read": {
     "closed": {
@@ -113,7 +114,6 @@
           "text": "Join the secure conversation «\u00a0{{title}}\u00a0»"
         },
         "copyLink": "Copy sharing link",
-
         "close": {
           "primary": "Close the box",
           "secondary": "By closing the box, other members will not have access to its content anymore.",

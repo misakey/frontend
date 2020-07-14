@@ -47,6 +47,11 @@ export const countUserBoxesBuilder = (payload) => {
     .then((response) => parseInt(response.headers.get('X-Total-Count'), 10));
 };
 
+export const updateBoxCount = ({ id, identityId }) => API
+  .use(API.endpoints.boxes.events.newCount.update)
+  .build({ id }, objectToSnakeCase({ identityId }))
+  .send();
+
 export const createBoxBuilder = (payload) => API
   .use(API.endpoints.boxes.create)
   .build(null, objectToSnakeCase(payload))

@@ -8,8 +8,7 @@ import pickAll from '@misakey/helpers/pickAll';
 import noop from '@misakey/helpers/noop';
 import isNil from '@misakey/helpers/isNil';
 import __ from '@misakey/helpers/__';
-import min from '@misakey/helpers/min';
-import range from '@misakey/helpers/range';
+import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/helpers/offsetLimitRange';
 import { getUserBoxesBuilder, countUserBoxesBuilder } from '@misakey/helpers/builder/boxes';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import debounce from '@misakey/helpers/debounce';
@@ -27,16 +26,6 @@ const EMPTY_OBJ = {};
 // HELPERS
 const actionCreatorsProp = propOr(EMPTY_OBJ, __, actionCreators);
 const selectorsProp = propOr(EMPTY_OBJ, __, selectors);
-
-const makeRangeFromOffsetLimit = ({ offset, limit }) => range(offset, offset + limit);
-const makeOffsetLimitFromRange = (rangeList) => {
-  const offset = min(rangeList);
-  const limit = rangeList.length;
-  return {
-    offset,
-    limit,
-  };
-};
 
 const getReceiveItemCountActionCreator = (status) => {
   const statusActionCreators = actionCreatorsProp(status);

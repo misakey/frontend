@@ -130,7 +130,7 @@ const FileField = ({
 
   const acceptString = useAcceptString(accept);
 
-  const valueChanged = usePropChanged(value, [file]);
+  const [valueChanged] = usePropChanged(value, [file]);
 
   useHandleFieldValue(valueChanged, value, file, onReset);
 

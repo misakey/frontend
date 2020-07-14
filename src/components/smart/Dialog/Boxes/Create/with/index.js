@@ -44,7 +44,9 @@ const withDialogCreate = (Component) => {
 
   Wrapper.propTypes = {
     onClick: PropTypes.func,
-    dialogProps: PropTypes.object,
+    dialogProps: PropTypes.shape({
+      onSuccess: PropTypes.func,
+    }),
   };
 
   Wrapper.defaultProps = {

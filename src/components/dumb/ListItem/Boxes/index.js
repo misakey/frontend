@@ -13,7 +13,8 @@ import Box from '@material-ui/core/Box';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
-import Chip from '@material-ui/core/Chip';
+// import Chip from '@material-ui/core/Chip';
+import Badge from '@material-ui/core/Badge';
 import BoxAvatar from 'components/dumb/Avatar/Box';
 import TypographyDateSince from 'components/dumb/Typography/DateSince';
 import BoxEventsAccordingToType from 'components/smart/Box/Event';
@@ -59,7 +60,7 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
     logoUri,
     title,
     lastEvent = {},
-    blobCount = 0,
+    eventsCount = 0,
   } = useMemo(() => box || {}, [box]);
 
   const linkProps = useMemo(
@@ -84,10 +85,12 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
   return (
     <ListItem key={id} {...linkProps} {...omitTranslationProps(rest)}>
       <ListItemAvatar>
-        <BoxAvatar
-          src={logoUri}
-          title={title}
-        />
+        <Badge badgeContent={eventsCount} color="secondary">
+          <BoxAvatar
+            src={logoUri}
+            title={title}
+          />
+        </Badge>
       </ListItemAvatar>
       <ListItemText
         primary={title}
@@ -96,11 +99,6 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
         secondaryTypographyProps={{ noWrap: true, display: 'block' }}
       />
       <Box display="flex" flexDirection="column" alignItems="end">
-        {(blobCount > 0) && (
-          <Box>
-            <Chip color="secondary" label={blobCount} size="small" clickable />
-          </Box>
-        )}
         <TypographyDateSince
           noWrap
           date={lastEvent.serverEventCreatedAt}
