@@ -5,16 +5,14 @@ import { loadUserThunk, authReset } from '@misakey/auth/store/actions/auth';
 
 import log from '@misakey/helpers/log';
 import isNil from '@misakey/helpers/isNil';
-import pick from '@misakey/helpers/pick';
 import parseJwt from '@misakey/helpers/parseJwt';
 import { parseAcr } from '@misakey/helpers/parseAcr';
 import createUserManager from '@misakey/auth/helpers/userManager';
 
-import OidcProviderSplash from '@misakey/auth/components/OidcProvider/Splash';
+import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
+
 import { matchPath } from 'react-router-dom';
 
-// HELPERS
-const pickUserProps = pick(['token', 'id']);
 
 const getUser = ({
   profile: { acr, sco: scope, auth_time: authenticatedAt } = {},
@@ -43,14 +41,6 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
     [config],
   );
   const [isLoading, setIsLoading] = useState(false);
-  const [tempUser, setTempUser] = useState();
-
-  const userProps = useMemo(
-    () => (isNil(tempUser)
-      ? {}
-      : pickUserProps(tempUser)),
-    [tempUser],
-  );
 
   const dispatchWindowStorageEvent = useCallback(
     () => {
@@ -129,7 +119,6 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
     userManager.getUser()
       .then((user) => {
         if (!isNil(user)) {
-          setTempUser(getUser(user));
           return onUserLoaded(user);
         }
 
@@ -137,7 +126,6 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
       })
       .finally(() => {
         setIsLoading(false);
-        setTempUser();
       });
   }, [onUserLoaded, userManager]);
 
@@ -172,7 +160,7 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
   return (
     <UserManagerContext.Provider value={{ userManager }}>
       {isLoading ? (
-        <OidcProviderSplash userProps={userProps} />
+        <SplashScreen />
       ) : children}
     </UserManagerContext.Provider>
   );
