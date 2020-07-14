@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
@@ -19,15 +20,29 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const ListConsent = (props) => {
+const ListConsent = ({ tosUri, policyUri, id, name, ...props }) => {
   const classes = useStyles();
 
   return (
     <List classes={{ root: classes.listRoot }} {...props}>
-      <ListItemTOS classes={{ container: classes.listItemContainer }} />
-      <ListItemPrivacy classes={{ container: classes.listItemContainer }} />
+      <ListItemTOS classes={{ container: classes.listItemContainer }} href={tosUri} />
+      <ListItemPrivacy classes={{ container: classes.listItemContainer }} href={policyUri} />
     </List>
   );
+};
+
+ListConsent.propTypes = {
+  id: PropTypes.string,
+  name: PropTypes.string,
+  tosUri: PropTypes.string,
+  policyUri: PropTypes.string,
+};
+
+ListConsent.defaultProps = {
+  id: null,
+  name: null,
+  tosUri: null,
+  policyUri: null,
 };
 
 export default ListConsent;

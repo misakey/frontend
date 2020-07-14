@@ -12,13 +12,13 @@ import IconButton from '@material-ui/core/IconButton';
 import DescriptionIcon from '@material-ui/icons/Description';
 
 // COMPONENTS
-const ListItemPrivacy = ({ t, ...props }) => (
+const ListItemPrivacy = ({ t, href, ...props }) => (
   <ListItem {...omitTranslationProps(props)}>
     <ListItemText primary={t('auth:privacy.text')} />
     <ListItemSecondaryAction>
       <IconButton
         aria-label={t('auth:privacy.button')}
-        href={t('auth:privacy.href')}
+        href={href}
         target="_blank"
         rel="noopener noreferrer"
         color="primary"
@@ -30,6 +30,7 @@ const ListItemPrivacy = ({ t, ...props }) => (
 );
 
 ListItemPrivacy.propTypes = {
+  href: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
 };
 

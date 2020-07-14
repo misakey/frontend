@@ -1,13 +1,16 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
+import * as Sentry from '@sentry/browser';
 
+import { FEEDBACK } from 'constants/emails';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
 import { CONSENTED_SCOPES_KEY, CONSENT_SCOPES } from '@misakey/auth/constants/consent';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 import { getDetails } from '@misakey/helpers/apiError';
 import { consent } from '@misakey/auth/builder/consent';
 
@@ -16,8 +19,10 @@ import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useGetConsentInfo from '@misakey/hooks/useGetConsentInfo';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import useNotDoneEffect from 'hooks/useNotDoneEffect';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import ListConsent from '@misakey/auth/components/List/Consent';
+import ListConsent from 'components/dumb/List/Consent';
 import Title from '@misakey/ui/Typography/Title';
 import Box from '@material-ui/core/Box';
 import BoxControls from '@misakey/ui/Box/Controls';
@@ -25,6 +30,8 @@ import DefaultSplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import Redirect from 'components/dumb/Redirect';
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
+import Alert from '@material-ui/lab/Alert';
+import { Link } from 'react-router-dom';
 
 // CONSTANTS
 const INITIAL_VALUES = {
@@ -34,6 +41,7 @@ const INITIAL_VALUES = {
 // COMPONENTS
 const AuthConsent = ({
   authnStep,
+  client,
   t,
 }) => {
   const [redirectTo, setRedirectTo] = useState(null);
@@ -42,10 +50,16 @@ const AuthConsent = ({
 
   const searchParams = useLocationSearchParams(objectToCamelCase);
 
-  const { consentChallenge } = useMemo(() => searchParams, [searchParams]);
+  const { consentChallenge } = useSafeDestr(searchParams);
 
-  const { identityId } = useMemo(() => authnStep || {}, [authnStep]);
+  const { identityId } = useSafeDestr(authnStep);
 
+  const { id, tosUri, policyUri, name } = useSafeDestr(client);
+
+  const hasMissingClientUris = useMemo(
+    () => !isEmpty(id) && (isEmpty(tosUri) || isEmpty(policyUri)),
+    [id, tosUri, policyUri],
+  );
 
   const getConsentInfo = useGetConsentInfo(consentChallenge);
 
@@ -78,6 +92,24 @@ const AuthConsent = ({
 
   const primary = useMemo(() => ({ text: t('common:accept'), isLoading: isFetching }), [isFetching, t]);
 
+  useNotDoneEffect(
+    (onDone) => {
+      if (hasMissingClientUris) {
+        const missing = [];
+        if (isEmpty(tosUri)) {
+          missing.push('tos');
+        }
+        if (isEmpty(policyUri)) {
+          missing.push('pp');
+        }
+        const errorMessage = `[missing consent link]: client ${name} - ${missing.join('|')}`;
+        Sentry.captureMessage(errorMessage, 'error');
+        onDone();
+      }
+    },
+    [id, name, tosUri, policyUri],
+  );
+
   if (!isNil(redirectTo)) {
     return (
       <Redirect
@@ -99,11 +131,22 @@ const AuthConsent = ({
         <Title>
           {t('auth:consent.title')}
         </Title>
-        <ListConsent />
-        <BoxControls
-          formik
-          primary={primary}
-        />
+        {hasMissingClientUris ? (
+          <Alert severity="warning">
+            <Trans i18nKey="auth:consent.missing">
+              Une erreur est survenue lors de votre inscription, merci de le signaler à
+              <Link href={`mailto:${FEEDBACK}`} color="inherit">{FEEDBACK}</Link>
+            </Trans>
+          </Alert>
+        ) : (
+          <>
+            <ListConsent {...client} />
+            <BoxControls
+              formik
+              primary={primary}
+            />
+          </>
+        )}
       </Box>
     </Formik>
   );
@@ -114,15 +157,18 @@ AuthConsent.propTypes = {
   t: PropTypes.func.isRequired,
   // CONNECT
   authnStep: SSO_PROP_TYPES.authnStep,
+  client: SSO_PROP_TYPES.client,
 };
 
 AuthConsent.defaultProps = {
   authnStep: null,
+  client: null,
 };
 
 // CONNECT
 const mapStateToProps = (state) => ({
   authnStep: state.sso.authnStep,
+  client: state.sso.client,
 });
 
 

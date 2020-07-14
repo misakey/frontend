@@ -16,6 +16,8 @@ export const PROP_TYPES = {
     id: PropTypes.string,
     name: PropTypes.string,
     logoUri: PropTypes.string,
+    tosUri: PropTypes.string,
+    policyUri: PropTypes.string,
   }),
   // not an identity schema because we didn't pass auth flow yet
   identity: PropTypes.shape({

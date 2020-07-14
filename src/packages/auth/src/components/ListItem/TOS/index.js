@@ -11,13 +11,13 @@ import IconButton from '@material-ui/core/IconButton';
 
 import DescriptionIcon from '@material-ui/icons/Description';
 // COMPONENTS
-const ListItemTOS = ({ t, ...props }) => (
+const ListItemTOS = ({ t, href, ...props }) => (
   <ListItem {...omitTranslationProps(props)}>
     <ListItemText primary={t('auth:tos.text')} />
     <ListItemSecondaryAction>
       <IconButton
+        href={href}
         aria-label={t('auth:tos.button')}
-        href={t('auth:tos.href')}
         target="_blank"
         rel="noopener noreferrer"
         color="primary"
@@ -29,6 +29,7 @@ const ListItemTOS = ({ t, ...props }) => (
 );
 
 ListItemTOS.propTypes = {
+  href: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
 };
 
