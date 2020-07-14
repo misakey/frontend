@@ -11,6 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import useFileReader from '@misakey/hooks/useFileReader';
 import useDrag from '@misakey/hooks/useDrag';
 import usePropChanged from '@misakey/hooks/usePropChanged';
+import { useFormikContext } from 'formik';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import Typography from '@material-ui/core/Typography';
@@ -92,9 +93,9 @@ const FileField = ({
   previewName,
   labelText,
   field: { value, name },
-  form: { setStatus, setFieldError, setFieldValue, setFieldTouched },
 }) => {
   const [dragActive, dragEvents] = useDrag();
+  const { setStatus, setFieldError, setFieldValue, setFieldTouched } = useFormikContext();
 
   const classes = useStyles();
 
@@ -114,7 +115,7 @@ const FileField = ({
       setFieldTouched(name, true);
       setStatus({ [previewName]: preview });
       if (isFunction(onUpload)) {
-        onUpload(e);
+        onUpload(e, { file, preview });
       }
     },
     [onUpload, previewName, name, setFieldError, setFieldValue, setFieldTouched, setStatus],
@@ -197,12 +198,6 @@ FileField.propTypes = {
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     name: PropTypes.string,
     onChange: PropTypes.func.isRequired,
-  }).isRequired,
-  form: PropTypes.shape({
-    setFieldError: PropTypes.func.isRequired,
-    setFieldValue: PropTypes.func.isRequired,
-    setFieldTouched: PropTypes.func.isRequired,
-    setStatus: PropTypes.func.isRequired,
   }).isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,

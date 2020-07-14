@@ -1,14 +1,14 @@
-import React, { useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useFormikContext } from 'formik';
 import { withTranslation, Trans } from 'react-i18next';
 
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+
 import { makeStyles } from '@material-ui/core/styles/';
+import useFieldErrors from '@misakey/hooks/useFieldErrors';
 
 import FieldFile from 'components/dumb/Form/Field/File';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import withErrors from 'components/dumb/Form/Field/withErrors';
-import { TMP_BLOB_FIELD_NAME } from 'components/smart/Dialog/Boxes/Upload';
 import { fileFieldValidation } from 'constants/fieldValidations';
 import Link from '@material-ui/core/Link';
 
@@ -25,46 +25,53 @@ const useStyles = makeStyles((theme) => ({
 // @FIXME: refactor field file to properly integrate formik validation
 const FieldBlobTmp = ({
   setNewBlob,
-  displayError,
-  errorKeys,
-  field,
+  name,
+  prefix,
   t,
   ...rest
 }) => {
-  const { setFieldTouched, setFieldValue, setFieldError } = useFormikContext();
   const classes = useStyles();
 
-  const onChange = useCallback(
+  const fieldConfig = useMemo(
+    () => ({ name, prefix }),
+    [name, prefix],
+  );
+
+  const {
+    field,
+    helpers: { setTouched, setError },
+    errorKeys,
+    displayError,
+  } = useFieldErrors(fieldConfig);
+
+  const onUpload = useCallback(
     (e, { file }) => {
       // Validate only TmpBlobField because we don't want to display a `required`
       // error on `BlobsField` while component rerendering to push the new value
       // We use an intermediate state `newBlob` to be able to take advantage
-      // of `FieldArray.push` method (Cf. ./BlobsField)
-      setFieldValue(TMP_BLOB_FIELD_NAME, file, false);
       fileFieldValidation.blobSchema
         .validate(file)
         .then(() => {
           setNewBlob({ blob: file, id: new Date().getUTCMilliseconds() });
         })
         .catch((err) => {
-          setFieldError(TMP_BLOB_FIELD_NAME, err.message);
-          setFieldTouched(TMP_BLOB_FIELD_NAME, true, false);
+          setError(err.message);
+          setTouched(true, false);
         });
     },
-    [setFieldError, setFieldTouched, setFieldValue, setNewBlob],
+    [setNewBlob, setError, setTouched],
   );
 
   return (
     <>
       <FieldFile
+        name={name}
         accept={['*']}
         className={classes.blob}
         labelText={t('boxes:read.upload.dialog.label')}
-        field={{
-          ...field,
-          onChange,
-        }}
-        {...rest}
+        field={field}
+        onUpload={onUpload}
+        {...omitTranslationProps(rest)}
       />
       {displayError ? (
         <FormHelperText error>
@@ -91,16 +98,15 @@ const FieldBlobTmp = ({
 };
 
 FieldBlobTmp.propTypes = {
-  // Formik Field
-  field: PropTypes.shape({
-    value: PropTypes.object,
-    name: PropTypes.string,
-    onChange: PropTypes.func.isRequired,
-  }).isRequired,
-  displayError: PropTypes.bool.isRequired,
-  errorKeys: PropTypes.arrayOf(PropTypes.string).isRequired,
+  name: PropTypes.string.isRequired,
+  prefix: PropTypes.string,
   setNewBlob: PropTypes.func.isRequired,
+  // withTranslation
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['boxes', 'dpo', 'fields'])(withErrors(FieldBlobTmp));
+FieldBlobTmp.defaultProps = {
+  prefix: '',
+};
+
+export default withTranslation(['boxes', 'dpo', 'fields'])(FieldBlobTmp);

@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { Form, Field, FieldArray } from 'formik';
+import { Form, FieldArray } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
@@ -166,9 +166,8 @@ function UploadDialog({
                   />
                 )}
               />
-              <Field
+              <FieldBlobTmp
                 name={TMP_BLOB_FIELD_NAME}
-                component={FieldBlobTmp}
                 setNewBlob={setNewBlob}
               />
 
