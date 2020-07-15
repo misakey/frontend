@@ -1,6 +1,7 @@
 import HttpStatus from 'http-status-codes';
 
 import prop from '@misakey/helpers/prop';
+import path from '@misakey/helpers/path';
 import props from '@misakey/helpers/props';
 import any from '@misakey/helpers/any';
 import equals from '@misakey/helpers/equals';
@@ -14,6 +15,9 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 const EMPTY_OBJ = {};
 
 export const getCode = prop('code');
+export const getOrigin = prop('origin');
+export const getUrlOrigin = path(['rawResponse', 'url']);
+export const getDescription = prop('desc');
 
 export const isInternalError = compose(
   any(equals(HttpStatus.INTERNAL_SERVER_ERROR)),

@@ -20,14 +20,14 @@ import getLoginInfo from '@misakey/auth/builder/getLoginInfo';
 
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
+
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Screen from 'components/dumb/Screen';
 import Container from '@material-ui/core/Container';
-import { withUserManager } from '@misakey/auth/components/OidcProvider';
 
 // LAZY
-const AuthError = lazy(() => import('components/oldScreens/Auth/Error'));
+const AuthError = lazy(() => import('components/screens/Auth/Error'));
 const Login = lazy(() => import('components/screens/Auth/Login'));
 const Consent = lazy(() => import('components/screens/Auth/Consent'));
 
@@ -38,6 +38,7 @@ const ERROR_SEARCH_PARAMS = ['error', 'errorDescription'];
 
 const SSO_REQUIRED_SEARCH_PARAMS = LOGIN_REQUIRED_SEARCH_PARAMS;
 
+// HELPERS
 const hasRequiredSearchParams = (requiredSearchParamsList) => (searchParams) => (
   difference(requiredSearchParamsList, Object.keys(searchParams)).length === 0
 );
@@ -49,8 +50,6 @@ const hasErrorRequiredParams = hasRequiredSearchParams(ERROR_SEARCH_PARAMS);
 const shouldRedirectToLoginFlow = nonePass(
   [hasLoginRequiredParams, hasConsentRequiredParams, hasErrorRequiredParams],
 );
-
-// CONSTANTS
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -67,7 +66,7 @@ const useStyles = makeStyles(() => ({
 
 // COMPONENTS
 const Auth = ({
-  from, match, userManager,
+  match,
   isAuthenticated, sso, currentAcr,
   dispatchSsoUpdate, dispatchSetIdentifier, dispatchResetAuth,
 }) => {
@@ -103,10 +102,15 @@ const Auth = ({
     [searchParams, sso],
   );
 
+  const hasLoginChallenge = useMemo(
+    () => !isNil(loginChallenge),
+    [loginChallenge],
+  );
+
   // Do not fetch when handling consent flow
   const shouldFetch = useMemo(
-    () => !hasConsentRequiredParams(searchParams),
-    [searchParams],
+    () => !hasConsentRequiredParams(searchParams) && hasLoginChallenge,
+    [searchParams, hasLoginChallenge],
   );
 
   const requiredSsoParams = useMemo(
@@ -159,21 +163,23 @@ const Auth = ({
     { onSuccess, onError },
   );
 
+  const hasLoginInfoError = useMemo(
+    () => !isNil(error),
+    [error],
+  );
+
   const state = useMemo(
-    () => ({ isLoading: isFetching, error }),
-    [error, isFetching],
+    () => ({ isLoading: isFetching }),
+    [isFetching],
   );
 
   if (shouldRedirectToLogin) {
     if (isAuthenticated && !isAcrChange) {
-      return <Redirect to={from} />;
+      return <Redirect to={errorTo} />;
     }
-
     if (hasRequiredSsoParams) {
       return <Redirect to={requiredSsoTo} />;
     }
-
-    userManager.signinRedirect();
   }
 
   if (shouldRedirectToErrorScreen) {
@@ -189,7 +195,19 @@ const Auth = ({
     >
       <Container maxWidth="md">
         <Switch>
-          <Route exact path={routes.auth.error} component={AuthError} />
+          {(hasLoginInfoError || !hasLoginChallenge) && (
+            <Route
+              path={match.path}
+              render={(routerProps) => (
+                <AuthError {...routerProps} loginChallenge={loginChallenge} error={error} />
+              )}
+            />
+          )}
+          <Route
+            exact
+            path={routes.auth.error}
+            render={(routerProps) => <AuthError {...routerProps} loginChallenge={loginChallenge} />}
+          />
           <Route
             path={routes.auth.consent._}
             component={Consent}
@@ -198,7 +216,6 @@ const Auth = ({
             path={routes.auth.signIn._}
             render={(routerProps) => <Login {...routerProps} loginChallenge={loginChallenge} />}
           />
-          <Redirect from={match.path} to={routes.auth.signIn._} exact />
         </Switch>
       </Container>
     </Screen>
@@ -206,10 +223,8 @@ const Auth = ({
 };
 
 Auth.propTypes = {
-  from: PropTypes.objectOf(PropTypes.any), // same origin referrer from PrivateRoute
   location: PropTypes.shape({ search: PropTypes.string, pathname: PropTypes.string }).isRequired,
   match: PropTypes.shape({ path: PropTypes.string }).isRequired,
-  userManager: PropTypes.object.isRequired,
   // CONNECT
   isAuthenticated: PropTypes.bool,
   currentAcr: PropTypes.number,
@@ -220,7 +235,6 @@ Auth.propTypes = {
 };
 
 Auth.defaultProps = {
-  from: null,
   isAuthenticated: false,
   currentAcr: null,
 };
@@ -238,4 +252,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchResetAuth: () => dispatch(screenAuthReset()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withUserManager(Auth));
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);

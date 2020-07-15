@@ -41,7 +41,7 @@ import countries from 'i18n-iso-countries';
 import isNil from '@misakey/helpers/isNil';
 import { isSilentAuthIframe, processSilentAuthCallbackInIframe } from '@misakey/auth/helpers'; // Silent auth
 
-import { isSigninRedirect, processSigninRedirect } from '@misakey/helpers/auth';
+import { isSigninRedirect, processSigninRedirect } from 'helpers/auth';
 import SnackbarActionHide from 'components/dumb/Snackbar/Action/Hide';
 import routes from 'routes';
 
