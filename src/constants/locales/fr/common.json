@@ -44,6 +44,7 @@
   "share": "Partager",
   "show": "Voir",
   "signIn": "Connexion",
+  "signOut": "Déconnexion",
   "signedIn": "Connecté\u00a0!",
   "skip": "Passer",
   "submit": "Envoyer",
@@ -64,92 +65,6 @@
     "errors": {
       "backupKeyShare": "Une erreur s'est produite lors de la mise à jour des clés de partage.",
       "shouldRefresh": "Erreur: l'application semble avoir été utilisée dans un autre navigateur et doit être re-synchronisée. Vous devriez rafraîchir la page"
-    }
-  },
-  "application": {
-    "category": {
-      "shops": "eCommerces",
-      "telecom": "Opérateurs télécom",
-      "music": "Musique",
-      "video": "Vidéo",
-      "banks": "Banques",
-      "estate_agency": "Agences immobilières",
-      "gym": "Salles de sport",
-      "gaming": "Jeux vidéo",
-      "insurance": "Assurances",
-      "transport": "Transport",
-      "mobility": "Mobilité",
-      "food": "Alimentation",
-      "energy": "Énergie",
-      "bet": "Paris en ligne",
-      "press": "Presse",
-      "retailers": "Grande distribution",
-      "travel": "Voyage",
-      "hr": "RH",
-      "public_service": "Service public",
-      "misc": "Divers",
-      "tickets": "Billeteries",
-      "services": "Services divers",
-      "car_rental": "Location de voiture",
-      "dating": "Sites de rencontre",
-      "crowdfunding": "Financement participatif"
-    }
-  },
-  "databox": {
-    "dpoComment": {
-      "done": "J'ai traité la demande",
-      "refused": "Je ne peux pas traiter la demande",
-      "no_data": "Aucune donnée trouvée",
-      "other": "Autres raisons"
-    },
-    "ownerComment": {
-      "done": "Ma demande a été traitée via Misakey",
-      "ok": "Ma demande a été traitée via Misakey",
-      "other_channel_satisfied": "Ma demande a été traitée autrement et je suis satisfait",
-      "other_channel_unsatisfied": "Ma demande a été traitée autrement et j'aurais préféré obtenir une réponse via Misakey",
-      "no_data": "Aucune donnée trouvée",
-      "identification_clarification_unwished": "Ma demande n'a pas été traitée. Je ne souhaite pas envoyer plus d'informations personnelles au site",
-      "procedure_unwished": "Ma demande n'a pas été traitée. Je ne souhaite pas suivre la procédure du site",
-      "misunderstood": "Ma demande n'a pas été traitée. Le site n'a pas compris ma demande",
-      "not_answered": "Ma demande n'a pas été traitée. Le site ne m'a pas répondu",
-      "undisclosed": "Je ne souhaite pas préciser de motif",
-      "other": "Autres raisons",
-      "refused": "Ma demande n'a pas été traitée",
-      "other_channel": "Ma demande a été traitée autrement"
-    },
-    "since": {
-      "open": "Ouverte",
-      "reopen": "Réouverte",
-      "done": "Complétée",
-      "closed": "Fermée",
-      "created": "Créée",
-      "updated": "Editée"
-    }
-  },
-  "requests": {
-    "type": {
-      "erasure": "Suppression",
-      "portability": "Portabilité"
-    },
-    "events": {
-      "author": {
-        "misakey": "Agent Misakey"
-      },
-      "textMessage": {
-        "confirm_email": "J’ai confirmé l’adresse e-mail {{ownerEmail}} avec un code.",
-        "sending": {
-          "erasure": "Bonjour, j’ai envoyé une requête de suppression par email pour {{ownerEmail}}",
-          "portability": "Bonjour, j’ai envoyé une requête de portabilité par email pour {{ownerEmail}}"
-        },
-        "reopening": "J’ai ré-ouvert la requête",
-        "accepting": "J’ai fermé la requête",
-        "terminating": "J’ai fermé la requête",
-        "answering": {
-          "refused": "Je ne peux pas traiter la requête",
-          "done": "J’ai traité la requête",
-          "no_data": "Je ne peux pas traiter la requête"
-        }
-      }
     }
   },
   "date": {
@@ -200,14 +115,5 @@
       "500": "Nous sommes désolés, une erreur est survenue",
       "503": "Nous sommes désolés, nos services ne sont pas accessibles"
     }
-  },
-  "workspaces": {
-    "citizen": "citizen",
-    "dpo": "dpo",
-    "admin": "admin",
-    "account": "account"
-  },
-  "quickDraft": {
-    "success": "Nouveau brouillon créé\u00a0!"
   }
 }

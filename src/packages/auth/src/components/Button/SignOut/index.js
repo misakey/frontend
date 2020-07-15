@@ -26,7 +26,7 @@ const ButtonSignOut = ({
   return (
     <Button
       onClick={onClick}
-      text={t('auth:signOut.button')}
+      text={t('common:signOut')}
       {...omitTranslationProps(props)}
     />
   );
@@ -52,4 +52,4 @@ const mapDispatchToProps = (dispatch) => ({
   onSignOut: () => dispatch(signOut()),
 });
 
-export default connect(null, mapDispatchToProps)(withTranslation('auth')(withUserManager(ButtonSignOut)));
+export default connect(null, mapDispatchToProps)(withTranslation('common')(withUserManager(ButtonSignOut)));
