@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import { Form, Field } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import { useSnackbar } from 'notistack';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
 import { normalize } from 'normalizr';
 import { useDispatch } from 'react-redux';
 import { generatePath, useHistory } from 'react-router-dom';
 import routes from 'routes';
+
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import BoxesSchema from 'store/schemas/Boxes';
 import { updatePaginationsToStatus } from 'store/reducers/userBoxes/pagination';
@@ -18,10 +20,12 @@ import isFunction from '@misakey/helpers/isFunction';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
+import useIsUserOnWhitelist from '@misakey/hooks/useIsUserOnWhitelist';
 import { generateAsymmetricKeyPair } from '@misakey/crypto/crypto';
 
 import { makeStyles } from '@material-ui/core/styles/';
 import Dialog from '@material-ui/core/Dialog';
+import Link from '@material-ui/core/Link';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -62,6 +66,7 @@ function CreateBoxDialog({
   const dispatch = useDispatch();
   const history = useHistory();
   const handleHttpErrors = useHandleHttpErrors();
+  const isUserAuthorizedToCreateABox = useIsUserOnWhitelist();
 
   const onSubmitSuccess = useCallback(
     async (newBox, secretKey) => {
@@ -109,6 +114,47 @@ function CreateBoxDialog({
     [onClose],
   );
 
+  if (!isUserAuthorizedToCreateABox) {
+    return (
+      <Dialog
+        fullWidth
+        fullScreen={fullScreen}
+        open={open}
+        onClose={onClose}
+        aria-labelledby="create-box-dialog-title"
+        aria-describedby="create-box-dialog-description"
+      >
+        <DialogTitleWithClose onClose={onClose} />
+        <DialogContent className={classes.dialogContentRoot}>
+          <Typography variant="h3" align="center" gutterBottom>{t('boxes:create.notOnTheList.title')}</Typography>
+          <Typography align="center" variant="h5">{t('boxes:create.notOnTheList.subtitle')}</Typography>
+          <Box display="flex" justifyContent="center" my={3}>
+            <Button
+              standing={BUTTON_STANDINGS.MAIN}
+              text={t('boxes:create.notOnTheList.button')}
+              href={window.env.VALIDATE_INVITATION_CODE_URL}
+            />
+          </Box>
+          <Typography align="center" variant="h4" gutterBottom>{t('boxes:create.notOnTheList.getCodeTitle')}</Typography>
+          <Typography align="center" paragraph>
+            <Trans i18nKey="boxes:create.notOnTheList.getCodeDescription">
+              To get a code, email
+              <Link href="mailto:iwant@misakey.com" color="secondary">iwant@misakey.com</Link>
+              and tell us about privacy in your business. Could be a sweet story...
+            </Trans>
+          </Typography>
+          <Typography align="center" variant="caption" display="block" color="textSecondary" paragraph>
+            {t('boxes:create.notOnTheList.nomarketing')}
+          </Typography>
+          <Typography align="center" variant="caption" display="block" color="textSecondary">
+            {t('boxes:create.notOnTheList.notradead')}
+          </Typography>
+        </DialogContent>
+        <DialogActions />
+      </Dialog>
+    );
+  }
+
   return (
     <Dialog
       fullWidth
@@ -155,7 +201,6 @@ function CreateBoxDialog({
         )}
       </Formik>
     </Dialog>
-
   );
 }
 

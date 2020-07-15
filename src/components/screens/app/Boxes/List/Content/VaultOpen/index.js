@@ -68,7 +68,7 @@ const VaultOpen = ({ t, identityId, activeStatus, ...props }) => {
 
   const intervalConfig = useMemo(
     () => ({
-      delay: 120000,
+      delay: window.env.AUTO_REFRESH_LIST_DELAY,
       shouldStart: hasIdentityId,
     }),
     [hasIdentityId],

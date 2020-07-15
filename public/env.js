@@ -16,22 +16,11 @@ window.env = {
   MATOMO: {
     ENABLED: false,
   },
-  CATEGORIES: [
-    'shops',
-    'gaming',
-  ],
-  ACTIVE_SERVICES: [
-    'fnac.com',
-    'misakey.com.local',
-    'vp.com',
-    'darty.com',
-    'veepee.fr',
-    'showroomprive.com',
-    'rakuten.com',
-    'yves-rocher.fr',
-    'leroymerlin.fr',
-    'auchan.fr',
-    'conforama.fr'
-  ],
+  WHITELIST: {
+    'emails': [ 'pp@vp.com', 'pp@vppp.com' ],
+    'domains': [ 'misakey.com' ],
+  },
+  AUTO_REFRESH_LIST_DELAY: 120000,
+  VALIDATE_INVITATION_CODE_URL: 'https://www.misakey.com/invitation',
   TYPEFORM_URL: 'https://misakey.typeform.com/to/hfR198'
 };

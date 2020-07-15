@@ -25,6 +25,12 @@ config: >-
       URL: 'https://analytics.misakey.com/',
       SITEID: '2'
     },
+    WHITELIST: {
+      'emails': [],
+      'domains': ['misakey.com'],
+    },
+    VALIDATE_INVITATION_CODE_URL: 'https://www.misakey.com/invitation',
+    AUTO_REFRESH_LIST_DELAY: 60000,
     TYPEFORM_URL: 'https://misakey.typeform.com/to/hfR198'
   };
     

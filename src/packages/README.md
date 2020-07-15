@@ -13,3 +13,7 @@ For now we have some packages:
 * `hooks`: our custom hooks
 * `store`: global store package
 * `ui`: common ui package. Contains reusable presentational components, global theme definition.
+
+:warning: Those "packages" are not used as NPM packages anymore. We have only one app, that use everything.
+We decided to keep the package folder structure to avoid a huge refacto, and be free to re use them as NPM packages later,
+but for now, they are not usable as is (cross package dependencies are broken). So don't consider them as NPM packages.
