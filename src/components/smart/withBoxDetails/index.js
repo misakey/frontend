@@ -56,6 +56,10 @@ const withBoxDetails = (mapper = identity) => (Component) => {
     const { params } = useRouteMatch();
     const history = useHistory();
 
+    const boxForChildren = useMemo(
+      () => ({ ...(box || { id: params.id }), members }), [box, members, params.id],
+    );
+
     const isAllowedToFetch = useMemo(
       () => isAuthenticated && !isNil(params.id) && !preventFetching,
       [isAuthenticated, params.id, preventFetching],
@@ -130,7 +134,7 @@ const withBoxDetails = (mapper = identity) => (Component) => {
 
     const mappedProps = useMemo(
       () => (mapper({
-        box: { ...box || { id: params.id }, members },
+        box: boxForChildren,
         belongsToCurrentUser,
         isFetching: {
           box: isFetching,
@@ -140,8 +144,8 @@ const withBoxDetails = (mapper = identity) => (Component) => {
         isAuthenticated,
         ...rest,
       })),
-      [belongsToCurrentUser, box, isAuthenticated, isFetching,
-        isFetchingEvents, members, onDelete, params.id, rest],
+      [belongsToCurrentUser, boxForChildren, isAuthenticated,
+        isFetching, isFetchingEvents, onDelete, rest],
     );
 
     return <Component {...mappedProps} />;

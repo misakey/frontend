@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import { selectors } from '@misakey/crypto/store/reducer';
+import { selectors } from '@misakey/crypto/store/reducers';
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
 import DialogCreatePassword from 'components/smart/Dialog/Password/Create';

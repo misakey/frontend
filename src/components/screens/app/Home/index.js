@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, Suspense } from 'react';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import routes from 'routes';
 import isNil from '@misakey/helpers/isNil';
@@ -7,6 +7,7 @@ import AccountList from 'components/screens/app/Account/List';
 import BoxesList from 'components/screens/app/Boxes/List';
 import IdentifierDrawer from 'components/screens/app/Identifiers/Drawer';
 import ScreenDrawer from 'components/smart/Screen/Drawer';
+import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 
 import Boxes from 'components/screens/app/Boxes';
 import Accounts from 'components/screens/app/Account';
@@ -24,20 +25,22 @@ function Home(props) {
     () => ({
       account: (drawerProps) => <IdentifierDrawer {...drawerProps} />,
       default: (drawerProps) => (
-        <Switch>
-          <Route
-            path={routes.accounts._}
-            render={(renderProps) => (
-              <AccountList {...drawerProps} {...renderProps} />
-            )}
-          />
-          <Route
-            path={routes.boxes._}
-            render={(renderProps) => (
-              <BoxesList {...drawerProps} {...renderProps} />
-            )}
-          />
-        </Switch>
+        <Suspense fallback={<SplashScreenWithTranslation />}>
+          <Switch>
+            <Route
+              path={routes.accounts._}
+              render={(renderProps) => (
+                <AccountList {...drawerProps} {...renderProps} />
+              )}
+            />
+            <Route
+              path={routes.boxes._}
+              render={(renderProps) => (
+                <BoxesList {...drawerProps} {...renderProps} />
+              )}
+            />
+          </Switch>
+        </Suspense>
       ),
     }),
     [],

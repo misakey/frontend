@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import STATUSES, { ALL } from 'constants/app/boxes/statuses';
 
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
-import { selectors } from '@misakey/crypto/store/reducer';
+import { selectors } from '@misakey/crypto/store/reducers';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isNil from '@misakey/helpers/isNil';

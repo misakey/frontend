@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 import { generatePath, Link } from 'react-router-dom';
 
 import BoxesSchema from 'store/schemas/Boxes';
@@ -54,7 +53,7 @@ export const BoxListItemSkeleton = (props) => (
   </ListItem>
 );
 
-function BoxListItem({ box, toRoute, t, ...rest }) {
+function BoxListItem({ box, toRoute, ...rest }) {
   const {
     id,
     logoUri,
@@ -74,8 +73,8 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
 
   const secondary = useMemo(
     () => (
-      <BoxEventsAccordingToType event={lastEvent} preview />
-    ), [lastEvent],
+      <BoxEventsAccordingToType event={lastEvent} preview boxID={id} />
+    ), [id, lastEvent],
   );
 
   if (isNil(id)) {
@@ -113,7 +112,6 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
 BoxListItem.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes),
   toRoute: PropTypes.string,
-  t: PropTypes.func.isRequired,
 };
 
 BoxListItem.defaultProps = {
@@ -121,4 +119,4 @@ BoxListItem.defaultProps = {
   toRoute: null,
 };
 
-export default withTranslation('citizen')(BoxListItem);
+export default BoxListItem;

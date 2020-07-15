@@ -7,8 +7,8 @@ import { useSelector } from 'react-redux';
 import { CLOSED } from 'constants/app/boxes/statuses';
 import BoxesSchema from 'store/schemas/Boxes';
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
-import { selectors } from '@misakey/crypto/store/reducer';
 
+import { selectors } from '@misakey/crypto/store/reducers';
 import isNil from '@misakey/helpers/isNil';
 
 import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';

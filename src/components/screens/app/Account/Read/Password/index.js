@@ -15,6 +15,7 @@ import isNil from '@misakey/helpers/isNil';
 import log from '@misakey/helpers/log';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import useCreateNewBackupShares from '@misakey/crypto/hooks/useCreateNewBackupShares';
 
 import { changePassword, fetchPwdHashParams } from '@misakey/auth/builder/accounts';
 
@@ -75,6 +76,7 @@ const AccountPassword = ({ t, identity, isFetching }) => {
   const dispatch = useDispatch();
 
   const { accountId } = useMemo(() => identity || {}, [identity]);
+  const createNewBackupKeyShares = useCreateNewBackupShares(dispatch);
 
   const onSubmit = useCallback(
     async (
@@ -85,6 +87,7 @@ const AccountPassword = ({ t, identity, isFetching }) => {
         const {
           backupData,
           backupVersion,
+          backupKey,
           commitPasswordChange,
         } = await dispatch(preparePasswordChange(newPassword, oldPassword));
 
@@ -100,8 +103,10 @@ const AccountPassword = ({ t, identity, isFetching }) => {
         });
 
         await commitPasswordChange();
-        enqueueSnackbar(t('account:password.success'), { variant: 'success' });
-        push(accountHome);
+        createNewBackupKeyShares(backupKey, accountId).finally(() => {
+          enqueueSnackbar(t('account:password.success'), { variant: 'success' });
+          push(accountHome);
+        });
       } catch (e) {
         if (e instanceof BackupDecryptionError || e.code === errorTypes.forbidden) {
           setFieldError(OLD_PASSWORD_KEY, errorTypes.invalid);
@@ -123,7 +128,8 @@ const AccountPassword = ({ t, identity, isFetching }) => {
         setSubmitting(false);
       }
     },
-    [dispatch, accountId, enqueueSnackbar, t, push, accountHome, handleHttpErrors],
+    [dispatch, accountId, enqueueSnackbar, t, createNewBackupKeyShares,
+      push, accountHome, handleHttpErrors],
   );
 
   return (

@@ -9,7 +9,6 @@ import { connect } from 'react-redux';
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
 
-import BoxesApp from 'components/screens/app';
 
 import Redirect from 'components/dumb/Redirect';
 import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallbackWrapper';
@@ -22,6 +21,7 @@ import './App.scss';
 
 // LAZY
 const Auth = lazy(() => import('components/screens/Auth'));
+const BoxesApp = lazy(() => import('components/screens/app'));
 
 // CONSTANTS
 const REFERRERS = {

@@ -7,7 +7,7 @@ import { authPersistedReducers } from '@misakey/auth/store/reducers';
 import storeReducers from '@misakey/store/reducers';
 import { makeReducer as makeEntities } from '@misakey/store/reducers/entities';
 
-import crypto from '@misakey/crypto/store/reducer';
+import crypto from '@misakey/crypto/store/reducers';
 
 import { wrapReducerWithResetOnSignOut } from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
 import userBoxesPagination from 'store/reducers/userBoxes/pagination';

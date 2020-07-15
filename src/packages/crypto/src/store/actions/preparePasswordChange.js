@@ -20,6 +20,7 @@ export default function preparePasswordChange(newPassword, oldPassword) {
     return {
       backupData: newEncryptedSecretsBackup,
       backupVersion: newBackupVersion,
+      backupKey: newBackupKey,
       commitPasswordChange: async () => Promise.all([
         dispatch(setBackupKey(newBackupKey)),
         dispatch(setBackupVersion(newBackupVersion)),

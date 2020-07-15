@@ -60,6 +60,18 @@ export default {
       naming: 'permissive',
     },
   },
+  backupKeyShares: {
+    read: {
+      method: 'GET',
+      path: '/backup-key-shares/:otherShareHash',
+      auth: true,
+    },
+    create: {
+      method: 'POST',
+      path: '/backup-key-shares',
+      auth: true,
+    },
+  },
   public: {
     read: {
       method: 'GET',

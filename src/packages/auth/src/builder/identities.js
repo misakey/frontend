@@ -34,7 +34,7 @@ export const createAccount = async ({
   dispatchHardPasswordChange,
 }) => {
   const [
-    { backupData },
+    { backupData, backupKey },
     prehashedPassword,
   ] = await Promise.all([
     dispatchHardPasswordChange(password),
@@ -52,5 +52,6 @@ export const createAccount = async ({
   return API
     .use(API.endpoints.identities.account.create)
     .build({ id: identityId }, payload)
-    .send();
+    .send()
+    .then((response) => ({ ...objectToCamelCase(response), backupKey }));
 };

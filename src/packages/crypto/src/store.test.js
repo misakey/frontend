@@ -1,7 +1,7 @@
 import { applyMiddleware, compose, createStore, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 
-import cryptoReducer from './store/reducer';
+import cryptoReducer from './store/reducers';
 
 import {
   // createNewOwnerSecrets,

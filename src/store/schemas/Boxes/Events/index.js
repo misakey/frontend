@@ -15,7 +15,7 @@ const EventSchema = {
     id: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     serverEventCreatedAt: PropTypes.string.isRequired,
-    content: PropTypes.object.isRequired,
+    content: PropTypes.object,
     // eslint-disable-next-line react/forbid-foreign-prop-types
     sender: SenderSchema.propTypes.isRequired,
   },

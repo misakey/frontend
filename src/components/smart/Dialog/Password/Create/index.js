@@ -12,9 +12,9 @@ import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isFunction from '@misakey/helpers/isFunction';
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import { createAccount } from '@misakey/auth/builder/identities';
 import { setBackupVersion } from '@misakey/crypto/store/actions/concrete';
+import useCreateNewBackupShares from '@misakey/crypto/hooks/useCreateNewBackupShares';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
@@ -32,6 +32,7 @@ const DialogPasswordCreate = forwardRef(({
   const { enqueueSnackbar } = useSnackbar();
   const handleHttpErrors = useHandleHttpErrors();
   const dispatch = useDispatch();
+  const createNewBackupKeyShares = useCreateNewBackupShares(dispatch);
 
   const formikProps = useMemo(
     () => ({ validationSchema: createPasswordValidationSchema }),
@@ -53,13 +54,15 @@ const DialogPasswordCreate = forwardRef(({
       identityId,
       dispatchHardPasswordChange,
     }).then((response) => {
-      const { id, backupVersion } = objectToCamelCase(response);
-      return Promise.resolve([
+      const { id, backupVersion, backupKey } = response;
+      return Promise.all([
         dispatchUpdateIdentity({ accountId: id }),
         dispatch(setBackupVersion(backupVersion)),
+        createNewBackupKeyShares(backupKey, id),
       ]);
     }),
-    [dispatch, dispatchHardPasswordChange, dispatchUpdateIdentity, identityId],
+    [createNewBackupKeyShares, dispatch,
+      dispatchHardPasswordChange, dispatchUpdateIdentity, identityId],
   );
 
   const onSubmit = useCallback(

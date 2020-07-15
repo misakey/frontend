@@ -142,7 +142,7 @@ function BoxEvents({
               <Typography component={Box} alignSelf="center">{date}</Typography>
               {
                 events.map((event) => (
-                  <BoxEventsAccordingToType event={event} key={event.id} boxID={box.id} />
+                  <BoxEventsAccordingToType event={event} key={event.id} boxID={id} />
                 ))
               }
               <div ref={lastEventRef} />
@@ -167,7 +167,7 @@ BoxEvents.propTypes = {
   toggleDrawer: PropTypes.func.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
-  showWarning: PropTypes.func,
+  showWarning: PropTypes.bool,
 };
 
 BoxEvents.defaultProps = {

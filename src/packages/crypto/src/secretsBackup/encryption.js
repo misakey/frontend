@@ -12,6 +12,13 @@ import {
   DecryptionError,
   BackupDecryptionError,
 } from '../Errors/classes';
+import { symmetricDecrypt } from '../crypto/core';
+import {
+  deserializeJsonToObject,
+} from '../helpers/serialization';
+
+import { decodeBase64 } from '../helpers/base64';
+
 
 // Note that decryption is asynchronous while encryption is not;
 // this is because decryption derives the backup key from the password
@@ -53,4 +60,23 @@ export async function decryptSecretsBackup(encryptedSecretsBackup, password) {
   const secretBackup = JSON.parse(encodeUTF8(decrypted));
 
   return { backupKey, secretBackup };
+}
+
+
+export async function decryptSecretsBackupWithBackupKey(encryptedSecretsBackup, backupKey) {
+  try {
+    const { nonce, ciphertext, salt } = deserializeJsonToObject(encryptedSecretsBackup);
+    const decodedBackupKey = decodeBase64(backupKey, { urlSafe: true });
+    const decrypted = symmetricDecrypt(ciphertext, nonce, decodedBackupKey);
+    return {
+      secrets: JSON.parse(encodeUTF8(decrypted)),
+      backupKey: { symmetricKey: decodedBackupKey, salt },
+    };
+  } catch (error) {
+    if (error instanceof DecryptionError) {
+      throw new BackupDecryptionError();
+    } else {
+      throw error;
+    }
+  }
 }
