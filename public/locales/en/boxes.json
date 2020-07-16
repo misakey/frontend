@@ -27,7 +27,7 @@
   },
   "read": {
     "closed": {
-      "info": "{{displayName}} closed the box «\u00a0{{title}}\u00a0» on {{date}}."
+      "info": "{{displayName}} closed the chat «\u00a0{{title}}\u00a0» on {{date}}."
     },
     "actions": {
       "upload": "Upload a file",
@@ -53,17 +53,17 @@
       "information": {
         "lifecycle": {
           "closed": {
-            "they": "{{displayName}} closed the box",
-            "you": "You closed the box"
+            "they": "{{displayName}} closed the chat",
+            "you": "You closed the chat"
           },
           "open": {
-            "they": "{{displayName}} reopened the box",
-            "you": "You reopened the box"
+            "they": "{{displayName}} reopened the chat",
+            "you": "You reopened the chat"
           }
         },
         "create": {
-          "they": "{{displayName}} created the box «\u00a0{{title}}\u00a0»",
-          "you": "You created the box «\u00a0{{title}}\u00a0»"
+          "they": "{{displayName}} created the chat «\u00a0{{title}}\u00a0»",
+          "you": "You created the chat «\u00a0{{title}}\u00a0»"
         }
       },
       "download": {
@@ -95,14 +95,14 @@
     "details": {
       "open": "See details",
       "menu": {
-        "title": "Name of the box",
-        "files": "Files of the box",
+        "title": "Name of the chat",
+        "files": "Files of the chat",
         "encryption": {
           "primary": "Encryption",
           "secondary": "Information sent in this workspace are protected with end-to-end encryption."
         },
         "members": {
-          "title": "Members of the box",
+          "title": "Members of the chat",
           "creator": "You are the only member",
           "count": "{{count}} member",
           "count_plural": "{{count}} members"
@@ -115,10 +115,10 @@
         },
         "copyLink": "Copy sharing link",
         "close": {
-          "primary": "Close the box",
-          "secondary": "By closing the box, other members will not have access to its content anymore.",
+          "primary": "Close the chat",
+          "secondary": "By closing the chat, other members will not have access to its content anymore.",
           "confirmDialog": {
-            "text": "Do you really want to close the box?\nOther members will not have access to its content anymore and you won't be able to reopen it.\nAs the box creator, you will still have access to the content."
+            "text": "Do you really want to close the chat?\nOther members will not have access to its content anymore and you won't be able to reopen it.\nBeing its creator, you will still have access to the content."
           }
         }
       }

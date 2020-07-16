@@ -27,7 +27,7 @@
   },
   "read": {
     "closed": {
-      "info": "{{displayName}} a fermé la box «\u00a0{{title}}\u00a0» le {{date}}."
+      "info": "{{displayName}} a fermé le chat «\u00a0{{title}}\u00a0» le {{date}}."
     },
     "actions": {
       "upload": "Envoyer un fichier",
@@ -53,17 +53,17 @@
       "information": {
         "lifecycle": {
           "closed": {
-            "they": "{{displayName}} a fermé la box",
-            "you": "Vous avez fermé la box"
+            "they": "{{displayName}} a fermé le chat",
+            "you": "Vous avez fermé le chat"
           },
           "open": {
-            "they": "{{displayName}} a ré-ouvert la box",
-            "you": "Vous avez ré-ouvert la box"
+            "they": "{{displayName}} a ré-ouvert le chat",
+            "you": "Vous avez ré-ouvert le chat"
           }
         },
         "create": {
-          "they": "{{displayName}} a créé la box «\u00a0{{title}}\u00a0»",
-          "you": "Vous avez créé la box «\u00a0{{title}}\u00a0»"
+          "they": "{{displayName}} a créé le chat «\u00a0{{title}}\u00a0»",
+          "you": "Vous avez créé le chat «\u00a0{{title}}\u00a0»"
         }
       },
       "download": {
@@ -95,14 +95,14 @@
     "details": {
       "open": "Voir les détails",
       "menu": {
-        "title": "Nom de la box",
-        "files": "Fichiers de la box",
+        "title": "Nom du chat",
+        "files": "Fichiers du chat",
         "encryption": {
           "primary": "Chiffrement",
           "secondary": "Les informations envoyées dans cet espace sont protégés avec le chiffrement de bout en bout."
         },
         "members": {
-          "title": "Membres de la box",
+          "title": "Membres du chat",
           "creator": "Vous êtes le seul participant",
           "count": "{{count}} membre",
           "count_plural": "{{count}} membres"
@@ -115,10 +115,10 @@
         },
         "copyLink": "Copier le lien de partage",
         "close": {
-          "primary": "Fermer la box",
-          "secondary": "En fermant la box, les autres membres n'auront plus accès à son contenu.",
+          "primary": "Fermer le chat",
+          "secondary": "En fermant le chat, les autres membres n'auront plus accès à son contenu.",
           "confirmDialog": {
-            "text": "Voulez-vous vraiment fermer cette box\u00a0?\nLes autres membres n'auront plus accès à son contenu et vous ne pourrez plus la réouvrir.\nEn tant que créateur·trice, vous aurez toujours accès au contenu."
+            "text": "Voulez-vous vraiment fermer ce chat\u00a0?\nLes autres membres n'auront plus accès à son contenu et vous ne pourrez plus la réouvrir.\nEn tant que créateur·trice, vous aurez toujours accès au contenu."
           }
         }
       }
