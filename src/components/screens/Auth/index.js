@@ -47,7 +47,7 @@ const hasLoginRequiredParams = hasRequiredSearchParams(LOGIN_REQUIRED_SEARCH_PAR
 const hasConsentRequiredParams = hasRequiredSearchParams(CONSENT_REQUIRED_SEARCH_PARAMS);
 const hasErrorRequiredParams = hasRequiredSearchParams(ERROR_SEARCH_PARAMS);
 
-const shouldRedirectToLoginFlow = nonePass(
+const noFlowParams = nonePass(
   [hasLoginRequiredParams, hasConsentRequiredParams, hasErrorRequiredParams],
 );
 
@@ -74,8 +74,8 @@ const Auth = ({
   const searchParams = useLocationSearchParams(objectToCamelCase);
   const { pathname, search } = useLocation();
 
-  const shouldRedirectToLogin = useMemo(
-    () => shouldRedirectToLoginFlow(searchParams),
+  const hasNoFlowParams = useMemo(
+    () => noFlowParams(searchParams),
     [searchParams],
   );
 
@@ -173,7 +173,7 @@ const Auth = ({
     [isFetching],
   );
 
-  if (shouldRedirectToLogin) {
+  if (hasNoFlowParams) {
     if (isAuthenticated && !isAcrChange) {
       return <Redirect to={errorTo} />;
     }
@@ -195,7 +195,7 @@ const Auth = ({
     >
       <Container maxWidth="md">
         <Switch>
-          {(hasLoginInfoError || !hasLoginChallenge) && (
+          {(hasLoginInfoError || hasNoFlowParams) && (
             <Route
               path={match.path}
               render={(routerProps) => (
