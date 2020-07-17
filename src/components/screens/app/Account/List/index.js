@@ -1,11 +1,10 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-
 
 import { Link } from 'react-router-dom';
 
+import { DRAWER_PROPS_PROP_TYPES } from 'components/smart/Screen/Drawer';
 import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import UserAccountAvatar from 'components/smart/Avatar/CurrentUser';
@@ -14,22 +13,13 @@ import ListItemNavLinkMisakey from 'components/smart/ListItem/NavLink/Misakey';
 import ListItemText from '@material-ui/core/ListItemText';
 import AddIcon from '@material-ui/icons/Add';
 import TabsMenu from 'components/dumb/Tabs/DrawerMenu';
-
-const useStyles = makeStyles((theme) => ({
-  avatar: {
-    [theme.breakpoints.down('sm')]: {
-      height: '35px',
-      width: '35px',
-    },
-  },
-}));
+import TabsMenuSkeleton from 'components/dumb/Tabs/DrawerMenu/Skeleton';
 
 // CONSTANTS
 const ACCOUNT = 'account';
 
 // COMPONENTS
-function AccountList({ drawerWidth, getNextDrawerSearch, t }) {
-  const classes = useStyles();
+function AccountList({ drawerWidth, animationDone, getNextDrawerSearch, t }) {
   const openAccountDrawer = useCallback(
     () => getNextDrawerSearch(ACCOUNT, true), [getNextDrawerSearch],
   );
@@ -43,9 +33,9 @@ function AccountList({ drawerWidth, getNextDrawerSearch, t }) {
           to={openAccountDrawer}
           edge="start"
         >
-          <UserAccountAvatar classes={{ root: classes.avatar }} />
+          <UserAccountAvatar />
         </IconButtonAppBar>
-        <TabsMenu />
+        {animationDone ? <TabsMenu /> : <TabsMenuSkeleton />}
         <IconButtonAppBar
           aria-label="create-account"
           edge="end"
@@ -55,7 +45,7 @@ function AccountList({ drawerWidth, getNextDrawerSearch, t }) {
           <AddIcon />
         </IconButtonAppBar>
       </AppBarDrawer>
-      <List>
+      <List disablePadding>
         <ListItemNavLinkMisakey
           button
         >
@@ -70,8 +60,9 @@ function AccountList({ drawerWidth, getNextDrawerSearch, t }) {
 
 AccountList.propTypes = {
   // DRAWER
-  drawerWidth: PropTypes.string.isRequired,
-  getNextDrawerSearch: PropTypes.func.isRequired,
+  drawerWidth: DRAWER_PROPS_PROP_TYPES.drawerWidth.isRequired,
+  getNextDrawerSearch: DRAWER_PROPS_PROP_TYPES.getNextDrawerSearch.isRequired,
+  animationDone: DRAWER_PROPS_PROP_TYPES.animationDone.isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,
 };

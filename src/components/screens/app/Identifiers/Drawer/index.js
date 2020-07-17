@@ -4,10 +4,15 @@ import { Link, useHistory } from 'react-router-dom';
 // import routes from 'routes';
 import { withTranslation } from 'react-i18next';
 
+import { DEFAULT } from 'components/smart/Screen/Drawer';
+
+import useDrawerLayout from '@misakey/hooks/useDrawerLayout';
+
 // import Button from '@misakey/ui/Button';
 import ButtonSignOut from '@misakey/auth/components/Button/SignOut';
 import CardIdentityThumbnail from 'components/dumb/Card/Identity/Thumbnail';
 import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
+
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 // import Typography from '@material-ui/core/Typography';
@@ -21,9 +26,14 @@ const CardIdentityThumbnailWithIdentity = withIdentity(CardIdentityThumbnail);
 
 function IdentifierList({ drawerWidth, getNextDrawerSearch, t }) {
   const history = useHistory();
+  const { isSmDown } = useDrawerLayout();
+  const nextDrawerSearch = useMemo(
+    () => (isSmDown ? DEFAULT : undefined),
+    [isSmDown],
+  );
   const goBack = useMemo(
-    () => getNextDrawerSearch(undefined, true),
-    [getNextDrawerSearch],
+    () => getNextDrawerSearch(nextDrawerSearch, true),
+    [getNextDrawerSearch, nextDrawerSearch],
   );
   // const handleAccountRoute = useMemo(
   //   () => generatePath(routes.accounts.read._, { id: 'misakey' }),

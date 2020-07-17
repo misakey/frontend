@@ -30,12 +30,6 @@ const SECONDARY_TYPO_PROPS = {
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  avatar: {
-    [theme.breakpoints.down('sm')]: {
-      height: '35px',
-      width: '35px',
-    },
-  },
   menuButton: {
     margin: theme.spacing(0, 1),
   },
@@ -111,7 +105,6 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, ...props }) => {
       <BoxAvatar
         aria-label={t('boxes:read.details.open')}
         aria-controls="menu-appbar"
-        classes={{ root: classes.avatar }}
         src={avatarUri}
         title={title || ''}
       />

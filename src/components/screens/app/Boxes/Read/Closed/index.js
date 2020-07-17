@@ -9,23 +9,11 @@ import BoxAvatar from 'components/dumb/Avatar/Box';
 import Title from '@misakey/ui/Typography/Title';
 import MenuIcon from '@material-ui/icons/Menu';
 import Box from '@material-ui/core/Box';
-import { makeStyles } from '@material-ui/core/styles';
 
 import BoxesSchema from 'store/schemas/Boxes';
 import { DATE_FULL } from 'constants/formats/dates';
 
-const useStyles = makeStyles((theme) => ({
-  avatar: {
-    [theme.breakpoints.down('sm')]: {
-      height: '35px',
-      width: '35px',
-    },
-  },
-}));
-
 function BoxClosed({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
-  const classes = useStyles();
-
   const { avatarUri, title = '', lastEvent } = useMemo(() => box, [box]);
   const { sender: { displayName }, serverEventCreatedAt } = useMemo(() => lastEvent, [lastEvent]);
   const date = useMemo(
@@ -53,7 +41,6 @@ function BoxClosed({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
           </Box>
         </Box>
         <BoxAvatar
-          classes={{ root: classes.avatar }}
           src={avatarUri}
           title={title}
         />

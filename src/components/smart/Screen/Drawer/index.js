@@ -1,24 +1,33 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useLocation, useHistory } from 'react-router-dom';
 
-import Box from '@material-ui/core/Box';
-import Drawer from '@material-ui/core/Drawer';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import useTheme from '@material-ui/core/styles/useTheme';
-import { makeStyles } from '@material-ui/core/styles';
 import getNextSearch from '@misakey/helpers/getNextSearch';
-import getSearchParams from '@misakey/helpers/getSearchParams';
 import isNil from '@misakey/helpers/isNil';
 import isPlainObject from '@misakey/helpers/isPlainObject';
 
 import isFunction from '@misakey/helpers/isFunction';
 
-const TMP_DRAWER = 'tmpDrawer';
-const DRAWER = 'drawer';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import useDrawerLayout, { TMP_DRAWER, DRAWER } from '@misakey/hooks/useDrawerLayout';
+import { useLocation, useHistory } from 'react-router-dom';
 
-const DEFAULT = 'default';
 
+import Box from '@material-ui/core/Box';
+import Drawer from '@material-ui/core/Drawer';
+
+// CONSTANTS
+export const DEFAULT = 'default';
+
+export const DRAWER_PROPS_PROP_TYPES = {
+  isDrawerOpen: PropTypes.bool,
+  animationDone: PropTypes.bool,
+  toggleDrawer: PropTypes.func,
+  drawerWidth: PropTypes.string,
+  getNextDrawerSearch: PropTypes.func,
+  selectedDrawer: PropTypes.bool,
+};
+
+// HOOKS
 const useStyles = makeStyles((theme) => ({
   drawerPaper: ({ drawerWidth }) => ({
     width: drawerWidth,
@@ -60,11 +69,9 @@ const useStyles = makeStyles((theme) => ({
 */
 
 function ScreenDrawer({ drawerChildren, children, isFullWidth, ...props }) {
-  const theme = useTheme();
-  const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const { isSmDown, tmpDrawerSearch, drawerSearch } = useDrawerLayout();
   const { pathname, search } = useLocation();
   const history = useHistory();
-  const searchParams = getSearchParams(search);
 
   const drawerWidth = useMemo(
     () => {
@@ -75,22 +82,21 @@ function ScreenDrawer({ drawerChildren, children, isFullWidth, ...props }) {
   );
   const classes = useStyles({ drawerWidth });
 
-  const tmpDrawerValue = useMemo(() => searchParams[TMP_DRAWER], [searchParams]);
-
   const initialTmpDrawerOpen = useMemo(
-    () => (!isNil(tmpDrawerValue) && !(tmpDrawerValue === DEFAULT && !isSmDown)) || isFullWidth,
-    [isFullWidth, isSmDown, tmpDrawerValue],
+    () => (!isNil(tmpDrawerSearch) && !(tmpDrawerSearch === DEFAULT && !isSmDown)) || isFullWidth,
+    [isFullWidth, isSmDown, tmpDrawerSearch],
   );
 
   const [isTmpDrawerOpen, setIsTmpDrawerOpen] = useState(false);
+  const [animationDone, setAnimationDone] = useState(false);
 
   const displayTempDrawer = useMemo(
-    () => (!isNil(searchParams[TMP_DRAWER])) || isSmDown,
-    [isSmDown, searchParams],
+    () => (!isNil(tmpDrawerSearch)) || isSmDown,
+    [isSmDown, tmpDrawerSearch],
   );
 
   const selectedDrawer = useMemo(
-    () => searchParams[TMP_DRAWER] || searchParams[DRAWER], [searchParams],
+    () => tmpDrawerSearch || drawerSearch, [tmpDrawerSearch, drawerSearch],
   );
 
   const getNextDrawerSearch = useCallback((value, isTmp = isSmDown) => ({
@@ -115,12 +121,16 @@ function ScreenDrawer({ drawerChildren, children, isFullWidth, ...props }) {
   const drawerProps = useMemo(
     () => ({
       isDrawerOpen: isTmpDrawerOpen || !isSmDown,
+      animationDone,
       toggleDrawer,
       drawerWidth,
       getNextDrawerSearch,
       selectedDrawer,
     }),
-    [drawerWidth, getNextDrawerSearch, isTmpDrawerOpen, isSmDown, selectedDrawer, toggleDrawer],
+    [
+      toggleDrawer, getNextDrawerSearch,
+      drawerWidth, isTmpDrawerOpen, isSmDown, selectedDrawer, animationDone,
+    ],
   );
 
   const drawerContent = useMemo(() => {
@@ -131,6 +141,21 @@ function ScreenDrawer({ drawerChildren, children, isFullWidth, ...props }) {
 
     return isFunction(drawer) ? drawer(drawerProps) : drawer;
   }, [drawerChildren, drawerProps, selectedDrawer]);
+
+  const onSlideEntering = useCallback(
+    () => setAnimationDone(false),
+    [setAnimationDone],
+  );
+
+  const onSlideEntered = useCallback(
+    () => setAnimationDone(true),
+    [setAnimationDone],
+  );
+
+  const SlideProps = useMemo(
+    () => ({ onEntered: onSlideEntered, onEntering: onSlideEntering }),
+    [onSlideEntering, onSlideEntered],
+  );
 
   useEffect(() => {
     setIsTmpDrawerOpen(initialTmpDrawerOpen);
@@ -143,6 +168,7 @@ function ScreenDrawer({ drawerChildren, children, isFullWidth, ...props }) {
           variant="permanent"
           anchor="left"
           open
+          SlideProps={SlideProps}
           classes={{ paper: classes.drawerPaper }}
           {...props}
         >
@@ -155,6 +181,7 @@ function ScreenDrawer({ drawerChildren, children, isFullWidth, ...props }) {
           anchor="left"
           open={isTmpDrawerOpen}
           onClose={onClose}
+          SlideProps={SlideProps}
           classes={{ paper: classes.drawerPaper }}
           {...props}
         >

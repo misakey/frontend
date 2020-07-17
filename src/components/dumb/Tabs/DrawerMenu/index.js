@@ -3,6 +3,9 @@ import React, { useMemo } from 'react';
 import routes from 'routes';
 
 import { useRouteMatch, useLocation, Link, generatePath } from 'react-router-dom';
+import useTheme from '@material-ui/core/styles/useTheme';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Tabs from '@material-ui/core/Tabs';
@@ -25,7 +28,11 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const TabsMenu = () => {
+const TabsMenu = (props) => {
+  const theme = useTheme();
+  // rule for dialog fullscreen
+  const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const variant = useMemo(() => (isSmDown ? 'fullWidth' : undefined), [isSmDown]);
   const { path } = useRouteMatch();
   const { search } = useLocation();
   const classes = useStyles();
@@ -37,8 +44,10 @@ const TabsMenu = () => {
       textColor="secondary"
       value={value}
       centered
+      variant={variant}
       component={Box}
       flexGrow={1}
+      {...props}
     >
       {TABS.map(
         ({ pathname, ...rest }) => (

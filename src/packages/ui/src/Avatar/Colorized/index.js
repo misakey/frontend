@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
 
 import Avatar from '@material-ui/core/Avatar';
 import getBackgroundAndColorFromString from '@misakey/helpers/getBackgroundAndColorFromString';
@@ -21,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
  * first letter of text (name / email) if not set.
  * If displaying text, will generate a color from a hash of the text.
  */
-const AvatarColorized = ({ text, image, className, ...rest }) => {
+const AvatarColorized = ({ text, image, classes, ...rest }) => {
   const { backgroundColor } = useMemo(
     () => getBackgroundAndColorFromString(text),
     [text],
@@ -29,12 +28,12 @@ const AvatarColorized = ({ text, image, className, ...rest }) => {
 
   const displayText = useMemo(() => text.charAt(0).toUpperCase(), [text]);
 
-  const classes = useStyles({ backgroundColor });
+  const internalClasses = useStyles({ backgroundColor });
 
   if (image) {
     return (
       <Avatar
-        classes={{ root: className, colorDefault: classes.avatarColorized }}
+        classes={{ colorDefault: internalClasses.avatarColorized, ...classes }}
         src={image}
         alt={text}
         {...rest}
@@ -44,7 +43,7 @@ const AvatarColorized = ({ text, image, className, ...rest }) => {
 
   return (
     <Avatar
-      className={clsx(classes.avatarColorized, className)}
+      classes={{ colorDefault: internalClasses.avatarColorized, ...classes }}
       {...rest}
     >
       {displayText}
@@ -58,11 +57,13 @@ AvatarColorized.propTypes = {
   /** The text to derivate the color from, and to extract the first letter. */
   text: PropTypes.string.isRequired,
   className: PropTypes.string,
+  classes: PropTypes.object,
 };
 
 AvatarColorized.defaultProps = {
   image: '',
   className: '',
+  classes: {},
 };
 
 export default AvatarColorized;

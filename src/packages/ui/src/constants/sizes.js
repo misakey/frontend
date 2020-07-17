@@ -6,5 +6,6 @@ export const SEARCH_WIDTH_MD = 400;
 export const SEARCH_WIDTH_LG = 600;
 
 export const AVATAR_SIZE = 40;
+export const AVATAR_SM_SIZE = 35;
 
 export const MIN_CARD_HEIGHT = 64;

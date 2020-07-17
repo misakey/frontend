@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import { AVATAR_SIZE } from '@misakey/ui/constants/sizes';
+import { AVATAR_SIZE, AVATAR_SM_SIZE } from '@misakey/ui/constants/sizes';
 
 import any from '@misakey/helpers/any';
 import complement from '@misakey/helpers/complement';
@@ -16,10 +16,14 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 const isNotEmptyUser = any(complement(isEmpty));
 
 // HOOKS
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   iconRoot: {
     width: AVATAR_SIZE,
     height: AVATAR_SIZE,
+    [theme.breakpoints.down('sm')]: {
+      height: AVATAR_SM_SIZE,
+      width: AVATAR_SM_SIZE,
+    },
   },
 }));
 
@@ -38,7 +42,14 @@ const AvatarUser = ({
   );
 
   if (isNotEmpty) {
-    return <AvatarColorized text={displayName || identifier} image={avatarUrl} {...rest} />;
+    return (
+      <AvatarColorized
+        className={classes.iconRoot}
+        text={displayName || identifier}
+        image={avatarUrl}
+        {...rest}
+      />
+    );
   }
 
   return <AccountCircleIcon classes={{ root: classes.iconRoot }} color="disabled" {...rest} />;

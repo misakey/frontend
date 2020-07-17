@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
+import { DEFAULT } from 'components/smart/Screen/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import MenuIcon from '@material-ui/icons/Menu';
 import Button from '@misakey/ui/Button';
@@ -26,7 +27,7 @@ function AccountNone({ drawerWidth, isDrawerOpen, getNextDrawerSearch }) {
             aria-label="open drawer"
             edge="start"
             component={Link}
-            to={() => getNextDrawerSearch('default')}
+            to={() => getNextDrawerSearch(DEFAULT)}
           >
             <MenuIcon />
           </IconButtonAppBar>
@@ -38,7 +39,7 @@ function AccountNone({ drawerWidth, isDrawerOpen, getNextDrawerSearch }) {
         <Button
           text="Sélectionner"
           component={Link}
-          to={() => getNextDrawerSearch('default')}
+          to={() => getNextDrawerSearch(DEFAULT)}
         />
       )}
     </Box>

@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { AVATAR_SIZE, AVATAR_SM_SIZE } from '@misakey/ui/constants/sizes';
+
 import Avatar from '@material-ui/core/Avatar';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
@@ -9,6 +11,12 @@ const useStyles = makeStyles((theme) => ({
     textTransform: 'uppercase',
     textDecoration: 'none',
     fontSize: theme.spacing(1.5),
+    height: AVATAR_SIZE,
+    width: AVATAR_SIZE,
+    [theme.breakpoints.down('sm')]: {
+      height: AVATAR_SM_SIZE,
+      width: AVATAR_SM_SIZE,
+    },
   },
 }));
 
