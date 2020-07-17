@@ -64,6 +64,10 @@
         "create": {
           "they": "{{displayName}} created the chat «\u00a0{{title}}\u00a0»",
           "you": "You created the chat «\u00a0{{title}}\u00a0»"
+        },
+        "join": {
+          "they": "{{displayName}} joined the chat",
+          "you": "You joined the chat"
         }
       },
       "download": {

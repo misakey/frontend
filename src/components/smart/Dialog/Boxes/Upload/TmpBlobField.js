@@ -109,4 +109,4 @@ FieldBlobTmp.defaultProps = {
   prefix: '',
 };
 
-export default withTranslation(['boxes', 'dpo', 'fields'])(FieldBlobTmp);
+export default withTranslation(['boxes', 'fields'])(FieldBlobTmp);

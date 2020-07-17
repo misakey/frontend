@@ -64,6 +64,10 @@
         "create": {
           "they": "{{displayName}} a créé le chat «\u00a0{{title}}\u00a0»",
           "you": "Vous avez créé le chat «\u00a0{{title}}\u00a0»"
+        },
+        "join": {
+          "they": "{{displayName}} a rejoint le chat",
+          "you": "Vous avez rejoint le chat"
         }
       },
       "download": {
