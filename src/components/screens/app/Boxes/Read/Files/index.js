@@ -12,12 +12,12 @@ import Title from '@misakey/ui/Typography/Title';
 import useGeneratePathKeepingSearch from '@misakey/hooks/useGeneratePathKeepingSearch';
 import { withTranslation } from 'react-i18next';
 
-function BoxFiles({ drawerWidth, box, t }) {
+function BoxFiles({ drawerWidth, isDrawerOpen, box, t }) {
   const goBack = useGeneratePathKeepingSearch(routes.boxes.read.details, { id: box.id });
 
   return (
     <>
-      <AppBarDrawer drawerWidth={drawerWidth}>
+      <AppBarDrawer drawerWidth={drawerWidth} isDrawerOpen={isDrawerOpen}>
         <IconButtonAppBar
           color="inherit"
           aria-label={t('common:openAccountDrawer')}
@@ -42,6 +42,7 @@ function BoxFiles({ drawerWidth, box, t }) {
 BoxFiles.propTypes = {
   t: PropTypes.func.isRequired,
   drawerWidth: PropTypes.string.isRequired,
+  isDrawerOpen: PropTypes.bool.isRequired,
   box: PropTypes.shape({ id: PropTypes.string.isRequired }).isRequired,
 };
 

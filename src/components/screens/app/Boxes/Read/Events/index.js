@@ -41,7 +41,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 function BoxEvents({
-  drawerWidth, isDrawerOpen, toggleDrawer, box, t, showWarning, belongsToCurrentUser,
+  drawerWidth, isDrawerOpen, toggleDrawer, box, t, belongsToCurrentUser,
 }) {
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
@@ -81,6 +81,7 @@ function BoxEvents({
     <>
       <ElevationScroll target={contentRef}>
         <AppBarDrawer
+          isDrawerOpen={isDrawerOpen}
           drawerWidth={drawerWidth}
           toolbarProps={{ px: 0 }}
           offsetHeight={headerHeight}
@@ -102,15 +103,13 @@ function BoxEvents({
               <BoxEventsAppBar box={box} belongsToCurrentUser={belongsToCurrentUser} />
             </Box>
 
-            {showWarning && (
+            {isNil(accountId) && (
               <Alert
                 severity="warning"
                 action={(
                   <ButtonWithDialogPassword
                     standing={BUTTON_STANDINGS.TEXT}
-                    text={isNil(accountId)
-                      ? t('common:save')
-                      : t('common:add')}
+                    text={t('common:add')}
                   />
                 )}
               >
@@ -167,11 +166,6 @@ BoxEvents.propTypes = {
   toggleDrawer: PropTypes.func.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
-  showWarning: PropTypes.bool,
-};
-
-BoxEvents.defaultProps = {
-  showWarning: false,
 };
 
 export default withTranslation(['common', 'boxes'])(BoxEvents);

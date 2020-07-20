@@ -150,13 +150,14 @@
     }
   },
   "pasteLink": {
-    "dialog": {
-      "content": "The key to secure this chat seems to have been deleted during navigation. Could you copy/paste the link you received?"
-    }
+    "text": "<0>The key for</0><1><0></0></1><2> is lost. Could you copy/paste the invitation link?</2>"
   },
   "vault": {
     "dialog": {
       "text": "Your vault is locked. Type your password to access your secured chats."
+    },
+    "lockedScreen": {
+      "text": "<0>What is the password for your vault </0><1><0></0></1><2>?</2>"
     }
   }
 }

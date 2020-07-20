@@ -44,7 +44,7 @@ function AccountRead({ match: { path }, toggleDrawer, isDrawerOpen, drawerWidth 
         path={path}
         render={() => (
           <>
-            <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth}>
+            <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth} isDrawerOpen={isDrawerOpen}>
               {!isDrawerOpen && (
               <IconButtonAppBar
                 color="inherit"

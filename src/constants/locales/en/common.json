@@ -49,6 +49,12 @@
   "openAccountDrawer": "See account",
   "createVault": "Create a vault",
   "openVault": "Open my vault",
+  "drawerMenu": {
+    "tabs": {
+      "account": "Accounts",
+      "chat": "Chats"
+    }
+  },
   "account": {
     "current": "Current account",
     "profile": "My profile"

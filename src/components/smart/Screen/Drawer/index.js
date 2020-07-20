@@ -1,19 +1,22 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import getNextSearch from '@misakey/helpers/getNextSearch';
 import isNil from '@misakey/helpers/isNil';
 import isPlainObject from '@misakey/helpers/isPlainObject';
+import getSearchParams from '@misakey/helpers/getSearchParams';
 
 import isFunction from '@misakey/helpers/isFunction';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useDrawerLayout, { TMP_DRAWER, DRAWER } from '@misakey/hooks/useDrawerLayout';
 import { useLocation, useHistory } from 'react-router-dom';
+import clsx from 'clsx';
+import { LEFT_DRAWER_QUERY_PARAM, PERMANENT_DRAWER_DESKTOP_WIDTH, PERMANENT_DRAWER_MOBILE_WIDTH } from 'constants/app/drawers';
 
 
 import Box from '@material-ui/core/Box';
 import Drawer from '@material-ui/core/Drawer';
+import { useTheme, useMediaQuery } from '@material-ui/core';
 
 // CONSTANTS
 export const DEFAULT = 'default';
@@ -29,22 +32,37 @@ export const DRAWER_PROPS_PROP_TYPES = {
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
+  drawer: ({ drawerWidth }) => ({
+    width: drawerWidth,
+    flexShrink: 0,
+  }),
   drawerPaper: ({ drawerWidth }) => ({
     width: drawerWidth,
   }),
-  main: ({ drawerWidth }) => ({
+  content: {
     height: 'inherit',
-    [theme.breakpoints.up('md')]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
-    },
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  contentShift: ({ drawerWidth }) => ({
+    width: `calc(100% - ${drawerWidth})`,
+    marginLeft: drawerWidth,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   }),
 }));
 
 /*
 * ScreenDrawer displays `drawerChildren` on the left on the screen and `children` on the right.
-* `drawerChildren` can be displayed in a permanent drawer (if screen > XS) or a temporary drawer
-  (if screen > XS or if `tmpDrawer` is not nil in queryParams)
+* Drawer is persistent. By default it is:
+    - open on desktop (30% of the screen)
+    - hidden on mobile with actions to open it (100% of the screen)
+* Drawer can be opened with `toggleDrawer` method or with `leftDrawer` query parameter
+(see getNextDrawerSearch)
 * `children` and `drawerChildren` can be simple element or function. If their are function, props
   from ScreenDrawer will be provided to their children:
      - isDrawerOpen: if drawer if open or not (usefull to display a button to open it or not)
@@ -52,6 +70,7 @@ const useStyles = makeStyles((theme) => ({
      - drawerWidth: can be user to compute and force width of children AppBar for example)
      - selectedDrawer: return the value of `tmpDrawer` or `drawer` in queryParams
      - getNextDrawerSearch: method that handle the queryParams to display drawerContent
+     - setIsDrawerForceClosed: force drawer to close on desktop (used for displaying Screen locked)
 * drawerChildren can also be an object of shape:
   ```
   {
@@ -64,131 +83,98 @@ const useStyles = makeStyles((theme) => ({
   ```
   /!\ do not forget to memoize this object if you use this structure to take advandage of
   reconciliation (https://reactjs.org/docs/reconciliation.html)
-* getNextDrawerSearch(value) put value in queryParams `tmpDrawer` (if XS down) or `drawer` (XS up).
-  It can be forced to `tmpDrawer` by passing a second parameter (boolean isTmp)
+* getNextDrawerSearch(value) put value in queryParams `leftDrawer`,
+then it can be used in children to determine which content displaying if the drawer
 */
 
-function ScreenDrawer({ drawerChildren, children, isFullWidth, ...props }) {
-  const { isSmDown, tmpDrawerSearch, drawerSearch } = useDrawerLayout();
+
+function ScreenDrawer({ drawerChildren, children, isFullWidth, initialIsDrawerOpen, ...props }) {
+  const theme = useTheme();
+  const isSmDown = useMediaQuery(theme.breakpoints.down('sm'), { noSsr: true });
   const { pathname, search } = useLocation();
   const history = useHistory();
+  const [isDrawerForceClosed, setIsDrawerForceClosed] = useState(false);
+
+  const searchParams = getSearchParams(search);
+
+  const leftDrawerQueryParams = useMemo(
+    () => searchParams[LEFT_DRAWER_QUERY_PARAM], [searchParams],
+  );
+
+  const isDrawerOpenMobile = useMemo(
+    () => !isNil(leftDrawerQueryParams) || initialIsDrawerOpen,
+    [initialIsDrawerOpen, leftDrawerQueryParams],
+  );
+
+  const isDrawerOpenDesktop = useMemo(
+    () => isFullWidth || (!isSmDown && !isDrawerForceClosed),
+    [isDrawerForceClosed, isFullWidth, isSmDown],
+  );
+
+  const isDrawerOpen = useMemo(
+    () => isDrawerOpenMobile || isDrawerOpenDesktop,
+    [isDrawerOpenDesktop, isDrawerOpenMobile],
+  );
 
   const drawerWidth = useMemo(
-    () => {
-      if (isSmDown) { return isFullWidth ? '100%' : '90%'; }
-      return '30%';
-    },
-    [isSmDown, isFullWidth],
+    () => (isSmDown || isFullWidth
+      ? PERMANENT_DRAWER_MOBILE_WIDTH
+      : PERMANENT_DRAWER_DESKTOP_WIDTH),
+    [isFullWidth, isSmDown],
   );
   const classes = useStyles({ drawerWidth });
 
-  const initialTmpDrawerOpen = useMemo(
-    () => (!isNil(tmpDrawerSearch) && !(tmpDrawerSearch === DEFAULT && !isSmDown)) || isFullWidth,
-    [isFullWidth, isSmDown, tmpDrawerSearch],
-  );
-
-  const [isTmpDrawerOpen, setIsTmpDrawerOpen] = useState(false);
-  const [animationDone, setAnimationDone] = useState(false);
-
-  const displayTempDrawer = useMemo(
-    () => (!isNil(tmpDrawerSearch)) || isSmDown,
-    [isSmDown, tmpDrawerSearch],
-  );
-
-  const selectedDrawer = useMemo(
-    () => tmpDrawerSearch || drawerSearch, [tmpDrawerSearch, drawerSearch],
-  );
-
-  const getNextDrawerSearch = useCallback((value, isTmp = isSmDown) => ({
+  const getNextDrawerSearch = useCallback((value) => ({
     pathname,
-    search: getNextSearch(search, new Map([[isTmp ? TMP_DRAWER : DRAWER, value]])),
-  }), [isSmDown, pathname, search]);
+    search: getNextSearch(search, new Map([[LEFT_DRAWER_QUERY_PARAM, value]])),
+  }), [pathname, search]);
 
   const toggleDrawer = useCallback(
-    (e, value = DEFAULT, isTmp = isSmDown) => {
-      const newParameter = !isNil(selectedDrawer) ? undefined : value;
-      history.replace(getNextDrawerSearch(newParameter, isTmp));
-    }, [getNextDrawerSearch, history, isSmDown, selectedDrawer],
+    (e, value = DEFAULT) => {
+      const newParameter = !isNil(leftDrawerQueryParams) ? undefined : value;
+      history.replace(getNextDrawerSearch(newParameter));
+    }, [getNextDrawerSearch, history, leftDrawerQueryParams],
   );
 
-  const onClose = useCallback(
-    () => {
-      history.replace(getNextDrawerSearch(undefined, true));
-    },
-    [getNextDrawerSearch, history],
-  );
 
   const drawerProps = useMemo(
     () => ({
-      isDrawerOpen: isTmpDrawerOpen || !isSmDown,
-      animationDone,
+      isDrawerOpen,
       toggleDrawer,
       drawerWidth,
       getNextDrawerSearch,
-      selectedDrawer,
+      selectedDrawer: leftDrawerQueryParams,
+      setIsDrawerForceClosed,
     }),
-    [
-      toggleDrawer, getNextDrawerSearch,
-      drawerWidth, isTmpDrawerOpen, isSmDown, selectedDrawer, animationDone,
-    ],
+    [isDrawerOpen, toggleDrawer, drawerWidth, getNextDrawerSearch, leftDrawerQueryParams],
   );
 
   const drawerContent = useMemo(() => {
     if (!isPlainObject(drawerChildren)) {
       return isFunction(drawerChildren) ? drawerChildren(drawerProps) : drawerChildren;
     }
-    const drawer = drawerChildren[selectedDrawer] || drawerChildren[DEFAULT];
+    const drawer = drawerChildren[leftDrawerQueryParams] || drawerChildren[DEFAULT];
 
     return isFunction(drawer) ? drawer(drawerProps) : drawer;
-  }, [drawerChildren, drawerProps, selectedDrawer]);
-
-  const onSlideEntering = useCallback(
-    () => setAnimationDone(false),
-    [setAnimationDone],
-  );
-
-  const onSlideEntered = useCallback(
-    () => setAnimationDone(true),
-    [setAnimationDone],
-  );
-
-  const SlideProps = useMemo(
-    () => ({ onEntered: onSlideEntered, onEntering: onSlideEntering }),
-    [onSlideEntering, onSlideEntered],
-  );
-
-  useEffect(() => {
-    setIsTmpDrawerOpen(initialTmpDrawerOpen);
-  }, [initialTmpDrawerOpen]);
+  }, [drawerChildren, drawerProps, leftDrawerQueryParams]);
 
   return (
     <>
-      {!isSmDown && (
-        <Drawer
-          variant="permanent"
-          anchor="left"
-          open
-          SlideProps={SlideProps}
-          classes={{ paper: classes.drawerPaper }}
-          {...props}
-        >
-          {drawerContent}
-        </Drawer>
-      )}
-      {displayTempDrawer && (
-        <Drawer
-          variant="temporary"
-          anchor="left"
-          open={isTmpDrawerOpen}
-          onClose={onClose}
-          SlideProps={SlideProps}
-          classes={{ paper: classes.drawerPaper }}
-          {...props}
-        >
-          {drawerContent}
-        </Drawer>
-      )}
-      <Box className={classes.main}>
+      <Drawer
+        variant="persistent"
+        anchor="left"
+        open={isDrawerOpen}
+        className={classes.drawer}
+        classes={{ paper: classes.drawerPaper }}
+        {...props}
+      >
+        {drawerContent}
+      </Drawer>
+      <Box
+        className={clsx(classes.content, {
+          [classes.contentShift]: isDrawerOpen,
+        })}
+      >
         {isFunction(children) ? children(drawerProps) : children}
       </Box>
     </>
@@ -211,6 +197,7 @@ ScreenDrawer.propTypes = {
   ]),
   children: PropTypes.oneOfType([PropTypes.element, PropTypes.node, PropTypes.func]),
   isFullWidth: PropTypes.bool,
+  initialIsDrawerOpen: PropTypes.bool,
 };
 
 
@@ -218,6 +205,7 @@ ScreenDrawer.defaultProps = {
   drawerChildren: null,
   children: null,
   isFullWidth: false,
+  initialIsDrawerOpen: false,
 };
 
 export default ScreenDrawer;

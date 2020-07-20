@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
+function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t }) {
   const classes = useStyles();
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
@@ -122,7 +122,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
   return (
     <>
       <ElevationScroll target={contentRef}>
-        <AppBarDrawer drawerWidth={drawerWidth}>
+        <AppBarDrawer drawerWidth={drawerWidth} isDrawerOpen={isDrawerOpen}>
           <IconButtonAppBar
             color="inherit"
             aria-label={t('common:openAccountDrawer')}
@@ -286,6 +286,7 @@ function BoxDetails({ drawerWidth, box, belongsToCurrentUser, t }) {
 
 BoxDetails.propTypes = {
   drawerWidth: PropTypes.string.isRequired,
+  isDrawerOpen: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   belongsToCurrentUser: PropTypes.bool,

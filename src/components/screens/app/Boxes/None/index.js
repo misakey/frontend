@@ -19,7 +19,7 @@ function BoxNone({ drawerWidth, isDrawerOpen, toggleDrawer, t }) {
       alignItems="center"
       style={{ height: 'inherit' }}
     >
-      <AppBarDrawer drawerWidth={drawerWidth}>
+      <AppBarDrawer drawerWidth={drawerWidth} isDrawerOpen={isDrawerOpen}>
         {!isDrawerOpen && (
           <IconButtonAppBar
             color="inherit"

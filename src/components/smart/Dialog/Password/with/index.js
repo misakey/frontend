@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { withTranslation } from 'react-i18next';
 
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
@@ -17,7 +16,6 @@ const withDialogPassword = (Component) => {
   let Wrapper = ({
     onClick,
     dialogProps,
-    t,
     ...props
   }, ref) => {
     const [open, setOpen] = useState(false);
@@ -81,8 +79,6 @@ const withDialogPassword = (Component) => {
       onSubmit: PropTypes.func,
       open: PropTypes.bool,
     }),
-    // withTranslation
-    t: PropTypes.func.isRequired,
   };
 
   Wrapper.defaultProps = {
@@ -90,7 +86,7 @@ const withDialogPassword = (Component) => {
     dialogProps: {},
   };
 
-  return withTranslation('account')(Wrapper);
+  return Wrapper;
 };
 
 export default withDialogPassword;

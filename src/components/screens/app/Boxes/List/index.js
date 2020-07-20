@@ -13,8 +13,8 @@ import isNil from '@misakey/helpers/isNil';
 
 import ListHeader from 'components/screens/app/Boxes/List/Header/List';
 import SearchHeader from 'components/screens/app/Boxes/List/Header/Search';
-import VaultOpen from './Content/VaultOpen';
-import VaultLocked from './Content/VaultLocked';
+import Vault from './Content/Vault';
+import NoVault from './Content/NoVault';
 
 // COMPONENTS
 function BoxesList({ t, ...props }) {
@@ -34,8 +34,8 @@ function BoxesList({ t, ...props }) {
         ? <SearchHeader {...omitTranslationProps(props)} />
         : <ListHeader {...omitTranslationProps(props)} />}
       {isCryptoLoaded
-        ? <VaultOpen {...omitTranslationProps(props)} />
-        : <VaultLocked {...omitTranslationProps(props)} />}
+        ? <Vault {...omitTranslationProps(props)} />
+        : <NoVault {...omitTranslationProps(props)} />}
     </>
   );
 }

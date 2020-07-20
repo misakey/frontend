@@ -1,14 +1,11 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import routes from 'routes';
-import { useSelector } from 'react-redux';
 
 import { CLOSED } from 'constants/app/boxes/statuses';
 import BoxesSchema from 'store/schemas/Boxes';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
-import { selectors } from '@misakey/crypto/store/reducers';
 import isNil from '@misakey/helpers/isNil';
 
 import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
@@ -17,9 +14,8 @@ import useMountEffect from '@misakey/hooks/useMountEffect';
 import usePropChanged from '@misakey/hooks/usePropChanged';
 import useResetBoxCount from 'hooks/useResetBoxCount';
 
-import PasteLinkDialog from 'components/smart/Dialog/Boxes/PasteLink';
+import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
-import DialogPasswordOpenVault from 'components/smart/Dialog/Password/OpenVault';
 import withBoxDetails from 'components/smart/withBoxDetails';
 import withIdentity from 'components/smart/withIdentity';
 import BoxClosed from './Closed';
@@ -28,38 +24,28 @@ import BoxEvents from './Events';
 import BoxFiles from './Files';
 
 function BoxRead({
-  match, toggleDrawer, isDrawerOpen, drawerWidth, box, isFetching, belongsToCurrentUser,
+  match,
+  toggleDrawer,
+  isDrawerOpen,
+  drawerWidth,
+  setIsDrawerForceClosed,
+  box,
+  isFetching,
+  belongsToCurrentUser,
   identityId,
 }) {
   const { lifecycle, publicKey, id: boxId } = useMemo(() => box, [box]);
-  const shouldDisplayContent = useMemo(
+  const shouldNotDisplayContent = useMemo(
     () => lifecycle === CLOSED && !belongsToCurrentUser,
     [belongsToCurrentUser, lifecycle],
   );
 
-  const isCryptoLoadedSelector = useMemo(
-    () => selectors.isCryptoLoaded,
-    [],
-  );
-
-  const isCryptoLoaded = useSelector(isCryptoLoadedSelector);
   const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
   const canBeDecrypted = publicKeysWeCanDecryptFrom.has(publicKey);
-  const { accountId } = useSelector(getCurrentUserSelector) || {};
 
-  const shouldShowPasteDialog = useMemo(
-    () => !canBeDecrypted && (isNil(accountId) || isCryptoLoaded),
-    [accountId, canBeDecrypted, isCryptoLoaded],
-  );
-
-  const shouldShowDialogPassword = useMemo(
-    () => !canBeDecrypted && !isNil(accountId) && !isCryptoLoaded,
-    [accountId, canBeDecrypted, isCryptoLoaded],
-  );
-
-  const showWarning = useMemo(
-    () => (canBeDecrypted && !isCryptoLoaded),
-    [canBeDecrypted, isCryptoLoaded],
+  const shouldShowPasteScreen = useMemo(
+    () => !isNil(publicKey) && !canBeDecrypted,
+    [canBeDecrypted, publicKey],
   );
 
   const [boxIdChanged, resetBoxIdChanged] = usePropChanged(boxId);
@@ -82,11 +68,15 @@ function BoxRead({
   useMountEffect(() => { onResetBoxCount(); });
   useFetchEffect(onResetBoxCount, { shouldFetch });
 
+  useEffect(() => {
+    setIsDrawerForceClosed(shouldShowPasteScreen);
+  }, [isFetching.box, setIsDrawerForceClosed, shouldShowPasteScreen]);
+
   if (isFetching.box) {
     return <SplashScreenWithTranslation />;
   }
 
-  if (shouldDisplayContent) {
+  if (shouldNotDisplayContent) {
     return (
       <BoxClosed
         box={box}
@@ -97,46 +87,55 @@ function BoxRead({
     );
   }
 
+  if (shouldShowPasteScreen) {
+    return (
+      <PasteLinkScreen
+        box={box}
+        drawerWidth={drawerWidth}
+        isDrawerOpen={isDrawerOpen}
+      />
+    );
+  }
+
   return (
-    <>
-      {shouldShowPasteDialog && (
-        <PasteLinkDialog open disableBackdropClick disableEscapeKeyDown boxId={boxId} />
-      )}
-      {shouldShowDialogPassword && (
-        <DialogPasswordOpenVault open disableBackdropClick disableEscapeKeyDown />
-      )}
-      <Switch>
-        <Route
-          path={routes.boxes.read.details}
-          render={() => (
-            <BoxDetails
-              box={box}
-              drawerWidth={drawerWidth}
-              belongsToCurrentUser={belongsToCurrentUser}
-            />
-          )}
-        />
-        <Route
-          path={routes.boxes.read.files}
-          render={() => <BoxFiles box={box} drawerWidth={drawerWidth} />}
-        />
-        <Route
-          exact
-          path={match.path}
-          render={() => (
-            <BoxEvents
-              box={box}
-              isFetching={isFetching.events}
-              toggleDrawer={toggleDrawer}
-              isDrawerOpen={isDrawerOpen}
-              drawerWidth={drawerWidth}
-              showWarning={showWarning}
-              belongsToCurrentUser={belongsToCurrentUser}
-            />
-          )}
-        />
-      </Switch>
-    </>
+    <Switch>
+      <Route
+        path={routes.boxes.read.details}
+        render={() => (
+          <BoxDetails
+            box={box}
+            drawerWidth={drawerWidth}
+            isDrawerOpen={isDrawerOpen}
+
+            belongsToCurrentUser={belongsToCurrentUser}
+          />
+        )}
+      />
+      <Route
+        path={routes.boxes.read.files}
+        render={() => (
+          <BoxFiles
+            box={box}
+            drawerWidth={drawerWidth}
+            isDrawerOpen={isDrawerOpen}
+          />
+        )}
+      />
+      <Route
+        exact
+        path={match.path}
+        render={() => (
+          <BoxEvents
+            box={box}
+            isFetching={isFetching.events}
+            toggleDrawer={toggleDrawer}
+            isDrawerOpen={isDrawerOpen}
+            drawerWidth={drawerWidth}
+            belongsToCurrentUser={belongsToCurrentUser}
+          />
+        )}
+      />
+    </Switch>
   );
 }
 
@@ -157,6 +156,7 @@ BoxRead.propTypes = {
   }),
   belongsToCurrentUser: PropTypes.bool.isRequired,
   // DRAWER
+  setIsDrawerForceClosed: PropTypes.func.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
   isDrawerOpen: PropTypes.bool,
   drawerWidth: PropTypes.string.isRequired,

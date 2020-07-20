@@ -22,7 +22,7 @@ function BoxClosed({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
 
   return (
     <>
-      <AppBarDrawer drawerWidth={drawerWidth}>
+      <AppBarDrawer drawerWidth={drawerWidth} isDrawerOpen={isDrawerOpen}>
         {!isDrawerOpen && (
         <IconButtonAppBar
           color="inherit"

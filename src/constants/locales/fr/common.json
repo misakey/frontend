@@ -57,6 +57,12 @@
   "openAccountDrawer": "Voir le compte",
   "createVault": "Créer un coffre-fort",
   "openVault": "Ouvrir mon coffre-fort",
+  "drawerMenu": {
+    "tabs": {
+      "account": "Comptes",
+      "chat": "Chats"
+    }
+  },
   "account": {
     "current": "Compte de l'utilisateur actuel",
     "profile": "Mon compte"

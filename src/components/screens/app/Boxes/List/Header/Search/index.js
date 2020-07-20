@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SEARCH = 'search';
 
-function SearchHeader({ drawerWidth, t }) {
+function SearchHeader({ drawerWidth, isDrawerOpen, t }) {
   const classes = useStyles();
 
   const { search: locationSearch, pathname } = useLocation();
@@ -112,7 +112,12 @@ function SearchHeader({ drawerWidth, t }) {
   );
 
   return (
-    <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth} classes={{ root: classes.appBar }}>
+    <AppBarDrawer
+      side={SIDES.LEFT}
+      drawerWidth={drawerWidth}
+      isDrawerOpen={isDrawerOpen}
+      classes={{ root: classes.appBar }}
+    >
       <TextField
         autoFocus
         fullWidth
@@ -130,6 +135,7 @@ function SearchHeader({ drawerWidth, t }) {
 SearchHeader.propTypes = {
   // DRAWER
   drawerWidth: PropTypes.string.isRequired,
+  isDrawerOpen: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
 };
 

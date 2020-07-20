@@ -11,17 +11,17 @@ import Invitation from 'components/screens/app/Invitation';
 import Redirect from 'components/dumb/Redirect';
 import withIdentity from 'components/smart/withIdentity';
 import useLoadSecretsFromShares from '@misakey/crypto/hooks/useLoadSecretsFromShares';
-import SplashScreenDrawer from 'components/smart/Screen/Drawer/Splash';
+import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 
 const BoxesApp = ({ isFetchingIdentity }) => {
   const { isFetchingBackupKeyShare } = useLoadSecretsFromShares();
 
   if (isFetchingIdentity || isFetchingBackupKeyShare) {
-    return <SplashScreenDrawer />;
+    return <SplashScreen />;
   }
 
   return (
-    <Suspense fallback={<SplashScreenDrawer />}>
+    <Suspense fallback={<SplashScreen />}>
       <Switch>
         {/* REDIRECT TO BOXES */}
         <Redirect

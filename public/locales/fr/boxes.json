@@ -150,13 +150,14 @@
     }
   },
   "pasteLink": {
-    "dialog": {
-      "content": "La clé pour sécuriser ce chat semble avoir été supprimée pendant la navigation. Pourriez-vous copier/coller le lien que vous avez reçu\u00a0?"
-    }
+    "text": "<0>La clé pour</0><1><0></0></1><2> est perdue.\nPouvez-vous copier-coller le lien d'invitation\u00a0?</2>"
   },
   "vault": {
     "dialog": {
       "text": "Votre coffre-fort est verrouillé. Tapez votre mot de passe pour accéder à vos chats sécurisés."
+    },
+    "lockedScreen": {
+      "text": "<0>Quel est le mot de passe pour votre coffre-fort</0><1><0></0></1><2>\u00a0?</2>"
     }
   }
 }
