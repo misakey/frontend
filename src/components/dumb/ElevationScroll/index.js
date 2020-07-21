@@ -11,7 +11,7 @@ function ElevationScroll({ children, threshold, target }) {
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold,
-    target,
+    target: target || undefined,
   });
 
   return React.cloneElement(children, {

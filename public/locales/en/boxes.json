@@ -13,8 +13,8 @@
     "events": {
       "preview": {
         "message": {
-          "you": "You: {{text}}",
-          "they": "{{displayName}}: {{text}}"
+          "you": "<1>You</1>: {{text}}",
+          "they": "<1>{{displayName}}</1>: {{text}}"
         }
       }
     },
@@ -68,6 +68,26 @@
         "join": {
           "they": "{{displayName}} joined the chat",
           "you": "You joined the chat"
+        },
+        "preview": {
+          "lifecycle": {
+            "closed": {
+              "they": "<0>{{displayName}}</0> closed the chat",
+              "you": "<0>You</0> closed the chat"
+            },
+            "open": {
+              "they": "<0>{{displayName}}</0> reopened the chat",
+              "you": "<0>You</0> reopened the chat"
+            }
+          },
+          "create": {
+            "they": "<0>{{displayName}}</0> created the chat «\u00a0{{title}}\u00a0»",
+            "you": "<0>You</0> created the chat «\u00a0{{title}}\u00a0»"
+          },
+          "join": {
+            "they": "<0>{{displayName}}</0> joined the chat",
+            "you": "<0>You</0> joined the chat"
+          }
         }
       },
       "download": {

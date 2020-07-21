@@ -98,6 +98,8 @@ const withIdentity = (Component, mapProps = identityFn) => {
   return connect(
     mapStateToProps,
     mapDispatchToProps,
+    null,
+    { forwardRef: true },
   )(ComponentWithIdentity);
 };
 

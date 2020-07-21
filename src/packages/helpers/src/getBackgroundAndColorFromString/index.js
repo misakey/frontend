@@ -23,6 +23,7 @@ function shouldTextBeWhite(rgb) {
   return luminance <= 0.179;
 }
 
+// Source: https://stackoverflow.com/a/3943023/12688757
 export default (str) => {
   const backgroundColor = stringToRGB(str);
   const isTextLight = shouldTextBeWhite(backgroundColor);

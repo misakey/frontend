@@ -8,10 +8,10 @@ import Typography from '@material-ui/core/Typography';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
 import { LIFECYCLE } from 'constants/app/boxes/events';
 
+import EventBoxInformationPreview from 'components/dumb/Event/Box/Information/Preview';
+
 const useStyles = makeStyles((theme) => ({
   root: {
-    border: `1px solid ${theme.palette.grey[300]}`,
-    borderRadius: 10,
     padding: theme.spacing(0, 1),
     marginBottom: theme.spacing(1),
     alignSelf: 'center',
@@ -43,7 +43,14 @@ const BoxInformationEvent = ({
   );
 
   if (preview) {
-    return text;
+    return (
+      <EventBoxInformationPreview
+        displayName={displayName}
+        isFromCurrentUser={isFromCurrentUser}
+        content={content}
+        type={type}
+      />
+    );
   }
 
   return (

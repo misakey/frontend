@@ -36,8 +36,8 @@ async function downloadAndDecryptFile({ boxID, encryptedFileId, decryptedContent
 }
 
 // COMPONENTS
-const ButtonDownloadBlob = ({ boxID, encryptedFileId, decryptedContent, t }) => {
-  const classes = useStyles();
+const ButtonDownloadBlob = ({ boxID, encryptedFileId, decryptedContent, t, classes }) => {
+  const internalClasses = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
   const onError = useCallback(
@@ -61,7 +61,8 @@ const ButtonDownloadBlob = ({ boxID, encryptedFileId, decryptedContent, t }) => 
 
   return (
     <Button
-      className={classes.buttonRoot}
+      className={internalClasses.buttonRoot}
+      classes={classes}
       color="secondary"
       onClick={onDownload}
     >
@@ -75,6 +76,11 @@ ButtonDownloadBlob.propTypes = {
   boxID: PropTypes.string.isRequired,
   encryptedFileId: PropTypes.string.isRequired,
   decryptedContent: PropTypes.object.isRequired,
+  classes: PropTypes.object,
+};
+
+ButtonDownloadBlob.defaultProps = {
+  classes: {},
 };
 
 export default withTranslation(['common', 'boxes'])(

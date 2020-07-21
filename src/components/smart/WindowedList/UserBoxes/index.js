@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation, Trans } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 const ButtonCreate = withDialogCreate(Button);
 
 // COMPONENTS
-function WindowedListBoxes({ activeStatus, selectedId, t, ...props }) {
+const WindowedListBoxes = forwardRef(({ activeStatus, selectedId, t, ...props }, ref) => {
   const locationSearchParams = useLocationSearchParams();
   const classes = useStyles();
 
@@ -53,7 +53,7 @@ function WindowedListBoxes({ activeStatus, selectedId, t, ...props }) {
 
   if (isNil(itemCount) || itemCount === 0) {
     return (
-      <Box m={2} display="flex" flexDirection="column" height="100%" justifyContent="center" alignItems="center">
+      <Box m={2} ref={ref} display="flex" flexDirection="column" height="100%" justifyContent="center" alignItems="center">
         <Title align="center">
           <Trans i18nKey="boxes:list.empty.text">
             Commencer un chat sécurisé en cliquant sur
@@ -70,6 +70,7 @@ function WindowedListBoxes({ activeStatus, selectedId, t, ...props }) {
 
   return (
     <WindowedListInfiniteLoaded
+      ref={ref}
       key={itemCount}
       Row={Row}
       Skeleton={Skeleton}
@@ -81,7 +82,7 @@ function WindowedListBoxes({ activeStatus, selectedId, t, ...props }) {
       {...props}
     />
   );
-}
+});
 
 WindowedListBoxes.propTypes = {
   activeStatus: PropTypes.oneOf(STATUSES),
@@ -94,4 +95,4 @@ WindowedListBoxes.defaultProps = {
   selectedId: null,
 };
 
-export default withTranslation('boxes')(WindowedListBoxes);
+export default withTranslation('boxes', { withRef: true })(WindowedListBoxes);

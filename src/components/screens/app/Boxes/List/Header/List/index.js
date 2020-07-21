@@ -4,6 +4,8 @@ import { withTranslation } from 'react-i18next';
 
 import STATUSES from 'constants/app/boxes/statuses';
 
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import usePaginateBoxesByStatusRefresh from 'hooks/usePaginateBoxesByStatus/refresh';
 
@@ -20,7 +22,7 @@ import AddIcon from '@material-ui/icons/Add';
 // COMPONENTS
 const IconButtonCreate = withDialogCreate(withDialogPassword(IconButtonAppBar));
 
-function ListHeader({ drawerWidth, isDrawerOpen, activeStatus, t }) {
+function ListHeader({ drawerWidth, activeStatus, t, ...props }) {
   const { search } = useLocationSearchParams();
 
   const onCreateSuccess = usePaginateBoxesByStatusRefresh(activeStatus, search);
@@ -33,7 +35,7 @@ function ListHeader({ drawerWidth, isDrawerOpen, activeStatus, t }) {
   );
 
   return (
-    <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth} isDrawerOpen={isDrawerOpen}>
+    <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth} {...omitTranslationProps(props)}>
       <OpenDrawerAccountButton />
       <TabsMenu />
       <IconButtonCreate

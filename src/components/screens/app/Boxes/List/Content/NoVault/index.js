@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import routes from 'routes';
@@ -14,7 +14,7 @@ import Title from '@misakey/ui/Typography/Title';
 const paramsIdPath = path(['params', 'id']);
 
 // COMPONENTS
-function NoVault({ t }) {
+const NoVault = forwardRef(({ t }, ref) => {
   const match = useRouteMatch(routes.boxes.read._);
   const selectedId = useMemo(
     () => paramsIdPath(match),
@@ -40,7 +40,15 @@ function NoVault({ t }) {
         path={routes.boxes.read._}
         component={ListItemBoxesCurrent}
       />
-      <Box m={3} display="flex" flexDirection="column" height="100%" justifyContent="center" alignItems="center">
+      <Box
+        m={3}
+        ref={ref}
+        display="flex"
+        flexDirection="column"
+        height="100%"
+        justifyContent="center"
+        alignItems="center"
+      >
         <Title align="center">{text}</Title>
         <Box>
           <ButtonWithDialogPassword text={buttonText} />
@@ -48,7 +56,7 @@ function NoVault({ t }) {
       </Box>
     </>
   );
-}
+});
 
 NoVault.propTypes = {
   t: PropTypes.func.isRequired,

@@ -15,6 +15,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 // import Chip from '@material-ui/core/Chip';
 import Badge from '@material-ui/core/Badge';
 import BoxAvatar from 'components/dumb/Avatar/Box';
+import BoxAvatarSkeleton from 'components/dumb/Avatar/Box/Skeleton';
 import TypographyDateSince from 'components/dumb/Typography/DateSince';
 import BoxEventsAccordingToType from 'components/smart/Box/Event';
 
@@ -22,19 +23,23 @@ import BoxEventsAccordingToType from 'components/smart/Box/Event';
 export const BoxListItemSkeleton = (props) => (
   <ListItem {...props}>
     <ListItemAvatar>
-      <Skeleton
-        variant="circle"
-        width={40}
-        height={40}
-      />
+      <BoxAvatarSkeleton />
     </ListItemAvatar>
     <ListItemText
       primary={(
-        <Skeleton
-          component="span"
-          variant="text"
-          width="50%"
-        />
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Skeleton
+            component="span"
+            variant="text"
+            width="50%"
+          />
+          <Skeleton
+            component="span"
+            variant="text"
+            width="20%"
+          />
+
+        </Box>
       )}
       secondary={(
         <Skeleton
@@ -44,12 +49,6 @@ export const BoxListItemSkeleton = (props) => (
         />
       )}
     />
-    <Box display="flex" flexDirection="column" alignItems="end">
-      <Skeleton
-        variant="text"
-        width={30}
-      />
-    </Box>
   </ListItem>
 );
 
@@ -92,19 +91,19 @@ function BoxListItem({ box, toRoute, ...rest }) {
         </Badge>
       </ListItemAvatar>
       <ListItemText
-        primary={title}
+        primary={(
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            {title}
+            <TypographyDateSince
+              noWrap
+              date={lastEvent.serverEventCreatedAt}
+            />
+          </Box>
+        )}
         secondary={secondary}
         primaryTypographyProps={{ noWrap: true, display: 'block' }}
         secondaryTypographyProps={{ noWrap: true, display: 'block' }}
       />
-      <Box display="flex" flexDirection="column" alignItems="end">
-        <TypographyDateSince
-          noWrap
-          date={lastEvent.serverEventCreatedAt}
-          color="textSecondary"
-        />
-      </Box>
-
     </ListItem>
   );
 }

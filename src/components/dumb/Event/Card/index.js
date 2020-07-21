@@ -2,16 +2,18 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
+import { MESSAGE_BORDER_RADIUS } from 'constants/app/boxes/layout';
+
 import isNil from '@misakey/helpers/isNil';
 import Avatar from '@misakey/ui/Avatar/User';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Typography from '@material-ui/core/Typography';
 import MuiCard from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Box from '@material-ui/core/Box';
+import EventCardHeader from 'components/dumb/Event/Card/Header';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,15 +22,11 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   card: {
-    backgroundColor: theme.palette.grey[100],
-    borderRadius: '10px',
     overflow: 'hidden',
   },
-  header: {
-    padding: theme.spacing(1, 1, 0, 1),
-  },
-  headerTypography: {
-    fontWeight: theme.typography.fontWeightBold,
+  boxRoot: {
+    backgroundColor: theme.palette.grey[100],
+    borderRadius: MESSAGE_BORDER_RADIUS,
   },
   content: {
     padding: theme.spacing(1),
@@ -37,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'pre-wrap',
   },
   footer: {
+    backgroundColor: theme.palette.common.white,
     padding: theme.spacing(0),
     borderTop: `1px solid ${theme.palette.grey[300]}`,
     '& > *': {
@@ -54,7 +53,6 @@ const EventCard = ({
   text,
   actions,
   titleProps,
-  titleTypographyProps,
   ...rest
 }) => {
   const classes = useStyles();
@@ -73,31 +71,28 @@ const EventCard = ({
       <MuiCard
         className={clsx(classes.card, className)}
         elevation={0}
+        square
         {...rest}
       >
         {!isFromCurrentUser && (
-          <CardHeader
+          <EventCardHeader
             title={displayName}
-            titleTypographyProps={{
-              variant: 'subtitle1',
-              classes: { root: classes.headerTypography },
-              ...titleTypographyProps,
-            }}
-            classes={{ root: classes.header }}
             {...titleProps}
           />
         )}
-        <CardContent classes={{ root: classes.content }}>
-          {!isNil(text) && <Typography className={classes.text}>{text}</Typography>}
-          {children}
-        </CardContent>
-        {!isNil(actions) && (
-          <CardActions classes={{ root: classes.footer }}>
-            <Box display="flex" flexDirection="column">
-              {actions}
-            </Box>
-          </CardActions>
-        )}
+        <Box classes={{ root: classes.boxRoot }}>
+          <CardContent classes={{ root: classes.content }}>
+            {!isNil(text) && <Typography className={classes.text}>{text}</Typography>}
+            {children}
+          </CardContent>
+          {!isNil(actions) && (
+            <CardActions classes={{ root: classes.footer }}>
+              <Box display="flex" flexDirection="column">
+                {actions}
+              </Box>
+            </CardActions>
+          )}
+        </Box>
       </MuiCard>
     </Box>
   );
@@ -113,7 +108,6 @@ EventCard.propTypes = {
     avatarUrl: PropTypes.string,
   }),
   titleProps: PropTypes.object,
-  titleTypographyProps: PropTypes.object,
   actions: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.object, PropTypes.node])),
     PropTypes.object,
@@ -130,7 +124,6 @@ EventCard.defaultProps = {
   },
   text: null,
   titleProps: {},
-  titleTypographyProps: {},
   isFromCurrentUser: false,
   actions: null,
 

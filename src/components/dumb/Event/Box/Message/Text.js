@@ -2,9 +2,11 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import EventCard from 'components/dumb/Event/Card';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import decryptText from '@misakey/crypto/box/decryptText';
+
+import EventCard from 'components/dumb/Event/Card';
+import EventBoxMessagePreview from 'components/dumb/Event/Box/Message/Preview';
 
 import EventSchema from 'store/schemas/Boxes/Events';
 import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
@@ -28,9 +30,12 @@ const BoxMessageTextEvent = ({ event, isFromCurrentUser, preview, t, ...rest }) 
   }, [canBeDecrypted, encrypted, publicKeysWeCanDecryptFrom, publicKey, t]);
 
   if (preview) {
-    return t(
-      `boxes:list.events.preview.message.${isFromCurrentUser ? 'you' : 'they'}`,
-      { displayName: sender.displayName, text },
+    return (
+      <EventBoxMessagePreview
+        isFromCurrentUser={isFromCurrentUser}
+        displayName={sender.displayName}
+        text={text}
+      />
     );
   }
 

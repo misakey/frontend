@@ -26,7 +26,7 @@ const WindowedListInfiniteLoaded = forwardRef(({
   Skeleton,
   itemCount,
   ...props
-}, loaderRef) => {
+}, listRef) => {
   const loadedItems = useMemo(
     () => fill(Array(itemCount), false),
     [itemCount],
@@ -60,7 +60,6 @@ const WindowedListInfiniteLoaded = forwardRef(({
 
   return (
     <InfiniteLoader
-      ref={loaderRef}
       isItemLoaded={isItemLoaded}
       itemCount={itemCount}
       loadMoreItems={onLoadMoreItems}
@@ -73,9 +72,8 @@ const WindowedListInfiniteLoaded = forwardRef(({
           Row={RowOrSkeleton}
           itemCount={itemCount}
           onItemsRendered={onItemsRendered}
-          ref={(list) => {
-            ref(list);
-          }}
+          outerRef={listRef}
+          ref={ref}
         />
       )}
     </InfiniteLoader>
