@@ -42,14 +42,6 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
   );
   const [isLoading, setIsLoading] = useState(false);
 
-  const dispatchWindowStorageEvent = useCallback(
-    () => {
-      const userHasChangedEvent = new StorageEvent('userHasChanged', { bubbles: true });
-      window.dispatchEvent(userHasChangedEvent);
-    },
-    [],
-  );
-
   const dispatchLoadUser = useCallback(
     (user, identityId) => store.dispatch(loadUserThunk({
       ...getUser(user),
@@ -82,13 +74,10 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
 
     // the access_token is still valid so we load the user in the store
     if (user && !user.expired) {
-      // PLUGIN
-      dispatchWindowStorageEvent();
-
       return dispatchStoreUpdate(user);
     }
     return Promise.resolve();
-  }, [dispatchStoreUpdate, dispatchWindowStorageEvent]);
+  }, [dispatchStoreUpdate]);
 
   // event callback when silent renew errored
   const onSilentRenewError = useCallback(() => {
