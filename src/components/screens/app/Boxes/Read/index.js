@@ -9,6 +9,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 import isNil from '@misakey/helpers/isNil';
 
 import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
+import useHandleBoxKeyShare from '@misakey/crypto/hooks/useHandleBoxKeyShare';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useMountEffect from '@misakey/hooks/useMountEffect';
 import usePropChanged from '@misakey/hooks/usePropChanged';
@@ -41,7 +42,18 @@ function BoxRead({
   );
 
   const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
-  const canBeDecrypted = publicKeysWeCanDecryptFrom.has(publicKey);
+  const secretKey = useMemo(
+    () => publicKeysWeCanDecryptFrom.get(publicKey),
+    [publicKey, publicKeysWeCanDecryptFrom],
+  );
+  const canBeDecrypted = useMemo(() => !isNil(secretKey), [secretKey]);
+
+  const { isFetching: isFetchingBoxKeyShare } = useHandleBoxKeyShare(boxId, secretKey);
+
+  const displayLoadingScreen = useMemo(
+    () => isFetching.box || (isFetchingBoxKeyShare && isNil(secretKey)),
+    [isFetching.box, isFetchingBoxKeyShare, secretKey],
+  );
 
   const shouldShowPasteScreen = useMemo(
     () => !isNil(publicKey) && !canBeDecrypted,
@@ -72,7 +84,7 @@ function BoxRead({
     setIsDrawerForceClosed(shouldShowPasteScreen);
   }, [isFetching.box, setIsDrawerForceClosed, shouldShowPasteScreen]);
 
-  if (isFetching.box) {
+  if (displayLoadingScreen) {
     return <SplashScreenWithTranslation />;
   }
 

@@ -18,6 +18,7 @@ import {
   CRYPTO_ADD_BOX_SECRET_KEY,
   CRYPTO_SET_ENCRYPTED_BACKUP_DATA,
   CRYPTO_SET_BACKUP_KEY_SHARE,
+  CRYPTO_SET_BOX_KEY_SHARE,
 } from '../actions/concrete';
 
 
@@ -44,6 +45,7 @@ export const INITIAL_STATE = {
   secrets: {
     // @FIXME rename "secretKey" to "userDecryptionKey"
     secretKey: null,
+    boxKeyShares: {},
     boxDecryptionKeys: [],
     // "passive" encryption keys are keys that must not be used any more for encrypting data;
     // they are only kept for decrypting data that was encrypted for them in the past.
@@ -68,9 +70,10 @@ const getBackupKey = createSelector(
   (state) => state.backupKey,
 );
 
-const getBackupKeyShareForAccount = createSelector(
+const makeGetBackupKeyShareForAccount = () => createSelector(
   (state) => getState(state).backupKeyShares,
-  (items) => (accountId) => propOr(null, accountId)(items),
+  (_, accountId) => accountId,
+  (items, accountId) => propOr(null, accountId)(items),
 );
 
 const areSecretsLoaded = createSelector(
@@ -88,13 +91,20 @@ const getEncryptedBackupData = createSelector(
   (state) => ({ data: state.data, backupVersion: state.backupVersion }),
 );
 
+const makeGetBoxKeyShare = () => createSelector(
+  (state) => getState(state).secrets.boxKeyShares,
+  (_, boxId) => boxId,
+  (items, boxId) => propOr(null, boxId)(items),
+);
+
 export const selectors = {
   getBackupKey,
-  getBackupKeyShareForAccount,
+  makeGetBackupKeyShareForAccount,
   isCryptoLoaded,
   areSecretsLoaded,
   currentBoxSecrets,
   getEncryptedBackupData,
+  makeGetBoxKeyShare,
 };
 
 
@@ -172,6 +182,19 @@ function importSecretKeys(state, { secretKeys }) {
   return concatToPath(secretKeys, state, ['secrets', 'passive', 'secretKeys']);
 }
 
+function setBoxKeyShare(state, { boxId, keyShare }) {
+  return {
+    ...state,
+    secrets: {
+      ...state.secrets,
+      boxKeyShares: {
+        ...state.secrets.boxKeyShares,
+        [boxId]: keyShare,
+      },
+    },
+  };
+}
+
 // REDUCER
 const cryptoReducer = createResetOnSignOutReducer(INITIAL_STATE, {
   [CRYPTO_SET_BACKUP_KEY]: setBackupKey,
@@ -182,6 +205,7 @@ const cryptoReducer = createResetOnSignOutReducer(INITIAL_STATE, {
   [CRYPTO_ADD_BOX_SECRET_KEY]: addBoxSecretKey,
   [CRYPTO_IMPORT_SECRET_KEYS]: importSecretKeys,
   [CRYPTO_SET_BACKUP_KEY_SHARE]: setBackupKeyShare,
+  [CRYPTO_SET_BOX_KEY_SHARE]: setBoxKeyShare,
 });
 
 export default persistReducer(

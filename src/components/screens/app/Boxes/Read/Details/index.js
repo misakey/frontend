@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { makeStyles } from '@material-ui/core/styles';
 
-import useGeneratePathKeepingSearch from '@misakey/hooks/useGeneratePathKeepingSearch';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
@@ -38,7 +38,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { removeEntities } from '@misakey/store/actions/entities';
-import useCreateBoxInvitationLink from 'hooks/useCreateBoxInvitationLink';
+import useGetShareMethods from 'hooks/useGetShareMethods';
 
 // CONSTANTS
 const { conflict } = errorTypes;
@@ -81,15 +81,15 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
     lifecycle,
   } = useMemo(() => box, [box]);
 
-  const goBack = useGeneratePathKeepingSearch(routes.boxes.read._, { id });
-  // const routeFiles = useGeneratePathKeepingSearch(routes.boxes.read.files, { id });
+  const goBack = useGeneratePathKeepingSearchAndHash(routes.boxes.read._, { id });
+  // const routeFiles = useGeneratePathKeepingSearchAndHash(routes.boxes.read.files, { id });
 
   const {
     canShare,
     canInvite,
     onShare,
     onCopyLink,
-  } = useCreateBoxInvitationLink(id, title, publicKey, t);
+  } = useGetShareMethods(id, title, publicKey, t);
 
   const isAllowedToClose = useMemo(
     () => belongsToCurrentUser && lifecycle === OPEN,

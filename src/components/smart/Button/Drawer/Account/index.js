@@ -23,13 +23,14 @@ const useStyles = makeStyles((theme) => ({
 
 function ButtonDrawerAccount({ t }) {
   const classes = useStyles();
-  const { pathname, search } = useLocation();
+  const { pathname, search, hash } = useLocation();
   const openAccountDrawer = useMemo(
     () => ({
       pathname,
+      hash,
       search: getNextSearch(search, new Map([[TMP_DRAWER_QUERY_PARAMS, TMP_DRAWER_ACCOUNT_VALUE]])),
     }),
-    [pathname, search],
+    [hash, pathname, search],
   );
 
   return (

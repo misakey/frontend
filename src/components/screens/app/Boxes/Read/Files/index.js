@@ -9,11 +9,11 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Title from '@misakey/ui/Typography/Title';
-import useGeneratePathKeepingSearch from '@misakey/hooks/useGeneratePathKeepingSearch';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import { withTranslation } from 'react-i18next';
 
 function BoxFiles({ drawerWidth, isDrawerOpen, box, t }) {
-  const goBack = useGeneratePathKeepingSearch(routes.boxes.read.details, { id: box.id });
+  const goBack = useGeneratePathKeepingSearchAndHash(routes.boxes.read.details, { id: box.id });
 
   return (
     <>

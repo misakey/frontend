@@ -17,7 +17,7 @@ import ButtonWithDialogPassword from 'components/smart/Dialog/Password/with/Butt
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
 import useGroupEventsByDate from 'hooks/useGroupEventsByDate';
-import useCreateBoxInvitationLink from 'hooks/useCreateBoxInvitationLink';
+import useGetShareMethods from 'hooks/useGetShareMethods';
 import isNil from '@misakey/helpers/isNil';
 
 import BoxesSchema from 'store/schemas/Boxes';
@@ -56,7 +56,7 @@ function BoxEvents({
     canInvite,
     onShare,
     onCopyLink,
-  } = useCreateBoxInvitationLink(id, title, publicKey, t);
+  } = useGetShareMethods(id, title, publicKey, t);
 
   const eventsByDate = useGroupEventsByDate(boxEvents);
 

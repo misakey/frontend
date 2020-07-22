@@ -12,7 +12,7 @@ import useFetchSecretBackup from './useFetchSecretBackup';
 
 
 // SELECTORS
-const { getBackupKey, getBackupKeyShareForAccount } = selectors;
+const { getBackupKey, makeGetBackupKeyShareForAccount } = selectors;
 
 export default (() => {
   const [notFound, setNotFound] = useState(false);
@@ -21,7 +21,8 @@ export default (() => {
   const { accountId } = useSelector(getCurrentUserSelector) || {};
 
   const backupKey = useSelector(getBackupKey);
-  const localBackupKeyShare = useSelector((state) => getBackupKeyShareForAccount(state)(accountId));
+  const getBackupKeyShareForAccount = useMemo(() => makeGetBackupKeyShareForAccount(), []);
+  const localBackupKeyShare = useSelector((state) => getBackupKeyShareForAccount(state, accountId));
   const { data, backupVersion, isReady } = useFetchSecretBackup();
 
   const shouldFetch = useMemo(

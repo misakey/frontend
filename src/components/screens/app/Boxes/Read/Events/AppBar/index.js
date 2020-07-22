@@ -8,7 +8,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useGeneratePathKeepingSearch from '@misakey/hooks/useGeneratePathKeepingSearch';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -52,9 +52,9 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const EventsAppBar = ({ box, t, belongsToCurrentUser, ...props }) => {
   const classes = useStyles();
-  const { avatarUri, title, members } = useMemo(() => box, [box]);
+  const { avatarUri, title, members, id } = useMemo(() => box, [box]);
 
-  const routeDetails = useGeneratePathKeepingSearch(routes.boxes.read.details, { id: box.id });
+  const routeDetails = useGeneratePathKeepingSearchAndHash(routes.boxes.read.details, { id });
 
   const theme = useTheme();
   const isDownSm = useMediaQuery(theme.breakpoints.down('sm'));

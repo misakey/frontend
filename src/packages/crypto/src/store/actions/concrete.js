@@ -59,6 +59,7 @@ export const CRYPTO_SET_BACKUP_VERSION = Symbol('CRYPTO_SET_BACKUP_VERSION');
 export const CRYPTO_ADD_BOX_SECRET_KEY = Symbol('CRYPTO_ADD_BOX_SECRET_KEY');
 export const CRYPTO_SET_ENCRYPTED_BACKUP_DATA = Symbol('CRYPTO_SET_ENCRYPTED_BACKUP_DATA');
 export const CRYPTO_SET_BACKUP_KEY_SHARE = Symbol('CRYPTO_SET_BACKUP_KEY_SHARE');
+export const CRYPTO_SET_BOX_KEY_SHARE = Symbol('CRYPTO_SET_BACKUP_KEY_SHARE');
 
 // ACTION BUILDERS
 // @FIXME maybe apply "withBackupUpdater" later
@@ -250,3 +251,10 @@ export const setBackupKeyShare = ({ backupKeyShare, accountId }) => ({
   backupKeyShare,
   accountId,
 });
+
+
+export const setBoxKeyShare = withBackupUpdater(({ boxId, keyShare }) => ({
+  type: CRYPTO_SET_BOX_KEY_SHARE,
+  boxId,
+  keyShare,
+}));

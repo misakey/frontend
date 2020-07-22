@@ -38,7 +38,7 @@ const useStyles = makeStyles(() => ({
 
 function AccountDrawer({ t }) {
   const history = useHistory();
-  const { pathname, search } = useLocation();
+  const { pathname, search, hash } = useLocation();
   const searchParams = getSearchParams(search);
   const theme = useTheme();
   const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
@@ -56,9 +56,10 @@ function AccountDrawer({ t }) {
   const hideDrawerTo = useMemo(
     () => ({
       pathname,
+      hash,
       search: getNextSearch(search, new Map([[TMP_DRAWER_QUERY_PARAMS, undefined]])),
     }),
-    [pathname, search],
+    [hash, pathname, search],
   );
 
   const onClose = useCallback(

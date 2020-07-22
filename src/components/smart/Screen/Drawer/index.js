@@ -91,7 +91,7 @@ then it can be used in children to determine which content displaying if the dra
 function ScreenDrawer({ drawerChildren, children, isFullWidth, initialIsDrawerOpen, ...props }) {
   const theme = useTheme();
   const isSmDown = useMediaQuery(theme.breakpoints.down('sm'), { noSsr: true });
-  const { pathname, search } = useLocation();
+  const { pathname, search, hash } = useLocation();
   const history = useHistory();
   const [isDrawerForceClosed, setIsDrawerForceClosed] = useState(false);
 
@@ -126,8 +126,9 @@ function ScreenDrawer({ drawerChildren, children, isFullWidth, initialIsDrawerOp
 
   const getNextDrawerSearch = useCallback((value) => ({
     pathname,
+    hash,
     search: getNextSearch(search, new Map([[LEFT_DRAWER_QUERY_PARAM, value]])),
-  }), [pathname, search]);
+  }), [hash, pathname, search]);
 
   const toggleDrawer = useCallback(
     (e, value = DEFAULT) => {

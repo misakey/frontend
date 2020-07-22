@@ -4,13 +4,14 @@ import { useLocation, generatePath } from 'react-router-dom';
 
 
 export default (path = '/', params = {}) => {
-  const { search } = useLocation();
+  const { search, hash } = useLocation();
 
   return useMemo(
     () => ({
       pathname: generatePath(path, params),
       search,
+      hash,
     }),
-    [params, path, search],
+    [hash, params, path, search],
   );
 };

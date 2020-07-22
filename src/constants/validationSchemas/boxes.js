@@ -1,15 +1,15 @@
 import * as Yup from 'yup';
 import errorTypes from '@misakey/ui/constants/errorTypes';
-import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 import routes from 'routes';
+import { generatePath } from 'react-router-dom';
 
 // CONSTANTS
 const { required, malformed } = errorTypes;
 const KEY_REGEX = '[A-Za-z0-9-_]+';
 
 // HELPERS
-const getInvitationUrl = () => parseUrlFromLocation(`${routes.boxes.invitation}`).href.replace(/[.*+?^${}()/|[\]\\]/g, '\\$&');
-const getInvitationUrlForBox = (id) => `${getInvitationUrl()}#${id}&${KEY_REGEX}`;
+const getInvitationUrl = (id) => generatePath(`${routes.boxes.read._}`, { id }).replace(/[.*+?^${}()/|[\]\\]/g, '\\$&');
+const getInvitationUrlForBox = (id) => `${getInvitationUrl(id)}#${KEY_REGEX}`;
 
 export const boxNameFieldValidationSchema = Yup.object().shape({
   name: Yup.string().min(5, malformed).max(50, malformed).required(required),
