@@ -11,7 +11,7 @@ import isFunction from '@misakey/helpers/isFunction';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useLocation, useHistory } from 'react-router-dom';
 import clsx from 'clsx';
-import { LEFT_DRAWER_QUERY_PARAM, PERMANENT_DRAWER_DESKTOP_WIDTH, PERMANENT_DRAWER_MOBILE_WIDTH } from 'constants/app/drawers';
+import { LEFT_DRAWER_QUERY_PARAM, PERMANENT_DRAWER_DESKTOP_WIDTH, PERMANENT_DRAWER_MOBILE_WIDTH } from '@misakey/ui/constants/drawers';
 
 
 import Box from '@material-ui/core/Box';

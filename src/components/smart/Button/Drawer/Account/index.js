@@ -8,7 +8,7 @@ import getNextSearch from '@misakey/helpers/getNextSearch';
 
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import UserAccountAvatar from 'components/smart/Avatar/CurrentUser';
-import { TMP_DRAWER_QUERY_PARAMS, TMP_DRAWER_ACCOUNT_VALUE } from 'constants/app/drawers';
+import { TMP_DRAWER_QUERY_PARAMS, TMP_DRAWER_ACCOUNT_VALUE } from '@misakey/ui/constants/drawers';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
