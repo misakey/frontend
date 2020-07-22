@@ -1,5 +1,3 @@
-// TODO move this in the "core", but this will probably be done by making the core a directory
-
 import { randomBytes } from 'tweetnacl';
 
 export function share(secret) {

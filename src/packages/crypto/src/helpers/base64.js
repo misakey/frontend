@@ -38,3 +38,5 @@ export function decodeBase64(string, { urlSafe = false } = {}) {
     throw e;
   }
 }
+
+export const isUnpaddedUrlSafeBase64 = (string) => !(/[+/=]/).test(string);

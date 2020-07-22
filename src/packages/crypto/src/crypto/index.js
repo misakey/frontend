@@ -6,6 +6,7 @@ import assertNotAnyNil from '../helpers/assertNotAnyNil';
 
 import {
   decodeBase64, encodeBase64,
+  isUnpaddedUrlSafeBase64,
 } from '../helpers/base64';
 
 import { encodeHex } from '../helpers/encodeHex';
@@ -140,11 +141,17 @@ export async function saltedSymmetricDecrypt(cryptogram, lowEntropySecret) {
 // which the application layer sends in binary form, not in base64 form,
 // so the ciphertext is kept as bytes (i.e. Uint8Array)
 
-export const generateSymmetricKey = () => encodeBase64(core.generateSymmetricKey());
+export const generateSymmetricKey = () => (
+  encodeBase64(core.generateSymmetricKey(), { urlSafe: true })
+);
 
 export function symmetricEncrypt(plaintext, symmetricKey) {
   assertNotAnyNil({ plaintext, symmetricKey });
-  const { nonce, ciphertext } = core.symmetricEncrypt(plaintext, decodeBase64(symmetricKey));
+
+  const { nonce, ciphertext } = core.symmetricEncrypt(
+    plaintext,
+    decodeBase64(symmetricKey, { urlSafe: isUnpaddedUrlSafeBase64(symmetricKey) }),
+  );
   return {
     nonce: encodeBase64(nonce),
     ciphertext,
@@ -156,7 +163,7 @@ export function symmetricDecrypt(ciphertext, nonce, symmetricKey) {
   return core.symmetricDecrypt(
     ciphertext,
     decodeBase64(nonce),
-    decodeBase64(symmetricKey),
+    decodeBase64(symmetricKey, { urlSafe: isUnpaddedUrlSafeBase64(symmetricKey) }),
   );
 }
 

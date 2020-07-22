@@ -12,7 +12,7 @@ import isNil from '@misakey/helpers/isNil';
 import { addBoxSecretKey } from '@misakey/crypto/store/actions/concrete';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import { getKeyShareBuilder } from '@misakey/helpers/builder/boxes';
-import { computeInvitationHash, combineShares } from '@misakey/crypto/box/keySplitting';
+import { computeInvitationHash, combineBoxKeyShares } from '@misakey/crypto/box/keySplitting';
 
 function Invitation({ location: { hash }, t }) {
   const [isReadyToRedirect, setIsReadyToRedirect] = useState(false);
@@ -43,7 +43,7 @@ function Invitation({ location: { hash }, t }) {
 
   const onSuccess = useCallback(
     async (misakeyKeyShare) => {
-      const secretKey = combineShares(invitationShare, misakeyKeyShare);
+      const secretKey = combineBoxKeyShares(invitationShare, misakeyKeyShare);
       try {
         return await Promise.resolve(dispatch(addBoxSecretKey(secretKey)));
       } catch (error) {

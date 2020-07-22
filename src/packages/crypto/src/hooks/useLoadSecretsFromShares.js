@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import isNil from '@misakey/helpers/isNil';
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 import { getBackupKeyShareBuilder } from '@misakey/auth/builder/backupKeyShares';
-import { combineShares, computeOtherShareHash } from '@misakey/crypto/secretsBackup/shares';
+import { combineBackupKeyShares, computeOtherShareHash } from '@misakey/crypto/secretsBackup/keySplitting';
 import { loadSecrets } from '@misakey/crypto/store/actions/concrete';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { decryptSecretsBackupWithBackupKey } from '@misakey/crypto/secretsBackup/encryption';
@@ -35,7 +35,7 @@ export default (() => {
   );
 
   const onSuccess = useCallback(async (remoteBackupKeyShare) => {
-    const rebuiltBackupKey = combineShares(localBackupKeyShare, remoteBackupKeyShare);
+    const rebuiltBackupKey = combineBackupKeyShares(localBackupKeyShare, remoteBackupKeyShare);
     const {
       secrets,
       backupKey: decodedBackupKey,

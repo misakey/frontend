@@ -2,6 +2,8 @@
 // but most are not exported by the lib itself,
 // it's just that exporting is required for testing
 
+// TODO split into multiple files for uniformity with "secretSharing.js"?
+
 // Note that "Blob" always has the meaning of "JavaScript Blob" here
 // (see https://developer.mozilla.org/en-US/docs/Web/API/Blob)
 // in the past we were speaking of "Blob" for encrypted data as well
@@ -9,10 +11,10 @@
 // (see https://gitlab.misakey.dev/misakey/specifications/issues/175)
 
 import { box, secretbox, randomBytes } from 'tweetnacl';
-import { encodeHex } from '../helpers/encodeHex';
-import { hasArgon2 } from '../helpers/hasArgon2';
-import { Uint8ArraysAreEqual } from '../helpers/Uint8ArraysAreEqual';
-import { DecryptionError } from '../Errors/classes';
+import { encodeHex } from '../../helpers/encodeHex';
+import { hasArgon2 } from '../../helpers/hasArgon2';
+import { Uint8ArraysAreEqual } from '../../helpers/Uint8ArraysAreEqual';
+import { DecryptionError } from '../../Errors/classes';
 
 const SALT_LENGTH = 16;
 
