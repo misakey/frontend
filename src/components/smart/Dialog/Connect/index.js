@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import isFunction from '@misakey/helpers/isFunction';
 import omit from '@misakey/helpers/omit';
 
-import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
+import ButtonConnect from 'components/dumb/Button/Connect';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -46,9 +46,9 @@ const DialogConnect = ({ open, onClose, t, buttonConnectProps, ...rest }) => {
         <Button onClick={onCancel} color="primary">
           {t('common:cancel')}
         </Button>
-        <ButtonConnectSimple {...buttonConnectProps} buttonProps={{ variant: 'contained' }}>
+        <ButtonConnect {...buttonConnectProps} buttonProps={{ variant: 'contained' }}>
           {t('common:signIn')}
-        </ButtonConnectSimple>
+        </ButtonConnect>
       </DialogActions>
     </Dialog>
   );

@@ -25,6 +25,7 @@ const mergeIdentity = (state, identity) => (isNil(identity)
 export const INITIAL_STATE = {
   id: null,
   authenticatedAt: null,
+  accountId: null,
   isAuthenticated: null,
   identityId: null,
   identity: null,

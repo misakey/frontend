@@ -2,25 +2,26 @@ import React, { useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { withUserManager } from '@misakey/auth/components/OidcProvider';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isFunction from '@misakey/helpers/isFunction';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import useProcessRedirect from '@misakey/auth/hooks/useProcessRedirect';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 // COMPONENTS
-// @FIXME create a wrapper in auth package for this logic
-const ButtonConnectSimple = forwardRef(
-  ({ userManager, authProps, children, onClick, t, ...props }, ref) => {
+const ButtonConnect = forwardRef(
+  ({ authProps, children, onClick, t, ...props }, ref) => {
+    const processSignIn = useProcessRedirect();
+
     const onButtonClick = useCallback(
       (...args) => {
         if (isFunction(onClick)) {
           onClick(...args);
         }
-        userManager.signinRedirect(objectToSnakeCase(authProps));
+        processSignIn(objectToSnakeCase(authProps));
       },
-      [authProps, onClick, userManager],
+      [authProps, onClick, processSignIn],
     );
 
     return (
@@ -35,12 +36,9 @@ const ButtonConnectSimple = forwardRef(
   },
 );
 
-ButtonConnectSimple.propTypes = {
+ButtonConnect.propTypes = {
   t: PropTypes.func.isRequired,
   onClick: PropTypes.func,
-  userManager: PropTypes.shape({
-    signinRedirect: PropTypes.func.isRequired,
-  }).isRequired,
   authProps: PropTypes.shape({
     acrValues: PropTypes.oneOfType([
       PropTypes.number,
@@ -52,10 +50,10 @@ ButtonConnectSimple.propTypes = {
   children: PropTypes.node,
 };
 
-ButtonConnectSimple.defaultProps = {
+ButtonConnect.defaultProps = {
   children: null,
   onClick: null,
   authProps: {},
 };
 
-export default withTranslation('components', { withRef: true })(withUserManager(ButtonConnectSimple));
+export default withTranslation('components', { withRef: true })(ButtonConnect);

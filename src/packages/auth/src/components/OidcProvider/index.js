@@ -43,9 +43,10 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const dispatchLoadUser = useCallback(
-    (user, identityId) => store.dispatch(loadUserThunk({
+    (user, identityId, accountId) => store.dispatch(loadUserThunk({
       ...getUser(user),
       identityId,
+      accountId: accountId || null, // accountId can be an empty string
     })),
     [store],
   );
@@ -62,8 +63,8 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
         return Promise.resolve();
       }
 
-      const identityId = parseJwt(user.id_token).sub;
-      return Promise.resolve(dispatchLoadUser(user, identityId));
+      const { mid: identityId, aid: accountId } = parseJwt(user.id_token);
+      return Promise.resolve(dispatchLoadUser(user, identityId, accountId));
     },
     [dispatchLoadUser, store],
   );

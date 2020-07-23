@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import isNil from '@misakey/helpers/isNil';
 import Alert from '@misakey/ui/Alert';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
-import ButtonConnectSimple from 'components/dumb/Button/Connect/Simple';
+import ButtonConnect from 'components/dumb/Button/Connect';
 
 const SecLevelWarningAlert = ({
   seclevelWarningShow,
@@ -27,7 +27,7 @@ const SecLevelWarningAlert = ({
           <Button
             standing={BUTTON_STANDINGS.MAIN}
             authProps={authProps}
-            component={ButtonConnectSimple}
+            component={ButtonConnect}
             text={t('common:signIn')}
           />
         </>

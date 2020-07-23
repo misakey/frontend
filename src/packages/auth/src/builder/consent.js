@@ -19,9 +19,9 @@ export const getInfo = ({ consentChallenge }) => API
   .build(null, null, objectToSnakeCase({ consentChallenge }))
   .send()
   .then(objectToCamelCaseDeep)
-  .then(({ subject, ...rest }) => {
+  .then(({ context: { mid: identityId }, ...rest }) => {
     const authnStep = {
-      identityId: subject,
+      identityId,
     };
     return {
       authnStep,
