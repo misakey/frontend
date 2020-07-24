@@ -1,6 +1,6 @@
 import API from '@misakey/api';
 
-import { AUTH_STEP_KEY } from '@misakey/auth/constants';
+import { AUTH_STEP_KEY } from '@misakey/auth/constants/step';
 
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 

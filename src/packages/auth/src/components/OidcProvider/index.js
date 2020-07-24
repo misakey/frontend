@@ -51,7 +51,6 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
     [store],
   );
 
-
   const isAllowedToLaunchSilentAuth = useCallback(
     () => silentBlacklist.every((route) => !matchPath(window.location.pathname, route)),
     [silentBlacklist],
@@ -74,8 +73,13 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
     log('User is loaded !');
 
     // the access_token is still valid so we load the user in the store
-    if (user && !user.expired) {
-      return dispatchStoreUpdate(user);
+    if (!isNil(user)) {
+      if (!user.expired) {
+        return dispatchStoreUpdate(user)
+          .then(() => setIsLoading(false));
+      }
+    } else {
+      setIsLoading(false);
     }
     return Promise.resolve();
   }, [dispatchStoreUpdate]);
@@ -94,11 +98,19 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
     // @TODO could be removed when https://github.com/IdentityModel/oidc-client-js/issues/787
     // will be implemented
     if (userManager.settings.automaticSilentRenew && isAllowedToLaunchSilentAuth()) {
-      userManager.signinSilent().then(() => {
-        log('OidcProvider.onAccessTokenExpired: Silent token renewal successful');
-      }, (err) => {
-        log(`OidcProvider.onAccessTokenExpired: Error from signinSilent: ${err.message}`);
-      });
+      setIsLoading(true);
+
+      userManager.signinSilent()
+        .then(() => {
+          log('OidcProvider.onAccessTokenExpired: Silent token renewal successful');
+        }, (err) => {
+          log(`OidcProvider.onAccessTokenExpired: Error from signinSilent: ${err.message}`);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } else {
+      setIsLoading(false);
     }
   }, [isAllowedToLaunchSilentAuth, userManager]);
 
@@ -107,16 +119,7 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
 
     // Load user on store when the app is opening
     userManager.getUser()
-      .then((user) => {
-        if (!isNil(user)) {
-          return onUserLoaded(user);
-        }
-
-        return Promise.resolve();
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      .then(onUserLoaded);
   }, [onUserLoaded, userManager]);
 
   useEffect(() => {

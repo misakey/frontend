@@ -20,11 +20,4 @@ export default {
       auth: true,
     },
   },
-  account: {
-    create: {
-      method: 'POST',
-      path: '/identities/:id/account',
-      auth: true,
-    },
-  },
 };

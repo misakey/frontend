@@ -7,11 +7,15 @@ import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import moment from 'moment';
 
+import routes from 'routes';
 import { QUESTIONS } from 'constants/emails';
+import { NEXT_STEP_REDIRECT, NEXT_STEP_AUTH } from '@misakey/auth/constants/step';
 import { STEP, INITIAL_VALUES, ERROR_KEYS } from 'constants/auth';
 import { getSecretValidationSchema } from 'constants/validationSchemas/auth';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
 import hardPasswordChange from '@misakey/crypto/store/actions/hardPasswordChange';
+import { createNewOwnerSecrets } from '@misakey/crypto/store/actions/concrete';
+import { ssoUpdate, ssoSign, ssoReset } from '@misakey/auth/store/actions/sso';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import { DATE_FULL } from 'constants/formats/dates';
 import { EMAILED_CODE, PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
@@ -66,7 +70,12 @@ const AuthLoginSecret = ({
   authnStep,
   identity,
   loginChallenge,
+  accessToken,
   dispatchHardPasswordChange,
+  dispatchCreateNewOwnerSecrets,
+  dispatchSsoUpdate,
+  dispatchSsoSign,
+  dispatchSsoReset,
   t,
 }) => {
   const classes = useStyles();
@@ -144,11 +153,25 @@ const AuthLoginSecret = ({
         methodName,
         pwdHashParams,
         dispatchHardPasswordChange,
+        dispatchCreateNewOwnerSecrets,
         ...values,
+        auth: !isNil(accessToken),
       })
         .then((response) => {
-          const { redirectTo: nextRedirectTo } = objectToCamelCase(response);
-          setRedirectTo(nextRedirectTo);
+          const {
+            redirectTo: nextRedirectTo,
+            next,
+            accessToken: nextAccessToken,
+            authnStep: nextAuthnStep,
+          } = objectToCamelCase(response);
+          dispatchSsoSign(nextAccessToken);
+          if (next === NEXT_STEP_REDIRECT) {
+            setRedirectTo(nextRedirectTo);
+          }
+          if (next === NEXT_STEP_AUTH) {
+            setFieldValue(CURRENT_STEP, '');
+            dispatchSsoUpdate({ authnStep: objectToCamelCase(nextAuthnStep) });
+          }
         })
         .catch((e) => {
           // in case reset password dialog is open, close dialog before setting field error
@@ -162,6 +185,12 @@ const AuthLoginSecret = ({
               setFieldValue(CURRENT_STEP, '');
             }
             setFieldError(CURRENT_STEP, secretError);
+          } else if (details.Authorization && details.loginChallenge) {
+            enqueueSnackbar(t('auth:login.form.error.authorizationChallenge'), { variant: 'error' });
+            dispatchSsoReset()
+              .then(() => {
+                setRedirectTo(routes.auth.redirectToSignIn);
+              });
           } else if (details.toDelete === conflict) {
             // @FIXME should we remove that part as it's not implemented in latest version ?
             const text = (
@@ -191,9 +220,12 @@ const AuthLoginSecret = ({
         });
     },
     [
-      loginChallenge, identityId, methodName, pwdHashParams, dispatchHardPasswordChange,
+      loginChallenge, identityId, methodName, pwdHashParams, accessToken,
+      setRedirectTo,
+      dispatchHardPasswordChange, dispatchCreateNewOwnerSecrets,
+      dispatchSsoSign, dispatchSsoUpdate, dispatchSsoReset,
       dialogOpen, onDialogClose,
-      enqueueSnackbar, handleHttpErrors,
+      enqueueSnackbar, handleHttpErrors, t,
     ],
   );
 
@@ -294,21 +326,42 @@ AuthLoginSecret.propTypes = {
   // CONNECT
   authnStep: SSO_PROP_TYPES.authnStep.isRequired,
   identity: SSO_PROP_TYPES.identity.isRequired,
+  accessToken: SSO_PROP_TYPES.accessToken,
   dispatchHardPasswordChange: PropTypes.func.isRequired,
+  dispatchCreateNewOwnerSecrets: PropTypes.func.isRequired,
+  dispatchSsoUpdate: PropTypes.func.isRequired,
+  dispatchSsoSign: PropTypes.func.isRequired,
+  dispatchSsoReset: PropTypes.func.isRequired,
 };
 
 AuthLoginSecret.defaultProps = {
   identifier: '',
+  accessToken: null,
 };
 
 // CONNECT
 const mapStateToProps = (state) => ({
   authnStep: state.sso.authnStep,
   identity: state.sso.identity,
+  accessToken: state.sso.accessToken,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchHardPasswordChange: (newPassword) => dispatch(hardPasswordChange(newPassword)),
+  dispatchHardPasswordChange: (newPassword) => Promise.resolve(
+    dispatch(hardPasswordChange(newPassword)),
+  ),
+  dispatchCreateNewOwnerSecrets: (password) => Promise.resolve(
+    dispatch(createNewOwnerSecrets(password)),
+  ),
+  dispatchSsoUpdate: (sso) => Promise.resolve(
+    dispatch(ssoUpdate(sso)),
+  ),
+  dispatchSsoSign: (accessToken) => Promise.resolve(
+    dispatch(ssoSign(accessToken)),
+  ),
+  dispatchSsoReset: () => Promise.resolve(
+    dispatch(ssoReset()),
+  ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['common', 'auth'])(AuthLoginSecret));

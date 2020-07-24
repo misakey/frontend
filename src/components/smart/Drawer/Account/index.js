@@ -78,7 +78,7 @@ function AccountDrawer({ t }) {
       classes={{ paper: classes.drawerPaper }}
     >
       <>
-        <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth}>
+        <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth} isDrawerOpen={isTmpDrawerOpen}>
           <IconButtonAppBar
             color="inherit"
             aria-label={t('common:goBack')}

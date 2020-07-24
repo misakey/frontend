@@ -43,7 +43,7 @@ function PasteBoxLinkScreen({ t, box, isDrawerOpen, drawerWidth }) {
   const [redirectTo, setRedirectTo] = useState(null);
   const history = useHistory();
 
-  const { title, avatarUri, id } = useMemo(() => box, [box]);
+  const { title, avatarUrl, id } = useMemo(() => box, [box]);
 
   const boxInvitationLinkFieldValidationSchema = useMemo(
     () => getBoxInvitationLinkFieldValidationSchema(id), [id],
@@ -92,7 +92,7 @@ function PasteBoxLinkScreen({ t, box, isDrawerOpen, drawerWidth }) {
           <Box display="flex" flexWrap="nowrap" p={1}>
             <ChipUser
               displayName={title}
-              avatarUri={avatarUri}
+              avatarUrl={avatarUrl}
               onDelete={onDelete}
             />
           </Box>

@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const EventsAppBar = ({ box, t, belongsToCurrentUser, ...props }) => {
   const classes = useStyles();
-  const { avatarUri, title, members, id } = useMemo(() => box, [box]);
+  const { avatarUrl, title, members, id } = useMemo(() => box, [box]);
 
   const routeDetails = useGeneratePathKeepingSearchAndHash(routes.boxes.read.details, { id });
 
@@ -105,7 +105,7 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, ...props }) => {
       <BoxAvatar
         aria-label={t('boxes:read.details.open')}
         aria-controls="menu-appbar"
-        src={avatarUri}
+        src={avatarUrl}
         title={title || ''}
       />
     </ListItem>

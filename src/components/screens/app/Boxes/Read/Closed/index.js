@@ -14,7 +14,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 import { DATE_FULL } from 'constants/formats/dates';
 
 function BoxClosed({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
-  const { avatarUri, title = '', lastEvent } = useMemo(() => box, [box]);
+  const { avatarUrl, title = '', lastEvent } = useMemo(() => box, [box]);
   const { sender: { displayName }, serverEventCreatedAt } = useMemo(() => lastEvent, [lastEvent]);
   const date = useMemo(
     () => moment(serverEventCreatedAt).format(DATE_FULL), [serverEventCreatedAt],
@@ -41,7 +41,7 @@ function BoxClosed({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
           </Box>
         </Box>
         <BoxAvatar
-          src={avatarUri}
+          src={avatarUrl}
           title={title}
         />
       </AppBarDrawer>

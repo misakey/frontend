@@ -1,14 +1,16 @@
-import React, { useState, useMemo, useCallback, forwardRef } from 'react';
+import React, { useState, useMemo, useCallback, useContext, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
+import { UserManagerContext } from '@misakey/auth/components/OidcProvider';
+
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
+import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import { selectors } from '@misakey/crypto/store/reducers';
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
-import DialogCreatePassword from 'components/smart/Dialog/Password/Create';
 import DialogOpenVault from 'components/smart/Dialog/Password/OpenVault';
 
 // COMPONENTS
@@ -18,6 +20,8 @@ const withDialogPassword = (Component) => {
     dialogProps,
     ...props
   }, ref) => {
+    const { userManager } = useContext(UserManagerContext);
+
     const [open, setOpen] = useState(false);
 
     const { accountId } = useSelector(getCurrentUserSelector) || {};
@@ -34,13 +38,15 @@ const withDialogPassword = (Component) => {
 
     const onWrapperClick = useCallback(
       (...args) => {
-        if (!hasAccountId || !isCryptoLoaded) {
+        if (!hasAccountId) {
+          userManager.signinRedirect(objectToSnakeCase({ acrValues: 2, prompt: 'login' }));
+        } else if (!isCryptoLoaded) {
           setOpen(true);
         } else if (isFunction(onClick)) {
           onClick(...args);
         }
       },
-      [hasAccountId, isCryptoLoaded, onClick],
+      [hasAccountId, isCryptoLoaded, onClick, userManager],
     );
 
     const onClose = useCallback(
@@ -50,15 +56,8 @@ const withDialogPassword = (Component) => {
 
     return (
       <>
-        {hasAccountId ? (
+        {hasAccountId && (
           <DialogOpenVault
-            open={open}
-            onClose={onClose}
-            onSuccess={onClick}
-            {...dialogProps}
-          />
-        ) : (
-          <DialogCreatePassword
             open={open}
             onClose={onClose}
             onSuccess={onClick}

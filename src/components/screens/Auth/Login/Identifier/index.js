@@ -43,6 +43,7 @@ const getIdentifierError = compose(
 const AuthLoginIdentifier = ({
   loginChallenge,
   client,
+  identifier,
   dispatchSsoUpdate,
   dispatchSetIdentifier,
   t,
@@ -55,15 +56,19 @@ const AuthLoginIdentifier = ({
   const initialValues = useMemo(
     () => ({
       ...INITIAL_VALUES[CURRENT_STEP],
+      identifier,
     }),
-    [],
+    [identifier],
   );
 
   const onSubmit = useCallback(
-    ({ identifier }, { setFieldError }) => requireAuthable(loginChallenge, identifier)
+    (
+      { identifier: nextIdentifier },
+      { setFieldError },
+    ) => requireAuthable(loginChallenge, nextIdentifier)
       .then((response) => Promise.all([
         dispatchSsoUpdate(response),
-        dispatchSetIdentifier(identifier),
+        dispatchSetIdentifier(nextIdentifier),
       ]))
       .then(() => {
         push({
@@ -115,6 +120,7 @@ const AuthLoginIdentifier = ({
 
 AuthLoginIdentifier.propTypes = {
   loginChallenge: PropTypes.string.isRequired,
+  identifier: PropTypes.string.isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,
   // CONNECT

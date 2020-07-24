@@ -4,6 +4,7 @@ import { createSelector } from 'reselect';
 import merge from '@misakey/helpers/merge';
 import isNil from '@misakey/helpers/isNil';
 import prop from '@misakey/helpers/prop';
+import { parseAcr } from '@misakey/helpers/parseAcr';
 
 import {
   AUTH_RESET,
@@ -47,10 +48,13 @@ function updateIdentity(state, { identity }) {
   };
 }
 
-function updateCredentials(state, { credentials: { identity, ...rest } }) {
+function updateCredentials(state, { credentials: { identity, acr, ...rest } }) {
+  const nextAcr = isNil(acr) ? state.acr : parseAcr(acr);
+
   return {
     ...state,
     identity: mergeIdentity(state, identity),
+    acr: nextAcr,
     ...rest,
   };
 }
@@ -79,6 +83,16 @@ export const getCurrentUserSelector = createSelector(
   (items) => items.identity,
 );
 
+const identitySelector = createSelector(
+  getState,
+  prop('identity'),
+);
+
+const identifierSelector = createSelector(
+  identitySelector,
+  prop('identifier'),
+);
+
 export const selectors = {
   id: createSelector(
     getState,
@@ -88,13 +102,23 @@ export const selectors = {
     getState,
     prop('token'),
   ),
-  identity: createSelector(
-    getState,
-    prop('identity'),
+  identity: identitySelector,
+  identifier: identifierSelector,
+  identifierValue: createSelector(
+    identifierSelector,
+    prop('value'),
   ),
   identityId: createSelector(
     getState,
     prop('identityId'),
+  ),
+  isAuthenticated: createSelector(
+    getState,
+    prop('isAuthenticated'),
+  ),
+  acr: createSelector(
+    getState,
+    prop('acr'),
   ),
 };
 

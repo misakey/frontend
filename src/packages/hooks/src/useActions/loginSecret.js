@@ -3,6 +3,7 @@ import { useMemo, useCallback } from 'react';
 import { EMAILED_CODE, PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 
 import { screenAuthSetIdentifier, screenAuthSetPublics } from 'store/actions/screens/auth';
+import { ssoUnsign } from '@misakey/auth/store/actions/sso';
 import routes from 'routes';
 
 import propOr from '@misakey/helpers/propOr';
@@ -54,6 +55,7 @@ export const useClearUser = () => {
     () => Promise.all([
       dispatch(screenAuthSetIdentifier('')),
       dispatch(screenAuthSetPublics(null)),
+      dispatch(ssoUnsign()),
     ]).then(() => {
       push(routes.auth.signIn._);
     }),

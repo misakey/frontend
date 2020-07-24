@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
-
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import isEmpty from '@misakey/helpers/isEmpty';
 
@@ -57,7 +57,7 @@ AuthLogin.defaultProps = {
 
 // CONNECT
 const mapStateToProps = (state) => ({
-  identifier: state.screens.auth.identifier,
+  identifier: state.screens.auth.identifier || authSelectors.identifierValue(state),
 });
 
 export default connect(mapStateToProps, {})(withTranslation('auth')(AuthLogin));

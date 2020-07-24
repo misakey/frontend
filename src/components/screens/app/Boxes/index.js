@@ -1,11 +1,13 @@
 import React, { useMemo } from 'react';
-import { Switch, Route, useRouteMatch } from 'react-router-dom';
+import { Switch, useRouteMatch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import routes from 'routes';
 import { useSelector } from 'react-redux';
 
 import BoxRead from 'components/screens/app/Boxes/Read';
 import BoxNone from 'components/screens/app/Boxes/None';
+import RouteAcr from '@misakey/auth/components/Route/Acr';
+import RouteAuthenticated from '@misakey/auth/components/Route/Authenticated';
 import { UUID4_REGEX } from 'constants/regex';
 
 import isNil from '@misakey/helpers/isNil';
@@ -51,32 +53,53 @@ function Boxes({ match }) {
   }, [shouldDisplayLockedScreen]);
 
   return (
-    <ScreenDrawer
-      drawerChildren={drawerChildren}
-      isFullWidth={isFullWidth}
-      initialIsDrawerOpen={isNothingSelected}
-    >
-      {(drawerProps) => (
-        <Switch>
-          <Route
-            path={routes.boxes.read._}
-            render={(renderProps) => {
-              if (!UUID4_REGEX.test(renderProps.match.params.id)) {
-                return <BoxNone {...drawerProps} {...renderProps} />;
-              }
-              return <BoxRead {...drawerProps} {...renderProps} />;
-            }}
-          />
-          <Route
-            exact
-            path={match.path}
-            render={(renderProps) => (
+    <Switch>
+      <RouteAuthenticated
+        path={routes.boxes.read._}
+        render={(renderProps) => {
+          if (!UUID4_REGEX.test(renderProps.match.params.id)) {
+            return (
+              <ScreenDrawer
+                drawerChildren={drawerChildren}
+                isFullWidth={isFullWidth}
+                initialIsDrawerOpen={isNothingSelected}
+              >
+                {(drawerProps) => (
+                  <BoxNone {...drawerProps} {...renderProps} />
+                )}
+              </ScreenDrawer>
+            );
+          }
+          return (
+            <ScreenDrawer
+              drawerChildren={drawerChildren}
+              isFullWidth={isFullWidth}
+              initialIsDrawerOpen={isNothingSelected}
+            >
+              {(drawerProps) => (
+                <BoxRead {...drawerProps} {...renderProps} />
+              )}
+            </ScreenDrawer>
+          );
+        }}
+      />
+      <RouteAcr
+        acr={2}
+        exact
+        path={match.path}
+        render={(renderProps) => (
+          <ScreenDrawer
+            drawerChildren={drawerChildren}
+            isFullWidth={isFullWidth}
+            initialIsDrawerOpen={isNothingSelected}
+          >
+            {(drawerProps) => (
               <BoxNone {...drawerProps} {...renderProps} />
             )}
-          />
-        </Switch>
-      )}
-    </ScreenDrawer>
+          </ScreenDrawer>
+        )}
+      />
+    </Switch>
   );
 }
 

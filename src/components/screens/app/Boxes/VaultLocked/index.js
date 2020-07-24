@@ -51,7 +51,7 @@ function VaultLocked({ t, drawerWidth, isDrawerOpen }) {
   const logout = useSignOut(userManagerContext.userManager);
 
   const currentUser = useSelector(getCurrentUserSelector);
-  const { displayName, avatarUri } = useMemo(() => currentUser || {}, [currentUser]);
+  const { displayName, avatarUrl } = useMemo(() => currentUser || {}, [currentUser]);
 
   const onSubmit = useCallback(
     ({ [PREHASHED_PASSWORD]: password }, { setFieldError }) => openVaultWithPassword(password)
@@ -86,7 +86,7 @@ function VaultLocked({ t, drawerWidth, isDrawerOpen }) {
           <Box display="flex" flexWrap="nowrap" p={1}>
             <ChipUser
               displayName={displayName}
-              avatarUri={avatarUri}
+              avatarUrl={avatarUrl}
               onDelete={logout}
             />
           </Box>

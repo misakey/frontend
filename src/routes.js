@@ -50,10 +50,6 @@ const routes = {
       finale: '/auth/register/finale',
     },
   },
-  legals: {
-    privacy: '/legals/privacy',
-    tos: '/legals/tos',
-  },
 };
 
 export default routes;

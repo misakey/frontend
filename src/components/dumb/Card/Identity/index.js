@@ -120,7 +120,6 @@ const CardIdentity = ({ identity, t }) => {
           button
           divider
           to={listItemPasswordTo}
-          hasPassword={hasAccountId}
         />
       </CardList>
       <CardIdentityHeader>{t('account:sections.myNotifications.title')}</CardIdentityHeader>

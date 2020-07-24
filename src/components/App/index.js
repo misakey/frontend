@@ -1,7 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
 
 import routes from 'routes';
 
@@ -9,7 +7,6 @@ import useProcessRedirect from '@misakey/auth/hooks/useProcessRedirect';
 
 import ErrorBoundary from 'components/smart/ErrorBoundary';
 import { Route, Switch } from 'react-router-dom';
-import Redirect from 'components/dumb/Redirect';
 import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallbackWrapper';
 import SeclevelWarningAlert from 'components/smart/Alert/SeclevelWarning';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
@@ -31,27 +28,15 @@ const SIGN_IN_REDIRECT_CONFIG = { referrer: routes._ };
 // COMPONENTS
 const TRedirectAuthCallback = withTranslation('common')(RedirectAuthCallback);
 
-const App = ({ t, isAuthenticated }) => {
+const App = () => {
   const processRedirect = useProcessRedirect();
-
 
   return (
     <ErrorBoundary maxWidth="md" my={3}>
       <Suspense fallback={<SplashScreenWithTranslation />}>
         <SeclevelWarningAlert />
         <Switch>
-          {/* LEGALS */}
-          <Route
-            exact
-            path={routes.legals.tos}
-            render={(routerProps) => <Redirect to={t('components:footer.links.tos.href')} {...routerProps} />}
-          />
-          <Route
-            exact
-            path={routes.legals.privacy}
-            render={(routerProps) => <Redirect to={t('components:footer.links.privacy.href')} {...routerProps} />}
-          />
-          {/* AUTH and ACCOUNT */}
+          {/* AUTH */}
           <Route
             path={routes.auth._}
             component={Auth}
@@ -72,14 +57,6 @@ const App = ({ t, isAuthenticated }) => {
               return null;
             }}
           />
-          {!isAuthenticated && (
-          <Route
-            render={() => {
-              processRedirect();
-              return null;
-            }}
-          />
-          )}
           {/* BOXES APP */}
           <Route component={BoxesApp} />
         </Switch>
@@ -88,20 +65,4 @@ const App = ({ t, isAuthenticated }) => {
   );
 };
 
-App.propTypes = {
-  // CONNECT
-  isAuthenticated: PropTypes.bool,
-
-  t: PropTypes.func.isRequired,
-};
-
-App.defaultProps = {
-  isAuthenticated: false,
-};
-
-// CONNECT
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
-});
-
-export default connect(mapStateToProps)(withTranslation('components')(App));
+export default App;

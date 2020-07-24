@@ -8,7 +8,7 @@ import { parseAcrValues, parseAcr } from '@misakey/helpers/parseAcr';
 import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
 import { createSelector } from 'reselect';
 
-import { SSO_RESET, SSO_UPDATE } from '@misakey/auth/store/actions/sso';
+import { SSO_RESET, SSO_UPDATE, SSO_SIGN, SSO_UNSIGN } from '@misakey/auth/store/actions/sso';
 
 // CONSTANTS
 export const PROP_TYPES = {
@@ -34,6 +34,7 @@ export const PROP_TYPES = {
   scope: PropTypes.arrayOf(PropTypes.string),
   acr: PropTypes.number,
   acrValues: PropTypes.arrayOf(PropTypes.string),
+  accessToken: PropTypes.string,
 };
 
 // INITIAL STATE
@@ -46,6 +47,7 @@ export const INITIAL_STATE = {
   scope: [],
   acr: null,
   acrValues: [],
+  accessToken: null,
 };
 
 const getState = prop('sso');
@@ -77,8 +79,14 @@ function onUpdate(state, { sso: { acrValues, acr, ...rest } }) {
   };
 }
 
+const onSign = (state, { accessToken }) => ({ ...state, accessToken });
+
+const onUnSign = (state) => ({ ...state, accessToken: INITIAL_STATE.accessToken });
+
 // REDUCER
 export default createResetOnSignOutReducer(INITIAL_STATE, {
   [SSO_RESET]: onReset,
   [SSO_UPDATE]: onUpdate,
+  [SSO_SIGN]: onSign,
+  [SSO_UNSIGN]: onUnSign,
 });

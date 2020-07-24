@@ -3,6 +3,8 @@ import React, { useMemo } from 'react';
 import routes from 'routes';
 import PropTypes from 'prop-types';
 
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+
 import { useRouteMatch, useLocation, Link, generatePath } from 'react-router-dom';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -16,9 +18,11 @@ import { withTranslation } from 'react-i18next';
 
 const TABS = [{
   value: 'chat',
+  match: [routes.boxes._, routes.boxes.read._],
   pathname: routes.boxes._,
 }, {
   value: 'account',
+  match: [routes.accounts._],
   pathname: routes.accounts._,
 }];
 
@@ -40,7 +44,7 @@ const TabsMenu = ({ t, ...props }) => {
   const { search } = useLocation();
   const classes = useStyles();
   const { value: selectedValue } = useMemo(
-    () => TABS.find(({ pathname }) => pathname === path), [path],
+    () => TABS.find(({ match }) => match.includes(path)), [path],
   );
 
   return (
@@ -53,7 +57,7 @@ const TabsMenu = ({ t, ...props }) => {
       component={Box}
       classes={{ indicator: classes.indicator }}
       flexGrow={1}
-      {...props}
+      {...omitTranslationProps(props)}
     >
       {TABS.map(
         ({ pathname, value, ...rest }) => (

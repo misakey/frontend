@@ -5,24 +5,15 @@ import { useDispatch } from 'react-redux';
 
 import { authReset } from '@misakey/auth/store/actions/auth';
 
-import getSearchParams from '@misakey/helpers/getSearchParams';
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+
+import useAuthFlowParams from '@misakey/auth/hooks/useAuthFlowParams';
 import { getUrlForOidcCallback } from '../../../helpers';
 
+
 import { withUserManager } from '../../OidcProvider';
-
-// HOOKS
-const useSearchParams = (hash) => useMemo(() => {
-  const search = hash.indexOf('#') === 0 ? hash.replace('#', '?') : hash;
-  return { hash: search, callbackParams: objectToCamelCase(getSearchParams(search)) };
-}, [hash]);
-
-const useGetAuthRequestDetails = (state) => useMemo(
-  () => (isNil(state) ? {} : objectToCamelCase(JSON.parse(localStorage.getItem(`oidc.${state}`) || '{}'))),
-  [state],
-);
 
 // COMPONENTS
 const RedirectAuthCallback = ({
@@ -34,11 +25,11 @@ const RedirectAuthCallback = ({
 }) => {
   const [redirect, setRedirect] = useState(false);
 
-  const { hash, callbackParams } = useSearchParams(location.hash);
-
-  const { state } = callbackParams;
-  const authRequestDetails = useGetAuthRequestDetails(state);
-  const { referrer, scope, acrValues } = useMemo(() => authRequestDetails, [authRequestDetails]);
+  const {
+    search,
+    searchParams,
+    storageParams: { referrer, scope, acrValues },
+  } = useAuthFlowParams();
 
   const dispatch = useDispatch();
 
@@ -49,7 +40,7 @@ const RedirectAuthCallback = ({
 
   const processRedirectCallback = useCallback(
     () => {
-      const callbackUrl = getUrlForOidcCallback(hash, callbackParams);
+      const callbackUrl = getUrlForOidcCallback(search, searchParams);
       return dispatchAuthReset()
         .then(() => userManager.signinRedirectCallback(callbackUrl)
           .then((user) => {
@@ -60,7 +51,7 @@ const RedirectAuthCallback = ({
               }
               return true;
             }
-            userManager.signinRedirect({ scope, referrer, acrValues, prompt: 'login' });
+            userManager.signinRedirect(objectToSnakeCase({ scope, referrer, acrValues, prompt: 'login' }));
             return false;
           })
           .catch((e) => {
@@ -71,30 +62,30 @@ const RedirectAuthCallback = ({
           }));
     },
     [
-      hash, callbackParams, acrValues, scope, referrer,
+      search, searchParams, acrValues, scope, referrer,
       dispatchAuthReset, userManager,
       handleSuccess, handleError,
     ],
   );
 
   const fallbackReferrer = useMemo(
-    () => (callbackParams.accessToken ? fallbackReferrers.success : fallbackReferrers.error),
-    [callbackParams, fallbackReferrers],
+    () => (searchParams.accessToken ? fallbackReferrers.success : fallbackReferrers.error),
+    [searchParams, fallbackReferrers],
   );
 
   const processCallback = useCallback(() => {
-    if (callbackParams.accessToken && callbackParams.state) {
+    if (searchParams.accessToken && searchParams.state) {
       processRedirectCallback()
         .then((shouldRedirect) => {
           setRedirect(shouldRedirect);
         });
-    } else if (callbackParams.error || callbackParams.errorCode) {
+    } else if (searchParams.error || searchParams.errorCode) {
       if (isFunction(handleError)) {
-        handleError(callbackParams);
+        handleError(searchParams);
       }
       setRedirect(true);
     }
-  }, [callbackParams, handleError, processRedirectCallback]);
+  }, [searchParams, handleError, processRedirectCallback]);
 
   useEffect(processCallback, []);
 

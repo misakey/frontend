@@ -10,33 +10,6 @@ export const fetchPwdHashParams = (accountId) => API
   .build({ id: accountId })
   .send();
 
-export const resetPassword = async ({
-  password,
-  accountId,
-  dispatchHardPasswordChange,
-}) => {
-  const [
-    { backupData },
-    prehashedPassword,
-  ] = await Promise.all([
-    dispatchHardPasswordChange(password),
-    hashPassword({ password, pwdHashParams: genParams() }),
-  ]);
-
-  // prehashed password is not deeply snakecased
-  // because "snake case" helper does not work well on it
-  // ("base64" is turned into "base_64")
-  const payload = objectToSnakeCase({
-    prehashedPassword,
-    backupData,
-  });
-
-  return API
-    .use(API.endpoints.identities.account.create)
-    .build({ id: accountId }, payload)
-    .send();
-};
-
 export const changePassword = async ({
   oldPassword,
   newPassword,

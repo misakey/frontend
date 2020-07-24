@@ -14,7 +14,6 @@ const IdentitySchema = {
     accountId: PropTypes.string,
     identifierId: PropTypes.string.isRequired,
     isAuthable: PropTypes.bool.isRequired,
-    confirmed: PropTypes.bool.isRequired,
     displayName: PropTypes.string.isRequired,
     avatarUrl: PropTypes.string,
     notifications: PropTypes.oneOf(NOTIFICATIONS),
