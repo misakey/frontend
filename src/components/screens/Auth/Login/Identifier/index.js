@@ -15,11 +15,14 @@ import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
 import compose from '@misakey/helpers/compose';
 import head from '@misakey/helpers/head';
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
+import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import props from '@misakey/helpers/props';
 import { requireAuthable } from '@misakey/auth/builder/identities';
 import { getDetails } from '@misakey/helpers/apiError';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import Title from '@misakey/ui/Typography/Title';
@@ -42,6 +45,7 @@ const getIdentifierError = compose(
 // COMPONENTS
 const AuthLoginIdentifier = ({
   loginChallenge,
+  loginHint,
   client,
   identifier,
   dispatchSsoUpdate,
@@ -60,6 +64,13 @@ const AuthLoginIdentifier = ({
     }),
     [identifier],
   );
+
+  const objLoginHint = useMemo(
+    () => (isEmpty(loginHint) ? null : objectToCamelCase(JSON.parse(loginHint))),
+    [loginHint],
+  );
+
+  const { resourceName } = useSafeDestr(objLoginHint);
 
   const onSubmit = useCallback(
     (
@@ -107,6 +118,12 @@ const AuthLoginIdentifier = ({
             <Box display="flex" flexWrap="nowrap">Quel est votre identifiant pour</Box>
             <Box ml={1} display="flex" flexWrap="nowrap">
               <AvatarClientSso client={client} />
+              {!isEmpty(resourceName) && (
+                <>
+                &nbsp;-&nbsp;
+                  {resourceName}
+                </>
+              )}
               &nbsp;?
             </Box>
           </Box>
@@ -125,6 +142,7 @@ AuthLoginIdentifier.propTypes = {
   t: PropTypes.func.isRequired,
   // CONNECT
   client: SSO_PROP_TYPES.client.isRequired,
+  loginHint: SSO_PROP_TYPES.loginHint.isRequired,
   dispatchSetIdentifier: PropTypes.func.isRequired,
   dispatchSsoUpdate: PropTypes.func.isRequired,
 };
@@ -132,6 +150,7 @@ AuthLoginIdentifier.propTypes = {
 // CONNECT
 const mapStateToProps = (state) => ({
   client: state.sso.client,
+  loginHint: state.sso.loginHint,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import BoxRead from 'components/screens/app/Boxes/Read';
 import BoxNone from 'components/screens/app/Boxes/None';
 import RouteAcr from '@misakey/auth/components/Route/Acr';
-import RouteAuthenticated from '@misakey/auth/components/Route/Authenticated';
+import RouteAuthenticatedBoxRead from 'components/smart/Route/Authenticated/BoxRead';
 import { UUID4_REGEX } from 'constants/regex';
 
 import isNil from '@misakey/helpers/isNil';
@@ -54,7 +54,7 @@ function Boxes({ match }) {
 
   return (
     <Switch>
-      <RouteAuthenticated
+      <RouteAuthenticatedBoxRead
         path={routes.boxes.read._}
         render={(renderProps) => {
           if (!UUID4_REGEX.test(renderProps.match.params.id)) {

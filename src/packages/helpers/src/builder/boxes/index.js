@@ -5,12 +5,19 @@ import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
 import objectToSnakeCaseDeep from '@misakey/helpers/objectToSnakeCaseDeep';
 // @FIXME shouldn't we just use "objectToSnakeCaseDeep" everywhere?
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
-export const getBoxBuilder = (id, body, queryParams = {}) => API
+export const getBoxBuilder = (id, queryParams = {}) => API
   .use(API.endpoints.boxes.read)
-  .build({ id }, body, objectToSnakeCase(queryParams))
+  .build({ id }, undefined, objectToSnakeCase(queryParams))
   .send()
   .then(objectToCamelCaseDeep);
+
+export const getBoxPublicBuilder = ({ id, otherShareHash }) => API
+  .use(API.endpoints.boxes.public.read)
+  .build({ id }, undefined, objectToSnakeCase({ otherShareHash }))
+  .send()
+  .then(objectToCamelCase);
 
 export const getBoxEventsBuilder = (id) => API
   .use(API.endpoints.boxes.events.find)

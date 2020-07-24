@@ -5,7 +5,7 @@ import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 
 import routes from 'routes';
 import { ssoUpdate } from '@misakey/auth/store/actions/sso';
-import { screenAuthReset, screenAuthSetIdentifier } from 'store/actions/screens/auth';
+import { screenAuthReset } from 'store/actions/screens/auth';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
 
 import isNil from '@misakey/helpers/isNil';
@@ -68,7 +68,7 @@ const useStyles = makeStyles(() => ({
 const Auth = ({
   match,
   isAuthenticated, sso, currentAcr,
-  dispatchSsoUpdate, dispatchSetIdentifier, dispatchResetAuth,
+  dispatchSsoUpdate, dispatchResetAuth,
 }) => {
   const classes = useStyles();
   const searchParams = useLocationSearchParams(objectToCamelCase);
@@ -142,14 +142,8 @@ const Auth = ({
   );
 
   const onSuccess = useCallback(
-    (loginInfo) => {
-      const { loginHint } = loginInfo || {};
-      return Promise.all([
-        dispatchSsoUpdate({ ...loginInfo, loginChallenge }),
-        dispatchSetIdentifier(loginHint),
-      ]);
-    },
-    [loginChallenge, dispatchSsoUpdate, dispatchSetIdentifier],
+    (loginInfo) => Promise.resolve(dispatchSsoUpdate({ ...loginInfo, loginChallenge })),
+    [loginChallenge, dispatchSsoUpdate],
   );
 
   const onError = useCallback(
@@ -230,7 +224,6 @@ Auth.propTypes = {
   currentAcr: PropTypes.number,
   sso: PropTypes.shape(SSO_PROP_TYPES).isRequired,
   dispatchSsoUpdate: PropTypes.func.isRequired,
-  dispatchSetIdentifier: PropTypes.func.isRequired,
   dispatchResetAuth: PropTypes.func.isRequired,
 };
 
@@ -248,7 +241,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchSsoUpdate: (sso) => dispatch(ssoUpdate(sso)),
-  dispatchSetIdentifier: (identifier) => dispatch(screenAuthSetIdentifier(identifier)),
   dispatchResetAuth: () => dispatch(screenAuthReset()),
 });
 

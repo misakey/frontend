@@ -19,6 +19,12 @@ export default {
     path: '/boxes',
     auth: true,
   },
+  public: {
+    read: {
+      method: 'GET',
+      path: '/boxes/:id/public',
+    },
+  },
   events: {
     newCount: {
       update: {
@@ -62,7 +68,7 @@ export default {
       auth: true,
     },
   },
-  // @FIXME is this still used at all?
+  // @UNUSED
   blob: {
     find: {
       method: 'GET',
