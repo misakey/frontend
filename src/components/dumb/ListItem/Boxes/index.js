@@ -7,17 +7,27 @@ import BoxesSchema from 'store/schemas/Boxes';
 import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
+import { makeStyles } from '@material-ui/core/styles';
+
 import Skeleton from '@material-ui/lab/Skeleton';
 import Box from '@material-ui/core/Box';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
-// import Chip from '@material-ui/core/Chip';
 import Badge from '@material-ui/core/Badge';
 import BoxAvatar from 'components/dumb/Avatar/Box';
 import BoxAvatarSkeleton from 'components/dumb/Avatar/Box/Skeleton';
 import TypographyDateSince from 'components/dumb/Typography/DateSince';
 import BoxEventsAccordingToType from 'components/smart/Box/Event';
+
+
+// HOOKS
+const useStyles = makeStyles(() => ({
+  listItemText: {
+    // Needed for IE11
+    width: '100%',
+  },
+}));
 
 // COMPONENTS
 export const BoxListItemSkeleton = (props) => (
@@ -53,6 +63,8 @@ export const BoxListItemSkeleton = (props) => (
 );
 
 function BoxListItem({ box, toRoute, ...rest }) {
+  const classes = useStyles();
+
   const {
     id,
     logoUri,
@@ -91,6 +103,7 @@ function BoxListItem({ box, toRoute, ...rest }) {
         </Badge>
       </ListItemAvatar>
       <ListItemText
+        className={classes.listItemText}
         primary={(
           <Box display="flex" justifyContent="space-between" alignItems="center">
             {title}

@@ -54,9 +54,8 @@ const noFlowParams = nonePass(
 // HOOKS
 const useStyles = makeStyles(() => ({
   screen: {
-    display: 'flex',
-    justifyContent: 'center',
     alignItems: 'center',
+    height: 'inherit',
   },
   screenContent: {
     marginTop: 'auto',
