@@ -18,21 +18,13 @@ export default (() => {
   const createNewBackupKeyShares = useCreateNewBackupShares(dispatch);
 
   const onDecryptSuccess = useCallback(({ backupKey, secrets, backupVersion }) => {
+    // Can occur when a user first log with ACR on a box and then create an account
     const shouldMerge = !currentBoxSecrets.every(
       (key) => secrets.boxDecryptionKeys.includes(key),
     );
     const loadSecretsAction = shouldMerge ? loadSecretsAndUpdateBackup : loadSecrets;
-    const args = shouldMerge ? {
-      secrets: {
-        ...secrets,
-        boxDecryptionKeys: [...new Set(secrets.boxDecryptionKeys.concat(currentBoxSecrets))],
-      },
-      backupKey,
-      backupVersion: backupVersion + 1,
-    } : { secrets, backupKey, backupVersion };
-
     return Promise.all([
-      dispatch(loadSecretsAction(args)),
+      dispatch(loadSecretsAction({ secrets, backupKey, backupVersion })),
       createNewBackupKeyShares(backupKey, accountId),
     ]);
   }, [accountId, createNewBackupKeyShares, currentBoxSecrets, dispatch]);

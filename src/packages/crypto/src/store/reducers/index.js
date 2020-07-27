@@ -1,13 +1,16 @@
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import isNil from '@misakey/helpers/isNil';
-import merge from '@misakey/helpers/merge';
+import mergeWith from '@misakey/helpers/mergeWith';
+import isArray from '@misakey/helpers/isArray';
 import ramdaPath from '@misakey/helpers/path';
 import assocPath from '@misakey/helpers/assocPath';
 import propOr from '@misakey/helpers/propOr';
 import pick from '@misakey/helpers/pick';
-import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
+import createReducer from '@misakey/store/reducers/helpers/createReducer';
 import { createSelector } from 'reselect';
+
+import { SIGN_OUT } from '@misakey/auth/store/actions/auth';
 
 import {
   CRYPTO_LOAD_SECRETS,
@@ -110,6 +113,10 @@ export const selectors = {
 
 // ACTION HANDLERS
 
+function reset() {
+  return INITIAL_STATE;
+}
+
 function setBackupKey(state, { backupKey }) {
   return {
     ...state,
@@ -157,9 +164,15 @@ function initialize(state, { backupKey, secretKey }) {
 }
 
 function loadSecrets(state, action) {
-  return merge(
+  return mergeWith(
     { ...state },
     pick(['secrets', 'backupKey', 'backupVersion'], action),
+    (objValue, srcValue) => {
+      if (isArray(objValue)) {
+        return [...new Set(objValue.concat(srcValue))];
+      }
+      return undefined;
+    },
   );
 }
 
@@ -169,10 +182,7 @@ function addBoxSecretKey(state, { secretKey }) {
     ...state,
     secrets: {
       ...state.secrets,
-      boxDecryptionKeys: [
-        ...state.secrets.boxDecryptionKeys,
-        secretKey,
-      ],
+      boxDecryptionKeys: [...new Set([secretKey].concat(state.secrets.boxDecryptionKeys))],
     },
   };
 }
@@ -196,7 +206,7 @@ function setBoxKeyShare(state, { boxId, keyShare }) {
 }
 
 // REDUCER
-const cryptoReducer = createResetOnSignOutReducer(INITIAL_STATE, {
+const cryptoReducer = createReducer(INITIAL_STATE, {
   [CRYPTO_SET_BACKUP_KEY]: setBackupKey,
   [CRYPTO_SET_ENCRYPTED_BACKUP_DATA]: setEncryptedBackupData,
   [CRYPTO_SET_BACKUP_VERSION]: setEncryptedBackupVersion,
@@ -206,6 +216,7 @@ const cryptoReducer = createResetOnSignOutReducer(INITIAL_STATE, {
   [CRYPTO_IMPORT_SECRET_KEYS]: importSecretKeys,
   [CRYPTO_SET_BACKUP_KEY_SHARE]: setBackupKeyShare,
   [CRYPTO_SET_BOX_KEY_SHARE]: setBoxKeyShare,
+  [SIGN_OUT]: reset,
 });
 
 export default persistReducer(

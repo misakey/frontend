@@ -10,6 +10,12 @@ export const createBackupKeyShareBuilder = (misakeyKeyShare) => API
   .send()
   .then(objectToCamelCaseDeep);
 
+export const createBackupKeyShareFromAuthFlowBuilder = (misakeyKeyShare) => API
+  .use(API.endpoints.auth.backupKeyShares.create)
+  .build(null, objectToSnakeCaseDeep(misakeyKeyShare))
+  .send()
+  .then(objectToCamelCaseDeep);
+
 export const getBackupKeyShareBuilder = (otherShareHash) => API
   .use(API.endpoints.user.backupKeyShares.read)
   .build({ otherShareHash })

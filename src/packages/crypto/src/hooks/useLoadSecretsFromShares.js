@@ -1,7 +1,7 @@
 import { useCallback, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import isNil from '@misakey/helpers/isNil';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import { getCurrentUserSelector, selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { getBackupKeyShareBuilder } from '@misakey/auth/builder/backupKeyShares';
 import { combineBackupKeyShares, computeOtherShareHash } from '@misakey/crypto/secretsBackup/keySplitting';
 import { loadSecrets } from '@misakey/crypto/store/actions/concrete';
@@ -10,6 +10,8 @@ import { decryptSecretsBackupWithBackupKey } from '@misakey/crypto/secretsBackup
 import { selectors } from '../store/reducers';
 import useFetchSecretBackup from './useFetchSecretBackup';
 
+// CONSTANTS
+const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
 
 // SELECTORS
 const { getBackupKey, makeGetBackupKeyShareForAccount } = selectors;
@@ -17,17 +19,18 @@ const { getBackupKey, makeGetBackupKeyShareForAccount } = selectors;
 export default (() => {
   const [notFound, setNotFound] = useState(false);
   const dispatch = useDispatch();
+  const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
 
   const { accountId } = useSelector(getCurrentUserSelector) || {};
 
   const backupKey = useSelector(getBackupKey);
   const getBackupKeyShareForAccount = useMemo(() => makeGetBackupKeyShareForAccount(), []);
   const localBackupKeyShare = useSelector((state) => getBackupKeyShareForAccount(state, accountId));
-  const { data, backupVersion, isReady } = useFetchSecretBackup();
+  const { data, backupVersion, isReady, isFetching: isFetchingBackup } = useFetchSecretBackup();
 
   const shouldFetch = useMemo(
-    () => isReady && isNil(backupKey) && !isNil(localBackupKeyShare),
-    [backupKey, isReady, localBackupKeyShare],
+    () => isReady && isNil(backupKey) && !isNil(localBackupKeyShare) && isAuthenticated,
+    [backupKey, isAuthenticated, isReady, localBackupKeyShare],
   );
 
   const fetchBackupKeyShare = useCallback(
@@ -57,6 +60,6 @@ export default (() => {
   return {
     notFound: notFound || isNil(localBackupKeyShare),
     backupKey,
-    isFetchingBackupKeyShare: isFetching,
+    isLoadingBackupKey: isFetching || isFetchingBackup || (shouldFetch && !notFound),
   };
 });

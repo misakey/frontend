@@ -18,7 +18,7 @@ import { createNewOwnerSecrets } from '@misakey/crypto/store/actions/concrete';
 import { ssoUpdate, ssoSign, ssoReset } from '@misakey/auth/store/actions/sso';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import { DATE_FULL } from 'constants/formats/dates';
-import { EMAILED_CODE, PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
+import { EMAILED_CODE, PREHASHED_PASSWORD, PASSWORD_RESET_KEY, ACCOUNT_CREATION } from '@misakey/auth/constants/method';
 
 import compose from '@misakey/helpers/compose';
 import head from '@misakey/helpers/head';
@@ -44,6 +44,8 @@ import BoxControls from '@misakey/ui/Box/Controls';
 import ButtonForgotPassword from '@misakey/auth/components/Button/ForgotPassword';
 import ButtonRenewAuthStep from '@misakey/auth/components/Button/RenewAuthStep';
 import DialogPasswordReset from 'components/smart/Dialog/Password/Reset';
+
+import useHandleBackupKeySharesFromAuthFlow from '@misakey/crypto/hooks/useHandleBackupKeySharesFromAuthFlow';
 
 // CONSTANTS
 const { conflict } = errorTypes;
@@ -88,13 +90,14 @@ const AuthLoginSecret = ({
   const [reset, setReset] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-
   const initialValues = useMemo(() => INITIAL_VALUES[CURRENT_STEP], []);
 
   const { methodName, identityId, metadata: pwdHashParams } = useMemo(
     () => authnStep || {},
     [authnStep],
   );
+
+  const handleBackupKeyShares = useHandleBackupKeySharesFromAuthFlow(loginChallenge, identityId);
 
   const validationSchema = useMemo(
     () => getSecretValidationSchema(methodName),
@@ -157,14 +160,23 @@ const AuthLoginSecret = ({
         ...values,
         auth: !isNil(accessToken),
       })
-        .then((response) => {
+        .then(async (response) => {
           const {
             redirectTo: nextRedirectTo,
             next,
             accessToken: nextAccessToken,
             authnStep: nextAuthnStep,
           } = objectToCamelCase(response);
-          dispatchSsoSign(nextAccessToken);
+
+          await Promise.resolve(dispatchSsoSign(nextAccessToken));
+
+          // handle BackupSecretShares
+          const { secret: password, [PASSWORD_RESET_KEY]: newPassword } = values;
+          const isResetPassword = methodName === EMAILED_CODE && !isNil(newPassword);
+          if (isResetPassword || [PREHASHED_PASSWORD, ACCOUNT_CREATION].includes(methodName)) {
+            await handleBackupKeyShares(newPassword || password);
+          }
+
           if (next === NEXT_STEP_REDIRECT) {
             setRedirectTo(nextRedirectTo);
           }
@@ -219,14 +231,10 @@ const AuthLoginSecret = ({
           setSubmitting(false);
         });
     },
-    [
-      loginChallenge, identityId, methodName, pwdHashParams, accessToken,
-      setRedirectTo,
-      dispatchHardPasswordChange, dispatchCreateNewOwnerSecrets,
-      dispatchSsoSign, dispatchSsoUpdate, dispatchSsoReset,
-      dialogOpen, onDialogClose,
-      enqueueSnackbar, handleHttpErrors, t,
-    ],
+    [loginChallenge, identityId, methodName, pwdHashParams, dispatchHardPasswordChange,
+      dispatchCreateNewOwnerSecrets, accessToken, dispatchSsoSign, handleBackupKeyShares,
+      dispatchSsoUpdate, dialogOpen, onDialogClose, enqueueSnackbar, t, dispatchSsoReset,
+      handleHttpErrors],
   );
 
   const onSubmit = useMemo(

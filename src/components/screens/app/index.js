@@ -13,9 +13,9 @@ import useLoadSecretsFromShares from '@misakey/crypto/hooks/useLoadSecretsFromSh
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 
 const BoxesApp = ({ isFetchingIdentity }) => {
-  const { isFetchingBackupKeyShare } = useLoadSecretsFromShares();
+  const { isLoadingBackupKey } = useLoadSecretsFromShares();
 
-  if (isFetchingIdentity || isFetchingBackupKeyShare) {
+  if (isFetchingIdentity || isLoadingBackupKey) {
     return <SplashScreen />;
   }
 

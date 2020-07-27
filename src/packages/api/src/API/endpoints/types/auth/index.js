@@ -42,4 +42,18 @@ export default {
     method: 'POST',
     path: '/login/method',
   },
+  backup: {
+    read: {
+      method: 'GET',
+      path: '/auth/backup',
+      auth: true,
+    },
+  },
+  backupKeyShares: {
+    create: {
+      method: 'POST',
+      path: '/auth/backup-key-shares',
+      auth: true,
+    },
+  },
 };
