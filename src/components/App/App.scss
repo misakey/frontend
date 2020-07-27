@@ -33,6 +33,9 @@ html, body {
   color: $dark-grey !important;
   height: 100%;
   overflow: hidden;
+  ::-ms-clear, ::-ms-reveal {
+    display: none;
+  }
 }
 
 #root {

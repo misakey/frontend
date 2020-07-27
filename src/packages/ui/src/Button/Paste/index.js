@@ -15,7 +15,7 @@ import PasteIcon from '@material-ui/icons/Assignment';
 // CONSTANTS
 const HAS_CLIPBOARD = navigator.clipboard;
 const HAS_PASTE = HAS_CLIPBOARD && isFunction(navigator.clipboard.readText);
-const EXEC_PASTE_SUPPORTED = document.queryCommandSupported('paste');
+const EXEC_PASTE_SUPPORT = document.queryCommandSupported('paste');
 
 export const MODE = {
   icon: 'icon',
@@ -41,13 +41,15 @@ const ButtonPaste = ({ mode, field, inputRef, ...props }) => {
     [isIcon],
   );
 
-  const onPasteFallback = useCallback(
+  const execCommandFallback = useCallback(
     () => {
       const { current } = inputRef;
 
       if (!isNil(current)) {
         current.focus();
-        document.execCommand('paste');
+        setTimeout(
+          () => { document.execCommand('paste'); },
+        );
       }
     },
     [inputRef],
@@ -65,13 +67,13 @@ const ButtonPaste = ({ mode, field, inputRef, ...props }) => {
             enqueueSnackbar(message || `${error}`, { variant: 'warning' });
           });
       } else {
-        onPasteFallback(e);
+        execCommandFallback(e);
       }
     },
-    [enqueueSnackbar, name, setFieldValue, onPasteFallback],
+    [enqueueSnackbar, name, setFieldValue, execCommandFallback],
   );
 
-  if (!HAS_PASTE && !EXEC_PASTE_SUPPORTED) {
+  if (!HAS_PASTE && !EXEC_PASTE_SUPPORT) {
     log('cannot paste: no clipboard API, nor paste fallback');
     return null;
   }
