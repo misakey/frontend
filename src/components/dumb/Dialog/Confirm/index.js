@@ -43,9 +43,7 @@ function ConfirmationDialog({
       onClose={onClose}
       {...omitTranslationProps(rest)}
     >
-      <DialogTitleWithClose onClose={onClose}>
-        {title}
-      </DialogTitleWithClose>
+      <DialogTitleWithClose title={title} onClose={onClose} />
       <ConfirmDialogContent content={dialogContent} />
       <DialogActions>
         <BoxControls

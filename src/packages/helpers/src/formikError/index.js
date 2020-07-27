@@ -1,4 +1,12 @@
 import isNil from '@misakey/helpers/isNil';
+import isArray from '@misakey/helpers/isArray';
+
+const getErrorKeys = (prefix, name, validationError) => [
+  `fields:${prefix}${name}.error.${validationError}`,
+  `fields:${name}.error.${validationError}`,
+  `fields:default.error.${validationError}`,
+  'fields:default.error.unknown',
+];
 
 export const getErrors = ({ field: { name }, form: { touched, errors, status }, prefix }) => {
   const validationError = touched[name] ? errors[name] : null;
@@ -6,12 +14,7 @@ export const getErrors = ({ field: { name }, form: { touched, errors, status }, 
   const displayError = !isNil(validationError) || !isNil(statusError);
 
   const error = validationError || statusError;
-  const errorKeys = [
-    `fields:${prefix}${name}.error.${error}`,
-    `fields:${name}.error.${error}`,
-    `fields:default.error.${error}`,
-    'fields:default.error.unknown',
-  ];
+  const errorKeys = getErrorKeys(prefix, name, error);
 
   return { displayError, errorKeys };
 };
@@ -20,12 +23,19 @@ export const getFieldError = ({ field: { name }, meta: { error, touched }, prefi
   const validationError = touched ? error : null;
   const displayError = !isNil(validationError);
 
-  const errorKeys = [
-    `fields:${prefix}${name}.error.${validationError}`,
-    `fields:${name}.error.${validationError}`,
-    `fields:default.error.${validationError}`,
-    'fields:default.error.unknown',
-  ];
+  const errorKeys = getErrorKeys(prefix, name, validationError);
+
+  return { displayError, errorKeys };
+};
+
+
+export const getArrayFieldError = ({ field: { name }, meta: { error, touched }, prefix }) => {
+  const validationError = touched ? error : null;
+  const displayError = !isNil(validationError);
+
+  const errorKeys = isArray(validationError)
+    ? validationError.map((err) => getErrorKeys(prefix, name, err))
+    : getErrorKeys(prefix, name, validationError);
 
   return { displayError, errorKeys };
 };

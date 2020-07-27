@@ -74,9 +74,7 @@ const DialogPassword = ({
       >
         <Form>
           {isFunction(onClose) && (
-            <DialogTitleWithCloseIcon onClose={onClose}>
-              {title}
-            </DialogTitleWithCloseIcon>
+            <DialogTitleWithCloseIcon title={title} onClose={onClose} />
           )}
           <DialogContent>
             <DialogContentText id="alert-dialog-description">

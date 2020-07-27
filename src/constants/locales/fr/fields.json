@@ -28,7 +28,32 @@
       "format": "Format incorrect. Formats acceptés: .jpg .jpeg .png .tiff .gif"
     }
   },
-  "blob": {
+  "file": {
+    "label": "Déposer un fichier ici",
+    "loading": "Importation en cours",
+    "button": {
+      "choose": {
+        "label": "Sélectionner"
+      }
+    }
+  },
+  "files": {
+    "label": "Déposer des fichiers ici",
+    "button": {
+      "choose": {
+        "label": "Sélectionner"
+      }
+    },
+    "error": {
+      "api": {
+        "notSent": "Une erreur inconnue s'est produite lors de l'envoi des fichiers\u00a0:{{filenamesErrors}}.\nVous pouvez vérifier leur format et réessayer.\n",
+        "sent": "Les fichiers\u00a0:{{filenamesSent}} ont été envoyés avec succès."
+      },
+      "required": "Vous devez envoyer au moins 1 fichier",
+      "max": "Vous ne pouvez envoyer que 10 fichiers à la fois"
+    }
+  },
+  "blobs_files": {
     "error": {
       "size": "Taille maximale de 9Mo. dépassée",
       "extension": "Format incorrect. Fichier sans extension",
@@ -126,15 +151,6 @@
       "required": "Oops, vous avez oublié de saisir un identifiant",
       "malformed": "Oops, cet email n'est pas valide",
       "seclevel_insufficient": "J'ai besoin d'un mot de passe pour me connecter par ici, mon compte n'a pas de mot de passe configuré"
-    }
-  },
-  "file": {
-    "label": "Déposer un fichier ici",
-    "loading": "Importation en cours",
-    "button": {
-      "choose": {
-        "label": "Sélectionner"
-      }
     }
   },
   "handle": {

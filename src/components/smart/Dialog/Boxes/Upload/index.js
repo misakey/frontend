@@ -1,42 +1,64 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { Form, FieldArray } from 'formik';
+import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import { useSnackbar } from 'notistack';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
 
-// import { serviceRequestsReadValidationSchema } from 'constants/validationSchemas/dpo';
+import { addMultiBoxEvents } from 'store/reducers/box';
+import BoxesSchema from 'store/schemas/Boxes';
+import { removeEntities } from '@misakey/store/actions/entities';
+import errorTypes from '@misakey/ui/constants/errorTypes';
+import { boxFileUploadValidationSchema } from 'constants/validationSchemas/boxes';
 
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
+import prop from '@misakey/helpers/prop';
+import compose from '@misakey/helpers/compose';
 import log from '@misakey/helpers/log';
+import uniqBy from '@misakey/helpers/uniqBy';
+import partition from '@misakey/helpers/partition';
+import promiseAllNoFailFast from '@misakey/helpers/promiseAllNoFailFast';
+import { createBoxEncryptedFileBuilder } from '@misakey/helpers/builder/boxes';
+import encryptFile from '@misakey/crypto/box/encryptFile';
 
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 
 import { makeStyles } from '@material-ui/core/styles/';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
-import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-
-import encryptFile from '@misakey/crypto/box/encryptFile';
-
-import FieldBlobs from 'components/smart/Dialog/Boxes/Upload/BlobsField';
-import FieldBlobTmp from 'components/smart/Dialog/Boxes/Upload/TmpBlobField';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import FieldFiles from 'components/dumb/Form/Field/Files';
 import BoxControls from '@misakey/ui/Box/Controls';
-import { createBoxEncryptedFileBuilder } from '@misakey/helpers/builder/boxes';
+import Link from '@material-ui/core/Link';
+import FieldBlobs from './BlobsField';
 
-import { addBoxEvents } from 'store/reducers/box';
-import BoxesSchema from 'store/schemas/Boxes';
-import errorTypes from '@misakey/ui/constants/errorTypes';
-import { removeEntities } from '@misakey/store/actions/entities';
-
-export const TMP_BLOB_FIELD_NAME = 'blob';
-export const BLOBS_FIELD_NAME = 'blobs';
-export const INITIAL_VALUES = { [TMP_BLOB_FIELD_NAME]: null, [BLOBS_FIELD_NAME]: [] };
+// CONSTANTS
+export const BLOBS_FIELD_NAME = 'files';
+const BLOBS_FIELD_PREFIX = 'blobs_';
+export const INITIAL_VALUES = { [BLOBS_FIELD_NAME]: [] };
 export const INITIAL_STATUS = {};
 const { conflict } = errorTypes;
+
+// HELPERS
+const errorPropNil = compose(
+  (e) => isNil(e),
+  prop('error'),
+);
+
+const fileToBlob = (file) => {
+  const { name, lastModified, size, type } = file;
+
+  return {
+    blob: file,
+    key: `${name}-${lastModified}-${size}-${type}`,
+  };
+};
+
+const uniqBlob = (list) => uniqBy(list, 'key');
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -46,6 +68,9 @@ const useStyles = makeStyles((theme) => ({
   },
   dialogContentRoot: {
     padding: theme.spacing(3),
+  },
+  dialogContentTextRoot: {
+    textAlign: 'center',
   },
 }));
 
@@ -60,7 +85,6 @@ function UploadDialog({
   const fullScreen = useDialogFullScreen();
 
   const { enqueueSnackbar } = useSnackbar();
-  const [newBlob, setNewBlob] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -78,10 +102,8 @@ function UploadDialog({
       try {
         const response = await createBoxEncryptedFileBuilder(boxId, formData);
 
-        dispatch(addBoxEvents(boxId, response));
-
         if (onSuccess) {
-          return onSuccess(response);
+          onSuccess(response);
         }
 
         return response;
@@ -112,16 +134,23 @@ function UploadDialog({
       const blobs = form[BLOBS_FIELD_NAME];
 
       // Could be improved later with a backend endpoint to upload several files at a time
-      const newBlobList = await Promise.all(blobs.map(
-        ({ blob, ...rest }) => handleUpload(blob)
-          .then(() => ({ ...rest, blob, isSent: true }))
-          .catch((e) => {
-            log(e, 'error');
-            return { ...rest, blob, error: e };
+      const newBlobList = await promiseAllNoFailFast(
+        blobs
+          .map(async ({ blob, ...rest }) => {
+            try {
+              const response = await handleUpload(blob);
+              return { ...response, ...rest, blob, isSent: true };
+            } catch (e) {
+              log(e, 'error');
+              return { ...rest, blob };
+            }
           }),
-      ));
+      );
 
-      const errors = newBlobList.filter(({ error }) => !isNil(error));
+      const [successes, errors] = partition(newBlobList, errorPropNil);
+
+      dispatch(addMultiBoxEvents(boxId, successes));
+
       resetForm();
 
       if (isEmpty(errors)) {
@@ -132,7 +161,7 @@ function UploadDialog({
         setStatus({ [BLOBS_FIELD_NAME]: newBlobList });
       }
     },
-    [enqueueSnackbar, handleUpload, onClose, t],
+    [enqueueSnackbar, handleUpload, onClose, t, dispatch, boxId],
   );
 
   return (
@@ -145,47 +174,60 @@ function UploadDialog({
       aria-describedby="upload-dialog-description"
     >
       <Formik
-        // validationSchema={serviceRequestsReadValidationSchema}
+        validationSchema={boxFileUploadValidationSchema}
         initialValues={INITIAL_VALUES}
         initialStatus={INITIAL_STATUS}
         onSubmit={onSubmit}
       >
         {({ resetForm }) => (
           <Form>
-            <DialogTitleWithClose onClose={getOnReset(resetForm)} />
-            <DialogContent className={classes.dialogContentRoot}>
-              {/* @FIXME This could be improved by updating useFileReader
-              and FieldFile to handle multiple files */}
-              <FieldArray
-                name={BLOBS_FIELD_NAME}
-                render={(arrayHelpers) => (
-                  <FieldBlobs
-                    setNewBlob={setNewBlob}
-                    newBlob={newBlob}
-                    {...arrayHelpers}
-                  />
-                )}
-              />
-              <FieldBlobTmp
-                name={TMP_BLOB_FIELD_NAME}
-                setNewBlob={setNewBlob}
-              />
-
-            </DialogContent>
-            <DialogActions>
+            <DialogTitleWithClose onClose={getOnReset(resetForm)}>
               <BoxControls
+                ml="auto"
+                alignItems="center"
                 primary={{
                   type: 'submit',
                   text: t('common:send'),
                 }}
                 formik
               />
-            </DialogActions>
+            </DialogTitleWithClose>
+            <DialogContent className={classes.dialogContentRoot}>
+              <FieldFiles
+                name={BLOBS_FIELD_NAME}
+                prefix={BLOBS_FIELD_PREFIX}
+                labelText={t('boxes:read.upload.dialog.label')}
+                renderItem={(props) => <FieldBlobs {...props} />}
+                fileTransform={fileToBlob}
+                uniqFn={uniqBlob}
+                emptyTitle={(
+                  <DialogContentText
+                    classes={{ root: classes.dialogContentTextRoot }}
+                    id="upload-dialog-description"
+                  >
+                    {t('boxes:read.upload.dialog.text')}
+                  </DialogContentText>
+                )}
+              />
+              <FormHelperText>
+                <Trans i18nKey={t('boxes:read.upload.dialog.helperText')}>
+                  Déposer le fichier que vous souhaitez chiffrer.
+                  {' '}
+                  <Link
+                    href={t('boxes:read.upload.dialog.helperLink')}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    color="secondary"
+                  >
+                    En savoir plus
+                  </Link>
+                </Trans>
+              </FormHelperText>
+            </DialogContent>
           </Form>
         )}
       </Formik>
     </Dialog>
-
   );
 }
 

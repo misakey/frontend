@@ -9,6 +9,31 @@
       "unknown": "An unknown error occurred"
     }
   },
+  "file": {
+    "label": "Drop a file here",
+    "loading": "Import in progress",
+    "button": {
+      "choose": {
+        "label": "Select"
+      }
+    }
+  },
+  "files": {
+    "label": "Drop files here",
+    "button": {
+      "choose": {
+        "label": "Choose"
+      }
+    },
+    "error": {
+      "api": {
+        "notSent": "An unknown error occured while sending files:{{filenamesErrors}}.\nCheck their format, then retry.\n",
+        "sent": "Files:{{filenamesSent}} were successfully sent."
+      },
+      "required": "You must send at least 1 file",
+      "max": "You cannot send more than 10 files in a row"
+    }
+  },
   "blob": {
     "error": {
       "size": "Max size 9MB",
@@ -51,15 +76,6 @@
     "error": {
       "required": "Oops, you forgot to enter an identifier",
       "malformed": "Oops, this email is not valid"
-    }
-  },
-  "file": {
-    "label": "Drop a file here",
-    "loading": "Import in progress",
-    "button": {
-      "choose": {
-        "label": "Select"
-      }
     }
   },
   "password": {

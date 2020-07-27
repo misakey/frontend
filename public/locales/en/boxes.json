@@ -30,7 +30,7 @@
       "info": "{{displayName}} closed the chat «\u00a0{{title}}\u00a0» on {{date}}."
     },
     "actions": {
-      "upload": "Upload a file",
+      "upload": "Send files",
       "confirmIdentity": "Confirm your identity",
       "more": "More actions",
       "send": "Send"
@@ -102,17 +102,7 @@
         "text": "What file do you want to encrypt?",
         "label": "New file to encrypt",
         "helperText": "Drop the file you want to encrypt. <1>Learn more</1>",
-        "helperLink": "https://docs.misakey.com/#/en/",
-        "errors": {
-          "blobs": {
-            "api": {
-              "notSent": "An error occurred while sending the files: {{filenamesErrors}}.\nYou can check their format and retry.\n",
-              "sent": "Files:{{filenamesSent}} have been successfully sent."
-            },
-            "required": "You must send at least one file",
-            "max": "You can not send more than 10 files at a time"
-          }
-        }
+        "helperLink": "https://docs.misakey.com/#/en/"
       },
       "success": "Files have been sent successfully\u00a0!"
     },

@@ -43,25 +43,21 @@ const useOnClearProgress = (setProgress) => useCallback(
   }, [setProgress],
 );
 
-const useOnReset = (setFile, setPreview, inputRef) => useCallback(
+const useOnReset = (setFile, setPreview) => useCallback(
   () => {
     setFile(undefined);
     setPreview(undefined);
-    if (inputRef && inputRef.current) {
-      // Fix for chrome https://stackoverflow.com/questions/9155136/chrome-file-upload-bug-on-change-event-wont-be-executed-twice-with-the-same-fi
-      // eslint-disable-next-line no-param-reassign
-      inputRef.current.value = null;
-    }
   },
-  [inputRef, setFile, setPreview],
+  [setFile, setPreview],
 );
 
 
-export default ({ onLoadStart, onProgress, onLoad, onError, inputRef }) => {
+export default ({ onLoadStart, onProgress, onLoad, onError }) => {
   const [progress, setProgress] = useState();
   const [file, setFile] = useState();
   const [preview, setPreview] = useState();
   const changeEvent = useRef();
+  const loadFinished = useRef();
 
   const endProgress = useEndProgress(setProgress);
 
@@ -77,8 +73,12 @@ export default ({ onLoadStart, onProgress, onLoad, onError, inputRef }) => {
       if (!isNil(current) && eventMatchFile(current, file)) {
         onLoad(current, { file, preview: result });
       }
+      const { current: loadFinishedCurrent } = loadFinished;
+      if (!isNil(loadFinishedCurrent)) {
+        loadFinishedCurrent();
+      }
     },
-    [endProgress, file, onLoad, changeEvent],
+    [endProgress, file, onLoad, changeEvent, loadFinished],
   );
 
   const handleFileError = useCallback((event) => {
@@ -97,11 +97,14 @@ export default ({ onLoadStart, onProgress, onLoad, onError, inputRef }) => {
         setFile(eventFile);
         FILE_READER.readAsDataURL(eventFile);
       }
+      return new Promise((resolve) => {
+        loadFinished.current = resolve;
+      });
     },
     [setFile, changeEvent],
   );
 
-  const onReset = useOnReset(setFile, setPreview, inputRef);
+  const onReset = useOnReset(setFile, setPreview);
 
   useEffect(
     () => {
@@ -112,6 +115,8 @@ export default ({ onLoadStart, onProgress, onLoad, onError, inputRef }) => {
     },
     [handleFileError, handleLoad, handleLoadStart, handleProgress],
   );
+
+
 
   return [{ file, preview, progress }, { onChange, onClearProgress, onReset }];
 };

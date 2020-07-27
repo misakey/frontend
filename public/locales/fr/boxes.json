@@ -30,7 +30,7 @@
       "info": "{{displayName}} a fermé le chat «\u00a0{{title}}\u00a0» le {{date}}."
     },
     "actions": {
-      "upload": "Envoyer un fichier",
+      "upload": "Envoyer des fichiers",
       "confirmIdentity": "Confirmer mon identité",
       "more": "Plus d'actions",
       "send": "Envoyer"
@@ -102,17 +102,7 @@
         "text": "Quel fichier souhaitez vous chiffrer\u00a0?",
         "label": "Nouveau fichier à chiffrer",
         "helperText": "Déposer le fichier que vous souhaitez chiffrer. <1>En savoir plus</1>",
-        "helperLink": "https://docs.misakey.com/#/fr/",
-        "errors": {
-          "blobs": {
-            "api": {
-              "notSent": "Une erreur inconnue s'est produite lors de l'envoi des fichiers\u00a0:{{filenamesErrors}}.\nVous pouvez vérifier leur format et réessayer.\n",
-              "sent": "Les fichiers\u00a0:{{filenamesSent}} ont été envoyés avec succès."
-            },
-            "required": "Vous devez envoyer au moins 1 fichier",
-            "max": "Vous ne pouvez envoyer que 10 fichiers à la fois"
-          }
-        }
+        "helperLink": "https://docs.misakey.com/#/fr/"
       },
       "success": "Les fichiers ont été envoyé avec succès\u00a0!"
     },

@@ -6,6 +6,7 @@ import { BUTTON_BORDER_RADIUS } from 'constants/app/boxes/layout';
 
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
 import decryptFileMsg from '@misakey/crypto/box/decryptFileMsg';
@@ -88,7 +89,7 @@ const BoxMessageFileEvent = ({ event, boxID, isFromCurrentUser, preview, t, ...r
           classes={{ root: classes.buttonDownloadRoot }}
         />
       )}
-      {...rest}
+      {...omitTranslationProps(rest)}
     />
   );
 };

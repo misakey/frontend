@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const DialogTitleWithCloseIcon = ({ children, onClose, icon, t, ...rest }) => {
+const DialogTitleWithCloseIcon = ({ children, title, onClose, icon, t, ...rest }) => {
   const classes = useStyles();
 
   const fullScreen = useDialogFullScreen();
@@ -55,14 +55,15 @@ const DialogTitleWithCloseIcon = ({ children, onClose, icon, t, ...rest }) => {
 
   return (
     <MuiDialogTitle disableTypography className={classes.root} {...omitTranslationProps(rest)}>
-      <Box display="flex">
+      <Box display="flex" width="100%">
         {hasOnClose && (
           <IconButton edge="start" aria-label={t('common:close')} onClick={onClose}>
             <Icon />
           </IconButton>
         )}
+        {children}
       </Box>
-      {children && (
+      {title && (
         <Typography classes={{ root: classes.typographyRoot }} variant="h6">{children}</Typography>
       )}
     </MuiDialogTitle>
@@ -70,6 +71,7 @@ const DialogTitleWithCloseIcon = ({ children, onClose, icon, t, ...rest }) => {
 };
 
 DialogTitleWithCloseIcon.propTypes = {
+  title: PropTypes.string,
   children: PropTypes.node,
   onClose: PropTypes.func,
   icon: PropTypes.elementType,
@@ -78,6 +80,7 @@ DialogTitleWithCloseIcon.propTypes = {
 };
 
 DialogTitleWithCloseIcon.defaultProps = {
+  title: null,
   children: null,
   onClose: null,
   icon: null,
