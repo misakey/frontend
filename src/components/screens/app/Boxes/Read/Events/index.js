@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, useRef, useEffect } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
@@ -45,11 +45,12 @@ function BoxEvents({
 }) {
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
-  const lastEventRef = useRef(null);
+  const [lastEventRef, setLastEventRef] = useState();
   const [headerHeight, setHeaderHeight] = useState(APPBAR_HEIGHT);
   const classes = useStyles({ headerHeight });
 
   const { events: boxEvents, members, title, publicKey, id } = useMemo(() => box, [box]);
+  const nbOfEvents = useMemo(() => (isNil(boxEvents) ? 0 : boxEvents.length), [boxEvents]);
   const { accountId } = useSelector(getCurrentUserSelector) || {};
   const {
     canShare,
@@ -69,13 +70,16 @@ function BoxEvents({
     if (ref) { setHeaderHeight(ref.clientHeight); }
   };
 
-  const scrollToBottom = useCallback(() => {
-    if (!isNil(lastEventRef) && !isNil(lastEventRef.current)) {
-      lastEventRef.current.scrollIntoView();
-    }
-  }, []);
+  const scrollToBottom = useCallback(
+    () => {
+      if (!isNil(lastEventRef)) { lastEventRef.scrollIntoView(); }
+    },
+    [lastEventRef],
+  );
 
-  useEffect(scrollToBottom, [eventsByDate]);
+  // lastEventRef.current to scroll on bottom when dom is ready
+  // nbOfEvents to scroll at bottom when events are added by autoRefresh
+  useEffect(scrollToBottom, [scrollToBottom, nbOfEvents]);
 
   return (
     <>
@@ -144,7 +148,7 @@ function BoxEvents({
                   <BoxEventsAccordingToType event={event} key={event.id} boxID={id} />
                 ))
               }
-              <div ref={lastEventRef} />
+              <div ref={(ref) => setLastEventRef(ref)} />
             </Box>
           ))}
         </Box>
