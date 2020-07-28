@@ -48,7 +48,9 @@ function BoxRead({
   );
   const canBeDecrypted = useMemo(() => !isNil(secretKey), [secretKey]);
 
-  const { isFetching: isFetchingBoxKeyShare } = useHandleBoxKeyShare(boxId, secretKey);
+  const {
+    isFetching: isFetchingBoxKeyShare,
+  } = useHandleBoxKeyShare(boxId, secretKey, isFetching.box);
 
   const displayLoadingScreen = useMemo(
     () => isFetching.box || (isFetchingBoxKeyShare && isNil(secretKey)),

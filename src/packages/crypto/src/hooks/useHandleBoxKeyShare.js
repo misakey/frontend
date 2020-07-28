@@ -8,7 +8,7 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 
-import { addBoxSecretKey, setBoxKeyShare } from '@misakey/crypto/store/actions/concrete';
+import { addBoxSecretKey, setBoxKeyShare, boxAddSecretKeySetKeyShare } from '@misakey/crypto/store/actions/concrete';
 import { getKeyShareBuilder, createKeyShareBuilder } from '@misakey/helpers/builder/boxes';
 import { computeInvitationHash, combineBoxKeyShares, splitBoxSecretKey } from '@misakey/crypto/box/keySplitting';
 import { selectors } from '@misakey/crypto/store/reducers';
@@ -33,7 +33,7 @@ const checkHashValidity = (shareHash) => {
 };
 
 
-export default (boxId, secretKey) => {
+export default (boxId, secretKey, isFetchingBox) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { t } = useTranslation('boxes');
@@ -47,7 +47,10 @@ export default (boxId, secretKey) => {
   // such as expirationDate
   const { value: backupKeyShareHash } = useSelector((state) => getBoxKeyShare(state, boxId) || {});
 
-  const shouldRebuildSecretKey = useMemo(() => isNil(secretKey), [secretKey]);
+  const shouldRebuildSecretKey = useMemo(
+    () => isNil(secretKey) && !isFetchingBox,
+    [secretKey, isFetchingBox],
+  );
 
   const shouldCheckBackupKeyShare = useMemo(
     () => !isNil(backupKeyShareHash) && shouldRebuildSecretKey,
@@ -60,8 +63,9 @@ export default (boxId, secretKey) => {
   );
 
   const shouldCreateNewShares = useMemo(
-    () => !isNil(secretKey) && isNil(urlKeyShareHash) && isNil(backupKeyShareHash),
-    [backupKeyShareHash, secretKey, urlKeyShareHash],
+    () => !isNil(secretKey) && !isFetchingBox
+    && isNil(urlKeyShareHash) && isNil(backupKeyShareHash),
+    [backupKeyShareHash, isFetchingBox, secretKey, urlKeyShareHash],
   );
 
   const shouldOnlyReplaceUrlHash = useMemo(
@@ -137,10 +141,22 @@ export default (boxId, secretKey) => {
 
   const onUrlKeyShareValid = useCallback(
     ({ misakeyKeyShare, otherShareHash }) => {
-      saveKeyShareInBackup(otherShareHash);
-      onSuccess(misakeyKeyShare, otherShareHash);
+      try {
+        const params = {
+          boxId,
+          keyShare: { value: otherShareHash },
+        };
+        if (shouldRebuildSecretKey) {
+          const newSecretKey = combineBoxKeyShares(otherShareHash, misakeyKeyShare);
+          params.newSecretKey = newSecretKey;
+        }
+        return Promise.resolve(dispatch(boxAddSecretKeySetKeyShare(params)));
+      } catch (error) {
+        enqueueSnackbar(t('boxes:create.dialog.error.updateBackup'), { variant: 'error' });
+        return Promise.resolve();
+      }
     },
-    [onSuccess, saveKeyShareInBackup],
+    [boxId, dispatch, shouldRebuildSecretKey, enqueueSnackbar, t],
   );
 
   const onUrlKeyShareInvalid = useCallback(

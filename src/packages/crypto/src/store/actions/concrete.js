@@ -201,10 +201,12 @@ export function createNewOwnerSecrets(password) {
  *
  * @param {string} secretKey
  */
-export const addBoxSecretKey = withBackupUpdater((secretKey) => ({
+const addBoxSecretKeyWithoutUpdate = (secretKey) => ({
   type: CRYPTO_ADD_BOX_SECRET_KEY,
   secretKey,
-}));
+});
+
+export const addBoxSecretKey = withBackupUpdater(addBoxSecretKeyWithoutUpdate);
 
 
 /**
@@ -252,9 +254,28 @@ export const setBackupKeyShare = ({ backupKeyShare, accountId }) => ({
   accountId,
 });
 
-
-export const setBoxKeyShare = withBackupUpdater(({ boxId, keyShare }) => ({
+const setBoxKeyShareWithoutUpdate = ({ boxId, keyShare }) => ({
   type: CRYPTO_SET_BOX_KEY_SHARE,
   boxId,
   keyShare,
-}));
+});
+
+export const setBoxKeyShare = withBackupUpdater(setBoxKeyShareWithoutUpdate);
+
+
+export const boxAddSecretKeySetKeyShare = withBackupUpdater(
+  ({ secretKey, boxId, keyShare }) => (dispatch) => {
+    if (isNil(secretKey)) {
+      return Promise.resolve(dispatch(setBoxKeyShareWithoutUpdate({ boxId, keyShare })));
+    }
+
+    if (isNil(boxId)) {
+      return Promise.resolve(dispatch(addBoxSecretKeyWithoutUpdate(secretKey)));
+    }
+
+    return Promise.all([
+      dispatch(setBoxKeyShareWithoutUpdate({ boxId, keyShare })),
+      dispatch(addBoxSecretKeyWithoutUpdate(secretKey)),
+    ]);
+  },
+);
