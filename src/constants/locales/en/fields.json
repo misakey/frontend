@@ -123,6 +123,11 @@
       "invalid": "Wrong password"
     }
   },
+  "account_creation_secret": {
+    "error": {
+      "malformed": "Password should be at least 8 characters long"
+    }
+  },
   "passwordVault": {
     "label": "Password",
     "placeholder": "********",

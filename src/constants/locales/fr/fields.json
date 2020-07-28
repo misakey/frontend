@@ -252,6 +252,11 @@
       "invalid": "Le mot de passe est erroné"
     }
   },
+  "account_creation_secret": {
+    "error": {
+      "malformed": "Le mot de passe doit contenir au moins 8 caractères"
+    }
+  },
   "passwordVault": {
     "label": "Mot de passe",
     "placeholder": "********",

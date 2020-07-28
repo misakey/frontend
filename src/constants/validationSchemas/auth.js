@@ -5,7 +5,7 @@ import {
   handleFieldValidation, switchFieldValidation, notificationFieldValidation,
 } from 'constants/fieldValidations';
 
-import { EMAILED_CODE, PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
+import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION } from '@misakey/auth/constants/method';
 
 import mapValues from '@misakey/helpers/mapValues';
 import pick from '@misakey/helpers/pick';
@@ -17,12 +17,14 @@ export const identifierValidationSchema = Yup.object().shape({
 const secretValidationSchemas = {
   [EMAILED_CODE]: codeFieldValidation.strictSchema,
   [PREHASHED_PASSWORD]: passwordFieldValidation.schema,
+  [ACCOUNT_CREATION]: passwordFieldValidation.setSchema,
 };
 
 export const getSecretValidationSchema = (methodName) => Yup.object().shape({
   secret: secretValidationSchemas[methodName],
 });
 
+// UNUSED
 const signInValidationSchema = {
   identifier: {
     email: emailFieldValidation.schema,
