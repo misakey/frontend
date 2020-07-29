@@ -18,7 +18,7 @@ import { createNewOwnerSecrets } from '@misakey/crypto/store/actions/concrete';
 import { ssoUpdate, ssoSign, ssoReset } from '@misakey/auth/store/actions/sso';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import { DATE_FULL } from 'constants/formats/dates';
-import { EMAILED_CODE, PREHASHED_PASSWORD, PASSWORD_RESET_KEY, ACCOUNT_CREATION } from '@misakey/auth/constants/method';
+import { EMAILED_CODE, PREHASHED_PASSWORD, PASSWORD_RESET_KEY, ACCOUNT_CREATION, AuthUndefinedMethodName } from '@misakey/auth/constants/method';
 
 import compose from '@misakey/helpers/compose';
 import head from '@misakey/helpers/head';
@@ -186,6 +186,11 @@ const AuthLoginSecret = ({
           }
         })
         .catch((e) => {
+          if (e instanceof AuthUndefinedMethodName) {
+            enqueueSnackbar(t('auth:error.flow.invalid_flow'), { variant: 'error' });
+            return setRedirectTo(routes.auth.redirectToSignIn);
+          }
+
           // in case reset password dialog is open, close dialog before setting field error
           if (dialogOpen) {
             onDialogClose();
@@ -196,14 +201,16 @@ const AuthLoginSecret = ({
             if (methodName === EMAILED_CODE) {
               setFieldValue(CURRENT_STEP, '');
             }
-            setFieldError(CURRENT_STEP, secretError);
-          } else if (details.Authorization && details.loginChallenge) {
+            return setFieldError(CURRENT_STEP, secretError);
+          }
+          if (details.Authorization && details.loginChallenge) {
             enqueueSnackbar(t('auth:login.form.error.authorizationChallenge'), { variant: 'error' });
-            dispatchSsoReset()
+            return dispatchSsoReset()
               .then(() => {
                 setRedirectTo(routes.auth.redirectToSignIn);
               });
-          } else if (details.toDelete === conflict) {
+          }
+          if (details.toDelete === conflict) {
             // @FIXME should we remove that part as it's not implemented in latest version ?
             const text = (
               <Trans
@@ -220,12 +227,12 @@ const AuthLoginSecret = ({
                 <a href={`mailto:${QUESTIONS}`}>{QUESTIONS}</a>
               </Trans>
             );
-            enqueueSnackbar(text, { variant: 'error' });
-          } else {
-            log(e, 'error');
-            // @FIXME It is false to assume that error must be a HTTP error
-            handleHttpErrors(e);
+            return enqueueSnackbar(text, { variant: 'error' });
           }
+
+          log(e, 'error');
+          // @FIXME It is false to assume that error must be a HTTP error
+          return handleHttpErrors(e);
         })
         .finally(() => {
           setSubmitting(false);

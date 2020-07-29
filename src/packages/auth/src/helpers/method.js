@@ -1,8 +1,9 @@
-import { SECLEVEL_METHOD, EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION } from '@misakey/auth/constants/method';
+import { SECLEVEL_METHOD, EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, AuthUndefinedMethodName } from '@misakey/auth/constants/method';
 
 import hashPassword from '@misakey/auth/passwordHashing/hashPassword';
 import genParams from '@misakey/auth/passwordHashing/genParams';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+import isNil from '@misakey/helpers/isNil';
 
 export const makeSeclevelMethod = (seclevel) => SECLEVEL_METHOD[seclevel] || EMAILED_CODE;
 
@@ -30,6 +31,10 @@ export const makeMetadata = async ({
       prehashedPassword,
       backupData,
     });
+  }
+
+  if (isNil(methodName)) {
+    throw new AuthUndefinedMethodName();
   }
 
   throw new Error(`unknown methodName ${methodName}`);

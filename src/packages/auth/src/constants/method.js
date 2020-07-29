@@ -14,3 +14,11 @@ export const SECLEVEL_METHOD = {
 };
 
 export const METHODS = [EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION];
+
+
+export class AuthUndefinedMethodName extends Error {
+  constructor(message) {
+    super(message);
+    this[message] = 'undefined methodName';
+  }
+}
