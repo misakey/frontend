@@ -12,11 +12,16 @@
     "profile": "Manage my account"
   },
   "errorBoundary": {
-    "title": {
-      "default": "Oopsy\u00a0! An unknown error occurred..."
-    },
     "button": {
       "collapse": "Details"
+    }
+  },
+  "ScreenError": {
+    "title": "<0>Oops...</0><1>An error occured !</1>",
+    "subtitle": "You can try to refresh the page. If the error persists, <1>contact us</1>.",
+    "button": {
+      "refresh": "Refresh",
+      "goback": "Go back"
     }
   },
   "errorOverlay": {

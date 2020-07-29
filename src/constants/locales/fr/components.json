@@ -51,11 +51,16 @@
     }
   },
   "errorBoundary": {
-    "title": {
-      "default": "Aïe\u00a0! Une erreur est survenue..."
-    },
     "button": {
       "collapse": "Détails"
+    }
+  },
+  "ScreenError": {
+    "title": "<0>Oups...</0><1>Une erreur s'est produite lors de la navigation</1>",
+    "subtitle": "Vous pouvez essayer de rafraichir la page. Si l'erreur persiste, <1>contactez-nous</1>.",
+    "button": {
+      "refresh": "Rafraichir",
+      "goback": "Retour"
     }
   },
   "errorOverlay": {

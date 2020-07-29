@@ -6,17 +6,15 @@ import clsx from 'clsx';
 import { withTranslation } from 'react-i18next';
 import * as Sentry from '@sentry/browser';
 
-import omit from '@misakey/helpers/omit';
 import BoxSection from '@misakey/ui/Box/Section';
-import BoxMessage from '@misakey/ui/Box/Message';
-
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Collapse from '@material-ui/core/Collapse';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import './ErrorBoundary.scss';
+import ScreenError from 'components/smart/Screen/Error';
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -48,16 +46,7 @@ class ErrorBoundary extends Component {
     if (hasError) {
       // render fallback UI
       return (
-        <Box
-          className={clsx('ErrorBoundary', className)}
-          component={component}
-          {...omit(rest, ['tReady', 'i18n'])}
-        >
-          <BoxMessage
-            text={t([`components:errorBoundary.title.${error}`, 'components:errorBoundary.title.default'])}
-            type="error"
-            mb={1}
-          />
+        <ScreenError {...omitTranslationProps(rest)}>
           {window.env.ENV === 'development' && (
             <>
               <Box display="flex" justifyContent="flex-end">
@@ -74,8 +63,7 @@ class ErrorBoundary extends Component {
               </Collapse>
             </>
           )}
-        </Box>
-
+        </ScreenError>
       );
     }
 

@@ -26,12 +26,19 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   const [resourceName, setResourceName] = useState();
   const { userManager } = useContext(UserManagerContext);
 
+  const loginHint = useMemo(
+    () => (!isNil(resourceName)
+      ? JSON.stringify(objectToSnakeCase({ resourceName }))
+      : null),
+    [resourceName],
+  );
+
   const redirectOptions = useMemo(
-    () => objectToSnakeCase({
-      ...options,
-      loginHint: JSON.stringify(objectToSnakeCase({ resourceName })),
-    }),
-    [options, resourceName],
+    () => {
+      const args = isNil(loginHint) ? options : { ...options, loginHint };
+      return objectToSnakeCase(args);
+    },
+    [loginHint, options],
   );
 
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
@@ -72,7 +79,7 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
     return <RouteComponent path={path} {...rest} />;
   }
 
-  if (isFetching || shouldFetch || isNil(keyShare)) {
+  if (isFetching || shouldFetch) {
     return <SplashScreenWithTranslation />;
   }
 
