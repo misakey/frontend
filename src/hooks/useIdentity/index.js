@@ -9,12 +9,9 @@ import IdentitySchema from 'store/schemas/Identity';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
-import any from '@misakey/helpers/any';
+import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import { getIdentity as getIdentityBuilder } from '@misakey/auth/builder/identities';
-
-// HELPERS
-const isAnyEmpty = any(isEmpty);
 
 
 // HOOKS
@@ -57,7 +54,7 @@ export default () => {
   );
 
   const shouldFetch = useMemo(
-    () => isAnyEmpty([token, identity]) && !isEmpty(identityId),
+    () => isEmpty(identity) && !isEmpty(identityId) && !isNil(token),
     [token, identity, identityId],
   );
 
