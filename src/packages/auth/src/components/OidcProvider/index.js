@@ -11,8 +11,6 @@ import createUserManager from '@misakey/auth/helpers/userManager';
 
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 
-import { matchPath } from 'react-router-dom';
-
 
 const getUser = ({
   profile: { acr, sco: scope, auth_time: authenticatedAt } = {},
@@ -35,7 +33,7 @@ export const UserManagerContext = createContext({
 });
 
 // COMPONENTS
-function OidcProvider({ store, children, config, silentBlacklist }) {
+function OidcProvider({ store, children, config }) {
   const userManager = useMemo(
     () => createUserManager(config),
     [config],
@@ -49,11 +47,6 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
       accountId: accountId || null, // accountId can be an empty string
     })),
     [store],
-  );
-
-  const isAllowedToLaunchSilentAuth = useCallback(
-    () => silentBlacklist.every((route) => !matchPath(window.location.pathname, route)),
-    [silentBlacklist],
   );
 
   const dispatchStoreUpdate = useCallback(
@@ -73,14 +66,11 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
     log('User is loaded !');
 
     // the access_token is still valid so we load the user in the store
-    if (!isNil(user)) {
-      if (!user.expired) {
-        return dispatchStoreUpdate(user)
-          .then(() => setIsLoading(false));
-      }
-    } else {
-      setIsLoading(false);
+    if (!isNil(user) && !user.expired) {
+      return dispatchStoreUpdate(user)
+        .then(() => setIsLoading(false));
     }
+    setIsLoading(false);
     return Promise.resolve();
   }, [dispatchStoreUpdate]);
 
@@ -91,28 +81,6 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
       store.dispatch(authReset());
     }
   }, [store]);
-
-  // event callback when the access token expired
-  const onAccessTokenExpired = useCallback(() => {
-    log('User token is expired !');
-    // @TODO could be removed when https://github.com/IdentityModel/oidc-client-js/issues/787
-    // will be implemented
-    if (userManager.settings.automaticSilentRenew && isAllowedToLaunchSilentAuth()) {
-      setIsLoading(true);
-
-      userManager.signinSilent()
-        .then(() => {
-          log('OidcProvider.onAccessTokenExpired: Silent token renewal successful');
-        }, (err) => {
-          log(`OidcProvider.onAccessTokenExpired: Error from signinSilent: ${err.message}`);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    } else {
-      setIsLoading(false);
-    }
-  }, [isAllowedToLaunchSilentAuth, userManager]);
 
   const loadUserAtMount = useCallback(() => {
     setIsLoading(true);
@@ -126,7 +94,6 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
     // register the event callbacks
     userManager.events.addUserLoaded(onUserLoaded);
     userManager.events.addSilentRenewError(onSilentRenewError);
-    userManager.events.addAccessTokenExpired(onAccessTokenExpired);
 
     loadUserAtMount();
 
@@ -139,13 +106,11 @@ function OidcProvider({ store, children, config, silentBlacklist }) {
       // unregister the event callbacks
       userManager.events.removeUserLoaded(onUserLoaded);
       userManager.events.removeSilentRenewError(onSilentRenewError);
-      userManager.events.removeAccessTokenExpired(onAccessTokenExpired);
     };
   }, [
     userManager,
     onUserLoaded,
     onSilentRenewError,
-    onAccessTokenExpired,
     loadUserAtMount,
   ]);
 
@@ -171,7 +136,6 @@ OidcProvider.propTypes = {
     scope: PropTypes.string,
   }),
   store: PropTypes.object,
-  silentBlacklist: PropTypes.arrayOf(PropTypes.object),
 };
 
 OidcProvider.defaultProps = {
@@ -183,7 +147,6 @@ OidcProvider.defaultProps = {
     loadUserInfo: false,
   },
   store: null,
-  silentBlacklist: [],
 };
 
 export const withUserManager = (Component) => forwardRef((props, ref) => (

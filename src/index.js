@@ -43,7 +43,6 @@ import { isSilentAuthIframe, processSilentAuthCallbackInIframe } from '@misakey/
 
 import { isSigninRedirect, processSigninRedirect } from 'helpers/auth';
 import SnackbarActionHide from 'components/dumb/Snackbar/Action/Hide';
-import routes from 'routes';
 
 /* END OF IMPORTS */
 
@@ -89,7 +88,6 @@ if (isSilentAuthIframe()) {
 
   // SPLASH SCREEN CONFIG
   const SPLASH_SCREEN_PROPS = { height: '100vh', width: '100vw' };
-  const silentAuthBlacklist = [{ path: '/auth' }, { path: routes.auth.callback, exact: true }];
 
   ReactDOM.render((
     <Suspense fallback={<SplashScreen {...SPLASH_SCREEN_PROPS} />}>
@@ -109,7 +107,6 @@ if (isSilentAuthIframe()) {
                 <OidcProvider
                   store={store}
                   config={window.env.AUTH}
-                  silentBlacklist={silentAuthBlacklist}
                 >
                   <App />
                 </OidcProvider>
