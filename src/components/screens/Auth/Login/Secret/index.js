@@ -259,10 +259,12 @@ const AuthLoginSecret = ({
   const onClearUser = useClearUser();
 
   const chipActions = useMemo(
-    () => ({
-      onDelete: onClearUser,
-    }),
-    [onClearUser],
+    () => (methodName === ACCOUNT_CREATION
+      ? {}
+      : {
+        onDelete: onClearUser,
+      }),
+    [onClearUser, methodName],
   );
 
   if (!isNil(redirectTo)) {

@@ -9,6 +9,7 @@ import { screenAuthReset } from 'store/actions/screens/auth';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
 
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 import pickAll from '@misakey/helpers/pickAll';
 import every from '@misakey/helpers/every';
 import difference from '@misakey/helpers/difference';
@@ -106,10 +107,15 @@ const Auth = ({
     [loginChallenge],
   );
 
+  const isSsoClientEmpty = useMemo(
+    () => isEmpty(sso.client),
+    [sso],
+  );
+
   // Do not fetch when handling consent flow
   const shouldFetch = useMemo(
-    () => !hasConsentRequiredParams(searchParams) && hasLoginChallenge,
-    [searchParams, hasLoginChallenge],
+    () => hasLoginChallenge && (!hasConsentRequiredParams(searchParams) || isSsoClientEmpty),
+    [searchParams, hasLoginChallenge, isSsoClientEmpty],
   );
 
   const requiredSsoParams = useMemo(
