@@ -1,10 +1,3 @@
-cache:
-  key: frontend-${CI_COMMIT_REF_NAME}
-  untracked: true
-  paths:
-    - node_modules/
-  policy: pull
-
 variables:
   CI: "true"
 
