@@ -15,13 +15,13 @@ export default function exportCrypto(fileNamePrefix, openPasswordPrompt) {
 
       const date = moment().format(DATETIME_FILE_HUMAN_READABLE);
 
-      downloadFile(
+      return downloadFile(
         JSON.stringify(secrets),
         `${fileNamePrefix}-${date}.json`,
       );
     } catch (error) {
       if (error instanceof NoPassword) {
-        return;
+        return undefined;
       }
       throw error;
     }

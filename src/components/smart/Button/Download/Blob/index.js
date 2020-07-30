@@ -1,23 +1,16 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { useSnackbar } from 'notistack';
+
 import log from '@misakey/helpers/log';
-
 import downloadFile from '@misakey/helpers/downloadFile';
-
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import { getBoxEncryptedFileBuilder } from '@misakey/helpers/builder/boxes';
 import decryptFile from '@misakey/crypto/box/decryptFile';
 
-import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
+import { useSnackbar } from 'notistack';
 
-// HELPERS
-const useStyles = makeStyles(() => ({
-  buttonRoot: {
-    borderRadius: 0,
-  },
-}));
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 async function downloadAndDecryptFile({ boxID, encryptedFileId, decryptedContent, onError }) {
   let encryptedFile;
@@ -25,19 +18,18 @@ async function downloadAndDecryptFile({ boxID, encryptedFileId, decryptedContent
     const response = await getBoxEncryptedFileBuilder(boxID, encryptedFileId);
     encryptedFile = response.blob;
   } catch (error) {
-    onError('boxes:read.events.download.errors.get');
     log(error, 'error');
-    return;
+    return onError('boxes:read.events.download.errors.get');
   }
 
   const file = await decryptFile(encryptedFile, decryptedContent);
 
-  downloadFile(file, file.name);
+  return downloadFile(file, file.name);
 }
 
 // COMPONENTS
-const ButtonDownloadBlob = ({ boxID, encryptedFileId, decryptedContent, t, classes }) => {
-  const internalClasses = useStyles();
+const ButtonDownloadBlob = ({ boxID, encryptedFileId, decryptedContent, t, ...rest }) => {
+  const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
   const onError = useCallback(
@@ -50,24 +42,26 @@ const ButtonDownloadBlob = ({ boxID, encryptedFileId, decryptedContent, t, class
   const onDownload = useCallback(
     async () => {
       try {
+        setLoading(true);
         await downloadAndDecryptFile({ boxID, encryptedFileId, decryptedContent, onError });
       } catch (e) {
         log(e);
         onError('boxes:read.events.download.errors.default');
       }
+      setLoading(false);
     },
     [boxID, encryptedFileId, decryptedContent, onError],
   );
 
   return (
     <Button
-      className={internalClasses.buttonRoot}
-      classes={classes}
       color="secondary"
+      isLoading={loading}
       onClick={onDownload}
-    >
-      {t('common:download')}
-    </Button>
+      standing={BUTTON_STANDINGS.TEXT}
+      text={t('common:download')}
+      {...omitTranslationProps(rest)}
+    />
   );
 };
 

@@ -20,7 +20,7 @@ import formatFileSize from 'helpers/formatFileSize';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 const useStyles = makeStyles(() => ({
-  buttonDownloadRoot: {
+  buttonDownloadButtonRoot: {
     borderRadius: BUTTON_BORDER_RADIUS,
   },
 }));
@@ -86,7 +86,7 @@ const BoxMessageFileEvent = ({ event, boxID, isFromCurrentUser, preview, t, ...r
           boxID={boxID}
           encryptedFileId={encryptedFileId}
           decryptedContent={decryptedContent}
-          classes={{ root: classes.buttonDownloadRoot }}
+          classes={{ buttonRoot: classes.buttonDownloadButtonRoot }}
         />
       )}
       {...omitTranslationProps(rest)}

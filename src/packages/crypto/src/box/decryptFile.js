@@ -1,3 +1,4 @@
+import makeFileOrBlob from '@misakey/helpers/makeFileOrBlob';
 import {
   symmetricDecrypt,
 } from '../crypto';
@@ -21,10 +22,5 @@ export default async function (encryptedFile, decryptedContent) {
   const ciphertext = await uint8arrayFromBlob(encryptedFile);
   const plaintext = symmetricDecrypt(ciphertext, nonce, fileKey);
 
-  const file = new File(
-    [blobFromUint8array(plaintext)],
-    fileName,
-  );
-
-  return file;
+  return makeFileOrBlob([blobFromUint8array(plaintext)], fileName);
 }
