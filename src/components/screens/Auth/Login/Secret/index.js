@@ -25,9 +25,10 @@ import head from '@misakey/helpers/head';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import props from '@misakey/helpers/props';
 import isNil from '@misakey/helpers/isNil';
-import { getDetails } from '@misakey/helpers/apiError';
+import { getDetails, getCode } from '@misakey/helpers/apiError';
 import log from '@misakey/helpers/log';
 import loginAuthStep from '@misakey/auth/builder/loginAuthStep';
+import { isHydraErrorCode } from '@misakey/auth/helpers/errors';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
@@ -44,6 +45,7 @@ import BoxControls from '@misakey/ui/Box/Controls';
 import ButtonForgotPassword from '@misakey/auth/components/Button/ForgotPassword';
 import ButtonRenewAuthStep from '@misakey/auth/components/Button/RenewAuthStep';
 import DialogPasswordReset from 'components/smart/Dialog/Password/Reset';
+import SnackbarActionAuthRestart from 'components/dumb/Snackbar/Action/AuthRestart';
 
 import useHandleBackupKeySharesFromAuthFlow from '@misakey/crypto/hooks/useHandleBackupKeySharesFromAuthFlow';
 
@@ -195,6 +197,7 @@ const AuthLoginSecret = ({
           if (dialogOpen) {
             onDialogClose();
           }
+          const code = getCode(e);
           const details = getDetails(e);
           const secretError = getSecretError(details);
           if (!isNil(secretError)) {
@@ -204,11 +207,17 @@ const AuthLoginSecret = ({
             return setFieldError(CURRENT_STEP, secretError);
           }
           if (details.Authorization && details.loginChallenge) {
-            enqueueSnackbar(t('auth:login.form.error.authorizationChallenge'), { variant: 'error' });
+            enqueueSnackbar(t('auth:login.form.error.authorizationChallenge'), { variant: 'warning' });
             return dispatchSsoReset()
               .then(() => {
                 setRedirectTo(routes.auth.redirectToSignIn);
               });
+          }
+          if (isHydraErrorCode(code)) {
+            return enqueueSnackbar(t(`auth:error.flow.${code}`), {
+              variant: 'warning',
+              action: (key) => <SnackbarActionAuthRestart id={key} />,
+            });
           }
           if (details.toDelete === conflict) {
             // @FIXME should we remove that part as it's not implemented in latest version ?
