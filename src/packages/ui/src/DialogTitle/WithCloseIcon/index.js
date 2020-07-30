@@ -64,7 +64,7 @@ const DialogTitleWithCloseIcon = ({ children, title, onClose, icon, t, ...rest }
         {children}
       </Box>
       {title && (
-        <Typography classes={{ root: classes.typographyRoot }} variant="h6">{children}</Typography>
+        <Typography classes={{ root: classes.typographyRoot }} variant="h6">{title}</Typography>
       )}
     </MuiDialogTitle>
   );
