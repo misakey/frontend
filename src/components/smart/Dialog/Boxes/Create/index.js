@@ -38,6 +38,7 @@ import { createBoxBuilder } from '@misakey/helpers/builder/boxes';
 import { ALL } from 'constants/app/boxes/statuses';
 import { addBoxSecretKey } from '@misakey/crypto/store/actions/concrete';
 import FieldTextStandard from 'components/dumb/Form/Field/Text/Standard';
+import getRandomTitle from '@misakey/helpers/getRandomTitle';
 
 export const FIELD_NAME = 'name';
 export const INITIAL_VALUES = { [FIELD_NAME]: '' };
@@ -97,10 +98,11 @@ function CreateBoxDialog({
   );
 
   const onSubmit = useCallback((form, { setSubmitting }) => {
+    const title = form[FIELD_NAME] || getRandomTitle();
     // @FIXME a component should not have to call such low-level functions,
     // see about moving part of the box creation logic to actions
     const { secretKey, publicKey } = generateAsymmetricKeyPair();
-    return createBoxBuilder({ title: form[FIELD_NAME], publicKey })
+    return createBoxBuilder({ title, publicKey })
       .then((response) => onSubmitSuccess(response, secretKey))
       .catch(handleHttpErrors)
       .finally(() => { setSubmitting(false); });

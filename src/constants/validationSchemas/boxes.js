@@ -16,7 +16,7 @@ const getInvitationUrl = (id) => generatePath(`${routes.boxes.read._}`, { id }).
 const getInvitationUrlForBox = (id) => `${getInvitationUrl(id)}#${KEY_REGEX}`;
 
 export const boxNameFieldValidationSchema = Yup.object().shape({
-  name: Yup.string().min(5, malformed).max(50, malformed).required(required),
+  name: Yup.string().min(1, malformed).max(50, malformed),
 });
 
 export const getBoxInvitationLinkFieldValidationSchema = (id) => Yup.object().shape({
