@@ -13,8 +13,8 @@
     "events": {
       "preview": {
         "message": {
-          "you": "<1>You</1>: {{text}}",
-          "they": "<1>{{displayName}}</1>: {{text}}"
+          "you": "<0>You</0>: {{text}}",
+          "they": "<0>{{displayName}}</0>: {{text}}"
         }
       }
     },
