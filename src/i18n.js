@@ -17,7 +17,6 @@ import numbroEN from 'numbro/languages/en-GB';
 import frCommonNew from 'constants/locales/fr/common';
 import frComponentsNew from 'constants/locales/fr/components';
 import frFieldsNew from 'constants/locales/fr/fields';
-import frLandingNew from 'constants/locales/fr/landing';
 
 // FR namespaces
 import enCommonNew from 'constants/locales/en/common';
@@ -40,10 +39,6 @@ const COMMONS_NAMESPACES = {
     {
       name: 'fields',
       ressources: frFieldsNew,
-    },
-    {
-      name: 'landing',
-      ressources: frLandingNew,
     },
   ],
   en: [

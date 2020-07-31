@@ -8,17 +8,8 @@
   "client": {
     "logoAlt": "Logo de {{clientName}}"
   },
-  "blob": {
-    "fileTypes": {
-      "unclassified": "Fichier non classifié"
-    },
-    "received": "{{size}} reçu le {{date}}"
-  },
   "buttonConnect": {
-    "currentUser": "Compte de l'utilisateur actuel",
-    "profile": "Mon compte",
-    "signIn": "Connexion",
-    "signOut": "Déconnexion"
+    "signIn": "Connexion"
   },
   "buttonAccount": {
     "profile": "Gérer mon compte"
@@ -26,29 +17,6 @@
   "dialogConnect": {
     "title": "Bonjour,",
     "subtitle": "Je me connecte pour pouvoir publier du contenu et contacter les sites pour récupérer mes données"
-  },
-  "drawer": {
-    "toggle": "Basculer le menu",
-    "select": {
-      "service": {
-        "dropdown": "Basculer la liste des sites",
-        "logo": {
-          "alt": "Logo du site\u00a0: {{mainDomain}}",
-          "title": "{{mainDomain}}"
-        }
-      }
-    },
-    "list": {
-      "items": {
-        "home": "Accueil",
-        "information": "Informations",
-        "sso": "Single Sign On",
-        "users": "Utilisateurs",
-        "data": "Mon coffre-fort",
-        "requests": "Requêtes RGPD",
-        "claim": "Revendiquer ce site"
-      }
-    }
   },
   "errorBoundary": {
     "button": {
@@ -97,13 +65,6 @@
     }
   },
   "list": {
-    "applications": {
-      "error": "Une erreur est survenue lors de la récupération des applications",
-      "linked": {
-        "title": "Mes sites"
-      },
-      "pending": "En attente de validation"
-    },
     "empty": {
       "title": "Il n'y a rien dans cette liste pour l'instant",
       "text": ""
@@ -122,106 +83,5 @@
         "subtitle": "Je souhaite recevoir des communications dès que de nouvelles informations sont disponibles"
       }
     }
-  },
-  "onboarding": {
-    "dpo": {
-      "title": "<0>A partir de maintenant,</0>\nje rends le contrôle à mes utilisateurs·trices sur leurs données personnelles.",
-      "steps": {
-        "1": {
-          "text": "1 - Je crée mon compte gratuitement",
-          "button": "Créer"
-        },
-        "2": {
-          "text": "2 - J’active l’interface sécurisée pour mon site {{ mainDomain }}",
-          "button": "Activer"
-        }
-      }
-    },
-    "citizen": {
-      "title": "<0>A partir de maintenant,</0>\nje contrôle mes données personnelles.",
-      "steps": {
-        "1": {
-          "text": "1 - Je crée mon coffre-fort gratuitement",
-          "button": "Créer"
-        },
-        "2": {
-          "text": "2 - J'installe l'extension Misakey",
-          "firefox": "Firefox",
-          "chrome": "Chrome"
-        },
-        "3": {
-          "text": "2 - Je demande mes données en 2 clics",
-          "button": "Commencer"
-        }
-      }
-    }
-  },
-  "passwordPrompt": {
-    "title": "Ouvrir mon coffre-fort",
-    "description": "Pour cette action, je dois saisir mon mot de passe"
-  },
-  "route": {
-    "service": {
-      "claim": {
-        "dpo": {
-          "button": "Je suis DPO",
-          "description": "Je ne suis pas connecté en tant que DPO de ce site, je peux lancer le processus de récupération du rôle DPO. Sinon je peux chercher un autre site"
-        },
-        "admin": {
-          "button": "Je suis administrateur",
-          "description": "Je ne suis pas connecté en tant qu'administrateur de ce site, je peux lancer le processus de récupération du rôle administrateur. Sinon je peux chercher un autre site"
-        }
-      },
-      "intro": {
-        "dpo": {
-          "description": "Bienvenue dans l'espace DPO. Pour commencer, je recherche un site."
-        },
-        "admin": {
-          "description": "Bienvenue dans l'espace administrateur. Pour commencer, je recherche un site."
-        }
-      },
-      "loginAs": {
-        "dpo": {
-          "button": "Connexion en tant que DPO",
-          "description": "Je ne suis pas connecté en tant que DPO",
-          "loading": "Connexion en tant que DPO en cours..."
-        },
-        "admin": {
-          "button": "Connexion en tant qu'administrateur",
-          "description": "Je ne suis pas connecté en tant qu'administrateur",
-          "loading": "Connexion en tant qu'administrateur en cours..."
-        }
-      },
-      "titleByComponentName": {
-        "AdminServiceClaim": "Je me connecte pour commencer les étapes d'appropriation de domaine",
-        "AdminServiceHome": "Une fois connecté, je pourrai consulter le tableau de bord de mon site",
-        "AdminServiceInformation": "Une fois connecté, je pourrai modifier les informations de la fiche de mon site",
-        "AdminServiceSSO": "Une fois connecté, je pourrai configurer le SSO Misakey pour mon site",
-        "AdminServiceUsers": "Une fois connecté, je pourrai ajouter des utilisateurs pour administrer mon site",
-        "AdminServiceData": "Je me connecte pour créer des demandes de partage de données",
-        "DPOServiceRequests": "Je me connecte pour consulter les requêtes RGPD des utilisateurs de mon site",
-        "DPOServiceClaim": "Je me connecte pour me déclarer en tant que DPO"
-      }
-    }
-  },
-  "search": {
-    "application": {
-      "button": "Rechercher un site"
-    },
-    "subHeader": {
-      "linkedApplication": {
-        "citizen": "Mes apps",
-        "dpo": "Mes rôles DPO",
-        "admin": "Mes rôles Admin"
-      },
-      "suggestedApplication": "Suggestions"
-    }
-  },
-  "silentAuth": {
-    "text": {
-      "dpo": "Je me connecte en tant que DPO pour accéder à cet espace.",
-      "citizen": "Je me connecte en tant que Citoyen pour accéder à cet espace."
-    },
-    "button": "Connexion"
   }
 }

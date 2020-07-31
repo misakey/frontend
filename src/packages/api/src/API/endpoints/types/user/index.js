@@ -32,11 +32,4 @@ export default {
       path: '/users/:email/public',
     },
   },
-  roles: {
-    read: {
-      method: 'GET',
-      path: '/user-roles',
-      auth: true,
-    },
-  },
 };

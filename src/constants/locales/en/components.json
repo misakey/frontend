@@ -1,12 +1,9 @@
 {
-  "application": {
-    "logoAlt": "{{applicationName}}'s logo"
+  "client": {
+    "logoAlt": "Logo of {{clientName}}"
   },
-  "blob": {
-    "fileTypes": {
-      "unclassified": "Unclassified file"
-    },
-    "received": "{{size}} received on {{date}}"
+  "buttonConnect": {
+    "signIn": "Login"
   },
   "buttonAccount": {
     "profile": "Manage my account"
@@ -61,15 +58,20 @@
     "empty": {
       "title": "This list is empty for now",
       "text": ""
-    }
-  },
-  "passwordPrompt": {
-    "title": "Unlock my vault",
-    "description": "I have to type my password to do that"
-  },
-  "search": {
-    "application": {
-      "button": "Search a site"
+    },
+    "notificationConfig": {
+      "minimal": {
+        "title": "Minimal",
+        "subtitle": "I want to receive communications only when it is necessary"
+      },
+      "moderate": {
+        "title": "Moderate",
+        "subtitle": "I want to receive communications sparingly to help me use the service"
+      },
+      "frequent": {
+        "title": "High",
+        "subtitle": "I want to receive communications as soon as new information is available"
+      }
     }
   }
 }

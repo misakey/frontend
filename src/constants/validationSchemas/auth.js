@@ -7,7 +7,6 @@ import {
 
 import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION } from '@misakey/auth/constants/method';
 
-import mapValues from '@misakey/helpers/mapValues';
 import pick from '@misakey/helpers/pick';
 
 export const identifierValidationSchema = Yup.object().shape({
@@ -23,21 +22,6 @@ const secretValidationSchemas = {
 export const getSecretValidationSchema = (methodName) => Yup.object().shape({
   secret: secretValidationSchemas[methodName],
 });
-
-// UNUSED
-const signInValidationSchema = {
-  identifier: {
-    email: emailFieldValidation.schema,
-  },
-  secret: {
-    [PREHASHED_PASSWORD]: passwordFieldValidation.schema,
-    [EMAILED_CODE]: codeFieldValidation.schema,
-  },
-};
-
-export const getSignInValidationSchema = (fieldTypes, step) => Yup.object().shape(
-  pick([step], mapValues(signInValidationSchema, (value, key) => value[fieldTypes[key]])),
-);
 
 export const openVaultValidationSchema = Yup.object().shape({
   [PREHASHED_PASSWORD]: passwordFieldValidation.schema,
@@ -83,7 +67,3 @@ export const createPasswordValidationSchema = Yup.object().shape({
 });
 
 export const resetPasswordValidationSchema = createPasswordValidationSchema;
-
-export const accessRequestValidationSchema = Yup.object().shape({
-  code: codeFieldValidation.schema,
-});

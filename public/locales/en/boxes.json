@@ -113,7 +113,7 @@
         "files": "Files of the chat",
         "encryption": {
           "primary": "Encryption",
-          "secondary": "Information sent in this workspace are protected with end-to-end encryption."
+          "secondary": "Information sent in this workspace is protected with end-to-end encryption."
         },
         "members": {
           "title": "Members of the chat",

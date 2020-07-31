@@ -22,6 +22,7 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 import { Container } from '@material-ui/core';
 import Subtitle from 'packages/ui/src/Typography/Subtitle';
 import { FEEDBACK } from 'constants/emails';
+import FooterFullScreen from 'components/dumb/Footer/FullScreen';
 
 // CONSTANTS
 const APPBAR_HEIGHT = 64;
@@ -33,7 +34,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function ScreenError({ t, className, children, ...rest }) {
+function ScreenError({ t, className, children, hideDefaultError, hideRefreshAction, ...rest }) {
   const classes = useStyles();
   return (
     <>
@@ -60,31 +61,38 @@ function ScreenError({ t, className, children, ...rest }) {
           className={clsx('ErrorBoundary', className)}
           {...omit(rest, ['tReady', 'i18n'])}
         >
-          <Trans i18nKey="components:ScreenError.title">
-            <Title align="center" color="secondary">
-              Oups ...
-            </Title>
-            <Title align="center">
-              Une erreur s&apos;est produite lors de la navigation
-            </Title>
-          </Trans>
-          <Subtitle align="center">
-            <Trans i18nKey="components:ScreenError.subtitle">
-              Vous pouvez essayer de rafraichir la page. Si l&apos;erreur persiste,
-              <MuiLink href={`mailto:${FEEDBACK}`} color="secondary">{' contactez-nous'}</MuiLink>
-              .
-            </Trans>
-          </Subtitle>
+          {!hideDefaultError && (
+            <>
+              <Trans i18nKey="components:ScreenError.title">
+                <Title align="center" color="secondary">
+                  Oups ...
+                </Title>
+                <Title align="center">
+                  Une erreur s&apos;est produite lors de la navigation
+                </Title>
+              </Trans>
+              <Subtitle align="center">
+                <Trans i18nKey="components:ScreenError.subtitle">
+                  Vous pouvez essayer de rafraichir la page. Si l&apos;erreur persiste,
+                  <MuiLink href={`mailto:${FEEDBACK}`} color="secondary">{' contactez-nous'}</MuiLink>
+                  .
+                </Trans>
+              </Subtitle>
+            </>
+          )}
           {children}
-          <BoxControls
-            m={2}
-            primary={{
-              onClick: () => { window.location.reload(); },
-              text: t('components:ScreenError.button.refresh'),
-            }}
-          />
+          {!hideRefreshAction && (
+            <BoxControls
+              m={2}
+              primary={{
+                onClick: () => { window.location.reload(); },
+                text: t('components:ScreenError.button.refresh'),
+              }}
+            />
+          )}
         </Box>
       </Container>
+      <FooterFullScreen />
     </>
   );
 }
@@ -92,12 +100,16 @@ function ScreenError({ t, className, children, ...rest }) {
 ScreenError.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
+  hideDefaultError: PropTypes.bool,
+  hideRefreshAction: PropTypes.bool,
   t: PropTypes.func.isRequired,
 };
 
 ScreenError.defaultProps = {
   children: null,
   className: '',
+  hideDefaultError: false,
+  hideRefreshAction: false,
 };
 
 

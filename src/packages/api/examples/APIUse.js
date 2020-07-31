@@ -7,7 +7,7 @@ const params = locationParams;
 const payload = undefined;
 const queryParams = undefined;
 
-const myRequestPromise = API.use(API.endpoints.application.read)
+const myRequestPromise = API.use(API.endpoints.boxes.read)
   .build(params, payload, queryParams)
   .send();
 

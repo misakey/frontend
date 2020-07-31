@@ -41,10 +41,6 @@
       "name": "Incorrect file format. Name is required"
     }
   },
-  "codeInvitation": {
-    "label": "Invitation code",
-    "placeholder": "codePink"
-  },
   "emailed_code": {
     "label": "Confirmation code",
     "helperText": "Type code received by email",
@@ -152,5 +148,12 @@
     "invitationLink": {
       "label": "Invitation link"
     }
+  },
+  "notifications": {
+    "label": "Frequency",
+    "action": "Edit",
+    "minimal": "Minimal",
+    "moderate": "Moderate",
+    "frequent": "High"
   }
 }

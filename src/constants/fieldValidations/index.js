@@ -48,11 +48,6 @@ export const notificationFieldValidation = {
     .oneOf(NOTIFICATIONS),
 };
 
-export const linkFieldValidation = {
-  optionalSchema: Yup.string().url(malformed),
-  schema: Yup.string().url(malformed).required(required),
-};
-
 export const fileFieldValidation = {
   blobSchema: Yup.mixed()
     .test('fileSize', 'size', (file) => isNil(file) || file.size <= MAX_FILE_SIZE)
@@ -71,13 +66,4 @@ export const stringFieldValidation = {
 
 export const displayNameFieldValidation = {
   schema: Yup.string().min(3, invalid).max(254, invalid).required(required),
-};
-
-export const ratingFieldValidation = {
-  schema: Yup.number().nullable().min(1, required).max(5, malformed)
-    .required(required),
-};
-
-export const commentFieldValidation = {
-  schema: Yup.string().min(10, malformed).max(4096, malformed).required(required),
 };
