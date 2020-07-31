@@ -268,7 +268,7 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
             {members.map(({ displayName, avatarUrl, identifier }) => (
               <ListItem key={identifier.value}>
                 <ListItemAvatar>
-                  <AvatarUser src={avatarUrl} />
+                  <AvatarUser displayName={displayName} avatarUrl={avatarUrl} />
                 </ListItemAvatar>
                 <ListItemText
                   primary={displayName}
