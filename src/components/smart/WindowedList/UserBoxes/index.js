@@ -19,14 +19,45 @@ import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import Box from '@material-ui/core/Box';
 import Title from '@misakey/ui/Typography/Title';
+import Typography from '@material-ui/core/Typography';
 
+const ButtonCreate = withDialogCreate(Button);
+
+// CONSTANTS
+// Box height + margin
+const INNER_ELEMENT_TYPE_HEIGHT = 51 + 2 * 8;
+
+// HOOKS
 const useStyles = makeStyles((theme) => ({
   secondary: {
     color: theme.palette.secondary.main,
   },
 }));
 
-const ButtonCreate = withDialogCreate(Button);
+
+const useInnerElementType = (itemCount, t) => useMemo(() => forwardRef((props, ref) => (
+  <div ref={ref}>
+    <div {...props} />
+    <Box
+      m={1}
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Typography variant="body2" color="textSecondary" align="center">
+        {t('boxes:list.count.text', { count: itemCount })}
+      </Typography>
+      <Box>
+        <ButtonCreate
+          standing={BUTTON_STANDINGS.TEXT}
+          size="small"
+          text={t('boxes:list.empty.create')}
+        />
+      </Box>
+    </Box>
+  </div>
+)), [itemCount, t]);
 
 // COMPONENTS
 const WindowedListBoxes = forwardRef(({ activeStatus, selectedId, t, ...props }, ref) => {
@@ -50,6 +81,8 @@ const WindowedListBoxes = forwardRef(({ activeStatus, selectedId, t, ...props },
     }),
     [byPagination, selectedId],
   );
+
+  const innerElementType = useInnerElementType(itemCount, t);
 
   if (isNil(itemCount) || itemCount === 0) {
     return (
@@ -79,6 +112,8 @@ const WindowedListBoxes = forwardRef(({ activeStatus, selectedId, t, ...props },
       itemCount={itemCount}
       itemSize={72}
       itemData={itemData}
+      innerElementType={innerElementType}
+      innerElementTypeHeight={INNER_ELEMENT_TYPE_HEIGHT}
       {...props}
     />
   );

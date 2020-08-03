@@ -1,14 +1,8 @@
 {
   "list": {
     "closedVault": {
-      "default": {
-        "open": "Type your password to decrypt all your chats",
-        "create": "Create a vault with a password to decrypt all your chats"
-      },
-      "selected": {
-        "open": "Type your password to save this chat",
-        "create": "Create a vault with a password to save this chat"
-      }
+      "open": "Your vault is locked",
+      "create": "Save in a vault"
     },
     "events": {
       "preview": {
@@ -20,10 +14,14 @@
     },
     "empty": {
       "text": "Start a secured chat by clicking <1>+</1> or",
-      "create": "Start a chat"
+      "create": "New chat"
     },
     "select": "Select a chat 💬 to start",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "count": {
+      "text": "You have {{count}} chat",
+      "text_plural": "You have {{count}} chats"
+    }
   },
   "read": {
     "closed": {

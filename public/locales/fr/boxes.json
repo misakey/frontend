@@ -1,14 +1,8 @@
 {
   "list": {
     "closedVault": {
-      "default": {
-        "open": "Saisis ton mot de passe pour déchiffrer tous tes chats",
-        "create": "Crée un coffre-fort avec un mot de passe pour déchiffrer tous tes chats"
-      },
-      "selected": {
-        "open": "Saisis ton mot de passe pour enregistrer ce chat",
-        "create": "Crée un coffre-fort avec un mot de passe pour enregistrer ce chat"
-      }
+      "open": "Votre coffre-fort est verrouillé",
+      "create": "Enregistrer dans un coffre-fort"
     },
     "events": {
       "preview": {
@@ -20,10 +14,14 @@
     },
     "empty": {
       "text": "Commencer un chat sécurisé en cliquant sur <1>+</1> ou",
-      "create": "Commencer un chat"
+      "create": "Nouveau chat"
     },
     "select": "Rejoins un chat sécurisé 💬 pour commencer",
-    "refresh": "Rafraîchir"
+    "refresh": "Rafraîchir",
+    "count": {
+      "text": "Vous avez {{count}} chat",
+      "text_plural": "Vous avez {{count}} chats"
+    }
   },
   "read": {
     "closed": {

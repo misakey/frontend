@@ -57,28 +57,34 @@ const getDefaultProps = (standing) => {
 };
 
 // COMPONENTS
-const Button = forwardRef(
-  ({ classes, isLoading, disabled, text, progressProps, standing, ...rest }, ref) => {
-    const disabledOrLoading = useMemo(() => disabled || isLoading, [disabled, isLoading]);
+const Button = forwardRef(({
+  classes,
+  isLoading,
+  disabled,
+  text,
+  progressProps,
+  standing,
+  ...rest
+}, ref) => {
+  const disabledOrLoading = useMemo(() => disabled || isLoading, [disabled, isLoading]);
 
-    return (
-      <span className={classes.wrapper}>
-        <MUIButton
-          ref={ref}
-          classes={{ root: classes.buttonRoot, label: classes.buttonLabel }}
-          {...getDefaultProps(standing)}
-          disabled={disabledOrLoading}
-          {...rest}
-        >
-          {text}
-        </MUIButton>
-        {isLoading && (
+  return (
+    <span className={classes.wrapper}>
+      <MUIButton
+        ref={ref}
+        classes={{ root: classes.buttonRoot, label: classes.buttonLabel }}
+        {...getDefaultProps(standing)}
+        disabled={disabledOrLoading}
+        {...rest}
+      >
+        {text}
+      </MUIButton>
+      {isLoading && (
         <CircularProgress size={24} className={classes.buttonProgress} {...progressProps} />
-        )}
-      </span>
-    );
-  },
-);
+      )}
+    </span>
+  );
+});
 
 Button.propTypes = {
   classes: PropTypes.shape({

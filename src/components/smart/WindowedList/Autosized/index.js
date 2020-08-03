@@ -13,6 +13,7 @@ const WindowedListAutoSized = forwardRef(({
   itemSize,
   itemCount,
   maxHeight,
+  innerElementTypeHeight,
   ...props
 }, ref) => {
   const [bestHeight, setBestHeight] = useState(maxHeight);
@@ -22,14 +23,13 @@ const WindowedListAutoSized = forwardRef(({
   const computeBestHeight = useCallback(
     ({ height }) => {
       if (height > 0) {
-        const computed = Math.min(itemsSize, height);
+        const computed = Math.min(itemsSize, height) + innerElementTypeHeight;
         setBestHeight((prevBestHeight) => (isNumber(prevBestHeight)
           ? Math.min(prevBestHeight, computed)
-          : computed
-        ));
+          : computed));
       }
     },
-    [itemsSize],
+    [innerElementTypeHeight, itemsSize],
   );
 
   return (
@@ -57,12 +57,14 @@ const WindowedListAutoSized = forwardRef(({
 WindowedListAutoSized.propTypes = {
   component: PropTypes.elementType,
   itemSize: PropTypes.number.isRequired,
+  innerElementTypeHeight: PropTypes.number,
   itemCount: PropTypes.number.isRequired,
   maxHeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 WindowedListAutoSized.defaultProps = {
   component: WindowedList,
+  innerElementTypeHeight: 0,
   maxHeight: '100vh',
 };
 

@@ -48,7 +48,7 @@
   "validate": "Validate",
   "view": "View",
   "openAccountDrawer": "See account",
-  "createVault": "Create a vault",
+  "createVault": "Create new vault",
   "askOpenVault": "Please type your password to perform this action",
   "openVault": "Open my vault",
   "drawerMenu": {

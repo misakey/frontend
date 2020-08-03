@@ -56,7 +56,7 @@
   "validate": "Valider",
   "view": "Voir",
   "openAccountDrawer": "Voir le compte",
-  "createVault": "Créer un coffre-fort",
+  "createVault": "Nouveau coffre-fort",
   "askOpenVault": "Merci de saisir votre mot de passe afin de réaliser cette action",
   "openVault": "Ouvrir mon coffre-fort",
   "drawerMenu": {
