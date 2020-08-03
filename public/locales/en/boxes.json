@@ -138,13 +138,11 @@
   },
   "create": {
     "notOnTheList": {
-      "title": "Hey :)",
+      "title": "Hey!",
       "subtitle": "Misakey is invitation only until July 2021",
       "button": "Have an invite code ? Click here",
       "getCodeTitle": "Want an invite ?",
-      "getCodeDescription": "To get a code, email <1>iwant@misakey.com</1> and tell us about privacy in your business. Could be a sweet story, or a shocking story. Could be long, could be short. It’s your story, so it’s up to you :)",
-      "nomarketing": "We’ll only use your email address to send an invite to Misakey, not for future marketing, sales, or anything like that. We’ll never sell or trade your name or email.",
-      "notradead": "If your story is great, and we’d like to share it broadly, we’ll send you an email back asking your permission before publishing anything. Promise."
+      "getCodeDescription": "We regularly send information about the next distributions of invitations by email to the members of the community. You can join the community by <1>joining this Misakey chat.</1><2/><3/>You will be able to discuss the project and try a small portion of the app to give us your early feedbacks.",
     },
     "dialog": {
       "content": "What is the new chat about?",

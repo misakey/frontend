@@ -140,16 +140,16 @@ function CreateBoxDialog({
           <Typography align="center" variant="h4" gutterBottom>{t('boxes:create.notOnTheList.getCodeTitle')}</Typography>
           <Typography align="center" paragraph>
             <Trans i18nKey="boxes:create.notOnTheList.getCodeDescription">
-              To get a code, email
-              <Link href="mailto:iwant@misakey.com" color="secondary">iwant@misakey.com</Link>
-              and tell us about privacy in your business. Could be a sweet story...
+              We regularly send information about the next distributions of invitations
+              by email to the members of the community. You can join the community by
+              <Link href={window.env.EARLY_BIRDS_MISAKEY_CHAT_URL} color="secondary">
+                joining this Misakey chat.
+              </Link>
+              <br />
+              <br />
+              You will be able to discuss the project and try a small portion of the app
+              to give us your early feedbacks.
             </Trans>
-          </Typography>
-          <Typography align="center" variant="caption" display="block" color="textSecondary" paragraph>
-            {t('boxes:create.notOnTheList.nomarketing')}
-          </Typography>
-          <Typography align="center" variant="caption" display="block" color="textSecondary">
-            {t('boxes:create.notOnTheList.notradead')}
           </Typography>
         </DialogContent>
         <DialogActions />
