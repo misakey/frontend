@@ -13,6 +13,7 @@ import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import MenuIcon from '@material-ui/icons/Menu';
 import CardIdentity from 'components/dumb/Card/Identity';
 import AccountReadPassword from 'components/screens/app/Account/Read/Password';
+import AccountReadVault from 'components/screens/app/Account/Read/Vault';
 import IdentityDisplayName from 'components/screens/app/Identity/DisplayName';
 import IdentityNotifications from 'components/screens/app/Identity/Notifications';
 import IdentityAvatar from 'components/screens/app/Identity/Avatar';
@@ -66,6 +67,11 @@ function AccountRead({ match: { path }, toggleDrawer, isDrawerOpen, drawerWidth 
         exact
         path={routes.accounts.password}
         render={(routerProps) => <AccountReadPassword {...routerProps} {...identityMetadata} />}
+      />
+      <Route
+        exact
+        path={routes.accounts.vault}
+        render={(routerProps) => <AccountReadVault {...routerProps} {...identityMetadata} />}
       />
       <Route
         exact

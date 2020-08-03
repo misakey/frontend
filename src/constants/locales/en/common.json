@@ -12,6 +12,7 @@
   "delete": "Delete",
   "details": "Details",
   "done": "Done",
+  "continue": "Continue",
   "download": "Download",
   "edit": "Edit",
   "emptyRating": "N/A",
@@ -48,6 +49,7 @@
   "view": "View",
   "openAccountDrawer": "See account",
   "createVault": "Create a vault",
+  "askOpenVault": "Please type your password to perform this action",
   "openVault": "Open my vault",
   "drawerMenu": {
     "tabs": {

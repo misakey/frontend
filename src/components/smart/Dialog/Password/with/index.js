@@ -18,6 +18,7 @@ const withDialogPassword = (Component) => {
   let Wrapper = ({
     onClick,
     dialogProps,
+    forceDialog,
     ...props
   }, ref) => {
     const { userManager } = useContext(UserManagerContext);
@@ -40,13 +41,13 @@ const withDialogPassword = (Component) => {
       (...args) => {
         if (!hasAccountId) {
           userManager.signinRedirect(objectToSnakeCase({ acrValues: 2, prompt: 'login' }));
-        } else if (!isCryptoLoaded) {
+        } else if (!isCryptoLoaded || forceDialog) {
           setOpen(true);
         } else if (isFunction(onClick)) {
           onClick(...args);
         }
       },
-      [hasAccountId, isCryptoLoaded, onClick, userManager],
+      [hasAccountId, isCryptoLoaded, forceDialog, onClick, userManager],
     );
 
     const onClose = useCallback(
@@ -61,6 +62,7 @@ const withDialogPassword = (Component) => {
             open={open}
             onClose={onClose}
             onSuccess={onClick}
+            skipUpdate={isCryptoLoaded && forceDialog}
             {...dialogProps}
           />
         )}
@@ -78,11 +80,13 @@ const withDialogPassword = (Component) => {
       onSubmit: PropTypes.func,
       open: PropTypes.bool,
     }),
+    forceDialog: PropTypes.bool,
   };
 
   Wrapper.defaultProps = {
     onClick: null,
     dialogProps: {},
+    forceDialog: false,
   };
 
   return Wrapper;

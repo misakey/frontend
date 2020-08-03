@@ -10,8 +10,8 @@ import DialogPassword from 'components/smart/Dialog/Password';
 import isFunction from '@misakey/helpers/isFunction';
 
 // COMPONENTS
-const DialogPasswordOpenVault = ({ t, open, onClose, onSuccess, ...props }) => {
-  const openVaultWithPassword = useLoadSecretsWithPassword();
+const DialogPasswordOpenVault = ({ t, open, onClose, onSuccess, skipUpdate, ...props }) => {
+  const openVaultWithPassword = useLoadSecretsWithPassword(skipUpdate);
 
   const onSubmit = useCallback(
     ({ [PREHASHED_PASSWORD]: password }) => openVaultWithPassword(password)
@@ -26,8 +26,8 @@ const DialogPasswordOpenVault = ({ t, open, onClose, onSuccess, ...props }) => {
 
   return (
     <DialogPassword
-      contentText={t('boxes:vault.dialog.text')}
-      submitText={t('common:unlock')}
+      contentText={t('common:askOpenVault')}
+      submitText={t('common:continue')}
       open={open}
       onClose={onClose}
       onSubmit={onSubmit}
@@ -42,6 +42,7 @@ DialogPasswordOpenVault.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
   onSuccess: PropTypes.func,
+  skipUpdate: PropTypes.bool,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
@@ -50,6 +51,7 @@ DialogPasswordOpenVault.defaultProps = {
   open: false,
   onClose: null,
   onSuccess: null,
+  skipUpdate: false,
 };
 
-export default withTranslation(['boxes', 'common'])(DialogPasswordOpenVault);
+export default withTranslation('common')(DialogPasswordOpenVault);

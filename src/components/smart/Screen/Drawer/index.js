@@ -88,7 +88,9 @@ then it can be used in children to determine which content displaying if the dra
 */
 
 
-function ScreenDrawer({ drawerChildren, children, isFullWidth, initialIsDrawerOpen, ...props }) {
+function ScreenDrawer({
+  drawerChildren, classes, children, isFullWidth, initialIsDrawerOpen, ...props
+}) {
   const theme = useTheme();
   const isSmDown = useMediaQuery(theme.breakpoints.down('sm'), { noSsr: true });
   const { pathname, search, hash } = useLocation();
@@ -122,7 +124,7 @@ function ScreenDrawer({ drawerChildren, children, isFullWidth, initialIsDrawerOp
       : PERMANENT_DRAWER_DESKTOP_WIDTH),
     [isFullWidth, isSmDown],
   );
-  const classes = useStyles({ drawerWidth });
+  const internalClasses = useStyles({ drawerWidth });
 
   const getNextDrawerSearch = useCallback((value) => ({
     pathname,
@@ -165,15 +167,15 @@ function ScreenDrawer({ drawerChildren, children, isFullWidth, initialIsDrawerOp
         variant="persistent"
         anchor="left"
         open={isDrawerOpen}
-        className={classes.drawer}
-        classes={{ paper: classes.drawerPaper }}
+        className={internalClasses.drawer}
+        classes={{ paper: internalClasses.drawerPaper }}
         {...props}
       >
         {drawerContent}
       </Drawer>
       <Box
-        className={clsx(classes.content, {
-          [classes.contentShift]: isDrawerOpen,
+        className={clsx(classes.content, internalClasses.content, {
+          [internalClasses.contentShift]: isDrawerOpen,
         })}
       >
         {isFunction(children) ? children(drawerProps) : children}
@@ -196,6 +198,9 @@ ScreenDrawer.propTypes = {
       ]).isRequired,
     }),
   ]),
+  classes: PropTypes.shape({
+    content: PropTypes.string,
+  }),
   children: PropTypes.oneOfType([PropTypes.element, PropTypes.node, PropTypes.func]),
   isFullWidth: PropTypes.bool,
   initialIsDrawerOpen: PropTypes.bool,
@@ -205,6 +210,7 @@ ScreenDrawer.propTypes = {
 ScreenDrawer.defaultProps = {
   drawerChildren: null,
   children: null,
+  classes: {},
   isFullWidth: false,
   initialIsDrawerOpen: false,
 };

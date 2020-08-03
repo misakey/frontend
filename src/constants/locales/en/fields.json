@@ -9,6 +9,31 @@
       "unknown": "An unknown error occurred"
     }
   },
+  "displayName": {
+    "label": "Public name",
+    "action": "Edit",
+    "placeholder": "Rose Flamingo",
+    "helperText": "I choose a name from 3 to 254 characters",
+    "error": {
+      "invalid": "Public name must contain from 3 to 254 characters"
+    }
+  },
+  "notifications": {
+    "label": "Frequency",
+    "action": "Edit",
+    "minimal": "Minimal",
+    "moderate": "Moderate",
+    "frequent": "High"
+  },
+  "avatar": {
+    "label": "Picture",
+    "action": "Edit",
+    "helperText": "A picture helps customize my account",
+    "error": {
+      "size": "Max size 3Mo. Exceeded",
+      "format": "Incorrect format. Accepted formats: .jpg .jpeg .png .tiff .gif"
+    }
+  },
   "file": {
     "label": "Drop a file here",
     "loading": "Import in progress",

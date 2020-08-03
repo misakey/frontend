@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 
 import routes from 'routes';
-import { MISAKEY_ACCOUNT_ID } from 'constants/account';
 
 import useAccountId from 'hooks/useAccountId';
 
@@ -15,7 +14,7 @@ const ListItemNavLinkMisakey = (props) => {
   const accountId = useAccountId(identity);
 
   const to = useMemo(
-    () => generatePath(routes.accounts._, { id: accountId || MISAKEY_ACCOUNT_ID }),
+    () => generatePath(routes.accounts._, { id: accountId }),
     [accountId],
   );
 

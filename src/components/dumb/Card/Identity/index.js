@@ -5,7 +5,6 @@ import { generatePath, Link } from 'react-router-dom';
 
 import routes from 'routes';
 import IdentitySchema from 'store/schemas/Identity';
-import { MISAKEY_ACCOUNT_ID } from 'constants/account';
 
 import isNil from '@misakey/helpers/isNil';
 
@@ -56,22 +55,27 @@ const CardIdentity = ({ identity, t }) => {
   const hasAccountId = useMemo(() => !isNil(accountId), [accountId]);
 
   const listItemDisplayNameTo = useMemo(
-    () => generatePath(routes.accounts.displayName, { id: accountId || MISAKEY_ACCOUNT_ID }),
+    () => generatePath(routes.accounts.displayName, { id: accountId }),
     [accountId],
   );
 
   const listItemNotificationsTo = useMemo(
-    () => generatePath(routes.accounts.notifications, { id: accountId || MISAKEY_ACCOUNT_ID }),
+    () => generatePath(routes.accounts.notifications, { id: accountId }),
     [accountId],
   );
 
   const listItemAvatarTo = useMemo(
-    () => generatePath(routes.accounts.avatar._, { id: accountId || MISAKEY_ACCOUNT_ID }),
+    () => generatePath(routes.accounts.avatar._, { id: accountId }),
     [accountId],
   );
 
   const listItemPasswordTo = useMemo(
     () => (hasAccountId ? generatePath(routes.accounts.password, { id: accountId }) : null),
+    [accountId, hasAccountId],
+  );
+
+  const listItemExportCryptoTo = useMemo(
+    () => (hasAccountId ? generatePath(routes.accounts.vault, { id: accountId }) : null),
     [accountId, hasAccountId],
   );
 
@@ -139,9 +143,21 @@ const CardIdentity = ({ identity, t }) => {
           <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
       </CardList>
-      {/* <CardIdentityHeader>{t('account:sections.myVault.title')}</CardIdentityHeader>
+      <CardIdentityHeader>{t('account:sections.myVault.title')}</CardIdentityHeader>
       <CardList>
         <ListItem
+          classes={{ container: classes.listItemContainer }}
+          button
+          component={Link}
+          to={listItemExportCryptoTo}
+        >
+          <ListItemIcon className={classes.listItemIcon}>
+            <Typography>{t('account:vault.title')}</Typography>
+          </ListItemIcon>
+          <ListItemText primary={t('account:vault.helperText')} />
+          <ChevronRightIcon className={classes.actionIcon} />
+        </ListItem>
+        {/* <ListItem
           classes={{ container: classes.listItemContainer }}
           divider
         >
@@ -149,21 +165,8 @@ const CardIdentity = ({ identity, t }) => {
             <Typography>{t('account:quota.title')}</Typography>
           </ListItemIcon>
           <UserStorage />
-        </ListItem>
-        <ListItem
-          classes={{ container: classes.listItemContainer }}
-          button
-          component={Link}
-          disabled
-          // to={routes.accounts.exportCrypto}
-        >
-          <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('account:exportCrypto.title')}</Typography>
-          </ListItemIcon>
-          <ListItemText primary={t('account:exportCrypto.helperText')} />
-          <ChevronRightIcon className={classes.actionIcon} />
-        </ListItem>
-      </CardList> */}
+        </ListItem> */}
+      </CardList>
       {/* <CardIdentityHeader>{t('account:sections.myAccount.title')}</CardIdentityHeader>
       <CardList>
         <DeleteAccountListItem

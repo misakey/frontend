@@ -1,0 +1,77 @@
+{
+  "misakey": "Misakey",
+  "sections": {
+    "myNotifications": {
+      "title": "My communications"
+    },
+    "myVault": {
+      "title": "My vault"
+    },
+    "myAccount": {
+      "title": "My account"
+    }
+  },
+  "avatar": {
+    "title": "Picture",
+    "subtitle": "My profile picture is visible to everyone on any app using Misakey",
+    "success": "Profile picture successfully updated",
+    "upload": {
+      "title": "Upload picture",
+      "subtitle": ".jpg .jpeg .png .tiff .gif files smaller than 3mo are allowed"
+    }
+  },
+  "delete": {
+    "title": "Account",
+    "label": "Delete my account",
+    "success": "My account was successfully deleted\u00a0!",
+    "dialog": {
+      "title": "Delete my account\u00a0?",
+      "description": "I type my email address ({{email}}) in the following field before submitting my account erasure."
+    }
+  },
+  "displayName": {
+    "title": "Public name",
+    "subtitle": "Public name will be visible to everyone",
+    "success": "Public name successfully updated"
+  },
+  "notifications": {
+    "title": "Communications frequency",
+    "subtitle": "I define email updates frequency",
+    "success": "Email updates frequency successfully updated"
+  },
+  "password": {
+    "existing": "What's the password\u00a0?",
+    "new": "Which password do you want to use\u00a0?",
+    "title": "Password",
+    "success": "Password successfully updated"
+  },
+  "vault": {
+    "title": "Key storage",
+    "helperText": "Export my private key",
+    "info": {
+      "general": "Data in this vault are cyphered with a private key. When I lose my password, this private key is no more accessible.",
+      "myKeyTitle": "My private key",
+      "exportInfo": "Saving my private key helps me keep access to my vault. I am advised not to share my private key with anyone."
+    },
+    "importKey": {
+      "title": "Restore a private key",
+      "helperText": "I recover access to a vault which password was lost.",
+      "buttonText": "Import a private key"
+    },
+    "importButton": {
+      "info": "Import a private key",
+      "text": "Import",
+      "noNewSecretKeys": "No new private key to import",
+      "error": "An error occured during file import",
+      "success": "Key import successful"
+    },
+    "exportButton": {
+      "fileName": "misakey_private_key",
+      "info": "Export my private key"
+    }
+  },
+  "quota": {
+    "title": "Storage",
+    "description": "{{currentUsage}} used on {{totalUsage}} free"
+  }
+}

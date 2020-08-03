@@ -8,7 +8,7 @@ import useFetchSecretBackup from './useFetchSecretBackup';
 import useCreateNewBackupShares from './useCreateNewBackupShares';
 import { selectors } from '../store/reducers';
 
-export default (() => {
+export default ((skipUpdate = false) => {
   const dispatch = useDispatch();
   const { accountId } = useSelector(getCurrentUserSelector) || {};
 
@@ -37,11 +37,13 @@ export default (() => {
       const { data, backupVersion } = encryptedSecretsBackup;
 
       return decryptSecretsBackup(data, password)
-        .then(({ backupKey, secretBackup: secrets }) => onDecryptSuccess(
-          { backupKey, secrets, backupVersion },
-        ));
+        .then(({ backupKey, secretBackup: secrets }) => (skipUpdate
+          ? Promise.resolve
+          : onDecryptSuccess(
+            { backupKey, secrets, backupVersion },
+          )));
     },
-    [encryptedSecretsBackup, onDecryptSuccess],
+    [encryptedSecretsBackup, onDecryptSuccess, skipUpdate],
   );
 
   return decryptWithPassword;

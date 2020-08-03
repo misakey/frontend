@@ -45,9 +45,9 @@
     "title": "Mot de passe",
     "success": "Mon mot de passe a été mis a jour"
   },
-  "exportCrypto": {
-    "title": "Sauvegarde",
-    "helperText": "Importer ou exporter une clé privée",
+  "vault": {
+    "title": "Stockage des clés",
+    "helperText": "Exporter ma clé privée",
     "info": {
       "general": "Les données dans mon coffre-fort sont chiffrées avec une clé privée. Lorsque je perds mon mot de passe, cette clé privée n'est plus accessible.",
       "myKeyTitle": "Ma clé privée",

@@ -18,7 +18,7 @@ const routes = {
     displayName: '/accounts/:id/displayName',
     password: '/accounts/:id/password',
     notifications: '/accounts/:id/notifications',
-    exportCrypto: '/accounts/:id/export-crypto',
+    vault: '/accounts/:id/vault',
   },
   account: {
     _: '/account',

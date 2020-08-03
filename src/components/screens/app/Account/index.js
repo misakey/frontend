@@ -9,9 +9,18 @@ import AccountNone from 'components/screens/app/Account/None';
 import AccountList from 'components/screens/app/Account/List';
 
 import isNil from '@misakey/helpers/isNil';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
+// HOOKS
+const useStyles = makeStyles(() => ({
+  drawerContent: {
+    position: 'relative',
+  },
+}));
 
+// COMPONENTS
 function Account({ match, ...props }) {
+  const classes = useStyles();
   const matchAccountSelected = useRouteMatch(routes.accounts._);
   const { params: { id } } = useMemo(
     () => matchAccountSelected || { params: {} },
@@ -26,6 +35,7 @@ function Account({ match, ...props }) {
 
   return (
     <ScreenDrawer
+      classes={{ content: classes.drawerContent }}
       drawerChildren={(drawerProps) => <AccountList {...drawerProps} />}
       initialIsDrawerOpen={initialIsDrawerOpen}
       {...props}

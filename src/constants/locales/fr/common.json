@@ -13,6 +13,7 @@
   "delete": "Supprimer",
   "details": "Détails",
   "done": "Terminer",
+  "continue": "Continuer",
   "download": "Télécharger",
   "edit": "Modifier",
   "emptyRating": "N/A",
@@ -56,6 +57,7 @@
   "view": "Voir",
   "openAccountDrawer": "Voir le compte",
   "createVault": "Créer un coffre-fort",
+  "askOpenVault": "Merci de saisir votre mot de passe afin de réaliser cette action",
   "openVault": "Ouvrir mon coffre-fort",
   "drawerMenu": {
     "tabs": {

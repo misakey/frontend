@@ -7,7 +7,8 @@ import BoxesSchema from 'store/schemas/Boxes';
 import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
 
 import Skeleton from '@material-ui/lab/Skeleton';
 import Box from '@material-ui/core/Box';
@@ -69,6 +70,7 @@ function BoxListItem({ box, toRoute, ...rest }) {
     id,
     logoUri,
     title,
+    publicKey,
     lastEvent = {},
     eventsCount = 0,
   } = useMemo(() => box || {}, [box]);
@@ -88,12 +90,18 @@ function BoxListItem({ box, toRoute, ...rest }) {
     ), [id, lastEvent],
   );
 
+  const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
+  const canBeDecrypted = useMemo(
+    () => publicKeysWeCanDecryptFrom.has(publicKey),
+    [publicKeysWeCanDecryptFrom, publicKey],
+  );
+
   if (isNil(id)) {
     return null;
   }
 
   return (
-    <ListItem key={id} {...linkProps} {...omitTranslationProps(rest)}>
+    <ListItem key={id} disabled={!canBeDecrypted} {...linkProps} {...omitTranslationProps(rest)}>
       <ListItemAvatar>
         <Badge badgeContent={eventsCount} color="secondary">
           <BoxAvatar
