@@ -19,6 +19,7 @@ import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 import useGroupEventsByDate from 'hooks/useGroupEventsByDate';
 import useGetShareMethods from 'hooks/useGetShareMethods';
 import isNil from '@misakey/helpers/isNil';
+import { ALL_EVENT_TYPES } from 'constants/app/boxes/events';
 
 import BoxesSchema from 'store/schemas/Boxes';
 
@@ -49,8 +50,8 @@ function BoxEvents({
   const [headerHeight, setHeaderHeight] = useState(APPBAR_HEIGHT);
   const classes = useStyles({ headerHeight });
 
-  const { events: boxEvents, members, title, publicKey, id } = useMemo(() => box, [box]);
-  const nbOfEvents = useMemo(() => (isNil(boxEvents) ? 0 : boxEvents.length), [boxEvents]);
+  const { events: boxEvents = [], members, title, publicKey, id } = useMemo(() => box, [box]);
+  const nbOfEvents = useMemo(() => boxEvents.length, [boxEvents]);
   const { accountId } = useSelector(getCurrentUserSelector) || {};
   const {
     canShare,
@@ -59,7 +60,12 @@ function BoxEvents({
     onCopyLink,
   } = useGetShareMethods(id, title, publicKey, t);
 
-  const eventsByDate = useGroupEventsByDate(boxEvents);
+  // Backend can add new types of events without breaking front UI
+  const eventsToDisplay = useMemo(
+    () => boxEvents.filter(({ type }) => ALL_EVENT_TYPES.includes(type)),
+    [boxEvents],
+  );
+  const eventsByDate = useGroupEventsByDate(eventsToDisplay);
 
   const isTheOnlyMember = useMemo(
     () => members.length === 1 && belongsToCurrentUser,

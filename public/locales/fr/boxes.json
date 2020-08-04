@@ -43,6 +43,7 @@
       "share": "Partager ce chat"
     },
     "events": {
+      "e2eeIntro": "Les messages et documents envoyés dans cette conversation sont protégés avec le chiffrement de bout en bout.",
       "create": {
         "error": {
           "lifecycle": "Le chat est fermé, vous ne pouvez pas effectuer cette action."
