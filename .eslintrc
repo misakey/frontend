@@ -3,14 +3,14 @@
   "extends": [
     "plugin:import/recommended",
     "airbnb",
-    "airbnb/hooks"
+    "airbnb/hooks",
+    "plugin:json/recommended"
   ],
   "env": {
     "es6": true,
     "browser": true,
     "node": true,
-    "jest": true,
-    "webextensions": true
+    "jest": true
   },
   "parser": "babel-eslint",
   "parserOptions": {

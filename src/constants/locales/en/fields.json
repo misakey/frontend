@@ -180,12 +180,5 @@
     "invitationLink": {
       "label": "Invitation link"
     }
-  },
-  "notifications": {
-    "label": "Frequency",
-    "action": "Edit",
-    "minimal": "Minimal",
-    "moderate": "Moderate",
-    "frequent": "High"
   }
 }

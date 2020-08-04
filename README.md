@@ -84,7 +84,7 @@ usable in the app directly.
 ### I18N
 
 Locale file organization:
-- in `public/locales` we have one locale file per workspace (`account`, `admin`, `auth`, `citizen`, `dpo`).
+- in `public/locales` we have one locale file per workspace (`account`, `boxes`).
 Those translation files are loaded by XHR request. We did that to optimize the size of loaded locales.
 - in `src/constants/locales` we have all common locales, they are loaded everywhere in the app.
     - `fields`: for all fields translations. It only contains translation used by Field component
