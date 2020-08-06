@@ -17,6 +17,9 @@ import { Link } from 'react-router-dom';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import BoxAvatar from 'components/dumb/Avatar/Box';
+import Typography from '@material-ui/core/Typography';
+
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 // CONSTANTS
 const PRIMARY_TYPO_PROPS = {
@@ -48,10 +51,14 @@ const useStyles = makeStyles((theme) => ({
       fontSize: theme.typography.subtitle2.fontSize,
     },
   },
+  typographyFlex: {
+    display: 'flex',
+    alignItems: 'center',
+  },
 }));
 
 // COMPONENTS
-const EventsAppBar = ({ box, t, belongsToCurrentUser, ...props }) => {
+const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
   const classes = useStyles();
   const { avatarUrl, title, members, id, lifecycle } = useMemo(() => box, [box]);
 
@@ -60,17 +67,22 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, ...props }) => {
   const theme = useTheme();
   const isDownSm = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const isBoxClosed = useMemo(
+    () => lifecycle === CLOSED,
+    [lifecycle],
+  );
+
   const membersText = useMemo(
     () => {
       if (members.length === 1 && belongsToCurrentUser) {
         return t('boxes:read.details.menu.members.creator');
       }
-      if (lifecycle === CLOSED) {
+      if (isBoxClosed) {
         return t('boxes:read.events.information.lifecycle.closed.generic');
       }
       return t('boxes:read.details.menu.members.count', { count: members.length });
     },
-    [belongsToCurrentUser, members.length, lifecycle, t],
+    [belongsToCurrentUser, members.length, isBoxClosed, t],
   );
 
   const primaryTypographyProps = useMemo(
@@ -93,6 +105,7 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, ...props }) => {
       component={Link}
       to={routeDetails}
       overflow="hidden"
+      disabled={disabled}
       {...omitTranslationProps(props)}
       classes={{ root: classes.listItemRoot }}
     >
@@ -101,10 +114,18 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, ...props }) => {
           primary: classes.listItemTextPrimary,
           secondary: classes.listItemTextSecondary,
         }}
-        primary={title}
-        primaryTypographyProps={primaryTypographyProps}
-        secondary={membersText}
-        secondaryTypographyProps={secondaryTypographyProps}
+        disableTypography
+        primary={(
+          <Typography className={classes.typographyFlex} {...primaryTypographyProps}>
+            {title}
+            {!disabled && <ExpandMoreIcon />}
+          </Typography>
+          )}
+        secondary={(
+          <Typography {...secondaryTypographyProps}>
+            {membersText}
+          </Typography>
+          )}
       />
       <BoxAvatar
         aria-label={t('boxes:read.details.open')}
@@ -119,8 +140,13 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, ...props }) => {
 EventsAppBar.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   belongsToCurrentUser: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
   // withTranslation
   t: PropTypes.func.isRequired,
+};
+
+EventsAppBar.defaultProps = {
+  disabled: false,
 };
 
 export default withTranslation(['boxes', 'common'])(EventsAppBar);
