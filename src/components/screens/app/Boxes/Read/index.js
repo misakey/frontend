@@ -8,7 +8,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 
 import isNil from '@misakey/helpers/isNil';
 
-import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
+import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import useHandleBoxKeyShare from '@misakey/crypto/hooks/useHandleBoxKeyShare';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useMountEffect from '@misakey/hooks/useMountEffect';
@@ -41,7 +41,7 @@ function BoxRead({
     [belongsToCurrentUser, lifecycle],
   );
 
-  const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
+  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
   const secretKey = useMemo(
     () => publicKeysWeCanDecryptFrom.get(publicKey),
     [publicKey, publicKeysWeCanDecryptFrom],
@@ -50,7 +50,7 @@ function BoxRead({
 
   const {
     isFetching: isFetchingBoxKeyShare,
-  } = useHandleBoxKeyShare(boxId, secretKey, isFetching.box);
+  } = useHandleBoxKeyShare(box, secretKey, isFetching.box);
 
   const displayLoadingScreen = useMemo(
     () => isFetching.box || (isFetchingBoxKeyShare && isNil(secretKey)),
@@ -58,8 +58,8 @@ function BoxRead({
   );
 
   const shouldShowPasteScreen = useMemo(
-    () => !isNil(publicKey) && !canBeDecrypted,
-    [canBeDecrypted, publicKey],
+    () => !isNil(publicKey) && !canBeDecrypted && !shouldNotDisplayContent,
+    [canBeDecrypted, publicKey, shouldNotDisplayContent],
   );
 
   const [boxIdChanged, resetBoxIdChanged] = usePropChanged(boxId);
@@ -97,6 +97,7 @@ function BoxRead({
         toggleDrawer={toggleDrawer}
         isDrawerOpen={isDrawerOpen}
         drawerWidth={drawerWidth}
+        belongsToCurrentUser={belongsToCurrentUser}
       />
     );
   }

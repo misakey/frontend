@@ -170,6 +170,13 @@
         "malformed": "Name must be between 5 and 50 characters long"
       }
     },
+    "delete": {
+      "confirm" :{
+        "error": {
+          "invalid": "invalid"
+        }
+      }
+    },
     "invitationLink": {
       "label": "Invitation link"
     }

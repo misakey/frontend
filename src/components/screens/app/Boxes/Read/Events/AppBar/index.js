@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { CLOSED } from 'constants/app/boxes/statuses';
 import routes from 'routes';
 import BoxesSchema from 'store/schemas/Boxes';
 
@@ -52,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const EventsAppBar = ({ box, t, belongsToCurrentUser, ...props }) => {
   const classes = useStyles();
-  const { avatarUrl, title, members, id } = useMemo(() => box, [box]);
+  const { avatarUrl, title, members, id, lifecycle } = useMemo(() => box, [box]);
 
   const routeDetails = useGeneratePathKeepingSearchAndHash(routes.boxes.read.details, { id });
 
@@ -64,9 +65,12 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, ...props }) => {
       if (members.length === 1 && belongsToCurrentUser) {
         return t('boxes:read.details.menu.members.creator');
       }
+      if (lifecycle === CLOSED) {
+        return t('boxes:read.events.information.lifecycle.closed.generic');
+      }
       return t('boxes:read.details.menu.members.count', { count: members.length });
     },
-    [belongsToCurrentUser, members.length, t],
+    [belongsToCurrentUser, members.length, lifecycle, t],
   );
 
   const primaryTypographyProps = useMemo(

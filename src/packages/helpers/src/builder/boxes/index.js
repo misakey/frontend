@@ -93,3 +93,8 @@ export const getKeyShareBuilder = (otherShareHash) => API
   .build({ otherShareHash })
   .send()
   .then(objectToCamelCaseDeep);
+
+export const deleteBoxBuilder = (boxId, userConfirmation) => API
+  .use(API.endpoints.boxes.delete)
+  .build({ id: boxId }, objectToSnakeCase({ userConfirmation }))
+  .send();

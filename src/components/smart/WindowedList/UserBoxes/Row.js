@@ -8,7 +8,7 @@ import { denormalize } from 'normalizr';
 import isNil from '@misakey/helpers/isNil';
 import omit from '@misakey/helpers/omit';
 
-import BoxListItem, { BoxListItemSkeleton } from 'components/dumb/ListItem/Boxes';
+import BoxListItem, { BoxListItemSkeleton } from 'components/smart/ListItem/Boxes';
 import { ROW_PROP_TYPES } from 'components/smart/WindowedList';
 
 // CONSTANTS

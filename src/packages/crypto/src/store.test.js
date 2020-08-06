@@ -11,7 +11,7 @@ import {
 // import importSecrets from './store/actions/importSecrets';
 import {
   publicKeysWeCanDecryptFrom,
-} from './hooks/usePublicKeysWeCanDecryptFrom';
+} from './hooks/useBoxPublicKeysWeCanDecryptFrom';
 
 import './testHelpers/argon2Mocking';
 // this will also set variable "window.env" required by package API

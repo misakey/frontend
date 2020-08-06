@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useLocation, generatePath } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import copy from '@misakey/helpers/copy';
-import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
+import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import { isDesktopDevice } from '@misakey/helpers/devices';
 import isNil from '@misakey/helpers/isNil';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
@@ -10,7 +10,7 @@ import routes from 'routes';
 
 // HOOKS
 export default (boxId, title, publicKey, t) => {
-  const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
+  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
   const { enqueueSnackbar } = useSnackbar();
   const { hash } = useLocation();
 

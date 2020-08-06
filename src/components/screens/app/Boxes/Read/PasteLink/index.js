@@ -131,9 +131,10 @@ function PasteBoxLinkScreen({ t, box, isDrawerOpen, drawerWidth }) {
 
 PasteBoxLinkScreen.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
-  t: PropTypes.bool.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
   drawerWidth: PropTypes.string.isRequired,
+  // withTranslation
+  t: PropTypes.func.isRequired,
 };
 
 

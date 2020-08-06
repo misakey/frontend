@@ -8,7 +8,7 @@ import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 
 // CONSTANTS
-const { required, malformed, max } = errorTypes;
+const { required, malformed, max, invalid } = errorTypes;
 const KEY_REGEX = '[A-Za-z0-9-_]+';
 
 // HELPERS
@@ -37,4 +37,8 @@ export const boxFileUploadValidationSchema = Yup.object().shape({
       .test('fileName', 'name', (file) => isNil(file) || isNil(file.blob) || (isString(file.blob.name) && !isEmpty(file.blob.name.split('.').shift()))),
   ).required(required)
     .max(10, max),
+});
+
+export const boxDeletionDialogValidationSchema = (expected) => Yup.object().shape({
+  confirm: Yup.string().equals([expected], invalid).required(invalid),
 });

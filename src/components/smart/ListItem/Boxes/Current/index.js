@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { makeDenormalizeBoxSelector } from 'store/reducers/box';
 
-import ListItemBoxes from 'components/dumb/ListItem/Boxes';
+import ListItemBoxes from 'components/smart/ListItem/Boxes';
 
 // CONSTANTS
 const TO_ROUTE = routes.boxes.read._;

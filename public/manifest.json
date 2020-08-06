@@ -8,7 +8,7 @@
       "type": "image/png"
     }
   ],
-  "start_url": "./citizen",
+  "start_url": "./",
   "display": "standalone",
   "theme_color": "#e32e72",
   "background_color": "#ffffff"

@@ -25,6 +25,11 @@ export default {
       path: '/boxes/:id/public',
     },
   },
+  delete: {
+    method: 'DELETE',
+    path: '/boxes/:id',
+    auth: true,
+  },
   events: {
     newCount: {
       update: {

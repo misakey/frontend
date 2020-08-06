@@ -7,13 +7,13 @@ import routes from 'routes';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 
 import isNil from '@misakey/helpers/isNil';
 import pluck from '@misakey/helpers/pluck';
 import identity from '@misakey/helpers/identity';
 import { getBoxEventsBuilder, getBoxWithEventsBuilder, getBoxBuilder } from '@misakey/helpers/builder/boxes';
 
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import BoxesSchema from 'store/schemas/Boxes';
@@ -41,17 +41,10 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       ...rest
     } = props;
 
-    const { id, events, lifecycle, creator, lastEvent } = useMemo(() => box || {}, [box]);
+    const { id, events, lifecycle, lastEvent } = useMemo(() => box || {}, [box]);
     const members = useSelector((state) => getBoxMembersIds(state, id));
     const isOpen = useMemo(() => lifecycle === OPEN, [lifecycle]);
-    const { identifier } = useSelector(getCurrentUserSelector) || {};
-    const belongsToCurrentUser = useMemo(
-      () => (!isNil(identifier) && !isNil(creator)
-        ? creator.identifier.value === identifier.value
-        : false
-      ),
-      [creator, identifier],
-    );
+    const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
 
     const { params } = useRouteMatch();
     const history = useHistory();

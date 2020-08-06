@@ -21,6 +21,16 @@
     "count": {
       "text": "You have {{count}} chat",
       "text_plural": "You have {{count}} chats"
+    },
+    "deleted": {
+      "count": {
+        "text": "{{count}} unknown chat",
+        "text_plural": "{{count}} unknown chats"
+      },
+      "subtitle": {
+        "text": "This chat has been deleted",
+        "text_plural": "These chats have been deleted"
+      }
     }
   },
   "read": {
@@ -40,6 +50,7 @@
       "incorrectLink": "Impossible to decrypt from invitation link, it seems incorrect."
     },
     "info": {
+      "closed": "Only admins can access this chat",
       "share": "Share this chat"
     },
     "events": {
@@ -52,8 +63,9 @@
       "information": {
         "lifecycle": {
           "closed": {
-            "they": "{{displayName}} closed the chat",
-            "you": "You closed the chat"
+            "they": "Chat closed by {{displayName}}",
+            "you": "You closed the chat",
+            "generic": "Chat closed"
           },
           "open": {
             "they": "{{displayName}} reopened the chat",
@@ -71,7 +83,7 @@
         "preview": {
           "lifecycle": {
             "closed": {
-              "they": "<0>{{displayName}}</0> closed the chat",
+              "they": "Chat closed",
               "you": "<0>You</0> closed the chat"
             },
             "open": {
@@ -154,6 +166,16 @@
       "fields": {
         "name": "New chat"
       }
+    }
+  },
+  "delete": {
+    "dialog": {
+      "description": "Are you sure you want to permanently delete “{{title}}”?\nThis cannot be undone. Please type “delete” to confirm",
+      "confirmValue": "delete"
+    },
+    "success": "Chat has been deleted.",
+    "error": {
+      "updateBackup": "An error occurred while updating the vault."
     }
   },
   "pasteLink": {

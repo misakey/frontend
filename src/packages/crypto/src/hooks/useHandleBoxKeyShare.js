@@ -1,12 +1,15 @@
+import { CLOSED } from 'constants/app/boxes/statuses';
+
+import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
+
 import { useMemo, useCallback, useEffect } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { useTranslation } from 'react-i18next';
-
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import { addBoxSecretKey, setBoxKeyShare, boxAddSecretKeySetKeyShare } from '@misakey/crypto/store/actions/concrete';
 import { getKeyShareBuilder, createKeyShareBuilder } from '@misakey/helpers/builder/boxes';
@@ -33,13 +36,20 @@ const checkHashValidity = (shareHash) => {
 };
 
 
-export default (boxId, secretKey, isFetchingBox) => {
+export default (box, secretKey, isFetchingBox) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { t } = useTranslation('boxes');
 
   const { enqueueSnackbar } = useSnackbar();
   const { pathname, hash, search } = useLocation();
+
+  const { id: boxId, lifecycle } = useSafeDestr(box);
+
+  const isBoxClosed = useMemo(
+    () => lifecycle === CLOSED,
+    [lifecycle],
+  );
 
   const urlKeyShareHash = useMemo(() => (isEmpty(hash) ? null : hash.substr(1)), [hash]);
   const getBoxKeyShare = useMemo(() => makeGetBoxKeyShare(), []);
@@ -53,19 +63,20 @@ export default (boxId, secretKey, isFetchingBox) => {
   );
 
   const shouldCheckBackupKeyShare = useMemo(
-    () => !isNil(backupKeyShareHash) && shouldRebuildSecretKey,
-    [backupKeyShareHash, shouldRebuildSecretKey],
+    () => !isNil(backupKeyShareHash) && shouldRebuildSecretKey && !isBoxClosed,
+    [backupKeyShareHash, shouldRebuildSecretKey, isBoxClosed],
   );
 
   const shouldCheckUrlKeyShare = useMemo(
-    () => !isNil(urlKeyShareHash) && isNil(backupKeyShareHash),
-    [backupKeyShareHash, urlKeyShareHash],
+    () => !isNil(urlKeyShareHash) && isNil(backupKeyShareHash) && !isBoxClosed,
+    [backupKeyShareHash, urlKeyShareHash, isBoxClosed],
   );
 
   const shouldCreateNewShares = useMemo(
     () => !isNil(secretKey) && !isFetchingBox
-    && isNil(urlKeyShareHash) && isNil(backupKeyShareHash),
-    [backupKeyShareHash, isFetchingBox, secretKey, urlKeyShareHash],
+    && isNil(urlKeyShareHash) && isNil(backupKeyShareHash)
+      && !isBoxClosed,
+    [backupKeyShareHash, isFetchingBox, secretKey, urlKeyShareHash, isBoxClosed],
   );
 
   const shouldOnlyReplaceUrlHash = useMemo(
@@ -164,9 +175,9 @@ export default (boxId, secretKey, isFetchingBox) => {
       if (err === INVALID_HASH_ERROR) {
         enqueueSnackbar(t('boxes:read.errors.incorrectLink'), { variant: 'warning' });
       }
-      if (!isNil(secretKey)) { createNewBoxKeyShares(); }
+      if (!isNil(secretKey) && !isBoxClosed) { createNewBoxKeyShares(); }
     },
-    [createNewBoxKeyShares, enqueueSnackbar, secretKey, t],
+    [createNewBoxKeyShares, enqueueSnackbar, secretKey, isBoxClosed, t],
   );
 
   // If hashKeyShare is found in backup, check its validity in backend

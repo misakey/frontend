@@ -31,7 +31,7 @@ import { removeEntities } from '@misakey/store/actions/entities';
 import { MSG_TXT } from 'constants/app/boxes/events';
 import encryptText from '@misakey/crypto/box/encryptText';
 import { CLOSED } from 'constants/app/boxes/statuses';
-import usePublicKeysWeCanDecryptFrom from 'packages/crypto/src/hooks/usePublicKeysWeCanDecryptFrom';
+import useBoxPublicKeysWeCanDecryptFrom from 'packages/crypto/src/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
@@ -66,7 +66,7 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, t }) {
   const handleHttpErrors = useHandleHttpErrors();
 
   const { lifecycle, id, publicKey } = useMemo(() => box || {}, [box]);
-  const publicKeysWeCanEncryptWith = usePublicKeysWeCanDecryptFrom();
+  const publicKeysWeCanEncryptWith = useBoxPublicKeysWeCanDecryptFrom();
 
   const disabled = useMemo(
     () => lifecycle === CLOSED || !publicKeysWeCanEncryptWith.has(publicKey),

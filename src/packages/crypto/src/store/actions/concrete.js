@@ -57,9 +57,11 @@ export const CRYPTO_IMPORT_SECRET_KEYS = Symbol('CRYPTO_IMPORT_SECRET_KEYS');
 export const CRYPTO_INITIALIZE = Symbol('CRYPTO_INITIALIZE');
 export const CRYPTO_SET_BACKUP_VERSION = Symbol('CRYPTO_SET_BACKUP_VERSION');
 export const CRYPTO_ADD_BOX_SECRET_KEY = Symbol('CRYPTO_ADD_BOX_SECRET_KEY');
+export const CRYPTO_REMOVE_BOX_SECRET_KEYS = Symbol('CRYPTO_REMOVE_BOX_SECRET_KEYS');
 export const CRYPTO_SET_ENCRYPTED_BACKUP_DATA = Symbol('CRYPTO_SET_ENCRYPTED_BACKUP_DATA');
 export const CRYPTO_SET_BACKUP_KEY_SHARE = Symbol('CRYPTO_SET_BACKUP_KEY_SHARE');
 export const CRYPTO_SET_BOX_KEY_SHARE = Symbol('CRYPTO_SET_BACKUP_KEY_SHARE');
+export const CRYPTO_REMOVE_BOX_KEY_SHARES = Symbol('CRYPTO_REMOVE_BOX_KEY_SHARES');
 
 // ACTION BUILDERS
 // @FIXME maybe apply "withBackupUpdater" later
@@ -208,6 +210,33 @@ const addBoxSecretKeyWithoutUpdate = (secretKey) => ({
 
 export const addBoxSecretKey = withBackupUpdater(addBoxSecretKeyWithoutUpdate);
 
+const removeBoxSecretKeysWithoutUpdate = (secretKeys) => ({
+  type: CRYPTO_REMOVE_BOX_SECRET_KEYS,
+  secretKeys,
+});
+export const removeBoxSecretKeys = withBackupUpdater(removeBoxSecretKeysWithoutUpdate);
+
+const removeBoxKeySharesWithoutUpdate = (boxIds) => ({
+  type: CRYPTO_REMOVE_BOX_KEY_SHARES,
+  boxIds,
+});
+
+export const removeBoxSecretKeysAndKeyShares = withBackupUpdater(
+  ({ secretKeys, boxIds }) => (dispatch) => {
+    if (isEmpty(secretKeys)) {
+      return Promise.resolve(dispatch(removeBoxKeySharesWithoutUpdate(boxIds)));
+    }
+
+    if (isEmpty(boxIds)) {
+      return Promise.resolve(dispatch(removeBoxSecretKeysWithoutUpdate(secretKeys)));
+    }
+
+    return Promise.all([
+      dispatch(removeBoxKeySharesWithoutUpdate(boxIds)),
+      dispatch(removeBoxSecretKeysWithoutUpdate(secretKeys)),
+    ]);
+  },
+);
 
 /**
  * loads secrets and update backup for a data owner.
@@ -261,7 +290,6 @@ const setBoxKeyShareWithoutUpdate = ({ boxId, keyShare }) => ({
 });
 
 export const setBoxKeyShare = withBackupUpdater(setBoxKeyShareWithoutUpdate);
-
 
 export const boxAddSecretKeySetKeyShare = withBackupUpdater(
   ({ secretKey, boxId, keyShare }) => (dispatch) => {

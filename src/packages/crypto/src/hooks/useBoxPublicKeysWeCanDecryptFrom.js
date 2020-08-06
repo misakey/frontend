@@ -29,9 +29,7 @@ function publicKeyFromSecretKey(secretKey) {
 export function publicKeysWeCanDecryptFrom(cryptoSecrets) {
   // "compact" removes falsey values
   const secretKeys = compact([
-    cryptoSecrets.secretKey,
     ...cryptoSecrets.boxDecryptionKeys,
-    ...cryptoSecrets.passive.secretKeys,
     ...cryptoSecrets.passive.boxDecryptionKeys,
   ]);
 
@@ -49,7 +47,7 @@ export function publicKeysWeCanDecryptFrom(cryptoSecrets) {
  * one regarding the entire set of secret keys in the store,
  * and a second one for the individual computation of public keys.
  */
-export default function usePublicKeysWeCanDecryptFrom() {
+export default function useBoxPublicKeysWeCanDecryptFrom() {
   const cryptoSecrets = useSelector((store) => store.crypto.secrets);
 
   // @FIXME we would like to use "useMemo"

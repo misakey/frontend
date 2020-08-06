@@ -9,7 +9,7 @@ import EventCard from 'components/dumb/Event/Card';
 import EventBoxMessagePreview from 'components/dumb/Event/Box/Message/Preview';
 
 import EventSchema from 'store/schemas/Boxes/Events';
-import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
+import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 
 // HELPERS
 const decryptMessage = (publicKeysWeCanDecryptFrom, encrypted, publicKey) => {
@@ -19,7 +19,7 @@ const decryptMessage = (publicKeysWeCanDecryptFrom, encrypted, publicKey) => {
 
 const BoxMessageTextEvent = ({ event, isFromCurrentUser, preview, t, ...rest }) => {
   const { sender, content: { encrypted, publicKey } } = useMemo(() => event, [event]);
-  const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
+  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
   const canBeDecrypted = publicKeysWeCanDecryptFrom.has(publicKey);
 
   const text = useMemo(() => {

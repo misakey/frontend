@@ -1,14 +1,17 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { generatePath, Link } from 'react-router-dom';
+import { withTranslation } from 'react-i18next';
 
+import { CLOSED } from 'constants/app/boxes/statuses';
 import BoxesSchema from 'store/schemas/Boxes';
 
 import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
+import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
+import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 
 import Skeleton from '@material-ui/lab/Skeleton';
 import Box from '@material-ui/core/Box';
@@ -20,13 +23,28 @@ import BoxAvatar from 'components/dumb/Avatar/Box';
 import BoxAvatarSkeleton from 'components/dumb/Avatar/Box/Skeleton';
 import TypographyDateSince from 'components/dumb/Typography/DateSince';
 import BoxEventsAccordingToType from 'components/smart/Box/Event';
+import IconStack from '@misakey/ui/Icon/Stack';
 
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import ClearIcon from '@material-ui/icons/Clear';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
   listItemText: {
     // Needed for IE11
     width: '100%',
+  },
+  iconStack: {
+    position: 'absolute',
+  },
+  background: {
+    visibility: '0.5',
+  },
+  boxPosition: {
+    top: '40%',
+    right: '16px',
+    position: 'absolute',
+    transform: 'translateY(-50%)',
   },
 }));
 
@@ -63,7 +81,7 @@ export const BoxListItemSkeleton = (props) => (
   </ListItem>
 );
 
-function BoxListItem({ box, toRoute, ...rest }) {
+function BoxListItem({ box, toRoute, t, ...rest }) {
   const classes = useStyles();
 
   const {
@@ -72,6 +90,7 @@ function BoxListItem({ box, toRoute, ...rest }) {
     title,
     publicKey,
     lastEvent = {},
+    lifecycle,
     eventsCount = 0,
   } = useMemo(() => box || {}, [box]);
 
@@ -90,10 +109,18 @@ function BoxListItem({ box, toRoute, ...rest }) {
     ), [id, lastEvent],
   );
 
-  const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
+  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
   const canBeDecrypted = useMemo(
     () => publicKeysWeCanDecryptFrom.has(publicKey),
     [publicKeysWeCanDecryptFrom, publicKey],
+  );
+
+  const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
+
+
+  const lostKey = useMemo(
+    () => !canBeDecrypted && (lifecycle !== CLOSED || belongsToCurrentUser),
+    [canBeDecrypted, lifecycle, belongsToCurrentUser],
   );
 
   if (isNil(id)) {
@@ -101,7 +128,7 @@ function BoxListItem({ box, toRoute, ...rest }) {
   }
 
   return (
-    <ListItem key={id} disabled={!canBeDecrypted} {...linkProps} {...omitTranslationProps(rest)}>
+    <ListItem key={id} {...linkProps} {...omitTranslationProps(rest)}>
       <ListItemAvatar>
         <Badge badgeContent={eventsCount} color="secondary">
           <BoxAvatar
@@ -115,16 +142,31 @@ function BoxListItem({ box, toRoute, ...rest }) {
         primary={(
           <Box display="flex" justifyContent="space-between" alignItems="center">
             {title}
-            <TypographyDateSince
-              noWrap
-              date={lastEvent.serverEventCreatedAt}
-            />
+            {!lostKey && (
+              <TypographyDateSince
+                noWrap
+                date={lastEvent.serverEventCreatedAt}
+              />
+            )}
           </Box>
         )}
         secondary={secondary}
         primaryTypographyProps={{ noWrap: true, display: 'block' }}
         secondaryTypographyProps={{ noWrap: true, display: 'block' }}
       />
+      {lostKey && (
+        <Box
+          aria-label={t('common:undecryptable')}
+          className={classes.boxPosition}
+          width={48}
+        >
+          <IconStack
+            color="secondary"
+            ForegroundIcon={VpnKeyIcon}
+            BackgroundIcon={ClearIcon}
+          />
+        </Box>
+      )}
     </ListItem>
   );
 }
@@ -132,6 +174,8 @@ function BoxListItem({ box, toRoute, ...rest }) {
 BoxListItem.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes),
   toRoute: PropTypes.string,
+  // withTranslation
+  t: PropTypes.func.isRequired,
 };
 
 BoxListItem.defaultProps = {
@@ -139,4 +183,4 @@ BoxListItem.defaultProps = {
   toRoute: null,
 };
 
-export default BoxListItem;
+export default withTranslation('common')(BoxListItem);

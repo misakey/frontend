@@ -8,7 +8,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import usePublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/usePublicKeysWeCanDecryptFrom';
+import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import decryptFileMsg from '@misakey/crypto/box/decryptFileMsg';
 
 import EventCard from 'components/dumb/Event/Card';
@@ -34,7 +34,7 @@ const BoxMessageFileEvent = ({ event, boxID, isFromCurrentUser, preview, t, ...r
   } = useMemo(() => event, [event]);
   const { displayName } = useMemo(() => sender || {}, [sender]);
 
-  const publicKeysWeCanDecryptFrom = usePublicKeysWeCanDecryptFrom();
+  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
 
   const {
     canBeDecrypted,

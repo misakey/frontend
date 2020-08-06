@@ -6,12 +6,14 @@ import isArray from '@misakey/helpers/isArray';
 import ramdaPath from '@misakey/helpers/path';
 import assocPath from '@misakey/helpers/assocPath';
 import propOr from '@misakey/helpers/propOr';
+import omit from '@misakey/helpers/omit';
 import pick from '@misakey/helpers/pick';
 import createReducer from '@misakey/store/reducers/helpers/createReducer';
 import { createSelector } from 'reselect';
 
 import { SIGN_OUT } from '@misakey/auth/store/actions/auth';
 
+import { without } from 'lodash';
 import {
   CRYPTO_LOAD_SECRETS,
   CRYPTO_SET_BACKUP_KEY,
@@ -19,9 +21,11 @@ import {
   CRYPTO_INITIALIZE,
   CRYPTO_SET_BACKUP_VERSION,
   CRYPTO_ADD_BOX_SECRET_KEY,
+  CRYPTO_REMOVE_BOX_SECRET_KEYS,
   CRYPTO_SET_ENCRYPTED_BACKUP_DATA,
   CRYPTO_SET_BACKUP_KEY_SHARE,
   CRYPTO_SET_BOX_KEY_SHARE,
+  CRYPTO_REMOVE_BOX_KEY_SHARES,
 } from '../actions/concrete';
 
 
@@ -100,6 +104,12 @@ const makeGetBoxKeyShare = () => createSelector(
   (items, boxId) => propOr(null, boxId)(items),
 );
 
+const makeGetMissingBoxKeyShares = () => createSelector(
+  (state) => getState(state).secrets.boxKeyShares,
+  (_, ids) => ids,
+  (items, ids) => omit(items, ids),
+);
+
 export const selectors = {
   getBackupKey,
   makeGetBackupKeyShareForAccount,
@@ -108,6 +118,7 @@ export const selectors = {
   currentBoxSecrets,
   getEncryptedBackupData,
   makeGetBoxKeyShare,
+  makeGetMissingBoxKeyShares,
 };
 
 
@@ -187,6 +198,13 @@ function addBoxSecretKey(state, { secretKey }) {
   };
 }
 
+const removeBoxSecretKeys = (state, { secretKeys }) => ({
+  ...state,
+  secrets: {
+    ...state.secrets,
+    boxDecryptionKeys: without(state.secrets.boxDecryptionKeys, ...secretKeys),
+  },
+});
 
 function importSecretKeys(state, { secretKeys }) {
   return concatToPath(secretKeys, state, ['secrets', 'passive', 'secretKeys']);
@@ -205,6 +223,14 @@ function setBoxKeyShare(state, { boxId, keyShare }) {
   };
 }
 
+const removeBoxKeyShares = (state, { boxIds }) => ({
+  ...state,
+  secrets: {
+    ...state.secrets,
+    boxKeyShares: omit(state.secrets.boxKeyShares, boxIds),
+  },
+});
+
 // REDUCER
 const cryptoReducer = createReducer(INITIAL_STATE, {
   [CRYPTO_SET_BACKUP_KEY]: setBackupKey,
@@ -213,9 +239,11 @@ const cryptoReducer = createReducer(INITIAL_STATE, {
   [CRYPTO_INITIALIZE]: initialize,
   [CRYPTO_LOAD_SECRETS]: loadSecrets,
   [CRYPTO_ADD_BOX_SECRET_KEY]: addBoxSecretKey,
+  [CRYPTO_REMOVE_BOX_SECRET_KEYS]: removeBoxSecretKeys,
   [CRYPTO_IMPORT_SECRET_KEYS]: importSecretKeys,
   [CRYPTO_SET_BACKUP_KEY_SHARE]: setBackupKeyShare,
   [CRYPTO_SET_BOX_KEY_SHARE]: setBoxKeyShare,
+  [CRYPTO_REMOVE_BOX_KEY_SHARES]: removeBoxKeyShares,
   [SIGN_OUT]: reset,
 });
 

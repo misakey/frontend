@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
+import { CLOSED } from 'constants/app/boxes/statuses';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import ElevationScroll from 'components/dumb/ElevationScroll';
@@ -26,6 +27,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 import BoxEventsAccordingToType from 'components/smart/Box/Event';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import BoxEventsFooter from './Footer';
+import DeleteBoxDialogButton from './DeleteBoxDialogButton';
 
 const APPBAR_HEIGHT = 64;
 
@@ -50,7 +52,14 @@ function BoxEvents({
   const [headerHeight, setHeaderHeight] = useState(APPBAR_HEIGHT);
   const classes = useStyles({ headerHeight });
 
-  const { events: boxEvents = [], members, title, publicKey, id } = useMemo(() => box, [box]);
+  const {
+    events: boxEvents = [],
+    members,
+    title,
+    publicKey,
+    id,
+    lifecycle,
+  } = useMemo(() => box, [box]);
   const nbOfEvents = useMemo(() => boxEvents.length, [boxEvents]);
   const { accountId } = useSelector(getCurrentUserSelector) || {};
   const {
@@ -70,6 +79,16 @@ function BoxEvents({
   const isTheOnlyMember = useMemo(
     () => members.length === 1 && belongsToCurrentUser,
     [belongsToCurrentUser, members.length],
+  );
+
+  const isClosed = useMemo(
+    () => lifecycle === CLOSED,
+    [lifecycle],
+  );
+
+  const canDeleteBox = useMemo(
+    () => belongsToCurrentUser && isClosed,
+    [belongsToCurrentUser, isClosed],
   );
 
   const headerRef = (ref) => {
@@ -127,7 +146,7 @@ function BoxEvents({
               </Alert>
             )}
 
-            {isTheOnlyMember && canInvite && (
+            {!isClosed && isTheOnlyMember && canInvite && (
               <Alert
                 severity="info"
                 action={(
@@ -139,6 +158,15 @@ function BoxEvents({
                 )}
               >
                 {t('boxes:read.info.share')}
+              </Alert>
+            )}
+
+            {canDeleteBox && (
+              <Alert
+                severity="error"
+                action={<DeleteBoxDialogButton box={box} />}
+              >
+                {t('boxes:read.info.closed')}
               </Alert>
             )}
           </Box>

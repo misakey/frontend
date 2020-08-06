@@ -5,7 +5,7 @@ import moment from 'moment';
 
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
-import BoxAvatar from 'components/dumb/Avatar/Box';
+import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import Title from '@misakey/ui/Typography/Title';
 import MenuIcon from '@material-ui/icons/Menu';
 import Box from '@material-ui/core/Box';
@@ -13,8 +13,9 @@ import Box from '@material-ui/core/Box';
 import BoxesSchema from 'store/schemas/Boxes';
 import { DATE_FULL } from 'constants/formats/dates';
 
-function BoxClosed({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
-  const { avatarUrl, title = '', lastEvent } = useMemo(() => box, [box]);
+// COMPONENTS
+function BoxClosed({ drawerWidth, isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t }) {
+  const { title = '', lastEvent } = useMemo(() => box, [box]);
   const { sender: { displayName }, serverEventCreatedAt } = useMemo(() => lastEvent, [lastEvent]);
   const date = useMemo(
     () => moment(serverEventCreatedAt).format(DATE_FULL), [serverEventCreatedAt],
@@ -22,7 +23,11 @@ function BoxClosed({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
 
   return (
     <>
-      <AppBarDrawer drawerWidth={drawerWidth} isDrawerOpen={isDrawerOpen}>
+      <AppBarDrawer
+        drawerWidth={drawerWidth}
+        isDrawerOpen={isDrawerOpen}
+        toolbarProps={{ px: 0 }}
+      >
         {!isDrawerOpen && (
         <IconButtonAppBar
           color="inherit"
@@ -33,17 +38,7 @@ function BoxClosed({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
           <MenuIcon />
         </IconButtonAppBar>
         )}
-        <Box display="flex" flexGrow={1} overflow="hidden" alignItems="center">
-          <Box display="flex" flexDirection="column">
-            <Title gutterBottom={false} noWrap>
-              {title}
-            </Title>
-          </Box>
-        </Box>
-        <BoxAvatar
-          src={avatarUrl}
-          title={title}
-        />
+        <BoxEventsAppBar disabled box={box} belongsToCurrentUser={belongsToCurrentUser} />
       </AppBarDrawer>
       <Box
         px={6}
@@ -53,7 +48,7 @@ function BoxClosed({ drawerWidth, isDrawerOpen, toggleDrawer, box, t }) {
         justifyContent="center"
         alignItems="center"
       >
-        <Title align="center">{t('boxes:read.closed.info', { title, displayName, date })}</Title>
+        <Title color="textSecondary" align="center">{t('boxes:read.closed.info', { title, displayName, date })}</Title>
       </Box>
     </>
 
@@ -66,6 +61,7 @@ BoxClosed.propTypes = {
   toggleDrawer: PropTypes.func.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
+  belongsToCurrentUser: PropTypes.bool.isRequired,
 };
 
 export default withTranslation(['common', 'boxes'])(BoxClosed);
