@@ -34,6 +34,7 @@ export default async function (file, boxPublicKey) {
     },
     fileName: file.name,
     fileSize: file.size,
+    fileType: file.type,
   };
 
   const encryptedMessageContent = encodeBase64(decodeUTF8(

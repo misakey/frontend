@@ -83,5 +83,11 @@
         "subtitle": "Je souhaite recevoir des communications dès que de nouvelles informations sont disponibles"
       }
     }
+  },
+  "filePreview": {
+    "errors": {
+      "unavailable": "n'est pas lisible dans le navigateur",
+      "noFile": "ne peut pas être téléchargé"
+    }
   }
 }

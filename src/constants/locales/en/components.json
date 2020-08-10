@@ -73,5 +73,11 @@
         "subtitle": "I want to receive communications as soon as new information is available"
       }
     }
+  },
+  "filePreview": {
+    "errors": {
+      "unavailable": "can not be displayed in browser",
+      "noFile": "can not be downloaded"
+    }
   }
 }

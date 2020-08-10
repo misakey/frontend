@@ -29,9 +29,10 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: MESSAGE_BORDER_RADIUS,
   },
   content: {
-    padding: theme.spacing(1),
+    padding: 0,
   },
   text: {
+    padding: theme.spacing(1),
     whiteSpace: 'pre-wrap',
   },
   footer: {
@@ -81,9 +82,9 @@ const EventCard = ({
           />
         )}
         <Box classes={{ root: classes.boxRoot }}>
+          {children}
           <CardContent classes={{ root: classes.content }}>
             {!isNil(text) && <Typography className={classes.text}>{text}</Typography>}
-            {children}
           </CardContent>
           {!isNil(actions) && (
             <CardActions classes={{ root: classes.footer }}>
