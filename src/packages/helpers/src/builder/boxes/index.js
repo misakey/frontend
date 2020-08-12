@@ -77,11 +77,6 @@ export const createBoxEncryptedFileBuilder = (boxID, formData) => API
   .send({ contentType: null }) // so that browser set content type automatically
   .then(objectToCamelCaseDeep);
 
-export const getBoxEncryptedFileBuilder = (boxID, encryptedFileId) => API
-  .use(API.endpoints.boxes.encryptedFiles.read)
-  .build({ id: boxID, fileId: encryptedFileId })
-  .send();
-
 export const createKeyShareBuilder = (misakeyKeyShare) => API
   .use(API.endpoints.boxes.keyShares.create)
   .build(null, objectToSnakeCaseDeep(misakeyKeyShare))

@@ -2,7 +2,7 @@ import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
-import { useParams, generatePath } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import IdentitySchema from 'store/schemas/Identity';
 import routes from 'routes';
@@ -14,6 +14,7 @@ import { updateIdentity } from '@misakey/helpers/builder/identities';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useDispatchUpdateIdentity from 'hooks/useDispatchUpdateIdentity';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 import { Form } from 'formik';
 import FormField from '@misakey/ui/Form/Field';
@@ -38,10 +39,7 @@ const IdentityDisplayName = ({
 
   const { id } = useParams();
 
-  const homePath = useMemo(
-    () => generatePath(routes.accounts._, { id }),
-    [id],
-  );
+  const homePath = useGeneratePathKeepingSearchAndHash(routes.accounts._, { id });
 
   const navigationProps = useMemo(
     () => ({

@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback, lazy } from 'react';
-import { Switch, Route, useParams, generatePath } from 'react-router-dom';
+import { Switch, Route, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
@@ -17,6 +17,7 @@ import { uploadAvatar } from '@misakey/helpers/builder/identities';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useDispatchUpdateIdentity from 'hooks/useDispatchUpdateIdentity';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 import Box from '@material-ui/core/Box';
 
@@ -52,10 +53,7 @@ const AccountAvatar = ({
     [identity, isFetching],
   );
 
-  const homePath = useMemo(
-    () => generatePath(routes.accounts._, { id }),
-    [id],
-  );
+  const homePath = useGeneratePathKeepingSearchAndHash(routes.accounts._, { id });
 
   const { displayName, avatarUrl, id: identityId } = useMemo(
     () => identity || EMPTY_OBJECT,

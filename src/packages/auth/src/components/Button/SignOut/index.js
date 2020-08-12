@@ -1,31 +1,23 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
-import { signOut } from '@misakey/auth/store/actions/auth';
-import signOutBuilder from '@misakey/auth/builder/signOut';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import isFunction from '@misakey/helpers/isFunction';
 
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import useSignOut from '@misakey/auth/hooks/useSignOut';
 
 // COMPONENTS
 const ButtonSignOut = ({
-  userManager, onSignOut, onSuccess,
+  userManager, onSuccess,
   t, ...props
 }) => {
-  const onClick = useCallback(
-    (e) => signOutBuilder()
-      .then(() => userManager.removeUser())
-      .then(() => Promise.resolve(onSignOut(e)))
-      .then(() => { if (isFunction(onSuccess)) { onSuccess(e); } }),
-    [onSignOut, onSuccess, userManager],
-  );
+  const onSignOut = useSignOut(userManager, onSuccess);
+
   return (
     <Button
-      onClick={onClick}
+      onClick={onSignOut}
       text={t('common:signOut')}
       {...omitTranslationProps(props)}
     />
@@ -37,8 +29,6 @@ ButtonSignOut.propTypes = {
   standing: PropTypes.oneOf(Object.values(BUTTON_STANDINGS)),
   // withUserManager
   userManager: PropTypes.object.isRequired,
-  // CONNECT
-  onSignOut: PropTypes.func.isRequired,
   onSuccess: PropTypes.func,
 };
 
@@ -47,9 +37,4 @@ ButtonSignOut.defaultProps = {
   onSuccess: null,
 };
 
-// CONNECT
-const mapDispatchToProps = (dispatch) => ({
-  onSignOut: () => dispatch(signOut()),
-});
-
-export default connect(null, mapDispatchToProps)(withTranslation('common')(withUserManager(ButtonSignOut)));
+export default withTranslation('common')(withUserManager(ButtonSignOut));

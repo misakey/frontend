@@ -26,6 +26,25 @@ export default {
       auth: true,
     },
   },
+  vault: {
+    files: {
+      read: {
+        method: 'GET',
+        path: '/saved-files',
+        auth: true,
+      },
+      create: {
+        method: 'POST',
+        path: '/saved-files',
+        auth: true,
+      },
+      delete: {
+        method: 'DELETE',
+        path: '/saved-files/:id',
+        auth: true,
+      },
+    },
+  },
   public: {
     read: {
       method: 'GET',

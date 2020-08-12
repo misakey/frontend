@@ -8,6 +8,7 @@ export const SIGN_OUT = Symbol('SIGN_OUT');
 export const UPDATE_IDENTITY = Symbol('UPDATE_IDENTITY');
 export const LOAD_USER_ROLES = Symbol('LOAD_USER_ROLES');
 export const ADD_USER_ROLE = Symbol('ADD_USER_ROLE');
+export const SET_IS_AUTHENTICATED = Symbol('SET_IS_AUTHENTICATED');
 
 // ACTION CREATORS
 export const authReset = () => ({
@@ -44,6 +45,11 @@ export const loadUserRoles = (roles) => ({
 export const addRoleToUser = (role) => ({
   type: ADD_USER_ROLE,
   role,
+});
+
+export const setIsAuthenticated = (isAuthenticated) => ({
+  type: SET_IS_AUTHENTICATED,
+  isAuthenticated,
 });
 
 // THUNKS

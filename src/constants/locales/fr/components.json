@@ -87,7 +87,14 @@
   "filePreview": {
     "errors": {
       "unavailable": "n'est pas lisible dans le navigateur",
-      "noFile": "ne peut pas être téléchargé"
+      "noFile": "ne peut pas être téléchargé",
+      "download": {
+        "get": "Une erreur s'est produite lors de la récupération du fichier\u00a0!"
+      }
     }
+  },
+  "saveInVault": {
+    "error": "Une erreur s'est produite lors de la sauvegarde du fichier\u00a0!",
+    "success": "Le fichier a été sauvegardé avec succès dans votre coffre\u00a0!"
   }
 }

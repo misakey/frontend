@@ -179,7 +179,7 @@ function BoxEvents({
               <Typography component={Box} alignSelf="center">{date}</Typography>
               {
                 events.map((event) => (
-                  <BoxEventsAccordingToType event={event} key={event.id} boxID={id} />
+                  <BoxEventsAccordingToType event={event} key={event.id} />
                 ))
               }
               <div ref={(ref) => setLastEventRef(ref)} />

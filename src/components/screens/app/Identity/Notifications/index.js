@@ -4,7 +4,7 @@ import { Field, Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
-import { useParams, generatePath } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import IdentitySchema from 'store/schemas/Identity';
 import routes from 'routes';
@@ -16,6 +16,7 @@ import { getDetails } from '@misakey/helpers/apiError';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useDispatchUpdateIdentity from 'hooks/useDispatchUpdateIdentity';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Container from '@material-ui/core/Container';
@@ -41,10 +42,7 @@ const AccountNotifications = ({
     [identity, isFetching],
   );
 
-  const homePath = useMemo(
-    () => generatePath(routes.accounts._, { id }),
-    [id],
-  );
+  const homePath = useGeneratePathKeepingSearchAndHash(routes.accounts._, { id });
 
   const navigationProps = useMemo(
     () => ({

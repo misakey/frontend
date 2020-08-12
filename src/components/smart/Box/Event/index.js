@@ -8,7 +8,7 @@ import BoxEventsSchema from 'store/schemas/Boxes/Events';
 import EVENTS_TYPE from 'constants/app/boxes/events';
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
-function BoxEvents({ event, boxID, preview }) {
+function BoxEvents({ event, preview }) {
   const { identifier } = useSelector(getCurrentUserSelector) || {};
 
   const isFromCurrentUser = useMemo(
@@ -31,7 +31,6 @@ function BoxEvents({ event, boxID, preview }) {
       <BoxMessageEvent
         key={event.id}
         event={event}
-        boxID={boxID}
         isFromCurrentUser={isFromCurrentUser}
         preview={preview}
       />
@@ -43,7 +42,6 @@ function BoxEvents({ event, boxID, preview }) {
 BoxEvents.propTypes = {
   preview: PropTypes.bool,
   event: PropTypes.shape(BoxEventsSchema.propTypes).isRequired,
-  boxID: PropTypes.string.isRequired,
 };
 
 BoxEvents.defaultProps = {

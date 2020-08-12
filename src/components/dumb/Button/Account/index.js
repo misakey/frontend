@@ -6,7 +6,7 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import { withTranslation } from 'react-i18next';
 
 import Button from '@misakey/ui/Button';
-import LinkAccount from 'components/dumb/Link/Account';
+import LinkAccount from 'components/smart/Link/Account';
 
 const ButtonAccount = forwardRef(({ t, ...props }, ref) => (
   <Button

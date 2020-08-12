@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
-import { generatePath, useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 
 import { OLD_PASSWORD_KEY, NEW_PASSWORD_KEY, PASSWORD_CONFIRM_KEY } from 'constants/account';
 import IdentitySchema from 'store/schemas/Identity';
@@ -27,6 +27,7 @@ import BoxControls from '@misakey/ui/Box/Controls';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 import preparePasswordChange from '@misakey/crypto/store/actions/preparePasswordChange';
 import {
@@ -59,10 +60,7 @@ const AccountPassword = ({ t, identity, isFetching }) => {
     [identity, isFetching],
   );
 
-  const accountHome = useMemo(
-    () => generatePath(routes.accounts._, { id }),
-    [id],
-  );
+  const accountHome = useGeneratePathKeepingSearchAndHash(routes.accounts._, { id });
 
   const navigationProps = useMemo(
     () => ({

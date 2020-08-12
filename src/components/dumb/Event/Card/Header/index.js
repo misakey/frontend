@@ -31,7 +31,7 @@ const EventCardHeader = ({ title, titleTypographyProps, ...rest }) => {
 
 EventCardHeader.propTypes = {
   title: PropTypes.string.isRequired,
-  titleTypographyProps: PropTypes.string,
+  titleTypographyProps: PropTypes.object,
 };
 
 EventCardHeader.defaultProps = {

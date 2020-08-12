@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { generatePath, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import IdentitySchema from 'store/schemas/Identity';
 import routes from 'routes';
@@ -14,6 +14,7 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Title from '@misakey/ui/Typography/Title';
 import CardDownloadBackupKey from 'components/smart/Card/Download/BackupKey';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 // COMPONENTS
 const AccountVault = ({ t, identity, isFetching }) => {
@@ -24,10 +25,7 @@ const AccountVault = ({ t, identity, isFetching }) => {
     [identity, isFetching],
   );
 
-  const accountHome = useMemo(
-    () => generatePath(routes.accounts._, { id }),
-    [id],
-  );
+  const accountHome = useGeneratePathKeepingSearchAndHash(routes.accounts._, { id });
 
   const navigationProps = useMemo(
     () => ({

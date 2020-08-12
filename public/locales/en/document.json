@@ -1,0 +1,9 @@
+{
+    "vault": {
+        "title": "My documents",
+        "subtitle": "You are the only member"
+    },
+    "read": {
+        "none": "Select a space to start"
+    }
+}

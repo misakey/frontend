@@ -1,5 +1,6 @@
 {
   "accept": "Accept",
+  "addToVault": "Save in my vault",
   "add": "Add",
   "archive": "Archive",
   "back": "Back",
@@ -55,7 +56,7 @@
   "openVault": "Open my vault",
   "drawerMenu": {
     "tabs": {
-      "account": "Accounts",
+      "document": "Documents",
       "chat": "Chats"
     }
   },

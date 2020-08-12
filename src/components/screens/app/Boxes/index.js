@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { Switch, useRouteMatch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import routes from 'routes';
-import { useSelector } from 'react-redux';
 
 import BoxRead from 'components/screens/app/Boxes/Read';
 import BoxNone from 'components/screens/app/Boxes/None';
@@ -15,11 +14,6 @@ import isNil from '@misakey/helpers/isNil';
 import BoxesList from 'components/screens/app/Boxes/List';
 import ScreenDrawer from 'components/smart/Screen/Drawer';
 
-import { selectors } from '@misakey/crypto/store/reducers';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
-import VaultLockedScreen from './VaultLocked';
-
-
 function Boxes({ match }) {
   const matchBoxSelected = useRouteMatch(routes.boxes.read._);
   const { params: { id } } = useMemo(
@@ -27,30 +21,6 @@ function Boxes({ match }) {
     [matchBoxSelected],
   );
   const isNothingSelected = useMemo(() => isNil(id), [id]);
-
-  const isCryptoLoadedSelector = useMemo(
-    () => selectors.isCryptoLoaded,
-    [],
-  );
-
-  const isCryptoLoaded = useSelector(isCryptoLoadedSelector);
-  const { accountId } = useSelector(getCurrentUserSelector) || {};
-
-  const shouldDisplayLockedScreen = useMemo(
-    () => !isNil(accountId) && !isCryptoLoaded,
-    [accountId, isCryptoLoaded],
-  );
-  const isFullWidth = useMemo(
-    () => shouldDisplayLockedScreen,
-    [shouldDisplayLockedScreen],
-  );
-
-  const drawerChildren = useMemo(() => {
-    if (shouldDisplayLockedScreen) {
-      return (drawerProps) => <VaultLockedScreen {...drawerProps} />;
-    }
-    return (drawerProps) => <BoxesList {...drawerProps} />;
-  }, [shouldDisplayLockedScreen]);
 
   return (
     <Switch>
@@ -60,8 +30,7 @@ function Boxes({ match }) {
           if (!UUID4_REGEX.test(renderProps.match.params.id)) {
             return (
               <ScreenDrawer
-                drawerChildren={drawerChildren}
-                isFullWidth={isFullWidth}
+                drawerChildren={(drawerProps) => <BoxesList {...drawerProps} />}
                 initialIsDrawerOpen={isNothingSelected}
               >
                 {(drawerProps) => (
@@ -72,8 +41,7 @@ function Boxes({ match }) {
           }
           return (
             <ScreenDrawer
-              drawerChildren={drawerChildren}
-              isFullWidth={isFullWidth}
+              drawerChildren={(drawerProps) => <BoxesList {...drawerProps} />}
               initialIsDrawerOpen={isNothingSelected}
             >
               {(drawerProps) => (
@@ -89,8 +57,7 @@ function Boxes({ match }) {
         path={match.path}
         render={(renderProps) => (
           <ScreenDrawer
-            drawerChildren={drawerChildren}
-            isFullWidth={isFullWidth}
+            drawerChildren={(drawerProps) => <BoxesList {...drawerProps} />}
             initialIsDrawerOpen={isNothingSelected}
           >
             {(drawerProps) => (

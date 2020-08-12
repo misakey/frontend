@@ -1,11 +1,6 @@
 import React, { useMemo, useCallback, useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { useSnackbar } from 'notistack';
-import { withTranslation } from 'react-i18next';
-
-import { getBoxEncryptedFileBuilder } from '@misakey/helpers/builder/boxes';
-import decryptFile from '@misakey/crypto/box/decryptFile';
 
 import isNil from '@misakey/helpers/isNil';
 import DialogFilePreview from 'components/smart/Dialog/FilePreview';
@@ -15,6 +10,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import ButtonBase from '@material-ui/core/ButtonBase';
+import useSaveFileInVault from 'hooks/useSaveFileInVault';
 
 const useStyles = makeStyles((theme) => ({
   filePreview: {
@@ -36,16 +32,22 @@ const FileCardEvent = ({
   sender,
   isFromCurrentUser,
   text,
-  boxId,
   decryptedContent,
   encryptedFileId,
-  t,
 }) => {
   const classes = useStyles();
-  const { enqueueSnackbar } = useSnackbar();
   const [isFilePreviewOpened, setIsFilePreviewOpened] = useState(false);
 
-  const { fileSize, fileType, fileName } = useMemo(() => decryptedContent, [decryptedContent]);
+  const {
+    fileSize,
+    fileType,
+    fileName,
+    encryption,
+  } = useMemo(() => decryptedContent, [decryptedContent]);
+
+  const onSaveInVault = useSaveFileInVault(
+    { encryption, fileSize, fileName, fileType }, encryptedFileId,
+  );
 
   const openFilePreview = useCallback(
     () => {
@@ -59,22 +61,6 @@ const FileCardEvent = ({
       setIsFilePreviewOpened(false);
     },
     [],
-  );
-
-  const onError = useCallback(() => {
-    enqueueSnackbar(t('boxes:read.events.download.errors.get'), { variant: 'error' });
-    return Promise.resolve(null);
-  }, [enqueueSnackbar, t]);
-
-  const onGetDecryptedFile = useCallback(
-    () => {
-      if (!isNil(boxId) && !isNil(encryptedFileId)) {
-        return getBoxEncryptedFileBuilder(boxId, encryptedFileId)
-          .then((response) => decryptFile(response.blob, decryptedContent))
-          .catch(onError);
-      }
-      return Promise.reject();
-    }, [boxId, decryptedContent, encryptedFileId, onError],
   );
 
   const onClick = useMemo(
@@ -98,8 +84,10 @@ const FileCardEvent = ({
         fileSize={fileSize}
         fileName={fileName}
         fileType={fileType}
-        onGetDecryptedFile={onGetDecryptedFile}
+        encryption={encryption}
+        encryptedFileId={encryptedFileId}
         onClose={onCloseFilePreview}
+        onSave={onSaveInVault}
       />
       <ButtonBase className={clsx(classes.filePreview)} onClick={onClick} disabled={isNil(onClick)}>
         <BoxFile
@@ -116,8 +104,6 @@ FileCardEvent.propTypes = {
   isFromCurrentUser: PropTypes.bool,
   text: PropTypes.string.isRequired,
   decryptedContent: PropTypes.object,
-  boxId: PropTypes.string.isRequired,
-  t: PropTypes.func.isRequired,
   encryptedFileId: PropTypes.string.isRequired,
   sender: PropTypes.shape({
     displayName: PropTypes.string,
@@ -130,4 +116,4 @@ FileCardEvent.defaultProps = {
   decryptedContent: {},
 };
 
-export default withTranslation('boxes')(FileCardEvent);
+export default FileCardEvent;

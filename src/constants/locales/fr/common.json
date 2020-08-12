@@ -1,5 +1,6 @@
 {
   "accept": "J'Accepte",
+  "addToVault": "Sauvegarder dans mon coffre",
   "add": "Ajouter",
   "anonymousUser": "Un utilisateur Misakey",
   "archive": "Archiver",
@@ -63,7 +64,7 @@
   "openVault": "Ouvrir mon coffre-fort",
   "drawerMenu": {
     "tabs": {
-      "account": "Comptes",
+      "document": "Documents",
       "chat": "Chats"
     }
   },

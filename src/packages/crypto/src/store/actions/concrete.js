@@ -26,6 +26,7 @@ import {
 import {
   generateAsymmetricKeyPair,
   generateNewSaltedSymmetricKey,
+  generateSymmetricKey,
 } from '../../crypto';
 import {
   NoNewSecretKeys,
@@ -62,6 +63,7 @@ export const CRYPTO_SET_ENCRYPTED_BACKUP_DATA = Symbol('CRYPTO_SET_ENCRYPTED_BAC
 export const CRYPTO_SET_BACKUP_KEY_SHARE = Symbol('CRYPTO_SET_BACKUP_KEY_SHARE');
 export const CRYPTO_SET_BOX_KEY_SHARE = Symbol('CRYPTO_SET_BACKUP_KEY_SHARE');
 export const CRYPTO_REMOVE_BOX_KEY_SHARES = Symbol('CRYPTO_REMOVE_BOX_KEY_SHARES');
+export const CRYPTO_SET_VAULT_KEY = Symbol('CRYPTO_SET_VAULT_KEY');
 
 // ACTION BUILDERS
 // @FIXME maybe apply "withBackupUpdater" later
@@ -170,11 +172,13 @@ export function createNewOwnerSecrets(password) {
     const { secretKey, publicKey } = generateAsymmetricKeyPair();
 
     const backupKey = await generateNewSaltedSymmetricKey(password);
+    const vaultKey = await generateSymmetricKey();
 
     dispatch({
       type: CRYPTO_INITIALIZE,
       secretKey,
       backupKey,
+      vaultKey,
     });
 
     const encryptedSecrets = encryptSecretsBackup(
@@ -307,3 +311,21 @@ export const boxAddSecretKeySetKeyShare = withBackupUpdater(
     ]);
   },
 );
+
+export const setVaultKey = withBackupUpdater(({ vaultKey }) => ({
+  type: CRYPTO_SET_VAULT_KEY,
+  vaultKey,
+}));
+
+export const ensureVaultKeyExists = () => async (dispatch, getState) => {
+  const storeVaultKey = getState().crypto.secrets.vaultKey;
+
+  if (isNil(storeVaultKey)) {
+    const vaultKey = await generateSymmetricKey();
+    dispatch(setVaultKey({ vaultKey }));
+    return vaultKey;
+  }
+
+  return storeVaultKey;
+};
+

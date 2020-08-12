@@ -28,11 +28,8 @@ const appReducer = combineReducers({
     // New app
     boxes: {},
     events: {},
-    // old app
-    applications: {},
-    users: {},
-    services: {},
-    blobs: {},
+    savedFiles: {},
+    savedFilesByIdentity: {},
   }, {}, makeEntities),
 });
 

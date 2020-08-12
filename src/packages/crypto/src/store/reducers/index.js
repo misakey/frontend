@@ -26,6 +26,7 @@ import {
   CRYPTO_SET_BACKUP_KEY_SHARE,
   CRYPTO_SET_BOX_KEY_SHARE,
   CRYPTO_REMOVE_BOX_KEY_SHARES,
+  CRYPTO_SET_VAULT_KEY,
 } from '../actions/concrete';
 
 
@@ -52,6 +53,7 @@ export const INITIAL_STATE = {
   secrets: {
     // @FIXME rename "secretKey" to "userDecryptionKey"
     secretKey: null,
+    vaultKey: null,
     boxKeyShares: {},
     boxDecryptionKeys: [],
     // "passive" encryption keys are keys that must not be used any more for encrypting data;
@@ -59,6 +61,7 @@ export const INITIAL_STATE = {
     // This is typically used when recovering old keys that were retired after being lost.
     passive: {
       secretKeys: [],
+      vaultKey: [],
       boxDecryptionKeys: [],
     },
   },
@@ -75,6 +78,11 @@ const isCryptoLoaded = createSelector(
 const getBackupKey = createSelector(
   getState,
   (state) => state.backupKey,
+);
+
+const getVaultKey = createSelector(
+  getState,
+  (state) => state.secrets.vaultKey,
 );
 
 const makeGetBackupKeyShareForAccount = () => createSelector(
@@ -112,6 +120,7 @@ const makeGetMissingBoxKeyShares = () => createSelector(
 
 export const selectors = {
   getBackupKey,
+  getVaultKey,
   makeGetBackupKeyShareForAccount,
   isCryptoLoaded,
   areSecretsLoaded,
@@ -132,6 +141,16 @@ function setBackupKey(state, { backupKey }) {
   return {
     ...state,
     backupKey,
+  };
+}
+
+function setVaultKey(state, { vaultKey }) {
+  return {
+    ...state,
+    secrets: {
+      ...state.secrets,
+      vaultKey,
+    },
   };
 }
 
@@ -163,12 +182,13 @@ function setEncryptedBackupVersion(state, { version }) {
 }
 
 
-function initialize(state, { backupKey, secretKey }) {
+function initialize(state, { backupKey, secretKey, vaultKey }) {
   return {
     ...state,
     secrets: {
       ...state.secrets,
       secretKey,
+      vaultKey,
     },
     backupKey,
   };
@@ -244,6 +264,7 @@ const cryptoReducer = createReducer(INITIAL_STATE, {
   [CRYPTO_SET_BACKUP_KEY_SHARE]: setBackupKeyShare,
   [CRYPTO_SET_BOX_KEY_SHARE]: setBoxKeyShare,
   [CRYPTO_REMOVE_BOX_KEY_SHARES]: removeBoxKeyShares,
+  [CRYPTO_SET_VAULT_KEY]: setVaultKey,
   [SIGN_OUT]: reset,
 });
 

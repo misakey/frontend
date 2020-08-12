@@ -1,8 +1,9 @@
 import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory, useParams, generatePath } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import FormField from '@misakey/ui/Form/Field';
 import { withTranslation } from 'react-i18next';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 import { ACCEPTED_TYPES } from 'constants/file/image';
 import routes from 'routes';
@@ -22,10 +23,8 @@ const AccountAvatarUpload = ({
   const { push } = useHistory();
   const { id } = useParams();
 
-  const homePath = useMemo(
-    () => generatePath(routes.accounts._, { id }),
-    [id],
-  );
+  const homePath = useGeneratePathKeepingSearchAndHash(routes.accounts._, { id });
+  const avatarPath = useGeneratePathKeepingSearchAndHash(routes.accounts.avatar._, { id });
 
   const navigationProps = useMemo(
     () => ({
@@ -36,9 +35,9 @@ const AccountAvatarUpload = ({
 
   const onUpload = useCallback(
     () => {
-      push(generatePath(routes.accounts.avatar._, { id }));
+      push(avatarPath);
     },
-    [id, push],
+    [avatarPath, push],
   );
 
   return (

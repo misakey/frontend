@@ -3,7 +3,7 @@ import React, { forwardRef } from 'react';
 
 import useAccountId from 'hooks/useAccountId';
 
-import LinkAccount from 'components/dumb/Link/Account';
+import LinkAccount from 'components/smart/Link/Account';
 import useIdentity from 'hooks/useIdentity';
 
 // COMPONENTS

@@ -100,12 +100,6 @@
             "you": "<0>Vous</0> avez rejoint le chat"
           }
         }
-      },
-      "download": {
-        "errors": {
-          "get": "Un erreur s'est produite lors de la récupération du fichier\u00a0!",
-          "default": "Une erreur s'est produite lors du déchiffrement du fichier\u00a0 !"
-        }
       }
     },
     "upload": {
@@ -128,7 +122,7 @@
         },
         "members": {
           "title": "Membres du chat",
-          "creator": "Vous êtes le seul participant",
+          "creator": "Vous êtes le seul membre",
           "count": "{{count}} membre",
           "count_plural": "{{count}} membres"
         },

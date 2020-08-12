@@ -13,6 +13,7 @@ import {
   UPDATE_IDENTITY,
   LOAD_USER_ROLES,
   ADD_USER_ROLE,
+  SET_IS_AUTHENTICATED,
 } from '../../actions/auth';
 
 
@@ -74,6 +75,12 @@ function addUserRole(state, { role }) {
   };
 }
 
+function setIsAuthenticated(state, { isAuthenticated }) {
+  return {
+    ...state,
+    isAuthenticated,
+  };
+}
 
 // SELECTORS
 const getState = ({ auth }) => auth;
@@ -130,4 +137,5 @@ export default createResetOnSignOutReducer(INITIAL_STATE, {
   [UPDATE_IDENTITY]: updateIdentity,
   [LOAD_USER_ROLES]: updateRoles,
   [ADD_USER_ROLE]: addUserRole,
+  [SET_IS_AUTHENTICATED]: setIsAuthenticated,
 });

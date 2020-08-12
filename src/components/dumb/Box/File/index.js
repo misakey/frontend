@@ -9,10 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import formatFileSize from 'helpers/formatFileSize';
 import isNil from '@misakey/helpers/isNil';
 
-import DefaultIcon from '@material-ui/icons/InsertDriveFile';
-import ImageIcon from '@material-ui/icons/Image';
-import VideoIcon from '@material-ui/icons/Videocam';
-import PdfIcon from '@material-ui/icons/PictureAsPdf';
+import useGetFileIconFromType from 'hooks/useGetFileIconFromType';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -22,7 +19,9 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-function BoxFile({ fileName, fileSize, fileType, text, typographyProps, isLarge, ...rest }) {
+function BoxFile(
+  { fileName, fileSize, fileType, text, typographyProps, textContainerProps, isLarge, ...rest },
+) {
   const classes = useStyles({ isLarge });
 
   const formattedSize = useMemo(
@@ -30,13 +29,7 @@ function BoxFile({ fileName, fileSize, fileType, text, typographyProps, isLarge,
     [fileSize],
   );
 
-  const FileIcon = useMemo(() => {
-    if (isNil(fileType)) { return DefaultIcon; }
-    if (fileType === 'application/pdf') { return PdfIcon; }
-    if (fileType.startsWith('image')) { return ImageIcon; }
-    if (fileType.startsWith('video')) { return VideoIcon; }
-    return DefaultIcon;
-  }, [fileType]);
+  const FileIcon = useGetFileIconFromType(fileType);
 
   return (
     <Box
@@ -47,11 +40,13 @@ function BoxFile({ fileName, fileSize, fileType, text, typographyProps, isLarge,
       {...rest}
     >
       <FileIcon className={classes.icons} />
-      <Typography variant="caption" align="center" color="textSecondary" {...typographyProps}>{fileName}</Typography>
-      <Typography variant="caption" align="center" color="textSecondary" {...typographyProps}>{formattedSize}</Typography>
-      {!isNil(text) && (
-      <Typography variant="caption" align="center" color="textSecondary" {...typographyProps}>{text}</Typography>
-      )}
+      <Box display="flex" flexDirection="column" {...textContainerProps}>
+        <Typography variant="caption" align="center" color="textSecondary" {...typographyProps}>{fileName}</Typography>
+        <Typography variant="caption" align="center" color="textSecondary" {...typographyProps}>{formattedSize}</Typography>
+        {!isNil(text) && (
+          <Typography variant="caption" align="center" color="textSecondary" {...typographyProps}>{text}</Typography>
+        )}
+      </Box>
     </Box>
   );
 }
@@ -62,6 +57,7 @@ BoxFile.propTypes = {
   fileSize: PropTypes.number,
   text: PropTypes.string,
   typographyProps: PropTypes.object,
+  textContainerProps: PropTypes.object,
   isLarge: PropTypes.bool,
 };
 
@@ -70,6 +66,7 @@ BoxFile.defaultProps = {
   fileSize: null,
   fileType: null,
   typographyProps: {},
+  textContainerProps: {},
   isLarge: false,
 };
 

@@ -77,7 +77,14 @@
   "filePreview": {
     "errors": {
       "unavailable": "can not be displayed in browser",
-      "noFile": "can not be downloaded"
+      "noFile": "can not be downloaded",
+      "download": {
+        "get": "An error occured while retrieving the file !"
+      }
     }
+  },
+  "saveInVault": {
+    "error": "An error occured while saving the file!",
+    "success": "File has been successfully saved in yout vault!"
   }
 }

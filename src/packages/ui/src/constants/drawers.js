@@ -1,5 +1,6 @@
 export const LEFT_DRAWER_QUERY_PARAM = 'leftDrawer';
 export const TMP_DRAWER_QUERY_PARAMS = 'tmpDrawer';
+export const ACCOUNT_LEFT_DRAWER_QUERY_PARAM = 'accountLeftDrawer';
 
 export const TMP_DRAWER_ACCOUNT_VALUE = 'account';
 

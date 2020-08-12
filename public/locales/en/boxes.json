@@ -100,12 +100,6 @@
             "you": "<0>You</0> joined the chat"
           }
         }
-      },
-      "download": {
-        "errors": {
-          "get": "An error occured while retrieving the file !",
-          "default": "An error occured during file decryption !"
-        }
       }
     },
     "upload": {

@@ -55,11 +55,6 @@ export default {
       path: '/boxes/:id/encrypted-files',
       auth: true,
     },
-    read: {
-      method: 'GET',
-      path: '/boxes/:id/encrypted-files/:fileId',
-      auth: true,
-    },
   },
   keyShares: {
     create: {
@@ -70,29 +65,6 @@ export default {
     read: {
       method: 'GET',
       path: '/box-key-shares/:otherShareHash',
-      auth: true,
-    },
-  },
-  // @UNUSED
-  blob: {
-    find: {
-      method: 'GET',
-      path: '/blobs',
-      auth: true,
-    },
-    read: {
-      method: 'GET',
-      path: '/blobs/:id',
-      auth: true,
-    },
-    create: {
-      method: 'PUT',
-      path: '/blobs',
-      auth: true,
-    },
-    count: {
-      method: 'HEAD',
-      path: '/blobs',
       auth: true,
     },
   },

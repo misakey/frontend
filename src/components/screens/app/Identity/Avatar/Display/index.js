@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { Link, generatePath, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 import routes from 'routes';
 
@@ -27,10 +28,7 @@ const AccountAvatarDisplay = ({
 }) => {
   const { id } = useParams();
 
-  const homePath = useMemo(
-    () => generatePath(routes.accounts._, { id }),
-    [id],
-  );
+  const homePath = useGeneratePathKeepingSearchAndHash(routes.accounts._, { id });
 
   const navigationProps = useMemo(
     () => ({
@@ -39,10 +37,7 @@ const AccountAvatarDisplay = ({
     [homePath],
   );
 
-  const secondaryTo = useMemo(
-    () => generatePath(routes.accounts.avatar.upload, { id }),
-    [id],
-  );
+  const secondaryTo = useGeneratePathKeepingSearchAndHash(routes.accounts.avatar.upload, { id });
 
   return (
     <ScreenAction

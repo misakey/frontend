@@ -1,12 +1,10 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { generatePath, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import routes from 'routes';
 import IdentitySchema from 'store/schemas/Identity';
-
-import isNil from '@misakey/helpers/isNil';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -22,6 +20,7 @@ import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
 // import DeleteAccountListItem from 'components/oldScreens/Account/Home/DeleteAccount';
 import CardIdentityHeader from 'components/dumb/Card/Identity/Header';
 import CardList from 'components/dumb/Card/List';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -52,31 +51,30 @@ const CardIdentity = ({ identity, t }) => {
 
   const { displayName, avatarUrl, notifications } = useMemo(() => identity || {}, [identity]);
   const { accountId } = useMemo(() => identity || {}, [identity]);
-  const hasAccountId = useMemo(() => !isNil(accountId), [accountId]);
 
-  const listItemDisplayNameTo = useMemo(
-    () => generatePath(routes.accounts.displayName, { id: accountId }),
-    [accountId],
+  const listItemDisplayNameTo = useGeneratePathKeepingSearchAndHash(
+    routes.accounts.displayName,
+    { id: accountId },
   );
 
-  const listItemNotificationsTo = useMemo(
-    () => generatePath(routes.accounts.notifications, { id: accountId }),
-    [accountId],
+  const listItemNotificationsTo = useGeneratePathKeepingSearchAndHash(
+    routes.accounts.notifications,
+    { id: accountId },
   );
 
-  const listItemAvatarTo = useMemo(
-    () => generatePath(routes.accounts.avatar._, { id: accountId }),
-    [accountId],
+  const listItemAvatarTo = useGeneratePathKeepingSearchAndHash(
+    routes.accounts.avatar._,
+    { id: accountId },
   );
 
-  const listItemPasswordTo = useMemo(
-    () => (hasAccountId ? generatePath(routes.accounts.password, { id: accountId }) : null),
-    [accountId, hasAccountId],
+  const listItemPasswordTo = useGeneratePathKeepingSearchAndHash(
+    routes.accounts.password,
+    { id: accountId },
   );
 
-  const listItemExportCryptoTo = useMemo(
-    () => (hasAccountId ? generatePath(routes.accounts.vault, { id: accountId }) : null),
-    [accountId, hasAccountId],
+  const listItemExportCryptoTo = useGeneratePathKeepingSearchAndHash(
+    routes.accounts.vault,
+    { id: accountId },
   );
 
   return (

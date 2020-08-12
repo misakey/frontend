@@ -20,7 +20,7 @@ const BoxesApp = () => (
       />
 
       {/* OTHERS */}
-      <Route path={[routes.boxes._, routes.accounts._]} component={Home} />
+      <Route path={[routes.boxes._, routes.accounts._, routes.documents._]} component={Home} />
       <Route path={routes.boxes.invitation} component={Invitation} />
 
       {/* DEFAULT */}

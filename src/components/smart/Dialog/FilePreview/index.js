@@ -1,10 +1,12 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import { useSnackbar } from 'notistack';
 import clsx from 'clsx';
 
 import downloadFile from '@misakey/helpers/downloadFile';
 import isNil from '@misakey/helpers/isNil';
+import isFunction from '@misakey/helpers/isFunction';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
@@ -19,8 +21,14 @@ import DialogContent from '@material-ui/core/DialogContent';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import DownloadIcon from '@material-ui/icons/GetApp';
 // import PrintIcon from '@material-ui/icons/Print';
+import AddToVaultIcon from '@material-ui/icons/LibraryAdd';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import BoxFile from 'components/dumb/Box/File';
+import decryptFile from '@misakey/crypto/box/decryptFile';
+import { getEncryptedFileBuilder } from '@misakey/helpers/builder/files';
+import withDialogPassword from 'components/smart/Dialog/Password/with';
+
+const IconButtonWithDialogPassword = withDialogPassword(IconButtonAppBar);
 
 // CONSTANTS
 const ALLOWED_TYPE_PREVIEW = [
@@ -63,6 +71,12 @@ const useStyles = makeStyles((theme) => ({
     width: 0,
     height: 0,
   }),
+  textContainerPreview: {
+    backgroundColor: theme.palette.grey[300],
+    opacity: 0.8,
+    padding: theme.spacing(1),
+    borderRadius: theme.shape.borderRadius,
+  },
 }));
 
 // HELPERS
@@ -84,7 +98,11 @@ const revokeBlobUrl = (file) => {
   }
 };
 
-function FilePreviewDialog({ t, open, onClose, onGetDecryptedFile, fileSize, fileName, fileType }) {
+function FilePreviewDialog({
+  t, open, onClose, encryptedFileId, encryption, onSave, fileSize, fileName, fileType,
+}) {
+  const { enqueueSnackbar } = useSnackbar();
+
   const [file, setFile] = useState();
   const [blobUrl, setBlobUrl] = useState();
   const [hasError, setHasError] = useState(false);
@@ -110,6 +128,20 @@ function FilePreviewDialog({ t, open, onClose, onGetDecryptedFile, fileSize, fil
   const onLoad = useCallback(() => {
     setIsLoaded(true);
   }, []);
+
+  const onGetDecryptedFile = useCallback(
+    () => {
+      if (!isNil(encryptedFileId)) {
+        return getEncryptedFileBuilder(encryptedFileId)
+          .then((response) => decryptFile(response.blob, { encryption, fileName }))
+          .catch(() => {
+            enqueueSnackbar(t('components:filePreview.errors.download.get'), { variant: 'error' });
+            return Promise.resolve(null);
+          });
+      }
+      return Promise.reject();
+    }, [encryptedFileId, encryption, enqueueSnackbar, fileName, t],
+  );
 
   const { isFetching } = useFetchEffect(
     onGetDecryptedFile,
@@ -203,7 +235,7 @@ function FilePreviewDialog({ t, open, onClose, onGetDecryptedFile, fileSize, fil
   }, [blobUrl, classes.embed, classes.media, fileName, fileSize, fileType, onError, onLoad, t]);
 
   const isMediaDisplayed = useMemo(
-    () => (fileType.startsWith('image') && !hasError) || isMediaAudioOrVideo,
+    () => (!isNil(fileType) && fileType.startsWith('image') && !hasError) || isMediaAudioOrVideo,
     [fileType, hasError, isMediaAudioOrVideo],
   );
 
@@ -252,6 +284,18 @@ function FilePreviewDialog({ t, open, onClose, onGetDecryptedFile, fileSize, fil
           </IconButtonAppBar>
 
           <Box flexGrow={1} />
+          {isFunction(onSave) && (
+            <IconButtonWithDialogPassword
+              color="inherit"
+              aria-label={t('common:addToVault')}
+              edge="end"
+              onClick={onSave}
+            >
+              <Tooltip title={t('common:addToVault')}>
+                <AddToVaultIcon />
+              </Tooltip>
+            </IconButtonWithDialogPassword>
+          )}
           {!isNil(blobUrl) && (
             <>
               <IconButtonAppBar
@@ -295,6 +339,7 @@ function FilePreviewDialog({ t, open, onClose, onGetDecryptedFile, fileSize, fil
               : t('components:filePreview.errors.unavailable')}
             isLarge
             typographyProps={{ variant: 'body1' }}
+            textContainerProps={{ className: classes.textContainerPreview }}
           />
         )}
       </DialogContent>
@@ -310,13 +355,17 @@ FilePreviewDialog.propTypes = {
   fileSize: PropTypes.number,
   fileType: PropTypes.string,
   fileName: PropTypes.string,
-  onGetDecryptedFile: PropTypes.func.isRequired,
+  encryption: PropTypes.object,
+  encryptedFileId: PropTypes.string.isRequired,
+  onSave: PropTypes.func,
 };
 
 FilePreviewDialog.defaultProps = {
   fileSize: null,
   fileType: null,
+  encryption: null,
   fileName: 'Untitled',
+  onSave: null,
 };
 
 export default withTranslation(['common', 'components'])(FilePreviewDialog);

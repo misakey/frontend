@@ -14,7 +14,7 @@ import EventSchema from 'store/schemas/Boxes/Events';
 
 
 // COMPONENTS
-const BoxMessageFileEvent = ({ event, boxID, isFromCurrentUser, preview, t }) => {
+const BoxMessageFileEvent = ({ event, isFromCurrentUser, preview, t }) => {
   const {
     sender,
     content: { encrypted, encryptedFileId, publicKey },
@@ -53,7 +53,6 @@ const BoxMessageFileEvent = ({ event, boxID, isFromCurrentUser, preview, t }) =>
   return (
     <EventFileCard
       text={text}
-      boxId={boxID}
       sender={sender}
       canBeDecrypted={canBeDecrypted}
       decryptedContent={decryptedContent}
@@ -67,7 +66,6 @@ BoxMessageFileEvent.propTypes = {
   isFromCurrentUser: PropTypes.bool,
   preview: PropTypes.bool,
   event: PropTypes.shape(EventSchema.propTypes).isRequired,
-  boxID: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
 };
 
