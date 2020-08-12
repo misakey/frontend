@@ -10,6 +10,8 @@ import DocumentList from 'components/screens/app/Documents/List';
 
 import isNil from '@misakey/helpers/isNil';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
+import VaultLockedScreen from 'components/screens/app/VaultLocked';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -32,6 +34,17 @@ function Documents({ match, ...props }) {
     () => isNothingSelected,
     [isNothingSelected],
   );
+
+  const shouldDisplayLockedScreen = useShouldDisplayLockedScreen();
+
+  if (shouldDisplayLockedScreen) {
+    return (
+      <ScreenDrawer
+        drawerChildren={(drawerProps) => <VaultLockedScreen {...drawerProps} />}
+        isFullWidth
+      />
+    );
+  }
 
   return (
     <ScreenDrawer

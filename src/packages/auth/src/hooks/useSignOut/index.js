@@ -14,11 +14,13 @@ export default (userManager, onSuccess = null) => {
       // in store but have already been invalidateed in backend
       dispatch(setIsAuthenticated(false));
       return signOutBuilder()
-        .then(() => Promise.all([userManager.removeUser(), dispatch(signOut(e))]))
+        .then(() => userManager.removeUser())
+        .then(() => Promise.resolve(dispatch(signOut(e))))
         .then(() => {
-          if (isFunction(onSuccess)) { Promise.resolve(onSuccess(e)); }
-        })
-        .catch(() => dispatch(setIsAuthenticated(true)));
+          if (isFunction(onSuccess)) {
+            Promise.resolve(onSuccess(e));
+          }
+        });
     },
     [dispatch, onSuccess, userManager],
   );

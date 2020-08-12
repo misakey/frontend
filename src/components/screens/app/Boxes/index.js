@@ -10,9 +10,11 @@ import RouteAuthenticatedBoxRead from 'components/smart/Route/Authenticated/BoxR
 import { UUID4_REGEX } from 'constants/regex';
 
 import isNil from '@misakey/helpers/isNil';
+import VaultLockedScreen from 'components/screens/app/VaultLocked';
 
 import BoxesList from 'components/screens/app/Boxes/List';
 import ScreenDrawer from 'components/smart/Screen/Drawer';
+import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 
 function Boxes({ match }) {
   const matchBoxSelected = useRouteMatch(routes.boxes.read._);
@@ -22,6 +24,20 @@ function Boxes({ match }) {
   );
   const isNothingSelected = useMemo(() => isNil(id), [id]);
 
+  const shouldDisplayLockedScreen = useShouldDisplayLockedScreen();
+
+  const isFullWidth = useMemo(
+    () => shouldDisplayLockedScreen,
+    [shouldDisplayLockedScreen],
+  );
+
+  const drawerChildren = useMemo(() => {
+    if (shouldDisplayLockedScreen) {
+      return (drawerProps) => <VaultLockedScreen {...drawerProps} />;
+    }
+    return (drawerProps) => <BoxesList {...drawerProps} />;
+  }, [shouldDisplayLockedScreen]);
+
   return (
     <Switch>
       <RouteAuthenticatedBoxRead
@@ -30,7 +46,8 @@ function Boxes({ match }) {
           if (!UUID4_REGEX.test(renderProps.match.params.id)) {
             return (
               <ScreenDrawer
-                drawerChildren={(drawerProps) => <BoxesList {...drawerProps} />}
+                drawerChildren={drawerChildren}
+                isFullWidth={isFullWidth}
                 initialIsDrawerOpen={isNothingSelected}
               >
                 {(drawerProps) => (
@@ -41,7 +58,8 @@ function Boxes({ match }) {
           }
           return (
             <ScreenDrawer
-              drawerChildren={(drawerProps) => <BoxesList {...drawerProps} />}
+              drawerChildren={drawerChildren}
+              isFullWidth={isFullWidth}
               initialIsDrawerOpen={isNothingSelected}
             >
               {(drawerProps) => (
@@ -57,7 +75,8 @@ function Boxes({ match }) {
         path={match.path}
         render={(renderProps) => (
           <ScreenDrawer
-            drawerChildren={(drawerProps) => <BoxesList {...drawerProps} />}
+            drawerChildren={drawerChildren}
+            isFullWidth={isFullWidth}
             initialIsDrawerOpen={isNothingSelected}
           >
             {(drawerProps) => (
