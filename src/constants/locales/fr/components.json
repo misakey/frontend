@@ -94,7 +94,10 @@
     }
   },
   "saveInVault": {
-    "error": "Une erreur s'est produite lors de la sauvegarde du fichier\u00a0!",
+    "error": {
+      "default": "Une erreur s'est produite lors de la sauvegarde du fichier\u00a0!",
+      "conflict": "Ce fichier est déjà enregistré dans votre coffre\u00a0!"
+    },
     "success": "Le fichier a été sauvegardé avec succès dans votre coffre\u00a0!"
   }
 }

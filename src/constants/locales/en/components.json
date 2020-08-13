@@ -84,7 +84,10 @@
     }
   },
   "saveInVault": {
-    "error": "An error occured while saving the file!",
+    "error": {
+      "default": "An error occured while saving the file!",
+      "conflict": "This file is already saved in your vault!"
+    },
     "success": "File has been successfully saved in yout vault!"
   }
 }

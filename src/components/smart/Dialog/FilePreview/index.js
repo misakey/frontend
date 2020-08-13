@@ -38,7 +38,7 @@ const ALLOWED_TYPE_PREVIEW = [
   'text/csv',
   'text/plain',
   'application/json',
-  'application/pdf',
+  // 'application/pdf',
 ];
 
 const APPBAR_HEIGHT = 64;
