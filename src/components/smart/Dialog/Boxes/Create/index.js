@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Field } from 'formik';
 import Formik from '@misakey/ui/Formik';
@@ -69,6 +69,9 @@ function CreateBoxDialog({
   const handleHttpErrors = useHandleHttpErrors();
   const isUserAuthorizedToCreateABox = useIsUserOnWhitelist();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const placeholder = useMemo(() => getRandomTitle(), [open]);
+
   const onSubmitSuccess = useCallback(
     async (newBox, secretKey) => {
       const { id } = newBox;
@@ -98,7 +101,7 @@ function CreateBoxDialog({
   );
 
   const onSubmit = useCallback((form, { setSubmitting }) => {
-    const title = form[FIELD_NAME] || getRandomTitle();
+    const title = form[FIELD_NAME] || placeholder;
     // @FIXME a component should not have to call such low-level functions,
     // see about moving part of the box creation logic to actions
     const { secretKey, publicKey } = generateAsymmetricKeyPair();
@@ -106,7 +109,7 @@ function CreateBoxDialog({
       .then((response) => onSubmitSuccess(response, secretKey))
       .catch(handleHttpErrors)
       .finally(() => { setSubmitting(false); });
-  }, [handleHttpErrors, onSubmitSuccess]);
+  }, [handleHttpErrors, onSubmitSuccess, placeholder]);
 
   const getOnReset = useCallback(
     (resetForm) => () => {
@@ -186,6 +189,7 @@ function CreateBoxDialog({
                   autoFocus
                   id="BoxName"
                   type="text"
+                  placeholder={placeholder}
                   fullWidth={false}
                 />
               </Box>
