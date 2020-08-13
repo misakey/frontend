@@ -14,7 +14,7 @@ import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
 import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
 import FormField from '@misakey/ui/Form/Field';
 import BoxControls from '@misakey/ui/Box/Controls';
-import Redirect from 'components/dumb/Redirect';
+import Redirect from '@misakey/ui/Redirect';
 import { getBoxInvitationLinkFieldValidationSchema } from 'constants/validationSchemas/boxes';
 import FieldTextStandard from 'components/dumb/Form/Field/Text/Standard';
 import ChipUser from 'components/dumb/Chip/User';

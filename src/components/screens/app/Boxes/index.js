@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Switch, useRouteMatch } from 'react-router-dom';
+import { Switch, useRouteMatch, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import routes from 'routes';
 
@@ -9,20 +9,38 @@ import RouteAcr from '@misakey/auth/components/Route/Acr';
 import RouteAuthenticatedBoxRead from 'components/smart/Route/Authenticated/BoxRead';
 import { UUID4_REGEX } from 'constants/regex';
 
+import { selectors } from '@misakey/crypto/store/reducers';
+
 import isNil from '@misakey/helpers/isNil';
 import VaultLockedScreen from 'components/screens/app/VaultLocked';
+
+import useBackupStorageEvent from '@misakey/crypto/hooks/useBackupStorageEvent';
+import { useSelector } from 'react-redux';
 
 import BoxesList from 'components/screens/app/Boxes/List';
 import ScreenDrawer from 'components/smart/Screen/Drawer';
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 
+import Redirect from '@misakey/ui/Redirect';
+import DrawerSplashScreen from 'components/smart/Screen/Drawer/Splash';
+
+// COMPONENTS
 function Boxes({ match }) {
+  const location = useLocation();
   const matchBoxSelected = useRouteMatch(routes.boxes.read._);
   const { params: { id } } = useMemo(
     () => matchBoxSelected || { params: {} },
     [matchBoxSelected],
   );
   const isNothingSelected = useMemo(() => isNil(id), [id]);
+  const { backupVersion } = useSelector(selectors.getEncryptedBackupData);
+
+  const [storageBackupVersion] = useBackupStorageEvent();
+
+  const shouldRefresh = useMemo(
+    () => !isNil(backupVersion) && backupVersion === storageBackupVersion,
+    [backupVersion, storageBackupVersion],
+  );
 
   const shouldDisplayLockedScreen = useShouldDisplayLockedScreen();
 
@@ -37,6 +55,18 @@ function Boxes({ match }) {
     }
     return (drawerProps) => <BoxesList {...drawerProps} />;
   }, [shouldDisplayLockedScreen]);
+
+  if (shouldRefresh) {
+    return (
+      <Redirect
+        to={location}
+        forceRefresh
+        manualRedirectPlaceholder={(
+          <DrawerSplashScreen />
+    )}
+      />
+    );
+  }
 
   return (
     <Switch>

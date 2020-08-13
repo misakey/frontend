@@ -38,7 +38,7 @@ import { useClearUser } from '@misakey/hooks/useActions/loginSecret';
 import Box from '@material-ui/core/Box';
 import DefaultSplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import SecretFormFields from 'components/screens/Auth/Login/Secret/Form/Fields';
-import Redirect from 'components/dumb/Redirect';
+import Redirect from '@misakey/ui/Redirect';
 import ChipUser from 'components/dumb/Chip/User';
 import TitleWithCancelIcon from '@misakey/ui/Typography/Title/WithCancelIcon';
 import BoxControls from '@misakey/ui/Box/Controls';

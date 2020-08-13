@@ -1,14 +1,27 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect as RouterRedirect } from 'react-router-dom';
+
 import isSameHost from '@misakey/helpers/isSameHost';
 import isSamePage from '@misakey/helpers/isSamePage';
+import isObject from '@misakey/helpers/isObject';
 import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
+import locationToString from '@misakey/helpers/locationToString';
 
+import { Redirect as RouterRedirect } from 'react-router-dom';
 
 // COMPONENTS
 function Redirect({ forceRefresh, to, manualRedirectPlaceholder, ...props }) {
-  const { href } = parseUrlFromLocation(to);
+  const stringTo = useMemo(
+    () => (isObject(to)
+      ? locationToString(to)
+      : to),
+    [to],
+  );
+
+  const { href } = useMemo(
+    () => parseUrlFromLocation(stringTo),
+    [stringTo],
+  );
 
   if (forceRefresh && isSamePage(href)) {
     window.location.reload();

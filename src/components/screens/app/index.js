@@ -6,7 +6,7 @@ import { Route, Switch } from 'react-router-dom';
 import Home from 'components/screens/app/Home';
 import NotFound from 'components/screens/app/NotFound';
 import Invitation from 'components/screens/app/Invitation';
-import Redirect from 'components/dumb/Redirect';
+import Redirect from '@misakey/ui/Redirect';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 
 const BoxesApp = () => (

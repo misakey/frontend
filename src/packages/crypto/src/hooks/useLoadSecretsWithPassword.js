@@ -1,19 +1,28 @@
+import { loadSecrets, loadSecretsAndUpdateBackup } from '@misakey/crypto/store/actions/concrete';
+import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+
+import isNil from '@misakey/helpers/isNil';
+
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import isNil from '@misakey/helpers/isNil';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import useBackupStorageEvent from '@misakey/crypto/hooks/useBackupStorageEvent';
+
 import { decryptSecretsBackup } from '../secretsBackup/encryption';
-import { loadSecrets, loadSecretsAndUpdateBackup } from '../store/actions/concrete';
+import { selectors } from '../store/reducers';
 import useFetchSecretBackup from './useFetchSecretBackup';
 import useCreateNewBackupShares from './useCreateNewBackupShares';
-import { selectors } from '../store/reducers';
 
+
+// HOOKS
 export default ((skipUpdate = false) => {
   const dispatch = useDispatch();
+
   const { accountId } = useSelector(getCurrentUserSelector) || {};
 
   const encryptedSecretsBackup = useFetchSecretBackup();
   const currentBoxSecrets = useSelector(selectors.currentBoxSecrets);
+
+  const [, onStorageEvent] = useBackupStorageEvent();
 
   const createNewBackupKeyShares = useCreateNewBackupShares(dispatch);
 
@@ -26,8 +35,9 @@ export default ((skipUpdate = false) => {
     return Promise.all([
       dispatch(loadSecretsAction({ secrets, backupKey, backupVersion })),
       createNewBackupKeyShares(backupKey, accountId),
+      onStorageEvent(backupVersion),
     ]);
-  }, [accountId, createNewBackupKeyShares, currentBoxSecrets, dispatch]);
+  }, [accountId, createNewBackupKeyShares, currentBoxSecrets, dispatch, onStorageEvent]);
 
   const decryptWithPassword = useCallback(
     (password) => {

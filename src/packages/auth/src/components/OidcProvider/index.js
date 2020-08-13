@@ -1,17 +1,26 @@
 import React, { useMemo, useEffect, createContext, useCallback, useState, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
+import { STORAGE_PREFIX } from '@misakey/auth/constants';
+
 import { loadUserThunk, authReset } from '@misakey/auth/store/actions/auth';
 
 import log from '@misakey/helpers/log';
 import isNil from '@misakey/helpers/isNil';
+import isString from '@misakey/helpers/isString';
 import parseJwt from '@misakey/helpers/parseJwt';
 import { parseAcr } from '@misakey/helpers/parseAcr';
 import createUserManager from '@misakey/auth/helpers/userManager';
 
+import { useLocation } from 'react-router-dom';
+
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
+import Redirect from '@misakey/ui/Redirect';
 
+// CONSTANTS
+const OIDC_LOGIN_STORAGE_KEY = `${STORAGE_PREFIX}user:${window.env.AUTH.authority}:`;
 
+// HELPERS
 const getUser = ({
   profile: { acr, sco: scope, auth_time: authenticatedAt } = {},
   expires_at: expiryAt,
@@ -27,6 +36,17 @@ const getUser = ({
   acr: parseAcr(acr),
 });
 
+const isOidcLoginStorageKey = (key) => !isNil(key)
+  && isString(key)
+  && key.startsWith(OIDC_LOGIN_STORAGE_KEY);
+
+const isAcrChange = (oldValue, newValue) => {
+  const { profile: { acr: oldAcr } } = JSON.parse(oldValue);
+  const { profile: { acr } } = JSON.parse(newValue);
+
+  return oldAcr !== acr;
+};
+
 // CONTEXT
 export const UserManagerContext = createContext({
   userManager: null,
@@ -34,6 +54,9 @@ export const UserManagerContext = createContext({
 
 // COMPONENTS
 function OidcProvider({ store, children, config }) {
+  const location = useLocation();
+  const [shouldRefresh, setShouldRefresh] = useState(false);
+
   const userManager = useMemo(
     () => createUserManager(config),
     [config],
@@ -90,6 +113,23 @@ function OidcProvider({ store, children, config }) {
       .then(onUserLoaded);
   }, [onUserLoaded, userManager]);
 
+  const onStorageEvent = useCallback(
+    (e) => {
+      const { key, isTrusted, oldValue, newValue } = e;
+      // fallback for IE11, Safari<10
+      const trusted = isTrusted === true || isNil(isTrusted);
+      if (trusted && isOidcLoginStorageKey(key)) {
+        if (isNil(newValue) || isNil(oldValue)) {
+          // logout or login
+          setShouldRefresh(true);
+        } else if (isAcrChange(oldValue, newValue)) {
+          setShouldRefresh(true);
+        }
+      }
+    },
+    [setShouldRefresh],
+  );
+
   useEffect(() => {
     // register the event callbacks
     userManager.events.addUserLoaded(onUserLoaded);
@@ -114,6 +154,27 @@ function OidcProvider({ store, children, config }) {
     loadUserAtMount,
   ]);
 
+  useEffect(
+    () => {
+      window.addEventListener('storage', onStorageEvent);
+      return () => {
+        window.removeEventListener('storage', onStorageEvent);
+      };
+    },
+    [onStorageEvent],
+  );
+
+  if (shouldRefresh) {
+    return (
+      <Redirect
+        to={location}
+        forceRefresh
+        manualRedirectPlaceholder={(
+          <SplashScreen />
+        )}
+      />
+    );
+  }
 
   return (
     <UserManagerContext.Provider value={{ userManager }}>

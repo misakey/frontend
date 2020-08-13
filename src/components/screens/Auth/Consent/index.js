@@ -27,7 +27,7 @@ import Title from '@misakey/ui/Typography/Title';
 import Box from '@material-ui/core/Box';
 import BoxControls from '@misakey/ui/Box/Controls';
 import DefaultSplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
-import Redirect from 'components/dumb/Redirect';
+import Redirect from '@misakey/ui/Redirect';
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import Alert from '@material-ui/lab/Alert';
