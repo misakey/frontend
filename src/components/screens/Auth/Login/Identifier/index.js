@@ -6,10 +6,7 @@ import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 
 import { STEP, INITIAL_VALUES, ERROR_KEYS } from 'constants/auth';
-import routes from 'routes';
 import { identifierValidationSchema } from 'constants/validationSchemas/auth';
-import { screenAuthSetIdentifier } from 'store/actions/screens/auth';
-import { ssoUpdate } from '@misakey/auth/store/actions/sso';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
 
 import compose from '@misakey/helpers/compose';
@@ -18,12 +15,11 @@ import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import props from '@misakey/helpers/props';
-import { requireAuthable } from '@misakey/auth/builder/identities';
 import { getDetails } from '@misakey/helpers/apiError';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import { useHistory, useLocation } from 'react-router-dom';
+import useOnIdentifierSubmit from 'hooks/useOnIdentifierSubmit';
 
 import Title from '@misakey/ui/Typography/Title';
 import LoginFormFields from 'components/screens/Auth/Login/Identifier/Form/Fields';
@@ -48,14 +44,9 @@ const AuthLoginIdentifier = ({
   loginHint,
   client,
   identifier,
-  dispatchSsoUpdate,
-  dispatchSetIdentifier,
   t,
 }) => {
   const handleHttpErrors = useHandleHttpErrors();
-
-  const { search } = useLocation();
-  const { push } = useHistory();
 
   const initialValues = useMemo(
     () => ({
@@ -72,21 +63,13 @@ const AuthLoginIdentifier = ({
 
   const { resourceName } = useSafeDestr(objLoginHint);
 
+  const onIdentifierSubmit = useOnIdentifierSubmit(loginChallenge);
+
   const onSubmit = useCallback(
     (
       { identifier: nextIdentifier },
       { setFieldError },
-    ) => requireAuthable(loginChallenge, nextIdentifier)
-      .then((response) => Promise.all([
-        dispatchSsoUpdate(response),
-        dispatchSetIdentifier(nextIdentifier),
-      ]))
-      .then(() => {
-        push({
-          pathname: routes.auth.signIn.secret,
-          search,
-        });
-      })
+    ) => onIdentifierSubmit(nextIdentifier)
       .catch((e) => {
         const details = getDetails(e);
         const identifierError = getIdentifierError(details);
@@ -97,7 +80,7 @@ const AuthLoginIdentifier = ({
           handleHttpErrors(e);
         }
       }),
-    [loginChallenge, dispatchSsoUpdate, dispatchSetIdentifier, push, search, handleHttpErrors],
+    [onIdentifierSubmit, handleHttpErrors],
   );
 
   const primary = useMemo(() => ({
@@ -143,19 +126,11 @@ AuthLoginIdentifier.propTypes = {
   // CONNECT
   client: SSO_PROP_TYPES.client.isRequired,
   loginHint: SSO_PROP_TYPES.loginHint.isRequired,
-  dispatchSetIdentifier: PropTypes.func.isRequired,
-  dispatchSsoUpdate: PropTypes.func.isRequired,
 };
 
 // CONNECT
 const mapStateToProps = (state) => ({
   client: state.sso.client,
-  loginHint: state.sso.loginHint,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  dispatchSsoUpdate: (sso) => dispatch(ssoUpdate(sso)),
-  dispatchSetIdentifier: (identifier) => dispatch(screenAuthSetIdentifier(identifier)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['auth', 'common'])(AuthLoginIdentifier));
+export default connect(mapStateToProps, {})(withTranslation(['auth', 'common'])(AuthLoginIdentifier));

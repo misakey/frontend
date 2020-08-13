@@ -6,6 +6,7 @@ export const SIGN_IN = Symbol('SIGN_IN');
 export const LOAD_USER = Symbol('LOAD_USER');
 export const SIGN_OUT = Symbol('SIGN_OUT');
 export const UPDATE_IDENTITY = Symbol('UPDATE_IDENTITY');
+export const CLEAR_IDENTITY = Symbol('CLEAR_IDENTITY');
 export const LOAD_USER_ROLES = Symbol('LOAD_USER_ROLES');
 export const ADD_USER_ROLE = Symbol('ADD_USER_ROLE');
 export const SET_IS_AUTHENTICATED = Symbol('SET_IS_AUTHENTICATED');
@@ -35,6 +36,10 @@ export const signOut = () => ({
 export const updateIdentity = (identity) => ({
   type: UPDATE_IDENTITY,
   identity,
+});
+
+export const clearIdentity = () => ({
+  type: CLEAR_IDENTITY,
 });
 
 export const loadUserRoles = (roles) => ({

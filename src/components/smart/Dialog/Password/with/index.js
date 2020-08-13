@@ -9,9 +9,15 @@ import isNil from '@misakey/helpers/isNil';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import { selectors } from '@misakey/crypto/store/reducers';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import { getCurrentUserSelector, selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+
 
 import DialogOpenVault from 'components/smart/Dialog/Password/OpenVault';
+
+// CONSTANTS
+const {
+  identifierValue: IDENTIFIER_VALUE_SELECTOR,
+} = authSelectors;
 
 // COMPONENTS
 const withDialogPassword = (Component) => {
@@ -26,6 +32,14 @@ const withDialogPassword = (Component) => {
     const [open, setOpen] = useState(false);
 
     const { accountId } = useSelector(getCurrentUserSelector) || {};
+    const identifierValue = useSelector(IDENTIFIER_VALUE_SELECTOR);
+
+    const loginHint = useMemo(
+      () => (isNil(identifierValue)
+        ? ''
+        : JSON.stringify({ identifier: identifierValue })),
+      [identifierValue],
+    );
 
     const hasAccountId = useMemo(
       () => !isNil(accountId),
@@ -40,14 +54,14 @@ const withDialogPassword = (Component) => {
     const onWrapperClick = useCallback(
       (...args) => {
         if (!hasAccountId) {
-          userManager.signinRedirect(objectToSnakeCase({ acrValues: 2, prompt: 'login' }));
+          userManager.signinRedirect(objectToSnakeCase({ acrValues: 2, prompt: 'login', loginHint }));
         } else if (!isCryptoLoaded || forceDialog) {
           setOpen(true);
         } else if (isFunction(onClick)) {
           onClick(...args);
         }
       },
-      [hasAccountId, isCryptoLoaded, forceDialog, onClick, userManager],
+      [hasAccountId, isCryptoLoaded, forceDialog, onClick, userManager, loginHint],
     );
 
     const onClose = useCallback(

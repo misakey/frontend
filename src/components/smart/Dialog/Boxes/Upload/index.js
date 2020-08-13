@@ -14,6 +14,7 @@ import { boxFileUploadValidationSchema } from 'constants/validationSchemas/boxes
 
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
+import fileToBlob from '@misakey/helpers/fileToBlob';
 import prop from '@misakey/helpers/prop';
 import compose from '@misakey/helpers/compose';
 import log from '@misakey/helpers/log';
@@ -25,7 +26,7 @@ import encryptFile from '@misakey/crypto/box/encryptFile';
 
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 
-import { makeStyles } from '@material-ui/core/styles/';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -49,15 +50,6 @@ const errorPropNil = compose(
   prop('error'),
 );
 
-const fileToBlob = (file) => {
-  const { name, lastModified, size, type } = file;
-
-  return {
-    blob: file,
-    key: `${name}-${lastModified}-${size}-${type}`,
-  };
-};
-
 const uniqBlob = (list) => uniqBy(list, 'key');
 
 // HOOKS
@@ -80,6 +72,9 @@ function UploadDialog({
   onClose,
   onSuccess,
   open,
+  initialValues,
+  fileTransform,
+  autoFocus,
 }) {
   const classes = useStyles();
   const fullScreen = useDialogFullScreen();
@@ -142,14 +137,16 @@ function UploadDialog({
               return { ...response, ...rest, blob, isSent: true };
             } catch (e) {
               log(e, 'error');
-              return { ...rest, blob };
+              return { ...rest, blob, error: true };
             }
           }),
       );
 
       const [successes, errors] = partition(newBlobList, errorPropNil);
 
-      dispatch(addMultiBoxEvents(boxId, successes));
+      if (!isEmpty(successes)) {
+        dispatch(addMultiBoxEvents(boxId, successes));
+      }
 
       resetForm();
 
@@ -175,7 +172,7 @@ function UploadDialog({
     >
       <Formik
         validationSchema={boxFileUploadValidationSchema}
-        initialValues={INITIAL_VALUES}
+        initialValues={initialValues}
         initialStatus={INITIAL_STATUS}
         onSubmit={onSubmit}
       >
@@ -198,7 +195,7 @@ function UploadDialog({
                 prefix={BLOBS_FIELD_PREFIX}
                 labelText={t('boxes:read.upload.dialog.label')}
                 renderItem={(props) => <FieldBlobs {...props} />}
-                fileTransform={fileToBlob}
+                fileTransform={fileTransform}
                 uniqFn={uniqBlob}
                 emptyTitle={(
                   <DialogContentText
@@ -208,6 +205,7 @@ function UploadDialog({
                     {t('boxes:read.upload.dialog.text')}
                   </DialogContentText>
                 )}
+                autoFocus={autoFocus}
               />
               <FormHelperText>
                 <Trans i18nKey={t('boxes:read.upload.dialog.helperText')}>
@@ -236,12 +234,19 @@ UploadDialog.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func.isRequired,
+  initialValues: PropTypes.object,
+  fileTransform: PropTypes.func,
+  autoFocus: PropTypes.bool,
+  // withTranslation
   t: PropTypes.func.isRequired,
 };
 
 UploadDialog.defaultProps = {
   // request: null,
   open: false,
+  initialValues: INITIAL_VALUES,
+  fileTransform: fileToBlob,
+  autoFocus: false,
 };
 
 export default withTranslation(['common', 'boxes'])(UploadDialog);

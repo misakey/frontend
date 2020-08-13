@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
+import React, { useCallback, useRef, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
@@ -58,9 +58,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, t }) {
+function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, isMenuActionOpen, onOpen, onClose, t }) {
   const classes = useStyles({ drawerWidth, isDrawerOpen });
-  const [isMenuActionOpen, setIsMenuActionOpen] = useState(false);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const handleHttpErrors = useHandleHttpErrors();
@@ -74,14 +73,6 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, t }) {
   );
 
   const anchorRef = useRef(null);
-
-  const onOpen = useCallback(() => {
-    setIsMenuActionOpen(true);
-  }, []);
-
-  const onClose = useCallback(() => {
-    setIsMenuActionOpen(false);
-  }, []);
 
   const handleSubmit = useCallback(
     ({ [FIELD]: value }, { setSubmitting, resetForm }) => {
@@ -114,8 +105,8 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, t }) {
 
   useEffect(() => {
     // Reset to initialState when box changes
-    setIsMenuActionOpen(false);
-  }, [id]);
+    onClose();
+  }, [id, onClose]);
 
   return (
     <Box p={BOX_PADDING_SPACING}>
@@ -133,7 +124,7 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, t }) {
               {({ TransitionProps }) => (
                 <Grow {...TransitionProps} style={{ transformOrigin: 'center top' }}>
                   <Paper variant="outlined" className={classes.paper}>
-                    <FooterMenuActions box={box} onCloseMenuActions={onClose} />
+                    <FooterMenuActions box={box} />
                   </Paper>
                 </Grow>
               )}
@@ -192,8 +183,9 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, t }) {
 BoxEventsFooter.propTypes = {
   drawerWidth: PropTypes.string.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
-  // @FIXME BoxesSchema doesn't match props
-  // (from https://gitlab.misakey.dev/misakey/frontend/-/merge_requests/413#note_51320)
+  isMenuActionOpen: PropTypes.bool.isRequired,
+  onOpen: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
 };

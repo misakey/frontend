@@ -51,7 +51,9 @@ const RedirectAuthCallback = ({
               }
               return true;
             }
-            userManager.signinRedirect(objectToSnakeCase({ scope, referrer, acrValues, prompt: 'login' }));
+            const { email } = user.profile;
+            const loginHint = email ? JSON.stringify({ identifier: email }) : '';
+            userManager.signinRedirect(objectToSnakeCase({ scope, referrer, acrValues, prompt: 'login', loginHint }));
             return false;
           })
           .catch((e) => {

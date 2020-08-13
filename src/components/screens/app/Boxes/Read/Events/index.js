@@ -26,11 +26,14 @@ import BoxesSchema from 'store/schemas/Boxes';
 
 import BoxEventsAccordingToType from 'components/smart/Box/Event';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
+import InputBoxesUploadContext from 'components/smart/Input/Boxes/Upload/Context';
 import BoxEventsFooter from './Footer';
 import DeleteBoxDialogButton from './DeleteBoxDialogButton';
 
+// CONSTANTS
 const APPBAR_HEIGHT = 64;
 
+// HOOKS
 const useStyles = makeStyles(() => ({
   content: ({ headerHeight }) => ({
     boxSizing: 'border-box',
@@ -43,6 +46,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+// COMPONENTS
 function BoxEvents({
   drawerWidth, isDrawerOpen, toggleDrawer, box, t, belongsToCurrentUser,
 }) {
@@ -51,6 +55,16 @@ function BoxEvents({
   const [lastEventRef, setLastEventRef] = useState();
   const [headerHeight, setHeaderHeight] = useState(APPBAR_HEIGHT);
   const classes = useStyles({ headerHeight });
+
+  const [isMenuActionOpen, setIsMenuActionOpen] = useState(false);
+
+  const onOpenMenuAction = useCallback(() => {
+    setIsMenuActionOpen(true);
+  }, [setIsMenuActionOpen]);
+
+  const onCloseMenuAction = useCallback(() => {
+    setIsMenuActionOpen(false);
+  }, [setIsMenuActionOpen]);
 
   const {
     events: boxEvents = [],
@@ -107,7 +121,7 @@ function BoxEvents({
   useEffect(scrollToBottom, [scrollToBottom, nbOfEvents]);
 
   return (
-    <>
+    <InputBoxesUploadContext box={box} onSuccess={onCloseMenuAction}>
       <ElevationScroll target={contentRef}>
         <AppBarDrawer
           isDrawerOpen={isDrawerOpen}
@@ -190,10 +204,12 @@ function BoxEvents({
           box={box}
           drawerWidth={drawerWidth}
           isDrawerOpen={isDrawerOpen}
+          isMenuActionOpen={isMenuActionOpen}
+          onOpen={onOpenMenuAction}
+          onClose={onCloseMenuAction}
         />
       </Box>
-    </>
-
+    </InputBoxesUploadContext>
   );
 }
 

@@ -12,7 +12,7 @@ import identity from '@misakey/helpers/identity';
 import groupBy from '@misakey/helpers/groupBy';
 import isFunction from '@misakey/helpers/isFunction';
 import uniq from '@misakey/helpers/uniq';
-import getTargetOrCurrentTarget from '@misakey/helpers/event/targetOrCurrentTarget/get';
+import getEventFilesArray from '@misakey/helpers/event/getFilesArray';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useFormikContext } from 'formik';
@@ -20,18 +20,12 @@ import useFieldErrors from '@misakey/hooks/useFieldErrors';
 
 import InputFile from '@misakey/ui/Input/File';
 import Typography from '@material-ui/core/Typography';
+import TypographyPreWrapped from '@misakey/ui/Typography/PreWrapped';
 import BoxMessage from '@misakey/ui/Box/Message';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import List from '@material-ui/core/List';
 
 // HELPERS
-// transform FileList Prototype into Array to have access to .map
-// NB: FileList API does not allow .map => https://developer.mozilla.org/en-US/docs/Web/API/FileList
-const getEventFilesArray = (e) => {
-  const { files } = getTargetOrCurrentTarget(e);
-  return [...files];
-};
-
 const getFilenamesStatuses = (status) => {
   if (isNil(status)) { return {}; }
   const { errors = [], sent = [] } = groupBy(status, ({ isSent }) => (isSent ? 'sent' : 'errors'));
@@ -51,9 +45,6 @@ const isErrorArray = (errorKeys, index) => {
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  textError: {
-    whiteSpace: 'pre-wrap',
-  },
   label: {
     color: theme.palette.grey[300],
     textTransform: 'uppercase',
@@ -73,6 +64,7 @@ const FilesField = ({
   emptyTitle,
   uniqFn,
   renderItem,
+  autoFocus,
 }) => {
   const { status } = useFormikContext();
   const fieldStatus = useMemo(() => status[name], [status, name]);
@@ -151,14 +143,13 @@ const FilesField = ({
         </List>
       )}
       {!isNil(fieldStatus) && (
-        <BoxMessage type="error" p={2} className={classes.textError}>
-          <Typography>
+        <BoxMessage type="error" p={2} my={1}>
+          <TypographyPreWrapped>
             {t('fields:files.error.api.notSent', { filenamesErrors })}
             {!isEmpty(filenamesSent) && (
               t('fields:files.error.api.sent', { filenamesSent })
             )}
-          </Typography>
-
+          </TypographyPreWrapped>
         </BoxMessage>
       )}
       <InputFile
@@ -167,11 +158,11 @@ const FilesField = ({
         onChange={onChange}
         label={(
           <Typography variant="h5" className={classes.label}>
-            {labelText || t('fields:file.label', 'Drop a file here')}
+            {labelText || t('fields:files.label')}
           </Typography>
           )}
-        buttonText={t('fields:files.button.choose.label', 'Choose a file')}
-        autoFocus
+        buttonText={t('fields:files.button.choose.label')}
+        autoFocus={autoFocus}
         multiple
       />
       {displayError && isGlobalErrorKeys && (
@@ -193,7 +184,7 @@ FilesField.propTypes = {
   fileTransform: PropTypes.func,
   uniqFn: PropTypes.func,
   renderItem: PropTypes.func.isRequired,
-
+  autoFocus: PropTypes.bool,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
@@ -206,6 +197,7 @@ FilesField.defaultProps = {
   uniqFn: uniq,
   labelText: null,
   prefix: '',
+  autoFocus: false,
 };
 
 export default withTranslation(['fields'])(FilesField);

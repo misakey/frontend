@@ -27,7 +27,7 @@ import Formik from '@misakey/ui/Formik';
 import BoxControls from '@misakey/ui/Box/Controls';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import Typography from '@material-ui/core/Typography';
+import TypographyPreWrapped from '@misakey/ui/Typography/PreWrapped';
 import Box from '@material-ui/core/Box';
 import DialogActions from '@material-ui/core/DialogActions';
 
@@ -42,9 +42,6 @@ const INITIAL_VALUES = {
 const useStyles = makeStyles((theme) => ({
   dialogContentRoot: {
     margin: theme.spacing(2, 0),
-  },
-  typographyPreWrap: {
-    whiteSpace: 'pre-wrap',
   },
 }));
 
@@ -105,9 +102,9 @@ function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
     >
       <DialogTitleWithClose onClose={onClose} />
       <DialogContent className={classes.dialogContentRoot}>
-        <Typography className={classes.typographyPreWrap}>
+        <TypographyPreWrapped>
           {t('boxes:delete.dialog.description', { title: box.title })}
-        </Typography>
+        </TypographyPreWrapped>
         <Formik
           onSubmit={onSubmit}
           validationSchema={validationSchema}

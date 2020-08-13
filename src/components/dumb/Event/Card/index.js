@@ -8,7 +8,7 @@ import isNil from '@misakey/helpers/isNil';
 import Avatar from '@misakey/ui/Avatar/User';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import Typography from '@material-ui/core/Typography';
+import TypographyPreWrapped from '@misakey/ui/Typography/PreWrapped';
 import MuiCard from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
@@ -33,7 +33,6 @@ const useStyles = makeStyles((theme) => ({
   },
   text: {
     padding: theme.spacing(1),
-    whiteSpace: 'pre-wrap',
   },
   footer: {
     backgroundColor: theme.palette.common.white,
@@ -84,7 +83,11 @@ const EventCard = ({
         <Box classes={{ root: classes.boxRoot }}>
           {children}
           <CardContent classes={{ root: classes.content }}>
-            {!isNil(text) && <Typography className={classes.text}>{text}</Typography>}
+            {!isNil(text) && (
+            <TypographyPreWrapped className={classes.text}>
+              {text}
+            </TypographyPreWrapped>
+            )}
           </CardContent>
           {!isNil(actions) && (
             <CardActions classes={{ root: classes.footer }}>

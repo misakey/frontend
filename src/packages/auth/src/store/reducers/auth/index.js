@@ -14,6 +14,7 @@ import {
   LOAD_USER_ROLES,
   ADD_USER_ROLE,
   SET_IS_AUTHENTICATED,
+  CLEAR_IDENTITY,
 } from '../../actions/auth';
 
 
@@ -46,6 +47,13 @@ function updateIdentity(state, { identity }) {
   return {
     ...state,
     identity: mergeIdentity(state, identity),
+  };
+}
+
+function clearIdentity(state) {
+  return {
+    ...state,
+    identity: INITIAL_STATE.identity,
   };
 }
 
@@ -135,6 +143,7 @@ export default createResetOnSignOutReducer(INITIAL_STATE, {
   [SIGN_IN]: updateCredentials,
   [LOAD_USER]: updateCredentials,
   [UPDATE_IDENTITY]: updateIdentity,
+  [CLEAR_IDENTITY]: clearIdentity,
   [LOAD_USER_ROLES]: updateRoles,
   [ADD_USER_ROLE]: addUserRole,
   [SET_IS_AUTHENTICATED]: setIsAuthenticated,
