@@ -29,13 +29,12 @@ export default (encryption, encryptedFileId) => {
 
   const saveInVault = useCallback(async (vaultKey) => {
     try {
-      const { encryptedMetadata, keyFingerprint, nonce } = encryptForVault(encryption, vaultKey);
+      const { encryptedMetadata, keyFingerprint } = encryptForVault(encryption, vaultKey);
       const response = await createSavedFile({
         encryptedFileId,
         encryptedMetadata,
         keyFingerprint,
         identityId,
-        nonce,
       });
       dispatch(addSavedFiles(identityId, [response]));
       enqueueSnackbar(t('components:saveInVault.success'), { variant: 'success', action: seeAction });
