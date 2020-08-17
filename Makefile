@@ -75,7 +75,7 @@ run-docs: ## Run devserver of documentation
 
 .PHONY: build
 build: ## Build a docker image with the build folder and serve server
-	@docker build --build-arg VERSION="$(RELEASE)" --build-arg SENTRY_AUTH_TOKEN=$(SENTRY_AUTH_TOKEN) -t $(DOCKER_IMAGE):$(CI_COMMIT_REF_NAME) .
+	@docker build --pull --build-arg VERSION="$(RELEASE)" --build-arg SENTRY_AUTH_TOKEN=$(SENTRY_AUTH_TOKEN) -t $(DOCKER_IMAGE):$(CI_COMMIT_REF_NAME) .
 
 .PHONY: build-maintenance
 build-maintenance:
