@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useLocation } from 'react-router-dom';
+import { withTranslation } from 'react-i18next';
 
 import useImportTypeformCallback, { TYPEFORM_EMBED_URL } from 'hooks/useImportTypeformCallback';
 
@@ -8,13 +9,13 @@ import isNil from '@misakey/helpers/isNil';
 
 import Link from '@material-ui/core/Link';
 
-const LinkFeedback = ({ text, ...rest }) => {
+const LinkFeedback = ({ text, t, ...rest }) => {
   const clickOnTypeformLinkCallback = useImportTypeformCallback();
   const { pathname } = useLocation();
 
   const typeformHref = useMemo(
-    () => `${window.env.TYPEFORM_URL}?where=${pathname}`,
-    [pathname],
+    () => `${t('components:footer.links.feedback.typeformUrl')}?where=${pathname}`,
+    [pathname, t],
   );
 
   const script = document.querySelector(`script[src="${TYPEFORM_EMBED_URL}"]`);
@@ -43,6 +44,8 @@ const LinkFeedback = ({ text, ...rest }) => {
 
 LinkFeedback.propTypes = {
   text: PropTypes.string.isRequired,
+  // withTranslation
+  t: PropTypes.func.isRequired,
 };
 
-export default LinkFeedback;
+export default withTranslation(['components'])(LinkFeedback);

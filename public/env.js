@@ -22,6 +22,5 @@ window.env = {
   },
   AUTO_REFRESH_LIST_DELAY: 120000,
   VALIDATE_INVITATION_CODE_URL: 'https://www.misakey.com/invitation',
-  TYPEFORM_URL: 'https://misakey.typeform.com/to/hfR198',
   EARLY_BIRDS_MISAKEY_CHAT_URL: 'https://app.misakey.com/boxes/a3c24d08-f5e2-40c4-81e2-a1c3ef33c540#kbCbS4K9UMvuFEIJDngGG4dYnVVqZYLEXekCnnHTs-c'
 };
