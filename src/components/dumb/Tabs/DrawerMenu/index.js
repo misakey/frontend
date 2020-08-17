@@ -22,18 +22,22 @@ import getNextSearch from '@misakey/helpers/getNextSearch';
 
 export const TAB_VALUES = {
   CHAT: 'chat',
-  DOCUMENT: 'document',
+  // DOCUMENT: 'document',
 };
 
-const TABS = [{
-  value: TAB_VALUES.CHAT,
-  match: [routes.boxes._, routes.boxes.read._],
-  pathname: routes.boxes._,
-}, {
-  value: TAB_VALUES.DOCUMENT,
-  match: [routes.documents._, routes.documents.vault],
-  pathname: routes.documents.vault,
-}];
+const TABS = [
+  {
+    value: TAB_VALUES.CHAT,
+    match: [routes.boxes._, routes.boxes.read._],
+    pathname: routes.boxes._,
+  },
+  // @FIXME: temporarly removed until decision is taken about https://gitlab.misakey.dev/misakey/product-needs/-/issues/567
+  // {
+  //   value: TAB_VALUES.DOCUMENT,
+  //   match: [routes.documents._, routes.documents.vault],
+  //   pathname: routes.documents.vault,
+  // },
+];
 
 const useStyles = makeStyles(() => ({
   indicator: {

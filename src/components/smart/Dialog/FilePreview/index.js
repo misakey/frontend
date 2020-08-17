@@ -6,7 +6,6 @@ import clsx from 'clsx';
 
 import downloadFile from '@misakey/helpers/downloadFile';
 import isNil from '@misakey/helpers/isNil';
-import isFunction from '@misakey/helpers/isFunction';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
@@ -21,14 +20,16 @@ import DialogContent from '@material-ui/core/DialogContent';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import DownloadIcon from '@material-ui/icons/GetApp';
 // import PrintIcon from '@material-ui/icons/Print';
-import AddToVaultIcon from '@material-ui/icons/LibraryAdd';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import BoxFile from 'components/dumb/Box/File';
 import decryptFile from '@misakey/crypto/box/decryptFile';
 import { getEncryptedFileBuilder } from '@misakey/helpers/builder/files';
-import withDialogPassword from 'components/smart/Dialog/Password/with';
 
-const IconButtonWithDialogPassword = withDialogPassword(IconButtonAppBar);
+// import withDialogPassword from 'components/smart/Dialog/Password/with';
+// import AddToVaultIcon from '@material-ui/icons/LibraryAdd';
+// import isFunction from '@misakey/helpers/isFunction';
+
+// const IconButtonWithDialogPassword = withDialogPassword(IconButtonAppBar);
 
 // CONSTANTS
 const ALLOWED_TYPE_PREVIEW = [
@@ -99,7 +100,8 @@ const revokeBlobUrl = (file) => {
 };
 
 function FilePreviewDialog({
-  t, open, onClose, encryptedFileId, encryption, onSave, fileSize, fileName, fileType,
+  t, open, onClose, encryptedFileId, encryption, fileSize, fileName, fileType,
+  // onSave,
 }) {
   const { enqueueSnackbar } = useSnackbar();
 
@@ -284,7 +286,8 @@ function FilePreviewDialog({
           </IconButtonAppBar>
 
           <Box flexGrow={1} />
-          {isFunction(onSave) && (
+          {/** @FIXME: temporarly removed until decision is taken about https://gitlab.misakey.dev/misakey/product-needs/-/issues/567 */}
+          {/* {isFunction(onSave) && (
             <IconButtonWithDialogPassword
               color="inherit"
               aria-label={t('common:addToVault')}
@@ -295,7 +298,7 @@ function FilePreviewDialog({
                 <AddToVaultIcon />
               </Tooltip>
             </IconButtonWithDialogPassword>
-          )}
+          )} */}
           {!isNil(blobUrl) && (
             <>
               <IconButtonAppBar
@@ -357,7 +360,7 @@ FilePreviewDialog.propTypes = {
   fileName: PropTypes.string,
   encryption: PropTypes.object,
   encryptedFileId: PropTypes.string.isRequired,
-  onSave: PropTypes.func,
+  // onSave: PropTypes.func,
 };
 
 FilePreviewDialog.defaultProps = {
@@ -365,7 +368,7 @@ FilePreviewDialog.defaultProps = {
   fileType: null,
   encryption: null,
   fileName: 'Untitled',
-  onSave: null,
+  // onSave: null,
 };
 
 export default withTranslation(['common', 'components'])(FilePreviewDialog);
