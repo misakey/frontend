@@ -9,15 +9,19 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import usePaginateBoxesByStatusRefresh from 'hooks/usePaginateBoxesByStatus/refresh';
 
+import Box from '@material-ui/core/Box';
+
 import { DRAWER_PROPS_PROP_TYPES } from 'components/smart/Screen/Drawer';
 import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
-import TabsMenu from 'components/dumb/Tabs/DrawerMenu';
 import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
 import withDialogPassword from 'components/smart/Dialog/Password/with';
 
 import AddIcon from '@material-ui/icons/Add';
+
+// import TabsMenu from 'components/dumb/Tabs/DrawerMenu';
+
 
 // COMPONENTS
 const IconButtonCreate = withDialogCreate(withDialogPassword(IconButtonAppBar));
@@ -37,7 +41,10 @@ function ListHeader({ drawerWidth, activeStatus, t, ...props }) {
   return (
     <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth} {...omitTranslationProps(props)}>
       <OpenDrawerAccountButton />
-      <TabsMenu />
+      {/* @FIXME: temporarly removed until decision is taken about https://gitlab.misakey.dev/misakey/product-needs/-/issues/567
+        <TabsMenu />
+      */}
+      <Box display="flex" flexGrow={1} />
       <IconButtonCreate
         aria-label={t('boxes:list.empty.create')}
         edge="end"
