@@ -22,7 +22,7 @@ import invalidTokenMiddleware from 'middlewares/invalidToken';
 import invalidSeclevelMiddleware from 'middlewares/invalidSeclevel';
 import floodManagementAlertMiddleware from 'middlewares/floodManagement/alert';
 // routing
-import { BrowserRouter as Router } from 'react-router-dom';
+import Router from 'components/smart/Router';
 import * as serviceWorker from 'serviceWorker';
 // ui
 import MuiThemeProvider from 'components/smart/ThemeProvider';

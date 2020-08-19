@@ -10685,6 +10685,11 @@ react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.0, react-is@^16.8.1, react-is
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-piwik@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/react-piwik/-/react-piwik-1.8.0.tgz#f0ff0d54c4923c80c9497b728a1863c4d2609cfc"
+  integrity sha512-ZpT7oPcdSIXt1yZvRWU/qq/EX7rXZELkwEJq2cDDejFlVYq7NKXtiMpuAvkO6QNeFwOmkO/820MHgmJ+fDug/Q==
+
 react-redux@^7.2.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.2.0.tgz#f970f62192b3981642fec46fd0db18a074fe879d"

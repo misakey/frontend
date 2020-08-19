@@ -22,7 +22,7 @@ config: >-
     },
     MATOMO: {
       ENABLED: true,
-      URL: 'https://analytics.misakey.com/',
+      URL: 'https://analytics.misakey.com',
       SITEID: '2'
     },
     WHITELIST: {
