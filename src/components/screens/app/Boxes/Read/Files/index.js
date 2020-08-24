@@ -19,7 +19,6 @@ function BoxFiles({ drawerWidth, isDrawerOpen, box, t }) {
     <>
       <AppBarDrawer drawerWidth={drawerWidth} isDrawerOpen={isDrawerOpen}>
         <IconButtonAppBar
-          color="inherit"
           aria-label={t('common:openAccountDrawer')}
           edge="start"
           component={Link}

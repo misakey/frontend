@@ -20,7 +20,7 @@ const styles = (theme) => ({
     flexDirection: 'column',
   },
   default: {
-    background: theme.palette.common.white,
+    backgroundColor: theme.palette.background.default,
   },
   backdrop: {
     background: fade(boulder[50], 0.85),

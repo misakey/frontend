@@ -68,7 +68,6 @@ function SearchHeader({ drawerWidth, isDrawerOpen, t }) {
         position="start"
       >
         <IconButtonAppBar
-          color="inherit"
           aria-label={t('common:goBack')}
           edge="start"
           component={Link}

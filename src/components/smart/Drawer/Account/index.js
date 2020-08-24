@@ -21,6 +21,7 @@ import withIdentity from 'components/smart/withIdentity';
 import Drawer from '@material-ui/core/Drawer';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import Footer from 'components/dumb/Footer';
+import DarkmodeSwitch from 'components/smart/Switch/Darkmode';
 
 import ArrowBack from '@material-ui/icons/ArrowBack';
 
@@ -80,7 +81,6 @@ function AccountDrawer({ t }) {
       <>
         <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth} isDrawerOpen={isTmpDrawerOpen}>
           <IconButtonAppBar
-            color="inherit"
             aria-label={t('common:goBack')}
             edge="start"
             component={Link}
@@ -88,6 +88,8 @@ function AccountDrawer({ t }) {
           >
             <ArrowBack />
           </IconButtonAppBar>
+          <Box display="flex" flexGrow={1} />
+          <DarkmodeSwitch />
         </AppBarDrawer>
         <Box display="flex" flexDirection="column" alignItems="center">
           <CardIdentityThumbnailWithIdentity />

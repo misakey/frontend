@@ -59,7 +59,10 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
   },
   subheader: {
-    backgroundColor: theme.palette.common.white,
+    backgroundColor: theme.palette.background.default,
+  },
+  primaryText: {
+    color: theme.palette.text.primary,
   },
 }));
 
@@ -124,7 +127,6 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
       <ElevationScroll target={contentRef}>
         <AppBarDrawer drawerWidth={drawerWidth} isDrawerOpen={isDrawerOpen}>
           <IconButtonAppBar
-            color="inherit"
             aria-label={t('common:openAccountDrawer')}
             edge="start"
             component={Link}
@@ -141,7 +143,7 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
             src={boxAvatarUrl}
             title={title || ''}
           />
-          <Typography variant="h6" align="center">
+          <Typography variant="h6" align="center" color="textPrimary">
             {title}
           </Typography>
           <Typography variant="body2" color="textSecondary">
@@ -247,7 +249,7 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
                   primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
                   secondaryTypographyProps={{ color: 'textPrimary' }}
                 />
-                <ChevronRightIcon />
+                <ChevronRightIcon className={classes.primaryText} />
               </ListItem>
               <ConfirmationDialog
                 onConfirm={onCloseBox}
@@ -273,6 +275,8 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
                 <ListItemText
                   primary={displayName}
                   secondary={identifier.value}
+                  primaryTypographyProps={{ color: 'textPrimary' }}
+                  secondaryTypographyProps={{ color: 'textSecondary' }}
                 />
               </ListItem>
             ))}

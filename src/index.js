@@ -25,8 +25,7 @@ import floodManagementAlertMiddleware from 'middlewares/floodManagement/alert';
 import Router from 'components/smart/Router';
 import * as serviceWorker from 'serviceWorker';
 // ui
-import MuiThemeProvider from 'components/smart/ThemeProvider';
-import theme from '@misakey/ui/theme';
+import ThemeProvider from 'components/smart/ThemeProvider';
 // components
 import App from 'components/App';
 
@@ -97,7 +96,7 @@ if (isSilentAuthIframe()) {
             <SplashScreenWithTranslation {...SPLASH_SCREEN_PROPS} />)}
           persistor={persistor}
         >
-          <MuiThemeProvider theme={theme}>
+          <ThemeProvider>
             <Router>
               <SnackbarProvider
                 action={(key) => <SnackbarActionHide id={key} />}
@@ -112,7 +111,7 @@ if (isSilentAuthIframe()) {
                 </OidcProvider>
               </SnackbarProvider>
             </Router>
-          </MuiThemeProvider>
+          </ThemeProvider>
         </PersistGate>
       </StoreProvider>
     </Suspense>

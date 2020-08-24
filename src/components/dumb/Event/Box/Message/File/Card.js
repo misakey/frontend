@@ -14,16 +14,12 @@ import useSaveFileInVault from 'hooks/useSaveFileInVault';
 
 const useStyles = makeStyles((theme) => ({
   filePreview: {
-    border: `1px solid ${theme.palette.grey[300]}`,
+    border: `1px solid ${theme.palette.divider}`,
     borderTopLeftRadius: 'inherit',
     borderTopRightRadius: 'inherit',
-    backgroundColor: theme.palette.common.white,
+    backgroundColor: theme.palette.background.default,
     minWidth: 150,
     width: '100%',
-  },
-  icons: {
-    color: theme.palette.grey[300],
-    fontSize: 30,
   },
 }));
 

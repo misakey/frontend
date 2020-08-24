@@ -15,7 +15,7 @@ import BoxControls from '@misakey/ui/Box/Controls';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    border: `1px solid ${theme.palette.grey.A100}`,
+    border: `1px solid ${theme.palette.divider}`,
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
   },

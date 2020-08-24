@@ -73,7 +73,8 @@ const useStyles = makeStyles((theme) => ({
     height: 0,
   }),
   textContainerPreview: {
-    backgroundColor: theme.palette.grey[300],
+    backgroundColor: theme.palette.background.message,
+    color: theme.palette.text.secondary,
     opacity: 0.8,
     padding: theme.spacing(1),
     borderRadius: theme.shape.borderRadius,

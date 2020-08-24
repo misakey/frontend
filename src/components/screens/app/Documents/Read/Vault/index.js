@@ -52,7 +52,6 @@ const DocumentsVault = ({ t, isDrawerOpen, drawerWidth, toggleDrawer, savedFiles
               {!isDrawerOpen && (
                 <Box display="flex" px={1}>
                   <IconButtonAppBar
-                    color="inherit"
                     aria-label={t('common:openAccountDrawer')}
                     edge="start"
                     onClick={toggleDrawer}

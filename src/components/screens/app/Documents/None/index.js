@@ -21,7 +21,6 @@ function DocumentNone({ drawerWidth, isDrawerOpen, toggleDrawer, t }) {
       <AppBarDrawer drawerWidth={drawerWidth} isDrawerOpen={isDrawerOpen}>
         {!isDrawerOpen && (
           <IconButtonAppBar
-            color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={toggleDrawer}

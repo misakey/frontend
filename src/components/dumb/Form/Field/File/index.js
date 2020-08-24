@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   label: {
-    color: theme.palette.grey[300],
+    color: theme.palette.text.secondary,
     textTransform: 'uppercase',
     textAlign: 'center',
   },

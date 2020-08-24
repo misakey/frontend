@@ -29,6 +29,8 @@ const ListNotificationConfigItem = ({ value, onClick, t, ...rest }) => {
       <ListItemText
         primary={t(`components:list.notificationConfig.${value}.title`)}
         secondary={t(`components:list.notificationConfig.${value}.subtitle`)}
+        primaryTypographyProps={{ color: 'textPrimary' }}
+        secondaryTypographyProps={{ color: 'textSecondary' }}
       />
       <ChevronRightIcon />
     </ListItem>

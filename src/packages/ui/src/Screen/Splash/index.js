@@ -11,7 +11,7 @@ import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 
 
 // HOOKS
-const useBoxStyles = makeStyles({
+const useBoxStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     display: 'flex',
@@ -19,8 +19,9 @@ const useBoxStyles = makeStyles({
     justifyContent: 'center',
     textAlign: 'center',
     height: 'inherit',
+    backgroundColor: theme.palette.background.default,
   },
-});
+}));
 
 const ScreenSplash = ({ text, ...rest }) => {
   const classes = useBoxStyles();

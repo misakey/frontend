@@ -23,10 +23,11 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     overflow: 'hidden',
+    background: 0,
   },
   boxRoot: {
-    backgroundColor: theme.palette.grey[100],
     borderRadius: MESSAGE_BORDER_RADIUS,
+    backgroundColor: theme.palette.background.message,
   },
   content: {
     padding: 0,
@@ -35,9 +36,9 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
   },
   footer: {
-    backgroundColor: theme.palette.common.white,
+    backgroundColor: theme.palette.background.default,
     padding: theme.spacing(0),
-    borderTop: `1px solid ${theme.palette.grey[300]}`,
+    borderTop: `1px solid ${theme.palette.divider}`,
     '& > *': {
       width: '100%',
       borderRadius: 0,

@@ -14,7 +14,7 @@ import useGetFileIconFromType from 'hooks/useGetFileIconFromType';
 
 const useStyles = makeStyles((theme) => ({
   icons: ({ isLarge }) => ({
-    color: theme.palette.grey[300],
+    color: theme.palette.text.secondary,
     fontSize: isLarge ? '8rem' : '2rem',
   }),
 }));

@@ -23,7 +23,6 @@ function AccountNone({ drawerWidth, isDrawerOpen, getNextDrawerSearch }) {
       <AppBarDrawer drawerWidth={drawerWidth} isDrawerOpen={isDrawerOpen}>
         {!isDrawerOpen && (
           <IconButtonAppBar
-            color="inherit"
             aria-label="open drawer"
             edge="start"
             component={Link}

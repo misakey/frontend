@@ -8,6 +8,8 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    backgroundColor: theme.palette.grey[400],
+    color: theme.palette.background.paper,
     textTransform: 'uppercase',
     textDecoration: 'none',
     fontSize: theme.spacing(1.5),

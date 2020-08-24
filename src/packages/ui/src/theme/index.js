@@ -1,10 +1,10 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import common from '@misakey/ui/colors/common';
 import boulder from '@misakey/ui/colors/boulder';
-import { portability, erasure } from '@misakey/ui/colors/requestTypes';
 
 export const themeOptions = {
   palette: {
+    type: 'light',
     primary: {
       main: common.primary,
     },
@@ -15,16 +15,6 @@ export const themeOptions = {
       main: common.secondary,
     },
     grey: boulder,
-    portability: {
-      main: portability[700],
-      light: portability[500],
-      dark: portability[900],
-    },
-    erasure: {
-      main: erasure[700],
-      light: erasure[500],
-      dark: erasure[900],
-    },
   },
   typography: {
     useNextVariants: true,
@@ -95,5 +85,21 @@ export const themeOptions = {
     },
   },
 };
+
+export const getThemeOptions = (isDarkMode) => ({
+  ...themeOptions,
+  palette: {
+    ...themeOptions.palette,
+    type: isDarkMode ? 'dark' : 'light',
+    background: {
+      message: isDarkMode ? '#555555' : '#F5F5F5',
+      paper: isDarkMode ? '#303030' : '#fff',
+      default: isDarkMode ? '#303030' : '#fff',
+    },
+    action: {
+      selected: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
+    },
+  },
+});
 
 export default createMuiTheme(themeOptions);

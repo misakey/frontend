@@ -8,8 +8,8 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
   avatarColorized: ({ backgroundColor }) => ({
     border: `2px solid #${backgroundColor}`,
-    background: theme.palette.common.white,
-    color: theme.palette.grey[800],
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.text.secondary,
     boxSizing: 'border-box',
   }),
 }));

@@ -134,7 +134,6 @@ function BoxEvents({
               {!isDrawerOpen && (
                 <Box display="flex" pl={2} pr={1}>
                   <IconButtonAppBar
-                    color="inherit"
                     aria-label={t('common:openAccountDrawer')}
                     edge="start"
                     onClick={toggleDrawer}
@@ -190,7 +189,7 @@ function BoxEvents({
         <Box p={2} ref={(ref) => setContentRef(ref)} flexGrow="1" className={classes.thread}>
           {eventsByDate.map(({ date, events }) => (
             <Box display="flex" flexDirection="column" py={1} key={date}>
-              <Typography component={Box} alignSelf="center">{date}</Typography>
+              <Typography component={Box} alignSelf="center" color="textPrimary">{date}</Typography>
               {
                 events.map((event) => (
                   <BoxEventsAccordingToType event={event} key={event.id} />

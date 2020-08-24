@@ -46,7 +46,7 @@ const isErrorArray = (errorKeys, index) => {
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   label: {
-    color: theme.palette.grey[300],
+    color: theme.palette.text.secondary,
     textTransform: 'uppercase',
     textAlign: 'center',
   },

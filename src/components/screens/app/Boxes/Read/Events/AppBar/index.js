@@ -25,6 +25,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 const PRIMARY_TYPO_PROPS = {
   variant: 'h5',
   noWrap: true,
+  color: 'textPrimary',
 };
 
 const SECONDARY_TYPO_PROPS = {

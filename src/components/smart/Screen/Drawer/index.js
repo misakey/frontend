@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
   }),
   content: {
     height: 'inherit',
+    backgroundColor: theme.palette.background.default,
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,

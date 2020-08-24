@@ -41,10 +41,10 @@ const AccountVault = ({ t, identity, isFetching }) => {
       navigationProps={navigationProps}
     >
       <Container maxWidth="md">
-        <Typography>{t('account:vault.info.general')}</Typography>
+        <Typography color="textSecondary">{t('account:vault.info.general')}</Typography>
         <Box my={3}>
           <Title>{t('account:vault.info.myKeyTitle')}</Title>
-          <Typography>{t('account:vault.info.exportInfo')}</Typography>
+          <Typography color="textSecondary">{t('account:vault.info.exportInfo')}</Typography>
           <Box my={1}>
             <CardDownloadBackupKey />
           </Box>

@@ -69,7 +69,6 @@ const AppBarNavigationBase = forwardRef(({
         {(isBoolean(showGoBack) ? showGoBack : isXsLayout) && (
           <IconButton
             edge="start"
-            color="inherit"
             className={clsx(internalClasses.backButton, classes.backButton)}
             aria-label={t('common:navigation.backButton', 'Go back')}
             {...buttonProps}

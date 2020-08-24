@@ -25,6 +25,8 @@ const useStyles = makeStyles((theme) => ({
   avatarRoot: {
     height: AVATAR_SIZE,
     width: AVATAR_SIZE,
+    backgroundColor: theme.palette.grey[400],
+    color: theme.palette.background.paper,
     [theme.breakpoints.down('sm')]: {
       height: AVATAR_SM_SIZE,
       width: AVATAR_SM_SIZE,

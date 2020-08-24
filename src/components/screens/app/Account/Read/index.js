@@ -48,7 +48,6 @@ function AccountRead({ match: { path }, toggleDrawer, isDrawerOpen, drawerWidth 
             <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth} isDrawerOpen={isDrawerOpen}>
               {!isDrawerOpen && (
               <IconButtonAppBar
-                color="inherit"
                 aria-label="open drawer"
                 edge="start"
                 onClick={toggleDrawer}

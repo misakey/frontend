@@ -30,7 +30,6 @@ function BoxClosed({ drawerWidth, isDrawerOpen, toggleDrawer, box, belongsToCurr
       >
         {!isDrawerOpen && (
         <IconButtonAppBar
-          color="inherit"
           aria-label={t('common:openAccountDrawer')}
           edge="start"
           onClick={toggleDrawer}

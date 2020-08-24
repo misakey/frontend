@@ -28,15 +28,16 @@ export const FOOTER_SPACE = FOOTER_HEIGHT + 16;
 const isError = (error) => error instanceof Error;
 
 // HOOKS
-const useBoxStyles = makeStyles({
+const useBoxStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     textAlign: 'center',
+    backgroundColor: theme.palette.background.default,
   },
-});
+}));
 
 // The string representing the message/name is lazily generated
 // when the error.message/name property is accessed.
@@ -130,6 +131,7 @@ const useScreenStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    backgroundColor: theme.palette.background.default,
   }),
 
   progress: {

@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     alignSelf: 'center',
   },
   e2eeIntro: {
-    border: `1px solid ${theme.palette.grey[300]}`,
+    border: `1px solid ${theme.palette.divider}`,
     borderRadius: theme.shape.borderRadius * 2,
     alignSelf: 'center',
     padding: theme.spacing(0.5, 1),
