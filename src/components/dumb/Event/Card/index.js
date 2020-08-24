@@ -107,7 +107,7 @@ EventCard.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   isFromCurrentUser: PropTypes.bool,
-  text: PropTypes.string,
+  text: PropTypes.node,
   author: PropTypes.shape({
     displayName: PropTypes.string,
     avatarUrl: PropTypes.string,

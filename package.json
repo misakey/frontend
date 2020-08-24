@@ -65,6 +65,7 @@
     "@material-ui/lab": "4.0.0-alpha.54",
     "@sentry/browser": "^5.15.5",
     "@testing-library/react-hooks": "3.2.1",
+    "anchorme": "^2.1.2",
     "clsx": "^1.1.0",
     "copy-to-clipboard": "^3.3.1",
     "formik": "^2.1.4",
