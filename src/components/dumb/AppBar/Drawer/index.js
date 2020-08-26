@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import omit from '@misakey/helpers/omit';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -61,7 +62,7 @@ function AppBarDrawer({
           [classes.appBarRight]: side === SIDES.RIGHT,
           [classes.appBarShift]: side === SIDES.RIGHT && isDrawerOpen,
         })}
-        {...props}
+        {...omit(props, ['toggleDrawer', 'getNextDrawerSearch', 'selectedDrawer', 'setIsDrawerForceClosed'])}
       >
         <Toolbar component={Box} px={2} disableGutters {...toolbarProps}>
           {children}

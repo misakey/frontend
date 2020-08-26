@@ -202,7 +202,6 @@ const Footer = ({
             </Grid>
           </Grid>
         </ContainerComponent>
-
       </ExpansionPanelDetails>
     </ExpansionPanel>
   );

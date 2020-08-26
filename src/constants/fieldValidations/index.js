@@ -48,6 +48,12 @@ export const notificationFieldValidation = {
     .oneOf(NOTIFICATIONS),
 };
 
+export const colorFieldValidation = {
+  requiredSchema: Yup.string()
+    .required(required)
+    .matches(/^#[0-9a-f]{3,6}$/i),
+};
+
 export const fileFieldValidation = {
   blobSchema: Yup.mixed()
     .test('fileSize', 'size', (file) => isNil(file) || file.size <= MAX_FILE_SIZE)

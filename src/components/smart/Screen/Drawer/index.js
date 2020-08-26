@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 
+import omit from '@misakey/helpers/omit';
 import getNextSearch from '@misakey/helpers/getNextSearch';
 import isNil from '@misakey/helpers/isNil';
 import isPlainObject from '@misakey/helpers/isPlainObject';
@@ -35,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
   drawer: ({ drawerWidth }) => ({
     width: drawerWidth,
     flexShrink: 0,
+    boxSizing: 'unset',
   }),
   drawerPaper: ({ drawerWidth }) => ({
     width: drawerWidth,
@@ -170,7 +172,7 @@ function ScreenDrawer({
         open={isDrawerOpen}
         className={internalClasses.drawer}
         classes={{ paper: internalClasses.drawerPaper }}
-        {...props}
+        {...omit(props, ['staticContext', 'tReady', 't'])}
       >
         {drawerContent}
       </Drawer>

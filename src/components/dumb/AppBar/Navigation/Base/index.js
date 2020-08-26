@@ -15,7 +15,6 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Title from '@misakey/ui/Typography/Title';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 
@@ -65,7 +64,7 @@ const AppBarNavigationBase = forwardRef(({
       )}
       {...omit(rest, ['i18n', 'tReady'])}
     >
-      <Toolbar component={Container} disableGutters {...toolbarProps}>
+      <Toolbar {...toolbarProps}>
         {(isBoolean(showGoBack) ? showGoBack : isXsLayout) && (
           <IconButton
             edge="start"

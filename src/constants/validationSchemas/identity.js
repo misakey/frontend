@@ -4,7 +4,7 @@ import { OLD_PASSWORD_KEY, NEW_PASSWORD_KEY, PASSWORD_CONFIRM_KEY } from 'consta
 import {
   codeFieldValidation, stringFieldValidation,
   passwordFieldValidation, displayNameFieldValidation, fileFieldValidation,
-  notificationFieldValidation,
+  notificationFieldValidation, colorFieldValidation,
 } from 'constants/fieldValidations';
 
 
@@ -14,6 +14,10 @@ export const displayNameValidationSchema = Yup.object().shape({
 
 export const notificationsValidationSchema = Yup.object().shape({
   notifications: notificationFieldValidation.requiredSchema,
+});
+
+export const colorValidationSchema = Yup.object().shape({
+  color: colorFieldValidation.requiredSchema,
 });
 
 export const avatarValidationSchema = Yup.object().shape({

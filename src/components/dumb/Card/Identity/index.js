@@ -8,6 +8,7 @@ import IdentitySchema from 'store/schemas/Identity';
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import ListItem from '@material-ui/core/ListItem';
@@ -23,7 +24,7 @@ import CardList from 'components/dumb/Card/List';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 // HOOKS
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -43,13 +44,23 @@ const useStyles = makeStyles(() => ({
     width: 40,
     verticalAlign: 'middle',
   },
+  colorDot: ({ color }) => ({
+    backgroundColor: color,
+    borderRadius: 50,
+    width: 20,
+    height: 20,
+    marginRight: theme.spacing(1),
+  }),
 }));
 
 // COMPONENTS
 const CardIdentity = ({ identity, t }) => {
-  const classes = useStyles();
+  const {
+    displayName, avatarUrl, notifications, color,
+  } = useMemo(() => identity || {}, [identity]);
 
-  const { displayName, avatarUrl, notifications } = useMemo(() => identity || {}, [identity]);
+  const classes = useStyles({ color });
+
   const { accountId } = useMemo(() => identity || {}, [identity]);
 
   const listItemDisplayNameTo = useGeneratePathKeepingSearchAndHash(
@@ -59,6 +70,11 @@ const CardIdentity = ({ identity, t }) => {
 
   const listItemNotificationsTo = useGeneratePathKeepingSearchAndHash(
     routes.accounts.notifications,
+    { id: accountId },
+  );
+
+  const listItemColorsTo = useGeneratePathKeepingSearchAndHash(
+    routes.accounts.colors,
     { id: accountId },
   );
 
@@ -138,6 +154,31 @@ const CardIdentity = ({ identity, t }) => {
             <Typography>{t('fields:notifications.label')}</Typography>
           </ListItemIcon>
           <ListItemText primary={t(`fields:notifications.${notifications}`)} />
+          <ChevronRightIcon className={classes.actionIcon} />
+        </ListItem>
+      </CardList>
+
+      <CardIdentityHeader>{t('account:sections.myInterface.title')}</CardIdentityHeader>
+      <CardList>
+        <ListItem
+          button
+          to={listItemColorsTo}
+          component={Link}
+          divider
+          aria-label={t('fields:accountColor.action')}
+          classes={{ container: classes.listItemContainer }}
+        >
+          <ListItemIcon className={classes.listItemIcon}>
+            <Typography>{t('fields:accountColor.label')}</Typography>
+          </ListItemIcon>
+          <ListItemText
+            primary={(
+              <Box display="flex" flexDirection="raw" alignItems="center">
+                <div className={classes.colorDot} />
+              </Box>
+            )}
+            disableTypography
+          />
           <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
       </CardList>

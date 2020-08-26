@@ -4,6 +4,9 @@
     "myNotifications": {
       "title": "Mes communications"
     },
+    "myInterface": {
+      "title": "Mon interface"
+    },
     "myVault": {
       "title": "Mon coffre-fort"
     },
@@ -38,6 +41,11 @@
     "title": "Fréquence des communications",
     "subtitle": "Je définis la fréquence des communications par email",
     "success": "La fréquence des communications a été mise à jour"
+  },
+  "accountColors": {
+    "title": "Ma couleur",
+    "subtitle": "Je définis la couleur principale de mon interface",
+    "success": "La couleur de mon interface a été mise à jour"
   },
   "password": {
     "existing": "Quel est le mot de passe\u00a0?",

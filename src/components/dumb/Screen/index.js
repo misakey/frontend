@@ -126,7 +126,6 @@ const useScreenStyles = makeStyles((theme) => ({
   root: () => ({
     width: '100%',
     minHeight: `calc(100vh - ${theme.spacing(GUTTERS_SPACING)}px)`,
-    paddingTop: theme.spacing(GUTTERS_SPACING),
     paddingBottom: 0,
     display: 'flex',
     flexDirection: 'column',

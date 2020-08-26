@@ -33,7 +33,6 @@ function ScreenAction({
       <ElevationScroll threshold={threshold}>
         <AppBarNavigation
           position="sticky"
-          toolbarProps={{ maxWidth: 'md' }}
           title={hideTitle ? null : title}
           {...navigationProps}
         >

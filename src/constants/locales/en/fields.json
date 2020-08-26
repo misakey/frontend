@@ -25,6 +25,10 @@
     "moderate": "Moderate",
     "frequent": "High"
   },
+  "accountColor": {
+    "label": "My color",
+    "action": "Edit"
+  },
   "avatar": {
     "label": "Picture",
     "action": "Edit",

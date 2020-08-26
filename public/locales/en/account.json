@@ -4,6 +4,9 @@
     "myNotifications": {
       "title": "My communications"
     },
+    "myInterface": {
+      "title": "Interface customization"
+    },
     "myVault": {
       "title": "My vault"
     },
@@ -38,6 +41,11 @@
     "title": "Communications frequency",
     "subtitle": "I define email updates frequency",
     "success": "Email updates frequency successfully updated"
+  },
+  "accountColors": {
+    "title": "My color",
+    "subtitle": "I define the main color of my interface",
+    "success": "My color has been successfully updated"
   },
   "password": {
     "existing": "What's the password\u00a0?",

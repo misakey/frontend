@@ -18,6 +18,7 @@ const routes = {
     displayName: '/accounts/:id/displayName',
     password: '/accounts/:id/password',
     notifications: '/accounts/:id/notifications',
+    colors: '/accounts/:id/colors',
     vault: '/accounts/:id/vault',
   },
   documents: {

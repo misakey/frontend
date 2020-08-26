@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useLocation } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import useImportTypeformCallback, { TYPEFORM_EMBED_URL } from 'hooks/useImportTypeformCallback';
 
@@ -35,7 +36,7 @@ const LinkFeedback = ({ text, t, ...rest }) => {
       data-hide-footer
       data-submit-close-delay="3"
       data-mode="drawer_right"
-      {...rest}
+      {...omitTranslationProps(rest)}
     >
       {text}
     </Link>

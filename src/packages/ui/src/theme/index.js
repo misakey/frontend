@@ -2,17 +2,27 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import common from '@misakey/ui/colors/common';
 import boulder from '@misakey/ui/colors/boulder';
 
-export const themeOptions = {
+import isNil from '@misakey/helpers/isNil';
+
+export const getThemeOptions = (isDarkMode = false, color = null) => ({
   palette: {
-    type: 'light',
+    type: isDarkMode ? 'dark' : 'light',
     primary: {
       main: common.primary,
     },
     secondary: {
-      main: common.secondary,
+      main: isNil(color) ? common.secondary : color,
     },
-    error: {
+    error: (isNil(color) || color === common.secondary) ? ({
       main: common.secondary,
+    }) : undefined,
+    background: {
+      message: isDarkMode ? '#555555' : '#F5F5F5',
+      paper: isDarkMode ? '#303030' : '#fff',
+      default: isDarkMode ? '#303030' : '#fff',
+    },
+    action: {
+      selected: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
     },
     grey: boulder,
   },
@@ -46,7 +56,7 @@ export const themeOptions = {
         '&.Mui-selected': {
           borderLeftWidth: 3,
           borderLeftStyle: 'solid',
-          borderLeftColor: common.secondary,
+          borderLeftColor: isNil(color) ? common.secondary : color,
           '&.MuiListItem-gutters': {
             paddingLeft: 13,
           },
@@ -84,22 +94,6 @@ export const themeOptions = {
       },
     },
   },
-};
-
-export const getThemeOptions = (isDarkMode) => ({
-  ...themeOptions,
-  palette: {
-    ...themeOptions.palette,
-    type: isDarkMode ? 'dark' : 'light',
-    background: {
-      message: isDarkMode ? '#555555' : '#F5F5F5',
-      paper: isDarkMode ? '#303030' : '#fff',
-      default: isDarkMode ? '#303030' : '#fff',
-    },
-    action: {
-      selected: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
-    },
-  },
 });
 
-export default createMuiTheme(themeOptions);
+export default createMuiTheme(getThemeOptions());

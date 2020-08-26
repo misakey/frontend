@@ -193,6 +193,10 @@
     "moderate": "Modérée",
     "frequent": "Elevée"
   },
+  "accountColor": {
+    "label": "Ma couleur",
+    "action": "Editer"
+  },
   "signUpConfirm": {
     "code": {
       "error": {

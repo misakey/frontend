@@ -16,6 +16,7 @@ import AccountReadPassword from 'components/screens/app/Account/Read/Password';
 import AccountReadVault from 'components/screens/app/Account/Read/Vault';
 import IdentityDisplayName from 'components/screens/app/Identity/DisplayName';
 import IdentityNotifications from 'components/screens/app/Identity/Notifications';
+import IdentityColors from 'components/screens/app/Identity/Colors';
 import IdentityAvatar from 'components/screens/app/Identity/Avatar';
 
 // COMPONENTS
@@ -81,6 +82,11 @@ function AccountRead({ match: { path }, toggleDrawer, isDrawerOpen, drawerWidth 
         exact
         path={routes.accounts.notifications}
         render={(routerProps) => <IdentityNotifications {...routerProps} {...identityMetadata} />}
+      />
+      <Route
+        exact
+        path={routes.accounts.colors}
+        render={(routerProps) => <IdentityColors {...routerProps} {...identityMetadata} />}
       />
       <Route
         path={routes.accounts.avatar._}
