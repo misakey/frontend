@@ -24,7 +24,7 @@ const CardIdentityThumbnail = ({ identity, ...props }) => {
   );
 
   return (
-    <Box m={4}>
+    <Box mx={4} mb={4}>
       {hasIdentity ? (
         <AvatarDetailed
           text={displayName}

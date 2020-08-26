@@ -10,7 +10,8 @@ import AccountNone from 'components/screens/app/Account/None';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
-import BoxesList from 'components/screens/app/Boxes/List';
+// import BoxesList from 'components/screens/app/Boxes/List';
+import DrawerAccountContent from 'components/smart/Drawer/Account/Content';
 import DocumentList from 'components/screens/app/Documents/List';
 import { ACCOUNT_LEFT_DRAWER_QUERY_PARAM } from '@misakey/ui/constants/drawers';
 import { TAB_VALUES } from 'components/dumb/Tabs/DrawerMenu';
@@ -19,6 +20,7 @@ import { TAB_VALUES } from 'components/dumb/Tabs/DrawerMenu';
 const useStyles = makeStyles(() => ({
   drawerContent: {
     position: 'relative',
+    overflow: 'auto',
   },
 }));
 
@@ -33,7 +35,7 @@ function Account({ match, ...props }) {
   const drawerChildren = useMemo(
     () => (leftDrawer === TAB_VALUES.DOCUMENT
       ? (drawerProps) => <DocumentList {...drawerProps} />
-      : (drawerProps) => <BoxesList {...drawerProps} />),
+      : (drawerProps) => <DrawerAccountContent backTo={routes.boxes._} {...drawerProps} />),
     [leftDrawer],
   );
 
