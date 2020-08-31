@@ -23,13 +23,9 @@ import BoxAvatar from 'components/dumb/Avatar/Box';
 import BoxAvatarSkeleton from 'components/dumb/Avatar/Box/Skeleton';
 import TypographyDateSince from 'components/dumb/Typography/DateSince';
 import BoxEventsAccordingToType from 'components/smart/Box/Event';
-import IconStack from '@misakey/ui/Icon/Stack';
-
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ClearIcon from '@material-ui/icons/Clear';
 
 // HOOKS
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   listItemText: {
     // Needed for IE11
     width: '100%',
@@ -37,14 +33,14 @@ const useStyles = makeStyles(() => ({
   iconStack: {
     position: 'absolute',
   },
+  badge: {
+    right: 3,
+    top: 15,
+    border: `2px solid ${theme.palette.background.default}`,
+    padding: '0 4px',
+  },
   background: {
     visibility: '0.5',
-  },
-  boxPosition: {
-    top: '40%',
-    right: '16px',
-    position: 'absolute',
-    transform: 'translateY(-50%)',
   },
 }));
 
@@ -117,7 +113,6 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
 
   const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
 
-
   const lostKey = useMemo(
     () => !canBeDecrypted && (lifecycle !== CLOSED || belongsToCurrentUser),
     [canBeDecrypted, lifecycle, belongsToCurrentUser],
@@ -130,10 +125,19 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
   return (
     <ListItem key={id} {...linkProps} {...omitTranslationProps(rest)}>
       <ListItemAvatar>
-        <Badge badgeContent={eventsCount} color="secondary">
+        <Badge
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          classes={{ badge: classes.badge }}
+          badgeContent={eventsCount}
+          color="secondary"
+        >
           <BoxAvatar
             src={logoUri}
             title={title}
+            lostKey={lostKey}
           />
         </Badge>
       </ListItemAvatar>
@@ -154,19 +158,6 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
         primaryTypographyProps={{ noWrap: true, display: 'block' }}
         secondaryTypographyProps={{ noWrap: true, display: 'block' }}
       />
-      {lostKey && (
-        <Box
-          aria-label={t('common:undecryptable')}
-          className={classes.boxPosition}
-          width={48}
-        >
-          <IconStack
-            color="secondary"
-            ForegroundIcon={VpnKeyIcon}
-            BackgroundIcon={ClearIcon}
-          />
-        </Box>
-      )}
     </ListItem>
   );
 }

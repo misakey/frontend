@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import Title from '@misakey/ui/Typography/Title';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
 import CardHeader from '@material-ui/core/CardHeader';
 
 // HOOKS
@@ -22,7 +22,7 @@ const EventCardHeader = ({ title, titleTypographyProps, ...rest }) => {
       classes={{ root: classes.cardHeaderRoot }}
       disableTypography
       title={(
-        <Title variant="subtitle1" color="textSecondary" {...titleTypographyProps}>{title}</Title>
+        <Subtitle variant="subtitle2" color="textSecondary" {...titleTypographyProps}>{title}</Subtitle>
     )}
       {...rest}
     />

@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { AVATAR_SIZE, AVATAR_SM_SIZE } from '@misakey/ui/constants/sizes';
 
 import Avatar from '@material-ui/core/Avatar';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import isString from '@misakey/helpers/isString';
+
+import IconStack from '@misakey/ui/Icon/Stack';
+
+import VpnKeyIcon from '@material-ui/icons/VpnKeyRounded';
+import ClearIcon from '@material-ui/icons/ClearRounded';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,8 +28,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function BoxAvatar({ children, src, title, ...rest }) {
+function BoxAvatar({ children, src, title, lostKey, ...rest }) {
   const classes = useStyles();
+
+  const content = useMemo(
+    () => {
+      if (lostKey) {
+        return (
+          <IconStack
+            color="textPrimary"
+            ForegroundIcon={VpnKeyIcon}
+            BackgroundIcon={ClearIcon}
+          />
+        );
+      }
+      if (isString(title)) {
+        return title.slice(0, 3);
+      }
+      return '';
+    },
+    [lostKey, title],
+  );
 
   return (
 
@@ -34,7 +59,7 @@ function BoxAvatar({ children, src, title, ...rest }) {
       className={classes.root}
       {...rest}
     >
-      {title.slice(0, 3)}
+      {content}
     </Avatar>
   );
 }
@@ -42,11 +67,14 @@ function BoxAvatar({ children, src, title, ...rest }) {
 BoxAvatar.propTypes = {
   children: PropTypes.node,
   src: PropTypes.string,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
+  lostKey: PropTypes.bool,
 };
 
 BoxAvatar.defaultProps = {
   children: undefined,
+  title: null,
+  lostKey: false,
   src: undefined,
 };
 

@@ -12,8 +12,7 @@ import EventBoxInformationPreview from 'components/dumb/Event/Box/Information/Pr
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: theme.spacing(0, 1),
-    marginBottom: theme.spacing(1),
+    padding: theme.spacing(1),
     alignSelf: 'center',
   },
   e2eeIntro: {
