@@ -76,7 +76,7 @@ const AccountColor = ({ t, identity, isFetching }) => {
   );
 
   const initialValues = useMemo(
-    () => ({ [FIELD_NAME]: color }),
+    () => ({ [FIELD_NAME]: isNil(color) ? undefined : color }),
     [color],
   );
 

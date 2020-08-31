@@ -1,5 +1,4 @@
 import React from 'react';
-import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import routes from 'routes';
@@ -28,20 +27,23 @@ import FooterFullScreen from 'components/dumb/Footer/FullScreen';
 const APPBAR_HEIGHT = 64;
 
 // HOOKS
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     height: `calc(100% - ${APPBAR_HEIGHT}px)`,
+  },
+  root: {
+    backgroundColor: theme.palette.background.default,
+    height: '100%',
   },
 }));
 
 function ScreenError({ t, className, children, hideDefaultError, hideRefreshAction, ...rest }) {
   const classes = useStyles();
   return (
-    <>
+    <Box className={classes.root}>
       <AppBar elevation={0} position="static" color="transparent">
         <Toolbar>
           <IconButton
-            color="inherit"
             aria-label={t('common:goBack')}
             edge="start"
             component={Link}
@@ -49,7 +51,7 @@ function ScreenError({ t, className, children, hideDefaultError, hideRefreshActi
           >
             <ArrowBack />
           </IconButton>
-          <Typography>{t('components:ScreenError.button.goback')}</Typography>
+          <Typography color="textSecondary">{t('components:ScreenError.button.goback')}</Typography>
         </Toolbar>
       </AppBar>
       <Container maxWidth="md" className={classes.container}>
@@ -58,7 +60,7 @@ function ScreenError({ t, className, children, hideDefaultError, hideRefreshActi
           flexDirection="column"
           justifyContent="center"
           height="100%"
-          className={clsx('ErrorBoundary', className)}
+          className={className}
           {...omit(rest, ['tReady', 'i18n'])}
         >
           {!hideDefaultError && (
@@ -93,7 +95,7 @@ function ScreenError({ t, className, children, hideDefaultError, hideRefreshActi
         </Box>
       </Container>
       <FooterFullScreen />
-    </>
+    </Box>
   );
 }
 
