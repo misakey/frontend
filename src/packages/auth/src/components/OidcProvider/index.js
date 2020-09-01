@@ -13,9 +13,11 @@ import { parseAcr } from '@misakey/helpers/parseAcr';
 import createUserManager from '@misakey/auth/helpers/userManager';
 
 import { useLocation } from 'react-router-dom';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import Redirect from '@misakey/ui/Redirect';
+import DialogSigninRedirect from '@misakey/auth/components/OidcProvider/Dialog/SigninRedirect';
 
 // CONSTANTS
 const OIDC_LOGIN_STORAGE_KEY = `${STORAGE_PREFIX}user:${window.env.AUTH.authority}:`;
@@ -50,6 +52,7 @@ const isAcrChange = (oldValue, newValue) => {
 // CONTEXT
 export const UserManagerContext = createContext({
   userManager: null,
+  askSigninRedirect: null,
 });
 
 // COMPONENTS
@@ -57,10 +60,44 @@ function OidcProvider({ store, children, config }) {
   const location = useLocation();
   const [shouldRefresh, setShouldRefresh] = useState(false);
 
+  const [signinRedirect, setSigninRedirect] = useState(null);
+  const [canCancelRedirect, setCanCancelRedirect] = useState(true);
+
+  const open = useMemo(
+    () => !isNil(signinRedirect),
+    [signinRedirect],
+  );
+
+  const signinRedirectProps = useSafeDestr(signinRedirect);
+
   const userManager = useMemo(
     () => createUserManager(config),
     [config],
   );
+
+  const askSigninRedirect = useCallback(
+    (params, canCancel = true) => {
+      setSigninRedirect(params);
+      setCanCancelRedirect(canCancel);
+    },
+    [setSigninRedirect, setCanCancelRedirect],
+  );
+
+  const onClose = useCallback(
+    () => {
+      setSigninRedirect(null);
+    },
+    [setSigninRedirect],
+  );
+
+  const contextValue = useMemo(
+    () => ({
+      userManager,
+      askSigninRedirect,
+    }),
+    [userManager, askSigninRedirect],
+  );
+
   const [isLoading, setIsLoading] = useState(false);
 
   const dispatchLoadUser = useCallback(
@@ -177,7 +214,14 @@ function OidcProvider({ store, children, config }) {
   }
 
   return (
-    <UserManagerContext.Provider value={{ userManager }}>
+    <UserManagerContext.Provider value={contextValue}>
+      <DialogSigninRedirect
+        open={open}
+        onClose={onClose}
+        canCancelRedirect={canCancelRedirect}
+        userManager={userManager}
+        {...signinRedirectProps}
+      />
       {isLoading ? (
         <SplashScreen />
       ) : children}

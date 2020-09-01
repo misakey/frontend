@@ -1,11 +1,11 @@
 import { useCallback, useContext } from 'react';
 import { UserManagerContext } from '@misakey/auth/components/OidcProvider';
 
-export default () => {
-  const { userManager } = useContext(UserManagerContext);
+export default (canCancel = true) => {
+  const { askSigninRedirect } = useContext(UserManagerContext);
 
   return useCallback(
-    (options) => userManager.signinRedirect(options),
-    [userManager],
+    (options) => askSigninRedirect(options, canCancel),
+    [askSigninRedirect, canCancel],
   );
 };

@@ -9,10 +9,6 @@ import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION } from '@misakey/aut
 
 import pick from '@misakey/helpers/pick';
 
-export const identifierValidationSchema = Yup.object().shape({
-  identifier: emailFieldValidation.schema,
-});
-
 const secretValidationSchemas = {
   [EMAILED_CODE]: codeFieldValidation.strictSchema,
   [PREHASHED_PASSWORD]: passwordFieldValidation.schema,

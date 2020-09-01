@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import { STEP } from 'constants/auth';
+import { STEP } from '@misakey/auth/constants';
 import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, METHODS } from '@misakey/auth/constants/method';
 
 import prop from '@misakey/helpers/prop';
@@ -30,6 +30,7 @@ const DEFAULT_FIELDS = {
       inputProps: {
         'data-matomo-ignore': true,
         id: `${PREHASHED_PASSWORD}_${STEP.secret}`,
+        autocomplete: 'current-password',
       },
     },
   },
@@ -42,6 +43,7 @@ const DEFAULT_FIELDS = {
       inputProps: {
         'data-matomo-ignore': true,
         id: `${ACCOUNT_CREATION}_${STEP.secret}`,
+        autocomplete: 'new-password',
       },
     },
   },

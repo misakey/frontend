@@ -1,4 +1,4 @@
-import { TMP_DRAWER_QUERY_PARAMS, LEFT_DRAWER_QUERY_PARAM } from '@misakey/ui/constants/drawers';
+import { TMP_DRAWER_QUERY_PARAMS, DRAWER_QUERY_PARAM, SIDE_QUERY_PARAM } from '@misakey/ui/constants/drawers';
 
 import { useMemo } from 'react';
 import useTheme from '@material-ui/core/styles/useTheme';
@@ -12,15 +12,17 @@ export default () => {
 
   const {
     [TMP_DRAWER_QUERY_PARAMS]: tmpDrawerSearch,
-    [LEFT_DRAWER_QUERY_PARAM]: leftDrawerSearch,
+    [DRAWER_QUERY_PARAM]: drawerSearch,
+    [SIDE_QUERY_PARAM]: side,
   } = useLocationSearchParams();
 
   return useMemo(
     () => ({
       isSmDown,
       tmpDrawerSearch,
-      leftDrawerSearch,
+      drawerSearch,
+      side,
     }),
-    [isSmDown, tmpDrawerSearch, leftDrawerSearch],
+    [isSmDown, tmpDrawerSearch, drawerSearch, side],
   );
 };

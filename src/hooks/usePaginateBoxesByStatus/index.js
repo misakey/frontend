@@ -27,7 +27,7 @@ const EMPTY_OBJ = {};
 const actionCreatorsProp = propOr(EMPTY_OBJ, __, actionCreators);
 const selectorsProp = propOr(EMPTY_OBJ, __, selectors);
 
-const getReceiveItemCountActionCreator = (status) => {
+export const getReceiveItemCountActionCreator = (status) => {
   const statusActionCreators = actionCreatorsProp(status);
   return statusActionCreators.receivePaginatedItemCount || noop;
 };

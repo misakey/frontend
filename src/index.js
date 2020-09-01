@@ -40,7 +40,6 @@ import countries from 'i18n-iso-countries';
 import isNil from '@misakey/helpers/isNil';
 import { isSilentAuthIframe, processSilentAuthCallbackInIframe } from '@misakey/auth/helpers'; // Silent auth
 
-import { isSigninRedirect, processSigninRedirect } from 'helpers/auth';
 import SnackbarActionHide from 'components/dumb/Snackbar/Action/Hide';
 
 /* END OF IMPORTS */
@@ -68,8 +67,6 @@ countries.registerLocale(require('i18n-iso-countries/langs/fr.json'));
 // https://github.com/maxmantz/redux-oidc/issues/48#issuecomment-315422236
 if (isSilentAuthIframe()) {
   processSilentAuthCallbackInIframe();
-} else if (isSigninRedirect()) {
-  processSigninRedirect();
 } else {
   // STORE
   const storeMiddleWares = [thunk, APITokenMiddleware];

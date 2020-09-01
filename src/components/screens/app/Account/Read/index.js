@@ -4,11 +4,12 @@ import { Switch, Route, Redirect, useParams, generatePath } from 'react-router-d
 
 import routes from 'routes';
 import { MISAKEY_ACCOUNT_ID } from 'constants/account';
+import { SIDES } from '@misakey/ui/constants/drawers';
 
 import useIdentity from 'hooks/useIdentity';
 import useAccountId from 'hooks/useAccountId';
 
-import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
+import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import MenuIcon from '@material-ui/icons/Menu';
 import CardIdentity from 'components/dumb/Card/Identity';

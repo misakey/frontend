@@ -12,7 +12,7 @@ import isFunction from '@misakey/helpers/isFunction';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useLocation, useHistory } from 'react-router-dom';
 import clsx from 'clsx';
-import { LEFT_DRAWER_QUERY_PARAM, PERMANENT_DRAWER_DESKTOP_WIDTH, PERMANENT_DRAWER_MOBILE_WIDTH } from '@misakey/ui/constants/drawers';
+import { DRAWER_QUERY_PARAM, PERMANENT_DRAWER_DESKTOP_WIDTH, PERMANENT_DRAWER_MOBILE_WIDTH } from '@misakey/ui/constants/drawers';
 
 
 import Box from '@material-ui/core/Box';
@@ -103,7 +103,7 @@ function ScreenDrawer({
   const searchParams = getSearchParams(search);
 
   const leftDrawerQueryParams = useMemo(
-    () => searchParams[LEFT_DRAWER_QUERY_PARAM], [searchParams],
+    () => searchParams[DRAWER_QUERY_PARAM], [searchParams],
   );
 
   const isDrawerOpenMobile = useMemo(
@@ -132,7 +132,7 @@ function ScreenDrawer({
   const getNextDrawerSearch = useCallback((value) => ({
     pathname,
     hash,
-    search: getNextSearch(search, new Map([[LEFT_DRAWER_QUERY_PARAM, value]])),
+    search: getNextSearch(search, new Map([[DRAWER_QUERY_PARAM, value]])),
   }), [hash, pathname, search]);
 
   const toggleDrawer = useCallback(

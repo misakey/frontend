@@ -22,14 +22,14 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import BoxAvatar from 'components/dumb/Avatar/Box';
 import ElevationScroll from 'components/dumb/ElevationScroll';
-import ConfirmationDialog from 'components/dumb/Dialog/Confirm';
+import ConfirmationDialog from '@misakey/ui/Dialog/Confirm';
 import AvatarUser from '@misakey/ui/Avatar/User';
 import IconButton from '@material-ui/core/IconButton';
 import ShareIcon from '@material-ui/icons/Share';
 import CopyIcon from '@material-ui/icons/FilterNone';
 
 import { ListItemSecondaryAction } from '@material-ui/core';
-import { AVATAR_SIZE } from '@misakey/ui/constants/sizes';
+import { AVATAR_SIZE, APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 import { CLOSED, OPEN } from 'constants/app/boxes/statuses';
 import { LIFECYCLE } from 'constants/app/boxes/events';
 import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
@@ -43,7 +43,6 @@ import useGetShareMethods from 'hooks/useGetShareMethods';
 // CONSTANTS
 const { conflict } = errorTypes;
 const CONTENT_SPACING = 2;
-const APPBAR_HEIGHT = 64;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -255,8 +254,9 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
                 onConfirm={onCloseBox}
                 isDialogOpen={isCloseDialogOpen}
                 onClose={toggleCloseDialog}
-                dialogContent={t('boxes:read.details.menu.close.confirmDialog.text')}
-              />
+              >
+                {t('boxes:read.details.menu.close.confirmDialog.text')}
+              </ConfirmationDialog>
             </>
           )}
           <List subheader={(

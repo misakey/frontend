@@ -1,49 +1,44 @@
 import React, { useCallback, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Form } from 'formik';
-import { withTranslation, Trans } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
+
+import { getBoxInvitationLinkFieldValidationSchema } from 'constants/validationSchemas/boxes';
+import { APPBAR_SPACING } from '@misakey/ui/constants/sizes';
+import { SIDES } from '@misakey/ui/constants/drawers';
 import routes from 'routes';
-import { useHistory } from 'react-router-dom';
 
 import isNil from '@misakey/helpers/isNil';
 import Formik from '@misakey/ui/Formik';
 
-import { makeStyles } from '@material-ui/core/styles/';
-import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
+import { Link } from 'react-router-dom';
+import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
+import AppBar from '@misakey/ui/AppBar';
 import FormField from '@misakey/ui/Form/Field';
 import BoxControls from '@misakey/ui/Box/Controls';
 import Redirect from '@misakey/ui/Redirect';
-import { getBoxInvitationLinkFieldValidationSchema } from 'constants/validationSchemas/boxes';
 import FieldTextStandard from 'components/dumb/Form/Field/Text/Standard';
-import ChipUser from 'components/dumb/Chip/User';
 import Box from '@material-ui/core/Box';
+import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import BoxesSchema from 'store/schemas/Boxes';
 import Title from '@misakey/ui/Typography/Title';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
+import BoxContent from '@misakey/ui/Box/Content';
+import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
+
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const FIELD_NAME = 'invitationLink';
 const INITIAL_VALUES = { [FIELD_NAME]: '' };
 
-// HOOKS
-const useStyles = makeStyles((theme) => ({
-  form: {
-    alignSelf: 'center',
-    [theme.breakpoints.up('sm')]: {
-      width: '50%',
-    },
-    [theme.breakpoints.down('sm')]: {
-      width: '100%',
-    },
-  },
-}));
 
-function PasteBoxLinkScreen({ t, box, isDrawerOpen, drawerWidth }) {
-  const classes = useStyles();
+// COMPONENTS
+function PasteBoxLinkScreen({ t, box }) {
   const [redirectTo, setRedirectTo] = useState(null);
-  const history = useHistory();
 
-  const { title, avatarUrl, id } = useMemo(() => box, [box]);
+  const { id } = useSafeDestr(box);
 
   const boxInvitationLinkFieldValidationSchema = useMemo(
     () => getBoxInvitationLinkFieldValidationSchema(id), [id],
@@ -54,59 +49,42 @@ function PasteBoxLinkScreen({ t, box, isDrawerOpen, drawerWidth }) {
     setRedirectTo(`${pathname}${hash}`);
   }, []);
 
-  const onDelete = useCallback(() => {
-    history.push(routes.boxes._);
-  }, [history]);
-
   if (!isNil(redirectTo)) {
     return <Redirect to={redirectTo} />;
   }
 
   return (
     <>
-      <AppBarDrawer
-        side={SIDES.LEFT}
+      <AppBar
         disableOffset
-        drawerWidth={drawerWidth}
-        isDrawerOpen={isDrawerOpen}
+        position="static"
       >
-        <OpenDrawerAccountButton />
-      </AppBarDrawer>
-      <Box
-        m={3}
-        display="flex"
-        height="100%"
-        flexDirection="column"
-        justifyContent="center"
-      >
+        <IconButtonAppBar
+          edge="start"
+          aria-label={t('common:goBack')}
+          component={Link}
+          to={routes.boxes._}
+        >
+          <ArrowBackIcon />
+        </IconButtonAppBar>
+        <BoxFlexFill />
+        <OpenDrawerAccountButton side={SIDES.RIGHT} />
+      </AppBar>
+      <BoxContent pt={APPBAR_SPACING}>
         <Box
-          component={Trans}
+          m={3}
           display="flex"
-          justifyContent="center"
-          alignItems="center"
-          i18nKey="boxes:pasteLink.text"
-          overflow="hidden"
-          flexWrap="wrap"
+          height="100%"
+          flexDirection="column"
         >
-          <Title align="center" gutterBottom={false}>La clé pour</Title>
-          <Box display="flex" flexWrap="nowrap" p={1}>
-            <ChipUser
-              displayName={title}
-              avatarUrl={avatarUrl}
-              onDelete={onDelete}
-            />
-          </Box>
-          <Title align="center" gutterBottom={false}>
-            est perdue. Pouvez-vous copier-coller le lien d&apos;invitation&nbsp;?
-          </Title>
-        </Box>
-        <Formik
-          validationSchema={boxInvitationLinkFieldValidationSchema}
-          initialValues={INITIAL_VALUES}
-          onSubmit={onSubmit}
-        >
-          <Box display="flex" width="100%" justifyContent="center">
-            <Form className={classes.form}>
+          <Title gutterBottom={false}>{t('boxes:pasteLink.broken.title')}</Title>
+          <Subtitle>{t('boxes:pasteLink.broken.subtitle')}</Subtitle>
+          <Formik
+            validationSchema={boxInvitationLinkFieldValidationSchema}
+            initialValues={INITIAL_VALUES}
+            onSubmit={onSubmit}
+          >
+            <Box component={Form} display="flex" flexDirection="column" width="100%">
               <FormField
                 prefix="boxes."
                 component={FieldTextStandard}
@@ -120,21 +98,22 @@ function PasteBoxLinkScreen({ t, box, isDrawerOpen, drawerWidth }) {
                 }}
                 formik
               />
-            </Form>
-          </Box>
-
-        </Formik>
-      </Box>
+            </Box>
+          </Formik>
+        </Box>
+      </BoxContent>
     </>
   );
 }
 
 PasteBoxLinkScreen.propTypes = {
-  box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
-  isDrawerOpen: PropTypes.bool.isRequired,
-  drawerWidth: PropTypes.string.isRequired,
+  box: PropTypes.shape(BoxesSchema.propTypes),
   // withTranslation
   t: PropTypes.func.isRequired,
+};
+
+PasteBoxLinkScreen.defaultProps = {
+  box: null,
 };
 
 

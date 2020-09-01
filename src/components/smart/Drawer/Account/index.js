@@ -4,7 +4,7 @@ import routes from 'routes';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import { TMP_DRAWER_QUERY_PARAMS, TEMP_DRAWER_MOBILE_WIDTH, TEMP_DRAWER_DESKTOP_WIDTH } from '@misakey/ui/constants/drawers';
+import { TMP_DRAWER_QUERY_PARAMS, SIDE_QUERY_PARAM, TEMP_DRAWER_MOBILE_WIDTH, TEMP_DRAWER_DESKTOP_WIDTH, SIDES } from '@misakey/ui/constants/drawers';
 
 import getNextSearch from '@misakey/helpers/getNextSearch';
 
@@ -13,7 +13,7 @@ import useDrawerLayout from '@misakey/hooks/useDrawerLayout';
 
 import ButtonSignOut from '@misakey/auth/components/Button/SignOut';
 import CardIdentityThumbnail from 'components/dumb/Card/Identity/Thumbnail';
-import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
+import AppBar from '@misakey/ui/AppBar';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
@@ -42,7 +42,12 @@ function AccountDrawer({ t }) {
   const history = useHistory();
   const { pathname, search, hash } = useLocation();
 
-  const { isSmDown, tmpDrawerSearch } = useDrawerLayout();
+  const { isSmDown, tmpDrawerSearch, side } = useDrawerLayout();
+
+  const sideOrDefault = useMemo(
+    () => side || SIDES.LEFT,
+    [side],
+  );
 
   const drawerWidth = useMemo(
     () => (isSmDown ? TEMP_DRAWER_MOBILE_WIDTH : TEMP_DRAWER_DESKTOP_WIDTH),
@@ -58,7 +63,20 @@ function AccountDrawer({ t }) {
     () => ({
       pathname,
       hash,
-      search: getNextSearch(search, new Map([[TMP_DRAWER_QUERY_PARAMS, undefined]])),
+      search: getNextSearch(search, new Map([
+        [TMP_DRAWER_QUERY_PARAMS, undefined],
+      ])),
+    }),
+    [hash, pathname, search],
+  );
+
+  const exitedTo = useMemo(
+    () => ({
+      pathname,
+      hash,
+      search: getNextSearch(search, new Map([
+        [SIDE_QUERY_PARAM, undefined],
+      ])),
     }),
     [hash, pathname, search],
   );
@@ -68,18 +86,30 @@ function AccountDrawer({ t }) {
     [hideDrawerTo, history],
   );
 
+  const onExited = useCallback(
+    () => history.replace(exitedTo),
+    [exitedTo, history],
+  );
+
+  const SlideProps = useMemo(
+    () => ({ onExited }),
+    [onExited],
+  );
+
   const onSignedOut = useCallback(() => history.replace(routes._), [history]);
 
   return (
     <Drawer
       variant="temporary"
-      anchor="left"
+      anchor={sideOrDefault}
       open={isTmpDrawerOpen}
       onClose={onClose}
+      SlideProps={SlideProps}
+      onExited={onExited}
       classes={{ paper: classes.drawerPaper }}
     >
       <>
-        <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth} isDrawerOpen={isTmpDrawerOpen}>
+        <AppBar position="static">
           <IconButtonAppBar
             aria-label={t('common:goBack')}
             edge="start"
@@ -88,9 +118,9 @@ function AccountDrawer({ t }) {
           >
             <ArrowBack />
           </IconButtonAppBar>
-          <Box display="flex" flexGrow={1} />
+          <BoxFlexFill />
           <DarkmodeSwitch />
-        </AppBarDrawer>
+        </AppBar>
         <Box display="flex" flexDirection="column" alignItems="center">
           <CardIdentityThumbnailWithIdentity />
         </Box>

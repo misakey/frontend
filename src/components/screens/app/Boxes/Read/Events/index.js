@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
+import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 import { CLOSED } from 'constants/app/boxes/statuses';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
@@ -29,9 +30,6 @@ import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import InputBoxesUploadContext from 'components/smart/Input/Boxes/Upload/Context';
 import BoxEventsFooter from './Footer';
 import DeleteBoxDialogButton from './DeleteBoxDialogButton';
-
-// CONSTANTS
-const APPBAR_HEIGHT = 64;
 
 // HOOKS
 const useStyles = makeStyles(() => ({

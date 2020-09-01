@@ -5,7 +5,7 @@ import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 
 import routes from 'routes';
 import { ssoUpdate } from '@misakey/auth/store/actions/sso';
-import { screenAuthReset } from 'store/actions/screens/auth';
+import { screenAuthReset, screenAuthSetIdentifier } from 'store/actions/screens/auth';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
 
 import isNil from '@misakey/helpers/isNil';
@@ -21,6 +21,8 @@ import getLoginInfo from '@misakey/auth/builder/getLoginInfo';
 
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import useNotDoneEffect from 'hooks/useNotDoneEffect';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
@@ -59,8 +61,7 @@ const useStyles = makeStyles(() => ({
     height: 'inherit',
   },
   screenContent: {
-    marginTop: 'auto',
-    marginBottom: 'auto',
+    width: '100%',
   },
 }));
 
@@ -68,7 +69,7 @@ const useStyles = makeStyles(() => ({
 const Auth = ({
   match,
   isAuthenticated, sso, currentAcr,
-  dispatchSsoUpdate, dispatchResetAuth,
+  dispatchSsoUpdate, dispatchResetAuth, dispatchSetIdentifier,
 }) => {
   const classes = useStyles();
   const searchParams = useLocationSearchParams(objectToCamelCase);
@@ -172,6 +173,26 @@ const Auth = ({
     [isFetching],
   );
 
+  const objLoginHint = useMemo(
+    () => {
+      const { loginHint } = sso;
+      return (isEmpty(loginHint) ? null : objectToCamelCase(JSON.parse(loginHint)));
+    },
+    [sso],
+  );
+
+  const { identifier: identifierHint } = useSafeDestr(objLoginHint);
+
+  useNotDoneEffect(
+    (onDone) => {
+      if (!isNil(identifierHint)) {
+        dispatchSetIdentifier(identifierHint);
+        onDone();
+      }
+    },
+    [identifierHint, dispatchSetIdentifier],
+  );
+
   if (hasNoFlowParams) {
     if (isAuthenticated && !isAcrChange) {
       return <Redirect to={errorTo} />;
@@ -192,15 +213,15 @@ const Auth = ({
       state={state}
       disableGrow
     >
-      <Container maxWidth="md">
+      <Container maxWidth={false}>
         <Switch>
           {(hasLoginInfoError || hasNoFlowParams) && (
-            <Route
-              path={match.path}
-              render={(routerProps) => (
-                <AuthError {...routerProps} loginChallenge={loginChallenge} error={error} />
-              )}
-            />
+          <Route
+            path={match.path}
+            render={(routerProps) => (
+              <AuthError {...routerProps} loginChallenge={loginChallenge} error={error} />
+            )}
+          />
           )}
           <Route
             exact
@@ -230,6 +251,7 @@ Auth.propTypes = {
   sso: PropTypes.shape(SSO_PROP_TYPES).isRequired,
   dispatchSsoUpdate: PropTypes.func.isRequired,
   dispatchResetAuth: PropTypes.func.isRequired,
+  dispatchSetIdentifier: PropTypes.func.isRequired,
 };
 
 Auth.defaultProps = {
@@ -247,6 +269,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   dispatchSsoUpdate: (sso) => dispatch(ssoUpdate(sso)),
   dispatchResetAuth: () => dispatch(screenAuthReset()),
+  dispatchSetIdentifier: (identifier) => dispatch(screenAuthSetIdentifier(identifier)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Auth);

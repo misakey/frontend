@@ -1,20 +1,11 @@
 import { PASSWORD_SECLEVEL, CONFIRMATION_CODE_SECLEVEL } from '@misakey/auth/constants/seclevel';
 import { SECLEVEL_METHOD, METADATA_KEYS, VALUE_KEY } from '@misakey/auth/constants/method';
+import { STEP } from '@misakey/auth/constants';
 
 import FieldCode from 'components/dumb/Form/Field/Code';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
 
 export const CONFIRM_REGEX = /^[0-9]{6}$/;
-
-export const STEP = {
-  identifier: 'identifier',
-  secret: 'secret',
-};
-
-export const INITIAL_VALUES = {
-  [STEP.identifier]: { [STEP.identifier]: '' },
-  [STEP.secret]: { [STEP.secret]: '' },
-};
 
 export const DEFAULT_SECLEVEL = PASSWORD_SECLEVEL;
 

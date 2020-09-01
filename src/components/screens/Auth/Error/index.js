@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useHistory, Link } from 'react-router-dom';
 
+import { APPBAR_SPACING } from '@misakey/ui/constants/sizes';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import routes from 'routes';
 
@@ -18,6 +19,7 @@ import AlertTitle from '@material-ui/lab/AlertTitle';
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
 import BoxControls from '@misakey/ui/Box/Controls';
 import AuthErrorDetails from 'components/screens/Auth/Error/Details';
 
@@ -115,36 +117,38 @@ const AuthError = ({ loginChallenge, error, t }) => {
   );
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center">
-      <Title>
-        {title}
-      </Title>
-      <Subtitle>{subtitle}</Subtitle>
-      {isDev && hasApiError && (
-        <Box py={2}>
-          <Alert severity="info">
-            <AlertTitle>{t('auth:error.dev')}</AlertTitle>
-            <AuthErrorDetails
-              code={errorCode || code}
-              description={errorDescription || description}
-              details={details}
-              location={errorLocation || location}
-            />
-          </Alert>
-        </Box>
-      )}
-      {hasFlowError && (
-        <AuthErrorDetails
-          code={errorCode}
-          description={errorDescription}
-          location={errorLocation}
+    <Container maxWidth="md">
+      <Box mt={2 * APPBAR_SPACING} display="flex" flexDirection="column" alignItems="center">
+        <Title>
+          {title}
+        </Title>
+        <Subtitle>{subtitle}</Subtitle>
+        {isDev && hasApiError && (
+          <Box py={2}>
+            <Alert severity="info">
+              <AlertTitle>{t('auth:error.dev')}</AlertTitle>
+              <AuthErrorDetails
+                code={errorCode || code}
+                description={errorDescription || description}
+                details={details}
+                location={errorLocation || location}
+              />
+            </Alert>
+          </Box>
+        )}
+        {hasFlowError && (
+          <AuthErrorDetails
+            code={errorCode}
+            description={errorDescription}
+            location={errorLocation}
+          />
+        )}
+        <BoxControls
+          primary={primary}
+          secondary={secondary}
         />
-      )}
-      <BoxControls
-        primary={primary}
-        secondary={secondary}
-      />
-    </Box>
+      </Box>
+    </Container>
   );
 };
 

@@ -4,6 +4,8 @@ import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 import clsx from 'clsx';
 
+import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
+
 import downloadFile from '@misakey/helpers/downloadFile';
 import isNil from '@misakey/helpers/isNil';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
@@ -42,7 +44,6 @@ const ALLOWED_TYPE_PREVIEW = [
   // 'application/pdf',
 ];
 
-const APPBAR_HEIGHT = 64;
 const PADDING = 64;
 
 // HOOKS

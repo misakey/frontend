@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import STATUSES from 'constants/app/boxes/statuses';
+import { SIDES } from '@misakey/ui/constants/drawers';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
@@ -12,7 +13,7 @@ import usePaginateBoxesByStatusRefresh from 'hooks/usePaginateBoxesByStatus/refr
 import Box from '@material-ui/core/Box';
 
 import { DRAWER_PROPS_PROP_TYPES } from 'components/smart/Screen/Drawer';
-import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
+import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
@@ -24,7 +25,9 @@ import AddIcon from '@material-ui/icons/Add';
 
 
 // COMPONENTS
-const IconButtonCreate = withDialogCreate(withDialogPassword(IconButtonAppBar));
+const IconButtonCreate = withDialogCreate(
+  withDialogPassword(IconButtonAppBar),
+);
 
 function ListHeader({ drawerWidth, activeStatus, t, ...props }) {
   const { search } = useLocationSearchParams();

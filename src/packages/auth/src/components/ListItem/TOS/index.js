@@ -13,7 +13,7 @@ import DescriptionIcon from '@material-ui/icons/Description';
 // COMPONENTS
 const ListItemTOS = ({ t, href, ...props }) => (
   <ListItem {...omitTranslationProps(props)}>
-    <ListItemText primary={t('auth:tos.text')} />
+    <ListItemText primary={t('auth:tos.text')} primaryTypographyProps={{ color: 'textPrimary' }} />
     <ListItemSecondaryAction>
       <IconButton
         href={href}

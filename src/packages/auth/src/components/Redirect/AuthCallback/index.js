@@ -7,7 +7,6 @@ import { authReset } from '@misakey/auth/store/actions/auth';
 
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
-import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
 import useAuthFlowParams from '@misakey/auth/hooks/useAuthFlowParams';
 import { getUrlForOidcCallback } from '../../../helpers';
@@ -22,6 +21,7 @@ const RedirectAuthCallback = ({
   location,
   fallbackReferrers,
   userManager,
+  askSigninRedirect,
 }) => {
   const [redirect, setRedirect] = useState(false);
 
@@ -53,7 +53,7 @@ const RedirectAuthCallback = ({
             }
             const { email } = user.profile;
             const loginHint = email ? JSON.stringify({ identifier: email }) : '';
-            userManager.signinRedirect(objectToSnakeCase({ scope, referrer, acrValues, prompt: 'login', loginHint }));
+            askSigninRedirect({ scope, referrer, acrValues, prompt: 'login', loginHint }, false);
             return false;
           })
           .catch((e) => {
@@ -65,7 +65,7 @@ const RedirectAuthCallback = ({
     },
     [
       search, searchParams, acrValues, scope, referrer,
-      dispatchAuthReset, userManager,
+      dispatchAuthReset, userManager, askSigninRedirect,
       handleSuccess, handleError,
     ],
   );
@@ -111,7 +111,9 @@ RedirectAuthCallback.propTypes = {
   handleError: PropTypes.func,
   handleSuccess: PropTypes.func,
   location: PropTypes.shape({ hash: PropTypes.string, search: PropTypes.string }).isRequired,
+  // withUserManager
   userManager: PropTypes.object.isRequired,
+  askSigninRedirect: PropTypes.func.isRequired,
 };
 
 RedirectAuthCallback.defaultProps = {

@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { STEP } from 'constants/auth';
+import { STEP } from '@misakey/auth/constants';
 
-import FieldText from 'components/dumb/Form/Field/Text';
+
+import FieldText from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import Fields from '@misakey/ui/Form/Fields';
-
 
 // CONSTANTS
 const PREFIX = 'email';
@@ -17,6 +17,7 @@ const DEFAULT_FIELDS = {
     inputProps: {
       'data-matomo-ignore': true,
       id: `${PREFIX}_${STEP.identifier}`,
+      autocomplete: 'username',
     },
     autoFocus: true,
   },

@@ -90,5 +90,11 @@
       "conflict": "This file is already saved in your vault!"
     },
     "success": "File has been successfully saved in yout vault!"
+  },
+  "signinRedirect": {
+    "resource": "{{resourceName}} is secured",
+    "acr": "This feature requires a secured account",
+    "default": "This screen is secured",
+    "subtitle": "Confirm your identity to continue"
   }
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Field } from 'formik';
 import Formik from '@misakey/ui/Formik';
@@ -9,50 +9,53 @@ import { useDispatch } from 'react-redux';
 import { generatePath, useHistory } from 'react-router-dom';
 import routes from 'routes';
 
-import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
-
+import { SIDES } from '@misakey/ui/constants/drawers';
+import { ALL } from 'constants/app/boxes/statuses';
 import BoxesSchema from 'store/schemas/Boxes';
+import { boxNameFieldValidationSchema } from 'constants/validationSchemas/boxes';
 import { updatePaginationsToStatus } from 'store/reducers/userBoxes/pagination';
 import { receiveEntities } from '@misakey/store/actions/entities';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
+import { addBoxSecretKey } from '@misakey/crypto/store/actions/concrete';
 
 import isFunction from '@misakey/helpers/isFunction';
-
-import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
-import useIsUserOnWhitelist from '@misakey/hooks/useIsUserOnWhitelist';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import { createBoxBuilder } from '@misakey/helpers/builder/boxes';
+import getRandomTitle from '@misakey/helpers/getRandomTitle';
 import { generateAsymmetricKeyPair } from '@misakey/crypto/crypto';
 
-import { makeStyles } from '@material-ui/core/styles/';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import useIsUserOnWhitelist from '@misakey/hooks/useIsUserOnWhitelist';
+
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import Dialog from '@material-ui/core/Dialog';
 import Link from '@material-ui/core/Link';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitleWithCloseFormik from '@misakey/ui/DialogTitle/WithCloseIcon/Formik';
+import DialogContent from '@misakey/ui/DialogContent';
 import Box from '@material-ui/core/Box';
+import BoxFlexFill from '@misakey/ui/Box/FlexFill';
+import Title from '@misakey/ui/Typography/Title';
 import Typography from '@material-ui/core/Typography';
-
 import BoxControls from '@misakey/ui/Box/Controls';
-import { boxNameFieldValidationSchema } from 'constants/validationSchemas/boxes';
-import { createBoxBuilder } from '@misakey/helpers/builder/boxes';
-import { ALL } from 'constants/app/boxes/statuses';
-import { addBoxSecretKey } from '@misakey/crypto/store/actions/concrete';
 import FieldTextStandard from 'components/dumb/Form/Field/Text/Standard';
-import getRandomTitle from '@misakey/helpers/getRandomTitle';
+import DialogBoxesCreatePasteLink from 'components/smart/Dialog/Boxes/Create/PasteLink';
+import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
 
+// CONSTANTS
 export const FIELD_NAME = 'name';
 export const INITIAL_VALUES = { [FIELD_NAME]: '' };
+const DIALOG_CONTENT_PROPS = { alignItems: 'center' };
+
+const DESCRIPTION_ID = 'create-box-dialog-description';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   dialogContentRoot: {
-    padding: theme.spacing(0, 2),
-    marginTop: theme.spacing(3),
+    padding: theme.spacing(0),
   },
-  dialogActionsRoot: {
-    padding: theme.spacing(2),
-  },
-  inputField: { width: '70%', margin: theme.spacing(2, 0) },
+  inputField: { margin: theme.spacing(2, 0) },
 }));
 
 function CreateBoxDialog({
@@ -60,17 +63,27 @@ function CreateBoxDialog({
   onClose,
   onSuccess,
   open,
+  fullScreen,
+  ...props
 }) {
   const classes = useStyles();
-  const fullScreen = useDialogFullScreen();
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const history = useHistory();
   const handleHttpErrors = useHandleHttpErrors();
   const isUserAuthorizedToCreateABox = useIsUserOnWhitelist();
 
+  const [isInvitation, setIsInvitation] = useState(false);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const placeholder = useMemo(() => getRandomTitle(), [open]);
+
+  const onToggleInvitation = useCallback(
+    () => {
+      setIsInvitation((invitation) => !invitation);
+    },
+    [setIsInvitation],
+  );
 
   const onSubmitSuccess = useCallback(
     async (newBox, secretKey) => {
@@ -111,8 +124,8 @@ function CreateBoxDialog({
       .finally(() => { setSubmitting(false); });
   }, [handleHttpErrors, onSubmitSuccess, placeholder]);
 
-  const getOnReset = useCallback(
-    (resetForm) => () => {
+  const onResetFormik = useCallback(
+    (e, { resetForm }) => {
       resetForm({ values: INITIAL_VALUES });
       onClose();
     },
@@ -127,12 +140,16 @@ function CreateBoxDialog({
         open={open}
         onClose={onClose}
         aria-labelledby="create-box-dialog-title"
-        aria-describedby="create-box-dialog-description"
+        aria-describedby={DESCRIPTION_ID}
+        {...omitTranslationProps(props)}
       >
-        <DialogTitleWithClose onClose={onClose} />
-        <DialogContent className={classes.dialogContentRoot}>
-          <Typography variant="h3" align="center" gutterBottom>{t('boxes:create.notOnTheList.title')}</Typography>
-          <Typography align="center" variant="h5">{t('boxes:create.notOnTheList.subtitle')}</Typography>
+        <DialogTitleWithClose onClose={onClose} fullScreen={fullScreen} gutterBottom />
+        <DialogContent
+          className={classes.dialogContentRoot}
+          contentProps={DIALOG_CONTENT_PROPS}
+          title={<Typography id="create-box-dialog-title" variant="h3" align="center" gutterBottom>{t('boxes:create.notOnTheList.title')}</Typography>}
+          subtitle={<Typography id={DESCRIPTION_ID} align="center" variant="h5">{t('boxes:create.notOnTheList.subtitle')}</Typography>}
+        >
           <Box display="flex" justifyContent="center" my={3}>
             <Button
               standing={BUTTON_STANDINGS.MAIN}
@@ -155,7 +172,6 @@ function CreateBoxDialog({
             </Trans>
           </Typography>
         </DialogContent>
-        <DialogActions />
       </Dialog>
     );
   }
@@ -166,20 +182,37 @@ function CreateBoxDialog({
       fullScreen={fullScreen}
       open={open}
       onClose={onClose}
-      aria-labelledby="create-box-dialog-title"
-      aria-describedby="create-box-dialog-description"
+      aria-label={t('boxes:create.dialog.title')}
+      aria-describedby={DESCRIPTION_ID}
+      {...omitTranslationProps(props)}
     >
-      <Formik
-        validationSchema={boxNameFieldValidationSchema}
-        initialValues={INITIAL_VALUES}
-        onSubmit={onSubmit}
-      >
-        {({ resetForm }) => (
-          <Form>
-            <DialogTitleWithClose onClose={getOnReset(resetForm)} />
-            <DialogContent className={classes.dialogContentRoot}>
-              <Typography>{t('boxes:create.dialog.content')}</Typography>
-              <Box display="flex" justifyContent="center">
+      {isInvitation
+        ? (
+          <DialogBoxesCreatePasteLink
+            fullScreen={fullScreen}
+            onClose={onClose}
+            onBack={onToggleInvitation}
+          />
+        )
+        : (
+          <Formik
+            validationSchema={boxNameFieldValidationSchema}
+            initialValues={INITIAL_VALUES}
+            onSubmit={onSubmit}
+          >
+            <Form>
+              <DialogTitleWithCloseFormik
+                onClose={onResetFormik}
+                fullScreen={fullScreen}
+                gutterBottom
+              >
+                <BoxFlexFill />
+                <OpenDrawerAccountButton side={SIDES.RIGHT} />
+              </DialogTitleWithCloseFormik>
+              <DialogContent
+                className={classes.dialogContentRoot}
+                title={<Title id={DESCRIPTION_ID}>{t('boxes:create.dialog.content')}</Title>}
+              >
                 <Field
                   component={FieldTextStandard}
                   className={classes.inputField}
@@ -190,22 +223,24 @@ function CreateBoxDialog({
                   id="BoxName"
                   type="text"
                   placeholder={placeholder}
-                  fullWidth={false}
+                  fullWidth
                 />
-              </Box>
-            </DialogContent>
-            <DialogActions className={classes.dialogActionsRoot}>
-              <BoxControls
-                primary={{
-                  type: 'submit',
-                  text: t('common:validate'),
-                }}
-                formik
-              />
-            </DialogActions>
-          </Form>
+                <Button
+                  standing={BUTTON_STANDINGS.TEXT}
+                  text={t('boxes:create.dialog.pasteLink')}
+                  onClick={onToggleInvitation}
+                />
+                <BoxControls
+                  primary={{
+                    type: 'submit',
+                    text: t('common:create'),
+                  }}
+                  formik
+                />
+              </DialogContent>
+            </Form>
+          </Formik>
         )}
-      </Formik>
     </Dialog>
   );
 }
@@ -214,12 +249,14 @@ CreateBoxDialog.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func,
+  fullScreen: PropTypes.bool,
   t: PropTypes.func.isRequired,
 };
 
 CreateBoxDialog.defaultProps = {
   open: false,
   onSuccess: null,
+  fullScreen: true,
 };
 
 export default withTranslation(['common', 'boxes'])(CreateBoxDialog);

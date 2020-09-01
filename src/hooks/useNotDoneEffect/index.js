@@ -12,7 +12,7 @@ import { useRef, useCallback, useEffect } from 'react';
  * It is also an alternative design to the `shouldFetch` logic,
  * This way you can have much more complex behaviours
  */
-export default (fn, deps) => {
+export default (fn, deps = []) => {
   const done = useRef(false);
 
   const onDone = useCallback(

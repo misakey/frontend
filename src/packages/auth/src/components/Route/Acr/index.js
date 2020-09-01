@@ -1,11 +1,10 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { UserManagerContext } from '@misakey/auth/components/OidcProvider';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import isNil from '@misakey/helpers/isNil';
-import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
 import { useSelector } from 'react-redux';
 
@@ -20,11 +19,16 @@ const {
 
 // COMPONENTS
 const RouteAcr = ({ route: RouteComponent, acr, options, ...rest }) => {
-  const { userManager } = useContext(UserManagerContext);
+  const { askSigninRedirect } = useContext(UserManagerContext);
 
   const currentAcr = useSelector(ACR_SELECTOR);
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
   const identifierValue = useSelector(IDENTIFIER_VALUE_SELECTOR);
+
+  const shouldAskRedirect = useMemo(
+    () => isNil(currentAcr) || currentAcr < acr,
+    [currentAcr, acr],
+  );
 
   const loginHint = useMemo(
     () => (isNil(identifierValue)
@@ -33,17 +37,25 @@ const RouteAcr = ({ route: RouteComponent, acr, options, ...rest }) => {
     [identifierValue],
   );
 
+  useEffect(
+    () => {
+      if (shouldAskRedirect) {
+        askSigninRedirect({ acrValues: acr, prompt: 'login', loginHint, ...options }, false);
+      }
+    },
+    [askSigninRedirect, acr, loginHint, options, shouldAskRedirect],
+  );
+
   if (isNil(currentAcr) && isAuthenticated) {
     throw new Error('authenticated with no acr');
   }
 
-  if (currentAcr >= acr) {
+  if (!shouldAskRedirect) {
     // ok
     return <RouteComponent {...rest} />;
   }
 
   // redirect to sign in
-  userManager.signinRedirect(objectToSnakeCase({ acrValues: acr, prompt: 'login', loginHint, ...options }));
   return null;
 };
 

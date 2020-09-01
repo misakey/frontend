@@ -8,11 +8,12 @@ import isNil from '@misakey/helpers/isNil';
 import __ from '@misakey/helpers/__';
 import { makeOffsetLimitFromRange } from '@misakey/helpers/offsetLimitRange';
 
-import { getUserBoxesBuilder } from '@misakey/helpers/builder/boxes';
+import { getUserBoxesBuilder, countUserBoxesBuilder } from '@misakey/helpers/builder/boxes';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
 import { useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { getReceiveItemCountActionCreator } from 'hooks/usePaginateBoxesByStatus';
 
 import { normalize } from 'normalizr';
 import { ALL } from 'constants/app/boxes/statuses';
@@ -50,6 +51,12 @@ export default (status = ALL, search = null) => {
     [dispatch],
   );
 
+  // ACTIONS
+  const receiveItemCountAction = useMemo(
+    () => getReceiveItemCountActionCreator(status),
+    [status],
+  );
+
   // SELECTORS
   const statusSelectors = useMemo(
     () => selectorsProp(status),
@@ -63,14 +70,28 @@ export default (status = ALL, search = null) => {
   // hook with memoization layer
   const byPagination = useSelector(byPaginationSelector);
 
+  const refreshBoxes = useCallback(
+    (data) => getUserBoxesBuilder(data)
+      .then((response) => dispatchRefreshBoxes(response.map(objectToCamelCase))),
+    [dispatchRefreshBoxes],
+  );
+
+  const refreshItemCount = useCallback(
+    (data) => countUserBoxesBuilder(data)
+      .then((result) => dispatch(receiveItemCountAction(result))),
+    [dispatch, receiveItemCountAction],
+  );
+
   const refresh = useCallback(
     () => {
       const toRefreshIndexes = Object.keys(byPagination).map(((index) => parseInt(index, 10)));
       const pagination = makeOffsetLimitFromRange(toRefreshIndexes);
-      return getUserBoxesBuilder({ ...payload, ...pagination })
-        .then((response) => dispatchRefreshBoxes(response.map(objectToCamelCase)));
+      return Promise.all([
+        refreshBoxes({ ...payload, ...pagination }),
+        refreshItemCount({ ...payload, ...pagination }),
+      ]);
     },
-    [byPagination, dispatchRefreshBoxes, payload],
+    [byPagination, payload, refreshBoxes, refreshItemCount],
   );
 
   return refresh;

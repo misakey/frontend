@@ -2,7 +2,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import common from '@misakey/ui/colors/common';
 import boulder from '@misakey/ui/colors/boulder';
 
-import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 
 export const getThemeOptions = (isDarkMode = false, color = null) => ({
   palette: {
@@ -11,9 +11,9 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
       main: common.primary,
     },
     secondary: {
-      main: isNil(color) ? common.secondary : color,
+      main: isEmpty(color) ? common.secondary : color,
     },
-    error: (isNil(color) || color === common.secondary) ? ({
+    error: (isEmpty(color) || color === common.secondary) ? ({
       main: common.secondary,
     }) : undefined,
     background: {
@@ -56,7 +56,7 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
         '&.Mui-selected': {
           borderLeftWidth: 3,
           borderLeftStyle: 'solid',
-          borderLeftColor: isNil(color) ? common.secondary : color,
+          borderLeftColor: isEmpty(color) ? common.secondary : color,
           '&.MuiListItem-gutters': {
             paddingLeft: 13,
           },

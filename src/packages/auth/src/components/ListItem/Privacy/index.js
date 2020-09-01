@@ -14,7 +14,7 @@ import DescriptionIcon from '@material-ui/icons/Description';
 // COMPONENTS
 const ListItemPrivacy = ({ t, href, ...props }) => (
   <ListItem {...omitTranslationProps(props)}>
-    <ListItemText primary={t('auth:privacy.text')} />
+    <ListItemText primary={t('auth:privacy.text')} primaryTypographyProps={{ color: 'textPrimary' }} />
     <ListItemSecondaryAction>
       <IconButton
         aria-label={t('auth:privacy.button')}

@@ -14,10 +14,10 @@ import Dialog from '@material-ui/core/Dialog';
 import BoxControls from '@misakey/ui/Box/Controls';
 import ConfirmDialogContent from './DialogContent';
 
-
+// COMPONENTS
 function ConfirmationDialog({
   onConfirm, isDialogOpen, onClose,
-  dialogContent, title,
+  title, children,
   confirmButtonText,
   t,
   ...rest
@@ -44,7 +44,7 @@ function ConfirmationDialog({
       {...omitTranslationProps(rest)}
     >
       <DialogTitleWithClose title={title} onClose={onClose} />
-      <ConfirmDialogContent content={dialogContent} />
+      <ConfirmDialogContent>{children}</ConfirmDialogContent>
       <DialogActions>
         <BoxControls
           primary={{
@@ -63,7 +63,7 @@ ConfirmationDialog.propTypes = {
   onConfirm: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   isDialogOpen: PropTypes.bool.isRequired,
-  dialogContent: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
+  children: PropTypes.node.isRequired,
   title: PropTypes.string,
   t: PropTypes.func.isRequired,
   confirmButtonText: PropTypes.string,

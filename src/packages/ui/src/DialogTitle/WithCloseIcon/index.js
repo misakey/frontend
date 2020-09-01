@@ -1,6 +1,6 @@
-
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 import { withTranslation } from 'react-i18next';
 
 import isFunction from '@misakey/helpers/isFunction';
@@ -20,23 +20,28 @@ import Box from '@material-ui/core/Box';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  root: {
-    margin: theme.spacing(1, 2),
+  root: ({ gutterBottom }) => ({
+    margin: gutterBottom ? theme.spacing(1, 2, 7, 2) : theme.spacing(1, 2),
     padding: theme.spacing(0),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-  },
+    minHeight: 64,
+  }),
   typographyRoot: {
     margin: theme.spacing(1),
   },
 }));
 
 // COMPONENTS
-const DialogTitleWithCloseIcon = ({ children, title, onClose, icon, t, ...rest }) => {
-  const classes = useStyles();
+const DialogTitleWithCloseIcon = ({
+  children, className, title, onClose, icon, t,
+  fullScreen, gutterBottom,
+  ...rest
+}) => {
+  const classes = useStyles({ gutterBottom });
 
-  const fullScreen = useDialogFullScreen();
+  const dialogFullScreen = useDialogFullScreen();
 
   const hasOnClose = useMemo(
     () => isFunction(onClose),
@@ -48,14 +53,18 @@ const DialogTitleWithCloseIcon = ({ children, title, onClose, icon, t, ...rest }
       if (!isNil(icon)) {
         return icon;
       }
-      return fullScreen ? ArrowBackIcon : CloseIcon;
+      return (fullScreen || dialogFullScreen) ? ArrowBackIcon : CloseIcon;
     },
-    [fullScreen, icon],
+    [fullScreen, dialogFullScreen, icon],
   );
 
   return (
-    <MuiDialogTitle disableTypography className={classes.root} {...omitTranslationProps(rest)}>
-      <Box display="flex" width="100%">
+    <MuiDialogTitle
+      disableTypography
+      className={clsx(className, classes.root)}
+      {...omitTranslationProps(rest)}
+    >
+      <Box display="flex" width="100%" minHeight="inherit" alignItems="center">
         {hasOnClose && (
           <IconButton edge="start" aria-label={t('common:close')} onClick={onClose}>
             <Icon />
@@ -75,6 +84,9 @@ DialogTitleWithCloseIcon.propTypes = {
   children: PropTypes.node,
   onClose: PropTypes.func,
   icon: PropTypes.elementType,
+  className: PropTypes.string,
+  fullScreen: PropTypes.bool,
+  gutterBottom: PropTypes.bool,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
@@ -84,6 +96,9 @@ DialogTitleWithCloseIcon.defaultProps = {
   children: null,
   onClose: null,
   icon: null,
+  className: '',
+  fullScreen: false,
+  gutterBottom: false,
 };
 
 export default withTranslation('common')(DialogTitleWithCloseIcon);

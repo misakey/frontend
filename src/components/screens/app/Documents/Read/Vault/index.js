@@ -2,6 +2,8 @@ import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
+
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import FileListItem from 'components/smart/ListItem/File';
@@ -18,9 +20,6 @@ import withSavedFiles from 'components/smart/withSavedFiles';
 import BoxEmpty from 'components/dumb/Box/Empty';
 import SavedFilesSchema from 'store/schemas/Files/Saved';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-
-// CONSTANTS
-const APPBAR_HEIGHT = 64;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({

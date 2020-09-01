@@ -12,7 +12,10 @@ const { required, malformed, max, invalid } = errorTypes;
 const KEY_REGEX = '[A-Za-z0-9-_]+';
 
 // HELPERS
-const getInvitationUrl = (id) => generatePath(`${routes.boxes.read._}`, { id }).replace(/[.*+?^${}()/|[\]\\]/g, '\\$&');
+const getInvitationUrl = (id) => (isNil(id)
+  ? `${generatePath(routes.boxes._).replace(/[.*+?^${}()/|[\]\\]/g, '\\$&')}\\/[^#]+`
+  : generatePath(routes.boxes.read._, { id }).replace(/[.*+?^${}()/|[\]\\]/g, '\\$&'));
+
 const getInvitationUrlForBox = (id) => `${getInvitationUrl(id)}#${KEY_REGEX}`;
 
 export const boxNameFieldValidationSchema = Yup.object().shape({

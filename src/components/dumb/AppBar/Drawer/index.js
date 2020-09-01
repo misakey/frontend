@@ -1,17 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { SIDES } from '@misakey/ui/constants/drawers';
+
 import omit from '@misakey/helpers/omit';
 import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Box from '@material-ui/core/Box';
+import AppBar, { PROP_TYPES } from '@misakey/ui/AppBar';
 import clsx from 'clsx';
-
-export const SIDES = {
-  RIGHT: 'right',
-  LEFT: 'left',
-};
 
 const useStyles = makeStyles((theme) => ({
   appBarLeft: ({ drawerWidth }) => ({
@@ -43,51 +38,38 @@ function AppBarDrawer({
   drawerWidth,
   isDrawerOpen,
   children,
+  className,
   side,
-  toolbarProps,
-  offsetHeight,
-  disableOffset,
   ...props
 }) {
-  const classes = useStyles({ drawerWidth, offsetHeight });
+  const classes = useStyles({ drawerWidth });
 
   return (
-    <>
-      <AppBar
-        position="fixed"
-        color="inherit"
-        elevation={0}
-        className={clsx({
-          [classes.appBarLeft]: side === SIDES.LEFT,
-          [classes.appBarRight]: side === SIDES.RIGHT,
-          [classes.appBarShift]: side === SIDES.RIGHT && isDrawerOpen,
-        })}
-        {...omit(props, ['toggleDrawer', 'getNextDrawerSearch', 'selectedDrawer', 'setIsDrawerForceClosed'])}
-      >
-        <Toolbar component={Box} px={2} disableGutters {...toolbarProps}>
-          {children}
-        </Toolbar>
-      </AppBar>
-      {!disableOffset && <Box className={classes.offset} />}
-    </>
+    <AppBar
+      className={clsx(className, {
+        [classes.appBarLeft]: side === SIDES.LEFT,
+        [classes.appBarRight]: side === SIDES.RIGHT,
+        [classes.appBarShift]: side === SIDES.RIGHT && isDrawerOpen,
+      })}
+      {...omit(props, ['toggleDrawer', 'getNextDrawerSearch', 'selectedDrawer', 'setIsDrawerForceClosed'])}
+    >
+      {children}
+    </AppBar>
   );
 }
 
 AppBarDrawer.propTypes = {
+  className: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.element, PropTypes.node]),
   drawerWidth: PropTypes.string.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
-  toolbarProps: PropTypes.object,
-  offsetHeight: PropTypes.number,
-  disableOffset: PropTypes.bool,
   side: PropTypes.oneOf(Object.values(SIDES)),
+  ...PROP_TYPES,
 };
 
 AppBarDrawer.defaultProps = {
+  className: '',
   children: null,
-  toolbarProps: {},
-  offsetHeight: null,
-  disableOffset: false,
   side: SIDES.RIGHT,
 };
 

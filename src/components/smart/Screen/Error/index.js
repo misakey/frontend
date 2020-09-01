@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import routes from 'routes';
 import { Trans, withTranslation } from 'react-i18next';
 
+import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
+
 import { makeStyles } from '@material-ui/core/styles';
 
 import omit from '@misakey/helpers/omit';
@@ -22,9 +24,6 @@ import { Container } from '@material-ui/core';
 import Subtitle from 'packages/ui/src/Typography/Subtitle';
 import { FEEDBACK } from 'constants/emails';
 import FooterFullScreen from 'components/dumb/Footer/FullScreen';
-
-// CONSTANTS
-const APPBAR_HEIGHT = 64;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({

@@ -100,5 +100,11 @@
       "conflict": "Ce fichier est déjà enregistré dans votre coffre\u00a0!"
     },
     "success": "Le fichier a été sauvegardé avec succès dans votre coffre\u00a0!"
+  },
+  "signinRedirect": {
+    "resource": "{{resourceName}} est protégé",
+    "acr": "Cette fonctionnalité requiert un compte sécurisé",
+    "default": "Cet écran est protégé",
+    "subtitle": "Confirmez votre identité pour y accéder"
   }
 }

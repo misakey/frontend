@@ -1,11 +1,10 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { UserManagerContext } from '@misakey/auth/components/OidcProvider';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import isNil from '@misakey/helpers/isNil';
-import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
 import { useSelector } from 'react-redux';
 
@@ -19,7 +18,7 @@ const {
 
 // COMPONENTS
 const RouteAuthenticated = ({ route: RouteComponent, options, ...rest }) => {
-  const { userManager } = useContext(UserManagerContext);
+  const { askSigninRedirect } = useContext(UserManagerContext);
 
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
   const identifierValue = useSelector(IDENTIFIER_VALUE_SELECTOR);
@@ -31,12 +30,25 @@ const RouteAuthenticated = ({ route: RouteComponent, options, ...rest }) => {
     [identifierValue],
   );
 
-  if (isAuthenticated) {
+  const shouldAskRedirect = useMemo(
+    () => !isAuthenticated,
+    [isAuthenticated],
+  );
+
+  useEffect(
+    () => {
+      if (shouldAskRedirect) {
+        askSigninRedirect({ loginHint, ...options }, false);
+      }
+    },
+    [shouldAskRedirect, askSigninRedirect, loginHint, options],
+  );
+
+  if (!shouldAskRedirect) {
     return <RouteComponent {...rest} />;
   }
 
   // redirect to sign in
-  userManager.signinRedirect(objectToSnakeCase({ loginHint, ...options }));
   return null;
 };
 

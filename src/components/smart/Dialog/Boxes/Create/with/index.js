@@ -5,7 +5,7 @@ import isFunction from '@misakey/helpers/isFunction';
 import CreateBoxDialog from 'components/smart/Dialog/Boxes/Create';
 
 // COMPONENTS
-const withDialogCreate = (Component) => {
+const withDialogCreate = (Component, DialogComponent = CreateBoxDialog) => {
   let Wrapper = ({
     onClick,
     dialogProps,
@@ -30,7 +30,7 @@ const withDialogCreate = (Component) => {
 
     return (
       <>
-        <CreateBoxDialog
+        <DialogComponent
           open={isDialogCreateOpen}
           onClose={toggleIsDialogCreateOpen}
           {...dialogProps}

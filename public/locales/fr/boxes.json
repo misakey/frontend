@@ -152,6 +152,8 @@
       "getCodeDescription": "Nous envoyons régulièrement des informations sur les prochaines campagnes de distribution d’invitations par email aux membres de la communauté. Vous pouvez rejoindre la communauté en <1>participant à ce chat Misakey.</1><2/><3/>Vous pourrez aussi y discuter du projet et tester une petite partie de l’app pour nous faire vos retours."
     },
     "dialog": {
+      "title": "Nouvelle conversation",
+      "pasteLink": "J'ai un lien d'invitation",
       "content": "Quel est le sujet de cette nouvelle conversation\u00a0?",
       "success": "Le chat a été créé avec succès\u00a0!",
       "error": {
@@ -173,7 +175,12 @@
     }
   },
   "pasteLink": {
-    "text": "<0>La clé pour</0><1><0></0></1><2> est perdue.\nPouvez-vous copier-coller le lien d'invitation\u00a0?</2>"
+    "broken": {
+      "title": "Le lien de ce chat est cassé",
+      "subtitle": "Collez un lien d'invitation pour ouvrir un chat"
+    },
+    "title": "Collez le lien d'invitation du chat",
+    "goBack": "Créer un nouveau chat"
   },
   "vault": {
     "dialog": {

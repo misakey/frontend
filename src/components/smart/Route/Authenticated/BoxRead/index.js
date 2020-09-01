@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useContext } from 'react';
+import React, { useState, useMemo, useCallback, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { UserManagerContext } from '@misakey/auth/components/OidcProvider';
@@ -24,7 +24,7 @@ const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
 // COMPONENTS
 const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...rest }) => {
   const [resourceName, setResourceName] = useState();
-  const { userManager } = useContext(UserManagerContext);
+  const { askSigninRedirect } = useContext(UserManagerContext);
 
   const loginHint = useMemo(
     () => (!isNil(resourceName)
@@ -75,6 +75,20 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
     { onSuccess },
   );
 
+  const shouldAskRedirect = useMemo(
+    () => !isAuthenticated && !isFetching && !shouldFetch,
+    [isAuthenticated, isFetching, shouldFetch],
+  );
+
+  useEffect(
+    () => {
+      if (shouldAskRedirect) {
+        askSigninRedirect(redirectOptions, false);
+      }
+    },
+    [askSigninRedirect, redirectOptions, shouldAskRedirect],
+  );
+
   if (isAuthenticated) {
     return <RouteComponent path={path} {...rest} />;
   }
@@ -84,7 +98,6 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   }
 
   // redirect to sign in
-  userManager.signinRedirect(redirectOptions);
   return null;
 };
 

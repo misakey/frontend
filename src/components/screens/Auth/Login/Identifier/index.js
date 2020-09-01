@@ -5,8 +5,10 @@ import { withTranslation, Trans } from 'react-i18next';
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 
-import { STEP, INITIAL_VALUES, ERROR_KEYS } from 'constants/auth';
-import { identifierValidationSchema } from 'constants/validationSchemas/auth';
+import { APPBAR_SPACING } from '@misakey/ui/constants/sizes';
+import { STEP, INITIAL_VALUES } from '@misakey/auth/constants';
+import { ERROR_KEYS } from 'constants/auth';
+import { identifierValidationSchema } from '@misakey/auth/constants/validationSchemas/auth';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
 
 import compose from '@misakey/helpers/compose';
@@ -22,7 +24,8 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useOnIdentifierSubmit from 'hooks/useOnIdentifierSubmit';
 
 import Title from '@misakey/ui/Typography/Title';
-import LoginFormFields from 'components/screens/Auth/Login/Identifier/Form/Fields';
+import Container from '@material-ui/core/Container';
+import LoginFormFields from '@misakey/ui/Form/Fields/Login/Identifier';
 import BoxControls from '@misakey/ui/Box/Controls';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
 import Box from '@material-ui/core/Box';
@@ -89,32 +92,36 @@ const AuthLoginIdentifier = ({
   [t]);
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={identifierValidationSchema}
-      onSubmit={onSubmit}
-      enableReinitialize
-    >
-      <Form>
-        <Title>
-          <Box display="flex" overflow="hidden" flexWrap="wrap" component={Trans} i18nKey="auth:login.identifier.title">
-            <Box display="flex" flexWrap="nowrap">Quel est votre identifiant pour</Box>
-            <Box ml={1} display="flex" flexWrap="nowrap">
-              <AvatarClientSso client={client} />
-              {!isEmpty(resourceName) && (
-                <>
-                &nbsp;-&nbsp;
-                  {resourceName}
-                </>
-              )}
+    <Container maxWidth="md">
+      <Box mt={2 * APPBAR_SPACING}>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={identifierValidationSchema}
+          onSubmit={onSubmit}
+          enableReinitialize
+        >
+          <Form>
+            <Title>
+              <Box display="flex" overflow="hidden" flexWrap="wrap" component={Trans} i18nKey="auth:login.identifier.title">
+                <Box display="flex" flexWrap="nowrap">Quel est votre identifiant pour</Box>
+                <Box ml={1} display="flex" flexWrap="nowrap">
+                  <AvatarClientSso client={client} />
+                  {!isEmpty(resourceName) && (
+                    <>
+                      &nbsp;-&nbsp;
+                      {resourceName}
+                    </>
+                  )}
               &nbsp;?
-            </Box>
-          </Box>
-        </Title>
-        <LoginFormFields />
-        <BoxControls formik primary={primary} />
-      </Form>
-    </Formik>
+                </Box>
+              </Box>
+            </Title>
+            <LoginFormFields />
+            <BoxControls formik primary={primary} />
+          </Form>
+        </Formik>
+      </Box>
+    </Container>
   );
 };
 

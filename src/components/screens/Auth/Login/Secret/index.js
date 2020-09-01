@@ -7,10 +7,12 @@ import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import moment from 'moment';
 
+import { APPBAR_SPACING } from '@misakey/ui/constants/sizes';
 import routes from 'routes';
 import { QUESTIONS } from 'constants/emails';
 import { NEXT_STEP_REDIRECT, NEXT_STEP_AUTH } from '@misakey/auth/constants/step';
-import { STEP, INITIAL_VALUES, ERROR_KEYS } from 'constants/auth';
+import { STEP, INITIAL_VALUES } from '@misakey/auth/constants';
+import { ERROR_KEYS } from 'constants/auth';
 import { getSecretValidationSchema } from 'constants/validationSchemas/auth';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
 import hardPasswordChange from '@misakey/crypto/store/actions/hardPasswordChange';
@@ -34,20 +36,23 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useCancelForgotPassword from '@misakey/auth/hooks/useCancelForgotPassword';
 import { useClearUser } from '@misakey/hooks/useActions/loginSecret';
+import useHandleBackupKeySharesFromAuthFlow from '@misakey/crypto/hooks/useHandleBackupKeySharesFromAuthFlow';
 
+import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import DefaultSplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import SecretFormFields from 'components/screens/Auth/Login/Secret/Form/Fields';
 import Redirect from '@misakey/ui/Redirect';
-import ChipUser from 'components/dumb/Chip/User';
-import TitleWithCancelIcon from '@misakey/ui/Typography/Title/WithCancelIcon';
+import ChipUser from '@misakey/ui/Chip/User';
+import Title from '@misakey/ui/Typography/Title';
 import BoxControls from '@misakey/ui/Box/Controls';
 import ButtonForgotPassword from '@misakey/auth/components/Button/ForgotPassword';
 import ButtonRenewAuthStep from '@misakey/auth/components/Button/RenewAuthStep';
 import DialogPasswordReset from 'components/smart/Dialog/Password/Reset';
 import SnackbarActionAuthRestart from 'components/dumb/Snackbar/Action/AuthRestart';
+import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 
-import useHandleBackupKeySharesFromAuthFlow from '@misakey/crypto/hooks/useHandleBackupKeySharesFromAuthFlow';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 // CONSTANTS
 const { conflict } = errorTypes;
@@ -278,69 +283,86 @@ const AuthLoginSecret = ({
 
   if (!isNil(redirectTo)) {
     return (
-      <Redirect
-        to={redirectTo}
-        forceRefresh
-        manualRedirectPlaceholder={(
-          <DefaultSplashScreen />
-        )}
-      />
+      <Box height="100vh">
+        <Redirect
+          to={redirectTo}
+          forceRefresh
+          manualRedirectPlaceholder={(
+            <DefaultSplashScreen />
+          )}
+        />
+      </Box>
     );
   }
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={onSubmit}
-      validateOnChange={false}
-    >
-      <Box component={Form} display="flex" flexDirection="column" alignItems="center">
-        <TitleWithCancelIcon onCancel={reset ? onCancelForgotPassword : null}>
-          <Box
-            display="flex"
-            overflow="hidden"
-            flexWrap="wrap"
-            component={Trans}
-            i18nKey={`auth:login.secret.${methodName}.title`}
-          >
-            <Box mr={1} display="flex" flexWrap="nowrap">Quel est le code de confirmation envoyé à </Box>
-            <Box display="flex" flexWrap="nowrap">
-              <ChipUser
-                {...chipActions}
-                {...userPublicData}
-              />
-              &nbsp;?
-            </Box>
-          </Box>
-        </TitleWithCancelIcon>
-        <Box justifyContent="flex-start" flexDirection="column" display="flex" width="100%">
-          <SecretFormFields methodName={methodName} />
-          {methodName === EMAILED_CODE && (
-            <ButtonRenewAuthStep
-              classes={{ buttonRoot: classes.buttonRoot }}
-              loginChallenge={loginChallenge}
-              authnStep={authnStep}
-              text={t('auth:login.form.action.getANewCode.button')}
-            />
-          )}
-          {methodName === PREHASHED_PASSWORD && (
-            <ButtonForgotPassword
-              classes={{ buttonRoot: classes.buttonRoot }}
-              loginChallenge={loginChallenge}
-              identifier={identifier}
-              text={t('auth:login.form.action.forgotPassword')}
-              onDone={onForgotPasswordDone}
-            />
-          )}
+    <>
+      {reset && (
+        <Box display="flex" width="100%">
+          <IconButtonAppBar edge="start" aria-label={t('common:cancel')} onClick={onCancelForgotPassword}>
+            <ArrowBackIcon />
+          </IconButtonAppBar>
         </Box>
-        <BoxControls
-          formik
-          primary={primary}
-        />
-        <DialogPasswordReset open={dialogOpen} onClose={onDialogClose} onSubmit={onDialogSubmit} />
-      </Box>
-    </Formik>
+      )}
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+        validateOnChange={false}
+      >
+        <Container maxWidth="md">
+          <Box mt={2 * APPBAR_SPACING}>
+            <Box component={Form} display="flex" flexDirection="column" alignItems="flex-start">
+              <Title>
+                <Box
+                  display="flex"
+                  overflow="hidden"
+                  flexWrap="wrap"
+                  component={Trans}
+                  i18nKey={`auth:login.secret.${methodName}.title`}
+                >
+                  <Box mr={1} display="flex" flexWrap="nowrap">Quel est le code de confirmation envoyé à </Box>
+                  <Box display="flex" flexWrap="nowrap">
+                    <ChipUser
+                      {...chipActions}
+                      {...userPublicData}
+                    />
+              &nbsp;?
+                  </Box>
+                </Box>
+              </Title>
+              <SecretFormFields methodName={methodName} />
+              {methodName === EMAILED_CODE && (
+                <ButtonRenewAuthStep
+                  classes={{ buttonRoot: classes.buttonRoot }}
+                  loginChallenge={loginChallenge}
+                  authnStep={authnStep}
+                  text={t('auth:login.form.action.getANewCode.button')}
+                />
+              )}
+              {methodName === PREHASHED_PASSWORD && (
+                <ButtonForgotPassword
+                  classes={{ buttonRoot: classes.buttonRoot }}
+                  loginChallenge={loginChallenge}
+                  identifier={identifier}
+                  text={t('auth:login.form.action.forgotPassword')}
+                  onDone={onForgotPasswordDone}
+                />
+              )}
+              <BoxControls
+                formik
+                primary={primary}
+              />
+            </Box>
+            <DialogPasswordReset
+              open={dialogOpen}
+              onClose={onDialogClose}
+              onSubmit={onDialogSubmit}
+            />
+          </Box>
+        </Container>
+      </Formik>
+    </>
   );
 };
 

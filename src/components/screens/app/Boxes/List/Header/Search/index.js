@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
-import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
+import { SIDES } from '@misakey/ui/constants/drawers';
+
+import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 
 import getNextSearch from '@misakey/helpers/getNextSearch';

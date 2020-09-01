@@ -6,8 +6,9 @@ import { Link, useRouteMatch } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import isNil from '@misakey/helpers/isNil';
+import { SIDES } from '@misakey/ui/constants/drawers';
 import { DRAWER_PROPS_PROP_TYPES } from 'components/smart/Screen/Drawer';
-import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
+import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';

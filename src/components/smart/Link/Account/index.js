@@ -5,7 +5,7 @@ import routes from 'routes';
 
 import { Link, generatePath, useLocation, useRouteMatch } from 'react-router-dom';
 import getNextSearch from '@misakey/helpers/getNextSearch';
-import { ACCOUNT_LEFT_DRAWER_QUERY_PARAM, TMP_DRAWER_QUERY_PARAMS, LEFT_DRAWER_QUERY_PARAM } from 'packages/ui/src/constants/drawers';
+import { ACCOUNT_LEFT_DRAWER_QUERY_PARAM, TMP_DRAWER_QUERY_PARAMS, DRAWER_QUERY_PARAM } from 'packages/ui/src/constants/drawers';
 import { TAB_VALUES } from 'components/dumb/Tabs/DrawerMenu';
 
 // COMPONENTS
@@ -24,7 +24,7 @@ const AccountLink = forwardRef(({ id, ...props }, ref) => {
         search,
         new Map([
           [ACCOUNT_LEFT_DRAWER_QUERY_PARAM, nextSearch],
-          [LEFT_DRAWER_QUERY_PARAM, undefined],
+          [DRAWER_QUERY_PARAM, undefined],
           [TMP_DRAWER_QUERY_PARAMS, undefined],
         ]),
       ),

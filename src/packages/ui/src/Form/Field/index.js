@@ -1,7 +1,10 @@
 import React from 'react';
-import { Field } from 'formik';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+
+import { Field } from 'formik';
 
 const FormField = ({ name, prefix, t, ...props }) => (
   <Field
@@ -10,7 +13,7 @@ const FormField = ({ name, prefix, t, ...props }) => (
     label={t([`fields:${prefix}${name}.label`, `fields:${name}.label`], '')}
     placeholder={t([`fields:${prefix}${name}.placeholder`, `fields:${name}.placeholder`], '')}
     helperText={t([`fields:${prefix}${name}.helperText`, `fields:${name}.helperText`], '')}
-    {...props}
+    {...omitTranslationProps(props)}
   />
 );
 

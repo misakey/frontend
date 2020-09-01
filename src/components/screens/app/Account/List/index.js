@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { SIDES } from '@misakey/ui/constants/drawers';
 import { DRAWER_PROPS_PROP_TYPES } from 'components/smart/Screen/Drawer';
-import AppBarDrawer, { SIDES } from 'components/dumb/AppBar/Drawer';
+import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import List from '@material-ui/core/List';
 import ListItemNavLinkMisakey from 'components/smart/ListItem/NavLink/Misakey';

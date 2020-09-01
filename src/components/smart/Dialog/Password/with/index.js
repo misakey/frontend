@@ -6,7 +6,6 @@ import { UserManagerContext } from '@misakey/auth/components/OidcProvider';
 
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
-import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import { selectors } from '@misakey/crypto/store/reducers';
 import { getCurrentUserSelector, selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
@@ -27,7 +26,7 @@ const withDialogPassword = (Component) => {
     forceDialog,
     ...props
   }, ref) => {
-    const { userManager } = useContext(UserManagerContext);
+    const { askSigninRedirect } = useContext(UserManagerContext);
 
     const [open, setOpen] = useState(false);
 
@@ -52,16 +51,16 @@ const withDialogPassword = (Component) => {
     const isCryptoLoaded = useSelector(isCryptoLoadedSelector);
 
     const onWrapperClick = useCallback(
-      (...args) => {
+      (e) => {
         if (!hasAccountId) {
-          userManager.signinRedirect(objectToSnakeCase({ acrValues: 2, prompt: 'login', loginHint }));
+          askSigninRedirect({ acrValues: 2, prompt: 'login', loginHint });
         } else if (!isCryptoLoaded || forceDialog) {
           setOpen(true);
         } else if (isFunction(onClick)) {
-          onClick(...args);
+          onClick(e);
         }
       },
-      [hasAccountId, isCryptoLoaded, forceDialog, onClick, userManager, loginHint],
+      [hasAccountId, isCryptoLoaded, forceDialog, onClick, askSigninRedirect, loginHint],
     );
 
     const onClose = useCallback(

@@ -152,6 +152,8 @@
       "getCodeDescription": "We regularly send information about the next distributions of invitations by email to the members of the community. You can join the community by <1>joining this Misakey chat.</1><2/><3/>You will be able to discuss the project and try a small portion of the app to give us your early feedbacks."
     },
     "dialog": {
+      "title": "New chat",
+      "pasteLink": "I have an invitation link",
       "content": "What is the new chat about?",
       "success": "Chat has been successfully created!",
       "error": {
@@ -173,7 +175,12 @@
     }
   },
   "pasteLink": {
-    "text": "<0>The key for</0><1><0></0></1><2> is lost. Could you copy/paste the invitation link?</2>"
+    "broken": {
+      "title": "This chat link is broken",
+      "subtitle": "Paste an invitation link to open a chat"
+    },
+    "title": "Paste the chat's invitation link",
+    "goBack": "Create a new chat"
   },
   "vault": {
     "dialog": {

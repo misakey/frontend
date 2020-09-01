@@ -7,3 +7,6 @@ export const AVATAR_SIZE = 40;
 export const AVATAR_SM_SIZE = 35;
 
 export const MIN_CARD_HEIGHT = 64;
+
+export const APPBAR_HEIGHT = 64;
+export const APPBAR_SPACING = 8;

@@ -41,7 +41,9 @@
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "formik": "^2.1.4",
+    "yup": "^0.29.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
