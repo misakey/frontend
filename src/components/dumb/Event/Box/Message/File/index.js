@@ -2,7 +2,10 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import EventSchema from 'store/schemas/Boxes/Events';
+
 import isNil from '@misakey/helpers/isNil';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import decryptFileMsg from '@misakey/crypto/box/decryptFileMsg';
@@ -10,11 +13,8 @@ import decryptFileMsg from '@misakey/crypto/box/decryptFileMsg';
 import EventBoxMessagePreview from 'components/dumb/Event/Box/Message/Preview';
 import EventFileCard from 'components/dumb/Event/Box/Message/File/Card';
 
-import EventSchema from 'store/schemas/Boxes/Events';
-
-
 // COMPONENTS
-const BoxMessageFileEvent = ({ event, isFromCurrentUser, preview, t }) => {
+const BoxMessageFileEvent = ({ event, isFromCurrentUser, preview, t, ...props }) => {
   const {
     sender,
     content: { encrypted, encryptedFileId, publicKey },
@@ -46,6 +46,7 @@ const BoxMessageFileEvent = ({ event, isFromCurrentUser, preview, t }) => {
         isFromCurrentUser={isFromCurrentUser}
         displayName={displayName}
         text={text}
+        {...omitTranslationProps(props)}
       />
     );
   }
@@ -54,10 +55,11 @@ const BoxMessageFileEvent = ({ event, isFromCurrentUser, preview, t }) => {
     <EventFileCard
       text={text}
       sender={sender}
-      canBeDecrypted={canBeDecrypted}
       decryptedContent={decryptedContent}
       isFromCurrentUser={isFromCurrentUser}
       encryptedFileId={encryptedFileId}
+      event={event}
+      {...omitTranslationProps(props)}
     />
   );
 };

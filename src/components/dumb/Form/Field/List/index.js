@@ -6,7 +6,7 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import withErrors from 'components/dumb/Form/Field/withErrors';
+import withErrors from '@misakey/ui/Form/Field/withErrors';
 
 // COMPONENTS
 const FormFieldList = ({

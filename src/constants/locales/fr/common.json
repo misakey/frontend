@@ -80,6 +80,11 @@
       "shouldRefresh": "Erreur: l'application semble avoir été utilisée dans un autre navigateur et doit être re-synchronisée. Vous devriez rafraîchir la page"
     }
   },
+  "fileDownload": {
+    "errors": {
+      "get": "Une erreur s'est produite lors de la récupération du fichier\u00a0!"
+    }
+  },
   "date": {
     "calendar": {
       "sameDay": "aujourd'hui",

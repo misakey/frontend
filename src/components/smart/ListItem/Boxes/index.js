@@ -8,6 +8,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 
 import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import { getBoxEventLastDate } from 'helpers/boxEvent';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
@@ -101,8 +102,8 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
 
   const secondary = useMemo(
     () => (
-      <BoxEventsAccordingToType event={lastEvent} preview boxID={id} />
-    ), [id, lastEvent],
+      <BoxEventsAccordingToType box={box} event={lastEvent} preview />
+    ), [lastEvent, box],
   );
 
   const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
@@ -116,6 +117,11 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
   const lostKey = useMemo(
     () => !canBeDecrypted && (lifecycle !== CLOSED || belongsToCurrentUser),
     [canBeDecrypted, lifecycle, belongsToCurrentUser],
+  );
+
+  const date = useMemo(
+    () => getBoxEventLastDate(lastEvent),
+    [lastEvent],
   );
 
   if (isNil(id)) {
@@ -149,14 +155,14 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
             {!lostKey && (
               <TypographyDateSince
                 noWrap
-                date={lastEvent.serverEventCreatedAt}
+                date={date}
               />
             )}
           </Box>
         )}
         secondary={secondary}
         primaryTypographyProps={{ noWrap: true, display: 'block' }}
-        secondaryTypographyProps={{ noWrap: true, display: 'block' }}
+        secondaryTypographyProps={{ noWrap: true, display: 'block', component: Box }}
       />
     </ListItem>
   );

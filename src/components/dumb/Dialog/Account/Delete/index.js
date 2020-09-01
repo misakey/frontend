@@ -14,7 +14,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import FieldText from 'components/dumb/Form/Field/Text';
+import FormFieldTextFieldWithErrors from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import BoxControls from '@misakey/ui/Box/Controls';
 
 
@@ -54,7 +54,7 @@ const DeleteAccountDialog = ({ onClose, onSuccess, open, identity, t }) => {
               {t('account:delete.dialog.description', { email: identity.displayName })}
             </DialogContentText>
             <Field
-              component={FieldText}
+              component={FormFieldTextFieldWithErrors}
               name="email"
               variant="outlined"
               autoFocus

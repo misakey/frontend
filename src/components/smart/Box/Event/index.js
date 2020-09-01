@@ -1,20 +1,19 @@
-import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
 import PropTypes from 'prop-types';
-import BoxMessageEvent from 'components/dumb/Event/Box/Message';
-import BoxInformationEvent from 'components/dumb/Event/Box/Information';
-import BoxEventsSchema from 'store/schemas/Boxes/Events';
 
 import EVENTS_TYPE from 'constants/app/boxes/events';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import BoxEventsSchema from 'store/schemas/Boxes/Events';
+import BoxesSchema from 'store/schemas/Boxes';
 
-function BoxEvents({ event, preview }) {
-  const { identifier } = useSelector(getCurrentUserSelector) || {};
+import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
+import useEventBelongsToCurrentUser from 'hooks/useEventBelongsToCurrentUser';
 
-  const isFromCurrentUser = useMemo(
-    () => identifier.value === event.sender.identifier.value,
-    [event.sender.identifier.value, identifier.value],
-  );
+import BoxMessageEvent from 'components/dumb/Event/Box/Message';
+import BoxInformationEvent from 'components/dumb/Event/Box/Information';
+
+function BoxEvents({ event, box, preview, ...rest }) {
+  const isFromCurrentUser = useEventBelongsToCurrentUser(event);
+  const boxBelongsToCurrentUser = useBoxBelongsToCurrentUser(box);
 
   if (EVENTS_TYPE.information.includes(event.type)) {
     return (
@@ -23,6 +22,8 @@ function BoxEvents({ event, preview }) {
         event={event}
         isFromCurrentUser={isFromCurrentUser}
         preview={preview}
+        box={box}
+        {...rest}
       />
     );
   }
@@ -32,7 +33,10 @@ function BoxEvents({ event, preview }) {
         key={event.id}
         event={event}
         isFromCurrentUser={isFromCurrentUser}
+        boxBelongsToCurrentUser={boxBelongsToCurrentUser}
         preview={preview}
+        box={box}
+        {...rest}
       />
     );
   }
@@ -42,6 +46,7 @@ function BoxEvents({ event, preview }) {
 BoxEvents.propTypes = {
   preview: PropTypes.bool,
   event: PropTypes.shape(BoxEventsSchema.propTypes).isRequired,
+  box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
 };
 
 BoxEvents.defaultProps = {

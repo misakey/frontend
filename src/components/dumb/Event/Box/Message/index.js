@@ -1,27 +1,48 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+
+import EventSchema from 'store/schemas/Boxes/Events';
+import BoxesSchema from 'store/schemas/Boxes';
+import { MSG_FILE, MSG_TXT } from 'constants/app/boxes/events';
+
+import isNil from '@misakey/helpers/isNil';
+
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import BoxMessageFileEvent from 'components/dumb/Event/Box/Message/File';
 import BoxMessageTextEvent from 'components/dumb/Event/Box/Message/Text';
+import BoxEventDeleted from 'components/smart/Box/Event/Deleted';
 
-import EventSchema from 'store/schemas/Boxes/Events';
-import { MSG_FILE, MSG_TXT } from 'constants/app/boxes/events';
+// COMPONENTS
+const BoxMessageEvent = ({ event, ...props }) => {
+  const { type, content: { deleted } } = useSafeDestr(event);
 
-const BoxMessageEvent = ({ event, isFromCurrentUser, ...props }) => {
-  const { type } = useMemo(() => event, [event]);
+  if (!isNil(deleted)) {
+    return (
+      <BoxEventDeleted
+        event={event}
+        {...deleted}
+        {...props}
+      />
+    );
+  }
 
   if (type === MSG_FILE) {
     return (
       <BoxMessageFileEvent
         event={event}
-        isFromCurrentUser={isFromCurrentUser}
         {...props}
       />
     );
   }
 
   if (type === MSG_TXT) {
-    return <BoxMessageTextEvent event={event} isFromCurrentUser={isFromCurrentUser} {...props} />;
+    return (
+      <BoxMessageTextEvent
+        event={event}
+        {...props}
+      />
+    );
   }
 
   return null;
@@ -29,7 +50,13 @@ const BoxMessageEvent = ({ event, isFromCurrentUser, ...props }) => {
 
 BoxMessageEvent.propTypes = {
   event: PropTypes.shape(EventSchema.propTypes).isRequired,
+  box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   isFromCurrentUser: PropTypes.bool.isRequired,
+  preview: PropTypes.bool,
+};
+
+BoxMessageEvent.defaultProps = {
+  preview: false,
 };
 
 export default BoxMessageEvent;

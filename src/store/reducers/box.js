@@ -73,6 +73,33 @@ export const addBoxEvents = (id, event) => (dispatch, getState) => {
   ]);
 };
 
+export const editBoxEvent = (id, event) => (dispatch, getState) => {
+  const { id: eventId } = event;
+
+  const currentBox = getBoxById(getState(), id);
+  const { events = [] } = currentBox;
+
+  const nextEvents = events.reduce((acc, prevEvent, index) => {
+    if (prevEvent.id === eventId) {
+      acc[index] = event;
+    } else {
+      acc[index] = prevEvent;
+    }
+
+    return acc;
+  }, []);
+
+  const changes = {
+    events: nextEvents,
+  };
+
+  return Promise.all([
+    dispatch(updateEntities([{ id: eventId, changes: event }], BoxEventsSchema)),
+    dispatch(updateEntities([{ id, changes }], BoxesSchema)),
+    dispatch(moveBackUpId(id)),
+  ]);
+};
+
 export const addMultiBoxEvents = (id, nextEvents) => (dispatch, getState) => {
   const currentBox = getBoxById(getState(), id);
   const { events = [] } = currentBox;

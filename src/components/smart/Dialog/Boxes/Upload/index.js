@@ -14,6 +14,7 @@ import { boxFileUploadValidationSchema } from 'constants/validationSchemas/boxes
 
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
+import isFunction from '@misakey/helpers/isFunction';
 import fileToBlob from '@misakey/helpers/fileToBlob';
 import prop from '@misakey/helpers/prop';
 import compose from '@misakey/helpers/compose';
@@ -97,7 +98,7 @@ function UploadDialog({
       try {
         const response = await createBoxEncryptedFileBuilder(boxId, formData);
 
-        if (onSuccess) {
+        if (isFunction(onSuccess)) {
           onSuccess(response);
         }
 

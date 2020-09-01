@@ -2,19 +2,32 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { TIME } from 'constants/formats/dates';
 import EventSchema from 'store/schemas/Boxes/Events';
+import BoxesSchema from 'store/schemas/Boxes';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import { getBoxEventLastDate, isBoxEventEdited } from 'helpers/boxEvent';
 import decryptText from '@misakey/crypto/box/decryptText';
 
 import useAnchormeCallback from '@misakey/hooks/useAnchorme/callback';
 import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
+import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
 
-import EventCard from 'components/dumb/Event/Card';
+import EventCard from 'components/dumb/Card/Event';
 import EventBoxMessagePreview from 'components/dumb/Event/Box/Message/Preview';
 import MuiLink from '@material-ui/core/Link';
+import withContextMenu from '@misakey/ui/Menu/ContextMenu/with';
+import MenuItemEventEdit from 'components/smart/MenuItem/Event/Edit';
+import MenuItemEventCopy from 'components/smart/MenuItem/Event/Copy';
+import MenuItemEventDelete from 'components/smart/MenuItem/Event/Delete';
 
 // CONSTANTS
+const MY_TRANSFORM_ORIGIN = {
+  vertical: 'top',
+  horizontal: 'right',
+};
+
 const LINK_PROPS = {
   color: 'secondary',
   target: '_blank',
@@ -27,12 +40,44 @@ const decryptMessage = (publicKeysWeCanDecryptFrom, encrypted, publicKey) => {
   return decryptText(encrypted, secretKey);
 };
 
-const BoxMessageTextEvent = ({ event, isFromCurrentUser, preview, t, ...rest }) => {
-  const { sender, content: { encrypted, publicKey } } = useMemo(() => event, [event]);
+// COMPONENTS
+const EventCardWithContextMenu = withContextMenu(EventCard);
+
+const BoxMessageTextEvent = ({
+  event, box,
+  isFromCurrentUser, boxBelongsToCurrentUser,
+  preview,
+  t,
+  ...rest
+}) => {
+  const {
+    sender,
+    content: { encrypted, publicKey },
+  } = useMemo(() => event, [event]);
   const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
   const canBeDecrypted = publicKeysWeCanDecryptFrom.has(publicKey);
 
   const anchorme = useAnchormeCallback({ LinkComponent: MuiLink, linkProps: LINK_PROPS });
+
+  const lastChange = useMemo(
+    () => getBoxEventLastDate(event),
+    [event],
+  );
+
+  const isEdited = useMemo(
+    () => isBoxEventEdited(event),
+    [event],
+  );
+
+  const date = useDateFormatMemo(lastChange, TIME);
+
+
+  const menuProps = useMemo(
+    () => (isFromCurrentUser
+      ? { transformOrigin: MY_TRANSFORM_ORIGIN }
+      : {}),
+    [isFromCurrentUser],
+  );
 
   const text = useMemo(() => {
     if (canBeDecrypted) {
@@ -44,6 +89,27 @@ const BoxMessageTextEvent = ({ event, isFromCurrentUser, preview, t, ...rest }) 
     canBeDecrypted, encrypted, publicKeysWeCanDecryptFrom, publicKey, t, preview, anchorme,
   ]);
 
+  const items = useMemo(
+    () => {
+      if (isFromCurrentUser) {
+        return [
+          <MenuItemEventEdit event={event} box={box} key="edit" />,
+          <MenuItemEventCopy event={event} key="copy" />,
+          <MenuItemEventDelete event={event} box={box} key="delete" />,
+        ];
+      }
+      if (boxBelongsToCurrentUser) {
+        return [
+          <MenuItemEventCopy event={event} key="copy" />,
+          <MenuItemEventDelete event={event} box={box} key="delete" />,
+        ];
+      }
+      return [
+        <MenuItemEventCopy event={event} key="copy" />,
+      ];
+    },
+    [isFromCurrentUser, boxBelongsToCurrentUser, event, box],
+  );
   if (preview) {
     return (
       <EventBoxMessagePreview
@@ -55,10 +121,14 @@ const BoxMessageTextEvent = ({ event, isFromCurrentUser, preview, t, ...rest }) 
   }
 
   return (
-    <EventCard
+    <EventCardWithContextMenu
       author={sender}
+      date={date}
       isFromCurrentUser={isFromCurrentUser}
       text={text}
+      isEdited={isEdited}
+      items={items}
+      menuProps={menuProps}
       {...omitTranslationProps(rest)}
     />
   );
@@ -66,13 +136,16 @@ const BoxMessageTextEvent = ({ event, isFromCurrentUser, preview, t, ...rest }) 
 
 BoxMessageTextEvent.propTypes = {
   isFromCurrentUser: PropTypes.bool,
+  boxBelongsToCurrentUser: PropTypes.bool,
   event: PropTypes.shape(EventSchema.propTypes).isRequired,
+  box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   preview: PropTypes.bool,
   t: PropTypes.func.isRequired,
 };
 
 BoxMessageTextEvent.defaultProps = {
   isFromCurrentUser: false,
+  boxBelongsToCurrentUser: false,
   preview: false,
 };
 

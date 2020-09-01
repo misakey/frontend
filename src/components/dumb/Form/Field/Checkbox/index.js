@@ -7,7 +7,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
 import omit from '@misakey/helpers/omit';
-import withErrors from 'components/dumb/Form/Field/withErrors';
+import withErrors from '@misakey/ui/Form/Field/withErrors';
 
 const FieldCheckbox = ({
   displayError, errorKeys, field, form, helperText, label, t, ...rest

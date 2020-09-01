@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Subtitle from '@misakey/ui/Typography/Subtitle';
-import CardHeader from '@material-ui/core/CardHeader';
+import MuiCardHeader from '@material-ui/core/CardHeader';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -14,11 +14,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const EventCardHeader = ({ title, titleTypographyProps, ...rest }) => {
+const CardHeader = ({ title, titleTypographyProps, ...rest }) => {
   const classes = useStyles();
 
   return (
-    <CardHeader
+    <MuiCardHeader
       classes={{ root: classes.cardHeaderRoot }}
       disableTypography
       title={(
@@ -29,13 +29,13 @@ const EventCardHeader = ({ title, titleTypographyProps, ...rest }) => {
   );
 };
 
-EventCardHeader.propTypes = {
+CardHeader.propTypes = {
   title: PropTypes.string.isRequired,
   titleTypographyProps: PropTypes.object,
 };
 
-EventCardHeader.defaultProps = {
+CardHeader.defaultProps = {
   titleTypographyProps: {},
 };
 
-export default EventCardHeader;
+export default CardHeader;

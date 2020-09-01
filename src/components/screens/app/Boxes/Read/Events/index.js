@@ -28,6 +28,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 import BoxEventsAccordingToType from 'components/smart/Box/Event';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import InputBoxesUploadContext from 'components/smart/Input/Boxes/Upload/Context';
+import BoxEventEditContext from 'components/smart/Box/Event/Edit/Context';
 import BoxEventsFooter from './Footer';
 import DeleteBoxDialogButton from './DeleteBoxDialogButton';
 
@@ -120,16 +121,17 @@ function BoxEvents({
 
   return (
     <InputBoxesUploadContext box={box} onSuccess={onCloseMenuAction}>
-      <ElevationScroll target={contentRef}>
-        <AppBarDrawer
-          isDrawerOpen={isDrawerOpen}
-          drawerWidth={drawerWidth}
-          toolbarProps={{ px: 0 }}
-          offsetHeight={headerHeight}
-        >
-          <Box ref={headerRef} display="flex" flexDirection="column" width="100%">
-            <Box display="flex">
-              {!isDrawerOpen && (
+      <BoxEventEditContext>
+        <ElevationScroll target={contentRef}>
+          <AppBarDrawer
+            isDrawerOpen={isDrawerOpen}
+            drawerWidth={drawerWidth}
+            toolbarProps={{ px: 0 }}
+            offsetHeight={headerHeight}
+          >
+            <Box ref={headerRef} display="flex" flexDirection="column" width="100%">
+              <Box display="flex">
+                {!isDrawerOpen && (
                 <Box display="flex" pl={2} pr={1}>
                   <IconButtonAppBar
                     aria-label={t('common:openAccountDrawer')}
@@ -139,11 +141,11 @@ function BoxEvents({
                     <MenuIcon />
                   </IconButtonAppBar>
                 </Box>
-              )}
-              <BoxEventsAppBar box={box} belongsToCurrentUser={belongsToCurrentUser} />
-            </Box>
+                )}
+                <BoxEventsAppBar box={box} belongsToCurrentUser={belongsToCurrentUser} />
+              </Box>
 
-            {isNil(accountId) && (
+              {isNil(accountId) && (
               <Alert
                 severity="warning"
                 action={(
@@ -155,9 +157,9 @@ function BoxEvents({
               >
                 {t('boxes:read.warning.saveInBackup')}
               </Alert>
-            )}
+              )}
 
-            {!isClosed && isTheOnlyMember && canInvite && (
+              {!isClosed && isTheOnlyMember && canInvite && (
               <Alert
                 severity="info"
                 action={(
@@ -170,42 +172,43 @@ function BoxEvents({
               >
                 {t('boxes:read.info.share')}
               </Alert>
-            )}
+              )}
 
-            {canDeleteBox && (
+              {canDeleteBox && (
               <Alert
                 severity="error"
                 action={<DeleteBoxDialogButton box={box} />}
               >
                 {t('boxes:read.info.closed')}
               </Alert>
-            )}
-          </Box>
-        </AppBarDrawer>
-      </ElevationScroll>
-      <Box className={classes.content}>
-        <Box p={2} ref={(ref) => setContentRef(ref)} flexGrow="1" className={classes.thread}>
-          {eventsByDate.map(({ date, events }) => (
-            <Box display="flex" flexDirection="column" pt={1} key={date}>
-              <Typography variant="body2" component={Box} alignSelf="center" color="textPrimary">{date}</Typography>
-              {
+              )}
+            </Box>
+          </AppBarDrawer>
+        </ElevationScroll>
+        <Box className={classes.content}>
+          <Box p={2} ref={(ref) => setContentRef(ref)} flexGrow="1" className={classes.thread}>
+            {eventsByDate.map(({ date, events }) => (
+              <Box display="flex" flexDirection="column" pt={1} key={date}>
+                <Typography variant="body2" component={Box} alignSelf="center" color="textPrimary">{date}</Typography>
+                {
                 events.map((event) => (
-                  <BoxEventsAccordingToType event={event} key={event.id} />
+                  <BoxEventsAccordingToType box={box} event={event} key={event.id} />
                 ))
               }
-              <div ref={(ref) => setLastEventRef(ref)} />
-            </Box>
-          ))}
+                <div ref={(ref) => setLastEventRef(ref)} />
+              </Box>
+            ))}
+          </Box>
+          <BoxEventsFooter
+            box={box}
+            drawerWidth={drawerWidth}
+            isDrawerOpen={isDrawerOpen}
+            isMenuActionOpen={isMenuActionOpen}
+            onOpen={onOpenMenuAction}
+            onClose={onCloseMenuAction}
+          />
         </Box>
-        <BoxEventsFooter
-          box={box}
-          drawerWidth={drawerWidth}
-          isDrawerOpen={isDrawerOpen}
-          isMenuActionOpen={isMenuActionOpen}
-          onOpen={onOpenMenuAction}
-          onClose={onCloseMenuAction}
-        />
-      </Box>
+      </BoxEventEditContext>
     </InputBoxesUploadContext>
   );
 }

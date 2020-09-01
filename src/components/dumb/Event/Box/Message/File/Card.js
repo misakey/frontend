@@ -1,17 +1,29 @@
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useMemo, useCallback, useState, forwardRef } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
+import { TIME } from 'constants/formats/dates';
+import EventSchema from 'store/schemas/Boxes/Events';
+import BoxesSchema from 'store/schemas/Boxes';
+
 import isNil from '@misakey/helpers/isNil';
-import DialogFilePreview from 'components/smart/Dialog/FilePreview';
-import EventCard from 'components/dumb/Event/Card';
-import BoxFile from 'components/dumb/Box/File';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isEmpty from '@misakey/helpers/isEmpty';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
+
+import DialogFilePreview from 'components/smart/Dialog/FilePreview';
+import EventCard from 'components/dumb/Card/Event';
+import BoxFile from 'components/dumb/Box/File';
+import withContextMenu from '@misakey/ui/Menu/ContextMenu/with';
+import MenuItemEventDelete from 'components/smart/MenuItem/Event/Delete';
+import MenuItemEventDownload from 'components/smart/MenuItem/Event/Download';
+
 import ButtonBase from '@material-ui/core/ButtonBase';
 import useSaveFileInVault from 'hooks/useSaveFileInVault';
 
+// HOOKS
 const useStyles = makeStyles((theme) => ({
   filePreview: {
     border: `1px solid ${theme.palette.divider}`,
@@ -24,15 +36,25 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const FileCardEvent = ({
+const EventCardWithContextMenu = withContextMenu(EventCard);
+
+const FileCardEvent = forwardRef(({
   sender,
   isFromCurrentUser,
+  boxBelongsToCurrentUser,
   text,
   decryptedContent,
   encryptedFileId,
-}) => {
+  event,
+  box,
+  ...props
+}, ref) => {
   const classes = useStyles();
   const [isFilePreviewOpened, setIsFilePreviewOpened] = useState(false);
+
+  const { serverEventCreatedAt } = useMemo(() => event, [event]);
+
+  const date = useDateFormatMemo(serverEventCreatedAt, TIME);
 
   const {
     fileSize,
@@ -69,12 +91,47 @@ const FileCardEvent = ({
     [decryptedContent, openFilePreview],
   );
 
+  const items = useMemo(
+    () => {
+      if (isFromCurrentUser || boxBelongsToCurrentUser) {
+        return [
+          <MenuItemEventDownload {...decryptedContent} encryptedFileId={encryptedFileId} key="download" />,
+          <MenuItemEventDelete event={event} box={box} key="delete" />,
+        ];
+      }
+      return [
+        <MenuItemEventDownload {...decryptedContent} encryptedFileId={encryptedFileId} key="download" />,
+      ];
+    },
+    [
+      isFromCurrentUser, boxBelongsToCurrentUser,
+      event, decryptedContent, encryptedFileId, box,
+    ],
+  );
+
   return (
-    <EventCard
-      author={sender}
-      isFromCurrentUser={isFromCurrentUser}
-      text={text}
-    >
+    <>
+      <EventCardWithContextMenu
+        author={sender}
+        date={date}
+        isFromCurrentUser={isFromCurrentUser}
+        text={text}
+        ref={ref}
+        items={items}
+        {...omitTranslationProps(props)}
+      >
+        <ButtonBase
+          className={clsx(classes.filePreview)}
+          onClick={onClick}
+          disabled={isNil(onClick)}
+        >
+          <BoxFile
+            fileName={fileName}
+            fileType={fileType}
+            fileSize={fileSize}
+          />
+        </ButtonBase>
+      </EventCardWithContextMenu>
       <DialogFilePreview
         open={isFilePreviewOpened}
         fileSize={fileSize}
@@ -85,19 +142,13 @@ const FileCardEvent = ({
         onClose={onCloseFilePreview}
         onSave={onSaveInVault}
       />
-      <ButtonBase className={clsx(classes.filePreview)} onClick={onClick} disabled={isNil(onClick)}>
-        <BoxFile
-          fileName={fileName}
-          fileType={fileType}
-          fileSize={fileSize}
-        />
-      </ButtonBase>
-    </EventCard>
+    </>
   );
-};
+});
 
 FileCardEvent.propTypes = {
   isFromCurrentUser: PropTypes.bool,
+  boxBelongsToCurrentUser: PropTypes.bool,
   text: PropTypes.string.isRequired,
   decryptedContent: PropTypes.object,
   encryptedFileId: PropTypes.string.isRequired,
@@ -105,10 +156,13 @@ FileCardEvent.propTypes = {
     displayName: PropTypes.string,
     avatarUrl: PropTypes.string,
   }).isRequired,
+  event: PropTypes.shape(EventSchema.propTypes).isRequired,
+  box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
 };
 
 FileCardEvent.defaultProps = {
   isFromCurrentUser: false,
+  boxBelongsToCurrentUser: false,
   decryptedContent: {},
 };
 

@@ -123,6 +123,10 @@ export const selectors = {
     identifierSelector,
     prop('value'),
   ),
+  identifierId: createSelector(
+    identifierSelector,
+    prop('id'),
+  ),
   identityId: createSelector(
     getState,
     prop('identityId'),

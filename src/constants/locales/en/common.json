@@ -72,6 +72,11 @@
       "shouldRefresh": "Error: app requires a re-sync. You should refresh your page"
     }
   },
+  "fileDownload": {
+    "errors": {
+      "get": "An error occured while retrieving the file!"
+    }
+  },
   "date": {
     "calendar": {
       "sameDay": "today",

@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import FieldText from 'components/dumb/Form/Field/Text';
+import FormFieldTextFieldWithErrors from '@misakey/ui/Form/Field/TextFieldWithErrors';
 
 import { useFormikContext } from 'formik';
 
@@ -41,7 +41,7 @@ const FormFieldTextMultiline = (props) => {
   );
 
   return (
-    <FieldText onTouchStart={onTouchStart} onKeyDown={onKeyDown} {...props} />
+    <FormFieldTextFieldWithErrors onTouchStart={onTouchStart} onKeyDown={onKeyDown} {...props} />
   );
 };
 

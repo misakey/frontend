@@ -1,7 +1,10 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import FieldTextStandard from 'components/dumb/Form/Field/Text/Standard';
+import useWithErrorsMapper from '@misakey/hooks/useWithErrorsMapper';
+
+import TextFieldStandard from '@misakey/ui/TextField/Standard';
+import withErrors from '@misakey/ui/Form/Field/withErrors';
 
 // CONSTANTS
 const DEFAULT_INPUT_PROPS = {
@@ -9,7 +12,7 @@ const DEFAULT_INPUT_PROPS = {
 };
 
 // COMPONENTS
-const FieldTextPassword = ({ type, inputProps, ...props }) => {
+const FormFieldTextPassword = ({ type, inputProps, ...props }) => {
   const mergedInputProps = useMemo(
     () => ({
       ...inputProps,
@@ -18,19 +21,21 @@ const FieldTextPassword = ({ type, inputProps, ...props }) => {
     [inputProps],
   );
 
+  const textFieldProps = useWithErrorsMapper(props);
+
   return (
-    <FieldTextStandard {...props} type={type} inputProps={mergedInputProps} />
+    <TextFieldStandard {...textFieldProps} type={type} inputProps={mergedInputProps} />
   );
 };
 
-FieldTextPassword.propTypes = {
+FormFieldTextPassword.propTypes = {
   type: PropTypes.string,
   inputProps: PropTypes.object,
 };
 
-FieldTextPassword.defaultProps = {
+FormFieldTextPassword.defaultProps = {
   type: 'password',
   inputProps: {},
 };
 
-export default FieldTextPassword;
+export default withErrors(FormFieldTextPassword);

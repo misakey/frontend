@@ -88,10 +88,7 @@
   "filePreview": {
     "errors": {
       "unavailable": "n'est pas lisible dans le navigateur",
-      "noFile": "ne peut pas être téléchargé",
-      "download": {
-        "get": "Une erreur s'est produite lors de la récupération du fichier\u00a0!"
-      }
+      "noFile": "ne peut pas être téléchargé"
     }
   },
   "saveInVault": {
@@ -106,5 +103,8 @@
     "acr": "Cette fonctionnalité requiert un compte sécurisé",
     "default": "Cet écran est protégé",
     "subtitle": "Confirmez votre identité pour y accéder"
+  },
+  "cardEvent": {
+    "edited": "modifié\u00a0{{date}}"
   }
 }

@@ -1,18 +1,18 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { useSnackbar } from 'notistack';
 import clsx from 'clsx';
 
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 
 import downloadFile from '@misakey/helpers/downloadFile';
 import isNil from '@misakey/helpers/isNil';
+
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import useGetDecryptedFileCallback from 'hooks/useGetDecryptedFile/callback';
 
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
-
-import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -24,8 +24,6 @@ import DownloadIcon from '@material-ui/icons/GetApp';
 // import PrintIcon from '@material-ui/icons/Print';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import BoxFile from 'components/dumb/Box/File';
-import decryptFile from '@misakey/crypto/box/decryptFile';
-import { getEncryptedFileBuilder } from '@misakey/helpers/builder/files';
 
 // import withDialogPassword from 'components/smart/Dialog/Password/with';
 // import AddToVaultIcon from '@material-ui/icons/LibraryAdd';
@@ -105,8 +103,6 @@ function FilePreviewDialog({
   t, open, onClose, encryptedFileId, encryption, fileSize, fileName, fileType,
   // onSave,
 }) {
-  const { enqueueSnackbar } = useSnackbar();
-
   const [file, setFile] = useState();
   const [blobUrl, setBlobUrl] = useState();
   const [hasError, setHasError] = useState(false);
@@ -133,18 +129,14 @@ function FilePreviewDialog({
     setIsLoaded(true);
   }, []);
 
-  const onGetDecryptedFile = useCallback(
-    () => {
-      if (!isNil(encryptedFileId)) {
-        return getEncryptedFileBuilder(encryptedFileId)
-          .then((response) => decryptFile(response.blob, { encryption, fileName }))
-          .catch(() => {
-            enqueueSnackbar(t('components:filePreview.errors.download.get'), { variant: 'error' });
-            return Promise.resolve(null);
-          });
-      }
-      return Promise.reject();
-    }, [encryptedFileId, encryption, enqueueSnackbar, fileName, t],
+  const onDownloadError = useCallback(
+    () => Promise.resolve(null),
+    [],
+  );
+
+  const onGetDecryptedFile = useGetDecryptedFileCallback(
+    { encryptedFileId, encryption, fileName },
+    onDownloadError,
   );
 
   const { isFetching } = useFetchEffect(

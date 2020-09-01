@@ -12,7 +12,7 @@ import repeat from '@misakey/helpers/repeat';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import TextField from '@material-ui/core/TextField';
-import withErrors from '../withErrors';
+import withErrors from '@misakey/ui/Form/Field/withErrors';
 
 // CONSTANTS
 const OUTLINED = 'outlined';

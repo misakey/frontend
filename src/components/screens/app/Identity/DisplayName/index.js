@@ -22,7 +22,7 @@ import Formik from '@misakey/ui/Formik';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Container from '@material-ui/core/Container';
 import BoxControls from '@misakey/ui/Box/Controls';
-import FieldText from 'components/dumb/Form/Field/Text';
+import FieldText from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import ScreenAction from 'components/dumb/Screen/Action';
 
 // CONSTANTS

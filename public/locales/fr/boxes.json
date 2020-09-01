@@ -41,7 +41,9 @@
       "upload": "Envoyer des fichiers",
       "confirmIdentity": "Confirmer mon identité",
       "more": "Plus d'actions",
-      "send": "Envoyer"
+      "write": "Ecrire dans {{title}}",
+      "send": "Envoyer",
+      "edit": "Modifier votre message"
     },
     "warning": {
       "saveInBackup": "Enregistrer ce chat dans mon coffre-fort"
@@ -60,6 +62,18 @@
           "lifecycle": "Le chat est fermé, vous ne pouvez pas effectuer cette action."
         }
       },
+      "delete": {
+        "confirmDialog": "Êtes-vous sûr·e de vouloir supprimer ce message\u00a0?\nCette action est irréversible.",
+        "success": "Le message a été supprimé\u00a0!"
+      },
+      "deleted": {
+        "they": "Ce message a été supprimé.",
+        "you": "Vous avez supprimé ce message"
+      },
+      "edited": {
+        "success": "Le message a été modifié\u00a0!"
+      },
+      "gone": "Le message a déjà été supprimé",
       "information": {
         "lifecycle": {
           "closed": {

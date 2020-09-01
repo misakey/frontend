@@ -5,6 +5,7 @@ const errorTypes = {
   invalid: 'invalid',
   malformed: 'malformed',
   notFound: 'not_found',
+  gone: 'gone',
   required: 'required',
   max: 'max',
   unknown: 'unknown',

@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
-
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-
 import { useBoxesUploadContext } from 'components/smart/Input/Boxes/Upload/Context';
 
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
+import Typography from '@material-ui/core/Typography';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+
+// HOOKS
 const useStyles = makeStyles((theme) => ({
   listItem: {
     justifyContent: 'center',
@@ -25,29 +25,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function FooterMenuActions({ t }) {
+// COMPONENTS
+function FooterMenuList({ t }) {
   const classes = useStyles();
 
   const { onOpen } = useBoxesUploadContext();
 
   return (
-    <>
-      <MenuList disablePadding autoFocusItem id="menu-list-actions">
-        {/* <MenuItem className={classes.listItem} divider onClick={onClose}>
+    <MenuList disablePadding autoFocusItem id="menu-list-actions">
+      {/* <MenuItem className={classes.listItem} divider onClick={onClose}>
           <Typography>{t('boxes:read.actions.confirmIdentity')}</Typography>
         </MenuItem> */}
-        <MenuItem className={classes.listItem} onClick={onOpen}>
-          <Typography>{t('boxes:read.actions.upload')}</Typography>
-        </MenuItem>
-      </MenuList>
-    </>
-
-
+      <MenuItem className={classes.listItem} onClick={onOpen}>
+        <Typography>{t('boxes:read.actions.upload')}</Typography>
+      </MenuItem>
+    </MenuList>
   );
 }
 
-FooterMenuActions.propTypes = {
+FooterMenuList.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['boxes'])(FooterMenuActions);
+export default withTranslation(['boxes'])(FooterMenuList);

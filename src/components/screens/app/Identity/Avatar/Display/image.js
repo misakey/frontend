@@ -13,7 +13,7 @@ import FormField from '@misakey/ui/Form/Field';
 import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import withErrors from 'components/dumb/Form/Field/withErrors';
+import withErrors from '@misakey/ui/Form/Field/withErrors';
 
 // HELPERS
 const getImage = prop('value');

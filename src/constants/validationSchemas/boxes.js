@@ -32,6 +32,10 @@ export const boxMessageValidationSchema = Yup.object().shape({
   message: Yup.string().trim().required(required),
 });
 
+export const boxEditMessageValidationSchema = Yup.object().shape({
+  message: Yup.string().trim(),
+});
+
 export const boxFileUploadValidationSchema = Yup.object().shape({
   files: Yup.array(
     Yup.mixed()

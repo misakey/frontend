@@ -1,19 +1,23 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import { withTranslation } from 'react-i18next';
 
-import { MESSAGE_BORDER_RADIUS } from 'constants/app/boxes/layout';
+import { CARD_BORDER_RADIUS } from '@misakey/ui/constants/sizes';
 
 import isNil from '@misakey/helpers/isNil';
-import Avatar from '@misakey/ui/Avatar/User';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
+import Avatar from '@misakey/ui/Avatar/User';
 import TypographyPreWrapped from '@misakey/ui/Typography/PreWrapped';
+import Typography from '@material-ui/core/Typography';
 import MuiCard from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Box from '@material-ui/core/Box';
-import EventCardHeader from 'components/dumb/Event/Card/Header';
+import CardHeader from 'components/dumb/Card/Header';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     background: 0,
   },
   boxRoot: {
-    borderRadius: MESSAGE_BORDER_RADIUS,
+    borderRadius: CARD_BORDER_RADIUS,
     backgroundColor: theme.palette.background.message,
   },
   content: {
@@ -34,6 +38,9 @@ const useStyles = makeStyles((theme) => ({
   },
   text: {
     padding: theme.spacing(1),
+  },
+  date: {
+    padding: theme.spacing(0, 1),
   },
   footer: {
     backgroundColor: theme.palette.background.default,
@@ -46,16 +53,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EventCard = ({
+const EventCard = forwardRef(({
   isFromCurrentUser,
   children,
   className,
   author,
   text,
+  date,
+  isEdited,
   actions,
   titleProps,
+  t,
   ...rest
-}) => {
+}, ref) => {
   const classes = useStyles();
 
   const { displayName, avatarUrl } = useMemo(() => author, [author]);
@@ -70,13 +80,14 @@ const EventCard = ({
     >
       {!isFromCurrentUser && <Avatar avatarUrl={avatarUrl} displayName={displayName} />}
       <MuiCard
+        ref={ref}
         className={clsx(classes.card, className)}
         elevation={0}
         square
-        {...rest}
+        {...omitTranslationProps(rest)}
       >
         {!isFromCurrentUser && (
-          <EventCardHeader
+          <CardHeader
             title={displayName}
             {...titleProps}
           />
@@ -85,9 +96,19 @@ const EventCard = ({
           {children}
           <CardContent classes={{ root: classes.content }}>
             {!isNil(text) && (
-            <TypographyPreWrapped className={classes.text}>
+            <TypographyPreWrapped component={Box} className={classes.text}>
               {text}
             </TypographyPreWrapped>
+            )}
+            {!isNil(date) && (
+              <Typography
+                className={classes.date}
+                variant="body2"
+                color="textSecondary"
+                align="right"
+              >
+                {isEdited ? t('components:cardEvent.edited', { date }) : date}
+              </Typography>
             )}
           </CardContent>
           {!isNil(actions) && (
@@ -101,13 +122,14 @@ const EventCard = ({
       </MuiCard>
     </Box>
   );
-};
+});
 
 EventCard.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   isFromCurrentUser: PropTypes.bool,
   text: PropTypes.node,
+  isEdited: PropTypes.bool,
   author: PropTypes.shape({
     displayName: PropTypes.string,
     avatarUrl: PropTypes.string,
@@ -118,6 +140,9 @@ EventCard.propTypes = {
     PropTypes.object,
     PropTypes.node,
   ]),
+  date: PropTypes.string,
+  // withTranslation
+  t: PropTypes.func.isRequired,
 };
 
 EventCard.defaultProps = {
@@ -128,10 +153,11 @@ EventCard.defaultProps = {
     name: null,
   },
   text: null,
+  isEdited: false,
   titleProps: {},
   isFromCurrentUser: false,
   actions: null,
-
+  date: null,
 };
 
-export default EventCard;
+export default withTranslation('components', { withRef: true })(EventCard);

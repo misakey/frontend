@@ -14,7 +14,7 @@
     }
   },
   "ScreenError": {
-    "title": "<0>Oops...</0><1>An error occured !</1>",
+    "title": "<0>Oops...</0><1>An error occured!</1>",
     "subtitle": "You can try to refresh the page. If the error persists, <1>contact us</1>.",
     "button": {
       "refresh": "Refresh",
@@ -77,11 +77,8 @@
   },
   "filePreview": {
     "errors": {
-      "unavailable": "can not be displayed in browser",
-      "noFile": "can not be downloaded",
-      "download": {
-        "get": "An error occured while retrieving the file !"
-      }
+      "unavailable": "cannot be displayed in browser",
+      "noFile": "cannot be downloaded"
     }
   },
   "saveInVault": {
@@ -96,5 +93,8 @@
     "acr": "This feature requires a secured account",
     "default": "This screen is secured",
     "subtitle": "Confirm your identity to continue"
+  },
+  "cardEvent": {
+    "edited": "edited\u00a0{{date}}"
   }
 }

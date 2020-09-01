@@ -90,11 +90,6 @@ const ListItemBoxesDeleted = ({ t, activeStatus, search, ...props }) => {
         primary={t('boxes:list.deleted.count.text', { count: missingPublicKeysCount })}
         secondary={t('boxes:list.deleted.subtitle.text', { count: missingPublicKeysCount })}
       />
-      <ListItemSecondaryAction>
-        <IconButton onClick={onClick} aria-label={t('common:more')} aria-controls="boxes-deleted-menu" aria-haspopup="true">
-          <MoreVertIcon />
-        </IconButton>
-      </ListItemSecondaryAction>
       <Menu
         id="boxes-deleted-menu"
         anchorEl={anchorEl}
@@ -106,6 +101,11 @@ const ListItemBoxesDeleted = ({ t, activeStatus, search, ...props }) => {
       >
         <MenuItem onClick={onDelete}>{t('common:leave')}</MenuItem>
       </Menu>
+      <ListItemSecondaryAction>
+        <IconButton onClick={onClick} aria-label={t('common:more')} aria-controls="boxes-deleted-menu" aria-haspopup="true">
+          <MoreVertIcon />
+        </IconButton>
+      </ListItemSecondaryAction>
     </ListItem>
   );
 };

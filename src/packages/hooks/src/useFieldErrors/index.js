@@ -15,6 +15,7 @@ export default ({ name, prefix, multiple, ...rest }) => {
 
   const [field, meta, helpers] = useField(fieldProps);
 
+  // {displayErrors: Boolean, errorKeys: []}
   const errorMeta = useMemo(
     () => (multiple
       ? getArrayFieldError({ field, meta, prefix })

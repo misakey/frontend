@@ -9,7 +9,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Slider from '@material-ui/core/Slider';
-import withErrors from 'components/dumb/Form/Field/withErrors';
+import withErrors from '@misakey/ui/Form/Field/withErrors';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
