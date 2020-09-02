@@ -7,8 +7,8 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Link from '@material-ui/core/Link';
-import LinkFeedback from 'components/smart/Link/Feedback';
-import Logo from 'components/dumb/Logo';
+import LinkFeedback from '@misakey/ui/FeedbackLink';
+import Logo from '@misakey/ui/Logo';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';

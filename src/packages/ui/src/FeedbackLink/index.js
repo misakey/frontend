@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import useImportTypeformCallback, { TYPEFORM_EMBED_URL } from 'hooks/useImportTypeformCallback';
+import useImportTypeformCallback, { TYPEFORM_EMBED_URL } from '@misakey/hooks/useImportTypeformCallback';
 
 import isNil from '@misakey/helpers/isNil';
 

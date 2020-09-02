@@ -60,12 +60,6 @@ docs:
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /^wip:/
-  only:
-    changes:
-      - src/packages/ui/**/*
-      - src/packages/auth/**/*
-      - styleguide/**/*
-      - styleguide.config.js
 
 build:
   stage: build

@@ -9,7 +9,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import pick from '@misakey/helpers/pick';
 
 import LinkHome from 'components/dumb/Link/Home';
-import Logo from 'components/dumb/Logo';
+import Logo from '@misakey/ui/Logo';
 import AvatarUser from '@misakey/ui/Avatar/User';
 
 // HOOKS

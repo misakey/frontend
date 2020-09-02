@@ -9,7 +9,7 @@ import boulder from '@misakey/ui/colors/boulder';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
-import LinkFeedback from 'components/smart/Link/Feedback';
+import LinkFeedback from '@misakey/ui/FeedbackLink';
 
 const styles = (theme) => ({
   root: {
