@@ -13,29 +13,29 @@
       }
     },
     "empty": {
-      "text": "Start a secured chat by clicking <1>+</1> or",
-      "create": "New chat"
+      "text": "Start a private space by clicking <1>+</1> or",
+      "create": "New private space"
     },
-    "select": "Select a chat 💬 to start",
+    "select": "Select a private space 💬 to start",
     "refresh": "Refresh",
     "count": {
-      "text": "You have {{count}} chat",
-      "text_plural": "You have {{count}} chats"
+      "text": "You have {{count}} private space",
+      "text_plural": "You have {{count}} private spaces"
     },
     "deleted": {
       "count": {
-        "text": "{{count}} unknown chat",
-        "text_plural": "{{count}} unknown chats"
+        "text": "{{count}} unknown private space",
+        "text_plural": "{{count}} unknown private spaces"
       },
       "subtitle": {
-        "text": "This chat has been deleted",
-        "text_plural": "These chats have been deleted"
+        "text": "This private space has been deleted",
+        "text_plural": "These private spaces have been deleted"
       }
     }
   },
   "read": {
     "closed": {
-      "info": "{{displayName}} closed the chat «\u00a0{{title}}\u00a0» on {{date}}."
+      "info": "{{displayName}} closed the private space «\u00a0{{title}}\u00a0» on {{date}}."
     },
     "actions": {
       "upload": "Send files",
@@ -46,20 +46,20 @@
       "edit": "Edit your message"
     },
     "warning": {
-      "saveInBackup": "Save this secure chat to my vault"
+      "saveInBackup": "Save this private space to my vault"
     },
     "errors": {
       "incorrectLink": "Impossible to decrypt from invitation link, it seems incorrect."
     },
     "info": {
-      "closed": "Only admins can access this chat",
-      "share": "Share this chat"
+      "closed": "Only admins can access this private space",
+      "share": "Share this private space"
     },
     "events": {
       "e2eeIntro": "Messages and documents sent in this conversation are protected with end-to-end encryption.",
       "create": {
         "error": {
-          "lifecycle": "Chat is closed, this action is not allowed anymore."
+          "lifecycle": "Space is closed, this action is not allowed anymore."
         }
       },
       "delete": {
@@ -77,41 +77,41 @@
       "information": {
         "lifecycle": {
           "closed": {
-            "they": "Chat closed by {{displayName}}",
-            "you": "You closed the chat",
-            "generic": "Chat closed"
+            "they": "Private space closed by {{displayName}}",
+            "you": "You closed the private space",
+            "generic": "Private space closed"
           },
           "open": {
-            "they": "{{displayName}} reopened the chat",
-            "you": "You reopened the chat"
+            "they": "{{displayName}} reopened the private space",
+            "you": "You reopened the private space"
           }
         },
         "create": {
-          "they": "{{displayName}} created the chat «\u00a0{{title}}\u00a0»",
-          "you": "You created the chat «\u00a0{{title}}\u00a0»"
+          "they": "{{displayName}} created the private space «\u00a0{{title}}\u00a0»",
+          "you": "You created the private space «\u00a0{{title}}\u00a0»"
         },
         "join": {
-          "they": "{{displayName}} joined the chat",
-          "you": "You joined the chat"
+          "they": "{{displayName}} joined the private space",
+          "you": "You joined the private space"
         },
         "preview": {
           "lifecycle": {
             "closed": {
-              "they": "Chat closed",
-              "you": "<0>You</0> closed the chat"
+              "they": "Private space closed",
+              "you": "<0>You</0> closed the private space"
             },
             "open": {
-              "they": "<0>{{displayName}}</0> reopened the chat",
-              "you": "<0>You</0> reopened the chat"
+              "they": "<0>{{displayName}}</0> reopened the private space",
+              "you": "<0>You</0> reopened the private space"
             }
           },
           "create": {
-            "they": "<0>{{displayName}}</0> created the chat «\u00a0{{title}}\u00a0»",
-            "you": "<0>You</0> created the chat «\u00a0{{title}}\u00a0»"
+            "they": "<0>{{displayName}}</0> created the private space «\u00a0{{title}}\u00a0»",
+            "you": "<0>You</0> created the private space «\u00a0{{title}}\u00a0»"
           },
           "join": {
-            "they": "<0>{{displayName}}</0> joined the chat",
-            "you": "<0>You</0> joined the chat"
+            "they": "<0>{{displayName}}</0> joined the private space",
+            "you": "<0>You</0> joined the private space"
           }
         }
       }
@@ -128,14 +128,14 @@
     "details": {
       "open": "See details",
       "menu": {
-        "title": "Name of the chat",
-        "files": "Files of the chat",
+        "title": "Name of the private space",
+        "files": "Files of the private space",
         "encryption": {
           "primary": "Encryption",
           "secondary": "Information sent in this workspace is protected with end-to-end encryption."
         },
         "members": {
-          "title": "Members of the chat",
+          "title": "Members of the private space",
           "creator": "You are the only member",
           "count": "{{count}} member",
           "count_plural": "{{count}} members"
@@ -148,33 +148,41 @@
         },
         "copyLink": "Copy sharing link",
         "close": {
-          "primary": "Close the chat",
-          "secondary": "By closing the chat, other members will not have access to its content anymore.",
+          "primary": "Close the private space",
+          "secondary": "By closing the private space, other members will not have access to its content anymore.",
           "confirmDialog": {
-            "text": "Do you really want to close the chat?\nOther members will not have access to its content anymore and you won't be able to reopen it.\nBeing its creator, you will still have access to the content."
+            "text": "Do you really want to close the private space?\nOther members will not have access to its content anymore and you won't be able to reopen it.\nBeing its creator, you will still have access to the content."
           }
         }
       }
     }
   },
   "create": {
-    "notOnTheList": {
+    "notOnTheListDialog": {
       "title": "Hey!",
       "subtitle": "Misakey is invitation only until July 2021",
       "button": "Have an invite code ? Click here",
       "getCodeTitle": "Want an invite ?",
-      "getCodeDescription": "We regularly send information about the next distributions of invitations by email to the members of the community. You can join the community by <1>joining this Misakey chat.</1><2/><3/>You will be able to discuss the project and try a small portion of the app to give us your early feedbacks."
+      "getCodeDescription": "We regularly send information about the next distributions of invitations by email to the members of the community. You can join the community by <1>joining this Misakey private space.</1><2/><3/>You will be able to discuss the project and try a small portion of the app to give us your early feedbacks."
+    },
+    "addCouponDialog": {
+      "title": "Welcome,",
+      "content": "Enter your invitation code to continue",
+      "success": "Your invitation code has been added. You can now create a new box!",
+      "fields": {
+        "coupon": "Invitation code"
+      }
     },
     "dialog": {
-      "title": "New chat",
+      "title": "New private space",
       "pasteLink": "I have an invitation link",
-      "content": "What is the new chat about?",
-      "success": "Chat has been successfully created!",
+      "content": "What is the new private space about?",
+      "success": "Private space has been successfully created!",
       "error": {
-        "updateBackup": "An error occurred while updating the vault, be sure to keep your invitation link to avoid loosing access to your chat."
+        "updateBackup": "An error occurred while updating the vault, be sure to keep your invitation link to avoid loosing access to your private space."
       },
       "fields": {
-        "name": "New chat"
+        "name": "New private space"
       }
     }
   },
@@ -183,22 +191,22 @@
       "description": "Are you sure you want to permanently delete “{{title}}”?\nThis cannot be undone. Please type “delete” to confirm",
       "confirmValue": "delete"
     },
-    "success": "Chat has been deleted.",
+    "success": "Private space has been deleted.",
     "error": {
       "updateBackup": "An error occurred while updating the vault."
     }
   },
   "pasteLink": {
     "broken": {
-      "title": "This chat link is broken",
-      "subtitle": "Paste an invitation link to open a chat"
+      "title": "This private space link is broken",
+      "subtitle": "Paste an invitation link to open a private space"
     },
-    "title": "Paste the chat's invitation link",
-    "goBack": "Create a new chat"
+    "title": "Paste the private space's invitation link",
+    "goBack": "Create a new private space"
   },
   "vault": {
     "dialog": {
-      "text": "Your vault is locked. Type your password to access your secured chats."
+      "text": "Your vault is locked. Type your password to access your secured private spaces."
     },
     "lockedScreen": {
       "text": "<0>What is the password for your vault </0><1><0></0></1><2>?</2>"

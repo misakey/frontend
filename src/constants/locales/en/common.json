@@ -6,7 +6,7 @@
   "back": "Back",
   "cancel": "Cancel",
   "close": "Fermer",
-  "copyInvitationLink": "Copy this link and send it to people you want to share the chat",
+  "copyInvitationLink": "Copy this link and send it to people you want to share the private space",
   "copy": "Copy",
   "copied": "Copied to clipboard!",
   "decrypt": "Decrypt",
@@ -59,7 +59,7 @@
   "drawerMenu": {
     "tabs": {
       "document": "Documents",
-      "chat": "Chats"
+      "chat": "Private spaces"
     }
   },
   "account": {

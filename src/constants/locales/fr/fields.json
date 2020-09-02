@@ -87,6 +87,13 @@
       "invalid": "Le nom public doit comporter entre 3 et 254 caractères"
     }
   },
+  "coupon": {
+    "label": "Code d'invitation",
+    "error": {
+      "invalid": "Le code d'invitation entré n'est pas valide. Merci de vérifier sa valeur",
+      "conflict": "Vous avez déjà rentré un code d'invitation. Vous ne pouvez pas le refaire."
+    }
+  },
   "email": {
     "label": "Email",
     "placeholder": "rose.flamingo@misakey.com",

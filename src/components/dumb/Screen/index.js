@@ -17,8 +17,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import ErrorIcon from '@material-ui/icons/Error';
 
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
-import { FOOTER_HEIGHT } from 'components/dumb/Footer';
-import FooterFullScreen from 'components/dumb/Footer/FullScreen';
+import { FOOTER_HEIGHT } from '@misakey/ui/Footer';
+import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
 
 // CONSTANTS
 // footer height + margintop

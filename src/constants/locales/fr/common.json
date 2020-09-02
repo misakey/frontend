@@ -7,7 +7,7 @@
   "back": "Précedent",
   "cancel": "Annuler",
   "close": "Fermer",
-  "copyInvitationLink": "Copiez et envoyez ce lien aux personnes que vous voulez inviter dans le chat",
+  "copyInvitationLink": "Copiez et envoyez ce lien aux personnes que vous voulez inviter dans l'espace privé",
   "copy": "Copier",
   "copied": "Copié dans le presse papier!",
   "decrypt": "Déchiffrer",
@@ -67,7 +67,7 @@
   "drawerMenu": {
     "tabs": {
       "document": "Documents",
-      "chat": "Chats"
+      "chat": "Espaces privés"
     }
   },
   "account": {

@@ -13,29 +13,29 @@
       }
     },
     "empty": {
-      "text": "Commencer un chat sécurisé en cliquant sur <1>+</1> ou",
-      "create": "Nouveau chat"
+      "text": "Commencer un espace privé sécurisé en cliquant sur <1>+</1> ou",
+      "create": "Nouvel espace privé"
     },
-    "select": "Rejoins un chat sécurisé 💬 pour commencer",
+    "select": "Rejoins un espace privé sécurisé 💬 pour commencer",
     "refresh": "Rafraîchir",
     "count": {
-      "text": "Vous avez {{count}} chat",
-      "text_plural": "Vous avez {{count}} chats"
+      "text": "Vous avez {{count}} espace privé",
+      "text_plural": "Vous avez {{count}} espaces privés"
     },
     "deleted": {
       "count": {
-        "text": "{{count}} chat inconnu",
-        "text_plural": "{{count}} chats inconnus"
+        "text": "{{count}} espace privé inconnu",
+        "text_plural": "{{count}} espaces privés inconnus"
       },
       "subtitle": {
-        "text": "Ce chat a été supprimé",
-        "text_plural": "Ces chats ont été supprimés"
+        "text": "Cet espace privé a été supprimé",
+        "text_plural": "Ces espaces privés ont été supprimés"
       }
     }
   },
   "read": {
     "closed": {
-      "info": "{{displayName}} a fermé le chat «\u00a0{{title}}\u00a0» le {{date}}."
+      "info": "{{displayName}} a fermé l'espace privé «\u00a0{{title}}\u00a0» le {{date}}."
     },
     "actions": {
       "upload": "Envoyer des fichiers",
@@ -46,20 +46,20 @@
       "edit": "Modifier votre message"
     },
     "warning": {
-      "saveInBackup": "Enregistrer ce chat dans mon coffre-fort"
+      "saveInBackup": "Enregistrer cet espace privé dans mon coffre-fort"
     },
     "errors": {
       "incorrectLink": "Impossible de déchiffrer à partir du lien d'invitation, il semble incorrect."
     },
     "info": {
       "closed": "Seuls les admins ont accès",
-      "share": "Partager ce chat"
+      "share": "Partager cet espace privé"
     },
     "events": {
       "e2eeIntro": "Les messages et documents envoyés dans cette conversation sont protégés avec le chiffrement de bout en bout.",
       "create": {
         "error": {
-          "lifecycle": "Le chat est fermé, vous ne pouvez pas effectuer cette action."
+          "lifecycle": "L'espace privé est fermé, vous ne pouvez pas effectuer cette action."
         }
       },
       "delete": {
@@ -77,41 +77,41 @@
       "information": {
         "lifecycle": {
           "closed": {
-            "they": "Chat fermé par {{displayName}}",
-            "you": "Vous avez fermé le chat",
-            "generic": "Chat fermé"
+            "they": "Espace privé fermé par {{displayName}}",
+            "you": "Vous avez fermé l'espace privé",
+            "generic": "Espace privé fermé"
           },
           "open": {
-            "they": "{{displayName}} a ré-ouvert le chat",
-            "you": "Vous avez ré-ouvert le chat"
+            "they": "{{displayName}} a ré-ouvert l'espace privé",
+            "you": "Vous avez ré-ouvert l'espace privé"
           }
         },
         "create": {
-          "they": "{{displayName}} a créé le chat «\u00a0{{title}}\u00a0»",
-          "you": "Vous avez créé le chat «\u00a0{{title}}\u00a0»"
+          "they": "{{displayName}} a créé l'espace privé «\u00a0{{title}}\u00a0»",
+          "you": "Vous avez créé l'espace privé «\u00a0{{title}}\u00a0»"
         },
         "join": {
-          "they": "{{displayName}} a rejoint le chat",
-          "you": "Vous avez rejoint le chat"
+          "they": "{{displayName}} a rejoint l'espace privé",
+          "you": "Vous avez rejoint l'espace privé"
         },
         "preview": {
           "lifecycle": {
             "closed": {
-              "they": "Chat fermé",
-              "you": "<0>Vous</0> avez fermé le chat"
+              "they": "Espace privé fermé",
+              "you": "<0>Vous</0> avez fermé l'espace privé"
             },
             "open": {
-              "they": "<0>{{displayName}}</0> a ré-ouvert le chat",
-              "you": "<0>Vous</0> avez ré-ouvert le chat"
+              "they": "<0>{{displayName}}</0> a ré-ouvert l'espace privé",
+              "you": "<0>Vous</0> avez ré-ouvert l'espace privé"
             }
           },
           "create": {
-            "they": "<0>{{displayName}}</0> a créé le chat «\u00a0{{title}}\u00a0»",
-            "you": "<0>Vous</0> avez créé le chat «\u00a0{{title}}\u00a0»"
+            "they": "<0>{{displayName}}</0> a créé l'espace privé «\u00a0{{title}}\u00a0»",
+            "you": "<0>Vous</0> avez créé l'espace privé «\u00a0{{title}}\u00a0»"
           },
           "join": {
-            "they": "<0>{{displayName}}</0> a rejoint le chat",
-            "you": "<0>Vous</0> avez rejoint le chat"
+            "they": "<0>{{displayName}}</0> a rejoint l'espace privé",
+            "you": "<0>Vous</0> avez rejoint l'espace privé"
           }
         }
       }
@@ -128,14 +128,14 @@
     "details": {
       "open": "Voir les détails",
       "menu": {
-        "title": "Nom du chat",
-        "files": "Fichiers du chat",
+        "title": "Nom de l'espace privé",
+        "files": "Fichiers de l'espace privé",
         "encryption": {
           "primary": "Chiffrement",
           "secondary": "Les informations envoyées dans cet espace sont protégés avec le chiffrement de bout en bout."
         },
         "members": {
-          "title": "Membres du chat",
+          "title": "Membres de l'espace privé",
           "creator": "Vous êtes le seul membre",
           "count": "{{count}} membre",
           "count_plural": "{{count}} membres"
@@ -148,33 +148,41 @@
         },
         "copyLink": "Copier le lien de partage",
         "close": {
-          "primary": "Fermer le chat",
-          "secondary": "En fermant le chat, les autres membres n'auront plus accès à son contenu.",
+          "primary": "Fermer l'espace privé",
+          "secondary": "En fermant l'espace privé, les autres membres n'auront plus accès à son contenu.",
           "confirmDialog": {
-            "text": "Voulez-vous vraiment fermer ce chat\u00a0?\nLes autres membres n'auront plus accès à son contenu et vous ne pourrez plus la réouvrir.\nEn tant que créateur·trice, vous aurez toujours accès au contenu."
+            "text": "Voulez-vous vraiment fermer cet espace privé\u00a0?\nLes autres membres n'auront plus accès à son contenu et vous ne pourrez plus la réouvrir.\nEn tant que créateur·trice, vous aurez toujours accès au contenu."
           }
         }
       }
     }
   },
   "create": {
-    "notOnTheList": {
+    "notOnTheListDialog": {
       "title": "Hey\u00a0!",
       "subtitle": "Misakey n'est que sur invitation jusqu'en juillet 2021",
       "button": "Vous avez un code d'invitation ? Cliquez ici",
       "getCodeTitle": "Vous voulez une invitation ?",
-      "getCodeDescription": "Nous envoyons régulièrement des informations sur les prochaines campagnes de distribution d’invitations par email aux membres de la communauté. Vous pouvez rejoindre la communauté en <1>participant à ce chat Misakey.</1><2/><3/>Vous pourrez aussi y discuter du projet et tester une petite partie de l’app pour nous faire vos retours."
+      "getCodeDescription": "Nous envoyons régulièrement des informations sur les prochaines campagnes de distribution d’invitations par email aux membres de la communauté. Vous pouvez rejoindre la communauté en <1>participant à cet espace privé Misakey.</1><2/><3/>Vous pourrez aussi y discuter du projet et tester une petite partie de l’app pour nous faire vos retours."
+    },
+    "addCouponDialog": {
+      "title": "Bienvenue,",
+      "content": "Saisissez votre code d'invitation pour continuer",
+      "success": "Votre code d'invitation a bien été ajouté. Vous pouvez maintenant créer une nouvelle conversation\u00a0!",
+      "fields": {
+        "coupon": "Code d'invitation"
+      }
     },
     "dialog": {
       "title": "Nouvelle conversation",
       "pasteLink": "J'ai un lien d'invitation",
       "content": "Quel est le sujet de cette nouvelle conversation\u00a0?",
-      "success": "Le chat a été créé avec succès\u00a0!",
+      "success": "L'espace privé a été créé avec succès\u00a0!",
       "error": {
-        "updateBackup": "Une erreur s'est produite lors de la mise à jour du coffre-fort. Assurez-vous de garder le lien d'invitation du chat afin de ne pas perdre la clé de déchiffrement."
+        "updateBackup": "Une erreur s'est produite lors de la mise à jour du coffre-fort. Assurez-vous de garder le lien d'invitation de l'espace privé afin de ne pas perdre la clé de déchiffrement."
       },
       "fields": {
-        "name": "Nouveau chat"
+        "name": "Nouvel espace privé"
       }
     }
   },
@@ -183,22 +191,22 @@
       "description": "Êtes-vous sûr·e de vouloir supprimer «\u00a0{{title}}\u00a0»\u00a0?\nCette action est irréversible. Veuillez saisir «\u00a0supprimer\u00a0» pour confirmer",
       "confirmValue": "supprimer"
     },
-    "success": "Le chat a été supprimé",
+    "success": "L'espace privé a été supprimé",
     "error": {
       "updateBackup": "Une erreur s'est produite lors de la mise à jour du coffre-fort."
     }
   },
   "pasteLink": {
     "broken": {
-      "title": "Le lien de ce chat est cassé",
-      "subtitle": "Collez un lien d'invitation pour ouvrir un chat"
+      "title": "Le lien de cet espace privé est cassé",
+      "subtitle": "Collez un lien d'invitation pour ouvrir un espace privé"
     },
-    "title": "Collez le lien d'invitation du chat",
-    "goBack": "Créer un nouveau chat"
+    "title": "Collez le lien d'invitation de l'espace privé",
+    "goBack": "Créer un nouvel espace privé"
   },
   "vault": {
     "dialog": {
-      "text": "Votre coffre-fort est verrouillé. Tapez votre mot de passe pour accéder à vos chats sécurisés."
+      "text": "Votre coffre-fort est verrouillé. Tapez votre mot de passe pour accéder à vos espaces privés sécurisés."
     },
     "lockedScreen": {
       "text": "<0>Quel est le mot de passe pour votre coffre-fort</0><1><0></0></1><2>\u00a0?</2>"

@@ -12,7 +12,7 @@ import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import withIdentity from 'components/smart/withIdentity';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
-import Footer from 'components/dumb/Footer';
+import Footer from '@misakey/ui/Footer';
 import DarkmodeSwitch from 'components/smart/Switch/Darkmode';
 
 import ArrowBack from '@material-ui/icons/ArrowBack';

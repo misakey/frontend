@@ -3,7 +3,7 @@ import React from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Container from '@material-ui/core/Container';
-import Footer from 'components/dumb/Footer';
+import Footer from '@misakey/ui/Footer';
 
 // CONSTANTS
 const CONTAINER_PROPS = {

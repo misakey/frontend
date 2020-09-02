@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Card from 'components/dumb/Card';
-import Footer from 'components/dumb/Footer';
+import Footer from '@misakey/ui/Footer';
 
 // CONSTANTS
 const AUTH_MAX_WIDTH = 500;

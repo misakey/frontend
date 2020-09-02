@@ -23,7 +23,7 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 import { Container } from '@material-ui/core';
 import Subtitle from 'packages/ui/src/Typography/Subtitle';
 import { FEEDBACK } from 'constants/emails';
-import FooterFullScreen from 'components/dumb/Footer/FullScreen';
+import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({

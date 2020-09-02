@@ -8,7 +8,7 @@ import API from '@misakey/api';
 
 const matchingMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD'];
 
-const matchingNaming = ['create', 'read', 'update', 'delete', 'find', 'search', 'count'];
+const matchingNaming = ['create', 'read', 'update', 'delete', 'find', 'search', 'count', 'add'];
 
 // @FIXME to cleanup
 const authExtendedNamings = [

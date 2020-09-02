@@ -15,8 +15,8 @@ import { useSelector } from 'react-redux';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 
-import Formik from '@misakey/ui/Formik';
 import { Form } from 'formik';
+import Formik from '@misakey/ui/Formik';
 import Box from '@material-ui/core/Box';
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
@@ -27,7 +27,7 @@ import DialogContent from '@misakey/ui/DialogContent';
 import BoxControls from '@misakey/ui/Box/Controls';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import AvatarUser from '@misakey/ui/Avatar/User';
-
+import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
 import LoginFormFields from '@misakey/ui/Form/Fields/Login/Identifier';
 
 // CONSTANTS
@@ -160,6 +160,7 @@ const DialogSigninRedirect = ({
           )}
         </Form>
       </Formik>
+      <FooterFullScreen />
     </Dialog>
   );
 };

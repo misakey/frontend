@@ -54,6 +54,11 @@ export const colorFieldValidation = {
     .matches(/^#[0-9a-f]{3,6}$/i),
 };
 
+export const couponFieldValidation = {
+  requiredSchema: Yup.string()
+    .required(required),
+};
+
 export const fileFieldValidation = {
   blobSchema: Yup.mixed()
     .test('fileSize', 'size', (file) => isNil(file) || file.size <= MAX_FILE_SIZE)
