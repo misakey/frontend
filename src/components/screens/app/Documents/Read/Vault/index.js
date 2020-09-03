@@ -25,6 +25,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 const useStyles = makeStyles((theme) => ({
   avatar: {
     backgroundColor: theme.palette.secondary.main,
+    color: theme.palette.common.white,
   },
   content: {
     maxHeight: `calc(100% - ${APPBAR_HEIGHT}px)`,
@@ -60,7 +61,7 @@ const DocumentsVault = ({ t, isDrawerOpen, drawerWidth, toggleDrawer, savedFiles
                 </Box>
               )}
               <Box display="flex" flexDirection="column" flexGrow={1}>
-                <Typography>
+                <Typography color="textPrimary">
                   {t('document:vault.title')}
                 </Typography>
                 <Typography variant="caption" color="textSecondary">

@@ -18,7 +18,7 @@ const CardIdentityThumbnail = ({ identity, ...props }) => {
     [identity],
   );
 
-  const { displayName, avatarUrl } = useMemo(
+  const { displayName, avatarUrl, identifier: { value: identifierValue } = {} } = useMemo(
     () => identity || {},
     [identity],
   );
@@ -30,6 +30,7 @@ const CardIdentityThumbnail = ({ identity, ...props }) => {
           text={displayName}
           image={avatarUrl}
           title={displayName}
+          subtitle={identifierValue}
           {...props}
         />
       ) : (

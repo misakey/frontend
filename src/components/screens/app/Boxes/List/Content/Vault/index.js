@@ -9,10 +9,10 @@ import path from '@misakey/helpers/path';
 import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import { useRouteMatch } from 'react-router-dom';
+import { useRouteMatch, Link } from 'react-router-dom';
 import useInterval from '@misakey/hooks/useInterval';
 // import { useLocation, useHistory } from 'react-router-dom';
-// import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import usePaginateBoxesByStatusRefresh from 'hooks/usePaginateBoxesByStatus/refresh';
@@ -20,26 +20,37 @@ import useResetBoxCount from 'hooks/useResetBoxCount';
 import useIdentity from 'hooks/useIdentity';
 // import getNextSearch from '@misakey/helpers/getNextSearch';
 
+import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import WindowedListBoxes from 'components/smart/WindowedList/UserBoxes';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 // import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 // import FilledInput from '@material-ui/core/FilledInput';
 
 // HELPERS
 const paramsIdPath = path(['params', 'id']);
 
-// const useStyles = makeStyles((theme) => ({
-//   search: {
-//     borderRadius: theme.spacing(0.5),
-//   },
-//   input: {
-//     padding: theme.spacing(1, 2),
-//   },
-// }));
+const useStyles = makeStyles((theme) => ({
+  // search: {
+  //   borderRadius: theme.spacing(0.5),
+  // },
+  // input: {
+  //   padding: theme.spacing(1, 2),
+  // },
+  documents: {
+    color: 'inherit',
+    display: 'inline-flex',
+    justifyContent: 'space-between',
+    padding: theme.spacing(2),
+    textDecoration: 'none',
+    borderTop: `1px solid ${theme.palette.divider}`,
+  },
+}));
 
 // COMPONENTS
 const VaultOpen = forwardRef(({ t, activeStatus, ...props }, ref) => {
-  // const classes = useStyles();
+  const classes = useStyles();
   const locationSearchParams = useLocationSearchParams();
 
   const { identityId } = useIdentity();
@@ -117,6 +128,11 @@ const VaultOpen = forwardRef(({ t, activeStatus, ...props }, ref) => {
         disablePadding
         {...omitTranslationProps(props)}
       />
+      <BoxFlexFill />
+      <Link to={routes.documents.vault} className={classes.documents}>
+        <Typography>{t('document:vault.title')}</Typography>
+        <KeyboardArrowRightIcon />
+      </Link>
     </>
   );
 });
@@ -127,4 +143,4 @@ VaultOpen.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('boxes', { withRef: true })(VaultOpen);
+export default withTranslation(['boxes', 'document'], { withRef: true })(VaultOpen);

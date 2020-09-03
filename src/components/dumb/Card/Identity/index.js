@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const CardIdentity = ({ identity, t }) => {
   const {
-    displayName, avatarUrl, notifications, color,
+    displayName, avatarUrl, notifications, color, identifier: { value: identifierValue } = {},
   } = useMemo(() => identity || {}, [identity]);
 
   const classes = useStyles({ color });
@@ -99,6 +99,7 @@ const CardIdentity = ({ identity, t }) => {
         text={displayName}
         image={avatarUrl}
         title={displayName}
+        subtitle={identifierValue}
       />
       <CardList>
         <ListItem

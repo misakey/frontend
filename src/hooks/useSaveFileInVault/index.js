@@ -23,7 +23,7 @@ export default (encryption, encryptedFileId) => {
   const { t } = useTranslation('components');
 
   const seeAction = useMemo(
-    () => <Button text={t('common:see')} component={Link} to={routes.documents.vault} />,
+    () => <Button text={t('common:see')} color="inherit" component={Link} to={routes.documents.vault} />,
     [t],
   );
 
@@ -40,7 +40,7 @@ export default (encryption, encryptedFileId) => {
       enqueueSnackbar(t('components:saveInVault.success'), { variant: 'success', action: seeAction });
     } catch (err) {
       if (err.code === conflict) {
-        enqueueSnackbar(t('components:saveInVault.error.conflict'), { variant: 'error', action: seeAction });
+        enqueueSnackbar(t('components:saveInVault.error.conflict'), { variant: 'info', action: seeAction });
       } else {
         enqueueSnackbar(t('components:saveInVault.error.default'), { variant: 'error' });
       }

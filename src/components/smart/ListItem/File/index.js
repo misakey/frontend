@@ -39,6 +39,10 @@ const useStyles = makeStyles((theme) => ({
   list: {
     padding: 0,
   },
+  avatar: {
+    backgroundColor: theme.palette.grey[400],
+    color: theme.palette.background.paper,
+  },
 }));
 
 const FileListItem = ({ file, t }) => {
@@ -109,14 +113,14 @@ const FileListItem = ({ file, t }) => {
       />
       <ListItem button onClick={onOpenFilePreview} divider>
         <ListItemAvatar>
-          <Avatar>
+          <Avatar className={classes.avatar}>
             <FileIcon />
           </Avatar>
         </ListItemAvatar>
         <ListItemText
           primary={fileName}
           secondary={secondary}
-          primaryTypographyProps={{ noWrap: true, display: 'block' }}
+          primaryTypographyProps={{ noWrap: true, display: 'block', color: 'textPrimary' }}
           secondaryTypographyProps={{ noWrap: true, display: 'block' }}
         />
         <ListItemSecondaryAction>

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Switch, Route, Redirect, Link, useParams, generatePath } from 'react-router-dom';
+import { Switch, Route, Redirect, Link, useParams, generatePath, useRouteMatch } from 'react-router-dom';
 
 import routes from 'routes';
 import { MISAKEY_ACCOUNT_ID } from 'constants/account';
@@ -23,7 +23,8 @@ import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 
 // COMPONENTS
-function AccountRead({ match: { path }, toggleDrawer, isDrawerOpen }) {
+function AccountRead({ toggleDrawer, isDrawerOpen }) {
+  const { path } = useRouteMatch();
   const identityMetadata = useIdentity();
   const accountId = useAccountId(identityMetadata.identity);
 
@@ -111,8 +112,6 @@ function AccountRead({ match: { path }, toggleDrawer, isDrawerOpen }) {
 }
 
 AccountRead.propTypes = {
-  // ROUTER
-  match: PropTypes.shape({ path: PropTypes.string }).isRequired,
   // DRAWER
   toggleDrawer: PropTypes.func.isRequired,
   isDrawerOpen: PropTypes.bool,

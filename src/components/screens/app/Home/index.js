@@ -10,7 +10,7 @@ import AccountDrawer from 'components/smart/Drawer/Account';
 import useLoadSecretsFromShares from '@misakey/crypto/hooks/useLoadSecretsFromShares';
 import withIdentity from 'components/smart/withIdentity';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
-import Documents from 'components/screens/app/Documents';
+import VaultDocuments from '../Documents';
 
 function Home({ isFetchingIdentity }) {
   const { isLoadingBackupKey } = useLoadSecretsFromShares();
@@ -31,7 +31,7 @@ function Home({ isFetchingIdentity }) {
         <RouteAcr
           acr={2}
           path={routes.documents._}
-          component={Documents}
+          component={VaultDocuments}
         />
         <Route
           path={routes.boxes._}

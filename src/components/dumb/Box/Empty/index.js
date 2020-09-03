@@ -30,7 +30,7 @@ function Empty({ t, text, title, ...rest }) {
       className={classes.root}
       {...omitTranslationProps(rest)}
     >
-      <Typography variant="h5" component="h4" align="center">
+      <Typography variant="h5" component="h4" color="textPrimary" align="center">
         {title || t('components:list.empty.title')}
       </Typography>
       <Typography variant="subtitle1" color="textSecondary" align="center">
