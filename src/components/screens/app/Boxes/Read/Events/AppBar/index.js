@@ -6,6 +6,7 @@ import { CLOSED } from 'constants/app/boxes/statuses';
 import routes from 'routes';
 import BoxesSchema from 'store/schemas/Boxes';
 
+import isEmpty from '@misakey/helpers/isEmpty';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -18,10 +19,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import BoxAvatar from 'components/dumb/Avatar/Box';
 import Typography from '@material-ui/core/Typography';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 // CONSTANTS
+const SKELETON_WIDTH = 100;
+
 const PRIMARY_TYPO_PROPS = {
   variant: 'h5',
   noWrap: true,
@@ -42,19 +46,15 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(0),
     paddingBottom: theme.spacing(0),
   },
-  listItemTextPrimary: {
-    [theme.breakpoints.down('sm')]: {
-      fontSize: theme.typography.subtitle1.fontSize,
-    },
-  },
-  listItemTextSecondary: {
-    [theme.breakpoints.down('sm')]: {
-      fontSize: theme.typography.subtitle2.fontSize,
-    },
-  },
   typographyFlex: {
     display: 'flex',
     alignItems: 'center',
+  },
+  secondarySkeleton: {
+    ...theme.typography.body2,
+    [theme.breakpoints.down('sm')]: {
+      ...theme.typography.subtitle2,
+    },
   },
 }));
 
@@ -83,7 +83,7 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
       }
       return t('boxes:read.details.menu.members.count', { count: members.length });
     },
-    [belongsToCurrentUser, members.length, isBoxClosed, t],
+    [belongsToCurrentUser, members, isBoxClosed, t],
   );
 
   const primaryTypographyProps = useMemo(
@@ -100,6 +100,18 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
     [isDownSm],
   );
 
+
+  const secondary = useMemo(
+    () => (isEmpty(members)
+      ? <Skeleton className={classes.secondarySkeleton} width={SKELETON_WIDTH} />
+      : (
+        <Typography {...secondaryTypographyProps}>
+          {membersText}
+        </Typography>
+      )),
+    [members, membersText, secondaryTypographyProps, classes.secondarySkeleton],
+  );
+
   return (
     <ListItem
       button
@@ -111,10 +123,6 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
       classes={{ root: classes.listItemRoot }}
     >
       <ListItemText
-        classes={{
-          primary: classes.listItemTextPrimary,
-          secondary: classes.listItemTextSecondary,
-        }}
         disableTypography
         primary={(
           <Typography className={classes.typographyFlex} {...primaryTypographyProps}>
@@ -122,11 +130,7 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
             {!disabled && <ExpandMoreIcon />}
           </Typography>
           )}
-        secondary={(
-          <Typography {...secondaryTypographyProps}>
-            {membersText}
-          </Typography>
-          )}
+        secondary={secondary}
       />
       <BoxAvatar
         aria-label={t('boxes:read.details.open')}

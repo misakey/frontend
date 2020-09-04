@@ -90,6 +90,15 @@ export const updatePaginationsToStatus = (id, status) => (dispatch) => {
   ]);
 };
 
+export const removeFromPaginations = (id) => (dispatch) => {
+  const removeActionCreators = getRemovePaginatedIdActionCreators(actionCreators);
+
+  return Promise.all(
+    removeActionCreators
+      .map((removePaginatedId) => dispatch(removePaginatedId(id))),
+  );
+};
+
 export const moveBackUpId = (id, status = ALL) => (dispatch) => {
   const { [status]: toStatusActionCreators } = actionCreators;
 

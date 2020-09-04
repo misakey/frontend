@@ -2,8 +2,8 @@ import { LIFECYCLE } from 'constants/app/boxes/events';
 import BoxesSchema from 'store/schemas/Boxes';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
 
-import { receiveEntities, updateEntities } from '@misakey/store/actions/entities';
-import { moveBackUpId } from 'store/reducers/userBoxes/pagination';
+import { receiveEntities, updateEntities, removeEntities } from '@misakey/store/actions/entities';
+import { moveBackUpId, removeFromPaginations } from 'store/reducers/userBoxes/pagination';
 import { createSelector } from 'reselect';
 import { normalize, denormalize } from 'normalizr';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
@@ -42,7 +42,7 @@ const getBoxSelector = createSelector(
   (items) => (id) => propOr(null, id)(items),
 );
 
-const getBoxMembersIdsSelector = createSelector(
+const getBoxSendersIdsSelector = createSelector(
   (state) => state.entities,
   (items) => (id) => {
     const { events = [] } = denormalize(id, BoxesSchema.entity, items) || {};
@@ -51,7 +51,20 @@ const getBoxMembersIdsSelector = createSelector(
 );
 
 export const getBoxById = (state, id) => getBoxSelector(state)(id);
-export const getBoxMembersIds = (state, id) => getBoxMembersIdsSelector(state)(id);
+export const getBoxSendersIds = (state, id) => getBoxSendersIdsSelector(state)(id);
+
+// THUNKS
+export const removeBox = (id) => (dispatch, getState) => {
+  const currentBox = getBoxById(getState(), id);
+
+  const { events = [] } = currentBox;
+
+  return Promise.all([
+    dispatch(removeEntities(events, BoxEventsSchema)),
+    dispatch(removeEntities([{ id }], BoxesSchema)),
+    dispatch(removeFromPaginations(id)),
+  ]);
+};
 
 export const addBoxEvents = (id, event) => (dispatch, getState) => {
   const currentBox = getBoxById(getState(), id);

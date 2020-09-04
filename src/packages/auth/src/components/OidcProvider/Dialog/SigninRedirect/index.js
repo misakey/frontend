@@ -150,7 +150,6 @@ const DialogSigninRedirect = ({
               )}
               <BoxControls
                 primary={{
-                  autoFocus: true,
                   type: 'submit',
                   text: t('common:confirm'),
                 }}

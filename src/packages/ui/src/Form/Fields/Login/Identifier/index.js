@@ -17,7 +17,7 @@ const DEFAULT_FIELDS = {
     inputProps: {
       'data-matomo-ignore': true,
       id: `${PREFIX}_${STEP.identifier}`,
-      autocomplete: 'username',
+      autoComplete: 'username',
     },
     autoFocus: true,
   },

@@ -43,4 +43,4 @@ NoVault.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['common', 'boxes'])(NoVault);
+export default withTranslation(['common', 'boxes'], { withRef: true })(NoVault);

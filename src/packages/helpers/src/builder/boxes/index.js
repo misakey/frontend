@@ -13,6 +13,12 @@ export const getBoxBuilder = (id, queryParams = {}) => API
   .send()
   .then(objectToCamelCaseDeep);
 
+export const getBoxMembersBuilder = (id) => API
+  .use(API.endpoints.boxes.members.find)
+  .build({ id })
+  .send()
+  .then((members) => members.map(objectToCamelCaseDeep));
+
 export const getBoxPublicBuilder = ({ id, otherShareHash }) => API
   .use(API.endpoints.boxes.public.read)
   .build({ id }, undefined, objectToSnakeCase({ otherShareHash }))
@@ -36,7 +42,7 @@ export const getBoxWithEventsBuilder = (id) => Promise.all([
 
 
 export const getUserBoxesBuilder = (payload) => API
-  .use(API.endpoints.boxes.find)
+  .use(API.endpoints.boxes.user.find)
   .build(null, null, objectToSnakeCase({
     withBlobCount: true,
     orderBy: 'updated_at DESC',
@@ -48,7 +54,7 @@ export const getUserBoxesBuilder = (payload) => API
 export const countUserBoxesBuilder = (payload) => {
   const query = isNil(payload) ? {} : objectToSnakeCase(payload);
   return API
-    .use(API.endpoints.boxes.count)
+    .use(API.endpoints.boxes.user.count)
     .build(null, null, query)
     .send()
     .then((response) => parseInt(response.headers.get('X-Total-Count'), 10));

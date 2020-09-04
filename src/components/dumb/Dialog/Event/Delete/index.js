@@ -56,10 +56,11 @@ const DialogEventDelete = ({
       onConfirm={onConfirm}
       isDialogOpen={isDialogOpen}
       onClose={onClose}
-      dialogContent={t('boxes:read.events.delete.confirmDialog')}
       confirmButtonText={t('common:delete')}
       {...omitTranslationProps(rest)}
-    />
+    >
+      {t('boxes:read.events.delete.confirmDialog')}
+    </DialogConfirm>
   );
 };
 

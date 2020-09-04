@@ -30,7 +30,7 @@ const DEFAULT_FIELDS = {
       inputProps: {
         'data-matomo-ignore': true,
         id: `${PREHASHED_PASSWORD}_${STEP.secret}`,
-        autocomplete: 'current-password',
+        autoComplete: 'current-password',
       },
     },
   },
@@ -43,7 +43,7 @@ const DEFAULT_FIELDS = {
       inputProps: {
         'data-matomo-ignore': true,
         id: `${ACCOUNT_CREATION}_${STEP.secret}`,
-        autocomplete: 'new-password',
+        autoComplete: 'new-password',
       },
     },
   },

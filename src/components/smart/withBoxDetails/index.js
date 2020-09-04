@@ -1,25 +1,29 @@
 import React, { useMemo, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { denormalize, normalize } from 'normalizr';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import routes from 'routes';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
+import useHandleBoxKeyShare from '@misakey/crypto/hooks/useHandleBoxKeyShare';
+import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 import pluck from '@misakey/helpers/pluck';
 import identity from '@misakey/helpers/identity';
-import { getBoxEventsBuilder, getBoxWithEventsBuilder, getBoxBuilder } from '@misakey/helpers/builder/boxes';
+import { getBoxEventsBuilder, getBoxWithEventsBuilder, getBoxBuilder, getBoxMembersBuilder } from '@misakey/helpers/builder/boxes';
 
 
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import BoxesSchema from 'store/schemas/Boxes';
 import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
 import EventsSchema from 'store/schemas/Boxes/Events';
-import { getBoxMembersIds } from 'store/reducers/box';
+import SenderSchema from 'store/schemas/Boxes/Sender';
 
 import { OPEN } from 'constants/app/boxes/statuses';
 
@@ -38,19 +42,25 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       box,
       dispatchReceiveBox,
       dispatchReceiveBoxEvents,
+      dispatchReceiveBoxMembers,
       ...rest
     } = props;
 
-    const { id, events, lifecycle, lastEvent } = useMemo(() => box || {}, [box]);
-    const members = useSelector((state) => getBoxMembersIds(state, id));
+    const { id, events, members, lifecycle, lastEvent, publicKey } = useSafeDestr(box);
     const isOpen = useMemo(() => lifecycle === OPEN, [lifecycle]);
     const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
+
+    const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
+    const secretKey = useMemo(
+      () => publicKeysWeCanDecryptFrom.get(publicKey),
+      [publicKey, publicKeysWeCanDecryptFrom],
+    );
 
     const { params } = useRouteMatch();
     const history = useHistory();
 
     const boxForChildren = useMemo(
-      () => ({ ...(box || { id: params.id }), members }), [box, members, params.id],
+      () => ({ members: [], ...box || { id: params.id } }), [box, params.id],
     );
 
     const isAllowedToFetch = useMemo(
@@ -63,6 +73,7 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       [isAllowedToFetch, box],
     );
 
+    // @FIXME to factorize
     const isAllowedToFetchContent = useMemo(
       () => !shouldFetchBox && isAllowedToFetch && (isOpen || belongsToCurrentUser),
       [belongsToCurrentUser, isAllowedToFetch, isOpen, shouldFetchBox],
@@ -92,6 +103,11 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       [isAllowedToFetchContent, params.id],
     );
 
+    const getBoxMembers = useCallback(
+      () => getBoxMembersBuilder(params.id),
+      [params.id],
+    );
+
     const getBoxEvents = useCallback(
       () => getBoxEventsBuilder(params.id),
       [params.id],
@@ -117,6 +133,27 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       { onSuccess: dispatchReceiveBox, onError },
     );
 
+
+    const {
+      isFetching: isFetchingBoxKeyShare,
+    } = useHandleBoxKeyShare(boxForChildren, secretKey, isFetching);
+
+    const shouldFetchMembers = useMemo(
+      () => isAllowedToFetchContent && isEmpty(members) && !isFetchingBoxKeyShare,
+      [isAllowedToFetchContent, members, isFetchingBoxKeyShare],
+    );
+
+    const onReceiveBoxMembers = useCallback(
+      (data) => dispatchReceiveBoxMembers(id, data),
+      [dispatchReceiveBoxMembers, id],
+    );
+
+    const { isFetching: isFetchingMembers } = useFetchEffect(
+      getBoxMembers,
+      { shouldFetch: shouldFetchMembers },
+      { onSuccess: onReceiveBoxMembers },
+    );
+
     const { isFetching: isFetchingEvents } = useFetchEffect(
       getBoxEvents,
       { shouldFetch: shouldFetchEvents },
@@ -132,13 +169,18 @@ const withBoxDetails = (mapper = identity) => (Component) => {
         isFetching: {
           box: isFetching,
           events: isFetchingEvents,
+          keyShare: isFetchingBoxKeyShare,
+          members: isFetchingMembers,
         },
         onDelete,
         isAuthenticated,
         ...rest,
       })),
-      [belongsToCurrentUser, boxForChildren, isAuthenticated,
-        isFetching, isFetchingEvents, onDelete, rest],
+      [
+        belongsToCurrentUser, boxForChildren, isAuthenticated,
+        isFetching, isFetchingEvents, isFetchingBoxKeyShare, isFetchingMembers,
+        onDelete, rest,
+      ],
     );
 
     return <Component {...mappedProps} />;
@@ -150,6 +192,7 @@ const withBoxDetails = (mapper = identity) => (Component) => {
     isAuthenticated: PropTypes.bool,
     dispatchReceiveBox: PropTypes.func.isRequired,
     dispatchReceiveBoxEvents: PropTypes.func.isRequired,
+    dispatchReceiveBoxMembers: PropTypes.func.isRequired,
   };
 
   Wrapper.defaultProps = {
@@ -175,6 +218,17 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       );
       const { entities } = normalized;
       dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
+    },
+    dispatchReceiveBoxMembers: (id, members) => {
+      const normalized = normalize(
+        members,
+        SenderSchema.collection,
+      );
+      const { entities, result } = normalized;
+      return Promise.all([
+        dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
+        dispatch(updateEntities([{ id, changes: { members: result } }], BoxesSchema)),
+      ]);
     },
     dispatchReceiveBoxEvents: (id, events) => {
       const normalized = normalize(

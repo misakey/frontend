@@ -129,10 +129,10 @@ function BoxEvents({
             toolbarProps={{ px: 0 }}
             offsetHeight={headerHeight}
           >
-            <Box ref={headerRef} display="flex" flexDirection="column" width="100%">
+            <Box ref={headerRef} display="flex" flexDirection="column" width="100%" minHeight="inherit">
               <Box display="flex">
                 {!isDrawerOpen && (
-                <Box display="flex" pl={2} pr={1}>
+                <Box display="flex" alignItems="center" pl={2} pr={1}>
                   <IconButtonAppBar
                     aria-label={t('common:openAccountDrawer')}
                     edge="start"
@@ -144,7 +144,6 @@ function BoxEvents({
                 )}
                 <BoxEventsAppBar box={box} belongsToCurrentUser={belongsToCurrentUser} />
               </Box>
-
               {isNil(accountId) && (
               <Alert
                 severity="warning"

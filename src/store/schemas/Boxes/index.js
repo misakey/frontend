@@ -9,6 +9,7 @@ const entity = new schema.Entity('boxes', {
   events: EventSchema.collection,
   lastEvent: EventSchema.entity,
   creator: SenderSchema.entity,
+  members: SenderSchema.collection,
 });
 
 const collection = [entity];
@@ -28,6 +29,8 @@ const BoxesSchema = {
     creator: PropTypes.shape(SenderSchema.propTypes),
     // eslint-disable-next-line react/forbid-foreign-prop-types
     lastEvent: PropTypes.shape(EventSchema.propTypes),
+    // eslint-disable-next-line react/forbid-foreign-prop-types
+    members: PropTypes.arrayOf(PropTypes.shape(SenderSchema.propTypes)),
   },
 };
 

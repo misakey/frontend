@@ -9,7 +9,6 @@ import BoxesSchema from 'store/schemas/Boxes';
 import isNil from '@misakey/helpers/isNil';
 
 import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
-import useHandleBoxKeyShare from '@misakey/crypto/hooks/useHandleBoxKeyShare';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useMountEffect from '@misakey/hooks/useMountEffect';
 import usePropChanged from '@misakey/hooks/usePropChanged';
@@ -48,13 +47,9 @@ function BoxRead({
   );
   const canBeDecrypted = useMemo(() => !isNil(secretKey), [secretKey]);
 
-  const {
-    isFetching: isFetchingBoxKeyShare,
-  } = useHandleBoxKeyShare(box, secretKey, isFetching.box);
-
   const displayLoadingScreen = useMemo(
-    () => isFetching.box || (isFetchingBoxKeyShare && isNil(secretKey)),
-    [isFetching.box, isFetchingBoxKeyShare, secretKey],
+    () => isFetching.box || (isFetching.keyShare && isNil(secretKey)),
+    [isFetching.box, isFetching.keyShare, secretKey],
   );
 
   const shouldShowPasteScreen = useMemo(
@@ -168,6 +163,8 @@ BoxRead.propTypes = {
   isFetching: PropTypes.shape({
     box: PropTypes.bool.isRequired,
     events: PropTypes.bool.isRequired,
+    members: PropTypes.bool.isRequired,
+    keyShare: PropTypes.bool.isRequired,
   }),
   belongsToCurrentUser: PropTypes.bool.isRequired,
   // DRAWER
@@ -183,6 +180,8 @@ BoxRead.defaultProps = {
   isFetching: {
     box: false,
     events: false,
+    members: false,
+    keyShare: false,
   },
   box: null,
 };

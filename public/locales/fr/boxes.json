@@ -90,9 +90,15 @@
           "they": "{{displayName}} a créé l'espace privé «\u00a0{{title}}\u00a0»",
           "you": "Vous avez créé l'espace privé «\u00a0{{title}}\u00a0»"
         },
-        "join": {
-          "they": "{{displayName}} a rejoint l'espace privé",
-          "you": "Vous avez rejoint l'espace privé"
+        "member": {
+          "join": {
+            "they": "{{displayName}} a rejoint l'espace privé",
+            "you": "Vous avez rejoint l'espace privé"
+          },
+          "leave": {
+            "they": "{{displayName}} a quitté l'espace privé",
+            "you": "Vous avez quitté l'espace privé"
+          }
         },
         "preview": {
           "lifecycle": {
@@ -109,9 +115,15 @@
             "they": "<0>{{displayName}}</0> a créé l'espace privé «\u00a0{{title}}\u00a0»",
             "you": "<0>Vous</0> avez créé l'espace privé «\u00a0{{title}}\u00a0»"
           },
-          "join": {
-            "they": "<0>{{displayName}}</0> a rejoint l'espace privé",
-            "you": "<0>Vous</0> avez rejoint l'espace privé"
+          "member": {
+            "join": {
+              "they": "<0>{{displayName}}</0> a rejoint l'espace privé",
+              "you": "<0>Vous</0> avez rejoint l'espace privé"
+            },
+            "leave": {
+              "they": "<0>{{displayName}}</0> a quitté l'espace privé",
+              "you": "<0>Vous</0> avez quitté l'espace privé"
+            }
           }
         }
       }
@@ -153,6 +165,14 @@
           "confirmDialog": {
             "text": "Voulez-vous vraiment fermer cet espace privé\u00a0?\nLes autres membres n'auront plus accès à son contenu et vous ne pourrez plus la réouvrir.\nEn tant que créateur·trice, vous aurez toujours accès au contenu."
           }
+        },
+        "leave": {
+          "primary": "Quitter l'espace privé",
+          "secondary": "En quittant l'espace privé, vous n'aurez plus accès à son contenu."
+        },
+        "delete": {
+          "primary": "Supprimer l'espace privé",
+          "secondary": "L'espace privé est fermé, seuls les admins y ont accès"
         }
       }
     }
@@ -194,6 +214,16 @@
     "success": "L'espace privé a été supprimé",
     "error": {
       "updateBackup": "Une erreur s'est produite lors de la mise à jour du coffre-fort."
+    }
+  },
+  "leave": {
+    "dialog": {
+      "description": "Êtes-vous sûr·e de vouloir quitter «\u00a0{{title}}\u00a0»\u00a0?"
+    },
+    "success": "L'espace privé a été quitté",
+    "error": {
+      "updateBackup": "Une erreur s'est produite lors de la mise à jour du coffre-fort.",
+      "forbidden": "Vous n'êtes plus membre de cet espace privé"
     }
   },
   "pasteLink": {

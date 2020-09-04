@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import routes from 'routes';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
+
 import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { makeStyles } from '@material-ui/core/styles';
@@ -27,8 +28,10 @@ import AvatarUser from '@misakey/ui/Avatar/User';
 import IconButton from '@material-ui/core/IconButton';
 import ShareIcon from '@material-ui/icons/Share';
 import CopyIcon from '@material-ui/icons/FilterNone';
+import ListItemLeave from 'components/smart/ListItem/Boxes/Leave';
+import ListItemDelete from 'components/smart/ListItem/Boxes/Delete';
 
-import { ListItemSecondaryAction } from '@material-ui/core';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import { AVATAR_SIZE, APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 import { CLOSED, OPEN } from 'constants/app/boxes/statuses';
 import { LIFECYCLE } from 'constants/app/boxes/events';
@@ -93,9 +96,20 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
     onCopyLink,
   } = useGetShareMethods(id, title, publicKey, t);
 
+  // @FIXME factorize rules
   const isAllowedToClose = useMemo(
     () => belongsToCurrentUser && lifecycle === OPEN,
     [belongsToCurrentUser, lifecycle],
+  );
+
+  const isAllowedToDelete = useMemo(
+    () => belongsToCurrentUser && lifecycle === CLOSED,
+    [belongsToCurrentUser, lifecycle],
+  );
+
+  const isAllowedToLeave = useMemo(
+    () => !belongsToCurrentUser,
+    [belongsToCurrentUser],
   );
 
   const toggleCloseDialog = useCallback(
@@ -234,6 +248,8 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
             />
             {/* <ChevronRightIcon /> */}
           </ListItem>
+          {isAllowedToLeave && <ListItemLeave box={box} />}
+          {isAllowedToDelete && <ListItemDelete box={box} />}
           {isAllowedToClose && (
             <>
               <ListItem

@@ -19,16 +19,28 @@ export default {
     path: '/boxes',
     auth: true,
   },
+  delete: {
+    method: 'DELETE',
+    path: '/boxes/:id',
+    auth: true,
+  },
+  user: {
+    find: {
+      METHOD: 'GET',
+      path: '/boxes/joined',
+      auth: true,
+    },
+    count: {
+      method: 'HEAD',
+      path: '/boxes/joined',
+      auth: true,
+    },
+  },
   public: {
     read: {
       method: 'GET',
       path: '/boxes/:id/public',
     },
-  },
-  delete: {
-    method: 'DELETE',
-    path: '/boxes/:id',
-    auth: true,
   },
   events: {
     newCount: {
@@ -46,6 +58,13 @@ export default {
     create: {
       method: 'POST',
       path: '/boxes/:id/events',
+      auth: true,
+    },
+  },
+  members: {
+    find: {
+      method: 'GET',
+      path: '/boxes/:id/members',
       auth: true,
     },
   },

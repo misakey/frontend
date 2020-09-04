@@ -90,9 +90,15 @@
           "they": "{{displayName}} created the private space «\u00a0{{title}}\u00a0»",
           "you": "You created the private space «\u00a0{{title}}\u00a0»"
         },
-        "join": {
-          "they": "{{displayName}} joined the private space",
-          "you": "You joined the private space"
+        "member": {
+          "join": {
+            "they": "{{displayName}} joined the private space",
+            "you": "You joined the private space"
+          },
+          "leave": {
+            "they": "{{displayName}} left the private space",
+            "you": "You left the private space"
+          }
         },
         "preview": {
           "lifecycle": {
@@ -109,9 +115,15 @@
             "they": "<0>{{displayName}}</0> created the private space «\u00a0{{title}}\u00a0»",
             "you": "<0>You</0> created the private space «\u00a0{{title}}\u00a0»"
           },
-          "join": {
-            "they": "<0>{{displayName}}</0> joined the private space",
-            "you": "<0>You</0> joined the private space"
+          "member": {
+            "join": {
+              "they": "<0>{{displayName}}</0> joined the private space",
+              "you": "<0>You</0> joined the private space"
+            },
+            "leave": {
+              "they": "<0>{{displayName}}</0> left the private space",
+              "you": "<0>You</0> left the private space"
+            }
           }
         }
       }
@@ -153,6 +165,14 @@
           "confirmDialog": {
             "text": "Do you really want to close the private space?\nOther members will not have access to its content anymore and you won't be able to reopen it.\nBeing its creator, you will still have access to the content."
           }
+        },
+        "leave": {
+          "primary": "Leave the private space",
+          "secondary": "By leaving the private space, you will not have access to its content anymore."
+        },
+        "delete": {
+          "primary": "Delete the private space",
+          "secondary": "The private space is closed, only admins can access it"
         }
       }
     }
@@ -194,6 +214,16 @@
     "success": "Private space has been deleted.",
     "error": {
       "updateBackup": "An error occurred while updating the vault."
+    }
+  },
+  "leave": {
+    "dialog": {
+      "description": "Are you sure you want to leave “{{title}}”?"
+    },
+    "success": "You left the private space.",
+    "error": {
+      "updateBackup": "An error occurred while updating the vault.",
+      "forbidden": "You are no longer member of this private space"
     }
   },
   "pasteLink": {

@@ -21,7 +21,7 @@ import { addBoxSecretKey } from '@misakey/crypto/store/actions/concrete';
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
 import { getDetails } from '@misakey/helpers/apiError';
-import { createBoxBuilder } from '@misakey/helpers/builder/boxes';
+import { createBoxBuilder, getBoxMembersBuilder } from '@misakey/helpers/builder/boxes';
 import { addCoupon } from '@misakey/helpers/builder/identities';
 import getRandomTitle from '@misakey/helpers/getRandomTitle';
 import isFunction from '@misakey/helpers/isFunction';
@@ -125,7 +125,13 @@ function CreateBoxDialog({
   const onSubmitNewBoxSuccess = useCallback(
     async (newBox, secretKey) => {
       const { id } = newBox;
-      const normalized = normalize(newBox, BoxesSchema.entity);
+      let members = [];
+      try {
+        members = await getBoxMembersBuilder(id);
+      } catch (e) {
+        handleHttpErrors(e);
+      }
+      const normalized = normalize({ members, ...newBox }, BoxesSchema.entity);
       const { entities } = normalized;
       await Promise.all([
         dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
@@ -147,7 +153,7 @@ function CreateBoxDialog({
           onClose();
         });
     },
-    [dispatch, enqueueSnackbar, history, onClose, onSuccess, t],
+    [dispatch, enqueueSnackbar, history, onClose, onSuccess, t, handleHttpErrors],
   );
 
   const onSubmitNewBox = useCallback((form, { setSubmitting }) => {

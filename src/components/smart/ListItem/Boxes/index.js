@@ -101,9 +101,12 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
   );
 
   const secondary = useMemo(
-    () => (
-      <BoxEventsAccordingToType box={box} event={lastEvent} preview />
-    ), [lastEvent, box],
+    () => (isNil(box)
+      ? null // @FIXME we could create a Skeleton
+      : (
+        <BoxEventsAccordingToType box={box} event={lastEvent} preview />
+      )),
+    [lastEvent, box],
   );
 
   const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();

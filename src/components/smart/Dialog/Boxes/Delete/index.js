@@ -4,9 +4,8 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Form, Field } from 'formik';
 
-import { CLOSED } from 'constants/app/boxes/statuses';
 import BoxesSchema from 'store/schemas/Boxes';
-import { updatePaginationsToStatus } from 'store/reducers/userBoxes/pagination';
+import { removeFromPaginations } from 'store/reducers/userBoxes/pagination';
 import { removeEntities } from '@misakey/store/actions/entities';
 import { removeBoxSecretKeys } from '@misakey/crypto/store/actions/concrete';
 import { boxDeletionDialogValidationSchema } from 'constants/validationSchemas/boxes';
@@ -62,17 +61,18 @@ function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
   const onDeleteSuccess = useCallback(
     () => {
       const promise = isFunction(onSuccess) ? onSuccess : Promise.resolve;
-      return promise().then(() => Promise.all([
-        dispatch(removeEntities([{ id }], BoxesSchema)),
-        dispatch(updatePaginationsToStatus(id, CLOSED)),
-      ])
-        .then(() => Promise.resolve(dispatch(removeBoxSecretKeys([secretKey]))))
-        .catch(() => {
-          enqueueSnackbar(t('boxes:delete.error.updateBackup'), { variant: 'error' });
-        })
-        .finally(() => {
-          enqueueSnackbar(t('boxes:delete.success'), { variant: 'success' });
-        }));
+      return promise()
+        .then(() => Promise.all([
+          dispatch(removeEntities([{ id }], BoxesSchema)),
+          dispatch(removeFromPaginations(id)),
+        ])
+          .then(() => Promise.resolve(dispatch(removeBoxSecretKeys([secretKey]))))
+          .catch(() => {
+            enqueueSnackbar(t('boxes:delete.error.updateBackup'), { variant: 'error' });
+          })
+          .finally(() => {
+            enqueueSnackbar(t('boxes:delete.success'), { variant: 'success' });
+          }));
     },
     [id, secretKey, dispatch, enqueueSnackbar, onSuccess, t],
   );
@@ -114,7 +114,7 @@ function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
             <Box display="flex" justifyContent="center">
               <Field
                 component={FieldTextStandard}
-                inputProps={{ autocomplete: 'off' }}
+                inputProps={{ autoComplete: 'off' }}
                 className={classes.inputField}
                 name={FIELD_NAME}
                 prefix="delete_"
@@ -144,10 +144,11 @@ function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
 
 DeleteBoxDialog.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
-  t: PropTypes.func.isRequired,
-  open: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func,
+  // withTranslation
+  t: PropTypes.func.isRequired,
 };
 
 DeleteBoxDialog.defaultProps = {
