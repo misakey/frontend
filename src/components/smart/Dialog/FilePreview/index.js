@@ -12,13 +12,13 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useGetDecryptedFileCallback from 'hooks/useGetDecryptedFile/callback';
 
-import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
+import BackdropLoading from '@misakey/ui/Backdrop/Loading';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import DownloadIcon from '@material-ui/icons/GetApp';
 // import PrintIcon from '@material-ui/icons/Print';
@@ -128,15 +128,19 @@ function FilePreviewDialog({
 
   const onError = useCallback(() => {
     setHasError(true);
-  }, []);
+    setIsLoaded(true);
+  }, [setHasError, setIsLoaded]);
 
   const onLoad = useCallback(() => {
     setIsLoaded(true);
-  }, []);
+  }, [setIsLoaded]);
 
   const onDownloadError = useCallback(
-    () => Promise.resolve(null),
-    [],
+    () => {
+      setIsLoaded(true);
+      return Promise.resolve(null);
+    },
+    [setIsLoaded],
   );
 
   const onGetDecryptedFile = useGetDecryptedFileCallback(
@@ -159,14 +163,49 @@ function FilePreviewDialog({
     };
   }, [file]);
 
-  const isTypeAllowedForPreview = useMemo(
-    () => !isNil(fileType) && ALLOWED_TYPE_PREVIEW.some((type) => fileType.startsWith(type)),
+  const nilFileType = useMemo(
+    () => isNil(fileType),
     [fileType],
   );
 
+  const isTypeAllowedForPreview = useMemo(
+    () => !nilFileType && ALLOWED_TYPE_PREVIEW.some((type) => fileType.startsWith(type)),
+    [nilFileType, fileType],
+  );
+
+  const isImage = useMemo(
+    () => !nilFileType && fileType.startsWith('image'),
+    [nilFileType, fileType],
+  );
+
+  const isAudio = useMemo(
+    () => !nilFileType && fileType.startsWith('audio'),
+    [nilFileType, fileType],
+  );
+
+  const isVideo = useMemo(
+    () => !nilFileType && fileType.startsWith('video'),
+    [nilFileType, fileType],
+  );
+
+  const canHandleError = useMemo(
+    () => isImage,
+    [isImage],
+  );
+
+  const loading = useMemo(
+    () => isFetching || (isTypeAllowedForPreview && canHandleError && !isLoaded),
+    [isFetching, isTypeAllowedForPreview, canHandleError, isLoaded],
+  );
+
   const displayDefault = useMemo(
-    () => !isFetching && (isNil(blobUrl) || hasError || !isLoaded),
-    [blobUrl, hasError, isFetching, isLoaded],
+    () => !isFetching
+      && (isNil(blobUrl)
+        || hasError
+        || !isTypeAllowedForPreview
+        || (!canHandleError && !isLoaded)
+      ),
+    [blobUrl, hasError, isFetching, isTypeAllowedForPreview, canHandleError, isLoaded],
   );
 
   const displayPreview = useMemo(
@@ -178,7 +217,7 @@ function FilePreviewDialog({
     if (isNil(fileType)) {
       return null;
     }
-    if (fileType.startsWith('image')) {
+    if (isImage) {
       return (
         <img
           src={blobUrl}
@@ -190,7 +229,7 @@ function FilePreviewDialog({
       );
     }
 
-    if (fileType.startsWith('audio')) {
+    if (isAudio) {
       return (
         // eslint-disable-next-line jsx-a11y/media-has-caption
         <audio controls>
@@ -207,7 +246,7 @@ function FilePreviewDialog({
       );
     }
 
-    if (fileType.startsWith('video')) {
+    if (isVideo) {
       return (
         // eslint-disable-next-line jsx-a11y/media-has-caption
         <video controls className={classes.media}>
@@ -233,7 +272,13 @@ function FilePreviewDialog({
         onLoad={onLoad}
       />
     );
-  }, [blobUrl, classes.embed, classes.media, fileName, fileSize, fileType, onError, onLoad, t]);
+  }, [
+    blobUrl,
+    classes.embed, classes.media,
+    fileName, fileSize, fileType, onError, onLoad,
+    isImage, isAudio, isVideo,
+    t,
+  ]);
 
   const isMediaDisplayed = useMemo(
     () => (!isNil(fileType) && fileType.startsWith('image') && !hasError) || isMediaAudioOrVideo,
@@ -269,6 +314,8 @@ function FilePreviewDialog({
       onClose={onClose}
       scroll="body"
       PaperProps={PaperProps}
+      BackdropComponent={BackdropLoading}
+      BackdropProps={{ loading }}
       {...dialogProps}
     >
       <AppBar className={classes.appBar}>
@@ -330,7 +377,6 @@ function FilePreviewDialog({
         </Toolbar>
       </AppBar>
       <DialogContent className={classes.content}>
-        {isFetching && <SplashScreen />}
         {displayPreview && preview}
         {displayDefault && (
           <BoxFile

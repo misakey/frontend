@@ -18,6 +18,6 @@ window.env = {
     URL: 'https://analytics.misakey.com',
     SITEID: '2',
   },
-  AUTO_REFRESH_LIST_DELAY: 120000,
+  AUTO_REFRESH_LIST_DELAY: 2000,
   EARLY_BIRDS_MISAKEY_CHAT_URL: 'https://app.misakey.com/boxes/a3c24d08-f5e2-40c4-81e2-a1c3ef33c540#kbCbS4K9UMvuFEIJDngGG4dYnVVqZYLEXekCnnHTs-c',
 };
