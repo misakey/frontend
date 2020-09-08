@@ -39,11 +39,20 @@ import errorTypes from '@misakey/ui/constants/errorTypes';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { removeEntities } from '@misakey/store/actions/entities';
 import useGetShareMethods from 'hooks/useGetShareMethods';
+import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
+import last from '@misakey/helpers/last';
 
 // CONSTANTS
 const { conflict } = errorTypes;
 const CONTENT_SPACING = 2;
 const APPBAR_HEIGHT = 64;
+
+// HELPERS
+const getEarlyBirdsChatId = () => {
+  const { pathname } = parseUrlFromLocation(window.env.EARLY_BIRDS_MISAKEY_CHAT_URL);
+  const id = last(pathname.split('/'));
+  return id;
+};
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -80,6 +89,12 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
     members,
     lifecycle,
   } = useMemo(() => box, [box]);
+
+  // @FIXME only for early birds chat
+  const isEarlyBirdBox = useMemo(
+    () => getEarlyBirdsChatId() === id,
+    [id],
+  );
 
   const goBack = useGeneratePathKeepingSearchAndHash(routes.boxes.read._, { id });
   // const routeFiles = useGeneratePathKeepingSearchAndHash(routes.boxes.read.files, { id });
@@ -272,7 +287,7 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
                 </ListItemAvatar>
                 <ListItemText
                   primary={displayName}
-                  secondary={identifier.value}
+                  secondary={isEarlyBirdBox ? null : identifier.value}
                 />
               </ListItem>
             ))}
