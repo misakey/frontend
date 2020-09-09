@@ -157,11 +157,12 @@ export default (boxId) => {
       return getCount()
         .then((result) => {
           const countDiff = result - itemCount;
-          dispatch(receivePaginatedItemCount(result));
           if (countDiff > 0) {
             pagination.limit += countDiff;
           }
-          return get(pagination);
+          return get(pagination).then(
+            () => Promise.resolve(dispatch(receivePaginatedItemCount(result))),
+          );
         });
     },
     [byPagination, dispatch, get, getCount, itemCount, receivePaginatedItemCount],

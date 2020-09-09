@@ -7,12 +7,11 @@ import STATUSES, { ALL } from 'constants/app/boxes/statuses';
 import { selectors } from '@misakey/crypto/store/reducers';
 import routes from 'routes';
 
-import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import useInterval from '@misakey/hooks/useInterval';
-import usePaginateBoxesByStatusRefresh from 'hooks/usePaginateBoxesByStatus/refresh';
 import useResetBoxCount from 'hooks/useResetBoxCount';
 import useIdentity from 'hooks/useIdentity';
 import { useRouteMatch } from 'react-router-dom';
+import { useBoxesContext } from 'components/smart/Context/Boxes';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isNil from '@misakey/helpers/isNil';
@@ -29,11 +28,9 @@ const paramsIdPath = path(['params', 'id']);
 
 // COMPONENTS
 function BoxesList({ t, activeStatus, ...props }) {
-  const locationSearchParams = useLocationSearchParams();
   const match = useRouteMatch(routes.boxes.read._);
   const [contentRef, setContentRef] = useState();
 
-  const { search } = locationSearchParams;
   const selectedId = useMemo(
     () => paramsIdPath(match),
     [match],
@@ -59,16 +56,16 @@ function BoxesList({ t, activeStatus, ...props }) {
     [identityId],
   );
 
-  const onPaginationRefresh = usePaginateBoxesByStatusRefresh(activeStatus, search);
+  const { search, refresh } = useBoxesContext();
   const resetBoxCount = useResetBoxCount();
   const onRefresh = useCallback(
     () => (isNil(selectedId)
-      ? onPaginationRefresh()
+      ? refresh()
       : Promise.all([
-        onPaginationRefresh(),
+        refresh(),
         resetBoxCount({ boxId: selectedId, identityId }),
       ])),
-    [selectedId, onPaginationRefresh, resetBoxCount, identityId],
+    [selectedId, refresh, resetBoxCount, identityId],
   );
 
   const intervalConfig = useMemo(
@@ -90,7 +87,13 @@ function BoxesList({ t, activeStatus, ...props }) {
       </ElevationScroll>
       {isCryptoLoaded
         ? (
-          <Vault ref={onContentRef} activeStatus={activeStatus} {...omitTranslationProps(props)} />)
+          <Vault
+            ref={onContentRef}
+            search={search}
+            activeStatus={activeStatus}
+            {...omitTranslationProps(props)}
+          />
+        )
         : (
           <NoVault
             ref={onContentRef}

@@ -29,7 +29,7 @@ const IconButtonCreate = withDialogCreate(
 function ListHeader({ drawerWidth, activeStatus, t, ...props }) {
   const { search } = useLocationSearchParams();
 
-  const onCreateSuccess = usePaginateBoxesByStatusRefresh(activeStatus, search);
+  const { refresh: onCreateSuccess } = usePaginateBoxesByStatusRefresh(activeStatus, search);
 
   const dialogProps = useMemo(
     () => ({

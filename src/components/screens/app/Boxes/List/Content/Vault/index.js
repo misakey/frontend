@@ -12,7 +12,6 @@ import { useRouteMatch, Link } from 'react-router-dom';
 // import { useLocation, useHistory } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 // import getNextSearch from '@misakey/helpers/getNextSearch';
 
 import Typography from '@material-ui/core/Typography';
@@ -44,9 +43,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const VaultOpen = forwardRef(({ t, activeStatus, ...props }, ref) => {
+const VaultOpen = forwardRef(({ t, activeStatus, search, ...props }, ref) => {
   const classes = useStyles();
-  const locationSearchParams = useLocationSearchParams();
 
   const match = useRouteMatch(routes.boxes.read._);
   const selectedId = useMemo(
@@ -54,7 +52,6 @@ const VaultOpen = forwardRef(({ t, activeStatus, ...props }, ref) => {
     [match],
   );
 
-  const { search } = locationSearchParams;
 
 
   // const { search: locationSearch, pathname } = useLocation();
@@ -107,8 +104,13 @@ const VaultOpen = forwardRef(({ t, activeStatus, ...props }, ref) => {
 
 VaultOpen.propTypes = {
   activeStatus: PropTypes.oneOf(STATUSES).isRequired,
+  search: PropTypes.string,
   // withTranslation
   t: PropTypes.func.isRequired,
+};
+
+VaultOpen.defaultProps = {
+  search: null,
 };
 
 export default withTranslation(['boxes', 'document'], { withRef: true })(VaultOpen);

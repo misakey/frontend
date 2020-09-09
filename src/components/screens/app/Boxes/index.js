@@ -1,28 +1,29 @@
 import React, { useMemo } from 'react';
 import { Switch, useRouteMatch, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import routes from 'routes';
 
+import routes from 'routes';
+import { ALL } from 'constants/app/boxes/statuses';
+import { UUID4_REGEX } from 'constants/regex';
+import { selectors } from '@misakey/crypto/store/reducers';
+
+import isNil from '@misakey/helpers/isNil';
+
+import useBackupStorageEvent from '@misakey/crypto/hooks/useBackupStorageEvent';
+import { useSelector } from 'react-redux';
+import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
+
+import VaultLockedScreen from 'components/screens/app/VaultLocked';
+import BoxesList from 'components/screens/app/Boxes/List';
+import ScreenDrawer from 'components/smart/Screen/Drawer';
 import BoxRead from 'components/screens/app/Boxes/Read';
 import BoxNone from 'components/screens/app/Boxes/None';
 import RouteAcr from '@misakey/auth/components/Route/Acr';
 import RouteAuthenticatedBoxRead from 'components/smart/Route/Authenticated/BoxRead';
-import { UUID4_REGEX } from 'constants/regex';
-
-import { selectors } from '@misakey/crypto/store/reducers';
-
-import isNil from '@misakey/helpers/isNil';
-import VaultLockedScreen from 'components/screens/app/VaultLocked';
-
-import useBackupStorageEvent from '@misakey/crypto/hooks/useBackupStorageEvent';
-import { useSelector } from 'react-redux';
-
-import BoxesList from 'components/screens/app/Boxes/List';
-import ScreenDrawer from 'components/smart/Screen/Drawer';
-import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 
 import Redirect from '@misakey/ui/Redirect';
 import DrawerSplashScreen from 'components/smart/Screen/Drawer/Splash';
+import BoxesContextProvider from 'components/smart/Context/Boxes';
 
 // COMPONENTS
 function Boxes({ match }) {
@@ -69,11 +70,24 @@ function Boxes({ match }) {
   }
 
   return (
-    <Switch>
-      <RouteAuthenticatedBoxRead
-        path={routes.boxes.read._}
-        render={(renderProps) => {
-          if (!UUID4_REGEX.test(renderProps.match.params.id)) {
+    <BoxesContextProvider activeStatus={ALL}>
+      <Switch>
+        <RouteAuthenticatedBoxRead
+          path={routes.boxes.read._}
+          render={(renderProps) => {
+            if (!UUID4_REGEX.test(renderProps.match.params.id)) {
+              return (
+                <ScreenDrawer
+                  drawerChildren={drawerChildren}
+                  isFullWidth={isFullWidth}
+                  initialIsDrawerOpen={isNothingSelected}
+                >
+                  {(drawerProps) => (
+                    <BoxNone {...drawerProps} {...renderProps} />
+                  )}
+                </ScreenDrawer>
+              );
+            }
             return (
               <ScreenDrawer
                 drawerChildren={drawerChildren}
@@ -81,41 +95,30 @@ function Boxes({ match }) {
                 initialIsDrawerOpen={isNothingSelected}
               >
                 {(drawerProps) => (
-                  <BoxNone {...drawerProps} {...renderProps} />
+                  <BoxRead {...drawerProps} {...renderProps} />
                 )}
               </ScreenDrawer>
             );
-          }
-          return (
+          }}
+        />
+        <RouteAcr
+          acr={2}
+          exact
+          path={match.path}
+          render={(renderProps) => (
             <ScreenDrawer
               drawerChildren={drawerChildren}
               isFullWidth={isFullWidth}
               initialIsDrawerOpen={isNothingSelected}
             >
               {(drawerProps) => (
-                <BoxRead {...drawerProps} {...renderProps} />
+                <BoxNone {...drawerProps} {...renderProps} />
               )}
             </ScreenDrawer>
-          );
-        }}
-      />
-      <RouteAcr
-        acr={2}
-        exact
-        path={match.path}
-        render={(renderProps) => (
-          <ScreenDrawer
-            drawerChildren={drawerChildren}
-            isFullWidth={isFullWidth}
-            initialIsDrawerOpen={isNothingSelected}
-          >
-            {(drawerProps) => (
-              <BoxNone {...drawerProps} {...renderProps} />
-            )}
-          </ScreenDrawer>
-        )}
-      />
-    </Switch>
+          )}
+        />
+      </Switch>
+    </BoxesContextProvider>
   );
 }
 

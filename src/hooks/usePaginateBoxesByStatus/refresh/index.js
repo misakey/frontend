@@ -1,10 +1,11 @@
 import BoxesSchema from 'store/schemas/Boxes';
 import { receiveEntities } from '@misakey/store/actions/entities';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
-import { selectors } from 'store/reducers/userBoxes/pagination';
+import { selectors, actionCreators } from 'store/reducers/userBoxes/pagination';
 
 import propOr from '@misakey/helpers/propOr';
 import isNil from '@misakey/helpers/isNil';
+import noop from '@misakey/helpers/noop';
 import __ from '@misakey/helpers/__';
 import { makeOffsetLimitFromRange } from '@misakey/helpers/offsetLimitRange';
 
@@ -23,6 +24,12 @@ const EMPTY_OBJ = {};
 
 // HELPERS
 const selectorsProp = propOr(EMPTY_OBJ, __, selectors);
+const actionCreatorsProp = propOr(EMPTY_OBJ, __, actionCreators);
+
+const getAddPaginatedIdActionCreator = (status) => {
+  const statusActionCreators = actionCreatorsProp(status);
+  return statusActionCreators.addPaginatedId || noop;
+};
 
 // HOOKS
 export default (status = ALL, search = null) => {
@@ -37,6 +44,18 @@ export default (status = ALL, search = null) => {
     [hasSearch, search, status],
   );
 
+  // ACTIONS
+  const receiveItemCountAction = useMemo(
+    () => getReceiveItemCountActionCreator(status),
+    [status],
+  );
+
+  const addPaginatedIdAction = useMemo(
+    () => getAddPaginatedIdActionCreator(status),
+    [status],
+  );
+
+  // DISPATCH
   const dispatch = useDispatch();
 
   const dispatchRefreshBoxes = useCallback(
@@ -51,10 +70,19 @@ export default (status = ALL, search = null) => {
     [dispatch],
   );
 
-  // ACTIONS
-  const receiveItemCountAction = useMemo(
-    () => getReceiveItemCountActionCreator(status),
-    [status],
+  const dispatchAddBox = useCallback(
+    (data) => {
+      const normalized = normalize(
+        data,
+        BoxesSchema.entity,
+      );
+      const { entities, result } = normalized;
+      return Promise.all([
+        dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
+        dispatch(addPaginatedIdAction(result)),
+      ]);
+    },
+    [addPaginatedIdAction, dispatch],
   );
 
   // SELECTORS
@@ -94,5 +122,14 @@ export default (status = ALL, search = null) => {
     [byPagination, payload, refreshBoxes, refreshItemCount],
   );
 
-  return refresh;
+  const addItem = useCallback(
+    (item) => Promise.resolve(dispatchAddBox(item)),
+    [dispatchAddBox],
+  );
+
+  return useMemo(() => ({
+    refresh,
+    addItem,
+  }),
+  [addItem, refresh]);
 };

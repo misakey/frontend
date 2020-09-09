@@ -13,6 +13,7 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 import useHandleBoxKeyShare from '@misakey/crypto/hooks/useHandleBoxKeyShare';
 import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
+import { useBoxesContext } from 'components/smart/Context/Boxes';
 
 import { getCode, getDetails } from '@misakey/helpers/apiError';
 import isNil from '@misakey/helpers/isNil';
@@ -42,6 +43,8 @@ const withBoxDetails = (mapper = identity) => (Component) => {
     // Used to prevent refetch on delete box
     const [preventFetching, setPreventFetching] = useState(false);
     const handleHttpErrors = useHandleHttpErrors();
+
+    const { addItem } = useBoxesContext();
 
     const {
       isAuthenticated,
@@ -108,7 +111,8 @@ const withBoxDetails = (mapper = identity) => (Component) => {
           dispatchReceiveBox({ id, isMember: false });
           createBoxEventBuilder(id, { type: MEMBER_JOIN })
             .then(() => getBox())
-            .then(dispatchReceiveBox)
+            .then((result) => dispatchReceiveBox(result)
+              .then(() => addItem(result)))
             .catch((e) => {
               handleHttpErrors(e);
               // View is broken without box membership
@@ -126,7 +130,7 @@ const withBoxDetails = (mapper = identity) => (Component) => {
           history.replace(routes._);
         }
       },
-      [dispatchReceiveBox, getBox, handleHttpErrors, hash, history, id],
+      [dispatchReceiveBox, getBox, handleHttpErrors, hash, history, id, addItem],
     );
 
     const { isFetching } = useFetchEffect(
@@ -212,7 +216,7 @@ const withBoxDetails = (mapper = identity) => (Component) => {
         BoxesSchema.entity,
       );
       const { entities } = normalized;
-      dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
+      return Promise.resolve(dispatch(receiveEntities(entities, mergeReceiveNoEmpty)));
     },
     dispatchReceiveBoxMembers: (id, members) => {
       const normalized = normalize(
