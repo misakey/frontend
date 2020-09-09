@@ -25,21 +25,17 @@ export const getBoxPublicBuilder = ({ id, otherShareHash }) => API
   .send()
   .then(objectToCamelCase);
 
-export const getBoxEventsBuilder = (id) => API
+export const getBoxEventsBuilder = (id, queryParams = {}) => API
   .use(API.endpoints.boxes.events.find)
-  .build({ id })
+  .build({ id }, null, objectToSnakeCase(queryParams))
   .send()
   .then((events) => events.map(objectToCamelCaseDeep));
 
-export const getBoxWithEventsBuilder = (id) => Promise.all([
-  getBoxBuilder(id),
-  getBoxEventsBuilder(id),
-])
-  .then(([box, events]) => ({
-    ...box,
-    events,
-  }));
-
+export const countBoxEventsBuilder = (id, queryParams = {}) => API
+  .use(API.endpoints.boxes.events.count)
+  .build({ id }, null, objectToSnakeCase(queryParams))
+  .send()
+  .then((response) => parseInt(response.headers.get('X-Total-Count'), 10));
 
 export const getUserBoxesBuilder = (payload) => API
   .use(API.endpoints.boxes.user.find)

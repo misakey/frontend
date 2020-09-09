@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, useEffect } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
@@ -12,23 +12,20 @@ import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
 import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
 import ButtonWithDialogPassword from 'components/smart/Dialog/Password/with/Button';
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
-import useGroupEventsByDate from 'hooks/useGroupEventsByDate';
 import useGetShareMethods from 'hooks/useGetShareMethods';
 import isNil from '@misakey/helpers/isNil';
-import { ALL_EVENT_TYPES } from 'constants/app/boxes/events';
 
 import BoxesSchema from 'store/schemas/Boxes';
 
-import BoxEventsAccordingToType from 'components/smart/Box/Event';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import InputBoxesUploadContext from 'components/smart/Input/Boxes/Upload/Context';
 import BoxEventEditContext from 'components/smart/Box/Event/Edit/Context';
+import PaginatedListBoxEvents from 'components/smart/PaginatedList/BoxEvents';
 import BoxEventsFooter from './Footer';
 import DeleteBoxDialogButton from './DeleteBoxDialogButton';
 
@@ -51,7 +48,7 @@ function BoxEvents({
 }) {
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
-  const [lastEventRef, setLastEventRef] = useState();
+  // const [lastEventRef, setLastEventRef] = useState();
   const [headerHeight, setHeaderHeight] = useState(APPBAR_HEIGHT);
   const classes = useStyles({ headerHeight });
 
@@ -66,14 +63,12 @@ function BoxEvents({
   }, [setIsMenuActionOpen]);
 
   const {
-    events: boxEvents = [],
     members,
     title,
     publicKey,
     id,
     lifecycle,
   } = useMemo(() => box, [box]);
-  const nbOfEvents = useMemo(() => boxEvents.length, [boxEvents]);
   const { accountId } = useSelector(getCurrentUserSelector) || {};
   const {
     canShare,
@@ -81,13 +76,6 @@ function BoxEvents({
     onShare,
     onCopyLink,
   } = useGetShareMethods(id, title, publicKey, t);
-
-  // Backend can add new types of events without breaking front UI
-  const eventsToDisplay = useMemo(
-    () => boxEvents.filter(({ type }) => ALL_EVENT_TYPES.includes(type)),
-    [boxEvents],
-  );
-  const eventsByDate = useGroupEventsByDate(eventsToDisplay);
 
   const isTheOnlyMember = useMemo(
     () => members.length === 1 && belongsToCurrentUser,
@@ -108,16 +96,16 @@ function BoxEvents({
     if (ref) { setHeaderHeight(ref.clientHeight); }
   };
 
-  const scrollToBottom = useCallback(
-    () => {
-      if (!isNil(lastEventRef)) { lastEventRef.scrollIntoView(); }
-    },
-    [lastEventRef],
-  );
+  // const scrollToBottom = useCallback(
+  //   () => {
+  //     if (!isNil(lastEventRef)) { lastEventRef.scrollIntoView(); }
+  //   },
+  //   [lastEventRef],
+  // );
 
-  // lastEventRef.current to scroll on bottom when dom is ready
-  // nbOfEvents to scroll at bottom when events are added by autoRefresh
-  useEffect(scrollToBottom, [scrollToBottom, nbOfEvents]);
+  // // lastEventRef.current to scroll on bottom when dom is ready
+  // // nbOfEvents to scroll at bottom when events are added by autoRefresh
+  // useEffect(scrollToBottom, [scrollToBottom, nbOfEvents]);
 
   return (
     <InputBoxesUploadContext box={box} onSuccess={onCloseMenuAction}>
@@ -185,19 +173,11 @@ function BoxEvents({
           </AppBarDrawer>
         </ElevationScroll>
         <Box className={classes.content}>
-          <Box p={2} ref={(ref) => setContentRef(ref)} flexGrow="1" className={classes.thread}>
-            {eventsByDate.map(({ date, events }) => (
-              <Box display="flex" flexDirection="column" pt={1} key={date}>
-                <Typography variant="body2" component={Box} alignSelf="center" color="textPrimary">{date}</Typography>
-                {
-                events.map((event) => (
-                  <BoxEventsAccordingToType box={box} event={event} key={event.id} />
-                ))
-              }
-                <div ref={(ref) => setLastEventRef(ref)} />
-              </Box>
-            ))}
-          </Box>
+          <PaginatedListBoxEvents
+            key={id}
+            ref={(ref) => setContentRef(ref)}
+            box={box}
+          />
           <BoxEventsFooter
             box={box}
             drawerWidth={drawerWidth}

@@ -3,7 +3,7 @@ import { useRef, useCallback, useEffect } from 'react';
 /**
  * @param {Function} fn receive onDone callback as param
  * @param {Array} deps list of dependencies
- * @returns {undefined}
+ * @returns {Function} reset function
  * This effect hook gives you control on when it should stop running the function passed
  * Trigger onDone callback
  * It is an upgrade based on useMountEffect, which depends on lifecycle
@@ -22,6 +22,13 @@ export default (fn, deps = []) => {
     [done],
   );
 
+  const reset = useCallback(
+    () => {
+      done.current = false;
+    },
+    [done],
+  );
+
   useEffect(
     () => {
       if (done.current === false) {
@@ -31,4 +38,6 @@ export default (fn, deps = []) => {
     },
     [fn, done, onDone, ...deps], // eslint-disable-line react-hooks/exhaustive-deps
   );
+
+  return reset;
 };

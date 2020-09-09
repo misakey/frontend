@@ -63,8 +63,8 @@ const WindowedListInfiniteLoaded = forwardRef(({
       isItemLoaded={isItemLoaded}
       itemCount={itemCount}
       loadMoreItems={onLoadMoreItems}
-      minimumBatchSize={5}
-      threshold={2}
+      minimumBatchSize={minimumBatchSize}
+      threshold={threshold}
     >
       {({ onItemsRendered, ref }) => (
         <List
@@ -102,8 +102,8 @@ WindowedListInfiniteLoaded.propTypes = {
 WindowedListInfiniteLoaded.defaultProps = {
   Skeleton: DefaultSkeleton,
   list: WindowedList,
-  threshold: 10,
-  minimumBatchSize: 10,
+  threshold: 2,
+  minimumBatchSize: 5,
 };
 
 export default WindowedListInfiniteLoaded;

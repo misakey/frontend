@@ -4,11 +4,22 @@ import routes from 'routes';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
+import { AVATAR_SIZE, APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
+import { CLOSED, OPEN } from 'constants/app/boxes/statuses';
+import { LIFECYCLE } from 'constants/app/boxes/events';
+import { removeEntities } from '@misakey/store/actions/entities';
+import BoxesSchema from 'store/schemas/Boxes';
+import errorTypes from '@misakey/ui/constants/errorTypes';
+
+import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+
 import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { makeStyles } from '@material-ui/core/styles';
-
+import { usePaginateEventsContext } from 'components/smart/Context/PaginateEventsByBox';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import useGetShareMethods from 'hooks/useGetShareMethods';
 
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
@@ -30,18 +41,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import CopyIcon from '@material-ui/icons/FilterNone';
 import ListItemLeave from 'components/smart/ListItem/Boxes/Leave';
 import ListItemDelete from 'components/smart/ListItem/Boxes/Delete';
-
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import { AVATAR_SIZE, APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
-import { CLOSED, OPEN } from 'constants/app/boxes/statuses';
-import { LIFECYCLE } from 'constants/app/boxes/events';
-import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
-import { addBoxEvents } from 'store/reducers/box';
-import BoxesSchema from 'store/schemas/Boxes';
-import errorTypes from '@misakey/ui/constants/errorTypes';
-import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import { removeEntities } from '@misakey/store/actions/entities';
-import useGetShareMethods from 'hooks/useGetShareMethods';
 
 // CONSTANTS
 const { conflict } = errorTypes;
@@ -96,6 +96,8 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
     onCopyLink,
   } = useGetShareMethods(id, title, publicKey, t);
 
+  const { addItems } = usePaginateEventsContext();
+
   // @FIXME factorize rules
   const isAllowedToClose = useMemo(
     () => belongsToCurrentUser && lifecycle === OPEN,
@@ -120,7 +122,7 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
 
   const onCloseBox = useCallback(
     () => createBoxEventBuilder(id, { type: LIFECYCLE, content: { state: CLOSED } })
-      .then((response) => dispatch(addBoxEvents(id, response)))
+      .then((response) => addItems([response]))
       .catch((error) => {
         if (error.code === conflict) {
           const { details = {} } = error;
@@ -132,7 +134,7 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
           handleHttpErrors(error);
         }
       }),
-    [dispatch, enqueueSnackbar, handleHttpErrors, id, t],
+    [addItems, dispatch, enqueueSnackbar, handleHttpErrors, id, t],
   );
 
   return (

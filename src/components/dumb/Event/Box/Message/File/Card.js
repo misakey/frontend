@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
 import { TIME } from 'constants/formats/dates';
+import { CLOSED } from 'constants/app/boxes/statuses';
 import EventSchema from 'store/schemas/Boxes/Events';
 import BoxesSchema from 'store/schemas/Boxes';
 
@@ -53,7 +54,12 @@ const FileCardEvent = forwardRef(({
   const [isFilePreviewOpened, setIsFilePreviewOpened] = useState(false);
 
   const { serverEventCreatedAt } = useMemo(() => event, [event]);
+  const { lifecycle } = useMemo(() => box, [box]);
 
+  const isClosed = useMemo(
+    () => lifecycle === CLOSED,
+    [lifecycle],
+  );
   const date = useDateFormatMemo(serverEventCreatedAt, TIME);
 
   const {
@@ -93,7 +99,7 @@ const FileCardEvent = forwardRef(({
 
   const items = useMemo(
     () => {
-      if (isFromCurrentUser || boxBelongsToCurrentUser) {
+      if (!isClosed && (isFromCurrentUser || boxBelongsToCurrentUser)) {
         return [
           <MenuItemEventDownload {...decryptedContent} encryptedFileId={encryptedFileId} key="download" />,
           <MenuItemEventDelete event={event} box={box} key="delete" />,
@@ -104,8 +110,8 @@ const FileCardEvent = forwardRef(({
       ];
     },
     [
-      isFromCurrentUser, boxBelongsToCurrentUser,
-      event, decryptedContent, encryptedFileId, box,
+      isClosed, isFromCurrentUser, boxBelongsToCurrentUser,
+      decryptedContent, encryptedFileId, event, box,
     ],
   );
 

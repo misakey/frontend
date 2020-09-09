@@ -14,21 +14,17 @@ import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublic
 
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
-import pluck from '@misakey/helpers/pluck';
 import identity from '@misakey/helpers/identity';
-import { getBoxEventsBuilder, getBoxWithEventsBuilder, getBoxBuilder, getBoxMembersBuilder } from '@misakey/helpers/builder/boxes';
+import { getBoxBuilder, getBoxMembersBuilder } from '@misakey/helpers/builder/boxes';
 
 
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import BoxesSchema from 'store/schemas/Boxes';
 import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
-import EventsSchema from 'store/schemas/Boxes/Events';
 import SenderSchema from 'store/schemas/Boxes/Sender';
 
 import { OPEN } from 'constants/app/boxes/statuses';
 
-// HELPERS
-const pluckIds = pluck('id');
 
 // COMPONENTS
 const withBoxDetails = (mapper = identity) => (Component) => {
@@ -41,12 +37,11 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       isAuthenticated,
       box,
       dispatchReceiveBox,
-      dispatchReceiveBoxEvents,
       dispatchReceiveBoxMembers,
       ...rest
     } = props;
 
-    const { id, events, members, lifecycle, lastEvent, publicKey } = useSafeDestr(box);
+    const { id, members, lifecycle, publicKey } = useSafeDestr(box);
     const isOpen = useMemo(() => lifecycle === OPEN, [lifecycle]);
     const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
 
@@ -79,28 +74,9 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       [belongsToCurrentUser, isAllowedToFetch, isOpen, shouldFetchBox],
     );
 
-    const isLastEventNew = useMemo(
-      () => {
-        if (!isNil(events) && !isNil(lastEvent)) {
-          const eventIds = pluckIds(events);
-          return !eventIds.includes(lastEvent.id);
-        }
-        return false;
-      },
-      [events, lastEvent],
-    );
-
-    const shouldFetchEvents = useMemo(
-      () => !shouldFetchBox && isAllowedToFetchContent && (isNil(events) || isLastEventNew),
-      [shouldFetchBox, isAllowedToFetchContent, events, isLastEventNew],
-    );
-
-    const getBoxWithEvents = useCallback(
-      () => (isAllowedToFetchContent
-        ? getBoxWithEventsBuilder(params.id)
-        : getBoxBuilder(params.id)
-      ),
-      [isAllowedToFetchContent, params.id],
+    const getBox = useCallback(
+      () => getBoxBuilder(params.id),
+      [params.id],
     );
 
     const getBoxMembers = useCallback(
@@ -108,15 +84,6 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       [params.id],
     );
 
-    const getBoxEvents = useCallback(
-      () => getBoxEventsBuilder(params.id),
-      [params.id],
-    );
-
-    const onReceiveBoxEvents = useCallback(
-      (data) => dispatchReceiveBoxEvents(id, data),
-      [dispatchReceiveBoxEvents, id],
-    );
 
     const onError = useCallback(
       (error) => {
@@ -128,7 +95,7 @@ const withBoxDetails = (mapper = identity) => (Component) => {
     );
 
     const { isFetching } = useFetchEffect(
-      getBoxWithEvents,
+      getBox,
       { shouldFetch: shouldFetchBox },
       { onSuccess: dispatchReceiveBox, onError },
     );
@@ -154,11 +121,11 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       { onSuccess: onReceiveBoxMembers },
     );
 
-    const { isFetching: isFetchingEvents } = useFetchEffect(
-      getBoxEvents,
-      { shouldFetch: shouldFetchEvents },
-      { onSuccess: onReceiveBoxEvents },
-    );
+    // const { isFetching: isFetchingEvents } = useFetchEffect(
+    //   getBoxEvents,
+    //   { shouldFetch: shouldFetchEvents },
+    //   { onSuccess: onReceiveBoxEvents },
+    // );
 
     const onDelete = useCallback(() => { setPreventFetching(true); }, []);
 
@@ -168,7 +135,6 @@ const withBoxDetails = (mapper = identity) => (Component) => {
         belongsToCurrentUser,
         isFetching: {
           box: isFetching,
-          events: isFetchingEvents,
           keyShare: isFetchingBoxKeyShare,
           members: isFetchingMembers,
         },
@@ -178,7 +144,7 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       })),
       [
         belongsToCurrentUser, boxForChildren, isAuthenticated,
-        isFetching, isFetchingEvents, isFetchingBoxKeyShare, isFetchingMembers,
+        isFetching, isFetchingBoxKeyShare, isFetchingMembers,
         onDelete, rest,
       ],
     );
@@ -191,7 +157,6 @@ const withBoxDetails = (mapper = identity) => (Component) => {
     box: PropTypes.shape(BoxesSchema.propTypes),
     isAuthenticated: PropTypes.bool,
     dispatchReceiveBox: PropTypes.func.isRequired,
-    dispatchReceiveBoxEvents: PropTypes.func.isRequired,
     dispatchReceiveBoxMembers: PropTypes.func.isRequired,
   };
 
@@ -228,17 +193,6 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       return Promise.all([
         dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
         dispatch(updateEntities([{ id, changes: { members: result } }], BoxesSchema)),
-      ]);
-    },
-    dispatchReceiveBoxEvents: (id, events) => {
-      const normalized = normalize(
-        events,
-        EventsSchema.collection,
-      );
-      const { entities, result } = normalized;
-      return Promise.all([
-        dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
-        dispatch(updateEntities([{ id, changes: { events: result } }], BoxesSchema)),
       ]);
     },
   });

@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import { AVATAR_SIZE, AVATAR_SM_SIZE } from '@misakey/ui/constants/sizes';
 import STATUSES from 'constants/app/boxes/statuses';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import usePaginateBoxesByStatusMissingPublicKeys from 'hooks/usePaginateBoxesByStatus/missingPublicKeys';
@@ -80,7 +81,7 @@ const ListItemBoxesDeleted = ({ t, activeStatus, search, ...props }) => {
   }
 
   return (
-    <ListItem {...props}>
+    <ListItem {...omitTranslationProps(props)}>
       <ListItemAvatar>
         <Avatar classes={{ root: classes.avatarRoot }}>
           <DeleteSweepIcon />

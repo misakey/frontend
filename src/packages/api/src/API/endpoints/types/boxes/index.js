@@ -55,6 +55,11 @@ export default {
       path: '/boxes/:id/events',
       auth: true,
     },
+    count: {
+      method: 'HEAD',
+      path: '/boxes/:id/events',
+      auth: true,
+    },
     create: {
       method: 'POST',
       path: '/boxes/:id/events',

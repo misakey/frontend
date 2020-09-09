@@ -12,12 +12,14 @@ import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublic
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useMountEffect from '@misakey/hooks/useMountEffect';
 import usePropChanged from '@misakey/hooks/usePropChanged';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useResetBoxCount from 'hooks/useResetBoxCount';
 
 import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 import withBoxDetails from 'components/smart/withBoxDetails';
 import withIdentity from 'components/smart/withIdentity';
+import PaginateEventsByBoxContextProvider from 'components/smart/Context/PaginateEventsByBox';
 import BoxClosed from './Closed';
 import BoxDetails from './Details';
 import BoxEvents from './Events';
@@ -34,11 +36,13 @@ function BoxRead({
   belongsToCurrentUser,
   identityId,
 }) {
-  const { lifecycle, publicKey, id: boxId } = useMemo(() => box, [box]);
+  const { lifecycle, publicKey } = useMemo(() => box, [box]);
   const shouldNotDisplayContent = useMemo(
     () => lifecycle === CLOSED && !belongsToCurrentUser,
     [belongsToCurrentUser, lifecycle],
   );
+
+  const { params: { id: boxId } } = useSafeDestr(match);
 
   const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
   const secretKey = useMemo(
@@ -108,44 +112,44 @@ function BoxRead({
   }
 
   return (
-    <Switch>
-      <Route
-        path={routes.boxes.read.details}
-        render={() => (
-          <BoxDetails
-            box={box}
-            drawerWidth={drawerWidth}
-            isDrawerOpen={isDrawerOpen}
-
-            belongsToCurrentUser={belongsToCurrentUser}
-          />
-        )}
-      />
-      <Route
-        path={routes.boxes.read.files}
-        render={() => (
-          <BoxFiles
-            box={box}
-            drawerWidth={drawerWidth}
-            isDrawerOpen={isDrawerOpen}
-          />
-        )}
-      />
-      <Route
-        exact
-        path={match.path}
-        render={() => (
-          <BoxEvents
-            box={box}
-            isFetching={isFetching.events}
-            toggleDrawer={toggleDrawer}
-            isDrawerOpen={isDrawerOpen}
-            drawerWidth={drawerWidth}
-            belongsToCurrentUser={belongsToCurrentUser}
-          />
-        )}
-      />
-    </Switch>
+    <PaginateEventsByBoxContextProvider boxId={boxId}>
+      <Switch>
+        <Route
+          path={routes.boxes.read.details}
+          render={() => (
+            <BoxDetails
+              box={box}
+              drawerWidth={drawerWidth}
+              isDrawerOpen={isDrawerOpen}
+              belongsToCurrentUser={belongsToCurrentUser}
+            />
+          )}
+        />
+        <Route
+          path={routes.boxes.read.files}
+          render={() => (
+            <BoxFiles
+              box={box}
+              drawerWidth={drawerWidth}
+              isDrawerOpen={isDrawerOpen}
+            />
+          )}
+        />
+        <Route
+          exact
+          path={match.path}
+          render={() => (
+            <BoxEvents
+              box={box}
+              toggleDrawer={toggleDrawer}
+              isDrawerOpen={isDrawerOpen}
+              drawerWidth={drawerWidth}
+              belongsToCurrentUser={belongsToCurrentUser}
+            />
+          )}
+        />
+      </Switch>
+    </PaginateEventsByBoxContextProvider>
   );
 }
 
@@ -162,7 +166,6 @@ BoxRead.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes),
   isFetching: PropTypes.shape({
     box: PropTypes.bool.isRequired,
-    events: PropTypes.bool.isRequired,
     members: PropTypes.bool.isRequired,
     keyShare: PropTypes.bool.isRequired,
   }),

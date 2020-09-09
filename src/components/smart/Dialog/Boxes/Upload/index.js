@@ -6,7 +6,6 @@ import Formik from '@misakey/ui/Formik';
 import { useSnackbar } from 'notistack';
 import { withTranslation, Trans } from 'react-i18next';
 
-import { addMultiBoxEvents } from 'store/reducers/box';
 import BoxesSchema from 'store/schemas/Boxes';
 import { removeEntities } from '@misakey/store/actions/entities';
 import errorTypes from '@misakey/ui/constants/errorTypes';
@@ -26,8 +25,9 @@ import { createBoxEncryptedFileBuilder } from '@misakey/helpers/builder/boxes';
 import encryptFile from '@misakey/crypto/box/encryptFile';
 
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
-
+import { usePaginateEventsContext } from 'components/smart/Context/PaginateEventsByBox';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -83,6 +83,7 @@ function UploadDialog({
   const { enqueueSnackbar } = useSnackbar();
 
   const dispatch = useDispatch();
+  const { addItems } = usePaginateEventsContext();
 
   const { publicKey, id: boxId } = box;
 
@@ -146,7 +147,7 @@ function UploadDialog({
       const [successes, errors] = partition(newBlobList, errorPropNil);
 
       if (!isEmpty(successes)) {
-        dispatch(addMultiBoxEvents(boxId, successes));
+        addItems(successes);
       }
 
       resetForm();
@@ -159,7 +160,7 @@ function UploadDialog({
         setStatus({ [BLOBS_FIELD_NAME]: newBlobList });
       }
     },
-    [enqueueSnackbar, handleUpload, onClose, t, dispatch, boxId],
+    [handleUpload, addItems, t, enqueueSnackbar, onClose],
   );
 
   return (

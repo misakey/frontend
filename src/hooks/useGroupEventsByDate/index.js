@@ -9,6 +9,7 @@ import pipe from '@misakey/helpers/pipe';
 import groupBy from '@misakey/helpers/groupBy';
 import sortBy from '@misakey/helpers/sortBy';
 
+// HELPERS
 const groupByDay = (events) => groupBy(events, ({ serverEventCreatedAt }) => moment(serverEventCreatedAt).startOf('day').format());
 const mapEventsGrouped = (days) => map(days, ([day, events]) => ({
   day,
@@ -17,10 +18,12 @@ const mapEventsGrouped = (days) => map(days, ([day, events]) => ({
 }));
 const sortByDay = (events) => sortBy(events, 'day');
 
-// COMPONENTS
+const groupMapSort = pipe(groupByDay, entries, mapEventsGrouped, sortByDay);
+
+// HOOKS
 export default (events) => {
   const displayedEventsGroupedByDate = useMemo(
-    () => pipe(groupByDay, entries, mapEventsGrouped, sortByDay)(events),
+    () => groupMapSort(events),
     [events],
   );
 

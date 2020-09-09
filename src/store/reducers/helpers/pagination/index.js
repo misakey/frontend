@@ -101,7 +101,7 @@ const onRemovePaginatedId = (state, { id, search = null }) => {
  * @param {String} prefix prefix to make a unique reducer
  * @param {Function} [getState] optional method to help fetch state via selectors
  */
-export const makePaginationReducer = (prefix, getState) => {
+export const makePaginationReducer = (prefix, getState, initialState = INITIAL_STATE) => {
   const uppercasedPrefix = prefix.toUpperCase();
 
   // ACTIONS
@@ -109,6 +109,7 @@ export const makePaginationReducer = (prefix, getState) => {
   const RECEIVE_PAGINATED_IDS = Symbol(`${uppercasedPrefix}_RECEIVE_PAGINATED_IDS`);
   const ADD_PAGINATED_ID = Symbol(`${uppercasedPrefix}_ADD_PAGINATED_ID`);
   const REMOVE_PAGINATED_ID = Symbol(`${uppercasedPrefix}_REMOVE_PAGINATED_ID`);
+  const RESET_PAGINATION = Symbol(`${uppercasedPrefix}_RESET_PAGINATION`);
 
   // ACTION CREATORS
   const receivePaginatedItemCount = (itemCount) => ({
@@ -136,6 +137,10 @@ export const makePaginationReducer = (prefix, getState) => {
     search,
   });
 
+  const resetPagination = () => ({
+    type: RESET_PAGINATION,
+  });
+
   // SELECTORS
   const selectors = isFunction(getState) ? {
     getByPagination: createSelector(
@@ -157,11 +162,12 @@ export const makePaginationReducer = (prefix, getState) => {
   } : {};
 
   // REDUCER
-  const reducer = createResetOnSignOutReducer(INITIAL_STATE, {
+  const reducer = createResetOnSignOutReducer(initialState, {
     [RECEIVE_PAGINATED_ITEM_COUNT]: onReceivePaginatedItemCount,
     [RECEIVE_PAGINATED_IDS]: onReceivePaginatedIds,
     [ADD_PAGINATED_ID]: onAddPaginatedId,
     [REMOVE_PAGINATED_ID]: onRemovePaginatedId,
+    [RESET_PAGINATION]: () => initialState,
   });
 
   return {
@@ -170,12 +176,14 @@ export const makePaginationReducer = (prefix, getState) => {
       RECEIVE_PAGINATED_IDS,
       ADD_PAGINATED_ID,
       REMOVE_PAGINATED_ID,
+      RESET_PAGINATION,
     },
     actionCreators: {
       receivePaginatedItemCount,
       receivePaginatedIds,
       addPaginatedId,
       removePaginatedId,
+      resetPagination,
     },
     selectors,
     reducer,

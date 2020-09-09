@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, forwardRef } from 'react';
+import React, { useMemo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -6,18 +6,13 @@ import routes from 'routes';
 import STATUSES from 'constants/app/boxes/statuses';
 
 import path from '@misakey/helpers/path';
-import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import { useRouteMatch, Link } from 'react-router-dom';
-import useInterval from '@misakey/hooks/useInterval';
 // import { useLocation, useHistory } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
-import usePaginateBoxesByStatusRefresh from 'hooks/usePaginateBoxesByStatus/refresh';
-import useResetBoxCount from 'hooks/useResetBoxCount';
-import useIdentity from 'hooks/useIdentity';
 // import getNextSearch from '@misakey/helpers/getNextSearch';
 
 import Typography from '@material-ui/core/Typography';
@@ -53,41 +48,14 @@ const VaultOpen = forwardRef(({ t, activeStatus, ...props }, ref) => {
   const classes = useStyles();
   const locationSearchParams = useLocationSearchParams();
 
-  const { identityId } = useIdentity();
-
   const match = useRouteMatch(routes.boxes.read._);
   const selectedId = useMemo(
     () => paramsIdPath(match),
     [match],
   );
 
-  const hasIdentityId = useMemo(
-    () => !isNil(identityId),
-    [identityId],
-  );
-
   const { search } = locationSearchParams;
-  const onPaginationRefresh = usePaginateBoxesByStatusRefresh(activeStatus, search);
-  const resetBoxCount = useResetBoxCount();
-  const onRefresh = useCallback(
-    () => (isNil(selectedId)
-      ? onPaginationRefresh()
-      : Promise.all([
-        onPaginationRefresh(),
-        resetBoxCount({ boxId: selectedId, identityId }),
-      ])),
-    [onPaginationRefresh, resetBoxCount, selectedId, identityId],
-  );
 
-  const intervalConfig = useMemo(
-    () => ({
-      delay: window.env.AUTO_REFRESH_LIST_DELAY,
-      shouldStart: hasIdentityId,
-    }),
-    [hasIdentityId],
-  );
-
-  useInterval(onRefresh, intervalConfig);
 
   // const { search: locationSearch, pathname } = useLocation();
   // const { push } = useHistory();

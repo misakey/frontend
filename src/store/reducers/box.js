@@ -66,26 +66,6 @@ export const removeBox = (id) => (dispatch, getState) => {
   ]);
 };
 
-export const addBoxEvents = (id, event) => (dispatch, getState) => {
-  const currentBox = getBoxById(getState(), id);
-  const { events = [] } = currentBox;
-
-  const changes = {
-    lastEvent: event,
-    ...(event.type === LIFECYCLE ? { lifecycle: event.content.state } : {}),
-    events: [...events, event],
-  };
-
-  const normalized = normalize(event, BoxEventsSchema.entity);
-  const { entities } = normalized;
-
-  return Promise.all([
-    dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
-    dispatch(updateEntities([{ id, changes }], BoxesSchema)),
-    dispatch(moveBackUpId(id)),
-  ]);
-};
-
 export const editBoxEvent = (id, event) => (dispatch, getState) => {
   const { id: eventId } = event;
 
@@ -113,7 +93,7 @@ export const editBoxEvent = (id, event) => (dispatch, getState) => {
   ]);
 };
 
-export const addMultiBoxEvents = (id, nextEvents) => (dispatch, getState) => {
+export const addBoxEvents = (id, nextEvents) => (dispatch, getState) => {
   const currentBox = getBoxById(getState(), id);
   const { events = [] } = currentBox;
 
@@ -132,5 +112,23 @@ export const addMultiBoxEvents = (id, nextEvents) => (dispatch, getState) => {
     dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
     dispatch(updateEntities([{ id, changes }], BoxesSchema)),
     dispatch(moveBackUpId(id)),
+  ]);
+};
+
+export const receiveBoxEvents = (id, nextEvents) => (dispatch, getState) => {
+  const currentBox = getBoxById(getState(), id);
+  const { events = [] } = currentBox;
+
+  const changes = {
+    events: events.concat(nextEvents),
+  };
+
+  const normalized = normalize(nextEvents, BoxEventsSchema.collection);
+  const { entities } = normalized;
+
+
+  return Promise.all([
+    dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
+    dispatch(updateEntities([{ id, changes }], BoxesSchema)),
   ]);
 };

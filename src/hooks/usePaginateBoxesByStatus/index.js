@@ -12,6 +12,7 @@ import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/hel
 import { getUserBoxesBuilder, countUserBoxesBuilder } from '@misakey/helpers/builder/boxes';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import debounce from '@misakey/helpers/debounce';
+import getMissingIndexes from '@misakey/helpers/getMissingIndexes';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useMemo, useCallback, useEffect } from 'react';
@@ -36,14 +37,6 @@ const getReceiveActionCreator = (status) => {
   const statusActionCreators = actionCreatorsProp(status);
   return statusActionCreators.receivePaginatedIds || noop;
 };
-
-const getMissingIndexes = (paginatedMap) => Object.entries(paginatedMap)
-  .reduce((acc, [key, value]) => {
-    if (isNil(value)) {
-      acc.push(key);
-    }
-    return acc;
-  }, []);
 
 // HOOKS
 /**
