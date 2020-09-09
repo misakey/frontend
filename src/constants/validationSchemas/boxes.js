@@ -6,6 +6,7 @@ import { generatePath } from 'react-router-dom';
 import isString from '@misakey/helpers/isString';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
+import { mainDomainFieldValidation, emailFieldValidation } from 'constants/fieldValidations';
 
 // CONSTANTS
 const { required, malformed, max, invalid } = errorTypes;
@@ -49,3 +50,12 @@ export const boxFileUploadValidationSchema = Yup.object().shape({
 export const boxDeletionDialogValidationSchema = (expected) => Yup.object().shape({
   confirm: Yup.string().equals([expected], invalid).required(invalid),
 });
+
+export const accessWhitelistValidationSchema = {
+  identifier: Yup.object().shape({
+    accessWhitelistIdentifier: emailFieldValidation.schema,
+  }),
+  emailDomain: Yup.object().shape({
+    accessWhitelistEmailDomain: mainDomainFieldValidation.schema,
+  }),
+};

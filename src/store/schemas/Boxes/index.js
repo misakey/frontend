@@ -7,6 +7,7 @@ import SenderSchema from 'store/schemas/Boxes/Sender';
 
 const entity = new schema.Entity('boxes', {
   events: EventSchema.collection,
+  accesses: EventSchema.collection,
   lastEvent: EventSchema.entity,
   creator: SenderSchema.entity,
   members: SenderSchema.collection,
@@ -25,6 +26,8 @@ const BoxesSchema = {
     eventsCount: PropTypes.number,
     // eslint-disable-next-line react/forbid-foreign-prop-types
     events: PropTypes.arrayOf(PropTypes.shape(EventSchema.propTypes)),
+    // eslint-disable-next-line react/forbid-foreign-prop-types
+    accesses: PropTypes.arrayOf(PropTypes.shape(EventSchema.propTypes)),
     // eslint-disable-next-line react/forbid-foreign-prop-types
     creator: PropTypes.shape(SenderSchema.propTypes),
     // eslint-disable-next-line react/forbid-foreign-prop-types

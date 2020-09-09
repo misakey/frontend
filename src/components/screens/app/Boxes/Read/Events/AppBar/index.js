@@ -17,11 +17,14 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Link } from 'react-router-dom';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import BoxAvatar from 'components/dumb/Avatar/Box';
+// import BoxAvatar from 'components/dumb/Avatar/Box';
 import Typography from '@material-ui/core/Typography';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import DeleteBoxDialogButton from './DeleteBoxDialogButton';
+import ShareBoxDialogButton from './ShareBoxDialogButton';
 
 // CONSTANTS
 const SKELETON_WIDTH = 100;
@@ -46,6 +49,9 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(0),
     paddingBottom: theme.spacing(0),
   },
+  listItemContainer: {
+    width: '100%',
+  },
   typographyFlex: {
     display: 'flex',
     alignItems: 'center',
@@ -61,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
   const classes = useStyles();
-  const { avatarUrl, title, members, id, lifecycle } = useMemo(() => box, [box]);
+  const { title, members, id, lifecycle } = useMemo(() => box, [box]);
 
   const routeDetails = useGeneratePathKeepingSearchAndHash(routes.boxes.read.details, { id });
 
@@ -73,17 +79,22 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
     [lifecycle],
   );
 
+  const isTheOnlyMember = useMemo(
+    () => members.length === 1 && belongsToCurrentUser,
+    [belongsToCurrentUser, members.length],
+  );
+
   const membersText = useMemo(
     () => {
-      if (members.length === 1 && belongsToCurrentUser) {
-        return t('boxes:read.details.menu.members.creator');
-      }
       if (isBoxClosed) {
         return t('boxes:read.events.information.lifecycle.closed.generic');
       }
+      if (isTheOnlyMember) {
+        return t('boxes:read.details.menu.members.creator');
+      }
       return t('boxes:read.details.menu.members.count', { count: members.length });
     },
-    [belongsToCurrentUser, members, isBoxClosed, t],
+    [isTheOnlyMember, isBoxClosed, t, members.length],
   );
 
   const primaryTypographyProps = useMemo(
@@ -112,9 +123,22 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
     [members, membersText, secondaryTypographyProps, classes.secondarySkeleton],
   );
 
+  const isClosed = useMemo(
+    () => lifecycle === CLOSED,
+    [lifecycle],
+  );
+
+  const canDeleteBox = useMemo(
+    () => belongsToCurrentUser && isClosed,
+    [belongsToCurrentUser, isClosed],
+  );
+
+
   return (
     <ListItem
       button
+      ContainerProps={{ className: classes.listItemContainer }}
+      ContainerComponent="div"
       component={Link}
       to={routeDetails}
       overflow="hidden"
@@ -132,12 +156,16 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
           )}
         secondary={secondary}
       />
-      <BoxAvatar
+      <ListItemSecondaryAction>
+        {!isClosed && <ShareBoxDialogButton box={box} />}
+        {canDeleteBox && <DeleteBoxDialogButton box={box} />}
+      </ListItemSecondaryAction>
+      {/* <BoxAvatar
         aria-label={t('boxes:read.details.open')}
         aria-controls="menu-appbar"
         src={avatarUrl}
         title={title || ''}
-      />
+      /> */}
     </ListItem>
   );
 };

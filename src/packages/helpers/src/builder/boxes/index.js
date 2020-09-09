@@ -95,3 +95,9 @@ export const deleteBoxBuilder = (boxId, userConfirmation) => API
   .use(API.endpoints.boxes.delete)
   .build({ id: boxId }, objectToSnakeCase({ userConfirmation }))
   .send();
+
+export const getBoxAccessesBuilder = (id) => API
+  .use(API.endpoints.boxes.accesses.find)
+  .build({ id })
+  .send()
+  .then((events) => events.map(objectToCamelCaseDeep));

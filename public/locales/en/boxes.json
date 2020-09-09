@@ -82,7 +82,7 @@
           "closed": {
             "they": "Private space closed by {{displayName}}",
             "you": "You closed the private space",
-            "generic": "Private space closed"
+            "generic": "Only admins can access"
           },
           "open": {
             "they": "{{displayName}} reopened the private space",
@@ -139,6 +139,44 @@
         "helperLink": "https://docs.misakey.com/#/en/"
       },
       "success": "Files have been sent successfully\u00a0!"
+    },
+    "share": {
+      "dialog": {
+        "title": "Share with people and groups",
+        "link": {
+          "title": "Get the link",
+          "subtitle": "Allowed users can read the content of the private space with the link"
+        },
+        "accesses": {
+          "accesses": "Define accesses",
+          "subtitle": "Define the access level of your private space"
+        }
+      },
+      "update": {
+        "success": "Accesses have been updated successfully",
+        "error": "An error occured while updating accesses!",
+        "noChanges": "No changes added"
+      },
+      "level": {
+        "public": {
+          "title": "Public",
+          "description": "Everybody can access the private space with the invitation link"
+        },
+        "private": {
+          "title": "Private",
+          "description": "Only you have access to the private space"
+        },
+        "limited": {
+          "title": "Limited",
+          "description": "Only people added to the private space have access to it",
+          "accessWhitelistIdentifier": {
+            "title": "Allowed emails"
+          },
+          "accessWhitelistEmailDomain": {
+            "title": "Allowed domains"
+          }
+        }
+      }
     },
     "details": {
       "open": "See details",

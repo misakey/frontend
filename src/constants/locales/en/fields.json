@@ -190,6 +190,24 @@
     },
     "invitationLink": {
       "label": "Invitation link"
+    },
+    "accessLevel": {
+      "label": "Access level"
+    },
+    "accessWhitelistIdentifier": {
+      "error": {
+        "malformed": "Please, type a valid email",
+        "required": "Email is required",
+        "placeholder": "rose.flamingo@misakey.com"
+
+      }
+    },
+    "accessWhitelistEmailDomain": {
+      "error": {
+        "malformed": "Please, type a valid domain name",
+        "required": "Domain name is required",
+        "placeholder": "misakey.com"
+      }
     }
   }
 }

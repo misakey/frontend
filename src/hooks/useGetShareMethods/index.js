@@ -58,5 +58,6 @@ export default (boxId, title, publicKey, t) => {
     canShare,
     onCopyLink,
     onShare,
+    invitationURL,
   };
 };

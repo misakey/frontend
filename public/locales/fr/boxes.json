@@ -82,7 +82,7 @@
           "closed": {
             "they": "Espace privé fermé par {{displayName}}",
             "you": "Vous avez fermé l'espace privé",
-            "generic": "Espace privé fermé"
+            "generic": "Accessible aux administrateurs seulement"
           },
           "open": {
             "they": "{{displayName}} a ré-ouvert l'espace privé",
@@ -139,6 +139,44 @@
         "helperLink": "https://docs.misakey.com/#/fr/"
       },
       "success": "Les fichiers ont été envoyé avec succès\u00a0!"
+    },
+    "share": {
+      "dialog": {
+        "title": "Partager avec des personnes et des groupes",
+        "link": {
+          "title": "Obtenir le lien",
+          "subtitle": "Le lien de partage permet aux utilisateurs autorisés de lire le contenu de l'espace privé"
+        },
+        "accesses": {
+          "title": "Définir les accès",
+          "subtitle": "Définissez le niveau d'accès de votre espace privé"
+        }
+      },
+      "update": {
+        "success": "Les accès ont été modifié avec succès",
+        "error": "Une erreur s'est produite lors de la modification des accès\u00a0!",
+        "noChanges": "Aucun changements detectés"
+      },
+      "level": {
+        "public": {
+          "title": "Public",
+          "description": "Tous les internautes auront accès au contenu avec le lien d'invitation"
+        },
+        "private": {
+          "title": "Privé",
+          "description": "Vous êtes la seule personne à avoir accès au contenu de l'espace privé"
+        },
+        "limited": {
+          "title": "Limité",
+          "description": "Seules les personnes ajoutées à l'espace privé y ont accès",
+          "accessWhitelistIdentifier": {
+            "title": "Emails autorisés"
+          },
+          "accessWhitelistEmailDomain": {
+            "title": "Domaines autorisés"
+          }
+        }
+      }
     },
     "details": {
       "open": "Voir les détails",

@@ -3,6 +3,7 @@ import errorTypes from '@misakey/ui/constants/errorTypes';
 import { MAX_FILE_SIZE, MAX_AVATAR_SIZE } from 'constants/file/size';
 import { ACCEPTED_TYPES } from 'constants/file/image';
 import { NOTIFICATIONS } from 'constants/notifications';
+import { MAIN_DOMAIN_REGEX } from 'constants/regex';
 
 import isString from '@misakey/helpers/isString';
 import isNil from '@misakey/helpers/isNil';
@@ -77,4 +78,11 @@ export const stringFieldValidation = {
 
 export const displayNameFieldValidation = {
   schema: Yup.string().min(3, invalid).max(254, invalid).required(required),
+};
+
+export const mainDomainFieldValidation = {
+  schema: Yup.string()
+    .matches(MAIN_DOMAIN_REGEX, { message: malformed, excludeEmptyString: true })
+    .required(required),
+  regex: MAIN_DOMAIN_REGEX,
 };

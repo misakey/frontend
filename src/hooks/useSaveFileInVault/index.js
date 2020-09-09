@@ -1,7 +1,6 @@
 
 import React, { useCallback, useMemo } from 'react';
 import routes from 'routes';
-import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
@@ -11,7 +10,7 @@ import { ensureVaultKeyExists } from '@misakey/crypto/store/actions/concrete';
 import { encryptForVault } from '@misakey/crypto/vault';
 import { addSavedFiles } from 'store/reducers/savedFiles';
 import errorTypes from '@misakey/ui/constants/errorTypes';
-import Button from '@misakey/ui/Button';
+import SnackbarActionSee from 'components/dumb/Snackbar/Action/See';
 
 const { conflict } = errorTypes;
 
@@ -23,8 +22,8 @@ export default (encryption, encryptedFileId) => {
   const { t } = useTranslation('components');
 
   const seeAction = useMemo(
-    () => <Button text={t('common:see')} color="inherit" component={Link} to={routes.documents.vault} />,
-    [t],
+    () => <SnackbarActionSee to={routes.documents.vault} />,
+    [],
   );
 
   const saveInVault = useCallback(async (vaultKey) => {

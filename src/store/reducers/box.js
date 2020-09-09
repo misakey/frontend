@@ -126,6 +126,18 @@ export const receiveBoxEvents = (id, nextEvents) => (dispatch, getState) => {
   const normalized = normalize(nextEvents, BoxEventsSchema.collection);
   const { entities } = normalized;
 
+  return Promise.all([
+    dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
+    dispatch(updateEntities([{ id, changes }], BoxesSchema)),
+  ]);
+};
+
+export const updateAccessesEvents = (id, newAccesses) => (dispatch) => {
+  const normalized = normalize(newAccesses, BoxEventsSchema.collection);
+  const { entities, result } = normalized;
+  const changes = {
+    accesses: result,
+  };
 
   return Promise.all([
     dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),

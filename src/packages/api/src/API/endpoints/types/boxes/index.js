@@ -92,4 +92,11 @@ export default {
       auth: true,
     },
   },
+  accesses: {
+    find: {
+      method: 'GET',
+      path: '/boxes/:id/accesses',
+      auth: true,
+    },
+  },
 };
