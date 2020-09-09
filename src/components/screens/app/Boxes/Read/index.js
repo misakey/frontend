@@ -20,6 +20,7 @@ import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslati
 import withBoxDetails from 'components/smart/withBoxDetails';
 import withIdentity from 'components/smart/withIdentity';
 import PaginateEventsByBoxContextProvider from 'components/smart/Context/PaginateEventsByBox';
+import BoxNoAccess from './NoAccess';
 import BoxClosed from './Closed';
 import BoxDetails from './Details';
 import BoxEvents from './Events';
@@ -36,7 +37,7 @@ function BoxRead({
   belongsToCurrentUser,
   identityId,
 }) {
-  const { lifecycle, publicKey } = useMemo(() => box, [box]);
+  const { lifecycle, publicKey, hasAccess } = useMemo(() => box, [box]);
   const shouldNotDisplayContent = useMemo(
     () => lifecycle === CLOSED && !belongsToCurrentUser,
     [belongsToCurrentUser, lifecycle],
@@ -87,6 +88,18 @@ function BoxRead({
 
   if (displayLoadingScreen) {
     return <SplashScreenWithTranslation />;
+  }
+
+  if (hasAccess === false) {
+    return (
+      <BoxNoAccess
+        box={box}
+        toggleDrawer={toggleDrawer}
+        isDrawerOpen={isDrawerOpen}
+        drawerWidth={drawerWidth}
+        belongsToCurrentUser={belongsToCurrentUser}
+      />
+    );
   }
 
   if (shouldNotDisplayContent) {

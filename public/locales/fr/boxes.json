@@ -37,6 +37,9 @@
     "closed": {
       "info": "{{displayName}} a fermé l'espace privé «\u00a0{{title}}\u00a0» le {{date}}."
     },
+    "noaccess": {
+      "info": "Vous n'avez pas accès à l'espace privé «\u00a0{{title}}\u00a0». Veuillez contacter la personne vous ayant donné le lien."
+    },
     "actions": {
       "upload": "Envoyer des fichiers",
       "confirmIdentity": "Confirmer mon identité",

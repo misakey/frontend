@@ -37,6 +37,9 @@
     "closed": {
       "info": "{{displayName}} closed the private space «\u00a0{{title}}\u00a0» on {{date}}."
     },
+    "noaccess": {
+      "info": "You don't have access to the private space «\u00a0{{title}}\u00a0». Please ask access to the person that gave you the link."
+    },
     "actions": {
       "upload": "Send files",
       "confirmIdentity": "Confirm your identity",

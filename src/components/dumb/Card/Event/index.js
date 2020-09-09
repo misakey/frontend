@@ -28,6 +28,18 @@ const useStyles = makeStyles((theme) => ({
   card: {
     overflow: 'hidden',
     background: 0,
+    [theme.breakpoints.down('xl')]: {
+      maxWidth: '50%',
+    },
+    [theme.breakpoints.down('md')]: {
+      maxWidth: '65%',
+    },
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: '80%',
+    },
+    [theme.breakpoints.up('xl')]: {
+      maxWidth: 600,
+    },
   },
   boxRoot: {
     borderRadius: CARD_BORDER_RADIUS,
