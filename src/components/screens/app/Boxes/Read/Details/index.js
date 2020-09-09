@@ -292,7 +292,9 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
                 </ListItemAvatar>
                 <ListItemText
                   primary={displayName}
+                  secondary={belongsToCurrentUser ? identifier.value : null}
                   primaryTypographyProps={{ color: 'textPrimary' }}
+                  secondaryTypographyProps={{ color: 'textSecondary' }}
                 />
               </ListItem>
             ))}
