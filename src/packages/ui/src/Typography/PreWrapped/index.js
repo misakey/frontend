@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 const useStyles = makeStyles(() => ({
   preWrapped: {
     whiteSpace: 'pre-wrap',
+    overflowWrap: 'break-word',
   },
 }));
 
