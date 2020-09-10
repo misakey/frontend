@@ -4,6 +4,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Container from '@material-ui/core/Container';
 import Footer from '@misakey/ui/Footer';
+import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 
 // CONSTANTS
 const CONTAINER_PROPS = {
@@ -15,10 +16,6 @@ const useStyles = makeStyles(() => ({
   footer: {
     borderLeft: 'none',
     borderRight: 'none',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
   },
 }));
 
@@ -27,13 +24,17 @@ const FooterFullScreen = (props) => {
   const classes = useStyles();
 
   return (
-    <Footer
-      className={classes.footer}
-      ContainerComponent={Container}
-      containerProps={CONTAINER_PROPS}
-      square
-      {...props}
-    />
+    <>
+      <BoxFlexFill />
+      <Footer
+        className={classes.footer}
+        ContainerComponent={Container}
+        containerProps={CONTAINER_PROPS}
+        square
+        {...props}
+      />
+    </>
+
   );
 };
 

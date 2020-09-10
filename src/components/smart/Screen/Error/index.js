@@ -4,8 +4,6 @@ import { Link } from 'react-router-dom';
 import routes from 'routes';
 import { Trans, withTranslation } from 'react-i18next';
 
-import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
-
 import { makeStyles } from '@material-ui/core/styles';
 
 import omit from '@misakey/helpers/omit';
@@ -20,26 +18,26 @@ import MuiLink from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 
-import { Container } from '@material-ui/core';
 import Subtitle from 'packages/ui/src/Typography/Subtitle';
 import { FEEDBACK } from 'constants/emails';
 import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  container: {
-    height: `calc(100% - ${APPBAR_HEIGHT}px)`,
-  },
   root: {
     backgroundColor: theme.palette.background.default,
-    height: '100%',
   },
 }));
 
 function ScreenError({ t, className, children, hideDefaultError, hideRefreshAction, ...rest }) {
   const classes = useStyles();
   return (
-    <Box className={classes.root}>
+    <Box
+      className={classes.root}
+      display="flex"
+      flexDirection="column"
+      height="100%"
+    >
       <AppBar elevation={0} position="static" color="transparent">
         <Toolbar>
           <IconButton
@@ -53,12 +51,13 @@ function ScreenError({ t, className, children, hideDefaultError, hideRefreshActi
           <Typography color="textSecondary">{t('components:ScreenError.button.goback')}</Typography>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="md" className={classes.container}>
+      <Box height="100%">
         <Box
           display="flex"
           flexDirection="column"
           justifyContent="center"
-          height="100%"
+          m={3}
+          height="inherit"
           className={className}
           {...omit(rest, ['tReady', 'i18n'])}
         >
@@ -92,7 +91,7 @@ function ScreenError({ t, className, children, hideDefaultError, hideRefreshActi
             />
           )}
         </Box>
-      </Container>
+      </Box>
       <FooterFullScreen />
     </Box>
   );
