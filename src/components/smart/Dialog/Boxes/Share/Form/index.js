@@ -206,11 +206,11 @@ function ShareBoxForm({ accesses, boxId, invitationURL }) {
 
   const accessLevelValue = useMemo(
     () => {
-      if (hasWhitelistRules) { return VALUES.LIMITED; }
+      if (hasWhitelistRules || showWhitelistForm) { return VALUES.LIMITED; }
       if (isPublic) { return VALUES.PUBLIC; }
       return VALUES.PRIVATE;
     },
-    [hasWhitelistRules, isPublic],
+    [hasWhitelistRules, isPublic, showWhitelistForm],
   );
 
   const onChangeAccessLevel = useCallback(
@@ -220,11 +220,13 @@ function ShareBoxForm({ accesses, boxId, invitationURL }) {
           setIsPublic(false);
           setWhitelistedEmailDomains([]);
           setWhitelistedIdentifiers([]);
+          setShowWhitelistForm(false);
           break;
         case VALUES.PUBLIC: {
           setIsPublic(true);
           setWhitelistedEmailDomains([]);
           setWhitelistedIdentifiers([]);
+          setShowWhitelistForm(false);
           break;
         }
         case VALUES.LIMITED:

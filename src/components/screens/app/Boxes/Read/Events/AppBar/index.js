@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
   const classes = useStyles();
-  const { title, members, id, lifecycle } = useMemo(() => box, [box]);
+  const { title, members, id, lifecycle, hasAccess } = useMemo(() => box, [box]);
 
   const routeDetails = useGeneratePathKeepingSearchAndHash(routes.boxes.read.details, { id });
 
@@ -111,21 +111,36 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
     [isDownSm],
   );
 
+  const skeletonAnimation = useMemo(
+    () => (hasAccess === false ? false : 'pulse'),
+    [hasAccess],
+  );
 
   const secondary = useMemo(
     () => (isEmpty(members)
-      ? <Skeleton className={classes.secondarySkeleton} width={SKELETON_WIDTH} />
+      ? (
+        <Skeleton
+          className={classes.secondarySkeleton}
+          animation={skeletonAnimation}
+          width={SKELETON_WIDTH}
+        />
+      )
       : (
         <Typography {...secondaryTypographyProps}>
           {membersText}
         </Typography>
       )),
-    [members, membersText, secondaryTypographyProps, classes.secondarySkeleton],
+    [members, classes.secondarySkeleton, skeletonAnimation, secondaryTypographyProps, membersText],
   );
 
   const isClosed = useMemo(
     () => lifecycle === CLOSED,
     [lifecycle],
+  );
+
+  const canShare = useMemo(
+    () => !isClosed && hasAccess,
+    [hasAccess, isClosed],
   );
 
   const canDeleteBox = useMemo(
@@ -157,7 +172,7 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
         secondary={secondary}
       />
       <ListItemSecondaryAction>
-        {!isClosed && <ShareBoxDialogButton box={box} />}
+        {canShare && <ShareBoxDialogButton box={box} />}
         {canDeleteBox && <DeleteBoxDialogButton box={box} />}
       </ListItemSecondaryAction>
       {/* <BoxAvatar
