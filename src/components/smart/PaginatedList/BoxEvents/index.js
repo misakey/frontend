@@ -16,6 +16,7 @@ import usePrevPropEffect from '@misakey/hooks/usePrevPropEffect';
 import useGroupEventsByDate from 'hooks/useGroupEventsByDate';
 import { usePaginateEventsContext } from 'components/smart/Context/PaginateEventsByBox';
 import useNotDoneEffect from 'hooks/useNotDoneEffect';
+import useMountEffect from '@misakey/hooks/useMountEffect';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useSelector } from 'react-redux';
 
@@ -66,7 +67,12 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
       : denormalize(Object.values(byPagination), EventSchema.collection, state.entities)),
   );
 
-  const eventsByDate = useGroupEventsByDate(events);
+  const notNilEvents = useMemo(
+    () => events.filter((event) => !isNil(event)),
+    [events],
+  );
+
+  const eventsByDate = useGroupEventsByDate(notNilEvents);
 
   const onLoadMoreItems = useCallback(
     () => {
@@ -107,7 +113,7 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
   );
 
   // [HANDLE SCROLL]
-  usePrevPropEffect(events, (prevEvents, nextEvents) => {
+  usePrevPropEffect(notNilEvents, (prevEvents, nextEvents) => {
     if (isEmpty(prevEvents) && !isEmpty(nextEvents)) {
       setTimeout(
         () => scrollToBottom(),
@@ -119,9 +125,9 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
   const resetScrollInit = useNotDoneEffect(
     (onDone) => {
       const { current } = combinedRef;
-      if (!isEmpty(events) && !isNil(current)) {
+      if (!isEmpty(notNilEvents) && !isNil(current)) {
         const scrollDiff = getScrollDiff(current);
-        if ((scrollDiff) > THRESHOLD || events.length === itemCount) {
+        if ((scrollDiff) > THRESHOLD || notNilEvents.length === itemCount) {
           scrollToBottom();
           onDone();
         } else {
@@ -130,7 +136,7 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
         }
       }
     },
-    [events, scrollToBottom, combinedRef],
+    [notNilEvents, scrollToBottom, combinedRef],
   );
 
   useEffect(
@@ -164,14 +170,24 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
   // [LOAD MORE ITEMS]
   const shouldFetch = useMemo(
     () => {
-      const { length } = events;
+      const { length } = notNilEvents;
       const { current } = paginationOffsetRef;
       return !isNil(itemCount) && length > 0 && length < itemCount && length === current;
     },
-    [events, itemCount, paginationOffsetRef],
+    [notNilEvents, itemCount, paginationOffsetRef],
   );
 
   // INIT
+  useMountEffect(
+    () => {
+      if (!isNil(itemCount)) {
+        onLoadMoreItemsRef.current();
+      }
+    },
+    [itemCount, onLoadMoreItemsRef],
+  );
+
+  // RESET
   usePrevPropEffect(itemCount, (prevItemCount, nextItemCount) => {
     if (isNil(prevItemCount) && !isNil(nextItemCount)) {
       // reset pagination offset ref

@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 
-export default (fn) => {
+export default (fn, effects = []) => {
   const mounted = useRef(false);
 
   useEffect(
@@ -11,6 +11,6 @@ export default (fn) => {
       }
       return undefined;
     },
-    [fn, mounted],
+    [fn, mounted, ...effects], // eslint-disable-line react-hooks/exhaustive-deps
   );
 };

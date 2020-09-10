@@ -204,7 +204,7 @@ function ShareBoxDialog({ box, t, open, onClose }) {
 ShareBoxDialog.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
-  open: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
