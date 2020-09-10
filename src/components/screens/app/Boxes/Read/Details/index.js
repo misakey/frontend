@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     boxSizing: 'border-box',
-    maxHeight: `calc(100vh - ${APPBAR_HEIGHT}px)`,
+    maxHeight: `calc(100% - ${APPBAR_HEIGHT}px)`,
     overflow: 'auto',
   },
   subheader: {

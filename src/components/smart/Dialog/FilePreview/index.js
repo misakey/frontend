@@ -68,11 +68,11 @@ const useStyles = makeStyles((theme) => ({
   },
   media: {
     maxWidth: '100%',
-    maxHeight: `calc(100vh - ${APPBAR_HEIGHT}px - ${PADDING}px)`,
+    maxHeight: `calc(100% - ${APPBAR_HEIGHT}px - ${PADDING}px)`,
   },
   embed: ({ isLoaded }) => (isLoaded ? {
     width: '100%',
-    height: `calc(100vh - ${APPBAR_HEIGHT}px - ${PADDING}px)`,
+    height: `calc(100% - ${APPBAR_HEIGHT}px - ${PADDING}px)`,
   } : {
     width: 0,
     height: 0,
