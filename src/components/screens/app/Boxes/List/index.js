@@ -12,6 +12,7 @@ import useResetBoxCount from 'hooks/useResetBoxCount';
 import useIdentity from 'hooks/useIdentity';
 import { useRouteMatch } from 'react-router-dom';
 import { useBoxesContext } from 'components/smart/Context/Boxes';
+import useFetchBoxMembers from 'hooks/useFetchBoxMembers';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isNil from '@misakey/helpers/isNil';
@@ -58,14 +59,17 @@ function BoxesList({ t, activeStatus, ...props }) {
 
   const { search, refresh } = useBoxesContext();
   const resetBoxCount = useResetBoxCount();
+  const onGetBoxMembers = useFetchBoxMembers();
+
   const onRefresh = useCallback(
     () => (isNil(selectedId)
       ? refresh()
       : Promise.all([
         refresh(),
+        onGetBoxMembers(selectedId),
         resetBoxCount({ boxId: selectedId, identityId }),
       ])),
-    [selectedId, refresh, resetBoxCount, identityId],
+    [selectedId, refresh, onGetBoxMembers, resetBoxCount, identityId],
   );
 
   const intervalConfig = useMemo(
