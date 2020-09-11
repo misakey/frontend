@@ -108,7 +108,7 @@ function BoxEvents({
                 action={(
                   <ButtonWithDialogPassword
                     standing={BUTTON_STANDINGS.TEXT}
-                    text={t('common:add')}
+                    text={t('boxes:read.warning.button')}
                   />
                 )}
               >

@@ -49,7 +49,8 @@
       "edit": "Edit your message"
     },
     "warning": {
-      "saveInBackup": "Save this private space to my vault"
+      "saveInBackup": "Save this private space for later",
+      "button": "Create an account"
     },
     "errors": {
       "incorrectLink": "Impossible to decrypt from invitation link, it seems incorrect."
@@ -148,7 +149,7 @@
           "subtitle": "Allowed users can read the content of the private space with the link"
         },
         "accesses": {
-          "accesses": "Define accesses",
+          "title": "Define accesses",
           "subtitle": "Define the access level of your private space"
         }
       },

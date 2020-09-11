@@ -63,6 +63,7 @@ const DialogPassword = ({
     <Dialog
       open={open}
       fullScreen={fullScreen}
+      fullWidth
       onClose={onClose}
       {...omitTranslationProps(rest)}
     >

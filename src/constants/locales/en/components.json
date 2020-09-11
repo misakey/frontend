@@ -91,7 +91,7 @@
   "signinRedirect": {
     "resource": "{{resourceName}} is secured",
     "acr": "This feature requires a secured account",
-    "default": "This screen is secured",
+    "default": "The application requires authentication",
     "subtitle": "Confirm your identity to continue"
   },
   "cardEvent": {
