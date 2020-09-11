@@ -19,7 +19,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { usePaginateEventsContext } from 'components/smart/Context/PaginateEventsByBox';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import useGetShareMethods from 'hooks/useGetShareMethods';
 
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
@@ -36,12 +35,9 @@ import BoxAvatar from 'components/dumb/Avatar/Box';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import ConfirmationDialog from '@misakey/ui/Dialog/Confirm';
 import AvatarUser from '@misakey/ui/Avatar/User';
-import IconButton from '@material-ui/core/IconButton';
-import ShareIcon from '@material-ui/icons/Share';
-import CopyIcon from '@material-ui/icons/FilterNone';
+import ListItemShare from 'components/smart/ListItem/Boxes/Share';
 import ListItemLeave from 'components/smart/ListItem/Boxes/Leave';
 import ListItemDelete from 'components/smart/ListItem/Boxes/Delete';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 
 // CONSTANTS
 const { conflict } = errorTypes;
@@ -81,20 +77,12 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
     id,
     avatarUrl: boxAvatarUrl,
     title,
-    publicKey,
     members,
     lifecycle,
   } = useMemo(() => box, [box]);
 
   const goBack = useGeneratePathKeepingSearchAndHash(routes.boxes.read._, { id });
   // const routeFiles = useGeneratePathKeepingSearchAndHash(routes.boxes.read.files, { id });
-
-  const {
-    canShare,
-    canInvite,
-    onShare,
-    onCopyLink,
-  } = useGetShareMethods(id, title, publicKey, t);
 
   const { addItems } = usePaginateEventsContext();
 
@@ -179,48 +167,6 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
             />
             {/* <ChevronRightIcon /> */}
           </ListItem>
-          {canInvite && (
-            <>
-              {canShare && (
-                <ListItem
-                  divider
-                  aria-label={t('boxes:read.details.menu.share.menuTitle')}
-                >
-                  <ListItemText
-                    primary={t('boxes:read.details.menu.share.menuTitle')}
-                    primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
-                  />
-                  <ListItemSecondaryAction>
-                    <IconButton
-                      onClick={onShare}
-                      disabled={!canShare}
-                      aria-label={t('common:share')}
-                    >
-                      <ShareIcon />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              )}
-              <ListItem
-                divider
-                aria-label={t('boxes:read.details.menu.copyLink')}
-              >
-                <ListItemText
-                  primary={t('boxes:read.details.menu.copyLink')}
-                  primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
-                />
-                <ListItemSecondaryAction>
-                  <IconButton
-                    onClick={onCopyLink}
-                    disabled={!canInvite}
-                    aria-label={t('common:copy')}
-                  >
-                    <CopyIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-            </>
-          )}
           {/* <ListItem
             button
             to={routeFiles}
@@ -250,6 +196,7 @@ function BoxDetails({ drawerWidth, isDrawerOpen, box, belongsToCurrentUser, t })
             />
             {/* <ChevronRightIcon /> */}
           </ListItem>
+          <ListItemShare box={box} />
           {isAllowedToLeave && <ListItemLeave box={box} />}
           {isAllowedToDelete && <ListItemDelete box={box} />}
           {isAllowedToClose && (

@@ -160,8 +160,8 @@
       },
       "level": {
         "public": {
-          "title": "Public",
-          "description": "Tous les internautes auront accès au contenu avec le lien d'invitation"
+          "title": "Tous les utilisateurs disposant du lien",
+          "description": "Tous les utilisateurs auront accès au contenu avec le lien d'invitation"
         },
         "private": {
           "title": "Privé",

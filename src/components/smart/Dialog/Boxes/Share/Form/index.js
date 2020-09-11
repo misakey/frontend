@@ -34,6 +34,7 @@ import BoxControls from '@misakey/ui/Box/Controls';
 
 import { updateAccessesEvents } from 'store/reducers/box';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
+import withStyles from '@material-ui/core/styles/withStyles';
 import AccessWhitelistForm from './Whitelist';
 
 // CONSTANTS
@@ -79,7 +80,11 @@ const errorPropNil = pipe(
 );
 
 // COMPONENTS
-const AccessLevel = ({ value }) => {
+const AccessLevel = withStyles(() => ({
+  wrapText: {
+    whiteSpace: 'normal',
+  },
+}))(({ value, classes }) => {
   const { t } = useTranslation('boxes');
   return (
     <>
@@ -87,14 +92,15 @@ const AccessLevel = ({ value }) => {
         {ICONS[value]}
       </ListItemIcon>
       <ListItemText
+        className={classes.wrapText}
         primary={t(`boxes:read.share.level.${value}.title`)}
         secondary={t(`boxes:read.share.level.${value}.description`)}
-        primaryTypographyProps={{ noWrap: true, display: 'block' }}
-        secondaryTypographyProps={{ noWrap: true, display: 'block' }}
+        primaryTypographyProps={{ display: 'block' }}
+        secondaryTypographyProps={{ display: 'block' }}
       />
     </>
   );
-};
+});
 
 AccessLevel.propTypes = {
   value: PropTypes.oneOf(Object.values(VALUES)).isRequired,

@@ -160,8 +160,8 @@
       },
       "level": {
         "public": {
-          "title": "Public",
-          "description": "Everybody can access the private space with the invitation link"
+          "title": "Anyone with link",
+          "description": "Anyone can access the private space with the invitation link"
         },
         "private": {
           "title": "Private",
