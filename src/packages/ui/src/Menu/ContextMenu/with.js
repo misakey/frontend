@@ -7,6 +7,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useCombinedRefs from '@misakey/hooks/useCombinedRefs';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Menu from '@material-ui/core/Menu';
 import IconButton from '@material-ui/core/IconButton';
@@ -27,6 +28,13 @@ const INITIAL_MOUSE = {
 // HELPERS
 const hasHref = (element) => !isEmpty(element.href);
 
+// HOOKS
+const useStyles = makeStyles(() => ({
+  popper: ({ popperAnchorEl }) => ({
+    height: popperAnchorEl ? popperAnchorEl.clientHeight : null,
+  }),
+}));
+
 // CONTEXT
 export const MenuContext = createContext({
   onClose: null,
@@ -46,6 +54,8 @@ const withContextMenu = (Component) => {
     const [popperAnchorEl, setPopperAnchorEl] = useState(null);
 
     const combinedRef = useCombinedRefs(ref);
+
+    const classes = useStyles({ popperAnchorEl });
 
     const { x, y } = useSafeDestr(mouse);
 
@@ -121,9 +131,10 @@ const withContextMenu = (Component) => {
             anchorEl={popperAnchorEl}
             open={Boolean(popperAnchorEl)}
             placement="right-start"
+            className={classes.popper}
           >
-            <IconButton size="small" onClick={onContextMenu}>
-              <MoreHorizIcon fontSize="small" />
+            <IconButton onClick={onContextMenu}>
+              <MoreHorizIcon />
             </IconButton>
           </Popper>
           {children}

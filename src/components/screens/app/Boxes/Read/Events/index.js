@@ -35,10 +35,8 @@ const useStyles = makeStyles(() => ({
     // Do not use 100vh for mobile devices
     // https://dev.to/admitkard/mobile-issue-with-100vh-height-100-100vh-3-solutions-3nae
     height: `calc(100% - ${headerHeight}px)`,
+    position: 'relative',
   }),
-  thread: {
-    overflow: 'auto',
-  },
 }));
 
 // COMPONENTS

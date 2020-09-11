@@ -24,6 +24,9 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import BoxEventsAccordingToType from 'components/smart/Box/Event';
 
+import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
+
+
 // CONSTANTS
 const THRESHOLD = 200; // px
 const MAXIMUM_BATCH_SIZE = 10;
@@ -36,17 +39,28 @@ const useStyles = makeStyles(() => ({
   root: {
     overflow: 'auto',
   },
+  loader: {
+    position: 'absolute',
+    top: 0,
+    alignSelf: 'center',
+  },
 }));
 
 // COMPONENTS
 const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
   const combinedRef = useCombinedRefs(ref);
-  const classes = useStyles();
   const paginationOffsetRef = useRef(0);
 
   const {
     itemCount, byPagination, isFetching, loadMoreItems, refresh,
   } = usePaginateEventsContext();
+
+  const isPaginationEmpty = useMemo(
+    () => isEmpty(byPagination),
+    [byPagination],
+  );
+
+  const classes = useStyles();
 
   const { lastEvent } = useSafeDestr(box);
   const { id: lastEventId } = useSafeDestr(lastEvent);
@@ -216,27 +230,32 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
   // AUTO REFRESH
   useEffect(
     () => {
-      if (!isFetching && !isEmpty(byPagination)
+      if (!isFetching && !isPaginationEmpty
         && !isNil(newestEventId) && !isNil(lastEventId) && newestEventId !== lastEventId) {
         refresh();
       }
     },
-    [isFetching, lastEventId, newestEventId, refresh, byPagination],
+    [isFetching, lastEventId, newestEventId, refresh, byPagination, isPaginationEmpty],
   );
 
   return (
-    <Box p={2} ref={combinedRef} flexGrow="1" className={classes.root} onScroll={onScroll}>
-      {eventsByDate.map(({ date, events: groupedEvents }) => (
-        <Box display="flex" flexDirection="column" pt={1} key={date}>
-          <Typography variant="body2" component={Box} alignSelf="center" color="textPrimary">{date}</Typography>
-          {
+    <>
+      {isFetching && !isEmpty(byPagination) && (
+      <HourglassEmptyIcon color="secondary" fontSize="small" className={classes.loader} />
+      )}
+      <Box p={2.5} ref={combinedRef} flexGrow="1" className={classes.root} onScroll={onScroll}>
+        {eventsByDate.map(({ date, events: groupedEvents }) => (
+          <Box display="flex" flexDirection="column" pt={1} key={date}>
+            <Typography variant="body2" component={Box} alignSelf="center" color="textPrimary">{date}</Typography>
+            {
           groupedEvents.map((event) => (
             <BoxEventsAccordingToType box={box} event={event} key={event.id} />
           ))
         }
-        </Box>
-      ))}
-    </Box>
+          </Box>
+        ))}
+      </Box>
+    </>
   );
 });
 
