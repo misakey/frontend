@@ -12,29 +12,14 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import { addBoxSecretKey, setBoxKeyShare, boxAddSecretKeySetKeyShare } from '@misakey/crypto/store/actions/concrete';
-import { getKeyShareBuilder, createKeyShareBuilder } from '@misakey/helpers/builder/boxes';
-import { computeInvitationHash, combineBoxKeyShares, splitBoxSecretKey } from '@misakey/crypto/box/keySplitting';
+import { createKeyShareBuilder } from '@misakey/helpers/builder/boxes';
+import { combineBoxKeyShares, splitBoxSecretKey } from '@misakey/crypto/box/keySplitting';
+import checkHashValidity from '@misakey/crypto/helpers/checkHashValidity';
 import { selectors } from '@misakey/crypto/store/reducers';
+import { InvalidHash } from '@misakey/crypto/Errors/classes';
 
 // SELECTORS
 const { makeGetBoxKeyShare } = selectors;
-
-// ERRORS
-const INVALID_HASH_ERROR = new Error('INVALID_HASH_ERROR');
-const HASH_NOT_FOUND_ERROR = new Error('HASH_NOT_FOUND_ERROR');
-
-// HELPERS
-const checkHashValidity = (shareHash) => {
-  try {
-    const keyShare = computeInvitationHash(shareHash);
-    return getKeyShareBuilder(keyShare)
-      .then((misakeyKeyShare) => ({ misakeyKeyShare, otherShareHash: shareHash }))
-      .catch(() => { throw HASH_NOT_FOUND_ERROR; });
-  } catch (error) {
-    return Promise.reject(INVALID_HASH_ERROR);
-  }
-};
-
 
 export default (box, secretKey, isFetchingBox) => {
   const dispatch = useDispatch();
@@ -172,7 +157,7 @@ export default (box, secretKey, isFetchingBox) => {
 
   const onUrlKeyShareInvalid = useCallback(
     (err) => {
-      if (err === INVALID_HASH_ERROR) {
+      if (err instanceof InvalidHash) {
         enqueueSnackbar(t('boxes:read.errors.incorrectLink'), { variant: 'warning' });
       }
       if (!isNil(secretKey) && !isBoxClosed) { createNewBoxKeyShares(); }
@@ -195,7 +180,7 @@ export default (box, secretKey, isFetchingBox) => {
   // It will also rebuild the secretKey if needed.
   // If hashKeyShare is invalid, PasteLink screen will be displayed
   // This can happen for user with or without account.
-  const { isFetching: isFetchingUrlKeyShare } = useFetchEffect(
+  const { isFetching: isFetchingUrlKeyShare, error: errorUrlKeyShare } = useFetchEffect(
     checkUrlKeyShareValidity,
     { shouldFetch: shouldCheckUrlKeyShare, fetchOnlyOnce: true },
     { onSuccess: onUrlKeyShareValid, onError: onUrlKeyShareInvalid },
@@ -217,8 +202,12 @@ export default (box, secretKey, isFetchingBox) => {
     }
   }, [backupKeyShareHash, replaceHash, shouldOnlyReplaceUrlHash]);
 
-  return {
-    isFetching: isFetchingBackupKeyShare || isFetchingUrlKeyShare,
-    isCreatingNewShares,
-  };
+  return useMemo(
+    () => ({
+      isFetching: isFetchingBackupKeyShare || isFetchingUrlKeyShare,
+      error: errorUrlKeyShare,
+      isCreatingNewShares,
+    }),
+    [errorUrlKeyShare, isCreatingNewShares, isFetchingBackupKeyShare, isFetchingUrlKeyShare],
+  );
 };

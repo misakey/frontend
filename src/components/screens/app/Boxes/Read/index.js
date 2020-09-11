@@ -5,6 +5,7 @@ import routes from 'routes';
 
 import { CLOSED } from 'constants/app/boxes/statuses';
 import BoxesSchema from 'store/schemas/Boxes';
+import { InvalidHash } from '@misakey/crypto/Errors/classes';
 
 import isNil from '@misakey/helpers/isNil';
 
@@ -26,6 +27,7 @@ import BoxDetails from './Details';
 import BoxEvents from './Events';
 import BoxFiles from './Files';
 
+// COMPONENTS
 function BoxRead({
   match,
   toggleDrawer,
@@ -34,6 +36,7 @@ function BoxRead({
   setIsDrawerForceClosed,
   box,
   isFetching,
+  error,
   belongsToCurrentUser,
   identityId,
 }) {
@@ -52,14 +55,22 @@ function BoxRead({
   );
   const canBeDecrypted = useMemo(() => !isNil(secretKey), [secretKey]);
 
+  const hasInvalidHashError = useMemo(
+    () => {
+      const { keyShare } = error;
+      return keyShare instanceof InvalidHash;
+    },
+    [error],
+  );
+
   const displayLoadingScreen = useMemo(
-    () => isFetching.box || (isFetching.keyShare && isNil(secretKey)),
-    [isFetching.box, isFetching.keyShare, secretKey],
+    () => (isFetching.box && !hasInvalidHashError) || (isFetching.keyShare && isNil(secretKey)),
+    [isFetching.box, hasInvalidHashError, isFetching.keyShare, secretKey],
   );
 
   const shouldShowPasteScreen = useMemo(
-    () => !isNil(publicKey) && !canBeDecrypted && !shouldNotDisplayContent,
-    [canBeDecrypted, publicKey, shouldNotDisplayContent],
+    () => hasInvalidHashError || (!isNil(publicKey) && !canBeDecrypted && !shouldNotDisplayContent),
+    [canBeDecrypted, hasInvalidHashError, publicKey, shouldNotDisplayContent],
   );
 
   const [boxIdChanged, resetBoxIdChanged] = usePropChanged(boxId);
@@ -182,6 +193,10 @@ BoxRead.propTypes = {
     members: PropTypes.bool.isRequired,
     keyShare: PropTypes.bool.isRequired,
   }),
+  error: PropTypes.shape({
+    box: PropTypes.object,
+    keyShare: PropTypes.object,
+  }),
   belongsToCurrentUser: PropTypes.bool.isRequired,
   // DRAWER
   setIsDrawerForceClosed: PropTypes.func.isRequired,
@@ -198,6 +213,10 @@ BoxRead.defaultProps = {
     events: false,
     members: false,
     keyShare: false,
+  },
+  error: {
+    box: null,
+    keyShare: null,
   },
   box: null,
 };

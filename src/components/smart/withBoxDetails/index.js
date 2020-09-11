@@ -33,7 +33,7 @@ import { OPEN } from 'constants/app/boxes/statuses';
 import { MEMBER_JOIN } from 'constants/app/boxes/events';
 
 // CONSTANTS
-const { forbidden } = errorTypes;
+const { forbidden, notFound } = errorTypes;
 const NOT_MEMBER = 'not_member';
 const NO_ACCESS = 'no_access';
 
@@ -120,10 +120,22 @@ const withBoxDetails = (mapper = identity) => (Component) => {
             });
         } else if (code === forbidden && reason === NO_ACCESS) {
           const urlKeyShareHash = (isEmpty(hash) ? null : hash.substr(1));
-          getBoxPublicBuilder({ id, otherShareHash: computeInvitationHash(urlKeyShareHash) })
-            .then((response) => {
-              dispatchReceiveBox({ ...response, id, hasAccess: false });
-            });
+          try {
+            const otherShareHash = computeInvitationHash(urlKeyShareHash);
+            getBoxPublicBuilder({ id, otherShareHash })
+              .then((response) => {
+                dispatchReceiveBox({ ...response, id, hasAccess: false });
+              })
+              .catch((e) => {
+                const errorCode = getCode(e);
+                // in case of not found error, it is already handled by useHandleBoxKeyShare
+                if (errorCode !== notFound) {
+                  handleHttpErrors(e);
+                }
+              });
+          } catch (e) {
+            // do nothing
+          }
         } else {
           handleHttpErrors(error);
           // View is broken without box
@@ -133,7 +145,7 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       [dispatchReceiveBox, getBox, handleHttpErrors, hash, history, id, addItem],
     );
 
-    const { isFetching } = useFetchEffect(
+    const { isFetching, error } = useFetchEffect(
       getBox,
       { shouldFetch: shouldFetchBox },
       { onSuccess: dispatchReceiveBox, onError },
@@ -141,6 +153,7 @@ const withBoxDetails = (mapper = identity) => (Component) => {
 
     const {
       isFetching: isFetchingBoxKeyShare,
+      error: errorBoxKeyShare,
     } = useHandleBoxKeyShare(boxForChildren, secretKey, isFetching);
 
     const shouldFetchMembers = useMemo(
@@ -166,17 +179,22 @@ const withBoxDetails = (mapper = identity) => (Component) => {
         box: boxForChildren,
         belongsToCurrentUser,
         isFetching: {
-          box: isFetching || isEmpty(box),
+          box: (isFetching || isEmpty(box)),
           keyShare: isFetchingBoxKeyShare,
           members: isFetchingMembers,
+        },
+        error: {
+          box: error,
+          keyShare: errorBoxKeyShare,
         },
         onDelete,
         isAuthenticated,
         ...rest,
       })),
       [
-        belongsToCurrentUser, box, boxForChildren,
-        isAuthenticated, isFetching, isFetchingBoxKeyShare, isFetchingMembers,
+        box, boxForChildren, belongsToCurrentUser, isAuthenticated,
+        isFetching, isFetchingBoxKeyShare, isFetchingMembers,
+        error, errorBoxKeyShare,
         onDelete, rest,
       ],
     );

@@ -5,3 +5,4 @@ export class BadPassword extends Error { name = 'BadPassword' }
 export class SecretsNotLoadedOrCreated extends Error { name = 'SecretsNotLoadedOrCreated' }
 export class NoNewSecretKeys extends Error { name = 'NoNewSecretKeys' }
 export class BadBackupVersion extends Error { name = 'BadBackupVersion' }
+export class InvalidHash extends Error {name = 'InvalidHash'}
