@@ -5,7 +5,7 @@ window.env = {
   CONFIRM_CODE_TIMEOUT: 5 * 60,
   AUTH: {
     authority: 'https://auth.misakey.com.local/_',
-    client_id: 'c001d00d-5ecc-beef-ca4e-b00b1e54a111',
+    client_id: '00000000-0000-0000-0000-000000000000',
     redirect_uri: 'https://api.misakey.com.local/auth/callback',
   },
   SENTRY: {
