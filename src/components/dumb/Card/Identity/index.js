@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
   listItemIcon: {
     textTransform: 'uppercase',
-    width: '8rem',
+    width: '9rem',
   },
   actionIcon: {
     width: 40,

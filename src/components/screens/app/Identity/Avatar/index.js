@@ -48,8 +48,8 @@ const AccountAvatar = ({
 
   const { id } = useParams();
 
-  const state = useMemo(
-    () => ({ isLoading: isFetching || isNil(identity) }),
+  const isLoading = useMemo(
+    () => isFetching || isNil(identity),
     [identity, isFetching],
   );
 
@@ -101,7 +101,7 @@ const AccountAvatar = ({
                     displayName={displayName}
                     name={FIELD_NAME}
                     previewName={PREVIEW_NAME}
-                    state={state}
+                    isLoading={isLoading}
                     {...formikProps}
                     {...routerProps}
                   />
@@ -114,7 +114,7 @@ const AccountAvatar = ({
                   <AccountAvatarUpload
                     name={FIELD_NAME}
                     previewName={PREVIEW_NAME}
-                    state={state}
+                    isLoading={isLoading}
                     {...formikProps}
                     {...routerProps}
                   />

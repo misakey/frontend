@@ -55,8 +55,8 @@ const AccountPassword = ({ t, identity, isFetching }) => {
   const { id } = useParams();
   const { push } = useHistory();
 
-  const state = useMemo(
-    () => ({ isLoading: isFetching || isNil(identity) }),
+  const isLoading = useMemo(
+    () => isFetching || isNil(identity),
     [identity, isFetching],
   );
 
@@ -133,8 +133,8 @@ const AccountPassword = ({ t, identity, isFetching }) => {
   return (
     <ScreenAction
       title={t('account:password.title')}
-      state={state}
       navigationProps={navigationProps}
+      isLoading={isLoading}
     >
       <Container maxWidth="md">
         <Formik

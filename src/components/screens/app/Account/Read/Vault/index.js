@@ -20,8 +20,8 @@ import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathK
 const AccountVault = ({ t, identity, isFetching }) => {
   const { id } = useParams();
 
-  const state = useMemo(
-    () => ({ isLoading: isFetching || isNil(identity) }),
+  const isLoading = useMemo(
+    () => isFetching || isNil(identity),
     [identity, isFetching],
   );
 
@@ -37,8 +37,8 @@ const AccountVault = ({ t, identity, isFetching }) => {
   return (
     <ScreenAction
       title={t('account:vault.title')}
-      state={state}
       navigationProps={navigationProps}
+      isLoading={isLoading}
     >
       <Container maxWidth="md">
         <Typography color="textSecondary">{t('account:vault.info.general')}</Typography>

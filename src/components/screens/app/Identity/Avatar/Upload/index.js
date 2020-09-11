@@ -17,7 +17,7 @@ import ScreenAction from 'components/dumb/Screen/Action';
 const AccountAvatarUpload = ({
   name,
   previewName,
-  state,
+  isLoading,
   t,
 }) => {
   const { push } = useHistory();
@@ -43,8 +43,8 @@ const AccountAvatarUpload = ({
   return (
     <ScreenAction
       title={t('account:avatar.upload.title')}
-      state={state}
       navigationProps={navigationProps}
+      isLoading={isLoading}
     >
       <Container maxWidth="md">
         <Subtitle>
@@ -64,13 +64,13 @@ const AccountAvatarUpload = ({
 AccountAvatarUpload.propTypes = {
   name: PropTypes.string.isRequired,
   previewName: PropTypes.string.isRequired,
-  state: PropTypes.object,
+  isLoading: PropTypes.bool,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
 
 AccountAvatarUpload.defaultProps = {
-  state: {},
+  isLoading: false,
 };
 
 export default withTranslation('account')(AccountAvatarUpload);

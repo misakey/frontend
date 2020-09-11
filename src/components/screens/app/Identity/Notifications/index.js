@@ -37,8 +37,8 @@ const AccountNotifications = ({
 
   const { id } = useParams();
 
-  const state = useMemo(
-    () => ({ isLoading: isFetching || isNil(identity) }),
+  const isLoading = useMemo(
+    () => isFetching || isNil(identity),
     [identity, isFetching],
   );
 
@@ -86,8 +86,8 @@ const AccountNotifications = ({
   return (
     <ScreenAction
       title={t('account:notifications.title')}
-      state={state}
       navigationProps={navigationProps}
+      isLoading={isLoading}
     >
       <Container maxWidth="md">
         <Subtitle>

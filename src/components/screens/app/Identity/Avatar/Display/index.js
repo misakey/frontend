@@ -22,7 +22,7 @@ const AccountAvatarDisplay = ({
   avatarUrl,
   name,
   previewName,
-  state,
+  isLoading,
   dirty,
   ...rest
 }) => {
@@ -42,8 +42,8 @@ const AccountAvatarDisplay = ({
   return (
     <ScreenAction
       title={t('account:avatar.title')}
-      state={state}
       navigationProps={navigationProps}
+      isLoading={isLoading}
     >
       <Container maxWidth="md" className="content">
         <Box display="flex" flexDirection="column" flexGrow={1}>
@@ -83,7 +83,7 @@ AccountAvatarDisplay.propTypes = {
   avatarUrl: PropTypes.string,
   name: PropTypes.string.isRequired,
   previewName: PropTypes.string.isRequired,
-  state: PropTypes.object,
+  isLoading: PropTypes.bool,
   // formik
   dirty: PropTypes.bool.isRequired,
 };
@@ -91,7 +91,7 @@ AccountAvatarDisplay.propTypes = {
 AccountAvatarDisplay.defaultProps = {
   displayName: '',
   avatarUrl: '',
-  state: {},
+  isLoading: false,
 };
 
 export default withTranslation(['common', 'account'])(AccountAvatarDisplay);

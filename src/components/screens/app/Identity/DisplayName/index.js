@@ -48,8 +48,8 @@ const IdentityDisplayName = ({
     [homePath],
   );
 
-  const state = useMemo(
-    () => ({ isLoading: isFetching || isNil(identity) }),
+  const isLoading = useMemo(
+    () => isFetching || isNil(identity),
     [identity, isFetching],
   );
 
@@ -87,8 +87,8 @@ const IdentityDisplayName = ({
   return (
     <ScreenAction
       title={t('account:displayName.title')}
-      state={state}
       navigationProps={navigationProps}
+      isLoading={isLoading}
     >
       <Container maxWidth="md">
         <Subtitle>

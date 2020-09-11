@@ -1,18 +1,19 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import omit from '@misakey/helpers/omit';
 import useXsMediaQuery from '@misakey/hooks/useXsMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
-
-import Screen from 'components/dumb/Screen';
+import Box from '@material-ui/core/Box';
 import AppBarNavigation from 'components/dumb/AppBar/Navigation';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 
 import { MIN_PX_0_LANDSCAPE, MIN_PX_600 } from '@misakey/ui/constants/medias';
+import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/helpers/isNil';
+import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 
 function ScreenAction({
-  children, navigation, navigationProps, title, hideTitle, ...rest
+  children, navigation, navigationProps, title, hideTitle, isLoading,
 }) {
   const theme = useTheme();
   const isXs = useXsMediaQuery();
@@ -25,28 +26,37 @@ function ScreenAction({
     return theme.mixins.toolbar.minHeight;
   }, [theme, isXs, landscape]);
 
+  useEffect(() => {
+    if (!isEmpty(title) && !isNil(title)) { document.title = title; }
+
+    return () => {
+      document.title = 'Misakey';
+    };
+  }, [title]);
+
   return (
-    <Screen
-      title={title}
-      {...omit(rest, ['location', 'match', 'staticContext'])}
-    >
+    <Box display="flex" flexDirection="column" height="inherit">
       <ElevationScroll threshold={threshold}>
         <AppBarNavigation
           position="sticky"
           title={hideTitle ? null : title}
+          gutterBottom={false}
           {...navigationProps}
         >
           {navigation}
         </AppBarNavigation>
       </ElevationScroll>
-      {children}
-    </Screen>
+      <Box mt={3} height="inherit">
+        {isLoading ? <SplashScreen /> : children}
+      </Box>
+    </Box>
   );
 }
 
 ScreenAction.propTypes = {
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.node, PropTypes.element]).isRequired,
   hideTitle: PropTypes.bool,
+  isLoading: PropTypes.bool,
   navigation: PropTypes.node,
   navigationProps: PropTypes.objectOf(PropTypes.any),
   title: PropTypes.string,
@@ -54,6 +64,7 @@ ScreenAction.propTypes = {
 
 ScreenAction.defaultProps = {
   hideTitle: false,
+  isLoading: false,
   navigation: null,
   navigationProps: {},
   title: '',

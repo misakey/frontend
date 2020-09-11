@@ -34,8 +34,8 @@ const AccountColor = ({ t, identity, isFetching }) => {
 
   const { id } = useParams();
 
-  const state = useMemo(
-    () => ({ isLoading: isFetching || isNil(identity) }),
+  const isLoading = useMemo(
+    () => isFetching || isNil(identity),
     [identity, isFetching],
   );
 
@@ -83,8 +83,8 @@ const AccountColor = ({ t, identity, isFetching }) => {
   return (
     <ScreenAction
       title={t('account:accountColors.title')}
-      state={state}
       navigationProps={navigationProps}
+      isLoading={isLoading}
     >
       <Container maxWidth="md">
         <Subtitle>

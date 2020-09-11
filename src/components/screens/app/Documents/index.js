@@ -5,6 +5,8 @@ import BoxesList from 'components/screens/app/Boxes/List';
 import ScreenDrawer from 'components/smart/Screen/Drawer';
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 import VaultRead from 'components/screens/app/Documents/Read/Vault';
+import BoxesContextProvider from 'components/smart/Context/Boxes';
+import { ALL } from 'constants/app/boxes/statuses';
 
 // COMPONENTS
 function VaultDocuments() {
@@ -14,7 +16,11 @@ function VaultDocuments() {
     if (shouldDisplayLockedScreen) {
       return (drawerProps) => <VaultLockedScreen {...drawerProps} />;
     }
-    return (drawerProps) => <BoxesList {...drawerProps} />;
+    return (drawerProps) => (
+      <BoxesContextProvider activeStatus={ALL}>
+        <BoxesList {...drawerProps} />
+      </BoxesContextProvider>
+    );
   }, [shouldDisplayLockedScreen]);
 
   return (
