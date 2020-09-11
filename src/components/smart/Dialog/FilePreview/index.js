@@ -5,31 +5,21 @@ import clsx from 'clsx';
 
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 
-import downloadFile from '@misakey/helpers/downloadFile';
 import isNil from '@misakey/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useGetDecryptedFileCallback from 'hooks/useGetDecryptedFile/callback';
 
-import AppBar from '@material-ui/core/AppBar';
-import Box from '@material-ui/core/Box';
-import Toolbar from '@material-ui/core/Toolbar';
-import Tooltip from '@material-ui/core/Tooltip';
+
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import BackdropLoading from '@misakey/ui/Backdrop/Loading';
-import ArrowBack from '@material-ui/icons/ArrowBack';
-import DownloadIcon from '@material-ui/icons/GetApp';
 // import PrintIcon from '@material-ui/icons/Print';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import BoxFile from 'components/dumb/Box/File';
+import FilePreviewPaper from 'components/smart/Dialog/FilePreview/Paper';
 
-import withDialogPassword from 'components/smart/Dialog/Password/with';
-import AddToVaultIcon from '@material-ui/icons/LibraryAdd';
-import isFunction from '@misakey/helpers/isFunction';
 
-const IconButtonWithDialogPassword = withDialogPassword(IconButtonAppBar);
 
 // CONSTANTS
 const ALLOWED_TYPE_PREVIEW = [
@@ -52,19 +42,10 @@ const useStyles = makeStyles((theme) => ({
   transparentBg: {
     backgroundColor: 'transparent',
   },
-  appBar: {
-    backgroundColor: theme.palette.grey[900],
-  },
   content: {
     display: 'flex',
     justifyContent: 'center',
-    padding: 0,
-  },
-  icons: {
-    [theme.breakpoints.down('sm')]: {
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
-    },
+    padding: '0 !important',
   },
   media: {
     maxWidth: '100%',
@@ -105,6 +86,7 @@ const revokeBlobUrl = (file) => {
   }
 };
 
+// COMPONENTS
 function FilePreviewDialog({
   t, open, onClose, encryptedFileId, encryption, fileSize, fileName, fileType, onSave,
 }) {
@@ -119,8 +101,6 @@ function FilePreviewDialog({
   // Fallback for video and audio is handled inside tags
   const [isLoaded, setIsLoaded] = useState(isMediaAudioOrVideo);
   const classes = useStyles({ isLoaded });
-
-  const onDownload = useCallback(() => downloadFile(file, file.name), [file]);
 
   const onSuccess = useCallback((decryptedFile) => {
     setFile(decryptedFile);
@@ -296,16 +276,20 @@ function FilePreviewDialog({
   }, [isFetching, isMediaDisplayed]);
 
   const PaperProps = useMemo(() => {
+    const dataProps = { onClose, onSave, file, blobUrl };
     if (isFetching || displayDefault) {
       return {
         className: clsx(classes.paper, classes.transparentBg),
         elevation: 0,
+        ...dataProps,
       };
     }
     return {
       className: classes.paper,
+      ...dataProps,
     };
-  }, [classes.paper, classes.transparentBg, displayDefault, isFetching]);
+  },
+  [blobUrl, classes, displayDefault, file, isFetching, onClose, onSave]);
 
   return (
     <Dialog
@@ -314,68 +298,11 @@ function FilePreviewDialog({
       onClose={onClose}
       scroll="body"
       PaperProps={PaperProps}
+      PaperComponent={FilePreviewPaper}
       BackdropComponent={BackdropLoading}
       BackdropProps={{ loading }}
       {...dialogProps}
     >
-      <AppBar className={classes.appBar}>
-        <Toolbar>
-          <IconButtonAppBar
-            color="inherit"
-            aria-label={t('common:goBack')}
-            edge="start"
-            onClick={onClose}
-          >
-            <Tooltip title={t('common:goBack')}>
-              <ArrowBack />
-            </Tooltip>
-          </IconButtonAppBar>
-
-          <Box flexGrow={1} />
-          {isFunction(onSave) && !isNil(file) && (
-            <IconButtonWithDialogPassword
-              color="inherit"
-              className={classes.icons}
-              aria-label={t('common:addToVault')}
-              edge="end"
-              onClick={onSave}
-            >
-              <Tooltip title={t('common:addToVault')}>
-                <AddToVaultIcon />
-              </Tooltip>
-            </IconButtonWithDialogPassword>
-          )}
-          {!isNil(blobUrl) && (
-            <>
-              <IconButtonAppBar
-                color="inherit"
-                className={classes.icons}
-                aria-label={t('common:download')}
-                edge="end"
-                onClick={onDownload}
-              >
-                <Tooltip title={t('common:download')}>
-                  <DownloadIcon />
-                </Tooltip>
-
-              </IconButtonAppBar>
-
-              {/* <IconButtonAppBar
-                color="inherit"
-                aria-label={t('common:print')}
-                edge="end"
-                onClick={() => {
-                  printBlobUrl(blobUrl);
-                }}
-              >
-                <Tooltip title={t('common:print')}>
-                  <PrintIcon />
-                </Tooltip>
-              </IconButtonAppBar> */}
-            </>
-          )}
-        </Toolbar>
-      </AppBar>
       <DialogContent className={classes.content}>
         {displayPreview && preview}
         {displayDefault && (

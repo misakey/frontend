@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.common.white,
   },
   content: {
+    boxSizing: 'border-box',
     maxHeight: `calc(100% - ${APPBAR_HEIGHT}px)`,
     overflow: 'auto',
   },
@@ -77,7 +78,7 @@ const DocumentsVault = ({ t, isDrawerOpen, drawerWidth, toggleDrawer, savedFiles
         </AppBarDrawer>
       </ElevationScroll>
       {isEmpty && <BoxEmpty py={0} />}
-      <Box ref={(ref) => setContentRef(ref)} className={classes.content}>
+      <Box p={2} ref={(ref) => setContentRef(ref)} className={classes.content}>
         <List>
           {savedFiles.map((file) => <FileListItem key={file.id} file={file} />)}
         </List>
