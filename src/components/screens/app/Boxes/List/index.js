@@ -59,14 +59,14 @@ function BoxesList({ t, activeStatus, ...props }) {
 
   const { search, refresh } = useBoxesContext();
   const resetBoxCount = useResetBoxCount();
-  const onGetBoxMembers = useFetchBoxMembers();
+  const onGetBoxMembers = useFetchBoxMembers(selectedId);
 
   const onRefresh = useCallback(
     () => (isNil(selectedId)
       ? refresh()
       : Promise.all([
         refresh(),
-        onGetBoxMembers(selectedId),
+        onGetBoxMembers(),
         resetBoxCount({ boxId: selectedId, identityId }),
       ])),
     [selectedId, refresh, onGetBoxMembers, resetBoxCount, identityId],

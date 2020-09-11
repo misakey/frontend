@@ -76,8 +76,8 @@ function BoxRead({
   const [boxIdChanged, resetBoxIdChanged] = usePropChanged(boxId);
 
   const shouldFetch = useMemo(
-    () => !isNil(boxId) && !isNil(identityId) && boxIdChanged,
-    [boxId, identityId, boxIdChanged],
+    () => !isNil(boxId) && !isNil(identityId) && boxIdChanged && hasAccess,
+    [boxId, identityId, boxIdChanged, hasAccess],
   );
 
   const resetBoxCount = useResetBoxCount();

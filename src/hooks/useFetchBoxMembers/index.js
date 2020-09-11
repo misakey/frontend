@@ -7,15 +7,17 @@ import { normalize } from 'normalizr';
 import { getBoxMembersBuilder } from '@misakey/helpers/builder/boxes';
 
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import { getBoxById } from 'store/reducers/box';
 
-export default () => {
+export default (boxId) => {
   const dispatch = useDispatch();
   const handleHttpErrors = useHandleHttpErrors();
+  const { hasAccess } = useSelector((state) => getBoxById(state, boxId) || {});
 
   const dispatchReceiveBoxMembers = useCallback(
-    (boxId, members) => {
+    (members) => {
       const normalized = normalize(
         members,
         SenderSchema.collection,
@@ -26,13 +28,18 @@ export default () => {
         dispatch(updateEntities([{ id: boxId, changes: { members: result } }], BoxesSchema)),
       ]);
     },
-    [dispatch],
+    [boxId, dispatch],
   );
 
   return useCallback(
-    (boxId) => getBoxMembersBuilder(boxId)
-      .then((result) => dispatchReceiveBoxMembers(boxId, result))
-      .catch(handleHttpErrors),
-    [dispatchReceiveBoxMembers, handleHttpErrors],
+    () => {
+      if (hasAccess === false) {
+        return Promise.resolve();
+      }
+      return getBoxMembersBuilder(boxId)
+        .then((result) => dispatchReceiveBoxMembers(result))
+        .catch(handleHttpErrors);
+    },
+    [boxId, dispatchReceiveBoxMembers, handleHttpErrors, hasAccess],
   );
 };
