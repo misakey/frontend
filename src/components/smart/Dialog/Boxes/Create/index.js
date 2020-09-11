@@ -55,6 +55,7 @@ import Typography from '@material-ui/core/Typography';
 import FieldTextStandard from 'components/dumb/Form/Field/Text/Standard';
 import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
 import DialogBoxesCreatePasteLink from 'components/smart/Dialog/Boxes/Create/PasteLink';
+import ProductHuntFormSubscribe from 'components/dumb/Form/ProductHunt/Subscribe';
 
 
 // CONSTANTS
@@ -244,7 +245,16 @@ function CreateBoxDialog({
                 onClick={goToNextStep}
               />
             </Box>
-            <Typography align="center" variant="h4" gutterBottom>{t('boxes:create.notOnTheListDialog.getCodeTitle')}</Typography>
+            <Typography align="center" variant="h6" gutterBottom>
+              <Trans i18nKey="boxes:create.notOnTheListDialog.getCodeTitle">
+                Don’t have a code?
+                <br />
+                Join us on for the ProductHunt launch
+              </Trans>
+            </Typography>
+            <Box py={2}>
+              <ProductHuntFormSubscribe />
+            </Box>
             <Typography align="center" paragraph>
               <Trans i18nKey="boxes:create.notOnTheListDialog.getCodeDescription">
                 We regularly send information about the next distributions of invitations

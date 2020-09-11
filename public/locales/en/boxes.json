@@ -224,7 +224,7 @@
       "title": "Hey!",
       "subtitle": "For now, private space creation requires an invitation code",
       "button": "Have an invite code ? Click here",
-      "getCodeTitle": "Want an invite ?",
+      "getCodeTitle": "Don’t have a code?<1/>Join us on for the ProductHunt launch",
       "getCodeDescription": "We regularly send information about the next distributions of invitations by email to the members of the community. You can join the community by <1>joining this Misakey private space.</1><2/><3/>You will be able to discuss the project and try a small portion of the app to give us your early feedbacks."
     },
     "addCouponDialog": {
