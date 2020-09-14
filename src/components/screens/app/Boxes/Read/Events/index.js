@@ -83,7 +83,6 @@ function BoxEvents({
         <ElevationScroll target={contentRef}>
           <AppBarDrawer
             isDrawerOpen={isDrawerOpen}
-            drawerWidth={drawerWidth}
             toolbarProps={{ px: 0 }}
             offsetHeight={headerHeight}
           >

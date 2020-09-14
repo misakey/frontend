@@ -39,7 +39,7 @@ function ListHeader({ drawerWidth, activeStatus, t, ...props }) {
   );
 
   return (
-    <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth} {...omitTranslationProps(props)}>
+    <AppBarDrawer side={SIDES.LEFT} {...omitTranslationProps(props)}>
       <OpenDrawerAccountButton />
       <Box display="flex" flexGrow={1} />
       <IconButtonCreate

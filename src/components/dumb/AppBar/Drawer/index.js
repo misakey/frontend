@@ -9,43 +9,37 @@ import AppBar, { PROP_TYPES } from '@misakey/ui/AppBar';
 import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
-  appBarLeft: ({ drawerWidth }) => ({
-    width: drawerWidth,
+  appBarLeft: {
+    width: '100%',
     left: 0,
-  }),
+  },
   appBarRight: {
+    width: '100%',
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
   },
-  appBarShift: ({ drawerWidth }) => ({
-    width: `calc(100% - ${drawerWidth})`,
-    marginLeft: drawerWidth,
+  appBarShift: {
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
-  }),
-  // necessary for content to be below app bar
-  offset: ({ offsetHeight }) => ({
-    ...theme.mixins.toolbar,
-    ...(offsetHeight ? { height: `${offsetHeight}px` } : {}),
-  }),
+  },
 }));
 
 function AppBarDrawer({
-  drawerWidth,
   isDrawerOpen,
   children,
   className,
   side,
   ...props
 }) {
-  const classes = useStyles({ drawerWidth });
+  const classes = useStyles();
 
   return (
     <AppBar
+      position="absolute"
       className={clsx(className, {
         [classes.appBarLeft]: side === SIDES.LEFT,
         [classes.appBarRight]: side === SIDES.RIGHT,
@@ -61,7 +55,6 @@ function AppBarDrawer({
 AppBarDrawer.propTypes = {
   className: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.element, PropTypes.node]),
-  drawerWidth: PropTypes.string.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
   side: PropTypes.oneOf(Object.values(SIDES)),
   ...PROP_TYPES,

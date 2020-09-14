@@ -8,8 +8,8 @@ import useProcessRedirect from '@misakey/auth/hooks/useProcessRedirect';
 import ErrorBoundary from 'components/smart/ErrorBoundary';
 import { Route, Switch } from 'react-router-dom';
 import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallbackWrapper';
-import SeclevelWarningAlert from 'components/smart/Alert/SeclevelWarning';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
+import AppBarProductHunt from 'components/dumb/AppBar/ProductHunt';
 
 import './App.scss';
 
@@ -34,7 +34,7 @@ const App = () => {
   return (
     <ErrorBoundary maxWidth="md" my={3}>
       <Suspense fallback={<SplashScreenWithTranslation />}>
-        <SeclevelWarningAlert />
+        <AppBarProductHunt />
         <Switch>
           {/* AUTH */}
           <Route

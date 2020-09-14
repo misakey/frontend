@@ -1,5 +1,9 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
+
+import { PRODUCT_HUNT_APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
+import { DRAWER_QUERY_PARAM, PERMANENT_DRAWER_DESKTOP_WIDTH, PERMANENT_DRAWER_MOBILE_WIDTH } from '@misakey/ui/constants/drawers';
 
 import omit from '@misakey/helpers/omit';
 import getNextSearch from '@misakey/helpers/getNextSearch';
@@ -11,8 +15,6 @@ import isFunction from '@misakey/helpers/isFunction';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useLocation, useHistory } from 'react-router-dom';
-import clsx from 'clsx';
-import { DRAWER_QUERY_PARAM, PERMANENT_DRAWER_DESKTOP_WIDTH, PERMANENT_DRAWER_MOBILE_WIDTH } from '@misakey/ui/constants/drawers';
 
 
 import Box from '@material-ui/core/Box';
@@ -40,9 +42,13 @@ const useStyles = makeStyles((theme) => ({
   }),
   drawerPaper: ({ drawerWidth }) => ({
     width: drawerWidth,
+    top: window.env.PRODUCT_HUNT.BANNER ? PRODUCT_HUNT_APPBAR_HEIGHT : null,
+    height: window.env.PRODUCT_HUNT.BANNER ? `calc(100% - ${PRODUCT_HUNT_APPBAR_HEIGHT}px)` : null,
   }),
   content: {
-    height: 'inherit',
+    height: window.env.PRODUCT_HUNT.BANNER ? `calc(100% - ${PRODUCT_HUNT_APPBAR_HEIGHT}px)` : 'inherit',
+    marginTop: window.env.PRODUCT_HUNT.BANNER ? PRODUCT_HUNT_APPBAR_HEIGHT : null,
+    position: 'relative',
     backgroundColor: theme.palette.background.default,
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
@@ -171,7 +177,7 @@ function ScreenDrawer({
         anchor="left"
         open={isDrawerOpen}
         className={internalClasses.drawer}
-        classes={{ paper: internalClasses.drawerPaper }}
+        classes={{ paper: clsx(classes.drawerPaper, internalClasses.drawerPaper) }}
         {...omit(props, ['staticContext', 'tReady', 't'])}
       >
         {drawerContent}
@@ -203,6 +209,7 @@ ScreenDrawer.propTypes = {
   ]),
   classes: PropTypes.shape({
     content: PropTypes.string,
+    drawerPaper: PropTypes.string,
   }),
   children: PropTypes.oneOfType([PropTypes.element, PropTypes.node, PropTypes.func]),
   isFullWidth: PropTypes.bool,

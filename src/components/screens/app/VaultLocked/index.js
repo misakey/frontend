@@ -33,7 +33,7 @@ const INITIAL_VALUES = {
 };
 
 // COMPONENTS
-function VaultLocked({ t, drawerWidth, isDrawerOpen }) {
+function VaultLocked({ t, isDrawerOpen }) {
   const openVaultWithPassword = useLoadSecretsWithPassword();
   const userManagerContext = useContext(UserManagerContext);
   const logout = useSignOut(userManagerContext.userManager);
@@ -51,7 +51,7 @@ function VaultLocked({ t, drawerWidth, isDrawerOpen }) {
 
   return (
     <>
-      <AppBarDrawer side={SIDES.LEFT} drawerWidth={drawerWidth} isDrawerOpen={isDrawerOpen}>
+      <AppBarDrawer side={SIDES.LEFT} isDrawerOpen={isDrawerOpen}>
         <OpenDrawerAccountButton />
       </AppBarDrawer>
       <BoxContent
@@ -106,7 +106,6 @@ function VaultLocked({ t, drawerWidth, isDrawerOpen }) {
 
 VaultLocked.propTypes = {
   t: PropTypes.func.isRequired,
-  drawerWidth: PropTypes.string.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
 };
 

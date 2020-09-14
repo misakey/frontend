@@ -4,6 +4,7 @@ import { Link, useLocation, useHistory } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
 import { SIDES } from '@misakey/ui/constants/drawers';
+import { DRAWER_PROPS_PROP_TYPES } from 'components/smart/Screen/Drawer';
 
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SEARCH = 'search';
 
-function SearchHeader({ drawerWidth, isDrawerOpen, t }) {
+function SearchHeader({ isDrawerOpen, t }) {
   const classes = useStyles();
 
   const { search: locationSearch, pathname } = useLocation();
@@ -115,7 +116,6 @@ function SearchHeader({ drawerWidth, isDrawerOpen, t }) {
   return (
     <AppBarDrawer
       side={SIDES.LEFT}
-      drawerWidth={drawerWidth}
       isDrawerOpen={isDrawerOpen}
       classes={{ root: classes.appBar }}
     >
@@ -135,8 +135,7 @@ function SearchHeader({ drawerWidth, isDrawerOpen, t }) {
 
 SearchHeader.propTypes = {
   // DRAWER
-  drawerWidth: PropTypes.string.isRequired,
-  isDrawerOpen: PropTypes.bool.isRequired,
+  isDrawerOpen: DRAWER_PROPS_PROP_TYPES.isDrawerOpen.isRequired,
   t: PropTypes.func.isRequired,
 };
 

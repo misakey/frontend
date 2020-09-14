@@ -2,11 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import omit from '@misakey/helpers/omit';
 
 import { withUserManager } from '@misakey/auth/components/OidcProvider';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import useSignOut from '@misakey/auth/hooks/useSignOut';
+
+// CONSTANTS
+const INTERNAL_PROPS = [
+  'tReady',
+  'i18n',
+  'askSigninRedirect',
+];
 
 // COMPONENTS
 const ButtonSignOut = ({
@@ -19,7 +26,7 @@ const ButtonSignOut = ({
     <Button
       onClick={onSignOut}
       text={t('common:signOut')}
-      {...omitTranslationProps(props)}
+      {...omit(props, INTERNAL_PROPS)}
     />
   );
 };

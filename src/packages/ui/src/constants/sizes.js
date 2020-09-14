@@ -11,3 +11,5 @@ export const MIN_CARD_HEIGHT = 64;
 export const APPBAR_HEIGHT = 64;
 export const APPBAR_SPACING = 8;
 export const CARD_BORDER_RADIUS = 10;
+
+export const PRODUCT_HUNT_APPBAR_HEIGHT = 48;

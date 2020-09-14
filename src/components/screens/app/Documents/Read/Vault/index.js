@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const DocumentsVault = ({ t, isDrawerOpen, drawerWidth, toggleDrawer, savedFiles }) => {
+const DocumentsVault = ({ t, isDrawerOpen, toggleDrawer, savedFiles }) => {
   const [contentRef, setContentRef] = useState();
   const classes = useStyles();
 
@@ -46,7 +46,6 @@ const DocumentsVault = ({ t, isDrawerOpen, drawerWidth, toggleDrawer, savedFiles
       <ElevationScroll target={contentRef}>
         <AppBarDrawer
           isDrawerOpen={isDrawerOpen}
-          drawerWidth={drawerWidth}
         >
           <Box display="flex" flexDirection="column" width="100%">
             <Box display="flex">
@@ -89,7 +88,6 @@ const DocumentsVault = ({ t, isDrawerOpen, drawerWidth, toggleDrawer, savedFiles
 };
 
 DocumentsVault.propTypes = {
-  drawerWidth: PropTypes.string.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
   savedFiles: PropTypes.arrayOf(SavedFilesSchema.propTypes).isRequired,

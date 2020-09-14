@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const CardIdentity = ({ identity, t }) => {
+const CardIdentity = forwardRef(({ identity, t }, ref) => {
   const {
     displayName, avatarUrl, notifications, color, identifier: { value: identifierValue } = {},
   } = useMemo(() => identity || {}, [identity]);
@@ -94,7 +94,7 @@ const CardIdentity = ({ identity, t }) => {
   );
 
   return (
-    <Container className={classes.container} maxWidth="sm">
+    <Container ref={ref} className={classes.container} maxWidth="sm">
       <AvatarDetailed
         text={displayName}
         image={avatarUrl}
@@ -216,7 +216,7 @@ const CardIdentity = ({ identity, t }) => {
       </CardList> */}
     </Container>
   );
-};
+});
 
 CardIdentity.propTypes = {
   identity: PropTypes.shape(IdentitySchema.propTypes),
@@ -227,4 +227,4 @@ CardIdentity.defaultProps = {
   identity: null,
 };
 
-export default withTranslation('fields', 'account')(CardIdentity);
+export default withTranslation(['fields', 'account'], { withRef: true })(CardIdentity);

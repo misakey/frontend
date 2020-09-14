@@ -107,7 +107,6 @@ function BoxRead({
         box={box}
         toggleDrawer={toggleDrawer}
         isDrawerOpen={isDrawerOpen}
-        drawerWidth={drawerWidth}
         belongsToCurrentUser={belongsToCurrentUser}
       />
     );
@@ -119,7 +118,6 @@ function BoxRead({
         box={box}
         toggleDrawer={toggleDrawer}
         isDrawerOpen={isDrawerOpen}
-        drawerWidth={drawerWidth}
         belongsToCurrentUser={belongsToCurrentUser}
       />
     );
@@ -129,7 +127,6 @@ function BoxRead({
     return (
       <PasteLinkScreen
         box={box}
-        drawerWidth={drawerWidth}
         isDrawerOpen={isDrawerOpen}
       />
     );
@@ -143,7 +140,6 @@ function BoxRead({
           render={() => (
             <BoxDetails
               box={box}
-              drawerWidth={drawerWidth}
               isDrawerOpen={isDrawerOpen}
               belongsToCurrentUser={belongsToCurrentUser}
             />
@@ -154,7 +150,6 @@ function BoxRead({
           render={() => (
             <BoxFiles
               box={box}
-              drawerWidth={drawerWidth}
               isDrawerOpen={isDrawerOpen}
             />
           )}

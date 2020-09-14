@@ -12,13 +12,12 @@ import Box from '@material-ui/core/Box';
 import BoxesSchema from 'store/schemas/Boxes';
 
 // COMPONENTS
-function BoxClosed({ drawerWidth, isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t }) {
+function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t }) {
   const { title = '' } = useMemo(() => box, [box]);
 
   return (
     <>
       <AppBarDrawer
-        drawerWidth={drawerWidth}
         isDrawerOpen={isDrawerOpen}
         toolbarProps={{ px: 0 }}
       >
@@ -55,7 +54,6 @@ function BoxClosed({ drawerWidth, isDrawerOpen, toggleDrawer, box, belongsToCurr
 }
 
 BoxClosed.propTypes = {
-  drawerWidth: PropTypes.string.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,

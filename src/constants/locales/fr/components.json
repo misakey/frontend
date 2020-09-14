@@ -106,5 +106,8 @@
   },
   "cardEvent": {
     "edited": "modifié\u00a0{{date}}"
+  },
+  "productHunt": {
+    "title": "Suivre le lancement sur ProductHunt"
   }
 }

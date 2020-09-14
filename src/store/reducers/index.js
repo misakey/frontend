@@ -14,14 +14,12 @@ import userBoxesPagination from 'store/reducers/userBoxes/pagination';
 
 import devicePreferences from './devicePreferences';
 import screens from './screens';
-import warning from './warning';
 
 const appReducer = combineReducers({
   ...authPersistedReducers,
   ...storeReducers,
   ...devicePreferences,
   screens,
-  warning,
   crypto,
   ...userBoxesPagination,
   entities: wrapReducerWithResetOnSignOut({

@@ -18,7 +18,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 import { DATE_FULL } from 'constants/formats/dates';
 
 // COMPONENTS
-function BoxClosed({ drawerWidth, isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t }) {
+function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t }) {
   const { title = '', lastEvent, lifecycle } = useMemo(() => box, [box]);
   const { sender: { displayName }, serverEventCreatedAt } = useMemo(() => lastEvent, [lastEvent]);
   const date = useMemo(
@@ -38,7 +38,6 @@ function BoxClosed({ drawerWidth, isDrawerOpen, toggleDrawer, box, belongsToCurr
   return (
     <>
       <AppBarDrawer
-        drawerWidth={drawerWidth}
         isDrawerOpen={isDrawerOpen}
         toolbarProps={{ px: 0 }}
       >
@@ -83,7 +82,6 @@ function BoxClosed({ drawerWidth, isDrawerOpen, toggleDrawer, box, belongsToCurr
 }
 
 BoxClosed.propTypes = {
-  drawerWidth: PropTypes.string.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,

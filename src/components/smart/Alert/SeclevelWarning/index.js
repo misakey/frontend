@@ -1,7 +1,5 @@
 import React, { useMemo } from 'react';
-import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
-import { authSeclevelWarningHide } from 'store/actions/warning';
 import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';
@@ -9,6 +7,7 @@ import Alert from '@misakey/ui/Alert';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import ButtonConnect from 'components/dumb/Button/Connect';
 
+// @UNUSED
 const SecLevelWarningAlert = ({
   seclevelWarningShow,
   requiredSeclevel,
@@ -52,14 +51,4 @@ SecLevelWarningAlert.defaultProps = {
   requiredSeclevel: null,
 };
 
-
-const mapDispatchToProps = (dispatch) => ({
-  hideSeclevelWarning: () => dispatch(authSeclevelWarningHide()),
-});
-
-const mapStateToProps = (state) => ({ ...state.warning });
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(withTranslation(['common', 'components'])(SecLevelWarningAlert));
+export default withTranslation(['common', 'components'])(SecLevelWarningAlert);
