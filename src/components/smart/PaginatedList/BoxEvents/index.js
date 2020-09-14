@@ -110,10 +110,15 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
       const { target } = e;
       const scrollDiff = getScrollDiff(target);
       if (target.scrollTop < THRESHOLD && scrollDiff > 0) {
-        onLoadMoreItemsRef.current();
+        if (!isFetching) {
+          onLoadMoreItemsRef.current();
+        }
+        if (paginationOffsetRef.current < itemCount) {
+          target.scrollTop = THRESHOLD;
+        }
       }
     },
-    [onLoadMoreItemsRef],
+    [onLoadMoreItemsRef, isFetching, paginationOffsetRef, itemCount],
   );
 
   const scrollToBottom = useCallback(
