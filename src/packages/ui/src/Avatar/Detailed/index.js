@@ -41,18 +41,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const AvatarDetailed = ({ text, image, title, subtitle }) => {
-  const classes = useStyles();
+const AvatarDetailed = ({ text, image, title, subtitle, classes }) => {
+  const internalClasses = useStyles();
   const layoutClasses = useLayoutStyles();
 
   return (
-    <div className={layoutClasses.root}>
+    <div className={clsx(layoutClasses.root, classes.root)}>
       <AvatarColorized
-        className={clsx(classes.avatar, layoutClasses.avatar)}
+        className={clsx(internalClasses.avatar, layoutClasses.avatar)}
         text={text}
         image={image}
       />
-      <Typography variant="h6" className={classes.title} color="textPrimary">
+      <Typography variant="h6" className={internalClasses.title} color="textPrimary">
         {title}
       </Typography>
       <Typography variant="body2" color="textSecondary">
@@ -68,6 +68,7 @@ AvatarDetailed.propTypes = {
   subtitle: PropTypes.string,
   text: PropTypes.string,
   title: PropTypes.string,
+  classes: PropTypes.object,
 };
 
 AvatarDetailed.defaultProps = {
@@ -75,6 +76,7 @@ AvatarDetailed.defaultProps = {
   image: '',
   title: '',
   subtitle: '',
+  classes: {},
 };
 
 export default AvatarDetailed;

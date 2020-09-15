@@ -59,8 +59,8 @@ const AccountAvatarDisplay = ({
             secondary={{
               to: secondaryTo,
               component: Link,
-              'aria-label': t('common:edit'),
-              text: t('common:edit'),
+              'aria-label': t('account:avatar.upload.title'),
+              text: t('account:avatar.upload.title'),
             }}
             formik
           >
@@ -68,6 +68,7 @@ const AccountAvatarDisplay = ({
               previewName={previewName}
               name={name}
               text={displayName}
+              to={secondaryTo}
               {...omit(rest, ['i18n', 'tReady'])}
             />
           </Card>

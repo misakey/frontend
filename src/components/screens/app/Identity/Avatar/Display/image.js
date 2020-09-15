@@ -8,9 +8,11 @@ import prop from '@misakey/helpers/prop';
 import isString from '@misakey/helpers/isString';
 import isNil from '@misakey/helpers/isNil';
 
+import { Link } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import FormField from '@misakey/ui/Form/Field';
 import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
+import CardActionArea from '@material-ui/core/CardActionArea';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import withErrors from '@misakey/ui/Form/Field/withErrors';
@@ -25,6 +27,12 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+}));
+
+const useFormImageFieldStyles = makeStyles((theme) => ({
+  cardActionArea: {
+    borderRadius: theme.shape.borderRadius,
   },
 }));
 
@@ -46,15 +54,25 @@ let FormImageField = ({
   text,
   helperText,
   showImage,
+  to,
   t,
 }) => {
+  const classes = useFormImageFieldStyles();
   const image = useImage(field);
 
   return (
     <FormControl>
       {
         showImage
-          ? (<AvatarDetailed image={image} text={text} />)
+          ? (
+            <CardActionArea
+              className={classes.cardActionArea}
+              component={Link}
+              to={to}
+            >
+              <AvatarDetailed image={image} text={text} />
+            </CardActionArea>
+          )
           : (null)
       }
       <FormHelperText error={displayError}>
@@ -72,7 +90,9 @@ FormImageField.propTypes = {
   helperText: PropTypes.string,
   showImage: PropTypes.bool,
   text: PropTypes.string.isRequired,
+  // withTranslation
   t: PropTypes.func.isRequired,
+  to: PropTypes.object.isRequired,
 };
 
 FormImageField.defaultProps = {

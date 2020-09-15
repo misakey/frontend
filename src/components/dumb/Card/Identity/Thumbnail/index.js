@@ -6,13 +6,31 @@ import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import isNil from '@misakey/helpers/isNil';
 
+import makeStyles from '@material-ui/core/styles/makeStyles';
+
 import ButtonAccount from 'components/dumb/Button/Account';
 import LinkAccountMisakey from 'components/smart/Link/Account/Misakey';
 import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
 import AvatarDetailedSkeleton from '@misakey/ui/Avatar/Detailed/Skeleton';
 import Box from '@material-ui/core/Box';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
 
+// HOOKS
+const useStyles = makeStyles((theme) => ({
+  avatarDetailedRoot: {
+    margin: theme.spacing(1, 0),
+    padding: theme.spacing(1, 0),
+  },
+  cardActionArea: {
+    borderRadius: theme.shape.borderRadius,
+  },
+}));
+
+// COMPONENTS
 const CardIdentityThumbnail = ({ identity, ...props }) => {
+  const classes = useStyles();
+
   const hasIdentity = useMemo(
     () => !isNil(identity),
     [identity],
@@ -25,24 +43,32 @@ const CardIdentityThumbnail = ({ identity, ...props }) => {
 
   return (
     <Box mx={4} mb={4}>
-      {hasIdentity ? (
-        <AvatarDetailed
-          text={displayName}
-          image={avatarUrl}
-          title={displayName}
-          subtitle={identifierValue}
-          {...props}
+      <Card elevation={0}>
+        <CardActionArea
+          className={classes.cardActionArea}
+          component={LinkAccountMisakey}
+        >
+          {hasIdentity ? (
+            <AvatarDetailed
+              text={displayName}
+              image={avatarUrl}
+              title={displayName}
+              subtitle={identifierValue}
+              classes={{ root: classes.avatarDetailedRoot }}
+              {...props}
+            />
+          ) : (
+            <AvatarDetailedSkeleton
+              title={displayName}
+              {...props}
+            />
+          )}
+        </CardActionArea>
+        <ButtonAccount
+          component={LinkAccountMisakey}
+          standing={BUTTON_STANDINGS.MAIN}
         />
-      ) : (
-        <AvatarDetailedSkeleton
-          title={displayName}
-          {...props}
-        />
-      )}
-      <ButtonAccount
-        component={LinkAccountMisakey}
-        standing={BUTTON_STANDINGS.MAIN}
-      />
+      </Card>
     </Box>
   );
 };

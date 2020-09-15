@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom';
 import routes from 'routes';
 import IdentitySchema from 'store/schemas/Identity';
 
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -21,10 +22,15 @@ import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
 // import DeleteAccountListItem from 'components/oldScreens/Account/Home/DeleteAccount';
 import CardIdentityHeader from 'components/dumb/Card/Identity/Header';
 import CardList from 'components/dumb/Card/List';
-import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import Card from '@material-ui/core/Card';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
+  avatarDetailedRoot: {
+    margin: theme.spacing(1, 0),
+    padding: theme.spacing(1, 0),
+  },
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -51,6 +57,9 @@ const useStyles = makeStyles((theme) => ({
     height: 20,
     marginRight: theme.spacing(1),
   }),
+  cardActionArea: {
+    borderRadius: theme.shape.borderRadius,
+  },
 }));
 
 // COMPONENTS
@@ -95,12 +104,21 @@ const CardIdentity = forwardRef(({ identity, t }, ref) => {
 
   return (
     <Container ref={ref} className={classes.container} maxWidth="sm">
-      <AvatarDetailed
-        text={displayName}
-        image={avatarUrl}
-        title={displayName}
-        subtitle={identifierValue}
-      />
+      <Card elevation={0}>
+        <CardActionArea
+          className={classes.cardActionArea}
+          component={Link}
+          to={listItemAvatarTo}
+        >
+          <AvatarDetailed
+            classes={{ root: classes.avatarDetailedRoot }}
+            text={displayName}
+            image={avatarUrl}
+            title={displayName}
+            subtitle={identifierValue}
+          />
+        </CardActionArea>
+      </Card>
       <CardList>
         <ListItem
           button
