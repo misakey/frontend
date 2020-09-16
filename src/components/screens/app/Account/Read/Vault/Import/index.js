@@ -6,6 +6,7 @@ import CardSimpleText from 'components/dumb/Card/Simple/Text';
 
 import ImportButton from './ImportButton';
 
+// @FIXME not used yet, could be used when implementing reimport crypto
 const ImportCard = ({ t }) => (
   <CardSimpleText
     text={t('account:exportCrypto.importButton.info')}

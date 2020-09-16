@@ -89,13 +89,14 @@
     "success": "File has been successfully saved in yout vault!"
   },
   "signinRedirect": {
+    "documentTitle": "Authentication",
     "resource": "{{resourceName}} is secured",
     "acr": "This feature requires a secured account",
     "default": "The application requires authentication",
     "subtitle": "Confirm your identity to continue"
   },
   "cardEvent": {
-    "edited": "edited\u00a0{{date}}"
+    "edited": "(edited)\u00a0{{date}}"
   },
   "productHunt": {
     "title": "Follow launch on ProductHunt"

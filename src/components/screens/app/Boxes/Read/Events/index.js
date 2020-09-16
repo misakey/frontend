@@ -9,7 +9,7 @@ import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
-import MenuIcon from '@material-ui/icons/Menu';
+import ArrowBack from '@material-ui/icons/ArrowBack';
 import Box from '@material-ui/core/Box';
 import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
@@ -95,7 +95,7 @@ function BoxEvents({
                     edge="start"
                     onClick={toggleDrawer}
                   >
-                    <MenuIcon />
+                    <ArrowBack />
                   </IconButtonAppBar>
                 </Box>
                 )}

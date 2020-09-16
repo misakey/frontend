@@ -8,6 +8,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 import { InvalidHash } from '@misakey/crypto/Errors/classes';
 
 import isNil from '@misakey/helpers/isNil';
+import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
 import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
@@ -40,7 +41,7 @@ function BoxRead({
   belongsToCurrentUser,
   identityId,
 }) {
-  const { lifecycle, publicKey, hasAccess } = useMemo(() => box, [box]);
+  const { lifecycle, publicKey, hasAccess, title } = useMemo(() => box, [box]);
   const shouldNotDisplayContent = useMemo(
     () => lifecycle === CLOSED && !belongsToCurrentUser,
     [belongsToCurrentUser, lifecycle],
@@ -96,6 +97,8 @@ function BoxRead({
   useEffect(() => {
     setIsDrawerForceClosed(shouldShowPasteScreen);
   }, [isFetching.box, setIsDrawerForceClosed, shouldShowPasteScreen]);
+
+  useUpdateDocHead(title);
 
   if (displayLoadingScreen) {
     return <SplashScreenWithTranslation />;

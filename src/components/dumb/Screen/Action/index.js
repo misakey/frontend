@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import useXsMediaQuery from '@misakey/hooks/useXsMediaQuery';
@@ -8,8 +8,7 @@ import AppBarNavigation from 'components/dumb/AppBar/Navigation';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 
 import { MIN_PX_0_LANDSCAPE, MIN_PX_600 } from '@misakey/ui/constants/medias';
-import isEmpty from '@misakey/helpers/isEmpty';
-import isNil from '@misakey/helpers/isNil';
+import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 
 function ScreenAction({
@@ -26,13 +25,7 @@ function ScreenAction({
     return theme.mixins.toolbar.minHeight;
   }, [theme, isXs, landscape]);
 
-  useEffect(() => {
-    if (!isEmpty(title) && !isNil(title)) { document.title = title; }
-
-    return () => {
-      document.title = 'Misakey';
-    };
-  }, [title]);
+  useUpdateDocHead(title);
 
   return (
     <Box display="flex" flexDirection="column" height="inherit">

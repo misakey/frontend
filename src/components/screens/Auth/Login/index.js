@@ -18,9 +18,10 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import LoginIdentifier from 'components/screens/Auth/Login/Identifier';
 import LoginSecret from 'components/screens/Auth/Login/Secret';
 import useOnIdentifierSubmit from 'hooks/useOnIdentifierSubmit';
+import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
 // COMPONENTS
-const AuthLogin = ({ identifier, match, loginChallenge, loginHint, ...props }) => {
+const AuthLogin = ({ identifier, match, loginChallenge, loginHint, t, ...props }) => {
   const handleHttpErrors = useHandleHttpErrors();
   const onSubmit = useOnIdentifierSubmit(loginChallenge);
 
@@ -40,6 +41,8 @@ const AuthLogin = ({ identifier, match, loginChallenge, loginHint, ...props }) =
     },
     [onSubmit, identifierHint, identifier, handleHttpErrors],
   );
+
+  useUpdateDocHead(t('auth:login.documentTitle'));
 
   return (
     <Switch>

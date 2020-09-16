@@ -1,4 +1,5 @@
 {
+  "documentTitle": "Espaces privés",
   "list": {
     "closedVault": {
       "open": "Votre coffre-fort est verrouillé",
@@ -146,7 +147,7 @@
         "title": "Partager avec des personnes et des groupes",
         "link": {
           "title": "Obtenir le lien",
-          "subtitle": "Le lien de partage permet aux utilisateurs autorisés de lire le contenu de l'espace privé"
+          "subtitle": "Le lien de partage permet aux utilisateurs et utilisatrices autorisées de lire le contenu de l'espace privé"
         },
         "accesses": {
           "title": "Définir les accès",
@@ -160,8 +161,8 @@
       },
       "level": {
         "public": {
-          "title": "Tous les utilisateurs disposant du lien",
-          "description": "Tous les utilisateurs auront accès au contenu avec le lien d'invitation"
+          "title": "Toutes les personnes disposant du lien",
+          "description": "Toutes les utilisatrices et utilisateurs auront accès au contenu avec le lien d'invitation"
         },
         "private": {
           "title": "Privé",
@@ -281,6 +282,7 @@
       "text": "Votre coffre-fort est verrouillé. Tapez votre mot de passe pour accéder à vos espaces privés sécurisés."
     },
     "lockedScreen": {
+      "documentTitle": "Interface verrouillée",
       "text": "<0>Quel est le mot de passe pour votre coffre-fort</0><1><0></0></1><2>\u00a0?</2>"
     }
   }

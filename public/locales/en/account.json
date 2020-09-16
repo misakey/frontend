@@ -1,4 +1,5 @@
 {
+  "documentTitle": "My account",
   "misakey": "Misakey",
   "sections": {
     "myNotifications": {
@@ -20,7 +21,7 @@
     "success": "Profile picture successfully updated",
     "upload": {
       "title": "Upload picture",
-      "subtitle": ".jpg .jpeg .png .tiff .gif files smaller than 3mo are allowed"
+      "subtitle": ".jpg .jpeg .png .tiff .gif files smaller than 3Mo are allowed"
     }
   },
   "delete": {

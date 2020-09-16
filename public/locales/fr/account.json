@@ -1,4 +1,5 @@
 {
+  "documentTitle": "Mon compte",
   "misakey": "Misakey",
   "sections": {
     "myNotifications": {
@@ -16,11 +17,11 @@
   },
   "avatar": {
     "title": "Photo",
-    "subtitle": "Ma photo de profil est visible par tous sur l’ensemble des sites qui utilisent Misakey",
+    "subtitle": "Ma photo de profil est visible par tous et toutes sur l’ensemble des sites qui utilisent Misakey",
     "success": "Ma photo de profil a été mise à jour",
     "upload": {
       "title": "Upload photo",
-      "subtitle": "Les fichiers .jpg .jpeg .png .tiff .gif de moins de 3mo sont acceptés"
+      "subtitle": "Les fichiers .jpg .jpeg .png .tiff .gif de moins de 3Mo sont acceptés"
     }
   },
   "delete": {

@@ -8,7 +8,7 @@ import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import FileListItem from 'components/smart/ListItem/File';
 import ElevationScroll from 'components/dumb/ElevationScroll';
-import MenuIcon from '@material-ui/icons/Menu';
+import ArrowBack from '@material-ui/icons/ArrowBack';
 import List from '@material-ui/core/List';
 
 import Avatar from '@material-ui/core/Avatar';
@@ -20,6 +20,8 @@ import withSavedFiles from 'components/smart/withSavedFiles';
 import BoxEmpty from 'components/dumb/Box/Empty';
 import SavedFilesSchema from 'store/schemas/Files/Saved';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+
+import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -41,6 +43,8 @@ const DocumentsVault = ({ t, isDrawerOpen, toggleDrawer, savedFiles }) => {
 
   const isEmpty = useMemo(() => savedFiles.length === 0, [savedFiles.length]);
 
+  useUpdateDocHead(t('document:vault.title'));
+
   return (
     <>
       <ElevationScroll target={contentRef}>
@@ -56,7 +60,7 @@ const DocumentsVault = ({ t, isDrawerOpen, toggleDrawer, savedFiles }) => {
                     edge="start"
                     onClick={toggleDrawer}
                   >
-                    <MenuIcon />
+                    <ArrowBack />
                   </IconButtonAppBar>
                 </Box>
               )}

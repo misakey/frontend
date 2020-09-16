@@ -8,7 +8,7 @@ import EventSchema from 'store/schemas/Boxes/Events';
 import BoxesSchema from 'store/schemas/Boxes';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import { getBoxEventLastDate, isBoxEventEdited } from 'helpers/boxEvent';
+import { isBoxEventEdited } from 'helpers/boxEvent';
 import decryptText from '@misakey/crypto/box/decryptText';
 
 import useAnchormeCallback from '@misakey/hooks/useAnchorme/callback';
@@ -53,6 +53,7 @@ const BoxMessageTextEvent = ({
 }) => {
   const {
     sender,
+    serverEventCreatedAt,
     content: { encrypted, publicKey },
   } = useMemo(() => event, [event]);
   const { lifecycle } = useMemo(() => box, [box]);
@@ -60,11 +61,6 @@ const BoxMessageTextEvent = ({
   const canBeDecrypted = publicKeysWeCanDecryptFrom.has(publicKey);
 
   const anchorme = useAnchormeCallback({ LinkComponent: MuiLink, linkProps: LINK_PROPS });
-
-  const lastChange = useMemo(
-    () => getBoxEventLastDate(event),
-    [event],
-  );
 
   const isEdited = useMemo(
     () => isBoxEventEdited(event),
@@ -76,7 +72,7 @@ const BoxMessageTextEvent = ({
     [lifecycle],
   );
 
-  const date = useDateFormatMemo(lastChange, TIME);
+  const date = useDateFormatMemo(serverEventCreatedAt, TIME);
 
   const menuProps = useMemo(
     () => (isFromCurrentUser

@@ -63,6 +63,7 @@ const useHandleSignOut = (onSignOut, userId, handleHttpErrors, userManager) => u
   }, [userId, handleHttpErrors, userManager, onSignOut],
 );
 
+// @FIXME not used yet, could be reused when user account deletion
 
 // COMPONENTS
 const DeleteAccount = ({ identity, t, onSignOut, seclevel, userId, userManager, classes }) => {

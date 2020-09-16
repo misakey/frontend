@@ -168,11 +168,6 @@ const Auth = ({
     [error],
   );
 
-  const state = useMemo(
-    () => ({ isLoading: isFetching }),
-    [isFetching],
-  );
-
   const objLoginHint = useMemo(
     () => {
       const { loginHint } = sso;
@@ -210,7 +205,7 @@ const Auth = ({
     <Screen
       className={classes.screen}
       classes={{ content: classes.screenContent }}
-      state={state}
+      isLoading={isFetching}
       disableGrow
     >
       <Container maxWidth={false}>

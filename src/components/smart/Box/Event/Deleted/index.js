@@ -4,9 +4,11 @@ import PropTypes from 'prop-types';
 import EventSchema from 'store/schemas/Boxes/Events';
 import SenderSchema from 'store/schemas/Boxes/Sender';
 
+import { TIME } from 'constants/formats/dates';
+
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useEventDateFormat from 'hooks/useEventDateFormat';
+import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
 
 import Box from '@material-ui/core/Box';
 import BoxEventDeletedPreview from 'components/smart/Box/Event/Deleted/Preview';
@@ -30,8 +32,7 @@ const BoxEventDeleted = ({
 
   const { sender: author, serverEventCreatedAt } = useSafeDestr(event);
 
-  const atTimeText = useEventDateFormat(serverEventCreatedAt, atTime);
-
+  const atTimeText = useDateFormatMemo(serverEventCreatedAt, TIME);
 
   if (preview) {
     return <BoxEventDeletedPreview byIdentity={byIdentity} {...props} />;

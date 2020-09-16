@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import Box from '@material-ui/core/Box';
 import Title from '@misakey/ui/Typography/Title';
-import { withTranslation } from 'react-i18next';
-
+import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
 function BoxNone({ isDrawerOpen, toggleDrawer, t }) {
+  useUpdateDocHead(t('boxes:documentTitle'));
+
   return (
     <Box
       display="flex"

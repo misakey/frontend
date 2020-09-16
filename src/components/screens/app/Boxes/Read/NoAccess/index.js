@@ -6,7 +6,7 @@ import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import Title from '@misakey/ui/Typography/Title';
-import MenuIcon from '@material-ui/icons/Menu';
+import ArrowBack from '@material-ui/icons/ArrowBack';
 import Box from '@material-ui/core/Box';
 
 import BoxesSchema from 'store/schemas/Boxes';
@@ -30,7 +30,7 @@ function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t })
                   edge="start"
                   onClick={toggleDrawer}
                 >
-                  <MenuIcon />
+                  <ArrowBack />
                 </IconButtonAppBar>
               </Box>
             )}

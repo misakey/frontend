@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Switch, Route, Redirect, Link, useParams, generatePath, useRouteMatch } from 'react-router-dom';
+import { Switch, Route, Redirect, useParams, generatePath, useRouteMatch } from 'react-router-dom';
 
 import routes from 'routes';
 import { MISAKEY_ACCOUNT_ID } from 'constants/account';
@@ -8,19 +8,13 @@ import { MISAKEY_ACCOUNT_ID } from 'constants/account';
 import useIdentity from 'hooks/useIdentity';
 import useAccountId from 'hooks/useAccountId';
 
-import AppBarStatic from '@misakey/ui/AppBar/Static';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
-import CardIdentity from 'components/dumb/Card/Identity';
 import AccountReadPassword from 'components/screens/app/Account/Read/Password';
 import AccountReadVault from 'components/screens/app/Account/Read/Vault';
 import IdentityDisplayName from 'components/screens/app/Identity/DisplayName';
 import IdentityNotifications from 'components/screens/app/Identity/Notifications';
 import IdentityColors from 'components/screens/app/Identity/Colors';
 import IdentityAvatar from 'components/screens/app/Identity/Avatar';
-import AvatarCurrentUser from 'components/smart/Avatar/CurrentUser';
-import BoxFlexFill from '@misakey/ui/Box/FlexFill';
-
-import ArrowBack from '@material-ui/icons/ArrowBack';
+import AccountHome from './Home';
 
 // COMPONENTS
 function AccountRead({ toggleDrawer, isDrawerOpen }) {
@@ -48,34 +42,13 @@ function AccountRead({ toggleDrawer, isDrawerOpen }) {
       <Route
         exact
         path={path}
-        render={() => (
-          <>
-            <AppBarStatic>
-              {!isDrawerOpen && (
-                <IconButtonAppBar
-                  aria-label="open drawer"
-                  edge="start"
-                  component={Link}
-                  to={routes.boxes._}
-                >
-                  <ArrowBack />
-                </IconButtonAppBar>
-              )}
-              <BoxFlexFill />
-              {!isDrawerOpen && (
-              <IconButtonAppBar
-                aria-label="open drawer"
-                edge="start"
-                onClick={toggleDrawer}
-              >
-                <AvatarCurrentUser />
-              </IconButtonAppBar>
-              )}
-            </AppBarStatic>
-            {id && (
-              <CardIdentity {...identityMetadata} />
-            )}
-          </>
+        render={(routerProps) => (
+          <AccountHome
+            identityMetadata={identityMetadata}
+            toggleDrawer={toggleDrawer}
+            isDrawerOpen={isDrawerOpen}
+            {...routerProps}
+          />
         )}
       />
       <Route

@@ -7,12 +7,16 @@ import ScreenError from 'components/smart/Screen/Error';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 
+import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
+
 // CONSTANTS
 const NOT_FOUND_ERROR = new Error();
 NOT_FOUND_ERROR.status = 404;
 
 // COMPONENTS
 function NotFound({ t }) {
+  useUpdateDocHead('404');
+
   return (
     <ScreenError hideDefaultError hideRefreshAction>
       <Box mb={1}>

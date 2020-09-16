@@ -29,6 +29,7 @@ import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import AvatarUser from '@misakey/ui/Avatar/User';
 import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
 import LoginFormFields from '@misakey/ui/Form/Fields/Login/Identifier';
+import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
 // CONSTANTS
 const INITIAL_VALUES = { identifier: '' };
@@ -116,6 +117,8 @@ const DialogSigninRedirect = ({
     }),
     [onRedirect, onClose, redirectOptions],
   );
+
+  useUpdateDocHead(t('components:signinRedirect.documentTitle'));
 
   return (
     <Dialog

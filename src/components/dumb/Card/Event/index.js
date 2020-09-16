@@ -115,7 +115,8 @@ const EventCard = forwardRef(({
             {!isNil(date) && (
               <Typography
                 className={classes.date}
-                variant="body2"
+                variant="caption"
+                display="block"
                 color="textSecondary"
                 align="right"
               >

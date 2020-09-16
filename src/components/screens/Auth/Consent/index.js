@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTranslation, Trans } from 'react-i18next';
 import * as Sentry from '@sentry/browser';
+import { Link } from 'react-router-dom';
 
 import { APPBAR_SPACING } from '@misakey/ui/constants/sizes';
 import { FEEDBACK } from 'constants/emails';
@@ -33,7 +34,8 @@ import Redirect from '@misakey/ui/Redirect';
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import Alert from '@material-ui/lab/Alert';
-import { Link } from 'react-router-dom';
+
+import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
 // CONSTANTS
 const INITIAL_VALUES = {
@@ -111,6 +113,8 @@ const AuthConsent = ({
     },
     [id, name, tosUri, policyUri],
   );
+
+  useUpdateDocHead(t('auth:consent.documentTitle'));
 
   if (!isNil(redirectTo)) {
     return (

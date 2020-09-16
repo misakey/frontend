@@ -69,6 +69,7 @@ const useFetchStorageQuota = (
   ],
 );
 
+// @FIXME not used yet, could be reused when implementing user quotas
 const UserStorage = ({ userId }) => {
   const classes = useStyles();
   const mounted = useRef(false);

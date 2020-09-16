@@ -99,13 +99,14 @@
     "success": "Le fichier a été sauvegardé avec succès dans votre coffre\u00a0!"
   },
   "signinRedirect": {
+    "documentTitle": "Authentification",
     "resource": "{{resourceName}} est protégé",
     "acr": "Cette fonctionnalité requiert un compte sécurisé",
     "default": "L'application nécessite une authentification",
     "subtitle": "Confirmez votre identité pour y accéder"
   },
   "cardEvent": {
-    "edited": "modifié\u00a0{{date}}"
+    "edited": "(modifié)\u00a0{{date}}"
   },
   "productHunt": {
     "title": "Suivre le lancement sur ProductHunt"

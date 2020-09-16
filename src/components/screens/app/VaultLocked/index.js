@@ -26,6 +26,8 @@ import useSignOut from '@misakey/auth/hooks/useSignOut';
 import { UserManagerContext } from '@misakey/auth/components/OidcProvider';
 import Title from '@misakey/ui/Typography/Title';
 
+import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
+
 // CONSTANTS
 const { invalid } = errorTypes;
 const INITIAL_VALUES = {
@@ -48,6 +50,8 @@ function VaultLocked({ t, isDrawerOpen }) {
       }),
     [openVaultWithPassword],
   );
+
+  useUpdateDocHead(t('boxes:vault.lockedScreen.documentTitle'));
 
   return (
     <>
