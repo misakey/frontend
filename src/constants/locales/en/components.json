@@ -100,5 +100,15 @@
   },
   "productHunt": {
     "title": "Follow launch on ProductHunt"
+  },
+  "createBoxSuggestions": {
+    "createBox": {
+      "text": "Create your own private space to share your information safely",
+      "button": "Create a private space"
+    },
+    "createAccount": {
+      "text": "Create a Misakey account to handle your own private spaces and share your information safely",
+      "button": "Create an account"
+    }
   }
 }

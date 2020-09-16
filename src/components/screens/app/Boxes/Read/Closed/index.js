@@ -9,16 +9,32 @@ import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import Title from '@misakey/ui/Typography/Title';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import Box from '@material-ui/core/Box';
+import Divider from '@material-ui/core/Divider';
 import Alert from '@material-ui/lab/Alert';
+import InfoIcon from '@material-ui/icons/Info';
 import LeaveBoxDialogButton from 'components/screens/app/Boxes/Read/Events/LeaveBoxDialogButton';
+import CreateBoxSuggestions from 'components/smart/Box/CreateSuggestions';
+import { makeStyles } from '@material-ui/core/styles';
 
 import BoxesSchema from 'store/schemas/Boxes';
 import { DATE_FULL } from 'constants/formats/dates';
 
+// HOOKS
+const useStyles = makeStyles((theme) => ({
+  icon: {
+    height: '10rem',
+    width: '10rem',
+    color: theme.palette.grey[200],
+    margin: theme.spacing(3),
+  },
+}));
+
 // COMPONENTS
 function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t }) {
+  const classes = useStyles();
   const { title = '', lastEvent, lifecycle } = useMemo(() => box, [box]);
   const { sender: { displayName }, serverEventCreatedAt } = useMemo(() => lastEvent, [lastEvent]);
   const date = useMemo(
@@ -70,11 +86,27 @@ function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t })
         px={6}
         display="flex"
         flexDirection="column"
-        height="100%"
+        height="inherit"
         justifyContent="center"
         alignItems="center"
       >
-        <Title color="textSecondary" align="center">{t('boxes:read.closed.info', { title, displayName, date })}</Title>
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          pb={6}
+        >
+          <InfoIcon className={classes.icon} color="primary" fontSize="large" />
+          <Title align="center">{t('boxes:read.closed.title', { title })}</Title>
+          <Subtitle>{t('boxes:read.closed.subtitle', { title, displayName, date })}</Subtitle>
+        </Box>
+
+        <Box width="100%">
+          <Divider variant="middle" />
+        </Box>
+
+        <CreateBoxSuggestions />
       </Box>
     </>
 

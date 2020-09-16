@@ -111,26 +111,25 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
     [isDownSm],
   );
 
-  const skeletonAnimation = useMemo(
-    () => (hasAccess === false ? false : 'pulse'),
-    [hasAccess],
-  );
-
   const secondary = useMemo(
-    () => (isEmpty(members)
-      ? (
-        <Skeleton
-          className={classes.secondarySkeleton}
-          animation={skeletonAnimation}
-          width={SKELETON_WIDTH}
-        />
-      )
-      : (
-        <Typography {...secondaryTypographyProps}>
-          {membersText}
-        </Typography>
-      )),
-    [members, classes.secondarySkeleton, skeletonAnimation, secondaryTypographyProps, membersText],
+    () => {
+      if (hasAccess === false) {
+        return '';
+      }
+      return isEmpty(members)
+        ? (
+          <Skeleton
+            className={classes.secondarySkeleton}
+            width={SKELETON_WIDTH}
+          />
+        )
+        : (
+          <Typography {...secondaryTypographyProps}>
+            {membersText}
+          </Typography>
+        );
+    },
+    [hasAccess, members, classes.secondarySkeleton, secondaryTypographyProps, membersText],
   );
 
   const isClosed = useMemo(
@@ -168,7 +167,7 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
             {title}
             {!disabled && <ExpandMoreIcon />}
           </Typography>
-          )}
+        )}
         secondary={secondary}
       />
       <ListItemSecondaryAction>

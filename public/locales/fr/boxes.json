@@ -36,10 +36,12 @@
   },
   "read": {
     "closed": {
-      "info": "{{displayName}} a fermé l'espace privé «\u00a0{{title}}\u00a0» le {{date}}."
+      "title": "L'espace privé «\u00a0{{title}}\u00a0» est fermé.",
+      "subtitle": "{{displayName}} a fermé l'espace privé «\u00a0{{title}}\u00a0» le {{date}}."
     },
     "noaccess": {
-      "info": "Vous n'avez pas accès à l'espace privé «\u00a0{{title}}\u00a0». Veuillez contacter la personne vous ayant donné le lien."
+      "title": "L'accès à l'espace privé «\u00a0{{title}}\u00a0» est restreint",
+      "subtitle": "Veuillez contacter la personne vous ayant donné le lien."
     },
     "actions": {
       "upload": "Envoyer des fichiers",
