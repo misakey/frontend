@@ -28,6 +28,7 @@ const { notFound } = errorTypes;
 // COMPONENTS
 const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...rest }) => {
   const [resourceName, setResourceName] = useState();
+  const [error, setError] = useState(false);
   const { askSigninRedirect } = useContext(UserManagerContext);
 
   const handleHttpErrors = useHandleHttpErrors();
@@ -68,8 +69,8 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   );
 
   const shouldFetch = useMemo(
-    () => !isAuthenticated && !isNil(id) && !isNil(keyShare) && isNil(resourceName),
-    [isAuthenticated, id, keyShare, resourceName],
+    () => !isAuthenticated && !isNil(id) && !isNil(keyShare) && isNil(resourceName) && !error,
+    [isAuthenticated, id, keyShare, resourceName, error],
   );
 
   const getBoxPublic = useCallback(
@@ -89,6 +90,7 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
       if (errorCode !== notFound) {
         handleHttpErrors(e);
       }
+      setError(true);
     },
     [handleHttpErrors],
   );
@@ -113,13 +115,11 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
     [askSigninRedirect, redirectOptions, shouldAskRedirect],
   );
 
-
-
   if (isAuthenticated) {
     return <RouteComponent path={path} {...rest} />;
   }
 
-  if (isFetching || shouldFetch) {
+  if (isFetching) {
     return <SplashScreenWithTranslation />;
   }
 

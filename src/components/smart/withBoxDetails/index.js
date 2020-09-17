@@ -1,4 +1,7 @@
-import React, { useMemo, useCallback, useState /* useEffect */ } from 'react';
+import React, {
+  useMemo, useCallback, useState, /* useEffect */
+  useEffect,
+} from 'react';
 import PropTypes from 'prop-types';
 import { denormalize, normalize } from 'normalizr';
 import { connect } from 'react-redux';
@@ -31,6 +34,8 @@ import SenderSchema from 'store/schemas/Boxes/Sender';
 
 import { OPEN } from 'constants/app/boxes/statuses';
 import { MEMBER_JOIN } from 'constants/app/boxes/events';
+import { InvalidHash } from '@misakey/crypto/Errors/classes';
+import usePropChanged from '@misakey/hooks/usePropChanged';
 
 // CONSTANTS
 const { forbidden, notFound } = errorTypes;
@@ -40,8 +45,12 @@ const NO_ACCESS = 'no_access';
 // COMPONENTS
 const withBoxDetails = (mapper = identity) => (Component) => {
   const Wrapper = (props) => {
-    // Used to prevent refetch on delete box
-    const [preventFetching, setPreventFetching] = useState(false);
+    const [errorBoxKeyShare, setErrorBoxKeyShare] = useState(null);
+
+    const { params } = useRouteMatch();
+    const { id } = params;
+    const [boxIdChanged] = usePropChanged(id);
+
     const handleHttpErrors = useHandleHttpErrors();
 
     const { addItem } = useBoxesContext();
@@ -64,19 +73,17 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       [publicKey, publicKeysWeCanDecryptFrom],
     );
 
-    const { params } = useRouteMatch();
-    const { id } = params;
+
     const history = useHistory();
     const { hash } = useLocation();
-
 
     const boxForChildren = useMemo(
       () => ({ members: [], ...box || { id } }), [box, id],
     );
 
     const isAllowedToFetch = useMemo(
-      () => isAuthenticated && !isNil(id) && !preventFetching,
-      [isAuthenticated, id, preventFetching],
+      () => isAuthenticated && !isNil(id),
+      [isAuthenticated, id],
     );
 
     const shouldFetchBox = useMemo(
@@ -131,10 +138,12 @@ const withBoxDetails = (mapper = identity) => (Component) => {
                 // in case of not found error, it is already handled by useHandleBoxKeyShare
                 if (errorCode !== notFound) {
                   handleHttpErrors(e);
+                  return;
                 }
+                setErrorBoxKeyShare(new InvalidHash());
               });
           } catch (e) {
-            // do nothing
+            setErrorBoxKeyShare(new InvalidHash());
           }
         } else {
           handleHttpErrors(error);
@@ -153,8 +162,24 @@ const withBoxDetails = (mapper = identity) => (Component) => {
 
     const {
       isFetching: isFetchingBoxKeyShare,
-      error: errorBoxKeyShare,
-    } = useHandleBoxKeyShare(boxForChildren, secretKey, isFetching);
+      error: errorBoxKeyShareForBuiltSecretKey,
+    } = useHandleBoxKeyShare(boxForChildren, secretKey, shouldFetchBox);
+
+    useEffect(
+      () => {
+        setErrorBoxKeyShare(errorBoxKeyShareForBuiltSecretKey);
+      },
+      [errorBoxKeyShareForBuiltSecretKey],
+    );
+
+    useEffect(
+      () => {
+        if (boxIdChanged && !isNil(errorBoxKeyShare)) {
+          setErrorBoxKeyShare(null);
+        }
+      },
+      [boxIdChanged, errorBoxKeyShare],
+    );
 
     const shouldFetchMembers = useMemo(
       () => isAllowedToFetchContent && isEmpty(members) && !isFetchingBoxKeyShare,
@@ -172,7 +197,6 @@ const withBoxDetails = (mapper = identity) => (Component) => {
       { onSuccess: onReceiveBoxMembers },
     );
 
-    const onDelete = useCallback(() => { setPreventFetching(true); }, []);
 
     const mappedProps = useMemo(
       () => (mapper({
@@ -187,7 +211,6 @@ const withBoxDetails = (mapper = identity) => (Component) => {
           box: error,
           keyShare: errorBoxKeyShare,
         },
-        onDelete,
         isAuthenticated,
         ...rest,
       })),
@@ -195,7 +218,7 @@ const withBoxDetails = (mapper = identity) => (Component) => {
         box, boxForChildren, belongsToCurrentUser, isAuthenticated,
         isFetching, isFetchingBoxKeyShare, isFetchingMembers,
         error, errorBoxKeyShare,
-        onDelete, rest,
+        rest,
       ],
     );
 

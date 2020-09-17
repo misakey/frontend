@@ -42,7 +42,7 @@ function BoxRead({
   identityId,
 }) {
   const { lifecycle, publicKey, hasAccess, title } = useMemo(() => box, [box]);
-  const shouldNotDisplayContent = useMemo(
+  const shouldDisplayClosedScreen = useMemo(
     () => lifecycle === CLOSED && !belongsToCurrentUser,
     [belongsToCurrentUser, lifecycle],
   );
@@ -64,15 +64,19 @@ function BoxRead({
     [error],
   );
 
+
   const displayLoadingScreen = useMemo(
-    () => (isFetching.box && !hasInvalidHashError) || (isFetching.keyShare && isNil(secretKey)),
-    [isFetching.box, hasInvalidHashError, isFetching.keyShare, secretKey],
+    () => ((isFetching.box || isNil(hasAccess)) && isNil(error.box))
+      || (isFetching.keyShare && isNil(error.keyShare)),
+    [isFetching.box, isFetching.keyShare, hasAccess, error.box, error.keyShare],
   );
 
   const shouldShowPasteScreen = useMemo(
-    () => hasInvalidHashError || (!isNil(publicKey) && !canBeDecrypted && !shouldNotDisplayContent),
-    [canBeDecrypted, hasInvalidHashError, publicKey, shouldNotDisplayContent],
+    () => hasInvalidHashError || (!isNil(publicKey) && !canBeDecrypted),
+    [canBeDecrypted, hasInvalidHashError, publicKey],
   );
+
+  const shouldShowNoAccessScreen = useMemo(() => hasAccess !== true, [hasAccess]);
 
   const [boxIdChanged, resetBoxIdChanged] = usePropChanged(boxId);
 
@@ -94,9 +98,17 @@ function BoxRead({
   useMountEffect(() => { onResetBoxCount(); });
   useFetchEffect(onResetBoxCount, { shouldFetch });
 
-  useEffect(() => {
-    setIsDrawerForceClosed(shouldShowPasteScreen);
-  }, [isFetching.box, setIsDrawerForceClosed, shouldShowPasteScreen]);
+  useEffect(
+    () => {
+      setIsDrawerForceClosed(
+        shouldShowPasteScreen || shouldDisplayClosedScreen || shouldShowNoAccessScreen,
+      );
+    },
+    [
+      isFetching.box, setIsDrawerForceClosed,
+      shouldDisplayClosedScreen, shouldShowNoAccessScreen, shouldShowPasteScreen,
+    ],
+  );
 
   useUpdateDocHead(title);
 
@@ -104,7 +116,7 @@ function BoxRead({
     return <SplashScreenWithTranslation />;
   }
 
-  if (hasAccess === false) {
+  if (shouldShowNoAccessScreen) {
     return (
       <BoxNoAccess
         box={box}
@@ -115,7 +127,7 @@ function BoxRead({
     );
   }
 
-  if (shouldNotDisplayContent) {
+  if (shouldDisplayClosedScreen) {
     return (
       <BoxClosed
         box={box}

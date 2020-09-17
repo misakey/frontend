@@ -17,11 +17,12 @@ import { combineBoxKeyShares, splitBoxSecretKey } from '@misakey/crypto/box/keyS
 import checkHashValidity from '@misakey/crypto/helpers/checkHashValidity';
 import { selectors } from '@misakey/crypto/store/reducers';
 import { InvalidHash } from '@misakey/crypto/Errors/classes';
+import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 
 // SELECTORS
 const { makeGetBoxKeyShare } = selectors;
 
-export default (box, secretKey, isFetchingBox) => {
+export default (box, secretKey, shouldFetchBox) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { t } = useTranslation('boxes');
@@ -29,11 +30,18 @@ export default (box, secretKey, isFetchingBox) => {
   const { enqueueSnackbar } = useSnackbar();
   const { pathname, hash, search } = useLocation();
 
-  const { id: boxId, lifecycle } = useSafeDestr(box);
+  const { id: boxId, lifecycle, publicKey, hasAccess } = useSafeDestr(box);
+
+  const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
 
   const isBoxClosed = useMemo(
     () => lifecycle === CLOSED,
     [lifecycle],
+  );
+
+  const isAllowedToFetch = useMemo(
+    () => Boolean(!shouldFetchBox && !isBoxClosed && hasAccess),
+    [hasAccess, isBoxClosed, shouldFetchBox],
   );
 
   const urlKeyShareHash = useMemo(() => (isEmpty(hash) ? null : hash.substr(1)), [hash]);
@@ -42,26 +50,36 @@ export default (box, secretKey, isFetchingBox) => {
   // such as expirationDate
   const { value: backupKeyShareHash } = useSelector((state) => getBoxKeyShare(state, boxId) || {});
 
+  // We know for sure if users has all the information to check if they have the secretKey
+  // We need to know publicKey of the box to known if user has corresponding secretKey
+  const userHasBoxSecretKey = useMemo(
+    () => !isNil(secretKey) && !isNil(publicKey),
+    [publicKey, secretKey],
+  );
+
   const shouldRebuildSecretKey = useMemo(
-    () => isNil(secretKey) && !isFetchingBox,
-    [secretKey, isFetchingBox],
+    () => !userHasBoxSecretKey,
+    [userHasBoxSecretKey],
   );
 
   const shouldCheckBackupKeyShare = useMemo(
-    () => !isNil(backupKeyShareHash) && shouldRebuildSecretKey && !isBoxClosed,
-    [backupKeyShareHash, shouldRebuildSecretKey, isBoxClosed],
+    () => !isNil(backupKeyShareHash) && shouldRebuildSecretKey && isAllowedToFetch,
+    [backupKeyShareHash, shouldRebuildSecretKey, isAllowedToFetch],
   );
 
   const shouldCheckUrlKeyShare = useMemo(
-    () => !isNil(urlKeyShareHash) && isNil(backupKeyShareHash) && !isBoxClosed,
-    [backupKeyShareHash, urlKeyShareHash, isBoxClosed],
+    () => !isNil(urlKeyShareHash) && isNil(backupKeyShareHash) && isAllowedToFetch,
+    [urlKeyShareHash, backupKeyShareHash, isAllowedToFetch],
   );
 
   const shouldCreateNewShares = useMemo(
-    () => !isNil(secretKey) && !isFetchingBox
-    && isNil(urlKeyShareHash) && isNil(backupKeyShareHash)
-      && !isBoxClosed,
-    [backupKeyShareHash, isFetchingBox, secretKey, urlKeyShareHash, isBoxClosed],
+    () => userHasBoxSecretKey && belongsToCurrentUser
+      // if no keyShareHash is found in user backup nor url:
+      // - it's a new chat so we should create new urlKeyShare
+      // - something wrong happens to box creator crypto (it should not)
+      // and creator should always have the ability to share its box
+      && isNil(urlKeyShareHash) && isNil(backupKeyShareHash),
+    [userHasBoxSecretKey, urlKeyShareHash, backupKeyShareHash, belongsToCurrentUser],
   );
 
   const shouldOnlyReplaceUrlHash = useMemo(
@@ -89,6 +107,11 @@ export default (box, secretKey, isFetchingBox) => {
 
   const replaceHash = useCallback(
     (shareHash) => { history.replace({ pathname, search, hash: `#${shareHash}` }); },
+    [history, pathname, search],
+  );
+
+  const removeHash = useCallback(
+    () => { history.replace({ pathname, search }); },
     [history, pathname, search],
   );
 
@@ -159,10 +182,10 @@ export default (box, secretKey, isFetchingBox) => {
     (err) => {
       if (err instanceof InvalidHash) {
         enqueueSnackbar(t('boxes:read.errors.incorrectLink'), { variant: 'warning' });
+        removeHash();
       }
-      if (!isNil(secretKey) && !isBoxClosed) { createNewBoxKeyShares(); }
     },
-    [createNewBoxKeyShares, enqueueSnackbar, secretKey, isBoxClosed, t],
+    [enqueueSnackbar, t, removeHash],
   );
 
   // If hashKeyShare is found in backup, check its validity in backend
@@ -186,8 +209,9 @@ export default (box, secretKey, isFetchingBox) => {
     { onSuccess: onUrlKeyShareValid, onError: onUrlKeyShareInvalid },
   );
 
-  // If no valid hashKeyShare is found in url or backup, recrete a pair of shares
-  // and store one in backend and the other in backup and/or url (according to account state)
+  // If no valid hashKeyShare is found in url or backup and user is the creator,
+  // recreate a pair of shares and store one in backend and the other in backup
+  // and/or url (according to account state)
   const { isFetching: isCreatingNewShares } = useFetchEffect(
     createNewBoxKeyShares,
     { shouldFetch: shouldCreateNewShares },
