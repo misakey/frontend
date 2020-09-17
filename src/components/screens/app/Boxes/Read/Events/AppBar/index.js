@@ -138,8 +138,8 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
   );
 
   const canShare = useMemo(
-    () => !isClosed && hasAccess,
-    [hasAccess, isClosed],
+    () => !isClosed && (hasAccess || belongsToCurrentUser),
+    [belongsToCurrentUser, hasAccess, isClosed],
   );
 
   const canDeleteBox = useMemo(

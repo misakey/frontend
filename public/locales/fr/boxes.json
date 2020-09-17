@@ -105,6 +105,11 @@
           "leave": {
             "they": "{{displayName}} a quitté l'espace privé",
             "you": "Vous avez quitté l'espace privé"
+          },
+          "kick": {
+            "they": "{{displayName}} a été retiré·e de l'espace privé",
+            "unknown": "Quelqu'un a été retiré de l'espace privé",
+            "you": "Vous avez été retiré·e de l'espace privé"
           }
         },
         "preview": {
@@ -130,6 +135,11 @@
             "leave": {
               "they": "<0>{{displayName}}</0> a quitté l'espace privé",
               "you": "<0>Vous</0> avez quitté l'espace privé"
+            },
+            "kick": {
+              "they": "{{displayName}} a été retiré·e de l'espace privé",
+              "you": "Vous avez été retiré de l'espace privé",
+              "unknown": "Quelqu'un a été retiré·e de l'espace privé"
             }
           }
         }

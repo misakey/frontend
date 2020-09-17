@@ -105,6 +105,11 @@
           "leave": {
             "they": "{{displayName}} left the private space",
             "you": "You left the private space"
+          },
+          "kick": {
+            "they": "{{displayName}} has been removed from the private space",
+            "you": "You have been removed from the private space",
+            "unknown": "Someone has been removed from the private space"
           }
         },
         "preview": {
@@ -130,6 +135,11 @@
             "leave": {
               "they": "<0>{{displayName}}</0> left the private space",
               "you": "<0>You</0> left the private space"
+            },
+            "kick": {
+              "they": "{{displayName}} has been removed from the private space",
+              "you": "You have been removed from the private space",
+              "unknown": "Someone has been removed from the private space"
             }
           }
         }

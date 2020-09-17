@@ -2,13 +2,14 @@ export const CREATE = 'create';
 export const LIFECYCLE = 'state.lifecycle';
 export const MEMBER_JOIN = 'member.join';
 export const MEMBER_LEAVE = 'member.leave';
+export const MEMBER_KICK = 'member.kick';
 export const MSG_FILE = 'msg.file';
 export const MSG_TXT = 'msg.text';
 export const MSG_DELETE = 'msg.delete';
 export const MSG_EDIT = 'msg.edit';
 
 const EVENT_TYPES_BY_KIND = {
-  information: [CREATE, LIFECYCLE, MEMBER_JOIN, MEMBER_LEAVE],
+  information: [CREATE, LIFECYCLE, MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK],
   message: [MSG_FILE, MSG_TXT],
 };
 

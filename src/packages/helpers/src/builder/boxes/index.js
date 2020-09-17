@@ -73,6 +73,12 @@ export const createBoxEventBuilder = (id, payload) => API
   .send()
   .then(objectToCamelCaseDeep);
 
+export const createBulkBoxEventBuilder = (id, payload) => API
+  .use(API.endpoints.boxes.bulkEvents.create)
+  .build({ id }, objectToSnakeCaseDeep(payload))
+  .send()
+  .then(objectToCamelCaseDeep);
+
 export const createBoxEncryptedFileBuilder = (boxID, formData) => API
   .use(API.endpoints.boxes.encryptedFiles.create)
   .build({ id: boxID }, formData)

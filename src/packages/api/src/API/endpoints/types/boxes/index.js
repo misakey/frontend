@@ -42,6 +42,13 @@ export default {
       path: '/boxes/:id/public',
     },
   },
+  bulkEvents: {
+    create: {
+      method: 'POST',
+      path: '/boxes/:id/batch-events',
+      auth: true,
+    },
+  },
   events: {
     newCount: {
       update: {

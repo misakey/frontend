@@ -17,17 +17,13 @@ import LockIcon from '@material-ui/icons/Lock';
 import PublicIcon from '@material-ui/icons/Public';
 import PeopleIcon from '@material-ui/icons/People';
 
-import partition from '@misakey/helpers/partition';
 import groupBy from '@misakey/helpers/groupBy';
-import prop from '@misakey/helpers/prop';
-import promiseAllNoFailFast from '@misakey/helpers/promiseAllNoFailFast';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import pluck from '@misakey/helpers/pluck';
-import pipe from '@misakey/helpers/pipe';
 import differenceWith from '@misakey/helpers/differenceWith';
 import filter from '@misakey/helpers/filter';
-import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import { createBulkBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 
 import { accessWhitelistValidationSchema } from 'constants/validationSchemas/boxes';
 import BoxControls from '@misakey/ui/Box/Controls';
@@ -35,6 +31,8 @@ import BoxControls from '@misakey/ui/Box/Controls';
 import { updateAccessesEvents } from 'store/reducers/box';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
 import withStyles from '@material-ui/core/styles/withStyles';
+import { MEMBER_KICK } from 'constants/app/boxes/events';
+import { usePaginateEventsContext } from 'components/smart/Context/PaginateEventsByBox';
 import AccessWhitelistForm from './Whitelist';
 
 // CONSTANTS
@@ -65,19 +63,31 @@ const ICONS = {
 const ACCESS_EVENT_TYPE = {
   RM: 'access.rm',
   ADD: 'access.add',
+  ALL: 'accesses',
 };
+
+const INITIAL_WHITELIST_VALUES = { emailDomains: [], identifiers: [] };
 
 // HELPERS
 const getValues = pluck('value');
 const getRestrictions = (accesses) => pluck('content', accesses);
 
-const removeFromList = (element) => (current) => current.filter((value) => element !== value);
-const addToList = (element) => (current) => [...new Set(current.concat([element]))];
+const removeFromList = (
+  current,
+  key,
+  element,
+) => ({
+  ...current,
+  [key]: current[key].filter((value) => element !== value),
+});
 
-const errorPropNil = pipe(
-  prop('error'),
-  (e) => isNil(e),
-);
+const addToList = (
+  key,
+  element,
+) => (current) => ({
+  ...current,
+  [key]: [...new Set(current[key].concat([element]))],
+});
 
 // COMPONENTS
 const AccessLevel = withStyles(() => ({
@@ -126,6 +136,8 @@ function ShareBoxForm({ accesses, boxId, invitationURL }) {
   const [initialAccesses, setInitialAccesses] = useState([]);
   const [shouldRefresh, setShouldRefresh] = useState([]);
 
+  const { addItems } = usePaginateEventsContext();
+
   /* COMPUTE INITIAL VALUES FOR FORM */
   useEffect(
     () => {
@@ -172,22 +184,21 @@ function ShareBoxForm({ accesses, boxId, invitationURL }) {
 
   /* METHODS TO FILL THE FORM */
   const [
-    whitelistedEmailDomains,
-    setWhitelistedEmailDomains,
-  ] = useState([]);
+    whitelist,
+    setWhitelist,
+  ] = useState({ emailDomains: [], identifiers: [] });
 
   useEffect(
-    () => { setWhitelistedEmailDomains(initialWhitelistedEmailDomains); },
+    () => {
+      setWhitelist((current) => ({ ...current, emailDomains: initialWhitelistedEmailDomains }));
+    },
     [initialWhitelistedEmailDomains],
   );
 
-  const [
-    whitelistedIdentifiers,
-    setWhitelistedIdentifiers,
-  ] = useState([]);
-
   useEffect(
-    () => { setWhitelistedIdentifiers(initialWhitelistedIdentifiers); },
+    () => {
+      setWhitelist((current) => ({ ...current, identifiers: initialWhitelistedIdentifiers }));
+    },
     [initialWhitelistedIdentifiers],
   );
 
@@ -199,8 +210,8 @@ function ShareBoxForm({ accesses, boxId, invitationURL }) {
   );
 
   const hasWhitelistRules = useMemo(
-    () => whitelistedIdentifiers.length > 0 || whitelistedEmailDomains.length > 0,
-    [whitelistedEmailDomains.length, whitelistedIdentifiers.length],
+    () => whitelist.identifiers.length > 0 || whitelist.emailDomains.length > 0,
+    [whitelist],
   );
 
   const [showWhitelistForm, setShowWhitelistForm] = useState(false);
@@ -224,14 +235,12 @@ function ShareBoxForm({ accesses, boxId, invitationURL }) {
       switch (event.target.value) {
         case VALUES.PRIVATE:
           setIsPublic(false);
-          setWhitelistedEmailDomains([]);
-          setWhitelistedIdentifiers([]);
+          setWhitelist(INITIAL_WHITELIST_VALUES);
           setShowWhitelistForm(false);
           break;
         case VALUES.PUBLIC: {
           setIsPublic(true);
-          setWhitelistedEmailDomains([]);
-          setWhitelistedIdentifiers([]);
+          setWhitelist(INITIAL_WHITELIST_VALUES);
           setShowWhitelistForm(false);
           break;
         }
@@ -244,16 +253,26 @@ function ShareBoxForm({ accesses, boxId, invitationURL }) {
     [],
   );
 
+  const onRemoveFromWhitelist = useCallback((key, value) => {
+    setWhitelist((current) => {
+      const newValues = removeFromList(current, key, value);
+      if (isEmpty(newValues.emailDomains) && isEmpty(newValues.identifiers)) {
+        setShowWhitelistForm(false);
+      }
+      return newValues;
+    });
+  }, []);
+
   const onAddWhitelistRule = useCallback(
     ({
       [WHITELIST_FIELD_NAME.emailDomain]: newDomain,
       [WHITELIST_FIELD_NAME.identifier]: newIdentifier,
     }, { resetForm }) => {
       if (!isNil(newDomain)) {
-        setWhitelistedEmailDomains(addToList(newDomain));
+        setWhitelist(addToList('emailDomains', newDomain));
       }
       if (!isNil(newIdentifier)) {
-        setWhitelistedIdentifiers(addToList(newIdentifier));
+        setWhitelist(addToList('identifiers', newIdentifier));
       }
       setIsPublic(false);
       resetForm();
@@ -263,16 +282,16 @@ function ShareBoxForm({ accesses, boxId, invitationURL }) {
 
   const onRemoveWhitelistIdentifierRule = useCallback(
     (value) => () => {
-      setWhitelistedIdentifiers(removeFromList(value));
+      onRemoveFromWhitelist('identifiers', value);
     },
-    [],
+    [onRemoveFromWhitelist],
   );
 
   const onRemoveWhitelistEmailDomainRule = useCallback(
     (value) => () => {
-      setWhitelistedEmailDomains(removeFromList(value));
+      onRemoveFromWhitelist('emailDomains', value);
     },
-    [],
+    [onRemoveFromWhitelist],
   );
 
   /* METHODS TO COMPUTE EVENTS TO GENERATE FROM FORM */
@@ -297,10 +316,10 @@ function ShareBoxForm({ accesses, boxId, invitationURL }) {
         && !isPublic && !hasWhitelistRules;
 
       const identifiersToRemove = initialWhitelistedIdentifiers.filter(
-        (element) => !whitelistedIdentifiers.includes(element),
+        (element) => !whitelist.identifiers.includes(element),
       );
       const domainsToRemove = initialWhitelistedEmailDomains.filter(
-        (element) => !whitelistedEmailDomains.includes(element),
+        (element) => !whitelist.emailDomains.includes(element),
       );
       const eventIdsToRemove = accesses.reduce((eventIds, { id: eventId, content }) => {
         const { restrictionType, value } = content;
@@ -326,10 +345,10 @@ function ShareBoxForm({ accesses, boxId, invitationURL }) {
       const needToAddInvitationEvent = (isPublic || hasWhitelistRules)
         && isEmpty(initialInvitationLinkAccessEvent);
 
-      const identifiersToAdd = whitelistedIdentifiers.filter(
+      const identifiersToAdd = whitelist.identifiers.filter(
         (element) => !initialWhitelistedIdentifiers.includes(element),
       );
-      const domainsToAdd = whitelistedEmailDomains.filter(
+      const domainsToAdd = whitelist.emailDomains.filter(
         (element) => !initialWhitelistedEmailDomains.includes(element),
       );
 
@@ -353,58 +372,46 @@ function ShareBoxForm({ accesses, boxId, invitationURL }) {
 
       // ARRAYS OF EVENTS TO POST
       const newEvents = [
+        ...accessRmEvents,
         ...accessAddDomainsEvents,
         ...accessAddIdentifiersEvents,
-        ...accessRmEvents,
         ...invitationLinkEvents,
       ];
 
-      if (newEvents.length === 0) {
+      if (isEmpty(newEvents)) {
         enqueueSnackbar(t('boxes:read.share.update.noChanges'), { variant: 'info' });
         return;
       }
 
-      // Will change in next MR to use a bulk rm access endpoint (UN: members.kick)
-      const newEventsList = await promiseAllNoFailFast(
-        newEvents.map(async (event) => {
-          try {
-            const response = await createBoxEventBuilder(boxId, event);
-            return { ...response, success: true };
-          } catch (e) {
-            return { ...event, error: true };
-          }
-        }),
-      );
-
-      const [successes, errors] = partition(newEventsList, errorPropNil);
-
-      if (!isEmpty(successes)) {
+      try {
+        const bulkEventsPayload = { batchType: ACCESS_EVENT_TYPE.ALL, events: newEvents };
+        const response = await createBulkBoxEventBuilder(boxId, bulkEventsPayload);
         const {
           [ACCESS_EVENT_TYPE.RM]: eventsToRemove = [],
+          [MEMBER_KICK]: newKickEvents = [],
           [ACCESS_EVENT_TYPE.ADD]: eventsToAdd = [],
-        } = groupBy(successes, 'type');
+        } = groupBy(response, 'type');
+        if (!isEmpty(newKickEvents)) {
+          addItems(newKickEvents);
+        }
         const cleanedAccesses = differenceWith(
           accesses,
           eventsToRemove,
           (initialEvent, rmEvent) => initialEvent.id === rmEvent.referrerId,
         );
         const newAccesses = cleanedAccesses.concat(eventsToAdd);
-
+        enqueueSnackbar(t('boxes:read.share.update.success'), { variant: 'success' });
         Promise.resolve(dispatch(updateAccessesEvents(boxId, newAccesses)))
           .then(() => { setShouldRefresh(true); });
-      }
-
-      if (isEmpty(errors)) {
-        enqueueSnackbar(t('boxes:read.share.update.success'), { variant: 'success' });
-      } else {
+      } catch (err) {
         enqueueSnackbar(t('boxes:read.share.update.error'), { variant: 'warning' });
       }
     },
-    [dispatch, enqueueSnackbar, generateInvitationLinkEvent, t,
+    [dispatch, enqueueSnackbar, generateInvitationLinkEvent, addItems, t,
       boxId, hasWhitelistRules, isPublic,
       accesses, initialInvitationLinkAccessEvent,
       initialWhitelistedEmailDomains, initialWhitelistedIdentifiers,
-      whitelistedEmailDomains, whitelistedIdentifiers],
+      whitelist],
   );
 
   return (
@@ -437,14 +444,14 @@ function ShareBoxForm({ accesses, boxId, invitationURL }) {
         <Box my={1}>
           <AccessWhitelistForm
             fieldName={WHITELIST_FIELD_NAME.identifier}
-            values={whitelistedIdentifiers}
+            values={whitelist.identifiers}
             validationSchema={accessWhitelistValidationSchema.identifier}
             onSubmit={onAddWhitelistRule}
             onRemove={onRemoveWhitelistIdentifierRule}
           />
           <AccessWhitelistForm
             fieldName={WHITELIST_FIELD_NAME.emailDomain}
-            values={whitelistedEmailDomains}
+            values={whitelist.emailDomains}
             validationSchema={accessWhitelistValidationSchema.emailDomain}
             onSubmit={onAddWhitelistRule}
             onRemove={onRemoveWhitelistEmailDomainRule}
