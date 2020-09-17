@@ -89,6 +89,7 @@ const EventCard = forwardRef(({
       justifyContent={isFromCurrentUser ? 'flex-end' : 'flex-start'}
       py={1}
       className={classes.root}
+      {...omitTranslationProps(rest)}
     >
       {!isFromCurrentUser && <Avatar avatarUrl={avatarUrl} displayName={displayName} />}
       <MuiCard
@@ -96,7 +97,6 @@ const EventCard = forwardRef(({
         className={clsx(classes.card, className)}
         elevation={0}
         square
-        {...omitTranslationProps(rest)}
       >
         {!isFromCurrentUser && (
           <CardHeader

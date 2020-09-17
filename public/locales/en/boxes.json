@@ -205,7 +205,8 @@
           "title": "Members of the private space",
           "creator": "You are the only member",
           "count": "{{count}} member",
-          "count_plural": "{{count}} members"
+          "count_plural": "{{count}} members",
+          "admin": "admin"
         },
         "createdAt": "Created on {{date}}",
         "share": {

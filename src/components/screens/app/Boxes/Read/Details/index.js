@@ -30,14 +30,13 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import BoxAvatar from 'components/dumb/Avatar/Box';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import ConfirmationDialog from '@misakey/ui/Dialog/Confirm';
-import AvatarUser from '@misakey/ui/Avatar/User';
 import ListItemShare from 'components/smart/ListItem/Boxes/Share';
 import ListItemLeave from 'components/smart/ListItem/Boxes/Leave';
 import ListItemDelete from 'components/smart/ListItem/Boxes/Delete';
+import ListItemMember from 'components/dumb/ListItem/Member';
 
 // CONSTANTS
 const { conflict } = errorTypes;
@@ -232,18 +231,13 @@ function BoxDetails({ isDrawerOpen, box, belongsToCurrentUser, t }) {
             </ListSubheader>
           )}
           >
-            {members.map(({ displayName, avatarUrl, identifier }) => (
-              <ListItem key={identifier.value}>
-                <ListItemAvatar>
-                  <AvatarUser displayName={displayName} avatarUrl={avatarUrl} />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={displayName}
-                  secondary={belongsToCurrentUser ? identifier.value : null}
-                  primaryTypographyProps={{ color: 'textPrimary' }}
-                  secondaryTypographyProps={{ color: 'textSecondary' }}
-                />
-              </ListItem>
+            {members.map((member) => (
+              <ListItemMember
+                key={member.identifier.value}
+                member={member}
+                box={box}
+                belongsToCurrentUser={belongsToCurrentUser}
+              />
             ))}
           </List>
         </List>
