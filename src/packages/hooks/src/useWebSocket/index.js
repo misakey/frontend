@@ -10,6 +10,8 @@ import { useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 // CONSTANTS
+export const NORMAL_CLOSE_CODE = 1000;
+
 const { token: TOKEN_SELECTOR } = authSelectors;
 
 // HELPERS
@@ -45,9 +47,9 @@ export default (endpoint, onMessage = defaultOnMessage) => {
       const { current } = socket;
       if (!isNil(current)) {
         if (isSocketOpen(current)) {
-          current.close();
+          current.close(NORMAL_CLOSE_CODE);
         } else {
-          current.onopen = () => { current.close(); };
+          current.onopen = () => { current.close(NORMAL_CLOSE_CODE); };
         }
       }
     },

@@ -11,6 +11,7 @@ import { eventKickedMemberIdentifierValuePath } from 'helpers/boxEvent';
 import { useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { usePaginateEventsContext } from 'components/smart/Context/PaginateEventsByBox';
+import { NORMAL_CLOSE_CODE } from '@misakey/hooks/useWebSocket';
 
 // CONSTANTS
 const { identifierValue: IDENTIFIER_VALUE_SELECTOR } = authSelectors;
@@ -39,7 +40,7 @@ export default (boxId, addItems) => {
         const kickedMemberIdentifierValue = eventKickedMemberIdentifierValuePath(content);
         if (kickedMemberIdentifierValue === identifierValue) {
           // @FIXME to handle with backend soon
-          onClose();
+          onClose(NORMAL_CLOSE_CODE);
           dispatch(updateEntities([{ id: boxId, changes: { hasAccess: false } }], BoxesSchema));
         }
       }

@@ -122,14 +122,14 @@ export default (status = ALL, search = null) => {
     [byPagination, payload, refreshBoxes, refreshItemCount],
   );
 
-  const addItem = useCallback(
+  const addBoxItem = useCallback(
     (item) => Promise.resolve(dispatchAddBox(item)),
     [dispatchAddBox],
   );
 
   return useMemo(() => ({
     refresh,
-    addItem,
+    addBoxItem,
   }),
-  [addItem, refresh]);
+  [addBoxItem, refresh]);
 };

@@ -11,7 +11,7 @@ export const BoxesContext = createContext({
   activeStatus: ALL,
   search: null,
   refresh: null,
-  addItem: null,
+  addBoxItem: null,
 });
 
 // HOOKS
@@ -22,16 +22,16 @@ const BoxesContextProvider = ({ activeStatus, children }) => {
   const locationSearchParams = useLocationSearchParams();
   const { search } = useMemo(() => locationSearchParams, [locationSearchParams]);
 
-  const { refresh, addItem } = usePaginateBoxesByStatusRefresh(activeStatus, search);
+  const { refresh, addBoxItem } = usePaginateBoxesByStatusRefresh(activeStatus, search);
 
   const contextValue = useMemo(
     () => ({
       activeStatus,
       search,
       refresh,
-      addItem,
+      addBoxItem,
     }),
-    [activeStatus, search, refresh, addItem],
+    [activeStatus, search, refresh, addBoxItem],
   );
 
   return (

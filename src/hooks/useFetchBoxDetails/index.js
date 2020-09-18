@@ -12,6 +12,7 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import usePropChanged from '@misakey/hooks/usePropChanged';
+import { useBoxesContext } from 'components/smart/Context/Boxes';
 
 import { getCode, getDetails } from '@misakey/helpers/apiError';
 import isNil from '@misakey/helpers/isNil';
@@ -40,6 +41,8 @@ export default (id) => {
     () => makeDenormalizeBoxSelector(),
     [],
   );
+
+  const { addBoxItem } = useBoxesContext();
 
   const box = useSelector((state) => denormalizeBoxSelector(state, id));
 
@@ -88,21 +91,20 @@ export default (id) => {
   );
 
   const onSuccess = useCallback(
-    (result) => {
-      dispatchReceiveBox({ ...result, id, isMember: true, hasAccess: true });
-    },
+    (result) => dispatchReceiveBox({ ...result, id, isMember: true, hasAccess: true }),
     [dispatchReceiveBox, id],
   );
 
   const postJoinEvent = useCallback(
     () => createBoxEventBuilder(id, { type: MEMBER_JOIN })
-      .then(() => getBox().then(onSuccess))
+      .then(() => getBox().then((result) => onSuccess(result)
+        .then(() => addBoxItem(result))))
       .catch((e) => {
         handleHttpErrors(e);
         // View is broken without box membership
         history.replace(routes._);
       }),
-    [getBox, handleHttpErrors, history, id, onSuccess],
+    [addBoxItem, getBox, handleHttpErrors, history, id, onSuccess],
   );
 
   const onError = useCallback(
