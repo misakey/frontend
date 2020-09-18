@@ -17,11 +17,11 @@ import usePropChanged from '@misakey/hooks/usePropChanged';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useResetBoxCount from 'hooks/useResetBoxCount';
 
+import PaginateEventsByBoxContextProvider from 'components/smart/Context/PaginateEventsByBox';
 import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 import withBoxDetails from 'components/smart/withBoxDetails';
 import withIdentity from 'components/smart/withIdentity';
-import PaginateEventsByBoxContextProvider from 'components/smart/Context/PaginateEventsByBox';
 import BoxNoAccess from './NoAccess';
 import BoxClosed from './Closed';
 import BoxDetails from './Details';
@@ -46,7 +46,6 @@ function BoxRead({
     () => lifecycle === CLOSED && !belongsToCurrentUser,
     [belongsToCurrentUser, lifecycle],
   );
-
   const { params: { id: boxId } } = useSafeDestr(match);
 
   const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
@@ -94,6 +93,7 @@ function BoxRead({
     },
     [boxId, identityId, resetBoxIdChanged, resetBoxCount],
   );
+
 
   useMountEffect(() => { onResetBoxCount(); });
   useFetchEffect(onResetBoxCount, { shouldFetch });

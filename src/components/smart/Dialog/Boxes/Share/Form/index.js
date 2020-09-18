@@ -31,8 +31,7 @@ import BoxControls from '@misakey/ui/Box/Controls';
 import { updateAccessesEvents } from 'store/reducers/box';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { MEMBER_KICK } from 'constants/app/boxes/events';
-import { usePaginateEventsContext } from 'components/smart/Context/PaginateEventsByBox';
+import { ACCESS_RM, ACCESS_ADD } from 'constants/app/boxes/events';
 import AccessWhitelistForm from './Whitelist';
 
 // CONSTANTS
@@ -61,8 +60,8 @@ const ICONS = {
 };
 
 const ACCESS_EVENT_TYPE = {
-  RM: 'access.rm',
-  ADD: 'access.add',
+  RM: ACCESS_RM,
+  ADD: ACCESS_ADD,
   ALL: 'accesses',
 };
 
@@ -135,8 +134,6 @@ function ShareBoxForm({ accesses, boxId, invitationURL }) {
   const { enqueueSnackbar } = useSnackbar();
   const [initialAccesses, setInitialAccesses] = useState([]);
   const [shouldRefresh, setShouldRefresh] = useState([]);
-
-  const { addItems } = usePaginateEventsContext();
 
   /* COMPUTE INITIAL VALUES FOR FORM */
   useEffect(
@@ -388,12 +385,8 @@ function ShareBoxForm({ accesses, boxId, invitationURL }) {
         const response = await createBulkBoxEventBuilder(boxId, bulkEventsPayload);
         const {
           [ACCESS_EVENT_TYPE.RM]: eventsToRemove = [],
-          [MEMBER_KICK]: newKickEvents = [],
           [ACCESS_EVENT_TYPE.ADD]: eventsToAdd = [],
         } = groupBy(response, 'type');
-        if (!isEmpty(newKickEvents)) {
-          addItems(newKickEvents);
-        }
         const cleanedAccesses = differenceWith(
           accesses,
           eventsToRemove,
@@ -407,7 +400,7 @@ function ShareBoxForm({ accesses, boxId, invitationURL }) {
         enqueueSnackbar(t('boxes:read.share.update.error'), { variant: 'warning' });
       }
     },
-    [dispatch, enqueueSnackbar, generateInvitationLinkEvent, addItems, t,
+    [dispatch, enqueueSnackbar, generateInvitationLinkEvent, t,
       boxId, hasWhitelistRules, isPublic,
       accesses, initialInvitationLinkAccessEvent,
       initialWhitelistedEmailDomains, initialWhitelistedIdentifiers,

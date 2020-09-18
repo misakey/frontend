@@ -1,7 +1,7 @@
 import BoxesEventsSchema from 'store/schemas/Boxes/Events';
 
 import { makePaginationReducer, INITIAL_STATE } from 'store/reducers/helpers/pagination';
-import { addBoxEvents, receiveBoxEvents } from 'store/reducers/box';
+import { receiveBoxEvents } from 'store/reducers/box';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import pickAll from '@misakey/helpers/pickAll';
@@ -28,7 +28,7 @@ const {
 const getState = identity;
 
 // HOOKS
-export default (boxId) => {
+export default (boxId, shouldStart = true) => {
   const handleHttpErrors = useHandleHttpErrors();
 
   const [isFetching, setIsFetching] = useState(false);
@@ -85,19 +85,8 @@ export default (boxId) => {
   );
 
   const dispatchAddEvents = useCallback(
-    (data) => {
-      const normalized = normalize(
-        data,
-        BoxesEventsSchema.collection,
-      );
-      const { result } = normalized;
-      return Promise.resolve(
-        reduxDispatch(addBoxEvents(boxId, data)),
-      ).then(
-        () => Promise.all([...result.map((id) => dispatch(addPaginatedId(id)))]),
-      );
-    },
-    [reduxDispatch, boxId, dispatch, addPaginatedId],
+    (data) => Promise.all([...data.map(({ id }) => dispatch(addPaginatedId(id)))]),
+    [dispatch, addPaginatedId],
   );
 
   // API data fetching:
@@ -141,14 +130,13 @@ export default (boxId) => {
   const addItems = useCallback(
     (items) => {
       setIsFetching(true);
-      return Promise.resolve(
-        dispatchAddEvents(items),
-      )
+      return dispatchAddEvents(items)
         .finally(() => setIsFetching(false));
     },
     [dispatchAddEvents],
   );
 
+  // @UNUSED
   const refresh = useCallback(
     () => {
       const toRefreshIndexes = Object.keys(byPagination).map(((index) => parseInt(index, 10)));
@@ -171,7 +159,7 @@ export default (boxId) => {
   // update itemCount whenever it is nil
   useEffect(
     () => {
-      if (isNil(itemCount) && isAuthenticated) {
+      if (isNil(itemCount) && isAuthenticated && shouldStart) {
         getCount()
           .then((result) => dispatch(receivePaginatedItemCount(result)))
           .catch((e) => handleHttpErrors(e))
@@ -181,6 +169,7 @@ export default (boxId) => {
     [
       dispatch, receivePaginatedItemCount, setIsFetching, handleHttpErrors,
       getCount, isAuthenticated, itemCount,
+      shouldStart,
     ],
   );
 

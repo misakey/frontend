@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import errorTypes from '@misakey/ui/constants/errorTypes';
 
-import { deleteBoxEventBuilder } from 'helpers/boxEvent';
+import { createDeleteBoxEventBuilder } from 'helpers/builder/boxes';
 import { getCode, getDetails } from '@misakey/helpers/apiError';
 import isFunction from '@misakey/helpers/isFunction';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
@@ -28,7 +28,7 @@ const DialogEventDelete = ({
   const handleHttpErrors = useHandleHttpErrors();
 
   const onConfirm = useCallback(
-    () => deleteBoxEventBuilder({ boxId, eventId })
+    () => createDeleteBoxEventBuilder({ boxId, referrerId: eventId })
       .then((response) => {
         enqueueSnackbar(t('boxes:read.events.delete.success'), { variant: 'success' });
         if (isFunction(onDelete)) {

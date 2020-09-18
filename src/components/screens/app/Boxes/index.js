@@ -8,6 +8,7 @@ import { UUID4_REGEX } from 'constants/regex';
 import { selectors } from '@misakey/crypto/store/reducers';
 
 import isNil from '@misakey/helpers/isNil';
+import path from '@misakey/helpers/path';
 
 import useBackupStorageEvent from '@misakey/crypto/hooks/useBackupStorageEvent';
 import { useSelector } from 'react-redux';
@@ -24,6 +25,9 @@ import RouteAuthenticatedBoxRead from 'components/smart/Route/Authenticated/BoxR
 import Redirect from '@misakey/ui/Redirect';
 import DrawerSplashScreen from 'components/smart/Screen/Drawer/Splash';
 import BoxesContextProvider from 'components/smart/Context/Boxes';
+
+// HELPERS
+const boxIdMatchParamPath = path(['match', 'params', 'id']);
 
 // COMPONENTS
 function Boxes({ match }) {
@@ -75,7 +79,8 @@ function Boxes({ match }) {
         <RouteAuthenticatedBoxRead
           path={routes.boxes.read._}
           render={(renderProps) => {
-            if (!UUID4_REGEX.test(renderProps.match.params.id)) {
+            const boxId = boxIdMatchParamPath(renderProps);
+            if (!UUID4_REGEX.test(boxId)) {
               return (
                 <ScreenDrawer
                   drawerChildren={drawerChildren}
@@ -94,7 +99,7 @@ function Boxes({ match }) {
                 isFullWidth={isFullWidth}
                 initialIsDrawerOpen={isNothingSelected}
               >
-                {(drawerProps) => (
+                {(drawerProps) => !shouldDisplayLockedScreen && (
                   <BoxRead {...drawerProps} {...renderProps} />
                 )}
               </ScreenDrawer>

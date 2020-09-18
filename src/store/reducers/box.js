@@ -1,4 +1,4 @@
-import { LIFECYCLE } from 'constants/app/boxes/events';
+import { LIFECYCLE, MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK } from 'constants/app/boxes/events';
 import BoxesSchema from 'store/schemas/Boxes';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
 
@@ -7,11 +7,16 @@ import { moveBackUpId, removeFromPaginations } from 'store/reducers/userBoxes/pa
 import { createSelector } from 'reselect';
 import { normalize, denormalize } from 'normalizr';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
+import { transformReferrerEvent, eventKickedMemberIdentifierValuePath } from 'helpers/boxEvent';
 import pluck from '@misakey/helpers/pluck';
 import propOr from '@misakey/helpers/propOr';
 import props from '@misakey/helpers/props';
 import isNil from '@misakey/helpers/isNil';
-import last from '@misakey/helpers/last';
+import without from '@misakey/helpers/without';
+import path from '@misakey/helpers/path';
+
+// HELPERS
+const identifierValuePath = path(['identifier', 'value']);
 
 // SELECTORS
 export const makeDenormalizeBoxSelector = () => createSelector(
@@ -42,6 +47,12 @@ const getBoxSelector = createSelector(
   (items) => (id) => propOr(null, id)(items),
 );
 
+const makeGetEventSelector = () => createSelector(
+  (state) => state.entities,
+  (_, eventId) => eventId,
+  (entities, id) => denormalize(id, BoxEventsSchema.entity, entities),
+);
+
 const getBoxSendersIdsSelector = createSelector(
   (state) => state.entities,
   (items) => (id) => {
@@ -66,47 +77,34 @@ export const removeBox = (id) => (dispatch, getState) => {
   ]);
 };
 
-export const editBoxEvent = (id, event) => (dispatch, getState) => {
-  const { id: eventId } = event;
-
+export const addBoxEvent = (id, nextEvent) => (dispatch, getState) => {
   const currentBox = getBoxById(getState(), id);
-  const { events = [] } = currentBox;
+  const { events = [], members = [] } = currentBox;
 
-  const nextEvents = events.reduce((acc, prevEvent, index) => {
-    if (prevEvent.id === eventId) {
-      acc[index] = event;
-    } else {
-      acc[index] = prevEvent;
-    }
-
-    return acc;
-  }, []);
-
-  const changes = {
-    events: nextEvents,
-  };
-
-  return Promise.all([
-    dispatch(updateEntities([{ id: eventId, changes: event }], BoxEventsSchema)),
-    dispatch(updateEntities([{ id, changes }], BoxesSchema)),
-    dispatch(moveBackUpId(id)),
-  ]);
-};
-
-export const addBoxEvents = (id, nextEvents) => (dispatch, getState) => {
-  const currentBox = getBoxById(getState(), id);
-  const { events = [] } = currentBox;
-
-  const lastEvent = last(nextEvents);
+  const lastEvent = nextEvent;
   const changes = {
     lastEvent,
     ...(lastEvent.type === LIFECYCLE ? { lifecycle: lastEvent.content.state } : {}),
-    events: events.concat(nextEvents),
+    events: events.concat([nextEvent]),
   };
 
-  const normalized = normalize(nextEvents, BoxEventsSchema.collection);
-  const { entities } = normalized;
+  const { type, sender, content } = nextEvent;
+  const senderIdentifierValue = identifierValuePath(sender);
 
+  if (type === MEMBER_JOIN) {
+    changes.members = members.concat([senderIdentifierValue]);
+  }
+
+  if (type === MEMBER_LEAVE) {
+    changes.members = without(members, senderIdentifierValue);
+  }
+
+  if (type === MEMBER_KICK) {
+    changes.members = without(members, eventKickedMemberIdentifierValuePath(content));
+  }
+
+  const normalized = normalize(nextEvent, BoxEventsSchema.entity);
+  const { entities } = normalized;
 
   return Promise.all([
     dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
@@ -129,6 +127,23 @@ export const receiveBoxEvents = (id, nextEvents) => (dispatch, getState) => {
   return Promise.all([
     dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
     dispatch(updateEntities([{ id, changes }], BoxesSchema)),
+  ]);
+};
+
+export const receiveWSEditEvent = (id, editEvent) => (dispatch, getState) => {
+  const { referrerId } = editEvent;
+
+  const getEventSelector = makeGetEventSelector();
+  const referrerEvent = getEventSelector(getState(), referrerId);
+
+  const changes = transformReferrerEvent(editEvent)(referrerEvent);
+
+  return Promise.all([
+    dispatch(updateEntities(
+      [{ id: referrerId, changes }],
+      BoxEventsSchema,
+    )),
+    dispatch(moveBackUpId(id)),
   ]);
 };
 

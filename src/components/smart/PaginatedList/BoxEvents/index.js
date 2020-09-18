@@ -7,11 +7,9 @@ import EventSchema from 'store/schemas/Boxes/Events';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import max from '@misakey/helpers/max';
-import first from '@misakey/helpers/first';
 import { denormalize } from 'normalizr';
 
 import useCombinedRefs from '@misakey/hooks/useCombinedRefs';
-import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import usePrevPropEffect from '@misakey/hooks/usePrevPropEffect';
 import useGroupEventsByDate from 'hooks/useGroupEventsByDate';
 import { usePaginateEventsContext } from 'components/smart/Context/PaginateEventsByBox';
@@ -52,27 +50,14 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
   const paginationOffsetRef = useRef(0);
 
   const {
-    itemCount, byPagination, isFetching, loadMoreItems, refresh,
+    itemCount, byPagination, isFetching, loadMoreItems,
   } = usePaginateEventsContext();
 
-  const isPaginationEmpty = useMemo(
-    () => isEmpty(byPagination),
-    [byPagination],
-  );
-
   const classes = useStyles();
-
-  const { lastEvent } = useSafeDestr(box);
-  const { id: lastEventId } = useSafeDestr(lastEvent);
 
   const eventIds = useMemo(
     () => Object.values(byPagination),
     [byPagination],
-  );
-
-  const newestEventId = useMemo(
-    () => first(eventIds),
-    [eventIds],
   );
 
   const events = useSelector(
@@ -108,6 +93,9 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
   const onScroll = useCallback(
     (e) => {
       const { target } = e;
+      if (target !== combinedRef.current) {
+        return;
+      }
       const scrollDiff = getScrollDiff(target);
       if (target.scrollTop < THRESHOLD && scrollDiff > 0) {
         if (!isFetching) {
@@ -118,7 +106,7 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
         }
       }
     },
-    [onLoadMoreItemsRef, isFetching, paginationOffsetRef, itemCount],
+    [onLoadMoreItemsRef, isFetching, paginationOffsetRef, itemCount, combinedRef],
   );
 
   const scrollToBottom = useCallback(
@@ -199,23 +187,14 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
   // INIT
   useMountEffect(
     () => {
-      if (!isNil(itemCount)) {
+      if (!isNil(itemCount) && paginationOffsetRef.current === 0) {
         onLoadMoreItemsRef.current();
       }
     },
-    [itemCount, onLoadMoreItemsRef],
+    [itemCount, onLoadMoreItemsRef, paginationOffsetRef],
   );
 
-  // RESET
-  usePrevPropEffect(itemCount, (prevItemCount, nextItemCount) => {
-    if (isNil(prevItemCount) && !isNil(nextItemCount)) {
-      // reset pagination offset ref
-      paginationOffsetRef.current = 0;
-      onLoadMoreItemsRef.current();
-      resetScrollInit();
-    }
-  }, [onLoadMoreItemsRef, paginationOffsetRef]);
-
+  // FETCH MORE WHEN LIST IS NOT FULL
   useNotDoneEffect(
     (onDone) => {
       if (shouldFetch) {
@@ -230,18 +209,17 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
     },
     [shouldFetch, onLoadMoreItemsRef, combinedRef],
   );
-  // [/LOAD MORE ITEMS]
 
-  // AUTO REFRESH
-  useEffect(
-    () => {
-      if (!isFetching && !isPaginationEmpty
-        && !isNil(newestEventId) && !isNil(lastEventId) && newestEventId !== lastEventId) {
-        refresh();
-      }
-    },
-    [isFetching, lastEventId, newestEventId, refresh, byPagination, isPaginationEmpty],
-  );
+  // RESET
+  usePrevPropEffect(itemCount, (prevItemCount, nextItemCount) => {
+    if (isNil(prevItemCount) && !isNil(nextItemCount)) {
+      // reset pagination offset ref
+      paginationOffsetRef.current = 0;
+      onLoadMoreItemsRef.current();
+      resetScrollInit();
+    }
+  }, [onLoadMoreItemsRef, paginationOffsetRef]);
+  // [/LOAD MORE ITEMS]
 
   return (
     <>

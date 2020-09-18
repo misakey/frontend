@@ -6,16 +6,14 @@ import errorTypes from '@misakey/ui/constants/errorTypes';
 import BoxesSchema from 'store/schemas/Boxes';
 import BoxesEventsSchema from 'store/schemas/Boxes/Events';
 import { boxEditMessageValidationSchema } from 'constants/validationSchemas/boxes';
-import { editBoxEvent } from 'store/reducers/box';
 import { CLOSED } from 'constants/app/boxes/statuses';
 
 import pluck from '@misakey/helpers/pluck';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
-import { editBoxEventTextBuilder } from 'helpers/boxEvent';
+import { createEditTextBoxEventBuilder } from 'helpers/builder/boxes';
 import { getCode } from '@misakey/helpers/apiError';
 
-import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import useDecryptedEventText from 'hooks/useDecryptedEventText';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
@@ -66,7 +64,6 @@ const useStyles = makeStyles((theme) => ({
 // @FIXME factorize footer common code
 function BoxEventsFooterEditing({ box, event, clearEvent, t }) {
   const classes = useStyles();
-  const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const handleHttpErrors = useHandleHttpErrors();
 
@@ -100,11 +97,8 @@ function BoxEventsFooterEditing({ box, event, clearEvent, t }) {
   );
 
   const onDelete = useCallback(
-    (response) => Promise.all([
-      dispatch(editBoxEvent(boxId, response)),
-      clearEvent(),
-    ]),
-    [dispatch, clearEvent, boxId],
+    () => clearEvent(),
+    [clearEvent],
   );
 
   const onOpen = useCallback(
@@ -127,13 +121,12 @@ function BoxEventsFooterEditing({ box, event, clearEvent, t }) {
         setSubmitting(false);
         return onOpen();
       }
-      return editBoxEventTextBuilder({
-        publicKey, boxId, eventId, value,
+      return createEditTextBoxEventBuilder({
+        publicKey, boxId, referrerId: eventId, value,
       })
-        .then((response) => {
+        .then(() => {
           enqueueSnackbar(t('boxes:read.events.edited.success'), { variant: 'success' });
           return Promise.all([
-            dispatch(editBoxEvent(boxId, response)),
             resetForm(),
             clearEvent(),
           ]);
@@ -155,12 +148,7 @@ function BoxEventsFooterEditing({ box, event, clearEvent, t }) {
           setSubmitting(false);
         });
     },
-    [
-      dispatch, enqueueSnackbar, handleHttpErrors,
-      boxId, eventId, publicKey,
-      clearEvent, onOpen,
-      t,
-    ],
+    [enqueueSnackbar, handleHttpErrors, boxId, eventId, publicKey, clearEvent, onOpen, t],
   );
 
   useEffect(

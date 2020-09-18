@@ -16,7 +16,6 @@ import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { makeStyles } from '@material-ui/core/styles';
-import { usePaginateEventsContext } from 'components/smart/Context/PaginateEventsByBox';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
@@ -83,8 +82,6 @@ function BoxDetails({ isDrawerOpen, box, belongsToCurrentUser, t }) {
   const goBack = useGeneratePathKeepingSearchAndHash(routes.boxes.read._, { id });
   // const routeFiles = useGeneratePathKeepingSearchAndHash(routes.boxes.read.files, { id });
 
-  const { addItems } = usePaginateEventsContext();
-
   // @FIXME factorize rules
   const isAllowedToClose = useMemo(
     () => belongsToCurrentUser && lifecycle === OPEN,
@@ -109,7 +106,6 @@ function BoxDetails({ isDrawerOpen, box, belongsToCurrentUser, t }) {
 
   const onCloseBox = useCallback(
     () => createBoxEventBuilder(id, { type: LIFECYCLE, content: { state: CLOSED } })
-      .then((response) => addItems([response]))
       .catch((error) => {
         if (error.code === conflict) {
           const { details = {} } = error;
@@ -121,7 +117,7 @@ function BoxDetails({ isDrawerOpen, box, belongsToCurrentUser, t }) {
           handleHttpErrors(error);
         }
       }),
-    [addItems, dispatch, enqueueSnackbar, handleHttpErrors, id, t],
+    [dispatch, enqueueSnackbar, handleHttpErrors, id, t],
   );
 
   return (

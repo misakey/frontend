@@ -7,6 +7,7 @@ import { CLOSED } from 'constants/app/boxes/statuses';
 import BoxesSchema from 'store/schemas/Boxes';
 
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import { getBoxEventLastDate } from 'helpers/boxEvent';
 
@@ -101,7 +102,7 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
   );
 
   const secondary = useMemo(
-    () => (isNil(box)
+    () => (isNil(box) || isEmpty(lastEvent)
       ? null // @FIXME we could create a Skeleton
       : (
         <BoxEventsAccordingToType box={box} event={lastEvent} preview />

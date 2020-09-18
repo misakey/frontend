@@ -25,7 +25,6 @@ import { createBoxEncryptedFileBuilder } from '@misakey/helpers/builder/boxes';
 import encryptFile from '@misakey/crypto/box/encryptFile';
 
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
-import { usePaginateEventsContext } from 'components/smart/Context/PaginateEventsByBox';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Dialog from '@material-ui/core/Dialog';
@@ -83,7 +82,6 @@ function UploadDialog({
   const { enqueueSnackbar } = useSnackbar();
 
   const dispatch = useDispatch();
-  const { addItems } = usePaginateEventsContext();
 
   const { publicKey, id: boxId } = box;
 
@@ -144,11 +142,7 @@ function UploadDialog({
           }),
       );
 
-      const [successes, errors] = partition(newBlobList, errorPropNil);
-
-      if (!isEmpty(successes)) {
-        addItems(successes);
-      }
+      const [, errors] = partition(newBlobList, errorPropNil);
 
       resetForm();
 
@@ -160,7 +154,7 @@ function UploadDialog({
         setStatus({ [BLOBS_FIELD_NAME]: newBlobList });
       }
     },
-    [handleUpload, addItems, t, enqueueSnackbar, onClose],
+    [handleUpload, t, enqueueSnackbar, onClose],
   );
 
   return (

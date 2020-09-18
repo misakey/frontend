@@ -132,7 +132,12 @@ function CreateBoxDialog({
       } catch (e) {
         handleHttpErrors(e);
       }
-      const normalized = normalize({ members, ...newBox, hasAccess: true }, BoxesSchema.entity);
+      const normalized = normalize({
+        members,
+        ...newBox,
+        hasAccess: true,
+        isMember: true,
+      }, BoxesSchema.entity);
       const { entities } = normalized;
       await Promise.all([
         dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),

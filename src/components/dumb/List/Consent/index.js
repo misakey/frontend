@@ -20,13 +20,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const ListConsent = ({ tosUri, policyUri, id, name, ...props }) => {
+const ListConsent = ({ tosUri, policyUri, id, name, logoUri, ...props }) => {
   const classes = useStyles();
 
   return (
     <List classes={{ root: classes.listRoot }} {...props}>
-      <ListItemTOS classes={{ container: classes.listItemContainer }} href={tosUri} />
-      <ListItemPrivacy classes={{ container: classes.listItemContainer }} href={policyUri} />
+      {tosUri
+      && <ListItemTOS classes={{ container: classes.listItemContainer }} href={tosUri} />}
+      {policyUri
+        && <ListItemPrivacy classes={{ container: classes.listItemContainer }} href={policyUri} />}
     </List>
   );
 };
@@ -34,6 +36,7 @@ const ListConsent = ({ tosUri, policyUri, id, name, ...props }) => {
 ListConsent.propTypes = {
   id: PropTypes.string,
   name: PropTypes.string,
+  logoUri: PropTypes.string,
   tosUri: PropTypes.string,
   policyUri: PropTypes.string,
 };
@@ -41,6 +44,7 @@ ListConsent.propTypes = {
 ListConsent.defaultProps = {
   id: null,
   name: null,
+  logoUri: null,
   tosUri: null,
   policyUri: null,
 };

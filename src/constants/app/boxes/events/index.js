@@ -7,13 +7,24 @@ export const MSG_FILE = 'msg.file';
 export const MSG_TXT = 'msg.text';
 export const MSG_DELETE = 'msg.delete';
 export const MSG_EDIT = 'msg.edit';
+export const ACCESS_ADD = 'access.add';
+export const ACCESS_RM = 'access.rm';
 
 const EVENT_TYPES_BY_KIND = {
   information: [CREATE, LIFECYCLE, MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK],
   message: [MSG_FILE, MSG_TXT],
 };
 
-export const ALL_EVENT_TYPES = EVENT_TYPES_BY_KIND.information.concat(EVENT_TYPES_BY_KIND.message);
+export const VISIBLE_EVENTS_TYPES = EVENT_TYPES_BY_KIND.information
+  .concat(EVENT_TYPES_BY_KIND.message);
+
+export const CHANGE_EVENT_TYPES = [MSG_DELETE, MSG_EDIT];
+
+export const ACCESS_EVENT_TYPES = [ACCESS_ADD, ACCESS_RM];
+
+export const ALL_EVENT_TYPES = VISIBLE_EVENTS_TYPES
+  .concat(CHANGE_EVENT_TYPES)
+  .concat(ACCESS_EVENT_TYPES);
 
 export const EDITABLE_EVENT_TYPES = MSG_TXT;
 

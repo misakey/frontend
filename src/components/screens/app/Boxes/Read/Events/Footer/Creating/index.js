@@ -17,7 +17,6 @@ import useBoxPublicKeysWeCanDecryptFrom from 'packages/crypto/src/hooks/useBoxPu
 import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import { usePaginateEventsContext } from 'components/smart/Context/PaginateEventsByBox';
 
 import FooterMenuList from 'components/screens/app/Boxes/Read/Events/Footer/MenuList';
 import Box from '@material-ui/core/Box';
@@ -68,8 +67,6 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, isMenuActionOpen, onO
   const { enqueueSnackbar } = useSnackbar();
   const handleHttpErrors = useHandleHttpErrors();
 
-  const { addItems } = usePaginateEventsContext();
-
   const { lifecycle, id, publicKey, title } = useMemo(() => box || {}, [box]);
   const publicKeysWeCanEncryptWith = useBoxPublicKeysWeCanDecryptFrom();
 
@@ -88,9 +85,6 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, isMenuActionOpen, onO
         publicKey,
       },
     })
-      .then((response) => {
-        addItems([response]);
-      })
       .catch((error) => {
         if (error.code === conflict) {
           const { details = {} } = error;
@@ -106,7 +100,7 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, isMenuActionOpen, onO
         setSubmitting(false);
         resetForm();
       }),
-    [addItems, dispatch, enqueueSnackbar, handleHttpErrors, id, publicKey, t],
+    [dispatch, enqueueSnackbar, handleHttpErrors, id, publicKey, t],
   );
 
   useEffect(() => {

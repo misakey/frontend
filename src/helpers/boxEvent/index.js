@@ -1,8 +1,7 @@
-import { MSG_EDIT, MSG_DELETE } from 'constants/app/boxes/events';
+import { MSG_DELETE, MSG_EDIT } from 'constants/app/boxes/events';
 
-import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
-import encryptText from '@misakey/crypto/box/encryptText';
 import prop from '@misakey/helpers/prop';
+import path from '@misakey/helpers/path';
 import isNil from '@misakey/helpers/isNil';
 
 // HELPERS
@@ -16,23 +15,31 @@ export const getBoxEventLastDate = ({ content, serverEventCreatedAt }) => {
 
 export const isBoxEventEdited = ({ content }) => !isNil(lastEditedAtProp(content));
 
-export const deleteBoxEventBuilder = ({ boxId, eventId }) => {
-  const event = {
-    type: MSG_DELETE,
-    content: {
-      eventId,
-    },
-  };
-  return createBoxEventBuilder(boxId, event);
-};
+export const eventKickedMemberIdentifierValuePath = path(['kickedMember', 'identifier', 'value']);
 
-export const editBoxEventTextBuilder = ({
-  publicKey, boxId, eventId, value,
-}) => createBoxEventBuilder(boxId, {
-  type: MSG_EDIT,
-  content: {
-    eventId,
-    newEncrypted: encryptText(value, publicKey),
-    newPublicKey: publicKey,
-  },
-});
+export const transformReferrerEvent = (event) => (referrerEvent) => {
+  const { type } = event;
+  if (type === MSG_DELETE) {
+    return {
+      ...referrerEvent,
+      content: {
+        deleted: {
+          atTime: event.serverEventCreatedAt,
+          byIdentity: event.sender,
+        },
+      },
+    };
+  }
+  if (type === MSG_EDIT) {
+    const { content } = event;
+    return {
+      ...referrerEvent,
+      content: {
+        encrypted: content.newEncrypted,
+        publicKey: content.newPublicKey,
+        lastEditedAt: event.serverEventCreatedAt,
+      },
+    };
+  }
+  return event;
+};
