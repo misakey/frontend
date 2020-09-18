@@ -12,13 +12,15 @@ import crypto from '@misakey/crypto/store/reducers';
 import { wrapReducerWithResetOnSignOut } from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
 import userBoxesPagination from 'store/reducers/userBoxes/pagination';
 
-import devicePreferences from './devicePreferences';
-import screens from './screens';
+import devicePreferences from 'store/reducers/devicePreferences';
+import box from 'store/reducers/box';
+import screens from 'store/reducers/screens';
 
 const appReducer = combineReducers({
   ...authPersistedReducers,
   ...storeReducers,
   ...devicePreferences,
+  ...box,
   screens,
   crypto,
   ...userBoxesPagination,

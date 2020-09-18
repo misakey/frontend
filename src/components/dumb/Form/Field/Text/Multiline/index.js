@@ -1,16 +1,36 @@
-import React, { useCallback, useState } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import FormFieldTextFieldWithErrors from '@misakey/ui/Form/Field/TextFieldWithErrors';
+
+import isEmpty from '@misakey/helpers/isEmpty';
 
 import { useFormikContext } from 'formik';
+
+import FormFieldTextFieldWithErrors from '@misakey/ui/Form/Field/TextFieldWithErrors';
 
 // CONSTANTS
 // see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
 const ENTER_KEY = 'Enter';
 
 // COMPONENTS
-const FormFieldTextMultiline = (props) => {
-  const { submitForm, dirty } = useFormikContext();
+const FormFieldTextMultiline = ({ field, ...props }) => {
+  const { submitForm, values, dirty, initialValues } = useFormikContext();
+
+  const { name } = useMemo(() => field, [field]);
+
+  const isValueEmpty = useMemo(
+    () => isEmpty(values[name]),
+    [values, name],
+  );
+
+  const isInitialValueEmpty = useMemo(
+    () => isEmpty(initialValues[name]),
+    [initialValues, name],
+  );
+
+  const canSubmit = useMemo(
+    () => (isInitialValueEmpty ? dirty : !isValueEmpty),
+    [isInitialValueEmpty, dirty, isValueEmpty],
+  );
 
   const [isTouch, setIsTouch] = useState(false);
 
@@ -31,23 +51,31 @@ const FormFieldTextMultiline = (props) => {
         if (e.altKey || e.metaKey || e.shiftKey || (isTouch && !e.ctrlKey)) {
           return;
         }
-        if (dirty) {
+        if (canSubmit) {
           submitForm();
         }
         e.preventDefault();
       }
     },
-    [dirty, isTouch, submitForm],
+    [canSubmit, isTouch, submitForm],
   );
 
   return (
-    <FormFieldTextFieldWithErrors onTouchStart={onTouchStart} onKeyDown={onKeyDown} {...props} />
+    <FormFieldTextFieldWithErrors
+      onTouchStart={onTouchStart}
+      onKeyDown={onKeyDown}
+      field={field}
+      {...props}
+    />
   );
 };
 
 FormFieldTextMultiline.propTypes = {
   multiline: PropTypes.bool,
   rowsMax: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  field: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 FormFieldTextMultiline.defaultProps = {

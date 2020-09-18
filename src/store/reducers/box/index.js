@@ -1,10 +1,12 @@
 import { LIFECYCLE, MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK } from 'constants/app/boxes/events';
 import BoxesSchema from 'store/schemas/Boxes';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
+import { BLUR_TEXT, CLEAR_TEXT } from 'store/actions/box';
 
+import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
+import { createSelector } from 'reselect';
 import { receiveEntities, updateEntities, removeEntities } from '@misakey/store/actions/entities';
 import { moveBackUpId, removeFromPaginations } from 'store/reducers/userBoxes/pagination';
-import { createSelector } from 'reselect';
 import { normalize, denormalize } from 'normalizr';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import { transformReferrerEvent, eventKickedMemberIdentifierValuePath } from 'helpers/boxEvent';
@@ -13,10 +15,16 @@ import propOr from '@misakey/helpers/propOr';
 import props from '@misakey/helpers/props';
 import isNil from '@misakey/helpers/isNil';
 import without from '@misakey/helpers/without';
-import path from '@misakey/helpers/path';
+import omit from '@misakey/helpers/omit';
+import prop from '@misakey/helpers/prop';
+import { identifierValuePath } from 'helpers/sender';
+
+// CONSTANTS
+const INITIAL_STATE = {};
 
 // HELPERS
-const identifierValuePath = path(['identifier', 'value']);
+const omitText = (values) => omit(values, ['text']);
+const textProp = prop('text');
 
 // SELECTORS
 export const makeDenormalizeBoxSelector = () => createSelector(
@@ -63,6 +71,13 @@ const getBoxSendersIdsSelector = createSelector(
 
 export const getBoxById = (state, id) => getBoxSelector(state)(id);
 export const getBoxSendersIds = (state, id) => getBoxSendersIdsSelector(state)(id);
+
+// REDUCER SELECTORS
+export const makeGetBoxText = () => createSelector(
+  (state) => state.box,
+  (_, boxId) => boxId,
+  (boxState, boxId) => textProp(prop(boxId, boxState)),
+);
 
 // THUNKS
 export const removeBox = (id) => (dispatch, getState) => {
@@ -158,4 +173,25 @@ export const updateAccessesEvents = (id, newAccesses) => (dispatch) => {
     dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
     dispatch(updateEntities([{ id, changes }], BoxesSchema)),
   ]);
+};
+
+// REDUCER
+
+// CALLBACKS
+const onBlurText = (state, { boxId, text }) => ({ ...state, [boxId]: { text } });
+
+const onClearText = (state, { boxId }) => {
+  if (isNil(state[boxId])) {
+    return state;
+  }
+  return { ...state, [boxId]: omitText(state[boxId]) };
+};
+
+const boxReducer = createResetOnSignOutReducer(INITIAL_STATE, {
+  [BLUR_TEXT]: onBlurText,
+  [CLEAR_TEXT]: onClearText,
+});
+
+export default {
+  box: boxReducer,
 };

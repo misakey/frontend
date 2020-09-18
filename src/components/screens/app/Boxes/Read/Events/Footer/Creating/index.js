@@ -9,12 +9,15 @@ import { CLOSED } from 'constants/app/boxes/statuses';
 import BoxesSchema from 'store/schemas/Boxes';
 import { boxMessageValidationSchema } from 'constants/validationSchemas/boxes';
 import { removeEntities } from '@misakey/store/actions/entities';
+import { blurText, clearText } from 'store/actions/box';
+import { makeGetBoxText } from 'store/reducers/box';
 
 import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import isNil from '@misakey/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useBoxPublicKeysWeCanDecryptFrom from 'packages/crypto/src/hooks/useBoxPublicKeysWeCanDecryptFrom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
@@ -77,6 +80,27 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, isMenuActionOpen, onO
 
   const anchorRef = useRef(null);
 
+  // SELECTORS
+  const getBoxText = useMemo(
+    () => makeGetBoxText(),
+    [],
+  );
+  const boxText = useSelector((state) => getBoxText(state, id));
+
+  const initialValues = useMemo(
+    () => (isNil(boxText)
+      ? INITIAL_VALUES
+      : { ...INITIAL_VALUES, [FIELD]: boxText }),
+    [boxText],
+  );
+
+  const onBlur = useCallback(
+    (e) => {
+      dispatch(blurText({ boxId: id, text: e.target.value }));
+    },
+    [dispatch, id],
+  );
+
   const handleSubmit = useCallback(
     ({ [FIELD]: value }, { setSubmitting, resetForm }) => createBoxEventBuilder(id, {
       type: MSG_TXT,
@@ -85,6 +109,7 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, isMenuActionOpen, onO
         publicKey,
       },
     })
+      .then(() => Promise.resolve(dispatch(clearText({ boxId: id }))))
       .catch((error) => {
         if (error.code === conflict) {
           const { details = {} } = error;
@@ -143,7 +168,8 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, isMenuActionOpen, onO
               </IconButton>
             </Tooltip>
             <Formik
-              initialValues={INITIAL_VALUES}
+              initialValues={initialValues}
+              enableReinitialize
               onSubmit={handleSubmit}
               validationSchema={boxMessageValidationSchema}
             >
@@ -164,6 +190,7 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, isMenuActionOpen, onO
                   rowsMax={8}
                   displayError={false}
                   disabled={disabled}
+                  onBlur={onBlur}
                 />
                 <Tooltip title={t('boxes:read.actions.send')}>
                   <IconButtonSubmit
