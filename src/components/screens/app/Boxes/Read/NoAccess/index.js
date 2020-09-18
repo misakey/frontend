@@ -1,8 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { withTranslation } from 'react-i18next';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import { useSnackbar } from 'notistack';
 
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
@@ -13,7 +15,12 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 import Box from '@material-ui/core/Box';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import Divider from '@material-ui/core/Divider';
+import Skeleton from '@material-ui/lab/Skeleton';
 import BoxesSchema from 'store/schemas/Boxes';
+import useFetchBoxPublicInfo from 'hooks/useFetchBoxPublicInfo';
+import isNil from '@misakey/helpers/isNil';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import { updateEntities } from '@misakey/store/actions/entities';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -30,8 +37,32 @@ const useStyles = makeStyles((theme) => ({
 
 function NoAccess({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t }) {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const { title = '' } = useMemo(() => box, [box]);
+  const { title, id } = useMemo(() => box, [box]);
+
+  const onGetPublicInfo = useCallback(
+    (response) => {
+      dispatch(updateEntities([{ id, changes: response }], BoxesSchema));
+    },
+    [dispatch, id],
+  );
+
+  const onError = useCallback(
+    () => {
+      enqueueSnackbar(t('boxes:read.errors.incorrectLink'), { variant: 'warning' });
+    },
+    [enqueueSnackbar, t],
+  );
+
+  const getBoxPublicInfo = useFetchBoxPublicInfo(id, onGetPublicInfo);
+
+  const { isFetching } = useFetchEffect(
+    getBoxPublicInfo,
+    { shouldFetch: isNil(title) },
+    { onSuccess: onGetPublicInfo, onError },
+  );
 
   return (
     <>
@@ -73,7 +104,9 @@ function NoAccess({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t }) 
           pb={6}
         >
           <RemoveCircleOutlineIcon className={classes.icon} color="primary" fontSize="large" />
-          <Title align="center">{t('boxes:read.noaccess.title', { title })}</Title>
+          {isFetching && <Skeleton width="300" />}
+          {!isNil(title) && <Title align="center">{t('boxes:read.noaccess.title', { title })}</Title>}
+          {isNil(title) && !isFetching && <Title align="center">{t('boxes:read.noaccess.defaultTitle')}</Title>}
           <Subtitle>{t('boxes:read.noaccess.subtitle')}</Subtitle>
         </Box>
 

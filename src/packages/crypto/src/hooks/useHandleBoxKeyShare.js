@@ -18,11 +18,12 @@ import checkHashValidity from '@misakey/crypto/helpers/checkHashValidity';
 import { selectors } from '@misakey/crypto/store/reducers';
 import { InvalidHash } from '@misakey/crypto/Errors/classes';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
+import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 
 // SELECTORS
 const { makeGetBoxKeyShare } = selectors;
 
-export default (box, secretKey, shouldFetchBox) => {
+export default (box, boxIsReady) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { t } = useTranslation('boxes');
@@ -32,6 +33,12 @@ export default (box, secretKey, shouldFetchBox) => {
 
   const { id: boxId, lifecycle, publicKey, hasAccess } = useSafeDestr(box);
 
+  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
+  const secretKey = useMemo(
+    () => publicKeysWeCanDecryptFrom.get(publicKey),
+    [publicKey, publicKeysWeCanDecryptFrom],
+  );
+
   const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
 
   const isBoxClosed = useMemo(
@@ -40,8 +47,8 @@ export default (box, secretKey, shouldFetchBox) => {
   );
 
   const isAllowedToFetch = useMemo(
-    () => Boolean(!shouldFetchBox && !isBoxClosed && hasAccess),
-    [hasAccess, isBoxClosed, shouldFetchBox],
+    () => Boolean(boxIsReady && !isBoxClosed && hasAccess),
+    [boxIsReady, hasAccess, isBoxClosed],
   );
 
   const urlKeyShareHash = useMemo(() => (isEmpty(hash) ? null : hash.substr(1)), [hash]);
@@ -203,9 +210,9 @@ export default (box, secretKey, shouldFetchBox) => {
   // It will also rebuild the secretKey if needed.
   // If hashKeyShare is invalid, PasteLink screen will be displayed
   // This can happen for user with or without account.
-  const { isFetching: isFetchingUrlKeyShare, error: errorUrlKeyShare } = useFetchEffect(
+  const { isFetching: isFetchingUrlKeyShare } = useFetchEffect(
     checkUrlKeyShareValidity,
-    { shouldFetch: shouldCheckUrlKeyShare, fetchOnlyOnce: true },
+    { shouldFetch: shouldCheckUrlKeyShare },
     { onSuccess: onUrlKeyShareValid, onError: onUrlKeyShareInvalid },
   );
 
@@ -229,9 +236,9 @@ export default (box, secretKey, shouldFetchBox) => {
   return useMemo(
     () => ({
       isFetching: isFetchingBackupKeyShare || isFetchingUrlKeyShare,
-      error: errorUrlKeyShare,
       isCreatingNewShares,
+      secretKey,
     }),
-    [errorUrlKeyShare, isCreatingNewShares, isFetchingBackupKeyShare, isFetchingUrlKeyShare],
+    [isCreatingNewShares, isFetchingBackupKeyShare, isFetchingUrlKeyShare, secretKey],
   );
 };

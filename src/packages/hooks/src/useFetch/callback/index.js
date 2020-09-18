@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useCallback, useRef, useEffect, useReducer } from 'react';
 import { useSnackbar } from 'notistack';
 
 import isFunction from '@misakey/helpers/isFunction';
@@ -9,6 +9,18 @@ import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpError
 
 // CONSTANTS
 const CALLED_WHILE_FETCHING = '[useFetchCallback] Warning: callback was called during fetching lifecycle';
+
+const ERROR = Symbol('ERROR');
+const DATA = Symbol('DATA');
+const FETCHING = Symbol('FETCHING');
+const DONE = Symbol('DONE');
+const RESET = Symbol('RESET');
+
+const INITIAL_STATE = {
+  data: undefined,
+  error: null,
+  isFetching: false,
+};
 
 // HOOKS
 /**
@@ -35,10 +47,6 @@ export default (
   { snackbarError, snackbarSuccess, onError, onSuccess, onFinally } = {},
   noGenericErrorHandling = false,
 ) => {
-  const [data, setData] = useState();
-  const [error, setError] = useState(null);
-  const [isFetching, setIsFetching] = useState(false);
-
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
 
   // handle component unmount with a ref
@@ -51,6 +59,35 @@ export default (
   const internalFetchingCount = useRef(0);
   const internalErrorRef = useRef();
 
+  const reducer = useCallback(
+    (state, { type, data, error }) => {
+      // only trigger state update if component is still mounted
+      if (isCanceled.current || type === RESET) {
+        return INITIAL_STATE;
+      }
+      if (type === ERROR) {
+        internalErrorRef.current = error;
+        return { ...state, error };
+      }
+      if (type === FETCHING) {
+        internalFetchingCount.current += 1;
+        internalErrorRef.current = undefined;
+        return { ...state, isFetching: true, error: INITIAL_STATE.error };
+      }
+      if (type === DONE) {
+        internalFetchingCount.current -= 1;
+        return { ...state, isFetching: false };
+      }
+      if (type === DATA) {
+        return { ...state, data };
+      }
+      return state;
+    },
+    [isCanceled, internalErrorRef, internalFetchingCount],
+  );
+
+  const [{ data, error, isFetching }, dispatch] = useReducer(reducer, INITIAL_STATE);
+
   const { enqueueSnackbar } = useSnackbar();
 
   const cancel = useCallback(
@@ -62,10 +99,9 @@ export default (
 
   const handleStart = useCallback(
     () => {
-      setIsFetching(true);
-      internalFetchingCount.current += 1;
+      dispatch({ type: FETCHING });
     },
-    [setIsFetching, internalFetchingCount],
+    [dispatch],
   );
 
   const onErrorFunction = useCallback(
@@ -98,15 +134,11 @@ export default (
         enqueueSnackbar(snackbarError(e), { variant: 'error' });
       }
 
-      // only trigger state update if component is still mounted
-      if (!isCanceled.current) {
-        setError(e);
-        internalErrorRef.current = e;
-      }
+      dispatch({ type: ERROR, error: e });
 
       return onErrorFunction(e);
     },
-    [snackbarError, onErrorFunction, enqueueSnackbar],
+    [snackbarError, onErrorFunction, enqueueSnackbar, dispatch],
   );
 
   const handleSuccess = useCallback(
@@ -115,31 +147,24 @@ export default (
         enqueueSnackbar(snackbarSuccess(result), { variant: 'success' });
       }
 
-      // only trigger state update if component is still mounted
-      if (!isCanceled.current) {
-        setData(result);
-      }
+      dispatch({ type: DATA, data: result });
 
       return isFunction(onSuccess)
         ? onSuccess(result)
         : result;
     },
-    [isCanceled, enqueueSnackbar, setData, snackbarSuccess, onSuccess],
+    [enqueueSnackbar, snackbarSuccess, onSuccess, dispatch],
   );
 
   const handleFinally = useCallback(
     () => {
-      // only trigger state update if component is still mounted
-      if (!isCanceled.current) {
-        setIsFetching(false);
-        internalFetchingCount.current -= 1;
-      }
+      dispatch({ type: DONE });
 
       return isFunction(onFinally)
         ? onFinally()
         : undefined;
     },
-    [isCanceled, setIsFetching, internalFetchingCount, onFinally],
+    [onFinally, dispatch],
   );
 
   const wrappedFetch = useCallback(

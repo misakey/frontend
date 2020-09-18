@@ -149,6 +149,55 @@ describe('testing useFetchCallback', () => {
       expect(internalErrorRef.current).toBe(ERROR);
     });
 
+    test('should clear error once wrappedFetch is called again', async () => {
+      const { result, waitForNextUpdate } = renderHook(
+        () => useFetchCallback(fecthErrorFn, { onError: noop }),
+        { wrapper: Wrapper },
+      );
+
+      act(() => {
+        result.current.wrappedFetch();
+      });
+
+      await waitForNextUpdate();
+
+      const {
+        data,
+        error,
+        isFetching,
+        wrappedFetch,
+        internalFetchingCount,
+        internalErrorRef,
+      } = result.current;
+
+      expect(data).toBeUndefined();
+      expect(error).toBe(ERROR);
+      expect(isFetching).toBe(false);
+      expect(wrappedFetch).toEqual(expect.any(Function));
+      expect(internalFetchingCount.current).toBe(0);
+      expect(internalErrorRef.current).toBe(ERROR);
+
+      act(() => {
+        result.current.wrappedFetch();
+      });
+
+      expect(result.current.data).toBeUndefined();
+      expect(result.current.error).toBeNull();
+      expect(result.current.isFetching).toBe(true);
+      expect(result.current.wrappedFetch).toEqual(expect.any(Function));
+      expect(result.current.internalFetchingCount.current).toBe(1);
+      expect(result.current.internalErrorRef.current).toBeUndefined();
+
+      await waitForNextUpdate();
+
+      expect(result.current.data).toBeUndefined();
+      expect(result.current.error).toBe(ERROR);
+      expect(result.current.isFetching).toBe(false);
+      expect(result.current.wrappedFetch).toEqual(expect.any(Function));
+      expect(result.current.internalFetchingCount.current).toBe(0);
+      expect(result.current.internalErrorRef.current).toBe(ERROR);
+    });
+
     test('should call handleGenericHttpErrors', async () => {
       const { result, waitForNextUpdate } = renderHook(
         () => useFetchCallback(fecthErrorFn),

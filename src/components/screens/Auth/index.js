@@ -206,7 +206,6 @@ const Auth = ({
       className={classes.screen}
       classes={{ content: classes.screenContent }}
       isLoading={isFetching}
-      disableGrow
     >
       <Container maxWidth={false}>
         <Switch>

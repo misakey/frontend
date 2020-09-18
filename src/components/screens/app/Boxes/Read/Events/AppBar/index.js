@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
   const classes = useStyles();
-  const { title, members, id, lifecycle, hasAccess } = useMemo(() => box, [box]);
+  const { title, members = [], id, lifecycle, hasAccess } = useMemo(() => box, [box]);
 
   const routeDetails = useGeneratePathKeepingSearchAndHash(routes.boxes.read.details, { id });
 

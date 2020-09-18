@@ -4,24 +4,23 @@ import PropTypes from 'prop-types';
 import routes from 'routes';
 
 import { CLOSED } from 'constants/app/boxes/statuses';
-import BoxesSchema from 'store/schemas/Boxes';
-import { InvalidHash } from '@misakey/crypto/Errors/classes';
 
 import isNil from '@misakey/helpers/isNil';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
-import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useMountEffect from '@misakey/hooks/useMountEffect';
 import usePropChanged from '@misakey/hooks/usePropChanged';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useResetBoxCount from 'hooks/useResetBoxCount';
+import useHandleBoxKeyShare from '@misakey/crypto/hooks/useHandleBoxKeyShare';
 
 import PaginateEventsByBoxContextProvider from 'components/smart/Context/PaginateEventsByBox';
 import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
-import withBoxDetails from 'components/smart/withBoxDetails';
 import withIdentity from 'components/smart/withIdentity';
+import useFetchBoxDetails from 'hooks/useFetchBoxDetails';
+import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 import BoxNoAccess from './NoAccess';
 import BoxClosed from './Closed';
 import BoxDetails from './Details';
@@ -35,48 +34,51 @@ function BoxRead({
   isDrawerOpen,
   drawerWidth,
   setIsDrawerForceClosed,
-  box,
-  isFetching,
-  error,
-  belongsToCurrentUser,
   identityId,
 }) {
-  const { lifecycle, publicKey, hasAccess, title } = useMemo(() => box, [box]);
+  const { params: { id: boxId } } = useSafeDestr(match);
+  const { isReady, box } = useFetchBoxDetails(boxId);
+
+  const { lifecycle, publicKey, hasAccess, title } = useMemo(() => box || {}, [box]);
+  const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
+
+  const {
+    isFetching: isFetchingBoxKeyShare,
+    secretKey,
+  } = useHandleBoxKeyShare(box, isReady);
+
   const shouldDisplayClosedScreen = useMemo(
     () => lifecycle === CLOSED && !belongsToCurrentUser,
     [belongsToCurrentUser, lifecycle],
   );
-  const { params: { id: boxId } } = useSafeDestr(match);
-
-  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
-  const secretKey = useMemo(
-    () => publicKeysWeCanDecryptFrom.get(publicKey),
-    [publicKey, publicKeysWeCanDecryptFrom],
-  );
-  const canBeDecrypted = useMemo(() => !isNil(secretKey), [secretKey]);
-
-  const hasInvalidHashError = useMemo(
-    () => {
-      const { keyShare } = error;
-      return keyShare instanceof InvalidHash;
-    },
-    [error],
-  );
-
 
   const displayLoadingScreen = useMemo(
-    () => ((isFetching.box || isNil(hasAccess)) && isNil(error.box))
-      || (isFetching.keyShare && isNil(error.keyShare)),
-    [isFetching.box, isFetching.keyShare, hasAccess, error.box, error.keyShare],
+    () => !isReady || isFetchingBoxKeyShare,
+    [isFetchingBoxKeyShare, isReady],
   );
 
   const shouldShowPasteScreen = useMemo(
-    () => hasInvalidHashError || (!isNil(publicKey) && !canBeDecrypted),
-    [canBeDecrypted, hasInvalidHashError, publicKey],
+    () => isNil(secretKey) && !isNil(publicKey),
+    [publicKey, secretKey],
   );
 
   const shouldShowNoAccessScreen = useMemo(() => hasAccess !== true, [hasAccess]);
 
+  useEffect(
+    () => {
+      if (!displayLoadingScreen) {
+        setIsDrawerForceClosed(
+          shouldShowPasteScreen || shouldDisplayClosedScreen || shouldShowNoAccessScreen,
+        );
+      }
+    },
+    [displayLoadingScreen, setIsDrawerForceClosed,
+      shouldDisplayClosedScreen, shouldShowNoAccessScreen, shouldShowPasteScreen],
+  );
+
+  useUpdateDocHead(title);
+
+  // RESET BOX COUNT
   const [boxIdChanged, resetBoxIdChanged] = usePropChanged(boxId);
 
   const shouldFetch = useMemo(
@@ -106,9 +108,13 @@ function BoxRead({
         );
       }
     },
-    [displayLoadingScreen,
-      isFetching.box, setIsDrawerForceClosed,
-      shouldDisplayClosedScreen, shouldShowNoAccessScreen, shouldShowPasteScreen],
+    [
+      displayLoadingScreen,
+      setIsDrawerForceClosed,
+      shouldDisplayClosedScreen,
+      shouldShowNoAccessScreen,
+      shouldShowPasteScreen,
+    ],
   );
 
   useUpdateDocHead(title);
@@ -197,18 +203,6 @@ BoxRead.propTypes = {
   }).isRequired,
   // withIdentity
   identityId: PropTypes.string,
-  // withBoxDetails
-  box: PropTypes.shape(BoxesSchema.propTypes),
-  isFetching: PropTypes.shape({
-    box: PropTypes.bool.isRequired,
-    members: PropTypes.bool.isRequired,
-    keyShare: PropTypes.bool.isRequired,
-  }),
-  error: PropTypes.shape({
-    box: PropTypes.object,
-    keyShare: PropTypes.object,
-  }),
-  belongsToCurrentUser: PropTypes.bool.isRequired,
   // DRAWER
   setIsDrawerForceClosed: PropTypes.func.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
@@ -219,17 +213,6 @@ BoxRead.propTypes = {
 BoxRead.defaultProps = {
   isDrawerOpen: false,
   identityId: null,
-  isFetching: {
-    box: false,
-    events: false,
-    members: false,
-    keyShare: false,
-  },
-  error: {
-    box: null,
-    keyShare: null,
-  },
-  box: null,
 };
 
-export default withBoxDetails()(withIdentity(BoxRead));
+export default withIdentity(BoxRead);

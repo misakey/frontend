@@ -61,7 +61,6 @@ export default (
       // still, we can limit calls by checking its value when effect is triggered
       const internalFetchingValid = fetchWhileFetching ? true : internalFetchingCount.current === 0;
       const internalErrorValid = stopOnError ? isNil(internalErrorRef.current) : true;
-
       if (needToFetch && internalFetchingValid && internalErrorValid) {
         wrappedFetchRef.current();
         if (fetchedOnce.current === false) {

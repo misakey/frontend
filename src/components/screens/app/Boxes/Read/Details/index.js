@@ -75,7 +75,7 @@ function BoxDetails({ isDrawerOpen, box, belongsToCurrentUser, t }) {
     id,
     avatarUrl: boxAvatarUrl,
     title,
-    members,
+    members = [],
     lifecycle,
   } = useMemo(() => box, [box]);
 

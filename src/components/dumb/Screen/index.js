@@ -98,7 +98,6 @@ Screen.propTypes = {
   description: PropTypes.string,
   preventSplashScreen: PropTypes.bool,
   isLoading: PropTypes.bool,
-  splashScreen: PropTypes.node,
   title: PropTypes.string,
 };
 
@@ -111,7 +110,6 @@ Screen.defaultProps = {
   description: '',
   preventSplashScreen: false,
   isLoading: false,
-  splashScreen: null,
   title: null,
 };
 

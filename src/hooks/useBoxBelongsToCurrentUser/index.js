@@ -1,6 +1,6 @@
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
-import isNil from '@misakey/helpers/isNil';
+import { sendersMatch } from 'helpers/sender';
 
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -10,14 +10,10 @@ export default (box) => {
   const { creator } = useSafeDestr(box);
 
   const currentUser = useSelector(getCurrentUserSelector);
-  const { identifier } = useSafeDestr(currentUser);
 
   const belongsToCurrentUser = useMemo(
-    () => (!isNil(identifier) && !isNil(creator)
-      ? creator.identifier.value === identifier.value
-      : false
-    ),
-    [creator, identifier],
+    () => sendersMatch(creator, currentUser),
+    [creator, currentUser],
   );
 
   return belongsToCurrentUser;
