@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import moment from 'moment';
 
-import { CLOSED } from 'constants/app/boxes/statuses';
+// import { CLOSED } from 'constants/app/boxes/statuses';
 
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
@@ -13,9 +13,9 @@ import Subtitle from '@misakey/ui/Typography/Subtitle';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
-import Alert from '@material-ui/lab/Alert';
+// import Alert from '@material-ui/lab/Alert';
 import InfoIcon from '@material-ui/icons/Info';
-import LeaveBoxDialogButton from 'components/screens/app/Boxes/Read/Events/LeaveBoxDialogButton';
+// import LeaveBoxDialogButton from 'components/screens/app/Boxes/Read/Events/LeaveBoxDialogButton';
 import CreateBoxSuggestions from 'components/smart/Box/CreateSuggestions';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -35,21 +35,21 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t }) {
   const classes = useStyles();
-  const { title = '', lastEvent, lifecycle } = useMemo(() => box, [box]);
+  const { title = '', lastEvent } = useMemo(() => box, [box]);
   const { sender: { displayName }, serverEventCreatedAt } = useMemo(() => lastEvent, [lastEvent]);
   const date = useMemo(
     () => moment(serverEventCreatedAt).format(DATE_FULL), [serverEventCreatedAt],
   );
 
-  const isClosed = useMemo(
-    () => lifecycle === CLOSED,
-    [lifecycle],
-  );
+  // const isClosed = useMemo(
+  //   () => lifecycle === CLOSED,
+  //   [lifecycle],
+  // );
 
-  const displayLeaveBox = useMemo(
-    () => !belongsToCurrentUser && isClosed,
-    [belongsToCurrentUser, isClosed],
-  );
+  // const displayLeaveBox = useMemo(
+  //   () => !belongsToCurrentUser && isClosed,
+  //   [belongsToCurrentUser, isClosed],
+  // );
 
   return (
     <>
@@ -72,14 +72,14 @@ function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t })
             )}
             <BoxEventsAppBar disabled box={box} belongsToCurrentUser={belongsToCurrentUser} />
           </Box>
-          {displayLeaveBox && (
+          {/* {displayLeaveBox && (
           <Alert
             severity="info"
             action={<LeaveBoxDialogButton box={box} />}
           >
             {t('boxes:read.info.closed')}
           </Alert>
-          )}
+          )} */}
         </Box>
       </AppBarDrawer>
       <Box

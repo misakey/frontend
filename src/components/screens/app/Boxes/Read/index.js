@@ -100,14 +100,15 @@ function BoxRead({
 
   useEffect(
     () => {
-      setIsDrawerForceClosed(
-        shouldShowPasteScreen || shouldDisplayClosedScreen || shouldShowNoAccessScreen,
-      );
+      if (!displayLoadingScreen) {
+        setIsDrawerForceClosed(
+          shouldShowPasteScreen || shouldDisplayClosedScreen || shouldShowNoAccessScreen,
+        );
+      }
     },
-    [
+    [displayLoadingScreen,
       isFetching.box, setIsDrawerForceClosed,
-      shouldDisplayClosedScreen, shouldShowNoAccessScreen, shouldShowPasteScreen,
-    ],
+      shouldDisplayClosedScreen, shouldShowNoAccessScreen, shouldShowPasteScreen],
   );
 
   useUpdateDocHead(title);
