@@ -12,19 +12,17 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import usePropChanged from '@misakey/hooks/usePropChanged';
-import { useBoxesContext } from 'components/smart/Context/Boxes';
 
 import { getCode, getDetails } from '@misakey/helpers/apiError';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
-import { getBoxBuilder, getBoxMembersBuilder, createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import { getBoxBuilder, getBoxMembersBuilder } from '@misakey/helpers/builder/boxes';
 
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import BoxesSchema from 'store/schemas/Boxes';
 import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
 import SenderSchema from 'store/schemas/Boxes/Sender';
 
-import { MEMBER_JOIN } from 'constants/app/boxes/events';
 import { makeDenormalizeBoxSelector } from 'store/reducers/box';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
@@ -42,11 +40,9 @@ export default (id) => {
     [],
   );
 
-  const { addBoxItem } = useBoxesContext();
-
   const box = useSelector((state) => denormalizeBoxSelector(state, id));
 
-  const { members, hasAccess, id: boxId } = useSafeDestr(box);
+  const { members, hasAccess, isMember, id: boxId } = useSafeDestr(box);
 
   const [idPropChanged] = usePropChanged(id, [boxId]);
 
@@ -62,8 +58,8 @@ export default (id) => {
   );
 
   const isAllowedToFetchContent = useMemo(
-    () => isAllowedToFetch && hasAccess === true,
-    [isAllowedToFetch, hasAccess],
+    () => isAllowedToFetch && hasAccess === true && isMember === true,
+    [isAllowedToFetch, hasAccess, isMember],
   );
 
   const shouldFetchBox = useMemo(
@@ -95,25 +91,12 @@ export default (id) => {
     [dispatchReceiveBox, id],
   );
 
-  const postJoinEvent = useCallback(
-    () => createBoxEventBuilder(id, { type: MEMBER_JOIN })
-      .then(() => getBox().then((result) => onSuccess(result)
-        .then(() => addBoxItem(result))))
-      .catch((e) => {
-        handleHttpErrors(e);
-        // View is broken without box membership
-        history.replace(routes._);
-      }),
-    [addBoxItem, getBox, handleHttpErrors, history, id, onSuccess],
-  );
-
   const onError = useCallback(
     async (error) => {
       const code = getCode(error);
       const { reason } = getDetails(error);
       if (code === forbidden && reason === NOT_MEMBER) {
-        dispatchReceiveBox({ id, isMember: false });
-        await postJoinEvent();
+        dispatchReceiveBox({ id, isMember: false, hasAccess: true });
       } else if (code === forbidden && reason === NO_ACCESS) {
         dispatchReceiveBox({ id, hasAccess: false });
       } else {
@@ -122,7 +105,7 @@ export default (id) => {
         history.replace(routes._);
       }
     },
-    [dispatchReceiveBox, id, postJoinEvent, handleHttpErrors, history],
+    [dispatchReceiveBox, id, handleHttpErrors, history],
   );
 
   useFetchEffect(

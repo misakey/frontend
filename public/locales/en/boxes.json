@@ -44,6 +44,12 @@
       "title": "Access restricted to the private space «\u00a0{{title}}\u00a0».",
       "subtitle": "Please ask access to the person that gave you the link."
     },
+    "mustjoin": {
+      "defaultTitle": "Welcome",
+      "title": "Welcome on «\u00a0{{title}}\u00a0»,",
+      "subtitle": "Continue to join this private space",
+      "button": "Continue"
+    },
     "actions": {
       "upload": "Send files",
       "confirmIdentity": "Confirm your identity",

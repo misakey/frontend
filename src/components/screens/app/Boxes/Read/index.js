@@ -26,6 +26,7 @@ import BoxClosed from './Closed';
 import BoxDetails from './Details';
 import BoxEvents from './Events';
 import BoxFiles from './Files';
+import MustJoin from './MustJoin';
 
 // COMPONENTS
 function BoxRead({
@@ -39,11 +40,11 @@ function BoxRead({
   const { params: { id: boxId } } = useSafeDestr(match);
   const { isReady, box } = useFetchBoxDetails(boxId);
 
-  const { lifecycle, publicKey, hasAccess, title } = useMemo(() => box || {}, [box]);
+  const { lifecycle, publicKey, hasAccess, title, isMember } = useMemo(() => box || {}, [box]);
   const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
 
   const {
-    isFetching: isFetchingBoxKeyShare,
+    isReady: isBoxKeyShareReady,
     secretKey,
   } = useHandleBoxKeyShare(box, isReady);
 
@@ -53,27 +54,33 @@ function BoxRead({
   );
 
   const displayLoadingScreen = useMemo(
-    () => !isReady || isFetchingBoxKeyShare,
-    [isFetchingBoxKeyShare, isReady],
+    () => !isReady || !isBoxKeyShareReady,
+    [isBoxKeyShareReady, isReady],
   );
 
   const shouldShowPasteScreen = useMemo(
-    () => isNil(secretKey) && !isNil(publicKey),
-    [publicKey, secretKey],
+    () => isNil(secretKey) && !isNil(publicKey) && isBoxKeyShareReady,
+    [isBoxKeyShareReady, publicKey, secretKey],
   );
 
   const shouldShowNoAccessScreen = useMemo(() => hasAccess !== true, [hasAccess]);
 
+  const shouldShowJoinScreen = useMemo(() => isMember === false, [isMember]);
+
+  const shouldForceDrawerClose = useMemo(
+    () => shouldShowPasteScreen || shouldDisplayClosedScreen
+      || shouldShowNoAccessScreen || shouldShowJoinScreen,
+    [shouldDisplayClosedScreen, shouldShowJoinScreen,
+      shouldShowNoAccessScreen, shouldShowPasteScreen],
+  );
+
   useEffect(
     () => {
       if (!displayLoadingScreen) {
-        setIsDrawerForceClosed(
-          shouldShowPasteScreen || shouldDisplayClosedScreen || shouldShowNoAccessScreen,
-        );
+        setIsDrawerForceClosed(shouldForceDrawerClose);
       }
     },
-    [displayLoadingScreen, setIsDrawerForceClosed,
-      shouldDisplayClosedScreen, shouldShowNoAccessScreen, shouldShowPasteScreen],
+    [displayLoadingScreen, setIsDrawerForceClosed, shouldForceDrawerClose],
   );
 
   useUpdateDocHead(title);
@@ -99,23 +106,6 @@ function BoxRead({
 
   useMountEffect(() => { onResetBoxCount(); });
   useFetchEffect(onResetBoxCount, { shouldFetch });
-
-  useEffect(
-    () => {
-      if (!displayLoadingScreen) {
-        setIsDrawerForceClosed(
-          shouldShowPasteScreen || shouldDisplayClosedScreen || shouldShowNoAccessScreen,
-        );
-      }
-    },
-    [
-      displayLoadingScreen,
-      setIsDrawerForceClosed,
-      shouldDisplayClosedScreen,
-      shouldShowNoAccessScreen,
-      shouldShowPasteScreen,
-    ],
-  );
 
   useUpdateDocHead(title);
 
@@ -149,6 +139,16 @@ function BoxRead({
     return (
       <PasteLinkScreen
         box={box}
+        isDrawerOpen={isDrawerOpen}
+      />
+    );
+  }
+
+  if (shouldShowJoinScreen) {
+    return (
+      <MustJoin
+        box={box}
+        toggleDrawer={toggleDrawer}
         isDrawerOpen={isDrawerOpen}
       />
     );

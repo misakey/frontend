@@ -3,7 +3,7 @@ import { CLOSED } from 'constants/app/boxes/statuses';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 
-import { useMemo, useCallback, useEffect } from 'react';
+import { useMemo, useCallback, useEffect, useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
@@ -26,12 +26,15 @@ const { makeGetBoxKeyShare } = selectors;
 export default (box, boxIsReady) => {
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const [isBuildingSecretKey, setIsBuildingSecretKey] = useState(false);
+
   const { t } = useTranslation('boxes');
 
   const { enqueueSnackbar } = useSnackbar();
   const { pathname, hash, search } = useLocation();
 
-  const { id: boxId, lifecycle, publicKey, hasAccess } = useSafeDestr(box);
+  const { id: boxId, lifecycle, publicKey, hasAccess, isMember } = useSafeDestr(box);
 
   const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
   const secretKey = useMemo(
@@ -47,8 +50,8 @@ export default (box, boxIsReady) => {
   );
 
   const isAllowedToFetch = useMemo(
-    () => Boolean(boxIsReady && !isBoxClosed && hasAccess),
-    [boxIsReady, hasAccess, isBoxClosed],
+    () => Boolean(boxIsReady && !isBoxClosed && hasAccess && isMember !== false),
+    [boxIsReady, hasAccess, isBoxClosed, isMember],
   );
 
   const urlKeyShareHash = useMemo(() => (isEmpty(hash) ? null : hash.substr(1)), [hash]);
@@ -104,8 +107,10 @@ export default (box, boxIsReady) => {
 
   const rebuildSecretKey = useCallback((misakeyKeyShare, otherKeyShare) => {
     try {
+      setIsBuildingSecretKey(true);
       const newSecretKey = combineBoxKeyShares(otherKeyShare, misakeyKeyShare);
-      return Promise.resolve(dispatch(addBoxSecretKey(newSecretKey)));
+      return Promise.resolve(dispatch(addBoxSecretKey(newSecretKey)))
+        .then(() => setIsBuildingSecretKey(false));
     } catch (error) {
       enqueueSnackbar(t('boxes:create.dialog.error.updateBackup'), { variant: 'error' });
       return Promise.resolve();
@@ -235,10 +240,11 @@ export default (box, boxIsReady) => {
 
   return useMemo(
     () => ({
-      isFetching: isFetchingBackupKeyShare || isFetchingUrlKeyShare,
+      isReady: (!isFetchingBackupKeyShare && !isFetchingUrlKeyShare && !isBuildingSecretKey),
       isCreatingNewShares,
       secretKey,
     }),
-    [isCreatingNewShares, isFetchingBackupKeyShare, isFetchingUrlKeyShare, secretKey],
+    [isBuildingSecretKey, isCreatingNewShares, isFetchingBackupKeyShare,
+      isFetchingUrlKeyShare, secretKey],
   );
 };
