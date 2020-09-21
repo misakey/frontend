@@ -16,6 +16,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import ButtonWithDialogPassword from 'components/smart/Dialog/Password/with/Button';
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import useMountEffect from '@misakey/hooks/useMountEffect';
+import useResetBoxCount from 'hooks/useResetBoxCount';
+
 import isNil from '@misakey/helpers/isNil';
 
 import BoxesSchema from 'store/schemas/Boxes';
@@ -59,8 +63,8 @@ function BoxEvents({
     setIsMenuActionOpen(false);
   }, [setIsMenuActionOpen]);
 
-  const { id } = useMemo(() => box, [box]);
-  const { accountId } = useSelector(getCurrentUserSelector) || {};
+  const { id, eventsCount } = useMemo(() => box, [box]);
+  const { accountId, id: identityId } = useSelector(getCurrentUserSelector) || {};
 
   const headerRef = (ref) => {
     if (ref) { setHeaderHeight(ref.clientHeight); }
@@ -77,6 +81,27 @@ function BoxEvents({
   // // nbOfEvents to scroll at bottom when events are added by autoRefresh
   // useEffect(scrollToBottom, [scrollToBottom, nbOfEvents]);
 
+
+  // RESET BOX COUNT
+  const shouldFetch = useMemo(
+    () => !isNil(id) && !isNil(identityId) && eventsCount > 0,
+    [id, identityId, eventsCount],
+  );
+
+  const resetBoxCount = useResetBoxCount();
+
+  const onResetBoxCount = useCallback(
+    () => resetBoxCount({ boxId: id, identityId }),
+    [resetBoxCount, id, identityId],
+  );
+
+  useMountEffect(() => {
+    if (shouldFetch) {
+      onResetBoxCount();
+    }
+  });
+  useFetchEffect(onResetBoxCount, { shouldFetch });
+
   return (
     <InputBoxesUploadContext box={box} onSuccess={onCloseMenuAction}>
       <BoxEventEditContext>
@@ -89,30 +114,30 @@ function BoxEvents({
             <Box ref={headerRef} display="flex" flexDirection="column" width="100%" minHeight="inherit">
               <Box display="flex">
                 {!isDrawerOpen && (
-                <Box display="flex" alignItems="center" pl={2} pr={1}>
-                  <IconButtonAppBar
-                    aria-label={t('common:openAccountDrawer')}
-                    edge="start"
-                    onClick={toggleDrawer}
-                  >
-                    <ArrowBack />
-                  </IconButtonAppBar>
-                </Box>
+                  <Box display="flex" alignItems="center" pl={2} pr={1}>
+                    <IconButtonAppBar
+                      aria-label={t('common:openAccountDrawer')}
+                      edge="start"
+                      onClick={toggleDrawer}
+                    >
+                      <ArrowBack />
+                    </IconButtonAppBar>
+                  </Box>
                 )}
                 <BoxEventsAppBar box={box} belongsToCurrentUser={belongsToCurrentUser} />
               </Box>
               {isNil(accountId) && (
-              <Alert
-                severity="warning"
-                action={(
-                  <ButtonWithDialogPassword
-                    standing={BUTTON_STANDINGS.TEXT}
-                    text={t('boxes:read.warning.button')}
-                  />
-                )}
-              >
-                {t('boxes:read.warning.saveInBackup')}
-              </Alert>
+                <Alert
+                  severity="warning"
+                  action={(
+                    <ButtonWithDialogPassword
+                      standing={BUTTON_STANDINGS.TEXT}
+                      text={t('boxes:read.warning.button')}
+                    />
+                  )}
+                >
+                  {t('boxes:read.warning.saveInBackup')}
+                </Alert>
               )}
             </Box>
           </AppBarDrawer>

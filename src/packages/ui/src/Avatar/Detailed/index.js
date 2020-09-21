@@ -52,10 +52,10 @@ const AvatarDetailed = ({ text, image, title, subtitle, classes }) => {
         text={text}
         image={image}
       />
-      <Typography variant="h6" className={internalClasses.title} color="textPrimary">
+      <Typography variant="h6" className={internalClasses.title} color="textPrimary" align="center">
         {title}
       </Typography>
-      <Typography variant="body2" color="textSecondary">
+      <Typography variant="body2" color="textSecondary" align="center">
         {subtitle}
       </Typography>
     </div>

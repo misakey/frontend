@@ -25,9 +25,11 @@ export default () => (next) => (action) => {
     case AUTH_RESET:
     case SSO_RESET:
     case SSO_UNSIGN:
-    case SIGN_OUT:
+    case SIGN_OUT: {
+      const res = next(action);
       API.deleteToken();
-      break;
+      return res;
+    }
     default:
       break;
   }

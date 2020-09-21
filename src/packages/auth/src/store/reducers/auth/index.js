@@ -29,7 +29,7 @@ export const INITIAL_STATE = {
   id: null,
   authenticatedAt: null,
   accountId: null,
-  isAuthenticated: null,
+  isAuthenticated: false,
   identityId: null,
   identity: null,
   roles: null,

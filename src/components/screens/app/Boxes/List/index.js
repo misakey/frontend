@@ -5,17 +5,13 @@ import { useSelector } from 'react-redux';
 
 import STATUSES, { ALL } from 'constants/app/boxes/statuses';
 import { selectors } from '@misakey/crypto/store/reducers';
-import routes from 'routes';
 
 import useInterval from '@misakey/hooks/useInterval';
-import useResetBoxCount from 'hooks/useResetBoxCount';
 import useIdentity from 'hooks/useIdentity';
-import { useRouteMatch } from 'react-router-dom';
 import { useBoxesContext } from 'components/smart/Context/Boxes';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isNil from '@misakey/helpers/isNil';
-import path from '@misakey/helpers/path';
 
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import ListHeader from 'components/screens/app/Boxes/List/Header/List';
@@ -23,18 +19,9 @@ import SearchHeader from 'components/screens/app/Boxes/List/Header/Search';
 import Vault from './Content/Vault';
 import NoVault from './Content/NoVault';
 
-// HELPERS
-const paramsIdPath = path(['params', 'id']);
-
 // COMPONENTS
 function BoxesList({ t, activeStatus, ...props }) {
-  const match = useRouteMatch(routes.boxes.read._);
   const [contentRef, setContentRef] = useState();
-
-  const selectedId = useMemo(
-    () => paramsIdPath(match),
-    [match],
-  );
 
   const isCryptoLoadedSelector = useMemo(
     () => selectors.isCryptoLoaded,
@@ -57,17 +44,6 @@ function BoxesList({ t, activeStatus, ...props }) {
   );
 
   const { search, refresh } = useBoxesContext();
-  const resetBoxCount = useResetBoxCount();
-
-  const onRefresh = useCallback(
-    () => (isNil(selectedId)
-      ? refresh()
-      : Promise.all([
-        refresh(),
-        resetBoxCount({ boxId: selectedId, identityId }),
-      ])),
-    [selectedId, refresh, resetBoxCount, identityId],
-  );
 
   const intervalConfig = useMemo(
     () => ({
@@ -77,7 +53,7 @@ function BoxesList({ t, activeStatus, ...props }) {
     [hasIdentityId],
   );
 
-  useInterval(onRefresh, intervalConfig);
+  useInterval(refresh, intervalConfig);
 
   return (
     <>

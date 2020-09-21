@@ -31,7 +31,7 @@ import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import { useBoxesContext } from 'components/smart/Context/Boxes';
 import { getCode, getDetails } from '@misakey/helpers/apiError';
 import errorTypes from '@misakey/ui/constants/errorTypes';
-
+import Container from '@material-ui/core/Container';
 
 const { forbidden } = errorTypes;
 const NO_ACCESS = 'no_access';
@@ -149,8 +149,10 @@ function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
           </Box>
         </Box>
       </AppBarDrawer>
-      <Box
+      <Container
         p={8}
+        maxWidth="md"
+        component={Box}
         display="flex"
         height="inherit"
         flexDirection="column"
@@ -159,7 +161,7 @@ function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
         {!isNil(title) && <Title align="left">{t('boxes:read.mustjoin.title', { title })}</Title>}
         {isNil(title) && !isFetching && <Title align="left">{t('boxes:read.mustjoin.defaultTitle')}</Title>}
         <Subtitle>{t('boxes:read.mustjoin.subtitle')}</Subtitle>
-        <Box alignSelf="center" my={2}>
+        <Box my={2}>
           <ChipUser
             displayName={displayName}
             avatarUrl={avatarUrl}
@@ -167,7 +169,7 @@ function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
           />
         </Box>
         <BoxControls primary={{ onClick: onJoin, text: t('boxes:read.mustjoin.button') }} />
-      </Box>
+      </Container>
     </>
 
   );
