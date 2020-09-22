@@ -49,17 +49,25 @@ const onReceivePaginatedIds = (state, { offset, limit, ids, search = null }) => 
 
 const onAddPaginatedId = (state, { id, search = null }) => {
   const stateKey = !isNil(search) ? BY_SEARCH_PAGINATION : BY_PAGINATION;
+  // Box is already in list
+  const currentBoxIds = Object.values(state[stateKey]);
+  if (currentBoxIds.includes(id)) {
+    return state;
+  }
+  // Add new box
   const nextByPagination = Object.entries(state[stateKey])
     .reduce((aggr, [key, value]) => ({
       ...aggr,
       [parseInt(key, 10) + 1]: value,
     }), { 0: id });
 
+  const nextItemCount = (state.itemCount || 0) + 1;
+
   return {
     ...state,
     search,
     [stateKey]: nextByPagination,
-    itemCount: (state.itemCount || 0) + 1,
+    itemCount: nextItemCount,
   };
 };
 
