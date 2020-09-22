@@ -56,7 +56,7 @@ function NoAccess({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t }) 
     [enqueueSnackbar, t],
   );
 
-  const getBoxPublicInfo = useFetchBoxPublicInfo(id, onGetPublicInfo);
+  const getBoxPublicInfo = useFetchBoxPublicInfo(id);
 
   const { isFetching } = useFetchEffect(
     getBoxPublicInfo,

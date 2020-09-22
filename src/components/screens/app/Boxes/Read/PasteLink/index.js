@@ -9,12 +9,11 @@ import { SIDES } from '@misakey/ui/constants/drawers';
 import routes from 'routes';
 
 import isNil from '@misakey/helpers/isNil';
-import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 import Formik from '@misakey/ui/Formik';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
 import AppBar from '@misakey/ui/AppBar';
 import FormField from '@misakey/ui/Form/Field';
@@ -40,15 +39,6 @@ function PasteBoxLinkScreen({ t, box }) {
   const [redirectTo, setRedirectTo] = useState(null);
 
   const { id } = useSafeDestr(box);
-  const { pathname } = useLocation();
-
-  const redirectToMatchesPathname = useMemo(
-    () => {
-      const { pathname: redirectToPathname } = parseUrlFromLocation(redirectTo);
-      return pathname === redirectToPathname;
-    },
-    [pathname, redirectTo],
-  );
 
   const boxInvitationLinkFieldValidationSchema = useMemo(
     () => getBoxInvitationLinkFieldValidationSchema(id), [id],
@@ -60,7 +50,7 @@ function PasteBoxLinkScreen({ t, box }) {
   }, []);
 
   if (!isNil(redirectTo)) {
-    return <Redirect to={redirectTo} forceRefresh={redirectToMatchesPathname} />;
+    return <Redirect to={redirectTo} />;
   }
 
   return (

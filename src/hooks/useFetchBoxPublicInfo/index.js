@@ -28,7 +28,7 @@ export default (id, onSuccess) => {
         if (isFunction(onSuccess)) {
           return onSuccess(response);
         }
-        return Promise.resolve();
+        return Promise.resolve(response);
       })
       .catch((e) => {
         const errorCode = getCode(e);

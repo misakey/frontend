@@ -1,15 +1,28 @@
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import routes from 'routes';
-import { useDispatch, useSelector } from 'react-redux';
 import { withTranslation } from 'react-i18next';
-import { useSnackbar } from 'notistack';
-import { useHistory } from 'react-router-dom';
 
+import routes from 'routes';
+import { updateEntities } from '@misakey/store/actions/entities';
+import { MEMBER_JOIN } from 'constants/app/boxes/events';
+import errorTypes from '@misakey/ui/constants/errorTypes';
+
+import { getBoxBuilder, createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import isNil from '@misakey/helpers/isNil';
+import { getCode, getDetails } from '@misakey/helpers/apiError';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { useSnackbar } from 'notistack';
+import { useHistory, useLocation } from 'react-router-dom';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
+import useFetchBoxPublicInfo from 'hooks/useFetchBoxPublicInfo';
+import { useBoxesContext } from 'components/smart/Context/Boxes';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import usePropChanged from '@misakey/hooks/usePropChanged';
+
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import ChipUser from '@misakey/ui/Chip/User';
@@ -20,17 +33,8 @@ import Box from '@material-ui/core/Box';
 import Skeleton from '@material-ui/lab/Skeleton';
 import BoxesSchema from 'store/schemas/Boxes';
 import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
-import useFetchBoxPublicInfo from 'hooks/useFetchBoxPublicInfo';
-import { getBoxBuilder, createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
-import isNil from '@misakey/helpers/isNil';
-import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import BoxControls from '@misakey/ui/Box/Controls';
-import { updateEntities } from '@misakey/store/actions/entities';
-import { MEMBER_JOIN } from 'constants/app/boxes/events';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
-import { useBoxesContext } from 'components/smart/Context/Boxes';
-import { getCode, getDetails } from '@misakey/helpers/apiError';
-import errorTypes from '@misakey/ui/constants/errorTypes';
 import Container from '@material-ui/core/Container';
 
 const { forbidden } = errorTypes;
@@ -39,18 +43,20 @@ const NO_ACCESS = 'no_access';
 // COMPONENTS
 function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const { replace } = useHistory();
+  const { hash } = useLocation();
   const { enqueueSnackbar } = useSnackbar();
   const handleHttpErrors = useHandleHttpErrors();
   const { addBoxItem } = useBoxesContext();
   const [shouldShowPasteScreen, setShouldShowPasteScreen] = useState(false);
 
-  const { title, id } = useMemo(() => box, [box]);
+  const { title, id, hasAccess } = useMemo(() => box, [box]);
+  const [hashChanged, resetHashChanged] = usePropChanged(hash);
 
   const currentUser = useSelector(getCurrentUserSelector);
   const { displayName, avatarUrl } = useSafeDestr(currentUser);
 
-  const onDelete = useCallback(() => history.replace(routes.boxes._), [history]);
+  const onDelete = useCallback(() => replace(routes.boxes._), [replace]);
 
   const onGetPublicInfo = useCallback(
     (response) => {
@@ -67,12 +73,17 @@ function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
     [enqueueSnackbar, t],
   );
 
-  const getBoxPublicInfo = useFetchBoxPublicInfo(id, onGetPublicInfo);
+  const getBoxPublicInfo = useFetchBoxPublicInfo(id);
+
+  const shouldFetch = useMemo(
+    () => hasAccess !== false && (hashChanged || isNil(title)) && !shouldShowPasteScreen,
+    [hasAccess, hashChanged, shouldShowPasteScreen, title],
+  );
 
   const { isFetching } = useFetchEffect(
     getBoxPublicInfo,
-    { shouldFetch: isNil(title) },
-    { onSuccess: onGetPublicInfo, onError: onPublicInfoError },
+    { shouldFetch, stopOnError: false },
+    { onSuccess: onGetPublicInfo, onError: onPublicInfoError, onFinally: resetHashChanged },
   );
 
   const onSuccess = useCallback(
@@ -112,6 +123,13 @@ function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
   const { wrappedFetch: onJoin, isFetching: isJoining } = useFetchCallback(
     createJoinEvent,
     { onSuccess: onFetchBox, onError },
+  );
+
+  useEffect(
+    () => {
+      setShouldShowPasteScreen(false);
+    },
+    [hash],
   );
 
   if (isFetchingBox || isJoining) {
