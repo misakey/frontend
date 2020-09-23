@@ -120,5 +120,8 @@
       "text": "Créer un compte Misakey pour gérer vos propres espaces privés et partager des informations en toute sécurité",
       "button": "Créer un compte"
     }
+  },
+  "colorDemo": {
+    "title": "Demo"
   }
 }

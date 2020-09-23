@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Field, Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
@@ -23,6 +23,7 @@ import Container from '@material-ui/core/Container';
 import ScreenAction from 'components/dumb/Screen/Action';
 import BoxControls from '@misakey/ui/Box/Controls';
 import CirclePickerField from 'components/dumb/Form/Field/CirclePicker';
+import ColorsDemo from 'components/screens/app/Identity/Colors/Demo';
 
 // CONSTANTS
 const FIELD_NAME = 'color';
@@ -39,6 +40,13 @@ const AccountColor = ({ t, identity, isFetching }) => {
     [identity, isFetching],
   );
 
+  const { [FIELD_NAME]: color, id: identityId } = useMemo(
+    () => identity || {},
+    [identity],
+  );
+
+  const [previewColor, setPreviewColor] = useState(color);
+
   const homePath = useGeneratePathKeepingSearchAndHash(routes.accounts._, { id });
 
   const navigationProps = useMemo(
@@ -48,14 +56,16 @@ const AccountColor = ({ t, identity, isFetching }) => {
     [homePath],
   );
 
-  const { [FIELD_NAME]: color, id: identityId } = useMemo(
-    () => identity || {},
-    [identity],
-  );
-
   const handleHttpErrors = useHandleHttpErrors();
 
   const dispatchUpdateIdentity = useDispatchUpdateIdentity({ identityId, homePath });
+
+  const onChange = useCallback(
+    (nextColor) => {
+      setPreviewColor(nextColor);
+    },
+    [setPreviewColor],
+  );
 
   const onSubmit = useCallback(
     (form, { setSubmitting, setFieldError }) => updateIdentity({ id: identityId, ...form })
@@ -100,6 +110,7 @@ const AccountColor = ({ t, identity, isFetching }) => {
               {(fieldProps) => (
                 <CirclePickerField
                   {...fieldProps}
+                  onChange={onChange}
                 />
               )}
             </Field>
@@ -107,13 +118,14 @@ const AccountColor = ({ t, identity, isFetching }) => {
               mt={3}
               primary={{
                 type: 'submit',
-                'aria-label': t('common:submit'),
-                text: t('common:submit'),
+                'aria-label': t('common:confirm'),
+                text: t('common:confirm'),
               }}
               formik
             />
           </Form>
         </Formik>
+        <ColorsDemo color={previewColor} />
       </Container>
     </ScreenAction>
   );

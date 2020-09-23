@@ -19,11 +19,12 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   avatarDetailedRoot: {
-    margin: theme.spacing(1, 0),
+    margin: theme.spacing(1, 1),
     padding: theme.spacing(1, 0),
   },
   cardActionArea: {
     borderRadius: theme.shape.borderRadius,
+    userSelect: 'text',
   },
 }));
 
@@ -45,6 +46,7 @@ const CardIdentityThumbnail = ({ identity, ...props }) => {
     <Box mx={4} mb={4}>
       <Card elevation={0}>
         <CardActionArea
+          draggable="false"
           className={classes.cardActionArea}
           component={LinkAccountMisakey}
         >

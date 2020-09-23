@@ -28,7 +28,7 @@ import Card from '@material-ui/core/Card';
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   avatarDetailedRoot: {
-    margin: theme.spacing(1, 0),
+    margin: theme.spacing(1, 1),
     padding: theme.spacing(1, 0),
   },
   container: {
@@ -59,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
   }),
   cardActionArea: {
     borderRadius: theme.shape.borderRadius,
+    userSelect: 'text',
   },
 }));
 
@@ -106,6 +107,7 @@ const CardIdentity = forwardRef(({ identity, t }, ref) => {
     <Container ref={ref} className={classes.container} maxWidth="sm">
       <Card elevation={0}>
         <CardActionArea
+          draggable="false"
           className={classes.cardActionArea}
           component={Link}
           to={listItemAvatarTo}

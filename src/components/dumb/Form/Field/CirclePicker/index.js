@@ -1,23 +1,30 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
-import { CirclePicker } from 'react-color';
 import ACCOUNT_COLORS from 'constants/account/colors';
 
+import isFunction from '@misakey/helpers/isFunction';
 
+import { CirclePicker } from 'react-color';
 
+// COMPONENTS
 const CirclePickerField = ({
   field: { value, name }, form: { setFieldValue, setFieldTouched },
+  onChange,
 }) => {
-  const onChange = useCallback(
+  const handleChange = useCallback(
     (color) => {
-      setFieldValue(name, color.hex);
+      const nextValue = color.hex;
+      setFieldValue(name, nextValue);
       setFieldTouched(name, true, false);
+      if (isFunction(onChange)) {
+        onChange(nextValue);
+      }
     },
-    [name, setFieldTouched, setFieldValue],
+    [name, onChange, setFieldTouched, setFieldValue],
   );
 
-  return <CirclePicker onChange={onChange} color={value} colors={ACCOUNT_COLORS} />;
+  return <CirclePicker onChange={handleChange} color={value} colors={ACCOUNT_COLORS} />;
 };
 
 
@@ -30,6 +37,11 @@ CirclePickerField.propTypes = {
     setFieldTouched: PropTypes.func.isRequired,
     setFieldValue: PropTypes.func.isRequired,
   }).isRequired,
+  onChange: PropTypes.func,
+};
+
+CirclePickerField.defaultProps = {
+  onChange: null,
 };
 
 export default CirclePickerField;

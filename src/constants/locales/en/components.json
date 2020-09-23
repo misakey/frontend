@@ -110,5 +110,8 @@
       "text": "Create a Misakey account to handle your own private spaces and share your information safely",
       "button": "Create an account"
     }
+  },
+  "colorDemo": {
+    "title": "Demo"
   }
 }
