@@ -23,6 +23,8 @@ window.env = {
   EARLY_BIRDS_MISAKEY_CHAT_URL: 'https://app.misakey.com/boxes/a3c24d08-f5e2-40c4-81e2-a1c3ef33c540#guybqc9KC7HZrOTAQ5SDEFS5YQ4NTnCfUKV1gH0U6LQ',
   PRODUCT_HUNT: {
     BANNER: true,
-    URL: 'https://www.producthunt.com/upcoming/misakey-v1-2',
+    URL: 'https://www.producthunt.com/posts/misakey-1-0/',
+    COMMENTS_SECTION_URL: 'https://www.producthunt.com/posts/misakey-1-0#comment-1146860',
+    CODE_SLIDE_NUMBER: '7',
   },
 };

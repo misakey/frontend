@@ -245,8 +245,9 @@
       "title": "Hey\u00a0!",
       "subtitle": "Pour le moment, la création d'espaces privés nécessite un code d'invitation",
       "button": "Vous avez un code d'invitation ? Cliquez ici",
-      "getCodeTitle": "Vous n'avez pas de code\u00a0?<1/>Rejoignez-nous sur ProductHunt pour suivre le lancement du produit\u00a0!",
-      "getCodeDescription": "Nous envoyons régulièrement des informations sur les prochaines campagnes de distribution d’invitations par email aux membres de la communauté. Vous pouvez rejoindre la communauté en <1>participant à cet espace privé Misakey.</1><2/><3/>Vous pourrez aussi y discuter du projet et tester une petite partie de l’app pour nous faire vos retours."
+      "getCodeTitle": "Pas de code\u00a0?\u00a0<1>Rejoignez-nous sur Product Hunt\u00a0!</1>",
+      "getCodeSubtitle": "Partagez vos impressions dans la partie commentaires",
+      "getCodeDescription": "Chut... C'est sur la {{number}}e slide de notre page Product Hunt<3/><4/>Vous pouvez aussi <6>partager vos impressions sur le chat early bird Misakey</6>"
     },
     "addCouponDialog": {
       "title": "Bienvenue,",

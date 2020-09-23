@@ -57,7 +57,7 @@ const AppBarProductHunt = ({ t, position }) => {
         variant="dense"
       >
         <img src="/ico/product-hunt.svg" alt={t('components:productHunt.title')} className={classes.logo} />
-        <Typography variant="h6" className={classes.title}>
+        <Typography variant="subtitle1" className={classes.title}>
           {t('components:productHunt.title')}
         </Typography>
         <ChevronRightIcon />

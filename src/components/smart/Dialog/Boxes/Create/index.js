@@ -55,8 +55,7 @@ import Typography from '@material-ui/core/Typography';
 import FieldTextStandard from 'components/dumb/Form/Field/Text/Standard';
 import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
 import DialogBoxesCreatePasteLink from 'components/smart/Dialog/Boxes/Create/PasteLink';
-import ProductHuntFormSubscribe from 'components/dumb/Form/ProductHunt/Subscribe';
-
+import ProductHuntFeaturedOn from 'components/dumb/Button/ProductHunt/FeaturedOn';
 
 // CONSTANTS
 const FIELD_BOX_NAME = 'name';
@@ -66,6 +65,7 @@ const INITIAL_VALUES = { [FIELD_BOX_NAME]: '', [FIELD_COUPON_NAME]: '' };
 const DIALOG_CONTENT_PROPS = { alignItems: 'center' };
 
 const DESCRIPTION_ID = 'create-box-dialog-description';
+const SLIDE_NUMBER = window.env.PRODUCT_HUNT.CODE_SLIDE_NUMBER;
 
 const { conflict } = errorTypes;
 
@@ -253,25 +253,50 @@ function CreateBoxDialog({
             <Typography align="center" variant="h6" gutterBottom>
               <Trans i18nKey="boxes:create.notOnTheListDialog.getCodeTitle">
                 Don’t have a code?
-                <br />
-                Join us on for the ProductHunt launch
+                <Link
+                  href={window.env.PRODUCT_HUNT.URL}
+                  color="secondary"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Join us on Product Hunt!
+                </Link>
               </Trans>
             </Typography>
-            <Box py={2}>
-              <ProductHuntFormSubscribe />
-            </Box>
-            <Typography align="center" paragraph>
-              <Trans i18nKey="boxes:create.notOnTheListDialog.getCodeDescription">
-                We regularly send information about the next distributions of invitations
-                by email to the members of the community. You can join the community by
-                <Link href={window.env.EARLY_BIRDS_MISAKEY_CHAT_URL} color="secondary">
-                  joining this Misakey chat.
-                </Link>
-                <br />
-                <br />
-                You will be able to discuss the project and try a small portion of the app
-                to give us your early feedbacks.
+            <Link
+              href={window.env.PRODUCT_HUNT.COMMENTS_SECTION_URL}
+              color="secondary"
+              align="center"
+              variant="subtitle1"
+              gutterBottom
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Trans i18nKey="boxes:create.notOnTheListDialog.getCodeSubtitle">
+                Share your feedback in the comments section
               </Trans>
+            </Link>
+            <Box py={2}>
+              <ProductHuntFeaturedOn />
+            </Box>
+            <Typography
+              component={Trans}
+              i18nKey="boxes:create.notOnTheListDialog.getCodeDescription"
+              values={{ number: SLIDE_NUMBER }}
+              color="textSecondary"
+              variant="subtitle2"
+              align="center"
+              paragraph
+            >
+              Shh... It&apos;s on the&nbsp;
+              {SLIDE_NUMBER}
+              th slide of our Product Hunt page
+              <br />
+              <br />
+              You can also
+              <Link href={window.env.EARLY_BIRDS_MISAKEY_CHAT_URL} color="secondary">
+                share your feedback on Misakey&apos;s early bird chat
+              </Link>
             </Typography>
           </DialogContent>
           {fullScreen ? <FooterFullScreen /> : null}
