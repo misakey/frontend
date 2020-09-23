@@ -21,13 +21,14 @@ const ButtonFeaturedOnProductHunt = () => {
       rel="noopener noreferrer"
     >
       <img
-        src="ico/product-hunt-featured.svg"
+        src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=263712&theme=dark"
         alt="Misakey 1.0 - Send encrypted documents & messages to anyone | Product Hunt Embed"
         className={classes.img}
         width="250"
         height="54"
       />
     </a>
+
   );
 };
 
