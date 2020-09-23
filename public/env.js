@@ -24,7 +24,7 @@ window.env = {
   PRODUCT_HUNT: {
     BANNER: true,
     URL: 'https://www.producthunt.com/posts/misakey-1-0/',
-    COMMENTS_SECTION_URL: 'https://www.producthunt.com/posts/misakey-1-0#comment-1146860',
+    COMMENTS_SECTION_URL: 'https://www.producthunt.com/posts/misakey-1-0#comment-1145288',
     CODE_SLIDE_NUMBER: '7',
   },
 };
