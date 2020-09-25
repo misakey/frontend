@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import downloadFile from '@misakey/helpers/downloadFile';
+import log from '@misakey/helpers/log';
 
 import useGetDecryptedFileCallback from 'hooks/useGetDecryptedFile/callback';
 
@@ -14,14 +15,17 @@ import DownloadIcon from '@material-ui/icons/GetApp';
 
 // COMPONENTS
 const MenuItemDownloadEvent = forwardRef(({ t, encryptedFileId, encryption, fileName }, ref) => {
-  const onGetDecryptedFile = useGetDecryptedFileCallback({ encryptedFileId, encryption, fileName });
+  const onGetDecryptedFile = useGetDecryptedFileCallback(
+    { encryptedFileId, encryption, fileName },
+  );
 
   const onClick = useCallback(
     () => {
       onGetDecryptedFile()
         .then((file) => {
           downloadFile(file, file.name);
-        });
+        })
+        .catch((e) => log(e, 'error'));
     },
     [onGetDecryptedFile],
   );

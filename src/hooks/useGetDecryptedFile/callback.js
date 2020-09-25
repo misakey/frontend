@@ -18,15 +18,15 @@ export default ({ encryptedFileId, encryption, fileName }, onDownloadError) => {
       if (!isNil(encryptedFileId)) {
         return getEncryptedFileBuilder(encryptedFileId)
           .then((response) => decryptFile(response.blob, { encryption, fileName }))
-          .catch(() => {
+          .catch((e) => {
             enqueueSnackbar(t('common:fileDownload.errors.get'), { variant: 'error' });
             if (isFunction(onDownloadError)) {
-              return onDownloadError();
+              return onDownloadError(e);
             }
-            return Promise.reject();
+            return Promise.reject(e);
           });
       }
-      return Promise.reject();
+      return Promise.reject(new Error('Missing encryptedFileId: ', encryptedFileId));
     }, [encryptedFileId, encryption, enqueueSnackbar, fileName, onDownloadError, t],
   );
 };
