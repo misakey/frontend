@@ -58,6 +58,9 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 const { conflict } = errorTypes;
 const CURRENT_STEP = STEP.secret;
 
+const TOP_SPACING = 2 * APPBAR_SPACING;
+const RESET_BAR_SPACING = 6;
+
 // HELPERS
 const getSecretError = compose(
   head,
@@ -66,9 +69,12 @@ const getSecretError = compose(
 );
 
 // HOOKS
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   buttonRoot: {
     width: 'auto',
+  },
+  resetBox: {
+    height: theme.spacing(RESET_BAR_SPACING),
   },
 }));
 
@@ -96,6 +102,13 @@ const AuthLoginSecret = ({
 
   const [reset, setReset] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const topSpacing = useMemo(
+    () => (reset
+      ? TOP_SPACING - RESET_BAR_SPACING
+      : TOP_SPACING),
+    [reset],
+  );
 
   const initialValues = useMemo(() => INITIAL_VALUES[CURRENT_STEP], []);
 
@@ -296,9 +309,9 @@ const AuthLoginSecret = ({
   }
 
   return (
-    <>
+    <Box>
       {reset && (
-        <Box display="flex" width="100%">
+        <Box display="flex" width="100%" className={classes.resetBox}>
           <IconButtonAppBar edge="start" aria-label={t('common:cancel')} onClick={onCancelForgotPassword}>
             <ArrowBackIcon />
           </IconButtonAppBar>
@@ -311,7 +324,7 @@ const AuthLoginSecret = ({
         validateOnChange={false}
       >
         <Container maxWidth="md">
-          <Box mt={2 * APPBAR_SPACING}>
+          <Box mt={topSpacing}>
             <Box component={Form} display="flex" flexDirection="column" alignItems="flex-start">
               <Title>
                 <Box
@@ -362,7 +375,7 @@ const AuthLoginSecret = ({
           </Box>
         </Container>
       </Formik>
-    </>
+    </Box>
   );
 };
 

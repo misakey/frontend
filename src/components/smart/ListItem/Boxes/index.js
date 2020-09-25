@@ -20,26 +20,20 @@ import Box from '@material-ui/core/Box';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
-import Badge from '@material-ui/core/Badge';
+import Badge from '@misakey/ui/Badge';
 import BoxAvatar from 'components/dumb/Avatar/Box';
 import BoxAvatarSkeleton from 'components/dumb/Avatar/Box/Skeleton';
 import TypographyDateSince from 'components/dumb/Typography/DateSince';
 import BoxEventsAccordingToType from 'components/smart/Box/Event';
 
 // HOOKS
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   listItemText: {
     // Needed for IE11
     width: '100%',
   },
   iconStack: {
     position: 'absolute',
-  },
-  badge: {
-    right: 3,
-    top: 15,
-    border: `2px solid ${theme.palette.background.default}`,
-    padding: '0 4px',
   },
   background: {
     visibility: '0.5',
@@ -136,13 +130,7 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
     <ListItem key={id} {...linkProps} {...omitTranslationProps(rest)}>
       <ListItemAvatar>
         <Badge
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-          classes={{ badge: classes.badge }}
           badgeContent={eventsCount}
-          color="secondary"
         >
           <BoxAvatar
             src={logoUri}

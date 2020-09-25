@@ -106,12 +106,12 @@ const AuthLoginIdentifier = ({
                 <Box display="flex" flexWrap="nowrap">Quel est votre identifiant pour</Box>
                 <Box ml={1} display="flex" flexWrap="nowrap">
                   <AvatarClientSso client={client} />
-                  {!isEmpty(resourceName) && (
+                  {!isEmpty(resourceName) ? (
                     <>
                       &nbsp;-&nbsp;
                       {resourceName}
                     </>
-                  )}
+                  ) : <></>}
               &nbsp;?
                 </Box>
               </Box>

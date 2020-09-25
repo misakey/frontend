@@ -112,6 +112,8 @@
     }
   },
   "colorDemo": {
-    "title": "Demo"
+    "title": "Preview",
+    "button": "Button",
+    "chat": "Private space"
   }
 }

@@ -96,7 +96,9 @@ export default function (data, filename, mime, bom) {
       // Fixes "webkit blob resource error 1"
       setTimeout(() => {
         revokeBlob(fileURL);
-        document.body.removeChild(tempLink);
+        if (document.body.contains(tempLink)) {
+          document.body.removeChild(tempLink);
+        }
       }, 0);
     });
 }

@@ -24,8 +24,9 @@ function AccountRead({ toggleDrawer, isDrawerOpen }) {
 
   const { id } = useParams();
 
+  // @FIXME to change when view of other accounts will be possible
   const shouldRedirect = useMemo(
-    () => accountId !== id && id === MISAKEY_ACCOUNT_ID,
+    () => accountId !== id || id === MISAKEY_ACCOUNT_ID,
     [accountId, id],
   );
 

@@ -14,6 +14,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+// @UNUSED
 function BadgeForAvatar({ badgeContent, children, ...rest }) {
   const classes = useStyles();
 
