@@ -36,17 +36,19 @@
   },
   "read": {
     "closed": {
-      "title": "Private space «\u00a0{{title}}\u00a0» is closed",
-      "subtitle": "{{displayName}} closed the private space «\u00a0{{title}}\u00a0» on {{date}}."
+      "title": "Private space “{{title}}” is closed",
+      "defaulTitle": "This private space is closed",
+      "subtitle": "{{displayName}} closed the private space “{{title}}” on {{date}}.",
+      "defaultSubtitle": "You can not access the private space anymore because it has been closed by the administrator."
     },
     "noaccess": {
       "defaultTitle": "Access to this private space is restricted.",
-      "title": "Access restricted to the private space «\u00a0{{title}}\u00a0».",
+      "title": "Access restricted to the private space “{{title}}”.",
       "subtitle": "Please ask access to the person that gave you the link."
     },
     "mustjoin": {
       "defaultTitle": "Welcome",
-      "title": "Welcome on «\u00a0{{title}}\u00a0»,",
+      "title": "Welcome on “{{title}}”,",
       "subtitle": "Continue to join this private space",
       "button": "Continue"
     },
@@ -101,8 +103,8 @@
           }
         },
         "create": {
-          "they": "{{displayName}} created the private space «\u00a0{{title}}\u00a0»",
-          "you": "You created the private space «\u00a0{{title}}\u00a0»"
+          "they": "{{displayName}} created the private space “{{title}}”",
+          "you": "You created the private space “{{title}}”"
         },
         "member": {
           "join": {
@@ -131,8 +133,8 @@
             }
           },
           "create": {
-            "they": "<0>{{displayName}}</0> created the private space «\u00a0{{title}}\u00a0»",
-            "you": "<0>You</0> created the private space «\u00a0{{title}}\u00a0»"
+            "they": "<0>{{displayName}}</0> created the private space “{{title}}”",
+            "you": "<0>You</0> created the private space “{{title}}”"
           },
           "member": {
             "join": {
@@ -159,7 +161,7 @@
         "helperText": "Drop the file you want to encrypt. <1>Learn more</1>",
         "helperLink": "https://docs.misakey.com/#/en/"
       },
-      "success": "Files have been sent successfully\u00a0!"
+      "success": "Files have been sent successfully!"
     },
     "share": {
       "dialog": {
@@ -219,7 +221,7 @@
         "share": {
           "menuTitle": "Share",
           "title": "Secure conversation | {{title}}",
-          "text": "Join the secure conversation «\u00a0{{title}}\u00a0»"
+          "text": "Join the secure conversation “{{title}}”"
         },
         "copyLink": "Copy sharing link",
         "close": {

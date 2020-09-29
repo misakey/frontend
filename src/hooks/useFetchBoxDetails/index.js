@@ -25,11 +25,13 @@ import SenderSchema from 'store/schemas/Boxes/Sender';
 
 import { makeDenormalizeBoxSelector } from 'store/reducers/box';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { CLOSED } from 'constants/app/boxes/statuses';
 
 // CONSTANTS
 const { forbidden } = errorTypes;
 const NOT_MEMBER = 'not_member';
 const NO_ACCESS = 'no_access';
+const ERR_BOX_CLOSED = 'closed';
 const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
 
 export default (id) => {
@@ -91,21 +93,42 @@ export default (id) => {
     [dispatchReceiveBox, id],
   );
 
+  const onDefaultError = useCallback(
+    (error) => {
+      handleHttpErrors(error);
+      // View is broken without box
+      history.replace(routes._);
+    },
+    [handleHttpErrors, history],
+  );
+
   const onError = useCallback(
     async (error) => {
       const code = getCode(error);
       const { reason } = getDetails(error);
-      if (code === forbidden && reason === NOT_MEMBER) {
-        dispatchReceiveBox({ id, isMember: false, hasAccess: true });
-      } else if (code === forbidden && reason === NO_ACCESS) {
-        dispatchReceiveBox({ id, hasAccess: false });
+      if (code === forbidden) {
+        switch (reason) {
+          case NOT_MEMBER: {
+            dispatchReceiveBox({ id, isMember: false, hasAccess: true });
+            break;
+          }
+          case NO_ACCESS: {
+            dispatchReceiveBox({ id, hasAccess: false });
+            break;
+          }
+          case ERR_BOX_CLOSED: {
+            dispatchReceiveBox({ id, hasAccess: true, lifecycle: CLOSED });
+            break;
+          }
+          default: {
+            onDefaultError(error);
+          }
+        }
       } else {
-        handleHttpErrors(error);
-        // View is broken without box
-        history.replace(routes._);
+        onDefaultError(error);
       }
     },
-    [dispatchReceiveBox, id, handleHttpErrors, history],
+    [dispatchReceiveBox, id, onDefaultError],
   );
 
   useFetchEffect(

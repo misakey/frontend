@@ -36,9 +36,11 @@ import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
 import BoxControls from '@misakey/ui/Box/Controls';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import Container from '@material-ui/core/Container';
+import { CLOSED } from 'constants/app/boxes/statuses';
 
 const { forbidden } = errorTypes;
 const NO_ACCESS = 'no_access';
+const ERR_BOX_CLOSED = 'closed';
 
 // COMPONENTS
 function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
@@ -101,11 +103,20 @@ function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
     async (error) => {
       const code = getCode(error);
       const { reason } = getDetails(error);
-      if (code === forbidden && reason === NO_ACCESS) {
-        dispatch(updateEntities([{ id, changes: { hasAccess: false } }], BoxesSchema));
-      } else {
-        handleHttpErrors(error);
+      if (code === forbidden) {
+        if (reason === NO_ACCESS) {
+          dispatch(updateEntities([{ id, changes: { hasAccess: false } }], BoxesSchema));
+          return;
+        }
+        if (reason === ERR_BOX_CLOSED) {
+          dispatch(updateEntities(
+            [{ id, changes: { hasAccess: true, lifecycle: CLOSED } }],
+            BoxesSchema,
+          ));
+          return;
+        }
       }
+      handleHttpErrors(error);
     },
     [dispatch, handleHttpErrors, id],
   );

@@ -37,7 +37,9 @@
   "read": {
     "closed": {
       "title": "L'espace privé «\u00a0{{title}}\u00a0» est fermé.",
-      "subtitle": "{{displayName}} a fermé l'espace privé «\u00a0{{title}}\u00a0» le {{date}}."
+      "defaultTitle": "Cet espace privé est fermé.",
+      "subtitle": "{{displayName}} a fermé l'espace privé «\u00a0{{title}}\u00a0» le {{date}}.",
+      "defaultSubtitle": "Vous ne pouvez plus accéder à cet espace car il a été fermé par son administrateur·trice."
     },
     "noaccess": {
       "defaultTitle": "L'accès à cet espace privé est restreint",
@@ -93,7 +95,7 @@
           "closed": {
             "they": "Espace privé fermé par {{displayName}}",
             "you": "Vous avez fermé l'espace privé",
-            "generic": "Accessible aux administrateurs seulement"
+            "generic": "Accessible aux administrateurs·trices seulement"
           },
           "open": {
             "they": "{{displayName}} a ré-ouvert l'espace privé",

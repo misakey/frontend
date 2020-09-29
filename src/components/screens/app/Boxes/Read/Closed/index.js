@@ -1,7 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import moment from 'moment';
+
+import { useDispatch } from 'react-redux';
+import { useSnackbar } from 'notistack';
 
 // import { CLOSED } from 'constants/app/boxes/statuses';
 
@@ -16,10 +19,15 @@ import Divider from '@material-ui/core/Divider';
 // import Alert from '@material-ui/lab/Alert';
 import InfoIcon from '@material-ui/icons/Info';
 // import LeaveBoxDialogButton from 'components/screens/app/Boxes/Read/Events/LeaveBoxDialogButton';
+import Skeleton from '@material-ui/lab/Skeleton';
 import CreateBoxSuggestions from 'components/smart/Box/CreateSuggestions';
 import { makeStyles } from '@material-ui/core/styles';
+import isNil from '@misakey/helpers/isNil';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import BoxesSchema from 'store/schemas/Boxes';
+import useFetchBoxPublicInfo from 'hooks/useFetchBoxPublicInfo';
+import { updateEntities } from '@misakey/store/actions/entities';
 import { DATE_FULL } from 'constants/formats/dates';
 
 // HOOKS
@@ -35,10 +43,48 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t }) {
   const classes = useStyles();
-  const { title = '', lastEvent } = useMemo(() => box, [box]);
-  const { sender: { displayName }, serverEventCreatedAt } = useMemo(() => lastEvent, [lastEvent]);
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const { id, title, lastEvent = {} } = useMemo(() => box, [box]);
+  const { sender, serverEventCreatedAt: closedDate } = useMemo(() => lastEvent, [lastEvent]);
+  const { displayName } = useMemo(() => sender || {}, [sender]);
+
   const date = useMemo(
-    () => moment(serverEventCreatedAt).format(DATE_FULL), [serverEventCreatedAt],
+    () => (isNil(closedDate) ? null : moment(closedDate).format(DATE_FULL)),
+    [closedDate],
+  );
+
+  const onGetPublicInfo = useCallback(
+    (response) => {
+      dispatch(updateEntities([{ id, changes: response }], BoxesSchema));
+    },
+    [dispatch, id],
+  );
+
+  const onError = useCallback(
+    () => {
+      enqueueSnackbar(t('boxes:read.errors.incorrectLink'), { variant: 'warning' });
+    },
+    [enqueueSnackbar, t],
+  );
+
+  const getBoxPublicInfo = useFetchBoxPublicInfo(id);
+
+  const { isFetching } = useFetchEffect(
+    getBoxPublicInfo,
+    { shouldFetch: isNil(title) },
+    { onSuccess: onGetPublicInfo, onError },
+  );
+
+  const shouldDisplayDefaultTitle = useMemo(
+    () => isNil(title) && !isFetching,
+    [isFetching, title],
+  );
+
+  const shouldDisplayDefaultSubtitle = useMemo(
+    () => (isNil(displayName) || isNil(date) || isNil(title)) && !isFetching,
+    [date, displayName, isFetching, title],
   );
 
   // const isClosed = useMemo(
@@ -98,8 +144,26 @@ function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t })
           pb={6}
         >
           <InfoIcon className={classes.icon} color="primary" fontSize="large" />
-          <Title align="center">{t('boxes:read.closed.title', { title })}</Title>
-          <Subtitle>{t('boxes:read.closed.subtitle', { title, displayName, date })}</Subtitle>
+          {isFetching && (
+            <>
+              <Skeleton width="300" />
+              <Skeleton width="600" />
+            </>
+          )}
+          {!isFetching && (
+            <>
+              <Title align="center">
+                {shouldDisplayDefaultTitle
+                  ? t('boxes:read.closed.defaultTitle')
+                  : t('boxes:read.closed.title', { title })}
+              </Title>
+              <Subtitle>
+                {shouldDisplayDefaultSubtitle
+                  ? t('boxes:read.closed.defaultSubtitle')
+                  : t('boxes:read.closed.subtitle', { title, displayName, date })}
+              </Subtitle>
+            </>
+          )}
         </Box>
 
         <Box width="100%">
