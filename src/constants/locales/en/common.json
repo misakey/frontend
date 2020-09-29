@@ -52,6 +52,8 @@
   "unlock": "Unlock",
   "validate": "Validate",
   "view": "View",
+  "anErrorOccurred": "Sorry, an error occurred",
+  "errorPleaseRetryOrRefresh": "An error occurred; please retry or refresh",
   "openAccountDrawer": "See account",
   "createVault": "Create new vault",
   "askOpenVault": "Please type your password to perform this action",
@@ -68,13 +70,13 @@
   },
   "crypto": {
     "errors": {
-      "backupKeyShare": "An error occured while updating the backup key shares.",
+      "backupKeyShare": "An error occurred while updating the backup key shares.",
       "shouldRefresh": "Error: app requires a re-sync. You should refresh your page"
     }
   },
   "fileDownload": {
     "errors": {
-      "get": "An error occured while retrieving the file!"
+      "get": "An error occurred while retrieving the file!"
     }
   },
   "date": {
@@ -109,7 +111,6 @@
   },
   "httpStatus": {
     "error": {
-      "default": "Sorry, an unknown error occurred",
       "400": "Sorry, an error occurred",
       "401": "I need to be connected",
       "402": "A payment is required",

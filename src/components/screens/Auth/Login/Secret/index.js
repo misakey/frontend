@@ -50,6 +50,7 @@ import ButtonForgotPassword from '@misakey/auth/components/Button/ForgotPassword
 import ButtonRenewAuthStep from '@misakey/auth/components/Button/RenewAuthStep';
 import DialogPasswordReset from 'components/smart/Dialog/Password/Reset';
 import SnackbarActionAuthRestart from 'components/dumb/Snackbar/Action/AuthRestart';
+import SnackbarActionRefresh from 'components/dumb/Snackbar/Action/Refresh';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -258,8 +259,15 @@ const AuthLoginSecret = ({
           }
 
           log(e, 'error');
-          // @FIXME It is false to assume that error must be a HTTP error
-          return handleHttpErrors(e);
+
+          if (!isNil(e.status)) {
+            // @FIXME It is false to assume that error must be a HTTP error
+            return handleHttpErrors(e);
+          }
+          return enqueueSnackbar(t('common:errorPleaseRetryOrRefresh'), {
+            variant: 'error',
+            action: (key) => <SnackbarActionRefresh id={key} />,
+          });
         })
         .finally(() => {
           setSubmitting(false);

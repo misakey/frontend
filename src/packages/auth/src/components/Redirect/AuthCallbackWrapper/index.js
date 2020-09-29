@@ -39,7 +39,7 @@ const useHandleError = (enqueueSnackbar, t) => {
     // Errors from hydra
     if (errorCode) {
       enqueueSnackbar(
-        t('common:httpStatus.error.default'),
+        t('common:anErrorOccurred'),
         { variant: 'error' },
       );
       return;
@@ -47,7 +47,7 @@ const useHandleError = (enqueueSnackbar, t) => {
 
     // Ohers errors (front))
     enqueueSnackbar(
-      t('common:httpStatus.error.default'),
+      t('common:anErrorOccurred'),
       { variant: 'error' },
     );
   }, [enqueueSnackbar, t, handleGenericHttpErrors]);

@@ -14,7 +14,7 @@ export default () => {
   return useCallback(
     (error) => {
       if (!isNil(error.status)) {
-        const text = t(`common:httpStatus.error.${API.errors.filter(error.status || 'default')}`);
+        const text = t([`common:httpStatus.error.${API.errors.filter(error.status)}`, 'common:anErrorOccurred']);
         enqueueSnackbar(text, { variant: 'warning' });
       } else {
         throw error;

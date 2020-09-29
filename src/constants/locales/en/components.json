@@ -14,7 +14,7 @@
     }
   },
   "ScreenError": {
-    "title": "<0>Oops...</0><1>An error occured!</1>",
+    "title": "<0>Oops...</0><1>An error occurred!</1>",
     "subtitle": "You can try to refresh the page. If the error persists, <1>contact us</1>.",
     "button": {
       "refresh": "Refresh",
@@ -83,7 +83,7 @@
   },
   "saveInVault": {
     "error": {
-      "default": "An error occured while saving the file!",
+      "default": "An error occurred while saving the file!",
       "conflict": "This file is already saved in your vault!"
     },
     "success": "File has been successfully saved in yout vault!"

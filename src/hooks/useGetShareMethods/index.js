@@ -35,7 +35,7 @@ export default (boxId, title, publicKey, t) => {
     navigator.share(details)
       .catch((err) => {
         if (err.name !== 'AbortError') {
-          enqueueSnackbar(t('common:httpStatus.error.default'), { variant: 'error' });
+          enqueueSnackbar(t('common:anErrorOccurred'), { variant: 'error' });
         }
       });
   }, [enqueueSnackbar, invitationURL, t, title]);

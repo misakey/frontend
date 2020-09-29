@@ -60,7 +60,8 @@
   "unlock": "Déverrouiller",
   "validate": "Valider",
   "view": "Voir",
-  "openAccountDrawer": "Voir le compte",
+  "anErrorOccurred": "Nous sommes désolés, une erreur est survenue",
+  "errorPleaseRetryOrRefresh": "Une erreur est survenue; veuillez réessayer ou rafraîchir",
   "createVault": "Nouveau coffre-fort",
   "askOpenVault": "Merci de saisir votre mot de passe afin de réaliser cette action",
   "openVault": "Ouvrir mon coffre-fort",
@@ -117,7 +118,6 @@
   },
   "httpStatus": {
     "error": {
-      "default": "Nous sommes désolés, une erreur inconnue est survenue",
       "400": "Nous sommes désolés, une erreur est survenue",
       "401": "Je dois d'abord me connecter",
       "402": "Un paiement est requis",

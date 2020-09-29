@@ -41,7 +41,7 @@ function ErrorOverlay({ classes, error, httpStatus, t, variant }) {
   const getText = useMemo(
     () => error
     || (httpStatus && API.errors.httpStatus.includes(httpStatus) && t(`common:httpStatus.error.${httpStatus}`))
-    || t('common:httpStatus.error.default'),
+    || t('common:anErrorOccurred'),
     [error, httpStatus, t],
   );
 

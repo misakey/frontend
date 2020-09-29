@@ -175,7 +175,7 @@
       },
       "update": {
         "success": "Accesses have been updated successfully",
-        "error": "An error occured while updating accesses!",
+        "error": "An error occurred while updating accesses!",
         "noChanges": "No changes added"
       },
       "level": {

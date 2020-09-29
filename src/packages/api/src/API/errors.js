@@ -17,4 +17,4 @@ export const HTTP_ERROR_STATUSES = [
   HttpStatus.UNSUPPORTED_MEDIA_TYPE,
 ];
 
-export const filterHttpStatus = (s) => (HTTP_ERROR_STATUSES.includes(s) ? s : 'default');
+export const filterHttpStatus = (s) => (HTTP_ERROR_STATUSES.includes(s) ? s : undefined);

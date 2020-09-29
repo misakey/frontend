@@ -74,7 +74,7 @@
       "info": "Import a private key",
       "text": "Import",
       "noNewSecretKeys": "No new private key to import",
-      "error": "An error occured during file import",
+      "error": "An error occurred during file import",
       "success": "Key import successful"
     },
     "exportButton": {

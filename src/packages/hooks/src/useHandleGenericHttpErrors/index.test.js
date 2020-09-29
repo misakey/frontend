@@ -81,7 +81,7 @@ describe('testing useHandleGenericHttpErrors', () => {
       const error = new Error();
       error.status = status;
       expect(handleHttpErrors.current(error)).toBe(true);
-      expect(mockEnqueueSnackbar).toHaveBeenCalledWith(`common:httpStatus.error.${status}`, { variant: 'error' });
+      expect(mockEnqueueSnackbar).toHaveBeenCalledWith([`common:httpStatus.error.${status}`, 'common:anErrorOccurred'], { variant: 'error' });
     });
 
   it.each(ERROR_STATUSES_EXCEPT_INTERNAL)('should rethrow error when details is not empty, with status %p',
@@ -98,6 +98,6 @@ describe('testing useHandleGenericHttpErrors', () => {
     const error = new Error();
     error.status = status;
     expect(handleHttpErrors.current(error)).toBe(true);
-    expect(mockEnqueueSnackbar).toHaveBeenCalledWith(`common:httpStatus.error.${status}`, { variant: 'error' });
+    expect(mockEnqueueSnackbar).toHaveBeenCalledWith([`common:httpStatus.error.${status}`, 'common:anErrorOccurred'], { variant: 'error' });
   });
 });

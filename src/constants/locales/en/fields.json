@@ -56,7 +56,7 @@
     },
     "error": {
       "api": {
-        "notSent": "An unknown error occured while sending files:{{filenamesErrors}}.\nCheck their format, then retry.\n",
+        "notSent": "An unknown error occurred while sending files:{{filenamesErrors}}.\nCheck their format, then retry.\n",
         "sent": "Files:{{filenamesSent}} were successfully sent."
       },
       "required": "You must send at least 1 file",
@@ -175,7 +175,7 @@
       }
     },
     "delete": {
-      "confirm" :{
+      "confirm": {
         "error": {
           "invalid": "invalid"
         }
@@ -192,7 +192,6 @@
         "malformed": "Please, type a valid email",
         "required": "Email is required",
         "placeholder": "rose.flamingo@misakey.com"
-
       }
     },
     "accessWhitelistEmailDomain": {

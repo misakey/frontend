@@ -15,7 +15,7 @@ export default () => {
   return useCallback(
     (error) => {
       if (isEmpty(error.details) || isInternalError(error)) {
-        const text = t(`common:httpStatus.error.${API.errors.filter(error.status || 'default')}`);
+        const text = t([`common:httpStatus.error.${API.errors.filter(error.status)}`, 'common:anErrorOccurred']);
         enqueueSnackbar(text, { variant: 'error' });
         return true;
       }
