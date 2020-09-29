@@ -15,7 +15,7 @@ import { boxNameFieldValidationSchema } from 'constants/validationSchemas/boxes'
 import { updatePaginationsToStatus } from 'store/reducers/userBoxes/pagination';
 import { receiveEntities } from '@misakey/store/actions/entities';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
-import { addBoxSecretKey } from '@misakey/crypto/store/actions/concrete';
+import { setBoxSecrets } from '@misakey/crypto/store/actions/concrete';
 
 import { createBoxBuilder, getBoxMembersBuilder } from '@misakey/helpers/builder/boxes';
 import getRandomTitle from '@misakey/helpers/getRandomTitle';
@@ -110,7 +110,7 @@ function CreateBoxDialog({
         dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
         dispatch(updatePaginationsToStatus(id, ALL)),
       ]);
-      return Promise.resolve(dispatch(addBoxSecretKey(secretKey)))
+      return Promise.resolve(dispatch(setBoxSecrets({ secretKey })))
         .then(() => {
           if (isFunction(onSuccess)) {
             onSuccess();

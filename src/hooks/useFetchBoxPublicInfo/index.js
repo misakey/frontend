@@ -19,7 +19,7 @@ const { notFound } = errorTypes;
 
 export default (id, onSuccess) => {
   const { hash } = useLocation();
-  const urlKeyShareHash = useMemo(() => (isEmpty(hash) ? null : hash.substr(1)), [hash]);
+  const invitationKeyShare = useMemo(() => (isEmpty(hash) ? null : hash.substr(1)), [hash]);
   const handleHttpErrors = useHandleHttpErrors();
 
   const getBoxPublicInfo = useCallback(
@@ -44,12 +44,12 @@ export default (id, onSuccess) => {
   return useCallback(
     () => {
       try {
-        const otherShareHash = computeInvitationHash(urlKeyShareHash);
+        const otherShareHash = computeInvitationHash(invitationKeyShare);
         return getBoxPublicInfo(otherShareHash);
       } catch (e) {
         return Promise.reject(new InvalidHash());
       }
     },
-    [urlKeyShareHash, getBoxPublicInfo],
+    [invitationKeyShare, getBoxPublicInfo],
   );
 };

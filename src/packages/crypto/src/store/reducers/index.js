@@ -20,11 +20,10 @@ import {
   CRYPTO_IMPORT_SECRET_KEYS,
   CRYPTO_INITIALIZE,
   CRYPTO_SET_BACKUP_VERSION,
-  CRYPTO_ADD_BOX_SECRET_KEY,
+  CRYPTO_SET_BOX_SECRETS,
   CRYPTO_REMOVE_BOX_SECRET_KEYS,
   CRYPTO_SET_ENCRYPTED_BACKUP_DATA,
   CRYPTO_SET_BACKUP_KEY_SHARE,
-  CRYPTO_SET_BOX_KEY_SHARE,
   CRYPTO_REMOVE_BOX_KEY_SHARES,
   CRYPTO_SET_VAULT_KEY,
 } from '../actions/concrete';
@@ -207,13 +206,28 @@ function loadSecrets(state, action) {
   );
 }
 
+function setBoxSecrets(state, { boxId, secretKey, keyShare }) {
+  if (isNil(boxId) && !isNil(keyShare)) {
+    throw Error('box ID is required to set a box key share');
+  }
 
-function addBoxSecretKey(state, { secretKey }) {
   return {
     ...state,
     secrets: {
       ...state.secrets,
-      boxDecryptionKeys: [...new Set([secretKey].concat(state.secrets.boxDecryptionKeys))],
+      boxDecryptionKeys: (
+        isNil(secretKey)
+          ? state.secrets.boxDecryptionKeys
+          : [...new Set([secretKey].concat(state.secrets.boxDecryptionKeys))]
+      ),
+      boxKeyShares: (
+        (isNil(keyShare) || isNil(boxId))
+          ? state.secrets.boxKeyShares
+          : {
+            ...state.secrets.boxKeyShares,
+            [boxId]: keyShare,
+          }
+      ),
     },
   };
 }
@@ -228,19 +242,6 @@ const removeBoxSecretKeys = (state, { secretKeys }) => ({
 
 function importSecretKeys(state, { secretKeys }) {
   return concatToPath(secretKeys, state, ['secrets', 'passive', 'secretKeys']);
-}
-
-function setBoxKeyShare(state, { boxId, keyShare }) {
-  return {
-    ...state,
-    secrets: {
-      ...state.secrets,
-      boxKeyShares: {
-        ...state.secrets.boxKeyShares,
-        [boxId]: keyShare,
-      },
-    },
-  };
 }
 
 const removeBoxKeyShares = (state, { boxIds }) => ({
@@ -258,11 +259,10 @@ const cryptoReducer = createReducer(INITIAL_STATE, {
   [CRYPTO_SET_BACKUP_VERSION]: setEncryptedBackupVersion,
   [CRYPTO_INITIALIZE]: initialize,
   [CRYPTO_LOAD_SECRETS]: loadSecrets,
-  [CRYPTO_ADD_BOX_SECRET_KEY]: addBoxSecretKey,
+  [CRYPTO_SET_BOX_SECRETS]: setBoxSecrets,
   [CRYPTO_REMOVE_BOX_SECRET_KEYS]: removeBoxSecretKeys,
   [CRYPTO_IMPORT_SECRET_KEYS]: importSecretKeys,
   [CRYPTO_SET_BACKUP_KEY_SHARE]: setBackupKeyShare,
-  [CRYPTO_SET_BOX_KEY_SHARE]: setBoxKeyShare,
   [CRYPTO_REMOVE_BOX_KEY_SHARES]: removeBoxKeyShares,
   [CRYPTO_SET_VAULT_KEY]: setVaultKey,
   [SIGN_OUT]: reset,

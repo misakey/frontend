@@ -57,11 +57,10 @@ export const CRYPTO_SET_BACKUP_KEY = Symbol('CRYPTO_SET_BACKUP_KEY');
 export const CRYPTO_IMPORT_SECRET_KEYS = Symbol('CRYPTO_IMPORT_SECRET_KEYS');
 export const CRYPTO_INITIALIZE = Symbol('CRYPTO_INITIALIZE');
 export const CRYPTO_SET_BACKUP_VERSION = Symbol('CRYPTO_SET_BACKUP_VERSION');
-export const CRYPTO_ADD_BOX_SECRET_KEY = Symbol('CRYPTO_ADD_BOX_SECRET_KEY');
+export const CRYPTO_SET_BOX_SECRETS = Symbol('CRYPTO_SET_BOX_SECRETS');
 export const CRYPTO_REMOVE_BOX_SECRET_KEYS = Symbol('CRYPTO_REMOVE_BOX_SECRET_KEYS');
 export const CRYPTO_SET_ENCRYPTED_BACKUP_DATA = Symbol('CRYPTO_SET_ENCRYPTED_BACKUP_DATA');
 export const CRYPTO_SET_BACKUP_KEY_SHARE = Symbol('CRYPTO_SET_BACKUP_KEY_SHARE');
-export const CRYPTO_SET_BOX_KEY_SHARE = Symbol('CRYPTO_SET_BACKUP_KEY_SHARE');
 export const CRYPTO_REMOVE_BOX_KEY_SHARES = Symbol('CRYPTO_REMOVE_BOX_KEY_SHARES');
 export const CRYPTO_SET_VAULT_KEY = Symbol('CRYPTO_SET_VAULT_KEY');
 
@@ -203,16 +202,18 @@ export function createNewOwnerSecrets(password) {
 }
 
 /**
- * add a new secret key for a data owner.
+ * set secret key and/or key share for a box
  *
- * @param {string} secretKey
+ * this will overwrite the existing key share for this box if any
  */
-const addBoxSecretKeyWithoutUpdate = (secretKey) => ({
-  type: CRYPTO_ADD_BOX_SECRET_KEY,
-  secretKey,
-});
-
-export const addBoxSecretKey = withBackupUpdater(addBoxSecretKeyWithoutUpdate);
+export const setBoxSecrets = withBackupUpdater(
+  ({ boxId, secretKey, keyShare }) => ({
+    type: CRYPTO_SET_BOX_SECRETS,
+    boxId,
+    secretKey,
+    keyShare,
+  }),
+);
 
 const removeBoxSecretKeysWithoutUpdate = (secretKeys) => ({
   type: CRYPTO_REMOVE_BOX_SECRET_KEYS,
@@ -286,31 +287,6 @@ export const setBackupKeyShare = ({ backupKeyShare, accountId }) => ({
   backupKeyShare,
   accountId,
 });
-
-const setBoxKeyShareWithoutUpdate = ({ boxId, keyShare }) => ({
-  type: CRYPTO_SET_BOX_KEY_SHARE,
-  boxId,
-  keyShare,
-});
-
-export const setBoxKeyShare = withBackupUpdater(setBoxKeyShareWithoutUpdate);
-
-export const boxAddSecretKeySetKeyShare = withBackupUpdater(
-  ({ secretKey, boxId, keyShare }) => (dispatch) => {
-    if (isNil(secretKey)) {
-      return Promise.resolve(dispatch(setBoxKeyShareWithoutUpdate({ boxId, keyShare })));
-    }
-
-    if (isNil(boxId)) {
-      return Promise.resolve(dispatch(addBoxSecretKeyWithoutUpdate(secretKey)));
-    }
-
-    return Promise.all([
-      dispatch(setBoxKeyShareWithoutUpdate({ boxId, keyShare })),
-      dispatch(addBoxSecretKeyWithoutUpdate(secretKey)),
-    ]);
-  },
-);
 
 export const setVaultKey = withBackupUpdater(({ vaultKey }) => ({
   type: CRYPTO_SET_VAULT_KEY,

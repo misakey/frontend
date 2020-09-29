@@ -49,33 +49,36 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   );
 
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
-  const { hash } = useLocation();
+  // locationHash is a URL hash
+  // (see https://developer.mozilla.org/en-US/docs/Web/API/URL/hash),
+  // not be confused with the output of a hash function
+  const { hash: locationHash } = useLocation();
   const { params } = useRouteMatch(path);
 
   const { id } = useSafeDestr(params);
 
-  const keyShare = useMemo(
+  const otherShareHash = useMemo(
     () => {
-      if (isEmpty(hash)) {
+      if (isEmpty(locationHash)) {
         return null;
       }
       try {
-        return computeInvitationHash(hash.substr(1));
+        return computeInvitationHash(locationHash.substr(1));
       } catch (e) {
         return null;
       }
     },
-    [hash],
+    [locationHash],
   );
 
   const shouldFetch = useMemo(
-    () => !isAuthenticated && !isNil(id) && !isNil(keyShare) && isNil(resourceName) && !error,
-    [isAuthenticated, id, keyShare, resourceName, error],
+    () => !isAuthenticated && !isNil(id) && !isNil(otherShareHash) && isNil(resourceName) && !error,
+    [isAuthenticated, id, otherShareHash, resourceName, error],
   );
 
   const getBoxPublic = useCallback(
-    () => getBoxPublicBuilder({ id, otherShareHash: keyShare }),
-    [id, keyShare],
+    () => getBoxPublicBuilder({ id, otherShareHash }),
+    [id, otherShareHash],
   );
 
   const onSuccess = useCallback(
