@@ -126,5 +126,10 @@
       "500": "Sorry, an unknown error occurred",
       "503": "Sorry, our services are not available"
     }
+  },
+  "error": {
+    "retry": "A request error occurred, retrying in {{delay}}s",
+    "stop": "Request failure after {{count}} attempt",
+    "stop_plural": "Request failure after {{count}} attempts"
   }
 }

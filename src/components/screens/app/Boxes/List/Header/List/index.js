@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -6,9 +6,6 @@ import STATUSES from 'constants/app/boxes/statuses';
 import { SIDES } from '@misakey/ui/constants/drawers';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-
-import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
-import usePaginateBoxesByStatusRefresh from 'hooks/usePaginateBoxesByStatus/refresh';
 
 import Box from '@material-ui/core/Box';
 
@@ -27,17 +24,6 @@ const IconButtonCreate = withDialogCreate(
 );
 
 function ListHeader({ drawerWidth, activeStatus, t, ...props }) {
-  const { search } = useLocationSearchParams();
-
-  const { refresh: onCreateSuccess } = usePaginateBoxesByStatusRefresh(activeStatus, search);
-
-  const dialogProps = useMemo(
-    () => ({
-      onSuccess: onCreateSuccess,
-    }),
-    [onCreateSuccess],
-  );
-
   return (
     <AppBarDrawer side={SIDES.LEFT} {...omitTranslationProps(props)}>
       <OpenDrawerAccountButton />
@@ -46,7 +32,6 @@ function ListHeader({ drawerWidth, activeStatus, t, ...props }) {
         aria-label={t('boxes:list.empty.create')}
         edge="end"
         color="secondary"
-        dialogProps={dialogProps}
       >
         <AddIcon />
       </IconButtonCreate>

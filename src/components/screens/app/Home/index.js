@@ -13,7 +13,7 @@ import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import VaultDocuments from '../Documents';
 
 function Home({ isFetchingIdentity }) {
-  const { isLoadingBackupKey } = useLoadSecretsFromShares();
+  const { isLoadingBackupKey, isReady } = useLoadSecretsFromShares();
 
   if (isFetchingIdentity || isLoadingBackupKey) {
     return <SplashScreen />;
@@ -35,7 +35,7 @@ function Home({ isFetchingIdentity }) {
         />
         <Route
           path={routes.boxes._}
-          component={Boxes}
+          render={(routeProps) => <Boxes isReady={isReady} {...routeProps} />}
         />
       </Switch>
     </>

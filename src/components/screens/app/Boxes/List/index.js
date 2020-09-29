@@ -6,8 +6,6 @@ import { useSelector } from 'react-redux';
 import STATUSES, { ALL } from 'constants/app/boxes/statuses';
 import { selectors } from '@misakey/crypto/store/reducers';
 
-import useInterval from '@misakey/hooks/useInterval';
-import useIdentity from 'hooks/useIdentity';
 import { useBoxesContext } from 'components/smart/Context/Boxes';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
@@ -36,24 +34,7 @@ function BoxesList({ t, activeStatus, ...props }) {
     [setContentRef],
   );
 
-  const { identityId } = useIdentity();
-
-  const hasIdentityId = useMemo(
-    () => !isNil(identityId),
-    [identityId],
-  );
-
-  const { search, refresh } = useBoxesContext();
-
-  const intervalConfig = useMemo(
-    () => ({
-      delay: window.env.AUTO_REFRESH_LIST_DELAY,
-      shouldStart: hasIdentityId,
-    }),
-    [hasIdentityId],
-  );
-
-  useInterval(refresh, intervalConfig);
+  const { search } = useBoxesContext();
 
   return (
     <>

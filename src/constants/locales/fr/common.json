@@ -133,5 +133,10 @@
       "500": "Nous sommes désolés, une erreur est survenue",
       "503": "Nous sommes désolés, nos services ne sont pas accessibles"
     }
+  },
+  "error": {
+    "retry": "Une erreur est survenue lors d'une requête, nouvelle tentative dans {{delay}}s",
+    "stop": "Echec de la requête au bout de {{count}} tentative",
+    "stop_plural": "Echec de la requête au bout de {{count}} tentatives"
   }
 }

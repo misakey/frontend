@@ -248,12 +248,12 @@
       "pasteLink": "J'ai un lien d'invitation",
       "content": "Quel est le sujet de cette nouvelle conversation\u00a0?",
       "success": "L'espace privé a été créé avec succès\u00a0!",
-      "error": {
-        "updateBackup": "Une erreur s'est produite lors de la mise à jour du coffre-fort. Assurez-vous de garder le lien d'invitation de l'espace privé afin de ne pas perdre la clé de déchiffrement."
-      },
       "fields": {
         "name": "Nouvel espace privé"
       }
+    },
+    "error": {
+      "updateBackup": "Une erreur s'est produite lors de la mise à jour du coffre-fort. Assurez-vous de garder le lien d'invitation de l'espace privé afin de ne pas perdre la clé de déchiffrement."
     }
   },
   "delete": {
@@ -261,10 +261,7 @@
       "description": "Êtes-vous sûr·e de vouloir supprimer «\u00a0{{title}}\u00a0»\u00a0?\nCette action est irréversible. Veuillez saisir «\u00a0supprimer\u00a0» pour confirmer",
       "confirmValue": "supprimer"
     },
-    "success": "L'espace privé a été supprimé",
-    "error": {
-      "updateBackup": "Une erreur s'est produite lors de la mise à jour du coffre-fort."
-    }
+    "success": "L'espace privé a été supprimé"
   },
   "leave": {
     "dialog": {
@@ -272,7 +269,6 @@
     },
     "success": "L'espace privé a été quitté",
     "error": {
-      "updateBackup": "Une erreur s'est produite lors de la mise à jour du coffre-fort.",
       "forbidden": "Vous n'êtes plus membre de cet espace privé"
     }
   },
@@ -291,6 +287,15 @@
     "lockedScreen": {
       "documentTitle": "Interface verrouillée",
       "text": "<0>Quel est le mot de passe pour votre coffre-fort</0><1><0></0></1><2>\u00a0?</2>"
+    }
+  },
+  "removeBox": {
+    "updateBackup": {
+      "error": "Une erreur s'est produite lors de la mise à jour du coffre-fort."
+    },
+    "success": {
+      "leave": "Vous avez quitté l'espace privé",
+      "delete": "L'espace privé {{title}} a été supprimé"
     }
   }
 }

@@ -17,8 +17,7 @@ import ButtonWithDialogPassword from 'components/smart/Dialog/Password/with/Butt
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import useMountEffect from '@misakey/hooks/useMountEffect';
-import useResetBoxCount from 'hooks/useResetBoxCount';
+import { useBoxesContext } from 'components/smart/Context/Boxes';
 
 import isNil from '@misakey/helpers/isNil';
 
@@ -83,24 +82,19 @@ function BoxEvents({
 
 
   // RESET BOX COUNT
+  const { onAckWSUserBox } = useBoxesContext();
+
   const shouldFetch = useMemo(
     () => !isNil(id) && !isNil(identityId) && eventsCount > 0,
     [id, identityId, eventsCount],
   );
 
-  const resetBoxCount = useResetBoxCount();
-
-  const onResetBoxCount = useCallback(
-    () => resetBoxCount({ boxId: id, identityId }),
-    [resetBoxCount, id, identityId],
+  const onResetBoxEventCount = useCallback(
+    () => onAckWSUserBox(id),
+    [onAckWSUserBox, id],
   );
 
-  useMountEffect(() => {
-    if (shouldFetch) {
-      onResetBoxCount();
-    }
-  });
-  useFetchEffect(onResetBoxCount, { shouldFetch });
+  useFetchEffect(onResetBoxEventCount, { shouldFetch });
 
   return (
     <InputBoxesUploadContext box={box} onSuccess={onCloseMenuAction}>

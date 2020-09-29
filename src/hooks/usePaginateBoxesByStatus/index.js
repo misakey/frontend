@@ -1,3 +1,4 @@
+import { ALL } from 'constants/app/boxes/statuses';
 import BoxesSchema from 'store/schemas/Boxes';
 import { receiveEntities } from '@misakey/store/actions/entities';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
@@ -19,7 +20,6 @@ import { useMemo, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { normalize } from 'normalizr';
-import { ALL } from 'constants/app/boxes/statuses';
 
 // CONSTANTS
 const EMPTY_OBJ = {};
@@ -28,7 +28,7 @@ const EMPTY_OBJ = {};
 const actionCreatorsProp = propOr(EMPTY_OBJ, __, actionCreators);
 const selectorsProp = propOr(EMPTY_OBJ, __, selectors);
 
-export const getReceiveItemCountActionCreator = (status) => {
+const getReceiveItemCountActionCreator = (status) => {
   const statusActionCreators = actionCreatorsProp(status);
   return statusActionCreators.receivePaginatedItemCount || noop;
 };

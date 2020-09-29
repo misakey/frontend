@@ -21,6 +21,7 @@ const BoxesSchema = {
   propTypes: {
     publicKey: PropTypes.string,
     id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
     serverCreatedAt: PropTypes.string,
     lifecycle: PropTypes.oneOf(STATUSES),
     eventsCount: PropTypes.number,

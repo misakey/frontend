@@ -6,7 +6,6 @@ import { withTranslation } from 'react-i18next';
 import { getBoxInvitationLinkFieldValidationSchema } from 'constants/validationSchemas/boxes';
 import { SIDES } from '@misakey/ui/constants/drawers';
 
-import { useBoxesContext } from 'components/smart/Context/Boxes';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import { useHistory } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -48,18 +47,15 @@ function PasteBoxLinkScreen({
     () => getBoxInvitationLinkFieldValidationSchema(id), [id],
   );
 
-  const { refresh } = useBoxesContext();
-
   const onSubmit = useCallback(
     ({ [FIELD_NAME]: link }) => {
       const { pathname, hash } = new URL(link);
       return Promise.resolve(replace(`${pathname}${hash}`))
         .then(() => {
           onClose();
-          refresh();
         });
     },
-    [replace, onClose, refresh],
+    [replace, onClose],
   );
 
   return (

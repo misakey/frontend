@@ -133,6 +133,14 @@ const noEmptyOverride = (oldValue, newValue) => {
   return newValue;
 };
 
+// same as noEmptyOverride, but allow nulling values
+const noEmptyNullableOverride = (oldValue, newValue) => {
+  if (newValue === null) {
+    return newValue;
+  }
+  return noEmptyOverride(oldValue, newValue);
+};
+
 /**
  * merge existing entities with received but skipping received empty values
  * @param {Object} state
@@ -145,6 +153,17 @@ export const mergeReceiveNoEmpty = (state, { entities }) => {
     newState = {
       ...newState,
       [entityName]: mergeDeepWith(noEmptyOverride, state[entityName], entity),
+    };
+  });
+  return newState;
+};
+
+export const mergeReceiveNoEmptyNullable = (state, { entities }) => {
+  let newState = { ...state };
+  Object.entries(entities).forEach(([entityName, entity]) => {
+    newState = {
+      ...newState,
+      [entityName]: mergeDeepWith(noEmptyNullableOverride, state[entityName], entity),
     };
   });
   return newState;

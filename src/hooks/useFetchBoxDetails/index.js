@@ -23,7 +23,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
 import SenderSchema from 'store/schemas/Boxes/Sender';
 
-import { makeDenormalizeBoxSelector } from 'store/reducers/box';
+import { makeDenormalizeBoxSelector, receiveJoinedBox } from 'store/reducers/box';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { CLOSED } from 'constants/app/boxes/statuses';
 
@@ -88,9 +88,14 @@ export default (id) => {
     [dispatch],
   );
 
+  const dispatchReceiveJoinedBox = useCallback(
+    (data) => Promise.resolve(dispatch(receiveJoinedBox(data, mergeReceiveNoEmpty))),
+    [dispatch],
+  );
+
   const onSuccess = useCallback(
-    (result) => dispatchReceiveBox({ ...result, id, isMember: true, hasAccess: true }),
-    [dispatchReceiveBox, id],
+    (result) => dispatchReceiveJoinedBox(result),
+    [dispatchReceiveJoinedBox],
   );
 
   const onDefaultError = useCallback(

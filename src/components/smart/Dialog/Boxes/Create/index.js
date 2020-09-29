@@ -4,20 +4,14 @@ import { Form, Field } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
-import { normalize } from 'normalizr';
 import { useDispatch } from 'react-redux';
 import { generatePath, useHistory } from 'react-router-dom';
 import routes from 'routes';
 
-import { ALL } from 'constants/app/boxes/statuses';
-import BoxesSchema from 'store/schemas/Boxes';
 import { boxNameFieldValidationSchema } from 'constants/validationSchemas/boxes';
-import { updatePaginationsToStatus } from 'store/reducers/userBoxes/pagination';
-import { receiveEntities } from '@misakey/store/actions/entities';
-import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import { setBoxSecrets } from '@misakey/crypto/store/actions/concrete';
 
-import { createBoxBuilder, getBoxMembersBuilder } from '@misakey/helpers/builder/boxes';
+import { createBoxBuilder } from '@misakey/helpers/builder/boxes';
 import getRandomTitle from '@misakey/helpers/getRandomTitle';
 import isFunction from '@misakey/helpers/isFunction';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
@@ -93,23 +87,7 @@ function CreateBoxDialog({
   const onSubmitNewBoxSuccess = useCallback(
     async (newBox, secretKey) => {
       const { id } = newBox;
-      let members = [];
-      try {
-        members = await getBoxMembersBuilder(id);
-      } catch (e) {
-        handleHttpErrors(e);
-      }
-      const normalized = normalize({
-        members,
-        ...newBox,
-        hasAccess: true,
-        isMember: true,
-      }, BoxesSchema.entity);
-      const { entities } = normalized;
-      await Promise.all([
-        dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
-        dispatch(updatePaginationsToStatus(id, ALL)),
-      ]);
+
       return Promise.resolve(dispatch(setBoxSecrets({ secretKey })))
         .then(() => {
           if (isFunction(onSuccess)) {
@@ -117,7 +95,7 @@ function CreateBoxDialog({
           }
         })
         .catch(() => {
-          enqueueSnackbar(t('boxes:create.dialog.error.updateBackup'), { variant: 'error' });
+          enqueueSnackbar(t('boxes:create.error.updateBackup'), { variant: 'error' });
         })
         .finally(() => {
           enqueueSnackbar(t('boxes:create.dialog.success'), { variant: 'success' });
@@ -126,7 +104,7 @@ function CreateBoxDialog({
           onClose();
         });
     },
-    [dispatch, enqueueSnackbar, history, onClose, onSuccess, t, handleHttpErrors],
+    [dispatch, enqueueSnackbar, history, onClose, onSuccess, t],
   );
 
   const onSubmitNewBox = useCallback((form, { setSubmitting }) => {

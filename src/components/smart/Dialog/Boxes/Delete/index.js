@@ -5,9 +5,6 @@ import { withTranslation } from 'react-i18next';
 import { Form, Field } from 'formik';
 
 import BoxesSchema from 'store/schemas/Boxes';
-import { removeFromPaginations } from 'store/reducers/userBoxes/pagination';
-import { removeEntities } from '@misakey/store/actions/entities';
-import { removeBoxSecretKeys } from '@misakey/crypto/store/actions/concrete';
 import { boxDeletionDialogValidationSchema } from 'constants/validationSchemas/boxes';
 
 import { deleteBoxBuilder } from '@misakey/helpers/builder/boxes';
@@ -15,10 +12,7 @@ import isFunction from '@misakey/helpers/isFunction';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import { useSnackbar } from 'notistack';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import { useDispatch } from 'react-redux';
-import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 
 import FieldTextStandard from 'components/dumb/Form/Field/Text/Standard';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
@@ -46,35 +40,16 @@ const useStyles = makeStyles((theme) => ({
 
 function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
   const classes = useStyles();
-  const { enqueueSnackbar } = useSnackbar();
-  const dispatch = useDispatch();
   const handleHttpErrors = useHandleHttpErrors();
 
-  const { id, publicKey } = useSafeDestr(box);
-
-  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
-  const secretKey = useMemo(
-    () => publicKeysWeCanDecryptFrom.get(publicKey),
-    [publicKeysWeCanDecryptFrom, publicKey],
-  );
+  const { id } = useSafeDestr(box);
 
   const onDeleteSuccess = useCallback(
     () => {
       const promise = isFunction(onSuccess) ? onSuccess : Promise.resolve;
-      return promise()
-        .then(() => Promise.all([
-          dispatch(removeEntities([{ id }], BoxesSchema)),
-          dispatch(removeFromPaginations(id)),
-        ])
-          .then(() => Promise.resolve(dispatch(removeBoxSecretKeys([secretKey]))))
-          .catch(() => {
-            enqueueSnackbar(t('boxes:delete.error.updateBackup'), { variant: 'error' });
-          })
-          .finally(() => {
-            enqueueSnackbar(t('boxes:delete.success'), { variant: 'success' });
-          }));
+      return promise();
     },
-    [id, secretKey, dispatch, enqueueSnackbar, onSuccess, t],
+    [onSuccess],
   );
 
   const onSubmit = useCallback(

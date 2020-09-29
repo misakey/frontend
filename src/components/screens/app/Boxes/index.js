@@ -30,7 +30,7 @@ import BoxesContextProvider from 'components/smart/Context/Boxes';
 const boxIdMatchParamPath = path(['match', 'params', 'id']);
 
 // COMPONENTS
-function Boxes({ match }) {
+function Boxes({ match, isReady }) {
   const location = useLocation();
   const matchBoxSelected = useRouteMatch(routes.boxes.read._);
   const { params: { id } } = useMemo(
@@ -43,7 +43,7 @@ function Boxes({ match }) {
   const [storageBackupVersion] = useBackupStorageEvent();
 
   const shouldRefresh = useMemo(
-    () => !isNil(backupVersion) && backupVersion === storageBackupVersion,
+    () => !isNil(backupVersion) && backupVersion <= storageBackupVersion,
     [backupVersion, storageBackupVersion],
   );
 
@@ -74,7 +74,7 @@ function Boxes({ match }) {
   }
 
   return (
-    <BoxesContextProvider activeStatus={ALL}>
+    <BoxesContextProvider activeStatus={ALL} isReady={isReady}>
       <Switch>
         <RouteAuthenticatedBoxRead
           path={routes.boxes.read._}
@@ -130,6 +130,7 @@ function Boxes({ match }) {
 
 Boxes.propTypes = {
   match: PropTypes.shape({ path: PropTypes.string }).isRequired,
+  isReady: PropTypes.bool.isRequired,
 };
 
 export default Boxes;

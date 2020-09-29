@@ -3,10 +3,23 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import moment from 'moment';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 
+import BoxesSchema from 'store/schemas/Boxes';
+import { DATE_FULL } from 'constants/formats/dates';
 // import { CLOSED } from 'constants/app/boxes/statuses';
+import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import { updateEntities } from '@misakey/store/actions/entities';
+
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import { useBoxesContext } from 'components/smart/Context/Boxes';
+
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useFetchBoxPublicInfo from 'hooks/useFetchBoxPublicInfo';
+
+import isNil from '@misakey/helpers/isNil';
 
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
@@ -21,14 +34,6 @@ import InfoIcon from '@material-ui/icons/Info';
 // import LeaveBoxDialogButton from 'components/screens/app/Boxes/Read/Events/LeaveBoxDialogButton';
 import Skeleton from '@material-ui/lab/Skeleton';
 import CreateBoxSuggestions from 'components/smart/Box/CreateSuggestions';
-import { makeStyles } from '@material-ui/core/styles';
-import isNil from '@misakey/helpers/isNil';
-import useFetchEffect from '@misakey/hooks/useFetch/effect';
-
-import BoxesSchema from 'store/schemas/Boxes';
-import useFetchBoxPublicInfo from 'hooks/useFetchBoxPublicInfo';
-import { updateEntities } from '@misakey/store/actions/entities';
-import { DATE_FULL } from 'constants/formats/dates';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -46,8 +51,8 @@ function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t })
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { id, title, lastEvent = {} } = useMemo(() => box, [box]);
-  const { sender, serverEventCreatedAt: closedDate } = useMemo(() => lastEvent, [lastEvent]);
+  const { id, title = '', lastEvent, eventsCount } = useMemo(() => box, [box]);
+  const { sender, serverEventCreatedAt: closedDate } = useSafeDestr(lastEvent);
   const { displayName } = useMemo(() => sender || {}, [sender]);
 
   const date = useMemo(
@@ -87,6 +92,8 @@ function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t })
     [date, displayName, isFetching, title],
   );
 
+  const { id: identityId } = useSelector(getCurrentUserSelector) || {};
+
   // const isClosed = useMemo(
   //   () => lifecycle === CLOSED,
   //   [lifecycle],
@@ -96,6 +103,21 @@ function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t })
   //   () => !belongsToCurrentUser && isClosed,
   //   [belongsToCurrentUser, isClosed],
   // );
+
+  // RESET BOX COUNT
+  const { onAckWSUserBox } = useBoxesContext();
+
+  const shouldFetch = useMemo(
+    () => !isNil(id) && !isNil(identityId) && eventsCount > 0,
+    [id, identityId, eventsCount],
+  );
+
+  const onResetBoxEventCount = useCallback(
+    () => onAckWSUserBox(id),
+    [onAckWSUserBox, id],
+  );
+
+  useFetchEffect(onResetBoxEventCount, { shouldFetch });
 
   return (
     <>
@@ -144,13 +166,12 @@ function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t })
           pb={6}
         >
           <InfoIcon className={classes.icon} color="primary" fontSize="large" />
-          {isFetching && (
+          {isFetching ? (
             <>
               <Skeleton width="300" />
               <Skeleton width="600" />
             </>
-          )}
-          {!isFetching && (
+          ) : (
             <>
               <Title align="center">
                 {shouldDisplayDefaultTitle

@@ -117,6 +117,16 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
     [canBeDecrypted, lifecycle, belongsToCurrentUser],
   );
 
+  const showEventsCount = useMemo(
+    () => canBeDecrypted,
+    [canBeDecrypted],
+  );
+
+  const badgeContent = useMemo(
+    () => (showEventsCount ? eventsCount : 0),
+    [showEventsCount, eventsCount],
+  );
+
   const date = useMemo(
     () => getBoxEventLastDate(lastEvent),
     [lastEvent],
@@ -130,7 +140,7 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
     <ListItem key={id} {...linkProps} {...omitTranslationProps(rest)}>
       <ListItemAvatar>
         <Badge
-          badgeContent={eventsCount}
+          badgeContent={badgeContent}
         >
           <BoxAvatar
             src={logoUri}

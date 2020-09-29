@@ -123,7 +123,7 @@ export default (box, boxIsReady) => {
       }));
       setIsBuildingSecretKey(false);
     } catch (error) {
-      enqueueSnackbar(t('boxes:create.dialog.error.updateBackup'), { variant: 'error' });
+      enqueueSnackbar(t('boxes:create.error.updateBackup'), { variant: 'error' });
     }
   }, [dispatch, enqueueSnackbar, t]);
 
@@ -192,7 +192,7 @@ export default (box, boxIsReady) => {
         }
         return Promise.resolve(dispatch(setBoxSecrets(params)));
       } catch (error) {
-        enqueueSnackbar(t('boxes:create.dialog.error.updateBackup'), { variant: 'error' });
+        enqueueSnackbar(t('boxes:create.error.updateBackup'), { variant: 'error' });
         return Promise.resolve();
       }
     },

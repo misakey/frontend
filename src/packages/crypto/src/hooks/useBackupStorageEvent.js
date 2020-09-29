@@ -1,13 +1,7 @@
-import storage from '@misakey/helpers/storage';
 import isNil from '@misakey/helpers/isNil';
+import setStorageLoadedBackup, { STORAGE_KEY } from '@misakey/crypto/helpers/setStorageLoadedBackup';
 
 import { useState, useCallback, useEffect } from 'react';
-
-// CONSTANTS
-export const STORAGE_KEY = 'CRYPTO_BACKUP_VERSION';
-
-// HELPERS
-const setStorageLoadedBackup = (backupVersion) => storage.setItem(STORAGE_KEY, backupVersion);
 
 // HOOKS
 export default () => {
@@ -17,8 +11,9 @@ export default () => {
   const dispatchStorageEvent = useCallback(
     (backupVersion) => {
       if (!isNil(backupVersion) && backupVersion !== lastStorageLoadedBackup) {
-        setStorageLoadedBackup(backupVersion);
+        return setStorageLoadedBackup(backupVersion);
       }
+      return Promise.resolve();
     },
     [lastStorageLoadedBackup],
   );

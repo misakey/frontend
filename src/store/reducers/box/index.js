@@ -6,14 +6,14 @@ import { BLUR_TEXT, CLEAR_TEXT } from 'store/actions/box';
 import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
 import { createSelector } from 'reselect';
 import { receiveEntities, updateEntities, removeEntities } from '@misakey/store/actions/entities';
-import { moveBackUpId, removeFromPaginations } from 'store/reducers/userBoxes/pagination';
 import { normalize, denormalize } from 'normalizr';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
-import { transformReferrerEvent, eventKickedMemberIdentifierValuePath } from 'helpers/boxEvent';
+import { transformReferrerEvent, eventKickedMemberIdentifierValuePath, isMemberEventType } from 'helpers/boxEvent';
 import pluck from '@misakey/helpers/pluck';
 import propOr from '@misakey/helpers/propOr';
 import props from '@misakey/helpers/props';
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 import without from '@misakey/helpers/without';
 import omit from '@misakey/helpers/omit';
 import prop from '@misakey/helpers/prop';
@@ -25,6 +25,22 @@ const INITIAL_STATE = {};
 // HELPERS
 const omitText = (values) => omit(values, ['text']);
 const textProp = prop('text');
+
+const getNextMembers = ({ type, sender, content }, members) => {
+  const senderIdentifierValue = identifierValuePath(sender);
+  if (type === MEMBER_JOIN) {
+    return members.concat([senderIdentifierValue]);
+  }
+
+  if (type === MEMBER_LEAVE) {
+    return without(members, senderIdentifierValue);
+  }
+
+  if (type === MEMBER_KICK) {
+    return without(members, eventKickedMemberIdentifierValuePath(content));
+  }
+  return null;
+};
 
 // SELECTORS
 export const makeDenormalizeBoxSelector = () => createSelector(
@@ -80,6 +96,43 @@ export const makeGetBoxText = () => createSelector(
 );
 
 // THUNKS
+export const receiveJoinedBoxes = (boxes, processStrategy = mergeReceiveNoEmpty) => (dispatch) => {
+  const normalized = normalize(
+    boxes.map((box) => ({ isMember: true, hasAccess: true, ...box })),
+    BoxesSchema.collection,
+  );
+  const { entities } = normalized;
+  return Promise.resolve(
+    dispatch(receiveEntities(entities, processStrategy)),
+  ).then(() => normalized);
+};
+
+export const receiveJoinedBox = (box, processStrategy = mergeReceiveNoEmpty) => (
+  dispatch, getState,
+) => {
+  const { id, lastEvent } = box;
+
+  const nextBox = { isMember: true, hasAccess: true, ...box };
+  if (isMemberEventType(lastEvent)) {
+    const currentBox = getBoxById(getState(), id);
+    if (!isNil(currentBox)) {
+      const { members } = currentBox;
+      if (!isEmpty(members)) {
+        nextBox.members = getNextMembers(lastEvent, members);
+      }
+    }
+  }
+
+  const normalized = normalize(
+    nextBox,
+    BoxesSchema.entity,
+  );
+  const { entities } = normalized;
+  return Promise.resolve(
+    dispatch(receiveEntities(entities, processStrategy)),
+  ).then(() => normalized);
+};
+
 export const removeBox = (id) => (dispatch, getState) => {
   const currentBox = getBoxById(getState(), id);
 
@@ -88,13 +141,12 @@ export const removeBox = (id) => (dispatch, getState) => {
   return Promise.all([
     dispatch(removeEntities(events, BoxEventsSchema)),
     dispatch(removeEntities([{ id }], BoxesSchema)),
-    dispatch(removeFromPaginations(id)),
   ]);
 };
 
 export const addBoxEvent = (id, nextEvent) => (dispatch, getState) => {
   const currentBox = getBoxById(getState(), id);
-  const { events = [], members = [] } = currentBox;
+  const { events = [] } = currentBox;
 
   const lastEvent = nextEvent;
   const changes = {
@@ -103,28 +155,12 @@ export const addBoxEvent = (id, nextEvent) => (dispatch, getState) => {
     events: events.concat([nextEvent]),
   };
 
-  const { type, sender, content } = nextEvent;
-  const senderIdentifierValue = identifierValuePath(sender);
-
-  if (type === MEMBER_JOIN) {
-    changes.members = members.concat([senderIdentifierValue]);
-  }
-
-  if (type === MEMBER_LEAVE) {
-    changes.members = without(members, senderIdentifierValue);
-  }
-
-  if (type === MEMBER_KICK) {
-    changes.members = without(members, eventKickedMemberIdentifierValuePath(content));
-  }
-
   const normalized = normalize(nextEvent, BoxEventsSchema.entity);
   const { entities } = normalized;
 
   return Promise.all([
     dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
     dispatch(updateEntities([{ id, changes }], BoxesSchema)),
-    dispatch(moveBackUpId(id)),
   ]);
 };
 
@@ -145,7 +181,7 @@ export const receiveBoxEvents = (id, nextEvents) => (dispatch, getState) => {
   ]);
 };
 
-export const receiveWSEditEvent = (id, editEvent) => (dispatch, getState) => {
+export const receiveWSEditEvent = (editEvent) => (dispatch, getState) => {
   const { referrerId } = editEvent;
 
   const getEventSelector = makeGetEventSelector();
@@ -158,7 +194,6 @@ export const receiveWSEditEvent = (id, editEvent) => (dispatch, getState) => {
       [{ id: referrerId, changes }],
       BoxEventsSchema,
     )),
-    dispatch(moveBackUpId(id)),
   ]);
 };
 

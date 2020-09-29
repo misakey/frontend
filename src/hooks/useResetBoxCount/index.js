@@ -7,6 +7,7 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
+// @UNUSED
 export default () => {
   const dispatch = useDispatch();
   const handleHttpErrors = useHandleHttpErrors();

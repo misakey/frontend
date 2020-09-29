@@ -105,20 +105,20 @@ function BoxRead({
     );
   }
 
-  if (shouldShowPasteScreen) {
-    return (
-      <PasteLinkScreen
-        box={box}
-        isDrawerOpen={isDrawerOpen}
-      />
-    );
-  }
-
   if (shouldShowJoinScreen) {
     return (
       <MustJoin
         box={box}
         toggleDrawer={toggleDrawer}
+        isDrawerOpen={isDrawerOpen}
+      />
+    );
+  }
+
+  if (shouldShowPasteScreen) {
+    return (
+      <PasteLinkScreen
+        box={box}
         isDrawerOpen={isDrawerOpen}
       />
     );

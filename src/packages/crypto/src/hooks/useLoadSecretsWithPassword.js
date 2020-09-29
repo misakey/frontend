@@ -32,10 +32,12 @@ export default ((skipUpdate = false) => {
       (key) => secrets.boxDecryptionKeys.includes(key),
     );
     const loadSecretsAction = shouldMerge ? loadSecretsAndUpdateBackup : loadSecrets;
+    // do not trigger onStorageEvent when we update backup, as it's already done there
+    const onStorageEventWhenNoBackupUpdate = shouldMerge ? Promise.resolve : onStorageEvent;
     return Promise.all([
       dispatch(loadSecretsAction({ secrets, backupKey, backupVersion })),
       createNewBackupKeyShares(backupKey, accountId),
-      onStorageEvent(backupVersion),
+      onStorageEventWhenNoBackupUpdate(backupVersion),
     ]);
   }, [accountId, createNewBackupKeyShares, currentBoxSecrets, dispatch, onStorageEvent]);
 

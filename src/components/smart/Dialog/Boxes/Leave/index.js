@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -6,8 +6,6 @@ import { withTranslation } from 'react-i18next';
 import routes from 'routes';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import BoxesSchema from 'store/schemas/Boxes';
-import { removeBox } from 'store/reducers/box';
-import { removeBoxSecretKeysAndKeyShares } from '@misakey/crypto/store/actions/concrete';
 
 import { createLeaveBoxEventBuilder } from 'helpers/builder/boxes';
 import isFunction from '@misakey/helpers/isFunction';
@@ -16,8 +14,6 @@ import { getCode } from '@misakey/helpers/apiError';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useSnackbar } from 'notistack';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import { useDispatch } from 'react-redux';
-import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import { useHistory } from 'react-router-dom';
 
 import DialogConfirm from '@misakey/ui/Dialog/Confirm';
@@ -28,37 +24,18 @@ const { forbidden } = errorTypes;
 // COMPONENTS
 function LeaveBoxDialog({ box, t, open, onClose, onSuccess }) {
   const { enqueueSnackbar } = useSnackbar();
-  const dispatch = useDispatch();
   const handleHttpErrors = useHandleHttpErrors();
   const { replace } = useHistory();
 
-  const { id, title, publicKey } = useSafeDestr(box);
+  const { id, title } = useSafeDestr(box);
 
-  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
-  const secretKey = useMemo(
-    () => publicKeysWeCanDecryptFrom.get(publicKey),
-    [publicKeysWeCanDecryptFrom, publicKey],
-  );
 
   const onLeaveSuccess = useCallback(
     () => {
       const promise = isFunction(onSuccess) ? onSuccess : Promise.resolve;
-      return promise()
-        .then(() => Promise.all([
-          dispatch(removeBox(id)),
-          dispatch(removeBoxSecretKeysAndKeyShares({
-            secretKeys: [secretKey],
-            boxIds: [id],
-          })),
-        ])
-          .catch(() => {
-            enqueueSnackbar(t('boxes:leave.error.updateBackup'), { variant: 'error' });
-          })
-          .finally(() => {
-            enqueueSnackbar(t('boxes:leave.success'), { variant: 'success' });
-          }));
+      return promise();
     },
-    [id, secretKey, dispatch, enqueueSnackbar, onSuccess, t],
+    [onSuccess],
   );
 
   const onConfirm = useCallback(

@@ -7,7 +7,7 @@ import { updateEntities } from '@misakey/store/actions/entities';
 import { MEMBER_JOIN } from 'constants/app/boxes/events';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 
-import { getBoxBuilder, createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import isNil from '@misakey/helpers/isNil';
 import { getCode, getDetails } from '@misakey/helpers/apiError';
 
@@ -19,7 +19,6 @@ import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
 import useFetchBoxPublicInfo from 'hooks/useFetchBoxPublicInfo';
-import { useBoxesContext } from 'components/smart/Context/Boxes';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import usePropChanged from '@misakey/hooks/usePropChanged';
 
@@ -49,7 +48,6 @@ function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
   const { hash } = useLocation();
   const { enqueueSnackbar } = useSnackbar();
   const handleHttpErrors = useHandleHttpErrors();
-  const { addBoxItem } = useBoxesContext();
   const [shouldShowPasteScreen, setShouldShowPasteScreen] = useState(false);
 
   const { title, id, hasAccess } = useMemo(() => box, [box]);
@@ -88,17 +86,6 @@ function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
     { onSuccess: onGetPublicInfo, onError: onPublicInfoError, onFinally: resetHashChanged },
   );
 
-  const onSuccess = useCallback(
-    (response) => addBoxItem({ ...response, isMember: true }),
-    [addBoxItem],
-  );
-
-  const getBox = useCallback(
-    () => getBoxBuilder(id),
-    [id],
-  );
-
-
   const onError = useCallback(
     async (error) => {
       const code = getCode(error);
@@ -121,11 +108,6 @@ function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
     [dispatch, handleHttpErrors, id],
   );
 
-  const { wrappedFetch: onFetchBox, isFetching: isFetchingBox } = useFetchCallback(
-    getBox,
-    { onSuccess },
-  );
-
   const createJoinEvent = useCallback(
     () => createBoxEventBuilder(id, { type: MEMBER_JOIN }),
     [id],
@@ -133,7 +115,7 @@ function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
 
   const { wrappedFetch: onJoin, isFetching: isJoining } = useFetchCallback(
     createJoinEvent,
-    { onSuccess: onFetchBox, onError },
+    { onError },
   );
 
   useEffect(
@@ -143,7 +125,7 @@ function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
     [hash],
   );
 
-  if (isFetchingBox || isJoining) {
+  if (isJoining) {
     return <SplashScreen />;
   }
 

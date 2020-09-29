@@ -7,6 +7,8 @@ import ramdaPath from '@misakey/helpers/path';
 import assocPath from '@misakey/helpers/assocPath';
 import propOr from '@misakey/helpers/propOr';
 import omit from '@misakey/helpers/omit';
+import compact from '@misakey/helpers/compact';
+import pathOr from '@misakey/helpers/pathOr';
 import pick from '@misakey/helpers/pick';
 import createReducer from '@misakey/store/reducers/helpers/createReducer';
 import { createSelector } from 'reselect';
@@ -30,6 +32,7 @@ import {
 
 
 // HELPERS
+const pathOrEmptyArray = pathOr([]);
 
 const concatToPath = (values, destObject, path) => (
   assocPath(
@@ -105,6 +108,16 @@ const getEncryptedBackupData = createSelector(
   (state) => ({ data: state.data, backupVersion: state.backupVersion }),
 );
 
+const getBoxSecretKeys = createSelector(
+  getState,
+  (state) => state.secrets,
+  // "compact" removes falsey values
+  (secrets) => compact([
+    ...pathOrEmptyArray(['secrets', 'boxDecryptionKeys'], secrets),
+    ...pathOrEmptyArray(['secrets', 'passive', 'boxDecryptionKeys'], secrets),
+  ]),
+);
+
 const makeGetBoxKeyShare = () => createSelector(
   (state) => getState(state).secrets.boxKeyShares,
   (_, boxId) => boxId,
@@ -125,6 +138,7 @@ export const selectors = {
   areSecretsLoaded,
   currentBoxSecrets,
   getEncryptedBackupData,
+  getBoxSecretKeys,
   makeGetBoxKeyShare,
   makeGetMissingBoxKeyShares,
 };
@@ -195,7 +209,8 @@ function initialize(state, { backupKey, secretKey, vaultKey }) {
 
 function loadSecrets(state, action) {
   return mergeWith(
-    { ...state },
+    {},
+    state,
     pick(['secrets', 'backupKey', 'backupVersion'], action),
     (objValue, srcValue) => {
       if (isArray(objValue)) {

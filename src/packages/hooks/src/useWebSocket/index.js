@@ -5,12 +5,15 @@ import getNextSearch from '@misakey/helpers/getNextSearch';
 import isNil from '@misakey/helpers/isNil';
 import isJSON from '@misakey/helpers/isJSON';
 import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
+import noop from '@misakey/helpers/noop';
 
 import { useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+// import useExponentialBackoff from '@misakey/hooks/useExponentialBackoff';
 
 // CONSTANTS
 export const NORMAL_CLOSE_CODE = 1000;
+export const ABNORMAL_CLOSE_CODE = 1006;
 
 const { token: TOKEN_SELECTOR } = authSelectors;
 
@@ -28,7 +31,7 @@ const defaultOnMessage = (e) => {
 const isSocketOpen = ({ readyState }) => isNil(readyState) || readyState === 1;
 
 // HOOKS
-export default (endpoint, onMessage = defaultOnMessage) => {
+export default (endpoint, onMessage = defaultOnMessage, isReady = true) => {
   const socket = useRef();
 
   const token = useSelector(TOKEN_SELECTOR);
@@ -41,6 +44,8 @@ export default (endpoint, onMessage = defaultOnMessage) => {
     },
     [endpoint, token],
   );
+
+  // const [exponentialBackoff, resetExponentialBackoff] = useExponentialBackoff();
 
   const clearSocket = useCallback(
     () => {
@@ -74,16 +79,32 @@ export default (endpoint, onMessage = defaultOnMessage) => {
         console.error('websocket error:', e); // eslint-disable-line no-console
       };
 
+      // socket.current.onclose = (e) => {
+      //   if (e.code === ABNORMAL_CLOSE_CODE) {
+      //     console.error('ABNORMAL CLOSE');
+      //     exponentialBackoff(onInit);
+      //   }
+      // };
+
+      // socket.current.onopen = () => {
+      //   resetExponentialBackoff();
+      // };
+
       socket.current.onmessage = handleMessage;
     },
-    [socket, endpointWithToken, handleMessage],
+    [endpointWithToken, handleMessage],
   );
 
   useEffect(
     () => {
-      onInit();
-      return clearSocket;
+      if (!isNil(token) && isReady) {
+        onInit();
+        return clearSocket;
+      }
+      return noop;
     },
-    [onInit, clearSocket],
+    [onInit, clearSocket, token, isReady],
   );
+
+  return socket;
 };

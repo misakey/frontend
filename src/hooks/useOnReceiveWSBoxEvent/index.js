@@ -1,7 +1,5 @@
 import { CHANGE_EVENT_TYPES, MEMBER_KICK } from 'constants/app/boxes/events';
 import { receiveWSEditEvent, addBoxEvent } from 'store/reducers/box';
-import BoxesSchema from 'store/schemas/Boxes';
-import { updateEntities } from '@misakey/store/actions/entities';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import isNil from '@misakey/helpers/isNil';
@@ -34,14 +32,13 @@ export default (boxId, addItems) => {
     (event, onClose) => {
       const { referrerId, type, content } = event;
       if (CHANGE_EVENT_TYPES.includes(type) && !isNil(referrerId)) {
-        return Promise.resolve(dispatch(receiveWSEditEvent(boxId, event)));
+        return Promise.resolve(dispatch(receiveWSEditEvent(event)));
       }
       if (type === MEMBER_KICK) {
         const kickedMemberIdentifierValue = eventKickedMemberIdentifierValuePath(content);
         if (kickedMemberIdentifierValue === identifierValue) {
           // @FIXME to handle with backend soon
           onClose(NORMAL_CLOSE_CODE);
-          dispatch(updateEntities([{ id: boxId, changes: { hasAccess: false } }], BoxesSchema));
         }
       }
       return Promise.resolve(dispatch(addBoxEvent(boxId, event)))

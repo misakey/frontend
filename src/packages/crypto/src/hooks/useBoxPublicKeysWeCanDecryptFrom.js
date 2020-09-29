@@ -1,6 +1,7 @@
-import { useSelector } from 'react-redux';
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 
-import compact from '@misakey/helpers/compact';
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import {
   keyPairFromSecretKey,
@@ -26,13 +27,7 @@ function publicKeyFromSecretKey(secretKey) {
  * it is only exported for tests
  * @param {object} cryptoSecrets must be a list of asymetric secret keys
  */
-export function publicKeysWeCanDecryptFrom(cryptoSecrets) {
-  // "compact" removes falsey values
-  const secretKeys = compact([
-    ...cryptoSecrets.boxDecryptionKeys,
-    ...cryptoSecrets.passive.boxDecryptionKeys,
-  ]);
-
+export function publicKeysWeCanDecryptFrom(secretKeys) {
   return new Map(secretKeys.map(
     (secretKey) => [publicKeyFromSecretKey(secretKey), secretKey],
   ));
@@ -48,14 +43,10 @@ export function publicKeysWeCanDecryptFrom(cryptoSecrets) {
  * and a second one for the individual computation of public keys.
  */
 export default function useBoxPublicKeysWeCanDecryptFrom() {
-  const cryptoSecrets = useSelector((store) => store.crypto.secrets);
+  const secretKeys = useSelector(cryptoSelectors.getBoxSecretKeys);
 
-  // @FIXME we would like to use "useMemo"
-  // but for some unknown reason it would not detect changes in cryptoSecrets,
-  // probably some interferences with "useSelector"
-  // return useMemo(
-  //   () => publicKeysWeCanDecryptFrom(cryptoSecrets),
-  //   [cryptoSecrets],
-  // );
-  return publicKeysWeCanDecryptFrom(cryptoSecrets);
+  return useMemo(
+    () => publicKeysWeCanDecryptFrom(secretKeys),
+    [secretKeys],
+  );
 }

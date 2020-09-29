@@ -1,7 +1,7 @@
 import { applyMiddleware, compose, createStore, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 
-import cryptoReducer from './store/reducers';
+import cryptoReducer, { selectors } from './store/reducers';
 
 import {
   // createNewOwnerSecrets,
@@ -81,5 +81,7 @@ test('crypto store handles states from previous versions', async () => {
     backupKey: 'test',
   });
 
-  expect(() => publicKeysWeCanDecryptFrom(store.getState().crypto.secrets)).not.toThrow();
+  const secretKeys = selectors.getBoxSecretKeys(store.getState());
+
+  expect(() => publicKeysWeCanDecryptFrom(secretKeys)).not.toThrow();
 });

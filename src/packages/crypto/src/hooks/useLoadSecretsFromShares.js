@@ -60,6 +60,7 @@ export default (() => {
   return {
     notFound: notFound || isNil(localBackupKeyShare),
     backupKey,
+    isReady: isReady || false,
     isLoadingBackupKey: isFetching || isFetchingBackup || (shouldFetch && !notFound),
   };
 });

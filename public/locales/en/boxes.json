@@ -248,12 +248,12 @@
       "pasteLink": "I have an invitation link",
       "content": "What is the new private space about?",
       "success": "Private space has been successfully created!",
-      "error": {
-        "updateBackup": "An error occurred while updating the vault, be sure to keep your invitation link to avoid loosing access to your private space."
-      },
       "fields": {
         "name": "New private space"
       }
+    },
+    "error": {
+      "updateBackup": "An error occurred while updating the vault, be sure to keep your invitation link to avoid loosing access to your private space."
     }
   },
   "delete": {
@@ -261,10 +261,7 @@
       "description": "Are you sure you want to permanently delete “{{title}}”?\nThis cannot be undone. Please type “delete” to confirm",
       "confirmValue": "delete"
     },
-    "success": "Private space has been deleted.",
-    "error": {
-      "updateBackup": "An error occurred while updating the vault."
-    }
+    "success": "Private space has been deleted."
   },
   "leave": {
     "dialog": {
@@ -272,7 +269,6 @@
     },
     "success": "You left the private space.",
     "error": {
-      "updateBackup": "An error occurred while updating the vault.",
       "forbidden": "You are no longer member of this private space"
     }
   },
@@ -291,6 +287,15 @@
     "lockedScreen": {
       "documentTitle": "Locked interface",
       "text": "<0>What is the password for your vault </0><1><0></0></1><2>?</2>"
+    }
+  },
+  "removeBox": {
+    "updateBackup": {
+      "error": "An error occurred while updating the vault."
+    },
+    "success": {
+      "leave": "You left the private space",
+      "delete": "Private space {{title}} was deleted"
     }
   }
 }
