@@ -11,6 +11,9 @@
     "myVault": {
       "title": "My vault"
     },
+    "myQuota": {
+      "title": "Storage"
+    },
     "myAccount": {
       "title": "My account"
     }
@@ -81,6 +84,6 @@
   },
   "quota": {
     "title": "Storage",
-    "description": "{{currentUsage}} used on {{totalUsage}} free"
+    "description": "{{currentUsage}} used on {{totalUsage}}"
   }
 }

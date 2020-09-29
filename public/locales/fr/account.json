@@ -11,6 +11,9 @@
     "myVault": {
       "title": "Mon coffre-fort"
     },
+    "myQuota": {
+      "title": "Stockage"
+    },
     "myAccount": {
       "title": "Mon compte"
     }
@@ -81,6 +84,6 @@
   },
   "quota": {
     "title": "Stockage",
-    "description": "{{currentUsage}} utilisé sur {{totalUsage}} gratuit"
+    "description": "{{currentUsage}} utilisés sur {{totalUsage}}"
   }
 }

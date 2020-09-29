@@ -18,7 +18,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
-// import UserStorage from 'components/oldScreens/Account/Home/UserStorage';
+import UserStorage from 'components/screens/app/Account/Read/UserStorage';
 // import DeleteAccountListItem from 'components/oldScreens/Account/Home/DeleteAccount';
 import CardIdentityHeader from 'components/dumb/Card/Identity/Header';
 import CardList from 'components/dumb/Card/List';
@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    paddingBottom: theme.spacing(1),
   },
   listItemTextBreak: {
     overflowWrap: 'break-word',
@@ -203,6 +204,18 @@ const CardIdentity = forwardRef(({ identity, t }, ref) => {
           <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
       </CardList>
+      <CardIdentityHeader>{t('account:sections.myQuota.title')}</CardIdentityHeader>
+      <CardList>
+        <ListItem
+          classes={{ container: classes.listItemContainer }}
+          divider
+        >
+          <ListItemIcon className={classes.listItemIcon}>
+            <Typography>{t('account:quota.title')}</Typography>
+          </ListItemIcon>
+          <UserStorage />
+        </ListItem>
+      </CardList>
       <CardIdentityHeader>{t('account:sections.myVault.title')}</CardIdentityHeader>
       <CardList>
         <ListItem
@@ -217,15 +230,6 @@ const CardIdentity = forwardRef(({ identity, t }, ref) => {
           <ListItemText primary={t('account:vault.helperText')} />
           <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
-        {/* <ListItem
-          classes={{ container: classes.listItemContainer }}
-          divider
-        >
-          <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('account:quota.title')}</Typography>
-          </ListItemIcon>
-          <UserStorage />
-        </ListItem> */}
       </CardList>
       {/* <CardIdentityHeader>{t('account:sections.myAccount.title')}</CardIdentityHeader>
       <CardList>

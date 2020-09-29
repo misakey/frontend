@@ -27,4 +27,25 @@ export default {
       auth: true,
     },
   },
+  storageQuota: {
+    find: {
+      method: 'GET',
+      path: '/box-users/:id/storage-quota',
+      auth: true,
+    },
+  },
+  boxUsedSpaces: {
+    find: {
+      method: 'GET',
+      path: '/box-used-spaces',
+      auth: true,
+    },
+  },
+  vaultUsedSpace: {
+    read: {
+      method: 'GET',
+      path: '/box-users/:id/vault-used-space',
+      auth: true,
+    },
+  },
 };

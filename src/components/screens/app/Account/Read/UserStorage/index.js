@@ -1,130 +1,96 @@
-import React, { useMemo, useCallback, useState, useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
-
-import numbro from 'numbro';
-import { FILE_SIZE_FORMAT } from 'constants/formats/numbers';
-
-import { makeStyles } from '@material-ui/core/styles';
-
-import { connect } from 'react-redux';
-import { withTranslation, Trans } from 'react-i18next';
-
-import API from '@misakey/api';
-
+import React, { useCallback, useState, useMemo } from 'react';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import isNil from '@misakey/helpers/isNil';
-import head from '@misakey/helpers/head';
-import prop from '@misakey/helpers/prop';
-import compose from '@misakey/helpers/compose';
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-
-
-import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-
 import LinearProgress from '@material-ui/core/LinearProgress';
+import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 import Typography from '@material-ui/core/Typography';
-
-const TOTAL_STORAGE_SPACE_AVAILABLE = 10 * 1024 * 1024;
-const GET_STORAGE_QUOTA_ENDPOINT = {
-  method: 'GET',
-  path: '/user-storages',
-  auth: true,
-};
-
-const getUsedSpace = compose(
-  prop('usedSpace'),
-  objectToCamelCase,
-  head,
-);
+import { listStorageQuota, listBoxUsedSpaces, readVaultUsedSpace } from '@misakey/helpers/builder/identities';
+import { useSelector } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
+import { useTranslation } from 'react-i18next';
+import formatFileSize from 'helpers/formatFileSize';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '80%',
-    '& > * + *': {
-      marginTop: theme.spacing(2),
-    },
+    width: '100%',
+    padding: theme.spacing(1, 0),
   },
 }));
 
-const useFetchStorageQuota = (
-  setBoxUsage,
-  userId,
-  handleHttpErrors,
-) => useCallback(
-  () => API.use(GET_STORAGE_QUOTA_ENDPOINT)
-    .build(null, null, objectToSnakeCase({ userId }))
-    .send()
-    .then((response) => {
-      if (response.length > 0) {
-        setBoxUsage(getUsedSpace(response));
-      } else {
-        setBoxUsage(0);
-      }
-    })
-    .catch(handleHttpErrors),
-  [
-    setBoxUsage,
-    userId,
-    handleHttpErrors,
-  ],
-);
-
-// @FIXME not used yet, could be reused when implementing user quotas
-const UserStorage = ({ userId }) => {
+function UserStorage() {
+  const [storageQuota, setStorageQuota] = useState([]);
+  const [boxUsedSpaces, setBoxUsedSpaces] = useState([]);
+  const [vaultUsedSpace, setVaultUsedSpace] = useState(null);
+  const currentUser = useSelector(getCurrentUserSelector);
+  const identityId = useMemo(() => currentUser.id, [currentUser.id]);
   const classes = useStyles();
-  const mounted = useRef(false);
-  const [boxUsage, setBoxUsage] = useState(0);
+  const { t } = useTranslation('account');
 
-  const handleHttpErrors = useHandleHttpErrors();
-  const fetchStorageQuota = useFetchStorageQuota(setBoxUsage, userId, handleHttpErrors);
-
-  const boxUsagePercent = useMemo(
-    () => ((isNil(boxUsage)) ? -1 : Math.round((100 * boxUsage) / TOTAL_STORAGE_SPACE_AVAILABLE)),
-    [boxUsage],
+  // fetch quota available
+  const onFetchStorageQuota = useCallback(() => listStorageQuota(identityId), [identityId]);
+  const shouldFetchStorageQuota = useMemo(() => !isNil(identityId), [identityId]);
+  const onSuccessStorageQuota = useCallback((response) => {
+    setStorageQuota(response);
+  }, []);
+  useFetchEffect(
+    onFetchStorageQuota,
+    { shouldFetch: shouldFetchStorageQuota },
+    { onSuccess: onSuccessStorageQuota },
   );
 
-  const boxCurrentUsage = useMemo(() => numbro(boxUsage).format(FILE_SIZE_FORMAT), [boxUsage]);
-  const boxTotalUsage = useMemo(
-    () => numbro(TOTAL_STORAGE_SPACE_AVAILABLE).format(FILE_SIZE_FORMAT),
-    [],
+  // fetch box used space
+  const onFetchBoxUsedSpaces = useCallback(() => listBoxUsedSpaces({ identityId }), [identityId]);
+  const shouldFetchBoxUsedSpaces = useMemo(() => !isNil(identityId), [identityId]);
+  const onSuccessBoxUsedSpaces = useCallback((response) => {
+    setBoxUsedSpaces(response);
+  }, []);
+  useFetchEffect(
+    onFetchBoxUsedSpaces,
+    { shouldFetch: shouldFetchBoxUsedSpaces },
+    { onSuccess: onSuccessBoxUsedSpaces },
   );
 
-  useEffect(
-    () => {
-      if (mounted.current === false) {
-        fetchStorageQuota();
-        mounted.current = true;
-      }
-    },
-    [mounted, fetchStorageQuota],
+  // fetch vault used space
+  const onFetchVaultUsedSpace = useCallback(() => readVaultUsedSpace(identityId), [identityId]);
+  const shouldFetchVaultUsedSpace = useMemo(() => !isNil(identityId), [identityId]);
+  const onSuccessVaultUsedSpace = useCallback((response) => {
+    setVaultUsedSpace(response);
+  }, []);
+  useFetchEffect(
+    onFetchVaultUsedSpace,
+    { shouldFetch: shouldFetchVaultUsedSpace },
+    { onSuccess: onSuccessVaultUsedSpace },
   );
+
+  // compute total used space
+  const totalUsedSpace = useMemo(() => {
+    const total = boxUsedSpaces.reduce((tmpTotal, { value }) => tmpTotal + value, 0);
+    if (isNil(vaultUsedSpace)) {
+      return total;
+    }
+    return total + vaultUsedSpace.value;
+  }, [boxUsedSpaces, vaultUsedSpace]);
+
+  // compute total quota
+  const totalStorageQuota = useMemo(
+    () => storageQuota.reduce(
+      (tmpTotal, { value }) => tmpTotal + value, 0,
+    ), [storageQuota],
+  );
+
+  const storageState = useMemo(() => {
+    if (totalStorageQuota === 0) {
+      return 0;
+    }
+    return (totalUsedSpace / totalStorageQuota) * 100;
+  }, [totalUsedSpace, totalStorageQuota]);
 
   return (
     <div className={classes.root}>
-      <LinearProgress variant="determinate" value={boxUsagePercent} color="secondary" />
-      <Typography>
-        <Trans
-          i18nKey="account:quota.description"
-          values={{
-            currentUsage: boxCurrentUsage,
-            totalUsage: boxTotalUsage,
-          }}
-        >
-          {'{{currentUsage}} of {{totalUsage}} used'}
-        </Trans>
-      </Typography>
+      <LinearProgress variant="determinate" value={storageState} color="secondary" />
+      <Typography color="textSecondary">{t('account:quota.description', { currentUsage: formatFileSize(totalUsedSpace), totalUsage: formatFileSize(totalStorageQuota) })}</Typography>
     </div>
   );
-};
+}
 
-UserStorage.propTypes = {
-  userId: PropTypes.string.isRequired,
-};
-
-// CONNECT
-const mapStateToProps = (state) => ({
-  userId: state.auth.userId,
-});
-
-
-export default connect(mapStateToProps)(withTranslation('account')(UserStorage));
+export default UserStorage;
