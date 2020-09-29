@@ -20,13 +20,6 @@ export default {
       auth: true,
     },
   },
-  coupon: {
-    add: {
-      method: 'POST',
-      path: '/identities/:id/coupons',
-      auth: true,
-    },
-  },
   storageQuota: {
     find: {
       method: 'GET',

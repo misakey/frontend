@@ -241,22 +241,6 @@
     }
   },
   "create": {
-    "notOnTheListDialog": {
-      "title": "Hey\u00a0!",
-      "subtitle": "Pour le moment, la création d'espaces privés nécessite un code d'invitation",
-      "button": "Vous avez un code d'invitation ? Cliquez ici",
-      "getCodeTitle": "Pas de code\u00a0?\u00a0<1>Rejoignez-nous sur Product Hunt\u00a0!</1>",
-      "getCodeSubtitle": "Partagez vos impressions dans la partie commentaires",
-      "getCodeDescription": "Chut... C'est sur la {{number}}e slide de notre page Product Hunt<3/><4/>Vous pouvez aussi <6>partager vos impressions sur le chat early bird Misakey</6>"
-    },
-    "addCouponDialog": {
-      "title": "Bienvenue,",
-      "content": "Saisissez votre code d'invitation pour continuer",
-      "success": "Votre code d'invitation a bien été ajouté. Vous pouvez maintenant créer une nouvelle conversation\u00a0!",
-      "fields": {
-        "coupon": "Code d'invitation"
-      }
-    },
     "dialog": {
       "title": "Nouvelle conversation",
       "pasteLink": "J'ai un lien d'invitation",

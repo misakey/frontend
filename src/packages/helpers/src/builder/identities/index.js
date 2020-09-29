@@ -14,11 +14,6 @@ export const uploadAvatar = ({ id, avatar }) => API
   .build({ id }, toFormData(avatar))
   .send({ contentType: null });
 
-export const addCoupon = ({ id, coupon }) => API
-  .use(API.endpoints.identities.coupon.add)
-  .build({ id }, objectToSnakeCase({ value: coupon }))
-  .send();
-
 export const listStorageQuota = (id) => API
   .use(API.endpoints.identities.storageQuota.find)
   .build({ id })

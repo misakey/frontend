@@ -18,13 +18,6 @@
       "invalid": "Public name must contain from 3 to 254 characters"
     }
   },
-  "coupon": {
-    "label": "Invitation code",
-    "error": {
-      "invalid": "The invitation code is not valid. Please check its value.",
-      "conflict": "You already used this invitation code. You cannot add it twice."
-    }
-  },
   "notifications": {
     "label": "Frequency",
     "action": "Edit",

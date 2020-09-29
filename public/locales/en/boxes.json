@@ -241,22 +241,6 @@
     }
   },
   "create": {
-    "notOnTheListDialog": {
-      "title": "Hey!",
-      "subtitle": "For now, private space creation requires an invitation code",
-      "button": "Have an invite code ? Click here",
-      "getCodeTitle": "Don’t have a code?\u00a0<1>Join us on Product Hunt!</1>",
-      "getCodeSubtitle": "Share your feedback in the comments section",
-      "getCodeDescription": "Shh... It's on the {{number}}th slide of our Product Hunt page<3/><4/>You can also <6>share your feedback on Misakey's early bird chat</6>"
-    },
-    "addCouponDialog": {
-      "title": "Welcome,",
-      "content": "Enter your invitation code to continue",
-      "success": "Your invitation code has been added. You can now create a new box!",
-      "fields": {
-        "coupon": "Invitation code"
-      }
-    },
     "dialog": {
       "title": "New private space",
       "pasteLink": "I have an invitation link",
