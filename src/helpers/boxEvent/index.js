@@ -1,9 +1,8 @@
 import { MSG_DELETE, MSG_EDIT, MEMBER_LEAVE, MEMBER_KICK, MEMBER_EVENT_TYPES } from 'constants/app/boxes/events';
 
 import prop from '@misakey/helpers/prop';
-import path from '@misakey/helpers/path';
 import isNil from '@misakey/helpers/isNil';
-import { identifierValuePath } from 'helpers/sender';
+import { identifierValuePath, senderMatchesIdentifierValue } from 'helpers/sender';
 
 // HELPERS
 const lastEditedAtProp = prop('lastEditedAt');
@@ -18,8 +17,6 @@ export const getBoxEventLastDate = ({ content, serverEventCreatedAt }) => {
 };
 
 export const isBoxEventEdited = ({ content }) => !isNil(lastEditedAtProp(content));
-
-export const eventKickedMemberIdentifierValuePath = path(['kickedMember', 'identifier', 'value']);
 
 export const transformReferrerEvent = (event) => (referrerEvent) => {
   const { type } = event;
@@ -56,10 +53,9 @@ export const isMeLeaveEvent = ({ type, sender }, meIdentifierValue) => {
   return false;
 };
 
-export const isMeKickEvent = ({ type, content }, meIdentifierValue) => {
+export const isMeKickEvent = ({ type, sender }, meIdentifierValue) => {
   if (type === MEMBER_KICK) {
-    const kickedMemberIdentifierValue = eventKickedMemberIdentifierValuePath(content);
-    return kickedMemberIdentifierValue === meIdentifierValue;
+    return senderMatchesIdentifierValue({ sender, identifierValue: meIdentifierValue });
   }
   return false;
 };

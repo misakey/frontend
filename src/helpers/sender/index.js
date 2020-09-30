@@ -15,3 +15,5 @@ export const senderMatchesIdentifierValue = ({ sender, identifierValue }) => {
 
   return !isNil(senderIdentifierValue) && senderIdentifierValue === identifierValue;
 };
+
+export const senderIdMatchesIdentityId = ({ senderId }, identityId) => senderId === identityId;

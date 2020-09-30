@@ -6,10 +6,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
-import { LIFECYCLE, CREATE, MEMBER_KICK } from 'constants/app/boxes/events';
+import { LIFECYCLE, CREATE } from 'constants/app/boxes/events';
 
 import EventBoxInformationPreview from 'components/dumb/Event/Box/Information/Preview';
-import useComputeKickEventTargetedUser from 'hooks/useComputeKickEventTargetedUser';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,18 +41,13 @@ const BoxInformationEvent = ({
     [isFromCurrentUser],
   );
 
-  const { key, kickedUserName } = useComputeKickEventTargetedUser(content);
-
   const text = useMemo(
     () => {
       if (type === LIFECYCLE) {
         return t(`boxes:read.events.information.lifecycle.${content.state}.${author}`, { displayName });
       }
-      if (type === MEMBER_KICK) {
-        return t(`boxes:read.events.information.member.kick.${key}`, { displayName: kickedUserName });
-      }
       return t(`boxes:read.events.information.${type}.${author}`, { displayName, ...content });
-    }, [author, content, displayName, key, kickedUserName, t, type],
+    }, [author, content, displayName, t, type],
   );
 
   if (preview) {
@@ -62,6 +56,7 @@ const BoxInformationEvent = ({
         displayName={displayName}
         isFromCurrentUser={isFromCurrentUser}
         content={content}
+        sender={sender}
         type={type}
       />
     );

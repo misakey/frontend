@@ -117,7 +117,6 @@
           },
           "kick": {
             "they": "{{displayName}} a été retiré·e de l'espace privé",
-            "unknown": "Quelqu'un a été retiré de l'espace privé",
             "you": "Vous avez été retiré·e de l'espace privé"
           }
         },
@@ -147,8 +146,7 @@
             },
             "kick": {
               "they": "{{displayName}} a été retiré·e de l'espace privé",
-              "you": "Vous avez été retiré de l'espace privé",
-              "unknown": "Quelqu'un a été retiré·e de l'espace privé"
+              "you": "Vous avez été retiré de l'espace privé"
             }
           }
         }
@@ -295,7 +293,11 @@
     },
     "success": {
       "leave": "Vous avez quitté l'espace privé",
-      "delete": "L'espace privé {{title}} a été supprimé"
+      "kick": "Vous avez été retiré·e de l'espace privé «\u00a0{{title}}\u00a0»",
+      "delete": {
+        "you": "L'espace privé a été supprimé",
+        "unknown": "Un espace privé a été supprimé"
+      }
     }
   }
 }

@@ -117,8 +117,7 @@
           },
           "kick": {
             "they": "{{displayName}} has been removed from the private space",
-            "you": "You have been removed from the private space",
-            "unknown": "Someone has been removed from the private space"
+            "you": "You have been removed from the private space"
           }
         },
         "preview": {
@@ -147,8 +146,7 @@
             },
             "kick": {
               "they": "{{displayName}} has been removed from the private space",
-              "you": "You have been removed from the private space",
-              "unknown": "Someone has been removed from the private space"
+              "you": "You have been removed from the private space"
             }
           }
         }
@@ -295,7 +293,11 @@
     },
     "success": {
       "leave": "You left the private space",
-      "delete": "Private space {{title}} was deleted"
+      "kick": "You have been removed from the private space “{{title}}”",
+      "delete": {
+        "you": "Private space deleted",
+        "unknown": "A private space has been deleted"
+      }
     }
   }
 }

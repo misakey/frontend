@@ -90,6 +90,8 @@ const ListItemBoxesDeleted = ({ t, activeStatus, search, ...props }) => {
       <ListItemText
         primary={t('boxes:list.deleted.count.text', { count: missingPublicKeysCount })}
         secondary={t('boxes:list.deleted.subtitle.text', { count: missingPublicKeysCount })}
+        primaryTypographyProps={{ noWrap: true }}
+        secondaryTypographyProps={{ noWrap: true }}
       />
       <Menu
         id="boxes-deleted-menu"

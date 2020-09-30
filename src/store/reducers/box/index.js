@@ -8,7 +8,7 @@ import { createSelector } from 'reselect';
 import { receiveEntities, updateEntities, removeEntities } from '@misakey/store/actions/entities';
 import { normalize, denormalize } from 'normalizr';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
-import { transformReferrerEvent, eventKickedMemberIdentifierValuePath, isMemberEventType } from 'helpers/boxEvent';
+import { transformReferrerEvent, isMemberEventType } from 'helpers/boxEvent';
 import pluck from '@misakey/helpers/pluck';
 import propOr from '@misakey/helpers/propOr';
 import props from '@misakey/helpers/props';
@@ -26,19 +26,16 @@ const INITIAL_STATE = {};
 const omitText = (values) => omit(values, ['text']);
 const textProp = prop('text');
 
-const getNextMembers = ({ type, sender, content }, members) => {
+const getNextMembers = ({ type, sender }, members) => {
   const senderIdentifierValue = identifierValuePath(sender);
   if (type === MEMBER_JOIN) {
     return members.concat([senderIdentifierValue]);
   }
 
-  if (type === MEMBER_LEAVE) {
+  if (type === MEMBER_LEAVE || type === MEMBER_KICK) {
     return without(members, senderIdentifierValue);
   }
 
-  if (type === MEMBER_KICK) {
-    return without(members, eventKickedMemberIdentifierValuePath(content));
-  }
   return null;
 };
 

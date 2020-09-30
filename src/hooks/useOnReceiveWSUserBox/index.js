@@ -1,16 +1,26 @@
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import routes from 'routes';
 
 import { isMeLeaveEvent, isMeKickEvent } from 'helpers/boxEvent';
-import { senderMatchesIdentifierValue } from 'helpers/sender';
+import { senderIdMatchesIdentityId } from 'helpers/sender';
+import path from '@misakey/helpers/path';
 
 import { useSelector } from 'react-redux';
+import { useRouteMatch, useHistory } from 'react-router-dom';
 import { useCallback, useMemo, useRef, useEffect } from 'react';
 import { useOnReceiveBox, useOnRemoveBox } from 'hooks/usePaginateBoxesByStatus/updates';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
+import useModifier from '@misakey/hooks/useModifier';
 
 // CONSTANTS
-const { identifierValue: IDENTIFIER_VALUE_SELECTOR } = authSelectors;
+const {
+  identifierValue: IDENTIFIER_VALUE_SELECTOR,
+  identityId: IDENTITY_ID_SELECTOR,
+} = authSelectors;
+
+// HELPERS
+const idParamPath = path(['params', 'id']);
 
 // HOOKS
 export default (activeStatus, search) => {
@@ -21,11 +31,23 @@ export default (activeStatus, search) => {
   const { t } = useTranslation('boxes');
   const tRef = useRef(t);
 
+  const matchBoxSelected = useRouteMatch(routes.boxes.read._);
+  const id = useModifier(idParamPath, matchBoxSelected);
+  const idRef = useRef(id);
+
+  const { replace } = useHistory();
+
+  const idMatchesDeletedBoxId = useCallback(
+    ({ id: boxId }) => idRef.current === boxId,
+    [idRef],
+  );
+
   useEffect(
     () => {
       tRef.current = t;
+      idRef.current = id;
     },
-    [tRef, t],
+    [tRef, t, idRef, id],
   );
 
   const leaveSuccess = useMemo(
@@ -33,18 +55,28 @@ export default (activeStatus, search) => {
     [t],
   );
 
+  const identityId = useSelector(IDENTITY_ID_SELECTOR);
   const identifierValue = useSelector(IDENTIFIER_VALUE_SELECTOR);
 
   const onDeleteSuccess = useCallback(
     (box) => {
-      const { lastEvent: { sender } } = box;
-      if (senderMatchesIdentifierValue({ sender, identifierValue })) {
-        return enqueueSnackbar(tRef.current('boxes:removeBox.success.delete', box), { variant: 'success' });
+      if (senderIdMatchesIdentityId(box, identityId)) {
+        enqueueSnackbar(tRef.current('boxes:removeBox.success.delete.you', box), { variant: 'success' });
+      } else {
+        // @FIXME persist snackbar for this important info ?
+        enqueueSnackbar(tRef.current('boxes:removeBox.success.delete.unknown', box), { variant: 'warning', persist: true });
       }
-      // @FIXME persist snackbar for this important info ?
-      return enqueueSnackbar(tRef.current('boxes:removeBox.success.delete', box), { variant: 'warning', persist: true });
+      if (idMatchesDeletedBoxId(box)) {
+        return replace(routes.boxes._);
+      }
+      return Promise.resolve();
     },
-    [identifierValue, enqueueSnackbar, tRef],
+    [identityId, enqueueSnackbar, tRef, idMatchesDeletedBoxId, replace],
+  );
+
+  const onKickSuccess = useCallback(
+    (box) => enqueueSnackbar(tRef.current('boxes:removeBox.success.kick', box), { variant: 'info' }),
+    [enqueueSnackbar, tRef],
   );
 
 
@@ -62,13 +94,18 @@ export default (activeStatus, search) => {
             .then(() => enqueueSnackbar(leaveSuccess, { variant: 'success' }));
         }
         if (isMeKickEvent(lastEvent, identifierValue)) {
-          return onReceiveBox({ ...object, isMember: false, hasAccess: false });
+          return onRemoveBox(object)
+            .then(() => onKickSuccess(object));
         }
         return onReceiveBox(object);
       }
       // @FIXME should we handle an error ?
       return Promise.resolve();
     },
-    [enqueueSnackbar, identifierValue, leaveSuccess, onDeleteSuccess, onReceiveBox, onRemoveBox],
+    [
+      enqueueSnackbar,
+      identifierValue,
+      leaveSuccess, onDeleteSuccess, onKickSuccess, onReceiveBox, onRemoveBox,
+    ],
   );
 };
