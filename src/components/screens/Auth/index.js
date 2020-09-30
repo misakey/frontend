@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 
-import { PRODUCT_HUNT_APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 import routes from 'routes';
 import { ssoUpdate } from '@misakey/auth/store/actions/sso';
 import { screenAuthReset, screenAuthSetIdentifier } from 'store/actions/screens/auth';
@@ -60,7 +59,6 @@ const useStyles = makeStyles(() => ({
   screen: {
     alignItems: 'center',
     height: 'inherit',
-    marginTop: window.env.PRODUCT_HUNT.BANNER ? PRODUCT_HUNT_APPBAR_HEIGHT : null,
   },
   screenContent: {
     width: '100%',

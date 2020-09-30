@@ -7,7 +7,6 @@ import ErrorBoundary from 'components/smart/ErrorBoundary';
 import { Route, Switch } from 'react-router-dom';
 import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallbackWrapper';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
-import AppBarProductHunt from 'components/dumb/AppBar/ProductHunt';
 import RedirectToSignIn from 'components/dumb/Redirect/ToSignIn';
 
 import './App.scss';
@@ -28,7 +27,6 @@ const TRedirectAuthCallback = withTranslation('common')(RedirectAuthCallback);
 const App = () => (
   <ErrorBoundary maxWidth="md" my={3}>
     <Suspense fallback={<SplashScreenWithTranslation />}>
-      <AppBarProductHunt />
       <Switch>
         {/* AUTH */}
         <Route

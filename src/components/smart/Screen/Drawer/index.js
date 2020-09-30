@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-import { PRODUCT_HUNT_APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 import { DRAWER_QUERY_PARAM, PERMANENT_DRAWER_DESKTOP_WIDTH, PERMANENT_DRAWER_MOBILE_WIDTH } from '@misakey/ui/constants/drawers';
 
 import omit from '@misakey/helpers/omit';
@@ -42,12 +41,9 @@ const useStyles = makeStyles((theme) => ({
   }),
   drawerPaper: ({ drawerWidth }) => ({
     width: drawerWidth,
-    top: window.env.PRODUCT_HUNT.BANNER ? PRODUCT_HUNT_APPBAR_HEIGHT : null,
-    height: window.env.PRODUCT_HUNT.BANNER ? `calc(100% - ${PRODUCT_HUNT_APPBAR_HEIGHT}px)` : null,
   }),
   content: {
-    height: window.env.PRODUCT_HUNT.BANNER ? `calc(100% - ${PRODUCT_HUNT_APPBAR_HEIGHT}px)` : 'inherit',
-    marginTop: window.env.PRODUCT_HUNT.BANNER ? PRODUCT_HUNT_APPBAR_HEIGHT : null,
+    height: 'inherit',
     position: 'relative',
     backgroundColor: theme.palette.background.default,
     transition: theme.transitions.create(['margin', 'width'], {

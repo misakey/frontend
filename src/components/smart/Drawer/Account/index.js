@@ -10,7 +10,6 @@ import useDrawerLayout from '@misakey/hooks/useDrawerLayout';
 
 import Drawer from '@material-ui/core/Drawer';
 import DrawerAccountContent from 'components/smart/Drawer/Account/Content';
-import AppBarProductHunt from 'components/dumb/AppBar/ProductHunt';
 
 // CONSTANTS
 const ACCOUNT = 'account';
@@ -91,9 +90,6 @@ const AccountDrawer = (props) => {
       classes={{ paper: classes.drawerPaper }}
       {...props}
     >
-      {isSmDown && (
-        <AppBarProductHunt position="static" />
-      )}
       <DrawerAccountContent
         backTo={hideDrawerTo}
       />
