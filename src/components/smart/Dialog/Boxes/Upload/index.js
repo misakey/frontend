@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { Form } from 'formik';
@@ -21,7 +21,7 @@ import log from '@misakey/helpers/log';
 import uniqBy from '@misakey/helpers/uniqBy';
 import partition from '@misakey/helpers/partition';
 import promiseAllNoFailFast from '@misakey/helpers/promiseAllNoFailFast';
-import { createBoxEncryptedFileBuilder } from '@misakey/helpers/builder/boxes';
+import { createBoxEncryptedFileWithProgressBuilder } from '@misakey/helpers/builder/boxes';
 import encryptFile from '@misakey/crypto/box/encryptFile';
 
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
@@ -78,6 +78,15 @@ function UploadDialog({
 }) {
   const classes = useStyles();
   const fullScreen = useDialogFullScreen();
+  const [blobsUploadStatus, setBlobsUploadStatus] = useState({});
+
+  const setBlobUploadStatus = useCallback(
+    (index, value) => setBlobsUploadStatus((previousProgress) => ({
+      ...previousProgress,
+      [index]: value,
+    })),
+    [setBlobsUploadStatus],
+  );
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -86,8 +95,14 @@ function UploadDialog({
   const { publicKey, id: boxId } = box;
 
   const handleUpload = useCallback(
-    async (file) => {
+    async (file, index) => {
+      const onProgress = (progress) => setBlobUploadStatus(index, { type: 'upload', progress });
+
+      setBlobUploadStatus(index, { type: 'encryption' });
       const { encryptedFile, encryptedMessageContent } = await encryptFile(file, publicKey);
+      onProgress(0);
+      setBlobUploadStatus(index, { type: 'upload', progress: 0 });
+
 
       const formData = new FormData();
       formData.append('encrypted_file', encryptedFile);
@@ -95,7 +110,11 @@ function UploadDialog({
       formData.append('msg_public_key', publicKey);
 
       try {
-        const response = await createBoxEncryptedFileBuilder(boxId, formData);
+        const response = await createBoxEncryptedFileWithProgressBuilder(
+          boxId, formData, onProgress,
+        );
+        // const response = await createBoxEncryptedFileBuilder(boxId, formData);
+        setBlobUploadStatus(index, { type: 'upload', progress: 100 });
 
         if (isFunction(onSuccess)) {
           onSuccess(response);
@@ -113,7 +132,7 @@ function UploadDialog({
         throw error;
       }
     },
-    [publicKey, boxId, dispatch, onSuccess, enqueueSnackbar, t],
+    [publicKey, boxId, dispatch, onSuccess, enqueueSnackbar, setBlobUploadStatus, t],
   );
 
   const getOnReset = useCallback(
@@ -127,13 +146,14 @@ function UploadDialog({
   const onSubmit = useCallback(
     async (form, { resetForm, setStatus }) => {
       const blobs = form[BLOBS_FIELD_NAME];
+      setBlobsUploadStatus({});
 
       // Could be improved later with a backend endpoint to upload several files at a time
       const newBlobList = await promiseAllNoFailFast(
         blobs
-          .map(async ({ blob, ...rest }) => {
+          .map(async ({ blob, ...rest }, index) => {
             try {
-              const response = await handleUpload(blob);
+              const response = await handleUpload(blob, index);
               return { ...response, ...rest, blob, isSent: true };
             } catch (e) {
               log(e, 'error');
@@ -145,6 +165,7 @@ function UploadDialog({
       const [, errors] = partition(newBlobList, errorPropNil);
 
       resetForm();
+      setBlobsUploadStatus({});
 
       if (isEmpty(errors)) {
         const text = t('boxes:read.upload.success');
@@ -193,6 +214,7 @@ function UploadDialog({
                 renderItem={(props) => <FieldBlobs {...props} />}
                 fileTransform={fileTransform}
                 uniqFn={uniqBlob}
+                uploadStatus={blobsUploadStatus}
                 emptyTitle={(
                   <DialogContentText
                     classes={{ root: classes.dialogContentTextRoot }}

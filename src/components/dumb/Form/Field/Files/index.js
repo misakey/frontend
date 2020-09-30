@@ -63,6 +63,7 @@ const FilesField = ({
   fileTransform,
   emptyTitle,
   uniqFn,
+  uploadStatus,
   renderItem,
   autoFocus,
 }) => {
@@ -132,7 +133,7 @@ const FilesField = ({
         <List dense>
           {value.map((file, index) => (
             <Fragment key={file.key}>
-              {renderItem({ ...file, index, onRemove })}
+              {renderItem({ ...file, uploadStatus: uploadStatus[index], index, onRemove })}
               {displayError && isErrorArray(errorKeys, index) && (
                 <FormHelperText error>
                   {t(errorKeys[index])}
@@ -183,6 +184,7 @@ FilesField.propTypes = {
   emptyTitle: PropTypes.node,
   fileTransform: PropTypes.func,
   uniqFn: PropTypes.func,
+  uploadStatus: PropTypes.object,
   renderItem: PropTypes.func.isRequired,
   autoFocus: PropTypes.bool,
   // withTranslation
@@ -195,6 +197,7 @@ FilesField.defaultProps = {
   emptyTitle: null,
   fileTransform: identity,
   uniqFn: uniq,
+  uploadStatus: {},
   labelText: null,
   prefix: '',
   autoFocus: false,

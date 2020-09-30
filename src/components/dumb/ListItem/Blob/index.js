@@ -14,6 +14,8 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import LockIcon from '@material-ui/icons/Lock';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 
 import isNil from '@misakey/helpers/isNil';
 import formatFileSize from 'helpers/formatFileSize';
@@ -24,6 +26,10 @@ const useStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.grey[300]}`,
     borderRadius: '5px',
     margin: theme.spacing(1, 0),
+  },
+  progress: {
+    marginTop: -12,
+    borderRadius: '0 0 5px 5px',
   },
   paper: {
     border: `1px solid ${theme.palette.grey[300]}`,
@@ -37,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BlobListItem = ({ blob, onRemove, isEncrypted, t }) => {
+const BlobListItem = ({ blob, onRemove, isEncrypted, uploadStatus, t }) => {
   const classes = useStyles();
   const { name, lastModified, size } = useMemo(() => blob, [blob]);
   const formattedSize = useMemo(
@@ -54,36 +60,46 @@ const BlobListItem = ({ blob, onRemove, isEncrypted, t }) => {
   );
 
   return (
-    <ListItem className={classes.root}>
-      <ListItemAvatar>
-        <Avatar className={classes.avatar}>
-          {isEncrypted ? <LockIcon /> : <LockOpenIcon />}
-        </Avatar>
-      </ListItemAvatar>
-      <ListItemText
-        primary={name}
-        secondary={formattedSize}
-        primaryTypographyProps={{ noWrap: true, display: 'block' }}
-        secondaryTypographyProps={{ noWrap: true, display: 'block' }}
-      />
-      <ListItemSecondaryAction>
-        <IconButton onClick={onClick} edge="end" aria-label="menu-more">
-          <MoreVertIcon />
-        </IconButton>
-        <Menu
-          id={`menu-remove-blob-${lastModified}`}
-          anchorEl={anchorEl}
-          keepMounted
-          open={!isNil((anchorEl))}
-          onClose={onClose}
-          classes={{ paper: classes.paper, list: classes.list }}
-          elevation={0}
-          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        >
-          <MenuItem onClick={onRemove}>{t('common:delete')}</MenuItem>
-        </Menu>
-      </ListItemSecondaryAction>
-    </ListItem>
+    <>
+      <ListItem className={classes.root}>
+        <ListItemAvatar>
+          <Avatar className={classes.avatar}>
+            {isEncrypted ? <LockIcon /> : <LockOpenIcon />}
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          primary={name}
+          secondary={formattedSize}
+          primaryTypographyProps={{ noWrap: true, display: 'block' }}
+          secondaryTypographyProps={{ noWrap: true, display: 'block' }}
+        />
+        <ListItemSecondaryAction>
+          <IconButton onClick={onClick} edge="end" aria-label="menu-more">
+            <MoreVertIcon />
+          </IconButton>
+          <Menu
+            id={`menu-remove-blob-${lastModified}`}
+            anchorEl={anchorEl}
+            keepMounted
+            open={!isNil((anchorEl))}
+            onClose={onClose}
+            classes={{ paper: classes.paper, list: classes.list }}
+            elevation={0}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            <MenuItem onClick={onRemove}>{t('common:delete')}</MenuItem>
+          </Menu>
+        </ListItemSecondaryAction>
+      </ListItem>
+      {!isNil(uploadStatus) ? (
+        <LinearProgress
+          className={classes.progress}
+          variant={uploadStatus.type === 'upload' ? 'determinate' : 'indeterminate'}
+          value={isNil(uploadStatus.progress) ? undefined : uploadStatus.progress}
+          color="secondary"
+        />
+      ) : null}
+    </>
   );
 };
 
@@ -92,10 +108,12 @@ BlobListItem.propTypes = {
   onRemove: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   isEncrypted: PropTypes.bool,
+  uploadStatus: PropTypes.object,
 };
 
 BlobListItem.defaultProps = {
   isEncrypted: false,
+  uploadStatus: undefined,
 };
 
 

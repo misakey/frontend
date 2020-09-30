@@ -6,7 +6,7 @@ import BlobListItem from 'components/dumb/ListItem/Blob';
 
 
 // COMPONENTS
-const FieldBlobs = ({ onRemove, blob, isSent, index }) => {
+const FieldBlobs = ({ onRemove, blob, isSent, index, uploadStatus }) => {
   const handleRemove = useCallback(
     () => onRemove(index),
     [onRemove, index],
@@ -17,6 +17,7 @@ const FieldBlobs = ({ onRemove, blob, isSent, index }) => {
       blob={blob}
       isEncrypted={isSent}
       onRemove={handleRemove}
+      uploadStatus={uploadStatus}
     />
   );
 };
@@ -26,10 +27,12 @@ FieldBlobs.propTypes = {
   blob: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,
   isSent: PropTypes.bool,
+  uploadStatus: PropTypes.object,
 };
 
 FieldBlobs.defaultProps = {
   isSent: false,
+  uploadStatus: undefined,
 };
 
 export default FieldBlobs;
