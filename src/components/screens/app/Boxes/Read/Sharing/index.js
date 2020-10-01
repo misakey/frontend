@@ -26,7 +26,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import Box from '@material-ui/core/Box';
@@ -34,7 +33,6 @@ import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import Avatar from '@material-ui/core/Avatar';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
-import IconButton from '@material-ui/core/IconButton';
 
 import CopyIcon from '@material-ui/icons/FilterNone';
 import LinkIcon from '@material-ui/icons/Link';
@@ -146,54 +144,49 @@ function ShareBoxDialog({ box, isDrawerOpen, t }) {
         </AppBarDrawer>
       </ElevationScroll>
       <Box p={CONTENT_SPACING} pt={0} ref={(ref) => setContentRef(ref)} className={classes.content}>
-        <Box className={classes.section}>
-          <List disablePadding>
-            <ListItem disableGutters dense>
-              <ListItemAvatar>
-                <Avatar className={classes.avatar}><LinkIcon fontSize="small" /></Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                primary={t('boxes:read.share.dialog.link.title')}
-                primaryTypographyProps={{ variant: 'h6' }}
-                className={classes.listItemText}
-              />
-              <ListItemSecondaryAction>
-                <IconButton
-                  aria-label={t('common:share')}
-                  onClick={shareAction}
-                  edge="end"
-                  color="secondary"
-                  disabled={isPrivate}
-                >
-                  <CopyIcon fontSize="small" />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-          </List>
-        </Box>
-        {belongsToCurrentUser && (
-          <Box className={classes.section}>
-            <ListItem disableGutters dense>
-              <ListItemAvatar>
-                <Avatar className={classes.avatar}><PersonAddIcon fontSize="small" /></Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                primary={t('boxes:read.share.dialog.accesses.title')}
-                secondary={t('boxes:read.share.dialog.accesses.subtitle')}
-                primaryTypographyProps={{ variant: 'h6' }}
-                className={classes.listItemText}
-              />
-            </ListItem>
-            {isFetching || isNil(accesses) ? <AccessLevelFormSkeleton /> : (
-              <ShareBoxForm
-                isFetching={isFetching}
-                accesses={accesses}
-                boxId={id}
-                invitationURL={invitationURL}
-              />
-            )}
-          </Box>
-        )}
+        <List disablePadding>
+          <ListItem
+            aria-label={t('common:share')}
+            onClick={shareAction}
+            disabled={isPrivate}
+            button
+          >
+            <ListItemAvatar>
+              <Avatar className={classes.avatar}><LinkIcon fontSize="small" /></Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary={t('boxes:read.share.dialog.link.title')}
+              primaryTypographyProps={{ variant: 'h6', color: 'textPrimary' }}
+              className={classes.listItemText}
+            />
+            <CopyIcon fontSize="small" color="action" />
+          </ListItem>
+          {belongsToCurrentUser && (
+            <>
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar className={classes.avatar}><PersonAddIcon fontSize="small" /></Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={t('boxes:read.share.dialog.accesses.title')}
+                  secondary={t('boxes:read.share.dialog.accesses.subtitle')}
+                  primaryTypographyProps={{ variant: 'h6', color: 'textPrimary' }}
+                  className={classes.listItemText}
+                />
+              </ListItem>
+              <Box className={classes.section}>
+                {isFetching || isNil(accesses) ? <AccessLevelFormSkeleton /> : (
+                  <ShareBoxForm
+                    isFetching={isFetching}
+                    accesses={accesses}
+                    boxId={id}
+                    invitationURL={invitationURL}
+                  />
+                )}
+              </Box>
+            </>
+          )}
+        </List>
       </Box>
     </>
   );
