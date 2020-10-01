@@ -34,7 +34,7 @@
     "action": "Edit",
     "helperText": "A picture helps customize my account",
     "error": {
-      "size": "Max size 3Mo. Exceeded",
+      "size": "Max size is 100MB",
       "format": "Incorrect format. Accepted formats: .jpg .jpeg .png .tiff .gif"
     }
   },

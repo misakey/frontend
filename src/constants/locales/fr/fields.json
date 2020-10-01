@@ -45,7 +45,7 @@
   },
   "blobs_files": {
     "error": {
-      "size": "Taille maximale de 9Mo. dépassée",
+      "size": "Taille maximale de fichier: 100Mo",
       "extension": "Format incorrect. Fichier sans extension",
       "name": "Format incorrect. Fichier sans nom"
     }
