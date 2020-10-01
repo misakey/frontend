@@ -1,40 +1,28 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import routes from 'routes';
 import BoxesSchema from 'store/schemas/Boxes';
 
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
+
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
-import ShareBoxDialog from 'components/smart/Dialog/Boxes/Share';
+import { Link } from 'react-router-dom';
 
 function ShareBoxDialogButton({ box, t }) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { id } = useSafeDestr(box);
 
-  const onClick = useCallback(
-    () => {
-      setIsDialogOpen(true);
-    },
-    [setIsDialogOpen],
-  );
-
-  const onClose = useCallback(
-    () => {
-      setIsDialogOpen(false);
-    },
-    [setIsDialogOpen],
-  );
+  const to = useGeneratePathKeepingSearchAndHash(routes.boxes.read.sharing, { id });
 
   return (
     <>
       <Button
-        onClick={onClick}
+        component={Link}
+        to={to}
         standing={BUTTON_STANDINGS.MAIN}
         text={t('common:share')}
-      />
-      <ShareBoxDialog
-        box={box}
-        open={isDialogOpen}
-        onClose={onClose}
       />
     </>
   );

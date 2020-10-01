@@ -102,29 +102,35 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, isMenuActionOpen, onO
   );
 
   const handleSubmit = useCallback(
-    ({ [FIELD]: value }, { setSubmitting, resetForm }) => createBoxEventBuilder(id, {
-      type: MSG_TXT,
-      content: {
-        encrypted: encryptText(value, publicKey),
-        publicKey,
-      },
-    })
-      .then(() => Promise.resolve(dispatch(clearText({ boxId: id }))))
-      .catch((error) => {
-        if (error.code === conflict) {
-          const { details = {} } = error;
-          if (details.lifecycle === conflict) {
-            dispatch(removeEntities([{ id }], BoxesSchema));
-            enqueueSnackbar(t('boxes:read.events.create.error.lifecycle'), { variant: 'error' });
+    (values, { setSubmitting, resetForm }) => {
+      const { [FIELD]: value } = values;
+      return Promise.all([
+        createBoxEventBuilder(id, {
+          type: MSG_TXT,
+          content: {
+            encrypted: encryptText(value, publicKey),
+            publicKey,
+          },
+        }),
+        Promise.resolve(dispatch(clearText({ boxId: id }))),
+        resetForm({ values: INITIAL_VALUES, isSubmitting: true }),
+      ])
+        .catch((error) => {
+          if (error.code === conflict) {
+            const { details = {} } = error;
+            if (details.lifecycle === conflict) {
+              dispatch(removeEntities([{ id }], BoxesSchema));
+              enqueueSnackbar(t('boxes:read.events.create.error.lifecycle'), { variant: 'error' });
+            }
+          } else {
+            resetForm({ values, isSubmitting: true });
+            handleHttpErrors(error);
           }
-        } else {
-          handleHttpErrors(error);
-        }
-      })
-      .finally(() => {
-        setSubmitting(false);
-        resetForm();
-      }),
+        })
+        .finally(() => {
+          setSubmitting(false);
+        });
+    },
     [dispatch, enqueueSnackbar, handleHttpErrors, id, publicKey, t],
   );
 

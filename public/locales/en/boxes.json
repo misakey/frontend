@@ -165,8 +165,7 @@
       "dialog": {
         "title": "Share with people and groups",
         "link": {
-          "title": "Get the link",
-          "subtitle": "Allowed users can read the content of the private space with the link"
+          "title": "Get the link"
         },
         "accesses": {
           "title": "Define accesses",
@@ -284,7 +283,7 @@
     },
     "lockedScreen": {
       "documentTitle": "Locked interface",
-      "text": "<0>What is the password for your vault </0><1><0></0></1><2>?</2>"
+      "text": "<0><0></0></0><1>Your vault is locked</1>"
     }
   },
   "removeBox": {

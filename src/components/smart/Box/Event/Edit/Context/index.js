@@ -23,7 +23,8 @@ const BoxEditEventContextProvider = ({ children }) => {
   const editEvent = useCallback(
     (e) => {
       if (EDITABLE_EVENT_TYPES.includes(e.type)) {
-        setEvent(e);
+        // Refreshes context value anytime we trigger edit
+        setEvent({ ...e });
       }
     },
     [setEvent],

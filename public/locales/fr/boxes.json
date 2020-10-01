@@ -165,8 +165,7 @@
       "dialog": {
         "title": "Partager avec des personnes et des groupes",
         "link": {
-          "title": "Obtenir le lien",
-          "subtitle": "Le lien de partage permet aux utilisateurs et utilisatrices autorisées de lire le contenu de l'espace privé"
+          "title": "Obtenir le lien"
         },
         "accesses": {
           "title": "Définir les accès",
@@ -284,7 +283,7 @@
     },
     "lockedScreen": {
       "documentTitle": "Interface verrouillée",
-      "text": "<0>Quel est le mot de passe pour votre coffre-fort</0><1><0></0></1><2>\u00a0?</2>"
+      "text": "<0><0></0></0><1>Votre coffre-fort est verrouillé</1>"
     }
   },
   "removeBox": {

@@ -122,7 +122,7 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
   // [HANDLE SCROLL]
   usePrevPropEffect(notNilEvents, (prevEvents, nextEvents) => {
     if (isEmpty(prevEvents) && !isEmpty(nextEvents)) {
-      setTimeout(
+      requestAnimationFrame(
         () => scrollToBottom(),
       );
     }
@@ -148,13 +148,13 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
 
   useEffect(
     () => {
-      setTimeout(
+      requestAnimationFrame(
         () => scrollToBottom(),
       );
     },
     [itemCount, scrollToBottom],
   );
-  /// [/HANDLE SCROLL]
+  // [/HANDLE SCROLL]
 
   // UPDATE OFFSET
   useEffect(

@@ -1,42 +1,30 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
+import routes from 'routes';
 import { CLOSED } from 'constants/app/boxes/statuses';
 import BoxesSchema from 'store/schemas/Boxes';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import ShareBoxDialog from 'components/smart/Dialog/Boxes/Share';
 
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 // COMPONENTS
 const ListItemBoxShare = ({ box, t }) => {
-  const [open, setOpen] = useState(false);
-
-  const { lifecycle } = useSafeDestr(box);
+  const { lifecycle, id } = useSafeDestr(box);
 
   const isClosed = useMemo(
     () => lifecycle === CLOSED,
     [lifecycle],
   );
 
-  const onClick = useCallback(
-    () => {
-      setOpen(true);
-    },
-    [setOpen],
-  );
-
-  const onClose = useCallback(
-    () => {
-      setOpen(false);
-    },
-    [setOpen],
-  );
+  const to = useGeneratePathKeepingSearchAndHash(routes.boxes.read.sharing, { id });
 
   return (
     <>
@@ -44,7 +32,8 @@ const ListItemBoxShare = ({ box, t }) => {
         button
         divider
         disabled={isClosed}
-        onClick={onClick}
+        component={Link}
+        to={to}
         aria-label={t('common:share')}
       >
         <ListItemText
@@ -53,11 +42,6 @@ const ListItemBoxShare = ({ box, t }) => {
         />
         {!isClosed && <ChevronRightIcon />}
       </ListItem>
-      <ShareBoxDialog
-        box={box}
-        open={open}
-        onClose={onClose}
-      />
     </>
   );
 };

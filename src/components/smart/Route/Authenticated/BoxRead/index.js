@@ -41,10 +41,7 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   );
 
   const redirectOptions = useMemo(
-    () => {
-      const args = isNil(loginHint) ? options : { ...options, loginHint };
-      return objectToSnakeCase(args);
-    },
+    () => (isNil(loginHint) ? options : { ...options, loginHint }),
     [loginHint, options],
   );
 

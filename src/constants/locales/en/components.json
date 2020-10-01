@@ -91,7 +91,7 @@
   "signinRedirect": {
     "documentTitle": "Authentication",
     "resource": "{{resourceName}} is secured",
-    "acr": "This feature requires a secured account",
+    "acr": "Your authenticated session has ended",
     "default": "The application requires authentication",
     "subtitle": "Confirm your identity to continue"
   },

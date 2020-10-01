@@ -160,7 +160,7 @@ function BoxEventsFooterEditing({ box, event, clearEvent, t }) {
         current.setSelectionRange(eventValue.length, eventValue.length);
       }
     },
-    [inputRef, eventValue],
+    [inputRef, eventValue, eventId, event],
   );
 
   useEffect(

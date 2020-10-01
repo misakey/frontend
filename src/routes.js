@@ -5,6 +5,7 @@ const routes = {
     read: {
       _: '/boxes/:id',
       details: '/boxes/:id/details',
+      sharing: '/boxes/:id/sharing',
       files: '/boxes/:id/files',
     },
     invitation: '/invitation',

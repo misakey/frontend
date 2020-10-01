@@ -70,7 +70,6 @@ function VaultLocked({ t, isDrawerOpen }) {
           flexWrap="wrap"
           i18nKey="boxes:vault.lockedScreen.text"
         >
-          <Title align="center" gutterBottom={false}>Quel est le mot de passe pour votre coffre-fort </Title>
           <Box display="flex" flexWrap="nowrap" p={1}>
             <ChipUser
               displayName={displayName}
@@ -78,7 +77,7 @@ function VaultLocked({ t, isDrawerOpen }) {
               onDelete={logout}
             />
           </Box>
-          <Title align="center" gutterBottom={false}>&nbsp;?</Title>
+          <Title align="center" gutterBottom={false}>Your vault is locked</Title>
         </Box>
         <Formik
           onSubmit={onSubmit}
@@ -97,7 +96,7 @@ function VaultLocked({ t, isDrawerOpen }) {
             <BoxControls
               primary={{
                 type: 'submit',
-                text: t('common:next'),
+                text: t('common:unlock'),
               }}
               formik
             />

@@ -16,6 +16,7 @@ import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 import useFetchBoxDetails from 'hooks/useFetchBoxDetails';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
+import BoxSharing from 'components/screens/app/Boxes/Read/Sharing';
 import BoxNoAccess from './NoAccess';
 import BoxClosed from './Closed';
 import BoxDetails from './Details';
@@ -134,6 +135,16 @@ function BoxRead({
               box={box}
               isDrawerOpen={isDrawerOpen}
               belongsToCurrentUser={belongsToCurrentUser}
+            />
+          )}
+        />
+        <Route
+          path={routes.boxes.read.sharing}
+          render={(routerProps) => (
+            <BoxSharing
+              box={box}
+              isDrawerOpen={isDrawerOpen}
+              {...routerProps}
             />
           )}
         />
