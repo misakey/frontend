@@ -65,7 +65,8 @@
       "button": "Create an account"
     },
     "errors": {
-      "incorrectLink": "Impossible to decrypt from invitation link, it seems incorrect."
+      "malformed": "Invitation link has an invalid format. Did you copy it correctly?",
+      "invalid": "Impossible to decrypt from invitation link, it seems incorrect."
     },
     "info": {
       "closed": "Only admins can access this private space",

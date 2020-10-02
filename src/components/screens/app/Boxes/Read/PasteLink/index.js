@@ -35,7 +35,7 @@ const INITIAL_VALUES = { [FIELD_NAME]: '' };
 
 
 // COMPONENTS
-function PasteBoxLinkScreen({ t, box }) {
+function PasteBoxLinkScreen({ t, box, currentLinkMalformed }) {
   const [redirectTo, setRedirectTo] = useState(null);
 
   const { id } = useSafeDestr(box);
@@ -77,7 +77,9 @@ function PasteBoxLinkScreen({ t, box }) {
           height="100%"
           flexDirection="column"
         >
-          <Title gutterBottom={false}>{t('boxes:pasteLink.broken.title')}</Title>
+          <Title gutterBottom={false}>
+            {currentLinkMalformed ? t('boxes:read.errors.malformed') : t('boxes:pasteLink.broken.title')}
+          </Title>
           <Subtitle>{t('boxes:pasteLink.broken.subtitle')}</Subtitle>
           <Formik
             validationSchema={boxInvitationLinkFieldValidationSchema}
@@ -108,12 +110,14 @@ function PasteBoxLinkScreen({ t, box }) {
 
 PasteBoxLinkScreen.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes),
+  currentLinkMalformed: PropTypes.bool,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
 
 PasteBoxLinkScreen.defaultProps = {
   box: null,
+  currentLinkMalformed: false,
 };
 
 

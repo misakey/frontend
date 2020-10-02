@@ -51,7 +51,7 @@ function NoAccess({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t }) 
 
   const onError = useCallback(
     () => {
-      enqueueSnackbar(t('boxes:read.errors.incorrectLink'), { variant: 'warning' });
+      enqueueSnackbar(t('boxes:read.errors.invalid'), { variant: 'warning' });
     },
     [enqueueSnackbar, t],
   );

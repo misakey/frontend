@@ -65,7 +65,8 @@
       "button": "Créer un compte"
     },
     "errors": {
-      "incorrectLink": "Impossible de déchiffrer à partir du lien d'invitation, il semble incorrect."
+      "malformed": "Le lien d'invitation n'est pas au bon format. Problème de copier-coller ?",
+      "invalid": "Impossible de déchiffrer à partir du lien d'invitation, il semble incorrect."
     },
     "info": {
       "closed": "Seuls les admins ont accès",

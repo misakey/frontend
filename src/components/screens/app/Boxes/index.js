@@ -6,11 +6,15 @@ import routes from 'routes';
 import { ALL } from 'constants/app/boxes/statuses';
 import { UUID4_REGEX } from 'constants/regex';
 import { selectors } from '@misakey/crypto/store/reducers';
+import { computeInvitationHash } from '@misakey/crypto/box/keySplitting';
+import { BadKeyShareFormat } from '@misakey/crypto/Errors/classes';
 
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 import path from '@misakey/helpers/path';
 
 import useBackupStorageEvent from '@misakey/crypto/hooks/useBackupStorageEvent';
+import useSetBoxKeyShareInUrl from '@misakey/crypto/hooks/useSetBoxKeyShareInUrl';
 import { useSelector } from 'react-redux';
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 
@@ -21,6 +25,7 @@ import BoxRead from 'components/screens/app/Boxes/Read';
 import BoxNone from 'components/screens/app/Boxes/None';
 import RouteAcr from '@misakey/auth/components/Route/Acr';
 import RouteAuthenticatedBoxRead from 'components/smart/Route/Authenticated/BoxRead';
+import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
 
 import Redirect from '@misakey/ui/Redirect';
 import DrawerSplashScreen from 'components/smart/Screen/Drawer/Splash';
@@ -32,6 +37,7 @@ const boxIdMatchParamPath = path(['match', 'params', 'id']);
 // COMPONENTS
 function Boxes({ match, isReady }) {
   const location = useLocation();
+  const { hash: locationHash } = location;
   const matchBoxSelected = useRouteMatch(routes.boxes.read._);
   const { params: { id } } = useMemo(
     () => matchBoxSelected || { params: {} },
@@ -41,6 +47,24 @@ function Boxes({ match, isReady }) {
   const { backupVersion } = useSelector(selectors.getEncryptedBackupData);
 
   const [storageBackupVersion] = useBackupStorageEvent();
+
+  useSetBoxKeyShareInUrl(id);
+
+  const badKeyShareFormat = useMemo(() => {
+    const keyShare = locationHash.substr(1);
+    if (isEmpty(keyShare)) {
+      return false;
+    }
+    try {
+      computeInvitationHash(locationHash.substr(1));
+      return false;
+    } catch (error) {
+      if (error instanceof BadKeyShareFormat) {
+        return true;
+      }
+      throw error;
+    }
+  }, [locationHash]);
 
   const shouldRefresh = useMemo(
     () => !isNil(backupVersion) && backupVersion <= storageBackupVersion,
@@ -60,6 +84,27 @@ function Boxes({ match, isReady }) {
     }
     return (drawerProps) => <BoxesList {...drawerProps} />;
   }, [shouldDisplayLockedScreen]);
+
+  if (badKeyShareFormat) {
+    return (
+      <ScreenDrawer
+        drawerChildren={drawerChildren}
+        isFullWidth={isFullWidth}
+        initialIsDrawerOpen={isNothingSelected}
+      >
+        {(drawerProps) => (
+          <PasteLinkScreen
+            box={{
+              /* this screen expects a box object but only uses the ID */
+              id,
+            }}
+            currentLinkMalformed
+            {...drawerProps}
+          />
+        )}
+      </ScreenDrawer>
+    );
+  }
 
   if (shouldRefresh) {
     return (

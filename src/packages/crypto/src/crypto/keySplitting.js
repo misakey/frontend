@@ -10,6 +10,7 @@
 
 import { hash } from 'tweetnacl';
 
+import { BadKeyShareFormat } from '@misakey/crypto/Errors/classes';
 import { encodeBase64, decodeBase64 } from '../helpers/base64';
 
 import { share, combine } from './core/secretSharing';
@@ -32,9 +33,20 @@ export function splitKey(key) {
   };
 }
 
-export const hashShare = (theShare) => (
-  hashBinaryShare(decodeBase64(theShare, { urlSafe: true }))
-);
+export function hashShare(theShare) {
+  let binaryShare;
+  try {
+    binaryShare = decodeBase64(theShare, { urlSafe: true });
+  } catch (error) {
+    throw new BadKeyShareFormat(error.message);
+  }
+
+  if (binaryShare.length !== 32) {
+    throw new BadKeyShareFormat(`key share length (${binaryShare.length}) is not 32`);
+  }
+
+  return hashBinaryShare(binaryShare);
+}
 
 export function combineShares(userShare, misakeyShare) {
   const key = combine(

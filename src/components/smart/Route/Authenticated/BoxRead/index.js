@@ -1,6 +1,9 @@
 import React, { useState, useMemo, useCallback, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
+import { useSnackbar } from 'notistack';
+import { useTranslation } from 'react-i18next';
+
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import { UserManagerContext } from '@misakey/auth/components/OidcProvider';
 
@@ -10,6 +13,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import { getCode } from '@misakey/helpers/apiError';
 import { getBoxPublicBuilder } from '@misakey/helpers/builder/boxes';
 import { computeInvitationHash } from '@misakey/crypto/box/keySplitting';
+import { BadKeyShareFormat } from '@misakey/crypto/Errors/classes';
 
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
@@ -32,6 +36,8 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   const { askSigninRedirect } = useContext(UserManagerContext);
 
   const handleHttpErrors = useHandleHttpErrors();
+  const { enqueueSnackbar } = useSnackbar();
+  const { t } = useTranslation('boxes');
 
   const loginHint = useMemo(
     () => (!isNil(resourceName)
@@ -62,10 +68,13 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
       try {
         return computeInvitationHash(locationHash.substr(1));
       } catch (e) {
+        if (e instanceof BadKeyShareFormat) {
+          enqueueSnackbar(t('boxes:read.errors.malformed'), { variant: 'warning' });
+        }
         return null;
       }
     },
-    [locationHash],
+    [locationHash, enqueueSnackbar, t],
   );
 
   const shouldFetch = useMemo(

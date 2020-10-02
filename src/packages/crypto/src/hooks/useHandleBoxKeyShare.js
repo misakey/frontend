@@ -202,7 +202,7 @@ export default (box, boxIsReady) => {
   const onUrlKeyShareInvalid = useCallback(
     (err) => {
       if (err instanceof InvalidHash) {
-        enqueueSnackbar(t('boxes:read.errors.incorrectLink'), { variant: 'warning' });
+        enqueueSnackbar(t('boxes:read.errors.invalid'), { variant: 'warning' });
         removeHash();
       }
     },

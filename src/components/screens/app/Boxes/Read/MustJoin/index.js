@@ -68,7 +68,7 @@ function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
   const onPublicInfoError = useCallback(
     () => {
       setShouldShowPasteScreen(true);
-      enqueueSnackbar(t('boxes:read.errors.incorrectLink'), { variant: 'warning' });
+      enqueueSnackbar(t('boxes:read.errors.invalid'), { variant: 'warning' });
     },
     [enqueueSnackbar, t],
   );
