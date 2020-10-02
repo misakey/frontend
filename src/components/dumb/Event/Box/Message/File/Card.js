@@ -10,6 +10,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isEmpty from '@misakey/helpers/isEmpty';
+import eventStopPropagation from '@misakey/helpers/event/stopPropagation';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
@@ -129,6 +130,7 @@ const FileCardEvent = forwardRef(({
         <ButtonBase
           className={clsx(classes.filePreview)}
           onClick={onClick}
+          onTouchStart={eventStopPropagation}
           disabled={isNil(onClick)}
         >
           <BoxFile

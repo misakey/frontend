@@ -1,9 +1,11 @@
 
-import React, { useState, useMemo, useCallback, forwardRef, createContext, useContext } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback, forwardRef, createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
+import path from '@misakey/helpers/path';
+import head from '@misakey/helpers/head';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useCombinedRefs from '@misakey/hooks/useCombinedRefs';
@@ -27,6 +29,7 @@ const INITIAL_MOUSE = {
 
 // HELPERS
 const hasHref = (element) => !isEmpty(element.href);
+const touchRefTargetPath = path(['current', 'target']);
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -48,10 +51,12 @@ const withContextMenu = (Component) => {
   // NB: items requires nodes in array synthax not to trigger material-ui warnings
   // https://github.com/mui-org/material-ui/issues/16181
   // ex: items={[<MenuItem>a</MenuItem>, <MenuItem>b</MenuItem>]}
-  let ComponentWithContextMenu = ({ items, menuProps, children, ...props }, ref) => {
+  let ComponentWithContextMenu = ({ items, menuProps, children, permanent, ...props }, ref) => {
     const [mouse, setMouse] = useState(INITIAL_MOUSE);
 
     const [popperAnchorEl, setPopperAnchorEl] = useState(null);
+
+    const touchRef = useRef();
 
     const combinedRef = useCombinedRefs(ref);
 
@@ -99,6 +104,48 @@ const withContextMenu = (Component) => {
       [setMouse],
     );
 
+    const contextProviderValue = useMemo(
+      () => ({ onClose }),
+      [onClose],
+    );
+
+    const onTouchStart = useCallback(
+      (e) => {
+        const { target, touches } = e;
+        if (hasHref(target) || touches.length > 1) {
+          return;
+        }
+        if (hasItems) {
+          touchRef.current = head(touches);
+        }
+      },
+      [touchRef, hasItems],
+    );
+
+    const onTouchMove = useCallback(
+      () => {
+        touchRef.current = undefined;
+      },
+      [touchRef],
+    );
+
+    const onTouchEnd = useCallback(
+      (e) => {
+        const { target } = e;
+        const touchRefTarget = touchRefTargetPath(touchRef);
+        if (hasHref(target) || target !== touchRefTarget) {
+          return;
+        }
+        e.preventDefault();
+        const { current } = touchRef;
+        setMouse({
+          x: current.clientX,
+          y: current.clientY,
+        });
+      },
+      [setMouse, touchRef],
+    );
+
     const onEnter = useCallback(
       () => {
         setPopperAnchorEl(combinedRef.current);
@@ -113,9 +160,31 @@ const withContextMenu = (Component) => {
       [setPopperAnchorEl],
     );
 
-    const contextProviderValue = useMemo(
-      () => ({ onClose }),
-      [onClose],
+    const hoverProps = useMemo(
+      () => (permanent
+        ? {}
+        : {
+          onMouseEnter: onEnter,
+          onMouseLeave: onLeave,
+        }),
+      [permanent, onEnter, onLeave],
+    );
+
+    const touchProps = useMemo(
+      () => (permanent
+        ? {}
+        : { onTouchStart, onTouchMove, onTouchEnd }
+      ),
+      [permanent, onTouchStart, onTouchMove, onTouchEnd],
+    );
+
+    useEffect(
+      () => {
+        if (permanent) {
+          setPopperAnchorEl(combinedRef.current);
+        }
+      },
+      [setPopperAnchorEl, combinedRef, permanent],
     );
 
     return (
@@ -123,8 +192,8 @@ const withContextMenu = (Component) => {
         <Component
           ref={combinedRef}
           onContextMenu={onContextMenu}
-          onMouseEnter={onEnter}
-          onMouseLeave={onLeave}
+          {...touchProps}
+          {...hoverProps}
           {...props}
         >
           <Popper
@@ -163,12 +232,14 @@ const withContextMenu = (Component) => {
     items: PropTypes.node,
     menuProps: PropTypes.object,
     children: PropTypes.node,
+    permanent: PropTypes.bool,
   };
 
   ComponentWithContextMenu.defaultProps = {
     items: null,
     menuProps: {},
     children: null,
+    permanent: false,
   };
 
   return ComponentWithContextMenu;
