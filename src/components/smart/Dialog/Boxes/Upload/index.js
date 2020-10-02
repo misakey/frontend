@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import { useSnackbar } from 'notistack';
-import { withTranslation, Trans } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import BoxesSchema from 'store/schemas/Boxes';
 import { removeEntities } from '@misakey/store/actions/entities';
@@ -226,18 +226,16 @@ function UploadDialog({
                 autoFocus={autoFocus}
               />
               <FormHelperText>
-                <Trans i18nKey={t('boxes:read.upload.dialog.helperText')}>
-                  Déposer le fichier que vous souhaitez chiffrer.
-                  {' '}
-                  <Link
-                    href={t('boxes:read.upload.dialog.helperLink')}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    color="secondary"
-                  >
-                    En savoir plus
-                  </Link>
-                </Trans>
+                {t('boxes:read.upload.dialog.helperText')}
+                &nbsp;
+                <Link
+                  href={t('boxes:read.upload.dialog.helperLink')}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  color="secondary"
+                >
+                  {t('boxes:read.upload.dialog.helperLinkText')}
+                </Link>
               </FormHelperText>
             </DialogContent>
           </Form>

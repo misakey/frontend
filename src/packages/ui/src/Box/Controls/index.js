@@ -69,6 +69,7 @@ const BoxControls = ({ primary, secondary, formik, ...rest }) => {
       width="100%"
       display="flex"
       flexDirection="row"
+      flexWrap="wrap"
       justifyContent={justifyContent}
       className={classes.boxRoot}
       {...rest}

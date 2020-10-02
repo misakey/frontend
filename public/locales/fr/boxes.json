@@ -154,10 +154,11 @@
     },
     "upload": {
       "dialog": {
-        "text": "Quel fichier souhaitez vous chiffrer\u00a0?",
-        "label": "Nouveau fichier à chiffrer",
-        "helperText": "Déposer le fichier que vous souhaitez chiffrer. <1>En savoir plus</1>",
-        "helperLink": "https://docs.misakey.com/#/fr/"
+        "text": "Quels fichiers souhaitez vous chiffrer\u00a0?",
+        "label": "Nouveaux fichiers à chiffrer",
+        "helperText": "Déposer les fichiers que vous souhaitez chiffrer.",
+        "helperLink": "https://docs.misakey.com/#/fr/",
+        "helperLinkText": "En savoir plus"
       },
       "success": "Les fichiers ont été envoyé avec succès\u00a0!"
     },

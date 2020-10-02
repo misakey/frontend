@@ -95,25 +95,25 @@ const DialogSigninRedirect = ({
 
   const title = useMemo(
     () => {
-      if (!isNil(acrValues)) {
-        return t('components:signinRedirect.acr');
+      if (!isNil(currentUser)) {
+        return t('components:signinRedirect.user');
       }
       if (!isNil(resourceName)) {
         return t('components:signinRedirect.resource', { resourceName });
       }
       return t('components:signinRedirect.default');
     },
-    [resourceName, acrValues, t],
+    [resourceName, currentUser, t],
   );
 
   const submitText = useMemo(
     () => {
-      if (!isNil(acrValues)) {
+      if (!isNil(currentUser)) {
         return t('common:unlock');
       }
       return t('common:confirm');
     },
-    [acrValues, t],
+    [currentUser, t],
   );
 
   const onDelete = useSignOut(userManager);

@@ -101,7 +101,7 @@
   "signinRedirect": {
     "documentTitle": "Authentification",
     "resource": "{{resourceName}} est protégé",
-    "acr": "Votre session authentifiée est terminée",
+    "user": "Votre session authentifiée est expirée",
     "default": "L'application nécessite une authentification",
     "subtitle": "Confirmez votre identité pour y accéder"
   },

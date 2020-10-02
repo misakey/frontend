@@ -154,10 +154,11 @@
     },
     "upload": {
       "dialog": {
-        "text": "What file do you want to encrypt?",
-        "label": "New file to encrypt",
-        "helperText": "Drop the file you want to encrypt. <1>Learn more</1>",
-        "helperLink": "https://docs.misakey.com/#/en/"
+        "text": "Which files do you want to encrypt?",
+        "label": "New files to encrypt",
+        "helperText": "Drop the files you want to encrypt.",
+        "helperLink": "https://docs.misakey.com/#/en/",
+        "helperLinkText": "Learn more"
       },
       "success": "Files have been sent successfully!"
     },
