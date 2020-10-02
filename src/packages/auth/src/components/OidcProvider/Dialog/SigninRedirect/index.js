@@ -9,6 +9,7 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import useSignOut from '@misakey/auth/hooks/useSignOut';
 import { useSelector } from 'react-redux';
@@ -54,18 +55,23 @@ const DialogSigninRedirect = ({
 
   const { resourceName } = useSafeDestr(objLoginHint);
 
+  const propsWithoutTranslation = useMemo(
+    () => omitTranslationProps(props),
+    [props],
+  );
+
   const redirectOptions = useMemo(
     () => (isNil(acrValues)
       ? {
-        ...props,
+        ...propsWithoutTranslation,
         loginHint,
       }
       : {
-        ...props,
+        ...propsWithoutTranslation,
         loginHint,
         acrValues,
       }),
-    [acrValues, loginHint, props],
+    [acrValues, loginHint, propsWithoutTranslation],
   );
 
   const closableDialogProps = useMemo(
@@ -122,10 +128,9 @@ const DialogSigninRedirect = ({
       const options = isEmpty(identifier)
         ? redirectOptions
         : { ...redirectOptions, loginHint: JSON.stringify({ identifier }) };
-      return onRedirect(options)
-        .then(onClose);
+      return onRedirect(options);
     }),
-    [onRedirect, onClose, redirectOptions],
+    [onRedirect, redirectOptions],
   );
 
   useUpdateDocHead(t('components:signinRedirect.documentTitle'));

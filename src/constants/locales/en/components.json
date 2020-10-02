@@ -115,5 +115,8 @@
     "title": "Preview",
     "button": "Button",
     "chat": "Private space"
+  },
+  "offline": {
+    "alert": "No Internet access"
   }
 }

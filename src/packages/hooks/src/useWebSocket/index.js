@@ -9,7 +9,7 @@ import noop from '@misakey/helpers/noop';
 
 import { useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-// import useExponentialBackoff from '@misakey/hooks/useExponentialBackoff';
+import useExponentialBackoff from '@misakey/hooks/useWebSocket/exponentialBackoff';
 
 // CONSTANTS
 export const NORMAL_CLOSE_CODE = 1000;
@@ -45,7 +45,7 @@ export default (endpoint, onMessage = defaultOnMessage, isReady = true) => {
     [endpoint, token],
   );
 
-  // const [exponentialBackoff, resetExponentialBackoff] = useExponentialBackoff();
+  const [exponentialBackoff, resetExponentialBackoff] = useExponentialBackoff();
 
   const clearSocket = useCallback(
     () => {
@@ -79,20 +79,19 @@ export default (endpoint, onMessage = defaultOnMessage, isReady = true) => {
         console.error('websocket error:', e); // eslint-disable-line no-console
       };
 
-      // socket.current.onclose = (e) => {
-      //   if (e.code === ABNORMAL_CLOSE_CODE) {
-      //     console.error('ABNORMAL CLOSE');
-      //     exponentialBackoff(onInit);
-      //   }
-      // };
+      socket.current.onclose = (e) => {
+        if (e.code === ABNORMAL_CLOSE_CODE) {
+          exponentialBackoff(onInit);
+        }
+      };
 
-      // socket.current.onopen = () => {
-      //   resetExponentialBackoff();
-      // };
+      socket.current.onopen = () => {
+        resetExponentialBackoff();
+      };
 
       socket.current.onmessage = handleMessage;
     },
-    [endpointWithToken, handleMessage],
+    [endpointWithToken, handleMessage, exponentialBackoff, resetExponentialBackoff],
   );
 
   useEffect(

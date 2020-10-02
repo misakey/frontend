@@ -6,6 +6,7 @@ import toLower from '@misakey/helpers/toLower';
 import isNil from '@misakey/helpers/isNil';
 import map from '@misakey/helpers/map';
 import log from '@misakey/helpers/log';
+import retry from '@misakey/api/Endpoint/retry';
 
 const DEFAULT_INIT_OPTIONS = {
   redirect: 'follow',
@@ -121,7 +122,7 @@ const applyMiddlewares = (requestOrResponse, endpoint) => {
   return middlewareResult;
 };
 
-const makeRequest = (headers, endpoint) => {
+const makeRequest = (headers, endpoint, retryOptions) => {
   const { initOptions, method, requestUri, body } = endpoint;
   const contentType = headers.get('Content-Type');
   const init = {
@@ -139,7 +140,7 @@ const makeRequest = (headers, endpoint) => {
 
   const middlewareRequest = applyMiddlewares({ requestUri, init }, endpoint);
   return isNil(middlewareRequest)
-    ? fetch(requestUri, init)
+    ? retry(requestUri, init, retryOptions)
     : Promise.resolve(middlewareRequest);
 };
 
@@ -151,7 +152,7 @@ const makeRequest = (headers, endpoint) => {
  * @returns {Promise<Response>|Promise}
  */
 function send(options = {}, endpoint = this) {
-  const { rawRequest, contentType = 'application/json', headers: optionsHeaders } = options;
+  const { rawRequest, contentType = 'application/json', headers: optionsHeaders, retryOptions } = options;
   const { token, auth, path } = endpoint;
 
   let headers = new Headers();
@@ -166,19 +167,18 @@ function send(options = {}, endpoint = this) {
     if (!token) { throw new Error(`${path} requires token to be truthy`); }
     headers.set('Authorization', `Bearer ${token}`);
   }
-
-  const request = makeRequest(headers, endpoint);
-
-  if (rawRequest === true) { return request; }
-
-  return request
-    .then((rawResponse) => {
-      const middlewareResponse = applyMiddlewares(rawResponse, endpoint);
-      return isNil(middlewareResponse) ? handleResponse(rawResponse) : middlewareResponse;
-    })
+  return (rawRequest === true
+    ? makeRequest(headers, endpoint, retryOptions)
+    : makeRequest(headers, endpoint, retryOptions)
+      .then((rawResponse) => {
+        const middlewareResponse = applyMiddlewares(rawResponse, endpoint);
+        return isNil(middlewareResponse) ? handleResponse(rawResponse) : middlewareResponse;
+      }))
     .catch((error) => {
-      log(error);
-      throw error;
+      const middlewareError = applyMiddlewares(error, endpoint);
+      const finalError = isNil(middlewareError) ? error : middlewareError;
+      log(finalError);
+      throw finalError;
     });
 }
 

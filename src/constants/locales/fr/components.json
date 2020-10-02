@@ -125,5 +125,8 @@
     "title": "Aperçu",
     "button": "Bouton",
     "chat": "Espace privé"
+  },
+  "offline": {
+    "alert": "Pas d'accès à Internet"
   }
 }

@@ -16,7 +16,7 @@ export function getNowhere() {
     undefined,
     undefined,
     'http://nowhere',
-  ).send();
+  ).send({ retryOptions: { retries: 0 } });
 }
 
 /**

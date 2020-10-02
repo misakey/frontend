@@ -8,7 +8,9 @@ const invalidTokenMiddleware = (dispatch, callback) => (rawResponse, endpoint) =
   // consequences are acceptable (case 401 !== no valid token are rare,
   // if hydra cannot answer for example) in that case it's safer to do as is user is not
   // authenticated anymore.
-  const match = rawResponse.status === 401 && endpoint.auth === true;
+  const match = rawResponse instanceof Response
+    && rawResponse.status === 401
+    && endpoint.auth === true;
 
   if (match && isFunction(dispatch)) {
     dispatch(authReset());

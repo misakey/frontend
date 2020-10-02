@@ -20,7 +20,9 @@ export default (delay) => {
   let floodManagementToken;
 
   return (request, endpoint) => {
-    const match = FLOOD_MANAGEMENT_METHODS.includes(getRequestMethod(request));
+    const match = !(request instanceof Response)
+      && !(request instanceof Error)
+      && FLOOD_MANAGEMENT_METHODS.includes(getRequestMethod(request));
 
     if (match) {
       const { token } = endpoint;

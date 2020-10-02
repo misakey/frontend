@@ -5,7 +5,7 @@ import { authSeclevelWarningShow } from 'store/actions/warning';
 
 
 const invalidSeclevelnMiddleware = (dispatch) => (rawResponse) => {
-  const match = rawResponse.status === HttpStatus.FORBIDDEN;
+  const match = rawResponse instanceof Response && rawResponse.status === HttpStatus.FORBIDDEN;
   if (match) {
     const contentType = rawResponse.headers.get('Content-Type') || '';
 

@@ -33,6 +33,7 @@ import SplashScreen from '@misakey/ui/Screen/Splash';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 import OidcProvider from '@misakey/auth/components/OidcProvider'; // OIDC provider
 import { SnackbarProvider } from 'notistack';
+import OfflineContextProvider from 'components/smart/Context/Offline';
 // translations
 import './i18n';
 import countries from 'i18n-iso-countries';
@@ -100,12 +101,14 @@ if (isSilentAuthIframe()) {
                 maxSnack={60}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
               >
-                <OidcProvider
-                  store={store}
-                  config={window.env.AUTH}
-                >
-                  <App />
-                </OidcProvider>
+                <OfflineContextProvider addMiddleware={API.addMiddleware}>
+                  <OidcProvider
+                    store={store}
+                    config={window.env.AUTH}
+                  >
+                    <App />
+                  </OidcProvider>
+                </OfflineContextProvider>
               </SnackbarProvider>
             </Router>
           </ThemeProvider>
