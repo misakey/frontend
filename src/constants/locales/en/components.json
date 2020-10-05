@@ -90,7 +90,7 @@
   },
   "signinRedirect": {
     "documentTitle": "Authentication",
-    "resource": "{{resourceName}} is secured",
+    "resource": "“{{resourceName}}” is secured",
     "user": "Your authenticated session has expired",
     "default": "The application requires authentication",
     "subtitle": "Confirm your identity to continue"

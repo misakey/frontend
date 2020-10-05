@@ -29,7 +29,7 @@ const BoxAccount = ({ t, backTo }) => {
   const onSignedOut = useCallback(() => history.replace(routes._), [history]);
 
   return (
-    <>
+    <Box minHeight="100%" display="flex" flexDirection="column">
       <AppBarStatic>
         <IconButtonAppBar
           aria-label={t('common:goBack')}
@@ -42,17 +42,17 @@ const BoxAccount = ({ t, backTo }) => {
         <BoxFlexFill />
         <DarkmodeSwitch />
       </AppBarStatic>
-      <Box display="flex" flexDirection="column" alignItems="center">
+      <Box display="flex" flexDirection="column" alignItems="center" flexShrink="0">
         <CardIdentityThumbnailWithIdentity />
       </Box>
       <Divider />
-      <Box mx={4} my={2}>
+      <Box display="flex" flexDirection="column" flexShrink="0" mx={4} my={2}>
         <ButtonSignOut onSuccess={onSignedOut} />
       </Box>
       <Divider />
       <BoxFlexFill />
       <Footer containerProps={FOOTER_CONTAINER_PROPS} />
-    </>
+    </Box>
   );
 };
 

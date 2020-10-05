@@ -2,7 +2,14 @@ import React, { useMemo, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { makeStyles } from '@material-ui/core/styles/';
+import { UPLOAD } from 'constants/upload/status';
+import isNil from '@misakey/helpers/isNil';
+import formatFileSize from 'helpers/formatFileSize';
+
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
+
+import IconProgress from '@misakey/ui/Icon/Progress';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 import ListItem from '@material-ui/core/ListItem';
@@ -15,10 +22,6 @@ import LockIcon from '@material-ui/icons/Lock';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import LinearProgress from '@material-ui/core/LinearProgress';
-
-
-import isNil from '@misakey/helpers/isNil';
-import formatFileSize from 'helpers/formatFileSize';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -43,13 +46,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BlobListItem = ({ blob, onRemove, isEncrypted, uploadStatus, t }) => {
+// COMPONENTS
+const BlobListItem = ({ blob, onRemove, uploadStatus, t }) => {
   const classes = useStyles();
   const { name, lastModified, size } = useMemo(() => blob, [blob]);
   const formattedSize = useMemo(
     () => formatFileSize(size), [size],
   );
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const { type, progress } = useSafeDestr(uploadStatus);
+
+  const isEncrypted = useMemo(
+    () => type === UPLOAD,
+    [type],
+  );
 
   const onClick = useCallback(
     (event) => { setAnchorEl(event.currentTarget); }, [],
@@ -64,7 +75,12 @@ const BlobListItem = ({ blob, onRemove, isEncrypted, uploadStatus, t }) => {
       <ListItem className={classes.root}>
         <ListItemAvatar>
           <Avatar className={classes.avatar}>
-            {isEncrypted ? <LockIcon /> : <LockOpenIcon />}
+            <IconProgress
+              isLoading={!isNil(uploadStatus)}
+              Icon={LockOpenIcon}
+              DoneIcon={LockIcon}
+              done={isEncrypted}
+            />
           </Avatar>
         </ListItemAvatar>
         <ListItemText
@@ -91,11 +107,11 @@ const BlobListItem = ({ blob, onRemove, isEncrypted, uploadStatus, t }) => {
           </Menu>
         </ListItemSecondaryAction>
       </ListItem>
-      {!isNil(uploadStatus) ? (
+      {type === UPLOAD ? (
         <LinearProgress
           className={classes.progress}
-          variant={uploadStatus.type === 'upload' ? 'determinate' : 'indeterminate'}
-          value={isNil(uploadStatus.progress) ? undefined : uploadStatus.progress}
+          variant="determinate"
+          value={isNil(progress) ? undefined : progress}
           color="secondary"
         />
       ) : null}
@@ -107,12 +123,10 @@ BlobListItem.propTypes = {
   blob: PropTypes.object.isRequired,
   onRemove: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  isEncrypted: PropTypes.bool,
   uploadStatus: PropTypes.object,
 };
 
 BlobListItem.defaultProps = {
-  isEncrypted: false,
   uploadStatus: undefined,
 };
 

@@ -67,8 +67,8 @@ const Footer = ({
   );
 
   const onEntered = useCallback(
-    () => {
-      window.scrollTo(0, document.body.scrollHeight);
+    (e) => {
+      e.scrollIntoView();
     },
     [],
   );
