@@ -16,7 +16,7 @@ import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublic
 import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
 
 import EventCard from 'components/dumb/Card/Event';
-import EventBoxMessagePreview from 'components/dumb/Event/Box/Message/Preview';
+import EventBoxMessagePreview from 'components/smart/Box/Event/Message/Preview';
 import MuiLink from '@material-ui/core/Link';
 import withContextMenu from '@misakey/ui/Menu/ContextMenu/with';
 import MenuItemEventEdit from 'components/smart/MenuItem/Event/Edit';

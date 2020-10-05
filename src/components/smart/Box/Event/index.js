@@ -8,8 +8,8 @@ import BoxesSchema from 'store/schemas/Boxes';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 import useEventBelongsToCurrentUser from 'hooks/useEventBelongsToCurrentUser';
 
-import BoxMessageEvent from 'components/dumb/Event/Box/Message';
-import BoxInformationEvent from 'components/dumb/Event/Box/Information';
+import BoxMessageEvent from 'components/smart/Box/Event/Message';
+import BoxInformationEvent from 'components/smart/Box/Event/Information';
 
 function BoxEvents({ event, box, preview, ...rest }) {
   const isFromCurrentUser = useEventBelongsToCurrentUser(event);

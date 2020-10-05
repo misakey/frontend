@@ -29,6 +29,7 @@ import { deleteSavedFile } from 'packages/helpers/src/builder/vault';
 import { deleteSavedFiles } from 'store/reducers/savedFiles';
 import { DATETIME_SHORT } from 'constants/formats/dates';
 import useGetFileIconFromType from 'hooks/useGetFileIconFromType';
+import FileContextProvider from 'components/smart/File/Context';
 
 
 // HOOKS
@@ -101,16 +102,11 @@ const FileListItem = ({ file, t }) => {
   const FileIcon = useGetFileIconFromType(fileType);
 
   return (
-    <>
-      <DialogFilePreview
-        open={isFilePreviewOpened}
-        encryptedFileId={encryptedFileId}
-        encryption={encryption}
-        fileSize={fileSize}
-        fileName={fileName}
-        fileType={fileType}
-        onClose={onCloseFilePreview}
-      />
+    <FileContextProvider
+      decryptedContent={{ fileSize, fileName, fileType, encryption }}
+      encryptedFileId={encryptedFileId}
+    >
+      <DialogFilePreview open={isFilePreviewOpened} onClose={onCloseFilePreview} />
       <ListItem button onClick={onOpenFilePreview} divider>
         <ListItemAvatar>
           <Avatar className={classes.avatar}>
@@ -141,7 +137,7 @@ const FileListItem = ({ file, t }) => {
           </Menu>
         </ListItemSecondaryAction>
       </ListItem>
-    </>
+    </FileContextProvider>
   );
 };
 

@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
 import { LIFECYCLE, CREATE } from 'constants/app/boxes/events';
 
-import EventBoxInformationPreview from 'components/dumb/Event/Box/Information/Preview';
+import EventBoxInformationPreview from 'components/smart/Box/Event/Information/Preview';
 
 const useStyles = makeStyles((theme) => ({
   root: {

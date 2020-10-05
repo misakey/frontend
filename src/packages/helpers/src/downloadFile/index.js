@@ -26,6 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 import isNil from '@misakey/helpers/isNil';
 import isIOS from '@misakey/helpers/isIOS';
 import isDataUrl from '@misakey/helpers/isDataUrl';
+import isBlobUrl from '@misakey/helpers/isBlobUrl';
 import makeFileOrBlob from '@misakey/helpers/makeFileOrBlob';
 
 // CONSTANTS
@@ -40,6 +41,7 @@ function revokeBlob(blobURL) {
 }
 
 const isFileDataUrl = (data) => typeof data === 'string' && isDataUrl(data);
+const isFileBlobUrl = (data) => typeof data === 'string' && isBlobUrl(data);
 
 const makeCompatFile = (data, filename, mime, bom) => {
   const blobData = (typeof bom !== 'undefined') ? [bom, data] : [data];
@@ -47,7 +49,7 @@ const makeCompatFile = (data, filename, mime, bom) => {
 };
 
 const makeFileURL = (data, filename, mime, bom) => new Promise((resolve) => {
-  if (isFileDataUrl(data)) {
+  if (isFileDataUrl(data) || isFileBlobUrl(data)) {
     return resolve(data);
   }
 
@@ -66,7 +68,7 @@ const makeFileURL = (data, filename, mime, bom) => new Promise((resolve) => {
   return resolve(fileURL);
 });
 
-export default function (data, filename, mime, bom) {
+export default function (data, filename, shouldRevokeBlob = true, mime, bom) {
   // cases where no download link is required
   if (!isFileDataUrl(data) && MS_SAVE_BLOB) {
     const blob = makeCompatFile(data, filename, mime, bom);
@@ -93,12 +95,14 @@ export default function (data, filename, mime, bom) {
 
       tempLink.click();
 
-      // Fixes "webkit blob resource error 1"
-      setTimeout(() => {
-        revokeBlob(fileURL);
-        if (document.body.contains(tempLink)) {
-          document.body.removeChild(tempLink);
-        }
-      }, 0);
+      if (shouldRevokeBlob) {
+        // Fixes "webkit blob resource error 1"
+        setTimeout(() => {
+          revokeBlob(fileURL);
+          if (document.body.contains(tempLink)) {
+            document.body.removeChild(tempLink);
+          }
+        }, 0);
+      }
     });
 }

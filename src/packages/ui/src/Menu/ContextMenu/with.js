@@ -192,6 +192,7 @@ const withContextMenu = (Component) => {
         <Component
           ref={combinedRef}
           onContextMenu={onContextMenu}
+          isSelected={hasMousePosition}
           {...touchProps}
           {...hoverProps}
           {...props}

@@ -10,8 +10,8 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import decryptFileMsg from '@misakey/crypto/box/decryptFileMsg';
 
-import EventBoxMessagePreview from 'components/dumb/Event/Box/Message/Preview';
-import EventFileCard from 'components/dumb/Event/Box/Message/File/Card';
+import EventBoxMessagePreview from 'components/smart/Box/Event/Message/Preview';
+import EventFileCard from 'components/smart/Box/Event/Message/File/Card';
 
 // COMPONENTS
 const BoxMessageFileEvent = ({ event, isFromCurrentUser, preview, t, ...props }) => {
@@ -53,7 +53,6 @@ const BoxMessageFileEvent = ({ event, isFromCurrentUser, preview, t, ...props })
 
   return (
     <EventFileCard
-      text={text}
       sender={sender}
       decryptedContent={decryptedContent}
       isFromCurrentUser={isFromCurrentUser}

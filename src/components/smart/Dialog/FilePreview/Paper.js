@@ -1,9 +1,8 @@
-import React, { forwardRef, useCallback } from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import isFunction from '@misakey/helpers/isFunction';
-import downloadFile from '@misakey/helpers/downloadFile';
 import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
@@ -16,10 +15,12 @@ import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 
 import AddToVaultIcon from '@material-ui/icons/LibraryAdd';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import DownloadIcon from '@material-ui/icons/GetApp';
+import { useFileContext } from 'components/smart/File/Context';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -37,17 +38,10 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const IconButtonWithDialogPassword = withDialogPassword(IconButtonAppBar);
 
-const FilePreviewPaper = forwardRef(({
-  onSave, onClose,
-  file,
-  blobUrl,
-  t,
-  ...props
-}, ref) => {
+const FilePreviewPaper = forwardRef(({ onSave, onClose, t, ...props }, ref) => {
   const classes = useStyles();
 
-  const onDownload = useCallback(() => downloadFile(file, file.name), [file]);
-
+  const { error, file, fileName, onDownloadFile } = useFileContext();
 
   return (
     <>
@@ -63,29 +57,30 @@ const FilePreviewPaper = forwardRef(({
               <ArrowBack />
             </Tooltip>
           </IconButtonAppBar>
-
+          <Typography>{fileName}</Typography>
           <Box flexGrow={1} />
-          {isFunction(onSave) && !isNil(file) && (
-          <IconButtonWithDialogPassword
-            color="inherit"
-            className={classes.icons}
-            aria-label={t('common:addToVault')}
-            edge="end"
-            onClick={onSave}
-          >
-            <Tooltip title={t('common:addToVault')}>
-              <AddToVaultIcon />
-            </Tooltip>
-          </IconButtonWithDialogPassword>
+          {isFunction(onSave) && (
+            <IconButtonWithDialogPassword
+              color="inherit"
+              className={classes.icons}
+              aria-label={t('common:addToVault')}
+              edge="end"
+              disabled={isNil(file)}
+              onClick={onSave}
+            >
+              <Tooltip title={t('common:addToVault')}>
+                <AddToVaultIcon />
+              </Tooltip>
+            </IconButtonWithDialogPassword>
           )}
-          {!isNil(blobUrl) && (
           <>
             <IconButtonAppBar
               color="inherit"
               className={classes.icons}
               aria-label={t('common:download')}
               edge="end"
-              onClick={onDownload}
+              disabled={!isNil(error)}
+              onClick={onDownloadFile}
             >
               <Tooltip title={t('common:download')}>
                 <DownloadIcon />
@@ -106,7 +101,6 @@ const FilePreviewPaper = forwardRef(({
                 </Tooltip>
               </IconButtonAppBar> */}
           </>
-          )}
         </Toolbar>
       </AppBar>
       <Paper {...omitTranslationProps(props)} ref={ref} />
@@ -117,17 +111,8 @@ const FilePreviewPaper = forwardRef(({
 FilePreviewPaper.propTypes = {
   onSave: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
-  file: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-  }),
-  blobUrl: PropTypes.string,
   // withTranslation
   t: PropTypes.func.isRequired,
-};
-
-FilePreviewPaper.defaultProps = {
-  file: null,
-  blobUrl: null,
 };
 
 export default withTranslation('common')(FilePreviewPaper);

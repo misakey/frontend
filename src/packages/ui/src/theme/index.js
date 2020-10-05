@@ -8,10 +8,15 @@ import isEmpty from '@misakey/helpers/isEmpty';
 const DARK_BG = '#303030';
 const LIGHT_BG = '#fff';
 
+export const THEMES = {
+  DARK: 'dark',
+  LIGHT: 'light',
+};
+
 // THEME
 export const getThemeOptions = (isDarkMode = false, color = null) => ({
   palette: {
-    type: isDarkMode ? 'dark' : 'light',
+    type: isDarkMode ? THEMES.DARK : THEMES.LIGHT,
     primary: {
       main: common.primary,
     },

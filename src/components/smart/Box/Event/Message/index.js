@@ -9,8 +9,8 @@ import isNil from '@misakey/helpers/isNil';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import BoxMessageFileEvent from 'components/dumb/Event/Box/Message/File';
-import BoxMessageTextEvent from 'components/dumb/Event/Box/Message/Text';
+import BoxMessageFileEvent from 'components/smart/Box/Event/Message/File';
+import BoxMessageTextEvent from 'components/smart/Box/Event/Message/Text';
 import BoxEventDeleted from 'components/smart/Box/Event/Deleted';
 
 // COMPONENTS

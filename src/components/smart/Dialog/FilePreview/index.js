@@ -1,24 +1,20 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import clsx from 'clsx';
-
-import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 
 import isNil from '@misakey/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import useGetDecryptedFileCallback from 'hooks/useGetDecryptedFile/callback';
-
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import BackdropLoading from '@misakey/ui/Backdrop/Loading';
 // import PrintIcon from '@material-ui/icons/Print';
-import BoxFile from 'components/dumb/Box/File';
 import FilePreviewPaper from 'components/smart/Dialog/FilePreview/Paper';
-
+import FilePreview from 'components/smart/File/Preview';
+import { useFileContext } from 'components/smart/File/Context';
+import Backdrop from '@material-ui/core/Backdrop';
+import BoxFile from 'components/dumb/Box/File';
+import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 
 
 // CONSTANTS
@@ -32,32 +28,24 @@ const ALLOWED_TYPE_PREVIEW = [
   // 'application/pdf',
 ];
 
-const PADDING = 64;
+// All height without appbar height + dialog content padding
+const PREVIEW_MAX_HEIGHT = `calc(100vh - ${APPBAR_HEIGHT}px - 16px)`;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: APPBAR_HEIGHT,
-  },
-  transparentBg: {
+    margin: `${APPBAR_HEIGHT}px 0 0 0`,
     backgroundColor: 'transparent',
+    maxWidth: '100%',
   },
   content: {
     display: 'flex',
     justifyContent: 'center',
-    padding: '0 !important',
+    alignItems: 'center',
+    '&:first-child': {
+      padding: theme.spacing(1),
+    },
   },
-  media: {
-    maxWidth: '100%',
-    maxHeight: `calc(100% - ${APPBAR_HEIGHT}px - ${PADDING}px)`,
-  },
-  embed: ({ isLoaded }) => (isLoaded ? {
-    width: '100%',
-    height: `calc(100% - ${APPBAR_HEIGHT}px - ${PADDING}px)`,
-  } : {
-    width: 0,
-    height: 0,
-  }),
   textContainerPreview: {
     backgroundColor: theme.palette.background.message,
     color: theme.palette.text.secondary,
@@ -67,229 +55,48 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// HELPERS
-const createBlobUrl = (file) => {
-  try {
-    const urlBuilder = window.URL || window.webkitURL;
-    return urlBuilder.createObjectURL(file);
-  } catch (err) {
-    return null;
-  }
-};
-
-const revokeBlobUrl = (file) => {
-  try {
-    const urlBuilder = window.URL || window.webkitURL;
-    return urlBuilder.revokeObjectURL(file);
-  } catch (err) {
-    return null;
-  }
-};
-
 // COMPONENTS
-function FilePreviewDialog({
-  t, open, onClose, encryptedFileId, encryption, fileSize, fileName, fileType, onSave,
-}) {
-  const [file, setFile] = useState();
-  const [blobUrl, setBlobUrl] = useState();
-  const [hasError, setHasError] = useState(false);
+function FilePreviewDialog({ open, onClose, onSave }) {
+  const classes = useStyles();
 
-  const isMediaAudioOrVideo = useMemo(
-    () => (isNil(fileType) ? false : fileType.startsWith('audio') || fileType.startsWith('video')),
+  const {
+    getDecryptedFile,
+    blobUrl,
+    file,
+    fileType,
+    fileSize,
+    fileName,
+    isLoading,
+    error,
+  } = useFileContext();
+
+  const isTypeAllowedForPreview = useMemo(
+    () => !isNil(fileType) && ALLOWED_TYPE_PREVIEW.some((type) => fileType.startsWith(type)),
     [fileType],
   );
-  // Fallback for video and audio is handled inside tags
-  const [isLoaded, setIsLoaded] = useState(isMediaAudioOrVideo);
-  const classes = useStyles({ isLoaded });
 
-  const onSuccess = useCallback((decryptedFile) => {
-    setFile(decryptedFile);
-  }, []);
-
-  const onError = useCallback(() => {
-    setHasError(true);
-    setIsLoaded(true);
-  }, [setHasError, setIsLoaded]);
-
-  const onLoad = useCallback(() => {
-    setIsLoaded(true);
-  }, [setIsLoaded]);
-
-  const onDownloadError = useCallback(
-    () => {
-      setIsLoaded(true);
-      return Promise.resolve(null);
-    },
-    [setIsLoaded],
-  );
-
-  const onGetDecryptedFile = useGetDecryptedFileCallback(
-    { encryptedFileId, encryption, fileName },
-    onDownloadError,
-  );
-
-  const { isFetching } = useFetchEffect(
-    onGetDecryptedFile,
-    { shouldFetch: open },
-    { onSuccess, onError },
+  const shouldDownloadFile = useMemo(
+    () => isNil(file) && open && isTypeAllowedForPreview,
+    [file, isTypeAllowedForPreview, open],
   );
 
   useEffect(() => {
-    if (!isNil(file)) {
-      setBlobUrl(createBlobUrl(file));
+    if (shouldDownloadFile) {
+      getDecryptedFile();
     }
-    return () => {
-      revokeBlobUrl(file);
-    };
-  }, [file]);
+  }, [getDecryptedFile, shouldDownloadFile]);
 
-  const nilFileType = useMemo(
-    () => isNil(fileType),
-    [fileType],
-  );
-
-  const isTypeAllowedForPreview = useMemo(
-    () => !nilFileType && ALLOWED_TYPE_PREVIEW.some((type) => fileType.startsWith(type)),
-    [nilFileType, fileType],
-  );
-
-  const isImage = useMemo(
-    () => !nilFileType && fileType.startsWith('image'),
-    [nilFileType, fileType],
-  );
-
-  const isAudio = useMemo(
-    () => !nilFileType && fileType.startsWith('audio'),
-    [nilFileType, fileType],
-  );
-
-  const isVideo = useMemo(
-    () => !nilFileType && fileType.startsWith('video'),
-    [nilFileType, fileType],
-  );
-
-  const canHandleError = useMemo(
-    () => isImage,
-    [isImage],
-  );
-
-  const loading = useMemo(
-    () => isFetching || (isTypeAllowedForPreview && canHandleError && !isLoaded),
-    [isFetching, isTypeAllowedForPreview, canHandleError, isLoaded],
-  );
-
-  const displayDefault = useMemo(
-    () => !isFetching
-      && (isNil(blobUrl)
-        || hasError
-        || !isTypeAllowedForPreview
-        || (!canHandleError && !isLoaded)
-      ),
-    [blobUrl, hasError, isFetching, isTypeAllowedForPreview, canHandleError, isLoaded],
-  );
-
-  const displayPreview = useMemo(
-    () => !isFetching && isTypeAllowedForPreview && (!isNil(blobUrl) && !hasError),
-    [blobUrl, hasError, isFetching, isTypeAllowedForPreview],
-  );
-
-  const preview = useMemo(() => {
-    if (isNil(fileType)) {
-      return null;
-    }
-    if (isImage) {
-      return (
-        <img
-          src={blobUrl}
-          alt={fileName}
-          className={classes.media}
-          onLoad={onLoad}
-          onError={onError}
-        />
-      );
-    }
-
-    if (isAudio) {
-      return (
-        // eslint-disable-next-line jsx-a11y/media-has-caption
-        <audio controls>
-          <source src={blobUrl} type={fileType} />
-          <BoxFile
-            fileSize={fileSize}
-            fileName={fileName}
-            fileType={fileType}
-            text={t('components:filePreview.errors.unavailable')}
-            isLarge
-            typographyProps={{ variant: 'body1' }}
-          />
-        </audio>
-      );
-    }
-
-    if (isVideo) {
-      return (
-        // eslint-disable-next-line jsx-a11y/media-has-caption
-        <video controls className={classes.media}>
-          <source src={blobUrl} type={fileType} />
-          <BoxFile
-            fileSize={fileSize}
-            fileName={fileName}
-            fileType={fileType}
-            text={t('components:filePreview.errors.unavailable')}
-            isLarge
-            typographyProps={{ variant: 'body1' }}
-          />
-        </video>
-      );
-    }
-
-    return (
-      <embed
-        title={fileName}
-        className={classes.embed}
-        src={blobUrl}
-        type={fileType}
-        onLoad={onLoad}
-      />
-    );
-  }, [
-    blobUrl,
-    classes.embed, classes.media,
-    fileName, fileSize, fileType, onError, onLoad,
-    isImage, isAudio, isVideo,
-    t,
-  ]);
-
-  const isMediaDisplayed = useMemo(
-    () => (!isNil(fileType) && fileType.startsWith('image') && !hasError) || isMediaAudioOrVideo,
-    [fileType, hasError, isMediaAudioOrVideo],
-  );
-
-  const dialogProps = useMemo(() => {
-    if (isFetching || isMediaDisplayed) {
-      return {};
-    }
-    return {
-      fullWidth: true,
-      maxWidth: 'md',
-    };
-  }, [isFetching, isMediaDisplayed]);
-
-  const PaperProps = useMemo(() => {
-    const dataProps = { onClose, onSave, file, blobUrl };
-    if (isFetching || displayDefault) {
+  const PaperProps = useMemo(
+    () => {
+      const dataProps = { onClose, onSave };
       return {
-        className: clsx(classes.paper, classes.transparentBg),
+        className: classes.paper,
         elevation: 0,
         ...dataProps,
       };
-    }
-    return {
-      className: classes.paper,
-      ...dataProps,
-    };
-  },
-  [blobUrl, classes, displayDefault, file, isFetching, onClose, onSave]);
+    },
+    [classes.paper, onClose, onSave],
+  );
 
   return (
     <Dialog
@@ -299,25 +106,25 @@ function FilePreviewDialog({
       scroll="body"
       PaperProps={PaperProps}
       PaperComponent={FilePreviewPaper}
-      BackdropComponent={BackdropLoading}
-      BackdropProps={{ loading }}
-      {...dialogProps}
+      BackdropComponent={(props) => (
+        <Backdrop {...props}>
+          {(isNil(blobUrl) || !isNil(error)) && (
+            <BoxFile
+              fileSize={fileSize}
+              fileName={fileName}
+              fileType={fileType}
+              isLoading={isLoading}
+              isBroken={!isNil(error)}
+              isLarge
+              typographyProps={{ variant: 'body1' }}
+              textContainerProps={{ className: classes.textContainerPreview }}
+            />
+          )}
+        </Backdrop>
+      )}
     >
       <DialogContent className={classes.content}>
-        {displayPreview && preview}
-        {displayDefault && (
-          <BoxFile
-            fileSize={fileSize}
-            fileName={fileName}
-            fileType={fileType}
-            text={isNil(blobUrl)
-              ? t('components:filePreview.errors.noFile')
-              : t('components:filePreview.errors.unavailable')}
-            isLarge
-            typographyProps={{ variant: 'body1' }}
-            textContainerProps={{ className: classes.textContainerPreview }}
-          />
-        )}
+        <FilePreview maxHeight={PREVIEW_MAX_HEIGHT} allowedFileTypePreview={ALLOWED_TYPE_PREVIEW} />
       </DialogContent>
     </Dialog>
   );
@@ -328,19 +135,10 @@ FilePreviewDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  fileSize: PropTypes.number,
-  fileType: PropTypes.string,
-  fileName: PropTypes.string,
-  encryption: PropTypes.object,
-  encryptedFileId: PropTypes.string.isRequired,
   onSave: PropTypes.func,
 };
 
 FilePreviewDialog.defaultProps = {
-  fileSize: null,
-  fileType: null,
-  encryption: null,
-  fileName: 'Untitled',
   onSave: null,
 };
 

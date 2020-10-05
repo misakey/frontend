@@ -45,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: CARD_BORDER_RADIUS,
     backgroundColor: theme.palette.background.message,
   },
+  selected: {
+    backgroundColor: theme.palette.action.selected,
+  },
   content: {
     padding: 0,
   },
@@ -73,13 +76,13 @@ const EventCard = forwardRef(({
   text,
   date,
   isEdited,
+  isSelected,
   actions,
   titleProps,
   t,
   ...rest
 }, ref) => {
   const classes = useStyles();
-
   const { displayName, avatarUrl } = useMemo(() => author, [author]);
 
   return (
@@ -88,7 +91,8 @@ const EventCard = forwardRef(({
       alignItems="flex-end"
       justifyContent={isFromCurrentUser ? 'flex-end' : 'flex-start'}
       py={1}
-      className={classes.root}
+      px={2}
+      className={clsx(classes.root, { [classes.selected]: isSelected })}
       {...omitTranslationProps(rest)}
     >
       {!isFromCurrentUser && <Avatar avatarUrl={avatarUrl} displayName={displayName} />}
@@ -143,6 +147,7 @@ EventCard.propTypes = {
   isFromCurrentUser: PropTypes.bool,
   text: PropTypes.node,
   isEdited: PropTypes.bool,
+  isSelected: PropTypes.bool,
   author: PropTypes.shape({
     displayName: PropTypes.string,
     avatarUrl: PropTypes.string,
@@ -167,6 +172,7 @@ EventCard.defaultProps = {
   },
   text: null,
   isEdited: false,
+  isSelected: false,
   titleProps: {},
   isFromCurrentUser: false,
   actions: null,

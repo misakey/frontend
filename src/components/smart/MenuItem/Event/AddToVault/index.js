@@ -9,26 +9,26 @@ import { useFileContext } from 'components/smart/File/Context';
 import ContextMenuItem from '@misakey/ui/Menu/ContextMenu/MenuItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-
-import DownloadIcon from '@material-ui/icons/GetApp';
+import AddToVaultIcon from '@material-ui/icons/LibraryAdd';
 
 // COMPONENTS
-const MenuItemDownloadEvent = forwardRef(({ t }, ref) => {
-  const { onDownloadFile, error } = useFileContext();
+const MenuItemAddFileToVault = forwardRef(({ t, onSave }, ref) => {
+  const { error } = useFileContext();
 
   return (
-    <ContextMenuItem ref={ref} onClick={onDownloadFile} disabled={!isNil(error)}>
+    <ContextMenuItem ref={ref} onClick={onSave} disabled={!isNil(error)}>
       <ListItemIcon>
-        <DownloadIcon />
+        <AddToVaultIcon />
       </ListItemIcon>
-      <ListItemText primary={t('common:download')} />
+      <ListItemText primary={t('common:addToVault')} />
     </ContextMenuItem>
   );
 });
 
-MenuItemDownloadEvent.propTypes = {
+MenuItemAddFileToVault.propTypes = {
   // withTranslation
   t: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
 };
 
-export default withTranslation('common', { withRef: true })(MenuItemDownloadEvent);
+export default withTranslation('common', { withRef: true })(MenuItemAddFileToVault);
