@@ -226,14 +226,11 @@ describe('testing usePaginateBoxesByStatus', () => {
       // make sure mocks call each other...
       expect(mockGetByPagination).toHaveBeenCalled();
 
-      const loadMorePromise = paginateBoxesByStatus.current.loadMoreItems(PAGINATION);
+      paginateBoxesByStatus.current.loadMoreItems(PAGINATION);
 
       expect(mockGetUserBoxesBuilder).toHaveBeenCalledWith({ ...PAYLOAD, ...PAGINATION });
 
       jest.runAllTimers();
-
-      expect(loadMorePromise).resolves.toBeInstanceOf(Array);
-      expect(loadMorePromise).resolves.toHaveLength(2);
     });
 
     it('should ask more items from API, some items in store', () => {
@@ -257,15 +254,12 @@ describe('testing usePaginateBoxesByStatus', () => {
       // make sure mocks call each other...
       expect(mockGetByPagination).toHaveBeenCalled();
 
-      const loadMorePromise = paginateBoxesByStatus.current.loadMoreItems(PAGINATION);
+      paginateBoxesByStatus.current.loadMoreItems(PAGINATION);
 
       expect(mockGetUserBoxesBuilder)
         .toHaveBeenCalledWith({ ...PAYLOAD, ...expectedPagination });
 
       jest.runAllTimers();
-
-      expect(loadMorePromise).resolves.toBeInstanceOf(Array);
-      expect(loadMorePromise).resolves.toHaveLength(2);
     });
   });
 
