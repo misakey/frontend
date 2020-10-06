@@ -113,16 +113,6 @@ const DialogSigninRedirect = ({
     [resourceName, currentUser, currentAcr, t, acrValues],
   );
 
-  const submitText = useMemo(
-    () => {
-      if (!isNil(currentUser)) {
-        return t('common:unlock');
-      }
-      return t('common:confirm');
-    },
-    [currentUser, t],
-  );
-
   const onDelete = useSignOut(userManager);
 
   const onRedirect = useCallback(
@@ -176,7 +166,7 @@ const DialogSigninRedirect = ({
               <BoxControls
                 primary={{
                   type: 'submit',
-                  text: submitText,
+                  text: t('common:signIn'),
                 }}
                 formik
               />
