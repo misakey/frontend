@@ -16,9 +16,10 @@ import usePropChanged from '@misakey/hooks/usePropChanged';
 import { getCode, getDetails } from '@misakey/helpers/apiError';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
+import mergeDeepWithKey from '@misakey/helpers/mergeDeepWithKey';
 import { getBoxBuilder, getBoxMembersBuilder } from '@misakey/helpers/builder/boxes';
 
-import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
+import { noEmptyOverride, mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import BoxesSchema from 'store/schemas/Boxes';
 import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
 import SenderSchema from 'store/schemas/Boxes/Sender';
@@ -34,6 +35,29 @@ const NO_ACCESS = 'no_access';
 const ERR_BOX_CLOSED = 'closed';
 const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
 
+// HELPERS
+const noEmptyNoEventsCountOverride = (key, oldValue, newValue) => {
+  if (key === 'eventsCount') {
+    if (!isNil(oldValue) && newValue === 0) {
+      return oldValue;
+    }
+    return noEmptyOverride(oldValue, newValue);
+  }
+  return noEmptyOverride(oldValue, newValue);
+};
+
+const mergeReceiveNoEmptyNoEventsCountOverride = (state, { entities }) => {
+  let newState = { ...state };
+  Object.entries(entities).forEach(([entityName, entity]) => {
+    newState = {
+      ...newState,
+      [entityName]: mergeDeepWithKey(noEmptyNoEventsCountOverride, state[entityName], entity),
+    };
+  });
+  return newState;
+};
+
+// HOOKS
 export default (id) => {
   const dispatch = useDispatch();
 
@@ -89,7 +113,9 @@ export default (id) => {
   );
 
   const dispatchReceiveJoinedBox = useCallback(
-    (data) => Promise.resolve(dispatch(receiveJoinedBox(data, mergeReceiveNoEmpty))),
+    (data) => Promise.resolve(dispatch(
+      receiveJoinedBox(data, mergeReceiveNoEmptyNoEventsCountOverride),
+    )),
     [dispatch],
   );
 

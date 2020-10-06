@@ -2,7 +2,7 @@ import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import { getCurrentUserSelector, selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { identifierValidationSchema } from '@misakey/auth/constants/validationSchemas/auth';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
@@ -33,6 +33,8 @@ import LoginFormFields from '@misakey/ui/Form/Fields/Login/Identifier';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
 // CONSTANTS
+const { acr: ACR_SELECTOR } = authSelectors;
+
 const INITIAL_VALUES = { identifier: '' };
 
 // COMPONENTS
@@ -46,6 +48,8 @@ const DialogSigninRedirect = ({
   ...props
 }) => {
   const currentUser = useSelector(getCurrentUserSelector);
+  const currentAcr = useSelector(ACR_SELECTOR);
+
   const { displayName, avatarUrl } = useSafeDestr(currentUser);
 
   const objLoginHint = useMemo(
@@ -95,25 +99,18 @@ const DialogSigninRedirect = ({
 
   const title = useMemo(
     () => {
-      if (!isNil(currentUser)) {
-        return t('components:signinRedirect.user');
-      }
       if (!isNil(resourceName)) {
         return t('components:signinRedirect.resource', { resourceName });
       }
+      if (!isNil(currentUser) && (isNil(acrValues) || currentAcr >= acrValues)) {
+        return t('components:signinRedirect.user');
+      }
+      if (!isNil(acrValues)) {
+        return t(`components:signinRedirect.acr.${acrValues}`);
+      }
       return t('components:signinRedirect.default');
     },
-    [resourceName, currentUser, t],
-  );
-
-  const submitText = useMemo(
-    () => {
-      if (!isNil(currentUser)) {
-        return t('common:unlock');
-      }
-      return t('common:confirm');
-    },
-    [currentUser, t],
+    [resourceName, currentUser, currentAcr, t, acrValues],
   );
 
   const onDelete = useSignOut(userManager);
@@ -169,7 +166,7 @@ const DialogSigninRedirect = ({
               <BoxControls
                 primary={{
                   type: 'submit',
-                  text: submitText,
+                  text: t('common:confirm'),
                 }}
                 formik
               />

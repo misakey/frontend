@@ -38,9 +38,9 @@ export default (endpoint, onMessage = defaultOnMessage, isReady = true) => {
 
   const endpointWithToken = useMemo(
     () => {
-      const { hostname, pathname, hash, search, protocol } = parseUrlFromLocation(endpoint);
+      const { origin, pathname, hash, search } = parseUrlFromLocation(endpoint);
       const nextSearch = getNextSearch(search, new Map([['access_token', token]]));
-      return `${protocol}${hostname}${pathname}${hash}?${nextSearch}`;
+      return `${origin}${pathname}${hash}?${nextSearch}`;
     },
     [endpoint, token],
   );

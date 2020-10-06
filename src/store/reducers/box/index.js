@@ -99,9 +99,9 @@ export const receiveJoinedBoxes = (boxes, processStrategy = mergeReceiveNoEmpty)
     BoxesSchema.collection,
   );
   const { entities } = normalized;
-  return Promise.resolve(
-    dispatch(receiveEntities(entities, processStrategy)),
-  ).then(() => normalized);
+
+  dispatch(receiveEntities(entities, processStrategy));
+  return Promise.resolve(normalized);
 };
 
 export const receiveJoinedBox = (box, processStrategy = mergeReceiveNoEmpty) => (
