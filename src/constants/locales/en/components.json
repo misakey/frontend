@@ -90,8 +90,12 @@
   },
   "signinRedirect": {
     "documentTitle": "Authentication",
-    "resource": "“{{resourceName}}” is secured",
+    "resource": "“{{resourceName}}” requires authentication",
     "user": "Your authenticated session has expired",
+    "acr": {
+      "1": "The application requires authentication",
+      "2": "The application requires password authentication"
+    },
     "default": "The application requires authentication",
     "subtitle": "Confirm your identity to continue"
   },
