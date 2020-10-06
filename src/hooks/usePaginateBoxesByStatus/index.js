@@ -1,8 +1,6 @@
 import { ALL } from 'constants/app/boxes/statuses';
-import BoxesSchema from 'store/schemas/Boxes';
-import { receiveEntities } from '@misakey/store/actions/entities';
-import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import { actionCreators, selectors } from 'store/reducers/userBoxes/pagination';
+import { receiveJoinedBoxes } from 'store/reducers/box';
 
 import propOr from '@misakey/helpers/propOr';
 import pickAll from '@misakey/helpers/pickAll';
@@ -18,8 +16,6 @@ import getMissingIndexes from '@misakey/helpers/getMissingIndexes';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useMemo, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { normalize } from 'normalizr';
 
 // CONSTANTS
 const EMPTY_OBJ = {};
@@ -108,17 +104,8 @@ export default (status = ALL, search = null) => {
   // ---
 
   const dispatchReceiveBoxes = useCallback(
-    (data, { offset, limit }) => {
-      const normalized = normalize(
-        data,
-        BoxesSchema.collection,
-      );
-      const { entities, result } = normalized;
-      return Promise.all([
-        dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
-        dispatch(receivePaginationAction(offset, limit, result, search)),
-      ]);
-    },
+    (data, { offset, limit }) => Promise.resolve(dispatch(receiveJoinedBoxes(data)))
+      .then(({ result }) => dispatch(receivePaginationAction(offset, limit, result, search))),
     [dispatch, search, receivePaginationAction],
   );
 
