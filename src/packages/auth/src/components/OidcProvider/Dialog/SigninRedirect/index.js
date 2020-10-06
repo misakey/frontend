@@ -166,7 +166,7 @@ const DialogSigninRedirect = ({
               <BoxControls
                 primary={{
                   type: 'submit',
-                  text: t('common:signIn'),
+                  text: t('common:confirm'),
                 }}
                 formik
               />
