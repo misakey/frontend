@@ -99,14 +99,14 @@ const DialogSigninRedirect = ({
 
   const title = useMemo(
     () => {
+      if (!isNil(resourceName)) {
+        return t('components:signinRedirect.resource', { resourceName });
+      }
       if (!isNil(currentUser) && (isNil(acrValues) || currentAcr >= acrValues)) {
         return t('components:signinRedirect.user');
       }
       if (!isNil(acrValues)) {
         return t(`components:signinRedirect.acr.${acrValues}`);
-      }
-      if (!isNil(resourceName)) {
-        return t('components:signinRedirect.resource', { resourceName });
       }
       return t('components:signinRedirect.default');
     },
