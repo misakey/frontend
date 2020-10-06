@@ -126,7 +126,7 @@ export const overrideReceive = (state, { entities }) => {
 export const mergeReceive = (state, { entities }) => mergeDeepRight(state, entities);
 
 // take first if second is empty
-const noEmptyOverride = (oldValue, newValue) => {
+export const noEmptyOverride = (oldValue, newValue) => {
   if (isEmpty(newValue) || isNil(newValue)) {
     return oldValue;
   }
@@ -134,7 +134,7 @@ const noEmptyOverride = (oldValue, newValue) => {
 };
 
 // same as noEmptyOverride, but allow nulling values
-const noEmptyNullableOverride = (oldValue, newValue) => {
+export const noEmptyNullableOverride = (oldValue, newValue) => {
   if (newValue === null) {
     return newValue;
   }
