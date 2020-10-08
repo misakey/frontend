@@ -2,20 +2,26 @@ import { loadSecrets, loadSecretsAndUpdateBackup } from '@misakey/crypto/store/a
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
 import isNil from '@misakey/helpers/isNil';
+import log from '@misakey/helpers/log';
 
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSnackbar } from 'notistack';
+import { useTranslation } from 'react-i18next';
+
 import useBackupStorageEvent from '@misakey/crypto/hooks/useBackupStorageEvent';
+import createNewBackupKeyShares from '@misakey/crypto/store/actions/createNewBackupKeyShares';
 
 import { decryptSecretsBackup } from '../secretsBackup/encryption';
 import { selectors } from '../store/reducers';
 import useFetchSecretBackup from './useFetchSecretBackup';
-import useCreateNewBackupShares from './useCreateNewBackupShares';
 
 
 // HOOKS
 export default ((skipUpdate = false) => {
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+  const { t } = useTranslation('common');
 
   const { accountId } = useSelector(getCurrentUserSelector) || {};
 
@@ -23,8 +29,6 @@ export default ((skipUpdate = false) => {
   const currentBoxSecrets = useSelector(selectors.currentBoxSecrets);
 
   const [, onStorageEvent] = useBackupStorageEvent();
-
-  const createNewBackupKeyShares = useCreateNewBackupShares(dispatch);
 
   const onDecryptSuccess = useCallback(({ backupKey, secrets, backupVersion }) => {
     // Can occur when a user first log with ACR on a box and then create an account
@@ -34,12 +38,20 @@ export default ((skipUpdate = false) => {
     const loadSecretsAction = shouldMerge ? loadSecretsAndUpdateBackup : loadSecrets;
     // do not trigger onStorageEvent when we update backup, as it's already done there
     const onStorageEventWhenNoBackupUpdate = shouldMerge ? Promise.resolve : onStorageEvent;
+
+    const keySharePromise = dispatch(createNewBackupKeyShares({ backupKey, accountId }))
+      // failure of backup key share creation should not make secret loading fail
+      .catch((reason) => {
+        log(reason, 'error');
+        enqueueSnackbar(t('common:crypto.errors.backupKeyShare'), { variant: 'warning' });
+      });
+
     return Promise.all([
       dispatch(loadSecretsAction({ secrets, backupKey, backupVersion })),
-      createNewBackupKeyShares(backupKey, accountId),
+      keySharePromise,
       onStorageEventWhenNoBackupUpdate(backupVersion),
     ]);
-  }, [accountId, createNewBackupKeyShares, currentBoxSecrets, dispatch, onStorageEvent]);
+  }, [accountId, currentBoxSecrets, dispatch, onStorageEvent, enqueueSnackbar, t]);
 
   const decryptWithPassword = useCallback(
     (password) => {

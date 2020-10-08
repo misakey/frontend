@@ -71,7 +71,7 @@
   },
   "crypto": {
     "errors": {
-      "backupKeyShare": "An error occurred while updating the backup key shares.",
+      "backupKeyShare": "Due to an error, you may have to type your password again",
       "shouldRefresh": "Error: app requires a re-sync. You should refresh your page"
     }
   },

@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
 import { withTranslation, Trans } from 'react-i18next';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import moment from 'moment';
@@ -17,6 +17,7 @@ import { getSecretValidationSchema } from 'constants/validationSchemas/auth';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
 import hardPasswordChange from '@misakey/crypto/store/actions/hardPasswordChange';
 import { createNewOwnerSecrets } from '@misakey/crypto/store/actions/concrete';
+import createNewBackupKeySharesFromAuthFlow from '@misakey/crypto/store/actions/createNewBackupKeySharesFromAuthFlow';
 import { ssoUpdate, ssoSign, ssoReset } from '@misakey/auth/store/actions/sso';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import { DATE_FULL } from 'constants/formats/dates';
@@ -36,7 +37,6 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useCancelForgotPassword from '@misakey/auth/hooks/useCancelForgotPassword';
 import { useClearUser } from '@misakey/hooks/useActions/loginSecret';
-import useHandleBackupKeySharesFromAuthFlow from '@misakey/crypto/hooks/useHandleBackupKeySharesFromAuthFlow';
 
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
@@ -98,6 +98,7 @@ const AuthLoginSecret = ({
   const { enqueueSnackbar } = useSnackbar();
   const handleHttpErrors = useHandleHttpErrors();
   const cancelForgotPassword = useCancelForgotPassword();
+  const dispatch = useDispatch();
 
   const [redirectTo, setRedirectTo] = useState(null);
 
@@ -117,8 +118,6 @@ const AuthLoginSecret = ({
     () => authnStep || {},
     [authnStep],
   );
-
-  const handleBackupKeyShares = useHandleBackupKeySharesFromAuthFlow(loginChallenge, identityId);
 
   const validationSchema = useMemo(
     () => getSecretValidationSchema(methodName),
@@ -195,7 +194,20 @@ const AuthLoginSecret = ({
           const { secret: password, [PASSWORD_RESET_KEY]: newPassword } = values;
           const isResetPassword = methodName === EMAILED_CODE && !isNil(newPassword);
           if (isResetPassword || [PREHASHED_PASSWORD, ACCOUNT_CREATION].includes(methodName)) {
-            await handleBackupKeyShares(newPassword || password);
+            try {
+              await dispatch(createNewBackupKeySharesFromAuthFlow({
+                loginChallenge,
+                identityId,
+                password: newPassword || password,
+              }));
+            } catch (error) {
+              log(error, 'error');
+              enqueueSnackbar(t('common:crypto.errors.backupKeyShare'), { variant: 'warning' });
+              // a failure of backup key shares creation
+              // should not make the entire auth flow fail
+              // because it is not an essential step of the auth flow:
+              // the user will simply have to enter her password one more time
+            }
           }
 
           if (next === NEXT_STEP_REDIRECT) {
@@ -274,7 +286,7 @@ const AuthLoginSecret = ({
         });
     },
     [loginChallenge, identityId, methodName, pwdHashParams, dispatchHardPasswordChange,
-      dispatchCreateNewOwnerSecrets, accessToken, dispatchSsoSign, handleBackupKeyShares,
+      dispatchCreateNewOwnerSecrets, accessToken, dispatchSsoSign, dispatch,
       dispatchSsoUpdate, dialogOpen, onDialogClose, enqueueSnackbar, t, dispatchSsoReset,
       handleHttpErrors],
   );
