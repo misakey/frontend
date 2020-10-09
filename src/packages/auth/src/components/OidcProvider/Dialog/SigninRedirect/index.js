@@ -105,9 +105,6 @@ const DialogSigninRedirect = ({
       if (!isNil(currentUser) && (isNil(acrValues) || currentAcr >= acrValues)) {
         return t('components:signinRedirect.user');
       }
-      if (!isNil(acrValues)) {
-        return t(`components:signinRedirect.acr.${acrValues}`);
-      }
       return t('components:signinRedirect.default');
     },
     [resourceName, currentUser, currentAcr, t, acrValues],

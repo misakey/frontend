@@ -102,10 +102,6 @@
     "documentTitle": "Authentification",
     "resource": "«\u00a0{{resourceName}}\u00a0» nécessite une authentification",
     "user": "Votre session authentifiée est expirée",
-    "acr": {
-      "1": "L'application nécessite une authentification",
-      "2": "L'application nécessite une authentification avec mot de passe"
-    },
     "default": "L'application nécessite une authentification",
     "subtitle": "Confirmez votre identité pour y accéder"
   },
