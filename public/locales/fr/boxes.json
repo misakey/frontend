@@ -298,7 +298,7 @@
       "kick": "Vous avez été retiré·e de l'espace privé «\u00a0{{title}}\u00a0»",
       "delete": {
         "you": "L'espace privé a été supprimé",
-        "unknown": "Un espace privé a été supprimé"
+        "they": "L'espace privé «\u00a0{{title}}\u00a0» a été supprimé"
       }
     }
   }

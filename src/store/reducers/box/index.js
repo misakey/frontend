@@ -2,6 +2,7 @@ import { LIFECYCLE, MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK } from 'constants/app
 import BoxesSchema from 'store/schemas/Boxes';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
 import { BLUR_TEXT, CLEAR_TEXT } from 'store/actions/box';
+import { ALL } from 'constants/app/boxes/statuses';
 
 import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
 import { createSelector } from 'reselect';
@@ -9,6 +10,8 @@ import { receiveEntities, updateEntities, removeEntities } from '@misakey/store/
 import { normalize, denormalize } from 'normalizr';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import { transformReferrerEvent, isMemberEventType } from 'helpers/boxEvent';
+import { actionCreators } from 'store/reducers/userBoxes/pagination/events';
+import { moveBackUpId } from 'store/reducers/userBoxes/pagination';
 import pluck from '@misakey/helpers/pluck';
 import propOr from '@misakey/helpers/propOr';
 import props from '@misakey/helpers/props';
@@ -18,9 +21,11 @@ import without from '@misakey/helpers/without';
 import omit from '@misakey/helpers/omit';
 import prop from '@misakey/helpers/prop';
 import { identifierValuePath } from 'helpers/sender';
+import { batch } from 'react-redux';
 
 // CONSTANTS
 const INITIAL_STATE = {};
+const { addPaginatedId: addPaginatedEventId } = actionCreators;
 
 // HELPERS
 const omitText = (values) => omit(values, ['text']);
@@ -131,34 +136,60 @@ export const receiveJoinedBox = (box, processStrategy = mergeReceiveNoEmpty) => 
 };
 
 export const removeBox = (id) => (dispatch, getState) => {
-  const currentBox = getBoxById(getState(), id);
+  const currentBox = getBoxById(getState(), id) || {};
 
   const { events = [] } = currentBox;
 
-  return Promise.all([
-    dispatch(removeEntities(events, BoxEventsSchema)),
-    dispatch(removeEntities([{ id }], BoxesSchema)),
-  ]);
+  return batch(() => {
+    dispatch(removeEntities(events, BoxEventsSchema));
+    dispatch(removeEntities([{ id }], BoxesSchema));
+    return { id, ...currentBox };
+  });
 };
 
-export const addBoxEvent = (id, nextEvent) => (dispatch, getState) => {
+export const addBoxEvent = (id, nextEvent, isMyEvent = false) => (dispatch, getState) => {
   const currentBox = getBoxById(getState(), id);
-  const { events = [] } = currentBox;
+
+  const isLifecycle = nextEvent.type === LIFECYCLE;
+
+  if (isNil(currentBox)) {
+    // @FIXME for now if box is not in list and we receive a lifecycle event,
+    // it's a close event that didn't come from owner (else they have the box in store for sure)
+    // don't move up the box as the app will try to fetch it for displaying the list, but will
+    // get forbidden error. This behavior will be soon replaced by user notifications and
+    // closed box will not appear in list anymore
+    return Promise.resolve(isLifecycle ? undefined : dispatch(moveBackUpId(id, ALL)));
+  }
+
+  const { events, eventsCount = 0, lifecycle } = currentBox;
 
   const lastEvent = nextEvent;
+
   const changes = {
     lastEvent,
-    ...(lastEvent.type === LIFECYCLE ? { lifecycle: lastEvent.content.state } : {}),
-    events: events.concat([nextEvent]),
+    eventsCount: isMyEvent ? eventsCount : eventsCount + 1,
+    lifecycle: isLifecycle ? lastEvent.content.state : lifecycle,
+    // If we haven't fetch initial list of events, don't add the event to the list
+    events: isNil(events) ? undefined : events.concat([nextEvent]),
   };
 
   const normalized = normalize(nextEvent, BoxEventsSchema.entity);
   const { entities } = normalized;
 
-  return Promise.all([
-    dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
-    dispatch(updateEntities([{ id, changes }], BoxesSchema)),
-  ]);
+  if (isNil(events)) {
+    return batch(() => {
+      dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
+      dispatch(updateEntities([{ id, changes }], BoxesSchema));
+      dispatch(moveBackUpId(id, ALL));
+    });
+  }
+
+  return batch(() => {
+    dispatch(addPaginatedEventId(id, lastEvent.id));
+    dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
+    dispatch(updateEntities([{ id, changes }], BoxesSchema));
+    dispatch(moveBackUpId(id, ALL));
+  });
 };
 
 export const receiveBoxEvents = (id, nextEvents) => (dispatch, getState) => {

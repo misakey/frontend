@@ -2,11 +2,8 @@ import { ALL } from 'constants/app/boxes/statuses';
 import { actionCreators, selectors } from 'store/reducers/userBoxes/pagination';
 import { receiveJoinedBoxes } from 'store/reducers/box';
 
-import propOr from '@misakey/helpers/propOr';
 import pickAll from '@misakey/helpers/pickAll';
-import noop from '@misakey/helpers/noop';
 import isNil from '@misakey/helpers/isNil';
-import __ from '@misakey/helpers/__';
 import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/helpers/offsetLimitRange';
 import { getUserBoxesBuilder, countUserBoxesBuilder } from '@misakey/helpers/builder/boxes';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
@@ -18,21 +15,8 @@ import { useMemo, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 // CONSTANTS
-const EMPTY_OBJ = {};
-
-// HELPERS
-const actionCreatorsProp = propOr(EMPTY_OBJ, __, actionCreators);
-const selectorsProp = propOr(EMPTY_OBJ, __, selectors);
-
-const getReceiveItemCountActionCreator = (status) => {
-  const statusActionCreators = actionCreatorsProp(status);
-  return statusActionCreators.receivePaginatedItemCount || noop;
-};
-
-const getReceiveActionCreator = (status) => {
-  const statusActionCreators = actionCreatorsProp(status);
-  return statusActionCreators.receivePaginatedIds || noop;
-};
+const { receivePaginatedItemCount, receivePaginatedIds } = actionCreators;
+const { getBySearchPagination, getByPagination, getItemCount, getSearch } = selectors;
 
 // HOOKS
 /**
@@ -59,54 +43,26 @@ export default (status = ALL, search = null) => {
     [hasSearch, search, status],
   );
 
-  // ACTIONS
-  const receiveItemCountAction = useMemo(
-    () => getReceiveItemCountActionCreator(status),
-    [status],
-  );
-
-  const receivePaginationAction = useMemo(
-    () => getReceiveActionCreator(status),
-    [status],
-  );
-  // ---
-
   const dispatch = useDispatch();
 
   // SELECTORS
-  const statusSelectors = useMemo(
-    () => selectorsProp(status),
-    [status],
-  );
-
   const byPaginationSelector = useMemo(
-    () => (hasSearch ? statusSelectors.getBySearchPagination : statusSelectors.getByPagination),
-    [hasSearch, statusSelectors.getByPagination, statusSelectors.getBySearchPagination],
+    () => (hasSearch ? getBySearchPagination : getByPagination),
+    [hasSearch],
   );
-
-  const itemCountSelector = useMemo(
-    () => statusSelectors.getItemCount,
-    [statusSelectors.getItemCount],
-  );
-
-  const searchSelector = useMemo(
-    () => statusSelectors.getSearch,
-    [statusSelectors.getSearch],
-  );
-
   // ---
 
   // SELECTORS hooks with memoization layer
-  const byPagination = useSelector(byPaginationSelector);
-  const itemCount = useSelector(itemCountSelector);
-  const currentSearch = useSelector(searchSelector);
+  const byPagination = useSelector((state) => byPaginationSelector(state, status));
+  const itemCount = useSelector((state) => getItemCount(state, status));
+  const currentSearch = useSelector((state) => getSearch(state, status));
 
   // ---
 
   const dispatchReceiveBoxes = useCallback(
     (data, { offset, limit }) => Promise.resolve(dispatch(receiveJoinedBoxes(data)))
-      .then(({ result }) => dispatch(receivePaginationAction(offset, limit, result, search))),
-    [dispatch, search, receivePaginationAction],
+      .then(({ result }) => dispatch(receivePaginatedIds(status, offset, limit, result, search))),
+    [dispatch, status, search],
   );
 
   // API data fetching:
@@ -157,11 +113,11 @@ export default (status = ALL, search = null) => {
     () => {
       if (isNil(itemCount)) {
         getCount()
-          .then((result) => dispatch(receiveItemCountAction(result)))
+          .then((result) => dispatch(receivePaginatedItemCount(status, result)))
           .catch((e) => handleHttpErrors(e));
       }
     },
-    [dispatch, getCount, handleHttpErrors, itemCount, receiveItemCountAction],
+    [dispatch, getCount, handleHttpErrors, itemCount, status],
   );
 
   // extra memoization layer because of object format

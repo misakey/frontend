@@ -1,9 +1,8 @@
 import { OPEN, CLOSED } from 'constants/app/boxes/statuses';
-import { INITIAL_STATE } from 'store/reducers/helpers/pagination';
-import reducer, { REDUCER_KEY, getState, selectors, updatePaginationsToStatus, actions } from '.';
+import userBoxesReducer, { REDUCER_KEY, getUserBoxesState, selectors } from '.';
 
 describe('testing reducer userBoxesPagination', () => {
-  describe('getState', () => {
+  describe('getUserBoxesState', () => {
     const itemCount = 5;
     const exStatus = OPEN;
     const state = {
@@ -17,11 +16,11 @@ describe('testing reducer userBoxesPagination', () => {
       [null],
       ['toto'],
     ];
-    it.each(STATUSES)('should not throw, status %p', (status) => {
-      expect(() => getState(status)(state)).not.toThrow();
+    it.each(STATUSES)('should not throw, status %p', () => {
+      expect(() => getUserBoxesState()(state)).not.toThrow();
     });
     it('should return state', () => {
-      expect(getState(exStatus)(state)).toBe(state.userBoxesPagination[exStatus]);
+      expect(getUserBoxesState()(state)).toBe(state.userBoxesPagination);
     });
   });
   describe('selectors', () => {
@@ -74,50 +73,16 @@ describe('testing reducer userBoxesPagination', () => {
       });
     });
   });
-  describe('thunks', () => {
-    const dispatchMock = (...args) => Promise.resolve(...args);
 
-    describe('updatePaginationsToStatus', () => {
-      const id = 'A304Ku';
-      it('should reject with error when status is unhandled', async () => {
-        const status = 'unhandled';
-
-        const thunk = updatePaginationsToStatus(id, status);
-        expect.assertions(1);
-        await expect(thunk(dispatchMock)).rejects.toEqual(expect.any(Error));
-      });
-      it('should resolve with 1 addPaginatedId action, 3 removePaginatedId actions', async () => {
-        const status = OPEN;
-        const { [status]: statusActions, ...restActions } = actions;
-
-        const expected = [
-          {
-            type: statusActions.ADD_PAGINATED_ID,
-            id,
-            search: null,
-          },
-          ...Object.values(restActions)
-            .map((action) => ({ type: action.REMOVE_PAGINATED_ID, id, search: null })),
-        ];
-
-        const thunk = updatePaginationsToStatus(id, status);
-        expect.assertions(1);
-        await expect(thunk(dispatchMock)).resolves.toEqual(expected);
-      });
-    });
-  });
   describe('reducer', () => {
     it('should have reducer key', () => {
-      expect(reducer).toEqual(expect.objectContaining({
+      expect(userBoxesReducer).toEqual(expect.objectContaining({
         [REDUCER_KEY]: expect.any(Function),
       }));
     });
     it('should return initial state', () => {
       // eslint-disable-next-line import/no-named-as-default-member
-      expect(reducer[REDUCER_KEY](undefined, {})).toEqual(expect.objectContaining({
-        [OPEN]: INITIAL_STATE,
-        [CLOSED]: INITIAL_STATE,
-      }));
+      expect(userBoxesReducer[REDUCER_KEY](undefined, {})).toEqual({});
     });
   });
 });

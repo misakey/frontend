@@ -1,4 +1,4 @@
-import { MSG_DELETE, MSG_EDIT, MEMBER_LEAVE, MEMBER_KICK, MEMBER_EVENT_TYPES } from 'constants/app/boxes/events';
+import { MSG_DELETE, MSG_EDIT, MEMBER_LEAVE, MEMBER_KICK, MEMBER_EVENT_TYPES, MEMBER_JOIN } from 'constants/app/boxes/events';
 
 import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
@@ -45,6 +45,11 @@ export const transformReferrerEvent = (event) => (referrerEvent) => {
   return event;
 };
 
+export const isMeEvent = ({ sender }, myIdentifierValue) => {
+  const senderIdentifierValue = identifierValuePath(sender);
+  return senderIdentifierValue === myIdentifierValue;
+};
+
 export const isMeLeaveEvent = ({ type, sender }, meIdentifierValue) => {
   if (type === MEMBER_LEAVE) {
     const senderIdentifierValue = identifierValuePath(sender);
@@ -55,6 +60,14 @@ export const isMeLeaveEvent = ({ type, sender }, meIdentifierValue) => {
 
 export const isMeKickEvent = ({ type, sender }, meIdentifierValue) => {
   if (type === MEMBER_KICK) {
+    return senderMatchesIdentifierValue({ sender, identifierValue: meIdentifierValue });
+  }
+  return false;
+};
+
+
+export const isMeJoinEvent = ({ type, sender }, meIdentifierValue) => {
+  if (type === MEMBER_JOIN) {
     return senderMatchesIdentifierValue({ sender, identifierValue: meIdentifierValue });
   }
   return false;

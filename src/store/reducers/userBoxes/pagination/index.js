@@ -1,14 +1,11 @@
-import { combineReducers } from 'redux';
 import { createSelector } from 'reselect';
-
-import { OPEN, CLOSED, ALL } from 'constants/app/boxes/statuses';
+import { ALL } from 'constants/app/boxes/statuses';
 
 import { makePaginationReducer } from 'store/reducers/helpers/pagination';
 
 import path from '@misakey/helpers/path';
 import prop from '@misakey/helpers/prop';
 import pluck from '@misakey/helpers/pluck';
-import compose from '@misakey/helpers/compose';
 import all from '@misakey/helpers/all';
 import isNil from '@misakey/helpers/isNil';
 
@@ -16,57 +13,23 @@ import isNil from '@misakey/helpers/isNil';
 export const REDUCER_KEY = 'userBoxesPagination';
 
 // HELPERS
-export const getState = (status) => path([REDUCER_KEY, status]);
-
-const removePaginatedIdPluck = pluck('removePaginatedId');
-const getRemovePaginatedIdActionCreators = compose(
-  Object.values,
-  removePaginatedIdPluck,
-);
 const itemCountPluck = pluck('itemCount');
-
 const isNilOrZero = (value) => isNil(value) || value === 0;
 const allIsNilOrZero = all(isNilOrZero);
+export const getUserBoxesState = () => path([REDUCER_KEY]);
 
 // FACTORY CALLS
-export const {
-  actions: openActions,
-  actionCreators: openActionCreators,
-  selectors: openSelectors,
-  reducer: openReducer,
-} = makePaginationReducer(`USER_BOXES_${OPEN}`, getState(OPEN));
+const {
+  actions: helperActions,
+  actionCreators: helperActionCreators,
+  selectors: helperSelectors,
+  reducer,
+} = makePaginationReducer('USER_BOXES', getUserBoxesState());
 
-export const {
-  actions: closedActions,
-  actionCreators: closedActionCreators,
-  selectors: closedSelectors,
-  reducer: closedReducer,
-} = makePaginationReducer(`USER_BOXES_${CLOSED}`, getState(CLOSED));
-
-export const {
-  actions: allActions,
-  actionCreators: allActionCreators,
-  selectors: allSelectors,
-  reducer: allReducer,
-} = makePaginationReducer(`USER_BOXES_${ALL}`, getState(ALL));
-
-
-export const actions = {
-  [ALL]: allActions,
-  [OPEN]: openActions,
-  [CLOSED]: closedActions,
-};
-
-export const actionCreators = {
-  [ALL]: allActionCreators,
-  [OPEN]: openActionCreators,
-  [CLOSED]: closedActionCreators,
-};
-
+export const actions = helperActions;
+export const actionCreators = helperActionCreators;
 export const selectors = {
-  [ALL]: allSelectors,
-  [OPEN]: openSelectors,
-  [CLOSED]: closedSelectors,
+  ...helperSelectors,
   isEmpty: createSelector(
     prop(REDUCER_KEY),
     (statusesPagination) => allIsNilOrZero(itemCountPluck(Object.values(statusesPagination))),
@@ -74,49 +37,24 @@ export const selectors = {
 };
 
 // THUNKS
-export const updatePaginationsToStatus = (id, status) => (dispatch) => {
-  const { [status]: toStatusActionCreators, ...otherStatusesActionCreators } = actionCreators;
+export const moveBackUpId = (id, status = ALL) => (dispatch, getState) => {
+  const { getByPagination } = selectors;
+  const { addPaginatedId, removePaginatedId } = actionCreators;
 
-  if (isNil(toStatusActionCreators)) {
-    return Promise.reject(new Error(`Unhandled status ${status}`));
+  const existingItems = getByPagination(getState(), status);
+  const existingItemsIds = Object.values(existingItems);
+
+  if (!existingItemsIds.includes(id)) {
+    return Promise.resolve(dispatch(addPaginatedId(status, id)));
   }
-  const { addPaginatedId } = toStatusActionCreators;
-
-  const removeActionCreators = getRemovePaginatedIdActionCreators(otherStatusesActionCreators);
 
   return Promise.all([
-    dispatch(addPaginatedId(id)),
-    ...removeActionCreators.map((removePaginatedId) => dispatch(removePaginatedId(id))),
-  ]);
-};
-
-export const removeFromPaginations = (id) => (dispatch) => {
-  const removeActionCreators = getRemovePaginatedIdActionCreators(actionCreators);
-
-  return Promise.all(
-    removeActionCreators
-      .map((removePaginatedId) => dispatch(removePaginatedId(id))),
-  );
-};
-
-export const moveBackUpId = (id, status = ALL) => (dispatch) => {
-  const { [status]: toStatusActionCreators } = actionCreators;
-
-  if (isNil(toStatusActionCreators)) {
-    return Promise.reject(new Error(`Unhandled status ${status}`));
-  }
-  const { addPaginatedId, removePaginatedId } = toStatusActionCreators;
-  return Promise.all([
-    dispatch(removePaginatedId(id)),
-    dispatch(addPaginatedId(id)),
+    dispatch(removePaginatedId(status, id)),
+    dispatch(addPaginatedId(status, id)),
   ]);
 };
 
 // REDUCER
 export default {
-  [REDUCER_KEY]: combineReducers({
-    [ALL]: allReducer,
-    [OPEN]: openReducer,
-    [CLOSED]: closedReducer,
-  }),
+  [REDUCER_KEY]: reducer,
 };

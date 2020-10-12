@@ -1,4 +1,4 @@
-import { INITIAL_STATE, makePaginationReducer } from '.';
+import { INITIAL_STATE, INITIAL_SUB_STATE, makePaginationReducer } from '.';
 
 describe('testing pagination reducers helpers', () => {
   describe('makePaginationReducer', () => {
@@ -57,18 +57,22 @@ describe('testing pagination reducers helpers', () => {
         });
 
         it('should create action RECEIVE_PAGINATED_ITEM_COUNT', () => {
+          const filterId = 'test';
           const itemCount = 5;
-          expect(receivePaginatedItemCount(itemCount)).toEqual({
+          expect(receivePaginatedItemCount(filterId, itemCount)).toEqual({
             type: RECEIVE_PAGINATED_ITEM_COUNT,
             itemCount,
+            filterId,
           });
         });
         it('should create action RECEIVE_PAGINATED_IDS', () => {
+          const filterId = 'test';
           const offset = 10;
           const limit = 20;
           const ids = ['zsergt', '1fdrj', '38hu'];
-          expect(receivePaginatedIds(offset, limit, ids)).toEqual({
+          expect(receivePaginatedIds(filterId, offset, limit, ids)).toEqual({
             type: RECEIVE_PAGINATED_IDS,
+            filterId,
             offset,
             limit,
             ids,
@@ -76,18 +80,22 @@ describe('testing pagination reducers helpers', () => {
           });
         });
         it('should create action ADD_PAGINATED_ID', () => {
+          const filterId = 'test';
           const id = 'defrgt7';
-          expect(addPaginatedId(id)).toEqual({
+          expect(addPaginatedId(filterId, id)).toEqual({
             type: ADD_PAGINATED_ID,
             id,
+            filterId,
             search: null,
           });
         });
         it('should create action REMOVE_PAGINATED_ID', () => {
+          const filterId = 'test';
           const id = 'defrgt7';
-          expect(removePaginatedId(id)).toEqual({
+          expect(removePaginatedId(filterId, id)).toEqual({
             type: REMOVE_PAGINATED_ID,
             id,
+            filterId,
             search: null,
           });
         });
@@ -110,21 +118,28 @@ describe('testing pagination reducers helpers', () => {
           expect(reducer(undefined, {})).toEqual(INITIAL_STATE);
         });
         describe('handle actions', () => {
+          const filterId = 'test';
           describe('RECEIVE_PAGINATED_ITEM_COUNT', () => {
             it('should handle action, initial state', () => {
               const itemCount = 5;
-              const nextState = { ...INITIAL_STATE, itemCount };
+              const nextState = {
+                ...INITIAL_STATE,
+                [filterId]: { ...INITIAL_SUB_STATE, itemCount },
+              };
               expect(reducer(INITIAL_STATE, {
-                type: RECEIVE_PAGINATED_ITEM_COUNT, itemCount,
+                type: RECEIVE_PAGINATED_ITEM_COUNT, itemCount, filterId,
               }))
                 .toEqual(nextState);
             });
             it('should handle action, other state', () => {
               const itemCount = 5;
-              const otherState = { byPagination: {}, itemCount: 30 };
-              const nextState = { ...otherState, itemCount };
+              const otherState = { [filterId]: { byPagination: {}, itemCount: 30 } };
+              const nextState = {
+                ...otherState,
+                [filterId]: { ...otherState[filterId], itemCount },
+              };
               expect(reducer(otherState, {
-                type: RECEIVE_PAGINATED_ITEM_COUNT, itemCount,
+                type: RECEIVE_PAGINATED_ITEM_COUNT, itemCount, filterId,
               }))
                 .toEqual(nextState);
             });
@@ -137,10 +152,13 @@ describe('testing pagination reducers helpers', () => {
               const limit = 3;
               const nextState = {
                 ...INITIAL_STATE,
-                byPagination: {
-                  10: ids[0],
-                  11: ids[1],
-                  12: ids[2],
+                [filterId]: {
+                  ...INITIAL_SUB_STATE,
+                  byPagination: {
+                    10: ids[0],
+                    11: ids[1],
+                    12: ids[2],
+                  },
                 },
               };
               expect(reducer(INITIAL_STATE, {
@@ -148,34 +166,49 @@ describe('testing pagination reducers helpers', () => {
                 offset,
                 limit,
                 ids,
+                filterId,
               }))
                 .toEqual(nextState);
             });
             it('should handle action, other state', () => {
               const otherState = {
-                byPagination: {
-                  0: 'sdfr',
-                  1: 34,
-                  2: 'i44',
+                other: {
+                  ...INITIAL_SUB_STATE,
+                  byPagination: {
+                    0: 'sdfr',
+                    1: 34,
+                    2: 'i44',
+                  },
+                  itemCount: 6,
                 },
-                itemCount: 6,
+                [filterId]: {
+                  ...INITIAL_SUB_STATE,
+                  byPagination: {
+                    0: 'num1',
+                    1: 'num2',
+                  },
+                  itemCount: 2,
+                },
               };
               const offset = 3;
               const limit = 3;
               const nextState = {
                 ...otherState,
-                search: null,
-                byPagination: {
-                  ...otherState.byPagination,
-                  3: ids[0],
-                  4: ids[1],
-                  5: ids[2],
+                [filterId]: {
+                  ...otherState[filterId],
+                  byPagination: {
+                    ...otherState[filterId].byPagination,
+                    3: ids[0],
+                    4: ids[1],
+                    5: ids[2],
+                  },
                 },
               };
               expect(reducer(otherState, {
                 type: RECEIVE_PAGINATED_IDS,
                 offset,
                 limit,
+                filterId,
                 ids,
               }))
                 .toEqual(nextState);
@@ -186,39 +219,57 @@ describe('testing pagination reducers helpers', () => {
             it('should handle action, initial state', () => {
               const nextState = {
                 ...INITIAL_STATE,
-                itemCount: 1,
-                byPagination: {
-                  0: id,
+                [filterId]: {
+                  ...INITIAL_SUB_STATE,
+                  itemCount: 1,
+                  byPagination: {
+                    0: id,
+                  },
                 },
               };
               expect(reducer(INITIAL_STATE, {
                 type: ADD_PAGINATED_ID,
+                filterId,
                 id,
               }))
                 .toEqual(nextState);
             });
             it('should handle action, other state', () => {
               const otherState = {
-                byPagination: {
-                  0: 'zefrt',
-                  1: 'a340',
-                  2: 'bef9',
+                [filterId]: {
+                  byPagination: {
+                    0: 'zefrt',
+                    1: 'a340',
+                    2: 'bef9',
+                  },
+                  itemCount: 10,
                 },
-                itemCount: 10,
+                other: {
+                  byPagination: {
+                    0: 'Test1',
+                    1: 'Test2',
+                    2: 'Test3',
+                    3: 'Test4',
+                  },
+                  itemCount: 4,
+                },
               };
               const nextState = {
                 ...otherState,
-                itemCount: otherState.itemCount + 1,
-                search: null,
-                byPagination: {
-                  0: id,
-                  1: otherState.byPagination[0],
-                  2: otherState.byPagination[1],
-                  3: otherState.byPagination[2],
+                [filterId]: {
+                  itemCount: otherState[filterId].itemCount + 1,
+                  search: null,
+                  byPagination: {
+                    0: id,
+                    1: otherState[filterId].byPagination[0],
+                    2: otherState[filterId].byPagination[1],
+                    3: otherState[filterId].byPagination[2],
+                  },
                 },
               };
               expect(reducer(otherState, {
                 type: ADD_PAGINATED_ID,
+                filterId,
                 id,
               }))
                 .toEqual(nextState);
@@ -230,35 +281,41 @@ describe('testing pagination reducers helpers', () => {
             it('should handle action, initial state', () => {
               expect(reducer(INITIAL_STATE, {
                 type: REMOVE_PAGINATED_ID,
+                filterId,
                 id,
               }))
                 .toEqual(INITIAL_STATE);
             });
             it('should handle action, other state', () => {
               const otherState = {
-                byPagination: {
-                  0: 'zef1',
-                  1: 'ddef',
-                  2: '6Y7',
-                  3: id,
-                  4: 'ferth',
+                [filterId]: {
+                  byPagination: {
+                    0: 'zef1',
+                    1: 'ddef',
+                    2: '6Y7',
+                    3: id,
+                    4: 'ferth',
+                  },
+                  itemCount: 10,
                 },
-                itemCount: 10,
               };
               const nextState = {
                 ...otherState,
-                itemCount: otherState.itemCount - 1,
-                search: null,
-                byPagination: {
-                  0: otherState.byPagination[0],
-                  1: otherState.byPagination[1],
-                  2: otherState.byPagination[2],
-                  3: otherState.byPagination[4],
+                [filterId]: {
+                  itemCount: otherState[filterId].itemCount - 1,
+                  search: null,
+                  byPagination: {
+                    0: otherState[filterId].byPagination[0],
+                    1: otherState[filterId].byPagination[1],
+                    2: otherState[filterId].byPagination[2],
+                    3: otherState[filterId].byPagination[4],
+                  },
                 },
               };
               expect(reducer(otherState, {
                 type: REMOVE_PAGINATED_ID,
                 search: null,
+                filterId,
                 id,
               }))
                 .toEqual(nextState);

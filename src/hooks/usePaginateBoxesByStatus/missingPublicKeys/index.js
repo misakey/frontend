@@ -3,11 +3,9 @@ import { makeGetBoxesPublicKeysSelector } from 'store/reducers/box';
 import { removeBoxSecretKeysAndKeyShares } from '@misakey/crypto/store/actions/concrete';
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 
-import propOr from '@misakey/helpers/propOr';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import difference from '@misakey/helpers/difference';
-import __ from '@misakey/helpers/__';
 
 import { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -16,12 +14,8 @@ import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublic
 import { ALL } from 'constants/app/boxes/statuses';
 
 // CONSTANTS
-const EMPTY_OBJ = {};
-
 const { makeGetMissingBoxKeyShares } = cryptoSelectors;
-
-// HELPERS
-const selectorsProp = propOr(EMPTY_OBJ, __, selectors);
+const { getBySearchPagination, getByPagination, getItemCount } = selectors;
 
 // HOOKS
 export default (status = ALL, search = null) => {
@@ -32,14 +26,9 @@ export default (status = ALL, search = null) => {
   const dispatch = useDispatch();
 
   // SELECTORS
-  const statusSelectors = useMemo(
-    () => selectorsProp(status),
-    [status],
-  );
-
   const byPaginationSelector = useMemo(
-    () => (hasSearch ? statusSelectors.getBySearchPagination : statusSelectors.getByPagination),
-    [hasSearch, statusSelectors.getByPagination, statusSelectors.getBySearchPagination],
+    () => (hasSearch ? getBySearchPagination : getByPagination),
+    [hasSearch],
   );
 
   const paginatedPublicKeysSelector = useMemo(
@@ -52,13 +41,8 @@ export default (status = ALL, search = null) => {
     [],
   );
 
-  const itemCountSelector = useMemo(
-    () => statusSelectors.getItemCount,
-    [statusSelectors.getItemCount],
-  );
-
   // --- SELECTORS hook with memoization layer
-  const byPagination = useSelector(byPaginationSelector);
+  const byPagination = useSelector((state) => byPaginationSelector(state, status));
 
   const byPaginationIds = useMemo(
     () => Object.values(byPagination),
@@ -70,7 +54,7 @@ export default (status = ALL, search = null) => {
     [byPaginationIds],
   );
 
-  const itemCount = useSelector(itemCountSelector);
+  const itemCount = useSelector((state) => getItemCount(state, status));
 
   const isPaginationFull = useMemo(
     () => byPaginationCount === itemCount,

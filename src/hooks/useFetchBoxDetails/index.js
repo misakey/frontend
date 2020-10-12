@@ -1,19 +1,15 @@
 
 
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useEffect, useState } from 'react';
 import { normalize } from 'normalizr';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import routes from 'routes';
 
-import errorTypes from '@misakey/ui/constants/errorTypes';
-
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import usePropChanged from '@misakey/hooks/usePropChanged';
 
-import { getCode, getDetails } from '@misakey/helpers/apiError';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import mergeDeepWithKey from '@misakey/helpers/mergeDeepWithKey';
@@ -27,12 +23,9 @@ import SenderSchema from 'store/schemas/Boxes/Sender';
 import { makeDenormalizeBoxSelector, receiveJoinedBox } from 'store/reducers/box';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { CLOSED } from 'constants/app/boxes/statuses';
+import useOnError from './onError';
 
 // CONSTANTS
-const { forbidden } = errorTypes;
-const NOT_MEMBER = 'not_member';
-const NO_ACCESS = 'no_access';
-const ERR_BOX_CLOSED = 'closed';
 const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
 
 // HELPERS
@@ -60,6 +53,7 @@ const mergeReceiveNoEmptyNoEventsCountOverride = (state, { entities }) => {
 // HOOKS
 export default (id) => {
   const dispatch = useDispatch();
+  const [isFetching, setIsFetching] = useState(false);
 
   const denormalizeBoxSelector = useMemo(
     () => makeDenormalizeBoxSelector(),
@@ -68,9 +62,7 @@ export default (id) => {
 
   const box = useSelector((state) => denormalizeBoxSelector(state, id));
 
-  const { members, hasAccess, isMember, id: boxId } = useSafeDestr(box);
-
-  const [idPropChanged] = usePropChanged(id, [boxId]);
+  const { members, hasAccess, isMember, publicKey, lifecycle } = useSafeDestr(box);
 
   const handleHttpErrors = useHandleHttpErrors();
 
@@ -79,18 +71,25 @@ export default (id) => {
   const history = useHistory();
 
   const isAllowedToFetch = useMemo(
-    () => isAuthenticated && !isNil(id),
-    [isAuthenticated, id],
+    () => isAuthenticated && !isNil(id) && !isFetching,
+    [isAuthenticated, id, isFetching],
   );
 
+  const hasAccessAndIsMember = useMemo(
+    () => hasAccess === true && isMember === true,
+    [hasAccess, isMember],
+  );
+
+  const isClosed = useMemo(() => lifecycle === CLOSED, [lifecycle]);
+
   const isAllowedToFetchContent = useMemo(
-    () => isAllowedToFetch && hasAccess === true && isMember === true,
-    [isAllowedToFetch, hasAccess, isMember],
+    () => isAllowedToFetch && hasAccessAndIsMember && !isClosed,
+    [isAllowedToFetch, hasAccessAndIsMember, isClosed],
   );
 
   const shouldFetchBox = useMemo(
-    () => isAllowedToFetch && (isNil(box) || isNil(hasAccess)),
-    [isAllowedToFetch, box, hasAccess],
+    () => isNil(box) || isNil(hasAccess) || (isNil(publicKey) && hasAccessAndIsMember),
+    [box, hasAccess, hasAccessAndIsMember, publicKey],
   );
 
   const getBox = useCallback(
@@ -101,15 +100,6 @@ export default (id) => {
   const getBoxMembers = useCallback(
     () => getBoxMembersBuilder(id),
     [id],
-  );
-
-  const dispatchReceiveBox = useCallback(
-    (data) => {
-      const normalized = normalize(data, BoxesSchema.entity);
-      const { entities } = normalized;
-      return Promise.resolve(dispatch(receiveEntities(entities, mergeReceiveNoEmpty)));
-    },
-    [dispatch],
   );
 
   const dispatchReceiveJoinedBox = useCallback(
@@ -133,39 +123,16 @@ export default (id) => {
     [handleHttpErrors, history],
   );
 
-  const onError = useCallback(
-    async (error) => {
-      const code = getCode(error);
-      const { reason } = getDetails(error);
-      if (code === forbidden) {
-        switch (reason) {
-          case NOT_MEMBER: {
-            dispatchReceiveBox({ id, isMember: false, hasAccess: true });
-            break;
-          }
-          case NO_ACCESS: {
-            dispatchReceiveBox({ id, hasAccess: false });
-            break;
-          }
-          case ERR_BOX_CLOSED: {
-            dispatchReceiveBox({ id, hasAccess: true, lifecycle: CLOSED });
-            break;
-          }
-          default: {
-            onDefaultError(error);
-          }
-        }
-      } else {
-        onDefaultError(error);
+  const onError = useOnError(id, onDefaultError);
+
+  useEffect(
+    () => {
+      if (isAllowedToFetch && shouldFetchBox) {
+        setIsFetching(true);
+        getBox().then(onSuccess).catch(onError).finally(() => setIsFetching(false));
       }
     },
-    [dispatchReceiveBox, id, onDefaultError],
-  );
-
-  useFetchEffect(
-    getBox,
-    { shouldFetch: shouldFetchBox, stopOnError: !idPropChanged },
-    { onSuccess, onError },
+    [getBox, isAllowedToFetch, onError, onSuccess, shouldFetchBox],
   );
 
   const shouldFetchMembers = useMemo(

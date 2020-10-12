@@ -298,7 +298,7 @@
       "kick": "You have been removed from the private space “{{title}}”",
       "delete": {
         "you": "Private space deleted",
-        "unknown": "A private space has been deleted"
+        "they": "Private space “{{title}}” has been deleted"
       }
     }
   }

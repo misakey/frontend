@@ -1,17 +1,23 @@
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import routes from 'routes';
 
-import { isMeLeaveEvent, isMeKickEvent } from 'helpers/boxEvent';
+import { isMeLeaveEvent, isMeKickEvent, isMeJoinEvent, isMeEvent } from 'helpers/boxEvent';
 import { senderIdMatchesIdentityId } from 'helpers/sender';
 import path from '@misakey/helpers/path';
+import isNil from '@misakey/helpers/isNil';
+import log from '@misakey/helpers/log';
 
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch, batch } from 'react-redux';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import { useCallback, useMemo, useRef, useEffect } from 'react';
-import { useOnReceiveBox, useOnRemoveBox } from 'hooks/usePaginateBoxesByStatus/updates';
+import { useOnRemoveBox } from 'hooks/usePaginateBoxesByStatus/updates';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 import useModifier from '@misakey/hooks/useModifier';
+import { CHANGE_EVENT_TYPES } from 'constants/app/boxes/events';
+import { receiveWSEditEvent, addBoxEvent } from 'store/reducers/box';
+import { updateEntities } from '@misakey/store/actions/entities';
+import BoxesSchema from 'store/schemas/Boxes';
 
 // CONSTANTS
 const {
@@ -19,13 +25,18 @@ const {
   identityId: IDENTITY_ID_SELECTOR,
 } = authSelectors;
 
+const MESSAGE_TYPES = {
+  DELETED_BOX: 'box.delete',
+  NEW_EVENT: 'event.new',
+};
+
 // HELPERS
 const idParamPath = path(['params', 'id']);
 
 // HOOKS
 export default (activeStatus, search) => {
-  const onReceiveBox = useOnReceiveBox(activeStatus, search);
   const onRemoveBox = useOnRemoveBox(activeStatus, search);
+  const dispatch = useDispatch();
 
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation('boxes');
@@ -60,11 +71,15 @@ export default (activeStatus, search) => {
 
   const onDeleteSuccess = useCallback(
     (box) => {
+      const { title } = box;
       if (senderIdMatchesIdentityId(box, identityId)) {
-        enqueueSnackbar(tRef.current('boxes:removeBox.success.delete.you', box), { variant: 'success' });
-      } else {
-        // @FIXME persist snackbar for this important info ?
-        enqueueSnackbar(tRef.current('boxes:removeBox.success.delete.unknown', box), { variant: 'warning', persist: true });
+        enqueueSnackbar(tRef.current('boxes:removeBox.success.delete.you'), { variant: 'success' });
+      } else if (!isNil(title)) {
+        // This information will be handled by user notifications later
+        enqueueSnackbar(
+          tRef.current('boxes:removeBox.success.delete.they', { title }),
+          { variant: 'warning', persist: true },
+        );
       }
       if (idMatchesDeletedBoxId(box)) {
         return replace(routes.boxes._);
@@ -75,37 +90,55 @@ export default (activeStatus, search) => {
   );
 
   const onKickSuccess = useCallback(
-    (box) => enqueueSnackbar(tRef.current('boxes:removeBox.success.kick', box), { variant: 'info' }),
-    [enqueueSnackbar, tRef],
+    (box) => {
+      const { title } = box;
+      if (!isNil(title)) {
+        // This will be handled by user notifications later
+        enqueueSnackbar(tRef.current('boxes:removeBox.success.kick', box), { variant: 'info' });
+      }
+      if (idMatchesDeletedBoxId(box)) {
+        replace(routes.boxes._);
+      }
+    },
+    [enqueueSnackbar, idMatchesDeletedBoxId, replace],
   );
-
 
   return useCallback(
     ({ type, object }) => {
-    // box update
-      if (type === 'box.delete') {
-        return onRemoveBox(object)
-          .then(() => onDeleteSuccess(object));
+      // delete box
+      if (type === MESSAGE_TYPES.DELETED_BOX) {
+        const { id: boxId } = object;
+        return onRemoveBox(boxId).then((box) => onDeleteSuccess({ ...box, ...object }));
       }
-      if (type === 'box') {
-        const { lastEvent } = object;
-        if (isMeLeaveEvent(lastEvent, identifierValue)) {
-          return onRemoveBox(object)
-            .then(() => enqueueSnackbar(leaveSuccess, { variant: 'success' }));
+
+      // New event
+      if (type === MESSAGE_TYPES.NEW_EVENT) {
+        const { referrerId, type: eventType, boxId } = object;
+        if (CHANGE_EVENT_TYPES.includes(eventType) && !isNil(referrerId)) {
+          return Promise.resolve(dispatch(receiveWSEditEvent(object)));
         }
-        if (isMeKickEvent(lastEvent, identifierValue)) {
-          return onRemoveBox(object)
-            .then(() => onKickSuccess(object));
+        if (isMeLeaveEvent(object, identifierValue)) {
+          return onRemoveBox(boxId).then(() => enqueueSnackbar(leaveSuccess, { variant: 'success' }));
         }
-        return onReceiveBox(object);
+        if (isMeKickEvent(object, identifierValue)) {
+          return onRemoveBox(boxId).then((box) => onKickSuccess(box));
+        }
+        if (isMeJoinEvent(object, identifierValue)) {
+          return batch(() => {
+            dispatch(updateEntities(
+              [{ id: boxId, changes: { hasAccess: true, isMember: true } }],
+              BoxesSchema,
+            ));
+            dispatch(addBoxEvent(boxId, object));
+          });
+        }
+        const isMyEvent = isMeEvent(object, identifierValue);
+        return Promise.resolve(dispatch(addBoxEvent(boxId, object, isMyEvent)));
       }
-      // @FIXME should we handle an error ?
+      log(`Receive unknown WS type: ${type}`);
       return Promise.resolve();
     },
-    [
-      enqueueSnackbar,
-      identifierValue,
-      leaveSuccess, onDeleteSuccess, onKickSuccess, onReceiveBox, onRemoveBox,
-    ],
+    [identifierValue, leaveSuccess, onRemoveBox, onDeleteSuccess,
+      dispatch, enqueueSnackbar, onKickSuccess],
   );
 };

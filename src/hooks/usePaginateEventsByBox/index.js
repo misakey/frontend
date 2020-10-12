@@ -1,72 +1,54 @@
-import BoxesEventsSchema from 'store/schemas/Boxes/Events';
 
-import { makePaginationReducer, INITIAL_STATE } from 'store/reducers/helpers/pagination';
+import { useState, useMemo, useCallback } from 'react';
+import { useRouteMatch } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import routes from 'routes';
+import { normalize } from 'normalizr';
+
+import BoxesEventsSchema from 'store/schemas/Boxes/Events';
+import { actionCreators, selectors } from 'store/reducers/userBoxes/pagination/events';
 import { receiveBoxEvents } from 'store/reducers/box';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
+import path from '@misakey/helpers/path';
 import pickAll from '@misakey/helpers/pickAll';
 import getMissingIndexes from '@misakey/helpers/getMissingIndexes';
 import { getBoxEventsBuilder, countBoxEventsBuilder } from '@misakey/helpers/builder/boxes';
 import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/helpers/offsetLimitRange';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
-import identity from '@misakey/helpers/identity';
-import { normalize } from 'normalizr';
 
-import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import { useDispatch, useSelector } from 'react-redux';
-import { useState, useMemo, useCallback, useEffect, useLayoutEffect } from 'react';
-import useReducer from '@misakey/hooks/useReducer';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 // CONSTANTS
 const {
   isAuthenticated: IS_AUTHENTICATED_SELECTOR,
 } = authSelectors;
 
+const { receivePaginatedItemCount, receivePaginatedIds, addPaginatedId } = actionCreators;
+const { getByPagination, getItemCount } = selectors;
+
 // HELPERS
-const getState = identity;
+const boxIdParamPath = path(['params', 'id']);
 
 // HOOKS
-export default (boxId, shouldStart = true) => {
-  const handleHttpErrors = useHandleHttpErrors();
-
+export default (shouldStart = true) => {
   const [isFetching, setIsFetching] = useState(false);
 
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
 
-  const initialState = useMemo(
-    () => ({ ...INITIAL_STATE, boxId }),
-    [boxId],
+  const matchBoxSelected = useRouteMatch(routes.boxes.read._);
+  const boxId = useMemo(
+    () => boxIdParamPath(matchBoxSelected),
+    [matchBoxSelected],
   );
 
-  const {
-    actionCreators:
-      { receivePaginatedItemCount, receivePaginatedIds, addPaginatedId, resetPagination },
-    selectors: { getByPagination, getItemCount },
-    reducer,
-  } = useMemo(
-    () => makePaginationReducer(boxId, getState, initialState),
-    [boxId, initialState],
-  );
-
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  const reduxDispatch = useDispatch();
+  const dispatch = useDispatch();
 
 
   // SELECTORS hooks
-  const { boxId: stateBoxId } = useSafeDestr(state);
-
-  const byPagination = useMemo(
-    () => (stateBoxId === boxId ? getByPagination(state) : {}),
-    [stateBoxId, boxId, getByPagination, state],
-  );
-
-  const itemCount = useMemo(
-    () => (stateBoxId === boxId ? getItemCount(state) : 0),
-    [stateBoxId, boxId, getItemCount, state],
-  );
+  const byPagination = useSelector((state) => getByPagination(state, boxId));
+  const itemCount = useSelector((state) => getItemCount(state, boxId));
 
   const dispatchReceiveEvents = useCallback(
     (data, { offset, limit }) => {
@@ -76,17 +58,17 @@ export default (boxId, shouldStart = true) => {
       );
       const { result } = normalized;
       return Promise.resolve(
-        reduxDispatch(receiveBoxEvents(boxId, data)),
+        dispatch(receiveBoxEvents(boxId, data)),
       ).then(
-        () => Promise.resolve(dispatch(receivePaginatedIds(offset, limit, result))),
+        () => Promise.resolve(dispatch(receivePaginatedIds(boxId, offset, limit, result))),
       );
     },
-    [reduxDispatch, boxId, dispatch, receivePaginatedIds],
+    [boxId, dispatch],
   );
 
   const dispatchAddEvents = useCallback(
-    (data) => Promise.all([...data.map(({ id }) => dispatch(addPaginatedId(id)))]),
-    [dispatch, addPaginatedId],
+    (data) => Promise.all([...data.map(({ id }) => dispatch(addPaginatedId(boxId, id)))]),
+    [dispatch, boxId],
   );
 
   // API data fetching:
@@ -149,47 +131,35 @@ export default (boxId, shouldStart = true) => {
             pagination.limit += countDiff;
           }
           return get(pagination).then(
-            () => Promise.resolve(dispatch(receivePaginatedItemCount(result))),
+            () => Promise.resolve(dispatch(receivePaginatedItemCount(boxId, result))),
           );
         });
     },
-    [byPagination, dispatch, get, getCount, itemCount, receivePaginatedItemCount],
+    [boxId, byPagination, dispatch, get, getCount, itemCount],
   );
 
-  // update itemCount whenever it is nil
-  useEffect(
-    () => {
-      if (isNil(itemCount) && isAuthenticated && shouldStart) {
-        getCount()
-          .then((result) => dispatch(receivePaginatedItemCount(result)))
-          .catch((e) => handleHttpErrors(e))
-          .finally(() => setIsFetching(false));
-      }
-    },
-    [
-      dispatch, receivePaginatedItemCount, setIsFetching, handleHttpErrors,
-      getCount, isAuthenticated, itemCount,
-      shouldStart,
-    ],
+  const shouldFetch = useMemo(
+    () => isNil(itemCount) && !isNil(boxId) && isAuthenticated && shouldStart,
+    [boxId, isAuthenticated, itemCount, shouldStart],
   );
 
-  useLayoutEffect(() => {
-    setIsFetching(true);
-    Promise.resolve(dispatch(resetPagination()))
-      .then(() => { setIsFetching(false); });
-  },
-  [boxId, resetPagination, dispatch, setIsFetching]);
+  const onSuccess = useCallback(
+    (result) => dispatch(receivePaginatedItemCount(boxId, result)),
+    [boxId, dispatch],
+  );
+
+  const { isFetching: isFetchingCount } = useFetchEffect(getCount, { shouldFetch }, { onSuccess });
 
   // extra memoization layer because of object format
   return useMemo(
     () => ({
       byPagination,
       itemCount,
-      isFetching,
+      isFetching: isFetchingCount || isFetching,
       loadMoreItems,
       addItems,
       refresh,
     }),
-    [byPagination, itemCount, isFetching, loadMoreItems, addItems, refresh],
+    [byPagination, itemCount, isFetchingCount, isFetching, loadMoreItems, addItems, refresh],
   );
 };

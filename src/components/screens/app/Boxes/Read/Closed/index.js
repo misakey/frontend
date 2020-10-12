@@ -54,7 +54,7 @@ function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t })
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { id, title = '', lastEvent, eventsCount } = useMemo(() => box, [box]);
+  const { id, title = null, lastEvent, eventsCount } = useMemo(() => box, [box]);
   const { sender, serverEventCreatedAt: closedDate } = useSafeDestr(lastEvent);
   const { displayName } = useMemo(() => sender || {}, [sender]);
 

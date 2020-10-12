@@ -49,18 +49,10 @@ jest.mock('store/reducers/userBoxes/pagination', () => ({
   __esModule: true,
   ...jest.requireActual('store/reducers/userBoxes/pagination'),
   selectors: {
-    open: {
-      getByPagination: (...args) => mockGetByPagination(...args),
-      getBySearchPagination: (...args) => mockGetBySearchPagination(...args),
-      getItemCount: (...args) => mockGetItemCount(...args),
-      getSearch: (...args) => mockGetSearch(...args),
-    },
-    closed: {
-      getByPagination: (...args) => mockGetByPagination(...args),
-      getBySearchPagination: (...args) => mockGetBySearchPagination(...args),
-      getItemCount: (...args) => mockGetItemCount(...args),
-      getSearch: (...args) => mockGetSearch(...args),
-    },
+    getByPagination: (...args) => mockGetByPagination(...args),
+    getBySearchPagination: (...args) => mockGetBySearchPagination(...args),
+    getItemCount: (...args) => mockGetItemCount(...args),
+    getSearch: (...args) => mockGetSearch(...args),
   },
 }));
 
