@@ -9,7 +9,7 @@ import { useSnackbar } from 'notistack';
 import BoxesSchema from 'store/schemas/Boxes';
 import { DATE_FULL } from 'constants/formats/dates';
 // import { CLOSED } from 'constants/app/boxes/statuses';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { updateEntities } from '@misakey/store/actions/entities';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -34,6 +34,9 @@ import InfoIcon from '@material-ui/icons/Info';
 // import LeaveBoxDialogButton from 'components/screens/app/Boxes/Read/Events/LeaveBoxDialogButton';
 import Skeleton from '@material-ui/lab/Skeleton';
 import CreateBoxSuggestions from 'components/smart/Box/CreateSuggestions';
+
+// CONSTANTS
+const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -92,7 +95,8 @@ function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t })
     [date, displayName, isFetching, title],
   );
 
-  const { id: identityId } = useSelector(getCurrentUserSelector) || {};
+  const identityId = useSelector(IDENTITY_ID_SELECTOR);
+
 
   // const isClosed = useMemo(
   //   () => lifecycle === CLOSED,

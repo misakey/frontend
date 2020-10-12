@@ -75,8 +75,8 @@ function ImagePreview({ fallbackView, maxHeight, width }) {
 
 ImagePreview.propTypes = {
   fallbackView: PropTypes.node,
-  maxHeight: PropTypes.oneOfType(PropTypes.string, PropTypes.number),
-  width: PropTypes.oneOfType(PropTypes.string, PropTypes.number),
+  maxHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 ImagePreview.defaultProps = {

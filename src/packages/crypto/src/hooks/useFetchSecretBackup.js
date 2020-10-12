@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getCurrentUserSelector, selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import isNil from '@misakey/helpers/isNil';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { getEncryptedSecretsBackup } from '../HttpApi';
@@ -8,14 +8,14 @@ import { storeEncryptedBackupData } from '../store/actions/concrete';
 import { selectors } from '../store/reducers';
 
 // CONSTANTS
-const { isAuthenticated: IS_AUTH_SELECTOR } = authSelectors;
+const { isAuthenticated: IS_AUTH_SELECTOR, accountId: ACCOUNT_ID_SELECTOR } = authSelectors;
 
 // HOOKS
 export default (() => {
   const areSecretsLoaded = useSelector(selectors.areSecretsLoaded);
   const dispatch = useDispatch();
 
-  const { accountId } = useSelector(getCurrentUserSelector) || {};
+  const accountId = useSelector(ACCOUNT_ID_SELECTOR);
   const { backupVersion, data } = useSelector(selectors.getEncryptedBackupData);
   const isAuthenticated = useSelector(IS_AUTH_SELECTOR);
 

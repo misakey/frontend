@@ -7,22 +7,31 @@ import ButtonWithDialogPassword from 'components/smart/Dialog/Password/with/Butt
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import BoxControls from '@misakey/ui/Box/Controls';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { useTranslation } from 'react-i18next';
 
+// CONSTANTS
+const { accountId: ACCOUNT_ID_SELECTOR, hasAccount: HAS_ACCOUNT_SELECTOR } = authSelectors;
+
+// COMPONENTS
 const ButtonCreate = withDialogCreate(Button);
 
 const CreateBoxSuggestions = () => {
-  const { accountId } = useSelector(getCurrentUserSelector) || {};
-  const hasAccount = useMemo(() => !isNil(accountId), [accountId]);
+  const accountId = useSelector(ACCOUNT_ID_SELECTOR);
+  const hasAccount = useSelector(HAS_ACCOUNT_SELECTOR);
+
+  const hasAccountOrAccountId = useMemo(
+    () => hasAccount || !isNil(accountId),
+    [hasAccount, accountId],
+  );
   const { t } = useTranslation('components');
 
   return (
     <Box pt={6}>
-      {hasAccount && (
+      {hasAccountOrAccountId && (
         <>
           <Typography color="textPrimary" align="center">
             {t('components:createBoxSuggestions.createBox.text')}

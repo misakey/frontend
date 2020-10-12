@@ -13,7 +13,7 @@ import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import path from '@misakey/helpers/path';
 
-import useBackupStorageEvent from '@misakey/crypto/hooks/useBackupStorageEvent';
+import useWatchStorageBackupVersion from '@misakey/crypto/hooks/useWatchStorageBackupVersion';
 import useSetBoxKeyShareInUrl from '@misakey/crypto/hooks/useSetBoxKeyShareInUrl';
 import { useSelector } from 'react-redux';
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
@@ -46,7 +46,7 @@ function Boxes({ match, isReady }) {
   const isNothingSelected = useMemo(() => isNil(id), [id]);
   const { backupVersion } = useSelector(selectors.getEncryptedBackupData);
 
-  const [storageBackupVersion] = useBackupStorageEvent();
+  const [storageBackupVersion] = useWatchStorageBackupVersion();
 
   useSetBoxKeyShareInUrl(id);
 

@@ -20,8 +20,8 @@ import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 import APITokenMiddleware from '@misakey/auth/middlewares/APItoken';
 import invalidTokenMiddleware from 'middlewares/invalidToken';
-import invalidSeclevelMiddleware from 'middlewares/invalidSeclevel';
 import floodManagementAlertMiddleware from 'middlewares/floodManagement/alert';
+import invalidSeclevelMiddleware from 'middlewares/invalidSeclevel';
 // routing
 import Router from 'components/smart/Router';
 import * as serviceWorker from 'serviceWorker';
@@ -81,8 +81,11 @@ if (isSilentAuthIframe()) {
 
   // ADD MIDDLEWARE TO API
   API.addMiddleware(invalidTokenMiddleware(store.dispatch));
-  API.addMiddleware(invalidSeclevelMiddleware(store.dispatch));
   API.addMiddleware(floodManagementAlertMiddleware(100)); // 100ms delay
+
+  const registerMiddlewares = (askSigninRedirect) => {
+    API.addMiddleware(invalidSeclevelMiddleware(askSigninRedirect));
+  };
 
   // SPLASH SCREEN CONFIG
   const SPLASH_SCREEN_PROPS = { height: '100vh', width: '100vw' };
@@ -106,6 +109,7 @@ if (isSilentAuthIframe()) {
                   <OidcProvider
                     store={store}
                     config={window.env.AUTH}
+                    registerMiddlewares={registerMiddlewares}
                   >
                     <App />
                   </OidcProvider>

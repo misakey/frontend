@@ -93,15 +93,12 @@ function setIsAuthenticated(state, { isAuthenticated }) {
 // SELECTORS
 const getState = ({ auth }) => auth;
 
-export const getCurrentUserSelector = createSelector(
-  (state) => state.auth,
-  (items) => items.identity,
-);
-
 const identitySelector = createSelector(
   getState,
   prop('identity'),
 );
+
+export const getCurrentUserSelector = identitySelector;
 
 const identifierSelector = createSelector(
   identitySelector,
@@ -118,6 +115,14 @@ export const selectors = {
     prop('token'),
   ),
   identity: identitySelector,
+  accountId: createSelector(
+    identitySelector,
+    prop('accountId'),
+  ),
+  hasAccount: createSelector(
+    identitySelector,
+    prop('hasAccount'),
+  ),
   identifier: identifierSelector,
   identifierValue: createSelector(
     identifierSelector,

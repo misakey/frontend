@@ -12,6 +12,7 @@ const IdentitySchema = {
   propTypes: {
     id: PropTypes.string.isRequired,
     accountId: PropTypes.string,
+    hasAccount: PropTypes.bool.isRequired,
     identifierId: PropTypes.string.isRequired,
     isAuthable: PropTypes.bool.isRequired,
     displayName: PropTypes.string.isRequired,

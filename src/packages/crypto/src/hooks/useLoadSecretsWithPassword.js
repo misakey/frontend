@@ -1,5 +1,5 @@
 import { loadSecrets, loadSecretsAndUpdateBackup } from '@misakey/crypto/store/actions/concrete';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import isNil from '@misakey/helpers/isNil';
 import log from '@misakey/helpers/log';
@@ -9,13 +9,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { useTranslation } from 'react-i18next';
 
-import useBackupStorageEvent from '@misakey/crypto/hooks/useBackupStorageEvent';
+import useWatchStorageBackupVersion from '@misakey/crypto/hooks/useWatchStorageBackupVersion';
 import createNewBackupKeyShares from '@misakey/crypto/store/actions/createNewBackupKeyShares';
 
 import { decryptSecretsBackup } from '../secretsBackup/encryption';
 import { selectors } from '../store/reducers';
 import useFetchSecretBackup from './useFetchSecretBackup';
 
+// CONSTANTS
+const {
+  accountId: ACCOUNT_ID_SELECTOR,
+} = authSelectors;
 
 // HOOKS
 export default ((skipUpdate = false) => {
@@ -23,12 +27,12 @@ export default ((skipUpdate = false) => {
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation('common');
 
-  const { accountId } = useSelector(getCurrentUserSelector) || {};
+  const accountId = useSelector(ACCOUNT_ID_SELECTOR);
 
   const encryptedSecretsBackup = useFetchSecretBackup();
   const currentBoxSecrets = useSelector(selectors.currentBoxSecrets);
 
-  const [, onStorageEvent] = useBackupStorageEvent();
+  const [, onStorageEvent] = useWatchStorageBackupVersion();
 
   const onDecryptSuccess = useCallback(({ backupKey, secrets, backupVersion }) => {
     // Can occur when a user first log with ACR on a box and then create an account

@@ -1,7 +1,7 @@
 import { useCallback, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import isNil from '@misakey/helpers/isNil';
-import { getCurrentUserSelector, selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { getBackupKeyShareBuilder } from '@misakey/auth/builder/backupKeyShares';
 import { combineBackupKeyShares, computeOtherShareHash } from '@misakey/crypto/secretsBackup/keySplitting';
 import { loadSecrets } from '@misakey/crypto/store/actions/concrete';
@@ -11,7 +11,10 @@ import { selectors } from '../store/reducers';
 import useFetchSecretBackup from './useFetchSecretBackup';
 
 // CONSTANTS
-const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
+const {
+  isAuthenticated: IS_AUTHENTICATED_SELECTOR,
+  accountId: ACCOUNT_ID_SELECTOR,
+} = authSelectors;
 
 // SELECTORS
 const { getBackupKey, makeGetBackupKeyShareForAccount } = selectors;
@@ -21,7 +24,7 @@ export default (() => {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
 
-  const { accountId } = useSelector(getCurrentUserSelector) || {};
+  const accountId = useSelector(ACCOUNT_ID_SELECTOR);
 
   const backupKey = useSelector(getBackupKey);
   const getBackupKeyShareForAccount = useMemo(() => makeGetBackupKeyShareForAccount(), []);

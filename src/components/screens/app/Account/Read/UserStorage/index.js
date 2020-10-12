@@ -2,7 +2,7 @@ import React, { useCallback, useState, useMemo } from 'react';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import isNil from '@misakey/helpers/isNil';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import Typography from '@material-ui/core/Typography';
 import { listStorageQuota, listBoxUsedSpaces, readVaultUsedSpace } from '@misakey/helpers/builder/identities';
 import { useSelector } from 'react-redux';
@@ -10,6 +10,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useTranslation } from 'react-i18next';
 import formatFileSize from 'helpers/formatFileSize';
 
+// CONSTANTS
+const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
+
+// HOOKS
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -17,12 +21,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// COMPONENTS
 function UserStorage() {
   const [storageQuota, setStorageQuota] = useState([]);
   const [boxUsedSpaces, setBoxUsedSpaces] = useState([]);
   const [vaultUsedSpace, setVaultUsedSpace] = useState(null);
-  const currentUser = useSelector(getCurrentUserSelector);
-  const identityId = useMemo(() => currentUser.id, [currentUser.id]);
+  const identityId = useSelector(IDENTITY_ID_SELECTOR);
   const classes = useStyles();
   const { t } = useTranslation('account');
 

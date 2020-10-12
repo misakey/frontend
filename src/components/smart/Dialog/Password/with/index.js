@@ -8,7 +8,7 @@ import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import { selectors } from '@misakey/crypto/store/reducers';
-import { getCurrentUserSelector, selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 
 import DialogOpenVault from 'components/smart/Dialog/Password/OpenVault';
@@ -16,6 +16,7 @@ import DialogOpenVault from 'components/smart/Dialog/Password/OpenVault';
 // CONSTANTS
 const {
   identifierValue: IDENTIFIER_VALUE_SELECTOR,
+  accountId: ACCOUNT_ID_SELECTOR,
 } = authSelectors;
 
 // COMPONENTS
@@ -30,7 +31,7 @@ const withDialogPassword = (Component) => {
 
     const [open, setOpen] = useState(false);
 
-    const { accountId } = useSelector(getCurrentUserSelector) || {};
+    const accountId = useSelector(ACCOUNT_ID_SELECTOR);
     const identifierValue = useSelector(IDENTIFIER_VALUE_SELECTOR);
 
     const loginHint = useMemo(

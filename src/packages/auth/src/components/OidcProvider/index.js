@@ -2,12 +2,12 @@ import React, { useMemo, useEffect, createContext, useCallback, useState, forwar
 import PropTypes from 'prop-types';
 
 import { STORAGE_PREFIX } from '@misakey/auth/constants';
-
 import { loadUserThunk, authReset } from '@misakey/auth/store/actions/auth';
 
 import log from '@misakey/helpers/log';
 import isNil from '@misakey/helpers/isNil';
 import isString from '@misakey/helpers/isString';
+import isFunction from '@misakey/helpers/isFunction';
 import parseJwt from '@misakey/helpers/parseJwt';
 import { parseAcr } from '@misakey/helpers/parseAcr';
 import createUserManager from '@misakey/auth/helpers/userManager';
@@ -56,7 +56,7 @@ export const UserManagerContext = createContext({
 });
 
 // COMPONENTS
-function OidcProvider({ store, children, config }) {
+function OidcProvider({ store, children, config, registerMiddlewares }) {
   const location = useLocation();
   const [shouldRefresh, setShouldRefresh] = useState(false);
 
@@ -104,7 +104,7 @@ function OidcProvider({ store, children, config }) {
     (user, identityId, accountId) => store.dispatch(loadUserThunk({
       ...getUser(user),
       identityId,
-      accountId: accountId || null, // accountId can be an empty string
+      accountId,
     })),
     [store],
   );
@@ -201,6 +201,15 @@ function OidcProvider({ store, children, config }) {
     [onStorageEvent],
   );
 
+  useEffect(
+    () => {
+      if (isFunction(registerMiddlewares)) {
+        registerMiddlewares(askSigninRedirect);
+      }
+    },
+    [registerMiddlewares, askSigninRedirect],
+  );
+
   if (shouldRefresh) {
     return (
       <Redirect
@@ -241,6 +250,7 @@ OidcProvider.propTypes = {
     scope: PropTypes.string,
   }),
   store: PropTypes.object,
+  registerMiddlewares: PropTypes.func.isRequired,
 };
 
 OidcProvider.defaultProps = {

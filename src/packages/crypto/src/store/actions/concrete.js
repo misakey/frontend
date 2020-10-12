@@ -18,7 +18,7 @@ import filter from '@misakey/helpers/filter';
 import path from '@misakey/helpers/path';
 import isString from '@misakey/helpers/isString';
 import isNil from '@misakey/helpers/isNil';
-import setStorageLoadedBackup from '@misakey/crypto/helpers/setStorageLoadedBackup';
+import setStorageBackupVersion from '@misakey/crypto/helpers/setStorageBackupVersion';
 
 import { updateSecretsBackup } from '../../secretsBackup';
 import {
@@ -105,7 +105,7 @@ export const withBackupUpdater = (actionBuilder) => (...args) => (
       return updateSecretsBackup(accountId, secrets, backupKey, newBackupVersion)
         .then(() => Promise.resolve(dispatch(setBackupVersion(newBackupVersion))))
         .then(({ version }) => {
-          setStorageLoadedBackup(version);
+          setStorageBackupVersion(version);
         })
         .catch((e) => {
           if (e.details && (e.details.version === 'invalid')) {

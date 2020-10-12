@@ -3,11 +3,15 @@ import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
 
 import { selectors } from '@misakey/crypto/store/reducers';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import isNil from '@misakey/helpers/isNil';
 
+// CONSTANTS
+const { accountId: ACCOUNT_ID_SELECTOR } = authSelectors;
 
+
+// HOOKS
 export default () => {
   const isCryptoLoadedSelector = useMemo(
     () => selectors.isCryptoLoaded,
@@ -15,7 +19,7 @@ export default () => {
   );
 
   const isCryptoLoaded = useSelector(isCryptoLoadedSelector);
-  const { accountId } = useSelector(getCurrentUserSelector) || {};
+  const accountId = useSelector(ACCOUNT_ID_SELECTOR);
 
   const shouldDisplayLockedScreen = useMemo(
     () => !isNil(accountId) && !isCryptoLoaded,

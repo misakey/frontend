@@ -14,7 +14,7 @@ import Box from '@material-ui/core/Box';
 import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
 import ButtonWithDialogPassword from 'components/smart/Dialog/Password/with/Button';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { useBoxesContext } from 'components/smart/Context/Boxes';
@@ -28,6 +28,9 @@ import InputBoxesUploadContext from 'components/smart/Input/Boxes/Upload/Context
 import BoxEventEditContext from 'components/smart/Box/Event/Edit/Context';
 import PaginatedListBoxEvents from 'components/smart/PaginatedList/BoxEvents';
 import BoxEventsFooter from './Footer';
+
+// CONSTANTS
+const { identityId: IDENTITY_ID_SELECTOR, accountId: ACCOUNT_ID_SELECTOR } = authSelectors;
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -63,7 +66,9 @@ function BoxEvents({
   }, [setIsMenuActionOpen]);
 
   const { id, eventsCount } = useMemo(() => box, [box]);
-  const { accountId, id: identityId } = useSelector(getCurrentUserSelector) || {};
+
+  const accountId = useSelector(ACCOUNT_ID_SELECTOR);
+  const identityId = useSelector(IDENTITY_ID_SELECTOR);
 
   const headerRef = (ref) => {
     if (ref) { setHeaderHeight(ref.clientHeight); }

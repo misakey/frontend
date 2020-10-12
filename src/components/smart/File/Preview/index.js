@@ -54,8 +54,8 @@ function FilePreview({ allowedFileTypePreview, maxHeight, width, fallbackView })
 FilePreview.propTypes = {
   allowedFileTypePreview: PropTypes.arrayOf(PropTypes.string).isRequired,
   fallbackView: PropTypes.node,
-  maxHeight: PropTypes.oneOfType(PropTypes.string, PropTypes.number),
-  width: PropTypes.oneOfType(PropTypes.string, PropTypes.number),
+  maxHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 FilePreview.defaultProps = {

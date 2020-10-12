@@ -1,21 +1,21 @@
 import isNil from '@misakey/helpers/isNil';
-import setStorageLoadedBackup, { STORAGE_KEY } from '@misakey/crypto/helpers/setStorageLoadedBackup';
+import setStorageBackupVersion, { STORAGE_KEY } from '@misakey/crypto/helpers/setStorageBackupVersion';
 
 import { useState, useCallback, useEffect } from 'react';
 
 // HOOKS
 export default () => {
   // NB: state is not initialized with storage value, as we only want to handle update situations
-  const [lastStorageLoadedBackup, setLastStorageLoadedBackup] = useState();
+  const [lastLoadedBackupVersion, setLastLoadedBackupVersion] = useState();
 
-  const dispatchStorageEvent = useCallback(
+  const onStorageEvent = useCallback(
     (backupVersion) => {
-      if (!isNil(backupVersion) && backupVersion !== lastStorageLoadedBackup) {
-        return setStorageLoadedBackup(backupVersion);
+      if (!isNil(backupVersion) && backupVersion !== lastLoadedBackupVersion) {
+        return setStorageBackupVersion(backupVersion);
       }
       return Promise.resolve();
     },
-    [lastStorageLoadedBackup],
+    [lastLoadedBackupVersion],
   );
 
   const handleStorageEvent = useCallback(
@@ -24,7 +24,7 @@ export default () => {
       // fallback for IE11, Safari<10
       const trusted = isTrusted === true || isNil(isTrusted);
       if (trusted && key === STORAGE_KEY) {
-        setLastStorageLoadedBackup(parseInt(newValue, 10));
+        setLastLoadedBackupVersion(parseInt(newValue, 10));
       }
     },
     [],
@@ -40,5 +40,5 @@ export default () => {
     [handleStorageEvent],
   );
 
-  return [lastStorageLoadedBackup, dispatchStorageEvent];
+  return [lastLoadedBackupVersion, onStorageEvent];
 };
