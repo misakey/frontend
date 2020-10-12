@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import decryptFile from '@misakey/crypto/box/decryptFile';
+import workerDecryptFile from '@misakey/crypto/box/decryptFile/worker';
 import { getEncryptedFileBuilder } from '@misakey/helpers/builder/files';
 import isNil from '@misakey/helpers/isNil';
 import log from '@misakey/helpers/log';
@@ -69,7 +69,10 @@ const FileContextProvider = ({ decryptedContent, encryptedFileId, children }) =>
       return getEncryptedFileBuilder(encryptedFileId)
         .then(async (response) => {
           try {
-            const decryptedFile = await decryptFile(response.blob, { encryption, fileName });
+            const decryptedFile = await workerDecryptFile(
+              response.blob,
+              { encryption, fileName },
+            );
             setFile(decryptedFile);
             setBlobUrl(createBlobUrl(decryptedFile));
             return decryptedFile;

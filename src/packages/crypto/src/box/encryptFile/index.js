@@ -7,10 +7,10 @@ import {
   generateSymmetricKey,
   symmetricEncrypt,
   asymmetricEncrypt,
-} from '../crypto';
+} from '@misakey/crypto/crypto';
 
-import uint8arrayFromBlob from '../helpers/uint8arrayFromBlob';
-import blobFromUint8array from '../helpers/blobFromUint8array';
+import uint8arrayFromBlob from '@misakey/crypto/helpers/uint8arrayFromBlob';
+import blobFromUint8array from '@misakey/crypto/helpers/blobFromUint8array';
 
 /**
  * Encrypts a file
@@ -20,7 +20,7 @@ import blobFromUint8array from '../helpers/blobFromUint8array';
  * @param {File} file a JS File object (https://developer.mozilla.org/en-US/docs/Web/API/File)
  * @param {string} boxPublicKey the public key of the box this file must be sent to
  */
-export default async function (file, boxPublicKey) {
+export default async (file, boxPublicKey) => {
   const fileKey = generateSymmetricKey();
 
   const bytes = await uint8arrayFromBlob(file);
@@ -49,4 +49,4 @@ export default async function (file, boxPublicKey) {
     encryptedMessageContent,
     publicKey: boxPublicKey,
   };
-}
+};

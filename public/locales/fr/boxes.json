@@ -161,7 +161,8 @@
         "helperLink": "https://docs.misakey.com/#/fr/",
         "helperLinkText": "En savoir plus"
       },
-      "success": "Les fichiers ont été envoyé avec succès\u00a0!"
+      "progress": "Envoi de fichiers en cours",
+      "success": "Les fichiers ont été envoyés avec succès\u00a0!"
     },
     "share": {
       "dialog": {

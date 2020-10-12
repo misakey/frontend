@@ -161,6 +161,7 @@
         "helperLink": "https://docs.misakey.com/#/en/",
         "helperLinkText": "Learn more"
       },
+      "progress": "File upload in progress",
       "success": "Files have been sent successfully!"
     },
     "share": {

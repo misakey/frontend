@@ -116,13 +116,13 @@ const FileCardEvent = ({
       if (!isClosed && (isFromCurrentUser || boxBelongsToCurrentUser)) {
         return [
           <MenuItemEventDownload key="download" />,
-          <MenuItemAddFileToVault onSave={onSaveInVault} />,
+          <MenuItemAddFileToVault key="vault" onSave={onSaveInVault} />,
           <MenuItemEventDelete event={event} box={box} key="delete" />,
         ];
       }
       return [
         <MenuItemEventDownload key="download" />,
-        <MenuItemAddFileToVault onSave={onSaveInVault} />,
+        <MenuItemAddFileToVault key="vault" onSave={onSaveInVault} />,
       ];
     },
     [isClosed, isFromCurrentUser, boxBelongsToCurrentUser, onSaveInVault, event, box],

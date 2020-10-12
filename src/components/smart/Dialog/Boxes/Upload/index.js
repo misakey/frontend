@@ -1,9 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
-import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
 
 import BoxesSchema from 'store/schemas/Boxes';
@@ -16,17 +14,20 @@ import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 import fileToBlob from '@misakey/helpers/fileToBlob';
 import prop from '@misakey/helpers/prop';
+import pluck from '@misakey/helpers/pluck';
 import compose from '@misakey/helpers/compose';
 import log from '@misakey/helpers/log';
 import uniqBy from '@misakey/helpers/uniqBy';
 import partition from '@misakey/helpers/partition';
 import promiseAllNoFailFast from '@misakey/helpers/promiseAllNoFailFast';
 import { createBoxEncryptedFileWithProgressBuilder } from '@misakey/helpers/builder/boxes';
-import encryptFile from '@misakey/crypto/box/encryptFile';
+import workerEncryptFile from '@misakey/crypto/box/encryptFile/worker';
 
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useUploadStatus from 'hooks/useUploadStatus';
+import { useDispatch } from 'react-redux';
+import { useSnackbar } from 'notistack';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
@@ -52,6 +53,12 @@ const errorPropNil = compose(
 );
 
 const uniqBlob = (list) => uniqBy(list, 'key');
+
+const isInProgress = compose(
+  (values) => values.some((value) => isNil(value) || value < 100),
+  Object.values,
+  pluck('progress'),
+);
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -84,18 +91,33 @@ function UploadDialog({
     { onProgress, onEncrypt, onUpload, onDone, onReset },
   ] = useUploadStatus();
 
+  const isUploading = useMemo(
+    () => (!isEmpty(blobsUploadStatus) || isInProgress(blobsUploadStatus)),
+    [blobsUploadStatus],
+  );
+
   const { enqueueSnackbar } = useSnackbar();
 
   const dispatch = useDispatch();
 
   const { publicKey, id: boxId } = box;
 
+  const handleClose = useCallback(
+    () => {
+      if (!isUploading) {
+        return onClose();
+      }
+      return enqueueSnackbar(t('boxes:read.upload.progress'), { variant: 'warning', preventDuplicate: true });
+    },
+    [isUploading, onClose, enqueueSnackbar, t],
+  );
+
   const handleUpload = useCallback(
     async (file, index) => {
       const onFileProgress = onProgress(index);
 
       onEncrypt(index);
-      const { encryptedFile, encryptedMessageContent } = await encryptFile(file, publicKey);
+      const { encryptedFile, encryptedMessageContent } = await workerEncryptFile(file, publicKey);
       onUpload(index);
 
       const formData = new FormData();
@@ -107,7 +129,6 @@ function UploadDialog({
         const response = await createBoxEncryptedFileWithProgressBuilder(
           boxId, formData, onFileProgress,
         );
-        // const response = await createBoxEncryptedFileBuilder(boxId, formData);
         onDone(index);
 
         if (isFunction(onSuccess)) {
@@ -134,10 +155,12 @@ function UploadDialog({
 
   const getOnReset = useCallback(
     (resetForm) => () => {
-      resetForm({ values: INITIAL_VALUES });
-      onClose();
+      if (!isUploading) {
+        resetForm({ values: INITIAL_VALUES });
+      }
+      handleClose();
     },
-    [onClose],
+    [isUploading, handleClose],
   );
 
   const onSubmit = useCallback(
@@ -180,7 +203,7 @@ function UploadDialog({
       fullWidth
       fullScreen={fullScreen}
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       aria-labelledby="upload-dialog-title"
       aria-describedby="upload-dialog-description"
     >
