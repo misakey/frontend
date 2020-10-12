@@ -1,23 +1,35 @@
 import { ENCRYPTION, UPLOAD } from 'constants/upload/status';
 
+import propOr from '@misakey/helpers/propOr';
+
 import { useReducer, useCallback } from 'react';
 
 // CONSTANTS
 const INITIAL_STATE = {};
+const ABORTABLE = Symbol('ABORTABLE');
 const RESET = Symbol('RESET');
 
 // HELPERS
-const uploadStatusReducer = (state, { key, type, progress }) => {
+const propOrEmpty = propOr({});
+
+const uploadStatusReducer = (state, { key, type, progress, req }) => {
+  const keyState = propOrEmpty(key)(state);
   if (type === ENCRYPTION) {
     return {
       ...state,
-      [key]: { type },
+      [key]: { ...keyState, type },
     };
   }
   if (type === UPLOAD) {
     return {
       ...state,
-      [key]: { type, progress },
+      [key]: { ...keyState, type, progress },
+    };
+  }
+  if (type === ABORTABLE) {
+    return {
+      ...state,
+      [key]: { ...keyState, req },
     };
   }
   if (type === RESET) {
@@ -45,6 +57,11 @@ export default () => {
     [dispatch],
   );
 
+  const onAbortable = useCallback(
+    (key, req) => dispatch({ type: ABORTABLE, key, req }),
+    [dispatch],
+  );
+
   const onDone = useCallback(
     (key) => dispatch({ type: UPLOAD, key, progress: 100 }),
     [dispatch],
@@ -55,5 +72,5 @@ export default () => {
     [dispatch],
   );
 
-  return [state, { onProgress, onEncrypt, onUpload, onDone, onReset }];
+  return [state, { onProgress, onEncrypt, onUpload, onDone, onAbortable, onReset }];
 };

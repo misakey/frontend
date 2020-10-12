@@ -4,6 +4,7 @@ import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import { withTranslation } from 'react-i18next';
 
+import { AbortError } from 'constants/Errors/classes/Files';
 import BoxesSchema from 'store/schemas/Boxes';
 import { removeEntities } from '@misakey/store/actions/entities';
 import errorTypes from '@misakey/ui/constants/errorTypes';
@@ -20,7 +21,7 @@ import log from '@misakey/helpers/log';
 import uniqBy from '@misakey/helpers/uniqBy';
 import partition from '@misakey/helpers/partition';
 import promiseAllNoFailFast from '@misakey/helpers/promiseAllNoFailFast';
-import { createBoxEncryptedFileWithProgressBuilder } from '@misakey/helpers/builder/boxes';
+import { makeAbortableCreateBoxEncryptedFileWithProgress } from '@misakey/helpers/builder/boxes';
 import workerEncryptFile from '@misakey/crypto/box/encryptFile/worker';
 
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
@@ -88,7 +89,7 @@ function UploadDialog({
   const fullScreen = useDialogFullScreen();
   const [
     blobsUploadStatus,
-    { onProgress, onEncrypt, onUpload, onDone, onReset },
+    { onProgress, onEncrypt, onUpload, onDone, onAbortable, onReset },
   ] = useUploadStatus();
 
   const isUploading = useMemo(
@@ -125,10 +126,15 @@ function UploadDialog({
       formData.append('msg_encrypted_content', encryptedMessageContent);
       formData.append('msg_public_key', publicKey);
 
+      const { send, req } = makeAbortableCreateBoxEncryptedFileWithProgress(
+        boxId, formData, onFileProgress,
+      );
+      onAbortable(index, req);
       try {
-        const response = await createBoxEncryptedFileWithProgressBuilder(
-          boxId, formData, onFileProgress,
-        );
+        const response = await send();
+        if (response.type === 'abort') {
+          throw new AbortError();
+        }
         onDone(index);
 
         if (isFunction(onSuccess)) {
@@ -149,7 +155,7 @@ function UploadDialog({
     },
     [
       publicKey, boxId, dispatch, onSuccess, enqueueSnackbar, t,
-      onEncrypt, onUpload, onProgress, onDone,
+      onEncrypt, onUpload, onProgress, onDone, onAbortable,
     ],
   );
 
@@ -171,11 +177,14 @@ function UploadDialog({
       // Could be improved later with a backend endpoint to upload several files at a time
       const newBlobList = await promiseAllNoFailFast(
         blobs
-          .map(async ({ blob, ...rest }, index) => {
+          .map(async ({ blob, abort, ...rest }, index) => {
             try {
               const response = await handleUpload(blob, index);
               return { ...response, ...rest, blob, isSent: true };
             } catch (e) {
+              if (e instanceof AbortError) {
+                return { ...rest, blob, isSent: false, abort: true };
+              }
               log(e, 'error');
               return { ...rest, blob, error: true };
             }
@@ -183,14 +192,22 @@ function UploadDialog({
       );
 
       const [, errors] = partition(newBlobList, errorPropNil);
-
-      resetForm();
+      const aborts = newBlobList.filter(({ abort }) => abort === true);
+      if (isEmpty(aborts)) {
+        resetForm();
+      } else {
+        resetForm({ values: { [BLOBS_FIELD_NAME]: aborts } });
+      }
       onReset();
 
       if (isEmpty(errors)) {
-        const text = t('boxes:read.upload.success');
-        enqueueSnackbar(text, { variant: 'success' });
-        onClose();
+        if (newBlobList.length > aborts.length) {
+          const text = t('boxes:read.upload.success');
+          enqueueSnackbar(text, { variant: 'success' });
+        }
+        if (isEmpty(aborts)) {
+          onClose();
+        }
       } else {
         setStatus({ [BLOBS_FIELD_NAME]: newBlobList });
       }

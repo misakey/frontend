@@ -1,4 +1,5 @@
 import API from '@misakey/api';
+import xhr from '@misakey/api/Endpoint/xhr';
 
 import isNil from '@misakey/helpers/isNil';
 import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
@@ -85,43 +86,11 @@ export const createBoxEncryptedFileBuilder = (boxID, formData) => API
   .send({ contentType: null }) // so that browser set content type automatically
   .then(objectToCamelCaseDeep);
 
-export const createBoxEncryptedFileWithProgressBuilder = (
-  boxId, formData, onProgress,
-) => new Promise((resolve, reject) => {
-  const req = new XMLHttpRequest();
+export const makeAbortableCreateBoxEncryptedFileWithProgress = (boxId, formData, onProgress) => {
   const endpoint = API.use(API.endpoints.boxes.encryptedFiles.create)
     .build({ id: boxId }, formData);
-
-  req.open(endpoint.method, endpoint.requestUri);
-  req.setRequestHeader('Authorization', `Bearer ${endpoint.token}`);
-
-  req.addEventListener('load', (e) => {
-    onProgress(100);
-    if (req.status < 400) {
-      resolve(e);
-    } else {
-      reject(e);
-    }
-  }, false);
-
-  req.addEventListener('error', (e) => {
-    reject(e);
-  }, false);
-
-  req.upload.addEventListener('progress', (e) => {
-    let progress = 0;
-    if (e.lengthComputable && e.total !== 0) {
-      progress = Math.round((e.loaded / e.total) * 100);
-    }
-    onProgress(progress);
-  }, false);
-
-  req.addEventListener('abort', (e) => {
-    reject(new Error('upload aborted', e));
-  }, false);
-
-  req.send(formData);
-});
+  return xhr({ onProgress }, endpoint);
+};
 
 export const createKeyShareBuilder = (misakeyKeyShare) => API
   .use(API.endpoints.boxes.keyShares.create)

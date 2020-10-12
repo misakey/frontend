@@ -16,12 +16,14 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
-import LockIcon from '@material-ui/icons/Lock';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import LinearProgress from '@material-ui/core/LinearProgress';
+
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import LockIcon from '@material-ui/icons/Lock';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -55,7 +57,7 @@ const BlobListItem = ({ blob, onRemove, uploadStatus, t }) => {
   );
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const { type, progress } = useSafeDestr(uploadStatus);
+  const { type, progress, req } = useSafeDestr(uploadStatus);
 
   const isEncrypted = useMemo(
     () => type === UPLOAD,
@@ -68,6 +70,13 @@ const BlobListItem = ({ blob, onRemove, uploadStatus, t }) => {
 
   const onClose = useCallback(
     () => { setAnchorEl(null); }, [],
+  );
+
+  const onAbort = useCallback(
+    () => {
+      req.abort();
+    },
+    [req],
   );
 
   return (
@@ -90,24 +99,33 @@ const BlobListItem = ({ blob, onRemove, uploadStatus, t }) => {
           secondaryTypographyProps={{ noWrap: true, display: 'block' }}
         />
         <ListItemSecondaryAction>
-          <IconButton onClick={onClick} edge="end" aria-label="menu-more">
-            <MoreVertIcon />
-          </IconButton>
-          <Menu
-            id={`menu-remove-blob-${lastModified}`}
-            anchorEl={anchorEl}
-            keepMounted
-            open={!isNil((anchorEl))}
-            onClose={onClose}
-            classes={{ paper: classes.paper, list: classes.list }}
-            elevation={0}
-            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-          >
-            <MenuItem onClick={onRemove}>{t('common:delete')}</MenuItem>
-          </Menu>
+          <>
+            {isEncrypted ? (
+              <IconButton disabled={isNil(req)} onClick={onAbort} edge="end" aria-label={t('common:cancel')}>
+                <CancelIcon />
+              </IconButton>
+            ) : (
+              <IconButton onClick={onClick} disabled={!isNil(type)} edge="end" aria-label={t('common:more')}>
+                <MoreVertIcon />
+              </IconButton>
+
+            )}
+            <Menu
+              id={`menu-remove-blob-${lastModified}`}
+              anchorEl={anchorEl}
+              keepMounted
+              open={!isNil((anchorEl))}
+              onClose={onClose}
+              classes={{ paper: classes.paper, list: classes.list }}
+              elevation={0}
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+              <MenuItem onClick={onRemove}>{t('common:delete')}</MenuItem>
+            </Menu>
+          </>
         </ListItemSecondaryAction>
       </ListItem>
-      {type === UPLOAD ? (
+      {isEncrypted ? (
         <LinearProgress
           className={classes.progress}
           variant="determinate"

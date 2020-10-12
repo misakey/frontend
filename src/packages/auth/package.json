@@ -32,6 +32,7 @@
   "peerDependencies": {
     "@material-ui/core": "^4.3.0",
     "@material-ui/icons": "^4.2.1",
+    "formik": "^2.1.4",
     "moment": "^2.x",
     "notistack": "^0.x",
     "react": "^16.13.1",
@@ -42,7 +43,6 @@
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
-    "formik": "^2.1.4",
     "yup": "^0.29.0"
   },
   "dependencies": {
