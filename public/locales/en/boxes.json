@@ -1,10 +1,11 @@
 {
   "documentTitle": "Private spaces",
+  "closedVault": {
+    "saveForLater": "Save for later",
+    "create": "Create an account",
+    "open": "Open my account"
+  },
   "list": {
-    "closedVault": {
-      "open": "Your vault is locked",
-      "create": "Save in a vault"
-    },
     "events": {
       "preview": {
         "message": {
@@ -59,10 +60,6 @@
       "write": "Write to {{title}}",
       "send": "Send",
       "edit": "Edit your message"
-    },
-    "warning": {
-      "saveInBackup": "Save this private space for later",
-      "button": "Create an account"
     },
     "errors": {
       "malformed": "Invitation link has an invalid format. Did you copy it correctly?",

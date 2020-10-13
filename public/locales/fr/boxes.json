@@ -1,10 +1,11 @@
 {
   "documentTitle": "Espaces privés",
+  "closedVault": {
+    "saveForLater": "Enregistrer pour plus tard",
+    "create": "Créer un compte",
+    "open": "Ouvrir mon compte"
+  },
   "list": {
-    "closedVault": {
-      "open": "Votre coffre-fort est verrouillé",
-      "create": "Enregistrer dans un coffre-fort"
-    },
     "events": {
       "preview": {
         "message": {
@@ -59,10 +60,6 @@
       "write": "Ecrire dans {{title}}",
       "send": "Envoyer",
       "edit": "Modifier votre message"
-    },
-    "warning": {
-      "saveInBackup": "Enregistrer cet espace privé pour plus tard",
-      "button": "Créer un compte"
     },
     "errors": {
       "malformed": "Le lien d'invitation n'est pas au bon format. Problème de copier-coller ?",

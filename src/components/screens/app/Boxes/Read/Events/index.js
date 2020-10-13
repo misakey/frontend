@@ -131,11 +131,11 @@ function BoxEvents({
                   action={(
                     <ButtonWithDialogPassword
                       standing={BUTTON_STANDINGS.TEXT}
-                      text={t('boxes:read.warning.button')}
+                      text={t('boxes:closedVault.create')}
                     />
                   )}
                 >
-                  {t('boxes:read.warning.saveInBackup')}
+                  {t('boxes:closedVault.saveForLater')}
                 </Alert>
               )}
             </Box>
