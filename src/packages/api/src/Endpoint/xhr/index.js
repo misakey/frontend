@@ -55,7 +55,9 @@ export default (
 
     if (auth) {
       if (!token) { throw new Error(`${path} requires token to be truthy`); }
-      req.setRequestHeader('Authorization', `Bearer ${token}`);
+      // allow receiving & sending cookies by CORS requests
+      req.withCredentials = true;
+      req.setRequestHeader('X-CSRF-Token', token);
     }
 
     req.send(body);

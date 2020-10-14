@@ -11,7 +11,8 @@ import retry from '@misakey/api/Endpoint/retry';
 const DEFAULT_INIT_OPTIONS = {
   redirect: 'follow',
   mode: 'cors',
-  credentials: 'same-origin',
+  // allow receiving & sending cookies by CORS requests
+  credentials: 'include',
   cache: 'default',
 };
 
@@ -164,8 +165,11 @@ function send(options = {}, endpoint = this) {
 
   if (contentType) { headers.set('Content-Type', contentType); }
   if (auth) {
-    if (!token) { throw new Error(`${path} requires token to be truthy`); }
-    headers.set('Authorization', `Bearer ${token}`);
+    const authorization = headers.get('Authorization');
+    if (!token && isNil(authorization)) {
+      throw new Error(`${path} requires csrf or tmp access token to be truthy`);
+    }
+    headers.set('X-CSRF-Token', token);
   }
   return (rawRequest === true
     ? makeRequest(headers, endpoint, retryOptions)

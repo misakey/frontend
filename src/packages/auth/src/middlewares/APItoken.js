@@ -1,5 +1,5 @@
 import API from '@misakey/api';
-import { SSO_SIGN, SSO_RESET, SSO_UNSIGN } from '@misakey/auth/store/actions/sso';
+import { SSO_RESET, SSO_UNSIGN } from '@misakey/auth/store/actions/sso';
 
 import path from '@misakey/helpers/path';
 import { AUTH_RESET, LOAD_USER, SIGN_IN, SIGN_OUT } from '../store/actions/auth';
@@ -9,13 +9,8 @@ const tokenPath = path(['credentials', 'token']);
 
 export default () => (next) => (action) => {
   const token = tokenPath(action);
-  const { accessToken, type } = action;
+  const { type } = action;
   switch (type) {
-    case SSO_SIGN:
-      if (accessToken) {
-        API.setToken(accessToken);
-      }
-      break;
     case SIGN_IN:
     case LOAD_USER:
       if (token) {

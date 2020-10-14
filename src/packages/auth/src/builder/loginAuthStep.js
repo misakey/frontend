@@ -16,7 +16,7 @@ export default async ({
   [PASSWORD_RESET_KEY]: password,
   dispatchHardPasswordChange, dispatchCreateNewOwnerSecrets,
   auth = false,
-}) => {
+}, accessToken) => {
   const metadata = await makeMetadata({
     secret,
     methodName,
@@ -40,6 +40,9 @@ export default async ({
   }
 
   const endpoint = { ...API.endpoints.auth.loginAuthStep, auth };
+  const options = auth ? { headers: { Authorization: `Bearer ${accessToken}` } } : undefined;
 
-  return API.use(endpoint).build(null, objectToSnakeCase(payload)).send();
+  return API.use(endpoint)
+    .build(null, objectToSnakeCase(payload))
+    .send(options);
 };

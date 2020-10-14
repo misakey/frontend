@@ -1,21 +1,17 @@
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
-
-import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
-import getNextSearch from '@misakey/helpers/getNextSearch';
+import { useSelector } from 'react-redux';
 import isNil from '@misakey/helpers/isNil';
 import isJSON from '@misakey/helpers/isJSON';
 import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
 import noop from '@misakey/helpers/noop';
 
-import { useEffect, useRef, useCallback, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useRef, useCallback } from 'react';
 import useExponentialBackoff from '@misakey/hooks/useWebSocket/exponentialBackoff';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 // CONSTANTS
 export const NORMAL_CLOSE_CODE = 1000;
 export const ABNORMAL_CLOSE_CODE = 1006;
-
-const { token: TOKEN_SELECTOR } = authSelectors;
+const { isAuthenticated: isAuthenticatedSelector } = authSelectors;
 
 // HELPERS
 const defaultOnMessage = (e) => {
@@ -33,18 +29,7 @@ const isSocketOpen = ({ readyState }) => isNil(readyState) || readyState === 1;
 // HOOKS
 export default (endpoint, onMessage = defaultOnMessage, isReady = true) => {
   const socket = useRef();
-
-  const token = useSelector(TOKEN_SELECTOR);
-
-  const endpointWithToken = useMemo(
-    () => {
-      const { origin, pathname, hash, search } = parseUrlFromLocation(endpoint);
-      const nextSearch = getNextSearch(search, new Map([['access_token', token]]));
-      return `${origin}${pathname}${hash}?${nextSearch}`;
-    },
-    [endpoint, token],
-  );
-
+  const isAuthenticated = useSelector(isAuthenticatedSelector);
   const [exponentialBackoff, resetExponentialBackoff] = useExponentialBackoff();
 
   const clearSocket = useCallback(
@@ -73,7 +58,7 @@ export default (endpoint, onMessage = defaultOnMessage, isReady = true) => {
 
   const onInit = useCallback(
     () => {
-      socket.current = new WebSocket(endpointWithToken);
+      socket.current = new WebSocket(endpoint);
 
       socket.current.onerror = (e) => {
         console.error('websocket error:', e); // eslint-disable-line no-console
@@ -91,18 +76,18 @@ export default (endpoint, onMessage = defaultOnMessage, isReady = true) => {
 
       socket.current.onmessage = handleMessage;
     },
-    [endpointWithToken, handleMessage, exponentialBackoff, resetExponentialBackoff],
+    [endpoint, handleMessage, exponentialBackoff, resetExponentialBackoff],
   );
 
   useEffect(
     () => {
-      if (!isNil(token) && isReady) {
+      if (isReady && isAuthenticated) {
         onInit();
         return clearSocket;
       }
       return noop;
     },
-    [onInit, clearSocket, token, isReady],
+    [onInit, clearSocket, isReady, isAuthenticated],
   );
 
   return socket;

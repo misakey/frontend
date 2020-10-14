@@ -179,7 +179,7 @@ const AuthLoginSecret = ({
         dispatchCreateNewOwnerSecrets,
         ...values,
         auth: !isNil(accessToken),
-      })
+      }, accessToken)
         .then(async (response) => {
           const {
             redirectTo: nextRedirectTo,
@@ -199,7 +199,7 @@ const AuthLoginSecret = ({
                 loginChallenge,
                 identityId,
                 password: newPassword || password,
-              }));
+              }, nextAccessToken));
             } catch (error) {
               log(error, 'error');
               enqueueSnackbar(t('common:crypto.errors.backupKeyShare'), { variant: 'warning' });

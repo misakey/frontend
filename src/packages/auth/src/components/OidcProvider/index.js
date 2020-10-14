@@ -24,9 +24,8 @@ const OIDC_LOGIN_STORAGE_KEY = `${STORAGE_PREFIX}user:${window.env.AUTH.authorit
 
 // HELPERS
 const getUser = ({
-  profile: { acr, sco: scope, auth_time: authenticatedAt } = {},
+  profile: { acr, sco: scope, auth_time: authenticatedAt, csrf_token: token } = {},
   expires_at: expiryAt,
-  access_token: token,
   id_token: id,
 }) => ({
   expiryAt,

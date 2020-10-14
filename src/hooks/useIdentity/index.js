@@ -20,7 +20,7 @@ import { getIdentity as getIdentityBuilder } from '@misakey/auth/builder/identit
  * @returns {string} identityMetadata.id
  *          idToken
  * @returns {string} identityMetadata.token
- *          accessToken
+ *          csrfToken
  * @returns {string} identityMetadata.identityId
  *          id of identity
  * @returns {Object} identityMetadata.identity

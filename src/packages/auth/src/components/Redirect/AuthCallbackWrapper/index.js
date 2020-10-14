@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
+import isNil from '@misakey/helpers/isNil';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import { parseAcr } from '@misakey/helpers/parseAcr';
 
@@ -11,21 +12,22 @@ import { signIn } from '../../../store/actions/auth';
 import AuthCallback from '../AuthCallback';
 
 const useHandleSuccess = (
-  onSignIn,
+  dispatch,
   enqueueSnackbar,
   t,
 ) => useCallback((user) => {
-  const { idToken, accessToken, expiresAt, profile } = objectToCamelCase(user);
+  const { idToken, csrfToken, expiresAt, profile } = objectToCamelCase(user);
   const { acr } = profile;
   const credentials = {
     expiresAt,
     id: idToken,
-    token: accessToken,
+    token: csrfToken,
+    isAuthenticated: !isNil(csrfToken),
     acr: parseAcr(acr),
   };
-  onSignIn(credentials);
+  dispatch(signIn(credentials));
   enqueueSnackbar(t('common:signedIn'), { variant: 'success' });
-}, [onSignIn, enqueueSnackbar, t]);
+}, [enqueueSnackbar, t, dispatch]);
 
 const useHandleError = (enqueueSnackbar, t) => {
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
@@ -45,7 +47,7 @@ const useHandleError = (enqueueSnackbar, t) => {
       return;
     }
 
-    // Ohers errors (front))
+    // Others errors (front))
     enqueueSnackbar(
       t('common:anErrorOccurred'),
       { variant: 'error' },
@@ -54,23 +56,18 @@ const useHandleError = (enqueueSnackbar, t) => {
 };
 
 // COMPONENTS
-const RedirectAuthCallbackWrapper = ({ onSignIn, t, ...rest }) => {
+const RedirectAuthCallbackWrapper = ({ t, ...rest }) => {
   const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
 
-  const handleSuccess = useHandleSuccess(onSignIn, enqueueSnackbar, t);
+  const handleSuccess = useHandleSuccess(dispatch, enqueueSnackbar, t);
   const handleError = useHandleError(enqueueSnackbar, t);
 
   return <AuthCallback handleSuccess={handleSuccess} handleError={handleError} {...rest} />;
 };
 
 RedirectAuthCallbackWrapper.propTypes = {
-  onSignIn: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
 };
 
-// CONNECT
-const mapDispatchToProps = (dispatch) => ({
-  onSignIn: (credentials) => dispatch(signIn(credentials)),
-});
-
-export default connect(null, mapDispatchToProps)(RedirectAuthCallbackWrapper);
+export default RedirectAuthCallbackWrapper;

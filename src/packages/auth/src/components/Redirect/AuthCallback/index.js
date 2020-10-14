@@ -1,18 +1,28 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-
-import { authReset } from '@misakey/auth/store/actions/auth';
 
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
+import storage from '@misakey/helpers/storage';
 
 import useAuthFlowParams from '@misakey/auth/hooks/useAuthFlowParams';
+import { STORAGE_PREFIX } from '@misakey/auth/constants';
 import { getUrlForOidcCallback } from '../../../helpers';
 
-
 import { withUserManager } from '../../OidcProvider';
+
+// HELPERS
+const addCsrfTokenToUser = (userStoreKey, csrfToken) => {
+  const storageItem = storage.getItem(userStoreKey);
+  if (!isNil(storageItem)) {
+    const { profile, ...user } = JSON.parse(storageItem);
+    storage.setItem(
+      userStoreKey,
+      JSON.stringify({ ...user, profile: { ...profile, csrf_token: csrfToken } }),
+    );
+  }
+};
 
 // COMPONENTS
 const RedirectAuthCallback = ({
@@ -25,58 +35,54 @@ const RedirectAuthCallback = ({
 }) => {
   const [redirect, setRedirect] = useState(false);
 
+  const userStoreKey = useMemo(
+    // eslint-disable-next-line no-underscore-dangle
+    () => `${STORAGE_PREFIX}${userManager._userStoreKey}`, [userManager._userStoreKey],
+  );
+
   const {
     search,
     searchParams,
     storageParams: { referrer, scope, acrValues },
   } = useAuthFlowParams();
 
-  const dispatch = useDispatch();
-
-  const dispatchAuthReset = useCallback(
-    () => Promise.resolve(dispatch(authReset())),
-    [dispatch],
+  const checkAcrIntegrity = useCallback(
+    // No specific acr was specified or if specified acr match received acr
+    (acr) => isNil(acrValues) || (acr.toString() === acrValues.toString()),
+    [acrValues],
   );
 
   const processRedirectCallback = useCallback(
-    () => {
-      const callbackUrl = getUrlForOidcCallback(search, searchParams);
-      return dispatchAuthReset()
-        .then(() => userManager.signinRedirectCallback(callbackUrl)
-          .then((user) => {
-            // No specific acr was specified or if specified acr match received acr
-            if (isNil(acrValues) || (user.profile.acr.toString() === acrValues.toString())) {
-              if (isFunction(handleSuccess)) {
-                handleSuccess(user);
-              }
-              return true;
-            }
-            const { email } = user.profile;
-            const loginHint = email ? JSON.stringify({ identifier: email }) : '';
-            askSigninRedirect({ scope, referrer, acrValues, prompt: 'login', loginHint }, false);
-            return false;
-          })
-          .catch((e) => {
-            if (isFunction(handleError)) {
-              handleError(e);
-            }
-            return true;
-          }));
+    async () => {
+      try {
+        const callbackUrl = getUrlForOidcCallback(search);
+        const { csrfToken } = searchParams;
+        const user = await userManager.signinRedirectCallback(callbackUrl);
+        if (checkAcrIntegrity(user.profile.acr)) {
+          addCsrfTokenToUser(userStoreKey, csrfToken);
+          if (isFunction(handleSuccess)) { handleSuccess({ ...user, csrfToken }); }
+          return true;
+        }
+        const { email } = user.profile;
+        const loginHint = email ? JSON.stringify({ identifier: email }) : '';
+        askSigninRedirect({ scope, referrer, acrValues, prompt: 'login', loginHint }, false);
+        return false;
+      } catch (e) {
+        if (isFunction(handleError)) { handleError(e); }
+        return true;
+      }
     },
-    [
-      search, searchParams, acrValues, scope, referrer,
-      dispatchAuthReset, userManager, askSigninRedirect,
-      handleSuccess, handleError,
-    ],
+    [search, searchParams, userManager, checkAcrIntegrity, askSigninRedirect,
+      scope, referrer, acrValues, userStoreKey, handleSuccess, handleError],
   );
 
   const fallbackReferrer = useMemo(
-    () => (searchParams.accessToken ? fallbackReferrers.success : fallbackReferrers.error),
+    () => (searchParams.csrfToken ? fallbackReferrers.success : fallbackReferrers.error),
     [searchParams, fallbackReferrers],
   );
 
   const processCallback = useCallback(() => {
-    if (searchParams.accessToken && searchParams.state) {
+    if (searchParams.csrfToken && searchParams.state) {
       processRedirectCallback()
         .then((shouldRedirect) => {
           setRedirect(shouldRedirect);
