@@ -286,7 +286,7 @@ UploadDialog.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   open: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
-  onSuccess: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func,
   initialValues: PropTypes.object,
   fileTransform: PropTypes.func,
   autoFocus: PropTypes.bool,
@@ -300,6 +300,7 @@ UploadDialog.defaultProps = {
   initialValues: INITIAL_VALUES,
   fileTransform: fileToBlob,
   autoFocus: false,
+  onSuccess: null,
 };
 
 export default withTranslation(['common', 'boxes'])(UploadDialog);

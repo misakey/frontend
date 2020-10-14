@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useMemo, useEffect } from 'react';
+import React, { useCallback, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -21,11 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
-import FooterMenuList from 'components/screens/app/Boxes/Read/Events/Footer/MenuList';
 import Box from '@material-ui/core/Box';
-import Grow from '@material-ui/core/Grow';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
 import Formik from '@misakey/ui/Formik';
 import { Form } from 'formik';
 import FormField from '@misakey/ui/Form/Field';
@@ -33,10 +29,11 @@ import FieldTextMultiline from 'components/dumb/Form/Field/Text/Multiline';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import IconButtonSubmit from '@misakey/ui/IconButton/Submit';
-import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import { useBoxesUploadContext } from 'components/smart/Input/Boxes/Upload/Context';
+
 import ResetOnBoxChange from 'components/screens/app/Boxes/Read/Events/Footer/Creating/ResetOnBoxChange';
 
-import AddIcon from '@material-ui/icons/Add';
+import AttachFileIcon from '@material-ui/icons/AttachFile';
 import SendIcon from '@material-ui/icons/Send';
 
 // CONSTANTS
@@ -64,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, isMenuActionOpen, onOpen, onClose, t }) {
+function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, t }) {
   const classes = useStyles({ drawerWidth, isDrawerOpen });
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -72,6 +69,8 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, isMenuActionOpen, onO
 
   const { lifecycle, id, publicKey, title } = useMemo(() => box || {}, [box]);
   const publicKeysWeCanEncryptWith = useBoxPublicKeysWeCanDecryptFrom();
+
+  const { onOpen: onBoxesUploadOpen } = useBoxesUploadContext();
 
   const disabled = useMemo(
     () => lifecycle === CLOSED || !publicKeysWeCanEncryptWith.has(publicKey),
@@ -134,83 +133,55 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, isMenuActionOpen, onO
     [dispatch, enqueueSnackbar, handleHttpErrors, id, publicKey, t],
   );
 
-  useEffect(() => {
-    // Reset to initialState when box changes
-    onClose();
-  }, [id, onClose]);
-
   return (
     <Box p={BOX_PADDING_SPACING}>
       <Box ref={anchorRef} display="flex" alignContent="center" alignItems="flex-end">
-        {isMenuActionOpen ? (
-          <Box width="100%" py={1}>
-            <Button text={t('common:cancel')} onClick={onClose} standing={BUTTON_STANDINGS.CANCEL} />
-            <Popper
-              className={classes.popper}
-              open={isMenuActionOpen}
-              anchorEl={anchorRef.current}
-              role={undefined}
-              transition
-            >
-              {({ TransitionProps }) => (
-                <Grow {...TransitionProps} style={{ transformOrigin: 'center top' }}>
-                  <Paper variant="outlined" className={classes.paper}>
-                    <FooterMenuList box={box} />
-                  </Paper>
-                </Grow>
-              )}
-            </Popper>
-          </Box>
-        ) : (
-          <>
-            <Tooltip title={t('boxes:read.actions.more')}>
-              <IconButton
-                aria-label={t('boxes:read.actions.more')}
+        <Tooltip title={t('boxes:read.actions.upload')}>
+          <IconButton
+            aria-label={t('boxes:read.actions.upload')}
+            color="secondary"
+            onClick={onBoxesUploadOpen}
+            disabled={disabled}
+          >
+            <AttachFileIcon />
+          </IconButton>
+        </Tooltip>
+        <Formik
+          initialValues={initialValues}
+          enableReinitialize
+          onSubmit={handleSubmit}
+          validationSchema={boxMessageValidationSchema}
+        >
+          <Box component={Form} display="flex" flexGrow="1" alignItems="flex-end">
+            <ResetOnBoxChange box={box} />
+            <FormField
+              component={FieldTextMultiline}
+              name={FIELD}
+              className={classes.textFieldRoot}
+              InputProps={{ classes: { root: classes.textFieldInputRoot } }}
+              id="new-message-textarea"
+              variant="outlined"
+              placeholder={t('boxes:read.actions.write', { title })}
+              aria-label={t('boxesread.actions.write', { title })}
+              size="small"
+              margin="none"
+              fullWidth
+              rowsMax={8}
+              displayError={false}
+              disabled={disabled}
+              onBlur={onBlur}
+            />
+            <Tooltip title={t('boxes:read.actions.send')}>
+              <IconButtonSubmit
+                aria-label={t('boxes:read.actions.send')}
                 color="secondary"
-                onClick={onOpen}
                 disabled={disabled}
               >
-                <AddIcon />
-              </IconButton>
+                <SendIcon />
+              </IconButtonSubmit>
             </Tooltip>
-            <Formik
-              initialValues={initialValues}
-              enableReinitialize
-              onSubmit={handleSubmit}
-              validationSchema={boxMessageValidationSchema}
-            >
-              <Box component={Form} display="flex" flexGrow="1" alignItems="flex-end">
-                <ResetOnBoxChange box={box} />
-                <FormField
-                  component={FieldTextMultiline}
-                  name={FIELD}
-                  className={classes.textFieldRoot}
-                  InputProps={{ classes: { root: classes.textFieldInputRoot } }}
-                  id="new-message-textarea"
-                  variant="outlined"
-                  placeholder={t('boxes:read.actions.write', { title })}
-                  aria-label={t('boxesread.actions.write', { title })}
-                  size="small"
-                  margin="none"
-                  fullWidth
-                  rowsMax={8}
-                  displayError={false}
-                  disabled={disabled}
-                  onBlur={onBlur}
-                />
-                <Tooltip title={t('boxes:read.actions.send')}>
-                  <IconButtonSubmit
-                    aria-label={t('boxes:read.actions.send')}
-                    color="secondary"
-                    disabled={disabled}
-                  >
-                    <SendIcon />
-                  </IconButtonSubmit>
-                </Tooltip>
-              </Box>
-            </Formik>
-          </>
-        )}
+          </Box>
+        </Formik>
       </Box>
     </Box>
   );
@@ -223,9 +194,6 @@ BoxEventsFooter.propTypes = {
   // withTranslation
   t: PropTypes.func.isRequired,
   // menu actions
-  isMenuActionOpen: PropTypes.bool.isRequired,
-  onOpen: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
 };
 
 export default withTranslation(['common', 'boxes'])(BoxEventsFooter);

@@ -27,7 +27,7 @@ import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import InputBoxesUploadContext from 'components/smart/Input/Boxes/Upload/Context';
 import BoxEventEditContext from 'components/smart/Box/Event/Edit/Context';
 import PaginatedListBoxEvents from 'components/smart/PaginatedList/BoxEvents';
-import BoxEventsFooter from './Footer';
+import BoxEventsFooter from 'components/screens/app/Boxes/Read/Events/Footer';
 
 // CONSTANTS
 const { identityId: IDENTITY_ID_SELECTOR, accountId: ACCOUNT_ID_SELECTOR } = authSelectors;
@@ -54,16 +54,6 @@ function BoxEvents({
   // const [lastEventRef, setLastEventRef] = useState();
   const [headerHeight, setHeaderHeight] = useState(APPBAR_HEIGHT);
   const classes = useStyles({ headerHeight });
-
-  const [isMenuActionOpen, setIsMenuActionOpen] = useState(false);
-
-  const onOpenMenuAction = useCallback(() => {
-    setIsMenuActionOpen(true);
-  }, [setIsMenuActionOpen]);
-
-  const onCloseMenuAction = useCallback(() => {
-    setIsMenuActionOpen(false);
-  }, [setIsMenuActionOpen]);
 
   const { id, eventsCount } = useMemo(() => box, [box]);
 
@@ -102,7 +92,7 @@ function BoxEvents({
   useFetchEffect(onResetBoxEventCount, { shouldFetch });
 
   return (
-    <InputBoxesUploadContext box={box} onSuccess={onCloseMenuAction}>
+    <InputBoxesUploadContext box={box}>
       <BoxEventEditContext>
         <ElevationScroll target={contentRef}>
           <AppBarDrawer
@@ -151,9 +141,6 @@ function BoxEvents({
             box={box}
             drawerWidth={drawerWidth}
             isDrawerOpen={isDrawerOpen}
-            isMenuActionOpen={isMenuActionOpen}
-            onOpen={onOpenMenuAction}
-            onClose={onCloseMenuAction}
           />
         </Box>
       </BoxEventEditContext>

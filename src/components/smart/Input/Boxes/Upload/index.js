@@ -157,7 +157,7 @@ InputBoxesUpload.propTypes = {
   // dialog
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onSuccess: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func,
   // input file
   onUpload: PropTypes.func,
   accept: PropTypes.arrayOf(PropTypes.string),
@@ -171,6 +171,7 @@ InputBoxesUpload.defaultProps = {
   onUpload: null,
   accept: [],
   fileTransform: fileToBlob,
+  onSuccess: null,
 };
 
 export default withTranslation(['boxes', 'fields'])(InputBoxesUpload);
