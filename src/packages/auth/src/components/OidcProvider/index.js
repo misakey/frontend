@@ -122,20 +122,20 @@ function OidcProvider({ store, children, config, registerMiddlewares }) {
 
   // event callback when the user has been loaded (on silent renew or redirect)
   const onUserLoaded = useCallback((user) => {
-    log('User is loaded !');
-
     // the access_token is still valid so we load the user in the store
     if (!isNil(user) && !user.expired) {
+      log('User is loaded !');
       return dispatchStoreUpdate(user)
         .then(() => setIsLoading(false));
     }
+    log('User not found or expired !');
     setIsLoading(false);
     return Promise.resolve();
   }, [dispatchStoreUpdate]);
 
   // event callback when silent renew errored
-  const onSilentRenewError = useCallback(() => {
-    log('Fail to renew token silently...');
+  const onSilentRenewError = useCallback((e) => {
+    log(`Fail to renew token silently... ${e}`);
     if (store) {
       store.dispatch(authReset());
     }

@@ -1,6 +1,5 @@
 import createUserManager from './userManager';
 
-
 export function getUrlForOidcCallback(baseUrl) {
   return baseUrl.indexOf('#') > -1 ? baseUrl.replace('#', '?') : baseUrl;
 }

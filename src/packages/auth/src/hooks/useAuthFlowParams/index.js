@@ -43,7 +43,7 @@ export default () => {
   );
 
   return useMemo(
-    () => ({ search, searchParams, storageParams }),
-    [search, searchParams, storageParams],
+    () => ({ searchParams, storageParams }),
+    [searchParams, storageParams],
   );
 };

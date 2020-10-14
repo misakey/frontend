@@ -1,9 +1,52 @@
-import { UserManager, WebStorageStateStore } from 'oidc-client';
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Licensed under the Apache License, Version 2.0.
+// See LICENSE in the project root for license information.
+
+/* eslint-disable no-underscore-dangle */
+import { UserManager, WebStorageStateStore, User } from 'oidc-client';
 import { uuid4RFC4122 } from '@misakey/helpers/uuid4';
 import log from '@misakey/helpers/log';
+import isNil from '@misakey/helpers/isNil';
+import addCsrfTokenToUser from './addCsrfTokenToUser';
+import { STORAGE_PREFIX } from '../constants';
 
 class MisakeyUserManager extends UserManager {
-  // eslint-disable-next-line no-underscore-dangle
+  // implement custom loads of silent renew token when expiring
+  // as library doesn't handle silent auth with cookie-stored access_token
+  loadSilentAuthTimer(user) {
+    if (!this.settings.automaticSilentRenew) {
+      return;
+    }
+
+    if (!isNil(user.expires_in)) {
+      const duration = user.expires_in;
+      log(`Access token Expiring: remaining duration: ${duration}`);
+
+      if (duration > 0) {
+        // only register expiring if we still have time
+        let expiring = duration - this._events._accessTokenExpiringNotificationTime;
+        if (expiring <= 0) {
+          expiring = 1;
+        }
+
+        log(`Registering expiring timer in: ${expiring}`);
+        this._events._accessTokenExpiring.init(expiring);
+      } else {
+        log("Canceling existing expiring timer because we're past expiration.");
+        this._events._accessTokenExpiring.cancel();
+      }
+
+      // if it's negative, it will still fire
+      const expired = duration + 1;
+      log(`Registering expired timer in: ${expired}`);
+      this._events._accessTokenExpired.init(expired);
+    } else {
+      this._events._accessTokenExpiring.cancel();
+      this._events._accessTokenExpired.cancel();
+    }
+  }
+
+  // overrides UserManager method to fit with our backend architecture
   _signinStart(args, navigator, navigatorParams = {}) {
     return navigator.prepare(navigatorParams).then((handle) => {
       log('UserManager._signinStart: got navigator window handle');
@@ -63,6 +106,52 @@ class MisakeyUserManager extends UserManager {
         log('UserManager._signinStart: Error after preparing navigator, closing navigator window');
         throw err;
       });
+    });
+  }
+
+  // overrides UserManager methods to add csrfToken in user stored in localStorage
+  // as csrfToken has the same validity than access_token
+  _signinEnd(url, args = {}) {
+    return this.processSigninResponse(url).then((signinResponse) => {
+      log('UserManager._signinEnd: got signin response');
+
+      const user = new User(signinResponse);
+
+      if (args.current_sub) {
+        if (args.current_sub !== user.profile.sub) {
+          log(`UserManager._signinEnd: current user does not match user returned from signin. sub from signin: ${user.profile.sub}`);
+          return Promise.reject(new Error('login_required'));
+        }
+        log('UserManager._signinEnd: current user matches user returned from signin');
+      }
+
+      return this.storeUser(user).then(() => addCsrfTokenToUser(`${STORAGE_PREFIX}${this._userStoreKey}`, url)
+        .then((userWithCsrfToken) => {
+          log('UserManager._signinEnd: user stored');
+
+          this._events.load(userWithCsrfToken || user);
+          // Fire expiring handled when new token is added
+          this.loadSilentAuthTimer(user);
+
+          return userWithCsrfToken || user;
+        }));
+    });
+  }
+
+  getUser() {
+    return this._loadUser().then((user) => {
+      if (user) {
+        log('UserManager.getUser: user loaded');
+
+        this._events.load(user, false);
+        // Fire expiring handled on load user
+        this.loadSilentAuthTimer(user);
+
+        return user;
+      }
+
+      log('UserManager.getUser: user not found in storage');
+      return null;
     });
   }
 }

@@ -4,25 +4,11 @@ import { Redirect } from 'react-router-dom';
 
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
-import storage from '@misakey/helpers/storage';
 
 import useAuthFlowParams from '@misakey/auth/hooks/useAuthFlowParams';
-import { STORAGE_PREFIX } from '@misakey/auth/constants';
 import { getUrlForOidcCallback } from '../../../helpers';
 
 import { withUserManager } from '../../OidcProvider';
-
-// HELPERS
-const addCsrfTokenToUser = (userStoreKey, csrfToken) => {
-  const storageItem = storage.getItem(userStoreKey);
-  if (!isNil(storageItem)) {
-    const { profile, ...user } = JSON.parse(storageItem);
-    storage.setItem(
-      userStoreKey,
-      JSON.stringify({ ...user, profile: { ...profile, csrf_token: csrfToken } }),
-    );
-  }
-};
 
 // COMPONENTS
 const RedirectAuthCallback = ({
@@ -35,13 +21,7 @@ const RedirectAuthCallback = ({
 }) => {
   const [redirect, setRedirect] = useState(false);
 
-  const userStoreKey = useMemo(
-    // eslint-disable-next-line no-underscore-dangle
-    () => `${STORAGE_PREFIX}${userManager._userStoreKey}`, [userManager._userStoreKey],
-  );
-
   const {
-    search,
     searchParams,
     storageParams: { referrer, scope, acrValues },
   } = useAuthFlowParams();
@@ -55,11 +35,10 @@ const RedirectAuthCallback = ({
   const processRedirectCallback = useCallback(
     async () => {
       try {
-        const callbackUrl = getUrlForOidcCallback(search);
+        const callbackUrl = getUrlForOidcCallback(window.location.href);
         const { csrfToken } = searchParams;
         const user = await userManager.signinRedirectCallback(callbackUrl);
         if (checkAcrIntegrity(user.profile.acr)) {
-          addCsrfTokenToUser(userStoreKey, csrfToken);
           if (isFunction(handleSuccess)) { handleSuccess({ ...user, csrfToken }); }
           return true;
         }
@@ -72,8 +51,8 @@ const RedirectAuthCallback = ({
         return true;
       }
     },
-    [search, searchParams, userManager, checkAcrIntegrity, askSigninRedirect,
-      scope, referrer, acrValues, userStoreKey, handleSuccess, handleError],
+    [searchParams, userManager, checkAcrIntegrity, askSigninRedirect,
+      scope, referrer, acrValues, handleSuccess, handleError],
   );
 
   const fallbackReferrer = useMemo(
