@@ -2,7 +2,7 @@ import { MSG_DELETE, MSG_EDIT, MEMBER_LEAVE, MEMBER_KICK, MEMBER_EVENT_TYPES, ME
 
 import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
-import { identifierValuePath, senderMatchesIdentifierValue } from 'helpers/sender';
+import { senderMatchesIdentifierId } from 'helpers/sender';
 
 // HELPERS
 const lastEditedAtProp = prop('lastEditedAt');
@@ -45,30 +45,28 @@ export const transformReferrerEvent = (event) => (referrerEvent) => {
   return event;
 };
 
-export const isMeEvent = ({ sender }, myIdentifierValue) => {
-  const senderIdentifierValue = identifierValuePath(sender);
-  return senderIdentifierValue === myIdentifierValue;
-};
+export const isMeEvent = (
+  { sender }, meIdentifierId,
+) => senderMatchesIdentifierId(sender, meIdentifierId);
 
-export const isMeLeaveEvent = ({ type, sender }, meIdentifierValue) => {
+export const isMeLeaveEvent = ({ type, sender }, meIdentifierId) => {
   if (type === MEMBER_LEAVE) {
-    const senderIdentifierValue = identifierValuePath(sender);
-    return senderIdentifierValue === meIdentifierValue;
+    return senderMatchesIdentifierId(sender, meIdentifierId);
   }
   return false;
 };
 
-export const isMeKickEvent = ({ type, sender }, meIdentifierValue) => {
+export const isMeKickEvent = ({ type, sender }, meIdentifierId) => {
   if (type === MEMBER_KICK) {
-    return senderMatchesIdentifierValue({ sender, identifierValue: meIdentifierValue });
+    return senderMatchesIdentifierId(sender, meIdentifierId);
   }
   return false;
 };
 
 
-export const isMeJoinEvent = ({ type, sender }, meIdentifierValue) => {
+export const isMeJoinEvent = ({ type, sender }, meIdentifierId) => {
   if (type === MEMBER_JOIN) {
-    return senderMatchesIdentifierValue({ sender, identifierValue: meIdentifierValue });
+    return senderMatchesIdentifierId(sender, meIdentifierId);
   }
   return false;
 };

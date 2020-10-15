@@ -2,7 +2,6 @@ import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import routes from 'routes';
 
 import { isMeLeaveEvent, isMeKickEvent, isMeJoinEvent, isMeEvent } from 'helpers/boxEvent';
-import { senderIdMatchesIdentityId } from 'helpers/sender';
 import path from '@misakey/helpers/path';
 import isNil from '@misakey/helpers/isNil';
 import log from '@misakey/helpers/log';
@@ -21,8 +20,8 @@ import BoxesSchema from 'store/schemas/Boxes';
 
 // CONSTANTS
 const {
-  identifierValue: IDENTIFIER_VALUE_SELECTOR,
   identityId: IDENTITY_ID_SELECTOR,
+  identifierId: IDENTIFIER_ID_SELECTOR,
 } = authSelectors;
 
 const MESSAGE_TYPES = {
@@ -67,12 +66,12 @@ export default (activeStatus, search) => {
   );
 
   const identityId = useSelector(IDENTITY_ID_SELECTOR);
-  const identifierValue = useSelector(IDENTIFIER_VALUE_SELECTOR);
+  const identifierId = useSelector(IDENTIFIER_ID_SELECTOR);
 
   const onDeleteSuccess = useCallback(
     (box) => {
-      const { title } = box;
-      if (senderIdMatchesIdentityId(box, identityId)) {
+      const { title, senderId } = box;
+      if (senderId === identityId) {
         enqueueSnackbar(tRef.current('boxes:removeBox.success.delete.you'), { variant: 'success' });
       } else if (!isNil(title)) {
         // This information will be handled by user notifications later
@@ -117,13 +116,13 @@ export default (activeStatus, search) => {
         if (CHANGE_EVENT_TYPES.includes(eventType) && !isNil(referrerId)) {
           return Promise.resolve(dispatch(receiveWSEditEvent(object)));
         }
-        if (isMeLeaveEvent(object, identifierValue)) {
+        if (isMeLeaveEvent(object, identifierId)) {
           return onRemoveBox(boxId).then(() => enqueueSnackbar(leaveSuccess, { variant: 'success' }));
         }
-        if (isMeKickEvent(object, identifierValue)) {
+        if (isMeKickEvent(object, identifierId)) {
           return onRemoveBox(boxId).then((box) => onKickSuccess(box));
         }
-        if (isMeJoinEvent(object, identifierValue)) {
+        if (isMeJoinEvent(object, identifierId)) {
           return batch(() => {
             dispatch(updateEntities(
               [{ id: boxId, changes: { hasAccess: true, isMember: true } }],
@@ -132,13 +131,13 @@ export default (activeStatus, search) => {
             dispatch(addBoxEvent(boxId, object));
           });
         }
-        const isMyEvent = isMeEvent(object, identifierValue);
+        const isMyEvent = isMeEvent(object, identifierId);
         return Promise.resolve(dispatch(addBoxEvent(boxId, object, isMyEvent)));
       }
       log(`Receive unknown WS type: ${type}`);
       return Promise.resolve();
     },
-    [identifierValue, leaveSuccess, onRemoveBox, onDeleteSuccess,
+    [identifierId, leaveSuccess, onRemoveBox, onDeleteSuccess,
       dispatch, enqueueSnackbar, onKickSuccess],
   );
 };

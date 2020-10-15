@@ -123,14 +123,14 @@ export const selectors = {
     identitySelector,
     prop('hasAccount'),
   ),
+  identifierId: createSelector(
+    identitySelector,
+    prop('identifierId'),
+  ),
   identifier: identifierSelector,
   identifierValue: createSelector(
     identifierSelector,
     prop('value'),
-  ),
-  identifierId: createSelector(
-    identifierSelector,
-    prop('id'),
   ),
   identityId: createSelector(
     getState,

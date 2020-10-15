@@ -20,7 +20,6 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import without from '@misakey/helpers/without';
 import omit from '@misakey/helpers/omit';
 import prop from '@misakey/helpers/prop';
-import { identifierValuePath } from 'helpers/sender';
 import { batch } from 'react-redux';
 
 // CONSTANTS
@@ -32,13 +31,12 @@ const omitText = (values) => omit(values, ['text']);
 const textProp = prop('text');
 
 const getNextMembers = ({ type, sender }, members) => {
-  const senderIdentifierValue = identifierValuePath(sender);
   if (type === MEMBER_JOIN) {
-    return members.concat([senderIdentifierValue]);
+    return members.concat([sender.identifierId]);
   }
 
   if (type === MEMBER_LEAVE || type === MEMBER_KICK) {
-    return without(members, senderIdentifierValue);
+    return without(members, sender.identifierId);
   }
 
   return null;
@@ -161,9 +159,10 @@ export const addBoxEvent = (id, nextEvent, isMyEvent = false) => (dispatch, getS
     return Promise.resolve(isLifecycle ? undefined : dispatch(moveBackUpId(id, ALL)));
   }
 
-  const { events, eventsCount = 0, lifecycle } = currentBox;
+  const { events, eventsCount = 0, lifecycle, members } = currentBox;
 
   const lastEvent = nextEvent;
+
 
   const changes = {
     lastEvent,
@@ -172,6 +171,12 @@ export const addBoxEvent = (id, nextEvent, isMyEvent = false) => (dispatch, getS
     // If we haven't fetch initial list of events, don't add the event to the list
     events: isNil(events) ? undefined : events.concat([nextEvent]),
   };
+
+  if (isMemberEventType(lastEvent)) {
+    if (!isEmpty(members)) {
+      changes.members = getNextMembers(lastEvent, members);
+    }
+  }
 
   const normalized = normalize(nextEvent, BoxEventsSchema.entity);
   const { entities } = normalized;

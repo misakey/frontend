@@ -103,7 +103,6 @@ const FileField = ({
           )}
         </>
       )}
-
       buttonText={t('fields:files.button.choose.label', 'Choose a file')}
     />
   );
