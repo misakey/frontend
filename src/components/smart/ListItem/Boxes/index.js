@@ -17,6 +17,7 @@ import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 
 import Skeleton from '@material-ui/lab/Skeleton';
 import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -153,10 +154,9 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
         className={classes.listItemText}
         primary={(
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            {title}
+            <Typography noWrap>{title}</Typography>
             {!lostKey && (
               <TypographyDateSince
-                noWrap
                 date={date}
               />
             )}

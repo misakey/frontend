@@ -86,6 +86,9 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
 
   const membersText = useMemo(
     () => {
+      if (!hasAccess) {
+        return t('boxes:read.events.access.denied');
+      }
       if (isBoxClosed) {
         return t('boxes:read.events.information.lifecycle.closed.generic');
       }
@@ -94,7 +97,7 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
       }
       return t('boxes:read.details.menu.members.count', { count: members.length });
     },
-    [isTheOnlyMember, isBoxClosed, t, members.length],
+    [hasAccess, isBoxClosed, isTheOnlyMember, t, members.length],
   );
 
   const primaryTypographyProps = useMemo(
@@ -112,24 +115,19 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
   );
 
   const secondary = useMemo(
-    () => {
-      if (hasAccess === false) {
-        return '';
-      }
-      return isEmpty(members)
-        ? (
-          <Skeleton
-            className={classes.secondarySkeleton}
-            width={SKELETON_WIDTH}
-          />
-        )
-        : (
-          <Typography {...secondaryTypographyProps}>
-            {membersText}
-          </Typography>
-        );
-    },
-    [hasAccess, members, classes.secondarySkeleton, secondaryTypographyProps, membersText],
+    () => (isEmpty(members) && !isBoxClosed && hasAccess
+      ? (
+        <Skeleton
+          className={classes.secondarySkeleton}
+          width={SKELETON_WIDTH}
+        />
+      )
+      : (
+        <Typography {...secondaryTypographyProps}>
+          {membersText}
+        </Typography>
+      )),
+    [members, isBoxClosed, hasAccess, classes, secondaryTypographyProps, membersText],
   );
 
   const isClosed = useMemo(

@@ -70,6 +70,9 @@
       "share": "Partager cet espace privé"
     },
     "events": {
+      "access": {
+        "denied": "Accès restreint"
+      },
       "e2eeIntro": "Les messages et documents envoyés dans cette conversation sont protégés avec le chiffrement de bout en bout.",
       "create": {
         "error": {

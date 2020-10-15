@@ -70,6 +70,9 @@
       "share": "Share this private space"
     },
     "events": {
+      "access": {
+        "denied": "Access denied"
+      },
       "e2eeIntro": "Messages and documents sent in this conversation are protected with end-to-end encryption.",
       "create": {
         "error": {
