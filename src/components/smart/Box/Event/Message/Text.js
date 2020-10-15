@@ -31,8 +31,6 @@ const MY_TRANSFORM_ORIGIN = {
 
 const LINK_PROPS = {
   color: 'secondary',
-  target: '_blank',
-  rel: 'noopener noreferrer',
 };
 
 // HELPERS

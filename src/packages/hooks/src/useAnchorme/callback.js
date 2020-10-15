@@ -4,9 +4,18 @@ import anchorme from '@misakey/helpers/anchorme';
 import isEmpty from '@misakey/helpers/isEmpty';
 import head from '@misakey/helpers/head';
 
+import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
+
+
+import { Link } from 'react-router-dom';
+
 // HELPERS
 const hasProtocol = (str) => /^https?:\/\//.test(str);
 const hasMailto = (str) => /^mailto:/.test(str);
+const isLocalUrl = (str) => {
+  const { hostname } = new URL(str);
+  return hostname === window.location.hostname;
+};
 
 const makeHref = (href, defaultProtocol) => {
   if (hasProtocol(href)) {
@@ -42,15 +51,34 @@ export default ({ extensions = [], defaultProtocol = 'https://', LinkComponent =
       }
       const key = `${start}-${end}`;
       if (isURL) {
-        elements.push(
-          <LinkComponent
-            key={key}
-            href={makeHref(string, defaultProtocol)}
-            {...linkProps}
-          >
-            {string}
-          </LinkComponent>,
-        );
+        const href = makeHref(string, defaultProtocol);
+
+        if (isLocalUrl(href)) {
+          const { pathname } = parseUrlFromLocation(href);
+
+          elements.push(
+            <LinkComponent
+              key={key}
+              to={pathname}
+              component={Link}
+              {...linkProps}
+            >
+              {string}
+            </LinkComponent>,
+          );
+        } else {
+          elements.push(
+            <LinkComponent
+              key={key}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              {...linkProps}
+            >
+              {string}
+            </LinkComponent>,
+          );
+        }
       } else if (isEmail) {
         elements.push(
           <LinkComponent

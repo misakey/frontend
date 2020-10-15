@@ -10,9 +10,9 @@ import Link from '@material-ui/core/Link';
 import LinkFeedback from '@misakey/ui/FeedbackLink';
 import Logo from '@misakey/ui/Logo';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 
@@ -74,7 +74,7 @@ const Footer = ({
   );
 
   return (
-    <ExpansionPanel
+    <Accordion
       classes={{ root: classes.expansionPanelRoot }}
       variant="outlined"
       expanded={expanded}
@@ -83,7 +83,7 @@ const Footer = ({
       {...omitTranslationProps(rest)}
     >
       <ContainerComponent {...containerProps}>
-        <ExpansionPanelSummary
+        <AccordionSummary
           classes={{
             root: classes.expansionPanelSummaryRoot,
           }}
@@ -93,9 +93,9 @@ const Footer = ({
             {title || t('components:footer.title')}
           </Subtitle>
           <Logo className={classes.logoRoot} />
-        </ExpansionPanelSummary>
+        </AccordionSummary>
       </ContainerComponent>
-      <ExpansionPanelDetails>
+      <AccordionDetails>
         <ContainerComponent {...containerProps}>
           <Grid container>
             <Grid container item xs={12}>
@@ -202,8 +202,8 @@ const Footer = ({
             </Grid>
           </Grid>
         </ContainerComponent>
-      </ExpansionPanelDetails>
-    </ExpansionPanel>
+      </AccordionDetails>
+    </Accordion>
   );
 };
 

@@ -74,7 +74,7 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
         },
       },
     },
-    MuiExpansionPanel: {
+    MuiAccordion: {
       root: {
         '&::before': {
           display: 'none',
@@ -85,7 +85,7 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
         },
       },
     },
-    MuiExpansionPanelDetails: {
+    MuiAccordionDetails: {
       root: {
         flexDirection: 'column',
         alignItems: 'flex-start',
@@ -95,7 +95,7 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
         },
       },
     },
-    MuiExpansionPanelSummary: {
+    MuiAccordionSummary: {
       content: {
         margin: 'auto 0',
         '&.Mui-expanded': {
