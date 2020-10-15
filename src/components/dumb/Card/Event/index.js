@@ -28,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
   card: {
     overflow: 'hidden',
     background: 0,
+    maxWidth: '100%',
+  },
+  cardMaxWidth: {
     [theme.breakpoints.down('xl')]: {
       maxWidth: '50%',
     },
@@ -71,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
 const EventCard = forwardRef(({
   isFromCurrentUser,
   children,
-  className,
+  classes,
   author,
   text,
   date,
@@ -79,10 +82,11 @@ const EventCard = forwardRef(({
   isSelected,
   actions,
   titleProps,
+  disableMaxWidth,
   t,
   ...rest
 }, ref) => {
-  const classes = useStyles();
+  const internalClasses = useStyles();
   const { displayName, avatarUrl } = useMemo(() => author, [author]);
 
   return (
@@ -92,13 +96,21 @@ const EventCard = forwardRef(({
       justifyContent={isFromCurrentUser ? 'flex-end' : 'flex-start'}
       py={1}
       px={2}
-      className={clsx(classes.root, { [classes.selected]: isSelected })}
+      className={clsx(
+        classes.container,
+        internalClasses.root,
+        { [internalClasses.selected]: isSelected },
+      )}
       {...omitTranslationProps(rest)}
     >
       {!isFromCurrentUser && <Avatar avatarUrl={avatarUrl} displayName={displayName} />}
       <MuiCard
         ref={ref}
-        className={clsx(classes.card, className)}
+        className={clsx(
+          internalClasses.card,
+          classes.card,
+          { [internalClasses.cardMaxWidth]: !disableMaxWidth },
+        )}
         elevation={0}
         square
       >
@@ -108,17 +120,17 @@ const EventCard = forwardRef(({
             {...titleProps}
           />
         )}
-        <Box classes={{ root: classes.boxRoot }}>
+        <Box classes={{ root: internalClasses.boxRoot }}>
           {children}
-          <CardContent classes={{ root: classes.content }}>
+          <CardContent classes={{ root: internalClasses.content }}>
             {!isNil(text) && (
-            <TypographyPreWrapped component={Box} className={classes.text}>
-              {text}
-            </TypographyPreWrapped>
+              <TypographyPreWrapped component={Box} className={internalClasses.text}>
+                {text}
+              </TypographyPreWrapped>
             )}
             {!isNil(date) && (
               <Typography
-                className={classes.date}
+                className={internalClasses.date}
                 variant="caption"
                 display="block"
                 color="textSecondary"
@@ -129,7 +141,7 @@ const EventCard = forwardRef(({
             )}
           </CardContent>
           {!isNil(actions) && (
-            <CardActions classes={{ root: classes.footer }}>
+            <CardActions classes={{ root: internalClasses.footer }}>
               <Box display="flex" flexDirection="column">
                 {actions}
               </Box>
@@ -143,11 +155,16 @@ const EventCard = forwardRef(({
 
 EventCard.propTypes = {
   children: PropTypes.node,
-  className: PropTypes.string,
+  classes: PropTypes.shape({
+    container: PropTypes.string,
+    card: PropTypes.string,
+    cardMaxWidth: PropTypes.string,
+  }),
   isFromCurrentUser: PropTypes.bool,
   text: PropTypes.node,
   isEdited: PropTypes.bool,
   isSelected: PropTypes.bool,
+  disableMaxWidth: PropTypes.bool,
   author: PropTypes.shape({
     displayName: PropTypes.string,
     avatarUrl: PropTypes.string,
@@ -165,7 +182,7 @@ EventCard.propTypes = {
 
 EventCard.defaultProps = {
   children: null,
-  className: '',
+  classes: {},
   author: {
     avatar: null,
     name: null,
@@ -173,6 +190,7 @@ EventCard.defaultProps = {
   text: null,
   isEdited: false,
   isSelected: false,
+  disableMaxWidth: false,
   titleProps: {},
   isFromCurrentUser: false,
   actions: null,

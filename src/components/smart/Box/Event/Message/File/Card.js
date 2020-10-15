@@ -162,6 +162,7 @@ const FileCardEvent = ({
         text={text}
         ref={ref}
         items={items}
+        disableMaxWidth={isTypeAllowedForPreview}
         {...omitTranslationProps(props)}
       >
         <ButtonBase
@@ -172,7 +173,7 @@ const FileCardEvent = ({
         >
           <FilePreview
             allowedFileTypePreview={ALLOWED_FILE_TYPES_TO_PREVIEW}
-            maxHeight={200}
+            height={200}
             fallbackView={(
               <BoxFile
                 fileSize={fileSize}

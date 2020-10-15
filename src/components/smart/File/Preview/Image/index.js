@@ -8,22 +8,21 @@ import Grow from '@material-ui/core/Grow';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
-  image: ({ maxHeight, width, isLoaded }) => ({
-    width: isLoaded ? width : 0,
+  image: ({ maxHeight, objectFit }) => ({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     maxWidth: '100%',
-    maxHeight: isLoaded ? maxHeight : 0,
-    objectFit: 'scale-down',
+    maxHeight,
+    objectFit,
   }),
 }));
 
 // COMPONENTS
-function ImagePreview({ fallbackView, maxHeight, width }) {
+function ImagePreview({ fallbackView, maxHeight, width, height, objectFit }) {
   const [hasInternalError, setHasInternalError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const classes = useStyles({ maxHeight, width, isLoaded });
+  const classes = useStyles({ maxHeight, objectFit });
 
   const onError = useCallback(
     () => {
@@ -64,6 +63,8 @@ function ImagePreview({ fallbackView, maxHeight, width }) {
             alt={isLoaded ? fileName : null}
             onLoad={onLoad}
             onError={onError}
+            height={height}
+            width={isLoaded ? width : 0}
           />
         </Grow>
       )}
@@ -77,12 +78,16 @@ ImagePreview.propTypes = {
   fallbackView: PropTypes.node,
   maxHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  objectFit: PropTypes.oneOf(['fill', 'contain', 'cover', 'none', 'scale-down']),
 };
 
 ImagePreview.defaultProps = {
   maxHeight: '100%',
   width: 'auto',
+  height: 'auto',
   fallbackView: null,
+  objectFit: 'scale-down',
 };
 
 

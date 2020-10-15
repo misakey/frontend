@@ -1,4 +1,4 @@
-import React, { forwardRef, useMemo, useCallback, useEffect, useRef } from 'react';
+import React, { forwardRef, useMemo, useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import BoxesSchema from 'store/schemas/Boxes';
@@ -15,6 +15,7 @@ import useGroupEventsByDate from 'hooks/useGroupEventsByDate';
 import { usePaginateEventsContext } from 'components/smart/Context/PaginateEventsByBox';
 import useNotDoneEffect from 'hooks/useNotDoneEffect';
 import useMountEffect from '@misakey/hooks/useMountEffect';
+import useIntersectionObserver from '@misakey/hooks/useIntersectionObserver';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useSelector } from 'react-redux';
 
@@ -30,13 +31,19 @@ const THRESHOLD = 200; // px
 const MAXIMUM_BATCH_SIZE = 10;
 
 // HELPERS
-const getScrollDiff = (elem) => elem.scrollHeight - elem.clientHeight;
+const getScrollDiff = ({ scrollHeight, clientHeight }) => scrollHeight - clientHeight;
 
 // HOOKS
 const useStyles = makeStyles(() => ({
   root: {
     overflow: 'auto',
+    '& > *': {
+      overflowAnchor: 'none',
+    },
   },
+  anchor: ({ anchorBottom }) => ({
+    overflowAnchor: anchorBottom ? 'auto' : 'none',
+  }),
   loader: {
     position: 'absolute',
     top: 0,
@@ -48,12 +55,15 @@ const useStyles = makeStyles(() => ({
 const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
   const combinedRef = useCombinedRefs(ref);
   const paginationOffsetRef = useRef(0);
+  const anchorRef = useRef();
+
+  const [anchorBottom, setAnchorBottom] = useState(false);
 
   const {
     itemCount, byPagination, isFetching, loadMoreItems,
   } = usePaginateEventsContext();
 
-  const classes = useStyles();
+  const classes = useStyles({ anchorBottom });
 
   const eventIds = useMemo(
     () => Object.values(byPagination),
@@ -90,6 +100,19 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
 
   const onLoadMoreItemsRef = useRef(onLoadMoreItems);
 
+  const restoreScrollPosition = useCallback(
+    () => {
+      const { current } = combinedRef;
+      const prev = current.scrollHeight;
+      return () => {
+        const next = current.scrollHeight;
+        const expansion = next - prev;
+        current.scrollTop += expansion;
+      };
+    },
+    [combinedRef],
+  );
+
   const onScroll = useCallback(
     (e) => {
       const { target } = e;
@@ -99,14 +122,19 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
       const scrollDiff = getScrollDiff(target);
       if (target.scrollTop < THRESHOLD && scrollDiff > 0) {
         if (!isFetching) {
-          onLoadMoreItemsRef.current();
+          const restorer = restoreScrollPosition();
+          onLoadMoreItemsRef.current()
+            .then(restorer);
         }
         if (paginationOffsetRef.current < itemCount) {
           target.scrollTop = THRESHOLD;
         }
       }
     },
-    [onLoadMoreItemsRef, isFetching, paginationOffsetRef, itemCount, combinedRef],
+    [
+      onLoadMoreItemsRef, restoreScrollPosition,
+      isFetching, paginationOffsetRef, itemCount, combinedRef,
+    ],
   );
 
   const scrollToBottom = useCallback(
@@ -146,14 +174,19 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
     [notNilEvents, scrollToBottom, combinedRef],
   );
 
-  useEffect(
-    () => {
-      requestAnimationFrame(
-        () => scrollToBottom(),
-      );
+  const onAnchorIntersects = useCallback(
+    (entry) => {
+      if (entry.isIntersecting === true) {
+        setAnchorBottom(true);
+      } else {
+        setAnchorBottom(false);
+      }
     },
-    [itemCount, scrollToBottom],
+    [setAnchorBottom],
   );
+
+  // watch anchor visibility, if visible, set overflowAnchor, else not
+  useIntersectionObserver(anchorRef, onAnchorIntersects, true);
   // [/HANDLE SCROLL]
 
   // UPDATE OFFSET
@@ -232,11 +265,16 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
             <Typography variant="body2" component={Box} alignSelf="center" color="textPrimary">{date}</Typography>
             {
           groupedEvents.map((event) => (
-            <BoxEventsAccordingToType box={box} event={event} key={event.id} />
+            <BoxEventsAccordingToType
+              box={box}
+              event={event}
+              key={event.id}
+            />
           ))
         }
           </Box>
         ))}
+        <Box ref={anchorRef} height="1px" className={classes.anchor} />
       </Box>
     </>
   );

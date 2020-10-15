@@ -1,7 +1,8 @@
-import React, { forwardRef, useState, useMemo, useCallback } from 'react';
+import React, { forwardRef, useState, useMemo, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import isNumber from '@misakey/helpers/isNumber';
+import debounce from '@misakey/helpers/debounce';
 
 import Box from '@material-ui/core/Box';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -20,6 +21,16 @@ const WindowedListAutoSized = forwardRef(({
 
   const itemsSize = useMemo(() => itemSize * itemCount, [itemCount, itemSize]);
 
+  const resetBestHeight = useCallback(
+    () => setBestHeight(maxHeight),
+    [setBestHeight, maxHeight],
+  );
+
+  const onResize = useMemo(
+    () => debounce(resetBestHeight, 300),
+    [resetBestHeight],
+  );
+
   const computeBestHeight = useCallback(
     ({ height }) => {
       if (height > 0) {
@@ -30,6 +41,15 @@ const WindowedListAutoSized = forwardRef(({
       }
     },
     [innerElementTypeHeight, itemsSize],
+  );
+
+  useEffect(
+    () => {
+      window.addEventListener('resize', onResize);
+      return () => {
+        window.removeEventListener('resize', onResize);
+      };
+    },
   );
 
   return (

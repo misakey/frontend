@@ -63,6 +63,13 @@
       "max": "You cannot send more than 10 files in a row"
     }
   },
+  "blobs_files": {
+    "error": {
+      "size": "Maximum file size: 100Mo",
+      "extension": "Incorrect format. File has no extension",
+      "name": "Incorrect format. File has no name"
+    }
+  },
   "blob": {
     "error": {
       "size": "Max size 9MB",

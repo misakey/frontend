@@ -8,7 +8,11 @@ import MediaPreview from './MediaPreview';
 import DefaultPreview from './Default';
 
 // COMPONENTS
-function FilePreview({ allowedFileTypePreview, maxHeight, width, fallbackView }) {
+function FilePreview({
+  allowedFileTypePreview,
+  fallbackView,
+  maxHeight, width, height, objectFit,
+}) {
   const { fileType } = useFileContext();
 
   const nilFileType = useMemo(
@@ -41,7 +45,15 @@ function FilePreview({ allowedFileTypePreview, maxHeight, width, fallbackView })
   }
 
   if (isImage) {
-    return <ImagePreview fallbackView={fallbackView} maxHeight={maxHeight} width={width} />;
+    return (
+      <ImagePreview
+        fallbackView={fallbackView}
+        maxHeight={maxHeight}
+        height={height}
+        width={width}
+        objectFit={objectFit}
+      />
+    );
   }
   if (isAudio || isVideo) {
     return <MediaPreview fallbackView={fallbackView} maxHeight={maxHeight} />;
@@ -56,12 +68,16 @@ FilePreview.propTypes = {
   fallbackView: PropTypes.node,
   maxHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  objectFit: PropTypes.oneOf(['fill', 'contain', 'cover', 'none', 'scale-down']),
 };
 
 FilePreview.defaultProps = {
   maxHeight: '100%',
   width: 'auto',
+  height: 'auto',
   fallbackView: null,
+  objectFit: 'scale-down',
 };
 
 export default FilePreview;

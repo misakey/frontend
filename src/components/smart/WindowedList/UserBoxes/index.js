@@ -105,12 +105,12 @@ const WindowedListBoxes = forwardRef(({ activeStatus, selectedId, t, ...props },
   }
 
   return (
-    <WindowedListInfiniteLoaded
+    <WindowedListAutosized
       ref={ref}
       key={itemCount}
       Row={Row}
       Skeleton={Skeleton}
-      list={WindowedListAutosized}
+      component={WindowedListInfiniteLoaded}
       loadMoreItems={loadMoreItems}
       itemCount={itemCount}
       itemSize={72}
