@@ -11,6 +11,10 @@ import addCsrfTokenToUser from './addCsrfTokenToUser';
 import { STORAGE_PREFIX } from '../constants';
 
 class MisakeyUserManager extends UserManager {
+  get userStorageKey() {
+    return `${STORAGE_PREFIX}${this._userStoreKey}`;
+  }
+
   // implement custom loads of silent renew token when expiring
   // as library doesn't handle silent auth with cookie-stored access_token
   loadSilentAuthTimer(user) {
@@ -125,7 +129,7 @@ class MisakeyUserManager extends UserManager {
         log('UserManager._signinEnd: current user matches user returned from signin');
       }
 
-      return this.storeUser(user).then(() => addCsrfTokenToUser(`${STORAGE_PREFIX}${this._userStoreKey}`, url)
+      return this.storeUser(user).then(() => addCsrfTokenToUser(this.userStorageKey, url)
         .then((userWithCsrfToken) => {
           log('UserManager._signinEnd: user stored');
 

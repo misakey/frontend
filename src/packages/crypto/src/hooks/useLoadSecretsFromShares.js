@@ -7,6 +7,7 @@ import { combineBackupKeyShares, computeOtherShareHash } from '@misakey/crypto/s
 import { loadSecrets } from '@misakey/crypto/store/actions/concrete';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { decryptSecretsBackupWithBackupKey } from '@misakey/crypto/secretsBackup/encryption';
+import useWatchStorageBackupKeyShares from '@misakey/crypto/hooks/useWatchStorageBackupKeyShares';
 import { selectors } from '../store/reducers';
 import useFetchSecretBackup from './useFetchSecretBackup';
 
@@ -59,6 +60,9 @@ export default (() => {
     { shouldFetch },
     { onSuccess, onError },
   );
+
+  // Handle multi tabs updates
+  useWatchStorageBackupKeyShares(localBackupKeyShare);
 
   return {
     notFound: notFound || isNil(localBackupKeyShare),
