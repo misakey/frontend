@@ -1,9 +1,6 @@
 import React, { useState, useMemo, useCallback, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { useSnackbar } from 'notistack';
-import { useTranslation } from 'react-i18next';
-
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import { UserManagerContext } from '@misakey/auth/components/OidcProvider';
 
@@ -16,12 +13,15 @@ import { computeInvitationHash } from '@misakey/crypto/box/keySplitting';
 import { BadKeyShareFormat } from '@misakey/crypto/Errors/classes';
 
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { makeDenormalizeBoxSelector } from 'store/reducers/box';
 
 import { useSelector } from 'react-redux';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useLocation, useRouteMatch, Route } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { useTranslation } from 'react-i18next';
 
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 
@@ -51,7 +51,6 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
     [loginHint, options],
   );
 
-  const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
   // locationHash is a URL hash
   // (see https://developer.mozilla.org/en-US/docs/Web/API/URL/hash),
   // not be confused with the output of a hash function
@@ -59,6 +58,18 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   const { params } = useRouteMatch(path);
 
   const { id } = useSafeDestr(params);
+
+  const denormalizeBoxSelector = useMemo(
+    () => makeDenormalizeBoxSelector(),
+    [],
+  );
+
+  // if box and box title are already in store, don't refetch
+  const box = useSelector((state) => denormalizeBoxSelector(state, id));
+
+  const { title } = useSafeDestr(box);
+
+  const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
 
   const otherShareHash = useMemo(
     () => {
@@ -78,8 +89,11 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   );
 
   const shouldFetch = useMemo(
-    () => !isAuthenticated && !isNil(id) && !isNil(otherShareHash) && isNil(resourceName) && !error,
-    [isAuthenticated, id, otherShareHash, resourceName, error],
+    () => !isAuthenticated
+    && !isNil(id) && isNil(title)
+    && !isNil(otherShareHash) && isNil(resourceName)
+    && !error,
+    [isAuthenticated, id, otherShareHash, resourceName, error, title],
   );
 
   const getBoxPublic = useCallback(
@@ -88,7 +102,7 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   );
 
   const onSuccess = useCallback(
-    ({ title }) => setResourceName(title),
+    ({ title: boxTitle }) => setResourceName(boxTitle),
     [setResourceName],
   );
 
@@ -122,6 +136,15 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
       }
     },
     [askSigninRedirect, redirectOptions, shouldAskRedirect],
+  );
+
+  useEffect(
+    () => {
+      if (!isNil(title)) {
+        setResourceName(title);
+      }
+    },
+    [title, setResourceName],
   );
 
   if (isAuthenticated) {

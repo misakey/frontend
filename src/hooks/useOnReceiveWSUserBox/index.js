@@ -1,5 +1,10 @@
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import routes from 'routes';
+import BoxesSchema from 'store/schemas/Boxes';
+import { DELETED_BOX, NEW_EVENT, NOTIFICATIONS_ACK } from 'constants/app/boxes/ws/messageTypes';
+import { CHANGE_EVENT_TYPES } from 'constants/app/boxes/events';
+import { receiveWSEditEvent, addBoxEvent } from 'store/reducers/box';
+import { updateEntities } from '@misakey/store/actions/entities';
 
 import { isMeLeaveEvent, isMeKickEvent, isMeJoinEvent, isMeEvent } from 'helpers/boxEvent';
 import path from '@misakey/helpers/path';
@@ -13,21 +18,12 @@ import { useOnRemoveBox } from 'hooks/usePaginateBoxesByStatus/updates';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 import useModifier from '@misakey/hooks/useModifier';
-import { CHANGE_EVENT_TYPES } from 'constants/app/boxes/events';
-import { receiveWSEditEvent, addBoxEvent } from 'store/reducers/box';
-import { updateEntities } from '@misakey/store/actions/entities';
-import BoxesSchema from 'store/schemas/Boxes';
 
 // CONSTANTS
 const {
   identityId: IDENTITY_ID_SELECTOR,
   identifierId: IDENTIFIER_ID_SELECTOR,
 } = authSelectors;
-
-const MESSAGE_TYPES = {
-  DELETED_BOX: 'box.delete',
-  NEW_EVENT: 'event.new',
-};
 
 // HELPERS
 const idParamPath = path(['params', 'id']);
@@ -105,13 +101,20 @@ export default (activeStatus, search) => {
   return useCallback(
     ({ type, object }) => {
       // delete box
-      if (type === MESSAGE_TYPES.DELETED_BOX) {
+      if (type === DELETED_BOX) {
         const { id: boxId } = object;
         return onRemoveBox(boxId).then((box) => onDeleteSuccess({ ...box, ...object }));
       }
 
+      if (type === NOTIFICATIONS_ACK) {
+        const { boxId } = object;
+        return Promise.resolve(
+          dispatch(updateEntities([{ id: boxId, changes: { eventsCount: 0 } }], BoxesSchema)),
+        );
+      }
+
       // New event
-      if (type === MESSAGE_TYPES.NEW_EVENT) {
+      if (type === NEW_EVENT) {
         const { referrerId, type: eventType, boxId } = object;
         if (CHANGE_EVENT_TYPES.includes(eventType) && !isNil(referrerId)) {
           return Promise.resolve(dispatch(receiveWSEditEvent(object)));

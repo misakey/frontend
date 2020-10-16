@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, Fragment } from 'react';
+import React, { useCallback, useMemo, useRef, Fragment, useEffect } from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
@@ -67,7 +67,9 @@ const FilesField = ({
   renderItem,
   autoFocus,
 }) => {
-  const { status } = useFormikContext();
+  const globalErrorRef = useRef();
+
+  const { status, isSubmitting } = useFormikContext();
   const fieldStatus = useMemo(() => status[name], [status, name]);
 
   const { filenamesErrors, filenamesSent } = useMemo(
@@ -127,6 +129,26 @@ const FilesField = ({
     [value, error, setValue, setError],
   );
 
+  const onGlobalError = useCallback(
+    (node) => {
+      if (!isNil(node)) {
+        globalErrorRef.current = node;
+        node.scrollIntoView();
+      }
+    },
+    [globalErrorRef],
+  );
+
+  useEffect(
+    () => {
+      const { current } = globalErrorRef;
+      if (displayError && isGlobalErrorKeys && !isNil(current)) {
+        current.scrollIntoView();
+      }
+    },
+    [isSubmitting, displayError, isGlobalErrorKeys],
+  );
+
   return (
     <>
       {isEmpty(value) ? emptyTitle : (
@@ -167,7 +189,7 @@ const FilesField = ({
         multiple
       />
       {displayError && isGlobalErrorKeys && (
-        <FormHelperText error>
+        <FormHelperText error ref={onGlobalError}>
           {t(errorKeys)}
         </FormHelperText>
       )}

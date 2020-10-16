@@ -34,7 +34,7 @@ export const getArrayFieldError = ({ field: { name }, meta: { error, touched }, 
   const displayError = !isNil(validationError);
 
   const errorKeys = isArray(validationError)
-    ? validationError.map((err) => getErrorKeys(prefix, name, err))
+    ? validationError.map((err) => (isNil(err) ? undefined : getErrorKeys(prefix, name, err)))
     : getErrorKeys(prefix, name, validationError);
 
   return { displayError, errorKeys };
