@@ -84,7 +84,7 @@ if (isSilentAuthIframe()) {
   API.addMiddleware(floodManagementAlertMiddleware(100)); // 100ms delay
 
   const registerMiddlewares = (askSigninRedirect) => {
-    API.addMiddleware(invalidSeclevelMiddleware(askSigninRedirect));
+    API.addMiddleware(invalidSeclevelMiddleware(askSigninRedirect, store));
   };
 
   // SPLASH SCREEN CONFIG
