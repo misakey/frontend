@@ -138,6 +138,7 @@
   "error": {
     "retry": "Une erreur est survenue lors d'une requête, nouvelle tentative dans {{delay}}s",
     "stop": "Echec de la requête au bout de {{count}} tentative",
-    "stop_plural": "Echec de la requête au bout de {{count}} tentatives"
+    "stop_plural": "Echec de la requête au bout de {{count}} tentatives",
+    "storage": "Merci d'autoriser les cookies sur cette application"
   }
 }

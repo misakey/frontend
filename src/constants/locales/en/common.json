@@ -131,6 +131,7 @@
   "error": {
     "retry": "A request error occurred, retrying in {{delay}}s",
     "stop": "Request failure after {{count}} attempt",
-    "stop_plural": "Request failure after {{count}} attempts"
+    "stop_plural": "Request failure after {{count}} attempts",
+    "storage": "Please enable cookies on this application"
   }
 }

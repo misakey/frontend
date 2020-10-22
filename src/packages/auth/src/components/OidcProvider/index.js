@@ -1,11 +1,13 @@
 import React, { useMemo, useEffect, createContext, useCallback, useState, forwardRef } from 'react';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 import { loadUserThunk, authReset } from '@misakey/auth/store/actions/auth';
 
 import log from '@misakey/helpers/log';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
+import { StorageUnavailable } from '@misakey/helpers/storage';
 import parseJwt from '@misakey/helpers/parseJwt';
 import { parseAcr } from '@misakey/helpers/parseAcr';
 import createUserManager from '@misakey/auth/helpers/userManager';
@@ -14,6 +16,8 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import DialogSigninRedirect from '@misakey/auth/components/OidcProvider/Dialog/SigninRedirect';
+import ScreenError from '@misakey/ui/Screen/Error';
+import Typography from '@material-ui/core/Typography';
 
 // HELPERS
 const getUser = ({
@@ -77,6 +81,9 @@ function OidcProvider({ store, children, config, registerMiddlewares }) {
   );
 
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
+
+  const { t } = useTranslation('common');
 
   const dispatchLoadUser = useCallback(
     (user, identityId, accountId) => store.dispatch(loadUserThunk({
@@ -124,8 +131,9 @@ function OidcProvider({ store, children, config, registerMiddlewares }) {
 
     // Load user on store when the app is opening
     userManager.getUser()
-      .then(onUserLoaded);
-  }, [onUserLoaded, userManager]);
+      .then(onUserLoaded)
+      .catch(setError);
+  }, [onUserLoaded, userManager, setError]);
 
   const onStorageEvent = useCallback(
     (e) => {
@@ -154,7 +162,11 @@ function OidcProvider({ store, children, config, registerMiddlewares }) {
     // Remove from store eventual dead signIn request key
     // (it happens when an error occurs in the flow and the backend response
     // doesn't send back the state so we can't remove it with the signInRequestCallback )
-    userManager.clearStaleState();
+    try {
+      userManager.clearStaleState();
+    } catch (e) {
+      setError(new StorageUnavailable());
+    }
 
     return function cleanup() {
       // unregister the event callbacks
@@ -166,6 +178,7 @@ function OidcProvider({ store, children, config, registerMiddlewares }) {
     onUserLoaded,
     onSilentRenewError,
     loadUserAtMount,
+    setError,
   ]);
 
   useEffect(
@@ -187,6 +200,17 @@ function OidcProvider({ store, children, config, registerMiddlewares }) {
     },
     [registerMiddlewares, askSigninRedirect],
   );
+
+  if (error) {
+    if (error instanceof StorageUnavailable) {
+      return (
+        <ScreenError>
+          <Typography variant="h5" component="h5" align="center" color="error">{t('common:error.storage')}</Typography>
+        </ScreenError>
+      );
+    }
+    return <ScreenError />;
+  }
 
   return (
     <UserManagerContext.Provider value={contextValue}>

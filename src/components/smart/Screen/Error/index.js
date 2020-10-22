@@ -1,116 +1,22 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import routes from 'routes';
-import { Trans, withTranslation } from 'react-i18next';
 
-import { makeStyles } from '@material-ui/core/styles';
-
-import omit from '@misakey/helpers/omit';
-import BoxControls from '@misakey/ui/Box/Controls';
-import IconButton from '@material-ui/core/IconButton';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Title from '@misakey/ui/Typography/Title';
-
-import Box from '@material-ui/core/Box';
-import MuiLink from '@material-ui/core/Link';
-import Typography from '@material-ui/core/Typography';
-import ArrowBack from '@material-ui/icons/ArrowBack';
-
-import Subtitle from 'packages/ui/src/Typography/Subtitle';
 import { FEEDBACK } from 'constants/emails';
-import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
+import routes from 'routes';
 
-// HOOKS
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.default,
-  },
-}));
+import ComponentProxy from '@misakey/ui/Component/Proxy';
+import ScreenError from '@misakey/ui/Screen/Error';
 
-function ScreenError({ t, className, children, hideDefaultError, hideRefreshAction, ...rest }) {
-  const classes = useStyles();
-  return (
-    <Box
-      className={classes.root}
-      display="flex"
-      flexDirection="column"
-      height="100%"
-    >
-      <AppBar elevation={0} position="static" color="transparent">
-        <Toolbar>
-          <IconButton
-            aria-label={t('common:goBack')}
-            edge="start"
-            component={Link}
-            to={routes._}
-          >
-            <ArrowBack />
-          </IconButton>
-          <Typography color="textSecondary">{t('components:ScreenError.button.goback')}</Typography>
-        </Toolbar>
-      </AppBar>
-      <Box height="100%">
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          m={3}
-          height="inherit"
-          className={className}
-          {...omit(rest, ['tReady', 'i18n'])}
-        >
-          {!hideDefaultError && (
-            <>
-              <Trans i18nKey="components:ScreenError.title">
-                <Title align="center" color="secondary">
-                  Oups ...
-                </Title>
-                <Title align="center">
-                  Une erreur s&apos;est produite lors de la navigation
-                </Title>
-              </Trans>
-              <Subtitle align="center">
-                <Trans i18nKey="components:ScreenError.subtitle">
-                  Vous pouvez essayer de rafraichir la page. Si l&apos;erreur persiste,
-                  <MuiLink href={`mailto:${FEEDBACK}`} color="secondary">{' contactez-nous'}</MuiLink>
-                  .
-                </Trans>
-              </Subtitle>
-            </>
-          )}
-          {children}
-          {!hideRefreshAction && (
-            <BoxControls
-              m={2}
-              primary={{
-                onClick: () => { window.location.reload(); },
-                text: t('components:ScreenError.button.refresh'),
-              }}
-            />
-          )}
-        </Box>
-      </Box>
-      <FooterFullScreen />
-    </Box>
-  );
-}
+// COMPONENTS
+const ScreenErrorFeedbackGoBack = ComponentProxy(ScreenError);
 
-ScreenError.propTypes = {
-  children: PropTypes.node,
-  className: PropTypes.string,
-  hideDefaultError: PropTypes.bool,
-  hideRefreshAction: PropTypes.bool,
-  t: PropTypes.func.isRequired,
+ScreenErrorFeedbackGoBack.propTypes = {
+  feedback: PropTypes.string,
+  goBack: PropTypes.string,
 };
 
-ScreenError.defaultProps = {
-  children: null,
-  className: '',
-  hideDefaultError: false,
-  hideRefreshAction: false,
+ScreenErrorFeedbackGoBack.defaultProps = {
+  feedback: FEEDBACK,
+  goBack: routes._,
 };
 
-
-export default withTranslation('components')(ScreenError);
+export default ScreenErrorFeedbackGoBack;

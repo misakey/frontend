@@ -7,6 +7,7 @@ import { UserManager, WebStorageStateStore, User } from 'oidc-client';
 import { uuid4RFC4122 } from '@misakey/helpers/uuid4';
 import log from '@misakey/helpers/log';
 import isNil from '@misakey/helpers/isNil';
+import storage, { StorageUnavailable } from '@misakey/helpers/storage';
 import addCsrfTokenToUser from './addCsrfTokenToUser';
 import { STORAGE_PREFIX } from '../constants';
 
@@ -143,20 +144,25 @@ class MisakeyUserManager extends UserManager {
   }
 
   getUser() {
-    return this._loadUser().then((user) => {
-      if (user) {
-        log('UserManager.getUser: user loaded');
+    try {
+      return this._loadUser().then((user) => {
+        if (user) {
+          log('UserManager.getUser: user loaded');
 
-        this._events.load(user, false);
-        // Fire expiring handled on load user
-        this.loadSilentAuthTimer(user);
+          this._events.load(user, false);
+          // Fire expiring handled on load user
+          this.loadSilentAuthTimer(user);
 
-        return user;
-      }
+          return user;
+        }
 
-      log('UserManager.getUser: user not found in storage');
-      return null;
-    });
+        log('UserManager.getUser: user not found in storage');
+        return null;
+      });
+    } catch (e) {
+      log('UserManager.getUser: localStorage not available');
+      return Promise.reject(new StorageUnavailable());
+    }
   }
 }
 
@@ -174,7 +180,7 @@ export default function createUserManager(config) {
     scope: 'openid tos privacy_policy',
     automaticSilentRenew: true,
     loadUserInfo: false,
-    userStore: new WebStorageStateStore({ store: window.localStorage }),
+    userStore: new WebStorageStateStore({ store: storage }),
     ...config,
   };
   return new MisakeyUserManager(userManagerConfig);
