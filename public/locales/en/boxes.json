@@ -36,6 +36,11 @@
     }
   },
   "read": {
+    "menu": {
+      "label": "Filter menu",
+      "discussion": "Conversation",
+      "files": "Files"
+    },
     "closed": {
       "title": "Private space “{{title}}” is closed",
       "defaulTitle": "This private space is closed",
@@ -240,6 +245,10 @@
           "secondary": "The private space is closed, only admins can access it"
         }
       }
+    },
+    "files": {
+      "empty": "There is no document shared in this private space yet",
+      "add": "Add document"
     }
   },
   "create": {

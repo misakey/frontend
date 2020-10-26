@@ -54,7 +54,7 @@ const BoxMessageTextEvent = ({
     serverEventCreatedAt,
     content: { encrypted, publicKey },
   } = useMemo(() => event, [event]);
-  const { lifecycle } = useMemo(() => box, [box]);
+  const { lifecycle, id: boxId } = useMemo(() => box, [box]);
   const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
   const canBeDecrypted = publicKeysWeCanDecryptFrom.has(publicKey);
 
@@ -95,20 +95,20 @@ const BoxMessageTextEvent = ({
         return [
           <MenuItemEventEdit event={event} box={box} key="edit" />,
           <MenuItemEventCopy event={event} key="copy" />,
-          <MenuItemEventDelete event={event} box={box} key="delete" />,
+          <MenuItemEventDelete event={event} boxId={boxId} key="delete" />,
         ];
       }
       if (boxBelongsToCurrentUser && !isClosed) {
         return [
           <MenuItemEventCopy event={event} key="copy" />,
-          <MenuItemEventDelete event={event} box={box} key="delete" />,
+          <MenuItemEventDelete event={event} boxId={boxId} key="delete" />,
         ];
       }
       return [
         <MenuItemEventCopy event={event} key="copy" />,
       ];
     },
-    [isFromCurrentUser, isClosed, boxBelongsToCurrentUser, event, box],
+    [isFromCurrentUser, isClosed, boxBelongsToCurrentUser, event, box, boxId],
   );
   if (preview) {
     return (

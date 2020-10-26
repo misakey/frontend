@@ -3,7 +3,6 @@ import { Switch, useRouteMatch, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import routes from 'routes';
-import { ALL } from 'constants/app/boxes/statuses';
 import { UUID4_REGEX } from 'constants/regex';
 import { selectors } from '@misakey/crypto/store/reducers';
 import { computeInvitationHash } from '@misakey/crypto/box/keySplitting';
@@ -29,13 +28,12 @@ import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
 
 import Redirect from '@misakey/ui/Redirect';
 import DrawerSplashScreen from 'components/smart/Screen/Drawer/Splash';
-import BoxesContextProvider from 'components/smart/Context/Boxes';
 
 // HELPERS
 const boxIdMatchParamPath = path(['match', 'params', 'id']);
 
 // COMPONENTS
-function Boxes({ match, isReady }) {
+function Boxes({ match }) {
   const location = useLocation();
   const { hash: locationHash } = location;
   const matchBoxSelected = useRouteMatch(routes.boxes.read._);
@@ -113,62 +111,60 @@ function Boxes({ match, isReady }) {
         forceRefresh
         manualRedirectPlaceholder={(
           <DrawerSplashScreen />
-    )}
+        )}
       />
     );
   }
 
   return (
-    <BoxesContextProvider activeStatus={ALL} isReady={isReady}>
-      <Switch>
-        <RouteAuthenticatedBoxRead
-          path={routes.boxes.read._}
-          render={(renderProps) => {
-            const boxId = boxIdMatchParamPath(renderProps);
-            if (!UUID4_REGEX.test(boxId)) {
-              return (
-                <ScreenDrawer
-                  drawerChildren={drawerChildren}
-                  isFullWidth={isFullWidth}
-                  initialIsDrawerOpen={isNothingSelected}
-                >
-                  {(drawerProps) => (
-                    <BoxNone {...drawerProps} {...renderProps} />
-                  )}
-                </ScreenDrawer>
-              );
-            }
+    <Switch>
+      <RouteAuthenticatedBoxRead
+        path={routes.boxes.read._}
+        render={(renderProps) => {
+          const boxId = boxIdMatchParamPath(renderProps);
+          if (!UUID4_REGEX.test(boxId)) {
             return (
               <ScreenDrawer
                 drawerChildren={drawerChildren}
                 isFullWidth={isFullWidth}
                 initialIsDrawerOpen={isNothingSelected}
               >
-                {(drawerProps) => !shouldDisplayLockedScreen && (
-                  <BoxRead {...drawerProps} {...renderProps} />
+                {(drawerProps) => (
+                  <BoxNone {...drawerProps} {...renderProps} />
                 )}
               </ScreenDrawer>
             );
-          }}
-        />
-        <RouteAcr
-          acr={2}
-          exact
-          path={match.path}
-          render={(renderProps) => (
+          }
+          return (
             <ScreenDrawer
               drawerChildren={drawerChildren}
               isFullWidth={isFullWidth}
               initialIsDrawerOpen={isNothingSelected}
             >
-              {(drawerProps) => (
-                <BoxNone {...drawerProps} {...renderProps} />
+              {(drawerProps) => !shouldDisplayLockedScreen && (
+                <BoxRead {...drawerProps} {...renderProps} />
               )}
             </ScreenDrawer>
-          )}
-        />
-      </Switch>
-    </BoxesContextProvider>
+          );
+        }}
+      />
+      <RouteAcr
+        acr={2}
+        exact
+        path={match.path}
+        render={(renderProps) => (
+          <ScreenDrawer
+            drawerChildren={drawerChildren}
+            isFullWidth={isFullWidth}
+            initialIsDrawerOpen={isNothingSelected}
+          >
+            {(drawerProps) => (
+              <BoxNone {...drawerProps} {...renderProps} />
+            )}
+          </ScreenDrawer>
+        )}
+      />
+    </Switch>
   );
 }
 

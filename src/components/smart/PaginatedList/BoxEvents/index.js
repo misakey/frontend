@@ -12,7 +12,7 @@ import { denormalize } from 'normalizr';
 import useCombinedRefs from '@misakey/hooks/useCombinedRefs';
 import usePrevPropEffect from '@misakey/hooks/usePrevPropEffect';
 import useGroupEventsByDate from 'hooks/useGroupEventsByDate';
-import { usePaginateEventsContext } from 'components/smart/Context/PaginateEventsByBox';
+import usePaginateEventsByBox from 'hooks/usePaginateEventsByBox';
 import useNotDoneEffect from 'hooks/useNotDoneEffect';
 import useMountEffect from '@misakey/hooks/useMountEffect';
 import useIntersectionObserver from '@misakey/hooks/useIntersectionObserver';
@@ -61,7 +61,7 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
 
   const {
     itemCount, byPagination, isFetching, loadMoreItems,
-  } = usePaginateEventsContext();
+  } = usePaginateEventsByBox();
 
   const classes = useStyles({ anchorBottom });
 

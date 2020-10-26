@@ -28,6 +28,11 @@ export default {
   },
   vault: {
     files: {
+      count: {
+        method: 'HEAD',
+        path: '/saved-files',
+        auth: true,
+      },
       read: {
         method: 'GET',
         path: '/saved-files',

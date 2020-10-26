@@ -38,6 +38,19 @@ export const countBoxEventsBuilder = (id, queryParams = {}) => API
   .send()
   .then((response) => parseInt(response.headers.get('X-Total-Count'), 10));
 
+
+export const getBoxFilesEventsBuilder = (id, queryParams = {}) => API
+  .use(API.endpoints.boxes.events.files.find)
+  .build({ id }, null, objectToSnakeCase(queryParams))
+  .send()
+  .then((events) => events.map(objectToCamelCaseDeep));
+
+export const countBoxFilesEventsBuilder = (id, queryParams = {}) => API
+  .use(API.endpoints.boxes.events.files.count)
+  .build({ id }, null, objectToSnakeCase(queryParams))
+  .send()
+  .then((response) => parseInt(response.headers.get('X-Total-Count'), 10));
+
 export const getUserBoxesBuilder = (payload) => API
   .use(API.endpoints.boxes.user.find)
   .build(null, null, objectToSnakeCase({

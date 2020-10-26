@@ -3,8 +3,8 @@ import React, { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useFileContext } from 'components/smart/File/Context';
 import Grow from '@material-ui/core/Grow';
+import FILE_PROP_TYPES from 'constants/file/proptypes';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -18,7 +18,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-function ImagePreview({ fallbackView, maxHeight, width, height, objectFit }) {
+function ImagePreview({ file, fallbackView, maxHeight, width, height, objectFit }) {
   const [hasInternalError, setHasInternalError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -40,8 +40,8 @@ function ImagePreview({ fallbackView, maxHeight, width, height, objectFit }) {
     blobUrl,
     isLoading: isFetching,
     error: initialError,
-    fileName,
-  } = useFileContext();
+    name,
+  } = useMemo(() => file, [file]);
 
   const hasError = useMemo(
     () => initialError || hasInternalError,
@@ -60,7 +60,7 @@ function ImagePreview({ fallbackView, maxHeight, width, height, objectFit }) {
           <img
             className={classes.image}
             src={blobUrl}
-            alt={isLoaded ? fileName : null}
+            alt={isLoaded ? name : null}
             onLoad={onLoad}
             onError={onError}
             height={height}
@@ -75,6 +75,7 @@ function ImagePreview({ fallbackView, maxHeight, width, height, objectFit }) {
 }
 
 ImagePreview.propTypes = {
+  file: PropTypes.shape(FILE_PROP_TYPES).isRequired,
   fallbackView: PropTypes.node,
   maxHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

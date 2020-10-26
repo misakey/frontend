@@ -2,42 +2,43 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';
-import { useFileContext } from 'components/smart/File/Context';
+import FILE_PROP_TYPES from 'constants/file/proptypes';
 import ImagePreview from './Image';
 import MediaPreview from './MediaPreview';
 import DefaultPreview from './Default';
 
 // COMPONENTS
 function FilePreview({
+  file,
   allowedFileTypePreview,
   fallbackView,
   maxHeight, width, height, objectFit,
 }) {
-  const { fileType } = useFileContext();
+  const { type } = useMemo(() => file, [file]);
 
   const nilFileType = useMemo(
-    () => isNil(fileType),
-    [fileType],
+    () => isNil(type),
+    [type],
   );
 
   const isTypeAllowedForPreview = useMemo(
-    () => !nilFileType && allowedFileTypePreview.some((type) => fileType.startsWith(type)),
-    [nilFileType, allowedFileTypePreview, fileType],
+    () => !nilFileType && allowedFileTypePreview.some((elem) => type.startsWith(elem)),
+    [nilFileType, allowedFileTypePreview, type],
   );
 
   const isImage = useMemo(
-    () => !nilFileType && fileType.startsWith('image'),
-    [nilFileType, fileType],
+    () => !nilFileType && type.startsWith('image'),
+    [nilFileType, type],
   );
 
   const isAudio = useMemo(
-    () => !nilFileType && fileType.startsWith('audio'),
-    [nilFileType, fileType],
+    () => !nilFileType && type.startsWith('audio'),
+    [nilFileType, type],
   );
 
   const isVideo = useMemo(
-    () => !nilFileType && fileType.startsWith('video'),
-    [nilFileType, fileType],
+    () => !nilFileType && type.startsWith('video'),
+    [nilFileType, type],
   );
 
   if (!isTypeAllowedForPreview) {
@@ -47,6 +48,7 @@ function FilePreview({
   if (isImage) {
     return (
       <ImagePreview
+        file={file}
         fallbackView={fallbackView}
         maxHeight={maxHeight}
         height={height}
@@ -56,14 +58,15 @@ function FilePreview({
     );
   }
   if (isAudio || isVideo) {
-    return <MediaPreview fallbackView={fallbackView} maxHeight={maxHeight} />;
+    return <MediaPreview file={file} fallbackView={fallbackView} maxHeight={maxHeight} />;
   }
 
-  return <DefaultPreview fallbackView={fallbackView} />;
+  return <DefaultPreview file={file} fallbackView={fallbackView} />;
 }
 
 
 FilePreview.propTypes = {
+  file: PropTypes.shape(FILE_PROP_TYPES).isRequired,
   allowedFileTypePreview: PropTypes.arrayOf(PropTypes.string).isRequired,
   fallbackView: PropTypes.node,
   maxHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

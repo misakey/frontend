@@ -10,6 +10,8 @@ import AccountDrawer from 'components/smart/Drawer/Account';
 import useLoadSecretsFromShares from '@misakey/crypto/hooks/useLoadSecretsFromShares';
 import withIdentity from 'components/smart/withIdentity';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
+import BoxesContextProvider from 'components/smart/Context/Boxes';
+import { ALL } from 'constants/app/boxes/statuses';
 import VaultDocuments from '../Documents';
 
 function Home({ isFetchingIdentity }) {
@@ -28,15 +30,17 @@ function Home({ isFetchingIdentity }) {
           path={routes.accounts._}
           component={Accounts}
         />
-        <RouteAcr
-          acr={2}
-          path={routes.documents._}
-          component={VaultDocuments}
-        />
-        <Route
-          path={routes.boxes._}
-          render={(routeProps) => <Boxes isReady={isReady} {...routeProps} />}
-        />
+        <BoxesContextProvider activeStatus={ALL} isReady={isReady}>
+          <RouteAcr
+            acr={2}
+            path={routes.documents._}
+            component={VaultDocuments}
+          />
+          <Route
+            path={routes.boxes._}
+            component={Boxes}
+          />
+        </BoxesContextProvider>
       </Switch>
     </>
   );

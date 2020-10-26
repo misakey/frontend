@@ -36,6 +36,11 @@
     }
   },
   "read": {
+    "menu": {
+      "label": "Menu de filtres",
+      "discussion": "Discussion",
+      "files": "Fichiers"
+    },
     "closed": {
       "title": "L'espace privé «\u00a0{{title}}\u00a0» est fermé.",
       "defaultTitle": "Cet espace privé est fermé.",
@@ -240,6 +245,10 @@
           "secondary": "L'espace privé est fermé, seuls les admins y ont accès"
         }
       }
+    },
+    "files": {
+      "empty": "Il n'y a pas encore de documents partagés dans cet espace privé",
+      "add": "Ajouter un document"
     }
   },
   "create": {

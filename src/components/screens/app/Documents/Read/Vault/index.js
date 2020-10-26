@@ -1,27 +1,33 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
+import useTheme from '@material-ui/core/styles/useTheme';
 
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
-import FileListItem from 'components/smart/ListItem/File';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import ArrowBack from '@material-ui/icons/ArrowBack';
-import List from '@material-ui/core/List';
 
 import Avatar from '@material-ui/core/Avatar';
 import FolderIcon from '@material-ui/icons/Folder';
 
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import withSavedFiles from 'components/smart/withSavedFiles';
 import BoxEmpty from 'components/dumb/Box/Empty';
-import SavedFilesSchema from 'store/schemas/Files/Saved';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import isNil from '@misakey/helpers/isNil';
 
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
+import FilePreviewContextProvider from 'components/smart/File/Preview/Context';
+import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
+
+import WindowedGridInfiniteLoaded from 'components/smart/WindowedList/InfiniteLoaded/Grid';
+import WindowedListAutoSized from 'components/smart/WindowedList/Autosized';
+import usePaginateSavedFiles from 'hooks/usePaginateSavedFiles';
+import VaultCell, { Skeleton, CELL_HEIGHT } from './Cell';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -31,23 +37,40 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     boxSizing: 'border-box',
-    maxHeight: `calc(100% - ${APPBAR_HEIGHT}px)`,
+    height: `calc(100% - ${APPBAR_HEIGHT}px)`,
     overflow: 'auto',
+  },
+  list: {
+    overflowX: 'hidden !important',
   },
 }));
 
+const NUM_COLUMNS = 2;
+
 // COMPONENTS
-const DocumentsVault = ({ t, isDrawerOpen, toggleDrawer, savedFiles }) => {
-  const [contentRef, setContentRef] = useState();
+const DocumentsVault = ({ t, isDrawerOpen, toggleDrawer }) => {
+  const ref = useRef();
   const classes = useStyles();
 
-  const isEmpty = useMemo(() => savedFiles.length === 0, [savedFiles.length]);
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
+  const numColumns = isSmall ? 1 : NUM_COLUMNS;
+
+  const {
+    byPagination,
+    itemCount,
+    loadMoreItems,
+  } = usePaginateSavedFiles();
+
+  const isEmpty = useMemo(() => itemCount === 0, [itemCount]);
+  const isLoading = useMemo(() => isNil(itemCount), [itemCount]);
+  const itemData = useMemo(() => ({ byPagination }), [byPagination]);
 
   useUpdateDocHead(t('document:vault.title'));
 
   return (
     <>
-      <ElevationScroll target={contentRef}>
+      <ElevationScroll target={ref.current}>
         <AppBarDrawer
           isDrawerOpen={isDrawerOpen}
         >
@@ -81,24 +104,37 @@ const DocumentsVault = ({ t, isDrawerOpen, toggleDrawer, savedFiles }) => {
         </AppBarDrawer>
       </ElevationScroll>
       {isEmpty && <BoxEmpty py={0} />}
-      <Box p={2} ref={(ref) => setContentRef(ref)} className={classes.content}>
-        <List>
-          {savedFiles.map((file) => <FileListItem key={file.id} file={file} />)}
-        </List>
-      </Box>
+      {isLoading && <SplashScreen />}
+      {!isEmpty && !isLoading && (
+        <Box width="100%" className={classes.content}>
+          <FilePreviewContextProvider>
+            <WindowedListAutoSized
+              maxHeight="100%"
+              component={WindowedGridInfiniteLoaded}
+              numColumns={numColumns}
+              loadMoreItems={loadMoreItems}
+              Cell={VaultCell}
+              Skeleton={Skeleton}
+              itemCount={itemCount}
+              itemData={itemData}
+              rowHeight={CELL_HEIGHT}
+              ref={ref}
+              className={classes.list}
+            />
+          </FilePreviewContextProvider>
+        </Box>
+      )}
     </>
-
   );
 };
 
 DocumentsVault.propTypes = {
   isDrawerOpen: PropTypes.bool.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
-  savedFiles: PropTypes.arrayOf(SavedFilesSchema.propTypes).isRequired,
 
   // withTranslation
   t: PropTypes.func.isRequired,
 };
 
 
-export default withTranslation(['common', 'document'])(withSavedFiles()(DocumentsVault));
+export default withTranslation(['common', 'document'])(DocumentsVault);

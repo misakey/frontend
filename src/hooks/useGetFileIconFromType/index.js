@@ -10,8 +10,10 @@ import ReportProblemIcon from '@material-ui/icons/ReportProblem';
 import VolumeUpIcon from '@material-ui/icons/VolumeUp';
 
 export default (fileType, broken = false) => useMemo(() => {
-  if (isNil(fileType)) { return DefaultIcon; }
-  if (fileType.startsWith('image') && broken) {
+  if (isNil(fileType)) {
+    return broken ? ReportProblemIcon : DefaultIcon;
+  }
+  if (fileType.startsWith('image')) {
     return broken ? BrokenImageIcon : ImageIcon;
   }
   if (broken) { return ReportProblemIcon; }

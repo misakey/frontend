@@ -8,13 +8,13 @@ import { createSavedFile } from '@misakey/helpers/builder/vault';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { ensureVaultKeyExists } from '@misakey/crypto/store/actions/concrete';
 import { encryptForVault } from '@misakey/crypto/vault';
-import { addSavedFiles } from 'store/reducers/savedFiles';
+import { addSavedFile } from 'store/reducers/savedFiles';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import SnackbarActionSee from 'components/dumb/Snackbar/Action/See';
 
 const { conflict } = errorTypes;
 
-export default (encryption, encryptedFileId) => {
+export default () => {
   const identityId = useSelector(authSelectors.identityId);
   const dispatch = useDispatch();
 
@@ -26,7 +26,7 @@ export default (encryption, encryptedFileId) => {
     [],
   );
 
-  const saveInVault = useCallback(async (vaultKey) => {
+  const saveInVault = useCallback(async (vaultKey, encryption, encryptedFileId) => {
     try {
       const { encryptedMetadata, keyFingerprint } = encryptForVault(encryption, vaultKey);
       const response = await createSavedFile({
@@ -35,7 +35,7 @@ export default (encryption, encryptedFileId) => {
         keyFingerprint,
         identityId,
       });
-      dispatch(addSavedFiles(identityId, [response]));
+      dispatch(addSavedFile(identityId, response));
       enqueueSnackbar(t('components:saveInVault.success'), { variant: 'success', action: seeAction });
     } catch (err) {
       if (err.code === conflict) {
@@ -44,10 +44,10 @@ export default (encryption, encryptedFileId) => {
         enqueueSnackbar(t('components:saveInVault.error.default'), { variant: 'error' });
       }
     }
-  }, [dispatch, encryptedFileId, encryption, enqueueSnackbar, identityId, seeAction, t]);
+  }, [dispatch, enqueueSnackbar, identityId, seeAction, t]);
 
-  return useCallback(async () => {
+  return useCallback(async (encryption, encryptedFileId) => {
     const vaultKey = await Promise.resolve(dispatch(ensureVaultKeyExists()));
-    return saveInVault(vaultKey);
+    return saveInVault(vaultKey, encryption, encryptedFileId);
   }, [dispatch, saveInVault]);
 };

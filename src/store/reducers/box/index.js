@@ -1,17 +1,23 @@
-import { LIFECYCLE, MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK } from 'constants/app/boxes/events';
+import { batch } from 'react-redux';
+import { createSelector } from 'reselect';
+import { normalize, denormalize } from 'normalizr';
+
+import { LIFECYCLE, MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK, MSG_FILE } from 'constants/app/boxes/events';
+import { ALL } from 'constants/app/boxes/statuses';
+
 import BoxesSchema from 'store/schemas/Boxes';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
 import { BLUR_TEXT, CLEAR_TEXT } from 'store/actions/box';
-import { ALL } from 'constants/app/boxes/statuses';
+import { actionCreators } from 'store/reducers/userBoxes/pagination/events';
+import { actionCreators as fileEventsActionCreators, selectors as fileEventsSelectors } from 'store/reducers/userBoxes/pagination/events/files';
+import { moveBackUpId } from 'store/reducers/userBoxes/pagination';
+
+import { receiveEntities, updateEntities, removeEntities } from '@misakey/store/actions/entities';
+import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 
 import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
-import { createSelector } from 'reselect';
-import { receiveEntities, updateEntities, removeEntities } from '@misakey/store/actions/entities';
-import { normalize, denormalize } from 'normalizr';
-import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
+
 import { transformReferrerEvent, isMemberEventType } from 'helpers/boxEvent';
-import { actionCreators } from 'store/reducers/userBoxes/pagination/events';
-import { moveBackUpId } from 'store/reducers/userBoxes/pagination';
 import pluck from '@misakey/helpers/pluck';
 import propOr from '@misakey/helpers/propOr';
 import props from '@misakey/helpers/props';
@@ -20,11 +26,15 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import without from '@misakey/helpers/without';
 import omit from '@misakey/helpers/omit';
 import prop from '@misakey/helpers/prop';
-import { batch } from 'react-redux';
 
 // CONSTANTS
 const INITIAL_STATE = {};
 const { addPaginatedId: addPaginatedEventId } = actionCreators;
+const {
+  addPaginatedId: addPaginatedFileEventId,
+  removePaginatedId: removePaginatedFileEventId,
+} = fileEventsActionCreators;
+const { getItemCount: getFileItemCount } = fileEventsSelectors;
 
 // HELPERS
 const omitText = (values) => omit(values, ['text']);
@@ -163,7 +173,6 @@ export const addBoxEvent = (id, nextEvent, isMyEvent = false) => (dispatch, getS
 
   const lastEvent = nextEvent;
 
-
   const changes = {
     lastEvent,
     eventsCount: isMyEvent ? eventsCount : eventsCount + 1,
@@ -180,12 +189,16 @@ export const addBoxEvent = (id, nextEvent, isMyEvent = false) => (dispatch, getS
 
   const normalized = normalize(nextEvent, BoxEventsSchema.entity);
   const { entities } = normalized;
+  const fileEventItemCount = getFileItemCount(getState(), id);
 
   if (isNil(events)) {
     return batch(() => {
       dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
       dispatch(updateEntities([{ id, changes }], BoxesSchema));
       dispatch(moveBackUpId(id, ALL));
+      if (!isNil(fileEventItemCount) && lastEvent.type === MSG_FILE) {
+        dispatch(addPaginatedFileEventId(id, lastEvent.id));
+      }
     });
   }
 
@@ -194,6 +207,9 @@ export const addBoxEvent = (id, nextEvent, isMyEvent = false) => (dispatch, getS
     dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
     dispatch(updateEntities([{ id, changes }], BoxesSchema));
     dispatch(moveBackUpId(id, ALL));
+    if (!isNil(fileEventItemCount) && lastEvent.type === MSG_FILE) {
+      dispatch(addPaginatedFileEventId(id, lastEvent.id));
+    }
   });
 };
 
@@ -215,19 +231,25 @@ export const receiveBoxEvents = (id, nextEvents) => (dispatch, getState) => {
 };
 
 export const receiveWSEditEvent = (editEvent) => (dispatch, getState) => {
-  const { referrerId } = editEvent;
+  const { referrerId, boxId } = editEvent;
+  const fileEventItemCount = getFileItemCount(getState(), boxId);
 
   const getEventSelector = makeGetEventSelector();
   const referrerEvent = getEventSelector(getState(), referrerId);
 
   const changes = transformReferrerEvent(editEvent)(referrerEvent);
 
-  return Promise.all([
-    dispatch(updateEntities(
+  const { type, id } = referrerEvent || {};
+
+  return batch(() => {
+    if (type === MSG_FILE && !isNil(fileEventItemCount)) {
+      dispatch(removePaginatedFileEventId(boxId, id));
+    }
+    return Promise.resolve(dispatch(updateEntities(
       [{ id: referrerId, changes }],
       BoxEventsSchema,
-    )),
-  ]);
+    )));
+  });
 };
 
 export const updateAccessesEvents = (id, newAccesses) => (dispatch) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -11,11 +11,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 // import PrintIcon from '@material-ui/icons/Print';
 import FilePreviewPaper from 'components/smart/Dialog/FilePreview/Paper';
 import FilePreview from 'components/smart/File/Preview';
-import { useFileContext } from 'components/smart/File/Context';
 import Backdrop from '@material-ui/core/Backdrop';
 import BoxFile from 'components/dumb/Box/File';
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
-
+import { useFilePreviewContext } from 'components/smart/File/Preview/Context';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 // CONSTANTS
 const ALLOWED_TYPE_PREVIEW = [
@@ -56,46 +56,62 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-function FilePreviewDialog({ open, onClose, onSave }) {
+function FilePreviewDialog({ open, onClose }) {
   const classes = useStyles();
 
   const {
+    getFileData,
     getDecryptedFile,
-    blobUrl,
-    file,
-    fileType,
-    fileSize,
-    fileName,
-    isLoading,
-    error,
-  } = useFileContext();
+    onDownloadFile,
+    onSaveFileInVault,
+    disableOnSave,
+    selectedId,
+  } = useFilePreviewContext();
+
+  const selected = getFileData(selectedId);
+
+  const {
+    isLoading, error, name, type, size, blobUrl,
+  } = useMemo(() => selected, [selected]);
 
   const isTypeAllowedForPreview = useMemo(
-    () => !isNil(fileType) && ALLOWED_TYPE_PREVIEW.some((type) => fileType.startsWith(type)),
-    [fileType],
+    () => !isNil(type) && ALLOWED_TYPE_PREVIEW.some((elem) => type.startsWith(elem)),
+    [type],
   );
 
-  const shouldDownloadFile = useMemo(
-    () => isNil(file) && open && isTypeAllowedForPreview,
-    [file, isTypeAllowedForPreview, open],
+  const onDownloadInBrowser = useCallback(
+    () => onDownloadFile(selectedId),
+    [onDownloadFile, selectedId],
   );
 
-  useEffect(() => {
-    if (shouldDownloadFile) {
-      getDecryptedFile();
-    }
-  }, [getDecryptedFile, shouldDownloadFile]);
+  const shouldLoadFile = useMemo(
+    () => isNil(blobUrl) && open && isTypeAllowedForPreview && !isLoading && isNil(error),
+    [blobUrl, error, isLoading, isTypeAllowedForPreview, open],
+  );
+
+  const onLoadFile = useCallback(
+    () => getDecryptedFile(selectedId),
+    [getDecryptedFile, selectedId],
+  );
+
+  const onSave = useCallback(
+    () => onSaveFileInVault(selectedId),
+    [onSaveFileInVault, selectedId],
+  );
+
+  useFetchEffect(onLoadFile, { shouldFetch: shouldLoadFile });
 
   const PaperProps = useMemo(
-    () => {
-      const dataProps = { onClose, onSave };
-      return {
-        className: classes.paper,
-        elevation: 0,
-        ...dataProps,
-      };
-    },
-    [classes.paper, onClose, onSave],
+    () => ({
+      className: classes.paper,
+      elevation: 0,
+      onClose,
+      onSave: !disableOnSave && onSave,
+      onDownload: onDownloadInBrowser,
+      fileName: name,
+      disabled: !isNil(error),
+    }),
+    [classes.paper, disableOnSave, error, name, onClose, onDownloadInBrowser, onSave],
   );
 
   return (
@@ -108,11 +124,11 @@ function FilePreviewDialog({ open, onClose, onSave }) {
       PaperComponent={FilePreviewPaper}
       BackdropComponent={(props) => (
         <Backdrop {...props}>
-          {(isNil(blobUrl) || !isNil(error)) && (
+          {(isNil(blobUrl) || !isTypeAllowedForPreview || !isNil(error)) && (
             <BoxFile
-              fileSize={fileSize}
-              fileName={fileName}
-              fileType={fileType}
+              fileSize={size}
+              fileName={name}
+              fileType={type}
               isLoading={isLoading}
               isBroken={!isNil(error)}
               isLarge
@@ -124,7 +140,11 @@ function FilePreviewDialog({ open, onClose, onSave }) {
       )}
     >
       <DialogContent className={classes.content}>
-        <FilePreview maxHeight={PREVIEW_MAX_HEIGHT} allowedFileTypePreview={ALLOWED_TYPE_PREVIEW} />
+        <FilePreview
+          file={selected}
+          maxHeight={PREVIEW_MAX_HEIGHT}
+          allowedFileTypePreview={ALLOWED_TYPE_PREVIEW}
+        />
       </DialogContent>
     </Dialog>
   );
@@ -135,11 +155,7 @@ FilePreviewDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  onSave: PropTypes.func,
 };
 
-FilePreviewDialog.defaultProps = {
-  onSave: null,
-};
 
 export default withTranslation(['common', 'components'])(FilePreviewDialog);

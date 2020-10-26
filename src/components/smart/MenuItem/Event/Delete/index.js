@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import EventSchema from 'store/schemas/Boxes/Events';
-import BoxesSchema from 'store/schemas/Boxes';
 
 import isNil from '@misakey/helpers/isNil';
 
@@ -19,11 +18,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 
 // COMPONENTS
-const MenuItemDeleteEvent = forwardRef(({ t, event, box }, ref) => {
+const MenuItemDeleteEvent = forwardRef(({ t, event, boxId }, ref) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { id: eventId } = useSafeDestr(event);
-  const { id: boxId } = useSafeDestr(box);
 
   const { event: editingEvent, clearEvent } = useBoxEditEventContext();
 
@@ -70,7 +68,7 @@ const MenuItemDeleteEvent = forwardRef(({ t, event, box }, ref) => {
 
 MenuItemDeleteEvent.propTypes = {
   event: PropTypes.shape(EventSchema.propTypes).isRequired,
-  box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
+  boxId: PropTypes.string.isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,
 };

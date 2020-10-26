@@ -8,10 +8,6 @@ export default (nodeRef, callback, shouldObserve, { root = null, rootMargin = '0
   const observer = useRef(null);
 
   useEffect(() => {
-    if (observer.current) {
-      observer.current.disconnect();
-    }
-
     observer.current = ('IntersectionObserver' in window) ? new window.IntersectionObserver(
       ([firstEntry]) => {
         if (isFunction(callback)) {

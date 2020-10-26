@@ -12,6 +12,8 @@ import crypto from '@misakey/crypto/store/reducers';
 import { wrapReducerWithResetOnSignOut } from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
 import userBoxesPagination from 'store/reducers/userBoxes/pagination';
 import boxEventsPagination from 'store/reducers/userBoxes/pagination/events';
+import boxFileEventsPagination from 'store/reducers/userBoxes/pagination/events/files';
+import savedFilesPagination from 'store/reducers/savedFiles/pagination';
 
 import devicePreferences from 'store/reducers/devicePreferences';
 import box from 'store/reducers/box';
@@ -26,12 +28,13 @@ const appReducer = combineReducers({
   crypto,
   ...userBoxesPagination,
   ...boxEventsPagination,
+  ...boxFileEventsPagination,
+  ...savedFilesPagination,
   entities: wrapReducerWithResetOnSignOut({
     // New app
     boxes: {},
     events: {},
     savedFiles: {},
-    savedFilesByIdentity: {},
   }, {}, makeEntities),
 });
 

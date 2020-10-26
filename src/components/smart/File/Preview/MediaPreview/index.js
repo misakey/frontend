@@ -2,10 +2,10 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import Box from '@material-ui/core/Box';
-import { useFileContext } from 'components/smart/File/Context';
 import isNil from '@misakey/helpers/isNil';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import BoxFile from 'components/dumb/Box/File';
+import FILE_PROP_TYPES from 'constants/file/proptypes';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -21,17 +21,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-function MediaPreview({ fallbackView, maxHeight }) {
+function MediaPreview({ file, fallbackView, maxHeight }) {
   const classes = useStyles({ maxHeight });
 
   const {
     blobUrl,
     isLoading,
     error,
-    fileType,
-    fileSize,
-    fileName,
-  } = useFileContext();
+    type,
+    size,
+    name,
+  } = useMemo(() => file, [file]);
 
   const hasError = useMemo(() => !isNil(error), [error]);
 
@@ -41,13 +41,13 @@ function MediaPreview({ fallbackView, maxHeight }) {
   );
 
   const nilFileType = useMemo(
-    () => isNil(fileType),
-    [fileType],
+    () => isNil(type),
+    [type],
   );
 
   const isAudio = useMemo(
-    () => !nilFileType && fileType.startsWith('audio'),
-    [nilFileType, fileType],
+    () => !nilFileType && type.startsWith('audio'),
+    [nilFileType, type],
   );
 
   const preview = useMemo(() => {
@@ -56,9 +56,9 @@ function MediaPreview({ fallbackView, maxHeight }) {
         <Box className={classes.container}>
           {fallbackView || (
             <BoxFile
-              fileSize={fileSize}
-              fileName={fileName}
-              fileType={fileType}
+              fileSize={size}
+              fileName={name}
+              fileType={type}
               isBroken={!isNil(error)}
               isLarge
               typographyProps={{ variant: 'body1' }}
@@ -66,7 +66,7 @@ function MediaPreview({ fallbackView, maxHeight }) {
           )}
           {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
           <audio controls className={classes.media}>
-            <source src={blobUrl} type={fileType} />
+            <source src={blobUrl} type={type} />
           </audio>
         </Box>
       );
@@ -75,11 +75,11 @@ function MediaPreview({ fallbackView, maxHeight }) {
     return (
       // eslint-disable-next-line jsx-a11y/media-has-caption
       <video controls className={classes.media}>
-        <source src={blobUrl} type={fileType} />
+        <source src={blobUrl} type={type} />
         {fallbackView}
       </video>
     );
-  }, [blobUrl, classes, error, fallbackView, fileName, fileSize, fileType, isAudio]);
+  }, [blobUrl, classes.container, classes.media, error, fallbackView, isAudio, name, size, type]);
 
 
   return (
@@ -90,6 +90,7 @@ function MediaPreview({ fallbackView, maxHeight }) {
 }
 
 MediaPreview.propTypes = {
+  file: PropTypes.shape(FILE_PROP_TYPES).isRequired,
   fallbackView: PropTypes.node,
   maxHeight: PropTypes.string,
 };

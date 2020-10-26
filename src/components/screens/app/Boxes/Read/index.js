@@ -11,7 +11,9 @@ import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useHandleBoxKeyShare from '@misakey/crypto/hooks/useHandleBoxKeyShare';
 
-import PaginateEventsByBoxContextProvider from 'components/smart/Context/PaginateEventsByBox';
+import BoxReadContextProvider from 'components/smart/Context/Boxes/BoxRead';
+import InputBoxesUploadContext from 'components/smart/Input/Boxes/Upload/Context';
+import FilePreviewContextProvider from 'components/smart/File/Preview/Context';
 import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 import useFetchBoxDetails from 'hooks/useFetchBoxDetails';
@@ -126,52 +128,58 @@ function BoxRead({
   }
 
   return (
-    <PaginateEventsByBoxContextProvider boxId={boxId}>
-      <Switch>
-        <Route
-          path={routes.boxes.read.details}
-          render={() => (
-            <BoxDetails
-              box={box}
-              isDrawerOpen={isDrawerOpen}
-              belongsToCurrentUser={belongsToCurrentUser}
+    <BoxReadContextProvider box={box}>
+      <FilePreviewContextProvider revokeOnChange={box.id}>
+        <Switch>
+          <Route
+            path={routes.boxes.read.details}
+            render={() => (
+              <BoxDetails
+                box={box}
+                isDrawerOpen={isDrawerOpen}
+                belongsToCurrentUser={belongsToCurrentUser}
+              />
+            )}
+          />
+          <Route
+            path={routes.boxes.read.sharing}
+            render={(routerProps) => (
+              <BoxSharing
+                box={box}
+                isDrawerOpen={isDrawerOpen}
+                {...routerProps}
+              />
+            )}
+          />
+          <InputBoxesUploadContext box={box}>
+            <Route
+              path={routes.boxes.read.files}
+              render={() => (
+                <BoxFiles
+                  belongsToCurrentUser={belongsToCurrentUser}
+                  box={box}
+                  toggleDrawer={toggleDrawer}
+                  isDrawerOpen={isDrawerOpen}
+                />
+              )}
             />
-          )}
-        />
-        <Route
-          path={routes.boxes.read.sharing}
-          render={(routerProps) => (
-            <BoxSharing
-              box={box}
-              isDrawerOpen={isDrawerOpen}
-              {...routerProps}
+            <Route
+              exact
+              path={match.path}
+              render={() => (
+                <BoxEvents
+                  box={box}
+                  toggleDrawer={toggleDrawer}
+                  isDrawerOpen={isDrawerOpen}
+                  drawerWidth={drawerWidth}
+                  belongsToCurrentUser={belongsToCurrentUser}
+                />
+              )}
             />
-          )}
-        />
-        <Route
-          path={routes.boxes.read.files}
-          render={() => (
-            <BoxFiles
-              box={box}
-              isDrawerOpen={isDrawerOpen}
-            />
-          )}
-        />
-        <Route
-          exact
-          path={match.path}
-          render={() => (
-            <BoxEvents
-              box={box}
-              toggleDrawer={toggleDrawer}
-              isDrawerOpen={isDrawerOpen}
-              drawerWidth={drawerWidth}
-              belongsToCurrentUser={belongsToCurrentUser}
-            />
-          )}
-        />
-      </Switch>
-    </PaginateEventsByBoxContextProvider>
+          </InputBoxesUploadContext>
+        </Switch>
+      </FilePreviewContextProvider>
+    </BoxReadContextProvider>
   );
 }
 

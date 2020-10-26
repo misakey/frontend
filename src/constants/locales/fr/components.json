@@ -91,6 +91,9 @@
       "noFile": "ne peut pas être téléchargé"
     }
   },
+  "fileListItem": {
+    "addedBy": "Ajouté par <1>vous</1> {{date}}"
+  },
   "saveInVault": {
     "error": {
       "default": "Une erreur s'est produite lors de la sauvegarde du fichier\u00a0!",

@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import routes from 'routes';
 
 import { CLOSED } from 'constants/app/boxes/statuses';
-import routes from 'routes';
 import BoxesSchema from 'store/schemas/Boxes';
 
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -14,7 +15,6 @@ import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathK
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import { Link } from 'react-router-dom';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 // import BoxAvatar from 'components/dumb/Avatar/Box';
@@ -23,8 +23,10 @@ import Skeleton from '@material-ui/lab/Skeleton';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import DeleteBoxDialogButton from './DeleteBoxDialogButton';
+import Box from '@material-ui/core/Box';
 import ShareBoxDialogButton from './ShareBoxDialogButton';
+import DeleteBoxDialogButton from './DeleteBoxDialogButton';
+import AppBarMenuTabs from './Tabs';
 
 // CONSTANTS
 const SKELETON_WIDTH = 100;
@@ -145,40 +147,41 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
     [belongsToCurrentUser, isClosed],
   );
 
+  const displayTabs = useMemo(
+    () => !isClosed || belongsToCurrentUser,
+    [belongsToCurrentUser, isClosed],
+  );
 
   return (
-    <ListItem
-      button
-      ContainerProps={{ className: classes.listItemContainer }}
-      ContainerComponent="div"
-      component={Link}
-      to={routeDetails}
-      overflow="hidden"
-      disabled={disabled}
-      {...omitTranslationProps(props)}
-      classes={{ root: classes.listItemRoot }}
-    >
-      <ListItemText
-        disableTypography
-        primary={(
-          <Typography className={classes.typographyFlex} {...primaryTypographyProps}>
-            {title}
-            {!disabled && <ExpandMoreIcon />}
-          </Typography>
-        )}
-        secondary={secondary}
-      />
-      <ListItemSecondaryAction>
-        {canShare && <ShareBoxDialogButton box={box} />}
-        {canDeleteBox && <DeleteBoxDialogButton box={box} />}
-      </ListItemSecondaryAction>
-      {/* <BoxAvatar
-        aria-label={t('boxes:read.details.open')}
-        aria-controls="menu-appbar"
-        src={avatarUrl}
-        title={title || ''}
-      /> */}
-    </ListItem>
+    <Box display="flex" flexDirection="column" width="100%">
+      <ListItem
+        button
+        ContainerProps={{ className: classes.listItemContainer }}
+        ContainerComponent="div"
+        component={Link}
+        to={routeDetails}
+        overflow="hidden"
+        disabled={disabled}
+        {...omitTranslationProps(props)}
+        classes={{ root: classes.listItemRoot }}
+      >
+        <ListItemText
+          disableTypography
+          primary={(
+            <Typography className={classes.typographyFlex} {...primaryTypographyProps}>
+              {title}
+              {!disabled && <ExpandMoreIcon />}
+            </Typography>
+          )}
+          secondary={secondary}
+        />
+        <ListItemSecondaryAction>
+          {canShare && <ShareBoxDialogButton box={box} />}
+          {canDeleteBox && <DeleteBoxDialogButton box={box} />}
+        </ListItemSecondaryAction>
+      </ListItem>
+      {displayTabs && <AppBarMenuTabs boxId={id} />}
+    </Box>
   );
 };
 

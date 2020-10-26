@@ -81,6 +81,9 @@
       "noFile": "cannot be downloaded"
     }
   },
+  "fileListItem": {
+    "addedBy": "Added by <1>you</1> {{date}}"
+  },
   "saveInVault": {
     "error": {
       "default": "An error occurred while saving the file!",

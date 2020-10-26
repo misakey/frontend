@@ -2,7 +2,13 @@ import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
-export const getSavedFiles = (queryParams = {}) => API
+export const countSavedFilesBuilder = (queryParams = {}) => API
+  .use(API.endpoints.user.vault.files.count)
+  .build(null, null, objectToSnakeCase(queryParams))
+  .send()
+  .then((response) => parseInt(response.headers.get('X-Total-Count'), 10));
+
+export const getSavedFilesBuilder = (queryParams = {}) => API
   .use(API.endpoints.user.vault.files.read)
   .build(null, null, objectToSnakeCase(queryParams))
   .send()
@@ -14,7 +20,7 @@ export const createSavedFile = (payload) => API
   .send()
   .then(objectToCamelCase);
 
-export const deleteSavedFile = (id) => API
+export const deleteSavedFileBuilder = (id) => API
   .use(API.endpoints.user.vault.files.delete)
   .build({ id })
   .send();

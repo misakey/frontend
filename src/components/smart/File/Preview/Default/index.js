@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 
 import Box from '@material-ui/core/Box';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useFileContext } from 'components/smart/File/Context';
 import isNil from '@misakey/helpers/isNil';
 import Grow from '@material-ui/core/Grow';
 import { THEMES } from '@misakey/ui/theme';
+import FILE_PROP_TYPES from 'constants/file/proptypes';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-function DefaultPreview({ fallbackView }) {
+function DefaultPreview({ file, fallbackView }) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const classes = useStyles({ isLoaded });
@@ -38,13 +38,7 @@ function DefaultPreview({ fallbackView }) {
     setIsLoaded(true);
   }, [setIsLoaded]);
 
-  const {
-    blobUrl,
-    isLoading: isFetching,
-    error,
-    fileName,
-    fileType,
-  } = useFileContext();
+  const { blobUrl, isLoading: isFetching, error, name, type } = useMemo(() => file, [file]);
 
   const hasError = useMemo(() => !isNil(error), [error]);
 
@@ -63,10 +57,10 @@ function DefaultPreview({ fallbackView }) {
       {displayPreview && (
         <Grow in={isLoaded} timeout={400}>
           <embed
-            title={fileName}
+            title={name}
             className={clsx(classes.embed, classes.embedSize)}
             src={blobUrl}
-            type={fileType}
+            type={type}
             onLoad={onLoad}
           />
         </Grow>
@@ -79,6 +73,7 @@ function DefaultPreview({ fallbackView }) {
 
 DefaultPreview.propTypes = {
   fallbackView: PropTypes.node,
+  file: PropTypes.shape(FILE_PROP_TYPES).isRequired,
 };
 
 DefaultPreview.defaultProps = {

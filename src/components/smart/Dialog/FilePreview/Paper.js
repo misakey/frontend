@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import isFunction from '@misakey/helpers/isFunction';
-import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -20,7 +19,6 @@ import Typography from '@material-ui/core/Typography';
 import AddToVaultIcon from '@material-ui/icons/LibraryAdd';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import DownloadIcon from '@material-ui/icons/GetApp';
-import { useFileContext } from 'components/smart/File/Context';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -38,10 +36,11 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const IconButtonWithDialogPassword = withDialogPassword(IconButtonAppBar);
 
-const FilePreviewPaper = forwardRef(({ onSave, onClose, t, ...props }, ref) => {
+const FilePreviewPaper = forwardRef((
+  { fileName, disabled, onSave, onDownload, onClose, t, ...props },
+  ref,
+) => {
   const classes = useStyles();
-
-  const { error, file, fileName, onDownloadFile } = useFileContext();
 
   return (
     <>
@@ -65,7 +64,7 @@ const FilePreviewPaper = forwardRef(({ onSave, onClose, t, ...props }, ref) => {
               className={classes.icons}
               aria-label={t('common:addToVault')}
               edge="end"
-              disabled={isNil(file)}
+              disabled={disabled}
               onClick={onSave}
             >
               <Tooltip title={t('common:addToVault')}>
@@ -79,13 +78,12 @@ const FilePreviewPaper = forwardRef(({ onSave, onClose, t, ...props }, ref) => {
               className={classes.icons}
               aria-label={t('common:download')}
               edge="end"
-              disabled={!isNil(error)}
-              onClick={onDownloadFile}
+              disabled={disabled}
+              onClick={onDownload}
             >
               <Tooltip title={t('common:download')}>
                 <DownloadIcon />
               </Tooltip>
-
             </IconButtonAppBar>
 
             {/* <IconButtonAppBar
@@ -109,10 +107,19 @@ const FilePreviewPaper = forwardRef(({ onSave, onClose, t, ...props }, ref) => {
 });
 
 FilePreviewPaper.propTypes = {
-  onSave: PropTypes.func.isRequired,
+  onDownload: PropTypes.func.isRequired,
+  onSave: PropTypes.func,
   onClose: PropTypes.func.isRequired,
+  fileName: PropTypes.string,
+  disabled: PropTypes.bool,
   // withTranslation
   t: PropTypes.func.isRequired,
+};
+
+FilePreviewPaper.defaultProps = {
+  fileName: 'Unknown',
+  disabled: false,
+  onSave: null,
 };
 
 export default withTranslation('common')(FilePreviewPaper);

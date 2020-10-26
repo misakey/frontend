@@ -18,7 +18,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 // @FIXME: js-common
-function Empty({ t, text, title, ...rest }) {
+function Empty({ t, text, title, children, ...rest }) {
   const classes = useStyles();
 
   return (
@@ -36,6 +36,7 @@ function Empty({ t, text, title, ...rest }) {
       <Typography variant="subtitle1" color="textSecondary" align="center">
         {text || t('components:list.empty.text')}
       </Typography>
+      {children}
     </Box>
   );
 }
@@ -44,11 +45,13 @@ Empty.propTypes = {
   t: PropTypes.func.isRequired,
   text: PropTypes.string,
   title: PropTypes.string,
+  children: PropTypes.oneOfType([PropTypes.element, PropTypes.node]),
 };
 
 Empty.defaultProps = {
   text: null,
   title: null,
+  children: null,
 };
 
 export default withTranslation('components')(Empty);

@@ -24,7 +24,6 @@ import isNil from '@misakey/helpers/isNil';
 import BoxesSchema from 'store/schemas/Boxes';
 
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
-import InputBoxesUploadContext from 'components/smart/Input/Boxes/Upload/Context';
 import BoxEventEditContext from 'components/smart/Box/Event/Edit/Context';
 import PaginatedListBoxEvents from 'components/smart/PaginatedList/BoxEvents';
 import BoxEventsFooter from 'components/screens/app/Boxes/Read/Events/Footer';
@@ -92,59 +91,57 @@ function BoxEvents({
   useFetchEffect(onResetBoxEventCount, { shouldFetch });
 
   return (
-    <InputBoxesUploadContext box={box}>
-      <BoxEventEditContext>
-        <ElevationScroll target={contentRef}>
-          <AppBarDrawer
-            isDrawerOpen={isDrawerOpen}
-            toolbarProps={{ px: 0 }}
-            offsetHeight={headerHeight}
-          >
-            <Box ref={headerRef} display="flex" flexDirection="column" width="100%" minHeight="inherit">
-              <Box display="flex">
-                {!isDrawerOpen && (
-                  <Box display="flex" alignItems="center" pl={2} pr={1}>
-                    <IconButtonAppBar
-                      aria-label={t('common:openAccountDrawer')}
-                      edge="start"
-                      onClick={toggleDrawer}
-                    >
-                      <ArrowBack />
-                    </IconButtonAppBar>
-                  </Box>
-                )}
-                <BoxEventsAppBar box={box} belongsToCurrentUser={belongsToCurrentUser} />
-              </Box>
-              {isNil(accountId) && (
-                <Alert
-                  severity="warning"
-                  action={(
-                    <ButtonWithDialogPassword
-                      standing={BUTTON_STANDINGS.TEXT}
-                      text={t('boxes:closedVault.create')}
-                    />
-                  )}
-                >
-                  {t('boxes:closedVault.saveForLater')}
-                </Alert>
+    <BoxEventEditContext>
+      <ElevationScroll target={contentRef}>
+        <AppBarDrawer
+          isDrawerOpen={isDrawerOpen}
+          toolbarProps={{ px: 0 }}
+          offsetHeight={headerHeight}
+        >
+          <Box ref={headerRef} display="flex" flexDirection="column" width="100%" minHeight="inherit">
+            <Box display="flex">
+              {!isDrawerOpen && (
+                <Box display="flex" alignItems="center" pl={2} pr={1}>
+                  <IconButtonAppBar
+                    aria-label={t('common:openAccountDrawer')}
+                    edge="start"
+                    onClick={toggleDrawer}
+                  >
+                    <ArrowBack />
+                  </IconButtonAppBar>
+                </Box>
               )}
+              <BoxEventsAppBar box={box} belongsToCurrentUser={belongsToCurrentUser} />
             </Box>
-          </AppBarDrawer>
-        </ElevationScroll>
-        <Box className={classes.content}>
-          <PaginatedListBoxEvents
-            key={id}
-            ref={(ref) => setContentRef(ref)}
-            box={box}
-          />
-          <BoxEventsFooter
-            box={box}
-            drawerWidth={drawerWidth}
-            isDrawerOpen={isDrawerOpen}
-          />
-        </Box>
-      </BoxEventEditContext>
-    </InputBoxesUploadContext>
+            {isNil(accountId) && (
+              <Alert
+                severity="warning"
+                action={(
+                  <ButtonWithDialogPassword
+                    standing={BUTTON_STANDINGS.TEXT}
+                    text={t('boxes:closedVault.create')}
+                  />
+                )}
+              >
+                {t('boxes:closedVault.saveForLater')}
+              </Alert>
+            )}
+          </Box>
+        </AppBarDrawer>
+      </ElevationScroll>
+      <Box className={classes.content}>
+        <PaginatedListBoxEvents
+          key={id}
+          ref={(ref) => setContentRef(ref)}
+          box={box}
+        />
+        <BoxEventsFooter
+          box={box}
+          drawerWidth={drawerWidth}
+          isDrawerOpen={isDrawerOpen}
+        />
+      </Box>
+    </BoxEventEditContext>
   );
 }
 

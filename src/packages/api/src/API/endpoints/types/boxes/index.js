@@ -72,6 +72,18 @@ export default {
       path: '/boxes/:id/events',
       auth: true,
     },
+    files: {
+      find: {
+        method: 'GET',
+        path: '/boxes/:id/files',
+        auth: true,
+      },
+      count: {
+        method: 'HEAD',
+        path: '/boxes/:id/files',
+        auth: true,
+      },
+    },
   },
   members: {
     find: {

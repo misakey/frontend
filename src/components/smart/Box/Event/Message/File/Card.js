@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, useRef } from 'react';
+import React, { useMemo, useCallback, useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
@@ -15,7 +15,6 @@ import eventStopPropagation from '@misakey/helpers/event/stopPropagation';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
 
-import DialogFilePreview from 'components/smart/Dialog/FilePreview';
 import EventCard from 'components/dumb/Card/Event';
 import withContextMenu from '@misakey/ui/Menu/ContextMenu/with';
 import MenuItemEventDelete from 'components/smart/MenuItem/Event/Delete';
@@ -23,12 +22,11 @@ import MenuItemAddFileToVault from 'components/smart/MenuItem/Event/AddToVault';
 import MenuItemEventDownload from 'components/smart/MenuItem/Event/Download';
 import execWithRequestIdleCallback from '@misakey/helpers/execWithRequestIdleCallback';
 import ButtonBase from '@material-ui/core/ButtonBase';
-import useSaveFileInVault from 'hooks/useSaveFileInVault';
 
-import FileContextProvider, { useFileContext } from 'components/smart/File/Context';
 import FilePreview from 'components/smart/File/Preview';
 import useIntersectionObserver from '@misakey/hooks/useIntersectionObserver';
 import BoxFile from 'components/dumb/Box/File';
+import { useFilePreviewContext } from 'components/smart/File/Preview/Context';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -64,12 +62,11 @@ const FileCardEvent = ({
   ...props
 }) => {
   const classes = useStyles();
-  const [isFilePreviewOpened, setIsFilePreviewOpened] = useState(false);
 
   const ref = useRef();
 
   const { serverEventCreatedAt } = useMemo(() => event, [event]);
-  const { lifecycle } = useMemo(() => box, [box]);
+  const { lifecycle, id: boxId } = useMemo(() => box, [box]);
 
   const isClosed = useMemo(
     () => lifecycle === CLOSED,
@@ -91,108 +88,138 @@ const FileCardEvent = ({
     [fileType],
   );
 
-  const [shouldObserve, setShouldObserve] = useState(isTypeAllowedForPreview);
+  const {
+    setFileData,
+    getFileData,
+    getDecryptedFile,
+    onDownloadFile,
+    onOpenFilePreview,
+    onSaveFileInVault,
+  } = useFilePreviewContext();
 
-  const onSaveInVault = useSaveFileInVault(
-    { encryption, fileSize, fileName, fileType }, encryptedFileId,
+  const file = getFileData(encryptedFileId);
+  const { isLoading, error, name } = useMemo(() => file, [file]);
+
+  const [shouldObserve, setShouldObserve] = useState(false);
+
+  const onDownloadInBrowser = useCallback(
+    () => onDownloadFile(encryptedFileId),
+    [encryptedFileId, onDownloadFile],
   );
 
-  const openFilePreview = useCallback(
-    () => {
-      setIsFilePreviewOpened(true);
-    },
-    [],
+  const onSave = useCallback(
+    () => onSaveFileInVault(encryptedFileId),
+    [encryptedFileId, onSaveFileInVault],
   );
 
-  const onCloseFilePreview = useCallback(
-    () => {
-      setIsFilePreviewOpened(false);
-    },
-    [],
+  const hasWriteAccess = useMemo(
+    () => !isClosed && (isFromCurrentUser || boxBelongsToCurrentUser),
+    [boxBelongsToCurrentUser, isClosed, isFromCurrentUser],
   );
 
   const items = useMemo(
     () => {
-      if (!isClosed && (isFromCurrentUser || boxBelongsToCurrentUser)) {
+      const disabled = !isNil(error);
+      if (hasWriteAccess) {
         return [
-          <MenuItemEventDownload key="download" />,
-          <MenuItemAddFileToVault key="vault" onSave={onSaveInVault} />,
-          <MenuItemEventDelete event={event} box={box} key="delete" />,
+          <MenuItemEventDownload key="download" onDownload={onDownloadInBrowser} disabled={disabled} />,
+          <MenuItemAddFileToVault key="vault" onSave={onSave} disabled={disabled} />,
+          <MenuItemEventDelete event={event} boxId={boxId} key="delete" />,
         ];
       }
       return [
-        <MenuItemEventDownload key="download" />,
-        <MenuItemAddFileToVault key="vault" onSave={onSaveInVault} />,
+        <MenuItemEventDownload key="download" onDownload={onDownloadInBrowser} disabled={disabled} />,
+        <MenuItemAddFileToVault key="vault" onSave={onSave} disabled={disabled} />,
       ];
     },
-    [isClosed, isFromCurrentUser, boxBelongsToCurrentUser, onSaveInVault, event, box],
+    [error, hasWriteAccess, onDownloadInBrowser, onSave, event, boxId],
   );
 
-  const { getDecryptedFile, error, isLoading } = useFileContext();
+  const openFilePreview = useCallback(
+    () => {
+      onOpenFilePreview(encryptedFileId);
+    },
+    [encryptedFileId, onOpenFilePreview],
+  );
+
+  useEffect(
+    () => {
+      if (isEmpty(file)) {
+        const fileData = {
+          name: fileName,
+          type: fileType,
+          size: fileSize,
+          createdAt: serverEventCreatedAt,
+          sender,
+          encryption,
+        };
+        setFileData(encryptedFileId, fileData);
+        setShouldObserve(isTypeAllowedForPreview);
+      }
+    },
+    [decryptedContent, encryptedFileId,
+      encryption, error, file, fileName, fileSize, fileType, getFileData,
+      isTypeAllowedForPreview, name, sender,
+      serverEventCreatedAt, setFileData],
+  );
 
   const onClick = useMemo(
     () => {
-      if (isEmpty(decryptedContent) || !isNil(error)) {
+      if (isEmpty(file) || !isNil(error)) {
         return null;
       }
       return openFilePreview;
     },
-    [decryptedContent, error, openFilePreview],
+    [error, file, openFilePreview],
   );
 
   const onCardAppeared = useCallback(
     (entry) => {
       if (entry.isIntersecting === true) {
         // download and decrypt are done in background
-        execWithRequestIdleCallback(getDecryptedFile);
+        execWithRequestIdleCallback(() => getDecryptedFile(encryptedFileId));
         setShouldObserve(false);
       }
     },
-    [getDecryptedFile],
+    [encryptedFileId, getDecryptedFile],
   );
 
   useIntersectionObserver(ref, onCardAppeared, shouldObserve);
 
   return (
-    <>
-      <EventCardWithContextMenu
-        author={sender}
-        date={date}
-        isFromCurrentUser={isFromCurrentUser}
-        text={text}
-        ref={ref}
-        items={items}
-        disableMaxWidth={isTypeAllowedForPreview}
-        {...omitTranslationProps(props)}
+    <EventCardWithContextMenu
+      ref={ref}
+      author={sender}
+      date={date}
+      isFromCurrentUser={isFromCurrentUser}
+      text={text}
+      items={items}
+      disableMaxWidth={isTypeAllowedForPreview}
+      {...omitTranslationProps(props)}
+    >
+      <ButtonBase
+        className={clsx(classes.filePreview)}
+        onClick={onClick}
+        onTouchStart={eventStopPropagation}
+        disabled={isNil(onClick)}
       >
-        <ButtonBase
-          className={clsx(classes.filePreview)}
-          onClick={onClick}
-          onTouchStart={eventStopPropagation}
-          disabled={isNil(onClick)}
-        >
-          <FilePreview
-            allowedFileTypePreview={ALLOWED_FILE_TYPES_TO_PREVIEW}
-            height={200}
-            fallbackView={(
-              <BoxFile
-                fileSize={fileSize}
-                fileName={fileName}
-                fileType={fileType}
-                isLoading={isLoading}
-                isBroken={!isNil(error)}
-                className={classes.previewFallback}
-              />
-            )}
-          />
-        </ButtonBase>
-      </EventCardWithContextMenu>
-      <DialogFilePreview
-        open={isFilePreviewOpened}
-        onClose={onCloseFilePreview}
-        onSave={onSaveInVault}
-      />
-    </>
+        <FilePreview
+          file={file}
+          allowedFileTypePreview={ALLOWED_FILE_TYPES_TO_PREVIEW}
+          height={200}
+          fallbackView={(
+            <BoxFile
+              fileSize={fileSize}
+              fileName={fileName}
+              fileType={fileType}
+              isLoading={isLoading}
+              isBroken={!isNil(error)}
+              className={classes.previewFallback}
+            />
+          )}
+        />
+      </ButtonBase>
+    </EventCardWithContextMenu>
   );
 };
 
@@ -217,26 +244,4 @@ FileCardEvent.defaultProps = {
   decryptedContent: {},
 };
 
-const FileCardEventWithContext = ({ encryptedFileId, decryptedContent, ...props }) => (
-  <FileContextProvider
-    decryptedContent={decryptedContent}
-    encryptedFileId={encryptedFileId}
-  >
-    <FileCardEvent
-      decryptedContent={decryptedContent}
-      encryptedFileId={encryptedFileId}
-      {...props}
-    />
-  </FileContextProvider>
-);
-
-FileCardEventWithContext.propTypes = {
-  decryptedContent: PropTypes.object,
-  encryptedFileId: PropTypes.string.isRequired,
-};
-
-FileCardEventWithContext.defaultProps = {
-  decryptedContent: {},
-};
-
-export default FileCardEventWithContext;
+export default FileCardEvent;

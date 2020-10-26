@@ -76,7 +76,7 @@ const WindowedListAutoSized = forwardRef(({
 
 WindowedListAutoSized.propTypes = {
   component: PropTypes.elementType,
-  itemSize: PropTypes.number.isRequired,
+  itemSize: PropTypes.number,
   innerElementTypeHeight: PropTypes.number,
   itemCount: PropTypes.number.isRequired,
   maxHeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -86,6 +86,7 @@ WindowedListAutoSized.defaultProps = {
   component: WindowedList,
   innerElementTypeHeight: 0,
   maxHeight: '100vh',
+  itemSize: undefined,
 };
 
 export default WindowedListAutoSized;
