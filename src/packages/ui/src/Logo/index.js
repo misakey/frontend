@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const Logo = ({ short, component: Component, ...rest }) => {
   const src = useMemo(
     () => (short
-      ? '/ico/favicon-48x48.png'
+      ? '/img/logo.png'
       : '/img/misakey-rose.svg'),
     [short],
   );

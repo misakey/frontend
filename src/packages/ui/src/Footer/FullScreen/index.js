@@ -16,6 +16,7 @@ const useStyles = makeStyles(() => ({
   footer: {
     borderLeft: 'none',
     borderRight: 'none',
+    alignSelf: 'stretch',
   },
 }));
 

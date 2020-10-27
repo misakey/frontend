@@ -93,10 +93,10 @@
   },
   "signinRedirect": {
     "documentTitle": "Authentication",
-    "resource": "“{{resourceName}}” requires authentication",
-    "user": "Your authenticated session has expired",
-    "default": "The application requires authentication",
-    "subtitle": "Confirm your identity to continue"
+    "user": {
+      "title": "Your authenticated session has expired",
+      "subtitle": "Confirm your identity to continue"
+    }
   },
   "cardEvent": {
     "edited": "(edited)\u00a0{{date}}"

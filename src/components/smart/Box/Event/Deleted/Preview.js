@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import SenderSchema from 'store/schemas/Boxes/Sender';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
-import { senderMatchesIdentifierId } from 'helpers/sender';
+import { senderMatchesIdentityId } from 'helpers/sender';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
@@ -13,15 +13,15 @@ import { useSelector } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 
 // CONSTANTS
-const { identifierId: IDENTIFIER_ID_SELECTOR } = authSelectors;
+const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
 
 // COMPONENTS
 const BoxEventDeletedPreview = ({ t, byIdentity, ...props }) => {
-  const identifierId = useSelector(IDENTIFIER_ID_SELECTOR);
+  const identityId = useSelector(IDENTITY_ID_SELECTOR);
 
   const deletedByMe = useMemo(
-    () => senderMatchesIdentifierId(byIdentity, identifierId),
-    [byIdentity, identifierId],
+    () => senderMatchesIdentityId(byIdentity, identityId),
+    [byIdentity, identityId],
   );
 
   const text = useMemo(

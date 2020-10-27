@@ -17,14 +17,12 @@ function ShareBoxDialogButton({ box, t }) {
   const to = useGeneratePathKeepingSearchAndHash(routes.boxes.read.sharing, { id });
 
   return (
-    <>
-      <Button
-        component={Link}
-        to={to}
-        standing={BUTTON_STANDINGS.MAIN}
-        text={t('common:share')}
-      />
-    </>
+    <Button
+      component={Link}
+      to={to}
+      standing={BUTTON_STANDINGS.MAIN}
+      text={t('common:share')}
+    />
   );
 }
 

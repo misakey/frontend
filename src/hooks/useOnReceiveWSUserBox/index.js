@@ -22,7 +22,6 @@ import useModifier from '@misakey/hooks/useModifier';
 // CONSTANTS
 const {
   identityId: IDENTITY_ID_SELECTOR,
-  identifierId: IDENTIFIER_ID_SELECTOR,
 } = authSelectors;
 
 // HELPERS
@@ -62,7 +61,6 @@ export default (activeStatus, search) => {
   );
 
   const identityId = useSelector(IDENTITY_ID_SELECTOR);
-  const identifierId = useSelector(IDENTIFIER_ID_SELECTOR);
 
   const onDeleteSuccess = useCallback(
     (box) => {
@@ -119,13 +117,13 @@ export default (activeStatus, search) => {
         if (CHANGE_EVENT_TYPES.includes(eventType) && !isNil(referrerId)) {
           return Promise.resolve(dispatch(receiveWSEditEvent(object)));
         }
-        if (isMeLeaveEvent(object, identifierId)) {
+        if (isMeLeaveEvent(object, identityId)) {
           return onRemoveBox(boxId).then(() => enqueueSnackbar(leaveSuccess, { variant: 'success' }));
         }
-        if (isMeKickEvent(object, identifierId)) {
+        if (isMeKickEvent(object, identityId)) {
           return onRemoveBox(boxId).then((box) => onKickSuccess(box));
         }
-        if (isMeJoinEvent(object, identifierId)) {
+        if (isMeJoinEvent(object, identityId)) {
           return batch(() => {
             dispatch(updateEntities(
               [{ id: boxId, changes: { hasAccess: true, isMember: true } }],
@@ -134,13 +132,13 @@ export default (activeStatus, search) => {
             dispatch(addBoxEvent(boxId, object));
           });
         }
-        const isMyEvent = isMeEvent(object, identifierId);
+        const isMyEvent = isMeEvent(object, identityId);
         return Promise.resolve(dispatch(addBoxEvent(boxId, object, isMyEvent)));
       }
       log(`Receive unknown WS type: ${type}`);
       return Promise.resolve();
     },
-    [identifierId, leaveSuccess, onRemoveBox, onDeleteSuccess,
+    [identityId, leaveSuccess, onRemoveBox, onDeleteSuccess,
       dispatch, enqueueSnackbar, onKickSuccess],
   );
 };

@@ -103,10 +103,10 @@
   },
   "signinRedirect": {
     "documentTitle": "Authentification",
-    "resource": "«\u00a0{{resourceName}}\u00a0» nécessite une authentification",
-    "user": "Votre session authentifiée est expirée",
-    "default": "L'application nécessite une authentification",
-    "subtitle": "Confirmez votre identité pour y accéder"
+    "user": {
+      "title": "Votre session authentifiée est expirée",
+      "subtitle": "Confirmez votre identité pour continuer"
+    }
   },
   "cardEvent": {
     "edited": "(modifié)\u00a0{{date}}"
@@ -116,7 +116,7 @@
   },
   "createBoxSuggestions": {
     "createBox": {
-      "text": "Créer votre propre espace privée pour partager vos informations en toute sécurité",
+      "text": "Créer votre propre espace privé pour partager vos informations en toute sécurité",
       "button": "Créer un espace"
     },
     "createAccount": {

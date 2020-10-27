@@ -7,6 +7,7 @@
   "back": "Précedent",
   "cancel": "Annuler",
   "close": "Fermer",
+  "contact": "Contacter",
   "copyInvitationLink": "Copiez et envoyez ce lien aux personnes que vous voulez inviter dans l'espace privé",
   "copy": "Copier",
   "copied": "Copié dans le presse papier!",
@@ -31,6 +32,8 @@
   "or": "ou",
   "previous": "Précédent",
   "print": "Imprimer",
+  "private": "Privé",
+  "public": "Public",
   "publish": "Publier",
   "redirectedToLinkedDomain": "J'ai été redirigé vers {{mainDomainTo}} car {{mainDomainFrom}} est un domaine lié à {{mainDomainTo}}",
   "refuse": "Refuser",
@@ -55,6 +58,7 @@
   "signedIn": "Connecté\u00a0!",
   "skip": "Passer",
   "submit": "Envoyer",
+  "success": "Mise à jour réussie",
   "undecryptable": "Indéchiffrable",
   "encrypted": "Contenu chiffré",
   "update": "Éditer",
@@ -140,5 +144,16 @@
     "stop": "Echec de la requête au bout de {{count}} tentative",
     "stop_plural": "Echec de la requête au bout de {{count}} tentatives",
     "storage": "Merci d'autoriser les cookies sur cette application"
+  },
+  "connect": {
+    "misakey": {
+      "title": "Accès à «\u00a0Misakey app\u00a0»",
+      "subtitle": "Misakey requiert l'accès aux données ci-dessous"
+    },
+    "title": "Accéder à «\u00a0{{resourceName}}\u00a0»",
+    "subtitle": "<1>{{creatorName}}</1> requiert l'accès aux données ci-dessous",
+    "authorize": "Autorisez-vous <1>{{creatorName}}</1> à accéder aux informations ci-dessus\u00a0?",
+    "email": "Identifiant confirmé",
+    "action": "Accéder"
   }
 }

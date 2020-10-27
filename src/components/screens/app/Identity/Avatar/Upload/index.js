@@ -14,7 +14,7 @@ import Subtitle from '@misakey/ui/Typography/Subtitle';
 import ScreenAction from 'components/dumb/Screen/Action';
 
 // COMPONENTS
-const AccountAvatarUpload = ({
+const IdentityAvatarUpload = ({
   name,
   previewName,
   isLoading,
@@ -23,8 +23,9 @@ const AccountAvatarUpload = ({
   const { push } = useHistory();
   const { id } = useParams();
 
-  const homePath = useGeneratePathKeepingSearchAndHash(routes.accounts._, { id });
-  const avatarPath = useGeneratePathKeepingSearchAndHash(routes.accounts.avatar._, { id });
+  // @FIXME until we change structure, parent is public profile
+  const homePath = useGeneratePathKeepingSearchAndHash(routes.identities.public, { id });
+  const avatarPath = useGeneratePathKeepingSearchAndHash(routes.identities.avatar._, { id });
 
   const navigationProps = useMemo(
     () => ({
@@ -61,7 +62,7 @@ const AccountAvatarUpload = ({
     </ScreenAction>
   );
 };
-AccountAvatarUpload.propTypes = {
+IdentityAvatarUpload.propTypes = {
   name: PropTypes.string.isRequired,
   previewName: PropTypes.string.isRequired,
   isLoading: PropTypes.bool,
@@ -69,8 +70,8 @@ AccountAvatarUpload.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-AccountAvatarUpload.defaultProps = {
+IdentityAvatarUpload.defaultProps = {
   isLoading: false,
 };
 
-export default withTranslation('account')(AccountAvatarUpload);
+export default withTranslation('account')(IdentityAvatarUpload);

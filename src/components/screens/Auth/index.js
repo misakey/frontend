@@ -24,10 +24,7 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useNotDoneEffect from 'hooks/useNotDoneEffect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import makeStyles from '@material-ui/core/styles/makeStyles';
-
-import Screen from 'components/dumb/Screen';
-import Container from '@material-ui/core/Container';
+import ScreenLoader from 'components/dumb/Screen/Loader';
 
 // LAZY
 const AuthError = lazy(() => import('components/screens/Auth/Error'));
@@ -54,24 +51,12 @@ const noFlowParams = nonePass(
   [hasLoginRequiredParams, hasConsentRequiredParams, hasErrorRequiredParams],
 );
 
-// HOOKS
-const useStyles = makeStyles(() => ({
-  screen: {
-    alignItems: 'center',
-    height: 'inherit',
-  },
-  screenContent: {
-    width: '100%',
-  },
-}));
-
 // COMPONENTS
 const Auth = ({
   match,
   isAuthenticated, sso, currentAcr,
   dispatchSsoUpdate, dispatchResetAuth, dispatchSetIdentifier,
 }) => {
-  const classes = useStyles();
   const searchParams = useLocationSearchParams(objectToCamelCase);
   const { pathname, search } = useLocation();
 
@@ -202,37 +187,32 @@ const Auth = ({
   }
 
   return (
-    <Screen
-      className={classes.screen}
-      classes={{ content: classes.screenContent }}
-      isLoading={isFetching}
-    >
-      <Container maxWidth={false}>
-        <Switch>
-          {(hasLoginInfoError || hasNoFlowParams) && (
-          <Route
-            path={match.path}
-            render={(routerProps) => (
-              <AuthError {...routerProps} loginChallenge={loginChallenge} error={error} />
-            )}
-          />
+    <>
+      <ScreenLoader isLoading={isFetching} />
+      <Switch>
+        {(hasLoginInfoError || hasNoFlowParams) && (
+        <Route
+          path={match.path}
+          render={(routerProps) => (
+            <AuthError {...routerProps} loginChallenge={loginChallenge} error={error} />
           )}
-          <Route
-            exact
-            path={routes.auth.error}
-            render={(routerProps) => <AuthError {...routerProps} loginChallenge={loginChallenge} />}
-          />
-          <Route
-            path={routes.auth.consent._}
-            component={Consent}
-          />
-          <Route
-            path={routes.auth.signIn._}
-            render={(routerProps) => <Login {...routerProps} loginChallenge={loginChallenge} />}
-          />
-        </Switch>
-      </Container>
-    </Screen>
+        />
+        )}
+        <Route
+          exact
+          path={routes.auth.error}
+          render={(routerProps) => <AuthError {...routerProps} loginChallenge={loginChallenge} />}
+        />
+        <Route
+          path={routes.auth.consent._}
+          component={Consent}
+        />
+        <Route
+          path={routes.auth.signIn._}
+          render={(routerProps) => <Login {...routerProps} loginChallenge={loginChallenge} />}
+        />
+      </Switch>
+    </>
   );
 };
 

@@ -2,7 +2,7 @@ import { MSG_DELETE, MSG_EDIT, MEMBER_LEAVE, MEMBER_KICK, MEMBER_EVENT_TYPES, ME
 
 import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
-import { senderMatchesIdentifierId } from 'helpers/sender';
+import { senderMatchesIdentityId } from 'helpers/sender';
 
 // HELPERS
 const lastEditedAtProp = prop('lastEditedAt');
@@ -46,27 +46,27 @@ export const transformReferrerEvent = (event) => (referrerEvent) => {
 };
 
 export const isMeEvent = (
-  { sender }, meIdentifierId,
-) => senderMatchesIdentifierId(sender, meIdentifierId);
+  { sender }, meIdentityId,
+) => senderMatchesIdentityId(sender, meIdentityId);
 
-export const isMeLeaveEvent = ({ type, sender }, meIdentifierId) => {
+export const isMeLeaveEvent = ({ type, sender }, meIdentityId) => {
   if (type === MEMBER_LEAVE) {
-    return senderMatchesIdentifierId(sender, meIdentifierId);
+    return senderMatchesIdentityId(sender, meIdentityId);
   }
   return false;
 };
 
-export const isMeKickEvent = ({ type, sender }, meIdentifierId) => {
+export const isMeKickEvent = ({ type, sender }, meIdentityId) => {
   if (type === MEMBER_KICK) {
-    return senderMatchesIdentifierId(sender, meIdentifierId);
+    return senderMatchesIdentityId(sender, meIdentityId);
   }
   return false;
 };
 
 
-export const isMeJoinEvent = ({ type, sender }, meIdentifierId) => {
+export const isMeJoinEvent = ({ type, sender }, meIdentityId) => {
   if (type === MEMBER_JOIN) {
-    return senderMatchesIdentifierId(sender, meIdentifierId);
+    return senderMatchesIdentityId(sender, meIdentityId);
   }
   return false;
 };

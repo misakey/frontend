@@ -20,6 +20,24 @@ export default {
       auth: true,
     },
   },
+  profile: {
+    read: {
+      method: 'GET',
+      path: '/identities/:id/profile',
+    },
+    config: {
+      read: {
+        method: 'GET',
+        path: '/identities/:id/profile/config',
+        auth: true,
+      },
+      update: {
+        method: 'PATCH',
+        path: '/identities/:id/profile/config',
+        auth: true,
+      },
+    },
+  },
   storageQuota: {
     find: {
       method: 'GET',

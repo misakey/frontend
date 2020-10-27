@@ -6,6 +6,7 @@
   "back": "Back",
   "cancel": "Cancel",
   "close": "Fermer",
+  "contact": "Contact",
   "copyInvitationLink": "Copy this link and send it to people you want to share the private space",
   "copy": "Copy",
   "copied": "Copied to clipboard!",
@@ -29,6 +30,8 @@
   "or": "or",
   "previous": "Previous",
   "print": "Print",
+  "private": "Private",
+  "public": "Public",
   "refuse": "Refuse",
   "confirm": "Confirm",
   "remove": "Remove",
@@ -47,6 +50,7 @@
   "signedIn": "Connected\u00a0!",
   "skip": "Skip",
   "submit": "Submit",
+  "success": "Update successful",
   "undecryptable": "Undecryptable",
   "encrypted": "Encrypted content",
   "update": "Update",
@@ -133,5 +137,16 @@
     "stop": "Request failure after {{count}} attempt",
     "stop_plural": "Request failure after {{count}} attempts",
     "storage": "Please enable cookies on this application"
+  },
+  "connect": {
+    "misakey": {
+      "title": "Access to “Misakey app”",
+      "subtitle": "Misakey requires access to the information below"
+    },
+    "title": "Access to “{{resourceName}}”",
+    "subtitle": "<1>{{creatorName}}</1> requires access to the information below",
+    "authorize": "Autorize <1>{{creatorName}}</1> to access above information\u00a0?",
+    "email": "Confirmed identifier",
+    "action": "Access"
   }
 }

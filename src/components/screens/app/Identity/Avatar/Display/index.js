@@ -28,7 +28,8 @@ const AccountAvatarDisplay = ({
 }) => {
   const { id } = useParams();
 
-  const homePath = useGeneratePathKeepingSearchAndHash(routes.accounts._, { id });
+  // @FIXME until we change structure, parent is public profile
+  const homePath = useGeneratePathKeepingSearchAndHash(routes.identities.public, { id });
 
   const navigationProps = useMemo(
     () => ({
@@ -37,7 +38,7 @@ const AccountAvatarDisplay = ({
     [homePath],
   );
 
-  const secondaryTo = useGeneratePathKeepingSearchAndHash(routes.accounts.avatar.upload, { id });
+  const secondaryTo = useGeneratePathKeepingSearchAndHash(routes.identities.avatar.upload, { id });
 
   return (
     <ScreenAction

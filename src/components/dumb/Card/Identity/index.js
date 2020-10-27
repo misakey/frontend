@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 import routes from 'routes';
 import IdentitySchema from 'store/schemas/Identity';
 
+import isNil from '@misakey/helpers/isNil';
+
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
@@ -18,7 +20,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
-import UserStorage from 'components/screens/app/Account/Read/UserStorage';
+import UserStorage from 'components/screens/app/Account/UserStorage';
 // import DeleteAccountListItem from 'components/oldScreens/Account/Home/DeleteAccount';
 import CardIdentityHeader from 'components/dumb/Card/Identity/Header';
 import CardList from 'components/dumb/Card/List';
@@ -65,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const CardIdentity = forwardRef(({ identity, t }, ref) => {
+const CardIdentity = forwardRef(({ identity, identityId, t }, ref) => {
   const {
     displayName, avatarUrl, notifications, color, identifier: { value: identifierValue } = {},
   } = useMemo(() => identity || {}, [identity]);
@@ -74,34 +76,29 @@ const CardIdentity = forwardRef(({ identity, t }, ref) => {
 
   const { accountId } = useMemo(() => identity || {}, [identity]);
 
-  const listItemDisplayNameTo = useGeneratePathKeepingSearchAndHash(
-    routes.accounts.displayName,
-    { id: accountId },
+  const listItemPublicTo = useGeneratePathKeepingSearchAndHash(
+    routes.identities.public,
+    { id: identityId },
   );
 
   const listItemNotificationsTo = useGeneratePathKeepingSearchAndHash(
-    routes.accounts.notifications,
-    { id: accountId },
+    routes.identities.notifications,
+    { id: identityId },
   );
 
   const listItemColorsTo = useGeneratePathKeepingSearchAndHash(
-    routes.accounts.colors,
-    { id: accountId },
-  );
-
-  const listItemAvatarTo = useGeneratePathKeepingSearchAndHash(
-    routes.accounts.avatar._,
-    { id: accountId },
+    routes.identities.colors,
+    { id: identityId },
   );
 
   const listItemPasswordTo = useGeneratePathKeepingSearchAndHash(
-    routes.accounts.password,
-    { id: accountId },
+    routes.identities.accounts.password,
+    { id: identityId, accountId },
   );
 
   const listItemExportCryptoTo = useGeneratePathKeepingSearchAndHash(
-    routes.accounts.vault,
-    { id: accountId },
+    routes.identities.accounts.vault,
+    { id: identityId, accountId },
   );
 
   return (
@@ -111,7 +108,7 @@ const CardIdentity = forwardRef(({ identity, t }, ref) => {
           draggable="false"
           className={classes.cardActionArea}
           component={Link}
-          to={listItemAvatarTo}
+          to={listItemPublicTo}
         >
           <AvatarDetailed
             classes={{ root: classes.avatarDetailedRoot }}
@@ -125,30 +122,16 @@ const CardIdentity = forwardRef(({ identity, t }, ref) => {
       <CardList>
         <ListItem
           button
-          to={listItemDisplayNameTo}
+          to={listItemPublicTo}
           component={Link}
           divider
-          aria-label={t('fields:displayName.action')}
+          aria-label={t('common:edit')}
           classes={{ container: classes.listItemContainer }}
         >
           <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('fields:displayName.label')}</Typography>
+            <Typography>{t('account:public.title')}</Typography>
           </ListItemIcon>
           <ListItemText primary={displayName} className={classes.listItemTextBreak} />
-          <ChevronRightIcon className={classes.actionIcon} />
-        </ListItem>
-        <ListItem
-          button
-          to={listItemAvatarTo}
-          component={Link}
-          divider
-          aria-label={t('fields:avatar.action')}
-          classes={{ container: classes.listItemContainer }}
-        >
-          <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('fields:avatar.label')}</Typography>
-          </ListItemIcon>
-          <ListItemText primary={t('fields:avatar.helperText')} />
           <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
         <ListItemPassword
@@ -204,33 +187,37 @@ const CardIdentity = forwardRef(({ identity, t }, ref) => {
           <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
       </CardList>
-      <CardIdentityHeader>{t('account:sections.myQuota.title')}</CardIdentityHeader>
-      <CardList>
-        <ListItem
-          classes={{ container: classes.listItemContainer }}
-          divider
-        >
-          <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('account:quota.title')}</Typography>
-          </ListItemIcon>
-          <UserStorage />
-        </ListItem>
-      </CardList>
-      <CardIdentityHeader>{t('account:sections.myVault.title')}</CardIdentityHeader>
-      <CardList>
-        <ListItem
-          classes={{ container: classes.listItemContainer }}
-          button
-          component={Link}
-          to={listItemExportCryptoTo}
-        >
-          <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('account:vault.title')}</Typography>
-          </ListItemIcon>
-          <ListItemText primary={t('account:vault.helperText')} />
-          <ChevronRightIcon className={classes.actionIcon} />
-        </ListItem>
-      </CardList>
+      {!isNil(accountId) && (
+        <>
+          <CardIdentityHeader>{t('account:sections.myQuota.title')}</CardIdentityHeader>
+          <CardList>
+            <ListItem
+              classes={{ container: classes.listItemContainer }}
+              divider
+            >
+              <ListItemIcon className={classes.listItemIcon}>
+                <Typography>{t('account:quota.title')}</Typography>
+              </ListItemIcon>
+              <UserStorage />
+            </ListItem>
+          </CardList>
+          <CardIdentityHeader>{t('account:sections.myVault.title')}</CardIdentityHeader>
+          <CardList>
+            <ListItem
+              classes={{ container: classes.listItemContainer }}
+              button
+              component={Link}
+              to={listItemExportCryptoTo}
+            >
+              <ListItemIcon className={classes.listItemIcon}>
+                <Typography>{t('account:vault.title')}</Typography>
+              </ListItemIcon>
+              <ListItemText primary={t('account:vault.helperText')} />
+              <ChevronRightIcon className={classes.actionIcon} />
+            </ListItem>
+          </CardList>
+        </>
+      )}
       {/* <CardIdentityHeader>{t('account:sections.myAccount.title')}</CardIdentityHeader>
       <CardList>
         <DeleteAccountListItem
@@ -244,6 +231,7 @@ const CardIdentity = forwardRef(({ identity, t }, ref) => {
 
 CardIdentity.propTypes = {
   identity: PropTypes.shape(IdentitySchema.propTypes),
+  identityId: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
 };
 

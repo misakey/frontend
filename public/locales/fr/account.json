@@ -16,6 +16,9 @@
     },
     "myAccount": {
       "title": "Mon compte"
+    },
+    "myIdentifiers": {
+      "title": "Identifiants"
     }
   },
   "avatar": {
@@ -34,6 +37,16 @@
     "dialog": {
       "title": "Supprimer mon compte\u00a0?",
       "description": "Je saisis mon adresse email ({{email}}) dans le champ ci-dessous avant de valider la suppression de mon compte."
+    }
+  },
+  "public": {
+    "title": "Profil public",
+    "subtitle": "Mon profil public sera visible par tous",
+    "success": "Mon profil public a été mis à jour",
+    "confirmed": "Confirmé",
+    "private": "l'email de {{displayName}} est privé",
+    "other": {
+      "title": "Profil de {{displayName}}"
     }
   },
   "displayName": {

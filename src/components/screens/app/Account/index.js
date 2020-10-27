@@ -1,42 +1,43 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { Switch, Route } from 'react-router-dom';
+
 import routes from 'routes';
-import { withTranslation } from 'react-i18next';
 
-import ScreenDrawer from 'components/smart/Screen/Drawer';
-import AccountRead from 'components/screens/app/Account/Read';
+import useIdentity from 'hooks/useIdentity';
 
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import DrawerAccountContent from 'components/smart/Drawer/Account/Content';
-
-// HOOKS
-const useStyles = makeStyles(() => ({
-  drawerContent: {
-    position: 'relative',
-    overflow: 'auto',
-  },
-}));
+import AccountPassword from 'components/screens/app/Account/Password';
+import AccountVault from 'components/screens/app/Account/Vault';
 
 // COMPONENTS
-function Account({ match, ...props }) {
-  const classes = useStyles();
+function Account(props) {
+  const identityMetadata = useIdentity();
 
   return (
-    <ScreenDrawer
-      classes={{ content: classes.drawerContent }}
-      drawerChildren={
-        (drawerProps) => <DrawerAccountContent backTo={routes.boxes._} {...drawerProps} />
-      }
-      {...props}
-    >
-      {(drawerProps) => <AccountRead {...drawerProps} />}
-    </ScreenDrawer>
+    <Switch>
+      <Route
+        exact
+        path={routes.identities.accounts.password}
+        render={(routerProps) => (
+          <AccountPassword
+            {...routerProps}
+            {...identityMetadata}
+            {...props}
+          />
+        )}
+      />
+      <Route
+        exact
+        path={routes.identities.accounts.vault}
+        render={(routerProps) => (
+          <AccountVault
+            {...routerProps}
+            {...identityMetadata}
+            {...props}
+          />
+        )}
+      />
+    </Switch>
   );
 }
 
-
-Account.propTypes = {
-  match: PropTypes.shape({ path: PropTypes.string }).isRequired,
-};
-
-export default withTranslation('account')(Account);
+export default Account;

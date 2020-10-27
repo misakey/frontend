@@ -1,66 +1,101 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
+import { useLocation, Link, generatePath } from 'react-router-dom';
+import { normalize } from 'normalizr';
 
 import routes from 'routes';
-import { updateEntities } from '@misakey/store/actions/entities';
+import { receiveEntities, updateEntities } from '@misakey/store/actions/entities';
 import { MEMBER_JOIN } from 'constants/app/boxes/events';
 import errorTypes from '@misakey/ui/constants/errorTypes';
+import { CLOSED } from 'constants/app/boxes/statuses';
+import BoxesSchema from 'store/schemas/Boxes';
+import BoxSenderSchema from 'store/schemas/Boxes/Sender';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { FOOTER_HEIGHT } from '@misakey/ui/Footer';
 
 import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import isNil from '@misakey/helpers/isNil';
 import { getCode, getDetails } from '@misakey/helpers/apiError';
+import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
+import { identifierValuePath } from 'helpers/sender';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector, useDispatch, batch } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import { useHistory, useLocation } from 'react-router-dom';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useModifier from '@misakey/hooks/useModifier';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
 import useFetchBoxPublicInfo from 'hooks/useFetchBoxPublicInfo';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import usePropChanged from '@misakey/hooks/usePropChanged';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
-import ChipUser from '@misakey/ui/Chip/User';
 import Title from '@misakey/ui/Typography/Title';
+import MuiLink from '@material-ui/core/Link';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import Box from '@material-ui/core/Box';
 import Skeleton from '@material-ui/lab/Skeleton';
-import BoxesSchema from 'store/schemas/Boxes';
 import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
-import BoxControls from '@misakey/ui/Box/Controls';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import Container from '@material-ui/core/Container';
-import { CLOSED } from 'constants/app/boxes/statuses';
+import List from '@material-ui/core/List';
+import ListItemConsentEmail from '@misakey/ui/ListItem/Consent/Email';
+import BoxControls from '@misakey/ui/Box/Controls';
+import AvatarBox from '@misakey/ui/Avatar/Box';
+import AvatarBoxSkeleton from '@misakey/ui/Avatar/Box/Skeleton';
+import ChipUserMeLogout from '@misakey/ui/Chip/User/Me/Logout';
+import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
 
+// CONSTANTS
 const { forbidden } = errorTypes;
 const NO_ACCESS = 'no_access';
 const ERR_BOX_CLOSED = 'closed';
+const { identity: IDENTITY_SELECTOR } = authSelectors;
+
+// HOOKS
+const useStyles = makeStyles(() => ({
+  container: {
+    height: `calc(100% - ${FOOTER_HEIGHT}px)`,
+  },
+}));
 
 // COMPONENTS
 function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
+  const classes = useStyles();
+
   const dispatch = useDispatch();
-  const { replace } = useHistory();
   const { hash } = useLocation();
   const { enqueueSnackbar } = useSnackbar();
   const handleHttpErrors = useHandleHttpErrors();
   const [shouldShowPasteScreen, setShouldShowPasteScreen] = useState(false);
 
-  const { title, id, hasAccess } = useMemo(() => box, [box]);
+  const { title, id, hasAccess, creator } = useMemo(() => box, [box]);
+  const { displayName: creatorName, id: creatorIdentityId } = useSafeDestr(creator);
+
+  const identity = useSelector(IDENTITY_SELECTOR);
+  const { displayName, avatarUrl } = useSafeDestr(identity);
+  const identifierValue = useModifier(identifierValuePath, identity);
+
+  const creatorProfileTo = useMemo(
+    () => (isNil(creatorIdentityId)
+      ? null
+      : generatePath(routes.identities.public, { id: creatorIdentityId })),
+    [creatorIdentityId],
+  );
+
   const [hashChanged, resetHashChanged] = usePropChanged(hash);
 
-  const currentUser = useSelector(getCurrentUserSelector);
-  const { displayName, avatarUrl } = useSafeDestr(currentUser);
-
-  const onDelete = useCallback(() => replace(routes.boxes._), [replace]);
-
   const onGetPublicInfo = useCallback(
-    (response) => {
-      dispatch(updateEntities([{ id, changes: response }], BoxesSchema));
+    ({ creator: boxCreator, ...rest }) => {
+      const { entities, result } = normalize(boxCreator, BoxSenderSchema.entity);
+      return batch(() => {
+        dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
+        dispatch(updateEntities([{ id, changes: { creator: result, ...rest } }], BoxesSchema));
+      });
     },
     [dispatch, id],
   );
@@ -139,50 +174,98 @@ function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
   }
 
   return (
-    <>
+    <Box
+      display="flex"
+      height="inherit"
+    >
       <AppBarDrawer
         isDrawerOpen={isDrawerOpen}
-        toolbarProps={{ px: 0 }}
       >
-        <Box display="flex" flexDirection="column" width="100%" minHeight="inherit">
-          <Box display="flex">
-            {!isDrawerOpen && (
-              <Box display="flex" alignItems="center" pl={2} pr={1}>
-                <IconButtonAppBar
-                  aria-label={t('common:openAccountDrawer')}
-                  edge="start"
-                  onClick={toggleDrawer}
-                >
-                  <ArrowBack />
-                </IconButtonAppBar>
-              </Box>
-            )}
-          </Box>
-        </Box>
+        {!isDrawerOpen && (
+        <IconButtonAppBar
+          aria-label={t('common:openAccountDrawer')}
+          edge="start"
+          onClick={toggleDrawer}
+        >
+          <ArrowBack />
+        </IconButtonAppBar>
+        )}
       </AppBarDrawer>
-      <Container
-        p={8}
-        maxWidth="md"
-        component={Box}
+      <Box
         display="flex"
-        height="inherit"
         flexDirection="column"
+        flexGrow={1}
+        width="100%"
       >
-        {isFetching && <Skeleton width="300" />}
-        {!isNil(title) && <Title align="left">{t('boxes:read.mustjoin.title', { title })}</Title>}
-        {isNil(title) && !isFetching && <Title align="left">{t('boxes:read.mustjoin.defaultTitle')}</Title>}
-        <Subtitle>{t('boxes:read.mustjoin.subtitle')}</Subtitle>
-        <Box my={2}>
-          <ChipUser
-            displayName={displayName}
-            avatarUrl={avatarUrl}
-            onDelete={onDelete}
-          />
-        </Box>
-        <BoxControls primary={{ onClick: onJoin, text: t('boxes:read.mustjoin.button') }} />
-      </Container>
-    </>
-
+        <Container
+          className={classes.container}
+          pt={8}
+          maxWidth="md"
+          component={Box}
+          overflow="auto"
+        >
+          <Box
+            width="100%"
+            display="flex"
+            justifyContent="center"
+            px={2}
+          >
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="flex-start"
+              width="100%"
+            >
+              {isFetching ? (<AvatarBoxSkeleton large />) : (
+                <AvatarBox
+                  title={title}
+                  large
+                />
+              )}
+              <Box mt={2} width="100%">
+                {isFetching && <Skeleton width="300" />}
+                {!isNil(title) && <Title align="left">{t('common:connect.title', { resourceName: title })}</Title>}
+                {isNil(title) && !isFetching && <Title align="left">{t('boxes:read.mustjoin.defaultTitle')}</Title>}
+                <Subtitle>
+                  <Trans values={{ creatorName }} i18nKey="common:connect.subtitle">
+                    {'Information below will be shared with '}
+                    <MuiLink color="secondary" component={Link} to={creatorProfileTo}>{'{{creatorName}}'}</MuiLink>
+                    {' to continue'}
+                  </Trans>
+                </Subtitle>
+                <Box my={2}>
+                  <List>
+                    <ListItemConsentEmail
+                      avatarUrl={avatarUrl}
+                      displayName={displayName}
+                      email={identifierValue}
+                    />
+                  </List>
+                </Box>
+                <Subtitle>
+                  <Trans values={{ creatorName }} i18nKey="common:connect.authorize">
+                    {'Authorize '}
+                    <MuiLink color="secondary" component={Link} to={creatorProfileTo}>{'{{creatorName}}'}</MuiLink>
+                    {' to access above information ?'}
+                  </Trans>
+                </Subtitle>
+                <BoxControls
+                  mt={2}
+                  primary={{
+                    onClick: onJoin,
+                    text: t('common:connect.action'),
+                  }}
+                />
+                <Box display="flex" justifyContent="center" mt={6} width="100%">
+                  <ChipUserMeLogout />
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+        </Container>
+        <FooterFullScreen />
+      </Box>
+    </Box>
   );
 }
 

@@ -14,6 +14,23 @@ export const uploadAvatar = ({ id, avatar }) => API
   .build({ id }, toFormData(avatar))
   .send({ contentType: null });
 
+export const getProfile = ({ identityId, isAuthenticated }) => API
+  .use({ ...API.endpoints.identities.profile.read, auth: isAuthenticated })
+  .build({ id: identityId })
+  .send()
+  .then(objectToCamelCase);
+
+export const getProfileConfig = ({ identityId }) => API
+  .use(API.endpoints.identities.profile.config.read)
+  .build({ id: identityId })
+  .send()
+  .then(objectToCamelCase);
+
+export const updateProfileConfig = ({ identityId, ...payload }) => API
+  .use(API.endpoints.identities.profile.config.update)
+  .build({ id: identityId }, objectToSnakeCase(payload))
+  .send();
+
 export const listStorageQuota = (id) => API
   .use(API.endpoints.identities.storageQuota.find)
   .build({ id })

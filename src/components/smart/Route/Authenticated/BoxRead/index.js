@@ -31,7 +31,7 @@ const { notFound } = errorTypes;
 
 // COMPONENTS
 const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...rest }) => {
-  const [resourceName, setResourceName] = useState();
+  const [objLoginHint, setObjLoginHint] = useState();
   const [error, setError] = useState(false);
   const { askSigninRedirect } = useContext(UserManagerContext);
 
@@ -40,10 +40,10 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   const { t } = useTranslation('boxes');
 
   const loginHint = useMemo(
-    () => (!isNil(resourceName)
-      ? JSON.stringify(objectToSnakeCase({ resourceName }))
+    () => (!isEmpty(objLoginHint)
+      ? JSON.stringify(objectToSnakeCase(objLoginHint))
       : null),
-    [resourceName],
+    [objLoginHint],
   );
 
   const redirectOptions = useMemo(
@@ -67,7 +67,8 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   // if box and box title are already in store, don't refetch
   const box = useSelector((state) => denormalizeBoxSelector(state, id));
 
-  const { title } = useSafeDestr(box);
+  const { title, creator } = useSafeDestr(box);
+  const { displayName: creatorName, id: creatorIdentityId } = useSafeDestr(creator);
 
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
 
@@ -91,19 +92,14 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   const shouldFetch = useMemo(
     () => !isAuthenticated
     && !isNil(id) && isNil(title)
-    && !isNil(otherShareHash) && isNil(resourceName)
+    && !isNil(otherShareHash) && isEmpty(objLoginHint)
     && !error,
-    [isAuthenticated, id, otherShareHash, resourceName, error, title],
+    [isAuthenticated, id, otherShareHash, objLoginHint, error, title],
   );
 
   const getBoxPublic = useCallback(
     () => getBoxPublicBuilder({ id, otherShareHash }),
     [id, otherShareHash],
-  );
-
-  const onSuccess = useCallback(
-    ({ title: boxTitle }) => setResourceName(boxTitle),
-    [setResourceName],
   );
 
   const onIgnoreNotFoundError = useCallback(
@@ -116,6 +112,17 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
       setError(true);
     },
     [handleHttpErrors],
+  );
+
+  const onSuccess = useCallback(
+    ({ title: resourceName, creator: { displayName, id: creatorId } = {} }) => {
+      setObjLoginHint({
+        resourceName,
+        creatorName: displayName,
+        creatorIdentityId: creatorId,
+      });
+    },
+    [setObjLoginHint],
   );
 
   const { isFetching } = useFetchEffect(
@@ -140,11 +147,11 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
 
   useEffect(
     () => {
-      if (!isNil(title)) {
-        setResourceName(title);
+      if (!isNil(title) || !isNil(creatorName) || !isNil(creatorIdentityId)) {
+        setObjLoginHint({ resourceName: title, creatorName, creatorIdentityId });
       }
     },
-    [title, setResourceName],
+    [title, creatorName, creatorIdentityId, setObjLoginHint],
   );
 
   if (isAuthenticated) {

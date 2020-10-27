@@ -16,6 +16,9 @@
     },
     "myAccount": {
       "title": "My account"
+    },
+    "myIdentifiers": {
+      "title": "Identifiers"
     }
   },
   "avatar": {
@@ -34,6 +37,16 @@
     "dialog": {
       "title": "Delete my account\u00a0?",
       "description": "I type my email address ({{email}}) in the following field before submitting my account erasure."
+    }
+  },
+  "public": {
+    "title": "Public profile",
+    "subtitle": "Public profile will be visible to everyone",
+    "success": "Public profile successfully updated",
+    "confirmed": "Confirmed",
+    "private": "{{displayName}}'s email is private",
+    "other": {
+      "title": "{{displayName}}'s profile"
     }
   },
   "displayName": {

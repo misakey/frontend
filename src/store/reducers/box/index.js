@@ -7,6 +7,7 @@ import { ALL } from 'constants/app/boxes/statuses';
 
 import BoxesSchema from 'store/schemas/Boxes';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
+import BoxSenderSchema from 'store/schemas/Boxes/Sender';
 import { BLUR_TEXT, CLEAR_TEXT } from 'store/actions/box';
 import { actionCreators } from 'store/reducers/userBoxes/pagination/events';
 import { actionCreators as fileEventsActionCreators, selectors as fileEventsSelectors } from 'store/reducers/userBoxes/pagination/events/files';
@@ -42,11 +43,13 @@ const textProp = prop('text');
 
 const getNextMembers = ({ type, sender }, members) => {
   if (type === MEMBER_JOIN) {
-    return members.concat([sender.identifierId]);
+    const { result } = normalize(sender, BoxSenderSchema.entity);
+    return members.concat(result);
   }
 
   if (type === MEMBER_LEAVE || type === MEMBER_KICK) {
-    return without(members, sender.identifierId);
+    const { result } = normalize(sender, BoxSenderSchema.entity);
+    return without(members, result);
   }
 
   return null;

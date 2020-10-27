@@ -39,9 +39,10 @@ const makeStyles = () => ({
   buttonRoot: {
     width: '100%',
   },
-  buttonLabel: ({ isLoading }) => (isLoading ? {
-    color: 'transparent',
-  } : {}),
+  buttonLabel: ({ isLoading }) => ({
+    color: isLoading ? 'transparent' : null,
+    whiteSpace: 'nowrap',
+  }),
   buttonProgress: {
     position: 'absolute',
     top: '50%',

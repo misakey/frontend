@@ -48,15 +48,12 @@
       "defaultSubtitle": "You can not access the private space anymore because it has been closed by the administrator."
     },
     "noaccess": {
-      "defaultTitle": "Access to this private space is restricted.",
-      "title": "Access restricted to the private space “{{title}}”.",
-      "subtitle": "Please ask access to the person that gave you the link."
+      "defaultTitle": "Access to this private space denied",
+      "title": "Access to “{{title}}” denied",
+      "subtitle": "Message <1>{{creatorName}}</1> to request access"
     },
     "mustjoin": {
-      "defaultTitle": "Welcome",
-      "title": "Welcome on “{{title}}”,",
-      "subtitle": "Continue to join this private space",
-      "button": "Continue"
+      "defaultTitle": "Welcome"
     },
     "actions": {
       "upload": "Send files",

@@ -41,7 +41,7 @@ export const UserManagerContext = createContext({
 });
 
 // COMPONENTS
-function OidcProvider({ store, children, config, registerMiddlewares }) {
+function OidcProvider({ store, children, config, registerMiddlewares, publicRoute }) {
   const [signinRedirect, setSigninRedirect] = useState(null);
   const [canCancelRedirect, setCanCancelRedirect] = useState(true);
 
@@ -219,6 +219,7 @@ function OidcProvider({ store, children, config, registerMiddlewares }) {
         onClose={onClose}
         canCancelRedirect={canCancelRedirect}
         userManager={userManager}
+        publicRoute={publicRoute}
         {...signinRedirectProps}
       />
       {isLoading ? (
@@ -241,6 +242,7 @@ OidcProvider.propTypes = {
   }),
   store: PropTypes.object,
   registerMiddlewares: PropTypes.func.isRequired,
+  publicRoute: PropTypes.string.isRequired,
 };
 
 OidcProvider.defaultProps = {

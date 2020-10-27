@@ -29,13 +29,13 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import BoxAvatar from 'components/dumb/Avatar/Box';
+import BoxAvatar from '@misakey/ui/Avatar/Box';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import ConfirmationDialog from '@misakey/ui/Dialog/Confirm';
 import ListItemShare from 'components/smart/ListItem/Boxes/Share';
 import ListItemLeave from 'components/smart/ListItem/Boxes/Leave';
 import ListItemDelete from 'components/smart/ListItem/Boxes/Delete';
-import ListItemMember from 'components/dumb/ListItem/Member';
+import ListItemMemberPublicLink from 'components/smart/ListItem/Member/PublicLink';
 
 // CONSTANTS
 const { conflict } = errorTypes;
@@ -73,7 +73,6 @@ function BoxDetails({ isDrawerOpen, box, belongsToCurrentUser, t }) {
 
   const {
     id,
-    avatarUrl: boxAvatarUrl,
     title,
     members = [],
     lifecycle,
@@ -138,7 +137,6 @@ function BoxDetails({ isDrawerOpen, box, belongsToCurrentUser, t }) {
         <Box display="flex" flexDirection="column" alignItems="center">
           <BoxAvatar
             classes={{ root: classes.avatar }}
-            src={boxAvatarUrl}
             title={title || ''}
           />
           <Typography variant="h6" align="center" color="textPrimary">
@@ -228,7 +226,7 @@ function BoxDetails({ isDrawerOpen, box, belongsToCurrentUser, t }) {
           )}
           >
             {members.map((member) => (
-              <ListItemMember
+              <ListItemMemberPublicLink
                 key={member.identifier.value}
                 member={member}
                 box={box}

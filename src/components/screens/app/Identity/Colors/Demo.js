@@ -10,7 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MuiLink from '@material-ui/core/Link';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import Badge from '@misakey/ui/Badge';
-import AvatarBox from 'components/dumb/Avatar/Box';
+import AvatarBox from '@misakey/ui/Avatar/Box';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';

@@ -29,7 +29,7 @@ export const DRAWER_PROPS_PROP_TYPES = {
   toggleDrawer: PropTypes.func,
   drawerWidth: PropTypes.string,
   getNextDrawerSearch: PropTypes.func,
-  selectedDrawer: PropTypes.bool,
+  selectedDrawer: PropTypes.string,
 };
 
 // HOOKS

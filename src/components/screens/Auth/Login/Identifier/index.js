@@ -1,11 +1,9 @@
 import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { withTranslation, Trans } from 'react-i18next';
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 
-import { APPBAR_SPACING } from '@misakey/ui/constants/sizes';
 import { STEP, INITIAL_VALUES } from '@misakey/auth/constants';
 import { ERROR_KEYS } from 'constants/auth';
 import { identifierValidationSchema } from '@misakey/auth/constants/validationSchemas/auth';
@@ -22,13 +20,17 @@ import { getDetails } from '@misakey/helpers/apiError';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useOnIdentifierSubmit from 'hooks/useOnIdentifierSubmit';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Title from '@misakey/ui/Typography/Title';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Container from '@material-ui/core/Container';
 import LoginFormFields from '@misakey/ui/Form/Fields/Login/Identifier';
 import BoxControls from '@misakey/ui/Box/Controls';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
 import Box from '@material-ui/core/Box';
+import Screen from 'components/dumb/Screen';
+import AvatarBox from '@misakey/ui/Avatar/Box';
 
 // CONSTANTS
 const CURRENT_STEP = STEP.identifier;
@@ -40,6 +42,19 @@ const getIdentifierError = compose(
   props(ERROR_KEYS[CURRENT_STEP]),
 );
 
+// HOOKS
+const useStyles = makeStyles((theme) => ({
+  boldTitle: {
+    fontWeight: theme.typography.fontWeightBold,
+  },
+  screenContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  container: {
+    overflow: 'auto',
+  },
+}));
 
 // COMPONENTS
 const AuthLoginIdentifier = ({
@@ -49,6 +64,7 @@ const AuthLoginIdentifier = ({
   identifier,
   t,
 }) => {
+  const classes = useStyles();
   const handleHttpErrors = useHandleHttpErrors();
 
   const initialValues = useMemo(
@@ -65,6 +81,8 @@ const AuthLoginIdentifier = ({
   );
 
   const { resourceName } = useSafeDestr(objLoginHint);
+
+  const { name } = useSafeDestr(client);
 
   const onIdentifierSubmit = useOnIdentifierSubmit(loginChallenge);
 
@@ -92,52 +110,49 @@ const AuthLoginIdentifier = ({
   [t]);
 
   return (
-    <Container maxWidth="md">
-      <Box mt={2 * APPBAR_SPACING}>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={identifierValidationSchema}
-          onSubmit={onSubmit}
-          enableReinitialize
-        >
-          <Form>
-            <Title>
-              <Box display="flex" overflow="hidden" flexWrap="wrap" component={Trans} i18nKey="auth:login.identifier.title">
-                <Box display="flex" flexWrap="nowrap">Quel est votre identifiant pour</Box>
-                <Box ml={1} display="flex" flexWrap="nowrap">
-                  <AvatarClientSso client={client} />
-                  {!isEmpty(resourceName) ? (
-                    <>
-                      &nbsp;-&nbsp;
-                      {resourceName}
-                    </>
-                  ) : <></>}
-              &nbsp;?
-                </Box>
-              </Box>
-            </Title>
-            <LoginFormFields />
-            <BoxControls formik primary={primary} />
-          </Form>
-        </Formik>
-      </Box>
-    </Container>
+    <Screen
+      classes={{ content: classes.screenContent }}
+    >
+      <Container maxWidth="md" className={classes.container}>
+        <Box>
+          {!isEmpty(resourceName) && resourceName !== name ? (
+            <AvatarBox title={resourceName} large />
+          ) : (
+            <AvatarClientSso client={client} />
+          )}
+          <Formik
+            initialValues={initialValues}
+            validationSchema={identifierValidationSchema}
+            onSubmit={onSubmit}
+            enableReinitialize
+          >
+            <Box component={Form} mt={2}>
+              <Title>
+                <Trans i18nKey="auth:login.identifier.title" values={{ resourceName: isEmpty(resourceName) ? name : resourceName }}>
+                  Identifier for
+                  <span className={classes.boldTitle}>{'{{resourceName}}'}</span>
+                </Trans>
+              </Title>
+              <Subtitle>
+                {t('auth:login.identifier.subtitle')}
+              </Subtitle>
+              <LoginFormFields />
+              <BoxControls formik primary={primary} />
+            </Box>
+          </Formik>
+        </Box>
+      </Container>
+    </Screen>
   );
 };
 
 AuthLoginIdentifier.propTypes = {
   loginChallenge: PropTypes.string.isRequired,
   identifier: PropTypes.string.isRequired,
+  loginHint: SSO_PROP_TYPES.loginHint.isRequired,
+  client: SSO_PROP_TYPES.client.isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,
-  // CONNECT
-  client: SSO_PROP_TYPES.client.isRequired,
-  loginHint: SSO_PROP_TYPES.loginHint.isRequired,
 };
 
-// CONNECT
-const mapStateToProps = (state) => ({
-  client: state.sso.client,
-});
-
-export default connect(mapStateToProps, {})(withTranslation(['auth', 'common'])(AuthLoginIdentifier));
+export default withTranslation(['auth', 'common'])(AuthLoginIdentifier);

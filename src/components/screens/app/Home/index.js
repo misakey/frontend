@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import RouteAcr from '@misakey/auth/components/Route/Acr';
 import Boxes from 'components/screens/app/Boxes';
-import Accounts from 'components/screens/app/Account';
+import Profile from 'components/screens/app/Profile';
 import AccountDrawer from 'components/smart/Drawer/Account';
 import useLoadSecretsFromShares from '@misakey/crypto/hooks/useLoadSecretsFromShares';
 import withIdentity from 'components/smart/withIdentity';
@@ -25,10 +25,9 @@ function Home({ isFetchingIdentity }) {
     <>
       <AccountDrawer />
       <Switch>
-        <RouteAcr
-          acr={2}
-          path={routes.accounts._}
-          component={Accounts}
+        <Route
+          path={routes.identities._}
+          component={Profile}
         />
         <BoxesContextProvider activeStatus={ALL} isReady={isReady}>
           <RouteAcr

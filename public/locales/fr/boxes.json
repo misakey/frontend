@@ -48,15 +48,12 @@
       "defaultSubtitle": "Vous ne pouvez plus accéder à cet espace car il a été fermé par son administrateur·trice."
     },
     "noaccess": {
-      "defaultTitle": "L'accès à cet espace privé est restreint",
-      "title": "L'accès à l'espace privé «\u00a0{{title}}\u00a0» est restreint",
-      "subtitle": "Veuillez contacter la personne vous ayant donné le lien."
+      "defaultTitle": "Accès à cet espace privé refusé",
+      "title": "Accès à «\u00a0{{title}}\u00a0» refusé",
+      "subtitle": "Contactez <1>{{creatorName}}</1> pour demander l'accès"
     },
     "mustjoin": {
-      "defaultTitle": "Bienvenue",
-      "title": "Bienvenue sur «\u00a0{{title}}\u00a0»,",
-      "subtitle": "Continuer pour rejoindre cet espace privé",
-      "button": "Continuer"
+      "defaultTitle": "Bienvenue"
     },
     "actions": {
       "upload": "Envoyer des fichiers",

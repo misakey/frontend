@@ -53,7 +53,8 @@ const AccountAvatar = ({
     [identity, isFetching],
   );
 
-  const homePath = useGeneratePathKeepingSearchAndHash(routes.accounts._, { id });
+  // @FIXME until we change structure, parent is public profile
+  const homePath = useGeneratePathKeepingSearchAndHash(routes.identities.public, { id });
 
   const { displayName, avatarUrl, id: identityId } = useMemo(
     () => identity || EMPTY_OBJECT,
@@ -94,7 +95,7 @@ const AccountAvatar = ({
             <Switch>
               <Route
                 exact
-                path={routes.accounts.avatar._}
+                path={routes.identities.avatar._}
                 render={(routerProps) => (
                   <AccountAvatarDisplay
                     avatarUrl={avatarUrl}
@@ -109,7 +110,7 @@ const AccountAvatar = ({
               />
               <Route
                 exact
-                path={routes.accounts.avatar.upload}
+                path={routes.identities.avatar.upload}
                 render={(routerProps) => (
                   <AccountAvatarUpload
                     name={FIELD_NAME}

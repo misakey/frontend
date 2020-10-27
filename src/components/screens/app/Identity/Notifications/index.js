@@ -28,7 +28,7 @@ import ListNotificationConfig from 'components/dumb/List/NotificationConfig';
 const FIELD_NAME = 'notifications';
 
 // COMPONENTS
-const AccountNotifications = ({
+const IdentityNotifications = ({
   t,
   identity,
   isFetching,
@@ -42,7 +42,7 @@ const AccountNotifications = ({
     [identity, isFetching],
   );
 
-  const homePath = useGeneratePathKeepingSearchAndHash(routes.accounts._, { id });
+  const homePath = useGeneratePathKeepingSearchAndHash(routes.identities._, { id });
 
   const navigationProps = useMemo(
     () => ({
@@ -118,16 +118,16 @@ const AccountNotifications = ({
   );
 };
 
-AccountNotifications.propTypes = {
+IdentityNotifications.propTypes = {
   identity: PropTypes.shape(IdentitySchema.propTypes),
   isFetching: PropTypes.bool,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
 
-AccountNotifications.defaultProps = {
+IdentityNotifications.defaultProps = {
   identity: null,
   isFetching: false,
 };
 
-export default withTranslation(['common', 'account', 'fields'])(AccountNotifications);
+export default withTranslation(['common', 'account', 'fields'])(IdentityNotifications);

@@ -10,17 +10,21 @@ const routes = {
     },
     invitation: '/invitation',
   },
-  accounts: {
-    _: '/accounts/:id?',
+  identities: {
+    _: '/identities/:id',
     avatar: {
-      _: '/accounts/:id/avatar',
-      upload: '/accounts/:id/avatar/upload',
+      _: '/identities/:id/avatar',
+      upload: '/identities/:id/avatar/upload',
     },
-    displayName: '/accounts/:id/displayName',
-    password: '/accounts/:id/password',
-    notifications: '/accounts/:id/notifications',
-    colors: '/accounts/:id/colors',
-    vault: '/accounts/:id/vault',
+    displayName: '/identities/:id/displayName',
+    public: '/identities/:id/public',
+    notifications: '/identities/:id/notifications',
+    colors: '/identities/:id/colors',
+    accounts: {
+      _: '/identities/:id/accounts/:accountId',
+      password: '/identities/:id/accounts/:accountId/password',
+      vault: '/identities/:id/accounts/:accountId/vault',
+    },
   },
   documents: {
     _: '/documents/:id?',

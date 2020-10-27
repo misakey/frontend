@@ -39,7 +39,8 @@ const IdentityDisplayName = ({
 
   const { id } = useParams();
 
-  const homePath = useGeneratePathKeepingSearchAndHash(routes.accounts._, { id });
+  // @FIXME until we change structure, parent is public profile
+  const homePath = useGeneratePathKeepingSearchAndHash(routes.identities.public, { id });
 
   const navigationProps = useMemo(
     () => ({

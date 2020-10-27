@@ -47,7 +47,7 @@ const AccountColor = ({ t, identity, isFetching }) => {
 
   const [previewColor, setPreviewColor] = useState(color);
 
-  const homePath = useGeneratePathKeepingSearchAndHash(routes.accounts._, { id });
+  const homePath = useGeneratePathKeepingSearchAndHash(routes.identities._, { id });
 
   const navigationProps = useMemo(
     () => ({

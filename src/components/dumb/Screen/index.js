@@ -3,42 +3,34 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
 import omit from '@misakey/helpers/omit';
-import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
+import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Box from '@material-ui/core/Box';
-import LinearProgress from '@material-ui/core/LinearProgress';
-
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
+import ScreenLoader from 'components/dumb/Screen/Loader';
 
-// CONSTANTS
-const GUTTERS_SPACING = 3;
-
+// HOOKS
 const useScreenStyles = makeStyles((theme) => ({
   root: ({
     width: '100%',
-    minHeight: `calc(100% - ${theme.spacing(GUTTERS_SPACING)}px)`,
+    height: 'inherit',
     paddingBottom: 0,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
     backgroundColor: theme.palette.background.default,
   }),
-  progress: {
-    position: 'fixed',
-    width: '100%',
-    top: 0,
-    zIndex: theme.zIndex.tooltip,
-  },
   content: ({
     display: 'flex',
     flexDirection: 'column',
+    overflow: 'auto',
   }),
 }));
 
-
+// COMPONENTS
 function Screen({
   children,
   className,
@@ -55,16 +47,10 @@ function Screen({
 
   return (
     <>
-      {isLoading && (
-        <LinearProgress
-          className={internalClasses.progress}
-          color="secondary"
-          variant="query"
-        />
-      )}
+      <ScreenLoader isLoading={isLoading} />
       <Box
         component="div"
-        className={clsx(internalClasses.root, className)}
+        className={clsx(internalClasses.root, classes.root, className)}
         {...omit(rest, ['staticContext', 'match'])}
       >
         {isLoading && !preventSplashScreen && (
@@ -75,25 +61,18 @@ function Screen({
             {children}
           </div>
         )}
+        <FooterFullScreen />
       </Box>
-      <FooterFullScreen />
     </>
   );
 }
-
-export const SCREEN_STATE_PROPTYPES = PropTypes.shape({
-  error: PropTypes.instanceOf(Error),
-  isFetching: PropTypes.bool,
-  isLoading: PropTypes.bool,
-  metas: PropTypes.objectOf(PropTypes.any),
-});
 
 Screen.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   classes: PropTypes.shape({
     content: PropTypes.string,
-    footer: PropTypes.string,
+    root: PropTypes.string,
   }),
   description: PropTypes.string,
   preventSplashScreen: PropTypes.bool,
@@ -104,9 +83,7 @@ Screen.propTypes = {
 Screen.defaultProps = {
   children: null,
   className: '',
-  classes: {
-    content: '',
-  },
+  classes: {},
   description: '',
   preventSplashScreen: false,
   isLoading: false,

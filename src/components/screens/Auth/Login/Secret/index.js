@@ -7,7 +7,6 @@ import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import moment from 'moment';
 
-import { APPBAR_SPACING } from '@misakey/ui/constants/sizes';
 import routes from 'routes';
 import { QUESTIONS } from 'constants/emails';
 import { NEXT_STEP_REDIRECT, NEXT_STEP_AUTH } from '@misakey/auth/constants/step';
@@ -52,15 +51,15 @@ import DialogPasswordReset from 'components/smart/Dialog/Password/Reset';
 import SnackbarActionAuthRestart from 'components/dumb/Snackbar/Action/AuthRestart';
 import SnackbarActionRefresh from 'components/dumb/Snackbar/Action/Refresh';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
+import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
+import Screen from 'components/dumb/Screen';
+import AppbarStatic from '@misakey/ui/AppBar/Static';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 // CONSTANTS
 const { conflict } = errorTypes;
 const CURRENT_STEP = STEP.secret;
-
-const TOP_SPACING = 2 * APPBAR_SPACING;
-const RESET_BAR_SPACING = 6;
 
 // HELPERS
 const getSecretError = compose(
@@ -70,12 +69,13 @@ const getSecretError = compose(
 );
 
 // HOOKS
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   buttonRoot: {
     width: 'auto',
   },
-  resetBox: {
-    height: theme.spacing(RESET_BAR_SPACING),
+  screenContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
   },
 }));
 
@@ -86,6 +86,7 @@ const AuthLoginSecret = ({
   authnStep,
   identity,
   loginChallenge,
+  client,
   accessToken,
   dispatchHardPasswordChange,
   dispatchCreateNewOwnerSecrets,
@@ -104,13 +105,6 @@ const AuthLoginSecret = ({
 
   const [reset, setReset] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-
-  const topSpacing = useMemo(
-    () => (reset
-      ? TOP_SPACING - RESET_BAR_SPACING
-      : TOP_SPACING),
-    [reset],
-  );
 
   const initialValues = useMemo(() => INITIAL_VALUES[CURRENT_STEP], []);
 
@@ -329,51 +323,54 @@ const AuthLoginSecret = ({
   }
 
   return (
-    <Box>
+    <>
       {reset && (
-        <Box display="flex" width="100%" className={classes.resetBox}>
+        <AppbarStatic>
           <IconButtonAppBar edge="start" aria-label={t('common:cancel')} onClick={onCancelForgotPassword}>
             <ArrowBackIcon />
           </IconButtonAppBar>
-        </Box>
+        </AppbarStatic>
       )}
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={onSubmit}
-        validateOnChange={false}
+      <Screen
+        classes={{ content: classes.screenContent }}
       >
-        <Container maxWidth="md">
-          <Box mt={topSpacing}>
-            <Box component={Form} display="flex" flexDirection="column" alignItems="flex-start">
-              <Title>
-                <Box
-                  display="flex"
-                  overflow="hidden"
-                  flexWrap="wrap"
-                  component={Trans}
-                  i18nKey={`auth:login.secret.${methodName}.title`}
-                >
-                  <Box mr={1} display="flex" flexWrap="nowrap">Quel est le code de confirmation envoyé à </Box>
-                  <Box display="flex" flexWrap="nowrap">
-                    <ChipUser
-                      {...chipActions}
-                      {...userPublicData}
-                    />
-              &nbsp;?
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
+          validateOnChange={false}
+        >
+          <Container component={Form} maxWidth="md">
+            <Box>
+              <AvatarClientSso client={client} />
+              <Box mt={2} display="flex" flexDirection="column" alignItems="flex-start">
+                <Title>
+                  <Box
+                    display="flex"
+                    overflow="hidden"
+                    flexWrap="wrap"
+                    component={Trans}
+                    i18nKey={`auth:login.secret.${methodName}.title`}
+                  >
+                    <Box mr={1} display="flex" flexWrap="nowrap">Code de confirmation envoyé à </Box>
+                    <Box display="flex" flexWrap="nowrap">
+                      <ChipUser
+                        {...chipActions}
+                        {...userPublicData}
+                      />
+                    </Box>
                   </Box>
-                </Box>
-              </Title>
-              <SecretFormFields methodName={methodName} />
-              {methodName === EMAILED_CODE && (
+                </Title>
+                <SecretFormFields methodName={methodName} />
+                {methodName === EMAILED_CODE && (
                 <ButtonRenewAuthStep
                   classes={{ buttonRoot: classes.buttonRoot }}
                   loginChallenge={loginChallenge}
                   authnStep={authnStep}
                   text={t('auth:login.form.action.getANewCode.button')}
                 />
-              )}
-              {methodName === PREHASHED_PASSWORD && (
+                )}
+                {methodName === PREHASHED_PASSWORD && (
                 <ButtonForgotPassword
                   classes={{ buttonRoot: classes.buttonRoot }}
                   loginChallenge={loginChallenge}
@@ -381,27 +378,29 @@ const AuthLoginSecret = ({
                   text={t('auth:login.form.action.forgotPassword')}
                   onDone={onForgotPasswordDone}
                 />
-              )}
-              <BoxControls
-                formik
-                primary={primary}
+                )}
+                <BoxControls
+                  formik
+                  primary={primary}
+                />
+              </Box>
+              <DialogPasswordReset
+                open={dialogOpen}
+                onClose={onDialogClose}
+                onSubmit={onDialogSubmit}
               />
             </Box>
-            <DialogPasswordReset
-              open={dialogOpen}
-              onClose={onDialogClose}
-              onSubmit={onDialogSubmit}
-            />
-          </Box>
-        </Container>
-      </Formik>
-    </Box>
+          </Container>
+        </Formik>
+      </Screen>
+    </>
   );
 };
 
 AuthLoginSecret.propTypes = {
   identifier: PropTypes.string,
   loginChallenge: PropTypes.string.isRequired,
+  client: SSO_PROP_TYPES.client.isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,
   // CONNECT

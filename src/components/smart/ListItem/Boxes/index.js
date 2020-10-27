@@ -22,8 +22,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Badge from '@misakey/ui/Badge';
-import BoxAvatar from 'components/dumb/Avatar/Box';
-import BoxAvatarSkeleton from 'components/dumb/Avatar/Box/Skeleton';
+import BoxAvatar from '@misakey/ui/Avatar/Box';
+import BoxAvatarSkeleton from '@misakey/ui/Avatar/Box/Skeleton';
 import TypographyDateSince from 'components/dumb/Typography/DateSince';
 import BoxEventsAccordingToType from 'components/smart/Box/Event';
 
@@ -79,7 +79,6 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
 
   const {
     id,
-    logoUri,
     title,
     publicKey,
     lastEvent = {},
@@ -144,7 +143,6 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
           badgeContent={badgeContent}
         >
           <BoxAvatar
-            src={logoUri}
             title={title}
             lostKey={lostKey}
           />

@@ -1,9 +1,9 @@
 import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
+import { Link, generatePath } from 'react-router-dom';
 
-import { getCurrentUserSelector, selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
-import { identifierValidationSchema } from '@misakey/auth/constants/validationSchemas/auth';
+import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
@@ -14,10 +14,11 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import useSignOut from '@misakey/auth/hooks/useSignOut';
 import { useSelector } from 'react-redux';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import useXsMediaQuery from '@misakey/hooks/useXsMediaQuery';
 
-
-import { Form } from 'formik';
-import Formik from '@misakey/ui/Formik';
+import MuiLink from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
@@ -26,16 +27,31 @@ import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@misakey/ui/DialogContent';
 import BoxControls from '@misakey/ui/Box/Controls';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import AvatarUser from '@misakey/ui/Avatar/User';
 import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
-import LoginFormFields from '@misakey/ui/Form/Fields/Login/Identifier';
-import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
+import List from '@material-ui/core/List';
+import ListItemConsentEmail from '@misakey/ui/ListItem/Consent/Email';
+import AvatarBox from '@misakey/ui/Avatar/Box';
+import AvatarMisakeyDenied from '@misakey/ui/Avatar/Misakey/Denied';
+import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
 
-// CONSTANTS
-const { acr: ACR_SELECTOR } = authSelectors;
-
-const INITIAL_VALUES = { identifier: '' };
+// HOOKS
+const useStyles = makeStyles((theme) => ({
+  listFullWidth: {
+    width: '100%',
+  },
+  dialogContentRoot: {
+    [theme.breakpoints.only('xs')]: {
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
+  },
+  dialogContentContent: {
+    alignItems: 'center',
+  },
+}));
 
 // COMPONENTS
 const DialogSigninRedirect = ({
@@ -45,19 +61,28 @@ const DialogSigninRedirect = ({
   open,
   onClose,
   canCancelRedirect,
+  publicRoute,
   ...props
 }) => {
-  const currentUser = useSelector(getCurrentUserSelector);
-  const currentAcr = useSelector(ACR_SELECTOR);
+  const classes = useStyles();
+  const isXs = useXsMediaQuery();
 
-  const { displayName, avatarUrl } = useSafeDestr(currentUser);
+  const currentUser = useSelector(getCurrentUserSelector);
+
+  const { displayName, avatarUrl, identifier } = useSafeDestr(currentUser);
+  const { value: identifierValue } = useSafeDestr(identifier);
 
   const objLoginHint = useMemo(
     () => (isEmpty(loginHint) ? null : objectToCamelCase(JSON.parse(loginHint))),
     [loginHint],
   );
 
-  const { resourceName } = useSafeDestr(objLoginHint);
+  const { resourceName, creatorName, creatorIdentityId } = useSafeDestr(objLoginHint);
+
+  const creatorProfileTo = useMemo(
+    () => (isNil(creatorIdentityId) ? null : generatePath(publicRoute, { id: creatorIdentityId })),
+    [publicRoute, creatorIdentityId],
+  );
 
   const propsWithoutTranslation = useMemo(
     () => omitTranslationProps(props),
@@ -97,17 +122,49 @@ const DialogSigninRedirect = ({
     [canCancelRedirect, onClose],
   );
 
+  const sessionExpired = useMemo(
+    () => !isNil(currentUser),
+    [currentUser],
+  );
+
   const title = useMemo(
     () => {
+      if (sessionExpired) {
+        return t('components:signinRedirect.user.title');
+      }
       if (!isNil(resourceName)) {
-        return t('components:signinRedirect.resource', { resourceName });
+        return t('common:connect.title', { resourceName });
       }
-      if (!isNil(currentUser) && (isNil(acrValues) || currentAcr >= acrValues)) {
-        return t('components:signinRedirect.user');
-      }
-      return t('components:signinRedirect.default');
+      return t('common:connect.misakey.title');
     },
-    [resourceName, currentUser, currentAcr, t, acrValues],
+    [resourceName, t, sessionExpired],
+  );
+
+  const subtitle = useMemo(
+    () => {
+      if (sessionExpired) {
+        return t('components:signinRedirect.user.subtitle');
+      }
+      if (!isNil(resourceName)) {
+        return (
+          <Trans values={{ creatorName }} i18nKey="common:connect.subtitle">
+            Information below will be shared with
+            <MuiLink
+              color="secondary"
+              component={Link}
+              to={creatorProfileTo}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {'{{creatorName}}'}
+            </MuiLink>
+            to continue
+          </Trans>
+        );
+      }
+      return t('common:connect.misakey.subtitle');
+    },
+    [resourceName, sessionExpired, t, creatorName, creatorProfileTo],
   );
 
   const onDelete = useSignOut(userManager);
@@ -117,13 +174,8 @@ const DialogSigninRedirect = ({
     [userManager],
   );
 
-  const onSubmit = useCallback(
-    (({ identifier }) => {
-      const options = isEmpty(identifier)
-        ? redirectOptions
-        : { ...redirectOptions, loginHint: JSON.stringify({ identifier }) };
-      return onRedirect(options);
-    }),
+  const onClick = useCallback(
+    () => onRedirect(redirectOptions),
     [onRedirect, redirectOptions],
   );
 
@@ -135,42 +187,72 @@ const DialogSigninRedirect = ({
       fullScreen
       {...closableDialogProps}
     >
-      <Formik
-        validationSchema={isNil(currentUser) && identifierValidationSchema}
-        initialValues={INITIAL_VALUES}
-        onSubmit={onSubmit}
+      <DialogTitleWithClose fullScreen {...dialogTitleProps} gutterBottom>
+        <BoxFlexFill />
+        {!isNil(currentUser) && <AvatarUser displayName={displayName} avatarUrl={avatarUrl} />}
+      </DialogTitleWithClose>
+      {open && (
+      <DialogContent
+        classes={{ root: classes.dialogContentRoot, content: classes.dialogContentContent }}
       >
-        <Form>
-          <DialogTitleWithClose fullScreen {...dialogTitleProps} gutterBottom>
-            <BoxFlexFill />
-            {!isNil(currentUser) && <AvatarUser displayName={displayName} avatarUrl={avatarUrl} />}
-          </DialogTitleWithClose>
-          {open && (
-            <DialogContent>
-              <Title>{title}</Title>
-              <Subtitle>{t('components:signinRedirect.subtitle')}</Subtitle>
-              {!isNil(currentUser) ? (
-                <Box my={2}>
-                  <ChipUser
-                    displayName={displayName}
-                    avatarUrl={avatarUrl}
-                    onDelete={onDelete}
-                  />
-                </Box>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="flex-start"
+        >
+          {sessionExpired ? (<AvatarMisakeyDenied large />) : (
+            <>
+              {isNil(resourceName) ? (
+                <AvatarMisakey large />
               ) : (
-                <LoginFormFields />
+                <AvatarBox
+                  title={resourceName}
+                  large
+                />
               )}
-              <BoxControls
-                primary={{
-                  type: 'submit',
-                  text: t('common:confirm'),
-                }}
-                formik
-              />
-            </DialogContent>
+            </>
           )}
-        </Form>
-      </Formik>
+          <Box mt={2}>
+            <Title>{title}</Title>
+            <Subtitle>{subtitle}</Subtitle>
+            {!sessionExpired && (
+            <List className={classes.listFullWidth}>
+              <ListItemConsentEmail
+                avatarUrl={avatarUrl}
+                displayName={displayName}
+                email={identifierValue}
+                selected
+              >
+                <Button
+                  standing={BUTTON_STANDINGS.MAIN}
+                  text={t('common:confirm')}
+                  onClick={onClick}
+                  size={isXs ? 'small' : 'medium'}
+                />
+              </ListItemConsentEmail>
+            </List>
+            )}
+          </Box>
+          {!isNil(currentUser) && (
+          <Box my={2} alignSelf="center">
+            <ChipUser
+              displayName={displayName}
+              avatarUrl={avatarUrl}
+              onDelete={onDelete}
+            />
+          </Box>
+          )}
+          {sessionExpired && (
+          <BoxControls
+            primary={{
+              text: t('common:confirm'),
+              onClick,
+            }}
+          />
+          )}
+        </Box>
+      </DialogContent>
+      )}
       <FooterFullScreen />
     </Dialog>
   );
@@ -181,6 +263,7 @@ DialogSigninRedirect.propTypes = {
   loginHint: PropTypes.string,
   userManager: PropTypes.object.isRequired,
   canCancelRedirect: PropTypes.bool.isRequired,
+  publicRoute: PropTypes.string.isRequired,
   // DialogConfirm
   onClose: PropTypes.func,
   open: PropTypes.bool.isRequired,

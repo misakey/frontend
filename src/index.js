@@ -16,6 +16,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import reducers from 'store/reducers';
 // middlewares
 import API from '@misakey/api';
+import routes from 'routes';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 import APITokenMiddleware from '@misakey/auth/middlewares/APItoken';
@@ -110,6 +111,7 @@ if (isSilentAuthIframe()) {
                     store={store}
                     config={window.env.AUTH}
                     registerMiddlewares={registerMiddlewares}
+                    publicRoute={routes.identities.public}
                   >
                     <App />
                   </OidcProvider>

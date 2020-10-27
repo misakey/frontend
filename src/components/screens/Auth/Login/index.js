@@ -81,6 +81,7 @@ AuthLogin.propTypes = {
   // CONNECT
   identifier: PropTypes.string,
   loginHint: SSO_PROP_TYPES.loginHint.isRequired,
+  client: SSO_PROP_TYPES.client.isRequired,
   // ROUTER
   match: PropTypes.shape({ path: PropTypes.string }).isRequired,
   // withTranslation
@@ -95,7 +96,7 @@ AuthLogin.defaultProps = {
 const mapStateToProps = (state) => ({
   identifier: state.screens.auth.identifier || authSelectors.identifierValue(state),
   loginHint: state.sso.loginHint,
-
+  client: state.sso.client,
 });
 
 export default connect(mapStateToProps, {})(withTranslation('auth')(AuthLogin));

@@ -1,0 +1,10 @@
+{
+  "welcome": "Bienvenue sur Misakey",
+  "noAccount": "Pas encore de compte\u00a0?",
+  "createAccount": "Créer un compte",
+  "connect": "Connexion",
+  "discoverUs": "Qu'est-ce que Misakey\u00a0?",
+  "createFreeAccount": "Créer mon compte gratuit",
+  "openSource": "Misakey est un serveur open-source de gestion fédérée des comptes utilisateurs",
+  "details": "Misakey fournit un compte unique pour confirmer son identité, gérer ses connexions et stocker-partager-recevoir des données, des messages et des documents avec du chiffrement de bout-en-bout. C'est gratuit et accessible à tous.\n\nAvec Misakey, vous allez pouvoir reprendre le contrôle sur votre vie numérique."
+}
