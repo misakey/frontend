@@ -2,7 +2,6 @@ import { STORAGE_PREFIX } from '@misakey/auth/constants';
 
 import getSearchParams from '@misakey/helpers/getSearchParams';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import storage from '@misakey/helpers/storage';
 import isNil from '@misakey/helpers/isNil';
 
 import { useMemo } from 'react';
@@ -33,7 +32,7 @@ export default () => {
       if (isNil(state)) {
         return EMPTY_OBJ;
       }
-      const storageItem = storage.getItem(`${STORAGE_PREFIX}${state}`);
+      const storageItem = sessionStorage && sessionStorage.getItem(`${STORAGE_PREFIX}${state}`);
       if (isNil(storageItem)) {
         return EMPTY_OBJ;
       }

@@ -1,13 +1,11 @@
 import React, { useMemo, useEffect, createContext, useCallback, useState, forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import { loadUserThunk, authReset } from '@misakey/auth/store/actions/auth';
 
 import log from '@misakey/helpers/log';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
-import { StorageUnavailable } from '@misakey/helpers/storage';
 import parseJwt from '@misakey/helpers/parseJwt';
 import { parseAcr } from '@misakey/helpers/parseAcr';
 import createUserManager from '@misakey/auth/helpers/userManager';
@@ -16,8 +14,6 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import DialogSigninRedirect from '@misakey/auth/components/OidcProvider/Dialog/SigninRedirect';
-import ScreenError from '@misakey/ui/Screen/Error';
-import Typography from '@material-ui/core/Typography';
 
 // HELPERS
 const getUser = ({
@@ -81,9 +77,6 @@ function OidcProvider({ store, children, config, registerMiddlewares, publicRout
   );
 
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
-
-  const { t } = useTranslation('common');
 
   const dispatchLoadUser = useCallback(
     (user, identityId, accountId) => store.dispatch(loadUserThunk({
@@ -114,7 +107,6 @@ function OidcProvider({ store, children, config, registerMiddlewares, publicRout
       return dispatchStoreUpdate(user).then(() => setIsLoading(false));
     }
     log('User not found or expired !');
-    setIsLoading(false);
     return Promise.resolve();
   }, [dispatchStoreUpdate]);
 
@@ -132,8 +124,9 @@ function OidcProvider({ store, children, config, registerMiddlewares, publicRout
     // Load user on store when the app is opening
     userManager.getUser()
       .then(onUserLoaded)
-      .catch(setError);
-  }, [onUserLoaded, userManager, setError]);
+      .catch((e) => log(`Fail to retrieve user: ${e}`))
+      .finally(() => setIsLoading(false));
+  }, [onUserLoaded, userManager]);
 
   const onStorageEvent = useCallback(
     (e) => {
@@ -152,6 +145,8 @@ function OidcProvider({ store, children, config, registerMiddlewares, publicRout
     [loadUserAtMount, store, userManager.userStorageKey],
   );
 
+  // This effet should only be fired at app launch as it only load user from localStorage and
+  // clean eventual residual keys in storage
   useEffect(() => {
     // register the event callbacks
     userManager.events.addUserLoaded(onUserLoaded);
@@ -162,10 +157,13 @@ function OidcProvider({ store, children, config, registerMiddlewares, publicRout
     // Remove from store eventual dead signIn request key
     // (it happens when an error occurs in the flow and the backend response
     // doesn't send back the state so we can't remove it with the signInRequestCallback )
+    // we could remove it if it became problematic as we use sessionStorage for state
+    // it must be cleaned on browser closing
     try {
       userManager.clearStaleState();
     } catch (e) {
-      setError(new StorageUnavailable());
+      // Do not show nor throw error as it's not blocking for using app
+      log(`Fail to clear localStorage from residual oidc:state, ${e}`);
     }
 
     return function cleanup() {
@@ -173,13 +171,7 @@ function OidcProvider({ store, children, config, registerMiddlewares, publicRout
       userManager.events.removeUserLoaded(onUserLoaded);
       userManager.events.removeSilentRenewError(onSilentRenewError);
     };
-  }, [
-    userManager,
-    onUserLoaded,
-    onSilentRenewError,
-    loadUserAtMount,
-    setError,
-  ]);
+  }, [userManager, onUserLoaded, onSilentRenewError, loadUserAtMount]);
 
   useEffect(
     () => {
@@ -200,17 +192,6 @@ function OidcProvider({ store, children, config, registerMiddlewares, publicRout
     },
     [registerMiddlewares, askSigninRedirect],
   );
-
-  if (error) {
-    if (error instanceof StorageUnavailable) {
-      return (
-        <ScreenError>
-          <Typography variant="h5" component="h5" align="center" color="error">{t('common:error.storage')}</Typography>
-        </ScreenError>
-      );
-    }
-    return <ScreenError />;
-  }
 
   return (
     <UserManagerContext.Provider value={contextValue}>

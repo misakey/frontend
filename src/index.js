@@ -34,7 +34,7 @@ import App from 'components/App';
 import SplashScreen from '@misakey/ui/Screen/Splash';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 import OidcProvider from '@misakey/auth/components/OidcProvider'; // OIDC provider
-import { SnackbarProvider } from 'notistack';
+import SnackbarProvider from 'components/smart/SnackbarProvider';
 import OfflineContextProvider from 'components/smart/Context/Offline';
 // translations
 import './i18n';
@@ -42,8 +42,6 @@ import countries from 'i18n-iso-countries';
 // helpers
 import isNil from '@misakey/helpers/isNil';
 import { isSilentAuthIframe, processSilentAuthCallbackInIframe } from '@misakey/auth/helpers'; // Silent auth
-
-import SnackbarActionHide from 'components/dumb/Snackbar/Action/Hide';
 
 /* END OF IMPORTS */
 
@@ -101,11 +99,7 @@ if (isSilentAuthIframe()) {
         >
           <ThemeProvider>
             <Router>
-              <SnackbarProvider
-                action={(key) => <SnackbarActionHide id={key} />}
-                maxSnack={60}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-              >
+              <SnackbarProvider>
                 <OfflineContextProvider addMiddleware={API.addMiddleware}>
                   <OidcProvider
                     store={store}

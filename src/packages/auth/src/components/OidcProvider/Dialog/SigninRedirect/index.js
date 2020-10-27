@@ -2,6 +2,7 @@ import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation, Trans } from 'react-i18next';
 import { Link, generatePath } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
@@ -68,6 +69,7 @@ const DialogSigninRedirect = ({
   const isXs = useXsMediaQuery();
 
   const currentUser = useSelector(getCurrentUserSelector);
+  const { enqueueSnackbar } = useSnackbar();
 
   const { displayName, avatarUrl, identifier } = useSafeDestr(currentUser);
   const { value: identifierValue } = useSafeDestr(identifier);
@@ -175,8 +177,10 @@ const DialogSigninRedirect = ({
   );
 
   const onClick = useCallback(
-    () => onRedirect(redirectOptions),
-    [onRedirect, redirectOptions],
+    () => onRedirect(redirectOptions).catch(() => {
+      enqueueSnackbar(t('common:error.storage'), { variant: 'warning', persist: true });
+    }),
+    [enqueueSnackbar, onRedirect, redirectOptions, t],
   );
 
   useUpdateDocHead(t('components:signinRedirect.documentTitle'));
@@ -192,66 +196,66 @@ const DialogSigninRedirect = ({
         {!isNil(currentUser) && <AvatarUser displayName={displayName} avatarUrl={avatarUrl} />}
       </DialogTitleWithClose>
       {open && (
-      <DialogContent
-        classes={{ root: classes.dialogContentRoot, content: classes.dialogContentContent }}
-      >
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="flex-start"
+        <DialogContent
+          classes={{ root: classes.dialogContentRoot, content: classes.dialogContentContent }}
         >
-          {sessionExpired ? (<AvatarMisakeyDenied large />) : (
-            <>
-              {isNil(resourceName) ? (
-                <AvatarMisakey large />
-              ) : (
-                <AvatarBox
-                  title={resourceName}
-                  large
-                />
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="flex-start"
+          >
+            {sessionExpired ? (<AvatarMisakeyDenied large />) : (
+              <>
+                {isNil(resourceName) ? (
+                  <AvatarMisakey large />
+                ) : (
+                  <AvatarBox
+                    title={resourceName}
+                    large
+                  />
+                )}
+              </>
+            )}
+            <Box mt={2}>
+              <Title>{title}</Title>
+              <Subtitle>{subtitle}</Subtitle>
+              {!sessionExpired && (
+                <List className={classes.listFullWidth}>
+                  <ListItemConsentEmail
+                    avatarUrl={avatarUrl}
+                    displayName={displayName}
+                    email={identifierValue}
+                    selected
+                  >
+                    <Button
+                      standing={BUTTON_STANDINGS.MAIN}
+                      text={t('common:confirm')}
+                      onClick={onClick}
+                      size={isXs ? 'small' : 'medium'}
+                    />
+                  </ListItemConsentEmail>
+                </List>
               )}
-            </>
-          )}
-          <Box mt={2}>
-            <Title>{title}</Title>
-            <Subtitle>{subtitle}</Subtitle>
-            {!sessionExpired && (
-            <List className={classes.listFullWidth}>
-              <ListItemConsentEmail
-                avatarUrl={avatarUrl}
-                displayName={displayName}
-                email={identifierValue}
-                selected
-              >
-                <Button
-                  standing={BUTTON_STANDINGS.MAIN}
-                  text={t('common:confirm')}
-                  onClick={onClick}
-                  size={isXs ? 'small' : 'medium'}
+            </Box>
+            {!isNil(currentUser) && (
+              <Box my={2} alignSelf="center">
+                <ChipUser
+                  displayName={displayName}
+                  avatarUrl={avatarUrl}
+                  onDelete={onDelete}
                 />
-              </ListItemConsentEmail>
-            </List>
+              </Box>
+            )}
+            {sessionExpired && (
+              <BoxControls
+                primary={{
+                  text: t('common:confirm'),
+                  onClick,
+                }}
+              />
             )}
           </Box>
-          {!isNil(currentUser) && (
-          <Box my={2} alignSelf="center">
-            <ChipUser
-              displayName={displayName}
-              avatarUrl={avatarUrl}
-              onDelete={onDelete}
-            />
-          </Box>
-          )}
-          {sessionExpired && (
-          <BoxControls
-            primary={{
-              text: t('common:confirm'),
-              onClick,
-            }}
-          />
-          )}
-        </Box>
-      </DialogContent>
+        </DialogContent>
       )}
       <FooterFullScreen />
     </Dialog>

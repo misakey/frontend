@@ -102,6 +102,13 @@ class MisakeyUserManager extends UserManager {
           ...(args.acr_values ? { acr_values: args.acr_values } : {}),
         });
 
+        // It can happen on Android Mobile WebView as domStorage are not enabled by default
+        // https://stackoverflow.com/questions/5899087/android-webview-localstorage/5934650#5934650
+        if (isNil(this.settings.stateStore._store)) {
+          // check on oidc state is going to fail if storage is not available
+          throw new StorageUnavailable();
+        }
+
         return this.settings.stateStore.set(signinRequest.state.id, newSignInRequest)
           .then(() => handle.navigate(newNavigatorParams));
       }).catch((err) => {
@@ -117,30 +124,48 @@ class MisakeyUserManager extends UserManager {
   // overrides UserManager methods to add csrfToken in user stored in localStorage
   // as csrfToken has the same validity than access_token
   _signinEnd(url, args = {}) {
-    return this.processSigninResponse(url).then((signinResponse) => {
-      log('UserManager._signinEnd: got signin response');
+    if (isNil(this.settings.stateStore._store)) {
+      // check on oidc state is going to fail if storage is not available
+      throw new StorageUnavailable();
+    }
+    return this.processSigninResponse(url)
+      .then((signinResponse) => {
+        log('UserManager._signinEnd: got signin response');
 
-      const user = new User(signinResponse);
+        const user = new User(signinResponse);
 
-      if (args.current_sub) {
-        if (args.current_sub !== user.profile.sub) {
-          log(`UserManager._signinEnd: current user does not match user returned from signin. sub from signin: ${user.profile.sub}`);
-          return Promise.reject(new Error('login_required'));
+        if (args.current_sub) {
+          if (args.current_sub !== user.profile.sub) {
+            log(`UserManager._signinEnd: current user does not match user returned from signin. sub from signin: ${user.profile.sub}`);
+            return Promise.reject(new Error('login_required'));
+          }
+          log('UserManager._signinEnd: current user matches user returned from signin');
         }
-        log('UserManager._signinEnd: current user matches user returned from signin');
-      }
 
-      return this.storeUser(user).then(() => addCsrfTokenToUser(this.userStorageKey, url)
-        .then((userWithCsrfToken) => {
-          log('UserManager._signinEnd: user stored');
+        return this.storeUser(user)
+          .then(() => addCsrfTokenToUser(this.userStorageKey, url)
+            .then((userWithCsrfToken) => {
+              log('UserManager._signinEnd: user stored');
+              this._events.load(userWithCsrfToken || user);
+              // Fire expiring handled when new token is added
+              this.loadSilentAuthTimer(user);
 
-          this._events.load(userWithCsrfToken || user);
-          // Fire expiring handled when new token is added
-          this.loadSilentAuthTimer(user);
-
-          return userWithCsrfToken || user;
-        }));
-    });
+              return userWithCsrfToken || user;
+            }))
+          .catch((e) => {
+            log(`UserManager._signinEnd: fail to store user in dom storage: ${e}`);
+            // User is not stored in localStorage but app can work anyway, user should<xc
+            // reauthenticated if leaving the app and go back
+            this._events.load(user);
+            // Fire expiring handled when new token is added
+            this.loadSilentAuthTimer(user);
+            return user;
+          });
+      })
+      .catch((e) => {
+        log(`UserManager._signinEnd: fail to processSigninResponse ${e}`);
+        throw e;
+      });
   }
 
   getUser() {
@@ -181,6 +206,7 @@ export default function createUserManager(config) {
     automaticSilentRenew: true,
     loadUserInfo: false,
     userStore: new WebStorageStateStore({ store: storage }),
+    stateStore: new WebStorageStateStore({ store: sessionStorage }),
     ...config,
   };
   return new MisakeyUserManager(userManagerConfig);

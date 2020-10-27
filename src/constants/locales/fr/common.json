@@ -143,7 +143,7 @@
     "retry": "Une erreur est survenue lors d'une requête, nouvelle tentative dans {{delay}}s",
     "stop": "Echec de la requête au bout de {{count}} tentative",
     "stop_plural": "Echec de la requête au bout de {{count}} tentatives",
-    "storage": "Merci d'autoriser les cookies sur cette application"
+    "storage": "Une erreur s'est produite lors de la tentative de connexion.\nL'application n'a pas pu accéder au stockage local du navigateur."
   },
   "connect": {
     "misakey": {

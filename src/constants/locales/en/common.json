@@ -136,7 +136,7 @@
     "retry": "A request error occurred, retrying in {{delay}}s",
     "stop": "Request failure after {{count}} attempt",
     "stop_plural": "Request failure after {{count}} attempts",
-    "storage": "Please enable cookies on this application"
+    "storage": "An error occurred with the connexion attempt.\nThe application can not reach browser local storage."
   },
   "connect": {
     "misakey": {

@@ -39,7 +39,9 @@ const RedirectAuthCallback = ({
         const { csrfToken } = searchParams;
         const user = await userManager.signinRedirectCallback(callbackUrl);
         if (checkAcrIntegrity(user.profile.acr)) {
-          if (isFunction(handleSuccess)) { handleSuccess({ ...user, csrfToken }); }
+          if (isFunction(handleSuccess)) {
+            handleSuccess(!isNil(user.csrfToken) ? user : { ...user, csrfToken });
+          }
           return true;
         }
         const { email } = user.profile;

@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 // COMPONENTS
-const SnackbarActionHide = forwardRef(({ id }, ref) => {
+const SnackbarActionRefresh = forwardRef(({ id }, ref) => {
   const { closeSnackbar } = useSnackbar();
 
   const onClose = useCallback(
@@ -32,8 +32,8 @@ const SnackbarActionHide = forwardRef(({ id }, ref) => {
   );
 });
 
-SnackbarActionHide.propTypes = {
+SnackbarActionRefresh.propTypes = {
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 
-export default SnackbarActionHide;
+export default SnackbarActionRefresh;

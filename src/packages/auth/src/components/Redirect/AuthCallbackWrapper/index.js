@@ -4,7 +4,9 @@ import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import isNil from '@misakey/helpers/isNil';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import isObject from '@misakey/helpers/isObject';
 import { parseAcr } from '@misakey/helpers/parseAcr';
+import { StorageUnavailable } from '@misakey/helpers/storage';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
@@ -31,26 +33,37 @@ const useHandleSuccess = (
 
 const useHandleError = (enqueueSnackbar, t) => {
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
-  return useCallback(({ error, errorCode }) => {
-    // Errors from API
-    if (error && error.httpStatus) {
-      handleGenericHttpErrors(error);
+  return useCallback((err) => {
+    if (err instanceof StorageUnavailable) {
+      enqueueSnackbar(
+        t('common:error.storage'),
+        { variant: 'warning' },
+      );
       return;
     }
 
-    // Errors from hydra
-    if (errorCode) {
-      enqueueSnackbar(
-        t('common:anErrorOccurred'),
-        { variant: 'error' },
-      );
-      return;
+    if (isObject(err)) {
+      const { error, errorCode } = err;
+      // Errors from API
+      if (error && error.httpStatus) {
+        handleGenericHttpErrors(error);
+        return;
+      }
+
+      // Errors from hydra
+      if (errorCode) {
+        enqueueSnackbar(
+          t('common:anErrorOccurred'),
+          { variant: 'error' },
+        );
+        return;
+      }
     }
 
     // Others errors (front))
     enqueueSnackbar(
       t('common:anErrorOccurred'),
-      { variant: 'error' },
+      { variant: 'warning' },
     );
   }, [enqueueSnackbar, t, handleGenericHttpErrors]);
 };
