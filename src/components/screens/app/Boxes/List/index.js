@@ -46,10 +46,10 @@ function BoxesList({ t, activeStatus, ...props }) {
       {isCryptoLoaded
         ? (
           <Vault
-            ref={onContentRef}
-            search={search}
-            activeStatus={activeStatus}
-            {...omitTranslationProps(props)}
+              ref={onContentRef}
+              search={search}
+              activeStatus={activeStatus}
+              {...omitTranslationProps(props)}
           />
         )
         : (

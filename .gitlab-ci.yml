@@ -65,7 +65,7 @@ build:
   stage: build
   image: docker:19.03.8 #Fixme: put back stable when gitlab is updated
   tags:
-    - misakey_docker
+    - misakey_docker_front
   before_script:
     - apk add make
     - apk add git
@@ -88,7 +88,7 @@ build_maintenance:
   stage: build
   image: docker:19.03.8 #Fixme: put back stable when gitlab is updated
   tags:
-    - misakey_docker
+    - misakey_docker_front
   before_script:
     - apk add make
     - apk add git

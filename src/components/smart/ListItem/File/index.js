@@ -172,12 +172,12 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
         </Avatar>
       </ListItemAvatar>
       <ListItemText
-        primary={name || t('common:undecryptable')}
-        secondary={(
-          <>
-            <Typography component="span" noWrap display="block" variant="caption">{secondary}</Typography>
-            <Typography component="span" noWrap display="block" variant="caption">{tertiary}</Typography>
-            {!isNil(onSave) && (
+          primary={name || t('common:undecryptable')}
+          secondary={(
+            <>
+              <Typography component="span" noWrap display="block" variant="caption">{secondary}</Typography>
+              <Typography component="span" noWrap display="block" variant="caption">{tertiary}</Typography>
+              {!isNil(onSave) && (
               <Button
                 ref={buttonRef}
                 size="small"
@@ -188,10 +188,10 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
               >
                 {t('common:addToVault')}
               </Button>
-            )}
-          </>
+              )}
+            </>
         )}
-        primaryTypographyProps={{ noWrap: true, display: 'block', color: 'textPrimary' }}
+          primaryTypographyProps={{ noWrap: true, display: 'block', color: 'textPrimary' }}
       />
       {
         !isNil(actions) && (

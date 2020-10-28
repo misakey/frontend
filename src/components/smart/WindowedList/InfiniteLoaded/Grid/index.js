@@ -89,11 +89,11 @@ const WindowedGridInfiniteLoaded = forwardRef(({
 
   return (
     <InfiniteLoader
-      isItemLoaded={isItemLoaded}
-      itemCount={itemCount}
-      loadMoreItems={onLoadMoreItems}
-      minimumBatchSize={minimumBatchSize}
-      threshold={threshold}
+        isItemLoaded={isItemLoaded}
+        itemCount={itemCount}
+        loadMoreItems={onLoadMoreItems}
+        minimumBatchSize={minimumBatchSize}
+        threshold={threshold}
     >
       {({ onItemsRendered, ref }) => (
         <Grid

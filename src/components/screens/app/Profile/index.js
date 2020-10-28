@@ -99,9 +99,9 @@ function Profile(props) {
       {(drawerProps) => (
         <Switch>
           <Route
-            exact
-            path={routes.identities.public}
-            render={(routerProps) => <IdentityPublicReadOnly {...routerProps} {...drawerProps} />}
+              exact
+              path={routes.identities.public}
+              render={(routerProps) => <IdentityPublicReadOnly {...routerProps} {...drawerProps} />}
           />
           <Redirect from={path} to={redirectTo} />
         </Switch>
