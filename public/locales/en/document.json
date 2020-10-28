@@ -1,7 +1,7 @@
 {
     "vault": {
         "title": "My documents",
-        "subtitle": "You are the only member"
+        "subtitle": "Only you can access"
     },
     "read": {
         "none": "Select a space to start"

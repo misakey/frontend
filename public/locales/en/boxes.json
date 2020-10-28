@@ -214,7 +214,7 @@
         },
         "members": {
           "title": "Members of the private space",
-          "creator": "You are the only member",
+          "creator": "Only you have access",
           "count": "{{count}} member",
           "count_plural": "{{count}} members",
           "admin": "admin"
