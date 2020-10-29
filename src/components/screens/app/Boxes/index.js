@@ -171,7 +171,6 @@ function Boxes({ match }) {
 
 Boxes.propTypes = {
   match: PropTypes.shape({ path: PropTypes.string }).isRequired,
-  isReady: PropTypes.bool.isRequired,
 };
 
 export default Boxes;

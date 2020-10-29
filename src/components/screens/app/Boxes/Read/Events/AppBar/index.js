@@ -148,8 +148,8 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
   );
 
   const displayTabs = useMemo(
-    () => !isClosed || belongsToCurrentUser,
-    [belongsToCurrentUser, isClosed],
+    () => (!isClosed || belongsToCurrentUser) && hasAccess,
+    [belongsToCurrentUser, hasAccess, isClosed],
   );
 
   return (

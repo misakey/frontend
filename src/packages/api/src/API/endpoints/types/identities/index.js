@@ -59,4 +59,11 @@ export default {
       auth: true,
     },
   },
+  boxSettings: {
+    update: {
+      method: 'PUT',
+      path: '/box-users/:identityId/boxes/:boxId/settings',
+      auth: true,
+    },
+  },
 };

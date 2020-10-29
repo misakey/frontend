@@ -94,8 +94,14 @@
   "signinRedirect": {
     "documentTitle": "Authentication",
     "user": {
-      "title": "Your authenticated session has expired",
-      "subtitle": "Confirm your identity to continue"
+      "accountNeeded": {
+        "title": "This functionality requires account creation",
+        "subtitle": "Confirm your identity to continue"
+      },
+      "expired": {
+        "title": "Your authenticated session has expired",
+        "subtitle": "Confirm your identity to continue"
+      }
     }
   },
   "cardEvent": {

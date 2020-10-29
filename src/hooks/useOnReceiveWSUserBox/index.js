@@ -1,7 +1,7 @@
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import routes from 'routes';
 import BoxesSchema from 'store/schemas/Boxes';
-import { DELETED_BOX, NEW_EVENT, NOTIFICATIONS_ACK } from 'constants/app/boxes/ws/messageTypes';
+import { DELETED_BOX, NEW_EVENT, NOTIFICATIONS_ACK, BOX_SETTINGS } from 'constants/app/boxes/ws/messageTypes';
 import { CHANGE_EVENT_TYPES } from 'constants/app/boxes/events';
 import { receiveWSEditEvent, addBoxEvent } from 'store/reducers/box';
 import { updateEntities } from '@misakey/store/actions/entities';
@@ -102,6 +102,13 @@ export default (activeStatus, search) => {
       if (type === DELETED_BOX) {
         const { id: boxId } = object;
         return onRemoveBox(boxId).then((box) => onDeleteSuccess({ ...box, ...object }));
+      }
+
+      if (type === BOX_SETTINGS) {
+        const { boxId } = object;
+        return Promise.resolve(
+          dispatch(updateEntities([{ id: boxId, changes: { settings: object } }], BoxesSchema)),
+        );
       }
 
       if (type === NOTIFICATIONS_ACK) {

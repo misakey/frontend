@@ -307,5 +307,10 @@
         "they": "L'espace privé «\u00a0{{title}}\u00a0» a été supprimé"
       }
     }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "mute": "Désactiver les notifications",
+    "unmute": "Activer les notifications"
   }
 }

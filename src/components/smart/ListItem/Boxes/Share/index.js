@@ -52,4 +52,4 @@ ListItemBoxShare.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation('boxes')(ListItemBoxShare);
+export default withTranslation('common')(ListItemBoxShare);

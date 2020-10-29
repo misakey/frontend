@@ -24,6 +24,20 @@ const mergeIdentity = (state, identity) => (isNil(identity)
   : merge({}, (state.identity || {}), identity)
 );
 
+const syncIdentity = (state, { identity, accountId, identityId }) => {
+  if (isNil(state.identity) || !isNil(identity)) { return identity; }
+  if (isNil(accountId) || isNil(identityId)) { return identity; }
+
+  const { id: currentIdentityId, accountId: currentAccountId } = state.identity;
+
+  const identityHasChanged = currentIdentityId !== identityId;
+  const identityUpgrade = currentAccountId !== accountId;
+
+  if (identityHasChanged) { return null; }
+  if (identityUpgrade) { return { accountId }; }
+  return {};
+};
+
 // INITIAL_STATE
 export const INITIAL_STATE = {
   id: null,
@@ -57,12 +71,16 @@ function clearIdentity(state) {
   };
 }
 
-function updateCredentials(state, { credentials: { identity, acr, ...rest } }) {
+function updateCredentials(state, { credentials }) {
+  const { identity, acr, ...rest } = credentials;
+
   const nextAcr = isNil(acr) ? state.acr : parseAcr(acr);
+
+  const nextIdentity = syncIdentity(state, credentials);
 
   return {
     ...state,
-    identity: mergeIdentity(state, identity),
+    identity: mergeIdentity(state, nextIdentity),
     acr: nextAcr,
     ...rest,
   };

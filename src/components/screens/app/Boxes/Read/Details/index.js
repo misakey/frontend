@@ -36,6 +36,7 @@ import ListItemShare from 'components/smart/ListItem/Boxes/Share';
 import ListItemLeave from 'components/smart/ListItem/Boxes/Leave';
 import ListItemDelete from 'components/smart/ListItem/Boxes/Delete';
 import ListItemMemberPublicLink from 'components/smart/ListItem/Member/PublicLink';
+import ListItemBoxMute from 'components/smart/ListItem/Boxes/Mute';
 
 // CONSTANTS
 const { conflict } = errorTypes;
@@ -174,6 +175,8 @@ function BoxDetails({ isDrawerOpen, box, belongsToCurrentUser, t }) {
             />
             <ChevronRightIcon />
           </ListItem> */}
+          <ListItemShare box={box} />
+          <ListItemBoxMute box={box} />
           <ListItem
             // button
             // to={}
@@ -187,9 +190,7 @@ function BoxDetails({ isDrawerOpen, box, belongsToCurrentUser, t }) {
               primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
               secondaryTypographyProps={{ color: 'textPrimary' }}
             />
-            {/* <ChevronRightIcon /> */}
           </ListItem>
-          <ListItemShare box={box} />
           {isAllowedToLeave && <ListItemLeave box={box} />}
           {isAllowedToDelete && <ListItemDelete box={box} />}
           {isAllowedToClose && (

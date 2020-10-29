@@ -24,14 +24,15 @@ function Home({ isFetchingIdentity }) {
   return (
     <>
       <AccountDrawer />
-      <Switch>
-        <Route
-          path={routes.identities._}
-          component={Profile}
-        />
-        <BoxesContextProvider activeStatus={ALL} isReady={isReady}>
+      <BoxesContextProvider activeStatus={ALL} isReady={isReady}>
+        <Switch>
+          <Route
+            path={routes.identities._}
+            component={Profile}
+          />
           <RouteAcr
             acr={2}
+            exact
             path={routes.documents._}
             component={VaultDocuments}
           />
@@ -39,8 +40,8 @@ function Home({ isFetchingIdentity }) {
             path={routes.boxes._}
             component={Boxes}
           />
-        </BoxesContextProvider>
-      </Switch>
+        </Switch>
+      </BoxesContextProvider>
     </>
   );
 }

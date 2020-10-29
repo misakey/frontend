@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { generatePath, Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
@@ -26,9 +26,19 @@ import BoxAvatar from '@misakey/ui/Avatar/Box';
 import BoxAvatarSkeleton from '@misakey/ui/Avatar/Box/Skeleton';
 import TypographyDateSince from 'components/dumb/Typography/DateSince';
 import BoxEventsAccordingToType from 'components/smart/Box/Event';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Menu from '@material-ui/core/Menu';
+import IconButton from '@material-ui/core/IconButton';
+import MenuItemBoxMute from 'components/smart/MenuItem/Box/Mute';
+import MenuItemBoxLeave from 'components/smart/MenuItem/Box/Leave';
+import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
+import { ROW_PROP_TYPES } from 'components/smart/WindowedList';
+
+const DEFAULT_SETTINGS = { muted: false };
 
 // HOOKS
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   listItemText: {
     // Needed for IE11
     width: '100%',
@@ -39,6 +49,18 @@ const useStyles = makeStyles(() => ({
   background: {
     visibility: '0.5',
   },
+  paper: {
+    border: `1px solid ${theme.palette.grey[300]}`,
+  },
+  menuList: {
+    padding: 0,
+  },
+  menuButton: ({ isActionVisible }) => ({
+    visibility: isActionVisible ? 'visible' : 'hidden',
+  }),
+  listItem: ({ isActionVisible }) => ({
+    paddingRight: isActionVisible ? 48 : 16,
+  }),
 }));
 
 // COMPONENTS
@@ -74,8 +96,10 @@ export const BoxListItemSkeleton = (props) => (
   </ListItem>
 );
 
-function BoxListItem({ box, toRoute, t, ...rest }) {
-  const classes = useStyles();
+function BoxListItem({ box, toRoute, t, style, index, ...rest }) {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isActionVisible, setIsActionVisible] = useState(false);
+  const classes = useStyles({ isActionVisible });
 
   const {
     id,
@@ -84,6 +108,7 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
     lastEvent = {},
     lifecycle,
     eventsCount = 0,
+    settings: { muted } = DEFAULT_SETTINGS,
   } = useMemo(() => box || {}, [box]);
 
   const linkProps = useMemo(
@@ -122,9 +147,20 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
     [canBeDecrypted],
   );
 
-  const badgeContent = useMemo(
-    () => (showEventsCount ? eventsCount : 0),
-    [showEventsCount, eventsCount],
+  const badgeProps = useMemo(
+    () => {
+      if (muted) {
+        return {
+          badgeContent: <NotificationsOffIcon style={{ fontSize: 12 }} />,
+          color: 'primary',
+        };
+      }
+      return {
+        badgeContent: showEventsCount ? eventsCount : 0,
+        color: 'secondary',
+      };
+    },
+    [muted, showEventsCount, eventsCount],
   );
 
   const date = useMemo(
@@ -132,16 +168,37 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
     [lastEvent],
   );
 
+  const onMenuClick = useCallback(
+    (event) => { setAnchorEl(event.currentTarget); }, [],
+  );
+
+  const onClose = useCallback(
+    () => { setAnchorEl(null); }, [],
+  );
+
+  const showAction = useCallback(() => setIsActionVisible(true), []);
+  const hideAction = useCallback(() => setIsActionVisible(false), []);
+
   if (isNil(id)) {
     return null;
   }
 
   return (
-    <ListItem key={id} {...linkProps} {...omitTranslationProps(rest)}>
+    <ListItem
+      key={id}
+      ContainerProps={{
+        onMouseEnter: showAction,
+        onMouseLeave: hideAction,
+        // react window props
+        style,
+        index,
+      }}
+      className={classes.listItem}
+      {...linkProps}
+      {...omitTranslationProps(rest)}
+    >
       <ListItemAvatar>
-        <Badge
-          badgeContent={badgeContent}
-        >
+        <Badge {...badgeProps}>
           <BoxAvatar
             title={title}
             lostKey={lostKey}
@@ -153,22 +210,37 @@ function BoxListItem({ box, toRoute, t, ...rest }) {
         primary={(
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography noWrap>{title}</Typography>
-            {!lostKey && (
-              <TypographyDateSince
-                date={date}
-              />
-            )}
+            {!isActionVisible && <TypographyDateSince date={date} />}
           </Box>
         )}
         secondary={secondary}
         primaryTypographyProps={{ noWrap: true, display: 'block' }}
         secondaryTypographyProps={{ noWrap: true, display: 'block', component: Box }}
       />
+      <ListItemSecondaryAction>
+        <IconButton className={classes.menuButton} onClick={onMenuClick} edge="end" aria-label="menu-more">
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          id={`menu-box-${id}`}
+          anchorEl={anchorEl}
+          open={!isNil(anchorEl)}
+          onClose={onClose}
+          onClick={onClose}
+          classes={{ paper: classes.paper, list: classes.menuList }}
+          elevation={0}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+          <MenuItemBoxMute box={box} />
+          {!belongsToCurrentUser && <MenuItemBoxLeave box={box} />}
+        </Menu>
+      </ListItemSecondaryAction>
     </ListItem>
   );
 }
 
 BoxListItem.propTypes = {
+  ...ROW_PROP_TYPES,
   box: PropTypes.shape(BoxesSchema.propTypes),
   toRoute: PropTypes.string,
   // withTranslation

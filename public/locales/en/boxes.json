@@ -307,5 +307,10 @@
         "they": "Private space “{{title}}” has been deleted"
       }
     }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "mute": "Disable notifications",
+    "unmute": "Enable notifications"
   }
 }

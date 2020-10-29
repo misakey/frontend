@@ -6,15 +6,18 @@ import ContextMenuItem from '@misakey/ui/Menu/ContextMenu/MenuItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import AddToVaultIcon from '@material-ui/icons/LibraryAdd';
+import withDialogPassword from 'components/smart/Dialog/Password/with';
+
+const ContextMenuItemACR2Required = withDialogPassword(ContextMenuItem);
 
 // COMPONENTS
 const MenuItemAddFileToVault = forwardRef(({ t, onSave, disabled }, ref) => (
-  <ContextMenuItem ref={ref} onClick={onSave} disabled={disabled}>
+  <ContextMenuItemACR2Required ref={ref} onClick={onSave} disabled={disabled}>
     <ListItemIcon>
       <AddToVaultIcon />
     </ListItemIcon>
     <ListItemText primary={t('common:addToVault')} />
-  </ContextMenuItem>
+  </ContextMenuItemACR2Required>
 ));
 
 MenuItemAddFileToVault.propTypes = {

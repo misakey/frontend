@@ -4,7 +4,7 @@ import { withTranslation, Trans } from 'react-i18next';
 import { Link, generatePath } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import { getCurrentUserSelector, selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
@@ -54,6 +54,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// CONSTANTS
+const { acr: getCurrentAcrSelector } = authSelectors;
+
 // COMPONENTS
 const DialogSigninRedirect = ({
   acrValues, loginHint,
@@ -69,6 +72,7 @@ const DialogSigninRedirect = ({
   const isXs = useXsMediaQuery();
 
   const currentUser = useSelector(getCurrentUserSelector);
+  const currentAcr = useSelector(getCurrentAcrSelector);
   const { enqueueSnackbar } = useSnackbar();
 
   const { displayName, avatarUrl, identifier } = useSafeDestr(currentUser);
@@ -125,27 +129,38 @@ const DialogSigninRedirect = ({
   );
 
   const sessionExpired = useMemo(
-    () => !isNil(currentUser),
-    [currentUser],
+    () => !isNil(currentUser) && currentAcr === acrValues,
+    [acrValues, currentAcr, currentUser],
+  );
+
+  const insufficientACR = useMemo(
+    () => !isNil(currentUser) && currentAcr < acrValues,
+    [acrValues, currentAcr, currentUser],
   );
 
   const title = useMemo(
     () => {
       if (sessionExpired) {
-        return t('components:signinRedirect.user.title');
+        return t('components:signinRedirect.user.expired.title');
+      }
+      if (insufficientACR) {
+        return t('components:signinRedirect.user.accountNeeded.title');
       }
       if (!isNil(resourceName)) {
         return t('common:connect.title', { resourceName });
       }
       return t('common:connect.misakey.title');
     },
-    [resourceName, t, sessionExpired],
+    [sessionExpired, insufficientACR, resourceName, t],
   );
 
   const subtitle = useMemo(
     () => {
       if (sessionExpired) {
-        return t('components:signinRedirect.user.subtitle');
+        return t('components:signinRedirect.user.expired.subtitle');
+      }
+      if (insufficientACR) {
+        return t('components:signinRedirect.user.accountNeeded.subtitle');
       }
       if (!isNil(resourceName)) {
         return (
@@ -166,7 +181,7 @@ const DialogSigninRedirect = ({
       }
       return t('common:connect.misakey.subtitle');
     },
-    [resourceName, sessionExpired, t, creatorName, creatorProfileTo],
+    [sessionExpired, insufficientACR, resourceName, t, creatorName, creatorProfileTo],
   );
 
   const onDelete = useSignOut(userManager);

@@ -48,3 +48,10 @@ export const readVaultUsedSpace = (id) => API
   .build({ id })
   .send()
   .then(objectToCamelCase);
+
+
+export const updateBoxSettings = (identityId, boxId, payload) => API
+  .use(API.endpoints.identities.boxSettings.update)
+  .build({ identityId, boxId }, objectToSnakeCase(payload))
+  .send()
+  .then(objectToCamelCase);

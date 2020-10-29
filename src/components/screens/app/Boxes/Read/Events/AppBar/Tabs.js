@@ -29,7 +29,7 @@ const AppBarMenuTabs = ({ boxId }) => {
 
   return (
     <Box display="flex" justifyContent="center">
-      <Tabs value={tabSelected} aria-label={t('boxes:read.menu.label')}>
+      <Tabs textColor="primary" value={tabSelected} aria-label={t('boxes:read.menu.label')}>
         <Tab
           label={t(`boxes:read.menu.${TABS.discussion}`)}
           component={Link}

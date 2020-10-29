@@ -104,8 +104,14 @@
   "signinRedirect": {
     "documentTitle": "Authentification",
     "user": {
-      "title": "Votre session authentifiée est expirée",
-      "subtitle": "Confirmez votre identité pour continuer"
+      "accountNeeded": {
+        "title": "Cette fonctionnalité nécessite la création d'un compte",
+        "subtitle": "Confirmez votre identité pour continuer"
+      },
+      "expired": {
+        "title": "Votre session authentifiée est expirée",
+        "subtitle": "Confirmez votre identité pour continuer"
+      }
     }
   },
   "cardEvent": {
