@@ -82,7 +82,10 @@
     }
   },
   "fileListItem": {
-    "addedBy": "Added by <1>you</1> {{date}}"
+    "addedBy": {
+      "you": "Added by <1>you</1> {{date}}",
+      "they": "Added by <1>{{displayName}}</1> {{date}}"
+    }
   },
   "saveInVault": {
     "error": {

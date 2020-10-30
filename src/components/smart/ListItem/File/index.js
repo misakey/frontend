@@ -121,7 +121,10 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
     () => {
       if (!isNil(dateSince) && (!isNil(displayName) || isFromCurrentUser)) {
         return (
-          <Trans i18nKey="components:fileListItem.addedBy" values={{ date: dateSince }}>
+          <Trans
+            i18nKey={`components:fileListItem.addedBy.${isFromCurrentUser ? 'you' : 'they'}`}
+            values={{ date: dateSince, displayName }}
+          >
             Added by
             <strong>You</strong>
             {dateSince}
@@ -190,7 +193,7 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
               </Button>
               )}
             </>
-        )}
+      )}
           primaryTypographyProps={{ noWrap: true, display: 'block', color: 'textPrimary' }}
       />
       {

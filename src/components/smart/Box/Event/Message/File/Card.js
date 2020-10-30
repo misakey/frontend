@@ -150,7 +150,7 @@ const FileCardEvent = ({
           type: fileType,
           size: fileSize,
           createdAt: serverEventCreatedAt,
-          sender,
+          sender: { ...sender, isFromCurrentUser },
           encryption,
         };
         setFileData(encryptedFileId, fileData);
@@ -160,7 +160,7 @@ const FileCardEvent = ({
     [decryptedContent, encryptedFileId,
       encryption, error, file, fileName, fileSize, fileType, getFileData,
       isTypeAllowedForPreview, name, sender,
-      serverEventCreatedAt, setFileData],
+      serverEventCreatedAt, setFileData, isFromCurrentUser],
   );
 
   const onClick = useMemo(

@@ -88,7 +88,7 @@ const Cell = ({ style, data, event }) => {
   const { content, serverEventCreatedAt, sender } = useMemo(() => event, [event]);
 
   const mapEventToFileContext = useMapEventToFileContext(
-    { content, serverEventCreatedAt, sender, isEventFromCurrentUser },
+    { content, serverEventCreatedAt, sender, isFromCurrentUser: isEventFromCurrentUser },
     secretKey,
   );
 
