@@ -39,7 +39,6 @@ import { useClearUser } from '@misakey/hooks/useActions/loginSecret';
 
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
-import DefaultSplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import SecretFormFields from 'components/screens/Auth/Login/Secret/Form/Fields';
 import Redirect from '@misakey/ui/Redirect';
 import ChipUser from '@misakey/ui/Chip/User';
@@ -52,7 +51,7 @@ import SnackbarActionAuthRestart from 'components/dumb/Snackbar/Action/AuthResta
 import SnackbarActionRefresh from 'components/dumb/Snackbar/Action/Refresh';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
-import Screen from 'components/dumb/Screen';
+import Screen from '@misakey/ui/Screen';
 import AppbarStatic from '@misakey/ui/AppBar/Static';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -310,15 +309,13 @@ const AuthLoginSecret = ({
 
   if (!isNil(redirectTo)) {
     return (
-      <Box height="100vh">
-        <Redirect
-          to={redirectTo}
-          forceRefresh
-          manualRedirectPlaceholder={(
-            <DefaultSplashScreen />
-          )}
-        />
-      </Box>
+      <Redirect
+        to={redirectTo}
+        forceRefresh
+        manualRedirectPlaceholder={(
+          <Screen isLoading />
+        )}
+      />
     );
   }
 
@@ -363,21 +360,21 @@ const AuthLoginSecret = ({
                 </Title>
                 <SecretFormFields methodName={methodName} />
                 {methodName === EMAILED_CODE && (
-                <ButtonRenewAuthStep
-                  classes={{ buttonRoot: classes.buttonRoot }}
-                  loginChallenge={loginChallenge}
-                  authnStep={authnStep}
-                  text={t('auth:login.form.action.getANewCode.button')}
-                />
+                  <ButtonRenewAuthStep
+                    classes={{ buttonRoot: classes.buttonRoot }}
+                    loginChallenge={loginChallenge}
+                    authnStep={authnStep}
+                    text={t('auth:login.form.action.getANewCode.button')}
+                  />
                 )}
                 {methodName === PREHASHED_PASSWORD && (
-                <ButtonForgotPassword
-                  classes={{ buttonRoot: classes.buttonRoot }}
-                  loginChallenge={loginChallenge}
-                  identifier={identifier}
-                  text={t('auth:login.form.action.forgotPassword')}
-                  onDone={onForgotPasswordDone}
-                />
+                  <ButtonForgotPassword
+                    classes={{ buttonRoot: classes.buttonRoot }}
+                    loginChallenge={loginChallenge}
+                    identifier={identifier}
+                    text={t('auth:login.form.action.forgotPassword')}
+                    onDone={onForgotPasswordDone}
+                  />
                 )}
                 <BoxControls
                   formik

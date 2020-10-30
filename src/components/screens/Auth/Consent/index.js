@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withTranslation, Trans } from 'react-i18next';
 import * as Sentry from '@sentry/browser';
 import { Link } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 import { APPBAR_SPACING } from '@misakey/ui/constants/sizes';
 import { FEEDBACK } from 'constants/emails';
@@ -16,7 +17,6 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import { getDetails } from '@misakey/helpers/apiError';
 import { consent } from '@misakey/auth/builder/consent';
 
-import { useSnackbar } from 'notistack';
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useGetConsentInfo from '@misakey/hooks/useGetConsentInfo';
@@ -24,12 +24,12 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useNotDoneEffect from 'hooks/useNotDoneEffect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
+import Screen from '@misakey/ui/Screen';
 import ListConsent from 'components/dumb/List/Consent';
 import Title from '@misakey/ui/Typography/Title';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import BoxControls from '@misakey/ui/Box/Controls';
-import DefaultSplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import Redirect from '@misakey/ui/Redirect';
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
@@ -118,49 +118,50 @@ const AuthConsent = ({
 
   if (!isNil(redirectTo)) {
     return (
-      <Box height="100vh">
-        <Redirect
-          to={redirectTo}
-          forceRefresh
-          manualRedirectPlaceholder={(
-            <DefaultSplashScreen />
+      <Redirect
+        to={redirectTo}
+        forceRefresh
+        manualRedirectPlaceholder={(
+          <Screen isLoading />
         )}
-        />
-      </Box>
+      />
     );
   }
 
   return (
-    <Container maxWidth="md">
-      <Box mt={2 * APPBAR_SPACING}>
-        <Formik
-          initialValues={INITIAL_VALUES}
-          onSubmit={onSubmit}
-        >
-          <Box component={Form} display="flex" flexDirection="column" alignItems="center">
-            <Title>
-              {t('auth:consent.title')}
-            </Title>
-            {hasMissingClientUris ? (
-              <Alert severity="warning">
-                <Trans i18nKey="auth:consent.missing">
-                  Une erreur est survenue lors de votre inscription, merci de le signaler à
-                  <Link href={`mailto:${FEEDBACK}`} color="inherit">{FEEDBACK}</Link>
-                </Trans>
-              </Alert>
-            ) : (
-              <>
-                <ListConsent {...client} />
-                <BoxControls
-                  formik
-                  primary={primary}
-                />
-              </>
-            )}
-          </Box>
-        </Formik>
-      </Box>
-    </Container>
+    <Screen>
+      <Container maxWidth="md">
+        <Box mt={2 * APPBAR_SPACING}>
+          <Formik
+            initialValues={INITIAL_VALUES}
+            onSubmit={onSubmit}
+          >
+            <Box component={Form} display="flex" flexDirection="column" alignItems="center">
+              <Title>
+                {t('auth:consent.title')}
+              </Title>
+              {hasMissingClientUris ? (
+                <Alert severity="warning">
+                  <Trans i18nKey="auth:consent.missing">
+                    Une erreur est survenue lors de votre inscription, merci de le signaler à
+                    <Link href={`mailto:${FEEDBACK}`} color="inherit">{FEEDBACK}</Link>
+                  </Trans>
+                </Alert>
+              ) : (
+                <>
+                  <ListConsent {...client} />
+                  <BoxControls
+                    formik
+                    primary={primary}
+                  />
+                </>
+              )}
+            </Box>
+          </Formik>
+        </Box>
+      </Container>
+    </Screen>
+
   );
 };
 

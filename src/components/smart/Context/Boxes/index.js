@@ -17,8 +17,7 @@ const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
 export const BoxesContext = createContext({
   activeStatus: ALL,
   search: null,
-  refresh: null,
-  addBoxItem: null,
+  onAckWSUserBox: null,
 });
 
 // HOOKS

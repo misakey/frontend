@@ -29,7 +29,7 @@ import LoginFormFields from '@misakey/ui/Form/Fields/Login/Identifier';
 import BoxControls from '@misakey/ui/Box/Controls';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
 import Box from '@material-ui/core/Box';
-import Screen from 'components/dumb/Screen';
+import Screen from '@misakey/ui/Screen';
 import AvatarBox from '@misakey/ui/Avatar/Box';
 
 // CONSTANTS

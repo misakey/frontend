@@ -24,7 +24,7 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useNotDoneEffect from 'hooks/useNotDoneEffect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import ScreenLoader from 'components/dumb/Screen/Loader';
+import ScreenLoader from '@misakey/ui/Screen/Loader';
 
 // LAZY
 const AuthError = lazy(() => import('components/screens/Auth/Error'));

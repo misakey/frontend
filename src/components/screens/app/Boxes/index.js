@@ -25,6 +25,7 @@ import BoxNone from 'components/screens/app/Boxes/None';
 import RouteAcr from '@misakey/auth/components/Route/Acr';
 import RouteAuthenticatedBoxRead from 'components/smart/Route/Authenticated/BoxRead';
 import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
+import BoxEventSubmitContextProvider from 'components/smart/Box/Event/Submit/Context';
 
 import Redirect from '@misakey/ui/Redirect';
 import DrawerSplashScreen from 'components/smart/Screen/Drawer/Splash';
@@ -142,7 +143,9 @@ function Boxes({ match }) {
               initialIsDrawerOpen={isNothingSelected}
             >
               {(drawerProps) => !shouldDisplayLockedScreen && (
-                <BoxRead {...drawerProps} {...renderProps} />
+                <BoxEventSubmitContextProvider>
+                  <BoxRead {...drawerProps} {...renderProps} />
+                </BoxEventSubmitContextProvider>
               )}
             </ScreenDrawer>
           );

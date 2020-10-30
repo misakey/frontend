@@ -20,6 +20,8 @@ import useBoxPublicKeysWeCanDecryptFrom from 'packages/crypto/src/hooks/useBoxPu
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import { useBoxEventSubmitContext } from 'components/smart/Box/Event/Submit/Context';
+import { useBoxesUploadContext } from 'components/smart/Input/Boxes/Upload/Context';
 
 import Box from '@material-ui/core/Box';
 import Formik from '@misakey/ui/Formik';
@@ -29,7 +31,6 @@ import FieldTextMultiline from 'components/dumb/Form/Field/Text/Multiline';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import IconButtonSubmit from '@misakey/ui/IconButton/Submit';
-import { useBoxesUploadContext } from 'components/smart/Input/Boxes/Upload/Context';
 
 import ResetOnBoxChange from 'components/screens/app/Boxes/Read/Events/Footer/Creating/ResetOnBoxChange';
 
@@ -66,6 +67,8 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, t }) {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const handleHttpErrors = useHandleHttpErrors();
+
+  const { scrollToBottom } = useBoxEventSubmitContext();
 
   const { lifecycle, id, publicKey, title } = useMemo(() => box || {}, [box]);
   const publicKeysWeCanEncryptWith = useBoxPublicKeysWeCanDecryptFrom();
@@ -114,6 +117,9 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, t }) {
         Promise.resolve(dispatch(clearText({ boxId: id }))),
         resetForm({ values: INITIAL_VALUES, isSubmitting: true }),
       ])
+        .then(() => {
+          scrollToBottom();
+        })
         .catch((error) => {
           if (error.code === conflict) {
             const { details = {} } = error;
@@ -130,7 +136,7 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, t }) {
           setSubmitting(false);
         });
     },
-    [dispatch, enqueueSnackbar, handleHttpErrors, id, publicKey, t],
+    [dispatch, enqueueSnackbar, handleHttpErrors, id, publicKey, scrollToBottom, t],
   );
 
   return (

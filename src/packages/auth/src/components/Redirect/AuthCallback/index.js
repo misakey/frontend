@@ -14,6 +14,7 @@ import { withUserManager } from '../../OidcProvider';
 const RedirectAuthCallback = ({
   handleSuccess,
   handleError,
+  loadingPlaceholder,
   location,
   fallbackReferrers,
   userManager,
@@ -87,7 +88,16 @@ const RedirectAuthCallback = ({
     window.location.hash = window.location.hash;
   }, [location.hash]);
 
-  return redirect ? <Redirect to={referrer || fallbackReferrer} /> : null;
+  if (redirect) {
+    return (
+      <Redirect
+        to={referrer || fallbackReferrer}
+        manualRedirectPlaceholder={loadingPlaceholder}
+      />
+    );
+  }
+
+  return loadingPlaceholder;
 };
 
 RedirectAuthCallback.propTypes = {
@@ -97,6 +107,7 @@ RedirectAuthCallback.propTypes = {
   }),
   handleError: PropTypes.func,
   handleSuccess: PropTypes.func,
+  loadingPlaceholder: PropTypes.oneOfType([PropTypes.element, PropTypes.node]),
   location: PropTypes.shape({ hash: PropTypes.string, search: PropTypes.string }).isRequired,
   // withUserManager
   userManager: PropTypes.object.isRequired,
@@ -107,6 +118,7 @@ RedirectAuthCallback.defaultProps = {
   fallbackReferrers: {},
   handleSuccess: null,
   handleError: null,
+  loadingPlaceholder: null,
 };
 
 export default withUserManager(RedirectAuthCallback);

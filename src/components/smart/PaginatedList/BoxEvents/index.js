@@ -1,4 +1,4 @@
-import React, { forwardRef, useMemo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useMemo, useCallback, useEffect, useRef, useState, useImperativeHandle } from 'react';
 import PropTypes from 'prop-types';
 
 import BoxesSchema from 'store/schemas/Boxes';
@@ -253,6 +253,11 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
     }
   }, [onLoadMoreItemsRef, paginationOffsetRef]);
   // [/LOAD MORE ITEMS]
+
+  // IMPERATIVE HANDLE FOR EXTERNAL CALLS
+  useImperativeHandle(ref, () => ({
+    scrollToBottom,
+  }), [scrollToBottom]);
 
   return (
     <>

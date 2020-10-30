@@ -6,9 +6,9 @@ import routes from 'routes';
 import ErrorBoundary from 'components/smart/ErrorBoundary';
 import { Route, Switch } from 'react-router-dom';
 import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallbackWrapper';
-import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 import OfflineAlert from 'components/smart/Context/Offline/Alert';
 import RedirectToSignIn from 'components/dumb/Redirect/ToSignIn';
+import Screen from '@misakey/ui/Screen';
 
 import './App.scss';
 
@@ -27,7 +27,7 @@ const TRedirectAuthCallback = withTranslation('common')(RedirectAuthCallback);
 
 const App = () => (
   <ErrorBoundary maxWidth="md" my={3}>
-    <Suspense fallback={<SplashScreenWithTranslation />}>
+    <Suspense fallback={<Screen isLoading />}>
       <OfflineAlert position="absolute" bottom={0} zIndex="snackbar" width="100%" />
       <Switch>
         {/* AUTH */}
@@ -39,7 +39,11 @@ const App = () => (
           exact
           path={routes.auth.callback}
           render={(routerProps) => (
-            <TRedirectAuthCallback fallbackReferrers={REFERRERS} {...routerProps} />
+            <TRedirectAuthCallback
+              fallbackReferrers={REFERRERS}
+              loadingPlaceholder={<Screen isLoading />}
+              {...routerProps}
+            />
           )}
         />
         {/* REDIRECT TO SIGN IN */}

@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useCallback } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import routes from 'routes';
@@ -10,6 +10,8 @@ import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useHandleBoxKeyShare from '@misakey/crypto/hooks/useHandleBoxKeyShare';
+import { useBoxEventSubmitContext } from 'components/smart/Box/Event/Submit/Context';
+
 
 import BoxReadContextProvider from 'components/smart/Context/Boxes/BoxRead';
 import InputBoxesUploadContext from 'components/smart/Input/Boxes/Upload/Context';
@@ -36,6 +38,8 @@ function BoxRead({
 }) {
   const { params: { id: boxId } } = useSafeDestr(match);
   const { isReady, box } = useFetchBoxDetails(boxId);
+
+  const { scrollToBottom } = useBoxEventSubmitContext();
 
   const { lifecycle, publicKey, hasAccess, title, isMember } = useMemo(() => box || {}, [box]);
   const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
@@ -69,6 +73,16 @@ function BoxRead({
       || shouldShowNoAccessScreen || shouldShowJoinScreen,
     [shouldDisplayClosedScreen, shouldShowJoinScreen,
       shouldShowNoAccessScreen, shouldShowPasteScreen],
+  );
+
+  // @FIXME helps avoid collision with intersection observer for file preview
+  const timeoutScrollToBottom = useCallback(
+    () => {
+      setTimeout(
+        () => scrollToBottom(),
+      );
+    },
+    [scrollToBottom],
   );
 
   useEffect(
@@ -151,7 +165,7 @@ function BoxRead({
               />
             )}
           />
-          <InputBoxesUploadContext box={box}>
+          <InputBoxesUploadContext box={box} onSuccess={timeoutScrollToBottom}>
             <Route
               path={routes.boxes.read.files}
               render={() => (

@@ -10,7 +10,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Box from '@material-ui/core/Box';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
-import ScreenLoader from 'components/dumb/Screen/Loader';
+import ScreenLoader from '@misakey/ui/Screen/Loader';
 
 // HOOKS
 const useScreenStyles = makeStyles((theme) => ({

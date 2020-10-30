@@ -137,10 +137,6 @@ function UploadDialog({
         }
         onDone(index);
 
-        if (isFunction(onSuccess)) {
-          onSuccess(response);
-        }
-
         return response;
       } catch (error) {
         if (error.code === conflict) {
@@ -154,7 +150,7 @@ function UploadDialog({
       }
     },
     [
-      publicKey, boxId, dispatch, onSuccess, enqueueSnackbar, t,
+      publicKey, boxId, dispatch, enqueueSnackbar, t,
       onEncrypt, onUpload, onProgress, onDone, onAbortable,
     ],
   );
@@ -201,18 +197,17 @@ function UploadDialog({
       onReset();
 
       if (isEmpty(errors)) {
-        if (newBlobList.length > aborts.length) {
-          const text = t('boxes:read.upload.success');
-          enqueueSnackbar(text, { variant: 'success' });
-        }
         if (isEmpty(aborts)) {
           onClose();
+          if (isFunction(onSuccess)) {
+            onSuccess();
+          }
         }
       } else {
         setStatus({ [BLOBS_FIELD_NAME]: newBlobList });
       }
     },
-    [handleUpload, t, enqueueSnackbar, onClose, onReset],
+    [handleUpload, onClose, onSuccess, onReset],
   );
 
   return (

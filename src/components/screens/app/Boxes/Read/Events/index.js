@@ -17,9 +17,11 @@ import ButtonWithDialogPassword from 'components/smart/Dialog/Password/with/Butt
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import { useBoxEventSubmitContext } from 'components/smart/Box/Event/Submit/Context';
 import { useBoxesContext } from 'components/smart/Context/Boxes';
 
 import isNil from '@misakey/helpers/isNil';
+import isPlainObject from '@misakey/helpers/isPlainObject';
 
 import BoxesSchema from 'store/schemas/Boxes';
 
@@ -50,7 +52,7 @@ function BoxEvents({
 }) {
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
-  // const [lastEventRef, setLastEventRef] = useState();
+  const { listRef } = useBoxEventSubmitContext();
   const [headerHeight, setHeaderHeight] = useState(APPBAR_HEIGHT);
   const classes = useStyles({ headerHeight });
 
@@ -62,17 +64,6 @@ function BoxEvents({
   const headerRef = (ref) => {
     if (ref) { setHeaderHeight(ref.clientHeight); }
   };
-
-  // const scrollToBottom = useCallback(
-  //   () => {
-  //     if (!isNil(lastEventRef)) { lastEventRef.scrollIntoView(); }
-  //   },
-  //   [lastEventRef],
-  // );
-
-  // // lastEventRef.current to scroll on bottom when dom is ready
-  // // nbOfEvents to scroll at bottom when events are added by autoRefresh
-  // useEffect(scrollToBottom, [scrollToBottom, nbOfEvents]);
 
 
   // RESET BOX COUNT
@@ -86,6 +77,16 @@ function BoxEvents({
   const onResetBoxEventCount = useCallback(
     () => onAckWSUserBox(id),
     [onAckWSUserBox, id],
+  );
+
+  const bindRefs = useCallback(
+    (ref) => {
+      setContentRef(ref);
+      if (isPlainObject(ref)) {
+        listRef.current = ref;
+      }
+    },
+    [setContentRef, listRef],
   );
 
   useFetchEffect(onResetBoxEventCount, { shouldFetch });
@@ -132,7 +133,7 @@ function BoxEvents({
       <Box className={classes.content}>
         <PaginatedListBoxEvents
           key={id}
-          ref={(ref) => setContentRef(ref)}
+          ref={bindRefs}
           box={box}
         />
         <BoxEventsFooter
