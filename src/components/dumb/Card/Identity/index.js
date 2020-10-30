@@ -1,7 +1,7 @@
 import React, { forwardRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, generatePath, useLocation } from 'react-router-dom';
 
 import routes from 'routes';
 import IdentitySchema from 'store/schemas/Identity';
@@ -9,7 +9,6 @@ import IdentitySchema from 'store/schemas/Identity';
 import isNil from '@misakey/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -66,6 +65,50 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
+// HOOKS
+const useGetItemTosForUser = (location, identityId, accountId) => useMemo(
+  () => {
+    const common = {
+      listItemPublicTo: {
+        ...location,
+        pathname: generatePath(routes.identities.public, { id: identityId }),
+      },
+      listItemNotificationsTo: {
+        ...location,
+        pathname: generatePath(routes.identities.notifications, { id: identityId }),
+      },
+      listItemColorsTo: {
+        ...location,
+        pathname: generatePath(routes.identities.colors, { id: identityId }),
+      },
+    };
+
+    if (isNil(accountId)) {
+      return common;
+    }
+
+    return {
+      ...common,
+      listItemPasswordTo: {
+        ...location,
+        pathname: generatePath(
+          routes.identities.accounts.password,
+          { id: identityId, accountId },
+        ),
+      },
+      listItemExportCryptoTo: {
+        ...location,
+        pathname: generatePath(
+          routes.identities.accounts.vault,
+          { id: identityId, accountId },
+        ),
+      },
+    };
+  },
+  [accountId, identityId, location],
+);
+
 // COMPONENTS
 const CardIdentity = forwardRef(({ identity, identityId, t }, ref) => {
   const {
@@ -75,31 +118,15 @@ const CardIdentity = forwardRef(({ identity, identityId, t }, ref) => {
   const classes = useStyles({ color });
 
   const { accountId } = useMemo(() => identity || {}, [identity]);
+  const location = useLocation();
 
-  const listItemPublicTo = useGeneratePathKeepingSearchAndHash(
-    routes.identities.public,
-    { id: identityId },
-  );
-
-  const listItemNotificationsTo = useGeneratePathKeepingSearchAndHash(
-    routes.identities.notifications,
-    { id: identityId },
-  );
-
-  const listItemColorsTo = useGeneratePathKeepingSearchAndHash(
-    routes.identities.colors,
-    { id: identityId },
-  );
-
-  const listItemPasswordTo = useGeneratePathKeepingSearchAndHash(
-    routes.identities.accounts.password,
-    { id: identityId, accountId },
-  );
-
-  const listItemExportCryptoTo = useGeneratePathKeepingSearchAndHash(
-    routes.identities.accounts.vault,
-    { id: identityId, accountId },
-  );
+  const {
+    listItemPublicTo,
+    listItemColorsTo,
+    listItemPasswordTo,
+    listItemExportCryptoTo,
+    listItemNotificationsTo,
+  } = useGetItemTosForUser(location, identityId, accountId);
 
   return (
     <Container ref={ref} className={classes.container} maxWidth="sm">
