@@ -129,12 +129,12 @@ const DialogSigninRedirect = ({
   );
 
   const sessionExpired = useMemo(
-    () => !isNil(currentUser) && currentAcr === acrValues,
+    () => !isNil(currentUser) && (isNil(currentAcr) || currentAcr === acrValues),
     [acrValues, currentAcr, currentUser],
   );
 
   const insufficientACR = useMemo(
-    () => !isNil(currentUser) && currentAcr < acrValues,
+    () => !isNil(currentUser) && !isNil(currentAcr) && currentAcr < acrValues,
     [acrValues, currentAcr, currentUser],
   );
 
