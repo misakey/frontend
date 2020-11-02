@@ -21,7 +21,7 @@ export default function ({
     const { backupKey } = await decryptSecretsBackup(encryptedSecretBackup, password);
     const createBackupKeyShareBuilder = curriedCreateBackupKeyShareBuilder(accessToken);
 
-    dispatch(createNewBackupKeyShares({
+    return dispatch(createNewBackupKeyShares({
       backupKey,
       accountId,
       uploadMisakeyShare: createBackupKeyShareBuilder,
