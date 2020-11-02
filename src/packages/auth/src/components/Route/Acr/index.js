@@ -40,7 +40,7 @@ const RouteAcr = ({ route: RouteComponent, acr, options, ...rest }) => {
   useEffect(
     () => {
       if (shouldAskRedirect) {
-        askSigninRedirect({ acrValues: acr, prompt: 'login', loginHint, ...options }, false);
+        askSigninRedirect({ acrValues: acr, loginHint, ...options }, false);
       }
     },
     [askSigninRedirect, acr, loginHint, options, shouldAskRedirect],

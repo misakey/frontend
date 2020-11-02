@@ -17,6 +17,7 @@ import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Box from '@material-ui/core/Box';
 import MenuItem from '@material-ui/core/MenuItem';
+import withDialogPassword from 'components/smart/Dialog/Password/with';
 
 import isNil from '@misakey/helpers/isNil';
 import formatFileSize from 'helpers/formatFileSize';
@@ -28,6 +29,7 @@ import FILE_PROP_TYPES from 'constants/file/proptypes';
 import isElementFocusedByEvent from '@misakey/helpers/isElementFocusedByEvent';
 
 const AVATAR_SIZE = '5rem';
+const ButtonWithDialogPassword = withDialogPassword(Button);
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -181,7 +183,7 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
               <Typography component="span" noWrap display="block" variant="caption">{secondary}</Typography>
               <Typography component="span" noWrap display="block" variant="caption">{tertiary}</Typography>
               {!isNil(onSave) && (
-              <Button
+              <ButtonWithDialogPassword
                 ref={buttonRef}
                 size="small"
                 color="secondary"
@@ -190,7 +192,7 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
                 disabled={!isNil(error)}
               >
                 {t('common:addToVault')}
-              </Button>
+              </ButtonWithDialogPassword>
               )}
             </>
       )}

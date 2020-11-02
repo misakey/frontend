@@ -12,6 +12,7 @@ import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import ButtonWithDialogPassword from 'components/smart/Dialog/Password/with/Button';
 import Box from '@material-ui/core/Box';
 import { Route } from 'react-router-dom';
+import List from '@material-ui/core/List';
 import ListItemBoxesCurrent from 'components/smart/ListItem/Boxes/Current';
 import Typography from '@material-ui/core/Typography';
 
@@ -39,7 +40,8 @@ const NoVault = forwardRef(({ t }, ref) => {
     <>
       <Route
         path={routes.boxes.read._}
-        component={ListItemBoxesCurrent}
+        render={(routeProps) => (
+          <List disablePadding><ListItemBoxesCurrent {...routeProps} /></List>)}
       />
       <Box
         m={1}
