@@ -113,10 +113,15 @@ const changeLocale = (lng) => {
     moment.locale('fr');
     numbro.setLanguage('fr-FR');
   }
-  // @FIXME default to en-US because of numbro issue, previously on en-GB
   if (lng.startsWith('en')) {
-    moment.locale('en-US');
-    numbro.setLanguage('en-US');
+    // allow en-GB for numbers and dates if it's user's preferences
+    if (lng === 'en-GB') {
+      moment.locale('en-GB');
+      numbro.setLanguage('en-GB');
+    } else {
+      moment.locale('en-US');
+      numbro.setLanguage('en-US');
+    }
   }
 };
 

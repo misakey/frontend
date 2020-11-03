@@ -85,7 +85,7 @@
     "node-sass": "^4.14.1",
     "normalizr": "^3.6.0",
     "notistack": "^0.9.16",
-    "numbro": "^2.2.0",
+    "numbro": "^2.3.2",
     "oidc-client": "^1.9.1",
     "prop-types": "^15.7.2",
     "proxy-polyfill": "0.3.2",
