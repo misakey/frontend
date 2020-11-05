@@ -7,9 +7,8 @@ import useTheme from '@material-ui/core/styles/useTheme';
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import ElevationScroll from 'components/dumb/ElevationScroll';
-import ArrowBack from '@material-ui/icons/ArrowBack';
+import ToggleDrawerButton from 'components/dumb/AppBar/Drawer/ToggleButton';
 
 import Avatar from '@material-ui/core/Avatar';
 import FolderIcon from '@material-ui/icons/Folder';
@@ -76,17 +75,8 @@ const DocumentsVault = ({ t, isDrawerOpen, toggleDrawer }) => {
         >
           <Box display="flex" flexDirection="column" width="100%">
             <Box display="flex">
-              {!isDrawerOpen && (
-                <Box display="flex" px={1}>
-                  <IconButtonAppBar
-                    aria-label={t('common:openAccountDrawer')}
-                    edge="start"
-                    onClick={toggleDrawer}
-                  >
-                    <ArrowBack />
-                  </IconButtonAppBar>
-                </Box>
-              )}
+              <ToggleDrawerButton isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
+
               <Box display="flex" flexDirection="column" flexGrow={1}>
                 <Typography color="textPrimary">
                   {t('document:vault.title')}
@@ -137,4 +127,4 @@ DocumentsVault.propTypes = {
 };
 
 
-export default withTranslation(['common', 'document'])(DocumentsVault);
+export default withTranslation(['document'])(DocumentsVault);

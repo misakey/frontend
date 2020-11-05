@@ -32,11 +32,9 @@ import usePropChanged from '@misakey/hooks/usePropChanged';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import Title from '@misakey/ui/Typography/Title';
 import MuiLink from '@material-ui/core/Link';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
-import ArrowBack from '@material-ui/icons/ArrowBack';
 import Box from '@material-ui/core/Box';
 import Skeleton from '@material-ui/lab/Skeleton';
 import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
@@ -49,6 +47,7 @@ import AvatarBox from '@misakey/ui/Avatar/Box';
 import AvatarBoxSkeleton from '@misakey/ui/Avatar/Box/Skeleton';
 import ChipUserMeLogout from '@misakey/ui/Chip/User/Me/Logout';
 import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
+import ToggleDrawerButton from 'components/dumb/AppBar/Drawer/ToggleButton';
 
 // CONSTANTS
 const { forbidden } = errorTypes;
@@ -181,15 +180,7 @@ function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
       <AppBarDrawer
         isDrawerOpen={isDrawerOpen}
       >
-        {!isDrawerOpen && (
-        <IconButtonAppBar
-          aria-label={t('common:openAccountDrawer')}
-          edge="start"
-          onClick={toggleDrawer}
-        >
-          <ArrowBack />
-        </IconButtonAppBar>
-        )}
+        <ToggleDrawerButton isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
       </AppBarDrawer>
       <Box
         display="flex"

@@ -207,7 +207,7 @@ function UploadDialog({
         setStatus({ [BLOBS_FIELD_NAME]: newBlobList });
       }
     },
-    [handleUpload, onClose, onSuccess, onReset],
+    [handleUpload, onClose, onReset, onSuccess],
   );
 
   return (

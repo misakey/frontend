@@ -18,15 +18,15 @@ import BoxListItem, { BoxListItemSkeleton } from 'components/smart/ListItem/Boxe
 import { ROW_PROP_TYPES } from 'components/smart/WindowedList';
 
 // CONSTANTS
-const INTERNAL_DATA = ['byPagination', 'selectedId'];
+const INTERNAL_DATA = ['byPagination', 'selectedId', 'guttersTop'];
 
 // HELPERS
 const omitInternalData = (props) => omit(props, INTERNAL_DATA);
 
 // COMPONENTS
-export const Skeleton = ({ index, style, data, ...rest }) => (
+export const Skeleton = ({ index, style, data: { guttersTop }, ...rest }) => (
   <BoxListItemSkeleton
-    style={style}
+    style={{ ...style, top: style.top + guttersTop }}
     {...rest}
   />
 );
@@ -44,6 +44,8 @@ const Row = ({ style, data, box, id, dispatchReceivedBox, ...rest }) => {
     [id],
   );
 
+  const { guttersTop = 0 } = useMemo(() => data, [data]);
+
   const shouldFetch = useMemo(() => isNil(box) && !isNil(id), [box, id]);
 
   const onError = useOnGetBoxError(id);
@@ -52,7 +54,7 @@ const Row = ({ style, data, box, id, dispatchReceivedBox, ...rest }) => {
 
   return (
     <BoxListItem
-      style={style}
+      style={{ ...style, top: style.top + guttersTop }}
       box={box}
       {...omitInternalData(data)}
       {...rest}

@@ -29,14 +29,13 @@ import CardIdentityHeader from 'components/dumb/Card/Identity/Header';
 import CardList from 'components/dumb/Card/List';
 import Card from '@material-ui/core/Card';
 import CardOnboardDiscover from 'components/dumb/Card/Onboard/Discover';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import ButtonConnect from 'components/dumb/Button/Connect';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import ButtonContactMailto from '@misakey/ui/Button/Contact/Mailto';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 
-import MenuIcon from '@material-ui/icons/Menu';
+import ToggleDrawerButton from 'components/dumb/AppBar/Drawer/ToggleButton';
 
 // CONSTANTS
 const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
@@ -131,15 +130,7 @@ const IdentityPublicReadOnly = forwardRef(({
   return (
     <>
       <AppBarStatic>
-        {!isDrawerOpen && (
-          <IconButtonAppBar
-            aria-label={t('common:openAccountDrawer')}
-            edge="start"
-            onClick={toggleDrawer}
-          >
-            <MenuIcon />
-          </IconButtonAppBar>
-        )}
+        <ToggleDrawerButton isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
         <BoxFlexFill />
         {!isAuthenticated && (
           <>

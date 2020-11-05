@@ -18,6 +18,7 @@ import { useOnRemoveBox } from 'hooks/usePaginateBoxesByStatus/updates';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 import useModifier from '@misakey/hooks/useModifier';
+import { resetNotifications } from 'store/actions/identity/notifications';
 
 // CONSTANTS
 const {
@@ -84,16 +85,12 @@ export default (activeStatus, search) => {
 
   const onKickSuccess = useCallback(
     (box) => {
-      const { title } = box;
-      if (!isNil(title)) {
-        // This will be handled by user notifications later
-        enqueueSnackbar(tRef.current('boxes:removeBox.success.kick', box), { variant: 'info' });
-      }
+      dispatch(resetNotifications());
       if (idMatchesDeletedBoxId(box)) {
         replace(routes.boxes._);
       }
     },
-    [enqueueSnackbar, idMatchesDeletedBoxId, replace],
+    [dispatch, idMatchesDeletedBoxId, replace],
   );
 
   return useCallback(

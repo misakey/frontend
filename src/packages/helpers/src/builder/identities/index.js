@@ -2,6 +2,7 @@ import API from '@misakey/api';
 
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
 import toFormData from '@misakey/helpers/toFormData';
 
 export const updateIdentity = ({ id, ...payload }) => API
@@ -49,9 +50,25 @@ export const readVaultUsedSpace = (id) => API
   .send()
   .then(objectToCamelCase);
 
-
 export const updateBoxSettings = (identityId, boxId, payload) => API
   .use(API.endpoints.identities.boxSettings.update)
   .build({ identityId, boxId }, objectToSnakeCase(payload))
   .send()
   .then(objectToCamelCase);
+
+export const getUserNotificationsBuilder = (id, queryParams = {}) => API
+  .use(API.endpoints.identities.notifications.find)
+  .build({ id }, null, objectToSnakeCase(queryParams))
+  .send()
+  .then((events) => events.map(objectToCamelCaseDeep));
+
+export const countUserNotificationsBuilder = (id, queryParams = {}) => API
+  .use(API.endpoints.identities.notifications.count)
+  .build({ id }, null, objectToSnakeCase(queryParams))
+  .send()
+  .then((response) => parseInt(response.headers.get('X-Total-Count'), 10));
+
+export const acknowledgeUserNotificationsBuilder = (id, queryParams = {}) => API
+  .use(API.endpoints.identities.notifications.update)
+  .build({ id }, null, objectToSnakeCase(queryParams))
+  .send();

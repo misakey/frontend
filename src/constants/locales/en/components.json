@@ -130,5 +130,8 @@
   },
   "offline": {
     "alert": "No Internet access"
+  },
+  "InfiniteLoadedChat": {
+    "loadMore": "Load more"
   }
 }

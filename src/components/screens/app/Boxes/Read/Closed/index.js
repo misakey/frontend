@@ -22,11 +22,9 @@ import useFetchBoxPublicInfo from 'hooks/useFetchBoxPublicInfo';
 import isNil from '@misakey/helpers/isNil';
 
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
-import ArrowBack from '@material-ui/icons/ArrowBack';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 // import Alert from '@material-ui/lab/Alert';
@@ -34,6 +32,7 @@ import InfoIcon from '@material-ui/icons/Info';
 // import LeaveBoxDialogButton from 'components/screens/app/Boxes/Read/Events/LeaveBoxDialogButton';
 import Skeleton from '@material-ui/lab/Skeleton';
 import CreateBoxSuggestions from 'components/smart/Box/CreateSuggestions';
+import ToggleDrawerButton from 'components/dumb/AppBar/Drawer/ToggleButton';
 
 // CONSTANTS
 const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
@@ -131,17 +130,7 @@ function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t })
       >
         <Box display="flex" flexDirection="column" width="100%" minHeight="inherit">
           <Box display="flex">
-            {!isDrawerOpen && (
-              <Box display="flex" alignItems="center" pl={2} pr={1}>
-                <IconButtonAppBar
-                  aria-label={t('common:openAccountDrawer')}
-                  edge="start"
-                  onClick={toggleDrawer}
-                >
-                  <ArrowBack />
-                </IconButtonAppBar>
-              </Box>
-            )}
+            <ToggleDrawerButton isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
             <BoxEventsAppBar disabled box={box} belongsToCurrentUser={belongsToCurrentUser} />
           </Box>
           {/* {displayLeaveBox && (
@@ -210,4 +199,4 @@ BoxClosed.propTypes = {
   belongsToCurrentUser: PropTypes.bool.isRequired,
 };
 
-export default withTranslation(['common', 'boxes'])(BoxClosed);
+export default withTranslation(['boxes'])(BoxClosed);

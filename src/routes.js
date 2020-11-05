@@ -30,6 +30,9 @@ const routes = {
     _: '/documents/:id?',
     vault: '/documents/vault',
   },
+  userNotifications: {
+    _: '/user-notifications',
+  },
   account: {
     _: '/account',
     mailProvider: { _: '/account/mail-provider' },

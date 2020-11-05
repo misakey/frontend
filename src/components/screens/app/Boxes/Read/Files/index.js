@@ -1,14 +1,12 @@
 import React, { useState, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { CLOSED } from 'constants/app/boxes/statuses';
 
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import { useBoxesUploadContext } from 'components/smart/Input/Boxes/Upload/Context';
 
-import ArrowBack from '@material-ui/icons/ArrowBack';
 import Box from '@material-ui/core/Box';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
@@ -21,6 +19,7 @@ import isNil from '@misakey/helpers/isNil';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import BoxEmpty from 'components/dumb/Box/Empty';
+import ToggleDrawerButton from 'components/dumb/AppBar/Drawer/ToggleButton';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -53,9 +52,10 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function BoxFiles({ belongsToCurrentUser, isDrawerOpen, toggleDrawer, box, t }) {
+function BoxFiles({ belongsToCurrentUser, isDrawerOpen, toggleDrawer, box }) {
   const [headerHeight, setHeaderHeight] = useState(APPBAR_HEIGHT);
   const contentRef = useRef();
+  const { t } = useTranslation('boxes');
 
   const { onOpen: onOpenUploadDialog } = useBoxesUploadContext();
 
@@ -98,17 +98,7 @@ function BoxFiles({ belongsToCurrentUser, isDrawerOpen, toggleDrawer, box, t }) 
         >
           <Box ref={headerRef} display="flex" flexDirection="column" width="100%" minHeight="inherit">
             <Box display="flex">
-              {!isDrawerOpen && (
-                <Box display="flex" alignItems="center" pl={2} pr={1}>
-                  <IconButtonAppBar
-                    aria-label={t('common:openAccountDrawer')}
-                    edge="start"
-                    onClick={toggleDrawer}
-                  >
-                    <ArrowBack />
-                  </IconButtonAppBar>
-                </Box>
-              )}
+              <ToggleDrawerButton isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
               <BoxEventsAppBar box={box} belongsToCurrentUser={belongsToCurrentUser} />
             </Box>
           </Box>
@@ -160,11 +150,10 @@ function BoxFiles({ belongsToCurrentUser, isDrawerOpen, toggleDrawer, box, t }) 
 }
 
 BoxFiles.propTypes = {
-  t: PropTypes.func.isRequired,
   isDrawerOpen: PropTypes.bool.isRequired,
   belongsToCurrentUser: PropTypes.bool.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
   box: PropTypes.shape({ id: PropTypes.string.isRequired }).isRequired,
 };
 
-export default withTranslation('common')(BoxFiles);
+export default BoxFiles;

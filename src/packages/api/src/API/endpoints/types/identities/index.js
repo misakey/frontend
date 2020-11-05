@@ -66,4 +66,21 @@ export default {
       auth: true,
     },
   },
+  notifications: {
+    find: {
+      method: 'GET',
+      path: '/identities/:id/notifications',
+      auth: true,
+    },
+    count: {
+      method: 'HEAD',
+      path: '/identities/:id/notifications',
+      auth: true,
+    },
+    update: {
+      method: 'PUT',
+      path: '/identities/:id/notifications/acknowledgement',
+      auth: true,
+    },
+  },
 };

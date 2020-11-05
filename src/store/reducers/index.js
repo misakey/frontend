@@ -17,6 +17,7 @@ import savedFilesPagination from 'store/reducers/savedFiles/pagination';
 
 import devicePreferences from 'store/reducers/devicePreferences';
 import box from 'store/reducers/box';
+import notificationsByIdentity from 'store/reducers/identity/notifications';
 import screens from 'store/reducers/screens';
 
 const appReducer = combineReducers({
@@ -24,6 +25,7 @@ const appReducer = combineReducers({
   ...storeReducers,
   ...devicePreferences,
   ...box,
+  ...notificationsByIdentity,
   screens,
   crypto,
   ...userBoxesPagination,
@@ -35,6 +37,7 @@ const appReducer = combineReducers({
     boxes: {},
     events: {},
     savedFiles: {},
+    identityNotifications: {},
   }, {}, makeEntities),
 });
 

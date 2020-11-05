@@ -18,7 +18,7 @@ import useFetchBoxPublicInfo from 'hooks/useFetchBoxPublicInfo';
 import { useDispatch } from 'react-redux';
 
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
+import ToggleDrawerButton from 'components/dumb/AppBar/Drawer/ToggleButton';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import CreateBoxSuggestions from 'components/smart/Box/CreateSuggestions';
 import MuiLink from '@material-ui/core/Link';
@@ -32,8 +32,6 @@ import AvatarBoxSkeleton from '@misakey/ui/Avatar/Box/Skeleton';
 import ChipUserMeLogout from '@misakey/ui/Chip/User/Me/Logout';
 import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
 import Container from '@material-ui/core/Container';
-
-import ArrowBack from '@material-ui/icons/ArrowBack';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -92,17 +90,7 @@ function NoAccess({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t }) 
       >
         <Box display="flex" flexDirection="column" width="100%" minHeight="inherit">
           <Box display="flex">
-            {!isDrawerOpen && (
-              <Box display="flex" alignItems="center" pl={2} pr={1}>
-                <IconButtonAppBar
-                  aria-label={t('common:openAccountDrawer')}
-                  edge="start"
-                  onClick={toggleDrawer}
-                >
-                  <ArrowBack />
-                </IconButtonAppBar>
-              </Box>
-            )}
+            <ToggleDrawerButton isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
             <BoxEventsAppBar disabled box={box} belongsToCurrentUser={belongsToCurrentUser} />
           </Box>
         </Box>
@@ -173,4 +161,4 @@ NoAccess.propTypes = {
   belongsToCurrentUser: PropTypes.bool.isRequired,
 };
 
-export default withTranslation(['common', 'boxes'])(NoAccess);
+export default withTranslation(['boxes'])(NoAccess);

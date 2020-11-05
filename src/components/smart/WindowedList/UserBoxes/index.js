@@ -17,6 +17,7 @@ import WindowedListAutosized from 'components/smart/WindowedList/Autosized';
 import Row, { Skeleton } from 'components/smart/WindowedList/UserBoxes/Row';
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
 import ListItemBoxesDeleted from 'components/smart/ListItem/Boxes/Deleted';
+import MisakeyNotificationsListItem from 'components/smart/ListItem/Notifications/Misakey';
 import Box from '@material-ui/core/Box';
 import Title from '@misakey/ui/Typography/Title';
 import Typography from '@material-ui/core/Typography';
@@ -25,7 +26,9 @@ const ButtonCreate = withDialogCreate(Button);
 
 // CONSTANTS
 // Box height + margin
-const INNER_ELEMENT_TYPE_HEIGHT = 72 + 51 + 2 * 8;
+const INNER_ELEMENT_TYPE_BOTTOM_HEIGHT = 72 + 51 + 2 * 8;
+// Misakey box height
+const INNER_ELEMENT_TYPE_TOP_HEIGHT = 72;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -38,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
 const useInnerElementType = (itemCount, activeStatus, search, t) => useMemo(
   () => forwardRef((props, ref) => (
     <div ref={ref}>
+      <MisakeyNotificationsListItem />
       <div {...props} />
       <ListItemBoxesDeleted activeStatus={activeStatus} search={search} />
       <Box
@@ -81,6 +85,7 @@ const WindowedListBoxes = forwardRef(({ activeStatus, selectedId, t, ...props },
       toRoute: routes.boxes.read._,
       byPagination,
       selectedId,
+      guttersTop: INNER_ELEMENT_TYPE_TOP_HEIGHT,
     }),
     [byPagination, selectedId],
   );
@@ -89,18 +94,21 @@ const WindowedListBoxes = forwardRef(({ activeStatus, selectedId, t, ...props },
 
   if (isNil(itemCount) || itemCount === 0) {
     return (
-      <Box m={2} ref={ref} display="flex" flexDirection="column" height="100%" justifyContent="center" alignItems="center">
-        <Title align="center">
-          <Trans i18nKey="boxes:list.empty.text">
-            Commencer un chat sécurisé en cliquant sur
-            <strong className={classes.secondary}>+</strong>
-            ou
-          </Trans>
-        </Title>
-        <Box>
-          <ButtonCreate standing={BUTTON_STANDINGS.MAIN} text={t('boxes:list.empty.create')} />
+      <>
+        <MisakeyNotificationsListItem />
+        <Box m={2} ref={ref} display="flex" flexDirection="column" height="100%" justifyContent="center" alignItems="center">
+          <Title align="center">
+            <Trans i18nKey="boxes:list.empty.text">
+              Commencer un chat sécurisé en cliquant sur
+              <strong className={classes.secondary}>+</strong>
+              ou
+            </Trans>
+          </Title>
+          <Box>
+            <ButtonCreate standing={BUTTON_STANDINGS.MAIN} text={t('boxes:list.empty.create')} />
+          </Box>
         </Box>
-      </Box>
+      </>
     );
   }
 
@@ -116,7 +124,7 @@ const WindowedListBoxes = forwardRef(({ activeStatus, selectedId, t, ...props },
       itemSize={72}
       itemData={itemData}
       innerElementType={innerElementType}
-      innerElementTypeHeight={INNER_ELEMENT_TYPE_HEIGHT}
+      innerElementTypeHeight={INNER_ELEMENT_TYPE_BOTTOM_HEIGHT}
       {...props}
     />
   );

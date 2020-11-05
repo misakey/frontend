@@ -126,7 +126,7 @@ function ShareBoxDialog({ box, isDrawerOpen, t }) {
       <ElevationScroll target={contentRef}>
         <AppBarDrawer position="static" disableOffset isDrawerOpen={isDrawerOpen}>
           <IconButtonAppBar
-            aria-label={t('common:openAccountDrawer')}
+            aria-label={t('common:goBack')}
             edge="start"
             component={Link}
             to={goBack}

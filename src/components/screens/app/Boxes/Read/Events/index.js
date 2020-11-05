@@ -5,11 +5,9 @@ import { useSelector } from 'react-redux';
 
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
-import ArrowBack from '@material-ui/icons/ArrowBack';
 import Box from '@material-ui/core/Box';
 import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
@@ -29,6 +27,7 @@ import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import BoxEventEditContext from 'components/smart/Box/Event/Edit/Context';
 import PaginatedListBoxEvents from 'components/smart/PaginatedList/BoxEvents';
 import BoxEventsFooter from 'components/screens/app/Boxes/Read/Events/Footer';
+import ToggleDrawerButton from 'components/dumb/AppBar/Drawer/ToggleButton';
 
 // CONSTANTS
 const { identityId: IDENTITY_ID_SELECTOR, accountId: ACCOUNT_ID_SELECTOR } = authSelectors;
@@ -101,17 +100,7 @@ function BoxEvents({
         >
           <Box ref={headerRef} display="flex" flexDirection="column" width="100%" minHeight="inherit">
             <Box display="flex">
-              {!isDrawerOpen && (
-                <Box display="flex" alignItems="center" pl={2} pr={1}>
-                  <IconButtonAppBar
-                    aria-label={t('common:openAccountDrawer')}
-                    edge="start"
-                    onClick={toggleDrawer}
-                  >
-                    <ArrowBack />
-                  </IconButtonAppBar>
-                </Box>
-              )}
+              <ToggleDrawerButton isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
               <BoxEventsAppBar box={box} belongsToCurrentUser={belongsToCurrentUser} />
             </Box>
             {isNil(accountId) && (
@@ -155,4 +144,4 @@ BoxEvents.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['common', 'boxes'])(BoxEvents);
+export default withTranslation(['boxes'])(BoxEvents);

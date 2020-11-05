@@ -117,7 +117,7 @@ const EventCard = forwardRef(({
         {!isFromCurrentUser && (
           <CardHeader
             title={displayName}
-            {...titleProps}
+            titleTypographyProps={titleProps}
           />
         )}
         <Box classes={{ root: internalClasses.boxRoot }}>
