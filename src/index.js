@@ -106,6 +106,9 @@ if (isSilentAuthIframe()) {
                     config={window.env.AUTH}
                     registerMiddlewares={registerMiddlewares}
                     publicRoute={routes.identities.public}
+                    // do not try to retrieve old user during auth flow as it useless
+                    // and could conflict with current auth flow (autoSignIn if user is expired)
+                    autoSignInExcludedRoutes={[routes.auth._, routes.auth.callback]}
                   >
                     <App />
                   </OidcProvider>

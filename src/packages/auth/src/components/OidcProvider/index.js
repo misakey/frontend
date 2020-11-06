@@ -1,5 +1,6 @@
 import React, { useMemo, useEffect, createContext, useCallback, useState, forwardRef } from 'react';
 import PropTypes from 'prop-types';
+import { matchPath, useLocation } from 'react-router-dom';
 
 import { loadUserThunk, authReset } from '@misakey/auth/store/actions/auth';
 
@@ -37,9 +38,22 @@ export const UserManagerContext = createContext({
 });
 
 // COMPONENTS
-function OidcProvider({ store, children, config, registerMiddlewares, publicRoute }) {
+function OidcProvider({
+  store,
+  children,
+  config,
+  registerMiddlewares,
+  publicRoute,
+  autoSignInExcludedRoutes,
+}) {
   const [signinRedirect, setSigninRedirect] = useState(null);
   const [canCancelRedirect, setCanCancelRedirect] = useState(true);
+
+  const { pathname } = useLocation();
+  const isRouteExcludedForAutomaticSignIn = useMemo(
+    () => autoSignInExcludedRoutes.some((excludedRoute) => matchPath(pathname, excludedRoute)),
+    [autoSignInExcludedRoutes, pathname],
+  );
 
   const open = useMemo(
     () => !isNil(signinRedirect),
@@ -100,15 +114,23 @@ function OidcProvider({ store, children, config, registerMiddlewares, publicRout
   );
 
   // event callback when the user has been loaded (on silent renew or redirect)
-  const onUserLoaded = useCallback((user) => {
-    // the access_token is still valid so we load the user in the store
-    if (!isNil(user) && !user.expired) {
+  const onUserLoaded = useCallback(
+    async (user) => {
+      if (isNil(user)) {
+        log('User not found !');
+        return Promise.resolve();
+      }
+
+      if (user.expired) {
+        return userManager.signinRedirect();
+      }
+
+      // the access_token is still valid so we load the user in the store
       log('User is loaded !');
-      return dispatchStoreUpdate(user).then(() => setIsLoading(false));
-    }
-    log('User not found or expired !');
-    return Promise.resolve();
-  }, [dispatchStoreUpdate]);
+      return dispatchStoreUpdate(user);
+    },
+    [dispatchStoreUpdate, userManager],
+  );
 
   // event callback when silent renew errored
   const onSilentRenewError = useCallback((e) => {
@@ -145,33 +167,49 @@ function OidcProvider({ store, children, config, registerMiddlewares, publicRout
     [loadUserAtMount, store, userManager.userStorageKey],
   );
 
-  // This effet should only be fired at app launch as it only load user from localStorage and
-  // clean eventual residual keys in storage
-  useEffect(() => {
-    // register the event callbacks
-    userManager.events.addUserLoaded(onUserLoaded);
-    userManager.events.addSilentRenewError(onSilentRenewError);
+  useEffect(
+    () => {
+      if (!isRouteExcludedForAutomaticSignIn) {
+        loadUserAtMount();
+      }
+    },
+    [isRouteExcludedForAutomaticSignIn, loadUserAtMount],
+  );
 
-    loadUserAtMount();
+  // This effet should only be fired at app launch as it clean eventual residual keys in storage
+  useEffect(
+    () => {
+      // Remove from store eventual dead signIn request key
+      // (it happens when an error occurs in the flow and the backend response
+      // doesn't send back the state so we can't remove it with the signInRequestCallback )
+      // we could remove it if it became problematic as we use sessionStorage for state
+      // it must be cleaned on browser closing
+      if (!isRouteExcludedForAutomaticSignIn) {
+        try {
+          userManager.clearStaleState();
+        } catch (e) {
+          // Do not show nor throw error as it's not blocking for using app
+          log(`Fail to clear localStorage from residual oidc:state, ${e}`);
+        }
+      }
+    },
+    [isRouteExcludedForAutomaticSignIn, userManager],
+  );
 
-    // Remove from store eventual dead signIn request key
-    // (it happens when an error occurs in the flow and the backend response
-    // doesn't send back the state so we can't remove it with the signInRequestCallback )
-    // we could remove it if it became problematic as we use sessionStorage for state
-    // it must be cleaned on browser closing
-    try {
-      userManager.clearStaleState();
-    } catch (e) {
-      // Do not show nor throw error as it's not blocking for using app
-      log(`Fail to clear localStorage from residual oidc:state, ${e}`);
-    }
+  useEffect(
+    () => {
+      // register the event callbacks
+      userManager.events.addUserLoaded(onUserLoaded);
+      userManager.events.addSilentRenewError(onSilentRenewError);
 
-    return function cleanup() {
-      // unregister the event callbacks
-      userManager.events.removeUserLoaded(onUserLoaded);
-      userManager.events.removeSilentRenewError(onSilentRenewError);
-    };
-  }, [userManager, onUserLoaded, onSilentRenewError, loadUserAtMount]);
+      return function cleanup() {
+        // unregister the event callbacks
+        userManager.events.removeUserLoaded(onUserLoaded);
+        userManager.events.removeSilentRenewError(onSilentRenewError);
+      };
+    },
+    [onSilentRenewError, onUserLoaded, userManager.events],
+  );
 
   useEffect(
     () => {
@@ -224,6 +262,7 @@ OidcProvider.propTypes = {
   store: PropTypes.object,
   registerMiddlewares: PropTypes.func.isRequired,
   publicRoute: PropTypes.string.isRequired,
+  autoSignInExcludedRoutes: PropTypes.oneOf(PropTypes.string, PropTypes.object),
 };
 
 OidcProvider.defaultProps = {
@@ -235,6 +274,7 @@ OidcProvider.defaultProps = {
     loadUserInfo: false,
   },
   store: null,
+  autoSignInExcludedRoutes: [],
 };
 
 export const withUserManager = (Component) => forwardRef((props, ref) => (
