@@ -120,9 +120,9 @@ const IdentityPublicReadOnly = forwardRef(({ t }, ref) => {
 
   useEffect(
     () => {
-      setIsDrawerForceClosed(true);
+      setIsDrawerForceClosed(!isAuthenticated);
     },
-    [setIsDrawerForceClosed],
+    [setIsDrawerForceClosed, isAuthenticated],
   );
 
   return (

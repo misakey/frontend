@@ -6,7 +6,8 @@ import Title from '@misakey/ui/Typography/Title';
 
 const CardIdentityHeader = ({ children }) => (
   <Box
-    width="100%"
+    display="flex"
+    alignSelf="stretch"
     mt={3}
     ml={2}
   >

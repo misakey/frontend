@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import routes from 'routes';
@@ -21,7 +21,6 @@ import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslati
 import useFetchBoxDetails from 'hooks/useFetchBoxDetails';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 import BoxSharing from 'components/screens/app/Boxes/Read/Sharing';
-import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
 import BoxNoAccess from './NoAccess';
 import BoxClosed from './Closed';
 import BoxDetails from './Details';
@@ -31,8 +30,6 @@ import MustJoin from './MustJoin';
 
 // COMPONENTS
 function BoxRead({ match }) {
-  const { setIsDrawerForceClosed } = useScreenDrawerContext();
-
   const { params: { id: boxId } } = useSafeDestr(match);
   const { isReady, box } = useFetchBoxDetails(boxId);
 
@@ -65,13 +62,6 @@ function BoxRead({ match }) {
 
   const shouldShowJoinScreen = useMemo(() => isMember === false, [isMember]);
 
-  const shouldForceDrawerClose = useMemo(
-    () => shouldShowPasteScreen || shouldDisplayClosedScreen
-      || shouldShowNoAccessScreen || shouldShowJoinScreen,
-    [shouldDisplayClosedScreen, shouldShowJoinScreen,
-      shouldShowNoAccessScreen, shouldShowPasteScreen],
-  );
-
   // @FIXME helps avoid collision with intersection observer for file preview
   const timeoutScrollToBottom = useCallback(
     () => {
@@ -80,18 +70,6 @@ function BoxRead({ match }) {
       );
     },
     [scrollToBottom],
-  );
-
-  useEffect(
-    () => {
-      if (!displayLoadingScreen) {
-        setIsDrawerForceClosed(shouldForceDrawerClose);
-      }
-      return () => {
-        setIsDrawerForceClosed(false);
-      };
-    },
-    [displayLoadingScreen, setIsDrawerForceClosed, shouldForceDrawerClose],
   );
 
   useUpdateDocHead(title);
