@@ -21,6 +21,7 @@ import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslati
 import useFetchBoxDetails from 'hooks/useFetchBoxDetails';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 import BoxSharing from 'components/screens/app/Boxes/Read/Sharing';
+import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
 import BoxNoAccess from './NoAccess';
 import BoxClosed from './Closed';
 import BoxDetails from './Details';
@@ -29,13 +30,9 @@ import BoxFiles from './Files';
 import MustJoin from './MustJoin';
 
 // COMPONENTS
-function BoxRead({
-  match,
-  toggleDrawer,
-  isDrawerOpen,
-  drawerWidth,
-  setIsDrawerForceClosed,
-}) {
+function BoxRead({ match }) {
+  const { setIsDrawerForceClosed } = useScreenDrawerContext();
+
   const { params: { id: boxId } } = useSafeDestr(match);
   const { isReady, box } = useFetchBoxDetails(boxId);
 
@@ -90,6 +87,9 @@ function BoxRead({
       if (!displayLoadingScreen) {
         setIsDrawerForceClosed(shouldForceDrawerClose);
       }
+      return () => {
+        setIsDrawerForceClosed(false);
+      };
     },
     [displayLoadingScreen, setIsDrawerForceClosed, shouldForceDrawerClose],
   );
@@ -102,42 +102,25 @@ function BoxRead({
 
   if (shouldShowNoAccessScreen) {
     return (
-      <BoxNoAccess
-        box={box}
-        toggleDrawer={toggleDrawer}
-        isDrawerOpen={isDrawerOpen}
-        belongsToCurrentUser={belongsToCurrentUser}
-      />
+      <BoxNoAccess box={box} belongsToCurrentUser={belongsToCurrentUser} />
     );
   }
 
   if (shouldDisplayClosedScreen) {
     return (
-      <BoxClosed
-        box={box}
-        toggleDrawer={toggleDrawer}
-        isDrawerOpen={isDrawerOpen}
-        belongsToCurrentUser={belongsToCurrentUser}
-      />
+      <BoxClosed box={box} belongsToCurrentUser={belongsToCurrentUser} />
     );
   }
 
   if (shouldShowJoinScreen) {
     return (
-      <MustJoin
-        box={box}
-        toggleDrawer={toggleDrawer}
-        isDrawerOpen={isDrawerOpen}
-      />
+      <MustJoin box={box} />
     );
   }
 
   if (shouldShowPasteScreen) {
     return (
-      <PasteLinkScreen
-        box={box}
-        isDrawerOpen={isDrawerOpen}
-      />
+      <PasteLinkScreen box={box} />
     );
   }
 
@@ -150,7 +133,6 @@ function BoxRead({
             render={() => (
               <BoxDetails
                 box={box}
-                isDrawerOpen={isDrawerOpen}
                 belongsToCurrentUser={belongsToCurrentUser}
               />
             )}
@@ -160,7 +142,6 @@ function BoxRead({
             render={(routerProps) => (
               <BoxSharing
                 box={box}
-                isDrawerOpen={isDrawerOpen}
                 {...routerProps}
               />
             )}
@@ -172,8 +153,6 @@ function BoxRead({
                 <BoxFiles
                   belongsToCurrentUser={belongsToCurrentUser}
                   box={box}
-                  toggleDrawer={toggleDrawer}
-                  isDrawerOpen={isDrawerOpen}
                 />
               )}
             />
@@ -183,9 +162,6 @@ function BoxRead({
               render={() => (
                 <BoxEvents
                   box={box}
-                  toggleDrawer={toggleDrawer}
-                  isDrawerOpen={isDrawerOpen}
-                  drawerWidth={drawerWidth}
                   belongsToCurrentUser={belongsToCurrentUser}
                 />
               )}
@@ -204,15 +180,6 @@ BoxRead.propTypes = {
       id: PropTypes.string,
     }),
   }).isRequired,
-  // DRAWER
-  setIsDrawerForceClosed: PropTypes.func.isRequired,
-  toggleDrawer: PropTypes.func.isRequired,
-  isDrawerOpen: PropTypes.bool,
-  drawerWidth: PropTypes.string.isRequired,
-};
-
-BoxRead.defaultProps = {
-  isDrawerOpen: false,
 };
 
 export default BoxRead;

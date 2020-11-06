@@ -13,10 +13,13 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 import { useParams, Link } from 'react-router-dom';
 import routes from 'routes';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
+import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
 
-const ProfileHome = ({ isDrawerOpen, toggleDrawer, identityMetadata }) => {
+const ProfileHome = ({ identityMetadata }) => {
   const { id } = useParams();
   const { t } = useTranslation(['account', 'common']);
+
+  const { isDrawerOpen, toggleDrawer } = useScreenDrawerContext();
 
   useUpdateDocHead(t('account:documentTitle'));
 
@@ -52,14 +55,7 @@ const ProfileHome = ({ isDrawerOpen, toggleDrawer, identityMetadata }) => {
 };
 
 ProfileHome.propTypes = {
-  // DRAWER
-  toggleDrawer: PropTypes.func.isRequired,
   identityMetadata: PropTypes.object.isRequired,
-  isDrawerOpen: PropTypes.bool,
-};
-
-ProfileHome.defaultProps = {
-  isDrawerOpen: false,
 };
 
 export default ProfileHome;

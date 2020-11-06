@@ -1,15 +1,16 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import PropTypes from 'prop-types';
 
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import Box from '@material-ui/core/Box';
+import { useScreenDrawerContext } from '../..';
 
 // COMPONENTS
-function ToggleDrawerButton({ toggleDrawer, isDrawerOpen }) {
+function ToggleDrawerButton() {
   const { t } = useTranslation('common');
+  const { toggleDrawer, isDrawerOpen } = useScreenDrawerContext();
 
   if (isDrawerOpen) { return null; }
 
@@ -25,10 +26,5 @@ function ToggleDrawerButton({ toggleDrawer, isDrawerOpen }) {
     </Box>
   );
 }
-
-ToggleDrawerButton.propTypes = {
-  isDrawerOpen: PropTypes.bool.isRequired,
-  toggleDrawer: PropTypes.func.isRequired,
-};
 
 export default ToggleDrawerButton;

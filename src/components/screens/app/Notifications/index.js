@@ -6,13 +6,11 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import moment from 'moment';
 
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
-import AppBarDrawer from 'components/dumb/AppBar/Drawer';
-import ToggleDrawerButton from 'components/dumb/AppBar/Drawer/ToggleButton/';
+import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
+import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 
 import Box from '@material-ui/core/Box';
-import ScreenDrawer from 'components/smart/Screen/Drawer';
-import BoxesList from 'components/screens/app/Boxes/List';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import range from '@misakey/helpers/range';
@@ -49,7 +47,7 @@ function MisakeyNotications() {
   const { items, hasNextPage } = useSelector(getPaginationSelector);
   const newCount = useSelector(getNewCountSelector);
   const dispatch = useDispatch();
-  const { t } = useTranslation(['boxes', 'onboard']);
+  const { t } = useTranslation(['boxes']);
 
   const [seenItemsIndexes, setSeenItemsIndexes] = useState([]);
   const [isNextPageLoading, setIsNextPageLoading] = useState(false);
@@ -145,47 +143,43 @@ function MisakeyNotications() {
   const itemData = useMemo(() => ({ items, hasNextPage }), [hasNextPage, items]);
 
   return (
-    <ScreenDrawer drawerChildren={(drawerProps) => <BoxesList {...drawerProps} />}>
-      {({ isDrawerOpen, toggleDrawer }) => (
-        <>
-          <ElevationScroll target={ref.current.outerRef}>
-            <AppBarDrawer isDrawerOpen={isDrawerOpen}>
-              <Box display="flex" width="100%" alignItems="center">
-                <ToggleDrawerButton isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
-                <Box display="flex" flexDirection="column" flexGrow={1}>
-                  <Title gutterBottom={false}>{t('boxes:notifications.byIdentity.title')}</Title>
-                  <Subtitle gutterBottom={false}>{t('boxes:notifications.byIdentity.subtitle')}</Subtitle>
-                </Box>
-                <Avatar src="/img/logo.png" label={t('boxes:notifications.byIdentity.title')} />
-              </Box>
-            </AppBarDrawer>
-          </ElevationScroll>
-          <Box height={`calc(100% - ${APPBAR_HEIGHT}px)`}>
-            <AutoSizer>
-              {(autoSizerProps) => (
-                <InfiniteLoaderChat
-                  {...autoSizerProps}
-                  Row={MessageRow}
-                  ref={ref}
-                  loadNextPage={loadNextPage}
-                  hasNextPage={hasNextPage}
-                  isNextPageLoading={isNextPageLoading}
-                  itemCount={itemsLength}
-                  itemData={itemData}
-                  onItemsRendered={onItemsRendered}
-                  NoMoreItemsElement={itemsLength === 0 ? null : (
-                    <Typography component={Box} p={1} variant="caption" color="secondary">
-                      {t('boxes:notifications.byIdentity.noMoreItems')}
-                    </Typography>
-                  )}
-                />
-              )}
-            </AutoSizer>
-            {itemsLength === 0 && <BoxEmpty title={t('boxes:notifications.byIdentity.empty')} py={0} />}
+    <>
+      <ElevationScroll target={ref.current.outerRef}>
+        <AppBarDrawer>
+          <Box display="flex" width="100%" alignItems="center">
+            <ToggleDrawerButton />
+            <Box display="flex" flexDirection="column" flexGrow={1}>
+              <Title gutterBottom={false}>{t('boxes:notifications.byIdentity.title')}</Title>
+              <Subtitle gutterBottom={false}>{t('boxes:notifications.byIdentity.subtitle')}</Subtitle>
+            </Box>
+            <Avatar src="/img/logo.png" label={t('boxes:notifications.byIdentity.title')} />
           </Box>
-        </>
-      )}
-    </ScreenDrawer>
+        </AppBarDrawer>
+      </ElevationScroll>
+      <Box height={`calc(100% - ${APPBAR_HEIGHT}px)`}>
+        <AutoSizer>
+          {(autoSizerProps) => (
+            <InfiniteLoaderChat
+              {...autoSizerProps}
+              Row={MessageRow}
+              ref={ref}
+              loadNextPage={loadNextPage}
+              hasNextPage={hasNextPage}
+              isNextPageLoading={isNextPageLoading}
+              itemCount={itemsLength}
+              itemData={itemData}
+              onItemsRendered={onItemsRendered}
+              NoMoreItemsElement={itemsLength === 0 ? null : (
+                <Typography component={Box} p={1} variant="caption" color="secondary">
+                  {t('boxes:notifications.byIdentity.noMoreItems')}
+                </Typography>
+              )}
+            />
+          )}
+        </AutoSizer>
+        {itemsLength === 0 && <BoxEmpty title={t('boxes:notifications.byIdentity.empty')} py={0} />}
+      </Box>
+    </>
   );
 }
 

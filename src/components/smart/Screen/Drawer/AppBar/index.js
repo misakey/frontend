@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 
 import { SIDES } from '@misakey/ui/constants/drawers';
 
 import omit from '@misakey/helpers/omit';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar, { PROP_TYPES } from '@misakey/ui/AppBar';
-import clsx from 'clsx';
+import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
 
 const useStyles = makeStyles((theme) => ({
   appBarLeft: {
@@ -29,13 +30,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function AppBarDrawer({
-  isDrawerOpen,
   children,
   className,
   side,
   ...props
 }) {
   const classes = useStyles();
+
+  const { isDrawerOpen } = useScreenDrawerContext();
 
   return (
     <AppBar

@@ -32,7 +32,7 @@ import Box from '@material-ui/core/Box';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import Avatar from '@material-ui/core/Avatar';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
-import AppBarDrawer from 'components/dumb/AppBar/Drawer';
+import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 
 import CopyIcon from '@material-ui/icons/FilterNone';
 import LinkIcon from '@material-ui/icons/Link';
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ShareBoxDialog({ box, isDrawerOpen, t }) {
+function ShareBoxDialog({ box, t }) {
   const classes = useStyles();
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
@@ -124,7 +124,7 @@ function ShareBoxDialog({ box, isDrawerOpen, t }) {
   return (
     <>
       <ElevationScroll target={contentRef}>
-        <AppBarDrawer position="static" disableOffset isDrawerOpen={isDrawerOpen}>
+        <AppBarDrawer position="static" disableOffset>
           <IconButtonAppBar
             aria-label={t('common:goBack')}
             edge="start"
@@ -195,7 +195,6 @@ function ShareBoxDialog({ box, isDrawerOpen, t }) {
 ShareBoxDialog.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
-  isDrawerOpen: PropTypes.bool.isRequired,
 };
 
 export default withTranslation(['boxes', 'common'])(ShareBoxDialog);

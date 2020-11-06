@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { SIDES } from '@misakey/ui/constants/drawers';
 import { DRAWER_PROPS_PROP_TYPES } from 'components/smart/Screen/Drawer';
 
-import AppBarDrawer from 'components/dumb/AppBar/Drawer';
+import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 
 import getNextSearch from '@misakey/helpers/getNextSearch';

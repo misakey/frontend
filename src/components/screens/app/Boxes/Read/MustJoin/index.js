@@ -31,7 +31,7 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import usePropChanged from '@misakey/hooks/usePropChanged';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import AppBarDrawer from 'components/dumb/AppBar/Drawer';
+import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import Title from '@misakey/ui/Typography/Title';
 import MuiLink from '@material-ui/core/Link';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
@@ -47,7 +47,7 @@ import AvatarBox from '@misakey/ui/Avatar/Box';
 import AvatarBoxSkeleton from '@misakey/ui/Avatar/Box/Skeleton';
 import ChipUserMeLogout from '@misakey/ui/Chip/User/Me/Logout';
 import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
-import ToggleDrawerButton from 'components/dumb/AppBar/Drawer/ToggleButton';
+import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
 
 // CONSTANTS
 const { forbidden } = errorTypes;
@@ -63,7 +63,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
+function MustJoin({ box, t }) {
   const classes = useStyles();
 
   const dispatch = useDispatch();
@@ -165,10 +165,7 @@ function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
 
   if (shouldShowPasteScreen) {
     return (
-      <PasteLinkScreen
-        box={box}
-        isDrawerOpen={isDrawerOpen}
-      />
+      <PasteLinkScreen box={box} />
     );
   }
 
@@ -177,10 +174,8 @@ function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
       display="flex"
       height="inherit"
     >
-      <AppBarDrawer
-        isDrawerOpen={isDrawerOpen}
-      >
-        <ToggleDrawerButton isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
+      <AppBarDrawer>
+        <ToggleDrawerButton />
       </AppBarDrawer>
       <Box
         display="flex"
@@ -261,8 +256,6 @@ function MustJoin({ isDrawerOpen, toggleDrawer, box, t }) {
 }
 
 MustJoin.propTypes = {
-  isDrawerOpen: PropTypes.bool.isRequired,
-  toggleDrawer: PropTypes.func.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
 };

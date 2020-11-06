@@ -17,8 +17,8 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useFetchBoxPublicInfo from 'hooks/useFetchBoxPublicInfo';
 import { useDispatch } from 'react-redux';
 
-import AppBarDrawer from 'components/dumb/AppBar/Drawer';
-import ToggleDrawerButton from 'components/dumb/AppBar/Drawer/ToggleButton';
+import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
+import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import CreateBoxSuggestions from 'components/smart/Box/CreateSuggestions';
 import MuiLink from '@material-ui/core/Link';
@@ -41,7 +41,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-function NoAccess({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t }) {
+function NoAccess({ box, belongsToCurrentUser, t }) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -83,14 +83,10 @@ function NoAccess({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t }) 
       display="flex"
       height="inherit"
     >
-      <AppBarDrawer
-        isDrawerOpen={isDrawerOpen}
-        toolbarProps={{ px: 0 }}
-        disableOffset
-      >
+      <AppBarDrawer toolbarProps={{ px: 0 }} disableOffset>
         <Box display="flex" flexDirection="column" width="100%" minHeight="inherit">
           <Box display="flex">
-            <ToggleDrawerButton isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
+            <ToggleDrawerButton />
             <BoxEventsAppBar disabled box={box} belongsToCurrentUser={belongsToCurrentUser} />
           </Box>
         </Box>
@@ -154,8 +150,6 @@ function NoAccess({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t }) 
 }
 
 NoAccess.propTypes = {
-  isDrawerOpen: PropTypes.bool.isRequired,
-  toggleDrawer: PropTypes.func.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
   belongsToCurrentUser: PropTypes.bool.isRequired,

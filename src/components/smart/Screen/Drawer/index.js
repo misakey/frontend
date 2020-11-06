@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, createContext, useContext, isValidElement } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
@@ -62,14 +62,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /*
-* ScreenDrawer displays `drawerChildren` on the left on the screen and `children` on the right.
+* ScreenDrawerContextProvider displays `drawerChildren` on the left on the screen
+* and `children` on the right.
 * Drawer is persistent. By default it is:
     - open on desktop (30% of the screen)
     - hidden on mobile with actions to open it (100% of the screen)
 * Drawer can be opened with `toggleDrawer` method or with `leftDrawer` query parameter
 (see getNextDrawerSearch)
-* `children` and `drawerChildren` can be simple element or function. If their are function, props
-  from ScreenDrawer will be provided to their children:
+* ScreenDrawerContextProvider provides:
      - isDrawerOpen: if drawer if open or not (usefull to display a button to open it or not)
      - toggleDrawer: open or close the drawer
      - drawerWidth: can be user to compute and force width of children AppBar for example)
@@ -92,8 +92,20 @@ const useStyles = makeStyles((theme) => ({
 then it can be used in children to determine which content displaying if the drawer
 */
 
+// CONTEXT
+export const ScreenDrawerContext = createContext({
+  isDrawerOpen: null,
+  toggleDrawer: null,
+  drawerWidth: null,
+  getNextDrawerSearch: null,
+  selectedDrawer: null,
+  setIsDrawerForceClosed: null,
+});
 
-function ScreenDrawer({
+// HOOKS
+export const useScreenDrawerContext = () => useContext(ScreenDrawerContext);
+
+function ScreenDrawerContextProvider({
   drawerChildren, classes, children, isFullWidth, initialIsDrawerOpen, ...props
 }) {
   const theme = useTheme();
@@ -157,17 +169,18 @@ function ScreenDrawer({
     [isDrawerOpen, toggleDrawer, drawerWidth, getNextDrawerSearch, leftDrawerQueryParams],
   );
 
-  const drawerContent = useMemo(() => {
-    if (!isPlainObject(drawerChildren)) {
-      return isFunction(drawerChildren) ? drawerChildren(drawerProps) : drawerChildren;
-    }
-    const drawer = drawerChildren[leftDrawerQueryParams] || drawerChildren[DEFAULT];
-
-    return isFunction(drawer) ? drawer(drawerProps) : drawer;
-  }, [drawerChildren, drawerProps, leftDrawerQueryParams]);
+  const drawerContent = useMemo(
+    () => {
+      if (isPlainObject(drawerChildren) && !isValidElement(drawerChildren)) {
+        return drawerChildren[leftDrawerQueryParams] || drawerChildren[DEFAULT];
+      }
+      return drawerChildren;
+    },
+    [drawerChildren, leftDrawerQueryParams],
+  );
 
   return (
-    <>
+    <ScreenDrawerContext.Provider value={drawerProps}>
       <Drawer
         variant="persistent"
         anchor="left"
@@ -185,12 +198,12 @@ function ScreenDrawer({
       >
         {isFunction(children) ? children(drawerProps) : children}
       </Box>
-    </>
+    </ScreenDrawerContext.Provider>
   );
 }
 
 
-ScreenDrawer.propTypes = {
+ScreenDrawerContextProvider.propTypes = {
   drawerChildren: PropTypes.oneOfType([
     PropTypes.element,
     PropTypes.node,
@@ -213,7 +226,7 @@ ScreenDrawer.propTypes = {
 };
 
 
-ScreenDrawer.defaultProps = {
+ScreenDrawerContextProvider.defaultProps = {
   drawerChildren: null,
   children: null,
   classes: {},
@@ -221,4 +234,4 @@ ScreenDrawer.defaultProps = {
   initialIsDrawerOpen: false,
 };
 
-export default ScreenDrawer;
+export default ScreenDrawerContextProvider;

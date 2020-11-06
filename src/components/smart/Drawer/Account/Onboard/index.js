@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
-import { DRAWER_PROPS_PROP_TYPES } from 'components/smart/Screen/Drawer';
+import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
 
 import { useTranslation } from 'react-i18next';
 
@@ -20,8 +20,9 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 const FOOTER_CONTAINER_PROPS = { mx: 2 };
 
 // COMPONENTS
-const BoxAccountOnboard = ({ toggleDrawer }) => {
+const BoxAccountOnboard = () => {
   const { t } = useTranslation('common');
+  const { toggleDrawer } = useScreenDrawerContext();
 
   return (
     <Box minHeight="100%" display="flex" flexDirection="column">
@@ -49,10 +50,6 @@ const BoxAccountOnboard = ({ toggleDrawer }) => {
       <Footer containerProps={FOOTER_CONTAINER_PROPS} />
     </Box>
   );
-};
-
-BoxAccountOnboard.propTypes = {
-  ...DRAWER_PROPS_PROP_TYPES,
 };
 
 export default BoxAccountOnboard;

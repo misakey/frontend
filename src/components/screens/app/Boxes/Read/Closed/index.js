@@ -21,7 +21,6 @@ import useFetchBoxPublicInfo from 'hooks/useFetchBoxPublicInfo';
 
 import isNil from '@misakey/helpers/isNil';
 
-import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
@@ -32,7 +31,8 @@ import InfoIcon from '@material-ui/icons/Info';
 // import LeaveBoxDialogButton from 'components/screens/app/Boxes/Read/Events/LeaveBoxDialogButton';
 import Skeleton from '@material-ui/lab/Skeleton';
 import CreateBoxSuggestions from 'components/smart/Box/CreateSuggestions';
-import ToggleDrawerButton from 'components/dumb/AppBar/Drawer/ToggleButton';
+import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
+import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
 
 // CONSTANTS
 const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t }) {
+function BoxClosed({ box, belongsToCurrentUser, t }) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -124,13 +124,10 @@ function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t })
 
   return (
     <>
-      <AppBarDrawer
-        isDrawerOpen={isDrawerOpen}
-        toolbarProps={{ px: 0 }}
-      >
+      <AppBarDrawer toolbarProps={{ px: 0 }}>
         <Box display="flex" flexDirection="column" width="100%" minHeight="inherit">
           <Box display="flex">
-            <ToggleDrawerButton isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
+            <ToggleDrawerButton />
             <BoxEventsAppBar disabled box={box} belongsToCurrentUser={belongsToCurrentUser} />
           </Box>
           {/* {displayLeaveBox && (
@@ -192,8 +189,6 @@ function BoxClosed({ isDrawerOpen, toggleDrawer, box, belongsToCurrentUser, t })
 }
 
 BoxClosed.propTypes = {
-  isDrawerOpen: PropTypes.bool.isRequired,
-  toggleDrawer: PropTypes.func.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
   belongsToCurrentUser: PropTypes.bool.isRequired,

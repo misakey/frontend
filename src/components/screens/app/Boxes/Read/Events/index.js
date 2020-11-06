@@ -4,7 +4,6 @@ import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
-import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
@@ -27,7 +26,9 @@ import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import BoxEventEditContext from 'components/smart/Box/Event/Edit/Context';
 import PaginatedListBoxEvents from 'components/smart/PaginatedList/BoxEvents';
 import BoxEventsFooter from 'components/screens/app/Boxes/Read/Events/Footer';
-import ToggleDrawerButton from 'components/dumb/AppBar/Drawer/ToggleButton';
+import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
+import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
+import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
 
 // CONSTANTS
 const { identityId: IDENTITY_ID_SELECTOR, accountId: ACCOUNT_ID_SELECTOR } = authSelectors;
@@ -46,9 +47,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-function BoxEvents({
-  drawerWidth, isDrawerOpen, toggleDrawer, box, t, belongsToCurrentUser,
-}) {
+function BoxEvents({ box, t, belongsToCurrentUser }) {
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
   const { listRef } = useBoxEventSubmitContext();
@@ -56,6 +55,8 @@ function BoxEvents({
   const classes = useStyles({ headerHeight });
 
   const { id, eventsCount } = useMemo(() => box, [box]);
+
+  const { drawerWidth, isDrawerOpen, toggleDrawer } = useScreenDrawerContext();
 
   const accountId = useSelector(ACCOUNT_ID_SELECTOR);
   const identityId = useSelector(IDENTITY_ID_SELECTOR);
@@ -136,10 +137,7 @@ function BoxEvents({
 }
 
 BoxEvents.propTypes = {
-  drawerWidth: PropTypes.string.isRequired,
-  isDrawerOpen: PropTypes.bool.isRequired,
   belongsToCurrentUser: PropTypes.bool.isRequired,
-  toggleDrawer: PropTypes.func.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
 };

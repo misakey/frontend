@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useContext, useEffect, forwardRef } from '
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { DRAWER_PROPS_PROP_TYPES } from 'components/smart/Screen/Drawer';
+import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
 import { UserManagerContext } from '@misakey/auth/components/OidcProvider';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
@@ -35,7 +35,7 @@ import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import ButtonContactMailto from '@misakey/ui/Button/Contact/Mailto';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 
-import ToggleDrawerButton from 'components/dumb/AppBar/Drawer/ToggleButton';
+import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
 
 // CONSTANTS
 const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
@@ -75,13 +75,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const IdentityPublicReadOnly = forwardRef(({
-  t,
-  toggleDrawer, isDrawerOpen, setIsDrawerForceClosed,
-}, ref) => {
+const IdentityPublicReadOnly = forwardRef(({ t }, ref) => {
   const classes = useStyles();
 
   const { id } = useParams();
+  const { setIsDrawerForceClosed } = useScreenDrawerContext();
 
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
 
@@ -130,7 +128,7 @@ const IdentityPublicReadOnly = forwardRef(({
   return (
     <>
       <AppBarStatic>
-        <ToggleDrawerButton isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
+        <ToggleDrawerButton />
         <BoxFlexFill />
         {!isAuthenticated && (
           <>
@@ -193,7 +191,6 @@ const IdentityPublicReadOnly = forwardRef(({
 });
 
 IdentityPublicReadOnly.propTypes = {
-  ...DRAWER_PROPS_PROP_TYPES,
   // withTranslation
   t: PropTypes.func.isRequired,
 };

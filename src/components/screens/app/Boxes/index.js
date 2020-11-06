@@ -17,9 +17,6 @@ import useSetBoxKeyShareInUrl from '@misakey/crypto/hooks/useSetBoxKeyShareInUrl
 import { useSelector } from 'react-redux';
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 
-import VaultLockedScreen from 'components/screens/app/VaultLocked';
-import BoxesList from 'components/screens/app/Boxes/List';
-import ScreenDrawer from 'components/smart/Screen/Drawer';
 import BoxRead from 'components/screens/app/Boxes/Read';
 import BoxNone from 'components/screens/app/Boxes/None';
 import RouteAcr from '@misakey/auth/components/Route/Acr';
@@ -42,7 +39,6 @@ function Boxes({ match }) {
     () => matchBoxSelected || { params: {} },
     [matchBoxSelected],
   );
-  const isNothingSelected = useMemo(() => isNil(id), [id]);
   const { backupVersion } = useSelector(selectors.getEncryptedBackupData);
 
   const [storageBackupVersion] = useWatchStorageBackupVersion();
@@ -72,36 +68,15 @@ function Boxes({ match }) {
 
   const shouldDisplayLockedScreen = useShouldDisplayLockedScreen();
 
-  const isFullWidth = useMemo(
-    () => shouldDisplayLockedScreen,
-    [shouldDisplayLockedScreen],
-  );
-
-  const drawerChildren = useMemo(() => {
-    if (shouldDisplayLockedScreen) {
-      return (drawerProps) => <VaultLockedScreen {...drawerProps} />;
-    }
-    return (drawerProps) => <BoxesList {...drawerProps} />;
-  }, [shouldDisplayLockedScreen]);
-
   if (badKeyShareFormat) {
     return (
-      <ScreenDrawer
-        drawerChildren={drawerChildren}
-        isFullWidth={isFullWidth}
-        initialIsDrawerOpen={isNothingSelected}
-      >
-        {(drawerProps) => (
-          <PasteLinkScreen
-            box={{
-              /* this screen expects a box object but only uses the ID */
-              id,
-            }}
-            currentLinkMalformed
-            {...drawerProps}
-          />
-        )}
-      </ScreenDrawer>
+      <PasteLinkScreen
+        box={{
+          /* this screen expects a box object but only uses the ID */
+          id,
+        }}
+        currentLinkMalformed
+      />
     );
   }
 
@@ -124,48 +99,23 @@ function Boxes({ match }) {
         render={(renderProps) => {
           const boxId = boxIdMatchParamPath(renderProps);
           if (!UUID4_REGEX.test(boxId)) {
+            return <BoxNone {...renderProps} />;
+          }
+          if (!shouldDisplayLockedScreen) {
             return (
-              <ScreenDrawer
-                drawerChildren={drawerChildren}
-                isFullWidth={isFullWidth}
-                initialIsDrawerOpen={isNothingSelected}
-              >
-                {(drawerProps) => (
-                  <BoxNone {...drawerProps} {...renderProps} />
-                )}
-              </ScreenDrawer>
+              <BoxEventSubmitContextProvider>
+                <BoxRead {...renderProps} />
+              </BoxEventSubmitContextProvider>
             );
           }
-          return (
-            <ScreenDrawer
-              drawerChildren={drawerChildren}
-              isFullWidth={isFullWidth}
-              initialIsDrawerOpen={isNothingSelected}
-            >
-              {(drawerProps) => !shouldDisplayLockedScreen && (
-                <BoxEventSubmitContextProvider>
-                  <BoxRead {...drawerProps} {...renderProps} />
-                </BoxEventSubmitContextProvider>
-              )}
-            </ScreenDrawer>
-          );
+          return null;
         }}
       />
       <RouteAcr
         acr={2}
         exact
         path={match.path}
-        render={(renderProps) => (
-          <ScreenDrawer
-            drawerChildren={drawerChildren}
-            isFullWidth={isFullWidth}
-            initialIsDrawerOpen={isNothingSelected}
-          >
-            {(drawerProps) => (
-              <BoxNone {...drawerProps} {...renderProps} />
-            )}
-          </ScreenDrawer>
-        )}
+        component={BoxNone}
       />
     </Switch>
   );

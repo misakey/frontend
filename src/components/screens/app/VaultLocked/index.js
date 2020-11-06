@@ -15,7 +15,7 @@ import Formik from '@misakey/ui/Formik';
 import FormField from '@misakey/ui/Form/Field';
 
 import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
-import AppBarDrawer from 'components/dumb/AppBar/Drawer';
+import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import ChipUser from '@misakey/ui/Chip/User';
 import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
 import BoxControls from '@misakey/ui/Box/Controls';
@@ -35,7 +35,7 @@ const INITIAL_VALUES = {
 };
 
 // COMPONENTS
-function VaultLocked({ t, isDrawerOpen }) {
+function VaultLocked({ t }) {
   const openVaultWithPassword = useLoadSecretsWithPassword();
   const userManagerContext = useContext(UserManagerContext);
   const logout = useSignOut(userManagerContext.userManager);
@@ -55,7 +55,7 @@ function VaultLocked({ t, isDrawerOpen }) {
 
   return (
     <>
-      <AppBarDrawer side={SIDES.LEFT} isDrawerOpen={isDrawerOpen}>
+      <AppBarDrawer side={SIDES.LEFT}>
         <OpenDrawerAccountButton />
       </AppBarDrawer>
       <BoxContent
@@ -109,7 +109,6 @@ function VaultLocked({ t, isDrawerOpen }) {
 
 VaultLocked.propTypes = {
   t: PropTypes.func.isRequired,
-  isDrawerOpen: PropTypes.bool.isRequired,
 };
 
 export default withTranslation(['common', 'boxes'])(VaultLocked);

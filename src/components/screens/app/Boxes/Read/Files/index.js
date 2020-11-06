@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import { CLOSED } from 'constants/app/boxes/statuses';
 
-import AppBarDrawer from 'components/dumb/AppBar/Drawer';
+import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
+import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
 import { useBoxesUploadContext } from 'components/smart/Input/Boxes/Upload/Context';
 
 import Box from '@material-ui/core/Box';
@@ -17,7 +18,6 @@ import isNil from '@misakey/helpers/isNil';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import BoxEmpty from 'components/dumb/Box/Empty';
-import ToggleDrawerButton from 'components/dumb/AppBar/Drawer/ToggleButton';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import FabAdd from '@misakey/ui/Fab/Add';
 
@@ -46,7 +46,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function BoxFiles({ belongsToCurrentUser, isDrawerOpen, toggleDrawer, box }) {
+function BoxFiles({ belongsToCurrentUser, box }) {
   const [headerHeight, setHeaderHeight] = useState(APPBAR_HEIGHT);
   const contentRef = useRef();
   const { t } = useTranslation('boxes');
@@ -85,14 +85,10 @@ function BoxFiles({ belongsToCurrentUser, isDrawerOpen, toggleDrawer, box }) {
   return (
     <>
       <ElevationScroll target={contentRef.current}>
-        <AppBarDrawer
-          isDrawerOpen={isDrawerOpen}
-          toolbarProps={{ px: 0 }}
-          offsetHeight={headerHeight}
-        >
+        <AppBarDrawer toolbarProps={{ px: 0 }} offsetHeight={headerHeight}>
           <Box ref={headerRef} display="flex" flexDirection="column" width="100%" minHeight="inherit">
             <Box display="flex">
-              <ToggleDrawerButton isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
+              <ToggleDrawerButton />
               <BoxEventsAppBar box={box} belongsToCurrentUser={belongsToCurrentUser} />
             </Box>
           </Box>
@@ -139,9 +135,7 @@ function BoxFiles({ belongsToCurrentUser, isDrawerOpen, toggleDrawer, box }) {
 }
 
 BoxFiles.propTypes = {
-  isDrawerOpen: PropTypes.bool.isRequired,
   belongsToCurrentUser: PropTypes.bool.isRequired,
-  toggleDrawer: PropTypes.func.isRequired,
   box: PropTypes.shape({ id: PropTypes.string.isRequired }).isRequired,
 };
 

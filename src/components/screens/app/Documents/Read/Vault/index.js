@@ -1,14 +1,13 @@
 import React, { useMemo, useRef, useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 import useTheme from '@material-ui/core/styles/useTheme';
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import AppBarDrawer from 'components/dumb/AppBar/Drawer';
+import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import ElevationScroll from 'components/dumb/ElevationScroll';
-import ToggleDrawerButton from 'components/dumb/AppBar/Drawer/ToggleButton';
+import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
 
 import Avatar from '@material-ui/core/Avatar';
 import FolderIcon from '@material-ui/icons/Folder';
@@ -50,10 +49,11 @@ const useStyles = makeStyles((theme) => ({
 const NUM_COLUMNS = 2;
 
 // COMPONENTS
-const DocumentsVault = ({ t, isDrawerOpen, toggleDrawer }) => {
+const DocumentsVault = () => {
   const ref = useRef();
   const classes = useStyles();
   const [isUploadDialogOpened, setIsUploadDialogOpened] = useState(false);
+  const { t } = useTranslation('document');
 
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
@@ -77,12 +77,10 @@ const DocumentsVault = ({ t, isDrawerOpen, toggleDrawer }) => {
   return (
     <>
       <ElevationScroll target={ref.current}>
-        <AppBarDrawer
-          isDrawerOpen={isDrawerOpen}
-        >
+        <AppBarDrawer>
           <Box display="flex" flexDirection="column" width="100%">
             <Box display="flex">
-              <ToggleDrawerButton isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
+              <ToggleDrawerButton />
 
               <Box display="flex" flexDirection="column" flexGrow={1}>
                 <Typography color="textPrimary">
@@ -137,13 +135,4 @@ const DocumentsVault = ({ t, isDrawerOpen, toggleDrawer }) => {
   );
 };
 
-DocumentsVault.propTypes = {
-  isDrawerOpen: PropTypes.bool.isRequired,
-  toggleDrawer: PropTypes.func.isRequired,
-
-  // withTranslation
-  t: PropTypes.func.isRequired,
-};
-
-
-export default withTranslation(['document'])(DocumentsVault);
+export default DocumentsVault;

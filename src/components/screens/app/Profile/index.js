@@ -12,7 +12,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Identities from 'components/screens/app/Identity';
 import IdentityPublicReadOnly from 'components/screens/app/Identity/Public/ReadOnly';
 import RouteAcr from '@misakey/auth/components/Route/Acr';
-import ScreenDrawer from 'components/smart/Screen/Drawer';
+import ScreenDrawerContextProvider from 'components/smart/Screen/Drawer';
 import DrawerAccountContent from 'components/smart/Drawer/Account/Content';
 import DrawerAccountOnboard from 'components/smart/Drawer/Account/Onboard';
 
@@ -53,11 +53,9 @@ function Profile(props) {
 
   if (isMe) {
     return (
-      <ScreenDrawer
+      <ScreenDrawerContextProvider
         classes={{ content: classes.drawerContent }}
-        drawerChildren={
-          (drawerProps) => <DrawerAccountContent backTo={routes.boxes._} {...drawerProps} />
-        }
+        drawerChildren={<DrawerAccountContent backTo={routes.boxes._} />}
         {...props}
       >
         {(drawerProps) => (
@@ -81,32 +79,29 @@ function Profile(props) {
             />
           </Switch>
         )}
-      </ScreenDrawer>
+      </ScreenDrawerContextProvider>
     );
   }
 
   return (
-    <ScreenDrawer
+    <ScreenDrawerContextProvider
       initialIsDrawerOpen={false}
       classes={{ content: classes.drawerContent }}
-      drawerChildren={
-        (drawerProps) => (hasIdentityId
-          ? <DrawerAccountContent backTo={routes.boxes._} {...drawerProps} />
-          : <DrawerAccountOnboard {...drawerProps} />)
-      }
+      drawerChildren={(hasIdentityId
+        ? <DrawerAccountContent backTo={routes.boxes._} />
+        : <DrawerAccountOnboard />
+      )}
       {...props}
     >
-      {(drawerProps) => (
-        <Switch>
-          <Route
-              exact
-              path={routes.identities.public}
-              render={(routerProps) => <IdentityPublicReadOnly {...routerProps} {...drawerProps} />}
-          />
-          <Redirect from={path} to={redirectTo} />
-        </Switch>
-      )}
-    </ScreenDrawer>
+      <Switch>
+        <Route
+            exact
+            path={routes.identities.public}
+            render={(routerProps) => <IdentityPublicReadOnly {...routerProps} />}
+        />
+        <Redirect from={path} to={redirectTo} />
+      </Switch>
+    </ScreenDrawerContextProvider>
 
   );
 }

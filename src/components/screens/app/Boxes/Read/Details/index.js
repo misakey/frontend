@@ -11,7 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import useBoxRights from 'hooks/useBoxRights';
 
-import AppBarDrawer from 'components/dumb/AppBar/Drawer';
+import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import Box from '@material-ui/core/Box';
 import ArrowBack from '@material-ui/icons/ArrowBack';
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function BoxDetails({ isDrawerOpen, box, belongsToCurrentUser, t }) {
+function BoxDetails({ box, belongsToCurrentUser, t }) {
   const classes = useStyles();
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
@@ -73,7 +73,7 @@ function BoxDetails({ isDrawerOpen, box, belongsToCurrentUser, t }) {
   return (
     <>
       <ElevationScroll target={contentRef}>
-        <AppBarDrawer position="static" disableOffset isDrawerOpen={isDrawerOpen}>
+        <AppBarDrawer position="static" disableOffset>
           <IconButtonAppBar
             aria-label={t('common:goBack')}
             edge="start"
@@ -169,7 +169,6 @@ function BoxDetails({ isDrawerOpen, box, belongsToCurrentUser, t }) {
 }
 
 BoxDetails.propTypes = {
-  isDrawerOpen: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   belongsToCurrentUser: PropTypes.bool,

@@ -33,6 +33,7 @@ import IconButton from '@material-ui/core/IconButton';
 import IconButtonSubmit from '@misakey/ui/IconButton/Submit';
 
 import ResetOnBoxChange from 'components/screens/app/Boxes/Read/Events/Footer/Creating/ResetOnBoxChange';
+import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
 
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import SendIcon from '@material-ui/icons/Send';
@@ -62,7 +63,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, t }) {
+function BoxEventsFooter({ box, t }) {
+  const { drawerWidth, isDrawerOpen } = useScreenDrawerContext();
+
   const classes = useStyles({ drawerWidth, isDrawerOpen });
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -194,8 +197,6 @@ function BoxEventsFooter({ box, drawerWidth, isDrawerOpen, t }) {
 }
 
 BoxEventsFooter.propTypes = {
-  drawerWidth: PropTypes.string.isRequired,
-  isDrawerOpen: PropTypes.bool.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,
