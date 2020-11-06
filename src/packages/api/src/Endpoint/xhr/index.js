@@ -1,6 +1,23 @@
 import noop from '@misakey/helpers/noop';
 
+// CONSTANTS
 const UPLOAD_METHODS = ['POST', 'PUT', 'PATCH'];
+
+// HELPERS
+const handleResponse = (response) => {
+  try {
+    return JSON.parse(response);
+  } catch (err) {
+    return response;
+  }
+};
+
+const computeProgress = (progressEvent, shouldBeDone = false) => {
+  if (progressEvent.lengthComputable && progressEvent.total !== 0) {
+    return Math.round((progressEvent.loaded / progressEvent.total) * 100);
+  }
+  return shouldBeDone ? 100 : 0;
+};
 
 /**
  * Send a request with XMLHttpRequest API and an instance of Endpoint
@@ -17,9 +34,9 @@ export default (
 
   const send = () => new Promise((resolve, reject) => {
     req.addEventListener('load', (e) => {
-      onProgress(100);
+      onProgress(computeProgress(e, true));
       if (req.status < 400) {
-        resolve(e);
+        resolve(handleResponse(req.response));
       } else {
         reject(e);
       }
@@ -31,19 +48,11 @@ export default (
 
     if (UPLOAD_METHODS.includes(method)) {
       req.upload.addEventListener('progress', (e) => {
-        let progress = 0;
-        if (e.lengthComputable && e.total !== 0) {
-          progress = Math.round((e.loaded / e.total) * 100);
-        }
-        onProgress(progress);
+        onProgress(computeProgress(e));
       }, false);
     } else {
       req.addEventListener('progress', (e) => {
-        let progress = 0;
-        if (e.lengthComputable && e.total !== 0) {
-          progress = Math.round((e.loaded / e.total) * 100);
-        }
-        onProgress(progress);
+        onProgress(computeProgress(e));
       }, false);
     }
 

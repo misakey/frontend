@@ -143,5 +143,14 @@
   },
   "InfiniteLoadedChat": {
     "loadMore": "Voir plus"
+  },
+  "dialogUpload": {
+    "text": "Quels fichiers souhaitez vous chiffrer\u00a0?",
+    "label": "Nouveaux fichiers à chiffrer",
+    "helperText": "Déposer les fichiers que vous souhaitez chiffrer.",
+    "helperLink": "https://docs.misakey.com/#/fr/",
+    "helperLinkText": "En savoir plus",
+    "progress": "Envoi de fichiers en cours",
+    "success": "Les fichiers ont été envoyés avec succès\u00a0!"
   }
 }

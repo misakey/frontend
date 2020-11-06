@@ -6,7 +6,7 @@ import { denormalize } from 'normalizr';
 
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
 
-import { decryptFromVault } from '@misakey/crypto/vault';
+import { decryptFileMetadataFromVault } from '@misakey/crypto/vault';
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
@@ -44,7 +44,7 @@ const useMapToFileContext = (vaultKey) => useCallback(
         fileName: name,
         fileType: type,
         encryption,
-      } = decryptFromVault(encryptedMetadata, vaultKey);
+      } = decryptFileMetadataFromVault(encryptedMetadata, vaultKey);
 
       return { ...defaultProps, name, type, size, encryption };
     } catch (err) {
@@ -144,6 +144,7 @@ const VaultCell = ({ style, data, savedFile }) => {
       file={fileFromContext}
       actions={[{ onClick: onRemove, text: t('common:remove') }]}
       onClick={onClick}
+      key={id}
       {...omitInternalData(data)}
     />
   );

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -18,11 +18,14 @@ import Typography from '@material-ui/core/Typography';
 import BoxEmpty from 'components/dumb/Box/Empty';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import isNil from '@misakey/helpers/isNil';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import FabAdd from '@misakey/ui/Fab/Add';
 
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import FilePreviewContextProvider from 'components/smart/File/Preview/Context';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 
+import VaultUploadDialog from 'components/smart/Dialog/Vault/Upload';
 import WindowedGridInfiniteLoaded from 'components/smart/WindowedList/InfiniteLoaded/Grid';
 import WindowedListAutoSized from 'components/smart/WindowedList/Autosized';
 import usePaginateSavedFiles from 'hooks/usePaginateSavedFiles';
@@ -50,6 +53,7 @@ const NUM_COLUMNS = 2;
 const DocumentsVault = ({ t, isDrawerOpen, toggleDrawer }) => {
   const ref = useRef();
   const classes = useStyles();
+  const [isUploadDialogOpened, setIsUploadDialogOpened] = useState(false);
 
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
@@ -66,6 +70,9 @@ const DocumentsVault = ({ t, isDrawerOpen, toggleDrawer }) => {
   const itemData = useMemo(() => ({ byPagination }), [byPagination]);
 
   useUpdateDocHead(t('document:vault.title'));
+
+  const onCloseDialog = useCallback(() => setIsUploadDialogOpened(false), []);
+  const onOpenDialog = useCallback(() => setIsUploadDialogOpened(true), []);
 
   return (
     <>
@@ -93,7 +100,18 @@ const DocumentsVault = ({ t, isDrawerOpen, toggleDrawer }) => {
           </Box>
         </AppBarDrawer>
       </ElevationScroll>
-      {isEmpty && <BoxEmpty py={0} />}
+      <VaultUploadDialog open={isUploadDialogOpened} onClose={onCloseDialog} />
+      {isEmpty && (
+        <BoxEmpty py={0}>
+          <Box display="flex" justifyContent="center" p={2}>
+            <Button
+              standing={BUTTON_STANDINGS.MAIN}
+              text={t('document:vault.add')}
+              onClick={onOpenDialog}
+            />
+          </Box>
+        </BoxEmpty>
+      )}
       {isLoading && <SplashScreen />}
       {!isEmpty && !isLoading && (
         <Box width="100%" className={classes.content}>
@@ -111,6 +129,7 @@ const DocumentsVault = ({ t, isDrawerOpen, toggleDrawer }) => {
               ref={ref}
               className={classes.list}
             />
+            <FabAdd onClick={onOpenDialog} />
           </FilePreviewContextProvider>
         </Box>
       )}

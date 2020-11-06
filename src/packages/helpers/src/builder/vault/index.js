@@ -1,4 +1,5 @@
 import API from '@misakey/api';
+import xhr from '@misakey/api/Endpoint/xhr';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
@@ -24,3 +25,9 @@ export const deleteSavedFileBuilder = (id) => API
   .use(API.endpoints.user.vault.files.delete)
   .build({ id })
   .send();
+
+export const uploadFileInVaultBuilder = (identityId, formData, onProgress) => {
+  const endpoint = API.use(API.endpoints.identities.vault.create)
+    .build({ identityId }, formData);
+  return xhr({ onProgress }, endpoint);
+};

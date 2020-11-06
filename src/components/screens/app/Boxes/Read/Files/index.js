@@ -8,8 +8,6 @@ import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import { useBoxesUploadContext } from 'components/smart/Input/Boxes/Upload/Context';
 
 import Box from '@material-ui/core/Box';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
@@ -21,6 +19,7 @@ import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import BoxEmpty from 'components/dumb/Box/Empty';
 import ToggleDrawerButton from 'components/dumb/AppBar/Drawer/ToggleButton';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
+import FabAdd from '@misakey/ui/Fab/Add';
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import WindowedGridInfiniteLoaded from 'components/smart/WindowedList/InfiniteLoaded/Grid';
@@ -44,11 +43,6 @@ const useStyles = makeStyles(() => ({
   }),
   list: {
     overflowX: 'hidden !important',
-  },
-  fab: {
-    position: 'absolute',
-    bottom: 35,
-    right: 35,
   },
 }));
 
@@ -132,15 +126,10 @@ function BoxFiles({ belongsToCurrentUser, isDrawerOpen, toggleDrawer, box }) {
               ref={contentRef}
               className={classes.list}
             />
-            <Fab
-              className={classes.fab}
-              color="secondary"
-              aria-label="add"
+            <FabAdd
               disabled={isClosed}
               onClick={onOpenUploadDialog}
-            >
-              <AddIcon />
-            </Fab>
+            />
           </>
         )}
       </Box>

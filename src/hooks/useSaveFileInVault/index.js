@@ -7,7 +7,7 @@ import { useSnackbar } from 'notistack';
 import { createSavedFile } from '@misakey/helpers/builder/vault';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { ensureVaultKeyExists } from '@misakey/crypto/store/actions/concrete';
-import { encryptForVault } from '@misakey/crypto/vault';
+import { encryptFileMetadataForVault } from '@misakey/crypto/vault';
 import { addSavedFile } from 'store/reducers/savedFiles';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import SnackbarActionSee from 'components/dumb/Snackbar/Action/See';
@@ -26,9 +26,12 @@ export default () => {
     [],
   );
 
-  const saveInVault = useCallback(async (vaultKey, encryption, encryptedFileId) => {
+  const saveInVault = useCallback(async (vaultKey, fileMetadata, encryptedFileId) => {
     try {
-      const { encryptedMetadata, keyFingerprint } = encryptForVault(encryption, vaultKey);
+      const {
+        encryptedMetadata,
+        keyFingerprint,
+      } = encryptFileMetadataForVault(fileMetadata, vaultKey);
       const response = await createSavedFile({
         encryptedFileId,
         encryptedMetadata,
@@ -46,8 +49,8 @@ export default () => {
     }
   }, [dispatch, enqueueSnackbar, identityId, seeAction, t]);
 
-  return useCallback(async (encryption, encryptedFileId) => {
+  return useCallback(async (fileMetadata, encryptedFileId) => {
     const vaultKey = await Promise.resolve(dispatch(ensureVaultKeyExists()));
-    return saveInVault(vaultKey, encryption, encryptedFileId);
+    return saveInVault(vaultKey, fileMetadata, encryptedFileId);
   }, [dispatch, saveInVault]);
 };

@@ -1,7 +1,8 @@
 {
     "vault": {
         "title": "Mes documents",
-        "subtitle": "Vous seul pouvez accéder"
+        "subtitle": "Vous seul pouvez accéder",
+        "add": "Ajouter un document"
     },
     "read": {
         "none": "Sélectionner un espace pour commencer"

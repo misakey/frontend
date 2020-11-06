@@ -155,17 +155,6 @@
         }
       }
     },
-    "upload": {
-      "dialog": {
-        "text": "Which files do you want to encrypt?",
-        "label": "New files to encrypt",
-        "helperText": "Drop the files you want to encrypt.",
-        "helperLink": "https://docs.misakey.com/#/en/",
-        "helperLinkText": "Learn more"
-      },
-      "progress": "File upload in progress",
-      "success": "Files have been sent successfully!"
-    },
     "share": {
       "dialog": {
         "title": "Share with people and groups",

@@ -83,4 +83,11 @@ export default {
       auth: true,
     },
   },
+  vault: {
+    create: {
+      method: 'POST',
+      path: '/box-users/:identityId/saved-files',
+      auth: true,
+    },
+  },
 };

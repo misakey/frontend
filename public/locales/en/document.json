@@ -1,7 +1,8 @@
 {
     "vault": {
         "title": "My documents",
-        "subtitle": "Only you can access"
+        "subtitle": "Only you can access",
+        "add": "Add a document"
     },
     "read": {
         "none": "Select a space to start"

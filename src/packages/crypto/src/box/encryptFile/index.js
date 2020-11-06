@@ -3,14 +3,8 @@ import {
   encodeBase64,
 } from 'tweetnacl-util';
 
-import {
-  generateSymmetricKey,
-  symmetricEncrypt,
-  asymmetricEncrypt,
-} from '@misakey/crypto/crypto';
-
-import uint8arrayFromBlob from '@misakey/crypto/helpers/uint8arrayFromBlob';
-import blobFromUint8array from '@misakey/crypto/helpers/blobFromUint8array';
+import { asymmetricEncrypt } from '@misakey/crypto/crypto';
+import { encryptFile } from '@misakey/crypto/files';
 
 /**
  * Encrypts a file
@@ -21,21 +15,10 @@ import blobFromUint8array from '@misakey/crypto/helpers/blobFromUint8array';
  * @param {string} boxPublicKey the public key of the box this file must be sent to
  */
 export default async (file, boxPublicKey) => {
-  const fileKey = generateSymmetricKey();
-
-  const bytes = await uint8arrayFromBlob(file);
-  const { nonce, ciphertext } = symmetricEncrypt(bytes, fileKey);
-  const encryptedFile = blobFromUint8array(ciphertext);
-
-  const messageContentPlainText = {
-    encryption: {
-      key: fileKey,
-      nonce,
-    },
-    fileName: file.name,
-    fileSize: file.size,
-    fileType: file.type,
-  };
+  const {
+    metaData: messageContentPlainText,
+    encryptedFile,
+  } = await encryptFile(file);
 
   const encryptedMessageContent = encodeBase64(decodeUTF8(
     asymmetricEncrypt(
