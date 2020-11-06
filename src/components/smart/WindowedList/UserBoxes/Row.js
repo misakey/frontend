@@ -38,7 +38,7 @@ Skeleton.defaultProps = {
 };
 
 
-const Row = ({ style, data, box, id, dispatchReceivedBox, ...rest }) => {
+const Row = ({ style, index, data, box, id, dispatchReceivedBox, ...rest }) => {
   const getBox = useCallback(
     () => getBoxBuilder(id),
     [id],
@@ -48,13 +48,21 @@ const Row = ({ style, data, box, id, dispatchReceivedBox, ...rest }) => {
 
   const shouldFetch = useMemo(() => isNil(box) && !isNil(id), [box, id]);
 
+  const containerProps = useMemo(
+    () => ({
+      style: { ...style, top: style.top + guttersTop },
+      index,
+    }),
+    [style, index, guttersTop],
+  );
+
   const onError = useOnGetBoxError(id);
 
   useFetchEffect(getBox, { shouldFetch }, { onSuccess: dispatchReceivedBox, onError });
 
   return (
     <BoxListItem
-      style={{ ...style, top: style.top + guttersTop }}
+      containerProps={containerProps}
       box={box}
       {...omitInternalData(data)}
       {...rest}

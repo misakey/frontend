@@ -4,7 +4,6 @@ import clsx from 'clsx';
 
 import { SIDES } from '@misakey/ui/constants/drawers';
 
-import omit from '@misakey/helpers/omit';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar, { PROP_TYPES } from '@misakey/ui/AppBar';
 import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
@@ -47,7 +46,7 @@ function AppBarDrawer({
         [classes.appBarRight]: side === SIDES.RIGHT,
         [classes.appBarShift]: side === SIDES.RIGHT && isDrawerOpen,
       })}
-      {...omit(props, ['toggleDrawer', 'getNextDrawerSearch', 'selectedDrawer', 'setIsDrawerForceClosed'])}
+      {...props}
     >
       {children}
     </AppBar>
@@ -57,7 +56,6 @@ function AppBarDrawer({
 AppBarDrawer.propTypes = {
   className: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.element, PropTypes.node]),
-  isDrawerOpen: PropTypes.bool.isRequired,
   side: PropTypes.oneOf(Object.values(SIDES)),
   ...PROP_TYPES,
 };

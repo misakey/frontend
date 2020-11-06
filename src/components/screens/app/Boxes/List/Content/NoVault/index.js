@@ -5,6 +5,7 @@ import routes from 'routes';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import isNil from '@misakey/helpers/isNil';
+import omitRouteProps from '@misakey/helpers/omit/routeProps';
 
 import { useSelector } from 'react-redux';
 
@@ -43,7 +44,7 @@ const NoVault = forwardRef(({ t }, ref) => {
       <Route
         path={routes.boxes.read._}
         render={(routeProps) => (
-          <List disablePadding><ListItemBoxesCurrent {...routeProps} /></List>)}
+          <List disablePadding><ListItemBoxesCurrent {...omitRouteProps(routeProps)} /></List>)}
       />
       <Box
         m={1}

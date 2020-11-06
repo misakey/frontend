@@ -24,7 +24,10 @@ import { SUPPORTED_TYPES } from 'constants/app/notifications/byIdentity';
 import { setNewCount, setLastNotification } from 'store/actions/identity/notifications';
 import { getLastNotificationSelector, getNewCountSelector } from 'store/reducers/identity/notifications';
 
-const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
+const {
+  identityId: IDENTITY_ID_SELECTOR,
+  isAuthenticated: IS_AUTHENTICATED_SELECTOR,
+} = authSelectors;
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -37,11 +40,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+// COMPONENTS
 function MisakeyNotificationsListItem({ ...props }) {
   const classes = useStyles();
   const { t } = useTranslation('boxes');
 
   const dispatch = useDispatch();
+  const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
   const identityId = useSelector(IDENTITY_ID_SELECTOR);
   const newNotificationsCount = useSelector(getNewCountSelector);
   const lastNotification = useSelector(getLastNotificationSelector);
@@ -69,6 +74,16 @@ function MisakeyNotificationsListItem({ ...props }) {
     [classes.bold, details, t, type],
   );
 
+  const shouldFetch = useMemo(
+    () => isNil(lastNotification) && isAuthenticated,
+    [lastNotification, isAuthenticated],
+  );
+
+  const shouldFetchCount = useMemo(
+    () => isNil(newNotificationsCount) && isAuthenticated,
+    [newNotificationsCount, isAuthenticated],
+  );
+
   const countNotifications = useCallback(
     () => countUserNotificationsBuilder(identityId),
     [identityId],
@@ -90,12 +105,12 @@ function MisakeyNotificationsListItem({ ...props }) {
 
   useFetchEffect(
     fetchUserNotifications,
-    { shouldFetch: isNil(lastNotification) },
+    { shouldFetch },
     { onSuccess: storeLastNotification },
   );
   useFetchEffect(
     countNotifications,
-    { shouldFetch: isNil(newNotificationsCount) },
+    { shouldFetch: shouldFetchCount },
     { onSuccess: storeNotificationsCount },
   );
 

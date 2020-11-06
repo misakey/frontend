@@ -9,7 +9,6 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import Box from '@material-ui/core/Box';
 
-import { DRAWER_PROPS_PROP_TYPES } from 'components/smart/Screen/Drawer';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
@@ -23,7 +22,7 @@ const IconButtonCreate = withDialogCreate(
   withDialogPassword(IconButtonAppBar),
 );
 
-function ListHeader({ drawerWidth, activeStatus, t, ...props }) {
+function ListHeader({ activeStatus, t, ...props }) {
   return (
     <AppBarDrawer side={SIDES.LEFT} {...omitTranslationProps(props)}>
       <OpenDrawerAccountButton />
@@ -41,9 +40,6 @@ function ListHeader({ drawerWidth, activeStatus, t, ...props }) {
 
 ListHeader.propTypes = {
   activeStatus: PropTypes.oneOf(STATUSES).isRequired,
-  // DRAWER
-  drawerWidth: DRAWER_PROPS_PROP_TYPES.drawerWidth.isRequired,
-  isDrawerOpen: DRAWER_PROPS_PROP_TYPES.isDrawerOpen.isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,
 };

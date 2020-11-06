@@ -37,7 +37,6 @@ import MenuItemBoxDelete from 'components/smart/MenuItem/Box/Delete';
 import MenuItemBoxClose from 'components/smart/MenuItem/Box/Close';
 import MenuItemBoxCloseDelete from 'components/smart/MenuItem/Box/CloseDelete';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
-import { ROW_PROP_TYPES } from 'components/smart/WindowedList';
 
 const DEFAULT_SETTINGS = { muted: false };
 
@@ -100,7 +99,7 @@ export const BoxListItemSkeleton = (props) => (
   </ListItem>
 );
 
-function BoxListItem({ box, toRoute, t, style, index, ...rest }) {
+function BoxListItem({ box, toRoute, containerProps, t, ...rest }) {
   const [anchorEl, setAnchorEl] = useState(null);
   // prefer state variable over css because hover is not enough to handle UX
   const [isActionVisible, setIsActionVisible] = useState(false);
@@ -201,9 +200,7 @@ function BoxListItem({ box, toRoute, t, style, index, ...rest }) {
       ContainerProps={{
         onMouseEnter: showAction,
         onMouseLeave: hideAction,
-        // react window props
-        style,
-        index,
+        ...containerProps,
       }}
       classes={{ root: classes.listItemRoot }}
       {...linkProps}
@@ -259,7 +256,7 @@ function BoxListItem({ box, toRoute, t, style, index, ...rest }) {
 }
 
 BoxListItem.propTypes = {
-  ...ROW_PROP_TYPES,
+  containerProps: PropTypes.object,
   box: PropTypes.shape(BoxesSchema.propTypes),
   toRoute: PropTypes.string,
   // withTranslation
@@ -267,6 +264,7 @@ BoxListItem.propTypes = {
 };
 
 BoxListItem.defaultProps = {
+  containerProps: {},
   box: null,
   toRoute: null,
 };

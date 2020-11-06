@@ -28,7 +28,6 @@ import PaginatedListBoxEvents from 'components/smart/PaginatedList/BoxEvents';
 import BoxEventsFooter from 'components/screens/app/Boxes/Read/Events/Footer';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
-import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
 
 // CONSTANTS
 const { identityId: IDENTITY_ID_SELECTOR, accountId: ACCOUNT_ID_SELECTOR } = authSelectors;
@@ -55,8 +54,6 @@ function BoxEvents({ box, t, belongsToCurrentUser }) {
   const classes = useStyles({ headerHeight });
 
   const { id, eventsCount } = useMemo(() => box, [box]);
-
-  const { drawerWidth, isDrawerOpen, toggleDrawer } = useScreenDrawerContext();
 
   const accountId = useSelector(ACCOUNT_ID_SELECTOR);
   const identityId = useSelector(IDENTITY_ID_SELECTOR);
@@ -95,13 +92,12 @@ function BoxEvents({ box, t, belongsToCurrentUser }) {
     <BoxEventEditContext>
       <ElevationScroll target={contentRef}>
         <AppBarDrawer
-          isDrawerOpen={isDrawerOpen}
           toolbarProps={{ px: 0 }}
           offsetHeight={headerHeight}
         >
           <Box ref={headerRef} display="flex" flexDirection="column" width="100%" minHeight="inherit">
             <Box display="flex">
-              <ToggleDrawerButton isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
+              <ToggleDrawerButton />
               <BoxEventsAppBar box={box} belongsToCurrentUser={belongsToCurrentUser} />
             </Box>
             {isNil(accountId) && (
@@ -128,8 +124,6 @@ function BoxEvents({ box, t, belongsToCurrentUser }) {
         />
         <BoxEventsFooter
           box={box}
-          drawerWidth={drawerWidth}
-          isDrawerOpen={isDrawerOpen}
         />
       </Box>
     </BoxEventEditContext>
