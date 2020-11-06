@@ -8,7 +8,6 @@ import errorTypes from '@misakey/ui/constants/errorTypes';
 import BoxesSchema from 'store/schemas/Boxes';
 
 import { createLeaveBoxEventBuilder } from 'helpers/builder/boxes';
-import isFunction from '@misakey/helpers/isFunction';
 import { getCode } from '@misakey/helpers/apiError';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
@@ -29,18 +28,8 @@ function LeaveBoxDialog({ box, t, open, onClose, onSuccess }) {
 
   const { id, title } = useSafeDestr(box);
 
-
-  const onLeaveSuccess = useCallback(
-    () => {
-      const promise = isFunction(onSuccess) ? onSuccess : Promise.resolve;
-      return promise();
-    },
-    [onSuccess],
-  );
-
   const onConfirm = useCallback(
     () => createLeaveBoxEventBuilder(id)
-      .then(onLeaveSuccess)
       .catch((e) => {
         const code = getCode(e);
         if (code === forbidden) {
@@ -50,7 +39,7 @@ function LeaveBoxDialog({ box, t, open, onClose, onSuccess }) {
           handleHttpErrors(e);
         }
       }),
-    [handleHttpErrors, enqueueSnackbar, t, onLeaveSuccess, id, replace],
+    [handleHttpErrors, enqueueSnackbar, t, id, replace],
   );
 
   return (
@@ -58,6 +47,7 @@ function LeaveBoxDialog({ box, t, open, onClose, onSuccess }) {
       isDialogOpen={open}
       onConfirm={onConfirm}
       onClose={onClose}
+      onSuccess={onSuccess}
       confirmButtonText={t('common:leave')}
     >
       {t('boxes:leave.dialog.description', { title })}

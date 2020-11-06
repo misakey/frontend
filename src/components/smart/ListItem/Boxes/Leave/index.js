@@ -36,11 +36,10 @@ const ListItemBoxLeave = ({ box, t }) => {
 
   const onSuccess = useCallback(
     () => {
-      onClose();
       replace(routes.boxes._);
       return Promise.resolve();
     },
-    [replace, onClose],
+    [replace],
   );
 
   return (

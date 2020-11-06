@@ -34,11 +34,8 @@ function LeaveBoxDialogButton({ box, t }) {
   );
 
   const onSuccess = useCallback(
-    () => onClose()
-      .then(() => replace(routes.boxes._)),
-    [
-      onClose, replace,
-    ],
+    () => replace(routes.boxes._),
+    [replace],
   );
 
   return (

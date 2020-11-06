@@ -9,6 +9,7 @@ import routes from 'routes';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -64,6 +65,8 @@ export default (id) => {
 
   const { members, hasAccess, isMember, publicKey, lifecycle } = useSafeDestr(box);
 
+  const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
+
   const handleHttpErrors = useHandleHttpErrors();
 
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
@@ -83,8 +86,8 @@ export default (id) => {
   const isClosed = useMemo(() => lifecycle === CLOSED, [lifecycle]);
 
   const isAllowedToFetchContent = useMemo(
-    () => isAllowedToFetch && hasAccessAndIsMember && !isClosed,
-    [isAllowedToFetch, hasAccessAndIsMember, isClosed],
+    () => isAllowedToFetch && hasAccessAndIsMember && (!isClosed || belongsToCurrentUser),
+    [isAllowedToFetch, hasAccessAndIsMember, isClosed, belongsToCurrentUser],
   );
 
   const shouldFetchBox = useMemo(

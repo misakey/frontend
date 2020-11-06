@@ -14,6 +14,7 @@ import { getBoxEventLastDate } from 'helpers/boxEvent';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
+import useBoxRights from 'hooks/useBoxRights';
 
 import Skeleton from '@material-ui/lab/Skeleton';
 import Box from '@material-ui/core/Box';
@@ -32,6 +33,9 @@ import Menu from '@material-ui/core/Menu';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItemBoxMute from 'components/smart/MenuItem/Box/Mute';
 import MenuItemBoxLeave from 'components/smart/MenuItem/Box/Leave';
+import MenuItemBoxDelete from 'components/smart/MenuItem/Box/Delete';
+import MenuItemBoxClose from 'components/smart/MenuItem/Box/Close';
+import MenuItemBoxCloseDelete from 'components/smart/MenuItem/Box/CloseDelete';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import { ROW_PROP_TYPES } from 'components/smart/WindowedList';
 
@@ -58,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   menuButton: ({ isActionVisible }) => ({
     visibility: isActionVisible ? 'visible' : 'hidden',
   }),
-  listItem: ({ isActionVisible }) => ({
+  listItemRoot: ({ isActionVisible }) => ({
     paddingRight: isActionVisible ? 48 : 16,
   }),
 }));
@@ -98,8 +102,10 @@ export const BoxListItemSkeleton = (props) => (
 
 function BoxListItem({ box, toRoute, t, style, index, ...rest }) {
   const [anchorEl, setAnchorEl] = useState(null);
+  // prefer state variable over css because hover is not enough to handle UX
   const [isActionVisible, setIsActionVisible] = useState(false);
   const classes = useStyles({ isActionVisible });
+
 
   const {
     id,
@@ -136,10 +142,16 @@ function BoxListItem({ box, toRoute, t, style, index, ...rest }) {
   );
 
   const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
+  const { canDelete, canLeave, canClose } = useBoxRights(box, belongsToCurrentUser);
+
+  const isClosed = useMemo(
+    () => lifecycle === CLOSED,
+    [lifecycle],
+  );
 
   const lostKey = useMemo(
-    () => !canBeDecrypted && (lifecycle !== CLOSED || belongsToCurrentUser),
-    [canBeDecrypted, lifecycle, belongsToCurrentUser],
+    () => !canBeDecrypted && (!isClosed || belongsToCurrentUser),
+    [canBeDecrypted, isClosed, belongsToCurrentUser],
   );
 
   const showEventsCount = useMemo(
@@ -176,8 +188,8 @@ function BoxListItem({ box, toRoute, t, style, index, ...rest }) {
     () => { setAnchorEl(null); }, [],
   );
 
-  const showAction = useCallback(() => setIsActionVisible(true), []);
-  const hideAction = useCallback(() => setIsActionVisible(false), []);
+  const showAction = useCallback(() => setIsActionVisible(true), [setIsActionVisible]);
+  const hideAction = useCallback(() => setIsActionVisible(false), [setIsActionVisible]);
 
   if (isNil(id)) {
     return null;
@@ -193,7 +205,7 @@ function BoxListItem({ box, toRoute, t, style, index, ...rest }) {
         style,
         index,
       }}
-      className={classes.listItem}
+      classes={{ root: classes.listItemRoot }}
       {...linkProps}
       {...omitTranslationProps(rest)}
     >
@@ -210,7 +222,7 @@ function BoxListItem({ box, toRoute, t, style, index, ...rest }) {
         primary={(
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography noWrap>{title}</Typography>
-            {!isActionVisible && <TypographyDateSince date={date} />}
+            {!isActionVisible && <TypographyDateSince date={date} className="hideOnHover" />}
           </Box>
         )}
         secondary={secondary}
@@ -227,12 +239,19 @@ function BoxListItem({ box, toRoute, t, style, index, ...rest }) {
           open={!isNil(anchorEl)}
           onClose={onClose}
           onClick={onClose}
+          keepMounted
           classes={{ paper: classes.paper, list: classes.menuList }}
           elevation={0}
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
           <MenuItemBoxMute box={box} />
-          {!belongsToCurrentUser && <MenuItemBoxLeave box={box} />}
+          {lostKey && (canClose || canDelete) ? (
+            <MenuItemBoxCloseDelete box={box} onClose={hideAction} />
+          ) : ([
+            canClose && <MenuItemBoxClose key="close" box={box} onClose={hideAction} />,
+            canDelete && <MenuItemBoxDelete key="delete" box={box} onClose={hideAction} />,
+          ])}
+          {canLeave && <MenuItemBoxLeave box={box} onClose={hideAction} />}
         </Menu>
       </ListItemSecondaryAction>
     </ListItem>

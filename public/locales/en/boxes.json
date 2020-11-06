@@ -228,10 +228,7 @@
         "copyLink": "Copy sharing link",
         "close": {
           "primary": "Close the private space",
-          "secondary": "By closing the private space, other members will not have access to its content anymore.",
-          "confirmDialog": {
-            "text": "Do you really want to close the private space?\nOther members will not have access to its content anymore and you won't be able to reopen it.\nBeing its creator, you will still have access to the content."
-          }
+          "secondary": "By closing the private space, other members will not have access to its content anymore."
         },
         "leave": {
           "primary": "Leave the private space",
@@ -276,6 +273,11 @@
     "success": "You left the private space.",
     "error": {
       "forbidden": "You are no longer member of this private space"
+    }
+  },
+  "close": {
+    "dialog": {
+      "description": "Are you sure you want to close “{{title}}”?\nThis cannot be undone. Other members will not have access to its content anymore.\nBeing its creator, you will still have access to the content."
     }
   },
   "pasteLink": {

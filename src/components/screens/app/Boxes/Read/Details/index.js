@@ -1,25 +1,16 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import routes from 'routes';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
 import { AVATAR_SIZE, APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
-import { CLOSED, OPEN } from 'constants/app/boxes/statuses';
-import { LIFECYCLE } from 'constants/app/boxes/events';
-import { removeEntities } from '@misakey/store/actions/entities';
 import BoxesSchema from 'store/schemas/Boxes';
-import errorTypes from '@misakey/ui/constants/errorTypes';
 
-import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
-
-import { useDispatch } from 'react-redux';
-import { useSnackbar } from 'notistack';
 import { makeStyles } from '@material-ui/core/styles';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
-import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import useBoxRights from 'hooks/useBoxRights';
 
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AppBarDrawer from 'components/dumb/AppBar/Drawer';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import Box from '@material-ui/core/Box';
@@ -31,15 +22,14 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import BoxAvatar from '@misakey/ui/Avatar/Box';
 import ElevationScroll from 'components/dumb/ElevationScroll';
-import ConfirmationDialog from '@misakey/ui/Dialog/Confirm';
 import ListItemShare from 'components/smart/ListItem/Boxes/Share';
 import ListItemLeave from 'components/smart/ListItem/Boxes/Leave';
 import ListItemDelete from 'components/smart/ListItem/Boxes/Delete';
 import ListItemMemberPublicLink from 'components/smart/ListItem/Member/PublicLink';
 import ListItemBoxMute from 'components/smart/ListItem/Boxes/Mute';
+import ListItemBoxClose from 'components/smart/ListItem/Boxes/Close';
 
 // CONSTANTS
-const { conflict } = errorTypes;
 const CONTENT_SPACING = 2;
 
 // HOOKS
@@ -67,58 +57,18 @@ function BoxDetails({ isDrawerOpen, box, belongsToCurrentUser, t }) {
   const classes = useStyles();
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
-  const [isCloseDialogOpen, setIsCloseDialogOpen] = useState(false);
-  const dispatch = useDispatch();
-  const { enqueueSnackbar } = useSnackbar();
-  const handleHttpErrors = useHandleHttpErrors();
 
   const {
     id,
     title,
     members = [],
-    lifecycle,
   } = useMemo(() => box, [box]);
 
   const goBack = useGeneratePathKeepingSearchAndHash(routes.boxes.read._, { id });
   // const routeFiles = useGeneratePathKeepingSearchAndHash(routes.boxes.read.files, { id });
 
   // @FIXME factorize rules
-  const isAllowedToClose = useMemo(
-    () => belongsToCurrentUser && lifecycle === OPEN,
-    [belongsToCurrentUser, lifecycle],
-  );
-
-  const isAllowedToDelete = useMemo(
-    () => belongsToCurrentUser && lifecycle === CLOSED,
-    [belongsToCurrentUser, lifecycle],
-  );
-
-  const isAllowedToLeave = useMemo(
-    () => !belongsToCurrentUser,
-    [belongsToCurrentUser],
-  );
-
-  const toggleCloseDialog = useCallback(
-    () => {
-      setIsCloseDialogOpen((current) => !current);
-    }, [setIsCloseDialogOpen],
-  );
-
-  const onCloseBox = useCallback(
-    () => createBoxEventBuilder(id, { type: LIFECYCLE, content: { state: CLOSED } })
-      .catch((error) => {
-        if (error.code === conflict) {
-          const { details = {} } = error;
-          if (details.lifecycle === conflict) {
-            dispatch(removeEntities([{ id }], BoxesSchema));
-            enqueueSnackbar(t('boxes:read.events.create.error.lifecycle'), { variant: 'error' });
-          }
-        } else {
-          handleHttpErrors(error);
-        }
-      }),
-    [dispatch, enqueueSnackbar, handleHttpErrors, id, t],
-  );
+  const { canClose, canDelete, canLeave } = useBoxRights(box, belongsToCurrentUser);
 
   return (
     <>
@@ -191,33 +141,9 @@ function BoxDetails({ isDrawerOpen, box, belongsToCurrentUser, t }) {
               secondaryTypographyProps={{ color: 'textPrimary' }}
             />
           </ListItem>
-          {isAllowedToLeave && <ListItemLeave box={box} />}
-          {isAllowedToDelete && <ListItemDelete box={box} />}
-          {isAllowedToClose && (
-            <>
-              <ListItem
-                button
-                divider
-                onClick={toggleCloseDialog}
-                aria-label={t('boxes:read.details.menu.close.primary')}
-              >
-                <ListItemText
-                  primary={t('boxes:read.details.menu.close.primary')}
-                  secondary={t('boxes:read.details.menu.close.secondary')}
-                  primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
-                  secondaryTypographyProps={{ color: 'textPrimary' }}
-                />
-                <ChevronRightIcon className={classes.primaryText} />
-              </ListItem>
-              <ConfirmationDialog
-                onConfirm={onCloseBox}
-                isDialogOpen={isCloseDialogOpen}
-                onClose={toggleCloseDialog}
-              >
-                {t('boxes:read.details.menu.close.confirmDialog.text')}
-              </ConfirmationDialog>
-            </>
-          )}
+          {canLeave && <ListItemLeave box={box} />}
+          {canDelete && <ListItemDelete box={box} />}
+          {canClose && <ListItemBoxClose box={box} />}
           <List subheader={(
             <ListSubheader className={classes.subheader}>
               <Typography noWrap variant="overline" color="textSecondary">

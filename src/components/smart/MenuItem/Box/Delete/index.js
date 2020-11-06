@@ -7,10 +7,10 @@ import BoxesSchema from 'store/schemas/Boxes';
 import isFunction from '@misakey/helpers/isFunction';
 
 import MenuItem from '@material-ui/core/MenuItem';
-import DialogBoxesLeave from 'components/smart/Dialog/Boxes/Leave';
+import DialogBoxesDelete from 'components/smart/Dialog/Boxes/Delete';
 
 // COMPONENTS
-const MenuItemBoxLeave = forwardRef(({ box, onClose, t }, ref) => {
+const MenuItemBoxDelete = forwardRef(({ box, onClose, t }, ref) => {
   const [open, setOpen] = useState(false);
 
   const onClick = useCallback(
@@ -37,28 +37,29 @@ const MenuItemBoxLeave = forwardRef(({ box, onClose, t }, ref) => {
         button
         divider
         onClick={onClick}
-        aria-label={t('boxes:read.details.menu.leave.primary')}
+        aria-label={t('boxes:read.details.menu.delete.primary')}
       >
-        {t('boxes:read.details.menu.leave.primary')}
+        {t('boxes:read.details.menu.delete.primary')}
       </MenuItem>
-      <DialogBoxesLeave
+      <DialogBoxesDelete
         open={open}
         onClose={handleClose}
+        onSuccess={handleClose}
         box={box}
       />
     </>
   );
 });
 
-MenuItemBoxLeave.propTypes = {
+MenuItemBoxDelete.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   onClose: PropTypes.func,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
 
-MenuItemBoxLeave.defaultProps = {
+MenuItemBoxDelete.defaultProps = {
   onClose: null,
 };
 
-export default withTranslation('boxes')(MenuItemBoxLeave);
+export default withTranslation('boxes')(MenuItemBoxDelete);

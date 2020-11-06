@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import isNil from '@misakey/helpers/isNil';
+import isFunction from '@misakey/helpers/isFunction';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
@@ -16,7 +17,7 @@ import ConfirmDialogContent from './DialogContent';
 
 // COMPONENTS
 function ConfirmationDialog({
-  onConfirm, isDialogOpen, onClose,
+  onConfirm, isDialogOpen, onClose, onSuccess,
   title, children,
   confirmButtonText,
   t,
@@ -29,9 +30,19 @@ function ConfirmationDialog({
     [confirmButtonText, t],
   );
 
-  const { wrappedFetch: handleOk, isFetching: isValidating } = useFetchCallback(
+  const handleSuccess = useCallback(
+    () => {
+      onClose();
+      if (isFunction(onSuccess)) {
+        onSuccess();
+      }
+    },
+    [onClose, onSuccess],
+  );
+
+  const { wrappedFetch: onClick, isFetching: isValidating } = useFetchCallback(
     onConfirm,
-    { onSuccess: onClose },
+    { onSuccess: handleSuccess },
   );
 
   return (
@@ -49,7 +60,7 @@ function ConfirmationDialog({
         <BoxControls
           primary={{
             autoFocus: true,
-            onClick: handleOk,
+            onClick,
             isLoading: isValidating,
             text,
           }}
@@ -62,6 +73,7 @@ function ConfirmationDialog({
 ConfirmationDialog.propTypes = {
   onConfirm: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func,
   isDialogOpen: PropTypes.bool.isRequired,
   children: PropTypes.node.isRequired,
   title: PropTypes.string,
@@ -72,6 +84,7 @@ ConfirmationDialog.propTypes = {
 ConfirmationDialog.defaultProps = {
   confirmButtonText: null,
   title: null,
+  onSuccess: null,
 };
 
 export default withTranslation(['common'])(ConfirmationDialog);

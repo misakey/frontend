@@ -7,10 +7,10 @@ import BoxesSchema from 'store/schemas/Boxes';
 import isFunction from '@misakey/helpers/isFunction';
 
 import MenuItem from '@material-ui/core/MenuItem';
-import DialogBoxesLeave from 'components/smart/Dialog/Boxes/Leave';
+import DialogBoxClose from 'components/smart/Dialog/Boxes/Close';
 
 // COMPONENTS
-const MenuItemBoxLeave = forwardRef(({ box, onClose, t }, ref) => {
+const MenuItemBoxClose = forwardRef(({ box, onClose, t }, ref) => {
   const [open, setOpen] = useState(false);
 
   const onClick = useCallback(
@@ -37,11 +37,11 @@ const MenuItemBoxLeave = forwardRef(({ box, onClose, t }, ref) => {
         button
         divider
         onClick={onClick}
-        aria-label={t('boxes:read.details.menu.leave.primary')}
+        aria-label={t('boxes:read.details.menu.close.primary')}
       >
-        {t('boxes:read.details.menu.leave.primary')}
+        {t('boxes:read.details.menu.close.primary')}
       </MenuItem>
-      <DialogBoxesLeave
+      <DialogBoxClose
         open={open}
         onClose={handleClose}
         box={box}
@@ -50,15 +50,15 @@ const MenuItemBoxLeave = forwardRef(({ box, onClose, t }, ref) => {
   );
 });
 
-MenuItemBoxLeave.propTypes = {
+MenuItemBoxClose.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   onClose: PropTypes.func,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
 
-MenuItemBoxLeave.defaultProps = {
+MenuItemBoxClose.defaultProps = {
   onClose: null,
 };
 
-export default withTranslation('boxes')(MenuItemBoxLeave);
+export default withTranslation('boxes')(MenuItemBoxClose);
