@@ -23,6 +23,7 @@ import APITokenMiddleware from '@misakey/auth/middlewares/APItoken';
 import invalidTokenMiddleware from 'middlewares/invalidToken';
 import floodManagementAlertMiddleware from 'middlewares/floodManagement/alert';
 import invalidSeclevelMiddleware from 'middlewares/invalidSeclevel';
+import unauthorizedMiddleware from 'middlewares/unauthorized';
 // routing
 import Router from 'components/smart/Router';
 import * as serviceWorker from 'serviceWorker';
@@ -84,6 +85,7 @@ if (isSilentAuthIframe()) {
 
   const registerMiddlewares = (askSigninRedirect) => {
     API.addMiddleware(invalidSeclevelMiddleware(askSigninRedirect, store));
+    API.addMiddleware(unauthorizedMiddleware(askSigninRedirect, store));
   };
 
   // SPLASH SCREEN CONFIG

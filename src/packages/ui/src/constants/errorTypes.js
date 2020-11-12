@@ -1,4 +1,5 @@
 const errorTypes = {
+  unauthorized: 'unauthorized',
   forbidden: 'forbidden',
   conflict: 'conflict',
   expired: 'expired',

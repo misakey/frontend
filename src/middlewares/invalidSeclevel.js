@@ -1,9 +1,9 @@
 import HttpStatus from 'http-status-codes';
 
+import errorTypes from '@misakey/ui/constants/errorTypes';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import isNil from '@misakey/helpers/isNil';
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import { getDetails } from '@misakey/helpers/apiError';
 
 // CONSTANTS
@@ -11,6 +11,7 @@ const {
   identifierValue: IDENTIFIER_VALUE_SELECTOR,
 } = authSelectors;
 
+const { invalid } = errorTypes;
 
 // MIDDLEWARE
 export default (askSigninRedirect, store) => (rawResponse) => {
@@ -19,16 +20,21 @@ export default (askSigninRedirect, store) => (rawResponse) => {
     const contentType = rawResponse.headers.get('Content-Type') || '';
 
     if (contentType.startsWith('application/json')) {
-      rawResponse.clone().json().then((json) => {
+      return rawResponse.clone().json().then((json) => {
         const { origin } = json;
-        if (origin === 'acr') {
-          const details = getDetails(json);
-          const { requiredAcr } = objectToCamelCase(details);
+        const { xCsrfToken, requiredAcr } = getDetails(json);
+        if (origin === 'acr' || xCsrfToken === invalid) {
           const identifier = IDENTIFIER_VALUE_SELECTOR(store.getState());
           const loginHint = isNil(identifier) ? '' : JSON.stringify({ identifier });
           askSigninRedirect({ acrValues: requiredAcr, prompt: 'login', loginHint }, false);
+          // return something other than error to consider error handled
+          return true;
         }
+        // return null to consider error not handled
+        return null;
       });
     }
+    return null;
   }
+  return null;
 };

@@ -3,17 +3,12 @@ import PropTypes from 'prop-types';
 
 import { AVATAR_SIZE, AVATAR_SM_SIZE } from '@misakey/ui/constants/sizes';
 
-import any from '@misakey/helpers/any';
-import complement from '@misakey/helpers/complement';
-import isEmpty from '@misakey/helpers/isEmpty';
+import isAnyNotEmpty from '@misakey/helpers/isAnyNotEmpty';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import AvatarColorized from '@misakey/ui/Avatar/Colorized';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-
-// HELPERS
-const isNotEmptyUser = any(complement(isEmpty));
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -36,12 +31,12 @@ const AvatarUser = ({
 }) => {
   const classes = useStyles();
 
-  const isNotEmpty = useMemo(
-    () => isNotEmptyUser([identifier, displayName, avatarUrl]),
+  const isNotEmptyUser = useMemo(
+    () => isAnyNotEmpty([identifier, displayName, avatarUrl]),
     [identifier, displayName, avatarUrl],
   );
 
-  if (isNotEmpty) {
+  if (isNotEmptyUser) {
     return (
       <AvatarColorized
         className={classes.iconRoot}

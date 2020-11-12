@@ -83,9 +83,11 @@ const Auth = ({
     [search, pathname],
   );
 
+  const { loginChallenge: ssoLoginChallenge, client, acr } = useSafeDestr(sso);
+
   const loginChallenge = useMemo(
-    () => sso.loginChallenge || searchParams.loginChallenge,
-    [searchParams, sso],
+    () => ssoLoginChallenge || searchParams.loginChallenge,
+    [searchParams, ssoLoginChallenge],
   );
 
   const hasLoginChallenge = useMemo(
@@ -94,8 +96,8 @@ const Auth = ({
   );
 
   const isSsoClientEmpty = useMemo(
-    () => isEmpty(sso.client),
-    [sso],
+    () => isEmpty(client),
+    [client],
   );
 
   // Do not fetch when handling consent flow
@@ -125,7 +127,7 @@ const Auth = ({
     [pathname, search, requiredSsoParams],
   );
 
-  const isAcrChange = useMemo(() => (currentAcr !== sso.acr), [currentAcr, sso.acr]);
+  const isAcrChange = useMemo(() => (currentAcr !== acr), [currentAcr, acr]);
 
   const onLoadLoginInfo = useCallback(
     () => getLoginInfo(loginChallenge),

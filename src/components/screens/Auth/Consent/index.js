@@ -6,7 +6,6 @@ import * as Sentry from '@sentry/browser';
 import { Link } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
-import { APPBAR_SPACING } from '@misakey/ui/constants/sizes';
 import { FEEDBACK } from 'constants/emails';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
 import { CONSENTED_SCOPES_KEY, CONSENT_SCOPES } from '@misakey/auth/constants/consent';
@@ -23,6 +22,7 @@ import useGetConsentInfo from '@misakey/hooks/useGetConsentInfo';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useNotDoneEffect from 'hooks/useNotDoneEffect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Screen from '@misakey/ui/Screen';
 import ListConsent from 'components/dumb/List/Consent';
@@ -42,12 +42,24 @@ const INITIAL_VALUES = {
   [CONSENTED_SCOPES_KEY]: CONSENT_SCOPES,
 };
 
+// HOOKS
+const useStyles = makeStyles(() => ({
+  screenContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  container: {
+    overflow: 'auto',
+  },
+}));
+
 // COMPONENTS
 const AuthConsent = ({
   authnStep,
   client,
   t,
 }) => {
+  const classes = useStyles();
   const [redirectTo, setRedirectTo] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
   const handleHttpErrors = useHandleHttpErrors();
@@ -129,39 +141,38 @@ const AuthConsent = ({
   }
 
   return (
-    <Screen>
-      <Container maxWidth="md">
-        <Box mt={2 * APPBAR_SPACING}>
-          <Formik
-            initialValues={INITIAL_VALUES}
-            onSubmit={onSubmit}
-          >
-            <Box component={Form} display="flex" flexDirection="column" alignItems="center">
-              <Title>
-                {t('auth:consent.title')}
-              </Title>
-              {hasMissingClientUris ? (
-                <Alert severity="warning">
-                  <Trans i18nKey="auth:consent.missing">
-                    Une erreur est survenue lors de votre inscription, merci de le signaler à
-                    <Link href={`mailto:${FEEDBACK}`} color="inherit">{FEEDBACK}</Link>
-                  </Trans>
-                </Alert>
-              ) : (
-                <>
-                  <ListConsent {...client} />
-                  <BoxControls
-                    formik
-                    primary={primary}
-                  />
-                </>
-              )}
-            </Box>
-          </Formik>
-        </Box>
+    <Screen
+      classes={{ content: classes.screenContent }}
+    >
+      <Container maxWidth="md" className={classes.container}>
+        <Formik
+          initialValues={INITIAL_VALUES}
+          onSubmit={onSubmit}
+        >
+          <Box component={Form} display="flex" flexDirection="column">
+            <Title>
+              {t('auth:consent.title')}
+            </Title>
+            {hasMissingClientUris ? (
+              <Alert severity="warning">
+                <Trans i18nKey="auth:consent.missing">
+                  Une erreur est survenue lors de votre inscription, merci de le signaler à
+                  <Link href={`mailto:${FEEDBACK}`} color="inherit">{FEEDBACK}</Link>
+                </Trans>
+              </Alert>
+            ) : (
+              <>
+                <ListConsent {...client} />
+                <BoxControls
+                  formik
+                  primary={primary}
+                />
+              </>
+            )}
+          </Box>
+        </Formik>
       </Container>
     </Screen>
-
   );
 };
 

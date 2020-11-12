@@ -57,6 +57,10 @@ export const selectors = {
     getState,
     prop('authnStep'),
   ),
+  loginChallenge: createSelector(
+    getState,
+    prop('loginChallenge'),
+  ),
 };
 
 // ACTION HANDLERS

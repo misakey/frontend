@@ -1,19 +1,27 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-import { useHistory, Link } from 'react-router-dom';
 
-import { APPBAR_SPACING } from '@misakey/ui/constants/sizes';
 import errorTypes from '@misakey/ui/constants/errorTypes';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import routes from 'routes';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
 import { getCode, getDescription, getUrlOrigin, getOrigin, getDetailPairs } from '@misakey/helpers/apiError';
+import { identifierValuePath } from 'helpers/sender';
+import isAnyNotEmpty from '@misakey/helpers/isAnyNotEmpty';
 
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
+import useResetAuthHref from '@misakey/auth/hooks/useResetAuthHref';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useModifier from '@misakey/hooks/useModifier';
 
+import Screen from '@misakey/ui/Screen';
 import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
 import Title from '@misakey/ui/Typography/Title';
@@ -22,13 +30,48 @@ import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import BoxControls from '@misakey/ui/Box/Controls';
 import AuthErrorDetails from 'components/screens/Auth/Error/Details';
+import List from '@material-ui/core/List';
+import ListItemConsentEmail from '@misakey/ui/ListItem/Consent/Email';
+import ButtonSignOut from '@misakey/auth/components/Button/SignOut';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 // CONSTANTS
 const { conflict } = errorTypes;
 
+const { identity: IDENTITY_SELECTOR, isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
+
+// HOOKS
+const useStyles = makeStyles(() => ({
+  screenContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  container: {
+    overflow: 'auto',
+  },
+  listFullWidth: {
+    flexGrow: 1,
+  },
+}));
+
 // COMPONENTS
 const AuthError = ({ loginChallenge, error, t }) => {
+  const classes = useStyles();
+
   const { errorCode, errorDescription, errorLocation } = useLocationSearchParams(objectToCamelCase);
+
+  const resetAuthHref = useResetAuthHref(loginChallenge);
+
+  const identity = useSelector(IDENTITY_SELECTOR);
+  const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
+
+  const { avatarUrl, displayName } = useSafeDestr(identity);
+  const identifierValue = useModifier(identifierValuePath, identity);
+
+  const showCard = useMemo(
+    () => isAnyNotEmpty([avatarUrl, displayName, identifierValue]),
+    [avatarUrl, displayName, identifierValue],
+  );
 
   const code = useMemo(
     () => getCode(error),
@@ -50,7 +93,7 @@ const AuthError = ({ loginChallenge, error, t }) => {
     [error],
   );
 
-  const { goBack } = useHistory();
+  const { goBack, replace } = useHistory();
 
   const hasLoginChallenge = useMemo(
     () => !isNil(loginChallenge),
@@ -72,14 +115,12 @@ const AuthError = ({ loginChallenge, error, t }) => {
     [],
   );
 
-
   const primary = useMemo(
     () => ({
-      text: t('common:openVault'),
-      component: Link,
-      to: routes.auth.redirectToSignIn,
+      text: t('common:retry'),
+      href: resetAuthHref,
     }),
-    [t],
+    [t, resetAuthHref],
   );
 
   const secondary = useMemo(
@@ -116,13 +157,45 @@ const AuthError = ({ loginChallenge, error, t }) => {
     [hasFlowError, errorCode, hasApiError, hasLoginChallenge, t],
   );
 
+  const onSignOutSuccess = useCallback(
+    () => {
+      replace(routes._);
+    },
+    [replace],
+  );
+
   return (
-    <Container maxWidth="md">
-      <Box mt={2 * APPBAR_SPACING} display="flex" flexDirection="column" alignItems="center">
+    <Screen
+      classes={{ content: classes.screenContent }}
+    >
+      <Container maxWidth="md" className={classes.container}>
         <Title>
           {title}
         </Title>
         <Subtitle>{subtitle}</Subtitle>
+        {isAuthenticated && (
+          <Box py={2} display="flex" alignItems="center">
+            <Box mr={2}>
+              <Subtitle gutterBottom={false}>{t('auth:error.alreadyAuth')}</Subtitle>
+            </Box>
+            {showCard ? ( // @FIXME replace by card user when implemented
+              <List className={classes.listFullWidth}>
+                <ListItemConsentEmail
+                  avatarUrl={avatarUrl}
+                  displayName={displayName}
+                  email={identifierValue}
+                >
+                  <ButtonSignOut
+                    standing={BUTTON_STANDINGS.OUTLINED}
+                    onSuccess={onSignOutSuccess}
+                  />
+                </ListItemConsentEmail>
+              </List>
+            ) : (
+              <ButtonSignOut standing={BUTTON_STANDINGS.OUTLINED} />
+            )}
+          </Box>
+        )}
         {isDev && hasApiError && (
           <Box py={2}>
             <Alert severity="info">
@@ -147,8 +220,8 @@ const AuthError = ({ loginChallenge, error, t }) => {
           primary={primary}
           secondary={secondary}
         />
-      </Box>
-    </Container>
+      </Container>
+    </Screen>
   );
 };
 

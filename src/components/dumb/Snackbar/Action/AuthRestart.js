@@ -2,12 +2,11 @@ import React, { useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import routes from 'routes';
-
 import { useSnackbar } from 'notistack';
+import useLoginChallenge from 'hooks/useLoginChallenge';
+import useResetAuthHref from '@misakey/auth/hooks/useResetAuthHref';
 
 import Button from '@material-ui/core/Button';
-import { Link } from 'react-router-dom';
 
 // COMPONENTS
 const SnackbarActionAuthRestart = forwardRef(({
@@ -15,6 +14,10 @@ const SnackbarActionAuthRestart = forwardRef(({
   t,
 }, ref) => {
   const { closeSnackbar } = useSnackbar();
+
+  const loginChallenge = useLoginChallenge();
+
+  const resetAuthHref = useResetAuthHref(loginChallenge);
 
   const onClose = useCallback(
     () => closeSnackbar(id),
@@ -24,11 +27,9 @@ const SnackbarActionAuthRestart = forwardRef(({
   return (
     <Button
       ref={ref}
-      component={Link}
-      // @FIXME use data from backend to have better redirection
-      to={routes.auth.redirectToSignIn}
       variant="text"
       color="inherit"
+      href={resetAuthHref}
       onClick={onClose}
     >
       {t('common:retry')}
@@ -38,6 +39,7 @@ const SnackbarActionAuthRestart = forwardRef(({
 
 SnackbarActionAuthRestart.propTypes = {
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  // withTranslation
   t: PropTypes.func.isRequired,
 };
 

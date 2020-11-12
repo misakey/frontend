@@ -36,6 +36,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useCancelForgotPassword from '@misakey/auth/hooks/useCancelForgotPassword';
 import { useClearUser } from '@misakey/hooks/useActions/loginSecret';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
@@ -101,6 +102,8 @@ const AuthLoginSecret = ({
   const dispatch = useDispatch();
 
   const [redirectTo, setRedirectTo] = useState(null);
+  const authIdentifierTo = useGeneratePathKeepingSearchAndHash(routes.auth.signIn._);
+
 
   const [reset, setReset] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -315,6 +318,14 @@ const AuthLoginSecret = ({
         manualRedirectPlaceholder={(
           <Screen isLoading />
         )}
+      />
+    );
+  }
+
+  if (isNil(methodName)) {
+    return (
+      <Redirect
+        to={authIdentifierTo}
       />
     );
   }

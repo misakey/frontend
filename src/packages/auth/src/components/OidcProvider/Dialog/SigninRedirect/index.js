@@ -129,12 +129,12 @@ const DialogSigninRedirect = ({
   );
 
   const sessionExpired = useMemo(
-    () => !isNil(currentUser) && (isNil(currentAcr) || currentAcr === acrValues),
+    () => !isEmpty(currentUser) && (isNil(currentAcr) || currentAcr === acrValues),
     [acrValues, currentAcr, currentUser],
   );
 
   const insufficientACR = useMemo(
-    () => !isNil(currentUser) && !isNil(currentAcr) && currentAcr < acrValues,
+    () => !isEmpty(currentUser) && !isNil(currentAcr) && currentAcr < acrValues,
     [acrValues, currentAcr, currentUser],
   );
 
@@ -208,7 +208,7 @@ const DialogSigninRedirect = ({
     >
       <DialogTitleWithClose fullScreen {...dialogTitleProps} gutterBottom>
         <BoxFlexFill />
-        {!isNil(currentUser) && <AvatarUser displayName={displayName} avatarUrl={avatarUrl} />}
+        {!isEmpty(currentUser) && <AvatarUser displayName={displayName} avatarUrl={avatarUrl} />}
       </DialogTitleWithClose>
       {open && (
         <DialogContent
@@ -252,7 +252,7 @@ const DialogSigninRedirect = ({
                 </List>
               )}
             </Box>
-            {!isNil(currentUser) && (
+            {!isEmpty(currentUser) && (
               <Box my={2} alignSelf="center">
                 <ChipUser
                   displayName={displayName}

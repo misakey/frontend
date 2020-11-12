@@ -181,8 +181,11 @@ function send(options = {}, endpoint = this) {
     .catch((error) => {
       const middlewareError = applyMiddlewares(error, endpoint);
       const finalError = isNil(middlewareError) ? error : middlewareError;
-      log(finalError);
-      throw finalError;
+      // if final error is not an error, consider middlewares handled it
+      if (finalError instanceof Error) {
+        log(finalError);
+        throw finalError;
+      }
     });
 }
 
