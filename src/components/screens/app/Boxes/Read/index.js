@@ -35,7 +35,10 @@ function BoxRead({ match }) {
 
   const { scrollToBottom } = useBoxEventSubmitContext();
 
-  const { lifecycle, publicKey, hasAccess, title, isMember } = useMemo(() => box || {}, [box]);
+  const { lifecycle, publicKey, hasAccess, title, isMember, eventsCount } = useMemo(
+    () => box || {},
+    [box],
+  );
   const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
 
   const {
@@ -72,7 +75,12 @@ function BoxRead({ match }) {
     [scrollToBottom],
   );
 
-  useUpdateDocHead(title);
+  const documentTitle = useMemo(
+    () => (isNil(eventsCount) || eventsCount === 0 ? title : `(${eventsCount}) ${title}`),
+    [eventsCount, title],
+  );
+
+  useUpdateDocHead(documentTitle);
 
   if (displayLoadingScreen) {
     return <SplashScreenWithTranslation />;

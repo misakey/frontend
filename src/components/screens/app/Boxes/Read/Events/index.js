@@ -28,6 +28,7 @@ import PaginatedListBoxEvents from 'components/smart/PaginatedList/BoxEvents';
 import BoxEventsFooter from 'components/screens/app/Boxes/Read/Events/Footer';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
+import useOnTabVisibilityChange from '@misakey/hooks/useOnTabVisibilityChange';
 
 // CONSTANTS
 const { identityId: IDENTITY_ID_SELECTOR, accountId: ACCOUNT_ID_SELECTOR } = authSelectors;
@@ -65,10 +66,11 @@ function BoxEvents({ box, t, belongsToCurrentUser }) {
 
   // RESET BOX COUNT
   const { onAckWSUserBox } = useBoxesContext();
+  const isTabActive = useOnTabVisibilityChange();
 
   const shouldFetch = useMemo(
-    () => !isNil(id) && !isNil(identityId) && eventsCount > 0,
-    [id, identityId, eventsCount],
+    () => !isNil(id) && !isNil(identityId) && eventsCount > 0 && isTabActive,
+    [id, identityId, eventsCount, isTabActive],
   );
 
   const onResetBoxEventCount = useCallback(

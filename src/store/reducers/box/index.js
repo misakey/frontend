@@ -158,7 +158,10 @@ export const removeBox = (id) => (dispatch, getState) => {
   });
 };
 
-export const addBoxEvent = (id, nextEvent, isMyEvent = false) => (dispatch, getState) => {
+export const addBoxEvent = (id, nextEvent, isMyEvent = false, onNotifyEvent) => (
+  dispatch,
+  getState,
+) => {
   const currentBox = getBoxById(getState(), id);
 
   const isLifecycle = nextEvent.type === LIFECYCLE;
@@ -172,7 +175,7 @@ export const addBoxEvent = (id, nextEvent, isMyEvent = false) => (dispatch, getS
     return Promise.resolve(isLifecycle ? undefined : dispatch(moveBackUpId(id, ALL)));
   }
 
-  const { events, eventsCount = 0, lifecycle, members } = currentBox;
+  const { events, eventsCount = 0, lifecycle, members, title } = currentBox;
 
   const lastEvent = nextEvent;
 
@@ -192,28 +195,30 @@ export const addBoxEvent = (id, nextEvent, isMyEvent = false) => (dispatch, getS
 
   const normalized = normalize(nextEvent, BoxEventsSchema.entity);
   const { entities } = normalized;
+
   const fileEventItemCount = getFileItemCount(getState(), id);
 
-  if (isNil(events)) {
-    return batch(() => {
-      dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
-      dispatch(updateEntities([{ id, changes }], BoxesSchema));
-      dispatch(moveBackUpId(id, ALL));
-      if (!isNil(fileEventItemCount) && lastEvent.type === MSG_FILE) {
-        dispatch(addPaginatedFileEventId(id, lastEvent.id));
-      }
-    });
+  const actions = [
+    receiveEntities(entities, mergeReceiveNoEmpty),
+    updateEntities([{ id, changes }], BoxesSchema),
+    moveBackUpId(id, ALL),
+  ];
+
+  if (!isNil(fileEventItemCount) && lastEvent.type === MSG_FILE) {
+    actions.push(addPaginatedFileEventId(id, lastEvent.id));
   }
 
-  return batch(() => {
-    dispatch(addPaginatedEventId(id, lastEvent.id));
-    dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
-    dispatch(updateEntities([{ id, changes }], BoxesSchema));
-    dispatch(moveBackUpId(id, ALL));
-    if (!isNil(fileEventItemCount) && lastEvent.type === MSG_FILE) {
-      dispatch(addPaginatedFileEventId(id, lastEvent.id));
-    }
-  });
+  if (!isNil(events)) {
+    actions.push(addPaginatedEventId(id, lastEvent.id));
+  }
+
+  const batchResult = batch(() => actions.forEach((action) => dispatch(action)));
+
+  if (!isMyEvent) {
+    onNotifyEvent(lastEvent, title);
+  }
+
+  return batchResult;
 };
 
 export const receiveBoxEvents = (id, nextEvents) => (dispatch, getState) => {

@@ -317,6 +317,15 @@
         "user_reset_password": "You have reset your password.\nYou have lost decryption keys for your previous private spaces.\nIf you had exported your vault backup from workspace “My account”, you could retrieve them by restauring the backup.",
         "user_create_account": "Welcome on Misakey!\nYou can now create your own private spaces and share it.\nDecryption keys of your private space are stored in your vault. Access to the vault fully depends on your current password, it is important for you not to lose it because Misakey haven't access to it and can't help you to retrieve it.\nYou can download a backup of your vault from the workspace “My account”, store it in a safe place, you could use it later to retrieve access to your private space, in case of password reset."
       }
+    },
+    "browser": {
+      "events": {
+        "defaultTitle": "New message",
+        "body": {
+          "file": "{{displayName}} sent a file",
+          "text": "{{displayName}} sent a message"
+        }
+      }
     }
   }
 }

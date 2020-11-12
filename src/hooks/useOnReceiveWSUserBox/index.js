@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 import useModifier from '@misakey/hooks/useModifier';
 import { resetNotifications } from 'store/actions/identity/notifications';
+import useOnNotifyEvent from 'hooks/useOnNotifyEvent';
 
 // CONSTANTS
 const {
@@ -93,6 +94,8 @@ export default (activeStatus, search) => {
     [dispatch, idMatchesDeletedBoxId, replace],
   );
 
+  const onNotifyEvent = useOnNotifyEvent();
+
   return useCallback(
     ({ type, object }) => {
       // delete box
@@ -137,12 +140,12 @@ export default (activeStatus, search) => {
           });
         }
         const isMyEvent = isMeEvent(object, identityId);
-        return Promise.resolve(dispatch(addBoxEvent(boxId, object, isMyEvent)));
+        return Promise.resolve(dispatch(addBoxEvent(boxId, object, isMyEvent, onNotifyEvent)));
       }
       log(`Receive unknown WS type: ${type}`);
       return Promise.resolve();
     },
-    [identityId, leaveSuccess, onRemoveBox, onDeleteSuccess,
-      dispatch, enqueueSnackbar, onKickSuccess],
+    [onRemoveBox, onDeleteSuccess, dispatch, identityId,
+      enqueueSnackbar, leaveSuccess, onKickSuccess, onNotifyEvent],
   );
 };
