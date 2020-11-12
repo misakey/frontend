@@ -144,7 +144,7 @@ function MisakeyNotications() {
 
   return (
     <>
-      <ElevationScroll target={ref.current.outerRef}>
+      <ElevationScroll target={ref.current ? ref.current.outerRef : undefined}>
         <AppBarDrawer>
           <Box display="flex" width="100%" alignItems="center">
             <ToggleDrawerButton />
