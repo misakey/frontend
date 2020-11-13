@@ -163,123 +163,123 @@ const AuthLoginSecret = ({
   );
 
   const handleSubmit = useCallback(
-    (values, { setFieldError, setSubmitting, setFieldValue }) => {
+    async (values, { setFieldError, setSubmitting, setFieldValue }) => {
       setRedirectTo(null);
 
-      loginAuthStep({
-        loginChallenge,
-        identityId,
-        methodName,
-        pwdHashParams,
-        dispatchHardPasswordChange,
-        dispatchCreateNewOwnerSecrets,
-        ...values,
-        auth: !isNil(accessToken),
-      }, accessToken)
-        .then(async (response) => {
-          const {
-            redirectTo: nextRedirectTo,
-            next,
-            accessToken: nextAccessToken,
-            authnStep: nextAuthnStep,
-          } = objectToCamelCase(response);
+      try {
+        const response = await loginAuthStep({
+          loginChallenge,
+          identityId,
+          methodName,
+          pwdHashParams,
+          dispatchHardPasswordChange,
+          dispatchCreateNewOwnerSecrets,
+          ...values,
+          auth: !isNil(accessToken),
+        }, accessToken);
 
-          await Promise.resolve(dispatchSsoSign(nextAccessToken));
+        const {
+          redirectTo: nextRedirectTo,
+          next,
+          accessToken: nextAccessToken,
+          authnStep: nextAuthnStep,
+        } = objectToCamelCase(response);
 
-          // handle BackupSecretShares
-          const { secret: password, [PASSWORD_RESET_KEY]: newPassword } = values;
-          const isResetPassword = methodName === EMAILED_CODE && !isNil(newPassword);
-          if (isResetPassword || [PREHASHED_PASSWORD, ACCOUNT_CREATION].includes(methodName)) {
-            try {
-              await dispatch(createNewBackupKeySharesFromAuthFlow({
-                loginChallenge,
-                identityId,
-                password: newPassword || password,
-              }, nextAccessToken));
-            } catch (error) {
-              log(error, 'error');
-              enqueueSnackbar(t('common:crypto.errors.backupKeyShare'), { variant: 'warning' });
-              // a failure of backup key shares creation
-              // should not make the entire auth flow fail
-              // because it is not an essential step of the auth flow:
-              // the user will simply have to enter her password one more time
-            }
+        await Promise.resolve(dispatchSsoSign(nextAccessToken));
+
+        // handle BackupSecretShares
+        const { secret: password, [PASSWORD_RESET_KEY]: newPassword } = values;
+        const isResetPassword = methodName === EMAILED_CODE && !isNil(newPassword);
+        if (isResetPassword || [PREHASHED_PASSWORD, ACCOUNT_CREATION].includes(methodName)) {
+          try {
+            await dispatch(createNewBackupKeySharesFromAuthFlow({
+              loginChallenge,
+              identityId,
+              password: newPassword || password,
+            }, nextAccessToken));
+          } catch (error) {
+            log(error, 'error');
+            enqueueSnackbar(t('common:crypto.errors.backupKeyShare'), { variant: 'warning' });
+            // a failure of backup key shares creation
+            // should not make the entire auth flow fail
+            // because it is not an essential step of the auth flow:
+            // the user will simply have to enter her password one more time
           }
+        }
 
-          if (next === NEXT_STEP_REDIRECT) {
-            setRedirectTo(nextRedirectTo);
-          }
-          if (next === NEXT_STEP_AUTH) {
+        if (next === NEXT_STEP_REDIRECT) {
+          return setRedirectTo(nextRedirectTo);
+        }
+        if (next === NEXT_STEP_AUTH) {
+          setFieldValue(CURRENT_STEP, '');
+          return dispatchSsoUpdate({ authnStep: objectToCamelCase(nextAuthnStep) });
+        }
+        return response;
+      } catch (e) {
+        if (e instanceof AuthUndefinedMethodName) {
+          enqueueSnackbar(t('auth:error.flow.invalid_flow'), { variant: 'error' });
+          return setRedirectTo(routes.auth.redirectToSignIn);
+        }
+
+        // in case reset password dialog is open, close dialog before setting field error
+        if (dialogOpen) {
+          onDialogClose();
+        }
+        const code = getCode(e);
+        const details = getDetails(e);
+        const secretError = getSecretError(details);
+        if (!isNil(secretError)) {
+          if (methodName === EMAILED_CODE) {
             setFieldValue(CURRENT_STEP, '');
-            dispatchSsoUpdate({ authnStep: objectToCamelCase(nextAuthnStep) });
           }
-        })
-        .catch((e) => {
-          if (e instanceof AuthUndefinedMethodName) {
-            enqueueSnackbar(t('auth:error.flow.invalid_flow'), { variant: 'error' });
-            return setRedirectTo(routes.auth.redirectToSignIn);
-          }
-
-          // in case reset password dialog is open, close dialog before setting field error
-          if (dialogOpen) {
-            onDialogClose();
-          }
-          const code = getCode(e);
-          const details = getDetails(e);
-          const secretError = getSecretError(details);
-          if (!isNil(secretError)) {
-            if (methodName === EMAILED_CODE) {
-              setFieldValue(CURRENT_STEP, '');
-            }
-            return setFieldError(CURRENT_STEP, secretError);
-          }
-          if (details.Authorization && details.loginChallenge) {
-            enqueueSnackbar(t('auth:login.form.error.authorizationChallenge'), { variant: 'warning' });
-            return dispatchSsoReset()
-              .then(() => {
-                setRedirectTo(routes.auth.redirectToSignIn);
-              });
-          }
-          if (isHydraErrorCode(code)) {
-            return enqueueSnackbar(t(`auth:error.flow.${code}`), {
-              variant: 'warning',
-              action: (key) => <SnackbarActionAuthRestart id={key} />,
+          return setFieldError(CURRENT_STEP, secretError);
+        }
+        if (details.Authorization && details.loginChallenge) {
+          enqueueSnackbar(t('auth:login.form.error.authorizationChallenge'), { variant: 'warning' });
+          return dispatchSsoReset()
+            .then(() => {
+              setRedirectTo(routes.auth.redirectToSignIn);
             });
-          }
-          if (details.toDelete === conflict) {
-            // @FIXME should we remove that part as it's not implemented in latest version ?
-            const text = (
-              <Trans
-                i18nKey="auth:login.form.error.deletedAccount"
-                values={{
-                  deletionDate: moment(details.deletionDate).format(DATE_FULL),
-                }}
-              >
-                Votre compte est en cours de suppression, vous ne pouvez donc plus vous y connecter.
-                <br />
-                {'Sans action de votre part il sera supprimé le {{deletionDate}}.'}
-                <br />
-                Si vous voulez le récupérer envoyez nous un email à&nbsp;
-                <a href={`mailto:${QUESTIONS}`}>{QUESTIONS}</a>
-              </Trans>
-            );
-            return enqueueSnackbar(text, { variant: 'error' });
-          }
-
-          log(e, 'error');
-
-          if (!isNil(e.status)) {
-            // @FIXME It is false to assume that error must be a HTTP error
-            return handleHttpErrors(e);
-          }
-          return enqueueSnackbar(t('common:errorPleaseRetryOrRefresh'), {
-            variant: 'error',
-            action: (key) => <SnackbarActionRefresh id={key} />,
+        }
+        if (isHydraErrorCode(code)) {
+          return enqueueSnackbar(t(`auth:error.flow.${code}`), {
+            variant: 'warning',
+            action: (key) => <SnackbarActionAuthRestart id={key} />,
           });
-        })
-        .finally(() => {
-          setSubmitting(false);
+        }
+        if (details.toDelete === conflict) {
+          // @FIXME should we remove that part as it's not implemented in latest version ?
+          const text = (
+            <Trans
+              i18nKey="auth:login.form.error.deletedAccount"
+              values={{
+                deletionDate: moment(details.deletionDate).format(DATE_FULL),
+              }}
+            >
+              Votre compte est en cours de suppression, vous ne pouvez donc plus vous y connecter.
+              <br />
+              {'Sans action de votre part il sera supprimé le {{deletionDate}}.'}
+              <br />
+              Si vous voulez le récupérer envoyez nous un email à&nbsp;
+              <a href={`mailto:${QUESTIONS}`}>{QUESTIONS}</a>
+            </Trans>
+          );
+          return enqueueSnackbar(text, { variant: 'error' });
+        }
+
+        log(e, 'error');
+
+        if (!isNil(e.status)) {
+          // @FIXME It is false to assume that error must be a HTTP error
+          return handleHttpErrors(e);
+        }
+        return enqueueSnackbar(t('common:errorPleaseRetryOrRefresh'), {
+          variant: 'error',
+          action: (key) => <SnackbarActionRefresh id={key} />,
         });
+      } finally {
+        setSubmitting(false);
+      }
     },
     [loginChallenge, identityId, methodName, pwdHashParams, dispatchHardPasswordChange,
       dispatchCreateNewOwnerSecrets, accessToken, dispatchSsoSign, dispatch,

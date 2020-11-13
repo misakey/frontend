@@ -106,24 +106,29 @@ export function handleResponse(rawResponse) {
   return rawResponse;
 }
 
-const applyMiddlewares = (requestOrResponse, endpoint) => {
+/**
+ * Applies middlewares sequentially until one returns something different than nil
+ * NB: it stops at first result not nil
+ */
+const applyMiddlewares = async (requestOrResponse, endpoint) => {
   const { middlewares } = endpoint;
   let middlewareResult;
-  // @FIXME: be careful with this "stop once something is returned" implem of our middlewares
-  middlewares.some((middleware) => {
+  let index = 0;
+
+  while (isNil(middlewareResult) && index < middlewares.length - 1) {
+    const middleware = middlewares[index];
     if (isFunction(middleware)) {
-      middlewareResult = middleware(requestOrResponse, endpoint);
-
-      return !!middlewareResult;
+      // middlewares must be applied sequentially in loop
+      // eslint-disable-next-line no-await-in-loop
+      middlewareResult = await Promise.resolve(middleware(requestOrResponse, endpoint));
     }
-
-    return false;
-  });
+    index += 1;
+  }
 
   return middlewareResult;
 };
 
-const makeRequest = (headers, endpoint, retryOptions) => {
+const makeRequest = async (headers, endpoint, retryOptions) => {
   const { initOptions, method, requestUri, body } = endpoint;
   const contentType = headers.get('Content-Type');
   const init = {
@@ -139,7 +144,7 @@ const makeRequest = (headers, endpoint, retryOptions) => {
       : body;
   }
 
-  const middlewareRequest = applyMiddlewares({ requestUri, init }, endpoint);
+  const middlewareRequest = await applyMiddlewares({ requestUri, init }, endpoint);
   return isNil(middlewareRequest)
     ? retry(requestUri, init, retryOptions)
     : Promise.resolve(middlewareRequest);
@@ -152,7 +157,7 @@ const makeRequest = (headers, endpoint, retryOptions) => {
  * @param endpoint
  * @returns {Promise<Response>|Promise}
  */
-function send(options = {}, endpoint = this) {
+async function send(options = {}, endpoint = this) {
   const { rawRequest, contentType = 'application/json', headers: optionsHeaders, retryOptions } = options;
   const { token, auth, path } = endpoint;
 
@@ -171,22 +176,24 @@ function send(options = {}, endpoint = this) {
     }
     headers.set('X-CSRF-Token', token);
   }
-  return (rawRequest === true
-    ? makeRequest(headers, endpoint, retryOptions)
-    : makeRequest(headers, endpoint, retryOptions)
-      .then((rawResponse) => {
-        const middlewareResponse = applyMiddlewares(rawResponse, endpoint);
-        return isNil(middlewareResponse) ? handleResponse(rawResponse) : middlewareResponse;
-      }))
-    .catch((error) => {
-      const middlewareError = applyMiddlewares(error, endpoint);
-      const finalError = isNil(middlewareError) ? error : middlewareError;
-      // if final error is not an error, consider middlewares handled it
-      if (finalError instanceof Error) {
-        log(finalError);
-        throw finalError;
-      }
-    });
+
+  try {
+    const rawResponse = await makeRequest(headers, endpoint, retryOptions);
+    if (rawRequest) {
+      return rawResponse;
+    }
+    const middlewareResponse = await applyMiddlewares(rawResponse, endpoint);
+    return isNil(middlewareResponse) ? handleResponse(rawResponse) : middlewareResponse;
+  } catch (error) {
+    const middlewareError = await applyMiddlewares(error, endpoint);
+    const finalError = isNil(middlewareError) ? error : middlewareError;
+    // if final error is not an error, consider middlewares handled it
+    if (finalError instanceof Error) {
+      log(finalError);
+      throw finalError;
+    }
+    return finalError;
+  }
 }
 
 export default send;
