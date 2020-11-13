@@ -58,7 +58,15 @@ const Row = ({ style, index, data, box, id, dispatchReceivedBox, ...rest }) => {
 
   const onError = useOnGetBoxError(id);
 
-  useFetchEffect(getBox, { shouldFetch }, { onSuccess: dispatchReceivedBox, onError });
+  const { isFetching } = useFetchEffect(
+    getBox,
+    { shouldFetch },
+    { onSuccess: dispatchReceivedBox, onError },
+  );
+
+  if (isFetching) {
+    return <Skeleton style={style} index={index} data={data} {...rest} />;
+  }
 
   return (
     <BoxListItem

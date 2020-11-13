@@ -25,10 +25,11 @@ import Typography from '@material-ui/core/Typography';
 const ButtonCreate = withDialogCreate(Button);
 
 // CONSTANTS
-// Box height + margin
+// `Deleted boxes height` + `total` box height + `total` box margin
 const INNER_ELEMENT_TYPE_BOTTOM_HEIGHT = 72 + 51 + 2 * 8;
 // Misakey box height
 const INNER_ELEMENT_TYPE_TOP_HEIGHT = 72;
+const INNER_ELEMENT_TYPE_HEIGHT = INNER_ELEMENT_TYPE_BOTTOM_HEIGHT + INNER_ELEMENT_TYPE_TOP_HEIGHT;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -36,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.secondary.main,
   },
 }));
-
 
 const useInnerElementType = (itemCount, activeStatus, search, t) => useMemo(
   () => forwardRef((props, ref) => (
@@ -124,7 +124,7 @@ const WindowedListBoxes = forwardRef(({ activeStatus, selectedId, t, ...props },
       itemSize={72}
       itemData={itemData}
       innerElementType={innerElementType}
-      innerElementTypeHeight={INNER_ELEMENT_TYPE_BOTTOM_HEIGHT}
+      innerElementTypeHeight={INNER_ELEMENT_TYPE_HEIGHT}
       {...props}
     />
   );
