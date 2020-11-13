@@ -136,7 +136,7 @@ export default (activeStatus, search) => {
               [{ id: boxId, changes: { hasAccess: true, isMember: true } }],
               BoxesSchema,
             ));
-            dispatch(addBoxEvent(boxId, object));
+            dispatch(addBoxEvent(boxId, object, true, onNotifyEvent));
           });
         }
         const isMyEvent = isMeEvent(object, identityId);
