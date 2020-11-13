@@ -3,13 +3,13 @@
   "misakey": "Misakey",
   "sections": {
     "myNotifications": {
-      "title": "Mes communications"
+      "title": "Notifications"
     },
     "myInterface": {
       "title": "Mon interface"
     },
     "myVault": {
-      "title": "Mon coffre-fort"
+      "title": "Mes données"
     },
     "myQuota": {
       "title": "Stockage"
@@ -31,12 +31,17 @@
     }
   },
   "delete": {
-    "title": "Compte",
+    "title": "Supprimer",
     "label": "Supprimer mon compte",
-    "success": "Mon compte a bien été supprimé\u00a0!",
-    "dialog": {
-      "title": "Supprimer mon compte\u00a0?",
-      "description": "Je saisis mon adresse email ({{email}}) dans le champ ci-dessous avant de valider la suppression de mon compte."
+    "content": {
+      "intro": "La protection de vos données personnelles est notre mission. Vous pouvez demander à tout moment la suppression de votre compte et des données qui y sont rattachées.<br/>Cette suppression est définitive : nous ne gardons pas de sauvegarde de vos données une fois ces dernières supprimées.",
+      "whatDeleteTitle": "Ce qui sera supprimé",
+      "whatDeleteContent": "Si vous faites votre demande de suppression, voici ce qui sera supprimé:<1><0>Votre compte, son mot de passe et les clés de votre coffre-fort</0><1>Les fichiers que vous avez sauvegardés dans \"Mes documents\"</1><2>Tous les espaces sécurisés que vous avez créés, ainsi que tous les échanges de vous et vos interlocuteurs dans ces espaces</2><3>Tout votre historique de connexion et les données relatives</3></1>",
+      "whatNotDeleteTitle": "Ce qui ne sera pas supprimé",
+      "whatNotDeleteContent": "Si vous faites votre demande de suppression, certaines données ne seront pas supprimées automatiquement (vous pouvez cependant les supprimer manuellement en amont):<1><0>Les messages et fichiers chiffrés que vous avez envoyés dans des espaces sécurisés que vous avez rejoint.</0><1>Les messages et fichiers que vous ne supprimez pas manuellement seront toujours accessible mais seront interprétés comme étant envoyés par un utilisateur anonyme (car votre identité n’existera plus dans le système)</1><2>Les fichiers que vous avez envoyés que d’autres utilisateurs ont enregistrés</2></1>",
+      "howToTitle": "Comment supprimer mon compte\u00a0?",
+      "howToContent": "Si vous voulez supprimer votre compte, il vous suffit d’envoyer un email à notre DPO (<1>dpo@misakey.com</1>), en lui demandant la suppression.<br/><br/>Nous répondrons à votre requête au plus vite, au plus tard sous 30 jours.",
+      "howToMailSubject": "[Misakey App] Demande de suppression du compte {{email}}"
     }
   },
   "public": {
@@ -55,9 +60,9 @@
     "success": "Mon nom public a été mis à jour"
   },
   "notifications": {
-    "title": "Fréquence des communications",
-    "subtitle": "Je définis la fréquence des communications par email",
-    "success": "La fréquence des communications a été mise à jour"
+    "title": "Fréquence des notifications",
+    "subtitle": "Je définis la fréquence des notifications par email",
+    "success": "La fréquence des notifications a été mise à jour"
   },
   "accountColors": {
     "title": "Ma couleur",

@@ -7,6 +7,7 @@ import useIdentity from 'hooks/useIdentity';
 
 import AccountPassword from 'components/screens/app/Account/Password';
 import AccountVault from 'components/screens/app/Account/Vault';
+import AccountDelete from 'components/screens/app/Account/Delete';
 
 // COMPONENTS
 function Account(props) {
@@ -30,6 +31,17 @@ function Account(props) {
         path={routes.identities.accounts.vault}
         render={(routerProps) => (
           <AccountVault
+            {...routerProps}
+            {...identityMetadata}
+            {...props}
+          />
+        )}
+      />
+      <Route
+        exact
+        path={routes.identities.accounts.delete}
+        render={(routerProps) => (
+          <AccountDelete
             {...routerProps}
             {...identityMetadata}
             {...props}

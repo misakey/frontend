@@ -63,15 +63,15 @@
     "notificationConfig": {
       "minimal": {
         "title": "Minimal",
-        "subtitle": "I want to receive communications only when it is necessary"
+        "subtitle": "I want to receive notifications once a day maximum"
       },
       "moderate": {
         "title": "Moderate",
-        "subtitle": "I want to receive communications sparingly to help me use the service"
+        "subtitle": "I want to receive notifications once an hour maximum"
       },
       "frequent": {
         "title": "High",
-        "subtitle": "I want to receive communications as soon as new information is available"
+        "subtitle": "I want to receive notifications as soon as new information are available"
       }
     }
   },

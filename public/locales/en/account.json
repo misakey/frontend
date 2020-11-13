@@ -3,13 +3,13 @@
   "misakey": "Misakey",
   "sections": {
     "myNotifications": {
-      "title": "My communications"
+      "title": "Notifications"
     },
     "myInterface": {
       "title": "Interface customization"
     },
     "myVault": {
-      "title": "My vault"
+      "title": "Personal data"
     },
     "myQuota": {
       "title": "Storage"
@@ -31,12 +31,17 @@
     }
   },
   "delete": {
-    "title": "Account",
+    "title": "Delete",
     "label": "Delete my account",
-    "success": "My account was successfully deleted\u00a0!",
-    "dialog": {
-      "title": "Delete my account\u00a0?",
-      "description": "I type my email address ({{email}}) in the following field before submitting my account erasure."
+    "content": {
+      "intro": "Your personnal data protection is our mission. You can at any moment ask for the deletion of your account and your data.<br/>This deletion is permanent: we do not keep backup of your data once deleted.",
+      "whatDeleteTitle": "What will be deleted",
+      "whatDeleteContent": "If you ask for account deletion, here is what will be deleted<1><0>Your account, password and the keys of your vault</0><1>The files you saved in the space My documents”</1><2>All the private spaces you created and the content of those spaces</2><3>All you connexion history and related data</3></1>",
+      "whatNotDeleteTitle": "What won't be deleted",
+      "whatNotDeleteContent": "If you ask for account deletion, here is what will not be deleted (but you can delete them manually before):<1><0>The files and messages you sent in spaces you joined.</0><1>Those files and messages will remain attached to an anonymous user (as your user won't exist anymore in our system)</1><2>The files you sent to other users that they saved</2></1>",
+      "howToTitle": "How to delete my account?",
+      "howToContent": "If you want to delete your account, you just have to send an email to our DPO (<1>dpo@misakey.com</1>), asking for deletion.<br/><br/>We will answer your request shortly, it won't be longer than 30 days.",
+      "howToMailSubject": "[Misakey App] Account deletion request for {{email}}"
     }
   },
   "public": {
@@ -55,7 +60,7 @@
     "success": "Public name successfully updated"
   },
   "notifications": {
-    "title": "Communications frequency",
+    "title": "Notifications frequency",
     "subtitle": "I define email updates frequency",
     "success": "Email updates frequency successfully updated"
   },

@@ -20,7 +20,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
 import UserStorage from 'components/screens/app/Account/UserStorage';
-// import DeleteAccountListItem from 'components/oldScreens/Account/Home/DeleteAccount';
 import CardIdentityHeader from 'components/dumb/Card/Identity/Header';
 import CardList from 'components/dumb/Card/List';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -104,6 +103,13 @@ const useGetItemTosForUser = (location, identityId, accountId) => useMemo(
           { id: identityId, accountId },
         ),
       },
+      listItemDeleteAccountTo: {
+        ...location,
+        pathname: generatePath(
+          routes.identities.accounts.delete,
+          { id: identityId, accountId },
+        ),
+      },
     };
   },
   [accountId, identityId, location],
@@ -126,6 +132,7 @@ const CardIdentity = forwardRef(({ identity, identityId, t }, ref) => {
     listItemPasswordTo,
     listItemExportCryptoTo,
     listItemNotificationsTo,
+    listItemDeleteAccountTo,
   } = useGetItemTosForUser(location, identityId, accountId);
 
   return (
@@ -214,10 +221,10 @@ const CardIdentity = forwardRef(({ identity, identityId, t }, ref) => {
           <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
       </CardList>
-      {!isNil(accountId) && (
-        <>
-          <CardIdentityHeader>{t('account:sections.myQuota.title')}</CardIdentityHeader>
-          <CardList>
+      <CardIdentityHeader>{t('account:sections.myVault.title')}</CardIdentityHeader>
+      <CardList>
+        {!isNil(accountId) && (
+          <>
             <ListItem
               classes={{ container: classes.listItemContainer }}
               divider
@@ -227,12 +234,10 @@ const CardIdentity = forwardRef(({ identity, identityId, t }, ref) => {
               </ListItemIcon>
               <UserStorage />
             </ListItem>
-          </CardList>
-          <CardIdentityHeader>{t('account:sections.myVault.title')}</CardIdentityHeader>
-          <CardList>
             <ListItem
               classes={{ container: classes.listItemContainer }}
               button
+              divider
               component={Link}
               to={listItemExportCryptoTo}
             >
@@ -242,16 +247,21 @@ const CardIdentity = forwardRef(({ identity, identityId, t }, ref) => {
               <ListItemText primary={t('account:vault.helperText')} />
               <ChevronRightIcon className={classes.actionIcon} />
             </ListItem>
-          </CardList>
-        </>
-      )}
-      {/* <CardIdentityHeader>{t('account:sections.myAccount.title')}</CardIdentityHeader>
-      <CardList>
-        <DeleteAccountListItem
-          identity={identity}
-          classes={{ listItemIcon: classes.listItemIcon, actionIcon: classes.actionIcon }}
-        />
-      </CardList> */}
+          </>
+        )}
+        <ListItem
+          classes={{ container: classes.listItemContainer }}
+          button
+          component={Link}
+          to={listItemDeleteAccountTo}
+        >
+          <ListItemIcon className={classes.listItemIcon}>
+            <Typography>{t('account:delete.title')}</Typography>
+          </ListItemIcon>
+          <ListItemText primary={t('account:delete.label')} primaryTypographyProps={{ color: 'error' }} />
+          <ChevronRightIcon className={classes.actionIcon} />
+        </ListItem>
+      </CardList>
     </Container>
   );
 });

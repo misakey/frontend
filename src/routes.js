@@ -24,6 +24,7 @@ const routes = {
       _: '/identities/:id/accounts/:accountId',
       password: '/identities/:id/accounts/:accountId/password',
       vault: '/identities/:id/accounts/:accountId/vault',
+      delete: '/identities/:id/accounts/:accountId/delete',
     },
   },
   documents: {
