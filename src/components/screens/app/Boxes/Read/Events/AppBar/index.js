@@ -24,7 +24,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Box from '@material-ui/core/Box';
-import ShareBoxDialogButton from './ShareBoxDialogButton';
+import ShareBoxButton from './ShareBoxButton';
 import DeleteBoxDialogButton from './DeleteBoxDialogButton';
 import AppBarMenuTabs from './Tabs';
 
@@ -176,7 +176,7 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
           secondary={secondary}
         />
         <ListItemSecondaryAction>
-          {canShare && <ShareBoxDialogButton box={box} />}
+          {canShare && <ShareBoxButton box={box} />}
           {canDeleteBox && <DeleteBoxDialogButton box={box} />}
         </ListItemSecondaryAction>
       </ListItem>

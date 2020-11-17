@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -9,12 +9,17 @@ const { makeGetBoxKeyShare } = selectors;
 
 export default function (boxId) {
   const { pathname, search, hash: locationHash } = useLocation();
-  const history = useHistory();
+  const { replace } = useHistory();
 
   const getBoxKeyShare = useMemo(() => makeGetBoxKeyShare(), []);
   const { value: keyShareInStore } = useSelector((state) => getBoxKeyShare(state, boxId) || {});
 
-  if (keyShareInStore && locationHash !== `#${keyShareInStore}`) {
-    history.replace({ pathname, search, hash: `#${keyShareInStore}` });
-  }
+  useEffect(
+    () => {
+      if (keyShareInStore && locationHash !== `#${keyShareInStore}`) {
+        replace({ pathname, search, hash: `#${keyShareInStore}` });
+      }
+    },
+    [keyShareInStore, locationHash, pathname, search, replace],
+  );
 }

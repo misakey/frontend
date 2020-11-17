@@ -142,5 +142,13 @@
     "helperLinkText": "Learn more",
     "progress": "File upload in progress",
     "success": "Files have been sent successfully!"
+  },
+  "whitelist": {
+    "domainTitle": "All users from domain",
+    "addDomain": "You can add access to every email from a domain with “*@[domain]”",
+    "needs_link": "Link required",
+    "invited": "Invitation sent",
+    "member": "Member",
+    "owner": "Owner"
   }
 }

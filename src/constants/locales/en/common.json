@@ -57,6 +57,7 @@
   "unlock": "Unlock",
   "validate": "Validate",
   "view": "View",
+  "you": "{{displayName}} (You)",
   "anErrorOccurred": "Sorry, an error occurred",
   "errorPleaseRetryOrRefresh": "An error occurred; please retry or refresh",
   "openAccountDrawer": "See account",

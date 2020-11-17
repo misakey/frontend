@@ -1,294 +1,146 @@
-import React, { useMemo, useState, useCallback, useEffect } from 'react';
+import React, { useMemo, useRef, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
-import { useSnackbar } from 'notistack';
-
 import { withTranslation, useTranslation } from 'react-i18next';
+import BoxEventsSchema from 'store/schemas/Boxes/Events';
+import SenderSchema from 'store/schemas/Boxes/Sender';
 
-import Box from '@material-ui/core/Box';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListItem from '@material-ui/core/ListItem';
-import Skeleton from '@material-ui/lab/Skeleton';
-import ListItemText from '@material-ui/core/ListItemText';
-import TextFieldStandard from '@misakey/ui/TextField/Standard';
+import { ACCESS_RM, ACCESS_ADD, ACCESS_BULK } from 'constants/app/boxes/events';
+import { RESTRICTION_TYPES } from 'constants/app/boxes/accesses';
+import { updateAccessesEvents } from 'store/reducers/box';
+import { makeAccessValidationSchema } from 'constants/validationSchemas/boxes';
+import { PRIVATE, PUBLIC, LIMITED } from '@misakey/ui/constants/accessLevels';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
-import LockIcon from '@material-ui/icons/Lock';
-import PublicIcon from '@material-ui/icons/Public';
-import PeopleIcon from '@material-ui/icons/People';
-
-import groupBy from '@misakey/helpers/groupBy';
-import isNil from '@misakey/helpers/isNil';
+import { getUpdatedAccesses } from 'helpers/accesses';
 import isEmpty from '@misakey/helpers/isEmpty';
 import pluck from '@misakey/helpers/pluck';
-import differenceWith from '@misakey/helpers/differenceWith';
 import filter from '@misakey/helpers/filter';
 import { createBulkBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import { identifierValuePath, senderMatchesIdentifierValue } from 'helpers/sender';
 
-import { accessWhitelistValidationSchema } from 'constants/validationSchemas/boxes';
-import BoxControls from '@misakey/ui/Box/Controls';
+import { useSelector, useDispatch } from 'react-redux';
+import { useSnackbar } from 'notistack';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
-import { updateAccessesEvents } from 'store/reducers/box';
-import BoxEventsSchema from 'store/schemas/Boxes/Events';
-import withStyles from '@material-ui/core/styles/withStyles';
-import { ACCESS_RM, ACCESS_ADD } from 'constants/app/boxes/events';
-import AccessWhitelistForm from './Whitelist';
+import Formik from '@misakey/ui/Formik';
+import Field from '@misakey/ui/Form/Field';
+import { Form } from 'formik';
+import MenuItem from '@material-ui/core/MenuItem';
+import Box from '@material-ui/core/Box';
+import ListItemAccessLevel from 'components/dumb/ListItem/AccessLevel';
+import SelectItemAccessLevel from 'components/dumb/SelectItem/AccessLevel';
+import TextField from '@misakey/ui/Form/Field/TextFieldWithErrors';
+import FormikAutoSave from '@misakey/ui/Formik/AutoSave';
+import SharingFormWhitelist from 'components/screens/app/Boxes/Read/Sharing/Form/Whitelist';
 
 // CONSTANTS
+const { identifierValue: IDENTIFIER_VALUE_SELECTOR } = authSelectors;
 const ACCESSES_FIELD_NAME = 'accessLevel';
-const WHITELIST_FIELD_NAME = {
-  identifier: 'accessWhitelistIdentifier',
-  emailDomain: 'accessWhitelistEmailDomain',
-};
+const WHITELIST_FIELD_NAME = 'accessWhitelist';
 
-const VALUES = {
-  PRIVATE: 'private',
-  PUBLIC: 'public',
-  LIMITED: 'limited',
-};
-
-const RESTRICTION_TYPES = {
-  INVITATION_LINK: 'invitation_link',
-  IDENTIFIER: 'identifier',
-  EMAIL_DOMAIN: 'email_domain',
-};
-
-const ICONS = {
-  [VALUES.PRIVATE]: <LockIcon />,
-  [VALUES.PUBLIC]: <PublicIcon />,
-  [VALUES.LIMITED]: <PeopleIcon />,
-};
+const WHITELIST_INITIAL_VALUE = null;
 
 const ACCESS_EVENT_TYPE = {
   RM: ACCESS_RM,
   ADD: ACCESS_ADD,
-  ALL: 'accesses',
+  ALL: ACCESS_BULK,
 };
-
-const INITIAL_WHITELIST_VALUES = { emailDomains: [], identifiers: [] };
 
 // HELPERS
 const getValues = pluck('value');
-const getRestrictions = (accesses) => pluck('content', accesses);
+const pluckContent = pluck('content');
 
-const removeFromList = (
-  current,
-  key,
-  element,
-) => ({
-  ...current,
-  [key]: current[key].filter((value) => element !== value),
-});
-
-const addToList = (
-  key,
-  element,
-) => (current) => ({
-  ...current,
-  [key]: [...new Set(current[key].concat([element]))],
-});
+const membersToWhitelistEvents = (members) => (members || []).map((member) => ({
+  type: ACCESS_EVENT_TYPE.ADD,
+  content: {
+    restrictionType: RESTRICTION_TYPES.IDENTIFIER,
+    value: identifierValuePath(member),
+  },
+}));
 
 // COMPONENTS
-const AccessLevel = withStyles(() => ({
-  wrapText: {
-    whiteSpace: 'normal',
-  },
-}))(({ value, classes }) => {
-  const { t } = useTranslation('boxes');
-  return (
-    <>
-      <ListItemIcon>
-        {ICONS[value]}
-      </ListItemIcon>
-      <ListItemText
-        className={classes.wrapText}
-        primary={t(`boxes:read.share.level.${value}.title`)}
-        secondary={t(`boxes:read.share.level.${value}.description`)}
-        primaryTypographyProps={{ display: 'block' }}
-        secondaryTypographyProps={{ display: 'block' }}
-      />
-    </>
-  );
-});
-
-AccessLevel.propTypes = {
-  value: PropTypes.oneOf(Object.values(VALUES)).isRequired,
-};
-
-export const AccessLevelFormSkeleton = () => (
-  <ListItem>
-    <ListItemIcon>
-      <Skeleton variant="circle" width={30} height={30} />
-    </ListItemIcon>
-    <ListItemText
-      primary={<Skeleton width={100} />}
-      secondary={<Skeleton width={200} />}
-    />
-  </ListItem>
-);
-
-
-function ShareBoxForm({ accesses, boxId, invitationURL }) {
+function ShareBoxForm({
+  accesses, boxId, invitationURL, children, isCurrentUserOwner, membersNotInWhitelist, isRemoving,
+}) {
   const { t } = useTranslation('boxes');
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  const [initialAccesses, setInitialAccesses] = useState([]);
-  const [shouldRefresh, setShouldRefresh] = useState([]);
 
-  /* COMPUTE INITIAL VALUES FOR FORM */
-  useEffect(
-    () => {
-      if (shouldRefresh) {
-        setShouldRefresh(false);
-        setInitialAccesses(getRestrictions(accesses));
-      }
-    },
-    // Do not recompte volontary each time accesses changes to avoid form to be reset
-    // on refresh boxes while user is parametrizing
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [shouldRefresh],
+  const meIdentifierValue = useSelector(IDENTIFIER_VALUE_SELECTOR);
+
+  const accessesRef = useRef(accesses);
+
+  const restrictions = useMemo(
+    () => pluckContent(accesses || []),
+    [accesses],
   );
 
   const getByRestrictionType = useCallback(
-    (type) => getValues(filter(initialAccesses, ['restrictionType', type])),
-    [initialAccesses],
+    (type) => getValues(filter(restrictions, ['restrictionType', type])),
+    [restrictions],
   );
 
-  const initialWhitelistedEmailDomains = useMemo(
+  const whitelistedEmailDomains = useMemo(
     () => getByRestrictionType(RESTRICTION_TYPES.EMAIL_DOMAIN),
     [getByRestrictionType],
   );
 
-  const initialWhitelistedIdentifiers = useMemo(
+  const whitelistedIdentifiers = useMemo(
     () => getByRestrictionType(RESTRICTION_TYPES.IDENTIFIER),
     [getByRestrictionType],
   );
 
-  const initialInvitationLinkAccessEvent = useMemo(
+  const whitelistedValues = useMemo(
+    () => whitelistedEmailDomains.concat(whitelistedIdentifiers),
+    [whitelistedEmailDomains, whitelistedIdentifiers],
+  );
+
+  const invitationLinkAccessEvent = useMemo(
     () => getByRestrictionType(RESTRICTION_TYPES.INVITATION_LINK),
     [getByRestrictionType],
   );
 
-  const initialIsPublic = useMemo(
-    () => !isEmpty(initialInvitationLinkAccessEvent),
-    [initialInvitationLinkAccessEvent],
-  );
-
-  const initialHasWhitelistRules = useMemo(
-    () => initialWhitelistedEmailDomains.length > 0 || initialWhitelistedIdentifiers.length > 0,
-    [initialWhitelistedEmailDomains.length, initialWhitelistedIdentifiers.length],
-  );
-
-  /* METHODS TO FILL THE FORM */
-  const [
-    whitelist,
-    setWhitelist,
-  ] = useState({ emailDomains: [], identifiers: [] });
-
-  useEffect(
-    () => {
-      setWhitelist((current) => ({ ...current, emailDomains: initialWhitelistedEmailDomains }));
-    },
-    [initialWhitelistedEmailDomains],
-  );
-
-  useEffect(
-    () => {
-      setWhitelist((current) => ({ ...current, identifiers: initialWhitelistedIdentifiers }));
-    },
-    [initialWhitelistedIdentifiers],
-  );
-
-  const [isPublic, setIsPublic] = useState(false);
-
-  useEffect(
-    () => { setIsPublic(initialIsPublic); },
-    [initialIsPublic],
+  const isPublic = useMemo(
+    () => !isEmpty(invitationLinkAccessEvent),
+    [invitationLinkAccessEvent],
   );
 
   const hasWhitelistRules = useMemo(
-    () => whitelist.identifiers.length > 0 || whitelist.emailDomains.length > 0,
-    [whitelist],
-  );
-
-  const [showWhitelistForm, setShowWhitelistForm] = useState(false);
-
-  useEffect(
-    () => { setShowWhitelistForm(initialHasWhitelistRules); },
-    [initialHasWhitelistRules],
+    () => whitelistedValues.length > 0,
+    [whitelistedValues],
   );
 
   const accessLevelValue = useMemo(
     () => {
-      if (hasWhitelistRules || showWhitelistForm) { return VALUES.LIMITED; }
-      if (isPublic) { return VALUES.PUBLIC; }
-      return VALUES.PRIVATE;
+      if (hasWhitelistRules) { return LIMITED; }
+      if (isPublic) { return PUBLIC; }
+      return PRIVATE;
     },
-    [hasWhitelistRules, isPublic, showWhitelistForm],
+    [hasWhitelistRules, isPublic],
   );
 
-  const onChangeAccessLevel = useCallback(
-    (event) => {
-      switch (event.target.value) {
-        case VALUES.PRIVATE:
-          setIsPublic(false);
-          setWhitelist(INITIAL_WHITELIST_VALUES);
-          setShowWhitelistForm(false);
-          break;
-        case VALUES.PUBLIC: {
-          setIsPublic(true);
-          setWhitelist(INITIAL_WHITELIST_VALUES);
-          setShowWhitelistForm(false);
-          break;
-        }
-        case VALUES.LIMITED:
-          setShowWhitelistForm(true);
-          break;
-        default:
-      }
-    },
-    [],
+  const initialValues = useMemo(
+    () => ({
+      [ACCESSES_FIELD_NAME]: accessLevelValue,
+      [WHITELIST_FIELD_NAME]: WHITELIST_INITIAL_VALUE,
+    }),
+    [accessLevelValue],
   );
 
-  const onRemoveFromWhitelist = useCallback((key, value) => {
-    setWhitelist((current) => {
-      const newValues = removeFromList(current, key, value);
-      if (isEmpty(newValues.emailDomains) && isEmpty(newValues.identifiers)) {
-        setShowWhitelistForm(false);
-      }
-      return newValues;
-    });
-  }, []);
-
-  const onAddWhitelistRule = useCallback(
-    ({
-      [WHITELIST_FIELD_NAME.emailDomain]: newDomain,
-      [WHITELIST_FIELD_NAME.identifier]: newIdentifier,
-    }, { resetForm }) => {
-      if (!isNil(newDomain)) {
-        setWhitelist(addToList('emailDomains', newDomain));
-      }
-      if (!isNil(newIdentifier)) {
-        setWhitelist(addToList('identifiers', newIdentifier));
-      }
-      setIsPublic(false);
-      resetForm();
-    },
-    [],
+  const isEmptyMembersNotInWhitelist = useMemo(
+    () => isEmpty(membersNotInWhitelist),
+    [membersNotInWhitelist],
   );
 
-  const onRemoveWhitelistIdentifierRule = useCallback(
-    (value) => () => {
-      onRemoveFromWhitelist('identifiers', value);
-    },
-    [onRemoveFromWhitelist],
+  const accessValidationSchema = useMemo(
+    () => makeAccessValidationSchema({ isEmptyMembersNotInWhitelist }),
+    [isEmptyMembersNotInWhitelist],
   );
 
-  const onRemoveWhitelistEmailDomainRule = useCallback(
-    (value) => () => {
-      onRemoveFromWhitelist('emailDomains', value);
-    },
-    [onRemoveFromWhitelist],
+  const getOptionDisabled = useCallback(
+    (option) => senderMatchesIdentifierValue(option, meIdentifierValue)
+    || whitelistedValues.includes(identifierValuePath(option)),
+    [meIdentifierValue, whitelistedValues],
   );
 
   /* METHODS TO COMPUTE EVENTS TO GENERATE FROM FORM */
@@ -306,160 +158,188 @@ function ShareBoxForm({ accesses, boxId, invitationURL }) {
     [invitationURL],
   );
 
-  const onValidate = useCallback(
-    async () => {
-      // COMPUTATION OF ACCESS.RM EVENTS
-      const needToRemoveInvitationEvent = !isEmpty(initialInvitationLinkAccessEvent)
-        && !isPublic && !hasWhitelistRules;
+  const getNextAccesses = useCallback(
+    (newAccesses) => getUpdatedAccesses(accessesRef.current, newAccesses),
+    [accessesRef],
+  );
 
-      const identifiersToRemove = initialWhitelistedIdentifiers.filter(
-        (element) => !whitelist.identifiers.includes(element),
-      );
-      const domainsToRemove = initialWhitelistedEmailDomains.filter(
-        (element) => !whitelist.emailDomains.includes(element),
-      );
-      const eventIdsToRemove = accesses.reduce((eventIds, { id: eventId, content }) => {
-        const { restrictionType, value } = content;
-        if (restrictionType === RESTRICTION_TYPES.IDENTIFIER
-          && identifiersToRemove.includes(value)) {
-          return [...eventIds, eventId];
+  const bulkUpdate = useCallback(
+    async (newEvents) => {
+      const bulkEventsPayload = { batchType: ACCESS_EVENT_TYPE.ALL, events: newEvents };
+      const response = await createBulkBoxEventBuilder(boxId, bulkEventsPayload);
+      const newAccesses = getNextAccesses(response);
+      await Promise.resolve(dispatch(updateAccessesEvents(boxId, newAccesses)));
+    },
+    [boxId, getNextAccesses, dispatch],
+  );
+
+  const onBulkError = useCallback(
+    () => enqueueSnackbar(t('boxes:read.share.update.error'), { variant: 'warning' }),
+    [enqueueSnackbar, t],
+  );
+
+  const onSubmit = useCallback(
+    async (
+      { [ACCESSES_FIELD_NAME]: nextAccessLevel, [WHITELIST_FIELD_NAME]: nextWhitelist },
+      { resetForm },
+    ) => {
+      let newEvents = [];
+
+      switch (nextAccessLevel) {
+        case PRIVATE: {
+          const accessRmEvents = accesses.map(({ id: referrerId }) => ({
+            type: ACCESS_EVENT_TYPE.RM,
+            referrerId,
+          }));
+          newEvents = accessRmEvents;
+          break;
         }
-        if (restrictionType === RESTRICTION_TYPES.EMAIL_DOMAIN && domainsToRemove.includes(value)) {
-          return [...eventIds, eventId];
+        case PUBLIC: {
+          const accessRmEvents = accesses.reduce((aggr, { id: referrerId, content }) => {
+            const { restrictionType } = content;
+            if (restrictionType !== RESTRICTION_TYPES.INVITATION_LINK) {
+              return [...aggr, {
+                type: ACCESS_EVENT_TYPE.RM,
+                referrerId,
+              }];
+            }
+            return aggr;
+          }, []);
+          const needToAddInvitationEvent = (!isPublic || hasWhitelistRules)
+            && isEmpty(invitationLinkAccessEvent);
+          const invitationLinkEvents = needToAddInvitationEvent
+            ? [generateInvitationLinkEvent()]
+            : [];
+          newEvents = [...accessRmEvents, ...invitationLinkEvents];
+          break;
         }
-        if (restrictionType === RESTRICTION_TYPES.INVITATION_LINK && needToRemoveInvitationEvent) {
-          return [...eventIds, eventId];
+        case LIMITED: {
+          const needToAddInvitationEvent = (!isPublic || hasWhitelistRules)
+            && isEmpty(invitationLinkAccessEvent);
+          const invitationLinkEvents = needToAddInvitationEvent
+            ? [generateInvitationLinkEvent()]
+            : [];
+          const value = identifierValuePath(nextWhitelist);
+          // @FIXME safety check, but it should never happen
+          // getOptionDisabled + validationSchema already handle the case
+          const whitelistEvents = isEmpty(nextWhitelist) || whitelistedValues.includes(value)
+            ? []
+            : [{
+              type: ACCESS_EVENT_TYPE.ADD,
+              content: {
+                restrictionType: nextWhitelist.type,
+                value,
+              } }];
+          const identifiersToWhitelistEvents = isPublic && !isEmptyMembersNotInWhitelist
+            ? membersToWhitelistEvents(membersNotInWhitelist)
+            : [];
+          newEvents = [
+            ...identifiersToWhitelistEvents,
+            ...whitelistEvents,
+            ...invitationLinkEvents,
+          ];
+          // @TODO if whitelistEvents is not empty, tryAddingAutoInvite
+          break;
         }
-        return eventIds;
-      }, []);
-
-      const accessRmEvents = eventIdsToRemove.map((eventId) => ({
-        type: ACCESS_EVENT_TYPE.RM,
-        referrerId: eventId,
-      }));
-
-      // COMPUTATION OF ACCESS.ADD EVENTS
-      const needToAddInvitationEvent = (isPublic || hasWhitelistRules)
-        && isEmpty(initialInvitationLinkAccessEvent);
-
-      const identifiersToAdd = whitelist.identifiers.filter(
-        (element) => !initialWhitelistedIdentifiers.includes(element),
-      );
-      const domainsToAdd = whitelist.emailDomains.filter(
-        (element) => !initialWhitelistedEmailDomains.includes(element),
-      );
-
-      const accessAddDomainsEvents = domainsToAdd.map((value) => ({
-        type: ACCESS_EVENT_TYPE.ADD,
-        content: {
-          restrictionType: RESTRICTION_TYPES.EMAIL_DOMAIN,
-          value,
-        },
-      }));
-
-      const accessAddIdentifiersEvents = identifiersToAdd.map((value) => ({
-        type: ACCESS_EVENT_TYPE.ADD,
-        content: {
-          restrictionType: RESTRICTION_TYPES.IDENTIFIER,
-          value,
-        },
-      }));
-
-      const invitationLinkEvents = needToAddInvitationEvent ? [generateInvitationLinkEvent()] : [];
-
-      // ARRAYS OF EVENTS TO POST
-      const newEvents = [
-        ...accessRmEvents,
-        ...accessAddDomainsEvents,
-        ...accessAddIdentifiersEvents,
-        ...invitationLinkEvents,
-      ];
-
-      if (isEmpty(newEvents)) {
-        enqueueSnackbar(t('boxes:read.share.update.noChanges'), { variant: 'info' });
-        return;
+        default:
       }
-
+      if (isEmpty(newEvents)) {
+        return enqueueSnackbar(t('boxes:read.share.update.noChanges'), { variant: 'info' });
+      }
       try {
-        const bulkEventsPayload = { batchType: ACCESS_EVENT_TYPE.ALL, events: newEvents };
-        const response = await createBulkBoxEventBuilder(boxId, bulkEventsPayload);
-        const {
-          [ACCESS_EVENT_TYPE.RM]: eventsToRemove = [],
-          [ACCESS_EVENT_TYPE.ADD]: eventsToAdd = [],
-        } = groupBy(response, 'type');
-        const cleanedAccesses = differenceWith(
-          accesses,
-          eventsToRemove,
-          (initialEvent, rmEvent) => initialEvent.id === rmEvent.referrerId,
-        );
-        const newAccesses = cleanedAccesses.concat(eventsToAdd);
+        await bulkUpdate(newEvents);
         enqueueSnackbar(t('boxes:read.share.update.success'), { variant: 'success' });
-        Promise.resolve(dispatch(updateAccessesEvents(boxId, newAccesses)))
-          .then(() => { setShouldRefresh(true); });
+        return resetForm({ values: {
+          [WHITELIST_FIELD_NAME]: initialValues[WHITELIST_FIELD_NAME],
+          [ACCESSES_FIELD_NAME]: nextAccessLevel,
+        } });
       } catch (err) {
-        enqueueSnackbar(t('boxes:read.share.update.error'), { variant: 'warning' });
+        return onBulkError();
       }
     },
-    [dispatch, enqueueSnackbar, generateInvitationLinkEvent, t,
-      boxId, hasWhitelistRules, isPublic,
-      accesses, initialInvitationLinkAccessEvent,
-      initialWhitelistedEmailDomains, initialWhitelistedIdentifiers,
-      whitelist],
+    [
+      enqueueSnackbar, generateInvitationLinkEvent, t,
+      bulkUpdate, onBulkError,
+      hasWhitelistRules, isPublic,
+      initialValues,
+      accesses, invitationLinkAccessEvent, whitelistedValues,
+      isEmptyMembersNotInWhitelist, membersNotInWhitelist,
+    ],
+  );
+
+  // @FIXME frontend dirty trick until redesigned
+  const shouldFetch = useMemo(
+    () => accessLevelValue === LIMITED && !isEmptyMembersNotInWhitelist && !isRemoving,
+    [accessLevelValue, isEmptyMembersNotInWhitelist, isRemoving],
+  );
+
+  // add to whitelist members who joined when limited
+  const bulkUpdateMembers = useCallback(
+    () => {
+      const identifiersToWhitelistEvents = membersToWhitelistEvents(membersNotInWhitelist);
+      bulkUpdate(identifiersToWhitelistEvents);
+    },
+    [membersNotInWhitelist, bulkUpdate],
+  );
+
+  useFetchEffect(
+    bulkUpdateMembers,
+    { shouldFetch },
+    { onError: onBulkError },
+  );
+
+  useEffect(
+    () => {
+      accessesRef.current = accesses;
+    },
+    [accessesRef, accesses],
   );
 
   return (
-    <>
-      <TextFieldStandard
-        prefix="boxes."
-        as="select"
-        name={ACCESSES_FIELD_NAME}
-        value={accessLevelValue}
-        onChange={onChangeAccessLevel}
-        margin="dense"
-        select
-        SelectProps={{
-          renderValue: (value) => (
-            <ListItem value={value}><AccessLevel value={value} /></ListItem>
-          ),
-        }}
-      >
-        <MenuItem value={VALUES.PRIVATE}>
-          <AccessLevel value={VALUES.PRIVATE} />
-        </MenuItem>
-        <MenuItem value={VALUES.PUBLIC}>
-          <AccessLevel value={VALUES.PUBLIC} />
-        </MenuItem>
-        <MenuItem value={VALUES.LIMITED}>
-          <AccessLevel value={VALUES.LIMITED} />
-        </MenuItem>
-      </TextFieldStandard>
-      {showWhitelistForm && (
-        <Box my={1}>
-          <AccessWhitelistForm
-            fieldName={WHITELIST_FIELD_NAME.identifier}
-            values={whitelist.identifiers}
-            validationSchema={accessWhitelistValidationSchema.identifier}
-            onSubmit={onAddWhitelistRule}
-            onRemove={onRemoveWhitelistIdentifierRule}
-          />
-          <AccessWhitelistForm
-            fieldName={WHITELIST_FIELD_NAME.emailDomain}
-            values={whitelist.emailDomains}
-            validationSchema={accessWhitelistValidationSchema.emailDomain}
-            onSubmit={onAddWhitelistRule}
-            onRemove={onRemoveWhitelistEmailDomainRule}
-            startAdornment="@"
+    <Formik
+      onSubmit={onSubmit}
+      initialValues={initialValues}
+      validationSchema={accessValidationSchema}
+      enableReinitialize
+    >
+      <Form>
+        <Box my={2}>
+          <SharingFormWhitelist
+            parent={ACCESSES_FIELD_NAME}
+            name={WHITELIST_FIELD_NAME}
+            getOptionDisabled={getOptionDisabled}
+            initialValue={WHITELIST_INITIAL_VALUE}
+            disabled={!isCurrentUserOwner}
           />
         </Box>
-      )}
-      <BoxControls
-        mt={1}
-        primary={{
-          text: t('common:validate'),
-          onClick: onValidate,
-        }}
-      />
-    </>
+        {children}
+        {isCurrentUserOwner && (
+          <Field
+            name={ACCESSES_FIELD_NAME}
+            prefix="boxes."
+            variant="outlined"
+            component={TextField}
+            select
+            SelectProps={{
+              renderValue: (value) => (
+                <ListItemAccessLevel value={value} dense />
+              ),
+            }}
+          >
+            <MenuItem value={PRIVATE}>
+              <SelectItemAccessLevel value={PRIVATE} />
+            </MenuItem>
+            <MenuItem value={PUBLIC}>
+              <SelectItemAccessLevel value={PUBLIC} />
+            </MenuItem>
+            <MenuItem value={LIMITED}>
+              <SelectItemAccessLevel value={LIMITED} />
+            </MenuItem>
+          </Field>
+        )}
+        <FormikAutoSave />
+      </Form>
+    </Formik>
   );
 }
 
@@ -467,6 +347,17 @@ ShareBoxForm.propTypes = {
   accesses: PropTypes.arrayOf(PropTypes.shape(BoxEventsSchema.propTypes)).isRequired,
   boxId: PropTypes.string.isRequired,
   invitationURL: PropTypes.object.isRequired,
+  children: PropTypes.node,
+  isCurrentUserOwner: PropTypes.bool,
+  membersNotInWhitelist: PropTypes.arrayOf(PropTypes.shape(SenderSchema.propTypes)),
+  isRemoving: PropTypes.bool,
+};
+
+ShareBoxForm.defaultProps = {
+  children: null,
+  isCurrentUserOwner: false,
+  membersNotInWhitelist: [],
+  isRemoving: false,
 };
 
 export default withTranslation(['boxes', 'common'])(ShareBoxForm);

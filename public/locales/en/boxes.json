@@ -156,15 +156,11 @@
       }
     },
     "share": {
-      "dialog": {
-        "title": "Share with people and groups",
-        "link": {
-          "title": "Get the link"
-        },
-        "accesses": {
-          "title": "Define accesses",
-          "subtitle": "Define the access level of your private space"
-        }
+      "link": {
+        "title": "Get the link"
+      },
+      "accesses": {
+        "title": "Share with people and groups"
       },
       "update": {
         "success": "Accesses have been updated successfully",

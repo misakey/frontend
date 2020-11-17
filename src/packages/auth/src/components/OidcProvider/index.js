@@ -262,7 +262,9 @@ OidcProvider.propTypes = {
   store: PropTypes.object,
   registerMiddlewares: PropTypes.func.isRequired,
   publicRoute: PropTypes.string.isRequired,
-  autoSignInExcludedRoutes: PropTypes.oneOf(PropTypes.string, PropTypes.object),
+  autoSignInExcludedRoutes: PropTypes.arrayOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  ),
 };
 
 OidcProvider.defaultProps = {

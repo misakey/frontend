@@ -5,9 +5,9 @@ import { getErrors } from '@misakey/helpers/formikError';
 
 // COMPONENTS
 // NB: withErrors expects to be wrapped by a Formik#Field component
-const withErrors = (Component) => {
+const withErrors = (Component, { parseError } = {}) => {
   const Field = forwardRef((props, ref) => {
-    const { displayError, errorKeys } = getErrors(props);
+    const { displayError, errorKeys } = getErrors(props, parseError);
 
     return <Component ref={ref} displayError={displayError} errorKeys={errorKeys} {...props} />;
   });

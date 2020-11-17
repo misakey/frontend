@@ -194,18 +194,15 @@
     "accessLevel": {
       "label": "Access level"
     },
-    "accessWhitelistIdentifier": {
+    "accessWhitelist": {
+      "label": "Add people or groups",
       "error": {
         "malformed": "Please, type a valid email",
         "required": "Email is required",
-        "placeholder": "rose.flamingo@misakey.com"
-      }
-    },
-    "accessWhitelistEmailDomain": {
-      "error": {
-        "malformed": "Please, type a valid domain name",
-        "required": "Domain name is required",
-        "placeholder": "misakey.com"
+        "domain": {
+          "malformed": "Please, type a valid domain name",
+          "required": "Domain name is required"
+        }
       }
     }
   }

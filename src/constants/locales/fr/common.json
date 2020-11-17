@@ -65,6 +65,7 @@
   "unlock": "Déverrouiller",
   "validate": "Valider",
   "view": "Voir",
+  "you": "{{displayName}} (Vous)",
   "anErrorOccurred": "Nous sommes désolés, une erreur est survenue",
   "errorPleaseRetryOrRefresh": "Une erreur est survenue; veuillez réessayer ou rafraîchir",
   "createVault": "Nouveau coffre-fort",

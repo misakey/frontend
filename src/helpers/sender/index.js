@@ -24,3 +24,9 @@ export const senderMatchesIdentityId = (sender, identityId) => {
 export const sendersMatch = (
   senderA, senderB,
 ) => (!isNil(senderB) && senderMatchesIdentityId(senderA, senderB.id));
+
+
+export const senderMatchesIdentifierValue = (sender, identifierValue) => {
+  const senderIdentifierValue = identifierValuePath(sender);
+  return senderIdentifierValue === identifierValue;
+};

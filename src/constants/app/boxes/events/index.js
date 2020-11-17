@@ -7,6 +7,7 @@ export const MSG_FILE = 'msg.file';
 export const MSG_TXT = 'msg.text';
 export const MSG_DELETE = 'msg.delete';
 export const MSG_EDIT = 'msg.edit';
+export const ACCESS_BULK = 'accesses';
 export const ACCESS_ADD = 'access.add';
 export const ACCESS_RM = 'access.rm';
 

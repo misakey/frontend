@@ -233,18 +233,15 @@
     "accessLevel": {
       "label": "Niveau d'accès"
     },
-    "accessWhitelistIdentifier": {
-      "placeholder": "rose.flamingo@misakey.com",
+    "accessWhitelist": {
+      "label": "Ajouter des personnes ou des groupes",
       "error": {
         "malformed": "Veuillez entrer un email valide",
-        "required": "L'email est requis"
-      }
-    },
-    "accessWhitelistEmailDomain": {
-      "placeholder": "misakey.com",
-      "error": {
-        "malformed": "Veuillez entrer un nom de domaine valide",
-        "required": "Le nom de domaine est requis"
+        "required": "Au moins une règle est nécessaire",
+        "email_domain": {
+          "malformed": "Veuillez entrer un nom de domaine valide",
+          "required": "Le nom de domaine est requis"
+        }
       }
     }
   }

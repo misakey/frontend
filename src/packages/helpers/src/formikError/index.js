@@ -1,4 +1,5 @@
 import isNil from '@misakey/helpers/isNil';
+import isFunction from '@misakey/helpers/isFunction';
 import isArray from '@misakey/helpers/isArray';
 
 const getErrorKeys = (prefix, name, validationError) => [
@@ -8,13 +9,20 @@ const getErrorKeys = (prefix, name, validationError) => [
   'fields:default.error.unknown',
 ];
 
-export const getErrors = ({ field: { name }, form: { touched, errors, status }, prefix }) => {
+export const getErrors = (
+  { field: { name, value }, form: { touched, errors, status }, prefix },
+  parseError,
+) => {
   const validationError = touched[name] ? errors[name] : null;
   const statusError = !touched[name] || isNil(status) ? null : status[name];
   const displayError = !isNil(validationError) || !isNil(statusError);
 
   const error = validationError || statusError;
-  const errorKeys = getErrorKeys(prefix, name, error);
+  const errorKeys = getErrorKeys(
+    prefix,
+    name,
+    isFunction(parseError) ? parseError(error, value) : error,
+  );
 
   return { displayError, errorKeys };
 };

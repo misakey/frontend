@@ -1,26 +1,11 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import { AVATAR_SIZE, AVATAR_SM_SIZE } from '@misakey/ui/constants/sizes';
-
 import isAnyNotEmpty from '@misakey/helpers/isAnyNotEmpty';
 
-import makeStyles from '@material-ui/core/styles/makeStyles';
-
 import AvatarColorized from '@misakey/ui/Avatar/Colorized';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-
-// HOOKS
-const useStyles = makeStyles((theme) => ({
-  iconRoot: {
-    width: AVATAR_SIZE,
-    height: AVATAR_SIZE,
-    [theme.breakpoints.down('sm')]: {
-      height: AVATAR_SM_SIZE,
-      width: AVATAR_SM_SIZE,
-    },
-  },
-}));
+import Avatar from '@misakey/ui/Avatar';
+import PersonIcon from '@material-ui/icons/Person';
 
 // COMPONENTS
 const AvatarUser = ({
@@ -29,8 +14,6 @@ const AvatarUser = ({
   avatarUrl,
   ...rest
 }) => {
-  const classes = useStyles();
-
   const isNotEmptyUser = useMemo(
     () => isAnyNotEmpty([identifier, displayName, avatarUrl]),
     [identifier, displayName, avatarUrl],
@@ -39,7 +22,6 @@ const AvatarUser = ({
   if (isNotEmptyUser) {
     return (
       <AvatarColorized
-        className={classes.iconRoot}
         text={displayName || identifier}
         image={avatarUrl}
         {...rest}
@@ -47,7 +29,11 @@ const AvatarUser = ({
     );
   }
 
-  return <AccountCircleIcon classes={{ root: classes.iconRoot }} color="disabled" {...rest} />;
+  return (
+    <Avatar>
+      <PersonIcon color="disabled" {...rest} />
+    </Avatar>
+  );
 };
 
 

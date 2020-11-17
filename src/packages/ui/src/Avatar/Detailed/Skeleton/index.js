@@ -1,19 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { RADIUS, useLayoutStyles } from '@misakey/ui/Avatar/Detailed';
+import { useLayoutStyles } from '@misakey/ui/Avatar/Detailed';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
+import AvatarSkeleton from '@misakey/ui/Avatar/Skeleton';
 import Skeleton from '@material-ui/lab/Skeleton';
+import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 // HOOKS
-const useStyles = makeStyles((theme) => ({
-  title: {
-    ...theme.typography.h6,
-  },
-  subtitle: {
-    ...theme.typography.body2,
+const useStyles = makeStyles(() => ({
+  fullWidth: {
+    width: '100%',
   },
 }));
 
@@ -23,9 +22,9 @@ const AvatarDetailedSkeleton = ({ title, subtitle }) => {
   const classes = useStyles();
   return (
     <Box className={layoutClasses.root}>
-      <Skeleton className={layoutClasses.avatar} variant="circle" width={RADIUS} height={RADIUS} />
-      {title && <Skeleton className={classes.title} variant="text" width="100%" />}
-      {subtitle && <Skeleton className={classes.subtitle} variant="text" width="100%" />}
+      <AvatarSkeleton large classes={{ root: layoutClasses.avatar }} />
+      {title && <Typography className={classes.fullWidth} variant="h6"><Skeleton variant="text" /></Typography>}
+      {subtitle && <Typography className={classes.fullWidth} variant="body2"><Skeleton variant="text" /></Typography>}
     </Box>
   );
 };

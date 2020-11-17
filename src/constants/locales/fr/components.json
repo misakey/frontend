@@ -152,5 +152,13 @@
     "helperLinkText": "En savoir plus",
     "progress": "Envoi de fichiers en cours",
     "success": "Les fichiers ont été envoyés avec succès\u00a0!"
+  },
+  "whitelist": {
+    "domainTitle": "Tous les utilisateurs du domaine",
+    "addDomain": "Vous pouvez ajouter l'accès à tous les emails d'un domaine avec «\u00a0*@[domaine]\u00a0»",
+    "needs_link": "Lien requis",
+    "invited": "Invitation envoyée",
+    "member": "Membre",
+    "owner": "Propriétaire"
   }
 }

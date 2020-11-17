@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import Avatar from '@material-ui/core/Avatar';
+import Avatar from '@misakey/ui/Avatar';
 import getBackgroundAndColorFromString from '@misakey/helpers/getBackgroundAndColorFromString';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -44,6 +44,7 @@ const AvatarColorized = ({ text, image, classes, ...rest }) => {
   return (
     <Avatar
       classes={{ colorDefault: internalClasses.avatarColorized, ...classes }}
+      alt={text}
       {...rest}
     >
       {displayText}
@@ -56,13 +57,11 @@ AvatarColorized.propTypes = {
   image: PropTypes.string,
   /** The text to derivate the color from, and to extract the first letter. */
   text: PropTypes.string.isRequired,
-  className: PropTypes.string,
   classes: PropTypes.object,
 };
 
 AvatarColorized.defaultProps = {
   image: '',
-  className: '',
   classes: {},
 };
 

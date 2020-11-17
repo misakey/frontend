@@ -1,9 +1,11 @@
 import * as Yup from 'yup';
+import { IDENTIFIER, EMAIL_DOMAIN } from '@misakey/ui/constants/accessTypes';
+import ACCESS_LEVELS, { LIMITED } from '@misakey/ui/constants/accessLevels';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import routes from 'routes';
 import { generatePath } from 'react-router-dom';
 import isNil from '@misakey/helpers/isNil';
-import { mainDomainFieldValidation, emailFieldValidation } from 'constants/fieldValidations';
+import { emailFieldValidation } from 'constants/fieldValidations';
 
 // CONSTANTS
 const { required, malformed, invalid } = errorTypes;
@@ -39,10 +41,29 @@ export const boxDeletionDialogValidationSchema = (expected) => Yup.object().shap
 });
 
 export const accessWhitelistValidationSchema = {
-  identifier: Yup.object().shape({
-    accessWhitelistIdentifier: emailFieldValidation.schema,
-  }),
-  emailDomain: Yup.object().shape({
-    accessWhitelistEmailDomain: mainDomainFieldValidation.schema,
-  }),
+  accessWhitelist: Yup.object().shape({
+    type: Yup.string().oneOf([IDENTIFIER, EMAIL_DOMAIN]),
+    identifier: Yup.object().when('type',
+      (type, schema) => (type === IDENTIFIER
+        ? schema.shape({
+          value: emailFieldValidation.schema,
+        })
+        : schema.shape({
+          value: emailFieldValidation.domain,
+        }))),
+  }).nullable(),
 };
+
+export const makeAccessValidationSchema = ({ isEmptyMembersNotInWhitelist } = {}) => Yup.object()
+  .shape({
+    accessWhitelist: accessWhitelistValidationSchema.accessWhitelist
+      .when(['accessLevel'], (accessLevel, schema) => {
+        const noMembers = isEmptyMembersNotInWhitelist === true
+      || isNil(isEmptyMembersNotInWhitelist);
+        const isRequired = accessLevel === LIMITED && noMembers;
+        return isRequired
+          ? schema.required(required)
+          : schema;
+      }),
+    accessLevel: Yup.string().oneOf(ACCESS_LEVELS).required(required),
+  });

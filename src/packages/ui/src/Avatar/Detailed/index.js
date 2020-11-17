@@ -2,15 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-import { AVATAR_SIZE } from '@misakey/ui/constants/sizes';
-
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
 
 import AvatarColorized from '@misakey/ui/Avatar/Colorized';
-
-// CONSTANTS
-export const RADIUS = 2 * AVATAR_SIZE;
 
 // HOOKS
 export const useLayoutStyles = makeStyles((theme) => ({
@@ -28,12 +23,7 @@ export const useLayoutStyles = makeStyles((theme) => ({
   },
 }));
 
-const useStyles = makeStyles((theme) => ({
-  avatar: {
-    width: RADIUS,
-    height: RADIUS,
-    fontSize: theme.typography.h3.fontSize,
-  },
+const useStyles = makeStyles(() => ({
   title: {
     flexGrow: 1,
     fontWeight: 'bold',
@@ -48,9 +38,10 @@ const AvatarDetailed = ({ text, image, title, subtitle, classes }) => {
   return (
     <div className={clsx(layoutClasses.root, classes.root)}>
       <AvatarColorized
-        className={clsx(internalClasses.avatar, layoutClasses.avatar)}
+        classes={{ root: clsx(layoutClasses.avatar, classes.avatar) }}
         text={text}
         image={image}
+        large
       />
       <Typography variant="h6" className={internalClasses.title} color="textPrimary" align="center">
         {title}

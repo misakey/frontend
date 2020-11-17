@@ -1,28 +1,34 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { normalize } from 'normalizr';
 
 import BoxesSchema from 'store/schemas/Boxes';
-import EventsSchema from 'store/schemas/Boxes/Events';
-import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
-import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import routes from 'routes';
+import { ACCESS_RM, ACCESS_BULK } from 'constants/app/boxes/events';
+import { LIMITED_RESTRICTION_TYPES } from 'constants/app/boxes/accesses';
+import { IDENTIFIER } from '@misakey/ui/constants/accessTypes';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { updateAccessesEvents } from 'store/reducers/box';
 
-import { getBoxAccessesBuilder } from '@misakey/helpers/builder/boxes';
+import { getUpdatedAccesses, getEmailDomainAccesses, getRestrictions, sortRestrictionsByType } from 'helpers/accesses';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
+import pluck from '@misakey/helpers/pluck';
+import differenceWith from '@misakey/helpers/differenceWith';
+import { senderMatchesIdentifierValue, senderMatchesIdentityId, sendersMatch, identifierValuePath } from 'helpers/sender';
+import { createBulkBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
-import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import { useDispatch } from 'react-redux';
 import useGetShareMethods from 'hooks/useGetShareMethods';
+import useBoxAccesses from 'hooks/useBoxAccesses';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
+import { useDispatch, useSelector } from 'react-redux';
+import { useSnackbar } from 'notistack';
 
 import { Link } from 'react-router-dom';
 import List from '@material-ui/core/List';
+import ListBordered from '@misakey/ui/List/Bordered';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -33,92 +39,145 @@ import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import Avatar from '@material-ui/core/Avatar';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
+import ListItemUserWhitelisted from '@misakey/ui/ListItem/User/Whitelisted';
+import ListItemUserWhitelistedSkeleton from '@misakey/ui/ListItem/User/Whitelisted/Skeleton';
+import ListItemUserWhitelistedMember from '@misakey/ui/ListItem/User/Whitelisted/Member';
+import ListItemDomainWhitelisted from '@misakey/ui/ListItem/Domain/Whitelisted';
+
+import ShareBoxForm from 'components/screens/app/Boxes/Read/Sharing/Form';
+import ShareBoxFormSkeleton from 'components/screens/app/Boxes/Read/Sharing/Form/Skeleton';
 
 import CopyIcon from '@material-ui/icons/FilterNone';
 import LinkIcon from '@material-ui/icons/Link';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import ShareBoxForm, { AccessLevelFormSkeleton } from './Form';
 
 // CONSTANTS
 const CONTENT_SPACING = 2;
+const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
+
+// HELPERS
+const pluckValue = pluck('value');
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-
+  listItemSpaced: {
+    marginBottom: theme.spacing(2),
+  },
   invitationURL: {
     width: '100%',
   },
   avatar: {
     marginRight: theme.spacing(1),
   },
-  section: {
-    padding: 12,
-    marginBottom: theme.spacing(2),
-  },
   listItemText: {
     margin: 0,
   },
 }));
 
+// COMPONENTS
 function ShareBoxDialog({ box, t }) {
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
+
+  const [removeId, setRemoveId] = useState(null);
+
+  const { id: boxId, publicKey, title, accesses, members, creator } = useSafeDestr(box);
+
+  const meIdentityId = useSelector(IDENTITY_ID_SELECTOR);
   const dispatch = useDispatch();
 
-  const { id, publicKey, title, accesses } = useSafeDestr(box);
-  const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
+  /* FETCH ACCESSES */
+  const { isFetching, isCurrentUserOwner } = useBoxAccesses(box);
 
   const isPrivate = useMemo(
-    () => isEmpty(accesses) && belongsToCurrentUser,
-    [accesses, belongsToCurrentUser],
+    () => isEmpty(accesses) && isCurrentUserOwner,
+    [accesses, isCurrentUserOwner],
   );
 
-  const goBack = useGeneratePathKeepingSearchAndHash(routes.boxes.read._, { id });
+  const goBack = useGeneratePathKeepingSearchAndHash(routes.boxes.read._, { id: boxId });
+
+  const whitelist = useMemo(
+    () => {
+      const restrictions = (accesses || []).map(({ id, content }) => ({ id, ...content }));
+      return sortRestrictionsByType(restrictions
+        .filter(({ restrictionType }) => LIMITED_RESTRICTION_TYPES
+          .includes(restrictionType)));
+    },
+    [accesses],
+  );
+
+  const emailDomains = useMemo(
+    () => (isEmpty(accesses) ? [] : pluckValue(getRestrictions(getEmailDomainAccesses(accesses)))),
+    [accesses],
+  );
+
+  const membersNotInWhitelist = useMemo(
+    () => {
+      const membersWithoutCreator = (members || [])
+        .filter((member) => !sendersMatch(member, creator));
+      return differenceWith(
+        membersWithoutCreator,
+        whitelist,
+        (member, { value }) => senderMatchesIdentifierValue(member, value),
+      );
+    },
+    [members, whitelist, creator],
+  );
 
   const {
     canShare,
     invitationURL,
     onShare,
     onCopyLink,
-  } = useGetShareMethods(id, title, publicKey, t);
+  } = useGetShareMethods(boxId, title, publicKey, t);
 
   const shareAction = useMemo(
     () => (canShare ? onShare : onCopyLink),
     [canShare, onCopyLink, onShare],
   );
 
-  /* FETCH ACCESSES */
-  const onFetchAccesses = useCallback(
-    () => getBoxAccessesBuilder(id),
-    [id],
-  );
-
-  const shouldFetch = useMemo(
-    () => isNil(accesses) && belongsToCurrentUser,
-    [accesses, belongsToCurrentUser],
-  );
-
-  const onSuccess = useCallback(
-    (response) => {
-      const normalized = normalize(
-        response,
-        EventsSchema.collection,
-      );
-      const { entities, result } = normalized;
-      return Promise.all([
-        dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
-        dispatch(updateEntities([{ id, changes: { accesses: result } }], BoxesSchema)),
-      ]);
+  const onRemove = useCallback(
+    async (event, referrerId, memberId) => {
+      // if whitelist is going to be emptied, remove all accesses
+      const events = whitelist.length > 1
+        ? [{
+          type: ACCESS_RM,
+          referrerId,
+        }]
+        : accesses.map(({ id }) => ({
+          type: ACCESS_RM,
+          referrerId: id,
+        }));
+      const bulkEventsPayload = {
+        batchType: ACCESS_BULK,
+        events,
+      };
+      try {
+        const response = await createBulkBoxEventBuilder(boxId, bulkEventsPayload);
+        const newAccesses = getUpdatedAccesses(accesses, response);
+        setRemoveId(memberId);
+        await dispatch(updateAccessesEvents(boxId, newAccesses));
+        enqueueSnackbar(t('boxes:read.share.update.success'), { variant: 'success' });
+      } catch (err) {
+        enqueueSnackbar(t('boxes:read.share.update.error'), { variant: 'warning' });
+      }
     },
-    [dispatch, id],
+    [accesses, dispatch, boxId, whitelist, enqueueSnackbar, t],
   );
 
-  const { isFetching } = useFetchEffect(
-    onFetchAccesses,
-    { shouldFetch },
-    { onSuccess },
+  useEffect(
+    () => {
+      if (!isNil(removeId)) {
+        const memberToRemove = members.find(({ id: memberId }) => memberId === removeId);
+        if (isNil(memberToRemove)) {
+          setRemoveId(null);
+        }
+      }
+    },
+    [removeId, members],
   );
 
   return (
@@ -145,48 +204,120 @@ function ShareBoxDialog({ box, t }) {
       </ElevationScroll>
       <Box p={CONTENT_SPACING} pt={0} ref={(ref) => setContentRef(ref)} className={classes.content}>
         <List disablePadding>
-          <ListItem
-            aria-label={t('common:share')}
-            onClick={shareAction}
-            disabled={isPrivate}
-            button
-          >
+          <ListItem disabled={!isCurrentUserOwner}>
             <ListItemAvatar>
-              <Avatar className={classes.avatar}><LinkIcon fontSize="small" /></Avatar>
+              <Avatar className={classes.avatar}><PersonAddIcon fontSize="small" /></Avatar>
             </ListItemAvatar>
             <ListItemText
-              primary={t('boxes:read.share.dialog.link.title')}
+              primary={t('boxes:read.share.accesses.title')}
               primaryTypographyProps={{ variant: 'h6', color: 'textPrimary' }}
               className={classes.listItemText}
             />
-            <CopyIcon fontSize="small" color="action" />
           </ListItem>
-          {belongsToCurrentUser && (
-            <>
-              <ListItem>
+          {(isFetching || (isNil(accesses) && isCurrentUserOwner)) ? (
+            <ShareBoxFormSkeleton>
+              <Box my={2}>
+                <ListBordered disablePadding>
+                  <ListItemUserWhitelistedSkeleton />
+                </ListBordered>
+              </Box>
+              <ListItem
+                aria-label={t('common:share')}
+                onClick={shareAction}
+                disabled={isPrivate}
+                button
+                className={classes.listItemSpaced}
+              >
                 <ListItemAvatar>
-                  <Avatar className={classes.avatar}><PersonAddIcon fontSize="small" /></Avatar>
+                  <Avatar className={classes.avatar}><LinkIcon fontSize="small" /></Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                  primary={t('boxes:read.share.dialog.accesses.title')}
-                  secondary={t('boxes:read.share.dialog.accesses.subtitle')}
+                  primary={t('boxes:read.share.link.title')}
                   primaryTypographyProps={{ variant: 'h6', color: 'textPrimary' }}
                   className={classes.listItemText}
                 />
+                <CopyIcon fontSize="small" color="secondary" />
               </ListItem>
-              <Box className={classes.section}>
-                {isFetching || isNil(accesses) ? <AccessLevelFormSkeleton /> : (
-                  <ShareBoxForm
-                    isFetching={isFetching}
-                    accesses={accesses}
-                    boxId={id}
-                    invitationURL={invitationURL}
+            </ShareBoxFormSkeleton>
+          ) : (
+            <ShareBoxForm
+              accesses={accesses}
+              boxId={boxId}
+              invitationURL={invitationURL}
+              isCurrentUserOwner={isCurrentUserOwner}
+              membersNotInWhitelist={membersNotInWhitelist}
+              isRemoving={!isNil(removeId)}
+            >
+              <Box my={2}>
+                <ListBordered disablePadding>
+                  <ListItemUserWhitelisted
+                    key={creator.id}
+                    isMe={senderMatchesIdentityId(creator, meIdentityId)}
+                    isOwner
+                    isMember
+                    id={creator.id}
+                    displayName={creator.displayName}
+                    avatarUrl={creator.avatarUrl}
+                    identifier={identifierValuePath(creator)}
                   />
-                )}
+                  {membersNotInWhitelist
+                    .map((member) => (
+                      <ListItemUserWhitelisted
+                        key={member.id}
+                        isMe={senderMatchesIdentityId(member, meIdentityId)}
+                        isOwner={sendersMatch(member, creator)}
+                        isMember
+                        id={member.id}
+                        displayName={member.displayName}
+                        avatarUrl={member.avatarUrl}
+                        identifier={identifierValuePath(member)}
+                        emailDomains={emailDomains}
+                      />
+                    ))}
+                  {whitelist.map((
+                    { restrictionType, value, id, ...rest },
+                  ) => (restrictionType === IDENTIFIER ? (
+                    <ListItemUserWhitelistedMember
+                      key={id}
+                      id={id}
+                      identifier={value}
+                      members={members}
+                      onRemove={onRemove}
+                      emailDomains={emailDomains}
+                      {...rest}
+                    />
+                  ) : (
+                    <ListItemDomainWhitelisted
+                      id={id}
+                      key={id}
+                      identifier={value}
+                      {...rest}
+                      onRemove={onRemove}
+                    />
+                  )))}
+                </ListBordered>
               </Box>
-            </>
+              <ListItem
+                aria-label={t('common:share')}
+                onClick={shareAction}
+                disabled={isPrivate}
+                button
+                className={classes.listItemSpaced}
+              >
+                <ListItemAvatar>
+                  <Avatar className={classes.avatar}><LinkIcon fontSize="small" /></Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={t('boxes:read.share.link.title')}
+                  primaryTypographyProps={{ variant: 'h6', color: 'textPrimary' }}
+                  className={classes.listItemText}
+                />
+                <CopyIcon fontSize="small" color="secondary" />
+              </ListItem>
+            </ShareBoxForm>
           )}
         </List>
+
       </Box>
     </>
   );
