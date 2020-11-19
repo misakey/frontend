@@ -3,7 +3,6 @@ import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
 
-import ErrorBoundary from 'components/smart/ErrorBoundary';
 import { Route, Switch } from 'react-router-dom';
 import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallbackWrapper';
 import OfflineAlert from 'components/smart/Context/Offline/Alert';
@@ -26,37 +25,35 @@ const REFERRERS = {
 const TRedirectAuthCallback = withTranslation('common')(RedirectAuthCallback);
 
 const App = () => (
-  <ErrorBoundary maxWidth="md" my={3}>
-    <Suspense fallback={<Screen isLoading />}>
-      <OfflineAlert position="absolute" bottom={0} zIndex="snackbar" width="100%" />
-      <Switch>
-        {/* AUTH */}
-        <Route
-          path={routes.auth._}
-          component={Auth}
-        />
-        <Route
-          exact
-          path={routes.auth.callback}
-          render={(routerProps) => (
-            <TRedirectAuthCallback
-              fallbackReferrers={REFERRERS}
-              loadingPlaceholder={<Screen isLoading />}
-              {...routerProps}
-            />
-          )}
-        />
-        {/* REDIRECT TO SIGN IN */}
-        <Route
-          exact
-          path={routes.auth.redirectToSignIn}
-          component={RedirectToSignIn}
-        />
-        {/* BOXES APP */}
-        <Route component={BoxesApp} />
-      </Switch>
-    </Suspense>
-  </ErrorBoundary>
+  <Suspense fallback={<Screen isLoading />}>
+    <OfflineAlert position="absolute" bottom={0} zIndex="snackbar" width="100%" />
+    <Switch>
+      {/* AUTH */}
+      <Route
+        path={routes.auth._}
+        component={Auth}
+      />
+      <Route
+        exact
+        path={routes.auth.callback}
+        render={(routerProps) => (
+          <TRedirectAuthCallback
+            fallbackReferrers={REFERRERS}
+            loadingPlaceholder={<Screen isLoading />}
+            {...routerProps}
+          />
+        )}
+      />
+      {/* REDIRECT TO SIGN IN */}
+      <Route
+        exact
+        path={routes.auth.redirectToSignIn}
+        component={RedirectToSignIn}
+      />
+      {/* BOXES APP */}
+      <Route component={BoxesApp} />
+    </Switch>
+  </Suspense>
 );
 
 export default App;

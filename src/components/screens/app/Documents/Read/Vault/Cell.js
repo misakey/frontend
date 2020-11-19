@@ -48,7 +48,8 @@ const useMapToFileContext = (vaultKey) => useCallback(
 
       return { ...defaultProps, name, type, size, encryption };
     } catch (err) {
-      log(err);
+      // It can happen if users have reset their password
+      log(err, 'error');
       return { ...defaultProps, error: new DecryptionError(err) };
     }
   },

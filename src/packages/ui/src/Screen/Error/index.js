@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Trans, withTranslation } from 'react-i18next';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -32,10 +32,25 @@ const useStyles = makeStyles((theme) => ({
 function ScreenError({ t, className,
   feedback, goBack,
   children,
+  forceRefreshOnGoBack,
   hideDefaultError, hideRefreshAction,
   ...rest
 }) {
   const classes = useStyles();
+
+  const forceRefresh = useCallback(() => window.location.reload(), []);
+
+  const { pathname } = useLocation();
+
+  useEffect(
+    () => {
+      if (forceRefreshOnGoBack && pathname === goBack) {
+        forceRefresh();
+      }
+    },
+    [forceRefresh, forceRefreshOnGoBack, goBack, pathname],
+  );
+
   return (
     <Box
       className={classes.root}
@@ -94,7 +109,7 @@ function ScreenError({ t, className,
             <BoxControls
               m={2}
               primary={{
-                onClick: () => { window.location.reload(); },
+                onClick: forceRefresh,
                 text: t('components:ScreenError.button.refresh'),
               }}
             />
@@ -114,6 +129,7 @@ ScreenError.propTypes = {
   t: PropTypes.func.isRequired,
   feedback: PropTypes.string,
   goBack: PropTypes.string,
+  forceRefreshOnGoBack: PropTypes.bool,
 };
 
 ScreenError.defaultProps = {
@@ -123,6 +139,7 @@ ScreenError.defaultProps = {
   hideRefreshAction: false,
   feedback: null,
   goBack: null,
+  forceRefreshOnGoBack: false,
 };
 
 

@@ -5,6 +5,7 @@ import { matchPath, useLocation } from 'react-router-dom';
 import { loadUserThunk, authReset } from '@misakey/auth/store/actions/auth';
 
 import log from '@misakey/helpers/log';
+import sentryLogError from '@misakey/helpers/log/sentry';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 import parseJwt from '@misakey/helpers/parseJwt';
@@ -134,7 +135,7 @@ function OidcProvider({
 
   // event callback when silent renew errored
   const onSilentRenewError = useCallback((e) => {
-    log(`Fail to renew token silently... ${e}`);
+    sentryLogError(e, 'Fail to renew token silently', { auth: true });
     if (store) {
       store.dispatch(authReset());
     }
@@ -146,7 +147,7 @@ function OidcProvider({
     // Load user on store when the app is opening
     userManager.getUser()
       .then(onUserLoaded)
-      .catch((e) => log(`Fail to retrieve user: ${e}`))
+      .catch((e) => sentryLogError(e, 'Fail to retrieve user', { auth: true }))
       .finally(() => setIsLoading(false));
   }, [onUserLoaded, userManager]);
 
@@ -189,7 +190,7 @@ function OidcProvider({
           userManager.clearStaleState();
         } catch (e) {
           // Do not show nor throw error as it's not blocking for using app
-          log(`Fail to clear localStorage from residual oidc:state, ${e}`);
+          sentryLogError(e, `Fail to clear localStorage from residual oidc:state, ${e}`, undefined, 'warning');
         }
       }
     },

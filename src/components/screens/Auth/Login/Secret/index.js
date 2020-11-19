@@ -28,7 +28,7 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import props from '@misakey/helpers/props';
 import isNil from '@misakey/helpers/isNil';
 import { getDetails, getCode } from '@misakey/helpers/apiError';
-import log from '@misakey/helpers/log';
+import sentryLogError from '@misakey/helpers/log/sentry';
 import loginAuthStep from '@misakey/auth/builder/loginAuthStep';
 import { isHydraErrorCode } from '@misakey/auth/helpers/errors';
 
@@ -198,7 +198,7 @@ const AuthLoginSecret = ({
               password: newPassword || password,
             }, nextAccessToken));
           } catch (error) {
-            log(error, 'error');
+            sentryLogError(error, 'AuthFlow: create new backup key share', { crypto: true }, 'warning');
             enqueueSnackbar(t('common:crypto.errors.backupKeyShare'), { variant: 'warning' });
             // a failure of backup key shares creation
             // should not make the entire auth flow fail
@@ -267,7 +267,7 @@ const AuthLoginSecret = ({
           return enqueueSnackbar(text, { variant: 'error' });
         }
 
-        log(e, 'error');
+        sentryLogError(e, 'Auth flow: LoginAuthStep', { auth: true });
 
         if (!isNil(e.status)) {
           // @FIXME It is false to assume that error must be a HTTP error

@@ -2,7 +2,7 @@ import { loadSecrets, loadSecretsAndUpdateBackup } from '@misakey/crypto/store/a
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import isNil from '@misakey/helpers/isNil';
-import log from '@misakey/helpers/log';
+import sentryLogError from '@misakey/helpers/log/sentry';
 
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -46,7 +46,7 @@ export default ((skipUpdate = false) => {
     const keySharePromise = dispatch(createNewBackupKeyShares({ backupKey, accountId }))
       // failure of backup key share creation should not make secret loading fail
       .catch((reason) => {
-        log(reason, 'error');
+        sentryLogError(reason, 'OpenVault: create new backup key share', { crypto: true });
         enqueueSnackbar(t('common:crypto.errors.backupKeyShare'), { variant: 'warning' });
       });
 

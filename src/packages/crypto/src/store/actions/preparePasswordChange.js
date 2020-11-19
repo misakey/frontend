@@ -1,5 +1,4 @@
-import log from '@misakey/helpers/log';
-
+import sentryLogError from '@misakey/helpers/log/sentry';
 
 import { generateNewSaltedSymmetricKey } from '@misakey/crypto/crypto';
 import { encryptSecretsBackup } from '@misakey/crypto/secretsBackup/encryption';
@@ -39,7 +38,7 @@ export default function preparePasswordChange(newPassword, oldPassword, accountI
             accountId,
           }));
         } catch (error) {
-          log(error, 'error');
+          sentryLogError(error, 'passwordChange: createNewBackupKeyShares', { crypto: true });
           // we don't throw because the failing of the update of backup key share
           // should not cause the password change procedure to fail;
           // if updating the backup key share fails,

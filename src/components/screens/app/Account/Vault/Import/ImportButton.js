@@ -6,7 +6,7 @@ import { useSnackbar } from 'notistack';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import log from '@misakey/helpers/log';
+import sentryLogError from '@misakey/helpers/log/sentry';
 
 import importSecrets from '@misakey/crypto/store/actions/importSecrets';
 import {
@@ -69,13 +69,13 @@ const ImportButton = ({ t }) => {
               autoHideDuration: 8000,
             },
           );
-          log(error, 'error');
+          sentryLogError(error, 'Import Crypto: Bad backup version', { crypto: true });
         } else {
           enqueueSnackbar(
             t('account:exportCrypto.importButton.error'),
             { variant: 'error' },
           );
-          log(error, 'error');
+          sentryLogError(error, 'Import Crypto: unidentified error', { crypto: true });
         }
       }
     },

@@ -34,7 +34,7 @@ const syncIdentity = (state, { identity, accountId, identityId }) => {
   const identityUpgrade = currentAccountId !== accountId;
 
   if (identityHasChanged) { return null; }
-  if (identityUpgrade) { return { accountId }; }
+  if (identityUpgrade) { return { accountId, hasAccount: true }; }
   return {};
 };
 

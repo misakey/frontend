@@ -6,6 +6,7 @@
 import { UserManager, WebStorageStateStore, User } from 'oidc-client';
 import { uuid4RFC4122 } from '@misakey/helpers/uuid4';
 import log from '@misakey/helpers/log';
+import sentryLogError from '@misakey/helpers/log/sentry';
 import isNil from '@misakey/helpers/isNil';
 import storage, { StorageUnavailable } from '@misakey/helpers/storage';
 import addCsrfTokenToUser from './addCsrfTokenToUser';
@@ -115,7 +116,11 @@ class MisakeyUserManager extends UserManager {
         if (handle.close) {
           handle.close();
         }
-        log('UserManager._signinStart: Error after preparing navigator, closing navigator window');
+        sentryLogError(
+          err,
+          'UserManager._signinStart: Error after preparing navigator, closing navigator window',
+          { auth: true },
+        );
         throw err;
       });
     });
@@ -153,8 +158,8 @@ class MisakeyUserManager extends UserManager {
               return userWithCsrfToken || user;
             }))
           .catch((e) => {
-            log(`UserManager._signinEnd: fail to store user in dom storage: ${e}`);
-            // User is not stored in localStorage but app can work anyway, user should<xc
+            sentryLogError(e, 'UserManager._signinEnd: fail to store user in dom storage', { auth: true }, 'warning');
+            // User is not stored in localStorage but app can work anyway, user should
             // reauthenticated if leaving the app and go back
             this._events.load(user);
             // Fire expiring handled when new token is added
@@ -163,7 +168,7 @@ class MisakeyUserManager extends UserManager {
           });
       })
       .catch((e) => {
-        log(`UserManager._signinEnd: fail to processSigninResponse ${e}`);
+        sentryLogError(e, 'UserManager._signinEnd: fail to processSigninResponse', { auth: true });
         throw e;
       });
   }
@@ -185,7 +190,7 @@ class MisakeyUserManager extends UserManager {
         return null;
       });
     } catch (e) {
-      log('UserManager.getUser: localStorage not available');
+      sentryLogError(e, 'UserManager.getUser: localStorage not available', { auth: true }, 'warning');
       return Promise.reject(new StorageUnavailable());
     }
   }

@@ -8,7 +8,7 @@ const createNotification = (text, options) => new Notification(text, options);
 
 export default (text, options) => {
   if (!isNotificationAPISupported) {
-    log('Ce navigateur ne prend pas en charge la notification de bureau');
+    log('Notification API not supported', 'warn');
     return null;
   }
 

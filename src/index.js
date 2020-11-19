@@ -31,6 +31,7 @@ import * as serviceWorker from 'serviceWorker';
 import ThemeProvider from 'components/smart/ThemeProvider';
 // components
 import App from 'components/App';
+import ErrorBoundary from 'components/smart/ErrorBoundary';
 
 import SplashScreen from '@misakey/ui/Screen/Splash';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
@@ -103,17 +104,19 @@ if (isSilentAuthIframe()) {
             <Router>
               <SnackbarProvider>
                 <OfflineContextProvider addMiddleware={API.addMiddleware}>
-                  <OidcProvider
-                    store={store}
-                    config={window.env.AUTH}
-                    registerMiddlewares={registerMiddlewares}
-                    publicRoute={routes.identities.public}
-                    // do not try to retrieve old user during auth flow as it useless
-                    // and could conflict with current auth flow (autoSignIn if user is expired)
-                    autoSignInExcludedRoutes={[routes.auth._, routes.auth.callback]}
-                  >
-                    <App />
-                  </OidcProvider>
+                  <ErrorBoundary maxWidth="md" my={3}>
+                    <OidcProvider
+                      store={store}
+                      config={window.env.AUTH}
+                      registerMiddlewares={registerMiddlewares}
+                      publicRoute={routes.identities.public}
+                      // do not try to retrieve old user during auth flow as it useless
+                      // and could conflict with current auth flow (autoSignIn if user is expired)
+                      autoSignInExcludedRoutes={[routes.auth._, routes.auth.callback]}
+                    >
+                      <App />
+                    </OidcProvider>
+                  </ErrorBoundary>
                 </OfflineContextProvider>
               </SnackbarProvider>
             </Router>

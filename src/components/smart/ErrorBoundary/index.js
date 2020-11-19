@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withTranslation } from 'react-i18next';
-import * as Sentry from '@sentry/browser';
 
 import BoxSection from '@misakey/ui/Box/Section';
 import Box from '@material-ui/core/Box';
@@ -13,6 +12,7 @@ import Collapse from '@material-ui/core/Collapse';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import sentryLogError from '@misakey/helpers/log/sentry';
 
 import ScreenError from 'components/smart/Screen/Error';
 
@@ -27,11 +27,8 @@ class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    Sentry.withScope((scope) => {
-      scope.setExtras(errorInfo);
-      Sentry.captureException(error);
-      this.setState({ error: error.toString(), errorInfo });
-    });
+    sentryLogError(error, 'ErrorBoundary', undefined, undefined, errorInfo);
+    this.setState({ error: error.toString(), errorInfo });
   }
 
   handleCollapse() {
@@ -46,7 +43,7 @@ class ErrorBoundary extends Component {
     if (hasError) {
       // render fallback UI
       return (
-        <ScreenError {...omitTranslationProps(rest)}>
+        <ScreenError forceRefreshOnGoBack {...omitTranslationProps(rest)}>
           {window.env.ENV === 'development' && (
             <>
               <Box display="flex" justifyContent="flex-end">
@@ -66,7 +63,6 @@ class ErrorBoundary extends Component {
         </ScreenError>
       );
     }
-
     // when there's not an error, render children untouched
     return children;
   }
