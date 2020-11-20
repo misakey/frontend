@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { mergeReceiveNoEmpty, mergeReceiveNoEmptyNullable } from '@misakey/store/reducers/helpers/processStrategies';
 import { selectors, actionCreators, moveBackUpId } from 'store/reducers/userBoxes/pagination';
 import { removeBox, receiveJoinedBox } from 'store/reducers/box';
-import { removeBoxSecretKeysAndKeyShares } from '@misakey/crypto/store/actions/concrete';
+import removeBoxSecretKeysAndKeyShares from '@misakey/crypto/store/actions/removeBoxSecretKeysAndKeyShares';
 
 import isNil from '@misakey/helpers/isNil';
 

@@ -1,7 +1,7 @@
 import { createBackupKeyShareBuilder } from '@misakey/auth/builder/backupKeyShares';
 import { splitBackupKey } from '@misakey/crypto/secretsBackup/keySplitting';
 
-import { setBackupKeyShare } from './concrete';
+import setBackupKeyShare from './setBackupKeyShare';
 
 /**
  * **Note:** for creating the backup key share during the auth flow,

@@ -4,7 +4,7 @@ import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import isNil from '@misakey/helpers/isNil';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { getEncryptedSecretsBackup } from '../HttpApi';
-import { storeEncryptedBackupData } from '../store/actions/concrete';
+import storeEncryptedBackupData from '../store/actions/storeEncryptedBackupData';
 import { selectors } from '../store/reducers';
 
 // CONSTANTS

@@ -12,6 +12,7 @@ import isNil from '@misakey/helpers/isNil';
 import Typography from '@material-ui/core/Typography';
 import { SUPPORTED_TYPES } from 'constants/app/notifications/byIdentity';
 import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
+import AutoInvitationButton from 'components/screens/app/Notifications/Actions/AutoInvitationButton';
 
 export const INNER_SPACING = 12;
 const NOT_ACK_STYLE = { style: { fontWeight: 800 } };
@@ -56,6 +57,13 @@ const MessageRow = ({ index, style, setSize, notification, previousNotification,
     [details, t, type],
   );
 
+  const actions = useMemo(
+    () => (
+      type === 'box.auto_invite' ? <AutoInvitationButton notifDetails={details} /> : null
+    ),
+    [type, details],
+  );
+
   const titleProps = useMemo(
     () => (isNil(acknowledgedAt) ? NOT_ACK_STYLE : undefined),
     [acknowledgedAt],
@@ -82,6 +90,7 @@ const MessageRow = ({ index, style, setSize, notification, previousNotification,
               text={text}
               index={index}
               titleProps={titleProps}
+              actions={actions}
             />
           </>
         )}

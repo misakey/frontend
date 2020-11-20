@@ -5,11 +5,9 @@ import { encryptSecretsBackup } from '@misakey/crypto/secretsBackup/encryption';
 
 import ensureSecretsLoaded from './ensureSecretsLoaded';
 import createNewBackupKeyShares from './createNewBackupKeyShares';
+import setBackupVersion from './setBackupVersion';
 
-import {
-  setBackupKey,
-  setBackupVersion,
-} from './concrete';
+import { CRYPTO_SET_BACKUP_KEY } from './types';
 
 export default function preparePasswordChange(newPassword, oldPassword, accountId) {
   return async (dispatch, getState) => {
@@ -26,7 +24,10 @@ export default function preparePasswordChange(newPassword, oldPassword, accountI
       backupKey: newBackupKey,
       commitPasswordChange: async () => {
         await Promise.all([
-          dispatch(setBackupKey(newBackupKey)),
+          dispatch({
+            type: CRYPTO_SET_BACKUP_KEY,
+            backupKey: newBackupKey,
+          }),
           dispatch(setBackupVersion(newBackupVersion)),
         ]);
 

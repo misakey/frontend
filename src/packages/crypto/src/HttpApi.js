@@ -13,6 +13,7 @@ import isString from '@misakey/helpers/isString';
 import isArray from '@misakey/helpers/isArray';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
+// TODO use @misakey/helpers/objectToCamelCaseDeep instead (same exact function)
 import objectToCamelCase from './helpers/objectToCamelCase';
 import assertNotAnyNil from './helpers/assertNotAnyNil';
 
@@ -34,6 +35,8 @@ async function httpCallReturnBody(endpoint, httpRequestParams) {
 }
 
 // exported functions
+
+// TODO remove unused functions
 
 export async function setOwnerPublicKey(ownerId, publicKey) {
   assertNotAnyNil({ ownerId, publicKey });
@@ -163,6 +166,84 @@ export async function getEncryptedSecretsBackup(id) {
   };
   const httpRequestParams = {
     params: { id },
+  };
+
+  return httpCallReturnBody(endpoint, httpRequestParams);
+}
+
+export async function setIdentityPublicKey(identityId, publicKey) {
+  assertNotAnyNil({ identityId, publicKey });
+
+  const endpoint = {
+    method: 'PATCH',
+    path: '/identities/:id',
+    auth: true,
+  };
+  const httpRequestParams = {
+    params: { id: identityId },
+    payload: {
+      pubkey: publicKey,
+    },
+  };
+
+  return httpCallReturnBody(endpoint, httpRequestParams);
+}
+
+/**
+ * returns an empty array if the identifier does not exists
+ * (HTTP 404 Not Found)
+ * or if any of the identities for this identifier
+ * does not have a public key
+ * (in which case it is the backend that will return an empty array)
+ */
+export async function getIdentityPublicKeys(identifier) {
+  assertNotAnyNil(identifier);
+
+  const endpoint = {
+    method: 'GET',
+    path: '/identities/pubkey',
+    auth: true,
+  };
+  const httpRequestParams = {
+    queryParams: {
+      identifierValue: identifier,
+    },
+  };
+
+  try {
+    return await httpCallReturnBody(endpoint, httpRequestParams);
+  } catch (error) {
+    if (error.status === 404) {
+      return [];
+    }
+    throw error;
+  }
+}
+
+export async function getCryptoaction({ accountId, cryptoactionId }) {
+  assertNotAnyNil({ accountId, cryptoactionId });
+
+  const endpoint = {
+    method: 'GET',
+    path: '/accounts/:accountId/crypto/actions/:actionId',
+    auth: true,
+  };
+  const httpRequestParams = {
+    params: { accountId, actionId: cryptoactionId },
+  };
+
+  const responseBody = await httpCallReturnBody(endpoint, httpRequestParams);
+  return objectToCamelCase(responseBody);
+}
+
+export async function deleteCryptoaction({ accountId, cryptoactionId }) {
+  const endpoint = {
+    method: 'DELETE',
+    path: '/accounts/:accountId/crypto/actions/:actionId',
+    auth: true,
+  };
+  const httpRequestParams = {
+    params: { accountId, actionId: cryptoactionId },
   };
 
   return httpCallReturnBody(endpoint, httpRequestParams);

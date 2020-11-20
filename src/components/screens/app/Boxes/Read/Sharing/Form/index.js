@@ -14,11 +14,13 @@ import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { getUpdatedAccesses } from 'helpers/accesses';
 import isEmpty from '@misakey/helpers/isEmpty';
 import pluck from '@misakey/helpers/pluck';
+import sentryLogError from '@misakey/helpers/log/sentry';
 import filter from '@misakey/helpers/filter';
 import { createBulkBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import { identifierValuePath, senderMatchesIdentifierValue } from 'helpers/sender';
 
 import { useSelector, useDispatch } from 'react-redux';
+import { tryAddingAutoInvite } from '@misakey/crypto/box/autoInvitation';
 import { useSnackbar } from 'notistack';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
@@ -60,7 +62,14 @@ const membersToWhitelistEvents = (members) => (members || []).map((member) => ({
 
 // COMPONENTS
 function ShareBoxForm({
-  accesses, boxId, invitationURL, children, isCurrentUserOwner, membersNotInWhitelist, isRemoving,
+  accesses,
+  boxId,
+  invitationURL,
+  children,
+  isCurrentUserOwner,
+  membersNotInWhitelist,
+  isRemoving,
+  boxKeyShare, boxSecretKey,
 }) {
   const { t } = useTranslation('boxes');
   const dispatch = useDispatch();
@@ -224,12 +233,17 @@ function ShareBoxForm({
           // getOptionDisabled + validationSchema already handle the case
           const whitelistEvents = isEmpty(nextWhitelist) || whitelistedValues.includes(value)
             ? []
-            : [{
-              type: ACCESS_EVENT_TYPE.ADD,
-              content: {
-                restrictionType: nextWhitelist.type,
-                value,
-              } }];
+            : [await tryAddingAutoInvite({
+              event: {
+                type: ACCESS_EVENT_TYPE.ADD,
+                content: {
+                  restrictionType: nextWhitelist.type,
+                  value,
+                },
+              },
+              boxKeyShare,
+              boxSecretKey,
+            })];
           const identifiersToWhitelistEvents = isPublic && !isEmptyMembersNotInWhitelist
             ? membersToWhitelistEvents(membersNotInWhitelist)
             : [];
@@ -238,7 +252,6 @@ function ShareBoxForm({
             ...whitelistEvents,
             ...invitationLinkEvents,
           ];
-          // @TODO if whitelistEvents is not empty, tryAddingAutoInvite
           break;
         }
         default:
@@ -254,11 +267,13 @@ function ShareBoxForm({
           [ACCESSES_FIELD_NAME]: nextAccessLevel,
         } });
       } catch (err) {
+        sentryLogError(err);
         return onBulkError();
       }
     },
     [
       enqueueSnackbar, generateInvitationLinkEvent, t,
+      boxKeyShare, boxSecretKey,
       bulkUpdate, onBulkError,
       hasWhitelistRules, isPublic,
       initialValues,
@@ -346,6 +361,8 @@ function ShareBoxForm({
 ShareBoxForm.propTypes = {
   accesses: PropTypes.arrayOf(PropTypes.shape(BoxEventsSchema.propTypes)).isRequired,
   boxId: PropTypes.string.isRequired,
+  boxKeyShare: PropTypes.string.isRequired,
+  boxSecretKey: PropTypes.string.isRequired,
   invitationURL: PropTypes.object.isRequired,
   children: PropTypes.node,
   isCurrentUserOwner: PropTypes.bool,

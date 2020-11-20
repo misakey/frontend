@@ -9,7 +9,7 @@ import { generatePath, useHistory } from 'react-router-dom';
 import routes from 'routes';
 
 import { boxNameFieldValidationSchema } from 'constants/validationSchemas/boxes';
-import { setBoxSecrets } from '@misakey/crypto/store/actions/concrete';
+import setBoxSecrets from '@misakey/crypto/store/actions/setBoxSecrets';
 
 import { createBoxBuilder } from '@misakey/helpers/builder/boxes';
 import getRandomTitle from '@misakey/helpers/getRandomTitle';

@@ -12,11 +12,25 @@ import routes from 'routes';
 export default (boxId, title, publicKey, t) => {
   const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
   const { enqueueSnackbar } = useSnackbar();
+  // XXX no strong guarantee that the box in the current location
+  // is the one referred to by "boxId" parameter;
+  // shouldn't we get the box key share from the store instead?
   const { hash } = useLocation();
+
+
+  const boxSecretKey = useMemo(
+    () => publicKeysWeCanDecryptFrom.get(publicKey),
+    [publicKeysWeCanDecryptFrom, publicKey],
+  );
 
   const invitationURL = useMemo(
     () => parseUrlFromLocation(`${generatePath(routes.boxes.read._, { id: boxId })}${hash}`),
     [boxId, hash],
+  );
+
+  const boxKeyShare = useMemo(
+    () => hash.substr(1),
+    [hash],
   );
 
   const canInvite = useMemo(
@@ -59,5 +73,7 @@ export default (boxId, title, publicKey, t) => {
     onCopyLink,
     onShare,
     invitationURL,
+    boxKeyShare,
+    boxSecretKey,
   };
 };

@@ -88,7 +88,7 @@ export const createBoxEventBuilder = (id, payload) => API
 
 export const createBulkBoxEventBuilder = (id, payload) => API
   .use(API.endpoints.boxes.bulkEvents.create)
-  .build({ id }, objectToSnakeCaseDeep(payload))
+  .build({ id }, objectToSnakeCaseDeep(payload, { ignoreBase64: true }))
   .send()
   .then(objectToCamelCaseDeep);
 

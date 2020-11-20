@@ -113,7 +113,7 @@
     "typeface-roboto": "^0.0.75",
     "ua-parser-js": "^0.7.21",
     "uuid": "^3.3.3",
-    "validator": "^11.1.0",
+    "validator": "^13.0.0",
     "yup": "^0.29.0"
   },
   "scripts": {

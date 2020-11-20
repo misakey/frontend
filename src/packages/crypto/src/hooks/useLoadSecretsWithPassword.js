@@ -1,5 +1,6 @@
-import { loadSecrets, loadSecretsAndUpdateBackup } from '@misakey/crypto/store/actions/concrete';
+import loadSecrets from '@misakey/crypto/store/actions/loadSecrets';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import ensureIdentityKey from '@misakey/crypto/store/actions/ensureIdentityKey';
 
 import isNil from '@misakey/helpers/isNil';
 import sentryLogError from '@misakey/helpers/log/sentry';
@@ -11,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 import useWatchStorageBackupVersion from '@misakey/crypto/hooks/useWatchStorageBackupVersion';
 import createNewBackupKeyShares from '@misakey/crypto/store/actions/createNewBackupKeyShares';
+import updateBackup from '@misakey/crypto/store/actions/updateBackup';
 
 import { decryptSecretsBackup } from '../secretsBackup/encryption';
 import { selectors } from '../store/reducers';
@@ -30,16 +32,15 @@ export default ((skipUpdate = false) => {
   const accountId = useSelector(ACCOUNT_ID_SELECTOR);
 
   const encryptedSecretsBackup = useFetchSecretBackup();
-  const currentBoxSecrets = useSelector(selectors.currentBoxSecrets);
+  const boxesSecretKeys = useSelector(selectors.boxesSecretKeys);
 
   const [, onStorageEvent] = useWatchStorageBackupVersion();
 
-  const onDecryptSuccess = useCallback(({ backupKey, secrets, backupVersion }) => {
+  const onDecryptSuccess = useCallback(async ({ backupKey, secrets, backupVersion }) => {
     // Can occur when a user first log with ACR on a box and then create an account
-    const shouldMerge = !currentBoxSecrets.every(
+    const shouldMerge = !boxesSecretKeys.every(
       (key) => secrets.boxDecryptionKeys.includes(key),
     );
-    const loadSecretsAction = shouldMerge ? loadSecretsAndUpdateBackup : loadSecrets;
     // do not trigger onStorageEvent when we update backup, as it's already done there
     const onStorageEventWhenNoBackupUpdate = shouldMerge ? Promise.resolve : onStorageEvent;
 
@@ -50,12 +51,20 @@ export default ((skipUpdate = false) => {
         enqueueSnackbar(t('common:crypto.errors.backupKeyShare'), { variant: 'warning' });
       });
 
-    return Promise.all([
-      dispatch(loadSecretsAction({ secrets, backupKey, backupVersion })),
+    await Promise.all([
+      dispatch(loadSecrets({ secrets, backupKey, backupVersion })),
       keySharePromise,
       onStorageEventWhenNoBackupUpdate(backupVersion),
     ]);
-  }, [accountId, currentBoxSecrets, dispatch, onStorageEvent, enqueueSnackbar, t]);
+
+    if (shouldMerge) {
+      // XXX maybe it would be more intuitive to use a different action like "mergeSecrets"
+      // which would include a call to "updateBackup"
+      await dispatch(updateBackup());
+    }
+
+    await dispatch(ensureIdentityKey());
+  }, [accountId, boxesSecretKeys, dispatch, onStorageEvent, enqueueSnackbar, t]);
 
   const decryptWithPassword = useCallback(
     (password) => {

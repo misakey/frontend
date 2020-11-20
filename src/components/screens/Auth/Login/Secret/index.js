@@ -15,7 +15,7 @@ import { ERROR_KEYS } from 'constants/auth';
 import { getSecretValidationSchema } from 'constants/validationSchemas/auth';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
 import hardPasswordChange from '@misakey/crypto/store/actions/hardPasswordChange';
-import { createNewOwnerSecrets } from '@misakey/crypto/store/actions/concrete';
+import createNewOwnerSecrets from '@misakey/crypto/store/actions/createNewOwnerSecrets';
 import createNewBackupKeySharesFromAuthFlow from '@misakey/crypto/store/actions/createNewBackupKeySharesFromAuthFlow';
 import { ssoUpdate, ssoSign, ssoReset } from '@misakey/auth/store/actions/sso';
 import errorTypes from '@misakey/ui/constants/errorTypes';

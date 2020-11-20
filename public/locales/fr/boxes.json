@@ -310,6 +310,7 @@
         "misakey_communication": "{{value}}",
         "member_kick": "Vous avez été retiré·e de l'espace privé «\u00a0{{title}}\u00a0».",
         "box_lifecycle": "L'espace privé «\u00a0{{title}}\u00a0» a été fermé.",
+        "box_auto_invite": "Vous avez été invité à rejoindre l'espace privé «\u00a0{{boxTitle}}\u00a0»",
         "user_reset_password": "Vous avez réinitialisé votre mot de passe.\nVous avez perdu les clés de déchiffrement de vos anciens espaces privés.\nSi vous aviez exporté la sauvegarde de votre coffre-fort via l'espace «\u00a0Mon compte\u00a0», vous pourrez les retrouver en restaurant la sauvagarde.",
         "user_create_account": "Bienvenue sur Misakey\u00a0!\nVous pouvez maintenant créer vos espaces privés et les partager.\nLes clés de déchiffrement de vos espaces privés sont stockées dans votre coffre-fort. L'accès à ce coffre-fort dépend entièrement de votre mot de passe actuel, il est important que vous ne le perdiez pas car Misakey n'y a pas accès et ne peut pas vous aider à le retrouver.\nVous avez la possibilité de télécharger une sauvegarde de votre coffre-fort depuis l'espace «\u00a0Mon compte\u00a0», stockez-la en lieu sûr, vous pourrez vous en servir en cas de réinitialisation de votre mot de passe pour retrouver les accès à vos espaces privés."
       }

@@ -130,6 +130,8 @@ function ShareBoxDialog({ box, t }) {
   const {
     canShare,
     invitationURL,
+    boxKeyShare,
+    boxSecretKey,
     onShare,
     onCopyLink,
   } = useGetShareMethods(boxId, title, publicKey, t);
@@ -247,6 +249,8 @@ function ShareBoxDialog({ box, t }) {
               isCurrentUserOwner={isCurrentUserOwner}
               membersNotInWhitelist={membersNotInWhitelist}
               isRemoving={!isNil(removeId)}
+              boxKeyShare={boxKeyShare}
+              boxSecretKey={boxSecretKey}
             >
               <Box my={2}>
                 <ListBordered disablePadding>

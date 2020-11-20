@@ -1,6 +1,6 @@
 import { getEncryptedSecretsBackup } from '../../HttpApi';
 import { decryptSecretsBackup } from '../../secretsBackup/encryption';
-import { CRYPTO_LOAD_SECRETS } from './concrete';
+import { CRYPTO_LOAD_SECRETS } from './types';
 import {
   promptForPasswordUntilOK,
   secretsAreLoaded,

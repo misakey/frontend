@@ -4,10 +4,11 @@ import isNil from '@misakey/helpers/isNil';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { getBackupKeyShareBuilder } from '@misakey/auth/builder/backupKeyShares';
 import { combineBackupKeyShares, computeOtherShareHash } from '@misakey/crypto/secretsBackup/keySplitting';
-import { loadSecrets } from '@misakey/crypto/store/actions/concrete';
+import loadSecrets from '@misakey/crypto/store/actions/loadSecrets';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { decryptSecretsBackupWithBackupKey } from '@misakey/crypto/secretsBackup/encryption';
 import useWatchStorageBackupKeyShares from '@misakey/crypto/hooks/useWatchStorageBackupKeyShares';
+import ensureIdentityKey from '@misakey/crypto/store/actions/ensureIdentityKey';
 import { selectors } from '../store/reducers';
 import useFetchSecretBackup from './useFetchSecretBackup';
 
@@ -48,7 +49,8 @@ export default (() => {
       secrets,
       backupKey: decodedBackupKey,
     } = await decryptSecretsBackupWithBackupKey(data, rebuiltBackupKey);
-    return dispatch(loadSecrets({ secrets, backupKey: decodedBackupKey, backupVersion }));
+    await dispatch(loadSecrets({ secrets, backupKey: decodedBackupKey, backupVersion }));
+    await dispatch(ensureIdentityKey());
   }, [backupVersion, data, dispatch, localBackupKeyShare]);
 
   const onError = useCallback(() => {

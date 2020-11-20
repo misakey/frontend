@@ -1,6 +1,6 @@
 import { selectors } from 'store/reducers/userBoxes/pagination';
 import { makeGetBoxesPublicKeysSelector } from 'store/reducers/box';
-import { removeBoxSecretKeysAndKeyShares } from '@misakey/crypto/store/actions/concrete';
+import removeBoxSecretKeysAndKeyShares from '@misakey/crypto/store/actions/removeBoxSecretKeysAndKeyShares';
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 
 import isNil from '@misakey/helpers/isNil';

@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useDispatch, batch } from 'react-redux';
 import isNil from '@misakey/helpers/isNil';
 import sentryLogError from '@misakey/helpers/log/sentry';
-import { setBackupKeyShare } from '../store/actions/concrete';
+import setBackupKeyShare from '../store/actions/setBackupKeyShare';
 
 const STORAGE_KEY = 'persist:crypto';
 

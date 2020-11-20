@@ -17,7 +17,7 @@ import { selectors } from '@misakey/crypto/store/reducers';
 import { InvalidHash } from '@misakey/crypto/Errors/classes';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
-import { setBoxSecrets } from '@misakey/crypto/store/actions/concrete';
+import setBoxSecrets from '@misakey/crypto/store/actions/setBoxSecrets';
 
 // SELECTORS
 const { makeGetBoxKeyShare } = selectors;

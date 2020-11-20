@@ -66,7 +66,9 @@ const useStyles = makeStyles((theme) => ({
     borderTop: `1px solid ${theme.palette.divider}`,
     '& > *': {
       width: '100%',
-      borderRadius: 0,
+      '& *': {
+        borderRadius: `0 0 ${CARD_BORDER_RADIUS}px ${CARD_BORDER_RADIUS}px`,
+      },
     },
   },
 }));

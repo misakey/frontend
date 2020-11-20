@@ -1,4 +1,4 @@
-import { createNewOwnerSecrets } from './concrete';
+import createNewOwnerSecrets from './createNewOwnerSecrets';
 
 export default function hardPasswordChange(newPassword) {
   return async (dispatch) => {

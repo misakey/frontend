@@ -28,7 +28,8 @@ import {
   CRYPTO_SET_BACKUP_KEY_SHARE,
   CRYPTO_REMOVE_BOX_KEY_SHARES,
   CRYPTO_SET_VAULT_KEY,
-} from '../actions/concrete';
+  CRYPTO_SET_IDENTITY_KEY,
+} from '../actions/types';
 
 
 // HELPERS
@@ -56,6 +57,10 @@ export const INITIAL_STATE = {
     // @FIXME rename "secretKey" to "userDecryptionKey"
     secretKey: null,
     vaultKey: null,
+    identityKeys: {
+      publicKeys: {},
+      secretKeys: {},
+    },
     boxKeyShares: {},
     boxDecryptionKeys: [],
     // "passive" encryption keys are keys that must not be used any more for encrypting data;
@@ -98,7 +103,7 @@ const areSecretsLoaded = createSelector(
   (state) => !isNil(state.secrets.secretKey),
 );
 
-const currentBoxSecrets = createSelector(
+const boxesSecretKeys = createSelector(
   getState,
   (state) => state.secrets.boxDecryptionKeys || [],
 );
@@ -136,7 +141,7 @@ export const selectors = {
   makeGetBackupKeyShareForAccount,
   isCryptoLoaded,
   areSecretsLoaded,
-  currentBoxSecrets,
+  boxesSecretKeys,
   getEncryptedBackupData,
   getBoxSecretKeys,
   makeGetBoxKeyShare,
@@ -208,6 +213,10 @@ function initialize(state, { backupKey, secretKey, vaultKey }) {
 }
 
 function loadSecrets(state, action) {
+  // we use mergeWith because we need the customizer function.
+  // XXX the customizer function is used to treat arrays as sets;
+  // it would probably be better to use objects (with keys = true)
+  // to implement sets.
   return mergeWith(
     {},
     state,
@@ -267,6 +276,23 @@ const removeBoxKeyShares = (state, { boxIds }) => ({
   },
 });
 
+const setIdentityKey = (state, { identityId, secretKey, publicKey }) => ({
+  ...state,
+  secrets: {
+    ...state.secrets,
+    identityKeys: {
+      publicKeys: {
+        ...state.secrets.identityKeys.publicKeys,
+        [identityId]: publicKey,
+      },
+      secretKeys: {
+        ...state.secrets.identityKeys.publicKeys,
+        [publicKey]: secretKey,
+      },
+    },
+  },
+});
+
 // REDUCER
 const cryptoReducer = createReducer(INITIAL_STATE, {
   [CRYPTO_SET_BACKUP_KEY]: setBackupKey,
@@ -281,6 +307,7 @@ const cryptoReducer = createReducer(INITIAL_STATE, {
   [CRYPTO_REMOVE_BOX_KEY_SHARES]: removeBoxKeyShares,
   [CRYPTO_SET_VAULT_KEY]: setVaultKey,
   [SIGN_OUT]: reset,
+  [CRYPTO_SET_IDENTITY_KEY]: setIdentityKey,
 });
 
 export default persistReducer(
