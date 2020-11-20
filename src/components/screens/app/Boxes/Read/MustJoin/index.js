@@ -2,25 +2,23 @@ import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation, Trans } from 'react-i18next';
 import { useLocation, Link, generatePath } from 'react-router-dom';
-import { normalize } from 'normalizr';
 
 import routes from 'routes';
-import { receiveEntities, updateEntities } from '@misakey/store/actions/entities';
+import { updateEntities } from '@misakey/store/actions/entities';
 import { MEMBER_JOIN } from 'constants/app/boxes/events';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import { CLOSED } from 'constants/app/boxes/statuses';
 import BoxesSchema from 'store/schemas/Boxes';
-import BoxSenderSchema from 'store/schemas/Boxes/Sender';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { receivePublicInfo } from 'store/reducers/box';
 import { FOOTER_HEIGHT } from '@misakey/ui/Footer';
 
 import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import isNil from '@misakey/helpers/isNil';
 import { getCode, getDetails } from '@misakey/helpers/apiError';
-import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import { identifierValuePath } from 'helpers/sender';
 
-import { useSelector, useDispatch, batch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useModifier from '@misakey/hooks/useModifier';
@@ -40,14 +38,15 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import Container from '@material-ui/core/Container';
+import ListItemIdentifier from '@misakey/ui/ListItem/Identifier';
 import List from '@material-ui/core/List';
-import ListItemConsentEmail from '@misakey/ui/ListItem/Consent/Email';
+import CardUserSignOut from '@misakey/auth/components/Card/User/SignOut';
 import BoxControls from '@misakey/ui/Box/Controls';
 import AvatarBox from '@misakey/ui/Avatar/Box';
 import AvatarBoxSkeleton from '@misakey/ui/Avatar/Box/Skeleton';
-import ChipUserMeLogout from '@misakey/ui/Chip/User/Me/Logout';
 import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
 import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
+import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
 
 // CONSTANTS
 const { forbidden } = errorTypes;
@@ -76,7 +75,6 @@ function MustJoin({ box, t }) {
   const { displayName: creatorName, id: creatorIdentityId } = useSafeDestr(creator);
 
   const identity = useSelector(IDENTITY_SELECTOR);
-  const { displayName, avatarUrl } = useSafeDestr(identity);
   const identifierValue = useModifier(identifierValuePath, identity);
 
   const creatorProfileTo = useMemo(
@@ -89,13 +87,7 @@ function MustJoin({ box, t }) {
   const [hashChanged, resetHashChanged] = usePropChanged(hash);
 
   const onGetPublicInfo = useCallback(
-    ({ creator: boxCreator, ...rest }) => {
-      const { entities, result } = normalize(boxCreator, BoxSenderSchema.entity);
-      return batch(() => {
-        dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
-        dispatch(updateEntities([{ id, changes: { creator: result, ...rest } }], BoxesSchema));
-      });
-    },
+    (response) => dispatch(receivePublicInfo(id, response)),
     [dispatch, id],
   );
 
@@ -174,7 +166,7 @@ function MustJoin({ box, t }) {
       display="flex"
       height="inherit"
     >
-      <AppBarDrawer>
+      <AppBarDrawer toolbarProps={{ px: 0 }} disableOffset>
         <ToggleDrawerButton />
       </AppBarDrawer>
       <Box
@@ -194,7 +186,6 @@ function MustJoin({ box, t }) {
             width="100%"
             display="flex"
             justifyContent="center"
-            px={2}
           >
             <Box
               display="flex"
@@ -210,24 +201,20 @@ function MustJoin({ box, t }) {
               )}
               <Box mt={2} width="100%">
                 {isFetching && <Skeleton width="300" />}
-                {!isNil(title) && <Title align="left">{t('common:connect.title', { resourceName: title })}</Title>}
-                {isNil(title) && !isFetching && <Title align="left">{t('boxes:read.mustjoin.defaultTitle')}</Title>}
+                {!isNil(title) && <Title align="left" gutterBottom={false}>{t('common:connect.title', { resourceName: title })}</Title>}
+                {isNil(title) && !isFetching && <Title align="left" gutterBottom={false}>{t('boxes:read.mustjoin.defaultTitle')}</Title>}
                 <Subtitle>
-                  <Trans values={{ creatorName }} i18nKey="common:connect.subtitle">
-                    {'Information below will be shared with '}
-                    <MuiLink color="secondary" component={Link} to={creatorProfileTo}>{'{{creatorName}}'}</MuiLink>
-                    {' to continue'}
-                  </Trans>
+                  <TransRequireAccess querier={creatorName} to={creatorProfileTo} />
                 </Subtitle>
-                <Box my={2}>
-                  <List>
-                    <ListItemConsentEmail
-                      avatarUrl={avatarUrl}
-                      displayName={displayName}
-                      email={identifierValue}
-                    />
+                <CardUserSignOut
+                  disablePadding
+                  mt={3}
+                  mb={2}
+                >
+                  <List disablePadding>
+                    <ListItemIdentifier dense identifier={identifierValue} />
                   </List>
-                </Box>
+                </CardUserSignOut>
                 <Subtitle>
                   <Trans values={{ creatorName }} i18nKey="common:connect.authorize">
                     {'Authorize '}
@@ -242,9 +229,6 @@ function MustJoin({ box, t }) {
                     text: t('common:connect.action'),
                   }}
                 />
-                <Box display="flex" justifyContent="center" mt={6} width="100%">
-                  <ChipUserMeLogout />
-                </Box>
               </Box>
             </Box>
           </Box>

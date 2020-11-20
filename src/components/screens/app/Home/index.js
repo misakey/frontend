@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import routes from 'routes';
-import PropTypes from 'prop-types';
 
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { ALL } from 'constants/app/boxes/statuses';
@@ -11,12 +10,13 @@ import isNil from '@misakey/helpers/isNil';
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 import useLoadSecretsFromShares from '@misakey/crypto/hooks/useLoadSecretsFromShares';
 import { useSelector } from 'react-redux';
+import useIdentity from 'hooks/useIdentity';
+import useLoadedAnimation from '@misakey/hooks/useLoadedAnimation';
 
 import RouteAcr from '@misakey/auth/components/Route/Acr';
 import RouteAuthenticated from '@misakey/auth/components/Route/Authenticated';
 import Boxes from 'components/screens/app/Boxes';
-import withIdentity from 'components/smart/withIdentity';
-import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
+import ScreenSplashOidc from '@misakey/ui/Screen/Splash/Oidc';
 import BoxesContextProvider from 'components/smart/Context/Boxes';
 import ScreenDrawerContextProvider from 'components/smart/Screen/Drawer';
 import BoxesList from 'components/screens/app/Boxes/List';
@@ -28,8 +28,27 @@ import MisakeyNotifications from '../Notifications';
 const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
 
 // COMPONENTS
-function Home({ isFetchingIdentity }) {
+function Home() {
   const { isLoadingBackupKey, isReady } = useLoadSecretsFromShares();
+  const { isFetching, shouldFetch } = useIdentity();
+
+  const isFetchingIdentity = useMemo(
+    () => isFetching || shouldFetch,
+    [isFetching, shouldFetch],
+  );
+
+  const isLoading = useMemo(
+    () => isFetchingIdentity || isLoadingBackupKey,
+    [isFetchingIdentity, isLoadingBackupKey],
+  );
+
+  const done = useMemo(
+    () => isReady && !shouldFetch && !isLoading,
+    [isReady, shouldFetch, isLoading],
+  );
+
+  const loadedAnimation = useLoadedAnimation(isLoading);
+
   const shouldDisplayLockedScreen = useShouldDisplayLockedScreen();
 
   const matchNothingSelected = useRouteMatch({ path: routes.boxes._, exact: true });
@@ -48,8 +67,8 @@ function Home({ isFetchingIdentity }) {
     [isAuthenticated, shouldDisplayLockedScreen],
   );
 
-  if (isFetchingIdentity || isLoadingBackupKey) {
-    return <SplashScreen />;
+  if (isLoading || !loadedAnimation) {
+    return <ScreenSplashOidc done={done} />;
   }
 
   return (
@@ -79,13 +98,4 @@ function Home({ isFetchingIdentity }) {
   );
 }
 
-
-Home.propTypes = {
-  isFetchingIdentity: PropTypes.bool,
-};
-
-Home.defaultProps = {
-  isFetchingIdentity: false,
-};
-
-export default withIdentity(Home);
+export default Home;

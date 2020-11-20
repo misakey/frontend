@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation, Trans } from 'react-i18next';
-import { Link, generatePath } from 'react-router-dom';
+import { withTranslation } from 'react-i18next';
+import { generatePath } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
 import { getCurrentUserSelector, selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
@@ -12,31 +12,25 @@ import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import useSignOut from '@misakey/auth/hooks/useSignOut';
 import { useSelector } from 'react-redux';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useXsMediaQuery from '@misakey/hooks/useXsMediaQuery';
 
-import MuiLink from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
-import ChipUser from '@misakey/ui/Chip/User';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@misakey/ui/DialogContent';
 import BoxControls from '@misakey/ui/Box/Controls';
-import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
-import BoxFlexFill from '@misakey/ui/Box/FlexFill';
-import AvatarUser from '@misakey/ui/Avatar/User';
 import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
-import List from '@material-ui/core/List';
-import ListItemConsentEmail from '@misakey/ui/ListItem/Consent/Email';
 import AvatarBox from '@misakey/ui/Avatar/Box';
 import AvatarMisakeyDenied from '@misakey/ui/Avatar/Misakey/Denied';
 import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
+import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
+import CardUserAuth from '@misakey/auth/components/Card/User';
+import CardUserSignOut from '@misakey/auth/components/Card/User/SignOut';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -69,14 +63,10 @@ const DialogSigninRedirect = ({
   ...props
 }) => {
   const classes = useStyles();
-  const isXs = useXsMediaQuery();
 
   const currentUser = useSelector(getCurrentUserSelector);
   const currentAcr = useSelector(getCurrentAcrSelector);
   const { enqueueSnackbar } = useSnackbar();
-
-  const { displayName, avatarUrl, identifier } = useSafeDestr(currentUser);
-  const { value: identifierValue } = useSafeDestr(identifier);
 
   const objLoginHint = useMemo(
     () => (isEmpty(loginHint) ? null : objectToCamelCase(JSON.parse(loginHint))),
@@ -164,27 +154,18 @@ const DialogSigninRedirect = ({
       }
       if (!isNil(resourceName)) {
         return (
-          <Trans values={{ creatorName }} i18nKey="common:connect.subtitle">
-            Information below will be shared with
-            <MuiLink
-              color="secondary"
-              component={Link}
-              to={creatorProfileTo}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {'{{creatorName}}'}
-            </MuiLink>
-            to continue
-          </Trans>
+          <TransRequireAccess querier={creatorName} to={creatorProfileTo} />
         );
       }
-      return t('common:connect.misakey.subtitle');
+      return <TransRequireAccess />;
     },
     [sessionExpired, insufficientACR, resourceName, t, creatorName, creatorProfileTo],
   );
 
-  const onDelete = useSignOut(userManager);
+  const CardUserComponent = useMemo(
+    () => (!isEmpty(currentUser) ? CardUserSignOut : CardUserAuth),
+    [currentUser],
+  );
 
   const onRedirect = useCallback(
     (options) => userManager.signinRedirect(objectToSnakeCase(options)),
@@ -206,10 +187,7 @@ const DialogSigninRedirect = ({
       fullScreen
       {...closableDialogProps}
     >
-      <DialogTitleWithClose fullScreen {...dialogTitleProps} gutterBottom>
-        <BoxFlexFill />
-        {!isEmpty(currentUser) && <AvatarUser displayName={displayName} avatarUrl={avatarUrl} />}
-      </DialogTitleWithClose>
+      <DialogTitleWithClose fullScreen {...dialogTitleProps} gutterBottom />
       {open && (
         <DialogContent
           classes={{ root: classes.dialogContentRoot, content: classes.dialogContentContent }}
@@ -232,43 +210,19 @@ const DialogSigninRedirect = ({
               </>
             )}
             <Box mt={2}>
-              <Title>{title}</Title>
+              <Title gutterBottom={false}>{title}</Title>
               <Subtitle>{subtitle}</Subtitle>
-              {!sessionExpired && (
-                <List className={classes.listFullWidth}>
-                  <ListItemConsentEmail
-                    avatarUrl={avatarUrl}
-                    displayName={displayName}
-                    email={identifierValue}
-                    selected
-                  >
-                    <Button
-                      standing={BUTTON_STANDINGS.MAIN}
-                      text={t('common:confirm')}
-                      onClick={onClick}
-                      size={isXs ? 'small' : 'medium'}
-                    />
-                  </ListItemConsentEmail>
-                </List>
-              )}
-            </Box>
-            {!isEmpty(currentUser) && (
-              <Box my={2} alignSelf="center">
-                <ChipUser
-                  displayName={displayName}
-                  avatarUrl={avatarUrl}
-                  onDelete={onDelete}
-                />
-              </Box>
-            )}
-            {sessionExpired && (
-              <BoxControls
-                primary={{
-                  text: t('common:confirm'),
-                  onClick,
-                }}
+              <CardUserComponent
+                my={3}
+                expired={sessionExpired}
               />
-            )}
+            </Box>
+            <BoxControls
+              primary={{
+                text: t('common:confirm'),
+                onClick,
+              }}
+            />
           </Box>
         </DialogContent>
       )}

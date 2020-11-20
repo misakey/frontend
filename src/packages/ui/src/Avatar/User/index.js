@@ -31,7 +31,7 @@ const AvatarUser = ({
 
   return (
     <Avatar>
-      <PersonIcon color="disabled" {...rest} />
+      <PersonIcon {...rest} />
     </Avatar>
   );
 };

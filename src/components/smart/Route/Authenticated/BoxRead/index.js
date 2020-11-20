@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback, useContext, useEffect } from 're
 import PropTypes from 'prop-types';
 
 import errorTypes from '@misakey/ui/constants/errorTypes';
-import { UserManagerContext } from '@misakey/auth/components/OidcProvider';
+import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';
 
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isNil from '@misakey/helpers/isNil';

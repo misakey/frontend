@@ -1,5 +1,5 @@
 import { useCallback, useContext } from 'react';
-import { UserManagerContext } from '@misakey/auth/components/OidcProvider';
+import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';
 
 export default (canCancel = true) => {
   const { askSigninRedirect } = useContext(UserManagerContext);

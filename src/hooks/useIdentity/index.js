@@ -71,8 +71,9 @@ export default () => {
       token,
       identity,
       identityId,
+      shouldFetch,
       ...fetchData,
     }),
-    [fetchData, id, identity, identityId, token],
+    [fetchData, shouldFetch, id, identity, identityId, token],
   );
 };

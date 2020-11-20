@@ -27,6 +27,7 @@ const useHandleSuccess = (
     isAuthenticated: !isNil(csrfToken),
     acr: parseAcr(acr),
   };
+  // @FIXME isn't this store update useless now that OidcProvider handles loadUser at mount ?
   dispatch(signIn(credentials));
   enqueueSnackbar(t('common:signedIn'), { variant: 'success' });
 }, [enqueueSnackbar, t, dispatch]);

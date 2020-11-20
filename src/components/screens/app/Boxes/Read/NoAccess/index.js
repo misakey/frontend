@@ -5,7 +5,7 @@ import { Link, generatePath } from 'react-router-dom';
 
 import { FOOTER_HEIGHT } from '@misakey/ui/Footer';
 import BoxesSchema from 'store/schemas/Boxes';
-import { updateEntities } from '@misakey/store/actions/entities';
+import { receivePublicInfo } from 'store/reducers/box';
 import routes from 'routes';
 
 import isNil from '@misakey/helpers/isNil';
@@ -29,9 +29,9 @@ import Divider from '@material-ui/core/Divider';
 import Skeleton from '@material-ui/lab/Skeleton';
 import AvatarBoxDenied from '@misakey/ui/Avatar/Box/Denied';
 import AvatarBoxSkeleton from '@misakey/ui/Avatar/Box/Skeleton';
-import ChipUserMeLogout from '@misakey/ui/Chip/User/Me/Logout';
 import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
 import Container from '@material-ui/core/Container';
+import CardUserSignOut from '@misakey/auth/components/Card/User/SignOut';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -57,9 +57,7 @@ function NoAccess({ box, belongsToCurrentUser, t }) {
   );
 
   const onGetPublicInfo = useCallback(
-    (response) => {
-      dispatch(updateEntities([{ id, changes: response }], BoxesSchema));
-    },
+    (response) => dispatch(receivePublicInfo(id, response)),
     [dispatch, id],
   );
 
@@ -112,7 +110,7 @@ function NoAccess({ box, belongsToCurrentUser, t }) {
               display="flex"
               flexDirection="column"
               alignItems="flex-start"
-              mb={6}
+              width="100%"
             >
               {isFetching ? (<AvatarBoxSkeleton large />) : (
                 <AvatarBoxDenied
@@ -134,9 +132,10 @@ function NoAccess({ box, belongsToCurrentUser, t }) {
               </Box>
             </Box>
           </Box>
-          <Box display="flex" justifyContent="center" mb={4} width="100%">
-            <ChipUserMeLogout />
-          </Box>
+          <CardUserSignOut
+            mt={3}
+            mb={6}
+          />
           <Box width="100%">
             <Divider variant="middle" />
           </Box>

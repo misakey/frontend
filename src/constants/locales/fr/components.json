@@ -53,7 +53,7 @@
       },
       "about": {
         "text": "À propos",
-        "href": "https://about.misakey.com/"
+        "href": "https://about.misakey.com/#/fr/"
       },
       "blog": {
         "text": "Blog",
@@ -152,6 +152,10 @@
     "helperLinkText": "En savoir plus",
     "progress": "Envoi de fichiers en cours",
     "success": "Les fichiers ont été envoyés avec succès\u00a0!"
+  },
+  "requireAccess": {
+    "title": "<0>{{querier}}</0> requiert l'accès aux données ci-dessous",
+    "href": "https://about.misakey.com/#/fr/"
   },
   "whitelist": {
     "domainTitle": "Tous les utilisateurs du domaine",

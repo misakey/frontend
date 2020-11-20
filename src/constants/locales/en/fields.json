@@ -87,6 +87,7 @@
     }
   },
   "emailed_code_secret": {
+    "label": "Code",
     "placeholder": "123456",
     "helperText": "Type code received by email",
     "error": {
@@ -103,8 +104,9 @@
     }
   },
   "email_identifier": {
-    "label": "",
+    "label": "Email",
     "placeholder": "rose.flamingo@misakey.com",
+    "helperText": "Type your email to start authentication",
     "error": {
       "required": "Oops, you forgot to enter an identifier",
       "malformed": "Oops, this email is not valid"
@@ -149,13 +151,15 @@
     }
   },
   "prehashed_password_secret": {
-    "label": "",
+    "label": "Password",
     "placeholder": "Super Password",
     "error": {
       "invalid": "Wrong password"
     }
   },
   "account_creation_secret": {
+    "label": "Password",
+    "placeholder": "Super Password",
     "error": {
       "malformed": "Password should be at least 8 characters long"
     }

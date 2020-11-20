@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback, useContext, forwardRef } from 'r
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
-import { UserManagerContext } from '@misakey/auth/components/OidcProvider';
+import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';
 
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';

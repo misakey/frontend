@@ -12,7 +12,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
-import FieldTextPassword from './index';
+import FieldPassword from './index';
 
 // CONSTANTS
 export const ADORNMENT_POSITION = {
@@ -65,7 +65,7 @@ const useInputProps = (
 }), [adornmentPosition, visible, disabled, onToggleVisible, t, InputProps]);
 
 // COMPONENTS
-const FieldTextPasswordRevealable = ({
+const FieldPasswordRevealable = ({
   initialVisible,
   type,
   t,
@@ -96,7 +96,7 @@ const FieldTextPasswordRevealable = ({
   );
 
   return (
-    <FieldTextPassword
+    <FieldPassword
       {...omitTranslationProps(props)}
       type={actualType}
       disabled={disabled}
@@ -105,7 +105,7 @@ const FieldTextPasswordRevealable = ({
   );
 };
 
-FieldTextPasswordRevealable.propTypes = {
+FieldPasswordRevealable.propTypes = {
   initialVisible: PropTypes.bool,
   forceHide: PropTypes.bool,
   disabled: PropTypes.bool,
@@ -115,7 +115,7 @@ FieldTextPasswordRevealable.propTypes = {
   adornmentPosition: PropTypes.oneOf(ADORNMENT_POSITIONS),
 };
 
-FieldTextPasswordRevealable.defaultProps = {
+FieldPasswordRevealable.defaultProps = {
   initialVisible: false,
   disabled: false,
   forceHide: false,
@@ -125,4 +125,4 @@ FieldTextPasswordRevealable.defaultProps = {
   adornmentPosition: ADORNMENT_POSITION.end,
 };
 
-export default withTranslation(['fields'])(FieldTextPasswordRevealable);
+export default withTranslation(['fields'])(FieldPasswordRevealable);

@@ -116,9 +116,7 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
   const onScroll = useCallback(
     (e) => {
       const { target } = e;
-      if (target !== combinedRef.current) {
-        return;
-      }
+
       const scrollDiff = getScrollDiff(target);
       if (target.scrollTop < THRESHOLD && scrollDiff > 0) {
         if (!isFetching) {
@@ -133,7 +131,7 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
     },
     [
       onLoadMoreItemsRef, restoreScrollPosition,
-      isFetching, paginationOffsetRef, itemCount, combinedRef,
+      isFetching, paginationOffsetRef, itemCount,
     ],
   );
 

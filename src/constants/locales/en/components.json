@@ -143,6 +143,10 @@
     "progress": "File upload in progress",
     "success": "Files have been sent successfully!"
   },
+  "requireAccess": {
+    "title": "<0>{{querier}}</0> requires access to the information below",
+    "href": "https://about.misakey.com/"
+  },
   "whitelist": {
     "domainTitle": "All users from domain",
     "addDomain": "You can add access to every email from a domain with “*@[domain]”",

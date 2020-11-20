@@ -1,14 +1,14 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
 
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
 
 import useAuthFlowParams from '@misakey/auth/hooks/useAuthFlowParams';
-import { getUrlForOidcCallback } from '../../../helpers';
+import { getUrlForOidcCallback } from '@misakey/auth/helpers';
 
-import { withUserManager } from '../../OidcProvider';
+import { withUserManager } from '@misakey/auth/components/OidcProvider/Context';
+import Redirect from '@misakey/ui/Redirect';
 
 // COMPONENTS
 const RedirectAuthCallback = ({
@@ -41,7 +41,9 @@ const RedirectAuthCallback = ({
         const user = await userManager.signinRedirectCallback(callbackUrl);
         if (checkAcrIntegrity(user.profile.acr)) {
           if (isFunction(handleSuccess)) {
-            handleSuccess(!isNil(user.csrfToken) ? user : { ...user, csrfToken });
+            await Promise.resolve(
+              handleSuccess(!isNil(user.csrfToken) ? user : { ...user, csrfToken }),
+            );
           }
           return true;
         }

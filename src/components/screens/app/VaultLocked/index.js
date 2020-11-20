@@ -17,13 +17,13 @@ import FormField from '@misakey/ui/Form/Field';
 import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import ChipUser from '@misakey/ui/Chip/User';
-import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
+import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
 import BoxControls from '@misakey/ui/Box/Controls';
 import Box from '@material-ui/core/Box';
 import BoxContent from '@misakey/ui/Box/Content';
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 import useSignOut from '@misakey/auth/hooks/useSignOut';
-import { UserManagerContext } from '@misakey/auth/components/OidcProvider';
+import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';
 import Title from '@misakey/ui/Typography/Title';
 
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
@@ -87,7 +87,7 @@ function VaultLocked({ t }) {
           <Box component={Form} display="flex" flexDirection="column" width="100%" justifyContent="center">
             <FormField
               name={PREHASHED_PASSWORD}
-              component={FieldTextPasswordRevealable}
+              component={FieldPasswordRevealable}
               helperText={null}
               inputProps={{ 'data-matomo-ignore': true }}
               fullWidth

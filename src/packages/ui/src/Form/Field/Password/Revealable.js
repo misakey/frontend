@@ -11,7 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
-import FieldTextPassword from './index';
+import FormFieldPassword from '@misakey/ui/Form/Field/Password';
 
 // CONSTANTS
 const HIDDEN_TYPE = 'password';
@@ -32,49 +32,50 @@ const useOnToggleVisible = (setVisible) => useCallback(() => {
   setVisible((visible) => !visible);
 }, [setVisible]);
 
-const useInputProps = (visible, onToggleVisible, t) => useMemo(() => ({
-  endAdornment: (
-    <InputAdornment position="end">
-      <IconButton
-        edge="end"
-        aria-label={t('fields:password.toggle.visibility')}
-        onClick={onToggleVisible}
-        onMouseDown={eventPreventDefault}
-      >
-        {visible ? <VisibilityOff /> : <Visibility />}
-      </IconButton>
-    </InputAdornment>
-  ),
-}), [visible, onToggleVisible, t]);
-
 // COMPONENTS
-const FieldTextPasswordRevealable = ({ initialVisible, type, t, ...props }) => {
+const FormFieldPasswordRevealable = ({ initialVisible, type, t, InputProps, ...props }) => {
   const [visible, setVisible] = useState(initialVisible);
 
   const actualType = useActualType(visible, type);
 
   const onToggleVisible = useOnToggleVisible(setVisible);
 
-  const InputProps = useInputProps(visible, onToggleVisible, t);
+  const InputPropsWithEndAdornment = useMemo(() => ({
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton
+          edge="end"
+          aria-label={t('fields:password.toggle.visibility')}
+          onClick={onToggleVisible}
+          onMouseDown={eventPreventDefault}
+        >
+          {visible ? <VisibilityOff /> : <Visibility />}
+        </IconButton>
+      </InputAdornment>
+    ),
+    ...InputProps,
+  }), [visible, onToggleVisible, t, InputProps]);
 
   return (
-    <FieldTextPassword
+    <FormFieldPassword
       {...omitTranslationProps(props)}
       type={actualType}
-      InputProps={InputProps}
+      InputProps={InputPropsWithEndAdornment}
     />
   );
 };
 
-FieldTextPasswordRevealable.propTypes = {
+FormFieldPasswordRevealable.propTypes = {
   initialVisible: PropTypes.bool,
   type: PropTypes.string,
   t: PropTypes.func.isRequired,
+  InputProps: PropTypes.object,
 };
 
-FieldTextPasswordRevealable.defaultProps = {
+FormFieldPasswordRevealable.defaultProps = {
   initialVisible: false,
   type: 'password',
+  InputProps: {},
 };
 
-export default withTranslation('fields')(FieldTextPasswordRevealable);
+export default withTranslation('fields')(FormFieldPasswordRevealable);

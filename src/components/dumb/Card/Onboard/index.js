@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import { UserManagerContext } from '@misakey/auth/components/OidcProvider';
+import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 

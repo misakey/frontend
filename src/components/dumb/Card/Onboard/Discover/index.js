@@ -1,7 +1,7 @@
 import React, { useContext, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { UserManagerContext } from '@misakey/auth/components/OidcProvider';
+import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';
 
 import Card from '@material-ui/core/Card';
 import Box from '@material-ui/core/Box';

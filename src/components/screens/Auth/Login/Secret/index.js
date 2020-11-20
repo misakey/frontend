@@ -27,6 +27,7 @@ import head from '@misakey/helpers/head';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import props from '@misakey/helpers/props';
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
 import { getDetails, getCode } from '@misakey/helpers/apiError';
 import sentryLogError from '@misakey/helpers/log/sentry';
 import loginAuthStep from '@misakey/auth/builder/loginAuthStep';
@@ -37,13 +38,15 @@ import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useCancelForgotPassword from '@misakey/auth/hooks/useCancelForgotPassword';
 import { useClearUser } from '@misakey/hooks/useActions/loginSecret';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
-import SecretFormFields from 'components/screens/Auth/Login/Secret/Form/Fields';
+import SecretFormField from '@misakey/ui/Form/Field/Login/Secret';
 import Redirect from '@misakey/ui/Redirect';
-import ChipUser from '@misakey/ui/Chip/User';
 import Title from '@misakey/ui/Typography/Title';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
+import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
 import BoxControls from '@misakey/ui/Box/Controls';
 import ButtonForgotPassword from '@misakey/auth/components/Button/ForgotPassword';
 import ButtonRenewAuthStep from '@misakey/auth/components/Button/RenewAuthStep';
@@ -54,8 +57,12 @@ import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
 import Screen from '@misakey/ui/Screen';
 import AppbarStatic from '@misakey/ui/AppBar/Static';
+import CardUser from '@misakey/ui/Card/User';
+import IconButton from '@material-ui/core/IconButton';
+import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import CloseIcon from '@material-ui/icons/Close';
 
 // CONSTANTS
 const { conflict } = errorTypes;
@@ -69,13 +76,19 @@ const getSecretError = compose(
 );
 
 // HOOKS
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   buttonRoot: {
     width: 'auto',
   },
   screenContent: {
     flexGrow: 1,
     justifyContent: 'center',
+  },
+  textFieldInputRoot: {
+    borderRadius: `0 0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px`,
+  },
+  cardOverflowVisible: {
+    overflow: 'visible',
   },
 }));
 
@@ -88,6 +101,7 @@ const AuthLoginSecret = ({
   loginChallenge,
   client,
   accessToken,
+  resourceName,
   dispatchHardPasswordChange,
   dispatchCreateNewOwnerSecrets,
   dispatchSsoUpdate,
@@ -104,16 +118,13 @@ const AuthLoginSecret = ({
   const [redirectTo, setRedirectTo] = useState(null);
   const authIdentifierTo = useGeneratePathKeepingSearchAndHash(routes.auth.signIn._);
 
-
   const [reset, setReset] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const initialValues = useMemo(() => INITIAL_VALUES[CURRENT_STEP], []);
 
-  const { methodName, identityId, metadata: pwdHashParams } = useMemo(
-    () => authnStep || {},
-    [authnStep],
-  );
+  const { methodName, identityId, metadata: pwdHashParams } = useSafeDestr(authnStep);
+  const { name } = useSafeDestr(client);
 
   const validationSchema = useMemo(
     () => getSecretValidationSchema(methodName),
@@ -236,10 +247,8 @@ const AuthLoginSecret = ({
         }
         if (details.Authorization && details.loginChallenge) {
           enqueueSnackbar(t('auth:login.form.error.authorizationChallenge'), { variant: 'warning' });
-          return dispatchSsoReset()
-            .then(() => {
-              setRedirectTo(routes.auth.redirectToSignIn);
-            });
+          await dispatchSsoReset();
+          setRedirectTo(routes.auth.redirectToSignIn);
         }
         if (isHydraErrorCode(code)) {
           return enqueueSnackbar(t(`auth:error.flow.${code}`), {
@@ -301,15 +310,6 @@ const AuthLoginSecret = ({
 
   const onClearUser = useClearUser();
 
-  const chipActions = useMemo(
-    () => (methodName === ACCOUNT_CREATION
-      ? {}
-      : {
-        onDelete: onClearUser,
-      }),
-    [onClearUser, methodName],
-  );
-
   if (!isNil(redirectTo)) {
     return (
       <Redirect
@@ -351,25 +351,32 @@ const AuthLoginSecret = ({
           <Container component={Form} maxWidth="md">
             <Box>
               <AvatarClientSso client={client} />
-              <Box mt={2} display="flex" flexDirection="column" alignItems="flex-start">
-                <Title>
-                  <Box
-                    display="flex"
-                    overflow="hidden"
-                    flexWrap="wrap"
-                    component={Trans}
-                    i18nKey={`auth:login.secret.${methodName}.title`}
-                  >
-                    <Box mr={1} display="flex" flexWrap="nowrap">Code de confirmation envoyé à </Box>
-                    <Box display="flex" flexWrap="nowrap">
-                      <ChipUser
-                        {...chipActions}
-                        {...userPublicData}
-                      />
-                    </Box>
-                  </Box>
+              <Box mt={2} display="flex" flexDirection="column">
+                <Title gutterBottom={false}>
+                  <Trans i18nKey={`auth:login.secret.${methodName}.title`} values={{ resourceName: isEmpty(resourceName) ? name : resourceName }}>
+                    <span className={classes.boldTitle}>{'{{resourceName}}'}</span>
+                  </Trans>
                 </Title>
-                <SecretFormFields methodName={methodName} />
+                <Subtitle>
+                  <TransRequireAccess i18nKey={`auth:login.secret.${methodName}.requireAccess.title`} />
+                </Subtitle>
+                <CardUser
+                  my={3}
+                  className={classes.cardOverflowVisible}
+                  action={methodName !== ACCOUNT_CREATION && (
+                  <IconButton aria-label={t('common:signOut')} onClick={onClearUser}>
+                    <CloseIcon />
+                  </IconButton>
+                  )}
+                  {...userPublicData}
+                >
+                  <SecretFormField
+                    methodName={methodName}
+                    InputProps={{ classes: { root: classes.textFieldInputRoot } }}
+                    FormHelperTextProps={{ component: FormHelperTextInCard }}
+                    margin="none"
+                  />
+                </CardUser>
                 {methodName === EMAILED_CODE && (
                   <ButtonRenewAuthStep
                     classes={{ buttonRoot: classes.buttonRoot }}
@@ -409,6 +416,7 @@ AuthLoginSecret.propTypes = {
   identifier: PropTypes.string,
   loginChallenge: PropTypes.string.isRequired,
   client: SSO_PROP_TYPES.client.isRequired,
+  resourceName: PropTypes.string,
   // withTranslation
   t: PropTypes.func.isRequired,
   // CONNECT
@@ -425,6 +433,7 @@ AuthLoginSecret.propTypes = {
 AuthLoginSecret.defaultProps = {
   identifier: '',
   accessToken: null,
+  resourceName: '',
 };
 
 // CONNECT

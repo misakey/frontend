@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import useWithErrorsMapper from '@misakey/hooks/useWithErrorsMapper';
 
-import TextFieldStandard from '@misakey/ui/TextField/Standard';
+import TextFieldPassword from '@misakey/ui/TextField/Password';
 import withErrors from '@misakey/ui/Form/Field/withErrors';
 
 // CONSTANTS
@@ -12,7 +12,7 @@ const DEFAULT_INPUT_PROPS = {
 };
 
 // COMPONENTS
-const FormFieldTextPassword = ({ type, inputProps, ...props }) => {
+const FormFieldPassword = ({ inputProps, ...props }) => {
   const mergedInputProps = useMemo(
     () => ({
       ...inputProps,
@@ -24,18 +24,16 @@ const FormFieldTextPassword = ({ type, inputProps, ...props }) => {
   const textFieldProps = useWithErrorsMapper(props);
 
   return (
-    <TextFieldStandard {...textFieldProps} type={type} inputProps={mergedInputProps} />
+    <TextFieldPassword {...textFieldProps} inputProps={mergedInputProps} />
   );
 };
 
-FormFieldTextPassword.propTypes = {
-  type: PropTypes.string,
+FormFieldPassword.propTypes = {
   inputProps: PropTypes.object,
 };
 
-FormFieldTextPassword.defaultProps = {
-  type: 'password',
+FormFieldPassword.defaultProps = {
   inputProps: {},
 };
 
-export default withErrors(FormFieldTextPassword);
+export default withErrors(FormFieldPassword);

@@ -13,7 +13,6 @@ import compose from '@misakey/helpers/compose';
 import head from '@misakey/helpers/head';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import props from '@misakey/helpers/props';
 import { getDetails } from '@misakey/helpers/apiError';
 
@@ -25,12 +24,15 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Container from '@material-ui/core/Container';
-import LoginFormFields from '@misakey/ui/Form/Fields/Login/Identifier';
+import CardUser from '@misakey/ui/Card/User';
+import LoginFormField from '@misakey/ui/Form/Field/Login/Identifier';
 import BoxControls from '@misakey/ui/Box/Controls';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
 import Box from '@material-ui/core/Box';
 import Screen from '@misakey/ui/Screen';
 import AvatarBox from '@misakey/ui/Avatar/Box';
+import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
+import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
 
 // CONSTANTS
 const CURRENT_STEP = STEP.identifier;
@@ -54,14 +56,17 @@ const useStyles = makeStyles((theme) => ({
   container: {
     overflow: 'auto',
   },
+  textFieldInputRoot: {
+    borderRadius: `0 0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px`,
+  },
 }));
 
 // COMPONENTS
 const AuthLoginIdentifier = ({
   loginChallenge,
-  loginHint,
   client,
   identifier,
+  resourceName,
   t,
 }) => {
   const classes = useStyles();
@@ -74,13 +79,6 @@ const AuthLoginIdentifier = ({
     }),
     [identifier],
   );
-
-  const objLoginHint = useMemo(
-    () => (isEmpty(loginHint) ? null : objectToCamelCase(JSON.parse(loginHint))),
-    [loginHint],
-  );
-
-  const { resourceName } = useSafeDestr(objLoginHint);
 
   const { name } = useSafeDestr(client);
 
@@ -127,16 +125,21 @@ const AuthLoginIdentifier = ({
             enableReinitialize
           >
             <Box component={Form} mt={2}>
-              <Title>
+              <Title gutterBottom={false}>
                 <Trans i18nKey="auth:login.identifier.title" values={{ resourceName: isEmpty(resourceName) ? name : resourceName }}>
-                  Identifier for
                   <span className={classes.boldTitle}>{'{{resourceName}}'}</span>
                 </Trans>
               </Title>
               <Subtitle>
-                {t('auth:login.identifier.subtitle')}
+                <TransRequireAccess i18nKey="auth:login.identifier.requireAccess.title" />
               </Subtitle>
-              <LoginFormFields />
+              <CardUser my={3}>
+                <LoginFormField
+                  InputProps={{ classes: { root: classes.textFieldInputRoot } }}
+                  FormHelperTextProps={{ component: FormHelperTextInCard }}
+                  margin="none"
+                />
+              </CardUser>
               <BoxControls formik primary={primary} />
             </Box>
           </Formik>
@@ -149,10 +152,14 @@ const AuthLoginIdentifier = ({
 AuthLoginIdentifier.propTypes = {
   loginChallenge: PropTypes.string.isRequired,
   identifier: PropTypes.string.isRequired,
-  loginHint: SSO_PROP_TYPES.loginHint.isRequired,
   client: SSO_PROP_TYPES.client.isRequired,
+  resourceName: PropTypes.string,
   // withTranslation
   t: PropTypes.func.isRequired,
+};
+
+AuthLoginIdentifier.defaultProps = {
+  resourceName: '',
 };
 
 export default withTranslation(['auth', 'common'])(AuthLoginIdentifier);

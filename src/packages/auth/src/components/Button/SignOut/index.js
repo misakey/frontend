@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import omit from '@misakey/helpers/omit';
 
-import { withUserManager } from '@misakey/auth/components/OidcProvider';
+import { withUserManager } from '@misakey/auth/components/OidcProvider/Context';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import useSignOut from '@misakey/auth/hooks/useSignOut';
 

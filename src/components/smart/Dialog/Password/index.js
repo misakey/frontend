@@ -22,7 +22,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitleWithCloseIcon from '@misakey/ui/DialogTitle/WithCloseIcon';
-import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
+import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
 import BoxControls from '@misakey/ui/Box/Controls';
 import Box from '@material-ui/core/Box';
 
@@ -84,7 +84,7 @@ const DialogPassword = ({
             <Box display="flex" justifyContent="center">
               <FormField
                 name={PREHASHED_PASSWORD}
-                component={FieldTextPasswordRevealable}
+                component={FieldPasswordRevealable}
                 className={classes.inputField}
                 inputProps={{ 'data-matomo-ignore': true }}
                 fullWidth={false}

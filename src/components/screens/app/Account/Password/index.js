@@ -23,7 +23,7 @@ import FormField from '@misakey/ui/Form/Field';
 import Formik from '@misakey/ui/Formik';
 import ScreenAction from 'components/dumb/Screen/Action';
 import BoxControls from '@misakey/ui/Box/Controls';
-import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
+import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
@@ -143,21 +143,21 @@ const AccountPassword = ({ t, identity, isFetching }) => {
                 <FormField
                   type="password"
                   name={OLD_PASSWORD_KEY}
-                  component={FieldTextPasswordRevealable}
+                  component={FieldPasswordRevealable}
                 />
               </Box>
               <Box mb={2}>
                 <FormField
                   type="password"
                   name={NEW_PASSWORD_KEY}
-                  component={FieldTextPasswordRevealable}
+                  component={FieldPasswordRevealable}
                   inputProps={NEW_PASSWORD_INPUT_PROPS}
                 />
               </Box>
               <FormField
                 type="password"
                 name={PASSWORD_CONFIRM_KEY}
-                component={FieldTextPasswordRevealable}
+                component={FieldPasswordRevealable}
               />
               <BoxControls
                 mt={3}

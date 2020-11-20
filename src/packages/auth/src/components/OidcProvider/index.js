@@ -1,6 +1,8 @@
-import React, { useMemo, useEffect, createContext, useCallback, useState, forwardRef } from 'react';
+import React, { useMemo, useEffect, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { matchPath, useLocation } from 'react-router-dom';
+
+import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';
 
 import { loadUserThunk, authReset } from '@misakey/auth/store/actions/auth';
 
@@ -14,28 +16,22 @@ import createUserManager from '@misakey/auth/helpers/userManager';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
+import SplashScreenOidc from '@misakey/ui/Screen/Splash/Oidc';
 import DialogSigninRedirect from '@misakey/auth/components/OidcProvider/Dialog/SigninRedirect';
 
 // HELPERS
 const getUser = ({
   profile: { acr, sco: scope, auth_time: authenticatedAt, csrf_token: token } = {},
-  expires_at: expiryAt,
+  expires_at: expiresAt,
   id_token: id,
 }) => ({
-  expiryAt,
+  expiresAt,
   token,
   id,
   authenticatedAt,
   scope,
   isAuthenticated: !!token,
   acr: parseAcr(acr),
-});
-
-// CONTEXT
-export const UserManagerContext = createContext({
-  userManager: null,
-  askSigninRedirect: null,
 });
 
 // COMPONENTS
@@ -243,7 +239,7 @@ function OidcProvider({
         {...signinRedirectProps}
       />
       {isLoading ? (
-        <SplashScreen />
+        <SplashScreenOidc />
       ) : children}
     </UserManagerContext.Provider>
   );
@@ -279,11 +275,5 @@ OidcProvider.defaultProps = {
   store: null,
   autoSignInExcludedRoutes: [],
 };
-
-export const withUserManager = (Component) => forwardRef((props, ref) => (
-  <UserManagerContext.Consumer>
-    {(context) => <Component {...props} {...context} ref={ref} />}
-  </UserManagerContext.Consumer>
-));
 
 export default OidcProvider;

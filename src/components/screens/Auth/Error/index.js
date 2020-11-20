@@ -30,8 +30,7 @@ import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import BoxControls from '@misakey/ui/Box/Controls';
 import AuthErrorDetails from 'components/screens/Auth/Error/Details';
-import List from '@material-ui/core/List';
-import ListItemConsentEmail from '@misakey/ui/ListItem/Consent/Email';
+import CardUserSignOut from '@misakey/auth/components/Card/User/SignOut';
 import ButtonSignOut from '@misakey/auth/components/Button/SignOut';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
@@ -179,20 +178,14 @@ const AuthError = ({ loginChallenge, error, t }) => {
               <Subtitle gutterBottom={false}>{t('auth:error.alreadyAuth')}</Subtitle>
             </Box>
             {showCard ? ( // @FIXME replace by card user when implemented
-              <List className={classes.listFullWidth}>
-                <ListItemConsentEmail
-                  avatarUrl={avatarUrl}
-                  displayName={displayName}
-                  email={identifierValue}
-                >
-                  <ButtonSignOut
-                    standing={BUTTON_STANDINGS.OUTLINED}
-                    onSuccess={onSignOutSuccess}
-                  />
-                </ListItemConsentEmail>
-              </List>
+              <CardUserSignOut
+                onSuccess={onSignOutSuccess}
+              />
             ) : (
-              <ButtonSignOut standing={BUTTON_STANDINGS.OUTLINED} />
+              <ButtonSignOut
+                standing={BUTTON_STANDINGS.OUTLINED}
+                onSuccess={onSignOutSuccess}
+              />
             )}
           </Box>
         )}

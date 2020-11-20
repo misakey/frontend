@@ -2,8 +2,8 @@ import { PASSWORD_SECLEVEL, CONFIRMATION_CODE_SECLEVEL } from '@misakey/auth/con
 import { SECLEVEL_METHOD, METADATA_KEYS, VALUE_KEY } from '@misakey/auth/constants/method';
 import { STEP } from '@misakey/auth/constants';
 
-import FieldCode from 'components/dumb/Form/Field/Code';
-import FieldTextPasswordRevealable from 'components/dumb/Form/Field/Text/Password/Revealable';
+import FieldCode from '@misakey/ui/Form/Field/Code';
+import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
 
 export const CONFIRM_REGEX = /^[0-9]{6}$/;
 
@@ -17,7 +17,7 @@ export const SECLEVEL_CONFIG = {
   [PASSWORD_SECLEVEL]: {
     fieldTypes: { [STEP.identifier]: 'email', [STEP.secret]: SECLEVEL_METHOD[2] },
     fieldProps: {
-      [STEP.secret]: { component: FieldTextPasswordRevealable, type: 'password', autoFocus: true, inputProps: { 'data-matomo-ignore': true } },
+      [STEP.secret]: { component: FieldPasswordRevealable, type: 'password', autoFocus: true, inputProps: { 'data-matomo-ignore': true } },
     },
   },
 };

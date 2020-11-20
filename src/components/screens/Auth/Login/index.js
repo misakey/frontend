@@ -26,7 +26,7 @@ const AuthLogin = ({ identifier, match, loginChallenge, loginHint, t, ...props }
   const onSubmit = useOnIdentifierSubmit(loginChallenge);
 
   const objLoginHint = useMemo(
-    () => (isEmpty(loginHint) ? null : objectToCamelCase(JSON.parse(loginHint))),
+    () => (isEmpty(loginHint) ? {} : objectToCamelCase(JSON.parse(loginHint))),
     [loginHint],
   );
 
@@ -55,6 +55,7 @@ const AuthLogin = ({ identifier, match, loginChallenge, loginHint, t, ...props }
           <LoginSecret
             identifier={identifier}
             loginChallenge={loginChallenge}
+            {...objLoginHint}
             {...routerProps}
             {...props}
           />
@@ -65,8 +66,8 @@ const AuthLogin = ({ identifier, match, loginChallenge, loginHint, t, ...props }
         render={(routerProps) => (
           <LoginIdentifier
             identifier={identifier}
-            loginHint={loginHint}
             loginChallenge={loginChallenge}
+            {...objLoginHint}
             {...routerProps}
             {...props}
           />

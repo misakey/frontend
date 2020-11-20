@@ -41,24 +41,36 @@ const ButtonPaste = ({ mode, field, inputRef, ...props }) => {
     [isIcon],
   );
 
+  const focusInput = useCallback(
+    () => {
+      const { current } = inputRef;
+
+      if (!isNil(current)) {
+        current.focus();
+      }
+    },
+    [inputRef],
+  );
+
   const execCommandFallback = useCallback(
     () => {
       const { current } = inputRef;
 
       if (!isNil(current)) {
         current.focus();
-        setTimeout(
+        return setTimeout(
           () => { document.execCommand('paste'); },
         );
       }
+      return Promise.resolve();
     },
     [inputRef],
   );
 
-  const onButtonClick = useCallback(
+  const onTryPaste = useCallback(
     (e) => {
       if (HAS_PASTE) {
-        navigator.clipboard.readText()
+        return navigator.clipboard.readText()
           .then((text) => {
             setFieldValue(name, text);
           })
@@ -66,11 +78,15 @@ const ButtonPaste = ({ mode, field, inputRef, ...props }) => {
             const { message } = error;
             enqueueSnackbar(message || `${error}`, { variant: 'warning' });
           });
-      } else {
-        execCommandFallback(e);
       }
+      return execCommandFallback(e);
     },
     [enqueueSnackbar, name, setFieldValue, execCommandFallback],
+  );
+
+  const onButtonClick = useCallback(
+    (e) => onTryPaste(e).then(focusInput),
+    [onTryPaste, focusInput],
   );
 
   if (!HAS_PASTE && !EXEC_PASTE_SUPPORT) {

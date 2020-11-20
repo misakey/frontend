@@ -20,11 +20,15 @@
   "download": "Download",
   "edit": "Edit",
   "emptyRating": "N/A",
+  "expired": "Session expired {{fromNow}}",
   "goBack": "Back",
   "gotIt": "Got it",
+  "identifier": "Identifier",
+  "identity": "Identity",
   "loading": "Loading",
   "more": "More",
   "next": "Next",
+  "noSession": "No authenticated session",
   "ok": "OK",
   "on": "On",
   "or": "or",
@@ -141,11 +145,9 @@
   },
   "connect": {
     "misakey": {
-      "title": "Access to “Misakey app”",
-      "subtitle": "Misakey requires access to the information below"
+      "title": "Access to “Misakey app”"
     },
     "title": "Access to “{{resourceName}}”",
-    "subtitle": "<1>{{creatorName}}</1> requires access to the information below",
     "authorize": "Autorize <1>{{creatorName}}</1> to access above information\u00a0?",
     "email": "Confirmed identifier",
     "action": "Access"

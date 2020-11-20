@@ -13,6 +13,7 @@
   "copied": "Copié dans le presse papier!",
   "decrypt": "Déchiffrer",
   "delete": "Supprimer",
+  "expired": "Session expirée {{fromNow}}",
   "join": "Rejoindre",
   "leave": "Quitter",
   "details": "Détails",
@@ -23,6 +24,8 @@
   "emptyRating": "N/A",
   "goBack": "Retour",
   "gotIt": "J'ai compris",
+  "identifier": "Identifiant",
+  "identity": "Identité",
   "incompatibleBrowser": "Cette fonctionnalité n'est pas disponible sur ce navigateur pour l'instant\u00a0:(",
   "loading": "Chargement",
   "more": "Plus",
@@ -41,6 +44,7 @@
   "regenerate": "Régénérer",
   "remove": "Retirer",
   "create": "Créer",
+  "noSession": "Pas de session authentifiée",
   "open": "Ouvrir",
   "reopen": "Réouvrir",
   "resendEmail": "Relancer",
@@ -148,11 +152,9 @@
   },
   "connect": {
     "misakey": {
-      "title": "Accès à «\u00a0Misakey app\u00a0»",
-      "subtitle": "Misakey requiert l'accès aux données ci-dessous"
+      "title": "Accès à «\u00a0Misakey app\u00a0»"
     },
     "title": "Accéder à «\u00a0{{resourceName}}\u00a0»",
-    "subtitle": "<1>{{creatorName}}</1> requiert l'accès aux données ci-dessous",
     "authorize": "Autorisez-vous <1>{{creatorName}}</1> à accéder aux informations ci-dessus\u00a0?",
     "email": "Identifiant confirmé",
     "action": "Accéder"

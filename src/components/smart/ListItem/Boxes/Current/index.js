@@ -1,10 +1,12 @@
 import React, { useMemo } from 'react';
 
 import routes from 'routes';
+import { makeDenormalizeBoxSelector } from 'store/reducers/box';
 
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { makeDenormalizeBoxSelector } from 'store/reducers/box';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 import ListItemBoxes from 'components/smart/ListItem/Boxes';
 
@@ -24,12 +26,24 @@ const ListItemBoxesCurrent = (props) => {
   );
 
   const box = useSelector((state) => denormalizeBoxSelector(state, id));
+  const { isMember } = useSafeDestr(box);
+
+  const { pathname, hash } = useGeneratePathKeepingSearchAndHash(TO_ROUTE, { id });
+  const to = useMemo(
+    () => ({ pathname, hash }),
+    [pathname, hash],
+  );
+
+  const linkProps = useMemo(
+    () => (isMember ? { toRoute: TO_ROUTE } : { toRoute: TO_ROUTE, to }),
+    [isMember, to],
+  );
 
   return (
     <ListItemBoxes
       selected
-      toRoute={TO_ROUTE}
       box={box}
+      {...linkProps}
       {...props}
     />
   );

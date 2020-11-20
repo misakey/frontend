@@ -132,6 +132,10 @@ export const selectors = {
     getState,
     prop('token'),
   ),
+  expiresAt: createSelector(
+    getState,
+    prop('expiresAt'),
+  ),
   identity: identitySelector,
   accountId: createSelector(
     identitySelector,

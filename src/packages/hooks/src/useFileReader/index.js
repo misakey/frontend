@@ -90,7 +90,6 @@ export default ({ onLoadStart, onProgress, onLoad, onError }) => {
   const onClearProgress = useOnClearProgress(setProgress);
   const onChange = useCallback(
     (event) => {
-      event.persist(); // @TODO remove when upgrading to React 17
       const eventFile = eventGetFile(event);
       if (!isNil(eventFile)) {
         changeEvent.current = event;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
-import { UserManagerContext } from '@misakey/auth/components/OidcProvider';
+import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import { getProfile as getProfileBuilder } from '@misakey/helpers/builder/identities';
