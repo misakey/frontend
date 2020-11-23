@@ -1,10 +1,21 @@
 import React, { useMemo, useCallback } from 'react';
 import { Link, useRouteMatch } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import routes from 'routes';
-import { useSelector, useDispatch } from 'react-redux';
 
+import routes from 'routes';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { SUPPORTED_TYPES } from 'constants/app/notifications/byIdentity';
+import { setNewCount, setLastNotification } from 'store/actions/identity/notifications';
+import { getLastNotificationSelector, getNewCountSelector } from 'store/reducers/identity/notifications';
+
+import { countUserNotificationsBuilder, getUserNotificationsBuilder } from '@misakey/helpers/builder/identities';
+import isNil from '@misakey/helpers/isNil';
+import head from '@misakey/helpers/head';
+
+import { useSelector, useDispatch } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import { useTranslation } from 'react-i18next';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -15,17 +26,10 @@ import TypographyDateSince from 'components/dumb/Typography/DateSince';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-import isNil from '@misakey/helpers/isNil';
-import head from '@misakey/helpers/head';
-import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import { countUserNotificationsBuilder, getUserNotificationsBuilder } from '@misakey/helpers/builder/identities';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
-import { SUPPORTED_TYPES } from 'constants/app/notifications/byIdentity';
-import { setNewCount, setLastNotification } from 'store/actions/identity/notifications';
-import { getLastNotificationSelector, getNewCountSelector } from 'store/reducers/identity/notifications';
-
+// CONSTANTS
 const {
   identityId: IDENTITY_ID_SELECTOR,
+  identity: IDENTITY_SELECTOR,
   isAuthenticated: IS_AUTHENTICATED_SELECTOR,
 } = authSelectors;
 
@@ -47,9 +51,13 @@ function MisakeyNotificationsListItem({ ...props }) {
 
   const dispatch = useDispatch();
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
+  const identity = useSelector(IDENTITY_SELECTOR);
   const identityId = useSelector(IDENTITY_ID_SELECTOR);
   const newNotificationsCount = useSelector(getNewCountSelector);
   const lastNotification = useSelector(getLastNotificationSelector);
+
+  const { displayName } = useSafeDestr(identity);
+
 
   const matchNotificationsRoute = useRouteMatch(routes.userNotifications._);
 
@@ -65,13 +73,13 @@ function MisakeyNotificationsListItem({ ...props }) {
         return (
           <>
             <span className={classes.bold}>{t('boxes:notifications.byIdentity.previewDisplayName')}</span>
-            {t(`boxes:notifications.byIdentity.types.${type}`, { ...details })}
+            {t(`boxes:notifications.byIdentity.types.${type}`, { ...details, displayName })}
           </>
         );
       }
       return t('boxes:notifications.byIdentity.subtitle');
     },
-    [classes.bold, details, t, type],
+    [classes.bold, details, t, type, displayName],
   );
 
   const shouldFetch = useMemo(

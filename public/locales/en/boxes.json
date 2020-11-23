@@ -303,7 +303,7 @@
       "title": "Misakey",
       "subtitle": "Your private space shared with Misakey",
       "displayName": "Misakey bot",
-      "previewDisplayName": "Misakey bot:",
+      "previewDisplayName": "Misakey bot:\u00a0",
       "empty": "You haven't received messages from us yet 🙊",
       "noMoreItems": "It's the beginning of your shared space with Misakey",
       "types": {
@@ -315,7 +315,7 @@
         },
         "box": {
           "lifecycle": "Private space “{{title}}” has been closed.",
-          "auto_invite": "You have been invited to join the private space “{{box_title}}”"
+          "auto_invite": "You have been invited to join the private space “{{boxTitle}}”"
         },
         "user": {
           "reset_password": "You have reset your password.\nYou have lost decryption keys for your previous private spaces.\nIf you had exported your vault backup from workspace “My account”, you could retrieve them by restauring the backup.",
