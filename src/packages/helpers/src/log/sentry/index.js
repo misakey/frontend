@@ -9,6 +9,6 @@ export default (error, hint = 'AppError', tags = {}, level = 'error', extras = {
 
     // log will only log in dev mode
     log(`Log error to Sentry with options ${JSON.stringify(options)}`);
-    log(error, 'error', true);
+    log(error, 'error', /* env = */'development', /* trace = */true);
   });
 };
