@@ -1,27 +1,43 @@
 import React, { useRef, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { denormalize } from 'normalizr';
 import { connect } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 
-import EventCard from 'components/dumb/Card/Event';
+import { selectors as authSelectors, PROP_TYPES as AUTH_PROPS_TYPES } from '@misakey/auth/store/reducers/auth';
 import IdentityNotificationsSchema from 'store/schemas/Notifications/Identity';
 import { DATE_FULL_NUMERAL, TIME } from 'constants/formats/dates';
-import isNil from '@misakey/helpers/isNil';
-import Typography from '@material-ui/core/Typography';
-import { SUPPORTED_TYPES } from 'constants/app/notifications/byIdentity';
-import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
-import AutoInvitationButton from 'components/screens/app/Notifications/Actions/AutoInvitationButton';
+import { SUPPORTED_TYPES, BOX_AUTO_INVITE, USER_CREATE_IDENTITY } from 'constants/app/notifications/byIdentity';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
+import { denormalize } from 'normalizr';
+import isNil from '@misakey/helpers/isNil';
+
+
+import { useTranslation } from 'react-i18next';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
+
+import EventCard from 'components/dumb/Card/Event';
+import Typography from '@material-ui/core/Typography';
+import AutoInvitationButton from 'components/screens/app/Notifications/Actions/AutoInvitationButton';
+import ButtonCreateAccount from '@misakey/auth/components/Button/CreateAccount';
+
+// CONSTANTS
 export const INNER_SPACING = 12;
 const NOT_ACK_STYLE = { style: { fontWeight: 800 } };
 
-const MessageRow = ({ index, style, setSize, notification, previousNotification, data }) => {
+// COMPONENTS
+const MessageRow = ({
+  index, style, setSize,
+  notification, previousNotification, data,
+  acr, identity,
+}) => {
   const rowRoot = useRef(null);
-  const { t } = useTranslation('boxes');
+  const { t } = useTranslation(['boxes', 'common']);
 
-  const { hasNextPage } = useMemo(() => data, [data]);
+  const { hasNextPage } = useSafeDestr(data);
+
+  const { displayName } = useSafeDestr(identity);
 
   const author = useMemo(
     () => ({ displayName: t('boxes:notifications.byIdentity.displayName'), avatarUrl: '/img/logo.png' }),
@@ -33,12 +49,9 @@ const MessageRow = ({ index, style, setSize, notification, previousNotification,
     type = '',
     details = {},
     acknowledgedAt,
-  } = useMemo(() => notification || {}, [notification]);
+  } = useSafeDestr(notification);
 
-  const { createdAt: previousCreatedAt } = useMemo(
-    () => previousNotification || {},
-    [previousNotification],
-  );
+  const { createdAt: previousCreatedAt } = useSafeDestr(previousNotification);
 
   const dateTitle = useMemo(
     () => {
@@ -53,15 +66,21 @@ const MessageRow = ({ index, style, setSize, notification, previousNotification,
   const date = useDateFormatMemo(createdAt, TIME);
 
   const text = useMemo(
-    () => t(`boxes:notifications.byIdentity.types.${type.replace('.', '_')}`, { ...details }),
-    [details, t, type],
+    () => t(`boxes:notifications.byIdentity.types.${type}`, { ...details, displayName }),
+    [details, t, type, displayName],
   );
 
   const actions = useMemo(
-    () => (
-      type === 'box.auto_invite' ? <AutoInvitationButton notifDetails={details} /> : null
-    ),
-    [type, details],
+    () => {
+      if (type === BOX_AUTO_INVITE) {
+        return <AutoInvitationButton notifDetails={details} />;
+      }
+      if (type === USER_CREATE_IDENTITY && acr === 1) {
+        return <ButtonCreateAccount standing={BUTTON_STANDINGS.OUTLINED} text={t('common:setupPassword')} />;
+      }
+      return null;
+    },
+    [type, details, t, acr],
   );
 
   const titleProps = useMemo(
@@ -107,6 +126,9 @@ MessageRow.propTypes = {
     hasNextPage: PropTypes.bool.isRequired,
     items: PropTypes.object.isRequired,
   }).isRequired,
+  // CONNECT
+  acr: AUTH_PROPS_TYPES.acr.isRequired,
+  identity: AUTH_PROPS_TYPES.identity.isRequired,
   notification: PropTypes.shape(IdentityNotificationsSchema.propTypes).isRequired,
   previousNotification: PropTypes.shape(IdentityNotificationsSchema.propTypes),
 };
@@ -129,7 +151,12 @@ const mapStateToProps = (state, { index, data: { items } }) => {
     IdentityNotificationsSchema.entity,
     state.entities,
   );
-  return { notification, previousNotification, index };
+  return {
+    acr: authSelectors.acr(state),
+    identity: authSelectors.identity(state),
+    notification,
+    previousNotification,
+  };
 };
 
 export default connect(mapStateToProps, null)(MessageRow);

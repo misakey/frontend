@@ -118,7 +118,7 @@ CardUser.defaultProps = {
   displayName: '',
   avatarUrl: '',
   expired: false,
-  expiresAt: '',
+  expiresAt: null,
   action: null,
   children: null,
   disablePadding: false,

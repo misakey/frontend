@@ -103,7 +103,7 @@ AppBarNavigationBase.propTypes = {
    */
   showGoBack: PropTypes.oneOf([true, false, null]),
   t: PropTypes.func.isRequired,
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  title: PropTypes.node,
   toolbarProps: PropTypes.object,
   buttonProps: PropTypes.object,
 };

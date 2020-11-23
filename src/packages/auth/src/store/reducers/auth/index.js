@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
 import { createSelector } from 'reselect';
 
@@ -11,12 +13,38 @@ import {
   LOAD_USER,
   SIGN_IN,
   UPDATE_IDENTITY,
-  LOAD_USER_ROLES,
-  ADD_USER_ROLE,
   SET_IS_AUTHENTICATED,
   CLEAR_IDENTITY,
 } from '../../actions/auth';
 
+// CONSTANTS
+export const PROP_TYPES = {
+  id: PropTypes.string,
+  authenticatedAt: PropTypes.string,
+  accountId: PropTypes.string,
+  isAuthenticated: PropTypes.bool,
+  identityId: PropTypes.string,
+  // @FIXME we would need a schema
+  identity: PropTypes.object,
+  token: PropTypes.string,
+  expiresAt: PropTypes.number,
+  acr: PropTypes.number,
+  scope: PropTypes.string,
+};
+
+// INITIAL_STATE
+export const INITIAL_STATE = {
+  id: null,
+  authenticatedAt: null,
+  accountId: null,
+  isAuthenticated: false,
+  identityId: null,
+  identity: null,
+  token: null,
+  expiresAt: null,
+  acr: null,
+  scope: null,
+};
 
 // HELPERS
 const mergeIdentity = (state, identity) => (isNil(identity)
@@ -36,21 +64,6 @@ const syncIdentity = (state, { identity, accountId, identityId }) => {
   if (identityHasChanged) { return null; }
   if (identityUpgrade) { return { accountId, hasAccount: true }; }
   return {};
-};
-
-// INITIAL_STATE
-export const INITIAL_STATE = {
-  id: null,
-  authenticatedAt: null,
-  accountId: null,
-  isAuthenticated: false,
-  identityId: null,
-  identity: null,
-  roles: null,
-  token: null,
-  expiresAt: null,
-  acr: null,
-  scope: null,
 };
 
 function resetCredentials() {
@@ -83,21 +96,6 @@ function updateCredentials(state, { credentials }) {
     identity: mergeIdentity(state, nextIdentity),
     acr: nextAcr,
     ...rest,
-  };
-}
-
-
-function updateRoles(state, { roles }) {
-  return {
-    ...state,
-    roles,
-  };
-}
-
-function addUserRole(state, { role }) {
-  return {
-    ...state,
-    roles: [...state.roles, role],
   };
 }
 
@@ -175,7 +173,5 @@ export default createResetOnSignOutReducer(INITIAL_STATE, {
   [LOAD_USER]: updateCredentials,
   [UPDATE_IDENTITY]: updateIdentity,
   [CLEAR_IDENTITY]: clearIdentity,
-  [LOAD_USER_ROLES]: updateRoles,
-  [ADD_USER_ROLE]: addUserRole,
   [SET_IS_AUTHENTICATED]: setIsAuthenticated,
 });

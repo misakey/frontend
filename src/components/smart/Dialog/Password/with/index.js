@@ -1,21 +1,20 @@
-import React, { useState, useMemo, useCallback, useContext, forwardRef } from 'react';
+import React, { useState, useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 
-import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';
+import { selectors } from '@misakey/crypto/store/reducers';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import { selectors } from '@misakey/crypto/store/reducers';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
+import { useSelector } from 'react-redux';
+import useCreateAccount from '@misakey/auth/hooks/useCreateAccount';
 
 import DialogOpenVault from 'components/smart/Dialog/Password/OpenVault';
 
 // CONSTANTS
 const {
-  identifierValue: IDENTIFIER_VALUE_SELECTOR,
   accountId: ACCOUNT_ID_SELECTOR,
 } = authSelectors;
 
@@ -27,19 +26,11 @@ const withDialogPassword = (Component) => {
     forceDialog,
     ...props
   }, ref) => {
-    const { askSigninRedirect } = useContext(UserManagerContext);
+    const onCreateAccount = useCreateAccount();
 
     const [open, setOpen] = useState(false);
 
     const accountId = useSelector(ACCOUNT_ID_SELECTOR);
-    const identifierValue = useSelector(IDENTIFIER_VALUE_SELECTOR);
-
-    const loginHint = useMemo(
-      () => (isNil(identifierValue)
-        ? ''
-        : JSON.stringify({ identifier: identifierValue })),
-      [identifierValue],
-    );
 
     const hasAccountId = useMemo(
       () => !isNil(accountId),
@@ -54,14 +45,14 @@ const withDialogPassword = (Component) => {
     const onWrapperClick = useCallback(
       (e) => {
         if (!hasAccountId) {
-          askSigninRedirect({ acrValues: 2, prompt: 'login', loginHint });
+          onCreateAccount();
         } else if (!isCryptoLoaded || forceDialog) {
           setOpen(true);
         } else if (isFunction(onClick)) {
           onClick(e);
         }
       },
-      [hasAccountId, isCryptoLoaded, forceDialog, onClick, askSigninRedirect, loginHint],
+      [hasAccountId, isCryptoLoaded, forceDialog, onClick, onCreateAccount],
     );
 
     const onClose = useCallback(

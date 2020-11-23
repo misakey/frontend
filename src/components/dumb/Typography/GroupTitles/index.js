@@ -44,9 +44,9 @@ function GroupTitles({ offset, subtitle, subtitleProps, title, titleProps }) {
 
 GroupTitles.propTypes = {
   offset: PropTypes.bool,
-  subtitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  subtitle: PropTypes.node,
   subtitleProps: PropTypes.object,
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
+  title: PropTypes.node.isRequired,
   titleProps: PropTypes.object,
 };
 

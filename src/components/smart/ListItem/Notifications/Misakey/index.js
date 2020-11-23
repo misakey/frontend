@@ -65,7 +65,7 @@ function MisakeyNotificationsListItem({ ...props }) {
         return (
           <>
             <span className={classes.bold}>{t('boxes:notifications.byIdentity.previewDisplayName')}</span>
-            {t(`boxes:notifications.byIdentity.types.${type.replace('.', '_')}`, { ...details })}
+            {t(`boxes:notifications.byIdentity.types.${type}`, { ...details })}
           </>
         );
       }

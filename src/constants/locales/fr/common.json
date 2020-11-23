@@ -1,4 +1,5 @@
 {
+  "wip": "En construction",
   "accept": "J'Accepte",
   "addToVault": "Sauvegarder dans mon coffre",
   "add": "Ajouter",
@@ -11,6 +12,7 @@
   "copyInvitationLink": "Copiez et envoyez ce lien aux personnes que vous voulez inviter dans l'espace privé",
   "copy": "Copier",
   "copied": "Copié dans le presse papier!",
+  "createAccount": "Créer un compte",
   "decrypt": "Déchiffrer",
   "delete": "Supprimer",
   "expired": "Session expirée {{fromNow}}",
@@ -55,6 +57,7 @@
   "see": "Voir",
   "select": "Sélectionner",
   "send": "Envoyer",
+  "setupPassword": "Définir mon mot de passe",
   "share": "Partager",
   "show": "Voir",
   "signIn": "Connexion",

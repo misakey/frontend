@@ -76,8 +76,8 @@
     "success": "Mon mot de passe a été mis a jour"
   },
   "vault": {
-    "title": "Stockage des clés",
-    "helperText": "Exporter ma clé privée",
+    "title": "Mes clés",
+    "helperText": "Exporter/Importer",
     "info": {
       "general": "Les données dans mon coffre-fort sont chiffrées avec une clé privée. Lorsque je perds mon mot de passe, cette clé privée n'est plus accessible.",
       "myKeyTitle": "Ma clé privée",

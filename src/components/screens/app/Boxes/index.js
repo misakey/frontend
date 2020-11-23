@@ -19,7 +19,9 @@ import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 
 import BoxRead from 'components/screens/app/Boxes/Read';
 import BoxNone from 'components/screens/app/Boxes/None';
+import RouteAuthenticated from '@misakey/auth/components/Route/Authenticated';
 import RouteAcr from '@misakey/auth/components/Route/Acr';
+import RedirectAcr from '@misakey/auth/components/Redirect/Acr';
 import RouteAuthenticatedBoxRead from 'components/smart/Route/Authenticated/BoxRead';
 import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
 import BoxEventSubmitContextProvider from 'components/smart/Box/Event/Submit/Context';
@@ -111,11 +113,25 @@ function Boxes({ match }) {
           return null;
         }}
       />
-      <RouteAcr
-        acr={2}
+      <RouteAuthenticated
         exact
         path={match.path}
-        component={BoxNone}
+        render={() => (
+          <Switch>
+            <RedirectAcr
+              acr={1}
+              exact
+              path={match.path}
+              to={routes.userNotifications._}
+            />
+            <RouteAcr
+              acr={2}
+              exact
+              path={match.path}
+              component={BoxNone}
+            />
+          </Switch>
+        )}
       />
     </Switch>
   );

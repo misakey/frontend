@@ -2,7 +2,7 @@
   "documentTitle": "Private spaces",
   "closedVault": {
     "saveForLater": "Save for later",
-    "create": "Create an account",
+    "create": "Setup password",
     "open": "Open my account"
   },
   "list": {
@@ -307,12 +307,21 @@
       "empty": "You haven't received messages from us yet 🙊",
       "noMoreItems": "It's the beginning of your shared space with Misakey",
       "types": {
-        "misakey_communication": "{{value}}",
-        "member.kick": "You have been removed from the private space “{{title}}”.",
-        "box.lifecycle": "Private space “{{title}}” has been closed.",
-        "box_auto_invite": "You have been invited to join the private space “{{box_title}}”",
-        "user_reset_password": "You have reset your password.\nYou have lost decryption keys for your previous private spaces.\nIf you had exported your vault backup from workspace “My account”, you could retrieve them by restauring the backup.",
-        "user_create_account": "Welcome on Misakey!\nYou can now create your own private spaces and share it.\nDecryption keys of your private space are stored in your vault. Access to the vault fully depends on your current password, it is important for you not to lose it because Misakey haven't access to it and can't help you to retrieve it.\nYou can download a backup of your vault from the workspace “My account”, store it in a safe place, you could use it later to retrieve access to your private space, in case of password reset."
+        "misakey": {
+          "communication": "{{value}}"
+        },
+        "member": {
+          "kick": "You have been removed from the private space “{{title}}”."
+        },
+        "box": {
+          "lifecycle": "Private space “{{title}}” has been closed.",
+          "auto_invite": "You have been invited to join the private space “{{box_title}}”"
+        },
+        "user": {
+          "reset_password": "You have reset your password.\nYou have lost decryption keys for your previous private spaces.\nIf you had exported your vault backup from workspace “My account”, you could retrieve them by restauring the backup.",
+          "create_identity": "Welcome to Misakey!\nThis first space is for you to discover the application.\nTo create your own private spaces, you will have to setup your password.",
+          "create_account": "Hey {{displayName}}!\nYou can now create your own private spaces and share it.\nDecryption keys of your private space are stored in your vault. Access to the vault fully depends on your current password, it is important for you not to lose it because Misakey haven't access to it and can't help you to retrieve it.\nYou can download a backup of your vault from the workspace “My account”, store it in a safe place, you could use it later to retrieve access to your private space, in case of password reset."
+        }
       }
     },
     "browser": {

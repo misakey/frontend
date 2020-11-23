@@ -2,6 +2,8 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { TO_PROP_TYPE } from '@misakey/ui/constants/propTypes';
+
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isNil from '@misakey/helpers/isNil';
 
@@ -47,7 +49,7 @@ ListItemPassword.propTypes = {
     icon: PropTypes.string,
     actionIcon: PropTypes.string,
   }),
-  to: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  to: TO_PROP_TYPE,
   // withTranslation
   t: PropTypes.func.isRequired,
 };

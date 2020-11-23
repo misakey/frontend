@@ -46,8 +46,8 @@ LimitedList.propTypes = {
     ]),
   ).isRequired,
   limit: PropTypes.number.isRequired,
-  emptyText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  extraText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  emptyText: PropTypes.node,
+  extraText: PropTypes.node,
   renderListItem: PropTypes.func.isRequired,
 };
 

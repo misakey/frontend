@@ -98,7 +98,7 @@ Button.propTypes = {
   disabled: PropTypes.bool,
   progressProps: PropTypes.object,
   standing: PropTypes.oneOf(Object.values(BUTTON_STANDINGS)),
-  text: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
+  text: PropTypes.node.isRequired,
 };
 
 Button.defaultProps = {

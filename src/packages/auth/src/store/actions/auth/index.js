@@ -7,8 +7,6 @@ export const LOAD_USER = Symbol('LOAD_USER');
 export const SIGN_OUT = Symbol('SIGN_OUT');
 export const UPDATE_IDENTITY = Symbol('UPDATE_IDENTITY');
 export const CLEAR_IDENTITY = Symbol('CLEAR_IDENTITY');
-export const LOAD_USER_ROLES = Symbol('LOAD_USER_ROLES');
-export const ADD_USER_ROLE = Symbol('ADD_USER_ROLE');
 export const SET_IS_AUTHENTICATED = Symbol('SET_IS_AUTHENTICATED');
 
 // ACTION CREATORS
@@ -42,16 +40,6 @@ export const clearIdentity = () => ({
   type: CLEAR_IDENTITY,
 });
 
-export const loadUserRoles = (roles) => ({
-  type: LOAD_USER_ROLES,
-  roles,
-});
-
-export const addRoleToUser = (role) => ({
-  type: ADD_USER_ROLE,
-  role,
-});
-
 export const setIsAuthenticated = (isAuthenticated) => ({
   type: SET_IS_AUTHENTICATED,
   isAuthenticated,
@@ -60,4 +48,3 @@ export const setIsAuthenticated = (isAuthenticated) => ({
 // THUNKS
 // thunks to ensure async behaviour: store update before promise is fulfilled
 export const loadUserThunk = (credentials) => (dispatch) => dispatch(loadUser(credentials));
-export const loadUserRolesThunk = (roles) => (dispatch) => dispatch(loadUserRoles(roles));

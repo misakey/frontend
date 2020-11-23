@@ -1,9 +1,8 @@
-import React, { useMemo, useCallback, useContext, useEffect, forwardRef } from 'react';
+import React, { useMemo, useCallback, useEffect, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
-import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import { getProfile as getProfileBuilder } from '@misakey/helpers/builder/identities';
@@ -31,11 +30,12 @@ import Card from '@material-ui/core/Card';
 import CardOnboardDiscover from 'components/dumb/Card/Onboard/Discover';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import ButtonConnect from 'components/dumb/Button/Connect';
-import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import ButtonContactMailto from '@misakey/ui/Button/Contact/Mailto';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 
 import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
+import ButtonCreateAccount from '@misakey/auth/components/Button/CreateAccount';
 
 // CONSTANTS
 const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
@@ -83,13 +83,6 @@ const IdentityPublicReadOnly = forwardRef(({ t }, ref) => {
 
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
 
-  const { askSigninRedirect } = useContext(UserManagerContext);
-
-  const onCreateAccount = useCallback(
-    () => askSigninRedirect({ acrValues: 2, prompt: 'login' }),
-    [askSigninRedirect],
-  );
-
   const getProfile = useCallback(
     () => getProfileBuilder({ identityId: id, isAuthenticated }),
     [id, isAuthenticated],
@@ -132,10 +125,8 @@ const IdentityPublicReadOnly = forwardRef(({ t }, ref) => {
         <BoxFlexFill />
         {!isAuthenticated && (
           <>
-            <Button
-              standing={BUTTON_STANDINGS.MAIN}
-              text={t('onboard:createAccount')}
-              onClick={onCreateAccount}
+            <ButtonCreateAccount
+              text={t('common:createAccount')}
             />
             <Box ml={2}>
               <ButtonConnect
@@ -198,4 +189,4 @@ IdentityPublicReadOnly.propTypes = {
 IdentityPublicReadOnly.defaultProps = {
 };
 
-export default withTranslation(['fields', 'account', 'onboard'], { withRef: true })(IdentityPublicReadOnly);
+export default withTranslation(['fields', 'account', 'onboard', 'common'], { withRef: true })(IdentityPublicReadOnly);

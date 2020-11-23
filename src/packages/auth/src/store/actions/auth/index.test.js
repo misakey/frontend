@@ -1,7 +1,7 @@
 import {
-  AUTH_RESET, LOAD_USER, SIGN_IN, SIGN_OUT, UPDATE_IDENTITY, LOAD_USER_ROLES,
-  authReset, loadUser, signIn, signOut, updateIdentity, loadUserRoles,
-  loadUserThunk, loadUserRolesThunk,
+  AUTH_RESET, LOAD_USER, SIGN_IN, SIGN_OUT, UPDATE_IDENTITY,
+  authReset, loadUser, signIn, signOut, updateIdentity,
+  loadUserThunk,
 } from './index';
 
 describe('testing auth actions', () => {
@@ -36,17 +36,6 @@ describe('testing auth actions', () => {
       };
       expect(updateIdentity(identity)).toEqual({ type: UPDATE_IDENTITY, identity });
     });
-
-    it('should LOAD_USER_ROLES action', () => {
-      const roles = [
-        {
-          roleLabel: 'dpo',
-          applicationId: '8b88d48-ad48-43b9-a323-eab1de68b280',
-          userId: '54rfde2-ad48-43b9-a323-iyhk7868b280',
-        },
-      ];
-      expect(loadUserRoles(roles)).toEqual({ type: LOAD_USER_ROLES, roles });
-    });
   });
 
   describe('thunks', () => {
@@ -60,22 +49,6 @@ describe('testing auth actions', () => {
       await expect(thunk(dispatchMock)).resolves.toEqual({
         type: LOAD_USER,
         credentials,
-      });
-    });
-    it('should create a LOAD_USER_ROLES thunk', async () => {
-      const roles = [
-        {
-          roleLabel: 'dpo',
-          applicationId: '8b88d48-ad48-43b9-a323-eab1de68b280',
-          userId: '54rfde2-ad48-43b9-a323-iyhk7868b280',
-        },
-      ];
-
-      const thunk = loadUserRolesThunk(roles);
-      expect.assertions(1);
-      await expect(thunk(dispatchMock)).resolves.toEqual({
-        type: LOAD_USER_ROLES,
-        roles,
       });
     });
   });

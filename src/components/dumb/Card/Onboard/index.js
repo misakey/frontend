@@ -1,17 +1,16 @@
-import React, { useCallback, useContext } from 'react';
+import React from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-
-import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Logo from '@misakey/ui/Logo';
-import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import ButtonCreateAccount from '@misakey/auth/components/Button/CreateAccount';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
+import useCreateAccount from '@misakey/auth/hooks/useCreateAccount';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -33,12 +32,7 @@ const useStyles = makeStyles((theme) => ({
 const CardOnboard = ({ t }) => {
   const classes = useStyles();
 
-  const { askSigninRedirect } = useContext(UserManagerContext);
-
-  const onCreateAccount = useCallback(
-    () => askSigninRedirect({ acrValues: 2, prompt: 'login' }),
-    [askSigninRedirect],
-  );
+  const onCreateAccount = useCreateAccount();
 
   return (
     <Box mx={4} mb={4}>
@@ -57,10 +51,8 @@ const CardOnboard = ({ t }) => {
           </Typography>
         </CardActionArea>
         <Box display="flex" flexDirection="column" flexShrink="0" mx={4} mt={2}>
-          <Button
-            standing={BUTTON_STANDINGS.MAIN}
-            text={t('onboard:createAccount')}
-            onClick={onCreateAccount}
+          <ButtonCreateAccount
+            text={t('common:createAccount')}
           />
         </Box>
       </Card>
@@ -74,4 +66,4 @@ CardOnboard.propTypes = {
 };
 
 
-export default withTranslation('onboard')(CardOnboard);
+export default withTranslation(['onboard', 'common'])(CardOnboard);

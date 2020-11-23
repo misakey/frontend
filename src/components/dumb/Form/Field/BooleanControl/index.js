@@ -94,8 +94,8 @@ FieldBooleanControl.propTypes = {
   helperText: PropTypes.string,
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.node, PropTypes.object]),
   labels: PropTypes.shape({
-    true: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-    false: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+    true: PropTypes.node,
+    false: PropTypes.node,
   }),
   // withTranslation
   t: PropTypes.func.isRequired,

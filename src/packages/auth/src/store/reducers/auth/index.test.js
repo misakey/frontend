@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { SIGN_IN, SIGN_OUT, AUTH_RESET, UPDATE_IDENTITY, LOAD_USER, LOAD_USER_ROLES } from '../../actions/auth';
+import { SIGN_IN, SIGN_OUT, AUTH_RESET, UPDATE_IDENTITY, LOAD_USER } from '../../actions/auth';
 import reducer, { INITIAL_STATE } from './index';
 
 describe('testing auth reducer', () => {
@@ -71,39 +71,6 @@ describe('testing auth reducer', () => {
       expect(reducer(state, { type: UPDATE_IDENTITY, identity })).toEqual({
         ...state,
         identity: { ...state.identity, ...identity },
-      });
-    });
-  });
-
-  describe('LOAD_USER_ROLES', () => {
-    const roles = [
-      {
-        roleLabel: 'dpo',
-        applicationId: '8b88d48-ad48-43b9-a323-eab1de68b280',
-        identityId: '54rfde2-ad48-43b9-a323-iyhk7868b280',
-      },
-    ];
-
-    it('should handle LOAD_USER_ROLES, initial state', () => {
-      expect(reducer(INITIAL_STATE, { type: LOAD_USER_ROLES, roles })).toEqual({
-        ...INITIAL_STATE,
-        roles,
-      });
-    });
-
-    it('should handle LOAD_USER_ROLES, any state', () => {
-      const state = {
-        roles: [
-          {
-            roleLabel: 'admin',
-            applicationId: '8b88d48-ad48-43b9-a323-eab1de68b280',
-            identityId: '54rfde2-ad48-43b9-a323-iyhk7868b280',
-          },
-        ],
-      };
-      expect(reducer(state, { type: LOAD_USER_ROLES, roles })).toEqual({
-        ...state,
-        roles,
       });
     });
   });

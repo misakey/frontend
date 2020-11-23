@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import { TO_PROP_TYPE } from '@misakey/ui/constants/propTypes';
+
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 
@@ -69,7 +71,7 @@ const withDialogConnect = (Component) => {
   Wrapper.propTypes = {
     isAuthenticated: PropTypes.bool,
     onClick: PropTypes.func,
-    to: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    to: TO_PROP_TYPE,
     replace: PropTypes.bool,
     dialogConnectProps: PropTypes.object,
   };

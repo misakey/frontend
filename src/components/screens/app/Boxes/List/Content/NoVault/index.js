@@ -44,7 +44,13 @@ const NoVault = forwardRef(({ t }, ref) => {
       <Route
         path={routes.boxes.read._}
         render={(routeProps) => (
-          <List disablePadding><ListItemBoxesCurrent {...omitRouteProps(routeProps)} /></List>)}
+          <>
+            <List disablePadding><ListItemBoxesCurrent {...omitRouteProps(routeProps)} /></List>
+            <Typography variant="body2" color="textSecondary" align="center">
+              {t('boxes:closedVault.saveForLater')}
+            </Typography>
+          </>
+        )}
       />
       <Box
         m={1}
@@ -54,9 +60,6 @@ const NoVault = forwardRef(({ t }, ref) => {
         justifyContent="center"
         alignItems="center"
       >
-        <Typography variant="body2" color="textSecondary" align="center">
-          {t('boxes:closedVault.saveForLater')}
-        </Typography>
         <Box>
           <ButtonWithDialogPassword
             standing={BUTTON_STANDINGS.TEXT}

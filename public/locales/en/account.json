@@ -76,8 +76,8 @@
     "success": "Password successfully updated"
   },
   "vault": {
-    "title": "Key storage",
-    "helperText": "Export my private key",
+    "title": "My keys",
+    "helperText": "Export/Import",
     "info": {
       "general": "Data in this vault are cyphered with a private key. When I lose my password, this private key is no more accessible.",
       "myKeyTitle": "My private key",

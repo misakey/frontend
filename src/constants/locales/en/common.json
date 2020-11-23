@@ -1,4 +1,5 @@
 {
+  "wip": "Work in progress",
   "accept": "Accept",
   "addToVault": "Save in my vault",
   "add": "Add",
@@ -10,6 +11,7 @@
   "copyInvitationLink": "Copy this link and send it to people you want to share the private space",
   "copy": "Copy",
   "copied": "Copied to clipboard!",
+  "createAccount": "Create an account",
   "decrypt": "Decrypt",
   "delete": "Delete",
   "join": "Join",
@@ -47,6 +49,7 @@
   "see": "See",
   "select": "Select",
   "send": "Send",
+  "setupPassword": "Setup password",
   "share": "Share",
   "show": "Show",
   "signIn": "Connection",

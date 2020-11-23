@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
+import { TO_PROP_TYPE } from '@misakey/ui/constants/propTypes';
+
 import isSameHost from '@misakey/helpers/isSameHost';
 import isSamePage from '@misakey/helpers/isSamePage';
 import isObject from '@misakey/helpers/isObject';
@@ -38,7 +40,7 @@ function Redirect({ forceRefresh, to, manualRedirectPlaceholder, ...props }) {
 
 Redirect.propTypes = {
   forceRefresh: PropTypes.bool,
-  to: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  to: TO_PROP_TYPE.isRequired,
   manualRedirectPlaceholder: PropTypes.object,
   ...RouterRedirect.propTypes,
 };

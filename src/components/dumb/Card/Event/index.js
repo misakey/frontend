@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
   footer: {
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing(0),
-    borderTop: `1px solid ${theme.palette.divider}`,
+    // borderTop: `1px solid ${theme.palette.divider}`,
     '& > *': {
       width: '100%',
       '& *': {

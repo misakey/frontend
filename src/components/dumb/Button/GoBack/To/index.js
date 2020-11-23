@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
+import { TO_PROP_TYPE } from '@misakey/ui/constants/propTypes';
 import routes from 'routes';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
@@ -22,7 +23,7 @@ const ButtonGoBackTo = ({ className, to, t, text, ...props }) => (
 
 ButtonGoBackTo.propTypes = {
   className: PropTypes.string,
-  to: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  to: TO_PROP_TYPE,
   text: PropTypes.string,
   t: PropTypes.func.isRequired,
 };

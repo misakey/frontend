@@ -8,13 +8,17 @@ import routes from 'routes';
 
 import isNil from '@misakey/helpers/isNil';
 
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
+
 import ScreenAction from 'components/dumb/Screen/Action';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Title from '@misakey/ui/Typography/Title';
 import CardDownloadBackupKey from 'components/smart/Card/Download/BackupKey';
-import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
+import ListBordered from '@misakey/ui/List/Bordered';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
 // COMPONENTS
 const AccountVault = ({ t, identity, isFetching }) => {
@@ -47,6 +51,17 @@ const AccountVault = ({ t, identity, isFetching }) => {
           <Typography color="textSecondary">{t('account:vault.info.exportInfo')}</Typography>
           <Box my={1}>
             <CardDownloadBackupKey />
+          </Box>
+          <Box my={1}>
+            <ListBordered disablePadding>
+              <ListItem disabled>
+                <ListItemText
+                  primary={t('account:vault.importButton.info')}
+                  primaryTypographyProps={{ color: 'textPrimary' }}
+                  secondary={t('common:wip')}
+                />
+              </ListItem>
+            </ListBordered>
           </Box>
         </Box>
       </Container>

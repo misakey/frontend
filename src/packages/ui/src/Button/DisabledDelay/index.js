@@ -127,8 +127,8 @@ ButtonDisabledDelay.propTypes = {
   // delay in unit
   delay: PropTypes.number,
   unit: PropTypes.oneOf(UNITS),
-  text: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
-  delayedText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  text: PropTypes.node.isRequired,
+  delayedText: PropTypes.node,
 };
 
 ButtonDisabledDelay.defaultProps = {

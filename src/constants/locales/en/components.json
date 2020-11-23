@@ -98,8 +98,8 @@
     "documentTitle": "Authentication",
     "user": {
       "accountNeeded": {
-        "title": "This functionality requires account creation",
-        "subtitle": "Confirm your identity to continue"
+        "title": "This feature requires a password",
+        "subtitle": "Confirm a password to continue"
       },
       "expired": {
         "title": "Your authenticated session has expired",
