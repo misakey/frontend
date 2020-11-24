@@ -279,7 +279,8 @@
     },
     "lockedScreen": {
       "documentTitle": "Locked interface",
-      "text": "<0><0></0></0><1>Your vault is locked</1>"
+      "text": "Your vault is locked",
+      "helperText": "Type your password"
     }
   },
   "removeBox": {

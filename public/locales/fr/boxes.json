@@ -279,7 +279,8 @@
     },
     "lockedScreen": {
       "documentTitle": "Interface verrouillée",
-      "text": "<0><0></0></0><1>Votre coffre-fort est verrouillé</1>"
+      "text": "Votre coffre-fort est verrouillé",
+      "helperText": "Saisissez votre mot de passe"
     }
   },
   "removeBox": {

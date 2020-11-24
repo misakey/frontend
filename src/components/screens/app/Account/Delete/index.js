@@ -99,7 +99,7 @@ const AccountDelete = ({ t, identity, isFetching }) => {
           <Typography color="textSecondary">
             <Trans i18nKey="account:delete.content.howToContent">
               Si vous voulez supprimer votre compte il vous suffit d’envoyer un email à notre DPO (
-              <Link color="secondary" href={`mailto:dpo@misakey.com&subject=${encodeURIComponent(t('account:delete.content.howToMailSubject', { email }))}`}>dpo@misakey.com</Link>
+              <Link color="secondary" href={`mailto:dpo@misakey.com?subject=${encodeURIComponent(t('account:delete.content.howToMailSubject', { email }))}`}>dpo@misakey.com</Link>
               ), en lui demandant la suppression.
               <br />
               <br />

@@ -33,6 +33,11 @@ const useStyles = makeStyles((theme) => ({
     // instead of marginTop: -8, to center button
     marginTop: -4,
     marginBottom: -4,
+    minWidth: 48,
+    minHeight: 48,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 }));
 

@@ -1,14 +1,22 @@
-import React, { useCallback, useMemo, useContext } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation, Trans } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
 import { APPBAR_SPACING } from '@misakey/ui/constants/sizes';
 import { openVaultValidationSchema } from 'constants/validationSchemas/auth';
 import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
-import useLoadSecretsWithPassword from '@misakey/crypto/hooks/useLoadSecretsWithPassword';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import { SIDES } from '@misakey/ui/constants/drawers';
+import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+
+import { identifierValuePath } from 'helpers/sender';
+
+import useLoadSecretsWithPassword from '@misakey/crypto/hooks/useLoadSecretsWithPassword';
+import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
+import useModifier from '@misakey/hooks/useModifier';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
@@ -16,17 +24,13 @@ import FormField from '@misakey/ui/Form/Field';
 
 import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
-import ChipUser from '@misakey/ui/Chip/User';
+import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
+import CardUserSignOut from '@misakey/auth/components/Card/User/SignOut';
 import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
 import BoxControls from '@misakey/ui/Box/Controls';
 import Box from '@material-ui/core/Box';
 import BoxContent from '@misakey/ui/Box/Content';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
-import useSignOut from '@misakey/auth/hooks/useSignOut';
-import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';
 import Title from '@misakey/ui/Typography/Title';
-
-import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
 // CONSTANTS
 const { invalid } = errorTypes;
@@ -34,14 +38,22 @@ const INITIAL_VALUES = {
   [PREHASHED_PASSWORD]: '',
 };
 
+// HOOKS
+const useStyles = makeStyles(() => ({
+  cardOverflowVisible: {
+    overflow: 'visible',
+  },
+}));
+
 // COMPONENTS
 function VaultLocked({ t }) {
+  const classes = useStyles();
+
   const openVaultWithPassword = useLoadSecretsWithPassword();
-  const userManagerContext = useContext(UserManagerContext);
-  const logout = useSignOut(userManagerContext.userManager);
 
   const currentUser = useSelector(getCurrentUserSelector);
-  const { displayName, avatarUrl } = useMemo(() => currentUser || {}, [currentUser]);
+  const { displayName, avatarUrl } = useSafeDestr(currentUser);
+  const identifierValue = useModifier(identifierValuePath, currentUser);
 
   const onSubmit = useCallback(
     ({ [PREHASHED_PASSWORD]: password }, { setFieldError }) => openVaultWithPassword(password)
@@ -62,22 +74,13 @@ function VaultLocked({ t }) {
         mt={APPBAR_SPACING}
       >
         <Box
-          component={Trans}
           display="flex"
           justifyContent="flex-start"
           alignItems="center"
           overflow="hidden"
           flexWrap="wrap"
-          i18nKey="boxes:vault.lockedScreen.text"
         >
-          <Box display="flex" flexWrap="nowrap" p={1}>
-            <ChipUser
-              displayName={displayName}
-              avatarUrl={avatarUrl}
-              onDelete={logout}
-            />
-          </Box>
-          <Title align="center" gutterBottom={false}>Your vault is locked</Title>
+          <Title align="center" gutterBottom={false}>{t('boxes:vault.lockedScreen.text')}</Title>
         </Box>
         <Formik
           onSubmit={onSubmit}
@@ -85,14 +88,25 @@ function VaultLocked({ t }) {
           validationSchema={openVaultValidationSchema}
         >
           <Box component={Form} display="flex" flexDirection="column" width="100%" justifyContent="center">
-            <FormField
-              name={PREHASHED_PASSWORD}
-              component={FieldPasswordRevealable}
-              helperText={null}
-              inputProps={{ 'data-matomo-ignore': true }}
-              fullWidth
-              autoFocus
-            />
+            <CardUserSignOut
+              my={3}
+              className={classes.cardOverflowVisible}
+              avatarUrl={avatarUrl}
+              displayName={displayName}
+              identifier={identifierValue}
+            >
+              <FormField
+                name={PREHASHED_PASSWORD}
+                variant="filled"
+                component={FieldPasswordRevealable}
+                helperText={t('boxes:vault.lockedScreen.helperText')}
+                margin="none"
+                inputProps={{ 'data-matomo-ignore': true }}
+                FormHelperTextProps={{ component: FormHelperTextInCard }}
+                fullWidth
+                autoFocus
+              />
+            </CardUserSignOut>
             <BoxControls
               primary={{
                 type: 'submit',
