@@ -90,9 +90,21 @@ export default (id) => {
     [isAllowedToFetch, hasAccessAndIsMember, isClosed, belongsToCurrentUser],
   );
 
+  // if the cache tells us that we don't ave access to the box,
+  // we re-fecth the box in case the cache is wrong.
+  // However if the cache was right we want to prevent infinite loops
+  // so we recall that this was confirmed.
+  // TODO remove when all changes to box access
+  // are updated via websockets
+  const [lastBoxIdConfirmedNoAccess, setLastBoxIdConfirmedNoAccess] = useState(null);
+
   const shouldFetchBox = useMemo(
-    () => isNil(box) || isNil(hasAccess) || (isNil(publicKey) && hasAccessAndIsMember),
-    [box, hasAccess, hasAccessAndIsMember, publicKey],
+    () => (
+      isNil(box)
+      || isNil(hasAccess)
+      || (hasAccess === false && lastBoxIdConfirmedNoAccess !== id) // refetch to confirm no access
+      || (isNil(publicKey) && hasAccessAndIsMember)),
+    [box, hasAccess, lastBoxIdConfirmedNoAccess, id, hasAccessAndIsMember, publicKey],
   );
 
   const getBox = useCallback(
@@ -126,7 +138,7 @@ export default (id) => {
     [handleHttpErrors, history],
   );
 
-  const onError = useOnError(id, onDefaultError);
+  const onError = useOnError(id, onDefaultError, setLastBoxIdConfirmedNoAccess);
 
   useEffect(
     () => {

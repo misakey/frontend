@@ -20,7 +20,7 @@ const NOT_MEMBER = 'not_member';
 const NO_ACCESS = 'no_access';
 const ERR_BOX_CLOSED = 'closed';
 
-export default (id, onDefaultError = null) => {
+export default (id, onDefaultError = null, setLastBoxIdConfirmedNoAccess) => {
   const dispatch = useDispatch();
 
   const dispatchReceiveBox = useCallback(
@@ -43,6 +43,9 @@ export default (id, onDefaultError = null) => {
             break;
           }
           case NO_ACCESS: {
+            if (isFunction(setLastBoxIdConfirmedNoAccess)) {
+              setLastBoxIdConfirmedNoAccess(id);
+            }
             dispatchReceiveBox({ id, hasAccess: false });
             break;
           }
@@ -60,6 +63,6 @@ export default (id, onDefaultError = null) => {
         onDefaultError(error);
       }
     },
-    [dispatchReceiveBox, id, onDefaultError],
+    [dispatchReceiveBox, id, onDefaultError, setLastBoxIdConfirmedNoAccess],
   );
 };
