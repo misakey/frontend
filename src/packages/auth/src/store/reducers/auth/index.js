@@ -99,6 +99,13 @@ function updateCredentials(state, { credentials }) {
   };
 }
 
+function replaceCredentials(state, { credentials }) {
+  return {
+    ...INITIAL_STATE,
+    ...credentials,
+  };
+}
+
 function setIsAuthenticated(state, { isAuthenticated }) {
   return {
     ...state,
@@ -169,7 +176,7 @@ export const selectors = {
 // REDUCER
 export default createResetOnSignOutReducer(INITIAL_STATE, {
   [AUTH_RESET]: resetCredentials,
-  [SIGN_IN]: updateCredentials,
+  [SIGN_IN]: replaceCredentials,
   [LOAD_USER]: updateCredentials,
   [UPDATE_IDENTITY]: updateIdentity,
   [CLEAR_IDENTITY]: clearIdentity,

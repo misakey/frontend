@@ -24,7 +24,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Container from '@material-ui/core/Container';
-import CardUser from '@misakey/ui/Card/User';
+import CardUser from '@misakey/auth/components/Card/User';
 import LoginFormField from '@misakey/ui/Form/Field/Login/Identifier';
 import BoxControls from '@misakey/ui/Box/Controls';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';

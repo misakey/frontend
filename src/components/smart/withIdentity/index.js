@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { signIn } from '@misakey/auth/store/actions/auth';
+import { loadUser } from '@misakey/auth/store/actions/auth';
 import { normalize } from 'normalizr';
 import { receiveEntities } from '@misakey/store/actions/entities';
 import IdentitySchema from 'store/schemas/Identity';
@@ -18,7 +18,7 @@ import { getIdentity as getIdentityBuilder } from '@misakey/auth/builder/identit
 const withIdentity = (Component, mapProps = identityFn) => {
   const ComponentWithIdentity = forwardRef(({
     id, token, identity, identityId,
-    onSignIn,
+    onLoadUser,
     ...props
   }, ref) => {
     const shouldFetch = useMemo(
@@ -32,8 +32,8 @@ const withIdentity = (Component, mapProps = identityFn) => {
     );
 
     const onSuccess = useCallback(
-      (user) => onSignIn(user),
-      [onSignIn],
+      (user) => onLoadUser(user),
+      [onLoadUser],
     );
 
     const { isFetching } = useFetchEffect(getIdentity, { shouldFetch }, { onSuccess });
@@ -63,7 +63,7 @@ const withIdentity = (Component, mapProps = identityFn) => {
     token: PropTypes.string,
     identity: PropTypes.shape(IdentitySchema.propTypes),
     identityId: PropTypes.string,
-    onSignIn: PropTypes.func.isRequired,
+    onLoadUser: PropTypes.func.isRequired,
   };
 
   ComponentWithIdentity.defaultProps = {
@@ -82,11 +82,11 @@ const withIdentity = (Component, mapProps = identityFn) => {
   });
 
   const mapDispatchToProps = (dispatch) => ({
-    onSignIn: (identity) => {
+    onLoadUser: (identity) => {
       const normalized = normalize(identity, IdentitySchema.entity);
       const { entities } = normalized;
       return Promise.all([
-        dispatch(signIn({ identity })),
+        dispatch(loadUser({ identity })),
         dispatch(receiveEntities(entities)),
       ]);
     },

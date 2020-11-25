@@ -1,7 +1,7 @@
 import { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { signIn } from '@misakey/auth/store/actions/auth';
+import { loadUser } from '@misakey/auth/store/actions/auth';
 import { selectors } from '@misakey/auth/store/reducers/auth';
 import { normalize } from 'normalizr';
 import { receiveEntities } from '@misakey/store/actions/entities';
@@ -41,12 +41,12 @@ export default () => {
 
   const dispatch = useDispatch();
 
-  const onSignIn = useCallback(
+  const onLoadUser = useCallback(
     (nextIdentity) => {
       const normalized = normalize(nextIdentity, IdentitySchema.entity);
       const { entities } = normalized;
       return Promise.all([
-        dispatch(signIn({ identity: nextIdentity })),
+        dispatch(loadUser({ identity: nextIdentity })),
         dispatch(receiveEntities(entities)),
       ]);
     },
@@ -63,7 +63,7 @@ export default () => {
     [identityId],
   );
 
-  const fetchData = useFetchEffect(getIdentity, { shouldFetch }, { onSuccess: onSignIn });
+  const fetchData = useFetchEffect(getIdentity, { shouldFetch }, { onSuccess: onLoadUser });
 
   return useMemo(
     () => ({

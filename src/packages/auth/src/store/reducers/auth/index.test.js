@@ -27,7 +27,11 @@ describe('testing auth reducer', () => {
     });
 
     it('should handle SIGN_IN, any state', () => {
-      expect(reducer({}, { type: SIGN_IN, credentials })).toEqual({
+      expect(reducer({
+        token: 'mytoken',
+        identity: { id: 'id', displayName: 'test' },
+      }, { type: SIGN_IN, credentials })).toEqual({
+        ...INITIAL_STATE,
         ...credentials,
       });
     });
