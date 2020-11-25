@@ -17,7 +17,9 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'center',
   },
   input: {
-    cursor: 'pointer',
+    '&:not(:disabled)': {
+      cursor: 'pointer',
+    },
   },
 }));
 
@@ -70,6 +72,7 @@ const InputFile = forwardRef(({ label, dragActiveLabel, buttonText, disabled, ..
           disabled={disabled}
         />
       )}
+      disabled={disabled}
       {...props}
     />
   );

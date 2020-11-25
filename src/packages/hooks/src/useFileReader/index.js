@@ -13,11 +13,6 @@ const PROGRESS_MAX = 100;
 // HELPERS
 const computeProgress = ({ loaded, total }) => (loaded / total) * PROGRESS_MAX;
 
-const eventMatchFile = (event, { name }) => {
-  const { name: eventFileName } = eventGetFile(event);
-  return name === eventFileName;
-};
-
 // HOOKS
 const useEndProgress = (setProgress) => useMemo(
   () => debounce(() => setProgress(undefined)), [setProgress],
@@ -56,7 +51,6 @@ export default ({ onLoadStart, onProgress, onLoad, onError }) => {
   const [progress, setProgress] = useState();
   const [file, setFile] = useState();
   const [preview, setPreview] = useState();
-  const changeEvent = useRef();
   const loadFinished = useRef();
 
   const endProgress = useEndProgress(setProgress);
@@ -69,16 +63,15 @@ export default ({ onLoadStart, onProgress, onLoad, onError }) => {
       const { result } = FILE_READER;
       setPreview(result);
       endProgress();
-      const { current } = changeEvent;
-      if (!isNil(current) && eventMatchFile(current, file)) {
-        onLoad(current, { file, preview: result });
+      if (!isNil(file)) {
+        onLoad({ file, preview: result });
       }
       const { current: loadFinishedCurrent } = loadFinished;
       if (!isNil(loadFinishedCurrent)) {
         loadFinishedCurrent();
       }
     },
-    [endProgress, file, onLoad, changeEvent, loadFinished],
+    [endProgress, file, onLoad, loadFinished],
   );
 
   const handleFileError = useCallback((event) => {
@@ -92,7 +85,6 @@ export default ({ onLoadStart, onProgress, onLoad, onError }) => {
     (event) => {
       const eventFile = eventGetFile(event);
       if (!isNil(eventFile)) {
-        changeEvent.current = event;
         setFile(eventFile);
         FILE_READER.readAsDataURL(eventFile);
       }
@@ -100,7 +92,7 @@ export default ({ onLoadStart, onProgress, onLoad, onError }) => {
         loadFinished.current = resolve;
       });
     },
-    [setFile, changeEvent],
+    [setFile],
   );
 
   const onReset = useOnReset(setFile, setPreview);

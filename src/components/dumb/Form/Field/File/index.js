@@ -56,13 +56,13 @@ const FileField = ({
   );
 
   const onLoad = useCallback(
-    (e, { preview, file }) => {
+    ({ preview, file }) => {
       setFieldError(name, null);
       setFieldValue(name, file);
       setFieldTouched(name, true);
       setStatus({ [previewName]: preview });
       if (isFunction(onUpload)) {
-        onUpload(e, { file, preview });
+        onUpload({ file, preview });
       }
     },
     [onUpload, previewName, name, setFieldError, setFieldValue, setFieldTouched, setStatus],
@@ -82,6 +82,7 @@ const FileField = ({
       accept={accept}
       name={name}
       onChange={onFileChange}
+      disabled={!isNil(progress)}
       label={!isNil(progress) ? (
         <>
           <LinearProgress variant="determinate" value={progress} className={classes.progressBar} />

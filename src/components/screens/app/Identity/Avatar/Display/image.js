@@ -86,7 +86,11 @@ let FormImageField = ({
 FormImageField.propTypes = {
   displayError: PropTypes.bool.isRequired,
   errorKeys: PropTypes.arrayOf(PropTypes.string).isRequired,
-  field: PropTypes.shape({ name: PropTypes.string.isRequired, value: PropTypes.string }).isRequired,
+  field: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    // NB: value can be an object when uploading an image
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  }).isRequired,
   helperText: PropTypes.string,
   showImage: PropTypes.bool,
   text: PropTypes.string.isRequired,
