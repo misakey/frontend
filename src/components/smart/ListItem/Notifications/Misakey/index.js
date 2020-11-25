@@ -132,7 +132,7 @@ function MisakeyNotificationsListItem({ ...props }) {
     >
       <ListItemAvatar>
         <Badge badgeContent={newNotificationsCount}>
-          <Avatar src="/img/logo.png" />
+          <Avatar src="https://static.misakey.com/ssoClientsLogo/misakey.png" />
         </Badge>
       </ListItemAvatar>
       <ListItemText

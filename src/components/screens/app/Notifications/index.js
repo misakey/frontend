@@ -152,7 +152,7 @@ function MisakeyNotications() {
               <Title gutterBottom={false}>{t('boxes:notifications.byIdentity.title')}</Title>
               <Subtitle gutterBottom={false}>{t('boxes:notifications.byIdentity.subtitle')}</Subtitle>
             </Box>
-            <Avatar src="/img/logo.png" label={t('boxes:notifications.byIdentity.title')} />
+            <Avatar src="https://static.misakey.com/ssoClientsLogo/misakey.png" label={t('boxes:notifications.byIdentity.title')} />
           </Box>
         </AppBarDrawer>
       </ElevationScroll>

@@ -40,7 +40,7 @@ const MessageRow = ({
   const { displayName } = useSafeDestr(identity);
 
   const author = useMemo(
-    () => ({ displayName: t('boxes:notifications.byIdentity.displayName'), avatarUrl: '/img/logo.png' }),
+    () => ({ displayName: t('boxes:notifications.byIdentity.displayName'), avatarUrl: 'https://static.misakey.com/ssoClientsLogo/misakey.png' }),
     [t],
   );
 
