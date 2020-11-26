@@ -8,6 +8,7 @@ import { ssoUpdate } from '@misakey/auth/store/actions/sso';
 import { screenAuthReset, screenAuthSetIdentifier } from 'store/actions/screens/auth';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
 
+import retry from '@misakey/helpers/retry';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import pickAll from '@misakey/helpers/pickAll';
@@ -27,9 +28,9 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import ScreenLoader from '@misakey/ui/Screen/Loader';
 
 // LAZY
-const AuthError = lazy(() => import('components/screens/Auth/Error'));
-const Login = lazy(() => import('components/screens/Auth/Login'));
-const Consent = lazy(() => import('components/screens/Auth/Consent'));
+const AuthError = lazy(() => retry(() => import('components/screens/Auth/Error')));
+const Login = lazy(() => retry(() => import('components/screens/Auth/Login')));
+const Consent = lazy(() => retry(() => import('components/screens/Auth/Consent')));
 
 // CONSTANTS
 const LOGIN_REQUIRED_SEARCH_PARAMS = ['loginChallenge'];

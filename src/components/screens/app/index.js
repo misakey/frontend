@@ -1,16 +1,21 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, lazy } from 'react';
 
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
 
+import retry from '@misakey/helpers/retry';
+
 import Home from 'components/screens/app/Home';
-import NotFound from 'components/screens/app/NotFound';
-import Invitation from 'components/screens/app/Invitation';
-import Profile from 'components/screens/app/Profile';
 import Redirect from '@misakey/ui/Redirect';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import AccountDrawer from 'components/smart/Drawer/Account';
 
+// LAZY
+const Profile = lazy(() => retry(() => import('components/screens/app/Profile')));
+const Invitation = lazy(() => retry(() => import('components/screens/app/Invitation')));
+const NotFound = lazy(() => retry(() => import('components/screens/app/NotFound')));
+
+// COMPONENTS
 const BoxesApp = () => (
   <Suspense fallback={<SplashScreen />}>
     <AccountDrawer />

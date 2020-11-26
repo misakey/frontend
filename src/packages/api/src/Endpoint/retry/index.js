@@ -1,33 +1,7 @@
-import exponentialBackoff from '@misakey/helpers/exponentialBackoff';
-import isFunction from '@misakey/helpers/isFunction';
+import retry from '@misakey/helpers/retry';
 
-// CONSTANTS
-const OPTIONS = {
-  retries: 3,
-  retryDelay: exponentialBackoff,
+// by default options can be undefined, retry helper sets a default value
+export default (requestUri, init, options) => {
+  const fn = () => fetch(requestUri, init);
+  return retry(fn, options);
 };
-
-// HELPERS
-const retry = (attempt, retryDelay, wrappedFetch) => {
-  const delay = isFunction(retryDelay) ? retryDelay(attempt) : retryDelay;
-  setTimeout(
-    () => wrappedFetch(attempt + 1),
-    delay,
-  );
-};
-
-export default (requestUri, init, { retries, retryDelay } = OPTIONS) => new Promise(
-  (resolve, reject) => {
-    const wrappedFetch = (attempt) => {
-      fetch(requestUri, init)
-        .then(resolve)
-        .catch((e) => {
-          if (attempt < retries) {
-            return retry(attempt, retryDelay, wrappedFetch);
-          }
-          return reject(e);
-        });
-    };
-    wrappedFetch(0);
-  },
-);

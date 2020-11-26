@@ -16,7 +16,7 @@ import ScreenDrawerContextProvider from 'components/smart/Screen/Drawer';
 import DrawerAccountContent from 'components/smart/Drawer/Account/Content';
 import DrawerAccountOnboard from 'components/smart/Drawer/Account/Onboard';
 
-import ProfileHome from './Home';
+import ProfileHome from 'components/screens/app/Profile/Home';
 
 // HOOKS
 const useStyles = makeStyles(() => ({

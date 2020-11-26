@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, lazy } from 'react';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import routes from 'routes';
 
@@ -6,6 +6,7 @@ import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { ALL } from 'constants/app/boxes/statuses';
 
 import isNil from '@misakey/helpers/isNil';
+import retry from '@misakey/helpers/retry';
 
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 import useLoadSecretsFromShares from '@misakey/crypto/hooks/useLoadSecretsFromShares';
@@ -15,14 +16,16 @@ import useLoadedAnimation from '@misakey/hooks/useLoadedAnimation';
 
 import RouteAcr from '@misakey/auth/components/Route/Acr';
 import RouteAuthenticated from '@misakey/auth/components/Route/Authenticated';
-import Boxes from 'components/screens/app/Boxes';
 import ScreenSplashOidc from '@misakey/ui/Screen/Splash/Oidc';
 import BoxesContextProvider from 'components/smart/Context/Boxes';
 import ScreenDrawerContextProvider from 'components/smart/Screen/Drawer';
 import BoxesList from 'components/screens/app/Boxes/List';
 import VaultLockedScreen from 'components/screens/app/VaultLocked';
-import VaultDocuments from '../Documents';
-import MisakeyNotifications from '../Notifications';
+
+// LAZY
+const VaultDocuments = lazy(() => retry(() => import('components/screens/app/Documents')));
+const MisakeyNotifications = lazy(() => retry(() => import('components/screens/app/Notifications')));
+const Boxes = lazy(() => retry(() => import('components/screens/app/Boxes')));
 
 // HOOKS
 const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;

@@ -5,21 +5,30 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withTranslation } from 'react-i18next';
 
+import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import sentryLogError from '@misakey/helpers/log/sentry';
+import isFunction from '@misakey/helpers/isFunction';
+
 import BoxSection from '@misakey/ui/Box/Section';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Collapse from '@material-ui/core/Collapse';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import sentryLogError from '@misakey/helpers/log/sentry';
 
-import ScreenError from 'components/smart/Screen/Error';
+import ScreenError from '@misakey/ui/Screen/Error';
 
+// CONSTANTS
+const INITIAL_ERROR_STATE = {
+  error: '',
+  errorInfo: {},
+};
+
+// COMPONENTS
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
-    this.state = { collapsed: false, error: '', errorInfo: {} };
+    this.state = { collapsed: false, ...INITIAL_ERROR_STATE };
   }
 
   static getDerivedStateFromError() {
@@ -29,6 +38,10 @@ class ErrorBoundary extends Component {
   componentDidCatch(error, errorInfo) {
     sentryLogError(error, 'ErrorBoundary', undefined, undefined, errorInfo);
     this.setState({ error: error.toString(), errorInfo });
+    const { onError } = this.props;
+    if (isFunction(onError)) {
+      onError(error);
+    }
   }
 
   handleCollapse() {
@@ -37,13 +50,13 @@ class ErrorBoundary extends Component {
   }
 
   render() {
-    const { children, className, component, t, ...rest } = this.props;
+    const { children, className, component: ScreenErrorComponent, t, ...rest } = this.props;
     const { collapsed, error, errorInfo, hasError } = this.state;
 
     if (hasError) {
       // render fallback UI
       return (
-        <ScreenError forceRefreshOnGoBack {...omitTranslationProps(rest)}>
+        <ScreenErrorComponent forceRefreshOnGoBack {...omitTranslationProps(rest)}>
           {window.env.ENV === 'development' && (
             <>
               <Box display="flex" justifyContent="flex-end">
@@ -60,7 +73,7 @@ class ErrorBoundary extends Component {
               </Collapse>
             </>
           )}
-        </ScreenError>
+        </ScreenErrorComponent>
       );
     }
     // when there's not an error, render children untouched
@@ -71,6 +84,7 @@ class ErrorBoundary extends Component {
 ErrorBoundary.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
+  onError: PropTypes.func,
   // eslint-disable-next-line react/forbid-prop-types
   component: PropTypes.any,
   t: PropTypes.func.isRequired,
@@ -78,7 +92,8 @@ ErrorBoundary.propTypes = {
 
 ErrorBoundary.defaultProps = {
   className: '',
-  component: undefined,
+  component: ScreenError,
+  onError: null,
 };
 
 export default withTranslation('components')(ErrorBoundary);

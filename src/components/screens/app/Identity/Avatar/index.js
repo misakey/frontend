@@ -10,6 +10,7 @@ import IdentitySchema from 'store/schemas/Identity';
 import routes from 'routes';
 import { avatarValidationSchema } from 'constants/validationSchemas/identity';
 
+import retry from '@misakey/helpers/retry';
 import isNil from '@misakey/helpers/isNil';
 import pick from '@misakey/helpers/pick';
 import { getIdentity } from '@misakey/auth/builder/identities';
@@ -22,8 +23,8 @@ import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathK
 import Box from '@material-ui/core/Box';
 
 // LAZY
-const AccountAvatarDisplay = lazy(() => import('./Display'));
-const AccountAvatarUpload = lazy(() => import('./Upload'));
+const AccountAvatarDisplay = lazy(() => retry(() => import('components/screens/app/Identity/Avatar/Display')));
+const AccountAvatarUpload = lazy(() => retry(() => import('components/screens/app/Identity/Avatar/Upload')));
 
 
 // CONSTANTS

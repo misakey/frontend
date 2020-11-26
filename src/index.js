@@ -31,13 +31,14 @@ import * as serviceWorker from 'serviceWorker';
 import ThemeProvider from 'components/smart/ThemeProvider';
 // components
 import App from 'components/App';
-import ErrorBoundary from 'components/smart/ErrorBoundary';
 
 import SplashScreen from '@misakey/ui/Screen/Splash';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 import OidcProvider from '@misakey/auth/components/OidcProvider'; // OIDC provider
 import SnackbarProvider from 'components/smart/SnackbarProvider';
 import OfflineContextProvider from 'components/smart/Context/Offline';
+import ScreenError from 'components/smart/Screen/Error';
+import ErrorBoundary from '@misakey/ui/ErrorBoundary';
 // translations
 import './i18n';
 import countries from 'i18n-iso-countries';
@@ -104,7 +105,7 @@ if (isSilentAuthIframe()) {
             <Router>
               <SnackbarProvider>
                 <OfflineContextProvider addMiddleware={API.addMiddleware}>
-                  <ErrorBoundary maxWidth="md" my={3}>
+                  <ErrorBoundary maxWidth="md" my={3} component={ScreenError}>
                     <OidcProvider
                       store={store}
                       config={window.env.AUTH}

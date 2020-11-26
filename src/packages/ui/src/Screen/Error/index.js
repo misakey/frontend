@@ -21,6 +21,7 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
+import usePropChanged from '@misakey/hooks/usePropChanged';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -41,14 +42,16 @@ function ScreenError({ t, className,
   const forceRefresh = useCallback(() => window.location.reload(), []);
 
   const { pathname } = useLocation();
+  const [locationChange, resetLocationChange] = usePropChanged(pathname);
 
   useEffect(
     () => {
-      if (forceRefreshOnGoBack && pathname === goBack) {
+      if (forceRefreshOnGoBack && pathname === goBack && locationChange) {
         forceRefresh();
+        resetLocationChange();
       }
     },
-    [forceRefresh, forceRefreshOnGoBack, goBack, pathname],
+    [forceRefresh, forceRefreshOnGoBack, goBack, locationChange, pathname, resetLocationChange],
   );
 
   return (
@@ -59,7 +62,7 @@ function ScreenError({ t, className,
       height="100%"
     >
       <AppBar elevation={0} position="static" color="transparent">
-        {!isNil(goBack) && (
+        {!isNil(goBack) && pathname !== goBack && (
           <Toolbar>
             <IconButton
               aria-label={t('common:goBack')}

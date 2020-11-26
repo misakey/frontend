@@ -3,8 +3,9 @@ import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
 
+import retry from '@misakey/helpers/retry';
+
 import { Route, Switch } from 'react-router-dom';
-import RedirectAuthCallback from '@misakey/auth/components/Redirect/AuthCallbackWrapper';
 import OfflineAlert from 'components/smart/Context/Offline/Alert';
 import RedirectToSignIn from 'components/dumb/Redirect/ToSignIn';
 import Screen from '@misakey/ui/Screen';
@@ -12,8 +13,9 @@ import Screen from '@misakey/ui/Screen';
 import './App.scss';
 
 // LAZY
-const Auth = lazy(() => import('components/screens/Auth'));
-const BoxesApp = lazy(() => import('components/screens/app'));
+const Auth = lazy(() => retry(() => import('components/screens/Auth')));
+const BoxesApp = lazy(() => retry(() => import('components/screens/app')));
+const RedirectAuthCallback = lazy(() => retry(() => import('@misakey/auth/components/Redirect/AuthCallbackWrapper')));
 
 // CONSTANTS
 const REFERRERS = {
