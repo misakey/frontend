@@ -21,7 +21,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Badge from '@misakey/ui/Badge';
-import Avatar from '@material-ui/core/Avatar';
+import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
 import TypographyDateSince from 'components/dumb/Typography/DateSince';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -132,7 +132,7 @@ function MisakeyNotificationsListItem({ ...props }) {
     >
       <ListItemAvatar>
         <Badge badgeContent={newNotificationsCount}>
-          <Avatar src="https://static.misakey.com/ssoClientsLogo/misakey.png" />
+          <AvatarMisakey />
         </Badge>
       </ListItemAvatar>
       <ListItemText
