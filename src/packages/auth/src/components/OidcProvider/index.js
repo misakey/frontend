@@ -10,33 +10,17 @@ import log from '@misakey/helpers/log';
 import sentryLogError from '@misakey/helpers/log/sentry';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
-import parseJwt from '@misakey/helpers/parseJwt';
-import { parseAcr } from '@misakey/helpers/parseAcr';
 import createUserManager from '@misakey/auth/helpers/userManager';
+import mapOidcUserForStore from '@misakey/auth/helpers/mapOidcUserForStore';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import { useDispatch } from 'react-redux';
 
 import SplashScreenOidc from '@misakey/ui/Screen/Splash/Oidc';
 import DialogSigninRedirect from '@misakey/auth/components/OidcProvider/Dialog/SigninRedirect';
 
-// HELPERS
-const getUser = ({
-  profile: { acr, sco: scope, auth_time: authenticatedAt, csrf_token: token } = {},
-  expires_at: expiresAt,
-  id_token: id,
-}) => ({
-  expiresAt,
-  token,
-  id,
-  authenticatedAt,
-  scope,
-  isAuthenticated: !!token,
-  acr: parseAcr(acr),
-});
-
 // COMPONENTS
 function OidcProvider({
-  store,
   children,
   config,
   registerMiddlewares,
@@ -45,6 +29,8 @@ function OidcProvider({
 }) {
   const [signinRedirect, setSigninRedirect] = useState(null);
   const [canCancelRedirect, setCanCancelRedirect] = useState(true);
+
+  const dispatch = useDispatch();
 
   const { pathname } = useLocation();
   const isRouteExcludedForAutomaticSignIn = useMemo(
@@ -89,25 +75,9 @@ function OidcProvider({
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const dispatchLoadUser = useCallback(
-    (user, identityId, accountId) => store.dispatch(loadUserThunk({
-      ...getUser(user),
-      identityId,
-      accountId,
-    })),
-    [store],
-  );
-
   const dispatchStoreUpdate = useCallback(
-    (user) => {
-      if (isNil(store)) {
-        return Promise.resolve();
-      }
-
-      const { mid: identityId, aid: accountId } = parseJwt(user.id_token);
-      return Promise.resolve(dispatchLoadUser(user, identityId, accountId));
-    },
-    [dispatchLoadUser, store],
+    (user) => Promise.resolve(dispatch(loadUserThunk(mapOidcUserForStore(user)))),
+    [dispatch],
   );
 
   // event callback when the user has been loaded (on silent renew or redirect)
@@ -131,11 +101,9 @@ function OidcProvider({
 
   // event callback when silent renew errored
   const onSilentRenewError = useCallback((e) => {
-    sentryLogError(e, 'Fail to renew token silently', { auth: true });
-    if (store) {
-      store.dispatch(authReset());
-    }
-  }, [store]);
+    sentryLogError(e, 'Fail to renew token silently', { auth: true }, 'warning');
+    dispatch(authReset());
+  }, [dispatch]);
 
   const loadUserAtMount = useCallback(() => {
     setIsLoading(true);
@@ -156,12 +124,12 @@ function OidcProvider({
         if (!isNil(newValue)) {
           loadUserAtMount();
           setSigninRedirect(null);
-        } else if (store) {
-          store.dispatch(authReset());
+        } else {
+          dispatch(authReset());
         }
       }
     },
-    [loadUserAtMount, store, userManager.userStorageKey],
+    [loadUserAtMount, dispatch, userManager.userStorageKey],
   );
 
   useEffect(
@@ -256,7 +224,6 @@ OidcProvider.propTypes = {
     response_type: PropTypes.string,
     scope: PropTypes.string,
   }),
-  store: PropTypes.object,
   registerMiddlewares: PropTypes.func.isRequired,
   publicRoute: PropTypes.string.isRequired,
   autoSignInExcludedRoutes: PropTypes.arrayOf(
@@ -272,7 +239,6 @@ OidcProvider.defaultProps = {
     automaticSilentRenew: true,
     loadUserInfo: false,
   },
-  store: null,
   autoSignInExcludedRoutes: [],
 };
 

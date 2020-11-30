@@ -54,7 +54,7 @@ const mergeIdentity = (state, identity) => (isNil(identity)
 
 const syncIdentity = (state, { identity, accountId, identityId }) => {
   if (isNil(state.identity) || !isNil(identity)) { return identity; }
-  if (isNil(accountId) || isNil(identityId)) { return identity; }
+  if (isNil(accountId) && isNil(identityId)) { return identity; }
 
   const { id: currentIdentityId, accountId: currentAccountId } = state.identity;
 

@@ -53,11 +53,11 @@ const AuthLogin = ({ identifier, match, loginChallenge, loginHint, t, ...props }
         path={routes.auth.signIn.secret}
         render={(routerProps) => (
           <LoginSecret
-            identifier={identifier}
-            loginChallenge={loginChallenge}
-            {...objLoginHint}
+            {...objLoginHint} // should not override identifier
             {...routerProps}
-            {...props}
+            loginChallenge={loginChallenge}
+            identifier={identifier}
+            {...props} // can override
           />
         )}
       />
@@ -65,11 +65,11 @@ const AuthLogin = ({ identifier, match, loginChallenge, loginHint, t, ...props }
         path={match.path}
         render={(routerProps) => (
           <LoginIdentifier
+            {...objLoginHint} // should not override identifier
+            {...routerProps}
             identifier={identifier}
             loginChallenge={loginChallenge}
-            {...objLoginHint}
-            {...routerProps}
-            {...props}
+            {...props} // can override
           />
         )}
       />

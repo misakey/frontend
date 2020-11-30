@@ -2,12 +2,9 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import isNil from '@misakey/helpers/isNil';
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isObject from '@misakey/helpers/isObject';
-import { parseAcr } from '@misakey/helpers/parseAcr';
 import { StorageUnavailable } from '@misakey/helpers/storage';
-
+import mapOidcUserForStore from '@misakey/auth/helpers/mapOidcUserForStore';
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 import { signIn } from '../../../store/actions/auth';
@@ -18,17 +15,7 @@ const useHandleSuccess = (
   enqueueSnackbar,
   t,
 ) => useCallback((user) => {
-  const { idToken, csrfToken, expiresAt, profile } = objectToCamelCase(user);
-  const { acr } = profile;
-  const credentials = {
-    expiresAt,
-    id: idToken,
-    token: csrfToken,
-    isAuthenticated: !isNil(csrfToken),
-    acr: parseAcr(acr),
-  };
-  // @FIXME isn't this store update useless now that OidcProvider handles loadUser at mount ?
-  dispatch(signIn(credentials));
+  dispatch(signIn(mapOidcUserForStore(user)));
   enqueueSnackbar(t('common:signedIn'), { variant: 'success' });
 }, [enqueueSnackbar, t, dispatch]);
 

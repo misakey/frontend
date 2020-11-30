@@ -107,7 +107,6 @@ if (isSilentAuthIframe()) {
                 <OfflineContextProvider addMiddleware={API.addMiddleware}>
                   <ErrorBoundary maxWidth="md" my={3} component={ScreenError}>
                     <OidcProvider
-                      store={store}
                       config={window.env.AUTH}
                       registerMiddlewares={registerMiddlewares}
                       publicRoute={routes.identities.public}
