@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
-import { Switch, useRouteMatch, useLocation } from 'react-router-dom';
+import { Switch, Redirect as MuiRedirect, useRouteMatch, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import routes from 'routes';
 import { UUID4_REGEX } from 'constants/regex';
 import { selectors } from '@misakey/crypto/store/reducers';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { computeInvitationHash } from '@misakey/crypto/box/keySplitting';
 import { BadKeyShareFormat } from '@misakey/crypto/Errors/classes';
 
@@ -17,17 +18,21 @@ import useSetBoxKeyShareInUrl from '@misakey/crypto/hooks/useSetBoxKeyShareInUrl
 import { useSelector } from 'react-redux';
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 
+import Redirect from '@misakey/ui/Redirect';
 import BoxRead from 'components/screens/app/Boxes/Read';
 import BoxNone from 'components/screens/app/Boxes/None';
 import RouteAuthenticated from '@misakey/auth/components/Route/Authenticated';
 import RouteAcr from '@misakey/auth/components/Route/Acr';
-import RedirectAcr from '@misakey/auth/components/Redirect/Acr';
 import RouteAuthenticatedBoxRead from 'components/smart/Route/Authenticated/BoxRead';
 import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
 import BoxEventSubmitContextProvider from 'components/smart/Box/Event/Submit/Context';
 
-import Redirect from '@misakey/ui/Redirect';
 import DrawerSplashScreen from 'components/smart/Screen/Drawer/Splash';
+
+// CONSTANTS
+const {
+  acr: ACR_SELECTOR,
+} = authSelectors;
 
 // HELPERS
 const boxIdMatchParamPath = path(['match', 'params', 'id']);
@@ -42,6 +47,8 @@ function Boxes({ match }) {
     [matchBoxSelected],
   );
   const { backupVersion } = useSelector(selectors.getEncryptedBackupData);
+
+  const currentAcr = useSelector(ACR_SELECTOR);
 
   const [storageBackupVersion] = useWatchStorageBackupVersion();
 
@@ -118,12 +125,13 @@ function Boxes({ match }) {
         path={match.path}
         render={() => (
           <Switch>
-            <RedirectAcr
-              acr={1}
-              exact
-              path={match.path}
-              to={routes.userNotifications._}
-            />
+            {(isNil(currentAcr) || currentAcr <= 1) && (
+              <MuiRedirect
+                exact
+                from={match.path}
+                to={routes.userNotifications._}
+              />
+            )}
             <RouteAcr
               acr={2}
               exact
