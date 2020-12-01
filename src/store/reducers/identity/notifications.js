@@ -5,6 +5,8 @@ import pluck from '@misakey/helpers/pluck';
 import filter from '@misakey/helpers/filter';
 import mapKeys from '@misakey/helpers/mapKeys';
 import rangeRight from '@misakey/helpers/rangeRight';
+import max from '@misakey/helpers/max';
+import isNil from '@misakey/helpers/isNil';
 
 import {
   SET_PAGINATION_NOTIFICATIONS_BY_IDENTITY,
@@ -12,6 +14,7 @@ import {
   SET_LAST_NOTIFICATION_BY_IDENTITY,
   DECREMENT_NEW_NOTIFICATIONS_COUNT_BY_IDENTITY,
   RESET_NOTIFICATIONS_BY_IDENTITY,
+  ADD_NOTIFICATION_ID_BY_IDENTITY,
 } from 'store/actions/identity/notifications';
 
 import IdentityNotificationsSchema from 'store/schemas/Notifications/Identity';
@@ -43,7 +46,11 @@ export const getNewCountSelector = createSelector(
 );
 export const getLastNotificationSelector = createSelector(
   (state) => state[REDUCER_KEY],
-  (items) => items.lastNotification,
+  (state) => state.entities,
+  (items, entities) => (isNil(items.lastNotification)
+    ? null
+    : denormalize(items.lastNotification, IdentityNotificationsSchema.entity, entities)
+  ),
 );
 
 export const getPaginationSelector = createSelector(
@@ -78,6 +85,33 @@ const setPaginationNotifications = (state, { newNotifications, hasNextPage }) =>
   };
 };
 
+const addPaginatedNotificationId = (state, { newNotificationId }) => {
+  const { notifications, newCount } = state;
+  if (isNil(notifications)) {
+    if (isNil(state.lastNotification)) { return state; }
+    return {
+      ...state,
+      newCount: isNil(newCount) ? newCount : newCount + 1,
+      lastNotification: newNotificationId,
+    };
+  }
+
+  const currentItems = state.notifications || {};
+  const maxIndex = max(Object.keys(currentItems).map((key) => parseInt(key, 10)));
+  const newLastIndex = maxIndex + 1;
+  const nextItems = { [newLastIndex]: newNotificationId };
+
+  return {
+    ...state,
+    newCount: state.newCount + 1,
+    lastNotification: newNotificationId,
+    notifications: {
+      ...currentItems,
+      ...nextItems,
+    },
+  };
+};
+
 const setNewCount = (state, { newCount }) => ({ ...state, newCount });
 
 const decrementNewCount = (state, { decrement }) => ({
@@ -96,5 +130,6 @@ export default {
     [SET_LAST_NOTIFICATION_BY_IDENTITY]: setLastNotification,
     [DECREMENT_NEW_NOTIFICATIONS_COUNT_BY_IDENTITY]: decrementNewCount,
     [RESET_NOTIFICATIONS_BY_IDENTITY]: resetNotifications,
+    [ADD_NOTIFICATION_ID_BY_IDENTITY]: addPaginatedNotificationId,
   }),
 };

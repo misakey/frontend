@@ -1,7 +1,7 @@
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import routes from 'routes';
 import BoxesSchema from 'store/schemas/Boxes';
-import { DELETED_BOX, NEW_EVENT, NOTIFICATIONS_ACK, BOX_SETTINGS } from 'constants/app/boxes/ws/messageTypes';
+import { DELETED_BOX, NEW_EVENT, NOTIFICATIONS_ACK, BOX_SETTINGS, NOTIFICATION } from 'constants/app/boxes/ws/messageTypes';
 import { CHANGE_EVENT_TYPES } from 'constants/app/boxes/events';
 import { receiveWSEditEvent, addBoxEvent } from 'store/reducers/box';
 import { updateEntities } from '@misakey/store/actions/entities';
@@ -18,7 +18,7 @@ import { useOnRemoveBox } from 'hooks/usePaginateBoxesByStatus/updates';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 import useModifier from '@misakey/hooks/useModifier';
-import { resetNotifications } from 'store/actions/identity/notifications';
+import { addNewNotification } from 'store/actions/identity/notifications';
 import useOnNotifyEvent from 'hooks/useOnNotifyEvent';
 
 // CONSTANTS
@@ -86,12 +86,11 @@ export default (activeStatus, search) => {
 
   const onKickSuccess = useCallback(
     (box) => {
-      dispatch(resetNotifications());
       if (idMatchesDeletedBoxId(box)) {
         replace(routes.boxes._);
       }
     },
-    [dispatch, idMatchesDeletedBoxId, replace],
+    [idMatchesDeletedBoxId, replace],
   );
 
   const onNotifyEvent = useOnNotifyEvent();
@@ -116,6 +115,10 @@ export default (activeStatus, search) => {
         return Promise.resolve(
           dispatch(updateEntities([{ id: boxId, changes: { eventsCount: 0 } }], BoxesSchema)),
         );
+      }
+
+      if (type === NOTIFICATION) {
+        return Promise.resolve(dispatch(addNewNotification(object)));
       }
 
       // New event
