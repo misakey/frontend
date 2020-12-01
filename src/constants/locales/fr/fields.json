@@ -25,6 +25,9 @@
       "choose": {
         "label": "Sélectionner"
       }
+    },
+    "pasted": {
+      "label": "{{kind}} collée le {{datetime}}.{{extension}}"
     }
   },
   "files": {

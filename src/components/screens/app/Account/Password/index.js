@@ -12,7 +12,7 @@ import { passwordValidationSchema } from 'constants/validationSchemas/identity';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 
 import isNil from '@misakey/helpers/isNil';
-import sentryLogError from '@misakey/helpers/log/sentry';
+import logSentry from '@misakey/helpers/log/sentry';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
@@ -111,11 +111,11 @@ const AccountPassword = ({ t, identity, isFetching }) => {
               autoHideDuration: 8000,
             },
           );
-          sentryLogError(e, 'PasswordChange: Bad backup version', { crypto: true });
+          logSentry(e, 'PasswordChange: Bad backup version', { crypto: true });
         } else if (e.httpStatus) {
           handleHttpErrors(e);
         } else {
-          sentryLogError(e, 'PasswordChange: Unidentified error', { crypto: true });
+          logSentry(e, 'PasswordChange: Unidentified error', { crypto: true });
         }
       } finally {
         setSubmitting(false);

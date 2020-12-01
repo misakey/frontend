@@ -24,53 +24,22 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE */
 
 import isNil from '@misakey/helpers/isNil';
-import isIOS from '@misakey/helpers/isIOS';
 import isDataUrl from '@misakey/helpers/isDataUrl';
-import isBlobUrl from '@misakey/helpers/isBlobUrl';
-import makeFileOrBlob from '@misakey/helpers/makeFileOrBlob';
+import makeCompatFile from '@misakey/helpers/makeCompatFile';
+import makeFileURL from '@misakey/helpers/makeFileURL';
+import { revokeObjectURL } from '@misakey/helpers/objectURL';
 
 // CONSTANTS
-const WINDOW_URL = window.URL || window.webkitURL;
 const MS_SAVE_BLOB = !isNil(window.navigator.msSaveBlob);
 
 // HELPERS
-const isChromeIOS = () => /CriOS\/[\d]+/.test(navigator.userAgent);
-
 function revokeBlob(blobURL) {
-  WINDOW_URL.revokeObjectURL(blobURL);
+  revokeObjectURL(blobURL);
 }
-
-const isFileDataUrl = (data) => typeof data === 'string' && isDataUrl(data);
-const isFileBlobUrl = (data) => typeof data === 'string' && isBlobUrl(data);
-
-const makeCompatFile = (data, filename, mime, bom) => {
-  const blobData = (typeof bom !== 'undefined') ? [bom, data] : [data];
-  return makeFileOrBlob(blobData, filename, { type: mime || 'application/octet-stream' });
-};
-
-const makeFileURL = (data, filename, mime, bom) => new Promise((resolve) => {
-  if (isFileDataUrl(data) || isFileBlobUrl(data)) {
-    return resolve(data);
-  }
-
-  const file = makeCompatFile(data, filename, mime, bom);
-
-  if (isIOS() && typeof FileReader !== 'undefined') {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const url = reader.result;
-      const fileURL = isChromeIOS ? url : url.replace(/^data:[^;]*;/, 'data:attachment/file;');
-      resolve(fileURL);
-    };
-    return reader.readAsDataURL(file);
-  }
-  const fileURL = WINDOW_URL.createObjectURL(file);
-  return resolve(fileURL);
-});
 
 export default function (data, filename, shouldRevokeBlob = true, mime, bom) {
   // cases where no download link is required
-  if (!isFileDataUrl(data) && MS_SAVE_BLOB) {
+  if (!isDataUrl(data) && MS_SAVE_BLOB) {
     const blob = makeCompatFile(data, filename, mime, bom);
     window.navigator.msSaveBlob(blob, filename);
     return Promise.resolve();

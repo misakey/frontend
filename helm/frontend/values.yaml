@@ -21,7 +21,7 @@ ingress:
 ingressRoute:
   enabled: true
   domain: app.misakey.com
-  contentSecurityPolicy: "default-src 'self' https://*.misakey.com https://sentry.io; frame-src 'self' https://*.misakey.com https://misakey.typeform.com https://content.googleapis.com https://accounts.google.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.misakey.com https://embed.typeform.com https://apis.google.com; style-src 'self' 'unsafe-inline'; object-src 'none'; img-src data: https://*.misakey.com 'self'"
+  contentSecurityPolicy: "default-src 'self' https://*.misakey.com https://sentry.io; frame-src 'self' https://*.misakey.com https://misakey.typeform.com https://content.googleapis.com https://accounts.google.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.misakey.com https://embed.typeform.com https://apis.google.com; style-src 'self' 'unsafe-inline'; object-src 'none'; img-src data: https://*.misakey.com 'self';"
 
 resources:
   limits:

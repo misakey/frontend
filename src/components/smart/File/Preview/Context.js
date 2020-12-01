@@ -8,7 +8,7 @@ import { getEncryptedFileBuilder } from '@misakey/helpers/builder/files';
 import DialogFilePreview from 'components/smart/Dialog/FilePreview';
 import workerDecryptFile from '@misakey/crypto/box/decryptFile/worker';
 import log from '@misakey/helpers/log';
-import sentryLogError from '@misakey/helpers/log/sentry';
+import logSentry from '@misakey/helpers/log/sentry';
 import propOr from '@misakey/helpers/propOr';
 import downloadFile from '@misakey/helpers/downloadFile';
 import execWithRequestIdleCallback from '@misakey/helpers/execWithRequestIdleCallback';
@@ -44,7 +44,7 @@ const createBlobUrl = (file) => {
     const urlBuilder = window.URL || window.webkitURL;
     return urlBuilder.createObjectURL(file);
   } catch (err) {
-    sentryLogError(err, 'FilePreviewContext: Fail to create blobUrl for preview', undefined, 'warning');
+    logSentry(err, 'FilePreviewContext: Fail to create blobUrl for preview', undefined, 'warning');
     return null;
   }
 };
@@ -161,7 +161,7 @@ const FilePreviewContextProvider = ({ children, revokeOnChange, ...props }) => {
           // revokeBlob is handled in this component as there is several place to download file
           downloadFile(data, name, /* shouldRevokeBlob */ false);
         } catch (e) {
-          sentryLogError(e, 'FilePreviewContext: Fail to downloadFile');
+          logSentry(e, 'FilePreviewContext: Fail to downloadFile');
         }
       });
     },

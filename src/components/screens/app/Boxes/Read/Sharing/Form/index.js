@@ -14,7 +14,7 @@ import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { getUpdatedAccesses } from 'helpers/accesses';
 import isEmpty from '@misakey/helpers/isEmpty';
 import pluck from '@misakey/helpers/pluck';
-import sentryLogError from '@misakey/helpers/log/sentry';
+import logSentry from '@misakey/helpers/log/sentry';
 import filter from '@misakey/helpers/filter';
 import { createBulkBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import { identifierValuePath, senderMatchesIdentifierValue } from 'helpers/sender';
@@ -267,7 +267,7 @@ function ShareBoxForm({
           [ACCESSES_FIELD_NAME]: nextAccessLevel,
         } });
       } catch (err) {
-        sentryLogError(err);
+        logSentry(err);
         return onBulkError();
       }
     },

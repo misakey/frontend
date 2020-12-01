@@ -14,7 +14,7 @@ import fileToBlob from '@misakey/helpers/fileToBlob';
 import prop from '@misakey/helpers/prop';
 import pluck from '@misakey/helpers/pluck';
 import compose from '@misakey/helpers/compose';
-import sentryLogError from '@misakey/helpers/log/sentry';
+import logSentry from '@misakey/helpers/log/sentry';
 import uniqBy from '@misakey/helpers/uniqBy';
 import partition from '@misakey/helpers/partition';
 import promiseAllNoFailFast from '@misakey/helpers/promiseAllNoFailFast';
@@ -160,7 +160,7 @@ function UploadDialog({
               if (e instanceof AbortError) {
                 return { ...rest, blob, isSent: false, abort: true };
               }
-              sentryLogError(e, 'DialogUpload: fail to upload');
+              logSentry(e, 'DialogUpload: fail to upload');
               return { ...rest, blob, error: true };
             }
           }),

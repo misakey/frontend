@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useLocation, generatePath } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import copy from '@misakey/helpers/copy';
+import copy from '@misakey/helpers/clipboard/copy';
 import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import { isDesktopDevice } from '@misakey/helpers/devices';
 import isNil from '@misakey/helpers/isNil';

@@ -1,4 +1,4 @@
-import copy from '@misakey/helpers/copy';
+import copy from '@misakey/helpers/clipboard/copy';
 
 import { useCallback } from 'react';
 import { useSnackbar } from 'notistack';

@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import sentryLogError from '@misakey/helpers/log/sentry';
+import logSentry from '@misakey/helpers/log/sentry';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import processAutoInviteCryptoaction from '@misakey/crypto/store/actions/processAutoInviteCryptoaction';
@@ -26,7 +26,7 @@ function ActualButton({ notifDetails }) {
         );
         history.push(boxUrl);
       } catch (error) {
-        sentryLogError(error);
+        logSentry(error);
         enqueueSnackbar(t('common:anErrorOccurred'), { variant: 'error' });
       }
     },

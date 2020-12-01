@@ -45,6 +45,9 @@
       "choose": {
         "label": "Select"
       }
+    },
+    "pasted": {
+      "label": "{{kind}} pasted on {{datetime}}.{{extension}}"
     }
   },
   "files": {

@@ -4,16 +4,25 @@ import { withTranslation } from 'react-i18next';
 
 import BoxesSchema from 'store/schemas/Boxes';
 import { CLOSED } from 'constants/app/boxes/statuses';
+import { ACCEPTED_TYPES } from 'constants/file/image';
+import { DATETIME_EXTRA_SHORT } from 'constants/formats/dates';
 
+import moment from 'moment';
 import fileToBlob from '@misakey/helpers/fileToBlob';
+import makeCompatFile from '@misakey/helpers/makeCompatFile';
 import isFunction from '@misakey/helpers/isFunction';
 import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/helpers/isNil';
+import capitalize from '@misakey/helpers/capitalize';
 import fileListToArray from '@misakey/helpers/fileListToArray';
+import logSentry from '@misakey/helpers/log/sentry';
+import clipboardGetItem from '@misakey/helpers/clipboard/getItem';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useBoxPublicKeysWeCanDecryptFrom from 'packages/crypto/src/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useDrag from '@misakey/hooks/useDrag';
+import usePasteEffect from '@misakey/hooks/usePasteEffect';
 
 import UploadDialog, { BLOBS_FIELD_NAME, INITIAL_VALUES } from 'components/smart/Dialog/Boxes/Upload';
 import Box from '@material-ui/core/Box';
@@ -24,6 +33,13 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 // CONSTANTS
 const DROP_TYPE = 'Files';
+const TYPE_REGEX = /^([^/]*)\/(.*)$/;
+
+// HELPERS
+const getKindAndExtensionFromType = (type) => {
+  const [, kind, extension] = type.match(TYPE_REGEX);
+  return { kind, extension };
+};
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -63,6 +79,27 @@ const InputBoxesUpload = ({
     [dialogInitialValues],
   );
 
+  const handlePaste = useCallback(
+    async (items) => {
+      const item = await clipboardGetItem(items, ACCEPTED_TYPES);
+      if (!isNil(item)) {
+        const { type } = item;
+        const { kind, extension } = getKindAndExtensionFromType(type);
+        const blobName = t('fields:file.pasted.label', {
+          datetime: moment().format(DATETIME_EXTRA_SHORT),
+          kind: capitalize(kind),
+          extension,
+        });
+        const file = await makeCompatFile(item, blobName, type);
+        setDialogInitialValues({ [BLOBS_FIELD_NAME]: [fileTransform(file)] });
+        if (isFunction(onUpload)) {
+          onUpload();
+        }
+      }
+    },
+    [fileTransform, onUpload, t],
+  );
+
   const handleDrop = useCallback(
     (e) => {
       // Prevent default behavior (Prevent file from being opened)
@@ -72,7 +109,6 @@ const InputBoxesUpload = ({
       if (files) {
         // Use DataTransfer interface to access the file(s)
         nextValue = fileListToArray(files).map(fileTransform);
-        setDialogInitialValues({ [BLOBS_FIELD_NAME]: nextValue });
       } else if (items) {
         // Use DataTransferItemList interface to access the file(s)
         for (let i = 0; i < items.length; i += 1) {
@@ -124,6 +160,9 @@ const InputBoxesUpload = ({
       : { ...dragEvents, onDragOver }),
     [disabled, dragEvents, onDragOver],
   );
+
+  // @FIXME do we want to log paste errors to sentry ?
+  usePasteEffect({ onPaste: handlePaste, onError: logSentry });
 
   return (
     <>
