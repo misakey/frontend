@@ -7,7 +7,7 @@ import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Contex
 import { loadUserThunk, authReset } from '@misakey/auth/store/actions/auth';
 
 import log from '@misakey/helpers/log';
-import logSentry from '@misakey/helpers/log/sentry';
+import logSentryException from '@misakey/helpers/log/sentry/exception';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 import createUserManager from '@misakey/auth/helpers/userManager';
@@ -101,7 +101,7 @@ function OidcProvider({
 
   // event callback when silent renew errored
   const onSilentRenewError = useCallback((e) => {
-    logSentry(e, 'Fail to renew token silently', { auth: true }, 'warning');
+    logSentryException(e, 'Fail to renew token silently', { auth: true }, 'warning');
     dispatch(authReset());
   }, [dispatch]);
 
@@ -111,7 +111,7 @@ function OidcProvider({
     // Load user on store when the app is opening
     userManager.getUser()
       .then(onUserLoaded)
-      .catch((e) => logSentry(e, 'Fail to retrieve user', { auth: true }))
+      .catch((e) => logSentryException(e, 'Fail to retrieve user', { auth: true }))
       .finally(() => setIsLoading(false));
   }, [onUserLoaded, userManager]);
 
@@ -154,7 +154,7 @@ function OidcProvider({
           userManager.clearStaleState();
         } catch (e) {
           // Do not show nor throw error as it's not blocking for using app
-          logSentry(e, `Fail to clear localStorage from residual oidc:state, ${e}`, undefined, 'warning');
+          logSentryException(e, `Fail to clear localStorage from residual oidc:state, ${e}`, undefined, 'warning');
         }
       }
     },

@@ -15,7 +15,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 import capitalize from '@misakey/helpers/capitalize';
 import fileListToArray from '@misakey/helpers/fileListToArray';
-import logSentry from '@misakey/helpers/log/sentry';
+import logSentryException from '@misakey/helpers/log/sentry/exception';
 import clipboardGetItem from '@misakey/helpers/clipboard/getItem';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -162,7 +162,7 @@ const InputBoxesUpload = ({
   );
 
   // @FIXME do we want to log paste errors to sentry ?
-  usePasteEffect({ onPaste: handlePaste, onError: logSentry });
+  usePasteEffect({ onPaste: handlePaste, onError: logSentryException });
 
   return (
     <>

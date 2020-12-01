@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useDispatch, batch } from 'react-redux';
 import isNil from '@misakey/helpers/isNil';
-import logSentry from '@misakey/helpers/log/sentry';
+import logSentryException from '@misakey/helpers/log/sentry/exception';
 import setBackupKeyShare from '../store/actions/setBackupKeyShare';
 
 const STORAGE_KEY = 'persist:crypto';
@@ -33,7 +33,7 @@ export default (localBackupKeyShare) => {
               );
             });
           } catch (err) {
-            logSentry(
+            logSentryException(
               err,
               'useWatchStorageBackupKeyShares: fail to refresh state updated in another context',
               { crypto: true },

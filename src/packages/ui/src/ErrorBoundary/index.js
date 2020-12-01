@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { withTranslation } from 'react-i18next';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import logSentry from '@misakey/helpers/log/sentry';
+import logSentryException from '@misakey/helpers/log/sentry/exception';
 import isFunction from '@misakey/helpers/isFunction';
 
 import BoxSection from '@misakey/ui/Box/Section';
@@ -36,7 +36,7 @@ class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    logSentry(error, 'ErrorBoundary', undefined, undefined, errorInfo);
+    logSentryException(error, 'ErrorBoundary', undefined, undefined, errorInfo);
     this.setState({ error: error.toString(), errorInfo });
     const { onError } = this.props;
     if (isFunction(onError)) {
