@@ -2,14 +2,15 @@
 #       CONFIGURATION
 # ----------------------------
 
-# Import deploy config
-dpl ?= deploy.env
-include $(dpl)
 export $(shell sed 's/=.*//' $(dpl))
+
+ifndef CI_REGISTRY:
+	CI_REGISTRY := registry.misakey.dev
+endif
 
 # Set gitlab-ci variables if not in a CI context
 ifndef CI_REGISTRY_IMAGE
-	CI_REGISTRY_IMAGE := $(DOCKER_REGISTRY)/misakey/frontend
+	CI_REGISTRY_IMAGE := $(CI_REGISTRY)/misakey/frontend
 endif
 DOCKER_IMAGE := $(CI_REGISTRY_IMAGE)
 ifndef CI_COMMIT_REF_NAME
@@ -63,7 +64,7 @@ strict-lint: ## Lint project code with eslint, return error if there is any sugg
 
 .PHONY: docker-login
 docker-login: ## Log in to the default registry
-	@docker login -u $(CI_REGISTRY_USER) -p $(CI_REGISTRY_PASSWORD) $(DOCKER_REGISTRY)
+	@docker login -u $(CI_REGISTRY_USER) -p $(CI_REGISTRY_PASSWORD) $(CI_REGISTRY)
 
 .PHONY: docs
 docs: ## Validate documentation
