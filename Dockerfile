@@ -1,4 +1,5 @@
-FROM registry.misakey.dev/misakey/frontend/base-image:latest AS builder
+ARG CI_REGISTRY_IMAGE=registry.gitlab.com/misakey/frontend
+FROM ${CI_REGISTRY_IMAGE}/base-image:latest AS builder
 LABEL stage=intermediate
 ARG VERSION
 ARG SENTRY_AUTH_TOKEN

@@ -9,7 +9,7 @@ stages:
 
 lint_code:
   stage: test
-  image: registry.misakey.dev/misakey/frontend/base-image:latest
+  image: $CI_REGISTRY_IMAGE/base-image:latest
   tags:
     - misakey_js
   before_script:
@@ -28,7 +28,7 @@ lint_code:
 
 unit_tests:
   stage: test
-  image: registry.misakey.dev/misakey/frontend/base-image:latest
+  image: $CI_REGISTRY_IMAGE/base-image:latest
   tags:
     - misakey_js
   before_script:
@@ -47,7 +47,7 @@ unit_tests:
 
 docs:
   stage: docs
-  image: registry.misakey.dev/misakey/frontend/base-image:latest
+  image: $CI_REGISTRY_IMAGE/base-image:latest
   tags:
     - misakey_js
   before_script:
