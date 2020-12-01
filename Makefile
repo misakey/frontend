@@ -2,9 +2,7 @@
 #       CONFIGURATION
 # ----------------------------
 
-export $(shell sed 's/=.*//' $(dpl))
-
-ifndef CI_REGISTRY:
+ifndef CI_REGISTRY
 	CI_REGISTRY := registry.misakey.dev
 endif
 
