@@ -4,7 +4,6 @@ import xhr from '@misakey/api/Endpoint/xhr';
 import isNil from '@misakey/helpers/isNil';
 import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
 import objectToSnakeCaseDeep from '@misakey/helpers/objectToSnakeCaseDeep';
-// @FIXME shouldn't we just use "objectToSnakeCaseDeep" everywhere?
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
 export const getBoxBuilder = (id, queryParams = {}) => API
@@ -76,7 +75,7 @@ export const updateBoxCount = ({ id, identityId }) => API
 
 export const createBoxBuilder = (payload) => API
   .use(API.endpoints.boxes.create)
-  .build(null, objectToSnakeCase(payload))
+  .build(null, objectToSnakeCaseDeep(payload))
   .send()
   .then(objectToCamelCaseDeep);
 

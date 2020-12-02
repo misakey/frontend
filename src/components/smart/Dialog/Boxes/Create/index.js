@@ -16,7 +16,7 @@ import getRandomTitle from '@misakey/helpers/getRandomTitle';
 import isFunction from '@misakey/helpers/isFunction';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import { generateAsymmetricKeyPair } from '@misakey/crypto/crypto';
+import { createCryptoForNewBox } from '@misakey/crypto/box/creation';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
@@ -85,10 +85,10 @@ function CreateBoxDialog({
   );
 
   const onSubmitNewBoxSuccess = useCallback(
-    async (newBox, secretKey) => {
+    async (newBox, secretKey, keyShare) => {
       const { id } = newBox;
 
-      return Promise.resolve(dispatch(setBoxSecrets({ secretKey })))
+      return Promise.resolve(dispatch(setBoxSecrets({ boxId: id, secretKey, keyShare })))
         .then(() => {
           if (isFunction(onSuccess)) {
             onSuccess();
@@ -109,11 +109,14 @@ function CreateBoxDialog({
 
   const onSubmitNewBox = useCallback((form, { setSubmitting }) => {
     const title = form[FIELD_BOX_NAME] || placeholder;
-    // @FIXME a component should not have to call such low-level functions,
-    // see about moving part of the box creation logic to actions
-    const { secretKey, publicKey } = generateAsymmetricKeyPair();
-    return createBoxBuilder({ title, publicKey })
-      .then((response) => onSubmitNewBoxSuccess(response, secretKey))
+    const {
+      boxSecretKey,
+      boxPublicKey,
+      invitationKeyShare,
+      misakeyKeyShare,
+    } = createCryptoForNewBox();
+    return createBoxBuilder({ title, publicKey: boxPublicKey, keyShare: misakeyKeyShare })
+      .then((response) => onSubmitNewBoxSuccess(response, boxSecretKey, invitationKeyShare))
       .catch(handleHttpErrors)
       .finally(() => { setSubmitting(false); });
   }, [handleHttpErrors, onSubmitNewBoxSuccess, placeholder]);

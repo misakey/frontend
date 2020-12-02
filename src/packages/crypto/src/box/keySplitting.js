@@ -2,20 +2,40 @@ import { getKeyShareBuilder } from '@misakey/helpers/builder/boxes';
 import { getCode, getDetails } from '@misakey/helpers/apiError';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 
-import { InvalidHash } from '../Errors/classes';
-import { splitKey, combineShares, hashShare } from '../crypto/keySplitting';
+import { InvalidHash } from '@misakey/crypto/Errors/classes';
+import { splitKey, combineShares, hashShare } from '@misakey/crypto/crypto/keySplitting';
+import { encryptCryptoaction } from '@misakey/crypto/cryptoactions';
 
-export function splitBoxSecretKey(key, { boxId }) {
+export function splitBoxSecretKey({ boxSecretKey, boxPublicKey }) {
   const {
-    userShare: invitationKeyShare,
-    misakeyShare: misakeyKeyShare,
-  } = splitKey(key);
+    userShare,
+    // XXX naming of shares is not very consistent
+    // from one part of the code to the other
+    // TODO fix this as part of refacto (https://gitlab.misakey.dev/misakey/frontend/-/issues/856)
+    misakeyShare: {
+      share: misakeyShare,
+      otherShareHash,
+    },
+  } = splitKey(boxSecretKey);
 
-  misakeyKeyShare.boxId = boxId;
+  // field `encryptedInvitationKeyShare` will be used both as a cryptoaction
+  // (for current members of the box)
+  // and as a box attribute
+  // (for users being invited to the box)
+  const encryptedInvitationKeyShare = encryptCryptoaction(
+    { boxKeyShare: userShare },
+    boxPublicKey,
+  );
 
   return {
-    invitationKeyShare,
-    misakeyKeyShare,
+    invitationKeyShare: userShare,
+    // reproducing the structure used in the HTTP API
+    // TODO (in refacto later) fix naming about key shares
+    misakeyKeyShare: {
+      misakeyShare,
+      otherShareHash,
+      encryptedInvitationKeyShare,
+    },
   };
 }
 

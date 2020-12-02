@@ -145,15 +145,21 @@ export default (box, boxIsReady) => {
   );
 
   const createNewBoxKeyShares = useCallback(
-    () => {
-      const { invitationKeyShare, misakeyKeyShare } = splitBoxSecretKey(secretKey, { boxId });
-      return createKeyShareBuilder(misakeyKeyShare)
-        .then(() => {
-          saveKeyShareInBackup(invitationKeyShare);
-          setKeyShareInURL(invitationKeyShare);
-        });
+    async () => {
+      const { invitationKeyShare, misakeyKeyShare } = splitBoxSecretKey({
+        boxSecretKey: secretKey,
+        boxPublicKey: publicKey,
+      });
+      // soon this will use the new API (`state.key_share` box event)
+      await createKeyShareBuilder({
+        share: misakeyKeyShare.misakeyKeyShare,
+        otherShareHash: misakeyKeyShare.otherShareHash,
+        boxId,
+      });
+      saveKeyShareInBackup(invitationKeyShare);
+      setKeyShareInURL(invitationKeyShare);
     },
-    [boxId, setKeyShareInURL, saveKeyShareInBackup, secretKey],
+    [boxId, setKeyShareInURL, saveKeyShareInBackup, secretKey, publicKey],
   );
 
   const onSuccess = useCallback(
@@ -185,7 +191,7 @@ export default (box, boxIsReady) => {
       try {
         const params = {
           boxId,
-          keyShare: { value: invitationKeyShare },
+          keyShare: invitationKeyShare,
         };
         if (shouldRebuildSecretKey) {
           params.secretKey = combineBoxKeyShares(invitationKeyShare, misakeyKeyShare);

@@ -126,7 +126,15 @@ const getBoxSecretKeys = createSelector(
 const makeGetBoxKeyShare = () => createSelector(
   (state) => getState(state).secrets.boxKeyShares,
   (_, boxId) => boxId,
-  (items, boxId) => propOr(null, boxId)(items),
+  (items, boxId) => {
+    const keyShare = propOr(null, boxId)(items);
+    // due to a past inconsistency in the way box key shares were added,
+    // it is possible that some box key shares are stored as strings instead of objects
+    if (typeof keyShare === 'string') {
+      return { value: keyShare };
+    }
+    return keyShare;
+  },
 );
 
 const makeGetMissingBoxKeyShares = () => createSelector(
@@ -249,7 +257,9 @@ function setBoxSecrets(state, { boxId, secretKey, keyShare }) {
           ? state.secrets.boxKeyShares
           : {
             ...state.secrets.boxKeyShares,
-            [boxId]: keyShare,
+            [boxId]: {
+              value: keyShare,
+            },
           }
       ),
     },
