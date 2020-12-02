@@ -1,12 +1,8 @@
 
 import { useMemo, useCallback, useEffect } from 'react';
-import { useDispatch, useSelector, batch } from 'react-redux';
-import { normalize } from 'normalizr';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { actionCreators, selectors } from 'store/reducers/savedFiles/pagination';
-import SavedFilesSchema from 'store/schemas/Files/Saved';
-import { receiveEntities } from '@misakey/store/actions/entities';
-import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
+import { actionCreators, selectors } from 'store/reducers/files/saved/pagination';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import pickAll from '@misakey/helpers/pickAll';
@@ -16,9 +12,10 @@ import { getSavedFilesBuilder, countSavedFilesBuilder } from '@misakey/helpers/b
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import getMissingIndexes from '@misakey/helpers/getMissingIndexes';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import { receiveSavedFiles } from 'store/reducers/files/saved';
 
 // CONSTANTS
-const { receivePaginatedItemCount, receivePaginatedIds } = actionCreators;
+const { receivePaginatedItemCount } = actionCreators;
 const { getByPagination, getItemCount } = selectors;
 
 // HOOKS
@@ -42,16 +39,7 @@ export default () => {
 
   const dispatchReceived = useCallback(
     (data, { offset, limit }) => {
-      const normalized = normalize(
-        data,
-        SavedFilesSchema.collection,
-      );
-      const { entities, result } = normalized;
-
-      batch(() => {
-        dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
-        dispatch(receivePaginatedIds(identityId, offset, limit, result));
-      });
+      dispatch(receiveSavedFiles(data, identityId, offset, limit));
     },
     [dispatch, identityId],
   );

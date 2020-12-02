@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -16,9 +16,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
-import AddToVaultIcon from '@material-ui/icons/LibraryAdd';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import DownloadIcon from '@material-ui/icons/GetApp';
+import AddToVaultIcon from '@misakey/ui/Icon/AddToVault';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -26,6 +26,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.grey[900],
   },
   icons: {
+    // couldn't make it work with `classes: {{ disabled }}`
+    '&.Mui-disabled': {
+      color: theme.palette.grey[400],
+    },
     [theme.breakpoints.down('sm')]: {
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
@@ -37,10 +41,11 @@ const useStyles = makeStyles((theme) => ({
 const IconButtonWithDialogPassword = withDialogPassword(IconButtonAppBar);
 
 const FilePreviewPaper = forwardRef((
-  { fileName, disabled, onSave, onDownload, onClose, t, ...props },
+  { fileName, disabled, onSave, isSaved, onDownload, onClose, t, ...props },
   ref,
 ) => {
   const classes = useStyles();
+  const vaultLabel = useMemo(() => (isSaved ? t('common:savedInVault') : t('common:addToVault')), [isSaved, t]);
 
   return (
     <>
@@ -62,13 +67,13 @@ const FilePreviewPaper = forwardRef((
             <IconButtonWithDialogPassword
               color="inherit"
               className={classes.icons}
-              aria-label={t('common:addToVault')}
+              aria-label={vaultLabel}
               edge="end"
-              disabled={disabled}
+              disabled={disabled || isSaved}
               onClick={onSave}
             >
-              <Tooltip title={t('common:addToVault')}>
-                <AddToVaultIcon />
+              <Tooltip title={vaultLabel}>
+                <AddToVaultIcon isSaved={isSaved} />
               </Tooltip>
             </IconButtonWithDialogPassword>
           )}
@@ -112,6 +117,7 @@ FilePreviewPaper.propTypes = {
   onClose: PropTypes.func.isRequired,
   fileName: PropTypes.string,
   disabled: PropTypes.bool,
+  isSaved: PropTypes.bool,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
@@ -119,6 +125,7 @@ FilePreviewPaper.propTypes = {
 FilePreviewPaper.defaultProps = {
   fileName: 'Unknown',
   disabled: false,
+  isSaved: false,
   onSave: null,
 };
 

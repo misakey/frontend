@@ -1,6 +1,8 @@
 import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import { denormalize } from 'normalizr';
+import { connect } from 'react-redux';
 
 import isNil from '@misakey/helpers/isNil';
 
@@ -16,6 +18,8 @@ import BoxFile from 'components/dumb/Box/File';
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 import { useFilePreviewContext } from 'components/smart/File/Preview/Context';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 
 // CONSTANTS
 const ALLOWED_TYPE_PREVIEW = [
@@ -56,23 +60,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-function FilePreviewDialog({ open, onClose }) {
+function FilePreviewDialog({ open, onClose, selectedId, file }) {
   const classes = useStyles();
 
   const {
-    getFileData,
     getDecryptedFile,
     onDownloadFile,
     onSaveFileInVault,
     disableOnSave,
-    selectedId,
   } = useFilePreviewContext();
 
-  const selected = getFileData(selectedId);
-
   const {
-    isLoading, error, name, type, size, blobUrl,
-  } = useMemo(() => selected, [selected]);
+    isLoading, error, name, type, size, blobUrl, isSaved, encryption,
+  } = useSafeDestr(file);
 
   const isTypeAllowedForPreview = useMemo(
     () => !isNil(type) && ALLOWED_TYPE_PREVIEW.some((elem) => type.startsWith(elem)),
@@ -80,8 +80,8 @@ function FilePreviewDialog({ open, onClose }) {
   );
 
   const onDownloadInBrowser = useCallback(
-    () => onDownloadFile(selectedId),
-    [onDownloadFile, selectedId],
+    () => onDownloadFile(file),
+    [file, onDownloadFile],
   );
 
   const shouldLoadFile = useMemo(
@@ -90,13 +90,13 @@ function FilePreviewDialog({ open, onClose }) {
   );
 
   const onLoadFile = useCallback(
-    () => getDecryptedFile(selectedId),
-    [getDecryptedFile, selectedId],
+    () => getDecryptedFile(selectedId, encryption, name),
+    [encryption, getDecryptedFile, name, selectedId],
   );
 
   const onSave = useCallback(
-    () => onSaveFileInVault(selectedId),
-    [onSaveFileInVault, selectedId],
+    () => onSaveFileInVault(file),
+    [onSaveFileInVault, file],
   );
 
   useFetchEffect(onLoadFile, { shouldFetch: shouldLoadFile });
@@ -110,8 +110,9 @@ function FilePreviewDialog({ open, onClose }) {
       onDownload: onDownloadInBrowser,
       fileName: name,
       disabled: !isNil(error),
+      isSaved,
     }),
-    [classes.paper, disableOnSave, error, name, onClose, onDownloadInBrowser, onSave],
+    [classes.paper, disableOnSave, error, isSaved, name, onClose, onDownloadInBrowser, onSave],
   );
 
   return (
@@ -141,7 +142,7 @@ function FilePreviewDialog({ open, onClose }) {
     >
       <DialogContent className={classes.content}>
         <FilePreview
-          file={selected}
+          file={file}
           maxHeight={PREVIEW_MAX_HEIGHT}
           allowedFileTypePreview={ALLOWED_TYPE_PREVIEW}
         />
@@ -153,9 +154,23 @@ function FilePreviewDialog({ open, onClose }) {
 
 FilePreviewDialog.propTypes = {
   open: PropTypes.bool.isRequired,
+  selectedId: PropTypes.string,
   onClose: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
+  // CONNECT
+  file: PropTypes.shape(DecryptedFileSchema.propTypes),
 };
 
+FilePreviewDialog.defaultProps = {
+  selectedId: null,
+  file: {},
+};
 
-export default withTranslation(['common', 'components'])(FilePreviewDialog);
+// CONNECT
+const mapStateToProps = (state, { selectedId }) => ({
+  file: isNil(selectedId)
+    ? {}
+    : denormalize(selectedId, DecryptedFileSchema.entity, state.entities),
+});
+
+export default connect(mapStateToProps, null)(withTranslation(['common', 'components'])(FilePreviewDialog));

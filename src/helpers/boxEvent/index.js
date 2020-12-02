@@ -70,3 +70,17 @@ export const isMeJoinEvent = ({ type, sender }, meIdentityId) => {
   }
   return false;
 };
+
+
+export const getEventForNormalization = (event) => {
+  const { content, serverEventCreatedAt: createdAt, sender } = event;
+  if (!isNil(content)) {
+    const { encryptedFileId, isSaved = false } = content;
+    if (!isNil(encryptedFileId)) {
+      const decryptedFile = { id: encryptedFileId, isSaved, sender, createdAt };
+      const newContent = { ...content, decryptedFile };
+      return { ...event, content: newContent };
+    }
+  }
+  return event;
+};

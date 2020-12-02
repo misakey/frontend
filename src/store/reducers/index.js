@@ -13,7 +13,7 @@ import { wrapReducerWithResetOnSignOut } from '@misakey/auth/store/reducers/help
 import userBoxesPagination from 'store/reducers/userBoxes/pagination';
 import boxEventsPagination from 'store/reducers/userBoxes/pagination/events';
 import boxFileEventsPagination from 'store/reducers/userBoxes/pagination/events/files';
-import savedFilesPagination from 'store/reducers/savedFiles/pagination';
+import savedFilesPagination from 'store/reducers/files/saved/pagination';
 
 import devicePreferences from 'store/reducers/devicePreferences';
 import box from 'store/reducers/box';

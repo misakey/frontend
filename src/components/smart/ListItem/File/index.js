@@ -18,6 +18,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import Box from '@material-ui/core/Box';
 import MenuItem from '@material-ui/core/MenuItem';
 import withDialogPassword from 'components/smart/Dialog/Password/with';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 import isNil from '@misakey/helpers/isNil';
 import formatFileSize from 'helpers/formatFileSize';
@@ -105,6 +106,7 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
     createdAt,
     error,
     isLoading,
+    isSaved,
     sender: { displayName, isFromCurrentUser } = {},
   } = useMemo(() => file, [file]);
 
@@ -178,6 +180,7 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
       </ListItemAvatar>
       <ListItemText
           primary={name || t('common:undecryptable')}
+          primaryTypographyProps={{ noWrap: true, display: 'block', color: 'textPrimary' }}
           secondary={(
             <>
               <Typography component="span" noWrap display="block" variant="caption">{secondary}</Typography>
@@ -187,16 +190,16 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
                 ref={buttonRef}
                 size="small"
                 color="secondary"
-                className={classes.button}
+                classes={{ root: classes.button }}
                 onClick={onSave}
-                disabled={!isNil(error)}
+                disabled={!isNil(error) || isSaved}
+                startIcon={isSaved ? <CheckCircleIcon color="secondary" /> : null}
               >
-                {t('common:addToVault')}
+                {isSaved ? t('common:savedInVault') : t('common:addToVault')}
               </ButtonWithDialogPassword>
               )}
             </>
-      )}
-          primaryTypographyProps={{ noWrap: true, display: 'block', color: 'textPrimary' }}
+        )}
       />
       {
         !isNil(actions) && (

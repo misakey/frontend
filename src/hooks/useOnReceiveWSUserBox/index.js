@@ -1,7 +1,7 @@
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import routes from 'routes';
 import BoxesSchema from 'store/schemas/Boxes';
-import { DELETED_BOX, NEW_EVENT, NOTIFICATIONS_ACK, BOX_SETTINGS, NOTIFICATION } from 'constants/app/boxes/ws/messageTypes';
+import { DELETED_BOX, NEW_EVENT, NOTIFICATIONS_ACK, BOX_SETTINGS, NOTIFICATION, SAVED_FILE } from 'constants/app/boxes/ws/messageTypes';
 import { CHANGE_EVENT_TYPES } from 'constants/app/boxes/events';
 import { receiveWSEditEvent, addBoxEvent } from 'store/reducers/box';
 import { updateEntities } from '@misakey/store/actions/entities';
@@ -20,6 +20,7 @@ import { useSnackbar } from 'notistack';
 import useModifier from '@misakey/hooks/useModifier';
 import { addNewNotification } from 'store/actions/identity/notifications';
 import useOnNotifyEvent from 'hooks/useOnNotifyEvent';
+import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 
 // CONSTANTS
 const {
@@ -119,6 +120,16 @@ export default (activeStatus, search) => {
 
       if (type === NOTIFICATION) {
         return Promise.resolve(dispatch(addNewNotification(object)));
+      }
+
+      if (type === SAVED_FILE) {
+        const { encryptedFileId, isSaved } = object;
+        return Promise.resolve(
+          dispatch(updateEntities(
+            [{ id: encryptedFileId, changes: { isSaved } }],
+            DecryptedFileSchema,
+          )),
+        );
       }
 
       // New event

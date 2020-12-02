@@ -18,7 +18,7 @@ import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStra
 
 import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
 
-import { transformReferrerEvent, isMemberEventType } from 'helpers/boxEvent';
+import { transformReferrerEvent, isMemberEventType, getEventForNormalization } from 'helpers/boxEvent';
 import pluck from '@misakey/helpers/pluck';
 import propOr from '@misakey/helpers/propOr';
 import props from '@misakey/helpers/props';
@@ -27,6 +27,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import without from '@misakey/helpers/without';
 import omit from '@misakey/helpers/omit';
 import prop from '@misakey/helpers/prop';
+import { cleanDecryptedFile } from '../files/saved/decrypted';
 
 // CONSTANTS
 const INITIAL_STATE = {};
@@ -111,7 +112,12 @@ export const makeGetBoxText = () => createSelector(
 // THUNKS
 export const receiveJoinedBoxes = (boxes, processStrategy = mergeReceiveNoEmpty) => (dispatch) => {
   const normalized = normalize(
-    boxes.map((box) => ({ isMember: true, hasAccess: true, ...box })),
+    boxes.map((box) => ({
+      isMember: true,
+      hasAccess: true,
+      ...box,
+      lastEvent: getEventForNormalization(box.lastEvent),
+    })),
     BoxesSchema.collection,
   );
   const { entities } = normalized;
@@ -135,6 +141,8 @@ export const receiveJoinedBox = (box, processStrategy = mergeReceiveNoEmpty) => 
       }
     }
   }
+
+  nextBox.lastEvent = getEventForNormalization(nextBox.lastEvent);
 
   const normalized = normalize(
     nextBox,
@@ -201,7 +209,7 @@ export const addBoxEvent = (id, nextEvent, isMyEvent = false, onNotifyEvent) => 
     }
   }
 
-  const normalized = normalize(nextEvent, BoxEventsSchema.entity);
+  const normalized = normalize(getEventForNormalization(nextEvent), BoxEventsSchema.entity);
   const { entities } = normalized;
 
   const fileEventItemCount = getFileItemCount(getState(), id);
@@ -229,15 +237,16 @@ export const addBoxEvent = (id, nextEvent, isMyEvent = false, onNotifyEvent) => 
   return batchResult;
 };
 
-export const receiveBoxEvents = (id, nextEvents) => (dispatch, getState) => {
+export const receiveBoxEvents = (id, events) => (dispatch, getState) => {
   const currentBox = getBoxById(getState(), id);
-  const { events = [] } = currentBox;
+  const { events: currentEvents = [] } = currentBox;
+  const newEvents = events.map(getEventForNormalization);
 
   const changes = {
-    events: events.concat(nextEvents),
+    events: currentEvents.concat(newEvents),
   };
 
-  const normalized = normalize(nextEvents, BoxEventsSchema.collection);
+  const normalized = normalize(newEvents, BoxEventsSchema.collection);
   const { entities } = normalized;
 
   return Promise.all([
@@ -255,11 +264,17 @@ export const receiveWSEditEvent = (editEvent) => (dispatch, getState) => {
 
   const changes = transformReferrerEvent(editEvent)(referrerEvent);
 
-  const { type, id } = referrerEvent || {};
+  const { type, id, content } = referrerEvent || {};
 
   return batch(() => {
-    if (type === MSG_FILE && !isNil(fileEventItemCount)) {
-      dispatch(removePaginatedFileEventId(boxId, id));
+    if (type === MSG_FILE) {
+      if (!isNil(fileEventItemCount)) {
+        dispatch(removePaginatedFileEventId(boxId, id));
+      }
+      const { encryptedFileId } = content || {};
+      if (!isNil(encryptedFileId)) {
+        dispatch(cleanDecryptedFile(encryptedFileId));
+      }
     }
     return Promise.resolve(dispatch(updateEntities(
       [{ id: referrerId, changes }],

@@ -15,6 +15,7 @@ import { getBoxFilesEventsBuilder, countBoxFilesEventsBuilder } from '@misakey/h
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import getMissingIndexes from '@misakey/helpers/getMissingIndexes';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import { getEventForNormalization } from 'helpers/boxEvent';
 
 // CONSTANTS
 const { receivePaginatedItemCount, receivePaginatedIds } = actionCreators;
@@ -43,7 +44,7 @@ export default (boxId) => {
   const dispatchReceived = useCallback(
     (data, { offset, limit }) => {
       const normalized = normalize(
-        data,
+        data.map(getEventForNormalization),
         BoxEventsSchema.collection,
       );
       const { entities, result } = normalized;

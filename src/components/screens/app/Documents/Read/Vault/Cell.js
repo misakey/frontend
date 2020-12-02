@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useEffect } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch, connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -6,22 +6,19 @@ import { denormalize } from 'normalizr';
 
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
 
-import { decryptFileMetadataFromVault } from '@misakey/crypto/vault';
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import isEmpty from '@misakey/helpers/isEmpty';
-import log from '@misakey/helpers/log';
 import isNil from '@misakey/helpers/isNil';
 import omit from '@misakey/helpers/omit';
 import execWithRequestIdleCallback from '@misakey/helpers/execWithRequestIdleCallback';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-
+import useDecryptSavedFileEffect from 'hooks/useDecryptSavedFileEffect';
 import SavedFilesSchema from 'store/schemas/Files/Saved';
 import { deleteSavedFileBuilder } from 'packages/helpers/src/builder/vault';
-import { deleteSavedFile } from 'store/reducers/savedFiles';
+import { deleteSavedFile } from 'store/reducers/files/saved';
 import { useFilePreviewContext } from 'components/smart/File/Preview/Context';
-import { DecryptionError } from '@misakey/crypto/Errors/classes';
 
 import FileListItem, { FileListItemSkeleton } from 'components/smart/ListItem/File';
 
@@ -32,29 +29,6 @@ const ALLOWED_FILE_TYPES_TO_PREVIEW = ['image/'];
 
 // HELPERS
 const omitInternalData = (props) => omit(props, INTERNAL_DATA);
-
-// HOOKS
-const useMapToFileContext = (vaultKey) => useCallback(
-  (encryptedMetadata, createdAt) => {
-    const defaultProps = { createdAt, sender: { isFromCurrentUser: true } };
-
-    try {
-      const {
-        fileSize: size,
-        fileName: name,
-        fileType: type,
-        encryption,
-      } = decryptFileMetadataFromVault(encryptedMetadata, vaultKey);
-
-      return { ...defaultProps, name, type, size, encryption };
-    } catch (err) {
-      // It can happen if users have reset their password
-      log(err, 'error');
-      return { ...defaultProps, error: new DecryptionError(err) };
-    }
-  },
-  [vaultKey],
-);
 
 // COMPONENTS
 export const Skeleton = ({ style }) => (
@@ -71,24 +45,13 @@ const VaultCell = ({ style, data, savedFile }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation('common');
 
-  const {
-    encryptedMetadata,
-    id,
-    encryptedFileId,
-    createdAt,
-  } = useMemo(() => savedFile || {}, [savedFile]);
+  const { id, encryptedFileId, decryptedFile } = useSafeDestr(savedFile);
 
-  const mapToFileContext = useMapToFileContext(vaultKey);
+  useDecryptSavedFileEffect(savedFile, vaultKey);
 
-  const {
-    setFileData,
-    getFileData,
-    getDecryptedFile,
-    onOpenFilePreview,
-  } = useFilePreviewContext();
+  const { getDecryptedFile, onOpenFilePreview } = useFilePreviewContext();
 
-  const fileFromContext = getFileData(encryptedFileId);
-  const { type, blobUrl, isLoading, error } = useMemo(() => fileFromContext, [fileFromContext]);
+  const { type, blobUrl, isLoading, error, encryption, name } = useSafeDestr(decryptedFile);
 
   const onClick = useCallback(
     () => {
@@ -108,15 +71,6 @@ const VaultCell = ({ style, data, savedFile }) => {
     { onSuccess: onDeleteSuccess },
   );
 
-  useEffect(
-    () => {
-      if (isEmpty(fileFromContext) && !isNil(encryptedMetadata)) {
-        setFileData(encryptedFileId, mapToFileContext(encryptedMetadata, createdAt));
-      }
-    },
-    [createdAt, encryptedFileId, encryptedMetadata, fileFromContext, mapToFileContext, setFileData],
-  );
-
   const isTypeAllowedForPreview = useMemo(
     () => !isNil(type) && ALLOWED_FILE_TYPES_TO_PREVIEW.some(
       (elem) => type.startsWith(elem),
@@ -132,9 +86,9 @@ const VaultCell = ({ style, data, savedFile }) => {
 
   const loadFile = useCallback(
     () => {
-      execWithRequestIdleCallback(() => getDecryptedFile(encryptedFileId));
+      execWithRequestIdleCallback(() => getDecryptedFile(encryptedFileId, encryption, name));
     },
-    [encryptedFileId, getDecryptedFile],
+    [encryptedFileId, encryption, getDecryptedFile, name],
   );
 
   useFetchEffect(loadFile, { shouldFetch: shouldLoadPreview, fetchOnlyOnce: true });
@@ -142,7 +96,7 @@ const VaultCell = ({ style, data, savedFile }) => {
   return (
     <FileListItem
       style={style}
-      file={fileFromContext}
+      file={decryptedFile}
       actions={[{ onClick: onRemove, text: t('common:remove') }]}
       onClick={onClick}
       key={id}

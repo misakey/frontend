@@ -2,6 +2,7 @@ import React, { createContext, useContext, useCallback, useMemo, useReducer, use
 import PropTypes from 'prop-types';
 import { useRouteMatch } from 'react-router-dom';
 import routes from 'routes';
+import { useDispatch, batch } from 'react-redux';
 
 import isNil from '@misakey/helpers/isNil';
 import { getEncryptedFileBuilder } from '@misakey/helpers/builder/files';
@@ -9,33 +10,23 @@ import DialogFilePreview from 'components/smart/Dialog/FilePreview';
 import workerDecryptFile from '@misakey/crypto/box/decryptFile/worker';
 import log from '@misakey/helpers/log';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
-import propOr from '@misakey/helpers/propOr';
 import downloadFile from '@misakey/helpers/downloadFile';
 import execWithRequestIdleCallback from '@misakey/helpers/execWithRequestIdleCallback';
 import { FetchFileError, DecryptionFileError } from 'constants/Errors/classes/Files';
 import useSaveFileInVault from 'hooks/useSaveFileInVault';
-
-// CONSTANTS
-export const INITIAL_SUB_STATE = {
-  name: null,
-  type: null,
-  // unused for now but may be useful later
-  blobFile: null,
-  blobUrl: null,
-  encryption: null,
-  isLoading: false,
-  createdAt: null,
-  sender: {},
-  error: null,
-};
-
-const EMPTY = {};
+import { updateEntities } from '@misakey/store/actions/entities';
+import { revokeObjectURL } from '@misakey/helpers/objectURL';
+import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 
 // CONTEXT
 export const FilePreviewContext = createContext({
   onOpenFilePreview: null,
   onCloseFilePreview: null,
-  setFileData: null,
+  getDecryptedFile: null,
+  onDownloadFile: null,
+  disableOnSave: false,
+  onSaveFileInVault: null,
+  selectedId: null,
 });
 
 // HELPERS
@@ -51,8 +42,7 @@ const createBlobUrl = (file) => {
 
 const revokeBlobUrl = (blobUrl) => {
   try {
-    const urlBuilder = window.URL || window.webkitURL;
-    return urlBuilder.revokeObjectURL(blobUrl);
+    return revokeObjectURL(blobUrl);
   } catch (err) {
     return null;
   }
@@ -70,19 +60,6 @@ const filePreviewReducer = (state, { type, ...rest }) => {
         selectedId,
       };
     }
-    case 'SET_FILE_DATA': {
-      const { fileId, data } = rest;
-      return {
-        ...state,
-        filesData: {
-          ...state.filesData,
-          [fileId]: {
-            ...(state.filesData[fileId] || INITIAL_SUB_STATE),
-            ...data,
-          },
-        },
-      };
-    }
     default:
       throw new Error();
   }
@@ -91,46 +68,44 @@ const filePreviewReducer = (state, { type, ...rest }) => {
 // COMPONENTS
 const FilePreviewContextProvider = ({ children, revokeOnChange, ...props }) => {
   const isVaultSpace = useRouteMatch(routes.documents.vault);
-  const [{ filesData, selectedId }, dispatch] = useReducer(filePreviewReducer, {
+  const [{ filesData, selectedId }, dispatchReducer] = useReducer(filePreviewReducer, {
     selectedId: null,
     filesData: {},
   });
-
-  const getFileData = useCallback((id) => propOr(EMPTY, id)(filesData), [filesData]);
+  const dispatch = useDispatch();
 
   const onOpenFilePreview = useCallback(
-    (id) => dispatch({ type: 'SET_SELECTED', selectedId: id }),
+    (id) => dispatchReducer({ type: 'SET_SELECTED', selectedId: id }),
     [],
   );
 
   const onCloseFilePreview = useCallback(
-    () => dispatch({ type: 'SET_SELECTED', selectedId: null }),
+    () => dispatchReducer({ type: 'SET_SELECTED', selectedId: null }),
     [],
   );
 
   const setFileData = useCallback(
-    (fileId, data) => dispatch({ type: 'SET_FILE_DATA', fileId, data }),
-    [],
+    (id, data) => dispatch(updateEntities([{ id, changes: data }], DecryptedFileSchema)),
+    [dispatch],
   );
 
   const onSaveInVault = useSaveFileInVault();
 
   const onSaveFileInVault = useCallback(
-    (id) => {
-      const { encryption, name: fileName, type: fileType, size: fileSize } = getFileData(id);
+    (file) => {
+      const { id, encryption, name: fileName, type: fileType, size: fileSize } = file;
       return onSaveInVault({ encryption, fileSize, fileName, fileType }, id);
     },
-    [getFileData, onSaveInVault],
+    [onSaveInVault],
   );
 
   const getDecryptedFile = useCallback(
-    async (id) => {
+    async (id, encryption, name) => {
       if (isNil(id)) {
         return setFileData(id, { error: new FetchFileError() });
       }
-      const { encryption, name } = getFileData(id);
       setFileData(id, { isLoading: true });
-      return getEncryptedFileBuilder(id)
+      return batch(() => getEncryptedFileBuilder(id)
         .then(async (response) => {
           try {
             const decryptedFile = await workerDecryptFile(
@@ -146,16 +121,16 @@ const FilePreviewContextProvider = ({ children, revokeOnChange, ...props }) => {
           }
         })
         .catch((e) => setFileData(id, { error: new FetchFileError(e) }))
-        .finally(() => setFileData(id, { isLoading: false }));
+        .finally(() => setFileData(id, { isLoading: false })));
     },
-    [getFileData, setFileData],
+    [setFileData],
   );
 
   const onDownloadFile = useCallback(
-    (id) => {
-      const { blobUrl, name } = getFileData(id);
+    (file) => {
       execWithRequestIdleCallback(async () => {
-        const data = isNil(blobUrl) ? await getDecryptedFile(id) : blobUrl;
+        const { name, id, encryption, blobUrl } = file;
+        const data = isNil(blobUrl) ? await getDecryptedFile(id, encryption, name) : blobUrl;
         if (isNil(data)) { return; }
         try {
           // revokeBlob is handled in this component as there is several place to download file
@@ -165,22 +140,23 @@ const FilePreviewContextProvider = ({ children, revokeOnChange, ...props }) => {
         }
       });
     },
-    [getDecryptedFile, getFileData],
+    [getDecryptedFile],
   );
 
   const onRevokeBlobUrl = useCallback(
-    (id) => {
-      const { blobUrl } = getFileData(id);
+    (id, blobUrl) => {
       if (!isNil(blobUrl)) {
         revokeBlobUrl(blobUrl);
         setFileData(id, { blobUrl: null });
       }
     },
-    [getFileData, setFileData],
+    [setFileData],
   );
 
   const revokeAllBlobs = useCallback(
-    () => Object.values(filesData).forEach(({ blobUrl }) => onRevokeBlobUrl(blobUrl)),
+    () => batch(() => {
+      Object.values(filesData).forEach(({ id, blobUrl }) => onRevokeBlobUrl(id, blobUrl));
+    }),
     [onRevokeBlobUrl, filesData],
   );
 
@@ -188,8 +164,6 @@ const FilePreviewContextProvider = ({ children, revokeOnChange, ...props }) => {
     () => ({
       onOpenFilePreview,
       onCloseFilePreview,
-      setFileData,
-      getFileData,
       getDecryptedFile,
       onDownloadFile,
       disableOnSave: isVaultSpace,
@@ -197,13 +171,14 @@ const FilePreviewContextProvider = ({ children, revokeOnChange, ...props }) => {
       selectedId,
     }),
     [onOpenFilePreview, onCloseFilePreview,
-      setFileData, getFileData,
       getDecryptedFile, onDownloadFile, onSaveFileInVault,
       isVaultSpace, selectedId],
   );
 
   useEffect(
     // revoke all blobUrl on component unmount or on change param revokeOnChange
+    // we could consider removing it to avoid redownload file too much
+    // but it will consume browser memory
     () => () => {
       revokeAllBlobs();
     },
@@ -216,6 +191,7 @@ const FilePreviewContextProvider = ({ children, revokeOnChange, ...props }) => {
       {children}
       <DialogFilePreview
         open={!isNil(selectedId)}
+        selectedId={selectedId}
         onSave={onSaveInVault}
         onClose={onCloseFilePreview}
         {...props}

@@ -7,7 +7,7 @@ import workerEncryptFileForVault from '@misakey/crypto/vault/workers/encryptFile
 import ensureVaultKeyExists from '@misakey/crypto/store/actions/ensureVaultKeyExists';
 import { uploadFileInVaultBuilder } from '@misakey/helpers/builder/vault';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
-import { addSavedFile } from 'store/reducers/savedFiles';
+import { addSavedFile } from 'store/reducers/files/saved';
 
 // CONSTANTS
 export const BLOBS_FIELD_NAME = 'files';
