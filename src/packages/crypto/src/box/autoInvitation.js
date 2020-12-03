@@ -50,7 +50,7 @@ export async function tryAddingAutoInvite({ event, boxSecretKey, boxKeyShare }) 
     // that is called by the HTTP API layer.
     // We added an heuristic in snakeCaseDeep
     // that is supposed to differentiate base64 from a camelCase name.
-    forServerNoStore: Object.fromEntries(
+    extra: Object.fromEntries(
       identityPublicKeys.map((pubkey) => {
         // in a first iteration the frontend will only use the box key share
         // when consuming auto-invitations;
