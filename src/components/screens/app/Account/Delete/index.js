@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation, Trans } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -55,7 +55,7 @@ const AccountDelete = ({ t, identity, isFetching }) => {
         </Typography>
         <Box my={3}>
           <Title>{t('account:delete.content.whatDeleteTitle')}</Title>
-          <Typography color="textSecondary">
+          <Typography color="textSecondary" component="div">
             <Trans i18nKey="account:delete.content.whatDeleteContent">
               Si vous faites votre demande de suppression, voici ce qui sera supprimé:
               <ul>
@@ -72,7 +72,7 @@ const AccountDelete = ({ t, identity, isFetching }) => {
         </Box>
         <Box my={3}>
           <Title>{t('account:delete.content.whatNotDeleteTitle')}</Title>
-          <Typography color="textSecondary">
+          <Typography color="textSecondary" component="div">
             <Trans i18nKey="account:delete.content.whatNotDeleteContent">
               Si vous faites votre demande de suppression, certaines données ne seront pas
               supprimées automatiquement

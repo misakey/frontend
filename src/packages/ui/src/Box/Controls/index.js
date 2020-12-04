@@ -1,4 +1,4 @@
-import React, { useMemo, isValidElement } from 'react';
+import { useMemo, isValidElement } from 'react';
 import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import mergeDeepLeft from '@misakey/helpers/mergeDeepLeft';

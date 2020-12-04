@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation, Trans } from 'react-i18next';
 import { Link, generatePath } from 'react-router-dom';
@@ -49,10 +49,13 @@ function NoAccess({ box, belongsToCurrentUser, t }) {
   const { title, id, creator } = useMemo(() => box, [box]);
   const { displayName: creatorName, id: creatorIdentityId } = useSafeDestr(creator);
 
-  const creatorProfileTo = useMemo(
+  const linkProps = useMemo(
     () => (isNil(creatorIdentityId)
-      ? null
-      : generatePath(routes.identities.public, { id: creatorIdentityId })),
+      ? {}
+      : {
+        component: Link,
+        to: generatePath(routes.identities.public, { id: creatorIdentityId }),
+      }),
     [creatorIdentityId],
   );
 
@@ -125,7 +128,7 @@ function NoAccess({ box, belongsToCurrentUser, t }) {
                 <Subtitle>
                   <Trans values={{ creatorName }} i18nKey="boxes:read.noaccess.subtitle">
                     {'Message '}
-                    <MuiLink color="secondary" component={Link} to={creatorProfileTo}>{'{{creatorName}}'}</MuiLink>
+                    <MuiLink color="secondary" {...linkProps}>{'{{creatorName}}'}</MuiLink>
                     {' to request access'}
                   </Trans>
                 </Subtitle>

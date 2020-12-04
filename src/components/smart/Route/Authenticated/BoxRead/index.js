@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useContext, useEffect } from 'react';
+import { useState, useMemo, useCallback, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import errorTypes from '@misakey/ui/constants/errorTypes';

@@ -1,6 +1,5 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import HttpStatus from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 
 import { renderHook } from '@testing-library/react-hooks';
 
@@ -27,36 +26,36 @@ jest.mock('react-i18next', () => ({
 
 // CONSTANTS
 const ERROR_STATUSES = [
-  [HttpStatus.BAD_REQUEST],
-  [HttpStatus.CONFLICT],
-  [HttpStatus.FORBIDDEN],
-  [HttpStatus.INTERNAL_SERVER_ERROR],
-  [HttpStatus.LOCKED],
-  [HttpStatus.METHOD_NOT_ALLOWED],
-  [HttpStatus.NOT_FOUND],
-  [HttpStatus.PAYMENT_REQUIRED],
-  [HttpStatus.REQUEST_TIMEOUT],
-  [HttpStatus.REQUEST_TOO_LONG],
-  [HttpStatus.SERVICE_UNAVAILABLE],
-  [HttpStatus.TOO_MANY_REQUESTS],
-  [HttpStatus.UNAUTHORIZED],
-  [HttpStatus.UNSUPPORTED_MEDIA_TYPE],
+  [StatusCodes.BAD_REQUEST],
+  [StatusCodes.CONFLICT],
+  [StatusCodes.FORBIDDEN],
+  [StatusCodes.INTERNAL_SERVER_ERROR],
+  [StatusCodes.LOCKED],
+  [StatusCodes.METHOD_NOT_ALLOWED],
+  [StatusCodes.NOT_FOUND],
+  [StatusCodes.PAYMENT_REQUIRED],
+  [StatusCodes.REQUEST_TIMEOUT],
+  [StatusCodes.REQUEST_TOO_LONG],
+  [StatusCodes.SERVICE_UNAVAILABLE],
+  [StatusCodes.TOO_MANY_REQUESTS],
+  [StatusCodes.UNAUTHORIZED],
+  [StatusCodes.UNSUPPORTED_MEDIA_TYPE],
 ];
 
 const ERROR_STATUSES_EXCEPT_INTERNAL = [
-  [HttpStatus.BAD_REQUEST],
-  [HttpStatus.CONFLICT],
-  [HttpStatus.FORBIDDEN],
-  [HttpStatus.LOCKED],
-  [HttpStatus.METHOD_NOT_ALLOWED],
-  [HttpStatus.NOT_FOUND],
-  [HttpStatus.PAYMENT_REQUIRED],
-  [HttpStatus.REQUEST_TIMEOUT],
-  [HttpStatus.REQUEST_TOO_LONG],
-  [HttpStatus.SERVICE_UNAVAILABLE],
-  [HttpStatus.TOO_MANY_REQUESTS],
-  [HttpStatus.UNAUTHORIZED],
-  [HttpStatus.UNSUPPORTED_MEDIA_TYPE],
+  [StatusCodes.BAD_REQUEST],
+  [StatusCodes.CONFLICT],
+  [StatusCodes.FORBIDDEN],
+  [StatusCodes.LOCKED],
+  [StatusCodes.METHOD_NOT_ALLOWED],
+  [StatusCodes.NOT_FOUND],
+  [StatusCodes.PAYMENT_REQUIRED],
+  [StatusCodes.REQUEST_TIMEOUT],
+  [StatusCodes.REQUEST_TOO_LONG],
+  [StatusCodes.SERVICE_UNAVAILABLE],
+  [StatusCodes.TOO_MANY_REQUESTS],
+  [StatusCodes.UNAUTHORIZED],
+  [StatusCodes.UNSUPPORTED_MEDIA_TYPE],
 ];
 
 // COMPONENTS
@@ -94,7 +93,7 @@ describe('testing useHandleGenericHttpErrors', () => {
     });
 
   it('should enqueueSnackbar for internal error status with details', () => {
-    const status = HttpStatus.INTERNAL_SERVER_ERROR;
+    const status = StatusCodes.INTERNAL_SERVER_ERROR;
     const error = new Error();
     error.status = status;
     expect(handleHttpErrors.current(error)).toBe(true);

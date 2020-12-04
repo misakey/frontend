@@ -1,20 +1,20 @@
-import HttpStatus from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 
 export const HTTP_ERROR_STATUSES = [
-  HttpStatus.BAD_REQUEST,
-  HttpStatus.CONFLICT,
-  HttpStatus.FORBIDDEN,
-  HttpStatus.INTERNAL_SERVER_ERROR,
-  HttpStatus.LOCKED,
-  HttpStatus.METHOD_NOT_ALLOWED,
-  HttpStatus.NOT_FOUND,
-  HttpStatus.PAYMENT_REQUIRED,
-  HttpStatus.REQUEST_TIMEOUT,
-  HttpStatus.REQUEST_TOO_LONG,
-  HttpStatus.SERVICE_UNAVAILABLE,
-  HttpStatus.TOO_MANY_REQUESTS,
-  HttpStatus.UNAUTHORIZED,
-  HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+  StatusCodes.BAD_REQUEST,
+  StatusCodes.CONFLICT,
+  StatusCodes.FORBIDDEN,
+  StatusCodes.INTERNAL_SERVER_ERROR,
+  StatusCodes.LOCKED,
+  StatusCodes.METHOD_NOT_ALLOWED,
+  StatusCodes.NOT_FOUND,
+  StatusCodes.PAYMENT_REQUIRED,
+  StatusCodes.REQUEST_TIMEOUT,
+  StatusCodes.REQUEST_TOO_LONG,
+  StatusCodes.SERVICE_UNAVAILABLE,
+  StatusCodes.TOO_MANY_REQUESTS,
+  StatusCodes.UNAUTHORIZED,
+  StatusCodes.UNSUPPORTED_MEDIA_TYPE,
 ];
 
 export const filterHttpStatus = (s) => (HTTP_ERROR_STATUSES.includes(s) ? s : undefined);

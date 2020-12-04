@@ -1,4 +1,4 @@
-import React, { useCallback, forwardRef } from 'react';
+import { useCallback, forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
 

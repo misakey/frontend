@@ -19,7 +19,8 @@
   },
   "plugins": [
     "jest",
-    "markdown"
+    "markdown",
+    "react-hooks"
   ],
   "settings": {
     "import/resolver": {
@@ -29,14 +30,38 @@
         ]
       },
       "alias": [
-        ["@misakey/api", "./src/packages/api/src"],
-        ["@misakey/auth", "./src/packages/auth/src"],
-        ["@misakey/helpers", "./src/packages/helpers/src"],
-        ["@misakey/hooks", "./src/packages/hooks/src"],
-        ["@misakey/ui/static", "./src/packages/ui/static"],
-        ["@misakey/ui", "./src/packages/ui/src"],
-        ["@misakey/store", "./src/packages/store/src"],
-        ["@misakey/crypto", "./src/packages/crypto/src"]
+        [
+          "@misakey/api",
+          "./src/packages/api/src"
+        ],
+        [
+          "@misakey/auth",
+          "./src/packages/auth/src"
+        ],
+        [
+          "@misakey/helpers",
+          "./src/packages/helpers/src"
+        ],
+        [
+          "@misakey/hooks",
+          "./src/packages/hooks/src"
+        ],
+        [
+          "@misakey/ui/static",
+          "./src/packages/ui/static"
+        ],
+        [
+          "@misakey/ui",
+          "./src/packages/ui/src"
+        ],
+        [
+          "@misakey/store",
+          "./src/packages/store/src"
+        ],
+        [
+          "@misakey/crypto",
+          "./src/packages/crypto/src"
+        ]
       ]
     }
   },
@@ -62,13 +87,20 @@
       }
     ],
     "import/no-extraneous-dependencies": "off", // It would be better to enable this rule.
-    "import/namespace": ["error", { "allowComputed": true }],
+    "import/namespace": [
+      "error",
+      {
+        "allowComputed": true
+      }
+    ],
     "import/prefer-default-export": 0,
     "object-curly-newline": "off",
     // Strict, airbnb is using warn
     "no-console": "error",
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
     "no-multiple-empty-lines": "off"
   },
   "overrides": [
@@ -84,7 +116,9 @@
       }
     },
     {
-      "files": ["**/*.md"],
+      "files": [
+        "**/*.md"
+      ],
       "rules": {
         "no-console": "off",
         "no-unused-expressions": "off"

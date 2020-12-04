@@ -1,4 +1,4 @@
-import React, { lazy, useMemo, useCallback } from 'react';
+import { lazy, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';

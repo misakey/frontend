@@ -1,7 +1,7 @@
 #### Delay in seconds, same text
 
 ```js
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { SnackbarProvider, withSnackbar } from 'notistack';
 
 import ButtonDisabledDelay from './index';
@@ -42,7 +42,7 @@ const ButtonDisabledDelayExample = () => (
 
 #### Delay in seconds, different text during delay
 ```js
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { SnackbarProvider, withSnackbar } from 'notistack';
 
 import ButtonDisabledDelay from './index';

@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Form } from 'formik';
 import { withTranslation } from 'react-i18next';

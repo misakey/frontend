@@ -1,13 +1,13 @@
 ScreenSplashWithTranslation example:
 
 ```js
-import React from 'react';
+import { Suspense } from 'react';
 import ScreenSplashWithTranslation from './index';
 
 const ScreenSplashWithTranslationExample = () => (
-  <React.Suspense fallback="Loading...">
+  <Suspense fallback="Loading...">
     <ScreenSplashWithTranslation text="loading" />
-  </React.Suspense>
+  </Suspense>
 );
 
   <ScreenSplashWithTranslationExample />;

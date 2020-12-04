@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, forwardRef } from 'react';
+import { useState, useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 import { selectors } from '@misakey/crypto/store/reducers';

@@ -1,4 +1,4 @@
-import HttpStatus from 'http-status-codes';
+import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 
 import isFunction from '@misakey/helpers/isFunction';
 import isObject from '@misakey/helpers/isObject';
@@ -57,7 +57,7 @@ export function handleResponse(rawResponse) {
 
         error.status = status;
         error.code = code;
-        error.desc = desc || HttpStatus.getStatusText(status);
+        error.desc = desc || getReasonPhrase(status);
         error.origin = origin;
         error.details = details;
         error.rawResponse = rawResponse;
@@ -72,8 +72,8 @@ export function handleResponse(rawResponse) {
       });
     }
 
-    const desc = HttpStatus.getStatusText(status);
-    const code = toLower(Object.keys(HttpStatus).find((c) => HttpStatus[c] === status));
+    const desc = getReasonPhrase(status);
+    const code = toLower(Object.keys(StatusCodes).find((c) => StatusCodes[c] === status));
     const error = new Error(getErrorDescriptor(status, { code, desc }));
 
     error.status = status;

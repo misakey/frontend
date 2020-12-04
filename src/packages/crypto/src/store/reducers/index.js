@@ -10,12 +10,12 @@ import omit from '@misakey/helpers/omit';
 import compact from '@misakey/helpers/compact';
 import pathOr from '@misakey/helpers/pathOr';
 import pick from '@misakey/helpers/pick';
+import without from '@misakey/helpers/without';
 import createReducer from '@misakey/store/reducers/helpers/createReducer';
 import { createSelector } from 'reselect';
 
 import { SIGN_OUT } from '@misakey/auth/store/actions/auth';
 
-import { without } from 'lodash';
 import {
   CRYPTO_LOAD_SECRETS,
   CRYPTO_SET_BACKUP_KEY,

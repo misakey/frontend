@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import isNil from '@misakey/helpers/isNil';
 import LinearProgress from '@material-ui/core/LinearProgress';

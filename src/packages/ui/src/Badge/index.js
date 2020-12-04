@@ -1,5 +1,3 @@
-import React from 'react';
-
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import MuiBadge from '@material-ui/core/Badge';

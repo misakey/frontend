@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Switch, Redirect as MuiRedirect, useRouteMatch, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 

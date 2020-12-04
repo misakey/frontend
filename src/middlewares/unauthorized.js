@@ -1,4 +1,4 @@
-import HttpStatus from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
@@ -12,7 +12,7 @@ const {
 
 // MIDDLEWARE
 export default (askSigninRedirect, store) => async (rawResponse) => {
-  const match = rawResponse instanceof Response && rawResponse.status === HttpStatus.UNAUTHORIZED;
+  const match = rawResponse instanceof Response && rawResponse.status === StatusCodes.UNAUTHORIZED;
   if (match) {
     const contentType = rawResponse.headers.get('Content-Type') || '';
 

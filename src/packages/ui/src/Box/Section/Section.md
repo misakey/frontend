@@ -1,5 +1,5 @@
 ```js
-import React from 'react';
+
 import BoxSection from '@misakey/ui/Box/Section';
 import Typography from '@material-ui/core/Typography';
 

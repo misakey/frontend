@@ -1,5 +1,3 @@
-import React from 'react';
-
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 import VaultRead from 'components/screens/app/Documents/Read/Vault';
 

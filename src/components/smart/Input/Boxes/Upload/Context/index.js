@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import InputBoxesUpload from 'components/smart/Input/Boxes/Upload';

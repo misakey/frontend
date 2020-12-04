@@ -1,4 +1,4 @@
-import React, { useMemo, forwardRef } from 'react';
+import { useMemo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation, Trans } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';

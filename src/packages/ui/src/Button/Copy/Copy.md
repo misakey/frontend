@@ -1,7 +1,7 @@
 ButtonCopy example:
 
 ```js
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { SnackbarProvider } from 'notistack';
 import TextField from '@material-ui/core/TextField';
 

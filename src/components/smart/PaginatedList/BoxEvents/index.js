@@ -1,4 +1,12 @@
-import React, { forwardRef, useMemo, useCallback, useEffect, useRef, useState, useImperativeHandle } from 'react';
+import {
+  forwardRef,
+  useMemo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useImperativeHandle,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import BoxesSchema from 'store/schemas/Boxes';

@@ -7,7 +7,7 @@ import setBackupKeyShare from './setBackupKeyShare';
  * **Note:** for creating the backup key share during the auth flow,
  * there is a dedicated function `createNewBackupKeySharesFromAuthFlow`
  */
-export default function ({
+export default function createNewBackupKeyShares({
   backupKey,
   accountId,
   uploadMisakeyShare = createBackupKeyShareBuilder,

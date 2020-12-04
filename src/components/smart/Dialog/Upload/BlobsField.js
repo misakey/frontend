@@ -1,5 +1,5 @@
 
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import BlobListItem from 'components/dumb/ListItem/Blob';

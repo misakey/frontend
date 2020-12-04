@@ -1,7 +1,8 @@
 FileField example:
 
 ```js
-import React from 'react';
+
+import { Suspense } from 'react';
 import FileField from './index';
 
 const ACCEPTED_TYPES = [
@@ -15,12 +16,12 @@ const ACCEPTED_TYPES = [
 const onChange = console.log;
 
 const FileFieldExample = () => (
-  <React.Suspense fallback="Loading...">
+  <Suspense fallback="Loading...">
     <FileField
       accept={ACCEPTED_TYPES}
       onChange={onChange}
     />
-  </React.Suspense>
+  </Suspense>
 );
 
   <FileFieldExample />;

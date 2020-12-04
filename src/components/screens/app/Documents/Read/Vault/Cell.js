@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch, connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';

@@ -1,14 +1,14 @@
 
-import React from 'react';
+import { createContext, useContext, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import DialogPassword from 'components/smart/Dialog/Password';
 import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 
-const PasswordPromptContext = React.createContext(null);
+const PasswordPromptContext = createContext(null);
 
-export const usePasswordPrompt = () => React.useContext(PasswordPromptContext);
+export const usePasswordPrompt = () => useContext(PasswordPromptContext);
 
 const PasswordPrompt = withTranslation(['account'])(({ t, ...props }) => (
   <DialogPassword
@@ -22,9 +22,9 @@ export const PasswordPromptProvider = ({ children }) => {
   const [
     confirmationState,
     setConfirmationState,
-  ] = React.useState(null);
+  ] = useState(null);
 
-  const awaitingPromiseRef = React.useRef();
+  const awaitingPromiseRef = useRef();
 
   const openConfirmation = (result) => {
     setConfirmationState({ open: true, ...result });

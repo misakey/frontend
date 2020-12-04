@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';

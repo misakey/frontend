@@ -35,7 +35,9 @@ const productionPlugins = [
 ];
 
 module.exports = {
-  presets: defaultPresets.concat(['@babel/preset-react']),
+  presets: defaultPresets.concat([['@babel/preset-react', {
+    runtime: 'automatic',
+  }]]),
   plugins: [
     'babel-plugin-optimize-clsx',
     ['@babel/plugin-proposal-class-properties', { loose: true }],

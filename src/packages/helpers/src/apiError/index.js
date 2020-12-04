@@ -1,4 +1,4 @@
-import HttpStatus from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 
 import prop from '@misakey/helpers/prop';
 import path from '@misakey/helpers/path';
@@ -20,7 +20,7 @@ export const getUrlOrigin = path(['rawResponse', 'url']);
 export const getDescription = prop('desc');
 
 export const isInternalError = compose(
-  any(equals(HttpStatus.INTERNAL_SERVER_ERROR)),
+  any(equals(StatusCodes.INTERNAL_SERVER_ERROR)),
   props(['code', 'status']),
 );
 

@@ -21,7 +21,7 @@ const BoxesSchema = {
   propTypes: {
     publicKey: PropTypes.string,
     id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
+    title: PropTypes.string,
     serverCreatedAt: PropTypes.string,
     lifecycle: PropTypes.oneOf(STATUSES),
     settings: PropTypes.shape({

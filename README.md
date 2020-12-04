@@ -50,13 +50,32 @@ This mean that if you want to add some dependencies to the project you have to u
 
 #### Building a new image, with new dependencies
 
-`make build-base` will build a new image base. Once you tested it locally (with a `make build`),
+`make build-base` will build a new image base. Once you tested it locally([testing image locally](#testing-locally)) (with a `make build`),
 you can publish it with a `make deploy-base`.
 
-:warning: The base is used for your branches and for master branch too (we didn't do a different image per branch for now). This imply two things:
+:warning: The base is used for your branches and for master branch too (we didn't do a different image per branch for now). This implies two things:
 - You cannot do breaking changes in the image (remove a dependency until your branch is merged)
 - You have to be careful when updating dependencies to publish your new base image not too early, as it may create broken images !
 - You should communicate to the team when you'll deploy a new image, as it may break WIP branches. We need to improve this part of the process when we'll experienced it
+
+
+##### Testing locally
+
+:warning: Make sure you already pulled needed images in `test&run` (`make pull`).
+
+Once you built a new image base, run `make build-local` on frontend project to generate a local docker image.
+
+:warning: Do not run `make pull` once you built this new image base, else it would be overwritten!
+
+At the end of `make build-local`, you should see something like: 
+```
+Successfully built [COMMIT_ID]
+Successfully tagged registry.misakey.dev/misakey/frontend:[BUILD_TAG]
+```
+
+In `test&run`, in your `.env`, set `FRONTEND_TAG=[BUILD_TAG]`, then run `make application`.
+
+App should then run as expected, but with a prod env config AND your new `frontend-base` build.
 
 ## Folder architecture
 
@@ -78,7 +97,7 @@ We use [Styleguidist](https://github.com/styleguidist/react-styleguidist) for cr
 
 We use [React App Rewired](https://github.com/timarney/react-app-rewired) to be able to add some config over CRA.
 
-The config for the webapp is `config-overrides-application.js`. It contains config to make the packages
+The config for the webapp is `config-overrides.js`. It contains config to make the packages
 usable in the app directly.
 
 ### I18N

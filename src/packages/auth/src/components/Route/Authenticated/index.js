@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useEffect } from 'react';
+import { useContext, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';

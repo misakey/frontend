@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -70,6 +70,11 @@ const useStyles = makeStyles((theme) => ({
 const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
   const classes = useStyles();
   const { title, members = [], id, lifecycle, hasAccess } = useMemo(() => box, [box]);
+
+  const isTitleEmpty = useMemo(
+    () => isEmpty(title),
+    [title],
+  );
 
   const routeDetails = useGeneratePathKeepingSearchAndHash(routes.boxes.read.details, { id });
 
@@ -169,7 +174,7 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
           disableTypography
           primary={(
             <Typography className={classes.typographyFlex} {...primaryTypographyProps}>
-              {title}
+              {isTitleEmpty ? <Skeleton width={200} /> : title}
               {!disabled && <ExpandMoreIcon />}
             </Typography>
           )}

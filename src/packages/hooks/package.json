@@ -21,10 +21,8 @@
     "release": "npm publish build --tag latest"
   },
   "peerDependencies": {
+    "@babel/runtime": "^7.5.5",
     "react": "^17.0.1"
-  },
-  "dependencies": {
-    "@babel/runtime": "^7.5.5"
   },
   "sideEffects": false,
   "publishConfig": {

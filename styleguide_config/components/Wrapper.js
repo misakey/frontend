@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import PropTypes from 'prop-types';
 
 import { MuiThemeProvider } from '@material-ui/core';

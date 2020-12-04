@@ -43,7 +43,7 @@
     },
     "closed": {
       "title": "Private space “{{title}}” is closed",
-      "defaulTitle": "This private space is closed",
+      "defaultTitle": "This private space is closed",
       "subtitle": "{{displayName}} closed the private space “{{title}}” on {{date}}.",
       "defaultSubtitle": "You can not access the private space anymore because it has been closed by the administrator."
     },

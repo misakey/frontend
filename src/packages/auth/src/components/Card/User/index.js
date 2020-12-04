@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import path from '@misakey/helpers/path';

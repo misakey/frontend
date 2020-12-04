@@ -1,4 +1,4 @@
-import React, { forwardRef, useMemo } from 'react';
+import { forwardRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { FixedSizeList } from 'react-window';

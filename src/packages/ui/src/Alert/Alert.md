@@ -1,14 +1,14 @@
 Alert example:
-
 ```js
-import React from 'react';
+
+import { useState } from 'react';
 import Button from '@material-ui/core/Button';
 
 
 import Alert from './index';
 
 const AlertExample = () => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleButtonClick = () => setOpen(true);
   const handleClose = () => setOpen(false);
 

@@ -1,4 +1,4 @@
-import HttpStatus from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 
 import errorTypes from '@misakey/ui/constants/errorTypes';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
@@ -15,7 +15,7 @@ const { invalid } = errorTypes;
 
 // MIDDLEWARE
 export default (askSigninRedirect, store) => async (rawResponse) => {
-  const match = rawResponse instanceof Response && rawResponse.status === HttpStatus.FORBIDDEN;
+  const match = rawResponse instanceof Response && rawResponse.status === StatusCodes.FORBIDDEN;
   if (match) {
     const contentType = rawResponse.headers.get('Content-Type') || '';
 

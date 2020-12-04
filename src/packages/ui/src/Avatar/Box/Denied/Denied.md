@@ -1,7 +1,7 @@
 #### Image
 
 ```js
-import React from 'react';
+
 
 import lemur from '@misakey/ui/lemur';
 
@@ -20,7 +20,7 @@ const AvatarBoxDeniedExample = () => (
 #### Title
 
 ```js
-import React from 'react';
+
 
 import AvatarBoxDenied from './index';
 
@@ -36,7 +36,7 @@ const AvatarBoxDeniedExample = () => (
 #### Lost key
 
 ```js
-import React from 'react';
+
 
 import AvatarBoxDenied from './index';
 
@@ -55,7 +55,7 @@ const AvatarBoxDeniedExample = () => (
 ##### Image
 
 ```js
-import React from 'react';
+
 
 import lemur from '@misakey/ui/lemur';
 
@@ -75,7 +75,7 @@ const AvatarBoxDeniedExample = () => (
 ##### Title
 
 ```js
-import React from 'react';
+
 
 import AvatarBoxDenied from './index';
 
@@ -92,7 +92,7 @@ const AvatarBoxDeniedExample = () => (
 ##### Lost key
 
 ```js
-import React from 'react';
+
 
 import AvatarBoxDenied from './index';
 

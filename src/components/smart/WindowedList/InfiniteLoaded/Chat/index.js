@@ -1,4 +1,4 @@
-import React, { useMemo, forwardRef, useRef, useCallback, useImperativeHandle } from 'react';
+import { useMemo, forwardRef, useRef, useCallback, useImperativeHandle } from 'react';
 import PropTypes from 'prop-types';
 import { VariableSizeList as List } from 'react-window';
 import { useTranslation } from 'react-i18next';

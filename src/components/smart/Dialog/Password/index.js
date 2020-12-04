@@ -1,5 +1,5 @@
 
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';

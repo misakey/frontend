@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, forwardRef, useEffect, useState } from 'react';
+import { useMemo, useCallback, forwardRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import InfiniteLoader from 'react-window-infinite-loader';
@@ -89,11 +89,11 @@ const WindowedGridInfiniteLoaded = forwardRef(({
 
   return (
     <InfiniteLoader
-        isItemLoaded={isItemLoaded}
-        itemCount={itemCount}
-        loadMoreItems={onLoadMoreItems}
-        minimumBatchSize={minimumBatchSize}
-        threshold={threshold}
+      isItemLoaded={isItemLoaded}
+      itemCount={itemCount}
+      loadMoreItems={onLoadMoreItems}
+      minimumBatchSize={minimumBatchSize}
+      threshold={threshold}
     >
       {({ onItemsRendered, ref }) => (
         <Grid

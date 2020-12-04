@@ -1,7 +1,7 @@
 #### Skeleton
 
 ```js
-import React from 'react';
+
 
 
 import AvatarBoxSkeleton from './index';
@@ -17,7 +17,7 @@ const AvatarBoxSkeletonExample = () => (
 
 
 ```js
-import React from 'react';
+
 
 
 import AvatarBoxSkeleton from './index';

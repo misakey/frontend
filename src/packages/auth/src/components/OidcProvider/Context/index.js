@@ -1,4 +1,4 @@
-import React, { createContext, useContext, forwardRef } from 'react';
+import { createContext, useContext, forwardRef } from 'react';
 
 // CONTEXT
 export const UserManagerContext = createContext({

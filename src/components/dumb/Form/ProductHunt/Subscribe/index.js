@@ -1,5 +1,3 @@
-import React from 'react';
-
 import './ProductHunt.scss';
 
 function ProductHuntFormSubscribe() {

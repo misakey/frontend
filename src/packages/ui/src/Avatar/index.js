@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 
 import { AVATAR_SIZE, AVATAR_SM_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
@@ -32,7 +31,6 @@ const AvatarSized = ({ classes, large, children, ...props }) => {
   const internalClasses = useStyles({ large });
   return (
     <Avatar
-      variant="circle"
       className={internalClasses.avatarRoot}
       classes={classes}
       {...props}

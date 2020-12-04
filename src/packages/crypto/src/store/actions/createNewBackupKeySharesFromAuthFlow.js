@@ -8,7 +8,7 @@ import createNewBackupKeyShares from './createNewBackupKeyShares';
 
 const curriedCreateBackupKeyShareBuilder = curry(createBackupKeyShareFromAuthFlowBuilder);
 
-export default function ({
+export default function createNewBackupKeySharesFromAuthFlow({
   loginChallenge,
   identityId,
   password,

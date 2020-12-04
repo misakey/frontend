@@ -37,7 +37,7 @@ function revokeBlob(blobURL) {
   revokeObjectURL(blobURL);
 }
 
-export default function (data, filename, shouldRevokeBlob = true, mime, bom) {
+export default function downloadFile(data, filename, shouldRevokeBlob = true, mime, bom) {
   // cases where no download link is required
   if (!isDataUrl(data) && MS_SAVE_BLOB) {
     const blob = makeCompatFile(data, filename, mime, bom);

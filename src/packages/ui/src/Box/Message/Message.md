@@ -1,5 +1,5 @@
 ```js
-import React from 'react';
+
 import BoxMessage from '@misakey/ui/Box/Message';
 
 const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nec mollis dolor.';

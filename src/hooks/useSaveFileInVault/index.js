@@ -1,5 +1,5 @@
 
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import routes from 'routes';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';

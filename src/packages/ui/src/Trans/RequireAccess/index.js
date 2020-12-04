@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';
@@ -17,9 +17,15 @@ const TransRequireAccess = ({ querier, to, i18nKey }) => {
   const { t } = useTranslation('components');
 
   const linkProps = useMemo(
-    () => (isNil(querier)
-      ? { href: t('components:requireAccess.href') }
-      : { component: Link, to }),
+    () => {
+      if (isNil(querier)) {
+        return { href: t('components:requireAccess.href') };
+      }
+      if (isNil(to)) {
+        return {};
+      }
+      return { component: Link, to };
+    },
     [querier, t, to],
   );
 

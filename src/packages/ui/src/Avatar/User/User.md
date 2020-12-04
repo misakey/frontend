@@ -1,7 +1,7 @@
 #### Image
 
 ```js
-import React from 'react';
+
 
 import lemur from '@misakey/ui/lemur';
 
@@ -22,7 +22,7 @@ const AvatarUserExample = () => (
 #### Letter
 
 ```js
-import React from 'react';
+
 
 import AvatarUser from './index';
 
@@ -39,7 +39,7 @@ const AvatarUserExample = () => (
 #### Empty
 
 ```js
-import React from 'react';
+
 
 import AvatarUser from './index';
 

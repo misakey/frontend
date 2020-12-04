@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useCallback, useMemo, useReducer, useEffect } from 'react';
+import { createContext, useContext, useCallback, useMemo, useReducer, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useRouteMatch } from 'react-router-dom';
 import routes from 'routes';

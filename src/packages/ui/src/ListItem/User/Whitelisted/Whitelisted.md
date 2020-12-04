@@ -1,7 +1,6 @@
 #### No accessStatus
 
 ```js
-import React from 'react';
 
 import ListItemDomainWhitelisted from './index';
 
@@ -18,7 +17,7 @@ const ListItemDomainWhitelistedExample = () => (
 #### Invitation sent
 
 ```js
-import React from 'react';
+
 
 import {
   ACCESS_STATUS_INVITED,
@@ -39,7 +38,7 @@ const ListItemDomainWhitelistedExample = () => (
 #### Link required
 
 ```js
-import React from 'react';
+
 
 import {
   ACCESS_STATUS_NEEDS_LINK,
@@ -60,7 +59,7 @@ const ListItemDomainWhitelistedExample = () => (
 #### Member
 
 ```js
-import React from 'react';
+
 
 import {
   ACCESS_STATUS_MEMBER,

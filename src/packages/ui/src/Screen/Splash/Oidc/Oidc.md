@@ -1,8 +1,6 @@
 #### Image
 
 ```js
-import React from 'react';
-
 import authReducers from '@misakey/auth/store/reducers';
 
 import { createStore, combineReducers } from 'redux';
@@ -34,7 +32,7 @@ const ScreenSplashOidcExample = () => (
 #### Letter
 
 ```js
-import React from 'react';
+
 
 import authReducers from '@misakey/auth/store/reducers';
 
@@ -64,7 +62,7 @@ const ScreenSplashOidcExample = () => (
 #### Empty
 
 ```js
-import React from 'react';
+
 
 import authReducers from '@misakey/auth/store/reducers';
 

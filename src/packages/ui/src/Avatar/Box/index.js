@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -44,7 +44,6 @@ function AvatarBox({ src, title, lostKey, large, ...rest }) {
 
   return (
     <Avatar
-      variant="circle"
       alt={title}
       src={src}
       large={large}

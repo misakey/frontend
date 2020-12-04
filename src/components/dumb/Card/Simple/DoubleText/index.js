@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 
 import ListItemText from '@material-ui/core/ListItemText';

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { generatePath, Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
@@ -190,7 +190,7 @@ function BoxListItem({ box, toRoute, containerProps, t, ...rest }) {
   const showAction = useCallback(() => setIsActionVisible(true), [setIsActionVisible]);
   const hideAction = useCallback(() => setIsActionVisible(false), [setIsActionVisible]);
 
-  if (isNil(id)) {
+  if (isNil(id) || isNil(title)) {
     return null;
   }
 

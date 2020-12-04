@@ -7,7 +7,7 @@ import { selectors } from '@misakey/crypto/store/reducers';
 
 const { makeGetBoxKeyShare } = selectors;
 
-export default function (boxId) {
+export default function useSetBoxKeyShareInUrl(boxId) {
   const { pathname, search, hash: locationHash } = useLocation();
   const { replace } = useHistory();
 

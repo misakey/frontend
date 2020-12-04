@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, forwardRef } from 'react';
+import { useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 

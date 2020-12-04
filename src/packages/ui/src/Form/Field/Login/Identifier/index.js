@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { STEP } from '@misakey/auth/constants';
 
 

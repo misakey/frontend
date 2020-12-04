@@ -1,11 +1,12 @@
-import React, { useMemo, useState, useCallback, useEffect } from 'react';
+import { useMemo, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
+import { getUrlForOidcCallback } from '@misakey/auth/helpers';
 
 import useAuthFlowParams from '@misakey/auth/hooks/useAuthFlowParams';
-import { getUrlForOidcCallback } from '@misakey/auth/helpers';
+import useMountEffect from '@misakey/hooks/useMountEffect';
 
 import { withUserManager } from '@misakey/auth/components/OidcProvider/Context';
 import Redirect from '@misakey/ui/Redirect';
@@ -79,7 +80,7 @@ const RedirectAuthCallback = ({
     }
   }, [searchParams, handleError, processRedirectCallback]);
 
-  useEffect(processCallback, []);
+  useMountEffect(processCallback);
 
   useEffect(() => {
     // Firefox BUGFIX: https://bugzilla.mozilla.org/show_bug.cgi?id=1422334#c15
@@ -88,7 +89,7 @@ const RedirectAuthCallback = ({
     location.hash = location.hash;
     // eslint-disable-next-line no-self-assign
     window.location.hash = window.location.hash;
-  }, [location.hash]);
+  }, [location]);
 
   if (redirect) {
     return (

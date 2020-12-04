@@ -7,7 +7,7 @@ import {
   asymmetricDecrypt,
 } from '../crypto';
 
-export default function (encryptedMessageContent, boxSecretKey) {
+export default function decryptFileMsg(encryptedMessageContent, boxSecretKey) {
   return JSON.parse(encodeUTF8(
     asymmetricDecrypt(
       encodeUTF8(decodeBase64(encryptedMessageContent)),

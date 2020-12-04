@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { IDENTIFIER as USER_TYPE, EMAIL_DOMAIN as DOMAIN_TYPE } from '@misakey/ui/constants/accessTypes';

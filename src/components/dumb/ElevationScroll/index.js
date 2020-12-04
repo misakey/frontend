@@ -1,4 +1,4 @@
-import React from 'react';
+import { cloneElement } from 'react';
 import PropTypes from 'prop-types';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 
@@ -14,7 +14,7 @@ function ElevationScroll({ children, threshold, target }) {
     target: target || undefined,
   });
 
-  return React.cloneElement(children, {
+  return cloneElement(children, {
     elevation: trigger ? 1 : 0,
   });
 }

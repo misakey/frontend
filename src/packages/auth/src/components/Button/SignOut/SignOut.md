@@ -1,13 +1,14 @@
 ButtonSignOut example:
 
 ```js
-import React from 'react';
+
+import { Suspense } from 'react';
 import ButtonSignOut from './index';
 
 const ButtonSignOutExample = () => (
-  <React.Suspense fallback="Loading...">
+  <Suspense fallback="Loading...">
     <ButtonSignOut />
-  </React.Suspense>
+  </Suspense>
 );
 
   <ButtonSignOutExample />;

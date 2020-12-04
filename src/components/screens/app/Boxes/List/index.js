@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
@@ -46,10 +46,10 @@ function BoxesList({ t, activeStatus, ...props }) {
       {isCryptoLoaded
         ? (
           <Vault
-              ref={onContentRef}
-              search={search}
-              activeStatus={activeStatus}
-              {...omitTranslationProps(props)}
+            ref={onContentRef}
+            search={search}
+            activeStatus={activeStatus}
+            {...omitTranslationProps(props)}
           />
         )
         : (

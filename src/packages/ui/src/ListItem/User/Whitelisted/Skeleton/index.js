@@ -1,5 +1,3 @@
-import React from 'react';
-
 import ListItemUserSkeleton from '@misakey/ui/ListItem/User/Skeleton';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Box from '@material-ui/core/Box';

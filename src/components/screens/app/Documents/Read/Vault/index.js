@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState, useCallback } from 'react';
+import { useMemo, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';

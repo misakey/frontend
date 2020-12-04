@@ -3,7 +3,7 @@
  * meaning that a JS "File" is also a "Blob".
  * https://developer.mozilla.org/en-US/docs/Web/API/Blob
  */
-export default async function (blob) {
+export default async function uint8ArrayFromBlob(blob) {
   const fileReader = new FileReader();
   const promise = new Promise((resolve) => {
     fileReader.readAsArrayBuffer(blob);

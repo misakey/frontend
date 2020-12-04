@@ -76,6 +76,11 @@ run-docs: ## Run devserver of documentation
 build: ## Build a docker image with the build folder and serve server
 	@docker build --pull --build-arg VERSION="$(RELEASE)" --build-arg SENTRY_AUTH_TOKEN=$(SENTRY_AUTH_TOKEN) -t $(DOCKER_IMAGE):$(CI_COMMIT_REF_NAME) .
 
+.PHONY: build-local
+build-local: ## Build a docker image without pulling (for frontend-base updates) with the build folder and serve server
+	@docker build --build-arg VERSION="$(RELEASE)" --build-arg SENTRY_AUTH_TOKEN=$(SENTRY_AUTH_TOKEN) -t $(DOCKER_IMAGE):$(CI_COMMIT_REF_NAME) .
+
+
 .PHONY: build-maintenance
 build-maintenance:
 	@docker build -f maintenance/Dockerfile -t $(DOCKER_IMAGE)/maintenance:$(CI_COMMIT_REF_NAME) maintenance
@@ -103,11 +108,16 @@ endif
 .ONESHELL:
 build-base:
 	@docker build -f base-image.Dockerfile -t $(DOCKER_IMAGE)/base-image:latest .
+	@docker tag $(DOCKER_IMAGE)/base-image:latest registry.misakey.dev/misakey/frontend/base-image:latest
+	@docker tag $(DOCKER_IMAGE)/base-image:latest registry.gitlab.com/misakey/frontend/base-image:latest
 
 .PHONY: deploy-base
 .ONESHELL:
 deploy-base:
-	@docker push $(DOCKER_IMAGE)/base-image:latest
+	@docker tag $(DOCKER_IMAGE)/base-image:latest registry.misakey.dev/misakey/frontend/base-image:latest
+	@docker tag $(DOCKER_IMAGE)/base-image:latest registry.gitlab.com/misakey/frontend/base-image:latest
+	@docker push registry.misakey.dev/misakey/frontend/base-image:latest
+	@docker push registry.gitlab.com/misakey/frontend/base-image:latest
 
 .PHONY: deploy-package
 .ONESHELL:

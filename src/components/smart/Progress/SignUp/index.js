@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useLocation, matchPath } from 'react-router-dom';
 
 import routes from 'routes';

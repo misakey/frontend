@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import ACCESS_LEVELS, { PRIVATE, PUBLIC, LIMITED } from '@misakey/ui/constants/accessLevels';

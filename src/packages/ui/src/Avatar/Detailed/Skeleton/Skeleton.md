@@ -1,7 +1,7 @@
 AvatatDetailedSkeleton example:
 
 ```js
-import React from 'react';
+
 import AvatarDetailedSkeleton from './index';
 
 const mock = {

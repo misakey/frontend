@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Field } from 'formik';
 import Formik from '@misakey/ui/Formik';
@@ -73,9 +73,14 @@ function CreateBoxDialog({
   const handleHttpErrors = useHandleHttpErrors();
 
   const [isInvitation, setIsInvitation] = useState(false);
+  const [placeholder, setPlaceholder] = useState();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const placeholder = useMemo(() => getRandomTitle(), [open]);
+  useEffect(
+    () => {
+      setPlaceholder(getRandomTitle());
+    },
+    [open],
+  );
 
   const onToggleInvitation = useCallback(
     () => {

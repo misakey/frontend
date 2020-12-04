@@ -1,4 +1,4 @@
-export function Uint8ArraysAreEqual(a, b) {
+export function uint8ArraysAreEqual(a, b) {
   if (a.length !== b.length) {
     return false;
   }

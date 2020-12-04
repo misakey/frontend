@@ -1,7 +1,7 @@
 #### Default
 
 ```js
-import React from 'react';
+
 
 import ListItemDomain from './index';
 
@@ -18,7 +18,7 @@ const ListItemDomainExample = () => (
 #### Children
 
 ```js
-import React from 'react';
+
 
 
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';

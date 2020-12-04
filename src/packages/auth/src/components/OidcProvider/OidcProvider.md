@@ -1,6 +1,7 @@
 In your main app file
 <!-- eslint-skip -->
 ```js static
+import { Suspense } from 'react';
 
 import OidcProvider from 'auth/components/OidcProvider';
 import { createStore } from 'redux';
@@ -16,11 +17,12 @@ const oidcConfig = {
 }
 
 ReactDOM.render((
+  <Suspense>
     <StoreProvider store={store}>
       <OidcProvider store={store} config={oidcConfig}>
       </OidcProvider>
     </StoreProvider>
-  </React.Suspense>
+  </Suspense>
 ), document.getElementById('root'));
 
 ```

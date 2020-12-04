@@ -13,7 +13,7 @@
 import { box, secretbox, randomBytes } from 'tweetnacl';
 import { encodeHex } from '../../helpers/encodeHex';
 import { hasArgon2 } from '../../helpers/hasArgon2';
-import { Uint8ArraysAreEqual } from '../../helpers/Uint8ArraysAreEqual';
+import { uint8ArraysAreEqual } from '../../helpers/uint8ArraysAreEqual';
 import { DecryptionError } from '../../Errors/classes';
 
 const SALT_LENGTH = 16;
@@ -48,7 +48,7 @@ export function asymmetricDecrypt(
   if (recipientPublicKey) {
     const keyPair = box.keyPair.fromSecretKey(recipientSecretKey);
     const expectedRecipientPublicKey = keyPair.publicKey;
-    if (!Uint8ArraysAreEqual(recipientPublicKey, expectedRecipientPublicKey)) {
+    if (!uint8ArraysAreEqual(recipientPublicKey, expectedRecipientPublicKey)) {
       throw Error(
         'Attached recipient public key does not have the expected value: \n'
         + `  expected ${expectedRecipientPublicKey}, \n`

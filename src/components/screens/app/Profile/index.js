@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Switch, Route, Redirect, useParams, generatePath, useRouteMatch } from 'react-router-dom';
 
 import routes from 'routes';
@@ -95,9 +95,9 @@ function Profile(props) {
     >
       <Switch>
         <Route
-            exact
-            path={routes.identities.public}
-            render={(routerProps) => <IdentityPublicReadOnly {...routerProps} />}
+          exact
+          path={routes.identities.public}
+          render={(routerProps) => <IdentityPublicReadOnly {...routerProps} />}
         />
         <Redirect from={path} to={redirectTo} />
       </Switch>

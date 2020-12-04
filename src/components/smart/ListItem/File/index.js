@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, useRef } from 'react';
+import { useMemo, useCallback, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation, Trans } from 'react-i18next';
 
@@ -179,13 +179,13 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
         </Avatar>
       </ListItemAvatar>
       <ListItemText
-          primary={name || t('common:undecryptable')}
-          primaryTypographyProps={{ noWrap: true, display: 'block', color: 'textPrimary' }}
-          secondary={(
-            <>
-              <Typography component="span" noWrap display="block" variant="caption">{secondary}</Typography>
-              <Typography component="span" noWrap display="block" variant="caption">{tertiary}</Typography>
-              {!isNil(onSave) && (
+        primary={name || t('common:undecryptable')}
+        primaryTypographyProps={{ noWrap: true, display: 'block', color: 'textPrimary' }}
+        secondary={(
+          <>
+            <Typography component="span" noWrap display="block" variant="caption">{secondary}</Typography>
+            <Typography component="span" noWrap display="block" variant="caption">{tertiary}</Typography>
+            {!isNil(onSave) && (
               <ButtonWithDialogPassword
                 ref={buttonRef}
                 size="small"
@@ -197,8 +197,8 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
               >
                 {isSaved ? t('common:savedInVault') : t('common:addToVault')}
               </ButtonWithDialogPassword>
-              )}
-            </>
+            )}
+          </>
         )}
       />
       {

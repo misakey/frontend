@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';

@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, forwardRef } from 'react';
+import { useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -60,11 +60,11 @@ const WindowedListInfiniteLoaded = forwardRef(({
 
   return (
     <InfiniteLoader
-        isItemLoaded={isItemLoaded}
-        itemCount={itemCount}
-        loadMoreItems={onLoadMoreItems}
-        minimumBatchSize={minimumBatchSize}
-        threshold={threshold}
+      isItemLoaded={isItemLoaded}
+      itemCount={itemCount}
+      loadMoreItems={onLoadMoreItems}
+      minimumBatchSize={minimumBatchSize}
+      threshold={threshold}
     >
       {({ onItemsRendered, ref }) => (
         <List

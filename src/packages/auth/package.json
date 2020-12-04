@@ -30,11 +30,15 @@
     "release": "npm publish build --tag latest"
   },
   "peerDependencies": {
+    "@babel/runtime": "^7.5.5",
+    "oidc-client": "^1.9.1",
     "@material-ui/core": "^4.3.0",
     "@material-ui/icons": "^4.2.1",
-    "formik": "^2.1.4",
+    "clsx": "^1.x",
+    "formik": "^2.x",
     "moment": "^2.x",
-    "notistack": "^0.x",
+    "notistack": "^1.x",
+    "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-redux": "^7.2.0",
@@ -44,13 +48,6 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
     "yup": "^0.29.0"
-  },
-  "dependencies": {
-    "@babel/runtime": "^7.5.5",
-    "clsx": "^1.0.4",
-    "oidc-client": "^1.9.1",
-    "prop-types": "^15.7.2",
-    "uuid": "^3.3.3"
   },
   "sideEffects": false,
   "publishConfig": {

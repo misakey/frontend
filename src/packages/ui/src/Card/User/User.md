@@ -1,7 +1,7 @@
 #### Action
 
 ```js
-import React from 'react';
+
 
 import lemur from '@misakey/ui/lemur';
 
@@ -29,7 +29,7 @@ const CardUserExample = () => (
 #### Expired
 
 ```js
-import React from 'react';
+
 
 import moment from 'moment';
 
@@ -65,7 +65,7 @@ const CardUserExample = () => {
 #### Image
 
 ```js
-import React from 'react';
+
 
 import lemur from '@misakey/ui/lemur';
 
@@ -85,7 +85,7 @@ const CardUserExample = () => (
 #### Letter
 
 ```js
-import React from 'react';
+
 
 import CardUser from './index';
 
@@ -102,7 +102,7 @@ const CardUserExample = () => (
 #### Empty
 
 ```js
-import React from 'react';
+
 
 import CardUser from './index';
 

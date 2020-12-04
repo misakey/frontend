@@ -1,5 +1,14 @@
 
-import React, { useState, useRef, useEffect, useMemo, useCallback, forwardRef, createContext, useContext } from 'react';
+import {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useCallback,
+  forwardRef,
+  createContext,
+  useContext,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';

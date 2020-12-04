@@ -1,4 +1,3 @@
-import React from 'react';
 import TextField from '@misakey/ui/TextField';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 

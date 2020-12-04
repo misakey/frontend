@@ -1,7 +1,7 @@
 AutocompleteWhitelist example
 
 ```js
-import React from 'react';
+
 
 import noop from '@misakey/helpers/noop';
 

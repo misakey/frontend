@@ -27,10 +27,8 @@
     "release": "npm publish build --tag latest"
   },
   "peerDependencies": {
+    "@babel/runtime": "^7.5.5",
     "redux": "^4.0.5"
-  },
-  "dependencies": {
-    "@babel/runtime": "^7.5.5"
   },
   "sideEffects": false,
   "publishConfig": {

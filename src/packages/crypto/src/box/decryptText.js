@@ -10,7 +10,7 @@ import { asymmetricDecrypt } from '../crypto';
 // One day we will migrate to MessagePack
 // (can be done server-side)
 
-export default function (encrypted, boxSecretKey) {
+export default function decryptText(encrypted, boxSecretKey) {
   return encodeUTF8(asymmetricDecrypt(
     encodeUTF8(decodeBase64(encrypted)),
     boxSecretKey,

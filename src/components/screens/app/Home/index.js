@@ -1,4 +1,4 @@
-import React, { useMemo, lazy } from 'react';
+import { useMemo, lazy } from 'react';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import routes from 'routes';
 

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useMemo } from 'react';
+import { useRef, useState, useCallback, useMemo } from 'react';
 import { normalize } from 'normalizr';
 import { useSelector, useDispatch, batch } from 'react-redux';
 import moment from 'moment';
@@ -101,16 +101,21 @@ function MisakeyNotications() {
     (state) => getUserNotificationsNotAckSelector(state, seenItemsValues),
   );
 
-  const onWatchSeenItems = useCallback(
+  const onSeenItems = useCallback(
+    ({ visibleStartIndex, visibleStopIndex }) => {
+      setSeenItemsIndexes(range(visibleStartIndex, visibleStopIndex + 1));
+    },
+    [setSeenItemsIndexes],
+  );
+
+  const onWatchSeenItems = useMemo(
     // debounce with 1 seconde to ensure user really has time to see the elements
     // at loading, scroll position changes quickly so "seen" events triggered by those changes
     // should not be considered
     // it also avoid to trigger several request of two elements seen in backend
     // one call for 10 elements is better
-    debounce(({ visibleStartIndex, visibleStopIndex }) => {
-      setSeenItemsIndexes(range(visibleStartIndex, visibleStopIndex + 1));
-    }, 1000),
-    [],
+    () => debounce(onSeenItems, 1000),
+    [onSeenItems],
   );
 
   const onItemsRendered = useMemo(

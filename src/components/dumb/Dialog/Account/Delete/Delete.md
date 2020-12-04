@@ -1,7 +1,7 @@
 DialogAccountDelete example:
 
 ```js
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback, Suspense } from 'react';
 import Button from '@material-ui/core/Button';
 import DialogAccountDelete from './index';
 
@@ -32,7 +32,7 @@ const DialogAccountDeleteExample = () => {
   );
 
   return (
-    <React.Suspense fallback="Loading...">
+    <Suspense fallback="Loading...">
       <DialogAccountDelete
         onClose={onClose}
         onSuccess={onSuccess}
@@ -42,7 +42,7 @@ const DialogAccountDeleteExample = () => {
       <Button onClick={onClick} color="primary" variant="contained">
         Show dialog
       </Button>
-    </React.Suspense>
+    </Suspense>
   );
 };
 

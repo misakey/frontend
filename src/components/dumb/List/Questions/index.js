@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import clsx from 'clsx';

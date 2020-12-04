@@ -1,6 +1,6 @@
 RedirectAuthCallback example, (no visible component)
 ```js
-import React from 'react';
+
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Provider as StoreProvider } from 'react-redux';
 import { SnackbarProvider } from 'notistack';
