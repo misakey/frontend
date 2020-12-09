@@ -40,7 +40,7 @@ import { useClearUser } from '@misakey/hooks/useActions/loginSecret';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import Container from '@material-ui/core/Container';
+import CardSso from '@misakey/auth/components/Card/Sso';
 import Box from '@material-ui/core/Box';
 import SecretFormField from '@misakey/ui/Form/Field/Login/Secret';
 import Redirect from '@misakey/ui/Redirect';
@@ -56,7 +56,7 @@ import SnackbarActionRefresh from 'components/dumb/Snackbar/Action/Refresh';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
 import Screen from '@misakey/ui/Screen';
-import AppbarStatic from '@misakey/ui/AppBar/Static';
+import AppBarSecondary from '@misakey/ui/AppBar/Secondary';
 import CardUser from '@misakey/ui/Card/User';
 import IconButton from '@material-ui/core/IconButton';
 import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
@@ -89,6 +89,12 @@ const useStyles = makeStyles((theme) => ({
   },
   cardOverflowVisible: {
     overflow: 'visible',
+  },
+  appBarButton: {
+    color: theme.palette.background.default,
+    '&:hover': {
+      backgroundColor: theme.palette.reverse.action.hover,
+    },
   },
 }));
 
@@ -331,84 +337,91 @@ const AuthLoginSecret = ({
   }
 
   return (
-    <>
-      {reset && (
-        <AppbarStatic>
-          <IconButtonAppBar edge="start" aria-label={t('common:cancel')} onClick={onCancelForgotPassword}>
+    <CardSso
+      avatar={<AvatarClientSso client={client} />}
+      avatarLarge
+      header={(
+        <AppBarSecondary
+          color="secondary"
+        >
+          {reset && (
+          <IconButtonAppBar
+            className={classes.appBarButton}
+            edge="start"
+            aria-label={t('common:cancel')}
+            onClick={onCancelForgotPassword}
+          >
             <ArrowBackIcon />
           </IconButtonAppBar>
-        </AppbarStatic>
+          )}
+        </AppBarSecondary>
       )}
-      <Screen
-        classes={{ content: classes.screenContent }}
+    >
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+        validateOnChange={false}
       >
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={onSubmit}
-          validateOnChange={false}
-        >
-          <Container component={Form} maxWidth="md">
-            <Box>
-              <AvatarClientSso client={client} />
-              <Box mt={2} display="flex" flexDirection="column">
-                <Title gutterBottom={false}>
-                  <Trans i18nKey={`auth:login.secret.${methodName}.title`} values={{ resourceName: isEmpty(resourceName) ? name : resourceName }}>
-                    <span className={classes.boldTitle}>{'{{resourceName}}'}</span>
-                  </Trans>
-                </Title>
-                <Subtitle>
-                  <TransRequireAccess i18nKey={`auth:login.secret.${methodName}.requireAccess.title`} />
-                </Subtitle>
-                <CardUser
-                  my={3}
-                  className={classes.cardOverflowVisible}
-                  action={methodName !== ACCOUNT_CREATION && (
+        <Form>
+          <Box>
+            <Box display="flex" flexDirection="column">
+              <Title align="center" gutterBottom={false}>
+                <Trans i18nKey={`auth:login.secret.${methodName}.title`} values={{ resourceName: isEmpty(resourceName) ? name : resourceName }}>
+                  <span className={classes.boldTitle}>{'{{resourceName}}'}</span>
+                </Trans>
+              </Title>
+              <Subtitle align="center">
+                <TransRequireAccess i18nKey={`auth:login.secret.${methodName}.requireAccess.title`} />
+              </Subtitle>
+              <CardUser
+                my={3}
+                className={classes.cardOverflowVisible}
+                action={methodName !== ACCOUNT_CREATION && (
                   <IconButton aria-label={t('common:signOut')} onClick={onClearUser}>
                     <CloseIcon />
                   </IconButton>
-                  )}
-                  {...userPublicData}
-                >
-                  <SecretFormField
-                    methodName={methodName}
-                    InputProps={{ classes: { root: classes.textFieldInputRoot } }}
-                    FormHelperTextProps={{ component: FormHelperTextInCard }}
-                    margin="none"
-                  />
-                </CardUser>
-                {methodName === EMAILED_CODE && (
-                  <ButtonRenewAuthStep
-                    classes={{ buttonRoot: classes.buttonRoot }}
-                    loginChallenge={loginChallenge}
-                    authnStep={authnStep}
-                    text={t('auth:login.form.action.getANewCode.button')}
-                  />
                 )}
-                {methodName === PREHASHED_PASSWORD && (
-                  <ButtonForgotPassword
-                    classes={{ buttonRoot: classes.buttonRoot }}
-                    loginChallenge={loginChallenge}
-                    identifier={identifier}
-                    text={t('auth:login.form.action.forgotPassword')}
-                    onDone={onForgotPasswordDone}
-                  />
-                )}
-                <BoxControls
-                  formik
-                  primary={primary}
+                {...userPublicData}
+              >
+                <SecretFormField
+                  methodName={methodName}
+                  InputProps={{ classes: { root: classes.textFieldInputRoot } }}
+                  FormHelperTextProps={{ component: FormHelperTextInCard }}
+                  margin="none"
                 />
-              </Box>
-              <DialogPasswordReset
-                open={dialogOpen}
-                onClose={onDialogClose}
-                onSubmit={onDialogSubmit}
+              </CardUser>
+              {methodName === EMAILED_CODE && (
+              <ButtonRenewAuthStep
+                classes={{ buttonRoot: classes.buttonRoot }}
+                loginChallenge={loginChallenge}
+                authnStep={authnStep}
+                text={t('auth:login.form.action.getANewCode.button')}
+              />
+              )}
+              {methodName === PREHASHED_PASSWORD && (
+              <ButtonForgotPassword
+                classes={{ buttonRoot: classes.buttonRoot }}
+                loginChallenge={loginChallenge}
+                identifier={identifier}
+                text={t('auth:login.form.action.forgotPassword')}
+                onDone={onForgotPasswordDone}
+              />
+              )}
+              <BoxControls
+                formik
+                primary={primary}
               />
             </Box>
-          </Container>
-        </Formik>
-      </Screen>
-    </>
+            <DialogPasswordReset
+              open={dialogOpen}
+              onClose={onDialogClose}
+              onSubmit={onDialogSubmit}
+            />
+          </Box>
+        </Form>
+      </Formik>
+    </CardSso>
   );
 };
 

@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    minHeight: 64,
+    ...theme.mixins.toolbar, // apply toolbar minHeight rules
   }),
   typographyRoot: {
     margin: theme.spacing(1),
@@ -35,11 +35,11 @@ const useStyles = makeStyles((theme) => ({
 
 // COMPONENTS
 const DialogTitleWithCloseIcon = ({
-  children, className, title, onClose, icon, t,
+  children, className, classes, title, onClose, icon, t,
   fullScreen, gutterBottom,
   ...rest
 }) => {
-  const classes = useStyles({ gutterBottom });
+  const internalClasses = useStyles({ gutterBottom });
 
   const dialogFullScreen = useDialogFullScreen();
 
@@ -61,19 +61,19 @@ const DialogTitleWithCloseIcon = ({
   return (
     <MuiDialogTitle
       disableTypography
-      className={clsx(className, classes.root)}
+      className={clsx(className, internalClasses.root, classes.root)}
       {...omitTranslationProps(rest)}
     >
       <Box display="flex" width="100%" minHeight="inherit" alignItems="center">
         {hasOnClose && (
-          <IconButton edge="start" aria-label={t('common:close')} onClick={onClose}>
+          <IconButton classes={{ root: classes.iconButton }} edge="start" aria-label={t('common:close')} onClick={onClose}>
             <Icon />
           </IconButton>
         )}
         {children}
       </Box>
       {title && (
-        <Typography classes={{ root: classes.typographyRoot }} variant="h6">{title}</Typography>
+        <Typography classes={{ root: clsx(internalClasses.typographyRoot, classes.title) }} variant="h6">{title}</Typography>
       )}
     </MuiDialogTitle>
   );
@@ -85,6 +85,11 @@ DialogTitleWithCloseIcon.propTypes = {
   onClose: PropTypes.func,
   icon: PropTypes.elementType,
   className: PropTypes.string,
+  classes: PropTypes.shape({
+    root: PropTypes.string,
+    iconButton: PropTypes.string,
+    title: PropTypes.string,
+  }),
   fullScreen: PropTypes.bool,
   gutterBottom: PropTypes.bool,
   // withTranslation
@@ -97,6 +102,7 @@ DialogTitleWithCloseIcon.defaultProps = {
   onClose: null,
   icon: null,
   className: '',
+  classes: {},
   fullScreen: false,
   gutterBottom: false,
 };

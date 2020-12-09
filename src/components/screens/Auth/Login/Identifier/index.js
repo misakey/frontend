@@ -23,13 +23,11 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
-import Container from '@material-ui/core/Container';
 import CardUser from '@misakey/auth/components/Card/User';
 import LoginFormField from '@misakey/ui/Form/Field/Login/Identifier';
 import BoxControls from '@misakey/ui/Box/Controls';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
-import Box from '@material-ui/core/Box';
-import Screen from '@misakey/ui/Screen';
+import CardSso from '@misakey/auth/components/Card/Sso';
 import AvatarBox from '@misakey/ui/Avatar/Box';
 import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
 import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
@@ -108,44 +106,40 @@ const AuthLoginIdentifier = ({
   [t]);
 
   return (
-    <Screen
-      classes={{ content: classes.screenContent }}
+    <CardSso
+      avatar={!isEmpty(resourceName) && resourceName !== name ? (
+        <AvatarBox title={resourceName} large />
+      ) : (
+        <AvatarClientSso client={client} />
+      )}
+      avatarLarge
     >
-      <Container maxWidth="md" className={classes.container}>
-        <Box>
-          {!isEmpty(resourceName) && resourceName !== name ? (
-            <AvatarBox title={resourceName} large />
-          ) : (
-            <AvatarClientSso client={client} />
-          )}
-          <Formik
-            initialValues={initialValues}
-            validationSchema={identifierValidationSchema}
-            onSubmit={onSubmit}
-            enableReinitialize
-          >
-            <Box component={Form} mt={2}>
-              <Title gutterBottom={false}>
-                <Trans i18nKey="auth:login.identifier.title" values={{ resourceName: isEmpty(resourceName) ? name : resourceName }}>
-                  <span className={classes.boldTitle}>{'{{resourceName}}'}</span>
-                </Trans>
-              </Title>
-              <Subtitle>
-                <TransRequireAccess i18nKey="auth:login.identifier.requireAccess.title" />
-              </Subtitle>
-              <CardUser my={3}>
-                <LoginFormField
-                  InputProps={{ classes: { root: classes.textFieldInputRoot } }}
-                  FormHelperTextProps={{ component: FormHelperTextInCard }}
-                  margin="none"
-                />
-              </CardUser>
-              <BoxControls formik primary={primary} />
-            </Box>
-          </Formik>
-        </Box>
-      </Container>
-    </Screen>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={identifierValidationSchema}
+        onSubmit={onSubmit}
+        enableReinitialize
+      >
+        <Form>
+          <Title align="center" gutterBottom={false}>
+            <Trans i18nKey="auth:login.identifier.title" values={{ resourceName: isEmpty(resourceName) ? name : resourceName }}>
+              <span className={classes.boldTitle}>{'{{resourceName}}'}</span>
+            </Trans>
+          </Title>
+          <Subtitle align="center">
+            <TransRequireAccess i18nKey="auth:login.identifier.requireAccess.title" />
+          </Subtitle>
+          <CardUser my={3}>
+            <LoginFormField
+              InputProps={{ classes: { root: classes.textFieldInputRoot } }}
+              FormHelperTextProps={{ component: FormHelperTextInCard }}
+              margin="none"
+            />
+          </CardUser>
+          <BoxControls formik primary={primary} />
+        </Form>
+      </Formik>
+    </CardSso>
   );
 };
 

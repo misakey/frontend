@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     zIndex: theme.zIndex.drawer + 1,
     maxHeight: PRODUCT_HUNT_APPBAR_HEIGHT,
-    backgroundColor: theme.palette.reverse,
+    backgroundColor: theme.palette.reverse.background.default,
   },
   toolbar: {
     color: theme.palette.background.default,

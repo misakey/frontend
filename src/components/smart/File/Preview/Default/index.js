@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   embed: {
     // cannot change text color in embed, black on grey is not readable
     backgroundColor: theme.palette.type === THEMES.DARK
-      ? theme.palette.reverse
+      ? theme.palette.reverse.background.paper
       : theme.palette.background.paper,
     borderRadius: theme.shape.borderRadius,
   },

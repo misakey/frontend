@@ -2,6 +2,14 @@ import * as Sentry from '@sentry/browser';
 import log from '@misakey/helpers/log';
 import execWithRequestIdleCallback from '@misakey/helpers/execWithRequestIdleCallback';
 
+// HELPERS
+const convertSentryLogLevel = (level) => {
+  if (level === 'warning') {
+    return 'warn';
+  }
+  return level;
+};
+
 export default (error, hint = 'AppError', tags = {}, level = 'error', extras = {}) => {
   execWithRequestIdleCallback(() => {
     const options = { tags, level, extra: { ...extras, hint } };
@@ -9,6 +17,6 @@ export default (error, hint = 'AppError', tags = {}, level = 'error', extras = {
 
     // log will only log in dev mode
     log(`Log error to Sentry with options ${JSON.stringify(options)}`);
-    log(error, level, /* env = */'development', /* trace = */true);
+    log(error, convertSentryLogLevel(level), /* env = */'development', /* trace = */true);
   });
 };

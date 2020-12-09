@@ -13,12 +13,12 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useMountEffect from '@misakey/hooks/useMountEffect';
+import useOnIdentifierSubmit from 'hooks/useOnIdentifierSubmit';
+import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
 import { Route, Switch, Redirect } from 'react-router-dom';
 import LoginIdentifier from 'components/screens/Auth/Login/Identifier';
 import LoginSecret from 'components/screens/Auth/Login/Secret';
-import useOnIdentifierSubmit from 'hooks/useOnIdentifierSubmit';
-import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
 // COMPONENTS
 const AuthLogin = ({ identifier, match, loginChallenge, loginHint, t, ...props }) => {
@@ -57,7 +57,7 @@ const AuthLogin = ({ identifier, match, loginChallenge, loginHint, t, ...props }
             {...routerProps}
             loginChallenge={loginChallenge}
             identifier={identifier}
-            {...props} // can override
+            {...props}
           />
         )}
       />
@@ -69,7 +69,7 @@ const AuthLogin = ({ identifier, match, loginChallenge, loginHint, t, ...props }
             {...routerProps}
             identifier={identifier}
             loginChallenge={loginChallenge}
-            {...props} // can override
+            {...props}
           />
         )}
       />

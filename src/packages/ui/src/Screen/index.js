@@ -38,6 +38,7 @@ function Screen({
   preventSplashScreen,
   isLoading,
   title,
+  hideFooter,
   ...rest
 }) {
   const internalClasses = useScreenStyles();
@@ -60,7 +61,7 @@ function Screen({
             {children}
           </div>
         )}
-        <FooterFullScreen />
+        {!hideFooter && <FooterFullScreen />}
       </Box>
     </>
   );
@@ -77,6 +78,7 @@ Screen.propTypes = {
   preventSplashScreen: PropTypes.bool,
   isLoading: PropTypes.bool,
   title: PropTypes.string,
+  hideFooter: PropTypes.bool,
 };
 
 Screen.defaultProps = {
@@ -87,6 +89,7 @@ Screen.defaultProps = {
   preventSplashScreen: false,
   isLoading: false,
   title: null,
+  hideFooter: false,
 };
 
 export default Screen;

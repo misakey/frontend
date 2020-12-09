@@ -35,7 +35,16 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
       selected: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
     },
     grey: boulder,
-    reverse: isDarkMode ? LIGHT_BG : DARK_BG,
+    reverse: {
+      background: {
+        paper: isDarkMode ? LIGHT_BG : DARK_BG,
+        default: isDarkMode ? LIGHT_BG : DARK_BG,
+      },
+      action: {
+        hover: isDarkMode ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.08)',
+        hoverOpacity: isDarkMode ? 0.04 : 0.08,
+      },
+    },
   },
   typography: {
     useNextVariants: true,

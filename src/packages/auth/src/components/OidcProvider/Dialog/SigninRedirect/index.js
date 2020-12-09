@@ -22,34 +22,31 @@ import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@misakey/ui/DialogContent';
 import BoxControls from '@misakey/ui/Box/Controls';
-import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
 import AvatarBox from '@misakey/ui/Avatar/Box';
 import AvatarMisakeyDenied from '@misakey/ui/Avatar/Misakey/Denied';
 import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
 import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
 import CardUserAuth from '@misakey/auth/components/Card/User';
 import CardUserSignOut from '@misakey/auth/components/Card/User/SignOut';
-
-// HOOKS
-const useStyles = makeStyles((theme) => ({
-  listFullWidth: {
-    width: '100%',
-  },
-  dialogContentRoot: {
-    [theme.breakpoints.only('xs')]: {
-      paddingLeft: 0,
-      paddingRight: 0,
-    },
-  },
-  dialogContentContent: {
-    alignItems: 'center',
-  },
-}));
+import DialogPaperSlope from '@misakey/ui/Dialog/Paper/Slope';
+import SigninRedirectCardSso from '@misakey/auth/components/OidcProvider/Dialog/SigninRedirect/Card/Sso';
 
 // CONSTANTS
 const { acr: getCurrentAcrSelector } = authSelectors;
+
+// HOOKS
+const useStyles = makeStyles((theme) => ({
+  dialogTitleIconButton: {
+    color: theme.palette.background.default,
+    '&:hover': {
+      backgroundColor: theme.palette.reverse.action.hover,
+    },
+  },
+  dialogTitleRoot: {
+    margin: theme.spacing(0, 2),
+  },
+}));
 
 // COMPONENTS
 const DialogSigninRedirect = ({
@@ -64,7 +61,6 @@ const DialogSigninRedirect = ({
   ...props
 }) => {
   const classes = useStyles();
-
   const currentUser = useSelector(getCurrentUserSelector);
   const currentAcr = useSelector(getCurrentAcrSelector);
   const { enqueueSnackbar } = useSnackbar();
@@ -188,52 +184,48 @@ const DialogSigninRedirect = ({
       fullScreen={fullScreen}
       fullWidth
       {...closableDialogProps}
-    >
-      <DialogTitleWithClose
-        fullScreen={fullScreen}
-        {...dialogTitleProps}
-        gutterBottom={fullScreen}
-      />
-      {open && (
-        <DialogContent
-          classes={{ root: classes.dialogContentRoot, content: classes.dialogContentContent }}
-        >
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="flex-start"
-            paddingBottom={fullScreen ? 0 : 2}
-          >
-            {sessionExpired ? (<AvatarMisakeyDenied large />) : (
-              <>
-                {isNil(resourceName) ? (
-                  <AvatarMisakey large />
-                ) : (
-                  <AvatarBox
-                    title={resourceName}
-                    large
-                  />
-                )}
-              </>
-            )}
-            <Box mt={2}>
-              <Title gutterBottom={false}>{title}</Title>
-              <Subtitle>{subtitle}</Subtitle>
-              <CardUserComponent
-                my={3}
-                expired={sessionExpired}
+      PaperComponent={DialogPaperSlope}
+      PaperProps={{
+        header: (
+          <DialogTitleWithClose
+            classes={{ root: classes.dialogTitleRoot, iconButton: classes.dialogTitleIconButton }}
+            fullScreen
+            {...dialogTitleProps}
+          />
+        ),
+        avatar: sessionExpired ? (<AvatarMisakeyDenied large />) : (
+          <>
+            {isNil(resourceName) ? (
+              <AvatarMisakey large />
+            ) : (
+              <AvatarBox
+                title={resourceName}
+                large
               />
-            </Box>
-            <BoxControls
-              primary={{
-                text: t('common:confirm'),
-                onClick,
-              }}
-            />
-          </Box>
-        </DialogContent>
+            )}
+          </>
+        ),
+        avatarLarge: true,
+      }}
+    >
+      {open && (
+      <SigninRedirectCardSso>
+        <Box>
+          <Title align="center" gutterBottom={false}>{title}</Title>
+          <Subtitle align="center">{subtitle}</Subtitle>
+          <CardUserComponent
+            my={3}
+            expired={sessionExpired}
+          />
+        </Box>
+        <BoxControls
+          primary={{
+            text: t('common:confirm'),
+            onClick,
+          }}
+        />
+      </SigninRedirectCardSso>
       )}
-      {fullScreen && <FooterFullScreen />}
     </Dialog>
   );
 };
