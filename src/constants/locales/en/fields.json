@@ -211,6 +211,20 @@
           "required": "Domain name is required"
         }
       }
+    },
+    "contact": {
+      "dialog": {
+        "title": {
+          "label": "Private space name",
+          "error": {
+            "malformed": "Name must be between 5 and 50 characters long"
+          }
+        },
+        "message": {
+          "label": "Message",
+          "placeholder": "Write a message..."
+        }
+      }
     }
   }
 }

@@ -29,11 +29,13 @@ import {
   CRYPTO_REMOVE_BOX_KEY_SHARES,
   CRYPTO_SET_VAULT_KEY,
   CRYPTO_SET_IDENTITY_KEY,
+  CRYPTO_SET_IDENTITY_NON_IDENTIFIED_KEYS,
 } from '../actions/types';
 
 
 // HELPERS
 const pathOrEmptyArray = pathOr([]);
+const getIdentityPubKeyPath = (publicKey, items) => pathOr(null, ['secretKeys', publicKey])(items);
 
 const concatToPath = (values, destObject, path) => (
   assocPath(
@@ -58,6 +60,10 @@ export const INITIAL_STATE = {
     secretKey: null,
     vaultKey: null,
     identityKeys: {
+      publicKeys: {},
+      secretKeys: {},
+    },
+    identityNonIdentifiedKeys: {
       publicKeys: {},
       secretKeys: {},
     },
@@ -123,6 +129,21 @@ const getBoxSecretKeys = createSelector(
   ]),
 );
 
+const getNonIdentifiedKeys = createSelector(
+  getState,
+  (secrets) => pathOr({}, ['secrets', 'identityNonIdentifiedKeys'])(secrets),
+);
+
+const getRelatedIdentitySecretKey = createSelector(
+  (state) => getState(state).secrets,
+  (_, publicKey) => publicKey,
+  (secrets, publicKey) => {
+    const { identityKeys, identityNonIdentifiedKeys } = secrets;
+    return getIdentityPubKeyPath(publicKey, identityKeys)
+      || getIdentityPubKeyPath(publicKey, identityNonIdentifiedKeys);
+  },
+);
+
 const makeGetBoxKeyShare = () => createSelector(
   (state) => getState(state).secrets.boxKeyShares,
   (_, boxId) => boxId,
@@ -154,6 +175,8 @@ export const selectors = {
   getBoxSecretKeys,
   makeGetBoxKeyShare,
   makeGetMissingBoxKeyShares,
+  getNonIdentifiedKeys,
+  getRelatedIdentitySecretKey,
 };
 
 
@@ -303,6 +326,25 @@ const setIdentityKey = (state, { identityId, secretKey, publicKey }) => ({
   },
 });
 
+
+
+const setIdentityNonIdentifiedKey = (state, { identityId, secretKey, publicKey }) => ({
+  ...state,
+  secrets: {
+    ...state.secrets,
+    identityNonIdentifiedKeys: {
+      publicKeys: {
+        ...state.secrets.identityNonIdentifiedKeys.publicKeys,
+        [identityId]: publicKey,
+      },
+      secretKeys: {
+        ...state.secrets.identityNonIdentifiedKeys.publicKeys,
+        [publicKey]: secretKey,
+      },
+    },
+  },
+});
+
 // REDUCER
 const cryptoReducer = createReducer(INITIAL_STATE, {
   [CRYPTO_SET_BACKUP_KEY]: setBackupKey,
@@ -318,6 +360,7 @@ const cryptoReducer = createReducer(INITIAL_STATE, {
   [CRYPTO_SET_VAULT_KEY]: setVaultKey,
   [SIGN_OUT]: reset,
   [CRYPTO_SET_IDENTITY_KEY]: setIdentityKey,
+  [CRYPTO_SET_IDENTITY_NON_IDENTIFIED_KEYS]: setIdentityNonIdentifiedKey,
 });
 
 export default persistReducer(

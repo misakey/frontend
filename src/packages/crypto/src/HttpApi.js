@@ -189,6 +189,25 @@ export async function setIdentityPublicKey(identityId, publicKey) {
   return httpCallReturnBody(endpoint, httpRequestParams);
 }
 
+
+export async function setIdentityNonIdentifiedPublicKey(identityId, publicKey) {
+  assertNotAnyNil({ identityId, publicKey });
+
+  const endpoint = {
+    method: 'PATCH',
+    path: '/identities/:id',
+    auth: true,
+  };
+  const httpRequestParams = {
+    params: { id: identityId },
+    payload: {
+      nonIdentifiedPubkey: publicKey,
+    },
+  };
+
+  return httpCallReturnBody(endpoint, httpRequestParams);
+}
+
 /**
  * returns an empty array if the identifier does not exists
  * (HTTP 404 Not Found)

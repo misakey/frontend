@@ -67,3 +67,9 @@ export const makeAccessValidationSchema = ({ isEmptyMembersNotInWhitelist } = {}
       }),
     accessLevel: Yup.string().oneOf(ACCESS_LEVELS).required(required),
   });
+
+
+export const contactFieldsValidationSchema = Yup.object().shape({
+  name: Yup.string().min(1, malformed).max(50, malformed),
+  message: Yup.string(),
+});

@@ -334,5 +334,11 @@
         }
       }
     }
+  },
+  "contact": {
+    "dialog": {
+      "title": "Envoyer un message à {{displayName}}",
+      "subtitle": "Un espace privé sera créé et partagé entre vous et {{displayName}}.\n{{displayName}} apparaîtra comme membre quand il ou elle aura accepté de rejoindre l'espace privé."
+    }
   }
 }

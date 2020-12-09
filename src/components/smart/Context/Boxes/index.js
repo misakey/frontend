@@ -24,7 +24,7 @@ export const BoxesContext = createContext({
 export const useBoxesContext = () => useContext(BoxesContext);
 
 // COMPONENTS
-const BoxesContextProvider = ({ activeStatus, isReady, children }) => {
+const BoxesContextProvider = ({ activeStatus, children }) => {
   const locationSearchParams = useLocationSearchParams();
   const { search } = useMemo(() => locationSearchParams, [locationSearchParams]);
   const identityId = useSelector(IDENTITY_ID_SELECTOR);
@@ -36,7 +36,7 @@ const BoxesContextProvider = ({ activeStatus, isReady, children }) => {
 
   const onReceiveWSUserBox = useOnReceiveWSUserBox(activeStatus, search);
 
-  const socketRef = useWebSocket(webSocketEndpoint, onReceiveWSUserBox, isReady);
+  const socketRef = useWebSocket(webSocketEndpoint, onReceiveWSUserBox);
 
   const onAckWSUserBox = useOnAckWSUserBox(socketRef, identityId);
 
@@ -57,7 +57,6 @@ const BoxesContextProvider = ({ activeStatus, isReady, children }) => {
 };
 BoxesContextProvider.propTypes = {
   activeStatus: PropTypes.oneOf(STATUSES),
-  isReady: PropTypes.bool.isRequired,
   children: PropTypes.node,
 };
 

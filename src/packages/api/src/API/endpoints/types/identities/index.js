@@ -90,4 +90,11 @@ export default {
       auth: true,
     },
   },
+  contact: {
+    create: {
+      method: 'POST',
+      path: '/box-users/:identityId/contact',
+      auth: true,
+    },
+  },
 };

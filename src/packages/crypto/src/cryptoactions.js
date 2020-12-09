@@ -12,6 +12,7 @@ import {
 } from '@misakey/crypto/crypto';
 
 export const generateIdentityKeyPair = generateAsymmetricKeyPair;
+export const generateIdentityNonIdentifiedKeyPair = generateAsymmetricKeyPair;
 
 /**
  * Encrypts data for crypto action with given public key

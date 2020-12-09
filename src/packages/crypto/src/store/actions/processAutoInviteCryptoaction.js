@@ -14,6 +14,8 @@ import {
   combineBoxKeyShares,
 } from '@misakey/crypto/box/keySplitting';
 
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
+
 import updateBackup from './updateBackup';
 import { CRYPTO_SET_BOX_SECRETS } from './types';
 
@@ -21,6 +23,7 @@ const {
   accountId: selectAccountId,
 } = authSelectors;
 
+const { getRelatedIdentitySecretKey: getRelatedIdentitySecretKeySelector } = cryptoSelectors;
 
 export default ({ cryptoactionId, boxId: notificationBoxId }) => (
   async (dispatch, getState) => {
@@ -35,7 +38,8 @@ export default ({ cryptoactionId, boxId: notificationBoxId }) => (
       throw Error(`box ID is not the same in notification (${notificationBoxId}) and in cryptoaction ${cryptoactionBoxId}`);
     }
 
-    const secretKey = state.crypto.secrets.identityKeys.secretKeys[encryptionPublicKey];
+    const secretKey = getRelatedIdentitySecretKeySelector(state, encryptionPublicKey);
+
     const decryptedCryptoaction = decryptCryptoaction(encrypted, secretKey);
     // in the near future, auto-invite crypto actions will contain the box secret key
     // instead of the box key share
@@ -64,13 +68,6 @@ export default ({ cryptoactionId, boxId: notificationBoxId }) => (
 
     const path = generatePath(routes.boxes.read._, { id: notificationBoxId });
 
-    // XXX one would think that after "processAutoInviteCryptoaction"
-    // we would not need to append the invitation key share
-    // since it should be in the secret backup
-    // but for some reason the frontend fails if we don't append it
-    // TODO fix this (it works with the invitation key share but it's weird we need it)
-    const boxUrl = `${path}#${invitationKeyShare}`;
-
-    return { boxUrl };
+    return { boxUrl: path };
   }
 );

@@ -250,6 +250,20 @@
           "required": "Le nom de domaine est requis"
         }
       }
+    },
+    "contact": {
+      "dialog": {
+        "title": {
+          "label": "Nom de l'espace privé",
+          "error": {
+            "malformed": "Le nom doit contenir entre 5 et 50 caractères"
+          }
+        },
+        "message": {
+          "label": "Message",
+          "placeholder": "Écrivez un message..."
+        }
+      }
     }
   }
 }

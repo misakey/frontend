@@ -1,8 +1,8 @@
 import { useSnackbar } from 'notistack';
 import { useTranslation } from 'react-i18next';
-import { mergeReceiveNoEmpty, mergeReceiveNoEmptyNullable } from '@misakey/store/reducers/helpers/processStrategies';
+import { mergeReceiveNoEmptyNullable } from '@misakey/store/reducers/helpers/processStrategies';
 import { selectors, actionCreators, moveBackUpId } from 'store/reducers/userBoxes/pagination';
-import { removeBox, receiveJoinedBox } from 'store/reducers/box';
+import { removeBox, receiveJoinedBox, addJoinedBox } from 'store/reducers/box';
 import removeBoxSecretKeysAndKeyShares from '@misakey/crypto/store/actions/removeBoxSecretKeysAndKeyShares';
 
 import isNil from '@misakey/helpers/isNil';
@@ -15,7 +15,7 @@ import { ALL } from 'constants/app/boxes/statuses';
 import execWithRequestIdleCallback from 'packages/helpers/src/execWithRequestIdleCallback';
 
 // ACTIONS
-const { removePaginatedId, addPaginatedId } = actionCreators;
+const { removePaginatedId } = actionCreators;
 const { getBySearchPagination, getByPagination } = selectors;
 
 // HOOKS
@@ -86,8 +86,7 @@ export const useOnReceiveBox = (status = ALL, search = null) => {
   );
 
   const dispatchAddBox = useCallback(
-    (box) => Promise.resolve(dispatch(receiveJoinedBox(box, mergeReceiveNoEmpty)))
-      .then(({ result }) => Promise.resolve(dispatch(addPaginatedId(status, result, search)))),
+    (box) => Promise.resolve(dispatch(addJoinedBox(box, status, search))),
     [dispatch, search, status],
   );
 

@@ -7,6 +7,7 @@ import invertObj from '@misakey/helpers/invertObj';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 import pathOr from '@misakey/helpers/pathOr';
+import path from '@misakey/helpers/path';
 import propOr from '@misakey/helpers/propOr';
 
 // CONSTANTS
@@ -201,6 +202,11 @@ export const makePaginationReducer = (prefix, getState, initialState = INITIAL_S
       getState,
       (_, filterId) => filterId,
       (items, filterId) => pathOr(EMPTY_OBJECT, [filterId, BY_PAGINATION])(items),
+    ),
+    isPaginationAlreadyFetched: createSelector(
+      getState,
+      (_, filterId, search) => ({ filterId, search }),
+      (items, { filterId, search }) => !isNil(path([filterId, search ? 'search' : BY_PAGINATION])(items)),
     ),
     getSearch: createSelector(
       getState,

@@ -60,6 +60,7 @@ const DialogSigninRedirect = ({
   onClose,
   canCancelRedirect,
   publicRoute,
+  fullScreen,
   ...props
 }) => {
   const classes = useStyles();
@@ -184,10 +185,15 @@ const DialogSigninRedirect = ({
   return (
     <Dialog
       open={open}
-      fullScreen
+      fullScreen={fullScreen}
+      fullWidth
       {...closableDialogProps}
     >
-      <DialogTitleWithClose fullScreen {...dialogTitleProps} gutterBottom />
+      <DialogTitleWithClose
+        fullScreen={fullScreen}
+        {...dialogTitleProps}
+        gutterBottom={fullScreen}
+      />
       {open && (
         <DialogContent
           classes={{ root: classes.dialogContentRoot, content: classes.dialogContentContent }}
@@ -196,6 +202,7 @@ const DialogSigninRedirect = ({
             display="flex"
             flexDirection="column"
             alignItems="flex-start"
+            paddingBottom={fullScreen ? 0 : 2}
           >
             {sessionExpired ? (<AvatarMisakeyDenied large />) : (
               <>
@@ -226,7 +233,7 @@ const DialogSigninRedirect = ({
           </Box>
         </DialogContent>
       )}
-      <FooterFullScreen />
+      {fullScreen && <FooterFullScreen />}
     </Dialog>
   );
 };
@@ -240,6 +247,7 @@ DialogSigninRedirect.propTypes = {
   // DialogConfirm
   onClose: PropTypes.func,
   open: PropTypes.bool.isRequired,
+  fullScreen: PropTypes.bool,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
@@ -248,6 +256,7 @@ DialogSigninRedirect.defaultProps = {
   acrValues: null,
   loginHint: '',
   onClose: null,
+  fullScreen: false,
 };
 
 export default withTranslation(['components', 'common'])(DialogSigninRedirect);

@@ -334,5 +334,11 @@
         }
       }
     }
+  },
+  "contact": {
+    "dialog": {
+      "title": "Send a message to {{displayName}}",
+      "subtitle": "A private space is going to be created between you and {{displayName}}.\n{{displayName}} will appear as a member when he or she would have accepted to join the private space."
+    }
   }
 }

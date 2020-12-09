@@ -3,6 +3,7 @@ import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
+import objectToSnakeCaseDeep from '@misakey/helpers/objectToSnakeCaseDeep';
 import toFormData from '@misakey/helpers/toFormData';
 
 export const updateIdentity = ({ id, ...payload }) => API
@@ -72,3 +73,9 @@ export const acknowledgeUserNotificationsBuilder = (id, queryParams = {}) => API
   .use(API.endpoints.identities.notifications.update)
   .build({ id }, null, objectToSnakeCase(queryParams))
   .send();
+
+export const contactUserBuilder = (identityId, payload) => API
+  .use(API.endpoints.identities.contact.create)
+  .build({ identityId }, objectToSnakeCaseDeep(payload, { ignoreBase64: true }))
+  .send()
+  .then(objectToCamelCase);

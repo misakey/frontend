@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useMemo } from 'react';
 
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
@@ -9,6 +9,11 @@ import Home from 'components/screens/app/Home';
 import Redirect from '@misakey/ui/Redirect';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import AccountDrawer from 'components/smart/Drawer/Account';
+import ScreenSplashOidc from '@misakey/ui/Screen/Splash/Oidc';
+
+import useLoadSecretsFromShares from '@misakey/crypto/hooks/useLoadSecretsFromShares';
+import useIdentity from 'hooks/useIdentity';
+import useLoadedAnimation from '@misakey/hooks/useLoadedAnimation';
 
 // LAZY
 const Profile = lazy(() => retry(() => import('components/screens/app/Profile')));
@@ -16,33 +21,59 @@ const Invitation = lazy(() => retry(() => import('components/screens/app/Invitat
 const NotFound = lazy(() => retry(() => import('components/screens/app/NotFound')));
 
 // COMPONENTS
-const BoxesApp = () => (
-  <Suspense fallback={<SplashScreen />}>
-    <AccountDrawer />
-    <Switch>
-      {/* REDIRECT TO BOXES */}
-      <Redirect
-        exact
-        from={routes._}
-        to={routes.boxes._}
-      />
+const BoxesApp = () => {
+  const { isLoadingBackupKey, isReady } = useLoadSecretsFromShares();
+  const { isFetching, shouldFetch } = useIdentity();
 
-      {/* OTHERS */}
-      <Route path={routes.identities._} component={Profile} />
-      <Route path={routes.boxes.invitation} component={Invitation} />
+  const isFetchingIdentity = useMemo(
+    () => isFetching || shouldFetch,
+    [isFetching, shouldFetch],
+  );
 
-      {/* MAIN VIEWS WITH BOXES LIST AT LEFT */}
-      <Route
-        path={[
-          routes.boxes._, routes.documents._, routes.userNotifications._,
-        ]}
-        component={Home}
-      />
+  const isLoading = useMemo(
+    () => isFetchingIdentity || isLoadingBackupKey,
+    [isFetchingIdentity, isLoadingBackupKey],
+  );
 
-      {/* DEFAULT */}
-      <Route component={NotFound} />
-    </Switch>
-  </Suspense>
-);
+  const done = useMemo(
+    () => isReady && !shouldFetch && !isLoading,
+    [isReady, shouldFetch, isLoading],
+  );
+
+  const loadedAnimation = useLoadedAnimation(isLoading);
+
+  if (isLoading || !loadedAnimation) {
+    return <ScreenSplashOidc done={done} />;
+  }
+
+  return (
+    <Suspense fallback={<SplashScreen />}>
+      <AccountDrawer />
+      <Switch>
+        {/* REDIRECT TO BOXES */}
+        <Redirect
+          exact
+          from={routes._}
+          to={routes.boxes._}
+        />
+
+        {/* OTHERS */}
+        <Route path={routes.identities._} component={Profile} />
+        <Route path={routes.boxes.invitation} component={Invitation} />
+
+        {/* MAIN VIEWS WITH BOXES LIST AT LEFT */}
+        <Route
+          path={[
+            routes.boxes._, routes.documents._, routes.userNotifications._,
+          ]}
+          component={Home}
+        />
+
+        {/* DEFAULT */}
+        <Route component={NotFound} />
+      </Switch>
+    </Suspense>
+  );
+};
 
 export default BoxesApp;

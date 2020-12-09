@@ -30,15 +30,18 @@ import Card from '@material-ui/core/Card';
 import CardOnboardDiscover from 'components/dumb/Card/Onboard/Discover';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import ButtonConnect from 'components/dumb/Button/Connect';
-import { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import ButtonContactMailto from '@misakey/ui/Button/Contact/Mailto';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 
 import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
 import ButtonCreateAccount from '@misakey/auth/components/Button/CreateAccount';
+import withDialogContact from 'components/smart/Dialog/Boxes/Contact/with';
+
 
 // CONSTANTS
 const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
+const ButtonContact = withDialogContact(Button);
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -92,7 +95,7 @@ const IdentityPublicReadOnly = forwardRef(({ t }, ref) => {
     getProfile,
   );
 
-  const { identifier, displayName, avatarUrl } = useSafeDestr(data);
+  const { identifier, displayName, avatarUrl, contactable } = useSafeDestr(data);
   const { value: identifierValue, kind } = useSafeDestr(identifier);
 
   const privateIdentifiervalue = useMemo(
@@ -109,6 +112,14 @@ const IdentityPublicReadOnly = forwardRef(({ t }, ref) => {
     () => t('account:public.other.title', { displayName }),
     [t, displayName],
   );
+
+  const dialogContactProps = useMemo(
+    () => ({
+      targetUser: { identityId: id, profile: data },
+    }),
+    [data, id],
+  );
+
   useUpdateDocHead(title);
 
   useEffect(
@@ -151,11 +162,21 @@ const IdentityPublicReadOnly = forwardRef(({ t }, ref) => {
               subtitle={identifierValue}
             />
           )}
-          {privateIdentifiervalue ? (
-            <Subtitle>{t('account:public.private', { displayName })}</Subtitle>
-          ) : (
-            <ButtonContactMailto email={identifierValue} />
+          {contactable && (
+            <ButtonContact
+              standing={BUTTON_STANDINGS.MAIN}
+              text={t('common:contact')}
+              dialogProps={dialogContactProps}
+            />
           )}
+          {!contactable && (
+            privateIdentifiervalue ? (
+              <Subtitle>{t('account:public.private', { displayName })}</Subtitle>
+            ) : (
+              <ButtonContactMailto email={identifierValue} />
+            )
+          )}
+
         </Card>
         <CardIdentityHeader>{t('account:sections.myIdentifiers.title')}</CardIdentityHeader>
         <CardList>

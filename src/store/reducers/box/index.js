@@ -11,7 +11,7 @@ import BoxSenderSchema from 'store/schemas/Boxes/Sender';
 import { BLUR_TEXT, CLEAR_TEXT } from 'store/actions/box';
 import { actionCreators } from 'store/reducers/userBoxes/pagination/events';
 import { actionCreators as fileEventsActionCreators, selectors as fileEventsSelectors } from 'store/reducers/userBoxes/pagination/events/files';
-import { moveBackUpId } from 'store/reducers/userBoxes/pagination';
+import { moveBackUpId, actionCreators as boxesActionsCreators, selectors as boxPaginationSelectors } from 'store/reducers/userBoxes/pagination';
 
 import { receiveEntities, updateEntities, removeEntities } from '@misakey/store/actions/entities';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
@@ -32,11 +32,13 @@ import { cleanDecryptedFile } from '../files/saved/decrypted';
 // CONSTANTS
 const INITIAL_STATE = {};
 const { addPaginatedId: addPaginatedEventId } = actionCreators;
+const { addPaginatedId: addPaginatedBoxId } = boxesActionsCreators;
 const {
   addPaginatedId: addPaginatedFileEventId,
   removePaginatedId: removePaginatedFileEventId,
 } = fileEventsActionCreators;
 const { getItemCount: getFileItemCount } = fileEventsSelectors;
+const { isPaginationAlreadyFetched: isBoxPaginationAlreadyFetched } = boxPaginationSelectors;
 
 // HELPERS
 const omitText = (values) => omit(values, ['text']);
@@ -152,6 +154,15 @@ export const receiveJoinedBox = (box, processStrategy = mergeReceiveNoEmpty) => 
   return Promise.resolve(
     dispatch(receiveEntities(entities, processStrategy)),
   ).then(() => normalized);
+};
+
+export const addJoinedBox = (box, status = ALL, search = null) => async (dispatch, getState) => {
+  const { result } = await Promise.resolve(dispatch(receiveJoinedBox(box, mergeReceiveNoEmpty)));
+  const shouldAddToPagination = isBoxPaginationAlreadyFetched(getState(), status, search);
+
+  if (shouldAddToPagination) {
+    dispatch(addPaginatedBoxId(status, result, search));
+  }
 };
 
 export const removeBox = (id) => (dispatch, getState) => {

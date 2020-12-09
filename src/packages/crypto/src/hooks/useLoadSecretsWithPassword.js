@@ -1,12 +1,13 @@
 import loadSecrets from '@misakey/crypto/store/actions/loadSecrets';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import ensureIdentityKey from '@misakey/crypto/store/actions/ensureIdentityKey';
+import ensureNonIdentifiedKey from '@misakey/crypto/store/actions/ensureNonIdentifiedKey';
 
 import isNil from '@misakey/helpers/isNil';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, batch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { useTranslation } from 'react-i18next';
 
@@ -63,7 +64,10 @@ export default ((skipUpdate = false) => {
       await dispatch(updateBackup());
     }
 
-    await dispatch(ensureIdentityKey());
+    batch(async () => {
+      await dispatch(ensureIdentityKey());
+      await dispatch(ensureNonIdentifiedKey());
+    });
   }, [accountId, boxesSecretKeys, dispatch, onStorageEvent, enqueueSnackbar, t]);
 
   const decryptWithPassword = useCallback(

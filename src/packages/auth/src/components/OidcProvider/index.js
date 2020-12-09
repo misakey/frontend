@@ -199,6 +199,7 @@ function OidcProvider({
   return (
     <UserManagerContext.Provider value={contextValue}>
       <DialogSigninRedirect
+        fullScreen
         open={open}
         onClose={onClose}
         canCancelRedirect={canCancelRedirect}
