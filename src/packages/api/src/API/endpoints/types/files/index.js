@@ -3,7 +3,6 @@ export default {
     read: {
       method: 'GET',
       path: '/encrypted-files/:id',
-      auth: true,
     },
   },
 };

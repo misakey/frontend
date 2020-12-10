@@ -2,7 +2,7 @@
 
 import API from '@misakey/api';
 
-API.setToken('fakeTokenForTests');
+API.setCsrfToken('fakeCsrfTokenForTests');
 
 // package "API" requires this variable to be set
 // In Unit tests, there is no need to have a server running at this address

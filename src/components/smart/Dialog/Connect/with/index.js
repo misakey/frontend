@@ -86,9 +86,9 @@ const withDialogConnect = (Component) => {
 
   // CONNECT
   const mapStateToProps = (state) => {
-    const { token } = state.auth;
+    const { isAuthenticated } = state.auth;
     return {
-      isAuthenticated: !!token,
+      isAuthenticated,
     };
   };
   return connect(mapStateToProps, {}, null, { forwardRef: true })(Wrapper);

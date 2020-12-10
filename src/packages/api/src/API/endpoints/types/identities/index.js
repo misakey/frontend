@@ -2,22 +2,22 @@ export default {
   checkAuthable: {
     method: 'PUT',
     path: '/identities/authable',
+    withCsrfToken: true,
   },
   read: {
     method: 'GET',
     path: '/identities/:id',
-    auth: true,
   },
   update: {
     method: 'PATCH',
     path: '/identities/:id',
-    auth: true,
+    withCsrfToken: true,
   },
   avatar: {
     update: {
       method: 'PUT',
       path: '/identities/:id/avatar',
-      auth: true,
+      withCsrfToken: true,
     },
   },
   profile: {
@@ -29,12 +29,11 @@ export default {
       read: {
         method: 'GET',
         path: '/identities/:id/profile/config',
-        auth: true,
       },
       update: {
         method: 'PATCH',
         path: '/identities/:id/profile/config',
-        auth: true,
+        withCsrfToken: true,
       },
     },
   },
@@ -42,52 +41,47 @@ export default {
     find: {
       method: 'GET',
       path: '/box-users/:id/storage-quota',
-      auth: true,
     },
   },
   boxUsedSpaces: {
     find: {
       method: 'GET',
       path: '/box-used-spaces',
-      auth: true,
     },
   },
   vaultUsedSpace: {
     read: {
       method: 'GET',
       path: '/box-users/:id/vault-used-space',
-      auth: true,
     },
   },
   boxSettings: {
     update: {
       method: 'PUT',
       path: '/box-users/:identityId/boxes/:boxId/settings',
-      auth: true,
+      withCsrfToken: true,
     },
   },
   notifications: {
     find: {
       method: 'GET',
       path: '/identities/:id/notifications',
-      auth: true,
     },
     count: {
       method: 'HEAD',
       path: '/identities/:id/notifications',
-      auth: true,
     },
     update: {
       method: 'PUT',
       path: '/identities/:id/notifications/acknowledgement',
-      auth: true,
+      withCsrfToken: true,
     },
   },
   vault: {
     create: {
       method: 'POST',
       path: '/box-users/:identityId/saved-files',
-      auth: true,
+      withCsrfToken: true,
     },
   },
   contact: {

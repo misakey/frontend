@@ -6,23 +6,29 @@ export default {
   confirm: {
     method: 'POST',
     path: '/users/confirm',
+    withCsrfToken: true,
   },
   askConfirm: {
     method: 'POST',
     path: '/users/confirm/ask',
+    withCsrfToken: true,
   },
   loginAuthStep: {
     method: 'POST',
     path: '/auth/login/authn-step',
+    withCsrfToken: true,
+    withBearer: true,
   },
   renewAuthStep: {
     method: 'POST',
     path: '/authn-steps',
+    withCsrfToken: true,
   },
   consent: {
     create: {
       method: 'POST',
       path: '/auth/consent',
+      withCsrfToken: true,
     },
     info: {
       method: 'GET',
@@ -32,28 +38,31 @@ export default {
   signOut: {
     method: 'POST',
     path: '/auth/logout',
-    auth: true,
+    withCsrfToken: true,
   },
   signUp: {
     method: 'POST',
     path: '/users',
+    withCsrfToken: true,
   },
   init: {
     method: 'POST',
     path: '/login/method',
+    withCsrfToken: true,
   },
   backup: {
     read: {
       method: 'GET',
       path: '/auth/backup',
-      auth: true,
+      withBearer: true,
     },
   },
   backupKeyShares: {
     create: {
       method: 'POST',
       path: '/auth/backup-key-shares',
-      auth: true,
+      withCsrfToken: true,
+      withBearer: true,
     },
   },
 };

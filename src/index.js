@@ -18,10 +18,10 @@ import API from '@misakey/api';
 import routes from 'routes';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
-import APITokenMiddleware from '@misakey/auth/middlewares/APItoken';
-import invalidTokenMiddleware from 'middlewares/invalidToken';
+import invalidAccessTokenMiddleware from '@misakey/auth/middlewares/invalidAccessToken';
+import invalidCsrfTokenMiddleware from '@misakey/auth/middlewares/invalidCsrfToken';
 import floodManagementAlertMiddleware from 'middlewares/floodManagement/alert';
-import invalidSeclevelMiddleware from 'middlewares/invalidSeclevel';
+import invalidSeclevelMiddleware from '@misakey/auth/middlewares/invalidSeclevel';
 import unauthorizedMiddleware from 'middlewares/unauthorized';
 // routing
 import Router from 'components/smart/Router';
@@ -72,7 +72,7 @@ if (isSilentAuthIframe()) {
   processSilentAuthCallbackInIframe();
 } else {
   // STORE
-  const storeMiddleWares = [thunk, APITokenMiddleware];
+  const storeMiddleWares = [thunk];
   if (window.env.ENV === 'development') { storeMiddleWares.push(createLogger()); }
 
   const rootPersistConfig = { key: 'root', storage, whitelist: ['global', 'devicePreferences'] };
@@ -81,7 +81,8 @@ if (isSilentAuthIframe()) {
   const persistor = persistStore(store);
 
   // ADD MIDDLEWARE TO API
-  API.addMiddleware(invalidTokenMiddleware(store.dispatch));
+  API.addMiddleware(invalidAccessTokenMiddleware(store.dispatch));
+  API.addMiddleware(invalidCsrfTokenMiddleware(API.deleteCsrfToken));
   API.addMiddleware(floodManagementAlertMiddleware(100)); // 100ms delay
 
   const registerMiddlewares = (askSigninRedirect) => {

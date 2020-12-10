@@ -1,4 +1,5 @@
 import noop from '@misakey/helpers/noop';
+import isNil from '@misakey/helpers/isNil';
 
 // CONSTANTS
 const UPLOAD_METHODS = ['POST', 'PUT', 'PATCH'];
@@ -28,9 +29,11 @@ const computeProgress = (progressEvent, shouldBeDone = false) => {
  */
 export default (
   { onProgress = noop } = {},
-  { token, auth, path, method, requestUri, body },
+  { getCsrfToken, withCsrfToken, withBearer, path, method, requestUri, body },
 ) => {
   const req = new XMLHttpRequest();
+  // needed for all requests for backend beeing to read HTTP only cookies
+  req.withCredentials = true;
 
   const send = () => new Promise((resolve, reject) => {
     req.addEventListener('load', (e) => {
@@ -62,11 +65,20 @@ export default (
 
     req.open(method, requestUri, true);
 
-    if (auth) {
-      if (!token) { throw new Error(`${path} requires token to be truthy`); }
-      // allow receiving & sending cookies by CORS requests
-      req.withCredentials = true;
-      req.setRequestHeader('X-CSRF-Token', token);
+    if (withBearer) {
+      if (isNil(req.getRequestHeader('Authorization'))) {
+        throw new Error(`${path} requires tmp access token for Bearer authorization to be truthy`);
+      }
+    }
+
+    if (withCsrfToken) {
+      getCsrfToken().then((xCsrfToken) => {
+        if (isNil(xCsrfToken)) { throw new Error(`${path} requires csrf token to be truthy`); }
+        // allow receiving & sending cookies by CORS requests
+        req.setRequestHeader('X-CSRF-Token', xCsrfToken);
+        req.send(body);
+      });
+      return;
     }
 
     req.send(body);

@@ -3,13 +3,12 @@
 // See LICENSE in the project root for license information.
 
 /* eslint-disable no-underscore-dangle */
-import { UserManager, WebStorageStateStore, User } from 'oidc-client';
+import { UserManager, WebStorageStateStore } from 'oidc-client';
 import { uuid4RFC4122 } from '@misakey/helpers/uuid4';
 import log from '@misakey/helpers/log';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 import isNil from '@misakey/helpers/isNil';
 import storage, { StorageUnavailable } from '@misakey/helpers/storage';
-import addCsrfTokenToUser from './addCsrfTokenToUser';
 import { STORAGE_PREFIX } from '../constants';
 
 class MisakeyUserManager extends UserManager {
@@ -17,7 +16,7 @@ class MisakeyUserManager extends UserManager {
     return `${STORAGE_PREFIX}${this._userStoreKey}`;
   }
 
-  // implement custom loads of silent renew token when expiring
+  // implement custom loads of silent renew access token when expiring
   // as library doesn't handle silent auth with cookie-stored access_token
   loadSilentAuthTimer(user) {
     if (!this.settings.automaticSilentRenew) {
@@ -124,53 +123,6 @@ class MisakeyUserManager extends UserManager {
         throw err;
       });
     });
-  }
-
-  // overrides UserManager methods to add csrfToken in user stored in localStorage
-  // as csrfToken has the same validity than access_token
-  _signinEnd(url, args = {}) {
-    if (isNil(this.settings.stateStore._store)) {
-      // check on oidc state is going to fail if storage is not available
-      throw new StorageUnavailable();
-    }
-    return this.processSigninResponse(url)
-      .then((signinResponse) => {
-        log('UserManager._signinEnd: got signin response');
-
-        const user = new User(signinResponse);
-
-        if (args.current_sub) {
-          if (args.current_sub !== user.profile.sub) {
-            log(`UserManager._signinEnd: current user does not match user returned from signin. sub from signin: ${user.profile.sub}`);
-            return Promise.reject(new Error('login_required'));
-          }
-          log('UserManager._signinEnd: current user matches user returned from signin');
-        }
-
-        return this.storeUser(user)
-          .then(() => addCsrfTokenToUser(this.userStorageKey, url)
-            .then((userWithCsrfToken) => {
-              log('UserManager._signinEnd: user stored');
-              this._events.load(userWithCsrfToken || user);
-              // Fire expiring handled when new token is added
-              this.loadSilentAuthTimer(user);
-
-              return userWithCsrfToken || user;
-            }))
-          .catch((e) => {
-            logSentryException(e, 'UserManager._signinEnd: fail to store user in dom storage', { auth: true }, 'warning');
-            // User is not stored in localStorage but app can work anyway, user should
-            // reauthenticated if leaving the app and go back
-            this._events.load(user);
-            // Fire expiring handled when new token is added
-            this.loadSilentAuthTimer(user);
-            return user;
-          });
-      })
-      .catch((e) => {
-        logSentryException(e, 'UserManager._signinEnd: fail to processSigninResponse', { auth: true });
-        throw e;
-      });
   }
 
   getUser() {

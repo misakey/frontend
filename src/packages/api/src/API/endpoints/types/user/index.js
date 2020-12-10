@@ -2,28 +2,26 @@ export default {
   read: {
     method: 'GET',
     path: '/users/:id',
-    auth: true,
   },
   update: {
     method: 'PATCH',
     path: '/users/:id',
-    auth: true,
+    withCsrfToken: true,
   },
   delete: {
     method: 'DELETE',
     path: '/users/:id',
-    auth: true,
+    withCsrfToken: true,
   },
   backupKeyShares: {
     read: {
       method: 'GET',
       path: '/backup-key-shares/:otherShareHash',
-      auth: true,
     },
     create: {
       method: 'POST',
       path: '/backup-key-shares',
-      auth: true,
+      withCsrfToken: true,
     },
   },
   vault: {
@@ -31,22 +29,20 @@ export default {
       count: {
         method: 'HEAD',
         path: '/saved-files',
-        auth: true,
       },
       read: {
         method: 'GET',
         path: '/saved-files',
-        auth: true,
       },
       create: {
         method: 'POST',
         path: '/saved-files',
-        auth: true,
+        withCsrfToken: true,
       },
       delete: {
         method: 'DELETE',
         path: '/saved-files/:id',
-        auth: true,
+        withCsrfToken: true,
       },
     },
   },

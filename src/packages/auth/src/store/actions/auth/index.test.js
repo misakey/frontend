@@ -10,7 +10,7 @@ describe('testing auth actions', () => {
       expect(authReset()).toEqual({ type: AUTH_RESET });
     });
     it('should create a SIGN_IN action', () => {
-      const credentials = { token: 'hey', id: 'ho' };
+      const credentials = { token: 'hey', id: 'ho', isAuthenticated: true };
       expect(signIn(credentials)).toEqual({
         type: SIGN_IN,
         credentials: {
@@ -20,7 +20,7 @@ describe('testing auth actions', () => {
       });
     });
     it('should create a LOAD_USER action', () => {
-      const credentials = { token: 'hey', id: 'ho', authenticatedAt: 'date' };
+      const credentials = { token: 'hey', id: 'ho', isAuthenticated: true, authenticatedAt: 'date' };
       expect(loadUser(credentials)).toEqual({
         type: LOAD_USER,
         credentials,
@@ -42,7 +42,7 @@ describe('testing auth actions', () => {
     const dispatchMock = (...args) => Promise.resolve(...args);
 
     it('should create a LOAD_USER thunk', async () => {
-      const credentials = { token: 'hey', id: 'ho', authenticatedAt: 'date' };
+      const credentials = { token: 'hey', id: 'ho', authenticatedAt: 'date', isAuthenticated: true };
 
       const thunk = loadUserThunk(credentials);
       expect.assertions(1);

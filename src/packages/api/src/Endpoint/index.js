@@ -11,10 +11,10 @@ const defaultInnerRules = {
 };
 
 class Endpoint {
-  constructor(types, mock, token, middlewares) {
-    const { method, path, auth = false, initOptions = {}, innerRules = {} } = types;
+  constructor(types, mock, getCsrfToken, middlewares) {
+    const { method, path, withCsrfToken = false, initOptions = {}, innerRules = {} } = types;
 
-    this.auth = auth;
+    this.withCsrfToken = withCsrfToken;
     this.body = undefined;
     this.innerRules = { ...defaultInnerRules, ...innerRules };
     this.method = method;
@@ -23,11 +23,10 @@ class Endpoint {
     this.initOptions = initOptions;
     this.path = path;
     this.requestUri = '';
-    this.token = token;
+    this.getCsrfToken = getCsrfToken;
 
     this.send = send;
   }
-
 
   /*
   * MIDDLEWARES

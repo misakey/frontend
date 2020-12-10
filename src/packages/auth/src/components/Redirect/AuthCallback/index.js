@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import isFunction from '@misakey/helpers/isFunction';
@@ -17,7 +17,7 @@ const RedirectAuthCallback = ({
   handleError,
   loadingPlaceholder,
   location,
-  fallbackReferrers,
+  fallbackReferrer,
   userManager,
   askSigninRedirect,
 }) => {
@@ -38,13 +38,10 @@ const RedirectAuthCallback = ({
     async () => {
       try {
         const callbackUrl = getUrlForOidcCallback(window.location.href);
-        const { csrfToken } = searchParams;
         const user = await userManager.signinRedirectCallback(callbackUrl);
         if (checkAcrIntegrity(user.profile.acr)) {
           if (isFunction(handleSuccess)) {
-            await Promise.resolve(
-              handleSuccess(!isNil(user.csrfToken) ? user : { ...user, csrfToken }),
-            );
+            await Promise.resolve(handleSuccess(user));
           }
           return true;
         }
@@ -57,17 +54,12 @@ const RedirectAuthCallback = ({
         return true;
       }
     },
-    [searchParams, userManager, checkAcrIntegrity, askSigninRedirect,
+    [userManager, checkAcrIntegrity, askSigninRedirect,
       scope, referrer, acrValues, handleSuccess, handleError],
   );
 
-  const fallbackReferrer = useMemo(
-    () => (searchParams.csrfToken ? fallbackReferrers.success : fallbackReferrers.error),
-    [searchParams, fallbackReferrers],
-  );
-
   const processCallback = useCallback(() => {
-    if (searchParams.csrfToken && searchParams.state) {
+    if (searchParams.state) {
       processRedirectCallback()
         .then((shouldRedirect) => {
           setRedirect(shouldRedirect);
@@ -104,10 +96,7 @@ const RedirectAuthCallback = ({
 };
 
 RedirectAuthCallback.propTypes = {
-  fallbackReferrers: PropTypes.shape({
-    error: PropTypes.string,
-    success: PropTypes.string,
-  }),
+  fallbackReferrer: PropTypes.string,
   handleError: PropTypes.func,
   handleSuccess: PropTypes.func,
   loadingPlaceholder: PropTypes.oneOfType([PropTypes.element, PropTypes.node]),
@@ -118,7 +107,7 @@ RedirectAuthCallback.propTypes = {
 };
 
 RedirectAuthCallback.defaultProps = {
-  fallbackReferrers: {},
+  fallbackReferrer: '/',
   handleSuccess: null,
   handleError: null,
   loadingPlaceholder: null,

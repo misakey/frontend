@@ -2,23 +2,22 @@ export default {
   create: {
     method: 'POST',
     path: '/sso-clients',
-    auth: true,
+    withCsrfToken: true,
   },
   update: {
     method: 'PATCH',
     path: '/sso-clients/:id',
-    auth: true,
+    withCsrfToken: true,
   },
   read: {
     method: 'GET',
     path: '/sso-clients/:id',
-    auth: true,
   },
   secret: {
     create: {
       method: 'POST',
       path: '/sso-clients/:id/secret',
-      auth: true,
+      withCsrfToken: true,
     },
   },
 };

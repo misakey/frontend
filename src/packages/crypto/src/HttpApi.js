@@ -44,7 +44,7 @@ export async function setOwnerPublicKey(ownerId, publicKey) {
   const endpoint = {
     method: 'POST',
     path: '/users/:ownerId/pubkey',
-    auth: true,
+    withCsrfToken: true,
   };
   const httpRequestParams = {
     params: { ownerId },
@@ -64,7 +64,7 @@ export async function postChannels(channels) {
   const endpoint = {
     method: 'POST',
     path: '/data-channels',
-    auth: true,
+    withCsrfToken: true,
   };
   const httpRequestParams = {
     payload: channels,
@@ -79,7 +79,6 @@ export async function getChannels(ownerId) {
   const endpoint = {
     method: 'GET',
     path: '/data-channels',
-    auth: true,
   };
   const httpRequestParams = {
     params: {
@@ -107,7 +106,7 @@ export async function postCryptograms(cryptogramsWithMetadata) {
   const endpoint = {
     method: 'POST',
     path: '/cryptograms',
-    auth: true,
+    withCsrfToken: true,
   };
   const httpRequestParams = {
     payload,
@@ -124,7 +123,6 @@ export async function getCryptograms(ownerId, datatypes, fromDatetime, toDatetim
   const endpoint = {
     method: 'GET',
     path: '/cryptograms',
-    auth: true,
   };
   const httpRequestParams = {
     params: {
@@ -144,7 +142,7 @@ export async function updateSecretsBackup(id, secretBackup, version) {
   const endpoint = {
     method: 'PUT',
     path: '/accounts/:id/backup',
-    auth: true,
+    withCsrfToken: true,
   };
   const httpRequestParams = {
     params: { id },
@@ -162,7 +160,6 @@ export async function getEncryptedSecretsBackup(id) {
   const endpoint = {
     method: 'GET',
     path: '/accounts/:id/backup',
-    auth: true,
   };
   const httpRequestParams = {
     params: { id },
@@ -177,7 +174,7 @@ export async function setIdentityPublicKey(identityId, publicKey) {
   const endpoint = {
     method: 'PATCH',
     path: '/identities/:id',
-    auth: true,
+    withCsrfToken: true,
   };
   const httpRequestParams = {
     params: { id: identityId },
@@ -221,7 +218,6 @@ export async function getIdentityPublicKeys(identifier) {
   const endpoint = {
     method: 'GET',
     path: '/identities/pubkey',
-    auth: true,
   };
   const httpRequestParams = {
     queryParams: {
@@ -245,7 +241,6 @@ export async function getCryptoaction({ accountId, cryptoactionId }) {
   const endpoint = {
     method: 'GET',
     path: '/accounts/:accountId/crypto/actions/:actionId',
-    auth: true,
   };
   const httpRequestParams = {
     params: { accountId, actionId: cryptoactionId },
@@ -259,7 +254,7 @@ export async function deleteCryptoaction({ accountId, cryptoactionId }) {
   const endpoint = {
     method: 'DELETE',
     path: '/accounts/:accountId/crypto/actions/:actionId',
-    auth: true,
+    withCsrfToken: true,
   };
   const httpRequestParams = {
     params: { accountId, actionId: cryptoactionId },

@@ -11,10 +11,7 @@ import RedirectAuthCallbackWrapper from './index';
 
 const store = createStore(combineReducers(authReducers));
 
-const REFFERERS = {
-  success: '/success',
-  error: '/error',
-};
+const REFFERER = '/success';
 
 const RedirectAuthCallbackExample = () => (
   <StoreProvider store={store}>
@@ -24,7 +21,7 @@ const RedirectAuthCallbackExample = () => (
           path="/callback"
           render={(routerProps) => (
             <RedirectAuthCallbackWrapper
-              fallbackReferrers={REFFERERS}
+              fallbackReferrer={REFFERER}
               {...routerProps}
             />
           )}

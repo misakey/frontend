@@ -1,6 +1,8 @@
 import isFunction from '@misakey/helpers/isFunction';
 import isArray from '@misakey/helpers/isArray';
 
+import isNil from '@misakey/helpers/isNil';
+import { getCsrfTokenBuilder } from '@misakey/auth/builder/getCsrfToken';
 import endpoints from './endpoints';
 import Endpoint from '../Endpoint';
 import { HTTP_ERROR_STATUSES, filterHttpStatus } from './errors';
@@ -18,15 +20,27 @@ class API {
       toFormErrors,
     };
     this.middlewares = [];
-    this.token = null;
+    this.xCsrfToken = null;
   }
 
-  /* TOKEN */
-  getToken = () => this.token;
+  /* CSRF TOKEN */
+  getCsrfToken = () => {
+    if (isNil(this.xCsrfToken)) {
+      return getCsrfTokenBuilder()
+        .then((xCsrfToken) => {
+          this.xCsrfToken = xCsrfToken;
+          return this.xCsrfToken;
+        })
+        .catch(() => null);
+    }
+    return Promise.resolve(this.xCsrfToken);
+  }
 
-  setToken = (token) => { this.token = token; };
+  setCsrfToken = (xCsrfToken) => { this.xCsrfToken = xCsrfToken; };
 
-  deleteToken = () => { this.token = null; };
+  deleteCsrfToken = () => {
+    this.xCsrfToken = null;
+  };
 
   /* MIDDLEWARES */
   setMiddlewares = (middlewares = []) => {
@@ -57,9 +71,9 @@ class API {
   /* USAGE */
   use = (
     endpoint = {},
-    token = this.token,
+    getCsrfToken = this.getCsrfToken,
     middlewares = this.middlewares,
-  ) => new Endpoint(endpoint, endpoint.mock, token, middlewares);
+  ) => new Endpoint(endpoint, endpoint.mock, getCsrfToken, middlewares);
 }
 
 export default API;

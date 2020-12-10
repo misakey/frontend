@@ -101,7 +101,7 @@ function OidcProvider({
 
   // event callback when silent renew errored
   const onSilentRenewError = useCallback((e) => {
-    logSentryException(e, 'Fail to renew token silently', { auth: true }, 'warning');
+    logSentryException(e, 'Fail to renew access token silently', { auth: true }, 'warning');
     dispatch(authReset());
   }, [dispatch]);
 

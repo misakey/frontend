@@ -159,7 +159,7 @@ const makeRequest = async (headers, endpoint, retryOptions) => {
  */
 async function send(options = {}, endpoint = this) {
   const { rawRequest, contentType = 'application/json', headers: optionsHeaders, retryOptions } = options;
-  const { token, auth, path } = endpoint;
+  const { withCsrfToken, withBearer, path, getCsrfToken } = endpoint;
 
   let headers = new Headers();
   if (optionsHeaders instanceof Headers) {
@@ -169,12 +169,17 @@ async function send(options = {}, endpoint = this) {
   }
 
   if (contentType) { headers.set('Content-Type', contentType); }
-  if (auth) {
-    const authorization = headers.get('Authorization');
-    if (!token && isNil(authorization)) {
-      throw new Error(`${path} requires csrf or tmp access token to be truthy`);
+  if (withBearer) {
+    if (isNil(headers.get('Authorization'))) {
+      throw new Error(`${path} requires tmp access token for Bearer authorization to be truthy`);
     }
-    headers.set('X-CSRF-Token', token);
+  }
+  if (withCsrfToken) {
+    const xCsrfToken = await getCsrfToken();
+    if (isNil(xCsrfToken)) {
+      throw new Error(`${path} requires csrf token to be truthy`);
+    }
+    headers.set('X-CSRF-Token', xCsrfToken);
   }
 
   try {

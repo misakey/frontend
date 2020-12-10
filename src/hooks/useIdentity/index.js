@@ -9,7 +9,6 @@ import IdentitySchema from 'store/schemas/Identity';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
-import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import { getIdentity as getIdentityBuilder } from '@misakey/auth/builder/identities';
 
@@ -19,8 +18,8 @@ import { getIdentity as getIdentityBuilder } from '@misakey/auth/builder/identit
  * @returns {Object} identityMetadata
  * @returns {string} identityMetadata.id
  *          idToken
- * @returns {string} identityMetadata.token
- *          csrfToken
+ * @returns {string} identityMetadata.isAuthenticated
+ *          isAuthenticated
  * @returns {string} identityMetadata.identityId
  *          id of identity
  * @returns {Object} identityMetadata.identity
@@ -35,7 +34,7 @@ import { getIdentity as getIdentityBuilder } from '@misakey/auth/builder/identit
 export default () => {
   // SELECTORS
   const id = useSelector(selectors.id);
-  const token = useSelector(selectors.token);
+  const isAuthenticated = useSelector(selectors.isAuthenticated);
   const identity = useSelector(selectors.identity);
   const identityId = useSelector(selectors.identityId);
 
@@ -54,8 +53,8 @@ export default () => {
   );
 
   const shouldFetch = useMemo(
-    () => isEmpty(identity) && !isEmpty(identityId) && !isNil(token),
-    [token, identity, identityId],
+    () => isEmpty(identity) && !isEmpty(identityId) && isAuthenticated,
+    [isAuthenticated, identity, identityId],
   );
 
   const getIdentity = useCallback(
@@ -68,12 +67,12 @@ export default () => {
   return useMemo(
     () => ({
       id,
-      token,
+      isAuthenticated,
       identity,
       identityId,
       shouldFetch,
       ...fetchData,
     }),
-    [fetchData, shouldFetch, id, identity, identityId, token],
+    [fetchData, shouldFetch, id, identity, identityId, isAuthenticated],
   );
 };

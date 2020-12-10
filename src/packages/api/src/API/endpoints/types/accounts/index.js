@@ -9,7 +9,7 @@ export default {
     update: {
       method: 'PUT',
       path: '/accounts/:id/password',
-      auth: true,
+      withCsrfToken: true,
     },
   },
 };

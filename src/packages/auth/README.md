@@ -66,9 +66,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-// Middlewares
-import APITokenMiddleware from '@misakey/auth/middlewares/APItoken';
-
 // Silent auth 
 import {
   isSilentAuthIframe,
@@ -85,7 +82,6 @@ import OidcProvider from '@misakey/auth/components/OidcProvider';
 if (isSilentAuthIframe()) {
   processSilentAuthCallbackInIframe();
 } else {
-  const middleWares = [APITokenMiddleware]; // + your other middlewares
   const rootPersistConfig = { 
     key: 'root', 
     storage, 
@@ -93,10 +89,7 @@ if (isSilentAuthIframe()) {
     blacklist: [] 
   };
   const persistedReducer = persistReducer(rootPersistConfig, reducers);
-  const store = createStore(
-    persistedReducer, 
-    compose(applyMiddleware(...middleWares))
-  );
+  const store = createStore(persistedReducer);
   const persistor = persistStore(store);
 
   const oidcConfig = {

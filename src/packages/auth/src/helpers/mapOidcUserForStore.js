@@ -2,7 +2,7 @@ import { parseAcr } from '@misakey/helpers/parseAcr';
 import parseJwt from '@misakey/helpers/parseJwt';
 
 export default ({
-  profile: { acr, sco: scope, auth_time: authenticatedAt, csrf_token: token } = {},
+  profile: { acr, sco: scope, auth_time: authenticatedAt } = {},
   expires_at: expiresAt,
   id_token: id,
 }) => {
@@ -10,11 +10,10 @@ export default ({
 
   return {
     expiresAt,
-    token,
     id,
     authenticatedAt,
     scope,
-    isAuthenticated: !!token,
+    isAuthenticated: true,
     acr: parseAcr(acr),
     identityId,
     accountId,

@@ -14,7 +14,6 @@ export default {
   read: {
     method: 'GET',
     path: '/applications/:mainDomain',
-    auth: true,
   },
 };
 ```

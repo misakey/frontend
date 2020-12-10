@@ -18,10 +18,7 @@ const BoxesApp = lazy(() => retry(() => import('components/screens/app')));
 const RedirectAuthCallback = lazy(() => retry(() => import('@misakey/auth/components/Redirect/AuthCallbackWrapper')));
 
 // CONSTANTS
-const REFERRERS = {
-  success: routes._,
-  error: routes._,
-};
+const REFERRER = routes._;
 
 // COMPONENTS
 const TRedirectAuthCallback = withTranslation('common')(RedirectAuthCallback);
@@ -40,7 +37,7 @@ const App = () => (
         path={routes.auth.callback}
         render={(routerProps) => (
           <TRedirectAuthCallback
-            fallbackReferrers={REFERRERS}
+            fallbackReferrer={REFERRER}
             loadingPlaceholder={<Screen isLoading />}
             {...routerProps}
           />

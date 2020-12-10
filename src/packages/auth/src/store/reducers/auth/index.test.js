@@ -7,7 +7,6 @@ describe('testing auth reducer', () => {
     id: '226',
     authenticatedAt: moment().toISOString(),
     identity: {},
-    token: '152852sdfr.efrgt.dre',
     expiresAt: '2020-10-15',
   };
   it('should return initial state', () => {
@@ -17,7 +16,7 @@ describe('testing auth reducer', () => {
     expect(reducer(dirtyState, { type: AUTH_RESET })).toEqual(INITIAL_STATE);
   });
   describe('SIGN_IN', () => {
-    const credentials = { token: 'hey', id: 'ho', identity: { id: 'letsgo' }, authenticatedAt: 'date', acr: 1 };
+    const credentials = { id: 'ho', isAuthenticated: true, identity: { id: 'letsgo' }, authenticatedAt: 'date', acr: 1 };
 
     it('should handle SIGN_IN, initial state', () => {
       expect(reducer(INITIAL_STATE, { type: SIGN_IN, credentials })).toEqual({
@@ -28,7 +27,6 @@ describe('testing auth reducer', () => {
 
     it('should handle SIGN_IN, any state', () => {
       expect(reducer({
-        token: 'mytoken',
         identity: { id: 'id', displayName: 'test' },
       }, { type: SIGN_IN, credentials })).toEqual({
         ...INITIAL_STATE,
@@ -38,7 +36,7 @@ describe('testing auth reducer', () => {
   });
 
   describe('LOAD_USER', () => {
-    const credentials = { token: 'hey', id: 'ho', identity: { id: 'letsgo' }, authenticatedAt: 'date', acr: 1 };
+    const credentials = { id: 'ho', isAuthenticated: true, identity: { id: 'letsgo' }, authenticatedAt: 'date', acr: 1 };
 
     it('should handle LOAD_USER, initial state', () => {
       expect(reducer(INITIAL_STATE, { type: LOAD_USER, credentials })).toEqual({

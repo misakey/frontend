@@ -26,7 +26,6 @@ export const PROP_TYPES = {
   identityId: PropTypes.string,
   // @FIXME we would need a schema
   identity: PropTypes.object,
-  token: PropTypes.string,
   expiresAt: PropTypes.number,
   acr: PropTypes.number,
   scope: PropTypes.string,
@@ -40,7 +39,6 @@ export const INITIAL_STATE = {
   isAuthenticated: false,
   identityId: null,
   identity: null,
-  token: null,
   expiresAt: null,
   acr: null,
   scope: null,
@@ -132,10 +130,6 @@ export const selectors = {
   id: createSelector(
     getState,
     prop('id'),
-  ),
-  token: createSelector(
-    getState,
-    prop('token'),
   ),
   expiresAt: createSelector(
     getState,

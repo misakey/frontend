@@ -2,38 +2,33 @@ export default {
   find: {
     method: 'GET',
     path: '/boxes',
-    auth: true,
   },
   read: {
     method: 'GET',
     path: '/boxes/:id',
-    auth: true,
   },
   create: {
     method: 'POST',
     path: '/boxes',
-    auth: true,
+    withCsrfToken: true,
   },
   count: {
     method: 'HEAD',
     path: '/boxes',
-    auth: true,
   },
   delete: {
     method: 'DELETE',
     path: '/boxes/:id',
-    auth: true,
+    withCsrfToken: true,
   },
   user: {
     find: {
       METHOD: 'GET',
       path: '/boxes/joined',
-      auth: true,
     },
     count: {
       method: 'HEAD',
       path: '/boxes/joined',
-      auth: true,
     },
   },
   public: {
@@ -46,7 +41,7 @@ export default {
     create: {
       method: 'POST',
       path: '/boxes/:id/batch-events',
-      auth: true,
+      withCsrfToken: true,
     },
   },
   events: {
@@ -54,34 +49,29 @@ export default {
       update: {
         method: 'PUT',
         path: '/boxes/:id/new-events-count/ack',
-        auth: true,
       },
     },
     find: {
       method: 'GET',
       path: '/boxes/:id/events',
-      auth: true,
     },
     count: {
       method: 'HEAD',
       path: '/boxes/:id/events',
-      auth: true,
     },
     create: {
       method: 'POST',
       path: '/boxes/:id/events',
-      auth: true,
+      withCsrfToken: true,
     },
     files: {
       find: {
         method: 'GET',
         path: '/boxes/:id/files',
-        auth: true,
       },
       count: {
         method: 'HEAD',
         path: '/boxes/:id/files',
-        auth: true,
       },
     },
   },
@@ -89,33 +79,30 @@ export default {
     find: {
       method: 'GET',
       path: '/boxes/:id/members',
-      auth: true,
     },
   },
   encryptedFiles: {
     create: {
       method: 'POST',
       path: '/boxes/:id/encrypted-files',
-      auth: true,
+      withCsrfToken: true,
     },
   },
   keyShares: {
     create: {
       method: 'POST',
       path: '/box-key-shares',
-      auth: true,
+      withCsrfToken: true,
     },
     read: {
       method: 'GET',
       path: '/box-key-shares/:otherShareHash',
-      auth: true,
     },
   },
   accesses: {
     find: {
       method: 'GET',
       path: '/boxes/:id/accesses',
-      auth: true,
     },
   },
 };

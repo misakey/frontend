@@ -10,20 +10,19 @@ import IdentitySchema from 'store/schemas/Identity';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import identityFn from '@misakey/helpers/identity';
-import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import { getIdentity as getIdentityBuilder } from '@misakey/auth/builder/identities';
 
 // COMPONENTS
 const withIdentity = (Component, mapProps = identityFn) => {
   const ComponentWithIdentity = forwardRef(({
-    id, token, identity, identityId,
+    id, isAuthenticated, identity, identityId,
     onLoadUser,
     ...props
   }, ref) => {
     const shouldFetch = useMemo(
-      () => isEmpty(identity) && !isEmpty(identityId) && !isNil(token),
-      [token, identity, identityId],
+      () => isEmpty(identity) && !isEmpty(identityId) && isAuthenticated,
+      [isAuthenticated, identity, identityId],
     );
 
     const getIdentity = useCallback(
@@ -43,11 +42,11 @@ const withIdentity = (Component, mapProps = identityFn) => {
         ...props,
         isFetchingIdentity: isFetching || shouldFetch,
         id,
-        token,
+        isAuthenticated,
         identity,
         identityId,
       }),
-      [id, identity, identityId, isFetching, props, shouldFetch, token],
+      [id, identity, identityId, isFetching, props, shouldFetch, isAuthenticated],
     );
 
     return (
@@ -60,7 +59,7 @@ const withIdentity = (Component, mapProps = identityFn) => {
 
   ComponentWithIdentity.propTypes = {
     id: PropTypes.string,
-    token: PropTypes.string,
+    isAuthenticated: PropTypes.bool,
     identity: PropTypes.shape(IdentitySchema.propTypes),
     identityId: PropTypes.string,
     onLoadUser: PropTypes.func.isRequired,
@@ -68,7 +67,7 @@ const withIdentity = (Component, mapProps = identityFn) => {
 
   ComponentWithIdentity.defaultProps = {
     id: null,
-    token: null,
+    isAuthenticated: false,
     identity: null,
     identityId: null,
   };
@@ -76,7 +75,7 @@ const withIdentity = (Component, mapProps = identityFn) => {
   // CONNECT
   const mapStateToProps = (state) => ({
     id: state.auth.id,
-    token: state.auth.token,
+    isAuthenticated: state.auth.isAuthenticated,
     identity: state.auth.identity,
     identityId: state.auth.identityId,
   });
