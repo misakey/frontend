@@ -46,9 +46,8 @@ import ListItemDomainWhitelisted from '@misakey/ui/ListItem/Domain/Whitelisted';
 
 import ShareBoxForm from 'components/screens/app/Boxes/Read/Sharing/Form';
 import ShareBoxFormSkeleton from 'components/screens/app/Boxes/Read/Sharing/Form/Skeleton';
+import ListItemShareBoxLink from 'components/smart/ListItem/BoxLink/Share';
 
-import CopyIcon from '@material-ui/icons/FilterNone';
-import LinkIcon from '@material-ui/icons/Link';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
@@ -61,12 +60,6 @@ const pluckValue = pluck('value');
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  listItemSpaced: {
-    marginBottom: theme.spacing(2),
-  },
-  invitationURL: {
-    width: '100%',
-  },
   avatar: {
     marginRight: theme.spacing(1),
   },
@@ -204,7 +197,7 @@ function ShareBoxDialog({ box, t }) {
 
         </AppBarDrawer>
       </ElevationScroll>
-      <Box p={CONTENT_SPACING} pt={0} ref={(ref) => setContentRef(ref)} className={classes.content}>
+      <Box p={CONTENT_SPACING} pt={0} ref={(ref) => setContentRef(ref)}>
         <List disablePadding>
           <ListItem disabled={!isCurrentUserOwner}>
             <ListItemAvatar>
@@ -223,23 +216,12 @@ function ShareBoxDialog({ box, t }) {
                   <ListItemUserWhitelistedSkeleton />
                 </ListBordered>
               </Box>
-              <ListItem
-                aria-label={t('common:share')}
-                onClick={shareAction}
+              <ListItemShareBoxLink
+                box={box}
+                shareAction={shareAction}
                 disabled={isPrivate}
-                button
-                className={classes.listItemSpaced}
-              >
-                <ListItemAvatar>
-                  <Avatar className={classes.avatar}><LinkIcon fontSize="small" /></Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={t('boxes:read.share.link.title')}
-                  primaryTypographyProps={{ variant: 'h6', color: 'textPrimary' }}
-                  className={classes.listItemText}
-                />
-                <CopyIcon fontSize="small" color="secondary" />
-              </ListItem>
+                isOwner={isCurrentUserOwner}
+              />
             </ShareBoxFormSkeleton>
           ) : (
             <ShareBoxForm
@@ -301,23 +283,12 @@ function ShareBoxDialog({ box, t }) {
                   )))}
                 </ListBordered>
               </Box>
-              <ListItem
-                aria-label={t('common:share')}
-                onClick={shareAction}
+              <ListItemShareBoxLink
+                box={box}
+                shareAction={shareAction}
                 disabled={isPrivate}
-                button
-                className={classes.listItemSpaced}
-              >
-                <ListItemAvatar>
-                  <Avatar className={classes.avatar}><LinkIcon fontSize="small" /></Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={t('boxes:read.share.link.title')}
-                  primaryTypographyProps={{ variant: 'h6', color: 'textPrimary' }}
-                  className={classes.listItemText}
-                />
-                <CopyIcon fontSize="small" color="secondary" />
-              </ListItem>
+                isOwner={isCurrentUserOwner}
+              />
             </ShareBoxForm>
           )}
         </List>

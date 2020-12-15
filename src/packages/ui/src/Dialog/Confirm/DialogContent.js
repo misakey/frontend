@@ -4,12 +4,14 @@ import isString from '@misakey/helpers/isString';
 
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import TypographyPreWrapped from '@misakey/ui/Typography/PreWrapped';
 
+// COMPONENTS
 const ConfirmDialogContent = ({ children }) => {
   if (isString(children)) {
     return (
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">{children}</DialogContentText>
+        <DialogContentText component={TypographyPreWrapped}>{children}</DialogContentText>
       </DialogContent>
     );
   }

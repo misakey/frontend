@@ -34,12 +34,6 @@ const ButtonWithDialogPassword = withDialogPassword(Button);
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    border: `1px solid ${theme.palette.grey[300]}`,
-  },
-  list: {
-    padding: 0,
-  },
   avatar: {
     backgroundColor: theme.palette.grey[400],
     color: theme.palette.background.paper,
@@ -214,8 +208,9 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
               open={!isNil((anchorEl))}
               onClose={onClose}
               onClick={onClose}
-              classes={{ paper: classes.paper, list: classes.list }}
-              elevation={0}
+              variant="menu"
+              MenuListProps={{ disablePadding: true }}
+              PaperProps={{ variant: 'outlined' }}
               transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
               {actions.map(({ text, component: Component = MenuItem, ...props }) => (

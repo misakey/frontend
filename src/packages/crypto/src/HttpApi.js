@@ -12,6 +12,7 @@ import API from '@misakey/api';
 import isString from '@misakey/helpers/isString';
 import isArray from '@misakey/helpers/isArray';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
+import objectToSnakeCaseDeep from '@misakey/helpers/objectToSnakeCaseDeep';
 
 // TODO use @misakey/helpers/objectToCamelCaseDeep instead (same exact function)
 import objectToCamelCase from './helpers/objectToCamelCase';
@@ -193,7 +194,7 @@ export async function setIdentityNonIdentifiedPublicKey(identityId, publicKey) {
   const endpoint = {
     method: 'PATCH',
     path: '/identities/:id',
-    auth: true,
+    withCsrfToken: true,
   };
   const httpRequestParams = {
     params: { id: identityId },
@@ -261,4 +262,35 @@ export async function deleteCryptoaction({ accountId, cryptoactionId }) {
   };
 
   return httpCallReturnBody(endpoint, httpRequestParams);
+}
+
+export async function setBoxKeyShare({ boxId, boxKeyShare }) {
+  const endpoint = {
+    method: 'POST',
+    path: '/boxes/:boxId/events',
+    withCsrfToken: true,
+  };
+  const httpRequestParams = {
+    params: { boxId },
+    payload: objectToSnakeCaseDeep({
+      type: 'state.key_share',
+      extra: boxKeyShare,
+    }),
+  };
+
+  return httpCallReturnBody(endpoint, httpRequestParams);
+}
+
+export async function listCryptoActions({ accountId }) {
+  const endpoint = {
+    method: 'GET',
+    path: '/accounts/:id/crypto/actions',
+    withCsrfToken: true,
+  };
+  const httpRequestParams = {
+    params: { id: accountId },
+  };
+
+  const responseBody = await httpCallReturnBody(endpoint, httpRequestParams);
+  return objectToCamelCase(responseBody);
 }

@@ -1,5 +1,6 @@
 export const CREATE = 'create';
 export const LIFECYCLE = 'state.lifecycle';
+export const KEY_SHARE = 'state.key_share';
 export const MEMBER_JOIN = 'member.join';
 export const MEMBER_LEAVE = 'member.leave';
 export const MEMBER_KICK = 'member.kick';
@@ -12,7 +13,7 @@ export const ACCESS_ADD = 'access.add';
 export const ACCESS_RM = 'access.rm';
 
 const EVENT_TYPES_BY_KIND = {
-  information: [CREATE, LIFECYCLE, MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK],
+  information: [CREATE, LIFECYCLE, MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK, KEY_SHARE],
   message: [MSG_FILE, MSG_TXT],
 };
 

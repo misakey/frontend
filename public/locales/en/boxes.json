@@ -105,6 +105,12 @@
             "you": "You reopened the private space"
           }
         },
+        "state": {
+          "key_share": {
+            "they": "{{displayName}} changed the invitation link",
+            "you": "You changed the invitation link"
+          }
+        },
         "create": {
           "they": "{{displayName}} created the private space “{{title}}”",
           "you": "You created the private space “{{title}}”"
@@ -157,7 +163,7 @@
     },
     "share": {
       "link": {
-        "title": "Get the link"
+        "title": "Access link"
       },
       "accesses": {
         "title": "Share with people and groups"
@@ -334,6 +340,17 @@
         }
       }
     }
+  },
+  "renewLink": {
+    "menu": {
+      "primary": "Renew"
+    },
+    "dialog": {
+      "title": "Renew access link",
+      "description": "Are you sure you want to renew this private space's access link?\nPrevious link will be revoked.",
+      "primary": "Renew"
+    },
+    "success": "Invitation link was renewed"
   },
   "contact": {
     "dialog": {

@@ -33,12 +33,6 @@ const useStyles = makeStyles((theme) => ({
       width: AVATAR_SM_SIZE,
     },
   },
-  paper: {
-    border: `1px solid ${theme.palette.grey[300]}`,
-  },
-  list: {
-    padding: 0,
-  },
 }));
 
 // COMPONENTS
@@ -98,8 +92,9 @@ const ListItemBoxesDeleted = ({ t, activeStatus, search, ...props }) => {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={onClose}
-        classes={{ paper: classes.paper, list: classes.list }}
-        elevation={0}
+        variant="menu"
+        MenuListProps={{ disablePadding: true }}
+        PaperProps={{ variant: 'outlined' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <MenuItem onClick={onDelete}>{t('common:leave')}</MenuItem>

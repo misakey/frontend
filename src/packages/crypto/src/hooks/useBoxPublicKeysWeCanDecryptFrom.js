@@ -23,8 +23,11 @@ function publicKeyFromSecretKey(secretKey) {
 }
 
 /**
- * This should not be imported in application code,
- * it is only exported for tests
+ * This should not be imported in application code;
+ * However it is used in some places of the crypto package,
+ * for instance in action `loadSecrets.js`.
+ * All this will change when the pubkey→seckey mapping will be stored in the secret backup
+ * (see https://gitlab.misakey.dev/misakey/frontend/-/issues/856)
  * @param {object} cryptoSecrets must be a list of asymetric secret keys
  */
 export function publicKeysWeCanDecryptFrom(secretKeys) {

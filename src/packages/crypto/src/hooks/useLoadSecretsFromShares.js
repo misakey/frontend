@@ -1,5 +1,5 @@
 import { useCallback, useState, useMemo } from 'react';
-import { useSelector, useDispatch, batch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import isNil from '@misakey/helpers/isNil';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { getBackupKeyShareBuilder } from '@misakey/auth/builder/backupKeyShares';
@@ -8,8 +8,6 @@ import loadSecrets from '@misakey/crypto/store/actions/loadSecrets';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { decryptSecretsBackupWithBackupKey } from '@misakey/crypto/secretsBackup/encryption';
 import useWatchStorageBackupKeyShares from '@misakey/crypto/hooks/useWatchStorageBackupKeyShares';
-import ensureIdentityKey from '@misakey/crypto/store/actions/ensureIdentityKey';
-import ensureNonIdentifiedKey from '@misakey/crypto/store/actions/ensureNonIdentifiedKey';
 import { selectors } from '../store/reducers';
 import useFetchSecretBackup from './useFetchSecretBackup';
 
@@ -51,11 +49,7 @@ export default (() => {
       backupKey: decodedBackupKey,
     } = await decryptSecretsBackupWithBackupKey(data, rebuiltBackupKey);
 
-    return batch(async () => {
-      await dispatch(loadSecrets({ secrets, backupKey: decodedBackupKey, backupVersion }));
-      await dispatch(ensureIdentityKey());
-      await dispatch(ensureNonIdentifiedKey());
-    });
+    await dispatch(loadSecrets({ secrets, backupKey: decodedBackupKey, backupVersion }));
   }, [backupVersion, data, dispatch, localBackupKeyShare]);
 
   const onError = useCallback(() => {

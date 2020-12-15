@@ -41,7 +41,7 @@ import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 const DEFAULT_SETTINGS = { muted: false };
 
 // HOOKS
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   listItemText: {
     // Needed for IE11
     width: '100%',
@@ -51,12 +51,6 @@ const useStyles = makeStyles((theme) => ({
   },
   background: {
     visibility: '0.5',
-  },
-  paper: {
-    border: `1px solid ${theme.palette.grey[300]}`,
-  },
-  menuList: {
-    padding: 0,
   },
   menuButton: ({ isActionVisible }) => ({
     visibility: isActionVisible ? 'visible' : 'hidden',
@@ -237,8 +231,9 @@ function BoxListItem({ box, toRoute, containerProps, t, ...rest }) {
           onClose={onClose}
           onClick={onClose}
           keepMounted
-          classes={{ paper: classes.paper, list: classes.menuList }}
-          elevation={0}
+          variant="menu"
+          MenuListProps={{ disablePadding: true }}
+          PaperProps={{ variant: 'outlined' }}
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
           <MenuItemBoxMute box={box} />

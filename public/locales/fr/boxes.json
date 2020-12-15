@@ -105,6 +105,12 @@
             "you": "Vous avez ré-ouvert l'espace privé"
           }
         },
+        "state": {
+          "key_share": {
+            "they": "{{displayName}} a changé le lien d'invitation",
+            "you": "Vous avez changé le lien d'invitation"
+          }
+        },
         "create": {
           "they": "{{displayName}} a créé l'espace privé «\u00a0{{title}}\u00a0»",
           "you": "Vous avez créé l'espace privé «\u00a0{{title}}\u00a0»"
@@ -157,7 +163,7 @@
     },
     "share": {
       "link": {
-        "title": "Obtenir le lien"
+        "title": "Lien d'accès"
       },
       "accesses": {
         "title": "Partager avec des personnes et des groupes"
@@ -334,6 +340,17 @@
         }
       }
     }
+  },
+  "renewLink": {
+    "menu": {
+      "primary": "Renouveler"
+    },
+    "dialog": {
+      "title": "Renouveler le lien d'accès",
+      "description": "Êtes-vous sûr·e de vouloir renouveler le lien d'accès de l'espace privé\u00a0?\nLe précédent lien sera révoqué.",
+      "primary": "Renouveler"
+    },
+    "success": "Lien d'accès renouvelé"
   },
   "contact": {
     "dialog": {

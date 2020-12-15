@@ -36,12 +36,6 @@ const useStyles = makeStyles((theme) => ({
     marginTop: -12,
     borderRadius: '0 0 5px 5px',
   },
-  paper: {
-    border: `1px solid ${theme.palette.grey[300]}`,
-  },
-  list: {
-    padding: 0,
-  },
   avatar: {
     backgroundColor: 'unset',
     color: theme.palette.primary.main,
@@ -116,8 +110,9 @@ const BlobListItem = ({ blob, onRemove, uploadStatus, t }) => {
               keepMounted
               open={!isNil((anchorEl))}
               onClose={onClose}
-              classes={{ paper: classes.paper, list: classes.list }}
-              elevation={0}
+              variant="menu"
+              MenuListProps={{ disablePadding: true }}
+              PaperProps={{ variant: 'outlined' }}
               transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
               <MenuItem onClick={onRemove}>{t('common:delete')}</MenuItem>

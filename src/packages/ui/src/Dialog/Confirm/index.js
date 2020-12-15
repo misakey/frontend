@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import stopPropagation from '@misakey/helpers/event/stopPropagation';
 
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
@@ -32,7 +33,9 @@ function ConfirmationDialog({
 
   const handleSuccess = useCallback(
     () => {
-      onClose();
+      if (isFunction(onClose)) {
+        onClose();
+      }
       if (isFunction(onSuccess)) {
         onSuccess();
       }
@@ -52,6 +55,7 @@ function ConfirmationDialog({
       open={isDialogOpen}
       fullScreen={fullScreen}
       onClose={onClose}
+      onClick={stopPropagation}
       {...omitTranslationProps(rest)}
     >
       <DialogTitleWithClose title={title} onClose={onClose} />
