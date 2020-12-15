@@ -154,7 +154,7 @@
     }
   },
   "prehashed_password_secret": {
-    "label": "Password",
+    "label": "Type your password",
     "placeholder": "Super Password",
     "error": {
       "invalid": "Wrong password"

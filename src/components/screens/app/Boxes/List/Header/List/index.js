@@ -29,7 +29,7 @@ function ListHeader({ activeStatus, t, ...props }) {
       <IconButtonCreate
         aria-label={t('boxes:list.empty.create')}
         edge="end"
-        color="secondary"
+        color="primary"
       >
         <AddIcon />
       </IconButtonCreate>

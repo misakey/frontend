@@ -16,6 +16,9 @@ import TextField from '@material-ui/core/TextField';
 import withErrors from '@misakey/ui/Form/Field/withErrors';
 
 // CONSTANTS
+const PRIMARY = 'primary';
+const SECONDARY = 'secondary';
+
 const OUTLINED = 'outlined';
 const STANDARD = 'standard';
 
@@ -53,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   inputRoot: {
     display: 'flex',
     flexDirection: 'column-reverse',
-    alignItems: 'flex-start',
+    alignItems: ({ centered }) => (centered ? 'center' : 'flex-start'),
     paddingLeft: ({ variant }) => (variant === STANDARD ? theme.spacing(0) : LETTER_SPACING),
     [theme.breakpoints.only('xs')]: {
       paddingLeft: ({ variant }) => (variant === STANDARD ? theme.spacing(0) : XS_LETTER_SPACING),
@@ -70,12 +73,20 @@ const useStyles = makeStyles((theme) => ({
       [theme.breakpoints.only('xs')]: {
         letterSpacing: XS_LETTER_SPACING,
       },
-      // forcing lineHeight 0 for display purpose
-      lineHeight: 0,
+      // forcing lineHeight 0.1 for display purpose
+      lineHeight: 0.1,
       // height comes from padding of outlined input
       height: LETTER_SIZE,
       // extra margin to make the text caret visible inside input even when full
       marginRight: ({ variant }) => (variant === OUTLINED ? '0.25rem' : null),
+      color: 'inherit',
+    },
+  },
+  inputFocused: {
+    '&::before': {
+      color: ({ color }) => (color === SECONDARY
+        ? theme.palette.secondary.main
+        : theme.palette.primary.main),
     },
   },
 }));
@@ -84,7 +95,7 @@ const useStyles = makeStyles((theme) => ({
 const FieldCode = forwardRef(({
   className, displayError, errorKeys, field, form: { setFieldValue, setFieldTouched },
   helperText, inputProps, InputProps,
-  variant,
+  variant, color, centered,
   t, length,
   ...rest
 }, ref) => {
@@ -99,7 +110,7 @@ const FieldCode = forwardRef(({
     () => repeatUnderline(length),
     [length],
   );
-  const classes = useStyles({ length, content, variant });
+  const classes = useStyles({ length, content, variant, color, centered });
 
   const { name, value } = field;
 
@@ -127,6 +138,7 @@ const FieldCode = forwardRef(({
       classes: {
         input: classes.inputInput,
         root: classes.inputRoot,
+        focused: classes.inputFocused,
       },
       disableUnderline: !isOutlined,
       onChange,
@@ -151,6 +163,7 @@ const FieldCode = forwardRef(({
       ref={ref}
       margin="normal"
       variant={variant}
+      color={color}
       className={className}
       inputProps={{
         type: 'text',
@@ -187,7 +200,9 @@ FieldCode.propTypes = {
   length: PropTypes.number,
   inputProps: PropTypes.object,
   InputProps: PropTypes.object,
+  color: PropTypes.oneOf([PRIMARY, SECONDARY]),
   variant: PropTypes.oneOf([OUTLINED, STANDARD, 'filled']),
+  centered: PropTypes.bool,
   t: PropTypes.func.isRequired,
 };
 
@@ -197,7 +212,9 @@ FieldCode.defaultProps = {
   length: 6,
   inputProps: {},
   InputProps: {},
+  color: PRIMARY,
   variant: STANDARD,
+  centered: false,
 };
 
 export default withTranslation('fields', { withRef: true })(withErrors(FieldCode));

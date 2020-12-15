@@ -89,7 +89,7 @@ function ScreenError({ t, className,
           {!hideDefaultError && (
             <>
               <Trans i18nKey="components:ScreenError.title">
-                <Title align="center" color="secondary">
+                <Title align="center" color="primary">
                   Oups ...
                 </Title>
                 <Title align="center">
@@ -100,7 +100,7 @@ function ScreenError({ t, className,
                 <Subtitle align="center">
                   <Trans i18nKey="components:ScreenError.subtitle">
                     Vous pouvez essayer de rafraichir la page. Si l&apos;erreur persiste,
-                    <MuiLink href={`mailto:${feedback}`} color="secondary">{' contactez-nous'}</MuiLink>
+                    <MuiLink href={`mailto:${feedback}`}>{' contactez-nous'}</MuiLink>
                     .
                   </Trans>
                 </Subtitle>

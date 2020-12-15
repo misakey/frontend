@@ -7,7 +7,7 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Link from '@material-ui/core/Link';
-import LinkFeedback from '@misakey/ui/FeedbackLink';
+import LinkFeedback from '@misakey/ui/Link/Feedback';
 import Logo from '@misakey/ui/Logo';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Accordion from '@material-ui/core/Accordion';
@@ -194,7 +194,6 @@ const Footer = ({
               >
                 <LinkFeedback
                   text={t('components:footer.links.feedback.text')}
-                  color="secondary"
                   variant="body2"
                   {...typographyProps}
                 />

@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
-    color: theme.palette.secondary.main,
+    color: theme.palette.primary.main,
     pointerEvents: 'none',
     position: 'absolute',
     backgroundColor: theme.palette.grey[300],

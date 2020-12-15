@@ -15,15 +15,15 @@ export const BUTTON_STANDINGS = {
 const BUTTON_PROPS_BY_STANDING = {
   [BUTTON_STANDINGS.MAIN]: {
     variant: 'contained',
-    color: 'secondary',
+    color: 'primary',
   },
   [BUTTON_STANDINGS.OUTLINED]: {
     variant: 'outlined',
-    color: 'secondary',
+    color: 'primary',
   },
   [BUTTON_STANDINGS.TEXT]: {
     variant: 'text',
-    color: 'secondary',
+    color: 'primary',
   },
   [BUTTON_STANDINGS.CANCEL]: {
     variant: 'text',

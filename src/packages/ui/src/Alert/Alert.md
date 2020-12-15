@@ -14,7 +14,7 @@ const AlertExample = () => {
 
   return (
     <>
-      <Button onClick={handleButtonClick} color="secondary" variant="contained">
+      <Button onClick={handleButtonClick} color="primary" variant="contained">
         Show Alert
       </Button>
       <Alert

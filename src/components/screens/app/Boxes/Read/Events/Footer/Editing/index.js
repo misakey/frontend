@@ -214,7 +214,7 @@ function BoxEventsFooterEditing({ box, event, clearEvent, t }) {
             <Tooltip title={t('boxes:read.actions.send')}>
               <IconButtonSubmit
                 aria-label={t('boxes:read.actions.send')}
-                color="secondary"
+                color="primary"
                 disabled={disabled}
               >
                 <SendIcon />

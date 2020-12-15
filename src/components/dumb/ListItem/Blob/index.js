@@ -125,7 +125,6 @@ const BlobListItem = ({ blob, onRemove, uploadStatus, t }) => {
           className={classes.progress}
           variant="determinate"
           value={isNil(progress) ? undefined : progress}
-          color="secondary"
         />
       ) : null}
     </>

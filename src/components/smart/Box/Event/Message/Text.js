@@ -29,10 +29,6 @@ const MY_TRANSFORM_ORIGIN = {
   horizontal: 'right',
 };
 
-const LINK_PROPS = {
-  color: 'secondary',
-};
-
 // HELPERS
 const decryptMessage = (publicKeysWeCanDecryptFrom, encrypted, publicKey) => {
   const secretKey = publicKeysWeCanDecryptFrom.get(publicKey);
@@ -58,7 +54,7 @@ const BoxMessageTextEvent = ({
   const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
   const canBeDecrypted = publicKeysWeCanDecryptFrom.has(publicKey);
 
-  const anchorme = useAnchormeCallback({ LinkComponent: MuiLink, linkProps: LINK_PROPS });
+  const anchorme = useAnchormeCallback({ LinkComponent: MuiLink });
 
   const isEdited = useMemo(
     () => isBoxEventEdited(event),

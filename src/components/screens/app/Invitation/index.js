@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { generatePath, Redirect } from 'react-router-dom';
 import routes from 'routes';
 
+// @FIXME kept for retrocompatibility
 function Invitation({ location: { hash } }) {
   const [id, invitationShare] = useMemo(() => hash.substr(1).split('&'), [hash]);
   const redirectTo = useMemo(

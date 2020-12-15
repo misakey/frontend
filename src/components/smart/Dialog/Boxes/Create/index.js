@@ -33,7 +33,7 @@ import Title from '@misakey/ui/Typography/Title';
 
 
 import Dialog from '@material-ui/core/Dialog';
-import FieldTextStandard from 'components/dumb/Form/Field/Text/Standard';
+import FieldText from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
 import DialogBoxesCreatePasteLink from 'components/smart/Dialog/Boxes/Create/PasteLink';
 
@@ -172,7 +172,7 @@ function CreateBoxDialog({
                 title={<Title id={DESCRIPTION_ID}>{t('boxes:create.dialog.content')}</Title>}
               >
                 <Field
-                  component={FieldTextStandard}
+                  component={FieldText}
                   className={classes.inputField}
                   name={FIELD_BOX_NAME}
                   label={t('boxes:create.dialog.fields.name')}
@@ -181,6 +181,7 @@ function CreateBoxDialog({
                   id="BoxName"
                   type="text"
                   placeholder={placeholder}
+                  variant="filled"
                   fullWidth
                 />
                 <Button

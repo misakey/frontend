@@ -16,7 +16,7 @@ const ChipDateSince = ({ date, text, ...rest }) => {
     return null;
   }
 
-  return <Chip color="secondary" variant="outlined" {...rest} label={label} />;
+  return <Chip color="primary" variant="outlined" {...rest} label={label} />;
 };
 
 ChipDateSince.propTypes = {

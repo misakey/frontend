@@ -1,23 +1,29 @@
-import { useMemo } from 'react';
-import * as React from 'react';
+import { useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { selectors as devicePreferencesSelector } from 'store/reducers/devicePreferences';
+import { initDarkMode } from 'store/actions/devicePreferences';
+
+import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
+import { getThemeOptions } from '@misakey/ui/theme';
+
+import { useSelector, useDispatch } from 'react-redux';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { createMuiTheme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
-import { getThemeOptions } from '@misakey/ui/theme';
 
-import isEmpty from '@misakey/helpers/isEmpty';
 
+// COMPONENTS
 function ThemeProvider({ children, previewColor }) {
-  // @FIXME if we want to use mediaquery to define darkmode from user preferencies
-  // import useMediaQuery from '@material-ui/core/useMediaQuery';
-  // const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)', { noSsr: true });
   const identity = useSelector(authSelectors.identity);
   const isDarkMode = useSelector(devicePreferencesSelector.getIsDarkMode);
+
+  const dispatch = useDispatch();
+
   const color = useMemo(
     () => {
       if (!isEmpty(previewColor)) {
@@ -28,9 +34,18 @@ function ThemeProvider({ children, previewColor }) {
     [identity, previewColor],
   );
 
-  const theme = React.useMemo(
+  const theme = useMemo(
     () => createMuiTheme(getThemeOptions(isDarkMode, color)),
     [isDarkMode, color],
+  );
+
+  useEffect(
+    () => {
+      if (isNil(isDarkMode)) {
+        dispatch(initDarkMode(prefersDarkMode));
+      }
+    },
+    [isDarkMode, prefersDarkMode, dispatch],
   );
 
   return (

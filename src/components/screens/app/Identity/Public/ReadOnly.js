@@ -104,7 +104,7 @@ const IdentityPublicReadOnly = forwardRef(({ t }, ref) => {
   );
 
   const primaryTypographyProps = useMemo(
-    () => (privateIdentifiervalue ? { color: 'secondary' } : {}),
+    () => (privateIdentifiervalue ? { color: 'primary' } : {}),
     [privateIdentifiervalue],
   );
 

@@ -38,7 +38,7 @@ const ProgressSignUp = (props) => {
   );
 
   return (
-    <LinearProgress value={value} variant="determinate" color="secondary" {...props} />
+    <LinearProgress value={value} variant="determinate" {...props} />
   );
 };
 

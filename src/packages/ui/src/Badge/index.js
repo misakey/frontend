@@ -23,7 +23,7 @@ const Badge = (props) => {
         horizontal: 'right',
       }}
       classes={{ badge: classes.badge }}
-      color="secondary"
+      color="primary"
       {...props}
     />
   );

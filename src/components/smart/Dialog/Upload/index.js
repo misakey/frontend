@@ -243,7 +243,6 @@ function UploadDialog({
                   href={t('components:dialogUpload.helperLink')}
                   target="_blank"
                   rel="noopener noreferrer"
-                  color="secondary"
                 >
                   {t('components:dialogUpload.helperLinkText')}
                 </Link>

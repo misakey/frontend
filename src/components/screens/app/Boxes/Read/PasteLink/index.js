@@ -19,7 +19,7 @@ import AppBar from '@misakey/ui/AppBar';
 import FormField from '@misakey/ui/Form/Field';
 import BoxControls from '@misakey/ui/Box/Controls';
 import Redirect from '@misakey/ui/Redirect';
-import FieldTextStandard from 'components/dumb/Form/Field/Text/Standard';
+import FormFieldTextField from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import Box from '@material-ui/core/Box';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import BoxesSchema from 'store/schemas/Boxes';
@@ -89,9 +89,10 @@ function PasteBoxLinkScreen({ t, box, currentLinkMalformed }) {
             <Box component={Form} display="flex" flexDirection="column" width="100%">
               <FormField
                 prefix="boxes."
-                component={FieldTextStandard}
+                component={FormFieldTextField}
                 name={FIELD_NAME}
                 fullWidth
+                variant="filled"
               />
               <BoxControls
                 primary={{

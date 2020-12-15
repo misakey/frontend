@@ -34,21 +34,21 @@ const ColorsDemo = ({ color, t }) => (
               />
             </Badge>
           </ListItemAvatar>
-          <ListItemText primaryTypographyProps={{ color: 'secondary' }}>{t('components:colorDemo.chat')}</ListItemText>
+          <ListItemText primaryTypographyProps={{ color: 'primary' }}>{t('components:colorDemo.chat')}</ListItemText>
           <ListItemSecondaryAction>
-            <IconButton color="secondary">
+            <IconButton color="primary">
               <CategoryIcon />
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>
         <ListItem>
-          <ListItemText primaryTypographyProps={{ color: 'secondary' }}>{t('components:colorDemo.chat')}</ListItemText>
+          <ListItemText primaryTypographyProps={{ color: 'primary' }}>{t('components:colorDemo.chat')}</ListItemText>
           <ListItemSecondaryAction>
             <Button standing={BUTTON_STANDINGS.OUTLINED} text={t('components:colorDemo.button')} />
           </ListItemSecondaryAction>
         </ListItem>
         <ListItem>
-          <ListItemText primaryTypographyProps={{ color: 'secondary' }}><MuiLink color="secondary">{t('components:colorDemo.chat')}</MuiLink></ListItemText>
+          <ListItemText primaryTypographyProps={{ color: 'primary' }}><MuiLink>{t('components:colorDemo.chat')}</MuiLink></ListItemText>
         </ListItem>
       </List>
       <BoxControls

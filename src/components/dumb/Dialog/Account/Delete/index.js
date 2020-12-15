@@ -56,7 +56,7 @@ const DeleteAccountDialog = ({ onClose, onSuccess, open, identity, t }) => {
             <Field
               component={FormFieldTextFieldWithErrors}
               name="email"
-              variant="outlined"
+              variant="filled"
               autoFocus
               id="email-address"
               fullWidth

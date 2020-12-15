@@ -23,7 +23,7 @@ const AddToVaultIcon = ({ isSaved }) => {
     <Badge
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       classes={{ badge: classes.badge }}
-      badgeContent={isSaved ? <CheckCircleIcon className={classes.checkIcon} color="secondary" /> : null}
+      badgeContent={isSaved ? <CheckCircleIcon className={classes.checkIcon} color="primary" /> : null}
     >
       <LibraryAddIcon />
     </Badge>

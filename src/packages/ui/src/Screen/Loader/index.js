@@ -22,7 +22,6 @@ const ScreenLoader = ({ isLoading, ...props }) => {
     return (
       <LinearProgress
         className={classes.progress}
-        color="secondary"
         variant="query"
         {...props}
       />

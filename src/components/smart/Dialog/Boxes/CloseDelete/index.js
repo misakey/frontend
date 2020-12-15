@@ -21,7 +21,7 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 
-import FieldTextStandard from 'components/dumb/Form/Field/Text/Standard';
+import FormFieldTextField from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import Formik from '@misakey/ui/Formik';
 import BoxControls from '@misakey/ui/Box/Controls';
@@ -112,7 +112,7 @@ function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
           <Form>
             <Box display="flex" justifyContent="center">
               <Field
-                component={FieldTextStandard}
+                component={FormFieldTextField}
                 inputProps={{ autoComplete: 'off' }}
                 className={classes.inputField}
                 name={FIELD_NAME}
@@ -121,6 +121,7 @@ function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
                 id="confirm"
                 type="text"
                 placeholder={confirmValue}
+                variant="filled"
               />
             </Box>
             <DialogActions className={classes.dialogActionsRoot}>

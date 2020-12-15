@@ -106,7 +106,7 @@ const InfiniteLoaderChat = forwardRef(({
     () => forwardRef((args, ref) => (
       <div ref={ref}>
         <Box display="flex" justifyContent="center">
-          {isNextPageLoading && <HourglassEmptyIcon color="secondary" />}
+          {isNextPageLoading && <HourglassEmptyIcon color="primary" />}
           {/* Fallback in case scroll hasn't been triggered well */}
           {!isNextPageLoading && hasNextPage && (
             <Button

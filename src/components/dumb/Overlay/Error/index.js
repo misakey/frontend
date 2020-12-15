@@ -9,7 +9,7 @@ import boulder from '@misakey/ui/colors/boulder';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
-import LinkFeedback from '@misakey/ui/FeedbackLink';
+import LinkFeedback from '@misakey/ui/Link/Feedback';
 
 const styles = (theme) => ({
   root: {
@@ -58,7 +58,6 @@ function ErrorOverlay({ classes, error, httpStatus, t, variant }) {
       <Typography variant="body2" align="center">
         <LinkFeedback
           text={t('components:errorOverlay.feedback.text')}
-          color="secondary"
         />
       </Typography>
     </div>

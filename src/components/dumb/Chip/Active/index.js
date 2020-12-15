@@ -30,7 +30,7 @@ const ChipActive = ({
   return (
     <Chip
       classes={{ root: classes.chipRoot }}
-      color={isActive ? 'secondary' : 'primary'}
+      color={isActive ? 'primary' : 'default'}
       {...rest}
     />
   );

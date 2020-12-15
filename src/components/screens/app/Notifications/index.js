@@ -172,7 +172,7 @@ function MisakeyNotications() {
               itemData={itemData}
               onItemsRendered={onItemsRendered}
               NoMoreItemsElement={itemsLength === 0 ? null : (
-                <Typography component={Box} p={1} variant="caption" color="secondary">
+                <Typography component={Box} p={1} variant="caption" color="primary">
                   {t('boxes:notifications.byIdentity.noMoreItems')}
                 </Typography>
               )}

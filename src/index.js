@@ -28,6 +28,7 @@ import Router from 'components/smart/Router';
 import * as serviceWorker from 'serviceWorker';
 // ui
 import ThemeProvider from 'components/smart/ThemeProvider';
+import ThemeProviderNoStore from 'components/smart/ThemeProvider/NoStore';
 // components
 import App from 'components/App';
 
@@ -94,7 +95,12 @@ if (isSilentAuthIframe()) {
   const SPLASH_SCREEN_PROPS = { height: '100vh', width: '100vw' };
 
   ReactDOM.render((
-    <Suspense fallback={<SplashScreen {...SPLASH_SCREEN_PROPS} />}>
+    <Suspense fallback={(
+      <ThemeProviderNoStore>
+        <SplashScreen {...SPLASH_SCREEN_PROPS} loading />
+      </ThemeProviderNoStore>
+)}
+    >
       <StoreProvider store={store}>
         <PersistGate
           loading={(

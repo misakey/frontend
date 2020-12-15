@@ -89,6 +89,7 @@ const DialogPassword = ({
                 inputProps={{ 'data-matomo-ignore': true }}
                 fullWidth={false}
                 autoFocus
+                variant="filled"
               />
             </Box>
           </DialogContent>

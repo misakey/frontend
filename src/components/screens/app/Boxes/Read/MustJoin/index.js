@@ -218,7 +218,7 @@ function MustJoin({ box, t }) {
                 <Subtitle>
                   <Trans values={{ creatorName }} i18nKey="common:connect.authorize">
                     {'Authorize '}
-                    <MuiLink color="secondary" component={Link} to={creatorProfileTo}>{'{{creatorName}}'}</MuiLink>
+                    <MuiLink component={Link} to={creatorProfileTo}>{'{{creatorName}}'}</MuiLink>
                     {' to access above information ?'}
                   </Trans>
                 </Subtitle>

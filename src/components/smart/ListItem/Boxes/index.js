@@ -162,7 +162,7 @@ function BoxListItem({ box, toRoute, containerProps, t, ...rest }) {
       }
       return {
         badgeContent: showEventsCount ? eventsCount : 0,
-        color: 'secondary',
+        color: 'primary',
       };
     },
     [muted, showEventsCount, eventsCount],

@@ -54,9 +54,6 @@ const useStyles = makeStyles((theme) => ({
   container: {
     overflow: 'auto',
   },
-  textFieldInputRoot: {
-    borderRadius: `0 0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px`,
-  },
 }));
 
 // COMPONENTS
@@ -131,7 +128,6 @@ const AuthLoginIdentifier = ({
           </Subtitle>
           <CardUser my={3}>
             <LoginFormField
-              InputProps={{ classes: { root: classes.textFieldInputRoot } }}
               FormHelperTextProps={{ component: FormHelperTextInCard }}
               margin="none"
             />

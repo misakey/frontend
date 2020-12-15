@@ -71,7 +71,7 @@ const ListItemDomainWhitelisted = ({ onRemove, id, ...rest }) => {
         alignItems="center"
         maxWidth={SECONDARY_ACTION_MAX_WIDTH}
       >
-        <Subtitle color="secondary">{t('components:whitelist.needs_link')}</Subtitle>
+        <Subtitle color="primary">{t('components:whitelist.needs_link')}</Subtitle>
         <IconButton onClick={onClick} edge="end">
           <MoreVertIcon />
         </IconButton>

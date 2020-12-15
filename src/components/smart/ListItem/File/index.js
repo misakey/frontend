@@ -168,7 +168,7 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
       <ListItemAvatar>
         <Avatar variant="rounded" className={classes.avatar} src={blobUrl}>
           {isLoading
-            ? <HourglassEmptyIcon className={classes.icons} />
+            ? <HourglassEmptyIcon />
             : <FileIcon fontSize="large" />}
         </Avatar>
       </ListItemAvatar>
@@ -183,11 +183,11 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
               <ButtonWithDialogPassword
                 ref={buttonRef}
                 size="small"
-                color="secondary"
+                color="primary"
                 classes={{ root: classes.button }}
                 onClick={onSave}
                 disabled={!isNil(error) || isSaved}
-                startIcon={isSaved ? <CheckCircleIcon color="secondary" /> : null}
+                startIcon={isSaved ? <CheckCircleIcon color="primary" /> : null}
               >
                 {isSaved ? t('common:savedInVault') : t('common:addToVault')}
               </ButtonWithDialogPassword>

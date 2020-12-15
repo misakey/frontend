@@ -19,7 +19,7 @@ function NotFound({ t }) {
   return (
     <ScreenError hideDefaultError hideRefreshAction>
       <Box mb={1}>
-        <Typography align="center" variant="h2" color="secondary">{NOT_FOUND_ERROR.status}</Typography>
+        <Typography align="center" variant="h2" color="primary">{NOT_FOUND_ERROR.status}</Typography>
       </Box>
       <Typography align="center" variant="h5" component="h3" color="textSecondary">
         {t(`common:httpStatus.error.${NOT_FOUND_ERROR.status}`)}

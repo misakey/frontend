@@ -29,7 +29,7 @@ function Alert({ children, dialogActions, dialogProps, onClose, onOk, open, t, t
         {dialogActions.length === 0 && (
           <>
             <Button onClick={onClose}>{t('common:cancel')}</Button>
-            <Button onClick={onOk} color="secondary" autoFocus>{t('common:ok')}</Button>
+            <Button onClick={onOk} color="primary" autoFocus>{t('common:ok')}</Button>
           </>
         )}
       </DialogActions>

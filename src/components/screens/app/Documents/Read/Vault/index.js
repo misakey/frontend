@@ -33,7 +33,7 @@ import VaultCell, { Skeleton, CELL_HEIGHT } from './Cell';
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   avatar: {
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.primary.main,
     color: theme.palette.common.white,
   },
   content: {

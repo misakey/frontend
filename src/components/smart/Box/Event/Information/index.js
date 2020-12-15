@@ -71,7 +71,7 @@ const BoxInformationEvent = ({
         <Typography
           className={classes.e2eeIntro}
           variant="caption"
-          color="secondary"
+          color="primary"
           align="center"
         >
           {t('boxes:read.events.e2eeIntro')}

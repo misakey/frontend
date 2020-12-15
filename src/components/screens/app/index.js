@@ -59,6 +59,7 @@ const BoxesApp = () => {
 
         {/* OTHERS */}
         <Route path={routes.identities._} component={Profile} />
+        {/* @FIXME kept for retrocompatibility */}
         <Route path={routes.boxes.invitation} component={Invitation} />
 
         {/* MAIN VIEWS WITH BOXES LIST AT LEFT */}

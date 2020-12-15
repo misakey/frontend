@@ -12,7 +12,7 @@ const SKEW_SPACING = `${SKEW_TAN} * 100vw`;
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   slopePaperRoot: {
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.primary.main,
     transform: `skewY(${SKEW_ANGLE}deg)`,
     position: 'absolute',
     top: `calc(-${SKEW_SPACING})`,
@@ -31,6 +31,7 @@ const PaperSlope = ({ classes, ...props }) => {
   return (
     <Paper
       elevation={0}
+      square
       classes={{ root: internalClasses.slopePaperRoot, ...classes }}
       {...props}
     />

@@ -42,7 +42,7 @@ const CardSso = ({ avatar, avatarLarge, header, children, ...props }) => {
       <Container
         component={Box}
         height="100%"
-        maxWidth="md"
+        maxWidth="sm"
         disableGutters={fullScreen}
       >
         <Card

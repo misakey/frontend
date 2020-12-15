@@ -34,7 +34,7 @@ const INNER_ELEMENT_TYPE_HEIGHT = INNER_ELEMENT_TYPE_BOTTOM_HEIGHT + INNER_ELEME
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   secondary: {
-    color: theme.palette.secondary.main,
+    color: theme.palette.primary.main,
   },
 }));
 

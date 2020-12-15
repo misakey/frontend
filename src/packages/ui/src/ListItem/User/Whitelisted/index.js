@@ -99,7 +99,7 @@ const ListItemUserWhitelisted = ({
         return 'textSecondary';
       }
       if (accessStatus === ACCESS_STATUS_NEEDS_LINK) {
-        return 'secondary';
+        return 'primary';
       }
       if (accessStatus === ACCESS_STATUS_INVITED) {
         return 'textPrimary';

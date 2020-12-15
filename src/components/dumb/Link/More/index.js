@@ -23,7 +23,6 @@ const LinkMore = (props) => {
       <Trans i18nKey="auth:login.card.more">
         {'En savoir plus sur '}
         <MUILink
-          color="secondary"
           to={routes.legals.privacy}
           component={Link}
           target="_blank"

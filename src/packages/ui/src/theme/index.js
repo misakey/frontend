@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createMuiTheme, fade } from '@material-ui/core/styles';
 import common from '@misakey/ui/colors/common';
 import boulder from '@misakey/ui/colors/boulder';
 
@@ -18,14 +18,11 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
   palette: {
     type: isDarkMode ? THEMES.DARK : THEMES.LIGHT,
     primary: {
-      main: common.primary,
+      main: isEmpty(color) ? common.primary : color,
     },
     secondary: {
-      main: isEmpty(color) ? common.secondary : color,
-    },
-    error: (isEmpty(color) || color === common.secondary) ? ({
       main: common.secondary,
-    }) : undefined,
+    },
     background: {
       message: isDarkMode ? '#555555' : '#F5F5F5',
       paper: isDarkMode ? DARK_BG : LIGHT_BG,
@@ -49,40 +46,13 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
   typography: {
     useNextVariants: true,
   },
+  shape: {
+    borderRadius: 8,
+  },
   zIndex: {
     max: 2000,
   },
   overrides: {
-    MuiButton: {
-      root: {
-        boxShadow: 'none !important',
-        borderRadius: 50,
-      },
-    },
-    MuiCardContent: {
-      root: {
-        '&:last-child': {
-          paddingBottom: null,
-        },
-      },
-    },
-    MuiDialog: {
-      paper: {
-        borderRadius: '10px',
-      },
-    },
-    MuiListItem: {
-      root: {
-        '&.Mui-selected': {
-          borderLeftWidth: 3,
-          borderLeftStyle: 'solid',
-          borderLeftColor: isEmpty(color) ? common.secondary : color,
-          '&.MuiListItem-gutters': {
-            paddingLeft: 13,
-          },
-        },
-      },
-    },
     MuiAccordion: {
       root: {
         '&::before': {
@@ -111,6 +81,55 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
           margin: 'auto 0',
         },
         alignItems: 'center',
+      },
+    },
+    MuiButton: {
+      root: {
+        boxShadow: 'none !important',
+        borderRadius: 50,
+      },
+    },
+    MuiCardContent: {
+      root: {
+        '&:last-child': {
+          paddingBottom: null,
+        },
+      },
+    },
+    MuiDialog: {
+      paper: {
+        borderRadius: '10px',
+      },
+    },
+    MuiFilledInput: {
+      root: {
+        backgroundColor: isEmpty(color) ? fade(common.primary, 0.03) : fade(color, 0.03),
+        '@media (hover:none)': {
+          '&:hover': {
+            backgroundColor: isEmpty(color) ? `${fade(common.primary, 0.07)} !important` : `${fade(color, 0.07)} !important`,
+          },
+        },
+        '&:hover': {
+          backgroundColor: isEmpty(color) ? fade(common.primary, 0.07) : fade(color, 0.07),
+        },
+        '&$focused': {
+          backgroundColor: isEmpty(color) ? fade(common.primary, 0.03) : fade(color, 0.03),
+        },
+        '&$disabled': {
+          backgroundColor: isEmpty(color) ? fade(common.primary, 0.06) : fade(color, 0.06),
+        },
+      },
+    },
+    MuiListItem: {
+      root: {
+        '&$selected': {
+          borderLeftWidth: 3,
+          borderLeftStyle: 'solid',
+          borderLeftColor: isEmpty(color) ? common.primary : color,
+          '&$gutters': {
+            paddingLeft: 13,
+          },
+        },
       },
     },
   },

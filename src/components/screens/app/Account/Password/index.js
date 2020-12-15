@@ -144,6 +144,7 @@ const AccountPassword = ({ t, identity, isFetching }) => {
                   type="password"
                   name={OLD_PASSWORD_KEY}
                   component={FieldPasswordRevealable}
+                  variant="filled"
                 />
               </Box>
               <Box mb={2}>
@@ -152,12 +153,14 @@ const AccountPassword = ({ t, identity, isFetching }) => {
                   name={NEW_PASSWORD_KEY}
                   component={FieldPasswordRevealable}
                   inputProps={NEW_PASSWORD_INPUT_PROPS}
+                  variant="filled"
                 />
               </Box>
               <FormField
                 type="password"
                 name={PASSWORD_CONFIRM_KEY}
                 component={FieldPasswordRevealable}
+                variant="filled"
               />
               <BoxControls
                 mt={3}

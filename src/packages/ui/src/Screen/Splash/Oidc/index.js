@@ -32,7 +32,7 @@ const ScreenSplashOidc = ({ cardUserProps, done, ...props }) => (
       >
         <Divider />
         <Box position="relative" display="flex" justifyContent="center" alignItems="center" my={2}>
-          <IconProgress isLoading={!done} done={done} Icon={HourglassEmptyIcon} DoneIcon={CheckIcon} fontSize="large" color="secondary" />
+          <IconProgress isLoading={!done} done={done} Icon={HourglassEmptyIcon} DoneIcon={CheckIcon} fontSize="large" color="primary" />
         </Box>
       </CardUserSignOut>
     </Box>

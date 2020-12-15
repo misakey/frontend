@@ -31,7 +31,7 @@ const ButtonCopy = ({ value, format, mode, t, ...props }) => {
   const buttonProps = useMemo(
     () => (isIcon
       ? {}
-      : { variant: 'outlined', color: 'secondary' }),
+      : { variant: 'outlined', color: 'primary' }),
     [isIcon],
   );
 

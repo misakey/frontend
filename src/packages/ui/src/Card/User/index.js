@@ -21,9 +21,20 @@ const isNotEmptyUser = any(complement(isEmpty));
 const useStyles = makeStyles((theme) => ({
   cardRoot: {
     overflow: 'visible',
+    '& .MuiInputBase-input,.MuiInputBase-root': {
+      borderRadius: `0 0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px`,
+    },
+    '& .MuiInput-underline, .MuiFilledInput-underline': {
+      '&:before,&:after': {
+        borderRadius: theme.shape.borderRadius,
+      },
+      '&:after': {
+        height: '100%',
+      },
+    },
   },
   cardHeaderRoot: ({ disablePadding }) => ({
-    paddingBottom: disablePadding ? theme.spacing(0) : null,
+    padding: theme.spacing(1, 1, disablePadding ? 0 : 1, 1),
     textAlign: 'start',
   }),
   cardHeaderSubheader: ({ expired }) => ({

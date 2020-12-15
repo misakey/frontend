@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   highlight: {
-    borderColor: theme.palette.secondary.main,
+    borderColor: theme.palette.primary.main,
   },
   dividerPadded: {
     margin: theme.spacing(0, -3),

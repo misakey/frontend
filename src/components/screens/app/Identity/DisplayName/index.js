@@ -107,6 +107,7 @@ const IdentityDisplayName = ({
                 name={FIELD_NAME}
                 component={FieldText}
                 inputProps={{ 'data-matomo-ignore': true }}
+                variant="filled"
               />
               <BoxControls
                 mt={3}

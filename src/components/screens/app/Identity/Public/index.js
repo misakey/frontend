@@ -241,7 +241,7 @@ const IdentityPublic = forwardRef(({ t, identity, isFetching }, ref) => {
                   <Field
                     component={FieldBooleanControlSwitch}
                     name={EMAIL_FIELD}
-                    color="secondary"
+                    color="primary"
                     labels={controlLabels}
                     classes={{ label: classes.listItemControlLabel }}
                   />

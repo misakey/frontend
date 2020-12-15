@@ -128,7 +128,7 @@ function NoAccess({ box, belongsToCurrentUser, t }) {
                 <Subtitle>
                   <Trans values={{ creatorName }} i18nKey="boxes:read.noaccess.subtitle">
                     {'Message '}
-                    <MuiLink color="secondary" {...linkProps}>{'{{creatorName}}'}</MuiLink>
+                    <MuiLink {...linkProps}>{'{{creatorName}}'}</MuiLink>
                     {' to request access'}
                   </Trans>
                 </Subtitle>

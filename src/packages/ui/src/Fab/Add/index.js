@@ -18,7 +18,7 @@ const FabAdd = ({ ...props }) => {
   return (
     <Fab
       className={classes.fab}
-      color="secondary"
+      color="primary"
       aria-label="add"
       {...props}
     >

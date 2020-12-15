@@ -13,7 +13,7 @@ import CloseIcon from '@material-ui/icons/Close';
 const FooterEditingHeader = ({ onClose, value, t, ...props }) => (
   <Box {...omitTranslationProps(props)}>
     <Box display="flex" flexGrow="1" justifyContent="space-between" alignItems="center">
-      <Typography color="secondary">
+      <Typography color="primary">
         {t('boxes:read.actions.edit')}
       </Typography>
       <IconButton

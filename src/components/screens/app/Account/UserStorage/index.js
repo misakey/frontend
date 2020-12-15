@@ -91,7 +91,7 @@ function UserStorage() {
 
   return (
     <div className={classes.root}>
-      <LinearProgress variant="determinate" value={storageState} color="secondary" />
+      <LinearProgress variant="determinate" value={storageState} />
       <Typography color="textSecondary">{t('account:quota.description', { currentUsage: formatFileSize(totalUsedSpace), totalUsage: formatFileSize(totalStorageQuota) })}</Typography>
     </div>
   );

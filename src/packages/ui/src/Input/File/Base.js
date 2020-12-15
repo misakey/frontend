@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     border: `1px dashed ${theme.palette.primary.main}`,
     '&:active, &.active': {
-      border: `1px solid ${theme.palette.secondary.main}`,
+      border: `1px solid ${theme.palette.primary.main}`,
     },
   },
   input: {

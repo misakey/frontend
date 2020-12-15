@@ -148,7 +148,7 @@ function BoxEventsFooter({ box, t }) {
         <Tooltip title={t('boxes:read.actions.upload')}>
           <IconButton
             aria-label={t('boxes:read.actions.upload')}
-            color="secondary"
+            color="primary"
             onClick={onBoxesUploadOpen}
             disabled={disabled}
           >
@@ -183,7 +183,7 @@ function BoxEventsFooter({ box, t }) {
             <Tooltip title={t('boxes:read.actions.send')}>
               <IconButtonSubmit
                 aria-label={t('boxes:read.actions.send')}
-                color="secondary"
+                color="primary"
                 disabled={disabled}
               >
                 <SendIcon />

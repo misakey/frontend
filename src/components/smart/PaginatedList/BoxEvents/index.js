@@ -268,7 +268,7 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
   return (
     <>
       {isFetching && !isEmpty(byPagination) && (
-      <HourglassEmptyIcon color="secondary" fontSize="small" className={classes.loader} />
+      <HourglassEmptyIcon color="primary" fontSize="small" className={classes.loader} />
       )}
       <Box p={2.5} ref={combinedRef} flexGrow="1" className={classes.root} onScroll={onScroll}>
         {eventsByDate.map(({ date, events: groupedEvents }) => (

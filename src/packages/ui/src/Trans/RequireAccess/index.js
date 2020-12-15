@@ -36,7 +36,7 @@ const TransRequireAccess = ({ querier, to, i18nKey }) => {
 
   return (
     <Trans values={values} i18nKey={i18nKey}>
-      <MuiLink color="secondary" {...linkProps}>{'{{querier}}'}</MuiLink>
+      <MuiLink {...linkProps}>{'{{querier}}'}</MuiLink>
       {' requires access to the information below'}
     </Trans>
   );

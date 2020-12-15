@@ -56,7 +56,7 @@ import SnackbarActionRefresh from 'components/dumb/Snackbar/Action/Refresh';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
 import Screen from '@misakey/ui/Screen';
-import AppBarSecondary from '@misakey/ui/AppBar/Secondary';
+import AppBar from '@misakey/ui/AppBar';
 import CardUser from '@misakey/ui/Card/User';
 import IconButton from '@material-ui/core/IconButton';
 import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
@@ -83,9 +83,6 @@ const useStyles = makeStyles((theme) => ({
   screenContent: {
     flexGrow: 1,
     justifyContent: 'center',
-  },
-  textFieldInputRoot: {
-    borderRadius: `0 0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px`,
   },
   cardOverflowVisible: {
     overflow: 'visible',
@@ -341,9 +338,7 @@ const AuthLoginSecret = ({
       avatar={<AvatarClientSso client={client} />}
       avatarLarge
       header={(
-        <AppBarSecondary
-          color="secondary"
-        >
+        <AppBar color="primary">
           {reset && (
           <IconButtonAppBar
             className={classes.appBarButton}
@@ -354,7 +349,7 @@ const AuthLoginSecret = ({
             <ArrowBackIcon />
           </IconButtonAppBar>
           )}
-        </AppBarSecondary>
+        </AppBar>
       )}
     >
       <Formik
@@ -386,9 +381,9 @@ const AuthLoginSecret = ({
               >
                 <SecretFormField
                   methodName={methodName}
-                  InputProps={{ classes: { root: classes.textFieldInputRoot } }}
                   FormHelperTextProps={{ component: FormHelperTextInCard }}
                   margin="none"
+                  centered
                 />
               </CardUser>
               {methodName === EMAILED_CODE && (

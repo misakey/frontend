@@ -78,7 +78,7 @@ const MenuItemBoxLinkRenew = ({ box, onClose }) => {
         onClick={onClick}
         aria-label={t('boxes:renewLink.menu.primary')}
       >
-        <Typography color="secondary">
+        <Typography color="error">
           {t('boxes:renewLink.menu.primary')}
         </Typography>
       </MenuItem>

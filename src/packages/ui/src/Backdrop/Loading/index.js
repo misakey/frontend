@@ -14,7 +14,7 @@ const BackdropLoading = ({ loading, t, ...props }) => (
   <Backdrop {...omitTranslationProps(props)}>
     {loading && (
       <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-        <HourglassEmptyIcon fontSize="large" color="secondary" />
+        <HourglassEmptyIcon fontSize="large" color="primary" />
         <Typography variant="h5" component="h3" color="textSecondary">
           {t('common:loading')}
         </Typography>

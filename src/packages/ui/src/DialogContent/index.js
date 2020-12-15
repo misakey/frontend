@@ -7,7 +7,7 @@ import Box from '@material-ui/core/Box';
 // COMPONENTS
 const DialogContent = ({ classes, children, title, subtitle, contentProps, ...props }) => (
   <MuiDialogContent className={classes.root} {...props}>
-    <Container className={classes.container} maxWidth="md">
+    <Container className={classes.container} maxWidth="sm">
       {title}
       {subtitle}
       <Box
