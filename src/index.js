@@ -45,6 +45,7 @@ import countries from 'i18n-iso-countries';
 // helpers
 import isNil from '@misakey/helpers/isNil';
 import { isSilentAuthIframe, processSilentAuthCallbackInIframe } from '@misakey/auth/helpers'; // Silent auth
+import sentryBeforeSend from '@misakey/helpers/sentry/beforeSend';
 
 /* END OF IMPORTS */
 
@@ -54,9 +55,7 @@ if (window.env.ENV !== 'development' || window.env.SENTRY.debug === true) {
     sentryConfig.release = `frontend@${window.bundleVersion}`;
   }
 
-  sentryConfig.beforeSend = (event) => (
-    { ...event, request: { ...event.request, url: event.request.url.split('#')[0] } }
-  );
+  sentryConfig.beforeSend = sentryBeforeSend;
 
   Sentry.init(sentryConfig);
 }
