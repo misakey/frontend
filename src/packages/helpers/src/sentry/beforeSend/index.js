@@ -15,10 +15,10 @@ export default (event) => {
   const { breadcrumbs, request } = event;
   const safeBreadcrumbs = map(breadcrumbs, ({ category, data, ...rest }) => {
     if (category === 'navigation') {
-      const { from, to } = data;
+      const { from, to, ...restData } = data;
       return {
         category,
-        data: { from: sentryReplaceHash(from), to: sentryReplaceHash(to) },
+        data: { ...restData, from: sentryReplaceHash(from), to: sentryReplaceHash(to) },
         ...rest,
       };
     }

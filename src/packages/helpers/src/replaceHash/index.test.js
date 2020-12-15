@@ -7,6 +7,8 @@ describe('test helper replaceHash', () => {
 
   it('should return current url with no changes', () => {
     expect(replaceHash()).toEqual(window.location.href);
+    expect(replaceHash('#mynewhash')).toEqual(window.location.href);
+    expect(replaceHash('#mynewhash', undefined, true)).toEqual(`${window.location.href}#mynewhash`);
   });
 
   it('should remove hash from current url', () => {
@@ -45,5 +47,10 @@ describe('test helper replaceHash', () => {
   it('should return given url with no changes', () => {
     const urlWithNoHash = 'https://app.misakey.com.local/boxes/c4f390ad-4959-4cd1-949c-2e33d9db6b88';
     expect(replaceHash(undefined, urlWithNoHash)).toEqual(urlWithNoHash);
+  });
+
+  it('should radd hash to url', () => {
+    const urlWithNoHash = 'https://app.misakey.com.local/boxes/c4f390ad-4959-4cd1-949c-2e33d9db6b88';
+    expect(replaceHash('#myhash', urlWithNoHash, true)).toEqual(`${urlWithNoHash}#myhash`);
   });
 });
