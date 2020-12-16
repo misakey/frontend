@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: maintenance
-          image: "{{ .Values.image.repository }}/maintenance:master"
+          image: "{{ .Values.image.maintenanceRepository }}:master"
           imagePullPolicy: Always
           ports:
             - name: http

@@ -7,7 +7,8 @@ replicaCount: 2
 maintenance: false
 
 image:
-  repository: registry.misakey.dev/misakey/frontend
+  repository: misakey/frontend
+  maintenanceRepository: misakey/frontend-maintenance
   tag:
   pullPolicy: IfNotPresent
 

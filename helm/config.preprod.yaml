@@ -1,6 +1,8 @@
 image:
   pullPolicy: Always
   tag: master
+  repository: registry.misakey.dev/misakey/frontend
+  maintenanceRepository: registry.misakey.dev/misakey/frontend/maintenance
 env: production
 ingressRoute:
   domain: app.preprod.misakey.dev
