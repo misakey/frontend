@@ -1,5 +1,6 @@
 variables:
   CI: "true"
+  BASE_IMAGE_VERSION: "v1.0"
 
 stages:
   - test
@@ -9,7 +10,7 @@ stages:
 
 lint_code:
   stage: test
-  image: $CI_REGISTRY_IMAGE/base-image:latest
+  image: misakey/frontend-base-image:$BASE_IMAGE_VERSION
   tags:
     - misakey_js
   before_script:
@@ -28,7 +29,7 @@ lint_code:
 
 unit_tests:
   stage: test
-  image: $CI_REGISTRY_IMAGE/base-image:latest
+  image: misakey/frontend-base-image:$BASE_IMAGE_VERSION
   tags:
     - misakey_js
   before_script:
@@ -47,7 +48,7 @@ unit_tests:
 
 docs:
   stage: docs
-  image: $CI_REGISTRY_IMAGE/base-image:latest
+  image: misakey/frontend-base-image:$BASE_IMAGE_VERSION
   tags:
     - misakey_js
   before_script:
