@@ -4,7 +4,7 @@ import errorTypes from '@misakey/ui/constants/errorTypes';
 
 import { InvalidHash } from '@misakey/crypto/Errors/classes';
 import { splitKey, combineShares, hashShare } from '@misakey/crypto/crypto/keySplitting';
-import { encryptCryptoaction } from '@misakey/crypto/cryptoactions';
+import { encryptCryptoaction, decryptCryptoaction } from '@misakey/crypto/cryptoactions';
 
 export function splitBoxSecretKey({ boxSecretKey, boxPublicKey }) {
   const {
@@ -37,6 +37,11 @@ export function splitBoxSecretKey({ boxSecretKey, boxPublicKey }) {
       encryptedInvitationKeyShare,
     },
   };
+}
+
+export function decryptEncryptedBoxKeyShare({ encryptedBoxKeyShare, boxSecretKey }) {
+  const { boxKeyShare } = decryptCryptoaction(encryptedBoxKeyShare, boxSecretKey);
+  return boxKeyShare;
 }
 
 export const computeInvitationHash = (invitationKeyShare) => hashShare(invitationKeyShare);

@@ -294,3 +294,18 @@ export async function listCryptoActions({ accountId }) {
   const responseBody = await httpCallReturnBody(endpoint, httpRequestParams);
   return objectToCamelCase(responseBody);
 }
+
+export async function getEncryptedBoxKeyShare(boxId) {
+  const endpoint = {
+    method: 'GET',
+    path: '/box-key-shares/encrypted-invitation-key-share',
+    withCsrfToken: true,
+  };
+  const httpRequestParams = {
+    queryParams: {
+      boxId,
+    },
+  };
+
+  return httpCallReturnBody(endpoint, httpRequestParams);
+}
