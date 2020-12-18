@@ -3,26 +3,22 @@ import { Switch, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import routes from 'routes';
 
-import { CLOSED } from 'constants/app/boxes/statuses';
-
 import isNil from '@misakey/helpers/isNil';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useHandleBoxKeyShare from '@misakey/crypto/hooks/useHandleBoxKeyShare';
 import { useBoxEventSubmitContext } from 'components/smart/Box/Event/Submit/Context';
-
+import useFetchBoxDetails from 'hooks/useFetchBoxDetails';
+import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 
 import BoxReadContextProvider from 'components/smart/Context/Boxes/BoxRead';
 import InputBoxesUploadContext from 'components/smart/Input/Boxes/Upload/Context';
 import FilePreviewContextProvider from 'components/smart/File/Preview/Context';
 import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
-import useFetchBoxDetails from 'hooks/useFetchBoxDetails';
-import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 import BoxSharing from 'components/screens/app/Boxes/Read/Sharing';
 import BoxNoAccess from './NoAccess';
-import BoxClosed from './Closed';
 import BoxDetails from './Details';
 import BoxEvents from './Events';
 import BoxFiles from './Files';
@@ -35,21 +31,13 @@ function BoxRead({ match }) {
 
   const { scrollToBottom } = useBoxEventSubmitContext();
 
-  const { lifecycle, publicKey, hasAccess, title, isMember, eventsCount } = useMemo(
-    () => box || {},
-    [box],
-  );
+  const { publicKey, hasAccess, title, isMember, eventsCount } = useSafeDestr(box);
   const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
 
   const {
     isReady: isBoxKeyShareReady,
     secretKey,
   } = useHandleBoxKeyShare(box, isReady);
-
-  const shouldDisplayClosedScreen = useMemo(
-    () => lifecycle === CLOSED && !belongsToCurrentUser,
-    [belongsToCurrentUser, lifecycle],
-  );
 
   const displayLoadingScreen = useMemo(
     () => !isReady || !isBoxKeyShareReady,
@@ -89,12 +77,6 @@ function BoxRead({ match }) {
   if (shouldShowNoAccessScreen) {
     return (
       <BoxNoAccess box={box} belongsToCurrentUser={belongsToCurrentUser} />
-    );
-  }
-
-  if (shouldDisplayClosedScreen) {
-    return (
-      <BoxClosed box={box} belongsToCurrentUser={belongsToCurrentUser} />
     );
   }
 

@@ -12,13 +12,11 @@ import isFunction from '@misakey/helpers/isFunction';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import BoxesSchema from 'store/schemas/Boxes';
 import { receiveEntities } from '@misakey/store/actions/entities';
-import { CLOSED } from 'constants/app/boxes/statuses';
 
 // CONSTANTS
 const { forbidden } = errorTypes;
 const NOT_MEMBER = 'not_member';
 const NO_ACCESS = 'no_access';
-const ERR_BOX_CLOSED = 'closed';
 
 export default (id, onDefaultError = null, setLastBoxIdConfirmedNoAccess) => {
   const dispatch = useDispatch();
@@ -47,10 +45,6 @@ export default (id, onDefaultError = null, setLastBoxIdConfirmedNoAccess) => {
               setLastBoxIdConfirmedNoAccess(id);
             }
             dispatchReceiveBox({ id, hasAccess: false });
-            break;
-          }
-          case ERR_BOX_CLOSED: {
-            dispatchReceiveBox({ id, hasAccess: true, lifecycle: CLOSED });
             break;
           }
           default: {

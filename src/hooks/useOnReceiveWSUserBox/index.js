@@ -45,8 +45,8 @@ export default (activeStatus, search) => {
 
   const { replace } = useHistory();
 
-  const idMatchesDeletedBoxId = useCallback(
-    ({ id: boxId }) => idRef.current === boxId,
+  const idRefMatchesDeletedBoxId = useCallback(
+    (boxId) => idRef.current === boxId,
     [idRef],
   );
 
@@ -65,6 +65,16 @@ export default (activeStatus, search) => {
 
   const identityId = useSelector(IDENTITY_ID_SELECTOR);
 
+  const onDelete = useCallback(
+    (boxId) => {
+      if (idRefMatchesDeletedBoxId(boxId)) {
+        replace(routes.boxes._);
+      }
+      return onRemoveBox(boxId);
+    },
+    [replace, onRemoveBox, idRefMatchesDeletedBoxId],
+  );
+
   const onDeleteSuccess = useCallback(
     (box) => {
       const { title, senderId } = box;
@@ -77,21 +87,9 @@ export default (activeStatus, search) => {
           { variant: 'warning', persist: true },
         );
       }
-      if (idMatchesDeletedBoxId(box)) {
-        return replace(routes.boxes._);
-      }
       return Promise.resolve();
     },
-    [identityId, enqueueSnackbar, tRef, idMatchesDeletedBoxId, replace],
-  );
-
-  const onKickSuccess = useCallback(
-    (box) => {
-      if (idMatchesDeletedBoxId(box)) {
-        replace(routes.boxes._);
-      }
-    },
-    [idMatchesDeletedBoxId, replace],
+    [identityId, enqueueSnackbar, tRef],
   );
 
   const onNotifyEvent = useOnNotifyEvent();
@@ -101,7 +99,7 @@ export default (activeStatus, search) => {
       // delete box
       if (type === DELETED_BOX) {
         const { id: boxId } = object;
-        return onRemoveBox(boxId).then((box) => onDeleteSuccess({ ...box, ...object }));
+        return onDelete(boxId).then((box) => onDeleteSuccess({ ...box, ...object }));
       }
 
       if (type === BOX_SETTINGS) {
@@ -139,10 +137,10 @@ export default (activeStatus, search) => {
           return Promise.resolve(dispatch(receiveWSEditEvent(object)));
         }
         if (isMeLeaveEvent(object, identityId)) {
-          return onRemoveBox(boxId).then(() => enqueueSnackbar(leaveSuccess, { variant: 'success' }));
+          return onDelete(boxId).then(() => enqueueSnackbar(leaveSuccess, { variant: 'success' }));
         }
         if (isMeKickEvent(object, identityId)) {
-          return onRemoveBox(boxId).then((box) => onKickSuccess(box));
+          return onDelete(boxId);
         }
         if (isMeJoinEvent(object, identityId)) {
           return batch(() => {
@@ -159,7 +157,7 @@ export default (activeStatus, search) => {
       log(`Receive unknown WS type: ${type}`);
       return Promise.resolve();
     },
-    [onRemoveBox, onDeleteSuccess, dispatch, identityId,
-      enqueueSnackbar, leaveSuccess, onKickSuccess, onNotifyEvent],
+    [onDelete, onDeleteSuccess, dispatch, identityId,
+      enqueueSnackbar, leaveSuccess, onNotifyEvent],
   );
 };

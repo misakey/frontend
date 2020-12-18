@@ -1,12 +1,7 @@
 import { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
-import { useSnackbar } from 'notistack';
 
 import BoxesSchema from 'store/schemas/Boxes';
-import { removeEntities } from '@misakey/store/actions/entities';
-import errorTypes from '@misakey/ui/constants/errorTypes';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import UploadDialog from 'components/smart/Dialog/Upload';
@@ -14,7 +9,6 @@ import { makeAbortableCreateBoxEncryptedFileWithProgress } from '@misakey/helper
 import workerEncryptFile from '@misakey/crypto/box/encryptFile/worker';
 
 // CONSTANTS
-const { conflict } = errorTypes;
 export const BLOBS_FIELD_NAME = 'files';
 export const INITIAL_VALUES = { [BLOBS_FIELD_NAME]: [] };
 
@@ -26,12 +20,7 @@ function BoxesUploadDialog({
   onClose,
   autoFocus,
 }) {
-  const { t } = useTranslation('boxes');
   const { id, publicKey } = useSafeDestr(box);
-
-  const { enqueueSnackbar } = useSnackbar();
-
-  const dispatch = useDispatch();
 
   const onEncryptBuilder = useCallback(
     (file) => workerEncryptFile(file, publicKey),
@@ -52,24 +41,9 @@ function BoxesUploadDialog({
     [id, publicKey],
   );
 
-  const onError = useCallback(
-    async (error) => {
-      if (error.code === conflict) {
-        const { details = {} } = error;
-        if (details.lifecycle === conflict) {
-          dispatch(removeEntities([{ id }], BoxesSchema));
-          enqueueSnackbar(t('boxes:read.events.create.error.lifecycle'), { variant: 'error' });
-        }
-      }
-      throw error;
-    },
-    [dispatch, enqueueSnackbar, id, t],
-  );
-
   return (
     <UploadDialog
       onSuccess={onSuccess}
-      onError={onError}
       onUploadBuilder={onUploadBuilder}
       onEncryptBuilder={onEncryptBuilder}
       initialValues={initialValues}

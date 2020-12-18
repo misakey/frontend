@@ -9,7 +9,6 @@ import routes from 'routes';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -23,7 +22,6 @@ import SenderSchema from 'store/schemas/Boxes/Sender';
 
 import { makeDenormalizeBoxSelector, receiveJoinedBox } from 'store/reducers/box';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
-import { CLOSED } from 'constants/app/boxes/statuses';
 import useOnError from './onError';
 
 // CONSTANTS
@@ -63,9 +61,7 @@ export default (id) => {
 
   const box = useSelector((state) => denormalizeBoxSelector(state, id));
 
-  const { members, hasAccess, isMember, publicKey, lifecycle } = useSafeDestr(box);
-
-  const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
+  const { members, hasAccess, isMember, publicKey } = useSafeDestr(box);
 
   const handleHttpErrors = useHandleHttpErrors();
 
@@ -83,11 +79,9 @@ export default (id) => {
     [hasAccess, isMember],
   );
 
-  const isClosed = useMemo(() => lifecycle === CLOSED, [lifecycle]);
-
   const isAllowedToFetchContent = useMemo(
-    () => isAllowedToFetch && hasAccessAndIsMember && (!isClosed || belongsToCurrentUser),
-    [isAllowedToFetch, hasAccessAndIsMember, isClosed, belongsToCurrentUser],
+    () => isAllowedToFetch && hasAccessAndIsMember,
+    [isAllowedToFetch, hasAccessAndIsMember],
   );
 
   // if the cache tells us that we don't ave access to the box,

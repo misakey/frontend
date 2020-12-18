@@ -27,7 +27,6 @@ import ListItemLeave from 'components/smart/ListItem/Boxes/Leave';
 import ListItemDelete from 'components/smart/ListItem/Boxes/Delete';
 import ListItemMemberPublicLink from 'components/smart/ListItem/Member/PublicLink';
 import ListItemBoxMute from 'components/smart/ListItem/Boxes/Mute';
-import ListItemBoxClose from 'components/smart/ListItem/Boxes/Close';
 
 // CONSTANTS
 const CONTENT_SPACING = 2;
@@ -68,7 +67,7 @@ function BoxDetails({ box, belongsToCurrentUser, t }) {
   // const routeFiles = useGeneratePathKeepingSearchAndHash(routes.boxes.read.files, { id });
 
   // @FIXME factorize rules
-  const { canClose, canDelete, canLeave } = useBoxRights(box, belongsToCurrentUser);
+  const { canDelete, canLeave } = useBoxRights(box, belongsToCurrentUser);
 
   return (
     <>
@@ -143,7 +142,6 @@ function BoxDetails({ box, belongsToCurrentUser, t }) {
           </ListItem>
           {canLeave && <ListItemLeave box={box} />}
           {canDelete && <ListItemDelete box={box} />}
-          {canClose && <ListItemBoxClose box={box} />}
           <List subheader={(
             <ListSubheader className={classes.subheader}>
               <Typography noWrap variant="overline" color="textSecondary">

@@ -1,10 +1,10 @@
-import { OPEN, CLOSED } from 'constants/app/boxes/statuses';
+import { ALL } from 'constants/app/boxes/statuses';
 import userBoxesReducer, { REDUCER_KEY, getUserBoxesState, selectors } from '.';
 
 describe('testing reducer userBoxesPagination', () => {
   describe('getUserBoxesState', () => {
     const itemCount = 5;
-    const exStatus = OPEN;
+    const exStatus = ALL;
     const state = {
       userBoxesPagination: {
         [exStatus]: { itemCount },
@@ -31,29 +31,29 @@ describe('testing reducer userBoxesPagination', () => {
     describe('isEmpty', () => {
       const EMPTY_STATES = [
         ['undefined, null, 0', {
-          [OPEN]: { itemCount: undefined },
+          [ALL]: { itemCount: undefined },
           other: { itemCount: null },
-          [CLOSED]: { itemCount: 0 },
+          one: { itemCount: 0 },
         }],
         ['0, 0, 0, 0', {
-          [OPEN]: { itemCount: 0 },
+          [ALL]: { itemCount: 0 },
           other: { itemCount: 0 },
-          [CLOSED]: { itemCount: 0 },
+          one: { itemCount: 0 },
         }],
         ['null, null, null', {
-          [OPEN]: { itemCount: null },
+          [ALL]: { itemCount: null },
           other: { itemCount: null },
-          [CLOSED]: { itemCount: null },
+          one: { itemCount: null },
         }],
         ['undefined, undefined, undefined', {
-          [OPEN]: { itemCount: undefined },
+          [ALL]: { itemCount: undefined },
           other: { itemCount: undefined },
-          [CLOSED]: { itemCount: undefined },
+          one: { itemCount: undefined },
         }],
         ['unset, unset, unset', {
-          [OPEN]: {},
+          [ALL]: {},
           other: {},
-          [CLOSED]: {},
+          one: {},
         }],
       ];
 
@@ -63,9 +63,9 @@ describe('testing reducer userBoxesPagination', () => {
       });
       it('should return false, non empty', () => {
         const subState = {
-          [OPEN]: { itemCount: 5 },
-          [CLOSED]: { itemCount: 2 },
-          one: { itemCount: 0 },
+          [ALL]: { itemCount: 5 },
+          one: { itemCount: 2 },
+          two: { itemCount: 0 },
           other: { itemCount: null },
         };
         const state = makeReducerState(subState);

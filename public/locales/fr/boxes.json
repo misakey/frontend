@@ -41,12 +41,6 @@
       "discussion": "Discussion",
       "files": "Fichiers"
     },
-    "closed": {
-      "title": "L'espace privé «\u00a0{{title}}\u00a0» est fermé.",
-      "defaultTitle": "Cet espace privé est fermé.",
-      "subtitle": "{{displayName}} a fermé l'espace privé «\u00a0{{title}}\u00a0» le {{date}}.",
-      "defaultSubtitle": "Vous ne pouvez plus accéder à cet espace car il a été fermé par son administrateur·trice."
-    },
     "noaccess": {
       "defaultTitle": "Accès à cet espace privé refusé",
       "title": "Accès à «\u00a0{{title}}\u00a0» refusé",
@@ -68,7 +62,6 @@
       "invalid": "Impossible de déchiffrer à partir du lien d'invitation, il semble incorrect."
     },
     "info": {
-      "closed": "Seuls les admins ont accès",
       "share": "Partager cet espace privé"
     },
     "events": {
@@ -76,11 +69,6 @@
         "denied": "Accès restreint"
       },
       "e2eeIntro": "Les messages et documents envoyés dans cette conversation sont protégés avec le chiffrement de bout en bout.",
-      "create": {
-        "error": {
-          "lifecycle": "L'espace privé est fermé, vous ne pouvez pas effectuer cette action."
-        }
-      },
       "delete": {
         "confirmDialog": "Êtes-vous sûr·e de vouloir supprimer ce message\u00a0?\nCette action est irréversible.",
         "success": "Le message a été supprimé\u00a0!"
@@ -94,17 +82,6 @@
       },
       "gone": "Le message a déjà été supprimé",
       "information": {
-        "lifecycle": {
-          "closed": {
-            "they": "Espace privé fermé par {{displayName}}",
-            "you": "Vous avez fermé l'espace privé",
-            "generic": "Accessible aux administrateurs·trices seulement"
-          },
-          "open": {
-            "they": "{{displayName}} a ré-ouvert l'espace privé",
-            "you": "Vous avez ré-ouvert l'espace privé"
-          }
-        },
         "state": {
           "key_share": {
             "they": "{{displayName}} a changé le lien d'invitation",
@@ -130,16 +107,6 @@
           }
         },
         "preview": {
-          "lifecycle": {
-            "closed": {
-              "they": "Espace privé fermé",
-              "you": "<0>Vous</0> avez fermé l'espace privé"
-            },
-            "open": {
-              "they": "<0>{{displayName}}</0> a ré-ouvert l'espace privé",
-              "you": "<0>Vous</0> avez ré-ouvert l'espace privé"
-            }
-          },
           "create": {
             "they": "<0>{{displayName}}</0> a créé l'espace privé «\u00a0{{title}}\u00a0»",
             "you": "<0>Vous</0> avez créé l'espace privé «\u00a0{{title}}\u00a0»"
@@ -217,17 +184,13 @@
           "text": "Rejoins la conversation sécurisée «\u00a0{{title}}\u00a0»"
         },
         "copyLink": "Copier le lien de partage",
-        "close": {
-          "primary": "Fermer l'espace privé",
-          "secondary": "En fermant l'espace privé, les autres membres n'auront plus accès à son contenu."
-        },
         "leave": {
           "primary": "Quitter l'espace privé",
           "secondary": "En quittant l'espace privé, vous n'aurez plus accès à son contenu."
         },
         "delete": {
           "primary": "Supprimer l'espace privé",
-          "secondary": "L'espace privé est fermé, seuls les admins y ont accès"
+          "secondary": "Son contenu sera effacé"
         }
       }
     },
@@ -264,11 +227,6 @@
     "success": "L'espace privé a été quitté",
     "error": {
       "forbidden": "Vous n'êtes plus membre de cet espace privé"
-    }
-  },
-  "close": {
-    "dialog": {
-      "description": "Êtes-vous sûr·e de vouloir fermer «\u00a0{{title}}\u00a0»\u00a0?\nCette action est irréversible. Les autres membres n'auront plus accès à son contenu.\nEn tant que créateur·trice, vous aurez toujours accès au contenu."
     }
   },
   "pasteLink": {
@@ -321,7 +279,6 @@
           "kick": "Vous avez été retiré·e de l'espace privé «\u00a0{{title}}\u00a0»."
         },
         "box": {
-          "lifecycle": "L'espace privé «\u00a0{{title}}\u00a0» a été fermé.",
           "auto_invite": "Vous avez été invité·e à rejoindre l'espace privé «\u00a0{{boxTitle}}\u00a0»"
         },
         "user": {

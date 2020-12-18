@@ -47,7 +47,7 @@ const Cell = ({ style, data, event }) => {
     getDecryptedFile,
   } = useFilePreviewContext();
 
-  const { secretKey, id: boxId, isCurrentUserOwner, isClosed } = useBoxReadContext();
+  const { secretKey, id: boxId, isCurrentUserOwner } = useBoxReadContext();
   const isEventFromCurrentUser = useEventBelongsToCurrentUser(event);
 
   const { content } = useMemo(() => event, [event]);
@@ -75,8 +75,8 @@ const Cell = ({ style, data, event }) => {
   );
 
   const hasWriteAccess = useMemo(
-    () => !isClosed && (isEventFromCurrentUser || isCurrentUserOwner),
-    [isClosed, isCurrentUserOwner, isEventFromCurrentUser],
+    () => isEventFromCurrentUser || isCurrentUserOwner,
+    [isCurrentUserOwner, isEventFromCurrentUser],
   );
 
   const actions = useMemo(

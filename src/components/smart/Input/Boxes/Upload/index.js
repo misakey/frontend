@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import BoxesSchema from 'store/schemas/Boxes';
-import { CLOSED } from 'constants/app/boxes/statuses';
 import { ACCEPTED_TYPES } from 'constants/file/image';
 import { DATETIME_EXTRA_SHORT } from 'constants/formats/dates';
 
@@ -147,11 +146,11 @@ const InputBoxesUpload = ({
   );
 
   const publicKeysWeCanEncryptWith = useBoxPublicKeysWeCanDecryptFrom();
-  const { lifecycle, publicKey } = useSafeDestr(box);
+  const { publicKey } = useSafeDestr(box);
 
   const disabled = useMemo(
-    () => lifecycle === CLOSED || !publicKeysWeCanEncryptWith.has(publicKey),
-    [lifecycle, publicKey, publicKeysWeCanEncryptWith],
+    () => !publicKeysWeCanEncryptWith.has(publicKey),
+    [publicKey, publicKeysWeCanEncryptWith],
   );
 
   const dragProps = useMemo(

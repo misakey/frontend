@@ -1,5 +1,3 @@
-import { CLOSED } from 'constants/app/boxes/statuses';
-
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 
@@ -33,7 +31,7 @@ export default (box, boxIsReady) => {
   const { enqueueSnackbar } = useSnackbar();
   const { pathname, hash: locationHash, search } = useLocation();
 
-  const { id: boxId, lifecycle, publicKey, hasAccess, isMember } = useSafeDestr(box);
+  const { id: boxId, publicKey, hasAccess, isMember } = useSafeDestr(box);
 
   const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
   const secretKey = useMemo(
@@ -43,14 +41,9 @@ export default (box, boxIsReady) => {
 
   const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
 
-  const isBoxClosed = useMemo(
-    () => lifecycle === CLOSED,
-    [lifecycle],
-  );
-
   const isAllowedToFetch = useMemo(
-    () => Boolean(boxIsReady && !isBoxClosed && hasAccess && isMember !== false),
-    [boxIsReady, hasAccess, isBoxClosed, isMember],
+    () => Boolean(boxIsReady && hasAccess && isMember !== false),
+    [boxIsReady, hasAccess, isMember],
   );
 
   // Note that the "hash" here is the "hash" part of the URL

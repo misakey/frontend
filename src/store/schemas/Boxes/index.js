@@ -1,7 +1,6 @@
 import { schema } from 'normalizr';
 import PropTypes from 'prop-types';
 
-import STATUSES from 'constants/app/boxes/statuses';
 import EventSchema from 'store/schemas/Boxes/Events';
 import SenderSchema from 'store/schemas/Boxes/Sender';
 
@@ -23,7 +22,6 @@ const BoxesSchema = {
     id: PropTypes.string.isRequired,
     title: PropTypes.string,
     serverCreatedAt: PropTypes.string,
-    lifecycle: PropTypes.oneOf(STATUSES),
     settings: PropTypes.shape({
       muted: PropTypes.bool,
     }),

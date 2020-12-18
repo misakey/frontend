@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import { TIME } from 'constants/formats/dates';
-import { CLOSED } from 'constants/app/boxes/statuses';
 import EventSchema from 'store/schemas/Boxes/Events';
 import BoxesSchema from 'store/schemas/Boxes';
 
@@ -99,12 +98,8 @@ const FileCardEvent = ({
     () => decryptedFile,
     [decryptedFile],
   );
-  const { lifecycle, id: boxId } = useMemo(() => box, [box]);
+  const { id: boxId } = useMemo(() => box, [box]);
 
-  const isClosed = useMemo(
-    () => lifecycle === CLOSED,
-    [lifecycle],
-  );
   const date = useDateFormatMemo(serverEventCreatedAt, TIME);
 
   const isTypeAllowedForPreview = useMemo(
@@ -134,8 +129,8 @@ const FileCardEvent = ({
   );
 
   const hasWriteAccess = useMemo(
-    () => !isClosed && (isFromCurrentUser || boxBelongsToCurrentUser),
-    [boxBelongsToCurrentUser, isClosed, isFromCurrentUser],
+    () => isFromCurrentUser || boxBelongsToCurrentUser,
+    [boxBelongsToCurrentUser, isFromCurrentUser],
   );
 
   const items = useMemo(

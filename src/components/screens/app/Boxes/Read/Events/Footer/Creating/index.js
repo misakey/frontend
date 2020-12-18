@@ -2,13 +2,10 @@ import { useCallback, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import errorTypes from '@misakey/ui/constants/errorTypes';
 import { MSG_TXT } from 'constants/app/boxes/events';
 import encryptText from '@misakey/crypto/box/encryptText';
-import { CLOSED } from 'constants/app/boxes/statuses';
 import BoxesSchema from 'store/schemas/Boxes';
 import { boxMessageValidationSchema } from 'constants/validationSchemas/boxes';
-import { removeEntities } from '@misakey/store/actions/entities';
 import { blurText, clearText } from 'store/actions/box';
 import { makeGetBoxText } from 'store/reducers/box';
 
@@ -18,7 +15,6 @@ import isNil from '@misakey/helpers/isNil';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useBoxPublicKeysWeCanDecryptFrom from 'packages/crypto/src/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSnackbar } from 'notistack';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useBoxEventSubmitContext } from 'components/smart/Box/Event/Submit/Context';
 import { useBoxesUploadContext } from 'components/smart/Input/Boxes/Upload/Context';
@@ -40,7 +36,6 @@ import SendIcon from '@material-ui/icons/Send';
 
 // CONSTANTS
 const FIELD = 'message';
-const { conflict } = errorTypes;
 const BOX_PADDING_SPACING = 1;
 
 const INITIAL_VALUES = {
@@ -68,19 +63,18 @@ function BoxEventsFooter({ box, t }) {
 
   const classes = useStyles({ drawerWidth, isDrawerOpen });
   const dispatch = useDispatch();
-  const { enqueueSnackbar } = useSnackbar();
   const handleHttpErrors = useHandleHttpErrors();
 
   const { scrollToBottom } = useBoxEventSubmitContext();
 
-  const { lifecycle, id, publicKey, title } = useMemo(() => box || {}, [box]);
+  const { id, publicKey, title } = useMemo(() => box || {}, [box]);
   const publicKeysWeCanEncryptWith = useBoxPublicKeysWeCanDecryptFrom();
 
   const { onOpen: onBoxesUploadOpen } = useBoxesUploadContext();
 
   const disabled = useMemo(
-    () => lifecycle === CLOSED || !publicKeysWeCanEncryptWith.has(publicKey),
-    [lifecycle, publicKey, publicKeysWeCanEncryptWith],
+    () => !publicKeysWeCanEncryptWith.has(publicKey),
+    [publicKey, publicKeysWeCanEncryptWith],
   );
 
   const anchorRef = useRef(null);
@@ -124,22 +118,14 @@ function BoxEventsFooter({ box, t }) {
           scrollToBottom();
         })
         .catch((error) => {
-          if (error.code === conflict) {
-            const { details = {} } = error;
-            if (details.lifecycle === conflict) {
-              dispatch(removeEntities([{ id }], BoxesSchema));
-              enqueueSnackbar(t('boxes:read.events.create.error.lifecycle'), { variant: 'error' });
-            }
-          } else {
-            resetForm({ values, isSubmitting: true });
-            handleHttpErrors(error);
-          }
+          resetForm({ values, isSubmitting: true });
+          handleHttpErrors(error);
         })
         .finally(() => {
           setSubmitting(false);
         });
     },
-    [dispatch, enqueueSnackbar, handleHttpErrors, id, publicKey, scrollToBottom, t],
+    [dispatch, handleHttpErrors, id, publicKey, scrollToBottom],
   );
 
   return (

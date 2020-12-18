@@ -2,8 +2,6 @@ import { useState, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import { CLOSED } from 'constants/app/boxes/statuses';
-
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
 import { useBoxesUploadContext } from 'components/smart/Input/Boxes/Upload/Context';
@@ -53,8 +51,7 @@ function BoxFiles({ belongsToCurrentUser, box }) {
 
   const { onOpen: onOpenUploadDialog } = useBoxesUploadContext();
 
-  const { id, lifecycle } = useMemo(() => box, [box]);
-  const isClosed = useMemo(() => lifecycle === CLOSED, [lifecycle]);
+  const { id } = useMemo(() => box, [box]);
 
   const classes = useStyles({ headerHeight });
 
@@ -102,7 +99,6 @@ function BoxFiles({ belongsToCurrentUser, box }) {
               <Button
                 standing={BUTTON_STANDINGS.MAIN}
                 text={t('boxes:read.files.add')}
-                disabled={isClosed}
                 onClick={onOpenUploadDialog}
               />
             </Box>
@@ -123,7 +119,6 @@ function BoxFiles({ belongsToCurrentUser, box }) {
               className={classes.list}
             />
             <FabAdd
-              disabled={isClosed}
               onClick={onOpenUploadDialog}
             />
           </>

@@ -2,7 +2,7 @@ import { batch } from 'react-redux';
 import { createSelector } from 'reselect';
 import { normalize, denormalize } from 'normalizr';
 
-import { LIFECYCLE, MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK, MSG_FILE } from 'constants/app/boxes/events';
+import { MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK, MSG_FILE } from 'constants/app/boxes/events';
 import { ALL } from 'constants/app/boxes/statuses';
 
 import BoxesSchema from 'store/schemas/Boxes';
@@ -191,25 +191,17 @@ export const addBoxEvent = (id, nextEvent, isMyEvent = false, onNotifyEvent) => 
 ) => {
   const currentBox = getBoxById(getState(), id);
 
-  const isLifecycle = nextEvent.type === LIFECYCLE;
-
   if (isNil(currentBox)) {
-    // @FIXME for now if box is not in list and we receive a lifecycle event,
-    // it's a close event that didn't come from owner (else they have the box in store for sure)
-    // don't move up the box as the app will try to fetch it for displaying the list, but will
-    // get forbidden error. This behavior will be soon replaced by user notifications and
-    // closed box will not appear in list anymore
-    return Promise.resolve(isLifecycle ? undefined : dispatch(moveBackUpId(id, ALL)));
+    return Promise.resolve(dispatch(moveBackUpId(id, ALL)));
   }
 
-  const { events, eventsCount = 0, lifecycle, members, title } = currentBox;
+  const { events, eventsCount = 0, members, title } = currentBox;
 
   const lastEvent = nextEvent;
 
   const changes = {
     lastEvent,
     eventsCount: isMyEvent ? eventsCount : eventsCount + 1,
-    lifecycle: isLifecycle ? lastEvent.content.state : lifecycle,
     // If we haven't fetch initial list of events, don't add the event to the list
     events: isNil(events) ? undefined : events.concat([nextEvent]),
   };

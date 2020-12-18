@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { generatePath, Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
-import { CLOSED } from 'constants/app/boxes/statuses';
 import BoxesSchema from 'store/schemas/Boxes';
 
 import isNil from '@misakey/helpers/isNil';
@@ -15,6 +14,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 import useBoxRights from 'hooks/useBoxRights';
+import useIsMountedRef from '@misakey/hooks/useIsMountedRef';
 
 import Skeleton from '@material-ui/lab/Skeleton';
 import Box from '@material-ui/core/Box';
@@ -34,8 +34,6 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuItemBoxMute from 'components/smart/MenuItem/Box/Mute';
 import MenuItemBoxLeave from 'components/smart/MenuItem/Box/Leave';
 import MenuItemBoxDelete from 'components/smart/MenuItem/Box/Delete';
-import MenuItemBoxClose from 'components/smart/MenuItem/Box/Close';
-import MenuItemBoxCloseDelete from 'components/smart/MenuItem/Box/CloseDelete';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 
 const DEFAULT_SETTINGS = { muted: false };
@@ -99,13 +97,13 @@ function BoxListItem({ box, toRoute, containerProps, t, ...rest }) {
   const [isActionVisible, setIsActionVisible] = useState(false);
   const classes = useStyles({ isActionVisible });
 
+  const isMounted = useIsMountedRef();
 
   const {
     id,
     title,
     publicKey,
     lastEvent = {},
-    lifecycle,
     eventsCount = 0,
     settings: { muted } = DEFAULT_SETTINGS,
   } = useMemo(() => box || {}, [box]);
@@ -135,16 +133,11 @@ function BoxListItem({ box, toRoute, containerProps, t, ...rest }) {
   );
 
   const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
-  const { canDelete, canLeave, canClose } = useBoxRights(box, belongsToCurrentUser);
-
-  const isClosed = useMemo(
-    () => lifecycle === CLOSED,
-    [lifecycle],
-  );
+  const { canDelete, canLeave } = useBoxRights(box, belongsToCurrentUser);
 
   const lostKey = useMemo(
-    () => !canBeDecrypted && (!isClosed || belongsToCurrentUser),
-    [canBeDecrypted, isClosed, belongsToCurrentUser],
+    () => !canBeDecrypted,
+    [canBeDecrypted],
   );
 
   const showEventsCount = useMemo(
@@ -178,11 +171,30 @@ function BoxListItem({ box, toRoute, containerProps, t, ...rest }) {
   );
 
   const onClose = useCallback(
-    () => { setAnchorEl(null); }, [],
+    () => {
+      if (isMounted.current === true) {
+        setAnchorEl(null);
+      }
+    },
+    [isMounted, setAnchorEl],
   );
 
-  const showAction = useCallback(() => setIsActionVisible(true), [setIsActionVisible]);
-  const hideAction = useCallback(() => setIsActionVisible(false), [setIsActionVisible]);
+  const showAction = useCallback(
+    () => {
+      if (isMounted.current) {
+        setIsActionVisible(true);
+      }
+    },
+    [setIsActionVisible, isMounted],
+  );
+  const hideAction = useCallback(
+    () => {
+      if (isMounted.current) {
+        setIsActionVisible(false);
+      }
+    },
+    [setIsActionVisible, isMounted],
+  );
 
   if (isNil(id) || isNil(title)) {
     return null;
@@ -237,12 +249,7 @@ function BoxListItem({ box, toRoute, containerProps, t, ...rest }) {
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
           <MenuItemBoxMute box={box} />
-          {lostKey && (canClose || canDelete) ? (
-            <MenuItemBoxCloseDelete box={box} onClose={hideAction} />
-          ) : ([
-            canClose && <MenuItemBoxClose key="close" box={box} onClose={hideAction} />,
-            canDelete && <MenuItemBoxDelete key="delete" box={box} onClose={hideAction} />,
-          ])}
+          {canDelete && <MenuItemBoxDelete box={box} onClose={hideAction} />}
           {canLeave && <MenuItemBoxLeave box={box} onClose={hideAction} />}
         </Menu>
       </ListItemSecondaryAction>

@@ -1,10 +1,8 @@
-import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import routes from 'routes';
-import { CLOSED } from 'constants/app/boxes/statuses';
 import BoxesSchema from 'store/schemas/Boxes';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
@@ -17,12 +15,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 // COMPONENTS
 const ListItemBoxShare = ({ box, t }) => {
-  const { lifecycle, id } = useSafeDestr(box);
-
-  const isClosed = useMemo(
-    () => lifecycle === CLOSED,
-    [lifecycle],
-  );
+  const { id } = useSafeDestr(box);
 
   const to = useGeneratePathKeepingSearchAndHash(routes.boxes.read.sharing, { id });
 
@@ -31,7 +24,6 @@ const ListItemBoxShare = ({ box, t }) => {
       <ListItem
         button
         divider
-        disabled={isClosed}
         component={Link}
         to={to}
         aria-label={t('common:share')}
@@ -40,7 +32,7 @@ const ListItemBoxShare = ({ box, t }) => {
           primary={t('common:share')}
           primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
         />
-        {!isClosed && <ChevronRightIcon />}
+        <ChevronRightIcon />
       </ListItem>
     </>
   );

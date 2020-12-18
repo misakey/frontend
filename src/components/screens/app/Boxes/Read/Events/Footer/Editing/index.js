@@ -6,7 +6,6 @@ import errorTypes from '@misakey/ui/constants/errorTypes';
 import BoxesSchema from 'store/schemas/Boxes';
 import BoxesEventsSchema from 'store/schemas/Boxes/Events';
 import { boxEditMessageValidationSchema } from 'constants/validationSchemas/boxes';
-import { CLOSED } from 'constants/app/boxes/statuses';
 
 import pluck from '@misakey/helpers/pluck';
 import isNil from '@misakey/helpers/isNil';
@@ -35,7 +34,7 @@ import SendIcon from '@material-ui/icons/Send';
 
 // CONSTANTS
 const FIELD = 'editMessage';
-const { conflict, gone } = errorTypes;
+const { gone } = errorTypes;
 const BOX_PADDING_SPACING = 1;
 
 const INITIAL_VALUES = {
@@ -69,13 +68,13 @@ function BoxEventsFooterEditing({ box, event, clearEvent, t }) {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const { lifecycle, id: boxId, publicKey, events } = useSafeDestr(box);
+  const { id: boxId, publicKey, events } = useSafeDestr(box);
   const { id: eventId } = useSafeDestr(event);
   const publicKeysWeCanEncryptWith = useBoxPublicKeysWeCanDecryptFrom();
 
   const disabled = useMemo(
-    () => lifecycle === CLOSED || !publicKeysWeCanEncryptWith.has(publicKey),
-    [lifecycle, publicKey, publicKeysWeCanEncryptWith],
+    () => !publicKeysWeCanEncryptWith.has(publicKey),
+    [publicKey, publicKeysWeCanEncryptWith],
   );
 
   const eventValue = useDecryptedEventText(event);
@@ -135,11 +134,6 @@ function BoxEventsFooterEditing({ box, event, clearEvent, t }) {
           const code = getCode(error);
           if (code === gone) {
             enqueueSnackbar(t('boxes:read.events.gone'), { variant: 'warning' });
-          } else if (code === conflict) {
-            const { details = {} } = error;
-            if (details.lifecycle === conflict) {
-              enqueueSnackbar(t('boxes:read.events.create.error.lifecycle'), { variant: 'error' });
-            }
           } else {
             handleHttpErrors(error);
           }

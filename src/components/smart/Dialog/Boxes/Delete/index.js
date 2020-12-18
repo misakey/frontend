@@ -4,15 +4,18 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Form, Field } from 'formik';
 
+import { ACCESS_RM, ACCESS_BULK } from 'constants/app/boxes/events';
 import BoxesSchema from 'store/schemas/Boxes';
 import { boxDeletionDialogValidationSchema } from 'constants/validationSchemas/boxes';
 
-import { deleteBoxBuilder } from '@misakey/helpers/builder/boxes';
+import { deleteBoxBuilder, createBulkBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import isFunction from '@misakey/helpers/isFunction';
+import isEmpty from '@misakey/helpers/isEmpty';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useBoxAccesses from 'hooks/useBoxAccesses';
 
 import FormFieldTextField from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
@@ -42,22 +45,32 @@ function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
   const classes = useStyles();
   const handleHttpErrors = useHandleHttpErrors();
 
-  const { id } = useSafeDestr(box);
+  const { id, accesses } = useSafeDestr(box);
+
+  const { isFetching } = useBoxAccesses(box);
 
   const onDeleteSuccess = useCallback(
-    () => {
-      const promise = isFunction(onSuccess) ? onSuccess : Promise.resolve;
-      return promise();
-    },
+    () => (isFunction(onSuccess) ? onSuccess() : Promise.resolve()),
     [onSuccess],
   );
 
   const onSubmit = useCallback(
-    (form, { setSubmitting }) => deleteBoxBuilder(id, form[FIELD_NAME])
-      .then(onDeleteSuccess)
-      .catch(handleHttpErrors)
-      .finally(() => setSubmitting(false)),
-    [handleHttpErrors, onDeleteSuccess, id],
+    (form) => {
+      const events = (accesses || []).map(({ id: referrerId }) => ({
+        type: ACCESS_RM,
+        referrerId,
+      }));
+      return (isEmpty(events)
+        ? Promise.resolve()
+        : createBulkBoxEventBuilder(id, {
+          batchType: ACCESS_BULK,
+          events,
+        }))
+        .then(() => deleteBoxBuilder(id, form[FIELD_NAME])
+          .then(onDeleteSuccess)
+          .catch(handleHttpErrors));
+    },
+    [handleHttpErrors, onDeleteSuccess, id, accesses],
   );
 
   const confirmValue = useMemo(
@@ -105,6 +118,7 @@ function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
                 primary={{
                   type: 'submit',
                   text: t('common:delete'),
+                  disabled: isFetching,
                 }}
                 formik
               />

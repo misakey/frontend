@@ -7,7 +7,6 @@ import routes from 'routes';
 import { updateEntities } from '@misakey/store/actions/entities';
 import { MEMBER_JOIN } from 'constants/app/boxes/events';
 import errorTypes from '@misakey/ui/constants/errorTypes';
-import { CLOSED } from 'constants/app/boxes/statuses';
 import BoxesSchema from 'store/schemas/Boxes';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { receivePublicInfo } from 'store/reducers/box';
@@ -51,7 +50,6 @@ import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
 // CONSTANTS
 const { forbidden } = errorTypes;
 const NO_ACCESS = 'no_access';
-const ERR_BOX_CLOSED = 'closed';
 const { identity: IDENTITY_SELECTOR } = authSelectors;
 
 // HOOKS
@@ -119,13 +117,6 @@ function MustJoin({ box, t }) {
       if (code === forbidden) {
         if (reason === NO_ACCESS) {
           dispatch(updateEntities([{ id, changes: { hasAccess: false } }], BoxesSchema));
-          return;
-        }
-        if (reason === ERR_BOX_CLOSED) {
-          dispatch(updateEntities(
-            [{ id, changes: { hasAccess: true, lifecycle: CLOSED } }],
-            BoxesSchema,
-          ));
           return;
         }
       }

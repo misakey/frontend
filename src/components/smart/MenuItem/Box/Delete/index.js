@@ -6,12 +6,16 @@ import BoxesSchema from 'store/schemas/Boxes';
 
 import isFunction from '@misakey/helpers/isFunction';
 
+import useIsMountedRef from '@misakey/hooks/useIsMountedRef';
+
 import MenuItem from '@material-ui/core/MenuItem';
 import DialogBoxesDelete from 'components/smart/Dialog/Boxes/Delete';
 
 // COMPONENTS
 const MenuItemBoxDelete = forwardRef(({ box, onClose, t }, ref) => {
   const [open, setOpen] = useState(false);
+
+  const isMounted = useIsMountedRef();
 
   const onClick = useCallback(
     () => {
@@ -22,12 +26,14 @@ const MenuItemBoxDelete = forwardRef(({ box, onClose, t }, ref) => {
 
   const handleClose = useCallback(
     () => {
-      setOpen(false);
+      if (isMounted.current === true) {
+        setOpen(false);
+      }
       if (isFunction(onClose)) {
         onClose();
       }
     },
-    [setOpen, onClose],
+    [setOpen, onClose, isMounted],
   );
 
   return (

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { TIME } from 'constants/formats/dates';
-import { CLOSED } from 'constants/app/boxes/statuses';
 import EventSchema from 'store/schemas/Boxes/Events';
 import BoxesSchema from 'store/schemas/Boxes';
 
@@ -50,7 +49,7 @@ const BoxMessageTextEvent = ({
     serverEventCreatedAt,
     content: { encrypted, publicKey },
   } = useMemo(() => event, [event]);
-  const { lifecycle, id: boxId } = useMemo(() => box, [box]);
+  const { id: boxId } = useMemo(() => box, [box]);
   const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
   const canBeDecrypted = publicKeysWeCanDecryptFrom.has(publicKey);
 
@@ -59,11 +58,6 @@ const BoxMessageTextEvent = ({
   const isEdited = useMemo(
     () => isBoxEventEdited(event),
     [event],
-  );
-
-  const isClosed = useMemo(
-    () => lifecycle === CLOSED,
-    [lifecycle],
   );
 
   const date = useDateFormatMemo(serverEventCreatedAt, TIME);
@@ -87,14 +81,14 @@ const BoxMessageTextEvent = ({
 
   const items = useMemo(
     () => {
-      if (isFromCurrentUser && !isClosed) {
+      if (isFromCurrentUser) {
         return [
           <MenuItemEventEdit event={event} box={box} key="edit" />,
           <MenuItemEventCopy event={event} key="copy" />,
           <MenuItemEventDelete event={event} boxId={boxId} key="delete" />,
         ];
       }
-      if (boxBelongsToCurrentUser && !isClosed) {
+      if (boxBelongsToCurrentUser) {
         return [
           <MenuItemEventCopy event={event} key="copy" />,
           <MenuItemEventDelete event={event} boxId={boxId} key="delete" />,
@@ -104,7 +98,7 @@ const BoxMessageTextEvent = ({
         <MenuItemEventCopy event={event} key="copy" />,
       ];
     },
-    [isFromCurrentUser, isClosed, boxBelongsToCurrentUser, event, box, boxId],
+    [isFromCurrentUser, boxBelongsToCurrentUser, event, box, boxId],
   );
   if (preview) {
     return (

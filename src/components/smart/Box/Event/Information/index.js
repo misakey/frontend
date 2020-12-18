@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
-import { LIFECYCLE, CREATE } from 'constants/app/boxes/events';
+import { CREATE } from 'constants/app/boxes/events';
 
 import EventBoxInformationPreview from 'components/smart/Box/Event/Information/Preview';
 
@@ -42,12 +42,8 @@ const BoxInformationEvent = ({
   );
 
   const text = useMemo(
-    () => {
-      if (type === LIFECYCLE) {
-        return t(`boxes:read.events.information.lifecycle.${content.state}.${author}`, { displayName });
-      }
-      return t(`boxes:read.events.information.${type}.${author}`, { displayName, ...content });
-    }, [author, content, displayName, t, type],
+    () => t(`boxes:read.events.information.${type}.${author}`, { displayName, ...content }),
+    [author, content, displayName, t, type],
   );
 
   if (preview) {

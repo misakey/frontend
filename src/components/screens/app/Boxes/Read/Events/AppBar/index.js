@@ -4,7 +4,6 @@ import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import routes from 'routes';
 
-import { CLOSED } from 'constants/app/boxes/statuses';
 import BoxesSchema from 'store/schemas/Boxes';
 
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -17,7 +16,6 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-// import BoxAvatar from '@misakey/ui/Avatar/Box';
 import Typography from '@material-ui/core/Typography';
 import Skeleton from '@material-ui/lab/Skeleton';
 
@@ -25,7 +23,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Box from '@material-ui/core/Box';
 import ShareBoxButton from './ShareBoxButton';
-import DeleteBoxDialogButton from './DeleteBoxDialogButton';
 import AppBarMenuTabs from './Tabs';
 
 // CONSTANTS
@@ -69,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
   const classes = useStyles();
-  const { title, members = [], id, lifecycle, hasAccess } = useMemo(() => box, [box]);
+  const { title, members = [], id, hasAccess } = useMemo(() => box, [box]);
 
   const isTitleEmpty = useMemo(
     () => isEmpty(title),
@@ -81,11 +78,6 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
   const theme = useTheme();
   const isDownSm = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const isBoxClosed = useMemo(
-    () => lifecycle === CLOSED,
-    [lifecycle],
-  );
-
   const isTheOnlyMember = useMemo(
     () => members.length === 1 && belongsToCurrentUser,
     [belongsToCurrentUser, members.length],
@@ -96,15 +88,12 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
       if (!hasAccess) {
         return t('boxes:read.events.access.denied');
       }
-      if (isBoxClosed) {
-        return t('boxes:read.events.information.lifecycle.closed.generic');
-      }
       if (isTheOnlyMember) {
         return t('boxes:read.details.menu.members.creator');
       }
       return t('boxes:read.details.menu.members.count', { count: members.length });
     },
-    [hasAccess, isBoxClosed, isTheOnlyMember, t, members.length],
+    [hasAccess, isTheOnlyMember, t, members.length],
   );
 
   const primaryTypographyProps = useMemo(
@@ -122,7 +111,7 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
   );
 
   const secondary = useMemo(
-    () => (isEmpty(members) && !isBoxClosed && hasAccess
+    () => (isEmpty(members) && hasAccess
       ? (
         <Skeleton
           className={classes.secondarySkeleton}
@@ -134,27 +123,17 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
           {membersText}
         </Typography>
       )),
-    [members, isBoxClosed, hasAccess, classes, secondaryTypographyProps, membersText],
-  );
-
-  const isClosed = useMemo(
-    () => lifecycle === CLOSED,
-    [lifecycle],
+    [members, hasAccess, classes, secondaryTypographyProps, membersText],
   );
 
   const canShare = useMemo(
-    () => !isClosed && (hasAccess || belongsToCurrentUser),
-    [belongsToCurrentUser, hasAccess, isClosed],
-  );
-
-  const canDeleteBox = useMemo(
-    () => belongsToCurrentUser && isClosed,
-    [belongsToCurrentUser, isClosed],
+    () => hasAccess || belongsToCurrentUser,
+    [belongsToCurrentUser, hasAccess],
   );
 
   const displayTabs = useMemo(
-    () => (!isClosed || belongsToCurrentUser) && hasAccess,
-    [belongsToCurrentUser, hasAccess, isClosed],
+    () => hasAccess,
+    [hasAccess],
   );
 
   return (
@@ -182,7 +161,6 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
         />
         <ListItemSecondaryAction>
           {canShare && <ShareBoxButton box={box} />}
-          {canDeleteBox && <DeleteBoxDialogButton box={box} />}
         </ListItemSecondaryAction>
       </ListItem>
       {displayTabs && <AppBarMenuTabs boxId={id} />}

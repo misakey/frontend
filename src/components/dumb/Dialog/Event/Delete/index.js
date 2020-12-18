@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import errorTypes from '@misakey/ui/constants/errorTypes';
 
 import { createDeleteBoxEventBuilder } from 'helpers/builder/boxes';
-import { getCode, getDetails } from '@misakey/helpers/apiError';
+import { getCode } from '@misakey/helpers/apiError';
 import isFunction from '@misakey/helpers/isFunction';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
@@ -15,7 +15,7 @@ import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import DialogConfirm from '@misakey/ui/Dialog/Confirm';
 
 // CONSTANTS
-const { conflict, gone } = errorTypes;
+const { gone } = errorTypes;
 
 // COMPONENTS
 const DialogEventDelete = ({
@@ -38,11 +38,8 @@ const DialogEventDelete = ({
       })
       .catch((error) => {
         const code = getCode(error);
-        const { lifecycle } = getDetails(error);
         if (code === gone) {
           enqueueSnackbar(t('boxes:read.events.gone'), { variant: 'warning' });
-        } else if (code === conflict && lifecycle === conflict) {
-          enqueueSnackbar(t('boxes:read.events.create.error.lifecycle'), { variant: 'error' });
         } else {
           handleHttpErrors(error);
         }

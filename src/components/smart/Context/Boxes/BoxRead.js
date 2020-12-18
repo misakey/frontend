@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 import BoxSchema from 'store/schemas/Boxes';
-import { CLOSED } from 'constants/app/boxes/statuses';
 import { sendersIdentifiersMatch } from 'helpers/sender';
 
 // CONTEXT
@@ -19,7 +18,7 @@ export const useBoxReadContext = () => useContext(BoxReadContext);
 
 // COMPONENTS
 const BoxReadContextProvider = ({ children, box }) => {
-  const { publicKey, id, lifecycle, creator } = useMemo(() => box, [box]);
+  const { publicKey, id, creator } = useMemo(() => box, [box]);
 
   const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
   const secretKey = useMemo(
@@ -34,19 +33,13 @@ const BoxReadContextProvider = ({ children, box }) => {
     [creator, currentUser],
   );
 
-  const isClosed = useMemo(
-    () => lifecycle === CLOSED,
-    [lifecycle],
-  );
-
   const contextValue = useMemo(
     () => ({
       id,
       secretKey,
-      isClosed,
       isCurrentUserOwner,
     }),
-    [id, isClosed, isCurrentUserOwner, secretKey],
+    [id, isCurrentUserOwner, secretKey],
   );
 
   return (
