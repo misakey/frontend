@@ -59,7 +59,7 @@ const isInProgress = compose(
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   mkAgentLink: {
-    fontWeight: 'bold',
+    fontWeight: theme.typography.fontWeightBold,
     color: 'inherit',
   },
   dialogContentRoot: {

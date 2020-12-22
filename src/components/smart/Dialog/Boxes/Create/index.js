@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(3),
   },
   bold: {
-    fontWeight: 'bold',
+    fontWeight: theme.typography.fontWeightBold,
   },
   dialogActionsRoot: {
     padding: theme.spacing(2),

@@ -16,15 +16,23 @@ import isNil from '@misakey/helpers/isNil';
 import { useTranslation } from 'react-i18next';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import EventCard from 'components/dumb/Card/Event';
-import Typography from '@material-ui/core/Typography';
+import TypographySeparator from '@misakey/ui/Typography/Separator';
 import AutoInvitationButton from 'components/screens/app/Notifications/Actions/AutoInvitationButton';
 import ButtonCreateAccount from '@misakey/auth/components/Button/CreateAccount';
 
 // CONSTANTS
 export const INNER_SPACING = 12;
 const NOT_ACK_STYLE = { style: { fontWeight: 800 } };
+
+// HOOKS
+const useStyles = makeStyles((theme) => ({
+  typoSpaced: {
+    paddingTop: theme.spacing(3),
+  },
+}));
 
 // COMPONENTS
 const MessageRow = ({
@@ -34,6 +42,7 @@ const MessageRow = ({
 }) => {
   const rowRoot = useRef(null);
   const { t } = useTranslation(['boxes', 'common']);
+  const classes = useStyles();
 
   const { hasNextPage } = useSafeDestr(data);
 
@@ -76,7 +85,7 @@ const MessageRow = ({
         return <AutoInvitationButton notifDetails={details} />;
       }
       if (type === USER_CREATE_IDENTITY && acr === 1) {
-        return <ButtonCreateAccount standing={BUTTON_STANDINGS.OUTLINED} text={t('common:setupPassword')} />;
+        return <ButtonCreateAccount standing={BUTTON_STANDINGS.TEXT} text={t('common:setupPassword')} />;
       }
       return null;
     },
@@ -102,7 +111,8 @@ const MessageRow = ({
       <div ref={rowRoot}>
         {SUPPORTED_TYPES.includes(type) && (
           <>
-            {!isNil(dateTitle) && <Typography color="textSecondary" align="center">{dateTitle}</Typography>}
+            {!isNil(dateTitle) && (
+            <TypographySeparator className={classes.typoSpaced}>{dateTitle}</TypographySeparator>)}
             <EventCard
               author={author}
               date={date}

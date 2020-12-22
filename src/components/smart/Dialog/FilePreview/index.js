@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-function FilePreviewDialog({ open, onClose, selectedId, file }) {
+function FilePreviewDialog({ open, onClose, selectedId, file, t }) {
   const classes = useStyles();
 
   const {
@@ -128,7 +128,7 @@ function FilePreviewDialog({ open, onClose, selectedId, file }) {
           {(isNil(blobUrl) || !isTypeAllowedForPreview || !isNil(error)) && (
             <BoxFile
               fileSize={size}
-              fileName={name}
+              fileName={name || t('common:loading')}
               fileType={type}
               isLoading={isLoading}
               isBroken={!isNil(error)}
@@ -141,11 +141,13 @@ function FilePreviewDialog({ open, onClose, selectedId, file }) {
       )}
     >
       <DialogContent className={classes.content}>
-        <FilePreview
-          file={file}
-          maxHeight={PREVIEW_MAX_HEIGHT}
-          allowedFileTypePreview={ALLOWED_TYPE_PREVIEW}
-        />
+        {!isNil(file) && (
+          <FilePreview
+            file={file}
+            maxHeight={PREVIEW_MAX_HEIGHT}
+            allowedFileTypePreview={ALLOWED_TYPE_PREVIEW}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );
@@ -156,6 +158,7 @@ FilePreviewDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   selectedId: PropTypes.string,
   onClose: PropTypes.func.isRequired,
+  // withTranslation
   t: PropTypes.func.isRequired,
   // CONNECT
   file: PropTypes.shape(DecryptedFileSchema.propTypes),
@@ -163,14 +166,14 @@ FilePreviewDialog.propTypes = {
 
 FilePreviewDialog.defaultProps = {
   selectedId: null,
-  file: {},
+  file: null,
 };
 
 // CONNECT
 const mapStateToProps = (state, { selectedId }) => ({
   file: isNil(selectedId)
-    ? {}
+    ? null
     : denormalize(selectedId, DecryptedFileSchema.entity, state.entities),
 });
 
-export default connect(mapStateToProps, null)(withTranslation(['common', 'components'])(FilePreviewDialog));
+export default connect(mapStateToProps, {})(withTranslation(['common'])(FilePreviewDialog));

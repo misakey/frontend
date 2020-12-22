@@ -9,6 +9,8 @@ import isFunction from '@misakey/helpers/isFunction';
 import MenuItem from '@material-ui/core/MenuItem';
 import DialogBoxesLeave from 'components/smart/Dialog/Boxes/Leave';
 
+import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
+
 // COMPONENTS
 const MenuItemBoxLeave = forwardRef(({ box, onClose, t }, ref) => {
   const [open, setOpen] = useState(false);
@@ -39,6 +41,7 @@ const MenuItemBoxLeave = forwardRef(({ box, onClose, t }, ref) => {
         onClick={onClick}
         aria-label={t('boxes:read.details.menu.leave.primary')}
       >
+        <MeetingRoomIcon />
         {t('boxes:read.details.menu.leave.primary')}
       </MenuItem>
       <DialogBoxesLeave

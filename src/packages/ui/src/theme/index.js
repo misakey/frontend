@@ -5,6 +5,9 @@ import boulder from '@misakey/ui/colors/boulder';
 import isEmpty from '@misakey/helpers/isEmpty';
 
 // CONSTANTS
+const BLACK = '#000';
+const WHITE = '#fff';
+
 const DARK_BG = '#303030';
 const LIGHT_BG = '#fff';
 
@@ -16,6 +19,10 @@ export const THEMES = {
 // THEME
 export const getThemeOptions = (isDarkMode = false, color = null) => ({
   palette: {
+    common: {
+      black: BLACK,
+      white: WHITE,
+    },
     type: isDarkMode ? THEMES.DARK : THEMES.LIGHT,
     primary: {
       main: isEmpty(color) ? common.primary : color,
@@ -29,7 +36,10 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
       default: isDarkMode ? DARK_BG : LIGHT_BG,
     },
     action: {
-      selected: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
+      hover: isDarkMode ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.02)',
+      hoverOpacity: isDarkMode ? 0.04 : 0.02,
+      selected: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.04)',
+      selectedOpacity: isDarkMode ? 0.08 : 0.04,
     },
     grey: boulder,
     reverse: {
@@ -38,8 +48,10 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
         default: isDarkMode ? LIGHT_BG : DARK_BG,
       },
       action: {
-        hover: isDarkMode ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.08)',
-        hoverOpacity: isDarkMode ? 0.04 : 0.08,
+        hover: isDarkMode ? 'rgba(0, 0, 0, 0.02)' : 'rgba(255, 255, 255, 0.04)',
+        hoverOpacity: isDarkMode ? 0.02 : 0.04,
+        selected: isDarkMode ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.08)',
+        selectedOpacity: isDarkMode ? 0.04 : 0.08,
       },
     },
   },
@@ -130,6 +142,11 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
             paddingLeft: 13,
           },
         },
+      },
+    },
+    MuiTooltip: {
+      tooltip: {
+        backgroundColor: fade(BLACK, 0.5),
       },
     },
   },

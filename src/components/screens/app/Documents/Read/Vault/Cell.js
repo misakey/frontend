@@ -4,21 +4,21 @@ import { useSelector, useDispatch, connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { denormalize } from 'normalizr';
 
-import useFetchCallback from '@misakey/hooks/useFetch/callback';
-
+import SavedFilesSchema from 'store/schemas/Files/Saved';
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
-import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import isNil from '@misakey/helpers/isNil';
 import omit from '@misakey/helpers/omit';
 import execWithRequestIdleCallback from '@misakey/helpers/execWithRequestIdleCallback';
-import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import useDecryptSavedFileEffect from 'hooks/useDecryptSavedFileEffect';
-import SavedFilesSchema from 'store/schemas/Files/Saved';
 import { deleteSavedFileBuilder } from 'packages/helpers/src/builder/vault';
 import { deleteSavedFile } from 'store/reducers/files/saved';
+
 import { useFilePreviewContext } from 'components/smart/File/Preview/Context';
+import useFetchCallback from '@misakey/hooks/useFetch/callback';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import useDecryptSavedFileEffect from 'hooks/useDecryptSavedFileEffect';
 
 import FileListItem, { FileListItemSkeleton } from 'components/smart/ListItem/File';
 
@@ -40,10 +40,11 @@ Skeleton.propTypes = {
 };
 
 const VaultCell = ({ style, data, savedFile }) => {
+  const { t } = useTranslation('common');
+
   const vaultKey = useSelector(cryptoSelectors.getVaultKey);
   const identityId = useSelector(authSelectors.identityId);
   const dispatch = useDispatch();
-  const { t } = useTranslation('common');
 
   const { id, encryptedFileId, decryptedFile } = useSafeDestr(savedFile);
 
@@ -97,7 +98,7 @@ const VaultCell = ({ style, data, savedFile }) => {
     <FileListItem
       style={style}
       file={decryptedFile}
-      actions={[{ onClick: onRemove, text: t('common:remove') }]}
+      actions={[{ key: 'remove', onClick: onRemove, text: t('common:remove') }]}
       onClick={onClick}
       key={id}
       {...omitInternalData(data)}
@@ -121,6 +122,7 @@ VaultCell.defaultProps = {
 };
 
 // CONNECT
+// @FIXME rely only on hooks or connect, not both
 const mapStateToProps = (state, { itemIndex, data: { byPagination } }) => {
   const id = byPagination[itemIndex];
   const savedFile = !isNil(id) ? denormalize(id, SavedFilesSchema.entity, state.entities) : null;

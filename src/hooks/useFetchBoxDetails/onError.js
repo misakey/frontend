@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { normalize } from 'normalizr';
 import { useDispatch } from 'react-redux';
 
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { forbidden } from '@misakey/ui/constants/errorTypes';
 
 import { getCode, getDetails } from '@misakey/helpers/apiError';
 import isFunction from '@misakey/helpers/isFunction';
@@ -14,7 +14,6 @@ import BoxesSchema from 'store/schemas/Boxes';
 import { receiveEntities } from '@misakey/store/actions/entities';
 
 // CONSTANTS
-const { forbidden } = errorTypes;
 const NOT_MEMBER = 'not_member';
 const NO_ACCESS = 'no_access';
 

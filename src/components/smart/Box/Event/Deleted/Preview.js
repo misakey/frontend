@@ -10,8 +10,6 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import { useSelector } from 'react-redux';
 
-import Typography from '@material-ui/core/Typography';
-
 // CONSTANTS
 const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
 
@@ -29,7 +27,7 @@ const BoxEventDeletedPreview = ({ t, byIdentity, ...props }) => {
     [t, deletedByMe],
   );
 
-  return <Typography variant="body2" {...omitTranslationProps(props)}>{text}</Typography>;
+  return <span {...omitTranslationProps(props)}>{text}</span>;
 };
 
 BoxEventDeletedPreview.propTypes = {

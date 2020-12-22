@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { APPBAR_SPACING } from '@misakey/ui/constants/sizes';
 import { openVaultValidationSchema } from 'constants/validationSchemas/auth';
 import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { invalid } from '@misakey/ui/constants/errorTypes';
 import { SIDES } from '@misakey/ui/constants/drawers';
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
@@ -33,7 +33,6 @@ import BoxContent from '@misakey/ui/Box/Content';
 import Title from '@misakey/ui/Typography/Title';
 
 // CONSTANTS
-const { invalid } = errorTypes;
 const INITIAL_VALUES = {
   [PREHASHED_PASSWORD]: '',
 };

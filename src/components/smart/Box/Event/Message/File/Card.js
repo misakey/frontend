@@ -1,5 +1,4 @@
 import { useMemo, useCallback, useState, useRef } from 'react';
-import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
@@ -15,8 +14,7 @@ import eventStopPropagation from '@misakey/helpers/event/stopPropagation';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
 
-import EventCard from 'components/dumb/Card/Event';
-import withContextMenu from '@misakey/ui/Menu/ContextMenu/with';
+import EventCardWithMenu from 'components/dumb/Card/Event/WithMenu';
 import MenuItemEventDelete from 'components/smart/MenuItem/Event/Delete';
 import MenuItemAddFileToVault from 'components/smart/MenuItem/Event/AddToVault';
 import MenuItemEventDownload from 'components/smart/MenuItem/Event/Download';
@@ -32,16 +30,28 @@ import { useFilePreviewContext } from 'components/smart/File/Preview/Context';
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   filePreview: {
-    border: `1px solid ${theme.palette.divider}`,
-    borderTopLeftRadius: 'inherit',
-    borderTopRightRadius: 'inherit',
+    boxShadow: theme.shadows[1],
+    borderRadius: theme.shape.borderRadius,
     backgroundColor: theme.palette.background.default,
     minWidth: 50,
     width: '100%',
+    '&:hover': {
+      boxShadow: theme.shadows[4],
+      // Reset on touch devices, it doesn't add specificity
+      '@media (hover: none)': {
+        boxShadow: theme.shadows[1],
+      },
+    },
+    '&:active': {
+      boxShadow: theme.shadows[8],
+    },
   },
   previewFallback: {
     width: 250,
     height: 200,
+  },
+  cardContent: {
+    padding: theme.spacing(1),
   },
 }));
 
@@ -49,12 +59,13 @@ const useStyles = makeStyles((theme) => ({
 const ALLOWED_FILE_TYPES_TO_PREVIEW = ['image/'];
 
 // COMPONENTS
-const EventCardWithContextMenu = withContextMenu(EventCard);
-
-export const FileCardEventSkeleton = ({ sender, isFromCurrentUser, ...props }) => (
-  <EventCard
+export const FileCardEventSkeleton = ({
+  sender,
+  isFromCurrentUser, boxBelongsToCurrentUser,
+  ...props
+}) => (
+  <EventCardWithMenu
     author={sender}
-    isFromCurrentUser={isFromCurrentUser}
     {...omitTranslationProps(props)}
   >
     <BoxFile
@@ -63,11 +74,12 @@ export const FileCardEventSkeleton = ({ sender, isFromCurrentUser, ...props }) =
       fileName={<Skeleton />}
       isLoading
     />
-  </EventCard>
+  </EventCardWithMenu>
 );
 
 FileCardEventSkeleton.propTypes = {
   isFromCurrentUser: PropTypes.bool,
+  boxBelongsToCurrentUser: PropTypes.bool,
   sender: PropTypes.shape({
     displayName: PropTypes.string,
     avatarUrl: PropTypes.string,
@@ -76,6 +88,7 @@ FileCardEventSkeleton.propTypes = {
 
 FileCardEventSkeleton.defaultProps = {
   isFromCurrentUser: false,
+  boxBelongsToCurrentUser: false,
 };
 
 const FileCardEvent = ({
@@ -182,18 +195,17 @@ const FileCardEvent = ({
   useIntersectionObserver(ref, onCardAppeared, shouldObserve);
 
   return (
-    <EventCardWithContextMenu
+    <EventCardWithMenu
       ref={ref}
       author={sender}
       date={date}
-      isFromCurrentUser={isFromCurrentUser}
       text={text}
       items={items}
-      disableMaxWidth={isTypeAllowedForPreview}
+      classes={{ content: classes.cardContent }}
       {...omitTranslationProps(props)}
     >
       <ButtonBase
-        className={clsx(classes.filePreview)}
+        className={classes.filePreview}
         onClick={onClick}
         onTouchStart={eventStopPropagation}
         disabled={isNil(onClick)}
@@ -202,6 +214,7 @@ const FileCardEvent = ({
           file={decryptedFile}
           allowedFileTypePreview={ALLOWED_FILE_TYPES_TO_PREVIEW}
           height={200}
+          titleOnHover
           fallbackView={(
             <BoxFile
               fileSize={size}
@@ -214,7 +227,7 @@ const FileCardEvent = ({
           )}
         />
       </ButtonBase>
-    </EventCardWithContextMenu>
+    </EventCardWithMenu>
   );
 };
 

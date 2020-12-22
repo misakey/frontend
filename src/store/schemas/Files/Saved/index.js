@@ -16,7 +16,7 @@ const SavedFilesSchema = {
     createdAt: PropTypes.string,
     encryptedFileId: PropTypes.string,
     // eslint-disable-next-line react/forbid-foreign-prop-types
-    decryptedFile: DecryptedFileSchema.propTypes,
+    decryptedFile: PropTypes.shape(DecryptedFileSchema.propTypes),
     encryptedMetadata: PropTypes.string,
     keyFingerprint: PropTypes.string,
     identityId: PropTypes.string,

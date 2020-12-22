@@ -185,11 +185,11 @@
         },
         "copyLink": "Copy sharing link",
         "leave": {
-          "primary": "Leave the private space",
+          "primary": "Leave",
           "secondary": "By leaving the private space, you will not have access to its content anymore."
         },
         "delete": {
-          "primary": "Delete the private space",
+          "primary": "Delete",
           "secondary": "Its content will be erased"
         }
       }
@@ -262,8 +262,8 @@
   },
   "notifications": {
     "title": "Notifications",
-    "mute": "Disable notifications",
-    "unmute": "Enable notifications",
+    "mute": "Mute",
+    "unmute": "Unmute",
     "byIdentity": {
       "title": "Misakey",
       "subtitle": "Your private space shared with Misakey",

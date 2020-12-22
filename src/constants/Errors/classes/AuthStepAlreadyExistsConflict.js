@@ -1,9 +1,7 @@
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { conflict } from '@misakey/ui/constants/errorTypes';
 
 import { isAuthStepAlreadyExistsConflict } from '@misakey/auth/helpers/errors';
 
-// CONSTANTS
-const { conflict } = errorTypes;
 
 // CLASS
 export default class AuthStepAlreadyExistsConflict extends Error {

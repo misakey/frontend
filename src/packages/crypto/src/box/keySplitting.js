@@ -1,11 +1,12 @@
 import { getKeyShareBuilder } from '@misakey/helpers/builder/boxes';
 import { getCode, getDetails } from '@misakey/helpers/apiError';
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { notFound } from '@misakey/ui/constants/errorTypes';
 
 import { InvalidHash } from '@misakey/crypto/Errors/classes';
 import { splitKey, combineShares, hashShare } from '@misakey/crypto/crypto/keySplitting';
 import { encryptCryptoaction, decryptCryptoaction } from '@misakey/crypto/cryptoactions';
 
+// HELPERS
 export function splitBoxSecretKey({ boxSecretKey, boxPublicKey }) {
   const {
     userShare,
@@ -49,9 +50,6 @@ export const computeInvitationHash = (invitationKeyShare) => hashShare(invitatio
 export const combineBoxKeyShares = (invitationKeyShare, misakeyKeyShare) => (
   combineShares(invitationKeyShare, misakeyKeyShare)
 );
-
-// CONSTANTS
-const { notFound } = errorTypes;
 
 export async function fetchMisakeyKeyShare(invitationKeyShare) {
   const otherShareHash = computeInvitationHash(invitationKeyShare);

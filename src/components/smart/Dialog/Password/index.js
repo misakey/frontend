@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { invalid } from '@misakey/ui/constants/errorTypes';
 import { openVaultValidationSchema } from 'constants/validationSchemas/auth';
 import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 
@@ -27,8 +27,6 @@ import BoxControls from '@misakey/ui/Box/Controls';
 import Box from '@material-ui/core/Box';
 
 // CONSTANTS
-const { invalid } = errorTypes;
-
 const INITIAL_VALUES = {
   [PREHASHED_PASSWORD]: '',
 };

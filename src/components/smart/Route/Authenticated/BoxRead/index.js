@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { notFound } from '@misakey/ui/constants/errorTypes';
 import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';
 
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
@@ -27,7 +27,6 @@ import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslati
 
 // CONSTANTS
 const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
-const { notFound } = errorTypes;
 
 // COMPONENTS
 const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...rest }) => {

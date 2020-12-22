@@ -37,7 +37,7 @@ function ActualButton({ notifDetails }) {
     <Button
       onClick={onClick}
       text={t('common:join')}
-      standing={BUTTON_STANDINGS.OUTLINED}
+      standing={BUTTON_STANDINGS.TEXT}
     />
   );
 }

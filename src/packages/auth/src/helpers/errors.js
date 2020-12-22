@@ -1,10 +1,8 @@
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { conflict, notFound, forbidden } from '@misakey/ui/constants/errorTypes';
 
 import { getDetails, getCode } from '@misakey/helpers/apiError';
 
 // CONSTANTS
-const { conflict, notFound, forbidden } = errorTypes;
-
 const HYDRA_ERRORS = [notFound, forbidden];
 
 // HELPERS

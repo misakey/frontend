@@ -198,7 +198,11 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
       {
         !isNil(actions) && (
           <ListItemSecondaryAction>
-            <IconButton onClick={onMenuClick} edge="end" aria-label="menu-more">
+            <IconButton
+              onClick={onMenuClick}
+              edge="end"
+              aria-label="menu-more"
+            >
               <MoreVertIcon />
             </IconButton>
             <Menu
@@ -213,8 +217,8 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
               PaperProps={{ variant: 'outlined' }}
               transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
-              {actions.map(({ text, component: Component = MenuItem, ...props }) => (
-                <Component {...props}>{text}</Component>
+              {actions.map(({ text, key, component: Component = MenuItem, ...props }) => (
+                <Component key={key} {...props}>{text}</Component>
               ))}
             </Menu>
           </ListItemSecondaryAction>

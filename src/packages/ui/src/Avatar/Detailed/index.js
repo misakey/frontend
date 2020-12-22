@@ -22,10 +22,10 @@ export const useLayoutStyles = makeStyles((theme) => ({
   },
 }));
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
-    fontWeight: 'bold',
+    fontWeight: theme.typography.fontWeightBold,
   },
 }));
 

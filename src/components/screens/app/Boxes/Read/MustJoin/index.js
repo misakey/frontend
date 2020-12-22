@@ -6,7 +6,7 @@ import { useLocation, Link, generatePath } from 'react-router-dom';
 import routes from 'routes';
 import { updateEntities } from '@misakey/store/actions/entities';
 import { MEMBER_JOIN } from 'constants/app/boxes/events';
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { forbidden } from '@misakey/ui/constants/errorTypes';
 import BoxesSchema from 'store/schemas/Boxes';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { receivePublicInfo } from 'store/reducers/box';
@@ -48,7 +48,6 @@ import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButt
 import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
 
 // CONSTANTS
-const { forbidden } = errorTypes;
 const NO_ACCESS = 'no_access';
 const { identity: IDENTITY_SELECTOR } = authSelectors;
 

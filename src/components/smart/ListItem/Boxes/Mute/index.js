@@ -29,7 +29,10 @@ const ListItemBoxMute = ({ box }) => {
     >
       <ListItemText
         primary={t('boxes:notifications.title')}
+        secondary={t(`boxes:notifications.${muted ? 'unmute' : 'mute'}`)}
         primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
+        secondaryTypographyProps={{ color: 'textPrimary' }}
+
       />
       {muted ? <NotificationsOffIcon color="disabled" /> : <NotificationsIcon color="primary" />}
     </ListItem>

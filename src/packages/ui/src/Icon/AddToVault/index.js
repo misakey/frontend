@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
@@ -16,7 +17,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const AddToVaultIcon = ({ isSaved }) => {
+const AddToVaultIcon = forwardRef(({ isSaved, ...props }, ref) => {
   const classes = useStyles();
 
   return (
@@ -25,10 +26,10 @@ const AddToVaultIcon = ({ isSaved }) => {
       classes={{ badge: classes.badge }}
       badgeContent={isSaved ? <CheckCircleIcon className={classes.checkIcon} color="primary" /> : null}
     >
-      <LibraryAddIcon />
+      <LibraryAddIcon {...props} ref={ref} />
     </Badge>
   );
-};
+});
 
 AddToVaultIcon.propTypes = {
   isSaved: PropTypes.bool,

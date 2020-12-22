@@ -1,39 +1,23 @@
-import { useMemo } from 'react';
-import PropTypes from 'prop-types';
-
-import IdentitySchema from 'store/schemas/Identity';
+import useIdentity from 'hooks/useIdentity';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import AvatarUser from '@misakey/ui/Avatar/User';
 import AvatarUserSkeleton from '@misakey/ui/Avatar/User/Skeleton';
-import withIdentity from 'components/smart/withIdentity';
-import omit from '@misakey/helpers/omit';
 
-const WITH_USER_PROPS = ['id', 'identityId'];
+// COMPONENTS
+const AvatarCurrentUser = (props) => {
+  const { identity, isFetching } = useIdentity();
+  const { displayName, avatarUrl } = useSafeDestr(identity);
 
-const UserAvatar = ({ identity, isFetchingIdentity, ...props }) => {
-  const { displayName, avatarUrl } = useMemo(() => identity || {}, [identity]);
-
-  if (isFetchingIdentity) {
+  if (isFetching) {
     return (
       <AvatarUserSkeleton />
     );
   }
 
   return (
-    <AvatarUser displayName={displayName} avatarUrl={avatarUrl} {...omit(props, WITH_USER_PROPS)} />
+    <AvatarUser displayName={displayName} avatarUrl={avatarUrl} {...props} />
   );
 };
 
-
-UserAvatar.propTypes = {
-  // withIdentity
-  identity: PropTypes.shape(IdentitySchema.propTypes),
-  isFetchingIdentity: PropTypes.bool,
-};
-
-UserAvatar.defaultProps = {
-  identity: null,
-  isFetchingIdentity: false,
-};
-
-export default withIdentity(UserAvatar);
+export default AvatarCurrentUser;

@@ -137,7 +137,7 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
   );
 
   return (
-    <Box display="flex" flexDirection="column" width="100%">
+    <Box display="flex" flexDirection="column" width="100%" overflow="hidden">
       <ListItem
         button
         ContainerProps={{ className: classes.listItemContainer }}

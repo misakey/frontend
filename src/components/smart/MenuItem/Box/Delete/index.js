@@ -11,6 +11,8 @@ import useIsMountedRef from '@misakey/hooks/useIsMountedRef';
 import MenuItem from '@material-ui/core/MenuItem';
 import DialogBoxesDelete from 'components/smart/Dialog/Boxes/Delete';
 
+import DeleteIcon from '@material-ui/icons/Delete';
+
 // COMPONENTS
 const MenuItemBoxDelete = forwardRef(({ box, onClose, t }, ref) => {
   const [open, setOpen] = useState(false);
@@ -45,6 +47,7 @@ const MenuItemBoxDelete = forwardRef(({ box, onClose, t }, ref) => {
         onClick={onClick}
         aria-label={t('boxes:read.details.menu.delete.primary')}
       >
+        <DeleteIcon />
         {t('boxes:read.details.menu.delete.primary')}
       </MenuItem>
       <DialogBoxesDelete

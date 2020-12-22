@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { gone } from '@misakey/ui/constants/errorTypes';
 
 import { createDeleteBoxEventBuilder } from 'helpers/builder/boxes';
 import { getCode } from '@misakey/helpers/apiError';
@@ -13,9 +13,6 @@ import { useSnackbar } from 'notistack';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import DialogConfirm from '@misakey/ui/Dialog/Confirm';
-
-// CONSTANTS
-const { gone } = errorTypes;
 
 // COMPONENTS
 const DialogEventDelete = ({

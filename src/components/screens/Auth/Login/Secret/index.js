@@ -18,7 +18,7 @@ import hardPasswordChange from '@misakey/crypto/store/actions/hardPasswordChange
 import createNewOwnerSecrets from '@misakey/crypto/store/actions/createNewOwnerSecrets';
 import createNewBackupKeySharesFromAuthFlow from '@misakey/crypto/store/actions/createNewBackupKeySharesFromAuthFlow';
 import { ssoUpdate, ssoSign, ssoReset } from '@misakey/auth/store/actions/sso';
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { conflict } from '@misakey/ui/constants/errorTypes';
 import { DATE_FULL } from 'constants/formats/dates';
 import { EMAILED_CODE, PREHASHED_PASSWORD, PASSWORD_RESET_KEY, ACCOUNT_CREATION, AuthUndefinedMethodName } from '@misakey/auth/constants/method';
 
@@ -65,7 +65,6 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
 
 // CONSTANTS
-const { conflict } = errorTypes;
 const CURRENT_STEP = STEP.secret;
 
 // HELPERS

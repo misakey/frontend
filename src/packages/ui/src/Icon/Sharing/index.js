@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 import ACCESS_LEVELS, { PRIVATE, PUBLIC, LIMITED } from '@misakey/ui/constants/accessLevels';
@@ -15,7 +15,7 @@ const ICONS = {
   [LIMITED]: PeopleIcon,
 };
 
-const IconSharing = ({ value, fallback, ...props }) => {
+const IconSharing = forwardRef(({ value, fallback, ...props }, ref) => {
   const Icon = useMemo(
     () => ICONS[value],
     [value],
@@ -23,8 +23,8 @@ const IconSharing = ({ value, fallback, ...props }) => {
   if (isNil(Icon)) {
     return fallback;
   }
-  return <Icon {...props} />;
-};
+  return <Icon ref={ref} {...props} />;
+});
 
 IconSharing.propTypes = {
   value: PropTypes.oneOf(ACCESS_LEVELS),

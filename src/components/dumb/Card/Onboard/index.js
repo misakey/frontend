@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
-    fontWeight: 'bold',
+    fontWeight: theme.typography.fontWeightBold,
   },
 }));
 

@@ -3,7 +3,7 @@
 import { useMemo, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { notFound } from '@misakey/ui/constants/errorTypes';
 
 import { getCode } from '@misakey/helpers/apiError';
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -14,9 +14,8 @@ import { computeInvitationHash } from '@misakey/crypto/box/keySplitting';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { InvalidHash } from '@misakey/crypto/Errors/classes';
 
-// CONSTANTS
-const { notFound } = errorTypes;
 
+// HOOKS
 export default (id, onSuccess) => {
   const { hash } = useLocation();
   const invitationKeyShare = useMemo(() => (isEmpty(hash) ? null : hash.substr(1)), [hash]);

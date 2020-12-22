@@ -9,6 +9,7 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
 
+import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import BoxEventDeletedPreview from 'components/smart/Box/Event/Deleted/Preview';
 import EventCard from 'components/dumb/Card/Event';
@@ -43,13 +44,14 @@ const BoxEventDeleted = ({
       date={atTimeText}
       text={(
         <>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box display="flex" alignItems="center">
             <NotInterestedIcon fontSize="small" className={classes.iconSpaced} />
-            <BoxEventDeletedPreview byIdentity={byIdentity} />
+            <Typography variant="body2" component="div">
+              <BoxEventDeletedPreview byIdentity={byIdentity} />
+            </Typography>
           </Box>
         </>
       )}
-      isFromCurrentUser={isFromCurrentUser}
       {...props}
     />
   );

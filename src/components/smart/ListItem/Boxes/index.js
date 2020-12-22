@@ -14,6 +14,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 import useBoxRights from 'hooks/useBoxRights';
+import useContextMenuAnchorEl from '@misakey/hooks/useContextMenuAnchor/el';
 import useIsMountedRef from '@misakey/hooks/useIsMountedRef';
 
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -39,7 +40,7 @@ import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 const DEFAULT_SETTINGS = { muted: false };
 
 // HOOKS
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   listItemText: {
     // Needed for IE11
     width: '100%',
@@ -56,6 +57,14 @@ const useStyles = makeStyles(() => ({
   listItemRoot: ({ isActionVisible }) => ({
     paddingRight: isActionVisible ? 48 : 16,
   }),
+  listItemSelected: {
+    '& > .MuiListItemAvatar-root .MuiAvatar-root': {
+      backgroundColor: theme.palette.primary.main,
+    },
+  },
+  titleSpaced: {
+    marginRight: theme.spacing(1),
+  },
 }));
 
 // COMPONENTS
@@ -166,9 +175,9 @@ function BoxListItem({ box, toRoute, containerProps, t, ...rest }) {
     [lastEvent],
   );
 
-  const onMenuClick = useCallback(
-    (event) => { setAnchorEl(event.currentTarget); }, [],
-  );
+  const { onContextMenu } = useContextMenuAnchorEl({
+    onAnchor: setAnchorEl,
+  });
 
   const onClose = useCallback(
     () => {
@@ -208,7 +217,11 @@ function BoxListItem({ box, toRoute, containerProps, t, ...rest }) {
         onMouseLeave: hideAction,
         ...containerProps,
       }}
-      classes={{ root: classes.listItemRoot }}
+      classes={{
+        root: classes.listItemRoot,
+        selected: classes.listItemSelected,
+      }}
+      onContextMenu={onContextMenu}
       {...linkProps}
       {...omitTranslationProps(rest)}
     >
@@ -224,7 +237,7 @@ function BoxListItem({ box, toRoute, containerProps, t, ...rest }) {
         className={classes.listItemText}
         primary={(
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography noWrap>{title}</Typography>
+            <Typography className={classes.titleSpaced} noWrap>{title}</Typography>
             {!isActionVisible && <TypographyDateSince date={date} className="hideOnHover" />}
           </Box>
         )}
@@ -233,7 +246,7 @@ function BoxListItem({ box, toRoute, containerProps, t, ...rest }) {
         secondaryTypographyProps={{ noWrap: true, display: 'block', component: Box }}
       />
       <ListItemSecondaryAction>
-        <IconButton className={classes.menuButton} onClick={onMenuClick} edge="end" aria-label="menu-more">
+        <IconButton className={classes.menuButton} onClick={onContextMenu} edge="end" aria-label="menu-more">
           <MoreVertIcon />
         </IconButton>
         <Menu

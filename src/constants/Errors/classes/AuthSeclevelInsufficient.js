@@ -1,10 +1,9 @@
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { required, forbidden } from '@misakey/ui/constants/errorTypes';
 
 import { getDetails, getCode } from '@misakey/helpers/apiError';
 
 // CONSTANTS
 // @FIXME maybe move this type to errorTypes? Not required until used in another place of the app
-const { required, forbidden } = errorTypes;
 const ERROR_TYPE = 'seclevel_insufficient';
 
 // CLASS

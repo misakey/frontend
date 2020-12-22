@@ -13,6 +13,7 @@ function FilePreview({
   allowedFileTypePreview,
   fallbackView,
   maxHeight, width, height, objectFit,
+  ...rest
 }) {
   const { type } = useMemo(() => file, [file]);
 
@@ -54,14 +55,15 @@ function FilePreview({
         height={height}
         width={width}
         objectFit={objectFit}
+        {...rest}
       />
     );
   }
   if (isAudio || isVideo) {
-    return <MediaPreview file={file} fallbackView={fallbackView} maxHeight={maxHeight} />;
+    return <MediaPreview file={file} fallbackView={fallbackView} maxHeight={maxHeight} {...rest} />;
   }
 
-  return <DefaultPreview file={file} fallbackView={fallbackView} />;
+  return <DefaultPreview file={file} fallbackView={fallbackView} {...rest} />;
 }
 
 

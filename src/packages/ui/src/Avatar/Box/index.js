@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.grey[400],
     color: theme.palette.background.paper,
+    fontWeight: theme.typography.fontWeightBold,
   },
 }));
 

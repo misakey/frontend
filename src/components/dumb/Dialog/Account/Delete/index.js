@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { invalid } from '@misakey/ui/constants/errorTypes';
 import IdentitySchema from 'store/schemas/Identity';
 
 import { Form, Field } from 'formik';
@@ -19,7 +19,6 @@ import BoxControls from '@misakey/ui/Box/Controls';
 
 
 // CONSTANTS
-const { invalid } = errorTypes;
 const INITIAL_VALUES = { email: '' };
 const NO_ERROR = {};
 const EMAIL_INVALID_ERROR = { email: invalid };

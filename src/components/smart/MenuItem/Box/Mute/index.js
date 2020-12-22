@@ -2,14 +2,19 @@ import { forwardRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
+import BoxesSchema from 'store/schemas/Boxes';
+
 import isFunction from '@misakey/helpers/isFunction';
 
-import BoxesSchema from 'store/schemas/Boxes';
 import useUpdateBoxSettings from 'hooks/useUpdateBoxSettings';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import MenuItem from '@material-ui/core/MenuItem';
 
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
+
+// CONSTANTS
 const DEFAULT_SETTINGS = { muted: false };
 
 // COMPONENTS
@@ -35,6 +40,9 @@ const MenuItemBoxMute = forwardRef(({ box, onClose }, ref) => {
       onClick={onClick}
       aria-label={t('boxes:notifications.title')}
     >
+      {muted
+        ? <NotificationsOffIcon />
+        : <NotificationsIcon />}
       {t(`boxes:notifications.${muted ? 'unmute' : 'mute'}`)}
     </MenuItem>
   );

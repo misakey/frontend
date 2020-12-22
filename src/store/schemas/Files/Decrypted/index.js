@@ -19,7 +19,7 @@ const DecryptedFileSchema = {
     isLoading: PropTypes.bool,
     createdAt: PropTypes.string,
     // eslint-disable-next-line react/forbid-foreign-prop-types
-    sender: SenderSchema.propTypes,
+    sender: PropTypes.shape(SenderSchema.propTypes),
     error: PropTypes.object,
   },
 };

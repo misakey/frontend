@@ -1,12 +1,11 @@
 import * as Yup from 'yup';
 import { MAX_FILE_SIZE } from 'constants/file/size';
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { required, max } from '@misakey/ui/constants/errorTypes';
 import isString from '@misakey/helpers/isString';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 
-const { required, max } = errorTypes;
-
+// CONSTANTS
 export const fileUploadValidationSchema = Yup.object().shape({
   files: Yup.array(
     Yup.mixed()

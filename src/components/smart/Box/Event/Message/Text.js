@@ -14,19 +14,12 @@ import useAnchormeCallback from '@misakey/hooks/useAnchorme/callback';
 import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
 
-import EventCard from 'components/dumb/Card/Event';
+import EventCardWithMenu from 'components/dumb/Card/Event/WithMenu';
 import EventBoxMessagePreview from 'components/smart/Box/Event/Message/Preview';
 import MuiLink from '@material-ui/core/Link';
-import withContextMenu from '@misakey/ui/Menu/ContextMenu/with';
 import MenuItemEventEdit from 'components/smart/MenuItem/Event/Edit';
 import MenuItemEventCopy from 'components/smart/MenuItem/Event/Copy';
 import MenuItemEventDelete from 'components/smart/MenuItem/Event/Delete';
-
-// CONSTANTS
-const MY_TRANSFORM_ORIGIN = {
-  vertical: 'top',
-  horizontal: 'right',
-};
 
 // HELPERS
 const decryptMessage = (publicKeysWeCanDecryptFrom, encrypted, publicKey) => {
@@ -35,8 +28,6 @@ const decryptMessage = (publicKeysWeCanDecryptFrom, encrypted, publicKey) => {
 };
 
 // COMPONENTS
-const EventCardWithContextMenu = withContextMenu(EventCard);
-
 const BoxMessageTextEvent = ({
   event, box,
   isFromCurrentUser, boxBelongsToCurrentUser,
@@ -61,13 +52,6 @@ const BoxMessageTextEvent = ({
   );
 
   const date = useDateFormatMemo(serverEventCreatedAt, TIME);
-
-  const menuProps = useMemo(
-    () => (isFromCurrentUser
-      ? { transformOrigin: MY_TRANSFORM_ORIGIN }
-      : {}),
-    [isFromCurrentUser],
-  );
 
   const text = useMemo(() => {
     if (canBeDecrypted) {
@@ -111,14 +95,12 @@ const BoxMessageTextEvent = ({
   }
 
   return (
-    <EventCardWithContextMenu
+    <EventCardWithMenu
       author={sender}
       date={date}
-      isFromCurrentUser={isFromCurrentUser}
       text={text}
       isEdited={isEdited}
       items={items}
-      menuProps={menuProps}
       {...omitTranslationProps(rest)}
     />
   );

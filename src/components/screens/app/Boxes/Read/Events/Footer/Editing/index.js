@@ -2,7 +2,7 @@ import { useCallback, useRef, useState, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { gone } from '@misakey/ui/constants/errorTypes';
 import BoxesSchema from 'store/schemas/Boxes';
 import BoxesEventsSchema from 'store/schemas/Boxes/Events';
 import { boxEditMessageValidationSchema } from 'constants/validationSchemas/boxes';
@@ -34,7 +34,6 @@ import SendIcon from '@material-ui/icons/Send';
 
 // CONSTANTS
 const FIELD = 'editMessage';
-const { gone } = errorTypes;
 const BOX_PADDING_SPACING = 1;
 
 const INITIAL_VALUES = {

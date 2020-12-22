@@ -72,7 +72,7 @@ function BoxFile({
 }
 
 BoxFile.propTypes = {
-  fileName: PropTypes.string.isRequired,
+  fileName: PropTypes.node.isRequired,
   fileType: PropTypes.string,
   fileSize: PropTypes.number,
   text: PropTypes.string,

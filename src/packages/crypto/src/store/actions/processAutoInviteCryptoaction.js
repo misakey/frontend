@@ -3,7 +3,7 @@ import { generatePath } from 'react-router-dom';
 import routes from 'routes';
 
 import { getCode } from '@misakey/helpers/apiError';
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { notFound } from '@misakey/ui/constants/errorTypes';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import { decryptCryptoaction } from '@misakey/crypto/cryptoactions';
@@ -21,14 +21,14 @@ import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 import updateBackup from './updateBackup';
 import { CRYPTO_SET_BOX_SECRETS } from './types';
 
+// CONSTANTS
 const {
   accountId: selectAccountId,
 } = authSelectors;
 
-const { notFound } = errorTypes;
-
 const { getRelatedIdentitySecretKey: getRelatedIdentitySecretKeySelector } = cryptoSelectors;
 
+// THUNK
 export default ({ cryptoactionId, boxId: notificationBoxId }) => (
   async (dispatch, getState) => {
     const state = getState();

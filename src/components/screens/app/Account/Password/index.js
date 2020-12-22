@@ -9,7 +9,7 @@ import { OLD_PASSWORD_KEY, NEW_PASSWORD_KEY, PASSWORD_CONFIRM_KEY } from 'consta
 import IdentitySchema from 'store/schemas/Identity';
 import routes from 'routes';
 import { passwordValidationSchema } from 'constants/validationSchemas/identity';
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { forbidden, invalid } from '@misakey/ui/constants/errorTypes';
 
 import isNil from '@misakey/helpers/isNil';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
@@ -101,8 +101,8 @@ const AccountPassword = ({ t, identity, isFetching }) => {
         enqueueSnackbar(t('account:password.success'), { variant: 'success' });
         push(accountHome);
       } catch (e) {
-        if (e instanceof BackupDecryptionError || e.code === errorTypes.forbidden) {
-          setFieldError(OLD_PASSWORD_KEY, errorTypes.invalid);
+        if (e instanceof BackupDecryptionError || e.code === forbidden) {
+          setFieldError(OLD_PASSWORD_KEY, invalid);
         } else if (e instanceof BadBackupVersion) {
           enqueueSnackbar(
             t('common:crypto.errors.shouldRefresh'),

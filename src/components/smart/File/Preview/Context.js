@@ -1,21 +1,24 @@
 import { createContext, useContext, useCallback, useMemo, useReducer, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useRouteMatch } from 'react-router-dom';
-import routes from 'routes';
 import { useDispatch, batch } from 'react-redux';
+
+import routes from 'routes';
+import { FetchFileError, DecryptionFileError } from 'constants/Errors/classes/Files';
+import { updateEntities } from '@misakey/store/actions/entities';
 
 import isNil from '@misakey/helpers/isNil';
 import { getEncryptedFileBuilder } from '@misakey/helpers/builder/files';
-import DialogFilePreview from 'components/smart/Dialog/FilePreview';
 import workerDecryptFile from '@misakey/crypto/box/decryptFile/worker';
 import log from '@misakey/helpers/log';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 import downloadFile from '@misakey/helpers/downloadFile';
 import execWithRequestIdleCallback from '@misakey/helpers/execWithRequestIdleCallback';
-import { FetchFileError, DecryptionFileError } from 'constants/Errors/classes/Files';
-import useSaveFileInVault from 'hooks/useSaveFileInVault';
-import { updateEntities } from '@misakey/store/actions/entities';
 import { revokeObjectURL } from '@misakey/helpers/objectURL';
+
+import { useRouteMatch } from 'react-router-dom';
+import useSaveFileInVault from 'hooks/useSaveFileInVault';
+
+import DialogFilePreview from 'components/smart/Dialog/FilePreview';
 import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 
 // CONTEXT
@@ -72,6 +75,7 @@ const FilePreviewContextProvider = ({ children, revokeOnChange, ...props }) => {
     selectedId: null,
     filesData: {},
   });
+
   const dispatch = useDispatch();
 
   const onOpenFilePreview = useCallback(

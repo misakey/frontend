@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { forbidden } from '@misakey/ui/constants/errorTypes';
 import BoxesSchema from 'store/schemas/Boxes';
 
 import { createLeaveBoxEventBuilder } from 'helpers/builder/boxes';
@@ -16,9 +16,6 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import { useHistory } from 'react-router-dom';
 
 import DialogConfirm from '@misakey/ui/Dialog/Confirm';
-
-// CONSTANTS
-const { forbidden } = errorTypes;
 
 // COMPONENTS
 function LeaveBoxDialog({ box, t, open, onClose, onSuccess }) {

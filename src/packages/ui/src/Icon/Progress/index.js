@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -25,7 +25,11 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-const IconProgress = ({ isLoading, done, Icon, DoneIcon, fontSize, color, ...props }) => {
+const IconProgress = forwardRef(({
+  isLoading, done, fontSize, color,
+  Icon, DoneIcon,
+  ...props
+}, ref) => {
   const classes = useStyles();
 
   const size = useMemo(
@@ -37,12 +41,14 @@ const IconProgress = ({ isLoading, done, Icon, DoneIcon, fontSize, color, ...pro
     <Box position="relative">
       {done ? (
         <DoneIcon
+          ref={ref}
           fontSize={fontSize}
           color={color}
           {...props}
         />
       ) : (
         <Icon
+          ref={ref}
           fontSize={fontSize}
           color={color}
           {...props}
@@ -57,7 +63,7 @@ const IconProgress = ({ isLoading, done, Icon, DoneIcon, fontSize, color, ...pro
       )}
     </Box>
   );
-};
+});
 
 IconProgress.propTypes = {
   isLoading: PropTypes.bool.isRequired,

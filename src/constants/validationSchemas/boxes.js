@@ -1,14 +1,13 @@
 import * as Yup from 'yup';
 import { IDENTIFIER, EMAIL_DOMAIN } from '@misakey/ui/constants/accessTypes';
 import ACCESS_LEVELS, { LIMITED } from '@misakey/ui/constants/accessLevels';
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { required, malformed, invalid } from '@misakey/ui/constants/errorTypes';
 import routes from 'routes';
 import { generatePath } from 'react-router-dom';
 import isNil from '@misakey/helpers/isNil';
 import { emailFieldValidation } from 'constants/fieldValidations';
 
 // CONSTANTS
-const { required, malformed, invalid } = errorTypes;
 const KEY_REGEX = '[A-Za-z0-9-_]+';
 
 // HELPERS

@@ -3,59 +3,52 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withTranslation } from 'react-i18next';
 
-import { CARD_BORDER_RADIUS } from '@misakey/ui/constants/sizes';
-
 import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import eventStopPropagation from '@misakey/helpers/event/stopPropagation';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Avatar from '@misakey/ui/Avatar/User';
 import TypographyPreWrapped from '@misakey/ui/Typography/PreWrapped';
-import Typography from '@material-ui/core/Typography';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
 import MuiCard from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Box from '@material-ui/core/Box';
-import CardHeader from 'components/dumb/Card/Header';
+import CardHeader from '@material-ui/core/CardHeader';
 
+// HOOKS
 const useStyles = makeStyles((theme) => ({
-  root: {
-    '& > :first-child': {
-      margin: theme.spacing(0, 1, 0, 0),
+  container: {
+    '&:hover': {
+      '& > $root': {
+        borderTopColor: theme.palette.divider,
+        borderBottomColor: theme.palette.divider,
+      },
     },
+  },
+  root: {
+    position: 'relative',
+    borderTop: '1px solid transparent',
+    borderBottom: '1px solid transparent',
+  },
+  avatarRoot: {
+    margin: theme.spacing(1, 1, 0, 0),
   },
   card: {
     overflow: 'hidden',
-    background: 0,
+    background: 'none',
     maxWidth: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
   },
-  cardMaxWidth: {
-    [theme.breakpoints.down('xl')]: {
-      maxWidth: '50%',
-    },
-    [theme.breakpoints.down('md')]: {
-      maxWidth: '65%',
-    },
-    [theme.breakpoints.down('sm')]: {
-      maxWidth: '80%',
-    },
-    [theme.breakpoints.up('xl')]: {
-      maxWidth: 600,
-    },
-  },
-  boxRoot: {
-    borderRadius: CARD_BORDER_RADIUS,
-    backgroundColor: theme.palette.background.message,
-  },
-  selected: {
-    backgroundColor: theme.palette.action.selected,
+  cardHeaderRoot: {
+    padding: theme.spacing(0),
   },
   content: {
     padding: 0,
-  },
-  text: {
-    padding: theme.spacing(1),
   },
   date: {
     padding: theme.spacing(0, 1),
@@ -63,28 +56,28 @@ const useStyles = makeStyles((theme) => ({
   footer: {
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing(0),
+    width: '100%',
     // borderTop: `1px solid ${theme.palette.divider}`,
-    '& > *': {
-      width: '100%',
-      '& *': {
-        borderRadius: `0 0 ${CARD_BORDER_RADIUS}px ${CARD_BORDER_RADIUS}px`,
-      },
-    },
+    // '& > *': {
+    //   width: '100%',
+    //   '& *': {
+    //     borderRadius: `0 0 ${CARD_BORDER_RADIUS}px ${CARD_BORDER_RADIUS}px`,
+    //   },
+    // },
   },
 }));
 
 const EventCard = forwardRef(({
-  isFromCurrentUser,
+  containerProps,
+  content,
   children,
   classes,
   author,
   text,
   date,
   isEdited,
-  isSelected,
   actions,
   titleProps,
-  disableMaxWidth,
   t,
   ...rest
 }, ref) => {
@@ -93,80 +86,104 @@ const EventCard = forwardRef(({
 
   return (
     <Box
-      display="flex"
-      alignItems="flex-end"
-      justifyContent={isFromCurrentUser ? 'flex-end' : 'flex-start'}
-      py={1}
-      px={2}
       className={clsx(
+        internalClasses.container,
         classes.container,
-        internalClasses.root,
-        { [internalClasses.selected]: isSelected },
       )}
-      {...omitTranslationProps(rest)}
+      {...containerProps}
     >
-      {!isFromCurrentUser && <Avatar avatarUrl={avatarUrl} displayName={displayName} />}
-      <MuiCard
-        ref={ref}
+      <Box
+        display="flex"
+        alignItems="flex-start"
+        justifyContent="flex-start"
+        py={1}
+        px={2}
         className={clsx(
-          internalClasses.card,
-          classes.card,
-          { [internalClasses.cardMaxWidth]: !disableMaxWidth },
+          classes.root,
+          internalClasses.root,
         )}
-        elevation={0}
-        square
+        {...omitTranslationProps(rest)}
       >
-        {!isFromCurrentUser && (
+        <Avatar
+          classes={{ root: internalClasses.avatarRoot }}
+          avatarUrl={avatarUrl}
+          displayName={displayName}
+        />
+        <MuiCard
+          ref={ref}
+          className={clsx(
+            internalClasses.card,
+            classes.card,
+          )}
+          elevation={0}
+          square
+        >
           <CardHeader
-            title={displayName}
-            titleTypographyProps={titleProps}
-          />
-        )}
-        <Box classes={{ root: internalClasses.boxRoot }}>
-          {children}
-          <CardContent classes={{ root: internalClasses.content }}>
-            {!isNil(text) && (
-              <TypographyPreWrapped component={Box} className={internalClasses.text}>
-                {text}
-              </TypographyPreWrapped>
-            )}
-            {!isNil(date) && (
-              <Typography
-                className={internalClasses.date}
-                variant="caption"
-                display="block"
-                color="textSecondary"
-                align="right"
+            classes={{ root: internalClasses.cardHeaderRoot }}
+            disableTypography
+            title={(
+              <Box
+                display="flex"
+                flexDirection="row"
               >
-                {isEdited ? t('components:cardEvent.edited', { date }) : date}
-              </Typography>
-            )}
-          </CardContent>
-          {!isNil(actions) && (
+                <Subtitle variant="subtitle1" color="textPrimary" {...titleProps}>
+                  {displayName}
+                </Subtitle>
+                <Box ml={2}>
+                  <Subtitle variant="subtitle1" color="textSecondary">
+                    {isEdited ? t('components:cardEvent.edited', { date }) : date}
+                  </Subtitle>
+                </Box>
+              </Box>
+              )}
+          />
+          {!isNil(text) && (
+          <TypographyPreWrapped component="div">
+            {text}
+          </TypographyPreWrapped>
+          )}
+          <Box
+            display="flex"
+            justifyContent="flex-start"
+          >
+            <CardContent
+              onTouchStart={eventStopPropagation}
+              classes={{ root: clsx(internalClasses.content, classes.content) }}
+            >
+              {content}
+            </CardContent>
+            {!isNil(actions) && (
             <CardActions classes={{ root: internalClasses.footer }}>
-              <Box display="flex" flexDirection="column">
+              <Box
+                width="100%"
+                display="flex"
+                alignItems="center"
+                justifyContent="flex-start"
+              >
                 {actions}
               </Box>
             </CardActions>
-          )}
-        </Box>
-      </MuiCard>
+            )}
+            {children}
+          </Box>
+        </MuiCard>
+      </Box>
     </Box>
   );
 });
 
 EventCard.propTypes = {
+  content: PropTypes.node,
   children: PropTypes.node,
+  containerProps: PropTypes.object,
   classes: PropTypes.shape({
     container: PropTypes.string,
+    root: PropTypes.string,
     card: PropTypes.string,
-    cardMaxWidth: PropTypes.string,
+    content: PropTypes.string,
   }),
-  isFromCurrentUser: PropTypes.bool,
   text: PropTypes.node,
   isEdited: PropTypes.bool,
-  isSelected: PropTypes.bool,
-  disableMaxWidth: PropTypes.bool,
   author: PropTypes.shape({
     displayName: PropTypes.string,
     avatarUrl: PropTypes.string,
@@ -183,7 +200,9 @@ EventCard.propTypes = {
 };
 
 EventCard.defaultProps = {
+  content: null,
   children: null,
+  containerProps: {},
   classes: {},
   author: {
     avatar: null,
@@ -191,10 +210,7 @@ EventCard.defaultProps = {
   },
   text: null,
   isEdited: false,
-  isSelected: false,
-  disableMaxWidth: false,
   titleProps: {},
-  isFromCurrentUser: false,
   actions: null,
   date: null,
 };

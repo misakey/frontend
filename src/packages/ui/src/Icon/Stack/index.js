@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
@@ -28,7 +29,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const IconStack = ({ ForegroundIcon, BackgroundIcon, color, fontSize, ...props }) => {
+const IconStack = forwardRef(({
+  ForegroundIcon, BackgroundIcon,
+  color, fontSize,
+  ...props
+}, ref) => {
   const classes = useStyles({ color, fontSize });
 
   return (
@@ -38,7 +43,7 @@ const IconStack = ({ ForegroundIcon, BackgroundIcon, color, fontSize, ...props }
       justifyContent="center"
       alignItems="center"
     >
-      <BackgroundIcon className={clsx(classes.background, classes.stack)} {...props} />
+      <BackgroundIcon ref={ref} className={clsx(classes.background, classes.stack)} {...props} />
       <ForegroundIcon
         fontSize={fontSize}
         className={clsx(classes.stack, classes.foreground)}
@@ -46,7 +51,7 @@ const IconStack = ({ ForegroundIcon, BackgroundIcon, color, fontSize, ...props }
       />
     </Box>
   );
-};
+});
 
 IconStack.propTypes = {
   ForegroundIcon: PropTypes.elementType.isRequired,

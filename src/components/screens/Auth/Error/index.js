@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import errorTypes from '@misakey/ui/constants/errorTypes';
+import { conflict } from '@misakey/ui/constants/errorTypes';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import routes from 'routes';
 
@@ -35,8 +35,6 @@ import ButtonSignOut from '@misakey/auth/components/Button/SignOut';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 // CONSTANTS
-const { conflict } = errorTypes;
-
 const { identity: IDENTITY_SELECTOR, isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
 
 // HOOKS
