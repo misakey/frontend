@@ -243,10 +243,10 @@
     "accessWhitelist": {
       "label": "Ajouter des personnes ou des groupes",
       "error": {
-        "malformed": "Veuillez entrer un email valide",
+        "malformed": "Au moins un email est invalide",
         "required": "Au moins une règle est nécessaire",
         "email_domain": {
-          "malformed": "Veuillez entrer un nom de domaine valide",
+          "malformed": "Au moins un nom de domaine est invalide",
           "required": "Le nom de domaine est requis"
         }
       }

@@ -1,10 +1,12 @@
 import { useMemo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
-import AvatarColorized from '@misakey/ui/Avatar/Colorized';
+import isFunction from '@misakey/helpers/isFunction';
+
+import Avatar from '@misakey/ui/Avatar';
 import Chip from '@material-ui/core/Chip';
 
-import isFunction from '@misakey/helpers/isFunction';
+import DomainIcon from '@material-ui/icons/Domain';
 
 // HOOKS
 const useEvents = (onClick, onDelete) => useMemo(() => {
@@ -19,7 +21,7 @@ const useEvents = (onClick, onDelete) => useMemo(() => {
   return events;
 }, [onClick, onDelete]);
 
-const ChipUser = forwardRef(({
+const ChipDomain = forwardRef(({
   identifier, displayName, label, avatarUrl,
   onClick, onDelete,
   ...props
@@ -30,8 +32,12 @@ const ChipUser = forwardRef(({
     <Chip
       ref={ref}
       component="div"
-      avatar={<AvatarColorized text={displayName || identifier} image={avatarUrl} />}
-      label={label || displayName || identifier}
+      avatar={(
+        <Avatar>
+          <DomainIcon fontSize="small" />
+        </Avatar>
+      )}
+      label={label || identifier}
       variant="outlined"
       {...events}
       {...props}
@@ -39,7 +45,7 @@ const ChipUser = forwardRef(({
   );
 });
 
-ChipUser.propTypes = {
+ChipDomain.propTypes = {
   identifier: PropTypes.string,
   displayName: PropTypes.string,
   label: PropTypes.string,
@@ -49,7 +55,7 @@ ChipUser.propTypes = {
   onClick: PropTypes.func,
 };
 
-ChipUser.defaultProps = {
+ChipDomain.defaultProps = {
   identifier: '',
   displayName: '',
   avatarUrl: '',
@@ -58,4 +64,4 @@ ChipUser.defaultProps = {
   onClick: null,
 };
 
-export default ChipUser;
+export default ChipDomain;

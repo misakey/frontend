@@ -57,7 +57,7 @@ const SharingFormWhitelist = ({ parent, name, initialValue, disabled, ...props }
 SharingFormWhitelist.propTypes = {
   parent: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  initialValue: PropTypes.object,
+  initialValue: PropTypes.arrayOf(PropTypes.object),
   disabled: PropTypes.bool,
 };
 

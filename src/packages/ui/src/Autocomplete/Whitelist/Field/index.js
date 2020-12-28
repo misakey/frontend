@@ -4,8 +4,11 @@ import PropTypes from 'prop-types';
 import { EMAIL_DOMAIN } from '@misakey/ui/constants/accessTypes';
 
 import path from '@misakey/helpers/path';
+import head from '@misakey/helpers/head';
+import compact from '@misakey/helpers/compact';
 import prop from '@misakey/helpers/prop';
 import isString from '@misakey/helpers/isString';
+import isNil from '@misakey/helpers/isNil';
 
 import useWithErrorsMapper from '@misakey/hooks/useWithErrorsMapper';
 
@@ -17,8 +20,13 @@ const identifierValuePath = path(['identifier', 'value']);
 const typeProp = prop('type');
 
 const parseError = (error, value) => {
-  const type = typeProp(value);
-  const errorOrSuberror = isString(error) ? error : identifierValuePath(error);
+  if (isNil(error)) {
+    return undefined;
+  }
+  const firstErrorKey = head(Object.keys(error));
+  const type = typeProp(value[firstErrorKey]);
+  const errorItem = head(compact(error));
+  const errorOrSuberror = isString(errorItem) ? errorItem : identifierValuePath(errorItem);
   return type === EMAIL_DOMAIN ? `${EMAIL_DOMAIN}.${errorOrSuberror}` : errorOrSuberror;
 };
 

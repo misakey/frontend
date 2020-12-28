@@ -32,7 +32,6 @@ import Box from '@material-ui/core/Box';
 import ListItemAccessLevel from 'components/dumb/ListItem/AccessLevel';
 import SelectItemAccessLevel from 'components/dumb/SelectItem/AccessLevel';
 import TextField from '@misakey/ui/Form/Field/TextFieldWithErrors';
-import FormikAutoSave from '@misakey/ui/Formik/AutoSave';
 import SharingFormWhitelist from 'components/screens/app/Boxes/Read/Sharing/Form/Whitelist';
 
 // CONSTANTS
@@ -40,7 +39,7 @@ const { identifierValue: IDENTIFIER_VALUE_SELECTOR } = authSelectors;
 const ACCESSES_FIELD_NAME = 'accessLevel';
 const WHITELIST_FIELD_NAME = 'accessWhitelist';
 
-const WHITELIST_INITIAL_VALUE = null;
+const WHITELIST_INITIAL_VALUE = [];
 
 const ACCESS_EVENT_TYPE = {
   RM: ACCESS_RM,
@@ -147,8 +146,12 @@ function ShareBoxForm({
   );
 
   const getOptionDisabled = useCallback(
-    (option) => senderMatchesIdentifierValue(option, meIdentifierValue)
-    || whitelistedValues.includes(identifierValuePath(option)),
+    (option) => {
+      const optionIdentifierValue = identifierValuePath(option);
+      return optionIdentifierValue.endsWith(',')
+    || senderMatchesIdentifierValue(option, meIdentifierValue)
+    || whitelistedValues.includes(optionIdentifierValue);
+    },
     [meIdentifierValue, whitelistedValues],
   );
 
@@ -194,6 +197,13 @@ function ShareBoxForm({
     ) => {
       let newEvents = [];
 
+      resetForm({
+        values: {
+          [WHITELIST_FIELD_NAME]: initialValues[WHITELIST_FIELD_NAME],
+          [ACCESSES_FIELD_NAME]: nextAccessLevel,
+        },
+      });
+
       switch (nextAccessLevel) {
         case PRIVATE: {
           const accessRmEvents = accesses.map(({ id: referrerId }) => ({
@@ -228,28 +238,33 @@ function ShareBoxForm({
           const invitationLinkEvents = needToAddInvitationEvent
             ? [generateInvitationLinkEvent()]
             : [];
-          const value = identifierValuePath(nextWhitelist);
           // @FIXME safety check, but it should never happen
           // getOptionDisabled + validationSchema already handle the case
-          const whitelistEvents = isEmpty(nextWhitelist) || whitelistedValues.includes(value)
-            ? []
-            : [await tryAddingAutoInvite({
+          const whitelistValues = nextWhitelist
+            .map((el) => {
+              const value = identifierValuePath(el);
+              const { type } = el;
+              return { value, type };
+            })
+            .filter(({ value }) => !whitelistedValues.includes(value));
+          const whitelistEventsWithAutoInvite = await Promise.all(whitelistValues
+            .map(async ({ value, type }) => tryAddingAutoInvite({
               event: {
                 type: ACCESS_EVENT_TYPE.ADD,
                 content: {
-                  restrictionType: nextWhitelist.type,
+                  restrictionType: type,
                   value,
                 },
               },
               boxKeyShare,
               boxSecretKey,
-            })];
+            })));
           const identifiersToWhitelistEvents = isPublic && !isEmptyMembersNotInWhitelist
             ? membersToWhitelistEvents(membersNotInWhitelist)
             : [];
           newEvents = [
             ...identifiersToWhitelistEvents,
-            ...whitelistEvents,
+            ...whitelistEventsWithAutoInvite,
             ...invitationLinkEvents,
           ];
           break;
@@ -261,11 +276,7 @@ function ShareBoxForm({
       }
       try {
         await bulkUpdate(newEvents);
-        enqueueSnackbar(t('boxes:read.share.update.success'), { variant: 'success' });
-        return resetForm({ values: {
-          [WHITELIST_FIELD_NAME]: initialValues[WHITELIST_FIELD_NAME],
-          [ACCESSES_FIELD_NAME]: nextAccessLevel,
-        } });
+        return enqueueSnackbar(t('boxes:read.share.update.success'), { variant: 'success' });
       } catch (err) {
         logSentryException(err);
         return onBulkError();
@@ -352,7 +363,6 @@ function ShareBoxForm({
             </MenuItem>
           </Field>
         )}
-        <FormikAutoSave />
       </Form>
     </Formik>
   );

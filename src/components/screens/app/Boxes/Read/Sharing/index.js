@@ -9,6 +9,7 @@ import { LIMITED_RESTRICTION_TYPES } from 'constants/app/boxes/accesses';
 import { IDENTIFIER } from '@misakey/ui/constants/accessTypes';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { updateAccessesEvents } from 'store/reducers/box';
+import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 
 import { getUpdatedAccesses, getEmailDomainAccesses, getRestrictions, sortRestrictionsByType } from 'helpers/accesses';
 import isNil from '@misakey/helpers/isNil';
@@ -65,6 +66,11 @@ const useStyles = makeStyles((theme) => ({
   },
   listItemText: {
     margin: 0,
+  },
+  content: {
+    boxSizing: 'border-box',
+    maxHeight: `calc(100% - ${APPBAR_HEIGHT}px)`,
+    overflow: 'auto',
   },
 }));
 
@@ -197,7 +203,7 @@ function ShareBoxDialog({ box, t }) {
 
         </AppBarDrawer>
       </ElevationScroll>
-      <Box p={CONTENT_SPACING} pt={0} ref={(ref) => setContentRef(ref)}>
+      <Box p={CONTENT_SPACING} pt={0} ref={(ref) => setContentRef(ref)} className={classes.content}>
         <List disablePadding>
           <ListItem disabled={!isCurrentUserOwner}>
             <ListItemAvatar>

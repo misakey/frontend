@@ -204,10 +204,10 @@
     "accessWhitelist": {
       "label": "Add people or groups",
       "error": {
-        "malformed": "Please, type a valid email",
-        "required": "Email is required",
+        "malformed": "At least one email is invalid",
+        "required": "At least one rule is required",
         "domain": {
-          "malformed": "Please, type a valid domain name",
+          "malformed": "At least one domain name is invalid",
           "required": "Domain name is required"
         }
       }

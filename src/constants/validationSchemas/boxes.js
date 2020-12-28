@@ -40,7 +40,7 @@ export const boxDeletionDialogValidationSchema = (expected) => Yup.object().shap
 });
 
 export const accessWhitelistValidationSchema = {
-  accessWhitelist: Yup.object().shape({
+  accessWhitelist: Yup.array(Yup.object().shape({
     type: Yup.string().oneOf([IDENTIFIER, EMAIL_DOMAIN]),
     identifier: Yup.object().when('type',
       (type, schema) => (type === IDENTIFIER
@@ -50,7 +50,7 @@ export const accessWhitelistValidationSchema = {
         : schema.shape({
           value: emailFieldValidation.domain,
         }))),
-  }).nullable(),
+  })),
 };
 
 export const makeAccessValidationSchema = ({ isEmptyMembersNotInWhitelist } = {}) => Yup.object()
@@ -61,7 +61,7 @@ export const makeAccessValidationSchema = ({ isEmptyMembersNotInWhitelist } = {}
       || isNil(isEmptyMembersNotInWhitelist);
         const isRequired = accessLevel === LIMITED && noMembers;
         return isRequired
-          ? schema.required(required)
+          ? schema.min(1, required)
           : schema;
       }),
     accessLevel: Yup.string().oneOf(ACCESS_LEVELS).required(required),

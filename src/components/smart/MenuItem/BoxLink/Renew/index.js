@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, forwardRef } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -17,7 +17,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 
 // COMPONENTS
-const MenuItemBoxLinkRenew = ({ box, onClose }) => {
+const MenuItemBoxLinkRenew = forwardRef(({ box, onClose }, ref) => {
   const { t } = useTranslation('boxes');
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
@@ -74,6 +74,7 @@ const MenuItemBoxLinkRenew = ({ box, onClose }) => {
   return (
     <>
       <MenuItem
+        ref={ref}
         button
         onClick={onClick}
         aria-label={t('boxes:renewLink.menu.primary')}
@@ -94,7 +95,7 @@ const MenuItemBoxLinkRenew = ({ box, onClose }) => {
       </DialogConfirm>
     </>
   );
-};
+});
 
 MenuItemBoxLinkRenew.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
