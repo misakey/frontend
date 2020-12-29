@@ -25,7 +25,7 @@ import { useSnackbar } from 'notistack';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import Formik from '@misakey/ui/Formik';
-import Field from '@misakey/ui/Form/Field';
+import FieldSubmitOnChange from '@misakey/ui/Form/Field/SubmitOnChange';
 import { Form } from 'formik';
 import MenuItem from '@material-ui/core/MenuItem';
 import Box from '@material-ui/core/Box';
@@ -340,7 +340,7 @@ function ShareBoxForm({
         </Box>
         {children}
         {isCurrentUserOwner && (
-          <Field
+          <FieldSubmitOnChange
             name={ACCESSES_FIELD_NAME}
             prefix="boxes."
             variant="outlined"
@@ -361,7 +361,7 @@ function ShareBoxForm({
             <MenuItem value={LIMITED}>
               <SelectItemAccessLevel value={LIMITED} />
             </MenuItem>
-          </Field>
+          </FieldSubmitOnChange>
         )}
       </Form>
     </Formik>

@@ -23,6 +23,9 @@ const parseError = (error, value) => {
   if (isNil(error)) {
     return undefined;
   }
+  if (isString(error)) {
+    return error;
+  }
   const firstErrorKey = head(Object.keys(error));
   const type = typeProp(value[firstErrorKey]);
   const errorItem = head(compact(error));
