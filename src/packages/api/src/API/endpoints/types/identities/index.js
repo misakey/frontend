@@ -89,6 +89,7 @@ export default {
       method: 'POST',
       path: '/box-users/:identityId/contact',
       auth: true,
+      withCsrfToken: true,
     },
   },
 };
