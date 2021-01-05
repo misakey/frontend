@@ -21,6 +21,7 @@ function ConfirmationDialog({
   onConfirm, isDialogOpen, onClose, onSuccess,
   title, children,
   confirmButtonText,
+  irreversible,
   t,
   ...rest
 }) {
@@ -59,17 +60,20 @@ function ConfirmationDialog({
       {...omitTranslationProps(rest)}
     >
       <DialogTitleWithClose title={title} onClose={onClose} />
-      <ConfirmDialogContent>{children}</ConfirmDialogContent>
-      <DialogActions>
-        <BoxControls
-          primary={{
-            autoFocus: true,
-            onClick,
-            isLoading: isValidating,
-            text,
-          }}
-        />
-      </DialogActions>
+      <ConfirmDialogContent>
+        {children}
+        <DialogActions>
+          <BoxControls
+            primary={{
+              autoFocus: true,
+              onClick,
+              isLoading: isValidating,
+              text,
+            }}
+            irreversible={irreversible}
+          />
+        </DialogActions>
+      </ConfirmDialogContent>
     </Dialog>
   );
 }
@@ -79,6 +83,7 @@ ConfirmationDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func,
   isDialogOpen: PropTypes.bool.isRequired,
+  irreversible: PropTypes.bool,
   children: PropTypes.node.isRequired,
   title: PropTypes.string,
   t: PropTypes.func.isRequired,
@@ -86,6 +91,7 @@ ConfirmationDialog.propTypes = {
 };
 
 ConfirmationDialog.defaultProps = {
+  irreversible: false,
   confirmButtonText: null,
   title: null,
   onSuccess: null,

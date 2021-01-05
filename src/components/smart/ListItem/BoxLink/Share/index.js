@@ -12,6 +12,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import MenuBoxLink from 'components/smart/Menu/BoxLink';
+import withDialogShare from 'components/smart/Dialog/BoxLink/Share/with';
 
 import LinkIcon from '@material-ui/icons/Link';
 
@@ -26,9 +27,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const ListItemShareBoxLink = ({ shareAction, disabled, isOwner, box }) => {
+const ButtonShareBoxLink = withDialogShare(Button);
+
+const ListItemShareBoxLink = ({ disabled, isOwner, box }) => {
   const { t } = useTranslation(['common', 'boxes']);
   const classes = useStyles();
+
 
   return (
     <ListItem
@@ -43,11 +47,11 @@ const ListItemShareBoxLink = ({ shareAction, disabled, isOwner, box }) => {
         primary={t('boxes:read.share.link.title')}
         primaryTypographyProps={{ variant: 'h6', color: 'textPrimary' }}
       />
-      <Button
+      <ButtonShareBoxLink
         standing={BUTTON_STANDINGS.TEXT}
         text={t('common:share')}
         disabled={disabled}
-        onClick={shareAction}
+        box={box}
       />
       {isOwner && (
       <ListItemSecondaryAction>
@@ -60,7 +64,6 @@ const ListItemShareBoxLink = ({ shareAction, disabled, isOwner, box }) => {
 
 ListItemShareBoxLink.propTypes = {
   box: PropTypes.shape(BoxSchema.propTypes).isRequired,
-  shareAction: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
   isOwner: PropTypes.bool,
 };

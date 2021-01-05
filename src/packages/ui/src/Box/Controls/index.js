@@ -9,6 +9,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Box from '@material-ui/core/Box';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import ButtonSubmit from '@misakey/ui/Button/Submit';
+import TypographyIrreversible from '@misakey/ui/Typography/Irreversible';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const BoxControls = ({ primary, secondary, formik, ...rest }) => {
+const BoxControls = ({ primary, secondary, formik, irreversible, ...rest }) => {
   const classes = useStyles();
 
   const justifyContent = useMemo(
@@ -34,7 +35,12 @@ const BoxControls = ({ primary, secondary, formik, ...rest }) => {
   );
 
   const PrimaryButton = useMemo(
-    () => (formik ? ButtonSubmit : Button),
+    () => {
+      if (formik) {
+        return ButtonSubmit;
+      }
+      return Button;
+    },
     [formik],
   );
 
@@ -44,7 +50,12 @@ const BoxControls = ({ primary, secondary, formik, ...rest }) => {
         return primary;
       }
       if (isObject(primary)) {
-        return <PrimaryButton standing={BUTTON_STANDINGS.MAIN} {...primary} />;
+        return (
+          <PrimaryButton
+            standing={BUTTON_STANDINGS.MAIN}
+            {...primary}
+          />
+        );
       }
       return null;
     },
@@ -75,19 +86,28 @@ const BoxControls = ({ primary, secondary, formik, ...rest }) => {
       {...rest}
     >
       {secondaryNode}
-      {primaryNode}
+      {irreversible
+        ? (
+          <Box display="flex" flexDirection="column">
+            <TypographyIrreversible />
+            {primaryNode}
+          </Box>
+        )
+        : primaryNode}
     </Box>
   );
 };
 
 BoxControls.propTypes = {
   formik: PropTypes.bool,
+  irreversible: PropTypes.bool,
   primary: PropTypes.oneOfType([PropTypes.object, PropTypes.node]),
   secondary: PropTypes.oneOfType([PropTypes.object, PropTypes.node]),
 };
 
 BoxControls.defaultProps = {
   formik: false,
+  irreversible: false,
   primary: null,
   secondary: null,
 };

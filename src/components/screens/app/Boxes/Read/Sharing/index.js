@@ -21,11 +21,12 @@ import { createBulkBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useGetShareMethods from 'hooks/useGetShareMethods';
+import useBoxShareMetadata from 'hooks/useBoxShareMetadata';
 import useBoxAccesses from 'hooks/useBoxAccesses';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
+import { useBoxReadContext } from 'components/smart/Context/Boxes/BoxRead';
 
 import { Link } from 'react-router-dom';
 import List from '@material-ui/core/List';
@@ -83,7 +84,7 @@ function ShareBoxDialog({ box, t }) {
 
   const [removeId, setRemoveId] = useState(null);
 
-  const { id: boxId, publicKey, title, accesses, members, creator } = useSafeDestr(box);
+  const { id: boxId, accesses, members, creator } = useSafeDestr(box);
 
   const meIdentityId = useSelector(IDENTITY_ID_SELECTOR);
   const dispatch = useDispatch();
@@ -126,19 +127,12 @@ function ShareBoxDialog({ box, t }) {
     [members, whitelist, creator],
   );
 
+  const { secretKey: boxSecretKey } = useBoxReadContext();
+
   const {
-    canShare,
     invitationURL,
     boxKeyShare,
-    boxSecretKey,
-    onShare,
-    onCopyLink,
-  } = useGetShareMethods(boxId, title, publicKey, t);
-
-  const shareAction = useMemo(
-    () => (canShare ? onShare : onCopyLink),
-    [canShare, onCopyLink, onShare],
-  );
+  } = useBoxShareMetadata(boxId);
 
   const onRemove = useCallback(
     async (event, referrerId, memberId) => {
@@ -224,7 +218,6 @@ function ShareBoxDialog({ box, t }) {
               </Box>
               <ListItemShareBoxLink
                 box={box}
-                shareAction={shareAction}
                 disabled={isPrivate}
                 isOwner={isCurrentUserOwner}
               />
@@ -291,7 +284,6 @@ function ShareBoxDialog({ box, t }) {
               </Box>
               <ListItemShareBoxLink
                 box={box}
-                shareAction={shareAction}
                 disabled={isPrivate}
                 isOwner={isCurrentUserOwner}
               />

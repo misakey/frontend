@@ -24,8 +24,8 @@ const useStyles = makeStyles((theme) => ({
     margin: gutterBottom ? theme.spacing(1, 2, 7, 2) : theme.spacing(1, 2),
     padding: theme.spacing(0),
     display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
     ...theme.mixins.toolbar, // apply toolbar minHeight rules
   }),
   typographyRoot: {
@@ -70,11 +70,11 @@ const DialogTitleWithCloseIcon = ({
             <Icon />
           </IconButton>
         )}
+        {title && (
+          <Typography classes={{ root: clsx(internalClasses.typographyRoot, classes.title) }} variant="h6">{title}</Typography>
+        )}
         {children}
       </Box>
-      {title && (
-        <Typography classes={{ root: clsx(internalClasses.typographyRoot, classes.title) }} variant="h6">{title}</Typography>
-      )}
     </MuiDialogTitle>
   );
 };

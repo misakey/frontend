@@ -8,11 +8,16 @@ import { useFormikContext } from 'formik';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 // NB: this component expects to be wrapped in a formik context
-const ButtonSubmit = ({ t, text, isLoading, ...rest }) => {
+const ButtonSubmit = ({
+  component: Component,
+  t,
+  text, isLoading,
+  ...rest
+}) => {
   const { isSubmitting } = useFormikContext();
 
   return (
-    <Button
+    <Component
       type="submit"
       standing={BUTTON_STANDINGS.MAIN}
       isLoading={isSubmitting || isLoading}
@@ -23,12 +28,15 @@ const ButtonSubmit = ({ t, text, isLoading, ...rest }) => {
 };
 
 ButtonSubmit.propTypes = {
-  t: PropTypes.func.isRequired,
+  component: PropTypes.elementType,
   text: PropTypes.string,
   isLoading: PropTypes.bool,
+  // withTranslation
+  t: PropTypes.func.isRequired,
 };
 
 ButtonSubmit.defaultProps = {
+  component: Button,
   text: '',
   isLoading: false,
 };

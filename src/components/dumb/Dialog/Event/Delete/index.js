@@ -51,10 +51,10 @@ const DialogEventDelete = ({
       isDialogOpen={isDialogOpen}
       onClose={onClose}
       confirmButtonText={t('common:delete')}
+      title={t('boxes:read.events.delete.title')}
+      irreversible
       {...omitTranslationProps(rest)}
-    >
-      {t('boxes:read.events.delete.confirmDialog')}
-    </DialogConfirm>
+    />
   );
 };
 

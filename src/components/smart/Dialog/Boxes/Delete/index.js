@@ -16,6 +16,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useBoxAccesses from 'hooks/useBoxAccesses';
+import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 
 import FormFieldTextField from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
@@ -44,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
   const classes = useStyles();
   const handleHttpErrors = useHandleHttpErrors();
+  const fullScreen = useDialogFullScreen();
 
   const { id, accesses } = useSafeDestr(box);
 
@@ -87,11 +89,17 @@ function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
     <Dialog
       open={open}
       onClose={onClose}
+      fullWidth
+      fullScreen={fullScreen}
     >
-      <DialogTitleWithClose onClose={onClose} />
+      <DialogTitleWithClose
+        fullScreen={fullScreen}
+        onClose={onClose}
+        title={t('boxes:delete.dialog.title', { title: box.title })}
+      />
       <DialogContent className={classes.dialogContentRoot}>
         <TypographyPreWrapped>
-          {t('boxes:delete.dialog.description', { title: box.title })}
+          {t('boxes:delete.dialog.description')}
         </TypographyPreWrapped>
         <Formik
           onSubmit={onSubmit}
@@ -113,13 +121,14 @@ function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
                 placeholder={confirmValue}
               />
             </Box>
-            <DialogActions className={classes.dialogActionsRoot}>
+            <DialogActions>
               <BoxControls
                 primary={{
                   type: 'submit',
                   text: t('common:delete'),
                   disabled: isFetching,
                 }}
+                irreversible
                 formik
               />
             </DialogActions>

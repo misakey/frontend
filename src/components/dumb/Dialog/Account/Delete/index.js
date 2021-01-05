@@ -73,6 +73,7 @@ const DeleteAccountDialog = ({ onClose, onSuccess, open, identity, t }) => {
                 text: t('common:cancel'),
                 onClick: onClose,
               }}
+              irreversible
               formik
             />
           </DialogActions>

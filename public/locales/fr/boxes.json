@@ -70,7 +70,7 @@
       },
       "e2eeIntro": "Les messages et documents envoyés dans cette conversation sont protégés avec le chiffrement de bout en bout.",
       "delete": {
-        "confirmDialog": "Êtes-vous sûr·e de vouloir supprimer ce message\u00a0?\nCette action est irréversible.",
+        "title": "Supprimer ce message\u00a0?",
         "success": "Le message a été supprimé\u00a0!"
       },
       "deleted": {
@@ -215,7 +215,8 @@
   },
   "delete": {
     "dialog": {
-      "description": "Êtes-vous sûr·e de vouloir supprimer «\u00a0{{title}}\u00a0»\u00a0?\nCette action est irréversible. Veuillez saisir «\u00a0supprimer\u00a0» pour confirmer",
+      "title": "Supprimer «\u00a0{{title}}\u00a0»\u00a0?",
+      "description": "Veuillez saisir «\u00a0supprimer\u00a0» pour confirmer",
       "confirmValue": "supprimer"
     },
     "success": "L'espace privé a été supprimé"

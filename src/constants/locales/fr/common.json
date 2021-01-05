@@ -30,6 +30,7 @@
   "identifier": "Identifiant",
   "identity": "Identité",
   "incompatibleBrowser": "Cette fonctionnalité n'est pas disponible sur ce navigateur pour l'instant\u00a0:(",
+  "irreversible": "Cette action est irréversible",
   "loading": "Chargement",
   "more": "Plus",
   "next": "Suivant",
