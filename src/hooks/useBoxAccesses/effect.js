@@ -3,20 +3,31 @@ import EventsSchema from 'store/schemas/Boxes/Events';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
 import { normalize } from 'normalizr';
+import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
 import { getBoxAccessesBuilder } from '@misakey/helpers/builder/boxes';
 import isNil from '@misakey/helpers/isNil';
+import { sendersIdentifiersMatch } from 'helpers/sender';
 
 import { useCallback, useMemo } from 'react';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { useBoxReadContext } from 'components/smart/Context/Boxes/BoxRead';
 
-export default (box) => {
+export default (box, canFetch = true) => {
   const dispatch = useDispatch();
-  const { id, accesses } = useSafeDestr(box);
-  const { isCurrentUserOwner } = useBoxReadContext();
+  const { id, accesses, creator } = useSafeDestr(box);
+  const { isCurrentUserOwner: contextIsCurrentUserOwner } = useBoxReadContext();
+
+  const currentUser = useSelector(getCurrentUserSelector);
+
+  const isCurrentUserOwner = useMemo(
+    () => (isNil(contextIsCurrentUserOwner)
+      ? sendersIdentifiersMatch(creator, currentUser)
+      : contextIsCurrentUserOwner),
+    [creator, currentUser, contextIsCurrentUserOwner],
+  );
 
   /* FETCH ACCESSES */
   const onFetchAccesses = useCallback(
@@ -25,8 +36,8 @@ export default (box) => {
   );
 
   const shouldFetch = useMemo(
-    () => isNil(accesses) && isCurrentUserOwner,
-    [accesses, isCurrentUserOwner],
+    () => isNil(accesses) && isCurrentUserOwner && canFetch,
+    [accesses, isCurrentUserOwner, canFetch],
   );
 
   const onSuccess = useCallback(

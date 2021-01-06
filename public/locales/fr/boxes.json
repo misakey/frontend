@@ -133,7 +133,9 @@
         "title": "Lien d'accès"
       },
       "accesses": {
-        "title": "Partager avec des personnes et des groupes"
+        "title": "Partager avec des personnes et des groupes",
+        "identifier": "Emails",
+        "email_domain": "Domaines"
       },
       "update": {
         "success": "Les accès ont été modifiés avec succès",

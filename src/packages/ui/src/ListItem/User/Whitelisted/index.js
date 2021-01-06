@@ -27,9 +27,6 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 const SECONDARY_ACTION_MAX_WIDTH = 110;
 const AVATAR_WIDTH = 56;
 
-// HELPERS
-const domainMatchesEmail = (domain, email) => email.endsWith(`@${domain}`);
-
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   listItemRoot: ({ needsLink }) => ({
@@ -48,7 +45,6 @@ const ListItemUserWhitelisted = ({
   autoInvite,
   isOwner,
   isMember,
-  emailDomains,
   ...rest }) => {
   const { t } = useTranslation(['components', 'common']);
 
@@ -59,15 +55,9 @@ const ListItemUserWhitelisted = ({
     [onRemove],
   );
 
-  const fromEmailDomains = useMemo(
-    () => emailDomains.some((domain) => domainMatchesEmail(domain, identifier)),
-    [emailDomains, identifier],
-  );
-
-  // cannot remove owner or address with domain whitelisted
   const canRemove = useMemo(
-    () => hasOnRemove && !isOwner && (!isMember || !fromEmailDomains),
-    [hasOnRemove, isOwner, isMember, fromEmailDomains],
+    () => hasOnRemove && !isOwner,
+    [hasOnRemove, isOwner],
   );
 
   const accessStatus = useMemo(
@@ -176,7 +166,6 @@ ListItemUserWhitelisted.propTypes = {
   isMember: PropTypes.bool,
   isOwner: PropTypes.bool,
   id: PropTypes.string.isRequired,
-  emailDomains: PropTypes.arrayOf(PropTypes.string),
 };
 
 ListItemUserWhitelisted.defaultProps = {
@@ -185,7 +174,6 @@ ListItemUserWhitelisted.defaultProps = {
   autoInvite: false,
   isMember: false,
   isOwner: false,
-  emailDomains: [],
 };
 
 export default ListItemUserWhitelisted;

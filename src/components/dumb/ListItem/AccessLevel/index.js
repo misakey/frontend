@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import SelectItemAccessLevel from 'components/dumb/SelectItem/AccessLevel';
 import ListItem from '@material-ui/core/ListItem';
-import ACCESS_LEVELS from '@misakey/ui/constants/accessLevels';
+import ACCESS_LEVELS from '@misakey/ui/constants/accessModes';
 
 // COMPONENTS
 const ListItemAccessLevel = forwardRef(({ value, ...props }, ref) => (

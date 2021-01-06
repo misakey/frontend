@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-import ACCESS_LEVELS from '@misakey/ui/constants/accessLevels';
+import ACCESS_LEVELS from '@misakey/ui/constants/accessModes';
 
 import { useTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';

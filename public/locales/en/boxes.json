@@ -133,7 +133,9 @@
         "title": "Access link"
       },
       "accesses": {
-        "title": "Share with people and groups"
+        "title": "Share with people and groups",
+        "identifier": "Emails",
+        "email_domain": "Domains"
       },
       "update": {
         "success": "Accesses have been updated successfully",

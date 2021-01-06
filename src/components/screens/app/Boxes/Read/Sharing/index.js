@@ -6,23 +6,25 @@ import BoxesSchema from 'store/schemas/Boxes';
 import routes from 'routes';
 import { ACCESS_RM, ACCESS_BULK } from 'constants/app/boxes/events';
 import { LIMITED_RESTRICTION_TYPES } from 'constants/app/boxes/accesses';
-import { IDENTIFIER } from '@misakey/ui/constants/accessTypes';
+import { EMAIL_DOMAIN, IDENTIFIER } from '@misakey/ui/constants/accessTypes';
+import { PUBLIC } from '@misakey/ui/constants/accessModes';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 import { updateAccessesEvents } from 'store/reducers/box';
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 
-import { getUpdatedAccesses, getEmailDomainAccesses, getRestrictions, sortRestrictionsByType } from 'helpers/accesses';
+import { getUpdatedAccesses } from 'helpers/accesses';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
-import pluck from '@misakey/helpers/pluck';
+import partition from '@misakey/helpers/partition';
 import differenceWith from '@misakey/helpers/differenceWith';
-import { senderMatchesIdentifierValue, senderMatchesIdentityId, sendersMatch, identifierValuePath } from 'helpers/sender';
+import { senderMatchesIdentityId, senderMatchesIdentifierValue, sendersMatch, identifierValuePath } from 'helpers/sender';
 import { createBulkBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useBoxShareMetadata from 'hooks/useBoxShareMetadata';
-import useBoxAccesses from 'hooks/useBoxAccesses';
+import useBoxAccessesEffect from 'hooks/useBoxAccesses/effect';
+import useBoxAccessesCallback from 'hooks/useBoxAccesses/callback';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
@@ -45,20 +47,21 @@ import ListItemUserWhitelisted from '@misakey/ui/ListItem/User/Whitelisted';
 import ListItemUserWhitelistedSkeleton from '@misakey/ui/ListItem/User/Whitelisted/Skeleton';
 import ListItemUserWhitelistedMember from '@misakey/ui/ListItem/User/Whitelisted/Member';
 import ListItemDomainWhitelisted from '@misakey/ui/ListItem/Domain/Whitelisted';
-
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ShareBoxForm from 'components/screens/app/Boxes/Read/Sharing/Form';
 import ShareBoxFormSkeleton from 'components/screens/app/Boxes/Read/Sharing/Form/Skeleton';
 import ListItemShareBoxLink from 'components/smart/ListItem/BoxLink/Share';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
 
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 // CONSTANTS
 const CONTENT_SPACING = 2;
 const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
-
-// HELPERS
-const pluckValue = pluck('value');
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -73,45 +76,52 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: `calc(100% - ${APPBAR_HEIGHT}px)`,
     overflow: 'auto',
   },
+  accordionRoot: {
+    '&.Mui-expanded': {
+      margin: 0,
+    },
+  },
+  accordionSummaryRoot: {
+    '&.Mui-expanded': {
+      minHeight: 48,
+    },
+  },
 }));
 
 // COMPONENTS
-function ShareBoxDialog({ box, t }) {
+function BoxSharing({ box, t }) {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
 
-  const [removeId, setRemoveId] = useState(null);
-
-  const { id: boxId, accesses, members, creator } = useSafeDestr(box);
+  const { id: boxId, accesses, members, creator, accessMode } = useSafeDestr(box);
 
   const meIdentityId = useSelector(IDENTITY_ID_SELECTOR);
   const dispatch = useDispatch();
 
   /* FETCH ACCESSES */
-  const { isFetching, isCurrentUserOwner } = useBoxAccesses(box);
-
-  const isPrivate = useMemo(
-    () => isEmpty(accesses) && isCurrentUserOwner,
-    [accesses, isCurrentUserOwner],
-  );
+  const { isFetching, isCurrentUserOwner } = useBoxAccessesEffect(box);
+  const {
+    wrappedFetch: getBoxAccesses,
+    isFetching: isFetchingAccesses,
+  } = useBoxAccessesCallback(box);
 
   const goBack = useGeneratePathKeepingSearchAndHash(routes.boxes.read._, { id: boxId });
 
   const whitelist = useMemo(
     () => {
       const restrictions = (accesses || []).map(({ id, content }) => ({ id, ...content }));
-      return sortRestrictionsByType(restrictions
+      return restrictions
         .filter(({ restrictionType }) => LIMITED_RESTRICTION_TYPES
-          .includes(restrictionType)));
+          .includes(restrictionType));
     },
     [accesses],
   );
 
-  const emailDomains = useMemo(
-    () => (isEmpty(accesses) ? [] : pluckValue(getRestrictions(getEmailDomainAccesses(accesses)))),
-    [accesses],
+  const [whitelistDomains, whitelistUsers] = useMemo(
+    () => partition(whitelist, ({ restrictionType }) => restrictionType === EMAIL_DOMAIN),
+    [whitelist],
   );
 
   const membersNotInWhitelist = useMemo(
@@ -120,11 +130,11 @@ function ShareBoxDialog({ box, t }) {
         .filter((member) => !sendersMatch(member, creator));
       return differenceWith(
         membersWithoutCreator,
-        whitelist,
+        whitelistUsers,
         (member, { value }) => senderMatchesIdentifierValue(member, value),
       );
     },
-    [members, whitelist, creator],
+    [members, whitelistUsers, creator],
   );
 
   const { secretKey: boxSecretKey } = useBoxReadContext();
@@ -135,7 +145,7 @@ function ShareBoxDialog({ box, t }) {
   } = useBoxShareMetadata(boxId);
 
   const onRemove = useCallback(
-    async (event, referrerId, memberId) => {
+    async (event, referrerId) => {
       // if whitelist is going to be emptied, remove all accesses
       const events = whitelist.length > 1
         ? [{
@@ -153,7 +163,6 @@ function ShareBoxDialog({ box, t }) {
       try {
         const response = await createBulkBoxEventBuilder(boxId, bulkEventsPayload);
         const newAccesses = getUpdatedAccesses(accesses, response);
-        setRemoveId(memberId);
         await dispatch(updateAccessesEvents(boxId, newAccesses));
         enqueueSnackbar(t('boxes:read.share.update.success'), { variant: 'success' });
       } catch (err) {
@@ -165,14 +174,11 @@ function ShareBoxDialog({ box, t }) {
 
   useEffect(
     () => {
-      if (!isNil(removeId)) {
-        const memberToRemove = members.find(({ id: memberId }) => memberId === removeId);
-        if (isNil(memberToRemove)) {
-          setRemoveId(null);
-        }
+      if (!isEmpty(membersNotInWhitelist) && !isFetchingAccesses && !isFetching) {
+        getBoxAccesses();
       }
     },
-    [removeId, members],
+    [membersNotInWhitelist, getBoxAccesses, isFetchingAccesses, isFetching],
   );
 
   return (
@@ -218,7 +224,6 @@ function ShareBoxDialog({ box, t }) {
               </Box>
               <ListItemShareBoxLink
                 box={box}
-                disabled={isPrivate}
                 isOwner={isCurrentUserOwner}
               />
             </ShareBoxFormSkeleton>
@@ -228,63 +233,75 @@ function ShareBoxDialog({ box, t }) {
               boxId={boxId}
               invitationURL={invitationURL}
               isCurrentUserOwner={isCurrentUserOwner}
-              membersNotInWhitelist={membersNotInWhitelist}
-              isRemoving={!isNil(removeId)}
               boxKeyShare={boxKeyShare}
               boxSecretKey={boxSecretKey}
+              accessMode={accessMode}
             >
               <Box my={2}>
                 <ListBordered disablePadding>
-                  <ListItemUserWhitelisted
-                    key={creator.id}
-                    isMe={senderMatchesIdentityId(creator, meIdentityId)}
-                    isOwner
-                    isMember
-                    id={creator.id}
-                    displayName={creator.displayName}
-                    avatarUrl={creator.avatarUrl}
-                    identifier={identifierValuePath(creator)}
-                  />
-                  {membersNotInWhitelist
-                    .map((member) => (
+                  <Accordion
+                    defaultExpanded
+                    classes={{ root: classes.accordionRoot }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      classes={{ root: classes.accordionSummaryRoot }}
+                    >
+                      <Subtitle>{t(`boxes:read.share.accesses.${IDENTIFIER}`)}</Subtitle>
+                    </AccordionSummary>
+                    <AccordionDetails>
                       <ListItemUserWhitelisted
-                        key={member.id}
-                        isMe={senderMatchesIdentityId(member, meIdentityId)}
-                        isOwner={sendersMatch(member, creator)}
+                        key={creator.id}
+                        isMe={senderMatchesIdentityId(creator, meIdentityId)}
+                        isOwner
                         isMember
-                        id={member.id}
-                        displayName={member.displayName}
-                        avatarUrl={member.avatarUrl}
-                        identifier={identifierValuePath(member)}
-                        emailDomains={emailDomains}
+                        id={creator.id}
+                        displayName={creator.displayName}
+                        avatarUrl={creator.avatarUrl}
+                        identifier={identifierValuePath(creator)}
                       />
-                    ))}
-                  {whitelist.map((
-                    { restrictionType, value, id, ...rest },
-                  ) => (restrictionType === IDENTIFIER ? (
-                    <ListItemUserWhitelistedMember
-                      key={id}
-                      id={id}
-                      identifier={value}
-                      members={members}
-                      onRemove={onRemove}
-                      emailDomains={emailDomains}
-                      {...rest}
-                    />
-                  ) : (
-                    <ListItemDomainWhitelisted
-                      id={id}
-                      key={id}
-                      identifier={value}
-                      {...rest}
-                      onRemove={onRemove}
-                    />
-                  )))}
+                      {whitelistUsers.map((
+                        { restrictionType, value, id, ...rest },
+                      ) => (
+                        <ListItemUserWhitelistedMember
+                          key={id}
+                          id={id}
+                          identifier={value}
+                          members={members}
+                          onRemove={onRemove}
+                          {...rest}
+                        />
+                      ))}
+                    </AccordionDetails>
+                  </Accordion>
+                  <Accordion
+                    defaultExpanded={accessMode !== PUBLIC}
+                    classes={{ root: classes.accordionRoot }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      classes={{ root: classes.accordionSummaryRoot }}
+                    >
+                      <Subtitle>{t(`boxes:read.share.accesses.${EMAIL_DOMAIN}`)}</Subtitle>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      {whitelistDomains.map((
+                        { restrictionType, value, id, ...rest },
+                      ) => (
+                        <ListItemDomainWhitelisted
+                          id={id}
+                          key={id}
+                          identifier={value}
+                          {...rest}
+                          onRemove={onRemove}
+                        />
+                      ))}
+                    </AccordionDetails>
+                  </Accordion>
                 </ListBordered>
               </Box>
               <ListItemShareBoxLink
                 box={box}
-                disabled={isPrivate}
                 isOwner={isCurrentUserOwner}
               />
             </ShareBoxForm>
@@ -296,9 +313,9 @@ function ShareBoxDialog({ box, t }) {
   );
 }
 
-ShareBoxDialog.propTypes = {
+BoxSharing.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['boxes', 'common'])(ShareBoxDialog);
+export default withTranslation(['boxes', 'common'])(BoxSharing);

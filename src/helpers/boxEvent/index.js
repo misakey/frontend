@@ -1,4 +1,10 @@
-import { MSG_DELETE, MSG_EDIT, MEMBER_LEAVE, MEMBER_KICK, MEMBER_EVENT_TYPES, MEMBER_JOIN } from 'constants/app/boxes/events';
+import {
+  MSG_DELETE, MSG_EDIT,
+  MEMBER_LEAVE, MEMBER_KICK, MEMBER_EVENT_TYPES, MEMBER_JOIN,
+  STATE_ACCESS_MODE,
+} from 'constants/app/boxes/events';
+import { LIMITED } from '@misakey/ui/constants/accessModes';
+
 
 import prop from '@misakey/helpers/prop';
 import path from '@misakey/helpers/path';
@@ -6,6 +12,7 @@ import compose from '@misakey/helpers/compose';
 import when from '@misakey/helpers/when';
 import isObject from '@misakey/helpers/isObject';
 import isNil from '@misakey/helpers/isNil';
+import findLast from '@misakey/helpers/findLast';
 import { senderMatchesIdentityId } from 'helpers/sender';
 
 // HELPERS
@@ -87,6 +94,11 @@ export const getEventForNormalization = (event) => {
     }
   }
   return event;
+};
+
+export const getLastAccessMode = (events) => {
+  const lastAccessModeEvent = findLast(events, ({ type }) => type === STATE_ACCESS_MODE);
+  return isNil(lastAccessModeEvent) ? LIMITED : lastAccessModeEvent.value;
 };
 
 export const getEventEncryptedFileId = compose(

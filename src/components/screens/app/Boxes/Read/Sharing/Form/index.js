@@ -2,13 +2,14 @@ import { useMemo, useRef, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation, useTranslation } from 'react-i18next';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
-import SenderSchema from 'store/schemas/Boxes/Sender';
+import BoxesSchema from 'store/schemas/Boxes';
 
-import { ACCESS_RM, ACCESS_ADD, ACCESS_BULK } from 'constants/app/boxes/events';
+import { ACCESS_RM, ACCESS_ADD, ACCESS_BULK, STATE_ACCESS_MODE } from 'constants/app/boxes/events';
 import { RESTRICTION_TYPES } from 'constants/app/boxes/accesses';
 import { updateAccessesEvents } from 'store/reducers/box';
-import { makeAccessValidationSchema } from 'constants/validationSchemas/boxes';
-import { PRIVATE, PUBLIC, LIMITED } from '@misakey/ui/constants/accessLevels';
+import { updateEntities } from '@misakey/store/actions/entities';
+import { accessValidationSchema } from 'constants/validationSchemas/boxes';
+import ACCESS_MODES, { PUBLIC, LIMITED } from '@misakey/ui/constants/accessModes';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import { getUpdatedAccesses } from 'helpers/accesses';
@@ -16,13 +17,12 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import pluck from '@misakey/helpers/pluck';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 import filter from '@misakey/helpers/filter';
-import { createBulkBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import { createBulkBoxEventBuilder, createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import { identifierValuePath, senderMatchesIdentifierValue } from 'helpers/sender';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { tryAddingAutoInvite } from '@misakey/crypto/box/autoInvitation';
 import { useSnackbar } from 'notistack';
-import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import Formik from '@misakey/ui/Formik';
 import FieldSubmitOnChange from '@misakey/ui/Form/Field/SubmitOnChange';
@@ -51,23 +51,12 @@ const ACCESS_EVENT_TYPE = {
 const getValues = pluck('value');
 const pluckContent = pluck('content');
 
-const membersToWhitelistEvents = (members) => (members || []).map((member) => ({
-  type: ACCESS_EVENT_TYPE.ADD,
-  content: {
-    restrictionType: RESTRICTION_TYPES.IDENTIFIER,
-    value: identifierValuePath(member),
-  },
-}));
-
 // COMPONENTS
 function ShareBoxForm({
-  accesses,
+  accesses, accessMode,
   boxId,
-  invitationURL,
   children,
   isCurrentUserOwner,
-  membersNotInWhitelist,
-  isRemoving,
   boxKeyShare, boxSecretKey,
 }) {
   const { t } = useTranslation('boxes');
@@ -103,46 +92,12 @@ function ShareBoxForm({
     [whitelistedEmailDomains, whitelistedIdentifiers],
   );
 
-  const invitationLinkAccessEvent = useMemo(
-    () => getByRestrictionType(RESTRICTION_TYPES.INVITATION_LINK),
-    [getByRestrictionType],
-  );
-
-  const isPublic = useMemo(
-    () => !isEmpty(invitationLinkAccessEvent),
-    [invitationLinkAccessEvent],
-  );
-
-  const hasWhitelistRules = useMemo(
-    () => whitelistedValues.length > 0,
-    [whitelistedValues],
-  );
-
-  const accessLevelValue = useMemo(
-    () => {
-      if (hasWhitelistRules) { return LIMITED; }
-      if (isPublic) { return PUBLIC; }
-      return PRIVATE;
-    },
-    [hasWhitelistRules, isPublic],
-  );
-
   const initialValues = useMemo(
     () => ({
-      [ACCESSES_FIELD_NAME]: accessLevelValue,
+      [ACCESSES_FIELD_NAME]: accessMode,
       [WHITELIST_FIELD_NAME]: WHITELIST_INITIAL_VALUE,
     }),
-    [accessLevelValue],
-  );
-
-  const isEmptyMembersNotInWhitelist = useMemo(
-    () => isEmpty(membersNotInWhitelist),
-    [membersNotInWhitelist],
-  );
-
-  const accessValidationSchema = useMemo(
-    () => makeAccessValidationSchema({ isEmptyMembersNotInWhitelist }),
-    [isEmptyMembersNotInWhitelist],
+    [accessMode],
   );
 
   const getOptionDisabled = useCallback(
@@ -153,21 +108,6 @@ function ShareBoxForm({
     || whitelistedValues.includes(optionIdentifierValue);
     },
     [meIdentifierValue, whitelistedValues],
-  );
-
-  /* METHODS TO COMPUTE EVENTS TO GENERATE FROM FORM */
-  const generateInvitationLinkEvent = useCallback(
-    () => {
-      const { hash } = new URL(invitationURL);
-      return {
-        type: ACCESS_EVENT_TYPE.ADD,
-        content: {
-          restrictionType: RESTRICTION_TYPES.INVITATION_LINK,
-          value: hash,
-        },
-      };
-    },
-    [invitationURL],
   );
 
   const getNextAccesses = useCallback(
@@ -192,126 +132,74 @@ function ShareBoxForm({
 
   const onSubmit = useCallback(
     async (
-      { [ACCESSES_FIELD_NAME]: nextAccessLevel, [WHITELIST_FIELD_NAME]: nextWhitelist },
+      { [ACCESSES_FIELD_NAME]: nextAccessMode, [WHITELIST_FIELD_NAME]: nextWhitelist },
       { resetForm },
     ) => {
-      let newEvents = [];
-
       resetForm({
         values: {
           [WHITELIST_FIELD_NAME]: initialValues[WHITELIST_FIELD_NAME],
-          [ACCESSES_FIELD_NAME]: nextAccessLevel,
+          [ACCESSES_FIELD_NAME]: nextAccessMode,
         },
       });
 
-      switch (nextAccessLevel) {
-        case PRIVATE: {
-          const accessRmEvents = accesses.map(({ id: referrerId }) => ({
-            type: ACCESS_EVENT_TYPE.RM,
-            referrerId,
-          }));
-          newEvents = accessRmEvents;
-          break;
-        }
-        case PUBLIC: {
-          const accessRmEvents = accesses.reduce((aggr, { id: referrerId, content }) => {
-            const { restrictionType } = content;
-            if (restrictionType !== RESTRICTION_TYPES.INVITATION_LINK) {
-              return [...aggr, {
-                type: ACCESS_EVENT_TYPE.RM,
-                referrerId,
-              }];
-            }
-            return aggr;
-          }, []);
-          const needToAddInvitationEvent = (!isPublic || hasWhitelistRules)
-            && isEmpty(invitationLinkAccessEvent);
-          const invitationLinkEvents = needToAddInvitationEvent
-            ? [generateInvitationLinkEvent()]
-            : [];
-          newEvents = [...accessRmEvents, ...invitationLinkEvents];
-          break;
-        }
-        case LIMITED: {
-          const needToAddInvitationEvent = (!isPublic || hasWhitelistRules)
-            && isEmpty(invitationLinkAccessEvent);
-          const invitationLinkEvents = needToAddInvitationEvent
-            ? [generateInvitationLinkEvent()]
-            : [];
-          // @FIXME safety check, but it should never happen
-          // getOptionDisabled + validationSchema already handle the case
-          const whitelistValues = nextWhitelist
-            .map((el) => {
-              const value = identifierValuePath(el);
-              const { type } = el;
-              return { value, type };
-            })
-            .filter(({ value }) => !whitelistedValues.includes(value));
-          const whitelistEventsWithAutoInvite = await Promise.all(whitelistValues
-            .map(async ({ value, type }) => tryAddingAutoInvite({
-              event: {
-                type: ACCESS_EVENT_TYPE.ADD,
-                content: {
-                  restrictionType: type,
-                  value,
-                },
+      const accessModeChanged = nextAccessMode !== accessMode;
+      if (accessModeChanged) {
+        await createBoxEventBuilder(boxId, {
+          type: STATE_ACCESS_MODE,
+          content: {
+            value: nextAccessMode,
+          },
+        });
+        await Promise.resolve(dispatch(updateEntities(
+          [{ id: boxId, changes: { accessMode: nextAccessMode } }], BoxesSchema,
+        )));
+      }
+
+      if (nextAccessMode === LIMITED) {
+        const whitelistValues = nextWhitelist
+          .map((el) => {
+            const value = identifierValuePath(el);
+            const { type } = el;
+            return { value, type };
+          })
+        // @FIXME safety check, but it should never happen
+        // getOptionDisabled + validationSchema already handle the case
+          .filter(({ value }) => !whitelistedValues.includes(value));
+        const whitelistEventsWithAutoInvite = await Promise.all(whitelistValues
+          .map(async ({ value, type }) => tryAddingAutoInvite({
+            event: {
+              type: ACCESS_EVENT_TYPE.ADD,
+              content: {
+                restrictionType: type,
+                value,
               },
-              boxKeyShare,
-              boxSecretKey,
-            })));
-          const identifiersToWhitelistEvents = isPublic && !isEmptyMembersNotInWhitelist
-            ? membersToWhitelistEvents(membersNotInWhitelist)
-            : [];
-          newEvents = [
-            ...identifiersToWhitelistEvents,
-            ...whitelistEventsWithAutoInvite,
-            ...invitationLinkEvents,
-          ];
-          break;
+            },
+            boxKeyShare,
+            boxSecretKey,
+          })));
+
+        if (isEmpty(whitelistEventsWithAutoInvite) && !accessModeChanged) {
+          return enqueueSnackbar(t('boxes:read.share.update.noChanges'), { variant: 'info' });
         }
-        default:
+        if (!isEmpty(whitelistEventsWithAutoInvite)) {
+          try {
+            await bulkUpdate(whitelistEventsWithAutoInvite);
+          } catch (err) {
+            logSentryException(err);
+            return onBulkError();
+          }
+        }
       }
-      if (isEmpty(newEvents)) {
-        return enqueueSnackbar(t('boxes:read.share.update.noChanges'), { variant: 'info' });
-      }
-      try {
-        await bulkUpdate(newEvents);
-        return enqueueSnackbar(t('boxes:read.share.update.success'), { variant: 'success' });
-      } catch (err) {
-        logSentryException(err);
-        return onBulkError();
-      }
+      return enqueueSnackbar(t('boxes:read.share.update.success'), { variant: 'success' });
     },
     [
-      enqueueSnackbar, generateInvitationLinkEvent, t,
-      boxKeyShare, boxSecretKey,
+      enqueueSnackbar, t,
+      boxId, boxKeyShare, boxSecretKey,
       bulkUpdate, onBulkError,
-      hasWhitelistRules, isPublic,
       initialValues,
-      accesses, invitationLinkAccessEvent, whitelistedValues,
-      isEmptyMembersNotInWhitelist, membersNotInWhitelist,
+      whitelistedValues, accessMode,
+      dispatch,
     ],
-  );
-
-  // @FIXME frontend dirty trick until redesigned
-  const shouldFetch = useMemo(
-    () => accessLevelValue === LIMITED && !isEmptyMembersNotInWhitelist && !isRemoving,
-    [accessLevelValue, isEmptyMembersNotInWhitelist, isRemoving],
-  );
-
-  // add to whitelist members who joined when limited
-  const bulkUpdateMembers = useCallback(
-    () => {
-      const identifiersToWhitelistEvents = membersToWhitelistEvents(membersNotInWhitelist);
-      bulkUpdate(identifiersToWhitelistEvents);
-    },
-    [membersNotInWhitelist, bulkUpdate],
-  );
-
-  useFetchEffect(
-    bulkUpdateMembers,
-    { shouldFetch },
-    { onError: onBulkError },
   );
 
   useEffect(
@@ -352,9 +240,6 @@ function ShareBoxForm({
               ),
             }}
           >
-            <MenuItem value={PRIVATE}>
-              <SelectItemAccessLevel value={PRIVATE} />
-            </MenuItem>
             <MenuItem value={PUBLIC}>
               <SelectItemAccessLevel value={PUBLIC} />
             </MenuItem>
@@ -370,21 +255,18 @@ function ShareBoxForm({
 
 ShareBoxForm.propTypes = {
   accesses: PropTypes.arrayOf(PropTypes.shape(BoxEventsSchema.propTypes)).isRequired,
+  accessMode: PropTypes.oneOf(ACCESS_MODES),
   boxId: PropTypes.string.isRequired,
   boxKeyShare: PropTypes.string.isRequired,
   boxSecretKey: PropTypes.string.isRequired,
-  invitationURL: PropTypes.object.isRequired,
   children: PropTypes.node,
   isCurrentUserOwner: PropTypes.bool,
-  membersNotInWhitelist: PropTypes.arrayOf(PropTypes.shape(SenderSchema.propTypes)),
-  isRemoving: PropTypes.bool,
 };
 
 ShareBoxForm.defaultProps = {
+  accessMode: LIMITED,
   children: null,
   isCurrentUserOwner: false,
-  membersNotInWhitelist: [],
-  isRemoving: false,
 };
 
 export default withTranslation(['boxes', 'common'])(ShareBoxForm);

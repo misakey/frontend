@@ -1,6 +1,8 @@
 import { schema } from 'normalizr';
 import PropTypes from 'prop-types';
 
+import ACCESS_MODES from '@misakey/ui/constants/accessModes';
+
 import EventSchema from 'store/schemas/Boxes/Events';
 import SenderSchema from 'store/schemas/Boxes/Sender';
 
@@ -21,6 +23,7 @@ const BoxesSchema = {
     publicKey: PropTypes.string,
     id: PropTypes.string.isRequired,
     title: PropTypes.string,
+    accessMode: PropTypes.oneOf(ACCESS_MODES),
     serverCreatedAt: PropTypes.string,
     settings: PropTypes.shape({
       muted: PropTypes.bool,

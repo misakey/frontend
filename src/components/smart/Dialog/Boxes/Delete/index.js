@@ -15,7 +15,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useBoxAccesses from 'hooks/useBoxAccesses';
+import useBoxAccessesEffect from 'hooks/useBoxAccesses/effect';
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 
 import FormFieldTextField from '@misakey/ui/Form/Field/TextFieldWithErrors';
@@ -49,7 +49,7 @@ function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
 
   const { id, accesses } = useSafeDestr(box);
 
-  const { isFetching } = useBoxAccesses(box);
+  const { isFetching } = useBoxAccessesEffect(box, open);
 
   const onDeleteSuccess = useCallback(
     () => (isFunction(onSuccess) ? onSuccess() : Promise.resolve()),

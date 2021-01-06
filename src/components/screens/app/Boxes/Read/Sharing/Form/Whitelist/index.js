@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import { LIMITED } from '@misakey/ui/constants/accessLevels';
+import { LIMITED } from '@misakey/ui/constants/accessModes';
 
 import propEq from '@misakey/helpers/propEq';
 import prop from '@misakey/helpers/prop';

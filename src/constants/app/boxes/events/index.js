@@ -1,5 +1,6 @@
 export const CREATE = 'create';
 export const KEY_SHARE = 'state.key_share';
+export const STATE_ACCESS_MODE = 'state.access_mode';
 export const MEMBER_JOIN = 'member.join';
 export const MEMBER_LEAVE = 'member.leave';
 export const MEMBER_KICK = 'member.kick';

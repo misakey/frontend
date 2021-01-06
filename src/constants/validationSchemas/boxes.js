@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { IDENTIFIER, EMAIL_DOMAIN } from '@misakey/ui/constants/accessTypes';
-import ACCESS_LEVELS, { LIMITED } from '@misakey/ui/constants/accessLevels';
+import ACCESS_LEVELS from '@misakey/ui/constants/accessModes';
 import { required, malformed, invalid } from '@misakey/ui/constants/errorTypes';
 import routes from 'routes';
 import { generatePath } from 'react-router-dom';
@@ -53,17 +53,9 @@ export const accessWhitelistValidationSchema = {
   })),
 };
 
-export const makeAccessValidationSchema = ({ isEmptyMembersNotInWhitelist } = {}) => Yup.object()
+export const accessValidationSchema = Yup.object()
   .shape({
-    accessWhitelist: accessWhitelistValidationSchema.accessWhitelist
-      .when(['accessLevel'], (accessLevel, schema) => {
-        const noMembers = isEmptyMembersNotInWhitelist === true
-      || isNil(isEmptyMembersNotInWhitelist);
-        const isRequired = accessLevel === LIMITED && noMembers;
-        return isRequired
-          ? schema.min(1, required)
-          : schema;
-      }),
+    accessWhitelist: accessWhitelistValidationSchema.accessWhitelist,
     accessLevel: Yup.string().oneOf(ACCESS_LEVELS).required(required),
   });
 

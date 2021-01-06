@@ -4,28 +4,26 @@ import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
 import BoxesSchema from 'store/schemas/Boxes';
+import { LIMITED } from '@misakey/ui/constants/accessModes';
 
-import { getRestrictionStatus } from 'helpers/accesses';
-
-import useBoxAccesses from 'hooks/useBoxAccesses';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
+import { useBoxReadContext } from 'components/smart/Context/Boxes/BoxRead';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import IconSharing from '@misakey/ui/Icon/Sharing';
 import { Link } from 'react-router-dom';
 
 function ShareBoxButton({ box, t }) {
-  const { id } = useSafeDestr(box);
+  const { id, accessMode } = useSafeDestr(box);
 
   const to = useGeneratePathKeepingSearchAndHash(routes.boxes.read.sharing, { id });
 
-  /* FETCH ACCESSES */
-  const { isFetching, isCurrentUserOwner } = useBoxAccesses(box);
+  const { isCurrentUserOwner } = useBoxReadContext();
 
-  const restrictionStatus = useMemo(
-    () => getRestrictionStatus(box),
-    [box],
+  const iconSharingValue = useMemo(
+    () => accessMode || LIMITED,
+    [accessMode],
   );
 
   return (
@@ -33,11 +31,10 @@ function ShareBoxButton({ box, t }) {
       component={Link}
       to={to}
       standing={BUTTON_STANDINGS.MAIN}
-      isLoading={isFetching}
       text={isCurrentUserOwner ? (
         <>
           <IconSharing
-            value={restrictionStatus}
+            value={iconSharingValue}
           />
           {t('common:share')}
         </>
