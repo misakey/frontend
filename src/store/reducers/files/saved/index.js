@@ -1,5 +1,6 @@
+import { createSelector } from 'reselect';
+import { denormalize, normalize } from 'normalizr';
 import { batch } from 'react-redux';
-import { normalize } from 'normalizr';
 import { receiveEntities, removeEntities } from '@misakey/store/actions/entities';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import SavedFilesSchema from 'store/schemas/Files/Saved';
@@ -22,6 +23,15 @@ const getSavedFileForNormalization = (savedFile) => {
   return { ...savedFile, decryptedFile };
 };
 
+// SELECTORS
+export const makeDenormalizeSavedFileSelector = () => createSelector(
+  (state) => state.entities,
+  (_, fileId) => fileId,
+  (entities, id) => (isNil(id) ? null : denormalize(id, SavedFilesSchema.entity, entities)),
+);
+
+
+// THUNKS
 export const receiveSavedFiles = (data, identityId, offset, limit) => (dispatch) => {
   const normalized = normalize(
     data.map(getSavedFileForNormalization),

@@ -1,4 +1,4 @@
-import { createContext, useContext, useCallback, useMemo, useReducer, useEffect } from 'react';
+import { useCallback, useMemo, useReducer, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, batch } from 'react-redux';
 
@@ -18,19 +18,8 @@ import { revokeObjectURL } from '@misakey/helpers/objectURL';
 import { useRouteMatch } from 'react-router-dom';
 import useSaveFileInVault from 'hooks/useSaveFileInVault';
 
-import DialogFilePreview from 'components/smart/Dialog/FilePreview/WithFile';
+import { FilePreviewContext } from 'components/smart/File/Preview/Context';
 import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
-
-// CONTEXT
-export const FilePreviewContext = createContext({
-  onOpenFilePreview: null,
-  onCloseFilePreview: null,
-  getDecryptedFile: null,
-  onDownloadFile: null,
-  disableOnSave: false,
-  onSaveFileInVault: null,
-  selectedId: null,
-});
 
 // HELPERS
 const createBlobUrl = (file) => {
@@ -51,9 +40,6 @@ const revokeBlobUrl = (blobUrl) => {
   }
 };
 
-// HOOKS
-export const useFilePreviewContext = () => useContext(FilePreviewContext);
-
 const filePreviewReducer = (state, { type, ...rest }) => {
   switch (type) {
     case 'SET_SELECTED': {
@@ -68,28 +54,36 @@ const filePreviewReducer = (state, { type, ...rest }) => {
 };
 
 // COMPONENTS
-const FilePreviewContextProvider = ({ children, revokeOnChange, ...props }) => {
+const FilePreviewCarouselContextProvider = ({
+  component: Component,
+  children, revokeOnChange, ...props
+}) => {
   const isVaultSpace = useRouteMatch(routes.documents.vault);
   const [{
     filesData, selectedId,
+    id: itemId,
   }, dispatchReducer] = useReducer(filePreviewReducer, {
     selectedId: null,
+    id: null,
     filesData: {},
   });
 
   const dispatch = useDispatch();
 
   const onOpenFilePreview = useCallback(
-    (id) => dispatchReducer({
+    (id, paginationProps = {}) => dispatchReducer({
       type: 'SET_SELECTED',
       selectedId: id,
+      ...paginationProps,
     }),
     [],
   );
 
   const onCloseFilePreview = useCallback(
-    () => dispatchReducer({ type: 'SET_SELECTED',
+    () => dispatchReducer({
+      type: 'SET_SELECTED',
       selectedId: null,
+      id: null,
     }),
     [],
   );
@@ -199,25 +193,28 @@ const FilePreviewContextProvider = ({ children, revokeOnChange, ...props }) => {
   return (
     <FilePreviewContext.Provider value={contextValue}>
       {children}
-      <DialogFilePreview
+      <Component
         open={!isNil(selectedId)}
         selectedId={selectedId}
+        id={itemId}
         onSave={onSaveInVault}
         onClose={onCloseFilePreview}
+        onChange={onOpenFilePreview}
         {...props}
       />
     </FilePreviewContext.Provider>
   );
 };
 
-FilePreviewContextProvider.propTypes = {
+FilePreviewCarouselContextProvider.propTypes = {
+  component: PropTypes.elementType.isRequired,
   children: PropTypes.node,
   revokeOnChange: PropTypes.string,
 };
 
-FilePreviewContextProvider.defaultProps = {
+FilePreviewCarouselContextProvider.defaultProps = {
   children: null,
   revokeOnChange: null,
 };
 
-export default FilePreviewContextProvider;
+export default FilePreviewCarouselContextProvider;

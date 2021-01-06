@@ -99,6 +99,7 @@ const FileCardEvent = ({
   encryptedFileId,
   event,
   box,
+  data,
   ...props
 }) => {
   const classes = useStyles();
@@ -106,7 +107,11 @@ const FileCardEvent = ({
   const ref = useRef();
   const { t } = useTranslation('common');
 
-  const { serverEventCreatedAt, content: { decryptedFile } } = useMemo(() => event, [event]);
+  const {
+    serverEventCreatedAt,
+    content: { decryptedFile },
+    id: eventId,
+  } = useMemo(() => event, [event]);
   const { isSaved, type, size, name, isLoading, error, encryption, blobUrl } = useMemo(
     () => decryptedFile,
     [decryptedFile],
@@ -166,9 +171,9 @@ const FileCardEvent = ({
 
   const openFilePreview = useCallback(
     () => {
-      onOpenFilePreview(encryptedFileId);
+      onOpenFilePreview(encryptedFileId, { ...data, id: eventId });
     },
-    [encryptedFileId, onOpenFilePreview],
+    [encryptedFileId, onOpenFilePreview, data, eventId],
   );
 
   const onClick = useMemo(
@@ -242,12 +247,14 @@ FileCardEvent.propTypes = {
   }).isRequired,
   event: PropTypes.shape(EventSchema.propTypes).isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
+  data: PropTypes.object,
 };
 
 FileCardEvent.defaultProps = {
   isFromCurrentUser: false,
   text: null,
   boxBelongsToCurrentUser: false,
+  data: {},
 };
 
 export default FileCardEvent;

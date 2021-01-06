@@ -1,25 +1,25 @@
+import clsx from 'clsx';
 import { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { denormalize } from 'normalizr';
-import { connect } from 'react-redux';
+
+import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
+import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 
 import isNil from '@misakey/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { useFilePreviewContext } from 'components/smart/File/Preview/Context';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 // import PrintIcon from '@material-ui/icons/Print';
 import FilePreviewPaper from 'components/smart/Dialog/FilePreview/Paper';
 import FilePreview from 'components/smart/File/Preview';
-import Backdrop from '@material-ui/core/Backdrop';
+import FilePreviewBackdrop from 'components/smart/Dialog/FilePreview/Backdrop';
 import BoxFile from 'components/dumb/Box/File';
-import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
-import { useFilePreviewContext } from 'components/smart/File/Preview/Context';
-import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 
 // CONSTANTS
 const ALLOWED_TYPE_PREVIEW = [
@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'column',
     '&:first-child': {
       padding: theme.spacing(1),
     },
@@ -60,8 +61,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-function FilePreviewDialog({ open, onClose, selectedId, file, t }) {
-  const classes = useStyles();
+function FilePreviewDialog({
+  open, onClose, selectedId, file, t,
+  appBarProps, children,
+  maxHeight, classes,
+}) {
+  const internalClasses = useStyles();
 
   const {
     getDecryptedFile,
@@ -103,16 +108,38 @@ function FilePreviewDialog({ open, onClose, selectedId, file, t }) {
 
   const PaperProps = useMemo(
     () => ({
-      className: classes.paper,
+      className: clsx(classes.paper, internalClasses.paper),
       elevation: 0,
       onClose,
-      onSave: !disableOnSave && onSave,
+      onSave: disableOnSave ? null : onSave,
       onDownload: onDownloadInBrowser,
       fileName: name,
       disabled: !isNil(error),
       isSaved,
+      appBarProps,
     }),
-    [classes.paper, disableOnSave, error, isSaved, name, onClose, onDownloadInBrowser, onSave],
+    [
+      internalClasses.paper, classes.paper,
+      disableOnSave, error, isSaved, appBarProps, name,
+      onClose, onDownloadInBrowser, onSave,
+    ],
+  );
+
+  const showPreview = useMemo(
+    () => !isNil(blobUrl) && isTypeAllowedForPreview && isNil(error) && !isLoading,
+    [blobUrl, isTypeAllowedForPreview, error, isLoading],
+  );
+
+  const BackdropProps = useMemo(
+    () => ({
+      size,
+      name,
+      type,
+      isLoading,
+      isBroken: !isNil(error),
+      showFallback: !showPreview,
+    }),
+    [error, size, name, type, isLoading, showPreview],
   );
 
   return (
@@ -123,31 +150,29 @@ function FilePreviewDialog({ open, onClose, selectedId, file, t }) {
       scroll="body"
       PaperProps={PaperProps}
       PaperComponent={FilePreviewPaper}
-      BackdropComponent={(props) => (
-        <Backdrop {...props}>
-          {(isNil(blobUrl) || !isTypeAllowedForPreview || !isNil(error)) && (
-            <BoxFile
-              fileSize={size}
-              fileName={name || t('common:loading')}
-              fileType={type}
-              isLoading={isLoading}
-              isBroken={!isNil(error)}
-              isLarge
-              typographyProps={{ variant: 'body1' }}
-              textContainerProps={{ className: classes.textContainerPreview }}
-            />
-          )}
-        </Backdrop>
-      )}
+      BackdropProps={BackdropProps}
+      BackdropComponent={FilePreviewBackdrop}
     >
-      <DialogContent className={classes.content}>
-        {!isNil(file) && (
+      <DialogContent className={internalClasses.content}>
+        {showPreview && (
           <FilePreview
             file={file}
-            maxHeight={PREVIEW_MAX_HEIGHT}
+            maxHeight={maxHeight}
             allowedFileTypePreview={ALLOWED_TYPE_PREVIEW}
+            fallbackView={(
+              <BoxFile
+                fileSize={size}
+                fileName={name || t('common:loading')}
+                fileType={type}
+                isBroken={!isNil(error)}
+                isLarge
+                typographyProps={{ variant: 'body1' }}
+                textContainerProps={{ className: internalClasses.textContainerPreview }}
+              />
+            )}
           />
         )}
+        {children}
       </DialogContent>
     </Dialog>
   );
@@ -158,22 +183,24 @@ FilePreviewDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   selectedId: PropTypes.string,
   onClose: PropTypes.func.isRequired,
+  children: PropTypes.node,
+  appBarProps: PropTypes.object,
+  file: PropTypes.shape(DecryptedFileSchema.propTypes),
+  maxHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  classes: PropTypes.shape({
+    paper: PropTypes.string,
+  }),
   // withTranslation
   t: PropTypes.func.isRequired,
-  // CONNECT
-  file: PropTypes.shape(DecryptedFileSchema.propTypes),
 };
 
 FilePreviewDialog.defaultProps = {
+  maxHeight: PREVIEW_MAX_HEIGHT,
   selectedId: null,
+  children: null,
   file: null,
+  appBarProps: {},
+  classes: {},
 };
 
-// CONNECT
-const mapStateToProps = (state, { selectedId }) => ({
-  file: isNil(selectedId)
-    ? null
-    : denormalize(selectedId, DecryptedFileSchema.entity, state.entities),
-});
-
-export default connect(mapStateToProps, {})(withTranslation(['common'])(FilePreviewDialog));
+export default withTranslation(['common'])(FilePreviewDialog);

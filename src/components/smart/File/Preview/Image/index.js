@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 import FILE_PROP_TYPES from 'constants/file/proptypes';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { fade } from '@material-ui/core/styles';
 
@@ -81,6 +81,13 @@ function ImagePreview({ file, fallbackView, maxHeight, width, height, titleOnHov
   const displayPreview = useMemo(
     () => !hasError && !isFetching,
     [hasError, isFetching],
+  );
+
+  useEffect(
+    () => () => {
+      setHasInternalError(false);
+    },
+    [file],
   );
 
   return (

@@ -1,9 +1,17 @@
 
 import { createSelector } from 'reselect';
+import { denormalize } from 'normalizr';
 import propOr from '@misakey/helpers/propOr';
 import isNil from '@misakey/helpers/isNil';
 import { removeEntities } from 'packages/store/src/actions/entities';
 import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
+
+// SELECTORS
+export const makeDenormalizeFileSelector = () => createSelector(
+  (state) => state.entities,
+  (_, fileId) => fileId,
+  (entities, id) => (isNil(id) ? null : denormalize(id, DecryptedFileSchema.entity, entities)),
+);
 
 const getDecryptedFileSelector = createSelector(
   (state) => state.entities.decryptedFiles,
@@ -12,6 +20,7 @@ const getDecryptedFileSelector = createSelector(
 
 export const getDecryptedFile = (state, id) => getDecryptedFileSelector(state)(id);
 
+// THUNKS
 export const cleanDecryptedFile = (id) => (dispatch, getState) => {
   const decryptedFile = getDecryptedFile(getState(), id);
   if (!isNil(decryptedFile)) {

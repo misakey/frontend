@@ -18,12 +18,12 @@ import MenuItemEventDownload from 'components/smart/MenuItem/Event/Download';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useEventBelongsToCurrentUser from 'hooks/useEventBelongsToCurrentUser';
-import useDecryptMsgFileEffect from 'hooks/useDecryptMsgFileEffect';
+import useDecryptMsgFileEffect from 'hooks/useDecryptMsgFile/effect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 // CONSTANTS
 export const CELL_HEIGHT = 115;
-const INTERNAL_DATA = ['byPagination'];
+const INTERNAL_DATA = ['byPagination', 'loadMoreItems'];
 const ALLOWED_FILE_TYPES_TO_PREVIEW = ['image/'];
 
 // HELPERS
@@ -50,8 +50,8 @@ const Cell = ({ style, data, event }) => {
   const { secretKey, id: boxId, isCurrentUserOwner } = useBoxReadContext();
   const isEventFromCurrentUser = useEventBelongsToCurrentUser(event);
 
-  const { content } = useMemo(() => event, [event]);
-  const { decryptedFile } = useSafeDestr(content);
+  const { content, id: eventId } = useMemo(() => event, [event]);
+  const { decryptedFile, encryptedFileId } = useSafeDestr(content);
 
   const {
     id,
@@ -97,7 +97,10 @@ const Cell = ({ style, data, event }) => {
     [error, onDownload, onSave, isSaved, hasWriteAccess, event, boxId],
   );
 
-  const onClick = useCallback(() => onOpenFilePreview(id), [id, onOpenFilePreview]);
+  const onClick = useCallback(
+    () => onOpenFilePreview(encryptedFileId, { ...data, id: eventId }),
+    [encryptedFileId, data, eventId, onOpenFilePreview],
+  );
 
   const isTypeAllowedForPreview = useMemo(
     () => !isNil(type) && ALLOWED_FILE_TYPES_TO_PREVIEW.some(
@@ -118,7 +121,7 @@ const Cell = ({ style, data, event }) => {
     [getDecryptedFile, id, encryption, name],
   );
 
-  useDecryptMsgFileEffect(content, secretKey, isEventFromCurrentUser);
+  useDecryptMsgFileEffect(event, secretKey, isEventFromCurrentUser);
 
   useFetchEffect(loadFile, { shouldFetch: shouldLoadPreview, fetchOnlyOnce: true });
 

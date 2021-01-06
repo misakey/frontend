@@ -10,7 +10,7 @@ import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublic
 
 import EventBoxMessagePreview from 'components/smart/Box/Event/Message/Preview';
 import EventFileCard, { FileCardEventSkeleton } from 'components/smart/Box/Event/Message/File/Card';
-import useDecryptMsgFileEffect from 'hooks/useDecryptMsgFileEffect';
+import useDecryptMsgFileEffect from 'hooks/useDecryptMsgFile/effect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 // COMPONENTS
@@ -27,7 +27,7 @@ const BoxMessageFileEvent = ({ event, isFromCurrentUser, preview, t, ...props })
     [publicKey, publicKeysWeCanDecryptFrom],
   );
 
-  const { isReady } = useDecryptMsgFileEffect(content, secretKey, isFromCurrentUser);
+  const { isReady } = useDecryptMsgFileEffect(event, secretKey, isFromCurrentUser);
   const text = useMemo(() => (isReady ? name : t('common:loading')), [isReady, name, t]);
 
   if (preview) {

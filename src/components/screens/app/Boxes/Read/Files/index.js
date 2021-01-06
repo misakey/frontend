@@ -1,31 +1,35 @@
-import { useState, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
-import { useBoxesUploadContext } from 'components/smart/Input/Boxes/Upload/Context';
 
 import Box from '@material-ui/core/Box';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import isNil from '@misakey/helpers/isNil';
+
+import usePaginateFileEventsByBox from 'hooks/usePaginateEventsByBox/Files';
+import useTheme from '@material-ui/core/styles/useTheme';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useBoxesUploadContext } from 'components/smart/Input/Boxes/Upload/Context';
+import { useTranslation } from 'react-i18next';
+import { useState, useMemo, useRef } from 'react';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import BoxEmpty from 'components/dumb/Box/Empty';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import FabAdd from '@misakey/ui/Fab/Add';
-
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import WindowedGridInfiniteLoaded from 'components/smart/WindowedList/InfiniteLoaded/Grid';
 import WindowedListAutoSized from 'components/smart/WindowedList/Autosized';
-import usePaginateFileEventsByBox from 'hooks/usePaginateEventsByBox/Files';
-import useTheme from '@material-ui/core/styles/useTheme';
+import FilePreviewCarouselContextProvider from 'components/smart/File/Preview/Carousel/Context';
+import EventFilesCarousel from 'components/smart/Carousel/FilePreview/EventFiles';
+
 import Cell, { Skeleton, CELL_HEIGHT } from './Cell';
 
+// CONSTANTS
 const NUM_COLUMNS = 2;
 
 // HOOKS
@@ -64,9 +68,9 @@ function BoxFiles({ belongsToCurrentUser, box }) {
   const numColumns = isSmall ? 1 : NUM_COLUMNS;
 
   const {
-    byPagination,
     itemCount,
     loadMoreItems,
+    byPagination,
   } = usePaginateFileEventsByBox(id);
 
   const itemData = useMemo(
@@ -76,11 +80,12 @@ function BoxFiles({ belongsToCurrentUser, box }) {
     [byPagination],
   );
 
+
   const displayLoading = useMemo(() => isNil(itemCount), [itemCount]);
   const displayEmpty = useMemo(() => itemCount === 0, [itemCount]);
 
   return (
-    <>
+    <FilePreviewCarouselContextProvider component={EventFilesCarousel} revokeOnChange={id}>
       <ElevationScroll target={contentRef.current}>
         <AppBarDrawer toolbarProps={{ px: 0 }} offsetHeight={headerHeight}>
           <Box ref={headerRef} display="flex" flexDirection="column" width="100%" minHeight="inherit">
@@ -124,8 +129,7 @@ function BoxFiles({ belongsToCurrentUser, box }) {
           </>
         )}
       </Box>
-    </>
-
+    </FilePreviewCarouselContextProvider>
   );
 }
 

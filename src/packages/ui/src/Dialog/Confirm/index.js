@@ -17,7 +17,7 @@ import BoxControls from '@misakey/ui/Box/Controls';
 import ConfirmDialogContent from './DialogContent';
 
 // COMPONENTS
-function ConfirmationDialog({
+function DialogConfirm({
   onConfirm, isDialogOpen, onClose, onSuccess,
   title, children,
   confirmButtonText,
@@ -78,23 +78,24 @@ function ConfirmationDialog({
   );
 }
 
-ConfirmationDialog.propTypes = {
+DialogConfirm.propTypes = {
   onConfirm: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func,
   isDialogOpen: PropTypes.bool.isRequired,
   irreversible: PropTypes.bool,
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   title: PropTypes.string,
   t: PropTypes.func.isRequired,
   confirmButtonText: PropTypes.string,
 };
 
-ConfirmationDialog.defaultProps = {
+DialogConfirm.defaultProps = {
   irreversible: false,
   confirmButtonText: null,
   title: null,
   onSuccess: null,
+  children: null,
 };
 
-export default withTranslation(['common'])(ConfirmationDialog);
+export default withTranslation(['common'])(DialogConfirm);

@@ -87,7 +87,7 @@ const getBoxSelector = createSelector(
   (items) => (id) => propOr(null, id)(items),
 );
 
-const makeGetEventSelector = () => createSelector(
+export const makeGetEventSelector = () => createSelector(
   (state) => state.entities,
   (_, eventId) => eventId,
   (entities, id) => denormalize(id, BoxEventsSchema.entity, entities),

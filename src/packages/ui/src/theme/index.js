@@ -16,8 +16,24 @@ export const THEMES = {
   LIGHT: 'light',
 };
 
+export const REVERSE = 'reverse';
+export const DARKER = 'darker';
+
 // THEME
 export const getThemeOptions = (isDarkMode = false, color = null) => ({
+  mixins: {
+    // helper to follow toolbar minHeight mixin
+    // NB: order of instructions is important!
+    followToolbarMinHeight: (theme, key) => ({
+      [key]: 56,
+      [`${theme.breakpoints.up('xs')} and (orientation: landscape)`]: {
+        [key]: 48,
+      },
+      [theme.breakpoints.up('sm')]: {
+        [key]: 64,
+      },
+    }),
+  },
   palette: {
     common: {
       black: BLACK,
@@ -34,6 +50,7 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
       message: isDarkMode ? '#555555' : '#F5F5F5',
       paper: isDarkMode ? DARK_BG : LIGHT_BG,
       default: isDarkMode ? DARK_BG : LIGHT_BG,
+      darker: isDarkMode ? boulder[900] : boulder[50],
     },
     action: {
       hover: isDarkMode ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.02)',
@@ -42,16 +59,32 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
       selectedOpacity: isDarkMode ? 0.08 : 0.04,
     },
     grey: boulder,
-    reverse: {
+    [DARKER]: {
+      background: {
+        paper: isDarkMode ? boulder[900] : boulder[50],
+        default: isDarkMode ? boulder[900] : boulder[50],
+      },
+      action: {
+        active: isDarkMode ? '#fff' : 'rgba(0, 0, 0, 0.9)',
+        hover: isDarkMode ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.2)',
+        hoverOpacity: isDarkMode ? 0.3 : 0.2,
+        selected: isDarkMode ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.3)',
+        selectedOpacity: isDarkMode ? 0.4 : 0.3,
+        disabled: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.66)',
+      },
+    },
+    [REVERSE]: {
       background: {
         paper: isDarkMode ? LIGHT_BG : DARK_BG,
         default: isDarkMode ? LIGHT_BG : DARK_BG,
       },
       action: {
+        active: isDarkMode ? 'rgba(0, 0, 0, 0.54)' : '#fff',
         hover: isDarkMode ? 'rgba(0, 0, 0, 0.02)' : 'rgba(255, 255, 255, 0.04)',
         hoverOpacity: isDarkMode ? 0.02 : 0.04,
         selected: isDarkMode ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.08)',
         selectedOpacity: isDarkMode ? 0.04 : 0.08,
+        disabled: isDarkMode ? 'rgba(0, 0, 0, 0.26)' : 'rgba(255, 255, 255, 0.3)',
       },
     },
   },

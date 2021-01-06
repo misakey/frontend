@@ -18,13 +18,13 @@ import { useFilePreviewContext } from 'components/smart/File/Preview/Context';
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import useDecryptSavedFileEffect from 'hooks/useDecryptSavedFileEffect';
+import useDecryptSavedFileEffect from 'hooks/useDecryptSavedFile/effect';
 
 import FileListItem, { FileListItemSkeleton } from 'components/smart/ListItem/File';
 
 // CONSTANTS
 export const CELL_HEIGHT = 97;
-const INTERNAL_DATA = ['byPagination'];
+const INTERNAL_DATA = ['byPagination', 'loadMoreItems'];
 const ALLOWED_FILE_TYPES_TO_PREVIEW = ['image/'];
 
 // HELPERS
@@ -56,9 +56,9 @@ const VaultCell = ({ style, data, savedFile }) => {
 
   const onClick = useCallback(
     () => {
-      onOpenFilePreview(encryptedFileId);
+      onOpenFilePreview(encryptedFileId, { ...data, id });
     },
-    [encryptedFileId, onOpenFilePreview],
+    [encryptedFileId, onOpenFilePreview, data, id],
   );
 
   const onDelete = useCallback(() => deleteSavedFileBuilder(id), [id]);

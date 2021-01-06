@@ -1,33 +1,31 @@
+import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
+
+import isNil from '@misakey/helpers/isNil';
+
+import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
+import usePaginateSavedFiles from 'hooks/usePaginateSavedFiles';
+import useTheme from '@material-ui/core/styles/useTheme';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useMemo, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
-import useTheme from '@material-ui/core/styles/useTheme';
-
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import BoxEmpty from 'components/dumb/Box/Empty';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
-
 import Avatar from '@material-ui/core/Avatar';
 import FolderIcon from '@material-ui/icons/Folder';
-
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import BoxEmpty from 'components/dumb/Box/Empty';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import isNil from '@misakey/helpers/isNil';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import FabAdd from '@misakey/ui/Fab/Add';
-
-import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
-import FilePreviewContextProvider from 'components/smart/File/Preview/Context';
+import FilePreviewCarouselContextProvider from 'components/smart/File/Preview/Carousel/Context';
+import SavedFilesCarousel from 'components/smart/Carousel/FilePreview/SavedFiles';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
-
 import VaultUploadDialog from 'components/smart/Dialog/Vault/Upload';
 import WindowedGridInfiniteLoaded from 'components/smart/WindowedList/InfiniteLoaded/Grid';
 import WindowedListAutoSized from 'components/smart/WindowedList/Autosized';
-import usePaginateSavedFiles from 'hooks/usePaginateSavedFiles';
 import VaultCell, { Skeleton, CELL_HEIGHT } from './Cell';
 
 // HOOKS
@@ -67,7 +65,13 @@ const DocumentsVault = () => {
 
   const isEmpty = useMemo(() => itemCount === 0, [itemCount]);
   const isLoading = useMemo(() => isNil(itemCount), [itemCount]);
-  const itemData = useMemo(() => ({ byPagination }), [byPagination]);
+
+  const itemData = useMemo(
+    () => ({
+      byPagination,
+    }),
+    [byPagination],
+  );
 
   useUpdateDocHead(t('document:vault.title'));
 
@@ -113,7 +117,7 @@ const DocumentsVault = () => {
       {isLoading && <SplashScreen />}
       {!isEmpty && !isLoading && (
         <Box width="100%" className={classes.content}>
-          <FilePreviewContextProvider>
+          <FilePreviewCarouselContextProvider component={SavedFilesCarousel}>
             <WindowedListAutoSized
               maxHeight="100%"
               component={WindowedGridInfiniteLoaded}
@@ -128,7 +132,7 @@ const DocumentsVault = () => {
               className={classes.list}
             />
             <FabAdd onClick={onOpenDialog} />
-          </FilePreviewContextProvider>
+          </FilePreviewCarouselContextProvider>
         </Box>
       )}
     </>

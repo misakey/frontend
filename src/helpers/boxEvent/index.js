@@ -1,6 +1,10 @@
 import { MSG_DELETE, MSG_EDIT, MEMBER_LEAVE, MEMBER_KICK, MEMBER_EVENT_TYPES, MEMBER_JOIN } from 'constants/app/boxes/events';
 
 import prop from '@misakey/helpers/prop';
+import path from '@misakey/helpers/path';
+import compose from '@misakey/helpers/compose';
+import when from '@misakey/helpers/when';
+import isObject from '@misakey/helpers/isObject';
 import isNil from '@misakey/helpers/isNil';
 import { senderMatchesIdentityId } from 'helpers/sender';
 
@@ -84,3 +88,13 @@ export const getEventForNormalization = (event) => {
   }
   return event;
 };
+
+export const getEventEncryptedFileId = compose(
+  when(isObject, prop('id')),
+  path(['content', 'encryptedFileId']),
+);
+
+export const getSavedFileEncryptedFileId = compose(
+  when(isObject, prop('id')),
+  prop('encryptedFileId'),
+);

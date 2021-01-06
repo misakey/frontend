@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '@misakey/ui/IconButton';
 
 // COMPONENTS
 const IconButtonAppBar = ({ children, ...props }) => {

@@ -23,13 +23,10 @@ import AddToVaultIcon from '@misakey/ui/Icon/AddToVault';
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    backgroundColor: theme.palette.grey[900],
+    backgroundColor: theme.palette.background.darker,
+    color: theme.palette.getContrastText(theme.palette.background.darker),
   },
   icons: {
-    // couldn't make it work with `classes: {{ disabled }}`
-    '&.Mui-disabled': {
-      color: theme.palette.grey[400],
-    },
     [theme.breakpoints.down('sm')]: {
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
@@ -41,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 const IconButtonWithDialogPassword = withDialogPassword(IconButtonAppBar);
 
 const FilePreviewPaper = forwardRef((
-  { fileName, disabled, onSave, isSaved, onDownload, onClose, t, ...props },
+  { fileName, disabled, onSave, isSaved, onDownload, onClose, t, appBarProps, ...props },
   ref,
 ) => {
   const classes = useStyles();
@@ -49,10 +46,10 @@ const FilePreviewPaper = forwardRef((
 
   return (
     <>
-      <AppBar className={classes.appBar}>
+      <AppBar className={classes.appBar} {...appBarProps}>
         <Toolbar>
           <IconButtonAppBar
-            color="inherit"
+            color="darker"
             aria-label={t('common:goBack')}
             edge="start"
             onClick={onClose}
@@ -65,7 +62,7 @@ const FilePreviewPaper = forwardRef((
           <Box flexGrow={1} />
           {isFunction(onSave) && (
             <IconButtonWithDialogPassword
-              color="inherit"
+              color="darker"
               className={classes.icons}
               aria-label={vaultLabel}
               edge="end"
@@ -79,7 +76,7 @@ const FilePreviewPaper = forwardRef((
           )}
           <>
             <IconButtonAppBar
-              color="inherit"
+              color="darker"
               className={classes.icons}
               aria-label={t('common:download')}
               edge="end"
@@ -118,6 +115,7 @@ FilePreviewPaper.propTypes = {
   fileName: PropTypes.string,
   disabled: PropTypes.bool,
   isSaved: PropTypes.bool,
+  appBarProps: PropTypes.object,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
@@ -127,6 +125,7 @@ FilePreviewPaper.defaultProps = {
   disabled: false,
   isSaved: false,
   onSave: null,
+  appBarProps: {},
 };
 
 export default withTranslation('common')(FilePreviewPaper);
