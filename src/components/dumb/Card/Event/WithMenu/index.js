@@ -37,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
 const CardEventWithMenu = forwardRef(({
   children,
   classes: { root: rootClass, ...restClasses },
-  date,
   items,
   actions,
   titleProps,
@@ -142,7 +141,6 @@ CardEventWithMenu.propTypes = {
     PropTypes.object,
     PropTypes.node,
   ]),
-  date: PropTypes.string,
 };
 
 CardEventWithMenu.defaultProps = {
@@ -151,7 +149,6 @@ CardEventWithMenu.defaultProps = {
   classes: {},
   titleProps: {},
   actions: null,
-  date: null,
 };
 
 export default CardEventWithMenu;
