@@ -82,7 +82,7 @@ const MessageRow = ({
   const actions = useMemo(
     () => {
       if (type === BOX_AUTO_INVITE) {
-        return <AutoInvitationButton notifDetails={details} />;
+        return <AutoInvitationButton notification={notification} />;
       }
       if (type === USER_CREATE_IDENTITY && acr === 1) {
         return <ButtonCreateAccount standing={BUTTON_STANDINGS.TEXT} text={t('common:setupPassword')} />;

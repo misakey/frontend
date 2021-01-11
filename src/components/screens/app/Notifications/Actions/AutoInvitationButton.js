@@ -10,8 +10,9 @@ import logSentryException from '@misakey/helpers/log/sentry/exception';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import processAutoInviteCryptoaction from '@misakey/crypto/store/actions/processAutoInviteCryptoaction';
+import { markNotificationAsUsed } from 'store/actions/identity/notifications';
 
-function ActualButton({ notifDetails }) {
+function ActualButton({ id, details: notifDetails }) {
   const history = useHistory();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -24,6 +25,7 @@ function ActualButton({ notifDetails }) {
         const { boxUrl } = await dispatch(
           processAutoInviteCryptoaction(notifDetails),
         );
+        dispatch(markNotificationAsUsed(id));
         history.push(boxUrl);
       } catch (error) {
         logSentryException(error);
@@ -43,11 +45,12 @@ function ActualButton({ notifDetails }) {
 }
 
 ActualButton.propTypes = {
-  notifDetails: PropTypes.object.isRequired,
+  details: PropTypes.object.isRequired,
+  id: PropTypes.string.isRequired,
 };
 
-const AutoInvitationButton = ({ notifDetails }) => (
-  notifDetails.used ? null : ActualButton({ notifDetails })
+const AutoInvitationButton = ({ notification: { id, details } }) => (
+  details.used ? null : ActualButton({ id, details })
 );
 
 export default AutoInvitationButton;

@@ -1,7 +1,7 @@
 import { batch } from 'react-redux';
 import { normalize } from 'normalizr';
 import IdentityNotificationsSchema from 'store/schemas/Notifications/Identity';
-import { receiveEntities } from '@misakey/store/actions/entities';
+import { receiveEntities, updateEntities } from '@misakey/store/actions/entities';
 
 export const RESET_NOTIFICATIONS_BY_IDENTITY = Symbol('RESET_NOTIFICATIONS_BY_IDENTITY');
 export const SET_PAGINATION_NOTIFICATIONS_BY_IDENTITY = Symbol('SET_PAGINATION_NOTIFICATIONS_BY_IDENTITY');
@@ -52,6 +52,11 @@ export const addNewNotification = (newNotification) => (dispatch) => {
     dispatch(addPaginatedNotificationId(result));
   });
 };
+
+export const markNotificationAsUsed = (notificationId) => updateEntities(
+  [{ id: notificationId, changes: { details: { used: true } } }],
+  IdentityNotificationsSchema,
+);
 
 export const setLastNotification = (notification) => (dispatch) => {
   const normalized = normalize(
