@@ -174,7 +174,7 @@
         },
         "members": {
           "title": "Membres de l'espace privé",
-          "creator": "Vous seul·e avez accès",
+          "creator": "Vous seul·e êtes membre",
           "count": "{{count}} membre",
           "count_plural": "{{count}} membres",
           "admin": "admin"

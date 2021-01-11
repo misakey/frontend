@@ -155,39 +155,37 @@ function ShareBoxForm({
         )));
       }
 
-      if (nextAccessMode === LIMITED) {
-        const whitelistValues = nextWhitelist
-          .map((el) => {
-            const value = identifierValuePath(el);
-            const { type } = el;
-            return { value, type };
-          })
+      const whitelistValues = nextWhitelist
+        .map((el) => {
+          const value = identifierValuePath(el);
+          const { type } = el;
+          return { value, type };
+        })
         // @FIXME safety check, but it should never happen
         // getOptionDisabled + validationSchema already handle the case
-          .filter(({ value }) => !whitelistedValues.includes(value));
-        const whitelistEventsWithAutoInvite = await Promise.all(whitelistValues
-          .map(async ({ value, type }) => tryAddingAutoInvite({
-            event: {
-              type: ACCESS_EVENT_TYPE.ADD,
-              content: {
-                restrictionType: type,
-                value,
-              },
+        .filter(({ value }) => !whitelistedValues.includes(value));
+      const whitelistEventsWithAutoInvite = await Promise.all(whitelistValues
+        .map(async ({ value, type }) => tryAddingAutoInvite({
+          event: {
+            type: ACCESS_EVENT_TYPE.ADD,
+            content: {
+              restrictionType: type,
+              value,
             },
-            boxKeyShare,
-            boxSecretKey,
-          })));
+          },
+          boxKeyShare,
+          boxSecretKey,
+        })));
 
-        if (isEmpty(whitelistEventsWithAutoInvite) && !accessModeChanged) {
-          return enqueueSnackbar(t('boxes:read.share.update.noChanges'), { variant: 'info' });
-        }
-        if (!isEmpty(whitelistEventsWithAutoInvite)) {
-          try {
-            await bulkUpdate(whitelistEventsWithAutoInvite);
-          } catch (err) {
-            logSentryException(err);
-            return onBulkError();
-          }
+      if (isEmpty(whitelistEventsWithAutoInvite) && !accessModeChanged) {
+        return enqueueSnackbar(t('boxes:read.share.update.noChanges'), { variant: 'info' });
+      }
+      if (!isEmpty(whitelistEventsWithAutoInvite)) {
+        try {
+          await bulkUpdate(whitelistEventsWithAutoInvite);
+        } catch (err) {
+          logSentryException(err);
+          return onBulkError();
         }
       }
       return enqueueSnackbar(t('boxes:read.share.update.success'), { variant: 'success' });
@@ -219,10 +217,8 @@ function ShareBoxForm({
       <Form>
         <Box my={2}>
           <SharingFormWhitelist
-            parent={ACCESSES_FIELD_NAME}
             name={WHITELIST_FIELD_NAME}
             getOptionDisabled={getOptionDisabled}
-            initialValue={WHITELIST_INITIAL_VALUE}
             disabled={!isCurrentUserOwner}
           />
         </Box>

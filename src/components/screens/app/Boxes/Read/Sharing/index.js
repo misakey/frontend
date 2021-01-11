@@ -94,6 +94,7 @@ function BoxSharing({ box, t }) {
   const classes = useStyles();
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
+  const [domainExpanded, setDomainExpanded] = useState(false);
 
   const { id: boxId, accesses, members, creator, accessMode } = useSafeDestr(box);
 
@@ -144,6 +145,11 @@ function BoxSharing({ box, t }) {
     boxKeyShare,
   } = useBoxShareMetadata(boxId);
 
+  const onToggleAccordion = useCallback(
+    () => setDomainExpanded((prevDomainExpanded) => !prevDomainExpanded),
+    [setDomainExpanded],
+  );
+
   const onRemove = useCallback(
     async (event, referrerId) => {
       // if whitelist is going to be emptied, remove all accesses
@@ -174,11 +180,22 @@ function BoxSharing({ box, t }) {
 
   useEffect(
     () => {
-      if (!isEmpty(membersNotInWhitelist) && !isFetchingAccesses && !isFetching) {
+      if (isCurrentUserOwner
+        && !isEmpty(membersNotInWhitelist) && !isFetchingAccesses && !isFetching
+      ) {
         getBoxAccesses();
       }
     },
-    [membersNotInWhitelist, getBoxAccesses, isFetchingAccesses, isFetching],
+    [isCurrentUserOwner, membersNotInWhitelist, getBoxAccesses, isFetchingAccesses, isFetching],
+  );
+
+  useEffect(
+    () => {
+      if (accessMode !== PUBLIC) {
+        setDomainExpanded(true);
+      }
+    },
+    [accessMode, setDomainExpanded],
   );
 
   return (
@@ -260,6 +277,17 @@ function BoxSharing({ box, t }) {
                         avatarUrl={creator.avatarUrl}
                         identifier={identifierValuePath(creator)}
                       />
+                      {!isCurrentUserOwner && membersNotInWhitelist.map((member) => (
+                        <ListItemUserWhitelisted
+                          key={member.id}
+                          isMe={senderMatchesIdentityId(member, meIdentityId)}
+                          isMember
+                          id={member.id}
+                          displayName={member.displayName}
+                          avatarUrl={member.avatarUrl}
+                          identifier={identifierValuePath(member)}
+                        />
+                      ))}
                       {whitelistUsers.map((
                         { restrictionType, value, id, ...rest },
                       ) => (
@@ -275,7 +303,8 @@ function BoxSharing({ box, t }) {
                     </AccordionDetails>
                   </Accordion>
                   <Accordion
-                    defaultExpanded={accessMode !== PUBLIC}
+                    expanded={domainExpanded}
+                    onChange={onToggleAccordion}
                     classes={{ root: classes.accordionRoot }}
                   >
                     <AccordionSummary

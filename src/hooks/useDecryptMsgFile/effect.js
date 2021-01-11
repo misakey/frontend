@@ -24,11 +24,20 @@ export default (event, secretKey, isFromCurrentUser) => {
       if (shouldDecrypt) {
         decryptMsgFile(event, isFromCurrentUser);
       }
-      setIsReady(true);
-
-      return () => { setIsReady(false); };
     },
     [shouldDecrypt, decryptMsgFile, setIsReady, event, isFromCurrentUser],
   );
+
+  useEffect(
+    () => {
+      setIsReady(true);
+
+      return () => {
+        setIsReady(false);
+      };
+    },
+    [shouldDecrypt, secretKey, setIsReady],
+  );
+
   return { isReady };
 };

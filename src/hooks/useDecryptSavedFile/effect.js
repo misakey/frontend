@@ -7,16 +7,16 @@ import useDecryptSavedFileCallback from 'hooks/useDecryptSavedFile/callback';
 
 export default (savedFile, vaultKey) => {
   const { decryptedFile } = useSafeDestr(savedFile);
-  const { encryption, name } = useSafeDestr(decryptedFile);
+  const { encryption, name, error } = useSafeDestr(decryptedFile);
 
   const decryptSavedFile = useDecryptSavedFileCallback(vaultKey);
 
   return useEffect(
     () => {
-      if (isNil(encryption)) {
+      if (isNil(encryption) && isNil(error)) {
         decryptSavedFile(savedFile);
       }
     },
-    [encryption, name, savedFile, vaultKey, decryptSavedFile],
+    [encryption, error, name, savedFile, vaultKey, decryptSavedFile],
   );
 };
