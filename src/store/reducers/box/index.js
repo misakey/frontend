@@ -27,7 +27,7 @@ import isEmpty from '@misakey/helpers/isEmpty';
 import without from '@misakey/helpers/without';
 import omit from '@misakey/helpers/omit';
 import prop from '@misakey/helpers/prop';
-import { cleanDecryptedFile } from '../files/saved/decrypted';
+import { cleanDecryptedFile } from 'store/reducers/files/saved/decrypted';
 
 // CONSTANTS
 const INITIAL_STATE = {};
@@ -44,10 +44,13 @@ const { isPaginationAlreadyFetched: isBoxPaginationAlreadyFetched } = boxPaginat
 const omitText = (values) => omit(values, ['text']);
 const textProp = prop('text');
 
+
 const getNextMembers = ({ type, sender }, members) => {
   if (type === MEMBER_JOIN) {
     const { result } = normalize(sender, BoxSenderSchema.entity);
-    return members.concat(result);
+    if (!members.includes(result)) {
+      return members.concat(result);
+    }
   }
 
   if (type === MEMBER_LEAVE || type === MEMBER_KICK) {
