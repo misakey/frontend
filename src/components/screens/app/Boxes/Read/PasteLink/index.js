@@ -9,12 +9,14 @@ import { SIDES } from '@misakey/ui/constants/drawers';
 import routes from 'routes';
 
 import isNil from '@misakey/helpers/isNil';
-import Formik from '@misakey/ui/Formik';
+import locationToString from '@misakey/helpers/locationToString';
+import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
+import Formik from '@misakey/ui/Formik';
 import AppBar from '@misakey/ui/AppBar';
 import FormField from '@misakey/ui/Form/Field';
 import BoxControls from '@misakey/ui/Box/Controls';
@@ -40,17 +42,32 @@ function PasteBoxLinkScreen({ t, box, currentLinkMalformed }) {
 
   const { id } = useSafeDestr(box);
 
-  const boxInvitationLinkFieldValidationSchema = useMemo(
-    () => getBoxInvitationLinkFieldValidationSchema(id), [id],
+  const location = useLocation();
+  const locationString = useMemo(
+    () => locationToString(location),
+    [location],
   );
 
-  const onSubmit = useCallback(({ [FIELD_NAME]: link }) => {
-    const { pathname: linkPathname, hash } = new URL(link);
-    setRedirectTo(`${linkPathname}${hash}`);
-  }, []);
+
+  const boxInvitationLinkFieldValidationSchema = useMemo(
+    () => getBoxInvitationLinkFieldValidationSchema(
+      id,
+      parseUrlFromLocation(locationString).toString(),
+    ),
+    [id, locationString],
+  );
+
+  const onSubmit = useCallback(
+    ({ [FIELD_NAME]: link }) => {
+      const { pathname: linkPathname, hash } = new URL(link);
+      setRedirectTo(`${linkPathname}${hash}`);
+      return Promise.resolve();
+    },
+    [setRedirectTo],
+  );
 
   if (!isNil(redirectTo)) {
-    return <Redirect to={redirectTo} />;
+    return <Redirect to={redirectTo} forceRefresh />;
   }
 
   return (

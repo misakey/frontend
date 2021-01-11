@@ -21,9 +21,10 @@ export const boxNameFieldValidationSchema = Yup.object().shape({
   name: Yup.string().min(1, malformed).max(50, malformed),
 });
 
-export const getBoxInvitationLinkFieldValidationSchema = (id) => Yup.object().shape({
+export const getBoxInvitationLinkFieldValidationSchema = (id, notFoundLocationString = '') => Yup.object().shape({
   invitationLink: Yup.string()
     .matches(getInvitationUrlForBox(id), { message: malformed })
+    .notOneOf([notFoundLocationString], malformed)
     .required(required),
 });
 
