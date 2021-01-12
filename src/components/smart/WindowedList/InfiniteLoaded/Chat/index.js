@@ -1,4 +1,4 @@
-import { useMemo, forwardRef, useRef, useCallback, useImperativeHandle } from 'react';
+import { useMemo, forwardRef, useRef, useCallback, useImperativeHandle, useState } from 'react';
 import PropTypes from 'prop-types';
 import { VariableSizeList as List } from 'react-window';
 import { useTranslation } from 'react-i18next';
@@ -38,9 +38,11 @@ const InfiniteLoaderChat = forwardRef(({
   itemCount,
   // optional: displayed when top of the list is reached
   NoMoreItemsElement,
+  initialScrollOffset,
   ...props
 }, forwardedRef) => {
   const { t } = useTranslation('common');
+  const [isReady, setIsReady] = useState();
 
   const sizeMap = useRef({});
   const listRef = useRef();
@@ -118,9 +120,17 @@ const InfiniteLoaderChat = forwardRef(({
           {!isNil(NoMoreItemsElement) && !hasNextPage && !isNextPageLoading && NoMoreItemsElement}
         </Box>
         <div {...args} />
+        <Box
+          ref={(anchorRef) => {
+            if (anchorRef && !isReady) {
+              anchorRef.scrollIntoView(false);
+            }
+          }}
+          height="1px"
+        />
       </div>
     )),
-    [NoMoreItemsElement, hasNextPage, isNextPageLoading, loadMoreItems, t],
+    [NoMoreItemsElement, hasNextPage, isNextPageLoading, isReady, loadMoreItems, t],
   );
 
   const onMoreItemsLoaded = useCallback(
@@ -131,26 +141,21 @@ const InfiniteLoaderChat = forwardRef(({
     [],
   );
 
-  const onFirstBatchLoaded = useCallback(
-    () => {
-      // scroll to bottom on first batch loaded
-      listRef.current.scrollTo(height);
-    },
-    [height],
-  );
-
   const { wrappedFetch: onLoadMoreItems } = useFetchCallback(
     loadMoreItems,
     { onSuccess: onMoreItemsLoaded },
   );
 
   const onScroll = useCallback(
-    ({ scrollOffset }) => {
-      if (scrollOffset === 0 && hasNextPage && !isNextPageLoading) {
+    ({ scrollOffset, scrollUpdateWasRequested }) => {
+      if (!scrollUpdateWasRequested && scrollOffset !== initialScrollOffset) {
+        setIsReady(true);
+      }
+      if (scrollOffset === 0 && hasNextPage && !isNextPageLoading && isReady) {
         onLoadMoreItems();
       }
     },
-    [hasNextPage, isNextPageLoading, onLoadMoreItems],
+    [hasNextPage, initialScrollOffset, isNextPageLoading, isReady, onLoadMoreItems],
   );
 
   useImperativeHandle(forwardedRef, () => ({
@@ -165,7 +170,6 @@ const InfiniteLoaderChat = forwardRef(({
   useFetchEffect(
     loadMoreItems,
     { shouldFetch: isNil(itemCount) },
-    { onSuccess: onFirstBatchLoaded },
   );
 
   return (
@@ -174,6 +178,7 @@ const InfiniteLoaderChat = forwardRef(({
       width={width}
       itemCount={itemCount}
       onScroll={onScroll}
+      initialScrollOffset={initialScrollOffset}
       outerRef={outerRef}
       ref={listRef}
       estimatedItemSize={calcEstimatedSize()}
@@ -196,11 +201,13 @@ InfiniteLoaderChat.propTypes = {
   hasNextPage: PropTypes.bool.isRequired,
   loadNextPage: PropTypes.func.isRequired,
   NoMoreItemsElement: PropTypes.node,
+  initialScrollOffset: PropTypes.number,
 };
 
 InfiniteLoaderChat.defaultProps = {
   Skeleton: MuiSkeleton,
   itemCount: 0,
+  initialScrollOffset: 0,
   NoMoreItemsElement: null,
 };
 
