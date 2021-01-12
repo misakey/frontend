@@ -3,14 +3,23 @@ import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import isNil from '@misakey/helpers/isNil';
+import prop from '@misakey/helpers/prop';
 
 import decryptFileMsg from '@misakey/crypto/box/decryptFileMsg';
 import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 import { updateEntities } from '@misakey/store/actions/entities';
 import { DecryptionError } from '@misakey/crypto/Errors/classes';
 
+// HELPERS
+const nameProp = prop('name');
+
+// HOOKS
 export default (secretKey) => {
   const { t } = useTranslation('common');
+  const encryptedName = useMemo(
+    () => t('common:encrypted'),
+    [t],
+  );
 
   const canBeDecrypted = useMemo(() => !isNil(secretKey), [secretKey]);
   const dispatch = useDispatch();
@@ -43,16 +52,21 @@ export default (secretKey) => {
   );
 
   return useCallback(
-    ({ content: { encrypted, encryptedFileId } }, isFromCurrentUser) => {
+    ({ content: { encrypted, encryptedFileId, decryptedFile } }, isFromCurrentUser) => {
       const sender = { isFromCurrentUser };
       if (canBeDecrypted) {
         const data = onDecryptFileMessage(encrypted);
         setDecryptedFileInfo(encryptedFileId, { ...data, sender });
       } else {
-        setDecryptedFileInfo(encryptedFileId, { name: t('common:encrypted'), sender });
+        const decryptedFileName = nameProp(decryptedFile);
+        if (decryptedFileName !== encryptedName) {
+          setDecryptedFileInfo(encryptedFileId, { name: encryptedName, sender });
+        }
       }
     },
-    [onDecryptFileMessage, setDecryptedFileInfo,
-      canBeDecrypted, t],
+    [
+      onDecryptFileMessage, setDecryptedFileInfo,
+      canBeDecrypted, encryptedName,
+    ],
   );
 };
