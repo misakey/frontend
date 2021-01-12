@@ -1,4 +1,5 @@
 import { STEP } from '@misakey/auth/constants';
+import { AUTOFILL_USERNAME } from '@misakey/ui/constants/autofill';
 
 
 import FieldText from '@misakey/ui/Form/Field/TextFieldWithErrors';
@@ -9,8 +10,7 @@ const PREFIX = 'email';
 
 const INPUT_PROPS = {
   'data-matomo-ignore': true,
-  id: `${PREFIX}_${STEP.identifier}`,
-  autoComplete: 'username',
+  ...AUTOFILL_USERNAME,
 };
 
 // COMPONENTS

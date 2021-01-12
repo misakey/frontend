@@ -43,6 +43,7 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import CardSso from '@misakey/auth/components/Card/Sso';
 import Box from '@material-ui/core/Box';
 import SecretFormField from '@misakey/ui/Form/Field/Login/Secret';
+import IdentifierHiddenFormField from '@misakey/ui/Form/Field/Login/Identifier/Hidden';
 import Redirect from '@misakey/ui/Redirect';
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
@@ -378,6 +379,7 @@ const AuthLoginSecret = ({
                 )}
                 {...userPublicData}
               >
+                <IdentifierHiddenFormField value={identifier} />
                 <SecretFormField
                   methodName={methodName}
                   FormHelperTextProps={{ component: FormHelperTextInCard }}

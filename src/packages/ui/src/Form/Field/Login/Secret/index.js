@@ -4,6 +4,7 @@ import clsx from 'clsx';
 
 import { STEP } from '@misakey/auth/constants';
 import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, METHODS } from '@misakey/auth/constants/method';
+import { AUTOFILL_PASSWORD, AUTOFILL_NEW_PASSWORD, AUTOFILL_CODE } from '@misakey/ui/constants/autofill';
 
 import prop from '@misakey/helpers/prop';
 
@@ -20,6 +21,7 @@ const FIELD_PROPS = {
     autoFocus: true,
     inputProps: {
       id: `${EMAILED_CODE}_${STEP.secret}`,
+      ...AUTOFILL_CODE,
     },
   },
   [PREHASHED_PASSWORD]: {
@@ -29,8 +31,7 @@ const FIELD_PROPS = {
     autoFocus: true,
     inputProps: {
       'data-matomo-ignore': true,
-      id: `${PREHASHED_PASSWORD}_${STEP.secret}`,
-      autoComplete: 'current-password',
+      ...AUTOFILL_PASSWORD,
     },
   },
   [ACCOUNT_CREATION]: {
@@ -41,7 +42,7 @@ const FIELD_PROPS = {
     inputProps: {
       'data-matomo-ignore': true,
       id: `${ACCOUNT_CREATION}_${STEP.secret}`,
-      autoComplete: 'new-password',
+      ...AUTOFILL_NEW_PASSWORD,
     },
   },
 

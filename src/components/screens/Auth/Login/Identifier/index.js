@@ -25,6 +25,7 @@ import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import CardUser from '@misakey/auth/components/Card/User';
 import LoginFormField from '@misakey/ui/Form/Field/Login/Identifier';
+import SecretHiddenFormField from '@misakey/ui/Form/Field/Login/Secret/Hidden';
 import BoxControls from '@misakey/ui/Box/Controls';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
 import CardSso from '@misakey/auth/components/Card/Sso';
@@ -131,6 +132,7 @@ const AuthLoginIdentifier = ({
               FormHelperTextProps={{ component: FormHelperTextInCard }}
               margin="none"
             />
+            <SecretHiddenFormField />
           </CardUser>
           <BoxControls formik primary={primary} />
         </Form>
