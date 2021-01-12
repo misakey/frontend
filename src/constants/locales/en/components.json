@@ -136,7 +136,10 @@
   },
   "dialogUpload": {
     "text": "Which files do you want to encrypt?",
-    "label": "New files to encrypt",
+    "label": {
+      "files": "New files to encrypt",
+      "folder": "New folder to encrypt"
+    },
     "helperText": "Drop the files you want to encrypt.",
     "helperLink": "https://docs.misakey.com/#/en/",
     "helperLinkText": "Learn more",

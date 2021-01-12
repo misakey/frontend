@@ -13,17 +13,20 @@ import groupBy from '@misakey/helpers/groupBy';
 import isFunction from '@misakey/helpers/isFunction';
 import uniq from '@misakey/helpers/uniq';
 import getEventFilesArray from '@misakey/helpers/event/getFilesArray';
+import { isDesktopDevice } from '@misakey/helpers/devices';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useFormikContext } from 'formik';
 import useFieldErrors from '@misakey/hooks/useFieldErrors';
 
 import InputFile from '@misakey/ui/Input/File';
+import InputFileFolder from '@misakey/ui/Input/File/Folder';
 import Typography from '@material-ui/core/Typography';
 import TypographyPreWrapped from '@misakey/ui/Typography/PreWrapped';
 import BoxMessage from '@misakey/ui/Box/Message';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import List from '@material-ui/core/List';
+import Box from '@material-ui/core/Box';
 
 // HELPERS
 const getFilenamesStatuses = (status) => {
@@ -57,7 +60,7 @@ const FilesField = ({
   t,
   onUpload,
   accept,
-  labelText,
+  labelFiles, labelFolder,
   name,
   prefix,
   fileTransform,
@@ -66,6 +69,7 @@ const FilesField = ({
   uploadStatus,
   renderItem,
   autoFocus,
+  disabled,
 }) => {
   const globalErrorRef = useRef();
 
@@ -175,19 +179,39 @@ const FilesField = ({
           </TypographyPreWrapped>
         </BoxMessage>
       )}
-      <InputFile
-        accept={accept}
-        name={name}
-        onChange={onChange}
-        label={(
-          <Typography variant="h5" className={classes.label}>
-            {labelText || t('fields:files.label')}
-          </Typography>
+      <Box display="flex" flexDirection="row">
+        <InputFile
+          accept={accept}
+          name={name}
+          onChange={onChange}
+          label={(
+            <Typography variant="h5" className={classes.label}>
+              {labelFiles || t('fields:files.label')}
+            </Typography>
           )}
-        buttonText={t('fields:files.button.choose.label')}
-        autoFocus={autoFocus}
-        multiple
-      />
+          buttonText={t('fields:files.button.choose.label')}
+          autoFocus={autoFocus}
+          multiple
+          disabled={isSubmitting || disabled}
+        />
+        {isDesktopDevice && (
+        <Box ml={1}>
+          <InputFileFolder
+            accept={accept}
+            name={name}
+            onChange={onChange}
+            label={(
+              <Typography variant="h5" className={classes.label}>
+                {labelFolder || t('fields:folder.label')}
+              </Typography>
+              )}
+            buttonText={t('fields:files.button.choose.label')}
+            multiple
+            disabled={isSubmitting || disabled}
+          />
+        </Box>
+        )}
+      </Box>
       {displayError && isGlobalErrorKeys && (
         <FormHelperText error ref={onGlobalError}>
           {t(errorKeys)}
@@ -200,7 +224,8 @@ const FilesField = ({
 FilesField.propTypes = {
   accept: PropTypes.arrayOf(PropTypes.string),
   onUpload: PropTypes.func,
-  labelText: PropTypes.string,
+  labelFiles: PropTypes.string,
+  labelFolder: PropTypes.string,
   name: PropTypes.string.isRequired,
   prefix: PropTypes.string,
   emptyTitle: PropTypes.node,
@@ -209,6 +234,7 @@ FilesField.propTypes = {
   uploadStatus: PropTypes.object,
   renderItem: PropTypes.func.isRequired,
   autoFocus: PropTypes.bool,
+  disabled: PropTypes.bool,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
@@ -220,9 +246,11 @@ FilesField.defaultProps = {
   fileTransform: identity,
   uniqFn: uniq,
   uploadStatus: {},
-  labelText: null,
+  labelFiles: null,
+  labelFolder: null,
   prefix: '',
   autoFocus: false,
+  disabled: false,
 };
 
 export default withTranslation(['fields'])(FilesField);

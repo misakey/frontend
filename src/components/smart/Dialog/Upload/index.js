@@ -221,7 +221,8 @@ function UploadDialog({
               <FieldFiles
                 name={BLOBS_FIELD_NAME}
                 prefix={BLOBS_FIELD_PREFIX}
-                labelText={t('components:dialogUpload.label')}
+                labelFiles={t('components:dialogUpload.label.files')}
+                labelFolder={t('components:dialogUpload.label.folder')}
                 renderItem={(props) => <FieldBlobs {...props} />}
                 fileTransform={fileTransform}
                 uniqFn={uniqBlob}
@@ -235,6 +236,7 @@ function UploadDialog({
                   </DialogContentText>
                 )}
                 autoFocus={autoFocus}
+                disabled={!open}
               />
               <FormHelperText>
                 {t('components:dialogUpload.helperText')}

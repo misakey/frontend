@@ -146,7 +146,10 @@
   },
   "dialogUpload": {
     "text": "Quels fichiers souhaitez vous chiffrer\u00a0?",
-    "label": "Nouveaux fichiers à chiffrer",
+    "label": {
+      "files": "Nouveaux fichiers à chiffrer",
+      "folder": "Nouveau dossier à chiffrer"
+    },
     "helperText": "Déposer les fichiers que vous souhaitez chiffrer.",
     "helperLink": "https://docs.misakey.com/#/fr/",
     "helperLinkText": "En savoir plus",

@@ -4,15 +4,22 @@ import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
+import propOr from '@misakey/helpers/propOr';
 
 import { makeStyles } from '@material-ui/core/styles';
 import useFileReader from '@misakey/hooks/useFileReader';
 import usePropChanged from '@misakey/hooks/usePropChanged';
 import { useFormikContext } from 'formik';
+import useModifier from '@misakey/hooks/useModifier';
 
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import InputFile from '@misakey/ui/Input/File';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import withErrors from '@misakey/ui/Form/Field/withErrors';
+
+// HELPERS
+const fieldDestrProp = propOr({}, 'field');
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -44,15 +51,24 @@ const FileField = ({
   accept,
   previewName,
   labelText,
-  field: { value, name },
+  errorKeys,
+  displayError,
+  ...rest
 }) => {
+  const { value, name } = useModifier(fieldDestrProp, rest);
+
   const { setStatus, setFieldError, setFieldValue, setFieldTouched } = useFormikContext();
 
   const classes = useStyles();
 
   const onFileError = useCallback(
-    (e) => onError(e),
-    [onError],
+    (e) => {
+      setFieldError(name, 'format');
+      if (isFunction(onError)) {
+        onError(e);
+      }
+    },
+    [onError, name, setFieldError],
   );
 
   const onLoad = useCallback(
@@ -78,34 +94,41 @@ const FileField = ({
   useHandleFieldValue(valueChanged, value, file, onReset);
 
   return (
-    <InputFile
-      accept={accept}
-      name={name}
-      onChange={onFileChange}
-      disabled={!isNil(progress)}
-      label={!isNil(progress) ? (
-        <>
-          <LinearProgress variant="determinate" value={progress} className={classes.progressBar} />
-          <Typography variant="body1" color="textSecondary">
-            {t('fields:file.loading', 'Import in progress')}
-          </Typography>
-        </>
-      ) : (
-        <>
-          {file ? (
-            <Typography variant="h6" color="textPrimary" noWrap>
-              {file.name}
+    <>
+      <InputFile
+        accept={accept}
+        name={name}
+        onChange={onFileChange}
+        disabled={!isNil(progress)}
+        label={!isNil(progress) ? (
+          <>
+            <LinearProgress variant="determinate" value={progress} className={classes.progressBar} />
+            <Typography variant="body1" color="textSecondary">
+              {t('fields:file.loading', 'Import in progress')}
             </Typography>
-          ) : (
-            <Typography variant="h5" className={classes.label}>
-              {labelText || t('fields:file.label', 'Drop a file here')}
-            </Typography>
+          </>
+        ) : (
+          <>
+            {file ? (
+              <Typography variant="h6" color="textPrimary" noWrap>
+                {file.name}
+              </Typography>
+            ) : (
+              <Typography variant="h5" className={classes.label}>
+                {labelText || t('fields:file.label', 'Drop a file here')}
+              </Typography>
 
-          )}
-        </>
+            )}
+          </>
+        )}
+        buttonText={t('fields:files.button.choose.label', 'Choose a file')}
+      />
+      {displayError && (
+        <FormHelperText error>
+          {t(errorKeys)}
+        </FormHelperText>
       )}
-      buttonText={t('fields:files.button.choose.label', 'Choose a file')}
-    />
+    </>
   );
 };
 
@@ -115,6 +138,9 @@ FileField.propTypes = {
   onError: PropTypes.func,
   previewName: PropTypes.string,
   labelText: PropTypes.string,
+  // withErrors
+  displayError: PropTypes.bool.isRequired,
+  errorKeys: PropTypes.arrayOf(PropTypes.string).isRequired,
   // Formik Field
   field: PropTypes.shape({
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
@@ -133,4 +159,4 @@ FileField.defaultProps = {
   labelText: null,
 };
 
-export default withTranslation(['fields'])(FileField);
+export default withTranslation(['fields'])(withErrors(FileField));
