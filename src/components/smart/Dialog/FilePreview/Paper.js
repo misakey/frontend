@@ -58,7 +58,7 @@ const FilePreviewPaper = forwardRef((
               <ArrowBack />
             </Tooltip>
           </IconButtonAppBar>
-          <Typography>{fileName}</Typography>
+          <Typography noWrap>{fileName}</Typography>
           <Box flexGrow={1} />
           {isFunction(onSave) && (
             <IconButtonWithDialogPassword

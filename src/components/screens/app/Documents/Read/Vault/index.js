@@ -73,6 +73,11 @@ const DocumentsVault = () => {
     [byPagination],
   );
 
+  const loadedIndexes = useMemo(
+    () => Object.keys(byPagination),
+    [byPagination],
+  );
+
   useUpdateDocHead(t('document:vault.title'));
 
   const onCloseDialog = useCallback(() => setIsUploadDialogOpened(false), []);
@@ -123,6 +128,7 @@ const DocumentsVault = () => {
               component={WindowedGridInfiniteLoaded}
               numColumns={numColumns}
               loadMoreItems={loadMoreItems}
+              loadedIndexes={loadedIndexes}
               Cell={VaultCell}
               Skeleton={Skeleton}
               itemCount={itemCount}

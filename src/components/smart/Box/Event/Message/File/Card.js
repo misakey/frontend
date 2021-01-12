@@ -49,14 +49,21 @@ const useStyles = makeStyles((theme) => ({
   previewFallback: {
     width: 250,
     height: 200,
+    maxWidth: '100%',
   },
   cardContent: {
     padding: theme.spacing(1),
+    maxWidth: '100%',
+  },
+  fallbackTextContainer: {
+    maxWidth: '100%',
   },
 }));
 
 // CONSTANTS
 const ALLOWED_FILE_TYPES_TO_PREVIEW = ['image/'];
+
+const BOX_FILE_TYPO_PROPS = { noWrap: true };
 
 // COMPONENTS
 export const FileCardEventSkeleton = ({
@@ -228,6 +235,9 @@ const FileCardEvent = ({
               isLoading={isLoading}
               isBroken={!isNil(error)}
               className={classes.previewFallback}
+              maxWidth="100%"
+              textContainerProps={{ className: classes.fallbackTextContainer }}
+              typographyProps={BOX_FILE_TYPO_PROPS}
             />
           )}
         />

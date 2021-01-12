@@ -1,10 +1,8 @@
-import { useMemo, useCallback, forwardRef, useEffect, useState } from 'react';
+import { useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import InfiniteLoader from 'react-window-infinite-loader';
 import { FixedSizeGrid as Grid } from 'react-window';
-
-import fill from '@misakey/helpers/fill';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import ListItem from '@material-ui/core/ListItem';
@@ -21,6 +19,7 @@ const WindowedGridInfiniteLoaded = forwardRef(({
   threshold,
   minimumBatchSize,
   loadMoreItems,
+  loadedIndexes,
   Cell,
   Skeleton,
   itemCount,
@@ -31,25 +30,6 @@ const WindowedGridInfiniteLoaded = forwardRef(({
   ...props
 }, forwardedRef) => {
   const rowCount = useMemo(() => Math.ceil(itemCount / numColumns), [itemCount, numColumns]);
-  const [loadedItems, setLoadedItems] = useState([]);
-
-  useEffect(() => {
-    setLoadedItems((current) => {
-      // initialisation
-      if (current.length === 0) {
-        return fill(Array(itemCount), false);
-      }
-      // item count has been incremented --> item added
-      if (current.length < itemCount) {
-        const newElementCount = itemCount - current.length;
-        return fill(Array(newElementCount), true).concat(current);
-      }
-      // itemcount has been decremented --> item removed
-      const elementToRemove = current.length - itemCount;
-      current.splice(-elementToRemove, elementToRemove);
-      return current;
-    });
-  }, [itemCount]);
 
   // will ask for n elements:
   // threshold + minimumBatchSize at start
@@ -58,19 +38,13 @@ const WindowedGridInfiniteLoaded = forwardRef(({
   const onLoadMoreItems = useCallback(
     (startIndex, stopIndex) => loadMoreItems(
       { offset: startIndex, limit: stopIndex + 1 - startIndex },
-    )
-      .then(() => {
-        setLoadedItems((current) => {
-          fill(current, true, startIndex, stopIndex + 1);
-          return current;
-        });
-      }),
+    ),
     [loadMoreItems],
   );
 
   const isItemLoaded = useCallback(
-    (index) => loadedItems[index],
-    [loadedItems],
+    (index) => loadedIndexes.includes(index.toString()),
+    [loadedIndexes],
   );
 
   const columnWidth = useMemo(() => width / numColumns, [numColumns, width]);
@@ -127,6 +101,7 @@ WindowedGridInfiniteLoaded.propTypes = {
   Skeleton: PropTypes.elementType,
   // params: {offset, limit}
   loadMoreItems: PropTypes.func.isRequired,
+  loadedIndexes: PropTypes.arrayOf(PropTypes.string),
   itemCount: PropTypes.number.isRequired,
   numColumns: PropTypes.number,
   rowHeight: PropTypes.number,
@@ -142,6 +117,7 @@ WindowedGridInfiniteLoaded.propTypes = {
 
 WindowedGridInfiniteLoaded.defaultProps = {
   Skeleton: DefaultSkeleton,
+  loadedIndexes: [],
   numColumns: 2,
   rowHeight: 72,
   threshold: 2,

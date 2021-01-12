@@ -168,6 +168,7 @@ function FilePreviewDialog({
                 isLarge
                 typographyProps={{ variant: 'body1' }}
                 textContainerProps={{ className: internalClasses.textContainerPreview }}
+                maxWidth="100%"
               />
             )}
           />

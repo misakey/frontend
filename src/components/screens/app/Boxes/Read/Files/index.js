@@ -80,6 +80,10 @@ function BoxFiles({ belongsToCurrentUser, box }) {
     [byPagination],
   );
 
+  const loadedIndexes = useMemo(
+    () => Object.keys(byPagination),
+    [byPagination],
+  );
 
   const displayLoading = useMemo(() => isNil(itemCount), [itemCount]);
   const displayEmpty = useMemo(() => itemCount === 0, [itemCount]);
@@ -115,6 +119,7 @@ function BoxFiles({ belongsToCurrentUser, box }) {
               component={WindowedGridInfiniteLoaded}
               numColumns={numColumns}
               loadMoreItems={loadMoreItems}
+              loadedIndexes={loadedIndexes}
               Cell={Cell}
               Skeleton={Skeleton}
               itemCount={itemCount}

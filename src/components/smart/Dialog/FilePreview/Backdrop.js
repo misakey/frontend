@@ -6,6 +6,12 @@ import { useTranslation } from 'react-i18next';
 import Backdrop from '@material-ui/core/Backdrop';
 import BoxFile from 'components/dumb/Box/File';
 
+// CONSTANTS
+const BOX_FILE_TYPO_PROPS = {
+  variant: 'body1',
+  noWrap: true,
+};
+
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   textContainerPreview: {
@@ -14,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
     opacity: 0.8,
     padding: theme.spacing(1),
     borderRadius: theme.shape.borderRadius,
+    maxWidth: '100%',
   },
 }));
 
@@ -38,7 +45,8 @@ const FilePreviewBackdrop = ({
           isLoading={isLoading}
           isBroken={isBroken}
           isLarge
-          typographyProps={{ variant: 'body1' }}
+          maxWidth="100%"
+          typographyProps={BOX_FILE_TYPO_PROPS}
           textContainerProps={{ className: internalClasses.textContainerPreview }}
         />
       )}
