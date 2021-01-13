@@ -63,7 +63,8 @@
         "sent": "Files:{{filenamesSent}} were successfully sent."
       },
       "required": "You must send at least 1 file",
-      "max": "You cannot send more than 10 files in a row"
+      "max": "You cannot send more than 10 files in a row",
+      "extension": "Following files with no extension couldn't be added:{{filenamesNoExtension}}"
     }
   },
   "folder": {

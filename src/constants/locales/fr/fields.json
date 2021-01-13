@@ -43,8 +43,12 @@
         "sent": "Les fichiers\u00a0:{{filenamesSent}} ont été envoyés avec succès."
       },
       "required": "Vous devez envoyer au moins 1 fichier",
-      "max": "Vous ne pouvez envoyer que 10 fichiers à la fois"
+      "max": "Vous ne pouvez envoyer que 10 fichiers à la fois",
+      "extension": "Les fichiers sans extension suivants n'ont pas pu être ajoutés\u00a0:{{filenamesNoExtension}}"
     }
+  },
+  "folder": {
+    "label": "Déposer un dossier ici"
   },
   "blobs_files": {
     "error": {

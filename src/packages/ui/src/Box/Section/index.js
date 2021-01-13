@@ -1,20 +1,35 @@
+import { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-import withStyles from '@material-ui/core/styles/withStyles';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import Box from '@material-ui/core/Box';
 
-const BoxSection = withStyles((theme) => ({
+// HOOKS
+const useStyles = makeStyles((theme) => ({
   root: {
     border: `1px solid ${theme.palette.grey.A100}`,
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
   },
-}))(({ children, className, classes, ...rest }) => (
-  <Box component="section" p={3} className={clsx(classes.root, className)} {...rest}>
-    {children}
-  </Box>
-));
+}));
+
+// COMPONENTS
+const BoxSection = forwardRef(({ children, className, ...rest }, ref) => {
+  const classes = useStyles();
+
+  return (
+    <Box
+      ref={ref}
+      component="section"
+      p={3}
+      className={clsx(classes.root, className)}
+      {...rest}
+    >
+      {children}
+    </Box>
+  );
+});
 
 BoxSection.propTypes = {
   children: PropTypes.node,

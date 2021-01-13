@@ -78,6 +78,7 @@ function UploadDialog({
   onUploadBuilder,
   onEncryptBuilder,
   initialValues,
+  initialStatus,
   fileTransform,
   autoFocus,
 }) {
@@ -201,7 +202,7 @@ function UploadDialog({
       <Formik
         validationSchema={fileUploadValidationSchema}
         initialValues={initialValues}
-        initialStatus={INITIAL_STATUS}
+        initialStatus={initialStatus}
         onSubmit={onSubmit}
       >
         {({ resetForm }) => (
@@ -221,8 +222,6 @@ function UploadDialog({
               <FieldFiles
                 name={BLOBS_FIELD_NAME}
                 prefix={BLOBS_FIELD_PREFIX}
-                labelFiles={t('components:dialogUpload.label.files')}
-                labelFolder={t('components:dialogUpload.label.folder')}
                 renderItem={(props) => <FieldBlobs {...props} />}
                 fileTransform={fileTransform}
                 uniqFn={uniqBlob}
@@ -265,6 +264,7 @@ UploadDialog.propTypes = {
   onEncryptBuilder: PropTypes.func.isRequired,
   onError: PropTypes.func,
   initialValues: PropTypes.object,
+  initialStatus: PropTypes.object,
   fileTransform: PropTypes.func,
   autoFocus: PropTypes.bool,
 };
@@ -272,6 +272,7 @@ UploadDialog.propTypes = {
 UploadDialog.defaultProps = {
   open: false,
   initialValues: INITIAL_VALUES,
+  initialStatus: INITIAL_STATUS,
   fileTransform: fileToBlob,
   autoFocus: false,
   onSuccess: null,

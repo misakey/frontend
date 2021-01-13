@@ -11,9 +11,12 @@ import workerEncryptFile from '@misakey/crypto/box/encryptFile/worker';
 // CONSTANTS
 export const BLOBS_FIELD_NAME = 'files';
 export const INITIAL_VALUES = { [BLOBS_FIELD_NAME]: [] };
+export const INITIAL_STATUS = { [BLOBS_FIELD_NAME]: null };
 
+// COMPONENTS
 function BoxesUploadDialog({
   initialValues,
+  initialStatus,
   box,
   onSuccess,
   open,
@@ -47,6 +50,7 @@ function BoxesUploadDialog({
       onUploadBuilder={onUploadBuilder}
       onEncryptBuilder={onEncryptBuilder}
       initialValues={initialValues}
+      initialStatus={initialStatus}
       open={open}
       onClose={onClose}
       autoFocus={autoFocus}
@@ -60,12 +64,14 @@ BoxesUploadDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func,
   initialValues: PropTypes.object,
+  initialStatus: PropTypes.object,
   autoFocus: PropTypes.bool,
 };
 
 BoxesUploadDialog.defaultProps = {
   open: false,
   initialValues: INITIAL_VALUES,
+  initialStatus: INITIAL_STATUS,
   autoFocus: false,
   onSuccess: null,
 };

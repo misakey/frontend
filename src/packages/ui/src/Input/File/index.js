@@ -66,7 +66,6 @@ const InputFile = forwardRef(({ label, dragActiveLabel, buttonText, disabled, ..
         <Button
           standing={BUTTON_STANDINGS.TEXT}
           type="button"
-          aria-label={buttonText}
           onClick={onClick}
           text={buttonText}
           disabled={disabled}
@@ -84,7 +83,7 @@ InputFile.propTypes = {
   onChange: PropTypes.func,
   label: PropTypes.node,
   dragActiveLabel: PropTypes.node,
-  buttonText: PropTypes.string.isRequired,
+  buttonText: PropTypes.node.isRequired,
   autoFocus: PropTypes.bool,
   disabled: PropTypes.bool,
 };

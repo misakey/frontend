@@ -7,7 +7,9 @@ import { ACCEPTED_TYPES } from 'constants/file/image';
 import { DATETIME_EXTRA_SHORT } from 'constants/formats/dates';
 
 import moment from 'moment';
+import partition from '@misakey/helpers/partition';
 import fileToBlob from '@misakey/helpers/fileToBlob';
+import fileType from '@misakey/helpers/fileType';
 import makeCompatFile from '@misakey/helpers/makeCompatFile';
 import isFunction from '@misakey/helpers/isFunction';
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -23,7 +25,7 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useDrag from '@misakey/hooks/useDrag';
 import usePasteEffect from '@misakey/hooks/usePasteEffect';
 
-import UploadDialog, { BLOBS_FIELD_NAME, INITIAL_VALUES } from 'components/smart/Dialog/Boxes/Upload';
+import UploadDialog, { BLOBS_FIELD_NAME, INITIAL_VALUES, INITIAL_STATUS } from 'components/smart/Dialog/Boxes/Upload';
 import Box from '@material-ui/core/Box';
 import Title from '@misakey/ui/Typography/Title';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -35,6 +37,8 @@ const DROP_TYPE = 'Files';
 const TYPE_REGEX = /^([^/]*)\/(.*)$/;
 
 // HELPERS
+const isEmptyFileType = (file) => isEmpty(fileType(file));
+
 const getKindAndExtensionFromType = (type) => {
   const [, kind, extension] = type.match(TYPE_REGEX);
   return { kind, extension };
@@ -70,13 +74,9 @@ const InputBoxesUpload = ({
   t,
 }) => {
   const [dialogInitialValues, setDialogInitialValues] = useState(INITIAL_VALUES);
+  const [dialogInitialStatus, setDialogInitialStatus] = useState(INITIAL_STATUS);
 
   const classes = useStyles();
-
-  const autoFocus = useMemo(
-    () => dialogInitialValues === INITIAL_VALUES,
-    [dialogInitialValues],
-  );
 
   const handlePaste = useCallback(
     async (items) => {
@@ -104,22 +104,31 @@ const InputBoxesUpload = ({
       // Prevent default behavior (Prevent file from being opened)
       e.preventDefault();
       const { items, files } = e.dataTransfer;
-      let nextValue = [];
+      let nextFiles = [];
       if (files) {
         // Use DataTransfer interface to access the file(s)
-        nextValue = fileListToArray(files).map(fileTransform);
+        nextFiles = fileListToArray(files);
       } else if (items) {
         // Use DataTransferItemList interface to access the file(s)
         for (let i = 0; i < items.length; i += 1) {
           // If dropped items aren't files, reject them
           if (items[i].kind === 'file') {
-            nextValue.push(fileTransform(items[i].getAsFile()));
+            nextFiles.push(items[i].getAsFile());
           }
         }
       }
+      const [noExtFiles, extFiles] = partition(nextFiles, isEmptyFileType);
+
+      const nextValue = extFiles.map(fileTransform);
       // In case of dropping anything other than files, do not trigger file upload
-      if (!isEmpty(nextValue)) {
-        setDialogInitialValues({ [BLOBS_FIELD_NAME]: nextValue });
+      if (!isEmpty(nextFiles)) {
+        if (!isEmpty(noExtFiles)) {
+          setDialogInitialStatus({ [BLOBS_FIELD_NAME]: noExtFiles
+            .map((blob) => ({ blob, noExtension: true })) });
+        }
+        if (!isEmpty(nextValue)) {
+          setDialogInitialValues({ [BLOBS_FIELD_NAME]: nextValue });
+        }
         if (isFunction(onUpload)) {
           onUpload(e);
         }
@@ -131,9 +140,10 @@ const InputBoxesUpload = ({
   const handleClose = useCallback(
     (e) => {
       setDialogInitialValues(INITIAL_VALUES);
+      setDialogInitialStatus(INITIAL_STATUS);
       return onClose(e);
     },
-    [setDialogInitialValues, onClose],
+    [setDialogInitialValues, setDialogInitialStatus, onClose],
   );
 
   const [dragActive, dragEvents] = useDrag({ handleDrop, type: DROP_TYPE });
@@ -167,11 +177,11 @@ const InputBoxesUpload = ({
     <>
       <UploadDialog
         initialValues={dialogInitialValues}
+        initialStatus={dialogInitialStatus}
         box={box}
         onSuccess={onSuccess}
         open={open}
         onClose={handleClose}
-        autoFocus={autoFocus}
       />
       <div className={classes.dragArea} {...dragProps}>
         {dragActive ? (

@@ -10,6 +10,8 @@ import remove from '@misakey/helpers/remove/ramda';
 import compact from '@misakey/helpers/compact';
 import identity from '@misakey/helpers/identity';
 import groupBy from '@misakey/helpers/groupBy';
+import partition from '@misakey/helpers/partition';
+import fileType from '@misakey/helpers/fileType';
 import isFunction from '@misakey/helpers/isFunction';
 import uniq from '@misakey/helpers/uniq';
 import getEventFilesArray from '@misakey/helpers/event/getFilesArray';
@@ -28,13 +30,27 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import List from '@material-ui/core/List';
 import Box from '@material-ui/core/Box';
 
+import FolderIcon from '@material-ui/icons/Folder';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+
 // HELPERS
+const isEmptyFileType = (file) => isEmpty(fileType(file));
+
+const makeErrorLine = (error) => `\n - ${error}`;
+
 const getFilenamesStatuses = (status) => {
   if (isNil(status)) { return {}; }
-  const { errors = [], sent = [] } = groupBy(status, ({ isSent }) => (isSent ? 'sent' : 'errors'));
+  const { noExtension = [], sent = [], errors = [] } = groupBy(status,
+    ({ isSent, noExtension: noExtensionError }) => {
+      if (noExtensionError) {
+        return 'noExtension';
+      }
+      return isSent ? 'sent' : 'errors';
+    });
   return {
-    filenamesErrors: errors.map(({ blob }) => `\n - ${blob.name}`),
-    filenamesSent: sent.map(({ blob }) => `\n - ${blob.name}`),
+    filenamesErrors: errors.map(({ blob }) => makeErrorLine(blob.name)),
+    filenamesSent: sent.map(({ blob }) => makeErrorLine(blob.name)),
+    filenamesNoExtension: noExtension.map(({ blob }) => makeErrorLine(blob.name)),
   };
 };
 
@@ -73,10 +89,17 @@ const FilesField = ({
 }) => {
   const globalErrorRef = useRef();
 
-  const { status, isSubmitting } = useFormikContext();
+  const { status, isSubmitting, setStatus } = useFormikContext();
   const fieldStatus = useMemo(() => status[name], [status, name]);
 
-  const { filenamesErrors, filenamesSent } = useMemo(
+  const clearStatus = useCallback(
+    () => {
+      setStatus({ [name]: null });
+    },
+    [setStatus, name],
+  );
+
+  const { filenamesErrors, filenamesSent, filenamesNoExtension } = useMemo(
     () => getFilenamesStatuses(fieldStatus),
     [fieldStatus],
   );
@@ -106,8 +129,16 @@ const FilesField = ({
   const onChange = useCallback(
     (e) => {
       const files = getEventFilesArray(e);
+      // immediately filter files without extension
+      const [noExtFiles, extFiles] = partition(files, isEmptyFileType);
       // NB accept only same file once
-      const nextValue = uniqFn(value.concat(files.map(fileTransform)));
+      const nextValue = uniqFn(value.concat(extFiles.map(fileTransform)));
+      if (!isEmpty(noExtFiles)) {
+        setStatus({ [name]: noExtFiles.map((blob) => ({ blob, noExtension: true })) });
+      } else {
+        setStatus({ [name]: undefined });
+      }
+
       setError(null);
       setValue(nextValue);
       setTouched(true);
@@ -120,6 +151,7 @@ const FilesField = ({
       value,
       onUpload, setError, setValue, setTouched,
       fileTransform, uniqFn,
+      setStatus, name,
     ],
   );
 
@@ -133,11 +165,13 @@ const FilesField = ({
     [value, error, setValue, setError],
   );
 
-  const onGlobalError = useCallback(
+  const onFocusNode = useCallback(
     (node) => {
       if (!isNil(node)) {
         globalErrorRef.current = node;
-        node.scrollIntoView();
+        requestAnimationFrame(() => {
+          node.scrollIntoView();
+        });
       }
     },
     [globalErrorRef],
@@ -170,11 +204,16 @@ const FilesField = ({
         </List>
       )}
       {!isNil(fieldStatus) && (
-        <BoxMessage type="error" p={2} my={1}>
+        <BoxMessage type="error" p={2} my={1} ref={onFocusNode} onClose={clearStatus}>
           <TypographyPreWrapped>
-            {t('fields:files.error.api.notSent', { filenamesErrors })}
+            {!isEmpty(filenamesErrors) && (
+              t('fields:files.error.api.notSent', { filenamesErrors })
+            )}
             {!isEmpty(filenamesSent) && (
               t('fields:files.error.api.sent', { filenamesSent })
+            )}
+            {!isEmpty(filenamesNoExtension) && (
+              t('fields:files.error.extension', { filenamesNoExtension })
             )}
           </TypographyPreWrapped>
         </BoxMessage>
@@ -189,7 +228,12 @@ const FilesField = ({
               {labelFiles || t('fields:files.label')}
             </Typography>
           )}
-          buttonText={t('fields:files.button.choose.label')}
+          buttonText={(
+            <>
+              {t('fields:files.button.choose.label')}
+              <InsertDriveFileIcon />
+            </>
+          )}
           autoFocus={autoFocus}
           multiple
           disabled={isSubmitting || disabled}
@@ -205,7 +249,12 @@ const FilesField = ({
                 {labelFolder || t('fields:folder.label')}
               </Typography>
               )}
-            buttonText={t('fields:files.button.choose.label')}
+            buttonText={(
+              <>
+                {t('fields:files.button.choose.label')}
+                <FolderIcon />
+              </>
+              )}
             multiple
             disabled={isSubmitting || disabled}
           />
@@ -213,7 +262,7 @@ const FilesField = ({
         )}
       </Box>
       {displayError && isGlobalErrorKeys && (
-        <FormHelperText error ref={onGlobalError}>
+        <FormHelperText error ref={onFocusNode}>
           {t(errorKeys)}
         </FormHelperText>
       )}
