@@ -48,7 +48,7 @@ export const getLastNotificationSelector = createSelector(
   (state) => state[REDUCER_KEY],
   (state) => state.entities,
   (items, entities) => (isNil(items.lastNotification)
-    ? null
+    ? items.lastNotification
     : denormalize(items.lastNotification, IdentityNotificationsSchema.entity, entities)
   ),
 );
@@ -61,7 +61,7 @@ export const getPaginationSelector = createSelector(
 const initialState = {
   notifications: null,
   newCount: null,
-  lastNotification: null,
+  lastNotification: undefined,
   hasNextPage: false,
 };
 
