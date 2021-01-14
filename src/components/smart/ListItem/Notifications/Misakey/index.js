@@ -110,9 +110,7 @@ function MisakeyNotificationsListItem({ ...props }) {
   const storeLastNotification = useCallback(
     (response) => {
       const lastNotif = isArray(response) ? head(response) : null;
-      if (!isNil(lastNotif)) {
-        dispatch(setLastNotification(lastNotif));
-      }
+      dispatch(setLastNotification(lastNotif));
     },
     [dispatch],
   );
