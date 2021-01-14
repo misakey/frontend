@@ -9,6 +9,7 @@ import { getLastNotificationSelector, getNewCountSelector } from 'store/reducers
 
 import { countUserNotificationsBuilder, getUserNotificationsBuilder } from '@misakey/helpers/builder/identities';
 import isNil from '@misakey/helpers/isNil';
+import isArray from '@misakey/helpers/isArray';
 import head from '@misakey/helpers/head';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -107,7 +108,12 @@ function MisakeyNotificationsListItem({ ...props }) {
   );
 
   const storeLastNotification = useCallback(
-    (response) => dispatch(setLastNotification(head(response))),
+    (response) => {
+      const lastNotif = isArray(response) ? head(response) : null;
+      if (!isNil(lastNotif)) {
+        dispatch(setLastNotification(lastNotif));
+      }
+    },
     [dispatch],
   );
 
