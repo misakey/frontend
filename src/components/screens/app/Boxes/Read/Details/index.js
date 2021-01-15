@@ -152,7 +152,7 @@ function BoxDetails({ box, belongsToCurrentUser, t }) {
           >
             {members.map((member) => (
               <ListItemMemberPublicLink
-                key={member.identifier.value}
+                key={member.identifierValue}
                 member={member}
                 box={box}
                 belongsToCurrentUser={belongsToCurrentUser}

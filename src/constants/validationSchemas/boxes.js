@@ -43,14 +43,11 @@ export const boxDeletionDialogValidationSchema = (expected) => Yup.object().shap
 export const accessWhitelistValidationSchema = {
   accessWhitelist: Yup.array(Yup.object().shape({
     type: Yup.string().oneOf([IDENTIFIER, EMAIL_DOMAIN]),
-    identifier: Yup.object().when('type',
-      (type, schema) => (type === IDENTIFIER
-        ? schema.shape({
-          value: emailFieldValidation.schema,
-        })
-        : schema.shape({
-          value: emailFieldValidation.domain,
-        }))),
+    identifierValue: Yup.string().when('type', {
+      is: IDENTIFIER,
+      then: emailFieldValidation.schema,
+      otherwise: emailFieldValidation.domain,
+    }),
   })),
 };
 

@@ -18,7 +18,7 @@ import pluck from '@misakey/helpers/pluck';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 import filter from '@misakey/helpers/filter';
 import { createBulkBoxEventBuilder, createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
-import { identifierValuePath, senderMatchesIdentifierValue } from 'helpers/sender';
+import { senderMatchesIdentifierValue, identifierValueProp } from 'helpers/sender';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { tryAddingAutoInvite } from '@misakey/crypto/box/autoInvitation';
@@ -102,7 +102,7 @@ function ShareBoxForm({
 
   const getOptionDisabled = useCallback(
     (option) => {
-      const optionIdentifierValue = identifierValuePath(option);
+      const optionIdentifierValue = identifierValueProp(option);
       return optionIdentifierValue.endsWith(',')
     || senderMatchesIdentifierValue(option, meIdentifierValue)
     || whitelistedValues.includes(optionIdentifierValue);
@@ -157,7 +157,7 @@ function ShareBoxForm({
 
       const whitelistValues = nextWhitelist
         .map((el) => {
-          const value = identifierValuePath(el);
+          const value = identifierValueProp(el);
           const { type } = el;
           return { value, type };
         })

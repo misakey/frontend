@@ -3,7 +3,7 @@ import routes from 'routes';
 import { screenAuthSetIdentifier } from 'store/actions/screens/auth';
 import { ssoUpdate } from '@misakey/auth/store/actions/sso';
 
-import { requireAuthable } from '@misakey/auth/builder/identities';
+import updateAuthIdentities from '@misakey/auth/builder/updateAuthIdentities';
 
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
@@ -16,7 +16,7 @@ export default (loginChallenge) => {
   const { search } = useLocation();
 
   return useCallback(
-    (nextIdentifier) => requireAuthable(loginChallenge, nextIdentifier)
+    (nextIdentifier) => updateAuthIdentities(loginChallenge, nextIdentifier)
       .then((response) => Promise.all([
         dispatch(ssoUpdate(response)),
         dispatch(screenAuthSetIdentifier(nextIdentifier)),

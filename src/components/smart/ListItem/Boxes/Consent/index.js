@@ -2,11 +2,8 @@ import PropTypes from 'prop-types';
 
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
-import { identifierValuePath } from 'helpers/sender';
-
 import { useSelector } from 'react-redux';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useModifier from '@misakey/hooks/useModifier';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -20,8 +17,7 @@ const { identity: IDENTITY_SELECTOR } = authSelectors;
 // COMPONENTS
 const ListItemBoxesConsent = ({ children }) => {
   const identity = useSelector(IDENTITY_SELECTOR);
-  const { displayName, avatarUrl } = useSafeDestr(identity);
-  const identifierValue = useModifier(identifierValuePath, identity);
+  const { displayName, avatarUrl, identifierValue } = useSafeDestr(identity);
 
   return (
     <ListItem>

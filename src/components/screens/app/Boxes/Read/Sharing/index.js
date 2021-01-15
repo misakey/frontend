@@ -17,7 +17,7 @@ import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import partition from '@misakey/helpers/partition';
 import differenceWith from '@misakey/helpers/differenceWith';
-import { senderMatchesIdentityId, senderMatchesIdentifierValue, sendersMatch, identifierValuePath } from 'helpers/sender';
+import { senderMatchesIdentifierValue, senderMatchesIdentityId, sendersMatch } from 'helpers/sender';
 import { createBulkBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -97,6 +97,7 @@ function BoxSharing({ box, t }) {
   const [domainExpanded, setDomainExpanded] = useState(false);
 
   const { id: boxId, accesses, members, creator, accessMode } = useSafeDestr(box);
+  const { id: creatorId, displayName, avatarUrl, identifierValue } = useSafeDestr(creator);
 
   const meIdentityId = useSelector(IDENTITY_ID_SELECTOR);
   const dispatch = useDispatch();
@@ -268,14 +269,14 @@ function BoxSharing({ box, t }) {
                     </AccordionSummary>
                     <AccordionDetails>
                       <ListItemUserWhitelisted
-                        key={creator.id}
+                        key={creatorId}
                         isMe={senderMatchesIdentityId(creator, meIdentityId)}
                         isOwner
                         isMember
-                        id={creator.id}
-                        displayName={creator.displayName}
-                        avatarUrl={creator.avatarUrl}
-                        identifier={identifierValuePath(creator)}
+                        id={creatorId}
+                        displayName={displayName}
+                        avatarUrl={avatarUrl}
+                        identifier={identifierValue}
                       />
                       {!isCurrentUserOwner && membersNotInWhitelist.map((member) => (
                         <ListItemUserWhitelisted
@@ -285,7 +286,7 @@ function BoxSharing({ box, t }) {
                           id={member.id}
                           displayName={member.displayName}
                           avatarUrl={member.avatarUrl}
-                          identifier={identifierValuePath(member)}
+                          identifier={member.identifierValue}
                         />
                       ))}
                       {whitelistUsers.map((

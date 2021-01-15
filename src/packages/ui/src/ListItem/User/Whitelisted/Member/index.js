@@ -19,7 +19,7 @@ const ListItemUserWhitelistedMember = ({
   identifier, members, onRemove,
   ...rest }) => {
   const member = useMemo(
-    () => (members || []).find(({ identifier: { value } }) => value === identifier),
+    () => (members || []).find(({ identifierValue }) => identifierValue === identifier),
     [members, identifier],
   );
 
@@ -67,9 +67,7 @@ const ListItemUserWhitelistedMember = ({
 ListItemUserWhitelistedMember.propTypes = {
   identifier: PropTypes.string,
   members: PropTypes.arrayOf(PropTypes.shape({
-    identifier: PropTypes.shape({
-      value: PropTypes.string.isRequired,
-    }).isRequired,
+    identifierValue: PropTypes.string.isRequired,
   })),
   onRemove: PropTypes.func,
 };

@@ -13,12 +13,9 @@ const SenderSchema = {
   propTypes: {
     displayName: PropTypes.string.isRequired,
     avatarUrl: PropTypes.string,
-    identifierId: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
-    identifier: PropTypes.shape({
-      value: PropTypes.string,
-      kind: PropTypes.string,
-    }).isRequired,
+    identifierValue: PropTypes.string.isRequired,
+    identifierKind: PropTypes.string.isRequired,
   },
 };
 

@@ -10,11 +10,8 @@ import { invalid } from '@misakey/ui/constants/errorTypes';
 import { SIDES } from '@misakey/ui/constants/drawers';
 import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
 
-import { identifierValuePath } from 'helpers/sender';
-
 import useLoadSecretsWithPassword from '@misakey/crypto/hooks/useLoadSecretsWithPassword';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
-import useModifier from '@misakey/hooks/useModifier';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
@@ -51,8 +48,7 @@ function VaultLocked({ t }) {
   const openVaultWithPassword = useLoadSecretsWithPassword();
 
   const currentUser = useSelector(getCurrentUserSelector);
-  const { displayName, avatarUrl } = useSafeDestr(currentUser);
-  const identifierValue = useModifier(identifierValuePath, currentUser);
+  const { displayName, avatarUrl, identifierValue } = useSafeDestr(currentUser);
 
   const onSubmit = useCallback(
     ({ [PREHASHED_PASSWORD]: password }, { setFieldError }) => openVaultWithPassword(password)

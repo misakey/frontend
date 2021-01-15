@@ -6,7 +6,7 @@ import { useFormikContext } from 'formik';
 import { EMAILED_CODE } from '@misakey/auth/constants/method';
 import { ssoUpdate } from '@misakey/auth/store/actions/sso';
 
-import { requireAuthable } from '@misakey/auth/builder/identities';
+import updateAuthIdentities from '@misakey/auth/builder/updateAuthIdentities';
 import isFunction from '@misakey/helpers/isFunction';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
@@ -27,7 +27,7 @@ const ButtonForgotPassword = ({
   const onRenewAuthStep = useRenewAuthStep({ loginChallenge });
 
   const onClick = useCallback(
-    () => requireAuthable(loginChallenge, identifier)
+    () => updateAuthIdentities(loginChallenge, identifier)
       .then(({ identity, authnStep }) => {
         const nextAuthnStep = { ...authnStep, methodName: EMAILED_CODE };
         dispatchSsoUpdate({ identity, authnStep: nextAuthnStep });

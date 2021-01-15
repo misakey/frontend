@@ -7,6 +7,7 @@ import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import isNil from '@misakey/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import ButtonAccount from 'components/dumb/Button/Account';
 import LinkAccountMisakey from 'components/smart/Link/Account/Misakey';
@@ -37,10 +38,11 @@ const CardIdentityThumbnail = ({ identity, ...props }) => {
     [identity],
   );
 
-  const { displayName, avatarUrl, identifier: { value: identifierValue } = {} } = useMemo(
-    () => identity || {},
-    [identity],
-  );
+  const {
+    displayName,
+    avatarUrl,
+    identifierValue,
+  } = useSafeDestr(identity);
 
   return (
     <Box mx={4} mb={4}>

@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation, Trans } from 'react-i18next';
-import { useParams } from 'react-router-dom';
 
 import IdentitySchema from 'store/schemas/Identity';
 import routes from 'routes';
 
 import isNil from '@misakey/helpers/isNil';
+
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
+import { useParams } from 'react-router-dom';
 
 import ScreenAction from 'components/dumb/Screen/Action';
 import Container from '@material-ui/core/Container';
@@ -14,13 +17,11 @@ import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import Title from '@misakey/ui/Typography/Title';
-import path from '@misakey/helpers/path';
-import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 // COMPONENTS
 const AccountDelete = ({ t, identity, isFetching }) => {
   const { id } = useParams();
-  const email = path(['identifier', 'value'], identity);
+  const { identifierValue: email } = useSafeDestr(identity);
 
   const isLoading = useMemo(
     () => isFetching || isNil(identity),

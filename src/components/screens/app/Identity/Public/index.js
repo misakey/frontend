@@ -102,7 +102,10 @@ const IdentityPublic = forwardRef(({ t, identity, isFetching }, ref) => {
   const { id } = useParams();
 
   const {
-    displayName, avatarUrl, identifier: { value: identifierValue, kind: identifierKind } = {},
+    displayName,
+    avatarUrl,
+    identifierValue,
+    identifierKind,
   } = useSafeDestr(identity);
 
 

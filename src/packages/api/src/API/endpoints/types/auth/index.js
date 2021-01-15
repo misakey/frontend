@@ -24,6 +24,13 @@ export default {
     path: '/authn-steps',
     withCsrfToken: true,
   },
+  identities: {
+    update: {
+      method: 'PUT',
+      path: '/auth/identities',
+      withCsrfToken: true,
+    },
+  },
   consent: {
     create: {
       method: 'POST',

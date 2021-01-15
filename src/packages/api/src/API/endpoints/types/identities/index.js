@@ -1,9 +1,4 @@
 export default {
-  checkAuthable: {
-    method: 'PUT',
-    path: '/identities/authable',
-    withCsrfToken: true,
-  },
   read: {
     method: 'GET',
     path: '/identities/:id',

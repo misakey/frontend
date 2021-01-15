@@ -32,7 +32,7 @@ function ActualButton({ id, details: notifDetails }) {
         enqueueSnackbar(t('common:anErrorOccurred'), { variant: 'error' });
       }
     },
-    [dispatch, history, notifDetails, enqueueSnackbar, t],
+    [dispatch, history, notifDetails, enqueueSnackbar, id, t],
   );
 
   return (

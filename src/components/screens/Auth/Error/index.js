@@ -10,7 +10,6 @@ import routes from 'routes';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
 import { getCode, getDescription, getUrlOrigin, getOrigin, getDetailPairs } from '@misakey/helpers/apiError';
-import { identifierValuePath } from 'helpers/sender';
 import isAnyNotEmpty from '@misakey/helpers/isAnyNotEmpty';
 
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
@@ -19,7 +18,6 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useModifier from '@misakey/hooks/useModifier';
 
 import Screen from '@misakey/ui/Screen';
 import Alert from '@material-ui/lab/Alert';
@@ -62,8 +60,7 @@ const AuthError = ({ loginChallenge, error, t }) => {
   const identity = useSelector(IDENTITY_SELECTOR);
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
 
-  const { avatarUrl, displayName } = useSafeDestr(identity);
-  const identifierValue = useModifier(identifierValuePath, identity);
+  const { avatarUrl, displayName, identifierValue } = useSafeDestr(identity);
 
   const showCard = useMemo(
     () => isAnyNotEmpty([avatarUrl, displayName, identifierValue]),

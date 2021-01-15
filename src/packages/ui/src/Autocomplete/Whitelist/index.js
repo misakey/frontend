@@ -32,9 +32,7 @@ const WHITELISTED_EL_PROP_TYPE = {
   type: PropTypes.oneOf(TYPES).isRequired,
   displayName: PropTypes.string.isRequired,
   avatarUrl: PropTypes.string,
-  identifier: PropTypes.shape({
-    value: PropTypes.string.isRequired,
-  }).isRequired,
+  identifierValue: PropTypes.string.isRequired,
 };
 
 const SUBMIT_INDICATOR_PADDING = 4;
@@ -43,7 +41,7 @@ const INPUT_EMPTY_REGEX = new RegExp(`^[${INPUT_SEPARATORS} ]*$`);
 
 // HELPERS
 const filterOptions = createFilterOptions();
-const valueProp = prop('value');
+const identifierValueProp = prop('identifierValue');
 
 const isInputEmpty = (inputValue) => INPUT_EMPTY_REGEX.test(inputValue);
 
@@ -55,9 +53,7 @@ const isDomainString = (string) => string.startsWith(DOMAIN_WILDCARD);
 const valueToUserValue = (value) => ({
   type: USER_TYPE,
   displayName: emailToDisplayName(value),
-  identifier: {
-    value,
-  },
+  identifierValue: value,
 });
 
 // HOOKS
@@ -117,19 +113,18 @@ const AutocompleteWhitelist = ({
     (valueToTransform) => ({
       type: DOMAIN_TYPE,
       displayName: t('components:whitelist.domainTitle'),
-      identifier: {
-        value: valueToTransform.replace(DOMAIN_WILDCARD, ''),
-      },
+      identifierValue: valueToTransform.replace('*@', ''),
     }),
     [t],
   );
 
   const handleGetOptionDisabled = useCallback(
     (option) => {
-      const identifierValue = valueProp(option.identifier);
+      const { identifierValue } = option;
       const isInValue = value
-        .some(({ identifier: {
-          value: itemIdentifierValue } }) => itemIdentifierValue === identifierValue);
+        .some(({
+          identifierValue: itemIdentifierValue,
+        }) => itemIdentifierValue === identifierValue);
       if (isInValue) {
         return true;
       }
@@ -184,14 +179,13 @@ const AutocompleteWhitelist = ({
       if (isEmpty(option)) {
         return '';
       }
-      return valueProp(option.identifier);
+      return identifierValueProp(option);
     },
     [],
   );
 
   const renderOption = useCallback(
-    ({ type, avatarUrl, identifier, ...rest }) => {
-      const identifierValue = valueProp(identifier);
+    ({ type, avatarUrl, identifierValue, ...rest }) => {
       if (type === DOMAIN_TYPE) {
         return (
           <ListItemDomain
@@ -216,8 +210,7 @@ const AutocompleteWhitelist = ({
   );
 
   const renderTags = useCallback(
-    (tags, getTagProps) => (tags || []).map(({ identifier, type, ...rest }, index) => {
-      const identifierValue = valueProp(identifier);
+    (tags, getTagProps) => (tags || []).map(({ identifierValue, type, ...rest }, index) => {
       if (type === DOMAIN_TYPE) {
         return (
           <Tooltip

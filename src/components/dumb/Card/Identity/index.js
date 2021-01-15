@@ -9,6 +9,7 @@ import IdentitySchema from 'store/schemas/Identity';
 import isNil from '@misakey/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -118,12 +119,16 @@ const useGetItemTosForUser = (location, identityId, accountId) => useMemo(
 // COMPONENTS
 const CardIdentity = forwardRef(({ identity, identityId, t }, ref) => {
   const {
-    displayName, avatarUrl, notifications, color, identifier: { value: identifierValue } = {},
-  } = useMemo(() => identity || {}, [identity]);
+    displayName,
+    avatarUrl,
+    notifications,
+    color,
+    identifierValue,
+    accountId,
+  } = useSafeDestr(identity);
 
   const classes = useStyles({ color });
 
-  const { accountId } = useMemo(() => identity || {}, [identity]);
   const location = useLocation();
 
   const {

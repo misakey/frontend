@@ -15,12 +15,10 @@ import { FOOTER_HEIGHT } from '@misakey/ui/Footer';
 import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import isNil from '@misakey/helpers/isNil';
 import { getCode, getDetails } from '@misakey/helpers/apiError';
-import { identifierValuePath } from 'helpers/sender';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useModifier from '@misakey/hooks/useModifier';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
 import useFetchBoxPublicInfo from 'hooks/useFetchBoxPublicInfo';
@@ -72,7 +70,7 @@ function MustJoin({ box, t }) {
   const { displayName: creatorName, id: creatorIdentityId } = useSafeDestr(creator);
 
   const identity = useSelector(IDENTITY_SELECTOR);
-  const identifierValue = useModifier(identifierValuePath, identity);
+  const { identifierValue } = useSafeDestr(identity);
 
   const creatorProfileTo = useMemo(
     () => (isNil(creatorIdentityId)

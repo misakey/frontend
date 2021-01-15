@@ -5,11 +5,10 @@ import { withTranslation } from 'react-i18next';
 import SenderSchema from 'store/schemas/Boxes/Sender';
 import BoxSchema from 'store/schemas/Boxes';
 
-import { identifierValuePath, sendersMatch } from 'helpers/sender';
+import { sendersMatch } from 'helpers/sender';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useModifier from '@misakey/hooks/useModifier';
 
 import AvatarUser from '@misakey/ui/Avatar/User';
 import ListItem from '@material-ui/core/ListItem';
@@ -19,9 +18,8 @@ import Chip from '@material-ui/core/Chip';
 
 // COMPONENTS
 const ListItemMember = ({ member, box, belongsToCurrentUser, t, ...rest }) => {
-  const { displayName, avatarUrl } = useSafeDestr(member);
+  const { displayName, avatarUrl, identifierValue } = useSafeDestr(member);
   const { creator } = useSafeDestr(box);
-  const memberIdentifierValue = useModifier(identifierValuePath, member);
 
   const isMemberAdmin = useMemo(
     () => sendersMatch(creator, member),
@@ -35,7 +33,7 @@ const ListItemMember = ({ member, box, belongsToCurrentUser, t, ...rest }) => {
       </ListItemAvatar>
       <ListItemText
         primary={displayName}
-        secondary={belongsToCurrentUser ? memberIdentifierValue : null}
+        secondary={belongsToCurrentUser ? identifierValue : null}
         primaryTypographyProps={{ color: 'textPrimary' }}
         secondaryTypographyProps={{ color: 'textSecondary' }}
       />

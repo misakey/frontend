@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import { EMAIL_DOMAIN } from '@misakey/ui/constants/accessTypes';
 
-import path from '@misakey/helpers/path';
 import head from '@misakey/helpers/head';
 import compact from '@misakey/helpers/compact';
 import prop from '@misakey/helpers/prop';
@@ -16,7 +15,6 @@ import AutocompleteWhitelist from '@misakey/ui/Autocomplete/Whitelist';
 import withErrors from '@misakey/ui/Form/Field/withErrors';
 
 // HELPERS
-const identifierValuePath = path(['identifier', 'value']);
 const typeProp = prop('type');
 
 const parseError = (error, value) => {
@@ -29,7 +27,7 @@ const parseError = (error, value) => {
   const firstErrorKey = head(Object.keys(error));
   const type = typeProp(value[firstErrorKey]);
   const errorItem = head(compact(error));
-  const errorOrSuberror = isString(errorItem) ? errorItem : identifierValuePath(errorItem);
+  const errorOrSuberror = isString(errorItem) ? errorItem : errorItem.identifierValue;
   return type === EMAIL_DOMAIN ? `${EMAIL_DOMAIN}.${errorOrSuberror}` : errorOrSuberror;
 };
 

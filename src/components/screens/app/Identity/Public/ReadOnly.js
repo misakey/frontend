@@ -95,8 +95,13 @@ const IdentityPublicReadOnly = forwardRef(({ t }, ref) => {
     getProfile,
   );
 
-  const { identifier, displayName, avatarUrl, contactable } = useSafeDestr(data);
-  const { value: identifierValue, kind } = useSafeDestr(identifier);
+  const {
+    identifierValue,
+    identifierKind,
+    displayName,
+    avatarUrl,
+    contactable,
+  } = useSafeDestr(data);
 
   const privateIdentifiervalue = useMemo(
     () => isEmpty(identifierValue),
@@ -186,7 +191,7 @@ const IdentityPublicReadOnly = forwardRef(({ t }, ref) => {
           >
             <ListItemIcon className={classes.listItemIcon}>
               {/* @FIXME fallback for backend bugged empty kind */}
-              <Typography>{t(`fields:${kind || 'email'}.label`)}</Typography>
+              <Typography>{t(`fields:${identifierKind || 'email'}.label`)}</Typography>
             </ListItemIcon>
             <ListItemText
               primary={identifierValue || t('account:public.confirmed')}

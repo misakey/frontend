@@ -89,7 +89,7 @@ const MessageRow = ({
       }
       return null;
     },
-    [type, details, t, acr],
+    [type, t, acr, notification],
   );
 
   const titleProps = useMemo(

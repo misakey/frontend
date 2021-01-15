@@ -121,11 +121,6 @@ const identitySelector = createSelector(
 
 export const getCurrentUserSelector = identitySelector;
 
-const identifierSelector = createSelector(
-  identitySelector,
-  prop('identifier'),
-);
-
 export const selectors = {
   id: createSelector(
     getState,
@@ -144,14 +139,9 @@ export const selectors = {
     identitySelector,
     prop('hasAccount'),
   ),
-  identifierId: createSelector(
-    identitySelector,
-    prop('identifierId'),
-  ),
-  identifier: identifierSelector,
   identifierValue: createSelector(
-    identifierSelector,
-    prop('value'),
+    identitySelector,
+    prop('identifierValue'),
   ),
   identityId: createSelector(
     getState,
