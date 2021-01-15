@@ -1,3 +1,5 @@
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
 import 'proxy-polyfill';
@@ -98,7 +100,7 @@ if (isSilentAuthIframe()) {
       <ThemeProviderNoStore>
         <SplashScreen {...SPLASH_SCREEN_PROPS} loading />
       </ThemeProviderNoStore>
-)}
+    )}
     >
       <StoreProvider store={store}>
         <PersistGate

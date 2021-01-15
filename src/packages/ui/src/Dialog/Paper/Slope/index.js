@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
     },
   }),
   content: {
+    position: 'relative',
     isolation: 'isolate',
     [dialogIsFullScreen(theme)]: {
       height: '100%',

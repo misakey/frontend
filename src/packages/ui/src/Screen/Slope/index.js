@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
   }),
   content: {
     isolation: 'isolate',
+    position: 'relative',
     [dialogIsFullScreen(theme)]: {
       height: '100%',
     },
@@ -68,13 +69,13 @@ const ScreenSlope = ({ children, classes, avatar, avatarLarge, header, ...props 
         justifyContent="center"
       >
         {avatar && (
-        <Box
-          display="flex"
-          justifyContent="center"
-          className={internalClasses.avatar}
-        >
-          {avatar}
-        </Box>
+          <Box
+            display="flex"
+            justifyContent="center"
+            className={internalClasses.avatar}
+          >
+            {avatar}
+          </Box>
         )}
         <Box className={internalClasses.content}>
           {children}
