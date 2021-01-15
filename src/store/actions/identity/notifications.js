@@ -1,7 +1,10 @@
-import { batch } from 'react-redux';
-import { normalize } from 'normalizr';
 import IdentityNotificationsSchema from 'store/schemas/Notifications/Identity';
 import { receiveEntities, updateEntities } from '@misakey/store/actions/entities';
+
+import { batch } from 'react-redux';
+import { normalize } from 'normalizr';
+import isNil from '@misakey/helpers/isNil';
+
 
 export const RESET_NOTIFICATIONS_BY_IDENTITY = Symbol('RESET_NOTIFICATIONS_BY_IDENTITY');
 export const SET_PAGINATION_NOTIFICATIONS_BY_IDENTITY = Symbol('SET_PAGINATION_NOTIFICATIONS_BY_IDENTITY');
@@ -59,6 +62,9 @@ export const markNotificationAsUsed = (notificationId) => updateEntities(
 );
 
 export const setLastNotification = (notification) => (dispatch) => {
+  if (isNil(notification)) {
+    return dispatch(setLastNotificationId(null));
+  }
   const normalized = normalize(
     notification,
     IdentityNotificationsSchema.entity,

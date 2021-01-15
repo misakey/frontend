@@ -62,10 +62,7 @@ function MisakeyNotificationsListItem({ ...props }) {
   const matchNotificationsRoute = useRouteMatch(routes.userNotifications._);
 
   const selected = useMemo(() => !isNil(matchNotificationsRoute), [matchNotificationsRoute]);
-  const { details = {}, type = '', createdAt } = useMemo(
-    () => lastNotification || {},
-    [lastNotification],
-  );
+  const { details = {}, type = '', createdAt } = useSafeDestr(lastNotification);
 
   const secondary = useMemo(
     () => {
@@ -83,7 +80,8 @@ function MisakeyNotificationsListItem({ ...props }) {
   );
 
   const shouldFetch = useMemo(
-    () => isNil(lastNotification) && isAuthenticated,
+    // lastNotification is null when there is none
+    () => lastNotification === undefined && isAuthenticated,
     [lastNotification, isAuthenticated],
   );
 
