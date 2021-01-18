@@ -80,14 +80,13 @@ function MisakeyNotificationsListItem({ ...props }) {
   );
 
   const shouldFetch = useMemo(
-    // lastNotification is null when there is none
-    () => lastNotification === undefined && isAuthenticated,
-    [lastNotification, isAuthenticated],
+    () => lastNotification === undefined && isAuthenticated && !isNil(identityId),
+    [lastNotification, isAuthenticated, identityId],
   );
 
   const shouldFetchCount = useMemo(
-    () => isNil(newNotificationsCount) && isAuthenticated,
-    [newNotificationsCount, isAuthenticated],
+    () => isNil(newNotificationsCount) && isAuthenticated && !isNil(identityId),
+    [newNotificationsCount, isAuthenticated, identityId],
   );
 
   const countNotifications = useCallback(

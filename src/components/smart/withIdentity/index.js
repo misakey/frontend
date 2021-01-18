@@ -2,7 +2,7 @@ import { useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { loadUser } from '@misakey/auth/store/actions/auth';
+import { updateIdentity } from '@misakey/auth/store/actions/auth';
 import { normalize } from 'normalizr';
 import { receiveEntities } from '@misakey/store/actions/entities';
 import IdentitySchema from 'store/schemas/Identity';
@@ -16,8 +16,8 @@ import { getIdentity as getIdentityBuilder } from '@misakey/auth/builder/identit
 // COMPONENTS
 const withIdentity = (Component, mapProps = identityFn) => {
   const ComponentWithIdentity = forwardRef(({
-    id, isAuthenticated, identity, identityId,
-    onLoadUser,
+    isAuthenticated, identity, identityId,
+    onLoadIdentity,
     ...props
   }, ref) => {
     const shouldFetch = useMemo(
@@ -31,8 +31,8 @@ const withIdentity = (Component, mapProps = identityFn) => {
     );
 
     const onSuccess = useCallback(
-      (user) => onLoadUser(user),
-      [onLoadUser],
+      (user) => onLoadIdentity(user),
+      [onLoadIdentity],
     );
 
     const { isFetching } = useFetchEffect(getIdentity, { shouldFetch }, { onSuccess });
@@ -41,12 +41,11 @@ const withIdentity = (Component, mapProps = identityFn) => {
       () => mapProps({
         ...props,
         isFetchingIdentity: isFetching || shouldFetch,
-        id,
         isAuthenticated,
         identity,
         identityId,
       }),
-      [id, identity, identityId, isFetching, props, shouldFetch, isAuthenticated],
+      [identity, identityId, isFetching, props, shouldFetch, isAuthenticated],
     );
 
     return (
@@ -58,15 +57,13 @@ const withIdentity = (Component, mapProps = identityFn) => {
   });
 
   ComponentWithIdentity.propTypes = {
-    id: PropTypes.string,
     isAuthenticated: PropTypes.bool,
     identity: PropTypes.shape(IdentitySchema.propTypes),
     identityId: PropTypes.string,
-    onLoadUser: PropTypes.func.isRequired,
+    onLoadIdentity: PropTypes.func.isRequired,
   };
 
   ComponentWithIdentity.defaultProps = {
-    id: null,
     isAuthenticated: false,
     identity: null,
     identityId: null,
@@ -74,18 +71,17 @@ const withIdentity = (Component, mapProps = identityFn) => {
 
   // CONNECT
   const mapStateToProps = (state) => ({
-    id: state.auth.id,
     isAuthenticated: state.auth.isAuthenticated,
     identity: state.auth.identity,
     identityId: state.auth.identityId,
   });
 
   const mapDispatchToProps = (dispatch) => ({
-    onLoadUser: (identity) => {
+    onLoadIdentity: (identity) => {
       const normalized = normalize(identity, IdentitySchema.entity);
       const { entities } = normalized;
       return Promise.all([
-        dispatch(loadUser({ identity })),
+        dispatch(updateIdentity(identity)),
         dispatch(receiveEntities(entities)),
       ]);
     },

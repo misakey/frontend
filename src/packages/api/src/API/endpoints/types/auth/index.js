@@ -42,6 +42,10 @@ export default {
       path: '/auth/consent/info',
     },
   },
+  userinfo: {
+    method: 'GET',
+    path: '/auth/userinfo',
+  },
   signOut: {
     method: 'POST',
     path: '/auth/logout',

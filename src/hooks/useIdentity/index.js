@@ -1,7 +1,7 @@
 import { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { loadUser } from '@misakey/auth/store/actions/auth';
+import { updateIdentity } from '@misakey/auth/store/actions/auth';
 import { selectors } from '@misakey/auth/store/reducers/auth';
 import { normalize } from 'normalizr';
 import { receiveEntities } from '@misakey/store/actions/entities';
@@ -16,8 +16,6 @@ import { getIdentity as getIdentityBuilder } from '@misakey/auth/builder/identit
 // HOOKS
 /**
  * @returns {Object} identityMetadata
- * @returns {string} identityMetadata.id
- *          idToken
  * @returns {string} identityMetadata.isAuthenticated
  *          isAuthenticated
  * @returns {string} identityMetadata.identityId
@@ -33,19 +31,18 @@ import { getIdentity as getIdentityBuilder } from '@misakey/auth/builder/identit
  */
 export default () => {
   // SELECTORS
-  const id = useSelector(selectors.id);
   const isAuthenticated = useSelector(selectors.isAuthenticated);
   const identity = useSelector(selectors.identity);
   const identityId = useSelector(selectors.identityId);
 
   const dispatch = useDispatch();
 
-  const onLoadUser = useCallback(
+  const onLoadIdentity = useCallback(
     (nextIdentity) => {
       const normalized = normalize(nextIdentity, IdentitySchema.entity);
       const { entities } = normalized;
       return Promise.all([
-        dispatch(loadUser({ identity: nextIdentity })),
+        dispatch(updateIdentity(nextIdentity)),
         dispatch(receiveEntities(entities)),
       ]);
     },
@@ -62,17 +59,16 @@ export default () => {
     [identityId],
   );
 
-  const fetchData = useFetchEffect(getIdentity, { shouldFetch }, { onSuccess: onLoadUser });
+  const fetchData = useFetchEffect(getIdentity, { shouldFetch }, { onSuccess: onLoadIdentity });
 
   return useMemo(
     () => ({
-      id,
       isAuthenticated,
       identity,
       identityId,
       shouldFetch,
       ...fetchData,
     }),
-    [fetchData, shouldFetch, id, identity, identityId, isAuthenticated],
+    [fetchData, shouldFetch, identity, identityId, isAuthenticated],
   );
 };

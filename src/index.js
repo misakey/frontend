@@ -46,7 +46,7 @@ import './i18n';
 import countries from 'i18n-iso-countries';
 // helpers
 import isNil from '@misakey/helpers/isNil';
-import { isSilentAuthIframe, processSilentAuthCallbackInIframe } from '@misakey/auth/helpers'; // Silent auth
+import { isSilentAuthIframe, processSilentAuthCallbackInIframe } from '@misakey/auth/helpers/silentAuth'; // Silent auth
 import sentryBeforeSend from '@misakey/helpers/sentry/beforeSend';
 
 /* END OF IMPORTS */

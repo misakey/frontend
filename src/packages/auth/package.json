@@ -31,11 +31,11 @@
   },
   "peerDependencies": {
     "@babel/runtime": "^7.5.5",
-    "oidc-client": "^1.9.1",
     "@material-ui/core": "^4.3.0",
     "@material-ui/icons": "^4.2.1",
     "clsx": "^1.x",
     "formik": "^2.x",
+    "jsrsasign": "^10.1.4",
     "moment": "^2.x",
     "notistack": "^1.x",
     "prop-types": "^15.7.2",

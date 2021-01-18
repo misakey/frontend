@@ -77,7 +77,7 @@ const CardUser = ({
   const subheader = useMemo(
     () => {
       if (expired) {
-        const fromNow = isEmpty(expiresAt) ? '' : moment.unix(expiresAt).fromNow();
+        const fromNow = isEmpty(expiresAt) ? '' : moment(expiresAt).fromNow();
         return t('common:expired', { fromNow });
       }
       return isNotEmpty ? identifier : t('common:noSession');
@@ -122,8 +122,7 @@ CardUser.propTypes = {
   displayName: PropTypes.string,
   identifier: PropTypes.string,
   expired: PropTypes.bool,
-  // unix timestamp
-  expiresAt: PropTypes.number,
+  expiresAt: PropTypes.string,
   action: PropTypes.node,
   children: PropTypes.node,
   disablePadding: PropTypes.bool,

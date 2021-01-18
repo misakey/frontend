@@ -4,14 +4,13 @@ import { matchPath, useLocation } from 'react-router-dom';
 
 import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';
 
-import { loadUserThunk, authReset } from '@misakey/auth/store/actions/auth';
+import { loadUserThunk, authReset, setExpiresAt } from '@misakey/auth/store/actions/auth';
 
 import log from '@misakey/helpers/log';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
-import createUserManager from '@misakey/auth/helpers/userManager';
-import mapOidcUserForStore from '@misakey/auth/helpers/mapOidcUserForStore';
+import UserManager from '@misakey/auth/classes/UserManager';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import { useDispatch } from 'react-redux';
@@ -33,6 +32,7 @@ function OidcProvider({
   const dispatch = useDispatch();
 
   const { pathname } = useLocation();
+
   const isRouteExcludedForAutomaticSignIn = useMemo(
     () => autoSignInExcludedRoutes.some((excludedRoute) => matchPath(pathname, excludedRoute)),
     [autoSignInExcludedRoutes, pathname],
@@ -45,9 +45,41 @@ function OidcProvider({
 
   const signinRedirectProps = useSafeDestr(signinRedirect);
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const dispatchUser = useCallback(
+    (user) => Promise.resolve(dispatch(loadUserThunk(user))),
+    [dispatch],
+  );
+
+  const onTokenExpirationChange = useCallback(
+    (expiresAt) => {
+      if (isRouteExcludedForAutomaticSignIn) {
+        // don't need to bother about older expiration if we are under new auth flow
+        return;
+      }
+      if (isNil(expiresAt)) {
+        dispatch(authReset());
+        return;
+      }
+      dispatch(setExpiresAt(expiresAt));
+      setSigninRedirect(null);
+    },
+    [dispatch, isRouteExcludedForAutomaticSignIn],
+  );
+
   const userManager = useMemo(
-    () => createUserManager(config),
-    [config],
+    () => new UserManager(
+      {
+        ...config,
+        automaticSilentRenew: !isRouteExcludedForAutomaticSignIn,
+      },
+      {
+        onUserChange: dispatchUser,
+        onTokenExpirationChange,
+      },
+    ),
+    [config, dispatchUser, isRouteExcludedForAutomaticSignIn, onTokenExpirationChange],
   );
 
   const askSigninRedirect = useCallback(
@@ -73,118 +105,38 @@ function OidcProvider({
     [userManager, askSigninRedirect],
   );
 
-  const [isLoading, setIsLoading] = useState(false);
+  const onLoadUserAtMount = useCallback(
+    () => {
+      setIsLoading(true);
 
-  const dispatchStoreUpdate = useCallback(
-    (user) => Promise.resolve(dispatch(loadUserThunk(mapOidcUserForStore(user)))),
-    [dispatch],
-  );
+      // Load user on store when the app is opening
+      userManager.getUser()
+        .then(async (user) => {
+          if (isNil(user)) {
+            log('User not found !');
+            return Promise.resolve();
+          }
 
-  // event callback when the user has been loaded (on silent renew or redirect)
-  const onUserLoaded = useCallback(
-    async (user) => {
-      if (isNil(user)) {
-        log('User not found !');
-        return Promise.resolve();
-      }
+          if (user.expired) {
+            return userManager.signinRedirect();
+          }
 
-      if (user.expired) {
-        return userManager.signinRedirect();
-      }
-
-      // the access_token is still valid so we load the user in the store
-      log('User is loaded !');
-      return dispatchStoreUpdate(user);
+          log('User is loaded !');
+          return dispatchUser(user);
+        })
+        .catch((e) => logSentryException(e, 'Fail to retrieve user', { auth: true }))
+        .finally(() => setIsLoading(false));
     },
-    [dispatchStoreUpdate, userManager],
-  );
-
-  // event callback when silent renew errored
-  const onSilentRenewError = useCallback((e) => {
-    logSentryException(e, 'Fail to renew access token silently', { auth: true }, 'warning');
-    dispatch(authReset());
-  }, [dispatch]);
-
-  const loadUserAtMount = useCallback(() => {
-    setIsLoading(true);
-
-    // Load user on store when the app is opening
-    userManager.getUser()
-      .then(onUserLoaded)
-      .catch((e) => logSentryException(e, 'Fail to retrieve user', { auth: true }))
-      .finally(() => setIsLoading(false));
-  }, [onUserLoaded, userManager]);
-
-  const onStorageEvent = useCallback(
-    (e) => {
-      const { key, isTrusted, newValue } = e;
-      // fallback for IE11, Safari<10
-      const trusted = isTrusted === true || isNil(isTrusted);
-      if (trusted && userManager.userStorageKey === key) {
-        if (!isNil(newValue)) {
-          loadUserAtMount();
-          setSigninRedirect(null);
-        } else {
-          dispatch(authReset());
-        }
-      }
-    },
-    [loadUserAtMount, dispatch, userManager.userStorageKey],
+    [dispatchUser, userManager],
   );
 
   useEffect(
     () => {
       if (!isRouteExcludedForAutomaticSignIn) {
-        loadUserAtMount();
+        onLoadUserAtMount();
       }
     },
-    [isRouteExcludedForAutomaticSignIn, loadUserAtMount],
-  );
-
-  // This effet should only be fired at app launch as it clean eventual residual keys in storage
-  useEffect(
-    () => {
-      // Remove from store eventual dead signIn request key
-      // (it happens when an error occurs in the flow and the backend response
-      // doesn't send back the state so we can't remove it with the signInRequestCallback )
-      // we could remove it if it became problematic as we use sessionStorage for state
-      // it must be cleaned on browser closing
-      if (!isRouteExcludedForAutomaticSignIn) {
-        try {
-          userManager.clearStaleState();
-        } catch (e) {
-          // Do not show nor throw error as it's not blocking for using app
-          logSentryException(e, `Fail to clear localStorage from residual oidc:state, ${e}`, undefined, 'warning');
-        }
-      }
-    },
-    [isRouteExcludedForAutomaticSignIn, userManager],
-  );
-
-  useEffect(
-    () => {
-      // register the event callbacks
-      userManager.events.addUserLoaded(onUserLoaded);
-      userManager.events.addSilentRenewError(onSilentRenewError);
-
-      return function cleanup() {
-        // unregister the event callbacks
-        userManager.events.removeUserLoaded(onUserLoaded);
-        userManager.events.removeSilentRenewError(onSilentRenewError);
-      };
-    },
-    [onSilentRenewError, onUserLoaded, userManager.events],
-  );
-
-  useEffect(
-    () => {
-      // Ensure consistency between multi tabs
-      window.addEventListener('storage', onStorageEvent);
-      return () => {
-        window.removeEventListener('storage', onStorageEvent);
-      };
-    },
-    [onStorageEvent],
+    [isRouteExcludedForAutomaticSignIn, onLoadUserAtMount],
   );
 
   useEffect(
@@ -193,7 +145,7 @@ function OidcProvider({
         registerMiddlewares(askSigninRedirect);
       }
     },
-    [registerMiddlewares, askSigninRedirect],
+    [registerMiddlewares, askSigninRedirect, userManager],
   );
 
   return (
@@ -219,10 +171,7 @@ OidcProvider.propTypes = {
   config: PropTypes.shape({
     authority: PropTypes.string.isRequired,
     automaticSilentRenew: PropTypes.bool,
-    client_id: PropTypes.string.isRequired,
-    loadUserInfo: PropTypes.bool,
-    redirect_uri: PropTypes.string.isRequired,
-    response_type: PropTypes.string,
+    clientId: PropTypes.string.isRequired,
     scope: PropTypes.string,
   }),
   registerMiddlewares: PropTypes.func.isRequired,
@@ -235,10 +184,8 @@ OidcProvider.propTypes = {
 OidcProvider.defaultProps = {
   children: null,
   config: {
-    response_type: 'code',
     scope: 'openid tos privacy_policy',
     automaticSilentRenew: true,
-    loadUserInfo: false,
   },
   autoSignInExcludedRoutes: [],
 };

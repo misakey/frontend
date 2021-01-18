@@ -7,7 +7,6 @@ import { useSnackbar } from 'notistack';
 import { getCurrentUserSelector, selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
@@ -165,7 +164,7 @@ const DialogSigninRedirect = ({
   );
 
   const onRedirect = useCallback(
-    (options) => userManager.signinRedirect(objectToSnakeCase(options)),
+    (options) => userManager.signinRedirect(options),
     [userManager],
   );
 

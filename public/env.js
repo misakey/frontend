@@ -6,8 +6,8 @@ window.env = {
   CONFIRM_CODE_TIMEOUT: 5 * 60,
   AUTH: {
     authority: 'https://auth.misakey.com.local/_',
-    client_id: '00000000-0000-0000-0000-000000000000',
-    redirect_uri: 'https://api.misakey.com.local/auth/callback',
+    clientId: '00000000-0000-0000-0000-000000000000',
+    redirectUri: 'https://api.misakey.com.local/auth/callback',
   },
   SENTRY: {
     debug: false,
@@ -19,5 +19,4 @@ window.env = {
     URL: 'https://analytics.misakey.com',
     SITEID: '2',
   },
-  EARLY_BIRDS_MISAKEY_CHAT_URL: 'https://app.misakey.com/boxes/a3c24d08-f5e2-40c4-81e2-a1c3ef33c540#guybqc9KC7HZrOTAQ5SDEFS5YQ4NTnCfUKV1gH0U6LQ'
 };

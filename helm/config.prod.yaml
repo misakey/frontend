@@ -7,8 +7,8 @@ config: >-
     GAPI_CLIENT_ID: '932593622193-c6i3ghh44ip9hhbh2heempuugcbk94n7.apps.googleusercontent.com',
     AUTH: {
       authority: 'https://auth.misakey.com/_',
-      client_id: 'f27effe1-5d57-4b70-bf73-939feef50f71',
-      redirect_uri: 'https://api.misakey.com/auth/callback',
+      clientId: 'f27effe1-5d57-4b70-bf73-939feef50f71',
+      redirectUri: 'https://api.misakey.com/auth/callback',
     },
     SENTRY: {
       debug: false,
@@ -20,5 +20,4 @@ config: >-
       URL: 'https://analytics.misakey.com',
       SITEID: '1'
     },
-    EARLY_BIRDS_MISAKEY_CHAT_URL: 'https://app.misakey.com/boxes/a3c24d08-f5e2-40c4-81e2-a1c3ef33c540#guybqc9KC7HZrOTAQ5SDEFS5YQ4NTnCfUKV1gH0U6LQ'
   };

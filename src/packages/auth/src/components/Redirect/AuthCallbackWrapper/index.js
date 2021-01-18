@@ -1,23 +1,15 @@
 import { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import isObject from '@misakey/helpers/isObject';
 import { StorageUnavailable } from '@misakey/helpers/storage';
-import mapOidcUserForStore from '@misakey/auth/helpers/mapOidcUserForStore';
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
-import { signIn } from '../../../store/actions/auth';
 import AuthCallback from '../AuthCallback';
 
-const useHandleSuccess = (
-  dispatch,
-  enqueueSnackbar,
-  t,
-) => useCallback((user) => {
-  dispatch(signIn(mapOidcUserForStore(user)));
+const useHandleSuccess = (enqueueSnackbar, t) => useCallback(() => {
   enqueueSnackbar(t('common:signedIn'), { variant: 'success' });
-}, [enqueueSnackbar, t, dispatch]);
+}, [enqueueSnackbar, t]);
 
 const useHandleError = (enqueueSnackbar, t) => {
   const handleGenericHttpErrors = useHandleGenericHttpErrors();
@@ -59,9 +51,8 @@ const useHandleError = (enqueueSnackbar, t) => {
 // COMPONENTS
 const RedirectAuthCallbackWrapper = ({ t, ...rest }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const dispatch = useDispatch();
 
-  const handleSuccess = useHandleSuccess(dispatch, enqueueSnackbar, t);
+  const handleSuccess = useHandleSuccess(enqueueSnackbar, t);
   const handleError = useHandleError(enqueueSnackbar, t);
 
   return <AuthCallback handleSuccess={handleSuccess} handleError={handleError} {...rest} />;

@@ -1,11 +1,9 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
-import { getUrlForOidcCallback } from '@misakey/auth/helpers';
 
-import useAuthFlowParams from '@misakey/auth/hooks/useAuthFlowParams';
 import useMountEffect from '@misakey/hooks/useMountEffect';
 
 import { withUserManager } from '@misakey/auth/components/OidcProvider/Context';
@@ -16,77 +14,40 @@ const RedirectAuthCallback = ({
   handleSuccess,
   handleError,
   loadingPlaceholder,
-  location,
   fallbackReferrer,
   userManager,
-  askSigninRedirect,
 }) => {
-  const [redirect, setRedirect] = useState(false);
+  const [redirect, setRedirect] = useState(null);
 
-  const {
-    searchParams,
-    storageParams: { referrer, scope, acrValues },
-  } = useAuthFlowParams();
-
-  const checkAcrIntegrity = useCallback(
-    // No specific acr was specified or if specified acr match received acr
-    (acr) => isNil(acrValues) || (acr.toString() === acrValues.toString()),
-    [acrValues],
-  );
-
-  const processRedirectCallback = useCallback(
+  const processCallback = useCallback(
     async () => {
       try {
-        const callbackUrl = getUrlForOidcCallback(window.location.href);
-        const user = await userManager.signinRedirectCallback(callbackUrl);
-        if (checkAcrIntegrity(user.profile.acr)) {
+        const {
+          user,
+          referrer,
+          expiresAt,
+        } = await userManager.signinCallback(window.location.href);
+        if (!isNil(user)) {
           if (isFunction(handleSuccess)) {
-            await Promise.resolve(handleSuccess(user));
+            await Promise.resolve(handleSuccess(user, expiresAt));
           }
-          return true;
+          return setRedirect(referrer);
         }
-        const { email } = user.profile;
-        const loginHint = email ? JSON.stringify({ identifier: email }) : '';
-        askSigninRedirect({ scope, referrer, acrValues, prompt: 'login', loginHint }, false);
-        return false;
+        return null;
       } catch (e) {
         if (isFunction(handleError)) { handleError(e); }
-        return true;
+        return setRedirect(e.referrer || fallbackReferrer);
       }
     },
-    [userManager, checkAcrIntegrity, askSigninRedirect,
-      scope, referrer, acrValues, handleSuccess, handleError],
+    [userManager, handleSuccess, handleError, fallbackReferrer],
   );
-
-  const processCallback = useCallback(() => {
-    if (searchParams.state) {
-      processRedirectCallback()
-        .then((shouldRedirect) => {
-          setRedirect(shouldRedirect);
-        });
-    } else if (searchParams.error || searchParams.errorCode) {
-      if (isFunction(handleError)) {
-        handleError(searchParams);
-      }
-      setRedirect(true);
-    }
-  }, [searchParams, handleError, processRedirectCallback]);
 
   useMountEffect(processCallback);
 
-  useEffect(() => {
-    // Firefox BUGFIX: https://bugzilla.mozilla.org/show_bug.cgi?id=1422334#c15
-    // Fixed in firefox 70 accodring to https://hg.mozilla.org/mozilla-central/rev/d14199c9c1cc
-    // eslint-disable-next-line no-self-assign,no-param-reassign
-    location.hash = location.hash;
-    // eslint-disable-next-line no-self-assign
-    window.location.hash = window.location.hash;
-  }, [location]);
-
-  if (redirect) {
+  if (!isNil(redirect)) {
     return (
       <Redirect
-        to={referrer || fallbackReferrer}
+        to={redirect}
         manualRedirectPlaceholder={loadingPlaceholder}
       />
     );
@@ -103,7 +64,6 @@ RedirectAuthCallback.propTypes = {
   location: PropTypes.shape({ hash: PropTypes.string, search: PropTypes.string }).isRequired,
   // withUserManager
   userManager: PropTypes.object.isRequired,
-  askSigninRedirect: PropTypes.func.isRequired,
 };
 
 RedirectAuthCallback.defaultProps = {

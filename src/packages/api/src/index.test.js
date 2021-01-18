@@ -13,7 +13,7 @@ const matchingNaming = ['create', 'read', 'update', 'delete', 'find', 'search', 
 // @FIXME to cleanup
 const authExtendedNamings = [
   'signOut', 'signUp',
-  'confirm', 'askConfirm', 'init',
+  'confirm', 'askConfirm', 'init', 'userinfo',
   'checkAuthable', 'info', 'loginAuthStep', 'renewAuthStep',
 ];
 

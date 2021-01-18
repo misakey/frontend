@@ -1,10 +1,9 @@
 import moment from 'moment';
-import { SIGN_IN, SIGN_OUT, AUTH_RESET, UPDATE_IDENTITY, LOAD_USER } from '../../actions/auth';
+import { SIGN_OUT, AUTH_RESET, UPDATE_IDENTITY, LOAD_USER_INFO } from '../../actions/auth';
 import reducer, { INITIAL_STATE } from './index';
 
 describe('testing auth reducer', () => {
   const dirtyState = {
-    id: '226',
     authenticatedAt: moment().toISOString(),
     identity: {},
     expiresAt: '2020-10-15',
@@ -15,39 +14,24 @@ describe('testing auth reducer', () => {
   it('should handle AUTH_RESET', () => {
     expect(reducer(dirtyState, { type: AUTH_RESET })).toEqual(INITIAL_STATE);
   });
-  describe('SIGN_IN', () => {
-    const credentials = { id: 'ho', isAuthenticated: true, identity: { id: 'letsgo' }, authenticatedAt: 'date', acr: 1 };
 
-    it('should handle SIGN_IN, initial state', () => {
-      expect(reducer(INITIAL_STATE, { type: SIGN_IN, credentials })).toEqual({
+  describe('LOAD_USER_INFO', () => {
+    const user = { scope: 'openid user', identityId: 'test', accountId: 'test', acr: 1 };
+
+    it('should handle LOAD_USER_INFO, initial state', () => {
+      expect(reducer(INITIAL_STATE, { type: LOAD_USER_INFO, ...user })).toEqual({
         ...INITIAL_STATE,
-        ...credentials,
+        ...user,
+        isAuthenticated: false, // because expiresAt is nil
       });
     });
 
-    it('should handle SIGN_IN, any state', () => {
-      expect(reducer({
-        identity: { id: 'id', displayName: 'test' },
-      }, { type: SIGN_IN, credentials })).toEqual({
-        ...INITIAL_STATE,
-        ...credentials,
-      });
-    });
-  });
-
-  describe('LOAD_USER', () => {
-    const credentials = { id: 'ho', isAuthenticated: true, identity: { id: 'letsgo' }, authenticatedAt: 'date', acr: 1 };
-
-    it('should handle LOAD_USER, initial state', () => {
-      expect(reducer(INITIAL_STATE, { type: LOAD_USER, credentials })).toEqual({
-        ...INITIAL_STATE,
-        ...credentials,
-      });
-    });
-
-    it('should handle LOAD_USER, any state', () => {
-      expect(reducer({}, { type: LOAD_USER, credentials })).toEqual({
-        ...credentials,
+    it('should handle LOAD_USER_INFO, any state', () => {
+      expect(reducer({ expiresAt: '2020-05-20..' }, { type: LOAD_USER_INFO, ...user })).toEqual({
+        ...user,
+        isAuthenticated: true,
+        identity: null,
+        expiresAt: '2020-05-20..',
       });
     });
   });

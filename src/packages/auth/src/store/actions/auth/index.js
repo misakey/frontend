@@ -1,9 +1,7 @@
-import moment from 'moment';
-
 // ACTIONS
 export const AUTH_RESET = Symbol('AUTH_RESET');
-export const SIGN_IN = Symbol('SIGN_IN');
-export const LOAD_USER = Symbol('LOAD_USER');
+export const LOAD_USER_INFO = Symbol('LOAD_USER_INFO');
+export const SET_EXPIRES_AT = Symbol('SET_EXPIRES_AT');
 export const SIGN_OUT = Symbol('SIGN_OUT');
 export const UPDATE_IDENTITY = Symbol('UPDATE_IDENTITY');
 export const CLEAR_IDENTITY = Symbol('CLEAR_IDENTITY');
@@ -14,17 +12,14 @@ export const authReset = () => ({
   type: AUTH_RESET,
 });
 
-export const signIn = (credentials) => ({
-  type: SIGN_IN,
-  credentials: {
-    ...credentials,
-    authenticatedAt: moment().toISOString(),
-  },
+export const loadUser = (user) => ({
+  type: LOAD_USER_INFO,
+  ...user,
 });
 
-export const loadUser = (credentials) => ({
-  type: LOAD_USER,
-  credentials,
+export const setExpiresAt = (expiresAt) => ({
+  type: SET_EXPIRES_AT,
+  expiresAt,
 });
 
 export const signOut = () => ({
@@ -47,4 +42,4 @@ export const setIsAuthenticated = (isAuthenticated) => ({
 
 // THUNKS
 // thunks to ensure async behaviour: store update before promise is fulfilled
-export const loadUserThunk = (credentials) => (dispatch) => dispatch(loadUser(credentials));
+export const loadUserThunk = (user) => (dispatch) => dispatch(loadUser(user));
