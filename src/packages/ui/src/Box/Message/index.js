@@ -90,7 +90,7 @@ const BoxMessage = forwardRef(({
         {children}
         {isLoading && <SplashScreen variant="backdrop" />}
         {isFunction(onClose) && (
-          <IconButton onClick={onClose}>
+          <IconButton color="inherit" onClick={onClose}>
             <CloseIcon />
           </IconButton>
         )}

@@ -14,6 +14,7 @@ import partition from '@misakey/helpers/partition';
 import fileType from '@misakey/helpers/fileType';
 import isFunction from '@misakey/helpers/isFunction';
 import uniq from '@misakey/helpers/uniq';
+import prop from '@misakey/helpers/prop';
 import getEventFilesArray from '@misakey/helpers/event/getFilesArray';
 import { isDesktopDevice } from '@misakey/helpers/devices';
 
@@ -24,14 +25,18 @@ import useFieldErrors from '@misakey/hooks/useFieldErrors';
 import InputFile from '@misakey/ui/Input/File';
 import InputFileFolder from '@misakey/ui/Input/File/Folder';
 import Typography from '@material-ui/core/Typography';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
 import TypographyPreWrapped from '@misakey/ui/Typography/PreWrapped';
 import BoxMessage from '@misakey/ui/Box/Message';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import List from '@material-ui/core/List';
 import Box from '@material-ui/core/Box';
+import Accordion from '@misakey/ui/Accordion';
+import AccordionSummary from '@misakey/ui/AccordionSummary';
 
 import FolderIcon from '@material-ui/icons/Folder';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 // HELPERS
 const isEmptyFileType = (file) => isEmpty(fileType(file));
@@ -54,12 +59,26 @@ const getFilenamesStatuses = (status) => {
   };
 };
 
-const isErrorArray = (errorKeys, index) => {
-  if (!isArray(errorKeys)) {
-    return false;
+const groupByFolder = (files, errorKeys, uploadStatus, defaultName) => {
+  if (isEmpty(files)) {
+    return [];
   }
-  const indexError = errorKeys[index];
-  return isArray(indexError);
+  const filesWithMeta = files
+    .map((file, index) => ({
+      ...file,
+      index,
+      errorKeys: prop(index, errorKeys),
+      uploadStatus: prop(index, uploadStatus),
+    }));
+  const groups = groupBy(filesWithMeta,
+    ({ blob: { webkitRelativePath, name } }) => {
+      const folderPath = isEmpty(webkitRelativePath)
+        ? defaultName
+        : webkitRelativePath.replace(`/${name}`, '');
+      return folderPath;
+    });
+
+  return Object.entries(groups).map(([key, values]) => ({ key, files: values }));
 };
 
 // HOOKS
@@ -80,10 +99,10 @@ const FilesField = ({
   name,
   prefix,
   fileTransform,
-  emptyTitle,
   uniqFn,
   uploadStatus,
   renderItem,
+  children,
   autoFocus,
   disabled,
 }) => {
@@ -122,6 +141,11 @@ const FilesField = ({
       && !isEmpty(compact(errorKeys))
       && errorKeys.every(isString),
     [errorKeys],
+  );
+
+  const groups = useMemo(
+    () => groupByFolder(value, errorKeys, uploadStatus, t('common:files')),
+    [value, errorKeys, uploadStatus, t],
   );
 
   const classes = useStyles();
@@ -189,20 +213,6 @@ const FilesField = ({
 
   return (
     <>
-      {isEmpty(value) ? emptyTitle : (
-        <List dense>
-          {value.map((file, index) => (
-            <Fragment key={file.key}>
-              {renderItem({ ...file, uploadStatus: uploadStatus[index], index, onRemove })}
-              {displayError && isErrorArray(errorKeys, index) && (
-                <FormHelperText error>
-                  {t(errorKeys[index])}
-                </FormHelperText>
-              )}
-            </Fragment>
-          ))}
-        </List>
-      )}
       {!isNil(fieldStatus) && (
         <BoxMessage type="error" p={2} my={1} ref={onFocusNode} onClose={clearStatus}>
           <TypographyPreWrapped>
@@ -215,6 +225,13 @@ const FilesField = ({
             {!isEmpty(filenamesNoExtension) && (
               t('fields:files.error.extension', { filenamesNoExtension })
             )}
+          </TypographyPreWrapped>
+        </BoxMessage>
+      )}
+      {displayError && isGlobalErrorKeys && (
+        <BoxMessage type="error" p={2} my={1} ref={onFocusNode} onClose={clearStatus}>
+          <TypographyPreWrapped>
+            {t(errorKeys)}
           </TypographyPreWrapped>
         </BoxMessage>
       )}
@@ -261,11 +278,39 @@ const FilesField = ({
         </Box>
         )}
       </Box>
-      {displayError && isGlobalErrorKeys && (
-        <FormHelperText error ref={onFocusNode}>
-          {t(errorKeys)}
-        </FormHelperText>
-      )}
+      {children}
+      {groups.map(({ key, files }) => (
+        <Accordion
+          key={key}
+          defaultExpanded
+          elevation={0}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+          >
+            <Subtitle>{key}</Subtitle>
+            <Box ml={1}>
+              <Subtitle>
+                (
+                {files.length}
+                )
+              </Subtitle>
+            </Box>
+          </AccordionSummary>
+          <List dense>
+            {files.map(({ errorKeys: fileErrorKeys, index, ...file }) => (
+              <Fragment key={file.key}>
+                {renderItem({ ...file, index, onRemove })}
+                {displayError && isArray(errorKeys) && (
+                  <FormHelperText error>
+                    {t(fileErrorKeys)}
+                  </FormHelperText>
+                )}
+              </Fragment>
+            ))}
+          </List>
+        </Accordion>
+      ))}
     </>
   );
 };
@@ -277,11 +322,11 @@ FilesField.propTypes = {
   labelFolder: PropTypes.string,
   name: PropTypes.string.isRequired,
   prefix: PropTypes.string,
-  emptyTitle: PropTypes.node,
   fileTransform: PropTypes.func,
   uniqFn: PropTypes.func,
   uploadStatus: PropTypes.object,
   renderItem: PropTypes.func.isRequired,
+  children: PropTypes.node,
   autoFocus: PropTypes.bool,
   disabled: PropTypes.bool,
   // withTranslation
@@ -291,7 +336,6 @@ FilesField.propTypes = {
 FilesField.defaultProps = {
   onUpload: undefined,
   accept: [],
-  emptyTitle: null,
   fileTransform: identity,
   uniqFn: uniq,
   uploadStatus: {},
@@ -300,6 +344,7 @@ FilesField.defaultProps = {
   prefix: '',
   autoFocus: false,
   disabled: false,
+  children: null,
 };
 
-export default withTranslation(['fields'])(FilesField);
+export default withTranslation(['fields', 'common'])(FilesField);

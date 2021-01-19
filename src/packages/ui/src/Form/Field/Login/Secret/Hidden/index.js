@@ -19,7 +19,7 @@ const LoginSecretFormFieldHidden = (props) => {
       {...AUTOFILL_PASSWORD}
       name="password"
       {...props}
-      ariaHidden
+      aria-hidden
     />
   );
 };

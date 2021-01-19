@@ -21,8 +21,9 @@ const LoginIdentifierFormFieldHidden = ({ value, ...props }) => {
       {...AUTOFILL_USERNAME}
       name="username"
       value={value}
+      readOnly
       {...props}
-      ariaHidden
+      aria-hidden
     />
   );
 };

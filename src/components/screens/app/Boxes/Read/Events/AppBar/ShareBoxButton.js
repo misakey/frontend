@@ -31,6 +31,7 @@ function ShareBoxButton({ box, t }) {
       component={Link}
       to={to}
       standing={BUTTON_STANDINGS.MAIN}
+      size="small"
       text={isCurrentUserOwner ? (
         <>
           <IconSharing

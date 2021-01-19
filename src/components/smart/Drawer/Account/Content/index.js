@@ -29,7 +29,7 @@ const BoxAccount = ({ t, backTo }) => {
   const onSignedOut = useCallback(() => history.replace(routes._), [history]);
 
   return (
-    <Box minHeight="100%" display="flex" flexDirection="column">
+    <Box minHeight="100%" display="flex" flexDirection="column" overflow="hidden">
       <AppBarStatic>
         <IconButtonAppBar
           aria-label={t('common:goBack')}

@@ -1,39 +1,36 @@
-import { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Form } from 'formik';
-import Formik from '@misakey/ui/Formik';
-import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+
+import { selectors } from '@misakey/auth/store/reducers/auth';
+import { MSG_TXT } from 'constants/app/boxes/events';
+import { contactFieldsValidationSchema } from 'constants/validationSchemas/boxes';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isEmpty from '@misakey/helpers/isEmpty';
+import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import encryptText from '@misakey/crypto/box/encryptText';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import useContactUser from 'hooks/useContactUser';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { useCallback, useMemo } from 'react';
+import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 
 import BoxControls from '@misakey/ui/Box/Controls';
 import DialogContent from '@misakey/ui/DialogContent';
 import DialogTitleWithCloseFormik from '@misakey/ui/DialogTitle/WithCloseIcon/Formik';
-import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import FieldTextMultiline from 'components/dumb/Form/Field/Text/Multiline';
 import FormField from '@misakey/ui/Form/Field';
 import FormFieldTextFieldWithErrors from '@misakey/ui/Form/Field/TextFieldWithErrors';
-
-import encryptText from '@misakey/crypto/box/encryptText';
-
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
-import useContactUser from 'hooks/useContactUser';
-import { selectors } from '@misakey/auth/store/reducers/auth';
-import { MSG_TXT } from 'constants/app/boxes/events';
-import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
-import { contactFieldsValidationSchema } from 'constants/validationSchemas/boxes';
+import { Form } from 'formik';
+import Formik from '@misakey/ui/Formik';
 
 // CONSTANTS
 const FIELD_BOX_TITLE = 'title';
 const FIELD_BOX_MESSAGE = 'message';
-
-const DESCRIPTION_ID = 'contact-dialog-description';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -51,6 +48,9 @@ function ContactBoxDialog({ onClose, open, targetUser, ...props }) {
   const classes = useStyles();
 
   const { t } = useTranslation('boxes');
+
+  const fullScreen = useDialogFullScreen();
+
   const { profile: { displayName } } = useMemo(() => targetUser, [targetUser]);
 
   const userIdentity = useSelector(selectors.identity);
@@ -86,10 +86,10 @@ function ContactBoxDialog({ onClose, open, targetUser, ...props }) {
   return (
     <Dialog
       fullWidth
+      fullScreen={fullScreen}
       open={open}
       onClose={onClose}
       aria-label={t('boxes:contact.dialog.title')}
-      aria-describedby={DESCRIPTION_ID}
       {...omitTranslationProps(props)}
     >
       <Formik
@@ -101,10 +101,12 @@ function ContactBoxDialog({ onClose, open, targetUser, ...props }) {
         onSubmit={onSubmit}
       >
         <Form>
-          <DialogTitleWithCloseFormik onClose={onClose} />
+          <DialogTitleWithCloseFormik
+            title={t('boxes:contact.dialog.title', { displayName })}
+            onClose={onClose}
+          />
           <DialogContent
             classes={{ root: classes.dialogContentRoot }}
-            title={<Title id={DESCRIPTION_ID}>{t('boxes:contact.dialog.title', { displayName })}</Title>}
             subtitle={<Subtitle className={classes.prewrap}>{t('boxes:contact.dialog.subtitle', { displayName })}</Subtitle>}
           >
             <FormField

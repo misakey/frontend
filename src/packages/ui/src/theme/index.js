@@ -1,4 +1,4 @@
-import { createMuiTheme, fade } from '@material-ui/core/styles';
+import { createMuiTheme, fade, responsiveFontSizes } from '@material-ui/core/styles';
 import common from '@misakey/ui/colors/common';
 import boulder from '@misakey/ui/colors/boulder';
 
@@ -128,6 +128,11 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
         alignItems: 'center',
       },
     },
+    MuiAvatarGroup: {
+      avatar: {
+        border: null,
+      },
+    },
     MuiButton: {
       root: {
         boxShadow: 'none !important',
@@ -185,4 +190,4 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
   },
 });
 
-export default createMuiTheme(getThemeOptions());
+export default responsiveFontSizes(createMuiTheme(getThemeOptions()));

@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useState } from 'react';
+import { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -16,14 +16,12 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import LockIcon from '@material-ui/icons/Lock';
-import CancelIcon from '@material-ui/icons/Cancel';
+import CancelScheduleSendIcon from '@material-ui/icons/CancelScheduleSend';
+import RemoveCircleOutlinedIcon from '@material-ui/icons/RemoveCircleOutline';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -45,25 +43,16 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const BlobListItem = ({ blob, onRemove, uploadStatus, t }) => {
   const classes = useStyles();
-  const { name, lastModified, size } = useMemo(() => blob, [blob]);
+  const { name, size } = useMemo(() => blob, [blob]);
   const formattedSize = useMemo(
     () => formatFileSize(size), [size],
   );
-  const [anchorEl, setAnchorEl] = useState(null);
 
   const { type, progress, req } = useSafeDestr(uploadStatus);
 
   const isEncrypted = useMemo(
     () => type === UPLOAD,
     [type],
-  );
-
-  const onClick = useCallback(
-    (event) => { setAnchorEl(event.currentTarget); }, [],
-  );
-
-  const onClose = useCallback(
-    () => { setAnchorEl(null); }, [],
   );
 
   const onAbort = useCallback(
@@ -96,27 +85,18 @@ const BlobListItem = ({ blob, onRemove, uploadStatus, t }) => {
           <>
             {isEncrypted ? (
               <IconButton disabled={isNil(req)} onClick={onAbort} edge="end" aria-label={t('common:cancel')}>
-                <CancelIcon />
+                <CancelScheduleSendIcon />
               </IconButton>
             ) : (
-              <IconButton onClick={onClick} disabled={!isNil(type)} edge="end" aria-label={t('common:more')}>
-                <MoreVertIcon />
+              <IconButton
+                onClick={onRemove}
+                disabled={!isNil(type)}
+                edge="end"
+                aria-label={t('common:remove')}
+              >
+                <RemoveCircleOutlinedIcon />
               </IconButton>
-
             )}
-            <Menu
-              id={`menu-remove-blob-${lastModified}`}
-              anchorEl={anchorEl}
-              keepMounted
-              open={!isNil((anchorEl))}
-              onClose={onClose}
-              variant="menu"
-              MenuListProps={{ disablePadding: true }}
-              PaperProps={{ variant: 'outlined' }}
-              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-            >
-              <MenuItem onClick={onRemove}>{t('common:delete')}</MenuItem>
-            </Menu>
           </>
         </ListItemSecondaryAction>
       </ListItem>

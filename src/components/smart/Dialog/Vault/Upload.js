@@ -56,7 +56,6 @@ function VaultUploadDialog({ open, onClose }) {
       initialValues={INITIAL_VALUES}
       open={open}
       onClose={onClose}
-      autoFocus
     />
   );
 }

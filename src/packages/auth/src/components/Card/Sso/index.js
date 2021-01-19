@@ -51,6 +51,7 @@ const CardSso = ({ avatar, avatarLarge, header, children, ...props }) => {
           display="flex"
           flexDirection="column"
           pt={5}
+          square={fullScreen}
           raised
           {...props}
         >

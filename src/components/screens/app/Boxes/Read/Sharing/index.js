@@ -47,8 +47,8 @@ import ListItemUserWhitelisted from '@misakey/ui/ListItem/User/Whitelisted';
 import ListItemUserWhitelistedSkeleton from '@misakey/ui/ListItem/User/Whitelisted/Skeleton';
 import ListItemUserWhitelistedMember from '@misakey/ui/ListItem/User/Whitelisted/Member';
 import ListItemDomainWhitelisted from '@misakey/ui/ListItem/Domain/Whitelisted';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
+import Accordion from '@misakey/ui/Accordion';
+import AccordionSummary from '@misakey/ui/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ShareBoxForm from 'components/screens/app/Boxes/Read/Sharing/Form';
 import ShareBoxFormSkeleton from 'components/screens/app/Boxes/Read/Sharing/Form/Skeleton';
@@ -75,16 +75,6 @@ const useStyles = makeStyles((theme) => ({
     boxSizing: 'border-box',
     maxHeight: `calc(100% - ${APPBAR_HEIGHT}px)`,
     overflow: 'auto',
-  },
-  accordionRoot: {
-    '&.Mui-expanded': {
-      margin: 0,
-    },
-  },
-  accordionSummaryRoot: {
-    '&.Mui-expanded': {
-      minHeight: 48,
-    },
   },
 }));
 
@@ -259,11 +249,9 @@ function BoxSharing({ box, t }) {
                 <ListBordered disablePadding>
                   <Accordion
                     defaultExpanded
-                    classes={{ root: classes.accordionRoot }}
                   >
                     <AccordionSummary
                       expandIcon={<ExpandMoreIcon />}
-                      classes={{ root: classes.accordionSummaryRoot }}
                     >
                       <Subtitle>{t(`boxes:read.share.accesses.${IDENTIFIER}`)}</Subtitle>
                     </AccordionSummary>

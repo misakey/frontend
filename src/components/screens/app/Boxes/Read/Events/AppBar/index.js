@@ -11,8 +11,6 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
-import useTheme from '@material-ui/core/styles/useTheme';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -22,6 +20,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Box from '@material-ui/core/Box';
+import AvatarGroupMembers from '@misakey/ui/AvatarGroup/Members';
 import ShareBoxButton from './ShareBoxButton';
 import AppBarMenuTabs from './Tabs';
 
@@ -29,13 +28,13 @@ import AppBarMenuTabs from './Tabs';
 const SKELETON_WIDTH = 100;
 
 const PRIMARY_TYPO_PROPS = {
-  variant: 'h5',
+  variant: 'h6',
   noWrap: true,
   color: 'textPrimary',
 };
 
 const SECONDARY_TYPO_PROPS = {
-  variant: 'body2',
+  variant: 'subtitle2',
   color: 'textSecondary',
 };
 
@@ -50,6 +49,16 @@ const useStyles = makeStyles((theme) => ({
   },
   listItemContainer: {
     width: '100%',
+  },
+  listItemSecondaryActionRoot: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  avatarGroupMembersRoot: {
+    [theme.breakpoints.only('xs')]: {
+      display: 'none',
+    },
+    marginRight: theme.spacing(2),
   },
   typographyFlex: {
     display: 'flex',
@@ -75,9 +84,6 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
 
   const routeDetails = useGeneratePathKeepingSearchAndHash(routes.boxes.read.details, { id });
 
-  const theme = useTheme();
-  const isDownSm = useMediaQuery(theme.breakpoints.down('sm'));
-
   const isTheOnlyMember = useMemo(
     () => members.length === 1 && belongsToCurrentUser,
     [belongsToCurrentUser, members.length],
@@ -96,20 +102,6 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
     [hasAccess, isTheOnlyMember, t, members.length],
   );
 
-  const primaryTypographyProps = useMemo(
-    () => (isDownSm
-      ? { ...PRIMARY_TYPO_PROPS, variant: 'subtitle1' }
-      : PRIMARY_TYPO_PROPS),
-    [isDownSm],
-  );
-
-  const secondaryTypographyProps = useMemo(
-    () => (isDownSm
-      ? { ...SECONDARY_TYPO_PROPS, variant: 'subtitle2' }
-      : SECONDARY_TYPO_PROPS),
-    [isDownSm],
-  );
-
   const secondary = useMemo(
     () => (isEmpty(members) && hasAccess
       ? (
@@ -119,11 +111,11 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
         />
       )
       : (
-        <Typography {...secondaryTypographyProps}>
+        <Typography {...SECONDARY_TYPO_PROPS}>
           {membersText}
         </Typography>
       )),
-    [members, hasAccess, classes, secondaryTypographyProps, membersText],
+    [members, hasAccess, classes, membersText],
   );
 
   const canShare = useMemo(
@@ -152,17 +144,22 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
         <ListItemText
           disableTypography
           primary={(
-            <Typography className={classes.typographyFlex} {...primaryTypographyProps}>
+            <Typography className={classes.typographyFlex} {...PRIMARY_TYPO_PROPS}>
               {isTitleEmpty ? <Skeleton width={200} /> : title}
               {!disabled && <ExpandMoreIcon />}
             </Typography>
           )}
           secondary={secondary}
         />
-        <ListItemSecondaryAction>
+        <ListItemSecondaryAction classes={{ root: classes.listItemSecondaryActionRoot }}>
+          <AvatarGroupMembers
+            members={members}
+            classes={{ root: classes.avatarGroupMembersRoot }}
+          />
           {canShare && <ShareBoxButton box={box} />}
         </ListItemSecondaryAction>
       </ListItem>
+
       {displayTabs && <AppBarMenuTabs boxId={id} />}
     </Box>
   );

@@ -7,6 +7,7 @@ import { useReducer, useCallback } from 'react';
 // CONSTANTS
 const INITIAL_STATE = {};
 const ABORTABLE = Symbol('ABORTABLE');
+const ABORT = Symbol('ABORT');
 const RESET = Symbol('RESET');
 
 // HELPERS
@@ -30,6 +31,12 @@ const uploadStatusReducer = (state, { key, type, progress, req }) => {
     return {
       ...state,
       [key]: { ...keyState, req },
+    };
+  }
+  if (type === ABORT) {
+    return {
+      ...state,
+      [key]: null,
     };
   }
   if (type === RESET) {
@@ -62,6 +69,11 @@ export default () => {
     [dispatch],
   );
 
+  const onAbort = useCallback(
+    (key) => dispatch({ type: ABORT, key }),
+    [dispatch],
+  );
+
   const onDone = useCallback(
     (key) => dispatch({ type: UPLOAD, key, progress: 100 }),
     [dispatch],
@@ -72,5 +84,5 @@ export default () => {
     [dispatch],
   );
 
-  return [state, { onProgress, onEncrypt, onUpload, onDone, onAbortable, onReset }];
+  return [state, { onProgress, onEncrypt, onUpload, onAbortable, onAbort, onDone, onReset }];
 };

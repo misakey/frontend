@@ -13,7 +13,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { createMuiTheme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
+import { createMuiTheme, ThemeProvider as MuiThemeProvider, responsiveFontSizes } from '@material-ui/core/styles';
 
 
 // COMPONENTS
@@ -35,7 +35,7 @@ function ThemeProvider({ children, previewColor }) {
   );
 
   const theme = useMemo(
-    () => createMuiTheme(getThemeOptions(isDarkMode, color)),
+    () => responsiveFontSizes(createMuiTheme(getThemeOptions(isDarkMode, color))),
     [isDarkMode, color],
   );
 

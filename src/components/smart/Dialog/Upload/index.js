@@ -29,7 +29,6 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import DialogContent from '@material-ui/core/DialogContent';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import FieldFiles from 'components/dumb/Form/Field/Files';
 import BoxControls from '@misakey/ui/Box/Controls';
 import Link from '@material-ui/core/Link';
@@ -65,9 +64,6 @@ const useStyles = makeStyles((theme) => ({
   dialogContentRoot: {
     padding: theme.spacing(3),
   },
-  dialogContentTextRoot: {
-    textAlign: 'center',
-  },
 }));
 
 function UploadDialog({
@@ -87,7 +83,7 @@ function UploadDialog({
   const { t } = useTranslation('components');
   const [
     blobsUploadStatus,
-    { onProgress, onEncrypt, onUpload, onDone, onAbortable, onReset },
+    { onProgress, onEncrypt, onUpload, onDone, onAbortable, onAbort, onReset },
   ] = useUploadStatus();
 
   const isUploading = useMemo(
@@ -121,6 +117,7 @@ function UploadDialog({
       try {
         const response = await send();
         if (response.type === 'abort') {
+          onAbort(index);
           throw new AbortError();
         }
         onDone(index);
@@ -131,8 +128,10 @@ function UploadDialog({
         throw error;
       }
     },
-    [onAbortable, onDone, onEncrypt, onEncryptBuilder,
-      onError, onProgress, onUpload, onUploadBuilder],
+    [
+      onAbortable, onAbort, onDone, onEncrypt, onEncryptBuilder,
+      onError, onProgress, onUpload, onUploadBuilder,
+    ],
   );
 
   const getOnReset = useCallback(
@@ -207,8 +206,13 @@ function UploadDialog({
       >
         {({ resetForm }) => (
           <Form>
-            <DialogTitleWithClose onClose={getOnReset(resetForm)}>
+            <DialogTitleWithClose
+              title={t('components:dialogUpload.text')}
+              onClose={getOnReset(resetForm)}
+            >
               <BoxControls
+                width={undefined}
+                flexGrow={1}
                 ml="auto"
                 alignItems="center"
                 primary={{
@@ -226,28 +230,21 @@ function UploadDialog({
                 fileTransform={fileTransform}
                 uniqFn={uniqBlob}
                 uploadStatus={blobsUploadStatus}
-                emptyTitle={(
-                  <DialogContentText
-                    classes={{ root: classes.dialogContentTextRoot }}
-                    id="upload-dialog-description"
-                  >
-                    {t('components:dialogUpload.text')}
-                  </DialogContentText>
-                )}
                 autoFocus={autoFocus}
                 disabled={!open}
-              />
-              <FormHelperText>
-                {t('components:dialogUpload.helperText')}
+              >
+                <FormHelperText>
+                  {t('components:dialogUpload.helperText')}
                 &nbsp;
-                <Link
-                  href={t('components:dialogUpload.helperLink')}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t('components:dialogUpload.helperLinkText')}
-                </Link>
-              </FormHelperText>
+                  <Link
+                    href={t('components:dialogUpload.helperLink')}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t('components:dialogUpload.helperLinkText')}
+                  </Link>
+                </FormHelperText>
+              </FieldFiles>
             </DialogContent>
           </Form>
         )}

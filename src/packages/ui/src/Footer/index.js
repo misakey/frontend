@@ -2,6 +2,8 @@ import { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { ACCORDION_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
+
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -11,16 +13,15 @@ import LinkFeedback from '@misakey/ui/Link/Feedback';
 import Logo from '@misakey/ui/Logo';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionSummary from '@misakey/ui/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-const FOOTER_MIN_HEIGHT = 48;
 // min height + border
-export const FOOTER_HEIGHT = FOOTER_MIN_HEIGHT + 2;
+export const FOOTER_HEIGHT = ACCORDION_MIN_HEIGHT + 2;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -40,9 +41,6 @@ const useStyles = makeStyles((theme) => ({
   },
   expansionPanelSummaryRoot: {
     padding: theme.spacing(0),
-    '&.Mui-expanded': {
-      minHeight: FOOTER_MIN_HEIGHT,
-    },
   },
   itemSpaced: {
     margin: theme.spacing(1, 0),
