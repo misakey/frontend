@@ -13,7 +13,7 @@ export const ACCESS_ADD = 'access.add';
 export const ACCESS_RM = 'access.rm';
 
 const EVENT_TYPES_BY_KIND = {
-  information: [CREATE, MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK, KEY_SHARE],
+  information: [CREATE, MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK, KEY_SHARE, STATE_ACCESS_MODE],
   message: [MSG_FILE, MSG_TXT],
 };
 

@@ -86,6 +86,10 @@
           "key_share": {
             "they": "{{displayName}} a changé le lien d'invitation",
             "you": "Vous avez changé le lien d'invitation"
+          },
+          "access_mode": {
+            "they": "{{displayName}} a changé le mode d'accès",
+            "you": "Vous avez changé le mode d'accès"
           }
         },
         "create": {
@@ -107,6 +111,16 @@
           }
         },
         "preview": {
+          "state": {
+            "key_share": {
+              "they": "<0>{{displayName}}</0> a changé le lien d'invitation",
+              "you": "<0>Vous</0> avez changé le lien d'invitation"
+            },
+            "access_mode": {
+              "they": "<0>{{displayName}}</0> a changé le mode d'accès",
+              "you": "<0>Vous</0> avez changé le mode d'accès"
+            }
+          },
           "create": {
             "they": "<0>{{displayName}}</0> a créé l'espace privé «\u00a0{{title}}\u00a0»",
             "you": "<0>Vous</0> avez créé l'espace privé «\u00a0{{title}}\u00a0»"

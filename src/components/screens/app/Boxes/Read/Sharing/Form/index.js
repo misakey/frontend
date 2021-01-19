@@ -223,27 +223,26 @@ function ShareBoxForm({
           />
         </Box>
         {children}
-        {isCurrentUserOwner && (
-          <FieldSubmitOnChange
-            name={ACCESSES_FIELD_NAME}
-            prefix="boxes."
-            variant="outlined"
-            component={TextField}
-            select
-            SelectProps={{
-              renderValue: (value) => (
-                <ListItemAccessLevel value={value} dense />
-              ),
-            }}
-          >
-            <MenuItem value={PUBLIC}>
-              <SelectItemAccessLevel value={PUBLIC} />
-            </MenuItem>
-            <MenuItem value={LIMITED}>
-              <SelectItemAccessLevel value={LIMITED} />
-            </MenuItem>
-          </FieldSubmitOnChange>
-        )}
+        <FieldSubmitOnChange
+          name={ACCESSES_FIELD_NAME}
+          prefix="boxes."
+          variant="outlined"
+          component={TextField}
+          disabled={!isCurrentUserOwner}
+          select
+          SelectProps={{
+            renderValue: (value) => (
+              <ListItemAccessLevel value={value} dense />
+            ),
+          }}
+        >
+          <MenuItem value={PUBLIC}>
+            <SelectItemAccessLevel value={PUBLIC} />
+          </MenuItem>
+          <MenuItem value={LIMITED}>
+            <SelectItemAccessLevel value={LIMITED} />
+          </MenuItem>
+        </FieldSubmitOnChange>
       </Form>
     </Formik>
   );

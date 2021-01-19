@@ -18,10 +18,11 @@ import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStra
 
 import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
 
-import { transformReferrerEvent, isMemberEventType, getEventForNormalization } from 'helpers/boxEvent';
+import { transformReferrerEvent, isMemberEventType, isAccessModeEventType, getEventForNormalization } from 'helpers/boxEvent';
 import pluck from '@misakey/helpers/pluck';
 import propOr from '@misakey/helpers/propOr';
 import props from '@misakey/helpers/props';
+import path from '@misakey/helpers/path';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import without from '@misakey/helpers/without';
@@ -44,6 +45,7 @@ const { isPaginationAlreadyFetched: isBoxPaginationAlreadyFetched } = boxPaginat
 const omitText = (values) => omit(values, ['text']);
 const textProp = prop('text');
 
+const contentValuePath = path(['content', 'value']);
 
 const getNextMembers = ({ type, sender }, members) => {
   if (type === MEMBER_JOIN) {
@@ -212,6 +214,13 @@ export const addBoxEvent = (id, nextEvent, isMyEvent = false, onNotifyEvent) => 
   if (isMemberEventType(lastEvent)) {
     if (!isEmpty(members)) {
       changes.members = getNextMembers(lastEvent, members);
+    }
+  }
+
+  if (isAccessModeEventType(lastEvent)) {
+    const nextAccessMode = contentValuePath(lastEvent);
+    if (!isNil(nextAccessMode)) {
+      changes.accessMode = nextAccessMode;
     }
   }
 

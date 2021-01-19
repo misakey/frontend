@@ -12,6 +12,8 @@ import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { getBoxById } from 'store/reducers/box';
 import isEmpty from '@misakey/helpers/isEmpty';
 
+// HOOKS
+// @UNUSED
 export default (boxId) => {
   const dispatch = useDispatch();
   const handleHttpErrors = useHandleHttpErrors();

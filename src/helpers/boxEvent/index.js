@@ -21,6 +21,8 @@ export const isKickEvent = ({ type }) => type === MEMBER_KICK;
 
 export const isMemberEventType = ({ type }) => MEMBER_EVENT_TYPES.includes(type);
 
+export const isAccessModeEventType = ({ type }) => type === STATE_ACCESS_MODE;
+
 export const getBoxEventLastDate = ({ content, serverEventCreatedAt }) => {
   const lastEditedAt = lastEditedAtProp(content);
 
@@ -97,7 +99,7 @@ export const getEventForNormalization = (event) => {
 };
 
 export const getLastAccessMode = (events) => {
-  const lastAccessModeEvent = findLast(events, ({ type }) => type === STATE_ACCESS_MODE);
+  const lastAccessModeEvent = findLast(events, isAccessModeEventType);
   return isNil(lastAccessModeEvent) ? LIMITED : lastAccessModeEvent.value;
 };
 

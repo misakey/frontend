@@ -86,6 +86,10 @@
           "key_share": {
             "they": "{{displayName}} changed the invitation link",
             "you": "You changed the invitation link"
+          },
+          "access_mode": {
+            "they": "{{displayName}} changed the access mode",
+            "you": "You changed the access mode"
           }
         },
         "create": {
@@ -107,6 +111,16 @@
           }
         },
         "preview": {
+          "state": {
+            "key_share": {
+              "they": "<0>{{displayName}}</0> changed the invitation link",
+              "you": "<0>You</0> changed the invitation link"
+            },
+            "access_mode": {
+              "they": "<0>{{displayName}}</0> changed the access mode",
+              "you": "<0>You</0> changed the access mode"
+            }
+          },
           "create": {
             "they": "<0>{{displayName}}</0> created the private space “{{title}}”",
             "you": "<0>You</0> created the private space “{{title}}”"
