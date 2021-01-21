@@ -25,7 +25,7 @@ const TRedirectAuthCallback = withTranslation('common')(RedirectAuthCallback);
 
 const App = () => (
   <Suspense fallback={<Screen isLoading hideFooter />}>
-    <OfflineAlert position="absolute" bottom={0} zIndex="snackbar" width="100%" />
+    <OfflineAlert position="absolute" top={0} zIndex="snackbar" width="100%" />
     <Switch>
       {/* AUTH */}
       <Route

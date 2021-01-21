@@ -159,7 +159,8 @@ const makeRequest = async (headers, endpoint, retryOptions) => {
  */
 async function send(options = {}, endpoint = this) {
   const { rawRequest, contentType = 'application/json', headers: optionsHeaders, retryOptions } = options;
-  const { withCsrfToken, withBearer, path, getCsrfToken } = endpoint;
+  const mergedEndpoint = { ...this, ...endpoint };
+  const { withCsrfToken, withBearer, path, getCsrfToken } = mergedEndpoint;
 
   let headers = new Headers();
   if (optionsHeaders instanceof Headers) {
@@ -183,14 +184,14 @@ async function send(options = {}, endpoint = this) {
   }
 
   try {
-    const rawResponse = await makeRequest(headers, endpoint, retryOptions);
+    const rawResponse = await makeRequest(headers, mergedEndpoint, retryOptions);
     if (rawRequest) {
       return rawResponse;
     }
-    const middlewareResponse = await applyMiddlewares(rawResponse, endpoint);
+    const middlewareResponse = await applyMiddlewares(rawResponse, mergedEndpoint);
     return isNil(middlewareResponse) ? handleResponse(rawResponse) : middlewareResponse;
   } catch (error) {
-    const middlewareError = await applyMiddlewares(error, endpoint);
+    const middlewareError = await applyMiddlewares(error, mergedEndpoint);
     const finalError = isNil(middlewareError) ? error : middlewareError;
     // if final error is not an error, consider middlewares handled it
     if (finalError instanceof Error) {

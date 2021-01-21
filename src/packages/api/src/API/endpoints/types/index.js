@@ -5,6 +5,7 @@ import identities from './identities';
 import sso from './sso';
 import user from './user';
 import files from './files';
+import generic from './generic';
 
 export default {
   accounts,
@@ -14,4 +15,5 @@ export default {
   identities,
   sso,
   user,
+  generic,
 };

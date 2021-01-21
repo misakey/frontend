@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import networkErrorMiddleware from 'middlewares/networkError';
 import isFunction from '@misakey/helpers/isFunction';
+// import simulateNetworkError from '@misakey/api/helpers/simulateNetworkError';
 
 // CONTEXT
 const OfflineContext = createContext({
@@ -39,6 +40,14 @@ const OfflineContextProvider = ({ addMiddleware, children }) => {
     },
     [addMiddleware, onNetworkError, onNetworkSuccess],
   );
+
+  // NB: Easy test
+  // useEffect(
+  //   () => {
+  //     simulateNetworkError();
+  //   },
+  //   [],
+  // );
 
   const contextValue = useMemo(
     () => ({

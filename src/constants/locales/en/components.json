@@ -129,7 +129,8 @@
     "chat": "Private space"
   },
   "offline": {
-    "alert": "No Internet access"
+    "loading": "<0>Connecting...</0>",
+    "alert": "<0>Not connected.</0>\u00a0<2>Connecting in {{countdown}}</2>"
   },
   "InfiniteLoadedChat": {
     "loadMore": "Load more"

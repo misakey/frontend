@@ -139,7 +139,8 @@
     "chat": "Espace privé"
   },
   "offline": {
-    "alert": "Pas d'accès à Internet"
+    "loading": "<0>Connexion...</0>",
+    "alert": "<0>Non connecté.</0>\u00a0<2>Connexion dans {{countdown}}</2>"
   },
   "InfiniteLoadedChat": {
     "loadMore": "Voir plus"
