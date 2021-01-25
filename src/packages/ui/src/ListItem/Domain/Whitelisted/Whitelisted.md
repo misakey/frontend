@@ -2,6 +2,7 @@ ListItemDomainWhitelisted example
 
 ```js
 
+import React from 'react';
 
 import ListItemDomainWhitelisted from './index';
 

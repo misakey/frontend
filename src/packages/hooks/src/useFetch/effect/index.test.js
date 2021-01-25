@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { renderHook, act } from '@testing-library/react-hooks';

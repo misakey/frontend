@@ -1,3 +1,4 @@
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { makeDenormalizeSavedFileSelector } from 'store/reducers/files/saved';
@@ -9,7 +10,7 @@ import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
 
 import usePaginateSavedFiles from 'hooks/usePaginateSavedFiles';
-import { useMemo, useState, useCallback, useEffect } from 'react';
+
 import { useSelector } from 'react-redux';
 import useDecryptSavedFileCallback from 'hooks/useDecryptSavedFile/callback';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';

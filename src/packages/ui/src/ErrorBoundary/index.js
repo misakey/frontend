@@ -1,6 +1,6 @@
 // Copied from https://docs.sentry.io/platforms/javascript/react/
 // See also https://reactjs.org/docs/hooks-faq.html#do-hooks-cover-all-use-cases-for-classes
-import { Component } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withTranslation } from 'react-i18next';

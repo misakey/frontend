@@ -1,4 +1,5 @@
-import { useMemo, createContext, useContext } from 'react';
+import React, { useMemo, createContext, useContext } from 'react';
+
 import PropTypes from 'prop-types';
 
 import STATUSES, { ALL } from 'constants/app/boxes/statuses';

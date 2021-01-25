@@ -1,4 +1,5 @@
-import { useMemo, forwardRef } from 'react';
+import React, { useMemo, forwardRef } from 'react';
+
 import PropTypes from 'prop-types';
 
 import ACCESS_LEVELS, { PUBLIC, LIMITED } from '@misakey/ui/constants/accessModes';

@@ -1,3 +1,4 @@
+import React, { useCallback, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { IDENTIFIER as USER_TYPE, EMAIL_DOMAIN as DOMAIN_TYPE } from '@misakey/ui/constants/accessTypes';
@@ -9,7 +10,7 @@ import emailToDisplayName from '@misakey/helpers/emailToDisplayName';
 
 import { useTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useCallback, useState, useMemo } from 'react';
+
 
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import TextField from '@misakey/ui/TextField';

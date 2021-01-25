@@ -1,4 +1,5 @@
-import { useMemo, useCallback, lazy } from 'react';
+import React, { useMemo, useCallback, lazy } from 'react';
+
 import { Switch, Route, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Form } from 'formik';

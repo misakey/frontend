@@ -1,5 +1,8 @@
-import TextField from '@misakey/ui/TextField';
+import React from 'react';
+
 import makeStyles from '@material-ui/core/styles/makeStyles';
+
+import TextField from '@misakey/ui/TextField';
 
 // HOOKS
 const useStyles = makeStyles(() => ({

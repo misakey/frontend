@@ -1,3 +1,4 @@
+import React from 'react';
 import useIdentity from 'hooks/useIdentity';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 

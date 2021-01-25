@@ -1,4 +1,5 @@
-import { forwardRef, useState, useMemo, useCallback, useEffect } from 'react';
+import React, { forwardRef, useState, useMemo, useCallback, useEffect } from 'react';
+
 import PropTypes from 'prop-types';
 
 import isNumber from '@misakey/helpers/isNumber';

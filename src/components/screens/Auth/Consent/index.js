@@ -1,4 +1,5 @@
-import { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
+
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTranslation, Trans } from 'react-i18next';

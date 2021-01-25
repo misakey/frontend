@@ -1,10 +1,11 @@
+import React, { useMemo } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
 import { ACCORDION_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useMemo } from 'react';
+
 
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 

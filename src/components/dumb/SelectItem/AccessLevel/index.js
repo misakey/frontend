@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import ACCESS_LEVELS from '@misakey/ui/constants/accessModes';

@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { AVATAR_SIZE, AVATAR_SM_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
@@ -5,7 +6,7 @@ import { AVATAR_SIZE, AVATAR_SM_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/const
 import dialogIsFullScreen from '@misakey/helpers/dialog/isFullScreen';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useMemo } from 'react';
+
 
 import Screen from '@misakey/ui/Screen';
 import PaperSlope from '@misakey/ui/Paper/Slope';

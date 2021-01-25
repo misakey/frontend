@@ -1,4 +1,5 @@
-import { useMemo, forwardRef } from 'react';
+import React, { useMemo, forwardRef } from 'react';
+
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withTranslation } from 'react-i18next';

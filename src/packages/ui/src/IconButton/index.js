@@ -1,8 +1,9 @@
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { REVERSE, DARKER } from '@misakey/ui/theme';
 
-import { useMemo } from 'react';
+
 
 import withStyles from '@material-ui/core/styles/withStyles';
 import MuiIconButton from '@material-ui/core/IconButton';

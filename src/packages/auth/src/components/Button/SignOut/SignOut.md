@@ -1,8 +1,9 @@
 ButtonSignOut example:
 
 ```js
+import React, { Suspense } from 'react';
 
-import { Suspense } from 'react';
+
 import ButtonSignOut from './index';
 
 const ButtonSignOutExample = () => (

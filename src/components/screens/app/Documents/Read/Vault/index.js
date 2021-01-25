@@ -1,3 +1,4 @@
+import React, { useMemo, useRef, useState, useCallback } from 'react';
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 
 import isNil from '@misakey/helpers/isNil';
@@ -6,7 +7,7 @@ import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import usePaginateSavedFiles from 'hooks/usePaginateSavedFiles';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useMemo, useRef, useState, useCallback } from 'react';
+
 import { useTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 

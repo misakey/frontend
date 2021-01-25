@@ -1,4 +1,5 @@
-import { useMemo, useRef, createContext, useContext, useCallback } from 'react';
+import React, { useMemo, useRef, createContext, useContext, useCallback } from 'react';
+
 import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';

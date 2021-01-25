@@ -3,6 +3,7 @@
 ```js
 
 
+import React from 'react';
 import lemur from '@misakey/ui/lemur';
 
 import IconButton from '@material-ui/core/IconButton';
@@ -30,6 +31,7 @@ const CardUserExample = () => (
 
 ```js
 
+import React from 'react';
 
 import moment from 'moment';
 
@@ -65,6 +67,7 @@ const CardUserExample = () => {
 #### Image
 
 ```js
+import React from 'react';
 
 
 import lemur from '@misakey/ui/lemur';
@@ -86,6 +89,7 @@ const CardUserExample = () => (
 
 ```js
 
+import React from 'react';
 
 import CardUser from './index';
 
@@ -103,6 +107,7 @@ const CardUserExample = () => (
 
 ```js
 
+import React from 'react';
 
 import CardUser from './index';
 

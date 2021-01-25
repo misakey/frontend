@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
+
 import PropTypes from 'prop-types';
 
 import { TO_PROP_TYPE } from '@misakey/ui/constants/propTypes';

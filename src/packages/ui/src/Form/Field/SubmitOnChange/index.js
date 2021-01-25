@@ -1,9 +1,10 @@
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import isFunction from '@misakey/helpers/isFunction';
 
 import { useFormikContext } from 'formik';
-import { useMemo, useCallback } from 'react';
+
 
 import Field from '@misakey/ui/Form/Field';
 

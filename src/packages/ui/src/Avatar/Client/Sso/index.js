@@ -1,3 +1,4 @@
+import React from 'react';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/auth/store/reducers/sso';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';

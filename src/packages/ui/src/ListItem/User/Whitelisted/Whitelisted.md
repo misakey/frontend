@@ -1,6 +1,7 @@
 #### No accessStatus
 
 ```js
+import React from 'react';
 
 import ListItemDomainWhitelisted from './index';
 
@@ -19,6 +20,7 @@ const ListItemDomainWhitelistedExample = () => (
 ```js
 
 
+import React from 'react';
 import {
   ACCESS_STATUS_INVITED,
 } from '@misakey/ui/constants/accessStatus';
@@ -39,6 +41,7 @@ const ListItemDomainWhitelistedExample = () => (
 
 ```js
 
+import React from 'react';
 
 import {
   ACCESS_STATUS_NEEDS_LINK,
@@ -60,6 +63,7 @@ const ListItemDomainWhitelistedExample = () => (
 
 ```js
 
+import React from 'react';
 
 import {
   ACCESS_STATUS_MEMBER,

@@ -1,7 +1,8 @@
 DialogAccountDelete example:
 
 ```js
-import { useState, useCallback, Suspense } from 'react';
+import React, { useState, useCallback, Suspense } from 'react';
+
 import Button from '@material-ui/core/Button';
 import DialogAccountDelete from './index';
 

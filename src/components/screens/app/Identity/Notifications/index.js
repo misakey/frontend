@@ -1,4 +1,5 @@
-import { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
+
 import PropTypes from 'prop-types';
 import { Field, Form } from 'formik';
 import Formik from '@misakey/ui/Formik';

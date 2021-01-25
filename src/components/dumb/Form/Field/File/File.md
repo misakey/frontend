@@ -1,9 +1,9 @@
 FileField example:
 
 ```js
-
-import { Suspense } from 'react';
+import React, { Suspense } from 'react';
 import FileField from './index';
+
 
 const ACCEPTED_TYPES = [
   'image/jpg',

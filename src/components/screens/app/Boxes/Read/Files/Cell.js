@@ -1,4 +1,5 @@
-import { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
+
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { denormalize } from 'normalizr';

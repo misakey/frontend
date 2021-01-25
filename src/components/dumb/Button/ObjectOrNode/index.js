@@ -1,4 +1,5 @@
-import { isValidElement } from 'react';
+import React, { isValidElement } from 'react';
+
 import PropTypes from 'prop-types';
 
 import isObject from '@misakey/helpers/isObject';

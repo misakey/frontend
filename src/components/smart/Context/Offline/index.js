@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useMemo, useCallback, useEffect } from 'react';
+import React, { createContext, useContext, useState, useMemo, useCallback, useEffect } from 'react';
+
 import PropTypes from 'prop-types';
 
 import networkErrorMiddleware from 'middlewares/networkError';

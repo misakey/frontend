@@ -1,4 +1,5 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
+
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
 import isObject from '@misakey/helpers/isObject';

@@ -1,4 +1,5 @@
-import { useMemo, useCallback, useEffect, useRef } from 'react';
+import React, { useMemo, useCallback, useEffect, useRef } from 'react';
+
 
 import isNil from '@misakey/helpers/isNil';
 import exponentialBackoff from '@misakey/helpers/exponentialBackoff';

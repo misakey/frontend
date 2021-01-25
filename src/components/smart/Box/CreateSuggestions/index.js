@@ -1,5 +1,6 @@
+import React, { useMemo } from 'react';
 
-import { useMemo } from 'react';
+
 import { useSelector } from 'react-redux';
 
 import isNil from '@misakey/helpers/isNil';

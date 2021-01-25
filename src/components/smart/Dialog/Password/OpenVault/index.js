@@ -1,4 +1,5 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
+
 import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 import { openVaultValidationSchema } from 'constants/validationSchemas/auth';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';

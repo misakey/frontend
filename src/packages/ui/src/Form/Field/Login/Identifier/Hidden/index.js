@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { AUTOFILL_USERNAME } from '@misakey/ui/constants/autofill';

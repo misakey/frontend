@@ -1,3 +1,4 @@
+import React from 'react';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
 

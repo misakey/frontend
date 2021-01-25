@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import AvatarGroup from '@material-ui/lab/AvatarGroup';

@@ -2,6 +2,7 @@
 
 ```js
 
+import React from 'react';
 
 import authReducers from '@misakey/auth/store/reducers';
 
@@ -34,6 +35,7 @@ const CardUserSignOutExample = () => (
 #### Letter
 
 ```js
+import React from 'react';
 
 
 import authReducers from '@misakey/auth/store/reducers';
@@ -64,6 +66,7 @@ const CardUserSignOutExample = () => (
 #### Empty
 
 ```js
+import React from 'react';
 
 
 import authReducers from '@misakey/auth/store/reducers';

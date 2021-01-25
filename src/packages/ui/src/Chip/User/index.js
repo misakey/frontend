@@ -1,4 +1,5 @@
-import { useMemo, forwardRef } from 'react';
+import React, { useMemo, forwardRef } from 'react';
+
 import PropTypes from 'prop-types';
 
 import AvatarColorized from '@misakey/ui/Avatar/Colorized';

@@ -1,5 +1,6 @@
+import React, { useMemo, useCallback } from 'react';
 import clsx from 'clsx';
-import { useMemo, useCallback } from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 

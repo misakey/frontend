@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import Logo from '@misakey/ui/Logo';
 import Avatar from '@misakey/ui/Avatar';

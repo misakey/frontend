@@ -4,7 +4,8 @@ import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
 import 'proxy-polyfill';
 
-import { Suspense } from 'react';
+import React, { Suspense } from 'react';
+
 import ReactDOM from 'react-dom';
 // metrics
 import * as Sentry from '@sentry/browser';

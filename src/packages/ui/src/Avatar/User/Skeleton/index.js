@@ -1,3 +1,4 @@
+import React from 'react';
 import useAvatarSize from '@misakey/hooks/useAvatarSize';
 
 import Skeleton from '@material-ui/lab/Skeleton';

@@ -1,4 +1,5 @@
-import { Suspense, lazy, useMemo } from 'react';
+import React, { Suspense, lazy, useMemo } from 'react';
+
 
 import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';

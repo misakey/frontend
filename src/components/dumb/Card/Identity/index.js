@@ -1,4 +1,5 @@
-import { forwardRef, useMemo } from 'react';
+import React, { forwardRef, useMemo } from 'react';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Link, generatePath, useLocation } from 'react-router-dom';

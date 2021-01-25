@@ -1,3 +1,4 @@
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { makeGetEventSelector } from 'store/reducers/box';
@@ -8,7 +9,7 @@ import prop from '@misakey/helpers/prop';
 import isNil from '@misakey/helpers/isNil';
 
 import usePaginateFileEventsByBox from 'hooks/usePaginateEventsByBox/Files';
-import { useMemo, useState, useCallback, useEffect } from 'react';
+
 import { useSelector } from 'react-redux';
 import { useBoxReadContext } from 'components/smart/Context/Boxes/BoxRead';
 import useDecryptMsgFileCallback from 'hooks/useDecryptMsgFile/callback';

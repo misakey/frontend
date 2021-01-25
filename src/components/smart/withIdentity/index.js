@@ -1,4 +1,5 @@
-import { useMemo, useCallback, forwardRef } from 'react';
+import React, { useMemo, useCallback, forwardRef } from 'react';
+
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 

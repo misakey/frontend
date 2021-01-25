@@ -1,4 +1,5 @@
-import { forwardRef } from 'react';
+import React, { forwardRef } from 'react';
+
 import PropTypes from 'prop-types';
 
 import { getErrors } from '@misakey/helpers/formikError';

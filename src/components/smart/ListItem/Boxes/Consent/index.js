@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';

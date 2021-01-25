@@ -1,3 +1,4 @@
+import React from 'react';
 import ScreenDrawer from 'components/smart/Screen/Drawer';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 

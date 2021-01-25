@@ -1,6 +1,7 @@
 #### Image
 
 ```js
+import React from 'react';
 import authReducers from '@misakey/auth/store/reducers';
 
 import { createStore, combineReducers } from 'redux';
@@ -33,6 +34,7 @@ const ScreenSplashOidcExample = () => (
 
 ```js
 
+import React from 'react';
 
 import authReducers from '@misakey/auth/store/reducers';
 
@@ -63,6 +65,7 @@ const ScreenSplashOidcExample = () => (
 
 ```js
 
+import React from 'react';
 
 import authReducers from '@misakey/auth/store/reducers';
 

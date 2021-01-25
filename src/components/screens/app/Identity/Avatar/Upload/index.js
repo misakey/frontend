@@ -1,4 +1,5 @@
-import { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
+
 import PropTypes from 'prop-types';
 import { useHistory, useParams } from 'react-router-dom';
 import FormField from '@misakey/ui/Form/Field';

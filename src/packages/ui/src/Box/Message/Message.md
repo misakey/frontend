@@ -1,4 +1,5 @@
 ```js
+import React from 'react';
 
 import BoxMessage from '@misakey/ui/Box/Message';
 

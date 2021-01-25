@@ -1,4 +1,5 @@
-import { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
+
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { TMP_DRAWER_QUERY_PARAMS, SIDE_QUERY_PARAM, TEMP_DRAWER_MOBILE_WIDTH, TEMP_DRAWER_DESKTOP_WIDTH, SIDES } from '@misakey/ui/constants/drawers';

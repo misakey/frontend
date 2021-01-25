@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
+
 import { Switch, Route, Redirect, useParams, generatePath, useRouteMatch } from 'react-router-dom';
 
 import routes from 'routes';

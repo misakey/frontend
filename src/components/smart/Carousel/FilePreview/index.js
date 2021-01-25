@@ -1,3 +1,4 @@
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { APPBAR_HEIGHT, ICONBUTTON_WIDTH } from '@misakey/ui/constants/sizes';
@@ -13,7 +14,7 @@ import propOr from '@misakey/helpers/propOr';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import { useMemo, useCallback } from 'react';
+
 
 import MobileStepper from '@material-ui/core/MobileStepper';
 import IconButton from '@misakey/ui/IconButton';

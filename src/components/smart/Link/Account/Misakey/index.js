@@ -1,4 +1,5 @@
-import { forwardRef } from 'react';
+import React, { forwardRef } from 'react';
+
 
 import LinkAccount from 'components/smart/Link/Account';
 import useIdentity from 'hooks/useIdentity';

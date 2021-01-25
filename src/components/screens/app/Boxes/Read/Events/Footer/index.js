@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
+
 
 import isNil from '@misakey/helpers/isNil';
 

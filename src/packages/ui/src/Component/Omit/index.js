@@ -1,3 +1,4 @@
+import React from 'react';
 import omit from '@misakey/helpers/omit';
 
 // COMPONENTS

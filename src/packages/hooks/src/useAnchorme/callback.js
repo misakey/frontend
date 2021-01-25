@@ -1,4 +1,5 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
+
 
 import anchorme from '@misakey/helpers/anchorme';
 import isEmpty from '@misakey/helpers/isEmpty';

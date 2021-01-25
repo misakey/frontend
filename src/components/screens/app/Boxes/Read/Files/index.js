@@ -1,3 +1,4 @@
+import React, { useState, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
@@ -14,7 +15,7 @@ import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useBoxesUploadContext } from 'components/smart/Input/Boxes/Upload/Context';
 import { useTranslation } from 'react-i18next';
-import { useState, useMemo, useRef } from 'react';
+
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import ElevationScroll from 'components/dumb/ElevationScroll';

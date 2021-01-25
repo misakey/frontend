@@ -1,8 +1,9 @@
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import FILE_PROP_TYPES from 'constants/file/proptypes';
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { fade } from '@material-ui/core/styles';
 

@@ -1,10 +1,10 @@
 ButtonSubmit example:
 
 ```js
-
-import { Suspense } from 'react';
+import React, { Suspense } from 'react';
 import Formik from '@misakey/ui/Formik';
 import ButtonSubmit from './index';
+
 
 const ButtonSubmitExample = () => (
   <Suspense fallback="Loading...">

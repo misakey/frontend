@@ -1,6 +1,7 @@
 #### Image
 
 ```js
+import React from 'react';
 
 
 import lemur from '@misakey/ui/lemur';
@@ -22,6 +23,7 @@ const ListItemUserExample = () => (
 #### Letter
 
 ```js
+import React from 'react';
 
 
 import ListItemUser from './index';
@@ -39,6 +41,7 @@ const ListItemUserExample = () => (
 #### Empty
 
 ```js
+import React from 'react';
 
 
 import ListItemUser from './index';
@@ -53,6 +56,7 @@ const ListItemUserExample = () => (
 #### Children
 
 ```js
+import React from 'react';
 
 
 

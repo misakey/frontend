@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
+
 
 import routes from 'routes';
 import { makeDenormalizeBoxSelector } from 'store/reducers/box';

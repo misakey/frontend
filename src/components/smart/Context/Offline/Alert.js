@@ -1,10 +1,11 @@
+import { React, useMemo, useState, useCallback, useLayoutEffect } from 'react';
+
 import isNil from '@misakey/helpers/isNil';
 import { getVersionBuilder } from '@misakey/helpers/builder/generic';
 // import simulateNetworkError from '@misakey/api/helpers/simulateNetworkError';
 import exponentialBackoff from '@misakey/helpers/exponentialBackoff';
 
 import { useOfflineContext } from 'components/smart/Context/Offline';
-import { useMemo, useState, useCallback, useLayoutEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import useCountDown from '@misakey/hooks/useCountDown';
 import usePrevPropEffect from '@misakey/hooks/usePrevPropEffect';

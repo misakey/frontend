@@ -1,3 +1,4 @@
+import React from 'react';
 import { Trans } from 'react-i18next';
 
 import routes from 'routes';

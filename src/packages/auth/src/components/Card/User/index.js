@@ -1,3 +1,4 @@
+import React from 'react';
 import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import { useSelector } from 'react-redux';

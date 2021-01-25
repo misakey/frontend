@@ -1,4 +1,5 @@
-import { useCallback, forwardRef } from 'react';
+import React, { useCallback, forwardRef } from 'react';
+
 import PropTypes from 'prop-types';
 
 import isFunction from '@misakey/helpers/isFunction';

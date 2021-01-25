@@ -1,3 +1,5 @@
+import React, { useCallback, useMemo } from 'react';
+
 import PropTypes from 'prop-types';
 
 import { selectors } from '@misakey/auth/store/reducers/auth';
@@ -13,7 +15,6 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import useContactUser from 'hooks/useContactUser';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useCallback, useMemo } from 'react';
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 
 import BoxControls from '@misakey/ui/Box/Controls';

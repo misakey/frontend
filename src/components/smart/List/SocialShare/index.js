@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { ICON_SIZE } from '@misakey/ui/constants/sizes';

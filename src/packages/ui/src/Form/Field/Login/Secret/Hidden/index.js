@@ -1,3 +1,4 @@
+import React from 'react';
 import { AUTOFILL_PASSWORD } from '@misakey/ui/constants/autofill';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
