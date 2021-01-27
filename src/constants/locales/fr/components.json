@@ -168,5 +168,20 @@
     "invited": "Invitation envoyée",
     "member": "Membre",
     "owner": "Propriétaire"
+  },
+  "webauthnLogin": {
+    "title": "Authentification à multiple facteurs",
+    "subtitle": {
+      "detecting": "Tentative de connexion à votre périphérique...\nBranchez-le et appuyer sur le button situé sur le périphérique.",
+      "error": "Votre périphérique n'a pas été reconnu. Veuillez réessayer."
+    }
+  },
+  "WebauthnIncompatibilityWarning": {
+    "text": "Cette fonctionnalité n'est pas supportée par le navigateur sur cet appareil"
+  },
+  "listItemSecurity": {
+    "title": "Sécurité",
+    "ariaLabel": "Aller à Sécurité du compte",
+    "text": "Mot de passe {{passwordStatus}}, MFA {{MFAStatus}}"
   }
 }

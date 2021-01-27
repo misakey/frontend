@@ -4,12 +4,15 @@ import snakeCase from '../snakeCase';
 import isArray from '../isArray';
 import isObject from '../isObject';
 
-export default function objectToSnakeCaseDeep(object, { ignoreBase64 = false } = {}) {
+export default function objectToSnakeCaseDeep(
+  object,
+  { ignoreBase64 = false, excludedKeys = [] } = {},
+) {
   // in JS an array is also an object
   if (isArray(object)) {
     return object.map((value) => (
       isObject(value)
-        ? objectToSnakeCaseDeep(value, { ignoreBase64 })
+        ? objectToSnakeCaseDeep(value, { ignoreBase64, excludedKeys })
         : value
     ));
   }
@@ -17,11 +20,14 @@ export default function objectToSnakeCaseDeep(object, { ignoreBase64 = false } =
   const newObject = {};
 
   Object.entries(object).forEach(([key, value]) => {
-    const newKey = (ignoreBase64 && isProbablyBase64(key)) ? key : snakeCase(key);
+    const isIgnoredBase64 = ignoreBase64 && isProbablyBase64(key);
+    const isExcludedKey = excludedKeys.includes(key);
+    const shouldConvert = !isExcludedKey && !isIgnoredBase64;
+    const newKey = shouldConvert ? snakeCase(key) : key;
 
     newObject[newKey] = (
-      isObject(value)
-        ? objectToSnakeCaseDeep(value, { ignoreBase64 })
+      isObject(value) && shouldConvert
+        ? objectToSnakeCaseDeep(value, { ignoreBase64, excludedKeys })
         : value
     );
   });

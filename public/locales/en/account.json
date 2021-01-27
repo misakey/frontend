@@ -69,11 +69,39 @@
     "subtitle": "I define the main color of my interface",
     "success": "My color has been successfully updated"
   },
-  "password": {
-    "existing": "What's the password\u00a0?",
-    "new": "Which password do you want to use\u00a0?",
-    "title": "Password",
-    "success": "Password successfully updated"
+  "security": {
+    "title": "Security",
+    "password": {
+      "existing": "What's the password\u00a0?",
+      "new": "Which password do you want to use\u00a0?",
+      "title": "Password",
+      "success": "Password successfully updated"
+    },
+    "MFA": {
+      "title": "Multi-Factor Authentication",
+      "devicesList": {
+        "title": "Registered devices",
+        "empty": "You haven't registered any device yet.\nAdd one to be able to activate Multi-Factor Authentication.",
+        "add": "Add a device",
+        "delete": {
+          "confirm": {
+            "title": "Delete device",
+            "subtitle": "This is your only registered device, deleting it will disable Multi-Factor Authentication"
+          }
+        }
+      },
+      "updateMethod": {
+        "success": "Multi-Factor Authentication method updated"
+      },
+      "register": {
+        "error": "Your device couldn't have been saved"
+      },
+      "registerDeviceDialog": {
+        "title": "Save the device",
+        "subtitle": "Name the device to easily find it in your list",
+        "label": "Device name"
+      }
+    }
   },
   "vault": {
     "title": "My keys",

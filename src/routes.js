@@ -22,7 +22,7 @@ const routes = {
     colors: '/identities/:id/colors',
     accounts: {
       _: '/identities/:id/accounts/:accountId',
-      password: '/identities/:id/accounts/:accountId/password',
+      security: '/identities/:id/accounts/:accountId/security',
       vault: '/identities/:id/accounts/:accountId/vault',
       delete: '/identities/:id/accounts/:accountId/delete',
     },

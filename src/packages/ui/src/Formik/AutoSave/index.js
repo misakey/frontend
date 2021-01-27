@@ -11,7 +11,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';
 
 // COMPONENTS
-const FormikAutoSave = ({ debounceMs, onSuccess, debounceLoader, ...rest }) => {
+const FormikAutoSave = (
+  { debounceMs, onSuccess, debounceLoader, circularProgressProps, ...rest },
+) => {
   const { submitForm, values, isSubmitting, setSubmitting, dirty } = useFormikContext();
 
   const dirtyRef = useRef(dirty);
@@ -61,7 +63,7 @@ const FormikAutoSave = ({ debounceMs, onSuccess, debounceLoader, ...rest }) => {
   if (isSubmitting) {
     return (
       <Box {...omitTranslationProps(rest)}>
-        <CircularProgress />
+        <CircularProgress {...circularProgressProps} />
       </Box>
     );
   }
@@ -73,12 +75,14 @@ FormikAutoSave.propTypes = {
   debounceMs: PropTypes.number,
   onSuccess: PropTypes.func,
   debounceLoader: PropTypes.bool,
+  circularProgressProps: PropTypes.object,
 };
 
 FormikAutoSave.defaultProps = {
   debounceMs: 300,
   debounceLoader: false,
   onSuccess: null,
+  circularProgressProps: {},
 };
 
 export default FormikAutoSave;

@@ -55,7 +55,7 @@ export default () => {
         const vaultKey = await Promise.resolve(dispatch(ensureVaultKeyExists()));
         return encryptFileMetadataForVault(fileMetadata, vaultKey);
       } catch (err) {
-        logSentryException(err, 'useSaveFileInVault: could not encrypt metadata', { cypto: true });
+        logSentryException(err, 'useSaveFileInVault: could not encrypt metadata', { crypto: true });
         enqueueSnackbar(t('components:saveInVault.error.default'), { variant: 'error' });
         return Promise.resolve({});
       }

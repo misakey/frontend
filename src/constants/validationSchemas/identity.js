@@ -24,6 +24,10 @@ export const avatarValidationSchema = Yup.object().shape({
   avatar: fileFieldValidation.avatarSchema,
 });
 
+export const webauthnDeviceValidationSchema = Yup.object().shape({
+  name: Yup.string().trim(),
+});
+
 export const passwordValidationSchema = Yup.object().shape({
   [OLD_PASSWORD_KEY]: passwordFieldValidation.schema,
   [NEW_PASSWORD_KEY]: passwordFieldValidation.setSchema,

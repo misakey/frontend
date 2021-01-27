@@ -69,11 +69,39 @@
     "subtitle": "Je définis la couleur principale de mon interface",
     "success": "La couleur de mon interface a été mise à jour"
   },
-  "password": {
-    "existing": "Quel est le mot de passe\u00a0?",
-    "new": "Quel mot de passe souhaitez-vous utiliser\u00a0?",
-    "title": "Mot de passe",
-    "success": "Mon mot de passe a été mis a jour"
+  "security": {
+    "title": "Sécurité",
+    "password": {
+      "existing": "Quel est le mot de passe\u00a0?",
+      "new": "Quel mot de passe souhaitez-vous utiliser\u00a0?",
+      "title": "Mot de passe",
+      "success": "Mon mot de passe a été mis a jour"
+    },
+    "MFA": {
+      "title": "Authentification à multiple facteurs",
+      "devicesList": {
+        "title": "Périphériques enregistrés",
+        "empty": "Vous n'avez pas encore ajouté de périphériques.\nAjoutez-en un pour pouvoir activer l'Authentification à Multiple Facteurs.",
+        "add": "Ajouter un périphérique",
+        "delete": {
+          "confirm": {
+            "title": "Supprimer un périphérique",
+            "subtitle": "C'est votre seul périphérique enregistré, le supprimer désactivera l'Authentification à Multiple Facteurs"
+          }
+        }
+      },
+      "updateMethod": {
+        "success": "Méthode d'Authentification à Multiple Facteurs modifiée"
+      },
+      "register": {
+        "error": "Votre périphérique n'a pas pu être enregistré"
+      },
+      "registerDeviceDialog": {
+        "title": "Enregistrer le périphérique",
+        "subtitle": "Nommez votre périphérique pour le retrouver facilement dans votre liste",
+        "label": "Nom du périphérique"
+      }
+    }
   },
   "vault": {
     "title": "Mes clés",

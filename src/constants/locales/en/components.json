@@ -158,5 +158,20 @@
     "invited": "Invitation sent",
     "member": "Member",
     "owner": "Owner"
+  },
+  "webauthnLogin": {
+    "title": "Multi-Factor Authentication",
+    "subtitle": {
+      "detecting": "Trying to communicate with your device...\nPlug it in and press the button on the device.",
+      "error": "We couldn't recognize your device. Please retry."
+    }
+  },
+  "WebauthnIncompatibilityWarning": {
+    "text": "This functionality is not supported by the browser on this device"
+  },
+  "listItemSecurity": {
+    "title": "Security",
+    "ariaLabel": "Go to Account security",
+    "text": "Password {{passwordStatus}}, MFA {{MFAStatus}}"
   }
 }

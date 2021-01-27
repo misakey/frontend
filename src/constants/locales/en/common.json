@@ -1,6 +1,7 @@
 {
   "wip": "Work in progress",
   "accept": "Accept",
+  "activated": "Activated",
   "addToVault": "Save in my vault",
   "savedInVault": "Saved in my vault",
   "add": "Add",
@@ -17,6 +18,7 @@
   "delete": "Delete",
   "join": "Join",
   "leave": "Leave",
+  "deactivated": "Deactivated",
   "details": "Details",
   "done": "Done",
   "continue": "Continue",

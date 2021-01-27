@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isEmpty from '@misakey/helpers/isEmpty';
+import isFunction from '@misakey/helpers/isFunction';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useXsMediaQuery from '@misakey/hooks/useXsMediaQuery';
@@ -32,11 +33,14 @@ const FieldBooleanControl = ({
 
   const isXs = useXsMediaQuery();
 
-  const onChange = useCallback(
-    () => {
+  const { onChange, ...fieldRest } = useMemo(() => field, [field]);
+
+  const onControlChange = useCallback(
+    (e) => {
       setFieldValue(name, !value);
+      if (isFunction()) { onChange(e); }
     },
-    [setFieldValue, name, value],
+    [setFieldValue, name, value, onChange],
   );
 
   const labelOrLabelsValue = useMemo(
@@ -63,8 +67,8 @@ const FieldBooleanControl = ({
             <Control
               className={classes.control}
               checked={value}
-              onChange={onChange}
-              {...field}
+              onChange={onControlChange}
+              {...fieldRest}
               {...omitTranslationProps(rest)}
             />
           )}
@@ -72,7 +76,7 @@ const FieldBooleanControl = ({
           labelPlacement={labelPlacement}
         />
         {(displayError || helperText) && (
-        <FormHelperText>{displayError ? t(errorKeys) : helperText}</FormHelperText>
+          <FormHelperText>{displayError ? t(errorKeys) : helperText}</FormHelperText>
         )}
       </FormGroup>
     </FormControl>

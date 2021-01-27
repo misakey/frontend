@@ -16,7 +16,7 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemPassword from 'components/smart/ListItem/Password';
+import ListItemSecurity from 'components/smart/ListItem/Security';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -91,10 +91,10 @@ const useGetItemTosForUser = (location, identityId, accountId) => useMemo(
 
     return {
       ...common,
-      listItemPasswordTo: {
+      listItemSecurityTo: {
         ...location,
         pathname: generatePath(
-          routes.identities.accounts.password,
+          routes.identities.accounts.security,
           { id: identityId, accountId },
         ),
       },
@@ -135,7 +135,7 @@ const CardIdentity = forwardRef(({ identity, identityId, t }, ref) => {
   const {
     listItemPublicTo,
     listItemColorsTo,
-    listItemPasswordTo,
+    listItemSecurityTo,
     listItemExportCryptoTo,
     listItemNotificationsTo,
     listItemDeleteAccountTo,
@@ -174,7 +174,7 @@ const CardIdentity = forwardRef(({ identity, identityId, t }, ref) => {
           <ListItemText primary={displayName} className={classes.listItemTextBreak} />
           <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
-        <ListItemPassword
+        <ListItemSecurity
           classes={{
             container: classes.listItemContainer,
             icon: classes.listItemIcon,
@@ -182,7 +182,7 @@ const CardIdentity = forwardRef(({ identity, identityId, t }, ref) => {
           }}
           button
           divider
-          to={listItemPasswordTo}
+          to={listItemSecurityTo}
         />
       </CardList>
       <CardIdentityHeader>{t('account:sections.myNotifications.title')}</CardIdentityHeader>

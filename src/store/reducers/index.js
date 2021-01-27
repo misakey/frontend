@@ -38,6 +38,8 @@ const appReducer = combineReducers({
     events: {},
     savedFiles: {},
     identityNotifications: {},
+    webauthnDevices: {},
+    identityWebauthnDevices: {},
   }, {}, makeEntities),
 });
 

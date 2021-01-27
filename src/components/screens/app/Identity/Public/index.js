@@ -230,7 +230,7 @@ const IdentityPublic = forwardRef(({ t, identity, isFetching }, ref) => {
           </ListItem>
         </CardList>
         <CardIdentityHeader>{t('account:sections.myIdentifiers.title')}</CardIdentityHeader>
-        <Formik initialValues={initialValues} onSubmit={onSubmit}>
+        <Formik initialValues={initialValues} onSubmit={onSubmit} enableReinitialize>
           <Box component={Form} width="100%">
             <CardList>
               <ListItem

@@ -1,15 +1,17 @@
 import * as Yup from 'yup';
 
 import {
-  passwordFieldValidation, codeFieldValidation,
+  passwordFieldValidation, codeFieldValidation, webauthnFieldValidation,
 } from 'constants/fieldValidations';
 
-import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION } from '@misakey/auth/constants/method';
+import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, WEBAUTHN } from '@misakey/auth/constants/method';
 
 const secretValidationSchemas = {
   [EMAILED_CODE]: codeFieldValidation.strictSchema,
   [PREHASHED_PASSWORD]: passwordFieldValidation.schema,
   [ACCOUNT_CREATION]: passwordFieldValidation.setSchema,
+  [ACCOUNT_CREATION]: passwordFieldValidation.setSchema,
+  [WEBAUTHN]: webauthnFieldValidation.schema,
 };
 
 export const getSecretValidationSchema = (methodName) => Yup.object().shape({

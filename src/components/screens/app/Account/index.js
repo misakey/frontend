@@ -5,7 +5,7 @@ import routes from 'routes';
 
 import useIdentity from 'hooks/useIdentity';
 
-import AccountPassword from 'components/screens/app/Account/Password';
+import AccountSecurity from 'components/screens/app/Account/Security';
 import AccountVault from 'components/screens/app/Account/Vault';
 import AccountDelete from 'components/screens/app/Account/Delete';
 
@@ -17,9 +17,9 @@ function Account(props) {
     <Switch>
       <Route
         exact
-        path={routes.identities.accounts.password}
+        path={routes.identities.accounts.security}
         render={(routerProps) => (
-          <AccountPassword
+          <AccountSecurity
             {...routerProps}
             {...identityMetadata}
             {...props}

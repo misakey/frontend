@@ -12,7 +12,6 @@ import routes from 'routes';
 import { passwordValidationSchema } from 'constants/validationSchemas/identity';
 import { forbidden, invalid } from '@misakey/ui/constants/errorTypes';
 
-import isNil from '@misakey/helpers/isNil';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
@@ -22,10 +21,8 @@ import { changePassword, fetchPwdHashParams } from '@misakey/auth/builder/accoun
 import { Form } from 'formik';
 import FormField from '@misakey/ui/Form/Field';
 import Formik from '@misakey/ui/Formik';
-import ScreenAction from 'components/dumb/Screen/Action';
 import BoxControls from '@misakey/ui/Box/Controls';
 import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
-import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
@@ -34,6 +31,7 @@ import {
   BackupDecryptionError,
   BadBackupVersion,
 } from '@misakey/crypto/Errors/classes';
+import Title from '@misakey/ui/Typography/Title';
 
 // CONSTANTS
 const INITIAL_VALUES = {
@@ -49,25 +47,13 @@ const NEW_PASSWORD_INPUT_PROPS = {
 };
 
 // COMPONENTS
-const AccountPassword = ({ t, identity, isFetching }) => {
+const AccountPassword = ({ t, identity }) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const { id } = useParams();
   const { push } = useHistory();
 
-  const isLoading = useMemo(
-    () => isFetching || isNil(identity),
-    [identity, isFetching],
-  );
-
   const accountHome = useGeneratePathKeepingSearchAndHash(routes.identities._, { id });
-
-  const navigationProps = useMemo(
-    () => ({
-      homePath: accountHome,
-    }),
-    [accountHome],
-  );
 
   const handleHttpErrors = useHandleHttpErrors();
 
@@ -127,63 +113,56 @@ const AccountPassword = ({ t, identity, isFetching }) => {
   );
 
   return (
-    <ScreenAction
-      title={t('account:password.title')}
-      navigationProps={navigationProps}
-      isLoading={isLoading}
+    <Formik
+      validationSchema={passwordValidationSchema}
+      onSubmit={onSubmit}
+      initialValues={INITIAL_VALUES}
     >
-      <Container maxWidth="md">
-        <Formik
-          validationSchema={passwordValidationSchema}
-          onSubmit={onSubmit}
-          initialValues={INITIAL_VALUES}
-        >
-          {({ isSubmitting }) => (
-            <Form>
-              <Box mb={2}>
-                <FormField
-                  type="password"
-                  name={OLD_PASSWORD_KEY}
-                  component={FieldPasswordRevealable}
-                  variant="filled"
-                />
-              </Box>
-              <Box mb={2}>
-                <FormField
-                  type="password"
-                  name={NEW_PASSWORD_KEY}
-                  component={FieldPasswordRevealable}
-                  inputProps={NEW_PASSWORD_INPUT_PROPS}
-                  variant="filled"
-                />
-              </Box>
-              <FormField
-                type="password"
-                name={PASSWORD_CONFIRM_KEY}
-                component={FieldPasswordRevealable}
-                variant="filled"
-              />
-              <BoxControls
-                mt={3}
-                primary={{
-                  type: 'submit',
-                  isLoading: isSubmitting,
-                  'aria-label': t('common:submit'),
-                  text: t('common:submit'),
-                }}
-                formik
-              />
-            </Form>
-          )}
-        </Formik>
-      </Container>
-    </ScreenAction>
+      {({ isSubmitting }) => (
+        <Form>
+          <Title>{t('account:security.password.title')}</Title>
+          <Box mb={2}>
+            <FormField
+              type="password"
+              name={OLD_PASSWORD_KEY}
+              component={FieldPasswordRevealable}
+              variant="filled"
+            />
+          </Box>
+          <Box mb={2}>
+            <FormField
+              type="password"
+              name={NEW_PASSWORD_KEY}
+              component={FieldPasswordRevealable}
+              inputProps={NEW_PASSWORD_INPUT_PROPS}
+              variant="filled"
+            />
+          </Box>
+          <FormField
+            type="password"
+            name={PASSWORD_CONFIRM_KEY}
+            component={FieldPasswordRevealable}
+            variant="filled"
+          />
+          <BoxControls
+            mt={3}
+            primary={{
+              type: 'submit',
+              isLoading: isSubmitting,
+              'aria-label': t('common:submit'),
+              text: t('common:submit'),
+            }}
+            formik
+          />
+        </Form>
+      )}
+    </Formik>
+
   );
 };
 
 AccountPassword.propTypes = {
   identity: PropTypes.shape(IdentitySchema.propTypes),
-  isFetching: PropTypes.bool,
 
   // withTranslation HOC
   t: PropTypes.func.isRequired,
@@ -191,7 +170,6 @@ AccountPassword.propTypes = {
 
 AccountPassword.defaultProps = {
   identity: null,
-  isFetching: false,
 };
 
 export default withTranslation(['common', 'account'])(AccountPassword);

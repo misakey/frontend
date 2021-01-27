@@ -13,7 +13,7 @@ export const usePasswordPrompt = () => useContext(PasswordPromptContext);
 
 const PasswordPrompt = withTranslation(['account'])(({ t, ...props }) => (
   <DialogPassword
-    title={t('account:password.existing')}
+    title={t('account:security.password.existing')}
     formikProps={{ enableReinitialize: true }}
     {...props}
   />

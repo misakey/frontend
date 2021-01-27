@@ -1,4 +1,4 @@
-import { React, useMemo, useState, useCallback, useLayoutEffect } from 'react';
+import React, { useMemo, useState, useCallback, useLayoutEffect } from 'react';
 
 import isNil from '@misakey/helpers/isNil';
 import { getVersionBuilder } from '@misakey/helpers/builder/generic';

@@ -32,6 +32,26 @@ export default {
       },
     },
   },
+  webauthnCredentials: {
+    read: {
+      method: 'GET',
+      path: '/identities/:id/webauthn-credentials/create',
+    },
+    create: {
+      method: 'POST',
+      path: '/identities/:id/webauthn-credentials/create',
+      withCsrfToken: true,
+    },
+    find: {
+      method: 'GET',
+      path: '/webauthn-credentials',
+    },
+    delete: {
+      method: 'DELETE',
+      path: '/webauthn-credentials/:id',
+      withCsrfToken: true,
+    },
+  },
   storageQuota: {
     find: {
       method: 'GET',

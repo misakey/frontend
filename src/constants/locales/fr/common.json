@@ -1,6 +1,7 @@
 {
   "wip": "En construction",
   "accept": "J'Accepte",
+  "activated": "Activé",
   "addToVault": "Sauvegarder dans mon coffre",
   "savedInVault": "Sauvegardé dans mon coffre",
   "add": "Ajouter",
@@ -14,6 +15,7 @@
   "copy": "Copier",
   "copied": "Copié dans le presse papier!",
   "createAccount": "Créer un compte",
+  "deactivated": "Désactivé",
   "decrypt": "Déchiffrer",
   "delete": "Supprimer",
   "expired": "Session expirée {{fromNow}}",

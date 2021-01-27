@@ -2,11 +2,13 @@ import React, { useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
 import { TO_PROP_TYPE } from '@misakey/ui/constants/propTypes';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isNil from '@misakey/helpers/isNil';
+import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
 
 import { Link } from 'react-router-dom';
 import ListItem from '@material-ui/core/ListItem';
@@ -15,9 +17,16 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import { WEBAUTHN } from 'constants/account/mfaMethod';
+
+const { identity: IDENTITY_SELECTOR } = authSelectors;
+const CHECK_MARK_SIGN = '\u2705';
+const CROSS_MARK_SIGN = '\u274C';
 
 // COMPONENTS
-const ListItemPassword = ({ classes, to, t, ...props }) => {
+const ListItemSecurity = ({ classes, to, t, ...props }) => {
+  const { hasAccount, mfaMethod } = useSelector(IDENTITY_SELECTOR);
+
   const linkProps = useMemo(
     () => (isNil(to)
       ? { disabled: true }
@@ -31,20 +40,24 @@ const ListItemPassword = ({ classes, to, t, ...props }) => {
   return (
     <ListItem
       classes={{ container: classes.container }}
-      aria-label={t('fields:password.action')}
+      aria-label={t('components:listItemSecurity.ariaLabel')}
       {...linkProps}
       {...omitTranslationProps(props)}
     >
       <ListItemIcon className={classes.icon}>
-        <Typography>{t('fields:password.label')}</Typography>
+        <Typography>{t('components:listItemSecurity.title')}</Typography>
       </ListItemIcon>
-      <ListItemText primary={t('fields:password.placeholder')} />
+      <ListItemText primary={t('components:listItemSecurity.text', {
+        MFAStatus: mfaMethod === WEBAUTHN ? CHECK_MARK_SIGN : CROSS_MARK_SIGN,
+        passwordStatus: hasAccount ? CHECK_MARK_SIGN : CROSS_MARK_SIGN,
+      })}
+      />
       <ChevronRightIcon className={classes.actionIcon} />
     </ListItem>
   );
 };
 
-ListItemPassword.propTypes = {
+ListItemSecurity.propTypes = {
   classes: PropTypes.shape({
     container: PropTypes.string,
     icon: PropTypes.string,
@@ -55,9 +68,9 @@ ListItemPassword.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-ListItemPassword.defaultProps = {
+ListItemSecurity.defaultProps = {
   classes: {},
   to: null,
 };
 
-export default withTranslation('fields')(ListItemPassword);
+export default withTranslation('components')(ListItemSecurity);

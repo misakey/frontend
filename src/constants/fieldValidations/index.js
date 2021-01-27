@@ -87,3 +87,7 @@ export const mainDomainFieldValidation = {
     .required(required),
   regex: MAIN_DOMAIN_REGEX,
 };
+
+export const webauthnFieldValidation = {
+  schema: Yup.object().required(required),
+};

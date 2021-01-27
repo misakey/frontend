@@ -21,17 +21,18 @@ import createNewBackupKeySharesFromAuthFlow from '@misakey/crypto/store/actions/
 import { ssoUpdate, ssoSign, ssoReset } from '@misakey/auth/store/actions/sso';
 import { conflict } from '@misakey/ui/constants/errorTypes';
 import { DATE_FULL } from 'constants/formats/dates';
-import { EMAILED_CODE, PREHASHED_PASSWORD, PASSWORD_RESET_KEY, ACCOUNT_CREATION, AuthUndefinedMethodName } from '@misakey/auth/constants/method';
+import { EMAILED_CODE, PREHASHED_PASSWORD, PASSWORD_RESET_KEY, ACCOUNT_CREATION, WEBAUTHN, AuthUndefinedMethodName } from '@misakey/auth/constants/method';
 
 import compose from '@misakey/helpers/compose';
 import head from '@misakey/helpers/head';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
 import props from '@misakey/helpers/props';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import { getDetails, getCode } from '@misakey/helpers/apiError';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
-import loginAuthStep from '@misakey/auth/builder/loginAuthStep';
+import { loginAuthStepSecretWebAuthn, loginAuthStepSecretInput } from '@misakey/auth/builder/loginAuthStep';
 import { isHydraErrorCode } from '@misakey/auth/helpers/errors';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -65,6 +66,7 @@ import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
+import WebauthnLogin from 'components/smart/Webauthn/LoginField';
 
 // CONSTANTS
 const CURRENT_STEP = STEP.secret;
@@ -127,7 +129,7 @@ const AuthLoginSecret = ({
 
   const initialValues = useMemo(() => INITIAL_VALUES[CURRENT_STEP], []);
 
-  const { methodName, identityId, metadata: pwdHashParams } = useSafeDestr(authnStep);
+  const { methodName, identityId, metadata } = useSafeDestr(authnStep);
   const { name } = useSafeDestr(client);
 
   const validationSchema = useMemo(
@@ -177,127 +179,166 @@ const AuthLoginSecret = ({
     [setReset],
   );
 
+  const onSuccessLoginAuthStep = useCallback(
+    (res, { setFieldValue }) => {
+      const {
+        redirectTo: nextRedirectTo,
+        next,
+        authnStep: nextAuthnStep,
+      } = objectToCamelCaseDeep(res);
+      if (next === NEXT_STEP_REDIRECT) {
+        return setRedirectTo(nextRedirectTo);
+      }
+      if (next === NEXT_STEP_AUTH) {
+        setFieldValue(CURRENT_STEP, '');
+        return dispatchSsoUpdate({ authnStep: objectToCamelCase(nextAuthnStep) });
+      }
+
+      return res;
+    },
+    [dispatchSsoUpdate],
+  );
+
+  const onErrorLoginAuthStep = useCallback(
+    async (e, { setFieldValue, setFieldError }) => {
+      if (e instanceof AuthUndefinedMethodName) {
+        enqueueSnackbar(t('auth:error.flow.invalid_flow'), { variant: 'error' });
+        return setRedirectTo(routes.auth.redirectToSignIn);
+      }
+
+      // in case reset password dialog is open, close dialog before setting field error
+      if (dialogOpen) {
+        onDialogClose();
+      }
+      const code = getCode(e);
+      const details = getDetails(e);
+      const secretError = getSecretError(details);
+      if (!isNil(secretError)) {
+        if (methodName === EMAILED_CODE) {
+          setFieldValue(CURRENT_STEP, '');
+        }
+        return setFieldError(CURRENT_STEP, secretError);
+      }
+      if (details.Authorization && details.loginChallenge) {
+        enqueueSnackbar(t('auth:login.form.error.authorizationChallenge'), { variant: 'warning' });
+        await dispatchSsoReset();
+        setRedirectTo(routes.auth.redirectToSignIn);
+      }
+      if (isHydraErrorCode(code)) {
+        return enqueueSnackbar(t(`auth:error.flow.${code}`), {
+          variant: 'warning',
+          action: (key) => <SnackbarActionAuthRestart id={key} />,
+        });
+      }
+      if (details.toDelete === conflict) {
+        // @FIXME should we remove that part as it's not implemented in latest version ?
+        const text = (
+          <Trans
+            i18nKey="auth:login.form.error.deletedAccount"
+            values={{
+              deletionDate: moment(details.deletionDate).format(DATE_FULL),
+            }}
+          >
+            Votre compte est en cours de suppression, vous ne pouvez donc plus vous y connecter.
+            <br />
+            {'Sans action de votre part il sera supprimé le {{deletionDate}}.'}
+            <br />
+            Si vous voulez le récupérer envoyez nous un email à&nbsp;
+            <a href={`mailto:${QUESTIONS}`}>{QUESTIONS}</a>
+          </Trans>
+        );
+        return enqueueSnackbar(text, { variant: 'error' });
+      }
+
+      logSentryException(e, 'Auth flow: LoginAuthStep', { auth: true });
+
+      if (!isNil(e.status)) {
+        // @FIXME It is false to assume that error must be a HTTP error
+        return handleHttpErrors(e);
+      }
+      return enqueueSnackbar(t('common:errorPleaseRetryOrRefresh'), {
+        variant: 'error',
+        action: (key) => <SnackbarActionRefresh id={key} />,
+      });
+    },
+    [dialogOpen, dispatchSsoReset, enqueueSnackbar, handleHttpErrors, methodName, onDialogClose, t],
+  );
+
+  const onLoginAuthStepSecret = useCallback(
+    (values) => loginAuthStepSecretInput(
+      {
+        loginChallenge,
+        identityId,
+        methodName,
+        pwdHashParams: metadata,
+        dispatchHardPasswordChange,
+        dispatchCreateNewOwnerSecrets,
+        ...values,
+        auth: !isNil(accessToken),
+      },
+      accessToken,
+    ),
+    [accessToken, dispatchCreateNewOwnerSecrets, dispatchHardPasswordChange,
+      identityId, loginChallenge, metadata, methodName],
+  );
+
+  const onValidateSecretSuccess = useCallback(
+    async (res, { values, setFieldValue }) => {
+      const { accessToken: nextAccessToken } = objectToCamelCaseDeep(res);
+
+      await Promise.resolve(dispatchSsoSign(nextAccessToken));
+
+      // handle BackupSecretShares
+      const { secret: password, [PASSWORD_RESET_KEY]: newPassword } = values;
+      const isResetPassword = methodName === EMAILED_CODE && !isNil(newPassword);
+      if (isResetPassword || [PREHASHED_PASSWORD, ACCOUNT_CREATION].includes(methodName)) {
+        try {
+          await dispatch(createNewBackupKeySharesFromAuthFlow({
+            loginChallenge,
+            identityId,
+            password: newPassword || password,
+          }, nextAccessToken));
+        } catch (error) {
+          logSentryException(error, 'AuthFlow: create new backup key share', { crypto: true }, 'warning');
+          enqueueSnackbar(t('common:crypto.errors.backupKeyShare'), { variant: 'warning' });
+          // a failure of backup key shares creation
+          // should not make the entire auth flow fail
+          // because it is not an essential step of the auth flow:
+          // the user will simply have to enter her password one more time
+        }
+      }
+
+      return onSuccessLoginAuthStep(res, { setFieldValue });
+    },
+    [dispatch, dispatchSsoSign, enqueueSnackbar, identityId,
+      loginChallenge, methodName, onSuccessLoginAuthStep, t],
+  );
+
+  const onValidateWebauthn = useCallback(
+    ({ secret: credentialsMetadata }) => loginAuthStepSecretWebAuthn(
+      { identityId, loginChallenge, metadata: credentialsMetadata },
+      accessToken,
+    ),
+    [accessToken, identityId, loginChallenge],
+  );
+
   const handleSubmit = useCallback(
     async (values, { setFieldError, setSubmitting, setFieldValue }) => {
       setRedirectTo(null);
-
       try {
-        const response = await loginAuthStep({
-          loginChallenge,
-          identityId,
-          methodName,
-          pwdHashParams,
-          dispatchHardPasswordChange,
-          dispatchCreateNewOwnerSecrets,
-          ...values,
-          auth: !isNil(accessToken),
-        }, accessToken);
-
-        const {
-          redirectTo: nextRedirectTo,
-          next,
-          accessToken: nextAccessToken,
-          authnStep: nextAuthnStep,
-        } = objectToCamelCase(response);
-
-        await Promise.resolve(dispatchSsoSign(nextAccessToken));
-
-        // handle BackupSecretShares
-        const { secret: password, [PASSWORD_RESET_KEY]: newPassword } = values;
-        const isResetPassword = methodName === EMAILED_CODE && !isNil(newPassword);
-        if (isResetPassword || [PREHASHED_PASSWORD, ACCOUNT_CREATION].includes(methodName)) {
-          try {
-            await dispatch(createNewBackupKeySharesFromAuthFlow({
-              loginChallenge,
-              identityId,
-              password: newPassword || password,
-            }, nextAccessToken));
-          } catch (error) {
-            logSentryException(error, 'AuthFlow: create new backup key share', { crypto: true }, 'warning');
-            enqueueSnackbar(t('common:crypto.errors.backupKeyShare'), { variant: 'warning' });
-            // a failure of backup key shares creation
-            // should not make the entire auth flow fail
-            // because it is not an essential step of the auth flow:
-            // the user will simply have to enter her password one more time
-          }
-        }
-
-        if (next === NEXT_STEP_REDIRECT) {
-          return setRedirectTo(nextRedirectTo);
-        }
-        if (next === NEXT_STEP_AUTH) {
-          setFieldValue(CURRENT_STEP, '');
-          return dispatchSsoUpdate({ authnStep: objectToCamelCase(nextAuthnStep) });
-        }
-        return response;
-      } catch (e) {
-        if (e instanceof AuthUndefinedMethodName) {
-          enqueueSnackbar(t('auth:error.flow.invalid_flow'), { variant: 'error' });
-          return setRedirectTo(routes.auth.redirectToSignIn);
-        }
-
-        // in case reset password dialog is open, close dialog before setting field error
-        if (dialogOpen) {
-          onDialogClose();
-        }
-        const code = getCode(e);
-        const details = getDetails(e);
-        const secretError = getSecretError(details);
-        if (!isNil(secretError)) {
-          if (methodName === EMAILED_CODE) {
-            setFieldValue(CURRENT_STEP, '');
-          }
-          return setFieldError(CURRENT_STEP, secretError);
-        }
-        if (details.Authorization && details.loginChallenge) {
-          enqueueSnackbar(t('auth:login.form.error.authorizationChallenge'), { variant: 'warning' });
-          await dispatchSsoReset();
-          setRedirectTo(routes.auth.redirectToSignIn);
-        }
-        if (isHydraErrorCode(code)) {
-          return enqueueSnackbar(t(`auth:error.flow.${code}`), {
-            variant: 'warning',
-            action: (key) => <SnackbarActionAuthRestart id={key} />,
-          });
-        }
-        if (details.toDelete === conflict) {
-          // @FIXME should we remove that part as it's not implemented in latest version ?
-          const text = (
-            <Trans
-              i18nKey="auth:login.form.error.deletedAccount"
-              values={{
-                deletionDate: moment(details.deletionDate).format(DATE_FULL),
-              }}
-            >
-              Votre compte est en cours de suppression, vous ne pouvez donc plus vous y connecter.
-              <br />
-              {'Sans action de votre part il sera supprimé le {{deletionDate}}.'}
-              <br />
-              Si vous voulez le récupérer envoyez nous un email à&nbsp;
-              <a href={`mailto:${QUESTIONS}`}>{QUESTIONS}</a>
-            </Trans>
-          );
-          return enqueueSnackbar(text, { variant: 'error' });
-        }
-
-        logSentryException(e, 'Auth flow: LoginAuthStep', { auth: true });
-
-        if (!isNil(e.status)) {
-          // @FIXME It is false to assume that error must be a HTTP error
-          return handleHttpErrors(e);
-        }
-        return enqueueSnackbar(t('common:errorPleaseRetryOrRefresh'), {
-          variant: 'error',
-          action: (key) => <SnackbarActionRefresh id={key} />,
-        });
+        const { loginAuthStep, onSuccess } = (methodName === WEBAUTHN)
+          ? { loginAuthStep: onValidateWebauthn, onSuccess: onSuccessLoginAuthStep }
+          : { loginAuthStep: onLoginAuthStepSecret, onSuccess: onValidateSecretSuccess };
+        const response = await loginAuthStep(values);
+        await onSuccess(response, { values, setFieldValue });
+      } catch (err) {
+        onErrorLoginAuthStep(err, { setFieldError, setFieldValue });
       } finally {
         setSubmitting(false);
       }
     },
-    [loginChallenge, identityId, methodName, pwdHashParams, dispatchHardPasswordChange,
-      dispatchCreateNewOwnerSecrets, accessToken, dispatchSsoSign, dispatch,
-      dispatchSsoUpdate, dialogOpen, onDialogClose, enqueueSnackbar, t, dispatchSsoReset,
-      handleHttpErrors],
+    [methodName, onLoginAuthStepSecret, onErrorLoginAuthStep, onSuccessLoginAuthStep,
+      onValidateSecretSuccess, onValidateWebauthn],
   );
 
   const onSubmit = useMemo(
@@ -341,14 +382,14 @@ const AuthLoginSecret = ({
       header={(
         <AppBar color="primary">
           {reset && (
-          <IconButtonAppBar
-            className={classes.appBarButton}
-            edge="start"
-            aria-label={t('common:cancel')}
-            onClick={onCancelForgotPassword}
-          >
-            <ArrowBackIcon />
-          </IconButtonAppBar>
+            <IconButtonAppBar
+              className={classes.appBarButton}
+              edge="start"
+              aria-label={t('common:cancel')}
+              onClick={onCancelForgotPassword}
+            >
+              <ArrowBackIcon />
+            </IconButtonAppBar>
           )}
         </AppBar>
       )}
@@ -381,34 +422,40 @@ const AuthLoginSecret = ({
                 {...userPublicData}
               >
                 <IdentifierHiddenFormField value={identifier} />
-                <SecretFormField
-                  methodName={methodName}
-                  FormHelperTextProps={{ component: FormHelperTextInCard }}
-                  margin="none"
-                  centered
-                />
+                {methodName === WEBAUTHN ? (
+                  <WebauthnLogin metadata={metadata} fieldKey={CURRENT_STEP} />
+                ) : (
+                  <SecretFormField
+                    methodName={methodName}
+                    FormHelperTextProps={{ component: FormHelperTextInCard }}
+                    margin="none"
+                    centered
+                  />
+                )}
               </CardUser>
               {methodName === EMAILED_CODE && (
-              <ButtonRenewAuthStep
-                classes={{ buttonRoot: classes.buttonRoot }}
-                loginChallenge={loginChallenge}
-                authnStep={authnStep}
-                text={t('auth:login.form.action.getANewCode.button')}
-              />
+                <ButtonRenewAuthStep
+                  classes={{ buttonRoot: classes.buttonRoot }}
+                  loginChallenge={loginChallenge}
+                  authnStep={authnStep}
+                  text={t('auth:login.form.action.getANewCode.button')}
+                />
               )}
               {methodName === PREHASHED_PASSWORD && (
-              <ButtonForgotPassword
-                classes={{ buttonRoot: classes.buttonRoot }}
-                loginChallenge={loginChallenge}
-                identifier={identifier}
-                text={t('auth:login.form.action.forgotPassword')}
-                onDone={onForgotPasswordDone}
-              />
+                <ButtonForgotPassword
+                  classes={{ buttonRoot: classes.buttonRoot }}
+                  loginChallenge={loginChallenge}
+                  identifier={identifier}
+                  text={t('auth:login.form.action.forgotPassword')}
+                  onDone={onForgotPasswordDone}
+                />
               )}
-              <BoxControls
-                formik
-                primary={primary}
-              />
+              {methodName !== WEBAUTHN && (
+                <BoxControls
+                  formik
+                  primary={primary}
+                />
+              )}
             </Box>
             <DialogPasswordReset
               open={dialogOpen}
