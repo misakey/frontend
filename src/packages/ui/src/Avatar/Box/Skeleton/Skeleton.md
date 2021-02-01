@@ -26,7 +26,7 @@ import AvatarBoxSkeleton from './index';
 
 const AvatarBoxSkeletonExample = () => (
   <AvatarBoxSkeleton
-    large
+    size="large"
   />
 );
 

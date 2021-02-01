@@ -6,7 +6,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import isString from '@misakey/helpers/isString';
 
 import IconStack from '@misakey/ui/Icon/Stack';
-import Avatar from '@misakey/ui/Avatar';
+import Avatar, { SIZES, MEDIUM } from '@misakey/ui/Avatar';
 
 import VpnKeyIcon from '@material-ui/icons/VpnKeyRounded';
 import ClearIcon from '@material-ui/icons/ClearRounded';
@@ -21,15 +21,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-function AvatarBox({ src, title, lostKey, large, ...rest }) {
+function AvatarBox({ src, title, lostKey, size, ...rest }) {
   const internalClasses = useStyles();
+
+  // convert size values to fontSize values,
+  // see https://material-ui.com/api/icon/#props
+  const fontSize = useMemo(
+    () => (size === MEDIUM ? 'default' : size),
+    [size],
+  );
 
   const content = useMemo(
     () => {
       if (lostKey) {
         return (
           <IconStack
-            fontSize={large ? 'large' : 'default'}
+            fontSize={fontSize}
             color="textPrimary"
             ForegroundIcon={VpnKeyIcon}
             BackgroundIcon={ClearIcon}
@@ -41,14 +48,14 @@ function AvatarBox({ src, title, lostKey, large, ...rest }) {
       }
       return '';
     },
-    [lostKey, title, large],
+    [lostKey, title, fontSize],
   );
 
   return (
     <Avatar
       alt={title}
       src={src}
-      large={large}
+      size={size}
       classes={{ root: internalClasses.root }}
       {...rest}
     >
@@ -61,14 +68,14 @@ AvatarBox.propTypes = {
   src: PropTypes.string,
   title: PropTypes.string,
   lostKey: PropTypes.bool,
-  large: PropTypes.bool,
+  size: PropTypes.oneOf(SIZES),
 };
 
 AvatarBox.defaultProps = {
   src: undefined,
   title: null,
   lostKey: false,
-  large: false,
+  size: MEDIUM,
 };
 
 export default AvatarBox;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
@@ -31,7 +31,7 @@ const useScreenStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-function Screen({
+const Screen = forwardRef(({
   children,
   className,
   classes,
@@ -41,7 +41,7 @@ function Screen({
   title,
   hideFooter,
   ...rest
-}) {
+}, ref) => {
   const internalClasses = useScreenStyles();
 
   useUpdateDocHead(title, description);
@@ -50,6 +50,7 @@ function Screen({
     <>
       <ScreenLoader isLoading={isLoading} />
       <Box
+        ref={ref}
         component="div"
         className={clsx(internalClasses.root, classes.root, className)}
         {...omit(rest, ['staticContext', 'match'])}
@@ -66,7 +67,7 @@ function Screen({
       </Box>
     </>
   );
-}
+});
 
 Screen.propTypes = {
   children: PropTypes.node,

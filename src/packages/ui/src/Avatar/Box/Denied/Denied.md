@@ -69,7 +69,7 @@ const AvatarBoxDeniedExample = () => (
   <AvatarBoxDenied
     title="Test"
     src={lemur}
-    large
+    size="large"
   />
 );
 
@@ -87,7 +87,7 @@ import AvatarBoxDenied from './index';
 const AvatarBoxDeniedExample = () => (
   <AvatarBoxDenied
     title="Test"
-    large
+    size="large"
   />
 );
 
@@ -106,7 +106,7 @@ const AvatarBoxDeniedExample = () => (
   <AvatarBoxDenied
     title="Test"
     lostKey
-    large
+    size="large"
   />
 );
 

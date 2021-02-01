@@ -1,24 +1,33 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import BadgeDenied from '@misakey/ui/Badge/Denied';
 import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
+import { SIZES, MEDIUM } from '@misakey/ui/Avatar';
 
 // COMPONENTS
-const AvatarMisakeyDenied = ({ large, ...props }) => (
-  <BadgeDenied
-    large={large}
-  >
-    <AvatarMisakey large={large} {...props} />
-  </BadgeDenied>
-);
+const AvatarMisakeyDenied = ({ size, ...props }) => {
+  // convert size values to fontSize values,
+  // see https://material-ui.com/api/icon/#props
+  const fontSize = useMemo(
+    () => (size === MEDIUM ? 'default' : size),
+    [size],
+  );
+  return (
+    <BadgeDenied
+      fontSize={fontSize}
+    >
+      <AvatarMisakey size={size} {...props} />
+    </BadgeDenied>
+  );
+};
 
 AvatarMisakeyDenied.propTypes = {
-  large: PropTypes.bool,
+  size: PropTypes.oneOf(SIZES),
 };
 
 AvatarMisakeyDenied.defaultProps = {
-  large: false,
+  size: MEDIUM,
 };
 
 export default AvatarMisakeyDenied;

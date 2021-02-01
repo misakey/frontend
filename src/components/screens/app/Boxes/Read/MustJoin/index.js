@@ -12,6 +12,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { receivePublicInfo } from 'store/reducers/box';
 import { FOOTER_HEIGHT } from '@misakey/ui/Footer';
+import { LARGE } from '@misakey/ui/Avatar';
 
 import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import isNil from '@misakey/helpers/isNil';
@@ -155,7 +156,7 @@ function MustJoin({ box, t }) {
       display="flex"
       height="inherit"
     >
-      <AppBarDrawer toolbarProps={{ px: 0 }} disableOffset>
+      <AppBarDrawer disableOffset>
         <ToggleDrawerButton />
       </AppBarDrawer>
       <Box
@@ -182,10 +183,10 @@ function MustJoin({ box, t }) {
               alignItems="flex-start"
               width="100%"
             >
-              {isFetching ? (<AvatarBoxSkeleton large />) : (
+              {isFetching ? (<AvatarBoxSkeleton size={LARGE} />) : (
                 <AvatarBox
                   title={title}
-                  large
+                  size={LARGE}
                 />
               )}
               <Box mt={2} width="100%">

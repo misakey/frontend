@@ -6,6 +6,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
 
 import AvatarColorized from '@misakey/ui/Avatar/Colorized';
+import { LARGE } from '@misakey/ui/Avatar';
 
 // HOOKS
 export const useLayoutStyles = makeStyles((theme) => ({
@@ -41,7 +42,7 @@ const AvatarDetailed = ({ text, image, title, subtitle, classes }) => {
         classes={{ root: clsx(layoutClasses.avatar, classes.avatar) }}
         text={text}
         image={image}
-        large
+        size={LARGE}
       />
       <Typography variant="h6" className={internalClasses.title} color="textPrimary" align="center">
         {title}

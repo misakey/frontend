@@ -27,23 +27,45 @@ export const getErrors = (
   return { displayError, errorKeys };
 };
 
-export const getFieldError = ({ field: { name }, meta: { error, touched }, prefix }) => {
+export const getFieldError = (
+  { field: { name }, meta: { error, touched }, prefix },
+  parseError = null,
+) => {
   const validationError = touched ? error : null;
   const displayError = !isNil(validationError);
 
-  const errorKeys = getErrorKeys(prefix, name, validationError);
+  const errorKey = isFunction(parseError) ? parseError(validationError) : validationError;
+  const errorKeys = getErrorKeys(prefix, name, errorKey);
 
   return { displayError, errorKeys };
 };
 
 
-export const getArrayFieldError = ({ field: { name }, meta: { error, touched }, prefix }) => {
+export const getArrayFieldError = (
+  { field: { name }, meta: { error, touched }, prefix },
+  parseError = null,
+) => {
   const validationError = touched ? error : null;
   const displayError = !isNil(validationError);
 
+  if (isArray(validationError)) {
+    const errorKeys = validationError
+      .map((err) => {
+        if (isNil(err)) {
+          return undefined;
+        }
+        return isFunction(parseError)
+          ? getErrorKeys(prefix, name, parseError(err))
+          : getErrorKeys(prefix, name, err);
+      });
+    return { displayError, errorKeys };
+  }
+
+  const errorKey = isFunction(parseError) ? parseError(validationError) : validationError;
+
   const errorKeys = isArray(validationError)
     ? validationError.map((err) => (isNil(err) ? undefined : getErrorKeys(prefix, name, err)))
-    : getErrorKeys(prefix, name, validationError);
+    : getErrorKeys(prefix, name, errorKey);
 
   return { displayError, errorKeys };
 };

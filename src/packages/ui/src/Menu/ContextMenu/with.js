@@ -57,6 +57,7 @@ export const MenuContext = createContext({
 export const useContextMenuContext = () => useContext(MenuContext);
 
 // COMPONENTS
+// @UNUSED
 const withContextMenu = (Component) => {
   // NB: items requires nodes in array synthax not to trigger material-ui warnings
   // https://github.com/mui-org/material-ui/issues/16181

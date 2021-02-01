@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: '1px solid transparent',
   },
   avatarRoot: {
-    margin: theme.spacing(1, 1, 0, 0),
+    margin: theme.spacing(0.5, 1, 0.5, 0),
   },
   card: {
     overflow: 'hidden',
@@ -58,13 +58,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing(0),
     width: '100%',
-    // borderTop: `1px solid ${theme.palette.divider}`,
-    // '& > *': {
-    //   width: '100%',
-    //   '& *': {
-    //     borderRadius: `0 0 ${CARD_BORDER_RADIUS}px ${CARD_BORDER_RADIUS}px`,
-    //   },
-    // },
   },
 }));
 
@@ -97,7 +90,7 @@ const EventCard = forwardRef(({
         display="flex"
         alignItems="flex-start"
         justifyContent="flex-start"
-        py={1}
+        pb={1}
         px={2}
         className={clsx(
           classes.root,
@@ -127,11 +120,11 @@ const EventCard = forwardRef(({
                 display="flex"
                 flexDirection="row"
               >
-                <Subtitle variant="subtitle1" color="textPrimary" {...titleProps}>
+                <Subtitle variant="caption" gutterBottom={false} color="textPrimary" {...titleProps}>
                   {displayName}
                 </Subtitle>
                 <Box ml={2}>
-                  <Subtitle variant="subtitle1" color="textSecondary">
+                  <Subtitle variant="caption" gutterBottom={false} color="textSecondary">
                     {isEdited ? t('components:cardEvent.edited', { date }) : date}
                   </Subtitle>
                 </Box>

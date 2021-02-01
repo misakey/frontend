@@ -28,7 +28,6 @@ import BoxEventEditContext from 'components/smart/Box/Event/Edit/Context';
 import PaginatedListBoxEvents from 'components/smart/PaginatedList/BoxEvents';
 import BoxEventsFooter from 'components/screens/app/Boxes/Read/Events/Footer';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
-import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
 import useOnTabVisibilityChange from '@misakey/hooks/useOnTabVisibilityChange';
 
 // CONSTANTS
@@ -100,8 +99,10 @@ function BoxEvents({ box, t, belongsToCurrentUser }) {
         >
           <Box ref={headerRef} display="flex" flexDirection="column" width="100%" minHeight="inherit">
             <Box display="flex">
-              <ToggleDrawerButton />
-              <BoxEventsAppBar box={box} belongsToCurrentUser={belongsToCurrentUser} />
+              <BoxEventsAppBar
+                box={box}
+                belongsToCurrentUser={belongsToCurrentUser}
+              />
             </Box>
             {isNil(accountId) && (
               <Alert

@@ -8,6 +8,8 @@ import Formik from '@misakey/ui/Formik';
 import { STEP, INITIAL_VALUES, ERROR_KEYS } from '@misakey/auth/constants';
 import { identifierValidationSchema } from '@misakey/auth/constants/validationSchemas/auth';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react-auth/store/reducers/sso';
+import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
+import { LARGE } from '@misakey/ui/Avatar';
 
 import compose from '@misakey/helpers/compose';
 import head from '@misakey/helpers/head';
@@ -28,13 +30,17 @@ import LoginFormField from '@misakey/ui/Form/Field/Login/Identifier';
 import SecretHiddenFormField from '@misakey/ui/Form/Field/Login/Secret/Hidden';
 import BoxControls from '@misakey/ui/Box/Controls';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
-import CardSso from '@misakey/react-auth/components/Card/Sso';
+import CardSsoWithSlope from '@misakey/react-auth/components/Card/Sso/WithSlope';
 import AvatarBox from '@misakey/ui/Avatar/Box';
 import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
 import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
 
 // CONSTANTS
 const CURRENT_STEP = STEP.identifier;
+const SLOPE_PROPS = {
+  // @FIXME approximate spacing to align card content with slope
+  height: APPBAR_HEIGHT + AVATAR_SIZE * LARGE_MULTIPLIER + 116,
+};
 
 // HELPERS
 const getIdentifierError = compose(
@@ -101,12 +107,13 @@ const AuthLoginIdentifier = ({
   const primary = useMemo(() => ({ text: t('common:next') }), [t]);
 
   return (
-    <CardSso
+    <CardSsoWithSlope
       avatar={!isEmpty(resourceName) && resourceName !== name ? (
-        <AvatarBox title={resourceName} large />
+        <AvatarBox title={resourceName} size={LARGE} />
       ) : (
         <AvatarClientSso client={client} />
       )}
+      slopeProps={SLOPE_PROPS}
       avatarLarge
     >
       <Formik
@@ -134,7 +141,7 @@ const AuthLoginIdentifier = ({
           <BoxControls formik primary={primary} />
         </Form>
       </Formik>
-    </CardSso>
+    </CardSsoWithSlope>
   );
 };
 

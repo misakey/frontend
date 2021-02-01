@@ -19,9 +19,6 @@ import LinkIcon from '@material-ui/icons/Link';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  listItemSpaced: {
-    marginBottom: theme.spacing(2),
-  },
   avatar: {
     marginRight: theme.spacing(1),
   },
@@ -39,7 +36,6 @@ const ListItemShareBoxLink = ({ disabled, isOwner, box }) => {
     <ListItem
       aria-label={t('common:share')}
       disabled={disabled}
-      className={classes.listItemSpaced}
     >
       <ListItemAvatar>
         <Avatar className={classes.avatar}><LinkIcon fontSize="small" /></Avatar>

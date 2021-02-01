@@ -3,8 +3,6 @@ import React, { useMemo, useState, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-import { ICONBUTTON_WIDTH } from '@misakey/ui/constants/sizes';
-
 import isEmpty from '@misakey/helpers/isEmpty';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -18,9 +16,6 @@ import ContextMenu from '@misakey/ui/Menu/ContextMenu';
 import CardEvent from 'components/dumb/Card/Event';
 
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-
-// CONSTANTS
-const MENU_MIN_WIDTH = 3 * ICONBUTTON_WIDTH;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -108,7 +103,6 @@ const CardEventWithMenu = forwardRef(({
           <Paper
             component={Box}
             mx={2}
-            minWidth={MENU_MIN_WIDTH}
             variant="outlined"
             display="flex"
             justifyContent="center"

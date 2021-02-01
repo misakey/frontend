@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 import { AVATAR_SIZE, AVATAR_SM_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
@@ -6,7 +6,6 @@ import { AVATAR_SIZE, AVATAR_SM_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/const
 import dialogIsFullScreen from '@misakey/helpers/dialog/isFullScreen';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-
 
 import Screen from '@misakey/ui/Screen';
 import PaperSlope from '@misakey/ui/Paper/Slope';
@@ -19,6 +18,7 @@ const HALF_LARGE_MULTIPLIER = LARGE_MULTIPLIER / 2;
 const useStyles = makeStyles((theme) => ({
   screenRoot: {
     position: 'relative',
+    boxSizing: 'border-box',
   },
   avatar: ({ large }) => ({
     marginBottom: large ? -AVATAR_SIZE * HALF_LARGE_MULTIPLIER : -AVATAR_SIZE / 2,
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     isolation: 'isolate',
     position: 'relative',
-    [dialogIsFullScreen(theme)]: {
+    [theme.breakpoints.only('xs')]: {
       height: '100%',
     },
   },
@@ -43,10 +43,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const ScreenSlope = ({ children, classes, avatar, avatarLarge, header, ...props }) => {
+const ScreenSlope = forwardRef(({
+  component: Component,
+  children, classes,
+  avatar, avatarLarge, header,
+  slopeProps,
+  ...props
+}, ref) => {
   const internalClasses = useStyles({ large: avatarLarge });
 
-  const screenClasses = useMemo(
+  const rootClasses = useMemo(
     () => ({
       root: internalClasses.screenRoot,
       ...classes,
@@ -55,11 +61,12 @@ const ScreenSlope = ({ children, classes, avatar, avatarLarge, header, ...props 
   );
 
   return (
-    <Screen
-      classes={screenClasses}
+    <Component
+      ref={ref}
+      classes={rootClasses}
       {...props}
     >
-      <PaperSlope />
+      <PaperSlope {...slopeProps} />
       {header || ( // when no header, use a box for similar spacing
         <Box className={internalClasses.toolbarFallback} />
       )}
@@ -67,7 +74,6 @@ const ScreenSlope = ({ children, classes, avatar, avatarLarge, header, ...props 
         display="flex"
         flexDirection="column"
         flexGrow="1"
-        justifyContent="center"
       >
         {avatar && (
           <Box
@@ -82,24 +88,28 @@ const ScreenSlope = ({ children, classes, avatar, avatarLarge, header, ...props 
           {children}
         </Box>
       </Box>
-    </Screen>
+    </Component>
   );
-};
+});
 
 ScreenSlope.propTypes = {
+  component: PropTypes.elementType,
   children: PropTypes.node,
   classes: PropTypes.object,
   header: PropTypes.node,
   avatar: PropTypes.node,
   avatarLarge: PropTypes.bool,
+  slopeProps: PropTypes.object,
 };
 
 ScreenSlope.defaultProps = {
+  component: Screen,
   children: null,
   classes: {},
   header: null,
   avatar: null,
   avatarLarge: false,
+  slopeProps: {},
 };
 
 export default ScreenSlope;

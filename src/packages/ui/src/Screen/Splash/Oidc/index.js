@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { LARGE } from '@misakey/ui/Avatar';
 
 import CardUserSignOut from '@misakey/react-auth/components/Card/User/SignOut';
 import ScreenSplashBase from '@misakey/ui/Screen/Splash/Base';
@@ -18,13 +19,14 @@ const CONTAINER_PROPS = {
   display: 'flex !important',
   flexDirection: 'column',
   flexGrow: 1,
+  maxWidth: 'sm',
 };
 
 // COMPONENTS
 const ScreenSplashOidc = ({ cardUserProps, done, ...props }) => (
   <ScreenSplashBase containerProps={CONTAINER_PROPS} {...props}>
     <Box my={2} display="flex" flexDirection="column" alignItems="center" justifyContent="flex-end" flexGrow={1}>
-      <AvatarMisakey large />
+      <AvatarMisakey size={LARGE} />
     </Box>
     <Box display="flex" flexDirection="column" flexGrow={2}>
       <CardUserSignOut

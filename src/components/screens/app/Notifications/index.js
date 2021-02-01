@@ -19,13 +19,12 @@ import debounce from '@misakey/helpers/debounce';
 
 import { useTranslation } from 'react-i18next';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import AutoSizer from 'react-virtualized-auto-sizer';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
 import ElevationScroll from 'components/dumb/ElevationScroll';
-import Title from '@misakey/ui/Typography/Title';
-import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Typography from '@material-ui/core/Typography';
 import BoxEmpty from 'components/dumb/Box/Empty';
 import InfiniteLoaderChat from 'components/smart/WindowedList/InfiniteLoaded/Chat';
@@ -37,8 +36,28 @@ import MessageRow from './Row';
 const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
 const BATCH_SIZE = 10;
 
+const PRIMARY_TYPO_PROPS = {
+  variant: 'body1',
+  noWrap: true,
+  color: 'textPrimary',
+};
+
+const SECONDARY_TYPO_PROPS = {
+  variant: 'body2',
+  color: 'textSecondary',
+};
+
+// HOOKS
+const useStyles = makeStyles((theme) => ({
+  secondaryReducedHeight: {
+    marginTop: theme.spacing(-1),
+  },
+}));
+
+// COMPONENTS
 function MisakeyNotications() {
   const ref = useRef({});
+  const classes = useStyles();
 
   const identityId = useSelector(IDENTITY_ID_SELECTOR);
 
@@ -152,8 +171,13 @@ function MisakeyNotications() {
           <Box display="flex" width="100%" alignItems="center">
             <ToggleDrawerButton />
             <Box display="flex" flexDirection="column" flexGrow={1}>
-              <Title gutterBottom={false}>{t('boxes:notifications.byIdentity.title')}</Title>
-              <Subtitle gutterBottom={false}>{t('boxes:notifications.byIdentity.subtitle')}</Subtitle>
+              <Typography {...PRIMARY_TYPO_PROPS}>{t('boxes:notifications.byIdentity.title')}</Typography>
+              <Typography
+                className={classes.secondaryReducedHeight}
+                {...SECONDARY_TYPO_PROPS}
+              >
+                {t('boxes:notifications.byIdentity.subtitle')}
+              </Typography>
             </Box>
             <AvatarMisakey alt={t('boxes:notifications.byIdentity.title')} />
           </Box>
@@ -173,7 +197,7 @@ function MisakeyNotications() {
               itemData={itemData}
               onItemsRendered={onItemsRendered}
               NoMoreItemsElement={itemsLength === 0 ? null : (
-                <Typography component={Box} p={1} variant="caption" color="primary">
+                <Typography variant="caption" color="primary">
                   {t('boxes:notifications.byIdentity.noMoreItems')}
                 </Typography>
               )}

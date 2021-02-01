@@ -148,8 +148,8 @@
       },
       "accesses": {
         "title": "Share with people and groups",
-        "identifier": "Emails",
-        "email_domain": "Domains"
+        "identifier": "People",
+        "email_domain": "Groups"
       },
       "update": {
         "success": "Accesses have been updated successfully",

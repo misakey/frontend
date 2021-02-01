@@ -69,7 +69,7 @@ const AvatarBoxExample = () => (
   <AvatarBox
     title="Test"
     src={lemur}
-    large
+    size="large"
   />
 );
 
@@ -87,7 +87,7 @@ import AvatarBox from './index';
 const AvatarBoxExample = () => (
   <AvatarBox
     title="Test"
-    large
+    size="large"
   />
 );
 
@@ -106,7 +106,7 @@ const AvatarBoxExample = () => (
   <AvatarBox
     title="Test"
     lostKey
-    large
+    size="large"
   />
 );
 

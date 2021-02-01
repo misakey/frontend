@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import routes from 'routes';
 
+import { SMALL } from '@misakey/ui/Avatar';
 import BoxesSchema from 'store/schemas/Boxes';
 
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -19,23 +20,24 @@ import Typography from '@material-ui/core/Typography';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Box from '@material-ui/core/Box';
 import AvatarGroupMembers from '@misakey/ui/AvatarGroup/Members';
+import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
 import ShareBoxButton from './ShareBoxButton';
 import AppBarMenuTabs from './Tabs';
 
 // CONSTANTS
 const SKELETON_WIDTH = 100;
+const MAX_MEMBERS = 3;
 
 const PRIMARY_TYPO_PROPS = {
-  variant: 'h6',
+  variant: 'body1',
   noWrap: true,
   color: 'textPrimary',
 };
 
 const SECONDARY_TYPO_PROPS = {
-  variant: 'subtitle2',
+  variant: 'body2',
   color: 'textSecondary',
 };
 
@@ -48,6 +50,9 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(0),
     paddingBottom: theme.spacing(0),
   },
+  listItemText: {
+    margin: 0,
+  },
   listItemContainer: {
     width: '100%',
   },
@@ -55,21 +60,18 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
   },
-  avatarGroupMembersRoot: {
-    [theme.breakpoints.only('xs')]: {
-      display: 'none',
-    },
-    marginRight: theme.spacing(2),
-  },
-  typographyFlex: {
-    display: 'flex',
-    alignItems: 'center',
+  typographyCaret: {
+    maxWidth: 'calc(100% - 24px)',
+    display: 'inline-block',
   },
   secondarySkeleton: {
     ...theme.typography.body2,
     [theme.breakpoints.down('sm')]: {
       ...theme.typography.subtitle2,
     },
+  },
+  secondaryReducedHeight: {
+    marginTop: theme.spacing(-1),
   },
 }));
 
@@ -112,7 +114,10 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
         />
       )
       : (
-        <Typography {...SECONDARY_TYPO_PROPS}>
+        <Typography
+          className={classes.secondaryReducedHeight}
+          {...SECONDARY_TYPO_PROPS}
+        >
           {membersText}
         </Typography>
       )),
@@ -139,29 +144,34 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
         to={routeDetails}
         overflow="hidden"
         disabled={disabled}
+        dense
         {...omitTranslationProps(props)}
         classes={{ root: classes.listItemRoot }}
       >
+        <ToggleDrawerButton />
         <ListItemText
           disableTypography
+          className={classes.listItemText}
           primary={(
-            <Typography className={classes.typographyFlex} {...PRIMARY_TYPO_PROPS}>
-              {isTitleEmpty ? <Skeleton width={200} /> : title}
+            <>
+              <Typography className={classes.typographyCaret} {...PRIMARY_TYPO_PROPS}>
+                {isTitleEmpty ? <Skeleton width={200} /> : title}
+              </Typography>
               {!disabled && <ExpandMoreIcon />}
-            </Typography>
+            </>
           )}
           secondary={secondary}
         />
-        <ListItemSecondaryAction classes={{ root: classes.listItemSecondaryActionRoot }}>
-          <AvatarGroupMembers
-            members={members}
-            classes={{ root: classes.avatarGroupMembersRoot }}
-          />
-          {canShare && <ShareBoxButton box={box} />}
-        </ListItemSecondaryAction>
+        <AvatarGroupMembers
+          max={MAX_MEMBERS}
+          members={members}
+          size={SMALL}
+        />
       </ListItem>
-
-      {displayTabs && <AppBarMenuTabs boxId={id} />}
+      <Box mx={2} mt={0.5} display="flex" flexDirection="row" justifyContent="space-between">
+        {displayTabs && <AppBarMenuTabs boxId={id} />}
+        {canShare && <Box mb={0.5}><ShareBoxButton box={box} /></Box>}
+      </Box>
     </Box>
   );
 };

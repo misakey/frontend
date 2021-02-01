@@ -12,6 +12,7 @@ import authRoutes from '@misakey/react-auth/routes';
 import { QUESTIONS } from '@misakey/ui/constants/emails';
 import { NEXT_STEP_REDIRECT, NEXT_STEP_AUTH } from '@misakey/auth/constants/step';
 import { STEP, INITIAL_VALUES, ERROR_KEYS } from '@misakey/auth/constants';
+import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
 import { getSecretValidationSchema } from 'constants/validationSchemas/auth';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react-auth/store/reducers/sso';
 import hardPasswordChange from '@misakey/crypto/store/actions/hardPasswordChange';
@@ -41,7 +42,7 @@ import { useClearUser } from '@misakey/hooks/useActions/loginSecret';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import CardSso from '@misakey/react-auth/components/Card/Sso';
+import CardSsoWithSlope from '@misakey/react-auth/components/Card/Sso/WithSlope';
 import Box from '@material-ui/core/Box';
 import SecretFormField from '@misakey/ui/Form/Field/Login/Secret';
 import IdentifierHiddenFormField from '@misakey/ui/Form/Field/Login/Identifier/Hidden';
@@ -69,6 +70,10 @@ import WebauthnLogin from '@misakey/react-auth/components/Webauthn/LoginField';
 
 // CONSTANTS
 const CURRENT_STEP = STEP.secret;
+const SLOPE_PROPS = {
+  // @FIXME approximate spacing to align card content with slope
+  height: APPBAR_HEIGHT + AVATAR_SIZE * LARGE_MULTIPLIER + 120,
+};
 
 // HELPERS
 const getSecretError = compose(
@@ -375,7 +380,8 @@ const AuthLoginSecret = ({
   }
 
   return (
-    <CardSso
+    <CardSsoWithSlope
+      slopeProps={SLOPE_PROPS}
       avatar={<AvatarClientSso client={client} />}
       avatarLarge
       header={(
@@ -464,7 +470,7 @@ const AuthLoginSecret = ({
           </Box>
         </Form>
       </Formik>
-    </CardSso>
+    </CardSsoWithSlope>
   );
 };
 

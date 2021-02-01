@@ -6,6 +6,8 @@ import { generatePath } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
 import { getCurrentUserSelector, selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
+import { LARGE } from '@misakey/ui/Avatar';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
@@ -30,10 +32,14 @@ import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
 import CardUserAuth from '@misakey/react-auth/components/Card/User';
 import CardUserSignOut from '@misakey/react-auth/components/Card/User/SignOut';
 import DialogPaperSlope from '@misakey/ui/Dialog/Paper/Slope';
-import SigninRedirectCardSso from '@misakey/react-auth/components/OidcProvider/Dialog/SigninRedirect/Card/Sso';
+import CardSso from '@misakey/react-auth/components/Card/Sso';
 
 // CONSTANTS
 const { acr: getCurrentAcrSelector } = authSelectors;
+const SLOPE_PROPS = {
+  // @FIXME approximate spacing to align card content with slope
+  height: APPBAR_HEIGHT + AVATAR_SIZE * LARGE_MULTIPLIER + 114,
+};
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -193,14 +199,15 @@ const DialogSigninRedirect = ({
             {...dialogTitleProps}
           />
         ),
-        avatar: sessionExpired ? (<AvatarMisakeyDenied large />) : (
+        slopeProps: SLOPE_PROPS,
+        avatar: sessionExpired ? (<AvatarMisakeyDenied size={LARGE} />) : (
           <>
             {isNil(resourceName) ? (
-              <AvatarMisakey large />
+              <AvatarMisakey size={LARGE} />
             ) : (
               <AvatarBox
                 title={resourceName}
-                large
+                size={LARGE}
               />
             )}
           </>
@@ -209,22 +216,22 @@ const DialogSigninRedirect = ({
       }}
     >
       {open && (
-        <SigninRedirectCardSso>
-          <Box>
-            <Title align="center" gutterBottom={false}>{title}</Title>
-            <Subtitle align="center">{subtitle}</Subtitle>
-            <CardUserComponent
-              my={3}
-              expired={sessionExpired}
-            />
-          </Box>
-          <BoxControls
-            primary={{
-              text: t('common:confirm'),
-              onClick,
-            }}
+      <CardSso avatarLarge>
+        <Box>
+          <Title align="center" gutterBottom={false}>{title}</Title>
+          <Subtitle align="center">{subtitle}</Subtitle>
+          <CardUserComponent
+            my={3}
+            expired={sessionExpired}
           />
-        </SigninRedirectCardSso>
+        </Box>
+        <BoxControls
+          primary={{
+            text: t('common:confirm'),
+            onClick,
+          }}
+        />
+      </CardSso>
       )}
     </Dialog>
   );

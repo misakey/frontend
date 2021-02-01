@@ -17,14 +17,14 @@ import TextField from '@misakey/ui/TextField';
 import ListItemUser from '@misakey/ui/ListItem/User';
 import ListItemDomain from '@misakey/ui/ListItem/Domain';
 import AutocompleteWhitelistPaper from '@misakey/ui/Autocomplete/Whitelist/Paper';
-import IconButtonSubmit from '@misakey/ui/IconButton/Submit';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import BoxControls from '@misakey/ui/Box/Controls';
 import Tooltip from '@material-ui/core/Tooltip';
 import ChipUser from '@misakey/ui/Chip/User';
 import ChipDomain from '@misakey/ui/Chip/Domain';
 
-import CheckIcon from '@material-ui/icons/Check';
-
 // CONSTANTS
+const INITIAL_INPUT_VALUE = '';
 const INPUT_SEPARATORS = [',', ';'];
 const DOMAIN_WILDCARD = '*@';
 const TYPES = [DOMAIN_TYPE, USER_TYPE];
@@ -98,12 +98,14 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const AutocompleteWhitelist = ({
   onChange, getOptionDisabled,
-  textFieldProps, name, value, ...props
+  textFieldProps, name, value,
+  errorIndexes,
+  ...props
 }) => {
   const classes = useStyles();
   const { t } = useTranslation(['components', 'common']);
 
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(INITIAL_INPUT_VALUE);
 
   const inputEmpty = useMemo(
     () => isEmpty(inputValue),
@@ -119,13 +121,17 @@ const AutocompleteWhitelist = ({
     [t],
   );
 
+  const getIsOptionInValue = useCallback(
+    ({ identifierValue }) => value
+      .some(({
+        identifierValue: itemIdentifierValue,
+      }) => itemIdentifierValue === identifierValue),
+    [value],
+  );
+
   const handleGetOptionDisabled = useCallback(
     (option) => {
-      const { identifierValue } = option;
-      const isInValue = value
-        .some(({
-          identifierValue: itemIdentifierValue,
-        }) => itemIdentifierValue === identifierValue);
+      const isInValue = getIsOptionInValue(option);
       if (isInValue) {
         return true;
       }
@@ -134,7 +140,7 @@ const AutocompleteWhitelist = ({
       }
       return false;
     },
-    [getOptionDisabled, value],
+    [getIsOptionInValue, getOptionDisabled],
   );
 
   const onInputChange = useCallback(
@@ -142,7 +148,7 @@ const AutocompleteWhitelist = ({
       const nextValueTrimmed = nextValue.trim();
       const isNextValueEmpty = isInputEmpty(nextValueTrimmed);
       if (isNextValueEmpty) {
-        setInputValue('');
+        setInputValue(INITIAL_INPUT_VALUE);
       } else {
         setInputValue(nextValueTrimmed);
         if (reason === 'input' && inputEndsWithSeparator(nextValueTrimmed)) {
@@ -157,6 +163,14 @@ const AutocompleteWhitelist = ({
       }
     },
     [onChange, value, handleGetOptionDisabled, valueToDomainValue],
+  );
+
+  const onReset = useCallback(
+    (event) => {
+      setInputValue(INITIAL_INPUT_VALUE);
+      onChange(event, [], 'clear');
+    },
+    [setInputValue, onChange],
   );
 
   const handleFilterOptions = useCallback(
@@ -212,6 +226,7 @@ const AutocompleteWhitelist = ({
 
   const renderTags = useCallback(
     (tags, getTagProps) => (tags || []).map(({ identifierValue, type, ...rest }, index) => {
+      const displayError = errorIndexes.includes(index);
       if (type === DOMAIN_TYPE) {
         return (
           <Tooltip
@@ -221,8 +236,9 @@ const AutocompleteWhitelist = ({
             <ChipDomain
               key={identifierValue}
               identifier={identifierValue}
+              error={displayError}
               {...rest}
-              {...getTagProps(index)}
+              {...getTagProps({ index })}
             />
           </Tooltip>
         );
@@ -235,68 +251,74 @@ const AutocompleteWhitelist = ({
           <ChipUser
             key={identifierValue}
             identifier={identifierValue}
+            error={displayError}
             {...rest}
-            {...getTagProps(index)}
+            {...getTagProps({ index })}
           />
         </Tooltip>
       );
     }),
-    [],
+    [errorIndexes],
   );
 
   return (
-    <Autocomplete
-      classes={{
-        hasPopupIcon: classes.autocompleteHasPopupIcon,
-        hasClearIcon: classes.autocompleteHasClearIcon,
-        inputRoot: classes.autocompleteInputRoot,
-        input: classes.autocompleteInput,
-      }}
-      name={name}
-      value={value}
-      onChange={onChange}
-      onInputChange={onInputChange}
-      filterOptions={handleFilterOptions}
-      renderOption={renderOption}
-      getOptionLabel={getOptionLabel}
-      getOptionDisabled={handleGetOptionDisabled}
-      inputValue={inputValue}
-      renderTags={renderTags}
-      renderInput={({ InputProps: { endAdornment, ...InputPropsRest }, ...params }) => (
-        <TextField
-          variant="standard"
-          name={name}
-          InputProps={{
-            endAdornment: (
-              <>
-                {!isEmpty(value) && inputEmpty && (
-                  <Tooltip title={t('common:submit')}>
-                    <IconButtonSubmit
-                      classes={{ root: classes.submitIndicator }}
-                    >
-                      <CheckIcon />
-                    </IconButtonSubmit>
-                  </Tooltip>
-                )}
-                {endAdornment}
-              </>
-            ),
-            ...InputPropsRest,
+    <>
+      <Autocomplete
+        classes={{
+          hasPopupIcon: classes.autocompleteHasPopupIcon,
+          hasClearIcon: classes.autocompleteHasClearIcon,
+          inputRoot: classes.autocompleteInputRoot,
+          input: classes.autocompleteInput,
+        }}
+        name={name}
+        value={value}
+        onChange={onChange}
+        onInputChange={onInputChange}
+        filterOptions={handleFilterOptions}
+        renderOption={renderOption}
+        getOptionLabel={getOptionLabel}
+        getOptionDisabled={handleGetOptionDisabled}
+        inputValue={inputValue}
+        renderTags={renderTags}
+        renderInput={({ InputProps: { endAdornment, ...InputPropsRest }, ...params }) => (
+          <TextField
+            variant="standard"
+            name={name}
+            InputProps={{
+              endAdornment,
+              ...InputPropsRest,
+            }}
+            {...params}
+            {...textFieldProps}
+          />
+        )}
+        noOptionsText={null}
+        PaperComponent={AutocompleteWhitelistPaper}
+        autoHighlight
+        clearOnBlur
+        clearOnEscape
+        selectOnFocus
+        handleHomeEndKeys
+        forcePopupIcon={false}
+        disableClearable
+        {...props}
+      />
+      {!isEmpty(value) && (
+        <BoxControls
+          formik
+          justifyContent="flex-end"
+          primary={{
+            standing: BUTTON_STANDINGS.OUTLINED,
+            text: t('common:add'),
+            disabled: !inputEmpty,
           }}
-          {...params}
-          {...textFieldProps}
+          secondary={{
+            onClick: onReset,
+            text: t('common:clear'),
+          }}
         />
       )}
-      noOptionsText={null}
-      PaperComponent={AutocompleteWhitelistPaper}
-      autoHighlight
-      clearOnBlur
-      clearOnEscape
-      selectOnFocus
-      handleHomeEndKeys
-      multiple
-      {...props}
-    />
+    </>
   );
 };
 
@@ -307,6 +329,7 @@ AutocompleteWhitelist.propTypes = {
   textFieldProps: PropTypes.object,
   onChange: PropTypes.func.isRequired,
   getOptionDisabled: PropTypes.func,
+  errorIndexes: PropTypes.arrayOf(PropTypes.number),
 };
 
 AutocompleteWhitelist.defaultProps = {
@@ -314,6 +337,7 @@ AutocompleteWhitelist.defaultProps = {
   value: [],
   textFieldProps: {},
   getOptionDisabled: null,
+  errorIndexes: [],
 };
 
 export default AutocompleteWhitelist;

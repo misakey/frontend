@@ -6,14 +6,14 @@ import Badge from '@material-ui/core/Badge';
 import NotInterestedIcon from '@material-ui/icons/NotInterested';
 
 // COMPONENTS
-const BadgeDenied = ({ large, children, ...props }) => (
+const BadgeDenied = ({ fontSize, children, ...props }) => (
   <Badge
     overlap="circle"
     anchorOrigin={{
       vertical: 'bottom',
       horizontal: 'right',
     }}
-    badgeContent={<NotInterestedIcon fontSize={large ? 'large' : undefined} color="error" />}
+    badgeContent={<NotInterestedIcon fontSize={fontSize} color="error" />}
     {...props}
   >
     {children}
@@ -21,12 +21,12 @@ const BadgeDenied = ({ large, children, ...props }) => (
 );
 
 BadgeDenied.propTypes = {
-  large: PropTypes.bool,
+  fontSize: PropTypes.oneOf(['small', 'default', 'large', 'inherit']),
   children: PropTypes.node,
 };
 
 BadgeDenied.defaultProps = {
-  large: false,
+  fontSize: 'default',
   children: null,
 };
 

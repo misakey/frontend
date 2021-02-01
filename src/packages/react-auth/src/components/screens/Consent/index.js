@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { FEEDBACK } from '@misakey/ui/constants/emails';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react-auth/store/reducers/sso';
 import { CONSENTED_SCOPES_KEY, CONSENT_SCOPES } from '@misakey/auth/constants/consent';
+import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
@@ -34,12 +35,17 @@ import Redirect from '@misakey/ui/Redirect';
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import Alert from '@material-ui/lab/Alert';
-import CardSso from '@misakey/react-auth/components/Card/Sso';
+import CardSsoWithSlope from '@misakey/react-auth/components/Card/Sso/WithSlope';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
 
 // CONSTANTS
 const INITIAL_VALUES = {
   [CONSENTED_SCOPES_KEY]: CONSENT_SCOPES,
+};
+
+const SLOPE_PROPS = {
+  // @FIXME approximate spacing to align card content with slope
+  height: APPBAR_HEIGHT + AVATAR_SIZE * LARGE_MULTIPLIER + 126,
 };
 
 // COMPONENTS
@@ -129,7 +135,8 @@ const AuthConsent = ({
   }
 
   return (
-    <CardSso
+    <CardSsoWithSlope
+      slopeProps={SLOPE_PROPS}
       avatar={<AvatarClientSso client={client} />}
       avatarLarge
     >
@@ -159,7 +166,7 @@ const AuthConsent = ({
           )}
         </Box>
       </Formik>
-    </CardSso>
+    </CardSsoWithSlope>
   );
 };
 

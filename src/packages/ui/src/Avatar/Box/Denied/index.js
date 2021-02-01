@@ -1,24 +1,32 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import BadgeDenied from '@misakey/ui/Badge/Denied';
 import AvatarBox from '@misakey/ui/Avatar/Box';
+import { SIZES, MEDIUM } from '@misakey/ui/Avatar';
 
 // COMPONENTS
-const AvatarBoxDenied = ({ large, ...props }) => (
-  <BadgeDenied
-    large={large}
-  >
-    <AvatarBox large={large} {...props} />
-  </BadgeDenied>
-);
-
+const AvatarBoxDenied = ({ size, ...props }) => {
+  // convert size values to fontSize values,
+  // see https://material-ui.com/api/icon/#props
+  const fontSize = useMemo(
+    () => (size === MEDIUM ? 'default' : size),
+    [size],
+  );
+  return (
+    <BadgeDenied
+      fontSize={fontSize}
+    >
+      <AvatarBox size={size} {...props} />
+    </BadgeDenied>
+  );
+};
 AvatarBoxDenied.propTypes = {
-  large: PropTypes.bool,
+  size: PropTypes.oneOf(SIZES),
 };
 
 AvatarBoxDenied.defaultProps = {
-  large: false,
+  size: MEDIUM,
 };
 
 export default AvatarBoxDenied;

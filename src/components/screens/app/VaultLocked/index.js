@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
-import { APPBAR_SPACING } from '@misakey/ui/constants/sizes';
+import { LARGE } from '@misakey/ui/Avatar';
+import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
 import { openVaultValidationSchema } from 'constants/validationSchemas/auth';
 import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 import { invalid } from '@misakey/ui/constants/errorTypes';
@@ -20,6 +21,7 @@ import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import FormField from '@misakey/ui/Form/Field';
 
+import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
 import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
@@ -27,12 +29,17 @@ import CardUserSignOut from '@misakey/react-auth/components/Card/User/SignOut';
 import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
 import BoxControls from '@misakey/ui/Box/Controls';
 import Box from '@material-ui/core/Box';
-import BoxContent from '@misakey/ui/Box/Content';
+import CardSsoWithSlope from '@misakey/react-auth/components/Card/Sso/WithSlope';
 import Title from '@misakey/ui/Typography/Title';
 
 // CONSTANTS
 const INITIAL_VALUES = {
   [PREHASHED_PASSWORD]: '',
+};
+
+const SLOPE_PROPS = {
+  // @FIXME approximate spacing to align card content with slope
+  height: APPBAR_HEIGHT + AVATAR_SIZE * LARGE_MULTIPLIER + 102,
 };
 
 // HOOKS
@@ -62,58 +69,52 @@ function VaultLocked({ t }) {
   useUpdateDocHead(t('boxes:vault.lockedScreen.documentTitle'));
 
   return (
-    <>
-      <AppBarDrawer side={SIDES.LEFT}>
-        <OpenDrawerAccountButton />
-      </AppBarDrawer>
-      <BoxContent
-        mt={APPBAR_SPACING}
+    <CardSsoWithSlope
+      slopeProps={SLOPE_PROPS}
+      avatar={<AvatarMisakey size={LARGE} />}
+      avatarLarge
+      header={(
+        <AppBarDrawer color="primary" side={SIDES.LEFT}>
+          <OpenDrawerAccountButton />
+        </AppBarDrawer>
+          )}
+    >
+      <Formik
+        onSubmit={onSubmit}
+        initialValues={INITIAL_VALUES}
+        validationSchema={openVaultValidationSchema}
       >
-        <Box
-          display="flex"
-          justifyContent="flex-start"
-          alignItems="center"
-          overflow="hidden"
-          flexWrap="wrap"
-        >
+        <Box component={Form} display="flex" flexDirection="column" width="100%" justifyContent="center">
           <Title align="center" gutterBottom={false}>{t('boxes:vault.lockedScreen.text')}</Title>
-        </Box>
-        <Formik
-          onSubmit={onSubmit}
-          initialValues={INITIAL_VALUES}
-          validationSchema={openVaultValidationSchema}
-        >
-          <Box component={Form} display="flex" flexDirection="column" width="100%" justifyContent="center">
-            <CardUserSignOut
-              my={3}
-              className={classes.cardOverflowVisible}
-              avatarUrl={avatarUrl}
-              displayName={displayName}
-              identifier={identifierValue}
-            >
-              <FormField
-                name={PREHASHED_PASSWORD}
-                variant="filled"
-                component={FieldPasswordRevealable}
-                helperText={t('boxes:vault.lockedScreen.helperText')}
-                margin="none"
-                inputProps={{ 'data-matomo-ignore': true }}
-                FormHelperTextProps={{ component: FormHelperTextInCard }}
-                fullWidth
-                autoFocus
-              />
-            </CardUserSignOut>
-            <BoxControls
-              primary={{
-                type: 'submit',
-                text: t('common:unlock'),
-              }}
-              formik
+          <CardUserSignOut
+            my={3}
+            className={classes.cardOverflowVisible}
+            avatarUrl={avatarUrl}
+            displayName={displayName}
+            identifier={identifierValue}
+          >
+            <FormField
+              name={PREHASHED_PASSWORD}
+              variant="filled"
+              component={FieldPasswordRevealable}
+              helperText={t('boxes:vault.lockedScreen.helperText')}
+              margin="none"
+              inputProps={{ 'data-matomo-ignore': true }}
+              FormHelperTextProps={{ component: FormHelperTextInCard }}
+              fullWidth
+              autoFocus
             />
-          </Box>
-        </Formik>
-      </BoxContent>
-    </>
+          </CardUserSignOut>
+          <BoxControls
+            primary={{
+              type: 'submit',
+              text: t('common:unlock'),
+            }}
+            formik
+          />
+        </Box>
+      </Formik>
+    </CardSsoWithSlope>
   );
 }
 

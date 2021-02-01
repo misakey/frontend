@@ -2,7 +2,6 @@ import React, { useState, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
-import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
 
 import Box from '@material-ui/core/Box';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
@@ -95,7 +94,6 @@ function BoxFiles({ belongsToCurrentUser, box }) {
         <AppBarDrawer toolbarProps={{ px: 0 }} offsetHeight={headerHeight}>
           <Box ref={headerRef} display="flex" flexDirection="column" width="100%" minHeight="inherit">
             <Box display="flex">
-              <ToggleDrawerButton />
               <BoxEventsAppBar box={box} belongsToCurrentUser={belongsToCurrentUser} />
             </Box>
           </Box>

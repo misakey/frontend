@@ -2,10 +2,13 @@ import React, { useMemo, forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
 
-import AvatarColorized from '@misakey/ui/Avatar/Colorized';
-import Chip from '@material-ui/core/Chip';
-
 import isFunction from '@misakey/helpers/isFunction';
+
+import AvatarColorized from '@misakey/ui/Avatar/Colorized';
+import Chip from '@misakey/ui/Chip';
+
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
+
 
 // HOOKS
 const useEvents = (onClick, onDelete) => useMemo(() => {
@@ -22,18 +25,29 @@ const useEvents = (onClick, onDelete) => useMemo(() => {
 
 const ChipUser = forwardRef(({
   identifier, displayName, label, avatarUrl,
+  error,
   onClick, onDelete,
   ...props
 }, ref) => {
   const events = useEvents(onClick, onDelete);
 
+  const errorProps = useMemo(
+    () => (error ? { color: 'error' } : {}),
+    [error],
+  );
+
   return (
     <Chip
       ref={ref}
       component="div"
-      avatar={<AvatarColorized text={displayName || identifier} image={avatarUrl} />}
+      icon={error ? (<ErrorOutlineIcon color="error" fontSize="small" />) : null}
+      avatar={
+        error ? null
+          : <AvatarColorized text={displayName || identifier} image={avatarUrl} />
+}
       label={label || displayName || identifier}
       variant="outlined"
+      {...errorProps}
       {...events}
       {...props}
     />
@@ -45,7 +59,7 @@ ChipUser.propTypes = {
   displayName: PropTypes.string,
   label: PropTypes.string,
   avatarUrl: PropTypes.string,
-
+  error: PropTypes.bool,
   onDelete: PropTypes.func,
   onClick: PropTypes.func,
 };
@@ -55,6 +69,7 @@ ChipUser.defaultProps = {
   displayName: '',
   avatarUrl: '',
   label: null,
+  error: false,
   onDelete: null,
   onClick: null,
 };

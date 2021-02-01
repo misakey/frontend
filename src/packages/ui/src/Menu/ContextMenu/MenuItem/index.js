@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import isFunction from '@misakey/helpers/isFunction';
 import log from '@misakey/helpers/log';
 
-import { useContextMenuContext } from '@misakey/ui/Menu/ContextMenu/with';
+import { useContextMenuContext } from '@misakey/ui/Menu/ContextMenu';
 
 import MenuItem from '@material-ui/core/MenuItem';
 

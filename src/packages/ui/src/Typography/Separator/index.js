@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const TypographyDateSeparator = forwardRef(({ children, className, ...props }, ref) => {
+const TypographySeparator = forwardRef(({ children, className, ...props }, ref) => {
   const classes = useStyles();
 
   return (
@@ -43,13 +43,13 @@ const TypographyDateSeparator = forwardRef(({ children, className, ...props }, r
   );
 });
 
-TypographyDateSeparator.propTypes = {
+TypographySeparator.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
 };
 
-TypographyDateSeparator.defaultProps = {
+TypographySeparator.defaultProps = {
   className: '',
 };
 
-export default TypographyDateSeparator;
+export default TypographySeparator;

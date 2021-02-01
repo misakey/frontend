@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation, Trans } from 'react-i18next';
 import { Link, generatePath } from 'react-router-dom';
 
+import { LARGE } from '@misakey/ui/Avatar';
 import { FOOTER_HEIGHT } from '@misakey/ui/Footer';
 import BoxesSchema from 'store/schemas/Boxes';
 import { receivePublicInfo } from 'store/reducers/box';
@@ -19,7 +20,6 @@ import useFetchBoxPublicInfo from 'hooks/useFetchBoxPublicInfo';
 import { useDispatch } from 'react-redux';
 
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
-import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import CreateBoxSuggestions from 'components/smart/Box/CreateSuggestions';
 import MuiLink from '@material-ui/core/Link';
@@ -88,7 +88,6 @@ function NoAccess({ box, belongsToCurrentUser, t }) {
       <AppBarDrawer toolbarProps={{ px: 0 }} disableOffset>
         <Box display="flex" flexDirection="column" width="100%" minHeight="inherit">
           <Box display="flex">
-            <ToggleDrawerButton />
             <BoxEventsAppBar disabled box={box} belongsToCurrentUser={belongsToCurrentUser} />
           </Box>
         </Box>
@@ -116,10 +115,10 @@ function NoAccess({ box, belongsToCurrentUser, t }) {
               alignItems="flex-start"
               width="100%"
             >
-              {isFetching ? (<AvatarBoxSkeleton large />) : (
+              {isFetching ? (<AvatarBoxSkeleton size={LARGE} />) : (
                 <AvatarBoxDenied
                   title={title}
-                  large
+                  size={LARGE}
                 />
               )}
               <Box mt={2}>

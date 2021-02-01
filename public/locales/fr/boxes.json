@@ -148,8 +148,8 @@
       },
       "accesses": {
         "title": "Partager avec des personnes et des groupes",
-        "identifier": "Emails",
-        "email_domain": "Domaines"
+        "identifier": "Personnes",
+        "email_domain": "Groupes"
       },
       "update": {
         "success": "Les accès ont été modifiés avec succès",

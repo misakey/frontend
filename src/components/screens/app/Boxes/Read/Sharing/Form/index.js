@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import { withTranslation, useTranslation } from 'react-i18next';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
 import BoxesSchema from 'store/schemas/Boxes';
+import SenderSchema from 'store/schemas/Boxes/Sender';
 
+import { EMAIL_DOMAIN as DOMAIN_TYPE } from '@misakey/ui/constants/accessTypes';
 import { ACCESS_RM, ACCESS_ADD, ACCESS_BULK, STATE_ACCESS_MODE } from 'constants/app/boxes/events';
 import { RESTRICTION_TYPES } from 'constants/app/boxes/accesses';
 import { updateAccessesEvents } from 'store/reducers/box';
@@ -15,7 +17,9 @@ import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/a
 
 import { getUpdatedAccesses } from 'helpers/accesses';
 import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/helpers/isNil';
 import pluck from '@misakey/helpers/pluck';
+import prop from '@misakey/helpers/prop';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 import filter from '@misakey/helpers/filter';
 import { createBulkBoxEventBuilder, createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
@@ -24,6 +28,7 @@ import { senderMatchesIdentifierValue, identifierValueProp } from 'helpers/sende
 import { useSelector, useDispatch } from 'react-redux';
 import { tryAddingAutoInvite } from '@misakey/crypto/box/autoInvitation';
 import { useSnackbar } from 'notistack';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Formik from '@misakey/ui/Formik';
 import FieldSubmitOnChange from '@misakey/ui/Form/Field/SubmitOnChange';
@@ -34,6 +39,10 @@ import ListItemAccessLevel from 'components/dumb/ListItem/AccessLevel';
 import SelectItemAccessLevel from 'components/dumb/SelectItem/AccessLevel';
 import TextField from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import SharingFormWhitelist from 'components/screens/app/Boxes/Read/Sharing/Form/Whitelist';
+import ListItemUserMember from '@misakey/ui/ListItem/User/Member';
+import ListItemUserOption from '@misakey/ui/ListItem/User/Option';
+import ListItemUserOptionSkeleton from '@misakey/ui/ListItem/User/Option/Skeleton';
+import ListItemDomain from '@misakey/ui/ListItem/Domain';
 
 // CONSTANTS
 const { identifierValue: IDENTIFIER_VALUE_SELECTOR } = authSelectors;
@@ -51,16 +60,30 @@ const ACCESS_EVENT_TYPE = {
 // HELPERS
 const getValues = pluck('value');
 const pluckContent = pluck('content');
+const autoInviteProp = prop('autoInvite');
+
+// HOOKS
+const useStyles = makeStyles((theme) => ({
+  boxSpaced: {
+    [theme.breakpoints.only('xs')]: {
+      margin: theme.spacing(0, 2, 1),
+    },
+    margin: theme.spacing(0, 0, 1),
+  },
+}));
 
 // COMPONENTS
 function ShareBoxForm({
   accesses, accessMode,
   boxId,
+  creator,
+  members,
   children,
   isCurrentUserOwner,
   boxKeyShare, boxSecretKey,
 }) {
   const { t } = useTranslation('boxes');
+  const classes = useStyles();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -109,6 +132,40 @@ function ShareBoxForm({
         || whitelistedValues.includes(optionIdentifierValue);
     },
     [meIdentifierValue, whitelistedValues],
+  );
+
+  const renderOption = useCallback(
+    ({ type, avatarUrl, identifierValue, ...rest }) => {
+      if (type === DOMAIN_TYPE) {
+        return (
+          <ListItemDomain
+            component="div"
+            disableGutters
+            identifier={identifierValue}
+            {...rest}
+          />
+        );
+      }
+      const valueFromWhitelist = restrictions.find(({ value }) => value === identifierValue);
+      const autoInvite = autoInviteProp(valueFromWhitelist);
+
+      return (
+        <ListItemUserMember
+          component={ListItemUserOption}
+          skeleton={ListItemUserOptionSkeleton}
+          disableGutters
+          avatarUrl={avatarUrl}
+          identifier={identifierValue}
+          isMe={identifierValue === meIdentifierValue}
+          isOwner={senderMatchesIdentifierValue(creator, identifierValue)}
+          needsLink={!isNil(valueFromWhitelist)}
+          members={members}
+          autoInvite={autoInvite}
+          {...rest}
+        />
+      );
+    },
+    [creator, meIdentifierValue, members, restrictions],
   );
 
   const getNextAccesses = useCallback(
@@ -213,14 +270,17 @@ function ShareBoxForm({
       onSubmit={onSubmit}
       initialValues={initialValues}
       validationSchema={accessValidationSchema}
+      validateOnChange
       enableReinitialize
     >
       <Form>
-        <Box my={2}>
+        <Box className={classes.boxSpaced}>
           <SharingFormWhitelist
             name={WHITELIST_FIELD_NAME}
             getOptionDisabled={getOptionDisabled}
+            renderOption={renderOption}
             disabled={!isCurrentUserOwner}
+            margin="dense"
           />
         </Box>
         {children}
@@ -230,11 +290,13 @@ function ShareBoxForm({
           variant="outlined"
           component={TextField}
           disabled={!isCurrentUserOwner}
+          margin="dense"
           select
           SelectProps={{
             renderValue: (value) => (
-              <ListItemAccessLevel value={value} dense />
+              <ListItemAccessLevel disableGutters value={value} dense />
             ),
+            MenuProps: { MenuListProps: { disablePadding: true } },
           }}
         >
           <MenuItem value={PUBLIC}>
@@ -256,12 +318,16 @@ ShareBoxForm.propTypes = {
   boxKeyShare: PropTypes.string.isRequired,
   boxSecretKey: PropTypes.string.isRequired,
   children: PropTypes.node,
+  creator: PropTypes.shape(SenderSchema.propTypes),
+  members: PropTypes.arrayOf(PropTypes.object),
   isCurrentUserOwner: PropTypes.bool,
 };
 
 ShareBoxForm.defaultProps = {
   accessMode: LIMITED,
   children: null,
+  creator: null,
+  members: null,
   isCurrentUserOwner: false,
 };
 

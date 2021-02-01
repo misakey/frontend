@@ -9,14 +9,13 @@ import emailToDisplayName from '@misakey/helpers/emailToDisplayName';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import ListItemUserWhitelisted from '@misakey/ui/ListItem/User/Whitelisted';
-import ListItemUserWhitelistedSkeleton from '@misakey/ui/ListItem/User/Whitelisted/Skeleton';
-
 // HELPERS
 const pickUserProps = pick(['avatarUrl', 'displayName']);
 
 // COMPONENTS
-const ListItemUserWhitelistedMember = ({
+const ListItemUserMember = ({
+  component: Component,
+  skeleton: Skeleton,
   identifier, members, onRemove,
   ...rest }) => {
   const member = useMemo(
@@ -51,11 +50,11 @@ const ListItemUserWhitelistedMember = ({
   );
 
   if (isNil(members)) {
-    return <ListItemUserWhitelistedSkeleton />;
+    return <Skeleton />;
   }
 
   return (
-    <ListItemUserWhitelisted
+    <Component
       {...rest}
       {...userProps}
       onRemove={handleRemove}
@@ -65,7 +64,9 @@ const ListItemUserWhitelistedMember = ({
   );
 };
 
-ListItemUserWhitelistedMember.propTypes = {
+ListItemUserMember.propTypes = {
+  component: PropTypes.elementType.isRequired,
+  skeleton: PropTypes.elementType.isRequired,
   identifier: PropTypes.string,
   members: PropTypes.arrayOf(PropTypes.shape({
     identifierValue: PropTypes.string.isRequired,
@@ -73,10 +74,10 @@ ListItemUserWhitelistedMember.propTypes = {
   onRemove: PropTypes.func,
 };
 
-ListItemUserWhitelistedMember.defaultProps = {
+ListItemUserMember.defaultProps = {
   identifier: '',
   members: null,
   onRemove: null,
 };
 
-export default ListItemUserWhitelistedMember;
+export default ListItemUserMember;

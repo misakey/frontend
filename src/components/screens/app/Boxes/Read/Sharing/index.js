@@ -30,6 +30,7 @@ import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathK
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { useBoxReadContext } from 'components/smart/Context/Boxes/BoxRead';
+import useXsMediaQuery from '@misakey/hooks/useXsMediaQuery';
 
 import { Link } from 'react-router-dom';
 import List from '@material-ui/core/List';
@@ -46,7 +47,7 @@ import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import ListItemUserWhitelisted from '@misakey/ui/ListItem/User/Whitelisted';
 import ListItemUserWhitelistedSkeleton from '@misakey/ui/ListItem/User/Whitelisted/Skeleton';
-import ListItemUserWhitelistedMember from '@misakey/ui/ListItem/User/Whitelisted/Member';
+import ListItemUserMember from '@misakey/ui/ListItem/User/Member';
 import ListItemDomainWhitelisted from '@misakey/ui/ListItem/Domain/Whitelisted';
 import Accordion from '@misakey/ui/Accordion';
 import AccordionSummary from '@misakey/ui/AccordionSummary';
@@ -73,6 +74,10 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
   },
   content: {
+    padding: theme.spacing(0, CONTENT_SPACING, CONTENT_SPACING),
+    [theme.breakpoints.only('xs')]: {
+      padding: theme.spacing(CONTENT_SPACING, 0, 0, 0),
+    },
     boxSizing: 'border-box',
     maxHeight: `calc(100% - ${APPBAR_HEIGHT}px)`,
     overflow: 'auto',
@@ -83,6 +88,8 @@ const useStyles = makeStyles((theme) => ({
 function BoxSharing({ box, t }) {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
+  const isXs = useXsMediaQuery();
+
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
   const [domainExpanded, setDomainExpanded] = useState(false);
@@ -212,7 +219,7 @@ function BoxSharing({ box, t }) {
 
         </AppBarDrawer>
       </ElevationScroll>
-      <Box p={CONTENT_SPACING} pt={0} ref={(ref) => setContentRef(ref)} className={classes.content}>
+      <Box ref={(ref) => setContentRef(ref)} className={classes.content}>
         <List disablePadding>
           <ListItem disabled={!isCurrentUserOwner}>
             <ListItemAvatar>
@@ -239,17 +246,20 @@ function BoxSharing({ box, t }) {
           ) : (
             <ShareBoxForm
               accesses={accesses}
+              members={members}
               boxId={boxId}
+              creator={creator}
               invitationURL={invitationURL}
               isCurrentUserOwner={isCurrentUserOwner}
               boxKeyShare={boxKeyShare}
               boxSecretKey={boxSecretKey}
               accessMode={accessMode}
             >
-              <Box my={2}>
-                <ListBordered disablePadding>
+              <Box my={1}>
+                <ListBordered x={!isXs} dense disablePadding>
                   <Accordion
                     defaultExpanded
+                    elevation={0}
                   >
                     <AccordionSummary
                       expandIcon={<ExpandMoreIcon />}
@@ -281,7 +291,9 @@ function BoxSharing({ box, t }) {
                       {whitelistUsers.map((
                         { restrictionType, value, id, ...rest },
                       ) => (
-                        <ListItemUserWhitelistedMember
+                        <ListItemUserMember
+                          component={ListItemUserWhitelisted}
+                          skeleton={ListItemUserWhitelistedSkeleton}
                           key={id}
                           id={id}
                           identifier={value}
@@ -295,7 +307,7 @@ function BoxSharing({ box, t }) {
                   <Accordion
                     expanded={domainExpanded}
                     onChange={onToggleAccordion}
-                    classes={{ root: classes.accordionRoot }}
+                    elevation={0}
                   >
                     <AccordionSummary
                       expandIcon={<ExpandMoreIcon />}

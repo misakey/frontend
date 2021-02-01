@@ -4,12 +4,23 @@ import PropTypes from 'prop-types';
 
 import isFunction from '@misakey/helpers/isFunction';
 
+import makeStyles from '@material-ui/core/styles/makeStyles';
+
 import Avatar from '@misakey/ui/Avatar';
-import Chip from '@material-ui/core/Chip';
+import Chip from '@misakey/ui/Chip';
 
 import DomainIcon from '@material-ui/icons/Domain';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
 // HOOKS
+const useStyles = makeStyles((theme) => ({
+  chipRoot: {
+    '& .MuiChip-avatar': {
+      color: theme.palette.background.default,
+    },
+  },
+}));
+
 const useEvents = (onClick, onDelete) => useMemo(() => {
   const events = {};
   if (isFunction(onClick)) {
@@ -22,24 +33,38 @@ const useEvents = (onClick, onDelete) => useMemo(() => {
   return events;
 }, [onClick, onDelete]);
 
+// COMPONENTS
 const ChipDomain = forwardRef(({
   identifier, displayName, label, avatarUrl,
+  error,
   onClick, onDelete,
   ...props
 }, ref) => {
+  const classes = useStyles();
+
   const events = useEvents(onClick, onDelete);
+
+  const errorProps = useMemo(
+    () => (error ? { color: 'error' } : {}),
+    [error],
+  );
 
   return (
     <Chip
+      classes={{ root: classes.chipRoot }}
       ref={ref}
       component="div"
-      avatar={(
+      icon={error ? <ErrorOutlineIcon color="error" fontSize="small" /> : null}
+      avatar={error ? null : (
         <Avatar>
-          <DomainIcon fontSize="small" />
+          {error
+            ? null
+            : <DomainIcon fontSize="small" />}
         </Avatar>
       )}
       label={label || identifier}
       variant="outlined"
+      {...errorProps}
       {...events}
       {...props}
     />
@@ -51,7 +76,7 @@ ChipDomain.propTypes = {
   displayName: PropTypes.string,
   label: PropTypes.string,
   avatarUrl: PropTypes.string,
-
+  error: PropTypes.bool,
   onDelete: PropTypes.func,
   onClick: PropTypes.func,
 };
@@ -60,6 +85,7 @@ ChipDomain.defaultProps = {
   identifier: '',
   displayName: '',
   avatarUrl: '',
+  error: false,
   label: null,
   onDelete: null,
   onClick: null,

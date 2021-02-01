@@ -5,6 +5,7 @@ import { useLayoutStyles } from '@misakey/ui/Avatar/Detailed';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import AvatarSkeleton from '@misakey/ui/Avatar/Skeleton';
+import { LARGE } from '@misakey/ui/Avatar';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -22,7 +23,7 @@ const AvatarDetailedSkeleton = ({ title, subtitle }) => {
   const classes = useStyles();
   return (
     <Box className={layoutClasses.root}>
-      <AvatarSkeleton large classes={{ root: layoutClasses.avatar }} />
+      <AvatarSkeleton size={LARGE} classes={{ root: layoutClasses.avatar }} />
       {title && <Typography className={classes.fullWidth} variant="h6"><Skeleton variant="text" /></Typography>}
       {subtitle && <Typography className={classes.fullWidth} variant="body2"><Skeleton variant="text" /></Typography>}
     </Box>

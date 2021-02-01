@@ -17,23 +17,16 @@ import isNil from '@misakey/helpers/isNil';
 import { useTranslation } from 'react-i18next';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import EventCard from 'components/dumb/Card/Event';
-import TypographySeparator from '@misakey/ui/Typography/Separator';
+import Typography from '@material-ui/core/Typography';
 import AutoInvitationButton from 'components/screens/app/Notifications/Actions/AutoInvitationButton';
 import ButtonCreateAccount from '@misakey/react-auth/components/Button/CreateAccount';
+import Box from '@material-ui/core/Box';
 
 // CONSTANTS
 export const INNER_SPACING = 12;
 const NOT_ACK_STYLE = { style: { fontWeight: 800 } };
-
-// HOOKS
-const useStyles = makeStyles((theme) => ({
-  typoSpaced: {
-    paddingTop: theme.spacing(3),
-  },
-}));
 
 // COMPONENTS
 const MessageRow = ({
@@ -43,7 +36,6 @@ const MessageRow = ({
 }) => {
   const rowRoot = useRef(null);
   const { t } = useTranslation(['boxes', 'common']);
-  const classes = useStyles();
 
   const { hasNextPage } = useSafeDestr(data);
 
@@ -109,13 +101,17 @@ const MessageRow = ({
 
   return (
     <div style={style}>
-      <div ref={rowRoot}>
+      <Box display="flex" flexDirection="column" ref={rowRoot}>
         {SUPPORTED_TYPES.includes(type) && (
           <>
             {!isNil(dateTitle) && (
-              <TypographySeparator className={classes.typoSpaced}>
+              <Typography
+                align="center"
+                color="textPrimary"
+                variant="caption"
+              >
                 {dateTitle}
-              </TypographySeparator>
+              </Typography>
             )}
             <EventCard
               author={author}
@@ -127,7 +123,7 @@ const MessageRow = ({
             />
           </>
         )}
-      </div>
+      </Box>
     </div>
   );
 };

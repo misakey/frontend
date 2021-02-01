@@ -29,7 +29,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useSelector } from 'react-redux';
 
 import Box from '@material-ui/core/Box';
-import TypographySeparator from '@misakey/ui/Typography/Separator';
+import Typography from '@material-ui/core/Typography';
 import BoxEventsAccordingToType from 'components/smart/Box/Event';
 
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
@@ -274,9 +274,9 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
       <Box ref={combinedRef} flexGrow="1" className={classes.root} onScroll={onScroll}>
         {eventsByDate.map(({ date, events: groupedEvents }) => (
           <Box display="flex" flexDirection="column" mt={1} key={date}>
-            <TypographySeparator>
+            <Typography align="center" color="textPrimary" variant="caption">
               {date}
-            </TypographySeparator>
+            </Typography>
             {
           groupedEvents.map((event) => (
             <BoxEventsAccordingToType

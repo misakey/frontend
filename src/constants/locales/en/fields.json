@@ -209,11 +209,7 @@
       "label": "Add people or groups",
       "error": {
         "malformed": "At least one email is invalid",
-        "required": "At least one rule is required",
-        "domain": {
-          "malformed": "At least one domain name is invalid",
-          "required": "Domain name is required"
-        }
+        "required": "At least one email is required"
       }
     },
     "contact": {
