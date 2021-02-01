@@ -1,7 +1,7 @@
 import { normalize } from 'normalizr';
 
 import { receiveEntities, updateEntities } from '@misakey/store/actions/entities';
-import { updateIdentity } from '@misakey/auth/store/actions/auth';
+import { updateIdentity } from '@misakey/react-auth/store/actions/auth';
 import IdentitySchema from 'store/schemas/Identity';
 
 

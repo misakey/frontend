@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 import { useLocation, matchPath } from 'react-router-dom';
 
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 
 import isNil from '@misakey/helpers/isNil';
 
@@ -12,13 +12,13 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 const STEP_VALUE = 100 / 6;
 
 const SIGNUP_STEPS = {
-  [routes.auth.signUp.preamble]: 0,
-  [routes.auth.signUp.identifier]: STEP_VALUE,
-  [routes.auth.signUp.handle]: 2 * STEP_VALUE,
-  [routes.auth.signUp.notifications]: 3 * STEP_VALUE,
-  [routes.auth.signUp.password]: 4 * STEP_VALUE,
-  [routes.auth.signUp.confirm]: 5 * STEP_VALUE,
-  [routes.auth.signUp.finale]: 100,
+  [authRoutes.signUp.preamble]: 0,
+  [authRoutes.signUp.identifier]: STEP_VALUE,
+  [authRoutes.signUp.handle]: 2 * STEP_VALUE,
+  [authRoutes.signUp.notifications]: 3 * STEP_VALUE,
+  [authRoutes.signUp.password]: 4 * STEP_VALUE,
+  [authRoutes.signUp.confirm]: 5 * STEP_VALUE,
+  [authRoutes.signUp.finale]: 100,
 };
 
 // HELPERS

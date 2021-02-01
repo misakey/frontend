@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import { DATETIME_FILE_HUMAN_READABLE } from 'constants/formats/dates';
+import { DATETIME_FILE_HUMAN_READABLE } from '@misakey/ui/constants/formats/dates';
 
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 

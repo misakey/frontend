@@ -3,7 +3,7 @@ import React, { useState, useMemo, useCallback, useContext, useEffect } from 're
 import PropTypes from 'prop-types';
 
 import { notFound } from '@misakey/ui/constants/errorTypes';
-import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';
+import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/Context';
 
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isNil from '@misakey/helpers/isNil';
@@ -13,7 +13,7 @@ import { getBoxPublicBuilder } from '@misakey/helpers/builder/boxes';
 import { computeInvitationHash } from '@misakey/crypto/box/keySplitting';
 import { BadKeyShareFormat } from '@misakey/crypto/Errors/classes';
 
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { makeDenormalizeBoxSelector } from 'store/reducers/box';
 
 import { useSelector } from 'react-redux';
@@ -91,9 +91,9 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
 
   const shouldFetch = useMemo(
     () => !isAuthenticated
-    && !isNil(id) && isNil(title)
-    && !isNil(otherShareHash) && isEmpty(objLoginHint)
-    && !error,
+      && !isNil(id) && isNil(title)
+      && !isNil(otherShareHash) && isEmpty(objLoginHint)
+      && !error,
     [isAuthenticated, id, otherShareHash, objLoginHint, error, title],
   );
 

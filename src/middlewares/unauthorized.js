@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import isNil from '@misakey/helpers/isNil';
 import { getDetails } from '@misakey/helpers/apiError';

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 
-import CardUserSignOut from '@misakey/auth/components/Card/User/SignOut';
+import CardUserSignOut from '@misakey/react-auth/components/Card/User/SignOut';
 import ScreenSplashBase from '@misakey/ui/Screen/Splash/Base';
 import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
 import Box from '@material-ui/core/Box';

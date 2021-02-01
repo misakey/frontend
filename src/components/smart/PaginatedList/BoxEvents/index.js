@@ -22,7 +22,7 @@ import useCombinedRefs from '@misakey/hooks/useCombinedRefs';
 import usePrevPropEffect from '@misakey/hooks/usePrevPropEffect';
 import useGroupEventsByDate from 'hooks/useGroupEventsByDate';
 import usePaginateEventsByBox from 'hooks/usePaginateEventsByBox';
-import useNotDoneEffect from 'hooks/useNotDoneEffect';
+import useNotDoneEffect from '@misakey/hooks/useNotDoneEffect';
 import useMountEffect from '@misakey/hooks/useMountEffect';
 import useIntersectionObserver from '@misakey/hooks/useIntersectionObserver';
 import makeStyles from '@material-ui/core/styles/makeStyles';

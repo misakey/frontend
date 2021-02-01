@@ -32,7 +32,7 @@ import AvatarBoxDenied from '@misakey/ui/Avatar/Box/Denied';
 import AvatarBoxSkeleton from '@misakey/ui/Avatar/Box/Skeleton';
 import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
 import Container from '@material-ui/core/Container';
-import CardUserSignOut from '@misakey/auth/components/Card/User/SignOut';
+import CardUserSignOut from '@misakey/react-auth/components/Card/User/SignOut';
 
 // HOOKS
 const useStyles = makeStyles(() => ({

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
 
 import { selectors } from '@misakey/crypto/store/reducers';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import isNil from '@misakey/helpers/isNil';
 

@@ -7,12 +7,12 @@ import { denormalize } from 'normalizr';
 
 import SavedFilesSchema from 'store/schemas/Files/Saved';
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import isNil from '@misakey/helpers/isNil';
 import omit from '@misakey/helpers/omit';
 import execWithRequestIdleCallback from '@misakey/helpers/execWithRequestIdleCallback';
-import { deleteSavedFileBuilder } from 'packages/helpers/src/builder/vault';
+import { deleteSavedFileBuilder } from '@misakey/helpers/builder/vault';
 import { deleteSavedFile } from 'store/reducers/files/saved';
 
 import { useFilePreviewContext } from 'components/smart/File/Preview/Context';

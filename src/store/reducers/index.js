@@ -3,13 +3,13 @@ import storage from 'redux-persist/lib/storage';
 
 import { RESET_APP } from '@misakey/store/actions/app';
 
-import { authPersistedReducers } from '@misakey/auth/store/reducers';
+import { authPersistedReducers } from '@misakey/react-auth/store/reducers';
 import storeReducers from '@misakey/store/reducers';
 import { makeReducer as makeEntities } from '@misakey/store/reducers/entities';
 
 import crypto from '@misakey/crypto/store/reducers';
 
-import { wrapReducerWithResetOnSignOut } from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
+import { wrapReducerWithResetOnSignOut } from '@misakey/react-auth/store/reducers/helpers/createResetOnSignOutReducer';
 import userBoxesPagination from 'store/reducers/userBoxes/pagination';
 import boxEventsPagination from 'store/reducers/userBoxes/pagination/events';
 import boxFileEventsPagination from 'store/reducers/userBoxes/pagination/events/files';

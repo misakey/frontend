@@ -9,7 +9,7 @@ import { openVaultValidationSchema } from 'constants/validationSchemas/auth';
 import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 import { invalid } from '@misakey/ui/constants/errorTypes';
 import { SIDES } from '@misakey/ui/constants/drawers';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import { getCurrentUserSelector } from '@misakey/react-auth/store/reducers/auth';
 
 import useLoadSecretsWithPassword from '@misakey/crypto/hooks/useLoadSecretsWithPassword';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
@@ -23,7 +23,7 @@ import FormField from '@misakey/ui/Form/Field';
 import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
-import CardUserSignOut from '@misakey/auth/components/Card/User/SignOut';
+import CardUserSignOut from '@misakey/react-auth/components/Card/User/SignOut';
 import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
 import BoxControls from '@misakey/ui/Box/Controls';
 import Box from '@material-ui/core/Box';

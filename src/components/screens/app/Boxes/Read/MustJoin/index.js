@@ -9,7 +9,7 @@ import { updateEntities } from '@misakey/store/actions/entities';
 import { MEMBER_JOIN } from 'constants/app/boxes/events';
 import { forbidden } from '@misakey/ui/constants/errorTypes';
 import BoxesSchema from 'store/schemas/Boxes';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { receivePublicInfo } from 'store/reducers/box';
 import { FOOTER_HEIGHT } from '@misakey/ui/Footer';
 
@@ -38,7 +38,7 @@ import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import Container from '@material-ui/core/Container';
 import ListItemIdentifier from '@misakey/ui/ListItem/Identifier';
 import List from '@material-ui/core/List';
-import CardUserSignOut from '@misakey/auth/components/Card/User/SignOut';
+import CardUserSignOut from '@misakey/react-auth/components/Card/User/SignOut';
 import BoxControls from '@misakey/ui/Box/Controls';
 import AvatarBox from '@misakey/ui/Avatar/Box';
 import AvatarBoxSkeleton from '@misakey/ui/Avatar/Box/Skeleton';

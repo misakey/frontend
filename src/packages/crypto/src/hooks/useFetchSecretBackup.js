@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import isNil from '@misakey/helpers/isNil';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { getEncryptedSecretsBackup } from '../HttpApi';

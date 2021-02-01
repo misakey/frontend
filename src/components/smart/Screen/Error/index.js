@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-import { FEEDBACK } from 'constants/emails';
+import { FEEDBACK } from '@misakey/ui/constants/emails';
 import routes from 'routes';
 
 import ComponentProxy from '@misakey/ui/Component/Proxy';

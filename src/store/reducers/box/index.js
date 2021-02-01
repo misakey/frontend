@@ -16,7 +16,7 @@ import { moveBackUpId, actionCreators as boxesActionsCreators, selectors as boxP
 import { receiveEntities, updateEntities, removeEntities } from '@misakey/store/actions/entities';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 
-import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
+import createResetOnSignOutReducer from '@misakey/react-auth/store/reducers/helpers/createResetOnSignOutReducer';
 
 import { transformReferrerEvent, isMemberEventType, isAccessModeEventType, getEventForNormalization } from 'helpers/boxEvent';
 import pluck from '@misakey/helpers/pluck';

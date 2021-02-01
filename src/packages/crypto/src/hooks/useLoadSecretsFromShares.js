@@ -1,7 +1,7 @@
 import { useCallback, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import isNil from '@misakey/helpers/isNil';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { getBackupKeyShareBuilder } from '@misakey/auth/builder/backupKeyShares';
 import { combineBackupKeyShares, computeOtherShareHash } from '@misakey/crypto/secretsBackup/keySplitting';
 import loadSecrets from '@misakey/crypto/store/actions/loadSecrets';

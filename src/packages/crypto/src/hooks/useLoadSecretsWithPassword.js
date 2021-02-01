@@ -1,5 +1,5 @@
 import loadSecrets from '@misakey/crypto/store/actions/loadSecrets';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import isNil from '@misakey/helpers/isNil';
 import logSentryException from '@misakey/helpers/log/sentry/exception';

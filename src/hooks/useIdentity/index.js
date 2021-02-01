@@ -1,8 +1,8 @@
 import { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { updateIdentity } from '@misakey/auth/store/actions/auth';
-import { selectors } from '@misakey/auth/store/reducers/auth';
+import { updateIdentity } from '@misakey/react-auth/store/actions/auth';
+import { selectors } from '@misakey/react-auth/store/reducers/auth';
 import { normalize } from 'normalizr';
 import { receiveEntities } from '@misakey/store/actions/entities';
 import IdentitySchema from 'store/schemas/Identity';

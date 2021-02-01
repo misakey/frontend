@@ -8,7 +8,7 @@ import { TO_PROP_TYPE } from '@misakey/ui/constants/propTypes';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isNil from '@misakey/helpers/isNil';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import { Link } from 'react-router-dom';
 import ListItem from '@material-ui/core/ListItem';

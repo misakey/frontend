@@ -10,7 +10,7 @@ import IdentityNotifications from 'components/screens/app/Identity/Notifications
 import IdentityColors from 'components/screens/app/Identity/Colors';
 import IdentityAvatar from 'components/screens/app/Identity/Avatar';
 import IdentityPublic from 'components/screens/app/Identity/Public';
-import RouteAcr from '@misakey/auth/components/Route/Acr';
+import RouteAcr from '@misakey/react-auth/components/Route/Acr';
 import Accounts from 'components/screens/app/Account';
 
 // COMPONENTS

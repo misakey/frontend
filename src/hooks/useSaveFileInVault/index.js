@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 import { createSavedFile } from '@misakey/helpers/builder/vault';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { encryptFileMetadataForVault } from '@misakey/crypto/vault';
 import ensureVaultKeyExists from '@misakey/crypto/store/actions/ensureVaultKeyExists';
 import { addSavedFile } from 'store/reducers/files/saved';

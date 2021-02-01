@@ -3,7 +3,7 @@ import React, { forwardRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import routes from 'routes';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import isNil from '@misakey/helpers/isNil';
 import omitRouteProps from '@misakey/helpers/omit/routeProps';

@@ -12,7 +12,7 @@ import Box from '@material-ui/core/Box';
 import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
 import ButtonWithDialogPassword from 'components/smart/Dialog/Password/with/Button';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { useBoxEventSubmitContext } from 'components/smart/Box/Event/Submit/Context';

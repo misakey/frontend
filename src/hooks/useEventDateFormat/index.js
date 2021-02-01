@@ -1,4 +1,4 @@
-import { DATETIME_EXTRA_SHORT, TIME } from 'constants/formats/dates';
+import { DATETIME_EXTRA_SHORT, TIME } from '@misakey/ui/constants/formats/dates';
 
 import moment from 'moment';
 

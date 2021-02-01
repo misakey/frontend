@@ -9,7 +9,7 @@ import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 import { decrementNewCount, setPaginationNotifications } from 'store/actions/identity/notifications';
 import { receiveEntities, updateEntities } from '@misakey/store/actions/entities';
 import { makeGetUserNotificationsNotAckSelector, getPaginationSelector, getNewCountSelector } from 'store/reducers/identity/notifications';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { getUserNotificationsBuilder, acknowledgeUserNotificationsBuilder } from 'packages/helpers/src/builder/identities';
 
 import isNil from '@misakey/helpers/isNil';

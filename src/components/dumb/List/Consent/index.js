@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import List from '@material-ui/core/List';
-import ListItemTOS from '@misakey/auth/components/ListItem/TOS';
-import ListItemPrivacy from '@misakey/auth/components/ListItem/Privacy';
+import ListItemTOS from '@misakey/react-auth/components/ListItem/TOS';
+import ListItemPrivacy from '@misakey/react-auth/components/ListItem/Privacy';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -26,7 +26,7 @@ const ListConsent = ({ tosUri, policyUri, id, name, logoUri, ...props }) => {
   return (
     <List classes={{ root: classes.listRoot }} {...props}>
       {tosUri
-      && <ListItemTOS classes={{ container: classes.listItemContainer }} href={tosUri} />}
+        && <ListItemTOS classes={{ container: classes.listItemContainer }} href={tosUri} />}
       {policyUri
         && <ListItemPrivacy classes={{ container: classes.listItemContainer }} href={policyUri} />}
     </List>

@@ -4,7 +4,7 @@ import routes from 'routes';
 
 import { getCode } from '@misakey/helpers/apiError';
 import { notFound } from '@misakey/ui/constants/errorTypes';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import { decryptCryptoaction } from '@misakey/crypto/cryptoactions';
 import {

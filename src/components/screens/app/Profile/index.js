@@ -12,7 +12,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Identities from 'components/screens/app/Identity';
 import IdentityPublicReadOnly from 'components/screens/app/Identity/Public/ReadOnly';
-import RouteAcr from '@misakey/auth/components/Route/Acr';
+import RouteAcr from '@misakey/react-auth/components/Route/Acr';
 import ScreenDrawerContextProvider from 'components/smart/Screen/Drawer';
 import DrawerAccountContent from 'components/smart/Drawer/Account/Content';
 import DrawerAccountOnboard from 'components/smart/Drawer/Account/Onboard';

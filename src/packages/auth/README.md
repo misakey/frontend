@@ -19,7 +19,7 @@ In your main reducers file
 ```js static
 import { combineReducers } from 'redux';
 
-import auth from '@misakey/auth/store/reducers/auth';
+import auth from '@misakey/react-auth/store/reducers/auth';
 
 const rootReducer = combineReducers({
   auth
@@ -37,7 +37,7 @@ In your main reducers file
 ```js static
 import { combineReducers } from 'redux';
 
-import reducers from '@misakey/auth/store/reducers';
+import reducers from '@misakey/react-auth/store/reducers';
 
 // ...
 
@@ -73,7 +73,7 @@ import {
 } from 'auth/helpers';
 
 // OIDC provider
-import OidcProvider from '@misakey/auth/components/OidcProvider';
+import OidcProvider from '@misakey/react-auth/components/OidcProvider';
 
 // The main purpose of the iframe is to launch auth request and update user
 // in localStorage when the request is finished. It doesn't need to load the

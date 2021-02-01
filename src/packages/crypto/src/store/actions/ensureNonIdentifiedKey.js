@@ -1,6 +1,6 @@
 import isNil from '@misakey/helpers/isNil';
 
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 
 import { setIdentityNonIdentifiedPublicKey } from '@misakey/crypto/HttpApi';

@@ -11,7 +11,7 @@ import { updateAccessesEvents } from 'store/reducers/box';
 import { updateEntities } from '@misakey/store/actions/entities';
 import { accessValidationSchema } from 'constants/validationSchemas/boxes';
 import ACCESS_MODES, { PUBLIC, LIMITED } from '@misakey/ui/constants/accessModes';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import { getUpdatedAccesses } from 'helpers/accesses';
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -105,8 +105,8 @@ function ShareBoxForm({
     (option) => {
       const optionIdentifierValue = identifierValueProp(option);
       return optionIdentifierValue.endsWith(',')
-    || senderMatchesIdentifierValue(option, meIdentifierValue)
-    || whitelistedValues.includes(optionIdentifierValue);
+        || senderMatchesIdentifierValue(option, meIdentifierValue)
+        || whitelistedValues.includes(optionIdentifierValue);
     },
     [meIdentifierValue, whitelistedValues],
   );

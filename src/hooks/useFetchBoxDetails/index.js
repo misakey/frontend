@@ -21,7 +21,7 @@ import { updateEntities, receiveEntities } from '@misakey/store/actions/entities
 import SenderSchema from 'store/schemas/Boxes/Sender';
 
 import { makeDenormalizeBoxSelector, receiveJoinedBox } from 'store/reducers/box';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import useOnError from './onError';
 
 // CONSTANTS

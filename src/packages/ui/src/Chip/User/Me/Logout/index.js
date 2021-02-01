@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 
 
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
-import { UserManagerContext } from '@misakey/auth/components/OidcProvider/Context';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/Context';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useSignOut from '@misakey/auth/hooks/useSignOut';
+import useSignOut from '@misakey/react-auth/hooks/useSignOut';
 import { useSelector } from 'react-redux';
 
 import ChipUser from '@misakey/ui/Chip/User';

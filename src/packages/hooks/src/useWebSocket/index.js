@@ -6,7 +6,7 @@ import noop from '@misakey/helpers/noop';
 
 import { useEffect, useRef, useCallback } from 'react';
 import useExponentialBackoff from '@misakey/hooks/useWebSocket/exponentialBackoff';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 // CONSTANTS
 export const NORMAL_CLOSE_CODE = 1000;

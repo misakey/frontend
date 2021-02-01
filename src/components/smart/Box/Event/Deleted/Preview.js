@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import SenderSchema from 'store/schemas/Boxes/Sender';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { senderMatchesIdentityId } from 'helpers/sender';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';

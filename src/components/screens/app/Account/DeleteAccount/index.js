@@ -11,9 +11,9 @@ import API from '@misakey/api';
 import IdentitySchema from 'store/schemas/Identity';
 
 import DeleteAccountDialog from 'components/dumb/Dialog/Account/Delete';
-import { signOut } from '@misakey/auth/store/actions/auth';
+import { signOut } from '@misakey/react-auth/store/actions/auth';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import { withUserManager } from '@misakey/auth/components/OidcProvider/Context';
+import { withUserManager } from '@misakey/react-auth/components/OidcProvider/Context';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import ListItem from '@material-ui/core/ListItem';

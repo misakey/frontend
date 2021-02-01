@@ -2,7 +2,7 @@
 
 ```js
 import React from 'react';
-import authReducers from '@misakey/auth/store/reducers';
+import authReducers from '@misakey/react-auth/store/reducers';
 
 import { createStore, combineReducers } from 'redux';
 
@@ -36,7 +36,7 @@ const ScreenSplashOidcExample = () => (
 
 import React from 'react';
 
-import authReducers from '@misakey/auth/store/reducers';
+import authReducers from '@misakey/react-auth/store/reducers';
 
 import { createStore, combineReducers } from 'redux';
 
@@ -67,7 +67,7 @@ const ScreenSplashOidcExample = () => (
 
 import React from 'react';
 
-import authReducers from '@misakey/auth/store/reducers';
+import authReducers from '@misakey/react-auth/store/reducers';
 
 import { createStore, combineReducers } from 'redux';
 

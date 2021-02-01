@@ -27,7 +27,7 @@ import TypographyPreWrapped from '@misakey/ui/Typography/PreWrapped';
 import AccountMFADeviceActionAdd from 'components/screens/app/Account/Security/MFA/DeviceActions/Add';
 import AccountMFADeviceActionDelete from 'components/screens/app/Account/Security/MFA/DeviceActions/Delete';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import WebauthnIncompatibilityWarning from 'components/smart/Webauthn/IncompatibilityWarning';
+import WebauthnIncompatibilityWarning from '@misakey/react-auth/components/Webauthn/IncompatibilityWarning';
 
 import IdentitySchema from 'store/schemas/Identity';
 import { userIdentityUpdate } from 'store/actions/screens/account';
@@ -43,7 +43,7 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
-import { DATETIME_SHORT } from 'constants/formats/dates';
+import { DATETIME_SHORT } from '@misakey/ui/constants/formats/dates';
 
 
 

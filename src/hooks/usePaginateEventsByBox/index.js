@@ -8,7 +8,7 @@ import { normalize } from 'normalizr';
 import BoxesEventsSchema from 'store/schemas/Boxes/Events';
 import { actionCreators, selectors } from 'store/reducers/userBoxes/pagination/events';
 import { receiveBoxEvents } from 'store/reducers/box';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import path from '@misakey/helpers/path';
 import pickAll from '@misakey/helpers/pickAll';

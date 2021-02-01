@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import EventSchema from 'store/schemas/Boxes/Events';
 import SenderSchema from 'store/schemas/Boxes/Sender';
 
-import { TIME } from 'constants/formats/dates';
+import { TIME } from '@misakey/ui/constants/formats/dates';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import makeStyles from '@material-ui/core/styles/makeStyles';

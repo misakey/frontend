@@ -3,7 +3,7 @@ import React, { useCallback, useState, useMemo } from 'react';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import isNil from '@misakey/helpers/isNil';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import Typography from '@material-ui/core/Typography';
 import { listStorageQuota, listBoxUsedSpaces, readVaultUsedSpace } from '@misakey/helpers/builder/identities';
 import { useSelector } from 'react-redux';

@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isFunction from '@misakey/helpers/isFunction';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import useProcessRedirect from '@misakey/auth/hooks/useProcessRedirect';
+import useProcessRedirect from '@misakey/react-auth/hooks/useProcessRedirect';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 

@@ -1,7 +1,7 @@
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 
-import { screenAuthSetIdentifier } from 'store/actions/screens/auth';
-import { ssoUpdate } from '@misakey/auth/store/actions/sso';
+import { screenAuthSetIdentifier } from '@misakey/react-auth/store/actions/screens';
+import { ssoUpdate } from '@misakey/react-auth/store/actions/sso';
 
 import updateAuthIdentities from '@misakey/auth/builder/updateAuthIdentities';
 
@@ -23,7 +23,7 @@ export default (loginChallenge) => {
       ]))
       .then(() => {
         push({
-          pathname: routes.auth.signIn.secret,
+          pathname: authRoutes.signIn.secret,
           search,
         });
       }),

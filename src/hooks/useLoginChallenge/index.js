@@ -1,4 +1,4 @@
-import { selectors as ssoSelectors } from '@misakey/auth/store/reducers/sso';
+import { selectors as ssoSelectors } from '@misakey/react-auth/store/reducers/sso';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 

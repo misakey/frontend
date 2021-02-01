@@ -3,7 +3,7 @@ import EventsSchema from 'store/schemas/Boxes/Events';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
 import { normalize } from 'normalizr';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import { getCurrentUserSelector } from '@misakey/react-auth/store/reducers/auth';
 
 import { getBoxAccessesBuilder } from '@misakey/helpers/builder/boxes';
 import isNil from '@misakey/helpers/isNil';

@@ -14,7 +14,7 @@ import without from '@misakey/helpers/without';
 import createReducer from '@misakey/store/reducers/helpers/createReducer';
 import { createSelector } from 'reselect';
 
-import { SIGN_OUT } from '@misakey/auth/store/actions/auth';
+import { SIGN_OUT } from '@misakey/react-auth/store/actions/auth';
 
 import {
   CRYPTO_LOAD_SECRETS,

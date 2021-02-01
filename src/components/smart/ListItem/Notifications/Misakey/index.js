@@ -3,7 +3,7 @@ import React, { useMemo, useCallback } from 'react';
 import { Link, useRouteMatch } from 'react-router-dom';
 
 import routes from 'routes';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { SUPPORTED_TYPES } from 'constants/app/notifications/byIdentity';
 import { setNewCount, setLastNotification } from 'store/actions/identity/notifications';
 import { getLastNotificationSelector, getNewCountSelector } from 'store/reducers/identity/notifications';

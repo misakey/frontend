@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 
-import { selectors as authSelectors, PROP_TYPES as AUTH_PROPS_TYPES } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors, PROP_TYPES as AUTH_PROPS_TYPES } from '@misakey/react-auth/store/reducers/auth';
 import IdentityNotificationsSchema from 'store/schemas/Notifications/Identity';
-import { DATE_FULL_NUMERAL, TIME } from 'constants/formats/dates';
+import { DATE_FULL_NUMERAL, TIME } from '@misakey/ui/constants/formats/dates';
 import { SUPPORTED_TYPES, BOX_AUTO_INVITE, USER_CREATE_IDENTITY } from 'constants/app/notifications/byIdentity';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
@@ -22,7 +22,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import EventCard from 'components/dumb/Card/Event';
 import TypographySeparator from '@misakey/ui/Typography/Separator';
 import AutoInvitationButton from 'components/screens/app/Notifications/Actions/AutoInvitationButton';
-import ButtonCreateAccount from '@misakey/auth/components/Button/CreateAccount';
+import ButtonCreateAccount from '@misakey/react-auth/components/Button/CreateAccount';
 
 // CONSTANTS
 export const INNER_SPACING = 12;
@@ -113,7 +113,10 @@ const MessageRow = ({
         {SUPPORTED_TYPES.includes(type) && (
           <>
             {!isNil(dateTitle) && (
-            <TypographySeparator className={classes.typoSpaced}>{dateTitle}</TypographySeparator>)}
+              <TypographySeparator className={classes.typoSpaced}>
+                {dateTitle}
+              </TypographySeparator>
+            )}
             <EventCard
               author={author}
               date={date}

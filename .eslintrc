@@ -39,6 +39,10 @@
           "./src/packages/auth/src"
         ],
         [
+          "@misakey/react-auth",
+          "./src/packages/react-auth/src"
+        ],
+        [
           "@misakey/helpers",
           "./src/packages/helpers/src"
         ],

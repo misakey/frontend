@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import moment from 'moment';
-import { DATE_FULL_NUMERAL } from 'constants/formats/dates';
+import { DATE_FULL_NUMERAL } from '@misakey/ui/constants/formats/dates';
 
 import map from '@misakey/helpers/map';
 import entries from '@misakey/helpers/entries';

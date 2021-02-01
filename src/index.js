@@ -19,12 +19,13 @@ import reducers from 'store/reducers';
 // middlewares
 import API from '@misakey/api';
 import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
-import invalidAccessTokenMiddleware from '@misakey/auth/middlewares/invalidAccessToken';
-import invalidCsrfTokenMiddleware from '@misakey/auth/middlewares/invalidCsrfToken';
+import invalidAccessTokenMiddleware from '@misakey/react-auth/middlewares/invalidAccessToken';
+import invalidCsrfTokenMiddleware from '@misakey/react-auth/middlewares/invalidCsrfToken';
 import floodManagementAlertMiddleware from 'middlewares/floodManagement/alert';
-import invalidSeclevelMiddleware from '@misakey/auth/middlewares/invalidSeclevel';
+import invalidSeclevelMiddleware from '@misakey/react-auth/middlewares/invalidSeclevel';
 import unauthorizedMiddleware from 'middlewares/unauthorized';
 // routing
 import Router from 'components/smart/Router';
@@ -37,7 +38,7 @@ import App from 'components/App';
 
 import SplashScreen from '@misakey/ui/Screen/Splash';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
-import OidcProvider from '@misakey/auth/components/OidcProvider'; // OIDC provider
+import OidcProvider from '@misakey/react-auth/components/OidcProvider'; // OIDC provider
 import SnackbarProvider from 'components/smart/SnackbarProvider';
 import OfflineContextProvider from 'components/smart/Context/Offline';
 import ScreenError from 'components/smart/Screen/Error';
@@ -120,7 +121,7 @@ if (isSilentAuthIframe()) {
                       publicRoute={routes.identities.public}
                       // do not try to retrieve old user during auth flow as it useless
                       // and could conflict with current auth flow (autoSignIn if user is expired)
-                      autoSignInExcludedRoutes={[routes.auth._, routes.auth.callback]}
+                      autoSignInExcludedRoutes={[authRoutes._, authRoutes.callback]}
                     >
                       <App />
                     </OidcProvider>

@@ -2,7 +2,7 @@ import path from '@misakey/helpers/path';
 import isNil from '@misakey/helpers/isNil';
 import log from '@misakey/helpers/log';
 
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import { setIdentityPublicKey } from '@misakey/crypto/HttpApi';
 import { generateIdentityKeyPair } from '@misakey/crypto/cryptoactions';

@@ -1,4 +1,4 @@
-import { selectors } from '@misakey/auth/store/reducers/auth';
+import { selectors } from '@misakey/react-auth/store/reducers/auth';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 import asyncBatch from 'helpers/batch/async';
 

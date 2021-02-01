@@ -1,4 +1,4 @@
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import routes from 'routes';
 import BoxesSchema from 'store/schemas/Boxes';
 import { DELETED_BOX, NEW_EVENT, NOTIFICATIONS_ACK, BOX_SETTINGS, NOTIFICATION, SAVED_FILE } from 'constants/app/boxes/ws/messageTypes';

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
-import { getCurrentUserSelector } from '@misakey/auth/store/reducers/auth';
+import { getCurrentUserSelector } from '@misakey/react-auth/store/reducers/auth';
 import BoxSchema from 'store/schemas/Boxes';
 import { sendersIdentifiersMatch } from 'helpers/sender';
 

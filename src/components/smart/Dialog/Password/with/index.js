@@ -3,14 +3,14 @@ import React, { useState, useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 import { selectors } from '@misakey/crypto/store/reducers';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import { useSelector } from 'react-redux';
-import useCreateAccount from '@misakey/auth/hooks/useCreateAccount';
+import useCreateAccount from '@misakey/react-auth/hooks/useCreateAccount';
 
 import DialogOpenVault from 'components/smart/Dialog/Password/OpenVault';
 

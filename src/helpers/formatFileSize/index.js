@@ -1,5 +1,5 @@
 import numbro from 'numbro';
-import { FILE_SIZE_FORMAT } from 'constants/formats/numbers';
+import { FILE_SIZE_FORMAT } from '@misakey/ui/constants/formats/numbers';
 
 export default (size) => {
   try {

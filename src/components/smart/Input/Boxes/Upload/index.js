@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import BoxesSchema from 'store/schemas/Boxes';
 import { ACCEPTED_TYPES } from 'constants/file/image';
-import { DATETIME_EXTRA_SHORT } from 'constants/formats/dates';
+import { DATETIME_EXTRA_SHORT } from '@misakey/ui/constants/formats/dates';
 
 import moment from 'moment';
 import partition from '@misakey/helpers/partition';
@@ -124,8 +124,10 @@ const InputBoxesUpload = ({
       // In case of dropping anything other than files, do not trigger file upload
       if (!isEmpty(nextFiles)) {
         if (!isEmpty(noExtFiles)) {
-          setDialogInitialStatus({ [BLOBS_FIELD_NAME]: noExtFiles
-            .map((blob) => ({ blob, noExtension: true })) });
+          setDialogInitialStatus({
+            [BLOBS_FIELD_NAME]: noExtFiles
+              .map((blob) => ({ blob, noExtension: true })),
+          });
         }
         if (!isEmpty(nextValue)) {
           setDialogInitialValues({ [BLOBS_FIELD_NAME]: nextValue });

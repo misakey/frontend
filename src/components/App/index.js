@@ -3,6 +3,7 @@ import React, { lazy, Suspense } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 
 import retry from '@misakey/helpers/retry';
 
@@ -14,9 +15,9 @@ import Screen from '@misakey/ui/Screen';
 import './App.scss';
 
 // LAZY
-const Auth = lazy(() => retry(() => import('components/screens/Auth')));
+const Auth = lazy(() => retry(() => import('@misakey/react-auth/components/screens')));
 const BoxesApp = lazy(() => retry(() => import('components/screens/app')));
-const RedirectAuthCallback = lazy(() => retry(() => import('@misakey/auth/components/Redirect/AuthCallbackWrapper')));
+const RedirectAuthCallback = lazy(() => retry(() => import('@misakey/react-auth/components/Redirect/AuthCallbackWrapper')));
 
 // CONSTANTS
 const REFERRER = routes._;
@@ -30,12 +31,12 @@ const App = () => (
     <Switch>
       {/* AUTH */}
       <Route
-        path={routes.auth._}
+        path={authRoutes._}
         component={Auth}
       />
       <Route
         exact
-        path={routes.auth.callback}
+        path={authRoutes.callback}
         render={(routerProps) => (
           <TRedirectAuthCallback
             fallbackReferrer={REFERRER}
@@ -47,7 +48,7 @@ const App = () => (
       {/* REDIRECT TO SIGN IN */}
       <Route
         exact
-        path={routes.auth.redirectToSignIn}
+        path={authRoutes.redirectToSignIn}
         component={RedirectToSignIn}
       />
       {/* BOXES APP */}

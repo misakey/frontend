@@ -1,7 +1,7 @@
 
 import routes from 'routes';
 
-import useProcessRedirect from '@misakey/auth/hooks/useProcessRedirect';
+import useProcessRedirect from '@misakey/react-auth/hooks/useProcessRedirect';
 import { useEffect } from 'react';
 
 // CONSTANTS

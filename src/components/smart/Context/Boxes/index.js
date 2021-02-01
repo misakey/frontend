@@ -3,7 +3,7 @@ import React, { useMemo, createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import STATUSES, { ALL } from 'constants/app/boxes/statuses';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import useWebSocket from '@misakey/hooks/useWebSocket';

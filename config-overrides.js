@@ -9,6 +9,7 @@ module.exports = function override(config) {
   newConfig.resolve.alias = {
     '@misakey/api': path.resolve(__dirname, './src/packages/api/src'),
     '@misakey/auth': path.resolve(__dirname, './src/packages/auth/src'),
+    '@misakey/react-auth': path.resolve(__dirname, './src/packages/react-auth/src'),
     '@misakey/helpers': path.resolve(__dirname, './src/packages/helpers/src'),
     '@misakey/hooks': path.resolve(__dirname, './src/packages/hooks/src'),
     '@misakey/store': path.resolve(__dirname, './src/packages/store/src'),

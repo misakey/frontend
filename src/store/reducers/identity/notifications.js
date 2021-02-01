@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { denormalize } from 'normalizr';
-import createResetOnSignOutReducer from '@misakey/auth/store/reducers/helpers/createResetOnSignOutReducer';
+import createResetOnSignOutReducer from '@misakey/react-auth/store/reducers/helpers/createResetOnSignOutReducer';
 import pluck from '@misakey/helpers/pluck';
 import filter from '@misakey/helpers/filter';
 import mapKeys from '@misakey/helpers/mapKeys';

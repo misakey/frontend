@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import { getProfile as getProfileBuilder } from '@misakey/helpers/builder/identities';
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -36,7 +36,7 @@ import ButtonContactMailto from '@misakey/ui/Button/Contact/Mailto';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 
 import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
-import ButtonCreateAccount from '@misakey/auth/components/Button/CreateAccount';
+import ButtonCreateAccount from '@misakey/react-auth/components/Button/CreateAccount';
 import withDialogContact from 'components/smart/Dialog/Boxes/Contact/with';
 
 

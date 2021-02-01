@@ -3,7 +3,7 @@ import React, { useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { updateIdentity } from '@misakey/auth/store/actions/auth';
+import { updateIdentity } from '@misakey/react-auth/store/actions/auth';
 import { normalize } from 'normalizr';
 import { receiveEntities } from '@misakey/store/actions/entities';
 import IdentitySchema from 'store/schemas/Identity';

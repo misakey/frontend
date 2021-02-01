@@ -8,7 +8,7 @@ import ButtonWithDialogPassword from 'components/smart/Dialog/Password/with/Butt
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import BoxControls from '@misakey/ui/Box/Controls';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';

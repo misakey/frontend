@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
-import { DATETIME_SHORT } from 'constants/formats/dates';
+import { DATETIME_SHORT } from '@misakey/ui/constants/formats/dates';
 
 import isNil from '@misakey/helpers/isNil';
 

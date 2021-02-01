@@ -3,7 +3,7 @@ import React, { useMemo, lazy } from 'react';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import routes from 'routes';
 
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { ALL } from 'constants/app/boxes/statuses';
 
 import isNil from '@misakey/helpers/isNil';
@@ -12,8 +12,8 @@ import retry from '@misakey/helpers/retry';
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 import { useSelector } from 'react-redux';
 
-import RouteAcr from '@misakey/auth/components/Route/Acr';
-import RouteAuthenticated from '@misakey/auth/components/Route/Authenticated';
+import RouteAcr from '@misakey/react-auth/components/Route/Acr';
+import RouteAuthenticated from '@misakey/react-auth/components/Route/Authenticated';
 import BoxesContextProvider from 'components/smart/Context/Boxes';
 import ScreenDrawerContextProvider from 'components/smart/Screen/Drawer';
 import BoxesList from 'components/screens/app/Boxes/List';

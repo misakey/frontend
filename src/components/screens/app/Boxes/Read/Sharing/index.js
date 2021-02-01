@@ -9,7 +9,7 @@ import { ACCESS_RM, ACCESS_BULK } from 'constants/app/boxes/events';
 import { LIMITED_RESTRICTION_TYPES } from 'constants/app/boxes/accesses';
 import { EMAIL_DOMAIN, IDENTIFIER } from '@misakey/ui/constants/accessTypes';
 import { PUBLIC } from '@misakey/ui/constants/accessModes';
-import { selectors as authSelectors } from '@misakey/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { updateAccessesEvents } from 'store/reducers/box';
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 

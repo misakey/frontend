@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { selectors } from '@misakey/auth/store/reducers/auth';
+import { selectors } from '@misakey/react-auth/store/reducers/auth';
 import { MSG_TXT } from 'constants/app/boxes/events';
 import { contactFieldsValidationSchema } from 'constants/validationSchemas/boxes';
 

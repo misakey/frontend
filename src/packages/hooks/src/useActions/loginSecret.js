@@ -2,11 +2,11 @@ import { useMemo, useCallback } from 'react';
 
 import { EMAILED_CODE, PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 
-import { screenAuthSetIdentifier, screenAuthSetPublics } from 'store/actions/screens/auth';
-import { ssoUnsign } from '@misakey/auth/store/actions/sso';
-import { clearIdentity } from '@misakey/auth/store/actions/auth';
+import { screenAuthSetIdentifier, screenAuthSetPublics } from '@misakey/react-auth/store/actions/screens';
+import { ssoUnsign } from '@misakey/react-auth/store/actions/sso';
+import { clearIdentity } from '@misakey/react-auth/store/actions/auth';
 
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 
 import propOr from '@misakey/helpers/propOr';
 
@@ -34,7 +34,7 @@ export const useSecretContentAction = (methodName, t, renewConfirmationCode) => 
       [PREHASHED_PASSWORD]: {
         buttonProps: {
           standing: BUTTON_STANDINGS.TEXT,
-          to: routes.auth.forgotPassword,
+          to: authRoutes.forgotPassword,
           component: Link,
         },
         textKey: 'auth:login.form.action.forgotPassword',
@@ -60,7 +60,7 @@ export const useClearUser = () => {
       dispatch(clearIdentity()),
       dispatch(ssoUnsign()),
     ]).then(() => {
-      push(routes.auth.signIn._);
+      push(authRoutes.signIn._);
     }),
     [dispatch, push],
   );
