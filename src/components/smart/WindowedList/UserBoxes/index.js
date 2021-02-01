@@ -39,10 +39,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const useInnerElementType = (itemCount, activeStatus, search, t) => useMemo(
+const useInnerElementType = (itemCount, activeStatus, search, t, itemClasses) => useMemo(
   () => forwardRef((props, ref) => (
     <div ref={ref}>
-      <MisakeyNotificationsListItem />
+      <MisakeyNotificationsListItem classes={itemClasses} />
       <div {...props} />
       <ListItemBoxesDeleted activeStatus={activeStatus} search={search} />
       <Box
@@ -65,11 +65,13 @@ const useInnerElementType = (itemCount, activeStatus, search, t) => useMemo(
       </Box>
     </div>
   )),
-  [itemCount, activeStatus, search, t],
+  [itemClasses, activeStatus, search, t, itemCount],
 );
 
 // COMPONENTS
-const WindowedListBoxes = forwardRef(({ activeStatus, selectedId, t, ...props }, ref) => {
+const WindowedListBoxes = forwardRef(({
+  activeStatus, selectedId, t, itemClasses, ...props
+}, ref) => {
   const locationSearchParams = useLocationSearchParams();
   const classes = useStyles();
 
@@ -87,16 +89,17 @@ const WindowedListBoxes = forwardRef(({ activeStatus, selectedId, t, ...props },
       byPagination,
       selectedId,
       guttersTop: INNER_ELEMENT_TYPE_TOP_HEIGHT,
+      classes: itemClasses,
     }),
-    [byPagination, selectedId],
+    [byPagination, selectedId, itemClasses],
   );
 
-  const innerElementType = useInnerElementType(itemCount, activeStatus, search, t);
+  const innerElementType = useInnerElementType(itemCount, activeStatus, search, t, itemClasses);
 
   if (isNil(itemCount) || itemCount === 0) {
     return (
       <>
-        <MisakeyNotificationsListItem />
+        <MisakeyNotificationsListItem classes={itemClasses} />
         <Box m={2} ref={ref} display="flex" flexDirection="column" height="100%" justifyContent="center" alignItems="center">
           <Title align="center">
             <Trans i18nKey="boxes:list.empty.text">
@@ -134,12 +137,15 @@ const WindowedListBoxes = forwardRef(({ activeStatus, selectedId, t, ...props },
 WindowedListBoxes.propTypes = {
   activeStatus: PropTypes.oneOf(STATUSES),
   selectedId: PropTypes.string,
+  itemClasses: PropTypes.object,
+  // withTranslation
   t: PropTypes.func.isRequired,
 };
 
 WindowedListBoxes.defaultProps = {
   activeStatus: ALL,
   selectedId: null,
+  itemClasses: {},
 };
 
 export default withTranslation('boxes', { withRef: true })(WindowedListBoxes);

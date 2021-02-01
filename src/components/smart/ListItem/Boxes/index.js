@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useCallback } from 'react';
-
+import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { generatePath, Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
@@ -17,6 +17,7 @@ import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 import useBoxRights from 'hooks/useBoxRights';
 import useContextMenuAnchorEl from '@misakey/hooks/useContextMenuAnchor/el';
 import useIsMountedRef from '@misakey/hooks/useIsMountedRef';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import Skeleton from '@material-ui/lab/Skeleton';
 import Box from '@material-ui/core/Box';
@@ -69,43 +70,69 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-export const BoxListItemSkeleton = (props) => (
-  <ListItem {...props}>
-    <ListItemAvatar>
-      <BoxAvatarSkeleton />
-    </ListItemAvatar>
-    <ListItemText
-      primary={(
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+export const BoxListItemSkeleton = ({ classes, ...props }) => {
+  const { root, selected, ...restClasses } = useSafeDestr(classes);
+
+  const internalClasses = useStyles({ isActionVisible: false });
+
+  return (
+    <ListItem
+      classes={{
+        root: clsx(root, internalClasses.listItemRoot),
+        selected: clsx(selected, internalClasses.listItemSelected),
+        ...restClasses,
+      }}
+      {...props}
+    >
+      <ListItemAvatar>
+        <BoxAvatarSkeleton />
+      </ListItemAvatar>
+      <ListItemText
+        primary={(
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Skeleton
+              component="span"
+              variant="text"
+              width="50%"
+            />
+            <Skeleton
+              component="span"
+              variant="text"
+              width="30%"
+            />
+
+          </Box>
+      )}
+        secondary={(
           <Skeleton
             component="span"
             variant="text"
             width="50%"
           />
-          <Skeleton
-            component="span"
-            variant="text"
-            width="20%"
-          />
-
-        </Box>
       )}
-      secondary={(
-        <Skeleton
-          component="span"
-          variant="text"
-          width="50%"
-        />
-      )}
-    />
-  </ListItem>
-);
+      />
+      <ListItemSecondaryAction />
+    </ListItem>
+  );
+};
 
-function BoxListItem({ box, toRoute, containerProps, t, ...rest }) {
+BoxListItemSkeleton.propTypes = {
+  classes: PropTypes.shape({
+    root: PropTypes.string,
+    selected: PropTypes.string,
+  }),
+};
+
+BoxListItemSkeleton.defaultProps = {
+  classes: {},
+};
+
+function BoxListItem({ box, toRoute, containerProps, classes, t, ...rest }) {
   const [anchorEl, setAnchorEl] = useState(null);
   // prefer state variable over css because hover is not enough to handle UX
   const [isActionVisible, setIsActionVisible] = useState(false);
-  const classes = useStyles({ isActionVisible });
+  const internalClasses = useStyles({ isActionVisible });
+  const { root, selected, ...restClasses } = useSafeDestr(classes);
 
   const isMounted = useIsMountedRef();
 
@@ -219,8 +246,9 @@ function BoxListItem({ box, toRoute, containerProps, t, ...rest }) {
         ...containerProps,
       }}
       classes={{
-        root: classes.listItemRoot,
-        selected: classes.listItemSelected,
+        root: clsx(root, internalClasses.listItemRoot),
+        selected: clsx(selected, internalClasses.listItemSelected),
+        ...restClasses,
       }}
       onContextMenu={onContextMenu}
       {...linkProps}
@@ -235,10 +263,10 @@ function BoxListItem({ box, toRoute, containerProps, t, ...rest }) {
         </Badge>
       </ListItemAvatar>
       <ListItemText
-        className={classes.listItemText}
+        className={internalClasses.listItemText}
         primary={(
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography className={classes.titleSpaced} noWrap>{title}</Typography>
+            <Typography className={internalClasses.titleSpaced} noWrap>{title}</Typography>
             {!isActionVisible && <TypographyDateSince date={date} className="hideOnHover" />}
           </Box>
         )}
@@ -247,7 +275,7 @@ function BoxListItem({ box, toRoute, containerProps, t, ...rest }) {
         secondaryTypographyProps={{ noWrap: true, display: 'block', component: Box }}
       />
       <ListItemSecondaryAction>
-        <IconButton className={classes.menuButton} onClick={onContextMenu} edge="end" aria-label="menu-more">
+        <IconButton className={internalClasses.menuButton} onClick={onContextMenu} edge="end" aria-label="menu-more">
           <MoreVertIcon />
         </IconButton>
         <Menu
@@ -273,6 +301,10 @@ function BoxListItem({ box, toRoute, containerProps, t, ...rest }) {
 
 BoxListItem.propTypes = {
   containerProps: PropTypes.object,
+  classes: PropTypes.shape({
+    root: PropTypes.string,
+    selected: PropTypes.string,
+  }),
   box: PropTypes.shape(BoxesSchema.propTypes),
   toRoute: PropTypes.string,
   // withTranslation
@@ -281,6 +313,7 @@ BoxListItem.propTypes = {
 
 BoxListItem.defaultProps = {
   containerProps: {},
+  classes: {},
   box: null,
   toRoute: null,
 };

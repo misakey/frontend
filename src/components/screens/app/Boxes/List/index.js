@@ -67,10 +67,12 @@ function BoxesList({ t, activeStatus, ...props }) {
 BoxesList.propTypes = {
   t: PropTypes.func.isRequired,
   activeStatus: PropTypes.oneOf(STATUSES),
+  isFullWidth: PropTypes.bool,
 };
 
 BoxesList.defaultProps = {
   activeStatus: ALL,
+  isFullWidth: false,
 };
 
 export default withTranslation(['common', 'boxes'])(BoxesList);

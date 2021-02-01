@@ -18,12 +18,13 @@ import List from '@material-ui/core/List';
 import ListItemBoxesCurrent from 'components/smart/ListItem/Boxes/Current';
 import MisakeyNotificationsListItem from 'components/smart/ListItem/Notifications/Misakey';
 import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
 
 // CONSTANTS
 const { accountId: ACCOUNT_ID_SELECTOR, hasAccount: HAS_ACCOUNT_SELECTOR } = authSelectors;
 
 // COMPONENTS
-const NoVault = forwardRef(({ t }, ref) => {
+const NoVault = forwardRef(({ t, isFullWidth }, ref) => {
   const accountId = useSelector(ACCOUNT_ID_SELECTOR);
   const hasAccount = useSelector(HAS_ACCOUNT_SELECTOR);
 
@@ -40,7 +41,10 @@ const NoVault = forwardRef(({ t }, ref) => {
   );
 
   return (
-    <>
+    <Container
+      disableGutters
+      maxWidth={isFullWidth ? 'md' : undefined}
+    >
       <MisakeyNotificationsListItem />
       <Route
         path={routes.boxes.read._}
@@ -69,12 +73,18 @@ const NoVault = forwardRef(({ t }, ref) => {
           />
         </Box>
       </Box>
-    </>
+    </Container>
   );
 });
 
 NoVault.propTypes = {
+  isFullWidth: PropTypes.bool,
+  // withTranslation
   t: PropTypes.func.isRequired,
+};
+
+NoVault.defaultProps = {
+  isFullWidth: true,
 };
 
 export default withTranslation(['boxes'], { withRef: true })(NoVault);

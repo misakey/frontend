@@ -35,6 +35,11 @@ function Home() {
 
   const isNothingSelected = useMemo(() => !isNil(matchNothingSelected), [matchNothingSelected]);
 
+  const isFullWidth = useMemo(
+    () => shouldDisplayLockedScreen || isNothingSelected,
+    [shouldDisplayLockedScreen, isNothingSelected],
+  );
+
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
 
   const drawerChildren = useMemo(
@@ -42,15 +47,17 @@ function Home() {
       if (!isAuthenticated) {
         return null;
       }
-      return shouldDisplayLockedScreen ? <VaultLockedScreen /> : <BoxesList />;
+      return shouldDisplayLockedScreen
+        ? <VaultLockedScreen />
+        : <BoxesList isFullWidth={isFullWidth} />;
     },
-    [isAuthenticated, shouldDisplayLockedScreen],
+    [isAuthenticated, isFullWidth, shouldDisplayLockedScreen],
   );
 
   return (
     <ScreenDrawerContextProvider
       drawerChildren={drawerChildren}
-      isFullWidth={shouldDisplayLockedScreen}
+      isFullWidth={isFullWidth}
       initialIsDrawerOpen={isNothingSelected}
     >
       <BoxesContextProvider activeStatus={ALL}>

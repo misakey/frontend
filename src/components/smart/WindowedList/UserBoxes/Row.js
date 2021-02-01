@@ -25,9 +25,9 @@ const INTERNAL_DATA = ['byPagination', 'selectedId', 'guttersTop'];
 const omitInternalData = (props) => omit(props, INTERNAL_DATA);
 
 // COMPONENTS
-export const Skeleton = ({ index, style, data: { guttersTop }, ...rest }) => (
+export const Skeleton = ({ index, data: { classes = {} }, ...rest }) => (
   <BoxListItemSkeleton
-    style={{ ...style, top: style.top + guttersTop }}
+    classes={classes}
     {...rest}
   />
 );
@@ -45,7 +45,7 @@ const Row = ({ style, index, data, box, id, dispatchReceivedBox, ...rest }) => {
     [id],
   );
 
-  const { guttersTop = 0 } = useMemo(() => data, [data]);
+  const { guttersTop = 0, classes = {} } = useMemo(() => data, [data]);
 
   const shouldFetch = useMemo(() => isNil(box) && !isNil(id), [box, id]);
 
@@ -54,7 +54,7 @@ const Row = ({ style, index, data, box, id, dispatchReceivedBox, ...rest }) => {
       style: { ...style, top: style.top + guttersTop },
       index,
     }),
-    [style, index, guttersTop],
+    [style, guttersTop, index],
   );
 
   const onError = useOnGetBoxError(id);
@@ -66,12 +66,21 @@ const Row = ({ style, index, data, box, id, dispatchReceivedBox, ...rest }) => {
   );
 
   if (isFetching) {
-    return <Skeleton style={style} index={index} data={data} {...rest} />;
+    return (
+      <Skeleton
+        containerProps={containerProps}
+        style={style}
+        index={index}
+        data={data}
+        {...rest}
+      />
+    );
   }
 
   return (
     <BoxListItem
       containerProps={containerProps}
+      classes={classes}
       box={box}
       {...omitInternalData(data)}
       {...rest}

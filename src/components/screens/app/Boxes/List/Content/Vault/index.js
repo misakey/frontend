@@ -41,19 +41,24 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
     borderTop: `1px solid ${theme.palette.divider}`,
   },
+  listItemContainer: ({ isFullWidth }) => (isFullWidth ? {
+    [theme.breakpoints.up('md')]: {
+      maxWidth: theme.breakpoints.values.md,
+      left: '50% !important',
+      transform: 'translateX(-50%)',
+    },
+  } : {}),
 }));
 
 // COMPONENTS
-const VaultOpen = forwardRef(({ t, activeStatus, search, ...props }, ref) => {
-  const classes = useStyles();
+const VaultOpen = forwardRef(({ t, activeStatus, search, isFullWidth, ...props }, ref) => {
+  const classes = useStyles({ isFullWidth });
 
   const match = useRouteMatch(routes.boxes.read._);
   const selectedId = useMemo(
     () => paramsIdPath(match),
     [match],
   );
-
-
 
   // const { search: locationSearch, pathname } = useLocation();
   // const { push } = useHistory();
@@ -92,6 +97,7 @@ const VaultOpen = forwardRef(({ t, activeStatus, search, ...props }, ref) => {
         key={search}
         selectedId={selectedId}
         disablePadding
+        itemClasses={{ container: classes.listItemContainer, root: classes.listItemContainer }}
         {...omitTranslationProps(props)}
       />
       <BoxFlexFill />
@@ -106,12 +112,14 @@ const VaultOpen = forwardRef(({ t, activeStatus, search, ...props }, ref) => {
 VaultOpen.propTypes = {
   activeStatus: PropTypes.oneOf(STATUSES).isRequired,
   search: PropTypes.string,
+  isFullWidth: PropTypes.bool,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
 
 VaultOpen.defaultProps = {
   search: null,
+  isFullWidth: false,
 };
 
 export default withTranslation(['boxes', 'document'], { withRef: true })(VaultOpen);

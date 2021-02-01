@@ -46,7 +46,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-function MisakeyNotificationsListItem({ ...props }) {
+function MisakeyNotificationsListItem(props) {
   const classes = useStyles();
   const { t } = useTranslation('boxes');
 

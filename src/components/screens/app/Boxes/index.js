@@ -137,7 +137,7 @@ function Boxes({ match }) {
               acr={2}
               exact
               path={match.path}
-              component={BoxNone}
+              component={null}
             />
           </Switch>
         )}
