@@ -64,6 +64,7 @@ const CardUser = ({
   action,
   children,
   disablePadding,
+  hideSkeleton,
   ...props
 }) => {
   const classes = useStyles({ disablePadding, expired });
@@ -100,19 +101,21 @@ const CardUser = ({
       classes={{ root: classes.cardRoot }}
       {...props}
     >
-      <CardHeader
-        classes={{
-          root: classes.cardHeaderRoot,
-          subheader: classes.cardHeaderSubheader,
-          action: classes.cardHeaderAction,
-        }}
-        avatar={(
-          <AvatarUser avatarUrl={avatarUrl} displayName={displayName} />
-        )}
-        action={action}
-        title={title}
-        subheader={subheader}
-      />
+      {(!hideSkeleton || isNotEmpty) && (
+        <CardHeader
+          classes={{
+            root: classes.cardHeaderRoot,
+            subheader: classes.cardHeaderSubheader,
+            action: classes.cardHeaderAction,
+          }}
+          avatar={(
+            <AvatarUser avatarUrl={avatarUrl} displayName={displayName} />
+          )}
+          action={action}
+          title={title}
+          subheader={subheader}
+        />
+      )}
       {children}
     </Card>
   );
@@ -127,6 +130,7 @@ CardUser.propTypes = {
   action: PropTypes.node,
   children: PropTypes.node,
   disablePadding: PropTypes.bool,
+  hideSkeleton: PropTypes.bool,
 };
 
 CardUser.defaultProps = {
@@ -138,6 +142,7 @@ CardUser.defaultProps = {
   action: null,
   children: null,
   disablePadding: false,
+  hideSkeleton: false,
 };
 
 export default CardUser;

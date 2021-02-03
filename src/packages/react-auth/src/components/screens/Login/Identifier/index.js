@@ -131,7 +131,10 @@ const AuthLoginIdentifier = ({
           <Subtitle align="center">
             <TransRequireAccess i18nKey="auth:login.identifier.requireAccess.title" />
           </Subtitle>
-          <CardUser my={3}>
+          <CardUser
+            hideSkeleton
+            my={3}
+          >
             <LoginFormField
               FormHelperTextProps={{ component: FormHelperTextInCard }}
               margin="none"

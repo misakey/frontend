@@ -8,6 +8,7 @@ import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react-auth/store/reducers
 import authRoutes from '@misakey/react-auth/routes';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
+import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
@@ -33,14 +34,24 @@ const AuthLogin = ({ identifier, match, loginChallenge, loginHint, t, ...props }
 
   const { identifier: identifierHint } = useSafeDestr(objLoginHint);
 
+  const identifierValid = useMemo(
+    () => !isEmpty(identifier),
+    [identifier],
+  );
+
+  const identifierHintValid = useMemo(
+    () => !isEmpty(identifierHint) && (identifierHint === identifier || isNil(identifier)),
+    [identifierHint, identifier],
+  );
+
   useMountEffect(
     () => {
-      if (!isEmpty(identifierHint) && identifierHint === identifier) {
-        onSubmit(identifierHint)
+      if (identifierHintValid || identifierValid) {
+        onSubmit(identifierHintValid ? identifierHint : identifier)
           .catch(handleHttpErrors);
       }
     },
-    [onSubmit, identifierHint, identifier, handleHttpErrors],
+    [onSubmit, identifierHint, identifier, identifierHintValid, identifierValid, handleHttpErrors],
   );
 
   useUpdateDocHead(t('auth:login.documentTitle'));
