@@ -34,3 +34,28 @@ export const deleteWebauthnRegistration = (identityId, id) => API
   .use(API.endpoints.identities.webauthnCredentials.delete)
   .build({ identityId, id })
   .send();
+
+
+export const beginTotpEnroll = (identityId) => API
+  .use(API.endpoints.identities.totp.read)
+  .build({ id: identityId })
+  .send()
+  .then(objectToCamelCase);
+
+
+export const finishTotpEnroll = (identityId, payload) => API
+  .use(API.endpoints.identities.totp.create)
+  .build({ id: identityId }, payload)
+  .send()
+  .then(objectToCamelCase);
+
+export const deleteTotpConfiguration = (identityId) => API
+  .use(API.endpoints.identities.totp.delete)
+  .build({ id: identityId })
+  .send();
+
+export const resetTotpRecoveryCodes = (identityId) => API
+  .use(API.endpoints.identities.totp.recoveryCodes.create)
+  .build({ id: identityId })
+  .send()
+  .then(objectToCamelCase);

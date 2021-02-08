@@ -23,7 +23,7 @@ export const MODES = Object.values(MODE);
 
 // COMPONENTS
 
-const ButtonCopy = ({ value, format, message, mode, t, ...props }) => {
+const ButtonCopy = ({ value, format, message, mode, t, iconProps, ...props }) => {
   const handleCopy = useCopy(value, { format, message });
 
   const hasNoValue = useMemo(() => isNil(value), [value]);
@@ -53,10 +53,10 @@ const ButtonCopy = ({ value, format, message, mode, t, ...props }) => {
         justifyContent="center"
         mr={1}
       >
-        <CopyIcon fontSize="small" />
+        <CopyIcon fontSize="small" {...iconProps} />
       </Box>
       )}
-      {isIcon ? <CopyIcon /> : t('common:copy')}
+      {isIcon ? <CopyIcon {...iconProps} /> : t('common:copy')}
     </Wrapper>
   );
 };
@@ -65,6 +65,7 @@ ButtonCopy.propTypes = {
   mode: PropTypes.oneOf(MODES),
   format: PropTypes.string,
   message: PropTypes.string,
+  iconProps: PropTypes.object,
   // withTranslation
   t: PropTypes.func.isRequired,
   value: PropTypes.string,
@@ -75,7 +76,7 @@ ButtonCopy.defaultProps = {
   format: 'text/plain',
   message: undefined,
   mode: MODE.text,
-
+  iconProps: {},
 };
 
 export default withTranslation('common')(ButtonCopy);

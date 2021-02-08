@@ -5,7 +5,7 @@ import { useSnackbar } from 'notistack';
 import { useDispatch } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
-import RegisterDeviceDialog from 'components/screens/app/Account/Security/MFA/Dialog/RegisterDevice';
+import RegisterDeviceDialog from 'components/screens/app/Account/Security/MFA/Webauthn/Dialog/RegisterDevice';
 
 import { beginWebauthnRegistration, finishWebauthnRegistration } from '@misakey/auth/builder/identities';
 import encodeBuffer from '@misakey/helpers/encodeBuffer';
@@ -79,7 +79,7 @@ const AccountMFADeviceActionAdd = ({ identityId }) => {
         }));
         setIsRegisterDeviceDialogOpened(true);
       } catch (err) {
-        enqueueSnackbar(t('account:security.MFA.register.error'), { variant: 'warning' });
+        enqueueSnackbar(t('account:security.MFA.webauthn.registerError'), { variant: 'warning' });
         logSentryException(err, 'onDetectMFADevice: fail to detect Device', undefined, 'warning');
       } finally {
         setIsDetecting(false);
@@ -117,7 +117,7 @@ const AccountMFADeviceActionAdd = ({ identityId }) => {
         color="primary"
         onClick={onDetectMFADevice}
         disabled={isDetecting}
-        aria-label={t('account:security.MFA.devicesList.add')}
+        aria-label={t('account:security.MFA.webauthn.devicesList.add')}
       >
         <AddIcon />
       </IconButton>

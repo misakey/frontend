@@ -21,7 +21,7 @@ import createNewBackupKeySharesFromAuthFlow from '@misakey/crypto/store/actions/
 import { ssoUpdate, ssoSign, ssoReset } from '@misakey/react-auth/store/actions/sso';
 import { conflict } from '@misakey/ui/constants/errorTypes';
 import { DATE_FULL } from '@misakey/ui/constants/formats/dates';
-import { EMAILED_CODE, PREHASHED_PASSWORD, PASSWORD_RESET_KEY, ACCOUNT_CREATION, WEBAUTHN, AuthUndefinedMethodName } from '@misakey/auth/constants/method';
+import { EMAILED_CODE, PREHASHED_PASSWORD, PASSWORD_RESET_KEY, ACCOUNT_CREATION, WEBAUTHN, TOTP, TOTP_RECOVERY, AuthUndefinedMethodName } from '@misakey/auth/constants/method';
 
 import compose from '@misakey/helpers/compose';
 import head from '@misakey/helpers/head';
@@ -32,7 +32,7 @@ import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import { getDetails, getCode } from '@misakey/helpers/apiError';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
-import { loginAuthStepSecretWebAuthn, loginAuthStepSecretInput } from '@misakey/auth/builder/loginAuthStep';
+import { loginAuthStepSecretWebAuthn, loginAuthStepSecretInput, loginAuthStepSecretTotp } from '@misakey/auth/builder/loginAuthStep';
 import { isHydraErrorCode } from '@misakey/auth/helpers/errors';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -63,6 +63,7 @@ import AppBar from '@misakey/ui/AppBar';
 import CardUser from '@misakey/ui/Card/User';
 import IconButton from '@material-ui/core/IconButton';
 import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
+import ButtonSwitchTotpMethod from '@misakey/react-auth/components/Button/SwitchTotpMethod';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
@@ -190,6 +191,7 @@ const AuthLoginSecret = ({
         next,
         authnStep: nextAuthnStep,
       } = objectToCamelCaseDeep(res);
+
       if (next === NEXT_STEP_REDIRECT) {
         return setRedirectTo(nextRedirectTo);
       }
@@ -210,10 +212,6 @@ const AuthLoginSecret = ({
         return setRedirectTo(authRoutes.redirectToSignIn);
       }
 
-      // in case reset password dialog is open, close dialog before setting field error
-      if (dialogOpen) {
-        onDialogClose();
-      }
       const code = getCode(e);
       const details = getDetails(e);
       const secretError = getSecretError(details);
@@ -265,7 +263,7 @@ const AuthLoginSecret = ({
         action: (key) => <SnackbarActionRefresh id={key} />,
       });
     },
-    [dialogOpen, dispatchSsoReset, enqueueSnackbar, handleHttpErrors, methodName, onDialogClose, t],
+    [dispatchSsoReset, enqueueSnackbar, handleHttpErrors, methodName, t],
   );
 
   const onLoginAuthStepSecret = useCallback(
@@ -326,23 +324,56 @@ const AuthLoginSecret = ({
     [accessToken, identityId, loginChallenge],
   );
 
+  const onValidateTotp = useCallback(
+    ({ secret }) => loginAuthStepSecretTotp(
+      { identityId, loginChallenge, metadata: { code: secret } },
+      accessToken,
+    ),
+    [accessToken, identityId, loginChallenge],
+  );
+
+  const onValidateTotpRecovery = useCallback(
+    ({ secret }) => loginAuthStepSecretTotp(
+      { identityId, loginChallenge, metadata: { recoveryCode: secret } },
+      accessToken,
+    ),
+    [accessToken, identityId, loginChallenge],
+  );
+
+  const { loginAuthStep, onSuccess } = useMemo(
+    () => {
+      switch (methodName) {
+        case WEBAUTHN:
+          return { loginAuthStep: onValidateWebauthn, onSuccess: onSuccessLoginAuthStep };
+        case TOTP:
+          return { loginAuthStep: onValidateTotp, onSuccess: onSuccessLoginAuthStep };
+        case TOTP_RECOVERY:
+          return { loginAuthStep: onValidateTotpRecovery, onSuccess: onSuccessLoginAuthStep };
+        default:
+          return { loginAuthStep: onLoginAuthStepSecret, onSuccess: onValidateSecretSuccess };
+      }
+    },
+    [methodName, onLoginAuthStepSecret, onSuccessLoginAuthStep,
+      onValidateSecretSuccess, onValidateTotp, onValidateWebauthn, onValidateTotpRecovery],
+  );
+
   const handleSubmit = useCallback(
     async (values, { setFieldError, setSubmitting, setFieldValue }) => {
       setRedirectTo(null);
       try {
-        const { loginAuthStep, onSuccess } = (methodName === WEBAUTHN)
-          ? { loginAuthStep: onValidateWebauthn, onSuccess: onSuccessLoginAuthStep }
-          : { loginAuthStep: onLoginAuthStepSecret, onSuccess: onValidateSecretSuccess };
         const response = await loginAuthStep(values);
         await onSuccess(response, { values, setFieldValue });
       } catch (err) {
         onErrorLoginAuthStep(err, { setFieldError, setFieldValue });
       } finally {
         setSubmitting(false);
+        // in case reset password dialog is open, close dialog before setting field error
+        if (dialogOpen) {
+          onDialogClose();
+        }
       }
     },
-    [methodName, onLoginAuthStepSecret, onErrorLoginAuthStep, onSuccessLoginAuthStep,
-      onValidateSecretSuccess, onValidateWebauthn],
+    [loginAuthStep, onSuccess, onErrorLoginAuthStep, dialogOpen, onDialogClose],
   );
 
   const onSubmit = useMemo(
@@ -453,6 +484,12 @@ const AuthLoginSecret = ({
                   identifier={identifier}
                   text={t('auth:login.form.action.forgotPassword')}
                   onDone={onForgotPasswordDone}
+                />
+              )}
+              {[TOTP, TOTP_RECOVERY].includes(methodName) && (
+                <ButtonSwitchTotpMethod
+                  authnStep={authnStep}
+                  classes={{ buttonRoot: classes.buttonRoot }}
                 />
               )}
               {methodName !== WEBAUTHN && (

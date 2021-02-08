@@ -97,9 +97,19 @@
   "signinRedirect": {
     "documentTitle": "Authentication",
     "user": {
-      "accountNeeded": {
-        "title": "This feature requires a password",
-        "subtitle": "Confirm a password to continue"
+      "insufficientACR": {
+        "2": {
+          "title": "This feature requires a password",
+          "subtitle": "Confirm a password to continue"
+        },
+        "3": {
+          "title": "Login with TOTP to continue",
+          "subtitle": "This feature requires you to reauthenticate in a more secured way"
+        }, 
+        "4": {
+          "title": "Login with Webauthn to continue",
+          "subtitle": "This feature requires you to reauthenticate in a more secured way"
+        }
       },
       "expired": {
         "title": "Your authenticated session has expired",

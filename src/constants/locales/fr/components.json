@@ -107,9 +107,19 @@
   "signinRedirect": {
     "documentTitle": "Authentification",
     "user": {
-      "accountNeeded": {
-        "title": "Cette fonctionnalité nécessite un mot de passe",
-        "subtitle": "Confirmez un mot de passe pour continuer"
+      "insufficientACR": {
+        "2": {
+          "title": "Cette fonctionnalité nécessite un mot de passe",
+          "subtitle": "Confirmez un mot de passe pour continuer"
+        },
+        "3": {
+          "title": "Se connecter avec TOTP pour continuer",
+          "subtitle": "Cette fonctionnalité nécessite que vous vous ré-authentifiez d'une façon plus sécurisée"
+        }, 
+        "4": {
+          "title": "Se connecter avec Webauthn pour continuer",
+          "subtitle": "Cette fonctionnalité nécessite que vous vous ré-authentifiez d'une façon plus sécurisée"
+        }
       },
       "expired": {
         "title": "Votre session authentifiée est expirée",

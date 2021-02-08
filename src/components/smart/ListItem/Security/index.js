@@ -17,7 +17,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { WEBAUTHN } from 'constants/account/mfaMethod';
+import { DISABLED } from 'constants/account/mfaMethod';
 
 const { identity: IDENTITY_SELECTOR } = authSelectors;
 const CHECK_MARK_SIGN = '\u2705';
@@ -48,7 +48,7 @@ const ListItemSecurity = ({ classes, to, t, ...props }) => {
         <Typography>{t('components:listItemSecurity.title')}</Typography>
       </ListItemIcon>
       <ListItemText primary={t('components:listItemSecurity.text', {
-        MFAStatus: mfaMethod === WEBAUTHN ? CHECK_MARK_SIGN : CROSS_MARK_SIGN,
+        MFAStatus: mfaMethod !== DISABLED ? CHECK_MARK_SIGN : CROSS_MARK_SIGN,
         passwordStatus: hasAccount ? CHECK_MARK_SIGN : CROSS_MARK_SIGN,
       })}
       />

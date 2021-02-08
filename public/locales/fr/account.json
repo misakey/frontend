@@ -75,31 +75,68 @@
       "existing": "Quel est le mot de passe\u00a0?",
       "new": "Quel mot de passe souhaitez-vous utiliser\u00a0?",
       "title": "Mot de passe",
+      "subtitle": "Votre compte est sécurisé par un mot de passe",
       "success": "Mon mot de passe a été mis a jour"
     },
     "MFA": {
       "title": "Authentification à multiple facteurs",
-      "devicesList": {
-        "title": "Périphériques enregistrés",
-        "empty": "Vous n'avez pas encore ajouté de périphériques.\nAjoutez-en un pour pouvoir activer l'Authentification à Multiple Facteurs.",
-        "add": "Ajouter un périphérique",
-        "delete": {
-          "confirm": {
-            "title": "Supprimer un périphérique",
-            "subtitle": "C'est votre seul périphérique enregistré, le supprimer désactivera l'Authentification à Multiple Facteurs"
+      "description": "L'authentification par mots de passe est une méthode qui peut être compromise. L'authentification à multiple facteurs renforce la sécurité en exigeant plusieurs formes de vérification pour prouver votre identité lors de la connexion.",
+      "subtitle": {
+        "activated": "Votre compte est sécurisé avec l'Authentification à Multiple Facteurs",
+        "deactivated": "Sécurisez votre compte avec l'Authentification à Multiple Facteurs"
+      },
+      "updateMethod": {
+        "success": "Méthode d'Authentification à Multiple Facteurs modifiée",
+        "confirm": {
+          "title": "Changer la méthode d'Authentification à Multiple Facteurs",
+          "subtitle": "Vous ne pouvez utiliser qu'une seule méthode MFA à la fois. Cela va remplacer votre méthode MFA actuelle (votre configuration ne sera pas affectée, vous pourrez la réactiver plus tard)."
+        }
+      },
+      "totp": {
+        "title": "Time-based One-time Password",
+        "subtitle": "Générez automatiquement un mot de passe à usage unique à partir d’un appareil physique",
+        "activate": "Activer l'authentification avec TOTP",
+        "resetConfig": {
+          "text": "Votre compte a une configuration TOTP",
+          "button": "Supprimer la configuration"
+        },
+        "noConfig": {
+          "text": "Vous n'avez enregistrer aucune configuration TOTP",
+          "button": "Configuration"
+        },
+        "resetRecoveryCodes": {
+          "button": "Réinitialiser vos codes de récupération"
+        },
+        "dialog": {
+          "title": {
+            "register": "Configurer l'authentification TOTP",
+            "recovery": "Enregistrer vos codes de récupération"
+          },
+          "subtitle": {
+            "register": "Scanner le flashcode ci-contre avec votre application TOTP et remplissez le formulaire avec le code obtenu dans l'application",
+            "recovery": "Voici vos codes de récupération. Enregistrez-les avec précaution, ils vous permettront de retrouver l'accès à votre compte en cas de problème.\nVous pouvez les télécharger dans un fichier ou les copier pour les enregistrer dans un endroit sécurisé."
           }
         }
       },
-      "updateMethod": {
-        "success": "Méthode d'Authentification à Multiple Facteurs modifiée"
-      },
-      "register": {
-        "error": "Votre périphérique n'a pas pu être enregistré"
-      },
-      "registerDeviceDialog": {
-        "title": "Enregistrer le périphérique",
-        "subtitle": "Nommez votre périphérique pour le retrouver facilement dans votre liste",
-        "label": "Nom du périphérique"
+      "webauthn": {
+        "title": "Second Facteur Universel (U2F)",
+        "subtitle": "Connectez-vous à l’aide d’une clé de sécurité externe prenant en charge les normes FIDO (Fast Identity Online).",
+        "activate": "Activer l'authentification U2F",
+        "devicesList": {
+          "title": "Périphériques enregistrés",
+          "empty": "Vous n'avez pas encore ajouté de périphériques.\nAjoutez-en un pour pouvoir activer l'Authentification à Multiple Facteurs.",
+          "add": "Ajouter un périphérique",
+          "confirmDelete": {
+            "title": "Supprimer un périphérique",
+            "subtitle": "C'est votre seul périphérique enregistré, le supprimer désactivera l'Authentification à Multiple Facteurs"
+          }
+        }, 
+        "registerError": "Votre périphérique n'a pas pu être enregistré",
+        "registerDeviceDialog": {
+          "title": "Enregistrer le périphérique",
+          "subtitle": "Nommez votre périphérique pour le retrouver facilement dans votre liste",
+          "label": "Nom du périphérique"
+        }
       }
     }
   },

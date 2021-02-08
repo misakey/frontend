@@ -31,7 +31,6 @@ import {
   BackupDecryptionError,
   BadBackupVersion,
 } from '@misakey/crypto/Errors/classes';
-import Title from '@misakey/ui/Typography/Title';
 
 // CONSTANTS
 const INITIAL_VALUES = {
@@ -119,8 +118,7 @@ const AccountPassword = ({ t, identity }) => {
       initialValues={INITIAL_VALUES}
     >
       {({ isSubmitting }) => (
-        <Form>
-          <Title>{t('account:security.password.title')}</Title>
+        <Form style={{ width: '100%' }}>
           <Box mb={2}>
             <FormField
               type="password"

@@ -188,6 +188,22 @@
       "malformed": "Le mot de passe doit contenir au moins 8 caractères"
     }
   },
+  "totp_secret": {
+    "label": "Time-Based-One-Time-Password",
+    "placeholder": "543232",
+    "error": {
+      "invalid": "Ce code est incorrect, veuillez réessayer",
+      "malformed": "Le code doit contenir 6 chiffres"
+    }
+  },
+  "totp_recovery_secret": {
+    "label": "Code de récupération TOTP",
+    "placeholder": "SpU34-pE5s8",
+    "error": {
+      "invalid": "Ce code est incorrect, veuillez réessayer",
+      "malformed": "Le code de récupération TOTP doit contenir 8 caractères séparés par un tiret"
+    }
+  },
   "passwordVault": {
     "label": "Mot de passe",
     "placeholder": "********",
@@ -263,6 +279,17 @@
           "label": "Message",
           "placeholder": "Écrivez un message..."
         }
+      }
+    }
+  }, 
+  "totp": {
+    "code": {
+      "label": "Code",
+      "placeholder": "123456",
+      "helperText": "Entrez le code obtenu avec votre application TOTP",
+      "error": {
+        "forbidden": "Ce code est incorrect, veuillez réessayer",
+        "malformed": "Le code de confirmation doit contenir 6 chiffres"
       }
     }
   }

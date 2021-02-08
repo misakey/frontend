@@ -1,7 +1,7 @@
 import API from '@misakey/api';
 
 import { AUTH_STEP_KEY } from '@misakey/auth/constants/step';
-import { PASSWORD_RESET_KEY, WEBAUTHN } from '@misakey/auth/constants/method';
+import { PASSWORD_RESET_KEY, WEBAUTHN, TOTP } from '@misakey/auth/constants/method';
 
 import { makeMetadata, makePasswordReset } from '@misakey/auth/helpers/method';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
@@ -63,6 +63,27 @@ export const loginAuthStepSecretWebAuthn = (
     },
     // webauthn backend lib expects the object as it has been provided by navigator.credentials API
     { excludedKeys: ['metadata'] },
+  );
+
+  return API.use({ ...API.endpoints.auth.loginAuthStep, auth: true })
+    .build(null, payload)
+    .send({ headers: { Authorization: `Bearer ${accessToken}` } });
+};
+
+
+export const loginAuthStepSecretTotp = (
+  { loginChallenge, identityId, metadata },
+  accessToken,
+) => {
+  const payload = objectToSnakeCaseDeep(
+    {
+      loginChallenge,
+      authnStep: {
+        identityId,
+        methodName: TOTP,
+        metadata,
+      },
+    },
   );
 
   return API.use({ ...API.endpoints.auth.loginAuthStep, auth: true })

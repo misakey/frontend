@@ -71,10 +71,10 @@ const AccountMFADeviceActionDelete = (
         isDialogOpen={isConfirmDeleteDialogOpened}
         onClose={onCloseConfirmDeleteDialog}
         confirmButtonText={t('common:delete')}
-        title={t('account:security.MFA.devicesList.delete.confirm.title')}
+        title={t('account:security.MFA.webauthn.devicesList.confirmDelete.title')}
       >
         <Typography color="textSecondary">
-          {t('account:security.MFA.devicesList.delete.confirm.subtitle')}
+          {t('account:security.MFA.webauthn.devicesList.confirmDelete.subtitle')}
         </Typography>
       </DialogConfirm>
       <IconButton

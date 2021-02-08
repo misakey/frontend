@@ -52,6 +52,29 @@ export default {
       withCsrfToken: true,
     },
   },
+  totp: {
+    read: {
+      method: 'GET',
+      path: '/identities/:id/totp/enroll',
+    },
+    create: {
+      method: 'POST',
+      path: '/identities/:id/totp/enroll',
+      withCsrfToken: true,
+    },
+    delete: {
+      method: 'DELETE',
+      path: '/identities/:id/totp',
+      withCsrfToken: true,
+    },
+    recoveryCodes: {
+      create: {
+        method: 'POST',
+        path: '/identities/:id/totp/recovery-codes',
+        withCsrfToken: true,
+      },
+    },
+  },
   storageQuota: {
     find: {
       method: 'GET',

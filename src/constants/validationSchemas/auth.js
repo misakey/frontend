@@ -4,7 +4,8 @@ import {
   passwordFieldValidation, codeFieldValidation, webauthnFieldValidation,
 } from 'constants/fieldValidations';
 
-import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, WEBAUTHN } from '@misakey/auth/constants/method';
+import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, WEBAUTHN, TOTP, TOTP_RECOVERY } from '@misakey/auth/constants/method';
+import { malformed, required } from '@misakey/ui/constants/errorTypes';
 
 const secretValidationSchemas = {
   [EMAILED_CODE]: codeFieldValidation.strictSchema,
@@ -12,6 +13,8 @@ const secretValidationSchemas = {
   [ACCOUNT_CREATION]: passwordFieldValidation.setSchema,
   [ACCOUNT_CREATION]: passwordFieldValidation.setSchema,
   [WEBAUTHN]: webauthnFieldValidation.schema,
+  [TOTP]: codeFieldValidation.strictSchema,
+  [TOTP_RECOVERY]: Yup.string().matches(/^[0-9a-zA-Z]{5}-[0-9a-zA-Z]{5}$/, { message: malformed }).required(required),
 };
 
 export const getSecretValidationSchema = (methodName) => Yup.object().shape({

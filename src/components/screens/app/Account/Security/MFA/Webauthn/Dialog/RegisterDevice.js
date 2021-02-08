@@ -61,7 +61,7 @@ function RegisterDeviceDialog({ onClose, open, onSubmit, ...props }) {
       fullWidth
       open={open}
       onClose={onClose}
-      aria-label={t('account:security.MFA.registerDeviceDialog.title')}
+      aria-label={t('account:security.MFA.webauthn.registerDeviceDialog.title')}
       aria-describedby={DESCRIPTION_ID}
       {...omitTranslationProps(props)}
     >
@@ -71,15 +71,15 @@ function RegisterDeviceDialog({ onClose, open, onSubmit, ...props }) {
         onSubmit={onSubmitForm}
       >
         <Form>
-          <DialogTitleWithCloseFormik title={t('account:security.MFA.registerDeviceDialog.title')} onClose={onClose} />
+          <DialogTitleWithCloseFormik title={t('account:security.MFA.webauthn.registerDeviceDialog.title')} onClose={onClose} />
           <DialogContent
-            subtitle={<Subtitle className={classes.prewrap}>{t('account:security.MFA.registerDeviceDialog.subtitle')}</Subtitle>}
+            subtitle={<Subtitle className={classes.prewrap}>{t('account:security.MFA.webauthn.registerDeviceDialog.subtitle')}</Subtitle>}
           >
             <FormField
               component={FormFieldTextFieldWithErrors}
               name={FIELD_DEVICE_NAME}
               placeholder={placeholder}
-              label={t('account:security.MFA.registerDeviceDialog.label')}
+              label={t('account:security.MFA.webauthn.registerDeviceDialog.label')}
               autoFocus
               type="text"
             />

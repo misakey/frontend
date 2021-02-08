@@ -137,14 +137,14 @@ const DialogSigninRedirect = ({
         return t('components:signinRedirect.user.expired.title');
       }
       if (insufficientACR) {
-        return t('components:signinRedirect.user.accountNeeded.title');
+        return t(`components:signinRedirect.user.insufficientACR.${acrValues}.title`);
       }
       if (!isNil(resourceName)) {
         return t('common:connect.title', { resourceName });
       }
       return t('common:connect.misakey.title');
     },
-    [sessionExpired, insufficientACR, resourceName, t],
+    [sessionExpired, insufficientACR, resourceName, t, acrValues],
   );
 
   const subtitle = useMemo(
@@ -153,7 +153,7 @@ const DialogSigninRedirect = ({
         return t('components:signinRedirect.user.expired.subtitle');
       }
       if (insufficientACR) {
-        return t('components:signinRedirect.user.accountNeeded.subtitle');
+        return t(`components:signinRedirect.user.insufficientACR.${acrValues}.subtitle`);
       }
       if (!isNil(resourceName)) {
         return (

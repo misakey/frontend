@@ -28,6 +28,10 @@ export const webauthnDeviceValidationSchema = Yup.object().shape({
   name: Yup.string().trim(),
 });
 
+export const totpEnrollValidationSchema = Yup.object().shape({
+  code: codeFieldValidation.strictSchema,
+});
+
 export const passwordValidationSchema = Yup.object().shape({
   [OLD_PASSWORD_KEY]: passwordFieldValidation.schema,
   [NEW_PASSWORD_KEY]: passwordFieldValidation.setSchema,

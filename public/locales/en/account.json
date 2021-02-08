@@ -75,32 +75,69 @@
       "existing": "What's the password\u00a0?",
       "new": "Which password do you want to use\u00a0?",
       "title": "Password",
+      "subtitle": "Your account is secured with a password",
       "success": "Password successfully updated"
     },
     "MFA": {
       "title": "Multi-Factor Authentication",
-      "devicesList": {
-        "title": "Registered devices",
-        "empty": "You haven't registered any device yet.\nAdd one to be able to activate Multi-Factor Authentication.",
-        "add": "Add a device",
-        "delete": {
-          "confirm": {
-            "title": "Delete device",
-            "subtitle": "This is your only registered device, deleting it will disable Multi-Factor Authentication"
+      "description": "Authentication by passwords is a method that can be compromised. Multi-Factor Authentication enforces the security of your account by requiring several kinds of checks to prove your identity during the authentication flow.",
+      "subtitle": {
+        "activated": "Your account is secured with Multi-Factor Authentication",
+        "deactivated": "Secure your account with Multi-Factor Authentication"
+      },
+      "updateMethod": {
+        "success": "Multi-Factor Authentication method updated",
+        "confirm": {
+          "title": "Update Multi-Factor Authentication method",
+          "subtitle": "You can use only one MFA method at a time. This is going to replace your current MFA method (your configuration will not be affected, you can reactivate it later)."
+        }
+      },
+      "totp": {
+        "title": "Time-based One-time Password",
+        "subtitle":"Automatically generate a One-Time-Password from a physical device",
+        "activate": "Activate TOTP authentification",
+        "resetConfig": {
+          "text": "Your account has a TOTP configuration",
+          "button": "Delete configuration"
+        },
+        "noConfig": {
+          "text": "You have no TOTP configuration registered",
+          "button": "Configuration"
+        },
+        "resetRecoveryCodes": {
+          "button": "Reinitialize your recovery codes"
+        },
+        "dialog": {
+          "title": {
+            "register": "Configure TOTP Authentication",
+            "recovery": "Save your recovery codes"
+          },
+          "subtitle": {
+            "register": "Flash the generated flashcode with your TOTP application and fill the form with the code obtained in the application",
+            "recovery": "Here are your recovery codes. Save them carefully, it allows you to recover access to your account in case of problem.\nYou can download the codes or copying them to paste somewhere else and save them in a secured place."
           }
         }
       },
-      "updateMethod": {
-        "success": "Multi-Factor Authentication method updated"
-      },
-      "register": {
-        "error": "Your device couldn't have been saved"
-      },
-      "registerDeviceDialog": {
-        "title": "Save the device",
-        "subtitle": "Name the device to easily find it in your list",
-        "label": "Device name"
-      }
+      "webauthn": {
+        "title": "Universal Second Factor",
+        "subtitle":"Connect with an external security key supporting FIDO standard (Fast Identity Online).",
+        "activate": "Activate U2F authentification",
+        "devicesList": {
+          "title": "Registered devices",
+          "empty": "You haven't registered any device yet.\nAdd one to be able to activate Multi-Factor Authentication.",
+          "add": "Add a device",
+          "confirmDelete": {
+            "title": "Delete device",
+            "subtitle": "This is your only registered device, deleting it will disable Multi-Factor Authentication"
+          }, 
+          "registerError": "Your device couldn't be saved",
+          "registerDeviceDialog": {
+            "title": "Save the device",
+            "subtitle": "Name the device to easily find it in your list",
+            "label": "Device name"
+          }
+        }        
+      }    
     }
   },
   "vault": {

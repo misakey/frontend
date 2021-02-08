@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
 import { STEP } from '@misakey/auth/constants';
-import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, METHODS } from '@misakey/auth/constants/method';
+import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, METHODS, TOTP, TOTP_RECOVERY } from '@misakey/auth/constants/method';
 import { AUTOFILL_PASSWORD, AUTOFILL_NEW_PASSWORD, AUTOFILL_CODE } from '@misakey/ui/constants/autofill';
 
 import prop from '@misakey/helpers/prop';
@@ -12,9 +12,40 @@ import prop from '@misakey/helpers/prop';
 import Field from '@misakey/ui/Form/Field';
 import FieldCodePasteButton from '@misakey/ui/Form/Field/Code/WithPasteButton';
 import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
+import FieldText from '@misakey/ui/Form/Field/TextFieldWithErrors';
 
 // CONSTANTS
 const FIELD_PROPS = {
+  [TOTP]: {
+    component: FieldCodePasteButton,
+    variant: 'filled',
+    fullWidth: true,
+    autoFocus: true,
+    inputProps: {
+      id: `${TOTP}_${STEP.secret}`,
+      'data-matomo-ignore': true,
+      ...AUTOFILL_CODE,
+    },
+  },
+  [TOTP_RECOVERY]: {
+    component: FieldText,
+    variant: 'filled',
+    fullWidth: true,
+    autoFocus: true,
+    inputProps: {
+      id: `${TOTP_RECOVERY}_${STEP.secret}`,
+      type: 'text',
+      maxLength: 11,
+      pattern: '[0-9a-zA-Z]{5}-[0-9a-zA-Z]{5}',
+      style: {
+        fontFamily: 'monospace',
+        letterSpacing: '1rem',
+        fontSize: '2rem',
+      },
+      autoComplete: 'off',
+      'data-matomo-ignore': true,
+    },
+  },
   [EMAILED_CODE]: {
     component: FieldCodePasteButton,
     variant: 'filled',

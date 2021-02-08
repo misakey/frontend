@@ -171,6 +171,22 @@
       "malformed": "Password should be at least 8 characters long"
     }
   },
+  "totp_secret": {
+    "label": "Time-Based-One-Time-Password",
+    "placeholder": "543232",
+    "error": {
+      "invalid": "This code is incorrect, please retry",
+      "malformed": "Code should contain 6 digits"
+    }
+  },
+  "totp_recovery_secret": {
+    "label": "TOTP Recovery Code",
+    "placeholder": "SpU34-pE5s8",
+    "error": {
+      "invalid": "This code is incorrect, please retry",
+      "malformed": "Recovery Code should contain 8 characters separated by a dash"
+    }
+  },
   "passwordVault": {
     "label": "Password",
     "placeholder": "********",
@@ -224,6 +240,17 @@
           "label": "Message",
           "placeholder": "Write a message..."
         }
+      }
+    }
+  },
+  "totp": {
+    "code": {
+      "label": "Code",
+      "placeholder": "123456",
+      "helperText": "Type code obtained in your TOTP application",
+      "error": {
+        "forbidden": "This code is incorrect, please retry",
+        "malformed": "Code should contain 6 digits"
       }
     }
   }
