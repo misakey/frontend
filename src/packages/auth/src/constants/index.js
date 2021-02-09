@@ -1,9 +1,5 @@
 import { VALUE_KEY, METADATA_KEYS } from '@misakey/auth/constants/method';
 
-export const SIGN_IN_STATE_LENGTH = 20;
-
-export const STORAGE_PREFIX = 'oidc.';
-
 export const STEP = {
   identifier: 'identifier',
   secret: 'secret',

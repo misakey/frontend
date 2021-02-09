@@ -5,7 +5,7 @@ import { required, malformed, invalid } from '@misakey/ui/constants/errorTypes';
 import routes from 'routes';
 import { generatePath } from 'react-router-dom';
 import isNil from '@misakey/helpers/isNil';
-import { emailFieldValidation } from 'constants/fieldValidations';
+import { emailFieldValidation } from '@misakey/ui/constants/fieldValidations';
 
 // CONSTANTS
 const KEY_REGEX = '[A-Za-z0-9-_]+';

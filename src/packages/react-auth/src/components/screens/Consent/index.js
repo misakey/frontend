@@ -27,7 +27,7 @@ import useNotDoneEffect from '@misakey/hooks/useNotDoneEffect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import Screen from '@misakey/ui/Screen';
-import ListConsent from 'components/dumb/List/Consent';
+import ListConsent from '@misakey/react-auth/components/List/Consent';
 import Title from '@misakey/ui/Typography/Title';
 import Box from '@material-ui/core/Box';
 import BoxControls from '@misakey/ui/Box/Controls';

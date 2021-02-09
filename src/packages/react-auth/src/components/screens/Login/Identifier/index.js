@@ -6,7 +6,7 @@ import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 
 import { STEP, INITIAL_VALUES, ERROR_KEYS } from '@misakey/auth/constants';
-import { identifierValidationSchema } from '@misakey/auth/constants/validationSchemas/auth';
+import { identifierValidationSchema } from '@misakey/react-auth/constants/validationSchemas';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react-auth/store/reducers/sso';
 import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
 import { LARGE } from '@misakey/ui/Avatar';
@@ -20,7 +20,7 @@ import { getDetails } from '@misakey/helpers/apiError';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useOnIdentifierSubmit from 'hooks/useOnIdentifierSubmit';
+import useOnIdentifierSubmit from '@misakey/react-auth/hooks/useOnIdentifierSubmit';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Title from '@misakey/ui/Typography/Title';

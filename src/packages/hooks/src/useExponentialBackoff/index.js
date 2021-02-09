@@ -6,7 +6,7 @@ import isNil from '@misakey/helpers/isNil';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import SnackbarActionRetry from 'components/dumb/Snackbar/Action/Retry';
+import SnackbarActionRetry from '@misakey/ui/Snackbar/Action/Retry';
 
 // CONSTANTS
 const INITIAL_DELAY = 4000;

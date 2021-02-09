@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { SnackbarProvider as NotistackSnackbarProvider } from 'notistack';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import SnackbarActionHide from 'components/dumb/Snackbar/Action/Hide';
+import SnackbarActionHide from '@misakey/ui/Snackbar/Action/Hide';
 
 // HOOKS
 const useStyles = makeStyles(() => ({

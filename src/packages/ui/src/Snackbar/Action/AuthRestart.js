@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { useSnackbar } from 'notistack';
-import useLoginChallenge from 'hooks/useLoginChallenge';
+import useLoginChallenge from '@misakey/react-auth/hooks/useLoginChallenge';
 import useResetAuthHref from '@misakey/react-auth/hooks/useResetAuthHref';
 
 import Button from '@material-ui/core/Button';

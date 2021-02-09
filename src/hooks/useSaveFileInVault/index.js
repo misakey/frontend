@@ -10,7 +10,7 @@ import { encryptFileMetadataForVault } from '@misakey/crypto/vault';
 import ensureVaultKeyExists from '@misakey/crypto/store/actions/ensureVaultKeyExists';
 import { addSavedFile } from 'store/reducers/files/saved';
 import { conflict } from '@misakey/ui/constants/errorTypes';
-import SnackbarActionSee from 'components/dumb/Snackbar/Action/See';
+import SnackbarActionSee from '@misakey/ui/Snackbar/Action/See';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 import isNil from '@misakey/helpers/isNil';
 

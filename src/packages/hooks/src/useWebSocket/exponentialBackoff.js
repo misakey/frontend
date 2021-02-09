@@ -7,8 +7,8 @@ import exponentialBackoff from '@misakey/helpers/exponentialBackoff';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import SnackbarActionRetry from 'components/dumb/Snackbar/Action/Retry';
-import SnackbarActionRefresh from 'components/dumb/Snackbar/Action/Refresh';
+import SnackbarActionRetry from '@misakey/ui/Snackbar/Action/Retry';
+import SnackbarActionRefresh from '@misakey/ui/Snackbar/Action/Refresh';
 
 // CONSTANTS
 const NOTIFICATION_COUNT = 4;

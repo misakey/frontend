@@ -15,7 +15,7 @@ import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useMountEffect from '@misakey/hooks/useMountEffect';
-import useOnIdentifierSubmit from 'hooks/useOnIdentifierSubmit';
+import useOnIdentifierSubmit from '@misakey/react-auth/hooks/useOnIdentifierSubmit';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
 import { Route, Switch, Redirect } from 'react-router-dom';

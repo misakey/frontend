@@ -5,7 +5,7 @@ import {
   codeFieldValidation, stringFieldValidation,
   passwordFieldValidation, displayNameFieldValidation, fileFieldValidation,
   notificationFieldValidation, colorFieldValidation,
-} from 'constants/fieldValidations';
+} from '@misakey/ui/constants/fieldValidations';
 
 
 export const displayNameValidationSchema = Yup.object().shape({

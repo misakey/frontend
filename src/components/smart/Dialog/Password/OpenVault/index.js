@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
 import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
-import { openVaultValidationSchema } from 'constants/validationSchemas/auth';
+import { openVaultValidationSchema } from 'constants/validationSchemas/vault';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';

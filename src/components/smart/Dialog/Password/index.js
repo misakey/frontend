@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import { invalid } from '@misakey/ui/constants/errorTypes';
-import { openVaultValidationSchema } from 'constants/validationSchemas/auth';
+import { openVaultValidationSchema } from 'constants/validationSchemas/vault';
 import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 
 import resolveAny from '@misakey/helpers/resolveAny';
