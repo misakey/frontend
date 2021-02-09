@@ -21,7 +21,7 @@ import createNewBackupKeySharesFromAuthFlow from '@misakey/crypto/store/actions/
 import { ssoUpdate, ssoSign, ssoReset } from '@misakey/react-auth/store/actions/sso';
 import { conflict } from '@misakey/ui/constants/errorTypes';
 import { DATE_FULL } from '@misakey/ui/constants/formats/dates';
-import { EMAILED_CODE, PREHASHED_PASSWORD, PASSWORD_RESET_KEY, ACCOUNT_CREATION, WEBAUTHN, TOTP, TOTP_RECOVERY, AuthUndefinedMethodName } from '@misakey/auth/constants/method';
+import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, WEBAUTHN, TOTP, TOTP_RECOVERY, AuthUndefinedMethodName, RESET_PASSWORD } from '@misakey/auth/constants/method';
 
 import compose from '@misakey/helpers/compose';
 import head from '@misakey/helpers/head';
@@ -32,7 +32,7 @@ import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import { getDetails, getCode } from '@misakey/helpers/apiError';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
-import { loginAuthStepSecretWebAuthn, loginAuthStepSecretInput, loginAuthStepSecretTotp } from '@misakey/auth/builder/loginAuthStep';
+import { loginAuthStepBuilder } from '@misakey/auth/builder/loginAuthStep';
 import { isHydraErrorCode } from '@misakey/auth/helpers/errors';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -53,7 +53,6 @@ import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
 import BoxControls from '@misakey/ui/Box/Controls';
 import ButtonForgotPassword from '@misakey/react-auth/components/Button/ForgotPassword';
 import ButtonRenewAuthStep from '@misakey/react-auth/components/Button/RenewAuthStep';
-import DialogPasswordReset from 'components/smart/Dialog/Password/Reset';
 import SnackbarActionAuthRestart from 'components/dumb/Snackbar/Action/AuthRestart';
 import SnackbarActionRefresh from 'components/dumb/Snackbar/Action/Refresh';
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
@@ -130,7 +129,6 @@ const AuthLoginSecret = ({
   const authIdentifierTo = useGeneratePathKeepingSearchAndHash(authRoutes.signIn._);
 
   const [reset, setReset] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   const initialValues = useMemo(() => INITIAL_VALUES[CURRENT_STEP], []);
 
@@ -147,13 +145,6 @@ const AuthLoginSecret = ({
     [identifier, identity],
   );
 
-  const onForgotPasswordDone = useCallback(
-    () => {
-      setReset(true);
-    },
-    [setReset],
-  );
-
   const onCancelForgotPassword = useCallback(
     () => {
       setReset(false);
@@ -162,35 +153,43 @@ const AuthLoginSecret = ({
     [cancelForgotPassword],
   );
 
-  const handleResetSubmit = useCallback(
-    () => {
-      setDialogOpen(true);
+  const onHandleBackupSecretShares = useCallback(
+    async ({ secret: password }, nextAccessToken) => {
+      try {
+        await dispatch(createNewBackupKeySharesFromAuthFlow({
+          loginChallenge,
+          identityId,
+          password,
+        }, nextAccessToken));
+      } catch (error) {
+        logSentryException(error, 'AuthFlow: create new backup key share', { crypto: true }, 'warning');
+        enqueueSnackbar(t('common:crypto.errors.backupKeyShare'), { variant: 'warning' });
+        // a failure of backup key shares creation
+        // should not make the entire auth flow fail
+        // because it is not an essential step of the auth flow:
+        // the user will simply have to enter her password one more time
+      }
     },
-    [setDialogOpen],
-  );
-
-  const onDialogClose = useCallback(
-    () => {
-      setDialogOpen(false);
-      setReset(true);
-    },
-    [setDialogOpen, setReset],
-  );
-
-  const onDialogSubmit = useCallback(
-    () => {
-      setReset(false);
-    },
-    [setReset],
+    [dispatch, enqueueSnackbar, identityId, loginChallenge, t],
   );
 
   const onSuccessLoginAuthStep = useCallback(
-    (res, { setFieldValue }) => {
+    async (res, { values, setFieldValue }) => {
       const {
+        accessToken: nextAccessToken,
         redirectTo: nextRedirectTo,
         next,
         authnStep: nextAuthnStep,
       } = objectToCamelCaseDeep(res);
+
+      if (!isNil(nextAccessToken)) {
+        await Promise.resolve(dispatchSsoSign(nextAccessToken));
+      }
+
+      // handle BackupSecretShares
+      if ([RESET_PASSWORD, PREHASHED_PASSWORD, ACCOUNT_CREATION].includes(methodName)) {
+        await onHandleBackupSecretShares(values, nextAccessToken);
+      }
 
       if (next === NEXT_STEP_REDIRECT) {
         return setRedirectTo(nextRedirectTo);
@@ -202,7 +201,7 @@ const AuthLoginSecret = ({
 
       return res;
     },
-    [dispatchSsoUpdate],
+    [dispatchSsoSign, dispatchSsoUpdate, methodName, onHandleBackupSecretShares],
   );
 
   const onErrorLoginAuthStep = useCallback(
@@ -267,7 +266,7 @@ const AuthLoginSecret = ({
   );
 
   const onLoginAuthStepSecret = useCallback(
-    (values) => loginAuthStepSecretInput(
+    (values) => loginAuthStepBuilder(
       {
         loginChallenge,
         identityId,
@@ -284,101 +283,19 @@ const AuthLoginSecret = ({
       identityId, loginChallenge, metadata, methodName],
   );
 
-  const onValidateSecretSuccess = useCallback(
-    async (res, { values, setFieldValue }) => {
-      const { accessToken: nextAccessToken } = objectToCamelCaseDeep(res);
-
-      await Promise.resolve(dispatchSsoSign(nextAccessToken));
-
-      // handle BackupSecretShares
-      const { secret: password, [PASSWORD_RESET_KEY]: newPassword } = values;
-      const isResetPassword = methodName === EMAILED_CODE && !isNil(newPassword);
-      if (isResetPassword || [PREHASHED_PASSWORD, ACCOUNT_CREATION].includes(methodName)) {
-        try {
-          await dispatch(createNewBackupKeySharesFromAuthFlow({
-            loginChallenge,
-            identityId,
-            password: newPassword || password,
-          }, nextAccessToken));
-        } catch (error) {
-          logSentryException(error, 'AuthFlow: create new backup key share', { crypto: true }, 'warning');
-          enqueueSnackbar(t('common:crypto.errors.backupKeyShare'), { variant: 'warning' });
-          // a failure of backup key shares creation
-          // should not make the entire auth flow fail
-          // because it is not an essential step of the auth flow:
-          // the user will simply have to enter her password one more time
-        }
-      }
-
-      return onSuccessLoginAuthStep(res, { setFieldValue });
-    },
-    [dispatch, dispatchSsoSign, enqueueSnackbar, identityId,
-      loginChallenge, methodName, onSuccessLoginAuthStep, t],
-  );
-
-  const onValidateWebauthn = useCallback(
-    ({ secret: credentialsMetadata }) => loginAuthStepSecretWebAuthn(
-      { identityId, loginChallenge, metadata: credentialsMetadata },
-      accessToken,
-    ),
-    [accessToken, identityId, loginChallenge],
-  );
-
-  const onValidateTotp = useCallback(
-    ({ secret }) => loginAuthStepSecretTotp(
-      { identityId, loginChallenge, metadata: { code: secret } },
-      accessToken,
-    ),
-    [accessToken, identityId, loginChallenge],
-  );
-
-  const onValidateTotpRecovery = useCallback(
-    ({ secret }) => loginAuthStepSecretTotp(
-      { identityId, loginChallenge, metadata: { recoveryCode: secret } },
-      accessToken,
-    ),
-    [accessToken, identityId, loginChallenge],
-  );
-
-  const { loginAuthStep, onSuccess } = useMemo(
-    () => {
-      switch (methodName) {
-        case WEBAUTHN:
-          return { loginAuthStep: onValidateWebauthn, onSuccess: onSuccessLoginAuthStep };
-        case TOTP:
-          return { loginAuthStep: onValidateTotp, onSuccess: onSuccessLoginAuthStep };
-        case TOTP_RECOVERY:
-          return { loginAuthStep: onValidateTotpRecovery, onSuccess: onSuccessLoginAuthStep };
-        default:
-          return { loginAuthStep: onLoginAuthStepSecret, onSuccess: onValidateSecretSuccess };
-      }
-    },
-    [methodName, onLoginAuthStepSecret, onSuccessLoginAuthStep,
-      onValidateSecretSuccess, onValidateTotp, onValidateWebauthn, onValidateTotpRecovery],
-  );
-
-  const handleSubmit = useCallback(
+  const onSubmit = useCallback(
     async (values, { setFieldError, setSubmitting, setFieldValue }) => {
       setRedirectTo(null);
       try {
-        const response = await loginAuthStep(values);
-        await onSuccess(response, { values, setFieldValue });
+        const response = await onLoginAuthStepSecret(values);
+        await onSuccessLoginAuthStep(response, { values, setFieldValue });
       } catch (err) {
         onErrorLoginAuthStep(err, { setFieldError, setFieldValue });
       } finally {
         setSubmitting(false);
-        // in case reset password dialog is open, close dialog before setting field error
-        if (dialogOpen) {
-          onDialogClose();
-        }
       }
     },
-    [loginAuthStep, onSuccess, onErrorLoginAuthStep, dialogOpen, onDialogClose],
-  );
-
-  const onSubmit = useMemo(
-    () => (reset ? handleResetSubmit : handleSubmit),
-    [handleResetSubmit, handleSubmit, reset],
+    [onLoginAuthStepSecret, onSuccessLoginAuthStep, onErrorLoginAuthStep],
   );
 
   const primary = useMemo(
@@ -483,7 +400,6 @@ const AuthLoginSecret = ({
                   loginChallenge={loginChallenge}
                   identifier={identifier}
                   text={t('auth:login.form.action.forgotPassword')}
-                  onDone={onForgotPasswordDone}
                 />
               )}
               {[TOTP, TOTP_RECOVERY].includes(methodName) && (
@@ -499,11 +415,6 @@ const AuthLoginSecret = ({
                 />
               )}
             </Box>
-            <DialogPasswordReset
-              open={dialogOpen}
-              onClose={onDialogClose}
-              onSubmit={onDialogSubmit}
-            />
           </Box>
         </Form>
       </Formik>

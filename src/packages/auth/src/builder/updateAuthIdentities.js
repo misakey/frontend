@@ -3,9 +3,9 @@ import API from '@misakey/api';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 
-export default (loginChallenge, identifier) => API
+export default (payload) => API
   .use(API.endpoints.auth.identities.update)
-  .build(null, objectToSnakeCase({ loginChallenge, identifierValue: identifier }))
+  .build(null, objectToSnakeCase(payload))
   .send()
   .then((response) => {
     const { identity, authnStep: { metadata, ...rest } } = objectToCamelCase(response);

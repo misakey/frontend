@@ -16,7 +16,7 @@ export default (loginChallenge) => {
   const { search } = useLocation();
 
   return useCallback(
-    (nextIdentifier) => updateAuthIdentities(loginChallenge, nextIdentifier)
+    (nextIdentifier) => updateAuthIdentities({ loginChallenge, identifierValue: nextIdentifier })
       .then((response) => Promise.all([
         dispatch(ssoUpdate(response)),
         dispatch(screenAuthSetIdentifier(nextIdentifier)),

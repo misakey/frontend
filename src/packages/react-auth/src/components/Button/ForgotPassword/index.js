@@ -2,51 +2,24 @@ import React, { useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { useFormikContext } from 'formik';
 
-import { EMAILED_CODE } from '@misakey/auth/constants/method';
 import { ssoUpdate } from '@misakey/react-auth/store/actions/sso';
 
 import updateAuthIdentities from '@misakey/auth/builder/updateAuthIdentities';
-import isFunction from '@misakey/helpers/isFunction';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import useRenewAuthStep from '@misakey/react-auth/hooks/useRenewAuthStep';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 // COMPONENTS
-const ButtonForgotPassword = ({
-  loginChallenge, identifier,
-  onDone,
-  dispatchSsoUpdate,
-  ...props }) => {
+const ButtonForgotPassword = ({ loginChallenge, identifier, dispatchSsoUpdate, ...props }) => {
   const handleHttpErrors = useHandleHttpErrors();
 
-  const { resetForm } = useFormikContext();
-
-  const onRenewAuthStep = useRenewAuthStep({ loginChallenge });
-
   const onClick = useCallback(
-    () => updateAuthIdentities(loginChallenge, identifier)
-      .then(({ identity, authnStep }) => {
-        const nextAuthnStep = { ...authnStep, methodName: EMAILED_CODE };
-        dispatchSsoUpdate({ identity, authnStep: nextAuthnStep });
-        return onRenewAuthStep(nextAuthnStep);
-      })
-      .then(() => {
-        resetForm();
-        if (isFunction(onDone)) {
-          onDone();
-        }
-      })
+    () => updateAuthIdentities({ loginChallenge, identifierValue: identifier, passwordReset: true })
+      .then(({ identity, authnStep }) => dispatchSsoUpdate({ identity, authnStep }))
       .catch(handleHttpErrors),
-    [
-      dispatchSsoUpdate, handleHttpErrors,
-      identifier, loginChallenge,
-      onDone, onRenewAuthStep,
-      resetForm,
-    ],
+    [dispatchSsoUpdate, handleHttpErrors, identifier, loginChallenge],
   );
 
   return (
@@ -61,13 +34,8 @@ const ButtonForgotPassword = ({
 ButtonForgotPassword.propTypes = {
   loginChallenge: PropTypes.string.isRequired,
   identifier: PropTypes.string.isRequired,
-  onDone: PropTypes.func,
   // CONNECT
   dispatchSsoUpdate: PropTypes.func.isRequired,
-};
-
-ButtonForgotPassword.defaultProps = {
-  onDone: null,
 };
 
 // CONNECT

@@ -1,4 +1,4 @@
-import { SECLEVEL_METHOD, EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, AuthUndefinedMethodName } from '@misakey/auth/constants/method';
+import { SECLEVEL_METHOD, EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, AuthUndefinedMethodName, RESET_PASSWORD, WEBAUTHN, TOTP, TOTP_RECOVERY } from '@misakey/auth/constants/method';
 
 import hashPassword from '@misakey/auth/passwordHashing/hashPassword';
 import genParams from '@misakey/auth/passwordHashing/genParams';
@@ -10,50 +10,46 @@ export const makeSeclevelMethod = (seclevel) => SECLEVEL_METHOD[seclevel] || EMA
 export const makeMetadata = async ({
   secret, methodName, pwdHashParams,
   dispatchCreateNewOwnerSecrets,
+  dispatchHardPasswordChange,
 }) => {
-  if (methodName === EMAILED_CODE) {
-    return { code: secret };
-  }
-
-  if (methodName === PREHASHED_PASSWORD) {
-    return hashPassword({ password: secret, pwdHashParams });
-  }
-
-  if (methodName === ACCOUNT_CREATION) {
-    const [
-      prehashedPassword,
-      { backupData },
-    ] = await Promise.all([
-      hashPassword({ password: secret, pwdHashParams: genParams() }),
-      dispatchCreateNewOwnerSecrets(secret),
-    ]);
-    return objectToSnakeCase({
-      prehashedPassword,
-      backupData,
-    });
-  }
-
   if (isNil(methodName)) {
     throw new AuthUndefinedMethodName();
   }
 
-  throw new Error(`unknown methodName ${methodName}`);
-};
+  switch (methodName) {
+    case EMAILED_CODE:
+      return { code: secret };
+    case PREHASHED_PASSWORD:
+      return hashPassword({ password: secret, pwdHashParams });
+    case ACCOUNT_CREATION: {
+      const [prehashedPassword, { backupData }] = await Promise.all([
+        hashPassword({ password: secret, pwdHashParams: genParams() }),
+        dispatchCreateNewOwnerSecrets(secret),
+      ]);
+      return objectToSnakeCase({
+        prehashedPassword,
+        backupData,
+      });
+    }
+    case RESET_PASSWORD: {
+      const [{ backupData }, prehashedPassword] = await Promise.all([
+        dispatchHardPasswordChange(secret),
+        hashPassword({ password: secret, pwdHashParams: genParams() }),
+      ]);
 
-export const makePasswordReset = async ({
-  password,
-  dispatchHardPasswordChange,
-}) => {
-  const [
-    { backupData },
-    prehashedPassword,
-  ] = await Promise.all([
-    dispatchHardPasswordChange(password),
-    hashPassword({ password, pwdHashParams: genParams() }),
-  ]);
+      return {
+        prehashedPassword,
+        backupData,
+      };
+    }
+    case WEBAUTHN:
+      return secret;
+    case TOTP:
+      return { code: secret };
+    case TOTP_RECOVERY:
+      return { recoveryCode: secret };
 
-  return {
-    prehashedPassword,
-    backupData,
-  };
+    default:
+      throw new Error(`unknown methodName ${methodName}`);
+  }
 };

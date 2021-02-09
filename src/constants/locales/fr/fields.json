@@ -188,6 +188,14 @@
       "malformed": "Le mot de passe doit contenir au moins 8 caractères"
     }
   },
+  "reset_password_secret": {
+    "label": "Nouveau mot de passe",
+    "placeholder": "********",
+    "error": {
+      "conflict": "Identique à l'ancien mot de passe",
+      "malformed": "Le mot de passe doit contenir au moins 8 caractères"
+    }
+  },
   "totp_secret": {
     "label": "Time-Based-One-Time-Password",
     "placeholder": "543232",

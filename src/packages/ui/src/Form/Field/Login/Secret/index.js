@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
 import { STEP } from '@misakey/auth/constants';
-import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, METHODS, TOTP, TOTP_RECOVERY } from '@misakey/auth/constants/method';
+import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, RESET_PASSWORD, METHODS, TOTP, TOTP_RECOVERY } from '@misakey/auth/constants/method';
 import { AUTOFILL_PASSWORD, AUTOFILL_NEW_PASSWORD, AUTOFILL_CODE } from '@misakey/ui/constants/autofill';
 
 import prop from '@misakey/helpers/prop';
@@ -74,6 +74,17 @@ const FIELD_PROPS = {
     inputProps: {
       'data-matomo-ignore': true,
       id: `${ACCOUNT_CREATION}_${STEP.secret}`,
+      ...AUTOFILL_NEW_PASSWORD,
+    },
+  },
+  [RESET_PASSWORD]: {
+    component: FieldPasswordRevealable,
+    variant: 'filled',
+    type: 'password',
+    autoFocus: true,
+    inputProps: {
+      'data-matomo-ignore': true,
+      id: `${RESET_PASSWORD}_${STEP.secret}`,
       ...AUTOFILL_NEW_PASSWORD,
     },
   },

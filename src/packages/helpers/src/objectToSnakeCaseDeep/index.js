@@ -23,7 +23,9 @@ export default function objectToSnakeCaseDeep(
     const isIgnoredBase64 = ignoreBase64 && isProbablyBase64(key);
     const isExcludedKey = excludedKeys.includes(key);
     const shouldConvert = !isExcludedKey && !isIgnoredBase64;
-    const newKey = shouldConvert ? snakeCase(key) : key;
+    // @FIXME: `.replace('base_64', 'base64')` should be
+    // fixed with https://gitlab.misakey.dev/misakey/frontend/-/merge_requests/754
+    const newKey = shouldConvert ? snakeCase(key).replace('base_64', 'base64') : key;
 
     newObject[newKey] = (
       isObject(value) && shouldConvert

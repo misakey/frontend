@@ -171,6 +171,14 @@
       "malformed": "Password should be at least 8 characters long"
     }
   },
+  "reset_password_secret": {
+    "label": "New password",
+    "placeholder": "********",
+    "error": {
+      "conflict": "Can't be same as old password",
+      "malformed": "Password should be at least 8 characters long"
+    }
+  },
   "totp_secret": {
     "label": "Time-Based-One-Time-Password",
     "placeholder": "543232",
