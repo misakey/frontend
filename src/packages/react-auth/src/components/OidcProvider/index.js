@@ -49,7 +49,9 @@ function OidcProvider({
   const [isLoading, setIsLoading] = useState(false);
 
   const dispatchUser = useCallback(
-    (user) => Promise.resolve(dispatch(loadUserThunk(user))),
+    ({ identityId, accountId, hasAccount, scope, acr }) => Promise.resolve(
+      dispatch(loadUserThunk({ identityId, accountId, hasAccount, scope, acr })),
+    ),
     [dispatch],
   );
 

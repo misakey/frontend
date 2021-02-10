@@ -72,12 +72,12 @@ export default class UserManager extends OidcClient {
   }
 
   mapUserInfo(expired = false) {
-    const { mid: identityId, aid, acr: userAcr, sco: scope } = this.user;
+    const { mid: identityId, aid, acr: userAcr, sco: scope, ...rest } = this.user;
     const accountId = isString(aid) && isEmpty(aid) ? null : aid;
     const acr = isEmpty(userAcr) ? null : parseInt(userAcr, 10);
     const hasAccount = !isNil(accountId);
 
-    return { expired, identityId, accountId, hasAccount, scope, acr };
+    return { expired, identityId, accountId, hasAccount, scope, acr, ...rest };
   }
 
   async getUser() {

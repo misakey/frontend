@@ -227,47 +227,47 @@ const CardIdentity = forwardRef(({ identity, identityId, t }, ref) => {
           <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
       </CardList>
-      <CardIdentityHeader>{t('account:sections.myVault.title')}</CardIdentityHeader>
-      <CardList>
-        {!isNil(accountId) && (
-          <>
-            <ListItem
-              classes={{ container: classes.listItemContainer }}
-              divider
-            >
-              <ListItemIcon className={classes.listItemIcon}>
-                <Typography>{t('account:quota.title')}</Typography>
-              </ListItemIcon>
-              <UserStorage />
-            </ListItem>
-            <ListItem
-              classes={{ container: classes.listItemContainer }}
-              button
-              divider
-              component={Link}
-              to={listItemExportCryptoTo}
-            >
-              <ListItemIcon className={classes.listItemIcon}>
-                <Typography>{t('account:vault.title')}</Typography>
-              </ListItemIcon>
-              <ListItemText primary={t('account:vault.helperText')} />
-              <ChevronRightIcon className={classes.actionIcon} />
-            </ListItem>
-          </>
-        )}
-        <ListItem
-          classes={{ container: classes.listItemContainer }}
-          button
-          component={Link}
-          to={listItemDeleteAccountTo}
-        >
-          <ListItemIcon className={classes.listItemIcon}>
-            <Typography>{t('account:delete.title')}</Typography>
-          </ListItemIcon>
-          <ListItemText primary={t('account:delete.label')} primaryTypographyProps={{ color: 'error' }} />
-          <ChevronRightIcon className={classes.actionIcon} />
-        </ListItem>
-      </CardList>
+      {!isNil(accountId) && (
+      <>
+        <CardIdentityHeader>{t('account:sections.myVault.title')}</CardIdentityHeader>
+        <CardList>
+          <ListItem
+            classes={{ container: classes.listItemContainer }}
+            divider
+          >
+            <ListItemIcon className={classes.listItemIcon}>
+              <Typography>{t('account:quota.title')}</Typography>
+            </ListItemIcon>
+            <UserStorage />
+          </ListItem>
+          <ListItem
+            classes={{ container: classes.listItemContainer }}
+            button
+            divider
+            component={Link}
+            to={listItemExportCryptoTo}
+          >
+            <ListItemIcon className={classes.listItemIcon}>
+              <Typography>{t('account:vault.title')}</Typography>
+            </ListItemIcon>
+            <ListItemText primary={t('account:vault.helperText')} />
+            <ChevronRightIcon className={classes.actionIcon} />
+          </ListItem>
+          <ListItem
+            classes={{ container: classes.listItemContainer }}
+            button
+            component={Link}
+            to={listItemDeleteAccountTo}
+          >
+            <ListItemIcon className={classes.listItemIcon}>
+              <Typography>{t('account:delete.title')}</Typography>
+            </ListItemIcon>
+            <ListItemText primary={t('account:delete.label')} primaryTypographyProps={{ color: 'error' }} />
+            <ChevronRightIcon className={classes.actionIcon} />
+          </ListItem>
+        </CardList>
+      </>
+      )}
     </Container>
   );
 });

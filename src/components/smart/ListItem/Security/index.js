@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useContext, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -7,8 +7,8 @@ import { useSelector } from 'react-redux';
 import { TO_PROP_TYPE } from '@misakey/ui/constants/propTypes';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import isNil from '@misakey/helpers/isNil';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/Context';
 
 import { Link } from 'react-router-dom';
 import ListItem from '@material-ui/core/ListItem';
@@ -26,22 +26,27 @@ const CROSS_MARK_SIGN = '\u274C';
 // COMPONENTS
 const ListItemSecurity = ({ classes, to, t, ...props }) => {
   const { hasAccount, mfaMethod } = useSelector(IDENTITY_SELECTOR);
+  const { askSigninRedirect } = useContext(UserManagerContext);
+  const onClick = useCallback(
+    () => askSigninRedirect({ acrValues: 2, fullScreen: false }),
+    [askSigninRedirect],
+  );
 
-  const linkProps = useMemo(
-    () => (isNil(to)
-      ? { disabled: true }
+  const listItemProps = useMemo(
+    () => (!hasAccount
+      ? { onClick }
       : {
         to,
         component: Link,
       }),
-    [to],
+    [hasAccount, onClick, to],
   );
 
   return (
     <ListItem
       classes={{ container: classes.container }}
       aria-label={t('components:listItemSecurity.ariaLabel')}
-      {...linkProps}
+      {...listItemProps}
       {...omitTranslationProps(props)}
     >
       <ListItemIcon className={classes.icon}>
