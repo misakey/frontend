@@ -216,7 +216,7 @@ export async function computeCryptoMigration({ encryptedSecretsBackup, password 
   const {
     state,
     newIdentityPublicKey,
-    newIdentityNonIdentifiedPublicKeys,
+    newIdentityNonIdentifiedPublicKey,
   } = setupAccountCrypto({
     currentState,
     identityPublicKeys,
@@ -227,7 +227,7 @@ export async function computeCryptoMigration({ encryptedSecretsBackup, password 
     passwordHash,
     state,
     newIdentityPublicKey,
-    newIdentityNonIdentifiedPublicKeys,
+    newIdentityNonIdentifiedPublicKey,
   });
 
   return {
