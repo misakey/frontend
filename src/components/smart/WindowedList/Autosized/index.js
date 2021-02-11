@@ -34,7 +34,7 @@ const WindowedListAutoSized = forwardRef(({
 
   const computeBestHeight = useCallback(
     ({ height }) => {
-      if (height > 0) {
+      if (isNumber(itemsSize) && height > 0) {
         const computed = Math.min(itemsSize, height) + innerElementTypeHeight;
         setBestHeight((prevBestHeight) => (isNumber(prevBestHeight)
           ? Math.min(prevBestHeight, computed)

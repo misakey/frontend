@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 
@@ -23,7 +24,6 @@ import BoxEmpty from 'components/dumb/Box/Empty';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import FabAdd from '@misakey/ui/Fab/Add';
 import WindowedGridInfiniteLoaded from 'components/smart/WindowedList/InfiniteLoaded/Grid';
-import WindowedListAutoSized from 'components/smart/WindowedList/Autosized';
 import FilePreviewCarouselContextProvider from 'components/smart/File/Preview/Carousel/Context';
 import EventFilesCarousel from 'components/smart/Carousel/FilePreview/EventFiles';
 
@@ -113,24 +113,26 @@ function BoxFiles({ belongsToCurrentUser, box }) {
           </BoxEmpty>
         )}
         {!displayLoading && !displayEmpty && (
-          <>
-            <WindowedListAutoSized
-              component={WindowedGridInfiniteLoaded}
-              numColumns={numColumns}
-              loadMoreItems={loadMoreItems}
-              loadedIndexes={loadedIndexes}
-              Cell={Cell}
-              Skeleton={Skeleton}
-              itemCount={itemCount}
-              itemData={itemData}
-              rowHeight={CELL_HEIGHT}
-              ref={contentRef}
-              className={classes.list}
-            />
-            <FabAdd
-              onClick={onOpenUploadDialog}
-            />
-          </>
+          <Box width="100%" height="100%">
+            <AutoSizer>
+              {(autoSizerProps) => (
+                <WindowedGridInfiniteLoaded
+                  numColumns={numColumns}
+                  loadMoreItems={loadMoreItems}
+                  loadedIndexes={loadedIndexes}
+                  Cell={Cell}
+                  Skeleton={Skeleton}
+                  itemCount={itemCount}
+                  itemData={itemData}
+                  rowHeight={CELL_HEIGHT}
+                  ref={contentRef}
+                  className={classes.list}
+                  {...autoSizerProps}
+                />
+              )}
+            </AutoSizer>
+            <FabAdd onClick={onOpenUploadDialog} />
+          </Box>
         )}
       </Box>
     </FilePreviewCarouselContextProvider>

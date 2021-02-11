@@ -1,6 +1,7 @@
 import React, { useMemo, useRef, useState, useCallback } from 'react';
-import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
+import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 import isNil from '@misakey/helpers/isNil';
 
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
@@ -26,7 +27,6 @@ import SavedFilesCarousel from 'components/smart/Carousel/FilePreview/SavedFiles
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import VaultUploadDialog from 'components/smart/Dialog/Vault/Upload';
 import WindowedGridInfiniteLoaded from 'components/smart/WindowedList/InfiniteLoaded/Grid';
-import WindowedListAutoSized from 'components/smart/WindowedList/Autosized';
 import VaultCell, { Skeleton, CELL_HEIGHT } from './Cell';
 
 // HOOKS
@@ -38,7 +38,6 @@ const useStyles = makeStyles((theme) => ({
   content: {
     boxSizing: 'border-box',
     height: `calc(100% - ${APPBAR_HEIGHT}px)`,
-    overflow: 'auto',
   },
   list: {
     overflowX: 'hidden !important',
@@ -124,20 +123,23 @@ const DocumentsVault = () => {
       {!isEmpty && !isLoading && (
         <Box width="100%" className={classes.content}>
           <FilePreviewCarouselContextProvider component={SavedFilesCarousel}>
-            <WindowedListAutoSized
-              maxHeight="100%"
-              component={WindowedGridInfiniteLoaded}
-              numColumns={numColumns}
-              loadMoreItems={loadMoreItems}
-              loadedIndexes={loadedIndexes}
-              Cell={VaultCell}
-              Skeleton={Skeleton}
-              itemCount={itemCount}
-              itemData={itemData}
-              rowHeight={CELL_HEIGHT}
-              ref={ref}
-              className={classes.list}
-            />
+            <AutoSizer>
+              {(autoSizerProps) => (
+                <WindowedGridInfiniteLoaded
+                  numColumns={numColumns}
+                  loadMoreItems={loadMoreItems}
+                  loadedIndexes={loadedIndexes}
+                  Cell={VaultCell}
+                  Skeleton={Skeleton}
+                  itemCount={itemCount}
+                  itemData={itemData}
+                  rowHeight={CELL_HEIGHT}
+                  ref={ref}
+                  className={classes.list}
+                  {...autoSizerProps}
+                />
+              )}
+            </AutoSizer>
             <FabAdd onClick={onOpenDialog} />
           </FilePreviewCarouselContextProvider>
         </Box>
