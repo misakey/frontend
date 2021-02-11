@@ -1,21 +1,25 @@
 import isNil from '@misakey/helpers/isNil';
-
 import { decryptCryptoaction } from '@misakey/crypto/cryptoactions';
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
+import {
+  uploadBoxKeyShareForStorage,
+} from '@misakey/crypto/secretStorage';
 
 import {
   CRYPTO_SET_BOX_SECRETS,
 } from './types';
 
-export default ({ cryptoaction, boxSecretKeysByPublicKeys }) => (
-  async (dispatch) => {
-    const { boxId, encrypted, encryptionPublicKey } = cryptoaction;
+const {
+  getRootKey: getRootKeySelector,
+  getAsymSecretKey,
+} = cryptoSelectors;
 
-    // it is planned to switch to having the mapping from pubkeys to secret keys
-    // in the secret backup instead
-    // but since this change requires a crypto migration
-    // we are waiting for a good opportunity to do it.
-    // see https://gitlab.misakey.dev/misakey/frontend/-/issues/856
-    const secretKey = boxSecretKeysByPublicKeys.get(encryptionPublicKey);
+export default ({ cryptoaction }) => (
+  async (dispatch, getState) => {
+    const { boxId, encrypted, encryptionPublicKey } = cryptoaction;
+    const state = getState();
+
+    const secretKey = getAsymSecretKey(encryptionPublicKey)(state);
     if (isNil(secretKey)) {
       throw Error(`no matching secret key for crypto action with public key ${encryptionPublicKey}`);
     }
@@ -29,5 +33,8 @@ export default ({ cryptoaction, boxSecretKeysByPublicKeys }) => (
       boxId,
       keyShare: boxKeyShare,
     });
+
+    const rootKey = getRootKeySelector(state);
+    await uploadBoxKeyShareForStorage({ boxId, share: boxKeyShare, rootKey });
   }
 );

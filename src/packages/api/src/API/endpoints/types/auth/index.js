@@ -68,10 +68,17 @@ export default {
       withBearer: true,
     },
   },
-  backupKeyShares: {
+  secretStorage: {
+    read: {
+      method: 'GET',
+      path: '/auth/secret-storage',
+      withBearer: true,
+    },
+  },
+  rootKeyShares: {
     create: {
       method: 'POST',
-      path: '/auth/backup-key-shares',
+      path: '/auth/account-root-key-shares',
       withCsrfToken: true,
       withBearer: true,
     },

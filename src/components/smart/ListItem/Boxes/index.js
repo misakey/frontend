@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { generatePath, Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
 import BoxesSchema from 'store/schemas/Boxes';
 
@@ -12,7 +13,7 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import { getBoxEventLastDate } from 'helpers/boxEvent';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 import useBoxRights from 'hooks/useBoxRights';
 import useContextMenuAnchorEl from '@misakey/hooks/useContextMenuAnchor/el';
@@ -40,6 +41,10 @@ import MenuItemBoxDelete from 'components/smart/MenuItem/Box/Delete';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 
 const DEFAULT_SETTINGS = { muted: false };
+
+const {
+  getAsymSecretKey,
+} = cryptoSelectors;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -163,10 +168,10 @@ function BoxListItem({ box, toRoute, containerProps, classes, t, ...rest }) {
     [lastEvent, box],
   );
 
-  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
+  const secretKey = useSelector(getAsymSecretKey(publicKey));
   const canBeDecrypted = useMemo(
-    () => publicKeysWeCanDecryptFrom.has(publicKey),
-    [publicKeysWeCanDecryptFrom, publicKey],
+    () => !isNil(secretKey),
+    [secretKey],
   );
 
   const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);

@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 
 import routes from 'routes';
 import { UUID4_REGEX } from 'constants/regex';
-import { selectors } from '@misakey/crypto/store/reducers';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { computeInvitationHash } from '@misakey/crypto/box/keySplitting';
 import { BadKeyShareFormat } from '@misakey/crypto/Errors/classes';
@@ -14,12 +13,10 @@ import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import path from '@misakey/helpers/path';
 
-import useWatchStorageBackupVersion from '@misakey/crypto/hooks/useWatchStorageBackupVersion';
 import useSetBoxKeyShareInUrl from '@misakey/crypto/hooks/useSetBoxKeyShareInUrl';
 import { useSelector } from 'react-redux';
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 
-import Redirect from '@misakey/ui/Redirect';
 import BoxRead from 'components/screens/app/Boxes/Read';
 import BoxNone from 'components/screens/app/Boxes/None';
 import RouteAuthenticated from '@misakey/react-auth/components/Route/Authenticated';
@@ -27,8 +24,6 @@ import RouteAcr from '@misakey/react-auth/components/Route/Acr';
 import RouteAuthenticatedBoxRead from 'components/smart/Route/Authenticated/BoxRead';
 import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
 import BoxEventSubmitContextProvider from 'components/smart/Box/Event/Submit/Context';
-
-import DrawerSplashScreen from 'components/smart/Screen/Drawer/Splash';
 
 // CONSTANTS
 const {
@@ -47,11 +42,8 @@ function Boxes({ match }) {
     () => matchBoxSelected || { params: {} },
     [matchBoxSelected],
   );
-  const { backupVersion } = useSelector(selectors.getEncryptedBackupData);
 
   const currentAcr = useSelector(ACR_SELECTOR);
-
-  const [storageBackupVersion] = useWatchStorageBackupVersion();
 
   useSetBoxKeyShareInUrl(id);
 
@@ -71,11 +63,6 @@ function Boxes({ match }) {
     }
   }, [locationHash]);
 
-  const shouldRefresh = useMemo(
-    () => !isNil(backupVersion) && backupVersion <= storageBackupVersion,
-    [backupVersion, storageBackupVersion],
-  );
-
   const shouldDisplayLockedScreen = useShouldDisplayLockedScreen();
 
   if (badKeyShareFormat) {
@@ -86,18 +73,6 @@ function Boxes({ match }) {
           id,
         }}
         currentLinkMalformed
-      />
-    );
-  }
-
-  if (shouldRefresh) {
-    return (
-      <Redirect
-        to={location}
-        forceRefresh
-        manualRedirectPlaceholder={(
-          <DrawerSplashScreen />
-        )}
       />
     );
   }

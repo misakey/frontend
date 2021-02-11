@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState, useMemo, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
 import { gone } from '@misakey/ui/constants/errorTypes';
@@ -13,11 +14,11 @@ import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import { createEditTextBoxEventBuilder } from 'helpers/builder/boxes';
 import { getCode } from '@misakey/helpers/apiError';
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 
 import { useSnackbar } from 'notistack';
 import useDecryptedEventText from 'hooks/useDecryptedEventText';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import useBoxPublicKeysWeCanDecryptFrom from 'packages/crypto/src/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
@@ -42,6 +43,10 @@ const INITIAL_VALUES = {
 };
 
 const BUTTON_WIDTH = 6;
+
+const {
+  getAsymSecretKey,
+} = cryptoSelectors;
 
 // HELPERS
 const pluckId = pluck('id');
@@ -70,11 +75,11 @@ function BoxEventsFooterEditing({ box, event, clearEvent, t }) {
 
   const { id: boxId, publicKey, events } = useSafeDestr(box);
   const { id: eventId } = useSafeDestr(event);
-  const publicKeysWeCanEncryptWith = useBoxPublicKeysWeCanDecryptFrom();
+  const secretKey = useSelector(getAsymSecretKey(publicKey));
 
   const disabled = useMemo(
-    () => !publicKeysWeCanEncryptWith.has(publicKey),
-    [publicKey, publicKeysWeCanEncryptWith],
+    () => isNil(secretKey),
+    [secretKey],
   );
 
   const eventValue = useDecryptedEventText(event);

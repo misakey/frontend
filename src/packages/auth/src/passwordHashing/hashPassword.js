@@ -9,7 +9,7 @@ export default async function hashPassword({ password, pwdHashParams }) {
   if (isEmpty(window.argon2)) { throw Error('Argon2 not available, cannot hash password'); }
 
   // more reliable access to salt base 64
-  const salt = pwdHashParams.saltBase64 || pwdHashParams.salt_base64;
+  const salt = pwdHashParams.saltBase64 || pwdHashParams.salt_base_64;
 
   const {
     iterations: time,
@@ -28,7 +28,7 @@ export default async function hashPassword({ password, pwdHashParams }) {
   const argon2Result = await window.argon2.hash(params);
 
   return {
-    hash_base64: encodeBase64(argon2Result.hash),
+    hash_base_64: encodeBase64(argon2Result.hash),
     params: pwdHashParams,
   };
 }

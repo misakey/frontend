@@ -18,15 +18,16 @@ import {
 
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 
-import updateBackup from './updateBackup';
-import { CRYPTO_SET_BOX_SECRETS } from './types';
+import setBoxSecrets from './setBoxSecrets';
 
 // CONSTANTS
 const {
   accountId: selectAccountId,
 } = authSelectors;
 
-const { getRelatedIdentitySecretKey: getRelatedIdentitySecretKeySelector } = cryptoSelectors;
+const {
+  getAsymSecretKey,
+} = cryptoSelectors;
 
 // THUNK
 export default ({ cryptoactionId, boxId: notificationBoxId }) => (
@@ -44,7 +45,8 @@ export default ({ cryptoactionId, boxId: notificationBoxId }) => (
 
     const boxId = notificationBoxId;
 
-    const secretKey = getRelatedIdentitySecretKeySelector(state, encryptionPublicKey);
+
+    const secretKey = getAsymSecretKey(encryptionPublicKey)(state);
     const decryptedCryptoaction = decryptCryptoaction(encrypted, secretKey);
     const { boxSecretKey } = decryptedCryptoaction;
 
@@ -81,14 +83,12 @@ export default ({ cryptoactionId, boxId: notificationBoxId }) => (
     }
     const invitationKeyShare = decryptedBoxKeyShare;
 
-    await dispatch({
-      type: CRYPTO_SET_BOX_SECRETS,
+    // setBoxSecrets takes care of updating the secret storage
+    await dispatch(setBoxSecrets({
       boxId: cryptoactionBoxId,
       secretKey: boxSecretKey,
       keyShare: invitationKeyShare,
-    });
-
-    await dispatch(updateBackup());
+    }));
 
     await deleteCryptoaction({ accountId, cryptoactionId });
 

@@ -14,6 +14,7 @@ import isArray from '@misakey/helpers/isArray';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import objectToSnakeCaseDeep from '@misakey/helpers/objectToSnakeCaseDeep';
 
+import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
 // TODO use @misakey/helpers/objectToCamelCaseDeep instead (same exact function)
 import objectToCamelCase from './helpers/objectToCamelCase';
 import assertNotAnyNil from './helpers/assertNotAnyNil';
@@ -135,24 +136,6 @@ export async function getCryptograms(ownerId, datatypes, fromDatetime, toDatetim
   };
   const responseBody = await httpCallReturnBody(endpoint, httpRequestParams);
   return objectToCamelCase(responseBody);
-}
-
-export async function updateSecretsBackup(id, secretBackup, version) {
-  assertNotAnyNil({ id, secretBackup });
-
-  const endpoint = {
-    method: 'PUT',
-    path: '/accounts/:id/backup',
-    withCsrfToken: true,
-  };
-  const httpRequestParams = {
-    params: { id },
-    payload: {
-      data: secretBackup,
-      version,
-    },
-  };
-  return httpCallReturnBody(endpoint, httpRequestParams);
 }
 
 export async function getEncryptedSecretsBackup(id) {
@@ -305,6 +288,106 @@ export async function getEncryptedBoxKeyShare(boxId) {
     queryParams: {
       boxId,
     },
+  };
+
+  return httpCallReturnBody(endpoint, httpRequestParams);
+}
+
+export async function getSecretStorage() {
+  const endpoint = {
+    method: 'GET',
+    path: '/crypto/secret-storage',
+    withCsrfToken: true,
+  };
+  const httpRequestParams = {};
+
+  const responseBody = await httpCallReturnBody(endpoint, httpRequestParams);
+  return objectToCamelCaseDeep(responseBody, { ignoreBase64: true });
+}
+
+export async function migrateToSecretStorage(payload) {
+  const endpoint = {
+    method: 'POST',
+    path: '/crypto/migration/v2',
+    withCsrfToken: true,
+  };
+  const httpRequestParams = {
+    payload: objectToSnakeCaseDeep(payload, { ignoreBase64: true }),
+  };
+
+  return httpCallReturnBody(endpoint, httpRequestParams);
+}
+
+export async function migrateToSecretStorageFromAuthFlow(payload, { accessToken }) {
+  const endpoint = {
+    method: 'POST',
+    path: '/auth/crypto/migration/v2',
+    withBearer: true,
+    withCsrfToken: true,
+  };
+
+  const response = await API
+    .use(endpoint)
+    .build(
+      {},
+      objectToSnakeCaseDeep(payload, { ignoreBase64: true }),
+      {},
+    )
+    .send({ headers: { Authorization: `Bearer ${accessToken}` } });
+
+  return response;
+}
+
+export async function postAsymKeyToSecretStorage(payload) {
+  const endpoint = {
+    method: 'POST',
+    path: '/crypto/secret-storage/asym-keys',
+    withCsrfToken: true,
+  };
+  const httpRequestParams = {
+    payload,
+  };
+
+  return httpCallReturnBody(endpoint, httpRequestParams);
+}
+
+export async function postBoxKeyShareToSecretStorage({ boxId, payload }) {
+  const endpoint = {
+    method: 'PUT',
+    path: '/crypto/secret-storage/box-key-shares/:boxId',
+    withCsrfToken: true,
+  };
+  const httpRequestParams = {
+    payload,
+    params: {
+      boxId,
+    },
+  };
+
+  return httpCallReturnBody(endpoint, httpRequestParams);
+}
+
+export async function deleteAsymKeys({ publicKeys }) {
+  const endpoint = {
+    method: 'DELETE',
+    path: '/crypto/secret-storage/asym-keys',
+    withCsrfToken: true,
+  };
+  const httpRequestParams = {
+    payload: { publicKeys },
+  };
+
+  return httpCallReturnBody(endpoint, httpRequestParams);
+}
+
+export async function deleteBoxKeyShares({ boxIds }) {
+  const endpoint = {
+    method: 'DELETE',
+    path: '/crypto/secret-storage/box-key-shares',
+    withCsrfToken: true,
+  };
+  const httpRequestParams = {
+    payload: { boxIds },
   };
 
   return httpCallReturnBody(endpoint, httpRequestParams);

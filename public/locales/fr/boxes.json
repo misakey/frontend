@@ -226,7 +226,7 @@
       }
     },
     "error": {
-      "updateBackup": "Une erreur s'est produite lors de la mise à jour du coffre-fort. Assurez-vous de garder le lien d'invitation de l'espace privé afin de ne pas perdre la clé de déchiffrement."
+      "updateSecretStorage": "Une erreur s'est produite lors de la mise à jour du coffre-fort. Assurez-vous de garder le lien d'invitation de l'espace privé afin de ne pas perdre la clé de déchiffrement."
     }
   },
   "delete": {
@@ -265,7 +265,7 @@
     }
   },
   "removeBox": {
-    "updateBackup": {
+    "updateSecretStorage": {
       "error": "Une erreur s'est produite lors de la mise à jour du coffre-fort."
     },
     "success": {

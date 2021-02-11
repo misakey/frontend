@@ -16,8 +16,14 @@ import { decodeUTF8, encodeUTF8 } from 'tweetnacl-util';
 
 import { serializeObjectToJson, deserializeJsonToObject } from '@misakey/crypto/helpers/serialization';
 import { computeVaultKeyFingerprint } from '@misakey/crypto/crypto/fingerprint';
-import { symmetricEncrypt, symmetricDecrypt } from '@misakey/crypto/crypto';
+import {
+  symmetricEncrypt,
+  symmetricDecrypt,
+  generateSymmetricKey,
+} from '@misakey/crypto/crypto';
 import { encryptFile } from '@misakey/crypto/files';
+
+export const generateVaultKey = generateSymmetricKey;
 
 export const encryptFileMetadataForVault = (metadata, vaultKey) => {
   const formattedObject = decodeUTF8(serializeObjectToJson(metadata));

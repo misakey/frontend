@@ -1,7 +1,18 @@
-import updateBackup from './updateBackup';
+import isNil from '@misakey/helpers/isNil';
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
+import {
+  uploadAsymKeyForStorage,
+  uploadBoxKeyShareForStorage,
+} from '@misakey/crypto/secretStorage';
+
 import {
   CRYPTO_SET_BOX_SECRETS,
 } from './types';
+
+const {
+  getRootKey: getRootKeySelector,
+} = cryptoSelectors;
+
 
 /**
  * set secret key and/or key share for a box
@@ -9,7 +20,9 @@ import {
  * this will overwrite the existing key share for this box if any
  */
 export default ({ boxId, secretKey, keyShare }) => (
-  async (dispatch) => {
+  async (dispatch, getState) => {
+    const state = getState();
+
     await dispatch({
       type: CRYPTO_SET_BOX_SECRETS,
       boxId,
@@ -17,6 +30,16 @@ export default ({ boxId, secretKey, keyShare }) => (
       keyShare,
     });
 
-    await dispatch(updateBackup());
+    const rootKey = getRootKeySelector(state);
+    if (isNil(rootKey)) {
+      return;
+    }
+
+    if (!isNil(secretKey)) {
+      await uploadAsymKeyForStorage({ secretKey, rootKey });
+    }
+    if (!isNil(keyShare)) {
+      await uploadBoxKeyShareForStorage({ boxId, share: keyShare, rootKey });
+    }
   }
 );

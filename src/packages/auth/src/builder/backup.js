@@ -1,4 +1,3 @@
-
 import API from '@misakey/api';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';

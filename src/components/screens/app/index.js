@@ -23,7 +23,7 @@ const NotFound = lazy(() => retry(() => import('components/screens/app/NotFound'
 
 // COMPONENTS
 const BoxesApp = () => {
-  const { isLoadingBackupKey, isReady } = useLoadSecretsFromShares();
+  const { isLoadingRootKey, isReady } = useLoadSecretsFromShares();
   const { isFetching, shouldFetch } = useIdentity();
 
   const isFetchingIdentity = useMemo(
@@ -32,8 +32,8 @@ const BoxesApp = () => {
   );
 
   const isLoading = useMemo(
-    () => isFetchingIdentity || isLoadingBackupKey,
-    [isFetchingIdentity, isLoadingBackupKey],
+    () => isFetchingIdentity || isLoadingRootKey,
+    [isFetchingIdentity, isLoadingRootKey],
   );
 
   const done = useMemo(

@@ -16,6 +16,7 @@ import { createBoxBuilder } from '@misakey/helpers/builder/boxes';
 import getRandomTitle from '@misakey/helpers/getRandomTitle';
 import isFunction from '@misakey/helpers/isFunction';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import logSentryException from '@misakey/helpers/log/sentry/exception';
 
 import { createCryptoForNewBox } from '@misakey/crypto/box/creation';
 
@@ -100,8 +101,9 @@ function CreateBoxDialog({
             onSuccess();
           }
         })
-        .catch(() => {
-          enqueueSnackbar(t('boxes:create.error.updateBackup'), { variant: 'error' });
+        .catch((error) => {
+          enqueueSnackbar(t('boxes:create.error.updateSecretStorage'), { variant: 'error' });
+          logSentryException(error, 'dispatching setBoxSecret', { crypto: true });
         })
         .finally(() => {
           enqueueSnackbar(t('boxes:create.dialog.success'), { variant: 'success' });

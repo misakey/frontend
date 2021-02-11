@@ -1,41 +1,31 @@
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import isNil from '@misakey/helpers/isNil';
-import mergeWith from '@misakey/helpers/mergeWith';
-import isArray from '@misakey/helpers/isArray';
+import merge from '@misakey/helpers/merge';
 import ramdaPath from '@misakey/helpers/path';
 import assocPath from '@misakey/helpers/assocPath';
 import propOr from '@misakey/helpers/propOr';
 import omit from '@misakey/helpers/omit';
-import compact from '@misakey/helpers/compact';
-import pathOr from '@misakey/helpers/pathOr';
-import pick from '@misakey/helpers/pick';
-import without from '@misakey/helpers/without';
 import createReducer from '@misakey/store/reducers/helpers/createReducer';
 import { createSelector } from 'reselect';
+
+import {
+  keyPairFromSecretKey,
+} from '@misakey/crypto/crypto';
 
 import { SIGN_OUT } from '@misakey/react-auth/store/actions/auth';
 
 import {
   CRYPTO_LOAD_SECRETS,
-  CRYPTO_SET_BACKUP_KEY,
   CRYPTO_IMPORT_SECRET_KEYS,
-  CRYPTO_INITIALIZE,
-  CRYPTO_SET_BACKUP_VERSION,
   CRYPTO_SET_BOX_SECRETS,
-  CRYPTO_REMOVE_BOX_SECRET_KEYS,
-  CRYPTO_SET_ENCRYPTED_BACKUP_DATA,
-  CRYPTO_SET_BACKUP_KEY_SHARE,
-  CRYPTO_REMOVE_BOX_KEY_SHARES,
+  CRYPTO_SET_ENCRYPTED_SECRET_STORAGE_DATA,
+  CRYPTO_SET_ROOT_KEY_SHARE,
   CRYPTO_SET_VAULT_KEY,
   CRYPTO_SET_IDENTITY_KEY,
   CRYPTO_SET_IDENTITY_NON_IDENTIFIED_KEYS,
+  CRYPTO_DELETE_SECRETS,
 } from '../actions/types';
-
-
-// HELPERS
-const pathOrEmptyArray = pathOr([]);
-const getIdentityPubKeyPath = (publicKey, items) => pathOr(null, ['secretKeys', publicKey])(items);
 
 const concatToPath = (values, destObject, path) => (
   assocPath(
@@ -51,32 +41,13 @@ const concatToPath = (values, destObject, path) => (
 
 // INITIAL STATE
 export const INITIAL_STATE = {
-  backupKey: null,
-  backupVersion: null,
-  backupKeyShares: {},
+  rootKeyShares: {},
   data: null,
-  secrets: {
-    // @FIXME rename "secretKey" to "userDecryptionKey"
-    secretKey: null,
+  secretStorage: {
+    rootKey: null,
     vaultKey: null,
-    identityKeys: {
-      publicKeys: {},
-      secretKeys: {},
-    },
-    identityNonIdentifiedKeys: {
-      publicKeys: {},
-      secretKeys: {},
-    },
+    asymKeys: {},
     boxKeyShares: {},
-    boxDecryptionKeys: [],
-    // "passive" encryption keys are keys that must not be used any more for encrypting data;
-    // they are only kept for decrypting data that was encrypted for them in the past.
-    // This is typically used when recovering old keys that were retired after being lost.
-    passive: {
-      secretKeys: [],
-      vaultKey: [],
-      boxDecryptionKeys: [],
-    },
   },
 };
 
@@ -85,98 +56,52 @@ const getState = (state) => state.crypto;
 
 const isCryptoLoaded = createSelector(
   getState,
-  (state) => !isNil(state.backupKey),
+  (state) => !isNil(state.secretStorage.rootKey),
 );
 
-const getBackupKey = createSelector(
+const getAsymKeys = (state) => getState(state).secretStorage.asymKeys;
+
+const getAsymSecretKey = (publicKey) => (state) => (
+  getState(state).secretStorage.asymKeys[publicKey]
+);
+
+const getBoxKeyShares = (state) => getState(state).secretStorage.boxKeyShares;
+
+const getBoxKeyShare = (boxId) => (state) => (
+  getState(state).secretStorage.boxKeyShares[boxId]
+);
+
+const getRootKey = createSelector(
   getState,
-  (state) => state.backupKey,
+  (state) => state.secretStorage.rootKey,
 );
 
 const getVaultKey = createSelector(
   getState,
-  (state) => state.secrets.vaultKey,
+  (state) => state.secretStorage.vaultKey,
 );
 
-const makeGetBackupKeyShareForAccount = () => createSelector(
-  (state) => getState(state).backupKeyShares,
+const makeGetRootKeyShareForAccount = () => createSelector(
+  (state) => getState(state).rootKeyShares,
   (_, accountId) => accountId,
   (items, accountId) => propOr(null, accountId)(items),
 );
 
-const areSecretsLoaded = createSelector(
+const getEncryptedSecretStorageData = createSelector(
   getState,
-  (state) => !isNil(state.secrets.secretKey),
-);
-
-const boxesSecretKeys = createSelector(
-  getState,
-  (state) => state.secrets.boxDecryptionKeys || [],
-);
-
-const getEncryptedBackupData = createSelector(
-  getState,
-  (state) => ({ data: state.data, backupVersion: state.backupVersion }),
-);
-
-const getBoxSecretKeys = createSelector(
-  getState,
-  (state) => state.secrets,
-  // "compact" removes falsey values
-  (secrets) => compact([
-    ...pathOrEmptyArray(['secrets', 'boxDecryptionKeys'], secrets),
-    ...pathOrEmptyArray(['secrets', 'passive', 'boxDecryptionKeys'], secrets),
-  ]),
-);
-
-const getNonIdentifiedKeys = createSelector(
-  getState,
-  (secrets) => pathOr({}, ['secrets', 'identityNonIdentifiedKeys'])(secrets),
-);
-
-const getRelatedIdentitySecretKey = createSelector(
-  (state) => getState(state).secrets,
-  (_, publicKey) => publicKey,
-  (secrets, publicKey) => {
-    const { identityKeys, identityNonIdentifiedKeys } = secrets;
-    return getIdentityPubKeyPath(publicKey, identityKeys)
-      || getIdentityPubKeyPath(publicKey, identityNonIdentifiedKeys);
-  },
-);
-
-const makeGetBoxKeyShare = () => createSelector(
-  (state) => getState(state).secrets.boxKeyShares,
-  (_, boxId) => boxId,
-  (items, boxId) => {
-    const keyShare = propOr(null, boxId)(items);
-    // due to a past inconsistency in the way box key shares were added,
-    // it is possible that some box key shares are stored as strings instead of objects
-    if (typeof keyShare === 'string') {
-      return { value: keyShare };
-    }
-    return keyShare;
-  },
-);
-
-const makeGetMissingBoxKeyShares = () => createSelector(
-  (state) => getState(state).secrets.boxKeyShares,
-  (_, ids) => ids,
-  (items, ids) => omit(items, ids),
+  (state) => ({ data: state.data }),
 );
 
 export const selectors = {
-  getBackupKey,
+  getAsymKeys,
+  getAsymSecretKey,
+  getBoxKeyShares,
+  getBoxKeyShare,
+  getRootKey,
   getVaultKey,
-  makeGetBackupKeyShareForAccount,
+  makeGetRootKeyShareForAccount,
   isCryptoLoaded,
-  areSecretsLoaded,
-  boxesSecretKeys,
-  getEncryptedBackupData,
-  getBoxSecretKeys,
-  makeGetBoxKeyShare,
-  makeGetMissingBoxKeyShares,
-  getNonIdentifiedKeys,
-  getRelatedIdentitySecretKey,
+  getEncryptedSecretStorageData,
 };
 
 
@@ -186,126 +111,96 @@ function reset() {
   return INITIAL_STATE;
 }
 
-function setBackupKey(state, { backupKey }) {
-  return {
-    ...state,
-    backupKey,
-  };
-}
-
 function setVaultKey(state, { vaultKey }) {
   return {
     ...state,
-    secrets: {
-      ...state.secrets,
+    secretStorage: {
+      ...state.secretStorage,
       vaultKey,
     },
   };
 }
 
-function setBackupKeyShare(state, { backupKeyShare, accountId }) {
+function setRootKeyShare(state, { rootKeyShare, accountId }) {
   return {
     ...state,
-    backupKeyShares: {
-      ...state.backupKeyShares,
-      [accountId]: backupKeyShare,
+    rootKeyShares: {
+      ...state.rootKeyShares,
+      [accountId]: rootKeyShare,
     },
   };
 }
 
 
-function setEncryptedBackupData(state, { data, backupVersion }) {
+function setEncryptedSecretStorageData(state, { data }) {
   return {
     ...state,
     data,
-    backupVersion,
   };
 }
 
-
-function setEncryptedBackupVersion(state, { version }) {
+function loadSecrets(state, { secretStorage }) {
   return {
     ...state,
-    backupVersion: version,
+    secretStorage: merge(state.secretStorage, secretStorage),
   };
 }
 
+function setAsymKey(state, { secretKey }) {
+  const { publicKey } = keyPairFromSecretKey(secretKey);
 
-function initialize(state, { backupKey, secretKey, vaultKey }) {
   return {
     ...state,
-    secrets: {
-      ...state.secrets,
-      secretKey,
-      vaultKey,
+    secretStorage: {
+      ...state.secretStorage,
+      asymKeys: {
+        ...state.secretStorage.asymKeys,
+        [publicKey]: secretKey,
+      },
     },
-    backupKey,
   };
 }
 
-function loadSecrets(state, action) {
-  // we use mergeWith because we need the customizer function.
-  // XXX the customizer function is used to treat arrays as sets;
-  // it would probably be better to use objects (with keys = true)
-  // to implement sets.
-  return mergeWith(
-    {},
-    state,
-    pick(['secrets', 'backupKey', 'backupVersion'], action),
-    (objValue, srcValue) => {
-      if (isArray(objValue)) {
-        return [...new Set(objValue.concat(srcValue))];
-      }
-      return undefined;
+function setBoxKeyShare(state, { boxId, keyShare }) {
+  return {
+    ...state,
+    secretStorage: {
+      ...state.secretStorage,
+      boxKeyShares: {
+        ...state.secretStorage.boxKeyShares,
+        [boxId]: keyShare,
+      },
     },
-  );
+  };
 }
 
 function setBoxSecrets(state, { boxId, secretKey, keyShare }) {
-  if (isNil(boxId) && !isNil(keyShare)) {
-    throw Error('box ID is required to set a box key share');
+  let newState = state;
+
+  if (!isNil(secretKey)) {
+    newState = setAsymKey(newState, { secretKey });
   }
 
-  return {
-    ...state,
-    secrets: {
-      ...state.secrets,
-      boxDecryptionKeys: (
-        isNil(secretKey)
-          ? state.secrets.boxDecryptionKeys
-          : [...new Set([secretKey].concat(state.secrets.boxDecryptionKeys))]
-      ),
-      boxKeyShares: (
-        (isNil(keyShare) || isNil(boxId))
-          ? state.secrets.boxKeyShares
-          : {
-            ...state.secrets.boxKeyShares,
-            [boxId]: {
-              value: keyShare,
-            },
-          }
-      ),
-    },
-  };
-}
+  if (!isNil(keyShare)) {
+    if (isNil(boxId)) {
+      throw Error('box ID is required to set a box key share');
+    }
+    newState = setBoxKeyShare(newState, { boxId, keyShare });
+  }
 
-const removeBoxSecretKeys = (state, { secretKeys }) => ({
-  ...state,
-  secrets: {
-    ...state.secrets,
-    boxDecryptionKeys: without(state.secrets.boxDecryptionKeys, ...secretKeys),
-  },
-});
+  return newState;
+}
 
 function importSecretKeys(state, { secretKeys }) {
   return concatToPath(secretKeys, state, ['secrets', 'passive', 'secretKeys']);
 }
 
-const removeBoxKeyShares = (state, { boxIds }) => ({
+const deleteSecrets = (state, { asymPublicKeys, boxKeySharesBoxIds }) => ({
   ...state,
-  secrets: {
-    ...state.secrets,
-    boxKeyShares: omit(state.secrets.boxKeyShares, boxIds),
+  secretStorage: {
+    ...state.secretStorage,
+    asymKeys: omit(state.secretStorage.asymKeys, asymPublicKeys),
+    boxKeyShares: omit(state.secretStorage.boxKeyShares, boxKeySharesBoxIds),
   },
 });
 
@@ -347,16 +242,12 @@ const setIdentityNonIdentifiedKey = (state, { identityId, secretKey, publicKey }
 
 // REDUCER
 const cryptoReducer = createReducer(INITIAL_STATE, {
-  [CRYPTO_SET_BACKUP_KEY]: setBackupKey,
-  [CRYPTO_SET_ENCRYPTED_BACKUP_DATA]: setEncryptedBackupData,
-  [CRYPTO_SET_BACKUP_VERSION]: setEncryptedBackupVersion,
-  [CRYPTO_INITIALIZE]: initialize,
+  [CRYPTO_SET_ENCRYPTED_SECRET_STORAGE_DATA]: setEncryptedSecretStorageData,
   [CRYPTO_LOAD_SECRETS]: loadSecrets,
   [CRYPTO_SET_BOX_SECRETS]: setBoxSecrets,
-  [CRYPTO_REMOVE_BOX_SECRET_KEYS]: removeBoxSecretKeys,
+  [CRYPTO_DELETE_SECRETS]: deleteSecrets,
   [CRYPTO_IMPORT_SECRET_KEYS]: importSecretKeys,
-  [CRYPTO_SET_BACKUP_KEY_SHARE]: setBackupKeyShare,
-  [CRYPTO_REMOVE_BOX_KEY_SHARES]: removeBoxKeyShares,
+  [CRYPTO_SET_ROOT_KEY_SHARE]: setRootKeyShare,
   [CRYPTO_SET_VAULT_KEY]: setVaultKey,
   [SIGN_OUT]: reset,
   [CRYPTO_SET_IDENTITY_KEY]: setIdentityKey,
@@ -364,6 +255,6 @@ const cryptoReducer = createReducer(INITIAL_STATE, {
 });
 
 export default persistReducer(
-  { key: 'crypto', storage, whitelist: ['backupKeyShares'], blacklist: [] },
+  { key: 'crypto', storage, whitelist: ['rootKeyShares'], blacklist: [] },
   cryptoReducer,
 );

@@ -1,7 +1,7 @@
 // mocking Argon2
 // which is provided through a "<script>" tag in the react app
 // importing this file is necessary in each test suite that involves
-// "salted symmetric encryption" (used to encrypt the secrets backup)
+// "salted symmetric encryption" (used to encrypt the root key)
 
 // this class used to be part of helpers
 // and was used for serialization of cryptograms

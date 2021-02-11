@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
 import BoxesSchema from 'store/schemas/Boxes';
@@ -21,7 +22,7 @@ import logSentryException from '@misakey/helpers/log/sentry/exception';
 import clipboardGetItem from '@misakey/helpers/clipboard/getItem';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useBoxPublicKeysWeCanDecryptFrom from 'packages/crypto/src/hooks/useBoxPublicKeysWeCanDecryptFrom';
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useDrag from '@misakey/hooks/useDrag';
 import usePasteEffect from '@misakey/hooks/usePasteEffect';
@@ -36,6 +37,10 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 // CONSTANTS
 const DROP_TYPE = 'Files';
 const TYPE_REGEX = /^([^/]*)\/(.*)$/;
+
+const {
+  getAsymSecretKey,
+} = cryptoSelectors;
 
 // HELPERS
 const isEmptyFileType = (file) => isEmpty(fileType(file));
@@ -158,12 +163,12 @@ const InputBoxesUpload = ({
     [],
   );
 
-  const publicKeysWeCanEncryptWith = useBoxPublicKeysWeCanDecryptFrom();
   const { publicKey } = useSafeDestr(box);
+  const secretKey = useSelector(getAsymSecretKey(publicKey));
 
   const disabled = useMemo(
-    () => !publicKeysWeCanEncryptWith.has(publicKey),
-    [publicKey, publicKeysWeCanEncryptWith],
+    () => isNil(secretKey),
+    [secretKey],
   );
 
   const dragProps = useMemo(

@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
@@ -10,7 +10,8 @@ import { OLD_PASSWORD_KEY, NEW_PASSWORD_KEY, PASSWORD_CONFIRM_KEY } from 'consta
 import IdentitySchema from 'store/schemas/Identity';
 import routes from 'routes';
 import { passwordValidationSchema } from 'constants/validationSchemas/identity';
-import { forbidden, invalid } from '@misakey/ui/constants/errorTypes';
+import { invalid, forbidden } from '@misakey/ui/constants/errorTypes';
+import { getCode } from '@misakey/helpers/apiError';
 
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 
@@ -26,11 +27,13 @@ import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable'
 import Box from '@material-ui/core/Box';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
-import preparePasswordChange from '@misakey/crypto/store/actions/preparePasswordChange';
-import {
-  BackupDecryptionError,
-  BadBackupVersion,
-} from '@misakey/crypto/Errors/classes';
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
+
+import { encryptRootKeyWithNewPassword } from '@misakey/crypto';
+
+const {
+  getRootKey,
+} = cryptoSelectors;
 
 // CONSTANTS
 const INITIAL_VALUES = {
@@ -56,9 +59,9 @@ const AccountPassword = ({ t, identity }) => {
 
   const handleHttpErrors = useHandleHttpErrors();
 
-  const dispatch = useDispatch();
-
   const { accountId } = useMemo(() => identity || {}, [identity]);
+
+  const rootKey = useSelector(getRootKey);
 
   const onSubmit = useCallback(
     async (
@@ -66,12 +69,7 @@ const AccountPassword = ({ t, identity }) => {
       { setSubmitting, setFieldError },
     ) => {
       try {
-        const {
-          backupData,
-          backupVersion,
-          commitPasswordChange,
-        } = await dispatch(preparePasswordChange(newPassword, oldPassword, accountId));
-
+        const encryptedAccountRootKey = await encryptRootKeyWithNewPassword(rootKey, newPassword);
         const pwdHashParams = await fetchPwdHashParams(accountId);
 
         await changePassword({
@@ -79,35 +77,23 @@ const AccountPassword = ({ t, identity }) => {
           oldPassword,
           newPassword,
           pwdHashParams,
-          backupData,
-          backupVersion,
+          encryptedAccountRootKey,
         });
 
-        await commitPasswordChange();
-        enqueueSnackbar(t('account:password.success'), { variant: 'success' });
+        enqueueSnackbar(t('account:forgotPassword.success'), { variant: 'success' });
         push(accountHome);
       } catch (e) {
-        if (e instanceof BackupDecryptionError || e.code === forbidden) {
+        if (e.httpStatus || getCode(e) === forbidden) {
           setFieldError(OLD_PASSWORD_KEY, invalid);
-        } else if (e instanceof BadBackupVersion) {
-          enqueueSnackbar(
-            t('common:crypto.errors.shouldRefresh'),
-            {
-              variant: 'error',
-              autoHideDuration: 8000,
-            },
-          );
-          logSentryException(e, 'PasswordChange: Bad backup version', { crypto: true });
-        } else if (e.httpStatus) {
-          handleHttpErrors(e);
-        } else {
-          logSentryException(e, 'PasswordChange: Unidentified error', { crypto: true });
+          return;
         }
+        handleHttpErrors(e);
+        logSentryException(e, 'PasswordChange: Unidentified error', { crypto: true });
       } finally {
         setSubmitting(false);
       }
     },
-    [dispatch, accountId, enqueueSnackbar, t,
+    [accountId, enqueueSnackbar, t, rootKey,
       push, accountHome, handleHttpErrors],
   );
 

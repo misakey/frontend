@@ -5,7 +5,7 @@ import { useDispatch, useSelector, batch } from 'react-redux';
 
 import UploadDialog from 'components/smart/Dialog/Upload';
 import workerEncryptFileForVault from '@misakey/crypto/vault/workers/encryptFile/singleton';
-import ensureVaultKeyExists from '@misakey/crypto/store/actions/ensureVaultKeyExists';
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 import { uploadFileInVaultBuilder } from '@misakey/helpers/builder/vault';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { addSavedFile } from 'store/reducers/files/saved';
@@ -14,9 +14,15 @@ import { addSavedFile } from 'store/reducers/files/saved';
 export const BLOBS_FIELD_NAME = 'files';
 export const INITIAL_VALUES = { [BLOBS_FIELD_NAME]: [] };
 
+const {
+  getVaultKey,
+} = cryptoSelectors;
+
+
 function VaultUploadDialog({ open, onClose }) {
   const dispatch = useDispatch();
   const identityId = useSelector(authSelectors.identityId);
+  const vaultKey = useSelector(getVaultKey);
 
   const onSuccess = useCallback(
     (response) => {
@@ -28,13 +34,12 @@ function VaultUploadDialog({ open, onClose }) {
   const onEncryptBuilder = useCallback(
     async (file) => {
       try {
-        const vaultKey = await Promise.resolve(dispatch(ensureVaultKeyExists()));
         return workerEncryptFileForVault(file, vaultKey);
       } catch (err) {
         return Promise.reject();
       }
     },
-    [dispatch],
+    [vaultKey],
   );
 
   const onUploadBuilder = useCallback(

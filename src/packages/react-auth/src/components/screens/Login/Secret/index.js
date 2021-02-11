@@ -15,10 +15,8 @@ import { STEP, INITIAL_VALUES, ERROR_KEYS } from '@misakey/auth/constants';
 import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
 import { getSecretValidationSchema } from '@misakey/react-auth/constants/validationSchemas';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react-auth/store/reducers/sso';
-import hardPasswordChange from '@misakey/crypto/store/actions/hardPasswordChange';
-import createNewOwnerSecrets from '@misakey/crypto/store/actions/createNewOwnerSecrets';
-import createNewBackupKeySharesFromAuthFlow from '@misakey/crypto/store/actions/createNewBackupKeySharesFromAuthFlow';
 import { ssoUpdate, ssoSign, ssoReset } from '@misakey/react-auth/store/actions/sso';
+import createNewRootKeySharesFromAuthFlow from '@misakey/crypto/store/actions/createNewRootKeySharesFromAuthFlow';
 import { conflict } from '@misakey/ui/constants/errorTypes';
 import { DATE_FULL } from '@misakey/ui/constants/formats/dates';
 import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, WEBAUTHN, TOTP, TOTP_RECOVERY, AuthUndefinedMethodName, RESET_PASSWORD } from '@misakey/auth/constants/method';
@@ -112,8 +110,6 @@ const AuthLoginSecret = ({
   client,
   accessToken,
   resourceName,
-  dispatchHardPasswordChange,
-  dispatchCreateNewOwnerSecrets,
   dispatchSsoUpdate,
   dispatchSsoSign,
   dispatchSsoReset,
@@ -156,15 +152,15 @@ const AuthLoginSecret = ({
   const onHandleBackupSecretShares = useCallback(
     async ({ secret: password }, nextAccessToken) => {
       try {
-        await dispatch(createNewBackupKeySharesFromAuthFlow({
+        await dispatch(createNewRootKeySharesFromAuthFlow({
           loginChallenge,
           identityId,
           password,
         }, nextAccessToken));
       } catch (error) {
-        logSentryException(error, 'AuthFlow: create new backup key share', { crypto: true }, 'warning');
-        enqueueSnackbar(t('common:crypto.errors.backupKeyShare'), { variant: 'warning' });
-        // a failure of backup key shares creation
+        logSentryException(error, 'AuthFlow: create new root key share', { crypto: true }, 'warning');
+        enqueueSnackbar(t('common:crypto.errors.rootKeyShare'), { variant: 'warning' });
+      // a failure of root key shares creation
         // should not make the entire auth flow fail
         // because it is not an essential step of the auth flow:
         // the user will simply have to enter her password one more time
@@ -272,14 +268,12 @@ const AuthLoginSecret = ({
         identityId,
         methodName,
         pwdHashParams: metadata,
-        dispatchHardPasswordChange,
-        dispatchCreateNewOwnerSecrets,
         ...values,
         auth: !isNil(accessToken),
       },
       accessToken,
     ),
-    [accessToken, dispatchCreateNewOwnerSecrets, dispatchHardPasswordChange,
+    [accessToken,
       identityId, loginChallenge, metadata, methodName],
   );
 
@@ -433,8 +427,6 @@ AuthLoginSecret.propTypes = {
   authnStep: SSO_PROP_TYPES.authnStep.isRequired,
   identity: SSO_PROP_TYPES.identity.isRequired,
   accessToken: SSO_PROP_TYPES.accessToken,
-  dispatchHardPasswordChange: PropTypes.func.isRequired,
-  dispatchCreateNewOwnerSecrets: PropTypes.func.isRequired,
   dispatchSsoUpdate: PropTypes.func.isRequired,
   dispatchSsoSign: PropTypes.func.isRequired,
   dispatchSsoReset: PropTypes.func.isRequired,
@@ -454,12 +446,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchHardPasswordChange: (newPassword) => Promise.resolve(
-    dispatch(hardPasswordChange(newPassword)),
-  ),
-  dispatchCreateNewOwnerSecrets: (password) => Promise.resolve(
-    dispatch(createNewOwnerSecrets(password)),
-  ),
   dispatchSsoUpdate: (sso) => Promise.resolve(
     dispatch(ssoUpdate(sso)),
   ),

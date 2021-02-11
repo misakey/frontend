@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
 import { TIME } from '@misakey/ui/constants/formats/dates';
@@ -8,11 +9,12 @@ import EventSchema from 'store/schemas/Boxes/Events';
 import BoxesSchema from 'store/schemas/Boxes';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import isNil from '@misakey/helpers/isNil';
 import { isBoxEventEdited } from 'helpers/boxEvent';
 import decryptText from '@misakey/crypto/box/decryptText';
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 
 import useAnchormeCallback from '@misakey/hooks/useAnchorme/callback';
-import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
 
 import EventCardWithMenu from 'components/dumb/Card/Event/WithMenu';
@@ -22,11 +24,9 @@ import MenuItemEventEdit from 'components/smart/MenuItem/Event/Edit';
 import MenuItemEventCopy from 'components/smart/MenuItem/Event/Copy';
 import MenuItemEventDelete from 'components/smart/MenuItem/Event/Delete';
 
-// HELPERS
-const decryptMessage = (publicKeysWeCanDecryptFrom, encrypted, publicKey) => {
-  const secretKey = publicKeysWeCanDecryptFrom.get(publicKey);
-  return decryptText(encrypted, secretKey);
-};
+const {
+  getAsymSecretKey,
+} = cryptoSelectors;
 
 // COMPONENTS
 const BoxMessageTextEvent = ({
@@ -42,8 +42,8 @@ const BoxMessageTextEvent = ({
     content: { encrypted, publicKey },
   } = useMemo(() => event, [event]);
   const { id: boxId } = useMemo(() => box, [box]);
-  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
-  const canBeDecrypted = publicKeysWeCanDecryptFrom.has(publicKey);
+  const secretKey = useSelector(getAsymSecretKey(publicKey));
+  const canBeDecrypted = !isNil(secretKey);
 
   const anchorme = useAnchormeCallback({ LinkComponent: MuiLink });
 
@@ -56,12 +56,12 @@ const BoxMessageTextEvent = ({
 
   const text = useMemo(() => {
     if (canBeDecrypted) {
-      const decrypted = decryptMessage(publicKeysWeCanDecryptFrom, encrypted, publicKey);
+      const decrypted = decryptText(encrypted, secretKey);
       return preview ? decrypted : anchorme(decrypted);
     }
     return t('common:encrypted');
   }, [
-    canBeDecrypted, encrypted, publicKeysWeCanDecryptFrom, publicKey, t, preview, anchorme,
+    canBeDecrypted, encrypted, secretKey, t, preview, anchorme,
   ]);
 
   const items = useMemo(

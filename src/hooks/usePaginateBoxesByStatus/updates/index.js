@@ -1,15 +1,12 @@
-import { useSnackbar } from 'notistack';
-import { useTranslation } from 'react-i18next';
 import { mergeReceiveNoEmptyNullable } from '@misakey/store/reducers/helpers/processStrategies';
 import { selectors, actionCreators, moveBackUpId } from 'store/reducers/userBoxes/pagination';
 import { removeBox, receiveJoinedBox, addJoinedBox } from 'store/reducers/box';
-import removeBoxSecretKeysAndKeyShares from '@misakey/crypto/store/actions/removeBoxSecretKeysAndKeyShares';
+import deleteSecrets from '@misakey/crypto/store/actions/deleteSecrets';
 
 import isNil from '@misakey/helpers/isNil';
 
 import { useMemo, useCallback, useRef, useEffect } from 'react';
 import { useDispatch, useSelector, batch } from 'react-redux';
-import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 
 import { ALL } from 'constants/app/boxes/statuses';
 import execWithRequestIdleCallback from 'packages/helpers/src/execWithRequestIdleCallback';
@@ -20,41 +17,16 @@ const { getBySearchPagination, getByPagination } = selectors;
 
 // HOOKS
 export const useOnRemoveBox = (status = ALL, search = null) => {
-  const { enqueueSnackbar } = useSnackbar();
-  const { t } = useTranslation('boxes');
-
-  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
-  const publicKeysRef = useRef(publicKeysWeCanDecryptFrom);
-
-  const errorBackup = useMemo(
-    () => t('boxes:removeBox.updateBackup.error'),
-    [t],
-  );
-
-  useEffect(
-    () => {
-      publicKeysRef.current = publicKeysWeCanDecryptFrom;
-    },
-    [publicKeysWeCanDecryptFrom, publicKeysRef],
-  );
-
-  // DISPATCH
   const dispatch = useDispatch();
 
   const cleanBackup = useCallback(
     ({ id, publicKey }) => {
-      if (!isNil(publicKey)) {
-        const secretKey = publicKeysRef.current.get(publicKey);
-        dispatch(removeBoxSecretKeysAndKeyShares({
-          secretKeys: [secretKey],
-          boxIds: [id],
-        }))
-          .catch(() => {
-            enqueueSnackbar(errorBackup, { variant: 'error' });
-          });
-      }
+      dispatch(deleteSecrets({
+        asymPublicKeys: [publicKey],
+        boxKeySharesBoxIds: [id],
+      }));
     },
-    [dispatch, enqueueSnackbar, errorBackup],
+    [dispatch],
   );
 
   const dispatchRemovePaginatedBox = useCallback(

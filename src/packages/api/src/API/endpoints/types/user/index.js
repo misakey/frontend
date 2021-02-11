@@ -13,14 +13,14 @@ export default {
     path: '/users/:id',
     withCsrfToken: true,
   },
-  backupKeyShares: {
+  rootKeyShares: {
     read: {
       method: 'GET',
-      path: '/backup-key-shares/:otherShareHash',
+      path: '/crypto/root-key-shares/:otherShareHash',
     },
     create: {
       method: 'POST',
-      path: '/backup-key-shares',
+      path: '/crypto/root-key-shares',
       withCsrfToken: true,
     },
   },

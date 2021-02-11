@@ -1,27 +1,32 @@
 import { selectors } from 'store/reducers/userBoxes/pagination';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { makeGetBoxesPublicKeysSelector } from 'store/reducers/box';
-import removeBoxSecretKeysAndKeyShares from '@misakey/crypto/store/actions/removeBoxSecretKeysAndKeyShares';
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
+import deleteSecrets from '@misakey/crypto/store/actions/deleteSecrets';
 
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import difference from '@misakey/helpers/difference';
+import omit from '@misakey/helpers/omit';
 
 import { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 
 import { ALL } from 'constants/app/boxes/statuses';
 
 // CONSTANTS
-const { makeGetMissingBoxKeyShares } = cryptoSelectors;
+const {
+  getAsymKeys,
+  getBoxKeyShares,
+} = cryptoSelectors;
 const { getBySearchPagination, getByPagination, getItemCount } = selectors;
+const { identity: IDENTITY_SELECTOR } = authSelectors;
 
 // HOOKS
 export default (status = ALL, search = null) => {
   const hasSearch = useMemo(() => !isNil(search), [search]);
 
-  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
+  const asymKeys = useSelector(getAsymKeys);
 
   const dispatch = useDispatch();
 
@@ -36,10 +41,7 @@ export default (status = ALL, search = null) => {
     [],
   );
 
-  const missingBoxKeySharesSelector = useMemo(
-    () => makeGetMissingBoxKeyShares(),
-    [],
-  );
+  const identity = useSelector(IDENTITY_SELECTOR);
 
   // --- SELECTORS hook with memoization layer
   const byPagination = useSelector((state) => byPaginationSelector(state, status));
@@ -68,7 +70,11 @@ export default (status = ALL, search = null) => {
 
   const paginatedPublicKeys = useSelector((state) => paginatedPublicKeysSelector(state, ids));
 
-  const missingBoxKeyShares = useSelector((state) => missingBoxKeySharesSelector(state, ids));
+  const boxKeyShares = useSelector(getBoxKeyShares);
+  const missingBoxKeyShares = useMemo(
+    () => omit(boxKeyShares, ids),
+    [boxKeyShares, ids],
+  );
   // ---
 
   const missingPublicKeys = useMemo(
@@ -76,9 +82,21 @@ export default (status = ALL, search = null) => {
       if (paginatedPublicKeys.length === 0) {
         return [];
       }
-      return difference([...publicKeysWeCanDecryptFrom.keys()], paginatedPublicKeys);
+      const {
+        pubkey: identityPublicKey,
+        nonIdentifiedPubkey: identityNonIdentifiedPublicKey,
+      } = identity;
+
+      return difference(
+        Object.keys(asymKeys),
+        [
+          ...paginatedPublicKeys,
+          identityPublicKey,
+          identityNonIdentifiedPublicKey,
+        ],
+      );
     },
-    [publicKeysWeCanDecryptFrom, paginatedPublicKeys],
+    [asymKeys, paginatedPublicKeys, identity],
   );
 
   const emptyPaginatedPublicKeysCount = useMemo(
@@ -86,26 +104,14 @@ export default (status = ALL, search = null) => {
     [paginatedPublicKeys],
   );
 
-  const missingSecrets = useMemo(
-    () => [...publicKeysWeCanDecryptFrom.entries()].reduce((acc, [publicKey, secretKey]) => {
-      if (missingPublicKeys.includes(publicKey)) {
-        acc.push(secretKey);
-      }
-      return acc;
-    }, []),
-    [publicKeysWeCanDecryptFrom, missingPublicKeys],
-  );
-
   const clearMissingSecret = useCallback(
-    () => Promise.resolve(
-      dispatch(removeBoxSecretKeysAndKeyShares(
-        {
-          secretKeys: missingSecrets,
-          boxIds: Object.keys(missingBoxKeyShares),
-        },
-      )),
+    async () => (
+      dispatch(deleteSecrets({
+        asymPublicKeys: missingPublicKeys,
+        boxKeySharesBoxIds: Object.keys(missingBoxKeyShares),
+      }))
     ),
-    [dispatch, missingSecrets, missingBoxKeyShares],
+    [dispatch, missingPublicKeys, missingBoxKeyShares],
   );
 
   return [missingPublicKeys, emptyPaginatedPublicKeysCount, clearMissingSecret];

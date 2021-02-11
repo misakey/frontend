@@ -12,7 +12,11 @@ import { invalid } from '@misakey/ui/constants/errorTypes';
 import { SIDES } from '@misakey/ui/constants/drawers';
 import { getCurrentUserSelector } from '@misakey/react-auth/store/reducers/auth';
 
+import logSentryException from '@misakey/helpers/log/sentry/exception';
 import useLoadSecretsWithPassword from '@misakey/crypto/hooks/useLoadSecretsWithPassword';
+import {
+  DecryptionError,
+} from '@misakey/crypto/Errors/classes';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -59,10 +63,17 @@ function VaultLocked({ t }) {
   const { displayName, avatarUrl, identifierValue } = useSafeDestr(currentUser);
 
   const onSubmit = useCallback(
-    ({ [PREHASHED_PASSWORD]: password }, { setFieldError }) => openVaultWithPassword(password)
-      .catch(() => {
-        setFieldError(PREHASHED_PASSWORD, invalid);
-      }),
+    async ({ [PREHASHED_PASSWORD]: password }, { setFieldError }) => {
+      try {
+        await openVaultWithPassword(password);
+      } catch (error) {
+        if (error instanceof DecryptionError) {
+          setFieldError(PREHASHED_PASSWORD, invalid);
+          return;
+        }
+        logSentryException(error, 'openning vault with password', { crypto: true });
+      }
+    },
     [openVaultWithPassword],
   );
 

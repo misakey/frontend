@@ -8,7 +8,6 @@ import {
 } from '@misakey/crypto/HttpApi';
 
 import processSetBoxKeyShareCryptoAction from './processSetBoxKeyShareCryptoAction';
-import updateBackup from './updateBackup';
 
 const { accountId: getAccountId } = selectors;
 
@@ -22,7 +21,7 @@ const { accountId: getAccountId } = selectors;
  * The name “pull” is a reference to `git pull` that fetches new commits
  * *and* applies them (merges the remote branch into the local one).
  */
-export default ({ boxSecretKeysByPublicKeys }) => (
+export default () => (
   async (dispatch, getState) => {
     const state = getState();
     const accountId = getAccountId(state);
@@ -30,7 +29,6 @@ export default ({ boxSecretKeysByPublicKeys }) => (
     // cryptoactions is supposed to be an array
     const cryptoactions = await listCryptoActions({ accountId });
 
-    let isBackupUpdateNeeded = false;
     const processedIds = [];
     await asyncBatch(async () => {
       // If we want to process cryptoactions one after the other
@@ -47,9 +45,9 @@ export default ({ boxSecretKeysByPublicKeys }) => (
         try {
           switch (type) {
             case 'set_box_key_share':
+              // action processSetBoxKeyShareCryptoAction takes care of updating secret storage
               await dispatch(processSetBoxKeyShareCryptoAction({
                 cryptoaction,
-                boxSecretKeysByPublicKeys,
               }));
               break;
             default:
@@ -63,15 +61,9 @@ export default ({ boxSecretKeysByPublicKeys }) => (
 
         if (wasProcessed) {
           processedIds.push(id);
-          // will be true if one or more cryptoactions were processed
-          isBackupUpdateNeeded = true;
         }
       }
       /* eslint-enable no-restricted-syntax, no-await-in-loop */
-
-      if (isBackupUpdateNeeded) {
-        await dispatch(updateBackup());
-      }
     });
 
     // TODO use batch deletion when backend supports it

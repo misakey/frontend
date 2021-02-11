@@ -2,14 +2,14 @@ import { useCallback, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import isNil from '@misakey/helpers/isNil';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
-import { getBackupKeyShareBuilder } from '@misakey/auth/builder/backupKeyShares';
-import { combineBackupKeyShares, computeOtherShareHash } from '@misakey/crypto/secretsBackup/keySplitting';
+import logSentryException from '@misakey/helpers/log/sentry/exception';
+import { getRootKeyShareBuilder } from '@misakey/auth/builder/rootKeyShares';
+import { combineRootKeyShares, computeOtherShareHash } from '@misakey/crypto/secretStorage/rootKeyShares';
 import loadSecrets from '@misakey/crypto/store/actions/loadSecrets';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import { decryptSecretsBackupWithBackupKey } from '@misakey/crypto/secretsBackup/encryption';
-import useWatchStorageBackupKeyShares from '@misakey/crypto/hooks/useWatchStorageBackupKeyShares';
+import { decryptSecretStorageWithRootKey } from '@misakey/crypto/secretStorage';
 import { selectors } from '../store/reducers';
-import useFetchSecretBackup from './useFetchSecretBackup';
+import useFetchSecretStorage from './useFetchSecretStorage';
 
 // CONSTANTS
 const {
@@ -18,7 +18,7 @@ const {
 } = authSelectors;
 
 // SELECTORS
-const { getBackupKey, makeGetBackupKeyShareForAccount } = selectors;
+const { getRootKey, makeGetRootKeyShareForAccount } = selectors;
 
 export default (() => {
   const [notFound, setNotFound] = useState(false);
@@ -27,48 +27,54 @@ export default (() => {
 
   const accountId = useSelector(ACCOUNT_ID_SELECTOR);
 
-  const backupKey = useSelector(getBackupKey);
-  const getBackupKeyShareForAccount = useMemo(() => makeGetBackupKeyShareForAccount(), []);
-  const localBackupKeyShare = useSelector((state) => getBackupKeyShareForAccount(state, accountId));
-  const { data, backupVersion, isReady, isFetching: isFetchingBackup } = useFetchSecretBackup();
+  const storedRootKey = useSelector(getRootKey);
+  const getRootKeyShareForAccount = useMemo(() => makeGetRootKeyShareForAccount(), []);
+  const localRootKeyShare = useSelector((state) => getRootKeyShareForAccount(state, accountId));
+  const {
+    data: encryptedSecretStorage,
+    isReady,
+    isFetching: isFetchingSecretStorage,
+  } = useFetchSecretStorage();
 
   const shouldFetch = useMemo(
-    () => isReady && isNil(backupKey) && !isNil(localBackupKeyShare) && isAuthenticated,
-    [backupKey, isAuthenticated, isReady, localBackupKeyShare],
+    () => isReady && isNil(storedRootKey) && !isNil(localRootKeyShare) && isAuthenticated,
+    [storedRootKey, isAuthenticated, isReady, localRootKeyShare],
   );
 
-  const fetchBackupKeyShare = useCallback(
-    () => getBackupKeyShareBuilder(computeOtherShareHash(localBackupKeyShare)),
-    [localBackupKeyShare],
+  const fetchRootKeyShare = useCallback(
+    () => getRootKeyShareBuilder(computeOtherShareHash(localRootKeyShare)),
+    [localRootKeyShare],
   );
 
-  const onSuccess = useCallback(async (remoteBackupKeyShare) => {
-    const rebuiltBackupKey = combineBackupKeyShares(localBackupKeyShare, remoteBackupKeyShare);
-    const {
-      secrets,
-      backupKey: decodedBackupKey,
-    } = await decryptSecretsBackupWithBackupKey(data, rebuiltBackupKey);
+  const onSuccess = useCallback(async (remoteRootKeyShare) => {
+    try {
+      const rebuiltRootKey = combineRootKeyShares(localRootKeyShare, remoteRootKeyShare);
+      // TODO ONE DAY allow decryptSecretStorageWithRootKey to finish
+      // even if there are some errors decrypting some values,
+      // and give it a callback to call in case of such non-critical errors;
+      // better have a few secrets missing than the entire app unsusable.
+      const secretStorage = decryptSecretStorageWithRootKey(encryptedSecretStorage, rebuiltRootKey);
+      await dispatch(loadSecrets({ secretStorage }));
+    } catch (error) {
+      logSentryException(error, 'decrypting secret storage from shares', { crypto: true });
+    }
+  }, [encryptedSecretStorage, dispatch, localRootKeyShare]);
 
-    await dispatch(loadSecrets({ secrets, backupKey: decodedBackupKey, backupVersion }));
-  }, [backupVersion, data, dispatch, localBackupKeyShare]);
-
-  const onError = useCallback(() => {
+  const onError = useCallback((error) => {
+    logSentryException(error, 'fetching root key share', { crypto: true });
     setNotFound(true);
   }, []);
 
   const { isFetching } = useFetchEffect(
-    fetchBackupKeyShare,
+    fetchRootKeyShare,
     { shouldFetch },
     { onSuccess, onError },
   );
 
-  // Handle multi tabs updates
-  useWatchStorageBackupKeyShares(localBackupKeyShare);
-
   return {
-    notFound: notFound || isNil(localBackupKeyShare),
-    backupKey,
+    notFound: notFound || isNil(localRootKeyShare),
+    rootKey: storedRootKey,
     isReady: isReady || false,
-    isLoadingBackupKey: isFetching || isFetchingBackup || (shouldFetch && !notFound),
+    isLoadingRootKey: isFetching || isFetchingSecretStorage || (shouldFetch && !notFound),
   };
 });

@@ -10,15 +10,18 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import { createKeyShareBuilder } from '@misakey/helpers/builder/boxes';
+import logSentryException from '@misakey/helpers/log/sentry/exception';
 import { combineBoxKeyShares, splitBoxSecretKey, fetchMisakeyKeyShare } from '@misakey/crypto/box/keySplitting';
 import { selectors } from '@misakey/crypto/store/reducers';
 import { InvalidHash } from '@misakey/crypto/Errors/classes';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
-import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import setBoxSecrets from '@misakey/crypto/store/actions/setBoxSecrets';
 
 // SELECTORS
-const { makeGetBoxKeyShare } = selectors;
+const {
+  getAsymSecretKey,
+  getBoxKeyShare,
+} = selectors;
 
 export default (box, boxIsReady) => {
   const dispatch = useDispatch();
@@ -33,11 +36,7 @@ export default (box, boxIsReady) => {
 
   const { id: boxId, publicKey, hasAccess, isMember } = useSafeDestr(box);
 
-  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
-  const secretKey = useMemo(
-    () => publicKeysWeCanDecryptFrom.get(publicKey),
-    [publicKey, publicKeysWeCanDecryptFrom],
-  );
+  const secretKey = useSelector(getAsymSecretKey(publicKey));
 
   const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
 
@@ -58,10 +57,7 @@ export default (box, boxIsReady) => {
       ? null
       : locationHash.substr(1)
   ), [locationHash]);
-  const getBoxKeyShare = useMemo(() => makeGetBoxKeyShare(), []);
-  // keyShareInStore is an object to allow to put some extra information later,
-  // such as expirationDate
-  const { value: keyShareInStore } = useSelector((state) => getBoxKeyShare(state, boxId) || {});
+  const keyShareInStore = useSelector(getBoxKeyShare(boxId));
 
   // We know for sure if users has all the information to check if they have the secretKey
   // We need to know publicKey of the box to known if user has corresponding secretKey
@@ -75,7 +71,7 @@ export default (box, boxIsReady) => {
     [userHasBoxSecretKey],
   );
 
-  const shouldCheckBackupKeyShare = useMemo(
+  const shouldCheckStoredKeyShare = useMemo(
     () => !isNil(keyShareInStore) && shouldRebuildSecretKey && isAllowedToFetch,
     [keyShareInStore, shouldRebuildSecretKey, isAllowedToFetch],
   );
@@ -87,7 +83,7 @@ export default (box, boxIsReady) => {
 
   const shouldCreateNewShares = useMemo(
     () => userHasBoxSecretKey && belongsToCurrentUser
-      // if no box key share is found in user backup nor url:
+      // if no box key share is found in secret storage nor url:
       // - it's a new chat so we should create new urlKeyShare
       // - something wrong happens to box creator crypto (it should not)
       // and creator should always have the ability to share its box
@@ -96,8 +92,8 @@ export default (box, boxIsReady) => {
   );
 
   const shouldOnlyReplaceUrlHash = useMemo(
-    () => !shouldCheckBackupKeyShare && isNil(keyShareInUrl) && !isNil(keyShareInStore),
-    [keyShareInStore, shouldCheckBackupKeyShare, keyShareInUrl],
+    () => !shouldCheckStoredKeyShare && isNil(keyShareInUrl) && !isNil(keyShareInStore),
+    [keyShareInStore, shouldCheckStoredKeyShare, keyShareInUrl],
   );
 
   const fetchMisakeyKeyShareFromKeyShareInUrl = useCallback(
@@ -116,7 +112,8 @@ export default (box, boxIsReady) => {
       }));
       setIsBuildingSecretKey(false);
     } catch (error) {
-      enqueueSnackbar(t('boxes:create.error.updateBackup'), { variant: 'error' });
+      enqueueSnackbar(t('boxes:create.error.updateSecretStorage'), { variant: 'error' });
+      logSentryException(error, 'rebuilding secret key', { crypto: true });
     }
   }, [dispatch, enqueueSnackbar, t]);
 
@@ -128,13 +125,6 @@ export default (box, boxIsReady) => {
   const removeHash = useCallback(
     () => { history.replace({ pathname, search }); },
     [history, pathname, search],
-  );
-
-  const saveKeyShareInBackup = useCallback(
-    (keyShare) => {
-      dispatch(setBoxSecrets({ boxId, keyShare }));
-    },
-    [boxId, dispatch],
   );
 
   const createNewBoxKeyShares = useCallback(
@@ -149,10 +139,10 @@ export default (box, boxIsReady) => {
         otherShareHash: misakeyKeyShare.otherShareHash,
         boxId,
       });
-      saveKeyShareInBackup(invitationKeyShare);
+      dispatch(setBoxSecrets({ boxId, keyShare: invitationKeyShare }));
       setKeyShareInURL(invitationKeyShare);
     },
-    [boxId, setKeyShareInURL, saveKeyShareInBackup, secretKey, publicKey],
+    [boxId, setKeyShareInURL, dispatch, secretKey, publicKey],
   );
 
   const onSuccess = useCallback(
@@ -162,7 +152,7 @@ export default (box, boxIsReady) => {
     [rebuildSecretKey, shouldRebuildSecretKey],
   );
 
-  const onBackupKeyShareValid = useCallback(
+  const onStoredKeyShareValid = useCallback(
     ({ misakeyKeyShare, invitationKeyShare }) => {
       onSuccess(misakeyKeyShare, invitationKeyShare);
       if (isNil(keyShareInUrl) || keyShareInUrl !== invitationKeyShare) {
@@ -172,11 +162,12 @@ export default (box, boxIsReady) => {
     [onSuccess, setKeyShareInURL, keyShareInUrl],
   );
 
-  const onBackupKeyShareInvalid = useCallback(
+  const onStoredKeyShareInvalid = useCallback(
     () => {
-      dispatch(setBoxSecrets({ boxId, keyShare: null }));
+      const error = new Error('stored box key share seems invalid');
+      logSentryException(error, 'stored box key share invalid', { crypto: true });
     },
-    [boxId, dispatch],
+    [],
   );
 
   const onUrlKeyShareValid = useCallback(
@@ -191,7 +182,8 @@ export default (box, boxIsReady) => {
         }
         return Promise.resolve(dispatch(setBoxSecrets(params)));
       } catch (error) {
-        enqueueSnackbar(t('boxes:create.error.updateBackup'), { variant: 'error' });
+        enqueueSnackbar(t('boxes:create.error.updateSecretStorage'), { variant: 'error' });
+        logSentryException(error, 'rebuilding box secret key', { crypto: true });
         return Promise.resolve();
       }
     },
@@ -202,24 +194,26 @@ export default (box, boxIsReady) => {
     (err) => {
       if (err instanceof InvalidHash) {
         enqueueSnackbar(t('boxes:read.errors.invalid'), { variant: 'warning' });
+        logSentryException(err, 'box key share in url is invalid', { crypto: true });
         removeHash();
       }
     },
     [enqueueSnackbar, t, removeHash],
   );
 
-  // If box key share is found in backup, check its validity in backend
+  // If box key share is found in secret storage, check its validity in backend
   // and put it in url. It will also rebuild the secretKey if needed.
-  // If box key share is invalid, it is removed from backup
-  // This will only happen for users with an account and a crypto backup
-  const { isFetching: isFetchingBackupKeyShare } = useFetchEffect(
+  // If box key share is invalid, it is removed from secret storage
+  // This will only happen for users with an account and a crypto secret storage
+  const { isFetching: isFetchingKeyShareUsingStore } = useFetchEffect(
     fetchMisakeyKeyShareFromKeyShareInStore,
-    { shouldFetch: shouldCheckBackupKeyShare },
-    { onSuccess: onBackupKeyShareValid, onError: onBackupKeyShareInvalid },
+    { shouldFetch: shouldCheckStoredKeyShare },
+    { onSuccess: onStoredKeyShareValid, onError: onStoredKeyShareInvalid },
   );
 
-  // If no (or invalid) box key share is found in backup but box key share is found in url,
-  // check its validity in backend and store the share in backup if user has a backup.
+  // If no (or invalid) box key share is found in secret storage but box key share is found in url,
+  // check its validity in backend
+  // and store the share in secret storage if user has a secret storage.
   // It will also rebuild the secretKey if needed.
   // If box key share is invalid, PasteLink screen will be displayed
   // This can happen for user with or without account.
@@ -229,16 +223,17 @@ export default (box, boxIsReady) => {
     { onSuccess: onUrlKeyShareValid, onError: onUrlKeyShareInvalid },
   );
 
-  // If no valid box key share is found in url or backup and user is the creator,
-  // recreate a pair of shares and store one in backend and the other in backup
+  // If no valid box key share is found in url or secret storage and user is the creator,
+  // recreate a pair of shares and store one in backend and the other in secret storage
   // and/or url (according to account state)
   const { isFetching: isCreatingNewShares } = useFetchEffect(
     createNewBoxKeyShares,
     { shouldFetch: shouldCreateNewShares },
   );
 
-  // If there is a box key share in backup and we already checked box key share validity
-  // in a satisfying time interval but urlHash is empty, put box key share from backup in url hash
+  // If there is a box key share in secret storage and we already checked box key share validity
+  // in a satisfying time interval but urlHash is empty,
+  // put box key share from secret storage in url hash
   // This case happen when users navigate between their boxes with boxes list
   useEffect(() => {
     if (shouldOnlyReplaceUrlHash) {
@@ -248,11 +243,11 @@ export default (box, boxIsReady) => {
 
   return useMemo(
     () => ({
-      isReady: (!isFetchingBackupKeyShare && !isFetchingUrlKeyShare && !isBuildingSecretKey),
+      isReady: (!isFetchingKeyShareUsingStore && !isFetchingUrlKeyShare && !isBuildingSecretKey),
       isCreatingNewShares,
       secretKey,
     }),
-    [isBuildingSecretKey, isCreatingNewShares, isFetchingBackupKeyShare,
+    [isBuildingSecretKey, isCreatingNewShares, isFetchingKeyShareUsingStore,
       isFetchingUrlKeyShare, secretKey],
   );
 };

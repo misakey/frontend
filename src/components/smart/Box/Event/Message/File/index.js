@@ -2,17 +2,21 @@ import React, { useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
 import EventSchema from 'store/schemas/Boxes/Events';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
-
 import EventBoxMessagePreview from 'components/smart/Box/Event/Message/Preview';
 import EventFileCard, { FileCardEventSkeleton } from 'components/smart/Box/Event/Message/File/Card';
 import useDecryptMsgFileEffect from 'hooks/useDecryptMsgFile/effect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
+
+const {
+  getAsymSecretKey,
+} = cryptoSelectors;
 
 // COMPONENTS
 const BoxMessageFileEvent = ({ event, isFromCurrentUser, preview, t, ...props }) => {
@@ -22,11 +26,7 @@ const BoxMessageFileEvent = ({ event, isFromCurrentUser, preview, t, ...props })
 
   const { displayName } = useMemo(() => sender || {}, [sender]);
 
-  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
-  const secretKey = useMemo(
-    () => publicKeysWeCanDecryptFrom.get(publicKey),
-    [publicKey, publicKeysWeCanDecryptFrom],
-  );
+  const secretKey = useSelector(getAsymSecretKey(publicKey));
 
   const { isReady } = useDecryptMsgFileEffect(event, secretKey, isFromCurrentUser);
   const text = useMemo(() => (isReady ? name : t('common:loading')), [isReady, name, t]);

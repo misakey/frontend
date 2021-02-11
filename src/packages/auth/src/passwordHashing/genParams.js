@@ -7,7 +7,7 @@ export default function genParams() {
   const salt = encodeBase64(randomBytes(SALT_LENGTH));
 
   return {
-    salt_base64: salt,
+    salt_base_64: salt,
     iterations: 1,
     memory: 1024,
     // not used in frontend but this is required by API specs

@@ -3,10 +3,14 @@ import React, { createContext, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 import { getCurrentUserSelector } from '@misakey/react-auth/store/reducers/auth';
 import BoxSchema from 'store/schemas/Boxes';
 import { sendersIdentifiersMatch } from 'helpers/sender';
+
+const {
+  getAsymSecretKey,
+} = cryptoSelectors;
 
 // CONTEXT
 export const BoxReadContext = createContext({
@@ -21,11 +25,7 @@ export const useBoxReadContext = () => useContext(BoxReadContext);
 const BoxReadContextProvider = ({ children, box }) => {
   const { publicKey, id, creator } = useMemo(() => box, [box]);
 
-  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
-  const secretKey = useMemo(
-    () => publicKeysWeCanDecryptFrom.get(publicKey),
-    [publicKey, publicKeysWeCanDecryptFrom],
-  );
+  const secretKey = useSelector(getAsymSecretKey(publicKey));
 
   const currentUser = useSelector(getCurrentUserSelector);
 

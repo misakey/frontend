@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, forwardRef } from 'react';
+import React, { useState, useCallback, forwardRef } from 'react';
 
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -8,7 +8,6 @@ import changeBoxInvitationLink from '@misakey/crypto/store/actions/changeBoxInvi
 
 import isFunction from '@misakey/helpers/isFunction';
 
-import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
@@ -23,28 +22,15 @@ const MenuItemBoxLinkRenew = forwardRef(({ box, onClose }, ref) => {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
 
-  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
-
   const [open, setOpen] = useState(false);
 
-  // in the near future,
-  // action `changeBoxInvitationLink` will get the keys by itself from the store
-  // (see action documentation)
-  const { id: boxId, publicKey: boxPublicKey } = useSafeDestr(box);
-  const boxSecretKey = useMemo(
-    () => publicKeysWeCanDecryptFrom.get(boxPublicKey),
-    [publicKeysWeCanDecryptFrom, boxPublicKey],
-  );
+  const { id: boxId } = useSafeDestr(box);
 
   const onConfirm = useCallback(
     async () => {
-      dispatch(changeBoxInvitationLink({
-        boxId,
-        boxSecretKey,
-        boxPublicKey,
-      }));
+      await dispatch(changeBoxInvitationLink({ boxId }));
     },
-    [dispatch, boxId, boxSecretKey, boxPublicKey],
+    [dispatch, boxId],
   );
 
   const onSuccess = useCallback(

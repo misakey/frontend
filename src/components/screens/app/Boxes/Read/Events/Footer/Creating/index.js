@@ -10,11 +10,12 @@ import { boxMessageValidationSchema } from 'constants/validationSchemas/boxes';
 import { blurText, clearText } from 'store/actions/box';
 import { makeGetBoxText } from 'store/reducers/box';
 
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
+
 import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import isNil from '@misakey/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useBoxPublicKeysWeCanDecryptFrom from 'packages/crypto/src/hooks/useBoxPublicKeysWeCanDecryptFrom';
 import { useDispatch, useSelector } from 'react-redux';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useBoxEventSubmitContext } from 'components/smart/Box/Event/Submit/Context';
@@ -43,6 +44,10 @@ const INITIAL_VALUES = {
   [FIELD]: '',
 };
 
+const {
+  getAsymSecretKey,
+} = cryptoSelectors;
+
 const useStyles = makeStyles((theme) => ({
   popper: ({ drawerWidth, isDrawerOpen }) => ({
     width: `calc(100% - ${isDrawerOpen ? drawerWidth : '0px'} - ${theme.spacing(BOX_PADDING_SPACING) * 4}px)`,
@@ -69,13 +74,13 @@ function BoxEventsFooter({ box, t }) {
   const { scrollToBottom } = useBoxEventSubmitContext();
 
   const { id, publicKey, title } = useMemo(() => box || {}, [box]);
-  const publicKeysWeCanEncryptWith = useBoxPublicKeysWeCanDecryptFrom();
+  const secretKey = useSelector(getAsymSecretKey(publicKey));
 
   const { onOpen: onBoxesUploadOpen } = useBoxesUploadContext();
 
   const disabled = useMemo(
-    () => !publicKeysWeCanEncryptWith.has(publicKey),
-    [publicKey, publicKeysWeCanEncryptWith],
+    () => isNil(secretKey),
+    [secretKey],
   );
 
   const anchorRef = useRef(null);

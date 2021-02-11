@@ -1,16 +1,19 @@
+import { getBoxById } from 'store/reducers/box';
+
 import { splitBoxSecretKey } from '@misakey/crypto/box/keySplitting';
 import { setBoxKeyShare } from '@misakey/crypto/HttpApi';
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 
 import setBoxSecrets from './setBoxSecrets';
 
-/**
- * TODO when mapping from public key to secret key is stored in secret backup
- * (see https://gitlab.misakey.dev/misakey/frontend/-/issues/856)
- * get the box public and secret keys from the store
- * instead of relying on the caller to provide them.
- */
-export default ({ boxId, boxSecretKey, boxPublicKey }) => (
-  async (dispatch) => {
+const { getAsymSecretKey } = cryptoSelectors;
+
+export default ({ boxId }) => (
+  async (dispatch, getState) => {
+    const state = getState();
+    const { publicKey: boxPublicKey } = (getBoxById(state, boxId) || {});
+    const boxSecretKey = getAsymSecretKey(boxPublicKey)(state);
+
     const {
       invitationKeyShare,
       misakeyKeyShare,
@@ -18,7 +21,7 @@ export default ({ boxId, boxSecretKey, boxPublicKey }) => (
 
     await setBoxKeyShare({ boxId, boxKeyShare: misakeyKeyShare });
 
-    // action `setBoxSecrets` takes care of updating the secret backup
+    // action `setBoxSecrets` takes care of updating the secret storage
     await dispatch(setBoxSecrets({ boxId, keyShare: invitationKeyShare }));
   }
 );

@@ -1,7 +1,6 @@
 import loadSecrets from '@misakey/crypto/store/actions/loadSecrets';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
-import isNil from '@misakey/helpers/isNil';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 
 import { useCallback } from 'react';
@@ -9,13 +8,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { useTranslation } from 'react-i18next';
 
-import useWatchStorageBackupVersion from '@misakey/crypto/hooks/useWatchStorageBackupVersion';
-import createNewBackupKeyShares from '@misakey/crypto/store/actions/createNewBackupKeyShares';
-import updateBackup from '@misakey/crypto/store/actions/updateBackup';
-
-import { decryptSecretsBackup } from '../secretsBackup/encryption';
-import { selectors } from '../store/reducers';
-import useFetchSecretBackup from './useFetchSecretBackup';
+import createNewRootKeyShares from '@misakey/crypto/store/actions/createNewRootKeyShares';
+import {
+  computeCryptoMigration,
+} from '@misakey/crypto';
+import {
+  migrateToSecretStorage,
+  getEncryptedSecretsBackup,
+} from '@misakey/crypto/HttpApi';
+import {
+  decryptSecretStorageWithPassword,
+} from '@misakey/crypto/secretStorage';
+import useFetchSecretStorage from './useFetchSecretStorage';
 
 // CONSTANTS
 const {
@@ -30,54 +34,50 @@ export default ((skipUpdate = false) => {
 
   const accountId = useSelector(ACCOUNT_ID_SELECTOR);
 
-  const encryptedSecretsBackup = useFetchSecretBackup();
-  const boxesSecretKeys = useSelector(selectors.boxesSecretKeys);
-
-  const [, onStorageEvent] = useWatchStorageBackupVersion();
-
-  const onDecryptSuccess = useCallback(async ({ backupKey, secrets, backupVersion }) => {
-    // Can occur when a user first log with ACR on a box and then create an account
-    const shouldMerge = !boxesSecretKeys.every(
-      (key) => secrets.boxDecryptionKeys.includes(key),
-    );
-    // do not trigger onStorageEvent when we update backup, as it's already done there
-    const onStorageEventWhenNoBackupUpdate = shouldMerge ? Promise.resolve : onStorageEvent;
-
-    const keySharePromise = dispatch(createNewBackupKeyShares({ backupKey, accountId }))
-      // failure of backup key share creation should not make secret loading fail
-      .catch((reason) => {
-        logSentryException(reason, 'OpenVault: create new backup key share', { crypto: true });
-        enqueueSnackbar(t('common:crypto.errors.backupKeyShare'), { variant: 'warning' });
-      });
-
-    await Promise.all([
-      dispatch(loadSecrets({ secrets, backupKey, backupVersion })),
-      keySharePromise,
-      onStorageEventWhenNoBackupUpdate(backupVersion),
-    ]);
-
-    if (shouldMerge) {
-      // XXX maybe it would be more intuitive to use a different action like "mergeSecrets"
-      // which would include a call to "updateBackup"
-      await dispatch(updateBackup());
-    }
-  }, [accountId, boxesSecretKeys, dispatch, onStorageEvent, enqueueSnackbar, t]);
+  const {
+    data: encryptedSecretStorage,
+    accountNeedsMigration,
+  } = useFetchSecretStorage();
 
   const decryptWithPassword = useCallback(
-    (password) => {
-      if (isNil(encryptedSecretsBackup)) {
-        return Promise.resolve();
+    async (password) => {
+      let secretStorage;
+      if (accountNeedsMigration) {
+        const {
+          data: encryptedSecretsBackup,
+        } = await getEncryptedSecretsBackup(accountId);
+        const {
+          secretStorage: ss,
+          migrationPayload,
+        } = (
+          await computeCryptoMigration({ encryptedSecretsBackup, password })
+        );
+        await migrateToSecretStorage(migrationPayload);
+        secretStorage = ss;
+      } else {
+        secretStorage = await decryptSecretStorageWithPassword(encryptedSecretStorage, password);
       }
-      const { data, backupVersion } = encryptedSecretsBackup;
 
-      return decryptSecretsBackup(data, password)
-        .then(({ backupKey, secretBackup: secrets }) => (skipUpdate
-          ? Promise.resolve
-          : onDecryptSuccess(
-            { backupKey, secrets, backupVersion },
-          )));
+      if (skipUpdate) {
+        return;
+      }
+
+      const { rootKey } = secretStorage;
+
+      const keySharePromise = dispatch(createNewRootKeyShares({ rootKey, accountId }))
+        // failure of root key share creation should not make secret loading fail
+        .catch((reason) => {
+          logSentryException(reason, 'OpenVault: create new root key share', { crypto: true });
+          enqueueSnackbar(t('common:crypto.errors.rootKeyShare'), { variant: 'warning' });
+        });
+
+      await Promise.all([
+        dispatch(loadSecrets({ secretStorage })),
+        keySharePromise,
+      ]);
     },
-    [encryptedSecretsBackup, onDecryptSuccess, skipUpdate],
+    [accountId, dispatch, enqueueSnackbar, t,
+      encryptedSecretStorage, skipUpdate, accountNeedsMigration],
   );
 
   return decryptWithPassword;

@@ -96,7 +96,7 @@
   },
   "crypto": {
     "errors": {
-      "backupKeyShare": "En raison d'une erreur, vous pouvez avoir à re-saisir votre mot de passe",
+      "rootKeyShare": "En raison d'une erreur, vous pouvez avoir à re-saisir votre mot de passe",
       "shouldRefresh": "Erreur: l'application semble avoir été utilisée dans un autre navigateur et doit être re-synchronisée. Vous devriez rafraîchir la page"
     }
   },

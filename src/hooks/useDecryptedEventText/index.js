@@ -1,22 +1,23 @@
+import { useSelector } from 'react-redux';
+
 import decryptText from '@misakey/crypto/box/decryptText';
 import isNil from '@misakey/helpers/isNil';
 
 import { useMemo } from 'react';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useBoxPublicKeysWeCanDecryptFrom from '@misakey/crypto/hooks/useBoxPublicKeysWeCanDecryptFrom';
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 import { useTranslation } from 'react-i18next';
+
+const {
+  getAsymSecretKey,
+} = cryptoSelectors;
 
 export default (event) => {
   const { t } = useTranslation('common');
 
   const { content: { encrypted, publicKey } } = useSafeDestr(event);
 
-  const publicKeysWeCanDecryptFrom = useBoxPublicKeysWeCanDecryptFrom();
-
-  const secretKey = useMemo(
-    () => publicKeysWeCanDecryptFrom.get(publicKey),
-    [publicKeysWeCanDecryptFrom, publicKey],
-  );
+  const secretKey = useSelector(getAsymSecretKey(publicKey));
 
   const canBeDecrypted = useMemo(
     () => !isNil(secretKey),

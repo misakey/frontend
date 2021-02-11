@@ -7,12 +7,16 @@ import { useSnackbar } from 'notistack';
 import { createSavedFile } from '@misakey/helpers/builder/vault';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { encryptFileMetadataForVault } from '@misakey/crypto/vault';
-import ensureVaultKeyExists from '@misakey/crypto/store/actions/ensureVaultKeyExists';
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 import { addSavedFile } from 'store/reducers/files/saved';
 import { conflict } from '@misakey/ui/constants/errorTypes';
 import SnackbarActionSee from '@misakey/ui/Snackbar/Action/See';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 import isNil from '@misakey/helpers/isNil';
+
+const {
+  getVaultKey,
+} = cryptoSelectors;
 
 // HOOKS
 export default () => {
@@ -21,6 +25,8 @@ export default () => {
 
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation('components');
+
+  const vaultKey = useSelector(getVaultKey);
 
   const seeAction = useMemo(
     () => <SnackbarActionSee to={routes.documents.vault} />,
@@ -52,7 +58,6 @@ export default () => {
   const onEncryptMetadataForVault = useCallback(
     async (fileMetadata) => {
       try {
-        const vaultKey = await Promise.resolve(dispatch(ensureVaultKeyExists()));
         return encryptFileMetadataForVault(fileMetadata, vaultKey);
       } catch (err) {
         logSentryException(err, 'useSaveFileInVault: could not encrypt metadata', { crypto: true });
@@ -60,7 +65,7 @@ export default () => {
         return Promise.resolve({});
       }
     },
-    [dispatch, enqueueSnackbar, t],
+    [vaultKey, enqueueSnackbar, t],
   );
 
   const onSaveInVault = useCallback(

@@ -11,17 +11,18 @@ import { useSelector } from 'react-redux';
 import { useCallback } from 'react';
 
 // CONSTANTS
-const { getBackupKey } = cryptoSelectors;
+const { getRootKey } = cryptoSelectors;
 
+// TODO IN THIS MR download root key instead
 export default (fileNamePrefix) => {
-  const backupKey = useSelector(getBackupKey);
+  const rootKey = useSelector(getRootKey);
 
   return useCallback(
     () => {
       const date = moment().format(DATETIME_FILE_HUMAN_READABLE);
 
       const file = serializeObjectToJson({
-        backupKey,
+        rootKey,
       });
 
       return downloadFile(
@@ -29,6 +30,6 @@ export default (fileNamePrefix) => {
         `${fileNamePrefix}-${date}.json`,
       );
     },
-    [backupKey, fileNamePrefix],
+    [rootKey, fileNamePrefix],
   );
 };

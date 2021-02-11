@@ -26,11 +26,13 @@ export const loginAuthStepBuilder = async ({
   // it's methodName: TOTP + `recovery_code` in metadata instead of `code`
   const apiMethodName = methodName === TOTP_RECOVERY ? TOTP : methodName;
 
+  const excludedKeys = methodName === WEBAUTHN ? ['metadata'] : undefined;
+
   const payload = objectToSnakeCaseDeep(
     { loginChallenge, [AUTH_STEP_KEY]: { identityId, methodName: apiMethodName, metadata } },
     // // webauthn backend lib expects the object as it has been provided
     // // by navigator.credentials API
-    methodName === WEBAUTHN ? { excludedKeys: ['metadata'] } : undefined,
+    { excludedKeys, ignoreBase64: true },
   );
 
   const endpoint = { ...API.endpoints.auth.loginAuthStep, auth };

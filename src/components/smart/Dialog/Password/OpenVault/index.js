@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react';
 
+import logSentryException from '@misakey/helpers/log/sentry/exception';
+
 import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 import { openVaultValidationSchema } from 'constants/validationSchemas/vault';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
@@ -15,13 +17,18 @@ const DialogPasswordOpenVault = ({ t, open, onClose, onSuccess, skipUpdate, ...p
   const openVaultWithPassword = useLoadSecretsWithPassword(skipUpdate);
 
   const onSubmit = useCallback(
-    ({ [PREHASHED_PASSWORD]: password }) => openVaultWithPassword(password)
-      .then(() => {
+    async ({ [PREHASHED_PASSWORD]: password }) => {
+      try {
+        await openVaultWithPassword(password);
         onClose();
         if (isFunction(onSuccess)) {
           onSuccess();
         }
-      }),
+      } catch (error) {
+        logSentryException(error, 'Openning vault with password', { crypto: true });
+        throw error;
+      }
+    },
     [openVaultWithPassword, onClose, onSuccess],
   );
 

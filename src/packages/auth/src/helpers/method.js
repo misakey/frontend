@@ -2,15 +2,16 @@ import { SECLEVEL_METHOD, EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, Au
 
 import hashPassword from '@misakey/auth/passwordHashing/hashPassword';
 import genParams from '@misakey/auth/passwordHashing/genParams';
-import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isNil from '@misakey/helpers/isNil';
+import {
+  accountCreationSecretStoragePayload,
+  passwordResetSecretStoragePayload,
+} from '@misakey/crypto';
 
 export const makeSeclevelMethod = (seclevel) => SECLEVEL_METHOD[seclevel] || EMAILED_CODE;
 
 export const makeMetadata = async ({
   secret, methodName, pwdHashParams,
-  dispatchCreateNewOwnerSecrets,
-  dispatchHardPasswordChange,
 }) => {
   if (isNil(methodName)) {
     throw new AuthUndefinedMethodName();
@@ -22,24 +23,25 @@ export const makeMetadata = async ({
     case PREHASHED_PASSWORD:
       return hashPassword({ password: secret, pwdHashParams });
     case ACCOUNT_CREATION: {
-      const [prehashedPassword, { backupData }] = await Promise.all([
+      const [prehashedPassword, secretStorage] = await Promise.all([
         hashPassword({ password: secret, pwdHashParams: genParams() }),
-        dispatchCreateNewOwnerSecrets(secret),
+        accountCreationSecretStoragePayload(secret),
       ]);
-      return objectToSnakeCase({
+
+      return {
         prehashedPassword,
-        backupData,
-      });
+        secretStorage,
+      };
     }
     case RESET_PASSWORD: {
-      const [{ backupData }, prehashedPassword] = await Promise.all([
-        dispatchHardPasswordChange(secret),
+      const [secretStorage, prehashedPassword] = await Promise.all([
+        passwordResetSecretStoragePayload(secret),
         hashPassword({ password: secret, pwdHashParams: genParams() }),
       ]);
 
       return {
         prehashedPassword,
-        backupData,
+        secretStorage,
       };
     }
     case WEBAUTHN:
