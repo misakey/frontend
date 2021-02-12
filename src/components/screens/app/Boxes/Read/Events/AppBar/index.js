@@ -49,6 +49,10 @@ const useStyles = makeStyles((theme) => ({
   listItemRoot: {
     paddingTop: theme.spacing(0),
     paddingBottom: theme.spacing(0),
+    // for the toggle button, as a secondary action
+    [theme.breakpoints.down('xs')]: {
+      paddingLeft: theme.spacing(5),
+    },
   },
   listItemText: {
     margin: 0,
@@ -59,6 +63,10 @@ const useStyles = makeStyles((theme) => ({
   listItemSecondaryActionRoot: {
     display: 'flex',
     alignItems: 'center',
+  },
+  toggleButton: {
+    position: 'absolute',
+    left: 16,
   },
   typographyCaret: {
     maxWidth: 'calc(100% - 24px)',
@@ -148,7 +156,8 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
         {...omitTranslationProps(props)}
         classes={{ root: classes.listItemRoot }}
       >
-        <ToggleDrawerButton />
+        <ToggleDrawerButton className={classes.toggleButton} />
+
         <ListItemText
           disableTypography
           className={classes.listItemText}

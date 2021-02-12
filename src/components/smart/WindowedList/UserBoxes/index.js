@@ -44,7 +44,7 @@ const useInnerElementType = (itemCount, activeStatus, search, t, itemClasses) =>
     <div ref={ref}>
       <MisakeyNotificationsListItem classes={itemClasses} />
       <div {...props} />
-      <ListItemBoxesDeleted activeStatus={activeStatus} search={search} />
+      <ListItemBoxesDeleted classes={itemClasses} activeStatus={activeStatus} search={search} />
       <Box
         m={1}
         display="flex"

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
@@ -12,6 +12,15 @@ function ToggleDrawerButton(props) {
   const { t } = useTranslation('common');
   const { toggleDrawer, isDrawerOpen } = useScreenDrawerContext();
 
+  const onClick = useCallback(
+    (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      toggleDrawer();
+    },
+    [toggleDrawer],
+  );
+
   if (isDrawerOpen) { return null; }
 
   return (
@@ -19,7 +28,7 @@ function ToggleDrawerButton(props) {
       <IconButtonAppBar
         aria-label={t('common:openAccountDrawer')}
         edge="start"
-        onClick={toggleDrawer}
+        onClick={onClick}
       >
         <ArrowBack />
       </IconButtonAppBar>

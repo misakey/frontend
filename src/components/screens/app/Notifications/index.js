@@ -30,6 +30,8 @@ import BoxEmpty from 'components/dumb/Box/Empty';
 import InfiniteLoaderChat from 'components/smart/WindowedList/InfiniteLoaded/Chat';
 import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
 import Box from '@material-ui/core/Box';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import MessageRow from './Row';
 
 // CONSTANTS
@@ -51,6 +53,9 @@ const SECONDARY_TYPO_PROPS = {
 const useStyles = makeStyles((theme) => ({
   secondaryReducedHeight: {
     marginTop: theme.spacing(-1),
+  },
+  listItemRoot: {
+    padding: 0,
   },
 }));
 
@@ -170,15 +175,14 @@ function MisakeyNotications() {
         <AppBarDrawer>
           <Box display="flex" width="100%" alignItems="center">
             <ToggleDrawerButton />
-            <Box display="flex" flexDirection="column" flexGrow={1}>
-              <Typography {...PRIMARY_TYPO_PROPS}>{t('boxes:notifications.byIdentity.title')}</Typography>
-              <Typography
-                className={classes.secondaryReducedHeight}
-                {...SECONDARY_TYPO_PROPS}
-              >
-                {t('boxes:notifications.byIdentity.subtitle')}
-              </Typography>
-            </Box>
+            <ListItem component="div" classes={{ root: classes.listItemRoot }}>
+              <ListItemText
+                primary={t('boxes:notifications.byIdentity.title')}
+                primaryTypographyProps={PRIMARY_TYPO_PROPS}
+                secondary={t('boxes:notifications.byIdentity.subtitle')}
+                secondaryTypographyProps={SECONDARY_TYPO_PROPS}
+              />
+            </ListItem>
             <AvatarMisakey alt={t('boxes:notifications.byIdentity.title')} />
           </Box>
         </AppBarDrawer>
