@@ -24,7 +24,6 @@ import { userIdentityUpdate } from 'store/actions/screens/account';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import useXsMediaQuery from '@misakey/hooks/useXsMediaQuery';
 import { totpEnrollValidationSchema } from 'constants/validationSchemas/identity';
 import { forbidden } from 'packages/ui/src/constants/errorTypes';
 
@@ -41,12 +40,9 @@ const useStyles = makeStyles((theme) => ({
     overflowWrap: 'break-word',
   },
   img: {
-    padding: theme.spacing(1),
-    width: 110,
-    height: 110,
-    [theme.breakpoints.up('sm')]: {
-      alignSelf: 'flex-end',
-    },
+    margin: theme.spacing(1),
+    width: 180,
+    height: 180,
   },
   loading: {
     margin: theme.spacing(4),
@@ -58,7 +54,6 @@ function RegisterTotpDialogContent({ onClose, identityId, onSetRecoveryCodes }) 
 
   const { t } = useTranslation(['account', 'common']);
   const handleHttpErrors = useHandleHttpErrors();
-  const isXs = useXsMediaQuery();
 
   const dispatch = useDispatch();
 
@@ -121,7 +116,7 @@ function RegisterTotpDialogContent({ onClose, identityId, onSetRecoveryCodes }) 
           classes={{ root: classes.dialogContentRoot }}
           subtitle={<Subtitle className={classes.prewrap}>{t('account:security.MFA.totp.dialog.subtitle.register')}</Subtitle>}
         >
-          <Box display="flex" flexDirection={isXs ? 'column' : 'row'} justifyContent="center" alignItems="center">
+          <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" width="100%">
             {isFetching && <CircularProgress className={classes.loading} />}
             {!isNil(imageFlashCode) && (
               <img
