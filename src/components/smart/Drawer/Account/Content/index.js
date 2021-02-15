@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import ButtonSignOut from '@misakey/react-auth/components/Button/SignOut';
 import CardIdentityThumbnail from 'components/dumb/Card/Identity/Thumbnail';
 import AppBarStatic from '@misakey/ui/AppBar/Static';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
+import IconButtonAppBar from '@misakey/ui/IconButton/Appbar';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import withIdentity from 'components/smart/withIdentity';

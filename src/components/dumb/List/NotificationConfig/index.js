@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { NOTIFICATIONS } from 'constants/notifications';
+import { NOTIFICATIONS } from '@misakey/ui/constants/notifications';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 

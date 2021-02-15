@@ -1,6 +1,6 @@
 import { selectors } from '@misakey/react-auth/store/reducers/auth';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
-import asyncBatch from 'helpers/batch/async';
+import asyncBatch from '@misakey/helpers/redux/batch/async';
 
 import {
   listCryptoActions,

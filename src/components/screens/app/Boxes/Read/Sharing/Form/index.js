@@ -7,8 +7,8 @@ import BoxesSchema from 'store/schemas/Boxes';
 import SenderSchema from 'store/schemas/Boxes/Sender';
 
 import { EMAIL_DOMAIN as DOMAIN_TYPE } from '@misakey/ui/constants/accessTypes';
-import { ACCESS_RM, ACCESS_ADD, ACCESS_BULK, STATE_ACCESS_MODE } from 'constants/app/boxes/events';
-import { RESTRICTION_TYPES } from 'constants/app/boxes/accesses';
+import { ACCESS_RM, ACCESS_ADD, ACCESS_BULK, STATE_ACCESS_MODE } from '@misakey/ui/constants/boxes/events';
+import { RESTRICTION_TYPES } from '@misakey/ui/constants/boxes/accesses';
 import { updateAccessesEvents } from 'store/reducers/box';
 import { updateEntities } from '@misakey/store/actions/entities';
 import { accessValidationSchema } from 'constants/validationSchemas/boxes';

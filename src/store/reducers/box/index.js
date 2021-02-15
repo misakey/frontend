@@ -2,7 +2,7 @@ import { batch } from 'react-redux';
 import { createSelector } from 'reselect';
 import { normalize, denormalize } from 'normalizr';
 
-import { MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK, MSG_FILE } from 'constants/app/boxes/events';
+import { MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK, MSG_FILE } from '@misakey/ui/constants/boxes/events';
 import { ALL } from 'constants/app/boxes/statuses';
 
 import BoxesSchema from 'store/schemas/Boxes';

@@ -10,7 +10,7 @@ import getNextSearch from '@misakey/helpers/getNextSearch';
 import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
+import IconButtonAppBar from '@misakey/ui/IconButton/Appbar';
 import UserAccountAvatar from 'components/smart/Avatar/CurrentUser';
 
 

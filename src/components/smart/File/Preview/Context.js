@@ -205,6 +205,10 @@ const FilePreviewContextProvider = ({ children, revokeOnChange, ...props }) => {
         selectedId={selectedId}
         onSave={onSaveInVault}
         onClose={onCloseFilePreview}
+        getDecryptedFile={getDecryptedFile}
+        onDownloadFile={onDownloadFile}
+        onSaveFileInVault={onSaveFileInVault}
+        disableOnSave={isVaultSpace}
         {...props}
       />
     </FilePreviewContext.Provider>

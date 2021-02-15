@@ -1,4 +1,4 @@
-import asyncBatch from 'helpers/batch/async';
+import asyncBatch from '@misakey/helpers/redux/batch/async';
 
 import pullCryptoactions from './pullCryptoactions';
 

@@ -25,9 +25,7 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "paths": [
-          "src"
-        ]
+        "moduleDirectory":  ["src"]
       },
       "alias": [
         [
@@ -70,6 +68,22 @@
     }
   },
   "rules": {
+    "import/no-restricted-paths": [
+      "error",
+      {
+        "basePath": "./src",
+        "zones": [
+          {
+            "message": "Cannot import file in @misakey/* packages",
+            "target": "./packages",
+            "from": "./",
+            "except": [
+              "./packages"
+            ]
+          }
+        ]
+      }
+    ],
     "react/jsx-props-no-spreading": "off",
     "react/jsx-filename-extension": [
       1,

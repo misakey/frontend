@@ -1,4 +1,4 @@
-import { MEMBER_LEAVE, MSG_DELETE, MSG_EDIT } from 'constants/app/boxes/events';
+import { MEMBER_LEAVE, MSG_DELETE, MSG_EDIT } from '@misakey/ui/constants/boxes/events';
 
 import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import encryptText from '@misakey/crypto/box/encryptText';

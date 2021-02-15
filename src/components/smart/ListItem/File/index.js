@@ -27,7 +27,7 @@ import isFunction from '@misakey/helpers/isFunction';
 
 import useGetFileIconFromType from 'hooks/useGetFileIconFromType';
 import useCalendarDateSince from '@misakey/hooks/useCalendarDateSince';
-import FILE_PROP_TYPES from 'constants/file/proptypes';
+import FILE_PROP_TYPES from '@misakey/ui/constants/file/proptypes';
 import isElementFocusedByEvent from '@misakey/helpers/isElementFocusedByEvent';
 
 const AVATAR_SIZE = '5rem';

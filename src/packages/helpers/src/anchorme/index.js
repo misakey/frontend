@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-self-import
 import anchorme from 'anchorme';
 
 /**

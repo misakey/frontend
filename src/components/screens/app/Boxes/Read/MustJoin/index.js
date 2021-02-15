@@ -6,7 +6,7 @@ import { useLocation, Link, generatePath } from 'react-router-dom';
 
 import routes from 'routes';
 import { updateEntities } from '@misakey/store/actions/entities';
-import { MEMBER_JOIN } from 'constants/app/boxes/events';
+import { MEMBER_JOIN } from '@misakey/ui/constants/boxes/events';
 import { forbidden } from '@misakey/ui/constants/errorTypes';
 import BoxesSchema from 'store/schemas/Boxes';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';

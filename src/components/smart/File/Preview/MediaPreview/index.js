@@ -6,7 +6,7 @@ import Box from '@material-ui/core/Box';
 import isNil from '@misakey/helpers/isNil';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import BoxFile from 'components/dumb/Box/File';
-import FILE_PROP_TYPES from 'constants/file/proptypes';
+import FILE_PROP_TYPES from '@misakey/ui/constants/file/proptypes';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({

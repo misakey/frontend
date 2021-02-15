@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
+import IconButtonAppBar from '@misakey/ui/IconButton/Appbar';
 
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import Box from '@material-ui/core/Box';

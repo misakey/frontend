@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { MSG_FILE, MSG_TXT } from 'constants/app/boxes/events';
+import { MSG_FILE, MSG_TXT } from '@misakey/ui/constants/boxes/events';
 import browserNotify from '@misakey/helpers/browserNotify';
 import { isTabVisible } from 'packages/helpers/src/visibilityChange';
 

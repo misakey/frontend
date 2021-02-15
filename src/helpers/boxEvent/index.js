@@ -2,7 +2,7 @@ import {
   MSG_DELETE, MSG_EDIT,
   MEMBER_LEAVE, MEMBER_KICK, MEMBER_EVENT_TYPES, MEMBER_JOIN,
   STATE_ACCESS_MODE,
-} from 'constants/app/boxes/events';
+} from '@misakey/ui/constants/boxes/events';
 import { LIMITED } from '@misakey/ui/constants/accessModes';
 
 

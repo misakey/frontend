@@ -162,10 +162,7 @@ const DialogSigninRedirect = ({
       }
       return <TransRequireAccess />;
     },
-    [
-      sessionExpired, insufficientACR, resourceName, t, creatorName, creatorProfileTo,
-      acrValues,
-    ],
+    [sessionExpired, insufficientACR, resourceName, t, acrValues, creatorName, creatorProfileTo],
   );
 
   const CardUserComponent = useMemo(

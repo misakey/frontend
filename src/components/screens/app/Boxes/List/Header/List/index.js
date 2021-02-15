@@ -10,7 +10,7 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import Box from '@material-ui/core/Box';
 
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
+import IconButtonAppBar from '@misakey/ui/IconButton/Appbar';
 import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
 import withDialogPassword from 'components/smart/Dialog/Password/with';

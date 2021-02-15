@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Form, Field } from 'formik';
 
-import { ACCESS_RM, ACCESS_BULK } from 'constants/app/boxes/events';
+import { ACCESS_RM, ACCESS_BULK } from '@misakey/ui/constants/boxes/events';
 import BoxesSchema from 'store/schemas/Boxes';
 import { boxDeletionDialogValidationSchema } from 'constants/validationSchemas/boxes';
 

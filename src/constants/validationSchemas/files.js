@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { MAX_FILE_SIZE } from 'constants/file/size';
+import { MAX_FILE_SIZE } from '@misakey/ui/constants/file/size';
 import { required } from '@misakey/ui/constants/errorTypes';
 import isString from '@misakey/helpers/isString';
 import isNil from '@misakey/helpers/isNil';

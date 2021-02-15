@@ -13,7 +13,7 @@ import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathK
 import useBoxRights from 'hooks/useBoxRights';
 
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
+import IconButtonAppBar from '@misakey/ui/IconButton/Appbar';
 import Box from '@material-ui/core/Box';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';

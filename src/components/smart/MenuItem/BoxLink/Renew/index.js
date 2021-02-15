@@ -24,13 +24,13 @@ const MenuItemBoxLinkRenew = forwardRef(({ box, onClose }, ref) => {
 
   const [open, setOpen] = useState(false);
 
-  const { id: boxId } = useSafeDestr(box);
+  const { id: boxId, publicKey } = useSafeDestr(box);
 
   const onConfirm = useCallback(
     async () => {
-      await dispatch(changeBoxInvitationLink({ boxId }));
+      await dispatch(changeBoxInvitationLink({ boxId, publicKey }));
     },
-    [dispatch, boxId],
+    [dispatch, boxId, publicKey],
   );
 
   const onSuccess = useCallback(

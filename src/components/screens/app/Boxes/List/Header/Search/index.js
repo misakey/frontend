@@ -7,7 +7,7 @@ import { withTranslation } from 'react-i18next';
 import { SIDES } from '@misakey/ui/constants/drawers';
 
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
+import IconButtonAppBar from '@misakey/ui/IconButton/Appbar';
 
 import getNextSearch from '@misakey/helpers/getNextSearch';
 import isEmpty from '@misakey/helpers/isEmpty';

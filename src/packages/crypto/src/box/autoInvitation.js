@@ -4,8 +4,8 @@
 import isEmpty from '@misakey/helpers/isEmpty';
 import propOr from '@misakey/helpers/propOr';
 
-import { ACCESS_ADD } from 'constants/app/boxes/events';
-import { RESTRICTION_TYPES } from 'constants/app/boxes/accesses';
+import { ACCESS_ADD } from '@misakey/ui/constants/boxes/events';
+import { RESTRICTION_TYPES } from '@misakey/ui/constants/boxes/accesses';
 
 import { getIdentityPublicKeys } from '@misakey/crypto/HttpApi';
 import { encryptCryptoaction } from '@misakey/crypto/cryptoactions';

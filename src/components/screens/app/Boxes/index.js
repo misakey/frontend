@@ -4,7 +4,7 @@ import { Switch, Redirect as MuiRedirect, useRouteMatch, useLocation } from 'rea
 import PropTypes from 'prop-types';
 
 import routes from 'routes';
-import { UUID4_REGEX } from 'constants/regex';
+import { UUID4_REGEX } from '@misakey/ui/constants/regex';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { computeInvitationHash } from '@misakey/crypto/box/keySplitting';
 import { BadKeyShareFormat } from '@misakey/crypto/Errors/classes';

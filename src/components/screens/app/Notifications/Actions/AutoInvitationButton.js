@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
-
+import routes from 'routes';
 
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, generatePath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -23,10 +23,11 @@ function ActualButton({ id, details: notifDetails }) {
   const onClick = useCallback(
     async () => {
       try {
-        const { boxUrl } = await dispatch(
+        const notificationBoxId = await dispatch(
           processAutoInviteCryptoaction(notifDetails),
         );
         dispatch(markNotificationAsUsed(id));
+        const boxUrl = generatePath(routes.boxes.read._, { id: notificationBoxId });
         history.push(boxUrl);
       } catch (error) {
         logSentryException(error);

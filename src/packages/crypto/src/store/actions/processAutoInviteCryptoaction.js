@@ -1,7 +1,3 @@
-import { generatePath } from 'react-router-dom';
-
-import routes from 'routes';
-
 import { getCode } from '@misakey/helpers/apiError';
 import { notFound } from '@misakey/ui/constants/errorTypes';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
@@ -92,8 +88,6 @@ export default ({ cryptoactionId, boxId: notificationBoxId }) => (
 
     await deleteCryptoaction({ accountId, cryptoactionId });
 
-    const path = generatePath(routes.boxes.read._, { id: notificationBoxId });
-
-    return { boxUrl: path };
+    return notificationBoxId;
   }
 );

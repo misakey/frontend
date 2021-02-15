@@ -6,7 +6,7 @@ import FormField from '@misakey/ui/Form/Field';
 import { withTranslation } from 'react-i18next';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
-import { ACCEPTED_TYPES } from 'constants/file/image';
+import { ACCEPTED_TYPES } from '@misakey/ui/constants/file/image';
 import routes from 'routes';
 
 import Container from '@material-ui/core/Container';

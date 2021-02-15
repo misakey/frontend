@@ -3,7 +3,7 @@ import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { selectors } from '@misakey/react-auth/store/reducers/auth';
-import { MSG_TXT } from 'constants/app/boxes/events';
+import { MSG_TXT } from '@misakey/ui/constants/boxes/events';
 import { contactFieldsValidationSchema } from 'constants/validationSchemas/boxes';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';

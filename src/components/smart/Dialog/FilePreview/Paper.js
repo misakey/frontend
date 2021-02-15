@@ -9,7 +9,7 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Paper from '@material-ui/core/Paper';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
+import IconButtonAppBar from '@misakey/ui/IconButton/Appbar';
 import withDialogPassword from 'components/smart/Dialog/Password/with';
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';

@@ -1,4 +1,3 @@
-import { getBoxById } from 'store/reducers/box';
 
 import { splitBoxSecretKey } from '@misakey/crypto/box/keySplitting';
 import { setBoxKeyShare } from '@misakey/crypto/HttpApi';
@@ -8,10 +7,9 @@ import setBoxSecrets from './setBoxSecrets';
 
 const { getAsymSecretKey } = cryptoSelectors;
 
-export default ({ boxId }) => (
+export default ({ boxId, publicKey: boxPublicKey }) => (
   async (dispatch, getState) => {
     const state = getState();
-    const { publicKey: boxPublicKey } = (getBoxById(state, boxId) || {});
     const boxSecretKey = getAsymSecretKey(boxPublicKey)(state);
 
     const {

@@ -29,7 +29,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import BoxContent from '@misakey/ui/Box/Content';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
+import IconButtonAppBar from '@misakey/ui/IconButton/Appbar';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 

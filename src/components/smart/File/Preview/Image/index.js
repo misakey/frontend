@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import FILE_PROP_TYPES from 'constants/file/proptypes';
+import FILE_PROP_TYPES from '@misakey/ui/constants/file/proptypes';
 
 
 import makeStyles from '@material-ui/core/styles/makeStyles';

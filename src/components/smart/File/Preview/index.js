@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';
-import FILE_PROP_TYPES from 'constants/file/proptypes';
+import FILE_PROP_TYPES from '@misakey/ui/constants/file/proptypes';
 import ImagePreview from './Image';
 import MediaPreview from './MediaPreview';
 import DefaultPreview from './Default';

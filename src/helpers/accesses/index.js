@@ -1,5 +1,5 @@
-import { RESTRICTION_TYPES } from 'constants/app/boxes/accesses';
-import { ACCESS_RM, ACCESS_ADD } from 'constants/app/boxes/events';
+import { RESTRICTION_TYPES } from '@misakey/ui/constants/boxes/accesses';
+import { ACCESS_RM, ACCESS_ADD } from '@misakey/ui/constants/boxes/events';
 
 import sort from '@misakey/helpers/sort';
 import pluck from '@misakey/helpers/pluck';

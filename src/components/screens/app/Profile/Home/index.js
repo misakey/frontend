@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import AppBarStatic from '@misakey/ui/AppBar/Static';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
+import IconButtonAppBar from '@misakey/ui/IconButton/Appbar';
 import CardIdentity from 'components/dumb/Card/Identity';
 import AvatarCurrentUser from 'components/smart/Avatar/CurrentUser';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
@@ -26,24 +26,24 @@ const ProfileHome = ({ identityMetadata }) => {
     <>
       <AppBarStatic>
         {!isDrawerOpen && (
-        <IconButtonAppBar
-          aria-label={t('common:goBack')}
-          edge="start"
-          component={Link}
-          to={routes.boxes._}
-        >
-          <ArrowBack />
-        </IconButtonAppBar>
+          <IconButtonAppBar
+            aria-label={t('common:goBack')}
+            edge="start"
+            component={Link}
+            to={routes.boxes._}
+          >
+            <ArrowBack />
+          </IconButtonAppBar>
         )}
         <BoxFlexFill />
         {!isDrawerOpen && (
-        <IconButtonAppBar
-          aria-label={t('common:openAccountDrawer')}
-          edge="start"
-          onClick={toggleDrawer}
-        >
-          <AvatarCurrentUser />
-        </IconButtonAppBar>
+          <IconButtonAppBar
+            aria-label={t('common:openAccountDrawer')}
+            edge="start"
+            onClick={toggleDrawer}
+          >
+            <AvatarCurrentUser />
+          </IconButtonAppBar>
         )}
       </AppBarStatic>
       {id && (

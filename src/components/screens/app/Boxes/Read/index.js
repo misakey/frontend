@@ -38,7 +38,7 @@ function BoxRead({ match }) {
   const {
     isReady: isBoxKeyShareReady,
     secretKey,
-  } = useHandleBoxKeyShare(box, isReady);
+  } = useHandleBoxKeyShare(box, isReady, belongsToCurrentUser);
 
   const displayLoadingScreen = useMemo(
     () => !isReady || !isBoxKeyShareReady,

@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
 import BoxesSchema from 'store/schemas/Boxes';
-import { ACCEPTED_TYPES } from 'constants/file/image';
+import { ACCEPTED_TYPES } from '@misakey/ui/constants/file/image';
 import { DATETIME_EXTRA_SHORT } from '@misakey/ui/constants/formats/dates';
 
 import moment from 'moment';

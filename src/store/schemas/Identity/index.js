@@ -1,7 +1,7 @@
 import { schema } from 'normalizr';
 import PropTypes from 'prop-types';
 
-import { NOTIFICATIONS } from 'constants/notifications';
+import { NOTIFICATIONS } from '@misakey/ui/constants/notifications';
 
 const entity = new schema.Entity('identities', {});
 const collection = [entity];

@@ -8,7 +8,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import isNil from '@misakey/helpers/isNil';
 import Grow from '@material-ui/core/Grow';
 import { THEMES } from '@misakey/ui/theme';
-import FILE_PROP_TYPES from 'constants/file/proptypes';
+import FILE_PROP_TYPES from '@misakey/ui/constants/file/proptypes';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({

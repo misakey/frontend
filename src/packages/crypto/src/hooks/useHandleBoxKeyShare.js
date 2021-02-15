@@ -14,7 +14,6 @@ import logSentryException from '@misakey/helpers/log/sentry/exception';
 import { combineBoxKeyShares, splitBoxSecretKey, fetchMisakeyKeyShare } from '@misakey/crypto/box/keySplitting';
 import { selectors } from '@misakey/crypto/store/reducers';
 import { InvalidHash } from '@misakey/crypto/Errors/classes';
-import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 import setBoxSecrets from '@misakey/crypto/store/actions/setBoxSecrets';
 
 // SELECTORS
@@ -23,7 +22,7 @@ const {
   getBoxKeyShare,
 } = selectors;
 
-export default (box, boxIsReady) => {
+export default (box, boxIsReady, belongsToCurrentUser) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -37,8 +36,6 @@ export default (box, boxIsReady) => {
   const { id: boxId, publicKey, hasAccess, isMember } = useSafeDestr(box);
 
   const secretKey = useSelector(getAsymSecretKey(publicKey));
-
-  const belongsToCurrentUser = useBoxBelongsToCurrentUser(box);
 
   const isAllowedToFetch = useMemo(
     () => Boolean(boxIsReady && hasAccess && isMember !== false),

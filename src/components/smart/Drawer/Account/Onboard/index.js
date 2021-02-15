@@ -10,7 +10,7 @@ import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import Footer from '@misakey/ui/Footer';
 import CardOnboard from 'components/dumb/Card/Onboard';
 import ButtonConnect from 'components/dumb/Button/Connect';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
+import IconButtonAppBar from '@misakey/ui/IconButton/Appbar';
 import Divider from '@material-ui/core/Divider';
 
 import ArrowBack from '@material-ui/icons/ArrowBack';

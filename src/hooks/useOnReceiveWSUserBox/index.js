@@ -2,7 +2,7 @@ import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/a
 import routes from 'routes';
 import BoxesSchema from 'store/schemas/Boxes';
 import { DELETED_BOX, NEW_EVENT, NOTIFICATIONS_ACK, BOX_SETTINGS, NOTIFICATION, SAVED_FILE } from 'constants/app/boxes/ws/messageTypes';
-import { CHANGE_EVENT_TYPES } from 'constants/app/boxes/events';
+import { CHANGE_EVENT_TYPES } from '@misakey/ui/constants/boxes/events';
 import { receiveWSEditEvent, addBoxEvent } from 'store/reducers/box';
 import { updateEntities } from '@misakey/store/actions/entities';
 

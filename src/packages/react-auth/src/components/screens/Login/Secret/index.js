@@ -53,7 +53,7 @@ import ButtonForgotPassword from '@misakey/react-auth/components/Button/ForgotPa
 import ButtonRenewAuthStep from '@misakey/react-auth/components/Button/RenewAuthStep';
 import SnackbarActionAuthRestart from '@misakey/ui/Snackbar/Action/AuthRestart';
 import SnackbarActionRefresh from '@misakey/ui/Snackbar/Action/Refresh';
-import IconButtonAppBar from 'components/dumb/IconButton/Appbar';
+import IconButtonAppBar from '@misakey/ui/IconButton/Appbar';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
 import Screen from '@misakey/ui/Screen';
 import AppBar from '@misakey/ui/AppBar';

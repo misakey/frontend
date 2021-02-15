@@ -3,7 +3,7 @@ import React, { useCallback, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { MSG_TXT } from 'constants/app/boxes/events';
+import { MSG_TXT } from '@misakey/ui/constants/boxes/events';
 import encryptText from '@misakey/crypto/box/encryptText';
 import BoxesSchema from 'store/schemas/Boxes';
 import { boxMessageValidationSchema } from 'constants/validationSchemas/boxes';

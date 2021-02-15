@@ -10,7 +10,6 @@ import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 import isNil from '@misakey/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useFilePreviewContext } from 'components/smart/File/Preview/Context';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
@@ -66,15 +65,12 @@ function FilePreviewDialog({
   open, onClose, selectedId, file, t,
   appBarProps, children,
   maxHeight, classes,
+  getDecryptedFile,
+  onDownloadFile,
+  onSaveFileInVault,
+  disableOnSave,
 }) {
   const internalClasses = useStyles();
-
-  const {
-    getDecryptedFile,
-    onDownloadFile,
-    onSaveFileInVault,
-    disableOnSave,
-  } = useFilePreviewContext();
 
   const {
     isLoading, error, name, type, size, blobUrl, isSaved, encryption,
@@ -185,6 +181,10 @@ FilePreviewDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   selectedId: PropTypes.string,
   onClose: PropTypes.func.isRequired,
+  getDecryptedFile: PropTypes.func.isRequired,
+  onDownloadFile: PropTypes.func.isRequired,
+  onSaveFileInVault: PropTypes.func.isRequired,
+  disableOnSave: PropTypes.bool,
   children: PropTypes.node,
   appBarProps: PropTypes.object,
   file: PropTypes.shape(DecryptedFileSchema.propTypes),
@@ -201,6 +201,7 @@ FilePreviewDialog.defaultProps = {
   selectedId: null,
   children: null,
   file: null,
+  disableOnSave: false,
   appBarProps: {},
   classes: {},
 };
