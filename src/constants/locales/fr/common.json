@@ -54,6 +54,8 @@
   "create": "Créer",
   "noSession": "Pas de session authentifiée",
   "open": "Ouvrir",
+  "openAccountDrawer": "Voir mon compte",
+  "organizations": "Organisations",
   "reopen": "Réouvrir",
   "resendEmail": "Relancer",
   "retry": "Recommencer",

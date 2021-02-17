@@ -212,11 +212,11 @@ const DialogSigninRedirect = ({
             )}
           </>
         ),
-        avatarLarge: true,
+        avatarSize: LARGE,
       }}
     >
       {open && (
-      <CardSso avatarLarge>
+      <CardSso avatarSize={LARGE}>
         <Box>
           <Title align="center" gutterBottom={false}>{title}</Title>
           <Subtitle align="center">{subtitle}</Subtitle>

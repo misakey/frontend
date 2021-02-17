@@ -2,7 +2,13 @@ import React, { useMemo, useCallback } from 'react';
 
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { TMP_DRAWER_QUERY_PARAMS, SIDE_QUERY_PARAM, TEMP_DRAWER_MOBILE_WIDTH, TEMP_DRAWER_DESKTOP_WIDTH, SIDES } from '@misakey/ui/constants/drawers';
+import {
+  TMP_DRAWER_ACCOUNT_VALUE,
+  TMP_DRAWER_QUERY_PARAMS,
+  SIDE_QUERY_PARAM,
+  TEMP_DRAWER_MOBILE_WIDTH,
+  TEMP_DRAWER_DESKTOP_WIDTH,
+  SIDES } from '@misakey/ui/constants/drawers';
 
 import getNextSearch from '@misakey/helpers/getNextSearch';
 
@@ -12,8 +18,6 @@ import useDrawerLayout from '@misakey/hooks/useDrawerLayout';
 import Drawer from '@material-ui/core/Drawer';
 import DrawerAccountContent from 'components/smart/Drawer/Account/Content';
 
-// CONSTANTS
-const ACCOUNT = 'account';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -41,7 +45,7 @@ const AccountDrawer = (props) => {
   const classes = useStyles({ drawerWidth });
 
   const isTmpDrawerOpen = useMemo(
-    () => tmpDrawerSearch === ACCOUNT, [tmpDrawerSearch],
+    () => tmpDrawerSearch === TMP_DRAWER_ACCOUNT_VALUE, [tmpDrawerSearch],
   );
 
   const hideDrawerTo = useMemo(

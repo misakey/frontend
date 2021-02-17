@@ -28,7 +28,7 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import usePropChanged from '@misakey/hooks/usePropChanged';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
+import AppBarStatic from '@misakey/ui/AppBar/Static';
 import Title from '@misakey/ui/Typography/Title';
 import MuiLink from '@material-ui/core/Link';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
@@ -44,7 +44,7 @@ import BoxControls from '@misakey/ui/Box/Controls';
 import AvatarBox from '@misakey/ui/Avatar/Box';
 import AvatarBoxSkeleton from '@misakey/ui/Avatar/Box/Skeleton';
 import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
-import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
+import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
 
 // CONSTANTS
@@ -154,11 +154,16 @@ function MustJoin({ box, t }) {
   return (
     <Box
       display="flex"
+      flexDirection="column"
       height="inherit"
     >
-      <AppBarDrawer disableOffset>
-        <ToggleDrawerButton />
-      </AppBarDrawer>
+      <AppBarStatic toolbarProps={{ px: 0 }}>
+        <Box display="flex" flexDirection="column" width="100%" minHeight="inherit">
+          <Box display="flex">
+            <BoxEventsAppBar disabled box={box} belongsToCurrentUser={false} />
+          </Box>
+        </Box>
+      </AppBarStatic>
       <Box
         display="flex"
         flexDirection="column"
@@ -167,7 +172,7 @@ function MustJoin({ box, t }) {
       >
         <Container
           className={classes.container}
-          pt={8}
+          pt={2}
           maxWidth="md"
           component={Box}
           overflow="auto"
@@ -194,7 +199,9 @@ function MustJoin({ box, t }) {
                 {!isNil(title) && <Title align="left" gutterBottom={false}>{t('common:connect.title', { resourceName: title })}</Title>}
                 {isNil(title) && !isFetching && <Title align="left" gutterBottom={false}>{t('boxes:read.mustjoin.defaultTitle')}</Title>}
                 <Subtitle>
-                  <TransRequireAccess querier={creatorName} to={creatorProfileTo} />
+                  {isNil(creatorProfileTo)
+                    ? <Skeleton width={300} />
+                    : <TransRequireAccess querier={creatorName} to={creatorProfileTo} />}
                 </Subtitle>
                 <CardUserSignOut
                   disablePadding
@@ -206,11 +213,15 @@ function MustJoin({ box, t }) {
                   </List>
                 </CardUserSignOut>
                 <Subtitle>
-                  <Trans values={{ creatorName }} i18nKey="common:connect.authorize">
-                    {'Authorize '}
-                    <MuiLink component={Link} to={creatorProfileTo}>{'{{creatorName}}'}</MuiLink>
-                    {' to access above information ?'}
-                  </Trans>
+                  {isNil(creatorProfileTo)
+                    ? <Skeleton width={400} />
+                    : (
+                      <Trans values={{ creatorName }} i18nKey="common:connect.authorize">
+                        {'Authorize '}
+                        <MuiLink component={Link} to={creatorProfileTo}>{'{{creatorName}}'}</MuiLink>
+                        {' to access above information ?'}
+                      </Trans>
+                    )}
                 </Subtitle>
                 <BoxControls
                   mt={2}

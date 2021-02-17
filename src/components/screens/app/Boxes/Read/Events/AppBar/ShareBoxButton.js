@@ -29,6 +29,7 @@ function ShareBoxButton({ box, t }) {
 
   return (
     <Button
+      color="background" // custom color
       component={Link}
       to={to}
       standing={BUTTON_STANDINGS.OUTLINED}

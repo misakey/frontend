@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -12,14 +12,25 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 
 // COMPONENTS
-const ListItemUser = ({
-  displayName, avatarUrl, identifier, isMe, children, t, classes, ...rest
-}) => {
-  const { listItemText, ...listItemClasses } = useSafeDestr(classes);
+const ListItemUser = forwardRef(({
+  displayName, avatarUrl, identifier,
+  isMe,
+  children,
+  t, classes,
+  avatarProps,
+  listItemTextProps,
+  ...rest
+}, ref) => {
+  const { listItemText, listItemAvatar, ...listItemClasses } = useSafeDestr(classes);
   return (
-    <ListItem classes={listItemClasses} {...omitTranslationProps(rest)}>
-      <ListItemAvatar>
-        <AvatarUser displayName={displayName} identifier={identifier} avatarUrl={avatarUrl} />
+    <ListItem ref={ref} classes={listItemClasses} {...omitTranslationProps(rest)}>
+      <ListItemAvatar classes={{ root: listItemAvatar }}>
+        <AvatarUser
+          displayName={displayName}
+          identifier={identifier}
+          avatarUrl={avatarUrl}
+          {...avatarProps}
+        />
       </ListItemAvatar>
       <ListItemText
         className={listItemText}
@@ -27,11 +38,12 @@ const ListItemUser = ({
         secondary={identifier}
         primaryTypographyProps={{ color: 'textPrimary', noWrap: true }}
         secondaryTypographyProps={{ color: 'textSecondary' }}
+        {...listItemTextProps}
       />
       {children}
     </ListItem>
   );
-};
+});
 ListItemUser.propTypes = {
   identifier: PropTypes.string,
   displayName: PropTypes.string,
@@ -40,7 +52,10 @@ ListItemUser.propTypes = {
   children: PropTypes.node,
   classes: PropTypes.shape({
     listItemText: PropTypes.string,
+    ListItemAvatar: PropTypes.string,
   }),
+  avatarProps: PropTypes.object,
+  listItemTextProps: PropTypes.object,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
@@ -53,7 +68,10 @@ ListItemUser.defaultProps = {
   isMe: false,
   classes: {
     listItemText: '',
+    listItemAvatar: '',
   },
+  avatarProps: {},
+  listItemTextProps: {},
 };
 
 export default withTranslation('common')(ListItemUser);

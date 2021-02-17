@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 
-const ComponentProxy = (Component) => (props) => <Component {...props} />;
+const ComponentProxy = (Component) => forwardRef(
+  (props, ref) => <Component ref={ref} {...props} />,
+);
 
 export default ComponentProxy;

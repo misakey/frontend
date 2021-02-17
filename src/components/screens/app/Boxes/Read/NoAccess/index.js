@@ -19,7 +19,7 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useFetchBoxPublicInfo from 'hooks/useFetchBoxPublicInfo';
 import { useDispatch } from 'react-redux';
 
-import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
+import AppBarStatic from '@misakey/ui/AppBar/Static';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import CreateBoxSuggestions from 'components/smart/Box/CreateSuggestions';
 import MuiLink from '@material-ui/core/Link';
@@ -83,15 +83,16 @@ function NoAccess({ box, belongsToCurrentUser, t }) {
   return (
     <Box
       display="flex"
+      flexDirection="column"
       height="inherit"
     >
-      <AppBarDrawer toolbarProps={{ px: 0 }} disableOffset>
+      <AppBarStatic toolbarProps={{ px: 0 }}>
         <Box display="flex" flexDirection="column" width="100%" minHeight="inherit">
           <Box display="flex">
             <BoxEventsAppBar disabled box={box} belongsToCurrentUser={belongsToCurrentUser} />
           </Box>
         </Box>
-      </AppBarDrawer>
+      </AppBarStatic>
       <Box
         display="flex"
         flexDirection="column"
@@ -99,7 +100,7 @@ function NoAccess({ box, belongsToCurrentUser, t }) {
       >
         <Container
           className={classes.container}
-          pt={8}
+          pt={2}
           maxWidth="md"
           component={Box}
           overflow="auto"

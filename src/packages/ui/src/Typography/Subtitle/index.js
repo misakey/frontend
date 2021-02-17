@@ -1,4 +1,4 @@
-import Typography from '@material-ui/core/Typography';
+import Typography from '@misakey/ui/Typography';
 import ComponentProxy from '@misakey/ui/Component/Proxy';
 
 const Subtitle = ComponentProxy(Typography);

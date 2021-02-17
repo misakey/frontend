@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
 import logSentryException from '@misakey/helpers/log/sentry/exception';
+import getNextSearch from '@misakey/helpers/getNextSearch';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import processAutoInviteCryptoaction from '@misakey/crypto/store/actions/processAutoInviteCryptoaction';
@@ -27,8 +28,11 @@ function ActualButton({ id, details: notifDetails }) {
           processAutoInviteCryptoaction(notifDetails),
         );
         dispatch(markNotificationAsUsed(id));
-        const boxUrl = generatePath(routes.boxes.read._, { id: notificationBoxId });
-        history.push(boxUrl);
+        const { ownerOrgId } = notifDetails;
+        history.push({
+          pathname: generatePath(routes.boxes.read._, { id: notificationBoxId }),
+          search: getNextSearch('', new Map([['orgId', ownerOrgId]])),
+        });
       } catch (error) {
         logSentryException(error);
         enqueueSnackbar(t('common:anErrorOccurred'), { variant: 'error' });

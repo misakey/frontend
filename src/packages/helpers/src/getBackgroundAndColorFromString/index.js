@@ -1,4 +1,5 @@
-import stringToRGB from '../stringToRGB';
+import stringToRGB from '@misakey/helpers/stringToRGB';
+import isEmpty from '@misakey/helpers/isEmpty';
 
 function derivateFromColor(c) {
   let derivated = c / 255.0;
@@ -24,8 +25,9 @@ function shouldTextBeWhite(rgb) {
 }
 
 // Source: https://stackoverflow.com/a/3943023/12688757
-export default (str) => {
-  const backgroundColor = stringToRGB(str);
+export default (str, fallback = '000') => {
+  const backgroundColor = isEmpty(str) ? fallback : `#${stringToRGB(str)}`;
+  // @UNUSED, material-ui gives `theme.palette.getContrastText`
   const isTextLight = shouldTextBeWhite(backgroundColor);
   return { backgroundColor, isTextLight };
 };

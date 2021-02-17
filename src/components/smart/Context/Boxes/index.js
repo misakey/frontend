@@ -2,7 +2,6 @@ import React, { useMemo, createContext, useContext } from 'react';
 
 import PropTypes from 'prop-types';
 
-import STATUSES, { ALL } from 'constants/app/boxes/statuses';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
@@ -16,7 +15,6 @@ const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
 
 // CONTEXT
 export const BoxesContext = createContext({
-  activeStatus: ALL,
   search: null,
   onAckWSUserBox: null,
 });
@@ -25,7 +23,7 @@ export const BoxesContext = createContext({
 export const useBoxesContext = () => useContext(BoxesContext);
 
 // COMPONENTS
-const BoxesContextProvider = ({ activeStatus, children }) => {
+const BoxesContextProvider = ({ children }) => {
   const locationSearchParams = useLocationSearchParams();
   const { search } = useMemo(() => locationSearchParams, [locationSearchParams]);
   const identityId = useSelector(IDENTITY_ID_SELECTOR);
@@ -35,7 +33,7 @@ const BoxesContextProvider = ({ activeStatus, children }) => {
     [identityId],
   );
 
-  const onReceiveWSUserBox = useOnReceiveWSUserBox(activeStatus, search);
+  const onReceiveWSUserBox = useOnReceiveWSUserBox(search);
 
   const socketRef = useWebSocket(webSocketEndpoint, onReceiveWSUserBox);
 
@@ -43,11 +41,10 @@ const BoxesContextProvider = ({ activeStatus, children }) => {
 
   const contextValue = useMemo(
     () => ({
-      activeStatus,
       search,
       onAckWSUserBox,
     }),
-    [activeStatus, onAckWSUserBox, search],
+    [onAckWSUserBox, search],
   );
 
   return (
@@ -57,12 +54,10 @@ const BoxesContextProvider = ({ activeStatus, children }) => {
   );
 };
 BoxesContextProvider.propTypes = {
-  activeStatus: PropTypes.oneOf(STATUSES),
   children: PropTypes.node,
 };
 
 BoxesContextProvider.defaultProps = {
-  activeStatus: ALL,
   children: null,
 };
 

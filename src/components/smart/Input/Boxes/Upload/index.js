@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import BoxesSchema from 'store/schemas/Boxes';
 import { ACCEPTED_TYPES } from '@misakey/ui/constants/file/image';
@@ -77,11 +77,12 @@ const InputBoxesUpload = ({
   onUpload,
   fileTransform,
   children,
-  t,
+  ...props
 }) => {
   const [dialogInitialValues, setDialogInitialValues] = useState(INITIAL_VALUES);
   const [dialogInitialStatus, setDialogInitialStatus] = useState(INITIAL_STATUS);
 
+  const { t } = useTranslation(['boxes', 'fields']);
   const classes = useStyles();
 
   const handlePaste = useCallback(
@@ -191,7 +192,7 @@ const InputBoxesUpload = ({
         open={open}
         onClose={handleClose}
       />
-      <div className={classes.dragArea} {...dragProps}>
+      <Box className={classes.dragArea} {...dragProps} {...props}>
         {dragActive ? (
           <div className={classes.backdropArea}>
             <Backdrop className={classes.backdrop} open={dragActive}>
@@ -202,7 +203,7 @@ const InputBoxesUpload = ({
             </Backdrop>
           </div>
         ) : children}
-      </div>
+      </Box>
     </>
   );
 };
@@ -218,8 +219,6 @@ InputBoxesUpload.propTypes = {
   onUpload: PropTypes.func,
   accept: PropTypes.arrayOf(PropTypes.string),
   fileTransform: PropTypes.func,
-  // withTranslation
-  t: PropTypes.func.isRequired,
 };
 
 InputBoxesUpload.defaultProps = {
@@ -230,4 +229,4 @@ InputBoxesUpload.defaultProps = {
   onSuccess: null,
 };
 
-export default withTranslation(['boxes', 'fields'])(InputBoxesUpload);
+export default InputBoxesUpload;

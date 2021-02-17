@@ -8,5 +8,6 @@ module.exports = {
   },
   setupFiles: [
     './scripts/jest/setup/fetch.js',
+    './scripts/jest/setup/env.js',
   ],
 };

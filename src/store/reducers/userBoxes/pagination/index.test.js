@@ -1,22 +1,22 @@
-import { ALL } from 'constants/app/boxes/statuses';
 import userBoxesReducer, { REDUCER_KEY, getUserBoxesState, selectors } from '.';
 
 describe('testing reducer userBoxesPagination', () => {
+  const selfClientId = '00000000-0000-0000-0000-000000000000';
   describe('getUserBoxesState', () => {
     const itemCount = 5;
-    const exStatus = ALL;
+    const exFilterId = selfClientId;
     const state = {
       userBoxesPagination: {
-        [exStatus]: { itemCount },
+        [exFilterId]: { itemCount },
       },
     };
-    const STATUSES = [
-      [exStatus],
+    const FILTER_IDS = [
+      [exFilterId],
       [undefined],
       [null],
-      ['toto'],
+      ['0000'],
     ];
-    it.each(STATUSES)('should not throw, status %p', () => {
+    it.each(FILTER_IDS)('should not throw, status %p', () => {
       expect(() => getUserBoxesState()(state)).not.toThrow();
     });
     it('should return state', () => {
@@ -31,27 +31,27 @@ describe('testing reducer userBoxesPagination', () => {
     describe('isEmpty', () => {
       const EMPTY_STATES = [
         ['undefined, null, 0', {
-          [ALL]: { itemCount: undefined },
+          [selfClientId]: { itemCount: undefined },
           other: { itemCount: null },
           one: { itemCount: 0 },
         }],
         ['0, 0, 0, 0', {
-          [ALL]: { itemCount: 0 },
+          [selfClientId]: { itemCount: 0 },
           other: { itemCount: 0 },
           one: { itemCount: 0 },
         }],
         ['null, null, null', {
-          [ALL]: { itemCount: null },
+          [selfClientId]: { itemCount: null },
           other: { itemCount: null },
           one: { itemCount: null },
         }],
         ['undefined, undefined, undefined', {
-          [ALL]: { itemCount: undefined },
+          [selfClientId]: { itemCount: undefined },
           other: { itemCount: undefined },
           one: { itemCount: undefined },
         }],
         ['unset, unset, unset', {
-          [ALL]: {},
+          [selfClientId]: {},
           other: {},
           one: {},
         }],
@@ -63,7 +63,7 @@ describe('testing reducer userBoxesPagination', () => {
       });
       it('should return false, non empty', () => {
         const subState = {
-          [ALL]: { itemCount: 5 },
+          [selfClientId]: { itemCount: 5 },
           one: { itemCount: 2 },
           two: { itemCount: 0 },
           other: { itemCount: null },

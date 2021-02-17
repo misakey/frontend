@@ -70,7 +70,12 @@ const filePreviewReducer = (state, { type, ...rest }) => {
 
 // COMPONENTS
 const FilePreviewContextProvider = ({ children, revokeOnChange, ...props }) => {
-  const isVaultSpace = useRouteMatch(routes.documents.vault);
+  const vaultSpaceRouteMatch = useRouteMatch(routes.documents._);
+  const isVaultSpace = useMemo(
+    () => !isNil(vaultSpaceRouteMatch),
+    [vaultSpaceRouteMatch],
+  );
+
   const [{
     filesData, selectedId,
   }, dispatchReducer] = useReducer(filePreviewReducer, {

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback, forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
+import { TO_PROP_TYPE } from '@misakey/ui/constants/propTypes';
 
 import { selectors } from '@misakey/crypto/store/reducers';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
@@ -11,6 +12,7 @@ import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import { useSelector } from 'react-redux';
 import useCreateAccount from '@misakey/react-auth/hooks/useCreateAccount';
+import useLinkCondition from '@misakey/hooks/useLinkCondition';
 
 import DialogOpenVault from 'components/smart/Dialog/Password/OpenVault';
 
@@ -23,6 +25,8 @@ const {
 const withDialogPassword = (Component) => {
   let Wrapper = ({
     onClick,
+    to,
+    replace,
     dialogProps,
     forceDialog,
     ...props
@@ -56,6 +60,12 @@ const withDialogPassword = (Component) => {
       [hasAccountId, isCryptoLoaded, forceDialog, onClick, onCreateAccount],
     );
 
+    const wrapperLinkProps = useLinkCondition(
+      hasAccountId && isCryptoLoaded && !forceDialog,
+      to,
+      replace,
+    );
+
     const onClose = useCallback(
       () => { setOpen(false); },
       [],
@@ -72,7 +82,12 @@ const withDialogPassword = (Component) => {
             {...dialogProps}
           />
         )}
-        <Component ref={ref} onClick={onWrapperClick} {...omitTranslationProps(props)} />
+        <Component
+          ref={ref}
+          onClick={onWrapperClick}
+          {...wrapperLinkProps}
+          {...omitTranslationProps(props)}
+        />
       </>
     );
   };
@@ -81,6 +96,8 @@ const withDialogPassword = (Component) => {
 
   Wrapper.propTypes = {
     onClick: PropTypes.func,
+    to: TO_PROP_TYPE,
+    replace: PropTypes.bool,
     dialogProps: PropTypes.shape({
       onClose: PropTypes.func,
       onSubmit: PropTypes.func,
@@ -91,6 +108,8 @@ const withDialogPassword = (Component) => {
 
   Wrapper.defaultProps = {
     onClick: null,
+    to: null,
+    replace: undefined,
     dialogProps: {},
     forceDialog: false,
   };

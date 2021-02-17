@@ -4,10 +4,8 @@ import PropTypes from 'prop-types';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
-import { SIDES } from '@misakey/ui/constants/drawers';
-
-import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
-import IconButtonAppBar from '@misakey/ui/IconButton/Appbar';
+import AppBarStatic from '@misakey/ui/AppBar/Static';
+import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
 
 import getNextSearch from '@misakey/helpers/getNextSearch';
 import isEmpty from '@misakey/helpers/isEmpty';
@@ -114,8 +112,7 @@ function SearchHeader({ t }) {
   );
 
   return (
-    <AppBarDrawer
-      side={SIDES.LEFT}
+    <AppBarStatic
       classes={{ root: classes.appBar }}
     >
       <TextField
@@ -128,7 +125,7 @@ function SearchHeader({ t }) {
           startAdornment, endAdornment, disableUnderline: true,
         }}
       />
-    </AppBarDrawer>
+    </AppBarStatic>
   );
 }
 

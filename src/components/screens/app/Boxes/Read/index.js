@@ -115,27 +115,39 @@ function BoxRead({ match }) {
               />
             )}
           />
-          <InputBoxesUploadContext box={box} onSuccess={timeoutScrollToBottom}>
-            <Route
-              path={routes.boxes.read.files}
-              render={() => (
-                <BoxFiles
-                  belongsToCurrentUser={belongsToCurrentUser}
-                  box={box}
-                />
-              )}
-            />
-            <Route
-              exact
-              path={match.path}
-              render={() => (
-                <BoxEvents
-                  box={box}
-                  belongsToCurrentUser={belongsToCurrentUser}
-                />
-              )}
-            />
-          </InputBoxesUploadContext>
+          <Route
+            path={[routes.boxes.read.files, match.path]}
+            render={() => (
+              <InputBoxesUploadContext
+                box={box}
+                onSuccess={timeoutScrollToBottom}
+                display="flex"
+                flexDirection="column"
+              >
+                <Switch>
+                  <Route
+                    path={routes.boxes.read.files}
+                    render={() => (
+                      <BoxFiles
+                        belongsToCurrentUser={belongsToCurrentUser}
+                        box={box}
+                      />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path={match.path}
+                    render={() => (
+                      <BoxEvents
+                        box={box}
+                        belongsToCurrentUser={belongsToCurrentUser}
+                      />
+                    )}
+                  />
+                </Switch>
+              </InputBoxesUploadContext>
+            )}
+          />
         </Switch>
       </FilePreviewContextProvider>
     </BoxReadContextProvider>

@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
 const DialogTitleWithCloseIcon = ({
   children, className, classes, title, onClose, icon, t,
   fullScreen, gutterBottom,
+  id,
   ...rest
 }) => {
   const internalClasses = useStyles({ gutterBottom });
@@ -67,12 +68,23 @@ const DialogTitleWithCloseIcon = ({
     >
       <Box display="flex" width="100%" minHeight="inherit" alignItems="center">
         {hasOnClose && (
-          <IconButton classes={{ root: classes.iconButton }} edge="start" aria-label={t('common:close')} onClick={onClose}>
+          <IconButton
+            classes={{ root: classes.iconButton }}
+            edge="start"
+            aria-label={t('common:close')}
+            onClick={onClose}
+          >
             <Icon />
           </IconButton>
         )}
         {title && (
-          <Typography classes={{ root: clsx(internalClasses.typographyRoot, classes.title) }} variant="h6">{title}</Typography>
+          <Typography
+            id={id}
+            classes={{ root: clsx(internalClasses.typographyRoot, classes.title) }}
+            variant="h6"
+          >
+            {title}
+          </Typography>
         )}
         {children}
       </Box>
@@ -93,6 +105,8 @@ DialogTitleWithCloseIcon.propTypes = {
   }),
   fullScreen: PropTypes.bool,
   gutterBottom: PropTypes.bool,
+  // useful for aria-X
+  id: PropTypes.string,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
@@ -106,6 +120,7 @@ DialogTitleWithCloseIcon.defaultProps = {
   classes: {},
   fullScreen: false,
   gutterBottom: false,
+  id: null,
 };
 
 export default withTranslation('common')(DialogTitleWithCloseIcon);

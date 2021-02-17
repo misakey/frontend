@@ -54,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
   },
   contentShift: ({ drawerWidth }) => ({
     width: `calc(100% - ${drawerWidth})`,
+    display: drawerWidth === PERMANENT_DRAWER_MOBILE_WIDTH ? 'none' : null,
     marginLeft: drawerWidth,
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,

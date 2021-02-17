@@ -8,7 +8,6 @@ import isNil from '@misakey/helpers/isNil';
 import { useMemo, useCallback, useRef, useEffect } from 'react';
 import { useDispatch, useSelector, batch } from 'react-redux';
 
-import { ALL } from 'constants/app/boxes/statuses';
 import execWithRequestIdleCallback from 'packages/helpers/src/execWithRequestIdleCallback';
 
 // ACTIONS
@@ -16,7 +15,7 @@ const { removePaginatedId } = actionCreators;
 const { getBySearchPagination, getByPagination } = selectors;
 
 // HOOKS
-export const useOnRemoveBox = (status = ALL, search = null) => {
+export const useOnRemoveBox = (search = null) => {
   const dispatch = useDispatch();
 
   const cleanBackup = useCallback(
@@ -30,8 +29,8 @@ export const useOnRemoveBox = (status = ALL, search = null) => {
   );
 
   const dispatchRemovePaginatedBox = useCallback(
-    (boxId) => batch(async () => {
-      dispatch(removePaginatedId(status, boxId, search));
+    (filterId, boxId) => batch(async () => {
+      dispatch(removePaginatedId(filterId, boxId, search));
       const box = await Promise.resolve(dispatch(removeBox(boxId)));
       // Cleanup has not priority regarding fluidity of the app
       // @FIXME we could maybe not clean at all as many other cases are not handled and implement a
@@ -39,13 +38,13 @@ export const useOnRemoveBox = (status = ALL, search = null) => {
       execWithRequestIdleCallback(() => cleanBackup(box), undefined, /* abortIfUnavailable */ true);
       return box;
     }),
-    [cleanBackup, dispatch, search, status],
+    [cleanBackup, dispatch, search],
   );
 
   return dispatchRemovePaginatedBox;
 };
 
-export const useOnReceiveBox = (status = ALL, search = null) => {
+export const useOnReceiveBox = (filterId, search = null) => {
   const hasSearch = useMemo(() => !isNil(search), [search]);
 
   // DISPATCH
@@ -53,13 +52,13 @@ export const useOnReceiveBox = (status = ALL, search = null) => {
 
   const dispatchReceiveBox = useCallback(
     (box) => Promise.resolve(dispatch(receiveJoinedBox(box, mergeReceiveNoEmptyNullable)))
-      .then(() => Promise.resolve(dispatch(moveBackUpId(box.id, status)))),
-    [dispatch, status],
+      .then(() => Promise.resolve(dispatch(moveBackUpId(box.id, filterId)))),
+    [dispatch, filterId],
   );
 
   const dispatchAddBox = useCallback(
-    (box) => Promise.resolve(dispatch(addJoinedBox(box, status, search))),
-    [dispatch, search, status],
+    (box) => Promise.resolve(dispatch(addJoinedBox(box, filterId, search))),
+    [dispatch, search, filterId],
   );
 
   // SELECTORS

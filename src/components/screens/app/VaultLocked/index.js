@@ -83,7 +83,7 @@ function VaultLocked({ t }) {
     <CardSsoWithSlope
       slopeProps={SLOPE_PROPS}
       avatar={<AvatarMisakey size={LARGE} />}
-      avatarLarge
+      avatarSize={LARGE}
       header={(
         <AppBarDrawer color="primary" side={SIDES.LEFT}>
           <OpenDrawerAccountButton />

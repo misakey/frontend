@@ -5,7 +5,6 @@ import { withTranslation, Trans } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import routes from 'routes';
-import STATUSES, { ALL } from 'constants/app/boxes/statuses';
 
 import isNil from '@misakey/helpers/isNil';
 
@@ -17,8 +16,7 @@ import WindowedListInfiniteLoaded from 'components/smart/WindowedList/InfiniteLo
 import WindowedListAutosized from 'components/smart/WindowedList/Autosized';
 import Row, { Skeleton } from 'components/smart/WindowedList/UserBoxes/Row';
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
-import ListItemBoxesDeleted from 'components/smart/ListItem/Boxes/Deleted';
-import MisakeyNotificationsListItem from 'components/smart/ListItem/Notifications/Misakey';
+// import ListItemBoxesDeleted from 'components/smart/ListItem/Boxes/Deleted';
 import Box from '@material-ui/core/Box';
 import Title from '@misakey/ui/Typography/Title';
 import Typography from '@material-ui/core/Typography';
@@ -27,10 +25,8 @@ const ButtonCreate = withDialogCreate(Button);
 
 // CONSTANTS
 // `Deleted boxes height` + `total` box height + `total` box margin
-const INNER_ELEMENT_TYPE_BOTTOM_HEIGHT = 72 + 51 + 2 * 8;
-// Misakey box height
-const INNER_ELEMENT_TYPE_TOP_HEIGHT = 72;
-const INNER_ELEMENT_TYPE_HEIGHT = INNER_ELEMENT_TYPE_BOTTOM_HEIGHT + INNER_ELEMENT_TYPE_TOP_HEIGHT;
+const INNER_ELEMENT_TYPE_BOTTOM_HEIGHT = /* 72 +*/ 51 + 2 * 8;
+const INNER_ELEMENT_TYPE_HEIGHT = INNER_ELEMENT_TYPE_BOTTOM_HEIGHT;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -39,12 +35,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const useInnerElementType = (itemCount, activeStatus, search, t, itemClasses) => useMemo(
+const useInnerElementType = (itemCount, t /* filterId, search, itemClasses */) => useMemo(
   () => forwardRef((props, ref) => (
     <div ref={ref}>
-      <MisakeyNotificationsListItem classes={itemClasses} />
       <div {...props} />
-      <ListItemBoxesDeleted classes={itemClasses} activeStatus={activeStatus} search={search} />
+      {/*
+        @FIXME cannot be working if user has boxes in multiple organizations
+      <ListItemBoxesDeleted classes={itemClasses} filterId={filterId} search={search} /> */}
       <Box
         m={1}
         display="flex"
@@ -65,12 +62,12 @@ const useInnerElementType = (itemCount, activeStatus, search, t, itemClasses) =>
       </Box>
     </div>
   )),
-  [itemClasses, activeStatus, search, t, itemCount],
+  [t, itemCount],
 );
 
 // COMPONENTS
 const WindowedListBoxes = forwardRef(({
-  activeStatus, selectedId, t, itemClasses, ...props
+  filterId, selectedId, t, itemClasses, ...props
 }, ref) => {
   const locationSearchParams = useLocationSearchParams();
   const classes = useStyles();
@@ -81,25 +78,23 @@ const WindowedListBoxes = forwardRef(({
     byPagination,
     itemCount,
     loadMoreItems,
-  } = usePaginateBoxesByStatus(activeStatus, search);
+  } = usePaginateBoxesByStatus(filterId, search);
 
   const itemData = useMemo(
     () => ({
       toRoute: routes.boxes.read._,
       byPagination,
       selectedId,
-      guttersTop: INNER_ELEMENT_TYPE_TOP_HEIGHT,
       classes: itemClasses,
     }),
     [byPagination, selectedId, itemClasses],
   );
 
-  const innerElementType = useInnerElementType(itemCount, activeStatus, search, t, itemClasses);
+  const innerElementType = useInnerElementType(itemCount, t /* itemClasses, filterId, search, */);
 
   if (isNil(itemCount) || itemCount === 0) {
     return (
       <>
-        <MisakeyNotificationsListItem classes={itemClasses} />
         <Box m={2} ref={ref} display="flex" flexDirection="column" height="100%" justifyContent="center" alignItems="center">
           <Title align="center">
             <Trans i18nKey="boxes:list.empty.text">
@@ -109,7 +104,10 @@ const WindowedListBoxes = forwardRef(({
             </Trans>
           </Title>
           <Box>
-            <ButtonCreate standing={BUTTON_STANDINGS.MAIN} text={t('boxes:list.empty.create')} />
+            <ButtonCreate
+              standing={BUTTON_STANDINGS.MAIN}
+              text={t('boxes:list.empty.create')}
+            />
           </Box>
         </Box>
       </>
@@ -135,7 +133,7 @@ const WindowedListBoxes = forwardRef(({
 });
 
 WindowedListBoxes.propTypes = {
-  activeStatus: PropTypes.oneOf(STATUSES),
+  filterId: PropTypes.string,
   selectedId: PropTypes.string,
   itemClasses: PropTypes.object,
   // withTranslation
@@ -143,7 +141,7 @@ WindowedListBoxes.propTypes = {
 };
 
 WindowedListBoxes.defaultProps = {
-  activeStatus: ALL,
+  filterId: null,
   selectedId: null,
   itemClasses: {},
 };

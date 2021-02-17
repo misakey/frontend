@@ -5,6 +5,9 @@ import { Link, useRouteMatch } from 'react-router-dom';
 
 import routes from 'routes';
 
+import isNil from '@misakey/helpers/isNil';
+
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useTranslation } from 'react-i18next';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
@@ -17,9 +20,21 @@ const TABS = {
   files: 'files',
 };
 
+// HOOKS
+const useStyles = makeStyles((theme) => ({
+  tabRoot: {
+    fontWeight: theme.typography.fontWeightBold,
+  },
+}));
+
 // COMPONENTS
 const AppBarMenuTabs = ({ boxId }) => {
-  const isRouteFile = useRouteMatch(routes.boxes.read.files);
+  const classes = useStyles();
+  const routeFilesMatch = useRouteMatch(routes.boxes.read.files);
+  const isRouteFile = useMemo(
+    () => !isNil(routeFilesMatch),
+    [routeFilesMatch],
+  );
   const { t } = useTranslation('boxes');
 
   const tabSelected = useMemo(() => (isRouteFile ? TABS.files : TABS.discussion), [isRouteFile]);
@@ -29,24 +44,26 @@ const AppBarMenuTabs = ({ boxId }) => {
 
   return (
     <Tabs
-      indicatorColor="primary"
-      textColor="primary"
       value={tabSelected}
       aria-label={t('boxes:read.menu.label')}
+      indicatorColor="background"
+      textColor="background"
     >
       <Tab
+        classes={{ root: classes.tabRoot }}
         label={t(`boxes:read.menu.${TABS.discussion}`)}
         component={Link}
         to={routeEvents}
         value={TABS.discussion}
-        size="small"
+        // size="small"
       />
       <Tab
+        classes={{ root: classes.tabRoot }}
         label={t(`boxes:read.menu.${TABS.files}`)}
         component={Link}
         value={TABS.files}
         to={routeFiles}
-        size="small"
+        // size="small"
       />
     </Tabs>
   );

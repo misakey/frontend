@@ -1,13 +1,12 @@
-import React, { useState, useMemo, useCallback, forwardRef } from 'react';
+import React, { useState, useCallback, forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
-import { useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { TO_PROP_TYPE } from '@misakey/ui/constants/propTypes';
 
-import isNil from '@misakey/helpers/isNil';
-import isFunction from '@misakey/helpers/isFunction';
+import useClickWrapper from '@misakey/hooks/useClickWrapper';
+import useLinkCondition from '@misakey/hooks/useLinkCondition';
 
 import DialogConnect from 'components/smart/Dialog/Connect';
 
@@ -22,42 +21,20 @@ const withDialogConnect = (Component) => {
     ...props
   }, ref) => {
     const [open, setOpen] = useState(false);
-    const location = useLocation();
 
-    const onWrapperClick = useCallback(
-      (...args) => {
-        if (!isAuthenticated) {
-          setOpen(true);
-        } else if (isFunction(onClick)) {
-          onClick(...args);
-        }
-      },
-      [onClick, isAuthenticated, setOpen],
+    const onNotAuthenticated = useCallback(
+      () => setOpen(true),
+      [setOpen],
     );
+
+    const onWrapperClick = useClickWrapper(!isAuthenticated, onClick, onNotAuthenticated);
 
     const onClose = useCallback(
       () => { setOpen(false); },
       [setOpen],
     );
 
-    const wrapperLinkProps = useMemo(
-      () => {
-        if (!isNil(to) || !isNil(replace)) {
-          return (!isAuthenticated
-            ? {
-              // give a to prop to Link component to avoid error,
-              // but force replace to current location
-              to: location,
-              replace: true,
-            } : {
-              to,
-              replace,
-            });
-        }
-        return {};
-      },
-      [isAuthenticated, location, to, replace],
-    );
+    const wrapperLinkProps = useLinkCondition(isAuthenticated, to, replace);
 
     return (
       <>

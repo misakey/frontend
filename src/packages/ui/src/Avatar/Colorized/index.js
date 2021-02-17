@@ -1,35 +1,59 @@
 import React, { useMemo } from 'react';
-
 import PropTypes from 'prop-types';
 
-import Avatar from '@misakey/ui/Avatar';
 import getBackgroundAndColorFromString from '@misakey/helpers/getBackgroundAndColorFromString';
-import { makeStyles } from '@material-ui/core/styles';
+import isEmpty from '@misakey/helpers/isEmpty';
 
+import { makeStyles } from '@material-ui/core/styles';
+import useTheme from '@material-ui/core/styles/useTheme';
+
+import Avatar from '@misakey/ui/Avatar';
+
+// CONSTANTS
+export const BACKGROUND_COLOR = 'backgroundColor';
+export const BORDER_COLOR = 'borderColor';
+const COLORIZED_PROPS = [BACKGROUND_COLOR, BORDER_COLOR];
+
+// HOOKS
 const useStyles = makeStyles((theme) => ({
-  avatarColorized: ({ backgroundColor }) => ({
-    border: `2px solid #${backgroundColor}`,
-    backgroundColor: theme.palette.background.default,
-    color: theme.palette.text.secondary,
+  avatarColorized: ({ backgroundColor = theme.palette.background.default, borderColor = 'transparent' }) => ({
+    border: `2px solid ${borderColor}`,
+    backgroundColor,
+    // @FIXME: getContrastText? make use of isTextLight?
+    color: theme.palette.getContrastText(backgroundColor),
     boxSizing: 'border-box',
   }),
 }));
 
 
+// COMPONENTS
 /**
  * Colorized Avatar is a circular avatar that will display image if set and
  * first letter of text (name / email) if not set.
  * If displaying text, will generate a color from a hash of the text.
  */
-const AvatarColorized = ({ text, image, classes, ...rest }) => {
+const AvatarColorized = ({ text, image, colorizedProp, classes, textLength, ...rest }) => {
+  const theme = useTheme();
   const { backgroundColor } = useMemo(
-    () => getBackgroundAndColorFromString(text),
-    [text],
+    () => getBackgroundAndColorFromString(text, theme.palette.background.paper),
+    [text, theme.palette.background.paper],
   );
 
-  const displayText = useMemo(() => text.charAt(0).toUpperCase(), [text]);
+  const displayText = useMemo(
+    () => (isEmpty(text)
+      ? ''
+      : text.slice(0, textLength).toUpperCase()),
+    [text, textLength],
+  );
 
-  const internalClasses = useStyles({ backgroundColor });
+  const stylesProps = useMemo(
+    () => ({
+      [colorizedProp]: backgroundColor,
+    }),
+    [colorizedProp, backgroundColor],
+  );
+
+  const internalClasses = useStyles(stylesProps);
 
   if (image) {
     return (
@@ -58,11 +82,15 @@ AvatarColorized.propTypes = {
   image: PropTypes.string,
   /** The text to derivate the color from, and to extract the first letter. */
   text: PropTypes.string.isRequired,
+  textLength: PropTypes.number,
+  colorizedProp: PropTypes.oneOf(COLORIZED_PROPS),
   classes: PropTypes.object,
 };
 
 AvatarColorized.defaultProps = {
   image: '',
+  textLength: 1,
+  colorizedProp: BORDER_COLOR,
   classes: {},
 };
 

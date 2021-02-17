@@ -10,7 +10,7 @@ import getNextSearch from '@misakey/helpers/getNextSearch';
 import isNil from '@misakey/helpers/isNil';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import IconButtonAppBar from '@misakey/ui/IconButton/Appbar';
+import IconButton from '@misakey/ui/IconButton';
 import UserAccountAvatar from 'components/smart/Avatar/CurrentUser';
 
 
@@ -38,15 +38,16 @@ function ButtonDrawerAccount({ t, side, ...props }) {
   );
 
   return (
-    <IconButtonAppBar
+    <IconButton
       aria-label={t('common:openAccountDrawer')}
       component={Link}
       to={openAccountDrawer}
       edge="start"
+      size="small"
       {...omitTranslationProps(props)}
     >
-      <UserAccountAvatar />
-    </IconButtonAppBar>
+      <UserAccountAvatar size="small" />
+    </IconButton>
   );
 }
 

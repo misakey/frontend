@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
-import STATUSES, { ALL } from 'constants/app/boxes/statuses';
+import { TOOLBAR_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
 import { selectors } from '@misakey/crypto/store/reducers';
 
 import { useBoxesContext } from 'components/smart/Context/Boxes';
@@ -15,11 +15,18 @@ import isNil from '@misakey/helpers/isNil';
 import ElevationScroll from 'components/dumb/ElevationScroll';
 import ListHeader from 'components/screens/app/Boxes/List/Header/List';
 import SearchHeader from 'components/screens/app/Boxes/List/Header/Search';
+import AppbarAccount from 'components/smart/AppBar/Account';
+import Box from '@material-ui/core/Box';
 import Vault from './Content/Vault';
 import NoVault from './Content/NoVault';
 
+// CONSTANTS
+const TOOLBAR_PROPS = {
+  minHeight: `${TOOLBAR_MIN_HEIGHT}px !important`,
+};
+
 // COMPONENTS
-function BoxesList({ t, activeStatus, ...props }) {
+function BoxesList({ t, filterId, ...props }) {
   const [contentRef, setContentRef] = useState();
 
   const isCryptoLoadedSelector = useMemo(
@@ -40,23 +47,27 @@ function BoxesList({ t, activeStatus, ...props }) {
   return (
     <>
       <ElevationScroll target={contentRef}>
-        {!isNil(search)
-          ? <SearchHeader activeStatus={activeStatus} {...omitTranslationProps(props)} />
-          : <ListHeader activeStatus={activeStatus} {...omitTranslationProps(props)} />}
+        <Box display="flex" flexDirection="column">
+          <AppbarAccount
+            toolbarProps={TOOLBAR_PROPS}
+          />
+          {!isNil(search)
+            ? <SearchHeader {...omitTranslationProps(props)} />
+            : <ListHeader {...omitTranslationProps(props)} />}
+        </Box>
       </ElevationScroll>
       {isCryptoLoaded
         ? (
           <Vault
+            filterId={filterId}
             ref={onContentRef}
             search={search}
-            activeStatus={activeStatus}
             {...omitTranslationProps(props)}
           />
         )
         : (
           <NoVault
             ref={onContentRef}
-            activeStatus={activeStatus}
             {...omitTranslationProps(props)}
           />
         )}
@@ -65,13 +76,14 @@ function BoxesList({ t, activeStatus, ...props }) {
 }
 
 BoxesList.propTypes = {
-  t: PropTypes.func.isRequired,
-  activeStatus: PropTypes.oneOf(STATUSES),
+  filterId: PropTypes.string,
   isFullWidth: PropTypes.bool,
+  // withTranslation
+  t: PropTypes.func.isRequired,
 };
 
 BoxesList.defaultProps = {
-  activeStatus: ALL,
+  filterId: null,
   isFullWidth: false,
 };
 

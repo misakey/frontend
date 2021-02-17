@@ -114,7 +114,7 @@ const AuthLoginIdentifier = ({
         <AvatarClientSso client={client} />
       )}
       slopeProps={SLOPE_PROPS}
-      avatarLarge
+      avatarSize={LARGE}
     >
       <Formik
         initialValues={initialValues}

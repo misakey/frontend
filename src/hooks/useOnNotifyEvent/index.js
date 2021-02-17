@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { MSG_FILE, MSG_TXT } from '@misakey/ui/constants/boxes/events';
@@ -7,6 +7,14 @@ import { isTabVisible } from 'packages/helpers/src/visibilityChange';
 
 export default () => {
   const { t } = useTranslation('boxes');
+  const tRef = useRef(t);
+
+  useEffect(
+    () => {
+      tRef.current = t;
+    },
+    [tRef, t],
+  );
 
   return useCallback(
     (event, boxTitle) => {
@@ -16,11 +24,11 @@ export default () => {
         const isMessageFile = type === MSG_FILE;
         if (isMessageFile || type === MSG_TXT) {
           return browserNotify(
-            `${boxTitle || t('boxes:notifications.browser.events.defaultTile')}`,
+            `${boxTitle || tRef.current('boxes:notifications.browser.events.defaultTile')}`,
             {
               badge: '/favicon.ico',
               icon: '/favicon.ico',
-              body: t(`boxes:notifications.browser.events.body.${isMessageFile ? 'file' : 'text'}`, { displayName }),
+              body: tRef.current(`boxes:notifications.browser.events.body.${isMessageFile ? 'file' : 'text'}`, { displayName }),
             },
           );
         }
@@ -28,6 +36,6 @@ export default () => {
       }
       return null;
     },
-    [t],
+    [tRef],
   );
 };

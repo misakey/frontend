@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { generatePath, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
@@ -11,6 +11,8 @@ import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import { getBoxEventLastDate } from 'helpers/boxEvent';
+import getNextSearch from '@misakey/helpers/getNextSearch';
+import isSelfOrg from 'helpers/isSelfOrg';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
@@ -19,6 +21,7 @@ import useBoxRights from 'hooks/useBoxRights';
 import useContextMenuAnchorEl from '@misakey/hooks/useContextMenuAnchor/el';
 import useIsMountedRef from '@misakey/hooks/useIsMountedRef';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useGeneratePathKeepingSearchAndHashCallback from '@misakey/hooks/useGeneratePathKeepingSearchAndHash/callback';
 
 import Skeleton from '@material-ui/lab/Skeleton';
 import Box from '@material-ui/core/Box';
@@ -62,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
     visibility: isActionVisible ? 'visible' : 'hidden',
   }),
   listItemRoot: ({ isActionVisible }) => ({
-    paddingRight: isActionVisible ? 48 : 16,
+    paddingRight: isActionVisible ? theme.spacing(6) : theme.spacing(2),
   }),
   listItemSelected: {
     '& > .MuiListItemAvatar-root .MuiAvatar-root': {
@@ -132,7 +135,7 @@ BoxListItemSkeleton.defaultProps = {
   classes: {},
 };
 
-function BoxListItem({ box, toRoute, containerProps, classes, t, ...rest }) {
+function BoxListItem({ box, toRoute, ContainerProps, classes, t, ...rest }) {
   const [anchorEl, setAnchorEl] = useState(null);
   // prefer state variable over css because hover is not enough to handle UX
   const [isActionVisible, setIsActionVisible] = useState(false);
@@ -141,6 +144,8 @@ function BoxListItem({ box, toRoute, containerProps, classes, t, ...rest }) {
 
   const isMounted = useIsMountedRef();
 
+  const generatePath = useGeneratePathKeepingSearchAndHashCallback();
+
   const {
     id,
     title,
@@ -148,15 +153,21 @@ function BoxListItem({ box, toRoute, containerProps, classes, t, ...rest }) {
     lastEvent = {},
     eventsCount = 0,
     settings: { muted } = DEFAULT_SETTINGS,
+    ownerOrgId,
   } = useMemo(() => box || {}, [box]);
+
+  const nextSearch = useMemo(
+    () => (isSelfOrg(ownerOrgId) ? '' : getNextSearch('', new Map([['orgId', ownerOrgId]]))),
+    [ownerOrgId],
+  );
 
   const linkProps = useMemo(
     () => (isNil(toRoute) || isNil(id) ? {} : {
-      to: generatePath(toRoute, { id }),
+      to: generatePath(toRoute, { id }, nextSearch),
       button: true,
       component: Link,
     }),
-    [id, toRoute],
+    [generatePath, id, nextSearch, toRoute],
   );
 
   const secondary = useMemo(
@@ -248,7 +259,7 @@ function BoxListItem({ box, toRoute, containerProps, classes, t, ...rest }) {
       ContainerProps={{
         onMouseEnter: showAction,
         onMouseLeave: hideAction,
-        ...containerProps,
+        ...ContainerProps,
       }}
       classes={{
         root: clsx(root, internalClasses.listItemRoot),
@@ -305,7 +316,7 @@ function BoxListItem({ box, toRoute, containerProps, classes, t, ...rest }) {
 }
 
 BoxListItem.propTypes = {
-  containerProps: PropTypes.object,
+  ContainerProps: PropTypes.object,
   classes: PropTypes.shape({
     root: PropTypes.string,
     selected: PropTypes.string,
@@ -317,7 +328,7 @@ BoxListItem.propTypes = {
 };
 
 BoxListItem.defaultProps = {
-  containerProps: {},
+  ContainerProps: {},
   classes: {},
   box: null,
   toRoute: null,

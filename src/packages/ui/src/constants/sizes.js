@@ -20,3 +20,4 @@ export const PRODUCT_HUNT_APPBAR_HEIGHT = 48;
 export const ICONBUTTON_WIDTH = 48;
 
 export const ACCORDION_MIN_HEIGHT = 48;
+export const TOOLBAR_MIN_HEIGHT = 48;

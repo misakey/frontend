@@ -4,22 +4,18 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
-import STATUSES from 'constants/app/boxes/statuses';
 
 import path from '@misakey/helpers/path';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import { useRouteMatch, Link } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom';
 // import { useLocation, useHistory } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 // import getNextSearch from '@misakey/helpers/getNextSearch';
 
-import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import WindowedListBoxes from 'components/smart/WindowedList/UserBoxes';
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 // import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 // import FilledInput from '@material-ui/core/FilledInput';
 
@@ -51,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const VaultOpen = forwardRef(({ t, activeStatus, search, isFullWidth, ...props }, ref) => {
+const VaultOpen = forwardRef(({ t, search, isFullWidth, ...props }, ref) => {
   const classes = useStyles({ isFullWidth });
 
   const match = useRouteMatch(routes.boxes.read._);
@@ -100,17 +96,11 @@ const VaultOpen = forwardRef(({ t, activeStatus, search, isFullWidth, ...props }
         itemClasses={{ container: classes.listItemContainer, root: classes.listItemContainer }}
         {...omitTranslationProps(props)}
       />
-      <BoxFlexFill />
-      <Link to={routes.documents.vault} className={classes.documents}>
-        <Typography>{t('document:vault.title')}</Typography>
-        <KeyboardArrowRightIcon />
-      </Link>
     </>
   );
 });
 
 VaultOpen.propTypes = {
-  activeStatus: PropTypes.oneOf(STATUSES).isRequired,
   search: PropTypes.string,
   isFullWidth: PropTypes.bool,
   // withTranslation

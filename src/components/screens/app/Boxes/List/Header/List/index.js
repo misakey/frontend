@@ -2,46 +2,59 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import STATUSES from 'constants/app/boxes/statuses';
-import { SIDES } from '@misakey/ui/constants/drawers';
+import { TOOLBAR_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import Box from '@material-ui/core/Box';
-
-import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
-import IconButtonAppBar from '@misakey/ui/IconButton/Appbar';
-import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
+import BoxFlexFill from '@misakey/ui/Box/FlexFill';
+import AppBarStatic from '@misakey/ui/AppBar/Static';
+import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
 import withDialogPassword from 'components/smart/Dialog/Password/with';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
+import ButtonDrawerOrganization from 'components/smart/Button/Drawer/Organization';
 
 import AddIcon from '@material-ui/icons/Add';
+
+// CONSTANTS
+const TOOLBAR_PROPS = {
+  minHeight: `${TOOLBAR_MIN_HEIGHT}px !important`,
+};
 
 // COMPONENTS
 const IconButtonCreate = withDialogCreate(
   withDialogPassword(IconButtonAppBar),
 );
 
-function ListHeader({ activeStatus, t, ...props }) {
+function ListHeader({ t, isFullWidth, ...props }) {
   return (
-    <AppBarDrawer side={SIDES.LEFT} {...omitTranslationProps(props)}>
-      <OpenDrawerAccountButton />
-      <Box display="flex" flexGrow={1} />
+    <AppBarStatic
+      color="primary"
+      toolbarProps={TOOLBAR_PROPS}
+      {...omitTranslationProps(props)}
+    >
+      <ButtonDrawerOrganization />
+      <Subtitle gutterBottom={false} color="background">{t('boxes:documentTitle')}</Subtitle>
+      <BoxFlexFill />
       <IconButtonCreate
         aria-label={t('boxes:list.empty.create')}
         edge="end"
-        color="primary"
+        color="background"
       >
         <AddIcon />
       </IconButtonCreate>
-    </AppBarDrawer>
+    </AppBarStatic>
   );
 }
 
 ListHeader.propTypes = {
-  activeStatus: PropTypes.oneOf(STATUSES).isRequired,
+  isFullWidth: PropTypes.bool,
   // withTranslation
   t: PropTypes.func.isRequired,
+};
+
+ListHeader.defaultProps = {
+  isFullWidth: false,
 };
 
 export default withTranslation(['common', 'boxes'])(ListHeader);

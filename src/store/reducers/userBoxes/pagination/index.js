@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import { ALL } from 'constants/app/boxes/statuses';
 
 import { makePaginationReducer } from 'store/reducers/helpers/pagination';
 
@@ -37,20 +36,20 @@ export const selectors = {
 };
 
 // THUNKS
-export const moveBackUpId = (id, status = ALL) => (dispatch, getState) => {
+export const moveBackUpId = (id, filterId) => (dispatch, getState) => {
   const { getByPagination } = selectors;
   const { addPaginatedId, removePaginatedId } = actionCreators;
 
-  const existingItems = getByPagination(getState(), status);
+  const existingItems = getByPagination(getState(), filterId);
   const existingItemsIds = Object.values(existingItems);
 
   if (!existingItemsIds.includes(id)) {
-    return Promise.resolve(dispatch(addPaginatedId(status, id)));
+    return Promise.resolve(dispatch(addPaginatedId(filterId, id)));
   }
 
   return Promise.all([
-    dispatch(removePaginatedId(status, id)),
-    dispatch(addPaginatedId(status, id)),
+    dispatch(removePaginatedId(filterId, id)),
+    dispatch(addPaginatedId(filterId, id)),
   ]);
 };
 

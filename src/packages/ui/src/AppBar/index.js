@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -24,18 +24,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const AppBar = ({
+const AppBar = forwardRef(({
   toolbarProps,
   offsetHeight,
   disableOffset,
   children,
   ...props
-}) => {
+}, ref) => {
   const classes = useStyles({ offsetHeight });
 
   return (
     <>
       <MuiAppBar
+        ref={ref}
         position="fixed"
         color="inherit"
         elevation={0}
@@ -48,7 +49,7 @@ const AppBar = ({
       {!disableOffset && <Box className={classes.offset} />}
     </>
   );
-};
+});
 
 AppBar.propTypes = PROP_TYPES;
 

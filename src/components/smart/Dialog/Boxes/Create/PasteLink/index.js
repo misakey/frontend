@@ -7,6 +7,8 @@ import { withTranslation } from 'react-i18next';
 import { getBoxInvitationLinkFieldValidationSchema } from 'constants/validationSchemas/boxes';
 import { SIDES } from '@misakey/ui/constants/drawers';
 
+import dialogIsFullScreen from '@misakey/helpers/dialog/isFullScreen';
+
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import { useHistory } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -20,7 +22,6 @@ import FormFieldTextField from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import Box from '@material-ui/core/Box';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import BoxesSchema from 'store/schemas/Boxes';
-import Title from '@misakey/ui/Typography/Title';
 import DialogTitleWithCloseFormik from '@misakey/ui/DialogTitle/WithCloseIcon/Formik';
 import DialogContent from '@misakey/ui/DialogContent';
 
@@ -31,7 +32,10 @@ const INITIAL_VALUES = { [FIELD_NAME]: '' };
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   dialogContentRoot: {
-    padding: theme.spacing(0),
+    padding: theme.spacing(0, 0, 1, 0),
+    [dialogIsFullScreen(theme)]: {
+      paddingBottom: theme.spacing(0),
+    },
   },
 }));
 
@@ -66,13 +70,18 @@ function PasteBoxLinkScreen({
       onSubmit={onSubmit}
     >
       <Box component={Form} display="flex" flexDirection="column" width="100%">
-        <DialogTitleWithCloseFormik onClose={onClose} fullScreen={fullScreen} gutterBottom>
+        <DialogTitleWithCloseFormik
+          title={t('boxes:pasteLink.title')}
+          onClose={onClose}
+          fullScreen={fullScreen}
+        >
           <BoxFlexFill />
-          <OpenDrawerAccountButton side={SIDES.RIGHT} />
+          {fullScreen && (
+            <OpenDrawerAccountButton side={SIDES.RIGHT} />
+          )}
         </DialogTitleWithCloseFormik>
         <DialogContent
           className={classes.dialogContentRoot}
-          title={<Title gutterBottom={false}>{t('boxes:pasteLink.title')}</Title>}
         >
           <FormField
             prefix="boxes."

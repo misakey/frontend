@@ -4,12 +4,12 @@ import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import routes from 'routes';
 
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
-import { ALL } from 'constants/app/boxes/statuses';
 
 import isNil from '@misakey/helpers/isNil';
 
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 import { useSelector } from 'react-redux';
+import useOrgId from 'hooks/useOrgId';
 
 import RouteAcr from '@misakey/react-auth/components/Route/Acr';
 import RouteAuthenticated from '@misakey/react-auth/components/Route/Authenticated';
@@ -27,6 +27,8 @@ const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
 // COMPONENTS
 function Home() {
   const shouldDisplayLockedScreen = useShouldDisplayLockedScreen();
+
+  const orgId = useOrgId();
 
   const matchNothingSelected = useRouteMatch({ path: routes.boxes._, exact: true });
 
@@ -46,9 +48,9 @@ function Home() {
       }
       return shouldDisplayLockedScreen
         ? <VaultLockedScreen />
-        : <BoxesList isFullWidth={isFullWidth} />;
+        : <BoxesList filterId={orgId} isFullWidth={isFullWidth} />;
     },
-    [isAuthenticated, isFullWidth, shouldDisplayLockedScreen],
+    [isAuthenticated, isFullWidth, shouldDisplayLockedScreen, orgId],
   );
 
   return (
@@ -57,7 +59,7 @@ function Home() {
       isFullWidth={isFullWidth}
       initialIsDrawerOpen={isNothingSelected}
     >
-      <BoxesContextProvider activeStatus={ALL}>
+      <BoxesContextProvider>
         <Switch>
           <RouteAcr
             acr={2}

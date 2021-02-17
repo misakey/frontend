@@ -16,7 +16,6 @@ import Box from '@material-ui/core/Box';
 import { Route } from 'react-router-dom';
 import List from '@material-ui/core/List';
 import ListItemBoxesCurrent from 'components/smart/ListItem/Boxes/Current';
-import MisakeyNotificationsListItem from 'components/smart/ListItem/Notifications/Misakey';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
@@ -45,7 +44,6 @@ const NoVault = forwardRef(({ t, isFullWidth }, ref) => {
       disableGutters
       maxWidth={isFullWidth ? 'md' : undefined}
     >
-      <MisakeyNotificationsListItem />
       <Route
         path={routes.boxes.read._}
         render={(routeProps) => (

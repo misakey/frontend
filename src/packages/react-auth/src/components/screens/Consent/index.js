@@ -10,6 +10,7 @@ import { FEEDBACK } from '@misakey/ui/constants/emails';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react-auth/store/reducers/sso';
 import { CONSENTED_SCOPES_KEY, CONSENT_SCOPES } from '@misakey/auth/constants/consent';
 import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
+import { LARGE } from '@misakey/ui/Avatar';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
@@ -138,7 +139,7 @@ const AuthConsent = ({
     <CardSsoWithSlope
       slopeProps={SLOPE_PROPS}
       avatar={<AvatarClientSso client={client} />}
-      avatarLarge
+      avatarSize={LARGE}
     >
       <Formik
         initialValues={INITIAL_VALUES}

@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import routes from 'routes';
 
+import { TOOLBAR_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
 import { SMALL } from '@misakey/ui/Avatar';
 import BoxesSchema from 'store/schemas/Boxes';
 
@@ -19,16 +20,26 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import Skeleton from '@material-ui/lab/Skeleton';
 
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Box from '@material-ui/core/Box';
 import AvatarGroupMembers from '@misakey/ui/AvatarGroup/Members';
 import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
+import AppBarStatic from '@misakey/ui/AppBar/Static';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ShareBoxButton from './ShareBoxButton';
 import AppBarMenuTabs from './Tabs';
+
 
 // CONSTANTS
 const SKELETON_WIDTH = 100;
 const MAX_MEMBERS = 3;
+
+const TOOLBAR_PROPS = {
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  minHeight: `${TOOLBAR_MIN_HEIGHT}px !important`,
+};
 
 const PRIMARY_TYPO_PROPS = {
   variant: 'body1',
@@ -49,34 +60,18 @@ const useStyles = makeStyles((theme) => ({
   listItemRoot: {
     paddingTop: theme.spacing(0),
     paddingBottom: theme.spacing(0),
-    // for the toggle button, as a secondary action
-    [theme.breakpoints.down('xs')]: {
-      paddingLeft: theme.spacing(5),
-    },
+    minHeight: TOOLBAR_MIN_HEIGHT,
   },
   listItemText: {
     margin: 0,
-  },
-  listItemContainer: {
-    width: '100%',
   },
   listItemSecondaryActionRoot: {
     display: 'flex',
     alignItems: 'center',
   },
-  toggleButton: {
-    position: 'absolute',
-    left: 16,
-  },
   typographyCaret: {
     maxWidth: 'calc(100% - 24px)',
     display: 'inline-block',
-  },
-  secondarySkeleton: {
-    ...theme.typography.body2,
-    [theme.breakpoints.down('sm')]: {
-      ...theme.typography.subtitle2,
-    },
   },
   secondaryReducedHeight: {
     marginTop: theme.spacing(-1),
@@ -86,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
   const classes = useStyles();
-  const { title, members = [], id, hasAccess } = useMemo(() => box, [box]);
+  const { title, members = [], id, hasAccess, isMember } = useMemo(() => box, [box]);
 
   const isTitleEmpty = useMemo(
     () => isEmpty(title),
@@ -113,74 +108,73 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
     [hasAccess, isTheOnlyMember, t, members.length],
   );
 
-  const secondary = useMemo(
-    () => (isEmpty(members) && hasAccess
-      ? (
-        <Skeleton
-          className={classes.secondarySkeleton}
-          width={SKELETON_WIDTH}
-        />
-      )
-      : (
-        <Typography
-          className={classes.secondaryReducedHeight}
-          {...SECONDARY_TYPO_PROPS}
-        >
-          {membersText}
-        </Typography>
-      )),
-    [members, hasAccess, classes, membersText],
-  );
-
   const canShare = useMemo(
-    () => hasAccess || belongsToCurrentUser,
-    [belongsToCurrentUser, hasAccess],
+    () => isMember || belongsToCurrentUser,
+    [belongsToCurrentUser, isMember],
   );
 
   const displayTabs = useMemo(
-    () => hasAccess,
-    [hasAccess],
+    () => isMember,
+    [isMember],
   );
 
   return (
     <Box display="flex" flexDirection="column" width="100%" overflow="hidden">
-      <ListItem
-        button
-        ContainerProps={{ className: classes.listItemContainer }}
-        ContainerComponent="div"
-        component={Link}
-        to={routeDetails}
-        overflow="hidden"
-        disabled={disabled}
-        dense
-        {...omitTranslationProps(props)}
-        classes={{ root: classes.listItemRoot }}
+      <AppBarStatic
+        toolbarProps={TOOLBAR_PROPS}
       >
-        <ToggleDrawerButton className={classes.toggleButton} />
-
-        <ListItemText
-          disableTypography
-          className={classes.listItemText}
-          primary={(
-            <>
-              <Typography className={classes.typographyCaret} {...PRIMARY_TYPO_PROPS}>
-                {isTitleEmpty ? <Skeleton width={200} /> : title}
-              </Typography>
-              {!disabled && <ExpandMoreIcon />}
-            </>
+        <ToggleDrawerButton />
+        <ListItem
+          button
+          component={Link}
+          to={routeDetails}
+          overflow="hidden"
+          disabled={disabled}
+          dense
+          disableGutters
+          {...omitTranslationProps(props)}
+          classes={{
+            root: classes.listItemRoot,
+          }}
+        >
+          <ListItemText
+            disableTypography
+            className={classes.listItemText}
+            primary={(
+              <>
+                <Typography className={classes.typographyCaret} {...PRIMARY_TYPO_PROPS}>
+                  {isTitleEmpty ? <Skeleton width={200} /> : title}
+                </Typography>
+                {!disabled && <ExpandMoreIcon />}
+              </>
           )}
-          secondary={secondary}
-        />
-        <AvatarGroupMembers
-          max={MAX_MEMBERS}
-          members={members}
-          size={SMALL}
-        />
-      </ListItem>
-      <Box mx={2} mt={0.5} display="flex" flexDirection="row" justifyContent="space-between">
+            secondary={(
+              <Typography
+                className={classes.secondaryReducedHeight}
+                {...SECONDARY_TYPO_PROPS}
+              >
+                {isEmpty(members) && hasAccess ? (
+                  <Skeleton
+                    width={SKELETON_WIDTH}
+                  />
+                ) : membersText}
+              </Typography>
+            )}
+          />
+          <AvatarGroupMembers
+            max={MAX_MEMBERS}
+            members={members}
+            size={SMALL}
+          />
+        </ListItem>
+      </AppBarStatic>
+      <AppBarStatic
+        toolbarProps={TOOLBAR_PROPS}
+        color="primary"
+      >
         {displayTabs && <AppBarMenuTabs boxId={id} />}
-        {canShare && <Box mb={0.5}><ShareBoxButton box={box} /></Box>}
-      </Box>
+        {canShare && <ShareBoxButton box={box} />}
+      </AppBarStatic>
     </Box>
   );
 };

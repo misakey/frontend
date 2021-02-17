@@ -3,7 +3,6 @@ import { createSelector } from 'reselect';
 import { normalize, denormalize } from 'normalizr';
 
 import { MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK, MSG_FILE } from '@misakey/ui/constants/boxes/events';
-import { ALL } from 'constants/app/boxes/statuses';
 
 import BoxesSchema from 'store/schemas/Boxes';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
@@ -161,12 +160,12 @@ export const receiveJoinedBox = (box, processStrategy = mergeReceiveNoEmpty) => 
   ).then(() => normalized);
 };
 
-export const addJoinedBox = (box, status = ALL, search = null) => async (dispatch, getState) => {
+export const addJoinedBox = (box, filterId, search = null) => async (dispatch, getState) => {
   const { result } = await Promise.resolve(dispatch(receiveJoinedBox(box, mergeReceiveNoEmpty)));
-  const shouldAddToPagination = isBoxPaginationAlreadyFetched(getState(), status, search);
+  const shouldAddToPagination = isBoxPaginationAlreadyFetched(getState(), filterId, search);
 
   if (shouldAddToPagination) {
-    dispatch(addPaginatedBoxId(status, result, search));
+    dispatch(addPaginatedBoxId(filterId, result, search));
   }
 };
 
@@ -190,14 +189,14 @@ export const receivePublicInfo = (id, { creator, ...rest }) => (dispatch) => {
   });
 };
 
-export const addBoxEvent = (id, nextEvent, isMyEvent = false, onNotifyEvent) => (
+export const addBoxEvent = (id, nextEvent, isMyEvent = false, filterId, onNotifyEvent) => (
   dispatch,
   getState,
 ) => {
   const currentBox = getBoxById(getState(), id);
 
   if (isNil(currentBox)) {
-    return Promise.resolve(dispatch(moveBackUpId(id, ALL)));
+    return Promise.resolve(dispatch(moveBackUpId(id, filterId)));
   }
 
   const { events, eventsCount = 0, members, title } = currentBox;
@@ -232,7 +231,7 @@ export const addBoxEvent = (id, nextEvent, isMyEvent = false, onNotifyEvent) => 
   const actions = [
     receiveEntities(entities, mergeReceiveNoEmpty),
     updateEntities([{ id, changes }], BoxesSchema),
-    moveBackUpId(id, ALL),
+    moveBackUpId(id, filterId),
   ];
 
   if (!isNil(fileEventItemCount) && lastEvent.type === MSG_FILE) {

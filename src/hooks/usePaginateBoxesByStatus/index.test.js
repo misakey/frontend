@@ -3,7 +3,7 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import usePaginateBoxesByStatus from '.';
 
 // CONSTANTS
-const STATUSES = ['open', 'closed'];
+const ORG_IDS = ['0000', '1111'];
 const OK = Symbol('OK');
 const TIMEOUT = 1000;
 
@@ -86,14 +86,14 @@ describe('testing usePaginateBoxesByStatus', () => {
   });
 
   describe('initialization', () => {
-    const STATUS = STATUSES[0];
-    const PAYLOAD = ({ statuses: [STATUS] });
+    const ORG_ID = ORG_IDS[0];
+    const PAYLOAD = ({ ownerOrgId: ORG_ID });
 
     it('should init itemCount', async () => {
       const { result: paginateBoxesByStatus } = renderHook(
-        ({ status }) => usePaginateBoxesByStatus(status),
+        ({ ownerOrgId }) => usePaginateBoxesByStatus(ownerOrgId),
         {
-          initialProps: { status: STATUS },
+          initialProps: { ownerOrgId: ORG_ID },
         },
       );
       const { itemCount } = paginateBoxesByStatus.current;
@@ -110,9 +110,9 @@ describe('testing usePaginateBoxesByStatus', () => {
     //   mockCountUserBoxesBuilder.mockImplementation(makeDelayedReject(TIMEOUT));
 
     //   const { result: paginateBoxesByStatus, waitForNextUpdate } = renderHook(
-    //     ({ status }) => usePaginateBoxesByStatus(status),
+    //     ({ ownerOrgId }) => usePaginateBoxesByStatus(ownerOrgId),
     //     {
-    //       initialProps: { status: STATUS },
+    //       initialProps: { ownerOrgId: ORG_ID },
     //     },
     //   );
     //   expect(mockCountUserBoxesBuilder).toHaveBeenCalled();
@@ -126,10 +126,21 @@ describe('testing usePaginateBoxesByStatus', () => {
 
     it('should return initial values', () => {
       const { result: paginateBoxesByStatus } = renderHook(
-        ({ status }) => usePaginateBoxesByStatus(status),
+        ({ ownerOrgId }) => usePaginateBoxesByStatus(ownerOrgId),
         {
-          initialProps: { status: STATUS },
+          initialProps: { ownerOrgId: ORG_ID },
         },
+      );
+      expect(paginateBoxesByStatus.current).toEqual(expect.objectContaining({
+        itemCount: undefined,
+        byPagination: undefined,
+        loadMoreItems: expect.any(Function),
+      }));
+    });
+
+    it('should return initial values, (default org id)', () => {
+      const { result: paginateBoxesByStatus } = renderHook(
+        () => usePaginateBoxesByStatus(),
       );
       expect(paginateBoxesByStatus.current).toEqual(expect.objectContaining({
         itemCount: undefined,
@@ -140,9 +151,9 @@ describe('testing usePaginateBoxesByStatus', () => {
 
     it('should not be impacted by unmount', async () => {
       const { result: paginateBoxesByStatus, unmount, wait } = renderHook(
-        ({ status }) => usePaginateBoxesByStatus(status),
+        ({ ownerOrgId }) => usePaginateBoxesByStatus(ownerOrgId),
         {
-          initialProps: { status: STATUS },
+          initialProps: { ownerOrgId: ORG_ID },
         },
       );
       const { itemCount } = paginateBoxesByStatus.current;
@@ -166,8 +177,8 @@ describe('testing usePaginateBoxesByStatus', () => {
     });
   });
   describe('loading more items, item count', () => {
-    const STATUS = STATUSES[0];
-    const PAYLOAD = ({ statuses: [STATUS] });
+    const ORG_ID = ORG_IDS[0];
+    const PAYLOAD = ({ ownerOrgId: ORG_ID });
 
     const PARTIAL_BY_PAGINATION = {
       0: 'r1',
@@ -192,9 +203,9 @@ describe('testing usePaginateBoxesByStatus', () => {
     it('should resolve, all items in store', () => {
       mockGetByPagination.mockImplementation(() => BY_PAGINATION);
       const { result: paginateBoxesByStatus } = renderHook(
-        ({ status }) => usePaginateBoxesByStatus(status),
+        ({ ownerOrgId }) => usePaginateBoxesByStatus(ownerOrgId),
         {
-          initialProps: { status: STATUS },
+          initialProps: { ownerOrgId: ORG_ID },
         },
       );
 
@@ -209,9 +220,9 @@ describe('testing usePaginateBoxesByStatus', () => {
       mockGetByPagination.mockImplementation(() => ({}));
       const PAGINATION = { offset: 0, limit: 3 };
       const { result: paginateBoxesByStatus } = renderHook(
-        ({ status }) => usePaginateBoxesByStatus(status),
+        ({ ownerOrgId }) => usePaginateBoxesByStatus(ownerOrgId),
         {
-          initialProps: { status: STATUS },
+          initialProps: { ownerOrgId: ORG_ID },
         },
       );
 
@@ -237,9 +248,9 @@ describe('testing usePaginateBoxesByStatus', () => {
       const expectedPagination = { offset: 1, limit: 2 };
 
       const { result: paginateBoxesByStatus } = renderHook(
-        ({ status, newSearch }) => usePaginateBoxesByStatus(status, newSearch),
+        ({ ownerOrgId, newSearch }) => usePaginateBoxesByStatus(ownerOrgId, undefined, newSearch),
         {
-          initialProps: { status: STATUS, newSearch: null },
+          initialProps: { ownerOrgId: ORG_ID, newSearch: null },
         },
       );
 
@@ -255,18 +266,101 @@ describe('testing usePaginateBoxesByStatus', () => {
     });
   });
 
-  describe('status change', () => {
-    const NEXT_PAYLOAD = ({ statuses: [STATUSES[1]] });
+  describe('loading more items, no ownerOrgId', () => {
+    const PAYLOAD = {};
 
-    it('should ask for a new itemCount', () => {
-      const { result: paginateBoxesByStatus, rerender } = renderHook(
-        ({ status }) => usePaginateBoxesByStatus(status),
+    const PARTIAL_BY_PAGINATION = {
+      0: 'r1',
+    };
+    const MISSING_BY_PAGINATION = {
+      1: 'r2',
+      2: 'r3',
+    };
+    const BY_PAGINATION = {
+      ...PARTIAL_BY_PAGINATION,
+      ...MISSING_BY_PAGINATION,
+    };
+
+    beforeEach(() => {
+      mockGetItemCount.mockImplementation(() => 10);
+    });
+
+    afterAll(() => {
+      mockGetItemCount.mockReset();
+    });
+
+    it('should resolve, all items in store', () => {
+      mockGetByPagination.mockImplementation(() => BY_PAGINATION);
+      const { result: paginateBoxesByStatus } = renderHook(
+        () => usePaginateBoxesByStatus(),
+      );
+
+      // make sure mocks call each other...
+      expect(mockGetByPagination).toHaveBeenCalled();
+
+      expect(paginateBoxesByStatus.current.loadMoreItems({ offset: 0, limit: 3 }))
+        .resolves.toBe(undefined);
+    });
+
+    it('should ask more items from API, no item in store', () => {
+      mockGetByPagination.mockImplementation(() => ({}));
+      const PAGINATION = { offset: 0, limit: 3 };
+      const { result: paginateBoxesByStatus } = renderHook(
+        () => usePaginateBoxesByStatus(),
+      );
+
+      // make sure mocks call each other...
+      expect(mockGetByPagination).toHaveBeenCalled();
+
+      paginateBoxesByStatus.current.loadMoreItems(PAGINATION);
+
+      expect(mockGetUserBoxesBuilder).toHaveBeenCalledWith({ ...PAYLOAD, ...PAGINATION });
+
+      jest.runAllTimers();
+    });
+
+    it('should ask more items from API, some items in store', () => {
+      const PAGINATION = { offset: 0, limit: 3 };
+      const MISSING_REQ_IDS = Object.values(MISSING_BY_PAGINATION);
+      const MISSING_BOXES = BOXES
+        .filter((req) => MISSING_REQ_IDS.includes(req.id));
+
+      mockGetByPagination.mockImplementation(() => PARTIAL_BY_PAGINATION);
+      mockGetUserBoxesBuilder.mockImplementation(makeDelayedResolve(TIMEOUT, MISSING_BOXES));
+
+      const expectedPagination = { offset: 1, limit: 2 };
+
+      const { result: paginateBoxesByStatus } = renderHook(
+        ({ newSearch }) => usePaginateBoxesByStatus(undefined, newSearch),
         {
-          initialProps: { status: STATUSES[0] },
+          initialProps: { newSearch: null },
         },
       );
 
-      rerender({ status: STATUSES[1] });
+      // make sure mocks call each other...
+      expect(mockGetByPagination).toHaveBeenCalled();
+
+      paginateBoxesByStatus.current.loadMoreItems(PAGINATION);
+
+      expect(mockGetUserBoxesBuilder)
+        .toHaveBeenCalledWith({ ...PAYLOAD, ...expectedPagination });
+
+      jest.runAllTimers();
+    });
+  });
+
+  describe('ownerOrgId change', () => {
+    const NEXT_PAYLOAD = ({ ownerOrgId: ORG_IDS[1] });
+
+    it('should ask for a new itemCount', () => {
+      const { result: paginateBoxesByStatus, rerender } = renderHook(
+        ({ ownerOrgId }) => usePaginateBoxesByStatus(ownerOrgId),
+        {
+          initialProps: { ownerOrgId: ORG_IDS[0] },
+        },
+      );
+
+      rerender({ ownerOrgId: ORG_IDS[1] });
 
       const { itemCount } = paginateBoxesByStatus.current;
       expect(mockUseSelector).toHaveBeenCalledTimes(6);
@@ -278,13 +372,13 @@ describe('testing usePaginateBoxesByStatus', () => {
 
     it('should not change initial values', () => {
       const { result: paginateBoxesByStatus, rerender } = renderHook(
-        ({ status }) => usePaginateBoxesByStatus(status),
+        ({ ownerOrgId }) => usePaginateBoxesByStatus(ownerOrgId),
         {
-          initialProps: { status: STATUSES[0] },
+          initialProps: { ownerOrgId: ORG_IDS[0] },
         },
       );
 
-      rerender({ status: STATUSES[1] });
+      rerender({ ownerOrgId: ORG_IDS[1] });
 
       expect(paginateBoxesByStatus.current).toEqual(expect.objectContaining({
         itemCount: undefined,

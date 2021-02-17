@@ -10,6 +10,7 @@ import Home from 'components/screens/app/Home';
 import Redirect from '@misakey/ui/Redirect';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import AccountDrawer from 'components/smart/Drawer/Account';
+import OrganizationDrawer from 'components/smart/Drawer/Organization';
 import ScreenSplashOidc from '@misakey/ui/Screen/Splash/Oidc';
 
 import useLoadSecretsFromShares from '@misakey/crypto/hooks/useLoadSecretsFromShares';
@@ -50,6 +51,7 @@ const BoxesApp = () => {
   return (
     <Suspense fallback={<SplashScreen />}>
       <AccountDrawer />
+      <OrganizationDrawer />
       <Switch>
         {/* REDIRECT TO BOXES */}
         <Redirect

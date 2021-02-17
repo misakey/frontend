@@ -1,11 +1,12 @@
 import React, { useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 
-import IconButtonAppBar from '@misakey/ui/IconButton/Appbar';
+import { useTranslation } from 'react-i18next';
+import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
+
+import Box from '@material-ui/core/Box';
+import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
 
 import ArrowBack from '@material-ui/icons/ArrowBack';
-import Box from '@material-ui/core/Box';
-import { useScreenDrawerContext } from '../..';
 
 // COMPONENTS
 function ToggleDrawerButton(props) {

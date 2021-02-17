@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { SIZES, MEDIUM } from '@misakey/ui/Avatar';
+
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import ScreenSlope from '@misakey/ui/Screen/Slope';
@@ -14,20 +16,20 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-const CardSsoWithSlope = ({ avatar, avatarLarge, header, children, slopeProps, ...props }) => {
+const CardSsoWithSlope = ({ avatar, avatarSize, header, children, slopeProps, ...props }) => {
   const classes = useStyles();
 
   return (
     <ScreenSlope
       classes={{ content: classes.screenContent }}
       avatar={avatar}
-      avatarLarge={avatarLarge}
+      avatarSize={avatarSize}
       header={header}
       slopeProps={slopeProps}
       hideFooter
     >
       <CardSso
-        avatarLarge
+        avatarSize={avatarSize}
         {...props}
       >
         {children}
@@ -38,7 +40,7 @@ const CardSsoWithSlope = ({ avatar, avatarLarge, header, children, slopeProps, .
 
 CardSsoWithSlope.propTypes = {
   avatar: PropTypes.node,
-  avatarLarge: PropTypes.bool,
+  avatarSize: PropTypes.oneOf(SIZES),
   header: PropTypes.node,
   children: PropTypes.node,
   slopeProps: PropTypes.object,
@@ -46,7 +48,7 @@ CardSsoWithSlope.propTypes = {
 
 CardSsoWithSlope.defaultProps = {
   avatar: null,
-  avatarLarge: false,
+  avatarSize: MEDIUM,
   header: null,
   children: null,
   slopeProps: {},

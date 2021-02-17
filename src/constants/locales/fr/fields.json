@@ -300,5 +300,14 @@
         "malformed": "Le code de confirmation doit contenir 6 chiffres"
       }
     }
+  },
+  "organization": {
+    "name": {
+      "label": "Nom",
+      "info": "Ce nom aidera les autres utilisateurs à identifier votre organisation",
+      "error": {
+        "conflict": "Ce nom d'organisation existe déjà"
+      }
+    }
   }
 }

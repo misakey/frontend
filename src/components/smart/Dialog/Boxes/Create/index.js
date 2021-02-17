@@ -6,8 +6,9 @@ import Formik from '@misakey/ui/Formik';
 import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
-import { generatePath, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import routes from 'routes';
+import { SIDES } from '@misakey/ui/constants/drawers';
 
 import { boxNameFieldValidationSchema } from 'constants/validationSchemas/boxes';
 import setBoxSecrets from '@misakey/crypto/store/actions/setBoxSecrets';
@@ -17,21 +18,21 @@ import getRandomTitle from '@misakey/helpers/getRandomTitle';
 import isFunction from '@misakey/helpers/isFunction';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
+import dialogIsFullScreen from '@misakey/helpers/dialog/isFullScreen';
 
 import { createCryptoForNewBox } from '@misakey/crypto/box/creation';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-
+import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
+import useOrgId from 'hooks/useOrgId';
+import useGeneratePathKeepingSearchAndHashCallback from '@misakey/hooks/useGeneratePathKeepingSearchAndHash/callback';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { SIDES } from '@misakey/ui/constants/drawers';
 
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import BoxControls from '@misakey/ui/Box/Controls';
 import DialogContent from '@misakey/ui/DialogContent';
 import DialogTitleWithCloseFormik from '@misakey/ui/DialogTitle/WithCloseIcon/Formik';
-import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
-import Title from '@misakey/ui/Typography/Title';
 
 
 import Dialog from '@material-ui/core/Dialog';
@@ -48,8 +49,10 @@ const DESCRIPTION_ID = 'create-box-dialog-description';
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   dialogContentRoot: {
-    padding: theme.spacing(0),
-    marginTop: theme.spacing(3),
+    padding: theme.spacing(0, 0, 1, 0),
+    [dialogIsFullScreen(theme)]: {
+      paddingBottom: theme.spacing(0),
+    },
   },
   bold: {
     fontWeight: theme.typography.fontWeightBold,
@@ -60,12 +63,12 @@ const useStyles = makeStyles((theme) => ({
   inputField: { margin: theme.spacing(2, 0) },
 }));
 
+// COMPONENTS
 function CreateBoxDialog({
   t,
   onClose,
   onSuccess,
   open,
-  fullScreen,
   ...props
 }) {
   const classes = useStyles();
@@ -73,9 +76,14 @@ function CreateBoxDialog({
   const dispatch = useDispatch();
   const history = useHistory();
   const handleHttpErrors = useHandleHttpErrors();
+  const fullScreen = useDialogFullScreen();
 
   const [isInvitation, setIsInvitation] = useState(false);
   const [placeholder, setPlaceholder] = useState();
+
+  const generatePathKeepingSearchAndHashCallback = useGeneratePathKeepingSearchAndHashCallback();
+
+  const ownerOrgId = useOrgId();
 
   useEffect(
     () => {
@@ -107,27 +115,38 @@ function CreateBoxDialog({
         })
         .finally(() => {
           enqueueSnackbar(t('boxes:create.dialog.success'), { variant: 'success' });
-          const nextTo = generatePath(routes.boxes.read._, { id });
+          const nextTo = generatePathKeepingSearchAndHashCallback(routes.boxes.read._, { id }, null, '');
           history.push(nextTo);
           onClose();
         });
     },
-    [dispatch, enqueueSnackbar, history, onClose, onSuccess, t],
+    [
+      dispatch, enqueueSnackbar, generatePathKeepingSearchAndHashCallback,
+      history, onClose, onSuccess, t,
+    ],
   );
 
-  const onSubmitNewBox = useCallback((form, { setSubmitting }) => {
-    const title = form[FIELD_BOX_NAME] || placeholder;
-    const {
-      boxSecretKey,
-      boxPublicKey,
-      invitationKeyShare,
-      misakeyKeyShare,
-    } = createCryptoForNewBox();
-    return createBoxBuilder({ title, publicKey: boxPublicKey, keyShare: misakeyKeyShare })
-      .then((response) => onSubmitNewBoxSuccess(response, boxSecretKey, invitationKeyShare))
-      .catch(handleHttpErrors)
-      .finally(() => { setSubmitting(false); });
-  }, [handleHttpErrors, onSubmitNewBoxSuccess, placeholder]);
+  const onSubmitNewBox = useCallback(
+    (form, { setSubmitting }) => {
+      const title = form[FIELD_BOX_NAME] || placeholder;
+      const {
+        boxSecretKey,
+        boxPublicKey,
+        invitationKeyShare,
+        misakeyKeyShare,
+      } = createCryptoForNewBox();
+      return createBoxBuilder({
+        title,
+        publicKey: boxPublicKey,
+        keyShare: misakeyKeyShare,
+        ownerOrgId,
+      })
+        .then((response) => onSubmitNewBoxSuccess(response, boxSecretKey, invitationKeyShare))
+        .catch(handleHttpErrors)
+        .finally(() => { setSubmitting(false); });
+    },
+    [handleHttpErrors, onSubmitNewBoxSuccess, placeholder, ownerOrgId],
+  );
 
   const onResetFormik = useCallback(
     (e, { resetForm }) => {
@@ -163,16 +182,18 @@ function CreateBoxDialog({
           >
             <Form>
               <DialogTitleWithCloseFormik
+                id={DESCRIPTION_ID}
+                title={t('boxes:create.dialog.content')}
                 onClose={onResetFormik}
                 fullScreen={fullScreen}
-                gutterBottom
               >
                 <BoxFlexFill />
-                <OpenDrawerAccountButton side={SIDES.RIGHT} />
+                {fullScreen && (
+                  <OpenDrawerAccountButton side={SIDES.RIGHT} />
+                )}
               </DialogTitleWithCloseFormik>
               <DialogContent
                 className={classes.dialogContentRoot}
-                title={<Title id={DESCRIPTION_ID}>{t('boxes:create.dialog.content')}</Title>}
               >
                 <Field
                   component={FieldText}
@@ -203,7 +224,6 @@ function CreateBoxDialog({
             </Form>
           </Formik>
         )}
-      {fullScreen ? <FooterFullScreen /> : null}
     </Dialog>
   );
 }
@@ -212,14 +232,12 @@ CreateBoxDialog.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func,
-  fullScreen: PropTypes.bool,
   t: PropTypes.func.isRequired,
 };
 
 CreateBoxDialog.defaultProps = {
   open: false,
   onSuccess: null,
-  fullScreen: true,
 };
 
 export default withTranslation(['common', 'boxes'])(CreateBoxDialog);

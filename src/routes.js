@@ -28,8 +28,7 @@ const routes = {
     },
   },
   documents: {
-    _: '/documents/:id?',
-    vault: '/documents/vault',
+    _: '/documents',
   },
   userNotifications: {
     _: '/user-notifications',

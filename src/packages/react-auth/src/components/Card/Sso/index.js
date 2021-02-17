@@ -1,7 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { AVATAR_SIZE, AVATAR_SM_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
+import { AVATAR_SIZE, AVATAR_SM_SIZE } from '@misakey/ui/constants/sizes';
+import {
+  LARGE, SMALL, SIZES, MEDIUM,
+  SMALL_AVATAR_SIZE, SMALL_AVATAR_SM_SIZE,
+  LARGE_AVATAR_SIZE, LARGE_AVATAR_SM_SIZE,
+} from '@misakey/ui/Avatar';
 import dialogIsFullScreen from '@misakey/helpers/dialog/isFullScreen';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -14,28 +19,48 @@ import CardContent from '@material-ui/core/CardContent';
 import FooterSso from '@misakey/react-auth/components/Footer/Sso';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 
-// CONSTANTS
-const HALF_LARGE_MULTIPLIER = LARGE_MULTIPLIER / 2;
-
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  cardRoot: ({ avatarLarge }) => ({
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    paddingTop: avatarLarge ? AVATAR_SIZE * HALF_LARGE_MULTIPLIER : AVATAR_SIZE / 2,
-    [dialogIsFullScreen(theme)]: {
-      paddingTop: avatarLarge ? AVATAR_SM_SIZE * HALF_LARGE_MULTIPLIER : AVATAR_SM_SIZE / 2,
-    },
-  }),
+  cardRoot: ({ avatarSize }) => {
+    const notSizedProps = {
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+    };
+    if (avatarSize === LARGE) {
+      return {
+        ...notSizedProps,
+        paddingTop: LARGE_AVATAR_SIZE / 2,
+        [dialogIsFullScreen(theme)]: {
+          paddingTop: LARGE_AVATAR_SM_SIZE / 2,
+        },
+      };
+    }
+    if (avatarSize === SMALL) {
+      return {
+        ...notSizedProps,
+        paddingTop: SMALL_AVATAR_SIZE / 2,
+        [dialogIsFullScreen(theme)]: {
+          paddingTop: SMALL_AVATAR_SM_SIZE / 2,
+        },
+      };
+    }
+    return {
+      ...notSizedProps,
+      paddingTop: AVATAR_SIZE / 2,
+      [dialogIsFullScreen(theme)]: {
+        paddingTop: AVATAR_SM_SIZE / 2,
+      },
+    };
+  },
   cardContent: {
     paddingBottom: 0,
   },
 }));
 
 // COMPONENTS
-const CardSso = ({ avatarLarge, children, ...props }) => {
-  const classes = useStyles({ avatarLarge });
+const CardSso = ({ avatarSize, children, ...props }) => {
+  const classes = useStyles({ avatarSize });
 
   const fullScreen = useDialogFullScreen();
 
@@ -65,12 +90,12 @@ const CardSso = ({ avatarLarge, children, ...props }) => {
 };
 
 CardSso.propTypes = {
-  avatarLarge: PropTypes.bool,
+  avatarSize: PropTypes.oneOf(SIZES),
   children: PropTypes.node,
 };
 
 CardSso.defaultProps = {
-  avatarLarge: false,
+  avatarSize: MEDIUM,
   children: null,
 };
 

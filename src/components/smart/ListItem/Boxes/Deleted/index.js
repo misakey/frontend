@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { AVATAR_SIZE, AVATAR_SM_SIZE } from '@misakey/ui/constants/sizes';
-import STATUSES from 'constants/app/boxes/statuses';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -34,10 +33,14 @@ const useStyles = makeStyles((theme) => ({
       width: AVATAR_SM_SIZE,
     },
   },
+  listItemRoot: {
+    paddingRight: theme.spacing(2),
+  },
 }));
 
 // COMPONENTS
-const ListItemBoxesDeleted = ({ t, activeStatus, search, ...props }) => {
+// @FIXME cannot be working if user has boxes in multiple organizations
+const ListItemBoxesDeleted = ({ t, filterId, search, ...props }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -45,7 +48,8 @@ const ListItemBoxesDeleted = ({ t, activeStatus, search, ...props }) => {
     missingPublicKeys,
     emptyCount,
     clearMissingSecrets,
-  ] = usePaginateBoxesByStatusMissingPublicKeys(activeStatus, search);
+    // @FIXME cannot be working if user has boxes in multiple organizations
+  ] = usePaginateBoxesByStatusMissingPublicKeys(filterId, search);
 
   const missingPublicKeysCount = useMemo(
     () => Math.max(missingPublicKeys.length - emptyCount, 0),
@@ -76,7 +80,10 @@ const ListItemBoxesDeleted = ({ t, activeStatus, search, ...props }) => {
   }
 
   return (
-    <ListItem {...omitTranslationProps(props)}>
+    <ListItem
+      classes={{ root: classes.listItemRoot }}
+      {...omitTranslationProps(props)}
+    >
       <ListItemAvatar>
         <Avatar classes={{ root: classes.avatarRoot }}>
           <DeleteSweepIcon />
@@ -101,7 +108,13 @@ const ListItemBoxesDeleted = ({ t, activeStatus, search, ...props }) => {
         <MenuItem onClick={onDelete}>{t('common:leave')}</MenuItem>
       </Menu>
       <ListItemSecondaryAction>
-        <IconButton onClick={onClick} aria-label={t('common:more')} aria-controls="boxes-deleted-menu" aria-haspopup="true">
+        <IconButton
+          edge="end"
+          onClick={onClick}
+          aria-label={t('common:more')}
+          aria-controls="boxes-deleted-menu"
+          aria-haspopup="true"
+        >
           <MoreVertIcon />
         </IconButton>
       </ListItemSecondaryAction>
@@ -110,13 +123,14 @@ const ListItemBoxesDeleted = ({ t, activeStatus, search, ...props }) => {
 };
 
 ListItemBoxesDeleted.propTypes = {
-  activeStatus: PropTypes.oneOf(STATUSES).isRequired,
+  filterId: PropTypes.string,
   search: PropTypes.string,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
 
 ListItemBoxesDeleted.defaultProps = {
+  filterId: null,
   search: null,
 };
 

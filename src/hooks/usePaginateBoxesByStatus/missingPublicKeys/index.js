@@ -12,7 +12,6 @@ import omit from '@misakey/helpers/omit';
 import { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { ALL } from 'constants/app/boxes/statuses';
 
 // CONSTANTS
 const {
@@ -23,7 +22,8 @@ const { getBySearchPagination, getByPagination, getItemCount } = selectors;
 const { identity: IDENTITY_SELECTOR } = authSelectors;
 
 // HOOKS
-export default (status = ALL, search = null) => {
+// @FIXME cannot be working if user has boxes in multiple organizations
+export default (filterId, search = null) => {
   const hasSearch = useMemo(() => !isNil(search), [search]);
 
   const asymKeys = useSelector(getAsymKeys);
@@ -44,7 +44,7 @@ export default (status = ALL, search = null) => {
   const identity = useSelector(IDENTITY_SELECTOR);
 
   // --- SELECTORS hook with memoization layer
-  const byPagination = useSelector((state) => byPaginationSelector(state, status));
+  const byPagination = useSelector((state) => byPaginationSelector(state, filterId));
 
   const byPaginationIds = useMemo(
     () => Object.values(byPagination),
@@ -56,7 +56,7 @@ export default (status = ALL, search = null) => {
     [byPaginationIds],
   );
 
-  const itemCount = useSelector((state) => getItemCount(state, status));
+  const itemCount = useSelector((state) => getItemCount(state, filterId));
 
   const isPaginationFull = useMemo(
     () => byPaginationCount === itemCount,

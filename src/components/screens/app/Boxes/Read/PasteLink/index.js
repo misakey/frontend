@@ -5,9 +5,6 @@ import { Form } from 'formik';
 import { withTranslation } from 'react-i18next';
 
 import { getBoxInvitationLinkFieldValidationSchema } from 'constants/validationSchemas/boxes';
-import { APPBAR_SPACING } from '@misakey/ui/constants/sizes';
-import { SIDES } from '@misakey/ui/constants/drawers';
-import routes from 'routes';
 
 import isNil from '@misakey/helpers/isNil';
 import locationToString from '@misakey/helpers/locationToString';
@@ -15,24 +12,21 @@ import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import { Link, useLocation } from 'react-router-dom';
-import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
+import { useLocation } from 'react-router-dom';
+import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import Formik from '@misakey/ui/Formik';
-import AppBar from '@misakey/ui/AppBar';
+import AppBarStatic from '@misakey/ui/AppBar/Static';
 import FormField from '@misakey/ui/Form/Field';
 import BoxControls from '@misakey/ui/Box/Controls';
 import Redirect from '@misakey/ui/Redirect';
 import FormFieldTextField from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import Box from '@material-ui/core/Box';
-import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import BoxesSchema from 'store/schemas/Boxes';
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import BoxContent from '@misakey/ui/Box/Content';
-import IconButtonAppBar from '@misakey/ui/IconButton/Appbar';
 
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-
+// CONSTANTS
 const FIELD_NAME = 'invitationLink';
 const INITIAL_VALUES = { [FIELD_NAME]: '' };
 
@@ -73,22 +67,14 @@ function PasteBoxLinkScreen({ t, box, currentLinkMalformed }) {
 
   return (
     <>
-      <AppBar
-        disableOffset
-        position="static"
-      >
-        <IconButtonAppBar
-          edge="start"
-          aria-label={t('common:goBack')}
-          component={Link}
-          to={routes.boxes._}
-        >
-          <ArrowBackIcon />
-        </IconButtonAppBar>
-        <BoxFlexFill />
-        <OpenDrawerAccountButton side={SIDES.RIGHT} />
-      </AppBar>
-      <BoxContent pt={APPBAR_SPACING}>
+      <AppBarStatic toolbarProps={{ px: 0 }}>
+        <Box display="flex" flexDirection="column" width="100%" minHeight="inherit">
+          <Box display="flex">
+            <BoxEventsAppBar disabled box={box} belongsToCurrentUser={false} />
+          </Box>
+        </Box>
+      </AppBarStatic>
+      <BoxContent>
         <Box
           m={3}
           display="flex"

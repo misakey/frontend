@@ -2,6 +2,8 @@ import React, { forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
 
+import { SIZES, MEDIUM } from '@misakey/ui/Avatar';
+
 import Paper from '@material-ui/core/Paper';
 import ScreenSlope from '@misakey/ui/Screen/Slope';
 
@@ -18,7 +20,7 @@ DialogPaperSlope.propTypes = {
   children: PropTypes.node,
   header: PropTypes.node,
   avatar: PropTypes.node,
-  avatarLarge: PropTypes.bool,
+  avatarSize: PropTypes.oneOf(SIZES),
   slopeProps: PropTypes.object,
 };
 
@@ -26,7 +28,7 @@ DialogPaperSlope.defaultProps = {
   children: null,
   header: null,
   avatar: null,
-  avatarLarge: false,
+  avatarSize: MEDIUM,
   slopeProps: {},
 };
 

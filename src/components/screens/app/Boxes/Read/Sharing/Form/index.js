@@ -312,11 +312,11 @@ function ShareBoxForm({
 }
 
 ShareBoxForm.propTypes = {
-  accesses: PropTypes.arrayOf(PropTypes.shape(BoxEventsSchema.propTypes)).isRequired,
+  accesses: PropTypes.arrayOf(PropTypes.shape(BoxEventsSchema.propTypes)),
   accessMode: PropTypes.oneOf(ACCESS_MODES),
   boxId: PropTypes.string.isRequired,
   boxKeyShare: PropTypes.string.isRequired,
-  boxSecretKey: PropTypes.string.isRequired,
+  boxSecretKey: PropTypes.string,
   children: PropTypes.node,
   creator: PropTypes.shape(SenderSchema.propTypes),
   members: PropTypes.arrayOf(PropTypes.object),
@@ -324,7 +324,9 @@ ShareBoxForm.propTypes = {
 };
 
 ShareBoxForm.defaultProps = {
+  accesses: [],
   accessMode: LIMITED,
+  boxSecretKey: null,
   children: null,
   creator: null,
   members: null,

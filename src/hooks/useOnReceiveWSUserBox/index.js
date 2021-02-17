@@ -1,10 +1,12 @@
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import routes from 'routes';
+import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 import BoxesSchema from 'store/schemas/Boxes';
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { DELETED_BOX, NEW_EVENT, NOTIFICATIONS_ACK, BOX_SETTINGS, NOTIFICATION, SAVED_FILE } from 'constants/app/boxes/ws/messageTypes';
 import { CHANGE_EVENT_TYPES } from '@misakey/ui/constants/boxes/events';
 import { receiveWSEditEvent, addBoxEvent } from 'store/reducers/box';
 import { updateEntities } from '@misakey/store/actions/entities';
+import { addNewNotification } from 'store/actions/identity/notifications';
 
 import { isMeLeaveEvent, isMeKickEvent, isMeJoinEvent, isMeEvent } from 'helpers/boxEvent';
 import path from '@misakey/helpers/path';
@@ -18,9 +20,8 @@ import { useOnRemoveBox } from 'hooks/usePaginateBoxesByStatus/updates';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 import useModifier from '@misakey/hooks/useModifier';
-import { addNewNotification } from 'store/actions/identity/notifications';
 import useOnNotifyEvent from 'hooks/useOnNotifyEvent';
-import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
+import useGeneratePathKeepingSearchAndHashCallback from '@misakey/hooks/useGeneratePathKeepingSearchAndHash/callback';
 
 // CONSTANTS
 const {
@@ -31,8 +32,8 @@ const {
 const idParamPath = path(['params', 'id']);
 
 // HOOKS
-export default (activeStatus, search) => {
-  const onRemoveBox = useOnRemoveBox(activeStatus, search);
+export default (search) => {
+  const onRemoveBox = useOnRemoveBox(search);
   const dispatch = useDispatch();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -43,6 +44,7 @@ export default (activeStatus, search) => {
   const id = useModifier(idParamPath, matchBoxSelected);
   const idRef = useRef(id);
 
+  const generatePath = useGeneratePathKeepingSearchAndHashCallback();
   const { replace } = useHistory();
 
   const idRefMatchesDeletedBoxId = useCallback(
@@ -59,20 +61,20 @@ export default (activeStatus, search) => {
   );
 
   const leaveSuccess = useMemo(
-    () => t('boxes:removeBox.success.leave'),
-    [t],
+    () => tRef.current('boxes:removeBox.success.leave'),
+    [tRef],
   );
 
   const identityId = useSelector(IDENTITY_ID_SELECTOR);
 
   const onDelete = useCallback(
-    (boxId) => {
+    ({ boxId, ownerOrgId }) => {
       if (idRefMatchesDeletedBoxId(boxId)) {
-        replace(routes.boxes._);
+        replace(generatePath(routes.boxes._, undefined, undefined, ''));
       }
-      return onRemoveBox(boxId);
+      return onRemoveBox(ownerOrgId, boxId);
     },
-    [replace, onRemoveBox, idRefMatchesDeletedBoxId],
+    [idRefMatchesDeletedBoxId, onRemoveBox, replace, generatePath],
   );
 
   const onDeleteSuccess = useCallback(
@@ -98,8 +100,7 @@ export default (activeStatus, search) => {
     ({ type, object }) => {
       // delete box
       if (type === DELETED_BOX) {
-        const { id: boxId } = object;
-        return onDelete(boxId).then((box) => onDeleteSuccess({ ...box, ...object }));
+        return onDelete(object).then((box) => onDeleteSuccess({ ...box, ...object }));
       }
 
       if (type === BOX_SETTINGS) {
@@ -132,15 +133,15 @@ export default (activeStatus, search) => {
 
       // New event
       if (type === NEW_EVENT) {
-        const { referrerId, type: eventType, boxId } = object;
+        const { referrerId, type: eventType, boxId, ownerOrgId } = object;
         if (CHANGE_EVENT_TYPES.includes(eventType) && !isNil(referrerId)) {
           return Promise.resolve(dispatch(receiveWSEditEvent(object)));
         }
         if (isMeLeaveEvent(object, identityId)) {
-          return onDelete(boxId).then(() => enqueueSnackbar(leaveSuccess, { variant: 'success' }));
+          return onDelete(object).then(() => enqueueSnackbar(leaveSuccess, { variant: 'success' }));
         }
         if (isMeKickEvent(object, identityId)) {
-          return onDelete(boxId);
+          return onDelete(object);
         }
         if (isMeJoinEvent(object, identityId)) {
           return batch(() => {
@@ -148,16 +149,17 @@ export default (activeStatus, search) => {
               [{ id: boxId, changes: { hasAccess: true, isMember: true } }],
               BoxesSchema,
             ));
-            dispatch(addBoxEvent(boxId, object, true, onNotifyEvent));
+            dispatch(addBoxEvent(boxId, object, true, ownerOrgId, onNotifyEvent));
           });
         }
         const isMyEvent = isMeEvent(object, identityId);
-        return Promise.resolve(dispatch(addBoxEvent(boxId, object, isMyEvent, onNotifyEvent)));
+        return Promise.resolve(
+          dispatch(addBoxEvent(boxId, object, isMyEvent, ownerOrgId, onNotifyEvent)),
+        );
       }
       log(`Receive unknown WS type: ${type}`);
       return Promise.resolve();
     },
-    [onDelete, onDeleteSuccess, dispatch, identityId,
-      enqueueSnackbar, leaveSuccess, onNotifyEvent],
+    [onDelete, onDeleteSuccess, dispatch, identityId, onNotifyEvent, enqueueSnackbar, leaveSuccess],
   );
 };

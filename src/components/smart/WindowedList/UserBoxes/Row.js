@@ -49,7 +49,7 @@ const Row = ({ style, index, data, box, id, dispatchReceivedBox, ...rest }) => {
 
   const shouldFetch = useMemo(() => isNil(box) && !isNil(id), [box, id]);
 
-  const containerProps = useMemo(
+  const ContainerProps = useMemo(
     () => ({
       style: { ...style, top: style.top + guttersTop },
       index,
@@ -68,7 +68,7 @@ const Row = ({ style, index, data, box, id, dispatchReceivedBox, ...rest }) => {
   if (isFetching) {
     return (
       <Skeleton
-        containerProps={containerProps}
+        ContainerProps={ContainerProps}
         style={style}
         index={index}
         data={data}
@@ -79,7 +79,7 @@ const Row = ({ style, index, data, box, id, dispatchReceivedBox, ...rest }) => {
 
   return (
     <BoxListItem
-      containerProps={containerProps}
+      ContainerProps={ContainerProps}
       classes={classes}
       box={box}
       {...omitInternalData(data)}

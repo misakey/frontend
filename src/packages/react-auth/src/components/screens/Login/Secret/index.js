@@ -8,6 +8,7 @@ import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import moment from 'moment';
 
+import { LARGE } from '@misakey/ui/Avatar';
 import authRoutes from '@misakey/react-auth/routes';
 import { QUESTIONS } from '@misakey/ui/constants/emails';
 import { NEXT_STEP_REDIRECT, NEXT_STEP_AUTH } from '@misakey/auth/constants/step';
@@ -53,7 +54,7 @@ import ButtonForgotPassword from '@misakey/react-auth/components/Button/ForgotPa
 import ButtonRenewAuthStep from '@misakey/react-auth/components/Button/RenewAuthStep';
 import SnackbarActionAuthRestart from '@misakey/ui/Snackbar/Action/AuthRestart';
 import SnackbarActionRefresh from '@misakey/ui/Snackbar/Action/Refresh';
-import IconButtonAppBar from '@misakey/ui/IconButton/Appbar';
+import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
 import Screen from '@misakey/ui/Screen';
 import AppBar from '@misakey/ui/AppBar';
@@ -325,7 +326,7 @@ const AuthLoginSecret = ({
     <CardSsoWithSlope
       slopeProps={SLOPE_PROPS}
       avatar={<AvatarClientSso client={client} />}
-      avatarLarge
+      avatarSize={LARGE}
       header={(
         <AppBar color="primary">
           {reset && (
@@ -382,7 +383,7 @@ const AuthLoginSecret = ({
               </CardUser>
               {methodName === EMAILED_CODE && (
                 <ButtonRenewAuthStep
-                  classes={{ buttonRoot: classes.buttonRoot }}
+                  classes={{ root: classes.buttonRoot }}
                   loginChallenge={loginChallenge}
                   authnStep={authnStep}
                   text={t('auth:login.form.action.getANewCode.button')}
@@ -390,7 +391,7 @@ const AuthLoginSecret = ({
               )}
               {methodName === PREHASHED_PASSWORD && (
                 <ButtonForgotPassword
-                  classes={{ buttonRoot: classes.buttonRoot }}
+                  classes={{ root: classes.buttonRoot }}
                   loginChallenge={loginChallenge}
                   identifier={identifier}
                   text={t('auth:login.form.action.forgotPassword')}

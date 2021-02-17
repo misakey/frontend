@@ -3,11 +3,12 @@ export const TMP_DRAWER_QUERY_PARAMS = 'tmpDrawer';
 export const SIDE_QUERY_PARAM = 'drawerSide';
 
 export const TMP_DRAWER_ACCOUNT_VALUE = 'account';
+export const TMP_DRAWER_ORG_VALUE = 'organization';
 
 export const PERMANENT_DRAWER_DESKTOP_WIDTH = '30%';
 export const PERMANENT_DRAWER_MOBILE_WIDTH = '100%';
 export const TEMP_DRAWER_DESKTOP_WIDTH = PERMANENT_DRAWER_DESKTOP_WIDTH;
-export const TEMP_DRAWER_MOBILE_WIDTH = '100%';
+export const TEMP_DRAWER_MOBILE_WIDTH = PERMANENT_DRAWER_MOBILE_WIDTH;
 
 export const SIDES = {
   RIGHT: 'right',

@@ -29,7 +29,7 @@ export default () => {
   const vaultKey = useSelector(getVaultKey);
 
   const seeAction = useMemo(
-    () => <SnackbarActionSee to={routes.documents.vault} />,
+    () => <SnackbarActionSee to={routes.documents._} />,
     [],
   );
 

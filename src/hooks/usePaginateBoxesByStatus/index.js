@@ -1,4 +1,3 @@
-import { ALL } from 'constants/app/boxes/statuses';
 import { actionCreators, selectors } from 'store/reducers/userBoxes/pagination';
 import { receiveJoinedBoxes } from 'store/reducers/box';
 
@@ -18,10 +17,11 @@ import { useDispatch, useSelector } from 'react-redux';
 const { receivePaginatedItemCount, receivePaginatedIds } = actionCreators;
 const { getBySearchPagination, getByPagination, getItemCount, getSearch } = selectors;
 
+const DEFAULT_ORG_ID = window.env.SELF_CLIENT_ID;
+
 // HOOKS
 /**
- * @param {String} [status = 'all'] one of possible box statuses
- * @see src/constants/app/boxes/statuses.js
+ * @param {String} ownerOrgId owner organization id
  * @param {String} [search=null]
  * @returns {{byPagination: Object, itemCount: Number, loadMoreItems: Function}}
  * where:
@@ -29,18 +29,31 @@ const { getBySearchPagination, getByPagination, getItemCount, getSearch } = sele
  * - itemCount is the total number of elements
  * - loadMoreItems is a function to call to ask for more items
  */
-export default (status = ALL, search = null) => {
+export default (ownerOrgId, search = null) => {
   const handleHttpErrors = useHandleHttpErrors();
 
   const hasSearch = useMemo(() => !isNil(search), [search]);
 
   // payload for API
   const payload = useMemo(
-    () => ({
-      ...(hasSearch ? { search } : {}),
-      ...(status !== ALL ? { statuses: [status] } : {}),
-    }),
-    [hasSearch, search, status],
+    () => {
+      // @FIXME should we pass query param when self org ?
+      if (!isNil(ownerOrgId) && ownerOrgId !== window.env.SELF_CLIENT_ID) {
+        return {
+          ...(hasSearch ? { search } : {}),
+          ownerOrgId,
+        };
+      }
+      return {
+        ...(hasSearch ? { search } : {}),
+      };
+    },
+    [hasSearch, search, ownerOrgId],
+  );
+
+  const filterId = useMemo(
+    () => (isNil(ownerOrgId) ? DEFAULT_ORG_ID : ownerOrgId),
+    [ownerOrgId],
   );
 
   const dispatch = useDispatch();
@@ -53,16 +66,16 @@ export default (status = ALL, search = null) => {
   // ---
 
   // SELECTORS hooks with memoization layer
-  const byPagination = useSelector((state) => byPaginationSelector(state, status));
-  const itemCount = useSelector((state) => getItemCount(state, status));
-  const currentSearch = useSelector((state) => getSearch(state, status));
+  const byPagination = useSelector((state) => byPaginationSelector(state, filterId));
+  const itemCount = useSelector((state) => getItemCount(state, filterId));
+  const currentSearch = useSelector((state) => getSearch(state, filterId));
 
   // ---
 
   const dispatchReceiveBoxes = useCallback(
     (data, { offset, limit }) => Promise.resolve(dispatch(receiveJoinedBoxes(data)))
-      .then(({ result }) => dispatch(receivePaginatedIds(status, offset, limit, result, search))),
-    [dispatch, status, search],
+      .then(({ result }) => dispatch(receivePaginatedIds(filterId, offset, limit, result, search))),
+    [dispatch, filterId, search],
   );
 
   // API data fetching:
@@ -113,11 +126,11 @@ export default (status = ALL, search = null) => {
     () => {
       if (isNil(itemCount)) {
         getCount()
-          .then((result) => dispatch(receivePaginatedItemCount(status, result)))
+          .then((result) => dispatch(receivePaginatedItemCount(filterId, result)))
           .catch((e) => handleHttpErrors(e));
       }
     },
-    [dispatch, getCount, handleHttpErrors, itemCount, status],
+    [dispatch, getCount, handleHttpErrors, itemCount, filterId],
   );
 
   // extra memoization layer because of object format

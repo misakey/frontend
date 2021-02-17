@@ -27,7 +27,7 @@ import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import BoxEventEditContext from 'components/smart/Box/Event/Edit/Context';
 import PaginatedListBoxEvents from 'components/smart/PaginatedList/BoxEvents';
 import BoxEventsFooter from 'components/screens/app/Boxes/Read/Events/Footer';
-import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
+import AppBarStatic from '@misakey/ui/AppBar/Static';
 import useOnTabVisibilityChange from '@misakey/hooks/useOnTabVisibilityChange';
 
 // CONSTANTS
@@ -39,7 +39,8 @@ const useStyles = makeStyles(() => ({
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
-    // Do not use 100vh for mobile devices
+    flexGrow: 1,
+    // Fallback to flex sizing. Do not use 100vh for mobile devices
     // https://dev.to/admitkard/mobile-issue-with-100vh-height-100-100vh-3-solutions-3nae
     height: `calc(100% - ${headerHeight}px)`,
     position: 'relative',
@@ -93,9 +94,8 @@ function BoxEvents({ box, t, belongsToCurrentUser }) {
   return (
     <BoxEventEditContext>
       <ElevationScroll target={contentRef}>
-        <AppBarDrawer
+        <AppBarStatic
           toolbarProps={{ px: 0 }}
-          offsetHeight={headerHeight}
         >
           <Box ref={headerRef} display="flex" flexDirection="column" width="100%" minHeight="inherit">
             <Box display="flex">
@@ -118,7 +118,7 @@ function BoxEvents({ box, t, belongsToCurrentUser }) {
               </Alert>
             )}
           </Box>
-        </AppBarDrawer>
+        </AppBarStatic>
       </ElevationScroll>
       <Box className={classes.content}>
         <PaginatedListBoxEvents

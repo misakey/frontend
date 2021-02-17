@@ -261,5 +261,14 @@
         "malformed": "Code should contain 6 digits"
       }
     }
+  },
+  "organization": {
+    "name": {
+      "label": "Name",
+      "info": "This name will help other users identify your organization",
+      "error": {
+        "conflict": "This organization name already exists"
+      }
+    }
   }
 }
