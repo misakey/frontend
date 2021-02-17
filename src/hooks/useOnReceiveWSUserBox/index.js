@@ -100,7 +100,8 @@ export default (search) => {
     ({ type, object }) => {
       // delete box
       if (type === DELETED_BOX) {
-        return onDelete(object).then((box) => onDeleteSuccess({ ...box, ...object }));
+        const { id: boxId, ...rest } = object;
+        return onDelete({ boxId, ...rest }).then((box) => onDeleteSuccess({ ...box, ...object }));
       }
 
       if (type === BOX_SETTINGS) {
