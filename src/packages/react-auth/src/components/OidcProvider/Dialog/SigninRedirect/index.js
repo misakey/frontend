@@ -156,13 +156,25 @@ const DialogSigninRedirect = ({
         return t(`components:signinRedirect.user.insufficientACR.${acrValues}.subtitle`);
       }
       if (!isNil(resourceName)) {
-        return (
-          <TransRequireAccess querier={creatorName} to={creatorProfileTo} />
-        );
+        return isEmpty(currentUser)
+          ? t('components:signinRedirect.user.authRequired')
+          : (
+            <TransRequireAccess querier={creatorName} to={creatorProfileTo} />
+          );
       }
-      return <TransRequireAccess />;
+      return isEmpty(currentUser)
+        ? t('components:signinRedirect.user.authRequired')
+        : <TransRequireAccess />;
     },
-    [sessionExpired, insufficientACR, resourceName, t, acrValues, creatorName, creatorProfileTo],
+    [
+      sessionExpired, insufficientACR, resourceName, currentUser,
+      t, acrValues, creatorName, creatorProfileTo,
+    ],
+  );
+
+  const text = useMemo(
+    () => (isEmpty(currentUser) ? t('common:continue') : t('common:confirm')),
+    [currentUser, t],
   );
 
   const CardUserComponent = useMemo(
@@ -220,14 +232,16 @@ const DialogSigninRedirect = ({
         <Box>
           <Title align="center" gutterBottom={false}>{title}</Title>
           <Subtitle align="center">{subtitle}</Subtitle>
+          {!isEmpty(currentUser) && (
           <CardUserComponent
             my={3}
             expired={sessionExpired}
           />
+          )}
         </Box>
         <BoxControls
           primary={{
-            text: t('common:confirm'),
+            text,
             onClick,
           }}
         />

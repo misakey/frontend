@@ -105,7 +105,7 @@
         "3": {
           "title": "Login with TOTP to continue",
           "subtitle": "This feature requires you to reauthenticate in a more secured way"
-        }, 
+        },
         "4": {
           "title": "Login with Webauthn to continue",
           "subtitle": "This feature requires you to reauthenticate in a more secured way"
@@ -114,7 +114,8 @@
       "expired": {
         "title": "Your authenticated session has expired",
         "subtitle": "Confirm your identity to continue"
-      }
+      },
+      "authRequired": "Authentication is required"
     }
   },
   "cardEvent": {
