@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation, Trans } from 'react-i18next';
 import { Link, generatePath } from 'react-router-dom';
 
-import { LARGE } from '@misakey/ui/Avatar';
+import { LARGE } from '@misakey/ui/constants/sizes';
 import { FOOTER_HEIGHT } from '@misakey/ui/Footer';
 import BoxesSchema from 'store/schemas/Boxes';
 import { receivePublicInfo } from 'store/reducers/box';

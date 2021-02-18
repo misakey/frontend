@@ -5,7 +5,7 @@ import { useLayoutStyles } from '@misakey/ui/Avatar/Detailed';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import AvatarSkeleton from '@misakey/ui/Avatar/Skeleton';
-import { LARGE } from '@misakey/ui/Avatar';
+import { LARGE } from '@misakey/ui/constants/sizes';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';

@@ -79,3 +79,9 @@ export const contactUserBuilder = (identityId, payload) => API
   .build({ identityId }, objectToSnakeCaseDeep(payload, { ignoreBase64: true }))
   .send()
   .then(objectToCamelCase);
+
+export const listOrganizations = (identityId) => API
+  .use(API.endpoints.identities.organizations.find)
+  .build({ id: identityId })
+  .send()
+  .then((response) => response.map(objectToCamelCase));

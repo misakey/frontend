@@ -6,7 +6,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
 
 import AvatarColorized from '@misakey/ui/Avatar/Colorized';
-import { LARGE } from '@misakey/ui/Avatar';
+import { LARGE } from '@misakey/ui/constants/sizes';
 
 // HOOKS
 export const useLayoutStyles = makeStyles((theme) => ({

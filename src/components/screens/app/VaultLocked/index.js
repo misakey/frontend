@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
-import { LARGE } from '@misakey/ui/Avatar';
-import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
+import { LARGE, APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
+
 import { openVaultValidationSchema } from 'constants/validationSchemas/vault';
 import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 import { invalid } from '@misakey/ui/constants/errorTypes';

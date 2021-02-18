@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { AVATAR_SIZE, AVATAR_SM_SIZE } from '@misakey/ui/constants/sizes';
-import {
+import { AVATAR_SIZE, AVATAR_SM_SIZE,
   LARGE, SMALL, SIZES, MEDIUM,
   SMALL_AVATAR_SIZE, SMALL_AVATAR_SM_SIZE,
   LARGE_AVATAR_SIZE, LARGE_AVATAR_SM_SIZE,
-} from '@misakey/ui/Avatar';
+} from '@misakey/ui/constants/sizes';
+
 import dialogIsFullScreen from '@misakey/helpers/dialog/isFullScreen';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';

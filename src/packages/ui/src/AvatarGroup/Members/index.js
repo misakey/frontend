@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { AVATAR_SIZE, AVATAR_SM_SIZE } from '@misakey/ui/constants/sizes';
+import { useStyles as useAvatarStyles } from '@misakey/ui/Avatar';
 
-import { useStyles as useAvatarStyles,
+import { AVATAR_SIZE, AVATAR_SM_SIZE,
   SMALL_AVATAR_SIZE, SMALL_AVATAR_SM_SIZE,
   LARGE_AVATAR_SIZE, LARGE_AVATAR_SM_SIZE,
   LARGE, MEDIUM, SMALL, SIZES,
-} from '@misakey/ui/Avatar';
+} from '@misakey/ui/constants/sizes';
+
+
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import AvatarGroup from '@material-ui/lab/AvatarGroup';

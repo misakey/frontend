@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { SIZES, MEDIUM } from '@misakey/ui/Avatar';
+import { SIZES, MEDIUM } from '@misakey/ui/constants/sizes';
 
 import Paper from '@material-ui/core/Paper';
 import ScreenSlope from '@misakey/ui/Screen/Slope';

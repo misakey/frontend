@@ -2,5 +2,10 @@
   "documentTitle": "Organisations",
   "self": "Espace personnel",
   "create": "Créer une organisation",
-  "join": "Rejoindre une organisation"
+  "join": "Rejoindre une organisation",
+  "role": {
+    "admin": "Administrateur",
+    "agent": "Agent",
+    "null": "Membre"
+  }
 }

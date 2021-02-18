@@ -1,13 +1,11 @@
 import React, { useMemo, forwardRef } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 
+import { useStyles } from '@misakey/ui/ListItem/Organization';
 import {
   SMALL,
-  SMALL_AVATAR_SIZE,
-  SMALL_AVATAR_SM_SIZE,
-} from '@misakey/ui/Avatar';
+} from '@misakey/ui/constants/sizes';
 import ListItemCurrentUser from 'components/smart/ListItem/CurrentUser';
 
 // CONSTANTS
@@ -15,20 +13,11 @@ const AVATAR_PROPS = {
   size: SMALL,
 };
 
-// HOOKS
-const useStyles = makeStyles((theme) => ({
-  listItemAvatarRoot: {
-    minWidth: SMALL_AVATAR_SIZE + 16,
-    [theme.breakpoints.down('sm')]: {
-      minWidth: SMALL_AVATAR_SM_SIZE + 16,
-    },
-  },
-}));
-
 // COMPONENTS
 const ListItemOrganizationSelf = forwardRef((props, ref) => {
   const { t } = useTranslation('organizations');
   const classes = useStyles();
+
 
   const listItemTextProps = useMemo(
     () => ({

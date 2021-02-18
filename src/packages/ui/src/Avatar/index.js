@@ -2,7 +2,13 @@ import React from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
-import { AVATAR_SIZE, AVATAR_SM_SIZE, LARGE_MULTIPLIER, SMALL_MULTIPLIER } from '@misakey/ui/constants/sizes';
+import {
+  SMALL, MEDIUM, LARGE, SIZES,
+  AVATAR_SIZE, AVATAR_SM_SIZE,
+  LARGE_MULTIPLIER, SMALL_MULTIPLIER,
+  LARGE_AVATAR_SIZE, LARGE_AVATAR_SM_SIZE,
+  SMALL_AVATAR_SIZE, SMALL_AVATAR_SM_SIZE,
+} from '@misakey/ui/constants/sizes';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
@@ -11,16 +17,6 @@ import Avatar from '@material-ui/core/Avatar';
 
 // CONSTANTS
 export const FONT_SIZE_PX = 12;
-export const SMALL = 'small';
-export const MEDIUM = 'medium';
-export const LARGE = 'large';
-export const SIZES = [SMALL, MEDIUM, LARGE];
-
-export const SMALL_AVATAR_SIZE = AVATAR_SIZE * SMALL_MULTIPLIER;
-export const SMALL_AVATAR_SM_SIZE = AVATAR_SM_SIZE * SMALL_MULTIPLIER;
-
-export const LARGE_AVATAR_SIZE = LARGE_MULTIPLIER * AVATAR_SIZE;
-export const LARGE_AVATAR_SM_SIZE = LARGE_MULTIPLIER * AVATAR_SM_SIZE;
 
 // HOOKS
 export const useStyles = makeStyles((theme) => ({

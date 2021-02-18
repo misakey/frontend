@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import BadgeDenied from '@misakey/ui/Badge/Denied';
 import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
-import { SIZES, MEDIUM } from '@misakey/ui/Avatar';
+import { SIZES, MEDIUM } from '@misakey/ui/constants/sizes';
 
 // COMPONENTS
 const AvatarMisakeyDenied = ({ size, ...props }) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { LARGE } from '@misakey/ui/Avatar';
+import { LARGE } from '@misakey/ui/constants/sizes';
 
 import CardUserSignOut from '@misakey/react-auth/components/Card/User/SignOut';
 import ScreenSplashBase from '@misakey/ui/Screen/Splash/Base';

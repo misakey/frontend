@@ -2,5 +2,10 @@
   "documentTitle": "Organizations",
   "self": "Personal plan",
   "create": "Create an organization",
-  "join": "Join an organization"
+  "join": "Join an organization",
+  "role": {
+    "admin": "Administrator",
+    "agent": "Agent",
+    "null": "Member"
+  }
 }

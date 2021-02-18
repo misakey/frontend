@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useStyles, SIZES, MEDIUM } from '@misakey/ui/Avatar';
+import { useStyles } from '@misakey/ui/Avatar';
+import { SIZES, MEDIUM } from '@misakey/ui/constants/sizes';
 
 import Skeleton from '@material-ui/lab/Skeleton';
 

@@ -115,6 +115,13 @@ export default {
       withCsrfToken: true,
     },
   },
+  organizations: {
+    find: {
+      method: 'GET',
+      path: '/identities/:id/organizations',
+      withCsrfToken: true,
+    },
+  },
   vault: {
     create: {
       method: 'POST',

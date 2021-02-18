@@ -6,8 +6,8 @@ import { generatePath } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
 import { getCurrentUserSelector, selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
-import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
-import { LARGE } from '@misakey/ui/Avatar';
+import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER, LARGE } from '@misakey/ui/constants/sizes';
+
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';

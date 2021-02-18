@@ -8,12 +8,12 @@ import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import moment from 'moment';
 
-import { LARGE } from '@misakey/ui/Avatar';
+import { LARGE, APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
 import authRoutes from '@misakey/react-auth/routes';
 import { QUESTIONS } from '@misakey/ui/constants/emails';
 import { NEXT_STEP_REDIRECT, NEXT_STEP_AUTH } from '@misakey/auth/constants/step';
 import { STEP, INITIAL_VALUES, ERROR_KEYS } from '@misakey/auth/constants';
-import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
+
 import { getSecretValidationSchema } from '@misakey/react-auth/constants/validationSchemas';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react-auth/store/reducers/sso';
 import { ssoUpdate, ssoSign, ssoReset } from '@misakey/react-auth/store/actions/sso';

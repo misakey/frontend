@@ -5,7 +5,7 @@ import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import Box from '@material-ui/core/Box';
 import ListBordered from '@misakey/ui/List/Bordered';
-import ListItemOrganizationSelf from 'components/smart/ListItem/Organization/Self';
+import ListItemOrganizationCurrent from 'components/smart/ListItem/Organization/Current';
 import IconButtonNotificationsMisakey from 'components/smart/IconButton/Notifications/Misakey';
 import PopoverOrganizations from 'components/smart/Popover/Organizations';
 
@@ -35,7 +35,7 @@ const AppBarAccount = (props) => {
         dense
         disablePadding
       >
-        <ListItemOrganizationSelf
+        <ListItemOrganizationCurrent
           button
           onClick={onClick}
         />

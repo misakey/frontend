@@ -12,7 +12,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { receivePublicInfo } from 'store/reducers/box';
 import { FOOTER_HEIGHT } from '@misakey/ui/Footer';
-import { LARGE } from '@misakey/ui/Avatar';
+import { LARGE } from '@misakey/ui/constants/sizes';
 
 import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import isNil from '@misakey/helpers/isNil';

@@ -8,8 +8,8 @@ import Formik from '@misakey/ui/Formik';
 import { STEP, INITIAL_VALUES, ERROR_KEYS } from '@misakey/auth/constants';
 import { identifierValidationSchema } from '@misakey/react-auth/constants/validationSchemas';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react-auth/store/reducers/sso';
-import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
-import { LARGE } from '@misakey/ui/Avatar';
+import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER, LARGE } from '@misakey/ui/constants/sizes';
+
 
 import compose from '@misakey/helpers/compose';
 import head from '@misakey/helpers/head';

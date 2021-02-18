@@ -6,7 +6,8 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import isString from '@misakey/helpers/isString';
 
 import IconStack from '@misakey/ui/Icon/Stack';
-import Avatar, { SIZES, MEDIUM } from '@misakey/ui/Avatar';
+import Avatar from '@misakey/ui/Avatar';
+import { SIZES, MEDIUM } from '@misakey/ui/constants/sizes';
 
 import VpnKeyIcon from '@material-ui/icons/VpnKeyRounded';
 import ClearIcon from '@material-ui/icons/ClearRounded';

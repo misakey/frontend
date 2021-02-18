@@ -24,7 +24,7 @@ import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import ListNavigationOrganization from 'components/smart/List/Navigation/Organization';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import ListBordered from '@misakey/ui/List/Bordered';
-import ListItemOrganizationSelf from 'components/smart/ListItem/Organization/Self';
+import ListItemOrganizationCurrent from 'components/smart/ListItem/Organization/Current';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
@@ -120,7 +120,7 @@ const DrawerOrganization = (props) => {
             dense
             disablePadding
           >
-            <ListItemOrganizationSelf />
+            <ListItemOrganizationCurrent />
           </ListBordered>
         </AppBarStatic>
         <Suspense fallback={<SplashScreen />}>

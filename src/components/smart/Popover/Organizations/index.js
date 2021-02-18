@@ -7,12 +7,17 @@ import routes from 'routes';
 
 import getNextSearch from '@misakey/helpers/getNextSearch';
 import isSelfOrg from 'helpers/isSelfOrg';
+import isNil from '@misakey/helpers/isNil';
 
 import { useTranslation } from 'react-i18next';
 import useOrgId from 'hooks/useOrgId';
+import useFetchOrganizations from 'hooks/useFetchOrganizations';
+import useOnAddOrganization from 'hooks/useOnAddOrganization';
 
 import Popover from '@material-ui/core/Popover';
 import ListItemOrganizationSelf from 'components/smart/ListItem/Organization/Self';
+import ListItemOrganizationLink from 'components/smart/ListItem/Organization/Link';
+import ListItemOrganizationSkeleton from '@misakey/ui/ListItem/Organization/Skeleton';
 import List from '@material-ui/core/List';
 import AppBarStatic from '@misakey/ui/AppBar/Static';
 import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
@@ -37,13 +42,14 @@ const SELF_ORG_TO = routes.boxes._;
 // COMPONENTS
 const IconButtonCreate = withDialogPassword(IconButtonAppBar);
 
-const PopoverOrganizations = forwardRef(({ onClose, ...props }, ref) => {
+const PopoverOrganizations = forwardRef(({ onClose, open, ...props }, ref) => {
   const { t } = useTranslation('organizations');
   const { replace } = useHistory();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const orgId = useOrgId();
+  const onAddOrganization = useOnAddOrganization();
   const selfOrgSelected = useMemo(
     () => isSelfOrg(orgId),
     [orgId],
@@ -65,21 +71,31 @@ const PopoverOrganizations = forwardRef(({ onClose, ...props }, ref) => {
   );
 
   const onDialogSuccess = useCallback(
-    ({ id }) => {
+    (org) => {
+      const { id } = org;
       setIsDialogOpen(false);
       onClose();
+      onAddOrganization(org);
       replace({
         pathname: routes.boxes._,
         search: getNextSearch('', new Map([['orgId', id]])),
       });
     },
-    [setIsDialogOpen, onClose, replace],
+    [onClose, onAddOrganization, replace],
+  );
+
+  const { isFetching, shouldFetch, organizations } = useFetchOrganizations(open);
+
+  const otherOrganizations = useMemo(
+    () => (isNil(organizations) ? [] : organizations.filter(({ id }) => !isSelfOrg(id))),
+    [organizations],
   );
 
   return (
     <>
       <Popover
         ref={ref}
+        open={open}
         onClose={onClose}
         {...props}
       >
@@ -103,7 +119,20 @@ const PopoverOrganizations = forwardRef(({ onClose, ...props }, ref) => {
             component={Link}
             to={SELF_ORG_TO}
             selected={selfOrgSelected}
+            onClick={onClose}
           />
+          {(isFetching || shouldFetch) ? (
+            <ListItemOrganizationSkeleton />
+          ) : otherOrganizations.map(({ id, name: orgName, currentIdentityRole }) => (
+            <ListItemOrganizationLink
+              key={id}
+              id={id}
+              name={orgName}
+              secondary={t(`organizations:role.${currentIdentityRole}`)}
+              selected={orgId === id}
+              onClick={onClose}
+            />
+          ))}
         </List>
       </Popover>
       <DialogOrganizationsCreate
@@ -116,7 +145,12 @@ const PopoverOrganizations = forwardRef(({ onClose, ...props }, ref) => {
 });
 
 PopoverOrganizations.propTypes = {
+  open: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
+};
+
+PopoverOrganizations.defaultProps = {
+  open: false,
 };
 
 export default PopoverOrganizations;

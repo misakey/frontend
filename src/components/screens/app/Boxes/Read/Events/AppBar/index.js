@@ -5,8 +5,8 @@ import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import routes from 'routes';
 
-import { TOOLBAR_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
-import { SMALL } from '@misakey/ui/Avatar';
+import { TOOLBAR_MIN_HEIGHT, SMALL } from '@misakey/ui/constants/sizes';
+
 import BoxesSchema from 'store/schemas/Boxes';
 
 import isEmpty from '@misakey/helpers/isEmpty';
