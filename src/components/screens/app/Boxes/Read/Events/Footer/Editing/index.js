@@ -128,13 +128,10 @@ function BoxEventsFooterEditing({ box, event, clearEvent, t }) {
       return createEditTextBoxEventBuilder({
         publicKey, boxId, referrerId: eventId, value,
       })
-        .then(() => {
-          enqueueSnackbar(t('boxes:read.events.edited.success'), { variant: 'success' });
-          return Promise.all([
-            resetForm(),
-            clearEvent(),
-          ]);
-        })
+        .then(() => Promise.all([
+          resetForm(),
+          clearEvent(),
+        ]))
         .catch((error) => {
           const code = getCode(error);
           if (code === gone) {

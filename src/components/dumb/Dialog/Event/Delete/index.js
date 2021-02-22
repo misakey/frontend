@@ -28,7 +28,6 @@ const DialogEventDelete = ({
   const onConfirm = useCallback(
     () => createDeleteBoxEventBuilder({ boxId, referrerId: eventId })
       .then((response) => {
-        enqueueSnackbar(t('boxes:read.events.delete.success'), { variant: 'success' });
         if (isFunction(onDelete)) {
           return onDelete(response);
         }
