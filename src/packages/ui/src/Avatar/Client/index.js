@@ -5,8 +5,8 @@ import { withTranslation } from 'react-i18next';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import Avatar from '@misakey/ui/Avatar';
 import Grow from '@material-ui/core/Grow';
+import AvatarColorized, { BACKGROUND_COLOR } from '@misakey/ui/Avatar/Colorized';
 
 // COMPONENTS
 function AvatarClient({
@@ -21,15 +21,15 @@ function AvatarClient({
 
   return (
     <Grow in={isLoaded || !src}>
-      <Avatar
+      <AvatarColorized
         alt={t('components:client.logoAlt', { clientName: name })}
-        src={src}
+        image={src}
+        text={name}
+        colorizedProp={BACKGROUND_COLOR}
         onError={handleLoaded}
         onLoad={handleLoaded}
         {...omitTranslationProps(rest)}
-      >
-        {name.slice(0, 3)}
-      </Avatar>
+      />
     </Grow>
   );
 }

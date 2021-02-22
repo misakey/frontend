@@ -1,8 +1,7 @@
-import React, { useContext, useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/Context';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import isNil from '@misakey/helpers/isNil';
@@ -11,40 +10,35 @@ import { useSelector } from 'react-redux';
 
 import { Route } from 'react-router-dom';
 
+import useAskSigninWithLoginHint from '@misakey/react-auth/hooks/useAskSigninWithLoginHint';
+
 // CONSTANTS
 const {
   acr: ACR_SELECTOR,
   isAuthenticated: IS_AUTHENTICATED_SELECTOR,
-  identifierValue: IDENTIFIER_VALUE_SELECTOR,
 } = authSelectors;
 
 // COMPONENTS
 const RouteAcr = ({ route: RouteComponent, acr, options, ...rest }) => {
-  const { askSigninRedirect } = useContext(UserManagerContext);
-
   const currentAcr = useSelector(ACR_SELECTOR);
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
-  const identifierValue = useSelector(IDENTIFIER_VALUE_SELECTOR);
+  const askSigninWithLoginHint = useAskSigninWithLoginHint();
 
   const shouldAskRedirect = useMemo(
     () => isNil(currentAcr) || currentAcr < acr,
     [currentAcr, acr],
   );
 
-  const loginHint = useMemo(
-    () => (isNil(identifierValue)
-      ? ''
-      : JSON.stringify({ identifier: identifierValue })),
-    [identifierValue],
-  );
-
   useEffect(
     () => {
       if (shouldAskRedirect) {
-        askSigninRedirect({ acrValues: acr, loginHint, ...options }, false);
+        askSigninWithLoginHint({
+          acrValues: acr,
+          ...options,
+        }, false);
       }
     },
-    [askSigninRedirect, acr, loginHint, options, shouldAskRedirect],
+    [askSigninWithLoginHint, acr, options, shouldAskRedirect],
   );
 
   if (isNil(currentAcr) && isAuthenticated) {

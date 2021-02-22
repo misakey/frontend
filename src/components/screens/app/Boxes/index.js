@@ -36,7 +36,7 @@ const boxIdMatchParamPath = path(['match', 'params', 'id']);
 // COMPONENTS
 function Boxes({ match }) {
   const location = useLocation();
-  const { hash: locationHash } = location;
+  const { hash: locationHash, search } = location;
   const matchBoxSelected = useRouteMatch(routes.boxes.read._);
   const { params: { id } } = useMemo(
     () => matchBoxSelected || { params: {} },
@@ -105,7 +105,7 @@ function Boxes({ match }) {
               <MuiRedirect
                 exact
                 from={match.path}
-                to={routes.userNotifications._}
+                to={{ pathname: routes.userNotifications._, search }}
               />
             )}
             <RouteAcr

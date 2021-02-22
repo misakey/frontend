@@ -1,8 +1,6 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
-
-import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/Context';
 
 import Card from '@material-ui/core/Card';
 import Box from '@material-ui/core/Box';
@@ -10,16 +8,20 @@ import BoxAlinea from '@misakey/ui/Box/Alinea';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
+import useAskSigninWithLoginHint from '@misakey/react-auth/hooks/useAskSigninWithLoginHint';
 
 // COMPONENTS
 const CardOnboardDiscover = () => {
   const { t } = useTranslation('onboard');
 
-  const { askSigninRedirect } = useContext(UserManagerContext);
+  const askSigninWithLoginHint = useAskSigninWithLoginHint();
 
   const onCreateAccount = useCallback(
-    () => askSigninRedirect({ acrValues: 2, prompt: 'login' }),
-    [askSigninRedirect],
+    async () => askSigninWithLoginHint({
+      acrValues: 2,
+      prompt: 'login',
+    }),
+    [askSigninWithLoginHint],
   );
 
   return (

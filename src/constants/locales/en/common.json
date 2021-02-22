@@ -155,8 +155,8 @@
     "storage": "An error occurred with the connexion attempt.\nThe application can not reach browser local storage."
   },
   "connect": {
-    "misakey": {
-      "title": "Access to “Misakey app”"
+    "client": {
+      "title": "Access to “{{clientName}}”"
     },
     "title": "Access to “{{resourceName}}”",
     "authorize": "Autorize <1>{{creatorName}}</1> to access above information\u00a0?",

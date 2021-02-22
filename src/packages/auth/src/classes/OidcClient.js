@@ -26,6 +26,7 @@ import { parseJwt, validateJwt } from '@misakey/auth/helpers/jwtUtils';
 import SigninResponseError from '@misakey/auth/classes/SigninResponseError';
 import isFunction from '@misakey/helpers/isFunction';
 import snakeCase from '@misakey/helpers/snakeCase';
+import trimStart from '@misakey/helpers/trimStart';
 
 const TOKEN_INFO_STORE_KEY = 'misoidc:tokenInfo';
 const STATE_STORE_PREFIX = 'misoidc:state';
@@ -236,11 +237,7 @@ export default class OidcClient {
 
   validateSigninResponse(state, response) {
     const { id: stateId, clientId, authority } = state;
-    const { stateId: responseStateId, error, idToken } = response;
-
-    if (!isNil(error)) {
-      return Promise.reject(new Error(response));
-    }
+    const { stateId: responseStateId, idToken } = response;
 
     if (stateId !== responseStateId) {
       return Promise.reject(new Error('State does not match'));
@@ -253,16 +250,32 @@ export default class OidcClient {
   }
 
   async processSigninResponse(url) {
-    const { hash } = new URL(url);
-    const hashParams = hash.split('&').reduce((params, item) => {
+    const { hash, search } = new URL(url);
+    const hashParams = trimStart(hash, '#').split('&').reduce((params, item) => {
+      const [key, value] = item.split('=');
+      return { ...params, [key]: value };
+    }, {});
+
+    const searchParams = trimStart(search, '?').split('&').reduce((params, item) => {
       const [key, value] = item.split('=');
       return { ...params, [key]: value };
     }, {});
 
     const {
-      error, errorDescription, errorUri,
       state: stateId, idToken, sessionState, tokenType, scope, profile, expiresIn, expiry,
     } = objectToCamelCase(hashParams);
+
+    const { error, errorDescription, errorUri } = objectToCamelCase(searchParams);
+
+    if (!isNil(error)) {
+      this.clearTokenInfo();
+      return Promise.reject(new Error(`${error}: ${errorDescription}`));
+    }
+
+    if (!isNil(errorUri)) {
+      this.clearTokenInfo();
+      return Promise.reject(new Error(errorUri));
+    }
 
     const params = {
       error,
@@ -290,6 +303,7 @@ export default class OidcClient {
       this.removeState(stateId);
       return { user, referrer };
     } catch (err) {
+      this.clearTokenInfo();
       this.removeState(stateId);
       return Promise.reject(new SigninResponseError(err, referrer));
     }

@@ -12,6 +12,7 @@ const OrganizationsSchema = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     creatorId: PropTypes.string,
+    logoUrl: PropTypes.string,
     currentIdentityRole: PropTypes.oneOf(['admin', 'agent', null]),
     createdAt: PropTypes.string,
   },

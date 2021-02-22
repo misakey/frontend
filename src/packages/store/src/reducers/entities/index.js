@@ -1,3 +1,6 @@
+import { createSelector } from 'reselect';
+import { denormalize } from 'normalizr';
+
 import isFunction from '@misakey/helpers/isFunction';
 import prop from '@misakey/helpers/prop';
 import omit from '@misakey/helpers/omit';
@@ -5,6 +8,7 @@ import isObject from '@misakey/helpers/isObject';
 import isArray from '@misakey/helpers/isArray';
 import isEmpty from '@misakey/helpers/isEmpty';
 import isSchemaEntity from '@misakey/helpers/isSchema/entity';
+import isNil from '@misakey/helpers/isNil';
 import createReducer from '@misakey/store/reducers/helpers/createReducer';
 import {
   RECEIVE_ENTITIES,
@@ -100,6 +104,13 @@ function updateEntities(state, { processStrategy, ...action }) {
 
   return processStrategy(state, action);
 }
+
+// SELECTORS
+export const makeGetEntitySelector = (entitySchema) => createSelector(
+  (state) => state.entities,
+  (_, id) => id,
+  (entities, id) => (isNil(id) ? null : denormalize(id, entitySchema, entities)),
+);
 
 export const makeReducer = (
   initialState = INITIAL_STATE,

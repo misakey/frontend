@@ -1,35 +1,25 @@
-import React, { useContext, useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/Context';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
-
-import isNil from '@misakey/helpers/isNil';
 
 import { useSelector } from 'react-redux';
 
 import { Route } from 'react-router-dom';
 
+import useAskSigninWithLoginHint from '@misakey/react-auth/hooks/useAskSigninWithLoginHint';
+
 // CONSTANTS
 const {
   isAuthenticated: IS_AUTHENTICATED_SELECTOR,
-  identifierValue: IDENTIFIER_VALUE_SELECTOR,
 } = authSelectors;
 
 // COMPONENTS
 const RouteAuthenticated = ({ route: RouteComponent, options, ...rest }) => {
-  const { askSigninRedirect } = useContext(UserManagerContext);
-
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
-  const identifierValue = useSelector(IDENTIFIER_VALUE_SELECTOR);
 
-  const loginHint = useMemo(
-    () => (isNil(identifierValue)
-      ? ''
-      : JSON.stringify({ identifier: identifierValue })),
-    [identifierValue],
-  );
+  const askSigninWithLoginHint = useAskSigninWithLoginHint();
 
   const shouldAskRedirect = useMemo(
     () => !isAuthenticated,
@@ -39,10 +29,10 @@ const RouteAuthenticated = ({ route: RouteComponent, options, ...rest }) => {
   useEffect(
     () => {
       if (shouldAskRedirect) {
-        askSigninRedirect({ loginHint, ...options }, false);
+        askSigninWithLoginHint(options, false);
       }
     },
-    [shouldAskRedirect, askSigninRedirect, loginHint, options],
+    [shouldAskRedirect, options, askSigninWithLoginHint],
   );
 
   if (!shouldAskRedirect) {

@@ -5,8 +5,8 @@ import { batch } from 'react-redux';
 import pathOr from '@misakey/helpers/pathOr';
 import isNil from '@misakey/helpers/isNil';
 import { receiveEntities, updateEntities, removeEntities } from '@misakey/store/actions/entities';
-import OrganizationsByIdentitySchema from 'store/schemas/Organizations/ByIdentity';
-import OrganizationsSchema from 'store/schemas/Organizations';
+import OrganizationsByIdentitySchema from '@misakey/react-auth/store/schemas/Organizations/ByIdentity';
+import OrganizationsSchema from '@misakey/react-auth/store/schemas/Organizations';
 
 // SELECTORS
 const getOrganizationsSelector = createSelector(

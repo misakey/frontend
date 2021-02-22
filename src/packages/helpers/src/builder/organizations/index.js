@@ -8,3 +8,9 @@ export const createOrganizationBuilder = (payload) => API
   .build(null, objectToSnakeCase(payload))
   .send()
   .then(objectToCamelCase);
+
+export const getOrgPublicBuilder = (id) => API
+  .use(API.endpoints.organizations.public.read)
+  .build({ id })
+  .send()
+  .then(objectToCamelCase);

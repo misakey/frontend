@@ -23,7 +23,9 @@ import LoginIdentifier from '@misakey/react-auth/components/screens/Login/Identi
 import LoginSecret from '@misakey/react-auth/components/screens/Login/Secret';
 
 // COMPONENTS
-const AuthLogin = ({ identifier, match, loginChallenge, loginHint, t, ...props }) => {
+const AuthLogin = ({
+  identifier, match, client: clientProvider, loginChallenge, loginHint, t, ...props
+}) => {
   const handleHttpErrors = useHandleHttpErrors();
   const onSubmit = useOnIdentifierSubmit(loginChallenge);
 
@@ -32,7 +34,12 @@ const AuthLogin = ({ identifier, match, loginChallenge, loginHint, t, ...props }
     [loginHint],
   );
 
-  const { identifier: identifierHint } = useSafeDestr(objLoginHint);
+  const { identifier: identifierHint, client: clientHint } = useSafeDestr(objLoginHint);
+
+  const client = useMemo(
+    () => (!isNil(clientHint) ? clientHint : clientProvider),
+    [clientHint, clientProvider],
+  );
 
   const identifierValid = useMemo(
     () => !isEmpty(identifier),
@@ -67,6 +74,7 @@ const AuthLogin = ({ identifier, match, loginChallenge, loginHint, t, ...props }
           <LoginSecret
             {...objLoginHint} // should not override identifier
             {...routerProps}
+            client={client}
             loginChallenge={loginChallenge}
             identifier={identifier}
             {...props}
@@ -79,6 +87,7 @@ const AuthLogin = ({ identifier, match, loginChallenge, loginHint, t, ...props }
           <LoginIdentifier
             {...objLoginHint} // should not override identifier
             {...routerProps}
+            client={client}
             identifier={identifier}
             loginChallenge={loginChallenge}
             {...props}

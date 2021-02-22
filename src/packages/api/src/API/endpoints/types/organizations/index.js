@@ -4,4 +4,10 @@ export default {
     path: '/organizations',
     withCsrfToken: true,
   },
+  public: {
+    read: {
+      method: 'GET',
+      path: '/organizations/:id/public',
+    },
+  },
 };

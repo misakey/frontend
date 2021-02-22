@@ -162,8 +162,8 @@
     "storage": "Une erreur s'est produite lors de la tentative de connexion.\nL'application n'a pas pu accéder au stockage local du navigateur."
   },
   "connect": {
-    "misakey": {
-      "title": "Accès à «\u00a0Misakey app\u00a0»"
+    "client": {
+      "title": "Accès à «\u00a0{{clientName}}\u00a0»"
     },
     "title": "Accéder à «\u00a0{{resourceName}}\u00a0»",
     "authorize": "Autorisez-vous <1>{{creatorName}}</1> à accéder aux informations ci-dessus\u00a0?",

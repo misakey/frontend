@@ -1,6 +1,6 @@
 import { schema } from 'normalizr';
 import PropTypes from 'prop-types';
-import OrganizationsSchema from 'store/schemas/Organizations';
+import OrganizationsSchema from '@misakey/react-auth/store/schemas/Organizations';
 
 const entity = new schema.Entity('identityOrganizations', {
   organizations: OrganizationsSchema.collection,

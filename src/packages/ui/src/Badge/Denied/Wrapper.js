@@ -2,11 +2,10 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import BadgeDenied from '@misakey/ui/Badge/Denied';
-import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
 import { SIZES, MEDIUM } from '@misakey/ui/constants/sizes';
 
 // COMPONENTS
-const AvatarMisakeyDenied = ({ size, ...props }) => {
+const BadgeDeniedWrapper = ({ size, children }) => {
   // convert size values to fontSize values,
   // see https://material-ui.com/api/icon/#props
   const fontSize = useMemo(
@@ -17,17 +16,19 @@ const AvatarMisakeyDenied = ({ size, ...props }) => {
     <BadgeDenied
       fontSize={fontSize}
     >
-      <AvatarMisakey size={size} {...props} />
+      {children}
     </BadgeDenied>
   );
 };
 
-AvatarMisakeyDenied.propTypes = {
+BadgeDeniedWrapper.propTypes = {
+  children: PropTypes.oneOfType([PropTypes.element, PropTypes.node]),
   size: PropTypes.oneOf(SIZES),
 };
 
-AvatarMisakeyDenied.defaultProps = {
+BadgeDeniedWrapper.defaultProps = {
+  children: null,
   size: MEDIUM,
 };
 
-export default AvatarMisakeyDenied;
+export default BadgeDeniedWrapper;

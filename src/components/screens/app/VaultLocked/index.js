@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -35,6 +35,9 @@ import BoxControls from '@misakey/ui/Box/Controls';
 import Box from '@material-ui/core/Box';
 import CardSsoWithSlope from '@misakey/react-auth/components/Card/Sso/WithSlope';
 import Title from '@misakey/ui/Typography/Title';
+import useGetOrgFromSearch from '@misakey/react-auth/hooks/useGetOrgFromSearch';
+import AvatarColorized, { BACKGROUND_COLOR } from '@misakey/ui/Avatar/Colorized';
+import isNil from '@misakey/helpers/isNil';
 
 // CONSTANTS
 const INITIAL_VALUES = {
@@ -79,10 +82,30 @@ function VaultLocked({ t }) {
 
   useUpdateDocHead(t('boxes:vault.lockedScreen.documentTitle'));
 
+  const { organization } = useGetOrgFromSearch();
+  const { name, logoUrl } = useSafeDestr(organization);
+
+  const avatar = useMemo(
+    () => {
+      if (!isNil(name)) {
+        return (
+          <AvatarColorized
+            size={LARGE}
+            text={name}
+            image={logoUrl}
+            colorizedProp={BACKGROUND_COLOR}
+          />
+        );
+      }
+      return <AvatarMisakey size={LARGE} />;
+    },
+    [logoUrl, name],
+  );
+
   return (
     <CardSsoWithSlope
       slopeProps={SLOPE_PROPS}
-      avatar={<AvatarMisakey size={LARGE} />}
+      avatar={avatar}
       avatarSize={LARGE}
       header={(
         <AppBarDrawer color="primary" side={SIDES.LEFT}>

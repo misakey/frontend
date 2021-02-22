@@ -1,7 +1,7 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, Fragment } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { generatePath } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
@@ -12,7 +12,6 @@ import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER, LARGE } from '@misakey/ui
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import { useSelector } from 'react-redux';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
@@ -26,16 +25,17 @@ import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import Dialog from '@material-ui/core/Dialog';
 import BoxControls from '@misakey/ui/Box/Controls';
 import AvatarBox from '@misakey/ui/Avatar/Box';
-import AvatarMisakeyDenied from '@misakey/ui/Avatar/Misakey/Denied';
 import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
 import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
 import CardUserAuth from '@misakey/react-auth/components/Card/User';
 import CardUserSignOut from '@misakey/react-auth/components/Card/User/SignOut';
 import DialogPaperSlope from '@misakey/ui/Dialog/Paper/Slope';
 import CardSso from '@misakey/react-auth/components/Card/Sso';
+import AvatarColorized, { BACKGROUND_COLOR } from '@misakey/ui/Avatar/Colorized';
+import BadgeDeniedWrapper from '@misakey/ui/Badge/Denied/Wrapper';
 
 // CONSTANTS
-const { acr: getCurrentAcrSelector } = authSelectors;
+const { acr: getCurrentAcrSelector, expiresAt: EXPIRES_AT_SELECTOR } = authSelectors;
 const SLOPE_PROPS = {
   // @FIXME approximate spacing to align card content with slope
   height: APPBAR_HEIGHT + AVATAR_SIZE * LARGE_MULTIPLIER + 114,
@@ -58,7 +58,6 @@ const useStyles = makeStyles((theme) => ({
 const DialogSigninRedirect = ({
   acrValues, loginHint,
   userManager,
-  t,
   open,
   onClose,
   canCancelRedirect,
@@ -70,36 +69,34 @@ const DialogSigninRedirect = ({
   const currentUser = useSelector(getCurrentUserSelector);
   const currentAcr = useSelector(getCurrentAcrSelector);
   const { enqueueSnackbar } = useSnackbar();
+  const { t } = useTranslation(['components', 'common']);
 
   const objLoginHint = useMemo(
     () => (isEmpty(loginHint) ? null : objectToCamelCase(JSON.parse(loginHint))),
     [loginHint],
   );
 
-  const { resourceName, creatorName, creatorIdentityId } = useSafeDestr(objLoginHint);
+  const { resourceName, creatorName, creatorIdentityId, client } = useSafeDestr(objLoginHint);
+  const expiresAt = useSelector(EXPIRES_AT_SELECTOR);
+  const { name: clientName, logoUri: clientLogo } = useSafeDestr(client);
 
   const creatorProfileTo = useMemo(
     () => (isNil(creatorIdentityId) ? null : generatePath(publicRoute, { id: creatorIdentityId })),
     [publicRoute, creatorIdentityId],
   );
 
-  const propsWithoutTranslation = useMemo(
-    () => omitTranslationProps(props),
-    [props],
-  );
-
   const redirectOptions = useMemo(
     () => (isNil(acrValues)
       ? {
-        ...propsWithoutTranslation,
+        ...props,
         loginHint,
       }
       : {
-        ...propsWithoutTranslation,
+        ...props,
         loginHint,
         acrValues,
       }),
-    [acrValues, loginHint, propsWithoutTranslation],
+    [acrValues, loginHint, props],
   );
 
   const closableDialogProps = useMemo(
@@ -122,8 +119,8 @@ const DialogSigninRedirect = ({
   );
 
   const sessionExpired = useMemo(
-    () => !isEmpty(currentUser) && (isNil(currentAcr) || currentAcr === acrValues),
-    [acrValues, currentAcr, currentUser],
+    () => !isEmpty(currentUser) && !isNil(expiresAt),
+    [currentUser, expiresAt],
   );
 
   const insufficientACR = useMemo(
@@ -142,9 +139,9 @@ const DialogSigninRedirect = ({
       if (!isNil(resourceName)) {
         return t('common:connect.title', { resourceName });
       }
-      return t('common:connect.misakey.title');
+      return t('common:connect.client.title', { clientName: clientName || 'Misakey App' });
     },
-    [sessionExpired, insufficientACR, resourceName, t, acrValues],
+    [sessionExpired, insufficientACR, resourceName, t, clientName, acrValues],
   );
 
   const subtitle = useMemo(
@@ -172,6 +169,40 @@ const DialogSigninRedirect = ({
     ],
   );
 
+  const avatar = useMemo(
+    () => {
+      const Wrapper = sessionExpired ? BadgeDeniedWrapper : Fragment;
+      if (!isNil(resourceName)) {
+        return (
+          <Wrapper size={LARGE}>
+            <AvatarBox
+              title={resourceName}
+              size={LARGE}
+            />
+          </Wrapper>
+        );
+      }
+      if (!isNil(clientName)) {
+        return (
+          <Wrapper size={LARGE}>
+            <AvatarColorized
+              size={LARGE}
+              image={clientLogo}
+              text={clientName}
+              colorizedProp={BACKGROUND_COLOR}
+            />
+          </Wrapper>
+        );
+      }
+      return (
+        <Wrapper size={LARGE}>
+          <AvatarMisakey size={LARGE} />
+        </Wrapper>
+      );
+    },
+    [clientLogo, clientName, resourceName, sessionExpired],
+  );
+
   const text = useMemo(
     () => (isEmpty(currentUser) ? t('common:continue') : t('common:confirm')),
     [currentUser, t],
@@ -182,16 +213,13 @@ const DialogSigninRedirect = ({
     [currentUser],
   );
 
-  const onRedirect = useCallback(
-    (options) => userManager.signinRedirect(options),
-    [userManager],
-  );
-
   const onClick = useCallback(
-    () => onRedirect(redirectOptions).catch(() => {
-      enqueueSnackbar(t('common:error.storage'), { variant: 'warning', persist: true });
-    }),
-    [enqueueSnackbar, onRedirect, redirectOptions, t],
+    () => userManager
+      .signinRedirect(redirectOptions)
+      .catch(() => {
+        enqueueSnackbar(t('common:error.storage'), { variant: 'warning', persist: true });
+      }),
+    [enqueueSnackbar, redirectOptions, t, userManager],
   );
 
   useUpdateDocHead(t('components:signinRedirect.documentTitle'));
@@ -212,40 +240,29 @@ const DialogSigninRedirect = ({
           />
         ),
         slopeProps: SLOPE_PROPS,
-        avatar: sessionExpired ? (<AvatarMisakeyDenied size={LARGE} />) : (
-          <>
-            {isNil(resourceName) ? (
-              <AvatarMisakey size={LARGE} />
-            ) : (
-              <AvatarBox
-                title={resourceName}
-                size={LARGE}
-              />
-            )}
-          </>
-        ),
+        avatar,
         avatarSize: LARGE,
       }}
     >
       {open && (
-      <CardSso avatarSize={LARGE}>
-        <Box>
-          <Title align="center" gutterBottom={false}>{title}</Title>
-          <Subtitle align="center">{subtitle}</Subtitle>
-          {!isEmpty(currentUser) && (
-          <CardUserComponent
-            my={3}
-            expired={sessionExpired}
+        <CardSso avatarSize={LARGE}>
+          <Box>
+            <Title align="center" gutterBottom={false}>{title}</Title>
+            <Subtitle align="center">{subtitle}</Subtitle>
+            {!isEmpty(currentUser) && (
+              <CardUserComponent
+                my={3}
+                expired={sessionExpired}
+              />
+            )}
+          </Box>
+          <BoxControls
+            primary={{
+              text,
+              onClick,
+            }}
           />
-          )}
-        </Box>
-        <BoxControls
-          primary={{
-            text,
-            onClick,
-          }}
-        />
-      </CardSso>
+        </CardSso>
       )}
     </Dialog>
   );
@@ -261,8 +278,6 @@ DialogSigninRedirect.propTypes = {
   onClose: PropTypes.func,
   open: PropTypes.bool.isRequired,
   fullScreen: PropTypes.bool,
-  // withTranslation
-  t: PropTypes.func.isRequired,
 };
 
 DialogSigninRedirect.defaultProps = {
@@ -272,4 +287,4 @@ DialogSigninRedirect.defaultProps = {
   fullScreen: false,
 };
 
-export default withTranslation(['components', 'common'])(DialogSigninRedirect);
+export default DialogSigninRedirect;

@@ -6,23 +6,23 @@ import { withTranslation } from 'react-i18next';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isFunction from '@misakey/helpers/isFunction';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import useProcessRedirect from '@misakey/react-auth/hooks/useProcessRedirect';
+import useAskSigninWithLoginHint from '@misakey/react-auth/hooks/useAskSigninWithLoginHint';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 // COMPONENTS
 const ButtonConnect = forwardRef(
   ({ authProps, children, onClick, t, ...props }, ref) => {
-    const processSignIn = useProcessRedirect();
+    const askSigninWithLoginHint = useAskSigninWithLoginHint();
 
     const onButtonClick = useCallback(
       (...args) => {
         if (isFunction(onClick)) {
           onClick(...args);
         }
-        processSignIn(objectToSnakeCase(authProps));
+        askSigninWithLoginHint(objectToSnakeCase(authProps));
       },
-      [authProps, onClick, processSignIn],
+      [authProps, onClick, askSigninWithLoginHint],
     );
 
     return (
