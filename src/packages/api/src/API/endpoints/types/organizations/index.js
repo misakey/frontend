@@ -10,4 +10,11 @@ export default {
       path: '/organizations/:id/public',
     },
   },
+  secret: {
+    create: {
+      method: 'PUT',
+      path: '/organizations/:id/secret',
+      withCsrfToken: true,
+    },
+  },
 };

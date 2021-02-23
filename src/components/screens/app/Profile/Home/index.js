@@ -3,48 +3,38 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import AppBarStatic from '@misakey/ui/AppBar/Static';
-import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
 import CardIdentity from 'components/dumb/Card/Identity';
 import AvatarCurrentUser from 'components/smart/Avatar/CurrentUser';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
+import ButtonDrawerDefault from 'components/smart/Button/Drawer/Default';
+import ButtonDrawerLink from 'components/smart/Button/Drawer/Link';
 
 import ArrowBack from '@material-ui/icons/ArrowBack';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import routes from 'routes';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
-import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
 
 const ProfileHome = ({ identityMetadata }) => {
   const { id } = useParams();
   const { t } = useTranslation(['account', 'common']);
-
-  const { isDrawerOpen, toggleDrawer } = useScreenDrawerContext();
 
   useUpdateDocHead(t('account:documentTitle'));
 
   return (
     <>
       <AppBarStatic>
-        {!isDrawerOpen && (
-          <IconButtonAppBar
-            aria-label={t('common:goBack')}
-            edge="start"
-            component={Link}
-            to={routes.boxes._}
-          >
-            <ArrowBack />
-          </IconButtonAppBar>
-        )}
+        <ButtonDrawerLink
+          aria-label={t('common:goBack')}
+          to={routes.boxes._}
+        >
+          <ArrowBack />
+        </ButtonDrawerLink>
         <BoxFlexFill />
-        {!isDrawerOpen && (
-          <IconButtonAppBar
-            aria-label={t('common:openAccountDrawer')}
-            edge="start"
-            onClick={toggleDrawer}
-          >
-            <AvatarCurrentUser />
-          </IconButtonAppBar>
-        )}
+        <ButtonDrawerDefault
+          aria-label={t('common:openAccountDrawer')}
+        >
+          <AvatarCurrentUser />
+        </ButtonDrawerDefault>
       </AppBarStatic>
       {id && (
         <CardIdentity {...identityMetadata} />

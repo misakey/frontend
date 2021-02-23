@@ -1,38 +1,27 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
 
 import Box from '@material-ui/core/Box';
-import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
+import ButtonDrawerDefault from 'components/smart/Button/Drawer/Default';
 
 import ArrowBack from '@material-ui/icons/ArrowBack';
 
 // COMPONENTS
 function ToggleDrawerButton(props) {
   const { t } = useTranslation('common');
-  const { toggleDrawer, isDrawerOpen } = useScreenDrawerContext();
-
-  const onClick = useCallback(
-    (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      toggleDrawer();
-    },
-    [toggleDrawer],
-  );
+  const { isDrawerOpen } = useScreenDrawerContext();
 
   if (isDrawerOpen) { return null; }
 
   return (
     <Box display="flex" alignItems="center" pl={0} ml={-1} pr={1} {...props}>
-      <IconButtonAppBar
+      <ButtonDrawerDefault
         aria-label={t('common:openAccountDrawer')}
-        edge="start"
-        onClick={onClick}
       >
         <ArrowBack />
-      </IconButtonAppBar>
+      </ButtonDrawerDefault>
     </Box>
   );
 }

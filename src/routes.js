@@ -30,6 +30,10 @@ const routes = {
   documents: {
     _: '/documents',
   },
+  organizations: {
+    _: '/organizations',
+    secret: '/organizations/secret',
+  },
   userNotifications: {
     _: '/user-notifications',
   },

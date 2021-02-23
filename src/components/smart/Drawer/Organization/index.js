@@ -1,6 +1,6 @@
-import React, { Suspense, useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 
-import { useHistory, useLocation, Link } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import {
   TMP_DRAWER_ORG_VALUE,
@@ -13,20 +13,10 @@ import {
 import getNextSearch from '@misakey/helpers/getNextSearch';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useTranslation } from 'react-i18next';
 import useDrawerLayout from '@misakey/hooks/useDrawerLayout';
 
 import Drawer from '@material-ui/core/Drawer';
-import AppBarStatic from '@misakey/ui/AppBar/Static';
-import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
-import Box from '@material-ui/core/Box';
-import BoxFlexFill from '@misakey/ui/Box/FlexFill';
-import ListNavigationOrganization from 'components/smart/List/Navigation/Organization';
-import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
-import ListBordered from '@misakey/ui/List/Bordered';
-import ListItemOrganizationCurrent from 'components/smart/ListItem/Organization/Current';
-
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import DrawerOrganizationContent from 'components/smart/Drawer/Organization/Content';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -38,7 +28,6 @@ const useStyles = makeStyles(() => ({
 // COMPONENTS
 const DrawerOrganization = (props) => {
   const history = useHistory();
-  const { t } = useTranslation('common');
   const { pathname, search, hash } = useLocation();
 
   const { isSmDown, tmpDrawerSearch, side } = useDrawerLayout();
@@ -105,28 +94,9 @@ const DrawerOrganization = (props) => {
       classes={{ paper: classes.drawerPaper }}
       {...props}
     >
-      <Box minHeight="100%" display="flex" flexDirection="column" overflow="hidden">
-        <AppBarStatic>
-          <IconButtonAppBar
-            aria-label={t('common:goBack')}
-            edge="start"
-            component={Link}
-            to={hideDrawerTo}
-          >
-            <ArrowBackIcon />
-          </IconButtonAppBar>
-          <BoxFlexFill />
-          <ListBordered
-            dense
-            disablePadding
-          >
-            <ListItemOrganizationCurrent />
-          </ListBordered>
-        </AppBarStatic>
-        <Suspense fallback={<SplashScreen />}>
-          <ListNavigationOrganization />
-        </Suspense>
-      </Box>
+      <DrawerOrganizationContent
+        backTo={hideDrawerTo}
+      />
     </Drawer>
   );
 };

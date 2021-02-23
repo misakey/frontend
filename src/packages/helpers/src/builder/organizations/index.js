@@ -14,3 +14,9 @@ export const getOrgPublicBuilder = (id) => API
   .build({ id })
   .send()
   .then(objectToCamelCase);
+
+export const generateOrganizationSecretBuilder = (id) => API
+  .use(API.endpoints.organizations.secret.create)
+  .build({ id })
+  .send()
+  .then(objectToCamelCase);

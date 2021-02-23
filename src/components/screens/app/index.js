@@ -21,6 +21,7 @@ import useLoadedAnimation from '@misakey/hooks/useLoadedAnimation';
 const Profile = lazy(() => retry(() => import('components/screens/app/Profile')));
 const Invitation = lazy(() => retry(() => import('components/screens/app/Invitation')));
 const NotFound = lazy(() => retry(() => import('components/screens/app/NotFound')));
+const OrganizationsRead = lazy(() => retry(() => import('components/screens/app/Organizations/Read')));
 
 // COMPONENTS
 const BoxesApp = () => {
@@ -61,6 +62,7 @@ const BoxesApp = () => {
         />
 
         {/* OTHERS */}
+        <Route path={routes.organizations._} component={OrganizationsRead} />
         <Route path={routes.identities._} component={Profile} />
         {/* @FIXME kept for retrocompatibility */}
         <Route path={routes.boxes.invitation} component={Invitation} />

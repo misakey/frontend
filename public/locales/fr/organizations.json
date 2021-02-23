@@ -7,5 +7,14 @@
     "admin": "Administrateur",
     "agent": "Agent",
     "null": "Membre"
+  },
+  "secret": {
+    "title": "Génération de secret",
+    "generate": "Générer un nouveau secret",
+    "copy": "Copiez et stockez ce code secret en sécurité, il vous permettra d'identifier une machine par API",
+    "confirm": {
+      "title": "Êtes-vous sûr·e de vouloir générer un nouveau secret\u00a0?",
+      "body": "Le secret précédent sera révoqué et les services l'utilisant n'auront plus d'autorisation le temps de les mettre à jour"
+    }
   }
 }
