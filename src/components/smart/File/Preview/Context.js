@@ -208,7 +208,6 @@ const FilePreviewContextProvider = ({ children, revokeOnChange, ...props }) => {
       <DialogFilePreview
         open={!isNil(selectedId)}
         selectedId={selectedId}
-        onSave={onSaveInVault}
         onClose={onCloseFilePreview}
         getDecryptedFile={getDecryptedFile}
         onDownloadFile={onDownloadFile}

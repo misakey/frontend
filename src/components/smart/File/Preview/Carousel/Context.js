@@ -202,9 +202,12 @@ const FilePreviewCarouselContextProvider = ({
         open={!isNil(selectedId)}
         selectedId={selectedId}
         id={itemId}
-        onSave={onSaveInVault}
         onClose={onCloseFilePreview}
         onChange={onOpenFilePreview}
+        getDecryptedFile={getDecryptedFile}
+        onDownloadFile={onDownloadFile}
+        onSaveFileInVault={onSaveFileInVault}
+        disableOnSave={isVaultSpace}
         {...props}
       />
     </FilePreviewContext.Provider>
