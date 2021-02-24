@@ -35,13 +35,13 @@ export default (canCancel = true) => {
   );
 
   return useCallback(
-    async (options) => {
+    async (options, overrideCanCancel) => {
       const loginHint = isEmpty(clientLoginHint) && isEmpty(identifierLoginHint)
         ? undefined
         : JSON.stringify({ ...clientLoginHint, ...identifierLoginHint });
       return askSigninRedirect(
         { loginHint, ...options },
-        canCancel,
+        isNil(overrideCanCancel) ? canCancel : overrideCanCancel,
       );
     },
     [askSigninRedirect, canCancel, clientLoginHint, identifierLoginHint],

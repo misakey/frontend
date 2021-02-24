@@ -19,7 +19,7 @@ const {
 const RouteAuthenticated = ({ route: RouteComponent, options, ...rest }) => {
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
 
-  const askSigninWithLoginHint = useAskSigninWithLoginHint();
+  const askSigninWithLoginHint = useAskSigninWithLoginHint(false);
 
   const shouldAskRedirect = useMemo(
     () => !isAuthenticated,
@@ -29,7 +29,7 @@ const RouteAuthenticated = ({ route: RouteComponent, options, ...rest }) => {
   useEffect(
     () => {
       if (shouldAskRedirect) {
-        askSigninWithLoginHint(options, false);
+        askSigninWithLoginHint(options);
       }
     },
     [shouldAskRedirect, options, askSigninWithLoginHint],

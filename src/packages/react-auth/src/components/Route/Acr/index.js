@@ -22,7 +22,7 @@ const {
 const RouteAcr = ({ route: RouteComponent, acr, options, ...rest }) => {
   const currentAcr = useSelector(ACR_SELECTOR);
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
-  const askSigninWithLoginHint = useAskSigninWithLoginHint();
+  const askSigninWithLoginHint = useAskSigninWithLoginHint(false);
 
   const shouldAskRedirect = useMemo(
     () => isNil(currentAcr) || currentAcr < acr,
@@ -35,7 +35,7 @@ const RouteAcr = ({ route: RouteComponent, acr, options, ...rest }) => {
         askSigninWithLoginHint({
           acrValues: acr,
           ...options,
-        }, false);
+        });
       }
     },
     [askSigninWithLoginHint, acr, options, shouldAskRedirect],
