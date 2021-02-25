@@ -71,6 +71,7 @@ function Identity(props) {
       />
       <RouteAcr
         acr={2}
+        options={{ prompt: 'login' }}
         path={routes.identities.accounts._}
         component={Accounts}
       />

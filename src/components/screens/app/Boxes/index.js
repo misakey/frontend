@@ -110,6 +110,7 @@ function Boxes({ match }) {
             )}
             <RouteAcr
               acr={2}
+              options={{ prompt: 'login' }}
               exact
               path={match.path}
               component={null}

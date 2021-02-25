@@ -28,7 +28,7 @@ const ListItemSecurity = ({ classes, to, t, ...props }) => {
   const { hasAccount, mfaMethod } = useSelector(IDENTITY_SELECTOR);
   const { askSigninRedirect } = useContext(UserManagerContext);
   const onClick = useCallback(
-    () => askSigninRedirect({ acrValues: 2, fullScreen: false }),
+    () => askSigninRedirect({ acrValues: 2, prompt: 'login', fullScreen: false }),
     [askSigninRedirect],
   );
 

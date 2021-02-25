@@ -63,6 +63,7 @@ function Home() {
         <Switch>
           <RouteAcr
             acr={2}
+            options={{ prompt: 'login' }}
             path={routes.documents._}
             component={VaultDocuments}
           />

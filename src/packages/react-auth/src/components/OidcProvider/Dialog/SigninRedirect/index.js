@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback, Fragment } from 'react';
+import moment from 'moment';
 
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -119,7 +120,10 @@ const DialogSigninRedirect = ({
   );
 
   const sessionExpired = useMemo(
-    () => !isEmpty(currentUser) && !isNil(expiresAt),
+    () => {
+      if (!isEmpty(currentUser) && !isNil(expiresAt)) { return false; }
+      return moment().isAfter(expiresAt);
+    },
     [currentUser, expiresAt],
   );
 
