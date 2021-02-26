@@ -8,16 +8,16 @@ import Box from '@material-ui/core/Box';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  root: {
-    border: `1px solid ${theme.palette.grey.A100}`,
-    borderRadius: theme.shape.borderRadius,
+  root: ({ border, square }) => ({
+    border: border ? `1px solid ${theme.palette.grey.A100}` : null,
+    borderRadius: square ? null : theme.shape.borderRadius,
     overflow: 'hidden',
-  },
+  }),
 }));
 
 // COMPONENTS
-const BoxSection = forwardRef(({ children, className, ...rest }, ref) => {
-  const classes = useStyles();
+const BoxSection = forwardRef(({ children, className, border, square, ...rest }, ref) => {
+  const classes = useStyles({ border, square });
 
   return (
     <Box
@@ -35,11 +35,15 @@ const BoxSection = forwardRef(({ children, className, ...rest }, ref) => {
 BoxSection.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
+  border: PropTypes.bool,
+  square: PropTypes.bool,
 };
 
 BoxSection.defaultProps = {
   children: null,
   className: '',
+  border: true,
+  square: false,
 };
 
 export default BoxSection;

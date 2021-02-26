@@ -80,15 +80,15 @@
     },
     "MFA": {
       "title": "Authentification à multiple facteurs",
-      "description": "L'authentification par mots de passe est une méthode qui peut être compromise. L'authentification à multiple facteurs renforce la sécurité en exigeant plusieurs formes de vérification pour prouver votre identité lors de la connexion.",
+      "description": "L'authentification par mots de passe est une méthode qui peut être compromise. L'Authentification Multi-Facteurs renforce la sécurité en exigeant plusieurs formes de vérification pour prouver votre identité lors de la connexion.",
       "subtitle": {
-        "activated": "Votre compte est sécurisé avec l'Authentification à Multiple Facteurs",
-        "deactivated": "Sécurisez votre compte avec l'Authentification à Multiple Facteurs"
+        "activated": "Votre compte est sécurisé avec l'Authentification Multi-Facteurs",
+        "deactivated": "Sécurisez votre compte avec l'Authentification Multi-Facteurs"
       },
       "updateMethod": {
-        "success": "Méthode d'Authentification à Multiple Facteurs modifiée",
+        "success": "Méthode d'Authentification Multi-Facteurs modifiée",
         "confirm": {
-          "title": "Changer la méthode d'Authentification à Multiple Facteurs",
+          "title": "Changer la méthode d'Authentification Multi-Facteurs",
           "subtitle": "Vous ne pouvez utiliser qu'une seule méthode MFA à la fois. Cela va remplacer votre méthode MFA actuelle (votre configuration ne sera pas affectée, vous pourrez la réactiver plus tard)."
         }
       },
@@ -101,7 +101,7 @@
           "button": "Supprimer la configuration"
         },
         "noConfig": {
-          "text": "Vous n'avez enregistrer aucune configuration TOTP",
+          "text": "Vous n'avez enregistré aucune configuration TOTP",
           "button": "Configuration"
         },
         "resetRecoveryCodes": {
@@ -124,13 +124,13 @@
         "activate": "Activer l'authentification U2F",
         "devicesList": {
           "title": "Périphériques enregistrés",
-          "empty": "Vous n'avez pas encore ajouté de périphériques.\nAjoutez-en un pour pouvoir activer l'Authentification à Multiple Facteurs.",
+          "empty": "Vous n'avez pas encore ajouté de périphérique.\nAjoutez-en un pour pouvoir activer l'Authentification Multi-Facteurs.",
           "add": "Ajouter un périphérique",
           "confirmDelete": {
             "title": "Supprimer un périphérique",
-            "subtitle": "C'est votre seul périphérique enregistré, le supprimer désactivera l'Authentification à Multiple Facteurs"
+            "subtitle": "C'est votre seul périphérique enregistré, le supprimer désactivera l'Authentification Multi-Facteurs"
           }
-        }, 
+        },
         "registerError": "Votre périphérique n'a pas pu être enregistré",
         "registerDeviceDialog": {
           "title": "Enregistrer le périphérique",

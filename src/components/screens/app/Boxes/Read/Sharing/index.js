@@ -56,6 +56,7 @@ import ShareBoxForm from 'components/screens/app/Boxes/Read/Sharing/Form';
 import ShareBoxFormSkeleton from 'components/screens/app/Boxes/Read/Sharing/Form/Skeleton';
 import ListItemShareBoxLink from 'components/smart/ListItem/BoxLink/Share';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
+import BoxMessageWhitelist from '@misakey/ui/Box/Message/Whitelist';
 
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
@@ -330,6 +331,14 @@ function BoxSharing({ box, t }) {
                     </AccordionDetails>
                   </Accordion>
                 </ListBordered>
+                <BoxMessageWhitelist
+                  my={1}
+                  whitelist={whitelist}
+                  type="warning"
+                  text={t('boxes:read.share.accesses.requiredWarning')}
+                  border={false}
+                  square={isXs}
+                />
               </Box>
               <ListItemShareBoxLink
                 box={box}

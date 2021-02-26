@@ -13,7 +13,7 @@ import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 // COMPONENTS
-const ButtonForgotPassword = ({ loginChallenge, identifier, onClick, ...props }) => {
+const ButtonForgotPasswordCancel = ({ loginChallenge, identifier, onClick, ...props }) => {
   const handleHttpErrors = useHandleHttpErrors();
   const dispatch = useDispatch();
 
@@ -23,7 +23,7 @@ const ButtonForgotPassword = ({ loginChallenge, identifier, onClick, ...props })
         const { identity, authnStep } = await updateAuthIdentities({
           loginChallenge,
           identifierValue: identifier,
-          passwordReset: true,
+          passwordReset: false,
         });
         dispatch(ssoUpdate({ identity, authnStep }));
         if (isFunction(onClick)) {
@@ -38,21 +38,21 @@ const ButtonForgotPassword = ({ loginChallenge, identifier, onClick, ...props })
 
   return (
     <Button
-      standing={BUTTON_STANDINGS.TEXT}
+      standing={BUTTON_STANDINGS.CANCEL}
       onClick={handleClick}
       {...props}
     />
   );
 };
 
-ButtonForgotPassword.propTypes = {
+ButtonForgotPasswordCancel.propTypes = {
   loginChallenge: PropTypes.string.isRequired,
   identifier: PropTypes.string.isRequired,
   onClick: PropTypes.func,
 };
 
-ButtonForgotPassword.defaultProps = {
+ButtonForgotPasswordCancel.defaultProps = {
   onClick: null,
 };
 
-export default ButtonForgotPassword;
+export default ButtonForgotPasswordCancel;

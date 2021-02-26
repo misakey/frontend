@@ -176,9 +176,10 @@ const DialogSigninRedirect = ({
   const avatar = useMemo(
     () => {
       const Wrapper = sessionExpired ? BadgeDeniedWrapper : Fragment;
+      const wrapperProps = sessionExpired ? { size: LARGE } : {};
       if (!isNil(resourceName)) {
         return (
-          <Wrapper size={LARGE}>
+          <Wrapper {...wrapperProps}>
             <AvatarBox
               title={resourceName}
               size={LARGE}
@@ -188,7 +189,7 @@ const DialogSigninRedirect = ({
       }
       if (!isNil(clientName)) {
         return (
-          <Wrapper size={LARGE}>
+          <Wrapper {...wrapperProps}>
             <AvatarColorized
               size={LARGE}
               image={clientLogo}
@@ -199,7 +200,7 @@ const DialogSigninRedirect = ({
         );
       }
       return (
-        <Wrapper size={LARGE}>
+        <Wrapper {...wrapperProps}>
           <AvatarMisakey size={LARGE} />
         </Wrapper>
       );

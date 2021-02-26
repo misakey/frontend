@@ -36,7 +36,6 @@ import { isHydraErrorCode } from '@misakey/auth/helpers/errors';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import useCancelForgotPassword from '@misakey/react-auth/hooks/useCancelForgotPassword';
 import { useClearUser } from '@misakey/hooks/useActions/loginSecret';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
@@ -51,10 +50,11 @@ import Subtitle from '@misakey/ui/Typography/Subtitle';
 import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
 import BoxControls from '@misakey/ui/Box/Controls';
 import ButtonForgotPassword from '@misakey/react-auth/components/Button/ForgotPassword';
+import ButtonForgotPasswordCancel from '@misakey/react-auth/components/Button/ForgotPassword/Cancel';
 import ButtonRenewAuthStep from '@misakey/react-auth/components/Button/RenewAuthStep';
 import SnackbarActionAuthRestart from '@misakey/ui/Snackbar/Action/AuthRestart';
 import SnackbarActionRefresh from '@misakey/ui/Snackbar/Action/Refresh';
-import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
 import Screen from '@misakey/ui/Screen';
 import AppBar from '@misakey/ui/AppBar';
@@ -82,7 +82,7 @@ const getSecretError = compose(
 );
 
 // HOOKS
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   buttonRoot: {
     width: 'auto',
   },
@@ -92,12 +92,6 @@ const useStyles = makeStyles((theme) => ({
   },
   cardOverflowVisible: {
     overflow: 'visible',
-  },
-  appBarButton: {
-    color: theme.palette.background.default,
-    '&:hover': {
-      backgroundColor: theme.palette.reverse.action.hover,
-    },
   },
 }));
 
@@ -119,7 +113,6 @@ const AuthLoginSecret = ({
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const handleHttpErrors = useHandleHttpErrors();
-  const cancelForgotPassword = useCancelForgotPassword();
   const dispatch = useDispatch();
 
   const [redirectTo, setRedirectTo] = useState(null);
@@ -142,12 +135,18 @@ const AuthLoginSecret = ({
     [identifier, identity],
   );
 
-  const onCancelForgotPassword = useCallback(
+  const onReset = useCallback(
+    () => {
+      setReset(true);
+    },
+    [setReset],
+  );
+
+  const onCancelReset = useCallback(
     () => {
       setReset(false);
-      cancelForgotPassword();
     },
-    [cancelForgotPassword],
+    [setReset],
   );
 
   const onHandleBackupSecretShares = useCallback(
@@ -293,14 +292,14 @@ const AuthLoginSecret = ({
     [onLoginAuthStepSecret, onSuccessLoginAuthStep, onErrorLoginAuthStep],
   );
 
+  const onClearUser = useClearUser();
+
   const primary = useMemo(
     () => ({
       text: t('common:next'),
     }),
     [t],
   );
-
-  const onClearUser = useClearUser();
 
   if (!isNil(redirectTo)) {
     return (
@@ -329,15 +328,31 @@ const AuthLoginSecret = ({
       avatarSize={LARGE}
       header={(
         <AppBar color="primary">
-          {reset && (
-            <IconButtonAppBar
-              className={classes.appBarButton}
-              edge="start"
-              aria-label={t('common:cancel')}
-              onClick={onCancelForgotPassword}
-            >
-              <ArrowBackIcon />
-            </IconButtonAppBar>
+          {reset ? (
+            <ButtonForgotPasswordCancel
+              color="background"
+              loginChallenge={loginChallenge}
+              identifier={identifier}
+              onClick={onCancelReset}
+              text={(
+                <>
+                  <ArrowBackIcon />
+                  {t('auth:forgotPassword.back')}
+                </>
+              )}
+            />
+          ) : (
+            <Button
+              color="background"
+              standing={BUTTON_STANDINGS.TEXT}
+              onClick={onClearUser}
+              text={(
+                <>
+                  <ArrowBackIcon />
+                  {t('auth:login.secret.changeAccount')}
+                </>
+              )}
+            />
           )}
         </AppBar>
       )}
@@ -395,6 +410,7 @@ const AuthLoginSecret = ({
                   loginChallenge={loginChallenge}
                   identifier={identifier}
                   text={t('auth:login.form.action.forgotPassword')}
+                  onClick={onReset}
                 />
               )}
               {[TOTP, TOTP_RECOVERY].includes(methodName) && (
@@ -405,6 +421,7 @@ const AuthLoginSecret = ({
               )}
               {methodName !== WEBAUTHN && (
                 <BoxControls
+                  mt={2}
                   formik
                   primary={primary}
                 />

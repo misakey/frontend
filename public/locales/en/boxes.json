@@ -149,7 +149,8 @@
       "accesses": {
         "title": "Share with people and groups",
         "identifier": "People",
-        "email_domain": "Groups"
+        "email_domain": "Groups",
+        "requiredWarning": "You must manually send the invitation link for invitations labeled “link required”"
       },
       "update": {
         "success": "Accesses have been updated successfully",
@@ -161,10 +162,6 @@
           "title": "Anyone with link",
           "description": "Anyone can access the private space with the invitation link"
         },
-        "private": {
-          "title": "Private",
-          "description": "Only you have access to the private space"
-        },
         "limited": {
           "title": "Limited",
           "description": "Only people added to the private space have access to it",
@@ -175,7 +172,8 @@
             "title": "Allowed domains"
           }
         }
-      }
+      },
+      "prompt": "Some draft invitations will be lost, leave?"
     },
     "details": {
       "open": "See details",

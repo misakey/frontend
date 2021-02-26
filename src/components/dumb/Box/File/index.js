@@ -2,19 +2,22 @@ import React, { useMemo } from 'react';
 
 import { PropTypes } from 'prop-types';
 
+import formatFileSize from 'helpers/formatFileSize';
+import isNil from '@misakey/helpers/isNil';
+import isFunction from '@misakey/helpers/isFunction';
+
+import useGetFileIconFromType from 'hooks/useGetFileIconFromType';
+import { useTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
+import Fab from '@material-ui/core/Fab';
+
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
+import DownloadIcon from '@material-ui/icons/GetApp';
 
-import formatFileSize from 'helpers/formatFileSize';
-import isNil from '@misakey/helpers/isNil';
-
-import useGetFileIconFromType from 'hooks/useGetFileIconFromType';
-import { useTranslation } from 'react-i18next';
-
-
+// HOOKS
 const useStyles = makeStyles((theme) => ({
   icons: ({ isLarge }) => ({
     color: theme.palette.text.secondary,
@@ -22,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
+// COMPONENTS
 function BoxFile({
   fileName,
   fileSize,
@@ -32,10 +36,11 @@ function BoxFile({
   typographyProps,
   textContainerProps,
   isLarge,
+  onDownload,
   ...rest
 }) {
   const classes = useStyles({ isLarge });
-  const { t } = useTranslation();
+  const { t } = useTranslation(['components', 'common']);
 
   const formattedSize = useMemo(
     () => (!isNil(fileSize) ? formatFileSize(fileSize) : null),
@@ -68,6 +73,18 @@ function BoxFile({
           </Typography>
         )}
       </Box>
+      {!isBroken && isFunction(onDownload) && (
+        <Box mt={0.5}>
+          <Fab
+            aria-label={t('common:download')}
+            variant="extended"
+            onClick={onDownload}
+          >
+            <DownloadIcon />
+            {t('common:download')}
+          </Fab>
+        </Box>
+      )}
     </Box>
   );
 }
@@ -82,6 +99,7 @@ BoxFile.propTypes = {
   isLarge: PropTypes.bool,
   isBroken: PropTypes.bool,
   isLoading: PropTypes.bool,
+  onDownload: PropTypes.func,
 };
 
 BoxFile.defaultProps = {
@@ -93,6 +111,7 @@ BoxFile.defaultProps = {
   isLarge: false,
   isBroken: false,
   isLoading: false,
+  onDownload: null,
 };
 
 export default BoxFile;

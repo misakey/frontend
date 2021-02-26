@@ -8,6 +8,7 @@ import {
 import isFunction from '@misakey/helpers/isFunction';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import useAccessStatus from '@misakey/hooks/useAccessStatus';
 
 import ListItemUser from '@misakey/ui/ListItem/User';
 import ListItemSecondaryActionWhitelist from '@misakey/ui/ListItemSecondaryAction/Whitelist';
@@ -38,21 +39,7 @@ const ListItemUserWhitelisted = ({
     [hasOnRemove, isOwner],
   );
 
-  const accessStatus = useMemo(
-    () => {
-      if (isOwner) {
-        return ACCESS_STATUS_OWNER;
-      }
-      if (isMember) {
-        return ACCESS_STATUS_MEMBER;
-      }
-      if (autoInvite) {
-        return ACCESS_STATUS_INVITED;
-      }
-      return ACCESS_STATUS_NEEDS_LINK;
-    },
-    [isOwner, isMember, autoInvite],
-  );
+  const accessStatus = useAccessStatus({ isOwner, isMember, autoInvite });
 
   const needsLink = useMemo(
     () => accessStatus === ACCESS_STATUS_NEEDS_LINK,

@@ -2,10 +2,11 @@ import React, { useMemo, useCallback, useRef, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
+import isFunction from '@misakey/helpers/isFunction';
 import debounce from '@misakey/helpers/debounce';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import { isFunction, useFormikContext } from 'formik';
+import { useFormikContext } from 'formik';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';

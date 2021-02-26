@@ -94,7 +94,7 @@
       },
       "totp": {
         "title": "Time-based One-time Password",
-        "subtitle":"Automatically generate a One-Time-Password from a physical device",
+        "subtitle": "Automatically generate a One-Time-Password from a physical device",
         "activate": "Activate TOTP authentification",
         "resetConfig": {
           "text": "Your account has a TOTP configuration",
@@ -114,13 +114,13 @@
           },
           "subtitle": {
             "register": "Flash the generated flashcode with your TOTP application and fill the form with the code obtained in the application",
-            "recovery": "Here are your recovery codes. Save them carefully, it allows you to recover access to your account in case of problem.\nYou can download the codes or copying them to paste somewhere else and save them in a secured place."
+            "recovery": "Here are your recovery codes. Save them carefully, they allow you to recover access to your account in case of problem.\nYou can download them as a file or copy then save them in a secure place."
           }
         }
       },
       "webauthn": {
         "title": "Universal Second Factor",
-        "subtitle":"Connect with an external security key supporting FIDO standard (Fast Identity Online).",
+        "subtitle": "Connect with an external security key supporting FIDO standard (Fast Identity Online).",
         "activate": "Activate U2F authentification",
         "devicesList": {
           "title": "Registered devices",
@@ -129,15 +129,15 @@
           "confirmDelete": {
             "title": "Delete device",
             "subtitle": "This is your only registered device, deleting it will disable Multi-Factor Authentication"
-          }, 
+          },
           "registerError": "Your device couldn't be saved",
           "registerDeviceDialog": {
             "title": "Save the device",
             "subtitle": "Name the device to easily find it in your list",
             "label": "Device name"
           }
-        }        
-      }    
+        }
+      }
     }
   },
   "vault": {

@@ -20,6 +20,10 @@ import FilePreviewPaper from 'components/smart/Dialog/FilePreview/Paper';
 import FilePreview from 'components/smart/File/Preview';
 import FilePreviewBackdrop from 'components/smart/Dialog/FilePreview/Backdrop';
 import BoxFile from 'components/dumb/Box/File';
+import Box from '@material-ui/core/Box';
+import Fab from '@material-ui/core/Fab';
+
+import DownloadIcon from '@material-ui/icons/GetApp';
 
 // CONSTANTS
 const ALLOWED_TYPE_PREVIEW = [
@@ -151,7 +155,7 @@ function FilePreviewDialog({
       BackdropComponent={FilePreviewBackdrop}
     >
       <DialogContent className={internalClasses.content}>
-        {showPreview && (
+        {showPreview ? (
           <FilePreview
             file={file}
             maxHeight={maxHeight}
@@ -165,10 +169,23 @@ function FilePreviewDialog({
                 isLarge
                 typographyProps={{ variant: 'body1' }}
                 textContainerProps={{ className: internalClasses.textContainerPreview }}
+                onDownload={onDownloadInBrowser}
                 maxWidth="100%"
               />
             )}
           />
+        ) : (
+          <Box mt={24}>
+            <Fab
+              aria-label={t('common:download')}
+              variant="extended"
+              onClick={onDownloadInBrowser}
+              disabled={!isNil(error)}
+            >
+              <DownloadIcon />
+              {t('common:download')}
+            </Fab>
+          </Box>
         )}
         {children}
       </DialogContent>

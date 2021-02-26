@@ -43,6 +43,7 @@ import ListItemUserMember from '@misakey/ui/ListItem/User/Member';
 import ListItemUserOption from '@misakey/ui/ListItem/User/Option';
 import ListItemUserOptionSkeleton from '@misakey/ui/ListItem/User/Option/Skeleton';
 import ListItemDomain from '@misakey/ui/ListItem/Domain';
+import FormikDirtyPrompt from '@misakey/ui/Formik/DirtyPrompt';
 
 // CONSTANTS
 const { identifierValue: IDENTIFIER_VALUE_SELECTOR } = authSelectors;
@@ -280,14 +281,14 @@ function ShareBoxForm({
             getOptionDisabled={getOptionDisabled}
             renderOption={renderOption}
             disabled={!isCurrentUserOwner}
-            margin="dense"
+            textFieldProps={{ autoFocus: true, margin: 'normal' }}
           />
         </Box>
         {children}
         <FieldSubmitOnChange
           name={ACCESSES_FIELD_NAME}
           prefix="boxes."
-          variant="outlined"
+          variant="filled"
           component={TextField}
           disabled={!isCurrentUserOwner}
           margin="dense"
@@ -306,6 +307,7 @@ function ShareBoxForm({
             <SelectItemAccessLevel value={LIMITED} />
           </MenuItem>
         </FieldSubmitOnChange>
+        <FormikDirtyPrompt title={t('boxes:read.share.prompt')} />
       </Form>
     </Formik>
   );

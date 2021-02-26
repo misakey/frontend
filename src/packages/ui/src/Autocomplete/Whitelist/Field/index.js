@@ -42,10 +42,10 @@ const getFirstError = (errorKeys) => {
 
 // COMPONENTS
 const FormFieldAutocompleteWhitelistWithErrors = ({
-  name, prefix, helperText, label, multiple, margin, ...props
+  name, prefix, multiple, textFieldProps, ...props
 }) => {
   const { t } = useTranslation('fields');
-  const textFieldTranslations = useFieldTranslations({ name, prefix });
+  const { helperText, ...textFieldTranslations } = useFieldTranslations({ name, prefix });
 
   const fieldConfig = useMemo(
     () => ({ name, prefix, multiple, parseError: identifierValueProp }),
@@ -69,15 +69,14 @@ const FormFieldAutocompleteWhitelistWithErrors = ({
     [displayError, t, errorKeys, helperText],
   );
 
-  const textFieldProps = useMemo(
+  const fieldTextFieldProps = useMemo(
     () => ({
+      ...textFieldTranslations,
       error: displayError,
       helperText: helperTextOrErrorText,
-      label,
-      margin,
-      ...textFieldTranslations,
+      ...textFieldProps,
     }),
-    [displayError, helperTextOrErrorText, label, margin, textFieldTranslations],
+    [displayError, helperTextOrErrorText, textFieldProps, textFieldTranslations],
   );
 
   const errorIndexes = useMemo(
@@ -121,7 +120,7 @@ const FormFieldAutocompleteWhitelistWithErrors = ({
       name={name}
       {...field}
       onChange={onChange}
-      textFieldProps={textFieldProps}
+      textFieldProps={fieldTextFieldProps}
       multiple
       errorIndexes={errorIndexes}
       {...props}
@@ -136,7 +135,7 @@ FormFieldAutocompleteWhitelistWithErrors.propTypes = {
   helperText: PropTypes.string,
   label: PropTypes.string,
   multiple: PropTypes.bool,
-  margin: PropTypes.oneOf(['dense', 'none', 'normal']),
+  textFieldProps: PropTypes.object,
 };
 
 FormFieldAutocompleteWhitelistWithErrors.defaultProps = {
@@ -145,7 +144,7 @@ FormFieldAutocompleteWhitelistWithErrors.defaultProps = {
   helperText: '',
   label: '',
   multiple: false,
-  margin: undefined,
+  textFieldProps: {},
 };
 
 export default FormFieldAutocompleteWhitelistWithErrors;

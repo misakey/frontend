@@ -20,6 +20,7 @@ import ceriseRed from '@misakey/ui/colors/ceriseRed';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import BoxSection from '@misakey/ui/Box/Section';
 import IconButton from '@material-ui/core/IconButton';
+import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 
 import InfoIcon from '@material-ui/icons/Info';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -90,6 +91,7 @@ const BoxMessage = forwardRef(({
         )}
         {children}
         {isLoading && <SplashScreen variant="backdrop" />}
+        <BoxFlexFill />
         {isFunction(onClose) && (
           <IconButton color="inherit" onClick={onClose}>
             <CloseIcon />

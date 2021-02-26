@@ -149,7 +149,8 @@
       "accesses": {
         "title": "Partager avec des personnes et des groupes",
         "identifier": "Personnes",
-        "email_domain": "Groupes"
+        "email_domain": "Groupes",
+        "requiredWarning": "Vous devez envoyer manuellement le lien d'invitation pour les invitations mentionnant «\u00a0lien requis\u00a0»"
       },
       "update": {
         "success": "Les accès ont été modifiés avec succès",
@@ -161,10 +162,6 @@
           "title": "Toutes les personnes disposant du lien",
           "description": "Toutes les utilisatrices et utilisateurs auront accès au contenu avec le lien d'invitation"
         },
-        "private": {
-          "title": "Privé",
-          "description": "Vous êtes la seule personne à avoir accès au contenu de l'espace privé"
-        },
         "limited": {
           "title": "Limité",
           "description": "Seules les personnes ajoutées à l'espace privé y ont accès",
@@ -175,7 +172,8 @@
             "title": "Domaines autorisés"
           }
         }
-      }
+      },
+      "prompt": "Des invitations en cours de saisie vont être perdues, quitter quand même\u00a0?"
     },
     "details": {
       "open": "Voir les détails",

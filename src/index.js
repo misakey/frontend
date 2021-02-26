@@ -27,7 +27,7 @@ import invalidCsrfTokenMiddleware from '@misakey/react-auth/middlewares/invalidC
 import floodManagementAlertMiddleware from 'middlewares/floodManagement/alert';
 import invalidSeclevelMiddleware from '@misakey/react-auth/middlewares/invalidSeclevel';
 // routing
-import Router from 'components/smart/Router';
+import RouterWithCustomConfirm from 'components/smart/Router/WithCustomConfirm';
 import * as serviceWorker from 'serviceWorker';
 // ui
 import ThemeProvider from 'components/smart/ThemeProvider';
@@ -109,7 +109,7 @@ if (isSilentAuthIframe()) {
           persistor={persistor}
         >
           <ThemeProvider>
-            <Router>
+            <RouterWithCustomConfirm>
               <SnackbarProvider>
                 <OfflineContextProvider addMiddleware={API.addMiddleware}>
                   <ErrorBoundary maxWidth="md" my={3} component={ScreenError}>
@@ -126,7 +126,7 @@ if (isSilentAuthIframe()) {
                   </ErrorBoundary>
                 </OfflineContextProvider>
               </SnackbarProvider>
-            </Router>
+            </RouterWithCustomConfirm>
           </ThemeProvider>
         </PersistGate>
       </StoreProvider>

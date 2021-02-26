@@ -36,7 +36,7 @@ const WHITELISTED_EL_PROP_TYPE = {
   identifierValue: PropTypes.string.isRequired,
 };
 
-const SUBMIT_INDICATOR_PADDING = 4;
+const INPUT_EXTRA_SPACING = 2;
 
 const INPUT_EMPTY_REGEX = new RegExp(`^[${INPUT_SEPARATORS} ]*$`);
 
@@ -59,39 +59,21 @@ const valueToUserValue = (value) => ({
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  // styles applied to submit indicator to look similar to other autocomplete indicators
-  // see https://github.com/mui-org/material-ui/blob/master/packages/material-ui-lab/src/Autocomplete/Autocomplete.js#L152
-  submitIndicator: {
-    // same padding as other indicators
-    padding: SUBMIT_INDICATOR_PADDING,
-    position: 'absolute',
-    right: 52, // next to other indicators
-  },
-  // styles applied to inputRoot to handle extra padding from submitIndicator
-  // see https://github.com/mui-org/material-ui/blob/master/packages/material-ui-lab/src/Autocomplete/Autocomplete.js#L50
-  autocompleteHasPopupIcon: {
-    '.MuiAutocomplete-inputRoot': {
-      // add padding for submitIndicator (= 2 buttons + 1 padding)
-      paddingRight: 52 + 4,
-    },
-  },
-  autocompleteHasClearIcon: {
-    '.MuiAutocomplete-inputRoot': {
-      // add padding for submitIndicator (= 2 buttons + 1 padding)
-      paddingRight: 52 + 4,
-    },
-    '&.MuiAutocomplete-hasPopupIcon .MuiAutocomplete-inputRoot': {
-    // add padding for submitIndicator (= 3 buttons + 2 paddings)
-      paddingRight: 78 + 8,
-    },
-  },
   autocompleteInputRoot: {
     '& .MuiAutocomplete-input': {
+      '&.MuiFilledInput-input': {
+        paddingTop: 9 + theme.spacing(INPUT_EXTRA_SPACING),
+        paddingBottom: 9 + theme.spacing(INPUT_EXTRA_SPACING),
+      },
       minWidth: '50%',
       [theme.breakpoints.only('xs')]: {
         minWidth: '100%',
       },
     },
+  },
+  inputLabelFilled: {
+    // see https://github.com/mui-org/material-ui/blob/master/packages/material-ui/src/InputLabel/InputLabel.js#L58
+    transform: `translate(12px, ${20 + theme.spacing(INPUT_EXTRA_SPACING)}px) scale(1)`,
   },
 }));
 
@@ -265,10 +247,7 @@ const AutocompleteWhitelist = ({
     <>
       <Autocomplete
         classes={{
-          hasPopupIcon: classes.autocompleteHasPopupIcon,
-          hasClearIcon: classes.autocompleteHasClearIcon,
           inputRoot: classes.autocompleteInputRoot,
-          input: classes.autocompleteInput,
         }}
         name={name}
         value={value}
@@ -280,13 +259,21 @@ const AutocompleteWhitelist = ({
         getOptionDisabled={handleGetOptionDisabled}
         inputValue={inputValue}
         renderTags={renderTags}
-        renderInput={({ InputProps: { endAdornment, ...InputPropsRest }, ...params }) => (
+        renderInput={({
+          InputProps: { endAdornment, ...InputPropsRest },
+          InputLabelProps,
+          ...params
+        }) => (
           <TextField
-            variant="standard"
+            variant="filled"
             name={name}
             InputProps={{
               endAdornment,
               ...InputPropsRest,
+            }}
+            InputLabelProps={{
+              className: classes.inputLabelFilled,
+              ...InputLabelProps,
             }}
             {...params}
             {...textFieldProps}
