@@ -2,7 +2,8 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  ACCESS_STATUS_MEMBER, ACCESS_STATUS_NEEDS_LINK, ACCESS_STATUS_INVITED, ACCESS_STATUS_OWNER,
+  ACCESS_STATUS_MEMBER, ACCESS_STATUS_SUBJECT, ACCESS_STATUS_OWNER,
+  ACCESS_STATUS_NEEDS_LINK, ACCESS_STATUS_INVITED,
 } from '@misakey/ui/constants/accessStatus';
 
 import isFunction from '@misakey/helpers/isFunction';
@@ -27,6 +28,7 @@ const ListItemUserWhitelisted = ({
   id,
   autoInvite,
   isOwner,
+  isSubject,
   isMember,
   ...rest }) => {
   const hasOnRemove = useMemo(
@@ -35,11 +37,11 @@ const ListItemUserWhitelisted = ({
   );
 
   const canRemove = useMemo(
-    () => hasOnRemove && !isOwner,
-    [hasOnRemove, isOwner],
+    () => hasOnRemove && !isOwner && !isSubject,
+    [hasOnRemove, isOwner, isSubject],
   );
 
-  const accessStatus = useAccessStatus({ isOwner, isMember, autoInvite });
+  const accessStatus = useAccessStatus({ isOwner, isSubject, isMember, autoInvite });
 
   const needsLink = useMemo(
     () => accessStatus === ACCESS_STATUS_NEEDS_LINK,
@@ -50,7 +52,11 @@ const ListItemUserWhitelisted = ({
 
   const subtitleColor = useMemo(
     () => {
-      if (accessStatus === ACCESS_STATUS_MEMBER || accessStatus === ACCESS_STATUS_OWNER) {
+      if ([
+        ACCESS_STATUS_MEMBER,
+        ACCESS_STATUS_OWNER,
+        ACCESS_STATUS_SUBJECT,
+      ].includes(accessStatus)) {
         return 'secondary';
       }
       if (needsLink) {
@@ -86,6 +92,7 @@ ListItemUserWhitelisted.propTypes = {
   autoInvite: PropTypes.bool,
   isMember: PropTypes.bool,
   isOwner: PropTypes.bool,
+  isSubject: PropTypes.bool,
   id: PropTypes.string.isRequired,
 };
 
@@ -95,6 +102,7 @@ ListItemUserWhitelisted.defaultProps = {
   autoInvite: false,
   isMember: false,
   isOwner: false,
+  isSubject: false,
 };
 
 export default ListItemUserWhitelisted;

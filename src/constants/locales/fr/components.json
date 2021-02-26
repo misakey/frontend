@@ -178,7 +178,8 @@
     "needs_link": "Lien requis",
     "invited": "Invitation envoyée",
     "member": "Membre",
-    "owner": "Propriétaire"
+    "owner": "Propriétaire",
+    "subject": "Sujet"
   },
   "webauthnLogin": {
     "title": "Authentification à multiple facteurs",

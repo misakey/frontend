@@ -20,11 +20,16 @@ import Chip from '@material-ui/core/Chip';
 // COMPONENTS
 const ListItemMember = ({ member, box, belongsToCurrentUser, t, ...rest }) => {
   const { displayName, avatarUrl, identifierValue } = useSafeDestr(member);
-  const { creator } = useSafeDestr(box);
+  const { creator, subject } = useSafeDestr(box);
 
-  const isMemberAdmin = useMemo(
+  const isMemberCreator = useMemo(
     () => sendersMatch(creator, member),
     [creator, member],
+  );
+
+  const isMemberSubject = useMemo(
+    () => sendersMatch(subject, member),
+    [subject, member],
   );
 
   return (
@@ -38,7 +43,8 @@ const ListItemMember = ({ member, box, belongsToCurrentUser, t, ...rest }) => {
         primaryTypographyProps={{ color: 'textPrimary' }}
         secondaryTypographyProps={{ color: 'textSecondary' }}
       />
-      {isMemberAdmin && <Chip label={t('boxes:read.details.menu.members.admin')} />}
+      {isMemberCreator && <Chip label={t('boxes:read.details.menu.members.creator.title')} />}
+      {isMemberSubject && <Chip label={t('boxes:read.details.menu.members.subject')} />}
     </ListItem>
   );
 };

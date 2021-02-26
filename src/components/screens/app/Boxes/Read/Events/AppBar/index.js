@@ -101,7 +101,7 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
         return t('boxes:read.events.access.denied');
       }
       if (isTheOnlyMember) {
-        return t('boxes:read.details.menu.members.creator');
+        return t('boxes:read.details.menu.members.creator.only');
       }
       return t('boxes:read.details.menu.members.count', { count: members.length });
     },

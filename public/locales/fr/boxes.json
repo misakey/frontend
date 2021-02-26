@@ -186,10 +186,13 @@
         },
         "members": {
           "title": "Membres de l'espace privé",
-          "creator": "Vous seul·e êtes membre",
+          "creator": {
+            "only": "Vous seul·e êtes membre",
+            "title": "créateur"
+          },
           "count": "{{count}} membre",
           "count_plural": "{{count}} membres",
-          "admin": "admin"
+          "subject": "sujet"
         },
         "createdAt": "Créée le {{date}}",
         "share": {

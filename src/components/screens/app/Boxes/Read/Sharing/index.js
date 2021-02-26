@@ -66,6 +66,15 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 const CONTENT_SPACING = 2;
 const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
 
+// HELPERS
+const getSubjectProps = (subject) => {
+  if (isNil(subject)) {
+    return {};
+  }
+  const { id, displayName, avatarUrl, identifierValue } = subject;
+  return { id, key: id, displayName, avatarUrl, identifier: identifierValue };
+};
+
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -95,8 +104,12 @@ function BoxSharing({ box, t }) {
   const [contentRef, setContentRef] = useState();
   const [domainExpanded, setDomainExpanded] = useState(false);
 
-  const { id: boxId, accesses, members, creator, accessMode } = useSafeDestr(box);
+  const { id: boxId, accesses, members, creator, subject, accessMode } = useSafeDestr(box);
   const { id: creatorId, displayName, avatarUrl, identifierValue } = useSafeDestr(creator);
+  const subjectProps = useMemo(
+    () => getSubjectProps(subject),
+    [subject],
+  );
 
   const meIdentityId = useSelector(IDENTITY_ID_SELECTOR);
   const dispatch = useDispatch();
@@ -127,15 +140,15 @@ function BoxSharing({ box, t }) {
 
   const membersNotInWhitelist = useMemo(
     () => {
-      const membersWithoutCreator = (members || [])
-        .filter((member) => !sendersMatch(member, creator));
+      const membersWithoutCreatorSubject = (members || [])
+        .filter((member) => !sendersMatch(member, creator) && !sendersMatch(member, subject));
       return differenceWith(
-        membersWithoutCreator,
+        membersWithoutCreatorSubject,
         whitelistUsers,
         (member, { value }) => senderMatchesIdentifierValue(member, value),
       );
     },
-    [members, whitelistUsers, creator],
+    [members, whitelistUsers, creator, subject],
   );
 
   const { secretKey: boxSecretKey } = useBoxReadContext();
@@ -278,6 +291,14 @@ function BoxSharing({ box, t }) {
                         avatarUrl={avatarUrl}
                         identifier={identifierValue}
                       />
+                      {!isNil(subject) && (
+                      <ListItemUserWhitelisted
+                        {...subjectProps}
+                        isMe={senderMatchesIdentityId(subject, meIdentityId)}
+                        isSubject
+                        isMember
+                      />
+                      )}
                       {!isCurrentUserOwner && membersNotInWhitelist.map((member) => (
                         <ListItemUserWhitelisted
                           key={member.id}

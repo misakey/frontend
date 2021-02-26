@@ -186,10 +186,14 @@
         },
         "members": {
           "title": "Members of the private space",
-          "creator": "You are the only member",
+          "creator": {
+            "only": "You are the only member",
+            "title": "creator"
+          },
           "count": "{{count}} member",
           "count_plural": "{{count}} members",
-          "admin": "admin"
+          "owner": "admin",
+          "subject": "subject"
         },
         "createdAt": "Created on {{date}}",
         "share": {

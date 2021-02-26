@@ -168,7 +168,8 @@
     "needs_link": "Link required",
     "invited": "Invitation sent",
     "member": "Member",
-    "owner": "Owner"
+    "owner": "Owner",
+    "subject": "Subject"
   },
   "webauthnLogin": {
     "title": "Multi-Factor Authentication",

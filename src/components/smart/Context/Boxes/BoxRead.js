@@ -23,7 +23,7 @@ export const useBoxReadContext = () => useContext(BoxReadContext);
 
 // COMPONENTS
 const BoxReadContextProvider = ({ children, box }) => {
-  const { publicKey, id, creator } = useMemo(() => box, [box]);
+  const { publicKey, id, creator, subject } = useMemo(() => box, [box]);
 
   const secretKey = useSelector(getAsymSecretKey(publicKey));
 
@@ -34,13 +34,19 @@ const BoxReadContextProvider = ({ children, box }) => {
     [creator, currentUser],
   );
 
+  const isCurrentUserSubject = useMemo(
+    () => sendersIdentifiersMatch(subject, currentUser),
+    [subject, currentUser],
+  );
+
   const contextValue = useMemo(
     () => ({
       id,
       secretKey,
       isCurrentUserOwner,
+      isCurrentUserSubject,
     }),
-    [id, isCurrentUserOwner, secretKey],
+    [id, isCurrentUserOwner, isCurrentUserSubject, secretKey],
   );
 
   return (

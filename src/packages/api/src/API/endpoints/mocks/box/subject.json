@@ -1,0 +1,62 @@
+{
+  "id": "88120a6f-55db-4def-a5f6-68e3b6bd2241",
+  "has_access": true,
+  "server_created_at": "2021-02-18T14:44:33.227645Z",
+  "owner_org_id": "cc411b8f-28bf-4d4e-abd9-99226b41da27",
+  "datatag_id": null,
+  "subject_identity_id": null,
+  "public_key": "U54Bwck05AyCmAqY6PqxNGfEqOjWYorhmWbrJC8gW38",
+  "title": "Prejudiced gladiolus",
+  "access_mode": "public",
+  "events_count": 0,
+  "creator": {
+    "id": "dac77a8a-5561-47f7-8339-3e6df22a856a",
+    "display_name": "Cedric Dupuis",
+    "avatar_url": "https://api.misakey.com.local/avatars/b92d6cb9-0bd9-4e81-ae9c-acb4e7f5d04a",
+    "identifier_value": "",
+    "identifier_kind": ""
+  },
+  "subject": {
+    "id": "e2fae038-9419-4f61-bf13-4f4fbd6bb488",
+    "display_name": "Cedric Dupuis+Toto",
+    "avatar_url": null,
+    "identifier_value": "",
+    "identifier_kind": ""
+  },
+  "last_event": {
+    "type": "member.join",
+    "content": null,
+    "box_id": "88120a6f-55db-4def-a5f6-68e3b6bd2241",
+    "id": "dd776e86-4c08-410e-8a15-a7e9b9b8b614",
+    "server_event_created_at": "2021-02-25T15:32:17.014969Z",
+    "referrer_id": null,
+    "sender": {
+      "id": "e2fae038-9419-4f61-bf13-4f4fbd6bb488",
+      "display_name": "Cedric Dupuis+Toto",
+      "avatar_url": null,
+      "identifier_value": "",
+      "identifier_kind": ""
+    }
+  },
+  "settings": {
+    "identity_id": "e2fae038-9419-4f61-bf13-4f4fbd6bb488",
+    "box_id": "88120a6f-55db-4def-a5f6-68e3b6bd2241",
+    "muted": false
+  },
+  "members": [
+    {
+      "id": "e2fae038-9419-4f61-bf13-4f4fbd6bb488",
+      "display_name": "Cedric Dupuis+Toto",
+      "avatar_url": null,
+      "identifier_value": "",
+      "identifier_kind": ""
+    },
+    {
+      "id": "dac77a8a-5561-47f7-8339-3e6df22a856a",
+      "display_name": "Cedric Dupuis",
+      "avatar_url": "https://api.misakey.com.local/avatars/b92d6cb9-0bd9-4e81-ae9c-acb4e7f5d04a",
+      "identifier_value": "",
+      "identifier_kind": ""
+    }
+  ]
+}
