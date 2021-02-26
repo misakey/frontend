@@ -115,7 +115,7 @@ const applyMiddlewares = async (requestOrResponse, endpoint) => {
   let middlewareResult;
   let index = 0;
 
-  while (isNil(middlewareResult) && index < middlewares.length - 1) {
+  while (isNil(middlewareResult) && index < middlewares.length) {
     const middleware = middlewares[index];
     if (isFunction(middleware)) {
       // middlewares must be applied sequentially in loop
@@ -189,7 +189,15 @@ async function send(options = {}, endpoint = this) {
       return rawResponse;
     }
     const middlewareResponse = await applyMiddlewares(rawResponse, mergedEndpoint);
-    return isNil(middlewareResponse) ? handleResponse(rawResponse) : middlewareResponse;
+    if (!isNil(middlewareResponse)) {
+      // this is not the expected result so we need to throw as promise should
+      // not be resolved and should not play the chain of `then()`
+      if (middlewareResponse instanceof Error) {
+        throw middlewareResponse;
+      }
+      return middlewareResponse;
+    }
+    return handleResponse(rawResponse);
   } catch (error) {
     const middlewareError = await applyMiddlewares(error, mergedEndpoint);
     const finalError = isNil(middlewareError) ? error : middlewareError;

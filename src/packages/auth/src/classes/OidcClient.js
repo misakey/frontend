@@ -32,6 +32,8 @@ const TOKEN_INFO_STORE_KEY = 'misoidc:tokenInfo';
 const STATE_STORE_PREFIX = 'misoidc:state';
 
 export default class OidcClient {
+  #tokenInfoValue
+
   constructor(
     { authority, clientId, clockSkew, redirectUri, scope = 'openid tos privacy_policy' } = {},
     { onTokenExpirationChange } = {},
@@ -54,7 +56,7 @@ export default class OidcClient {
     // expiresAt value (expiration date of the access token) is stored
     // in localStorage to know if a session were existing on the app before
     // and know if app should re-signIn (expired) or launch a silent auth timer
-    this.tokenInfoValue = null;
+    this.#tokenInfoValue = null;
 
     this.onTokenExpirationChange = onTokenExpirationChange;
   }
@@ -140,15 +142,16 @@ export default class OidcClient {
   }
 
   get tokenInfo() {
-    if (isNil(this.tokenInfoValue)) {
+    if (isNil(this.#tokenInfoValue)) {
       this.loadTokenInfo();
     }
-    return this.tokenInfoValue;
+    return this.#tokenInfoValue;
   }
 
   set tokenInfo({ expiresAt, ...rest }) {
-    const hasChanged = isNil(this.tokenInfoValue) || (this.tokenInfoValue.expiresAt !== expiresAt);
-    this.tokenInfoValue = { expiresAt, ...rest };
+    const hasChanged = isNil(this.#tokenInfoValue)
+      || (this.#tokenInfoValue.expiresAt !== expiresAt);
+    this.#tokenInfoValue = { expiresAt, ...rest };
     this.tokenInfoStorage.setItem(TOKEN_INFO_STORE_KEY, JSON.stringify(this.tokenInfo));
 
     if (hasChanged && isFunction(this.onTokenExpirationChange)) {

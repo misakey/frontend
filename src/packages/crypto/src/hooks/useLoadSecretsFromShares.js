@@ -8,6 +8,8 @@ import { combineRootKeyShares, computeOtherShareHash } from '@misakey/crypto/sec
 import loadSecrets from '@misakey/crypto/store/actions/loadSecrets';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { decryptSecretStorageWithRootKey } from '@misakey/crypto/secretStorage';
+import { getCode } from '@misakey/helpers/apiError';
+import { notFound as notFoundError } from '@misakey/ui/constants/errorTypes';
 import { selectors } from '../store/reducers';
 import useFetchSecretStorage from './useFetchSecretStorage';
 
@@ -60,10 +62,18 @@ export default (() => {
     }
   }, [encryptedSecretStorage, dispatch, localRootKeyShare]);
 
-  const onError = useCallback((error) => {
-    logSentryException(error, 'fetching root key share', { crypto: true });
-    setNotFound(true);
-  }, []);
+  const onError = useCallback(
+    (error) => {
+      const errorCode = getCode(error);
+      const isNotFound = errorCode === notFoundError;
+      // notFoundError is normal: backend key shares expires regularly
+      logSentryException(error, 'fetching root key share', { crypto: true }, isNotFound ? 'info' : 'error');
+      // even if it's another error than notFound, best thing to do
+      // for user is to ask the password to open the app
+      setNotFound(true);
+    },
+    [],
+  );
 
   const { isFetching } = useFetchEffect(
     fetchRootKeyShare,

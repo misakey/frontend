@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import isNil from '@misakey/helpers/isNil';
+import { HandledError } from '@misakey/api/API/errors';
 import { getDetails } from '@misakey/helpers/apiError';
 
 // CONSTANTS
@@ -11,26 +12,24 @@ const {
 } = authSelectors;
 
 // MIDDLEWARE
-export default (askSigninRedirect, store) => async (rawResponse) => {
-  const match = rawResponse instanceof Response && rawResponse.status === StatusCodes.FORBIDDEN;
-  if (match) {
-    const contentType = rawResponse.headers.get('Content-Type') || '';
-
-    if (contentType.startsWith('application/json')) {
+const invalidSeclevelMiddleware = (askSigninRedirect, store) => async (rawResponse) => {
+  if (rawResponse instanceof Response && rawResponse.status === StatusCodes.FORBIDDEN) {
+    const contentType = rawResponse.headers.get('Content-Type');
+    if (!isNil(contentType) && contentType.startsWith('application/json')) {
       const json = await rawResponse.clone().json();
-      const { origin } = json;
       const { requiredAcr } = getDetails(json);
-      if (origin === 'acr') {
+      if (!isNil(requiredAcr)) {
         const identifier = IDENTIFIER_VALUE_SELECTOR(store.getState());
         const loginHint = isNil(identifier) ? '' : JSON.stringify({ identifier });
         askSigninRedirect({ acrValues: requiredAcr, prompt: 'login', loginHint }, false);
-        // return something other than error to consider error handled
-        return true;
+        // return an Error to prevent `handleResponse` to redo the error handling but
+        // and to prevent caller to run promise success
+        return new HandledError('invalidSeclevel');
       }
-      // return null to consider error not handled
-      return null;
     }
-    return null;
   }
-  return null;
+  // return undefined to consider error not handled
+  return undefined;
 };
+
+export default invalidSeclevelMiddleware;

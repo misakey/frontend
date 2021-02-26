@@ -18,3 +18,16 @@ export const HTTP_ERROR_STATUSES = [
 ];
 
 export const filterHttpStatus = (s) => (HTTP_ERROR_STATUSES.includes(s) ? s : undefined);
+
+
+export class HandledError extends Error {
+  constructor(params) {
+    super(params);
+
+    // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error#custom_error_types
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, HandledError);
+    }
+    this.name = 'HandledError';
+  }
+}

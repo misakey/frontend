@@ -20,6 +20,8 @@ import log from '@misakey/helpers/log';
 
 const DefaultTimeout = 10000;
 
+export const TimeoutErrorMessage = 'Frame window timed out';
+
 export default class IFrameWindow {
   constructor() {
     this._promise = new Promise((resolve, reject) => {
@@ -47,7 +49,7 @@ export default class IFrameWindow {
       this._error('No url provided');
     } else {
       const timeout = params.silentRequestTimeout || DefaultTimeout;
-      log(`IFrameWindow.navigate: Using timeout of:' ${timeout}`);
+      log(`IFrameWindow.navigate: Using timeout of: ${timeout} ms`);
       this._timer = window.setTimeout(this._timeout.bind(this), timeout);
       this._frame.src = params.url;
     }
@@ -93,7 +95,7 @@ export default class IFrameWindow {
 
   _timeout() {
     log('IFrameWindow.timeout');
-    this._error('Frame window timed out');
+    this._error(TimeoutErrorMessage);
   }
 
   _message(e) {

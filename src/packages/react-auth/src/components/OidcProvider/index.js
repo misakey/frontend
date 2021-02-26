@@ -148,7 +148,7 @@ function OidcProvider({
         registerMiddlewares(askSigninRedirect);
       }
     },
-    [registerMiddlewares, askSigninRedirect, userManager],
+    [registerMiddlewares, askSigninRedirect],
   );
 
   return (

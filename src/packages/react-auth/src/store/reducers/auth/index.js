@@ -48,7 +48,7 @@ const mergeIdentity = (state, identity) => (isNil(identity)
 );
 
 const syncIdentity = (state, { accountId, identityId }) => {
-  if (isNil(state.identity) || isNil(identityId)) { return null; }
+  if (isNil(identityId) || isNil(state.identity)) { return state.identity; }
 
   const { id: currentIdentityId, accountId: currentAccountId } = state.identity;
 
@@ -57,7 +57,7 @@ const syncIdentity = (state, { accountId, identityId }) => {
 
   if (identityHasChanged) { return null; }
   if (identityUpgrade) { return mergeIdentity(state, { accountId, hasAccount: true }); }
-  return {};
+  return state.identity;
 };
 
 function resetCredentials() {

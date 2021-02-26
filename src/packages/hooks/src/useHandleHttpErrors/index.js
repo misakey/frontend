@@ -6,6 +6,7 @@ import isNil from '@misakey/helpers/isNil';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 
 import API from '@misakey/api';
+import { HandledError } from '@misakey/api/API/errors';
 
 // HOOKS
 export default () => {
@@ -14,11 +15,14 @@ export default () => {
 
   return useCallback(
     (error) => {
+      if (error instanceof HandledError) {
+        logSentryException(error, 'handleHttpErrors', undefined, 'warning');
+        return;
+      }
+      logSentryException(error, 'handleHttpErrors');
       if (!isNil(error.status)) {
         const text = t([`common:httpStatus.error.${API.errors.filter(error.status)}`, 'common:anErrorOccurred']);
         enqueueSnackbar(text, { variant: 'warning' });
-        // log sentry exception
-        logSentryException(error);
       } else {
         throw error;
       }

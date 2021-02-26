@@ -26,11 +26,44 @@ describe('testing auth reducer', () => {
       });
     });
 
-    it('should handle LOAD_USER_INFO, any state', () => {
+    it('should handle LOAD_USER_INFO, any state with no identity', () => {
       expect(reducer({ expiresAt: '2020-05-20..' }, { type: LOAD_USER_INFO, ...user })).toEqual({
         ...user,
         isAuthenticated: true,
+        identity: undefined,
+        expiresAt: '2020-05-20..',
+      });
+    });
+
+    it('should handle LOAD_USER_INFO, any state with same identity', () => {
+      expect(reducer({ expiresAt: '2020-05-20..', identity: { id: 'test', displayName: 'jean', accountId: 'test' } }, { type: LOAD_USER_INFO, ...user })).toEqual({
+        ...user,
+        isAuthenticated: true,
+        identity: { id: 'test', displayName: 'jean', accountId: 'test' },
+        expiresAt: '2020-05-20..',
+      });
+    });
+
+    it('should handle LOAD_USER_INFO, state with identity', () => {
+      expect(reducer(
+        { expiresAt: '2020-05-20..', identity: { id: 'test2', displayName: 'jean' } },
+        { type: LOAD_USER_INFO, ...user },
+      )).toEqual({
+        ...user,
+        isAuthenticated: true,
         identity: null,
+        expiresAt: '2020-05-20..',
+      });
+    });
+
+    it('should handle LOAD_USER_INFO, state with account upgrade', () => {
+      expect(reducer(
+        { expiresAt: '2020-05-20..', identity: { id: 'test', displayName: 'jean', accountId: null, hasAccount: false } },
+        { type: LOAD_USER_INFO, ...user },
+      )).toEqual({
+        ...user,
+        isAuthenticated: true,
+        identity: { id: 'test', displayName: 'jean', accountId: 'test', hasAccount: true },
         expiresAt: '2020-05-20..',
       });
     });

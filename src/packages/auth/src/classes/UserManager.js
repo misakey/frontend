@@ -26,7 +26,7 @@ import isEqual from '@misakey/helpers/isEqual';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 import SigninResponseError from '@misakey/auth/classes/SigninResponseError';
 import OidcClient from './OidcClient';
-import IFrameWindow from './IFrameWindow';
+import IFrameWindow, { TimeoutErrorMessage } from './IFrameWindow';
 
 // BROADCAST_MESSAGE_TYPES
 const BC_REQUIRE_SILENT_LOCK = 'MisOidc:channel.bc_required_silent_lock';
@@ -35,16 +35,19 @@ const BC_LOGOUT = 'MisOidc:channel.bc_logout';
 const BC_SIGNIN = 'MisOidc:channel.bc_signin';
 
 export default class UserManager extends OidcClient {
+  #userValue
+
   constructor(
     { automaticSilentRenew = true, ...settings } = {},
     { onUserChange, onTokenExpirationChange } = {},
   ) {
     super(settings, { onTokenExpirationChange });
 
-    this.userValue = null;
+    this.#userValue = null;
     this.automaticSilentRenew = automaticSilentRenew;
     // Token can be renewed between 10 minutes and 1 minute before it expires
     this.automaticSilentRenewIntervalDelay = [10 * 60, 1 * 60];
+    this.silentRequestTimeout = 10000;
 
     this.expiringTimer = null;
 
@@ -59,12 +62,12 @@ export default class UserManager extends OidcClient {
   }
 
   get user() {
-    return this.userValue;
+    return this.#userValue;
   }
 
   set user(value) {
-    if (!isEqual(this.userValue, value)) {
-      this.userValue = value;
+    if (!isEqual(this.#userValue, value)) {
+      this.#userValue = value;
       if (!isNil(value) && isFunction(this.onUserChange)) {
         this.onUserChange(this.mapUserInfo());
       }
@@ -96,7 +99,7 @@ export default class UserManager extends OidcClient {
     return getUserInfoBuilder()
       .then((user) => {
         // don't use the setter to prevent to trigger onUserChange for nothing
-        this.userValue = user;
+        this.#userValue = user;
         return this.mapUserInfo();
       })
       .catch(() => null);
@@ -137,20 +140,40 @@ export default class UserManager extends OidcClient {
     currentSub = isNil(this.user) ? undefined : this.user.sub,
     ...rest
   } = {}) {
+    let errorLogged = false;
     return this.createSigninRequest({ redirectUrl, prompt, ...rest })
       .then(async (url) => {
         const iFrameWindow = new IFrameWindow();
         return iFrameWindow
           .navigate({ url, silentRequestTimeout })
-          .then(({ url: signinEndUrl }) => this.signinEnd(signinEndUrl, { currentSub }));
+          .then(
+            ({ url: signinEndUrl }) => this.signinEnd(signinEndUrl, { currentSub, silent: true })
+              .catch((err) => {
+                errorLogged = true;
+                // logSentryException already done in signinEnd
+                return Promise.reject(err);
+              }),
+          )
+          .catch((err) => {
+            if (!errorLogged) {
+              // timeout occurs if user lose connection
+              const level = err.message === TimeoutErrorMessage ? 'warning' : 'error';
+              logSentryException(err, 'UserManager.signinSilent --> iFrameWindow.navigate', { auth: true }, level);
+              errorLogged = true;
+            }
+            return Promise.reject(err);
+          });
       })
       .catch((err) => {
-        logSentryException(err, 'UserManager.signinSilent', { auth: true });
+        if (!errorLogged) {
+          logSentryException(err, 'UserManager.signinSilent --> createSigninRequest', { auth: true });
+          errorLogged = true;
+        }
         return Promise.reject(err);
       });
   }
 
-  async signinEnd(url, { currentSub } = {}) {
+  async signinEnd(url, { currentSub, silent } = {}) {
     return this.processSigninResponse(url)
       .then(({ user, referrer }) => {
         const { profile, expiresAt } = user;
@@ -158,7 +181,7 @@ export default class UserManager extends OidcClient {
         if (!isNil(currentSub)) {
           const { sub } = profile;
           if (currentSub !== sub) {
-            return new Error('login_required');
+            throw new Error('login_required');
           }
         }
 
@@ -175,8 +198,10 @@ export default class UserManager extends OidcClient {
         // referrer can contain sensible information as boxes key share
         // we don't want it to be sent to Sentry
         const sentryErr = (err instanceof SigninResponseError) ? new Error(err.error) : err;
+        // 'login_required' = functional error, hydra cookie is expired or sub has changed
+        const level = silent && err.message === 'login_required' ? 'warning' : 'error';
 
-        logSentryException(sentryErr, 'UserManager.signInEnd', { auth: true });
+        logSentryException(sentryErr, 'UserManager.signInEnd', { auth: true, silent }, level);
         return Promise.reject(err);
       });
   }
@@ -193,6 +218,7 @@ export default class UserManager extends OidcClient {
     log('Start silent renew ...');
     this.signinSilent()
       .then(() => { log('silent renew successfull'); })
+      .catch(() => { this.removeUser(); })
       // Free the resource
       .finally(() => {
         this.silentLocked = false;
