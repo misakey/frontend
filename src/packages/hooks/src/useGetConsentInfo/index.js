@@ -8,7 +8,7 @@ export default (consentChallenge) => {
   const dispatch = useDispatch();
 
   return useCallback(
-    (accessToken) => getInfo({ consentChallenge }, accessToken)
+    () => getInfo({ consentChallenge })
       .then(
         (response) => Promise.resolve(dispatch(ssoUpdate(response))),
       ),

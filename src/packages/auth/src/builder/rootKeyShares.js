@@ -10,10 +10,10 @@ export const createRootKeyShareBuilder = (misakeyKeyShare) => API
   .send()
   .then(objectToCamelCaseDeep);
 
-export const createRootKeyShareFromAuthFlowBuilder = (accessToken, misakeyKeyShare) => API
+export const createRootKeyShareFromAuthFlowBuilder = (misakeyKeyShare) => API
   .use(API.endpoints.auth.rootKeyShares.create)
   .build(null, objectToSnakeCaseDeep(misakeyKeyShare))
-  .send({ headers: { Authorization: `Bearer ${accessToken}` } })
+  .send()
   .then(objectToCamelCaseDeep);
 
 export const getRootKeyShareBuilder = (otherShareHash) => API

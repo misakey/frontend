@@ -17,7 +17,6 @@ export default {
     method: 'POST',
     path: '/auth/login/authn-step',
     withCsrfToken: true,
-    withBearer: true,
   },
   renewAuthStep: {
     method: 'POST',
@@ -65,14 +64,12 @@ export default {
     read: {
       method: 'GET',
       path: '/auth/backup',
-      withBearer: true,
     },
   },
   secretStorage: {
     read: {
       method: 'GET',
       path: '/auth/secret-storage',
-      withBearer: true,
     },
   },
   rootKeyShares: {
@@ -80,7 +77,6 @@ export default {
       method: 'POST',
       path: '/auth/account-root-key-shares',
       withCsrfToken: true,
-      withBearer: true,
     },
   },
 };

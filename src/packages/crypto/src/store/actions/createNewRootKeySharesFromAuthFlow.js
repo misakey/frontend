@@ -1,5 +1,3 @@
-import curry from '@misakey/helpers/curry';
-
 import { getSecretStorageFromAuthFlowBuilder } from '@misakey/auth/builder/secretStorage';
 import { createRootKeyShareFromAuthFlowBuilder } from '@misakey/auth/builder/rootKeyShares';
 import { getBackupFromAuthFlowBuilder } from '@misakey/auth/builder/backup';
@@ -16,14 +14,12 @@ import { decryptSecretStorageWithPassword } from '@misakey/crypto/secretStorage'
 
 import createNewRootKeyShares from './createNewRootKeyShares';
 
-const curriedCreateRootKeyShareBuilder = curry(createRootKeyShareFromAuthFlowBuilder);
-
-async function getData({ loginChallenge, identityId, accessToken, password }) {
+async function getData({ loginChallenge, identityId, password }) {
   try {
     const {
       secrets: encryptedSecretStorage,
       accountId,
-    } = await getSecretStorageFromAuthFlowBuilder({ loginChallenge, identityId }, accessToken);
+    } = await getSecretStorageFromAuthFlowBuilder({ loginChallenge, identityId });
 
     const { rootKey } = await decryptSecretStorageWithPassword(encryptedSecretStorage, password);
 
@@ -36,7 +32,7 @@ async function getData({ loginChallenge, identityId, accessToken, password }) {
       const {
         data: encryptedSecretsBackup,
         accountId,
-      } = await getBackupFromAuthFlowBuilder({ loginChallenge, identityId }, accessToken);
+      } = await getBackupFromAuthFlowBuilder({ loginChallenge, identityId });
 
       const {
         secretStorage: {
@@ -50,7 +46,7 @@ async function getData({ loginChallenge, identityId, accessToken, password }) {
         })
       );
 
-      await migrateToSecretStorageFromAuthFlow(migrationPayload, { accessToken });
+      await migrateToSecretStorageFromAuthFlow(migrationPayload);
 
       return {
         accountId,
@@ -65,19 +61,17 @@ export default ({
   loginChallenge,
   identityId,
   password,
-}, accessToken) => (
+}) => (
   async (dispatch) => {
     const {
       rootKey,
       accountId,
-    } = await getData({ loginChallenge, identityId, accessToken, password });
-
-    const createRootKeyShareBuilder = curriedCreateRootKeyShareBuilder(accessToken);
+    } = await getData({ loginChallenge, identityId, password });
 
     return dispatch(createNewRootKeyShares({
       rootKey,
       accountId,
-      uploadMisakeyShare: createRootKeyShareBuilder,
+      uploadMisakeyShare: createRootKeyShareFromAuthFlowBuilder,
     }));
   }
 );

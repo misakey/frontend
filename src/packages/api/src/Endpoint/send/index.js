@@ -160,7 +160,7 @@ const makeRequest = async (headers, endpoint, retryOptions) => {
 async function send(options = {}, endpoint = this) {
   const { rawRequest, contentType = 'application/json', headers: optionsHeaders, retryOptions } = options;
   const mergedEndpoint = { ...this, ...endpoint };
-  const { withCsrfToken, withBearer, path, getCsrfToken } = mergedEndpoint;
+  const { withCsrfToken, path, getCsrfToken } = mergedEndpoint;
 
   let headers = new Headers();
   if (optionsHeaders instanceof Headers) {
@@ -170,11 +170,6 @@ async function send(options = {}, endpoint = this) {
   }
 
   if (contentType) { headers.set('Content-Type', contentType); }
-  if (withBearer) {
-    if (isNil(headers.get('Authorization'))) {
-      throw new Error(`${path} requires tmp access token for Bearer authorization to be truthy`);
-    }
-  }
   if (withCsrfToken) {
     const xCsrfToken = await getCsrfToken();
     if (isNil(xCsrfToken)) {

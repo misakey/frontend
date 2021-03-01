@@ -29,7 +29,7 @@ const computeProgress = (progressEvent, shouldBeDone = false) => {
  */
 export default (
   { onProgress = noop } = {},
-  { getCsrfToken, withCsrfToken, withBearer, path, method, requestUri, body },
+  { getCsrfToken, withCsrfToken, path, method, requestUri, body },
 ) => {
   const req = new XMLHttpRequest();
   // needed for all requests for backend beeing to read HTTP only cookies
@@ -64,12 +64,6 @@ export default (
     }, false);
 
     req.open(method, requestUri, true);
-
-    if (withBearer) {
-      if (isNil(req.getRequestHeader('Authorization'))) {
-        throw new Error(`${path} requires tmp access token for Bearer authorization to be truthy`);
-      }
-    }
 
     if (withCsrfToken) {
       getCsrfToken().then((xCsrfToken) => {

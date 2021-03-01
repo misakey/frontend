@@ -12,8 +12,7 @@ import objectToSnakeCaseDeep from '@misakey/helpers/objectToSnakeCaseDeep';
 export const loginAuthStepBuilder = async ({
   loginChallenge, identityId, secret, methodName, pwdHashParams,
   dispatchHardPasswordChange, dispatchCreateNewOwnerSecrets,
-  auth = false,
-}, accessToken) => {
+}) => {
   const metadata = await makeMetadata({
     secret,
     methodName,
@@ -35,8 +34,5 @@ export const loginAuthStepBuilder = async ({
     { excludedKeys, ignoreBase64: true },
   );
 
-  const endpoint = { ...API.endpoints.auth.loginAuthStep, auth };
-  const options = auth ? { headers: { Authorization: `Bearer ${accessToken}` } } : undefined;
-
-  return API.use(endpoint).build(null, payload).send(options);
+  return API.use(API.endpoints.auth.loginAuthStep).build(null, payload).send();
 };

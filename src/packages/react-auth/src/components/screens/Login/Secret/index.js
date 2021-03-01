@@ -6,20 +6,17 @@ import { withTranslation, Trans } from 'react-i18next';
 import { connect, useDispatch } from 'react-redux';
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
-import moment from 'moment';
 
 import { LARGE, APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
 import authRoutes from '@misakey/react-auth/routes';
-import { QUESTIONS } from '@misakey/ui/constants/emails';
 import { NEXT_STEP_REDIRECT, NEXT_STEP_AUTH } from '@misakey/auth/constants/step';
 import { STEP, INITIAL_VALUES, ERROR_KEYS } from '@misakey/auth/constants';
 
 import { getSecretValidationSchema } from '@misakey/react-auth/constants/validationSchemas';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react-auth/store/reducers/sso';
-import { ssoUpdate, ssoSign, ssoReset } from '@misakey/react-auth/store/actions/sso';
+import { ssoUpdate } from '@misakey/react-auth/store/actions/sso';
 import createNewRootKeySharesFromAuthFlow from '@misakey/crypto/store/actions/createNewRootKeySharesFromAuthFlow';
-import { conflict } from '@misakey/ui/constants/errorTypes';
-import { DATE_FULL } from '@misakey/ui/constants/formats/dates';
+
 import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, WEBAUTHN, TOTP, TOTP_RECOVERY, AuthUndefinedMethodName, RESET_PASSWORD } from '@misakey/auth/constants/method';
 
 import compose from '@misakey/helpers/compose';
@@ -35,7 +32,6 @@ import { loginAuthStepBuilder } from '@misakey/auth/builder/loginAuthStep';
 import { isHydraErrorCode } from '@misakey/auth/helpers/errors';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useClearUser } from '@misakey/hooks/useActions/loginSecret';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
@@ -103,16 +99,13 @@ const AuthLoginSecret = ({
   identity,
   loginChallenge,
   client,
-  accessToken,
   resourceName,
   dispatchSsoUpdate,
-  dispatchSsoSign,
-  dispatchSsoReset,
   t,
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const handleHttpErrors = useHandleHttpErrors();
+
   const dispatch = useDispatch();
 
   const [redirectTo, setRedirectTo] = useState(null);
@@ -172,19 +165,14 @@ const AuthLoginSecret = ({
   const onSuccessLoginAuthStep = useCallback(
     async (res, { values, setFieldValue }) => {
       const {
-        accessToken: nextAccessToken,
         redirectTo: nextRedirectTo,
         next,
         authnStep: nextAuthnStep,
       } = objectToCamelCaseDeep(res);
 
-      if (!isNil(nextAccessToken)) {
-        await Promise.resolve(dispatchSsoSign(nextAccessToken));
-      }
-
       // handle BackupSecretShares
       if ([RESET_PASSWORD, PREHASHED_PASSWORD, ACCOUNT_CREATION].includes(methodName)) {
-        await onHandleBackupSecretShares(values, nextAccessToken);
+        await onHandleBackupSecretShares(values);
       }
 
       if (next === NEXT_STEP_REDIRECT) {
@@ -197,91 +185,57 @@ const AuthLoginSecret = ({
 
       return res;
     },
-    [dispatchSsoSign, dispatchSsoUpdate, methodName, onHandleBackupSecretShares],
+    [dispatchSsoUpdate, methodName, onHandleBackupSecretShares],
   );
 
   const onErrorLoginAuthStep = useCallback(
     async (e, { setFieldValue, setFieldError }) => {
-      if (e instanceof AuthUndefinedMethodName) {
-        enqueueSnackbar(t('auth:error.flow.invalid_flow'), { variant: 'error' });
+      const code = getCode(e);
+      const details = getDetails(e);
+
+      logSentryException(e, 'Auth flow: LoginAuthStep', { auth: true });
+
+      if (e instanceof AuthUndefinedMethodName || details.loginChallenge) {
+        enqueueSnackbar(t('auth:error.flow.invalid_flow'), { variant: 'warning' });
         return setRedirectTo(authRoutes.redirectToSignIn);
       }
 
-      const code = getCode(e);
-      const details = getDetails(e);
       const secretError = getSecretError(details);
+
       if (!isNil(secretError)) {
         if (methodName === EMAILED_CODE) {
           setFieldValue(CURRENT_STEP, '');
         }
         return setFieldError(CURRENT_STEP, secretError);
       }
-      if (details.Authorization && details.loginChallenge) {
-        enqueueSnackbar(t('auth:login.form.error.authorizationChallenge'), { variant: 'warning' });
-        await dispatchSsoReset();
-        setRedirectTo(authRoutes.redirectToSignIn);
-      }
+
       if (isHydraErrorCode(code)) {
         return enqueueSnackbar(t(`auth:error.flow.${code}`), {
           variant: 'warning',
           action: (key) => <SnackbarActionAuthRestart id={key} />,
         });
       }
-      if (details.toDelete === conflict) {
-        // @FIXME should we remove that part as it's not implemented in latest version ?
-        const text = (
-          <Trans
-            i18nKey="auth:login.form.error.deletedAccount"
-            values={{
-              deletionDate: moment(details.deletionDate).format(DATE_FULL),
-            }}
-          >
-            Votre compte est en cours de suppression, vous ne pouvez donc plus vous y connecter.
-            <br />
-            {'Sans action de votre part il sera supprimé le {{deletionDate}}.'}
-            <br />
-            Si vous voulez le récupérer envoyez nous un email à&nbsp;
-            <a href={`mailto:${QUESTIONS}`}>{QUESTIONS}</a>
-          </Trans>
-        );
-        return enqueueSnackbar(text, { variant: 'error' });
-      }
 
-      logSentryException(e, 'Auth flow: LoginAuthStep', { auth: true });
-
-      if (!isNil(e.status)) {
-        // @FIXME It is false to assume that error must be a HTTP error
-        return handleHttpErrors(e);
-      }
       return enqueueSnackbar(t('common:errorPleaseRetryOrRefresh'), {
-        variant: 'error',
+        variant: 'warning',
         action: (key) => <SnackbarActionRefresh id={key} />,
       });
     },
-    [dispatchSsoReset, enqueueSnackbar, handleHttpErrors, methodName, t],
+    [enqueueSnackbar, methodName, t],
   );
 
-  const onLoginAuthStepSecret = useCallback(
+  const onLoginAuthStep = useCallback(
     (values) => loginAuthStepBuilder(
-      {
-        loginChallenge,
-        identityId,
-        methodName,
-        pwdHashParams: metadata,
-        ...values,
-        auth: !isNil(accessToken),
-      },
-      accessToken,
+      { loginChallenge, identityId, methodName, pwdHashParams: metadata, ...values },
     ),
-    [accessToken,
-      identityId, loginChallenge, metadata, methodName],
+    [identityId, loginChallenge, metadata, methodName],
   );
 
   const onSubmit = useCallback(
     async (values, { setFieldError, setSubmitting, setFieldValue }) => {
       setRedirectTo(null);
       try {
-        const response = await onLoginAuthStepSecret(values);
+        const response = await onLoginAuthStep(values);
         await onSuccessLoginAuthStep(response, { values, setFieldValue });
       } catch (err) {
         onErrorLoginAuthStep(err, { setFieldError, setFieldValue });
@@ -289,7 +243,7 @@ const AuthLoginSecret = ({
         setSubmitting(false);
       }
     },
-    [onLoginAuthStepSecret, onSuccessLoginAuthStep, onErrorLoginAuthStep],
+    [onLoginAuthStep, onSuccessLoginAuthStep, onErrorLoginAuthStep],
   );
 
   const onClearUser = useClearUser();
@@ -444,15 +398,11 @@ AuthLoginSecret.propTypes = {
   // CONNECT
   authnStep: SSO_PROP_TYPES.authnStep.isRequired,
   identity: SSO_PROP_TYPES.identity.isRequired,
-  accessToken: SSO_PROP_TYPES.accessToken,
   dispatchSsoUpdate: PropTypes.func.isRequired,
-  dispatchSsoSign: PropTypes.func.isRequired,
-  dispatchSsoReset: PropTypes.func.isRequired,
 };
 
 AuthLoginSecret.defaultProps = {
   identifier: '',
-  accessToken: null,
   resourceName: '',
 };
 
@@ -460,18 +410,11 @@ AuthLoginSecret.defaultProps = {
 const mapStateToProps = (state) => ({
   authnStep: state.sso.authnStep,
   identity: state.sso.identity,
-  accessToken: state.sso.accessToken,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchSsoUpdate: (sso) => Promise.resolve(
     dispatch(ssoUpdate(sso)),
-  ),
-  dispatchSsoSign: (accessToken) => Promise.resolve(
-    dispatch(ssoSign(accessToken)),
-  ),
-  dispatchSsoReset: () => Promise.resolve(
-    dispatch(ssoReset()),
   ),
 });
 

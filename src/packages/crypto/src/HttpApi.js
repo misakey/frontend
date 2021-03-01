@@ -318,11 +318,10 @@ export async function migrateToSecretStorage(payload) {
   return httpCallReturnBody(endpoint, httpRequestParams);
 }
 
-export async function migrateToSecretStorageFromAuthFlow(payload, { accessToken }) {
+export async function migrateToSecretStorageFromAuthFlow(payload) {
   const endpoint = {
     method: 'POST',
     path: '/auth/crypto/migration/v2',
-    withBearer: true,
     withCsrfToken: true,
   };
 
@@ -333,7 +332,7 @@ export async function migrateToSecretStorageFromAuthFlow(payload, { accessToken 
       objectToSnakeCaseDeep(payload, { ignoreBase64: true }),
       {},
     )
-    .send({ headers: { Authorization: `Bearer ${accessToken}` } });
+    .send();
 
   return response;
 }
