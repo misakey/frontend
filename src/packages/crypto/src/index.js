@@ -110,8 +110,11 @@ function makeCryptoResetPayload({
     },
     asymKeys: {},
     boxKeyShares: {},
-    identityPublicKey: newIdentityPublicKey,
-    identityNonIdentifiedPublicKey: newIdentityNonIdentifiedPublicKey,
+    // backend use these names instead
+    // TODO make naming consistent
+    // (see refacto list: https://gitlab.misakey.dev/misakey/frontend/-/issues/856)
+    pubkey: newIdentityPublicKey,
+    nonIdentifiedPubkey: newIdentityNonIdentifiedPublicKey,
   };
 
   Object.entries(asymKeys).forEach(([publicKey, secretKey]) => {
