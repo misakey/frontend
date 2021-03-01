@@ -132,8 +132,6 @@ FormFieldAutocompleteWhitelistWithErrors.propTypes = {
   className: PropTypes.string,
   name: PropTypes.string.isRequired,
   prefix: PropTypes.string,
-  helperText: PropTypes.string,
-  label: PropTypes.string,
   multiple: PropTypes.bool,
   textFieldProps: PropTypes.object,
 };
@@ -141,8 +139,6 @@ FormFieldAutocompleteWhitelistWithErrors.propTypes = {
 FormFieldAutocompleteWhitelistWithErrors.defaultProps = {
   className: '',
   prefix: '',
-  helperText: '',
-  label: '',
   multiple: false,
   textFieldProps: {},
 };

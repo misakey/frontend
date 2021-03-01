@@ -12,6 +12,9 @@ import { PUBLIC } from '@misakey/ui/constants/accessModes';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { updateAccessesEvents } from 'store/reducers/box';
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
+import {
+  ACCESS_STATUS_NEEDS_LINK,
+} from '@misakey/ui/constants/accessStatus';
 
 import { getUpdatedAccesses } from 'helpers/accesses';
 import isNil from '@misakey/helpers/isNil';
@@ -20,6 +23,7 @@ import partition from '@misakey/helpers/partition';
 import differenceWith from '@misakey/helpers/differenceWith';
 import { senderMatchesIdentifierValue, senderMatchesIdentityId, sendersMatch } from 'helpers/sender';
 import { createBulkBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import getAccessStatus from '@misakey/helpers/getAccessStatus';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
@@ -56,7 +60,7 @@ import ShareBoxForm from 'components/screens/app/Boxes/Read/Sharing/Form';
 import ShareBoxFormSkeleton from 'components/screens/app/Boxes/Read/Sharing/Form/Skeleton';
 import ListItemShareBoxLink from 'components/smart/ListItem/BoxLink/Share';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
-import BoxMessageWhitelist from '@misakey/ui/Box/Message/Whitelist';
+import BoxMessage from '@misakey/ui/Box/Message';
 
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
@@ -138,6 +142,24 @@ function BoxSharing({ box, t }) {
     [whitelist],
   );
 
+  const hasDomains = useMemo(
+    () => !isEmpty(whitelistDomains),
+    [whitelistDomains],
+  );
+
+  const hasLinkRequiredUsers = useMemo(
+    () => whitelistUsers.some((whitelistUser) => {
+      const accessStatus = getAccessStatus(whitelistUser);
+      return accessStatus === ACCESS_STATUS_NEEDS_LINK;
+    }),
+    [whitelistUsers],
+  );
+
+  const isAccessModePublic = useMemo(
+    () => accessMode === PUBLIC,
+    [accessMode],
+  );
+
   const membersNotInWhitelist = useMemo(
     () => {
       const membersWithoutCreatorSubject = (members || [])
@@ -204,11 +226,11 @@ function BoxSharing({ box, t }) {
 
   useEffect(
     () => {
-      if (accessMode !== PUBLIC) {
+      if (!isAccessModePublic) {
         setDomainExpanded(true);
       }
     },
-    [accessMode, setDomainExpanded],
+    [isAccessModePublic, setDomainExpanded],
   );
 
   return (
@@ -255,6 +277,7 @@ function BoxSharing({ box, t }) {
               <ListItemShareBoxLink
                 box={box}
                 isOwner={isCurrentUserOwner}
+                disabled
               />
             </ShareBoxFormSkeleton>
           ) : (
@@ -352,18 +375,21 @@ function BoxSharing({ box, t }) {
                     </AccordionDetails>
                   </Accordion>
                 </ListBordered>
-                <BoxMessageWhitelist
+                {(hasDomains || hasLinkRequiredUsers) && (
+                <BoxMessage
                   my={1}
-                  whitelist={whitelist}
                   type="warning"
                   text={t('boxes:read.share.accesses.requiredWarning')}
                   border={false}
                   square={isXs}
                 />
+                )}
               </Box>
               <ListItemShareBoxLink
                 box={box}
                 isOwner={isCurrentUserOwner}
+                disabled={!isAccessModePublic && !hasDomains && !hasLinkRequiredUsers}
+                forceEnableMenu
               />
             </ShareBoxForm>
           )}

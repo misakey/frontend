@@ -16,6 +16,7 @@ import ACCESS_MODES, { PUBLIC, LIMITED } from '@misakey/ui/constants/accessModes
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import { getUpdatedAccesses } from 'helpers/accesses';
+import alwaysNull from '@misakey/helpers/always/null';
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 import pluck from '@misakey/helpers/pluck';
@@ -44,6 +45,8 @@ import ListItemUserOption from '@misakey/ui/ListItem/User/Option';
 import ListItemUserOptionSkeleton from '@misakey/ui/ListItem/User/Option/Skeleton';
 import ListItemDomain from '@misakey/ui/ListItem/Domain';
 import FormikDirtyPrompt from '@misakey/ui/Formik/DirtyPrompt';
+
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 // CONSTANTS
 const { identifierValue: IDENTIFIER_VALUE_SELECTOR } = authSelectors;
@@ -298,6 +301,7 @@ function ShareBoxForm({
               <ListItemAccessLevel disableGutters value={value} dense />
             ),
             MenuProps: { MenuListProps: { disablePadding: true } },
+            IconComponent: isCurrentUserOwner ? ArrowDropDownIcon : alwaysNull,
           }}
         >
           <MenuItem value={PUBLIC}>

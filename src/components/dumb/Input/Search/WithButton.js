@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 
+import alwaysNull from '@misakey/helpers/always/null';
 import noop from '@misakey/helpers/noop';
 import isString from '@misakey/helpers/isString';
 import isNil from '@misakey/helpers/isNil';
@@ -71,7 +72,7 @@ InputSearchButton.propTypes = {
 InputSearchButton.defaultProps = {
   value: '',
   onSubmit: noop,
-  Icon: () => null,
+  Icon: alwaysNull,
   iconButtonProps: {},
 };
 

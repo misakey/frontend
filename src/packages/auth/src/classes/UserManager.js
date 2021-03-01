@@ -17,6 +17,7 @@
 
 import moment from 'moment';
 import getUserInfoBuilder from '@misakey/auth/builder/userinfo';
+import alwaysNull from '@misakey/helpers/always/null';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import isString from '@misakey/helpers/isString';
@@ -102,7 +103,7 @@ export default class UserManager extends OidcClient {
         this.#userValue = user;
         return this.mapUserInfo();
       })
-      .catch(() => null);
+      .catch(alwaysNull);
   }
 
   removeUser(preventBroadcast = false) {

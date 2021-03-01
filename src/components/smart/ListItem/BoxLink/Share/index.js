@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import BoxSchema from 'store/schemas/Boxes';
@@ -27,15 +27,19 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const ButtonShareBoxLink = withDialogShare(Button);
 
-const ListItemShareBoxLink = ({ disabled, isOwner, box }) => {
+const ListItemShareBoxLink = ({ disabled, forceEnableMenu, isOwner, box }) => {
   const { t } = useTranslation(['common', 'boxes']);
   const classes = useStyles();
 
+  const menuDisabled = useMemo(
+    () => disabled && !forceEnableMenu,
+    [disabled, forceEnableMenu],
+  );
 
   return (
     <ListItem
       aria-label={t('common:share')}
-      disabled={disabled}
+      disabled={menuDisabled}
     >
       <ListItemAvatar>
         <Avatar className={classes.avatar}><LinkIcon fontSize="small" /></Avatar>
@@ -52,7 +56,7 @@ const ListItemShareBoxLink = ({ disabled, isOwner, box }) => {
       />
       {isOwner && (
       <ListItemSecondaryAction>
-        <MenuBoxLink disabled={disabled} box={box} />
+        <MenuBoxLink disabled={menuDisabled} box={box} />
       </ListItemSecondaryAction>
       )}
     </ListItem>
@@ -62,11 +66,13 @@ const ListItemShareBoxLink = ({ disabled, isOwner, box }) => {
 ListItemShareBoxLink.propTypes = {
   box: PropTypes.shape(BoxSchema.propTypes).isRequired,
   disabled: PropTypes.bool,
+  forceEnableMenu: PropTypes.bool,
   isOwner: PropTypes.bool,
 };
 
 ListItemShareBoxLink.defaultProps = {
   disabled: false,
+  forceEnableMenu: false,
   isOwner: false,
 };
 

@@ -1,7 +1,7 @@
 import isFunction from '@misakey/helpers/isFunction';
 import isArray from '@misakey/helpers/isArray';
-
 import isNil from '@misakey/helpers/isNil';
+import alwaysNull from '@misakey/helpers/always/null';
 import { getCsrfTokenBuilder } from '@misakey/auth/builder/getCsrfToken';
 import endpoints from './endpoints';
 import Endpoint from '../Endpoint';
@@ -31,7 +31,7 @@ class API {
           this.xCsrfToken = xCsrfToken;
           return this.xCsrfToken;
         })
-        .catch(() => null);
+        .catch(alwaysNull);
     }
     return Promise.resolve(this.xCsrfToken);
   }
