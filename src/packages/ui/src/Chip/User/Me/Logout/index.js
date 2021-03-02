@@ -5,7 +5,6 @@ import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/a
 import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/Context';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useSignOut from '@misakey/react-auth/hooks/useSignOut';
 import { useSelector } from 'react-redux';
 
 import ChipUser from '@misakey/ui/Chip/User';
@@ -17,8 +16,7 @@ const { identity: IDENTITY_SELECTOR } = authSelectors;
 // COMPONENTS
 // @UNUSED
 const ChipUserMeLogout = (props) => {
-  const { userManager } = useContext(UserManagerContext);
-  const onDelete = useSignOut(userManager);
+  const { onLogout: onDelete } = useContext(UserManagerContext);
 
   const identity = useSelector(IDENTITY_SELECTOR);
   const { displayName, avatarUrl } = useSafeDestr(identity);

@@ -12,6 +12,7 @@ import logSentryException from '@misakey/helpers/log/sentry/exception';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 import UserManager from '@misakey/auth/classes/UserManager';
+import signOutBuilder from '@misakey/auth/builder/signOut';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import { useDispatch } from 'react-redux';
@@ -73,16 +74,10 @@ function OidcProvider({
 
   const userManager = useMemo(
     () => new UserManager(
-      {
-        ...config,
-        automaticSilentRenew: !isRouteExcludedForAutomaticSignIn,
-      },
-      {
-        onUserChange: dispatchUser,
-        onTokenExpirationChange,
-      },
+      config,
+      { onUserChange: dispatchUser, onTokenExpirationChange },
     ),
-    [config, dispatchUser, isRouteExcludedForAutomaticSignIn, onTokenExpirationChange],
+    [config, dispatchUser, onTokenExpirationChange],
   );
 
   const askSigninRedirect = useCallback(
@@ -100,12 +95,20 @@ function OidcProvider({
     [setSigninRedirect],
   );
 
+  const onLogout = useCallback(
+    () => signOutBuilder()
+      // userManager.removeUser triggers onTokenExpirationChange which triggers AUTH_RESET
+      .then(() => userManager.removeUser()),
+    [userManager],
+  );
+
   const contextValue = useMemo(
     () => ({
       userManager,
       askSigninRedirect,
+      onLogout,
     }),
-    [userManager, askSigninRedirect],
+    [userManager, askSigninRedirect, onLogout],
   );
 
   const onLoadUserAtMount = useCallback(

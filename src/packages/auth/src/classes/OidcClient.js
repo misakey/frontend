@@ -15,6 +15,7 @@
 // limitations under the License.
 
 import { handleResponse } from '@misakey/api/Endpoint/send';
+import isString from '@misakey/helpers/isString';
 import isNil from '@misakey/helpers/isNil';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import pick from '@misakey/helpers/pick';
@@ -24,19 +25,26 @@ import validateProperties from '@misakey/helpers/validateProperties';
 import isEmpty from '@misakey/helpers/isEmpty';
 import { parseJwt, validateJwt } from '@misakey/auth/helpers/jwtUtils';
 import SigninResponseError from '@misakey/auth/classes/SigninResponseError';
-import isFunction from '@misakey/helpers/isFunction';
+import log from '@misakey/helpers/log';
+import isArray from '@misakey/helpers/isArray';
 import snakeCase from '@misakey/helpers/snakeCase';
 import trimStart from '@misakey/helpers/trimStart';
+import isJSON from '@misakey/helpers/isJSON';
 
 const TOKEN_INFO_STORE_KEY = 'misoidc:tokenInfo';
 const STATE_STORE_PREFIX = 'misoidc:state';
+
+const mergeLoginHint = (loginHint, object) => {
+  const current = isString(loginHint) && isJSON(loginHint) ? JSON.parse(loginHint) : {};
+  return JSON.stringify({ ...current, ...object });
+};
 
 export default class OidcClient {
   #tokenInfoValue
 
   constructor(
     { authority, clientId, clockSkew, redirectUri, scope = 'openid tos privacy_policy' } = {},
-    { onTokenExpirationChange } = {},
+    { onTokenExpirationChangeCbs = [] } = {},
   ) {
     this.authority = authority;
     this.clientId = clientId;
@@ -58,7 +66,7 @@ export default class OidcClient {
     // and know if app should re-signIn (expired) or launch a silent auth timer
     this.#tokenInfoValue = null;
 
-    this.onTokenExpirationChange = onTokenExpirationChange;
+    this.onTokenExpirationChangeCbs = onTokenExpirationChangeCbs;
   }
 
   async createSigninRequest({
@@ -71,6 +79,7 @@ export default class OidcClient {
     extraQueryParams = {},
     acrValues,
     referrer = `${window.location.pathname}${window.location.search || ''}${window.location.hash || ''}`,
+    loginHint,
     ...rest
   }) {
     const err = validateProperties(
@@ -100,9 +109,10 @@ export default class OidcClient {
       query.set('acr_values', acrValues);
     }
 
+    query.set('login_hint', mergeLoginHint(loginHint, { state: stateId }));
+
     const optional = pick(
-      ['prompt', 'display', 'maxAge', 'uiLocales',
-        'idTokenHint', 'loginHint',
+      ['prompt', 'display', 'maxAge', 'uiLocales', 'idTokenHint',
         'resource', 'request', 'requestUri', 'responseMode'],
       rest,
     );
@@ -136,7 +146,7 @@ export default class OidcClient {
   getStateInStore(id) {
     const state = this.stateStorage.getItem(`${STATE_STORE_PREFIX}.${id}`);
     if (isNil(state)) {
-      throw new Error('Could not finalize auth flow: missing state in storage');
+      return null;
     }
     return JSON.parse(state);
   }
@@ -154,9 +164,18 @@ export default class OidcClient {
     this.#tokenInfoValue = { expiresAt, ...rest };
     this.tokenInfoStorage.setItem(TOKEN_INFO_STORE_KEY, JSON.stringify(this.tokenInfo));
 
-    if (hasChanged && isFunction(this.onTokenExpirationChange)) {
-      this.onTokenExpirationChange(expiresAt);
+    if (hasChanged) {
+      if (!isArray(this.onTokenExpirationChangeCbs)) {
+        log('onTokenExpirationChangeCbs should be an array !', 'error'); return;
+      }
+      this.onTokenExpirationChangeCbs.forEach((callback) => {
+        callback(expiresAt);
+      });
     }
+  }
+
+  addOnTokenExpirationChangeCb(callback) {
+    this.onTokenExpirationChangeCbs.push(callback);
   }
 
   loadTokenInfo() {
@@ -299,6 +318,11 @@ export default class OidcClient {
     }
 
     const state = this.getStateInStore(stateId);
+
+    if (isNil(state)) {
+      throw new Error('Could not finalize auth flow: missing state in storage');
+    }
+
     const { referrer } = state;
 
     try {

@@ -42,7 +42,10 @@ export default class UserManager extends OidcClient {
     { automaticSilentRenew = true, ...settings } = {},
     { onUserChange, onTokenExpirationChange } = {},
   ) {
-    super(settings, { onTokenExpirationChange });
+    const options = isFunction(onTokenExpirationChange)
+      ? { onTokenExpirationChangeCbs: [onTokenExpirationChange] }
+      : undefined;
+    super(settings, options);
 
     this.#userValue = null;
     this.automaticSilentRenew = automaticSilentRenew;
@@ -59,7 +62,7 @@ export default class UserManager extends OidcClient {
     this.channel = 'BroadcastChannel' in window ? new BroadcastChannel('MisOidc:broadcast_channel') : {};
     this.channel.onmessage = this.onReceiveChannelMessage.bind(this);
 
-    this.loadSilentAuthTimer();
+    this.addOnTokenExpirationChangeCb(this.loadSilentAuthTimer.bind(this));
   }
 
   get user() {
@@ -187,7 +190,6 @@ export default class UserManager extends OidcClient {
         }
 
         this.user = profile;
-        this.loadSilentAuthTimer();
         this.onPostChannelMessage(BC_SIGNIN, { ...this.user, expiresAt });
         return {
           user: this.mapUserInfo(),

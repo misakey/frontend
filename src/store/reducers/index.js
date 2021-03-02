@@ -18,7 +18,6 @@ import savedFilesPagination from 'store/reducers/files/saved/pagination';
 import devicePreferences from 'store/reducers/devicePreferences';
 import box from 'store/reducers/box';
 import notificationsByIdentity from 'store/reducers/identity/notifications';
-import screens from 'store/reducers/screens';
 
 const appReducer = combineReducers({
   ...authPersistedReducers,
@@ -26,7 +25,6 @@ const appReducer = combineReducers({
   ...devicePreferences,
   ...box,
   ...notificationsByIdentity,
-  screens,
   crypto,
   ...userBoxesPagination,
   ...boxEventsPagination,

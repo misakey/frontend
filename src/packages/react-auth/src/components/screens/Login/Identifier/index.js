@@ -1,53 +1,34 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import PropTypes from 'prop-types';
 import { withTranslation, Trans } from 'react-i18next';
-import { Form } from 'formik';
-import Formik from '@misakey/ui/Formik';
-
-import { STEP, INITIAL_VALUES, ERROR_KEYS } from '@misakey/auth/constants';
-import { identifierValidationSchema } from '@misakey/react-auth/constants/validationSchemas';
-import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react-auth/store/reducers/sso';
+import { PROP_TYPES as SSO_PROP_TYPES, selectors as ssoSelectors } from '@misakey/react-auth/store/reducers/sso';
 import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER, LARGE } from '@misakey/ui/constants/sizes';
 
-
-import compose from '@misakey/helpers/compose';
-import head from '@misakey/helpers/head';
-import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
-import props from '@misakey/helpers/props';
-import { getDetails } from '@misakey/helpers/apiError';
+import isNil from '@misakey/helpers/isNil';
 
-import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useOnIdentifierSubmit from '@misakey/react-auth/hooks/useOnIdentifierSubmit';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import pick from '@misakey/helpers/pick';
 
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
-import CardUser from '@misakey/react-auth/components/Card/User';
-import LoginFormField from '@misakey/ui/Form/Field/Login/Identifier';
-import SecretHiddenFormField from '@misakey/ui/Form/Field/Login/Secret/Hidden';
-import BoxControls from '@misakey/ui/Box/Controls';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
 import CardSsoWithSlope from '@misakey/react-auth/components/Card/Sso/WithSlope';
 import AvatarBox from '@misakey/ui/Avatar/Box';
 import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
-import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
+import CardUser from '@misakey/ui/Card/User';
+import AuthLoginIdentifierForm from './Form';
+import AuthLoginIdentifierNoAccount from './NoAccount';
 
 // CONSTANTS
-const CURRENT_STEP = STEP.identifier;
 const SLOPE_PROPS = {
   // @FIXME approximate spacing to align card content with slope
   height: APPBAR_HEIGHT + AVATAR_SIZE * LARGE_MULTIPLIER + 116,
 };
-
-// HELPERS
-const getIdentifierError = compose(
-  head,
-  (errors) => errors.filter((error) => !isNil(error)),
-  props(ERROR_KEYS[CURRENT_STEP]),
-);
+const { identity: identitySelector } = ssoSelectors;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -69,42 +50,19 @@ const AuthLoginIdentifier = ({
   client,
   identifier,
   resourceName,
-  t,
+  isLoading,
 }) => {
   const classes = useStyles();
-  const handleHttpErrors = useHandleHttpErrors();
-
-  const initialValues = useMemo(
-    () => ({
-      ...INITIAL_VALUES[CURRENT_STEP],
-      identifier,
-    }),
-    [identifier],
-  );
-
   const { name } = useSafeDestr(client);
+  const identity = useSelector(identitySelector);
 
-  const onIdentifierSubmit = useOnIdentifierSubmit(loginChallenge);
+  const displayForm = useMemo(() => isNil(identity) && !isLoading, [identity, isLoading]);
+  const displayNoAccount = useMemo(() => !isNil(identity) && !isLoading, [identity, isLoading]);
 
-  const onSubmit = useCallback(
-    (
-      { identifier: nextIdentifier },
-      { setFieldError },
-    ) => onIdentifierSubmit(nextIdentifier)
-      .catch((e) => {
-        const details = getDetails(e);
-        const identifierError = getIdentifierError(details);
-
-        if (!isNil(identifierError)) {
-          setFieldError(CURRENT_STEP, identifierError);
-        } else {
-          handleHttpErrors(e);
-        }
-      }),
-    [onIdentifierSubmit, handleHttpErrors],
+  const userPublicData = useMemo(
+    () => (isNil(identity) ? { identifier } : { ...pick(['displayName', 'avatarUrl'], identity), identifier }),
+    [identifier, identity],
   );
-
-  const primary = useMemo(() => ({ text: t('common:next') }), [t]);
 
   return (
     <CardSsoWithSlope
@@ -116,45 +74,32 @@ const AuthLoginIdentifier = ({
       slopeProps={SLOPE_PROPS}
       avatarSize={LARGE}
     >
-      <Formik
-        initialValues={initialValues}
-        validationSchema={identifierValidationSchema}
-        onSubmit={onSubmit}
-        enableReinitialize
-      >
-        <Form>
-          <Title align="center" gutterBottom={false}>
-            <Trans i18nKey="auth:login.identifier.title" values={{ resourceName: isEmpty(resourceName) ? name : resourceName }}>
-              <span className={classes.boldTitle}>{'{{resourceName}}'}</span>
-            </Trans>
-          </Title>
-          <Subtitle align="center">
-            <TransRequireAccess i18nKey="auth:login.identifier.requireAccess.title" />
-          </Subtitle>
-          <CardUser
-            hideSkeleton
-            my={3}
-          >
-            <LoginFormField
-              FormHelperTextProps={{ component: FormHelperTextInCard }}
-              margin="none"
-            />
-            <SecretHiddenFormField />
-          </CardUser>
-          <BoxControls formik primary={primary} />
-        </Form>
-      </Formik>
+      <Title align="center" gutterBottom={false}>
+        <Trans i18nKey="auth:login.identifier.title" values={{ resourceName: isEmpty(resourceName) ? name : resourceName }}>
+          <span className={classes.boldTitle}>{'{{resourceName}}'}</span>
+        </Trans>
+      </Title>
+      <Subtitle align="center">
+        <TransRequireAccess i18nKey="auth:login.identifier.requireAccess.title" />
+      </Subtitle>
+      {isLoading && <CardUser my={3} {...userPublicData} />}
+      {displayForm && (
+        <AuthLoginIdentifierForm
+          loginChallenge={loginChallenge}
+          identifier={identifier}
+        />
+      )}
+      {displayNoAccount && <AuthLoginIdentifierNoAccount userPublicData={userPublicData} />}
     </CardSsoWithSlope>
   );
 };
 
 AuthLoginIdentifier.propTypes = {
+  isLoading: PropTypes.bool.isRequired,
   loginChallenge: PropTypes.string.isRequired,
   identifier: PropTypes.string.isRequired,
   client: SSO_PROP_TYPES.client.isRequired,
   resourceName: PropTypes.string,
-  // withTranslation
-  t: PropTypes.func.isRequired,
 };
 
 AuthLoginIdentifier.defaultProps = {

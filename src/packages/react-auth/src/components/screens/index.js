@@ -1,17 +1,17 @@
 import React, { lazy, useMemo, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, batch } from 'react-redux';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 
 import authRoutes from '@misakey/react-auth/routes';
-import { ssoUpdate } from '@misakey/react-auth/store/actions/sso';
-import { screenAuthReset, screenAuthSetIdentifier } from '@misakey/react-auth/store/actions/screens';
+import { ssoUpdate, onSetIdentifier, ssoReset } from '@misakey/react-auth/store/actions/sso';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react-auth/store/reducers/sso';
 
 import retry from '@misakey/helpers/retry';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
+import isString from '@misakey/helpers/isString';
 import pickAll from '@misakey/helpers/pickAll';
 import every from '@misakey/helpers/every';
 import difference from '@misakey/helpers/difference';
@@ -23,7 +23,6 @@ import getLoginInfo from '@misakey/auth/builder/getLoginInfo';
 
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import useNotDoneEffect from '@misakey/hooks/useNotDoneEffect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import ScreenLoader from '@misakey/ui/Screen/Loader';
@@ -57,7 +56,7 @@ const noFlowParams = nonePass(
 const Auth = ({
   match,
   isAuthenticated, sso, currentAcr,
-  dispatchSsoUpdate, dispatchResetAuth, dispatchSetIdentifier,
+  dispatchSsoUpdate, dispatchSetIdentifier, dispatchSsoReset,
 }) => {
   const searchParams = useLocationSearchParams(objectToCamelCase);
   const { pathname, search } = useLocation();
@@ -137,13 +136,27 @@ const Auth = ({
   );
 
   const onSuccess = useCallback(
-    (loginInfo) => Promise.resolve(dispatchSsoUpdate({ ...loginInfo, loginChallenge })),
-    [loginChallenge, dispatchSsoUpdate],
+    ({ scope, loginHint: stringifiedLoginHint, ...loginInfo }) => {
+      const loginHint = isString(stringifiedLoginHint) ? JSON.parse(stringifiedLoginHint) : null;
+      const { identifier } = loginHint || {};
+      batch(() => {
+        if (!isNil(identifier)) {
+          dispatchSetIdentifier(identifier);
+        }
+        dispatchSsoUpdate({
+          ...loginInfo,
+          scope: scope.join(' '),
+          loginHint,
+          loginChallenge,
+        });
+      });
+    },
+    [dispatchSsoUpdate, loginChallenge, dispatchSetIdentifier],
   );
 
   const onError = useCallback(
-    () => dispatchResetAuth(),
-    [dispatchResetAuth],
+    () => dispatchSsoReset(),
+    [dispatchSsoReset],
   );
 
   const { isFetching, error } = useFetchEffect(
@@ -155,26 +168,6 @@ const Auth = ({
   const hasLoginInfoError = useMemo(
     () => !isNil(error),
     [error],
-  );
-
-  const objLoginHint = useMemo(
-    () => {
-      const { loginHint } = sso;
-      return (isEmpty(loginHint) ? null : objectToCamelCase(JSON.parse(loginHint)));
-    },
-    [sso],
-  );
-
-  const { identifier: identifierHint } = useSafeDestr(objLoginHint);
-
-  useNotDoneEffect(
-    (onDone) => {
-      if (!isNil(identifierHint)) {
-        dispatchSetIdentifier(identifierHint);
-        onDone();
-      }
-    },
-    [identifierHint, dispatchSetIdentifier],
   );
 
   if (hasNoFlowParams) {
@@ -228,8 +221,8 @@ Auth.propTypes = {
   currentAcr: PropTypes.number,
   sso: PropTypes.shape(SSO_PROP_TYPES).isRequired,
   dispatchSsoUpdate: PropTypes.func.isRequired,
-  dispatchResetAuth: PropTypes.func.isRequired,
   dispatchSetIdentifier: PropTypes.func.isRequired,
+  dispatchSsoReset: PropTypes.func.isRequired,
 };
 
 Auth.defaultProps = {
@@ -246,8 +239,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchSsoUpdate: (sso) => dispatch(ssoUpdate(sso)),
-  dispatchResetAuth: () => dispatch(screenAuthReset()),
-  dispatchSetIdentifier: (identifier) => dispatch(screenAuthSetIdentifier(identifier)),
+  dispatchSsoReset: () => dispatch(ssoReset()),
+  dispatchSetIdentifier: (identifier) => dispatch(onSetIdentifier(identifier)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Auth);

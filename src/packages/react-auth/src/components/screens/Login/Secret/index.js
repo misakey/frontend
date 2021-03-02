@@ -62,6 +62,7 @@ import ButtonSwitchTotpMethod from '@misakey/react-auth/components/Button/Switch
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
 import WebauthnLogin from '@misakey/react-auth/components/Webauthn/LoginField';
+import pick from '@misakey/helpers/pick';
 
 // CONSTANTS
 const CURRENT_STEP = STEP.secret;
@@ -124,7 +125,7 @@ const AuthLoginSecret = ({
   );
 
   const userPublicData = useMemo(
-    () => ({ ...identity, identifier }),
+    () => (isNil(identity) ? {} : { ...pick(['displayName', 'avatarUrl'], identity), identifier }),
     [identifier, identity],
   );
 
@@ -346,7 +347,6 @@ const AuthLoginSecret = ({
                     methodName={methodName}
                     FormHelperTextProps={{ component: FormHelperTextInCard }}
                     margin="none"
-                    centered
                   />
                 )}
               </CardUser>

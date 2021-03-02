@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -6,7 +6,6 @@ import omit from '@misakey/helpers/omit';
 
 import { withUserManager } from '@misakey/react-auth/components/OidcProvider/Context';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
-import useSignOut from '@misakey/react-auth/hooks/useSignOut';
 
 // CONSTANTS
 const INTERNAL_PROPS = [
@@ -16,12 +15,8 @@ const INTERNAL_PROPS = [
 ];
 
 // COMPONENTS
-const ButtonSignOut = ({
-  userManager, onSuccess,
-  t, ...props
-}) => {
-  const onSignOut = useSignOut(userManager, onSuccess);
-
+const ButtonSignOut = ({ onSuccess, onLogout, t, ...props }) => {
+  const onSignOut = useCallback(() => onLogout().then(onSuccess), [onLogout, onSuccess]);
   return (
     <Button
       onClick={onSignOut}
@@ -34,9 +29,9 @@ const ButtonSignOut = ({
 ButtonSignOut.propTypes = {
   t: PropTypes.func.isRequired,
   standing: PropTypes.oneOf(Object.values(BUTTON_STANDINGS)),
-  // withUserManager
-  userManager: PropTypes.object.isRequired,
   onSuccess: PropTypes.func,
+  // withUserManager
+  onLogout: PropTypes.func.isRequired,
 };
 
 ButtonSignOut.defaultProps = {

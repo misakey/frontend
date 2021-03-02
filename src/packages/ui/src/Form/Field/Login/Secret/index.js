@@ -21,6 +21,7 @@ const FIELD_PROPS = {
     variant: 'filled',
     fullWidth: true,
     autoFocus: true,
+    centered: true,
     inputProps: {
       id: `${TOTP}_${STEP.secret}`,
       'data-matomo-ignore': true,
@@ -49,6 +50,7 @@ const FIELD_PROPS = {
   [EMAILED_CODE]: {
     component: FieldCodePasteButton,
     variant: 'filled',
+    centered: true,
     fullWidth: true,
     autoFocus: true,
     inputProps: {

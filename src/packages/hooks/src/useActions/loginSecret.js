@@ -2,8 +2,7 @@ import { useMemo, useCallback } from 'react';
 
 import { EMAILED_CODE, PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
 
-import { screenAuthSetIdentifier, screenAuthSetPublics } from '@misakey/react-auth/store/actions/screens';
-import { clearIdentity } from '@misakey/react-auth/store/actions/auth';
+import { onResetSsoIdentity, onSetIdentifier } from '@misakey/react-auth/store/actions/sso';
 
 import authRoutes from '@misakey/react-auth/routes';
 
@@ -54,9 +53,8 @@ export const useClearUser = () => {
 
   return useCallback(
     () => Promise.all([
-      dispatch(screenAuthSetIdentifier('')),
-      dispatch(screenAuthSetPublics(null)),
-      dispatch(clearIdentity()),
+      dispatch(onSetIdentifier('')),
+      dispatch(onResetSsoIdentity()),
     ]).then(() => {
       push(authRoutes.signIn._);
     }),

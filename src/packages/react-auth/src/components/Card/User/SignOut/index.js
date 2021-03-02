@@ -1,10 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
 import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/Context';
 
-import useSignOut from '@misakey/react-auth/hooks/useSignOut';
 import { useTranslation } from 'react-i18next';
 import useXsMediaQuery from '@misakey/hooks/useXsMediaQuery';
 
@@ -18,8 +17,11 @@ const CardUserSignOut = ({ onSuccess, component: Component, ...props }) => {
 
   const isXs = useXsMediaQuery();
 
-  const { userManager } = useContext(UserManagerContext);
-  const onSignOut = useSignOut(userManager, onSuccess);
+  const { onLogout } = useContext(UserManagerContext);
+  const onSignOut = useCallback(
+    () => onLogout().then(onSuccess),
+    [onLogout, onSuccess],
+  );
 
   return (
     <Component
