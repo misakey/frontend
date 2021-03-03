@@ -88,7 +88,8 @@
   "filePreview": {
     "errors": {
       "unavailable": "n'est pas lisible dans le navigateur",
-      "noFile": "ne peut pas être téléchargé"
+      "noFile": "ne peut pas être téléchargé",
+      "pdf": "erreur pendant le chargement de la prévisualisation pdf"
     }
   },
   "fileListItem": {

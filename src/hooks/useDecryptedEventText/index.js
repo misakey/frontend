@@ -9,7 +9,7 @@ import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 import { useTranslation } from 'react-i18next';
 
 const {
-  getAsymSecretKey,
+  makeGetAsymSecretKey,
 } = cryptoSelectors;
 
 export default (event) => {
@@ -17,7 +17,11 @@ export default (event) => {
 
   const { content: { encrypted, publicKey } } = useSafeDestr(event);
 
-  const secretKey = useSelector(getAsymSecretKey(publicKey));
+  const getAsymSecretKey = useMemo(
+    () => makeGetAsymSecretKey(),
+    [],
+  );
+  const secretKey = useSelector((state) => getAsymSecretKey(state, publicKey));
 
   const canBeDecrypted = useMemo(
     () => !isNil(secretKey),

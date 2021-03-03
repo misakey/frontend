@@ -4,6 +4,7 @@ import isNil from '@misakey/helpers/isNil';
 import merge from '@misakey/helpers/merge';
 import ramdaPath from '@misakey/helpers/path';
 import assocPath from '@misakey/helpers/assocPath';
+import prop from '@misakey/helpers/prop';
 import propOr from '@misakey/helpers/propOr';
 import omit from '@misakey/helpers/omit';
 import createReducer from '@misakey/store/reducers/helpers/createReducer';
@@ -59,16 +60,26 @@ const isCryptoLoaded = createSelector(
   (state) => !isNil(state.secretStorage.rootKey),
 );
 
-const getAsymKeys = (state) => getState(state).secretStorage.asymKeys;
-
-const getAsymSecretKey = (publicKey) => (state) => (
-  getState(state).secretStorage.asymKeys[publicKey]
+const getAsymKeys = createSelector(
+  getState,
+  ramdaPath(['secretStorage', 'asymKeys']),
 );
 
-const getBoxKeyShares = (state) => getState(state).secretStorage.boxKeyShares;
+const makeGetAsymSecretKey = () => createSelector(
+  getAsymKeys,
+  (_, publicKey) => publicKey,
+  (asymKeys, publicKey) => prop(publicKey, asymKeys),
+);
 
-const getBoxKeyShare = (boxId) => (state) => (
-  getState(state).secretStorage.boxKeyShares[boxId]
+const getBoxKeyShares = createSelector(
+  getState,
+  ramdaPath(['secretStorage', 'boxKeyShares']),
+);
+
+const makeGetBoxKeyShare = () => createSelector(
+  getBoxKeyShares,
+  (_, boxId) => boxId,
+  (boxKeyShares, boxId) => prop(boxId, boxKeyShares),
 );
 
 const getRootKey = createSelector(
@@ -89,14 +100,14 @@ const makeGetRootKeyShareForAccount = () => createSelector(
 
 const getEncryptedSecretStorageData = createSelector(
   getState,
-  (state) => ({ data: state.data }),
+  ({ data }) => ({ data }),
 );
 
 export const selectors = {
   getAsymKeys,
-  getAsymSecretKey,
+  makeGetAsymSecretKey,
   getBoxKeyShares,
-  getBoxKeyShare,
+  makeGetBoxKeyShare,
   getRootKey,
   getVaultKey,
   makeGetRootKeyShareForAccount,

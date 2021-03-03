@@ -1,17 +1,17 @@
 // import with comlink loader in factory mode
 // see https://github.com/GoogleChromeLabs/comlink-loader#factory-mode-default
-// eslint-disable-next-line
-import DecryptFileWorker from 'comlink-loader!./loader';
-import * as Comlink from 'comlink';
+import { wrap, releaseProxy } from 'comlink';
+import DecryptFileWorker from './decryptFile.worker';
 
 export default async (encryptedFile, decryptedContent) => {
   // instanciates a worker
-  const worker = new DecryptFileWorker();
+  const workerInstance = new DecryptFileWorker();
+  const proxy = wrap(workerInstance);
   // calls decryptFile
-  const decrypted = await worker.decryptFile(encryptedFile, decryptedContent);
-  // terminates worker instance, see ./loader.js
-  worker.terminate();
+  const decrypted = await proxy.decryptFile(encryptedFile, decryptedContent);
+  // terminates worker instance
+  workerInstance.terminate();
   // releases proxy to be garbage collected (see https://github.com/GoogleChromeLabs/comlink#comlinkreleaseproxy)
-  worker[Comlink.releaseProxy]();
+  proxy[releaseProxy]();
   return decrypted;
 };

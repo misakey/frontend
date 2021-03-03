@@ -78,7 +78,8 @@
   "filePreview": {
     "errors": {
       "unavailable": "cannot be displayed in browser",
-      "noFile": "cannot be downloaded"
+      "noFile": "cannot be downloaded",
+      "pdf": "error while loading pdf preview"
     }
   },
   "fileListItem": {

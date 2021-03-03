@@ -18,5 +18,15 @@ module.exports = function override(config) {
     '@misakey/crypto': path.resolve(__dirname, './src/packages/crypto/src'),
   };
 
+  newConfig.module.rules.push({
+    test: /\.worker\.js$/,
+    use: {
+      loader: 'worker-loader',
+      options: {
+        filename: 'static/js/[name].[contenthash:8].js',
+      },
+    },
+  });
+
   return newConfig;
 };

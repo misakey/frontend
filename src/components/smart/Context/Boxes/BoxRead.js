@@ -9,13 +9,15 @@ import BoxSchema from 'store/schemas/Boxes';
 import { sendersIdentifiersMatch } from 'helpers/sender';
 
 const {
-  getAsymSecretKey,
+  makeGetAsymSecretKey,
 } = cryptoSelectors;
 
 // CONTEXT
 export const BoxReadContext = createContext({
   secretKey: null,
   id: null,
+  isCurrentUserOwner: null,
+  isCurrentUserSubject: null,
 });
 
 // HOOKS
@@ -25,7 +27,11 @@ export const useBoxReadContext = () => useContext(BoxReadContext);
 const BoxReadContextProvider = ({ children, box }) => {
   const { publicKey, id, creator, subject } = useMemo(() => box, [box]);
 
-  const secretKey = useSelector(getAsymSecretKey(publicKey));
+  const getAsymSecretKey = useMemo(
+    () => makeGetAsymSecretKey(),
+    [],
+  );
+  const secretKey = useSelector((state) => getAsymSecretKey(state, publicKey));
 
   const currentUser = useSelector(getCurrentUserSelector);
 

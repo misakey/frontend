@@ -11,15 +11,15 @@ import {
 
 const {
   getRootKey: getRootKeySelector,
-  getAsymSecretKey,
+  makeGetAsymSecretKey,
 } = cryptoSelectors;
 
 export default ({ cryptoaction }) => (
   async (dispatch, getState) => {
     const { boxId, encrypted, encryptionPublicKey } = cryptoaction;
     const state = getState();
-
-    const secretKey = getAsymSecretKey(encryptionPublicKey)(state);
+    const getAsymSecretKey = makeGetAsymSecretKey();
+    const secretKey = getAsymSecretKey(state, encryptionPublicKey);
     if (isNil(secretKey)) {
       throw Error(`no matching secret key for crypto action with public key ${encryptionPublicKey}`);
     }

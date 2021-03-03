@@ -33,7 +33,7 @@ const ALLOWED_TYPE_PREVIEW = [
   'text/csv',
   'text/plain',
   'application/json',
-  // 'application/pdf',
+  'application/pdf',
 ];
 
 // All height without appbar height + dialog content padding

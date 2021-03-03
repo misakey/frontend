@@ -5,12 +5,13 @@ import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 
 import setBoxSecrets from './setBoxSecrets';
 
-const { getAsymSecretKey } = cryptoSelectors;
+const { makeGetAsymSecretKey } = cryptoSelectors;
 
 export default ({ boxId, publicKey: boxPublicKey }) => (
   async (dispatch, getState) => {
     const state = getState();
-    const boxSecretKey = getAsymSecretKey(boxPublicKey)(state);
+    const getAsymSecretKey = makeGetAsymSecretKey();
+    const boxSecretKey = getAsymSecretKey(state, boxPublicKey);
 
     const {
       invitationKeyShare,

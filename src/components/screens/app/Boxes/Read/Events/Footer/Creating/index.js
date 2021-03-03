@@ -10,8 +10,6 @@ import { boxMessageValidationSchema } from 'constants/validationSchemas/boxes';
 import { blurText, clearText } from 'store/actions/box';
 import { makeGetBoxText } from 'store/reducers/box';
 
-import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
-
 import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import isNil from '@misakey/helpers/isNil';
 
@@ -44,10 +42,6 @@ const INITIAL_VALUES = {
   [FIELD]: '',
 };
 
-const {
-  getAsymSecretKey,
-} = cryptoSelectors;
-
 const useStyles = makeStyles((theme) => ({
   popper: ({ drawerWidth, isDrawerOpen }) => ({
     width: `calc(100% - ${isDrawerOpen ? drawerWidth : '0px'} - ${theme.spacing(BOX_PADDING_SPACING) * 4}px)`,
@@ -64,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-function BoxEventsFooter({ box, t }) {
+function BoxEventsFooterCreating({ box, secretKey, t }) {
   const { drawerWidth, isDrawerOpen } = useScreenDrawerContext();
 
   const classes = useStyles({ drawerWidth, isDrawerOpen });
@@ -74,7 +68,6 @@ function BoxEventsFooter({ box, t }) {
   const { scrollToBottom } = useBoxEventSubmitContext();
 
   const { id, publicKey, title } = useMemo(() => box || {}, [box]);
-  const secretKey = useSelector(getAsymSecretKey(publicKey));
 
   const { onOpen: onBoxesUploadOpen } = useBoxesUploadContext();
 
@@ -188,11 +181,15 @@ function BoxEventsFooter({ box, t }) {
   );
 }
 
-BoxEventsFooter.propTypes = {
+BoxEventsFooterCreating.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
+  secretKey: PropTypes.string,
   // withTranslation
   t: PropTypes.func.isRequired,
-  // menu actions
 };
 
-export default withTranslation(['common', 'boxes'])(BoxEventsFooter);
+BoxEventsFooterCreating.defaultProps = {
+  secretKey: null,
+};
+
+export default withTranslation(['common', 'boxes'])(BoxEventsFooterCreating);

@@ -46,7 +46,7 @@ import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 const DEFAULT_SETTINGS = { muted: false };
 
 const {
-  getAsymSecretKey,
+  makeGetAsymSecretKey,
 } = cryptoSelectors;
 
 // HOOKS
@@ -179,7 +179,11 @@ function BoxListItem({ box, toRoute, ContainerProps, classes, t, ...rest }) {
     [lastEvent, box],
   );
 
-  const secretKey = useSelector(getAsymSecretKey(publicKey));
+  const getAsymSecretKey = useMemo(
+    () => makeGetAsymSecretKey(),
+    [],
+  );
+  const secretKey = useSelector((state) => getAsymSecretKey(state, publicKey));
   const canBeDecrypted = useMemo(
     () => !isNil(secretKey),
     [secretKey],

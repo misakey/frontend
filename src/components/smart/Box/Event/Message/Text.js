@@ -24,8 +24,9 @@ import MenuItemEventEdit from 'components/smart/MenuItem/Event/Edit';
 import MenuItemEventCopy from 'components/smart/MenuItem/Event/Copy';
 import MenuItemEventDelete from 'components/smart/MenuItem/Event/Delete';
 
+// CONSTANTS
 const {
-  getAsymSecretKey,
+  makeGetAsymSecretKey,
 } = cryptoSelectors;
 
 // COMPONENTS
@@ -42,7 +43,12 @@ const BoxMessageTextEvent = ({
     content: { encrypted, publicKey },
   } = useMemo(() => event, [event]);
   const { id: boxId } = useMemo(() => box, [box]);
-  const secretKey = useSelector(getAsymSecretKey(publicKey));
+
+  const getAsymSecretKey = useMemo(
+    () => makeGetAsymSecretKey(),
+    [],
+  );
+  const secretKey = useSelector((state) => getAsymSecretKey(state, publicKey));
   const canBeDecrypted = !isNil(secretKey);
 
   const anchorme = useAnchormeCallback({ LinkComponent: MuiLink });

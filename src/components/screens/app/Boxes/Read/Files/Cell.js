@@ -1,14 +1,21 @@
 import React, { useCallback, useMemo } from 'react';
 
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { denormalize } from 'normalizr';
 
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 
 import isNil from '@misakey/helpers/isNil';
 import omit from '@misakey/helpers/omit';
 import execWithRequestIdleCallback from '@misakey/helpers/execWithRequestIdleCallback';
+
+
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import useEventBelongsToCurrentUser from 'hooks/useEventBelongsToCurrentUser';
+import useDecryptMsgFileEffect from 'hooks/useDecryptMsgFile/effect';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import FileListItem, { FileListItemSkeleton } from 'components/smart/ListItem/File';
 import { useFilePreviewContext } from 'components/smart/File/Preview/Context';
@@ -17,12 +24,11 @@ import MenuItemEventDelete from 'components/smart/MenuItem/Event/Delete';
 import MenuItemAddFileToVault from 'components/smart/MenuItem/Event/AddToVault';
 import MenuItemEventDownload from 'components/smart/MenuItem/Event/Download';
 
-import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import useEventBelongsToCurrentUser from 'hooks/useEventBelongsToCurrentUser';
-import useDecryptMsgFileEffect from 'hooks/useDecryptMsgFile/effect';
-import useSafeDestr from '@misakey/hooks/useSafeDestr';
-
 // CONSTANTS
+const {
+  makeGetAsymSecretKey,
+} = cryptoSelectors;
+
 export const CELL_HEIGHT = 115;
 const INTERNAL_DATA = ['byPagination', 'loadMoreItems'];
 const ALLOWED_FILE_TYPES_TO_PREVIEW = ['image/'];
@@ -48,11 +54,17 @@ const Cell = ({ style, data, event }) => {
     getDecryptedFile,
   } = useFilePreviewContext();
 
-  const { secretKey, id: boxId, isCurrentUserOwner } = useBoxReadContext();
+  const { id: boxId, isCurrentUserOwner } = useBoxReadContext();
   const isEventFromCurrentUser = useEventBelongsToCurrentUser(event);
 
-  const { content, id: eventId } = useMemo(() => event, [event]);
+  const { content, publicKey, id: eventId } = useMemo(() => event, [event]);
   const { decryptedFile, encryptedFileId } = useSafeDestr(content);
+
+  const getAsymSecretKey = useMemo(
+    () => makeGetAsymSecretKey(),
+    [],
+  );
+  const secretKey = useSelector((state) => getAsymSecretKey(state, publicKey));
 
   const {
     id,

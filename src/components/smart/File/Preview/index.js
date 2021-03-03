@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';
 import FILE_PROP_TYPES from '@misakey/ui/constants/file/proptypes';
+import PdfPreview from 'components/smart/File/Preview/Pdf';
 import ImagePreview from './Image';
 import MediaPreview from './MediaPreview';
 import DefaultPreview from './Default';
@@ -43,6 +44,11 @@ function FilePreview({
     [nilFileType, type],
   );
 
+  const isPdf = useMemo(
+    () => !nilFileType && type.startsWith('application/pdf'),
+    [nilFileType, type],
+  );
+
   if (!isTypeAllowedForPreview) {
     return fallbackView;
   }
@@ -62,6 +68,10 @@ function FilePreview({
   }
   if (isAudio || isVideo) {
     return <MediaPreview file={file} fallbackView={fallbackView} maxHeight={maxHeight} {...rest} />;
+  }
+
+  if (isPdf) {
+    return <PdfPreview file={file} fallbackView={fallbackView} maxHeight={maxHeight} {...rest} />;
   }
 
   return <DefaultPreview file={file} fallbackView={fallbackView} {...rest} />;

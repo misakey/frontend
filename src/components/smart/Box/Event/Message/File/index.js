@@ -15,7 +15,7 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 
 const {
-  getAsymSecretKey,
+  makeGetAsymSecretKey,
 } = cryptoSelectors;
 
 // COMPONENTS
@@ -26,7 +26,11 @@ const BoxMessageFileEvent = ({ event, isFromCurrentUser, preview, t, ...props })
 
   const { displayName } = useMemo(() => sender || {}, [sender]);
 
-  const secretKey = useSelector(getAsymSecretKey(publicKey));
+  const getAsymSecretKey = useMemo(
+    () => makeGetAsymSecretKey(),
+    [],
+  );
+  const secretKey = useSelector((state) => getAsymSecretKey(state, publicKey));
 
   const { isReady } = useDecryptMsgFileEffect(event, secretKey, isFromCurrentUser);
   const text = useMemo(() => (isReady ? name : t('common:loading')), [isReady, name, t]);

@@ -22,7 +22,7 @@ const {
 } = authSelectors;
 
 const {
-  getAsymSecretKey,
+  makeGetAsymSecretKey,
 } = cryptoSelectors;
 
 // THUNK
@@ -41,8 +41,8 @@ export default ({ cryptoactionId, boxId: notificationBoxId }) => (
 
     const boxId = notificationBoxId;
 
-
-    const secretKey = getAsymSecretKey(encryptionPublicKey)(state);
+    const getAsymSecretKey = makeGetAsymSecretKey();
+    const secretKey = getAsymSecretKey(state, encryptionPublicKey);
     const decryptedCryptoaction = decryptCryptoaction(encrypted, secretKey);
     const { boxSecretKey } = decryptedCryptoaction;
 

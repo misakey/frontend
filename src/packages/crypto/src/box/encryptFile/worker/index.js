@@ -1,18 +1,18 @@
 // import with comlink loader in factory mode
 // see https://github.com/GoogleChromeLabs/comlink-loader#factory-mode-default
-// eslint-disable-next-line
-import EncryptFileWorker from 'comlink-loader!./loader';
-import * as Comlink from 'comlink';
+import { wrap, releaseProxy } from 'comlink';
+import EncryptFileWorker from './encryptFile.worker';
 
 // async method to start a worker, encrypt file, then terminate
 export default async (file, publicKey) => {
   // instantiates a worker
-  const worker = new EncryptFileWorker();
+  const workerInstance = new EncryptFileWorker();
+  const proxy = wrap(workerInstance);
   // calls encryptFile
-  const encrypted = await worker.encryptFile(file, publicKey);
+  const encrypted = await proxy.encryptFile(file, publicKey);
   // terminates worker instance, see ./loader.js
-  worker.terminate();
+  workerInstance.terminate();
   // releases proxy to be garbage collected (see https://github.com/GoogleChromeLabs/comlink#comlinkreleaseproxy)
-  worker[Comlink.releaseProxy]();
+  proxy[releaseProxy]();
   return encrypted;
 };

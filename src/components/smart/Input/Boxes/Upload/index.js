@@ -39,7 +39,7 @@ const DROP_TYPE = 'Files';
 const TYPE_REGEX = /^([^/]*)\/(.*)$/;
 
 const {
-  getAsymSecretKey,
+  makeGetAsymSecretKey,
 } = cryptoSelectors;
 
 // HELPERS
@@ -165,7 +165,11 @@ const InputBoxesUpload = ({
   );
 
   const { publicKey } = useSafeDestr(box);
-  const secretKey = useSelector(getAsymSecretKey(publicKey));
+  const getAsymSecretKey = useMemo(
+    () => makeGetAsymSecretKey(),
+    [],
+  );
+  const secretKey = useSelector((state) => getAsymSecretKey(state, publicKey));
 
   const disabled = useMemo(
     () => isNil(secretKey),

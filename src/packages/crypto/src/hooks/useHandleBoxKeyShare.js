@@ -18,8 +18,8 @@ import setBoxSecrets from '@misakey/crypto/store/actions/setBoxSecrets';
 
 // SELECTORS
 const {
-  getAsymSecretKey,
-  getBoxKeyShare,
+  makeGetAsymSecretKey,
+  makeGetBoxKeyShare,
 } = selectors;
 
 export default (box, boxIsReady, belongsToCurrentUser) => {
@@ -35,7 +35,11 @@ export default (box, boxIsReady, belongsToCurrentUser) => {
 
   const { id: boxId, publicKey, hasAccess, isMember } = useSafeDestr(box);
 
-  const secretKey = useSelector(getAsymSecretKey(publicKey));
+  const getAsymSecretKey = useMemo(
+    () => makeGetAsymSecretKey(),
+    [],
+  );
+  const secretKey = useSelector((state) => getAsymSecretKey(state, publicKey));
 
   const isAllowedToFetch = useMemo(
     () => Boolean(boxIsReady && hasAccess && isMember !== false),
@@ -54,7 +58,11 @@ export default (box, boxIsReady, belongsToCurrentUser) => {
       ? null
       : locationHash.substr(1)
   ), [locationHash]);
-  const keyShareInStore = useSelector(getBoxKeyShare(boxId));
+  const getBoxKeyShare = useMemo(
+    () => makeGetBoxKeyShare(),
+    [],
+  );
+  const keyShareInStore = useSelector((state) => getBoxKeyShare(state, boxId));
 
   // We know for sure if users has all the information to check if they have the secretKey
   // We need to know publicKey of the box to known if user has corresponding secretKey

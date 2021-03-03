@@ -1,7 +1,6 @@
 import React, { useCallback, useRef, useState, useMemo, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
 import { gone } from '@misakey/ui/constants/errorTypes';
@@ -14,7 +13,6 @@ import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import { createEditTextBoxEventBuilder } from 'helpers/builder/boxes';
 import { getCode } from '@misakey/helpers/apiError';
-import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 
 import { useSnackbar } from 'notistack';
 import useDecryptedEventText from 'hooks/useDecryptedEventText';
@@ -44,10 +42,6 @@ const INITIAL_VALUES = {
 
 const BUTTON_WIDTH = 6;
 
-const {
-  getAsymSecretKey,
-} = cryptoSelectors;
-
 // HELPERS
 const pluckId = pluck('id');
 
@@ -66,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 
 // COMPONENTS
 // @FIXME factorize footer common code
-function BoxEventsFooterEditing({ box, event, clearEvent, t }) {
+function BoxEventsFooterEditing({ box, secretKey, event, clearEvent, t }) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const handleHttpErrors = useHandleHttpErrors();
@@ -75,7 +69,6 @@ function BoxEventsFooterEditing({ box, event, clearEvent, t }) {
 
   const { id: boxId, publicKey, events } = useSafeDestr(box);
   const { id: eventId } = useSafeDestr(event);
-  const secretKey = useSelector(getAsymSecretKey(publicKey));
 
   const disabled = useMemo(
     () => isNil(secretKey),
@@ -225,10 +218,15 @@ function BoxEventsFooterEditing({ box, event, clearEvent, t }) {
 
 BoxEventsFooterEditing.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
+  secretKey: PropTypes.string,
   event: PropTypes.shape(BoxesEventsSchema.propTypes).isRequired,
   clearEvent: PropTypes.func.isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,
+};
+
+BoxEventsFooterEditing.defaultProps = {
+  secretKey: null,
 };
 
 export default withTranslation(['common', 'boxes'])(BoxEventsFooterEditing);
