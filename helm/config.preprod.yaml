@@ -10,6 +10,7 @@ config: >-
     API_ENDPOINT: 'https://api.preprod.misakey.dev',
     API_WS_ENDPOINT: 'wss://api.preprod.misakey.dev',
     GAPI_CLIENT_ID: '932593622193-rgk9os4utgk93v2ac3k6bbrqu9v829l3.apps.googleusercontent.com',
+    SELF_CLIENT_ID: 'f1f6c6c8-2b91-4a63-8797-cb0fffdcf3df',
     AUTH: {
       authority: 'https://auth.preprod.misakey.dev/_',
       clientId: 'f1f6c6c8-2b91-4a63-8797-cb0fffdcf3df',

@@ -5,6 +5,7 @@ config: >-
     API_ENDPOINT: 'https://api.misakey.com',
     API_WS_ENDPOINT: 'wss://api.misakey.com',
     GAPI_CLIENT_ID: '932593622193-c6i3ghh44ip9hhbh2heempuugcbk94n7.apps.googleusercontent.com',
+    SELF_CLIENT_ID: 'f27effe1-5d57-4b70-bf73-939feef50f71',
     AUTH: {
       authority: 'https://auth.misakey.com/_',
       clientId: 'f27effe1-5d57-4b70-bf73-939feef50f71',
