@@ -59,7 +59,7 @@ export default ((skipUpdate = false) => {
       }
 
       if (skipUpdate) {
-        return;
+        return secretStorage;
       }
 
       const { rootKey } = secretStorage;
@@ -75,6 +75,8 @@ export default ((skipUpdate = false) => {
         dispatch(loadSecrets({ secretStorage })),
         keySharePromise,
       ]);
+
+      return secretStorage;
     },
     [accountId, dispatch, enqueueSnackbar, t,
       encryptedSecretStorage, skipUpdate, accountNeedsMigration],

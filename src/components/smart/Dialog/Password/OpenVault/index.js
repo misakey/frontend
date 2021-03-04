@@ -25,7 +25,7 @@ const DialogPasswordOpenVault = ({ t, open, onClose, onSuccess, skipUpdate, ...p
           onSuccess();
         }
       } catch (error) {
-        logSentryException(error, 'Openning vault with password', { crypto: true });
+        logSentryException(error, 'Opening vault with password', { crypto: true });
         throw error;
       }
     },

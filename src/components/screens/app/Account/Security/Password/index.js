@@ -1,23 +1,28 @@
 import React, { useMemo, useCallback } from 'react';
 
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { useSnackbar } from 'notistack';
-import { useParams, useHistory } from 'react-router-dom';
 
+import { DecryptionError } from '@misakey/crypto/Errors/classes';
 import { OLD_PASSWORD_KEY, NEW_PASSWORD_KEY, PASSWORD_CONFIRM_KEY } from 'constants/account';
 import IdentitySchema from 'store/schemas/Identity';
 import routes from 'routes';
 import { passwordValidationSchema } from 'constants/validationSchemas/identity';
 import { invalid, forbidden } from '@misakey/ui/constants/errorTypes';
-import { getCode } from '@misakey/helpers/apiError';
+import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 
+import { getCode } from '@misakey/helpers/apiError';
+import { changePassword, fetchPwdHashParams } from '@misakey/auth/builder/accounts';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
+import { encryptRootKeyWithNewPassword } from '@misakey/crypto';
+import isNil from '@misakey/helpers/isNil';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-
-import { changePassword, fetchPwdHashParams } from '@misakey/auth/builder/accounts';
+import useLoadSecretsWithPassword from '@misakey/crypto/hooks/useLoadSecretsWithPassword';
+import { useSnackbar } from 'notistack';
+import { useParams, useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 import { Form } from 'formik';
 import FormField from '@misakey/ui/Form/Field';
@@ -25,11 +30,8 @@ import Formik from '@misakey/ui/Formik';
 import BoxControls from '@misakey/ui/Box/Controls';
 import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
 import Box from '@material-ui/core/Box';
-import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
-import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 
-import { encryptRootKeyWithNewPassword } from '@misakey/crypto';
 
 const {
   getRootKey,
@@ -59,17 +61,37 @@ const AccountPassword = ({ t, identity }) => {
 
   const handleHttpErrors = useHandleHttpErrors();
 
+  const openVaultWithPassword = useLoadSecretsWithPassword();
+
   const { accountId } = useMemo(() => identity || {}, [identity]);
 
-  const rootKey = useSelector(getRootKey);
+  const storedRootKey = useSelector(getRootKey);
 
   const onSubmit = useCallback(
     async (
       { [NEW_PASSWORD_KEY]: newPassword, [OLD_PASSWORD_KEY]: oldPassword },
       { setSubmitting, setFieldError },
     ) => {
+      let rootKey = storedRootKey;
+      if (isNil(storedRootKey)) {
+        try {
+          const secretStorage = await openVaultWithPassword(oldPassword);
+          rootKey = secretStorage.rootKey;
+        } catch (e) {
+          if (e instanceof DecryptionError) {
+            setFieldError(OLD_PASSWORD_KEY, invalid);
+          } else {
+            handleHttpErrors(e);
+            logSentryException(e, 'Opening vault with password', { crypto: true });
+          }
+
+          return;
+        }
+      }
       try {
-        const encryptedAccountRootKey = await encryptRootKeyWithNewPassword(rootKey, newPassword);
+        const encryptedAccountRootKey = await encryptRootKeyWithNewPassword(
+          rootKey, newPassword,
+        );
         const pwdHashParams = await fetchPwdHashParams(accountId);
 
         await changePassword({
@@ -80,7 +102,7 @@ const AccountPassword = ({ t, identity }) => {
           encryptedAccountRootKey,
         });
 
-        enqueueSnackbar(t('account:forgotPassword.success'), { variant: 'success' });
+        enqueueSnackbar(t('account:security.password.success'), { variant: 'success' });
         push(accountHome);
       } catch (e) {
         if (e.httpStatus || getCode(e) === forbidden) {
@@ -93,8 +115,10 @@ const AccountPassword = ({ t, identity }) => {
         setSubmitting(false);
       }
     },
-    [accountId, enqueueSnackbar, t, rootKey,
-      push, accountHome, handleHttpErrors],
+    [
+      storedRootKey, openVaultWithPassword, accountId,
+      enqueueSnackbar, t, push, accountHome, handleHttpErrors,
+    ],
   );
 
   return (
