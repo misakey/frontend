@@ -94,17 +94,19 @@ const ListNavigationOrganization = (props) => {
         </ListItemIcon>
         <ListItemText>{t('boxes:documentTitle')}</ListItemText>
       </ListItem>
-      <ListItem
-        selected={isRouteDocuments}
-        button
-        component={LinkWithDialogPassword}
-        to={routes.documents._}
-      >
-        <ListItemIcon>
-          <SaveIcon />
-        </ListItemIcon>
-        <ListItemText>{t('document:vault.title')}</ListItemText>
-      </ListItem>
+      {selfOrgSelected && (
+        <ListItem
+          selected={isRouteDocuments}
+          button
+          component={LinkWithDialogPassword}
+          to={routes.documents._}
+        >
+          <ListItemIcon>
+            <SaveIcon />
+          </ListItemIcon>
+          <ListItemText>{t('document:vault.title')}</ListItemText>
+        </ListItem>
+      )}
       <Divider />
       {showTokenConfig && (
         <ListItem

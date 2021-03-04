@@ -21,7 +21,8 @@ import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import partition from '@misakey/helpers/partition';
 import differenceWith from '@misakey/helpers/differenceWith';
-import { senderMatchesIdentifierValue, senderMatchesIdentityId, sendersMatch } from 'helpers/sender';
+import { senderMatchesIdentifierValue, senderMatchesIdentityId } from 'helpers/sender';
+import { filterCreatorSubjectFromMembers } from 'helpers/members';
 import { createBulkBoxEventBuilder } from '@misakey/helpers/builder/boxes';
 import getAccessStatus from '@misakey/helpers/getAccessStatus';
 
@@ -162,8 +163,11 @@ function BoxSharing({ box, t }) {
 
   const membersNotInWhitelist = useMemo(
     () => {
-      const membersWithoutCreatorSubject = (members || [])
-        .filter((member) => !sendersMatch(member, creator) && !sendersMatch(member, subject));
+      const membersWithoutCreatorSubject = filterCreatorSubjectFromMembers({
+        members,
+        creator,
+        subject,
+      });
       return differenceWith(
         membersWithoutCreatorSubject,
         whitelistUsers,

@@ -11,6 +11,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 
 import isEmpty from '@misakey/helpers/isEmpty';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import { filterCreatorSubjectFromMembers } from 'helpers/members';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
@@ -81,7 +82,11 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
   const classes = useStyles();
-  const { title, members = [], id, hasAccess, isMember } = useMemo(() => box, [box]);
+  const {
+    title,
+    members = [], creator, subject,
+    id, hasAccess, isMember,
+  } = useMemo(() => box, [box]);
 
   const isTitleEmpty = useMemo(
     () => isEmpty(title),
@@ -106,6 +111,11 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
       return t('boxes:read.details.menu.members.count', { count: members.length });
     },
     [hasAccess, isTheOnlyMember, t, members.length],
+  );
+
+  const membersWithoutCreatorSubject = useMemo(
+    () => filterCreatorSubjectFromMembers({ members, creator, subject }),
+    [members, creator, subject],
   );
 
   const canShare = useMemo(
@@ -163,7 +173,7 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
           />
           <AvatarGroupMembers
             max={MAX_MEMBERS}
-            members={members}
+            members={membersWithoutCreatorSubject}
             size={SMALL}
           />
         </ListItem>
