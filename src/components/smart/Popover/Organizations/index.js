@@ -46,6 +46,14 @@ const PopoverOrganizations = forwardRef(({ onClose, open, ...props }, ref) => {
   const { t } = useTranslation('organizations');
   const { replace } = useHistory();
 
+  const fetchOrgOptions = useMemo(
+    () => ({
+      isReady: open,
+      forceRefresh: true, // @FIXME once org cache is working properly, remove that
+    }),
+    [open],
+  );
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const orgId = useOrgId();
@@ -84,7 +92,7 @@ const PopoverOrganizations = forwardRef(({ onClose, open, ...props }, ref) => {
     [onClose, onAddOrganization, replace],
   );
 
-  const { isFetching, shouldFetch, organizations } = useFetchOrganizations(open);
+  const { isFetching, organizations } = useFetchOrganizations(fetchOrgOptions);
 
   const otherOrganizations = useMemo(
     () => (isNil(organizations) ? [] : organizations.filter(({ id }) => !isSelfOrg(id))),
@@ -121,7 +129,7 @@ const PopoverOrganizations = forwardRef(({ onClose, open, ...props }, ref) => {
             selected={selfOrgSelected}
             onClick={onClose}
           />
-          {(isFetching || shouldFetch) ? (
+          {(isFetching) ? (
             <ListItemOrganizationSkeleton />
           ) : otherOrganizations.map(({ id, name: orgName, currentIdentityRole }) => (
             <ListItemOrganizationLink

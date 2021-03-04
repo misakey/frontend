@@ -7,21 +7,21 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import routes from 'routes';
 
 import isNil from '@misakey/helpers/isNil';
+import isSelfOrg from 'helpers/isSelfOrg';
 
 import usePaginateBoxesByStatus from 'hooks/usePaginateBoxesByStatus';
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
+import useOrgId from 'hooks/useOrgId';
 
-import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import WindowedListInfiniteLoaded from 'components/smart/WindowedList/InfiniteLoaded';
 import WindowedListAutosized from 'components/smart/WindowedList/Autosized';
 import Row, { Skeleton } from 'components/smart/WindowedList/UserBoxes/Row';
-import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
+import ButtonCreate from 'components/smart/Dialog/Boxes/Create/with/Button';
 // import ListItemBoxesDeleted from 'components/smart/ListItem/Boxes/Deleted';
 import Box from '@material-ui/core/Box';
 import Title from '@misakey/ui/Typography/Title';
 import Typography from '@material-ui/core/Typography';
-
-const ButtonCreate = withDialogCreate(Button);
 
 // CONSTANTS
 // `Deleted boxes height` + `total` box height + `total` box margin
@@ -35,7 +35,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const useInnerElementType = (itemCount, t /* filterId, search, itemClasses */) => useMemo(
+const useInnerElementType = (
+  itemCount, t,
+  selfOrgSelected, /* filterId, search, itemClasses */
+) => useMemo(
   () => forwardRef((props, ref) => (
     <div ref={ref}>
       <div {...props} />
@@ -52,17 +55,19 @@ const useInnerElementType = (itemCount, t /* filterId, search, itemClasses */) =
         <Typography variant="body2" color="textSecondary" align="center">
           {t('boxes:list.count.text', { count: itemCount })}
         </Typography>
-        <Box>
-          <ButtonCreate
-            standing={BUTTON_STANDINGS.TEXT}
-            size="small"
-            text={t('boxes:list.empty.create')}
-          />
-        </Box>
+        {selfOrgSelected && (
+          <Box>
+            <ButtonCreate
+              standing={BUTTON_STANDINGS.TEXT}
+              size="small"
+              text={t('boxes:list.empty.create')}
+            />
+          </Box>
+        )}
       </Box>
     </div>
   )),
-  [t, itemCount],
+  [t, itemCount, selfOrgSelected],
 );
 
 // COMPONENTS
@@ -73,6 +78,12 @@ const WindowedListBoxes = forwardRef(({
   const classes = useStyles();
 
   const { search } = locationSearchParams;
+
+  const orgId = useOrgId();
+  const selfOrgSelected = useMemo(
+    () => isSelfOrg(orgId),
+    [orgId],
+  );
 
   const {
     byPagination,
@@ -90,25 +101,29 @@ const WindowedListBoxes = forwardRef(({
     [byPagination, selectedId, itemClasses],
   );
 
-  const innerElementType = useInnerElementType(itemCount, t /* itemClasses, filterId, search, */);
+  const innerElementType = useInnerElementType(
+    itemCount, t, selfOrgSelected, /* itemClasses, filterId, search, */
+  );
 
   if (isNil(itemCount) || itemCount === 0) {
     return (
       <>
         <Box m={2} ref={ref} display="flex" flexDirection="column" height="100%" justifyContent="center" alignItems="center">
           <Title align="center">
-            <Trans i18nKey="boxes:list.empty.text">
+            <Trans i18nKey={selfOrgSelected ? 'boxes:list.empty.text' : 'boxes:list.empty.disabled'}>
               Commencer un chat sécurisé en cliquant sur
               <strong className={classes.secondary}>+</strong>
               ou
             </Trans>
           </Title>
+          {selfOrgSelected && (
           <Box>
             <ButtonCreate
               standing={BUTTON_STANDINGS.MAIN}
               text={t('boxes:list.empty.create')}
             />
           </Box>
+          )}
         </Box>
       </>
     );

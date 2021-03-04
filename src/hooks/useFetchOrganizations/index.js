@@ -14,7 +14,7 @@ const { makeDenormalizeOrganizations } = orgSelectors;
 const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
 
 // HOOKS
-export default (isReady = true) => {
+export default ({ isReady = true, forceRefresh = false } = {}) => {
   const dispatch = useDispatch();
   const handleHttpErrors = useHandleHttpErrors();
 
@@ -28,8 +28,8 @@ export default (isReady = true) => {
   const organizations = useSelector((state) => denormalizeOrgsSelector(state, meIdentityId));
 
   const shouldFetch = useMemo(
-    () => isNil(organizations) && isReady,
-    [organizations, isReady],
+    () => (isNil(organizations) || forceRefresh) && isReady,
+    [organizations, forceRefresh, isReady],
   );
 
   const dispatchReceiveOrganizations = useCallback(

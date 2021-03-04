@@ -16,7 +16,8 @@
     },
     "empty": {
       "text": "Commencer un espace privé sécurisé en cliquant sur <1>+</1> ou",
-      "create": "Nouvel espace privé"
+      "create": "Nouvel espace privé",
+      "disabled": "Vous n'avez pas encore d'espace privé"
     },
     "select": "Rejoins un espace privé sécurisé 💬 pour commencer",
     "refresh": "Rafraîchir",

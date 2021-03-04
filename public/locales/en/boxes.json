@@ -16,7 +16,8 @@
     },
     "empty": {
       "text": "Start a private space by clicking <1>+</1> or",
-      "create": "New private space"
+      "create": "New private space",
+      "disabled": "You don't have a private space yet"
     },
     "select": "Select a private space 💬 to start",
     "refresh": "Refresh",

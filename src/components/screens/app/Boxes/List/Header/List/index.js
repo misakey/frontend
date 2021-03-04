@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { TOOLBAR_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import isSelfOrg from 'helpers/isSelfOrg';
+
+import useOrgId from 'hooks/useOrgId';
 
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import AppBarStatic from '@misakey/ui/AppBar/Static';
@@ -27,6 +30,12 @@ const IconButtonCreate = withDialogCreate(
 );
 
 function ListHeader({ t, isFullWidth, ...props }) {
+  const orgId = useOrgId();
+  const selfOrgSelected = useMemo(
+    () => isSelfOrg(orgId),
+    [orgId],
+  );
+
   return (
     <AppBarStatic
       color="primary"
@@ -36,13 +45,15 @@ function ListHeader({ t, isFullWidth, ...props }) {
       <ButtonDrawerOrganization />
       <Subtitle gutterBottom={false} color="background">{t('boxes:documentTitle')}</Subtitle>
       <BoxFlexFill />
-      <IconButtonCreate
-        aria-label={t('boxes:list.empty.create')}
-        edge="end"
-        color="background"
-      >
-        <AddIcon />
-      </IconButtonCreate>
+      {selfOrgSelected && (
+        <IconButtonCreate
+          aria-label={t('boxes:list.empty.create')}
+          edge="end"
+          color="background"
+        >
+          <AddIcon />
+        </IconButtonCreate>
+      )}
     </AppBarStatic>
   );
 }

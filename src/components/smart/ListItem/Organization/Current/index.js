@@ -26,7 +26,7 @@ const ListItemOrganizationCurrent = (props) => {
     [orgId],
   );
 
-  const { isFetching, shouldFetch } = useFetchOrganizations(!selfOrgSelected);
+  const { isFetching, shouldFetch } = useFetchOrganizations({ isReady: !selfOrgSelected });
 
   const denormalizeOrganizationSelector = useMemo(
     () => makeDenormalizeOrganization(),
