@@ -28,8 +28,8 @@ export default ({ isReady = true, forceRefresh = false } = {}) => {
   const organizations = useSelector((state) => denormalizeOrgsSelector(state, meIdentityId));
 
   const shouldFetch = useMemo(
-    () => (isNil(organizations) || forceRefresh) && isReady,
-    [organizations, forceRefresh, isReady],
+    () => (isNil(organizations) || forceRefresh) && isReady && !isNil(meIdentityId),
+    [organizations, forceRefresh, isReady, meIdentityId],
   );
 
   const dispatchReceiveOrganizations = useCallback(
