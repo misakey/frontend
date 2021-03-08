@@ -1,10 +1,11 @@
 import copy from '@misakey/helpers/clipboard/copy';
+import isNil from '@misakey/helpers/isNil';
 
 import { useCallback } from 'react';
 import { useSnackbar } from 'notistack';
 import { useTranslation } from 'react-i18next';
 
-export default (value, { format = 'text/plain', message } = {}) => {
+export default (value, { format = 'text/plain', message } = {}, { successText } = {}) => {
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation('common');
 
@@ -12,9 +13,9 @@ export default (value, { format = 'text/plain', message } = {}) => {
     async () => {
       const success = await copy(value, { format, message });
       if (success) {
-        enqueueSnackbar(t('common:copied'), { variant: 'success' });
+        enqueueSnackbar(isNil(successText) ? t('common:copied') : successText, { variant: 'success' });
       }
     },
-    [enqueueSnackbar, format, message, t, value],
+    [enqueueSnackbar, format, message, successText, t, value],
   );
 };

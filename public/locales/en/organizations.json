@@ -11,6 +11,7 @@
   "secret": {
     "title": "Secret generation",
     "generate": "Generate a new secret",
+    "identifier": "Organization's identifier",
     "copy": "Copy and store this secret code safe, it will allow you to identify a machine through API",
     "confirm": {
       "title": "Are you sure you want to generate a new secret?",

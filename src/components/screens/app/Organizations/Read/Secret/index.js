@@ -36,6 +36,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 
 // CONSTANTS
+const IDENTIFIER_FIELD = 'organization_identifier';
 const FIELD_NAME = 'organization_secret';
 
 // HOOKS
@@ -124,8 +125,24 @@ const OrganizationsReadSecret = () => {
           </ListItem>
         </List>
         <TextField
+          name={IDENTIFIER_FIELD}
+          InputProps={{
+            readOnly: true,
+            endAdornment: (
+              <ButtonCopy
+                value={orgId}
+                message={t('organizations:secret.identifier')}
+                mode={MODE.icon}
+              />
+            ),
+          }}
+          helperText={t('organizations:secret.identifier')}
+          value={orgId}
+        />
+        <TextField
           name={FIELD_NAME}
           InputProps={{ readOnly: true }}
+          helperText={t('organizations:secret.copy')}
           value={secretOrEmpty}
         />
         <ButtonCopy

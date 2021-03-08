@@ -11,6 +11,7 @@
   "secret": {
     "title": "Génération de secret",
     "generate": "Générer un nouveau secret",
+    "identifier": "Identifiant de l'organisation",
     "copy": "Copiez et stockez ce code secret en sécurité, il vous permettra d'identifier une machine par API",
     "confirm": {
       "title": "Êtes-vous sûr·e de vouloir générer un nouveau secret\u00a0?",
