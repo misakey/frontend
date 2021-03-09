@@ -6,12 +6,10 @@ import { Link } from 'react-router-dom';
 import routes from 'routes';
 
 import { TOOLBAR_MIN_HEIGHT, SMALL } from '@misakey/ui/constants/sizes';
-
 import BoxesSchema from 'store/schemas/Boxes';
 
 import isEmpty from '@misakey/helpers/isEmpty';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import { filterCreatorSubjectFromMembers } from 'helpers/members';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
@@ -84,7 +82,7 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
   const classes = useStyles();
   const {
     title,
-    members = [], creator, subject,
+    members = [],
     id, hasAccess, isMember,
   } = useMemo(() => box, [box]);
 
@@ -111,11 +109,6 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
       return t('boxes:read.details.menu.members.count', { count: members.length });
     },
     [hasAccess, isTheOnlyMember, t, members.length],
-  );
-
-  const membersWithoutCreatorSubject = useMemo(
-    () => filterCreatorSubjectFromMembers({ members, creator, subject }),
-    [members, creator, subject],
   );
 
   const canShare = useMemo(
@@ -171,11 +164,13 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
               </Typography>
             )}
           />
-          <AvatarGroupMembers
-            max={MAX_MEMBERS}
-            members={membersWithoutCreatorSubject}
-            size={SMALL}
-          />
+          {!isTheOnlyMember && (
+            <AvatarGroupMembers
+              max={MAX_MEMBERS}
+              members={members}
+              size={SMALL}
+            />
+          )}
         </ListItem>
       </AppBarStatic>
       <AppBarStatic
