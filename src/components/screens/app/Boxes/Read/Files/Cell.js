@@ -57,8 +57,8 @@ const Cell = ({ style, data, event }) => {
   const { id: boxId, isCurrentUserOwner } = useBoxReadContext();
   const isEventFromCurrentUser = useEventBelongsToCurrentUser(event);
 
-  const { content, publicKey, id: eventId } = useMemo(() => event, [event]);
-  const { decryptedFile, encryptedFileId } = useSafeDestr(content);
+  const { content, id: eventId } = useMemo(() => event, [event]);
+  const { decryptedFile, encryptedFileId, publicKey } = useSafeDestr(content);
 
   const getAsymSecretKey = useMemo(
     () => makeGetAsymSecretKey(),

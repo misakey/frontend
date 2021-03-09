@@ -29,6 +29,7 @@ import useGetFileIconFromType from 'hooks/useGetFileIconFromType';
 import useCalendarDateSince from '@misakey/hooks/useCalendarDateSince';
 import FILE_PROP_TYPES from '@misakey/ui/constants/file/proptypes';
 import isElementFocusedByEvent from '@misakey/helpers/isElementFocusedByEvent';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 const AVATAR_SIZE = '5rem';
 const ButtonWithDialogPassword = withDialogPassword(Button);
@@ -103,7 +104,7 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
     isLoading,
     isSaved,
     sender: { displayName, isFromCurrentUser } = {},
-  } = useMemo(() => file, [file]);
+  } = useSafeDestr(file);
 
   const formattedSize = useMemo(
     () => (isNil(size) ? null : formatFileSize(size)), [size],
