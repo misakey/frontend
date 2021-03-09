@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from 'react';
+import { useMemo, useEffect } from 'react';
 
 import isNil from '@misakey/helpers/isNil';
 import pathOr from '@misakey/helpers/pathOr';
@@ -11,33 +11,31 @@ const decryptedFilePath = pathOr({}, ['content', 'decryptedFile']);
 
 // HOOKS
 export default (event, secretKey, isFromCurrentUser) => {
-  const [isReady, setIsReady] = useState(false);
+  const { encryption, error } = useModifier(decryptedFilePath, event);
 
-  const { encryption, name } = useModifier(decryptedFilePath, event);
+  const isDecryptedFileReady = useMemo(
+    // even if decryption is not successful, decryptedFile is set with an error
+    () => !isNil(encryption) || !isNil(error),
+    [encryption, error],
+  );
 
-  const shouldDecrypt = useMemo(() => (isNil(encryption) || isNil(name)), [encryption, name]);
+  const shouldDecrypt = useMemo(
+    // do not try to decrypt if secretKey is not ready and
+    // do not try to decrypt if it's already done
+    () => !isNil(secretKey) && !isDecryptedFileReady,
+    [isDecryptedFileReady, secretKey],
+  );
 
-  const decryptMsgFile = useDecryptMsgFileCallback(secretKey);
+  const setDecryptedFile = useDecryptMsgFileCallback(secretKey);
 
   useEffect(
     () => {
       if (shouldDecrypt) {
-        decryptMsgFile(event, isFromCurrentUser);
+        setDecryptedFile(event, isFromCurrentUser);
       }
     },
-    [shouldDecrypt, decryptMsgFile, setIsReady, event, isFromCurrentUser],
+    [shouldDecrypt, event, isFromCurrentUser, setDecryptedFile],
   );
 
-  useEffect(
-    () => {
-      setIsReady(true);
-
-      return () => {
-        setIsReady(false);
-      };
-    },
-    [shouldDecrypt, secretKey, setIsReady],
-  );
-
-  return { isReady };
+  return { isReady: isDecryptedFileReady };
 };
