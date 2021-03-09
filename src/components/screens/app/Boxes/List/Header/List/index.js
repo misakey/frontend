@@ -13,7 +13,6 @@ import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import AppBarStatic from '@misakey/ui/AppBar/Static';
 import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
-import withDialogPassword from 'components/smart/Dialog/Password/with';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import ButtonDrawerOrganization from 'components/smart/Button/Drawer/Organization';
 
@@ -26,7 +25,7 @@ const TOOLBAR_PROPS = {
 
 // COMPONENTS
 const IconButtonCreate = withDialogCreate(
-  withDialogPassword(IconButtonAppBar),
+  IconButtonAppBar,
 );
 
 function ListHeader({ t, isFullWidth, ...props }) {

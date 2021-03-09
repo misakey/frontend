@@ -1,15 +1,10 @@
 import React, { useCallback, useState, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
-import { Form, Field } from 'formik';
-import Formik from '@misakey/ui/Formik';
-import { useSnackbar } from 'notistack';
 import { withTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import routes from 'routes';
 import { SIDES } from '@misakey/ui/constants/drawers';
-
+import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { boxNameFieldValidationSchema } from 'constants/validationSchemas/boxes';
 import setBoxSecrets from '@misakey/crypto/store/actions/setBoxSecrets';
 
@@ -19,7 +14,6 @@ import isFunction from '@misakey/helpers/isFunction';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 import dialogIsFullScreen from '@misakey/helpers/dialog/isFullScreen';
-
 import { createCryptoForNewBox } from '@misakey/crypto/box/creation';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
@@ -27,20 +21,24 @@ import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 import useOrgId from 'hooks/useOrgId';
 import useGeneratePathKeepingSearchAndHashCallback from '@misakey/hooks/useGeneratePathKeepingSearchAndHash/callback';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import BoxControls from '@misakey/ui/Box/Controls';
 import DialogContent from '@misakey/ui/DialogContent';
 import DialogTitleWithCloseFormik from '@misakey/ui/DialogTitle/WithCloseIcon/Formik';
-
-
+import { Form, Field } from 'formik';
+import Formik from '@misakey/ui/Formik';
 import Dialog from '@material-ui/core/Dialog';
 import FieldText from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
 import DialogBoxesCreatePasteLink from 'components/smart/Dialog/Boxes/Create/PasteLink';
 
 // CONSTANTS
+const { acr: ACR_SELECTOR } = authSelectors;
 const FIELD_BOX_NAME = 'name';
 const INITIAL_VALUES = { [FIELD_BOX_NAME]: '' };
 
@@ -82,6 +80,8 @@ function CreateBoxDialog({
   const [placeholder, setPlaceholder] = useState();
 
   const generatePathKeepingSearchAndHashCallback = useGeneratePathKeepingSearchAndHashCallback();
+
+  const acr = useSelector(ACR_SELECTOR);
 
   const ownerOrgId = useOrgId();
 
@@ -166,7 +166,7 @@ function CreateBoxDialog({
       aria-describedby={DESCRIPTION_ID}
       {...omitTranslationProps(props)}
     >
-      {isInvitation
+      {isInvitation || acr === 1
         ? (
           <DialogBoxesCreatePasteLink
             fullScreen={fullScreen}

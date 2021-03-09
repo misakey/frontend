@@ -16,7 +16,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Formik from '@misakey/ui/Formik';
 import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
 import FormField from '@misakey/ui/Form/Field';
-import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import BoxControls from '@misakey/ui/Box/Controls';
 import FormFieldTextField from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import Box from '@material-ui/core/Box';
@@ -24,6 +24,7 @@ import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import BoxesSchema from 'store/schemas/Boxes';
 import DialogTitleWithCloseFormik from '@misakey/ui/DialogTitle/WithCloseIcon/Formik';
 import DialogContent from '@misakey/ui/DialogContent';
+import ButtonWithDialogPassword from 'components/smart/Dialog/Password/with/Button';
 
 // CONSTANTS
 const FIELD_NAME = 'invitationLink';
@@ -90,7 +91,7 @@ function PasteBoxLinkScreen({
             fullWidth
             variant="filled"
           />
-          <Button
+          <ButtonWithDialogPassword
             standing={BUTTON_STANDINGS.TEXT}
             text={t('boxes:pasteLink.goBack')}
             onClick={onBack}
