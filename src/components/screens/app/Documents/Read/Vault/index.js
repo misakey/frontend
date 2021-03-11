@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState, useCallback } from 'react';
+import React, { useMemo, useRef } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
@@ -11,6 +11,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { useTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { useUploadContext } from '@misakey/ui/Input/Upload/Context';
 
 import BoxEmpty from 'components/dumb/Box/Empty';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
@@ -25,7 +26,6 @@ import FabAdd from '@misakey/ui/Fab/Add';
 import FilePreviewCarouselContextProvider from 'components/smart/File/Preview/Carousel/Context';
 import SavedFilesCarousel from 'components/smart/Carousel/FilePreview/SavedFiles';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
-import VaultUploadDialog from 'components/smart/Dialog/Vault/Upload';
 import WindowedGridInfiniteLoaded from 'components/smart/WindowedList/InfiniteLoaded/Grid';
 import VaultCell, { Skeleton, CELL_HEIGHT } from './Cell';
 
@@ -50,7 +50,6 @@ const NUM_COLUMNS = 2;
 const DocumentsVault = () => {
   const ref = useRef();
   const classes = useStyles();
-  const [isUploadDialogOpened, setIsUploadDialogOpened] = useState(false);
   const { t } = useTranslation('document');
 
   const theme = useTheme();
@@ -62,6 +61,8 @@ const DocumentsVault = () => {
     itemCount,
     loadMoreItems,
   } = usePaginateSavedFiles();
+
+  const { onOpen: onOpenDialog } = useUploadContext();
 
   const isEmpty = useMemo(() => itemCount === 0, [itemCount]);
   const isLoading = useMemo(() => isNil(itemCount), [itemCount]);
@@ -79,9 +80,6 @@ const DocumentsVault = () => {
   );
 
   useUpdateDocHead(t('document:vault.title'));
-
-  const onCloseDialog = useCallback(() => setIsUploadDialogOpened(false), []);
-  const onOpenDialog = useCallback(() => setIsUploadDialogOpened(true), []);
 
   return (
     <>
@@ -107,7 +105,6 @@ const DocumentsVault = () => {
           </Box>
         </AppBarDrawer>
       </ElevationScroll>
-      <VaultUploadDialog open={isUploadDialogOpened} onClose={onCloseDialog} />
       {isEmpty && (
         <BoxEmpty py={0}>
           <Box display="flex" justifyContent="center" p={2}>

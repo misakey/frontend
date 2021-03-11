@@ -17,7 +17,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useBoxEventSubmitContext } from 'components/smart/Box/Event/Submit/Context';
-import { useBoxesUploadContext } from 'components/smart/Input/Boxes/Upload/Context';
+import { useUploadContext } from '@misakey/ui/Input/Upload/Context';
 
 import Box from '@material-ui/core/Box';
 import Formik from '@misakey/ui/Formik';
@@ -69,7 +69,7 @@ function BoxEventsFooterCreating({ box, secretKey, t }) {
 
   const { id, publicKey, title } = useMemo(() => box || {}, [box]);
 
-  const { onOpen: onBoxesUploadOpen } = useBoxesUploadContext();
+  const { onOpen: onBoxesUploadOpen } = useUploadContext();
 
   const disabled = useMemo(
     () => isNil(secretKey),

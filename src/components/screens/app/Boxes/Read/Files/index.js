@@ -13,7 +13,7 @@ import isNil from '@misakey/helpers/isNil';
 import usePaginateFileEventsByBox from 'hooks/usePaginateEventsByBox/Files';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useBoxesUploadContext } from 'components/smart/Input/Boxes/Upload/Context';
+import { useUploadContext } from '@misakey/ui/Input/Upload/Context';
 import { useTranslation } from 'react-i18next';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -53,7 +53,7 @@ function BoxFiles({ belongsToCurrentUser, box }) {
   const contentRef = useRef();
   const { t } = useTranslation('boxes');
 
-  const { onOpen: onOpenUploadDialog } = useBoxesUploadContext();
+  const { onOpen: onOpenUploadDialog } = useUploadContext();
 
   const { id } = useMemo(() => box, [box]);
 

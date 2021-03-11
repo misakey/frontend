@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { useBoxesUploadContext } from 'components/smart/Input/Boxes/Upload/Context';
+import { useUploadContext } from '@misakey/ui/Input/Upload/Context';
 
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 function FooterMenuList({ t }) {
   const classes = useStyles();
 
-  const { onOpen } = useBoxesUploadContext();
+  const { onOpen } = useUploadContext();
 
   return (
     <MenuList disablePadding autoFocusItem id="menu-list-actions">

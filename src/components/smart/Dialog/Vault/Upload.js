@@ -13,13 +13,19 @@ import { addSavedFile } from 'store/reducers/files/saved';
 // CONSTANTS
 export const BLOBS_FIELD_NAME = 'files';
 export const INITIAL_VALUES = { [BLOBS_FIELD_NAME]: [] };
+export const INITIAL_STATUS = { [BLOBS_FIELD_NAME]: null };
 
 const {
   getVaultKey,
 } = cryptoSelectors;
 
 
-function VaultUploadDialog({ open, onClose }) {
+function VaultUploadDialog({
+  initialValues,
+  initialStatus,
+  open,
+  onClose,
+}) {
   const dispatch = useDispatch();
   const identityId = useSelector(authSelectors.identityId);
   const vaultKey = useSelector(getVaultKey);
@@ -59,7 +65,8 @@ function VaultUploadDialog({ open, onClose }) {
       onSuccess={onSuccess}
       onUploadBuilder={onUploadBuilder}
       onEncryptBuilder={onEncryptBuilder}
-      initialValues={INITIAL_VALUES}
+      initialValues={initialValues}
+      initialStatus={initialStatus}
       open={open}
       onClose={onClose}
     />
@@ -69,10 +76,14 @@ function VaultUploadDialog({ open, onClose }) {
 VaultUploadDialog.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
+  initialValues: PropTypes.object,
+  initialStatus: PropTypes.object,
 };
 
 VaultUploadDialog.defaultProps = {
   open: false,
+  initialValues: INITIAL_VALUES,
+  initialStatus: INITIAL_STATUS,
 };
 
 export default VaultUploadDialog;
