@@ -18,11 +18,11 @@ import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Box from '@material-ui/core/Box';
 import MenuItem from '@material-ui/core/MenuItem';
-import withDialogPassword from 'components/smart/Dialog/Password/with';
+import withDialogPassword from '@misakey/react-auth/components/Dialog/Password/with';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 import isNil from '@misakey/helpers/isNil';
-import formatFileSize from 'helpers/formatFileSize';
+import formatFileSize from '@misakey/helpers/formatFileSize';
 import isFunction from '@misakey/helpers/isFunction';
 
 import useGetFileIconFromType from 'hooks/useGetFileIconFromType';

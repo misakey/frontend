@@ -11,7 +11,7 @@ import omitRouteProps from '@misakey/helpers/omit/routeProps';
 import { useSelector } from 'react-redux';
 
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
-import ButtonWithDialogPassword from 'components/smart/Dialog/Password/with/Button';
+import ButtonWithDialogPassword from '@misakey/react-auth/components/Dialog/Password/with/Button';
 import Box from '@material-ui/core/Box';
 import { Route } from 'react-router-dom';
 import List from '@material-ui/core/List';

@@ -14,7 +14,7 @@ import OrganizationDrawer from 'components/smart/Drawer/Organization';
 import ScreenSplashOidc from '@misakey/ui/Screen/Splash/Oidc';
 
 import useLoadSecretsFromShares from '@misakey/crypto/hooks/useLoadSecretsFromShares';
-import useIdentity from 'hooks/useIdentity';
+import useIdentity from '@misakey/react-auth/hooks/useIdentity';
 import useLoadedAnimation from '@misakey/hooks/useLoadedAnimation';
 
 // LAZY

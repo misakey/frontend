@@ -30,8 +30,8 @@ import invalidSeclevelMiddleware from '@misakey/react-auth/middlewares/invalidSe
 import RouterWithCustomConfirm from 'components/smart/Router/WithCustomConfirm';
 import * as serviceWorker from 'serviceWorker';
 // ui
-import ThemeProvider from 'components/smart/ThemeProvider';
-import ThemeProviderNoStore from 'components/smart/ThemeProvider/NoStore';
+import ThemeProvider from 'components/smart//ThemeProvider';
+import ThemeProviderNoStore from 'components/smart//ThemeProvider/NoStore';
 // components
 import App from 'components/App';
 

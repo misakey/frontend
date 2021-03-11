@@ -12,7 +12,7 @@ import { useBoxesContext } from 'components/smart/Context/Boxes';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isNil from '@misakey/helpers/isNil';
 
-import ElevationScroll from 'components/dumb/ElevationScroll';
+import ElevationScroll from '@misakey/ui/ElevationScroll';
 import ListHeader from 'components/screens/app/Boxes/List/Header/List';
 import SearchHeader from 'components/screens/app/Boxes/List/Header/Search';
 import AppbarAccount from 'components/smart/AppBar/Account';

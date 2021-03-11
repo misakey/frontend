@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import ElevationScroll from 'components/dumb/ElevationScroll';
+import ElevationScroll from '@misakey/ui/ElevationScroll';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import BoxEmpty from 'components/dumb/Box/Empty';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';

@@ -43,7 +43,7 @@ import ListBordered from '@misakey/ui/List/Bordered';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ElevationScroll from 'components/dumb/ElevationScroll';
+import ElevationScroll from '@misakey/ui/ElevationScroll';
 import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
 import Box from '@material-ui/core/Box';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';

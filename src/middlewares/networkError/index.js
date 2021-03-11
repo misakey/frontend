@@ -1,7 +1,7 @@
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
 
-// @FIXME @misakey/auth
+// @FIXME @misakey/api
 const networkErrorMiddleware = (onNetworkError, onNetworkSuccess) => (errorOrResponse) => {
   const successMatch = errorOrResponse instanceof Response;
 

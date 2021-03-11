@@ -6,18 +6,19 @@ import routes from 'routes';
 
 import isNil from '@misakey/helpers/isNil';
 
-import useIdentity from 'hooks/useIdentity';
+import useIdentity from '@misakey/react-auth/hooks/useIdentity';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import Identities from 'components/screens/app/Identity';
-import IdentityPublicReadOnly from 'components/screens/app/Identity/Public/ReadOnly';
+import Identities from '@misakey/react-auth/components/screens/Identity';
+import IdentityPublicReadOnly from 'components/screens/app/Profile/Public/ReadOnly';
 import RouteAcr from '@misakey/react-auth/components/Route/Acr';
 import ScreenDrawerContextProvider from 'components/smart/Screen/Drawer';
 import DrawerAccountContent from 'components/smart/Drawer/Account/Content';
 import DrawerAccountOnboard from 'components/smart/Drawer/Account/Onboard';
 
 import ProfileHome from 'components/screens/app/Profile/Home';
+import ColorsDemo from 'components/dumb/ThemeProvider/Demo';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -76,7 +77,14 @@ function Profile(props) {
             <RouteAcr
               acr={1}
               path={routes.identities._}
-              component={Identities}
+              render={(routerProps) => (
+                <Identities
+                  demoComponent={ColorsDemo}
+                  {...props}
+                  {...routerProps}
+                  {...drawerProps}
+                />
+              )}
             />
           </Switch>
         )}

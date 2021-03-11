@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 import { PropTypes } from 'prop-types';
 
-import formatFileSize from 'helpers/formatFileSize';
+import formatFileSize from '@misakey/helpers/formatFileSize';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 

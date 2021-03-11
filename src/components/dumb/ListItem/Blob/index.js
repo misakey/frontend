@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import { UPLOAD } from 'constants/upload/status';
 import isNil from '@misakey/helpers/isNil';
-import formatFileSize from 'helpers/formatFileSize';
+import formatFileSize from '@misakey/helpers/formatFileSize';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';

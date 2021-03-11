@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { updateIdentity } from '@misakey/react-auth/store/actions/auth';
 import { normalize } from 'normalizr';
 import { receiveEntities } from '@misakey/store/actions/entities';
-import IdentitySchema from 'store/schemas/Identity';
+import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 

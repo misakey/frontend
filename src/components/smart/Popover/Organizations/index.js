@@ -24,7 +24,7 @@ import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import DialogOrganizationsCreate from 'components/smart/Dialog/Organizations/Create';
-import withDialogPassword from 'components/smart/Dialog/Password/with';
+import withDialogPassword from '@misakey/react-auth/components/Dialog/Password/with';
 
 import AddIcon from '@material-ui/icons/Add';
 

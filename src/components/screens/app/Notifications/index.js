@@ -24,7 +24,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
-import ElevationScroll from 'components/dumb/ElevationScroll';
+import ElevationScroll from '@misakey/ui/ElevationScroll';
 import Typography from '@material-ui/core/Typography';
 import BoxEmpty from 'components/dumb/Box/Empty';
 import InfiniteLoaderChat from 'components/smart/WindowedList/InfiniteLoaded/Chat';

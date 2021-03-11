@@ -1,5 +1,5 @@
 import React from 'react';
-import useIdentity from 'hooks/useIdentity';
+import useIdentity from '@misakey/react-auth/hooks/useIdentity';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import AvatarUser from '@misakey/ui/Avatar/User';

@@ -15,7 +15,7 @@ import { useUploadContext } from '@misakey/ui/Input/Upload/Context';
 
 import BoxEmpty from 'components/dumb/Box/Empty';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
-import ElevationScroll from 'components/dumb/ElevationScroll';
+import ElevationScroll from '@misakey/ui/ElevationScroll';
 import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
 import Avatar from '@material-ui/core/Avatar';
 import FolderIcon from '@material-ui/icons/Folder';

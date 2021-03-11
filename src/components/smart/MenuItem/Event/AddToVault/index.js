@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import ContextMenuItem from '@misakey/ui/Menu/ContextMenu/MenuItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import withDialogPassword from 'components/smart/Dialog/Password/with';
+import withDialogPassword from '@misakey/react-auth/components/Dialog/Password/with';
 import AddToVaultIcon from '@misakey/ui/Icon/AddToVault';
 
 const ContextMenuItemACR2Required = withDialogPassword(ContextMenuItem);

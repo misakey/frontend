@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
 import ButtonSignOut from '@misakey/react-auth/components/Button/SignOut';
-import CardIdentityThumbnail from 'components/dumb/Card/Identity/Thumbnail';
+import CardIdentityThumbnail from '@misakey/react-auth/components/Card/Identity/Thumbnail';
 import AppBarStatic from '@misakey/ui/AppBar/Static';
 import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
 import Box from '@material-ui/core/Box';

@@ -10,7 +10,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Paper from '@material-ui/core/Paper';
 import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
-import withDialogPassword from 'components/smart/Dialog/Password/with';
+import withDialogPassword from '@misakey/react-auth/components/Dialog/Password/with';
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
 import Toolbar from '@material-ui/core/Toolbar';

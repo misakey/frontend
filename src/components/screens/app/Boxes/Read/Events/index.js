@@ -5,13 +5,13 @@ import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
-import ElevationScroll from 'components/dumb/ElevationScroll';
+import ElevationScroll from '@misakey/ui/ElevationScroll';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import Box from '@material-ui/core/Box';
 import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
-import ButtonWithDialogPassword from 'components/smart/Dialog/Password/with/Button';
+import ButtonWithDialogPassword from '@misakey/react-auth/components/Dialog/Password/with/Button';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';

@@ -20,7 +20,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
-import withDialogPassword from 'components/smart/Dialog/Password/with';
+import withDialogPassword from '@misakey/react-auth/components/Dialog/Password/with';
 
 import ChatIcon from '@material-ui/icons/Chat';
 import SaveIcon from '@material-ui/icons/Save';

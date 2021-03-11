@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import AppBarStatic from '@misakey/ui/AppBar/Static';
-import CardIdentity from 'components/dumb/Card/Identity';
+import CardIdentity from '@misakey/react-auth/components/Card/Identity';
 import AvatarCurrentUser from 'components/smart/Avatar/CurrentUser';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import ButtonDrawerDefault from 'components/smart/Button/Drawer/Default';

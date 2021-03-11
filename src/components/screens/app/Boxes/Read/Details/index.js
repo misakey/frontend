@@ -22,7 +22,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import BoxAvatar from '@misakey/ui/Avatar/Box';
-import ElevationScroll from 'components/dumb/ElevationScroll';
+import ElevationScroll from '@misakey/ui/ElevationScroll';
 import ListItemShare from 'components/smart/ListItem/Boxes/Share';
 import ListItemLeave from 'components/smart/ListItem/Boxes/Leave';
 import ListItemDelete from 'components/smart/ListItem/Boxes/Delete';

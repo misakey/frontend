@@ -4,7 +4,7 @@ import clsx from 'clsx';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import Card from 'components/dumb/Card';
+import Card from '@misakey/ui/Card';
 import Footer from '@misakey/ui/Footer';
 
 // CONSTANTS
