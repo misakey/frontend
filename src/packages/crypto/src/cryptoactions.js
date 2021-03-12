@@ -1,9 +1,9 @@
 import {
   encodeUTF8,
   decodeUTF8,
-  encodeBase64,
-  decodeBase64,
 } from 'tweetnacl-util';
+
+import { decodeBase64, encodeBase64 } from '@misakey/crypto/helpers/base64';
 
 import {
   generateAsymmetricKeyPair,

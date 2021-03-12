@@ -13,7 +13,7 @@ export const getFromUrlSafe = (string) => {
   return `${string.replace(/_/g, '/').replace(/-/g, '+')}${padding}`;
 };
 
-export function encodeBase64(data, { urlSafe = false } = {}) {
+export function encodeBase64(data, { urlSafe = true } = {}) {
   if (isEmpty(data)) { throw Error('cannot encode empty data'); }
   if (!isTypedArray(data)) {
     throw Error(`function encodeBase64 requires a Uint8Array, not ${typeof data}`);
@@ -24,7 +24,7 @@ export function encodeBase64(data, { urlSafe = false } = {}) {
   return urlSafe ? makeSafeForUrl(encoded) : encoded;
 }
 
-export function decodeBase64(string, { urlSafe = false } = {}) {
+export function decodeBase64(string, { urlSafe = true } = {}) {
   if (isEmpty(string)) { throw Error('cannot decode empty input'); }
 
   try {

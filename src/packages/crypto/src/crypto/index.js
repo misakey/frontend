@@ -76,7 +76,7 @@ export function asymmetricDecrypt(cryptogram, recipientSecretKey) {
     } = deserializeJsonToObject(cryptogram));
   } catch (e) {
     // @FIXME this legacy code could be removed
-    const unpacker = new BitFieldUnpacker(decodeBase64(cryptogram));
+    const unpacker = new BitFieldUnpacker(decodeBase64(cryptogram, { urlSafe: false }));
     const packingVersion = unpacker.getPackingVersion();
     if (packingVersion !== ASYMMETRIC_PACKING_VERSION) {
       throw Error(`bad version byte : ${packingVersion}`);
@@ -153,7 +153,7 @@ export function symmetricEncrypt(plaintext, symmetricKey) {
     decodeBase64(symmetricKey, { urlSafe: isUnpaddedUrlSafeBase64(symmetricKey) }),
   );
   return {
-    nonce: encodeBase64(nonce),
+    nonce: encodeBase64(nonce, { urlSafe: false }),
     ciphertext,
   };
 }
@@ -162,7 +162,7 @@ export function symmetricDecrypt(ciphertext, nonce, symmetricKey) {
   assertNotAnyNil({ ciphertext, nonce, symmetricKey });
   return core.symmetricDecrypt(
     ciphertext,
-    decodeBase64(nonce),
+    decodeBase64(nonce, { urlSafe: false }),
     decodeBase64(symmetricKey, { urlSafe: isUnpaddedUrlSafeBase64(symmetricKey) }),
   );
 }

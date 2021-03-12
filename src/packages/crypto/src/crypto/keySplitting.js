@@ -27,7 +27,7 @@ export function splitKey(key) {
   return {
     userShare: encodeBase64(shareOne, { urlSafe: true }),
     misakeyShare: {
-      share: encodeBase64(shareTwo, { urlSafe: false }),
+      share: encodeBase64(shareTwo, { urlSafe: true }),
       otherShareHash: hashBinaryShare(shareOne),
     },
   };
@@ -51,7 +51,7 @@ export function hashShare(theShare) {
 export function combineShares(userShare, misakeyShare) {
   const key = combine(
     decodeBase64(userShare, { urlSafe: true }),
-    decodeBase64(misakeyShare.share, { urlSafe: false }),
+    decodeBase64(misakeyShare.share, { urlSafe: true }),
   );
 
   return encodeBase64(key, { urlSafe: true });

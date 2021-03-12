@@ -22,7 +22,7 @@ export function prepareForJsonSerialization(x) {
     return {
       type: 'Uint8Array',
       encoding: 'base64',
-      value: encodeBase64(x),
+      value: encodeBase64(x, { urlSafe: false }),
     };
   }
 
@@ -42,7 +42,7 @@ export function reversePrepareForJsonSerialization(x) {
     if (objectKeysAreExactly(['type', 'encoding', 'value'], x)) {
       const { type, encoding, value } = x;
       if (type === 'Uint8Array' && encoding === 'base64') {
-        return decodeBase64(value);
+        return decodeBase64(value, { urlSafe: false });
       }
     }
 
