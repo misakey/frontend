@@ -85,3 +85,9 @@ export const listOrganizations = (identityId) => API
   .build({ id: identityId })
   .send()
   .then((response) => response.map(objectToCamelCase));
+
+export const listDatatags = (identityId, queryParams = {}) => API
+  .use(API.endpoints.identities.datatags.find)
+  .build({ id: identityId }, null, objectToSnakeCase(queryParams))
+  .send()
+  .then((response) => response.map(objectToCamelCase));

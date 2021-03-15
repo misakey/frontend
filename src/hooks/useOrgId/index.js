@@ -4,7 +4,6 @@ import { useMemo } from 'react';
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 
 export default (defaultValue = true) => {
-  // @TODO: check implem when actually used
   const { orgId } = useLocationSearchParams();
 
   return useMemo(

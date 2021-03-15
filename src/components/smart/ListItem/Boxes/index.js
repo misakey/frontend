@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
@@ -43,6 +43,7 @@ import MenuItemBoxLeave from 'components/smart/MenuItem/Box/Leave';
 import MenuItemBoxDelete from 'components/smart/MenuItem/Box/Delete';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 
+// CONSTANTS
 const DEFAULT_SETTINGS = { muted: false };
 
 const {
@@ -78,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-export const BoxListItemSkeleton = ({ classes, ...props }) => {
+export const BoxListItemSkeleton = ({ classes, toRoute, nextSearchMap, ...props }) => {
   const { root, selected, ...restClasses } = useSafeDestr(classes);
 
   const internalClasses = useStyles({ isActionVisible: false });
@@ -129,13 +130,17 @@ BoxListItemSkeleton.propTypes = {
     root: PropTypes.string,
     selected: PropTypes.string,
   }),
+  toRoute: PropTypes.string,
+  nextSearchMap: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
 };
 
 BoxListItemSkeleton.defaultProps = {
   classes: {},
+  toRoute: null,
+  nextSearchMap: [],
 };
 
-function BoxListItem({ box, toRoute, ContainerProps, classes, t, ...rest }) {
+function BoxListItem({ box, toRoute, nextSearchMap, ContainerProps, classes, t, ...rest }) {
   const [anchorEl, setAnchorEl] = useState(null);
   // prefer state variable over css because hover is not enough to handle UX
   const [isActionVisible, setIsActionVisible] = useState(false);
@@ -144,6 +149,7 @@ function BoxListItem({ box, toRoute, ContainerProps, classes, t, ...rest }) {
 
   const isMounted = useIsMountedRef();
 
+  const { search } = useLocation();
   const generatePath = useGeneratePathKeepingSearchAndHashCallback();
 
   const {
@@ -157,8 +163,10 @@ function BoxListItem({ box, toRoute, ContainerProps, classes, t, ...rest }) {
   } = useMemo(() => box || {}, [box]);
 
   const nextSearch = useMemo(
-    () => (isSelfOrg(ownerOrgId) ? '' : getNextSearch('', new Map([['orgId', ownerOrgId]]))),
-    [ownerOrgId],
+    () => (isSelfOrg(ownerOrgId)
+      ? getNextSearch(search, new Map([['orgId', undefined], ...nextSearchMap]))
+      : getNextSearch(search, new Map([['orgId', ownerOrgId], ...nextSearchMap]))),
+    [nextSearchMap, ownerOrgId, search],
   );
 
   const linkProps = useMemo(
@@ -327,6 +335,7 @@ BoxListItem.propTypes = {
   }),
   box: PropTypes.shape(BoxesSchema.propTypes),
   toRoute: PropTypes.string,
+  nextSearchMap: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
   // withTranslation
   t: PropTypes.func.isRequired,
 };
@@ -336,6 +345,7 @@ BoxListItem.defaultProps = {
   classes: {},
   box: null,
   toRoute: null,
+  nextSearchMap: [],
 };
 
 export default withTranslation('common')(BoxListItem);

@@ -12,6 +12,7 @@ import useHandleBoxKeyShare from '@misakey/crypto/hooks/useHandleBoxKeyShare';
 import { useBoxEventSubmitContext } from 'components/smart/Box/Event/Submit/Context';
 import useFetchBoxDetails from 'hooks/useFetchBoxDetails';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
+import useQueryOrgDatatag from 'hooks/useQueryOrgDatatag';
 
 import BoxReadContextProvider from 'components/smart/Context/Boxes/BoxRead';
 import InputBoxesUploadContext from 'components/smart/Input/Boxes/Upload/Context';
@@ -70,6 +71,7 @@ function BoxRead({ match }) {
   );
 
   useUpdateDocHead(documentTitle);
+  useQueryOrgDatatag(box);
 
   if (displayLoadingScreen) {
     return <SplashScreenWithTranslation />;

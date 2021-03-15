@@ -12,9 +12,6 @@ const BOXES = [
   { id: 'r2', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
   { id: 'r3', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
 ];
-// const makeDelayedReject = (timeout, result = KO) => () => new Promise(
-//   (resolve, reject) => setTimeout(() => reject(result), timeout),
-// );
 
 // MOCKS
 const mockUseSelector = jest.fn();
@@ -91,7 +88,7 @@ describe('testing usePaginateBoxesByStatus', () => {
 
     it('should init itemCount', async () => {
       const { result: paginateBoxesByStatus } = renderHook(
-        ({ ownerOrgId }) => usePaginateBoxesByStatus(ownerOrgId),
+        ({ ownerOrgId }) => usePaginateBoxesByStatus(ownerOrgId, { ownerOrgId }),
         {
           initialProps: { ownerOrgId: ORG_ID },
         },
@@ -103,26 +100,6 @@ describe('testing usePaginateBoxesByStatus', () => {
 
       expect(mockCountUserBoxesBuilder).toHaveBeenCalledWith(PAYLOAD);
     });
-
-    // @FIXME not working because of @testing-library/react-hooks bug
-    // Issue: https://github.com/testing-library/react-hooks-testing-library/issues/308
-    // it('should handleHttpError on init', async () => {
-    //   mockCountUserBoxesBuilder.mockImplementation(makeDelayedReject(TIMEOUT));
-
-    //   const { result: paginateBoxesByStatus, waitForNextUpdate } = renderHook(
-    //     ({ ownerOrgId }) => usePaginateBoxesByStatus(ownerOrgId),
-    //     {
-    //       initialProps: { ownerOrgId: ORG_ID },
-    //     },
-    //   );
-    //   expect(mockCountUserBoxesBuilder).toHaveBeenCalled();
-
-    //   jest.runAllTimers();
-    //   // make sure to await async callback in hook
-    //   // await waitForNextUpdate();
-    //   expect(paginateBoxesByStatus.error).toBe(KO);
-    //   mockCountUserBoxesBuilder.mockReset();
-    // });
 
     it('should return initial values', () => {
       const { result: paginateBoxesByStatus } = renderHook(
@@ -150,8 +127,8 @@ describe('testing usePaginateBoxesByStatus', () => {
     });
 
     it('should not be impacted by unmount', async () => {
-      const { result: paginateBoxesByStatus, unmount, wait } = renderHook(
-        ({ ownerOrgId }) => usePaginateBoxesByStatus(ownerOrgId),
+      const { result: paginateBoxesByStatus, unmount } = renderHook(
+        ({ ownerOrgId }) => usePaginateBoxesByStatus(ownerOrgId, { ownerOrgId }),
         {
           initialProps: { ownerOrgId: ORG_ID },
         },
@@ -167,8 +144,6 @@ describe('testing usePaginateBoxesByStatus', () => {
         unmount();
       });
 
-      jest.runAllTimers();
-      await wait(() => { }, { timeout: 0 });
       jest.runAllTimers();
 
       expect(mockCountUserBoxesBuilder).toHaveBeenCalledTimes(1);
@@ -220,7 +195,7 @@ describe('testing usePaginateBoxesByStatus', () => {
       mockGetByPagination.mockImplementation(() => ({}));
       const PAGINATION = { offset: 0, limit: 3 };
       const { result: paginateBoxesByStatus } = renderHook(
-        ({ ownerOrgId }) => usePaginateBoxesByStatus(ownerOrgId),
+        ({ ownerOrgId }) => usePaginateBoxesByStatus(ownerOrgId, { ownerOrgId }),
         {
           initialProps: { ownerOrgId: ORG_ID },
         },
@@ -248,7 +223,11 @@ describe('testing usePaginateBoxesByStatus', () => {
       const expectedPagination = { offset: 1, limit: 2 };
 
       const { result: paginateBoxesByStatus } = renderHook(
-        ({ ownerOrgId, newSearch }) => usePaginateBoxesByStatus(ownerOrgId, undefined, newSearch),
+        ({ ownerOrgId, newSearch }) => usePaginateBoxesByStatus(
+          ownerOrgId,
+          { ownerOrgId },
+          newSearch,
+        ),
         {
           initialProps: { ownerOrgId: ORG_ID, newSearch: null },
         },
@@ -354,7 +333,7 @@ describe('testing usePaginateBoxesByStatus', () => {
 
     it('should ask for a new itemCount', () => {
       const { result: paginateBoxesByStatus, rerender } = renderHook(
-        ({ ownerOrgId }) => usePaginateBoxesByStatus(ownerOrgId),
+        ({ ownerOrgId }) => usePaginateBoxesByStatus(ownerOrgId, { ownerOrgId }),
         {
           initialProps: { ownerOrgId: ORG_IDS[0] },
         },

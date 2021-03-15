@@ -17,5 +17,8 @@
       "title": "Êtes-vous sûr·e de vouloir générer un nouveau secret\u00a0?",
       "body": "Le secret précédent sera révoqué et les services l'utilisant n'auront plus d'autorisation le temps de les mettre à jour"
     }
+  },
+  "datatags": {
+    "empty": "Aucune catégorie définie par l'organisation"
   }
 }

@@ -24,7 +24,7 @@ const EventSchema = {
     content: PropTypes.object,
     referrerId: PropTypes.string,
     // eslint-disable-next-line react/forbid-foreign-prop-types
-    sender: SenderSchema.propTypes.isRequired,
+    sender: PropTypes.shape(SenderSchema.propTypes).isRequired,
   },
 };
 

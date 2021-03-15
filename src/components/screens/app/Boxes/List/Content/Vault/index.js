@@ -3,6 +3,7 @@ import React, { useMemo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { DRAWER_QUERY_PARAM, TMP_DRAWER_QUERY_PARAMS } from '@misakey/ui/constants/drawers';
 import routes from 'routes';
 
 import path from '@misakey/helpers/path';
@@ -18,6 +19,9 @@ import List from '@material-ui/core/List';
 import WindowedListBoxes from 'components/smart/WindowedList/UserBoxes';
 // import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 // import FilledInput from '@material-ui/core/FilledInput';
+
+// CONSTANTS
+const NEXT_SEARCH_MAP = [[DRAWER_QUERY_PARAM, undefined], [TMP_DRAWER_QUERY_PARAMS, undefined]];
 
 // HELPERS
 const paramsIdPath = path(['params', 'id']);
@@ -94,6 +98,7 @@ const VaultOpen = forwardRef(({ t, search, isFullWidth, ...props }, ref) => {
         selectedId={selectedId}
         disablePadding
         itemClasses={{ container: classes.listItemContainer, root: classes.listItemContainer }}
+        itemProps={{ nextSearchMap: NEXT_SEARCH_MAP }}
         {...omitTranslationProps(props)}
       />
     </>

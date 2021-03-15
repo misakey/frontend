@@ -5,12 +5,14 @@ import { normalize, denormalize } from 'normalizr';
 import { MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK, MSG_FILE } from '@misakey/ui/constants/boxes/events';
 
 import BoxesSchema from 'store/schemas/Boxes';
+import BoxesByDatatagSchema from 'store/schemas/Boxes/ByDatatag';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
 import BoxSenderSchema from 'store/schemas/Boxes/Sender';
 import { BLUR_TEXT, CLEAR_TEXT } from 'store/actions/box';
 import { actionCreators } from 'store/reducers/userBoxes/pagination/events';
 import { actionCreators as fileEventsActionCreators, selectors as fileEventsSelectors } from 'store/reducers/userBoxes/pagination/events/files';
 import { moveBackUpId, actionCreators as boxesActionsCreators, selectors as boxPaginationSelectors } from 'store/reducers/userBoxes/pagination';
+import { selectors as datatagSelectors } from 'store/reducers/datatag';
 
 import { receiveEntities, updateEntities, removeEntities } from '@misakey/store/actions/entities';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
@@ -39,6 +41,7 @@ const {
 } = fileEventsActionCreators;
 const { getItemCount: getFileItemCount } = fileEventsSelectors;
 const { isPaginationAlreadyFetched: isBoxPaginationAlreadyFetched } = boxPaginationSelectors;
+const { getDatatagById } = datatagSelectors;
 
 // HELPERS
 const omitText = (values) => omit(values, ['text']);
@@ -116,15 +119,59 @@ export const makeGetBoxText = () => createSelector(
 );
 
 // THUNKS
-export const receiveJoinedBoxes = (boxes, processStrategy = mergeReceiveNoEmpty) => (dispatch) => {
-  const normalized = normalize(
-    boxes.map((box) => ({
+export const receiveJoinedBoxesByDatatag = (
+  boxes,
+  { ownerOrgId, datatagId },
+  processStrategy = mergeReceiveNoEmpty,
+) => (dispatch, getState) => {
+  const datatag = getDatatagById(getState(), datatagId);
+
+  const entity = {
+    organizationId: ownerOrgId,
+    boxes: boxes.map((box) => ({
       isMember: true,
       hasAccess: true,
       ...box,
       lastEvent: getEventForNormalization(box.lastEvent),
     })),
-    BoxesSchema.collection,
+    datatag,
+    datatagId,
+  };
+
+  const normalized = normalize(
+    entity,
+    BoxesByDatatagSchema.entity,
+  );
+  const { entities, result } = normalized;
+  const boxIds = path(['boxesByDatatag', result, 'boxes'], entities);
+
+  dispatch(receiveEntities(entities, processStrategy));
+  return Promise.resolve({ result: boxIds });
+};
+
+// @UNUSED
+export const receiveJoinedBoxes = (
+  boxes,
+  { ownerOrgId, datatagId },
+  processStrategy = mergeReceiveNoEmpty,
+) => (dispatch, getState) => {
+  const datatag = getDatatagById(getState(), datatagId);
+
+  const entity = {
+    organizationId: ownerOrgId,
+    boxes: boxes.map((box) => ({
+      isMember: true,
+      hasAccess: true,
+      ...box,
+      lastEvent: getEventForNormalization(box.lastEvent),
+    })),
+    datatag,
+    datatagId,
+  };
+
+  const normalized = normalize(
+    entity,
+    BoxesByDatatagSchema.entity,
   );
   const { entities } = normalized;
 

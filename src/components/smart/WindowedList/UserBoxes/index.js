@@ -72,7 +72,8 @@ const useInnerElementType = (
 
 // COMPONENTS
 const WindowedListBoxes = forwardRef(({
-  filterId, selectedId, t, itemClasses, ...props
+  filterId, queryParams, onError,
+  selectedId, t, itemClasses, itemProps, ...props
 }, ref) => {
   const locationSearchParams = useLocationSearchParams();
   const classes = useStyles();
@@ -89,7 +90,7 @@ const WindowedListBoxes = forwardRef(({
     byPagination,
     itemCount,
     loadMoreItems,
-  } = usePaginateBoxesByStatus(filterId, search);
+  } = usePaginateBoxesByStatus(filterId, queryParams, search, onError);
 
   const itemData = useMemo(
     () => ({
@@ -97,8 +98,9 @@ const WindowedListBoxes = forwardRef(({
       byPagination,
       selectedId,
       classes: itemClasses,
+      ...itemProps,
     }),
-    [byPagination, selectedId, itemClasses],
+    [byPagination, selectedId, itemClasses, itemProps],
   );
 
   const innerElementType = useInnerElementType(
@@ -149,16 +151,22 @@ const WindowedListBoxes = forwardRef(({
 
 WindowedListBoxes.propTypes = {
   filterId: PropTypes.string,
+  queryParams: PropTypes.object,
+  onError: PropTypes.func,
   selectedId: PropTypes.string,
   itemClasses: PropTypes.object,
+  itemProps: PropTypes.object,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
 
 WindowedListBoxes.defaultProps = {
   filterId: null,
+  queryParams: {},
+  onError: null,
   selectedId: null,
   itemClasses: {},
+  itemProps: {},
 };
 
 export default withTranslation('boxes', { withRef: true })(WindowedListBoxes);

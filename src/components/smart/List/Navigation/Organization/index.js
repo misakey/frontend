@@ -15,11 +15,11 @@ import { useSelector } from 'react-redux';
 import useOrgId from 'hooks/useOrgId';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import List from '@material-ui/core/List';
+import ListBordered from '@misakey/ui/List/Bordered';
+import ListDatatags from 'components/smart/List/Datatags';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
 import withDialogPassword from '@misakey/react-auth/components/Dialog/Password/with';
 
 import ChatIcon from '@material-ui/icons/Chat';
@@ -40,19 +40,18 @@ const ListNavigationOrganization = (props) => {
   );
 
   const orgId = useOrgId();
-
-  const nextSearch = useMemo(
-    () => getNextSearch('', new Map([['orgId', orgId]])),
-    [orgId],
-  );
-
-  const boxesTo = useGeneratePathKeepingSearchAndHash(routes.boxes._, undefined, nextSearch, '');
-  const tokenTo = useGeneratePathKeepingSearchAndHash(routes.organizations.secret, undefined, nextSearch, '');
-
   const selfOrgSelected = useMemo(
     () => isSelfOrg(orgId),
     [orgId],
   );
+
+  const nextSearch = useMemo(
+    () => getNextSearch('', new Map([['orgId', selfOrgSelected ? undefined : orgId]])),
+    [orgId, selfOrgSelected],
+  );
+
+  const boxesTo = useGeneratePathKeepingSearchAndHash(routes.boxes._, undefined, nextSearch, '');
+  const tokenTo = useGeneratePathKeepingSearchAndHash(routes.organizations.secret, undefined, nextSearch, '');
 
   // SELECTOR
   const denormalizeOrganizationSelector = useMemo(
@@ -82,19 +81,24 @@ const ListNavigationOrganization = (props) => {
   const { t } = useTranslation(['boxes', 'document', 'organizations']);
 
   return (
-    <List {...props}>
-      <ListItem
-        selected={isRouteBoxes}
-        button
-        component={LinkWithDialogPassword}
-        to={boxesTo}
+    <>
+      <ListBordered
+        x={false}
+        y={false}
+        {...props}
       >
-        <ListItemIcon>
-          <ChatIcon />
-        </ListItemIcon>
-        <ListItemText>{t('boxes:documentTitle')}</ListItemText>
-      </ListItem>
-      {selfOrgSelected && (
+        <ListItem
+          selected={isRouteBoxes}
+          button
+          component={LinkWithDialogPassword}
+          to={boxesTo}
+        >
+          <ListItemIcon>
+            <ChatIcon />
+          </ListItemIcon>
+          <ListItemText>{t('boxes:documentTitle')}</ListItemText>
+        </ListItem>
+        {selfOrgSelected && (
         <ListItem
           selected={isRouteDocuments}
           button
@@ -106,22 +110,25 @@ const ListNavigationOrganization = (props) => {
           </ListItemIcon>
           <ListItemText>{t('document:vault.title')}</ListItemText>
         </ListItem>
-      )}
-      <Divider />
+        )}
+      </ListBordered>
+      {!selfOrgSelected && <ListDatatags x={false} t {...props} />}
       {showTokenConfig && (
-        <ListItem
-          selected={isRouteToken}
-          button
-          component={Link}
-          to={tokenTo}
-        >
-          <ListItemIcon>
-            <SettingsInputComponentIcon />
-          </ListItemIcon>
-          <ListItemText>{t('organizations:secret.title')}</ListItemText>
-        </ListItem>
+        <ListBordered t x={false} {...props}>
+          <ListItem
+            selected={isRouteToken}
+            button
+            component={Link}
+            to={tokenTo}
+          >
+            <ListItemIcon>
+              <SettingsInputComponentIcon />
+            </ListItemIcon>
+            <ListItemText>{t('organizations:secret.title')}</ListItemText>
+          </ListItem>
+        </ListBordered>
       )}
-    </List>
+    </>
   );
 };
 

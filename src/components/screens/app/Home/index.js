@@ -1,15 +1,20 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
-import { Switch, Route, useRouteMatch } from 'react-router-dom';
+import { Switch, Route, useRouteMatch, useHistory, useLocation } from 'react-router-dom';
 import routes from 'routes';
+import { notFound } from '@misakey/ui/constants/errorTypes';
 
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
+import getNextSearch from '@misakey/helpers/getNextSearch';
 
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 import { useSelector } from 'react-redux';
 import useOrgId from 'hooks/useOrgId';
+import useDatatagId from 'hooks/useDatatagId';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import RouteAcr from '@misakey/react-auth/components/Route/Acr';
 import RouteAuthenticated from '@misakey/react-auth/components/Route/Authenticated';
@@ -26,9 +31,41 @@ const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
 
 // COMPONENTS
 function Home() {
+  const { replace } = useHistory();
+  const { search } = useLocation();
+  const handleHttpErrors = useHandleHttpErrors();
+
   const shouldDisplayLockedScreen = useShouldDisplayLockedScreen();
 
-  const orgId = useOrgId();
+  const ownerOrgId = useOrgId();
+  const datatagId = useDatatagId();
+
+  const noDatatagSearch = useMemo(
+    () => getNextSearch(search, new Map([['datatagId', undefined]])),
+    [search],
+  );
+
+  const filterId = useMemo(
+    () => (isEmpty(datatagId) ? ownerOrgId : datatagId),
+    [ownerOrgId, datatagId],
+  );
+
+  const queryParams = useMemo(
+    () => (!isNil(ownerOrgId)
+      ? { ownerOrgId, datatagId }
+      : { datatagId }),
+    [ownerOrgId, datatagId],
+  );
+
+  const onError = useCallback(
+    (e) => {
+      handleHttpErrors(e);
+      if (e.code === notFound) {
+        replace({ search: noDatatagSearch });
+      }
+    },
+    [handleHttpErrors, replace, noDatatagSearch],
+  );
 
   const matchNothingSelected = useRouteMatch({ path: routes.boxes._, exact: true });
 
@@ -48,9 +85,16 @@ function Home() {
       }
       return shouldDisplayLockedScreen
         ? <VaultLockedScreen />
-        : <BoxesList filterId={orgId} isFullWidth={isFullWidth} />;
+        : (
+          <BoxesList
+            filterId={filterId}
+            queryParams={queryParams}
+            onError={onError}
+            isFullWidth={isFullWidth}
+          />
+        );
     },
-    [isAuthenticated, isFullWidth, shouldDisplayLockedScreen, orgId],
+    [isAuthenticated, shouldDisplayLockedScreen, filterId, queryParams, onError, isFullWidth],
   );
 
   return (

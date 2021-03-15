@@ -119,7 +119,12 @@ export default {
     find: {
       method: 'GET',
       path: '/identities/:id/organizations',
-      withCsrfToken: true,
+    },
+  },
+  datatags: {
+    find: {
+      method: 'GET',
+      path: '/identities/:id/datatags',
     },
   },
   vault: {

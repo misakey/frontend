@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import routes from 'routes';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { DRAWER_QUERY_PARAM, TMP_DRAWER_QUERY_PARAMS } from '@misakey/ui/constants/drawers';
 
 import isNil from '@misakey/helpers/isNil';
 import omitRouteProps from '@misakey/helpers/omit/routeProps';
@@ -21,6 +22,8 @@ import Container from '@material-ui/core/Container';
 
 // CONSTANTS
 const { accountId: ACCOUNT_ID_SELECTOR, hasAccount: HAS_ACCOUNT_SELECTOR } = authSelectors;
+
+const NEXT_SEARCH_MAP = [[DRAWER_QUERY_PARAM, undefined], [TMP_DRAWER_QUERY_PARAMS, undefined]];
 
 // COMPONENTS
 const NoVault = forwardRef(({ t, isFullWidth }, ref) => {
@@ -48,7 +51,12 @@ const NoVault = forwardRef(({ t, isFullWidth }, ref) => {
         path={routes.boxes.read._}
         render={(routeProps) => (
           <>
-            <List disablePadding><ListItemBoxesCurrent {...omitRouteProps(routeProps)} /></List>
+            <List disablePadding>
+              <ListItemBoxesCurrent
+                nextSearchMap={NEXT_SEARCH_MAP}
+                {...omitRouteProps(routeProps)}
+              />
+            </List>
             <Typography variant="body2" color="textSecondary" align="center">
               {t('boxes:closedVault.saveForLater')}
             </Typography>

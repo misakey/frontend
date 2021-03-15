@@ -17,5 +17,8 @@
       "title": "Are you sure you want to generate a new secret?",
       "body": "Previous secret will be revoked and services using it will no longer be authorized until you update them"
     }
+  },
+  "datatags": {
+    "empty": "No category defined by the organization"
   }
 }

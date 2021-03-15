@@ -22,23 +22,23 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const ListBordered = ({ x, y, t, b, l, r, ...props }) => {
   const borderTop = useMemo(
-    () => (isNil(t) ? y : t),
-    [t, y],
+    () => (isNil(t) && isNil(b) ? y : t),
+    [b, t, y],
   );
 
   const borderRight = useMemo(
-    () => (isNil(r) ? x : r),
-    [r, x],
+    () => (isNil(r) && isNil(l) ? x : r),
+    [l, r, x],
   );
 
   const borderBottom = useMemo(
-    () => (isNil(b) ? y : b),
-    [b, y],
+    () => (isNil(b) && isNil(t) ? y : b),
+    [b, t, y],
   );
 
   const borderLeft = useMemo(
-    () => (isNil(l) ? x : l),
-    [l, x],
+    () => (isNil(l) && isNil(r) ? x : l),
+    [l, r, x],
   );
 
   const classes = useStyles({ borderTop, borderRight, borderLeft, borderBottom });

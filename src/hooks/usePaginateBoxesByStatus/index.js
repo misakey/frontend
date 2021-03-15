@@ -1,8 +1,9 @@
 import { actionCreators, selectors } from 'store/reducers/userBoxes/pagination';
-import { receiveJoinedBoxes } from 'store/reducers/box';
+import { receiveJoinedBoxesByDatatag } from 'store/reducers/box';
 
 import pickAll from '@misakey/helpers/pickAll';
 import isNil from '@misakey/helpers/isNil';
+import isFunction from '@misakey/helpers/isFunction';
 import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/helpers/offsetLimitRange';
 import { getUserBoxesBuilder, countUserBoxesBuilder } from '@misakey/helpers/builder/boxes';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
@@ -17,43 +18,30 @@ import { useDispatch, useSelector } from 'react-redux';
 const { receivePaginatedItemCount, receivePaginatedIds } = actionCreators;
 const { getBySearchPagination, getByPagination, getItemCount, getSearch } = selectors;
 
-const DEFAULT_ORG_ID = window.env.SELF_CLIENT_ID;
-
 // HOOKS
 /**
- * @param {String} ownerOrgId owner organization id
- * @param {String} [search=null]
+ * @param {String} filterId id to group by
+ * @param {Object} [queryParams={}] to add to payload
+ * @param {String} [search=null] search
+ * @param {Function} [onError=null] on error specific handler
  * @returns {{byPagination: Object, itemCount: Number, loadMoreItems: Function}}
  * where:
  * - byPagination is a map of paginated elements
  * - itemCount is the total number of elements
  * - loadMoreItems is a function to call to ask for more items
  */
-export default (ownerOrgId, search = null) => {
+export default (filterId, queryParams = {}, search = null, onError = null) => {
   const handleHttpErrors = useHandleHttpErrors();
 
   const hasSearch = useMemo(() => !isNil(search), [search]);
 
   // payload for API
   const payload = useMemo(
-    () => {
-      // @FIXME should we pass query param when self org ?
-      if (!isNil(ownerOrgId) && ownerOrgId !== window.env.SELF_CLIENT_ID) {
-        return {
-          ...(hasSearch ? { search } : {}),
-          ownerOrgId,
-        };
-      }
-      return {
-        ...(hasSearch ? { search } : {}),
-      };
-    },
-    [hasSearch, search, ownerOrgId],
-  );
-
-  const filterId = useMemo(
-    () => (isNil(ownerOrgId) ? DEFAULT_ORG_ID : ownerOrgId),
-    [ownerOrgId],
+    () => ({
+      ...(hasSearch ? { search } : {}),
+      ...queryParams,
+    }),
+    [hasSearch, search, queryParams],
   );
 
   const dispatch = useDispatch();
@@ -73,7 +61,9 @@ export default (ownerOrgId, search = null) => {
   // ---
 
   const dispatchReceiveBoxes = useCallback(
-    (data, { offset, limit }) => Promise.resolve(dispatch(receiveJoinedBoxes(data)))
+    (data, { offset, limit }, metadata) => Promise.resolve(
+      dispatch(receiveJoinedBoxesByDatatag(data, metadata)),
+    )
       .then(({ result }) => dispatch(receivePaginatedIds(filterId, offset, limit, result, search))),
     [dispatch, filterId, search],
   );
@@ -84,8 +74,19 @@ export default (ownerOrgId, search = null) => {
   // get applications
   const get = useCallback(
     (pagination) => getUserBoxesBuilder({ ...payload, ...pagination })
-      .then((response) => dispatchReceiveBoxes(response.map(objectToCamelCase), pagination)),
-    [dispatchReceiveBoxes, payload],
+      .then((response) => dispatchReceiveBoxes(
+        response.map(objectToCamelCase),
+        pagination,
+        payload,
+      ))
+      .catch((e) => {
+        if (isFunction(onError)) {
+          onError(e);
+        } else {
+          handleHttpErrors(e);
+        }
+      }),
+    [dispatchReceiveBoxes, handleHttpErrors, onError, payload],
   );
 
   const getCount = useCallback(
@@ -127,10 +128,16 @@ export default (ownerOrgId, search = null) => {
       if (isNil(itemCount)) {
         getCount()
           .then((result) => dispatch(receivePaginatedItemCount(filterId, result)))
-          .catch((e) => handleHttpErrors(e));
+          .catch((e) => {
+            if (isFunction(onError)) {
+              onError(e);
+            } else {
+              handleHttpErrors(e);
+            }
+          });
       }
     },
-    [dispatch, getCount, handleHttpErrors, itemCount, filterId],
+    [dispatch, getCount, handleHttpErrors, itemCount, filterId, onError],
   );
 
   // extra memoization layer because of object format
