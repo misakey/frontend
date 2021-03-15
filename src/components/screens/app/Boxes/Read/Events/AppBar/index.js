@@ -29,6 +29,8 @@ import AppBarMenuTabs from './Tabs';
 
 
 // CONSTANTS
+export const HEADER_MIN_HEIGHT = 2 * TOOLBAR_MIN_HEIGHT;
+
 const SKELETON_WIDTH = 100;
 const MAX_MEMBERS = 3;
 

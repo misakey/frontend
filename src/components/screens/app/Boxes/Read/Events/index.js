@@ -1,10 +1,9 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
-import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 import ElevationScroll from '@misakey/ui/ElevationScroll';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
@@ -23,7 +22,7 @@ import isPlainObject from '@misakey/helpers/isPlainObject';
 
 import BoxesSchema from 'store/schemas/Boxes';
 
-import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
+import BoxEventsAppBar, { HEADER_MIN_HEIGHT } from 'components/screens/app/Boxes/Read/Events/AppBar';
 import BoxEventEditContext from 'components/smart/Box/Event/Edit/Context';
 import PaginatedListBoxEvents from 'components/smart/PaginatedList/BoxEvents';
 import BoxEventsFooter from 'components/screens/app/Boxes/Read/Events/Footer';
@@ -51,8 +50,8 @@ const useStyles = makeStyles(() => ({
 function BoxEvents({ box, t, belongsToCurrentUser }) {
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
-  const { listRef } = useBoxEventSubmitContext();
-  const [headerHeight, setHeaderHeight] = useState(APPBAR_HEIGHT);
+  const { listRef, scrollToBottom } = useBoxEventSubmitContext();
+  const [headerHeight, setHeaderHeight] = useState(HEADER_MIN_HEIGHT);
   const classes = useStyles({ headerHeight });
 
   const { id, eventsCount } = useMemo(() => box, [box]);
@@ -90,6 +89,12 @@ function BoxEvents({ box, t, belongsToCurrentUser }) {
   );
 
   useFetchEffect(onResetBoxEventCount, { shouldFetch });
+  useEffect(
+    () => {
+      scrollToBottom();
+    },
+    [headerHeight, scrollToBottom],
+  );
 
   return (
     <BoxEventEditContext>

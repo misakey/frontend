@@ -66,7 +66,7 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
   const paginationOffsetRef = useRef(0);
   const anchorRef = useRef();
 
-  const [anchorBottom, setAnchorBottom] = useState(false);
+  const [anchorBottom, setAnchorBottom] = useState(true);
 
   const {
     itemCount, byPagination, isFetching, loadMoreItems,
