@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
   useImperativeHandle,
+  Fragment,
 } from 'react';
 
 import PropTypes from 'prop-types';
@@ -15,8 +16,13 @@ import EventSchema from 'store/schemas/Boxes/Events';
 
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
+import isFunction from '@misakey/helpers/isFunction';
 import max from '@misakey/helpers/max';
+import prop from '@misakey/helpers/prop';
+import nth from '@misakey/helpers/nth';
+import throttle from '@misakey/helpers/throttle';
 import { denormalize } from 'normalizr';
+import getScrollDiff from '@misakey/helpers/getScrollDiff';
 
 import useCombinedRefs from '@misakey/hooks/useCombinedRefs';
 import usePrevPropEffect from '@misakey/hooks/usePrevPropEffect';
@@ -25,12 +31,17 @@ import usePaginateEventsByBox from 'hooks/usePaginateEventsByBox';
 import useNotDoneEffect from '@misakey/hooks/useNotDoneEffect';
 import useMountEffect from '@misakey/hooks/useMountEffect';
 import useIntersectionObserver from '@misakey/hooks/useIntersectionObserver';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useOnScroll from '@misakey/hooks/useOnScroll';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import BoxEventsAccordingToType from 'components/smart/Box/Event';
+import TypographySeparator from '@misakey/ui/Typography/Separator';
+import Grow from '@material-ui/core/Grow';
 
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 
@@ -40,7 +51,7 @@ const THRESHOLD = 200; // px
 const MAXIMUM_BATCH_SIZE = 10;
 
 // HELPERS
-const getScrollDiff = ({ scrollHeight, clientHeight }) => scrollHeight - clientHeight;
+const idProp = prop('id');
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -61,18 +72,21 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
+const PaginatedListBoxEvents = forwardRef(({ box, onScroll }, ref) => {
   const combinedRef = useCombinedRefs(ref);
   const paginationOffsetRef = useRef(0);
   const anchorRef = useRef();
 
   const [anchorBottom, setAnchorBottom] = useState(true);
 
+  const { eventsCount } = useSafeDestr(box);
+
   const {
     itemCount, byPagination, isFetching, loadMoreItems,
   } = usePaginateEventsByBox();
 
   const classes = useStyles({ anchorBottom });
+  const { t } = useTranslation('common');
 
   const eventIds = useMemo(
     () => Object.values(byPagination),
@@ -88,6 +102,18 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
   const notNilEvents = useMemo(
     () => events.filter((event) => !isNil(event)),
     [events],
+  );
+
+  const firstNewEventId = useMemo(
+    () => {
+      if (!isNil(eventsCount) && eventsCount > 0) {
+        // NB: notNilEvents is sorted from most recent to least recent
+        const firstNewEvent = nth(notNilEvents, eventsCount - 1);
+        return idProp(firstNewEvent);
+      }
+      return null;
+    },
+    [eventsCount, notNilEvents],
   );
 
   const eventsByDate = useGroupEventsByDate(notNilEvents);
@@ -122,10 +148,18 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
     [combinedRef],
   );
 
-  const onScroll = useCallback(
+  const handleScroll = useCallback(
+    (e) => {
+      if (isFunction(onScroll)) {
+        onScroll(e);
+      }
+    },
+    [onScroll],
+  );
+
+  const handleScrollTop = useCallback(
     (e) => {
       const { target } = e;
-
       const scrollDiff = getScrollDiff(target);
       if (target.scrollTop < THRESHOLD && scrollDiff > 0) {
         if (!isFetching) {
@@ -192,8 +226,13 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
     [setAnchorBottom],
   );
 
+  const onAnchorIntersectsThrottled = useMemo(
+    () => throttle(onAnchorIntersects, 300),
+    [onAnchorIntersects],
+  );
+
   // watch anchor visibility, if visible, set overflowAnchor, else not
-  useIntersectionObserver(anchorRef, onAnchorIntersects, true);
+  useIntersectionObserver(anchorRef, onAnchorIntersectsThrottled, true);
   // [/HANDLE SCROLL]
 
   // UPDATE OFFSET
@@ -266,12 +305,15 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
     scrollToBottom,
   }), [scrollToBottom]);
 
+  useOnScroll(combinedRef, handleScrollTop, 0);
+  useOnScroll(combinedRef, handleScroll);
+
   return (
     <>
       {isFetching && !isEmpty(byPagination) && (
       <HourglassEmptyIcon color="primary" fontSize="small" className={classes.loader} />
       )}
-      <Box ref={combinedRef} flexGrow="1" className={classes.root} onScroll={onScroll}>
+      <Box ref={combinedRef} flexGrow="1" className={classes.root}>
         {eventsByDate.map(({ date, events: groupedEvents }) => (
           <Box display="flex" flexDirection="column" mt={1} key={date}>
             <Typography align="center" color="textPrimary" variant="caption">
@@ -279,11 +321,16 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
             </Typography>
             {
           groupedEvents.map((event) => (
-            <BoxEventsAccordingToType
-              box={box}
-              event={event}
-              key={event.id}
-            />
+            <Fragment key={event.id}>
+              <Grow in={firstNewEventId === event.id} mountOnEnter>
+                <TypographySeparator color="primary" variant="caption">{t('common:newMessages')}</TypographySeparator>
+              </Grow>
+              <BoxEventsAccordingToType
+                box={box}
+                event={event}
+                key={event.id}
+              />
+            </Fragment>
           ))
         }
           </Box>
@@ -296,6 +343,11 @@ const PaginatedListBoxEvents = forwardRef(({ box }, ref) => {
 
 PaginatedListBoxEvents.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
+  onScroll: PropTypes.func,
+};
+
+PaginatedListBoxEvents.defaultProps = {
+  onScroll: null,
 };
 
 export default PaginatedListBoxEvents;

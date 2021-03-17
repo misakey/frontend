@@ -2,35 +2,47 @@ import React, { useMemo, useState, useCallback, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 
-import ElevationScroll from '@misakey/ui/ElevationScroll';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
-
-import Box from '@material-ui/core/Box';
-import Alert from '@material-ui/lab/Alert';
-import { makeStyles } from '@material-ui/core/styles';
-import ButtonWithDialogPassword from '@misakey/react-auth/components/Dialog/Password/with/Button';
+import { ICONBUTTON_WIDTH } from '@misakey/ui/constants/sizes';
+import BoxesSchema from 'store/schemas/Boxes';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+
+import isNil from '@misakey/helpers/isNil';
+import isPlainObject from '@misakey/helpers/isPlainObject';
+import getScrollDiff from '@misakey/helpers/getScrollDiff';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { useBoxEventSubmitContext } from 'components/smart/Box/Event/Submit/Context';
 import { useBoxesContext } from 'components/smart/Context/Boxes';
-
-import isNil from '@misakey/helpers/isNil';
-import isPlainObject from '@misakey/helpers/isPlainObject';
-
-import BoxesSchema from 'store/schemas/Boxes';
+import useOnTabVisibilityChange from '@misakey/hooks/useOnTabVisibilityChange';
+import { useSelector } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
 
 import BoxEventsAppBar, { HEADER_MIN_HEIGHT } from 'components/screens/app/Boxes/Read/Events/AppBar';
 import BoxEventEditContext from 'components/smart/Box/Event/Edit/Context';
 import PaginatedListBoxEvents from 'components/smart/PaginatedList/BoxEvents';
 import BoxEventsFooter from 'components/screens/app/Boxes/Read/Events/Footer';
 import AppBarStatic from '@misakey/ui/AppBar/Static';
-import useOnTabVisibilityChange from '@misakey/hooks/useOnTabVisibilityChange';
+import ButtonWithDialogPassword from '@misakey/react-auth/components/Dialog/Password/with/Button';
+import Box from '@material-ui/core/Box';
+import Alert from '@material-ui/lab/Alert';
+import ElevationScroll from '@misakey/ui/ElevationScroll';
+import IconButton from '@material-ui/core/IconButton';
+import Badge from '@material-ui/core/Badge';
+import Grow from '@material-ui/core/Grow';
+
+import ArrowDownWardIcon from '@material-ui/icons/ArrowDownward';
 
 // CONSTANTS
 const { identityId: IDENTITY_ID_SELECTOR, accountId: ACCOUNT_ID_SELECTOR } = authSelectors;
+
+// @FIXME to test
+const SCROLL_THRESHOLD = 1;
+const BADGE_ORIGIN = {
+  vertical: 'top',
+  horizontal: 'left',
+};
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -44,12 +56,21 @@ const useStyles = makeStyles(() => ({
     height: `calc(100% - ${headerHeight}px)`,
     position: 'relative',
   }),
+  scrollBottomButton: {
+    position: 'absolute',
+    bottom: 64,
+    right: 0,
+  },
+  scrollBottomBadge: {
+    left: ICONBUTTON_WIDTH / 2,
+  },
 }));
 
 // COMPONENTS
 function BoxEvents({ box, t, belongsToCurrentUser }) {
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
+  const [isScrolledBottom, setIsScrolledBottom] = useState(true);
   const { listRef, scrollToBottom } = useBoxEventSubmitContext();
   const [headerHeight, setHeaderHeight] = useState(HEADER_MIN_HEIGHT);
   const classes = useStyles({ headerHeight });
@@ -63,18 +84,19 @@ function BoxEvents({ box, t, belongsToCurrentUser }) {
     if (ref) { setHeaderHeight(ref.clientHeight); }
   };
 
-
   // RESET BOX COUNT
   const { onAckWSUserBox } = useBoxesContext();
   const isTabActive = useOnTabVisibilityChange();
 
   const shouldFetch = useMemo(
-    () => !isNil(id) && !isNil(identityId) && eventsCount > 0 && isTabActive,
-    [id, identityId, eventsCount, isTabActive],
+    () => !isNil(id) && !isNil(identityId) && eventsCount > 0 && isTabActive && isScrolledBottom,
+    [id, identityId, eventsCount, isTabActive, isScrolledBottom],
   );
 
   const onResetBoxEventCount = useCallback(
-    () => onAckWSUserBox(id),
+    () => {
+      onAckWSUserBox(id);
+    },
     [onAckWSUserBox, id],
   );
 
@@ -86,6 +108,21 @@ function BoxEvents({ box, t, belongsToCurrentUser }) {
       }
     },
     [setContentRef, listRef],
+  );
+
+  const onScroll = useCallback(
+    (e) => {
+      const { target } = e;
+      const scrollDiff = getScrollDiff(target);
+      if (scrollDiff > 0) {
+        const distanceToBottom = scrollDiff - target.scrollTop;
+        setIsScrolledBottom(distanceToBottom < SCROLL_THRESHOLD);
+        if (shouldFetch) {
+          onResetBoxEventCount();
+        }
+      }
+    },
+    [shouldFetch, onResetBoxEventCount, setIsScrolledBottom],
   );
 
   useFetchEffect(onResetBoxEventCount, { shouldFetch });
@@ -130,7 +167,23 @@ function BoxEvents({ box, t, belongsToCurrentUser }) {
           key={id}
           ref={bindRefs}
           box={box}
+          onScroll={onScroll}
         />
+        <Grow in={eventsCount > 0 && !isScrolledBottom} mountOnEnter>
+          <Badge
+            color="primary"
+            badgeContent={eventsCount}
+            anchorOrigin={BADGE_ORIGIN}
+            classes={{
+              root: classes.scrollBottomButton,
+              badge: classes.scrollBottomBadge,
+            }}
+          >
+            <IconButton aria-label={t('common:scrollToBottom')} color="primary" onClick={scrollToBottom}>
+              <ArrowDownWardIcon />
+            </IconButton>
+          </Badge>
+        </Grow>
         <BoxEventsFooter
           box={box}
         />
@@ -145,4 +198,4 @@ BoxEvents.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['boxes'])(BoxEvents);
+export default withTranslation(['boxes', 'common'])(BoxEvents);

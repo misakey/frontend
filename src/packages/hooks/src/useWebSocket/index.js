@@ -24,9 +24,16 @@ const defaultOnMessage = (e) => {
 };
 
 // see https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
-const isSocketOpen = ({ readyState }) => isNil(readyState) || readyState === 1;
+export const isSocketOpen = ({ readyState }) => isNil(readyState) || readyState === 1;
 
 // HOOKS
+/**
+ * @param {string} endpoint endpoint on which to instantiate websocket, see https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/WebSocket
+ * @param {Function} [onMessage=defaultOnMessage] callback when message received
+ * @param {Boolean} [isReady=true] extra boolean to condition websocket instantiation
+ * @returns {Object} socketRef - React useRef format
+ * Warning, make sure socket is open before trying to send data
+ */
 export default (endpoint, onMessage = defaultOnMessage, isReady = true) => {
   const socket = useRef();
   const isAuthenticated = useSelector(isAuthenticatedSelector);
