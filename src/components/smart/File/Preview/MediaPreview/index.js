@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   }),
   container: {
     backgroundColor: theme.palette.background.message,
-    color: theme.palette.white,
+    color: theme.palette.common.white,
     borderRadius: theme.shape.borderRadius,
   },
 }));

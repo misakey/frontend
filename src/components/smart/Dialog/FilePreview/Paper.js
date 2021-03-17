@@ -13,11 +13,12 @@ import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
 import withDialogPassword from '@misakey/react-auth/components/Dialog/Password/with';
 import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
+import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
-import ArrowBack from '@material-ui/icons/ArrowBack';
+import CloseIcon from '@material-ui/icons/Close';
 import DownloadIcon from '@material-ui/icons/GetApp';
 import AddToVaultIcon from '@misakey/ui/Icon/AddToVault';
 
@@ -26,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
   appBar: {
     backgroundColor: theme.palette.background.darker,
     color: theme.palette.getContrastText(theme.palette.background.darker),
+  },
+  toolbar: {
+    justifyContent: 'center',
   },
   icons: {
     [theme.breakpoints.down('sm')]: {
@@ -39,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 const IconButtonWithDialogPassword = withDialogPassword(IconButtonAppBar);
 
 const FilePreviewPaper = forwardRef((
-  { fileName, disabled, onSave, isSaved, onDownload, onClose, t, appBarProps, ...props },
+  { fileName, title, disabled, onSave, isSaved, onDownload, onClose, t, appBarProps, ...props },
   ref,
 ) => {
   const classes = useStyles();
@@ -48,34 +52,47 @@ const FilePreviewPaper = forwardRef((
   return (
     <>
       <AppBar className={classes.appBar} {...appBarProps}>
-        <Toolbar>
-          <IconButtonAppBar
-            color="darker"
-            aria-label={t('common:goBack')}
-            edge="start"
-            onClick={onClose}
+        <Toolbar className={classes.toolbar}>
+          <Box
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            overflow="hidden"
           >
-            <Tooltip title={t('common:goBack')}>
-              <ArrowBack />
-            </Tooltip>
-          </IconButtonAppBar>
-          <Typography noWrap>{fileName}</Typography>
-          <Box flexGrow={1} />
-          {isFunction(onSave) && (
-            <IconButtonWithDialogPassword
+            <IconButtonAppBar
               color="darker"
-              className={classes.icons}
-              aria-label={vaultLabel}
-              edge="end"
-              disabled={disabled || isSaved}
-              onClick={onSave}
+              aria-label={t('common:close')}
+              edge="start"
+              onClick={onClose}
             >
-              <Tooltip title={vaultLabel}>
-                <AddToVaultIcon isSaved={isSaved} />
+              <Tooltip title={t('common:close')}>
+                <CloseIcon />
               </Tooltip>
-            </IconButtonWithDialogPassword>
-          )}
-          <>
+            </IconButtonAppBar>
+            <Typography noWrap>{fileName}</Typography>
+          </Box>
+          <BoxFlexFill />
+          {title}
+          <BoxFlexFill />
+          <Box
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+          >
+            {isFunction(onSave) && (
+              <IconButtonWithDialogPassword
+                color="darker"
+                className={classes.icons}
+                aria-label={vaultLabel}
+                edge="end"
+                disabled={disabled || isSaved}
+                onClick={onSave}
+              >
+                <Tooltip title={vaultLabel}>
+                  <AddToVaultIcon isSaved={isSaved} />
+                </Tooltip>
+              </IconButtonWithDialogPassword>
+            )}
             <IconButtonAppBar
               color="darker"
               className={classes.icons}
@@ -101,7 +118,7 @@ const FilePreviewPaper = forwardRef((
                   <PrintIcon />
                 </Tooltip>
               </IconButtonAppBar> */}
-          </>
+          </Box>
         </Toolbar>
       </AppBar>
       <Paper {...omitTranslationProps(props)} ref={ref} />
@@ -114,6 +131,7 @@ FilePreviewPaper.propTypes = {
   onSave: PropTypes.func,
   onClose: PropTypes.func.isRequired,
   fileName: PropTypes.string,
+  title: PropTypes.node,
   disabled: PropTypes.bool,
   isSaved: PropTypes.bool,
   appBarProps: PropTypes.object,
@@ -123,6 +141,7 @@ FilePreviewPaper.propTypes = {
 
 FilePreviewPaper.defaultProps = {
   fileName: 'Unknown',
+  title: null,
   disabled: false,
   isSaved: false,
   onSave: null,

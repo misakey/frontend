@@ -5,19 +5,20 @@ import FILE_PROP_TYPES from '@misakey/ui/constants/file/proptypes';
 
 import { getPage, getDocument } from '@misakey/helpers/pdf';
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
+import range from '@misakey/helpers/range';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useTheme from '@material-ui/core/styles/useTheme';
 import { useSnackbar } from 'notistack';
 import { useTranslation } from 'react-i18next';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useIntersectionObservers from '@misakey/hooks/useIntersectionObservers';
+import useScrollAnimation from '@misakey/hooks/useScrollAnimation';
 
 import Box from '@material-ui/core/Box';
-import IconButton from '@misakey/ui/IconButton';
 import MobileStepper from '@material-ui/core/MobileStepper';
+import Grow from '@material-ui/core/Grow';
 
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 
 // CONSTANTS
@@ -25,47 +26,63 @@ const START_PAGE = 1;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  canvas: ({ maxHeight }) => ({
-    maxWidth: '100%',
-    maxHeight,
-  }),
   container: {
     backgroundColor: theme.palette.background.message,
-    color: theme.palette.white,
+    color: theme.palette.common.white,
     borderRadius: theme.shape.borderRadius,
   },
   stepperRoot: {
-    flexGrow: 1,
+    backgroundColor: theme.palette.background.darker,
+    color: theme.palette.getContrastText(theme.palette.background.darker),
+    padding: theme.spacing(0, 1),
+    position: 'absolute',
+    top: 0,
   },
   loader: {
     position: 'absolute',
+  },
+  boxOverflow: {
+    overflowY: 'auto',
+  },
+  canvasFit: {
+    maxWidth: '100%',
+    maxHeight: '100%',
   },
 }));
 
 // COMPONENTS
 const PdfPreview = ({ file, fallbackView, maxHeight }) => {
   const classes = useStyles({ maxHeight });
-  const theme = useTheme();
   const { t } = useTranslation(['components', 'common']);
   const { enqueueSnackbar } = useSnackbar();
 
-  const [page, setPage] = useState(START_PAGE);
   const [pdfDoc, setPdfDoc] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(START_PAGE);
 
   const { numPages } = useSafeDestr(pdfDoc);
 
-  const stepperVariant = useMemo(
-    () => {
-      if (isNil(numPages)) {
-        return null;
-      }
-      return numPages < 5 ? 'dots' : 'text';
-    },
+  const pagesRange = useMemo(
+    () => range(numPages),
     [numPages],
   );
 
-  const canvasRef = useRef(null);
+  const canvasesRef = useMemo(
+    () => [],
+    [],
+  );
+  const makeCanvasRef = useCallback(
+    (index) => (node) => {
+      canvasesRef[index] = node;
+    },
+    [canvasesRef],
+  );
+  const shouldBind = useMemo(
+    () => canvasesRef.length === numPages,
+    [canvasesRef.length, numPages],
+  );
+
+  const rootRef = useRef();
   const taskRef = useRef(null);
 
   const {
@@ -81,33 +98,15 @@ const PdfPreview = ({ file, fallbackView, maxHeight }) => {
     [hasError, isLoading],
   );
 
-  const onNext = useCallback(
-    () => {
-      if (!isNil(numPages)) {
-        setPage((prevPage) => (prevPage < numPages ? prevPage + 1 : prevPage));
-      }
-    },
-    [numPages, setPage],
-  );
-
-  const onPrev = useCallback(
-    () => {
-      if (!isNil(numPages)) {
-        setPage((prevPage) => (prevPage > 1 ? prevPage - 1 : prevPage));
-      }
-    },
-    [numPages, setPage],
-  );
-
   const loadPage = useCallback(
-    async (pageNum, doc) => {
+    async (pageNum, doc, canvas) => {
       setLoading(true);
       try {
         const { current: currentTask } = taskRef;
         if (currentTask) {
           currentTask.cancel();
         }
-        const task = await getPage(pageNum, doc, canvasRef.current);
+        const task = await getPage(pageNum, doc, canvas);
         taskRef.current = task;
         await taskRef.current;
         taskRef.current = null;
@@ -118,7 +117,7 @@ const PdfPreview = ({ file, fallbackView, maxHeight }) => {
         setLoading(false);
       }
     },
-    [enqueueSnackbar, t, setLoading],
+    [enqueueSnackbar, t, setLoading, taskRef],
   );
 
   const loadDocument = useCallback(
@@ -149,11 +148,34 @@ const PdfPreview = ({ file, fallbackView, maxHeight }) => {
 
   useEffect(
     () => {
-      if (!isNil(pdfDoc) && !isNil(numPages)) {
-        loadPage(page, pdfDoc);
+      if (!isNil(pdfDoc) && !isEmpty(pagesRange)) {
+        pagesRange.forEach(
+          (index) => {
+            loadPage(index + START_PAGE, pdfDoc, canvasesRef[index]);
+          },
+        );
       }
     },
-    [page, pdfDoc, canvasRef, numPages, loadPage],
+    [pdfDoc, numPages, loadPage, pagesRange, canvasesRef],
+  );
+
+  const onIntersects = useCallback(
+    (entry, index) => {
+      if (entry.isIntersecting === true) {
+        setCurrentPage(index);
+      }
+    },
+    [setCurrentPage],
+  );
+
+  const [isScrolling, onScroll] = useScrollAnimation();
+
+  // watch canvas visibility, if visible, set currentPage
+  useIntersectionObservers(
+    canvasesRef,
+    onIntersects,
+    { shouldBind, shouldObserve: shouldBind },
+    { rootRef, threshold: 0.6 },
   );
 
   return (
@@ -171,39 +193,36 @@ const PdfPreview = ({ file, fallbackView, maxHeight }) => {
           {loading && (
             <HourglassEmptyIcon color="primary" fontSize="large" className={classes.loader} />
           )}
-          <canvas ref={canvasRef} className={classes.canvas} />
+          {!isNil(numPages) && (
+            <Grow in={isScrolling}>
+              <MobileStepper
+                elevation={0}
+                classes={{
+                  root: classes.stepperRoot,
+                }}
+                variant="text"
+                steps={numPages}
+                position="static"
+                activeStep={currentPage}
+              />
+            </Grow>
+          )}
           <Box
-            width="100%"
+            ref={rootRef}
             display="flex"
-            mt={1}
+            flexDirection="column"
+            maxWidth="100%"
+            maxHeight={maxHeight}
+            className={classes.boxOverflow}
+            onScroll={onScroll}
           >
-            <MobileStepper
-              classes={{ root: classes.stepperRoot }}
-              variant={stepperVariant}
-              steps={numPages || START_PAGE}
-              position="static"
-              activeStep={page - 1}
-              nextButton={(
-                <IconButton
-                  size="small"
-                  disabled={page === numPages || loading}
-                  aria-label={t('common:next')}
-                  onClick={onNext}
-                >
-                  {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-                </IconButton>
-              )}
-              backButton={(
-                <IconButton
-                  size="small"
-                  disabled={page === START_PAGE || loading}
-                  aria-label={t('common:previous')}
-                  onClick={onPrev}
-                >
-                  {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                </IconButton>
-              )}
-            />
+            {pagesRange.map((key) => (
+              <canvas
+                key={key}
+                ref={makeCanvasRef(key)}
+                className={classes.canvasFit}
+              />
+            ))}
           </Box>
         </Box>
       ) : fallbackView}

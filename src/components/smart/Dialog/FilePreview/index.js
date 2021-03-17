@@ -45,6 +45,8 @@ const useStyles = makeStyles((theme) => ({
     margin: `${APPBAR_HEIGHT}px 0 0 0`,
     backgroundColor: 'transparent',
     maxWidth: '100%',
+    position: 'static',
+    borderRadius: 0,
   },
   content: {
     display: 'flex',
@@ -67,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 function FilePreviewDialog({
   open, onClose, selectedId, file, t,
-  appBarProps, children,
+  appBarProps, children, title,
   maxHeight, classes,
   getDecryptedFile,
   onDownloadFile,
@@ -109,7 +111,6 @@ function FilePreviewDialog({
 
   const PaperProps = useMemo(
     () => ({
-      className: clsx(classes.paper, internalClasses.paper),
       elevation: 0,
       onClose,
       onSave: disableOnSave ? null : onSave,
@@ -118,10 +119,10 @@ function FilePreviewDialog({
       disabled: !isNil(error),
       isSaved,
       appBarProps,
+      title,
     }),
     [
-      internalClasses.paper, classes.paper,
-      disableOnSave, error, isSaved, appBarProps, name,
+      disableOnSave, error, isSaved, appBarProps, name, title,
       onClose, onDownloadInBrowser, onSave,
     ],
   );
@@ -153,6 +154,7 @@ function FilePreviewDialog({
       PaperComponent={FilePreviewPaper}
       BackdropProps={BackdropProps}
       BackdropComponent={FilePreviewBackdrop}
+      classes={{ paper: clsx(classes.paper, internalClasses.paper) }}
     >
       <DialogContent className={internalClasses.content}>
         {showPreview ? (
@@ -204,6 +206,7 @@ FilePreviewDialog.propTypes = {
   disableOnSave: PropTypes.bool,
   children: PropTypes.node,
   appBarProps: PropTypes.object,
+  title: PropTypes.node,
   file: PropTypes.shape(DecryptedFileSchema.propTypes),
   maxHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   classes: PropTypes.shape({
@@ -220,6 +223,7 @@ FilePreviewDialog.defaultProps = {
   file: null,
   disableOnSave: false,
   appBarProps: {},
+  title: null,
   classes: {},
 };
 
