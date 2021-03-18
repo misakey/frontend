@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { withTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 
 import isNil from '@misakey/helpers/isNil';
@@ -111,16 +111,16 @@ const IdentityPublic = forwardRef(({ t, identity, isFetching }, ref) => {
 
 
   const listItemDisplayNameTo = useGeneratePathKeepingSearchAndHash(
-    routes.identities.displayName,
+    authRoutes.identities.displayName,
     { id },
   );
 
   const listItemAvatarTo = useGeneratePathKeepingSearchAndHash(
-    routes.identities.avatar._,
+    authRoutes.identities.avatar._,
     { id },
   );
 
-  const homePath = useGeneratePathKeepingSearchAndHash(routes.identities._, { id });
+  const homePath = useGeneratePathKeepingSearchAndHash(authRoutes.identities._, { id });
 
   const navigationProps = useMemo(
     () => ({

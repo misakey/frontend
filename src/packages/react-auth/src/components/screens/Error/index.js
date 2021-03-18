@@ -6,7 +6,6 @@ import { withTranslation } from 'react-i18next';
 
 import { conflict } from '@misakey/ui/constants/errorTypes';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
-import routes from 'routes';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
@@ -154,7 +153,7 @@ const AuthError = ({ loginChallenge, error, t }) => {
 
   const onSignOutSuccess = useCallback(
     () => {
-      replace(routes._);
+      replace('/');
     },
     [replace],
   );

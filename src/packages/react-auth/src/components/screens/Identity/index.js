@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 
 import useIdentity from '@misakey/react-auth/hooks/useIdentity';
 
@@ -21,14 +21,14 @@ function Identity(props) {
     <Switch>
       <Route
         exact
-        path={routes.identities.public}
+        path={authRoutes.identities.public}
         render={(routerProps) => (
           <IdentityPublic {...routerProps} {...identityMetadata} {...props} />
         )}
       />
       <Route
         exact
-        path={routes.identities.displayName}
+        path={authRoutes.identities.displayName}
         render={(routerProps) => (
           <IdentityDisplayName
             {...routerProps}
@@ -39,7 +39,7 @@ function Identity(props) {
       />
       <Route
         exact
-        path={routes.identities.notifications}
+        path={authRoutes.identities.notifications}
         render={(routerProps) => (
           <IdentityNotifications
             {...routerProps}
@@ -50,7 +50,7 @@ function Identity(props) {
       />
       <Route
         exact
-        path={routes.identities.colors}
+        path={authRoutes.identities.colors}
         render={(routerProps) => (
           <IdentityColors
             {...routerProps}
@@ -60,7 +60,7 @@ function Identity(props) {
         )}
       />
       <Route
-        path={routes.identities.avatar._}
+        path={authRoutes.identities.avatar._}
         render={(routerProps) => (
           <IdentityAvatar
             {...routerProps}
@@ -72,7 +72,7 @@ function Identity(props) {
       <RouteAcr
         acr={2}
         options={{ prompt: 'login' }}
-        path={routes.identities.accounts._}
+        path={authRoutes.identities.accounts._}
         component={Accounts}
       />
     </Switch>

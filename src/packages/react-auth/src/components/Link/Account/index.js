@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';
 
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 
 import { Link, generatePath } from 'react-router-dom';
 
 // COMPONENTS
 const AccountLink = forwardRef(({ id, ...props }, ref) => {
   const to = useMemo(
-    () => (isNil(id) ? null : generatePath(routes.identities._, { id })),
+    () => (isNil(id) ? null : generatePath(authRoutes.identities._, { id })),
     [id],
   );
 

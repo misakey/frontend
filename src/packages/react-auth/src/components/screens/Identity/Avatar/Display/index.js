@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 
 import omit from '@misakey/helpers/omit';
 
@@ -30,7 +30,7 @@ const AccountAvatarDisplay = ({
   const { id } = useParams();
 
   // @FIXME until we change structure, parent is public profile
-  const homePath = useGeneratePathKeepingSearchAndHash(routes.identities.public, { id });
+  const homePath = useGeneratePathKeepingSearchAndHash(authRoutes.identities.public, { id });
 
   const navigationProps = useMemo(
     () => ({
@@ -39,7 +39,10 @@ const AccountAvatarDisplay = ({
     [homePath],
   );
 
-  const secondaryTo = useGeneratePathKeepingSearchAndHash(routes.identities.avatar.upload, { id });
+  const secondaryTo = useGeneratePathKeepingSearchAndHash(
+    authRoutes.identities.avatar.upload,
+    { id },
+  );
 
   return (
     <ScreenAction

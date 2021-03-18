@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Link, generatePath, useLocation } from 'react-router-dom';
 
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 
 import isNil from '@misakey/helpers/isNil';
@@ -73,15 +73,15 @@ const useGetItemTosForUser = (location, identityId, accountId) => useMemo(
     const common = {
       listItemPublicTo: {
         ...location,
-        pathname: generatePath(routes.identities.public, { id: identityId }),
+        pathname: generatePath(authRoutes.identities.public, { id: identityId }),
       },
       listItemNotificationsTo: {
         ...location,
-        pathname: generatePath(routes.identities.notifications, { id: identityId }),
+        pathname: generatePath(authRoutes.identities.notifications, { id: identityId }),
       },
       listItemColorsTo: {
         ...location,
-        pathname: generatePath(routes.identities.colors, { id: identityId }),
+        pathname: generatePath(authRoutes.identities.colors, { id: identityId }),
       },
     };
 
@@ -94,21 +94,21 @@ const useGetItemTosForUser = (location, identityId, accountId) => useMemo(
       listItemSecurityTo: {
         ...location,
         pathname: generatePath(
-          routes.identities.accounts.security,
+          authRoutes.identities.accounts.security,
           { id: identityId, accountId },
         ),
       },
       listItemExportCryptoTo: {
         ...location,
         pathname: generatePath(
-          routes.identities.accounts.vault,
+          authRoutes.identities.accounts.vault,
           { id: identityId, accountId },
         ),
       },
       listItemDeleteAccountTo: {
         ...location,
         pathname: generatePath(
-          routes.identities.accounts.delete,
+          authRoutes.identities.accounts.delete,
           { id: identityId, accountId },
         ),
       },

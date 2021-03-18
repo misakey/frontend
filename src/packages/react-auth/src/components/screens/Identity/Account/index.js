@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 
 import useIdentity from '@misakey/react-auth/hooks/useIdentity';
 
@@ -17,7 +17,7 @@ function Account(props) {
     <Switch>
       <Route
         exact
-        path={routes.identities.accounts.security}
+        path={authRoutes.identities.accounts.security}
         render={(routerProps) => (
           <AccountSecurity
             {...routerProps}
@@ -28,7 +28,7 @@ function Account(props) {
       />
       <Route
         exact
-        path={routes.identities.accounts.vault}
+        path={authRoutes.identities.accounts.vault}
         render={(routerProps) => (
           <AccountVault
             {...routerProps}
@@ -39,7 +39,7 @@ function Account(props) {
       />
       <Route
         exact
-        path={routes.identities.accounts.delete}
+        path={authRoutes.identities.accounts.delete}
         render={(routerProps) => (
           <AccountDelete
             {...routerProps}

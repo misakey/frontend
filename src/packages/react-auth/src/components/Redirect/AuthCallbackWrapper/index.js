@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
 import isObject from '@misakey/helpers/isObject';
 import { StorageUnavailable } from '@misakey/helpers/storage';
@@ -50,17 +50,14 @@ const useHandleError = (enqueueSnackbar, t) => {
 };
 
 // COMPONENTS
-const RedirectAuthCallbackWrapper = ({ t, ...rest }) => {
+const RedirectAuthCallbackWrapper = (props) => {
   const { enqueueSnackbar } = useSnackbar();
+  const { t } = useTranslation('common');
 
   const handleSuccess = useHandleSuccess(enqueueSnackbar, t);
   const handleError = useHandleError(enqueueSnackbar, t);
 
-  return <AuthCallback handleSuccess={handleSuccess} handleError={handleError} {...rest} />;
-};
-
-RedirectAuthCallbackWrapper.propTypes = {
-  t: PropTypes.func.isRequired,
+  return <AuthCallback handleSuccess={handleSuccess} handleError={handleError} {...props} />;
 };
 
 export default RedirectAuthCallbackWrapper;

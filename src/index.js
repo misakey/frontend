@@ -19,13 +19,9 @@ import reducers from 'store/reducers';
 // middlewares
 import API from '@misakey/api';
 import routes from 'routes';
-import authRoutes from '@misakey/react-auth/routes';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
-import invalidAccessTokenMiddleware from '@misakey/react-auth/middlewares/invalidAccessToken';
-import invalidCsrfTokenMiddleware from '@misakey/react-auth/middlewares/invalidCsrfToken';
 import floodManagementAlertMiddleware from 'middlewares/floodManagement/alert';
-import invalidSeclevelMiddleware from '@misakey/react-auth/middlewares/invalidSeclevel';
 // routing
 import RouterWithCustomConfirm from 'components/smart/Router/WithCustomConfirm';
 import * as serviceWorker from 'serviceWorker';
@@ -42,38 +38,34 @@ import SnackbarProvider from 'components/smart/SnackbarProvider';
 import OfflineContextProvider from 'components/smart/Context/Offline';
 import ScreenError from 'components/smart/Screen/Error';
 import ErrorBoundary from '@misakey/ui/ErrorBoundary';
+import Screen from '@misakey/ui/Screen';
+
 // translations
-import './i18n';
-import countries from 'i18n-iso-countries';
+import configureI18n from '@misakey/ui/i18n';
+
 // helpers
 import isNil from '@misakey/helpers/isNil';
-import { isSilentAuthIframe, processSilentAuthCallbackInIframe } from '@misakey/auth/helpers/silentAuth'; // Silent auth
+import oidcSilentRenewalWrapper from '@misakey/auth/helpers/oidcSilentRenewalWrapper'; // Silent auth
 import sentryBeforeSend from '@misakey/helpers/sentry/beforeSend';
 
 /* END OF IMPORTS */
 
-if (window.env.ENV !== 'development' || window.env.SENTRY.debug === true) {
-  const sentryConfig = window.env.SENTRY;
-  if (!isNil(window.bundleVersion)) {
-    sentryConfig.release = `frontend@${window.bundleVersion}`;
+oidcSilentRenewalWrapper(window.env.AUTH, () => {
+  if (window.env.ENV !== 'development' || window.env.SENTRY.debug === true) {
+    const sentryConfig = window.env.SENTRY;
+    if (!isNil(window.bundleVersion)) {
+      sentryConfig.release = `frontend@${window.bundleVersion}`;
+    }
+
+    sentryConfig.beforeSend = sentryBeforeSend;
+
+    Sentry.init(sentryConfig);
   }
 
-  sentryConfig.beforeSend = sentryBeforeSend;
+  const rootNode = document.getElementById('root');
 
-  Sentry.init(sentryConfig);
-}
+  configureI18n();
 
-const rootNode = document.getElementById('root');
-
-countries.registerLocale(require('i18n-iso-countries/langs/fr.json'));
-
-// The main purpose of the iframe is to launch auth request and update user
-// in localStorage when the request is finished. It doesn't need to load the
-// rest of the application and if it does, the iframe can throw timeout errors
-// https://github.com/maxmantz/redux-oidc/issues/48#issuecomment-315422236
-if (isSilentAuthIframe()) {
-  processSilentAuthCallbackInIframe();
-} else {
   // STORE
   const storeMiddleWares = [thunk];
   if (window.env.ENV === 'development') { storeMiddleWares.push(createLogger()); }
@@ -84,13 +76,7 @@ if (isSilentAuthIframe()) {
   const persistor = persistStore(store);
 
   // ADD MIDDLEWARE TO API
-  API.addMiddleware(invalidAccessTokenMiddleware(store.dispatch));
-  API.addMiddleware(invalidCsrfTokenMiddleware(API.deleteCsrfToken));
   API.addMiddleware(floodManagementAlertMiddleware(100)); // 100ms delay
-
-  const registerMiddlewares = (askSigninRedirect) => {
-    API.addMiddleware(invalidSeclevelMiddleware(askSigninRedirect, store));
-  };
 
   // SPLASH SCREEN CONFIG
   const SPLASH_SCREEN_PROPS = { height: '100vh', width: '100vw' };
@@ -115,11 +101,10 @@ if (isSilentAuthIframe()) {
                   <ErrorBoundary maxWidth="md" my={3} component={ScreenError}>
                     <OidcProvider
                       config={window.env.AUTH}
-                      registerMiddlewares={registerMiddlewares}
-                      publicRoute={routes.identities.public}
-                      // do not try to retrieve old user during auth flow as it useless
-                      // and could conflict with current auth flow (autoSignIn if user is expired)
-                      autoSignInExcludedRoutes={[authRoutes._, authRoutes.callback]}
+                      redirectProps={{
+                        fallbackReferrer: routes._,
+                        loadingPlaceholder: <Screen isLoading />,
+                      }}
                     >
                       <App />
                     </OidcProvider>
@@ -137,4 +122,4 @@ if (isSilentAuthIframe()) {
   // unregister() to register() below. Note this comes with some pitfalls.
   // Learn more about service workers: http://bit.ly/CRA-PWA
   serviceWorker.unregister();
-}
+});

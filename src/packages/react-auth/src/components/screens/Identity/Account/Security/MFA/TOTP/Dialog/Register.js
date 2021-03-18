@@ -25,7 +25,7 @@ import { userIdentityUpdate } from '@misakey/react-auth/store/actions/identity/a
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { totpEnrollValidationSchema } from '@misakey/react-auth/constants/validationSchemas/identity';
-import { forbidden } from 'packages/ui/src/constants/errorTypes';
+import { forbidden } from '@misakey/ui/constants/errorTypes';
 
 // CONSTANTS
 const TOTP_CODE = 'code';

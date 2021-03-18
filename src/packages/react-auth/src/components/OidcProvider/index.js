@@ -2,32 +2,30 @@ import React, { useMemo, useEffect, useCallback, useState } from 'react';
 
 import PropTypes from 'prop-types';
 import { matchPath, useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/Context';
+import invalidAccessTokenMiddleware from '@misakey/react-auth/middlewares/invalidAccessToken';
+import invalidSeclevelMiddleware from '@misakey/react-auth/middlewares/invalidSeclevel';
 
 import { loadUserThunk, authReset, setExpiresAt } from '@misakey/react-auth/store/actions/auth';
 
 import log from '@misakey/helpers/log';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 import isNil from '@misakey/helpers/isNil';
-import isFunction from '@misakey/helpers/isFunction';
 import UserManager from '@misakey/auth/classes/UserManager';
 import signOutBuilder from '@misakey/auth/builder/signOut';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import { useDispatch } from 'react-redux';
+import API from '@misakey/api';
 
 import SplashScreenOidc from '@misakey/ui/Screen/Splash/Oidc';
 import DialogSigninRedirect from '@misakey/react-auth/components/OidcProvider/Dialog/SigninRedirect';
+import authRoutes from '@misakey/react-auth/routes';
+import AuthRoutesSwitch from '@misakey/react-auth/components/Route/Switch';
 
 // COMPONENTS
-function OidcProvider({
-  children,
-  config,
-  registerMiddlewares,
-  publicRoute,
-  autoSignInExcludedRoutes,
-}) {
+function OidcProvider({ children, config, redirectProps }) {
   const [signinRedirect, setSigninRedirect] = useState(null);
   const [canCancelRedirect, setCanCancelRedirect] = useState(true);
 
@@ -36,8 +34,12 @@ function OidcProvider({
   const { pathname } = useLocation();
 
   const isRouteExcludedForAutomaticSignIn = useMemo(
-    () => autoSignInExcludedRoutes.some((excludedRoute) => matchPath(pathname, excludedRoute)),
-    [autoSignInExcludedRoutes, pathname],
+    // do not try to retrieve old user during auth flow as it useless
+    // and could conflict with current auth flow (autoSignIn if user is expired)
+    () => [authRoutes._, authRoutes.callback].some(
+      (excludedRoute) => matchPath(pathname, excludedRoute),
+    ),
+    [pathname],
   );
 
   const open = useMemo(
@@ -95,7 +97,7 @@ function OidcProvider({
     [setSigninRedirect],
   );
 
-  const onLogout = useCallback(
+  const onSignOut = useCallback(
     () => signOutBuilder()
       // userManager.removeUser triggers onTokenExpirationChange which triggers AUTH_RESET
       .then(() => userManager.removeUser()),
@@ -106,9 +108,11 @@ function OidcProvider({
     () => ({
       userManager,
       askSigninRedirect,
-      onLogout,
+      getUser: userManager.getUser,
+      onSignIn: userManager.signinRedirect,
+      onSignOut,
     }),
-    [userManager, askSigninRedirect, onLogout],
+    [userManager, askSigninRedirect, onSignOut],
   );
 
   const onLoadUserAtMount = useCallback(
@@ -136,6 +140,15 @@ function OidcProvider({
     [dispatchUser, userManager],
   );
 
+  const onAskHigherACR = useCallback(
+    async (requiredAcr) => {
+      const { email: identifier } = (await userManager.getUser()) || {};
+      const loginHint = isNil(identifier) ? undefined : JSON.stringify({ identifier });
+      askSigninRedirect({ acrValues: requiredAcr, prompt: 'login', loginHint }, false);
+    },
+    [askSigninRedirect, userManager],
+  );
+
   useEffect(
     () => {
       if (!isRouteExcludedForAutomaticSignIn) {
@@ -147,11 +160,10 @@ function OidcProvider({
 
   useEffect(
     () => {
-      if (isFunction(registerMiddlewares)) {
-        registerMiddlewares(askSigninRedirect);
-      }
+      API.addMiddleware(invalidAccessTokenMiddleware(dispatch));
+      API.addMiddleware(invalidSeclevelMiddleware(onAskHigherACR));
     },
-    [registerMiddlewares, askSigninRedirect],
+    [dispatch, onAskHigherACR],
   );
 
   return (
@@ -162,12 +174,16 @@ function OidcProvider({
         onClose={onClose}
         canCancelRedirect={canCancelRedirect}
         userManager={userManager}
-        publicRoute={publicRoute}
         {...signinRedirectProps}
       />
-      {isLoading ? (
-        <SplashScreenOidc />
-      ) : children}
+      {isLoading
+        ? <SplashScreenOidc />
+        : (
+          <AuthRoutesSwitch redirectProps={redirectProps}>
+            {children}
+          </AuthRoutesSwitch>
+        )}
+
     </UserManagerContext.Provider>
   );
 }
@@ -176,24 +192,20 @@ OidcProvider.propTypes = {
   children: PropTypes.node,
   config: PropTypes.shape({
     authority: PropTypes.string.isRequired,
-    automaticSilentRenew: PropTypes.bool,
+    disableAutomaticSilentRenew: PropTypes.bool,
     clientId: PropTypes.string.isRequired,
     scope: PropTypes.string,
   }),
-  registerMiddlewares: PropTypes.func.isRequired,
-  publicRoute: PropTypes.string.isRequired,
-  autoSignInExcludedRoutes: PropTypes.arrayOf(
-    PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  ),
+  redirectProps: PropTypes.object,
 };
 
 OidcProvider.defaultProps = {
   children: null,
   config: {
     scope: 'openid tos privacy_policy',
-    automaticSilentRenew: true,
+    disableAutomaticSilentRenew: true,
   },
-  autoSignInExcludedRoutes: [],
+  redirectProps: {},
 };
 
 export default OidcProvider;

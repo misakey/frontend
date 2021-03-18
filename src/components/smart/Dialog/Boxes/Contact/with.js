@@ -9,7 +9,6 @@ import { selectors } from '@misakey/react-auth/store/reducers/auth';
 import ContactBoxDialog from 'components/smart/Dialog/Boxes/Contact';
 import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/Context';
 import DialogSigninRedirect from '@misakey/react-auth/components/OidcProvider/Dialog/SigninRedirect';
-import routes from 'routes';
 
 // COMPONENTS
 const withDialogContact = (Component) => {
@@ -60,7 +59,6 @@ const withDialogContact = (Component) => {
           onClose={toggleIsDialogAuthRequiredOpened}
           userManager={userManager}
           canCancelRedirect
-          publicRoute={routes.identities.public}
           acrValues={2}
         />
         <Component ref={ref} onClick={onWrapperClick} {...props} />

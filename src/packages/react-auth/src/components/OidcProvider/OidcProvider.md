@@ -3,7 +3,7 @@ In your main app file
 ```js static
 import { Suspense } from 'react';
 
-import OidcProvider from 'auth/components/OidcProvider';
+import OidcProvider from '@misakey/react-auth/components/OidcProvider';
 import { createStore } from 'redux';
 
 const store = createStore(
@@ -13,13 +13,14 @@ const store = createStore(
 const oidcConfig = {
   authority: 'https://auth.misakey.com.local/',
   client_id: '<client_id>',
-  redirect_uri: 'https://api.misakey.com.local/app/auth/callback',
+  redirect_uri: 'https://api.misakey.com.local/auth/callback',
 }
 
 ReactDOM.render((
   <Suspense>
     <StoreProvider store={store}>
       <OidcProvider store={store} config={oidcConfig}>
+        {/* Your app */}
       </OidcProvider>
     </StoreProvider>
   </Suspense>

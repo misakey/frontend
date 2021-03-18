@@ -9,6 +9,7 @@ import { useSnackbar } from 'notistack';
 import { getCurrentUserSelector, selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER, LARGE } from '@misakey/ui/constants/sizes';
 
+import authRoutes from '@misakey/react-auth/routes';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';
@@ -62,7 +63,6 @@ const DialogSigninRedirect = ({
   open,
   onClose,
   canCancelRedirect,
-  publicRoute,
   fullScreen,
   ...props
 }) => {
@@ -82,8 +82,10 @@ const DialogSigninRedirect = ({
   const { name: clientName, logoUri: clientLogo } = useSafeDestr(client);
 
   const creatorProfileTo = useMemo(
-    () => (isNil(creatorIdentityId) ? null : generatePath(publicRoute, { id: creatorIdentityId })),
-    [publicRoute, creatorIdentityId],
+    () => (isNil(creatorIdentityId)
+      ? null
+      : generatePath(authRoutes.identities.public, { id: creatorIdentityId })),
+    [creatorIdentityId],
   );
 
   const redirectOptions = useMemo(
@@ -278,7 +280,6 @@ DialogSigninRedirect.propTypes = {
   loginHint: PropTypes.string,
   userManager: PropTypes.object.isRequired,
   canCancelRedirect: PropTypes.bool.isRequired,
-  publicRoute: PropTypes.string.isRequired,
   // DialogConfirm
   onClose: PropTypes.func,
   open: PropTypes.bool.isRequired,

@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { DecryptionError } from '@misakey/crypto/Errors/classes';
 import { OLD_PASSWORD_KEY, NEW_PASSWORD_KEY, PASSWORD_CONFIRM_KEY } from '@misakey/react-auth/constants/account';
 import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 import { passwordValidationSchema } from '@misakey/react-auth/constants/validationSchemas/identity';
 import { invalid, forbidden } from '@misakey/ui/constants/errorTypes';
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
@@ -57,7 +57,7 @@ const AccountPassword = ({ t, identity }) => {
   const { id } = useParams();
   const { push } = useHistory();
 
-  const accountHome = useGeneratePathKeepingSearchAndHash(routes.identities._, { id });
+  const accountHome = useGeneratePathKeepingSearchAndHash(authRoutes.identities._, { id });
 
   const handleHttpErrors = useHandleHttpErrors();
 

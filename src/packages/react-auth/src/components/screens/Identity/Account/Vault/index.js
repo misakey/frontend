@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 
 import isNil from '@misakey/helpers/isNil';
 
@@ -30,7 +30,7 @@ const AccountVault = ({ t, identity, isFetching }) => {
     [identity, isFetching],
   );
 
-  const accountHome = useGeneratePathKeepingSearchAndHash(routes.identities._, { id });
+  const accountHome = useGeneratePathKeepingSearchAndHash(authRoutes.identities._, { id });
 
   const navigationProps = useMemo(
     () => ({

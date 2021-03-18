@@ -8,7 +8,7 @@ import { useSnackbar } from 'notistack';
 import { useParams } from 'react-router-dom';
 
 import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 import { colorValidationSchema } from '@misakey/react-auth/constants/validationSchemas/identity';
 
 import isNil from '@misakey/helpers/isNil';
@@ -47,7 +47,7 @@ const AccountColor = ({ t, identity, isFetching, demoComponent: DemoComponent })
 
   const [previewColor, setPreviewColor] = useState(color);
 
-  const homePath = useGeneratePathKeepingSearchAndHash(routes.identities._, { id });
+  const homePath = useGeneratePathKeepingSearchAndHash(authRoutes.identities._, { id });
 
   const navigationProps = useMemo(
     () => ({

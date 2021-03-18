@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import SenderSchema from 'store/schemas/Boxes/Sender';
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 
 import { generatePath, Link } from 'react-router-dom';
 import { senderMatchesIdentityId } from 'helpers/sender';
@@ -32,7 +32,7 @@ const ListItemMemberPublicLink = ({ component: Component, member, ...props }) =>
   const identityPublicTo = useMemo(
     () => (isNil(id)
       ? null
-      : generatePath(routes.identities.public, { id })),
+      : generatePath(authRoutes.identities.public, { id })),
     [id],
   );
 

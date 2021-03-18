@@ -16,7 +16,7 @@ const { identity: IDENTITY_SELECTOR } = authSelectors;
 // COMPONENTS
 // @UNUSED
 const ChipUserMeLogout = (props) => {
-  const { onLogout: onDelete } = useContext(UserManagerContext);
+  const { onSignOut: onDelete } = useContext(UserManagerContext);
 
   const identity = useSelector(IDENTITY_SELECTOR);
   const { displayName, avatarUrl } = useSafeDestr(identity);

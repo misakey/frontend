@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
 
-
-import routes from 'routes';
-
+import authRoutes from '@misakey/react-auth/routes';
 
 import ListItemNavLink from 'components/dumb/ListItem/NavLink';
 import ListItemNavLinkMisakeySkeleton from 'components/smart/ListItem/NavLink/Misakey/Skeleton';
@@ -13,7 +11,7 @@ const ListItemNavLinkMisakey = (props) => {
   const { identityId, isFetching } = useIdentity();
 
   const to = useMemo(
-    () => generatePath(routes.identities._, { id: identityId }),
+    () => generatePath(authRoutes.identities._, { id: identityId }),
     [identityId],
   );
 

@@ -17,16 +17,16 @@ const CardUserSignOut = ({ onSuccess, component: Component, ...props }) => {
 
   const isXs = useXsMediaQuery();
 
-  const { onLogout } = useContext(UserManagerContext);
-  const onSignOut = useCallback(
-    () => onLogout().then(onSuccess),
-    [onLogout, onSuccess],
+  const { onSignOut } = useContext(UserManagerContext);
+  const processSignOut = useCallback(
+    () => onSignOut().then(onSuccess),
+    [onSignOut, onSuccess],
   );
 
   return (
     <Component
       action={(
-        <IconButton size={isXs ? 'small' : undefined} aria-label={t('common:signOut')} onClick={onSignOut}>
+        <IconButton size={isXs ? 'small' : undefined} aria-label={t('common:signOut')} onClick={processSignOut}>
           <CloseIcon />
         </IconButton>
       )}

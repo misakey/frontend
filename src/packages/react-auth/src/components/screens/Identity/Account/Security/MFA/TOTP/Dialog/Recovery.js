@@ -13,7 +13,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
 
-import downloadFile from 'packages/helpers/src/downloadFile';
+import downloadFile from '@misakey/helpers/downloadFile';
 import { IconButton, Typography } from '@material-ui/core';
 import DownloadIcon from '@material-ui/icons/GetApp';
 import ButtonCopy, { MODE } from '@misakey/ui/Button/Copy';

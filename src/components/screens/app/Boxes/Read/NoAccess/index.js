@@ -8,7 +8,7 @@ import { LARGE } from '@misakey/ui/constants/sizes';
 import { FOOTER_HEIGHT } from '@misakey/ui/Footer';
 import BoxesSchema from 'store/schemas/Boxes';
 import { receivePublicInfo } from 'store/reducers/box';
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 
 import isNil from '@misakey/helpers/isNil';
 
@@ -55,7 +55,7 @@ function NoAccess({ box, belongsToCurrentUser, t }) {
       ? {}
       : {
         component: Link,
-        to: generatePath(routes.identities.public, { id: creatorIdentityId }),
+        to: generatePath(authRoutes.identities.public, { id: creatorIdentityId }),
       }),
     [creatorIdentityId],
   );

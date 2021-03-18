@@ -3,6 +3,7 @@ import isArray from '@misakey/helpers/isArray';
 import isNil from '@misakey/helpers/isNil';
 import alwaysNull from '@misakey/helpers/always/null';
 import { getCsrfTokenBuilder } from '@misakey/auth/builder/getCsrfToken';
+import invalidCsrfTokenMiddleware from '@misakey/api/API/middlewares/invalidCsrfToken';
 import endpoints from './endpoints';
 import Endpoint from '../Endpoint';
 import { HTTP_ERROR_STATUSES, filterHttpStatus } from './errors';
@@ -20,6 +21,9 @@ class API {
       toFormErrors,
     };
     this.middlewares = [];
+    this.addMiddleware(
+      invalidCsrfTokenMiddleware(this.deleteCsrfToken),
+    );
     this.xCsrfToken = null;
   }
 

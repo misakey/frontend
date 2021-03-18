@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation, Trans } from 'react-i18next';
 import { useLocation, Link, generatePath } from 'react-router-dom';
 
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 import { updateEntities } from '@misakey/store/actions/entities';
 import { MEMBER_JOIN } from '@misakey/ui/constants/boxes/events';
 import { forbidden } from '@misakey/ui/constants/errorTypes';
@@ -77,7 +77,7 @@ function MustJoin({ box, t }) {
   const creatorProfileTo = useMemo(
     () => (isNil(creatorIdentityId)
       ? null
-      : generatePath(routes.identities.public, { id: creatorIdentityId })),
+      : generatePath(authRoutes.identities.public, { id: creatorIdentityId })),
     [creatorIdentityId],
   );
 

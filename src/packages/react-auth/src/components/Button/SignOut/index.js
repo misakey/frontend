@@ -15,11 +15,11 @@ const INTERNAL_PROPS = [
 ];
 
 // COMPONENTS
-const ButtonSignOut = ({ onSuccess, onLogout, t, ...props }) => {
-  const onSignOut = useCallback(() => onLogout().then(onSuccess), [onLogout, onSuccess]);
+const ButtonSignOut = ({ onSuccess, onSignOut, t, ...props }) => {
+  const processSignOut = useCallback(() => onSignOut().then(onSuccess), [onSignOut, onSuccess]);
   return (
     <Button
-      onClick={onSignOut}
+      onClick={processSignOut}
       text={t('common:signOut')}
       {...omit(props, INTERNAL_PROPS)}
     />
@@ -31,7 +31,7 @@ ButtonSignOut.propTypes = {
   standing: PropTypes.oneOf(Object.values(BUTTON_STANDINGS)),
   onSuccess: PropTypes.func,
   // withUserManager
-  onLogout: PropTypes.func.isRequired,
+  onSignOut: PropTypes.func.isRequired,
 };
 
 ButtonSignOut.defaultProps = {

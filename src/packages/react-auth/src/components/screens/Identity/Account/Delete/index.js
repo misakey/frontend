@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation, Trans } from 'react-i18next';
 
 import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 
 import isNil from '@misakey/helpers/isNil';
 
@@ -29,7 +29,7 @@ const AccountDelete = ({ t, identity, isFetching }) => {
     [identity, isFetching],
   );
 
-  const accountHome = useGeneratePathKeepingSearchAndHash(routes.identities._, { id });
+  const accountHome = useGeneratePathKeepingSearchAndHash(authRoutes.identities._, { id });
 
   const navigationProps = useMemo(
     () => ({

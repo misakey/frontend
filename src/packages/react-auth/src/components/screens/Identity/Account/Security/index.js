@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -59,7 +59,7 @@ const AccountSecurity = ({ t, identity, isFetching }) => {
     [identity, isFetching],
   );
 
-  const accountHome = useGeneratePathKeepingSearchAndHash(routes.identities._, { id });
+  const accountHome = useGeneratePathKeepingSearchAndHash(authRoutes.identities._, { id });
 
   const navigationProps = useMemo(
     () => ({

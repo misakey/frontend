@@ -8,7 +8,7 @@ import { withTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
 import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 import { avatarValidationSchema } from '@misakey/react-auth/constants/validationSchemas/identity';
 
 import retry from '@misakey/helpers/retry';
@@ -56,7 +56,7 @@ const AccountAvatar = ({
   );
 
   // @FIXME until we change structure, parent is public profile
-  const homePath = useGeneratePathKeepingSearchAndHash(routes.identities.public, { id });
+  const homePath = useGeneratePathKeepingSearchAndHash(authRoutes.identities.public, { id });
 
   const { displayName, avatarUrl, id: identityId } = useMemo(
     () => identity || EMPTY_OBJECT,
@@ -97,7 +97,7 @@ const AccountAvatar = ({
             <Switch>
               <Route
                 exact
-                path={routes.identities.avatar._}
+                path={authRoutes.identities.avatar._}
                 render={(routerProps) => (
                   <AccountAvatarDisplay
                     avatarUrl={avatarUrl}
@@ -112,7 +112,7 @@ const AccountAvatar = ({
               />
               <Route
                 exact
-                path={routes.identities.avatar.upload}
+                path={authRoutes.identities.avatar.upload}
                 render={(routerProps) => (
                   <AccountAvatarUpload
                     name={FIELD_NAME}

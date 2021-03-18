@@ -6,9 +6,9 @@ module.exports = {
   sections: [{
     name: 'Documentation',
     sections: [{
-      name: 'Auth bundle',
-      content: 'src/packages/auth/README.md',
-      components: 'src/packages/auth/src/components/**/+([A-Z]*)/*.js',
+      name: 'React Auth SDK',
+      content: 'src/packages/react-auth/README.md',
+      components: 'src/packages/react-auth/src/components/**/+([A-Z]*)/*.js',
       exampleMode: 'expand', // 'hide' | 'collapse' | 'expand'
       usageMode: 'expand', // 'hide' | 'collapse' | 'expand'
     }, {

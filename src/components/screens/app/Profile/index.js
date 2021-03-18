@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import { Switch, Route, Redirect, useParams, generatePath, useRouteMatch } from 'react-router-dom';
 
 import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 
 import isNil from '@misakey/helpers/isNil';
 
@@ -76,7 +77,7 @@ function Profile(props) {
             />
             <RouteAcr
               acr={1}
-              path={routes.identities._}
+              path={authRoutes.identities._}
               render={(routerProps) => (
                 <Identities
                   demoComponent={ColorsDemo}
@@ -105,7 +106,7 @@ function Profile(props) {
       <Switch>
         <Route
           exact
-          path={routes.identities.public}
+          path={authRoutes.identities.public}
           render={(routerProps) => <IdentityPublicReadOnly {...routerProps} />}
         />
         <Redirect from={path} to={redirectTo} />

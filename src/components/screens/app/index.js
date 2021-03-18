@@ -1,8 +1,9 @@
 import React, { Suspense, lazy, useMemo } from 'react';
 
 
-import routes from 'routes';
 import { Route, Switch } from 'react-router-dom';
+import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 
 import retry from '@misakey/helpers/retry';
 
@@ -63,7 +64,7 @@ const BoxesApp = () => {
 
         {/* OTHERS */}
         <Route path={routes.organizations._} component={OrganizationsRead} />
-        <Route path={routes.identities._} component={Profile} />
+        <Route path={authRoutes.identities._} component={Profile} />
         {/* @FIXME kept for retrocompatibility */}
         <Route path={routes.boxes.invitation} component={Invitation} />
 

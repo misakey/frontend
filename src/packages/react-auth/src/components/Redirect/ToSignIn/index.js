@@ -1,11 +1,9 @@
 
-import routes from 'routes';
-
 import useAskSigninWithLoginHint from '@misakey/react-auth/hooks/useAskSigninWithLoginHint';
 import { useEffect } from 'react';
 
 // CONSTANTS
-const SIGN_IN_REDIRECT_CONFIG = { referrer: routes._ };
+const SIGN_IN_REDIRECT_CONFIG = { referrer: '/' };
 
 
 // COMPONENTS

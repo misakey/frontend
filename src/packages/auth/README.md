@@ -67,21 +67,19 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 // Silent auth 
-import {
-  isSilentAuthIframe,
-  processSilentAuthCallbackInIframe,
-} from 'auth/helpers';
+import oidcSilentRenewalWrapper from '@misakey/auth/helpers/oidcSilentRenewalWrapper'; 
 
 // OIDC provider
 import OidcProvider from '@misakey/react-auth/components/OidcProvider';
 
-// The main purpose of the iframe is to launch auth request and update user
-// in localStorage when the request is finished. It doesn't need to load the
-// rest of the application and if it does, the iframe can throw timeout errors
-// https://github.com/maxmantz/redux-oidc/issues/48#issuecomment-315422236
-if (isSilentAuthIframe()) {
-  processSilentAuthCallbackInIframe();
-} else {
+
+const oidcConfig = {
+  authority: 'https://auth.misakey.com.local/',
+  client_id: '<client_id>',
+  redirect_uri: 'https://api.misakey.com.local/app/auth/callback',
+}
+
+oidcSilentRenewalWrapper(oidcConfig, () => {
   const rootPersistConfig = { 
     key: 'root', 
     storage, 
@@ -92,12 +90,6 @@ if (isSilentAuthIframe()) {
   const store = createStore(persistedReducer);
   const persistor = persistStore(store);
 
-  const oidcConfig = {
-    authority: 'https://auth.misakey.com.local/',
-    client_id: '<client_id>',
-    redirect_uri: 'https://api.misakey.com.local/app/auth/callback',
-  }
-
   ReactDOM.render((
       <StoreProvider store={store}>
         <OidcProvider store={store} config={oidcConfig}>
@@ -107,5 +99,5 @@ if (isSilentAuthIframe()) {
         </OidcProvider>
       </StoreProvider>
   ), document.getElementById('root'));
-}
+});
 ```

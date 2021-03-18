@@ -39,7 +39,7 @@ export default class UserManager extends OidcClient {
   #userValue
 
   constructor(
-    { automaticSilentRenew = true, ...settings } = {},
+    { disableAutomaticSilentRenew = false, ...settings } = {},
     { onUserChange, onTokenExpirationChange } = {},
   ) {
     const options = isFunction(onTokenExpirationChange)
@@ -48,7 +48,7 @@ export default class UserManager extends OidcClient {
     super(settings, options);
 
     this.#userValue = null;
-    this.automaticSilentRenew = automaticSilentRenew;
+    this.disableAutomaticSilentRenew = disableAutomaticSilentRenew;
     // Token can be renewed between 10 minutes and 1 minute before it expires
     this.automaticSilentRenewIntervalDelay = [10 * 60, 1 * 60];
     this.silentRequestTimeout = 10000;
@@ -230,7 +230,7 @@ export default class UserManager extends OidcClient {
   }
 
   loadSilentAuthTimer() {
-    if (!this.automaticSilentRenew) {
+    if (this.disableAutomaticSilentRenew === true) {
       return;
     }
 

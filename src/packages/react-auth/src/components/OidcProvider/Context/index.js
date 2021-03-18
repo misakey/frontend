@@ -4,6 +4,9 @@ import React, { createContext, useContext, forwardRef } from 'react';
 // CONTEXT
 export const UserManagerContext = createContext({
   userManager: null,
+  onSignIn: null,
+  onSignOut: null,
+  getUser: null,
   askSigninRedirect: null,
 });
 

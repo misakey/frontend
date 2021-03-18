@@ -7,7 +7,7 @@ import { withTranslation } from 'react-i18next';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 import { ACCEPTED_TYPES } from '@misakey/ui/constants/file/image';
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 
 import Container from '@material-ui/core/Container';
 import FileField from '@misakey/ui/Form/Field/File';
@@ -25,8 +25,8 @@ const IdentityAvatarUpload = ({
   const { id } = useParams();
 
   // @FIXME until we change structure, parent is public profile
-  const homePath = useGeneratePathKeepingSearchAndHash(routes.identities.public, { id });
-  const avatarPath = useGeneratePathKeepingSearchAndHash(routes.identities.avatar._, { id });
+  const homePath = useGeneratePathKeepingSearchAndHash(authRoutes.identities.public, { id });
+  const avatarPath = useGeneratePathKeepingSearchAndHash(authRoutes.identities.avatar._, { id });
 
   const navigationProps = useMemo(
     () => ({

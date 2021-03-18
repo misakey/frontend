@@ -6,7 +6,7 @@ import { useSnackbar } from 'notistack';
 import { useParams } from 'react-router-dom';
 
 import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
-import routes from 'routes';
+import authRoutes from '@misakey/react-auth/routes';
 import { displayNameValidationSchema } from '@misakey/react-auth/constants/validationSchemas/identity';
 
 import isNil from '@misakey/helpers/isNil';
@@ -41,7 +41,7 @@ const IdentityDisplayName = ({
   const { id } = useParams();
 
   // @FIXME until we change structure, parent is public profile
-  const homePath = useGeneratePathKeepingSearchAndHash(routes.identities.public, { id });
+  const homePath = useGeneratePathKeepingSearchAndHash(authRoutes.identities.public, { id });
 
   const navigationProps = useMemo(
     () => ({
