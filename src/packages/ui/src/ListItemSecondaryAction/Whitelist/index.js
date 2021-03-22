@@ -2,6 +2,8 @@ import React, { useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
+import { TOOLBAR_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
+
 import isFunction from '@misakey/helpers/isFunction';
 import isNil from '@misakey/helpers/isNil';
 
@@ -15,10 +17,15 @@ import IconButton from '@misakey/ui/IconButton';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import AppBarStatic from '@misakey/ui/AppBar/Static';
 
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import InfoIcon from '@material-ui/icons/Info';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+
+// CONSTANTS
+const TOOLBAR_PROPS = {
+  minHeight: `${TOOLBAR_MIN_HEIGHT}px !important`,
+};
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -83,8 +90,7 @@ const ListItemSecondaryActionWhitelist = ({ id, color, accessStatus, onRemove })
             onClick={onClick}
             size="small"
           >
-            <InfoIcon />
-            {isNil(anchorEl) ? <KeyboardArrowRightIcon /> : <KeyboardArrowDownIcon />}
+            {isNil(anchorEl) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
           </IconButton>
         )}
         {(!isXs && hasOnRemove) && (
@@ -95,7 +101,7 @@ const ListItemSecondaryActionWhitelist = ({ id, color, accessStatus, onRemove })
           text={(
             <>
               {t(`components:whitelist.${accessStatus}`)}
-              {isNil(anchorEl) ? <KeyboardArrowRightIcon /> : <KeyboardArrowDownIcon />}
+              {isNil(anchorEl) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
             </>
             )}
           size="small"
@@ -120,11 +126,14 @@ const ListItemSecondaryActionWhitelist = ({ id, color, accessStatus, onRemove })
           MenuListProps={{ disablePadding: true }}
         >
           {isXs && (
-            <MenuItem selected>
-              <Subtitle color={color} classes={{ root: classes.subtitleRoot }}>
+            <AppBarStatic
+              toolbarProps={TOOLBAR_PROPS}
+              color="primary"
+            >
+              <Subtitle gutterBottom={false} color="background" classes={{ root: classes.subtitleRoot }}>
                 {t(`components:whitelist.${accessStatus}`)}
               </Subtitle>
-            </MenuItem>
+            </AppBarStatic>
           )}
           {hasOnRemove && (
             <MenuItem onClick={handleRemove}>{t('common:remove')}</MenuItem>

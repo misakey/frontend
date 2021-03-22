@@ -17,13 +17,11 @@ import useDatatagId from 'hooks/useDatatagId';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import RouteAcr from '@misakey/react-auth/components/Route/Acr';
-import RouteAuthenticated from '@misakey/react-auth/components/Route/Authenticated';
 import BoxesContextProvider from 'components/smart/Context/Boxes';
 import ScreenDrawerContextProvider from 'components/smart/Screen/Drawer';
 import BoxesList from 'components/screens/app/Boxes/List';
 import VaultLockedScreen from 'components/screens/app/VaultLocked';
 import VaultDocuments from 'components/screens/app/Documents';
-import MisakeyNotifications from 'components/screens/app/Notifications';
 import Boxes from 'components/screens/app/Boxes';
 
 // HOOKS
@@ -110,10 +108,6 @@ function Home() {
             options={{ prompt: 'login' }}
             path={routes.documents._}
             component={VaultDocuments}
-          />
-          <RouteAuthenticated
-            path={routes.userNotifications._}
-            component={MisakeyNotifications}
           />
           <Route
             path={routes.boxes._}

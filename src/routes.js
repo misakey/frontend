@@ -17,9 +17,6 @@ const routes = {
     _: '/organizations',
     secret: '/organizations/secret',
   },
-  userNotifications: {
-    _: '/user-notifications',
-  },
 };
 
 export default routes;

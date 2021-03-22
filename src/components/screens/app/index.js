@@ -10,7 +10,7 @@ import retry from '@misakey/helpers/retry';
 import Home from 'components/screens/app/Home';
 import Redirect from '@misakey/ui/Redirect';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
-import AccountDrawer from 'components/smart/Drawer/Account';
+import AccountMenuContext from 'components/smart/Menu/Account/Context';
 import OrganizationDrawer from 'components/smart/Drawer/Organization';
 import ScreenSplashOidc from '@misakey/ui/Screen/Splash/Oidc';
 
@@ -52,33 +52,34 @@ const BoxesApp = () => {
 
   return (
     <Suspense fallback={<SplashScreen />}>
-      <AccountDrawer />
       <OrganizationDrawer />
-      <Switch>
-        {/* REDIRECT TO BOXES */}
-        <Redirect
-          exact
-          from={routes._}
-          to={routes.boxes._}
-        />
+      <AccountMenuContext>
+        <Switch>
+          {/* REDIRECT TO BOXES */}
+          <Redirect
+            exact
+            from={routes._}
+            to={routes.boxes._}
+          />
 
-        {/* OTHERS */}
-        <Route path={routes.organizations._} component={OrganizationsRead} />
-        <Route path={authRoutes.identities._} component={Profile} />
-        {/* @FIXME kept for retrocompatibility */}
-        <Route path={routes.boxes.invitation} component={Invitation} />
+          {/* OTHERS */}
+          <Route path={routes.organizations._} component={OrganizationsRead} />
+          <Route path={authRoutes.identities._} component={Profile} />
+          {/* @FIXME kept for retrocompatibility */}
+          <Route path={routes.boxes.invitation} component={Invitation} />
 
-        {/* MAIN VIEWS WITH BOXES LIST AT LEFT */}
-        <Route
-          path={[
-            routes.boxes._, routes.documents._, routes.userNotifications._,
-          ]}
-          component={Home}
-        />
+          {/* MAIN VIEWS WITH BOXES LIST AT LEFT */}
+          <Route
+            path={[
+              routes.boxes._, routes.documents._,
+            ]}
+            component={Home}
+          />
 
-        {/* DEFAULT */}
-        <Route component={NotFound} />
-      </Switch>
+          {/* DEFAULT */}
+          <Route component={NotFound} />
+        </Switch>
+      </AccountMenuContext>
     </Suspense>
   );
 };

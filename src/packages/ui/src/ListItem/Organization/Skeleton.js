@@ -13,7 +13,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 const ListItemOrganizationSkeleton = ({ children, ...rest }) => {
   const classes = useStyles();
   return (
-    <ListItem {...rest}>
+    <ListItem classes={{ root: classes.listItemRoot }} {...rest}>
       <ListItemAvatar classes={{ root: classes.listItemAvatarRoot }}>
         <AvatarSkeleton
           size="small"

@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
 
 // COMPONENTS
-const ButtonDrawerLink = ({ to, children, ...props }) => {
+const IconButtonDrawerLink = ({ to, children, ...props }) => {
   const { isDrawerOpen } = useScreenDrawerContext();
 
   if (isDrawerOpen) {
@@ -28,13 +28,13 @@ const ButtonDrawerLink = ({ to, children, ...props }) => {
   );
 };
 
-ButtonDrawerLink.propTypes = {
+IconButtonDrawerLink.propTypes = {
   to: TO_PROP_TYPE.isRequired,
   children: PropTypes.node,
 };
 
-ButtonDrawerLink.defaultProps = {
+IconButtonDrawerLink.defaultProps = {
   children: null,
 };
 
-export default ButtonDrawerLink;
+export default IconButtonDrawerLink;

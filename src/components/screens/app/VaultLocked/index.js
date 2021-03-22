@@ -26,7 +26,7 @@ import Formik from '@misakey/ui/Formik';
 import FormField from '@misakey/ui/Form/Field';
 
 import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
-import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
+import IconButtonMenuAccount from 'components/smart/IconButton/Menu/Account';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
 import CardUserSignOut from '@misakey/react-auth/components/Card/User/SignOut';
@@ -109,7 +109,7 @@ function VaultLocked({ t }) {
       avatarSize={LARGE}
       header={(
         <AppBarDrawer color="primary" side={SIDES.LEFT}>
-          <OpenDrawerAccountButton />
+          <IconButtonMenuAccount />
         </AppBarDrawer>
           )}
     >

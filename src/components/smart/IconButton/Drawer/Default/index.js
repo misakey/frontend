@@ -6,7 +6,7 @@ import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
 import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
 
 // COMPONENTS
-const ButtonDrawerDefault = ({ children, ...props }) => {
+const IconButtonDrawerDefault = ({ children, ...props }) => {
   const { isDrawerOpen, toggleDrawer } = useScreenDrawerContext();
 
   const onClick = useCallback(
@@ -34,12 +34,12 @@ const ButtonDrawerDefault = ({ children, ...props }) => {
   );
 };
 
-ButtonDrawerDefault.propTypes = {
+IconButtonDrawerDefault.propTypes = {
   children: PropTypes.node,
 };
 
-ButtonDrawerDefault.defaultProps = {
+IconButtonDrawerDefault.defaultProps = {
   children: null,
 };
 
-export default ButtonDrawerDefault;
+export default IconButtonDrawerDefault;

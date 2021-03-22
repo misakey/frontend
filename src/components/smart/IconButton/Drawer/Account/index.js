@@ -2,20 +2,16 @@ import React, { useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
-import { withTranslation } from 'react-i18next';
 
 import { SIDES, SIDE_QUERY_PARAM, TMP_DRAWER_QUERY_PARAMS, TMP_DRAWER_ACCOUNT_VALUE } from '@misakey/ui/constants/drawers';
 
 import getNextSearch from '@misakey/helpers/getNextSearch';
 import isNil from '@misakey/helpers/isNil';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import IconButton from '@misakey/ui/IconButton';
-import UserAccountAvatar from 'components/smart/Avatar/CurrentUser';
-
+import IconButtonAccount from 'components/smart/IconButton/Account';
 
 // COMPONENTS
-function ButtonDrawerAccount({ t, side, ...props }) {
+function IconButtonDrawerAccount({ side, ...props }) {
   const { pathname, search, hash } = useLocation();
 
   const nextSearch = useMemo(
@@ -28,7 +24,7 @@ function ButtonDrawerAccount({ t, side, ...props }) {
     [search, side],
   );
 
-  const openAccountDrawer = useMemo(
+  const openAccount = useMemo(
     () => ({
       pathname,
       hash,
@@ -38,27 +34,20 @@ function ButtonDrawerAccount({ t, side, ...props }) {
   );
 
   return (
-    <IconButton
-      aria-label={t('common:openAccountDrawer')}
+    <IconButtonAccount
       component={Link}
-      to={openAccountDrawer}
-      edge="start"
-      size="small"
-      {...omitTranslationProps(props)}
-    >
-      <UserAccountAvatar size="small" />
-    </IconButton>
+      to={openAccount}
+      {...props}
+    />
   );
 }
 
-ButtonDrawerAccount.propTypes = {
+IconButtonDrawerAccount.propTypes = {
   side: PropTypes.oneOf(Object.values(SIDES)),
-  // withTranslation
-  t: PropTypes.func.isRequired,
 };
 
-ButtonDrawerAccount.defaultProps = {
+IconButtonDrawerAccount.defaultProps = {
   side: null,
 };
 
-export default withTranslation(['common'])(ButtonDrawerAccount);
+export default IconButtonDrawerAccount;

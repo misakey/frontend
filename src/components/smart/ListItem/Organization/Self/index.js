@@ -25,7 +25,7 @@ const ListItemOrganizationSelf = forwardRef((props, ref) => {
       primaryTypographyProps: {
         color: 'textPrimary',
         noWrap: true,
-        variant: 'caption',
+        variant: 'body2',
       },
       secondary: null,
     }),
@@ -35,9 +35,13 @@ const ListItemOrganizationSelf = forwardRef((props, ref) => {
   return (
     <ListItemCurrentUser
       ref={ref}
+      disableGutters
       listItemTextProps={listItemTextProps}
       avatarProps={AVATAR_PROPS}
-      classes={{ listItemAvatar: classes.listItemAvatarRoot }}
+      classes={{
+        root: classes.listItemRoot,
+        listItemAvatar: classes.listItemAvatarRoot,
+      }}
       {...props}
     />
   );

@@ -30,10 +30,13 @@ export const CARD_BORDER_RADIUS = 10;
 export const APPBAR_HEIGHT = 64;
 export const APPBAR_SPACING = 8;
 
-export const PRODUCT_HUNT_APPBAR_HEIGHT = 48;
-
 // TOOLBAR
 export const TOOLBAR_MIN_HEIGHT = 48;
+
+// MENU
+export const SMALL_MENU_WIDTH = 300;
+export const MENU_WIDTH = '40%';
+export const MENU_FULLSCREEN = '100%';
 
 // ICONBUTTON
 export const ICONBUTTON_WIDTH = 48;

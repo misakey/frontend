@@ -5,6 +5,7 @@ import BoxSchema from 'store/schemas/Boxes';
 
 import { useTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import useXsMediaQuery from '@misakey/hooks/useXsMediaQuery';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -14,6 +15,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import MenuBoxLink from 'components/smart/Menu/BoxLink';
 import withDialogShare from 'components/smart/Dialog/BoxLink/Share/with';
+import ButtonCopyBoxLink from 'components/smart/Button/Copy/BoxLink';
 
 import LinkIcon from '@material-ui/icons/Link';
 
@@ -30,6 +32,8 @@ const ButtonShareBoxLink = withDialogShare(Button);
 const ListItemShareBoxLink = ({ disabled, forceEnableMenu, isOwner, box }) => {
   const { t } = useTranslation(['common', 'boxes']);
   const classes = useStyles();
+
+  const isXs = useXsMediaQuery();
 
   const menuDisabled = useMemo(
     () => disabled && !forceEnableMenu,
@@ -48,6 +52,12 @@ const ListItemShareBoxLink = ({ disabled, forceEnableMenu, isOwner, box }) => {
         primary={t('boxes:read.share.link.title')}
         primaryTypographyProps={{ variant: 'h6', color: 'textPrimary' }}
       />
+      {!isXs && (
+        <ButtonCopyBoxLink
+          variant="text"
+          box={box}
+        />
+      )}
       <ButtonShareBoxLink
         standing={BUTTON_STANDINGS.TEXT}
         text={t('common:share')}

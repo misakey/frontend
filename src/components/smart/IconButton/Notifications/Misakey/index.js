@@ -1,9 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { forwardRef, useMemo } from 'react';
+import PropTypes from 'prop-types';
 
 import useMisakeyNotifications from 'hooks/useMisakeyNotifications';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import { Link } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@misakey/ui/Badge';
 
@@ -17,13 +17,11 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-const IconButtonNotificationsMisakey = (props) => {
+const IconButtonNotificationsMisakey = forwardRef(({ selected, ...props }, ref) => {
   const classes = useStyles();
 
   const {
     newNotificationsCount,
-    selected,
-    to,
   } = useMisakeyNotifications();
 
   const color = useMemo(
@@ -33,8 +31,7 @@ const IconButtonNotificationsMisakey = (props) => {
 
   return (
     <IconButton
-      component={Link}
-      to={to}
+      ref={ref}
       color={color}
       {...props}
     >
@@ -46,6 +43,14 @@ const IconButtonNotificationsMisakey = (props) => {
       </Badge>
     </IconButton>
   );
+});
+
+IconButtonNotificationsMisakey.propTypes = {
+  selected: PropTypes.bool,
+};
+
+IconButtonNotificationsMisakey.defaultProps = {
+  selected: false,
 };
 
 export default IconButtonNotificationsMisakey;

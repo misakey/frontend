@@ -3,7 +3,6 @@ import React, { useCallback, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import routes from 'routes';
-import { SIDES } from '@misakey/ui/constants/drawers';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { boxNameFieldValidationSchema } from 'constants/validationSchemas/boxes';
 import setBoxSecrets from '@misakey/crypto/store/actions/setBoxSecrets';
@@ -34,7 +33,7 @@ import { Form, Field } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import Dialog from '@material-ui/core/Dialog';
 import FieldText from '@misakey/ui/Form/Field/TextFieldWithErrors';
-import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
+import IconButtonMenuAccount from 'components/smart/IconButton/Menu/Account';
 import DialogBoxesCreatePasteLink from 'components/smart/Dialog/Boxes/Create/PasteLink';
 
 // CONSTANTS
@@ -189,7 +188,7 @@ function CreateBoxDialog({
               >
                 <BoxFlexFill />
                 {fullScreen && (
-                  <OpenDrawerAccountButton side={SIDES.RIGHT} />
+                  <IconButtonMenuAccount />
                 )}
               </DialogTitleWithCloseFormik>
               <DialogContent

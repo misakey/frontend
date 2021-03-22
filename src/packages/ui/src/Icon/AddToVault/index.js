@@ -6,7 +6,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Badge from '@material-ui/core/Badge';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
-import LibraryAddIcon from '@material-ui/icons/LibraryAdd';
+import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -27,7 +27,7 @@ const AddToVaultIcon = forwardRef(({ isSaved, ...props }, ref) => {
       classes={{ badge: classes.badge }}
       badgeContent={isSaved ? <CheckCircleIcon className={classes.checkIcon} color="primary" /> : null}
     >
-      <LibraryAddIcon {...props} ref={ref} />
+      <CreateNewFolderIcon {...props} ref={ref} />
     </Badge>
   );
 });

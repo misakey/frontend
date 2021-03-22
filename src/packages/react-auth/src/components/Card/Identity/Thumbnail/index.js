@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -6,6 +6,7 @@ import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import isNil from '@misakey/helpers/isNil';
+import isFunction from '@misakey/helpers/isFunction';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
@@ -31,12 +32,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const CardIdentityThumbnail = ({ identity, ...props }) => {
+const CardIdentityThumbnail = ({ identity, onClick, ...props }) => {
   const classes = useStyles();
 
   const hasIdentity = useMemo(
     () => !isNil(identity),
     [identity],
+  );
+
+  const handleClick = useCallback(
+    (e) => {
+      if (isFunction(onClick)) {
+        onClick(e);
+      }
+    },
+    [onClick],
   );
 
   const {
@@ -52,6 +62,7 @@ const CardIdentityThumbnail = ({ identity, ...props }) => {
           draggable="false"
           className={classes.cardActionArea}
           component={LinkAccountMisakey}
+          onClick={handleClick}
         >
           {hasIdentity ? (
             <AvatarDetailed
@@ -72,6 +83,7 @@ const CardIdentityThumbnail = ({ identity, ...props }) => {
         <ButtonAccount
           component={LinkAccountMisakey}
           standing={BUTTON_STANDINGS.MAIN}
+          onClick={handleClick}
         />
       </Card>
     </Box>
@@ -80,10 +92,12 @@ const CardIdentityThumbnail = ({ identity, ...props }) => {
 
 CardIdentityThumbnail.propTypes = {
   identity: PropTypes.shape(IdentitySchema.propTypes),
+  onClick: PropTypes.func,
 };
 
 CardIdentityThumbnail.defaultProps = {
   identity: null,
+  onClick: null,
 };
 
 export default CardIdentityThumbnail;

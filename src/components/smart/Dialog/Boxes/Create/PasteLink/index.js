@@ -5,7 +5,6 @@ import { Form } from 'formik';
 import { withTranslation } from 'react-i18next';
 
 import { getBoxInvitationLinkFieldValidationSchema } from 'constants/validationSchemas/boxes';
-import { SIDES } from '@misakey/ui/constants/drawers';
 
 import dialogIsFullScreen from '@misakey/helpers/dialog/isFullScreen';
 
@@ -14,7 +13,7 @@ import { useHistory } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Formik from '@misakey/ui/Formik';
-import OpenDrawerAccountButton from 'components/smart/Button/Drawer/Account';
+import IconButtonMenuAccount from 'components/smart/IconButton/Menu/Account';
 import FormField from '@misakey/ui/Form/Field';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import BoxControls from '@misakey/ui/Box/Controls';
@@ -78,7 +77,7 @@ function PasteBoxLinkScreen({
         >
           <BoxFlexFill />
           {fullScreen && (
-            <OpenDrawerAccountButton side={SIDES.RIGHT} />
+            <IconButtonMenuAccount />
           )}
         </DialogTitleWithCloseFormik>
         <DialogContent

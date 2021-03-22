@@ -1,4 +1,3 @@
-import routes from 'routes';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { setNewCount, setLastNotification } from 'store/actions/identity/notifications';
 import { getLastNotificationSelector, getNewCountSelector } from 'store/reducers/identity/notifications';
@@ -7,7 +6,6 @@ import { countUserNotificationsBuilder, getUserNotificationsBuilder } from '@mis
 import isNil from '@misakey/helpers/isNil';
 import head from '@misakey/helpers/head';
 
-import { useRouteMatch } from 'react-router-dom';
 import { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
@@ -25,10 +23,6 @@ export default (fetchLastNotification = false) => {
   const identityId = useSelector(IDENTITY_ID_SELECTOR);
   const newNotificationsCount = useSelector(getNewCountSelector);
   const lastNotification = useSelector(getLastNotificationSelector);
-
-  const matchNotificationsRoute = useRouteMatch(routes.userNotifications._);
-
-  const selected = useMemo(() => !isNil(matchNotificationsRoute), [matchNotificationsRoute]);
 
   const shouldFetch = useMemo(
     () => fetchLastNotification === true && lastNotification === undefined
@@ -75,9 +69,7 @@ export default (fetchLastNotification = false) => {
     () => ({
       newNotificationsCount,
       lastNotification,
-      selected,
-      to: routes.userNotifications._,
     }),
-    [lastNotification, newNotificationsCount, selected],
+    [lastNotification, newNotificationsCount],
   );
 };

@@ -1,19 +1,22 @@
-import React, { useMemo, forwardRef, useRef, useCallback, useImperativeHandle, useState } from 'react';
-
+import React, { useMemo, forwardRef, useRef, useCallback, useImperativeHandle, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { VariableSizeList as List } from 'react-window';
-import { useTranslation } from 'react-i18next';
 
+import isNil from '@misakey/helpers/isNil';
+import maxSafeInteger from '@misakey/helpers/maxSafeInteger';
+
+import { useTranslation } from 'react-i18next';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
+
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import MuiSkeleton from '@material-ui/lab/Skeleton';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import Box from '@material-ui/core/Box';
-import isNil from '@misakey/helpers/isNil';
+import { VariableSizeList as List } from 'react-window';
 
 // CONSTANTS
-const GUTTER_TOP = 37;
+// gutter to display loaders, see `innerElementType`
+const GUTTER_TOP = 31;
 const HEIGHT_FALLBACK = 100;
 
 /*
@@ -116,22 +119,15 @@ const InfiniteLoaderChat = forwardRef(({
               standing={BUTTON_STANDINGS.TEXT}
               onClick={loadMoreItems}
               text={t('components:InfiniteLoadedChat.loadMore')}
+              size="small"
             />
           )}
           {!isNil(NoMoreItemsElement) && !hasNextPage && !isNextPageLoading && NoMoreItemsElement}
         </Box>
         <div {...args} />
-        <Box
-          ref={(anchorRef) => {
-            if (anchorRef && !isReady) {
-              anchorRef.scrollIntoView(false);
-            }
-          }}
-          height="1px"
-        />
       </div>
     )),
-    [NoMoreItemsElement, hasNextPage, isNextPageLoading, isReady, loadMoreItems, t],
+    [NoMoreItemsElement, hasNextPage, isNextPageLoading, loadMoreItems, t],
   );
 
   const onMoreItemsLoaded = useCallback(
@@ -171,6 +167,16 @@ const InfiniteLoaderChat = forwardRef(({
   useFetchEffect(
     loadMoreItems,
     { shouldFetch: isNil(itemCount) },
+  );
+
+  useEffect(
+    () => {
+      if (!isNil(itemCount)) {
+        // make sure to scroll to bottom, whatever the offset
+        listRef.current.scrollTo(maxSafeInteger());
+      }
+    },
+    [itemCount, listRef],
   );
 
   return (

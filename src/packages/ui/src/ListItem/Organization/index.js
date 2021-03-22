@@ -15,10 +15,17 @@ import AvatarColorized, { BACKGROUND_COLOR } from '@misakey/ui/Avatar/Colorized'
 
 // HOOKS
 export const useStyles = makeStyles((theme) => ({
+  listItemRoot: {
+    paddingLeft: theme.spacing(0.5),
+    paddingRight: theme.spacing(0.5),
+    '&.Mui-selected': {
+      paddingLeft: theme.spacing(0.5) - 3,
+    },
+  },
   listItemAvatarRoot: {
-    minWidth: SMALL_AVATAR_SIZE + 16,
+    minWidth: SMALL_AVATAR_SIZE + theme.spacing(0.5),
     [theme.breakpoints.down('sm')]: {
-      minWidth: SMALL_AVATAR_SM_SIZE + 16,
+      minWidth: SMALL_AVATAR_SM_SIZE + theme.spacing(0.5),
     },
   },
 }));
@@ -29,7 +36,7 @@ const ListItemOrganization = forwardRef(({
 }, ref) => {
   const classes = useStyles();
   return (
-    <ListItem ref={ref} {...rest}>
+    <ListItem classes={{ root: classes.listItemRoot }} ref={ref} {...rest}>
       <ListItemAvatar classes={{ root: classes.listItemAvatarRoot }}>
         <AvatarColorized
           size="small"
@@ -42,12 +49,12 @@ const ListItemOrganization = forwardRef(({
         primaryTypographyProps={{
           color: 'textPrimary',
           noWrap: true,
-          variant: 'caption',
+          variant: 'body2',
         }}
         secondary={secondary}
         secondaryTypographyProps={{
           color: 'textSecondary',
-          variant: 'caption',
+          variant: 'body2',
         }}
         {...listItemTextProps}
       />

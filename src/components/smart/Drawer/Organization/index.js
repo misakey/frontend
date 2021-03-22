@@ -11,11 +11,12 @@ import {
   SIDES } from '@misakey/ui/constants/drawers';
 
 import getNextSearch from '@misakey/helpers/getNextSearch';
+import isIOS from '@misakey/helpers/isIOS';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useDrawerLayout from '@misakey/hooks/useDrawerLayout';
 
-import Drawer from '@material-ui/core/Drawer';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import DrawerOrganizationContent from 'components/smart/Drawer/Organization/Content';
 
 // HOOKS
@@ -35,6 +36,15 @@ const DrawerOrganization = (props) => {
   const sideOrDefault = useMemo(
     () => side || SIDES.LEFT,
     [side],
+  );
+
+  const swipeableProps = useMemo(
+    () => (isIOS() ? {
+      disableDiscovery: true,
+    } : {
+      disableBackdropTransition: true,
+    }),
+    [],
   );
 
   const drawerWidth = useMemo(
@@ -85,19 +95,20 @@ const DrawerOrganization = (props) => {
   );
 
   return (
-    <Drawer
+    <SwipeableDrawer
       variant="temporary"
       anchor={sideOrDefault}
       open={isTmpDrawerOpen}
       onClose={onClose}
       SlideProps={SlideProps}
       classes={{ paper: classes.drawerPaper }}
+      {...swipeableProps}
       {...props}
     >
       <DrawerOrganizationContent
         backTo={hideDrawerTo}
       />
-    </Drawer>
+    </SwipeableDrawer>
   );
 };
 

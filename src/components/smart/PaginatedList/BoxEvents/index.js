@@ -4,7 +4,6 @@ import React, {
   useCallback,
   useEffect,
   useRef,
-  useState,
   useImperativeHandle,
   Fragment,
 } from 'react';
@@ -20,7 +19,6 @@ import isFunction from '@misakey/helpers/isFunction';
 import max from '@misakey/helpers/max';
 import prop from '@misakey/helpers/prop';
 import nth from '@misakey/helpers/nth';
-import throttle from '@misakey/helpers/throttle';
 import { denormalize } from 'normalizr';
 import getScrollDiff from '@misakey/helpers/getScrollDiff';
 
@@ -30,7 +28,6 @@ import useGroupEventsByDate from 'hooks/useGroupEventsByDate';
 import usePaginateEventsByBox from 'hooks/usePaginateEventsByBox';
 import useNotDoneEffect from '@misakey/hooks/useNotDoneEffect';
 import useMountEffect from '@misakey/hooks/useMountEffect';
-import useIntersectionObserver from '@misakey/hooks/useIntersectionObserver';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useOnScroll from '@misakey/hooks/useOnScroll';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -44,7 +41,7 @@ import TypographySeparator from '@misakey/ui/Typography/Separator';
 import Grow from '@material-ui/core/Grow';
 
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
-
+import ScrollAnchor from '@misakey/ui/ScrollAnchor';
 
 // CONSTANTS
 const THRESHOLD = 200; // px
@@ -61,9 +58,6 @@ const useStyles = makeStyles(() => ({
       overflowAnchor: 'none',
     },
   },
-  anchor: ({ anchorBottom }) => ({
-    overflowAnchor: anchorBottom ? 'auto' : 'none',
-  }),
   loader: {
     position: 'absolute',
     top: 0,
@@ -73,11 +67,9 @@ const useStyles = makeStyles(() => ({
 
 // COMPONENTS
 const PaginatedListBoxEvents = forwardRef(({ box, onScroll }, ref) => {
+  const classes = useStyles();
   const combinedRef = useCombinedRefs(ref);
   const paginationOffsetRef = useRef(0);
-  const anchorRef = useRef();
-
-  const [anchorBottom, setAnchorBottom] = useState(true);
 
   const { eventsCount } = useSafeDestr(box);
 
@@ -85,7 +77,6 @@ const PaginatedListBoxEvents = forwardRef(({ box, onScroll }, ref) => {
     itemCount, byPagination, isFetching, loadMoreItems,
   } = usePaginateEventsByBox();
 
-  const classes = useStyles({ anchorBottom });
   const { t } = useTranslation('common');
 
   const eventIds = useMemo(
@@ -215,24 +206,6 @@ const PaginatedListBoxEvents = forwardRef(({ box, onScroll }, ref) => {
     [notNilEvents, scrollToBottom, combinedRef],
   );
 
-  const onAnchorIntersects = useCallback(
-    (entry) => {
-      if (entry.isIntersecting === true) {
-        setAnchorBottom(true);
-      } else {
-        setAnchorBottom(false);
-      }
-    },
-    [setAnchorBottom],
-  );
-
-  const onAnchorIntersectsThrottled = useMemo(
-    () => throttle(onAnchorIntersects, 300),
-    [onAnchorIntersects],
-  );
-
-  // watch anchor visibility, if visible, set overflowAnchor, else not
-  useIntersectionObserver(anchorRef, onAnchorIntersectsThrottled, true);
   // [/HANDLE SCROLL]
 
   // UPDATE OFFSET
@@ -335,7 +308,7 @@ const PaginatedListBoxEvents = forwardRef(({ box, onScroll }, ref) => {
         }
           </Box>
         ))}
-        <Box ref={anchorRef} height="1px" className={classes.anchor} />
+        <ScrollAnchor height="1px" />
       </Box>
     </>
   );

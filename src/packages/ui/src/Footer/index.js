@@ -1,11 +1,9 @@
 import React, { useState, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { ACCORDION_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
-
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
@@ -50,11 +48,13 @@ const useStyles = makeStyles((theme) => ({
 
 // COMPONENTS
 const Footer = ({
-  t, title, typographyProps,
+  title, typographyProps,
   ContainerComponent, containerProps,
   ...rest
 }) => {
   const classes = useStyles();
+
+  const { t } = useTranslation('components');
 
   const [expanded, setExpanded] = useState(false);
 
@@ -79,7 +79,7 @@ const Footer = ({
       expanded={expanded}
       onChange={onExpandChange}
       TransitionProps={{ onEntered }}
-      {...omitTranslationProps(rest)}
+      {...rest}
     >
       <ContainerComponent {...containerProps}>
         <AccordionSummary
@@ -206,7 +206,6 @@ const Footer = ({
 };
 
 Footer.propTypes = {
-  t: PropTypes.func.isRequired,
   title: PropTypes.string,
   typographyProps: PropTypes.object,
   ContainerComponent: PropTypes.elementType,
@@ -220,4 +219,4 @@ Footer.defaultProps = {
   containerProps: {},
 };
 
-export default withTranslation('components')(Footer);
+export default Footer;

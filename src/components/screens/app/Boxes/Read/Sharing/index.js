@@ -54,8 +54,7 @@ import ListItemUserWhitelisted from '@misakey/ui/ListItem/User/Whitelisted';
 import ListItemUserWhitelistedSkeleton from '@misakey/ui/ListItem/User/Whitelisted/Skeleton';
 import ListItemUserMember from '@misakey/ui/ListItem/User/Member';
 import ListItemDomainWhitelisted from '@misakey/ui/ListItem/Domain/Whitelisted';
-import Accordion from '@misakey/ui/Accordion';
-import AccordionSummary from '@misakey/ui/AccordionSummary';
+import AccordionExpandedSummaryIcon from '@misakey/ui/Accordion/ExpandedSummaryIcon';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ShareBoxForm from 'components/screens/app/Boxes/Read/Sharing/Form';
 import ShareBoxFormSkeleton from 'components/screens/app/Boxes/Read/Sharing/Form/Skeleton';
@@ -65,7 +64,8 @@ import BoxMessage from '@misakey/ui/Box/Message';
 
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore';
+import UnfoldLessIcon from '@material-ui/icons/UnfoldLess';
 
 // CONSTANTS
 const CONTENT_SPACING = 2;
@@ -177,17 +177,31 @@ function BoxSharing({ box, t }) {
     [members, whitelistUsers, creator, subject],
   );
 
+  const identifiersCount = useMemo(
+    () => {
+      let count = membersNotInWhitelist.length + whitelistUsers.length;
+      if (!isNil(creator)) {
+        count += 1;
+      }
+      if (!isNil(subject)) {
+        count += 1;
+      }
+      return count;
+    },
+    [membersNotInWhitelist, whitelistUsers, creator, subject],
+  );
+
+  const domainsCount = useMemo(
+    () => whitelistDomains.length,
+    [whitelistDomains],
+  );
+
   const { secretKey: boxSecretKey } = useBoxReadContext();
 
   const {
     invitationURL,
     boxKeyShare,
   } = useBoxShareMetadata(boxId);
-
-  const onToggleAccordion = useCallback(
-    () => setDomainExpanded((prevDomainExpanded) => !prevDomainExpanded),
-    [setDomainExpanded],
-  );
 
   const onRemove = useCallback(
     async (event, referrerId) => {
@@ -298,15 +312,13 @@ function BoxSharing({ box, t }) {
             >
               <Box my={1}>
                 <ListBordered x={!isXs} dense disablePadding>
-                  <Accordion
+                  <AccordionExpandedSummaryIcon
                     defaultExpanded
                     elevation={0}
+                    summary={<Subtitle>{t(`boxes:read.share.accesses.${IDENTIFIER}`, { count: identifiersCount })}</Subtitle>}
+                    moreIcon={<UnfoldMoreIcon />}
+                    lessIcon={<UnfoldLessIcon />}
                   >
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                    >
-                      <Subtitle>{t(`boxes:read.share.accesses.${IDENTIFIER}`)}</Subtitle>
-                    </AccordionSummary>
                     <AccordionDetails>
                       <ListItemUserWhitelisted
                         key={creatorId}
@@ -319,12 +331,12 @@ function BoxSharing({ box, t }) {
                         identifier={identifierValue}
                       />
                       {!isNil(subject) && (
-                      <ListItemUserWhitelisted
-                        {...subjectProps}
-                        isMe={senderMatchesIdentityId(subject, meIdentityId)}
-                        isSubject
-                        isMember
-                      />
+                        <ListItemUserWhitelisted
+                          {...subjectProps}
+                          isMe={senderMatchesIdentityId(subject, meIdentityId)}
+                          isSubject
+                          isMember
+                        />
                       )}
                       {!isCurrentUserOwner && membersNotInWhitelist.map((member) => (
                         <ListItemUserWhitelisted
@@ -352,18 +364,15 @@ function BoxSharing({ box, t }) {
                         />
                       ))}
                     </AccordionDetails>
-                  </Accordion>
-                  <Accordion
-                    expanded={domainExpanded}
-                    onChange={onToggleAccordion}
+                  </AccordionExpandedSummaryIcon>
+                  {domainsCount > 0 && (
+                  <AccordionExpandedSummaryIcon
+                    defaultExpanded={domainExpanded}
                     elevation={0}
+                    summary={<Subtitle>{t(`boxes:read.share.accesses.${EMAIL_DOMAIN}`, { count: domainsCount })}</Subtitle>}
+                    moreIcon={<UnfoldMoreIcon />}
+                    lessIcon={<UnfoldLessIcon />}
                   >
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      classes={{ root: classes.accordionSummaryRoot }}
-                    >
-                      <Subtitle>{t(`boxes:read.share.accesses.${EMAIL_DOMAIN}`)}</Subtitle>
-                    </AccordionSummary>
                     <AccordionDetails>
                       {whitelistDomains.map((
                         { restrictionType, value, id, ...rest },
@@ -377,7 +386,8 @@ function BoxSharing({ box, t }) {
                         />
                       ))}
                     </AccordionDetails>
-                  </Accordion>
+                  </AccordionExpandedSummaryIcon>
+                  )}
                 </ListBordered>
                 {(hasDomains || hasLinkRequiredUsers) && (
                 <BoxMessage
