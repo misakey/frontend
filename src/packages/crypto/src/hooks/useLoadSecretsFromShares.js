@@ -4,7 +4,7 @@ import isNil from '@misakey/helpers/isNil';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 import { getRootKeyShareBuilder } from '@misakey/auth/builder/rootKeyShares';
-import { combineRootKeyShares, computeOtherShareHash } from '@misakey/crypto/secretStorage/rootKeyShares';
+import { combineRootKeyShares, computeUserLocalShareHash } from '@misakey/crypto/secretStorage/rootKeyShares';
 import loadSecrets from '@misakey/crypto/store/actions/loadSecrets';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { decryptSecretStorageWithRootKey } from '@misakey/crypto/secretStorage';
@@ -44,7 +44,7 @@ export default (() => {
   );
 
   const fetchRootKeyShare = useCallback(
-    () => getRootKeyShareBuilder(computeOtherShareHash(localRootKeyShare)),
+    () => getRootKeyShareBuilder(computeUserLocalShareHash(localRootKeyShare)),
     [localRootKeyShare],
   );
 

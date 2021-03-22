@@ -89,14 +89,9 @@ export default {
     },
   },
   keyShares: {
-    create: {
-      method: 'POST',
-      path: '/box-key-shares',
-      withCsrfToken: true,
-    },
     read: {
       method: 'GET',
-      path: '/box-key-shares/:otherShareHash',
+      path: '/box-key-shares/:invitationShareHash',
     },
   },
   accesses: {

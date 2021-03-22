@@ -16,7 +16,7 @@ export default {
   rootKeyShares: {
     read: {
       method: 'GET',
-      path: '/crypto/root-key-shares/:otherShareHash',
+      path: '/crypto/root-key-shares/:userLocalShareHash',
     },
     create: {
       method: 'POST',

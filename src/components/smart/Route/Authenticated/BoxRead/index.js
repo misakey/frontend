@@ -72,7 +72,7 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
 
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
 
-  const otherShareHash = useMemo(
+  const invitationShareHash = useMemo(
     () => {
       if (isEmpty(locationHash)) {
         return null;
@@ -92,14 +92,14 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   const shouldFetch = useMemo(
     () => !isAuthenticated
       && !isNil(id) && isNil(title)
-      && !isNil(otherShareHash) && isEmpty(objLoginHint)
+      && !isNil(invitationShareHash) && isEmpty(objLoginHint)
       && !error,
-    [isAuthenticated, id, otherShareHash, objLoginHint, error, title],
+    [isAuthenticated, id, invitationShareHash, objLoginHint, error, title],
   );
 
   const getBoxPublic = useCallback(
-    () => getBoxPublicBuilder({ id, otherShareHash }),
-    [id, otherShareHash],
+    () => getBoxPublicBuilder({ id, invitationShareHash }),
+    [id, invitationShareHash],
   );
 
   const onIgnoreNotFoundError = useCallback(

@@ -22,7 +22,7 @@ export default (id, onSuccess) => {
   const handleHttpErrors = useHandleHttpErrors();
 
   const getBoxPublicInfo = useCallback(
-    (otherShareHash) => getBoxPublicBuilder({ id, otherShareHash })
+    (invitationShareHash) => getBoxPublicBuilder({ id, invitationShareHash })
       .then((response) => {
         if (isFunction(onSuccess)) {
           return onSuccess(response);
@@ -43,8 +43,8 @@ export default (id, onSuccess) => {
   return useCallback(
     () => {
       try {
-        const otherShareHash = computeInvitationHash(invitationKeyShare);
-        return getBoxPublicInfo(otherShareHash);
+        const invitationShareHash = computeInvitationHash(invitationKeyShare);
+        return getBoxPublicInfo(invitationShareHash);
       } catch (e) {
         return Promise.reject(new InvalidHash());
       }

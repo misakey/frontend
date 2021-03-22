@@ -12,7 +12,9 @@
 // (since it is never sent through the network)
 import { hash } from 'tweetnacl';
 
-
+// XXX why not using src/packages/crypto/src/crypto/keySplitting.js?
+// (see https://gitlab.misakey.dev/misakey/frontend/-/issues/856)
+// (note that `keySplitting.js` uses the term "misakey share" instead of just "share" now though)
 import { share, combine } from '../crypto/core/secretSharing';
 import { encodeBase64, decodeBase64 } from '../helpers/base64';
 
@@ -29,13 +31,13 @@ export function splitRootKey(key, { accountId }) {
     localRootKeyShare: encodeBase64(shareOne, { urlSafe: true }),
     misakeyRootKeyShare: {
       share: encodeBase64(shareTwo, { urlSafe: true }),
-      otherShareHash: hashBinaryShare(shareOne),
+      userLocalShareHash: hashBinaryShare(shareOne),
       accountId,
     },
   };
 }
 
-export const computeOtherShareHash = (localRootKeyShare) => (
+export const computeUserLocalShareHash = (localRootKeyShare) => (
   hashBinaryShare(decodeBase64(localRootKeyShare, { urlSafe: true }))
 );
 

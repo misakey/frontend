@@ -3,7 +3,7 @@
  * cryptographic secret sharing to secret keys
  * because "key sharing" already has another meaning.
  *
- * The Misakey share has **the hash of** the other share attached to it
+ * The Misakey share has **the hash of** the user share attached to it
  * as a practical way for the frontend
  * to tell the backend which share it wants to download.
  */
@@ -27,8 +27,8 @@ export function splitKey(key) {
   return {
     userShare: encodeBase64(shareOne, { urlSafe: true }),
     misakeyShare: {
-      share: encodeBase64(shareTwo, { urlSafe: true }),
-      otherShareHash: hashBinaryShare(shareOne),
+      misakeyShare: encodeBase64(shareTwo, { urlSafe: true }),
+      userShareHash: hashBinaryShare(shareOne),
     },
   };
 }
@@ -51,7 +51,7 @@ export function hashShare(theShare) {
 export function combineShares(userShare, misakeyShare) {
   const key = combine(
     decodeBase64(userShare, { urlSafe: true }),
-    decodeBase64(misakeyShare.share, { urlSafe: true }),
+    decodeBase64(misakeyShare.misakeyShare, { urlSafe: true }),
   );
 
   return encodeBase64(key, { urlSafe: true });

@@ -14,9 +14,9 @@ describe('key splitting', () => {
 
     const { userShare, misakeyShare } = splitKey(secretKey);
 
-    const otherShareHash = hashShare(userShare);
+    const userShareHash = hashShare(userShare);
 
-    expect(otherShareHash).toEqual(misakeyShare.otherShareHash);
+    expect(userShareHash).toEqual(misakeyShare.userShareHash);
 
     const rebuiltSecretKey = combineShares(userShare, misakeyShare);
 
@@ -28,9 +28,9 @@ describe('key splitting', () => {
 
     const { userShare, misakeyShare } = splitKey(key);
 
-    const otherShareHash = hashShare(userShare);
+    const userShareHash = hashShare(userShare);
 
-    expect(otherShareHash).toEqual(misakeyShare.otherShareHash);
+    expect(userShareHash).toEqual(misakeyShare.userShareHash);
 
     const rebuiltSecretKey = combineShares(userShare, misakeyShare);
 

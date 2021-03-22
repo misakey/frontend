@@ -14,8 +14,8 @@ export function splitBoxSecretKey({ boxSecretKey, boxPublicKey }) {
     // from one part of the code to the other
     // TODO fix this as part of refacto (https://gitlab.misakey.dev/misakey/frontend/-/issues/856)
     misakeyShare: {
-      share: misakeyShare,
-      otherShareHash,
+      misakeyShare,
+      userShareHash: invitationShareHash,
     },
   } = splitKey(boxSecretKey);
 
@@ -34,7 +34,7 @@ export function splitBoxSecretKey({ boxSecretKey, boxPublicKey }) {
     // TODO (in refacto later) fix naming about key shares
     misakeyKeyShare: {
       misakeyShare,
-      otherShareHash,
+      invitationShareHash,
       encryptedInvitationKeyShare,
     },
   };
@@ -52,14 +52,14 @@ export const combineBoxKeyShares = (invitationKeyShare, misakeyKeyShare) => (
 );
 
 export async function fetchMisakeyKeyShare(invitationKeyShare) {
-  const otherShareHash = computeInvitationHash(invitationKeyShare);
+  const invitationShareHash = computeInvitationHash(invitationKeyShare);
   try {
-    const misakeyKeyShare = await getKeyShareBuilder(otherShareHash);
+    const misakeyKeyShare = await getKeyShareBuilder(invitationShareHash);
     return { misakeyKeyShare, invitationKeyShare };
   } catch (error) {
     const code = getCode(error);
-    const { otherShareHash: errorOtherShareHash } = getDetails(error);
-    if (code === notFound && errorOtherShareHash === notFound) {
+    const { invitationShareHash: errorInvitationShareHash } = getDetails(error);
+    if (code === notFound && errorInvitationShareHash === notFound) {
       throw new InvalidHash();
     }
     throw error;

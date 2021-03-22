@@ -18,9 +18,9 @@ export const getBoxMembersBuilder = (id) => API
   .send()
   .then((members) => members.map(objectToCamelCaseDeep));
 
-export const getBoxPublicBuilder = ({ id, otherShareHash }) => API
+export const getBoxPublicBuilder = ({ id, invitationShareHash }) => API
   .use(API.endpoints.boxes.public.read)
-  .build({ id }, undefined, objectToSnakeCase({ otherShareHash }))
+  .build({ id }, undefined, objectToSnakeCase({ invitationShareHash }))
   .send()
   .then(objectToCamelCaseDeep);
 
@@ -103,15 +103,9 @@ export const makeAbortableCreateBoxEncryptedFileWithProgress = (boxId, formData,
   return xhr({ onProgress }, endpoint);
 };
 
-export const createKeyShareBuilder = (misakeyKeyShare) => API
-  .use(API.endpoints.boxes.keyShares.create)
-  .build(null, objectToSnakeCaseDeep(misakeyKeyShare))
-  .send()
-  .then(objectToCamelCaseDeep);
-
-export const getKeyShareBuilder = (otherShareHash) => API
+export const getKeyShareBuilder = (invitationShareHash) => API
   .use(API.endpoints.boxes.keyShares.read)
-  .build({ otherShareHash })
+  .build({ invitationShareHash })
   .send()
   .then(objectToCamelCaseDeep);
 

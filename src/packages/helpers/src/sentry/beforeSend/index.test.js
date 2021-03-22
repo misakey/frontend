@@ -192,7 +192,7 @@ describe('test helper sentryBeforeSend', () => {
         category: 'fetch',
         data: {
           method: 'GET',
-          url: 'https://api.misakey.com.local/boxes/e989f6fd-7b01-4e1b-b05b-5ad41bc71af3/public?other_share_hash=WTptejJU9QfYhaTNcFM1c0XO7SEVxr_3-b6oSA2eacETgJpAENQKDipQHMKg65MaveeBU31wMZiBQapfKmWC4w',
+          url: 'https://api.misakey.com.local/boxes/e989f6fd-7b01-4e1b-b05b-5ad41bc71af3/public?invitation_share_hash=WTptejJU9QfYhaTNcFM1c0XO7SEVxr_3-b6oSA2eacETgJpAENQKDipQHMKg65MaveeBU31wMZiBQapfKmWC4w',
           status_code: 404,
         },
         type: 'http',

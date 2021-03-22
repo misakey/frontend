@@ -9,9 +9,9 @@ import { useTranslation } from 'react-i18next';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import { createKeyShareBuilder } from '@misakey/helpers/builder/boxes';
+import changeBoxInvitationLink from '@misakey/crypto/store/actions/changeBoxInvitationLink';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
-import { combineBoxKeyShares, splitBoxSecretKey, fetchMisakeyKeyShare } from '@misakey/crypto/box/keySplitting';
+import { combineBoxKeyShares, fetchMisakeyKeyShare } from '@misakey/crypto/box/keySplitting';
 import { selectors } from '@misakey/crypto/store/reducers';
 import { InvalidHash } from '@misakey/crypto/Errors/classes';
 import setBoxSecrets from '@misakey/crypto/store/actions/setBoxSecrets';
@@ -51,7 +51,8 @@ export default (box, boxIsReady, belongsToCurrentUser) => {
   // not to be confused with the output of a hash function.
   // It turns out that the value we get from the “URL hash” (the invitation key share)
   // will be passed through a hash function
-  // (to compute the "other share hash" with which we retrieve the corresponding Misakey key share)
+  // (to compute the "invitation share hash"
+  // with which we retrieve the corresponding Misakey key share)
   // so this can be a bit error-prone.
   const keyShareInUrl = useMemo(() => (
     isEmpty(locationHash)
@@ -134,20 +135,9 @@ export default (box, boxIsReady, belongsToCurrentUser) => {
 
   const createNewBoxKeyShares = useCallback(
     async () => {
-      const { invitationKeyShare, misakeyKeyShare } = splitBoxSecretKey({
-        boxSecretKey: secretKey,
-        boxPublicKey: publicKey,
-      });
-      // soon this will use the new API (`state.key_share` box event)
-      await createKeyShareBuilder({
-        share: misakeyKeyShare.misakeyKeyShare,
-        otherShareHash: misakeyKeyShare.otherShareHash,
-        boxId,
-      });
-      dispatch(setBoxSecrets({ boxId, keyShare: invitationKeyShare }));
-      setKeyShareInURL(invitationKeyShare);
+      await dispatch(changeBoxInvitationLink({ boxId, publicKey }));
     },
-    [boxId, setKeyShareInURL, dispatch, secretKey, publicKey],
+    [boxId, dispatch, publicKey],
   );
 
   const onSuccess = useCallback(
