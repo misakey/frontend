@@ -1,53 +1,63 @@
-import React, { useMemo } from 'react';
-
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useLocation } from 'react-router-dom';
-import { withTranslation } from 'react-i18next';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 
-import useImportTypeformCallback, { TYPEFORM_EMBED_URL } from '@misakey/hooks/useImportTypeformCallback';
-
-import isNil from '@misakey/helpers/isNil';
+import noop from '@misakey/helpers/noop';
+import isFunction from '@misakey/helpers/isFunction';
 
 import Link from '@material-ui/core/Link';
+import DialogConfirm from '@misakey/ui/Dialog/Confirm';
 
-const LinkFeedback = ({ text, t, ...rest }) => {
-  const clickOnTypeformLinkCallback = useImportTypeformCallback();
-  const { pathname } = useLocation();
+// COMPONENTS
+const LinkFeedback = ({ text, details, onClick, ...rest }) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const typeformHref = useMemo(
-    () => `${t('components:footer.links.feedback.typeformUrl')}?where=${pathname}`,
-    [pathname, t],
+  const handleClick = useCallback(
+    (e) => {
+      setIsDialogOpen(true);
+      if (isFunction(onClick)) {
+        onClick(e);
+      }
+    },
+    [setIsDialogOpen, onClick],
   );
 
-  const script = document.querySelector(`script[src="${TYPEFORM_EMBED_URL}"]`);
-  if (!isNil(script)) {
-    script.remove();
-  }
+  const onClose = useCallback(
+    () => {
+      setIsDialogOpen(false);
+    },
+    [setIsDialogOpen],
+  );
 
   return (
-    <Link
-      href={typeformHref}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={clickOnTypeformLinkCallback}
-      // Typeform specific data configuration
-      className="typeform-share link"
-      data-hide-headers
-      data-hide-footer
-      data-submit-close-delay="3"
-      data-mode="drawer_right"
-      {...omitTranslationProps(rest)}
-    >
-      {text}
-    </Link>
+    <>
+      <Link
+        component="button"
+        onClick={handleClick}
+        {...rest}
+      >
+        {text}
+      </Link>
+      <DialogConfirm
+        isDialogOpen={isDialogOpen}
+        onClose={onClose}
+        onConfirm={noop}
+        title={text}
+      >
+        {details}
+      </DialogConfirm>
+    </>
   );
 };
 
 LinkFeedback.propTypes = {
   text: PropTypes.string.isRequired,
-  // withTranslation
-  t: PropTypes.func.isRequired,
+  details: PropTypes.node,
+  onClick: PropTypes.func,
 };
 
-export default withTranslation(['components'])(LinkFeedback);
+LinkFeedback.defaultProps = {
+  onClick: null,
+  details: null,
+};
+
+export default LinkFeedback;

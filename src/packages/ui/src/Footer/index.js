@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 
+import { FEEDBACK } from '@misakey/ui/constants/emails';
 import { ACCORDION_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -193,6 +194,14 @@ const Footer = ({
               >
                 <LinkFeedback
                   text={t('components:footer.links.feedback.text')}
+                  details={(
+                    <Trans i18nKey="components:footer.links.feedback.details">
+                      Send us an email at
+                      <Link href={`mailto:${FEEDBACK}`}>{FEEDBACK}</Link>
+                      ,
+                      we&apos;ll get back to you shortly
+                    </Trans>
+                  )}
                   variant="body2"
                   {...typographyProps}
                 />
