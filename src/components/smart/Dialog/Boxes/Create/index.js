@@ -17,7 +17,7 @@ import { createCryptoForNewBox } from '@misakey/crypto/box/creation';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
-import useOrgId from 'hooks/useOrgId';
+import useOrgId from '@misakey/react-auth/hooks/useOrgId';
 import useGeneratePathKeepingSearchAndHashCallback from '@misakey/hooks/useGeneratePathKeepingSearchAndHash/callback';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';

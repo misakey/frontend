@@ -4,7 +4,7 @@ import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/a
 import { listDatatags } from '@misakey/helpers/builder/identities';
 import isNil from '@misakey/helpers/isNil';
 
-import useOrgId from 'hooks/useOrgId';
+import useOrgId from '@misakey/react-auth/hooks/useOrgId';
 import { useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';

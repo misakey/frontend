@@ -10,7 +10,7 @@ import isSelfOrg from 'helpers/isSelfOrg';
 import isNil from '@misakey/helpers/isNil';
 
 import { useTranslation } from 'react-i18next';
-import useOrgId from 'hooks/useOrgId';
+import useOrgId from '@misakey/react-auth/hooks/useOrgId';
 import useFetchOrganizations from 'hooks/useFetchOrganizations';
 import useOnAddOrganization from 'hooks/useOnAddOrganization';
 

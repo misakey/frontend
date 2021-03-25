@@ -7,7 +7,7 @@ import { TOOLBAR_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isSelfOrg from 'helpers/isSelfOrg';
 
-import useOrgId from 'hooks/useOrgId';
+import useOrgId from '@misakey/react-auth/hooks/useOrgId';
 
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import AppBarStatic from '@misakey/ui/AppBar/Static';

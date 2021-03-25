@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useEffect } from 'react';
 
 import { Switch, Route, useRouteMatch, useHistory, useLocation } from 'react-router-dom';
 import routes from 'routes';
@@ -8,13 +8,15 @@ import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/a
 
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
+import isSelfOrg from 'helpers/isSelfOrg';
 import getNextSearch from '@misakey/helpers/getNextSearch';
 
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 import { useSelector } from 'react-redux';
-import useOrgId from 'hooks/useOrgId';
+import useOrgId from '@misakey/react-auth/hooks/useOrgId';
 import useDatatagId from 'hooks/useDatatagId';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import useFetchOrganizations from 'hooks/useFetchOrganizations';
 
 import RouteAcr from '@misakey/react-auth/components/Route/Acr';
 import BoxesContextProvider from 'components/smart/Context/Boxes';
@@ -36,7 +38,16 @@ function Home() {
   const shouldDisplayLockedScreen = useShouldDisplayLockedScreen();
 
   const ownerOrgId = useOrgId();
+  const isSelfOrgSelected = useMemo(
+    () => isSelfOrg(ownerOrgId),
+    [ownerOrgId],
+  );
   const datatagId = useDatatagId();
+
+  const selfOrgSearch = useMemo(
+    () => getNextSearch(search, new Map([['orgId', undefined], ['datatagId', undefined]])),
+    [search],
+  );
 
   const noDatatagSearch = useMemo(
     () => getNextSearch(search, new Map([['datatagId', undefined]])),
@@ -93,6 +104,27 @@ function Home() {
         );
     },
     [isAuthenticated, shouldDisplayLockedScreen, filterId, queryParams, onError, isFullWidth],
+  );
+
+  const {
+    organizations,
+    isFetching,
+    shouldFetch,
+  } = useFetchOrganizations({ isReady: !isSelfOrgSelected });
+
+  useEffect(
+    () => {
+      if (!isFetching && !shouldFetch && !isSelfOrgSelected && isAuthenticated) {
+        const isMyOrg = organizations.some(({ id }) => ownerOrgId === id);
+        if (!isMyOrg) {
+          replace(selfOrgSearch);
+        }
+      }
+    },
+    [
+      isAuthenticated, isFetching, isSelfOrgSelected,
+      organizations, ownerOrgId, replace, selfOrgSearch, shouldFetch,
+    ],
   );
 
   return (

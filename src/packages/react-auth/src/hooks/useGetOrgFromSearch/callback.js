@@ -1,25 +1,19 @@
-import { useCallback, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
-
-import { useLocation } from 'react-router-dom';
-import getSearchParams from '@misakey/helpers/getSearchParams';
-
-import isNil from '@misakey/helpers/isNil';
-
 import OrganizationsSchema from '@misakey/react-auth/store/schemas/Organizations';
 import { makeGetEntitySelector } from '@misakey/store/reducers/entities';
-import useFetchOrganizationPublicInfo from '@misakey/react-auth/hooks/useFetchOrganizationPublicInfo';
-import isUUID from '@misakey/helpers/isUUID';
-import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
+import isNil from '@misakey/helpers/isNil';
+import isUUID from '@misakey/helpers/isUUID';
+
+import useOrgId from '@misakey/react-auth/hooks/useOrgId';
+import { useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
+import useFetchOrganizationPublicInfo from '@misakey/react-auth/hooks/useFetchOrganizationPublicInfo';
+
+// HOOKS
 export default () => {
-  const { search } = useLocation();
   const [hasError, setHasError] = useState(false);
 
-  const { orgId } = useMemo(
-    () => getSearchParams(search),
-    [search],
-  );
+  const orgId = useOrgId(false);
 
   const getOrgEntitySelector = useMemo(
     () => makeGetEntitySelector(OrganizationsSchema.entity),
@@ -49,10 +43,8 @@ export default () => {
     [isValidId, hasError, organization],
   );
 
-  const { isFetching } = useFetchEffect(onFetchOrgIdPublicInfo, { shouldFetch });
-
   return useMemo(
-    () => ({ organization, orgId, isFetching, shouldFetch, hasError }),
-    [hasError, isFetching, orgId, organization, shouldFetch],
+    () => ({ orgId, organization, shouldFetch, fetch: onFetchOrgIdPublicInfo }),
+    [onFetchOrgIdPublicInfo, orgId, organization, shouldFetch],
   );
 };

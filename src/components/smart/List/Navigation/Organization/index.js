@@ -12,7 +12,7 @@ import getNextSearch from '@misakey/helpers/getNextSearch';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import useOrgId from 'hooks/useOrgId';
+import useOrgId from '@misakey/react-auth/hooks/useOrgId';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import ListBordered from '@misakey/ui/List/Bordered';
