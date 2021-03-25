@@ -37,7 +37,7 @@ const MessageRow = ({
   const rowRoot = useRef(null);
   const { t } = useTranslation(['boxes', 'common']);
 
-  const { hasNextPage } = useSafeDestr(data);
+  const { hasNextPage, onClick } = useSafeDestr(data);
 
   const { displayName } = useSafeDestr(identity);
 
@@ -75,14 +75,25 @@ const MessageRow = ({
   const actions = useMemo(
     () => {
       if (type === BOX_AUTO_INVITE) {
-        return <AutoInvitationButton notification={notification} />;
+        return (
+          <AutoInvitationButton
+            onClick={onClick}
+            notification={notification}
+          />
+        );
       }
       if (type === USER_CREATE_IDENTITY && acr === 1) {
-        return <ButtonCreateAccount standing={BUTTON_STANDINGS.TEXT} text={t('common:setupPassword')} />;
+        return (
+          <ButtonCreateAccount
+            onClick={onClick}
+            standing={BUTTON_STANDINGS.TEXT}
+            text={t('common:setupPassword')}
+          />
+        );
       }
       return null;
     },
-    [type, t, acr, notification],
+    [type, acr, onClick, notification, t],
   );
 
   const titleProps = useMemo(
@@ -135,6 +146,7 @@ MessageRow.propTypes = {
   data: PropTypes.shape({
     hasNextPage: PropTypes.bool.isRequired,
     items: PropTypes.object.isRequired,
+    onClick: PropTypes.func.isRequired,
   }).isRequired,
   // CONNECT
   acr: AUTH_PROPS_TYPES.acr.isRequired,

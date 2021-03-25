@@ -191,7 +191,10 @@ const MenuNotificationsMisakey = ({ onClose, ...props }) => {
     { shouldFetch: !isEmpty(itemIdsToAck) },
   );
 
-  const itemData = useMemo(() => ({ items, hasNextPage }), [hasNextPage, items]);
+  const itemData = useMemo(
+    () => ({ items, hasNextPage, onClick: onClose }),
+    [hasNextPage, items, onClose],
+  );
 
   const onToggleMenuFullscreen = useCallback(
     () => {

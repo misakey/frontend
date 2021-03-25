@@ -1,17 +1,30 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
-import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import isFunction from '@misakey/helpers/isFunction';
+
 import useCreateAccount from '@misakey/react-auth/hooks/useCreateAccount';
 
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
+
 // COMPONENTS
-const ButtonCreateAccount = (props) => {
+const ButtonCreateAccount = ({ onClick, ...props }) => {
   const onCreateAccount = useCreateAccount();
+
+  const handleClick = useCallback(
+    (e) => {
+      if (isFunction(onClick)) {
+        onClick(e);
+      }
+      onCreateAccount(e);
+    },
+    [onClick, onCreateAccount],
+  );
 
   return (
     <Button
       standing={BUTTON_STANDINGS.MAIN}
-      onClick={onCreateAccount}
+      onClick={handleClick}
       {...props}
     />
   );
@@ -19,6 +32,11 @@ const ButtonCreateAccount = (props) => {
 
 ButtonCreateAccount.propTypes = {
   text: PropTypes.node.isRequired,
+  onClick: PropTypes.func,
+};
+
+ButtonCreateAccount.defaultProps = {
+  onClick: null,
 };
 
 export default ButtonCreateAccount;

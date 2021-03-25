@@ -9,26 +9,30 @@ import { useSnackbar } from 'notistack';
 
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 import getNextSearch from '@misakey/helpers/getNextSearch';
+import isFunction from '@misakey/helpers/isFunction';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import processAutoInviteCryptoaction from '@misakey/crypto/store/actions/processAutoInviteCryptoaction';
 import { markNotificationAsUsed } from 'store/actions/identity/notifications';
 
-function ActualButton({ id, details: notifDetails }) {
+function ActualButton({ id, details: notifDetails, onClick }) {
   const history = useHistory();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
   const { t } = useTranslation('common');
 
-  const onClick = useCallback(
-    async () => {
+  const handleClick = useCallback(
+    async (e) => {
       try {
         const notificationBoxId = await dispatch(
           processAutoInviteCryptoaction(notifDetails),
         );
         dispatch(markNotificationAsUsed(id));
         const { ownerOrgId } = notifDetails;
+        if (isFunction(onClick)) {
+          onClick(e);
+        }
         history.push({
           pathname: generatePath(routes.boxes.read._, { id: notificationBoxId }),
           search: getNextSearch('', new Map([['orgId', ownerOrgId]])),
@@ -38,12 +42,12 @@ function ActualButton({ id, details: notifDetails }) {
         enqueueSnackbar(t('common:anErrorOccurred'), { variant: 'error' });
       }
     },
-    [dispatch, history, notifDetails, enqueueSnackbar, id, t],
+    [dispatch, notifDetails, id, onClick, history, enqueueSnackbar, t],
   );
 
   return (
     <Button
-      onClick={onClick}
+      onClick={handleClick}
       text={t('common:join')}
       standing={BUTTON_STANDINGS.TEXT}
     />
@@ -53,10 +57,15 @@ function ActualButton({ id, details: notifDetails }) {
 ActualButton.propTypes = {
   details: PropTypes.object.isRequired,
   id: PropTypes.string.isRequired,
+  onClick: PropTypes.func,
 };
 
-const AutoInvitationButton = ({ notification: { id, details } }) => (
-  details.used ? null : ActualButton({ id, details })
+ActualButton.defaultProps = {
+  onClick: null,
+};
+
+const AutoInvitationButton = ({ notification: { id, details }, ...rest }) => (
+  details.used ? null : ActualButton({ id, details, ...rest })
 );
 
 export default AutoInvitationButton;
