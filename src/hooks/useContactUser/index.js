@@ -62,7 +62,9 @@ export default (targetIdentity, fromIdentity) => {
       identityId: contactedIdentityId,
       box,
       keyShare,
-      invitationData,
+      crypto: {
+        invitationData,
+      },
     }),
     [contactedIdentityId, identityId],
   );
