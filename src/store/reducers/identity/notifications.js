@@ -88,7 +88,6 @@ const setPaginationNotifications = (state, { newNotifications, hasNextPage }) =>
 const addPaginatedNotificationId = (state, { newNotificationId }) => {
   const { notifications, newCount } = state;
   if (isNil(notifications)) {
-    if (isNil(state.lastNotification)) { return state; }
     return {
       ...state,
       newCount: isNil(newCount) ? newCount : newCount + 1,
