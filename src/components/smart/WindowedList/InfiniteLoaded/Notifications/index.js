@@ -2,10 +2,10 @@ import React, { useMemo, forwardRef, useRef, useCallback, useImperativeHandle, u
 import PropTypes from 'prop-types';
 
 import isNil from '@misakey/helpers/isNil';
+import getScrollDiff from '@misakey/helpers/getScrollDiff';
 
 import { useTranslation } from 'react-i18next';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import useFetchCallback from '@misakey/hooks/useFetch/callback';
 
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import MuiSkeleton from '@material-ui/lab/Skeleton';
@@ -14,10 +14,8 @@ import Box from '@material-ui/core/Box';
 import { VariableSizeList as List } from 'react-window';
 
 // CONSTANTS
-// gutter to display loaders, see `innerElementType`
-const GUTTER_TOP = 31;
 const HEIGHT_FALLBACK = 100;
-
+const INNER_ELEMENT_HEIGHT = 31;
 /*
 Inspired from https://codesandbox.io/s/react-window-dynamic-list-xlfkq?file=/src/components/List.tsx:541-554
 for dynamic sizing of the element
@@ -30,7 +28,7 @@ for infinite loading logic
 See src/components/screens/app/Notifications/Row.js to see how to use the `setSize` logic
 */
 
-const InfiniteLoaderChat = forwardRef(({
+const WindowedListInfiniteLoadedNotifications = forwardRef(({
   hasNextPage,
   isNextPageLoading,
   loadNextPage, // should returns a Promise with the number of new items added
@@ -86,15 +84,11 @@ const InfiniteLoaderChat = forwardRef(({
 
   // Render an item or a loading indicator.
   const Item = useCallback(
-    ({ index, style, ...rest }) => {
-      const customStyle = {
-        ...style,
-        top: parseFloat(style.top) + GUTTER_TOP,
-      };
+    ({ index, ...rest }) => {
       if (!isItemLoaded(index)) {
-        return <Skeleton style={customStyle} index={index} />;
+        return <Skeleton index={index} />;
       }
-      return <Row style={customStyle} index={index} {...rest} />;
+      return <Row index={index} {...rest} />;
     },
     [isItemLoaded],
   );
@@ -116,6 +110,7 @@ const InfiniteLoaderChat = forwardRef(({
   const innerElementType = useMemo(
     () => forwardRef((args, ref) => (
       <div ref={ref}>
+        <div {...args} />
         <Box display="flex" justifyContent="center">
           {isNextPageLoading && <HourglassEmptyIcon color="primary" />}
           {/* Fallback in case scroll hasn't been triggered well */}
@@ -129,32 +124,9 @@ const InfiniteLoaderChat = forwardRef(({
           )}
           {!isNil(NoMoreItemsElement) && !hasNextPage && !isNextPageLoading && NoMoreItemsElement}
         </Box>
-        <div {...args} />
-        <Box
-          ref={(anchorRef) => {
-            if (anchorRef && !isReady) {
-              // @FIXME does not fully scroll to bottom
-              anchorRef.scrollIntoView(false);
-            }
-          }}
-          height="1px"
-        />
       </div>
     )),
-    [NoMoreItemsElement, hasNextPage, isNextPageLoading, isReady, loadMoreItems, t],
-  );
-
-  const onMoreItemsLoaded = useCallback(
-    (numberOfNewItems) => {
-      // scroll to previous first item for user not to be lost in nav
-      listRef.current.scrollToItem(numberOfNewItems, 'start');
-    },
-    [],
-  );
-
-  const { wrappedFetch: onLoadMoreItems } = useFetchCallback(
-    loadMoreItems,
-    { onSuccess: onMoreItemsLoaded },
+    [NoMoreItemsElement, hasNextPage, isNextPageLoading, loadMoreItems, t],
   );
 
   const onScroll = useCallback(
@@ -162,11 +134,14 @@ const InfiniteLoaderChat = forwardRef(({
       if (!scrollUpdateWasRequested && scrollOffset !== initialScrollOffset) {
         setIsReady(true);
       }
-      if (scrollOffset === 0 && hasNextPage && !isNextPageLoading && isReady) {
-        onLoadMoreItems();
+      if (
+        scrollOffset >= getScrollDiff(outerRef.current) - INNER_ELEMENT_HEIGHT
+      && hasNextPage && !isNextPageLoading && isReady
+      ) {
+        loadMoreItems();
       }
     },
-    [hasNextPage, initialScrollOffset, isNextPageLoading, isReady, onLoadMoreItems],
+    [hasNextPage, initialScrollOffset, isNextPageLoading, isReady, loadMoreItems, outerRef],
   );
 
   useImperativeHandle(forwardedRef, () => ({
@@ -203,7 +178,7 @@ const InfiniteLoaderChat = forwardRef(({
   );
 });
 
-InfiniteLoaderChat.propTypes = {
+WindowedListInfiniteLoadedNotifications.propTypes = {
   Row: PropTypes.elementType.isRequired,
   Skeleton: PropTypes.elementType,
   itemCount: PropTypes.number,
@@ -217,7 +192,7 @@ InfiniteLoaderChat.propTypes = {
   initialScrollOffset: PropTypes.number,
 };
 
-InfiniteLoaderChat.defaultProps = {
+WindowedListInfiniteLoadedNotifications.defaultProps = {
   Skeleton: MuiSkeleton,
   itemCount: 0,
   itemData: {},
@@ -225,4 +200,4 @@ InfiniteLoaderChat.defaultProps = {
   NoMoreItemsElement: null,
 };
 
-export default InfiniteLoaderChat;
+export default WindowedListInfiniteLoadedNotifications;

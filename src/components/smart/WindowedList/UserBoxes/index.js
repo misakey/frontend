@@ -23,11 +23,6 @@ import Box from '@material-ui/core/Box';
 import Title from '@misakey/ui/Typography/Title';
 import Typography from '@material-ui/core/Typography';
 
-// CONSTANTS
-// `Deleted boxes height` + `total` box height + `total` box margin
-const INNER_ELEMENT_TYPE_BOTTOM_HEIGHT = /* 72 +*/ 51 + 2 * 8;
-const INNER_ELEMENT_TYPE_HEIGHT = INNER_ELEMENT_TYPE_BOTTOM_HEIGHT;
-
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   secondary: {
@@ -143,7 +138,6 @@ const WindowedListBoxes = forwardRef(({
       itemSize={72}
       itemData={itemData}
       innerElementType={innerElementType}
-      innerElementTypeHeight={INNER_ELEMENT_TYPE_HEIGHT}
       {...props}
     />
   );

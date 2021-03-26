@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import fill from '@misakey/helpers/fill';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import isFunction from '@misakey/helpers/isFunction';
 
 import WindowedList from 'components/smart/WindowedList';
 import InfiniteLoader from 'react-window-infinite-loader';
@@ -26,6 +27,7 @@ const WindowedListInfiniteLoaded = forwardRef(({
   Row,
   Skeleton,
   itemCount,
+  onItemsRendered,
   ...props
 }, listRef) => {
   const loadedItems = useMemo(
@@ -59,6 +61,41 @@ const WindowedListInfiniteLoaded = forwardRef(({
     [isItemLoaded],
   );
 
+  const bindRefs = useCallback(
+    (ref) => (node) => {
+      if (isFunction(ref)) {
+        ref(node);
+      } else {
+        ref.current = node; // eslint-disable-line no-param-reassign
+      }
+      listRef.current = node; // eslint-disable-line no-param-reassign
+    },
+    [listRef],
+  );
+
+  const handleItemsRendered = useCallback(
+    (loaderOnItemsRendered) => (indices) => {
+      if (isFunction(onItemsRendered)) {
+        onItemsRendered(indices);
+      }
+      loaderOnItemsRendered(indices);
+    },
+    [onItemsRendered],
+  );
+
+  const ListRenderer = useCallback(
+    ({ onItemsRendered: loaderOnItemsRendered, ref }) => (
+      <List
+        {...props}
+        Row={RowOrSkeleton}
+        itemCount={itemCount}
+        onItemsRendered={handleItemsRendered(loaderOnItemsRendered)}
+        ref={bindRefs(ref)}
+      />
+    ),
+    [RowOrSkeleton, bindRefs, handleItemsRendered, itemCount, props],
+  );
+
   return (
     <InfiniteLoader
       isItemLoaded={isItemLoaded}
@@ -67,16 +104,7 @@ const WindowedListInfiniteLoaded = forwardRef(({
       minimumBatchSize={minimumBatchSize}
       threshold={threshold}
     >
-      {({ onItemsRendered, ref }) => (
-        <List
-          {...props}
-          Row={RowOrSkeleton}
-          itemCount={itemCount}
-          onItemsRendered={onItemsRendered}
-          outerRef={listRef}
-          ref={ref}
-        />
-      )}
+      {ListRenderer}
     </InfiniteLoader>
   );
 });
@@ -98,6 +126,8 @@ WindowedListInfiniteLoaded.propTypes = {
   // high number reduces frequency of reloading
   // best is optimal perf related to API
   minimumBatchSize: PropTypes.number,
+  // Called when the range of items rendered by the list changes
+  onItemsRendered: PropTypes.func,
 };
 
 WindowedListInfiniteLoaded.defaultProps = {
@@ -105,6 +135,7 @@ WindowedListInfiniteLoaded.defaultProps = {
   list: WindowedList,
   threshold: 2,
   minimumBatchSize: 5,
+  onItemsRendered: null,
 };
 
 export default WindowedListInfiniteLoaded;

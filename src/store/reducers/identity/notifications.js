@@ -3,8 +3,7 @@ import { denormalize } from 'normalizr';
 import createResetOnSignOutReducer from '@misakey/react-auth/store/reducers/helpers/createResetOnSignOutReducer';
 import pluck from '@misakey/helpers/pluck';
 import filter from '@misakey/helpers/filter';
-import mapKeys from '@misakey/helpers/mapKeys';
-import rangeRight from '@misakey/helpers/rangeRight';
+import range from '@misakey/helpers/range';
 import max from '@misakey/helpers/max';
 import isNil from '@misakey/helpers/isNil';
 
@@ -66,20 +65,19 @@ const initialState = {
 };
 
 const setPaginationNotifications = (state, { newNotifications, hasNextPage }) => {
+  const oldItems = state.notifications || {};
   const numberOfNew = newNotifications.length;
-  const paginatedRange = rangeRight(0, numberOfNew);
+  const paginatedRange = range(0, numberOfNew);
   const nextItems = paginatedRange.reduce((aggr, key, index) => ({
     ...aggr,
-    [key]: newNotifications[index],
+    [key + Object.keys(oldItems).length]: newNotifications[index],
   }), {});
-
-  const oldItems = state.notifications || {};
 
   return {
     ...state,
     hasNextPage,
     notifications: {
-      ...(mapKeys(oldItems, (_, key) => parseInt(key, 10) + numberOfNew)),
+      ...oldItems,
       ...nextItems,
     },
   };

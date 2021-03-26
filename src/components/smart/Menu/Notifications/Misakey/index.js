@@ -33,10 +33,11 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import BoxEmpty from 'components/dumb/Box/Empty';
-import InfiniteLoaderChat from 'components/smart/WindowedList/InfiniteLoaded/Chat';
+import InfiniteLoadedNotifications from 'components/smart/WindowedList/InfiniteLoaded/Notifications';
 import Menu from '@material-ui/core/Menu';
 import IconButton from '@material-ui/core/IconButton';
 import MessageRow from 'components/smart/Menu/Notifications/Misakey/Row';
+import MessageRowSkeleton from 'components/smart/Menu/Notifications/Misakey/Row/Skeleton';
 
 import CloseIcon from '@material-ui/icons/Close';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
@@ -80,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
 
 // COMPONENTS
 const MenuNotificationsMisakey = ({ onClose, ...props }) => {
-  const ref = useRef({});
+  const ref = useRef();
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
   const menuRef = useRef();
@@ -229,11 +230,14 @@ const MenuNotificationsMisakey = ({ onClose, ...props }) => {
       MenuListProps={{
         disablePadding: true,
       }}
+      PaperProps={{
+        square: isSmall || menuFullScreen,
+      }}
       {...menuFullScreenProps}
       {...props}
     >
       <Box>
-        <ElevationScroll target={ref.current ? ref.current.outerRef : undefined}>
+        <ElevationScroll target={!isNil(ref.current) ? ref.current.outerRef : undefined}>
           <AppBarStatic
             toolbarProps={TOOLBAR_PROPS}
           >
@@ -268,9 +272,10 @@ const MenuNotificationsMisakey = ({ onClose, ...props }) => {
       <Box height={`calc(100% - ${TOOLBAR_MIN_HEIGHT}px)`}>
         <AutoSizer>
           {(autoSizerProps) => (
-            <InfiniteLoaderChat
+            <InfiniteLoadedNotifications
               {...autoSizerProps}
               Row={MessageRow}
+              Skeleton={MessageRowSkeleton}
               ref={ref}
               loadNextPage={loadNextPage}
               hasNextPage={hasNextPage}

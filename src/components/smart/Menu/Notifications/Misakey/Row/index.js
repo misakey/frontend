@@ -30,14 +30,14 @@ const NOT_ACK_STYLE = { style: { fontWeight: 800 } };
 
 // COMPONENTS
 const MessageRow = ({
-  index, style, setSize,
+  index, style,
   notification, previousNotification, data,
   acr, identity,
 }) => {
   const rowRoot = useRef(null);
   const { t } = useTranslation(['boxes', 'common']);
 
-  const { hasNextPage, onClick } = useSafeDestr(data);
+  const { hasNextPage, onClick, setSize } = useSafeDestr(data);
 
   const { displayName } = useSafeDestr(identity);
 
@@ -140,13 +140,13 @@ const MessageRow = ({
 };
 
 MessageRow.propTypes = {
-  setSize: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   style: PropTypes.object.isRequired,
   data: PropTypes.shape({
     hasNextPage: PropTypes.bool.isRequired,
     items: PropTypes.object.isRequired,
     onClick: PropTypes.func.isRequired,
+    setSize: PropTypes.func.isRequired,
   }).isRequired,
   // CONNECT
   acr: AUTH_PROPS_TYPES.acr.isRequired,
