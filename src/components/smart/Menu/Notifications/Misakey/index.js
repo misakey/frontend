@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const MenuNotificationsMisakey = ({ onClose, ...props }) => {
+const MenuNotificationsMisakey = ({ onClose, open, ...props }) => {
   const ref = useRef();
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
@@ -144,6 +144,7 @@ const MenuNotificationsMisakey = ({ onClose, ...props }) => {
     () => (isNil(items) ? [] : seenItemsIndexes.map((index) => items[index])),
     [items, seenItemsIndexes],
   );
+
   const getUserNotificationsNotAckSelector = useMemo(
     () => makeGetUserNotificationsNotAckSelector(), [],
   );
@@ -187,9 +188,11 @@ const MenuNotificationsMisakey = ({ onClose, ...props }) => {
     [dispatch, identityId, itemIdsToAck],
   );
 
+  const shouldAck = useMemo(() => !isEmpty(itemIdsToAck) && open, [itemIdsToAck, open]);
+
   useFetchEffect(
     acknowledgeUserNotifications,
-    { shouldFetch: !isEmpty(itemIdsToAck) },
+    { shouldFetch: shouldAck },
   );
 
   const itemData = useMemo(
@@ -233,6 +236,7 @@ const MenuNotificationsMisakey = ({ onClose, ...props }) => {
       PaperProps={{
         square: isSmall || menuFullScreen,
       }}
+      open={open}
       {...menuFullScreenProps}
       {...props}
     >
@@ -294,6 +298,7 @@ const MenuNotificationsMisakey = ({ onClose, ...props }) => {
 
 MenuNotificationsMisakey.propTypes = {
   onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
 };
 
 export default MenuNotificationsMisakey;

@@ -4,7 +4,7 @@ import createResetOnSignOutReducer from '@misakey/react-auth/store/reducers/help
 import pluck from '@misakey/helpers/pluck';
 import filter from '@misakey/helpers/filter';
 import range from '@misakey/helpers/range';
-import max from '@misakey/helpers/max';
+import mapKeys from '@misakey/helpers/mapKeys';
 import isNil from '@misakey/helpers/isNil';
 
 import {
@@ -94,17 +94,14 @@ const addPaginatedNotificationId = (state, { newNotificationId }) => {
   }
 
   const currentItems = state.notifications || {};
-  const maxIndex = max(Object.keys(currentItems).map((key) => parseInt(key, 10)));
-  const newLastIndex = maxIndex + 1;
-  const nextItems = { [newLastIndex]: newNotificationId };
 
   return {
     ...state,
     newCount: state.newCount + 1,
     lastNotification: newNotificationId,
     notifications: {
-      ...currentItems,
-      ...nextItems,
+      0: newNotificationId,
+      ...mapKeys(currentItems, (_, key) => parseInt(key, 10) + 1),
     },
   };
 };
