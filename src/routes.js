@@ -16,6 +16,7 @@ const routes = {
   organizations: {
     _: '/organizations',
     secret: '/organizations/secret',
+    agents: '/organizations/agents',
   },
 };
 

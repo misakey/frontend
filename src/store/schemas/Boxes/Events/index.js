@@ -1,11 +1,11 @@
 import { schema } from 'normalizr';
 import PropTypes from 'prop-types';
-import SenderSchema from 'store/schemas/Boxes/Sender';
+import UserSchema from '@misakey/react-auth/store/schemas/User';
 import { ALL_EVENT_TYPES } from '@misakey/ui/constants/boxes/events';
 import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 
 const entity = new schema.Entity('events', {
-  sender: SenderSchema.entity,
+  sender: UserSchema.entity,
   content: {
     decryptedFile: DecryptedFileSchema.entity,
   },
@@ -24,7 +24,7 @@ const EventSchema = {
     content: PropTypes.object,
     referrerId: PropTypes.string,
     // eslint-disable-next-line react/forbid-foreign-prop-types
-    sender: PropTypes.shape(SenderSchema.propTypes).isRequired,
+    sender: PropTypes.shape(UserSchema.propTypes).isRequired,
   },
 };
 

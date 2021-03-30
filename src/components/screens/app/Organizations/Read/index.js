@@ -1,64 +1,112 @@
 import React, { useMemo } from 'react';
-import { Redirect, Switch, useRouteMatch } from 'react-router-dom';
+import { Redirect, Switch, useRouteMatch, useLocation } from 'react-router-dom';
 
 import routes from 'routes';
+import { ADMIN } from '@misakey/ui/constants/organizations/roles';
+import { selectors as orgSelectors } from 'store/reducers/identity/organizations';
 
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import isSelfOrg from 'helpers/isSelfOrg';
+import isNil from '@misakey/helpers/isNil';
+import getNextSearch from '@misakey/helpers/getNextSearch';
+
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useOrgId from '@misakey/react-auth/hooks/useOrgId';
+import { useSelector } from 'react-redux';
+import useFetchOrganizations from 'hooks/useFetchOrganizations';
 
-import ScreenDrawerContextProvider from 'components/smart/Screen/Drawer';
-import DrawerOrganizationContent from 'components/smart/Drawer/Organization/Content';
 import RouteAcr from '@misakey/react-auth/components/Route/Acr';
 import OrganizationsReadSecret from 'components/screens/app/Organizations/Read/Secret';
-import isSelfOrg from 'helpers/isSelfOrg';
-import { ADMIN } from '@misakey/ui/constants/organizations/roles';
-import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useGetOrgFromSearch from '@misakey/react-auth/hooks/useGetOrgFromSearch';
+import OrganizationsReadAgents from 'components/screens/app/Organizations/Read/Agents';
 
-// HOOKS
-const useStyles = makeStyles(() => ({
-  drawerContent: {
-    position: 'relative',
-    overflow: 'auto',
-  },
-}));
+// CONSTANTS
+const { makeDenormalizeOrganization } = orgSelectors;
 
 // COMPONENTS
-const OrganizationsRead = (props) => {
-  const classes = useStyles();
+const OrganizationsRead = () => {
   const { path } = useRouteMatch();
-  const { organization } = useGetOrgFromSearch();
-  const { currentIdentityRole, id: orgId } = useSafeDestr(organization);
+  const { search } = useLocation();
 
-  const backTo = useGeneratePathKeepingSearchAndHash(routes.boxes._);
+  const denormalizeOrganizationSelector = useMemo(
+    () => makeDenormalizeOrganization(),
+    [],
+  );
+
+  const orgId = useOrgId();
+  const organization = useSelector((state) => denormalizeOrganizationSelector(state, orgId));
+
+  const { currentIdentityRole } = useSafeDestr(organization);
+
   const redirectToSecret = useGeneratePathKeepingSearchAndHash(routes.organizations.secret);
 
-  const isAllowedToSeeSecret = useMemo(
+  const canAdmin = useMemo(
     () => !isSelfOrg(orgId) && currentIdentityRole === ADMIN,
-    [orgId, currentIdentityRole],
+    [currentIdentityRole, orgId],
+  );
+
+  // @FIXME make sure we don't flood call this hook
+  const { organizations, shouldFetch, isFetching } = useFetchOrganizations();
+
+  const organizationsReady = useMemo(
+    () => !shouldFetch && !isFetching && !isNil(organizations),
+    [isFetching, organizations, shouldFetch],
+  );
+
+  const organizationNotLinked = useMemo(
+    () => organizationsReady && !organizations.some(({ id }) => orgId === id),
+    [organizationsReady, organizations, orgId],
+  );
+
+  const selfOrgSearch = useMemo(
+    () => getNextSearch(search, new Map([['orgId', undefined], ['datatagId', undefined]])),
+    [search],
+  );
+  const redirectToSelfOrg = useGeneratePathKeepingSearchAndHash(
+    routes.boxes._,
+    undefined,
+    selfOrgSearch,
   );
 
   return (
-    <ScreenDrawerContextProvider
-      classes={{ content: classes.drawerContent }}
-      drawerChildren={<DrawerOrganizationContent backTo={backTo} />}
-      {...props}
-    >
-      <Switch>
-        {isAllowedToSeeSecret && (
-          <RouteAcr
-            acr={2}
-            exact
-            path={routes.organizations.secret}
-            component={OrganizationsReadSecret}
-          />
+    <Switch>
+      <RouteAcr
+        acr={2}
+        path={path}
+        render={() => (
+          <>
+            {!organizationsReady ? null : (
+              <>
+                {(organizationNotLinked || !canAdmin) ? (
+                  <Redirect
+                    from={path}
+                    to={redirectToSelfOrg}
+                  />
+                ) : (
+                  <Switch>
+                    <RouteAcr
+                      acr={2}
+                      exact
+                      path={routes.organizations.secret}
+                      component={OrganizationsReadSecret}
+                    />
+                    <RouteAcr
+                      acr={2}
+                      exact
+                      path={routes.organizations.agents}
+                      component={OrganizationsReadAgents}
+                    />
+                    <Redirect
+                      from={path}
+                      to={redirectToSecret}
+                    />
+                  </Switch>
+                )}
+              </>
+            )}
+          </>
         )}
-        <Redirect
-          from={path}
-          to={redirectToSecret}
-        />
-      </Switch>
-    </ScreenDrawerContextProvider>
+      />
+    </Switch>
   );
 };
 

@@ -28,7 +28,7 @@ const useStyles = makeStyles(() => ({
 
 // COMPONENTS
 const DrawerOrganization = (props) => {
-  const history = useHistory();
+  const { replace } = useHistory();
   const { pathname, search, hash } = useLocation();
 
   const { isSmDown, tmpDrawerSearch, side } = useDrawerLayout();
@@ -68,6 +68,17 @@ const DrawerOrganization = (props) => {
     [hash, pathname, search],
   );
 
+  const showDrawerTo = useMemo(
+    () => ({
+      pathname,
+      hash,
+      search: getNextSearch(search, new Map([
+        [TMP_DRAWER_QUERY_PARAMS, TMP_DRAWER_ORG_VALUE],
+      ])),
+    }),
+    [hash, pathname, search],
+  );
+
   const exitedTo = useMemo(
     () => ({
       pathname,
@@ -80,13 +91,18 @@ const DrawerOrganization = (props) => {
   );
 
   const onClose = useCallback(
-    () => history.replace(hideDrawerTo),
-    [hideDrawerTo, history],
+    () => replace(hideDrawerTo),
+    [hideDrawerTo, replace],
+  );
+
+  const onOpen = useCallback(
+    () => replace(showDrawerTo),
+    [replace, showDrawerTo],
   );
 
   const onExited = useCallback(
-    () => history.replace(exitedTo),
-    [exitedTo, history],
+    () => replace(exitedTo),
+    [exitedTo, replace],
   );
 
   const SlideProps = useMemo(
@@ -100,6 +116,7 @@ const DrawerOrganization = (props) => {
       anchor={sideOrDefault}
       open={isTmpDrawerOpen}
       onClose={onClose}
+      onOpen={onOpen}
       SlideProps={SlideProps}
       classes={{ paper: classes.drawerPaper }}
       {...swipeableProps}

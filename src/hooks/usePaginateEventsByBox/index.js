@@ -26,7 +26,7 @@ const {
 } = authSelectors;
 
 const { receivePaginatedItemCount, receivePaginatedIds, addPaginatedId } = actionCreators;
-const { getByPagination, getItemCount } = selectors;
+const { makeGetByPagination, makeGetItemCount } = selectors;
 
 // HELPERS
 const boxIdParamPath = path(['params', 'id']);
@@ -45,10 +45,20 @@ export default (shouldStart = true) => {
 
   const dispatch = useDispatch();
 
+  // SELECTORS
+  const getByPaginationSelector = useMemo(
+    () => makeGetByPagination(),
+    [],
+  );
+
+  const getItemCountSelector = useMemo(
+    () => makeGetItemCount(),
+    [],
+  );
 
   // SELECTORS hooks
-  const byPagination = useSelector((state) => getByPagination(state, boxId));
-  const itemCount = useSelector((state) => getItemCount(state, boxId));
+  const byPagination = useSelector((state) => getByPaginationSelector(state, boxId));
+  const itemCount = useSelector((state) => getItemCountSelector(state, boxId));
 
   const dispatchReceiveEvents = useCallback(
     (data, { offset, limit }) => {

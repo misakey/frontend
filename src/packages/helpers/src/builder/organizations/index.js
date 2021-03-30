@@ -1,6 +1,7 @@
 import API from '@misakey/api';
 
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
 import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 
 export const createOrganizationBuilder = (payload) => API
@@ -20,3 +21,25 @@ export const generateOrganizationSecretBuilder = (id) => API
   .build({ id })
   .send()
   .then(objectToCamelCase);
+
+export const countOrganizationAgents = (id, queryParams) => API
+  .use(API.endpoints.organizations.agents.count)
+  .build({ id }, null, objectToSnakeCase(queryParams))
+  .send()
+  .then((response) => parseInt(response.headers.get('X-Total-Count'), 10));
+
+export const listOrganizationAgents = (id, queryParams) => API
+  .use(API.endpoints.organizations.agents.find)
+  .build({ id }, null, objectToSnakeCase(queryParams))
+  .send()
+  .then((response) => response
+    .map(({ id: agentId, ...rest }) => ({
+      id: agentId.toString(),
+      ...objectToCamelCaseDeep(rest),
+    })));
+
+export const addOrganizationAgent = (id, agent) => API
+  .use(API.endpoints.organizations.agents.create)
+  .build({ id }, { email: agent })
+  .send()
+  .then(({ id: agentId, ...rest }) => ({ id: agentId.toString(), ...objectToCamelCaseDeep(rest) }));

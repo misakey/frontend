@@ -18,7 +18,7 @@ const {
   getAsymKeys,
   getBoxKeyShares,
 } = cryptoSelectors;
-const { getBySearchPagination, getByPagination, getItemCount } = selectors;
+const { makeGetBySearchPagination, makeGetByPagination, makeGetItemCount } = selectors;
 const { identity: IDENTITY_SELECTOR } = authSelectors;
 
 // HOOKS
@@ -32,8 +32,13 @@ export default (filterId, search = null) => {
 
   // SELECTORS
   const byPaginationSelector = useMemo(
-    () => (hasSearch ? getBySearchPagination : getByPagination),
+    () => (hasSearch ? makeGetBySearchPagination() : makeGetByPagination()),
     [hasSearch],
+  );
+
+  const getItemCountSelector = useMemo(
+    () => makeGetItemCount(),
+    [],
   );
 
   const paginatedPublicKeysSelector = useMemo(
@@ -56,7 +61,7 @@ export default (filterId, search = null) => {
     [byPaginationIds],
   );
 
-  const itemCount = useSelector((state) => getItemCount(state, filterId));
+  const itemCount = useSelector((state) => getItemCountSelector(state, filterId));
 
   const isPaginationFull = useMemo(
     () => byPaginationCount === itemCount,

@@ -19,7 +19,7 @@ import { getEventForNormalization } from 'helpers/boxEvent';
 
 // CONSTANTS
 const { receivePaginatedItemCount, receivePaginatedIds } = actionCreators;
-const { getByPagination, getItemCount } = selectors;
+const { makeGetByPagination, makeGetItemCount } = selectors;
 
 // HOOKS
 /**
@@ -36,9 +36,20 @@ export default (boxId) => {
 
   const dispatch = useDispatch();
 
+  // SELECTORS
+  const getByPaginationSelector = useMemo(
+    () => makeGetByPagination(),
+    [],
+  );
+
+  const getItemCountSelector = useMemo(
+    () => makeGetItemCount(),
+    [],
+  );
+
   // SELECTORS hooks with memoization layer
-  const byPagination = useSelector((state) => getByPagination(state, boxId));
-  const itemCount = useSelector((state) => getItemCount(state, boxId));
+  const byPagination = useSelector((state) => getByPaginationSelector(state, boxId));
+  const itemCount = useSelector((state) => getItemCountSelector(state, boxId));
   // ---
 
   const dispatchReceived = useCallback(

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import EventSchema from 'store/schemas/Boxes/Events';
-import SenderSchema from 'store/schemas/Boxes/Sender';
+import UserSchema from '@misakey/react-auth/store/schemas/User';
 
 import { TIME } from '@misakey/ui/constants/formats/dates';
 
@@ -61,7 +61,7 @@ const BoxEventDeleted = ({
 BoxEventDeleted.propTypes = {
   event: PropTypes.shape(EventSchema.propTypes).isRequired,
   atTime: PropTypes.string,
-  byIdentity: PropTypes.shape(SenderSchema.propTypes),
+  byIdentity: PropTypes.shape(UserSchema.propTypes),
   preview: PropTypes.bool,
   isFromCurrentUser: PropTypes.bool,
   boxBelongsToCurrentUser: PropTypes.bool,

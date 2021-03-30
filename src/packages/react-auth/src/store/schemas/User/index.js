@@ -1,13 +1,13 @@
 import { schema } from 'normalizr';
 import PropTypes from 'prop-types';
 
-const entity = new schema.Entity('eventSenders', {}, {
+const entity = new schema.Entity('users', {}, {
   idAttribute: ({ id }) => id,
 });
 
 const collection = [entity];
 
-const SenderSchema = {
+const UserSchema = {
   entity,
   collection,
   propTypes: {
@@ -19,4 +19,4 @@ const SenderSchema = {
   },
 };
 
-export default SenderSchema;
+export default UserSchema;

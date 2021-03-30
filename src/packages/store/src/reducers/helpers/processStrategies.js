@@ -1,9 +1,11 @@
 import { normalize } from 'normalizr';
 import map from '@misakey/helpers/map';
-import isEmpty from '@misakey/helpers/isEmpty';
-import mergeDeepRight from '@misakey/helpers/mergeDeepRight';
 import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/helpers/isEmpty';
+import concat from '@misakey/helpers/concat';
+import mergeDeepRight from '@misakey/helpers/mergeDeepRight';
 import mergeDeepWith from '@misakey/helpers/mergeDeepWith';
+import mergeDeepWithKey from '@misakey/helpers/mergeDeepWithKey';
 
 
 // HELPERS
@@ -164,6 +166,21 @@ export const mergeReceiveNoEmptyNullable = (state, { entities }) => {
     newState = {
       ...newState,
       [entityName]: mergeDeepWith(noEmptyNullableOverride, state[entityName], entity),
+    };
+  });
+  return newState;
+};
+
+export const makeMergeReceiveOneToMany = (manyKey) => (state, { entities }) => {
+  let newState = state;
+  Object.entries(entities).forEach(([entityName, entity]) => {
+    newState = {
+      ...newState,
+      [entityName]: mergeDeepWithKey(
+        (key, l, r) => (key === manyKey ? concat(l, r) : r),
+        state[entityName],
+        entity,
+      ),
     };
   });
   return newState;

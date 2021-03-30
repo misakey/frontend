@@ -20,5 +20,28 @@
   },
   "datatags": {
     "empty": "No category defined by the organization"
+  },
+  "agents": {
+    "title": "Agents management",
+    "empty": "Add agents to your organization",
+    "count": {
+      "text": "{{count}} agent",
+      "text_plural": "{{count}} agents"
+    },
+    "role": {
+      "agent": "Agent",
+      "admin": "Admin",
+      "revoke": "Revoke"
+    }
+  },
+  "admins": {
+    "count": {
+      "text": "{{count}} admin",
+      "text_plural": "{{count}} admins"
+    }
+  },
+  "navigation": {
+    "boxes": "Private spaces",
+    "documents": "Saved files"
   }
 }

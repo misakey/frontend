@@ -1,10 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 
-import routes from 'routes';
-
 import { generateOrganizationSecretBuilder } from '@misakey/helpers/builder/organizations';
 import isNil from '@misakey/helpers/isNil';
-import getNextSearch from '@misakey/helpers/getNextSearch';
 
 import { useTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -13,7 +10,6 @@ import useFetchCallback from '@misakey/hooks/useFetch/callback';
 import useOrgId from '@misakey/react-auth/hooks/useOrgId';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import AppBarStatic from '@misakey/ui/AppBar/Static';
@@ -23,17 +19,16 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import ButtonDrawerLink from 'components/smart/IconButton/Drawer/Link';
-import ButtonDrawerDefault from 'components/smart/IconButton/Drawer/Default';
+import ButtonDrawerOrganization from 'components/smart/IconButton/Drawer/Organization';
 import TextField from '@misakey/ui/TextField';
 import BoxControls from '@misakey/ui/Box/Controls';
 import Container from '@material-ui/core/Container';
 import DialogConfirm from '@misakey/ui/Dialog/Confirm';
 import Typography from '@material-ui/core/Typography';
+import ListBordered from '@misakey/ui/List/Bordered';
+import ListItemOrganizationCurrent from 'components/smart/ListItem/Organization/Current';
 
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import MenuIcon from '@material-ui/icons/Menu';
-import ArrowBack from '@material-ui/icons/ArrowBack';
 
 // CONSTANTS
 const IDENTIFIER_FIELD = 'organization_identifier';
@@ -60,13 +55,6 @@ const OrganizationsReadSecret = () => {
   useUpdateDocHead(t('organizations:secret.title'));
 
   const orgId = useOrgId();
-
-  const nextSearch = useMemo(
-    () => getNextSearch('', new Map([['orgId', orgId]])),
-    [orgId],
-  );
-
-  const boxesTo = useGeneratePathKeepingSearchAndHash(routes.boxes._, undefined, nextSearch, '');
 
   const generateOrganizationSecret = useCallback(
     () => generateOrganizationSecretBuilder(orgId),
@@ -98,20 +86,8 @@ const OrganizationsReadSecret = () => {
   return (
     <>
       <AppBarStatic>
-        <ButtonDrawerLink
-          aria-label={t('common:goBack')}
-          to={boxesTo}
-        >
-          <ArrowBack />
-        </ButtonDrawerLink>
+        <ButtonDrawerOrganization color="default" />
         <BoxFlexFill />
-        <ButtonDrawerDefault
-          aria-label={t('common:open')}
-        >
-          <MenuIcon />
-        </ButtonDrawerDefault>
-      </AppBarStatic>
-      <Container maxWidth="sm">
         <List disablePadding>
           <ListItem>
             <ListItemAvatar>
@@ -124,6 +100,15 @@ const OrganizationsReadSecret = () => {
             />
           </ListItem>
         </List>
+        <BoxFlexFill />
+        <ListBordered
+          dense
+          disablePadding
+        >
+          <ListItemOrganizationCurrent />
+        </ListBordered>
+      </AppBarStatic>
+      <Container maxWidth="sm">
         <TextField
           name={IDENTIFIER_FIELD}
           InputProps={{

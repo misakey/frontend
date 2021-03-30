@@ -269,6 +269,14 @@
       "error": {
         "conflict": "This organization name already exists"
       }
+    },
+    "agents": {
+      "label": "Add agents",
+      "error": {
+        "malformed": "At least one email is invalid",
+        "required": "At least one email is required",
+        "conflict": "At least one email is already agent"
+      }
     }
   }
 }

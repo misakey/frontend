@@ -289,7 +289,7 @@
         }
       }
     }
-  }, 
+  },
   "totp": {
     "code": {
       "label": "Code",
@@ -307,6 +307,14 @@
       "info": "Ce nom aidera les autres utilisateurs à identifier votre organisation",
       "error": {
         "conflict": "Ce nom d'organisation existe déjà"
+      }
+    },
+    "agents": {
+      "label": "Ajouter des agents",
+      "error": {
+        "malformed": "Au moins un email est invalide",
+        "required": "Au moins un email est nécessaire",
+        "conflict": "Au moins un email est déjà agent"
       }
     }
   }

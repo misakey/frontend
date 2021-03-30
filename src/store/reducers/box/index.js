@@ -7,7 +7,7 @@ import { MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK, MSG_FILE } from '@misakey/ui/co
 import BoxesSchema from 'store/schemas/Boxes';
 import BoxesByDatatagSchema from 'store/schemas/Boxes/ByDatatag';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
-import BoxSenderSchema from 'store/schemas/Boxes/Sender';
+import UserSchema from '@misakey/react-auth/store/schemas/User';
 import { BLUR_TEXT, CLEAR_TEXT } from 'store/actions/box';
 import { actionCreators } from 'store/reducers/userBoxes/pagination/events';
 import { actionCreators as fileEventsActionCreators, selectors as fileEventsSelectors } from 'store/reducers/userBoxes/pagination/events/files';
@@ -39,8 +39,8 @@ const {
   addPaginatedId: addPaginatedFileEventId,
   removePaginatedId: removePaginatedFileEventId,
 } = fileEventsActionCreators;
-const { getItemCount: getFileItemCount } = fileEventsSelectors;
-const { isPaginationAlreadyFetched: isBoxPaginationAlreadyFetched } = boxPaginationSelectors;
+const { makeGetItemCount } = fileEventsSelectors;
+const { makeIsPaginationAlreadyFetched } = boxPaginationSelectors;
 const { getDatatagById } = datatagSelectors;
 
 // HELPERS
@@ -51,14 +51,14 @@ const contentValuePath = path(['content', 'value']);
 
 const getNextMembers = ({ type, sender }, members) => {
   if (type === MEMBER_JOIN) {
-    const { result } = normalize(sender, BoxSenderSchema.entity);
+    const { result } = normalize(sender, UserSchema.entity);
     if (!members.includes(result)) {
       return members.concat(result);
     }
   }
 
   if (type === MEMBER_LEAVE || type === MEMBER_KICK) {
-    const { result } = normalize(sender, BoxSenderSchema.entity);
+    const { result } = normalize(sender, UserSchema.entity);
     return without(members, result);
   }
 
@@ -208,6 +208,7 @@ export const receiveJoinedBox = (box, processStrategy = mergeReceiveNoEmpty) => 
 };
 
 export const addJoinedBox = (box, filterId, search = null) => async (dispatch, getState) => {
+  const isBoxPaginationAlreadyFetched = makeIsPaginationAlreadyFetched();
   const { result } = await Promise.resolve(dispatch(receiveJoinedBox(box, mergeReceiveNoEmpty)));
   const shouldAddToPagination = isBoxPaginationAlreadyFetched(getState(), filterId, search);
 
@@ -229,7 +230,7 @@ export const removeBox = (id) => (dispatch, getState) => {
 };
 
 export const receivePublicInfo = (id, { creator, ...rest }) => (dispatch) => {
-  const { entities, result } = normalize(creator, BoxSenderSchema.entity);
+  const { entities, result } = normalize(creator, UserSchema.entity);
   return batch(() => {
     dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
     dispatch(updateEntities([{ id, changes: { creator: result, ...rest } }], BoxesSchema));
@@ -240,6 +241,7 @@ export const addBoxEvent = (id, nextEvent, isMyEvent = false, filterId, onNotify
   dispatch,
   getState,
 ) => {
+  const getFileItemCount = makeGetItemCount();
   const currentBox = getBoxById(getState(), id);
 
   if (isNil(currentBox)) {
@@ -317,6 +319,7 @@ export const receiveBoxEvents = (id, events) => (dispatch, getState) => {
 };
 
 export const receiveWSEditEvent = (editEvent) => (dispatch, getState) => {
+  const getFileItemCount = makeGetItemCount();
   const { referrerId, boxId } = editEvent;
   const fileEventItemCount = getFileItemCount(getState(), boxId);
 

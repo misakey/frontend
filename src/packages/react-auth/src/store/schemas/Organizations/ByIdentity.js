@@ -14,7 +14,7 @@ const IdentityOrganizationsSchema = {
   propTypes: {
     id: PropTypes.string.isRequired,
     // eslint-disable-next-line react/forbid-foreign-prop-types
-    organizations: PropTypes.shape(OrganizationsSchema.propTypes),
+    organizations: PropTypes.arrayOf(PropTypes.shape(OrganizationsSchema.propTypes)),
   },
 };
 

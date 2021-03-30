@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import SenderSchema from 'store/schemas/Boxes/Sender';
+import UserSchema from '@misakey/react-auth/store/schemas/User';
 import BoxSchema from 'store/schemas/Boxes';
 
 import { sendersMatch } from 'helpers/sender';
@@ -50,7 +50,7 @@ const ListItemMember = ({ member, box, belongsToCurrentUser, t, ...rest }) => {
 };
 
 ListItemMember.propTypes = {
-  member: PropTypes.shape(SenderSchema.propTypes).isRequired,
+  member: PropTypes.shape(UserSchema.propTypes).isRequired,
   box: PropTypes.shape(BoxSchema.propTypes).isRequired,
   belongsToCurrentUser: PropTypes.bool,
   // withTranslation

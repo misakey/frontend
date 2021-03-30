@@ -12,7 +12,7 @@ import execWithRequestIdleCallback from 'packages/helpers/src/execWithRequestIdl
 
 // ACTIONS
 const { removePaginatedId } = actionCreators;
-const { getBySearchPagination, getByPagination } = selectors;
+const { makeGetBySearchPagination, makeGetByPagination } = selectors;
 
 // HOOKS
 export const useOnRemoveBox = (search = null) => {
@@ -63,7 +63,7 @@ export const useOnReceiveBox = (filterId, search = null) => {
 
   // SELECTORS
   const byPaginationSelector = useMemo(
-    () => (hasSearch ? getBySearchPagination : getByPagination),
+    () => (hasSearch ? makeGetBySearchPagination() : makeGetByPagination()),
     [hasSearch],
   );
   // hook with memoization layer

@@ -15,10 +15,10 @@ describe('testing pagination reducers helpers', () => {
         TEST,
         makePaginationReducer(TEST, getState),
         expect.objectContaining({
-          getByPagination: expect.any(Function),
-          getBySearchPagination: expect.any(Function),
-          getItemCount: expect.any(Function),
-          getSearch: expect.any(Function),
+          makeGetByPagination: expect.any(Function),
+          makeGetBySearchPagination: expect.any(Function),
+          makeGetItemCount: expect.any(Function),
+          makeGetSearch: expect.any(Function),
         }),
       ],
     ];

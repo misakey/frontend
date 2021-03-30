@@ -14,6 +14,7 @@ import userBoxesPagination from 'store/reducers/userBoxes/pagination';
 import boxEventsPagination from 'store/reducers/userBoxes/pagination/events';
 import boxFileEventsPagination from 'store/reducers/userBoxes/pagination/events/files';
 import savedFilesPagination from 'store/reducers/files/saved/pagination';
+import agentsPagination from 'store/reducers/identity/organizations/agents/pagination';
 
 import devicePreferences from 'store/reducers/devicePreferences';
 import box from 'store/reducers/box';
@@ -30,6 +31,7 @@ const appReducer = combineReducers({
   ...boxEventsPagination,
   ...boxFileEventsPagination,
   ...savedFilesPagination,
+  ...agentsPagination,
   entities: wrapReducerWithResetOnSignOut({
     // New app
     boxes: {},

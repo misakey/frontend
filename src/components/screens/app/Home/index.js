@@ -26,7 +26,7 @@ import VaultLockedScreen from 'components/screens/app/VaultLocked';
 import VaultDocuments from 'components/screens/app/Documents';
 import Boxes from 'components/screens/app/Boxes';
 
-// HOOKS
+// CONSTANTS
 const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
 
 // COMPONENTS

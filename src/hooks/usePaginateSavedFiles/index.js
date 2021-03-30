@@ -16,7 +16,7 @@ import { receiveSavedFiles } from 'store/reducers/files/saved';
 
 // CONSTANTS
 const { receivePaginatedItemCount } = actionCreators;
-const { getByPagination, getItemCount } = selectors;
+const { makeGetByPagination, makeGetItemCount } = selectors;
 
 // HOOKS
 /**
@@ -32,9 +32,20 @@ export default () => {
 
   const dispatch = useDispatch();
 
+  // SELECTORS
+  const getByPaginationSelector = useMemo(
+    () => makeGetByPagination(),
+    [],
+  );
+
+  const getItemCountSelector = useMemo(
+    () => makeGetItemCount(),
+    [],
+  );
+
   // SELECTORS hooks with memoization layer
-  const byPagination = useSelector((state) => getByPagination(state, identityId));
-  const itemCount = useSelector((state) => getItemCount(state, identityId));
+  const byPagination = useSelector((state) => getByPaginationSelector(state, identityId));
+  const itemCount = useSelector((state) => getItemCountSelector(state, identityId));
   // ---
 
   const dispatchReceived = useCallback(

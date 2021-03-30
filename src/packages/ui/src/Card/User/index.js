@@ -7,6 +7,7 @@ import moment from 'moment';
 import any from '@misakey/helpers/any';
 import complement from '@misakey/helpers/complement';
 import isEmpty from '@misakey/helpers/isEmpty';
+import toLower from '@misakey/helpers/toLower';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
@@ -82,7 +83,7 @@ const CardUser = ({
         const fromNow = isEmpty(expiresAt) ? '' : moment(expiresAt).fromNow();
         return t('common:expired', { fromNow });
       }
-      return isNotEmpty ? identifier : t('common:noSession');
+      return isNotEmpty ? toLower(identifier) : t('common:noSession');
     },
     [expired, expiresAt, isNotEmpty, identifier, t],
   );

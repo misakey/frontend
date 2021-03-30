@@ -10,7 +10,7 @@ import pathOr from '@misakey/helpers/pathOr';
 import isNil from '@misakey/helpers/isNil';
 
 // SELECTORS
-const getDatatagsSelector = createSelector(
+const makeGetDatatagsSelector = () => createSelector(
   (state) => state.entities,
   (_, { id }) => id,
   (entities, id) => pathOr([], ['organizationDatatags', id, 'datatags'])(entities),
@@ -18,7 +18,7 @@ const getDatatagsSelector = createSelector(
 
 
 export const selectors = {
-  getDatatags: getDatatagsSelector,
+  makeGetDatatags: makeGetDatatagsSelector,
   makeDenormalizeDatatags: () => createSelector(
     (state) => state.entities,
     (_, id) => id,

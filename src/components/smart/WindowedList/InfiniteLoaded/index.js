@@ -6,6 +6,7 @@ import { withTranslation } from 'react-i18next';
 import fill from '@misakey/helpers/fill';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isFunction from '@misakey/helpers/isFunction';
+import isNil from '@misakey/helpers/isNil';
 
 import WindowedList from 'components/smart/WindowedList';
 import InfiniteLoader from 'react-window-infinite-loader';
@@ -68,7 +69,9 @@ const WindowedListInfiniteLoaded = forwardRef(({
       } else {
         ref.current = node; // eslint-disable-line no-param-reassign
       }
-      listRef.current = node; // eslint-disable-line no-param-reassign
+      if (!isNil(listRef)) {
+        listRef.current = node; // eslint-disable-line no-param-reassign
+      }
     },
     [listRef],
   );

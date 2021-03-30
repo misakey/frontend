@@ -1,5 +1,5 @@
 import BoxesSchema from 'store/schemas/Boxes';
-import SenderSchema from 'store/schemas/Boxes/Sender';
+import UserSchema from '@misakey/react-auth/store/schemas/User';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
 import { normalize } from 'normalizr';
@@ -23,7 +23,7 @@ export default (boxId) => {
     (members) => {
       const normalized = normalize(
         members,
-        SenderSchema.collection,
+        UserSchema.collection,
       );
       const { entities, result } = normalized;
       return Promise.all([

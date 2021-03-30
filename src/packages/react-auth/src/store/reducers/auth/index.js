@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 
 import createResetOnSignOutReducer from '@misakey/react-auth/store/reducers/helpers/createResetOnSignOutReducer';
 import { createSelector } from 'reselect';
+import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 
 import merge from '@misakey/helpers/merge';
 import isNil from '@misakey/helpers/isNil';
@@ -22,8 +23,9 @@ export const PROP_TYPES = {
   accountId: PropTypes.string,
   isAuthenticated: PropTypes.bool,
   identityId: PropTypes.string,
-  // @FIXME we would need a schema
-  identity: PropTypes.object,
+  identity: PropTypes.shape(
+    IdentitySchema.propTypes, // eslint-disable-line react/forbid-foreign-prop-types
+  ),
   expiresAt: PropTypes.string,
   acr: PropTypes.number,
   scope: PropTypes.string,

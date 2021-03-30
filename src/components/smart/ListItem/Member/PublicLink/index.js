@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
-import SenderSchema from 'store/schemas/Boxes/Sender';
+import UserSchema from '@misakey/react-auth/store/schemas/User';
 import authRoutes from '@misakey/react-auth/routes';
 
 import { generatePath, Link } from 'react-router-dom';
@@ -58,7 +58,7 @@ const ListItemMemberPublicLink = ({ component: Component, member, ...props }) =>
 
 ListItemMemberPublicLink.propTypes = {
   component: PropTypes.elementType,
-  member: PropTypes.shape(SenderSchema.propTypes).isRequired,
+  member: PropTypes.shape(UserSchema.propTypes).isRequired,
 };
 
 ListItemMemberPublicLink.defaultProps = {

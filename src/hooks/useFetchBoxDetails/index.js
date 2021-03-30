@@ -18,7 +18,7 @@ import { getBoxBuilder, getBoxMembersBuilder } from '@misakey/helpers/builder/bo
 import { noEmptyOverride, mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import BoxesSchema from 'store/schemas/Boxes';
 import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
-import SenderSchema from 'store/schemas/Boxes/Sender';
+import UserSchema from '@misakey/react-auth/store/schemas/User';
 
 import { makeDenormalizeBoxSelector, receiveJoinedBox } from 'store/reducers/box';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
@@ -153,7 +153,7 @@ export default (id) => {
     (data) => {
       const normalized = normalize(
         data,
-        SenderSchema.collection,
+        UserSchema.collection,
       );
       const { entities, result } = normalized;
       return Promise.all([

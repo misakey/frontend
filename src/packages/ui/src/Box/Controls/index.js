@@ -17,10 +17,10 @@ const useStyles = makeStyles((theme) => ({
   boxRoot: {
     [theme.breakpoints.down('xs')]: {
       '& > *:not(:last-child)': {
-        marginBottom: theme.spacing(0.5),
+        marginRight: theme.spacing(0.5),
       },
       '& > *:not(:first-child)': {
-        marginTop: theme.spacing(0.5),
+        marginLeft: theme.spacing(0.5),
       },
     },
   },

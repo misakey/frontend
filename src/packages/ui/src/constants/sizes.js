@@ -40,6 +40,7 @@ export const MENU_FULLSCREEN = '100%';
 
 // ICONBUTTON
 export const ICONBUTTON_WIDTH = 48;
+export const SMALL_BUTTON_HEIGHT = 30;
 
 // ACCORDION
 export const ACCORDION_MIN_HEIGHT = 48;

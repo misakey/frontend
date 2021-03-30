@@ -20,5 +20,28 @@
   },
   "datatags": {
     "empty": "Aucune catégorie définie par l'organisation"
+  },
+  "agents": {
+    "title": "Gestion des agents",
+    "count": {
+      "text": "{{count}} agent",
+      "text_plural": "{{count}} agents"
+    },
+    "empty": "Ajoutez des agents à votre organisation",
+    "role": {
+      "agent": "Agent",
+      "admin": "Admin",
+      "revoke": "Révoquer"
+    }
+  },
+  "admins": {
+    "count": {
+      "text": "{{count}} admin",
+      "text_plural": "{{count}} admins"
+    }
+  },
+  "navigation": {
+    "boxes": "Discussions",
+    "documents": "Fichiers sauvegardés"
   }
 }

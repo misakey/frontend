@@ -4,15 +4,15 @@ import PropTypes from 'prop-types';
 import ACCESS_MODES from '@misakey/ui/constants/accessModes';
 
 import EventSchema from 'store/schemas/Boxes/Events';
-import SenderSchema from 'store/schemas/Boxes/Sender';
+import UserSchema from '@misakey/react-auth/store/schemas/User';
 
 const entity = new schema.Entity('boxes', {
   events: EventSchema.collection,
   accesses: EventSchema.collection,
   lastEvent: EventSchema.entity,
-  creator: SenderSchema.entity,
-  subject: SenderSchema.entity,
-  members: SenderSchema.collection,
+  creator: UserSchema.entity,
+  subject: UserSchema.entity,
+  members: UserSchema.collection,
 });
 
 const collection = [entity];
@@ -35,13 +35,13 @@ const BoxesSchema = {
     // eslint-disable-next-line react/forbid-foreign-prop-types
     accesses: PropTypes.arrayOf(PropTypes.shape(EventSchema.propTypes)),
     // eslint-disable-next-line react/forbid-foreign-prop-types
-    creator: PropTypes.shape(SenderSchema.propTypes),
+    creator: PropTypes.shape(UserSchema.propTypes),
     // eslint-disable-next-line react/forbid-foreign-prop-types
-    subject: PropTypes.shape(SenderSchema.propTypes),
+    subject: PropTypes.shape(UserSchema.propTypes),
     // eslint-disable-next-line react/forbid-foreign-prop-types
     lastEvent: PropTypes.shape(EventSchema.propTypes),
     // eslint-disable-next-line react/forbid-foreign-prop-types
-    members: PropTypes.arrayOf(PropTypes.shape(SenderSchema.propTypes)),
+    members: PropTypes.arrayOf(PropTypes.shape(UserSchema.propTypes)),
   },
 };
 

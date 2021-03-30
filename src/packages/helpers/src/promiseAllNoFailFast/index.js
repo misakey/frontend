@@ -1,8 +1,8 @@
 
 // HELPERS
-const defaultMapError = (error) => ({ error });
+const defaultMapError = (index) => (error) => ({ error, index });
 
 export default (promises, mapError = defaultMapError) => Promise.all(
   promises
-    .map((promise) => promise.catch(mapError)),
+    .map((promise, index) => promise.catch(mapError(index))),
 );

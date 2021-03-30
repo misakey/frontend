@@ -17,4 +17,19 @@ export default {
       withCsrfToken: true,
     },
   },
+  agents: {
+    count: {
+      method: 'HEAD',
+      path: '/organizations/:id/agents',
+    },
+    find: {
+      method: 'GET',
+      path: '/organizations/:id/agents',
+    },
+    create: {
+      method: 'POST',
+      path: '/organizations/:id/agents',
+      withCsrfToken: true,
+    },
+  },
 };

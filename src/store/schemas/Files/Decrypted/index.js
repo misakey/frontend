@@ -1,6 +1,6 @@
 import { schema } from 'normalizr';
 import PropTypes from 'prop-types';
-import SenderSchema from 'store/schemas/Boxes/Sender';
+import UserSchema from '@misakey/react-auth/store/schemas/User';
 
 const entity = new schema.Entity('decryptedFiles');
 
@@ -19,7 +19,7 @@ const DecryptedFileSchema = {
     isLoading: PropTypes.bool,
     createdAt: PropTypes.string,
     // eslint-disable-next-line react/forbid-foreign-prop-types
-    sender: PropTypes.shape(SenderSchema.propTypes),
+    sender: PropTypes.shape(UserSchema.propTypes),
     error: PropTypes.object,
   },
 };

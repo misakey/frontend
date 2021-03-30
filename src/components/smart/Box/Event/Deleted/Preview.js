@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import SenderSchema from 'store/schemas/Boxes/Sender';
+import UserSchema from '@misakey/react-auth/store/schemas/User';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { senderMatchesIdentityId } from 'helpers/sender';
 
@@ -32,7 +32,7 @@ const BoxEventDeletedPreview = ({ t, byIdentity, ...props }) => {
 };
 
 BoxEventDeletedPreview.propTypes = {
-  byIdentity: PropTypes.shape(SenderSchema.propTypes),
+  byIdentity: PropTypes.shape(UserSchema.propTypes),
   // withTranslation
   t: PropTypes.func.isRequired,
 };

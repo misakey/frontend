@@ -198,27 +198,27 @@ export const makePaginationReducer = (prefix, getState, initialState = INITIAL_S
 
   // SELECTORS
   const selectors = isFunction(getState) ? {
-    getByPagination: createSelector(
+    makeGetByPagination: () => createSelector(
       getState,
       (_, filterId) => filterId,
       (items, filterId) => pathOr(EMPTY_OBJECT, [filterId, BY_PAGINATION])(items),
     ),
-    isPaginationAlreadyFetched: createSelector(
+    makeIsPaginationAlreadyFetched: () => createSelector(
       getState,
       (_, filterId, search) => ({ filterId, search }),
       (items, { filterId, search }) => !isNil(path([filterId, search ? 'search' : BY_PAGINATION])(items)),
     ),
-    getSearch: createSelector(
+    makeGetSearch: () => createSelector(
       getState,
       (_, filterId) => filterId,
       (items, filterId) => pathOr(null, [filterId, 'search'])(items),
     ),
-    getBySearchPagination: createSelector(
+    makeGetBySearchPagination: () => createSelector(
       getState,
       (_, filterId) => filterId,
       (items, filterId) => pathOr(EMPTY_OBJECT, [filterId, BY_SEARCH_PAGINATION])(items),
     ),
-    getItemCount: createSelector(
+    makeGetItemCount: () => createSelector(
       getState,
       (_, filterId) => filterId,
       (items, filterId) => pathOr(null, [filterId, 'itemCount'])(items),

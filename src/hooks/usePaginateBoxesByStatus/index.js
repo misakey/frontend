@@ -16,7 +16,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // CONSTANTS
 const { receivePaginatedItemCount, receivePaginatedIds } = actionCreators;
-const { getBySearchPagination, getByPagination, getItemCount, getSearch } = selectors;
+const {
+  makeGetBySearchPagination, makeGetByPagination, makeGetItemCount, makeGetSearch,
+} = selectors;
 
 // HOOKS
 /**
@@ -48,15 +50,25 @@ export default (filterId, queryParams = {}, search = null, onError = null) => {
 
   // SELECTORS
   const byPaginationSelector = useMemo(
-    () => (hasSearch ? getBySearchPagination : getByPagination),
+    () => (hasSearch ? makeGetBySearchPagination() : makeGetByPagination()),
     [hasSearch],
+  );
+
+  const getItemCountSelector = useMemo(
+    () => makeGetItemCount(),
+    [],
+  );
+
+  const getSearchSelector = useMemo(
+    () => makeGetSearch(),
+    [],
   );
   // ---
 
   // SELECTORS hooks with memoization layer
   const byPagination = useSelector((state) => byPaginationSelector(state, filterId));
-  const itemCount = useSelector((state) => getItemCount(state, filterId));
-  const currentSearch = useSelector((state) => getSearch(state, filterId));
+  const itemCount = useSelector((state) => getItemCountSelector(state, filterId));
+  const currentSearch = useSelector((state) => getSearchSelector(state, filterId));
 
   // ---
 

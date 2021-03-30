@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation, useTranslation } from 'react-i18next';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
 import BoxesSchema from 'store/schemas/Boxes';
-import SenderSchema from 'store/schemas/Boxes/Sender';
+import UserSchema from '@misakey/react-auth/store/schemas/User';
 
 import { EMAIL_DOMAIN as DOMAIN_TYPE } from '@misakey/ui/constants/accessTypes';
 import { ACCESS_RM, ACCESS_ADD, ACCESS_BULK, STATE_ACCESS_MODE } from '@misakey/ui/constants/boxes/events';
@@ -20,6 +20,8 @@ import alwaysNull from '@misakey/helpers/always/null';
 import isEmpty from '@misakey/helpers/isEmpty';
 import isNil from '@misakey/helpers/isNil';
 import pluck from '@misakey/helpers/pluck';
+import compose from '@misakey/helpers/compose';
+import toLower from '@misakey/helpers/toLower';
 import prop from '@misakey/helpers/prop';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 import filter from '@misakey/helpers/filter';
@@ -65,6 +67,10 @@ const ACCESS_EVENT_TYPE = {
 const getValues = pluck('value');
 const pluckContent = pluck('content');
 const autoInviteProp = prop('autoInvite');
+const identifierValuePropLowerCase = compose(
+  toLower,
+  identifierValueProp,
+);
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -130,7 +136,7 @@ function ShareBoxForm({
 
   const getOptionDisabled = useCallback(
     (option) => {
-      const optionIdentifierValue = identifierValueProp(option);
+      const optionIdentifierValue = identifierValuePropLowerCase(option);
       return optionIdentifierValue.endsWith(',')
         || senderMatchesIdentifierValue(option, meIdentifierValue)
         || whitelistedValues.includes(optionIdentifierValue);
@@ -140,17 +146,19 @@ function ShareBoxForm({
 
   const renderOption = useCallback(
     ({ type, avatarUrl, identifierValue, ...rest }) => {
+      const lowerCasedIdentifierValue = toLower(identifierValue);
       if (type === DOMAIN_TYPE) {
         return (
           <ListItemDomain
             component="div"
             disableGutters
-            identifier={identifierValue}
+            identifier={lowerCasedIdentifierValue}
             {...rest}
           />
         );
       }
-      const valueFromWhitelist = restrictions.find(({ value }) => value === identifierValue);
+      const valueFromWhitelist = restrictions
+        .find(({ value }) => value === lowerCasedIdentifierValue);
       const autoInvite = autoInviteProp(valueFromWhitelist);
 
       return (
@@ -159,9 +167,9 @@ function ShareBoxForm({
           skeleton={ListItemUserOptionSkeleton}
           disableGutters
           avatarUrl={avatarUrl}
-          identifier={identifierValue}
-          isMe={identifierValue === meIdentifierValue}
-          isOwner={senderMatchesIdentifierValue(creator, identifierValue)}
+          identifier={lowerCasedIdentifierValue}
+          isMe={lowerCasedIdentifierValue === meIdentifierValue}
+          isOwner={senderMatchesIdentifierValue(creator, lowerCasedIdentifierValue)}
           needsLink={!isNil(valueFromWhitelist)}
           members={members}
           autoInvite={autoInvite}
@@ -324,7 +332,7 @@ ShareBoxForm.propTypes = {
   boxKeyShare: PropTypes.string.isRequired,
   boxSecretKey: PropTypes.string,
   children: PropTypes.node,
-  creator: PropTypes.shape(SenderSchema.propTypes),
+  creator: PropTypes.shape(UserSchema.propTypes),
   members: PropTypes.arrayOf(PropTypes.object),
   isCurrentUserOwner: PropTypes.bool,
 };

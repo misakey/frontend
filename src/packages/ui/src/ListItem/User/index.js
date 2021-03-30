@@ -1,8 +1,6 @@
 import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
-
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import { useTranslation } from 'react-i18next';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
@@ -16,14 +14,15 @@ const ListItemUser = forwardRef(({
   displayName, avatarUrl, identifier,
   isMe,
   children,
-  t, classes,
+  classes,
   avatarProps,
   listItemTextProps,
   ...rest
 }, ref) => {
+  const { t } = useTranslation('common');
   const { listItemText, listItemAvatar, ...listItemClasses } = useSafeDestr(classes);
   return (
-    <ListItem ref={ref} classes={listItemClasses} {...omitTranslationProps(rest)}>
+    <ListItem ref={ref} classes={listItemClasses} {...rest}>
       <ListItemAvatar classes={{ root: listItemAvatar }}>
         <AvatarUser
           displayName={displayName}
@@ -56,8 +55,6 @@ ListItemUser.propTypes = {
   }),
   avatarProps: PropTypes.object,
   listItemTextProps: PropTypes.object,
-  // withTranslation
-  t: PropTypes.func.isRequired,
 };
 
 ListItemUser.defaultProps = {
@@ -74,4 +71,4 @@ ListItemUser.defaultProps = {
   listItemTextProps: {},
 };
 
-export default withTranslation('common')(ListItemUser);
+export default ListItemUser;

@@ -9,7 +9,7 @@ import isNil from '@misakey/helpers/isNil';
 
 // CONSTANTS
 const { addPaginatedId, removePaginatedId, receivePaginatedIds } = actionCreators;
-const { getItemCount } = selectors;
+const { makeGetItemCount } = selectors;
 
 // HELPERS
 const getSavedFileForNormalization = (savedFile) => {
@@ -45,8 +45,9 @@ export const receiveSavedFiles = (data, identityId, offset, limit) => (dispatch)
 };
 
 export const addSavedFile = (identityId, file) => (dispatch, getState) => {
+  const getFileItemCount = makeGetItemCount();
   const { entities } = normalize(getSavedFileForNormalization(file), SavedFilesSchema.entity);
-  const itemCount = getItemCount(getState(), identityId);
+  const itemCount = getFileItemCount(getState(), identityId);
 
   // No need to add if saved files have not been fetched yet
   if (isNil(itemCount)) {

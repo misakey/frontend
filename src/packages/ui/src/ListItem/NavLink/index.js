@@ -1,38 +1,35 @@
-import React, { useMemo } from 'react';
-
+import React, { useMemo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import { Link, useRouteMatch } from 'react-router-dom';
-
-import { TO_PROP_TYPE } from '@misakey/ui/constants/propTypes';
 
 import isNil from '@misakey/helpers/isNil';
 
+import { useRouteMatch } from 'react-router-dom';
+
 import ListItem from '@material-ui/core/ListItem';
 
-const ListItemNavLink = ({ to, exact, strict, ...props }) => {
-  const match = useRouteMatch({
-    path: to,
+// COMPONENTS
+const ListItemNavLink = forwardRef(({ path, exact, strict, ...rest }, ref) => {
+  const routeMatch = useRouteMatch({
+    path,
     strict,
     exact,
   });
-
   const selected = useMemo(
-    () => !isNil(match),
-    [match],
+    () => !isNil(routeMatch),
+    [routeMatch],
   );
 
   return (
     <ListItem
-      component={Link}
-      to={to}
+      ref={ref}
       selected={selected}
-      {...props}
+      {...rest}
     />
   );
-};
+});
 
 ListItemNavLink.propTypes = {
-  to: TO_PROP_TYPE.isRequired,
+  path: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   exact: PropTypes.bool,
   strict: PropTypes.bool,
 };
