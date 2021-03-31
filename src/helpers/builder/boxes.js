@@ -1,6 +1,6 @@
 import { MEMBER_LEAVE, MSG_DELETE, MSG_EDIT } from '@misakey/ui/constants/boxes/events';
 
-import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import { createBoxEventBuilder } from '@misakey/api/helpers/builder/boxes';
 import encryptText from '@misakey/crypto/box/encryptText';
 
 export const createLeaveBoxEventBuilder = (id) => createBoxEventBuilder(id, {

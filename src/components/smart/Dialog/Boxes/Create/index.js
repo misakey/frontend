@@ -7,7 +7,7 @@ import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/a
 import { boxNameFieldValidationSchema } from 'constants/validationSchemas/boxes';
 import setBoxSecrets from '@misakey/crypto/store/actions/setBoxSecrets';
 
-import { createBoxBuilder } from '@misakey/helpers/builder/boxes';
+import { createBoxBuilder } from '@misakey/api/helpers/builder/boxes';
 import getRandomTitle from '@misakey/helpers/getRandomTitle';
 import isFunction from '@misakey/helpers/isFunction';
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';

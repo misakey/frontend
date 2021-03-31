@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory, generatePath } from 'react-router-dom';
 import routes from 'routes';
 
-import { contactUserBuilder } from '@misakey/helpers/builder/identities';
+import { contactUserBuilder } from '@misakey/api/helpers/builder/identities';
 import { useCallback, useMemo } from 'react';
 import { encryptCryptoaction } from '@misakey/crypto/cryptoactions';
 import { createCryptoForNewBox } from '@misakey/crypto/box/creation';
@@ -106,4 +106,3 @@ export default (targetIdentity, fromIdentity) => {
     boxDefaultTitle: boxTitle,
   };
 };
-

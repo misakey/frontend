@@ -4,7 +4,7 @@ import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStra
 import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
 import { normalize } from 'normalizr';
 
-import { getBoxMembersBuilder } from '@misakey/helpers/builder/boxes';
+import { getBoxMembersBuilder } from '@misakey/api/helpers/builder/boxes';
 
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';

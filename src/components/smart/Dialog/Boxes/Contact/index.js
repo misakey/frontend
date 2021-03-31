@@ -8,7 +8,7 @@ import { contactFieldsValidationSchema } from 'constants/validationSchemas/boxes
 
 import omitTranslationProps from '@misakey/helpers/omit/translationProps';
 import isEmpty from '@misakey/helpers/isEmpty';
-import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import { createBoxEventBuilder } from '@misakey/api/helpers/builder/boxes';
 import encryptText from '@misakey/crypto/box/encryptText';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';

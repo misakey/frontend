@@ -23,7 +23,7 @@ import partition from '@misakey/helpers/partition';
 import differenceWith from '@misakey/helpers/differenceWith';
 import { senderMatchesIdentifierValue, senderMatchesIdentityId } from 'helpers/sender';
 import { filterCreatorSubjectFromMembers } from 'helpers/members';
-import { createBulkBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import { createBulkBoxEventBuilder } from '@misakey/api/helpers/builder/boxes';
 import getAccessStatus from '@misakey/helpers/getAccessStatus';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';

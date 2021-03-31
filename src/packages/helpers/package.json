@@ -28,8 +28,7 @@
     "normalizr": "^3.x",
     "path-to-regexp": "^3.0.0",
     "ramda": "^0.27.0",
-    "validator": "^13.0.0",
-    "uuid": "^3.3.3"
+    "validator": "^13.0.0"
   },
   "sideEffects": false,
   "publishConfig": {

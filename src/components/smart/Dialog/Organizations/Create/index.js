@@ -5,7 +5,7 @@ import { conflict } from '@misakey/ui/constants/errorTypes';
 import { organizationCreateSchema } from 'constants/validationSchemas/organizations';
 
 import isFunction from '@misakey/helpers/isFunction';
-import { createOrganizationBuilder } from '@misakey/helpers/builder/organizations';
+import { createOrganizationBuilder } from '@misakey/api/helpers/builder/organizations';
 import { getCode } from '@misakey/helpers/apiError';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';

@@ -7,7 +7,7 @@ import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/a
 import { selectors as orgSelectors } from 'store/reducers/identity/organizations/agents';
 
 import { senderMatchesIdentifierValue, identifierValueProp } from 'helpers/sender';
-import { addOrganizationAgent } from '@misakey/helpers/builder/organizations';
+import { addOrganizationAgent } from '@misakey/api/helpers/builder/organizations';
 import promiseAllNoFailFast from '@misakey/helpers/promiseAllNoFailFast';
 import { getCode } from '@misakey/helpers/apiError';
 import path from '@misakey/helpers/path';

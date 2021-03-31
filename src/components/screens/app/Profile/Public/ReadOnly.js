@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
-import { getProfile as getProfileBuilder } from '@misakey/helpers/builder/identities';
+import { getProfile as getProfileBuilder } from '@misakey/api/helpers/builder/identities';
 import isEmpty from '@misakey/helpers/isEmpty';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';

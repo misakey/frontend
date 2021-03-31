@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 
-import { generateOrganizationSecretBuilder } from '@misakey/helpers/builder/organizations';
+import { generateOrganizationSecretBuilder } from '@misakey/api/helpers/builder/organizations';
+
 import isNil from '@misakey/helpers/isNil';
 
 import { useTranslation } from 'react-i18next';

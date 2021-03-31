@@ -200,7 +200,7 @@ export default class UserManager extends OidcClient {
       .catch((err) => {
         // referrer can contain sensible information as boxes key share
         // we don't want it to be sent to Sentry
-        const sentryErr = (err instanceof SigninResponseError) ? new Error(err.error) : err;
+        const sentryErr = (err instanceof SigninResponseError) ? err.error : err;
         // 'login_required' = functional error, hydra cookie is expired or sub has changed
         const level = silent && err.message === 'login_required' ? 'warning' : 'error';
 

@@ -5,7 +5,7 @@ import isNil from '@misakey/helpers/isNil';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import Typography from '@material-ui/core/Typography';
-import { listStorageQuota, listBoxUsedSpaces, readVaultUsedSpace } from '@misakey/helpers/builder/identities';
+import { listStorageQuota, listBoxUsedSpaces, readVaultUsedSpace } from '@misakey/api/helpers/builder/identities';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { useTranslation } from 'react-i18next';

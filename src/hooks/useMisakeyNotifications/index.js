@@ -2,7 +2,7 @@ import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/a
 import { setNewCount, setLastNotification } from 'store/actions/identity/notifications';
 import { getLastNotificationSelector, getNewCountSelector } from 'store/reducers/identity/notifications';
 
-import { countUserNotificationsBuilder, getUserNotificationsBuilder } from '@misakey/helpers/builder/identities';
+import { countUserNotificationsBuilder, getUserNotificationsBuilder } from '@misakey/api/helpers/builder/identities';
 import isNil from '@misakey/helpers/isNil';
 import head from '@misakey/helpers/head';
 
@@ -26,7 +26,7 @@ export default (fetchLastNotification = false) => {
 
   const shouldFetch = useMemo(
     () => fetchLastNotification === true && lastNotification === undefined
-    && isAuthenticated && !isNil(identityId),
+      && isAuthenticated && !isNil(identityId),
     [fetchLastNotification, lastNotification, isAuthenticated, identityId],
   );
 

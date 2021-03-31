@@ -12,7 +12,7 @@ import authRoutes from '@misakey/react-auth/routes';
 import { colorValidationSchema } from '@misakey/react-auth/constants/validationSchemas/identity';
 
 import isNil from '@misakey/helpers/isNil';
-import { updateIdentity } from '@misakey/helpers/builder/identities';
+import { updateIdentity } from '@misakey/api/helpers/builder/identities';
 import { getDetails } from '@misakey/helpers/apiError';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';

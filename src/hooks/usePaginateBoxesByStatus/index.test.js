@@ -35,9 +35,9 @@ jest.mock('@misakey/hooks/useHandleHttpErrors', () => ({
   default: () => mockHandleHttpErrors,
 }));
 
-jest.mock('@misakey/helpers/builder/boxes', () => ({
+jest.mock('@misakey/api/helpers/builder/boxes', () => ({
   __esModule: true,
-  ...jest.requireActual('@misakey/helpers/builder/boxes'),
+  ...jest.requireActual('@misakey/api/helpers/builder/boxes'),
   getUserBoxesBuilder: (...args) => mockGetUserBoxesBuilder(...args),
   countUserBoxesBuilder: (...args) => mockCountUserBoxesBuilder(...args),
 }));

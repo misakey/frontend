@@ -5,7 +5,7 @@ import pickAll from '@misakey/helpers/pickAll';
 import isNil from '@misakey/helpers/isNil';
 import isFunction from '@misakey/helpers/isFunction';
 import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/helpers/offsetLimitRange';
-import { listOrganizationAgents, countOrganizationAgents } from '@misakey/helpers/builder/organizations';
+import { listOrganizationAgents, countOrganizationAgents } from '@misakey/api/helpers/builder/organizations';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import debounce from '@misakey/helpers/debounce';
 import getMissingIndexes from '@misakey/helpers/getMissingIndexes';

@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback, useLayoutEffect } from 'react';
 
 import isNil from '@misakey/helpers/isNil';
-import { getVersionBuilder } from '@misakey/helpers/builder/generic';
+import { getVersionBuilder } from '@misakey/api/helpers/builder/generic';
 // import simulateNetworkError from '@misakey/api/helpers/simulateNetworkError';
 import exponentialBackoff from '@misakey/helpers/exponentialBackoff';
 

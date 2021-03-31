@@ -1,4 +1,4 @@
-import { getKeyShareBuilder } from '@misakey/helpers/builder/boxes';
+import { getKeyShareBuilder } from '@misakey/api/helpers/builder/boxes';
 import { getCode, getDetails } from '@misakey/helpers/apiError';
 import { notFound } from '@misakey/ui/constants/errorTypes';
 

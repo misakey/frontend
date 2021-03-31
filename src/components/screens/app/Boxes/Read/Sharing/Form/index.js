@@ -25,7 +25,7 @@ import toLower from '@misakey/helpers/toLower';
 import prop from '@misakey/helpers/prop';
 import logSentryException from '@misakey/helpers/log/sentry/exception';
 import filter from '@misakey/helpers/filter';
-import { createBulkBoxEventBuilder, createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import { createBulkBoxEventBuilder, createBoxEventBuilder } from '@misakey/api/helpers/builder/boxes';
 import { senderMatchesIdentifierValue, identifierValueProp } from 'helpers/sender';
 
 import { useSelector, useDispatch } from 'react-redux';

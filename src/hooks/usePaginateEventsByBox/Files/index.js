@@ -11,7 +11,7 @@ import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStra
 import pickAll from '@misakey/helpers/pickAll';
 import isNil from '@misakey/helpers/isNil';
 import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/helpers/offsetLimitRange';
-import { getBoxFilesEventsBuilder, countBoxFilesEventsBuilder } from '@misakey/helpers/builder/boxes';
+import { getBoxFilesEventsBuilder, countBoxFilesEventsBuilder } from '@misakey/api/helpers/builder/boxes';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import getMissingIndexes from '@misakey/helpers/getMissingIndexes';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';

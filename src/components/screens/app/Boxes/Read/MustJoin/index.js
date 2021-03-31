@@ -14,7 +14,7 @@ import { receivePublicInfo } from 'store/reducers/box';
 import { FOOTER_HEIGHT } from '@misakey/ui/Footer';
 import { LARGE } from '@misakey/ui/constants/sizes';
 
-import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import { createBoxEventBuilder } from '@misakey/api/helpers/builder/boxes';
 import isNil from '@misakey/helpers/isNil';
 import { getCode, getDetails } from '@misakey/helpers/apiError';
 

@@ -6,7 +6,7 @@ import { useDispatch, useSelector, batch } from 'react-redux';
 import UploadDialog from 'components/smart/Dialog/Upload';
 import workerEncryptFileForVault from '@misakey/crypto/vault/workers/encryptFile/singleton';
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
-import { uploadFileInVaultBuilder } from '@misakey/helpers/builder/vault';
+import { uploadFileInVaultBuilder } from '@misakey/api/helpers/builder/vault';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { addSavedFile } from 'store/reducers/files/saved';
 

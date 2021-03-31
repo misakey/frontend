@@ -9,7 +9,7 @@ import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import { getCode } from '@misakey/helpers/apiError';
-import { getBoxPublicBuilder } from '@misakey/helpers/builder/boxes';
+import { getBoxPublicBuilder } from '@misakey/api/helpers/builder/boxes';
 import { computeInvitationHash } from '@misakey/crypto/box/keySplitting';
 import { BadKeyShareFormat } from '@misakey/crypto/Errors/classes';
 

@@ -9,7 +9,7 @@ import { ACCESS_RM, ACCESS_BULK } from '@misakey/ui/constants/boxes/events';
 import BoxesSchema from 'store/schemas/Boxes';
 import { boxDeletionDialogValidationSchema } from 'constants/validationSchemas/boxes';
 
-import { deleteBoxBuilder, createBulkBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import { deleteBoxBuilder, createBulkBoxEventBuilder } from '@misakey/api/helpers/builder/boxes';
 import isFunction from '@misakey/helpers/isFunction';
 import isEmpty from '@misakey/helpers/isEmpty';
 

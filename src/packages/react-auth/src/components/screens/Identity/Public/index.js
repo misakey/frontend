@@ -9,7 +9,7 @@ import authRoutes from '@misakey/react-auth/routes';
 import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 
 import isNil from '@misakey/helpers/isNil';
-import { updateProfileConfig, getProfileConfig as getProfileConfigBuilder } from '@misakey/helpers/builder/identities';
+import { updateProfileConfig, getProfileConfig as getProfileConfigBuilder } from '@misakey/api/helpers/builder/identities';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';

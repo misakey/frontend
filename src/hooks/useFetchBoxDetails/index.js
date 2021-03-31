@@ -13,7 +13,7 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import isNil from '@misakey/helpers/isNil';
 import isEmpty from '@misakey/helpers/isEmpty';
 import mergeDeepWithKey from '@misakey/helpers/mergeDeepWithKey';
-import { getBoxBuilder, getBoxMembersBuilder } from '@misakey/helpers/builder/boxes';
+import { getBoxBuilder, getBoxMembersBuilder } from '@misakey/api/helpers/builder/boxes';
 
 import { noEmptyOverride, mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import BoxesSchema from 'store/schemas/Boxes';

@@ -5,7 +5,7 @@ import { updateEntities, receiveEntities } from '@misakey/store/actions/entities
 import { normalize } from 'normalizr';
 import { getCurrentUserSelector } from '@misakey/react-auth/store/reducers/auth';
 
-import { getBoxAccessesBuilder } from '@misakey/helpers/builder/boxes';
+import { getBoxAccessesBuilder } from '@misakey/api/helpers/builder/boxes';
 import isNil from '@misakey/helpers/isNil';
 import { sendersIdentifiersMatch } from 'helpers/sender';
 

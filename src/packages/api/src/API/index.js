@@ -2,7 +2,7 @@ import isFunction from '@misakey/helpers/isFunction';
 import isArray from '@misakey/helpers/isArray';
 import isNil from '@misakey/helpers/isNil';
 import alwaysNull from '@misakey/helpers/always/null';
-import { getCsrfTokenBuilder } from '@misakey/auth/builder/getCsrfToken';
+import { getCsrfTokenBuilder } from '@misakey/api/helpers/builder/getCsrfToken';
 import invalidCsrfTokenMiddleware from '@misakey/api/API/middlewares/invalidCsrfToken';
 import endpoints from './endpoints';
 import Endpoint from '../Endpoint';

@@ -4,7 +4,7 @@ import routes from 'routes';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
-import { createSavedFile } from '@misakey/helpers/builder/vault';
+import { createSavedFile } from '@misakey/api/helpers/builder/vault';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { encryptFileMetadataForVault } from '@misakey/crypto/vault';
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';

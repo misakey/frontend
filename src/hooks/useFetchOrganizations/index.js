@@ -1,7 +1,7 @@
 import { receiveOrganizations, selectors as orgSelectors } from 'store/reducers/identity/organizations';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
-import { listOrganizations } from '@misakey/helpers/builder/identities';
+import { listOrganizations } from '@misakey/api/helpers/builder/identities';
 import isNil from '@misakey/helpers/isNil';
 
 import { useMemo, useCallback } from 'react';

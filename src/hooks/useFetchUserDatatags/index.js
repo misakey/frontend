@@ -1,7 +1,7 @@
 import { receiveDatatags, selectors as datatagsSelectors } from 'store/reducers/identity/organizations/datatags';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
-import { listDatatags } from '@misakey/helpers/builder/identities';
+import { listDatatags } from '@misakey/api/helpers/builder/identities';
 import isNil from '@misakey/helpers/isNil';
 
 import useOrgId from '@misakey/react-auth/hooks/useOrgId';

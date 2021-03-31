@@ -12,7 +12,7 @@ import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/a
 import isNil from '@misakey/helpers/isNil';
 import omit from '@misakey/helpers/omit';
 import execWithRequestIdleCallback from '@misakey/helpers/execWithRequestIdleCallback';
-import { deleteSavedFileBuilder } from '@misakey/helpers/builder/vault';
+import { deleteSavedFileBuilder } from '@misakey/api/helpers/builder/vault';
 import { deleteSavedFile } from 'store/reducers/files/saved';
 
 import { useFilePreviewContext } from 'components/smart/File/Preview/Context';

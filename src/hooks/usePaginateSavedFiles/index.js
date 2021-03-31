@@ -8,7 +8,7 @@ import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/a
 import pickAll from '@misakey/helpers/pickAll';
 import isNil from '@misakey/helpers/isNil';
 import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/helpers/offsetLimitRange';
-import { getSavedFilesBuilder, countSavedFilesBuilder } from '@misakey/helpers/builder/vault';
+import { getSavedFilesBuilder, countSavedFilesBuilder } from '@misakey/api/helpers/builder/vault';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import getMissingIndexes from '@misakey/helpers/getMissingIndexes';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';

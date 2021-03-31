@@ -13,7 +13,7 @@ import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/a
 import path from '@misakey/helpers/path';
 import pickAll from '@misakey/helpers/pickAll';
 import getMissingIndexes from '@misakey/helpers/getMissingIndexes';
-import { getBoxEventsBuilder, countBoxEventsBuilder } from '@misakey/helpers/builder/boxes';
+import { getBoxEventsBuilder, countBoxEventsBuilder } from '@misakey/api/helpers/builder/boxes';
 import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/helpers/offsetLimitRange';
 import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
 import isNil from '@misakey/helpers/isNil';

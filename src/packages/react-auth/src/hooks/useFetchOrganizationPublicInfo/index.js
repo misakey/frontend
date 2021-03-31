@@ -3,7 +3,7 @@
 import { useCallback } from 'react';
 
 
-import { getOrgPublicBuilder } from '@misakey/helpers/builder/organizations';
+import { getOrgPublicBuilder } from '@misakey/api/helpers/builder/organizations';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import OrganizationsSchema from '@misakey/react-auth/store/schemas/Organizations';

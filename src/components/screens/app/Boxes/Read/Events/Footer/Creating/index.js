@@ -10,7 +10,7 @@ import { boxMessageValidationSchema } from 'constants/validationSchemas/boxes';
 import { blurText, clearText } from 'store/actions/box';
 import { makeGetBoxText } from 'store/reducers/box';
 
-import { createBoxEventBuilder } from '@misakey/helpers/builder/boxes';
+import { createBoxEventBuilder } from '@misakey/api/helpers/builder/boxes';
 import isNil from '@misakey/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';

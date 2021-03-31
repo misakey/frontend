@@ -15,7 +15,7 @@ import retry from '@misakey/helpers/retry';
 import isNil from '@misakey/helpers/isNil';
 import pick from '@misakey/helpers/pick';
 import { getIdentity } from '@misakey/auth/builder/identities';
-import { uploadAvatar } from '@misakey/helpers/builder/identities';
+import { uploadAvatar } from '@misakey/api/helpers/builder/identities';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useDispatchUpdateIdentity from '@misakey/react-auth/hooks/useDispatchUpdateIdentity';

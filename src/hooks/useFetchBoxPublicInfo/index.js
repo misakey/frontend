@@ -8,7 +8,7 @@ import { notFound } from '@misakey/ui/constants/errorTypes';
 import { getCode } from '@misakey/helpers/apiError';
 import isEmpty from '@misakey/helpers/isEmpty';
 import isFunction from '@misakey/helpers/isFunction';
-import { getBoxPublicBuilder } from '@misakey/helpers/builder/boxes';
+import { getBoxPublicBuilder } from '@misakey/api/helpers/builder/boxes';
 import { computeInvitationHash } from '@misakey/crypto/box/keySplitting';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';

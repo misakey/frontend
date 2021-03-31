@@ -8,7 +8,7 @@ import { FetchFileError, DecryptionFileError } from 'constants/Errors/classes/Fi
 import { updateEntities } from '@misakey/store/actions/entities';
 
 import isNil from '@misakey/helpers/isNil';
-import { getEncryptedFileBuilder } from '@misakey/helpers/builder/files';
+import { getEncryptedFileBuilder } from '@misakey/api/helpers/builder/files';
 import workerDecryptFile from '@misakey/crypto/box/decryptFile/worker';
 import log from '@misakey/helpers/log';
 import logSentryException from '@misakey/helpers/log/sentry/exception';

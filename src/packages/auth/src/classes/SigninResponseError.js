@@ -1,5 +1,7 @@
+const DEFAULT_ERROR = new Error('Unknown Error');
+
 class SigninResponseError extends Error {
-  constructor({ error, referrer } = {}) {
+  constructor(error = DEFAULT_ERROR, referrer = null) {
     super(error);
 
     this.name = 'SigninResponseError';

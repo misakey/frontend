@@ -11,7 +11,7 @@ import { displayNameValidationSchema } from '@misakey/react-auth/constants/valid
 
 import isNil from '@misakey/helpers/isNil';
 import { getDetails } from '@misakey/helpers/apiError';
-import { updateIdentity } from '@misakey/helpers/builder/identities';
+import { updateIdentity } from '@misakey/api/helpers/builder/identities';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useDispatchUpdateIdentity from '@misakey/react-auth/hooks/useDispatchUpdateIdentity';

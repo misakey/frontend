@@ -9,7 +9,7 @@ import { normalize, denormalize } from 'normalizr';
 import isNil from '@misakey/helpers/isNil';
 import omit from '@misakey/helpers/omit';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import { getBoxBuilder } from '@misakey/helpers/builder/boxes';
+import { getBoxBuilder } from '@misakey/api/helpers/builder/boxes';
 import useOnGetBoxError from 'hooks/useFetchBoxDetails/onError';
 
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';

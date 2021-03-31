@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 import { userIdentityUpdate } from '@misakey/react-auth/store/actions/identity/account';
 
-import { updateIdentity } from '@misakey/helpers/builder/identities';
+import { updateIdentity } from '@misakey/api/helpers/builder/identities';
 
 import { DISABLED } from '@misakey/react-auth/constants/account/mfaMethod';
 
