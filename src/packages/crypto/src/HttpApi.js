@@ -210,7 +210,8 @@ export async function getIdentityPublicKeys(identifier) {
   };
 
   try {
-    return await httpCallReturnBody(endpoint, httpRequestParams);
+    const responseBody = await httpCallReturnBody(endpoint, httpRequestParams);
+    return objectToCamelCase(responseBody);
   } catch (error) {
     if (error.status === 404) {
       return [];

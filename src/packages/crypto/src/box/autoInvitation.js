@@ -34,9 +34,9 @@ export async function tryAddingAutoInvite({ event, boxSecretKey, boxKeyShare }) 
   }
 
   const identifier = event.content.value;
-  const identityPublicKeys = await getIdentityPublicKeys(identifier);
+  const { identityPubkey } = await getIdentityPublicKeys(identifier);
 
-  if (isEmpty(identityPublicKeys)) {
+  if (isEmpty(identityPubkey)) {
     return event;
   }
 
@@ -50,22 +50,20 @@ export async function tryAddingAutoInvite({ event, boxSecretKey, boxKeyShare }) 
     // that is called by the HTTP API layer.
     // We added an heuristic in snakeCaseDeep
     // that is supposed to differentiate base64 from a camelCase name.
-    extra: Object.fromEntries(
-      identityPublicKeys.map((pubkey) => {
-        // in a first iteration the frontend will only use the box key share
-        // when consuming auto-invitations;
-        // but soon after (when the backend provides an endpoint
-        // to let users knowing the box secret key to get the box key share)
-        // the frontend will use the box secret key instead;
-        // as a result right now we put *both* values in crypto actions;
-        // when the frontend starts only using the "box secret key" part,
-        // we may stop including the "box key share" in the crypto action
-        const action = {
-          boxKeyShare,
-          boxSecretKey,
-        };
-        return [pubkey, encryptCryptoaction(action, pubkey)];
-      }),
-    ),
+    // in a first iteration the frontend will only use the box key share
+    // when consuming auto-invitations;
+    // but soon after (when the backend provides an endpoint
+    // to let users knowing the box secret key to get the box key share)
+    // the frontend will use the box secret key instead;
+    // as a result right now we put *both* values in crypto actions;
+    // when the frontend starts only using the "box secret key" part,
+    // we may stop including the "box key share" in the crypto action
+    extra: {
+      [identityPubkey]: encryptCryptoaction({
+        boxKeyShare,
+        boxSecretKey,
+      },
+      identityPubkey),
+    },
   };
 }
