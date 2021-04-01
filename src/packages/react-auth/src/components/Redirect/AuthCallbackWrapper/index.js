@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSnackbar } from 'notistack';
-import isObject from '@misakey/helpers/isObject';
-import { StorageUnavailable } from '@misakey/helpers/storage';
+import isObject from '@misakey/core/helpers/isObject';
+import { StorageUnavailable } from '@misakey/core/helpers/storage';
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 
 import AuthCallback from '../AuthCallback';

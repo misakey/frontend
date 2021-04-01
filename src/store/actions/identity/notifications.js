@@ -3,7 +3,7 @@ import { receiveEntities, updateEntities } from '@misakey/store/actions/entities
 
 import { batch } from 'react-redux';
 import { normalize } from 'normalizr';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 
 export const RESET_NOTIFICATIONS_BY_IDENTITY = Symbol('RESET_NOTIFICATIONS_BY_IDENTITY');

@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 import Alert from '@misakey/ui/Alert';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import ButtonConnect from 'components/dumb/Button/Connect';

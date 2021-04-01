@@ -29,20 +29,12 @@
       },
       "alias": [
         [
-          "@misakey/api",
-          "./src/packages/api/src"
-        ],
-        [
-          "@misakey/auth",
-          "./src/packages/auth/src"
+          "@misakey/core",
+          "./src/packages/core/src"
         ],
         [
           "@misakey/react-auth",
           "./src/packages/react-auth/src"
-        ],
-        [
-          "@misakey/helpers",
-          "./src/packages/helpers/src"
         ],
         [
           "@misakey/hooks",

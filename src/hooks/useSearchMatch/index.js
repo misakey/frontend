@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import isArray from '@misakey/helpers/isArray';
+import isArray from '@misakey/core/helpers/isArray';
 import { hasAllKeys, hasAllKeysAndValues } from 'helpers/searchRouting';
 
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';

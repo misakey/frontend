@@ -10,7 +10,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 import { receivePublicInfo } from 'store/reducers/box';
 import authRoutes from '@misakey/react-auth/routes';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useSnackbar } from 'notistack';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';

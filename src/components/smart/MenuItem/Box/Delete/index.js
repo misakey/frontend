@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import BoxesSchema from 'store/schemas/Boxes';
 
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import useIsMountedRef from '@misakey/hooks/useIsMountedRef';
 

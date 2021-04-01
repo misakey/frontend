@@ -1,5 +1,5 @@
-import { getCode } from '@misakey/helpers/apiError';
-import { notFound } from '@misakey/ui/constants/errorTypes';
+import { getCode } from '@misakey/core/helpers/apiError';
+import { notFound } from '@misakey/core/api/constants/errorTypes';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import { decryptCryptoaction } from '@misakey/crypto/cryptoactions';

@@ -6,13 +6,13 @@ import {
 import { LIMITED } from '@misakey/ui/constants/accessModes';
 
 
-import prop from '@misakey/helpers/prop';
-import path from '@misakey/helpers/path';
-import compose from '@misakey/helpers/compose';
-import when from '@misakey/helpers/when';
-import isObject from '@misakey/helpers/isObject';
-import isNil from '@misakey/helpers/isNil';
-import findLast from '@misakey/helpers/findLast';
+import prop from '@misakey/core/helpers/prop';
+import path from '@misakey/core/helpers/path';
+import compose from '@misakey/core/helpers/compose';
+import when from '@misakey/core/helpers/when';
+import isObject from '@misakey/core/helpers/isObject';
+import isNil from '@misakey/core/helpers/isNil';
+import findLast from '@misakey/core/helpers/findLast';
 import { senderMatchesIdentityId } from 'helpers/sender';
 
 // HELPERS

@@ -35,10 +35,8 @@ module.exports = {
     resolve: {
       modules: [path.join(__dirname, '../'), 'node_modules'],
       alias: {
-        '@misakey/api': path.resolve(__dirname, './src/packages/api/src'),
-        '@misakey/auth': path.resolve(__dirname, './src/packages/auth/src'),
+        '@misakey/core': path.resolve(__dirname, './src/packages/core/src'),
         '@misakey/react-auth': path.resolve(__dirname, './src/packages/react-auth/src'),
-        '@misakey/helpers': path.resolve(__dirname, './src/packages/helpers/src'),
         '@misakey/hooks': path.resolve(__dirname, './src/packages/hooks/src'),
         '@misakey/store': path.resolve(__dirname, './src/packages/store/src'),
         '@misakey/ui/static': path.resolve(__dirname, './src/packages/ui/static'),

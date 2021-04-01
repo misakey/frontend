@@ -1,10 +1,10 @@
 import * as Yup from 'yup';
 import { IDENTIFIER, EMAIL_DOMAIN } from '@misakey/ui/constants/accessTypes';
 import ACCESS_LEVELS from '@misakey/ui/constants/accessModes';
-import { required, malformed, invalid } from '@misakey/ui/constants/errorTypes';
+import { required, malformed, invalid } from '@misakey/core/api/constants/errorTypes';
 import routes from 'routes';
 import { generatePath } from 'react-router-dom';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 import { emailFieldValidation } from '@misakey/ui/constants/fieldValidations';
 
 // CONSTANTS

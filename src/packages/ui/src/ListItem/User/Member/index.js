@@ -2,10 +2,10 @@ import React, { useMemo, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
-import isNil from '@misakey/helpers/isNil';
-import isFunction from '@misakey/helpers/isFunction';
-import pick from '@misakey/helpers/pick';
-import emailToDisplayName from '@misakey/helpers/emailToDisplayName';
+import isNil from '@misakey/core/helpers/isNil';
+import isFunction from '@misakey/core/helpers/isFunction';
+import pick from '@misakey/core/helpers/pick';
+import emailToDisplayName from '@misakey/core/helpers/emailToDisplayName';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 

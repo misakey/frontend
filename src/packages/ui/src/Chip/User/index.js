@@ -2,7 +2,7 @@ import React, { useMemo, forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
 
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import AvatarColorized from '@misakey/ui/Avatar/Colorized';
 import Chip from '@misakey/ui/Chip';
@@ -44,7 +44,7 @@ const ChipUser = forwardRef(({
       avatar={
         error ? null
           : <AvatarColorized text={displayName || identifier} image={avatarUrl} />
-}
+      }
       label={label || displayName || identifier}
       variant="outlined"
       {...errorProps}

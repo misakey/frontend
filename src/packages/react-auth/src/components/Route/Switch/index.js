@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import authRoutes from '@misakey/react-auth/routes';
 
-import retry from '@misakey/helpers/retry';
+import retry from '@misakey/core/helpers/retry';
 
 import RedirectToSignIn from '@misakey/react-auth/components/Redirect/ToSignIn';
 

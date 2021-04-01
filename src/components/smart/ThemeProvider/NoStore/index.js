@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { createMuiTheme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import { getThemeOptions } from '@misakey/ui/theme';
-import isEmpty from '@misakey/helpers/isEmpty';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 

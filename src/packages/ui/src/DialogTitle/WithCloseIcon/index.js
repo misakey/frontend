@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withTranslation } from 'react-i18next';
 
-import isFunction from '@misakey/helpers/isFunction';
-import isNil from '@misakey/helpers/isNil';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import isFunction from '@misakey/core/helpers/isFunction';
+import isNil from '@misakey/core/helpers/isNil';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';

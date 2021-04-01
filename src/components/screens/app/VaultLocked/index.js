@@ -7,12 +7,12 @@ import { useSelector } from 'react-redux';
 import { LARGE, APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
 
 import { openVaultValidationSchema } from '@misakey/react-auth/constants/validationSchemas/vault';
-import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
-import { invalid } from '@misakey/ui/constants/errorTypes';
+import { PREHASHED_PASSWORD } from '@misakey/core/auth/constants/method';
+import { invalid } from '@misakey/core/api/constants/errorTypes';
 import { SIDES } from '@misakey/ui/constants/drawers';
 import { getCurrentUserSelector } from '@misakey/react-auth/store/reducers/auth';
 
-import logSentryException from '@misakey/helpers/log/sentry/exception';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 import useLoadSecretsWithPassword from '@misakey/crypto/hooks/useLoadSecretsWithPassword';
 import {
   DecryptionError,
@@ -37,7 +37,7 @@ import CardSsoWithSlope from '@misakey/react-auth/components/Card/Sso/WithSlope'
 import Title from '@misakey/ui/Typography/Title';
 import useGetOrgFromSearch from '@misakey/react-auth/hooks/useGetOrgFromSearch';
 import AvatarColorized, { BACKGROUND_COLOR } from '@misakey/ui/Avatar/Colorized';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 // CONSTANTS
 const INITIAL_VALUES = {
@@ -111,7 +111,7 @@ function VaultLocked({ t }) {
         <AppBarDrawer color="primary" side={SIDES.LEFT}>
           <IconButtonMenuAccount />
         </AppBarDrawer>
-          )}
+      )}
     >
       <Formik
         onSubmit={onSubmit}

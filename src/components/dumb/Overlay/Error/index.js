@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import clsx from 'clsx';
-import API from '@misakey/api';
+import API from '@misakey/core/api';
 
 import boulder from '@misakey/ui/colors/boulder';
 import Typography from '@material-ui/core/Typography';
@@ -41,8 +41,8 @@ const styles = (theme) => ({
 function ErrorOverlay({ classes, error, httpStatus, t, variant }) {
   const getText = useMemo(
     () => error
-    || (httpStatus && API.errors.httpStatus.includes(httpStatus) && t(`common:httpStatus.error.${httpStatus}`))
-    || t('common:anErrorOccurred'),
+      || (httpStatus && API.errors.httpStatus.includes(httpStatus) && t(`common:httpStatus.error.${httpStatus}`))
+      || t('common:anErrorOccurred'),
     [error, httpStatus, t],
   );
 

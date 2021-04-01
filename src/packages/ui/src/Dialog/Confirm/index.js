@@ -3,10 +3,10 @@ import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import isNil from '@misakey/helpers/isNil';
-import isFunction from '@misakey/helpers/isFunction';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import stopPropagation from '@misakey/helpers/event/stopPropagation';
+import isNil from '@misakey/core/helpers/isNil';
+import isFunction from '@misakey/core/helpers/isFunction';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
+import stopPropagation from '@misakey/core/helpers/event/stopPropagation';
 
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';

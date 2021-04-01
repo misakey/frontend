@@ -13,7 +13,7 @@ import ListItemOrganizationCurrent from 'components/smart/ListItem/Organization/
 import IconButtonNotificationsMisakey from 'components/smart/IconButton/Notifications/Misakey';
 import MenuNotificationsMisakey from 'components/smart/Menu/Notifications/Misakey';
 import PopoverOrganizations from 'components/smart/Popover/Organizations';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 // CONSTANTS
 const {

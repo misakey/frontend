@@ -7,17 +7,17 @@ import { ACCEPTED_TYPES } from '@misakey/ui/constants/file/image';
 import { DATETIME_EXTRA_SHORT } from '@misakey/ui/constants/formats/dates';
 
 import moment from 'moment';
-import partition from '@misakey/helpers/partition';
-import fileToBlob from '@misakey/helpers/fileToBlob';
-import fileType from '@misakey/helpers/fileType';
-import makeCompatFile from '@misakey/helpers/makeCompatFile';
-import isFunction from '@misakey/helpers/isFunction';
-import isEmpty from '@misakey/helpers/isEmpty';
-import isNil from '@misakey/helpers/isNil';
-import capitalize from '@misakey/helpers/capitalize';
-import fileListToArray from '@misakey/helpers/fileListToArray';
-import logSentryException from '@misakey/helpers/log/sentry/exception';
-import clipboardGetItem from '@misakey/helpers/clipboard/getItem';
+import partition from '@misakey/core/helpers/partition';
+import fileToBlob from '@misakey/core/helpers/fileToBlob';
+import fileType from '@misakey/core/helpers/fileType';
+import makeCompatFile from '@misakey/core/helpers/makeCompatFile';
+import isFunction from '@misakey/core/helpers/isFunction';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import isNil from '@misakey/core/helpers/isNil';
+import capitalize from '@misakey/core/helpers/capitalize';
+import fileListToArray from '@misakey/core/helpers/fileListToArray';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
+import clipboardGetItem from '@misakey/core/helpers/clipboard/getItem';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useDrag from '@misakey/hooks/useDrag';

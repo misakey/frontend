@@ -4,9 +4,9 @@ import createResetOnSignOutReducer from '@misakey/react-auth/store/reducers/help
 import { createSelector } from 'reselect';
 import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 
-import merge from '@misakey/helpers/merge';
-import isNil from '@misakey/helpers/isNil';
-import prop from '@misakey/helpers/prop';
+import merge from '@misakey/core/helpers/merge';
+import isNil from '@misakey/core/helpers/isNil';
+import prop from '@misakey/core/helpers/prop';
 
 import {
   AUTH_RESET,

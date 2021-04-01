@@ -5,7 +5,7 @@ import {
   ACCESS_STATUS_MEMBER, ACCESS_STATUS_NEEDS_LINK, ACCESS_STATUS_INVITED, ACCESS_STATUS_OWNER,
 } from '@misakey/ui/constants/accessStatus';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useTranslation } from 'react-i18next';
 

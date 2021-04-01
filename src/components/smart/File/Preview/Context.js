@@ -7,14 +7,14 @@ import routes from 'routes';
 import { FetchFileError, DecryptionFileError } from 'constants/Errors/classes/Files';
 import { updateEntities } from '@misakey/store/actions/entities';
 
-import isNil from '@misakey/helpers/isNil';
-import { getEncryptedFileBuilder } from '@misakey/api/helpers/builder/files';
+import isNil from '@misakey/core/helpers/isNil';
+import { getEncryptedFileBuilder } from '@misakey/core/api/helpers/builder/files';
 import workerDecryptFile from '@misakey/crypto/box/decryptFile/worker';
-import log from '@misakey/helpers/log';
-import logSentryException from '@misakey/helpers/log/sentry/exception';
-import downloadFile from '@misakey/helpers/downloadFile';
-import execWithRequestIdleCallback from '@misakey/helpers/execWithRequestIdleCallback';
-import { revokeObjectURL } from '@misakey/helpers/objectURL';
+import log from '@misakey/core/helpers/log';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
+import downloadFile from '@misakey/core/helpers/downloadFile';
+import execWithRequestIdleCallback from '@misakey/core/helpers/execWithRequestIdleCallback';
+import { revokeObjectURL } from '@misakey/core/helpers/objectURL';
 
 import { useRouteMatch } from 'react-router-dom';
 import useSaveFileInVault from 'hooks/useSaveFileInVault';

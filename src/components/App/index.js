@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 
-import retry from '@misakey/helpers/retry';
+import retry from '@misakey/core/helpers/retry';
 
 import OfflineAlert from 'components/smart/Context/Offline/Alert';
 import Screen from '@misakey/ui/Screen';

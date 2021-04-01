@@ -2,7 +2,7 @@ import React, { useMemo, forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import authRoutes from '@misakey/react-auth/routes';
 

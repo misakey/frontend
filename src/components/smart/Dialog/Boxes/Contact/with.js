@@ -3,7 +3,7 @@ import React, { useState, useCallback, forwardRef, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 import { selectors } from '@misakey/react-auth/store/reducers/auth';
 
 import ContactBoxDialog from 'components/smart/Dialog/Boxes/Contact';

@@ -1,4 +1,4 @@
-import throttle from '@misakey/helpers/throttle';
+import throttle from '@misakey/core/helpers/throttle';
 import { isNil } from 'lodash-es';
 
 import { useMemo, useEffect } from 'react';

@@ -1,4 +1,4 @@
-import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
+import { PREHASHED_PASSWORD } from '@misakey/core/auth/constants/method';
 
 import {
   SSO_RESET, SSO_UPDATE,

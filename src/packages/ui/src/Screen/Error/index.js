@@ -6,8 +6,8 @@ import { Trans, withTranslation } from 'react-i18next';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import isNil from '@misakey/helpers/isNil';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
+import isNil from '@misakey/core/helpers/isNil';
 
 import BoxControls from '@misakey/ui/Box/Controls';
 import IconButton from '@material-ui/core/IconButton';

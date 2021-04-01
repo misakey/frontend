@@ -1,12 +1,12 @@
 import isSelfOrg from 'helpers/isSelfOrg';
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 import { useMemo, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import getNextSearch from '@misakey/helpers/getNextSearch';
+import getNextSearch from '@misakey/core/helpers/getNextSearch';
 
 // HOOKS
 export default (box) => {

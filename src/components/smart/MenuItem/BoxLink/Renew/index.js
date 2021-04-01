@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import BoxesSchema from 'store/schemas/Boxes';
 import changeBoxInvitationLink from '@misakey/crypto/store/actions/changeBoxInvitationLink';
 
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';

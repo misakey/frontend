@@ -5,12 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actionCreators, selectors } from 'store/reducers/files/saved/pagination';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
-import pickAll from '@misakey/helpers/pickAll';
-import isNil from '@misakey/helpers/isNil';
-import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/helpers/offsetLimitRange';
-import { getSavedFilesBuilder, countSavedFilesBuilder } from '@misakey/api/helpers/builder/vault';
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import getMissingIndexes from '@misakey/helpers/getMissingIndexes';
+import pickAll from '@misakey/core/helpers/pickAll';
+import isNil from '@misakey/core/helpers/isNil';
+import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/core/helpers/offsetLimitRange';
+import { getSavedFilesBuilder, countSavedFilesBuilder } from '@misakey/core/api/helpers/builder/vault';
+import objectToCamelCase from '@misakey/core/helpers/objectToCamelCase';
+import getMissingIndexes from '@misakey/core/helpers/getMissingIndexes';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { receiveSavedFiles } from 'store/reducers/files/saved';
 

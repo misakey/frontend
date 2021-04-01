@@ -8,8 +8,8 @@ import authRoutes from '@misakey/react-auth/routes';
 import { ssoUpdate, onSetIdentifier } from '@misakey/react-auth/store/actions/sso';
 import { selectors as ssoSelectors } from '@misakey/react-auth/store/reducers/sso';
 
-import updateAuthIdentities from '@misakey/auth/builder/updateAuthIdentities';
-import isNil from '@misakey/helpers/isNil';
+import updateAuthIdentities from '@misakey/core/auth/builder/updateAuthIdentities';
+import isNil from '@misakey/core/helpers/isNil';
 
 const { acr: askedAcrSelectors } = ssoSelectors;
 

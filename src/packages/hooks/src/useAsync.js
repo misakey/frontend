@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 // HELPERS
 const callAsync = (arg) => (isFunction(arg) ? Promise.resolve(arg()) : Promise.resolve(arg));

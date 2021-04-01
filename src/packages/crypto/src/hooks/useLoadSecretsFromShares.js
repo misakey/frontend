@@ -1,15 +1,15 @@
 import { useCallback, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
-import logSentryException from '@misakey/helpers/log/sentry/exception';
-import { getRootKeyShareBuilder } from '@misakey/auth/builder/rootKeyShares';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
+import { getRootKeyShareBuilder } from '@misakey/core/auth/builder/rootKeyShares';
 import { combineRootKeyShares, computeUserLocalShareHash } from '@misakey/crypto/secretStorage/rootKeyShares';
 import loadSecrets from '@misakey/crypto/store/actions/loadSecrets';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { decryptSecretStorageWithRootKey } from '@misakey/crypto/secretStorage';
-import { getCode } from '@misakey/helpers/apiError';
-import { notFound as notFoundError } from '@misakey/ui/constants/errorTypes';
+import { getCode } from '@misakey/core/helpers/apiError';
+import { notFound as notFoundError } from '@misakey/core/api/constants/errorTypes';
 import { selectors } from '../store/reducers';
 import useFetchSecretStorage from './useFetchSecretStorage';
 

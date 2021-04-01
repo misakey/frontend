@@ -1,5 +1,5 @@
 import React from 'react';
-import { STEP } from '@misakey/auth/constants';
+import { STEP } from '@misakey/core/auth/constants';
 import { AUTOFILL_USERNAME } from '@misakey/ui/constants/autofill';
 
 

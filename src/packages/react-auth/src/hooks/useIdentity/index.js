@@ -9,8 +9,8 @@ import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
-import isEmpty from '@misakey/helpers/isEmpty';
-import { getIdentity as getIdentityBuilder } from '@misakey/auth/builder/identities';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import { getIdentity as getIdentityBuilder } from '@misakey/core/auth/builder/identities';
 
 
 // HOOKS

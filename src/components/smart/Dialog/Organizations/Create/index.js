@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
-import { conflict } from '@misakey/ui/constants/errorTypes';
+import { conflict } from '@misakey/core/api/constants/errorTypes';
 import { organizationCreateSchema } from 'constants/validationSchemas/organizations';
 
-import isFunction from '@misakey/helpers/isFunction';
-import { createOrganizationBuilder } from '@misakey/api/helpers/builder/organizations';
-import { getCode } from '@misakey/helpers/apiError';
+import isFunction from '@misakey/core/helpers/isFunction';
+import { createOrganizationBuilder } from '@misakey/core/api/helpers/builder/organizations';
+import { getCode } from '@misakey/core/helpers/apiError';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';

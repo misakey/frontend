@@ -2,14 +2,14 @@ import React, { useMemo, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
-import head from '@misakey/helpers/head';
-import compact from '@misakey/helpers/compact';
-import prop from '@misakey/helpers/prop';
-import findIndex from '@misakey/helpers/findIndex';
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import isArray from '@misakey/helpers/isArray';
-import differenceBy from '@misakey/helpers/differenceBy';
+import head from '@misakey/core/helpers/head';
+import compact from '@misakey/core/helpers/compact';
+import prop from '@misakey/core/helpers/prop';
+import findIndex from '@misakey/core/helpers/findIndex';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import isArray from '@misakey/core/helpers/isArray';
+import differenceBy from '@misakey/core/helpers/differenceBy';
 
 import { useTranslation } from 'react-i18next';
 import useFieldErrors from '@misakey/hooks/useFieldErrors';

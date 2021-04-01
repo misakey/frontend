@@ -7,8 +7,8 @@ import AgentsSchema from '@misakey/react-auth/store/schemas/Agents';
 import { receiveEntities, updateEntities } from '@misakey/store/actions/entities';
 import { makeMergeReceiveOneToMany } from '@misakey/store/reducers/helpers/processStrategies';
 
-import pathOr from '@misakey/helpers/pathOr';
-import isNil from '@misakey/helpers/isNil';
+import pathOr from '@misakey/core/helpers/pathOr';
+import isNil from '@misakey/core/helpers/isNil';
 
 // HELPERS
 const organizationAgentsPathOrEmpty = (entities, id) => pathOr([], ['organizationAgents', id, 'agents'])(entities);

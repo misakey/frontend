@@ -10,13 +10,13 @@ import { actionCreators, selectors } from 'store/reducers/userBoxes/pagination/e
 import { receiveBoxEvents } from 'store/reducers/box';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
-import path from '@misakey/helpers/path';
-import pickAll from '@misakey/helpers/pickAll';
-import getMissingIndexes from '@misakey/helpers/getMissingIndexes';
-import { getBoxEventsBuilder, countBoxEventsBuilder } from '@misakey/api/helpers/builder/boxes';
-import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/helpers/offsetLimitRange';
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import isNil from '@misakey/helpers/isNil';
+import path from '@misakey/core/helpers/path';
+import pickAll from '@misakey/core/helpers/pickAll';
+import getMissingIndexes from '@misakey/core/helpers/getMissingIndexes';
+import { getBoxEventsBuilder, countBoxEventsBuilder } from '@misakey/core/api/helpers/builder/boxes';
+import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/core/helpers/offsetLimitRange';
+import objectToCamelCase from '@misakey/core/helpers/objectToCamelCase';
+import isNil from '@misakey/core/helpers/isNil';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 

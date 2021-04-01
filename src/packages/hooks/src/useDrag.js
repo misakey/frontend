@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 
-import isFunction from '@misakey/helpers/isFunction';
-import isNil from '@misakey/helpers/isNil';
+import isFunction from '@misakey/core/helpers/isFunction';
+import isNil from '@misakey/core/helpers/isNil';
 
 // HOOKS
 const useOnDragEnter = (setDragActive, type) => useCallback((e) => {

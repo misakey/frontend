@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { getErrors } from '@misakey/helpers/formikError';
+import { getErrors } from '@misakey/core/helpers/formikError';
 
 // COMPONENTS
 // NB: withErrors expects to be wrapped by a Formik#Field component

@@ -10,8 +10,8 @@ import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import IconButton from '@material-ui/core/IconButton';
 
-import omit from '@misakey/helpers/omit';
-import isFunction from '@misakey/helpers/isFunction';
+import omit from '@misakey/core/helpers/omit';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 // STYLING
 import 'components/dumb/Input/Search/index.scss';

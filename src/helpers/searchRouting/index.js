@@ -1,8 +1,8 @@
-import whereEq from '@misakey/helpers/whereEq';
-import isNil from '@misakey/helpers/isNil';
-import none from '@misakey/helpers/none';
-import props from '@misakey/helpers/props';
-import compose from '@misakey/helpers/compose';
+import whereEq from '@misakey/core/helpers/whereEq';
+import isNil from '@misakey/core/helpers/isNil';
+import none from '@misakey/core/helpers/none';
+import props from '@misakey/core/helpers/props';
+import compose from '@misakey/core/helpers/compose';
 
 
 // check keys from searchParams in locationSearchParams

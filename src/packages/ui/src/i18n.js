@@ -3,7 +3,7 @@ import XHR from 'i18next-xhr-backend';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-import isObject from '@misakey/helpers/isObject';
+import isObject from '@misakey/core/helpers/isObject';
 
 import moment from 'moment';
 import 'moment/locale/fr';
@@ -62,7 +62,7 @@ const COMMONS_NAMESPACES = {
 };
 
 export default () => {
-// We should explicitly register languages to numbro to them to be available
+  // We should explicitly register languages to numbro to them to be available
   // If we don't, en-US is the fallback for every languages
   numbro.registerLanguage(numbroFR);
   numbro.registerLanguage(numbroEN);
@@ -80,7 +80,7 @@ export default () => {
       nonExplicitWhitelist: true, // if true will pass eg. en-US if finding en in whitelist
 
       detection: {
-      // order and from where user language should be detected
+        // order and from where user language should be detected
         order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
 
         // cache user language on
@@ -119,7 +119,7 @@ export default () => {
       numbro.setLanguage('fr-FR');
     }
     if (lng.startsWith('en')) {
-    // allow en-GB for numbers and dates if it's user's preferences
+      // allow en-GB for numbers and dates if it's user's preferences
       if (lng === 'en-GB') {
         moment.locale('en-GB');
         numbro.setLanguage('en-GB');

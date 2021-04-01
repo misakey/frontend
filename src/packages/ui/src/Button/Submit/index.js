@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import omit from '@misakey/helpers/omit';
+import omit from '@misakey/core/helpers/omit';
 
 import { useFormikContext } from 'formik';
 

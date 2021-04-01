@@ -5,14 +5,14 @@ import { useTranslation } from 'react-i18next';
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 
-import { STEP, INITIAL_VALUES, ERROR_KEYS } from '@misakey/auth/constants';
+import { STEP, INITIAL_VALUES, ERROR_KEYS } from '@misakey/core/auth/constants';
 import { identifierValidationSchema } from '@misakey/react-auth/constants/validationSchemas';
 
-import compose from '@misakey/helpers/compose';
-import head from '@misakey/helpers/head';
-import isNil from '@misakey/helpers/isNil';
-import props from '@misakey/helpers/props';
-import { getDetails } from '@misakey/helpers/apiError';
+import compose from '@misakey/core/helpers/compose';
+import head from '@misakey/core/helpers/head';
+import isNil from '@misakey/core/helpers/isNil';
+import props from '@misakey/core/helpers/props';
+import { getDetails } from '@misakey/core/helpers/apiError';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useOnIdentifierSubmit from '@misakey/react-auth/hooks/useOnIdentifierSubmit';

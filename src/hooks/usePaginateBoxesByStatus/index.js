@@ -1,14 +1,14 @@
 import { actionCreators, selectors } from 'store/reducers/userBoxes/pagination';
 import { receiveJoinedBoxesByDatatag } from 'store/reducers/box';
 
-import pickAll from '@misakey/helpers/pickAll';
-import isNil from '@misakey/helpers/isNil';
-import isFunction from '@misakey/helpers/isFunction';
-import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/helpers/offsetLimitRange';
-import { getUserBoxesBuilder, countUserBoxesBuilder } from '@misakey/api/helpers/builder/boxes';
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import debounce from '@misakey/helpers/debounce';
-import getMissingIndexes from '@misakey/helpers/getMissingIndexes';
+import pickAll from '@misakey/core/helpers/pickAll';
+import isNil from '@misakey/core/helpers/isNil';
+import isFunction from '@misakey/core/helpers/isFunction';
+import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/core/helpers/offsetLimitRange';
+import { getUserBoxesBuilder, countUserBoxesBuilder } from '@misakey/core/api/helpers/builder/boxes';
+import objectToCamelCase from '@misakey/core/helpers/objectToCamelCase';
+import debounce from '@misakey/core/helpers/debounce';
+import getMissingIndexes from '@misakey/core/helpers/getMissingIndexes';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useMemo, useCallback, useEffect } from 'react';

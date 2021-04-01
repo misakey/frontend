@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 
-import { METHODS } from '@misakey/auth/constants/method';
+import { METHODS } from '@misakey/core/auth/constants/method';
 import { PROP_TYPES as PWD_HASH_PROP_TYPES } from '@misakey/react-auth/constants/propTypes/passwordHashing';
-import isNil from '@misakey/helpers/isNil';
-import prop from '@misakey/helpers/prop';
-import { parseAcrValues, parseAcr } from '@misakey/helpers/parseAcr';
+import isNil from '@misakey/core/helpers/isNil';
+import prop from '@misakey/core/helpers/prop';
+import { parseAcrValues, parseAcr } from '@misakey/core/helpers/parseAcr';
 import createResetOnSignOutReducer from '@misakey/react-auth/store/reducers/helpers/createResetOnSignOutReducer';
 import { createSelector } from 'reselect';
 

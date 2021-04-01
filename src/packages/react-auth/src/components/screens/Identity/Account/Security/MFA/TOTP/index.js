@@ -24,7 +24,7 @@ import RegisterTotpDialog from '@misakey/react-auth/components/screens/Identity/
 
 import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 
-import { deleteTotpConfiguration, resetTotpRecoveryCodes } from '@misakey/auth/builder/identities';
+import { deleteTotpConfiguration, resetTotpRecoveryCodes } from '@misakey/core/auth/builder/identities';
 import { userIdentityUpdate } from '@misakey/react-auth/store/actions/identity/account';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/Context';
@@ -32,7 +32,7 @@ import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useXsMediaQuery from '@misakey/hooks/useXsMediaQuery';
-import eventStopPropagation from '@misakey/helpers/event/stopPropagation';
+import eventStopPropagation from '@misakey/core/helpers/event/stopPropagation';
 
 import { TOTP, DISABLED } from '@misakey/react-auth/constants/account/mfaMethod';
 
@@ -182,7 +182,7 @@ const ListItemTotp = ({ identity, onChangeMFAMethod }) => {
                     <DeleteIcon />
                   </IconButton>
                 </Tooltip>
-                  )}
+              )}
               secondary={isTotpActivated ? (
                 <Tooltip title={t('account:security.MFA.totp.resetRecoveryCodes.button')}>
                   <IconButton
@@ -206,7 +206,7 @@ const ListItemTotp = ({ identity, onChangeMFAMethod }) => {
                 >
                   <SettingsIcon />
                 </IconButton>
-              )}
+                )}
             />
           )}
 

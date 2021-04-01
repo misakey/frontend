@@ -8,12 +8,12 @@ import BoxEventsSchema from 'store/schemas/Boxes/Events';
 import { receiveEntities } from '@misakey/store/actions/entities';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 
-import pickAll from '@misakey/helpers/pickAll';
-import isNil from '@misakey/helpers/isNil';
-import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/helpers/offsetLimitRange';
-import { getBoxFilesEventsBuilder, countBoxFilesEventsBuilder } from '@misakey/api/helpers/builder/boxes';
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import getMissingIndexes from '@misakey/helpers/getMissingIndexes';
+import pickAll from '@misakey/core/helpers/pickAll';
+import isNil from '@misakey/core/helpers/isNil';
+import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/core/helpers/offsetLimitRange';
+import { getBoxFilesEventsBuilder, countBoxFilesEventsBuilder } from '@misakey/core/api/helpers/builder/boxes';
+import objectToCamelCase from '@misakey/core/helpers/objectToCamelCase';
+import getMissingIndexes from '@misakey/core/helpers/getMissingIndexes';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { getEventForNormalization } from 'helpers/boxEvent';
 

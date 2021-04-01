@@ -4,10 +4,10 @@ import { makeGetBoxesPublicKeysSelector } from 'store/reducers/box';
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 import deleteSecrets from '@misakey/crypto/store/actions/deleteSecrets';
 
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import difference from '@misakey/helpers/difference';
-import omit from '@misakey/helpers/omit';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import difference from '@misakey/core/helpers/difference';
+import omit from '@misakey/core/helpers/omit';
 
 import { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';

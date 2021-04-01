@@ -4,7 +4,7 @@ AutocompleteWhitelist example
 import React from 'react';
 
 
-import noop from '@misakey/helpers/noop';
+import noop from '@misakey/core/helpers/noop';
 
 import AutocompleteWhitelist from './index';
 

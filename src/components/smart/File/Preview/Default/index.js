@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import Box from '@material-ui/core/Box';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 import Grow from '@material-ui/core/Grow';
 import { THEMES } from '@misakey/ui/theme';
 import FILE_PROP_TYPES from '@misakey/ui/constants/file/proptypes';

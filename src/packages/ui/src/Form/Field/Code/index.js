@@ -3,12 +3,12 @@ import React, { useMemo, useCallback, useEffect, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import omit from '@misakey/helpers/omit';
-import isNaN from '@misakey/helpers/isNaN';
-import trim from '@misakey/helpers/trim';
-import isEmpty from '@misakey/helpers/isEmpty';
-import repeat from '@misakey/helpers/repeat';
-import mergeDeepLeft from '@misakey/helpers/mergeDeepLeft';
+import omit from '@misakey/core/helpers/omit';
+import isNaN from '@misakey/core/helpers/isNaN';
+import trim from '@misakey/core/helpers/trim';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import repeat from '@misakey/core/helpers/repeat';
+import mergeDeepLeft from '@misakey/core/helpers/mergeDeepLeft';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useFormikContext } from 'formik';

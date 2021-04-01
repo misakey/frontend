@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
-import isNil from '@misakey/helpers/isNil';
-import isJSON from '@misakey/helpers/isJSON';
-import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
-import noop from '@misakey/helpers/noop';
+import isNil from '@misakey/core/helpers/isNil';
+import isJSON from '@misakey/core/helpers/isJSON';
+import objectToCamelCaseDeep from '@misakey/core/helpers/objectToCamelCaseDeep';
+import noop from '@misakey/core/helpers/noop';
 
 import { useEffect, useRef, useCallback } from 'react';
 import useExponentialBackoff from '@misakey/hooks/useWebSocket/exponentialBackoff';

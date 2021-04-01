@@ -5,7 +5,7 @@ import moment from 'moment';
 
 import { DATETIME_SHORT } from '@misakey/ui/constants/formats/dates';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import useCalendarDateSince from '@misakey/hooks/useCalendarDateSince';
 

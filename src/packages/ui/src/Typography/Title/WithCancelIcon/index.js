@@ -3,8 +3,8 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import isFunction from '@misakey/helpers/isFunction';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import isFunction from '@misakey/core/helpers/isFunction';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import Title from '@misakey/ui/Typography/Title';
 import Box from '@material-ui/core/Box';
@@ -23,9 +23,9 @@ const TitleWithCancelIcon = ({ onCancel, t, ...props }) => {
     <>
       <Box display="flex" width="100%">
         {hasOnCancel && (
-        <IconButton edge="start" aria-label={t('common:cancel')} onClick={onCancel}>
-          <ArrowBackIcon />
-        </IconButton>
+          <IconButton edge="start" aria-label={t('common:cancel')} onClick={onCancel}>
+            <ArrowBackIcon />
+          </IconButton>
         )}
       </Box>
       <Title {...omitTranslationProps(props)} />

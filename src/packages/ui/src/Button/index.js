@@ -2,9 +2,9 @@ import React, { forwardRef, useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 
-import propOr from '@misakey/helpers/propOr';
-import isNil from '@misakey/helpers/isNil';
-import __ from '@misakey/helpers/__';
+import propOr from '@misakey/core/helpers/propOr';
+import isNil from '@misakey/core/helpers/isNil';
+import __ from '@misakey/core/helpers/__';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import withStyles from '@material-ui/core/styles/withStyles';
 

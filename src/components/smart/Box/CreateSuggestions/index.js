@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 
 import { useSelector } from 'react-redux';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 import ButtonWithDialogPassword from '@misakey/react-auth/components/Dialog/Password/with/Button';
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';

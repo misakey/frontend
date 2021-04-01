@@ -1,6 +1,6 @@
 import routes from 'routes';
 
-import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
+import parseUrlFromLocation from '@misakey/core/helpers/parseUrl/fromLocation';
 
 import { useMemo } from 'react';
 import { useLocation, generatePath } from 'react-router-dom';

@@ -4,8 +4,8 @@ import clsx from 'clsx';
 
 import { TOOLBAR_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
 
-import isFunction from '@misakey/helpers/isFunction';
-import isNil from '@misakey/helpers/isNil';
+import isFunction from '@misakey/core/helpers/isFunction';
+import isNil from '@misakey/core/helpers/isNil';
 
 import useXsMediaQuery from '@misakey/hooks/useXsMediaQuery';
 import { useTranslation } from 'react-i18next';
@@ -94,18 +94,18 @@ const ListItemSecondaryActionWhitelist = ({ id, color, accessStatus, onRemove })
           </IconButton>
         )}
         {(!isXs && hasOnRemove) && (
-        <Button
-          standing={BUTTON_STANDINGS.CANCEL}
-          color={color}
-          onClick={onClick}
-          text={(
-            <>
-              {t(`components:whitelist.${accessStatus}`)}
-              {isNil(anchorEl) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-            </>
+          <Button
+            standing={BUTTON_STANDINGS.CANCEL}
+            color={color}
+            onClick={onClick}
+            text={(
+              <>
+                {t(`components:whitelist.${accessStatus}`)}
+                {isNil(anchorEl) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+              </>
             )}
-          size="small"
-        />
+            size="small"
+          />
         )}
         {!hasMenu && (
           <Subtitle

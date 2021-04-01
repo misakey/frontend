@@ -11,7 +11,7 @@ import { SUPPORTED_TYPES, BOX_AUTO_INVITE, USER_CREATE_IDENTITY } from 'constant
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import { denormalize } from 'normalizr';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 
 import { useTranslation } from 'react-i18next';

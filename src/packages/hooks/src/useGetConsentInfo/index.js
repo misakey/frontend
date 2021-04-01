@@ -1,4 +1,4 @@
-import { getInfo } from '@misakey/auth/builder/consent';
+import { getInfo } from '@misakey/core/auth/builder/consent';
 import { ssoUpdate } from '@misakey/react-auth/store/actions/sso';
 
 import { useCallback } from 'react';

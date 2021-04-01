@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
-import isNil from '@misakey/helpers/isNil';
-import { conflict } from '@misakey/ui/constants/errorTypes';
-import { getCode } from '@misakey/helpers/apiError';
+import isNil from '@misakey/core/helpers/isNil';
+import { conflict } from '@misakey/core/api/constants/errorTypes';
+import { getCode } from '@misakey/core/helpers/apiError';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { getSecretStorage } from '../HttpApi';
 import storeEncryptedSecretStorageData from '../store/actions/storeEncryptedSecretStorageData';

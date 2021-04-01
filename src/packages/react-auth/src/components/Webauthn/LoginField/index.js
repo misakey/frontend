@@ -10,10 +10,10 @@ import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import Box from '@material-ui/core/Box';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import decodeBuffer from '@misakey/helpers/decodeBuffer';
-import encodeBuffer from '@misakey/helpers/encodeBuffer';
+import decodeBuffer from '@misakey/core/helpers/decodeBuffer';
+import encodeBuffer from '@misakey/core/helpers/encodeBuffer';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 import WebauthnIncompatibilityWarning from '@misakey/react-auth/components/Webauthn/IncompatibilityWarning';
 
 const useStyles = makeStyles(() => ({

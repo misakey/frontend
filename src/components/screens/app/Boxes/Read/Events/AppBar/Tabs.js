@@ -5,7 +5,7 @@ import { Link, useRouteMatch } from 'react-router-dom';
 
 import routes from 'routes';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useTranslation } from 'react-i18next';
@@ -55,7 +55,7 @@ const AppBarMenuTabs = ({ boxId }) => {
         component={Link}
         to={routeEvents}
         value={TABS.discussion}
-        // size="small"
+      // size="small"
       />
       <Tab
         classes={{ root: classes.tabRoot }}
@@ -63,7 +63,7 @@ const AppBarMenuTabs = ({ boxId }) => {
         component={Link}
         value={TABS.files}
         to={routeFiles}
-        // size="small"
+      // size="small"
       />
     </Tabs>
   );

@@ -1,11 +1,11 @@
 import { createSelector } from 'reselect';
 import { denormalize } from 'normalizr';
 import createResetOnSignOutReducer from '@misakey/react-auth/store/reducers/helpers/createResetOnSignOutReducer';
-import pluck from '@misakey/helpers/pluck';
-import filter from '@misakey/helpers/filter';
-import range from '@misakey/helpers/range';
-import mapKeys from '@misakey/helpers/mapKeys';
-import isNil from '@misakey/helpers/isNil';
+import pluck from '@misakey/core/helpers/pluck';
+import filter from '@misakey/core/helpers/filter';
+import range from '@misakey/core/helpers/range';
+import mapKeys from '@misakey/core/helpers/mapKeys';
+import isNil from '@misakey/core/helpers/isNil';
 
 import {
   SET_PAGINATION_NOTIFICATIONS_BY_IDENTITY,

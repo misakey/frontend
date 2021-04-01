@@ -1,4 +1,4 @@
-import { EMAILED_CODE, PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
+import { EMAILED_CODE, PREHASHED_PASSWORD } from '@misakey/core/auth/constants/method';
 import { SSO_RESET, SSO_UPDATE } from '../../actions/sso';
 
 import reducer, { INITIAL_STATE } from '.';

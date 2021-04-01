@@ -1,7 +1,7 @@
 
 import { useEffect, useRef } from 'react';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
 

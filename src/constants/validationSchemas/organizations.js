@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-import { required } from '@misakey/ui/constants/errorTypes';
+import { required } from '@misakey/core/api/constants/errorTypes';
 import { emailFieldValidation } from '@misakey/ui/constants/fieldValidations';
 
 // CONSTANTS

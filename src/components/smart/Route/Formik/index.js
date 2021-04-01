@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import { Redirect, Route, useLocation, useParams, generatePath } from 'react-router-dom';
 import { useFormikContext } from 'formik';
 
-import isString from '@misakey/helpers/isString';
-import getSearchParams from '@misakey/helpers/getSearchParams';
-import getNextSearch from '@misakey/helpers/getNextSearch';
-import toPairs from '@misakey/helpers/toPairs';
-import whereEq from '@misakey/helpers/whereEq';
+import isString from '@misakey/core/helpers/isString';
+import getSearchParams from '@misakey/core/helpers/getSearchParams';
+import getNextSearch from '@misakey/core/helpers/getNextSearch';
+import toPairs from '@misakey/core/helpers/toPairs';
+import whereEq from '@misakey/core/helpers/whereEq';
 
 // COMPONENTS
 const RouteFormik = ({ route: RouteComponent, start, path, ...rest }) => {

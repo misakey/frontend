@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import isFunction from '@misakey/helpers/isFunction';
-import { isTabVisible, listenForVisibilityChanges, stopListeningForVisibilityChanges } from '@misakey/helpers/visibilityChange';
+import isFunction from '@misakey/core/helpers/isFunction';
+import { isTabVisible, listenForVisibilityChanges, stopListeningForVisibilityChanges } from '@misakey/core/helpers/visibilityChange';
 
 export default (handler) => {
   const [isTabActive, setIsTabActive] = useState(isTabVisible());

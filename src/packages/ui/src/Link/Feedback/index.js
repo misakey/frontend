@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import noop from '@misakey/helpers/noop';
-import isFunction from '@misakey/helpers/isFunction';
+import noop from '@misakey/core/helpers/noop';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import Link from '@material-ui/core/Link';
 import DialogConfirm from '@misakey/ui/Dialog/Confirm';

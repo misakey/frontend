@@ -2,8 +2,8 @@ import { useMemo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import isNil from '@misakey/helpers/isNil';
-import prop from '@misakey/helpers/prop';
+import isNil from '@misakey/core/helpers/isNil';
+import prop from '@misakey/core/helpers/prop';
 
 import decryptFileMsg from '@misakey/crypto/box/decryptFileMsg';
 import DecryptedFileSchema from 'store/schemas/Files/Decrypted';

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import decryptText from '@misakey/crypto/box/decryptText';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useMemo } from 'react';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';

@@ -5,7 +5,7 @@ import { receiveEntities, removeEntities } from '@misakey/store/actions/entities
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import SavedFilesSchema from 'store/schemas/Files/Saved';
 import { actionCreators, selectors } from 'store/reducers/files/saved/pagination';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 // CONSTANTS
 const { addPaginatedId, removePaginatedId, receivePaginatedIds } = actionCreators;

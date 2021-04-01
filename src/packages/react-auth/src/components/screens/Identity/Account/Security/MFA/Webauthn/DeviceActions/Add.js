@@ -7,11 +7,11 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import RegisterDeviceDialog from '@misakey/react-auth/components/screens/Identity/Account/Security/MFA/Webauthn/Dialog/RegisterDevice';
 
-import { beginWebauthnRegistration, finishWebauthnRegistration } from '@misakey/auth/builder/identities';
-import encodeBuffer from '@misakey/helpers/encodeBuffer';
-import decodeBuffer from '@misakey/helpers/decodeBuffer';
-import isNil from '@misakey/helpers/isNil';
-import logSentryException from '@misakey/helpers/log/sentry/exception';
+import { beginWebauthnRegistration, finishWebauthnRegistration } from '@misakey/core/auth/builder/identities';
+import encodeBuffer from '@misakey/core/helpers/encodeBuffer';
+import decodeBuffer from '@misakey/core/helpers/decodeBuffer';
+import isNil from '@misakey/core/helpers/isNil';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 import { addWebauthnDevice } from '@misakey/react-auth/store/reducers/identity/webauthnDevices';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';

@@ -3,9 +3,9 @@ import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-import isNil from '@misakey/helpers/isNil';
-import isFunction from '@misakey/helpers/isFunction';
-import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/core/helpers/isNil';
+import isFunction from '@misakey/core/helpers/isFunction';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
@@ -85,9 +85,9 @@ const BoxMessage = forwardRef(({
           fontSize={ICON_SIZE}
         />
         {!isEmpty(text) && (
-        <Typography className={classes.text} color="inherit" gutterBottom={children}>
-          {text}
-        </Typography>
+          <Typography className={classes.text} color="inherit" gutterBottom={children}>
+            {text}
+          </Typography>
         )}
         {children}
         {isLoading && <SplashScreen variant="backdrop" />}

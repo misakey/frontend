@@ -3,21 +3,21 @@ import React, { useCallback, useMemo, useRef, Fragment, useEffect } from 'react'
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import isNil from '@misakey/helpers/isNil';
-import isString from '@misakey/helpers/isString';
-import isArray from '@misakey/helpers/isArray';
-import isEmpty from '@misakey/helpers/isEmpty';
-import remove from '@misakey/helpers/remove/ramda';
-import compact from '@misakey/helpers/compact';
-import identity from '@misakey/helpers/identity';
-import groupBy from '@misakey/helpers/groupBy';
-import partition from '@misakey/helpers/partition';
-import fileType from '@misakey/helpers/fileType';
-import isFunction from '@misakey/helpers/isFunction';
-import uniq from '@misakey/helpers/uniq';
-import prop from '@misakey/helpers/prop';
-import getEventFilesArray from '@misakey/helpers/event/getFilesArray';
-import { isDesktopDevice } from '@misakey/helpers/devices';
+import isNil from '@misakey/core/helpers/isNil';
+import isString from '@misakey/core/helpers/isString';
+import isArray from '@misakey/core/helpers/isArray';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import remove from '@misakey/core/helpers/remove/ramda';
+import compact from '@misakey/core/helpers/compact';
+import identity from '@misakey/core/helpers/identity';
+import groupBy from '@misakey/core/helpers/groupBy';
+import partition from '@misakey/core/helpers/partition';
+import fileType from '@misakey/core/helpers/fileType';
+import isFunction from '@misakey/core/helpers/isFunction';
+import uniq from '@misakey/core/helpers/uniq';
+import prop from '@misakey/core/helpers/prop';
+import getEventFilesArray from '@misakey/core/helpers/event/getFilesArray';
+import { isDesktopDevice } from 'helpers/devices';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useFormikContext } from 'formik';
@@ -257,26 +257,26 @@ const FilesField = ({
           disabled={isSubmitting || disabled}
         />
         {isDesktopDevice && (
-        <Box ml={1}>
-          <InputFileFolder
-            accept={accept}
-            name={name}
-            onChange={onChange}
-            label={(
-              <Typography variant="h5" className={classes.label}>
-                {labelFolder || t('fields:folder.label')}
-              </Typography>
+          <Box ml={1}>
+            <InputFileFolder
+              accept={accept}
+              name={name}
+              onChange={onChange}
+              label={(
+                <Typography variant="h5" className={classes.label}>
+                  {labelFolder || t('fields:folder.label')}
+                </Typography>
               )}
-            buttonText={(
-              <>
-                {t('fields:files.button.choose.label')}
-                <FolderIcon />
-              </>
+              buttonText={(
+                <>
+                  {t('fields:files.button.choose.label')}
+                  <FolderIcon />
+                </>
               )}
-            multiple
-            disabled={isSubmitting || disabled}
-          />
-        </Box>
+              multiple
+              disabled={isSubmitting || disabled}
+            />
+          </Box>
         )}
       </Box>
       {children}

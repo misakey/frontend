@@ -1,7 +1,7 @@
 import BoxesSchema from 'store/schemas/Boxes';
 import { updateEntities } from '@misakey/store/actions/entities';
 
-import { updateBoxCount } from '@misakey/api/helpers/builder/boxes';
+import { updateBoxCount } from '@misakey/core/api/helpers/builder/boxes';
 
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';

@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 
 import { getBoxInvitationLinkFieldValidationSchema } from 'constants/validationSchemas/boxes';
 
-import dialogIsFullScreen from '@misakey/helpers/dialog/isFullScreen';
+import dialogIsFullScreen from '@misakey/core/helpers/dialog/isFullScreen';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import { useHistory } from 'react-router-dom';

@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
-import isNil from '@misakey/helpers/isNil';
-import isFunction from '@misakey/helpers/isFunction';
+import isNil from '@misakey/core/helpers/isNil';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';

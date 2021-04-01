@@ -1,0 +1,93 @@
+{
+  "root": true,
+  "extends": [
+    "plugin:import/recommended",
+    "airbnb",
+    "airbnb/hooks",
+    "plugin:json/recommended"
+  ],
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true,
+    "jest": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 7,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "jest",
+    "markdown"
+  ],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "moduleDirectory":  ["src"]
+      },
+      "alias": [
+        [
+          "@misakey/core",
+          "./src/packages/core/src"
+        ],
+        [
+          "@misakey/crypto",
+          "./src/packages/crypto/src"
+        ]
+      ]
+    }
+  },
+  "rules": {
+    "import/no-restricted-paths": [
+      "error",
+      {
+        "basePath": "./src",
+        "zones": [
+          {
+            "message": "Cannot import file in @misakey/* packages",
+            "target": "./packages/core",
+            "from": "./",
+            "except": [
+              "./packages/core",
+              "./packages/crypto"
+            ]
+          }
+        ]
+      }
+    ],
+    "import/namespace": [
+      "error",
+      {
+        "allowComputed": true
+      }
+    ],
+    "import/prefer-default-export": 0,
+    "object-curly-newline": "off",
+    // Strict, airbnb is using warn
+    "no-console": "error",
+    "no-multiple-empty-lines": "off"
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/test-utils/**/*.js",
+        "*.test.js",
+        "*.int-test.js"
+      ],
+      "rules": {
+        "import/named": "off",
+        "no-unused-expressions": "off"
+      }
+    },
+    {
+      "files": [
+        "**/*.md"
+      ],
+      "rules": {
+        "no-console": "off",
+        "no-unused-expressions": "off"
+      }
+    }
+  ]
+}

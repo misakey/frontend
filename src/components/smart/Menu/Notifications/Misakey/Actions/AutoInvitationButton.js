@@ -7,9 +7,9 @@ import { useHistory, generatePath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import logSentryException from '@misakey/helpers/log/sentry/exception';
-import getNextSearch from '@misakey/helpers/getNextSearch';
-import isFunction from '@misakey/helpers/isFunction';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
+import getNextSearch from '@misakey/core/helpers/getNextSearch';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import processAutoInviteCryptoaction from '@misakey/crypto/store/actions/processAutoInviteCryptoaction';

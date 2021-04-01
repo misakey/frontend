@@ -6,8 +6,8 @@ import DatatagsSchema from 'store/schemas/Datatags';
 
 import { receiveEntities } from '@misakey/store/actions/entities';
 
-import pathOr from '@misakey/helpers/pathOr';
-import isNil from '@misakey/helpers/isNil';
+import pathOr from '@misakey/core/helpers/pathOr';
+import isNil from '@misakey/core/helpers/isNil';
 
 // SELECTORS
 const makeGetDatatagsSelector = () => createSelector(

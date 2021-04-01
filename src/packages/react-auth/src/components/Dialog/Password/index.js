@@ -5,13 +5,13 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import { invalid } from '@misakey/ui/constants/errorTypes';
+import { invalid } from '@misakey/core/api/constants/errorTypes';
 import { openVaultValidationSchema } from '@misakey/react-auth/constants/validationSchemas/vault';
-import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
+import { PREHASHED_PASSWORD } from '@misakey/core/auth/constants/method';
 
-import resolveAny from '@misakey/helpers/resolveAny';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import isFunction from '@misakey/helpers/isFunction';
+import resolveAny from '@misakey/core/helpers/resolveAny';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 

@@ -5,11 +5,11 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import routes from 'routes';
-import { forbidden } from '@misakey/ui/constants/errorTypes';
+import { forbidden } from '@misakey/core/api/constants/errorTypes';
 import BoxesSchema from 'store/schemas/Boxes';
 
 import { createLeaveBoxEventBuilder } from 'helpers/builder/boxes';
-import { getCode } from '@misakey/helpers/apiError';
+import { getCode } from '@misakey/core/helpers/apiError';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { useSnackbar } from 'notistack';

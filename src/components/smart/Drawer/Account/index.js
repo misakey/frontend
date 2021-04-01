@@ -8,9 +8,10 @@ import {
   SIDE_QUERY_PARAM,
   TEMP_DRAWER_MOBILE_WIDTH,
   TEMP_DRAWER_DESKTOP_WIDTH,
-  SIDES } from '@misakey/ui/constants/drawers';
+  SIDES,
+} from '@misakey/ui/constants/drawers';
 
-import getNextSearch from '@misakey/helpers/getNextSearch';
+import getNextSearch from '@misakey/core/helpers/getNextSearch';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useDrawerLayout from '@misakey/hooks/useDrawerLayout';

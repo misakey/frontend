@@ -2,7 +2,7 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 
 import useMountEffect from '@misakey/hooks/useMountEffect';
 
-import log from '@misakey/helpers/log';
+import log from '@misakey/core/helpers/log';
 
 // CONSTANTS
 const USE_WARNING = 'WARNING: useSuspenseMaterialFix was triggered, it can cause infinite refresh loops';

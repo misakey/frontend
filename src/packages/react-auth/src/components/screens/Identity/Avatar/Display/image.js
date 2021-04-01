@@ -5,9 +5,9 @@ import { withTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 import { useFormikContext } from 'formik';
 
-import prop from '@misakey/helpers/prop';
-import isString from '@misakey/helpers/isString';
-import isNil from '@misakey/helpers/isNil';
+import prop from '@misakey/core/helpers/prop';
+import isString from '@misakey/core/helpers/isString';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { Link } from 'react-router-dom';
 import Box from '@material-ui/core/Box';

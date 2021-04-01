@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-import omit from '@misakey/helpers/omit';
+import omit from '@misakey/core/helpers/omit';
 
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import makeStyles from '@material-ui/core/styles/makeStyles';

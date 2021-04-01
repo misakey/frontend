@@ -2,9 +2,9 @@ import React, { useMemo, useCallback, useRef, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
-import isFunction from '@misakey/helpers/isFunction';
-import debounce from '@misakey/helpers/debounce';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import isFunction from '@misakey/core/helpers/isFunction';
+import debounce from '@misakey/core/helpers/debounce';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import { useFormikContext } from 'formik';
 

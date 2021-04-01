@@ -4,10 +4,10 @@ import { useCallback } from 'react';
 import { normalize } from 'normalizr';
 import { useDispatch } from 'react-redux';
 
-import { forbidden } from '@misakey/ui/constants/errorTypes';
+import { forbidden } from '@misakey/core/api/constants/errorTypes';
 
-import { getCode, getDetails } from '@misakey/helpers/apiError';
-import isFunction from '@misakey/helpers/isFunction';
+import { getCode, getDetails } from '@misakey/core/helpers/apiError';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import BoxesSchema from 'store/schemas/Boxes';

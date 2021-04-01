@@ -9,27 +9,27 @@ import Formik from '@misakey/ui/Formik';
 
 import { LARGE, APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
 import authRoutes from '@misakey/react-auth/routes';
-import { NEXT_STEP_REDIRECT, NEXT_STEP_AUTH } from '@misakey/auth/constants/step';
-import { STEP, INITIAL_VALUES, ERROR_KEYS } from '@misakey/auth/constants';
+import { NEXT_STEP_REDIRECT, NEXT_STEP_AUTH } from '@misakey/core/auth/constants/step';
+import { STEP, INITIAL_VALUES, ERROR_KEYS } from '@misakey/core/auth/constants';
 
 import { getSecretValidationSchema } from '@misakey/react-auth/constants/validationSchemas';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react-auth/store/reducers/sso';
 import { ssoUpdate } from '@misakey/react-auth/store/actions/sso';
 import createNewRootKeySharesFromAuthFlow from '@misakey/crypto/store/actions/createNewRootKeySharesFromAuthFlow';
 
-import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, WEBAUTHN, TOTP, TOTP_RECOVERY, AuthUndefinedMethodName, RESET_PASSWORD } from '@misakey/auth/constants/method';
+import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, WEBAUTHN, TOTP, TOTP_RECOVERY, AuthUndefinedMethodName, RESET_PASSWORD } from '@misakey/core/auth/constants/method';
 
-import compose from '@misakey/helpers/compose';
-import head from '@misakey/helpers/head';
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
-import props from '@misakey/helpers/props';
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import { getDetails, getCode } from '@misakey/helpers/apiError';
-import logSentryException from '@misakey/helpers/log/sentry/exception';
-import { loginAuthStepBuilder } from '@misakey/auth/builder/loginAuthStep';
-import { isHydraErrorCode } from '@misakey/auth/helpers/errors';
+import compose from '@misakey/core/helpers/compose';
+import head from '@misakey/core/helpers/head';
+import objectToCamelCase from '@misakey/core/helpers/objectToCamelCase';
+import objectToCamelCaseDeep from '@misakey/core/helpers/objectToCamelCaseDeep';
+import props from '@misakey/core/helpers/props';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import { getDetails, getCode } from '@misakey/core/helpers/apiError';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
+import { loginAuthStepBuilder } from '@misakey/core/auth/builder/loginAuthStep';
+import { isHydraErrorCode } from '@misakey/core/auth/helpers/errors';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useClearUser } from '@misakey/hooks/useActions/loginSecret';
@@ -62,7 +62,7 @@ import ButtonSwitchTotpMethod from '@misakey/react-auth/components/Button/Switch
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
 import WebauthnLogin from '@misakey/react-auth/components/Webauthn/LoginField';
-import pick from '@misakey/helpers/pick';
+import pick from '@misakey/core/helpers/pick';
 
 // CONSTANTS
 const CURRENT_STEP = STEP.secret;
@@ -154,7 +154,7 @@ const AuthLoginSecret = ({
       } catch (error) {
         logSentryException(error, 'AuthFlow: create new root key share', { crypto: true }, 'warning');
         enqueueSnackbar(t('common:crypto.errors.rootKeyShare'), { variant: 'warning' });
-      // a failure of root key shares creation
+        // a failure of root key shares creation
         // should not make the entire auth flow fail
         // because it is not an essential step of the auth flow:
         // the user will simply have to enter her password one more time
@@ -306,7 +306,7 @@ const AuthLoginSecret = ({
                   <ArrowBackIcon />
                   {t('auth:login.secret.changeAccount')}
                 </>
-              )}
+                )}
             />
           )}
         </AppBar>

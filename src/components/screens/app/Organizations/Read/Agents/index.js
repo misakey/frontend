@@ -1,23 +1,23 @@
 import React, { useMemo, useCallback, useState } from 'react';
 
 import { ADMIN } from '@misakey/ui/constants/organizations/roles';
-import { conflict } from '@misakey/ui/constants/errorTypes';
+import { conflict } from '@misakey/core/api/constants/errorTypes';
 import { agentsAddSchema } from 'constants/validationSchemas/organizations';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { selectors as orgSelectors } from 'store/reducers/identity/organizations/agents';
 
 import { senderMatchesIdentifierValue, identifierValueProp } from 'helpers/sender';
-import { addOrganizationAgent } from '@misakey/api/helpers/builder/organizations';
-import promiseAllNoFailFast from '@misakey/helpers/promiseAllNoFailFast';
-import { getCode } from '@misakey/helpers/apiError';
-import path from '@misakey/helpers/path';
-import prop from '@misakey/helpers/prop';
-import pluck from '@misakey/helpers/pluck';
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import partition from '@misakey/helpers/partition';
-import compose from '@misakey/helpers/compose';
-import toLower from '@misakey/helpers/toLower';
+import { addOrganizationAgent } from '@misakey/core/api/helpers/builder/organizations';
+import promiseAllNoFailFast from '@misakey/core/helpers/promiseAllNoFailFast';
+import { getCode } from '@misakey/core/helpers/apiError';
+import path from '@misakey/core/helpers/path';
+import prop from '@misakey/core/helpers/prop';
+import pluck from '@misakey/core/helpers/pluck';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import partition from '@misakey/core/helpers/partition';
+import compose from '@misakey/core/helpers/compose';
+import toLower from '@misakey/core/helpers/toLower';
 
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';

@@ -3,10 +3,10 @@ import React, { useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import fill from '@misakey/helpers/fill';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import isFunction from '@misakey/helpers/isFunction';
-import isNil from '@misakey/helpers/isNil';
+import fill from '@misakey/core/helpers/fill';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
+import isFunction from '@misakey/core/helpers/isFunction';
+import isNil from '@misakey/core/helpers/isNil';
 
 import WindowedList from 'components/smart/WindowedList';
 import InfiniteLoader from 'react-window-infinite-loader';

@@ -3,16 +3,16 @@ import React, { useCallback, useRef, useState, useMemo, useEffect } from 'react'
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { gone } from '@misakey/ui/constants/errorTypes';
+import { gone } from '@misakey/core/api/constants/errorTypes';
 import BoxesSchema from 'store/schemas/Boxes';
 import BoxesEventsSchema from 'store/schemas/Boxes/Events';
 import { boxEditMessageValidationSchema } from 'constants/validationSchemas/boxes';
 
-import pluck from '@misakey/helpers/pluck';
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
+import pluck from '@misakey/core/helpers/pluck';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 import { createEditTextBoxEventBuilder } from 'helpers/builder/boxes';
-import { getCode } from '@misakey/helpers/apiError';
+import { getCode } from '@misakey/core/helpers/apiError';
 
 import { useSnackbar } from 'notistack';
 import useDecryptedEventText from 'hooks/useDecryptedEventText';

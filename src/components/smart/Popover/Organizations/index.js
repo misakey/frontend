@@ -5,9 +5,9 @@ import { useHistory, Link } from 'react-router-dom';
 import { TOOLBAR_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
 import routes from 'routes';
 
-import getNextSearch from '@misakey/helpers/getNextSearch';
+import getNextSearch from '@misakey/core/helpers/getNextSearch';
 import isSelfOrg from 'helpers/isSelfOrg';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useTranslation } from 'react-i18next';
 import useOrgId from '@misakey/react-auth/hooks/useOrgId';

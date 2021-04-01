@@ -5,7 +5,7 @@ import { DATETIME_FILE_HUMAN_READABLE } from '@misakey/ui/constants/formats/date
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 
 import { serializeObjectToJson } from '@misakey/crypto/helpers/serialization';
-import downloadFile from '@misakey/helpers/downloadFile';
+import downloadFile from '@misakey/core/helpers/downloadFile';
 
 import { useSelector } from 'react-redux';
 import { useCallback } from 'react';

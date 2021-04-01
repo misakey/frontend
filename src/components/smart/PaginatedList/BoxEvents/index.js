@@ -13,14 +13,14 @@ import PropTypes from 'prop-types';
 import BoxesSchema from 'store/schemas/Boxes';
 import EventSchema from 'store/schemas/Boxes/Events';
 
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import isFunction from '@misakey/helpers/isFunction';
-import max from '@misakey/helpers/max';
-import prop from '@misakey/helpers/prop';
-import nth from '@misakey/helpers/nth';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import isFunction from '@misakey/core/helpers/isFunction';
+import max from '@misakey/core/helpers/max';
+import prop from '@misakey/core/helpers/prop';
+import nth from '@misakey/core/helpers/nth';
 import { denormalize } from 'normalizr';
-import getScrollDiff from '@misakey/helpers/getScrollDiff';
+import getScrollDiff from '@misakey/core/helpers/getScrollDiff';
 
 import useCombinedRefs from '@misakey/hooks/useCombinedRefs';
 import usePrevPropEffect from '@misakey/hooks/usePrevPropEffect';
@@ -284,7 +284,7 @@ const PaginatedListBoxEvents = forwardRef(({ box, onScroll }, ref) => {
   return (
     <>
       {isFetching && !isEmpty(byPagination) && (
-      <HourglassEmptyIcon color="primary" fontSize="small" className={classes.loader} />
+        <HourglassEmptyIcon color="primary" fontSize="small" className={classes.loader} />
       )}
       <Box ref={combinedRef} flexGrow="1" className={classes.root}>
         {eventsByDate.map(({ date, events: groupedEvents }) => (
@@ -293,19 +293,19 @@ const PaginatedListBoxEvents = forwardRef(({ box, onScroll }, ref) => {
               {date}
             </Typography>
             {
-          groupedEvents.map((event) => (
-            <Fragment key={event.id}>
-              <Grow in={firstNewEventId === event.id} mountOnEnter>
-                <TypographySeparator color="primary" variant="caption">{t('common:newMessages')}</TypographySeparator>
-              </Grow>
-              <BoxEventsAccordingToType
-                box={box}
-                event={event}
-                key={event.id}
-              />
-            </Fragment>
-          ))
-        }
+              groupedEvents.map((event) => (
+                <Fragment key={event.id}>
+                  <Grow in={firstNewEventId === event.id} mountOnEnter>
+                    <TypographySeparator color="primary" variant="caption">{t('common:newMessages')}</TypographySeparator>
+                  </Grow>
+                  <BoxEventsAccordingToType
+                    box={box}
+                    event={event}
+                    key={event.id}
+                  />
+                </Fragment>
+              ))
+            }
           </Box>
         ))}
         <ScrollAnchor height="1px" />

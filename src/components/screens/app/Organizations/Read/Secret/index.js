@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useCallback } from 'react';
 
-import { generateOrganizationSecretBuilder } from '@misakey/api/helpers/builder/organizations';
+import { generateOrganizationSecretBuilder } from '@misakey/core/api/helpers/builder/organizations';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';

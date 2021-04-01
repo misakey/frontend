@@ -1,7 +1,7 @@
-import log from '@misakey/helpers/log';
-import isNil from '@misakey/helpers/isNil';
-import prop from '@misakey/helpers/prop';
-import path from '@misakey/helpers/path';
+import log from '@misakey/core/helpers/log';
+import isNil from '@misakey/core/helpers/isNil';
+import prop from '@misakey/core/helpers/prop';
+import path from '@misakey/core/helpers/path';
 
 import * as Sentry from '@sentry/browser';
 

@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback, useEffect, useRef } from 'react';
 
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';

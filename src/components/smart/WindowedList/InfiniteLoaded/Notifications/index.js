@@ -1,8 +1,8 @@
 import React, { useMemo, forwardRef, useRef, useCallback, useImperativeHandle, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import isNil from '@misakey/helpers/isNil';
-import getScrollDiff from '@misakey/helpers/getScrollDiff';
+import isNil from '@misakey/core/helpers/isNil';
+import getScrollDiff from '@misakey/core/helpers/getScrollDiff';
 
 import { useTranslation } from 'react-i18next';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
@@ -136,7 +136,7 @@ const WindowedListInfiniteLoadedNotifications = forwardRef(({
       }
       if (
         scrollOffset >= getScrollDiff(outerRef.current) - INNER_ELEMENT_HEIGHT
-      && hasNextPage && !isNextPageLoading && isReady
+        && hasNextPage && !isNextPageLoading && isReady
       ) {
         loadMoreItems();
       }

@@ -1,7 +1,7 @@
 import { useMemo, useEffect } from 'react';
 
-import isNil from '@misakey/helpers/isNil';
-import pathOr from '@misakey/helpers/pathOr';
+import isNil from '@misakey/core/helpers/isNil';
+import pathOr from '@misakey/core/helpers/pathOr';
 
 import useModifier from '@misakey/hooks/useModifier';
 import useDecryptMsgFileCallback from 'hooks/useDecryptMsgFile/callback';

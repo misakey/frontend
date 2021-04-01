@@ -8,14 +8,14 @@
 */
 
 
-import API from '@misakey/api';
-import isString from '@misakey/helpers/isString';
-import isArray from '@misakey/helpers/isArray';
-import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import objectToSnakeCaseDeep from '@misakey/helpers/objectToSnakeCaseDeep';
+import API from '@misakey/core/api';
+import isString from '@misakey/core/helpers/isString';
+import isArray from '@misakey/core/helpers/isArray';
+import objectToSnakeCase from '@misakey/core/helpers/objectToSnakeCase';
+import objectToSnakeCaseDeep from '@misakey/core/helpers/objectToSnakeCaseDeep';
 
-import objectToCamelCaseDeep from '@misakey/helpers/objectToCamelCaseDeep';
-// TODO use @misakey/helpers/objectToCamelCaseDeep instead (same exact function)
+import objectToCamelCaseDeep from '@misakey/core/helpers/objectToCamelCaseDeep';
+// TODO use @misakey/core/helpers/objectToCamelCaseDeep instead (same exact function)
 import objectToCamelCase from './helpers/objectToCamelCase';
 import assertNotAnyNil from './helpers/assertNotAnyNil';
 

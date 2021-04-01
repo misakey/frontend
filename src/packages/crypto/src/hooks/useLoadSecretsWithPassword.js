@@ -1,7 +1,7 @@
 import loadSecrets from '@misakey/crypto/store/actions/loadSecrets';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
-import logSentryException from '@misakey/helpers/log/sentry/exception';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';

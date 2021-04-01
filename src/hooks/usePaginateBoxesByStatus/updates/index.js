@@ -3,12 +3,12 @@ import { selectors, actionCreators, moveBackUpId } from 'store/reducers/userBoxe
 import { removeBox, receiveJoinedBox, addJoinedBox } from 'store/reducers/box';
 import deleteSecrets from '@misakey/crypto/store/actions/deleteSecrets';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useMemo, useCallback, useRef, useEffect } from 'react';
 import { useDispatch, useSelector, batch } from 'react-redux';
 
-import execWithRequestIdleCallback from 'packages/helpers/src/execWithRequestIdleCallback';
+import execWithRequestIdleCallback from '@misakey/core/helpers/execWithRequestIdleCallback';
 
 // ACTIONS
 const { removePaginatedId } = actionCreators;

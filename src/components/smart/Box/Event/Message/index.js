@@ -5,7 +5,7 @@ import EventSchema from 'store/schemas/Boxes/Events';
 import BoxesSchema from 'store/schemas/Boxes';
 import { MSG_FILE, MSG_TXT } from '@misakey/ui/constants/boxes/events';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 

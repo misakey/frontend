@@ -6,9 +6,9 @@ import { selectors } from '@misakey/react-auth/store/reducers/auth';
 import { MSG_TXT } from '@misakey/ui/constants/boxes/events';
 import { contactFieldsValidationSchema } from 'constants/validationSchemas/boxes';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import isEmpty from '@misakey/helpers/isEmpty';
-import { createBoxEventBuilder } from '@misakey/api/helpers/builder/boxes';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import { createBoxEventBuilder } from '@misakey/core/api/helpers/builder/boxes';
 import encryptText from '@misakey/crypto/box/encryptText';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';

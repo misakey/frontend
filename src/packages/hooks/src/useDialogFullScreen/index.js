@@ -1,4 +1,4 @@
-import dialogIsFullScreen from '@misakey/helpers/dialog/isFullScreen';
+import dialogIsFullScreen from '@misakey/core/helpers/dialog/isFullScreen';
 
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';

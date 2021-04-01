@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
-import isFunction from '@misakey/helpers/isFunction';
-import logWithMatomo from '@misakey/helpers/log/matomo';
+import isFunction from '@misakey/core/helpers/isFunction';
+import logWithMatomo from '@misakey/core/helpers/log/matomo';
 
 
 // COMPONENTS

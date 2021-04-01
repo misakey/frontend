@@ -7,7 +7,7 @@ import UserSchema from '@misakey/react-auth/store/schemas/User';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { senderMatchesIdentityId } from 'helpers/sender';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import { useSelector } from 'react-redux';
 

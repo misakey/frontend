@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
 import { useFormikContext } from 'formik';
 
-import log from '@misakey/helpers/log';
-import isFunction from '@misakey/helpers/isFunction';
-import isNil from '@misakey/helpers/isNil';
+import log from '@misakey/core/helpers/log';
+import isFunction from '@misakey/core/helpers/isFunction';
+import isNil from '@misakey/core/helpers/isNil';
 
 import Button from '@misakey/ui/Button';
 import IconButton from '@material-ui/core/IconButton';

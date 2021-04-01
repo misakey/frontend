@@ -3,7 +3,7 @@ import React, { useMemo, useState, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-import isEmpty from '@misakey/helpers/isEmpty';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useTouchAnchorPosition from '@misakey/hooks/useTouchAnchor/position';

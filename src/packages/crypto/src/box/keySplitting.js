@@ -1,6 +1,6 @@
-import { getKeyShareBuilder } from '@misakey/api/helpers/builder/boxes';
-import { getCode, getDetails } from '@misakey/helpers/apiError';
-import { notFound } from '@misakey/ui/constants/errorTypes';
+import { getKeyShareBuilder } from '@misakey/core/api/helpers/builder/boxes';
+import { getCode, getDetails } from '@misakey/core/helpers/apiError';
+import { notFound } from '@misakey/core/api/constants/errorTypes';
 
 import { InvalidHash } from '@misakey/crypto/Errors/classes';
 import { splitKey, combineShares, hashShare } from '@misakey/crypto/crypto/keySplitting';

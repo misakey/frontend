@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 
 import { TO_PROP_TYPE } from '@misakey/ui/constants/propTypes';
 
-import isSameHost from '@misakey/helpers/isSameHost';
-import isSamePage from '@misakey/helpers/isSamePage';
-import isObject from '@misakey/helpers/isObject';
-import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
-import locationToString from '@misakey/helpers/locationToString';
+import isSameHost from '@misakey/core/helpers/isSameHost';
+import isSamePage from '@misakey/core/helpers/isSamePage';
+import isObject from '@misakey/core/helpers/isObject';
+import parseUrlFromLocation from '@misakey/core/helpers/parseUrl/fromLocation';
+import locationToString from '@misakey/core/helpers/locationToString';
 
 import { Redirect as RouterRedirect } from 'react-router-dom';
 

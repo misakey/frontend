@@ -7,7 +7,7 @@ import { Link, generatePath, useLocation } from 'react-router-dom';
 import authRoutes from '@misakey/react-auth/routes';
 import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
@@ -228,45 +228,45 @@ const CardIdentity = forwardRef(({ identity, identityId, t }, ref) => {
         </ListItem>
       </CardList>
       {!isNil(accountId) && (
-      <>
-        <CardIdentityHeader>{t('account:sections.myVault.title')}</CardIdentityHeader>
-        <CardList>
-          <ListItem
-            classes={{ container: classes.listItemContainer }}
-            divider
-          >
-            <ListItemIcon className={classes.listItemIcon}>
-              <Typography>{t('account:quota.title')}</Typography>
-            </ListItemIcon>
-            <UserStorage />
-          </ListItem>
-          <ListItem
-            classes={{ container: classes.listItemContainer }}
-            button
-            divider
-            component={Link}
-            to={listItemExportCryptoTo}
-          >
-            <ListItemIcon className={classes.listItemIcon}>
-              <Typography>{t('account:vault.title')}</Typography>
-            </ListItemIcon>
-            <ListItemText primary={t('account:vault.helperText')} />
-            <ChevronRightIcon className={classes.actionIcon} />
-          </ListItem>
-          <ListItem
-            classes={{ container: classes.listItemContainer }}
-            button
-            component={Link}
-            to={listItemDeleteAccountTo}
-          >
-            <ListItemIcon className={classes.listItemIcon}>
-              <Typography>{t('account:delete.title')}</Typography>
-            </ListItemIcon>
-            <ListItemText primary={t('account:delete.label')} primaryTypographyProps={{ color: 'error' }} />
-            <ChevronRightIcon className={classes.actionIcon} />
-          </ListItem>
-        </CardList>
-      </>
+        <>
+          <CardIdentityHeader>{t('account:sections.myVault.title')}</CardIdentityHeader>
+          <CardList>
+            <ListItem
+              classes={{ container: classes.listItemContainer }}
+              divider
+            >
+              <ListItemIcon className={classes.listItemIcon}>
+                <Typography>{t('account:quota.title')}</Typography>
+              </ListItemIcon>
+              <UserStorage />
+            </ListItem>
+            <ListItem
+              classes={{ container: classes.listItemContainer }}
+              button
+              divider
+              component={Link}
+              to={listItemExportCryptoTo}
+            >
+              <ListItemIcon className={classes.listItemIcon}>
+                <Typography>{t('account:vault.title')}</Typography>
+              </ListItemIcon>
+              <ListItemText primary={t('account:vault.helperText')} />
+              <ChevronRightIcon className={classes.actionIcon} />
+            </ListItem>
+            <ListItem
+              classes={{ container: classes.listItemContainer }}
+              button
+              component={Link}
+              to={listItemDeleteAccountTo}
+            >
+              <ListItemIcon className={classes.listItemIcon}>
+                <Typography>{t('account:delete.title')}</Typography>
+              </ListItemIcon>
+              <ListItemText primary={t('account:delete.label')} primaryTypographyProps={{ color: 'error' }} />
+              <ChevronRightIcon className={classes.actionIcon} />
+            </ListItem>
+          </CardList>
+        </>
       )}
     </Container>
   );

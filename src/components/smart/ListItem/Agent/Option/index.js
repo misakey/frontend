@@ -5,7 +5,7 @@ import {
   ADMIN, AGENT,
 } from '@misakey/ui/constants/organizations/roles';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useTranslation } from 'react-i18next';
 

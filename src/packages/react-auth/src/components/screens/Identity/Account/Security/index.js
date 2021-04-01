@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 
 import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 

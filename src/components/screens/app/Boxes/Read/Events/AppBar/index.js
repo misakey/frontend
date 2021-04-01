@@ -8,8 +8,8 @@ import routes from 'routes';
 import { TOOLBAR_MIN_HEIGHT, SMALL } from '@misakey/ui/constants/sizes';
 import BoxesSchema from 'store/schemas/Boxes';
 
-import isEmpty from '@misakey/helpers/isEmpty';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
@@ -152,7 +152,7 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
                 </Typography>
                 {!disabled && <ExpandMoreIcon />}
               </>
-          )}
+            )}
             secondary={(
               <Typography
                 className={classes.secondaryReducedHeight}

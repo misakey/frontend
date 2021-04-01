@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 
 import { useLocation, Link } from 'react-router-dom';
 
-import isNil from '@misakey/helpers/isNil';
-import isObject from '@misakey/helpers/isObject';
+import isNil from '@misakey/core/helpers/isNil';
+import isObject from '@misakey/core/helpers/isObject';
 
 import AppBarNavigationBase from '@misakey/ui/AppBar/Navigation/Base';
 

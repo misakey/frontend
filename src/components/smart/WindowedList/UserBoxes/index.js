@@ -6,7 +6,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import routes from 'routes';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 import isSelfOrg from 'helpers/isSelfOrg';
 
 import usePaginateBoxesByStatus from 'hooks/usePaginateBoxesByStatus';
@@ -114,12 +114,12 @@ const WindowedListBoxes = forwardRef(({
             </Trans>
           </Title>
           {selfOrgSelected && (
-          <Box>
-            <ButtonCreate
-              standing={BUTTON_STANDINGS.MAIN}
-              text={t('boxes:list.empty.create')}
-            />
-          </Box>
+            <Box>
+              <ButtonCreate
+                standing={BUTTON_STANDINGS.MAIN}
+                text={t('boxes:list.empty.create')}
+              />
+            </Box>
           )}
         </Box>
       </>

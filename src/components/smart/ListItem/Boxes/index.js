@@ -7,11 +7,11 @@ import { useSelector } from 'react-redux';
 
 import BoxesSchema from 'store/schemas/Boxes';
 
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 import { getBoxEventLastDate } from 'helpers/boxEvent';
-import getNextSearch from '@misakey/helpers/getNextSearch';
+import getNextSearch from '@misakey/core/helpers/getNextSearch';
 import isSelfOrg from 'helpers/isSelfOrg';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -111,14 +111,14 @@ export const BoxListItemSkeleton = ({ classes, toRoute, nextSearchMap, ...props 
             />
 
           </Box>
-      )}
+        )}
         secondary={(
           <Skeleton
             component="span"
             variant="text"
             width="50%"
           />
-      )}
+        )}
       />
       <ListItemSecondaryAction />
     </ListItem>

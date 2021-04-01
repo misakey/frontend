@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { UPLOAD } from 'constants/upload/status';
-import isNil from '@misakey/helpers/isNil';
-import formatFileSize from '@misakey/helpers/formatFileSize';
+import isNil from '@misakey/core/helpers/isNil';
+import formatFileSize from '@misakey/ui/helpers/formatFileSize';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';

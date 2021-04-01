@@ -8,7 +8,7 @@ import Box from '@material-ui/core/Box';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import usePaginateFileEventsByBox from 'hooks/usePaginateEventsByBox/Files';
 import useTheme from '@material-ui/core/styles/useTheme';

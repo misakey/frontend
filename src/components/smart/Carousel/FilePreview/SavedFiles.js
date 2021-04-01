@@ -6,8 +6,8 @@ import { makeDenormalizeFileSelector } from 'store/reducers/files/saved/decrypte
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 import { getSavedFileEncryptedFileId } from 'helpers/boxEvent';
 
-import prop from '@misakey/helpers/prop';
-import isNil from '@misakey/helpers/isNil';
+import prop from '@misakey/core/helpers/prop';
+import isNil from '@misakey/core/helpers/isNil';
 
 import usePaginateSavedFiles from 'hooks/usePaginateSavedFiles';
 

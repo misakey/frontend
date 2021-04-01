@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { userIdentityUpdate } from '@misakey/react-auth/store/actions/identity/account';
 import { useHistory } from 'react-router-dom';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 export default ({ identityId, homePath }) => {
   const { push } = useHistory();

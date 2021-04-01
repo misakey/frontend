@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import BoxesSchema from 'store/schemas/Boxes';
 
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import useUpdateBoxSettings from 'hooks/useUpdateBoxSettings';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';

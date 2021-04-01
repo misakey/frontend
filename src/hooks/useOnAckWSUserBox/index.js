@@ -1,5 +1,5 @@
-import isNil from '@misakey/helpers/isNil';
-import objectToSnakeCaseDeep from '@misakey/helpers/objectToSnakeCaseDeep';
+import isNil from '@misakey/core/helpers/isNil';
+import objectToSnakeCaseDeep from '@misakey/core/helpers/objectToSnakeCaseDeep';
 
 import { useCallback } from 'react';
 import { isSocketOpen } from '@misakey/hooks/useWebSocket';

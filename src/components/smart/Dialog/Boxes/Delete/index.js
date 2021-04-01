@@ -9,9 +9,9 @@ import { ACCESS_RM, ACCESS_BULK } from '@misakey/ui/constants/boxes/events';
 import BoxesSchema from 'store/schemas/Boxes';
 import { boxDeletionDialogValidationSchema } from 'constants/validationSchemas/boxes';
 
-import { deleteBoxBuilder, createBulkBoxEventBuilder } from '@misakey/api/helpers/builder/boxes';
-import isFunction from '@misakey/helpers/isFunction';
-import isEmpty from '@misakey/helpers/isEmpty';
+import { deleteBoxBuilder, createBulkBoxEventBuilder } from '@misakey/core/api/helpers/builder/boxes';
+import isFunction from '@misakey/core/helpers/isFunction';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';

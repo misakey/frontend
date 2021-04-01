@@ -1,6 +1,6 @@
 import { ENCRYPTION, UPLOAD } from 'constants/upload/status';
 
-import propOr from '@misakey/helpers/propOr';
+import propOr from '@misakey/core/helpers/propOr';
 
 import { useReducer, useCallback } from 'react';
 

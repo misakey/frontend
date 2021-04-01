@@ -1,11 +1,11 @@
 import { normalize } from 'normalizr';
-import map from '@misakey/helpers/map';
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import concat from '@misakey/helpers/concat';
-import mergeDeepRight from '@misakey/helpers/mergeDeepRight';
-import mergeDeepWith from '@misakey/helpers/mergeDeepWith';
-import mergeDeepWithKey from '@misakey/helpers/mergeDeepWithKey';
+import map from '@misakey/core/helpers/map';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import concat from '@misakey/core/helpers/concat';
+import mergeDeepRight from '@misakey/core/helpers/mergeDeepRight';
+import mergeDeepWith from '@misakey/core/helpers/mergeDeepWith';
+import mergeDeepWithKey from '@misakey/core/helpers/mergeDeepWithKey';
 
 
 // HELPERS

@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import isNil from '@misakey/helpers/isNil';
-import isObject from '@misakey/helpers/isObject';
+import isNil from '@misakey/core/helpers/isNil';
+import isObject from '@misakey/core/helpers/isObject';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';

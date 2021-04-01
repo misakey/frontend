@@ -8,9 +8,9 @@ import { ICONBUTTON_WIDTH } from '@misakey/ui/constants/sizes';
 import BoxesSchema from 'store/schemas/Boxes';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
-import isNil from '@misakey/helpers/isNil';
-import isPlainObject from '@misakey/helpers/isPlainObject';
-import getScrollDiff from '@misakey/helpers/getScrollDiff';
+import isNil from '@misakey/core/helpers/isNil';
+import isPlainObject from '@misakey/core/helpers/isPlainObject';
+import getScrollDiff from '@misakey/core/helpers/getScrollDiff';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { useBoxEventSubmitContext } from 'components/smart/Box/Event/Submit/Context';

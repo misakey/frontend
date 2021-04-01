@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-import prop from '@misakey/helpers/prop';
+import prop from '@misakey/core/helpers/prop';
 
 export const selectors = {
   getDatatagById: createSelector(

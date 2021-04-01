@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 

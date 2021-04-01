@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useField } from 'formik';
-import { getFieldError, getArrayFieldError } from '@misakey/helpers/formikError';
+import { getFieldError, getArrayFieldError } from '@misakey/core/helpers/formikError';
 
 export default ({ name, prefix, multiple, parseError, ...rest }) => {
   const fieldProps = useMemo(

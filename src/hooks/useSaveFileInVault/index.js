@@ -4,15 +4,15 @@ import routes from 'routes';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
-import { createSavedFile } from '@misakey/api/helpers/builder/vault';
+import { createSavedFile } from '@misakey/core/api/helpers/builder/vault';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { encryptFileMetadataForVault } from '@misakey/crypto/vault';
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 import { addSavedFile } from 'store/reducers/files/saved';
-import { conflict } from '@misakey/ui/constants/errorTypes';
+import { conflict } from '@misakey/core/api/constants/errorTypes';
 import SnackbarActionSee from '@misakey/ui/Snackbar/Action/See';
-import logSentryException from '@misakey/helpers/log/sentry/exception';
-import isNil from '@misakey/helpers/isNil';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
+import isNil from '@misakey/core/helpers/isNil';
 
 const {
   getVaultKey,

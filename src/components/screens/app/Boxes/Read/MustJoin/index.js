@@ -7,16 +7,16 @@ import { useLocation, Link, generatePath } from 'react-router-dom';
 import authRoutes from '@misakey/react-auth/routes';
 import { updateEntities } from '@misakey/store/actions/entities';
 import { MEMBER_JOIN } from '@misakey/ui/constants/boxes/events';
-import { forbidden } from '@misakey/ui/constants/errorTypes';
+import { forbidden } from '@misakey/core/api/constants/errorTypes';
 import BoxesSchema from 'store/schemas/Boxes';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { receivePublicInfo } from 'store/reducers/box';
 import { FOOTER_HEIGHT } from '@misakey/ui/Footer';
 import { LARGE } from '@misakey/ui/constants/sizes';
 
-import { createBoxEventBuilder } from '@misakey/api/helpers/builder/boxes';
-import isNil from '@misakey/helpers/isNil';
-import { getCode, getDetails } from '@misakey/helpers/apiError';
+import { createBoxEventBuilder } from '@misakey/core/api/helpers/builder/boxes';
+import isNil from '@misakey/core/helpers/isNil';
+import { getCode, getDetails } from '@misakey/core/helpers/apiError';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';

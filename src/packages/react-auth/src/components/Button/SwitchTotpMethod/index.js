@@ -6,8 +6,8 @@ import { useFormikContext } from 'formik';
 
 import { ssoUpdate } from '@misakey/react-auth/store/actions/sso';
 
-import camelCase from '@misakey/helpers/camelCase';
-import { TOTP, TOTP_RECOVERY } from '@misakey/auth/constants/method';
+import camelCase from '@misakey/core/helpers/camelCase';
+import { TOTP, TOTP_RECOVERY } from '@misakey/core/auth/constants/method';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react-auth/store/reducers/sso';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';

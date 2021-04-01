@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 

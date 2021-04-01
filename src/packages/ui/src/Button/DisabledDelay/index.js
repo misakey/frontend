@@ -2,9 +2,9 @@ import React, { useState, useMemo, useCallback, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
-import isNil from '@misakey/helpers/isNil';
-import isNumber from '@misakey/helpers/isNumber';
-import isFunction from '@misakey/helpers/isFunction';
+import isNil from '@misakey/core/helpers/isNil';
+import isNumber from '@misakey/core/helpers/isNumber';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import useInterval from '@misakey/hooks/useInterval';
 

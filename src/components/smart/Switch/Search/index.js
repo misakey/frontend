@@ -2,8 +2,8 @@ import { isValidElement, cloneElement, Children } from 'react';
 import PropTypes from 'prop-types';
 
 import { hasAllKeys, hasAllKeysAndValues } from 'helpers/searchRouting';
-import isArray from '@misakey/helpers/isArray';
-import getSearchParams from '@misakey/helpers/getSearchParams';
+import isArray from '@misakey/core/helpers/isArray';
+import getSearchParams from '@misakey/core/helpers/getSearchParams';
 
 import { useLocation } from 'react-router-dom';
 

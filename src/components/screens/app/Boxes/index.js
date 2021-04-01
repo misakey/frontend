@@ -8,8 +8,8 @@ import { UUID4_REGEX } from '@misakey/ui/constants/regex';
 import { computeInvitationHash } from '@misakey/crypto/box/keySplitting';
 import { BadKeyShareFormat } from '@misakey/crypto/Errors/classes';
 
-import isEmpty from '@misakey/helpers/isEmpty';
-import path from '@misakey/helpers/path';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import path from '@misakey/core/helpers/path';
 
 import useSetBoxKeyShareInUrl from '@misakey/crypto/hooks/useSetBoxKeyShareInUrl';
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';

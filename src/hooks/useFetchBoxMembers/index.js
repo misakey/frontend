@@ -4,13 +4,13 @@ import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStra
 import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
 import { normalize } from 'normalizr';
 
-import { getBoxMembersBuilder } from '@misakey/api/helpers/builder/boxes';
+import { getBoxMembersBuilder } from '@misakey/core/api/helpers/builder/boxes';
 
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { getBoxById } from 'store/reducers/box';
-import isEmpty from '@misakey/helpers/isEmpty';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 // HOOKS
 // @UNUSED

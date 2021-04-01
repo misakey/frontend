@@ -31,9 +31,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 import { receiveWebauthnDevices, makeDenormalizeWebauthnDevicesSelector } from '@misakey/react-auth/store/reducers/identity/webauthnDevices';
 
-import { listWebauthnRegistration } from '@misakey/auth/builder/identities';
-import isNil from '@misakey/helpers/isNil';
-import eventStopPropagation from '@misakey/helpers/event/stopPropagation';
+import { listWebauthnRegistration } from '@misakey/core/auth/builder/identities';
+import isNil from '@misakey/core/helpers/isNil';
+import eventStopPropagation from '@misakey/core/helpers/event/stopPropagation';
 
 import { WEBAUTHN, DISABLED } from '@misakey/react-auth/constants/account/mfaMethod';
 
@@ -161,23 +161,23 @@ const ListItemWebauthn = ({ identity, onChangeMFAMethod }) => {
           )}
           >
             {isFetching && (
-            <ListItem divider>
-              <ListItemAvatar>
-                <Skeleton variant="rect" width="5rem" height="5rem" />
-              </ListItemAvatar>
-              <ListItemText
-                primary={<Skeleton variant="text" width="60%" />}
-                secondary={<Skeleton variant="text" width="40%" />}
-              />
-            </ListItem>
+              <ListItem divider>
+                <ListItemAvatar>
+                  <Skeleton variant="rect" width="5rem" height="5rem" />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={<Skeleton variant="text" width="60%" />}
+                  secondary={<Skeleton variant="text" width="40%" />}
+                />
+              </ListItem>
             )}
             {!isWebauthnDevicesNil && webauthnDevices.length === 0 && (
-            <ListItem divider alignItems="center">
-              <ListItemText
-                primary={t('account:security.MFA.webauthn.devicesList.empty')}
-                primaryTypographyProps={{ align: 'center', variant: 'h6', component: TypographyPreWrapped }}
-              />
-            </ListItem>
+              <ListItem divider alignItems="center">
+                <ListItemText
+                  primary={t('account:security.MFA.webauthn.devicesList.empty')}
+                  primaryTypographyProps={{ align: 'center', variant: 'h6', component: TypographyPreWrapped }}
+                />
+              </ListItem>
             )}
             {!isWebauthnDevicesNil && webauthnDevices.map(({ name, createdAt, id }) => (
               <ListItem divider key={id}>

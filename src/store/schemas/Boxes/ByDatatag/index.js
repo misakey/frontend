@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import BoxesSchema from 'store/schemas/Boxes';
 import DatatagsSchema from 'store/schemas/Datatags';
 
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 const entity = new schema.Entity('boxesByDatatag', {
   boxes: BoxesSchema.collection,

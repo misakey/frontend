@@ -1,4 +1,4 @@
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 function reducerShouldMatch(action, shouldMatch) {
   return !shouldMatch || action.scope === shouldMatch;

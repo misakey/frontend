@@ -1,4 +1,4 @@
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 import { decryptCryptoaction } from '@misakey/crypto/cryptoactions';
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 import {

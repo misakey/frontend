@@ -1,7 +1,7 @@
 /* This file adds serialization and base64 encoding/decoding over core.js
 */
 
-import log from '@misakey/helpers/log';
+import log from '@misakey/core/helpers/log';
 import assertNotAnyNil from '../helpers/assertNotAnyNil';
 
 import {

@@ -1,5 +1,5 @@
-import { isDesktopDevice } from '@misakey/helpers/devices';
-import isNil from '@misakey/helpers/isNil';
+import { isDesktopDevice } from 'helpers/devices';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useTranslation } from 'react-i18next';
 import { useCallback, useMemo } from 'react';

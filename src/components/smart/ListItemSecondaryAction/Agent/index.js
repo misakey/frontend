@@ -4,8 +4,8 @@ import clsx from 'clsx';
 
 import { TOOLBAR_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
 
-import isFunction from '@misakey/helpers/isFunction';
-import isNil from '@misakey/helpers/isNil';
+import isFunction from '@misakey/core/helpers/isFunction';
+import isNil from '@misakey/core/helpers/isNil';
 
 import useXsMediaQuery from '@misakey/hooks/useXsMediaQuery';
 import { useTranslation } from 'react-i18next';
@@ -111,7 +111,7 @@ const ListItemSecondaryActionAgent = ({ id, onRemove, role, isNew }) => {
                   {t(`organizations:agents.role.${role}`)}
                   {isNil(anchorEl) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
                 </>
-            )}
+              )}
               size="small"
             />
           </BadgeNew>

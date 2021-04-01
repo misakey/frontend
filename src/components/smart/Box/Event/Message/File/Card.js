@@ -7,10 +7,10 @@ import { TIME } from '@misakey/ui/constants/formats/dates';
 import EventSchema from 'store/schemas/Boxes/Events';
 import BoxesSchema from 'store/schemas/Boxes';
 
-import isNil from '@misakey/helpers/isNil';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import isEmpty from '@misakey/helpers/isEmpty';
-import eventStopPropagation from '@misakey/helpers/event/stopPropagation';
+import isNil from '@misakey/core/helpers/isNil';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import eventStopPropagation from '@misakey/core/helpers/event/stopPropagation';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
@@ -19,7 +19,7 @@ import EventCardWithMenu from 'components/dumb/Card/Event/WithMenu';
 import MenuItemEventDelete from 'components/smart/MenuItem/Event/Delete';
 import MenuItemAddFileToVault from 'components/smart/MenuItem/Event/AddToVault';
 import MenuItemEventDownload from 'components/smart/MenuItem/Event/Download';
-import execWithRequestIdleCallback from '@misakey/helpers/execWithRequestIdleCallback';
+import execWithRequestIdleCallback from '@misakey/core/helpers/execWithRequestIdleCallback';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Skeleton from '@material-ui/lab/Skeleton';
 

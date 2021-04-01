@@ -1,10 +1,10 @@
 import React, { useCallback, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import isEmpty from '@misakey/helpers/isEmpty';
-import isFunction from '@misakey/helpers/isFunction';
-import prop from '@misakey/helpers/prop';
-import emailToDisplayName from '@misakey/helpers/emailToDisplayName';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import isFunction from '@misakey/core/helpers/isFunction';
+import prop from '@misakey/core/helpers/prop';
+import emailToDisplayName from '@misakey/core/helpers/emailToDisplayName';
 
 import { useTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';

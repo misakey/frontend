@@ -1,5 +1,5 @@
 import React from 'react';
-import omit from '@misakey/helpers/omit';
+import omit from '@misakey/core/helpers/omit';
 
 // COMPONENTS
 const ComponentOmit = (Component, toOmit) => (props) => <Component {...omit(props, toOmit)} />;

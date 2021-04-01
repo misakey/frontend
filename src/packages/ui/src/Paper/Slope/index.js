@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import isString from '@misakey/helpers/isString';
-import isNil from '@misakey/helpers/isNil';
+import isString from '@misakey/core/helpers/isString';
+import isNil from '@misakey/core/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 

@@ -11,12 +11,12 @@ import { decrementNewCount, setPaginationNotifications } from 'store/actions/ide
 import { receiveEntities, updateEntities } from '@misakey/store/actions/entities';
 import { makeGetUserNotificationsNotAckSelector, getPaginationSelector, getNewCountSelector } from 'store/reducers/identity/notifications';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
-import { getUserNotificationsBuilder, acknowledgeUserNotificationsBuilder } from '@misakey/api/helpers/builder/identities';
+import { getUserNotificationsBuilder, acknowledgeUserNotificationsBuilder } from '@misakey/core/api/helpers/builder/identities';
 
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import range from '@misakey/helpers/range';
-import debounce from '@misakey/helpers/debounce';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import range from '@misakey/core/helpers/range';
+import debounce from '@misakey/core/helpers/debounce';
 
 import { useTranslation } from 'react-i18next';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
@@ -254,13 +254,13 @@ const MenuNotificationsMisakey = ({ onClose, open, ...props }) => {
                 <CloseIcon />
               </IconButton>
               {!isSmall && (
-              <IconButton
-                edge="start"
-                aria-label={t('common:close')}
-                onClick={onToggleMenuFullscreen}
-              >
-                {menuFullScreen ? <FullscreenExitIcon /> : <FullscreenIcon /> }
-              </IconButton>
+                <IconButton
+                  edge="start"
+                  aria-label={t('common:close')}
+                  onClick={onToggleMenuFullscreen}
+                >
+                  {menuFullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+                </IconButton>
               )}
               <ListItem component="div" classes={{ root: classes.listItemRoot }}>
                 <ListItemText
@@ -290,7 +290,7 @@ const MenuNotificationsMisakey = ({ onClose, open, ...props }) => {
             />
           )}
         </AutoSizer>
-        { itemsLength === 0 && <BoxEmpty title={t('boxes:notifications.byIdentity.empty')} py={0} /> }
+        {itemsLength === 0 && <BoxEmpty title={t('boxes:notifications.byIdentity.empty')} py={0} />}
       </Box>
     </Menu>
   );

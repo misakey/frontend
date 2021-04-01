@@ -128,7 +128,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 // Silent auth 
-import oidcSilentRenewalWrapper from '@misakey/auth/helpers/oidcSilentRenewalWrapper'; 
+import oidcSilentRenewalWrapper from '@misakey/core/auth/helpers/oidcSilentRenewalWrapper'; 
 
 // OIDC provider
 import OidcProvider from '@misakey/react-auth/components/OidcProvider';

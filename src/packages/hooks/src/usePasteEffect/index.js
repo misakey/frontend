@@ -1,5 +1,5 @@
-import clipboardRead from '@misakey/helpers/clipboard/read';
-import isFunction from '@misakey/helpers/isFunction';
+import clipboardRead from '@misakey/core/helpers/clipboard/read';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import { useCallback, useEffect } from 'react';
 

@@ -21,14 +21,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 import withDialogPassword from '@misakey/react-auth/components/Dialog/Password/with';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
-import isNil from '@misakey/helpers/isNil';
-import formatFileSize from '@misakey/helpers/formatFileSize';
-import isFunction from '@misakey/helpers/isFunction';
+import isNil from '@misakey/core/helpers/isNil';
+import formatFileSize from '@misakey/ui/helpers/formatFileSize';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import useGetFileIconFromType from 'hooks/useGetFileIconFromType';
 import useCalendarDateSince from '@misakey/hooks/useCalendarDateSince';
 import FILE_PROP_TYPES from '@misakey/ui/constants/file/proptypes';
-import isElementFocusedByEvent from '@misakey/helpers/isElementFocusedByEvent';
+import isElementFocusedByEvent from '@misakey/core/helpers/isElementFocusedByEvent';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 const AVATAR_SIZE = '5rem';

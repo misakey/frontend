@@ -3,12 +3,12 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { gone } from '@misakey/ui/constants/errorTypes';
+import { gone } from '@misakey/core/api/constants/errorTypes';
 
 import { createDeleteBoxEventBuilder } from 'helpers/builder/boxes';
-import { getCode } from '@misakey/helpers/apiError';
-import isFunction from '@misakey/helpers/isFunction';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import { getCode } from '@misakey/core/helpers/apiError';
+import isFunction from '@misakey/core/helpers/isFunction';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import { useSnackbar } from 'notistack';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';

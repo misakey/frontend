@@ -9,9 +9,9 @@ import { updateEntities } from '@misakey/store/actions/entities';
 import { addNewNotification } from 'store/actions/identity/notifications';
 
 import { isMeLeaveEvent, isMeKickEvent, isMeJoinEvent, isMeEvent } from 'helpers/boxEvent';
-import path from '@misakey/helpers/path';
-import isNil from '@misakey/helpers/isNil';
-import log from '@misakey/helpers/log';
+import path from '@misakey/core/helpers/path';
+import isNil from '@misakey/core/helpers/isNil';
+import log from '@misakey/core/helpers/log';
 
 import { useSelector, useDispatch, batch } from 'react-redux';
 import { useRouteMatch, useHistory } from 'react-router-dom';

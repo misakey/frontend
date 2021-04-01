@@ -1,9 +1,9 @@
 import { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 
-import eventGetFile from '@misakey/helpers/event/getFile';
-import isNil from '@misakey/helpers/isNil';
-import isFunction from '@misakey/helpers/isFunction';
-import debounce from '@misakey/helpers/debounce';
+import eventGetFile from '@misakey/core/helpers/event/getFile';
+import isNil from '@misakey/core/helpers/isNil';
+import isFunction from '@misakey/core/helpers/isFunction';
+import debounce from '@misakey/core/helpers/debounce';
 
 // CONSTANTS
 const FILE_READER = new FileReader();

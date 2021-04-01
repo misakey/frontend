@@ -3,8 +3,8 @@ import React, { useMemo, useCallback, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-import isArray from '@misakey/helpers/isArray';
-import resolveAny from '@misakey/helpers/resolveAny';
+import isArray from '@misakey/core/helpers/isArray';
+import resolveAny from '@misakey/core/helpers/resolveAny';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useDrag from '@misakey/hooks/useDrag';

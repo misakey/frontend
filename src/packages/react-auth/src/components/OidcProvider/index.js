@@ -10,14 +10,14 @@ import invalidSeclevelMiddleware from '@misakey/react-auth/middlewares/invalidSe
 
 import { loadUserThunk, authReset, setExpiresAt } from '@misakey/react-auth/store/actions/auth';
 
-import log from '@misakey/helpers/log';
-import logSentryException from '@misakey/helpers/log/sentry/exception';
-import isNil from '@misakey/helpers/isNil';
-import UserManager from '@misakey/auth/classes/UserManager';
-import signOutBuilder from '@misakey/auth/builder/signOut';
+import log from '@misakey/core/helpers/log';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
+import isNil from '@misakey/core/helpers/isNil';
+import UserManager from '@misakey/core/auth/classes/UserManager';
+import signOutBuilder from '@misakey/core/auth/builder/signOut';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import API from '@misakey/api';
+import API from '@misakey/core/api';
 
 import SplashScreenOidc from '@misakey/ui/Screen/Splash/Oidc';
 import DialogSigninRedirect from '@misakey/react-auth/components/OidcProvider/Dialog/SigninRedirect';

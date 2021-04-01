@@ -3,9 +3,9 @@ import React, { useCallback, useEffect } from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import isNil from '@misakey/helpers/isNil';
-import isFunction from '@misakey/helpers/isFunction';
-import propOr from '@misakey/helpers/propOr';
+import isNil from '@misakey/core/helpers/isNil';
+import isFunction from '@misakey/core/helpers/isFunction';
+import propOr from '@misakey/core/helpers/propOr';
 
 import { makeStyles } from '@material-ui/core/styles';
 import useFileReader from '@misakey/hooks/useFileReader';

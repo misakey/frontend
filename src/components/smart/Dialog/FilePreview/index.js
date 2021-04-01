@@ -7,7 +7,7 @@ import { withTranslation } from 'react-i18next';
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 
-import isEmpty from '@misakey/helpers/isEmpty';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 import { useTranslation } from 'react-i18next';
 

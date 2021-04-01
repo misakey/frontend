@@ -3,11 +3,11 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-import { STEP } from '@misakey/auth/constants';
-import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, RESET_PASSWORD, METHODS, TOTP, TOTP_RECOVERY } from '@misakey/auth/constants/method';
+import { STEP } from '@misakey/core/auth/constants';
+import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, RESET_PASSWORD, METHODS, TOTP, TOTP_RECOVERY } from '@misakey/core/auth/constants/method';
 import { AUTOFILL_PASSWORD, AUTOFILL_NEW_PASSWORD, AUTOFILL_CODE } from '@misakey/ui/constants/autofill';
 
-import prop from '@misakey/helpers/prop';
+import prop from '@misakey/core/helpers/prop';
 
 import Field from '@misakey/ui/Form/Field';
 import FieldCodePasteButton from '@misakey/ui/Form/Field/Code/WithPasteButton';

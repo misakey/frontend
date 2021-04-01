@@ -5,7 +5,7 @@ import { Switch, Route, Redirect, useParams, generatePath, useRouteMatch } from 
 import routes from 'routes';
 import authRoutes from '@misakey/react-auth/routes';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import useIdentity from '@misakey/react-auth/hooks/useIdentity';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';

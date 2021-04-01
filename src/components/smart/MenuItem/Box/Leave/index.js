@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import BoxesSchema from 'store/schemas/Boxes';
 
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import MenuItem from '@material-ui/core/MenuItem';
 import DialogBoxesLeave from 'components/smart/Dialog/Boxes/Leave';

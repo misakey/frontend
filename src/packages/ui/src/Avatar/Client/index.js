@@ -3,7 +3,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import Grow from '@material-ui/core/Grow';
 import AvatarColorized, { BACKGROUND_COLOR } from '@misakey/ui/Avatar/Colorized';

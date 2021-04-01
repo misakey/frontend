@@ -7,10 +7,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 
-import alwaysNull from '@misakey/helpers/always/null';
-import noop from '@misakey/helpers/noop';
-import isString from '@misakey/helpers/isString';
-import isNil from '@misakey/helpers/isNil';
+import alwaysNull from '@misakey/core/helpers/always/null';
+import noop from '@misakey/core/helpers/noop';
+import isString from '@misakey/core/helpers/isString';
+import isNil from '@misakey/core/helpers/isNil';
 
 import InputSearch from 'components/dumb/Input/Search/index';
 

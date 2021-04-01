@@ -9,8 +9,8 @@ import { selectors } from '@misakey/crypto/store/reducers';
 
 import { useBoxesContext } from 'components/smart/Context/Boxes';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import isNil from '@misakey/helpers/isNil';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
+import isNil from '@misakey/core/helpers/isNil';
 
 import ElevationScroll from '@misakey/ui/ElevationScroll';
 import ListHeader from 'components/screens/app/Boxes/List/Header/List';

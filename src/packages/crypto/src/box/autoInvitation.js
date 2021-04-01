@@ -1,8 +1,8 @@
 // Auto invitation allows a box admin to invite an existing Misakey user
 // without having to send this user the invitation link of the box.
 // See https://backend.docs.misakey.dev/concepts/box-events/
-import isEmpty from '@misakey/helpers/isEmpty';
-import propOr from '@misakey/helpers/propOr';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import propOr from '@misakey/core/helpers/propOr';
 
 import { ACCESS_ADD } from '@misakey/ui/constants/boxes/events';
 import { RESTRICTION_TYPES } from '@misakey/ui/constants/boxes/accesses';

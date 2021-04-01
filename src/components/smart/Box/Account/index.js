@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import routes from 'routes';
 import PropTypes from 'prop-types';
 
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import ButtonSignOut from '@misakey/react-auth/components/Button/SignOut';
 import CardIdentityThumbnail from '@misakey/react-auth/components/Card/Identity/Thumbnail';

@@ -1,6 +1,6 @@
 import { AVATAR_SIZE, AVATAR_SM_SIZE } from '@misakey/ui/constants/sizes';
 
-import isNumber from '@misakey/helpers/isNumber';
+import isNumber from '@misakey/core/helpers/isNumber';
 
 import { useMemo } from 'react';
 import useTheme from '@material-ui/core/styles/useTheme';

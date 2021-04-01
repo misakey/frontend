@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { AGENT } from '@misakey/ui/constants/organizations/roles';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useTranslation } from 'react-i18next';
 import usePaginateOrgAgents from 'hooks/usePaginateOrgAgents';

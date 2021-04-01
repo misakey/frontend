@@ -1,14 +1,14 @@
 import { createSelector } from 'reselect';
 import createResetOnSignOutReducer from '@misakey/react-auth/store/reducers/helpers/createResetOnSignOutReducer';
 
-import range from '@misakey/helpers/range';
-import pick from '@misakey/helpers/pick';
-import invertObj from '@misakey/helpers/invertObj';
-import isNil from '@misakey/helpers/isNil';
-import isFunction from '@misakey/helpers/isFunction';
-import pathOr from '@misakey/helpers/pathOr';
-import path from '@misakey/helpers/path';
-import propOr from '@misakey/helpers/propOr';
+import range from '@misakey/core/helpers/range';
+import pick from '@misakey/core/helpers/pick';
+import invertObj from '@misakey/core/helpers/invertObj';
+import isNil from '@misakey/core/helpers/isNil';
+import isFunction from '@misakey/core/helpers/isFunction';
+import pathOr from '@misakey/core/helpers/pathOr';
+import path from '@misakey/core/helpers/path';
+import propOr from '@misakey/core/helpers/propOr';
 
 // CONSTANTS
 export const BY_PAGINATION = 'byPagination';

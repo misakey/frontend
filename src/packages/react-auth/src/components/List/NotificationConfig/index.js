@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import { NOTIFICATIONS } from '@misakey/ui/constants/notifications';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';

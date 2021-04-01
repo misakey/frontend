@@ -2,8 +2,8 @@ import { denormalize, normalize } from 'normalizr';
 import { createSelector } from 'reselect';
 import { batch } from 'react-redux';
 
-import pathOr from '@misakey/helpers/pathOr';
-import isNil from '@misakey/helpers/isNil';
+import pathOr from '@misakey/core/helpers/pathOr';
+import isNil from '@misakey/core/helpers/isNil';
 import { receiveEntities, updateEntities, removeEntities } from '@misakey/store/actions/entities';
 import OrganizationsByIdentitySchema from '@misakey/react-auth/store/schemas/Organizations/ByIdentity';
 import OrganizationsSchema from '@misakey/react-auth/store/schemas/Organizations';
@@ -66,7 +66,8 @@ export const deleteOrganization = (identityId, organizationId) => (dispatch, get
     dispatch(updateEntities(
       [{
         id: identityId,
-        changes: { organizations: organizationIds.filter((id) => id !== organizationId) } }],
+        changes: { organizations: organizationIds.filter((id) => id !== organizationId) },
+      }],
       OrganizationsByIdentitySchema,
     ));
     dispatch(removeEntities([organizationId], OrganizationsSchema));

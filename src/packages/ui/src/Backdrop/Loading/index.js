@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import Box from '@material-ui/core/Box';
 import Backdrop from '@material-ui/core/Backdrop';

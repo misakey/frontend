@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-import isEmpty from '@misakey/helpers/isEmpty';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';

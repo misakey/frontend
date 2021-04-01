@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 

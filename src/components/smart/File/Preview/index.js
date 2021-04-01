@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 import FILE_PROP_TYPES from '@misakey/ui/constants/file/proptypes';
 import PdfPreview from 'components/smart/File/Preview/Pdf';
 import ImagePreview from './Image';

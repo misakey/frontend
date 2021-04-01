@@ -2,7 +2,7 @@ import React, { useMemo, useRef, createContext, useContext, useCallback } from '
 
 import PropTypes from 'prop-types';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 // CONTEXT
 export const BoxEventSubmitContext = createContext({

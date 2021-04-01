@@ -3,12 +3,12 @@
 import { useMemo, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { notFound } from '@misakey/ui/constants/errorTypes';
+import { notFound } from '@misakey/core/api/constants/errorTypes';
 
-import { getCode } from '@misakey/helpers/apiError';
-import isEmpty from '@misakey/helpers/isEmpty';
-import isFunction from '@misakey/helpers/isFunction';
-import { getBoxPublicBuilder } from '@misakey/api/helpers/builder/boxes';
+import { getCode } from '@misakey/core/helpers/apiError';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import isFunction from '@misakey/core/helpers/isFunction';
+import { getBoxPublicBuilder } from '@misakey/core/api/helpers/builder/boxes';
 import { computeInvitationHash } from '@misakey/crypto/box/keySplitting';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';

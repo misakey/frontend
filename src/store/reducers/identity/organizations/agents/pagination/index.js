@@ -2,11 +2,11 @@ import { createSelector } from 'reselect';
 
 import { makePaginationReducer } from 'store/reducers/helpers/pagination';
 
-import path from '@misakey/helpers/path';
-import prop from '@misakey/helpers/prop';
-import pluck from '@misakey/helpers/pluck';
-import all from '@misakey/helpers/all';
-import isNil from '@misakey/helpers/isNil';
+import path from '@misakey/core/helpers/path';
+import prop from '@misakey/core/helpers/prop';
+import pluck from '@misakey/core/helpers/pluck';
+import all from '@misakey/core/helpers/all';
+import isNil from '@misakey/core/helpers/isNil';
 
 // CONSTANTS
 export const REDUCER_KEY = 'agentsPagination';

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { AVATAR_SIZE, AVATAR_SM_SIZE } from '@misakey/ui/constants/sizes';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import usePaginateBoxesByStatusMissingPublicKeys from 'hooks/usePaginateBoxesByStatus/missingPublicKeys';

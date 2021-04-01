@@ -1,14 +1,14 @@
 import { createSelector } from 'reselect';
 import { denormalize } from 'normalizr';
 
-import isFunction from '@misakey/helpers/isFunction';
-import prop from '@misakey/helpers/prop';
-import omit from '@misakey/helpers/omit';
-import isObject from '@misakey/helpers/isObject';
-import isArray from '@misakey/helpers/isArray';
-import isEmpty from '@misakey/helpers/isEmpty';
-import isSchemaEntity from '@misakey/helpers/isSchema/entity';
-import isNil from '@misakey/helpers/isNil';
+import isFunction from '@misakey/core/helpers/isFunction';
+import prop from '@misakey/core/helpers/prop';
+import omit from '@misakey/core/helpers/omit';
+import isObject from '@misakey/core/helpers/isObject';
+import isArray from '@misakey/core/helpers/isArray';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import isSchemaEntity from '@misakey/store/reducers/helpers/isSchema/entity';
+import isNil from '@misakey/core/helpers/isNil';
 import createReducer from '@misakey/store/reducers/helpers/createReducer';
 import {
   RECEIVE_ENTITIES,

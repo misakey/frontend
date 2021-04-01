@@ -11,11 +11,11 @@ import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 import authRoutes from '@misakey/react-auth/routes';
 import { avatarValidationSchema } from '@misakey/react-auth/constants/validationSchemas/identity';
 
-import retry from '@misakey/helpers/retry';
-import isNil from '@misakey/helpers/isNil';
-import pick from '@misakey/helpers/pick';
-import { getIdentity } from '@misakey/auth/builder/identities';
-import { uploadAvatar } from '@misakey/api/helpers/builder/identities';
+import retry from '@misakey/core/helpers/retry';
+import isNil from '@misakey/core/helpers/isNil';
+import pick from '@misakey/core/helpers/pick';
+import { getIdentity } from '@misakey/core/auth/builder/identities';
+import { uploadAvatar } from '@misakey/core/api/helpers/builder/identities';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useDispatchUpdateIdentity from '@misakey/react-auth/hooks/useDispatchUpdateIdentity';

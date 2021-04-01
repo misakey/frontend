@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import isString from '@misakey/helpers/isString';
+import isString from '@misakey/core/helpers/isString';
 
 import IconStack from '@misakey/ui/Icon/Stack';
 import Avatar from '@misakey/ui/Avatar';

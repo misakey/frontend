@@ -5,9 +5,9 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withTranslation } from 'react-i18next';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import logSentryException from '@misakey/helpers/log/sentry/exception';
-import isFunction from '@misakey/helpers/isFunction';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import BoxSection from '@misakey/ui/Box/Section';
 import Box from '@material-ui/core/Box';

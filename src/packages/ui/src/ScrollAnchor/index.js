@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback, forwardRef } from 'react';
 
-import throttle from '@misakey/helpers/throttle';
+import throttle from '@misakey/core/helpers/throttle';
 
 import useCombinedRefs from '@misakey/hooks/useCombinedRefs';
 import useIntersectionObserver from '@misakey/hooks/useIntersectionObserver';

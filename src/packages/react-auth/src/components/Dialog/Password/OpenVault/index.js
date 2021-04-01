@@ -1,16 +1,16 @@
 import React, { useCallback } from 'react';
 
-import logSentryException from '@misakey/helpers/log/sentry/exception';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 
-import { PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
+import { PREHASHED_PASSWORD } from '@misakey/core/auth/constants/method';
 import { openVaultValidationSchema } from '@misakey/react-auth/constants/validationSchemas/vault';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import useLoadSecretsWithPassword from '@misakey/crypto/hooks/useLoadSecretsWithPassword';
 import DialogPassword from '@misakey/react-auth/components/Dialog/Password';
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 // COMPONENTS
 const DialogPasswordOpenVault = ({ t, open, onClose, onSuccess, skipUpdate, ...props }) => {

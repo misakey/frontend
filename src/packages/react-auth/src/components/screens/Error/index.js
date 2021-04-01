@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import { conflict } from '@misakey/ui/constants/errorTypes';
+import { conflict } from '@misakey/core/api/constants/errorTypes';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import isNil from '@misakey/helpers/isNil';
-import { getCode, getDescription, getUrlOrigin, getOrigin, getDetailPairs } from '@misakey/helpers/apiError';
-import isAnyNotEmpty from '@misakey/helpers/isAnyNotEmpty';
+import objectToCamelCase from '@misakey/core/helpers/objectToCamelCase';
+import isNil from '@misakey/core/helpers/isNil';
+import { getCode, getDescription, getUrlOrigin, getOrigin, getDetailPairs } from '@misakey/core/helpers/apiError';
+import isAnyNotEmpty from '@misakey/core/helpers/isAnyNotEmpty';
 
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import useResetAuthHref from '@misakey/react-auth/hooks/useResetAuthHref';

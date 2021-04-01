@@ -7,7 +7,7 @@ import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathK
 
 import authRoutes from '@misakey/react-auth/routes';
 
-import omit from '@misakey/helpers/omit';
+import omit from '@misakey/core/helpers/omit';
 
 import Card from '@misakey/ui/Card';
 import ScreenAction from '@misakey/ui/Screen/Action';

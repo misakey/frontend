@@ -3,7 +3,7 @@
 import { useCallback } from 'react';
 
 
-import { getOrgPublicBuilder } from '@misakey/api/helpers/builder/organizations';
+import { getOrgPublicBuilder } from '@misakey/core/api/helpers/builder/organizations';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import OrganizationsSchema from '@misakey/react-auth/store/schemas/Organizations';
@@ -13,7 +13,7 @@ import { normalize } from 'normalizr';
 
 import { receiveEntities } from '@misakey/store/actions/entities';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 // HOOKS
 export default (onError) => {

@@ -2,7 +2,7 @@ import React, { isValidElement } from 'react';
 
 import PropTypes from 'prop-types';
 
-import isObject from '@misakey/helpers/isObject';
+import isObject from '@misakey/core/helpers/isObject';
 
 import Button from '@misakey/ui/Button';
 

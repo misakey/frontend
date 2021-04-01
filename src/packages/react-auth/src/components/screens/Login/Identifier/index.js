@@ -6,12 +6,12 @@ import { withTranslation, Trans } from 'react-i18next';
 import { PROP_TYPES as SSO_PROP_TYPES, selectors as ssoSelectors } from '@misakey/react-auth/store/reducers/sso';
 import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER, LARGE } from '@misakey/ui/constants/sizes';
 
-import isEmpty from '@misakey/helpers/isEmpty';
-import isNil from '@misakey/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import isNil from '@misakey/core/helpers/isNil';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import pick from '@misakey/helpers/pick';
+import pick from '@misakey/core/helpers/pick';
 
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';

@@ -2,8 +2,8 @@ import React, { useCallback, forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
 
-import isFunction from '@misakey/helpers/isFunction';
-import log from '@misakey/helpers/log';
+import isFunction from '@misakey/core/helpers/isFunction';
+import log from '@misakey/core/helpers/log';
 
 import { useContextMenuContext } from '@misakey/ui/Menu/ContextMenu';
 

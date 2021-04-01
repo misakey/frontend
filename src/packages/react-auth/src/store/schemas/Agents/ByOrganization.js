@@ -2,7 +2,7 @@ import { schema } from 'normalizr';
 import PropTypes from 'prop-types';
 import AgentsSchema from '@misakey/react-auth/store/schemas/Agents';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 const entity = new schema.Entity('organizationAgents', {
   agents: AgentsSchema.collection,

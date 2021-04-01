@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 
 import { useLocation } from 'react-router-dom';
 
-import getSearchParams from '@misakey/helpers/getSearchParams';
-import isFunction from '@misakey/helpers/isFunction';
+import getSearchParams from '@misakey/core/helpers/getSearchParams';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 export default (transform = null) => {
   const { search: locationSearch } = useLocation();

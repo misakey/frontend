@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 
 import EventSchema from 'store/schemas/Boxes/Events';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import EventBoxMessagePreview from 'components/smart/Box/Event/Message/Preview';
 import EventFileCard, { FileCardEventSkeleton } from 'components/smart/Box/Event/Message/File/Card';

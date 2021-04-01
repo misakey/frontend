@@ -7,7 +7,7 @@ import UserSchema from '@misakey/react-auth/store/schemas/User';
 import BoxSchema from 'store/schemas/Boxes';
 
 import { sendersMatch } from 'helpers/sender';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 

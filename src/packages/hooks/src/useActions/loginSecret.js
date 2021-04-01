@@ -1,12 +1,12 @@
 import { useMemo, useCallback } from 'react';
 
-import { EMAILED_CODE, PREHASHED_PASSWORD } from '@misakey/auth/constants/method';
+import { EMAILED_CODE, PREHASHED_PASSWORD } from '@misakey/core/auth/constants/method';
 
 import { onResetSsoIdentity, onSetIdentifier } from '@misakey/react-auth/store/actions/sso';
 
 import authRoutes from '@misakey/react-auth/routes';
 
-import propOr from '@misakey/helpers/propOr';
+import propOr from '@misakey/core/helpers/propOr';
 
 import { useDispatch } from 'react-redux';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import dialogIsFullScreen from '@misakey/helpers/dialog/isFullScreen';
+import dialogIsFullScreen from '@misakey/core/helpers/dialog/isFullScreen';
 
 import { useTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';

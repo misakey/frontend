@@ -2,7 +2,7 @@ import React, { useMemo, useRef } from 'react';
 
 import PropTypes from 'prop-types';
 
-import mergeDeepLeft from '@misakey/helpers/mergeDeepLeft';
+import mergeDeepLeft from '@misakey/core/helpers/mergeDeepLeft';
 
 import ButtonPaste from '@misakey/ui/Button/Paste';
 import InputAdornment from '@material-ui/core/InputAdornment';

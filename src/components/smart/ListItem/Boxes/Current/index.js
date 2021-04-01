@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import routes from 'routes';
 import { makeDenormalizeBoxSelector } from 'store/reducers/box';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';

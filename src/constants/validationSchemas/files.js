@@ -1,9 +1,9 @@
 import * as Yup from 'yup';
 import { MAX_FILE_SIZE } from '@misakey/ui/constants/file/size';
-import { required } from '@misakey/ui/constants/errorTypes';
-import isString from '@misakey/helpers/isString';
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
+import { required } from '@misakey/core/api/constants/errorTypes';
+import isString from '@misakey/core/helpers/isString';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 // CONSTANTS
 export const fileUploadValidationSchema = Yup.object().shape({

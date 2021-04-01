@@ -8,8 +8,8 @@ import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react-auth/store/reducers
 import authRoutes from '@misakey/react-auth/routes';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
@@ -66,7 +66,7 @@ const AuthLogin = ({
       <ScreenLoader isLoading={isSubmitting} />
       <Switch>
         {isEmpty(identifier)
-        && <Redirect exact from={authRoutes.signIn.secret} to={authRoutes.signIn._} />}
+          && <Redirect exact from={authRoutes.signIn.secret} to={authRoutes.signIn._} />}
         <Route
           exact
           path={authRoutes.signIn.secret}

@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import moment from 'moment';
-import any from '@misakey/helpers/any';
-import complement from '@misakey/helpers/complement';
-import isEmpty from '@misakey/helpers/isEmpty';
-import toLower from '@misakey/helpers/toLower';
+import any from '@misakey/core/helpers/any';
+import complement from '@misakey/core/helpers/complement';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import toLower from '@misakey/core/helpers/toLower';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 

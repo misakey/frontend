@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 
-import isAnyNotEmpty from '@misakey/helpers/isAnyNotEmpty';
+import isAnyNotEmpty from '@misakey/core/helpers/isAnyNotEmpty';
 
 import AvatarColorized from '@misakey/ui/Avatar/Colorized';
 import Avatar from '@misakey/ui/Avatar';

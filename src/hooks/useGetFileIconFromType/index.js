@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import DefaultIcon from '@material-ui/icons/InsertDriveFile';
 import ImageIcon from '@material-ui/icons/Image';

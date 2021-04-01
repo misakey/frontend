@@ -1,4 +1,4 @@
-import { createRootKeyShareBuilder } from '@misakey/auth/builder/rootKeyShares';
+import { createRootKeyShareBuilder } from '@misakey/core/auth/builder/rootKeyShares';
 import { splitRootKey } from '@misakey/crypto/secretStorage/rootKeyShares';
 
 import setRootKeyShare from './setRootKeyShare';

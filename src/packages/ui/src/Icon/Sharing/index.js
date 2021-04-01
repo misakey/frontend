@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import ACCESS_LEVELS, { PUBLIC, LIMITED } from '@misakey/ui/constants/accessModes';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import LockIcon from '@material-ui/icons/Lock';
 import PublicIcon from '@material-ui/icons/Public';

@@ -1,5 +1,5 @@
-import hasHref from '@misakey/helpers/hasHref';
-import eventPreventDefault from '@misakey/helpers/event/preventDefault';
+import hasHref from '@misakey/core/helpers/hasHref';
+import eventPreventDefault from '@misakey/core/helpers/event/preventDefault';
 
 
 import { useCallback, useMemo } from 'react';

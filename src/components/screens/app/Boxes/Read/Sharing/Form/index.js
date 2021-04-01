@@ -16,16 +16,16 @@ import ACCESS_MODES, { PUBLIC, LIMITED } from '@misakey/ui/constants/accessModes
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
 import { getUpdatedAccesses } from 'helpers/accesses';
-import alwaysNull from '@misakey/helpers/always/null';
-import isEmpty from '@misakey/helpers/isEmpty';
-import isNil from '@misakey/helpers/isNil';
-import pluck from '@misakey/helpers/pluck';
-import compose from '@misakey/helpers/compose';
-import toLower from '@misakey/helpers/toLower';
-import prop from '@misakey/helpers/prop';
-import logSentryException from '@misakey/helpers/log/sentry/exception';
-import filter from '@misakey/helpers/filter';
-import { createBulkBoxEventBuilder, createBoxEventBuilder } from '@misakey/api/helpers/builder/boxes';
+import alwaysNull from '@misakey/core/helpers/always/null';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import isNil from '@misakey/core/helpers/isNil';
+import pluck from '@misakey/core/helpers/pluck';
+import compose from '@misakey/core/helpers/compose';
+import toLower from '@misakey/core/helpers/toLower';
+import prop from '@misakey/core/helpers/prop';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
+import filter from '@misakey/core/helpers/filter';
+import { createBulkBoxEventBuilder, createBoxEventBuilder } from '@misakey/core/api/helpers/builder/boxes';
 import { senderMatchesIdentifierValue, identifierValueProp } from 'helpers/sender';
 
 import { useSelector, useDispatch } from 'react-redux';

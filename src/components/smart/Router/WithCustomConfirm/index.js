@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
 
-import isEmpty from '@misakey/helpers/isEmpty';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 import { createBrowserHistory } from 'history';
 
 import DialogPrompt from '@misakey/ui/Dialog/Prompt';

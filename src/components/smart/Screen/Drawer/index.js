@@ -5,13 +5,13 @@ import clsx from 'clsx';
 
 import { DRAWER_QUERY_PARAM, PERMANENT_DRAWER_DESKTOP_WIDTH, PERMANENT_DRAWER_MOBILE_WIDTH } from '@misakey/ui/constants/drawers';
 
-import omit from '@misakey/helpers/omit';
-import getNextSearch from '@misakey/helpers/getNextSearch';
-import isNil from '@misakey/helpers/isNil';
-import isPlainObject from '@misakey/helpers/isPlainObject';
-import getSearchParams from '@misakey/helpers/getSearchParams';
+import omit from '@misakey/core/helpers/omit';
+import getNextSearch from '@misakey/core/helpers/getNextSearch';
+import isNil from '@misakey/core/helpers/isNil';
+import isPlainObject from '@misakey/core/helpers/isPlainObject';
+import getSearchParams from '@misakey/core/helpers/getSearchParams';
 
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useLocation, useHistory } from 'react-router-dom';

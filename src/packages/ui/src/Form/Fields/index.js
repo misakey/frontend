@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import map from '@misakey/helpers/map';
+import map from '@misakey/core/helpers/map';
 
 import FormField from '@misakey/ui/Form/Field';
 

@@ -1,6 +1,6 @@
 import { selectors as ssoSelectors } from '@misakey/react-auth/store/reducers/sso';
 
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
+import objectToCamelCase from '@misakey/core/helpers/objectToCamelCase';
 
 import { useMemo } from 'react';
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';

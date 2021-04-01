@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import { TOOLBAR_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 import isSelfOrg from 'helpers/isSelfOrg';
 
 import useOrgId from '@misakey/react-auth/hooks/useOrgId';

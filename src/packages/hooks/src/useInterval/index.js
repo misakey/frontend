@@ -1,7 +1,7 @@
 import { useEffect, useRef, useMemo } from 'react';
-import isFunction from '@misakey/helpers/isFunction';
-import isNumber from '@misakey/helpers/isNumber';
-import noop from '@misakey/helpers/noop';
+import isFunction from '@misakey/core/helpers/isFunction';
+import isNumber from '@misakey/core/helpers/isNumber';
+import noop from '@misakey/core/helpers/noop';
 
 // HELPERS
 const callCbFn = (callbackRef) => {

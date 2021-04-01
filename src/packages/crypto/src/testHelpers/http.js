@@ -1,6 +1,6 @@
 // Some code needed when running unit tests involving HTTP calls
 
-import API from '@misakey/api';
+import API from '@misakey/core/api';
 
 API.setCsrfToken('fakeCsrfTokenForTests');
 

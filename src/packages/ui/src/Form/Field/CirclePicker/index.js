@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import ACCOUNT_COLORS from '@misakey/react-auth/constants/account/colors';
 
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import { CirclePicker } from 'react-color';
 

@@ -2,8 +2,8 @@ import React, { useMemo, isValidElement } from 'react';
 
 import PropTypes from 'prop-types';
 
-import isNil from '@misakey/helpers/isNil';
-import isObject from '@misakey/helpers/isObject';
+import isNil from '@misakey/core/helpers/isNil';
+import isObject from '@misakey/core/helpers/isObject';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 

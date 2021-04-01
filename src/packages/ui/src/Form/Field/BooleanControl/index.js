@@ -3,9 +3,9 @@ import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import isEmpty from '@misakey/helpers/isEmpty';
-import isFunction from '@misakey/helpers/isFunction';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useXsMediaQuery from '@misakey/hooks/useXsMediaQuery';

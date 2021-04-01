@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 
 import { TO_PROP_TYPE } from '@misakey/ui/constants/propTypes';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/Context';
 

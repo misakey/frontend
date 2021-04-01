@@ -7,12 +7,12 @@ import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/a
 import { boxNameFieldValidationSchema } from 'constants/validationSchemas/boxes';
 import setBoxSecrets from '@misakey/crypto/store/actions/setBoxSecrets';
 
-import { createBoxBuilder } from '@misakey/api/helpers/builder/boxes';
-import getRandomTitle from '@misakey/helpers/getRandomTitle';
-import isFunction from '@misakey/helpers/isFunction';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import logSentryException from '@misakey/helpers/log/sentry/exception';
-import dialogIsFullScreen from '@misakey/helpers/dialog/isFullScreen';
+import { createBoxBuilder } from '@misakey/core/api/helpers/builder/boxes';
+import getRandomTitle from '@misakey/core/helpers/getRandomTitle';
+import isFunction from '@misakey/core/helpers/isFunction';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
+import dialogIsFullScreen from '@misakey/core/helpers/dialog/isFullScreen';
 import { createCryptoForNewBox } from '@misakey/crypto/box/creation';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';

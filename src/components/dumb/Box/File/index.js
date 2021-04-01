@@ -2,9 +2,9 @@ import React, { useMemo } from 'react';
 
 import { PropTypes } from 'prop-types';
 
-import formatFileSize from '@misakey/helpers/formatFileSize';
-import isNil from '@misakey/helpers/isNil';
-import isFunction from '@misakey/helpers/isFunction';
+import formatFileSize from '@misakey/ui/helpers/formatFileSize';
+import isNil from '@misakey/core/helpers/isNil';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import useGetFileIconFromType from 'hooks/useGetFileIconFromType';
 import { useTranslation } from 'react-i18next';

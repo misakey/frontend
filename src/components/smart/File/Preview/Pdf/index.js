@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 
 import FILE_PROP_TYPES from '@misakey/ui/constants/file/proptypes';
 
-import { getPage, getDocument } from '@misakey/helpers/pdf';
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import range from '@misakey/helpers/range';
+import { getPage, getDocument } from 'helpers/pdf';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import range from '@misakey/core/helpers/range';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useSnackbar } from 'notistack';

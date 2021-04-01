@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import AppBarNavigationHistory from '@misakey/ui/AppBar/Navigation/History';
 import AppBarNavigationLink from '@misakey/ui/AppBar/Navigation/Link';

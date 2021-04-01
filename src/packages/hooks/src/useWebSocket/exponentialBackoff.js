@@ -1,8 +1,8 @@
 import React, { useMemo, useCallback, useEffect, useRef } from 'react';
 
 
-import isNil from '@misakey/helpers/isNil';
-import exponentialBackoff from '@misakey/helpers/exponentialBackoff';
+import isNil from '@misakey/core/helpers/isNil';
+import exponentialBackoff from '@misakey/core/helpers/exponentialBackoff';
 
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
@@ -50,7 +50,8 @@ export default () => {
           enqueueSnackbar(text, {
             variant: 'warning',
             preventDuplicate: true,
-            action: (key) => <SnackbarActionRetry id={key} fn={fn} onClick={onRetry} /> });
+            action: (key) => <SnackbarActionRetry id={key} fn={fn} onClick={onRetry} />,
+          });
         }
         attempt.current += 1;
         timeoutRef.current = setTimeout(

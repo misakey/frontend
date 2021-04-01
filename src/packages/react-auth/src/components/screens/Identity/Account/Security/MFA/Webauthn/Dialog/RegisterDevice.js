@@ -4,8 +4,8 @@ import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import { useTranslation } from 'react-i18next';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import getRandomTitle from '@misakey/helpers/getRandomTitle';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
+import getRandomTitle from '@misakey/core/helpers/getRandomTitle';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 

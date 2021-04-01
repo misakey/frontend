@@ -5,7 +5,7 @@ import { Route, Switch } from 'react-router-dom';
 import routes from 'routes';
 import authRoutes from '@misakey/react-auth/routes';
 
-import retry from '@misakey/helpers/retry';
+import retry from '@misakey/core/helpers/retry';
 
 import Home from 'components/screens/app/Home';
 import Redirect from '@misakey/ui/Redirect';

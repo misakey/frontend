@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import UserSchema from '@misakey/react-auth/store/schemas/User';
 import { VISIBLE_ROLES } from '@misakey/ui/constants/organizations/roles';
 
-import { pickUsersPropsRemapIdentifier } from '@misakey/helpers/user';
+import { pickUsersPropsRemapIdentifier } from '@misakey/core/helpers/user';
 
 import ListItemUser from '@misakey/ui/ListItem/User';
 import ListItemSecondaryActionAgent from 'components/smart/ListItemSecondaryAction/Agent';

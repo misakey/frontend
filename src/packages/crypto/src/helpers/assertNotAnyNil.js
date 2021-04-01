@@ -1,4 +1,4 @@
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 export default function assertNotAnyNil(params) {
   Object.entries(params).forEach(([name, value]) => {

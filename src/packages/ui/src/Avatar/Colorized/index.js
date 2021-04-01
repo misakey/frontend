@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import getBackgroundAndColorFromString from '@misakey/helpers/getBackgroundAndColorFromString';
-import isEmpty from '@misakey/helpers/isEmpty';
+import getBackgroundAndColorFromString from '@misakey/core/helpers/getBackgroundAndColorFromString';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 import { makeStyles } from '@material-ui/core/styles';
 import useTheme from '@material-ui/core/styles/useTheme';

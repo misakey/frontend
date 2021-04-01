@@ -1,8 +1,8 @@
 import { StatusCodes } from 'http-status-codes';
 
-import isNil from '@misakey/helpers/isNil';
-import { HandledError } from '@misakey/api/API/errors';
-import { getDetails } from '@misakey/helpers/apiError';
+import isNil from '@misakey/core/helpers/isNil';
+import { HandledError } from '@misakey/core/api/API/errors';
+import { getDetails } from '@misakey/core/helpers/apiError';
 
 // MIDDLEWARE
 const invalidSeclevelMiddleware = (onMatch) => async (rawResponse) => {

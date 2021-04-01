@@ -2,14 +2,14 @@ import React, { useState, useMemo, useCallback, useContext, useEffect } from 're
 
 import PropTypes from 'prop-types';
 
-import { notFound } from '@misakey/ui/constants/errorTypes';
+import { notFound } from '@misakey/core/api/constants/errorTypes';
 import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/Context';
 
-import objectToSnakeCase from '@misakey/helpers/objectToSnakeCase';
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import { getCode } from '@misakey/helpers/apiError';
-import { getBoxPublicBuilder } from '@misakey/api/helpers/builder/boxes';
+import objectToSnakeCase from '@misakey/core/helpers/objectToSnakeCase';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import { getCode } from '@misakey/core/helpers/apiError';
+import { getBoxPublicBuilder } from '@misakey/core/api/helpers/builder/boxes';
 import { computeInvitationHash } from '@misakey/crypto/box/keySplitting';
 import { BadKeyShareFormat } from '@misakey/crypto/Errors/classes';
 

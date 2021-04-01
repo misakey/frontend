@@ -1,12 +1,12 @@
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import isNil from '@misakey/helpers/isNil';
-import merge from '@misakey/helpers/merge';
-import ramdaPath from '@misakey/helpers/path';
-import assocPath from '@misakey/helpers/assocPath';
-import prop from '@misakey/helpers/prop';
-import propOr from '@misakey/helpers/propOr';
-import omit from '@misakey/helpers/omit';
+import isNil from '@misakey/core/helpers/isNil';
+import merge from '@misakey/core/helpers/merge';
+import ramdaPath from '@misakey/core/helpers/path';
+import assocPath from '@misakey/core/helpers/assocPath';
+import prop from '@misakey/core/helpers/prop';
+import propOr from '@misakey/core/helpers/propOr';
+import omit from '@misakey/core/helpers/omit';
 import createReducer from '@misakey/store/reducers/helpers/createReducer';
 import { createSelector } from 'reselect';
 

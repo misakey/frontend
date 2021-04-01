@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import EventSchema from 'store/schemas/Boxes/Events';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useBoxEditEventContext } from 'components/smart/Box/Event/Edit/Context';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';

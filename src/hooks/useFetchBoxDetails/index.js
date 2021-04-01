@@ -10,10 +10,10 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import mergeDeepWithKey from '@misakey/helpers/mergeDeepWithKey';
-import { getBoxBuilder, getBoxMembersBuilder } from '@misakey/api/helpers/builder/boxes';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import mergeDeepWithKey from '@misakey/core/helpers/mergeDeepWithKey';
+import { getBoxBuilder, getBoxMembersBuilder } from '@misakey/core/api/helpers/builder/boxes';
 
 import { noEmptyOverride, mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import BoxesSchema from 'store/schemas/Boxes';

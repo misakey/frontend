@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 
-import isNil from '@misakey/helpers/isNil';
-import isFunction from '@misakey/helpers/isFunction';
-import invertObj from '@misakey/helpers/invertObj';
-import max from '@misakey/helpers/max';
-import min from '@misakey/helpers/min';
-import propOr from '@misakey/helpers/propOr';
+import isNil from '@misakey/core/helpers/isNil';
+import isFunction from '@misakey/core/helpers/isFunction';
+import invertObj from '@misakey/core/helpers/invertObj';
+import max from '@misakey/core/helpers/max';
+import min from '@misakey/core/helpers/min';
+import propOr from '@misakey/core/helpers/propOr';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useTheme from '@material-ui/core/styles/useTheme';
@@ -127,13 +127,13 @@ function FilePreviewCarousel({ open,
 
   const shouldLoadPrevNext = useMemo(
     () => isFunction(loadMoreItems)
-    && !isNil(byPagination)
-    && !isNil(itemCount)
-    && open
-    && !isNil(minIndex)
-    && !isNil(maxIndex)
-    && ((activeStep === minIndex && minIndex > 0)
-      || (activeStep === maxIndex && maxIndex < itemCount)),
+      && !isNil(byPagination)
+      && !isNil(itemCount)
+      && open
+      && !isNil(minIndex)
+      && !isNil(maxIndex)
+      && ((activeStep === minIndex && minIndex > 0)
+        || (activeStep === maxIndex && maxIndex < itemCount)),
     [
       loadMoreItems, byPagination, itemCount,
       open, activeStep, minIndex, maxIndex,

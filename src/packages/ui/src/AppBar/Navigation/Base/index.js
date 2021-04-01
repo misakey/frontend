@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
-import omit from '@misakey/helpers/omit';
-import isNil from '@misakey/helpers/isNil';
-import isBoolean from '@misakey/helpers/isBoolean';
+import omit from '@misakey/core/helpers/omit';
+import isNil from '@misakey/core/helpers/isNil';
+import isBoolean from '@misakey/core/helpers/isBoolean';
 
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';

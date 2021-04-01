@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import BoxSchema from 'store/schemas/Boxes';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Menu from '@material-ui/core/Menu';

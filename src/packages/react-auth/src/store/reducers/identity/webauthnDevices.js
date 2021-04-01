@@ -2,7 +2,7 @@ import { denormalize, normalize } from 'normalizr';
 import { createSelector } from 'reselect';
 import { batch } from 'react-redux';
 
-import pathOr from '@misakey/helpers/pathOr';
+import pathOr from '@misakey/core/helpers/pathOr';
 import { receiveEntities, updateEntities, removeEntities } from '@misakey/store/actions/entities';
 import IdentityWebauthnDeviceSchema from '@misakey/react-auth/store/schemas/WebauthnDevice/ByIdentity';
 import WebauthnDeviceSchema from '@misakey/react-auth/store/schemas/WebauthnDevice';

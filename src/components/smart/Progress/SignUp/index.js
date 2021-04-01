@@ -4,7 +4,7 @@ import { useLocation, matchPath } from 'react-router-dom';
 
 import authRoutes from '@misakey/react-auth/routes';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 

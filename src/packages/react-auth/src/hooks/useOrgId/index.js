@@ -1,4 +1,4 @@
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useMemo } from 'react';
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';

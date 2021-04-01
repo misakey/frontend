@@ -2,7 +2,7 @@ import { schema } from 'normalizr';
 import PropTypes from 'prop-types';
 import DatatagsSchema from 'store/schemas/Datatags';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 const entity = new schema.Entity('organizationDatatags', {
   datatags: DatatagsSchema.collection,

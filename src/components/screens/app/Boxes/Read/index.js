@@ -4,7 +4,7 @@ import { Switch, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import routes from 'routes';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';

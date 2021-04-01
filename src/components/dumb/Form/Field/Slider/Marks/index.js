@@ -3,11 +3,11 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import last from '@misakey/helpers/last';
-import pluck from '@misakey/helpers/pluck';
-import prop from '@misakey/helpers/prop';
-import sortNumbersAsc from '@misakey/helpers/sort/numbers/asc';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import last from '@misakey/core/helpers/last';
+import pluck from '@misakey/core/helpers/pluck';
+import prop from '@misakey/core/helpers/prop';
+import sortNumbersAsc from '@misakey/core/helpers/sort/numbers/asc';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import FieldSlider from 'components/dumb/Form/Field/Slider';
 

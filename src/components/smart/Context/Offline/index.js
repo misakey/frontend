@@ -3,8 +3,8 @@ import React, { createContext, useContext, useState, useMemo, useCallback, useEf
 import PropTypes from 'prop-types';
 
 import networkErrorMiddleware from 'middlewares/networkError';
-import isFunction from '@misakey/helpers/isFunction';
-// import simulateNetworkError from '@misakey/api/helpers/simulateNetworkError';
+import isFunction from '@misakey/core/helpers/isFunction';
+// import simulateNetworkError from '@misakey/core/api/helpers/simulateNetworkError';
 
 // CONTEXT
 const OfflineContext = createContext({

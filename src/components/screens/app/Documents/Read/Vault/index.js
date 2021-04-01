@@ -2,7 +2,7 @@ import React, { useMemo, useRef } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import usePaginateSavedFiles from 'hooks/usePaginateSavedFiles';

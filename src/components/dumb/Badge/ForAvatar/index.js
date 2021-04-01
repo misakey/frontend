@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Badge from '@material-ui/core/Badge';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 // HOOKS
 const useStyles = makeStyles(() => ({

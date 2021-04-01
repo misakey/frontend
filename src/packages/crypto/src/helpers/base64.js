@@ -1,8 +1,8 @@
 import * as tweetnaclUtil from 'tweetnacl-util';
 
-import isTypedArray from '@misakey/helpers/isTypedArray';
-import isEmpty from '@misakey/helpers/isEmpty';
-import trimEnd from '@misakey/helpers/trimEnd';
+import isTypedArray from '@misakey/core/helpers/isTypedArray';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import trimEnd from '@misakey/core/helpers/trimEnd';
 
 export const makeSafeForUrl = (string) => trimEnd(string.replace(/\//g, '_').replace(/\+/g, '-'), '=');
 

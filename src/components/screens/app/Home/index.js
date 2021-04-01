@@ -2,14 +2,14 @@ import React, { useCallback, useMemo, useEffect } from 'react';
 
 import { Switch, Route, useRouteMatch, useHistory, useLocation } from 'react-router-dom';
 import routes from 'routes';
-import { notFound } from '@misakey/ui/constants/errorTypes';
+import { notFound } from '@misakey/core/api/constants/errorTypes';
 
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 import isSelfOrg from 'helpers/isSelfOrg';
-import getNextSearch from '@misakey/helpers/getNextSearch';
+import getNextSearch from '@misakey/core/helpers/getNextSearch';
 
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 import { useSelector } from 'react-redux';

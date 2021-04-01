@@ -10,9 +10,9 @@ import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
-import identityFn from '@misakey/helpers/identity';
-import isEmpty from '@misakey/helpers/isEmpty';
-import { getIdentity as getIdentityBuilder } from '@misakey/auth/builder/identities';
+import identityFn from '@misakey/core/helpers/identity';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import { getIdentity as getIdentityBuilder } from '@misakey/core/auth/builder/identities';
 
 // COMPONENTS
 const withIdentity = (Component, mapProps = identityFn) => {

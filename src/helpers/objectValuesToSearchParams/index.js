@@ -1,4 +1,4 @@
-import fromPairs from '@misakey/helpers/fromPairs';
+import fromPairs from '@misakey/core/helpers/fromPairs';
 
 export default (object, searchKey) => {
   const searchParamPairs = Object.values(object)

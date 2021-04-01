@@ -1,8 +1,8 @@
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 import { StatusCodes } from 'http-status-codes';
 import { authReset } from '@misakey/react-auth/store/actions/auth';
-import isNil from '@misakey/helpers/isNil';
-import { HandledError } from '@misakey/api/API/errors';
+import isNil from '@misakey/core/helpers/isNil';
+import { HandledError } from '@misakey/core/api/API/errors';
 
 const isMatch = async (rawResponse, endpoint) => {
   // HEAD cannot return JSON

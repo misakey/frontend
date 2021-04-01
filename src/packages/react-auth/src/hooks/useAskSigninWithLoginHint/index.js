@@ -3,8 +3,8 @@ import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/
 
 import { useSelector } from 'react-redux';
 
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 

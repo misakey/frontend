@@ -1,8 +1,8 @@
 import OrganizationsSchema from '@misakey/react-auth/store/schemas/Organizations';
 import { makeGetEntitySelector } from '@misakey/store/reducers/entities';
 
-import isNil from '@misakey/helpers/isNil';
-import isUUID from '@misakey/helpers/isUUID';
+import isNil from '@misakey/core/helpers/isNil';
+import isUUID from '@misakey/core/helpers/isUUID';
 
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useOrgId from '@misakey/react-auth/hooks/useOrgId';

@@ -1,7 +1,7 @@
-import head from '@misakey/helpers/head';
-import hasHref from '@misakey/helpers/hasHref';
-import path from '@misakey/helpers/path';
-import eventPreventDefault from '@misakey/helpers/event/preventDefault';
+import head from '@misakey/core/helpers/head';
+import hasHref from '@misakey/core/helpers/hasHref';
+import path from '@misakey/core/helpers/path';
+import eventPreventDefault from '@misakey/core/helpers/event/preventDefault';
 
 import { useMemo, useCallback, useRef } from 'react';
 

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
-import isFunction from '@misakey/helpers/isFunction';
-import isNumber from '@misakey/helpers/isNumber';
+import isFunction from '@misakey/core/helpers/isFunction';
+import isNumber from '@misakey/core/helpers/isNumber';
 
 // CONSTANTS
 const NO_DELAY = 0;

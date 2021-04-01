@@ -1,13 +1,13 @@
 import * as Yup from 'yup';
-import { malformed, required, invalid } from '@misakey/ui/constants/errorTypes';
+import { malformed, required, invalid } from '@misakey/core/api/constants/errorTypes';
 import { MAX_FILE_SIZE, MAX_AVATAR_SIZE } from '@misakey/ui/constants/file/size';
 import { ACCEPTED_TYPES } from '@misakey/ui/constants/file/image';
 import { NOTIFICATIONS } from '@misakey/ui/constants/notifications';
 import { MAIN_DOMAIN_REGEX, EMAIL_DOMAIN_REGEX } from '@misakey/ui/constants/regex';
 
-import isString from '@misakey/helpers/isString';
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
+import isString from '@misakey/core/helpers/isString';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 // CONSTANTS
 export const emailFieldValidation = {

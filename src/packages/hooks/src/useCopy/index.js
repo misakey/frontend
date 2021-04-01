@@ -1,5 +1,5 @@
-import copy from '@misakey/helpers/clipboard/copy';
-import isNil from '@misakey/helpers/isNil';
+import copy from '@misakey/core/helpers/clipboard/copy';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useCallback } from 'react';
 import { useSnackbar } from 'notistack';

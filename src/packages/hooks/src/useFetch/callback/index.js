@@ -1,9 +1,9 @@
 import { useCallback, useRef, useEffect, useReducer } from 'react';
 import { useSnackbar } from 'notistack';
 
-import isFunction from '@misakey/helpers/isFunction';
-import log from '@misakey/helpers/log';
-import resolveAny from '@misakey/helpers/resolveAny';
+import isFunction from '@misakey/core/helpers/isFunction';
+import log from '@misakey/core/helpers/log';
+import resolveAny from '@misakey/core/helpers/resolveAny';
 
 import useHandleGenericHttpErrors from '@misakey/hooks/useHandleGenericHttpErrors';
 

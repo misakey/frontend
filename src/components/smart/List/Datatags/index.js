@@ -14,7 +14,7 @@ import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import LabelIcon from '@material-ui/icons/Label';
 import InfoIcon from '@material-ui/icons/Info';
 
-import isEmpty from '@misakey/helpers/isEmpty';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 // COMPONENTS
 const ListDatatags = (props) => {

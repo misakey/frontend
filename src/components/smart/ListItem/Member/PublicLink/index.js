@@ -8,7 +8,7 @@ import authRoutes from '@misakey/react-auth/routes';
 
 import { generatePath, Link } from 'react-router-dom';
 import { senderMatchesIdentityId } from 'helpers/sender';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useSelector } from 'react-redux';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';

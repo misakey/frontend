@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import BoxSchema from 'store/schemas/Boxes';
 
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import useGetShareMethods from 'hooks/useGetShareMethods';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';

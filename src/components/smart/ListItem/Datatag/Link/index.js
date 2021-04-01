@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import routes from 'routes';
 
-import getNextSearch from '@misakey/helpers/getNextSearch';
+import getNextSearch from '@misakey/core/helpers/getNextSearch';
 import isSelfOrg from 'helpers/isSelfOrg';
 
 import ListItem from '@material-ui/core/ListItem';

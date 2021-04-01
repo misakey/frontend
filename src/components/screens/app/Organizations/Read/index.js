@@ -6,8 +6,8 @@ import { ADMIN } from '@misakey/ui/constants/organizations/roles';
 import { selectors as orgSelectors } from 'store/reducers/identity/organizations';
 
 import isSelfOrg from 'helpers/isSelfOrg';
-import isNil from '@misakey/helpers/isNil';
-import getNextSearch from '@misakey/helpers/getNextSearch';
+import isNil from '@misakey/core/helpers/isNil';
+import getNextSearch from '@misakey/core/helpers/getNextSearch';
 
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';

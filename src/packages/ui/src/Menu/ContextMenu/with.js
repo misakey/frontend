@@ -12,10 +12,10 @@ import {
 } from 'react';
 import PropTypes from 'prop-types';
 
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import path from '@misakey/helpers/path';
-import head from '@misakey/helpers/head';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import path from '@misakey/core/helpers/path';
+import head from '@misakey/core/helpers/head';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useCombinedRefs from '@misakey/hooks/useCombinedRefs';

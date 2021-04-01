@@ -3,8 +3,8 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import isNil from '@misakey/helpers/isNil';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
+import isNil from '@misakey/core/helpers/isNil';
 
 import useCopy from '@misakey/hooks/useCopy';
 
@@ -47,14 +47,14 @@ const ButtonCopy = ({ value, format, message, mode, t, iconProps, successText, .
       {...omitTranslationProps(props)}
     >
       {isBoth && (
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        mr={1}
-      >
-        <CopyIcon fontSize="small" {...iconProps} />
-      </Box>
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          mr={1}
+        >
+          <CopyIcon fontSize="small" {...iconProps} />
+        </Box>
       )}
       {isIcon ? <CopyIcon {...iconProps} /> : t('common:copy')}
     </Wrapper>

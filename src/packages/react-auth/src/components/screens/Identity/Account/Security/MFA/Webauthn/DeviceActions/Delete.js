@@ -8,12 +8,12 @@ import IconButton from '@material-ui/core/IconButton';
 import DialogConfirm from '@misakey/ui/Dialog/Confirm';
 import Typography from '@material-ui/core/Typography';
 
-import { deleteWebauthnRegistration } from '@misakey/auth/builder/identities';
+import { deleteWebauthnRegistration } from '@misakey/core/auth/builder/identities';
 
 import { DISABLED } from '@misakey/react-auth/constants/account/mfaMethod';
 import { deleteWebauthnDevice } from '@misakey/react-auth/store/reducers/identity/webauthnDevices';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import logSentryException from '@misakey/helpers/log/sentry/exception';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 
 // COMPONENTS
 const AccountMFADeviceActionDelete = (

@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import { withTranslation } from 'react-i18next';
 

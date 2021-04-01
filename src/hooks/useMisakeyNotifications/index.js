@@ -2,9 +2,9 @@ import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/a
 import { setNewCount, setLastNotification } from 'store/actions/identity/notifications';
 import { getLastNotificationSelector, getNewCountSelector } from 'store/reducers/identity/notifications';
 
-import { countUserNotificationsBuilder, getUserNotificationsBuilder } from '@misakey/api/helpers/builder/identities';
-import isNil from '@misakey/helpers/isNil';
-import head from '@misakey/helpers/head';
+import { countUserNotificationsBuilder, getUserNotificationsBuilder } from '@misakey/core/api/helpers/builder/identities';
+import isNil from '@misakey/core/helpers/isNil';
+import head from '@misakey/core/helpers/head';
 
 import { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';

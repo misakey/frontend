@@ -1,6 +1,6 @@
 import { denormalize as normalizrDenormalize } from 'normalizr';
 
-import hasPath from '@misakey/helpers/hasPath';
+import hasPath from '@misakey/core/helpers/hasPath';
 
 // @UNUSED
 export const denormalize = (identifier, entitySchema, entities) => {

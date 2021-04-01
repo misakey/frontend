@@ -2,11 +2,11 @@ import { useCallback } from 'react';
 import { useSnackbar } from 'notistack';
 import { useTranslation } from 'react-i18next';
 
-import isNil from '@misakey/helpers/isNil';
-import logSentryException from '@misakey/helpers/log/sentry/exception';
+import isNil from '@misakey/core/helpers/isNil';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 
-import API from '@misakey/api';
-import { HandledError } from '@misakey/api/API/errors';
+import API from '@misakey/core/api';
+import { HandledError } from '@misakey/core/api/API/errors';
 
 // HOOKS
 export default () => {

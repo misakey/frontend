@@ -8,14 +8,14 @@ import { OLD_PASSWORD_KEY, NEW_PASSWORD_KEY, PASSWORD_CONFIRM_KEY } from '@misak
 import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 import authRoutes from '@misakey/react-auth/routes';
 import { passwordValidationSchema } from '@misakey/react-auth/constants/validationSchemas/identity';
-import { invalid, forbidden } from '@misakey/ui/constants/errorTypes';
+import { invalid, forbidden } from '@misakey/core/api/constants/errorTypes';
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 
-import { getCode } from '@misakey/helpers/apiError';
-import { changePassword, fetchPwdHashParams } from '@misakey/auth/builder/accounts';
-import logSentryException from '@misakey/helpers/log/sentry/exception';
+import { getCode } from '@misakey/core/helpers/apiError';
+import { changePassword, fetchPwdHashParams } from '@misakey/core/auth/builder/accounts';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 import { encryptRootKeyWithNewPassword } from '@misakey/crypto';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useLoadSecretsWithPassword from '@misakey/crypto/hooks/useLoadSecretsWithPassword';

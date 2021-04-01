@@ -1,5 +1,5 @@
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 import { useMemo, useCallback, useEffect, useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
@@ -10,7 +10,7 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import changeBoxInvitationLink from '@misakey/crypto/store/actions/changeBoxInvitationLink';
-import logSentryException from '@misakey/helpers/log/sentry/exception';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 import { combineBoxKeyShares, fetchMisakeyKeyShare } from '@misakey/crypto/box/keySplitting';
 import { selectors } from '@misakey/crypto/store/reducers';
 import { InvalidHash } from '@misakey/crypto/Errors/classes';

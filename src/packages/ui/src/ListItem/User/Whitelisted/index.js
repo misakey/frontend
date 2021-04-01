@@ -6,7 +6,7 @@ import {
   ACCESS_STATUS_NEEDS_LINK, ACCESS_STATUS_INVITED,
 } from '@misakey/ui/constants/accessStatus';
 
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useAccessStatus from '@misakey/hooks/useAccessStatus';

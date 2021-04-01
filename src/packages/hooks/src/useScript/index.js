@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useCallback } from 'react';
 
-import isNil from '@misakey/helpers/isNil';
-import isFunction from '@misakey/helpers/isFunction';
-import any from '@misakey/helpers/any';
-import propEq from '@misakey/helpers/propEq';
-import noop from '@misakey/helpers/noop';
-import remove from '@misakey/helpers/remove';
+import isNil from '@misakey/core/helpers/isNil';
+import isFunction from '@misakey/core/helpers/isFunction';
+import any from '@misakey/core/helpers/any';
+import propEq from '@misakey/core/helpers/propEq';
+import noop from '@misakey/core/helpers/noop';
+import remove from '@misakey/core/helpers/remove';
 
 // CONSTANTS
 const LOADING_SCRIPTS = [];

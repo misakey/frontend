@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useSelector } from 'react-redux';
 

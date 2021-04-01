@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withTranslation } from 'react-i18next';
 
-import isNil from '@misakey/helpers/isNil';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import eventStopPropagation from '@misakey/helpers/event/stopPropagation';
+import isNil from '@misakey/core/helpers/isNil';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
+import eventStopPropagation from '@misakey/core/helpers/event/stopPropagation';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
@@ -129,12 +129,12 @@ const EventCard = forwardRef(({
                   </Subtitle>
                 </Box>
               </Box>
-              )}
+            )}
           />
           {!isNil(text) && (
-          <TypographyPreWrapped component="div">
-            {text}
-          </TypographyPreWrapped>
+            <TypographyPreWrapped component="div">
+              {text}
+            </TypographyPreWrapped>
           )}
           <Box
             display="flex"
@@ -147,16 +147,16 @@ const EventCard = forwardRef(({
               {content}
             </CardContent>
             {!isNil(actions) && (
-            <CardActions classes={{ root: internalClasses.footer }}>
-              <Box
-                width="100%"
-                display="flex"
-                alignItems="center"
-                justifyContent="flex-start"
-              >
-                {actions}
-              </Box>
-            </CardActions>
+              <CardActions classes={{ root: internalClasses.footer }}>
+                <Box
+                  width="100%"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="flex-start"
+                >
+                  {actions}
+                </Box>
+              </CardActions>
             )}
             {children}
           </Box>

@@ -2,8 +2,8 @@ import { useCallback, useRef, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { MSG_FILE, MSG_TXT } from '@misakey/ui/constants/boxes/events';
-import browserNotify from '@misakey/helpers/browserNotify';
-import { isTabVisible } from 'packages/helpers/src/visibilityChange';
+import browserNotify from '@misakey/core/helpers/browserNotify';
+import { isTabVisible } from '@misakey/core/helpers/visibilityChange';
 
 export default () => {
   const { t } = useTranslation('boxes');

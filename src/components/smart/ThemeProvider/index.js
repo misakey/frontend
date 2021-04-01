@@ -6,8 +6,8 @@ import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/a
 import { selectors as devicePreferencesSelector } from 'store/reducers/devicePreferences';
 import { initDarkMode } from 'store/actions/devicePreferences';
 
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 import { getThemeOptions } from '@misakey/ui/theme';
 
 import { useSelector, useDispatch } from 'react-redux';

@@ -7,8 +7,8 @@ import { withTranslation } from 'react-i18next';
 import AppBarStatic from '@misakey/ui/AppBar/Static';
 import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
 
-import getNextSearch from '@misakey/helpers/getNextSearch';
-import isEmpty from '@misakey/helpers/isEmpty';
+import getNextSearch from '@misakey/core/helpers/getNextSearch';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 
 import { makeStyles } from '@material-ui/core/styles';

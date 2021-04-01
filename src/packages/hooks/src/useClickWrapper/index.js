@@ -1,4 +1,4 @@
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import { useCallback } from 'react';
 

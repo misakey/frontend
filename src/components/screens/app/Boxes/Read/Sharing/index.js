@@ -17,14 +17,14 @@ import {
 } from '@misakey/ui/constants/accessStatus';
 
 import { getUpdatedAccesses } from 'helpers/accesses';
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import partition from '@misakey/helpers/partition';
-import differenceWith from '@misakey/helpers/differenceWith';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import partition from '@misakey/core/helpers/partition';
+import differenceWith from '@misakey/core/helpers/differenceWith';
 import { senderMatchesIdentifierValue, senderMatchesIdentityId } from 'helpers/sender';
 import { filterCreatorSubjectFromMembers } from 'helpers/members';
-import { createBulkBoxEventBuilder } from '@misakey/api/helpers/builder/boxes';
-import getAccessStatus from '@misakey/helpers/getAccessStatus';
+import { createBulkBoxEventBuilder } from '@misakey/core/api/helpers/builder/boxes';
+import getAccessStatus from '@misakey/ui/helpers/getAccessStatus';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
@@ -331,12 +331,12 @@ function BoxSharing({ box, t }) {
                         identifier={identifierValue}
                       />
                       {!isNil(subject) && (
-                        <ListItemUserWhitelisted
-                          {...subjectProps}
-                          isMe={senderMatchesIdentityId(subject, meIdentityId)}
-                          isSubject
-                          isMember
-                        />
+                      <ListItemUserWhitelisted
+                        {...subjectProps}
+                        isMe={senderMatchesIdentityId(subject, meIdentityId)}
+                        isSubject
+                        isMember
+                      />
                       )}
                       {!isCurrentUserOwner && membersNotInWhitelist.map((member) => (
                         <ListItemUserWhitelisted

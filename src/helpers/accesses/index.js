@@ -1,12 +1,12 @@
 import { RESTRICTION_TYPES } from '@misakey/ui/constants/boxes/accesses';
 import { ACCESS_RM, ACCESS_ADD } from '@misakey/ui/constants/boxes/events';
 
-import sort from '@misakey/helpers/sort';
-import pluck from '@misakey/helpers/pluck';
-import pathEq from '@misakey/helpers/pathEq';
-import filterRamda from '@misakey/helpers/filter/ramda';
-import groupBy from '@misakey/helpers/groupBy';
-import differenceWith from '@misakey/helpers/differenceWith';
+import sort from '@misakey/core/helpers/sort';
+import pluck from '@misakey/core/helpers/pluck';
+import pathEq from '@misakey/core/helpers/pathEq';
+import filterRamda from '@misakey/core/helpers/filter/ramda';
+import groupBy from '@misakey/core/helpers/groupBy';
+import differenceWith from '@misakey/core/helpers/differenceWith';
 
 // CONSTANTS
 const SORT_VALUES = {

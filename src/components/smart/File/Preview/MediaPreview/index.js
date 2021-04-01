@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import Box from '@material-ui/core/Box';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import BoxFile from 'components/dumb/Box/File';
 import FILE_PROP_TYPES from '@misakey/ui/constants/file/proptypes';

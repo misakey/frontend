@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import Accordion from '@misakey/ui/Accordion';
 import AccordionSummary from '@misakey/ui/AccordionSummary';

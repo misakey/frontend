@@ -4,7 +4,7 @@ import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStra
 import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
 import { normalize } from 'normalizr';
 
-import { getBoxAccessesBuilder } from '@misakey/api/helpers/builder/boxes';
+import { getBoxAccessesBuilder } from '@misakey/core/api/helpers/builder/boxes';
 
 import { useCallback } from 'react';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';

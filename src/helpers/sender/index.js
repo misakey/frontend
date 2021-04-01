@@ -1,5 +1,5 @@
-import prop from '@misakey/helpers/prop';
-import isNil from '@misakey/helpers/isNil';
+import prop from '@misakey/core/helpers/prop';
+import isNil from '@misakey/core/helpers/isNil';
 
 // HELPERS
 export const identifierValueProp = prop('identifierValue');

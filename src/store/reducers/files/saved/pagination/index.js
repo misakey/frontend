@@ -1,6 +1,6 @@
 import { makePaginationReducer } from 'store/reducers/helpers/pagination';
 
-import path from '@misakey/helpers/path';
+import path from '@misakey/core/helpers/path';
 // CONSTANTS
 export const REDUCER_KEY = 'savedFilesPagination';
 

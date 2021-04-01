@@ -1,9 +1,9 @@
-import isPlainObject from '@misakey/helpers/isPlainObject';
-import log from '@misakey/helpers/log';
-import symmetricDifference from '@misakey/helpers/symmetricDifference';
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import mapValues from '@misakey/helpers/mapValues';
+import isPlainObject from '@misakey/core/helpers/isPlainObject';
+import log from '@misakey/core/helpers/log';
+import symmetricDifference from '@misakey/core/helpers/symmetricDifference';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import mapValues from '@misakey/core/helpers/mapValues';
 
 import {
   encodeBase64,

@@ -5,12 +5,12 @@ import { useTranslation } from 'react-i18next';
 import { useHistory, generatePath } from 'react-router-dom';
 import routes from 'routes';
 
-import { contactUserBuilder } from '@misakey/api/helpers/builder/identities';
+import { contactUserBuilder } from '@misakey/core/api/helpers/builder/identities';
 import { useCallback, useMemo } from 'react';
 import { encryptCryptoaction } from '@misakey/crypto/cryptoactions';
 import { createCryptoForNewBox } from '@misakey/crypto/box/creation';
 import setBoxSecrets from '@misakey/crypto/store/actions/setBoxSecrets';
-import logSentryException from '@misakey/helpers/log/sentry/exception';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 import { addJoinedBox } from 'store/reducers/box';
 
 export default (targetIdentity, fromIdentity) => {

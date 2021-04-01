@@ -2,7 +2,7 @@ import { createMuiTheme, fade, responsiveFontSizes } from '@material-ui/core/sty
 import common from '@misakey/ui/colors/common';
 import boulder from '@misakey/ui/colors/boulder';
 
-import isEmpty from '@misakey/helpers/isEmpty';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 // CONSTANTS
 const BLACK = '#000';

@@ -1,8 +1,8 @@
-import { getSecretStorageFromAuthFlowBuilder } from '@misakey/auth/builder/secretStorage';
-import { createRootKeyShareFromAuthFlowBuilder } from '@misakey/auth/builder/rootKeyShares';
-import { getBackupFromAuthFlowBuilder } from '@misakey/auth/builder/backup';
-import { conflict } from '@misakey/ui/constants/errorTypes';
-import { getCode } from '@misakey/helpers/apiError';
+import { getSecretStorageFromAuthFlowBuilder } from '@misakey/core/auth/builder/secretStorage';
+import { createRootKeyShareFromAuthFlowBuilder } from '@misakey/core/auth/builder/rootKeyShares';
+import { getBackupFromAuthFlowBuilder } from '@misakey/core/auth/builder/backup';
+import { conflict } from '@misakey/core/api/constants/errorTypes';
+import { getCode } from '@misakey/core/helpers/apiError';
 import {
   computeCryptoMigration,
 } from '@misakey/crypto';

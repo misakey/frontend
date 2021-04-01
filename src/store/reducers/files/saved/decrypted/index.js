@@ -1,8 +1,8 @@
 
 import { createSelector } from 'reselect';
 import { denormalize } from 'normalizr';
-import propOr from '@misakey/helpers/propOr';
-import isNil from '@misakey/helpers/isNil';
+import propOr from '@misakey/core/helpers/propOr';
+import isNil from '@misakey/core/helpers/isNil';
 import { removeEntities } from 'packages/store/src/actions/entities';
 import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 

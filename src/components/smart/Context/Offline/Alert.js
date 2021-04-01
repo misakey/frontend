@@ -1,9 +1,9 @@
 import React, { useMemo, useState, useCallback, useLayoutEffect } from 'react';
 
-import isNil from '@misakey/helpers/isNil';
-import { getVersionBuilder } from '@misakey/api/helpers/builder/generic';
-// import simulateNetworkError from '@misakey/api/helpers/simulateNetworkError';
-import exponentialBackoff from '@misakey/helpers/exponentialBackoff';
+import isNil from '@misakey/core/helpers/isNil';
+import { getVersionBuilder } from '@misakey/core/api/helpers/builder/generic';
+// import simulateNetworkError from '@misakey/core/api/helpers/simulateNetworkError';
+import exponentialBackoff from '@misakey/core/helpers/exponentialBackoff';
 
 import { useOfflineContext } from 'components/smart/Context/Offline';
 import { useTranslation, Trans } from 'react-i18next';

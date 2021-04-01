@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 
 import PropTypes from 'prop-types';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import isNil from '@misakey/helpers/isNil';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
+import isNil from '@misakey/core/helpers/isNil';
 
 import Dialog from '@material-ui/core/Dialog';
 import RegisterTotpDialogContent from '@misakey/react-auth/components/screens/Identity/Account/Security/MFA/TOTP/Dialog/Register';

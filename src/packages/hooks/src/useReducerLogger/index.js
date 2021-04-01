@@ -1,7 +1,7 @@
 import defaults from 'redux-logger/src/defaults';
 
-import isNil from '@misakey/helpers/isNil';
-import equals from '@misakey/helpers/equals';
+import isNil from '@misakey/core/helpers/isNil';
+import equals from '@misakey/core/helpers/equals';
 
 import { useCallback } from 'react';
 

@@ -1,6 +1,6 @@
 import { actionCreators, selectors } from 'store/reducers/identity/organizations/agents/pagination';
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useMemo, useCallback, useRef, useEffect } from 'react';
 import { useDispatch, useSelector, batch } from 'react-redux';

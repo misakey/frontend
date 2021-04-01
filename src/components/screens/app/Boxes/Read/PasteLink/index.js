@@ -6,9 +6,9 @@ import { withTranslation } from 'react-i18next';
 
 import { getBoxInvitationLinkFieldValidationSchema } from 'constants/validationSchemas/boxes';
 
-import isNil from '@misakey/helpers/isNil';
-import locationToString from '@misakey/helpers/locationToString';
-import parseUrlFromLocation from '@misakey/helpers/parseUrl/fromLocation';
+import isNil from '@misakey/core/helpers/isNil';
+import locationToString from '@misakey/core/helpers/locationToString';
+import parseUrlFromLocation from '@misakey/core/helpers/parseUrl/fromLocation';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 

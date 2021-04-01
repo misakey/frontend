@@ -10,8 +10,8 @@ import { boxMessageValidationSchema } from 'constants/validationSchemas/boxes';
 import { blurText, clearText } from 'store/actions/box';
 import { makeGetBoxText } from 'store/reducers/box';
 
-import { createBoxEventBuilder } from '@misakey/api/helpers/builder/boxes';
-import isNil from '@misakey/helpers/isNil';
+import { createBoxEventBuilder } from '@misakey/core/api/helpers/builder/boxes';
+import isNil from '@misakey/core/helpers/isNil';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';

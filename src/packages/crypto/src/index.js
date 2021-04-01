@@ -1,7 +1,7 @@
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import pathOr from '@misakey/helpers/pathOr';
-import path from '@misakey/helpers/path';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import pathOr from '@misakey/core/helpers/pathOr';
+import path from '@misakey/core/helpers/path';
 
 import {
   generateSymmetricKey,

@@ -6,8 +6,8 @@ import routes from 'routes';
 import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
 import { DRAWER_QUERY_PARAM, TMP_DRAWER_QUERY_PARAMS } from '@misakey/ui/constants/drawers';
 
-import isNil from '@misakey/helpers/isNil';
-import omitRouteProps from '@misakey/helpers/omit/routeProps';
+import isNil from '@misakey/core/helpers/isNil';
+import omitRouteProps from '@misakey/core/helpers/omit/routeProps';
 
 import { useSelector } from 'react-redux';
 

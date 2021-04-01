@@ -1,0 +1,64 @@
+{
+  "name": "@misakey/core",
+  "version": "1.0.0",
+  "private": false,
+  "license": "SEE LICENSE IN /LICENSE",
+  "author": "Misakey Team",
+  "description": "Auth related stack to ship in.",
+  "keywords": [
+    "middleware",
+    "auth",
+    "api", 
+    "misakey",
+    "helpers"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.misakey.dev/misakey/frontend.git",
+    "directory": "src/packages/core"
+  },
+  "homepage": "https://frontend.docs.misakey.dev",
+  "scripts": {
+    "build": "yarn build:cjs && yarn build:esm && yarn build:es && yarn build:copy-files",
+    "build:cjs": "cross-env NODE_ENV=production BABEL_ENV=cjs babel --config-file ../../../babel.config.js ./src --out-dir ./build --ignore \"**/*.test.js\"",
+    "build:esm": "cross-env NODE_ENV=production BABEL_ENV=esm babel --config-file ../../../babel.config.js ./src --out-dir ./build/esm --ignore \"**/*.test.js\"",
+    "build:es": "cross-env NODE_ENV=production BABEL_ENV=es babel --config-file ../../../babel.config.js ./src --out-dir ./build/es --ignore \"**/*.test.js\"",
+    "build:umd": "cross-env BABEL_ENV=production-umd rollup -c rollup.config.js",
+    "build:copy-files": "node ../../../scripts/copy-files.js",
+    "prebuild": "rimraf build",
+    "prepublish": "yarn build",
+    "release": "npm publish build --tag latest"
+  },
+  "devDependencies": {
+    "rollup": "^1.27.6",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-globals": "^1.4.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-size-snapshot": "^0.10.0",
+    "rollup-plugin-terser": "^5.1.2",
+    "rollup-plugin-replace": "^2.1.0"
+  },
+  "dependencies": {
+    "@sentry/browser": "^5.15.5",
+    "tweetnacl": "^1.0.1",
+    "tweetnacl-util": "^0.15.0",
+    "uuid": "^3.3.3",
+    "@babel/runtime": "^7.5.5",
+    "copy-to-clipboard": "^3.3.1",
+    "http-status-codes": "^2.x",
+    "jsrsasign": "^10.1.4",
+    "lodash": "^4.17.20",
+    "moment": "^2.x",
+    "path-to-regexp": "^3.0.0",
+    "ramda": "^0.27.0",
+    "validator": "^13.0.0"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}

@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 
 import { SIDES, SIDE_QUERY_PARAM, TMP_DRAWER_QUERY_PARAMS, TMP_DRAWER_ORG_VALUE } from '@misakey/ui/constants/drawers';
 
-import getNextSearch from '@misakey/helpers/getNextSearch';
-import isNil from '@misakey/helpers/isNil';
+import getNextSearch from '@misakey/core/helpers/getNextSearch';
+import isNil from '@misakey/core/helpers/isNil';
 
 import IconButton from '@misakey/ui/IconButton';
 

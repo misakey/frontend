@@ -17,7 +17,7 @@ import storage from 'redux-persist/lib/storage';
 import { PersistGate } from 'redux-persist/integration/react';
 import reducers from 'store/reducers';
 // middlewares
-import API from '@misakey/api';
+import API from '@misakey/core/api';
 import routes from 'routes';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
@@ -44,9 +44,9 @@ import Screen from '@misakey/ui/Screen';
 import configureI18n from '@misakey/ui/i18n';
 
 // helpers
-import isNil from '@misakey/helpers/isNil';
-import oidcSilentRenewalWrapper from '@misakey/auth/helpers/oidcSilentRenewalWrapper'; // Silent auth
-import sentryBeforeSend from '@misakey/helpers/sentry/beforeSend';
+import isNil from '@misakey/core/helpers/isNil';
+import oidcSilentRenewalWrapper from '@misakey/core/auth/helpers/oidcSilentRenewalWrapper'; // Silent auth
+import sentryBeforeSend from '@misakey/core/helpers/sentry/beforeSend';
 
 /* END OF IMPORTS */
 

@@ -11,9 +11,9 @@ import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER, LARGE } from '@misakey/ui
 
 import authRoutes from '@misakey/react-auth/routes';
 
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
+import objectToCamelCase from '@misakey/core/helpers/objectToCamelCase';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 import { useSelector } from 'react-redux';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';

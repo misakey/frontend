@@ -6,7 +6,7 @@ import routes from 'routes';
 import { ADMIN } from '@misakey/ui/constants/organizations/roles';
 
 import isSelfOrg from 'helpers/isSelfOrg';
-import getNextSearch from '@misakey/helpers/getNextSearch';
+import getNextSearch from '@misakey/core/helpers/getNextSearch';
 
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import { useTranslation } from 'react-i18next';

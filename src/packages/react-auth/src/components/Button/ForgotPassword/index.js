@@ -5,8 +5,8 @@ import { useDispatch } from 'react-redux';
 
 import { ssoUpdate } from '@misakey/react-auth/store/actions/sso';
 
-import updateAuthIdentities from '@misakey/auth/builder/updateAuthIdentities';
-import isFunction from '@misakey/helpers/isFunction';
+import updateAuthIdentities from '@misakey/core/auth/builder/updateAuthIdentities';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 

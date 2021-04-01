@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
-import { isAuthStepAlreadyExistsConflict } from '@misakey/auth/helpers/errors';
-import renewAuthStepBuilder from '@misakey/auth/builder/renewAuthStep';
+import { isAuthStepAlreadyExistsConflict } from '@misakey/core/auth/helpers/errors';
+import renewAuthStepBuilder from '@misakey/core/auth/builder/renewAuthStep';
 
 import { useSnackbar } from 'notistack';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';

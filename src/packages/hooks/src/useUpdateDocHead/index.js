@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import isEmpty from '@misakey/helpers/isEmpty';
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 const DEFAULT_TITLE = 'Misakey';
 

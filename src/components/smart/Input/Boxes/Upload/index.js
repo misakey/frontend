@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import BoxesSchema from 'store/schemas/Boxes';
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';

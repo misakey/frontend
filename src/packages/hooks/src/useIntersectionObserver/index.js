@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import isFunction from '@misakey/helpers/isFunction';
+import isFunction from '@misakey/core/helpers/isFunction';
 
 // inspired from https://medium.com/the-non-traditional-developer/how-to-use-an-intersectionobserver-in-a-react-hook-9fb061ac6cb5
 export default (nodeRef, callback, shouldObserve, { root = null, rootMargin = '0px 0px 0px 0px', threshold = 0 } = {}) => {

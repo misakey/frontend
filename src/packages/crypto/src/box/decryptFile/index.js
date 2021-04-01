@@ -1,4 +1,4 @@
-import makeFileOrBlob from '@misakey/helpers/makeFileOrBlob';
+import makeFileOrBlob from '@misakey/core/helpers/makeFileOrBlob';
 import {
   symmetricDecrypt,
 } from '@misakey/crypto/crypto';

@@ -3,8 +3,8 @@ import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
-import eventPreventDefault from '@misakey/helpers/event/preventDefault';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
+import eventPreventDefault from '@misakey/core/helpers/event/preventDefault';
 
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';

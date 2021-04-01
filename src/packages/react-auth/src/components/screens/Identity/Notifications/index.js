@@ -11,9 +11,9 @@ import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
 import authRoutes from '@misakey/react-auth/routes';
 import { notificationsValidationSchema } from '@misakey/react-auth/constants/validationSchemas/identity';
 
-import isNil from '@misakey/helpers/isNil';
-import { updateIdentity } from '@misakey/api/helpers/builder/identities';
-import { getDetails } from '@misakey/helpers/apiError';
+import isNil from '@misakey/core/helpers/isNil';
+import { updateIdentity } from '@misakey/core/api/helpers/builder/identities';
+import { getDetails } from '@misakey/core/helpers/apiError';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useDispatchUpdateIdentity from '@misakey/react-auth/hooks/useDispatchUpdateIdentity';

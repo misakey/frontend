@@ -1,5 +1,5 @@
-import isFunction from '@misakey/helpers/isFunction';
-import update from '@misakey/helpers/update';
+import isFunction from '@misakey/core/helpers/isFunction';
+import update from '@misakey/core/helpers/update';
 
 import { useState, useMemo, useEffect, useCallback } from 'react';
 

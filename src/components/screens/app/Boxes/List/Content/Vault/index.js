@@ -6,14 +6,14 @@ import { withTranslation } from 'react-i18next';
 import { DRAWER_QUERY_PARAM, TMP_DRAWER_QUERY_PARAMS } from '@misakey/ui/constants/drawers';
 import routes from 'routes';
 
-import path from '@misakey/helpers/path';
-import omitTranslationProps from '@misakey/helpers/omit/translationProps';
+import path from '@misakey/core/helpers/path';
+import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import { useRouteMatch } from 'react-router-dom';
 // import { useLocation, useHistory } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-// import getNextSearch from '@misakey/helpers/getNextSearch';
+// import getNextSearch from '@misakey/core/helpers/getNextSearch';
 
 import List from '@material-ui/core/List';
 import WindowedListBoxes from 'components/smart/WindowedList/UserBoxes';

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
 
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useBoxEditEventContext } from 'components/smart/Box/Event/Edit/Context';
 import { useBoxReadContext } from 'components/smart/Context/Boxes/BoxRead';

@@ -8,15 +8,15 @@ import { Link } from 'react-router-dom';
 
 import { FEEDBACK } from '@misakey/ui/constants/emails';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react-auth/store/reducers/sso';
-import { CONSENTED_SCOPES_KEY, CONSENT_SCOPES } from '@misakey/auth/constants/consent';
+import { CONSENTED_SCOPES_KEY, CONSENT_SCOPES } from '@misakey/core/auth/constants/consent';
 import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER, LARGE } from '@misakey/ui/constants/sizes';
 
 
-import objectToCamelCase from '@misakey/helpers/objectToCamelCase';
-import isNil from '@misakey/helpers/isNil';
-import isEmpty from '@misakey/helpers/isEmpty';
-import { getDetails } from '@misakey/helpers/apiError';
-import { consent } from '@misakey/auth/builder/consent';
+import objectToCamelCase from '@misakey/core/helpers/objectToCamelCase';
+import isNil from '@misakey/core/helpers/isNil';
+import isEmpty from '@misakey/core/helpers/isEmpty';
+import { getDetails } from '@misakey/core/helpers/apiError';
+import { consent } from '@misakey/core/auth/builder/consent';
 
 import { useSnackbar } from 'notistack';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';

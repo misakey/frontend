@@ -1,4 +1,4 @@
-import isNil from '@misakey/helpers/isNil';
+import isNil from '@misakey/core/helpers/isNil';
 
 import { useMemo, useEffect, useRef } from 'react';
 import { useLocation, generatePath } from 'react-router-dom';

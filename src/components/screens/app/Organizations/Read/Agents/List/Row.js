@@ -6,8 +6,8 @@ import { connect } from 'react-redux';
 import AgentSchema from '@misakey/react-auth/store/schemas/Agents';
 
 import { denormalize } from 'normalizr';
-import isNil from '@misakey/helpers/isNil';
-import omit from '@misakey/helpers/omit';
+import isNil from '@misakey/core/helpers/isNil';
+import omit from '@misakey/core/helpers/omit';
 
 import ListItemAgent from 'components/smart/ListItem/Agent';
 import ListItemUserSkeleton from '@misakey/ui/ListItem/User/Skeleton';
