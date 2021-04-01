@@ -3,8 +3,8 @@ import React, { useCallback, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { MSG_TXT } from '@misakey/ui/constants/boxes/events';
-import encryptText from '@misakey/crypto/box/encryptText';
+import { MSG_TXT } from '@misakey/core/api/constants/boxes/events';
+import encryptText from '@misakey/core/crypto/box/encryptText';
 import BoxesSchema from 'store/schemas/Boxes';
 import { boxMessageValidationSchema } from 'constants/validationSchemas/boxes';
 import { blurText, clearText } from 'store/actions/box';

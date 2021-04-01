@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { denormalize } from 'normalizr';
 
 import SavedFilesSchema from 'store/schemas/Files/Saved';
-import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as cryptoSelectors } from '@misakey/react/crypto/store/reducers';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import isNil from '@misakey/core/helpers/isNil';
 import omit from '@misakey/core/helpers/omit';

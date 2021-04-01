@@ -4,11 +4,11 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import isNil from '@misakey/core/helpers/isNil';
-import ButtonWithDialogPassword from '@misakey/react-auth/components/Dialog/Password/with/Button';
+import ButtonWithDialogPassword from '@misakey/react/auth/components/Dialog/Password/with/Button';
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import BoxControls from '@misakey/ui/Box/Controls';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';

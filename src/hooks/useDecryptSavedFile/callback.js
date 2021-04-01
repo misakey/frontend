@@ -2,10 +2,10 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
 
-import { decryptFileMetadataFromVault } from '@misakey/crypto/vault';
+import { decryptFileMetadataFromVault } from '@misakey/core/crypto/vault';
 import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 import { updateEntities } from '@misakey/store/actions/entities';
-import { DecryptionError } from '@misakey/crypto/Errors/classes';
+import { DecryptionError } from '@misakey/core/crypto/Errors/classes';
 
 export default (vaultKey) => {
   const dispatch = useDispatch();

@@ -2,9 +2,9 @@ import React, { useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
-import UserSchema from '@misakey/react-auth/store/schemas/User';
-import authRoutes from '@misakey/react-auth/routes';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
+import UserSchema from '@misakey/react/auth/store/schemas/User';
+import authRoutes from '@misakey/react/auth/routes';
 
 import { generatePath, Link } from 'react-router-dom';
 import { senderMatchesIdentityId } from 'helpers/sender';

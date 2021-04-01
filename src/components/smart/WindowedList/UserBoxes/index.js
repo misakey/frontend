@@ -11,7 +11,7 @@ import isSelfOrg from 'helpers/isSelfOrg';
 
 import usePaginateBoxesByStatus from 'hooks/usePaginateBoxesByStatus';
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
-import useOrgId from '@misakey/react-auth/hooks/useOrgId';
+import useOrgId from '@misakey/react/auth/hooks/useOrgId';
 
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import WindowedListInfiniteLoaded from 'components/smart/WindowedList/InfiniteLoaded';

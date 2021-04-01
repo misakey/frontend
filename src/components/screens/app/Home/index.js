@@ -4,7 +4,7 @@ import { Switch, Route, useRouteMatch, useHistory, useLocation } from 'react-rou
 import routes from 'routes';
 import { notFound } from '@misakey/core/api/constants/errorTypes';
 
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import isNil from '@misakey/core/helpers/isNil';
 import isEmpty from '@misakey/core/helpers/isEmpty';
@@ -13,12 +13,12 @@ import getNextSearch from '@misakey/core/helpers/getNextSearch';
 
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 import { useSelector } from 'react-redux';
-import useOrgId from '@misakey/react-auth/hooks/useOrgId';
+import useOrgId from '@misakey/react/auth/hooks/useOrgId';
 import useDatatagId from 'hooks/useDatatagId';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useFetchOrganizations from 'hooks/useFetchOrganizations';
 
-import RouteAcr from '@misakey/react-auth/components/Route/Acr';
+import RouteAcr from '@misakey/react/auth/components/Route/Acr';
 import BoxesContextProvider from 'components/smart/Context/Boxes';
 import ScreenDrawerContextProvider from 'components/smart/Screen/Drawer';
 import BoxesList from 'components/screens/app/Boxes/List';

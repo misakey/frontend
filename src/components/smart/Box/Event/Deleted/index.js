@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import EventSchema from 'store/schemas/Boxes/Events';
-import UserSchema from '@misakey/react-auth/store/schemas/User';
+import UserSchema from '@misakey/react/auth/store/schemas/User';
 
 import { TIME } from '@misakey/ui/constants/formats/dates';
 

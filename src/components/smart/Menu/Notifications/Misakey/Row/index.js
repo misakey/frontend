@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 
-import { selectors as authSelectors, PROP_TYPES as AUTH_PROPS_TYPES } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors, PROP_TYPES as AUTH_PROPS_TYPES } from '@misakey/react/auth/store/reducers/auth';
 import IdentityNotificationsSchema from 'store/schemas/Notifications/Identity';
 import { DATE_FULL_NUMERAL, TIME } from '@misakey/ui/constants/formats/dates';
 import { SUPPORTED_TYPES, BOX_AUTO_INVITE, USER_CREATE_IDENTITY } from 'constants/app/notifications/byIdentity';
@@ -21,7 +21,7 @@ import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
 import EventCard from 'components/dumb/Card/Event';
 import Typography from '@material-ui/core/Typography';
 import AutoInvitationButton from 'components/smart/Menu/Notifications/Misakey/Actions/AutoInvitationButton';
-import ButtonCreateAccount from '@misakey/react-auth/components/Button/CreateAccount';
+import ButtonCreateAccount from '@misakey/react/auth/components/Button/CreateAccount';
 import Box from '@material-ui/core/Box';
 
 // CONSTANTS

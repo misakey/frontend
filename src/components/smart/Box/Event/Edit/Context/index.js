@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useCallback, useMemo } from
 
 import PropTypes from 'prop-types';
 
-import { EDITABLE_EVENT_TYPES } from '@misakey/ui/constants/boxes/events';
+import { EDITABLE_EVENT_TYPES } from '@misakey/core/api/constants/boxes/events';
 
 // CONSTANTS
 const INITIAL_EVENT = null;

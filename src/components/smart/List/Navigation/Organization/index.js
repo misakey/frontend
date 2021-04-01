@@ -11,7 +11,7 @@ import getNextSearch from '@misakey/core/helpers/getNextSearch';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import useOrgId from '@misakey/react-auth/hooks/useOrgId';
+import useOrgId from '@misakey/react/auth/hooks/useOrgId';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import ListBordered from '@misakey/ui/List/Bordered';
@@ -19,7 +19,7 @@ import ListDatatags from 'components/smart/List/Datatags';
 import ListItemNavLink from '@misakey/ui/ListItem/NavLink';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import withDialogPassword from '@misakey/react-auth/components/Dialog/Password/with';
+import withDialogPassword from '@misakey/react/auth/components/Dialog/Password/with';
 
 import ChatIcon from '@material-ui/icons/Chat';
 import SaveIcon from '@material-ui/icons/Save';

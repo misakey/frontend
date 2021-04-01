@@ -3,9 +3,9 @@ import React, { useCallback, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import routes from 'routes';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import { boxNameFieldValidationSchema } from 'constants/validationSchemas/boxes';
-import setBoxSecrets from '@misakey/crypto/store/actions/setBoxSecrets';
+import setBoxSecrets from '@misakey/react/crypto/store/actions/setBoxSecrets';
 
 import { createBoxBuilder } from '@misakey/core/api/helpers/builder/boxes';
 import getRandomTitle from '@misakey/core/helpers/getRandomTitle';
@@ -13,11 +13,11 @@ import isFunction from '@misakey/core/helpers/isFunction';
 import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 import dialogIsFullScreen from '@misakey/core/helpers/dialog/isFullScreen';
-import { createCryptoForNewBox } from '@misakey/crypto/box/creation';
+import { createCryptoForNewBox } from '@misakey/core/crypto/box/creation';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
-import useOrgId from '@misakey/react-auth/hooks/useOrgId';
+import useOrgId from '@misakey/react/auth/hooks/useOrgId';
 import useGeneratePathKeepingSearchAndHashCallback from '@misakey/hooks/useGeneratePathKeepingSearchAndHash/callback';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';

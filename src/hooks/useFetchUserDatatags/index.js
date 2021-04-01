@@ -1,10 +1,10 @@
 import { receiveDatatags, selectors as datatagsSelectors } from 'store/reducers/identity/organizations/datatags';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import { listDatatags } from '@misakey/core/api/helpers/builder/identities';
 import isNil from '@misakey/core/helpers/isNil';
 
-import useOrgId from '@misakey/react-auth/hooks/useOrgId';
+import useOrgId from '@misakey/react/auth/hooks/useOrgId';
 import { useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';

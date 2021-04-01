@@ -5,12 +5,12 @@ import PropTypes from 'prop-types';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Logo from '@misakey/ui/Logo';
-import ButtonCreateAccount from '@misakey/react-auth/components/Button/CreateAccount';
+import ButtonCreateAccount from '@misakey/react/auth/components/Button/CreateAccount';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
-import useCreateAccount from '@misakey/react-auth/hooks/useCreateAccount';
+import useCreateAccount from '@misakey/react/auth/hooks/useCreateAccount';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({

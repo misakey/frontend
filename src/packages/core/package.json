@@ -4,7 +4,7 @@
   "private": false,
   "license": "SEE LICENSE IN /LICENSE",
   "author": "Misakey Team",
-  "description": "Auth related stack to ship in.",
+  "description": "Misakey core funtionalities.",
   "keywords": [
     "middleware",
     "auth",
@@ -40,11 +40,9 @@
     "rollup-plugin-replace": "^2.1.0"
   },
   "dependencies": {
-    "@sentry/browser": "^5.15.5",
-    "tweetnacl": "^1.0.1",
-    "tweetnacl-util": "^0.15.0",
-    "uuid": "^3.3.3",
     "@babel/runtime": "^7.5.5",
+    "@sentry/browser": "^5.15.5",
+    "comlink": "^4.3.0",
     "copy-to-clipboard": "^3.3.1",
     "http-status-codes": "^2.x",
     "jsrsasign": "^10.1.4",
@@ -52,6 +50,9 @@
     "moment": "^2.x",
     "path-to-regexp": "^3.0.0",
     "ramda": "^0.27.0",
+    "tweetnacl": "^1.0.1",
+    "tweetnacl-util": "^0.15.0",
+    "uuid": "^3.3.3",
     "validator": "^13.0.0"
   },
   "sideEffects": false,

@@ -6,7 +6,7 @@ import isSelfOrg from 'helpers/isSelfOrg';
 import isNil from '@misakey/core/helpers/isNil';
 
 import useFetchOrganizations from 'hooks/useFetchOrganizations';
-import useOrgId from '@misakey/react-auth/hooks/useOrgId';
+import useOrgId from '@misakey/react/auth/hooks/useOrgId';
 import { useSelector } from 'react-redux';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 

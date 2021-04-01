@@ -1,4 +1,4 @@
-ARG BASE_IMAGE_VERSION=v5.0
+ARG BASE_IMAGE_VERSION=v5.1
 FROM misakey/frontend-base-image:${BASE_IMAGE_VERSION} AS builder
 LABEL stage=intermediate
 ARG VERSION

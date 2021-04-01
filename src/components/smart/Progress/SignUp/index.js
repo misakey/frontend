@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 import { useLocation, matchPath } from 'react-router-dom';
 
-import authRoutes from '@misakey/react-auth/routes';
+import authRoutes from '@misakey/react/auth/routes';
 
 import isNil from '@misakey/core/helpers/isNil';
 

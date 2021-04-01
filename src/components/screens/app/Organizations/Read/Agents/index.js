@@ -3,7 +3,7 @@ import React, { useMemo, useCallback, useState } from 'react';
 import { ADMIN } from '@misakey/ui/constants/organizations/roles';
 import { conflict } from '@misakey/core/api/constants/errorTypes';
 import { agentsAddSchema } from 'constants/validationSchemas/organizations';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import { selectors as orgSelectors } from 'store/reducers/identity/organizations/agents';
 
 import { senderMatchesIdentifierValue, identifierValueProp } from 'helpers/sender';
@@ -24,7 +24,7 @@ import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import useOrgId from '@misakey/react-auth/hooks/useOrgId';
+import useOrgId from '@misakey/react/auth/hooks/useOrgId';
 import { useOnAddAgents } from 'hooks/usePaginateOrgAgents/updates';
 
 import ElevationScroll from '@misakey/ui/ElevationScroll';

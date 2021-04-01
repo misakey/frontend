@@ -3,17 +3,17 @@ import React, { useState, useMemo, useCallback, useContext, useEffect } from 're
 import PropTypes from 'prop-types';
 
 import { notFound } from '@misakey/core/api/constants/errorTypes';
-import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/Context';
+import { UserManagerContext } from '@misakey/react/auth/components/OidcProvider/Context';
 
 import objectToSnakeCase from '@misakey/core/helpers/objectToSnakeCase';
 import isNil from '@misakey/core/helpers/isNil';
 import isEmpty from '@misakey/core/helpers/isEmpty';
 import { getCode } from '@misakey/core/helpers/apiError';
 import { getBoxPublicBuilder } from '@misakey/core/api/helpers/builder/boxes';
-import { computeInvitationHash } from '@misakey/crypto/box/keySplitting';
-import { BadKeyShareFormat } from '@misakey/crypto/Errors/classes';
+import { computeInvitationHash } from '@misakey/core/crypto/box/keySplitting';
+import { BadKeyShareFormat } from '@misakey/core/crypto/Errors/classes';
 
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import { makeDenormalizeBoxSelector } from 'store/reducers/box';
 
 import { useSelector } from 'react-redux';

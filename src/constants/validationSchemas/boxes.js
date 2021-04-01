@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { IDENTIFIER, EMAIL_DOMAIN } from '@misakey/ui/constants/accessTypes';
+import { IDENTIFIER, EMAIL_DOMAIN } from '@misakey/core/api/constants/accessTypes';
 import ACCESS_LEVELS from '@misakey/ui/constants/accessModes';
 import { required, malformed, invalid } from '@misakey/core/api/constants/errorTypes';
 import routes from 'routes';

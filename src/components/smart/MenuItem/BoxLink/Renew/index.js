@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import BoxesSchema from 'store/schemas/Boxes';
-import changeBoxInvitationLink from '@misakey/crypto/store/actions/changeBoxInvitationLink';
+import changeBoxInvitationLink from '@misakey/react/crypto/store/actions/changeBoxInvitationLink';
 
 import isFunction from '@misakey/core/helpers/isFunction';
 

@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next';
 import isNil from '@misakey/core/helpers/isNil';
 import prop from '@misakey/core/helpers/prop';
 
-import decryptFileMsg from '@misakey/crypto/box/decryptFileMsg';
+import decryptFileMsg from '@misakey/core/crypto/box/decryptFileMsg';
 import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 import { updateEntities } from '@misakey/store/actions/entities';
-import { DecryptionError } from '@misakey/crypto/Errors/classes';
+import { DecryptionError } from '@misakey/core/crypto/Errors/classes';
 
 // HELPERS
 const nameProp = prop('name');

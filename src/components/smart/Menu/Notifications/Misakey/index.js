@@ -10,7 +10,7 @@ import IdentityNotificationsSchema from 'store/schemas/Notifications/Identity';
 import { decrementNewCount, setPaginationNotifications } from 'store/actions/identity/notifications';
 import { receiveEntities, updateEntities } from '@misakey/store/actions/entities';
 import { makeGetUserNotificationsNotAckSelector, getPaginationSelector, getNewCountSelector } from 'store/reducers/identity/notifications';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import { getUserNotificationsBuilder, acknowledgeUserNotificationsBuilder } from '@misakey/core/api/helpers/builder/identities';
 
 import isNil from '@misakey/core/helpers/isNil';

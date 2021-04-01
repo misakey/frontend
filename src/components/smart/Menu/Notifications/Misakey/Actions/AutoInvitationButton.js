@@ -12,7 +12,7 @@ import getNextSearch from '@misakey/core/helpers/getNextSearch';
 import isFunction from '@misakey/core/helpers/isFunction';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
-import processAutoInviteCryptoaction from '@misakey/crypto/store/actions/processAutoInviteCryptoaction';
+import processAutoInviteCryptoaction from '@misakey/react/crypto/store/actions/processAutoInviteCryptoaction';
 import { markNotificationAsUsed } from 'store/actions/identity/notifications';
 
 function ActualButton({ id, details: notifDetails, onClick }) {

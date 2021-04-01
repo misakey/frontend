@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import AgentSchema from '@misakey/react-auth/store/schemas/Agents';
+import AgentSchema from '@misakey/react/auth/store/schemas/Agents';
 
 import { denormalize } from 'normalizr';
 import isNil from '@misakey/core/helpers/isNil';

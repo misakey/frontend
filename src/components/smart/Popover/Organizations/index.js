@@ -10,7 +10,7 @@ import isSelfOrg from 'helpers/isSelfOrg';
 import isNil from '@misakey/core/helpers/isNil';
 
 import { useTranslation } from 'react-i18next';
-import useOrgId from '@misakey/react-auth/hooks/useOrgId';
+import useOrgId from '@misakey/react/auth/hooks/useOrgId';
 import useFetchOrganizations from 'hooks/useFetchOrganizations';
 import useOnAddOrganization from 'hooks/useOnAddOrganization';
 
@@ -24,7 +24,7 @@ import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import DialogOrganizationsCreate from 'components/smart/Dialog/Organizations/Create';
-import withDialogPassword from '@misakey/react-auth/components/Dialog/Password/with';
+import withDialogPassword from '@misakey/react/auth/components/Dialog/Password/with';
 
 import AddIcon from '@material-ui/icons/Add';
 

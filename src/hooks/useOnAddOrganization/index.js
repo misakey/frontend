@@ -1,5 +1,5 @@
 
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import { addOrganization } from 'store/reducers/identity/organizations';
 
 import { useCallback } from 'react';

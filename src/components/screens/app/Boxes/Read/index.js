@@ -8,7 +8,7 @@ import isNil from '@misakey/core/helpers/isNil';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useHandleBoxKeyShare from '@misakey/crypto/hooks/useHandleBoxKeyShare';
+import useHandleBoxKeyShare from '@misakey/react/crypto/hooks/useHandleBoxKeyShare';
 import { useBoxEventSubmitContext } from 'components/smart/Box/Event/Submit/Context';
 import useFetchBoxDetails from 'hooks/useFetchBoxDetails';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';

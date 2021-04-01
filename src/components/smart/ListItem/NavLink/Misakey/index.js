@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 
-import authRoutes from '@misakey/react-auth/routes';
+import authRoutes from '@misakey/react/auth/routes';
 
 import ListItemNavLink from '@misakey/ui/ListItem/NavLink';
 import ListItemNavLinkMisakeySkeleton from 'components/smart/ListItem/NavLink/Misakey/Skeleton';
 import { generatePath } from 'react-router-dom';
-import useIdentity from '@misakey/react-auth/hooks/useIdentity';
+import useIdentity from '@misakey/react/auth/hooks/useIdentity';
 
 // CONSTANTS
 const PATH = authRoutes.identities._;

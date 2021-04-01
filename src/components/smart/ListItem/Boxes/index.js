@@ -15,7 +15,7 @@ import getNextSearch from '@misakey/core/helpers/getNextSearch';
 import isSelfOrg from 'helpers/isSelfOrg';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
+import { selectors as cryptoSelectors } from '@misakey/react/crypto/store/reducers';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 import useBoxRights from 'hooks/useBoxRights';
 import useContextMenuAnchorEl from '@misakey/hooks/useContextMenuAnchor/el';

@@ -2,7 +2,7 @@ import React, { useMemo, createContext, useContext } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import useWebSocket from '@misakey/hooks/useWebSocket';

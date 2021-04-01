@@ -1,5 +1,5 @@
 import { receiveOrganizations, selectors as orgSelectors } from 'store/reducers/identity/organizations';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import { listOrganizations } from '@misakey/core/api/helpers/builder/identities';
 import isNil from '@misakey/core/helpers/isNil';

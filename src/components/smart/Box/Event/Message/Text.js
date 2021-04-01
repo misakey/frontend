@@ -11,8 +11,8 @@ import BoxesSchema from 'store/schemas/Boxes';
 import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 import isNil from '@misakey/core/helpers/isNil';
 import { isBoxEventEdited } from 'helpers/boxEvent';
-import decryptText from '@misakey/crypto/box/decryptText';
-import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
+import decryptText from '@misakey/core/crypto/box/decryptText';
+import { selectors as cryptoSelectors } from '@misakey/react/crypto/store/reducers';
 
 import useAnchormeCallback from 'hooks/useAnchorme/callback';
 import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
 import { updateBoxSettings } from '@misakey/core/api/helpers/builder/identities';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
 

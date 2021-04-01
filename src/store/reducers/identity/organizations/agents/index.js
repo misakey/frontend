@@ -1,8 +1,8 @@
 import { denormalize, normalize } from 'normalizr';
 import { createSelector } from 'reselect';
 
-import AgentsByOrganizationSchema from '@misakey/react-auth/store/schemas/Agents/ByOrganization';
-import AgentsSchema from '@misakey/react-auth/store/schemas/Agents';
+import AgentsByOrganizationSchema from '@misakey/react/auth/store/schemas/Agents/ByOrganization';
+import AgentsSchema from '@misakey/react/auth/store/schemas/Agents';
 
 import { receiveEntities, updateEntities } from '@misakey/store/actions/entities';
 import { makeMergeReceiveOneToMany } from '@misakey/store/reducers/helpers/processStrategies';

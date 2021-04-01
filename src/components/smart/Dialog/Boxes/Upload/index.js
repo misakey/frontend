@@ -7,7 +7,7 @@ import BoxesSchema from 'store/schemas/Boxes';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import UploadDialog from 'components/smart/Dialog/Upload';
 import { makeAbortableCreateBoxEncryptedFileWithProgress } from '@misakey/core/api/helpers/builder/boxes';
-import workerEncryptFile from '@misakey/crypto/box/encryptFile/worker';
+import workerEncryptFile from '@misakey/core/crypto/box/encryptFile/worker';
 
 // CONSTANTS
 export const BLOBS_FIELD_NAME = 'files';

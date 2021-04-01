@@ -7,9 +7,9 @@ import routes from 'routes';
 
 import { contactUserBuilder } from '@misakey/core/api/helpers/builder/identities';
 import { useCallback, useMemo } from 'react';
-import { encryptCryptoaction } from '@misakey/crypto/cryptoactions';
-import { createCryptoForNewBox } from '@misakey/crypto/box/creation';
-import setBoxSecrets from '@misakey/crypto/store/actions/setBoxSecrets';
+import { encryptCryptoaction } from '@misakey/core/crypto/cryptoactions';
+import { createCryptoForNewBox } from '@misakey/core/crypto/box/creation';
+import setBoxSecrets from '@misakey/react/crypto/store/actions/setBoxSecrets';
 import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 import { addJoinedBox } from 'store/reducers/box';
 

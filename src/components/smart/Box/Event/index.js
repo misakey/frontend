@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import EVENTS_TYPE from '@misakey/ui/constants/boxes/events';
+import EVENTS_TYPE from '@misakey/core/api/constants/boxes/events';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
 import BoxesSchema from 'store/schemas/Boxes';
 

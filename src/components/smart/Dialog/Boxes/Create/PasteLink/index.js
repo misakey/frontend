@@ -23,7 +23,7 @@ import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import BoxesSchema from 'store/schemas/Boxes';
 import DialogTitleWithCloseFormik from '@misakey/ui/DialogTitle/WithCloseIcon/Formik';
 import DialogContent from '@misakey/ui/DialogContent';
-import ButtonWithDialogPassword from '@misakey/react-auth/components/Dialog/Password/with/Button';
+import ButtonWithDialogPassword from '@misakey/react/auth/components/Dialog/Password/with/Button';
 
 // CONSTANTS
 const FIELD_NAME = 'invitationLink';

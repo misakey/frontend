@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { makeDenormalizeSavedFileSelector } from 'store/reducers/files/saved';
 import { makeDenormalizeFileSelector } from 'store/reducers/files/saved/decrypted';
-import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
+import { selectors as cryptoSelectors } from '@misakey/react/crypto/store/reducers';
 import { getSavedFileEncryptedFileId } from 'helpers/boxEvent';
 
 import prop from '@misakey/core/helpers/prop';

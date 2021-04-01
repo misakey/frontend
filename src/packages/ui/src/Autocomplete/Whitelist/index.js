@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import { IDENTIFIER as USER_TYPE, EMAIL_DOMAIN as DOMAIN_TYPE } from '@misakey/ui/constants/accessTypes';
+import { IDENTIFIER as USER_TYPE, EMAIL_DOMAIN as DOMAIN_TYPE } from '@misakey/core/api/constants/accessTypes';
 
 import isEmpty from '@misakey/core/helpers/isEmpty';
 import isFunction from '@misakey/core/helpers/isFunction';

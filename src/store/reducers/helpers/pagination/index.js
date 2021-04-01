@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import createResetOnSignOutReducer from '@misakey/react-auth/store/reducers/helpers/createResetOnSignOutReducer';
+import createResetOnSignOutReducer from '@misakey/react/auth/store/reducers/helpers/createResetOnSignOutReducer';
 
 import range from '@misakey/core/helpers/range';
 import pick from '@misakey/core/helpers/pick';

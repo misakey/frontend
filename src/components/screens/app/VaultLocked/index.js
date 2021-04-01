@@ -6,17 +6,17 @@ import { useSelector } from 'react-redux';
 
 import { LARGE, APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
 
-import { openVaultValidationSchema } from '@misakey/react-auth/constants/validationSchemas/vault';
+import { openVaultValidationSchema } from '@misakey/react/auth/constants/validationSchemas/vault';
 import { PREHASHED_PASSWORD } from '@misakey/core/auth/constants/method';
 import { invalid } from '@misakey/core/api/constants/errorTypes';
 import { SIDES } from '@misakey/ui/constants/drawers';
-import { getCurrentUserSelector } from '@misakey/react-auth/store/reducers/auth';
+import { getCurrentUserSelector } from '@misakey/react/auth/store/reducers/auth';
 
 import logSentryException from '@misakey/core/helpers/log/sentry/exception';
-import useLoadSecretsWithPassword from '@misakey/crypto/hooks/useLoadSecretsWithPassword';
+import useLoadSecretsWithPassword from '@misakey/react/crypto/hooks/useLoadSecretsWithPassword';
 import {
   DecryptionError,
-} from '@misakey/crypto/Errors/classes';
+} from '@misakey/core/crypto/Errors/classes';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -29,13 +29,13 @@ import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
 import IconButtonMenuAccount from 'components/smart/IconButton/Menu/Account';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
-import CardUserSignOut from '@misakey/react-auth/components/Card/User/SignOut';
+import CardUserSignOut from '@misakey/react/auth/components/Card/User/SignOut';
 import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
 import BoxControls from '@misakey/ui/Box/Controls';
 import Box from '@material-ui/core/Box';
-import CardSsoWithSlope from '@misakey/react-auth/components/Card/Sso/WithSlope';
+import CardSsoWithSlope from '@misakey/react/auth/components/Card/Sso/WithSlope';
 import Title from '@misakey/ui/Typography/Title';
-import useGetOrgFromSearch from '@misakey/react-auth/hooks/useGetOrgFromSearch';
+import useGetOrgFromSearch from '@misakey/react/auth/hooks/useGetOrgFromSearch';
 import AvatarColorized, { BACKGROUND_COLOR } from '@misakey/ui/Avatar/Colorized';
 import isNil from '@misakey/core/helpers/isNil';
 

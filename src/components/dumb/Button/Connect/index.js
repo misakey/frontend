@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import objectToSnakeCase from '@misakey/core/helpers/objectToSnakeCase';
 import isFunction from '@misakey/core/helpers/isFunction';
 import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
-import useAskSigninWithLoginHint from '@misakey/react-auth/hooks/useAskSigninWithLoginHint';
+import useAskSigninWithLoginHint from '@misakey/react/auth/hooks/useAskSigninWithLoginHint';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 

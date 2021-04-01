@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import isFunction from '@misakey/core/helpers/isFunction';
-import { selectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors } from '@misakey/react/auth/store/reducers/auth';
 
 import ContactBoxDialog from 'components/smart/Dialog/Boxes/Contact';
-import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/Context';
-import DialogSigninRedirect from '@misakey/react-auth/components/OidcProvider/Dialog/SigninRedirect';
+import { UserManagerContext } from '@misakey/react/auth/components/OidcProvider/Context';
+import DialogSigninRedirect from '@misakey/react/auth/components/OidcProvider/Dialog/SigninRedirect';
 
 // COMPONENTS
 const withDialogContact = (Component) => {

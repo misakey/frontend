@@ -14,12 +14,11 @@ if (process.env.BABEL_ENV === 'es') {
 }
 
 const defaultAlias = {
-  '@misakey/api': './src/packages/api/src',
-  '@misakey/helpers': './src/packages/helpers/src',
+  '@misakey/core': './src/packages/core/src',
+  '@misakey/react': './src/packages/react/src',
   '@misakey/hooks': './src/packages/hooks/src',
   '@misakey/ui/static': './src/packages/ui/static',
   '@misakey/ui': './src/packages/ui/src',
-  '@misakey/crypto': './src/packages/crypto/src',
 };
 
 const productionPlugins = [
@@ -45,6 +44,7 @@ module.exports = {
     '@babel/plugin-transform-runtime',
     // for IE 11 support
     '@babel/plugin-transform-object-assign',
+    ['inline-json-import', {}],
   ],
   ignore: [/@babel[\\|/]runtime/], // Fix a Windows issue.
   env: {

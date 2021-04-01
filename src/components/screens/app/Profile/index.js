@@ -3,17 +3,17 @@ import React, { useMemo } from 'react';
 import { Switch, Route, Redirect, useParams, generatePath, useRouteMatch } from 'react-router-dom';
 
 import routes from 'routes';
-import authRoutes from '@misakey/react-auth/routes';
+import authRoutes from '@misakey/react/auth/routes';
 
 import isNil from '@misakey/core/helpers/isNil';
 
-import useIdentity from '@misakey/react-auth/hooks/useIdentity';
+import useIdentity from '@misakey/react/auth/hooks/useIdentity';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import Identities from '@misakey/react-auth/components/screens/Identity';
+import Identities from '@misakey/react/auth/components/screens/Identity';
 import IdentityPublicReadOnly from 'components/screens/app/Profile/Public/ReadOnly';
-import RouteAcr from '@misakey/react-auth/components/Route/Acr';
+import RouteAcr from '@misakey/react/auth/components/Route/Acr';
 import ScreenDrawerContextProvider from 'components/smart/Screen/Drawer';
 import DrawerAccountContent from 'components/smart/Drawer/Account/Content';
 import DrawerAccountOnboard from 'components/smart/Drawer/Account/Onboard';

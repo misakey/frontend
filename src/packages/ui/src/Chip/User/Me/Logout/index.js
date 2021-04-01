@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 
 
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
-import { UserManagerContext } from '@misakey/react-auth/components/OidcProvider/Context';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
+import { UserManagerContext } from '@misakey/react/auth/components/OidcProvider/Context';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import { useSelector } from 'react-redux';

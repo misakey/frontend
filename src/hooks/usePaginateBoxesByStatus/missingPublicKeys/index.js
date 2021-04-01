@@ -1,8 +1,8 @@
 import { selectors } from 'store/reducers/userBoxes/pagination';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import { makeGetBoxesPublicKeysSelector } from 'store/reducers/box';
-import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
-import deleteSecrets from '@misakey/crypto/store/actions/deleteSecrets';
+import { selectors as cryptoSelectors } from '@misakey/react/crypto/store/reducers';
+import deleteSecrets from '@misakey/react/crypto/store/actions/deleteSecrets';
 
 import isNil from '@misakey/core/helpers/isNil';
 import isEmpty from '@misakey/core/helpers/isEmpty';

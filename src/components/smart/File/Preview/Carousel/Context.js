@@ -9,7 +9,7 @@ import { updateEntities } from '@misakey/store/actions/entities';
 
 import isNil from '@misakey/core/helpers/isNil';
 import { getEncryptedFileBuilder } from '@misakey/core/api/helpers/builder/files';
-import workerDecryptFile from '@misakey/crypto/box/decryptFile/worker';
+import workerDecryptFile from '@misakey/core/crypto/box/decryptFile/worker';
 import log from '@misakey/core/helpers/log';
 import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 import downloadFile from '@misakey/core/helpers/downloadFile';

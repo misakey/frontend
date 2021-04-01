@@ -18,10 +18,10 @@ import { getBoxBuilder, getBoxMembersBuilder } from '@misakey/core/api/helpers/b
 import { noEmptyOverride, mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import BoxesSchema from 'store/schemas/Boxes';
 import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
-import UserSchema from '@misakey/react-auth/store/schemas/User';
+import UserSchema from '@misakey/react/auth/store/schemas/User';
 
 import { makeDenormalizeBoxSelector, receiveJoinedBox } from 'store/reducers/box';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import useOnError from './onError';
 
 // CONSTANTS

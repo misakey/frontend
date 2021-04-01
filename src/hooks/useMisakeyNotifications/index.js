@@ -1,4 +1,4 @@
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import { setNewCount, setLastNotification } from 'store/actions/identity/notifications';
 import { getLastNotificationSelector, getNewCountSelector } from 'store/reducers/identity/notifications';
 

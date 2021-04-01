@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
-import ACCOUNT_COLORS from '@misakey/react-auth/constants/account/colors';
+import ACCOUNT_COLORS from '@misakey/react/auth/constants/account/colors';
 
 import isFunction from '@misakey/core/helpers/isFunction';
 

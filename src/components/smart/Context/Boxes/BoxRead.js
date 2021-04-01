@@ -3,8 +3,8 @@ import React, { createContext, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
-import { getCurrentUserSelector } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as cryptoSelectors } from '@misakey/react/crypto/store/reducers';
+import { getCurrentUserSelector } from '@misakey/react/auth/store/reducers/auth';
 import BoxSchema from 'store/schemas/Boxes';
 import { sendersIdentifiersMatch } from 'helpers/sender';
 

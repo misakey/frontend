@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import { ICONBUTTON_WIDTH } from '@misakey/ui/constants/sizes';
 import BoxesSchema from 'store/schemas/Boxes';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import isNil from '@misakey/core/helpers/isNil';
 import isPlainObject from '@misakey/core/helpers/isPlainObject';
@@ -24,7 +24,7 @@ import BoxEventEditContext from 'components/smart/Box/Event/Edit/Context';
 import PaginatedListBoxEvents from 'components/smart/PaginatedList/BoxEvents';
 import BoxEventsFooter from 'components/screens/app/Boxes/Read/Events/Footer';
 import AppBarStatic from '@misakey/ui/AppBar/Static';
-import ButtonWithDialogPassword from '@misakey/react-auth/components/Dialog/Password/with/Button';
+import ButtonWithDialogPassword from '@misakey/react/auth/components/Dialog/Password/with/Button';
 import Box from '@material-ui/core/Box';
 import Alert from '@material-ui/lab/Alert';
 import ElevationScroll from '@misakey/ui/ElevationScroll';

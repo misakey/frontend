@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import UserSchema from '@misakey/react-auth/store/schemas/User';
+import UserSchema from '@misakey/react/auth/store/schemas/User';
 import { VISIBLE_ROLES } from '@misakey/ui/constants/organizations/roles';
 
 import { pickUsersPropsRemapIdentifier } from '@misakey/core/helpers/user';

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ACCESS_MODES from '@misakey/ui/constants/accessModes';
 
 import EventSchema from 'store/schemas/Boxes/Events';
-import UserSchema from '@misakey/react-auth/store/schemas/User';
+import UserSchema from '@misakey/react/auth/store/schemas/User';
 
 const entity = new schema.Entity('boxes', {
   events: EventSchema.collection,

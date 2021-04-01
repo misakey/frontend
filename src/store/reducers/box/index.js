@@ -2,12 +2,12 @@ import { batch } from 'react-redux';
 import { createSelector } from 'reselect';
 import { normalize, denormalize } from 'normalizr';
 
-import { MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK, MSG_FILE } from '@misakey/ui/constants/boxes/events';
+import { MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK, MSG_FILE } from '@misakey/core/api/constants/boxes/events';
 
 import BoxesSchema from 'store/schemas/Boxes';
 import BoxesByDatatagSchema from 'store/schemas/Boxes/ByDatatag';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
-import UserSchema from '@misakey/react-auth/store/schemas/User';
+import UserSchema from '@misakey/react/auth/store/schemas/User';
 import { BLUR_TEXT, CLEAR_TEXT } from 'store/actions/box';
 import { actionCreators } from 'store/reducers/userBoxes/pagination/events';
 import { actionCreators as fileEventsActionCreators, selectors as fileEventsSelectors } from 'store/reducers/userBoxes/pagination/events/files';
@@ -17,7 +17,7 @@ import { selectors as datatagSelectors } from 'store/reducers/datatag';
 import { receiveEntities, updateEntities, removeEntities } from '@misakey/store/actions/entities';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 
-import createResetOnSignOutReducer from '@misakey/react-auth/store/reducers/helpers/createResetOnSignOutReducer';
+import createResetOnSignOutReducer from '@misakey/react/auth/store/reducers/helpers/createResetOnSignOutReducer';
 
 import { transformReferrerEvent, isMemberEventType, isAccessModeEventType, getEventForNormalization } from 'helpers/boxEvent';
 import pluck from '@misakey/core/helpers/pluck';

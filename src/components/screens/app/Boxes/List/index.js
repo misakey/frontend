@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
 import { TOOLBAR_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
-import { selectors } from '@misakey/crypto/store/reducers';
+import { selectors } from '@misakey/react/crypto/store/reducers';
 
 import { useBoxesContext } from 'components/smart/Context/Boxes';
 

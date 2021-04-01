@@ -24,7 +24,9 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "moduleDirectory":  ["src"]
+        "moduleDirectory": [
+          "src"
+        ]
       },
       "alias": [
         [
@@ -32,7 +34,7 @@
           "./src/packages/core/src"
         ],
         [
-          "@misakey/crypto",
+          "@misakey/core/crypto",
           "./src/packages/crypto/src"
         ]
       ]

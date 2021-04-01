@@ -7,7 +7,7 @@ module.exports = {
     name: 'Documentation',
     sections: [{
       name: 'React Auth SDK',
-      content: 'src/packages/react-auth/README.md',
+      content: 'src/packages/react/src/auth/README.md',
       components: 'src/packages/react-auth/src/components/**/+([A-Z]*)/*.js',
       exampleMode: 'expand', // 'hide' | 'collapse' | 'expand'
       usageMode: 'expand', // 'hide' | 'collapse' | 'expand'
@@ -36,7 +36,7 @@ module.exports = {
       modules: [path.join(__dirname, '../'), 'node_modules'],
       alias: {
         '@misakey/core': path.resolve(__dirname, './src/packages/core/src'),
-        '@misakey/react-auth': path.resolve(__dirname, './src/packages/react-auth/src'),
+        '@misakey/react': path.resolve(__dirname, './src/packages/react/src'),
         '@misakey/hooks': path.resolve(__dirname, './src/packages/hooks/src'),
         '@misakey/store': path.resolve(__dirname, './src/packages/store/src'),
         '@misakey/ui/static': path.resolve(__dirname, './src/packages/ui/static'),

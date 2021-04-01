@@ -33,7 +33,7 @@ import App from 'components/App';
 
 import SplashScreen from '@misakey/ui/Screen/Splash';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
-import OidcProvider from '@misakey/react-auth/components/OidcProvider'; // OIDC provider
+import OidcProvider from '@misakey/react/auth/components/OidcProvider'; // OIDC provider
 import SnackbarProvider from 'components/smart/SnackbarProvider';
 import OfflineContextProvider from 'components/smart/Context/Offline';
 import ScreenError from 'components/smart/Screen/Error';

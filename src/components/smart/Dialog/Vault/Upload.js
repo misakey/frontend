@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector, batch } from 'react-redux';
 
 import UploadDialog from 'components/smart/Dialog/Upload';
-import workerEncryptFileForVault from '@misakey/crypto/vault/workers/encryptFile/singleton';
-import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
+import workerEncryptFileForVault from '@misakey/core/crypto/vault/workers/encryptFile/singleton';
+import { selectors as cryptoSelectors } from '@misakey/react/crypto/store/reducers';
 import { uploadFileInVaultBuilder } from '@misakey/core/api/helpers/builder/vault';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import { addSavedFile } from 'store/reducers/files/saved';
 
 // CONSTANTS

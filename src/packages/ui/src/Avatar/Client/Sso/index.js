@@ -1,5 +1,5 @@
 import React from 'react';
-import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react-auth/store/reducers/sso';
+import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react/auth/store/reducers/sso';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 

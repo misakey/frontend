@@ -1,6 +1,6 @@
 import { schema } from 'normalizr';
 import PropTypes from 'prop-types';
-import UserSchema from '@misakey/react-auth/store/schemas/User';
+import UserSchema from '@misakey/react/auth/store/schemas/User';
 
 const entity = new schema.Entity('decryptedFiles');
 

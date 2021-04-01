@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
-import useOrgId from '@misakey/react-auth/hooks/useOrgId';
+import useOrgId from '@misakey/react/auth/hooks/useOrgId';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 

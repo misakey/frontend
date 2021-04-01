@@ -1,7 +1,7 @@
 import { mergeReceiveNoEmptyNullable } from '@misakey/store/reducers/helpers/processStrategies';
 import { selectors, actionCreators, moveBackUpId } from 'store/reducers/userBoxes/pagination';
 import { removeBox, receiveJoinedBox, addJoinedBox } from 'store/reducers/box';
-import deleteSecrets from '@misakey/crypto/store/actions/deleteSecrets';
+import deleteSecrets from '@misakey/react/crypto/store/actions/deleteSecrets';
 
 import isNil from '@misakey/core/helpers/isNil';
 

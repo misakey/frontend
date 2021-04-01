@@ -6,8 +6,8 @@ import PropTypes from 'prop-types';
 
 import isFunction from '@misakey/core/helpers/isFunction';
 
-import ButtonSignOut from '@misakey/react-auth/components/Button/SignOut';
-import CardIdentityThumbnail from '@misakey/react-auth/components/Card/Identity/Thumbnail';
+import ButtonSignOut from '@misakey/react/auth/components/Button/SignOut';
+import CardIdentityThumbnail from '@misakey/react/auth/components/Card/Identity/Thumbnail';
 import AppBarStatic from '@misakey/ui/AppBar/Static';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';

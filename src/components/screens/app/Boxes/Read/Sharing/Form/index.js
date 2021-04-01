@@ -4,16 +4,16 @@ import PropTypes from 'prop-types';
 import { withTranslation, useTranslation } from 'react-i18next';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
 import BoxesSchema from 'store/schemas/Boxes';
-import UserSchema from '@misakey/react-auth/store/schemas/User';
+import UserSchema from '@misakey/react/auth/store/schemas/User';
 
-import { EMAIL_DOMAIN as DOMAIN_TYPE } from '@misakey/ui/constants/accessTypes';
-import { ACCESS_RM, ACCESS_ADD, ACCESS_BULK, STATE_ACCESS_MODE } from '@misakey/ui/constants/boxes/events';
-import { RESTRICTION_TYPES } from '@misakey/ui/constants/boxes/accesses';
+import { EMAIL_DOMAIN as DOMAIN_TYPE } from '@misakey/core/api/constants/accessTypes';
+import { ACCESS_RM, ACCESS_ADD, ACCESS_BULK, STATE_ACCESS_MODE } from '@misakey/core/api/constants/boxes/events';
+import { RESTRICTION_TYPES } from '@misakey/core/api/constants/boxes/accesses';
 import { updateAccessesEvents } from 'store/reducers/box';
 import { updateEntities } from '@misakey/store/actions/entities';
 import { accessValidationSchema } from 'constants/validationSchemas/boxes';
 import ACCESS_MODES, { PUBLIC, LIMITED } from '@misakey/ui/constants/accessModes';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import { getUpdatedAccesses } from 'helpers/accesses';
 import alwaysNull from '@misakey/core/helpers/always/null';
@@ -29,7 +29,7 @@ import { createBulkBoxEventBuilder, createBoxEventBuilder } from '@misakey/core/
 import { senderMatchesIdentifierValue, identifierValueProp } from 'helpers/sender';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { tryAddingAutoInvite } from '@misakey/crypto/box/autoInvitation';
+import { tryAddingAutoInvite } from '@misakey/core/crypto/box/autoInvitation';
 import { useSnackbar } from 'notistack';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 

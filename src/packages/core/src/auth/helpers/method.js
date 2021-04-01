@@ -6,7 +6,7 @@ import isNil from '@misakey/core/helpers/isNil';
 import {
   accountCreationSecretStoragePayload,
   passwordResetSecretStoragePayload,
-} from '@misakey/crypto';
+} from '@misakey/core/crypto';
 
 export const makeSeclevelMethod = (seclevel) => SECLEVEL_METHOD[seclevel] || EMAILED_CODE;
 

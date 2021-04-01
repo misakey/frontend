@@ -3,7 +3,7 @@ import { useMemo, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { actionCreators, selectors } from 'store/reducers/files/saved/pagination';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import pickAll from '@misakey/core/helpers/pickAll';
 import isNil from '@misakey/core/helpers/isNil';

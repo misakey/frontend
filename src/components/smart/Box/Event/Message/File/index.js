@@ -12,7 +12,7 @@ import EventBoxMessagePreview from 'components/smart/Box/Event/Message/Preview';
 import EventFileCard, { FileCardEventSkeleton } from 'components/smart/Box/Event/Message/File/Card';
 import useDecryptMsgFileEffect from 'hooks/useDecryptMsgFile/effect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
+import { selectors as cryptoSelectors } from '@misakey/react/crypto/store/reducers';
 
 const {
   makeGetAsymSecretKey,

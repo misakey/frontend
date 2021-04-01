@@ -5,7 +5,7 @@ import { connect, useSelector } from 'react-redux';
 import { denormalize } from 'normalizr';
 
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
-import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
+import { selectors as cryptoSelectors } from '@misakey/react/crypto/store/reducers';
 
 import isNil from '@misakey/core/helpers/isNil';
 import omit from '@misakey/core/helpers/omit';

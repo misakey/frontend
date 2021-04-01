@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import decryptText from '@misakey/crypto/box/decryptText';
+import decryptText from '@misakey/core/crypto/box/decryptText';
 import isNil from '@misakey/core/helpers/isNil';
 
 import { useMemo } from 'react';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import { selectors as cryptoSelectors } from '@misakey/crypto/store/reducers';
+import { selectors as cryptoSelectors } from '@misakey/react/crypto/store/reducers';
 import { useTranslation } from 'react-i18next';
 
 const {

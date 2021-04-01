@@ -1,5 +1,5 @@
 import BoxesSchema from 'store/schemas/Boxes';
-import UserSchema from '@misakey/react-auth/store/schemas/User';
+import UserSchema from '@misakey/react/auth/store/schemas/User';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import { updateEntities, receiveEntities } from '@misakey/store/actions/entities';
 import { normalize } from 'normalizr';

@@ -9,10 +9,10 @@ import { getCode } from '@misakey/core/helpers/apiError';
 import isEmpty from '@misakey/core/helpers/isEmpty';
 import isFunction from '@misakey/core/helpers/isFunction';
 import { getBoxPublicBuilder } from '@misakey/core/api/helpers/builder/boxes';
-import { computeInvitationHash } from '@misakey/crypto/box/keySplitting';
+import { computeInvitationHash } from '@misakey/core/crypto/box/keySplitting';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import { InvalidHash } from '@misakey/crypto/Errors/classes';
+import { InvalidHash } from '@misakey/core/crypto/Errors/classes';
 
 
 // HOOKS

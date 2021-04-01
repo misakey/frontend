@@ -5,18 +5,18 @@ import PropTypes from 'prop-types';
 
 import routes from 'routes';
 import { UUID4_REGEX } from '@misakey/ui/constants/regex';
-import { computeInvitationHash } from '@misakey/crypto/box/keySplitting';
-import { BadKeyShareFormat } from '@misakey/crypto/Errors/classes';
+import { computeInvitationHash } from '@misakey/core/crypto/box/keySplitting';
+import { BadKeyShareFormat } from '@misakey/core/crypto/Errors/classes';
 
 import isEmpty from '@misakey/core/helpers/isEmpty';
 import path from '@misakey/core/helpers/path';
 
-import useSetBoxKeyShareInUrl from '@misakey/crypto/hooks/useSetBoxKeyShareInUrl';
+import useSetBoxKeyShareInUrl from '@misakey/react/crypto/hooks/useSetBoxKeyShareInUrl';
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 
 import BoxRead from 'components/screens/app/Boxes/Read';
 import BoxNone from 'components/screens/app/Boxes/None';
-import RouteAuthenticated from '@misakey/react-auth/components/Route/Authenticated';
+import RouteAuthenticated from '@misakey/react/auth/components/Route/Authenticated';
 import RouteAuthenticatedBoxRead from 'components/smart/Route/Authenticated/BoxRead';
 import PasteLinkScreen from 'components/screens/app/Boxes/Read/PasteLink';
 import BoxEventSubmitContextProvider from 'components/smart/Box/Event/Submit/Context';

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { invalid } from '@misakey/core/api/constants/errorTypes';
-import IdentitySchema from '@misakey/react-auth/store/schemas/Identity';
+import IdentitySchema from '@misakey/react/auth/store/schemas/Identity';
 
 import { Form, Field } from 'formik';
 import Formik from '@misakey/ui/Formik';

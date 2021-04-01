@@ -8,7 +8,7 @@ import { LARGE } from '@misakey/ui/constants/sizes';
 import { FOOTER_HEIGHT } from '@misakey/ui/Footer';
 import BoxesSchema from 'store/schemas/Boxes';
 import { receivePublicInfo } from 'store/reducers/box';
-import authRoutes from '@misakey/react-auth/routes';
+import authRoutes from '@misakey/react/auth/routes';
 
 import isNil from '@misakey/core/helpers/isNil';
 
@@ -32,7 +32,7 @@ import AvatarBoxDenied from '@misakey/ui/Avatar/Box/Denied';
 import AvatarBoxSkeleton from '@misakey/ui/Avatar/Box/Skeleton';
 import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
 import Container from '@material-ui/core/Container';
-import CardUserSignOut from '@misakey/react-auth/components/Card/User/SignOut';
+import CardUserSignOut from '@misakey/react/auth/components/Card/User/SignOut';
 
 // HOOKS
 const useStyles = makeStyles(() => ({

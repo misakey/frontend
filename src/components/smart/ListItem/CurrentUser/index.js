@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import useIdentity from '@misakey/react-auth/hooks/useIdentity';
+import useIdentity from '@misakey/react/auth/hooks/useIdentity';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import ListItemUser from '@misakey/ui/ListItem/User';

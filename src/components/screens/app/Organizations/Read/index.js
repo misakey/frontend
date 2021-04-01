@@ -11,11 +11,11 @@ import getNextSearch from '@misakey/core/helpers/getNextSearch';
 
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useOrgId from '@misakey/react-auth/hooks/useOrgId';
+import useOrgId from '@misakey/react/auth/hooks/useOrgId';
 import { useSelector } from 'react-redux';
 import useFetchOrganizations from 'hooks/useFetchOrganizations';
 
-import RouteAcr from '@misakey/react-auth/components/Route/Acr';
+import RouteAcr from '@misakey/react/auth/components/Route/Acr';
 import OrganizationsReadSecret from 'components/screens/app/Organizations/Read/Secret';
 import OrganizationsReadAgents from 'components/screens/app/Organizations/Read/Agents';
 

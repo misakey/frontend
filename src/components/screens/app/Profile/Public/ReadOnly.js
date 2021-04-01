@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { useScreenDrawerContext } from 'components/smart/Screen/Drawer';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import { getProfile as getProfileBuilder } from '@misakey/core/api/helpers/builder/identities';
 import isEmpty from '@misakey/core/helpers/isEmpty';
@@ -25,7 +25,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import AvatarDetailed from '@misakey/ui/Avatar/Detailed';
 import AvatarDetailedSkeleton from '@misakey/ui/Avatar/Detailed/Skeleton';
 import AppBarStatic from '@misakey/ui/AppBar/Static';
-import CardIdentityHeader from '@misakey/react-auth/components/Card/Identity/Header';
+import CardIdentityHeader from '@misakey/react/auth/components/Card/Identity/Header';
 import CardList from '@misakey/ui/Card/List';
 import Card from '@material-ui/core/Card';
 import CardOnboardDiscover from 'components/dumb/Card/Onboard/Discover';
@@ -36,7 +36,7 @@ import ButtonContactMailto from '@misakey/ui/Button/Contact/Mailto';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 
 import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
-import ButtonCreateAccount from '@misakey/react-auth/components/Button/CreateAccount';
+import ButtonCreateAccount from '@misakey/react/auth/components/Button/CreateAccount';
 import withDialogContact from 'components/smart/Dialog/Boxes/Contact/with';
 
 

@@ -1,9 +1,9 @@
 import routes from 'routes';
 import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 import BoxesSchema from 'store/schemas/Boxes';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import { DELETED_BOX, NEW_EVENT, NOTIFICATIONS_ACK, BOX_SETTINGS, NOTIFICATION, SAVED_FILE } from 'constants/app/boxes/ws/messageTypes';
-import { CHANGE_EVENT_TYPES } from '@misakey/ui/constants/boxes/events';
+import { CHANGE_EVENT_TYPES } from '@misakey/core/api/constants/boxes/events';
 import { receiveWSEditEvent, addBoxEvent } from 'store/reducers/box';
 import { updateEntities } from '@misakey/store/actions/entities';
 import { addNewNotification } from 'store/actions/identity/notifications';

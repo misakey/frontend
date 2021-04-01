@@ -5,11 +5,11 @@ import { withTranslation } from 'react-i18next';
 
 import BoxesSchema from 'store/schemas/Boxes';
 import routes from 'routes';
-import { ACCESS_RM, ACCESS_BULK } from '@misakey/ui/constants/boxes/events';
-import { LIMITED_RESTRICTION_TYPES } from '@misakey/ui/constants/boxes/accesses';
-import { EMAIL_DOMAIN, IDENTIFIER } from '@misakey/ui/constants/accessTypes';
+import { ACCESS_RM, ACCESS_BULK } from '@misakey/core/api/constants/boxes/events';
+import { LIMITED_RESTRICTION_TYPES } from '@misakey/core/api/constants/boxes/accesses';
+import { EMAIL_DOMAIN, IDENTIFIER } from '@misakey/core/api/constants/accessTypes';
 import { PUBLIC } from '@misakey/ui/constants/accessModes';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import { updateAccessesEvents } from 'store/reducers/box';
 import { APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
 import {

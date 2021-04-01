@@ -2,7 +2,7 @@ import React, { useMemo, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import { selectors as devicePreferencesSelector } from 'store/reducers/devicePreferences';
 import { initDarkMode } from 'store/actions/devicePreferences';
 

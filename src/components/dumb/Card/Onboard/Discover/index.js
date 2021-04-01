@@ -8,7 +8,7 @@ import BoxAlinea from '@misakey/ui/Box/Alinea';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
-import useAskSigninWithLoginHint from '@misakey/react-auth/hooks/useAskSigninWithLoginHint';
+import useAskSigninWithLoginHint from '@misakey/react/auth/hooks/useAskSigninWithLoginHint';
 
 // COMPONENTS
 const CardOnboardDiscover = () => {

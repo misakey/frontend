@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
-import { CREATE } from '@misakey/ui/constants/boxes/events';
+import { CREATE } from '@misakey/core/api/constants/boxes/events';
 
 import EventBoxInformationPreview from 'components/smart/Box/Event/Information/Preview';
 

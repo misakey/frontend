@@ -3,7 +3,7 @@ import React, { Suspense, lazy, useMemo } from 'react';
 
 import { Route, Switch } from 'react-router-dom';
 import routes from 'routes';
-import authRoutes from '@misakey/react-auth/routes';
+import authRoutes from '@misakey/react/auth/routes';
 
 import retry from '@misakey/core/helpers/retry';
 
@@ -14,8 +14,8 @@ import AccountMenuContext from 'components/smart/Menu/Account/Context';
 import OrganizationDrawer from 'components/smart/Drawer/Organization';
 import ScreenSplashOidc from '@misakey/ui/Screen/Splash/Oidc';
 
-import useLoadSecretsFromShares from '@misakey/crypto/hooks/useLoadSecretsFromShares';
-import useIdentity from '@misakey/react-auth/hooks/useIdentity';
+import useLoadSecretsFromShares from '@misakey/react/crypto/hooks/useLoadSecretsFromShares';
+import useIdentity from '@misakey/react/auth/hooks/useIdentity';
 import useLoadedAnimation from '@misakey/hooks/useLoadedAnimation';
 
 // LAZY

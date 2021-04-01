@@ -3,8 +3,8 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import UserSchema from '@misakey/react-auth/store/schemas/User';
-import { selectors as authSelectors } from '@misakey/react-auth/store/reducers/auth';
+import UserSchema from '@misakey/react/auth/store/schemas/User';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import { senderMatchesIdentityId } from 'helpers/sender';
 
 import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
