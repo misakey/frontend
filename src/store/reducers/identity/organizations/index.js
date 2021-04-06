@@ -9,14 +9,14 @@ import OrganizationsByIdentitySchema from '@misakey/react/auth/store/schemas/Org
 import OrganizationsSchema from '@misakey/react/auth/store/schemas/Organizations';
 
 // SELECTORS
-const getOrganizationsSelector = createSelector(
+const makeGetOrganizationsSelector = () => createSelector(
   (state) => state.entities,
   (_, id) => id,
   (entities, id) => pathOr([], ['identityOrganizations', id, 'organizations'])(entities),
 );
 
 export const selectors = {
-  getOrganizations: getOrganizationsSelector,
+  makeGetOrganizations: makeGetOrganizationsSelector,
   makeDenormalizeOrganizations: () => createSelector(
     (state) => state.entities,
     (_, id) => id,
@@ -47,6 +47,7 @@ export const receiveOrganizations = (data, identityId) => (dispatch) => {
 };
 
 export const addOrganization = (identityId, organization) => (dispatch, getState) => {
+  const getOrganizationsSelector = makeGetOrganizationsSelector();
   const { entities, result } = normalize(organization, OrganizationsSchema.entity);
   const organizationIds = getOrganizationsSelector(getState(), identityId);
 
@@ -61,6 +62,7 @@ export const addOrganization = (identityId, organization) => (dispatch, getState
 
 export const deleteOrganization = (identityId, organizationId) => (dispatch, getState) => batch(
   () => {
+    const getOrganizationsSelector = makeGetOrganizationsSelector();
     const organizationIds = getOrganizationsSelector(getState(), identityId);
 
     dispatch(updateEntities(

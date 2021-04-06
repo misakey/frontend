@@ -135,21 +135,35 @@ export default (filterId, queryParams = {}, search = null, onError = null) => {
   );
 
   // update itemCount whenever it is nil
-  useEffect(
-    () => {
-      if (isNil(itemCount)) {
-        getCount()
-          .then((result) => dispatch(receivePaginatedItemCount(filterId, result)))
-          .catch((e) => {
-            if (isFunction(onError)) {
-              onError(e);
-            } else {
-              handleHttpErrors(e);
-            }
-          });
+  const shouldFetch = useMemo(
+    () => isNil(itemCount),
+    [itemCount],
+  );
+
+  const onSuccess = useCallback(
+    (result) => dispatch(receivePaginatedItemCount(filterId, result)),
+    [dispatch, filterId],
+  );
+
+  const handleError = useCallback(
+    (e) => {
+      if (isFunction(onError)) {
+        onError(e);
+      } else {
+        handleHttpErrors(e);
       }
     },
-    [dispatch, getCount, handleHttpErrors, itemCount, filterId, onError],
+    [handleHttpErrors, onError],
+  );
+
+  useEffect(
+    () => {
+      if (shouldFetch) {
+        getCount()
+          .then(onSuccess)
+          .catch(handleError);
+      }
+    },
   );
 
   // extra memoization layer because of object format

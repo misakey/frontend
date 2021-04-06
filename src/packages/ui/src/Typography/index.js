@@ -30,7 +30,7 @@ Typography.propTypes = {
 };
 
 Typography.defaultProps = {
-  color: 'default',
+  color: 'initial',
 };
 
 export default Typography;

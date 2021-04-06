@@ -82,6 +82,11 @@ export default (organizationId, queryParams = {}, search = null, onError = null)
     [dispatch, organizationId, search],
   );
 
+  const dispatchReceiveNoAgent = useCallback(
+    (metadata) => Promise.resolve(dispatch(receiveAgents([], metadata))),
+    [dispatch],
+  );
+
   // API data fetching:
   // get boxes
   // check missing applications in store
@@ -137,21 +142,41 @@ export default (organizationId, queryParams = {}, search = null, onError = null)
   );
 
   // update itemCount whenever it is nil
-  useEffect(
-    () => {
-      if (isNil(itemCount)) {
-        getCount()
-          .then((result) => dispatch(receivePaginatedItemCount(organizationId, result)))
-          .catch((e) => {
-            if (isFunction(onError)) {
-              onError(e);
-            } else {
-              handleHttpErrors(e);
-            }
-          });
+  const shouldFetch = useMemo(
+    () => isNil(itemCount),
+    [itemCount],
+  );
+
+  const onSuccess = useCallback(
+    (result) => {
+      if (result === 0) {
+        dispatchReceiveNoAgent({ organizationId });
+      }
+      return dispatch(receivePaginatedItemCount(organizationId, result));
+    },
+    [dispatch, dispatchReceiveNoAgent, organizationId],
+  );
+
+  const handleError = useCallback(
+    (e) => {
+      if (isFunction(onError)) {
+        onError(e);
+      } else {
+        handleHttpErrors(e);
       }
     },
-    [dispatch, getCount, handleHttpErrors, itemCount, organizationId, onError],
+    [handleHttpErrors, onError],
+  );
+
+  useEffect(
+    () => {
+      if (shouldFetch) {
+        getCount()
+          .then(onSuccess)
+          .catch(handleError);
+      }
+    },
+    [getCount, handleError, onSuccess, shouldFetch],
   );
 
   // extra memoization layer because of object format

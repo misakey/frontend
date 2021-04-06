@@ -8,7 +8,10 @@ import Skeleton from '@material-ui/lab/Skeleton';
 
 // COMPONENTS
 const ListItemUserOptionSkeleton = (props) => (
-  <ListItemUserSkeleton {...props}>
+  <ListItemUserSkeleton
+    component="div"
+    {...props}
+  >
     <Box component={ListItemSecondaryAction} display="flex" alignItems="center">
       <Subtitle>
         <Skeleton variant="text" width={50} />

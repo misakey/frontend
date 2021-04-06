@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { REVERSE, DARKER } from '@misakey/ui/theme';
@@ -14,7 +14,23 @@ const isDarker = (color) => color === DARKER;
 const isBackground = (color) => color === 'background';
 
 // COMPONENTS
-const IconButton = withStyles((theme) => ({
+const IconButton = forwardRef(({ color, ...rest }, ref) => {
+  const cleanColor = useMemo(
+    () => (isReverse(color) || isDarker(color) || isBackground(color) ? undefined : color),
+    [color],
+  );
+  return <MuiIconButton ref={ref} {...rest} color={cleanColor} />;
+});
+
+IconButton.propTypes = {
+  color: PropTypes.string,
+};
+
+IconButton.defaultProps = {
+  color: 'default',
+};
+
+export default withStyles((theme) => ({
   root: ({ color }) => {
     if (isBackground(color)) {
       return {
@@ -42,20 +58,4 @@ const IconButton = withStyles((theme) => ({
     }
     return {};
   },
-}))(({ color, ...rest }) => {
-  const cleanColor = useMemo(
-    () => (isReverse(color) || isDarker(color) || isBackground(color) ? undefined : color),
-    [color],
-  );
-  return <MuiIconButton {...rest} color={cleanColor} />;
-});
-
-IconButton.propTypes = {
-  color: PropTypes.string,
-};
-
-IconButton.defaultProps = {
-  color: 'default',
-};
-
-export default IconButton;
+}))(IconButton);

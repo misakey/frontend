@@ -56,6 +56,11 @@ export default () => {
   );
 
   // API data fetching:
+  const getCount = useCallback(
+    () => countSavedFilesBuilder({ identityId }),
+    [identityId],
+  );
+
   // get files events
   const get = useCallback(
     (pagination) => getSavedFilesBuilder({ identityId, ...pagination })
@@ -83,15 +88,25 @@ export default () => {
   );
 
   // update itemCount whenever it is nil
+  const shouldFetch = useMemo(
+    () => isNil(itemCount),
+    [itemCount],
+  );
+
+  const onSuccess = useCallback(
+    (result) => dispatch(receivePaginatedItemCount(identityId, result)),
+    [dispatch, identityId],
+  );
+
   useEffect(
     () => {
-      if (isNil(itemCount)) {
-        countSavedFilesBuilder({ identityId })
-          .then((result) => dispatch(receivePaginatedItemCount(identityId, result)))
-          .catch((e) => handleHttpErrors(e));
+      if (shouldFetch) {
+        getCount()
+          .then(onSuccess)
+          .catch(handleHttpErrors);
       }
     },
-    [identityId, dispatch, handleHttpErrors, itemCount],
+    [getCount, handleHttpErrors, onSuccess, shouldFetch],
   );
 
   // extra memoization layer because of object format

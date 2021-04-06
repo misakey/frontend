@@ -13,6 +13,7 @@ import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import AccountMenuContext from 'components/smart/Menu/Account/Context';
 import OrganizationDrawer from 'components/smart/Drawer/Organization';
 import ScreenSplashOidc from '@misakey/ui/Screen/Splash/Oidc';
+import BoxesContextProvider from 'components/smart/Context/Boxes';
 
 import useLoadSecretsFromShares from '@misakey/react/crypto/hooks/useLoadSecretsFromShares';
 import useIdentity from '@misakey/react/auth/hooks/useIdentity';
@@ -46,7 +47,7 @@ const BoxesApp = () => {
 
   const loadedAnimation = useLoadedAnimation(isLoading);
 
-  if (isLoading || !loadedAnimation) {
+  if (!loadedAnimation) {
     return <ScreenSplashOidc done={done} />;
   }
 
@@ -54,31 +55,33 @@ const BoxesApp = () => {
     <Suspense fallback={<SplashScreen />}>
       <OrganizationDrawer />
       <AccountMenuContext>
-        <Switch>
-          {/* REDIRECT TO BOXES */}
-          <Redirect
-            exact
-            from={routes._}
-            to={routes.boxes._}
-          />
+        <BoxesContextProvider>
+          <Switch>
+            {/* REDIRECT TO BOXES */}
+            <Redirect
+              exact
+              from={routes._}
+              to={routes.boxes._}
+            />
 
-          {/* OTHERS */}
-          <Route path={routes.organizations._} component={OrganizationsRead} />
-          <Route path={authRoutes.identities._} component={Profile} />
-          {/* @FIXME kept for retrocompatibility */}
-          <Route path={routes.boxes.invitation} component={Invitation} />
+            {/* OTHERS */}
+            <Route path={routes.organizations._} component={OrganizationsRead} />
+            <Route path={authRoutes.identities._} component={Profile} />
+            {/* @FIXME kept for retrocompatibility */}
+            <Route path={routes.boxes.invitation} component={Invitation} />
 
-          {/* MAIN VIEWS WITH BOXES LIST AT LEFT */}
-          <Route
-            path={[
-              routes.boxes._, routes.documents._,
-            ]}
-            component={Home}
-          />
+            {/* MAIN VIEWS WITH BOXES LIST AT LEFT */}
+            <Route
+              path={[
+                routes.boxes._, routes.documents._,
+              ]}
+              component={Home}
+            />
 
-          {/* DEFAULT */}
-          <Route component={NotFound} />
-        </Switch>
+            {/* DEFAULT */}
+            <Route component={NotFound} />
+          </Switch>
+        </BoxesContextProvider>
       </AccountMenuContext>
     </Suspense>
   );

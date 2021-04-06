@@ -2,12 +2,17 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { ADMIN, AGENT } from '@misakey/ui/constants/organizations/roles';
 import { TOOLBAR_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
+import { selectors as orgSelectors } from 'store/reducers/identity/organizations';
 
 import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 import isSelfOrg from 'helpers/isSelfOrg';
+import noop from '@misakey/core/helpers/noop';
 
 import useOrgId from '@misakey/react/auth/hooks/useOrgId';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import { useSelector } from 'react-redux';
 
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import AppBarStatic from '@misakey/ui/AppBar/Static';
@@ -19,6 +24,8 @@ import ButtonDrawerOrganization from 'components/smart/IconButton/Drawer/Organiz
 import AddIcon from '@material-ui/icons/Add';
 
 // CONSTANTS
+const { makeDenormalizeOrganization } = orgSelectors;
+
 const TOOLBAR_PROPS = {
   minHeight: `${TOOLBAR_MIN_HEIGHT}px !important`,
 };
@@ -34,6 +41,17 @@ function ListHeader({ t, isFullWidth, ...props }) {
     () => isSelfOrg(orgId),
     [orgId],
   );
+  const denormalizeOrganizationSelector = useMemo(
+    () => (selfOrgSelected ? noop : makeDenormalizeOrganization()),
+    [selfOrgSelected],
+  );
+  const organization = useSelector((state) => denormalizeOrganizationSelector(state, orgId));
+  const { currentIdentityRole } = useSafeDestr(organization);
+
+  const canCreateOnOrg = useMemo(
+    () => currentIdentityRole === ADMIN || currentIdentityRole === AGENT,
+    [currentIdentityRole],
+  );
 
   return (
     <AppBarStatic
@@ -44,7 +62,7 @@ function ListHeader({ t, isFullWidth, ...props }) {
       <ButtonDrawerOrganization />
       <Subtitle gutterBottom={false} color="background">{t('boxes:documentTitle')}</Subtitle>
       <BoxFlexFill />
-      {selfOrgSelected && (
+      {(selfOrgSelected || canCreateOnOrg) && (
         <IconButtonCreate
           aria-label={t('boxes:list.empty.create')}
           edge="end"

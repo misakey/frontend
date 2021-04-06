@@ -90,7 +90,7 @@ const ListItemSecondaryActionAgent = ({ id, onRemove, role, isNew }) => {
     <>
       <ListItemSecondaryAction>
         {isXs && (
-          <BadgeNew isNew={isNew}>
+          <BadgeNew onClick={onClick} isNew={isNew}>
             <IconButton
               color="secondary"
               onClick={onClick}
@@ -101,7 +101,7 @@ const ListItemSecondaryActionAgent = ({ id, onRemove, role, isNew }) => {
           </BadgeNew>
         )}
         {(!isXs && hasOnRemove) && (
-          <BadgeNew isNew={isNew}>
+          <BadgeNew onClick={onClick} isNew={isNew}>
             <Button
               standing={BUTTON_STANDINGS.CANCEL}
               color="secondary"
@@ -129,7 +129,6 @@ const ListItemSecondaryActionAgent = ({ id, onRemove, role, isNew }) => {
       </ListItemSecondaryAction>
       {hasMenu && (
         <Menu
-          id="listitem-secondaryaction-whitelist-menu"
           anchorEl={anchorEl}
           keepMounted
           open={Boolean(anchorEl)}

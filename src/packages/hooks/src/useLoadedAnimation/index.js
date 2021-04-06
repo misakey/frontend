@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 import usePrevPropEffect from '@misakey/hooks/usePrevPropEffect';
 
@@ -7,12 +7,11 @@ const DEFAULT_TIMEOUT = 300;
 
 // HOOKS
 export default (isLoading, timeout = DEFAULT_TIMEOUT) => {
-  const [done, setDone] = useState(true);
+  const [done, setDone] = useState(false);
 
   usePrevPropEffect(isLoading,
     (prevLoading, nextLoading) => {
       if (prevLoading && !nextLoading) {
-        setDone(false);
         setTimeout(
           () => {
             setDone(true);
@@ -23,5 +22,8 @@ export default (isLoading, timeout = DEFAULT_TIMEOUT) => {
     },
     [setDone]);
 
-  return done;
+  return useMemo(
+    () => (isLoading ? !isLoading : done),
+    [done, isLoading],
+  );
 };

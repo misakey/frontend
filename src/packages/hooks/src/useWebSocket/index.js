@@ -1,10 +1,10 @@
-import { useSelector } from 'react-redux';
 import isNil from '@misakey/core/helpers/isNil';
 import isJSON from '@misakey/core/helpers/isJSON';
 import objectToCamelCaseDeep from '@misakey/core/helpers/objectToCamelCaseDeep';
 import noop from '@misakey/core/helpers/noop';
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useSelector } from 'react-redux';
+import { useMemo, useEffect, useRef, useCallback } from 'react';
 import useExponentialBackoff from '@misakey/hooks/useWebSocket/exponentialBackoff';
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
@@ -86,15 +86,20 @@ export default (endpoint, onMessage = defaultOnMessage, isReady = true) => {
     [endpoint, handleMessage, exponentialBackoff, resetExponentialBackoff],
   );
 
+  const canInit = useMemo(
+    () => isReady && isAuthenticated,
+    [isAuthenticated, isReady],
+  );
+
   useEffect(
     () => {
-      if (isReady && isAuthenticated) {
+      if (canInit) {
         onInit();
         return clearSocket;
       }
       return noop;
     },
-    [onInit, clearSocket, isReady, isAuthenticated],
+    [onInit, clearSocket, canInit],
   );
 
   return socket;

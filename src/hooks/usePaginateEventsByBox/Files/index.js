@@ -68,6 +68,11 @@ export default (boxId) => {
     [boxId, dispatch],
   );
 
+  const getCount = useCallback(
+    () => countBoxFilesEventsBuilder(boxId),
+    [boxId],
+  );
+
   // API data fetching:
   // get files events
   const get = useCallback(
@@ -96,15 +101,25 @@ export default (boxId) => {
   );
 
   // update itemCount whenever it is nil
+  const shouldFetch = useMemo(
+    () => isNil(itemCount),
+    [itemCount],
+  );
+
+  const onSuccess = useCallback(
+    (result) => dispatch(receivePaginatedItemCount(boxId, result)),
+    [boxId, dispatch],
+  );
+
   useEffect(
     () => {
-      if (isNil(itemCount)) {
-        countBoxFilesEventsBuilder(boxId)
-          .then((result) => dispatch(receivePaginatedItemCount(boxId, result)))
-          .catch((e) => handleHttpErrors(e));
+      if (shouldFetch) {
+        getCount()
+          .then(onSuccess)
+          .catch(handleHttpErrors);
       }
     },
-    [boxId, dispatch, handleHttpErrors, itemCount],
+    [getCount, handleHttpErrors, onSuccess, shouldFetch],
   );
 
   // extra memoization layer because of object format

@@ -120,7 +120,7 @@ const VaultOpen = forwardRef(({ search, isFullWidth, ...props }, ref) => {
         itemProps={{ nextSearchMap: NEXT_SEARCH_MAP }}
         {...omitTranslationProps(props)}
       >
-        {(!done || !loadedAnimation) && (
+        {(!loadedAnimation) && (
           <Box className={classes.loader}>
             <IconProgress
               isLoading={!done}

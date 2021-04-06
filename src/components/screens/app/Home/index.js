@@ -19,7 +19,6 @@ import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useFetchOrganizations from 'hooks/useFetchOrganizations';
 
 import RouteAcr from '@misakey/react/auth/components/Route/Acr';
-import BoxesContextProvider from 'components/smart/Context/Boxes';
 import ScreenDrawerContextProvider from 'components/smart/Screen/Drawer';
 import BoxesList from 'components/screens/app/Boxes/List';
 import VaultLockedScreen from 'components/screens/app/VaultLocked';
@@ -133,20 +132,18 @@ function Home() {
       isFullWidth={isFullWidth}
       initialIsDrawerOpen={isNothingSelected}
     >
-      <BoxesContextProvider>
-        <Switch>
-          <RouteAcr
-            acr={2}
-            options={{ prompt: 'login' }}
-            path={routes.documents._}
-            component={VaultDocuments}
-          />
-          <Route
-            path={routes.boxes._}
-            component={Boxes}
-          />
-        </Switch>
-      </BoxesContextProvider>
+      <Switch>
+        <RouteAcr
+          acr={2}
+          options={{ prompt: 'login' }}
+          path={routes.documents._}
+          component={VaultDocuments}
+        />
+        <Route
+          path={routes.boxes._}
+          component={Boxes}
+        />
+      </Switch>
     </ScreenDrawerContextProvider>
   );
 }
