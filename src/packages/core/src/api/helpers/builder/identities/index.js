@@ -45,6 +45,12 @@ export const listBoxUsedSpaces = (payload) => API
   .send()
   .then((response) => response.map(objectToCamelCase));
 
+export const bulkJoinBoxes = (identityId, boxIds) => API
+  .use(API.endpoints.identities.bulkJoinBoxes.create)
+  .build({ id: identityId }, objectToSnakeCase({ boxIds }))
+  .send()
+  .then((response) => response.map(objectToCamelCaseDeep));
+
 export const readVaultUsedSpace = (id) => API
   .use(API.endpoints.identities.vaultUsedSpace.read)
   .build({ id })

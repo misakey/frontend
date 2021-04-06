@@ -29,6 +29,7 @@ const useStyles = makeStyles(() => ({
 const IconProgress = forwardRef(({
   isLoading, done, fontSize, color,
   Icon, DoneIcon,
+  progressProps,
   ...props
 }, ref) => {
   const classes = useStyles();
@@ -60,6 +61,7 @@ const IconProgress = forwardRef(({
         color={color}
         size={size}
         className={classes.progress}
+        {...progressProps}
       />
       )}
     </Box>
@@ -73,11 +75,13 @@ IconProgress.propTypes = {
   color: PropTypes.string,
   Icon: PropTypes.elementType.isRequired,
   DoneIcon: PropTypes.elementType.isRequired,
+  progressProps: PropTypes.object,
 };
 
 IconProgress.defaultProps = {
   fontSize: 'default',
   color: undefined,
+  progressProps: {},
 };
 
 export default IconProgress;

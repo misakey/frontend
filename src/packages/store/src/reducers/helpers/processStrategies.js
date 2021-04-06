@@ -23,7 +23,7 @@ export const mergeUpdate = (state, { entities, entitySchema }) => {
   const subState = state[key];
 
   if (isEmpty(subState)) {
-    return { ...state };
+    return state;
   }
 
   const subStateKeys = Object.keys(subState || {});
@@ -41,7 +41,7 @@ export const mergeUpdate = (state, { entities, entitySchema }) => {
     }, []);
 
   if (isEmpty(changeEntities)) {
-    return { ...state };
+    return state;
   }
 
   const { entities: toUpdate } = normalize(changeEntities, entitySchema.collection);
@@ -65,7 +65,7 @@ export const overrideUpdate = (state, { entities, entitySchema }) => {
   const subState = state[key];
 
   if (isEmpty(subState)) {
-    return { ...state };
+    return state;
   }
 
   const subStateKeys = Object.keys(subState || {});
@@ -84,7 +84,7 @@ export const overrideUpdate = (state, { entities, entitySchema }) => {
     }, []);
 
   if (isEmpty(changeEntities)) {
-    return { ...state };
+    return state;
   }
 
   const { entities: toUpdate } = normalize(changeEntities, entitySchema.collection);
@@ -150,7 +150,7 @@ export const noEmptyNullableOverride = (oldValue, newValue) => {
  * @param {Object} action.entities
  */
 export const mergeReceiveNoEmpty = (state, { entities }) => {
-  let newState = { ...state };
+  let newState = state;
   Object.entries(entities).forEach(([entityName, entity]) => {
     newState = {
       ...newState,
@@ -161,7 +161,7 @@ export const mergeReceiveNoEmpty = (state, { entities }) => {
 };
 
 export const mergeReceiveNoEmptyNullable = (state, { entities }) => {
-  let newState = { ...state };
+  let newState = state;
   Object.entries(entities).forEach(([entityName, entity]) => {
     newState = {
       ...newState,

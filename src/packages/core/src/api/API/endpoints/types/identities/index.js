@@ -100,6 +100,13 @@ export default {
       withCsrfToken: true,
     },
   },
+  bulkJoinBoxes: {
+    create: {
+      method: 'POST',
+      path: '/box-users/:id/joins',
+      withCsrfToken: true,
+    },
+  },
   notifications: {
     find: {
       method: 'GET',

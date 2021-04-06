@@ -1,7 +1,7 @@
 import React, { useMemo, forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation, Trans } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import routes from 'routes';
@@ -30,48 +30,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const useInnerElementType = (
-  itemCount, t,
-  selfOrgSelected, /* filterId, search, itemClasses */
-) => useMemo(
-  () => forwardRef((props, ref) => (
-    <div ref={ref}>
-      <div {...props} />
-      {/*
-        @FIXME cannot be working if user has boxes in multiple organizations
-      <ListItemBoxesDeleted classes={itemClasses} filterId={filterId} search={search} /> */}
-      <Box
-        m={1}
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Typography variant="body2" color="textSecondary" align="center">
-          {t('boxes:list.count.text', { count: itemCount })}
-        </Typography>
-        {selfOrgSelected && (
-          <Box>
-            <ButtonCreate
-              standing={BUTTON_STANDINGS.TEXT}
-              size="small"
-              text={t('boxes:list.empty.create')}
-            />
-          </Box>
-        )}
-      </Box>
-    </div>
-  )),
-  [t, itemCount, selfOrgSelected],
-);
-
 // COMPONENTS
 const WindowedListBoxes = forwardRef(({
   filterId, queryParams, onError,
-  selectedId, t, itemClasses, itemProps, ...props
+  selectedId, itemClasses, itemProps,
+  children,
+  ...props
 }, ref) => {
   const locationSearchParams = useLocationSearchParams();
   const classes = useStyles();
+  const { t } = useTranslation('boxes');
 
   const { search } = locationSearchParams;
 
@@ -98,8 +66,37 @@ const WindowedListBoxes = forwardRef(({
     [byPagination, selectedId, itemClasses, itemProps],
   );
 
-  const innerElementType = useInnerElementType(
-    itemCount, t, selfOrgSelected, /* itemClasses, filterId, search, */
+  const innerElementType = useMemo(
+    () => forwardRef((innerProps, innerRef) => (
+      <div ref={innerRef}>
+        {children}
+        <div {...innerProps} />
+        {/*
+        @FIXME cannot be working if user has boxes in multiple organizations
+      <ListItemBoxesDeleted classes={itemClasses} filterId={filterId} search={search} /> */}
+        <Box
+          m={1}
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Typography variant="body2" color="textSecondary" align="center">
+            {t('boxes:list.count.text', { count: itemCount })}
+          </Typography>
+          {selfOrgSelected && (
+            <Box>
+              <ButtonCreate
+                standing={BUTTON_STANDINGS.TEXT}
+                size="small"
+                text={t('boxes:list.empty.create')}
+              />
+            </Box>
+          )}
+        </Box>
+      </div>
+    )),
+    [children, t, itemCount, selfOrgSelected],
   );
 
   if (isNil(itemCount) || itemCount === 0) {
@@ -150,8 +147,7 @@ WindowedListBoxes.propTypes = {
   selectedId: PropTypes.string,
   itemClasses: PropTypes.object,
   itemProps: PropTypes.object,
-  // withTranslation
-  t: PropTypes.func.isRequired,
+  children: PropTypes.node,
 };
 
 WindowedListBoxes.defaultProps = {
@@ -161,6 +157,7 @@ WindowedListBoxes.defaultProps = {
   selectedId: null,
   itemClasses: {},
   itemProps: {},
+  children: null,
 };
 
-export default withTranslation('boxes', { withRef: true })(WindowedListBoxes);
+export default WindowedListBoxes;

@@ -15,7 +15,7 @@ import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import processAutoInviteCryptoaction from '@misakey/react/crypto/store/actions/processAutoInviteCryptoaction';
 import { markNotificationAsUsed } from 'store/actions/identity/notifications';
 
-function ActualButton({ id, details: notifDetails, onClick }) {
+function JoinButton({ id, details: notifDetails, onClick }) {
   const history = useHistory();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -54,18 +54,14 @@ function ActualButton({ id, details: notifDetails, onClick }) {
   );
 }
 
-ActualButton.propTypes = {
+JoinButton.propTypes = {
   details: PropTypes.object.isRequired,
   id: PropTypes.string.isRequired,
   onClick: PropTypes.func,
 };
 
-ActualButton.defaultProps = {
+JoinButton.defaultProps = {
   onClick: null,
 };
 
-const AutoInvitationButton = ({ notification: { id, details }, ...rest }) => (
-  details.used ? null : ActualButton({ id, details, ...rest })
-);
-
-export default AutoInvitationButton;
+export default JoinButton;

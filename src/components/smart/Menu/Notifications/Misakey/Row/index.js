@@ -20,7 +20,7 @@ import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
 
 import EventCard from 'components/dumb/Card/Event';
 import Typography from '@material-ui/core/Typography';
-import AutoInvitationButton from 'components/smart/Menu/Notifications/Misakey/Actions/AutoInvitationButton';
+import BoxInvitationButton from 'components/smart/Menu/Notifications/Misakey/Actions/BoxInvitationButton';
 import ButtonCreateAccount from '@misakey/react/auth/components/Button/CreateAccount';
 import Box from '@material-ui/core/Box';
 
@@ -76,7 +76,7 @@ const MessageRow = ({
     () => {
       if (type === BOX_AUTO_INVITE) {
         return (
-          <AutoInvitationButton
+          <BoxInvitationButton
             onClick={onClick}
             notification={notification}
           />

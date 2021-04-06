@@ -3,6 +3,7 @@ import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 import BoxesSchema from 'store/schemas/Boxes';
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import { DELETED_BOX, NEW_EVENT, NOTIFICATIONS_ACK, BOX_SETTINGS, NOTIFICATION, SAVED_FILE } from 'constants/app/boxes/ws/messageTypes';
+import { BOX_AUTO_INVITE } from 'constants/app/notifications/byIdentity';
 import { CHANGE_EVENT_TYPES } from '@misakey/core/api/constants/boxes/events';
 import { receiveWSEditEvent, addBoxEvent } from 'store/reducers/box';
 import { updateEntities } from '@misakey/store/actions/entities';
@@ -22,6 +23,7 @@ import { useSnackbar } from 'notistack';
 import useModifier from '@misakey/hooks/useModifier';
 import useOnNotifyEvent from 'hooks/useOnNotifyEvent';
 import useGeneratePathKeepingSearchAndHashCallback from '@misakey/hooks/useGeneratePathKeepingSearchAndHash/callback';
+import useAutojoinBoxInvitations from 'hooks/useAutojoinBoxInvitations';
 
 // CONSTANTS
 const {
@@ -66,6 +68,8 @@ export default (search) => {
   );
 
   const identityId = useSelector(IDENTITY_ID_SELECTOR);
+
+  const autojoinBoxInvitations = useAutojoinBoxInvitations(identityId);
 
   const onDelete = useCallback(
     ({ boxId, ownerOrgId }) => {
@@ -119,6 +123,10 @@ export default (search) => {
       }
 
       if (type === NOTIFICATION) {
+        const { type: notifType } = object;
+        if (notifType === BOX_AUTO_INVITE) {
+          autojoinBoxInvitations(object);
+        }
         return Promise.resolve(dispatch(addNewNotification(object)));
       }
 
@@ -161,6 +169,10 @@ export default (search) => {
       log(`Receive unknown WS type: ${type}`);
       return Promise.resolve();
     },
-    [onDelete, onDeleteSuccess, dispatch, identityId, onNotifyEvent, enqueueSnackbar, leaveSuccess],
+    [
+      onDelete, onDeleteSuccess, onNotifyEvent,
+      dispatch, autojoinBoxInvitations, enqueueSnackbar,
+      identityId, leaveSuccess,
+    ],
   );
 };
