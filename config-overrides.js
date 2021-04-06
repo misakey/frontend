@@ -13,7 +13,6 @@ module.exports = function override(config) {
     '@misakey/store': path.resolve(__dirname, './src/packages/store/src'),
     '@misakey/ui/static': path.resolve(__dirname, './src/packages/ui/static'),
     '@misakey/ui': path.resolve(__dirname, './src/packages/ui/src'),
-    '@misakey/crypto': path.resolve(__dirname, './src/packages/crypto/src'),
   };
 
   newConfig.module.rules.push({

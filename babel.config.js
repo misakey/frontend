@@ -15,6 +15,7 @@ if (process.env.BABEL_ENV === 'es') {
 
 const defaultAlias = {
   '@misakey/core': './src/packages/core/src',
+  '@misakey/store': './src/packages/store/src',
   '@misakey/react': './src/packages/react/src',
   '@misakey/hooks': './src/packages/hooks/src',
   '@misakey/ui/static': './src/packages/ui/static',

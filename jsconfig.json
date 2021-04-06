@@ -2,16 +2,27 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@misakey/api/*": ["packages/api/src/*"],
-      "@misakey/auth/*": ["packages/auth/src/*"],
-      "@misakey/react-auth/*": ["packages/react-auth/src/*"],
-      "@misakey/helpers/*": ["packages/helpers/src/*"],
-      "@misakey/hooks/*": ["packages/hooks/src/*"],
-      "@misakey/store/*": ["packages/store/src/*"],
-      "@misakey/ui/static/*": ["packages/ui/static/*"],
-      "@misakey/ui/*": ["packages/ui/src/*"],
-      "@misakey/crypto/*": ["packages/crypto/src/*"]
+      "@misakey/react/*": [
+        "packages/react/src/*"
+      ],
+      "@misakey/core/*": [
+        "packages/core/src/*"
+      ],
+      "@misakey/hooks/*": [
+        "packages/hooks/src/*"
+      ],
+      "@misakey/store/*": [
+        "packages/store/src/*"
+      ],
+      "@misakey/ui/static/*": [
+        "packages/ui/static/*"
+      ],
+      "@misakey/ui/*": [
+        "packages/ui/src/*"
+      ]
     }
   },
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }
