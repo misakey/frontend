@@ -7,8 +7,6 @@ import { Link, generatePath, useLocation } from 'react-router-dom';
 import authRoutes from '@misakey/react/auth/routes';
 import IdentitySchema from '@misakey/react/auth/store/schemas/Identity';
 
-import isNil from '@misakey/core/helpers/isNil';
-
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
@@ -66,57 +64,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-// HOOKS
-const useGetItemTosForUser = (location, identityId, accountId) => useMemo(
-  () => {
-    const common = {
-      listItemPublicTo: {
-        ...location,
-        pathname: generatePath(authRoutes.identities.public, { id: identityId }),
-      },
-      listItemNotificationsTo: {
-        ...location,
-        pathname: generatePath(authRoutes.identities.notifications, { id: identityId }),
-      },
-      listItemColorsTo: {
-        ...location,
-        pathname: generatePath(authRoutes.identities.colors, { id: identityId }),
-      },
-    };
-
-    if (isNil(accountId)) {
-      return common;
-    }
-
-    return {
-      ...common,
-      listItemSecurityTo: {
-        ...location,
-        pathname: generatePath(
-          authRoutes.identities.accounts.security,
-          { id: identityId, accountId },
-        ),
-      },
-      listItemExportCryptoTo: {
-        ...location,
-        pathname: generatePath(
-          authRoutes.identities.accounts.vault,
-          { id: identityId, accountId },
-        ),
-      },
-      listItemDeleteAccountTo: {
-        ...location,
-        pathname: generatePath(
-          authRoutes.identities.accounts.delete,
-          { id: identityId, accountId },
-        ),
-      },
-    };
-  },
-  [accountId, identityId, location],
-);
-
 // COMPONENTS
 const CardIdentity = forwardRef(({ identity, identityId, t }, ref) => {
   const {
@@ -125,6 +72,7 @@ const CardIdentity = forwardRef(({ identity, identityId, t }, ref) => {
     notifications,
     color,
     identifierValue,
+    hasCrypto,
     accountId,
   } = useSafeDestr(identity);
 
@@ -139,7 +87,44 @@ const CardIdentity = forwardRef(({ identity, identityId, t }, ref) => {
     listItemExportCryptoTo,
     listItemNotificationsTo,
     listItemDeleteAccountTo,
-  } = useGetItemTosForUser(location, identityId, accountId);
+  } = useMemo(
+    () => ({
+      listItemPublicTo: {
+        ...location,
+        pathname: generatePath(authRoutes.identities.public, { id: identityId }),
+      },
+      listItemNotificationsTo: {
+        ...location,
+        pathname: generatePath(authRoutes.identities.notifications, { id: identityId }),
+      },
+      listItemColorsTo: {
+        ...location,
+        pathname: generatePath(authRoutes.identities.colors, { id: identityId }),
+      },
+      listItemDeleteAccountTo: {
+        ...location,
+        pathname: generatePath(
+          authRoutes.identities.accounts.delete,
+          { id: identityId, accountId },
+        ),
+      },
+      listItemSecurityTo: {
+        ...location,
+        pathname: generatePath(
+          authRoutes.identities.accounts.security,
+          { id: identityId, accountId },
+        ),
+      },
+      listItemExportCryptoTo: {
+        ...location,
+        pathname: generatePath(
+          authRoutes.identities.accounts.vault,
+          { id: identityId, accountId },
+        ),
+      },
+    }),
+    [accountId, identityId, location],
+  );
 
   return (
     <Container ref={ref} className={classes.container} maxWidth="sm">
@@ -227,7 +212,7 @@ const CardIdentity = forwardRef(({ identity, identityId, t }, ref) => {
           <ChevronRightIcon className={classes.actionIcon} />
         </ListItem>
       </CardList>
-      {!isNil(accountId) && (
+      {hasCrypto && (
         <>
           <CardIdentityHeader>{t('account:sections.myVault.title')}</CardIdentityHeader>
           <CardList>

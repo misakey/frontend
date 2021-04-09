@@ -10,21 +10,22 @@ import storeEncryptedSecretStorageData from '@misakey/react/crypto/store/actions
 import { selectors } from '@misakey/react/crypto/store/reducers';
 
 // CONSTANTS
-const { isAuthenticated: IS_AUTH_SELECTOR, accountId: ACCOUNT_ID_SELECTOR } = authSelectors;
+const { isAuthenticated: IS_AUTH_SELECTOR, hasCrypto: HAS_CRYPTO_SELECTOR } = authSelectors;
 
 // HOOKS
 export default (() => {
   const areSecretsLoaded = useSelector(selectors.isCryptoLoaded);
   const dispatch = useDispatch();
 
-  const accountId = useSelector(ACCOUNT_ID_SELECTOR);
+  const hasCrypto = useSelector(HAS_CRYPTO_SELECTOR);
   const { data } = useSelector(selectors.getEncryptedSecretStorageData);
   const isAuthenticated = useSelector(IS_AUTH_SELECTOR);
 
   const shouldFetch = useMemo(
-    () => !areSecretsLoaded && isNil(data) && !isNil(accountId) && isAuthenticated,
-    [accountId, areSecretsLoaded, data, isAuthenticated],
+    () => isAuthenticated && !areSecretsLoaded && isNil(data) && hasCrypto === true,
+    [hasCrypto, areSecretsLoaded, data, isAuthenticated],
   );
+
   const onSuccess = useCallback(
     (result) => {
       dispatch(storeEncryptedSecretStorageData(
@@ -65,6 +66,6 @@ export default (() => {
     data,
     isFetching,
     accountNeedsMigration,
-    isReady: areSecretsLoaded || isNil(accountId) || !isNil(data),
+    isReady: areSecretsLoaded || hasCrypto === false || !isNil(data),
   };
 });

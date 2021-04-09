@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { LARGE, APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
 
 import { openVaultValidationSchema } from '@misakey/react/auth/constants/validationSchemas/vault';
-import { PREHASHED_PASSWORD } from '@misakey/core/auth/constants/method';
+import { PREHASHED_PASSWORD } from '@misakey/react/auth/constants/account/password';
 import { invalid } from '@misakey/core/api/constants/errorTypes';
 import { SIDES } from '@misakey/ui/constants/drawers';
 import { getCurrentUserSelector } from '@misakey/react/auth/store/reducers/auth';

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, forwardRef, useContext } from 'react';
+import React, { useState, useCallback, forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
@@ -7,8 +7,8 @@ import isFunction from '@misakey/core/helpers/isFunction';
 import { selectors } from '@misakey/react/auth/store/reducers/auth';
 
 import ContactBoxDialog from 'components/smart/Dialog/Boxes/Contact';
-import { UserManagerContext } from '@misakey/react/auth/components/OidcProvider/Context';
-import DialogSigninRedirect from '@misakey/react/auth/components/OidcProvider/Dialog/SigninRedirect';
+import { useSetPasswordContext } from '@misakey/react/auth/components/Dialog/Password/Create/Context';
+import useAskSigninWithLoginHint from '@misakey/react/auth/hooks/useAskSigninWithLoginHint';
 
 // COMPONENTS
 const withDialogContact = (Component) => {
@@ -18,24 +18,25 @@ const withDialogContact = (Component) => {
     ...props
   }, ref) => {
     const [isDialogContactOpened, setIsDialogContactOpened] = useState(false);
-    const [isDialogAuthRequiredOpened, setIsDialogAuthRequiredOpened] = useState(false);
+
+    const { onOpenSetPasswordDialog } = useSetPasswordContext();
+    const askSigninWithLoginHint = useAskSigninWithLoginHint();
 
     const isAuthenticated = useSelector(selectors.isAuthenticated);
-    const hasAccount = useSelector(selectors.hasAccount);
-    const { userManager } = useContext(UserManagerContext);
+    const hasCrypto = useSelector(selectors.hasCrypto);
 
     const toggleIsDialogContactOpened = useCallback(
       () => { setIsDialogContactOpened((current) => !current); }, [],
     );
 
-    const toggleIsDialogAuthRequiredOpened = useCallback(
-      () => { setIsDialogAuthRequiredOpened((current) => !current); }, [],
-    );
-
     const onWrapperClick = useCallback(
       (...args) => {
-        if (!isAuthenticated || !hasAccount) {
-          setIsDialogAuthRequiredOpened(true);
+        if (!isAuthenticated) {
+          askSigninWithLoginHint({ extraStateParams: { shouldCreateAccount: true } });
+          return;
+        }
+        if (!hasCrypto) {
+          onOpenSetPasswordDialog();
           return;
         }
         setIsDialogContactOpened(true);
@@ -44,7 +45,7 @@ const withDialogContact = (Component) => {
           onClick(...args);
         }
       },
-      [hasAccount, isAuthenticated, onClick],
+      [askSigninWithLoginHint, hasCrypto, isAuthenticated, onClick, onOpenSetPasswordDialog],
     );
 
     return (
@@ -53,13 +54,6 @@ const withDialogContact = (Component) => {
           open={isDialogContactOpened}
           onClose={toggleIsDialogContactOpened}
           {...dialogProps}
-        />
-        <DialogSigninRedirect
-          open={isDialogAuthRequiredOpened}
-          onClose={toggleIsDialogAuthRequiredOpened}
-          userManager={userManager}
-          canCancelRedirect
-          acrValues={2}
         />
         <Component ref={ref} onClick={onWrapperClick} {...props} />
       </>

@@ -175,7 +175,7 @@ const FieldCode = forwardRef(({
         'data-matomo-ignore': true,
         ...inputProps,
       }}
-      {...omit(rest, ['i18n', 'tReady', 'prefix'])}
+      {...omit(rest, ['i18n', 'tReady', 'prefix', 'suffix'])}
       // eslint-disable-next-line react/jsx-no-duplicate-props
       InputProps={codeInputProps}
       {...field}

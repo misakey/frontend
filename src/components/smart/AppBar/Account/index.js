@@ -16,9 +16,7 @@ import PopoverOrganizations from 'components/smart/Popover/Organizations';
 import isNil from '@misakey/core/helpers/isNil';
 
 // CONSTANTS
-const {
-  acr: ACR_SELECTOR,
-} = authSelectors;
+const { hasCrypto: hasCryptoSelector } = authSelectors;
 
 // COMPONENTS
 const AppBarAccount = (props) => {
@@ -26,7 +24,7 @@ const AppBarAccount = (props) => {
   const [notifAnchorEl, setNotifAnchorEl] = useState(null);
   const notifButtonRef = useRef();
 
-  const currentAcr = useSelector(ACR_SELECTOR);
+  const hasCrypto = useSelector(hasCryptoSelector);
 
   const onOrgClick = useCallback(
     (event) => {
@@ -59,13 +57,13 @@ const AppBarAccount = (props) => {
   useEffect(
     () => {
       const { current } = notifButtonRef;
-      if ((isNil(currentAcr) || currentAcr <= 1) && !isNil(current)) {
+      if (hasCrypto === false && !isNil(current)) {
         requestAnimationFrame(
           () => setNotifAnchorEl(current),
         );
       }
     },
-    [currentAcr, setNotifAnchorEl, notifButtonRef],
+    [setNotifAnchorEl, notifButtonRef, hasCrypto],
   );
 
   return (

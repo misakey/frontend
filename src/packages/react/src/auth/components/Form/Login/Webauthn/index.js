@@ -2,6 +2,7 @@ import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
@@ -15,6 +16,9 @@ import encodeBuffer from '@misakey/core/helpers/encodeBuffer';
 
 import isNil from '@misakey/core/helpers/isNil';
 import WebauthnIncompatibilityWarning from '@misakey/react/auth/components/Webauthn/IncompatibilityWarning';
+import { selectors as ssoSelectors } from '@misakey/react/auth/store/reducers/sso';
+
+const { methodMetadata: methodMetadataSelector } = ssoSelectors;
 
 const useStyles = makeStyles(() => ({
   subtitle: {
@@ -26,21 +30,24 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const WebauthnLogin = ({ metadata, fieldKey }) => {
+const WebauthnLogin = ({ field: { name } }) => {
   const { t } = useTranslation(['components', 'common']);
   const classes = useStyles();
+
+  const metadata = useSelector(methodMetadataSelector);
 
   const [shouldLaunchDetection, setShouldLaunchDetection] = useState(true);
   const [isDetecting, setIsDetecting] = useState(false);
 
   const { setFieldValue, errors, submitForm, resetForm } = useFormikContext();
-  const { [fieldKey]: hasError } = useMemo(
+  const { [name]: hasError } = useMemo(
     () => errors,
     [errors],
   );
 
   const decodedMetadata = useMemo(
     () => {
+      if (isNil(metadata)) { return null; }
       const { publicKey, ...rest } = metadata;
       const { challenge, allowCredentials, ...publicKeyRest } = publicKey;
       return {
@@ -67,7 +74,7 @@ const WebauthnLogin = ({ metadata, fieldKey }) => {
       try {
         setIsDetecting(true);
         const { id, rawId, response, type } = await navigator.credentials.get(decodedMetadata);
-        setFieldValue(fieldKey, {
+        setFieldValue(name, {
           id,
           rawId: encodeBuffer(rawId),
           response: {
@@ -83,17 +90,17 @@ const WebauthnLogin = ({ metadata, fieldKey }) => {
         setIsDetecting(false);
       }
     },
-    [decodedMetadata, fieldKey, resetForm, setFieldValue, submitForm],
+    [decodedMetadata, name, resetForm, setFieldValue, submitForm],
   );
 
   useEffect(
     () => {
-      if (!isDetecting && shouldLaunchDetection) {
+      if (!isDetecting && shouldLaunchDetection && !isNil(metadata)) {
         onAskAuth();
         setShouldLaunchDetection(false);
       }
     },
-    [isDetecting, onAskAuth, shouldLaunchDetection],
+    [isDetecting, metadata, onAskAuth, shouldLaunchDetection],
   );
 
   return (
@@ -115,23 +122,14 @@ const WebauthnLogin = ({ metadata, fieldKey }) => {
         standing={BUTTON_STANDINGS.TEXT}
         onClick={onAskAuth}
         text={t('common:retry')}
-        disabled={isDetecting}
+        disabled={isDetecting || isNil(metadata)}
       />
     </Box>
   );
 };
 
 WebauthnLogin.propTypes = {
-  fieldKey: PropTypes.string.isRequired,
-  metadata: PropTypes.shape({
-    publicKey: PropTypes.shape({
-      challenge: PropTypes.string.isRequired,
-      allowCredentials: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
-      })),
-    }),
-  }).isRequired,
-
+  field: PropTypes.shape({ name: PropTypes.string.isRequired }).isRequired,
 };
 
 export default WebauthnLogin;

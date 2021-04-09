@@ -1,4 +1,4 @@
-import React, { useMemo, useContext, useCallback } from 'react';
+import React, { useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -8,7 +8,6 @@ import { TO_PROP_TYPE } from '@misakey/ui/constants/propTypes';
 
 import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
-import { UserManagerContext } from '@misakey/react/auth/components/OidcProvider/Context';
 
 import { Link } from 'react-router-dom';
 import ListItem from '@material-ui/core/ListItem';
@@ -18,6 +17,7 @@ import Typography from '@material-ui/core/Typography';
 
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { DISABLED } from '@misakey/react/auth/constants/account/mfaMethod';
+import useAskToSetPassword from '@misakey/react/auth/hooks/useAskToSetPassword';
 
 const { identity: IDENTITY_SELECTOR } = authSelectors;
 const CHECK_MARK_SIGN = '\u2705';
@@ -25,21 +25,16 @@ const CROSS_MARK_SIGN = '\u274C';
 
 // COMPONENTS
 const ListItemSecurity = ({ classes, to, t, ...props }) => {
-  const { hasAccount, mfaMethod } = useSelector(IDENTITY_SELECTOR);
-  const { askSigninRedirect } = useContext(UserManagerContext);
-  const onClick = useCallback(
-    () => askSigninRedirect({ acrValues: 2, prompt: 'login', fullScreen: false }),
-    [askSigninRedirect],
-  );
+  const { hasCrypto, mfaMethod } = useSelector(IDENTITY_SELECTOR);
+
+  const onAskToSetPassword = useAskToSetPassword();
 
   const listItemProps = useMemo(
-    () => (!hasAccount
-      ? { onClick }
-      : {
-        to,
-        component: Link,
-      }),
-    [hasAccount, onClick, to],
+    () => (!hasCrypto
+      ? { onClick: onAskToSetPassword }
+      : { to, component: Link }
+    ),
+    [hasCrypto, onAskToSetPassword, to],
   );
 
   return (
@@ -54,7 +49,7 @@ const ListItemSecurity = ({ classes, to, t, ...props }) => {
       </ListItemIcon>
       <ListItemText primary={t('components:listItemSecurity.text', {
         MFAStatus: mfaMethod !== DISABLED ? CHECK_MARK_SIGN : CROSS_MARK_SIGN,
-        passwordStatus: hasAccount ? CHECK_MARK_SIGN : CROSS_MARK_SIGN,
+        passwordStatus: hasCrypto ? CHECK_MARK_SIGN : CROSS_MARK_SIGN,
       })}
       />
       <ChevronRightIcon className={classes.actionIcon} />

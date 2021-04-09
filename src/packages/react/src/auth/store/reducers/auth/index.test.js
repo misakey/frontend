@@ -55,18 +55,6 @@ describe('testing auth reducer', () => {
         expiresAt: '2020-05-20..',
       });
     });
-
-    it('should handle LOAD_USER_INFO, state with account upgrade', () => {
-      expect(reducer(
-        { expiresAt: '2020-05-20..', identity: { id: 'test', displayName: 'jean', accountId: null, hasAccount: false } },
-        { type: LOAD_USER_INFO, ...user },
-      )).toEqual({
-        ...user,
-        isAuthenticated: true,
-        identity: { id: 'test', displayName: 'jean', accountId: 'test', hasAccount: true },
-        expiresAt: '2020-05-20..',
-      });
-    });
   });
 
   it('should handle SIGN_OUT', () => {

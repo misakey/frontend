@@ -11,7 +11,7 @@ const Example = () => {
       identity={{
         "id": "b5b82b4e-0a5f-4488-8df2-36ae708ef679",
         "accountId": "b5b82b4e-0a5f-4488-8df2-36ae708ef679",
-        "hasAccount": false,
+        "hasCrypto": false,
         "identifierValue":  "johnny@misakey.com",
         "identifierKind": "email",
         "displayName": "Johnny",

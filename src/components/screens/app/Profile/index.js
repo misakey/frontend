@@ -13,7 +13,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Identities from '@misakey/react/auth/components/screens/Identity';
 import IdentityPublicReadOnly from 'components/screens/app/Profile/Public/ReadOnly';
-import RouteAcr from '@misakey/react/auth/components/Route/Acr';
+import RouteAuthenticated from '@misakey/react/auth/components/Route/Authenticated';
 import ScreenDrawerContextProvider from 'components/smart/Screen/Drawer';
 import DrawerAccountContent from 'components/smart/Drawer/Account/Content';
 import DrawerAccountOnboard from 'components/smart/Drawer/Account/Onboard';
@@ -75,8 +75,7 @@ function Profile(props) {
                 />
               )}
             />
-            <RouteAcr
-              acr={1}
+            <RouteAuthenticated
               path={authRoutes.identities._}
               render={(routerProps) => (
                 <Identities

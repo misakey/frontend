@@ -14,7 +14,7 @@ const matchingNaming = ['create', 'read', 'update', 'delete', 'find', 'search', 
 const authExtendedNamings = [
   'signOut', 'signUp',
   'confirm', 'askConfirm', 'init', 'userinfo',
-  'checkAuthable', 'info', 'loginAuthStep', 'renewAuthStep',
+  'checkAuthable', 'info', 'loginAuthStep', 'initAuthStep',
 ];
 
 window.env = {

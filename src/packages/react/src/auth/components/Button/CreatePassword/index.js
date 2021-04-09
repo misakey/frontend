@@ -3,22 +3,22 @@ import PropTypes from 'prop-types';
 
 import isFunction from '@misakey/core/helpers/isFunction';
 
-import useCreateAccount from '@misakey/react/auth/hooks/useCreateAccount';
+import useAskToSetPassword from '@misakey/react/auth/hooks/useAskToSetPassword';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 // COMPONENTS
-const ButtonCreateAccount = ({ onClick, ...props }) => {
-  const onCreateAccount = useCreateAccount();
+const ButtonCreatePassword = ({ onClick, ...props }) => {
+  const askToSetPassword = useAskToSetPassword();
 
   const handleClick = useCallback(
     (e) => {
       if (isFunction(onClick)) {
         onClick(e);
       }
-      onCreateAccount(e);
+      askToSetPassword(e);
     },
-    [onClick, onCreateAccount],
+    [onClick, askToSetPassword],
   );
 
   return (
@@ -30,13 +30,13 @@ const ButtonCreateAccount = ({ onClick, ...props }) => {
   );
 };
 
-ButtonCreateAccount.propTypes = {
+ButtonCreatePassword.propTypes = {
   text: PropTypes.node.isRequired,
   onClick: PropTypes.func,
 };
 
-ButtonCreateAccount.defaultProps = {
+ButtonCreatePassword.defaultProps = {
   onClick: null,
 };
 
-export default ButtonCreateAccount;
+export default ButtonCreatePassword;

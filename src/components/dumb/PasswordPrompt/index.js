@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import DialogPassword from '@misakey/react/auth/components/Dialog/Password';
-import { PREHASHED_PASSWORD } from '@misakey/core/auth/constants/method';
+import { PREHASHED_PASSWORD } from '@misakey/react/auth/constants/account/password';
 
 const PasswordPromptContext = createContext(null);
 

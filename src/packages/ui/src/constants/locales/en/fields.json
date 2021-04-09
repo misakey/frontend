@@ -84,46 +84,12 @@
       "name": "Incorrect file format. Name is required"
     }
   },
-  "emailed_code": {
-    "label": "Confirmation code",
-    "helperText": "Type code received by email",
-    "error": {
-      "expired": "Code has expired. I can ask for a new one",
-      "invalid": "Incorrect confirmation code",
-      "malformed": "Confirmation code should contain 6 digits"
-    }
-  },
-  "emailed_code_secret": {
-    "label": "Code",
-    "placeholder": "123456",
-    "helperText": "Type code received by email",
-    "error": {
-      "expired": "Code has expired. I can ask for a new one",
-      "invalid": "Incorrect confirmation code",
-      "malformed": "Confirmation code should contain 6 digits"
-    }
-  },
   "email": {
     "label": "Email",
     "placeholder": "rose.flamingo@misakey.com",
     "error": {
       "malformed": "Please enter a valid email address"
     }
-  },
-  "email_identifier": {
-    "label": "Email",
-    "placeholder": "rose.flamingo@misakey.com",
-    "helperText": "Type your email to start authentication",
-    "error": {
-      "required": "Oops, you forgot to enter an identifier",
-      "malformed": "Oops, this email is not valid"
-    }
-  },
-  "password": {
-    "label": "Password",
-    "action": "Edit",
-    "placeholder": "********",
-    "none": "None"
   },
   "prehashed_password": {
     "label": "Password",
@@ -157,52 +123,70 @@
       "malformed": "Password should be at least 8 characters long"
     }
   },
-  "prehashed_password_secret": {
-    "label": "Type your password",
-    "placeholder": "Super Password",
-    "error": {
-      "invalid": "Wrong password"
-    }
-  },
-  "account_creation_secret": {
+  "setPassword": {
     "label": "Password",
     "placeholder": "Super Password",
+    "helperText": "At least 8 characters",
     "error": {
       "malformed": "Password should be at least 8 characters long"
     }
   },
-  "reset_password_secret": {
+  "resetPassword": {
     "label": "New password",
     "placeholder": "********",
+    "helperText": "At least 8 characters",
     "error": {
       "conflict": "Can't be same as old password",
       "malformed": "Password should be at least 8 characters long"
     }
   },
-  "totp_secret": {
-    "label": "Time-Based-One-Time-Password",
-    "placeholder": "543232",
+  "identifier": {
+    "label": "Email",
+    "placeholder": "rose.flamingo@misakey.com",
+    "helperText": "Type your email to start authentication",
     "error": {
-      "invalid": "This code is incorrect, please retry",
-      "malformed": "Code should contain 6 digits"
+      "required": "Oops, you forgot to enter an identifier",
+      "malformed": "Oops, this email is not valid"
     }
   },
-  "totp_recovery_secret": {
-    "label": "TOTP Recovery Code",
-    "placeholder": "SpU34-pE5s8",
-    "error": {
-      "invalid": "This code is incorrect, please retry",
-      "malformed": "Recovery Code should contain 8 characters separated by a dash"
-    }
-  },
-  "passwordVault": {
-    "label": "Password",
-    "placeholder": "********",
-    "action": "Confirm",
-    "error": {
-      "required": "Password is required",
-      "invalid": "Wrong password"
-    }
+  "secret": {
+    "identity": {
+      "emailed_code": {
+        "label": "Code",
+        "placeholder": "123456",
+        "helperText": "Type code received by email",
+        "error": {
+          "expired": "Code has expired. I can ask for a new one",
+          "invalid": "Incorrect confirmation code",
+          "malformed": "Confirmation code should contain 6 digits"
+        }
+      },
+      "prehashed_password": {
+        "label": "Type your password",
+        "placeholder": "Super Password",
+        "error": {
+          "invalid": "Wrong password"
+        }
+      }
+    },
+    "totp": {
+      "totp": {
+        "label": "Time-Based-One-Time-Password",
+        "placeholder": "543232",
+        "error": {
+          "invalid": "This code is incorrect, please retry",
+          "malformed": "Code should contain 6 digits"
+        }
+      },
+      "recovery_secret": {
+        "label": "TOTP Recovery Code",
+        "placeholder": "SpU34-pE5s8",
+        "error": {
+          "invalid": "This code is incorrect, please retry",
+          "malformed": "Recovery Code should contain 8 characters separated by a dash"
+        }
+      }
+    } 
   },
   "tos": {
     "label": "I accept TOS",

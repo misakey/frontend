@@ -1,58 +1,41 @@
 import React, { useCallback } from 'react';
+import { useFormikContext } from 'formik';
 
-import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 
-import { ssoUpdate } from '@misakey/react/auth/store/actions/sso';
-
-import updateAuthIdentities from '@misakey/core/auth/builder/updateAuthIdentities';
-import isFunction from '@misakey/core/helpers/isFunction';
-
-import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import { ssoSetMethodName } from '@misakey/react/auth/store/actions/sso';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import { IDENTITY_PASSWORD } from '@misakey/core/auth/constants/amr';
+import { useUserManagerContext } from '@misakey/react/auth/components/OidcProvider/Context';
+import useGetAskedAuthState from '@misakey/react/auth/hooks/useGetAskedAuthState';
 
 // COMPONENTS
-const ButtonForgotPasswordCancel = ({ loginChallenge, identifier, onClick, ...props }) => {
-  const handleHttpErrors = useHandleHttpErrors();
+const ButtonForgotPasswordCancel = (props) => {
   const dispatch = useDispatch();
 
-  const handleClick = useCallback(
+  const { resetForm } = useFormikContext();
+
+  const { userManager } = useUserManagerContext();
+
+  const { state, stateId } = useGetAskedAuthState();
+
+  const onClick = useCallback(
     async () => {
-      try {
-        const { identity, authnStep } = await updateAuthIdentities({
-          loginChallenge,
-          identifierValue: identifier,
-          passwordReset: false,
-        });
-        dispatch(ssoUpdate({ identity, authnStep }));
-        if (isFunction(onClick)) {
-          onClick();
-        }
-      } catch (e) {
-        handleHttpErrors(e);
-      }
+      await userManager.storeState(stateId, { ...state, resetPassword: false });
+      dispatch(ssoSetMethodName(IDENTITY_PASSWORD));
+      resetForm();
     },
-    [dispatch, handleHttpErrors, identifier, loginChallenge, onClick],
+    [dispatch, resetForm, state, stateId, userManager],
   );
 
   return (
     <Button
-      standing={BUTTON_STANDINGS.CANCEL}
-      onClick={handleClick}
+      standing={BUTTON_STANDINGS.TEXT}
+      onClick={onClick}
       {...props}
     />
   );
-};
-
-ButtonForgotPasswordCancel.propTypes = {
-  loginChallenge: PropTypes.string.isRequired,
-  identifier: PropTypes.string.isRequired,
-  onClick: PropTypes.func,
-};
-
-ButtonForgotPasswordCancel.defaultProps = {
-  onClick: null,
 };
 
 export default ButtonForgotPasswordCancel;

@@ -7,7 +7,7 @@ import FieldText from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import Field from '@misakey/ui/Form/Field';
 
 // CONSTANTS
-const PREFIX = 'email';
+const SUFFIX = 'email';
 
 const INPUT_PROPS = {
   'data-matomo-ignore': true,
@@ -17,7 +17,7 @@ const INPUT_PROPS = {
 // COMPONENTS
 const LoginIdentifierFormField = (props) => (
   <Field
-    prefix={`${PREFIX}_`}
+    suffix={`:${SUFFIX}`}
     name={STEP.identifier}
     component={FieldText}
     variant="filled"

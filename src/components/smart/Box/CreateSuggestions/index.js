@@ -1,9 +1,7 @@
-import React, { useMemo } from 'react';
-
+import React from 'react';
 
 import { useSelector } from 'react-redux';
 
-import isNil from '@misakey/core/helpers/isNil';
 import ButtonWithDialogPassword from '@misakey/react/auth/components/Dialog/Password/with/Button';
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
@@ -15,24 +13,19 @@ import Box from '@material-ui/core/Box';
 import { useTranslation } from 'react-i18next';
 
 // CONSTANTS
-const { accountId: ACCOUNT_ID_SELECTOR, hasAccount: HAS_ACCOUNT_SELECTOR } = authSelectors;
+const { hasCrypto: HAS_CRYPTO_SELECTOR } = authSelectors;
 
 // COMPONENTS
 const ButtonCreate = withDialogCreate(Button);
 
 const CreateBoxSuggestions = () => {
-  const accountId = useSelector(ACCOUNT_ID_SELECTOR);
-  const hasAccount = useSelector(HAS_ACCOUNT_SELECTOR);
+  const hasCrypto = useSelector(HAS_CRYPTO_SELECTOR);
 
-  const hasAccountOrAccountId = useMemo(
-    () => hasAccount || !isNil(accountId),
-    [hasAccount, accountId],
-  );
   const { t } = useTranslation('components');
 
   return (
     <Box pt={6}>
-      {hasAccountOrAccountId && (
+      {hasCrypto && (
         <>
           <Typography color="textPrimary" align="center">
             {t('components:createBoxSuggestions.createBox.text')}
@@ -48,7 +41,7 @@ const CreateBoxSuggestions = () => {
           />
         </>
       )}
-      {!hasAccount && (
+      {!hasCrypto && (
         <>
           <Typography color="textPrimary" align="center">
             {t('components:createBoxSuggestions.createAccount.text')}

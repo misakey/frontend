@@ -1,6 +1,7 @@
 import API from '@misakey/core/api';
 
 import objectToSnakeCase from '@misakey/core/helpers/objectToSnakeCase';
+import objectToSnakeCaseDeep from '@misakey/core/helpers/objectToSnakeCaseDeep';
 import hashPassword from '../passwordHashing/hashPassword';
 import genParams from '../passwordHashing/genParams';
 
@@ -33,3 +34,9 @@ export const changePassword = async ({
     .build({ id: accountId }, objectToSnakeCase(payload))
     .send();
 };
+
+
+export const setAccountPasswordBuilder = (accountId, payload) => API
+  .use(API.endpoints.accounts.password.create)
+  .build({ id: accountId }, objectToSnakeCaseDeep(payload, { ignoreBase64: true }))
+  .send();

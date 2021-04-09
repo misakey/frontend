@@ -7,18 +7,17 @@ import { selectors } from '@misakey/react/crypto/store/reducers';
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import isFunction from '@misakey/core/helpers/isFunction';
-import isNil from '@misakey/core/helpers/isNil';
 import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import { useSelector } from 'react-redux';
-import useCreateAccount from '@misakey/react/auth/hooks/useCreateAccount';
+import useAskToSetPassword from '@misakey/react/auth/hooks/useAskToSetPassword';
 import useLinkCondition from '@misakey/hooks/useLinkCondition';
 
 import DialogOpenVault from '@misakey/react/auth/components/Dialog/Password/OpenVault';
 
 // CONSTANTS
 const {
-  accountId: ACCOUNT_ID_SELECTOR,
+  hasCrypto: HAS_CRYPTO_SELECTOR,
 } = authSelectors;
 
 // COMPONENTS
@@ -31,16 +30,11 @@ const withDialogPassword = (Component) => {
     forceDialog,
     ...props
   }, ref) => {
-    const onCreateAccount = useCreateAccount();
+    const askToSetPassword = useAskToSetPassword();
 
     const [open, setOpen] = useState(false);
 
-    const accountId = useSelector(ACCOUNT_ID_SELECTOR);
-
-    const hasAccountId = useMemo(
-      () => !isNil(accountId),
-      [accountId],
-    );
+    const hasCrypto = useSelector(HAS_CRYPTO_SELECTOR);
 
     const isCryptoLoadedSelector = useMemo(
       () => selectors.isCryptoLoaded, [],
@@ -49,19 +43,19 @@ const withDialogPassword = (Component) => {
 
     const onWrapperClick = useCallback(
       (e) => {
-        if (!hasAccountId) {
-          onCreateAccount();
+        if (!hasCrypto) {
+          askToSetPassword();
         } else if (!isCryptoLoaded || forceDialog) {
           setOpen(true);
         } else if (isFunction(onClick)) {
           onClick(e);
         }
       },
-      [hasAccountId, isCryptoLoaded, forceDialog, onClick, onCreateAccount],
+      [hasCrypto, isCryptoLoaded, forceDialog, onClick, askToSetPassword],
     );
 
     const wrapperLinkProps = useLinkCondition(
-      hasAccountId && isCryptoLoaded && !forceDialog,
+      hasCrypto && isCryptoLoaded && !forceDialog,
       to,
       replace,
     );
@@ -73,7 +67,7 @@ const withDialogPassword = (Component) => {
 
     return (
       <>
-        {hasAccountId && (
+        {hasCrypto && (
           <DialogOpenVault
             open={open}
             onClose={onClose}

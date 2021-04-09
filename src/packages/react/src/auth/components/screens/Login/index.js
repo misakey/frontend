@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react/auth/store/reducers/sso';
 import authRoutes from '@misakey/react/auth/routes';
@@ -10,6 +10,7 @@ import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/a
 
 import isNil from '@misakey/core/helpers/isNil';
 import isEmpty from '@misakey/core/helpers/isEmpty';
+import pick from '@misakey/core/helpers/pick';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
@@ -24,8 +25,9 @@ import ScreenLoader from '@misakey/ui/Screen/Loader';
 
 // COMPONENTS
 const AuthLogin = ({
-  identifier, match, client: clientProvider, loginChallenge, loginHint, t, ...props
+  identifier, match, client: clientProvider, loginChallenge, loginHint, identity, ...props
 }) => {
+  const { t } = useTranslation('auth');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const handleHttpErrors = useHandleHttpErrors();
   const onSubmit = useOnIdentifierSubmit(loginChallenge);
@@ -45,6 +47,11 @@ const AuthLogin = ({
   const identifierHintValid = useMemo(
     () => !isEmpty(identifierHint) && (identifierHint === identifier || isNil(identifier)),
     [identifierHint, identifier],
+  );
+
+  const userPublicData = useMemo(
+    () => (isNil(identity) ? {} : { ...pick(['displayName', 'avatarUrl'], identity), identifier }),
+    [identifier, identity],
   );
 
   useMountEffect(
@@ -77,6 +84,8 @@ const AuthLogin = ({
               client={client}
               loginChallenge={loginChallenge}
               identifier={identifier}
+              identity={identity}
+              userPublicData={userPublicData}
               {...props}
             />
           )}
@@ -89,6 +98,8 @@ const AuthLogin = ({
               {...routerProps}
               client={client}
               identifier={identifier}
+              identity={identity}
+              userPublicData={userPublicData}
               loginChallenge={loginChallenge}
               isLoading={isSubmitting}
               {...props}
@@ -106,13 +117,13 @@ AuthLogin.propTypes = {
   identifier: PropTypes.string,
   loginHint: SSO_PROP_TYPES.loginHint,
   client: SSO_PROP_TYPES.client.isRequired,
+  identity: SSO_PROP_TYPES.identity,
   // ROUTER
   match: PropTypes.shape({ path: PropTypes.string }).isRequired,
-  // withTranslation
-  t: PropTypes.func.isRequired,
 };
 
 AuthLogin.defaultProps = {
+  identity: null,
   identifier: '',
   loginHint: {},
 };
@@ -121,7 +132,8 @@ AuthLogin.defaultProps = {
 const mapStateToProps = (state) => ({
   identifier: state.sso.identifier || authSelectors.identifierValue(state),
   loginHint: state.sso.loginHint,
+  identity: state.sso.identity,
   client: state.sso.client,
 });
 
-export default connect(mapStateToProps, {})(withTranslation('auth')(AuthLogin));
+export default connect(mapStateToProps, {})(AuthLogin);

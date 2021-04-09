@@ -20,11 +20,11 @@ export const getInfo = ({ consentChallenge }) => API
   .send()
   .then(objectToCamelCaseDeep)
   .then(({ context: { mid: identityId }, ...rest }) => {
-    const authnStep = {
+    const authnState = {
       identityId,
     };
     return {
-      authnStep,
+      authnState,
       ...rest,
     };
   });

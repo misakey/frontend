@@ -1,22 +1,18 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-import omit from '@misakey/core/helpers/omit';
 import isFunction from '@misakey/core/helpers/isFunction';
 
-import { withUserManager } from '@misakey/react/auth/components/OidcProvider/Context';
+import { useUserManagerContext } from '@misakey/react/auth/components/OidcProvider/Context';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
-// CONSTANTS
-const INTERNAL_PROPS = [
-  'tReady',
-  'i18n',
-  'askSigninRedirect',
-];
 
 // COMPONENTS
-const ButtonSignOut = ({ onSuccess, onSignOut, onClick, t, ...props }) => {
+const ButtonSignOut = ({ onSuccess, onClick, ...props }) => {
+  const { t } = useTranslation('common');
+  const { onSignOut } = useUserManagerContext();
+
   const handleClick = useCallback(
     (e) => {
       if (isFunction(onClick)) {
@@ -29,18 +25,15 @@ const ButtonSignOut = ({ onSuccess, onSignOut, onClick, t, ...props }) => {
     <Button
       onClick={handleClick}
       text={t('common:signOut')}
-      {...omit(props, INTERNAL_PROPS)}
+      {...props}
     />
   );
 };
 
 ButtonSignOut.propTypes = {
-  t: PropTypes.func.isRequired,
   standing: PropTypes.oneOf(Object.values(BUTTON_STANDINGS)),
   onSuccess: PropTypes.func,
   onClick: PropTypes.func,
-  // withUserManager
-  onSignOut: PropTypes.func.isRequired,
 };
 
 ButtonSignOut.defaultProps = {
@@ -49,4 +42,4 @@ ButtonSignOut.defaultProps = {
   onClick: null,
 };
 
-export default withTranslation('common')(withUserManager(ButtonSignOut));
+export default ButtonSignOut;

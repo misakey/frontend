@@ -1,17 +1,11 @@
 import { useMemo, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { updateIdentity } from '@misakey/react/auth/store/actions/auth';
 import { selectors } from '@misakey/react/auth/store/reducers/auth';
-import { normalize } from 'normalizr';
-import { receiveEntities } from '@misakey/store/actions/entities';
-import IdentitySchema from '@misakey/react/auth/store/schemas/Identity';
-
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 import isEmpty from '@misakey/core/helpers/isEmpty';
-import { getIdentity as getIdentityBuilder } from '@misakey/core/auth/builder/identities';
-
+import useIdentityCallback from '@misakey/react/auth/hooks/useIdentity/callback';
 
 // HOOKS
 /**
@@ -35,18 +29,10 @@ export default () => {
   const identity = useSelector(selectors.identity);
   const identityId = useSelector(selectors.identityId);
 
-  const dispatch = useDispatch();
-
-  const onLoadIdentity = useCallback(
-    (nextIdentity) => {
-      const normalized = normalize(nextIdentity, IdentitySchema.entity);
-      const { entities } = normalized;
-      return Promise.all([
-        dispatch(updateIdentity(nextIdentity)),
-        dispatch(receiveEntities(entities)),
-      ]);
-    },
-    [dispatch],
+  const getIdentityBuilder = useIdentityCallback();
+  const fetchIdentity = useCallback(
+    () => getIdentityBuilder(identityId),
+    [getIdentityBuilder, identityId],
   );
 
   const shouldFetch = useMemo(
@@ -54,12 +40,7 @@ export default () => {
     [isAuthenticated, identity, identityId],
   );
 
-  const getIdentity = useCallback(
-    () => getIdentityBuilder(identityId),
-    [identityId],
-  );
-
-  const fetchData = useFetchEffect(getIdentity, { shouldFetch }, { onSuccess: onLoadIdentity });
+  const fetchData = useFetchEffect(fetchIdentity, { shouldFetch });
 
   return useMemo(
     () => ({

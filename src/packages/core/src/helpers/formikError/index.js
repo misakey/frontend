@@ -2,15 +2,15 @@ import isNil from '@misakey/core/helpers/isNil';
 import isFunction from '@misakey/core/helpers/isFunction';
 import isArray from '@misakey/core/helpers/isArray';
 
-const getErrorKeys = (prefix, name, validationError) => [
-  `fields:${prefix}${name}.error.${validationError}`,
+const getErrorKeys = (name, validationError, prefix, suffix) => [
+  `fields:${prefix}${name}${suffix}.error.${validationError}`,
   `fields:${name}.error.${validationError}`,
   `fields:default.error.${validationError}`,
   'fields:default.error.unknown',
 ];
 
 export const getErrors = (
-  { field: { name, value }, form: { touched, errors, status }, prefix },
+  { field: { name, value }, form: { touched, errors, status }, prefix, suffix },
   parseError,
 ) => {
   const validationError = touched[name] ? errors[name] : null;
@@ -19,30 +19,31 @@ export const getErrors = (
 
   const error = validationError || statusError;
   const errorKeys = getErrorKeys(
-    prefix,
     name,
     isFunction(parseError) ? parseError(error, value) : error,
+    prefix,
+    suffix,
   );
 
   return { displayError, errorKeys };
 };
 
 export const getFieldError = (
-  { field: { name }, meta: { error, touched }, prefix },
+  { field: { name }, meta: { error, touched }, prefix, suffix },
   parseError = null,
 ) => {
   const validationError = touched ? error : null;
   const displayError = !isNil(validationError);
 
   const errorKey = isFunction(parseError) ? parseError(validationError) : validationError;
-  const errorKeys = getErrorKeys(prefix, name, errorKey);
+  const errorKeys = getErrorKeys(name, errorKey, prefix, suffix);
 
   return { displayError, errorKeys };
 };
 
 
 export const getArrayFieldError = (
-  { field: { name }, meta: { error, touched }, prefix },
+  { field: { name }, meta: { error, touched }, prefix, suffix },
   parseError = null,
 ) => {
   const validationError = touched ? error : null;
@@ -55,8 +56,8 @@ export const getArrayFieldError = (
           return undefined;
         }
         return isFunction(parseError)
-          ? getErrorKeys(prefix, name, parseError(err))
-          : getErrorKeys(prefix, name, err);
+          ? getErrorKeys(name, parseError(err), prefix, suffix)
+          : getErrorKeys(name, err, prefix, suffix);
       });
     return { displayError, errorKeys };
   }
@@ -64,8 +65,10 @@ export const getArrayFieldError = (
   const errorKey = isFunction(parseError) ? parseError(validationError) : validationError;
 
   const errorKeys = isArray(validationError)
-    ? validationError.map((err) => (isNil(err) ? undefined : getErrorKeys(prefix, name, err)))
-    : getErrorKeys(prefix, name, errorKey);
+    ? validationError.map(
+      (err) => (isNil(err) ? undefined : getErrorKeys(name, err, prefix, suffix)),
+    )
+    : getErrorKeys(name, errorKey, prefix, suffix);
 
   return { displayError, errorKeys };
 };

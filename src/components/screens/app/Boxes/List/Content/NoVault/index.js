@@ -6,7 +6,6 @@ import routes from 'routes';
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import { DRAWER_QUERY_PARAM, TMP_DRAWER_QUERY_PARAMS } from '@misakey/ui/constants/drawers';
 
-import isNil from '@misakey/core/helpers/isNil';
 import omitRouteProps from '@misakey/core/helpers/omit/routeProps';
 
 import { useSelector } from 'react-redux';
@@ -21,25 +20,19 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
 // CONSTANTS
-const { accountId: ACCOUNT_ID_SELECTOR, hasAccount: HAS_ACCOUNT_SELECTOR } = authSelectors;
+const { hasCrypto: HAS_CRYPTO_SELECTOR } = authSelectors;
 
 const NEXT_SEARCH_MAP = [[DRAWER_QUERY_PARAM, undefined], [TMP_DRAWER_QUERY_PARAMS, undefined]];
 
 // COMPONENTS
 const NoVault = forwardRef(({ t, isFullWidth }, ref) => {
-  const accountId = useSelector(ACCOUNT_ID_SELECTOR);
-  const hasAccount = useSelector(HAS_ACCOUNT_SELECTOR);
-
-  const hasAccountOrAccountId = useMemo(
-    () => hasAccount || !isNil(accountId),
-    [hasAccount, accountId],
-  );
+  const hasCrypto = useSelector(HAS_CRYPTO_SELECTOR);
 
   const buttonText = useMemo(
-    () => (hasAccountOrAccountId
+    () => (hasCrypto
       ? t('boxes:closedVault.open')
       : t('boxes:closedVault.create')),
-    [hasAccountOrAccountId, t],
+    [hasCrypto, t],
   );
 
   return (

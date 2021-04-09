@@ -62,7 +62,7 @@ export default rootReducer;
 {
   "id": "<identityId>",
   "accountId": "<accountId>",
-  "hasAccount": "<boolean>",
+  "hasCrypto": "<boolean>",
   "identifierValue":  "<identifier valut>",
   "identifierKind": "<kind of the identifier (email, ...)>",
   "displayName": "<displayName>",
@@ -84,7 +84,7 @@ const {
   expiresAt,
   identity,
   accountId,
-  hasAccount,
+  hasCrypto,
   identifierValue,
   identityId,
   isAuthenticated,
@@ -206,7 +206,7 @@ const AuthButton = () => {
   "expired": "true|false", 
   "identityId": "<user identity id>",  // string
   "accountId": "<user account id>", // null if user has no account
-  "hasAccount": "true|false", 
+  "hasCrypto": "true|false", 
   "scope": "<current access token scope>", // string 
   "acr": "<current access token ACR>", // string
   "amr": "<current access token AMR>", // array of string

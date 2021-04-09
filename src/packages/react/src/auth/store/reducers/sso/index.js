@@ -1,14 +1,17 @@
 import PropTypes from 'prop-types';
 
-import { METHODS } from '@misakey/core/auth/constants/method';
-import { PROP_TYPES as PWD_HASH_PROP_TYPES } from '@misakey/react/auth/constants/propTypes/passwordHashing';
 import isNil from '@misakey/core/helpers/isNil';
 import prop from '@misakey/core/helpers/prop';
+import path from '@misakey/core/helpers/path';
 import { parseAcrValues, parseAcr } from '@misakey/core/helpers/parseAcr';
 import createResetOnSignOutReducer from '@misakey/react/auth/store/reducers/helpers/createResetOnSignOutReducer';
 import { createSelector } from 'reselect';
 
-import { SSO_RESET, SSO_UPDATE, SSO_IDENTITY_RESET, SSO_SET_IDENTIFIER } from '@misakey/react/auth/store/actions/sso';
+import { SSO_RESET, SSO_UPDATE, SSO_IDENTITY_RESET, SSO_SET_IDENTIFIER, SSO_SET_METHOD_NAME, SSO_SET_METHOD_METADATA } from '@misakey/react/auth/store/actions/sso';
+import { AMRS, IDENTITY_PASSWORD, IDENTITY_EMAILED_CODE, WEBAUTHN } from '@misakey/core/auth/constants/amr';
+
+// HELPERS
+const getMethodName = prop('methodName');
 
 // CONSTANTS
 export const PROP_TYPES = {
@@ -23,15 +26,35 @@ export const PROP_TYPES = {
   identity: PropTypes.shape({
     displayName: PropTypes.string,
     avatarUrl: PropTypes.string,
-    hasAccount: PropTypes.bool,
+    hasCrypto: PropTypes.bool,
   }),
-  authnStep: PropTypes.shape({
+  authnState: PropTypes.shape({
     identityId: PropTypes.string,
-    methodName: PropTypes.oneOf(METHODS),
-    metadata: PropTypes.shape(PWD_HASH_PROP_TYPES),
+    currentAcr: PropTypes.number,
+    requiredAcr: PropTypes.number,
+    currentAmrs: PropTypes.arrayOf(PropTypes.string),
+    availableAmrs: PropTypes.arrayOf(PropTypes.string),
+  }),
+  methodName: PropTypes.oneOf(AMRS),
+  metadata: PropTypes.shape({
+    [IDENTITY_PASSWORD]: PropTypes.shape({
+      memory: PropTypes.number,
+      iterations: PropTypes.number,
+      parallelism: PropTypes.number,
+      salt_base_64: PropTypes.string,
+    }),
+    [IDENTITY_EMAILED_CODE]: PropTypes.string,
+    [WEBAUTHN]: PropTypes.shape({
+      publicKey: PropTypes.shape({
+        challenge: PropTypes.string.isRequired,
+        allowCredentials: PropTypes.arrayOf(PropTypes.shape({
+          id: PropTypes.string.isRequired,
+        })),
+      }),
+    }),
   }),
   loginChallenge: PropTypes.string,
-  loginHint: PropTypes.string,
+  loginHint: PropTypes.object,
   scope: PropTypes.string,
   acr: PropTypes.number,
   acrValues: PropTypes.arrayOf(PropTypes.string),
@@ -42,7 +65,9 @@ export const INITIAL_STATE = {
   client: {},
   identifier: null,
   identity: null,
-  authnStep: {},
+  authnState: {},
+  methodName: null,
+  metadata: {},
   loginChallenge: null,
   loginHint: {},
   scope: null,
@@ -53,9 +78,9 @@ export const INITIAL_STATE = {
 const getState = prop('sso');
 
 export const selectors = {
-  getAuthnStep: createSelector(
+  authnState: createSelector(
     getState,
-    prop('authnStep'),
+    prop('authnState'),
   ),
   loginChallenge: createSelector(
     getState,
@@ -85,6 +110,14 @@ export const selectors = {
     getState,
     prop('scope'),
   ),
+  methodName: createSelector(
+    getState,
+    prop('methodName'),
+  ),
+  methodMetadata: createSelector(
+    getState,
+    (sso) => path(['metadata', getMethodName(sso)])(sso),
+  ),
 };
 
 // ACTION HANDLERS
@@ -96,6 +129,23 @@ function onSetIdentifier(state, { identifier }) {
   return {
     ...state,
     identifier,
+  };
+}
+
+function onSetMethodName(state, { methodName }) {
+  return {
+    ...state,
+    methodName,
+  };
+}
+
+function onSetMethodMetadata(state, { methodName, metadata }) {
+  return {
+    ...state,
+    metadata: {
+      ...state.metadata,
+      [methodName]: metadata,
+    },
   };
 }
 
@@ -131,4 +181,6 @@ export default createResetOnSignOutReducer(INITIAL_STATE, {
   [SSO_IDENTITY_RESET]: onClearSsoUpdate,
   [SSO_UPDATE]: onUpdate,
   [SSO_SET_IDENTIFIER]: onSetIdentifier,
+  [SSO_SET_METHOD_NAME]: onSetMethodName,
+  [SSO_SET_METHOD_METADATA]: onSetMethodMetadata,
 });

@@ -7,7 +7,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import { invalid } from '@misakey/core/api/constants/errorTypes';
 import { openVaultValidationSchema } from '@misakey/react/auth/constants/validationSchemas/vault';
-import { PREHASHED_PASSWORD } from '@misakey/core/auth/constants/method';
+import { PREHASHED_PASSWORD } from '@misakey/react/auth/constants/account/password';
 
 import resolveAny from '@misakey/core/helpers/resolveAny';
 import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';

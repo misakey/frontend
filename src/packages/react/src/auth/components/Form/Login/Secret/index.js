@@ -4,18 +4,31 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
 import { STEP } from '@misakey/core/auth/constants';
-import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, RESET_PASSWORD, METHODS, TOTP, TOTP_RECOVERY } from '@misakey/core/auth/constants/method';
-import { AUTOFILL_PASSWORD, AUTOFILL_NEW_PASSWORD, AUTOFILL_CODE } from '@misakey/ui/constants/autofill';
+import {
+  IDENTITY_PASSWORD,
+  IDENTITY_EMAILED_CODE,
+  WEBAUTHN,
+  TOTP,
+  TOTP_RECOVERY,
+} from '@misakey/core/auth/constants/amr';
+import { AUTOFILL_PASSWORD, AUTOFILL_CODE } from '@misakey/ui/constants/autofill';
+import { PROP_TYPES } from '@misakey/react/auth/store/reducers/sso';
 
 import prop from '@misakey/core/helpers/prop';
+import isNil from '@misakey/core/helpers/isNil';
 
 import Field from '@misakey/ui/Form/Field';
 import FieldCodePasteButton from '@misakey/ui/Form/Field/Code/WithPasteButton';
 import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
 import FieldText from '@misakey/ui/Form/Field/TextFieldWithErrors';
 
+import WebauthnLogin from '../Webauthn';
+
 // CONSTANTS
 const FIELD_PROPS = {
+  [WEBAUTHN]: {
+    component: WebauthnLogin,
+  },
   [TOTP]: {
     component: FieldCodePasteButton,
     variant: 'filled',
@@ -47,18 +60,18 @@ const FIELD_PROPS = {
       'data-matomo-ignore': true,
     },
   },
-  [EMAILED_CODE]: {
+  [IDENTITY_EMAILED_CODE]: {
     component: FieldCodePasteButton,
     variant: 'filled',
     centered: true,
     fullWidth: true,
     autoFocus: true,
     inputProps: {
-      id: `${EMAILED_CODE}_${STEP.secret}`,
+      id: `${IDENTITY_EMAILED_CODE}_${STEP.secret}`,
       ...AUTOFILL_CODE,
     },
   },
-  [PREHASHED_PASSWORD]: {
+  [IDENTITY_PASSWORD]: {
     component: FieldPasswordRevealable,
     variant: 'filled',
     type: 'password',
@@ -68,29 +81,6 @@ const FIELD_PROPS = {
       ...AUTOFILL_PASSWORD,
     },
   },
-  [ACCOUNT_CREATION]: {
-    component: FieldPasswordRevealable,
-    variant: 'filled',
-    type: 'password',
-    autoFocus: true,
-    inputProps: {
-      'data-matomo-ignore': true,
-      id: `${ACCOUNT_CREATION}_${STEP.secret}`,
-      ...AUTOFILL_NEW_PASSWORD,
-    },
-  },
-  [RESET_PASSWORD]: {
-    component: FieldPasswordRevealable,
-    variant: 'filled',
-    type: 'password',
-    autoFocus: true,
-    inputProps: {
-      'data-matomo-ignore': true,
-      id: `${RESET_PASSWORD}_${STEP.secret}`,
-      ...AUTOFILL_NEW_PASSWORD,
-    },
-  },
-
 };
 
 // COMPONENTS
@@ -105,11 +95,13 @@ const LoginSecretFormFields = ({ methodName, methodNameClasses, className, ...re
     [methodName, methodNameClasses],
   );
 
+  if (isNil(methodName)) { return null; }
+
   return (
     <Field
       className={clsx(className, fieldClassName)}
+      suffix={`:${methodName}`}
       name={STEP.secret}
-      prefix={`${methodName}_`}
       {...fieldProps}
       {...rest}
     />
@@ -119,12 +111,14 @@ const LoginSecretFormFields = ({ methodName, methodNameClasses, className, ...re
 
 LoginSecretFormFields.propTypes = {
   methodNameClasses: PropTypes.shape({
-    [EMAILED_CODE]: PropTypes.string,
-    [PREHASHED_PASSWORD]: PropTypes.string,
-    [ACCOUNT_CREATION]: PropTypes.string,
+    [WEBAUTHN]: PropTypes.string,
+    [IDENTITY_EMAILED_CODE]: PropTypes.string,
+    [IDENTITY_PASSWORD]: PropTypes.string,
+    [TOTP_RECOVERY]: PropTypes.string,
+    [TOTP]: PropTypes.string,
   }),
   className: PropTypes.string,
-  methodName: PropTypes.oneOf(METHODS).isRequired,
+  methodName: PROP_TYPES.methodName.isRequired,
 };
 
 LoginSecretFormFields.defaultProps = {

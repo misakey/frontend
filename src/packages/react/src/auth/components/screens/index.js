@@ -218,7 +218,7 @@ Auth.propTypes = {
   match: PropTypes.shape({ path: PropTypes.string }).isRequired,
   // CONNECT
   isAuthenticated: PropTypes.bool,
-  currentAcr: PropTypes.number,
+  currentAcr: PropTypes.string,
   sso: PropTypes.shape(SSO_PROP_TYPES).isRequired,
   dispatchSsoUpdate: PropTypes.func.isRequired,
   dispatchSetIdentifier: PropTypes.func.isRequired,

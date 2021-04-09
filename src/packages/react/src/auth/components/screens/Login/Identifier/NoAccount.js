@@ -1,6 +1,6 @@
 import React, { useMemo, useContext, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -12,49 +12,44 @@ import BoxControls from '@misakey/ui/Box/Controls';
 import BoxMessage from '@misakey/ui/Box/Message';
 import { UserManagerContext } from '@misakey/react/auth/components/OidcProvider/Context';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import { ssoSetMethodName } from '@misakey/react/auth/store/actions/sso';
 import { selectors as ssoSelectors } from '@misakey/react/auth/store/reducers/sso';
+import { IDENTITY_EMAILED_CODE } from '@misakey/core/auth/constants/amr';
+import useGetAskedAuthState from '@misakey/react/auth/hooks/useGetAskedAuthState';
 
-const {
-  identifier: identifierSelector,
-  loginHint: loginHintSelector,
-  scope: scopeSelector,
-  client: clientSelector,
-} = ssoSelectors;
+const { client: clientSelector } = ssoSelectors;
 
 // COMPONENTS
 const AuthLoginIdentifierNoAccount = ({ userPublicData }) => {
   const { t } = useTranslation(['auth', 'common']);
-  const loginHint = useSelector(loginHintSelector);
-  const identifier = useSelector(identifierSelector);
-  const scope = useSelector(scopeSelector);
   const client = useSelector(clientSelector);
 
   const { userManager } = useContext(UserManagerContext);
   const { push } = useHistory();
+  const dispatch = useDispatch();
 
-  const { state: stateId, ...loginHintRest } = useMemo(() => loginHint, [loginHint]);
-  const state = useMemo(() => userManager.getStateInStore(stateId), [stateId, userManager]);
-  const { referrer } = useMemo(() => state || {}, [state]);
-
+  const { stateId, state } = useGetAskedAuthState();
   const { name: clientName } = useMemo(() => client, [client]);
-  const nextLoginHint = useMemo(
-    () => JSON.stringify({ ...loginHintRest, identifier }),
-    [identifier, loginHintRest],
+
+  const onNext = useCallback(
+    () => {
+      dispatch(ssoSetMethodName(IDENTITY_EMAILED_CODE));
+      push(authRoutes.signIn.secret);
+    },
+    [dispatch, push],
   );
 
   const onSignup = useCallback(
-    () => userManager.signinRedirect({ scope, referrer, loginHint: nextLoginHint, acrValues: 2 }),
-    [nextLoginHint, referrer, scope, userManager],
-  );
-
-  const onNext = useCallback(
-    () => push(authRoutes.signIn.secret),
-    [push],
+    async () => {
+      await userManager.storeState(stateId, { ...state, shouldCreateAccount: true });
+      onNext();
+    },
+    [onNext, state, stateId, userManager],
   );
 
   const primary = useMemo(() => ({ text: t('common:createAccount'), onClick: onSignup }), [onSignup, t]);
   const secondary = useMemo(
-    () => ({ text: t('auth:login.identifier.loginAcr1'), onClick: onNext, standing: BUTTON_STANDINGS.TEXT }),
+    () => ({ text: t('auth:login.identifier.oneTimeCode'), onClick: onNext, standing: BUTTON_STANDINGS.TEXT }),
     [onNext, t],
   );
 

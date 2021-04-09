@@ -15,9 +15,9 @@ import useOrgId from '@misakey/react/auth/hooks/useOrgId';
 import { useSelector } from 'react-redux';
 import useFetchOrganizations from 'hooks/useFetchOrganizations';
 
-import RouteAcr from '@misakey/react/auth/components/Route/Acr';
 import OrganizationsReadSecret from 'components/screens/app/Organizations/Read/Secret';
 import OrganizationsReadAgents from 'components/screens/app/Organizations/Read/Agents';
+import RoutePasswordRequired from '@misakey/react/auth/components/Route/PasswordRequired';
 
 // CONSTANTS
 const { makeDenormalizeOrganization } = orgSelectors;
@@ -69,8 +69,7 @@ const OrganizationsRead = () => {
 
   return (
     <Switch>
-      <RouteAcr
-        acr={2}
+      <RoutePasswordRequired
         path={path}
         render={() => (
           <>
@@ -83,14 +82,12 @@ const OrganizationsRead = () => {
                   />
                 ) : (
                   <Switch>
-                    <RouteAcr
-                      acr={2}
+                    <RoutePasswordRequired
                       exact
                       path={routes.organizations.secret}
                       component={OrganizationsReadSecret}
                     />
-                    <RouteAcr
-                      acr={2}
+                    <RoutePasswordRequired
                       exact
                       path={routes.organizations.agents}
                       component={OrganizationsReadAgents}

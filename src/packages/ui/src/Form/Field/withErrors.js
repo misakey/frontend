@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -8,7 +8,7 @@ import { getErrors } from '@misakey/core/helpers/formikError';
 // NB: withErrors expects to be wrapped by a Formik#Field component
 const withErrors = (Component, { parseError } = {}) => {
   const Field = forwardRef((props, ref) => {
-    const { displayError, errorKeys } = getErrors(props, parseError);
+    const { displayError, errorKeys } = useMemo(() => getErrors(props, parseError), [props]);
 
     return <Component ref={ref} displayError={displayError} errorKeys={errorKeys} {...props} />;
   });
@@ -18,6 +18,7 @@ const withErrors = (Component, { parseError } = {}) => {
       name: PropTypes.string.isRequired,
     }).isRequired,
     prefix: PropTypes.string,
+    suffix: PropTypes.string,
     form: PropTypes.shape({
       errors: PropTypes.objectOf(PropTypes.any),
       touched: PropTypes.objectOf(PropTypes.any),
@@ -27,6 +28,7 @@ const withErrors = (Component, { parseError } = {}) => {
 
   Field.defaultProps = {
     prefix: '',
+    suffix: '',
   };
 
 

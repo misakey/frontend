@@ -10,7 +10,7 @@ import RedirectToSignIn from '@misakey/react/auth/components/Redirect/ToSignIn';
 
 // LAZY
 const Auth = lazy(() => retry(() => import('@misakey/react/auth/components/screens')));
-const RedirectAuthCallback = lazy(() => retry(() => import('@misakey/react/auth/components/Redirect/AuthCallbackWrapper')));
+const RedirectAuthCallback = lazy(() => retry(() => import('@misakey/react/auth/components/Redirect/AuthCallback')));
 
 // COMPONENTS
 const AuthRoutesSwitch = ({ children, redirectProps }) => (

@@ -6,13 +6,14 @@ import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import { Field } from 'formik';
 
-const FormField = ({ name, prefix, t, ...props }) => (
+const FormField = ({ name, prefix, suffix, t, ...props }) => (
   <Field
     name={name}
     prefix={prefix}
-    label={t([`fields:${prefix}${name}.label`, `fields:${name}.label`], '')}
-    placeholder={t([`fields:${prefix}${name}.placeholder`, `fields:${name}.placeholder`], '')}
-    helperText={t([`fields:${prefix}${name}.helperText`, `fields:${name}.helperText`], '')}
+    suffix={suffix}
+    label={t([`fields:${prefix}${name}${suffix}.label`, `fields:${name}.label`], '')}
+    placeholder={t([`fields:${prefix}${name}${suffix}.placeholder`, `fields:${name}.placeholder`], '')}
+    helperText={t([`fields:${prefix}${name}${suffix}.helperText`, `fields:${name}.helperText`], '')}
     {...omitTranslationProps(props)}
   />
 );
@@ -20,11 +21,13 @@ const FormField = ({ name, prefix, t, ...props }) => (
 FormField.propTypes = {
   name: PropTypes.string.isRequired,
   prefix: PropTypes.string,
+  suffix: PropTypes.string,
   t: PropTypes.func.isRequired,
 };
 
 FormField.defaultProps = {
   prefix: '',
+  suffix: '',
 };
 
 export default withTranslation(['fields'])(FormField);

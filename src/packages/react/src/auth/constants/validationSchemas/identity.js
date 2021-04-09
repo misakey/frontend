@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-import { OLD_PASSWORD_KEY, NEW_PASSWORD_KEY, PASSWORD_CONFIRM_KEY } from '@misakey/react/auth/constants/account';
+import { OLD_PASSWORD_KEY, NEW_PASSWORD_KEY, PASSWORD_CONFIRM_KEY, SET_PASSWORD } from '@misakey/react/auth/constants/account';
 import {
   codeFieldValidation, stringFieldValidation,
   passwordFieldValidation, displayNameFieldValidation, fileFieldValidation,
@@ -36,6 +36,10 @@ export const passwordValidationSchema = Yup.object().shape({
   [OLD_PASSWORD_KEY]: passwordFieldValidation.schema,
   [NEW_PASSWORD_KEY]: passwordFieldValidation.setSchema,
   [PASSWORD_CONFIRM_KEY]: passwordFieldValidation.confirmSchema(NEW_PASSWORD_KEY),
+});
+
+export const setPasswordValidationSchema = Yup.object().shape({
+  [SET_PASSWORD]: passwordFieldValidation.setSchema,
 });
 
 export const confirmEmailValidationSchema = Yup.object().shape({

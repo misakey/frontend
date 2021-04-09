@@ -1,10 +1,9 @@
-import { EMAILED_CODE, PREHASHED_PASSWORD } from '@misakey/core/auth/constants/method';
 import { SSO_RESET, SSO_UPDATE } from '../../actions/sso';
 
 import reducer, { INITIAL_STATE } from '.';
 
 describe('testing sso reducer', () => {
-  const ACR = 18;
+  const ACR = 1;
   const dirtyState = {
     client: {
       id: 'zefkrtlledz128',
@@ -15,9 +14,11 @@ describe('testing sso reducer', () => {
       displayName: 'Test',
       avatarUrl: 'zdfrgt',
     },
-    authnStep: {
-      identityId: 'ertfedezr',
-      methodName: EMAILED_CODE,
+    authnState: {
+      availableAmrs: ['identity:emailed_code', 'identity:prehashed_password', 'totp:totp', 'totp:recovery'],
+      currentAcr: '0',
+      currentAmrs: [],
+      requiredAcr: '2',
     },
     loginChallenge: 'defrthdr',
     loginHint: '',
@@ -38,7 +39,7 @@ describe('testing sso reducer', () => {
   });
 
   describe('SSO_UPDATE', () => {
-    const OTHER_ACR = 32;
+    const OTHER_ACR = 2;
     const payload = {
       client: {
         id: 'efrthykol',
@@ -49,9 +50,11 @@ describe('testing sso reducer', () => {
         displayName: 't0t0',
         avatarUrl: 'efgkh',
       },
-      authnStep: {
-        identityId: 'djifdrelktjklfs',
-        methodName: PREHASHED_PASSWORD,
+      authnState: {
+        availableAmrs: ['identity:emailed_code', 'identity:prehashed_password', 'totp:totp', 'totp:recovery'],
+        currentAcr: '0',
+        currentAmrs: [],
+        requiredAcr: '2',
       },
       loginChallenge: 'dsfopkzklf',
       loginHint: '',

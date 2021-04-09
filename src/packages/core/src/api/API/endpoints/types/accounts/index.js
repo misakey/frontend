@@ -6,6 +6,11 @@ export default {
     },
   },
   password: {
+    create: {
+      method: 'POST',
+      path: '/accounts/:id/set-password',
+      withCsrfToken: true,
+    },
     update: {
       method: 'PUT',
       path: '/accounts/:id/password',

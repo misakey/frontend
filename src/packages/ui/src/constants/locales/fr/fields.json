@@ -57,35 +57,6 @@
       "name": "Format incorrect. Fichier sans nom"
     }
   },
-  "code": {
-    "label": "Code",
-    "helperText": "Je saisis le code reçu par e-mail",
-    "error": {
-      "invalid": "Ce code est invalide. Je peux vérifier qu'il correspond au code \nque j'ai reçu par mail il y a moins de 30min ou j'en redemande \nun nouveau",
-      "expired": "Le code a expiré. Je dois en demander un nouveau",
-      "notSent": "Je dois d'abord demander un code en cliquant sur \"Envoyer un code\".",
-      "malformed": "Le code est incorrect"
-    }
-  },
-  "emailed_code": {
-    "label": "Code de confirmation",
-    "helperText": "Saisir le code reçu par e-mail",
-    "error": {
-      "expired": "Le code a expiré. Je dois en demander un nouveau",
-      "invalid": "Le code saisi n'est pas le bon",
-      "malformed": "Le code de confirmation doit contenir 6 chiffres"
-    }
-  },
-  "emailed_code_secret": {
-    "label": "Code",
-    "placeholder": "123456",
-    "helperText": "Saisir le code reçu par e-mail",
-    "error": {
-      "expired": "Le code a expiré. Je dois en demander un nouveau",
-      "invalid": "Le code de confirmation est incorrect",
-      "malformed": "Le code de confirmation doit contenir 6 chiffres"
-    }
-  },
   "displayName": {
     "label": "Nom public",
     "action": "Editer",
@@ -104,26 +75,6 @@
       "not_found": "Aucun compte lié à cet email"
     }
   },
-  "email_identifier": {
-    "label": "Email",
-    "placeholder": "rose.flamingo@misakey.com",
-    "helperText": "Saisissez votre email pour démarrer l'authentification",
-    "error": {
-      "required": "Oops, vous avez oublié de saisir un identifiant",
-      "malformed": "Oops, cet email n'est pas valide",
-      "seclevel_insufficient": "J'ai besoin d'un mot de passe pour me connecter par ici, mon compte n'a pas de mot de passe configuré"
-    }
-  },
-  "handle": {
-    "label": "Pseudo",
-    "placeholder": "roseflam",
-    "helperText": "Je choisis un pseudo entre 3 et 21 lettres minuscules, chiffres et underscore",
-    "error": {
-      "noTrailingUnderscore": "Mon pseudo ne peut commencer ou terminer par un underscore",
-      "invalid": "Mon pseudo doit comporter entre 3 et 21 lettres minuscules, chiffres et underscore",
-      "conflict": "Il existe déjà un compte avec ce pseudo. Merci d'en choisir un autre"
-    }
-  },
   "logo": {
     "label": "Logo",
     "action": "Modifier",
@@ -136,12 +87,6 @@
   "name": {
     "action": "Editer",
     "label": "Nom"
-  },
-  "password": {
-    "label": "Mot de passe",
-    "action": "Editer",
-    "placeholder": "********",
-    "none": "Aucun"
   },
   "prehashed_password": {
     "label": "Mot de passe",
@@ -174,21 +119,14 @@
       "malformed": "Le mot de passe doit contenir au moins 8 caractères"
     }
   },
-  "prehashed_password_secret": {
-    "label": "Saisissez votre mot de passe",
-    "placeholder": "Super Mot de passe",
-    "error": {
-      "invalid": "Le mot de passe est erroné"
-    }
-  },
-  "account_creation_secret": {
+  "setPassword": {
     "label": "Mot de passe",
     "placeholder": "Super Mot de passe",
     "error": {
       "malformed": "Le mot de passe doit contenir au moins 8 caractères"
     }
   },
-  "reset_password_secret": {
+  "resetPassword": {
     "label": "Nouveau mot de passe",
     "placeholder": "********",
     "error": {
@@ -196,29 +134,54 @@
       "malformed": "Le mot de passe doit contenir au moins 8 caractères"
     }
   },
-  "totp_secret": {
-    "label": "Time-Based-One-Time-Password",
-    "placeholder": "543232",
-    "error": {
-      "invalid": "Ce code est incorrect, veuillez réessayer",
-      "malformed": "Le code doit contenir 6 chiffres"
+  "identifier": {
+    "email": {
+      "label": "Email",
+      "placeholder": "rose.flamingo@misakey.com",
+      "helperText": "Saisissez votre email pour démarrer l'authentification",
+      "error": {
+        "required": "Oups, vous avez oublié de saisir un identifiant",
+        "malformed": "Oups, cet email n'est pas valide"
+      }
     }
   },
-  "totp_recovery_secret": {
-    "label": "Code de récupération TOTP",
-    "placeholder": "SpU34-pE5s8",
-    "error": {
-      "invalid": "Ce code est incorrect, veuillez réessayer",
-      "malformed": "Le code de récupération TOTP doit contenir 8 caractères séparés par un tiret"
-    }
-  },
-  "passwordVault": {
-    "label": "Mot de passe",
-    "placeholder": "********",
-    "action": "Valider",
-    "error": {
-      "required": "Le mot de passe est requis",
-      "invalid": "Le mot de passe est erroné"
+  "secret": {
+    "identity": {
+      "emailed_code": {
+        "label": "Code",
+        "placeholder": "123456",
+        "helperText": "Saisir le code reçu par e-mail",
+        "error": {
+          "expired": "Le code a expiré. Je dois en demander un nouveau",
+          "invalid": "Le code de confirmation est incorrect",
+          "malformed": "Le code de confirmation doit contenir 6 chiffres"
+        }
+      },
+      "prehashed_password": {
+        "label": "Saisissez votre mot de passe",
+        "placeholder": "Super Mot de passe",
+        "error": {
+          "invalid": "Le mot de passe est erroné"
+        }
+      }
+    },
+    "totp": {
+      "totp": {
+        "label": "Time-Based-One-Time-Password",
+        "placeholder": "543232",
+        "error": {
+          "invalid": "Ce code est incorrect, veuillez réessayer",
+          "malformed": "Le code doit contenir 6 chiffres"
+        }
+      },
+      "recovery": {
+        "label": "Code de récupération TOTP",
+        "placeholder": "SpU34-pE5s8",
+        "error": {
+          "invalid": "Ce code est incorrect, veuillez réessayer",
+          "malformed": "Le code de récupération TOTP doit contenir 8 caractères séparés par un tiret"
+        }
+      }
     }
   },
   "notifications": {
@@ -232,28 +195,10 @@
     "label": "Ma couleur",
     "action": "Editer"
   },
-  "signUpConfirm": {
-    "code": {
-      "error": {
-        "expired": "Ce code de confirmation a expiré. Je peux en demander un nouveau",
-        "invalid": "Le code de confirmation est incorrect",
-        "conflict": "L'email a déjà été revendiqué sur un autre compte",
-        "malformed": "Le code de confirmation doit contenir 6 chiffres"
-      },
-      "label": "Code de confirmation",
-      "placeholder": "161803"
-    }
-  },
   "tos": {
     "label": "J'accepte les CGUs",
     "error": {
       "required": "Je dois accepter les CGUs"
-    }
-  },
-  "value": {
-    "error": {
-      "required": "Je dois saisir une note",
-      "malformed": "Cette note est incorrecte"
     }
   },
   "boxes": {

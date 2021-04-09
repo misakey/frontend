@@ -13,8 +13,11 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { getCode } from '@misakey/core/helpers/apiError';
+import { notFound } from '@misakey/core/api/constants/errorTypes';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
@@ -36,8 +39,8 @@ import ButtonContactMailto from '@misakey/ui/Button/Contact/Mailto';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 
 import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
-import ButtonCreateAccount from '@misakey/react/auth/components/Button/CreateAccount';
 import withDialogContact from 'components/smart/Dialog/Boxes/Contact/with';
+import routes from 'routes';
 
 
 // CONSTANTS
@@ -81,6 +84,8 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const IdentityPublicReadOnly = forwardRef(({ t }, ref) => {
   const classes = useStyles();
+  const history = useHistory();
+  const handleHttpErrors = useHandleHttpErrors();
 
   const { id } = useParams();
   const { setIsDrawerForceClosed } = useScreenDrawerContext();
@@ -92,8 +97,19 @@ const IdentityPublicReadOnly = forwardRef(({ t }, ref) => {
     [id, isAuthenticated],
   );
 
+  const onError = useCallback(
+    (e) => {
+      const code = getCode(e);
+      handleHttpErrors(e);
+      if (code === notFound) {
+        history.push(routes._);
+      }
+    },
+    [handleHttpErrors, history],
+  );
+
   const { isFetching, data } = useFetchEffect(
-    getProfile,
+    getProfile, undefined, { onError },
   );
 
   const {
@@ -142,7 +158,8 @@ const IdentityPublicReadOnly = forwardRef(({ t }, ref) => {
         <BoxFlexFill />
         {!isAuthenticated && (
           <>
-            <ButtonCreateAccount
+            <ButtonConnect
+              authProps={{ extraStateParams: { shouldCreateAccount: true } }}
               text={t('common:createAccount')}
             />
             <Box ml={2}>

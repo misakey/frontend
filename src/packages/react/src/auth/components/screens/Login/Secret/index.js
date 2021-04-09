@@ -2,26 +2,24 @@ import React, { useState, useMemo, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
-import { withTranslation, Trans } from 'react-i18next';
-import { connect, useDispatch } from 'react-redux';
+import { Trans, useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 
 import { LARGE, APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
 import authRoutes from '@misakey/react/auth/routes';
-import { NEXT_STEP_REDIRECT, NEXT_STEP_AUTH } from '@misakey/core/auth/constants/step';
+import { NEXT_STEP_REDIRECT, AuthUndefinedMethodName } from '@misakey/core/auth/constants/step';
 import { STEP, INITIAL_VALUES, ERROR_KEYS } from '@misakey/core/auth/constants';
-
 import { getSecretValidationSchema } from '@misakey/react/auth/constants/validationSchemas';
-import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react/auth/store/reducers/sso';
+import { WEBAUTHN, IDENTITY_PASSWORD, IDENTITY_EMAILED_CODE, TOTP, TOTP_RECOVERY } from '@misakey/core/auth/constants/amr';
+
+import { PROP_TYPES as SSO_PROP_TYPES, selectors as ssoSelectors } from '@misakey/react/auth/store/reducers/sso';
 import { ssoUpdate } from '@misakey/react/auth/store/actions/sso';
 import createNewRootKeySharesFromAuthFlow from '@misakey/react/crypto/store/actions/createNewRootKeySharesFromAuthFlow';
 
-import { EMAILED_CODE, PREHASHED_PASSWORD, ACCOUNT_CREATION, WEBAUTHN, TOTP, TOTP_RECOVERY, AuthUndefinedMethodName, RESET_PASSWORD } from '@misakey/core/auth/constants/method';
-
 import compose from '@misakey/core/helpers/compose';
 import head from '@misakey/core/helpers/head';
-import objectToCamelCase from '@misakey/core/helpers/objectToCamelCase';
 import objectToCamelCaseDeep from '@misakey/core/helpers/objectToCamelCaseDeep';
 import props from '@misakey/core/helpers/props';
 import isNil from '@misakey/core/helpers/isNil';
@@ -30,24 +28,26 @@ import { getDetails, getCode } from '@misakey/core/helpers/apiError';
 import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 import { loginAuthStepBuilder } from '@misakey/core/auth/builder/loginAuthStep';
 import { isHydraErrorCode } from '@misakey/core/auth/helpers/errors';
+import { makeMetadata } from '@misakey/core/auth/helpers/method';
+import computeNextAuthMethod from '@misakey/core/auth/helpers/computeNextAuthMethod';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useClearUser } from '@misakey/hooks/useActions/loginSecret';
-import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useInitAuthStepEffect from '@misakey/react/auth/hooks/useInitAuthStep/effect';
 
 import CardSsoWithSlope from '@misakey/react/auth/components/Card/Sso/WithSlope';
 import Box from '@material-ui/core/Box';
-import SecretFormField from '@misakey/ui/Form/Field/Login/Secret';
-import IdentifierHiddenFormField from '@misakey/ui/Form/Field/Login/Identifier/Hidden';
+import SecretFormField from '@misakey/react/auth/components/Form/Login/Secret';
+import IdentifierHiddenFormField from '@misakey/react/auth/components/Form/Login/Identifier/Hidden';
 import Redirect from '@misakey/ui/Redirect';
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
 import BoxControls from '@misakey/ui/Box/Controls';
 import ButtonForgotPassword from '@misakey/react/auth/components/Button/ForgotPassword';
+import ButtonInitAuthStep from '@misakey/react/auth/components/Button/InitAuthStep';
 import ButtonForgotPasswordCancel from '@misakey/react/auth/components/Button/ForgotPassword/Cancel';
-import ButtonRenewAuthStep from '@misakey/react/auth/components/Button/RenewAuthStep';
 import SnackbarActionAuthRestart from '@misakey/ui/Snackbar/Action/AuthRestart';
 import SnackbarActionRefresh from '@misakey/ui/Snackbar/Action/Refresh';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
@@ -58,11 +58,14 @@ import CardUser from '@misakey/ui/Card/User';
 import IconButton from '@material-ui/core/IconButton';
 import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
 import ButtonSwitchTotpMethod from '@misakey/react/auth/components/Button/SwitchTotpMethod';
-
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
-import WebauthnLogin from '@misakey/react/auth/components/Webauthn/LoginField';
-import pick from '@misakey/core/helpers/pick';
+
+const {
+  authnState: authnStateSelector,
+  methodName: methodNameSelector,
+  methodMetadata: methodMetadataSelector,
+} = ssoSelectors;
 
 // CONSTANTS
 const CURRENT_STEP = STEP.secret;
@@ -83,74 +86,48 @@ const useStyles = makeStyles(() => ({
   buttonRoot: {
     width: 'auto',
   },
-  screenContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
   cardOverflowVisible: {
     overflow: 'visible',
   },
 }));
 
-
 // COMPONENTS
-const AuthLoginSecret = ({
-  identifier,
-  authnStep,
-  identity,
-  loginChallenge,
-  client,
-  resourceName,
-  dispatchSsoUpdate,
-  t,
-}) => {
+const AuthLoginSecret = ({ identifier, userPublicData, loginChallenge, client, resourceName }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+  const { t } = useTranslation(['common', 'auth']);
 
   const dispatch = useDispatch();
+  const authnState = useSelector(authnStateSelector);
+  const methodName = useSelector(methodNameSelector);
+  const methodMetadata = useSelector(methodMetadataSelector);
 
   const [redirectTo, setRedirectTo] = useState(null);
-  const authIdentifierTo = useGeneratePathKeepingSearchAndHash(authRoutes.signIn._);
-
-  const [reset, setReset] = useState(false);
 
   const initialValues = useMemo(() => INITIAL_VALUES[CURRENT_STEP], []);
 
-  const { methodName, identityId, metadata } = useSafeDestr(authnStep);
+  const { identityId } = useSafeDestr(authnState);
   const { name } = useSafeDestr(client);
+  const { availableAmrs } = useSafeDestr(authnState);
 
   const validationSchema = useMemo(
     () => getSecretValidationSchema(methodName),
     [methodName],
   );
 
-  const userPublicData = useMemo(
-    () => (isNil(identity) ? {} : { ...pick(['displayName', 'avatarUrl'], identity), identifier }),
-    [identifier, identity],
-  );
-
-  const onReset = useCallback(
-    () => {
-      setReset(true);
-    },
-    [setReset],
-  );
-
-  const onCancelReset = useCallback(
-    () => {
-      setReset(false);
-    },
-    [setReset],
+  const showCancelForgotPassword = useMemo(
+    () => methodName === IDENTITY_EMAILED_CODE && availableAmrs.includes(IDENTITY_PASSWORD),
+    [availableAmrs, methodName],
   );
 
   const onHandleBackupSecretShares = useCallback(
-    async ({ secret: password }, nextAccessToken) => {
+    async ({ secret: password }) => {
       try {
         await dispatch(createNewRootKeySharesFromAuthFlow({
           loginChallenge,
           identityId,
           password,
-        }, nextAccessToken));
+        }));
       } catch (error) {
         logSentryException(error, 'AuthFlow: create new root key share', { crypto: true }, 'warning');
         enqueueSnackbar(t('common:crypto.errors.rootKeyShare'), { variant: 'warning' });
@@ -163,33 +140,23 @@ const AuthLoginSecret = ({
     [dispatch, enqueueSnackbar, identityId, loginChallenge, t],
   );
 
-  const onSuccessLoginAuthStep = useCallback(
-    async (res, { values, setFieldValue }) => {
-      const {
-        redirectTo: nextRedirectTo,
-        next,
-        authnStep: nextAuthnStep,
-      } = objectToCamelCaseDeep(res);
-
-      // handle BackupSecretShares
-      if ([RESET_PASSWORD, PREHASHED_PASSWORD, ACCOUNT_CREATION].includes(methodName)) {
-        await onHandleBackupSecretShares(values);
-      }
+  const onSuccess = useCallback(
+    (res) => {
+      const { state, next, redirectTo: nextRedirectTo } = objectToCamelCaseDeep(res);
 
       if (next === NEXT_STEP_REDIRECT) {
         return setRedirectTo(nextRedirectTo);
       }
-      if (next === NEXT_STEP_AUTH) {
-        setFieldValue(CURRENT_STEP, '');
-        return dispatchSsoUpdate({ authnStep: objectToCamelCase(nextAuthnStep) });
-      }
 
-      return res;
+      return dispatch(ssoUpdate({
+        authnState: state,
+        methodName: computeNextAuthMethod(state),
+      }));
     },
-    [dispatchSsoUpdate, methodName, onHandleBackupSecretShares],
+    [dispatch],
   );
 
-  const onErrorLoginAuthStep = useCallback(
+  const onError = useCallback(
     async (e, { setFieldValue, setFieldError }) => {
       const code = getCode(e);
       const details = getDetails(e);
@@ -204,7 +171,7 @@ const AuthLoginSecret = ({
       const secretError = getSecretError(details);
 
       if (!isNil(secretError)) {
-        if (methodName === EMAILED_CODE) {
+        if (methodName === IDENTITY_PASSWORD) {
           setFieldValue(CURRENT_STEP, '');
         }
         return setFieldError(CURRENT_STEP, secretError);
@@ -226,10 +193,11 @@ const AuthLoginSecret = ({
   );
 
   const onLoginAuthStep = useCallback(
-    (values) => loginAuthStepBuilder(
-      { loginChallenge, identityId, methodName, pwdHashParams: metadata, ...values },
-    ),
-    [identityId, loginChallenge, metadata, methodName],
+    async (values) => {
+      const metadata = await makeMetadata(methodName, { ...values, metadata: methodMetadata });
+      return loginAuthStepBuilder({ loginChallenge, identityId, methodName, metadata });
+    },
+    [identityId, loginChallenge, methodMetadata, methodName],
   );
 
   const onSubmit = useCallback(
@@ -237,23 +205,28 @@ const AuthLoginSecret = ({
       setRedirectTo(null);
       try {
         const response = await onLoginAuthStep(values);
-        await onSuccessLoginAuthStep(response, { values, setFieldValue });
+        // handle BackupSecretShares
+        if (methodName === IDENTITY_PASSWORD) {
+          await onHandleBackupSecretShares(values);
+        }
+        setFieldValue(CURRENT_STEP, '');
+        onSuccess(response);
       } catch (err) {
-        onErrorLoginAuthStep(err, { setFieldError, setFieldValue });
+        onError(err, { setFieldError, setFieldValue });
       } finally {
         setSubmitting(false);
       }
     },
-    [onLoginAuthStep, onSuccessLoginAuthStep, onErrorLoginAuthStep],
+    [methodName, onError, onHandleBackupSecretShares, onLoginAuthStep, onSuccess],
   );
 
   const onClearUser = useClearUser();
 
-  const primary = useMemo(
-    () => ({
-      text: t('common:next'),
-    }),
-    [t],
+  const { isFetching: isFetchingMetadata } = useInitAuthStepEffect(
+    loginChallenge,
+    identityId,
+    methodName,
+    methodMetadata,
   );
 
   if (!isNil(redirectTo)) {
@@ -261,64 +234,46 @@ const AuthLoginSecret = ({
       <Redirect
         to={redirectTo}
         forceRefresh
-        manualRedirectPlaceholder={(
-          <Screen isLoading />
-        )}
-      />
-    );
-  }
-
-  if (isNil(methodName)) {
-    return (
-      <Redirect
-        to={authIdentifierTo}
+        manualRedirectPlaceholder={<Screen isLoading />}
       />
     );
   }
 
   return (
-    <CardSsoWithSlope
-      slopeProps={SLOPE_PROPS}
-      avatar={<AvatarClientSso client={client} />}
-      avatarSize={LARGE}
-      header={(
-        <AppBar color="primary">
-          {reset ? (
-            <ButtonForgotPasswordCancel
-              color="background"
-              loginChallenge={loginChallenge}
-              identifier={identifier}
-              onClick={onCancelReset}
-              text={(
-                <>
-                  <ArrowBackIcon />
-                  {t('auth:forgotPassword.back')}
-                </>
-              )}
-            />
-          ) : (
-            <Button
-              color="background"
-              standing={BUTTON_STANDINGS.TEXT}
-              onClick={onClearUser}
-              text={(
-                <>
-                  <ArrowBackIcon />
-                  {t('auth:login.secret.changeAccount')}
-                </>
-                )}
-            />
-          )}
-        </AppBar>
-      )}
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={onSubmit}
+      validateOnChange={false}
     >
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={onSubmit}
-        validateOnChange={false}
-      >
-        <Form>
+      <Box component={Form} height="100%">
+        <CardSsoWithSlope
+          slopeProps={SLOPE_PROPS}
+          avatar={<AvatarClientSso client={client} />}
+          avatarSize={LARGE}
+          header={(
+            <AppBar color="primary">
+              {showCancelForgotPassword ? (
+                <ButtonForgotPasswordCancel
+                  color="background"
+                  text={t('auth:login.secret.cancelForgotPassword')}
+                />
+              ) : (
+                <Button
+                  color="background"
+                  standing={BUTTON_STANDINGS.TEXT}
+                  onClick={onClearUser}
+                  text={(
+                    <>
+                      <ArrowBackIcon />
+                      {t('auth:login.secret.changeAccount')}
+                    </>
+                  )}
+                />
+              )}
+            </AppBar>
+          )}
+        >
           <Box>
             <Box display="flex" flexDirection="column">
               <Title align="center" gutterBottom={false}>
@@ -332,7 +287,7 @@ const AuthLoginSecret = ({
               <CardUser
                 my={3}
                 className={classes.cardOverflowVisible}
-                action={methodName !== ACCOUNT_CREATION && (
+                action={(
                   <IconButton aria-label={t('common:signOut')} onClick={onClearUser}>
                     <CloseIcon />
                   </IconButton>
@@ -340,51 +295,48 @@ const AuthLoginSecret = ({
                 {...userPublicData}
               >
                 <IdentifierHiddenFormField value={identifier} />
-                {methodName === WEBAUTHN ? (
-                  <WebauthnLogin metadata={metadata} fieldKey={CURRENT_STEP} />
-                ) : (
-                  <SecretFormField
-                    methodName={methodName}
-                    FormHelperTextProps={{ component: FormHelperTextInCard }}
-                    margin="none"
-                  />
-                )}
+                <SecretFormField
+                  methodName={methodName}
+                  FormHelperTextProps={{ component: FormHelperTextInCard }}
+                  margin="none"
+                />
               </CardUser>
-              {methodName === EMAILED_CODE && (
-                <ButtonRenewAuthStep
-                  classes={{ root: classes.buttonRoot }}
-                  loginChallenge={loginChallenge}
-                  authnStep={authnStep}
-                  text={t('auth:login.form.action.getANewCode.button')}
-                />
+              {methodName === IDENTITY_EMAILED_CODE && (
+              <ButtonInitAuthStep
+                classes={{ root: classes.buttonRoot }}
+                loginChallenge={loginChallenge}
+                methodName={methodName}
+                identityId={identityId}
+                successText={t('auth:login.form.action.getANewCode.success')}
+                text={t('auth:login.form.action.getANewCode.button')}
+              />
               )}
-              {methodName === PREHASHED_PASSWORD && (
-                <ButtonForgotPassword
-                  classes={{ root: classes.buttonRoot }}
-                  loginChallenge={loginChallenge}
-                  identifier={identifier}
-                  text={t('auth:login.form.action.forgotPassword')}
-                  onClick={onReset}
-                />
+              {methodName === IDENTITY_PASSWORD && (
+              <ButtonForgotPassword
+                classes={{ root: classes.buttonRoot }}
+                text={t('auth:login.form.action.forgotPassword')}
+              />
               )}
               {[TOTP, TOTP_RECOVERY].includes(methodName) && (
-                <ButtonSwitchTotpMethod
-                  authnStep={authnStep}
-                  classes={{ buttonRoot: classes.buttonRoot }}
-                />
+              <ButtonSwitchTotpMethod
+                methodName={methodName}
+                classes={{ root: classes.buttonRoot }}
+              />
               )}
-              {methodName !== WEBAUTHN && (
-                <BoxControls
-                  mt={2}
-                  formik
-                  primary={primary}
-                />
-              )}
+              <BoxControls
+                mt={2}
+                formik
+                primary={{
+                  text: t('common:next'),
+                  disabled: methodName === WEBAUTHN,
+                  isLoading: isFetchingMetadata,
+                }}
+              />
             </Box>
           </Box>
-        </Form>
-      </Formik>
-    </CardSsoWithSlope>
+        </CardSsoWithSlope>
+      </Box>
+    </Formik>
   );
 };
 
@@ -393,12 +345,8 @@ AuthLoginSecret.propTypes = {
   loginChallenge: PropTypes.string.isRequired,
   client: SSO_PROP_TYPES.client.isRequired,
   resourceName: PropTypes.string,
-  // withTranslation
-  t: PropTypes.func.isRequired,
-  // CONNECT
-  authnStep: SSO_PROP_TYPES.authnStep.isRequired,
   identity: SSO_PROP_TYPES.identity.isRequired,
-  dispatchSsoUpdate: PropTypes.func.isRequired,
+  userPublicData: PropTypes.object.isRequired,
 };
 
 AuthLoginSecret.defaultProps = {
@@ -406,16 +354,4 @@ AuthLoginSecret.defaultProps = {
   resourceName: '',
 };
 
-// CONNECT
-const mapStateToProps = (state) => ({
-  authnStep: state.sso.authnStep,
-  identity: state.sso.identity,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  dispatchSsoUpdate: (sso) => Promise.resolve(
-    dispatch(ssoUpdate(sso)),
-  ),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation(['common', 'auth'])(AuthLoginSecret));
+export default AuthLoginSecret;

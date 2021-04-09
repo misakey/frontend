@@ -21,7 +21,7 @@ import { useDateFormatMemo } from '@misakey/hooks/useDateFormat';
 import EventCard from 'components/dumb/Card/Event';
 import Typography from '@material-ui/core/Typography';
 import BoxInvitationButton from 'components/smart/Menu/Notifications/Misakey/Actions/BoxInvitationButton';
-import ButtonCreateAccount from '@misakey/react/auth/components/Button/CreateAccount';
+import ButtonCreatePassword from '@misakey/react/auth/components/Button/CreatePassword';
 import Box from '@material-ui/core/Box';
 
 // CONSTANTS
@@ -32,14 +32,14 @@ const NOT_ACK_STYLE = { style: { fontWeight: 800 } };
 const MessageRow = ({
   index, style,
   notification, previousNotification, data,
-  acr, identity,
+  identity,
 }) => {
   const rowRoot = useRef(null);
   const { t } = useTranslation(['boxes', 'common']);
 
   const { hasNextPage, onClick, setSize } = useSafeDestr(data);
 
-  const { displayName } = useSafeDestr(identity);
+  const { displayName, hasCrypto } = useSafeDestr(identity);
 
   const author = useMemo(
     () => ({ displayName: t('boxes:notifications.byIdentity.displayName'), avatarUrl: 'https://static.misakey.com/ssoClientsLogo/misakey.png' }),
@@ -82,9 +82,9 @@ const MessageRow = ({
           />
         );
       }
-      if (type === USER_CREATE_IDENTITY && acr === 1) {
+      if (type === USER_CREATE_IDENTITY && !hasCrypto) {
         return (
-          <ButtonCreateAccount
+          <ButtonCreatePassword
             onClick={onClick}
             standing={BUTTON_STANDINGS.TEXT}
             text={t('common:setupPassword')}
@@ -93,7 +93,7 @@ const MessageRow = ({
       }
       return null;
     },
-    [type, acr, onClick, notification, t],
+    [type, hasCrypto, onClick, notification, t],
   );
 
   const titleProps = useMemo(
@@ -149,7 +149,6 @@ MessageRow.propTypes = {
     setSize: PropTypes.func.isRequired,
   }).isRequired,
   // CONNECT
-  acr: AUTH_PROPS_TYPES.acr.isRequired,
   identity: AUTH_PROPS_TYPES.identity.isRequired,
   notification: PropTypes.shape(IdentityNotificationsSchema.propTypes).isRequired,
   previousNotification: PropTypes.shape(IdentityNotificationsSchema.propTypes),
@@ -174,7 +173,7 @@ const mapStateToProps = (state, { index, data: { items } }) => {
     state.entities,
   );
   return {
-    acr: authSelectors.acr(state),
+    hasCrypto: authSelectors.hasCrypto(state),
     identity: authSelectors.identity(state),
     notification,
     previousNotification,

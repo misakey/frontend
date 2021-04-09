@@ -1,28 +1,27 @@
-import React, { useCallback, forwardRef } from 'react';
+import React, { useCallback, forwardRef, useContext } from 'react';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import objectToSnakeCase from '@misakey/core/helpers/objectToSnakeCase';
 import isFunction from '@misakey/core/helpers/isFunction';
 import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
-import useAskSigninWithLoginHint from '@misakey/react/auth/hooks/useAskSigninWithLoginHint';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import { UserManagerContext } from '@misakey/react/auth/components/OidcProvider/Context';
 
 // COMPONENTS
 const ButtonConnect = forwardRef(
   ({ authProps, children, onClick, t, ...props }, ref) => {
-    const askSigninWithLoginHint = useAskSigninWithLoginHint();
+    const { userManager } = useContext(UserManagerContext);
 
     const onButtonClick = useCallback(
       (...args) => {
         if (isFunction(onClick)) {
           onClick(...args);
         }
-        askSigninWithLoginHint(objectToSnakeCase(authProps));
+        userManager.signinRedirect(authProps);
       },
-      [authProps, onClick, askSigninWithLoginHint],
+      [onClick, userManager, authProps],
     );
 
     return (

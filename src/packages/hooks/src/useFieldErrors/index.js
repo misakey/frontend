@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useField } from 'formik';
 import { getFieldError, getArrayFieldError } from '@misakey/core/helpers/formikError';
 
-export default ({ name, prefix, multiple, parseError, ...rest }) => {
+export default ({ name, prefix, suffix, multiple, parseError, ...rest }) => {
   const fieldProps = useMemo(
     () => {
       if (multiple) {
@@ -18,9 +18,9 @@ export default ({ name, prefix, multiple, parseError, ...rest }) => {
   // {displayErrors: Boolean, errorKeys: []}
   const errorMeta = useMemo(
     () => (multiple
-      ? getArrayFieldError({ field, meta, prefix }, parseError)
-      : getFieldError({ field, meta, prefix }, parseError)),
-    [multiple, field, meta, prefix, parseError],
+      ? getArrayFieldError({ field, meta, prefix, suffix }, parseError)
+      : getFieldError({ field, meta, prefix, suffix }, parseError)),
+    [multiple, field, meta, prefix, suffix, parseError],
   );
 
   return useMemo(

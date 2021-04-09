@@ -51,7 +51,7 @@ const SLOPE_PROPS = {
 
 // COMPONENTS
 const AuthConsent = ({
-  authnStep,
+  authnState,
   client,
   t,
 }) => {
@@ -63,7 +63,7 @@ const AuthConsent = ({
 
   const { consentChallenge } = useSafeDestr(searchParams);
 
-  const { identityId } = useSafeDestr(authnStep);
+  const { identityId } = useSafeDestr(authnState);
 
   const { id, tosUri, policyUri, name } = useSafeDestr(client);
 
@@ -175,18 +175,18 @@ AuthConsent.propTypes = {
   // withTranslation
   t: PropTypes.func.isRequired,
   // CONNECT
-  authnStep: SSO_PROP_TYPES.authnStep,
+  authnState: SSO_PROP_TYPES.authnState,
   client: SSO_PROP_TYPES.client,
 };
 
 AuthConsent.defaultProps = {
-  authnStep: null,
+  authnState: null,
   client: null,
 };
 
 // CONNECT
 const mapStateToProps = (state) => ({
-  authnStep: state.sso.authnStep,
+  authnState: state.sso.authnState,
   client: state.sso.client,
 });
 

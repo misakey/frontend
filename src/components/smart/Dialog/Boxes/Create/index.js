@@ -37,7 +37,7 @@ import IconButtonMenuAccount from 'components/smart/IconButton/Menu/Account';
 import DialogBoxesCreatePasteLink from 'components/smart/Dialog/Boxes/Create/PasteLink';
 
 // CONSTANTS
-const { acr: ACR_SELECTOR } = authSelectors;
+const { hasCrypto: hasCryptoSelector } = authSelectors;
 const FIELD_BOX_NAME = 'name';
 const INITIAL_VALUES = { [FIELD_BOX_NAME]: '' };
 
@@ -80,7 +80,7 @@ function CreateBoxDialog({
 
   const generatePathKeepingSearchAndHashCallback = useGeneratePathKeepingSearchAndHashCallback();
 
-  const acr = useSelector(ACR_SELECTOR);
+  const hasCrypto = useSelector(hasCryptoSelector);
 
   const ownerOrgId = useOrgId();
 
@@ -165,7 +165,7 @@ function CreateBoxDialog({
       aria-describedby={DESCRIPTION_ID}
       {...omitTranslationProps(props)}
     >
-      {isInvitation || acr === 1
+      {isInvitation || !hasCrypto
         ? (
           <DialogBoxesCreatePasteLink
             fullScreen={fullScreen}

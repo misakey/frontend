@@ -120,7 +120,7 @@ const ListItemTotp = ({ identity, onChangeMFAMethod }) => {
 
   const onResetTotpRecoveryCodes = useCallback(
     async () => {
-      if (currentAcr < 3) { askSigninRedirect({ acrValues: 3 }); return; }
+      if (currentAcr < 2) { askSigninRedirect({ acrValues: 2 }); return; }
       try {
         const { recoveryCodes: newRecoveryCodes } = await resetTotpRecoveryCodes(identityId);
         setRecoveryCodes(newRecoveryCodes);

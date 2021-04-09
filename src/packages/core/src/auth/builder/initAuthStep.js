@@ -16,5 +16,5 @@ export default async ({ loginChallenge, identityId, methodName }) => {
     }),
   });
 
-  return API.use(API.endpoints.auth.renewAuthStep).build(null, payload).send();
+  return API.use(API.endpoints.auth.initAuthStep).build(null, payload).send();
 };

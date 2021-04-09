@@ -23,8 +23,6 @@ const RedirectAuthCallbackExample = () => (
           render={(routerProps) => (
             <RedirectAuthCallback
               fallbackReferrer={REFFERER}
-              handleSuccess={(user) => console.log(user)}
-              handleError={(error) => console.log(error)}
               {...routerProps}
             />
           )}

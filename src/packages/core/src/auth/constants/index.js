@@ -1,4 +1,4 @@
-import { VALUE_KEY, METADATA_KEYS } from '@misakey/core/auth/constants/method';
+import { VALUE_KEY, METADATA_KEYS } from '@misakey/core/auth/constants/step';
 
 export const STEP = {
   identifier: 'identifier',

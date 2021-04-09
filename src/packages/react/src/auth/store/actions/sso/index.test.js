@@ -1,4 +1,3 @@
-import { PREHASHED_PASSWORD } from '@misakey/core/auth/constants/method';
 
 import {
   SSO_RESET, SSO_UPDATE,
@@ -11,7 +10,7 @@ describe('testing sso actions', () => {
       expect(ssoReset()).toEqual({ type: SSO_RESET });
     });
     it('should create an SSO_UPDATE action', () => {
-      const ACR = 88;
+      const ACR = 2;
       const payload = {
         client: {
           id: 'efrthykol',
@@ -22,9 +21,11 @@ describe('testing sso actions', () => {
           displayName: 't0t0',
           avatarUrl: 'efgkh',
         },
-        authnStep: {
-          identityId: 'djifdrelktjklfs',
-          methodName: PREHASHED_PASSWORD,
+        authnState: {
+          availableAmrs: ['identity:emailed_code', 'identity:prehashed_password', 'totp:totp', 'totp:recovery'],
+          currentAcr: '0',
+          currentAmrs: [],
+          requiredAcr: '2',
         },
         loginChallenge: 'dsfopkzklf',
         loginHint: '',

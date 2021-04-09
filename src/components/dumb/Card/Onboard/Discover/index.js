@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -8,21 +8,14 @@ import BoxAlinea from '@misakey/ui/Box/Alinea';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
-import useAskSigninWithLoginHint from '@misakey/react/auth/hooks/useAskSigninWithLoginHint';
+
+import useAskToSetPassword from '@misakey/react/auth/hooks/useAskToSetPassword';
 
 // COMPONENTS
 const CardOnboardDiscover = () => {
   const { t } = useTranslation('onboard');
 
-  const askSigninWithLoginHint = useAskSigninWithLoginHint();
-
-  const onCreateAccount = useCallback(
-    async () => askSigninWithLoginHint({
-      acrValues: 2,
-      prompt: 'login',
-    }),
-    [askSigninWithLoginHint],
-  );
+  const askToSetPassword = useAskToSetPassword();
 
   return (
     <Box width="100%" mx={4} my={4}>
@@ -37,7 +30,7 @@ const CardOnboardDiscover = () => {
           <Button
             text={t('onboard:createFreeAccount')}
             standing={BUTTON_STANDINGS.MAIN}
-            onClick={onCreateAccount}
+            onClick={askToSetPassword}
           />
         </Box>
         <BoxAlinea>

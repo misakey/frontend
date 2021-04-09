@@ -143,7 +143,7 @@ function makeCryptoResetPayload({
   return payload;
 }
 
-export async function accountCreationSecretStoragePayload(password) {
+export async function setPasswordSecretStoragePayload(password) {
   const {
     newIdentityPublicKey,
     newIdentityNonIdentifiedPublicKey,
@@ -159,10 +159,11 @@ export async function accountCreationSecretStoragePayload(password) {
     newIdentityNonIdentifiedPublicKey,
   });
 
-  return payload;
+  return {
+    payload,
+    secretStorage: state.secretStorage,
+  };
 }
-
-export const passwordResetSecretStoragePayload = accountCreationSecretStoragePayload;
 
 export async function encryptRootKeyWithNewPassword(rootKey, newPassword) {
   const passwordHash = await hashPassword(newPassword);

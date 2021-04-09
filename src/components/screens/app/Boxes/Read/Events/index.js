@@ -35,7 +35,7 @@ import Grow from '@material-ui/core/Grow';
 import ArrowDownWardIcon from '@material-ui/icons/ArrowDownward';
 
 // CONSTANTS
-const { identityId: IDENTITY_ID_SELECTOR, accountId: ACCOUNT_ID_SELECTOR } = authSelectors;
+const { identityId: IDENTITY_ID_SELECTOR, hasCrypto: HAS_CRYPTO_SELECTOR } = authSelectors;
 
 // @FIXME to test
 const SCROLL_THRESHOLD = 1;
@@ -77,7 +77,7 @@ function BoxEvents({ box, t, belongsToCurrentUser }) {
 
   const { id, eventsCount } = useMemo(() => box, [box]);
 
-  const accountId = useSelector(ACCOUNT_ID_SELECTOR);
+  const hasCrypto = useSelector(HAS_CRYPTO_SELECTOR);
   const identityId = useSelector(IDENTITY_ID_SELECTOR);
 
   const headerRef = (ref) => {
@@ -146,7 +146,7 @@ function BoxEvents({ box, t, belongsToCurrentUser }) {
                 belongsToCurrentUser={belongsToCurrentUser}
               />
             </Box>
-            {isNil(accountId) && (
+            {!hasCrypto && (
               <Alert
                 severity="warning"
                 action={(

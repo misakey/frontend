@@ -82,9 +82,8 @@ export default class UserManager extends OidcClient {
     const { mid: identityId, aid, acr: userAcr, sco: scope, ...rest } = this.user;
     const accountId = isString(aid) && isEmpty(aid) ? null : aid;
     const acr = isEmpty(userAcr) ? null : parseInt(userAcr, 10);
-    const hasAccount = !isNil(accountId);
 
-    return { expired, identityId, accountId, hasAccount, scope, acr, ...rest };
+    return { expired, identityId, accountId, scope, acr, ...rest };
   }
 
   async getUser() {
@@ -179,7 +178,7 @@ export default class UserManager extends OidcClient {
 
   async signinEnd(url, { currentSub, silent } = {}) {
     return this.processSigninResponse(url)
-      .then(({ user, referrer }) => {
+      .then(({ user, state }) => {
         const { profile, expiresAt } = user;
 
         if (!isNil(currentSub)) {
@@ -194,7 +193,7 @@ export default class UserManager extends OidcClient {
         return {
           user: this.mapUserInfo(),
           expiresAt,
-          referrer,
+          state,
         };
       })
       .catch((err) => {

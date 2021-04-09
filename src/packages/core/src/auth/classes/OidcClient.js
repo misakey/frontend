@@ -80,6 +80,7 @@ export default class OidcClient {
     acrValues,
     referrer = `${window.location.pathname}${window.location.search || ''}${window.location.hash || ''}`,
     loginHint,
+    extraStateParams,
     ...rest
   }) {
     const err = validateProperties(
@@ -99,6 +100,7 @@ export default class OidcClient {
       authority,
       referrer,
       acrValues,
+      ...extraStateParams,
     };
 
     const query = new URLSearchParams(
@@ -323,16 +325,14 @@ export default class OidcClient {
       throw new Error('Could not finalize auth flow: missing state in storage');
     }
 
-    const { referrer } = state;
-
     try {
       const user = await this.validateSigninResponse(state, params);
       this.removeState(stateId);
-      return { user, referrer };
+      return { user, state };
     } catch (err) {
       this.clearTokenInfo();
       this.removeState(stateId);
-      return Promise.reject(new SigninResponseError(err, referrer));
+      return Promise.reject(new SigninResponseError(err, state));
     }
   }
 }

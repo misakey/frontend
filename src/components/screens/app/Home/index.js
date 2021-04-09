@@ -18,12 +18,12 @@ import useDatatagId from 'hooks/useDatatagId';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useFetchOrganizations from 'hooks/useFetchOrganizations';
 
-import RouteAcr from '@misakey/react/auth/components/Route/Acr';
 import ScreenDrawerContextProvider from 'components/smart/Screen/Drawer';
 import BoxesList from 'components/screens/app/Boxes/List';
 import VaultLockedScreen from 'components/screens/app/VaultLocked';
 import VaultDocuments from 'components/screens/app/Documents';
 import Boxes from 'components/screens/app/Boxes';
+import RoutePasswordRequired from '@misakey/react/auth/components/Route/PasswordRequired';
 
 // CONSTANTS
 const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
@@ -133,9 +133,7 @@ function Home() {
       initialIsDrawerOpen={isNothingSelected}
     >
       <Switch>
-        <RouteAcr
-          acr={2}
-          options={{ prompt: 'login' }}
+        <RoutePasswordRequired
           path={routes.documents._}
           component={VaultDocuments}
         />

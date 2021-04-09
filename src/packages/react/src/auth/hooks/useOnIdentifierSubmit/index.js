@@ -1,38 +1,54 @@
 
-import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { useTranslation } from 'react-i18next';
 
 import authRoutes from '@misakey/react/auth/routes';
+import { getCode } from '@misakey/core/helpers/apiError';
+
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import { ssoUpdate, onSetIdentifier } from '@misakey/react/auth/store/actions/sso';
-import { selectors as ssoSelectors } from '@misakey/react/auth/store/reducers/sso';
 
+import SnackbarActionAuthRestart from '@misakey/ui/Snackbar/Action/AuthRestart';
+import useGetAskedAuthState from '@misakey/react/auth/hooks/useGetAskedAuthState';
 import updateAuthIdentities from '@misakey/core/auth/builder/updateAuthIdentities';
-import isNil from '@misakey/core/helpers/isNil';
-
-const { acr: askedAcrSelectors } = ssoSelectors;
+import computeNextAuthMethod from '@misakey/core/auth/helpers/computeNextAuthMethod';
 
 export default (loginChallenge) => {
   const dispatch = useDispatch();
   const { push } = useHistory();
   const { search } = useLocation();
-  const askedAcr = useSelector(askedAcrSelectors);
+  const { enqueueSnackbar } = useSnackbar();
+  const { t } = useTranslation('auth');
+
+  const { state } = useGetAskedAuthState();
+
+  const { shouldCreateAccount } = useSafeDestr(state);
 
   return useCallback(
     (nextIdentifier) => updateAuthIdentities({ loginChallenge, identifierValue: nextIdentifier })
       .then((response) => {
-        const { identity } = response;
-        const { hasAccount } = identity;
+        const { identity, authnState } = response;
+        const { hasCrypto } = identity;
         return Promise.all([
-          dispatch(ssoUpdate(response)),
+          dispatch(ssoUpdate({ ...response, methodName: computeNextAuthMethod(authnState) })),
           dispatch(onSetIdentifier(nextIdentifier)),
         ]).then(() => {
-          if (hasAccount || !isNil(askedAcr)) {
+          if (hasCrypto || shouldCreateAccount === true) {
             push({ pathname: authRoutes.signIn.secret, search });
           }
         });
+      })
+      .catch((e) => {
+        const code = getCode(e);
+        enqueueSnackbar(t(`auth:error.flow.${code}`), {
+          variant: 'warning',
+          action: (key) => <SnackbarActionAuthRestart id={key} />,
+        });
       }),
-    [loginChallenge, dispatch, askedAcr, push, search],
+    [loginChallenge, dispatch, shouldCreateAccount, push, search, enqueueSnackbar, t],
   );
 };

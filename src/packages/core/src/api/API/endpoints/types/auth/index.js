@@ -18,7 +18,7 @@ export default {
     path: '/auth/login/authn-step',
     withCsrfToken: true,
   },
-  renewAuthStep: {
+  initAuthStep: {
     method: 'POST',
     path: '/authn-steps',
     withCsrfToken: true,

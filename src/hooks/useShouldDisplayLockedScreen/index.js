@@ -5,11 +5,8 @@ import { useMemo } from 'react';
 import { selectors } from '@misakey/react/crypto/store/reducers';
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
-import isNil from '@misakey/core/helpers/isNil';
-
 // CONSTANTS
-const { accountId: ACCOUNT_ID_SELECTOR } = authSelectors;
-
+const { hasCrypto: HAS_CRYPTO_SELECTOR } = authSelectors;
 
 // HOOKS
 export default () => {
@@ -19,11 +16,11 @@ export default () => {
   );
 
   const isCryptoLoaded = useSelector(isCryptoLoadedSelector);
-  const accountId = useSelector(ACCOUNT_ID_SELECTOR);
+  const hasCrypto = useSelector(HAS_CRYPTO_SELECTOR);
 
   const shouldDisplayLockedScreen = useMemo(
-    () => !isNil(accountId) && !isCryptoLoaded,
-    [accountId, isCryptoLoaded],
+    () => hasCrypto === true && !isCryptoLoaded,
+    [hasCrypto, isCryptoLoaded],
   );
 
   return shouldDisplayLockedScreen;

@@ -10,8 +10,8 @@ import IdentityNotifications from '@misakey/react/auth/components/screens/Identi
 import IdentityColors from '@misakey/react/auth/components/screens/Identity/Colors';
 import IdentityAvatar from '@misakey/react/auth/components/screens/Identity/Avatar';
 import IdentityPublic from '@misakey/react/auth/components/screens/Identity/Public';
-import RouteAcr from '@misakey/react/auth/components/Route/Acr';
 import Accounts from '@misakey/react/auth/components/screens/Identity/Account';
+import RoutePasswordRequired from '@misakey/react/auth/components/Route/PasswordRequired';
 
 // COMPONENTS
 function Identity(props) {
@@ -69,9 +69,7 @@ function Identity(props) {
           />
         )}
       />
-      <RouteAcr
-        acr={2}
-        options={{ prompt: 'login' }}
+      <RoutePasswordRequired
         path={authRoutes.identities.accounts._}
         component={Accounts}
       />

@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 
 import PropTypes from 'prop-types';
 import { withTranslation, Trans } from 'react-i18next';
-import { PROP_TYPES as SSO_PROP_TYPES, selectors as ssoSelectors } from '@misakey/react/auth/store/reducers/sso';
+import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react/auth/store/reducers/sso';
 import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER, LARGE } from '@misakey/ui/constants/sizes';
 
 import isEmpty from '@misakey/core/helpers/isEmpty';
@@ -11,7 +10,6 @@ import isNil from '@misakey/core/helpers/isNil';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import pick from '@misakey/core/helpers/pick';
 
 import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
@@ -28,7 +26,6 @@ const SLOPE_PROPS = {
   // @FIXME approximate spacing to align card content with slope
   height: APPBAR_HEIGHT + AVATAR_SIZE * LARGE_MULTIPLIER + 116,
 };
-const { identity: identitySelector } = ssoSelectors;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -47,6 +44,8 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const AuthLoginIdentifier = ({
   loginChallenge,
+  identity,
+  userPublicData,
   client,
   identifier,
   resourceName,
@@ -54,15 +53,9 @@ const AuthLoginIdentifier = ({
 }) => {
   const classes = useStyles();
   const { name } = useSafeDestr(client);
-  const identity = useSelector(identitySelector);
 
   const displayForm = useMemo(() => isNil(identity) && !isLoading, [identity, isLoading]);
   const displayNoAccount = useMemo(() => !isNil(identity) && !isLoading, [identity, isLoading]);
-
-  const userPublicData = useMemo(
-    () => (isNil(identity) ? { identifier } : { ...pick(['displayName', 'avatarUrl'], identity), identifier }),
-    [identifier, identity],
-  );
 
   return (
     <CardSsoWithSlope
@@ -98,12 +91,15 @@ AuthLoginIdentifier.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   loginChallenge: PropTypes.string.isRequired,
   identifier: PropTypes.string.isRequired,
+  identity: SSO_PROP_TYPES.identity,
+  userPublicData: PropTypes.object.isRequired,
   client: SSO_PROP_TYPES.client.isRequired,
   resourceName: PropTypes.string,
 };
 
 AuthLoginIdentifier.defaultProps = {
   resourceName: '',
+  identity: null,
 };
 
 export default withTranslation(['auth', 'common'])(AuthLoginIdentifier);

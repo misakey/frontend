@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 
-import { PREHASHED_PASSWORD } from '@misakey/core/auth/constants/method';
+import { PREHASHED_PASSWORD } from '@misakey/react/auth/constants/account/password';
 import { openVaultValidationSchema } from '@misakey/react/auth/constants/validationSchemas/vault';
 import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 import PropTypes from 'prop-types';

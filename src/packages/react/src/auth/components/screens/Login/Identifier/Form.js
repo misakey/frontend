@@ -18,8 +18,8 @@ import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useOnIdentifierSubmit from '@misakey/react/auth/hooks/useOnIdentifierSubmit';
 
 import CardUser from '@misakey/react/auth/components/Card/User';
-import LoginFormField from '@misakey/ui/Form/Field/Login/Identifier';
-import SecretHiddenFormField from '@misakey/ui/Form/Field/Login/Secret/Hidden';
+import LoginFormField from '@misakey/react/auth/components/Form/Login/Identifier';
+import SecretHiddenFormField from '@misakey/react/auth/components/Form/Login/Secret/Hidden';
 import BoxControls from '@misakey/ui/Box/Controls';
 import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
 

@@ -49,16 +49,14 @@ const mergeIdentity = (state, identity) => (isNil(identity)
   : merge({}, (state.identity || {}), identity)
 );
 
-const syncIdentity = (state, { accountId, identityId }) => {
+const syncIdentity = (state, { identityId }) => {
   if (isNil(identityId) || isNil(state.identity)) { return state.identity; }
 
-  const { id: currentIdentityId, accountId: currentAccountId } = state.identity;
+  const { id: currentIdentityId } = state.identity;
 
   const identityHasChanged = currentIdentityId !== identityId;
-  const identityUpgrade = currentAccountId !== accountId;
 
   if (identityHasChanged) { return null; }
-  if (identityUpgrade) { return mergeIdentity(state, { accountId, hasAccount: true }); }
   return state.identity;
 };
 
@@ -81,7 +79,7 @@ function clearIdentity(state) {
 }
 
 function loadUserInfo(state, { accountId, identityId, acr, scope }) {
-  const nextIdentity = syncIdentity(state, { accountId, identityId });
+  const nextIdentity = syncIdentity(state, { identityId });
 
   const newState = {
     ...state,
@@ -133,9 +131,9 @@ export const selectors = {
     identitySelector,
     prop('accountId'),
   ),
-  hasAccount: createSelector(
+  hasCrypto: createSelector(
     identitySelector,
-    prop('hasAccount'),
+    prop('hasCrypto'),
   ),
   identifierValue: createSelector(
     identitySelector,

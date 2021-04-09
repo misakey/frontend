@@ -12,7 +12,7 @@ export default ({ displayError, errorKeys, field, helperText, ...rest }) => {
 
   return useMemo(
     () => {
-      const { form, prefix, ...restProps } = rest;
+      const { form, prefix, suffix, ...restProps } = rest;
       return {
         ...field,
         ...restProps,
