@@ -19,6 +19,7 @@ import useLoadSecretsFromShares from '@misakey/react/crypto/hooks/useLoadSecrets
 import useIdentity from '@misakey/react/auth/hooks/useIdentity';
 import useLoadedAnimation from '@misakey/hooks/useLoadedAnimation';
 import SetPasswordContextProvider from '@misakey/react/auth/components/Dialog/Password/Create/Context';
+import useCheckAccessToOrg from 'hooks/useCheckAccessToOrg';
 
 // LAZY
 const Profile = lazy(() => retry(() => import('components/screens/app/Profile')));
@@ -47,6 +48,8 @@ const BoxesApp = () => {
   );
 
   const loadedAnimation = useLoadedAnimation(isLoading);
+
+  useCheckAccessToOrg();
 
   if (!loadedAnimation) {
     return <ScreenSplashOidc done={done} />;

@@ -11,7 +11,7 @@ import getNextSearch from '@misakey/core/helpers/getNextSearch';
 // HOOKS
 export default (box) => {
   const { ownerOrgId, datatagId } = useSafeDestr(box);
-  const { pathname, search } = useLocation();
+  const { search, ...restLocation } = useLocation();
   const { orgId: locationOrgId, datatagId: locationDatatagId } = useLocationSearchParams();
   const { replace } = useHistory();
 
@@ -54,9 +54,9 @@ export default (box) => {
   useEffect(
     () => {
       if (isBoxLoaded && (!orgIdsMatch || !datatagIdsMatch)) {
-        replace({ pathname, search: nextSearch });
+        replace({ search: nextSearch, ...restLocation });
       }
     },
-    [isBoxLoaded, orgIdsMatch, datatagIdsMatch, replace, pathname, nextSearch],
+    [datatagIdsMatch, isBoxLoaded, nextSearch, orgIdsMatch, replace, restLocation],
   );
 };

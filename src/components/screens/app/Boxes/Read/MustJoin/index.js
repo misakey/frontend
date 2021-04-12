@@ -17,6 +17,7 @@ import { LARGE } from '@misakey/ui/constants/sizes';
 import { createBoxEventBuilder } from '@misakey/core/api/helpers/builder/boxes';
 import isNil from '@misakey/core/helpers/isNil';
 import { getCode, getDetails } from '@misakey/core/helpers/apiError';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
@@ -89,8 +90,9 @@ function MustJoin({ box, t }) {
   );
 
   const onPublicInfoError = useCallback(
-    () => {
+    (error) => {
       setShouldShowPasteScreen(true);
+      logSentryException(error, 'fetching box public info', { crypto: true });
       enqueueSnackbar(t('boxes:read.errors.invalid'), { variant: 'warning' });
     },
     [enqueueSnackbar, t],

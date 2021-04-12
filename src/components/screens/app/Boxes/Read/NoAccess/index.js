@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation, Trans } from 'react-i18next';
 import { Link, generatePath } from 'react-router-dom';
 
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 import { LARGE } from '@misakey/ui/constants/sizes';
 import { FOOTER_HEIGHT } from '@misakey/ui/Footer';
 import BoxesSchema from 'store/schemas/Boxes';
@@ -66,7 +67,8 @@ function NoAccess({ box, belongsToCurrentUser, t }) {
   );
 
   const onError = useCallback(
-    () => {
+    (error) => {
+      logSentryException(error, 'fetching box public info', { crypto: true });
       enqueueSnackbar(t('boxes:read.errors.invalid'), { variant: 'warning' });
     },
     [enqueueSnackbar, t],

@@ -41,12 +41,16 @@ export default (id, onSuccess) => {
   );
 
   return useCallback(
-    () => {
+    async () => {
       try {
         const invitationShareHash = computeInvitationHash(invitationKeyShare);
-        return getBoxPublicInfo(invitationShareHash);
+        return await getBoxPublicInfo(invitationShareHash);
       } catch (e) {
-        return Promise.reject(new InvalidHash());
+        const errorCode = getCode(e);
+        if (errorCode === notFound) {
+          throw new InvalidHash();
+        }
+        throw e;
       }
     },
     [invitationKeyShare, getBoxPublicInfo],
