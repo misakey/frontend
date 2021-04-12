@@ -7,7 +7,8 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import AvatarSkeleton from '@misakey/ui/Avatar/Skeleton';
 import { LARGE } from '@misakey/ui/constants/sizes';
 import Skeleton from '@material-ui/lab/Skeleton';
-import Typography from '@material-ui/core/Typography';
+import Title from '@misakey/ui/Typography/Title';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Box from '@material-ui/core/Box';
 
 // HOOKS
@@ -24,8 +25,8 @@ const AvatarDetailedSkeleton = ({ title, subtitle }) => {
   return (
     <Box className={layoutClasses.root}>
       <AvatarSkeleton size={LARGE} classes={{ root: layoutClasses.avatar }} />
-      {title && <Typography className={classes.fullWidth} variant="h6"><Skeleton variant="text" /></Typography>}
-      {subtitle && <Typography className={classes.fullWidth} variant="body2"><Skeleton variant="text" /></Typography>}
+      {title && <Title gutterBottom={false} className={classes.fullWidth} variant="h6"><Skeleton variant="text" /></Title>}
+      {subtitle && <Subtitle gutterBottom={false} className={classes.fullWidth}><Skeleton variant="text" /></Subtitle>}
     </Box>
   );
 };

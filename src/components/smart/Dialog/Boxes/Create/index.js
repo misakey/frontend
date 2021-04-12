@@ -29,7 +29,8 @@ import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import BoxControls from '@misakey/ui/Box/Controls';
 import DialogContent from '@misakey/ui/DialogContent';
 import DialogTitleWithCloseFormik from '@misakey/ui/DialogTitle/WithCloseIcon/Formik';
-import { Form, Field } from 'formik';
+import { Form } from 'formik';
+import Field from '@misakey/ui/Form/Field';
 import Formik from '@misakey/ui/Formik';
 import Dialog from '@material-ui/core/Dialog';
 import FieldText from '@misakey/ui/Form/Field/TextFieldWithErrors';
@@ -50,9 +51,6 @@ const useStyles = makeStyles((theme) => ({
     [dialogIsFullScreen(theme)]: {
       paddingBottom: theme.spacing(0),
     },
-  },
-  bold: {
-    fontWeight: theme.typography.fontWeightBold,
   },
   dialogActionsRoot: {
     padding: theme.spacing(2),
@@ -198,7 +196,6 @@ function CreateBoxDialog({
                   component={FieldText}
                   className={classes.inputField}
                   name={FIELD_BOX_NAME}
-                  label={t('boxes:create.dialog.fields.name')}
                   prefix="boxes."
                   autoFocus
                   id="BoxName"

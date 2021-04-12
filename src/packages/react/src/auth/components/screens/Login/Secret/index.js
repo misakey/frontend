@@ -41,7 +41,7 @@ import Box from '@material-ui/core/Box';
 import SecretFormField from '@misakey/react/auth/components/Form/Login/Secret';
 import IdentifierHiddenFormField from '@misakey/react/auth/components/Form/Login/Identifier/Hidden';
 import Redirect from '@misakey/ui/Redirect';
-import Title from '@misakey/ui/Typography/Title';
+import TitleBold from '@misakey/ui/Typography/Title/Bold';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
 import BoxControls from '@misakey/ui/Box/Controls';
@@ -276,11 +276,11 @@ const AuthLoginSecret = ({ identifier, userPublicData, loginChallenge, client, r
         >
           <Box>
             <Box display="flex" flexDirection="column">
-              <Title align="center" gutterBottom={false}>
+              <TitleBold align="center" gutterBottom={false}>
                 <Trans i18nKey={`auth:login.secret.${methodName}.title`} values={{ resourceName: isEmpty(resourceName) ? name : resourceName }}>
-                  <span className={classes.boldTitle}>{'{{resourceName}}'}</span>
+                  <span>{'{{resourceName}}'}</span>
                 </Trans>
-              </Title>
+              </TitleBold>
               <Subtitle align="center">
                 <TransRequireAccess i18nKey={`auth:login.secret.${methodName}.requireAccess.title`} />
               </Subtitle>

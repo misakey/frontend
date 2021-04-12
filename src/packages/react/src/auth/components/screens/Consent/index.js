@@ -29,7 +29,7 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import Screen from '@misakey/ui/Screen';
 import ListConsent from '@misakey/react/auth/components/List/Consent';
-import Title from '@misakey/ui/Typography/Title';
+import TitleBold from '@misakey/ui/Typography/Title/Bold';
 import Box from '@material-ui/core/Box';
 import BoxControls from '@misakey/ui/Box/Controls';
 import Redirect from '@misakey/ui/Redirect';
@@ -146,9 +146,9 @@ const AuthConsent = ({
         onSubmit={onSubmit}
       >
         <Box component={Form} display="flex" flexDirection="column">
-          <Title align="center">
+          <TitleBold align="center">
             {t('auth:consent.title')}
-          </Title>
+          </TitleBold>
           {hasMissingClientUris ? (
             <Alert severity="warning">
               <Trans i18nKey="auth:consent.missing">

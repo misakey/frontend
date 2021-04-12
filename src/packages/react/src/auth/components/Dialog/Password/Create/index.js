@@ -22,7 +22,7 @@ import CardUserSignOut from '@misakey/react/auth/components/Card/User/SignOut';
 import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
 import BoxControls from '@misakey/ui/Box/Controls';
 import Box from '@material-ui/core/Box';
-import Title from '@misakey/ui/Typography/Title';
+import TitleBold from '@misakey/ui/Typography/Title/Bold';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
@@ -190,7 +190,7 @@ function DialogCreatePassword({ open, onClose, isReset, ...rest }) {
             avatarSize={LARGE}
           >
             <Box display="flex" flexDirection="column" width="100%" justifyContent="center">
-              <Title align="center" gutterBottom={false}>{t(`auth:account.${i18nTextKey}.title`)}</Title>
+              <TitleBold align="center" gutterBottom={false}>{t(`auth:account.${i18nTextKey}.title`)}</TitleBold>
               <Subtitle align="center" gutterBottom={false}>{t(`auth:account.${i18nTextKey}.subtitle`)}</Subtitle>
               <CardUserSignOut
                 my={3}

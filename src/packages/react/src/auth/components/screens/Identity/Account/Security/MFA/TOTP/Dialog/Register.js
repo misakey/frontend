@@ -3,14 +3,23 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 
 import PropTypes from 'prop-types';
-import { Form, Field } from 'formik';
+
+import { AUTOFILL_CODE } from '@misakey/ui/constants/autofill';
+import { userIdentityUpdate } from '@misakey/react/auth/store/actions/identity/account';
+import { totpEnrollValidationSchema } from '@misakey/react/auth/constants/validationSchemas/identity';
+import { forbidden } from '@misakey/core/api/constants/errorTypes';
 
 import isNil from '@misakey/core/helpers/isNil';
+import { beginTotpEnroll, finishTotpEnroll } from '@misakey/core/auth/builder/identities';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
+
+import { Form } from 'formik';
+import Field from '@misakey/ui/Form/Field';
 import FieldCodePasteButton from '@misakey/ui/Form/Field/Code/WithPasteButton';
 import Formik from '@misakey/ui/Formik';
-import { AUTOFILL_CODE } from '@misakey/ui/constants/autofill';
 import BoxControls from '@misakey/ui/Box/Controls';
 import DialogContent from '@misakey/ui/DialogContent';
 import DialogTitleWithCloseFormik from '@misakey/ui/DialogTitle/WithCloseIcon/Formik';
@@ -18,14 +27,6 @@ import Subtitle from '@misakey/ui/Typography/Subtitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import Box from '@material-ui/core/Box';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
-import { beginTotpEnroll, finishTotpEnroll } from '@misakey/core/auth/builder/identities';
-import { userIdentityUpdate } from '@misakey/react/auth/store/actions/identity/account';
-
-import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import { totpEnrollValidationSchema } from '@misakey/react/auth/constants/validationSchemas/identity';
-import { forbidden } from '@misakey/core/api/constants/errorTypes';
 
 // CONSTANTS
 const TOTP_CODE = 'code';

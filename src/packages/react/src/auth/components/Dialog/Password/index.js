@@ -34,6 +34,10 @@ const INITIAL_VALUES = {
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   inputField: { width: '70%', margin: theme.spacing(2, 0) },
+  titleBold: {
+    fontWeight: theme.typography.fontWeightBold,
+    flexGrow: 1,
+  },
 }));
 
 // COMPONENTS
@@ -74,7 +78,11 @@ const DialogPassword = ({
       >
         <Form>
           {isFunction(onClose) && (
-            <DialogTitleWithCloseIcon title={title} onClose={onClose} />
+            <DialogTitleWithCloseIcon
+              classes={{ title: classes.titleBold }}
+              title={title}
+              onClose={onClose}
+            />
           )}
           <DialogContent>
             <DialogContentText id="alert-dialog-description">

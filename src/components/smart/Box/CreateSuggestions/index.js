@@ -27,7 +27,7 @@ const CreateBoxSuggestions = () => {
     <Box pt={6}>
       {hasCrypto && (
         <>
-          <Typography color="textPrimary" align="center">
+          <Typography color="textSecondary" align="center">
             {t('components:createBoxSuggestions.createBox.text')}
           </Typography>
           <BoxControls
@@ -43,7 +43,7 @@ const CreateBoxSuggestions = () => {
       )}
       {!hasCrypto && (
         <>
-          <Typography color="textPrimary" align="center">
+          <Typography color="textSecondary" align="center">
             {t('components:createBoxSuggestions.createAccount.text')}
           </Typography>
           <BoxControls

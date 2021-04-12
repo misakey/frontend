@@ -186,7 +186,7 @@
           "malformed": "Recovery Code should contain 8 characters separated by a dash"
         }
       }
-    } 
+    }
   },
   "tos": {
     "label": "I accept TOS",
@@ -196,8 +196,10 @@
   },
   "boxes": {
     "name": {
+      "label": "Title",
+      "helperText": "An appropriate subject will help you find the private space",
       "error": {
-        "malformed": "Name must be between 5 and 50 characters long"
+        "malformed": "Title must be between 5 and 50 characters long"
       }
     },
     "delete": {
@@ -208,7 +210,8 @@
       }
     },
     "invitationLink": {
-      "label": "Invitation link"
+      "label": "Invitation link",
+      "helperText": "Paste an invitation link"
     },
     "accessLevel": {
       "label": "Access level"

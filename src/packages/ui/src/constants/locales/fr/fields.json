@@ -203,12 +203,15 @@
   },
   "boxes": {
     "name": {
+      "label": "Titre",
+      "helperText": "Un titre approprié vous aidera à retrouver l'espace privé",
       "error": {
-        "malformed": "Le nom doit contenir entre 5 et 50 caractères"
+        "malformed": "Le titre doit contenir entre 5 et 50 caractères"
       }
     },
     "invitationLink": {
-      "label": "Lien d'invitation"
+      "label": "Lien d'invitation",
+      "helperText": "Collez un lien d'invitation"
     },
     "accessLevel": {
       "label": "Niveau d'accès"

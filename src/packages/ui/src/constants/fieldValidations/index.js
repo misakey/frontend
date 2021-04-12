@@ -32,7 +32,7 @@ export const passwordFieldValidation = {
 
 export const codeFieldValidation = {
   schema: Yup.string().required(required),
-  strictSchema: Yup.string().matches(/^[0-9]{6}$/, { message: malformed }).required(required),
+  strictSchema: Yup.string().matches(/^\d{6}$/, { message: malformed }).required(required),
 };
 
 // @UNUSED

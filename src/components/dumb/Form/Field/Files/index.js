@@ -237,33 +237,35 @@ const FilesField = ({
         </BoxMessage>
       )}
       <Box display="flex" flexDirection="row">
-        <InputFile
-          accept={accept}
-          name={name}
-          onChange={onChange}
-          label={(
-            <Typography variant="h5" className={classes.label}>
-              {labelFiles || t('fields:files.label')}
-            </Typography>
-          )}
-          buttonText={(
-            <>
-              {t('fields:files.button.choose.label')}
-              <InsertDriveFileIcon />
-            </>
-          )}
-          autoFocus={autoFocus}
-          multiple
-          disabled={isSubmitting || disabled}
-        />
+        <Box width={isDesktopDevice ? '50%' : '100%'}>
+          <InputFile
+            accept={accept}
+            name={name}
+            onChange={onChange}
+            label={(
+              <Typography variant="h6" className={classes.label}>
+                {labelFiles || t('fields:files.label')}
+              </Typography>
+            )}
+            buttonText={(
+              <>
+                {t('fields:files.button.choose.label')}
+                <InsertDriveFileIcon />
+              </>
+            )}
+            autoFocus={autoFocus}
+            multiple
+            disabled={isSubmitting || disabled}
+          />
+        </Box>
         {isDesktopDevice && (
-          <Box ml={1}>
+          <Box width="50%" pl={1}>
             <InputFileFolder
               accept={accept}
               name={name}
               onChange={onChange}
               label={(
-                <Typography variant="h5" className={classes.label}>
+                <Typography variant="h6" className={classes.label}>
                   {labelFolder || t('fields:folder.label')}
                 </Typography>
               )}

@@ -6,7 +6,8 @@ import { withTranslation } from 'react-i18next';
 import { invalid } from '@misakey/core/api/constants/errorTypes';
 import IdentitySchema from '@misakey/react/auth/store/schemas/Identity';
 
-import { Form, Field } from 'formik';
+import { Form } from 'formik';
+import Field from '@misakey/ui/Form/Field';
 import Formik from '@misakey/ui/Formik';
 
 import Dialog from '@material-ui/core/Dialog';
@@ -60,8 +61,6 @@ const DeleteAccountDialog = ({ onClose, onSuccess, open, identity, t }) => {
               autoFocus
               id="email-address"
               fullWidth
-              label={t('fields:email.label')}
-              placeholder={identity.displayName || t('fields:email.placeholder')}
             />
           </DialogContent>
           <DialogActions>

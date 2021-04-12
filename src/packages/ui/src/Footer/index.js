@@ -123,14 +123,14 @@ const Footer = ({
                 sm={4}
               >
                 <Link
-                  href={t('components:footer.links.blog.href')}
+                  href={t('components:footer.links.site.href')}
                   color="textSecondary"
                   variant="body2"
                   target="_blank"
                   rel="noopener noreferrer"
                   {...typographyProps}
                 >
-                  {t('components:footer.links.blog.text')}
+                  {t('components:footer.links.site.text')}
                 </Link>
               </Grid>
               <Grid

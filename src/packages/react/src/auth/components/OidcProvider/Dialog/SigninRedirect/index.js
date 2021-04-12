@@ -21,7 +21,7 @@ import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Box from '@material-ui/core/Box';
-import Title from '@misakey/ui/Typography/Title';
+import TitleBold from '@misakey/ui/Typography/Title/Bold';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import Dialog from '@material-ui/core/Dialog';
@@ -53,6 +53,10 @@ const useStyles = makeStyles((theme) => ({
   },
   dialogTitleRoot: {
     margin: theme.spacing(0, 2),
+  },
+  dialogTitleTitle: {
+    fontWeight: theme.typography.fontWeightBold,
+    flexGrow: 1,
   },
 }));
 
@@ -241,7 +245,11 @@ const DialogSigninRedirect = ({
       PaperProps={{
         header: (
           <DialogTitleWithClose
-            classes={{ root: classes.dialogTitleRoot, iconButton: classes.dialogTitleIconButton }}
+            classes={{
+              root: classes.dialogTitleRoot,
+              iconButton: classes.dialogTitleIconButton,
+              title: classes.dialogTitleTitle,
+            }}
             fullScreen
             {...dialogTitleProps}
           />
@@ -254,7 +262,7 @@ const DialogSigninRedirect = ({
       {open && (
         <CardSso avatarSize={LARGE}>
           <Box>
-            <Title align="center" gutterBottom={false}>{title}</Title>
+            <TitleBold align="center" gutterBottom={false}>{title}</TitleBold>
             <Subtitle align="center">{subtitle}</Subtitle>
             {!isEmpty(currentUser) && (
               <CardUserComponent

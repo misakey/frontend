@@ -30,7 +30,7 @@ module.exports = {
     codeVariable: '#e90',
   },
   fontFamily: {
-    base: ['"Roboto"', '"Ubuntu"', '"Helvetica Neue"', 'sans-serif'],
+    base: ['"Inter"', '"Ubuntu"', '"Helvetica Neue"', 'sans-serif'],
   },
   sidebarWidth: 250,
   maxWidth: 1000,

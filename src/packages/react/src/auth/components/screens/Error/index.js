@@ -22,7 +22,7 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import Screen from '@misakey/ui/Screen';
 import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
-import Title from '@misakey/ui/Typography/Title';
+import TitleBold from '@misakey/ui/Typography/Title/Bold';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
@@ -163,9 +163,9 @@ const AuthError = ({ loginChallenge, error, t }) => {
       classes={{ content: classes.screenContent }}
     >
       <Container maxWidth="md" className={classes.container}>
-        <Title>
+        <TitleBold gutterBottom={false} align="center">
           {title}
-        </Title>
+        </TitleBold>
         <Subtitle>{subtitle}</Subtitle>
         {isAuthenticated && (
           <Box py={2} display="flex" alignItems="center">

@@ -115,7 +115,7 @@ const FileField = ({
                 {file.name}
               </Typography>
             ) : (
-              <Typography variant="h5" className={classes.label}>
+              <Typography variant="h6" className={classes.label}>
                 {labelText || t('fields:file.label', 'Drop a file here')}
               </Typography>
 

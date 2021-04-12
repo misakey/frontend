@@ -7,7 +7,8 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Logo from '@misakey/ui/Logo';
 import ButtonConnect from 'components/dumb/Button/Connect';
 import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
+import TitleBold from '@misakey/ui/Typography/Title/Bold';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import useAskToSetPassword from '@misakey/react/auth/hooks/useAskToSetPassword';
@@ -21,10 +22,6 @@ const useStyles = makeStyles((theme) => ({
   cardActionArea: {
     borderRadius: theme.shape.borderRadius,
     userSelect: 'text',
-  },
-  title: {
-    flexGrow: 1,
-    fontWeight: theme.typography.fontWeightBold,
   },
 }));
 
@@ -43,12 +40,12 @@ const CardOnboard = ({ t }) => {
           onClick={askToSetPassword}
         >
           <Logo className={classes.logoRoot} />
-          <Typography variant="h6" className={classes.title} color="textPrimary" align="center">
+          <TitleBold gutterBottom={false} align="center">
             {t('onboard:welcome')}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" align="center">
+          </TitleBold>
+          <Subtitle gutterBottom={false} align="center">
             {t('onboard:noAccount')}
-          </Typography>
+          </Subtitle>
         </CardActionArea>
         <Box display="flex" flexDirection="column" flexShrink="0" mx={4} mt={2}>
           <ButtonConnect

@@ -1,6 +1,6 @@
 publish:api:
   stage: deploy
-  image: node:10.15.3
+  image: node:14.16.1
   tags:
     - misakey_js
   only:
@@ -15,7 +15,7 @@ publish:api:
 
 publish:auth:
   stage: deploy
-  image: node:10.15.3
+  image: node:14.16.1
   tags:
     - misakey_js
   only:
@@ -30,7 +30,7 @@ publish:auth:
 
 publish:crypto:
   stage: deploy
-  image: node:10.15.3
+  image: node:14.16.1
   tags:
     - misakey_js
   only:
@@ -45,7 +45,7 @@ publish:crypto:
 
 publish:helpers:
   stage: deploy
-  image: node:10.15.3
+  image: node:14.16.1
   tags:
     - misakey_js
   only:
@@ -60,7 +60,7 @@ publish:helpers:
 
 publish:hooks:
   stage: deploy
-  image: node:10.15.3
+  image: node:14.16.1
   tags:
     - misakey_js
   only:
@@ -75,7 +75,7 @@ publish:hooks:
 
 publish:store:
   stage: deploy
-  image: node:10.15.3
+  image: node:14.16.1
   tags:
     - misakey_js
   only:
@@ -90,7 +90,7 @@ publish:store:
 
 publish:ui:
   stage: deploy
-  image: node:10.15.3
+  image: node:14.16.1
   tags:
     - misakey_js
   only:

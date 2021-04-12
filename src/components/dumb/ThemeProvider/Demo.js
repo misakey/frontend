@@ -23,7 +23,7 @@ import CategoryIcon from '@material-ui/icons/Category';
 const ColorsDemo = ({ color, t }) => (
   <ThemeProvider previewColor={color}>
     <BoxSection display="flex" flexDirection="column" mt={5}>
-      <Typography variant="h6" color="textSecondary">{t('components:colorDemo.title')}</Typography>
+      <Typography variant="h5" color="textSecondary">{t('components:colorDemo.title')}</Typography>
       <List>
         <ListItem selected>
           <ListItemAvatar>

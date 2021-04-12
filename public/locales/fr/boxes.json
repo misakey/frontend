@@ -219,13 +219,10 @@
   },
   "create": {
     "dialog": {
-      "title": "Nouvelle conversation",
+      "title": "Nouvel espace privé",
       "pasteLink": "J'ai un lien d'invitation",
-      "content": "Quel est le sujet de cette nouvelle conversation\u00a0?",
-      "success": "L'espace privé a été créé avec succès\u00a0!",
-      "fields": {
-        "name": "Nouvel espace privé"
-      }
+      "content": "Nouvel espace privé",
+      "success": "L'espace privé a été créé avec succès\u00a0!"
     },
     "error": {
       "updateSecretStorage": "Une erreur s'est produite lors de la mise à jour du coffre-fort. Assurez-vous de garder le lien d'invitation de l'espace privé afin de ne pas perdre la clé de déchiffrement."
@@ -251,9 +248,9 @@
   "pasteLink": {
     "broken": {
       "title": "Le lien de cet espace privé est cassé",
-      "subtitle": "Collez un lien d'invitation pour ouvrir un espace privé"
+      "subtitle": "Collez un lien d'invitation"
     },
-    "title": "Collez le lien d'invitation de l'espace privé",
+    "title": "Rejoindre un espace privé",
     "goBack": "Créer un nouvel espace privé"
   },
   "vault": {

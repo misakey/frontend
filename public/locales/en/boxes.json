@@ -222,11 +222,8 @@
     "dialog": {
       "title": "New private space",
       "pasteLink": "I have an invitation link",
-      "content": "What is the new private space about?",
-      "success": "Private space has been successfully created!",
-      "fields": {
-        "name": "New private space"
-      }
+      "content": "New private space",
+      "success": "Private space has been successfully created!"
     },
     "error": {
       "updateSecretStorage": "An error occurred while updating the vault, be sure to keep your invitation link to avoid loosing access to your private space."
@@ -252,9 +249,9 @@
   "pasteLink": {
     "broken": {
       "title": "This private space link is broken",
-      "subtitle": "Paste an invitation link to open a private space"
+      "subtitle": "Paste an invitation link"
     },
-    "title": "Paste the private space's invitation link",
+    "title": "Join a private space",
     "goBack": "Create a new private space"
   },
   "vault": {

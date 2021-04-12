@@ -9,9 +9,8 @@ import isEmpty from '@misakey/core/helpers/isEmpty';
 import isNil from '@misakey/core/helpers/isNil';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import Title from '@misakey/ui/Typography/Title';
+import TitleBold from '@misakey/ui/Typography/Title/Bold';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
 import CardSsoWithSlope from '@misakey/react/auth/components/Card/Sso/WithSlope';
@@ -27,20 +26,6 @@ const SLOPE_PROPS = {
   height: APPBAR_HEIGHT + AVATAR_SIZE * LARGE_MULTIPLIER + 116,
 };
 
-// HOOKS
-const useStyles = makeStyles((theme) => ({
-  boldTitle: {
-    fontWeight: theme.typography.fontWeightBold,
-  },
-  screenContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
-  container: {
-    overflow: 'auto',
-  },
-}));
-
 // COMPONENTS
 const AuthLoginIdentifier = ({
   loginChallenge,
@@ -51,7 +36,6 @@ const AuthLoginIdentifier = ({
   resourceName,
   isLoading,
 }) => {
-  const classes = useStyles();
   const { name } = useSafeDestr(client);
 
   const displayForm = useMemo(() => isNil(identity) && !isLoading, [identity, isLoading]);
@@ -67,11 +51,11 @@ const AuthLoginIdentifier = ({
       slopeProps={SLOPE_PROPS}
       avatarSize={LARGE}
     >
-      <Title align="center" gutterBottom={false}>
+      <TitleBold align="center" gutterBottom={false}>
         <Trans i18nKey="auth:login.identifier.title" values={{ resourceName: isEmpty(resourceName) ? name : resourceName }}>
-          <span className={classes.boldTitle}>{'{{resourceName}}'}</span>
+          <span>{'{{resourceName}}'}</span>
         </Trans>
-      </Title>
+      </TitleBold>
       <Subtitle align="center">
         <TransRequireAccess i18nKey="auth:login.identifier.requireAccess.title" />
       </Subtitle>

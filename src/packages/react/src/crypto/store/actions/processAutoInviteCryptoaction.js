@@ -74,7 +74,7 @@ export default ({ cryptoactionId, boxId: notificationBoxId }) => (
 
     // we expect a box key share encoded as unpadded url-safe base64.
     // box key share is 32 bytes so ceil(32*8/6)=43 base64 characters
-    if (!/^[A-Za-z0-9-_]{43}$/.test(decryptedBoxKeyShare)) {
+    if (!/^[\w-]{43}$/.test(decryptedBoxKeyShare)) {
       throw Error('invitation crypto action decrypts to unexpected format');
     }
     const invitationKeyShare = decryptedBoxKeyShare;

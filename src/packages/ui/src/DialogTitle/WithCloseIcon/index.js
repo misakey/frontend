@@ -12,7 +12,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
+import Title from '@misakey/ui/Typography/Title';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 
 import CloseIcon from '@material-ui/icons/Close';
@@ -78,13 +78,13 @@ const DialogTitleWithCloseIcon = ({
           </IconButton>
         )}
         {title && (
-          <Typography
+          <Title
             id={id}
+            gutterBottom={false}
             classes={{ root: clsx(internalClasses.typographyRoot, classes.title) }}
-            variant="h6"
           >
             {title}
-          </Typography>
+          </Title>
         )}
         {children}
       </Box>

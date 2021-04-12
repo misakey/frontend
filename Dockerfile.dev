@@ -1,4 +1,4 @@
-FROM node:10.15.3
+FROM node:14.16.1
 
 # This will probably be overridden by a volume in the docker-compose file
 

@@ -45,9 +45,9 @@
         "text": "About",
         "href": "https://about.misakey.com/"
       },
-      "blog": {
-        "text": "Blog",
-        "href": "https://blog.misakey.com"
+      "site": {
+        "text": "Website",
+        "href": "https://misakey.com"
       },
       "feedback": {
         "text": "Contact us",
@@ -144,7 +144,8 @@
     "loadMore": "Load more"
   },
   "dialogUpload": {
-    "text": "Which files do you want to encrypt?",
+    "text": "Encrypt {{count}} file",
+    "text_plural": "Encrypt {{count}} files",
     "label": {
       "files": "New files to encrypt",
       "folder": "New folder to encrypt"

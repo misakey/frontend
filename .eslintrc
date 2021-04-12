@@ -4,7 +4,8 @@
     "plugin:import/recommended",
     "airbnb",
     "airbnb/hooks",
-    "plugin:json/recommended"
+    "plugin:json/recommended",
+    "plugin:clean-regex/recommended"
   ],
   "env": {
     "es6": true,
@@ -20,7 +21,9 @@
   "plugins": [
     "jest",
     "markdown",
-    "react-hooks"
+    "react-hooks",
+    "clean-regex",
+    "json"
   ],
   "settings": {
     "import/resolver": {
@@ -109,7 +112,8 @@
     "react-hooks/exhaustive-deps": "warn",
     "react/jsx-uses-react": "error",
     "react/react-in-jsx-scope": "error",
-    "no-multiple-empty-lines": "off"
+    "no-multiple-empty-lines": "off",
+    "clean-regex/identity-escape": "off"
   },
   "overrides": [
     {

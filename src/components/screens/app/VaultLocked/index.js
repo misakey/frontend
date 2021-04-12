@@ -2,21 +2,23 @@ import React, { useCallback, useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 
 import { LARGE, APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
-
 import { openVaultValidationSchema } from '@misakey/react/auth/constants/validationSchemas/vault';
 import { PREHASHED_PASSWORD } from '@misakey/react/auth/constants/account/password';
 import { invalid } from '@misakey/core/api/constants/errorTypes';
 import { SIDES } from '@misakey/ui/constants/drawers';
 import { getCurrentUserSelector } from '@misakey/react/auth/store/reducers/auth';
-
-import logSentryException from '@misakey/core/helpers/log/sentry/exception';
-import useLoadSecretsWithPassword from '@misakey/react/crypto/hooks/useLoadSecretsWithPassword';
 import {
   DecryptionError,
 } from '@misakey/core/crypto/Errors/classes';
+
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
+import isNil from '@misakey/core/helpers/isNil';
+
+import useGetOrgFromSearch from '@misakey/react/auth/hooks/useGetOrgFromSearch';
+import { useSelector } from 'react-redux';
+import useLoadSecretsWithPassword from '@misakey/react/crypto/hooks/useLoadSecretsWithPassword';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -24,7 +26,6 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
 import FormField from '@misakey/ui/Form/Field';
-
 import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
 import IconButtonMenuAccount from 'components/smart/IconButton/Menu/Account';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
@@ -34,10 +35,8 @@ import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable'
 import BoxControls from '@misakey/ui/Box/Controls';
 import Box from '@material-ui/core/Box';
 import CardSsoWithSlope from '@misakey/react/auth/components/Card/Sso/WithSlope';
-import Title from '@misakey/ui/Typography/Title';
-import useGetOrgFromSearch from '@misakey/react/auth/hooks/useGetOrgFromSearch';
+import TitleBold from '@misakey/ui/Typography/Title/Bold';
 import AvatarColorized, { BACKGROUND_COLOR } from '@misakey/ui/Avatar/Colorized';
-import isNil from '@misakey/core/helpers/isNil';
 
 // CONSTANTS
 const INITIAL_VALUES = {
@@ -119,7 +118,7 @@ function VaultLocked({ t }) {
         validationSchema={openVaultValidationSchema}
       >
         <Box component={Form} display="flex" flexDirection="column" width="100%" justifyContent="center">
-          <Title align="center" gutterBottom={false}>{t('boxes:vault.lockedScreen.text')}</Title>
+          <TitleBold align="center" gutterBottom={false}>{t('boxes:vault.lockedScreen.text')}</TitleBold>
           <CardUserSignOut
             my={3}
             className={classes.cardOverflowVisible}

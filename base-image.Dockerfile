@@ -1,4 +1,4 @@
-FROM node:10.15.3 AS builder
+FROM node:14.16.1 AS builder
 LABEL stage=intermediate
 
 COPY ./package.json /app/package.json

@@ -22,7 +22,7 @@ function NotFound({ t }) {
       <Box mb={1}>
         <Typography align="center" variant="h2" color="primary">{NOT_FOUND_ERROR.status}</Typography>
       </Box>
-      <Typography align="center" variant="h5" component="h3" color="textSecondary">
+      <Typography align="center" variant="h6" component="h3" color="textSecondary">
         {t(`common:httpStatus.error.${NOT_FOUND_ERROR.status}`)}
       </Typography>
     </ScreenError>

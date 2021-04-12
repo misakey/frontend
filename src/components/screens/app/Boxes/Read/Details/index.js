@@ -90,7 +90,7 @@ function BoxDetails({ box, belongsToCurrentUser, t }) {
             classes={{ root: classes.avatar }}
             title={title || ''}
           />
-          <Typography variant="h6" align="center" color="textPrimary">
+          <Typography variant="h5" align="center" color="textPrimary">
             {title}
           </Typography>
           <Typography variant="body2" color="textSecondary">

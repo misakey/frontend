@@ -1,5 +1,5 @@
-@import '~@misakey/ui/static/sass/colors';
 @import '~@misakey/ui/static/sass/fonts';
+@import '~@misakey/ui/static/sass/colors';
 
 @font-face {
   font-family: 'Futura Std Bold';
@@ -12,6 +12,7 @@
   url('~@misakey/ui/static/fonts/FuturaStdBold.ttf') format('truetype'),
   url('~@misakey/ui/static/fonts/FuturaStdBold.svg') format('svg');
 }
+
 
 $plugin-width: 460px;
 $plugin-height: 500px;

@@ -89,6 +89,7 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
     },
   },
   typography: {
+    fontFamily: '"Inter", "Roboto", sans-serif',
     useNextVariants: true,
   },
   shape: {
@@ -137,6 +138,7 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
       root: {
         boxShadow: 'none !important',
         borderRadius: 50,
+        textTransform: 'none',
       },
     },
     MuiCardContent: {

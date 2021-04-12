@@ -8,7 +8,7 @@ import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
 
 // CONSTANTS
 const TYPOGRAPHY_PROPS = {
-  variant: 'h6',
+  variant: 'h5',
 };
 
 // COMPONENTS

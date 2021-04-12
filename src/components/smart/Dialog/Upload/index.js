@@ -58,10 +58,6 @@ const isInProgress = compose(
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
-  mkAgentLink: {
-    fontWeight: theme.typography.fontWeightBold,
-    color: 'inherit',
-  },
   dialogContentRoot: {
     padding: theme.spacing(3),
   },
@@ -205,10 +201,10 @@ function UploadDialog({
         initialStatus={initialStatus}
         onSubmit={onSubmit}
       >
-        {({ resetForm }) => (
+        {({ resetForm, values }) => (
           <Form>
             <DialogTitleWithClose
-              title={t('components:dialogUpload.text')}
+              title={t('components:dialogUpload.text', { count: values[BLOBS_FIELD_NAME].length })}
               onClose={getOnReset(resetForm)}
             >
               <BoxControls

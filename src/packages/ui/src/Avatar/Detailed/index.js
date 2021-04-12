@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import Typography from '@material-ui/core/Typography';
+import Title from '@misakey/ui/Typography/Title';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
 
 import AvatarColorized from '@misakey/ui/Avatar/Colorized';
 import { LARGE } from '@misakey/ui/constants/sizes';
@@ -24,16 +25,8 @@ export const useLayoutStyles = makeStyles((theme) => ({
   },
 }));
 
-const useStyles = makeStyles((theme) => ({
-  title: {
-    flexGrow: 1,
-    fontWeight: theme.typography.fontWeightBold,
-  },
-}));
-
 // COMPONENTS
 const AvatarDetailed = ({ text, image, title, subtitle, classes }) => {
-  const internalClasses = useStyles();
   const layoutClasses = useLayoutStyles();
 
   return (
@@ -44,12 +37,12 @@ const AvatarDetailed = ({ text, image, title, subtitle, classes }) => {
         image={image}
         size={LARGE}
       />
-      <Typography variant="h6" className={internalClasses.title} color="textPrimary" align="center">
+      <Title gutterBottom={false} align="center">
         {title}
-      </Typography>
-      <Typography variant="body2" color="textSecondary" align="center">
+      </Title>
+      <Subtitle gutterBottom={false} align="center">
         {subtitle}
-      </Typography>
+      </Subtitle>
     </div>
 
   );

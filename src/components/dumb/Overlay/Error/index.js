@@ -53,7 +53,7 @@ function ErrorOverlay({ classes, error, httpStatus, t, variant }) {
           {httpStatus}
         </Typography>
       )}
-      <Typography className={classes.h3} variant="h5" component="h3" align="center" color="textSecondary">
+      <Typography className={classes.h3} variant="h6" component="h3" align="center" color="textSecondary">
         {getText}
       </Typography>
       <Typography variant="body2" align="center">
