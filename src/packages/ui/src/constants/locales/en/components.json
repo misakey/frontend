@@ -43,11 +43,11 @@
       },
       "about": {
         "text": "About",
-        "href": "https://about.misakey.com/"
+        "href": "https://www.misakey.com/about"
       },
       "site": {
         "text": "Website",
-        "href": "https://misakey.com"
+        "href": "https://www.misakey.com"
       },
       "feedback": {
         "text": "Contact us",
@@ -162,7 +162,7 @@
   },
   "requireAccess": {
     "title": "<0>{{querier}}</0> requires access to the information below",
-    "href": "https://about.misakey.com/"
+    "href": "https://www.misakey.com/about"
   },
   "whitelist": {
     "domainTitle": "All users from domain",
