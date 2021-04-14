@@ -2,8 +2,10 @@
 import { useEffect, useRef } from 'react';
 
 import isNil from '@misakey/core/helpers/isNil';
+import equals from '@misakey/core/helpers/equals';
 
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
+import usePropChanged from '@misakey/hooks/usePropChanged';
 
 // HOOKS
 /**
@@ -21,6 +23,10 @@ import useFetchCallback from '@misakey/hooks/useFetch/callback';
  *   when true, do not trigger wrappedFetch if `useFetchCallback` errored
  * @param {boolean} [fetchConditions.fetchWhileFetching=false]
  *   when false, do not trigger wrappedFetch if `useFetchCallback` is still fetching
+ * @param {[]} [fetchConditions.deps=[]]
+ *   extra dependencies to rerun effect
+ *   if their value changed, `fetchWhileFetching` value is ignored
+ *   they make sure we call again `fetchFn` even if `shouldFetch` doesn't change
  * @param {[]} props extra props passed down to `useFetchCallback`
  */
 export default (
@@ -30,6 +36,7 @@ export default (
     fetchOnlyOnce = false,
     stopOnError = true,
     fetchWhileFetching = false,
+    deps = [],
   } = {},
   ...props
 ) => {
@@ -40,6 +47,7 @@ export default (
   } = useFetchCallback(fetchFn, ...props);
 
   const wrappedFetchRef = useRef(wrappedFetch);
+  const [depsChanged] = usePropChanged(deps, equals);
 
   const fetchedOnce = useRef(false);
 
@@ -60,7 +68,9 @@ export default (
 
       // internalFetchingCount ref does not trigger effect when inner value changes,
       // still, we can limit calls by checking its value when effect is triggered
-      const internalFetchingValid = fetchWhileFetching ? true : internalFetchingCount.current === 0;
+      const internalFetchingValid = (fetchWhileFetching || depsChanged)
+        ? true
+        : internalFetchingCount.current === 0;
       const internalErrorValid = stopOnError ? isNil(internalErrorRef.current) : true;
       if (needToFetch && internalFetchingValid && internalErrorValid) {
         wrappedFetchRef.current();
@@ -70,14 +80,9 @@ export default (
       }
     },
     [
-      shouldFetch,
-      wrappedFetchRef,
-      fetchedOnce,
-      fetchOnlyOnce,
-      stopOnError,
-      fetchWhileFetching,
-      internalFetchingCount,
-      internalErrorRef,
+      shouldFetch, fetchOnlyOnce, stopOnError, fetchWhileFetching,
+      wrappedFetchRef, fetchedOnce, internalFetchingCount, internalErrorRef,
+      depsChanged,
     ],
   );
 

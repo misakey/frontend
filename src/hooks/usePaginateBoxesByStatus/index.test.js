@@ -152,13 +152,13 @@ describe('testing usePaginateBoxesByStatus', () => {
 
       expect(itemCount).toBeUndefined();
 
-      jest.runAllTimers();
+      act(() => { jest.runAllTimers(); });
 
       act(() => {
         unmount();
       });
 
-      jest.runAllTimers();
+      act(() => { jest.runAllTimers(); });
 
       expect(mockCountUserBoxesBuilder).toHaveBeenCalledTimes(1);
       expect(mockCountUserBoxesBuilder).toHaveBeenCalledWith(PAYLOAD);
@@ -202,8 +202,10 @@ describe('testing usePaginateBoxesByStatus', () => {
       // make sure mocks call each other...
       expect(mockGetByPagination).toHaveBeenCalled();
 
-      expect(paginateBoxesByStatus.current.loadMoreItems({ offset: 0, limit: 3 }))
-        .resolves.toBe(undefined);
+      act(() => {
+        expect(paginateBoxesByStatus.current.loadMoreItems({ offset: 0, limit: 3 }))
+          .resolves.toBe(undefined);
+      });
     });
 
     it('should ask more items from API, no item in store', () => {
@@ -220,11 +222,13 @@ describe('testing usePaginateBoxesByStatus', () => {
       // make sure mocks call each other...
       expect(mockGetByPagination).toHaveBeenCalled();
 
-      paginateBoxesByStatus.current.loadMoreItems(PAGINATION);
+      act(() => {
+        paginateBoxesByStatus.current.loadMoreItems(PAGINATION);
+      });
 
       expect(mockGetUserBoxesBuilder).toHaveBeenCalledWith({ ...PAYLOAD, ...PAGINATION });
 
-      jest.runAllTimers();
+      act(() => { jest.runAllTimers(); });
     });
 
     it('should ask more items from API, some items in store', () => {
@@ -253,12 +257,14 @@ describe('testing usePaginateBoxesByStatus', () => {
       // make sure mocks call each other...
       expect(mockGetByPagination).toHaveBeenCalled();
 
-      paginateBoxesByStatus.current.loadMoreItems(PAGINATION);
+      act(() => {
+        paginateBoxesByStatus.current.loadMoreItems(PAGINATION);
+      });
 
       expect(mockGetUserBoxesBuilder)
         .toHaveBeenCalledWith({ ...PAYLOAD, ...expectedPagination });
 
-      jest.runAllTimers();
+      act(() => { jest.runAllTimers(); });
     });
   });
 
@@ -295,8 +301,10 @@ describe('testing usePaginateBoxesByStatus', () => {
       // make sure mocks call each other...
       expect(mockGetByPagination).toHaveBeenCalled();
 
-      expect(paginateBoxesByStatus.current.loadMoreItems({ offset: 0, limit: 3 }))
-        .resolves.toBe(undefined);
+      act(() => {
+        expect(paginateBoxesByStatus.current.loadMoreItems({ offset: 0, limit: 3 }))
+          .resolves.toBe(undefined);
+      });
     });
 
     it('should ask more items from API, no item in store', () => {
@@ -310,11 +318,13 @@ describe('testing usePaginateBoxesByStatus', () => {
       // make sure mocks call each other...
       expect(mockGetByPagination).toHaveBeenCalled();
 
-      paginateBoxesByStatus.current.loadMoreItems(PAGINATION);
+      act(() => {
+        paginateBoxesByStatus.current.loadMoreItems(PAGINATION);
+      });
 
       expect(mockGetUserBoxesBuilder).toHaveBeenCalledWith({ ...PAYLOAD, ...PAGINATION });
 
-      jest.runAllTimers();
+      act(() => { jest.runAllTimers(); });
     });
 
     it('should ask more items from API, some items in store', () => {
@@ -339,12 +349,14 @@ describe('testing usePaginateBoxesByStatus', () => {
       // make sure mocks call each other...
       expect(mockGetByPagination).toHaveBeenCalled();
 
-      paginateBoxesByStatus.current.loadMoreItems(PAGINATION);
+      act(() => {
+        paginateBoxesByStatus.current.loadMoreItems(PAGINATION);
+      });
 
       expect(mockGetUserBoxesBuilder)
         .toHaveBeenCalledWith({ ...PAYLOAD, ...expectedPagination });
 
-      jest.runAllTimers();
+      act(() => { jest.runAllTimers(); });
     });
   });
 
@@ -364,7 +376,9 @@ describe('testing usePaginateBoxesByStatus', () => {
       expect(mockCountUserBoxesBuilder).toHaveBeenCalledWith(PAYLOAD);
 
       mockGetItemCount.mockImplementation(() => undefined);
-      rerender(NEXT_PAYLOAD);
+      act(() => {
+        rerender(NEXT_PAYLOAD);
+      });
 
       const { itemCount } = paginateBoxesByStatus.current;
       expect(mockUseSelector).toHaveBeenCalled();
@@ -382,8 +396,9 @@ describe('testing usePaginateBoxesByStatus', () => {
           wrapper: Wrapper,
         },
       );
-
-      rerender({ ownerOrgId: ORG_IDS[1] });
+      act(() => {
+        rerender({ ownerOrgId: ORG_IDS[1] });
+      });
 
       expect(paginateBoxesByStatus.current).toEqual(expect.objectContaining({
         itemCount: undefined,

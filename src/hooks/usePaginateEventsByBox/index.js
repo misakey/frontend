@@ -158,7 +158,11 @@ export default (shouldStart = true) => {
     [boxId, dispatch],
   );
 
-  const { isFetching: isFetchingCount } = useFetchEffect(getCount, { shouldFetch }, { onSuccess });
+  const { isFetching: isFetchingCount } = useFetchEffect(
+    getCount,
+    { shouldFetch, deps: [boxId] },
+    { onSuccess },
+  );
 
   // extra memoization layer because of object format
   return useMemo(

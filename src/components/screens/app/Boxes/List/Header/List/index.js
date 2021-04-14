@@ -6,7 +6,6 @@ import { ADMIN, AGENT } from '@misakey/ui/constants/organizations/roles';
 import { TOOLBAR_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
 import { selectors as orgSelectors } from 'store/reducers/identity/organizations';
 
-import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 import isSelfOrg from 'helpers/isSelfOrg';
 import noop from '@misakey/core/helpers/noop';
 
@@ -35,7 +34,7 @@ const IconButtonCreate = withDialogCreate(
   IconButtonAppBar,
 );
 
-function ListHeader({ t, isFullWidth, ...props }) {
+function ListHeader({ t }) {
   const orgId = useOrgId();
   const selfOrgSelected = useMemo(
     () => isSelfOrg(orgId),
@@ -57,7 +56,6 @@ function ListHeader({ t, isFullWidth, ...props }) {
     <AppBarStatic
       color="primary"
       toolbarProps={TOOLBAR_PROPS}
-      {...omitTranslationProps(props)}
     >
       <ButtonDrawerOrganization />
       <Subtitle gutterBottom={false} color="background">{t('boxes:documentTitle')}</Subtitle>
@@ -76,13 +74,8 @@ function ListHeader({ t, isFullWidth, ...props }) {
 }
 
 ListHeader.propTypes = {
-  isFullWidth: PropTypes.bool,
   // withTranslation
   t: PropTypes.func.isRequired,
-};
-
-ListHeader.defaultProps = {
-  isFullWidth: false,
 };
 
 export default withTranslation(['common', 'boxes'])(ListHeader);

@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const InputUpload = ({
   open, disabled,
-  onClose, onSuccess, onUpload,
+  onOpen, onClose, onSuccess, onUpload,
   fileTransform,
   children,
   dialog: Dialog,
@@ -203,6 +203,7 @@ InputUpload.propTypes = {
   fieldName: PropTypes.string.isRequired,
   open: PropTypes.bool.isRequired,
   disabled: PropTypes.bool,
+  onOpen: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func,
   dialogProps: PropTypes.object,

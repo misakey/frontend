@@ -1,5 +1,3 @@
-
-import { useMemo, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector, batch } from 'react-redux';
 import { normalize } from 'normalizr';
 
@@ -14,8 +12,11 @@ import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/cor
 import { getBoxFilesEventsBuilder, countBoxFilesEventsBuilder } from '@misakey/core/api/helpers/builder/boxes';
 import objectToCamelCase from '@misakey/core/helpers/objectToCamelCase';
 import getMissingIndexes from '@misakey/core/helpers/getMissingIndexes';
-import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { getEventForNormalization } from 'helpers/boxEvent';
+
+import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import { useMemo, useCallback } from 'react';
 
 // CONSTANTS
 const { receivePaginatedItemCount, receivePaginatedIds } = actionCreators;
@@ -111,15 +112,10 @@ export default (boxId) => {
     [boxId, dispatch],
   );
 
-  useEffect(
-    () => {
-      if (shouldFetch) {
-        getCount()
-          .then(onSuccess)
-          .catch(handleHttpErrors);
-      }
-    },
-    [getCount, handleHttpErrors, onSuccess, shouldFetch],
+  useFetchEffect(
+    getCount,
+    { shouldFetch, deps: [boxId] },
+    { onSuccess, onError: handleHttpErrors },
   );
 
   // extra memoization layer because of object format

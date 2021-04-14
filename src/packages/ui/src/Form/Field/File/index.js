@@ -90,7 +90,7 @@ const FileField = ({
     { onChange: onFileChange, onReset },
   ] = useFileReader({ onError: onFileError, onLoad });
 
-  const [valueChanged] = usePropChanged(value, [file]);
+  const [valueChanged] = usePropChanged(value, null, [file]);
 
   useHandleFieldValue(valueChanged, value, file, onReset);
 

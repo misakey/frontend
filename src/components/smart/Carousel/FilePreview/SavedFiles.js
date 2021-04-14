@@ -9,8 +9,6 @@ import { getSavedFileEncryptedFileId } from 'helpers/boxEvent';
 import prop from '@misakey/core/helpers/prop';
 import isNil from '@misakey/core/helpers/isNil';
 
-import usePaginateSavedFiles from 'hooks/usePaginateSavedFiles';
-
 import { useSelector } from 'react-redux';
 import useDecryptSavedFileCallback from 'hooks/useDecryptSavedFile/callback';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
@@ -21,10 +19,9 @@ import CarouselFilePreview from 'components/smart/Carousel/FilePreview';
 const byPaginationProp = prop('byPagination');
 
 // COMPONENTS
-const CarouselFilePreviewSavedFiles = ({ onChange, selectedId, ...props }) => {
+const CarouselFilePreviewSavedFiles = ({ onChange, selectedId, pagination, ...props }) => {
   const [nextId, setNextId] = useState(null);
 
-  const pagination = usePaginateSavedFiles();
   const byPagination = useMemo(
     () => byPaginationProp(pagination),
     [pagination],
@@ -105,6 +102,7 @@ const CarouselFilePreviewSavedFiles = ({ onChange, selectedId, ...props }) => {
 CarouselFilePreviewSavedFiles.propTypes = {
   onChange: PropTypes.func.isRequired,
   selectedId: PropTypes.string,
+  pagination: PropTypes.object.isRequired,
 };
 
 CarouselFilePreviewSavedFiles.defaultProps = {

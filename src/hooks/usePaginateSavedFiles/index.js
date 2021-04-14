@@ -1,8 +1,5 @@
-
-import { useMemo, useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
 import { actionCreators, selectors } from 'store/reducers/files/saved/pagination';
+import { receiveSavedFiles } from 'store/reducers/files/saved';
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import pickAll from '@misakey/core/helpers/pickAll';
@@ -11,8 +8,11 @@ import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/cor
 import { getSavedFilesBuilder, countSavedFilesBuilder } from '@misakey/core/api/helpers/builder/vault';
 import objectToCamelCase from '@misakey/core/helpers/objectToCamelCase';
 import getMissingIndexes from '@misakey/core/helpers/getMissingIndexes';
+
+import { useDispatch, useSelector } from 'react-redux';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import { receiveSavedFiles } from 'store/reducers/files/saved';
+import { useMemo, useCallback } from 'react';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 // CONSTANTS
 const { receivePaginatedItemCount } = actionCreators;
@@ -98,15 +98,10 @@ export default () => {
     [dispatch, identityId],
   );
 
-  useEffect(
-    () => {
-      if (shouldFetch) {
-        getCount()
-          .then(onSuccess)
-          .catch(handleHttpErrors);
-      }
-    },
-    [getCount, handleHttpErrors, onSuccess, shouldFetch],
+  useFetchEffect(
+    getCount,
+    { shouldFetch, deps: [identityId] },
+    { onSuccess, onError: handleHttpErrors },
   );
 
   // extra memoization layer because of object format

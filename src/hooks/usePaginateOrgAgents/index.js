@@ -11,7 +11,8 @@ import debounce from '@misakey/core/helpers/debounce';
 import getMissingIndexes from '@misakey/core/helpers/getMissingIndexes';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import { useMemo, useCallback, useEffect } from 'react';
+import { useMemo, useCallback } from 'react';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import { useDispatch, useSelector } from 'react-redux';
 
 // CONSTANTS
@@ -168,15 +169,10 @@ export default (organizationId, queryParams = {}, search = null, onError = null)
     [handleHttpErrors, onError],
   );
 
-  useEffect(
-    () => {
-      if (shouldFetch) {
-        getCount()
-          .then(onSuccess)
-          .catch(handleError);
-      }
-    },
-    [getCount, handleError, onSuccess, shouldFetch],
+  useFetchEffect(
+    getCount,
+    { shouldFetch, deps: [organizationId, payload] },
+    { onSuccess, onError: handleError },
   );
 
   // extra memoization layer because of object format

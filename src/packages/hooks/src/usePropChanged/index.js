@@ -1,6 +1,9 @@
+import isNil from '@misakey/core/helpers/isNil';
+
 import { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 
-export default (prop, effects = []) => {
+// HOOKS
+export default (prop, equalFn = null, effects = []) => {
   const prevProp = useRef(prop);
 
   const [propChanged, setPropChanged] = useState(false);
@@ -12,9 +15,16 @@ export default (prop, effects = []) => {
     [setPropChanged],
   );
 
+  const propEqualPrev = useCallback(
+    (current, prev) => (isNil(equalFn)
+      ? current === prev
+      : equalFn(current, prev)),
+    [equalFn],
+  );
+
   useEffect(
     () => {
-      if (prop !== prevProp.current) {
+      if (!propEqualPrev(prop, prevProp.current)) {
         setPropChanged(true);
         prevProp.current = prop;
       } else {

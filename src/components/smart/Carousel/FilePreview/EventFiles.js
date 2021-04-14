@@ -9,9 +9,7 @@ import { getEventEncryptedFileId } from 'helpers/boxEvent';
 import prop from '@misakey/core/helpers/prop';
 import isNil from '@misakey/core/helpers/isNil';
 
-import usePaginateFileEventsByBox from 'hooks/usePaginateEventsByBox/Files';
 import { useSelector } from 'react-redux';
-import { useBoxReadContext } from 'components/smart/Context/Boxes/BoxRead';
 import useDecryptMsgFileCallback from 'hooks/useDecryptMsgFile/callback';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
@@ -26,16 +24,14 @@ const {
 const byPaginationProp = prop('byPagination');
 
 // COMPONENTS
-const CarouselFilePreviewEventFiles = ({ onChange, selectedId, id, ...props }) => {
+const CarouselFilePreviewEventFiles = ({ pagination, onChange, selectedId, id, ...props }) => {
   const [nextId, setNextId] = useState(null);
 
-  const { id: boxId } = useBoxReadContext();
   const getAsymSecretKey = useMemo(
     () => makeGetAsymSecretKey(),
     [],
   );
 
-  const pagination = usePaginateFileEventsByBox(boxId);
   const byPagination = useMemo(
     () => byPaginationProp(pagination),
     [pagination],
@@ -121,6 +117,7 @@ const CarouselFilePreviewEventFiles = ({ onChange, selectedId, id, ...props }) =
 };
 
 CarouselFilePreviewEventFiles.propTypes = {
+  pagination: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
   selectedId: PropTypes.string,
   id: PropTypes.string,

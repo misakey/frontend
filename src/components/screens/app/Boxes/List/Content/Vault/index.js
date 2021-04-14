@@ -6,7 +6,6 @@ import routes from 'routes';
 
 import path from '@misakey/core/helpers/path';
 import isNil from '@misakey/core/helpers/isNil';
-import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 
 import useLoadedAnimation from '@misakey/hooks/useLoadedAnimation';
 import { useRouteMatch } from 'react-router-dom';
@@ -118,7 +117,7 @@ const VaultOpen = forwardRef(({ search, isFullWidth, ...props }, ref) => {
         disablePadding
         itemClasses={{ container: classes.listItemContainer, root: classes.listItemContainer }}
         itemProps={{ nextSearchMap: NEXT_SEARCH_MAP }}
-        {...omitTranslationProps(props)}
+        {...props}
       >
         {(!loadedAnimation) && (
           <Box className={classes.loader}>

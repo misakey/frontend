@@ -56,11 +56,15 @@ const DocumentsVault = () => {
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
   const numColumns = isSmall ? 1 : NUM_COLUMNS;
 
+  const pagination = usePaginateSavedFiles();
   const {
     byPagination,
     itemCount,
     loadMoreItems,
-  } = usePaginateSavedFiles();
+  } = useMemo(
+    () => pagination,
+    [pagination],
+  );
 
   const { onOpen: onOpenDialog } = useUploadContext();
 
@@ -119,7 +123,10 @@ const DocumentsVault = () => {
       {isLoading && <SplashScreen />}
       {!isEmpty && !isLoading && (
         <Box width="100%" className={classes.content}>
-          <FilePreviewCarouselContextProvider component={SavedFilesCarousel}>
+          <FilePreviewCarouselContextProvider
+            pagination={pagination}
+            component={SavedFilesCarousel}
+          >
             <AutoSizer>
               {(autoSizerProps) => (
                 <WindowedGridInfiniteLoaded

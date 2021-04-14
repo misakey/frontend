@@ -67,11 +67,15 @@ function BoxFiles({ belongsToCurrentUser, box }) {
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
   const numColumns = isSmall ? 1 : NUM_COLUMNS;
 
+  const pagination = usePaginateFileEventsByBox(id);
   const {
     itemCount,
     loadMoreItems,
     byPagination,
-  } = usePaginateFileEventsByBox(id);
+  } = useMemo(
+    () => pagination,
+    [pagination],
+  );
 
   const itemData = useMemo(
     () => ({
@@ -89,7 +93,11 @@ function BoxFiles({ belongsToCurrentUser, box }) {
   const displayEmpty = useMemo(() => itemCount === 0, [itemCount]);
 
   return (
-    <FilePreviewCarouselContextProvider component={EventFilesCarousel} revokeOnChange={id}>
+    <FilePreviewCarouselContextProvider
+      pagination={pagination}
+      component={EventFilesCarousel}
+      revokeOnChange={id}
+    >
       <ElevationScroll target={contentRef.current}>
         <AppBarDrawer toolbarProps={{ px: 0 }} offsetHeight={headerHeight}>
           <Box ref={headerRef} display="flex" flexDirection="column" width="100%" minHeight="inherit">
