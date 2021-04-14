@@ -8,7 +8,7 @@ value privacy and simplicity. And it’s open source.
 
 This project is the frontend repository of [Misakey](https://misakey.com/).
 
-You can find more info about Misakey in our [website](https://www.misakey.com) and our [about page](https://about.misakey.com/).
+You can find more info about Misakey in our [website](https://www.misakey.com) and our [about page](https://www.misakey.com/about).
 
 On this README you will only find technical information about the frontend code.
 For more global information about Misakey, the contribution guide, the community, 
