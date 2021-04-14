@@ -1,6 +1,5 @@
 import React, { useMemo, useCallback, Fragment } from 'react';
 import moment from 'moment';
-
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { generatePath } from 'react-router-dom';
@@ -11,33 +10,27 @@ import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER, LARGE } from '@misakey/ui
 
 import authRoutes from '@misakey/react/auth/routes';
 
-import objectToCamelCase from '@misakey/core/helpers/objectToCamelCase';
 import isNil from '@misakey/core/helpers/isNil';
 import isEmpty from '@misakey/core/helpers/isEmpty';
 
 import { useSelector } from 'react-redux';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import Box from '@material-ui/core/Box';
-import TitleBold from '@misakey/ui/Typography/Title/Bold';
-import Subtitle from '@misakey/ui/Typography/Subtitle';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import Dialog from '@material-ui/core/Dialog';
-import BoxControls from '@misakey/ui/Box/Controls';
 import AvatarBox from '@misakey/ui/Avatar/Box';
 import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
 import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
-import CardUserAuth from '@misakey/react/auth/components/Card/User';
-import CardUserSignOut from '@misakey/react/auth/components/Card/User/SignOut';
 import DialogPaperSlope from '@misakey/ui/Dialog/Paper/Slope';
 import CardSso from '@misakey/react/auth/components/Card/Sso';
 import AvatarColorized, { BACKGROUND_COLOR } from '@misakey/ui/Avatar/Colorized';
 import BadgeDeniedWrapper from '@misakey/ui/Badge/Denied/Wrapper';
+import DialogSigninRedirectNoUser from './NoUser';
+import DialogSigninRedirectUser from './User';
 
 // CONSTANTS
-const { acr: getCurrentAcrSelector, expiresAt: EXPIRES_AT_SELECTOR } = authSelectors;
+const { expiresAt: EXPIRES_AT_SELECTOR } = authSelectors;
 const SLOPE_PROPS = {
   // @FIXME approximate spacing to align card content with slope
   height: APPBAR_HEIGHT + AVATAR_SIZE * LARGE_MULTIPLIER + 114,
@@ -62,7 +55,8 @@ const useStyles = makeStyles((theme) => ({
 
 // COMPONENTS
 const DialogSigninRedirect = ({
-  acrValues, loginHint,
+  acrValues,
+  loginHints,
   userManager,
   open,
   onClose,
@@ -72,16 +66,10 @@ const DialogSigninRedirect = ({
 }) => {
   const classes = useStyles();
   const currentUser = useSelector(getCurrentUserSelector);
-  const currentAcr = useSelector(getCurrentAcrSelector);
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation(['components', 'common']);
 
-  const objLoginHint = useMemo(
-    () => (isEmpty(loginHint) ? null : objectToCamelCase(JSON.parse(loginHint))),
-    [loginHint],
-  );
-
-  const { resourceName, creatorName, creatorIdentityId, client } = useSafeDestr(objLoginHint);
+  const { resourceName, creatorName, creatorIdentityId, client } = useSafeDestr(loginHints);
   const expiresAt = useSelector(EXPIRES_AT_SELECTOR);
   const { name: clientName, logoUri: clientLogo } = useSafeDestr(client);
 
@@ -90,20 +78,6 @@ const DialogSigninRedirect = ({
       ? null
       : generatePath(authRoutes.identities.public, { id: creatorIdentityId })),
     [creatorIdentityId],
-  );
-
-  const redirectOptions = useMemo(
-    () => (isNil(acrValues)
-      ? {
-        ...props,
-        loginHint,
-      }
-      : {
-        ...props,
-        loginHint,
-        acrValues,
-      }),
-    [acrValues, loginHint, props],
   );
 
   const closableDialogProps = useMemo(
@@ -127,41 +101,21 @@ const DialogSigninRedirect = ({
 
   const sessionExpired = useMemo(
     () => {
-      if (!isEmpty(currentUser) && !isNil(expiresAt)) { return false; }
+      if (isEmpty(currentUser) || isNil(expiresAt)) { return false; }
       return moment().isAfter(expiresAt);
     },
     [currentUser, expiresAt],
   );
 
-  const insufficientACR = useMemo(
-    () => !isEmpty(currentUser) && !isNil(currentAcr) && currentAcr < acrValues,
-    [acrValues, currentAcr, currentUser],
-  );
-
   const title = useMemo(
-    () => {
-      if (sessionExpired) {
-        return t('components:signinRedirect.user.expired.title');
-      }
-      if (insufficientACR) {
-        return t(`components:signinRedirect.user.insufficientACR.${acrValues}.title`);
-      }
-      if (!isNil(resourceName)) {
-        return t('common:connect.title', { resourceName });
-      }
-      return t('common:connect.client.title', { clientName: clientName || 'Misakey App' });
-    },
-    [sessionExpired, insufficientACR, resourceName, t, clientName, acrValues],
+    () => (!isNil(resourceName)
+      ? t('common:connect.title', { resourceName })
+      : t('common:connect.client.title', { clientName: clientName || 'Misakey App' })),
+    [resourceName, t, clientName],
   );
 
   const subtitle = useMemo(
     () => {
-      if (sessionExpired) {
-        return t('components:signinRedirect.user.expired.subtitle');
-      }
-      if (insufficientACR) {
-        return t(`components:signinRedirect.user.insufficientACR.${acrValues}.subtitle`);
-      }
       if (!isNil(resourceName)) {
         return isEmpty(currentUser)
           ? t('components:signinRedirect.user.authRequired')
@@ -173,10 +127,7 @@ const DialogSigninRedirect = ({
         ? t('components:signinRedirect.user.authRequired')
         : <TransRequireAccess />;
     },
-    [
-      sessionExpired, insufficientACR, resourceName, currentUser,
-      t, acrValues, creatorName, creatorProfileTo,
-    ],
+    [resourceName, currentUser, t, creatorName, creatorProfileTo],
   );
 
   const avatar = useMemo(
@@ -214,26 +165,20 @@ const DialogSigninRedirect = ({
     [clientLogo, clientName, resourceName, sessionExpired],
   );
 
-  const text = useMemo(
-    () => (isEmpty(currentUser) ? t('common:continue') : t('common:confirm')),
-    [currentUser, t],
+  const onSignInRedirect = useCallback(
+    ({ loginHints: newLoginHints, ...restOptions } = {}) => {
+      const hints = isNil(newLoginHints) ? loginHints : { ...loginHints, ...newLoginHints };
+      const loginHint = JSON.stringify(hints);
+      // user choices `restOptions` on this dialog should override pre-asked params for UX coherence
+      const options = { loginHint, acrValues, ...props, ...restOptions };
+      return userManager
+        .signinRedirect(options)
+        .catch(() => {
+          enqueueSnackbar(t('common:error.storage'), { variant: 'warning', persist: true });
+        });
+    },
+    [acrValues, enqueueSnackbar, loginHints, props, t, userManager],
   );
-
-  const CardUserComponent = useMemo(
-    () => (!isEmpty(currentUser) ? CardUserSignOut : CardUserAuth),
-    [currentUser],
-  );
-
-  const onClick = useCallback(
-    () => userManager
-      .signinRedirect(redirectOptions)
-      .catch(() => {
-        enqueueSnackbar(t('common:error.storage'), { variant: 'warning', persist: true });
-      }),
-    [enqueueSnackbar, redirectOptions, t, userManager],
-  );
-
-  useUpdateDocHead(t('components:signinRedirect.documentTitle'));
 
   return (
     <Dialog
@@ -261,22 +206,22 @@ const DialogSigninRedirect = ({
     >
       {open && (
         <CardSso avatarSize={LARGE}>
-          <Box>
-            <TitleBold align="center" gutterBottom={false}>{title}</TitleBold>
-            <Subtitle align="center">{subtitle}</Subtitle>
-            {!isEmpty(currentUser) && (
-              <CardUserComponent
-                my={3}
-                expired={sessionExpired}
+          {isEmpty(currentUser)
+            ? (
+              <DialogSigninRedirectNoUser
+                onSignInRedirect={onSignInRedirect}
+                title={title}
+                subtitle={subtitle}
+              />
+            )
+            : (
+              <DialogSigninRedirectUser
+                onSignInRedirect={onSignInRedirect}
+                title={title}
+                subtitle={subtitle}
+                acrValues={acrValues}
               />
             )}
-          </Box>
-          <BoxControls
-            primary={{
-              text,
-              onClick,
-            }}
-          />
         </CardSso>
       )}
     </Dialog>
@@ -285,7 +230,7 @@ const DialogSigninRedirect = ({
 
 DialogSigninRedirect.propTypes = {
   acrValues: PropTypes.number,
-  loginHint: PropTypes.string,
+  loginHints: PropTypes.object,
   userManager: PropTypes.object.isRequired,
   canCancelRedirect: PropTypes.bool.isRequired,
   // DialogConfirm
@@ -296,7 +241,7 @@ DialogSigninRedirect.propTypes = {
 
 DialogSigninRedirect.defaultProps = {
   acrValues: null,
-  loginHint: '',
+  loginHints: {},
   onClose: null,
   fullScreen: false,
 };

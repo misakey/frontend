@@ -11,10 +11,10 @@ import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/a
 import isNil from '@misakey/core/helpers/isNil';
 import isEmpty from '@misakey/core/helpers/isEmpty';
 import pick from '@misakey/core/helpers/pick';
+import useNotDoneEffect from '@misakey/hooks/useNotDoneEffect';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import useMountEffect from '@misakey/hooks/useMountEffect';
 import useOnIdentifierSubmit from '@misakey/react/auth/hooks/useOnIdentifierSubmit';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
@@ -54,13 +54,18 @@ const AuthLogin = ({
     [identifier, identity],
   );
 
-  useMountEffect(
-    () => {
-      if (identifierHintValid || identifierValid) {
-        setIsSubmitting(true);
-        onSubmit(identifierHintValid ? identifierHint : identifier)
-          .catch(handleHttpErrors)
-          .finally(() => setIsSubmitting(false));
+  useNotDoneEffect(
+    (onDone) => {
+      // if auth flow is launched with Misakey,
+      // there is always a loginHint that contains the state at the end
+      if (!isEmpty(loginHint)) {
+        if (identifierHintValid || identifierValid) {
+          setIsSubmitting(true);
+          onSubmit(identifierHintValid ? identifierHint : identifier)
+            .catch(handleHttpErrors)
+            .finally(() => setIsSubmitting(false));
+        }
+        onDone();
       }
     },
     [onSubmit, identifierHint, identifier, identifierHintValid, identifierValid, handleHttpErrors],

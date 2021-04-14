@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { notFound } from '@misakey/core/api/constants/errorTypes';
 import { UserManagerContext } from '@misakey/react/auth/components/OidcProvider/Context';
 
-import objectToSnakeCase from '@misakey/core/helpers/objectToSnakeCase';
 import isNil from '@misakey/core/helpers/isNil';
 import isEmpty from '@misakey/core/helpers/isEmpty';
 import { getCode } from '@misakey/core/helpers/apiError';
@@ -31,7 +30,7 @@ const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
 
 // COMPONENTS
 const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...rest }) => {
-  const [objLoginHint, setObjLoginHint] = useState();
+  const [loginHints, setLoginHints] = useState();
   const [error, setError] = useState(false);
   const { askSigninRedirect } = useContext(UserManagerContext);
 
@@ -39,16 +38,9 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation('boxes');
 
-  const loginHint = useMemo(
-    () => (!isEmpty(objLoginHint)
-      ? JSON.stringify(objectToSnakeCase(objLoginHint))
-      : null),
-    [objLoginHint],
-  );
-
-  const redirectOptions = useMemo(
-    () => (isNil(loginHint) ? options : { ...options, loginHint }),
-    [loginHint, options],
+  const askSigninProps = useMemo(
+    () => (isNil(loginHints) ? options : { ...options, loginHints }),
+    [loginHints, options],
   );
 
   // locationHash is a URL hash
@@ -92,9 +84,9 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   const shouldFetch = useMemo(
     () => !isAuthenticated
       && !isNil(id) && isNil(title)
-      && !isNil(invitationShareHash) && isEmpty(objLoginHint)
+      && !isNil(invitationShareHash) && isNil(loginHints)
       && !error,
-    [isAuthenticated, id, invitationShareHash, objLoginHint, error, title],
+    [isAuthenticated, id, title, invitationShareHash, loginHints, error],
   );
 
   const getBoxPublic = useCallback(
@@ -116,13 +108,13 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
 
   const onSuccess = useCallback(
     ({ title: resourceName, creator: { displayName, id: creatorId } = {} }) => {
-      setObjLoginHint({
+      setLoginHints({
         resourceName,
         creatorName: displayName,
         creatorIdentityId: creatorId,
       });
     },
-    [setObjLoginHint],
+    [],
   );
 
   const { isFetching } = useFetchEffect(
@@ -139,19 +131,19 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   useEffect(
     () => {
       if (shouldAskRedirect) {
-        askSigninRedirect(redirectOptions, false);
+        askSigninRedirect(askSigninProps, false);
       }
     },
-    [askSigninRedirect, redirectOptions, shouldAskRedirect],
+    [askSigninRedirect, askSigninProps, shouldAskRedirect],
   );
 
   useEffect(
     () => {
       if (!isNil(title) || !isNil(creatorName) || !isNil(creatorIdentityId)) {
-        setObjLoginHint({ resourceName: title, creatorName, creatorIdentityId });
+        setLoginHints({ resourceName: title, creatorName, creatorIdentityId });
       }
     },
-    [title, creatorName, creatorIdentityId, setObjLoginHint],
+    [title, creatorName, creatorIdentityId],
   );
 
   if (isAuthenticated) {

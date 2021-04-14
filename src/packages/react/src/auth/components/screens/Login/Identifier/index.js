@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation, Trans } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react/auth/store/reducers/sso';
 import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER, LARGE } from '@misakey/ui/constants/sizes';
 
@@ -37,6 +37,7 @@ const AuthLoginIdentifier = ({
   isLoading,
 }) => {
   const { name } = useSafeDestr(client);
+  const { t } = useTranslation('auth');
 
   const displayForm = useMemo(() => isNil(identity) && !isLoading, [identity, isLoading]);
   const displayNoAccount = useMemo(() => !isNil(identity) && !isLoading, [identity, isLoading]);
@@ -57,7 +58,8 @@ const AuthLoginIdentifier = ({
         </Trans>
       </TitleBold>
       <Subtitle align="center">
-        <TransRequireAccess i18nKey="auth:login.identifier.requireAccess.title" />
+        {displayNoAccount ? t('auth:login.identifier.noAccount', { clientName: name })
+          : <TransRequireAccess i18nKey="auth:login.identifier.requireAccess.title" />}
       </Subtitle>
       {isLoading && <CardUser my={3} {...userPublicData} />}
       {displayForm && (
@@ -86,4 +88,4 @@ AuthLoginIdentifier.defaultProps = {
   identity: null,
 };
 
-export default withTranslation(['auth', 'common'])(AuthLoginIdentifier);
+export default AuthLoginIdentifier;

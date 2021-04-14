@@ -39,20 +39,20 @@ export default (canCancel = true) => {
 
   return useCallback(
     async (options, overrideCanCancel) => {
-      let loginHint = isEmpty(storedClientLoginHint) && isEmpty(identifierLoginHint)
+      let loginHints = isEmpty(storedClientLoginHint) && isEmpty(identifierLoginHint)
         ? undefined
-        : JSON.stringify({ ...storedClientLoginHint, ...identifierLoginHint });
+        : { ...storedClientLoginHint, ...identifierLoginHint };
       if (shouldFetch) {
         const org = await fetch();
         const clientLoginHint = toClientLoginHint(org);
-        loginHint = JSON.stringify({
+        loginHints = {
           ...storedClientLoginHint,
           ...clientLoginHint,
           ...identifierLoginHint,
-        });
+        };
       }
       return askSigninRedirect(
-        { loginHint, ...options },
+        { loginHints, ...options },
         isNil(overrideCanCancel) ? canCancel : overrideCanCancel,
       );
     },

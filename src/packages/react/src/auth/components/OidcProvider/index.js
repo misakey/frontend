@@ -143,8 +143,8 @@ function OidcProvider({ children, config, redirectProps }) {
   const onAskHigherACR = useCallback(
     async (requiredAcr) => {
       const { email: identifier } = (await userManager.getUser()) || {};
-      const loginHint = isNil(identifier) ? undefined : JSON.stringify({ identifier });
-      askSigninRedirect({ acrValues: requiredAcr, prompt: 'login', loginHint }, false);
+      const loginHints = isNil(identifier) ? undefined : { identifier };
+      askSigninRedirect({ acrValues: requiredAcr, prompt: 'login', loginHints }, false);
     },
     [askSigninRedirect, userManager],
   );

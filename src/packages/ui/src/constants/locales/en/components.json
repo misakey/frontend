@@ -97,6 +97,10 @@
   },
   "signinRedirect": {
     "documentTitle": "Authentication",
+    "noUser": {
+      "signIn": "Access with one-time use code",
+      "signUp": "Continue with Misakey"
+    },
     "user": {
       "insufficientACR": {
         "2": {

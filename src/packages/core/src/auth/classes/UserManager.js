@@ -201,7 +201,7 @@ export default class UserManager extends OidcClient {
         // we don't want it to be sent to Sentry
         const sentryErr = (err instanceof SigninResponseError) ? err.error : err;
         // 'login_required' = functional error, hydra cookie is expired or sub has changed
-        const level = silent && err.message === 'login_required' ? 'warning' : 'error';
+        const level = silent && sentryErr.message === 'login_required' ? 'warning' : 'error';
 
         logSentryException(sentryErr, 'UserManager.signInEnd', { auth: true, silent }, level);
         return Promise.reject(err);

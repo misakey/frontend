@@ -171,6 +171,10 @@ function onClearSsoUpdate(state) {
   return {
     ...state,
     identity: null,
+    identifier: null,
+    authnState: {},
+    methodName: null,
+    metadata: {},
   };
 }
 

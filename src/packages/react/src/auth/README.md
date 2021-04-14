@@ -255,6 +255,7 @@ Display a prompt screen to ask user to authenticate with the arguments passed to
 - Same arguments than for [onSignIn](#onsignin)
 - `fullScreen` (boolean): put the « auth needed » screen in a dialog or full screen
 - `canCancelRedirect` (boolean): if the « auth needed » screen can be closed or not
+- `loginHints` (object): object that will be transformed in JSON stringified to be passed as `loginHint`
 
 ### onSignOut
 

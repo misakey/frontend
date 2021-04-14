@@ -8,7 +8,6 @@ import { useSnackbar } from 'notistack';
 import { LARGE, APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
 
 import logSentryException from '@misakey/core/helpers/log/sentry/exception';
-import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
@@ -127,8 +126,6 @@ function DialogCreatePassword({ open, onClose, isReset, ...rest }) {
     },
     [enqueueSnackbar, i18nTextKey, onClose, onLoadAccountState, onSetPasswordBuilder, t],
   );
-
-  useUpdateDocHead(t(`auth:account.${i18nTextKey}.documentTitle`));
 
   const { organization } = useGetOrgFromSearch();
   const { name, logoUrl } = useSafeDestr(organization);
