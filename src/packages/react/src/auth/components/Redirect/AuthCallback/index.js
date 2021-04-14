@@ -65,7 +65,7 @@ const RedirectAuthCallback = ({ loadingPlaceholder, fallbackReferrer }) => {
         const identity = await fetchIdentity(identityId);
         const { hasCrypto } = identity;
 
-        if (hasCrypto && shouldCreateAccount) {
+        if (hasCrypto && shouldCreateAccount && !resetPassword) {
           // it can happened if user has clicked on `createAccount` not authenticated
           // and then connect with an existing account
           return setRedirect(true);
