@@ -88,7 +88,7 @@ export const isMeJoinEvent = ({ type, sender }, meIdentityId) => {
 export const getEventForNormalization = (event) => {
   const { content, serverEventCreatedAt: createdAt, sender } = event;
   if (!isNil(content)) {
-    const { encryptedFileId, isSaved = false } = content;
+    const { encryptedFileId, isSaved } = content;
     if (!isNil(encryptedFileId)) {
       const decryptedFile = { id: encryptedFileId, isSaved, sender, createdAt };
       const newContent = { ...content, decryptedFile };
