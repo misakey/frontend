@@ -48,8 +48,8 @@ export const decryptFileMetadataFromVault = (encryptedMetadata, vaultKey) => {
  * @param {string} encryptedMetadata
  * @param {string} keyFingerprint
 */
-export const encryptFileForVault = async (file, vaultKey) => {
-  const { metaData, encryptedFile } = await encryptFile(file);
+export const encryptFileForVault = async (fileBytes, vaultKey, fileName, fileType, fileSize) => {
+  const { metaData, encryptedFile } = await encryptFile(fileBytes, fileName, fileType, fileSize);
 
   const { encryptedMetadata, keyFingerprint } = encryptFileMetadataForVault(metaData, vaultKey);
 

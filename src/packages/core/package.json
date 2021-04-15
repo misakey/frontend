@@ -1,8 +1,8 @@
 {
   "name": "@misakey/core",
-  "version": "1.0.0",
+  "version": "0.1.5",
   "private": false,
-  "license": "SEE LICENSE IN /LICENSE",
+  "license": "MIT",
   "author": "Misakey Team",
   "description": "Misakey core funtionalities.",
   "keywords": [
@@ -19,25 +19,29 @@
   },
   "homepage": "https://frontend.docs.misakey.dev",
   "scripts": {
-    "build": "yarn build:cjs && yarn build:esm && yarn build:es && yarn build:copy-files",
+    "local-build": "BUILD_ENV=local-package-link yarn build",
+    "build": "npm-run-all --parallel build:cjs build:esm build:es build:umd",
     "build:cjs": "cross-env NODE_ENV=production BABEL_ENV=cjs babel --config-file ../../../babel.config.js ./src --out-dir ./build --ignore \"**/*.test.js\"",
     "build:esm": "cross-env NODE_ENV=production BABEL_ENV=esm babel --config-file ../../../babel.config.js ./src --out-dir ./build/esm --ignore \"**/*.test.js\"",
     "build:es": "cross-env NODE_ENV=production BABEL_ENV=es babel --config-file ../../../babel.config.js ./src --out-dir ./build/es --ignore \"**/*.test.js\"",
-    "build:umd": "cross-env BABEL_ENV=production-umd rollup -c rollup.config.js",
+    "build:umd": "cross-env NODE_ENV=production BABEL_ENV=production-umd babel --config-file ../../../babel.config.js ./src --out-dir ./build/umd --ignore \"**/*.test.js\"",
+    "build:oldumd": "cross-env BABEL_ENV=production-umd rollup -c rollup.config.js",
     "build:copy-files": "node ../../../scripts/copy-files.js",
     "prebuild": "rimraf build",
+    "postbuild": "yarn build:copy-files",
     "prepublish": "yarn build",
-    "release": "npm publish build --tag latest"
+    "release": "npm publish build"
   },
   "devDependencies": {
+    "npm-run-all": "^4.1.5",
     "rollup": "^1.27.6",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-globals": "^1.4.0",
     "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-replace": "^2.1.0",
     "rollup-plugin-size-snapshot": "^0.10.0",
-    "rollup-plugin-terser": "^5.1.2",
-    "rollup-plugin-replace": "^2.1.0"
+    "rollup-plugin-terser": "^5.1.2"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",

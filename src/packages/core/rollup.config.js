@@ -5,6 +5,7 @@ import replace from 'rollup-plugin-replace';
 import nodeGlobals from 'rollup-plugin-node-globals';
 import { terser } from 'rollup-plugin-terser';
 
+const input = './src/index.js';
 const babelOptions = {
   exclude: /node_modules/,
   // We are using @babel/plugin-transform-runtime
@@ -39,6 +40,7 @@ function onwarn(warning) {
 
 export default [
   {
+    input,
     onwarn,
     output: {
       file: 'build/umd/misakey-core.development.js',
@@ -54,6 +56,7 @@ export default [
     ],
   },
   {
+    input,
     onwarn,
     output: {
       file: 'build/umd/misakey-core.production.min.js',

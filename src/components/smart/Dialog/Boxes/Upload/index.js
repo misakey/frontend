@@ -27,14 +27,20 @@ function BoxesUploadDialog({
   const { id, publicKey } = useSafeDestr(box);
 
   const onEncryptBuilder = useCallback(
-    (file) => workerEncryptFile(file, publicKey),
+    async (file) => {
+      const fileBytes = new Uint8Array(await file.arrayBuffer());
+      return workerEncryptFile(
+        fileBytes, publicKey,
+        file.name, file.type, file.size,
+      );
+    },
     [publicKey],
   );
 
   const onUploadBuilder = useCallback(
     ({ encryptedFile, encryptedMessageContent }, onFileProgress) => {
       const formData = new FormData();
-      formData.append('encrypted_file', encryptedFile);
+      formData.append('encrypted_file', new Blob([encryptedFile]));
       formData.append('msg_encrypted_content', encryptedMessageContent);
       formData.append('msg_public_key', publicKey);
 

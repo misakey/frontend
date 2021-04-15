@@ -12,16 +12,8 @@ const TEST_FILE_BYTES = Uint8Array.from([
 ]);
 
 test('encrypts and decrypts files', async () => {
-  // @FIXME one day we want to use files (with a filename)
-  // instead of just blobs
-  const blob = new Blob(
-    [TEST_FILE_BYTES],
-    { type: 'application/octet-stream' },
-  );
-  const file = new File(
-    [blob],
-    'testName',
-  );
+  const filename = 'testName';
+
   const {
     secretKey: boxSecretKey,
     publicKey: boxPublicKey,
@@ -30,12 +22,11 @@ test('encrypts and decrypts files', async () => {
   const {
     encryptedFile,
     encryptedMessageContent,
-  } = await encryptFile(file, boxPublicKey);
+  } = await encryptFile(TEST_FILE_BYTES, boxPublicKey, filename);
 
   const decryptedContent = decryptFileMsg(encryptedMessageContent, boxSecretKey);
 
   const decrypted = await decryptFile(encryptedFile, decryptedContent);
 
-  expect(decrypted).toEqual(file);
-  expect(decrypted.name).toEqual(file.name);
+  expect(decrypted).toEqual(TEST_FILE_BYTES);
 });

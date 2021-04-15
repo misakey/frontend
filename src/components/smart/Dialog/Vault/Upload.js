@@ -40,7 +40,11 @@ function VaultUploadDialog({
   const onEncryptBuilder = useCallback(
     async (file) => {
       try {
-        return workerEncryptFileForVault(file, vaultKey);
+        const fileBytes = new Uint8Array(await file.arrayBuffer());
+        return await workerEncryptFileForVault(
+          fileBytes, vaultKey,
+          file.name, file.type, file.size,
+        );
       } catch (err) {
         return Promise.reject();
       }
@@ -51,7 +55,7 @@ function VaultUploadDialog({
   const onUploadBuilder = useCallback(
     ({ encryptedMetadata, keyFingerprint, encryptedFile }, onFileProgress) => {
       const formData = new FormData();
-      formData.append('encrypted_file', encryptedFile);
+      formData.append('encrypted_file', new Blob([encryptedFile]));
       formData.append('encrypted_metadata', encryptedMetadata);
       formData.append('key_fingerprint', keyFingerprint);
 

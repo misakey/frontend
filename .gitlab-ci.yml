@@ -1,6 +1,6 @@
 variables:
   CI: "true"
-  BASE_IMAGE_VERSION: "v6.1"
+  BASE_IMAGE_VERSION: "v6.2"
 
 stages:
   - test

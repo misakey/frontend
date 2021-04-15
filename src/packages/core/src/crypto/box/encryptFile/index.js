@@ -12,14 +12,13 @@ import { encryptFile } from '@misakey/core/crypto/files';
  * and returns all the data required by the `POST /boxes/:id/encrypted-files` endpoint
  * (the encrypted file, the encrypted message content, and the public key that was used).
  *
- * @param {File} file a JS File object (https://developer.mozilla.org/en-US/docs/Web/API/File)
  * @param {string} boxPublicKey the public key of the box this file must be sent to
  */
-export default async (file, boxPublicKey) => {
+export default async (fileBytes, boxPublicKey, fileName, fileType, fileSize) => {
   const {
     metaData: messageContentPlainText,
     encryptedFile,
-  } = await encryptFile(file);
+  } = await encryptFile(fileBytes, fileName, fileType, fileSize);
 
   const encryptedMessageContent = encodeBase64(decodeUTF8(
     asymmetricEncrypt(

@@ -13,7 +13,7 @@ if (process.env.BABEL_ENV === 'es') {
   ];
 }
 
-const defaultAlias = {
+const localAlias = {
   '@misakey/core': './src/packages/core/src',
   '@misakey/store': './src/packages/store/src',
   '@misakey/react': './src/packages/react/src',
@@ -33,6 +33,23 @@ const productionPlugins = [
     },
   ],
 ];
+
+if (process.env.BUILD_ENV === 'local-package-link') {
+  productionPlugins.push([
+    'babel-plugin-module-resolver',
+    {
+      root: ['./'],
+      alias: {
+        '@misakey/core': '../core/build',
+        '@misakey/store': '../store/build',
+        '@misakey/react': '../react/build',
+        '@misakey/hooks': '../hooks/build',
+        '@misakey/ui/static': '../ui/static',
+        '@misakey/ui': '../ui/build',
+      },
+    },
+  ]);
+}
 
 module.exports = {
   presets: defaultPresets.concat([['@babel/preset-react', {
@@ -59,7 +76,7 @@ module.exports = {
           'babel-plugin-module-resolver',
           {
             root: ['./'],
-            alias: defaultAlias,
+            alias: localAlias,
           },
         ],
       ],
@@ -95,7 +112,7 @@ module.exports = {
           'babel-plugin-module-resolver',
           {
             root: ['./'],
-            alias: defaultAlias,
+            alias: localAlias,
           },
         ],
       ],
@@ -107,7 +124,7 @@ module.exports = {
           'babel-plugin-module-resolver',
           {
             root: ['./'],
-            alias: defaultAlias,
+            alias: localAlias,
           },
         ],
       ],

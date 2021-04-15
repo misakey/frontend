@@ -3,6 +3,7 @@ const path = require('path');
 module.exports = {
   title: 'Frontend components',
   serverHost: 'docs.misakey.dev.local',
+  serverPort: 6060,
   sections: [{
     name: 'Documentation',
     sections: [{

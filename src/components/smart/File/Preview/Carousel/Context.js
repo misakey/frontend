@@ -22,6 +22,9 @@ import useSaveFileInVault from 'hooks/useSaveFileInVault';
 import { FilePreviewContext } from 'components/smart/File/Preview/Context';
 import DecryptedFileSchema from 'store/schemas/Files/Decrypted';
 
+import blobFromUint8array from '@misakey/core/crypto/helpers/blobFromUint8array';
+import makeFileOrBlob from '@misakey/core/helpers/makeFileOrBlob';
+
 // HELPERS
 const createBlobUrl = (file) => {
   try {
@@ -109,7 +112,7 @@ const FilePreviewCarouselContextProvider = ({
   );
 
   const getDecryptedFile = useCallback(
-    async (id, encryption, name) => {
+    async (id, encryption, filename) => {
       if (isNil(id)) {
         return setFileData(id, { error: new FetchFileError() });
       }
@@ -117,10 +120,11 @@ const FilePreviewCarouselContextProvider = ({
       return batch(() => getEncryptedFileBuilder(id)
         .then(async (response) => {
           try {
-            const decryptedFile = await workerDecryptFile(
-              response.blob,
-              { encryption, fileName: name },
+            const decryptedFileData = await workerDecryptFile(
+              new Uint8Array(await response.blob.arrayBuffer()),
+              { encryption },
             );
+            const decryptedFile = makeFileOrBlob([blobFromUint8array(decryptedFileData)], filename);
             setFileData(id, { blobUrl: createBlobUrl(decryptedFile) });
             return decryptedFile;
           } catch (e) {

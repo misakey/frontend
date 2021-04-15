@@ -4,12 +4,12 @@ import { wrap, releaseProxy } from 'comlink';
 import EncryptFileWorker from './encryptFile.worker';
 
 // async method to start a worker, encrypt file, then terminate
-export default async (file, publicKey) => {
+export default async (fileBytes, boxPublicKey, fileName, fileType, fileSize) => {
   // instantiates a worker
   const workerInstance = new EncryptFileWorker();
   const proxy = wrap(workerInstance);
   // calls encryptFile
-  const encrypted = await proxy.encryptFile(file, publicKey);
+  const encrypted = await proxy.encryptFile(fileBytes, boxPublicKey, fileName, fileType, fileSize);
   // terminates worker instance, see ./loader.js
   workerInstance.terminate();
   // releases proxy to be garbage collected (see https://github.com/GoogleChromeLabs/comlink#comlinkreleaseproxy)
