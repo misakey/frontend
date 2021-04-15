@@ -30,7 +30,8 @@ export const validateJwtAttributes = (
   jwt,
   issuer,
   audience,
-  clockSkew = 0,
+  // https://github.com/IdentityModel/oidc-client-js/issues/24
+  clockSkew = 300,
   now = parseInt((Date.now() / 1000), 10),
   timeInsensitive,
 ) => {
@@ -59,11 +60,11 @@ export const validateJwtAttributes = (
     }
 
     if (lowerNow < iat) {
-      return Promise.reject(new Error(`iat is in the future: ${iat}`));
+      return Promise.reject(new Error(`iat is in the future: ${iat} - ${now}`));
     }
 
     if (nbf && lowerNow < nbf) {
-      return Promise.reject(new Error(`nbf is in the future: ${nbf}`));
+      return Promise.reject(new Error(`nbf is in the future: ${nbf} - ${now}`));
     }
 
     if (isNil(exp)) {
@@ -71,7 +72,7 @@ export const validateJwtAttributes = (
     }
 
     if (exp < upperNow) {
-      return Promise.reject(new Error(`exp is in the past:${exp}`));
+      return Promise.reject(new Error(`exp is in the past:${exp} - ${now}`));
     }
   }
 
