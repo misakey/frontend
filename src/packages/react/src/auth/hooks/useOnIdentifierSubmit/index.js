@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import authRoutes from '@misakey/react/auth/routes';
 import { getCode } from '@misakey/core/helpers/apiError';
+import isNil from '@misakey/core/helpers/isNil';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
@@ -37,7 +38,7 @@ export default (loginChallenge) => {
           dispatch(ssoUpdate({ ...response, methodName: computeNextAuthMethod(authnState) })),
           dispatch(onSetIdentifier(nextIdentifier)),
         ]).then(() => {
-          if (hasCrypto || shouldCreateAccount === true) {
+          if (hasCrypto || !isNil(shouldCreateAccount)) {
             push({ pathname: authRoutes.signIn.secret, search });
           }
         });

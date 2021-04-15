@@ -41,7 +41,7 @@ const DialogSigninRedirectNoUser = ({ onSignInRedirect, title, subtitle }) => {
 
   const onSubmit = useCallback(
     ({ [STEP.identifier]: identifier, [SHOULD_CREATE_ACCOUNT]: shouldCreateAccount }) => {
-      const extraStateParams = shouldCreateAccount === true ? { shouldCreateAccount } : undefined;
+      const extraStateParams = { shouldCreateAccount };
       // prompt: 'login' to ensure to erase eventual previous session
       onSignInRedirect({ prompt: 'login', extraStateParams, loginHints: { identifier } });
     },
