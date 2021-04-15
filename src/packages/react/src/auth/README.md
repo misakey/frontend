@@ -193,7 +193,7 @@ const AuthButton = () => {
 | redirectUri (`string`) | The redirect URI of the client application to receive a response from the OIDC provider | required |
 | scope (`string`) | The scope being requested from the OIDC provider | default: `openid tos privacy_policy` |
 | disableAutomaticSilentRenew (`boolean`) | disable silent token renewal | default: `false` |
-| clockSkew (`number`) |  The window of time (in seconds) to allow the current time to deviate when validating id_token's iat, nbf, and exp values | default: `0` |
+| clockSkew (`number`) |  The window of time (in seconds) to allow the current time to deviate when validating id_token's iat, nbf, and exp values | default: `300` |
 
 #### Methods
 
