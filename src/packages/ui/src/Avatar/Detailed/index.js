@@ -23,6 +23,9 @@ export const useLayoutStyles = makeStyles((theme) => ({
   avatar: {
     margin: theme.spacing(2, 0),
   },
+  wrapTextAnywhere: {
+    overflowWrap: 'anywhere',
+  },
 }));
 
 // COMPONENTS
@@ -37,10 +40,10 @@ const AvatarDetailed = ({ text, image, title, subtitle, classes }) => {
         image={image}
         size={LARGE}
       />
-      <Title gutterBottom={false} align="center">
+      <Title classes={{ root: classes.wrapTextAnywhere }} gutterBottom={false} align="center">
         {title}
       </Title>
-      <Subtitle gutterBottom={false} align="center">
+      <Subtitle classes={{ root: classes.wrapTextAnywhere }} gutterBottom={false} align="center">
         {subtitle}
       </Subtitle>
     </div>
