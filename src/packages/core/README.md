@@ -19,4 +19,4 @@ To publish on NPM, we need to use a build for NPM (different from build for loca
 
 1. Be sure to have bump version in `package.json`
 2. Run `yarn build`
-3. Run `yarn release`
+3. Run `npm run release`
