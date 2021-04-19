@@ -1,12 +1,13 @@
 import React, { useCallback } from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
-import { Form } from 'formik';
 
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import { AUTOFILL_USERNAME } from '@misakey/ui/constants/autofill';
 import { STEP } from '@misakey/core/auth/constants';
 import { identifierValidationSchema } from '@misakey/react/auth/constants/validationSchemas';
+
+import { useTranslation } from 'react-i18next';
 
 import Box from '@material-ui/core/Box';
 import TitleBold from '@misakey/ui/Typography/Title/Bold';
@@ -14,9 +15,8 @@ import Subtitle from '@misakey/ui/Typography/Subtitle';
 import FieldText from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import Field from '@misakey/ui/Form/Field';
 import Formik from '@misakey/ui/Formik';
-import BoxControls from '@misakey/ui/Box/Controls';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import BoxControlsCard from '@misakey/ui/Box/Controls/Card';
+import { Form } from 'formik';
 
 // CONSTANTS
 export const SHOULD_CREATE_ACCOUNT = 'shouldCreateAccount';
@@ -27,17 +27,9 @@ const INITIAL_VALUES = {
 };
 
 
-const useStyles = makeStyles((theme) => ({
-  button: {
-    marginTop: theme.spacing(1),
-  },
-}));
-
-
 // COMPONENTS
 const DialogSigninRedirectNoUser = ({ onSignInRedirect, title, subtitle }) => {
   const { t } = useTranslation('common');
-  const classes = useStyles();
 
   const onSubmit = useCallback(
     ({ [STEP.identifier]: identifier, [SHOULD_CREATE_ACCOUNT]: shouldCreateAccount }) => {
@@ -57,7 +49,11 @@ const DialogSigninRedirectNoUser = ({ onSignInRedirect, title, subtitle }) => {
   );
 
   return (
-    <Box>
+    <Box
+      display="flex"
+      flexDirection="column"
+      flexGrow={1}
+    >
       <TitleBold align="center" gutterBottom={false}>{title}</TitleBold>
       <Subtitle align="center">{subtitle}</Subtitle>
       <Formik
@@ -67,7 +63,13 @@ const DialogSigninRedirectNoUser = ({ onSignInRedirect, title, subtitle }) => {
         enableReinitialize
       >
         {({ submitForm, setFieldValue, isSubmitting }) => (
-          <Form>
+          <Box
+            component={Form}
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            flexGrow={1}
+          >
             <Field
               margin="none"
               suffix=":email"
@@ -78,29 +80,21 @@ const DialogSigninRedirectNoUser = ({ onSignInRedirect, title, subtitle }) => {
               inputProps={AUTOFILL_USERNAME}
               autoFocus
             />
-            <Field
-              name={SHOULD_CREATE_ACCOUNT}
-              type="hidden"
+            <BoxControlsCard
+              mt={3}
+              minWidth={300}
+              primary={{
+                text: t('components:signinRedirect.noUser.signUp'),
+              }}
+              secondary={{
+                text: t('components:signinRedirect.noUser.signIn'),
+                onClick: onGetSignin({ submitForm, setFieldValue }),
+                isLoading: isSubmitting,
+                standing: BUTTON_STANDINGS.TEXT,
+              }}
+              formik
             />
-            <Box display="flex" width="100%" justifyContent="center">
-              <BoxControls
-                formik
-                primary={{
-                  text: t('components:signinRedirect.noUser.signUp'),
-                  classes: { wrapper: classes.button },
-                }}
-                secondary={{
-                  text: t('components:signinRedirect.noUser.signIn'),
-                  onClick: onGetSignin({ submitForm, setFieldValue }),
-                  classes: { wrapper: classes.button },
-                  isLoading: isSubmitting,
-                  standing: BUTTON_STANDINGS.TEXT,
-                }}
-                flexDirection="column"
-                width={300}
-              />
-            </Box>
-          </Form>
+          </Box>
         )}
       </Formik>
     </Box>

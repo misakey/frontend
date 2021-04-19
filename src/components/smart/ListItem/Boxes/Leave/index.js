@@ -1,78 +1,37 @@
-import React, { useState, useCallback } from 'react';
+import React, { forwardRef } from 'react';
 
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-import BoxesSchema from 'store/schemas/Boxes';
-import routes from 'routes';
-
-import { useHistory } from 'react-router-dom';
+import { useDialogBoxesLeaveContext } from 'components/smart/Dialog/Boxes/Leave/Context';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import DialogBoxesLeave from 'components/smart/Dialog/Boxes/Leave';
 
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import NoMeetingRoomIcon from '@material-ui/icons/NoMeetingRoom';
 
 // COMPONENTS
-const ListItemBoxLeave = ({ box, t }) => {
-  const [open, setOpen] = useState(false);
-
-  const { replace } = useHistory();
-
-  const onClick = useCallback(
-    () => {
-      setOpen(true);
-    },
-    [setOpen],
-  );
-
-  const onClose = useCallback(
-    () => {
-      setOpen(false);
-    },
-    [setOpen],
-  );
-
-
-  const onSuccess = useCallback(
-    () => {
-      replace(routes.boxes._);
-      return Promise.resolve();
-    },
-    [replace],
-  );
+const ListItemBoxLeave = forwardRef((props, ref) => {
+  const { onOpen } = useDialogBoxesLeaveContext();
+  const { t } = useTranslation('boxes');
 
   return (
-    <>
-      <ListItem
-        button
-        divider
-        onClick={onClick}
-        aria-label={t('boxes:read.details.menu.leave.primary')}
-      >
-        <ListItemText
-          primary={t('boxes:read.details.menu.leave.primary')}
-          secondary={t('boxes:read.details.menu.leave.secondary')}
-          primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
-          secondaryTypographyProps={{ color: 'textPrimary' }}
-        />
-        <ChevronRightIcon />
-      </ListItem>
-      <DialogBoxesLeave
-        open={open}
-        onClose={onClose}
-        onSuccess={onSuccess}
-        box={box}
+    <ListItem
+      ref={ref}
+      button
+      divider
+      onClick={onOpen}
+      aria-label={t('boxes:read.details.menu.leave.primary')}
+      {...props}
+    >
+      <ListItemText
+        primary={t('boxes:read.details.menu.leave.primary')}
+        secondary={t('boxes:read.details.menu.leave.secondary')}
+        primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
+        secondaryTypographyProps={{ color: 'textPrimary' }}
       />
-    </>
+      <NoMeetingRoomIcon color="action" />
+    </ListItem>
   );
-};
+});
 
-ListItemBoxLeave.propTypes = {
-  box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
-  // withTranslation
-  t: PropTypes.func.isRequired,
-};
-
-export default withTranslation('boxes')(ListItemBoxLeave);
+export default ListItemBoxLeave;

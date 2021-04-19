@@ -17,7 +17,7 @@ import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import Formik from '@misakey/ui/Formik';
 import AppBarStatic from '@misakey/ui/AppBar/Static';
 import FormField from '@misakey/ui/Form/Field';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 import Redirect from '@misakey/ui/Redirect';
 import FormFieldTextField from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import Box from '@material-ui/core/Box';
@@ -98,7 +98,7 @@ function PasteBoxLinkScreen({ t, box, currentLinkMalformed }) {
                 fullWidth
                 variant="filled"
               />
-              <BoxControls
+              <BoxControlsDialog
                 primary={{
                   type: 'submit',
                   text: t('common:next'),

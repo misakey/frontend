@@ -9,6 +9,8 @@ import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathK
 import { ACCEPTED_TYPES } from '@misakey/ui/constants/file/image';
 import authRoutes from '@misakey/react/auth/routes';
 
+import { isDesktopDevice } from '@misakey/core/helpers/devices';
+
 import Container from '@material-ui/core/Container';
 import FileField from '@misakey/ui/Form/Field/File';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
@@ -58,6 +60,7 @@ const IdentityAvatarUpload = ({
           name={name}
           previewName={previewName}
           onUpload={onUpload}
+          autoFocus={!isDesktopDevice}
         />
       </Container>
     </ScreenAction>

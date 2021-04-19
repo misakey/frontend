@@ -80,7 +80,7 @@ const AccountMFA = ({ identity, setIsFetching }) => {
       </List>
       <DialogConfirm
         onConfirm={onChangeMFAMethod}
-        isDialogOpen={isConfirmChangeDialogOpened}
+        open={isConfirmChangeDialogOpened}
         onClose={onCloseConfirmChangeMFAMethod}
         confirmButtonText={t('common:validate')}
         title={t('account:security.MFA.updateMethod.confirm.title')}

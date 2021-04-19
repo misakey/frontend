@@ -20,6 +20,7 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import FileListItem, { FileListItemSkeleton } from 'components/smart/ListItem/File';
 import { useFilePreviewContext } from 'components/smart/File/Preview/Context';
 import { useBoxReadContext } from 'components/smart/Context/Boxes/BoxRead';
+import MenuItem from '@material-ui/core/MenuItem';
 import MenuItemEventDelete from 'components/smart/MenuItem/Event/Delete';
 import MenuItemAddFileToVault from 'components/smart/MenuItem/Event/AddToVault';
 import MenuItemEventDownload from 'components/smart/MenuItem/Event/Download';
@@ -29,7 +30,7 @@ const {
   makeGetAsymSecretKey,
 } = cryptoSelectors;
 
-export const CELL_HEIGHT = 115;
+export const CELL_HEIGHT = 97;
 const INTERNAL_DATA = ['byPagination', 'loadMoreItems'];
 const ALLOWED_FILE_TYPES_TO_PREVIEW = ['image/'];
 
@@ -96,18 +97,18 @@ const Cell = ({ style, data, event }) => {
     () => {
       const disabled = !isNil(error);
       const defaultOptions = [
-        { component: MenuItemEventDownload, key: 'download', onDownload, disabled },
-        { component: MenuItemAddFileToVault, key: 'vault', onSave, isSaved, disabled },
+        <MenuItemEventDownload component={MenuItem} key="download" onDownload={onDownload} disabled={disabled} />,
+        <MenuItemAddFileToVault component={MenuItem} key="vault" onSave={onSave} isSaved={isSaved} disabled={disabled || disableOnSave} />,
       ];
       if (hasWriteAccess) {
         return ([
           ...defaultOptions,
-          { component: MenuItemEventDelete, key: 'delete', event, boxId, disabled },
+          <MenuItemEventDelete component={MenuItem} key="delete" event={event} boxId={boxId} disabled={disabled} />,
         ]);
       }
       return defaultOptions;
     },
-    [error, onDownload, onSave, isSaved, hasWriteAccess, event, boxId],
+    [error, onDownload, onSave, isSaved, disableOnSave, hasWriteAccess, event, boxId],
   );
 
   const onClick = useCallback(
@@ -144,7 +145,6 @@ const Cell = ({ style, data, event }) => {
       file={decryptedFile}
       actions={actions}
       onClick={onClick}
-      onSave={disableOnSave ? null : onSave}
       {...omitInternalData(data)}
     />
   );

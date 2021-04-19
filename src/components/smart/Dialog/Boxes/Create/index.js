@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
 import routes from 'routes';
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import { boxNameFieldValidationSchema } from 'constants/validationSchemas/boxes';
@@ -24,9 +24,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
+import Box from '@material-ui/core/Box';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
-import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
-import BoxControls from '@misakey/ui/Box/Controls';
+import { BUTTON_STANDINGS } from '@misakey/ui/Button';
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 import DialogContent from '@misakey/ui/DialogContent';
 import DialogTitleWithCloseFormik from '@misakey/ui/DialogTitle/WithCloseIcon/Formik';
 import { Form } from 'formik';
@@ -36,6 +37,8 @@ import Dialog from '@material-ui/core/Dialog';
 import FieldText from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import IconButtonMenuAccount from 'components/smart/IconButton/Menu/Account';
 import DialogBoxesCreatePasteLink from 'components/smart/Dialog/Boxes/Create/PasteLink';
+import ListItemOrganizationCurrent from 'components/smart/ListItem/Organization/Current';
+import ListBordered from '@misakey/ui/List/Bordered';
 
 // CONSTANTS
 const { hasCrypto: hasCryptoSelector } = authSelectors;
@@ -180,7 +183,7 @@ function CreateBoxDialog({
             <Form>
               <DialogTitleWithCloseFormik
                 id={DESCRIPTION_ID}
-                title={t('boxes:create.dialog.content')}
+                title={t('boxes:create.dialog.title')}
                 onClose={onResetFormik}
                 fullScreen={fullScreen}
               >
@@ -192,6 +195,20 @@ function CreateBoxDialog({
               <DialogContent
                 className={classes.dialogContentRoot}
               >
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  component={Trans}
+                  i18nKey="boxes:create.dialog.organization"
+                >
+                  In&nbsp;
+                  <ListBordered
+                    dense
+                    disablePadding
+                  >
+                    <ListItemOrganizationCurrent />
+                  </ListBordered>
+                </Box>
                 <Field
                   component={FieldText}
                   className={classes.inputField}
@@ -204,15 +221,16 @@ function CreateBoxDialog({
                   variant="filled"
                   fullWidth
                 />
-                <Button
-                  standing={BUTTON_STANDINGS.TEXT}
-                  text={t('boxes:create.dialog.pasteLink')}
-                  onClick={onToggleInvitation}
-                />
-                <BoxControls
+                <BoxControlsDialog
+                  mt={1}
                   primary={{
                     type: 'submit',
                     text: t('common:create'),
+                  }}
+                  secondary={{
+                    standing: BUTTON_STANDINGS.TEXT,
+                    text: t('boxes:create.dialog.pasteLink'),
+                    onClick: onToggleInvitation,
                   }}
                   formik
                 />

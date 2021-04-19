@@ -71,7 +71,7 @@ const MenuItemBoxLinkRenew = forwardRef(({ box, onClose }, ref) => {
         </Typography>
       </MenuItem>
       <DialogConfirm
-        isDialogOpen={open}
+        open={open}
         onConfirm={onConfirm}
         onSuccess={onSuccess}
         onClose={onDialogClose}

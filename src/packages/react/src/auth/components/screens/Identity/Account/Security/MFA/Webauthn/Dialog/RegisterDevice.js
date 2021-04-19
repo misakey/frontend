@@ -6,10 +6,12 @@ import { useTranslation } from 'react-i18next';
 
 import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 import getRandomTitle from '@misakey/core/helpers/getRandomTitle';
+import dialogIsFullScreen from '@misakey/core/helpers/dialog/isFullScreen';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 import DialogContent from '@misakey/ui/DialogContent';
 import DialogTitleWithCloseFormik from '@misakey/ui/DialogTitle/WithCloseIcon/Formik';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
@@ -17,7 +19,6 @@ import FormField from '@misakey/ui/Form/Field';
 import FormFieldTextFieldWithErrors from '@misakey/ui/Form/Field/TextFieldWithErrors';
 
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
 import { webauthnDeviceValidationSchema } from '@misakey/react/auth/constants/validationSchemas/identity';
 
 // CONSTANTS
@@ -26,7 +27,13 @@ const FIELD_DEVICE_NAME = 'name';
 const DESCRIPTION_ID = 'register-device-dialog-description';
 
 // HOOKS
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
+  dialogContentRoot: {
+    padding: theme.spacing(0, 0, 1, 0),
+    [dialogIsFullScreen(theme)]: {
+      paddingBottom: theme.spacing(0),
+    },
+  },
   prewrap: {
     whiteSpace: 'pre-wrap',
     overflowWrap: 'break-word',
@@ -37,6 +44,8 @@ function RegisterDeviceDialog({ onClose, open, onSubmit, ...props }) {
   const classes = useStyles();
   const [placeholder, setPlaceholder] = useState();
   const { t } = useTranslation('account');
+
+  const fullScreen = useDialogFullScreen();
 
   useEffect(
     () => {
@@ -59,6 +68,7 @@ function RegisterDeviceDialog({ onClose, open, onSubmit, ...props }) {
   return (
     <Dialog
       fullWidth
+      fullScreen={fullScreen}
       open={open}
       onClose={onClose}
       aria-label={t('account:security.MFA.webauthn.registerDeviceDialog.title')}
@@ -73,6 +83,7 @@ function RegisterDeviceDialog({ onClose, open, onSubmit, ...props }) {
         <Form>
           <DialogTitleWithCloseFormik title={t('account:security.MFA.webauthn.registerDeviceDialog.title')} onClose={onClose} />
           <DialogContent
+            classes={{ root: classes.dialogContentRoot }}
             subtitle={<Subtitle className={classes.prewrap}>{t('account:security.MFA.webauthn.registerDeviceDialog.subtitle')}</Subtitle>}
           >
             <FormField
@@ -83,16 +94,15 @@ function RegisterDeviceDialog({ onClose, open, onSubmit, ...props }) {
               autoFocus
               type="text"
             />
-          </DialogContent>
-          <DialogActions>
-            <BoxControls
+            <BoxControlsDialog
+              mt={1}
               primary={{
                 type: 'submit',
                 text: t('common:save'),
               }}
               formik
             />
-          </DialogActions>
+          </DialogContent>
         </Form>
       </Formik>
     </Dialog>

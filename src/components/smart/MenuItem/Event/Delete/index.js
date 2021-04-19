@@ -19,7 +19,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 
 // COMPONENTS
-const MenuItemDeleteEvent = forwardRef(({ t, event, boxId }, ref) => {
+const MenuItemDeleteEvent = forwardRef(({ t, event, boxId, component: Component }, ref) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { id: eventId } = useSafeDestr(event);
@@ -51,7 +51,7 @@ const MenuItemDeleteEvent = forwardRef(({ t, event, boxId }, ref) => {
   );
 
   return (
-    <ContextMenuItem ref={ref} onClick={onOpen}>
+    <Component ref={ref} onClick={onOpen}>
       <ListItemIcon>
         <DeleteIcon />
       </ListItemIcon>
@@ -61,17 +61,22 @@ const MenuItemDeleteEvent = forwardRef(({ t, event, boxId }, ref) => {
         eventId={eventId}
         onDelete={onDelete}
         onClose={onClose}
-        isDialogOpen={isDialogOpen}
+        open={isDialogOpen}
       />
-    </ContextMenuItem>
+    </Component>
   );
 });
 
 MenuItemDeleteEvent.propTypes = {
+  component: PropTypes.elementType,
   event: PropTypes.shape(EventSchema.propTypes).isRequired,
   boxId: PropTypes.string.isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,
+};
+
+MenuItemDeleteEvent.defaultProps = {
+  component: ContextMenuItem,
 };
 
 export default withTranslation(['common', 'boxes'], { withRef: true })(MenuItemDeleteEvent);

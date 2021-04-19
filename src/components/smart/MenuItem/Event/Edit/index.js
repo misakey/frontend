@@ -13,7 +13,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 
 import EditIcon from '@material-ui/icons/Edit';
 
-const MenuItemEditEvent = forwardRef(({ t, event }, ref) => {
+const MenuItemEditEvent = forwardRef(({ t, event, component: Component }, ref) => {
   const { editEvent } = useBoxEditEventContext();
 
   const onClick = useCallback(
@@ -26,19 +26,24 @@ const MenuItemEditEvent = forwardRef(({ t, event }, ref) => {
   );
 
   return (
-    <ContextMenuItem ref={ref} onClick={onClick}>
+    <Component ref={ref} onClick={onClick}>
       <ListItemIcon>
         <EditIcon />
       </ListItemIcon>
       <ListItemText primary={t('common:edit')} />
-    </ContextMenuItem>
+    </Component>
   );
 });
 
 MenuItemEditEvent.propTypes = {
+  component: PropTypes.elementType,
   event: PropTypes.shape(EventSchema.propTypes).isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,
+};
+
+MenuItemEditEvent.defaultProps = {
+  component: ContextMenuItem,
 };
 
 export default withTranslation('common', { withRef: true })(MenuItemEditEvent);

@@ -19,7 +19,7 @@ import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
 import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
 import CardUserSignOut from '@misakey/react/auth/components/Card/User/SignOut';
 import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 import Box from '@material-ui/core/Box';
 import TitleBold from '@misakey/ui/Typography/Title/Bold';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
@@ -209,7 +209,7 @@ function DialogCreatePassword({ open, onClose, isReset, ...rest }) {
                   autoFocus
                 />
               </CardUserSignOut>
-              <BoxControls
+              <BoxControlsDialog
                 primary={{
                   type: 'submit',
                   text: t('common:validate'),

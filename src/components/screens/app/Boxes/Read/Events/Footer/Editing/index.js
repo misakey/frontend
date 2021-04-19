@@ -168,7 +168,7 @@ function BoxEventsFooterEditing({ box, secretKey, event, clearEvent, t }) {
         eventId={eventId}
         onDelete={onDelete}
         onClose={onClose}
-        isDialogOpen={isDialogOpen}
+        open={isDialogOpen}
       />
       <Box ref={anchorRef} display="flex" alignContent="center" alignItems="flex-end" width="100%">
         <Formik

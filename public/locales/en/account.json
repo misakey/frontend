@@ -162,7 +162,7 @@
     },
     "exportButton": {
       "fileName": "misakey_private_key",
-      "info": "Export my private key"
+      "info": "Download my private key"
     }
   },
   "quota": {

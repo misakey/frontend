@@ -12,7 +12,7 @@ import DialogContent from '@misakey/ui/DialogContent';
 // import BoxControlsCentered from '@misakey/ui/Box/Controls/Centered';
 import BoxMessage from '@misakey/ui/Box/Message';
 // import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 import BoxFloatAvatar, { TOP } from '@misakey/ui/Box/FloatAvatar';
 import AvatarColorized, { BACKGROUND_COLOR } from '@misakey/ui/Avatar/Colorized';
 import Field from '@misakey/ui/Form/Field';
@@ -85,7 +85,7 @@ const DialogOrganizationCreateContent = () => {
           text={t('organizations:join')}
           onClick={onToggleInvitation}
         /> */}
-        <BoxControls
+        <BoxControlsDialog
           primary={{
             type: 'submit',
             text: t('common:create'),

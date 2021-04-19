@@ -32,7 +32,7 @@ import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
 import CardUserSignOut from '@misakey/react/auth/components/Card/User/SignOut';
 import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsCard from '@misakey/ui/Box/Controls/Card';
 import Box from '@material-ui/core/Box';
 import CardSsoWithSlope from '@misakey/react/auth/components/Card/Sso/WithSlope';
 import TitleBold from '@misakey/ui/Typography/Title/Bold';
@@ -138,7 +138,7 @@ function VaultLocked({ t }) {
               autoFocus
             />
           </CardUserSignOut>
-          <BoxControls
+          <BoxControlsCard
             primary={{
               type: 'submit',
               text: t('common:unlock'),

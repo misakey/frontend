@@ -1,25 +1,29 @@
 import React, { useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
-import PropTypes from 'prop-types';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
+
+import dialogIsFullScreen from '@misakey/core/helpers/dialog/isFullScreen';
+import downloadFile from '@misakey/core/helpers/downloadFile';
+
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import BoxControls from '@misakey/ui/Box/Controls';
+
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 import DialogContent from '@misakey/ui/DialogContent';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
-import DialogActions from '@material-ui/core/DialogActions';
 import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
-
-import downloadFile from '@misakey/core/helpers/downloadFile';
-import { IconButton, Typography } from '@material-ui/core';
-import DownloadIcon from '@material-ui/icons/GetApp';
 import ButtonCopy, { MODE } from '@misakey/ui/Button/Copy';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
 
-import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
+import DownloadIcon from '@material-ui/icons/GetApp';
+
 
 // CONSTANTS
 const { identifierValue: IDENTIFIER_VALUE_SELECTOR } = authSelectors;
@@ -27,7 +31,10 @@ const { identifierValue: IDENTIFIER_VALUE_SELECTOR } = authSelectors;
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   dialogContentRoot: {
-    padding: 0,
+    padding: theme.spacing(0, 0, 1, 0),
+    [dialogIsFullScreen(theme)]: {
+      paddingBottom: theme.spacing(0),
+    },
   },
   prewrap: {
     whiteSpace: 'pre-wrap',
@@ -101,14 +108,12 @@ function RecoveryTotpDialogContent({ onClose, recoveryCodes }) {
             {recoveryCodesText}
           </Typography>
         </Paper>
-
-      </DialogContent>
-      <DialogActions>
-        <BoxControls
+        <BoxControlsDialog
+          mt={1}
           primary={{ text: t('common:close') }}
           onClick={onClose}
         />
-      </DialogActions>
+      </DialogContent>
     </>
   );
 }

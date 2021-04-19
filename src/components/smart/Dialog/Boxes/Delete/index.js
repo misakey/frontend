@@ -22,7 +22,7 @@ import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 import FormFieldTextField from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import Formik from '@misakey/ui/Formik';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import TypographyPreWrapped from '@misakey/ui/Typography/PreWrapped';
@@ -48,7 +48,7 @@ function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
   const handleHttpErrors = useHandleHttpErrors();
   const fullScreen = useDialogFullScreen();
 
-  const { id, accesses } = useSafeDestr(box);
+  const { id, accesses, title } = useSafeDestr(box);
 
   const { isFetching } = useBoxAccessesEffect(box, open);
 
@@ -96,7 +96,7 @@ function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
       <DialogTitleWithClose
         fullScreen={fullScreen}
         onClose={onClose}
-        title={t('boxes:delete.dialog.title', { title: box.title })}
+        title={t('boxes:delete.dialog.title', { title })}
       />
       <DialogContent className={classes.dialogContentRoot}>
         <TypographyPreWrapped>
@@ -123,7 +123,7 @@ function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
               />
             </Box>
             <DialogActions>
-              <BoxControls
+              <BoxControlsDialog
                 primary={{
                   type: 'submit',
                   text: t('common:delete'),

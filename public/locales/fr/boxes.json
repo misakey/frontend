@@ -221,8 +221,8 @@
     "dialog": {
       "title": "Nouvel espace privé",
       "pasteLink": "J'ai un lien d'invitation",
-      "content": "Nouvel espace privé",
-      "success": "L'espace privé a été créé avec succès\u00a0!"
+      "success": "L'espace privé a été créé avec succès\u00a0!",
+      "organization": "Dans\u00a0<1><0></0></1>"
     },
     "error": {
       "updateSecretStorage": "Une erreur s'est produite lors de la mise à jour du coffre-fort. Assurez-vous de garder le lien d'invitation de l'espace privé afin de ne pas perdre la clé de déchiffrement."
@@ -278,7 +278,9 @@
   },
   "notifications": {
     "title": "Notifications",
-    "mute": "Mettre en sourdine",
+    "active": "Actives",
+    "inactive": "Inactives",
+    "mute": "Sourdine",
     "unmute": "Notifier",
     "byIdentity": {
       "title": "Notifications",

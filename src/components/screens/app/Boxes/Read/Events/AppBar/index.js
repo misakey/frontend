@@ -2,10 +2,10 @@ import React, { useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import routes from 'routes';
 
 import { TOOLBAR_MIN_HEIGHT, SMALL } from '@misakey/ui/constants/sizes';
+import { LIMITED } from '@misakey/ui/constants/accessModes';
 import BoxesSchema from 'store/schemas/Boxes';
 
 import isEmpty from '@misakey/core/helpers/isEmpty';
@@ -14,19 +14,19 @@ import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
+import { Link } from 'react-router-dom';
+import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import Skeleton from '@material-ui/lab/Skeleton';
-
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import Box from '@material-ui/core/Box';
 import AvatarGroupMembers from '@misakey/ui/AvatarGroup/Members';
 import ToggleDrawerButton from 'components/smart/Screen/Drawer/AppBar/ToggleButton';
 import AppBarStatic from '@misakey/ui/AppBar/Static';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ShareBoxButton from './ShareBoxButton';
-import AppBarMenuTabs from './Tabs';
-
+import BoxesAppBarTabs from 'components/screens/app/Boxes/Read/Events/AppBar/Tabs';
+import IconSharing from '@misakey/ui/Icon/Sharing';
 
 // CONSTANTS
 export const HEADER_MIN_HEIGHT = 2 * TOOLBAR_MIN_HEIGHT;
@@ -58,21 +58,22 @@ const useStyles = makeStyles((theme) => ({
   menuButton: {
     margin: theme.spacing(0, 1),
   },
+  listRoot: {
+    display: 'flex',
+    flexGrow: 1,
+    overflow: 'hidden',
+  },
+  listItemContainer: {
+    width: '100%',
+  },
   listItemRoot: {
+    width: '100%',
     paddingTop: theme.spacing(0),
     paddingBottom: theme.spacing(0),
     minHeight: TOOLBAR_MIN_HEIGHT,
   },
   listItemText: {
     margin: 0,
-  },
-  listItemSecondaryActionRoot: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  typographyCaret: {
-    maxWidth: 'calc(100% - 24px)',
-    display: 'inline-block',
   },
   secondaryReducedHeight: {
     marginTop: theme.spacing(-1),
@@ -85,6 +86,7 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
   const {
     title,
     members = [],
+    accessMode,
     id, hasAccess, isMember,
   } = useMemo(() => box, [box]);
 
@@ -93,7 +95,13 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
     [title],
   );
 
+  const iconSharingValue = useMemo(
+    () => accessMode || LIMITED,
+    [accessMode],
+  );
+
   const routeDetails = useGeneratePathKeepingSearchAndHash(routes.boxes.read.details, { id });
+  const routeSharing = useGeneratePathKeepingSearchAndHash(routes.boxes.read.sharing, { id });
 
   const isTheOnlyMember = useMemo(
     () => members.length === 1 && belongsToCurrentUser,
@@ -118,70 +126,76 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
     [belongsToCurrentUser, isMember],
   );
 
-  const displayTabs = useMemo(
-    () => isMember,
-    [isMember],
-  );
-
   return (
     <Box display="flex" flexDirection="column" width="100%" overflow="hidden">
       <AppBarStatic
         toolbarProps={TOOLBAR_PROPS}
       >
         <ToggleDrawerButton />
-        <ListItem
-          button
-          component={Link}
-          to={routeDetails}
-          overflow="hidden"
-          disabled={disabled}
-          dense
-          disableGutters
-          {...omitTranslationProps(props)}
-          classes={{
-            root: classes.listItemRoot,
-          }}
-        >
-          <ListItemText
-            disableTypography
-            className={classes.listItemText}
-            primary={(
-              <>
-                <Typography className={classes.typographyCaret} {...PRIMARY_TYPO_PROPS}>
-                  {isTitleEmpty ? <Skeleton width={200} /> : title}
+        <List disablePadding classes={{ root: classes.listRoot }}>
+          <ListItem
+            button
+            component={Link}
+            to={routeDetails}
+            overflow="hidden"
+            disabled={disabled}
+            dense
+            disableGutters
+            {...omitTranslationProps(props)}
+            classes={{
+              container: classes.listItemContainer,
+              root: classes.listItemRoot,
+            }}
+          >
+            <ListItemText
+              disableTypography
+              className={classes.listItemText}
+              primary={(
+                <>
+                  <Typography {...PRIMARY_TYPO_PROPS}>
+                    {isTitleEmpty ? <Skeleton width={200} /> : title}
+                  </Typography>
+                </>
+            )}
+              secondary={(
+                <Typography
+                  className={classes.secondaryReducedHeight}
+                  {...SECONDARY_TYPO_PROPS}
+                >
+                  {isEmpty(members) && hasAccess ? (
+                    <Skeleton
+                      width={SKELETON_WIDTH}
+                    />
+                  ) : membersText}
                 </Typography>
-                {!disabled && <ExpandMoreIcon />}
-              </>
             )}
-            secondary={(
-              <Typography
-                className={classes.secondaryReducedHeight}
-                {...SECONDARY_TYPO_PROPS}
-              >
-                {isEmpty(members) && hasAccess ? (
-                  <Skeleton
-                    width={SKELETON_WIDTH}
-                  />
-                ) : membersText}
-              </Typography>
-            )}
-          />
-          {!isTheOnlyMember && (
+            />
+          </ListItem>
+        </List>
+        <Button
+          disabled={!canShare}
+          component={Link}
+          to={routeSharing}
+          standing={BUTTON_STANDINGS.TEXT}
+          startIcon={belongsToCurrentUser ? (
+            <IconSharing
+              value={iconSharingValue}
+            />
+          ) : null}
+          text={!isTheOnlyMember ? (
             <AvatarGroupMembers
               max={MAX_MEMBERS}
               members={members}
               size={SMALL}
             />
-          )}
-        </ListItem>
+          ) : t('common:share')}
+        />
       </AppBarStatic>
-      <AppBarStatic
-        toolbarProps={TOOLBAR_PROPS}
+      <BoxesAppBarTabs
         color="primary"
-      >
-        {displayTabs && <AppBarMenuTabs boxId={id} />}
-        {canShare && <ShareBoxButton box={box} />}
-      </AppBarStatic>
+        disabled={!isMember}
+        boxId={id}
+      />
     </Box>
   );
 };

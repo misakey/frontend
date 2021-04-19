@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { isDesktopDevice } from '@misakey/core/helpers/devices';
 
 import BoxesSchema from 'store/schemas/Boxes';
 import isNil from '@misakey/core/helpers/isNil';
@@ -38,6 +39,7 @@ const InputBoxesUpload = ({
   const dialogProps = useMemo(
     () => ({
       box,
+      autoFocus: !isDesktopDevice,
     }),
     [box],
   );

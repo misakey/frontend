@@ -2,7 +2,6 @@ import React, { useMemo, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch, connect } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 import { denormalize } from 'normalizr';
 
 import SavedFilesSchema from 'store/schemas/Files/Saved';
@@ -21,6 +20,9 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useDecryptSavedFileEffect from 'hooks/useDecryptSavedFile/effect';
 
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuItemEventDownload from 'components/smart/MenuItem/Event/Download';
+import MenuItemEventRemoveFromVault from 'components/smart/MenuItem/Event/RemoveFromVault';
 import FileListItem, { FileListItemSkeleton } from 'components/smart/ListItem/File';
 
 // CONSTANTS
@@ -41,8 +43,6 @@ Skeleton.propTypes = {
 };
 
 const VaultCell = ({ style, data, savedFile }) => {
-  const { t } = useTranslation('common');
-
   const vaultKey = useSelector(cryptoSelectors.getVaultKey);
   const identityId = useSelector(authSelectors.identityId);
   const dispatch = useDispatch();
@@ -51,7 +51,7 @@ const VaultCell = ({ style, data, savedFile }) => {
 
   useDecryptSavedFileEffect(savedFile, vaultKey);
 
-  const { getDecryptedFile, onOpenFilePreview } = useFilePreviewContext();
+  const { getDecryptedFile, onOpenFilePreview, onDownloadFile } = useFilePreviewContext();
 
   const { type, blobUrl, isLoading, error, encryption, name } = useSafeDestr(decryptedFile);
 
@@ -60,6 +60,11 @@ const VaultCell = ({ style, data, savedFile }) => {
       onOpenFilePreview(encryptedFileId, { ...data, id });
     },
     [encryptedFileId, onOpenFilePreview, data, id],
+  );
+
+  const onDownload = useCallback(
+    () => onDownloadFile(decryptedFile),
+    [decryptedFile, onDownloadFile],
   );
 
   const onDelete = useCallback(() => deleteSavedFileBuilder(id), [id]);
@@ -71,6 +76,14 @@ const VaultCell = ({ style, data, savedFile }) => {
   const { wrappedFetch: onRemove } = useFetchCallback(
     onDelete,
     { onSuccess: onDeleteSuccess },
+  );
+
+  const actions = useMemo(
+    () => [
+      <MenuItemEventDownload component={MenuItem} key="download" onDownload={onDownload} disabled={!isNil(error)} />,
+      <MenuItemEventRemoveFromVault component={MenuItem} key="remove" onRemove={onRemove} />,
+    ],
+    [onDownload, error, onRemove],
   );
 
   const isTypeAllowedForPreview = useMemo(
@@ -99,7 +112,7 @@ const VaultCell = ({ style, data, savedFile }) => {
     <FileListItem
       style={style}
       file={decryptedFile}
-      actions={[{ key: 'remove', onClick: onRemove, text: t('common:remove') }]}
+      actions={actions}
       onClick={onClick}
       key={id}
       {...omitInternalData(data)}

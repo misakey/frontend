@@ -17,11 +17,12 @@ import { getDetails } from '@misakey/core/helpers/apiError';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useOnIdentifierSubmit from '@misakey/react/auth/hooks/useOnIdentifierSubmit';
 
+import Box from '@material-ui/core/Box';
 import CardUser from '@misakey/react/auth/components/Card/User';
 import LoginFormField from '@misakey/react/auth/components/Form/Login/Identifier';
 import SecretHiddenFormField from '@misakey/react/auth/components/Form/Login/Secret/Hidden';
-import BoxControls from '@misakey/ui/Box/Controls';
 import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
+import BoxControlsCard from '@misakey/ui/Box/Controls/Card';
 
 // CONSTANTS
 const CURRENT_STEP = STEP.identifier;
@@ -75,7 +76,11 @@ const AuthLoginIdentifierForm = ({ loginChallenge, identifier }) => {
       onSubmit={onSubmit}
       enableReinitialize
     >
-      <Form>
+      <Box
+        component={Form}
+        display="flex"
+        flexDirection="column"
+      >
 
         <CardUser
           hideSkeleton
@@ -87,8 +92,12 @@ const AuthLoginIdentifierForm = ({ loginChallenge, identifier }) => {
           />
           <SecretHiddenFormField />
         </CardUser>
-        <BoxControls formik primary={primary} />
-      </Form>
+        <BoxControlsCard
+          mt={3}
+          formik
+          primary={primary}
+        />
+      </Box>
     </Formik>
   );
 };

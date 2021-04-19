@@ -43,7 +43,6 @@
         "sent": "Les fichiers\u00a0:{{filenamesSent}} ont été envoyés avec succès."
       },
       "required": "Vous devez envoyer au moins 1 fichier",
-      "max": "Vous ne pouvez envoyer que 10 fichiers à la fois",
       "extension": "Les fichiers sans extension suivants n'ont pas pu être ajoutés\u00a0:{{filenamesNoExtension}}"
     }
   },
@@ -242,10 +241,10 @@
     "code": {
       "label": "Code",
       "placeholder": "123456",
-      "helperText": "Entrez le code obtenu avec votre application TOTP",
+      "helperText": "Entrez le TOTP obtenu",
       "error": {
-        "forbidden": "Ce code est incorrect, veuillez réessayer",
-        "malformed": "Le code de confirmation doit contenir 6 chiffres"
+        "forbidden": "TOTP incorrect, veuillez réessayer",
+        "malformed": "Le TOTP doit contenir 6 chiffres"
       }
     }
   },

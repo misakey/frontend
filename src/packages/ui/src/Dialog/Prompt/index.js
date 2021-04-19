@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 
 import isFunction from '@misakey/core/helpers/isFunction';
 
+import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 import { useTranslation } from 'react-i18next';
 
+import Box from '@material-ui/core/Box';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 
 // COMPONENTS
 const DialogPrompt = ({
@@ -17,6 +18,8 @@ const DialogPrompt = ({
   open, onClose,
   ...props }) => {
   const { t } = useTranslation('common');
+
+  const fullScreen = useDialogFullScreen();
 
   const onCancel = useCallback(
     () => {
@@ -46,27 +49,27 @@ const DialogPrompt = ({
     <Dialog
       open={open}
       onClose={onCancel}
+      fullWidth
+      fullScreen={fullScreen}
       {...props}
     >
       <DialogTitleWithClose
         onClose={onCancel}
         title={message}
       />
-      <DialogContent>
-        <DialogActions>
-          <BoxControls
-            primary={{
-              text: t('common:confirm'),
-              onClick: onConfirm,
-            }}
-            secondary={{
-              text: t('common:cancel'),
-              onClick: onCancel,
-            }}
-          />
-        </DialogActions>
+      <Box component={DialogContent} display="flex" flexDirection="column">
+        <BoxControlsDialog
+          primary={{
+            text: t('common:confirm'),
+            onClick: onConfirm,
+          }}
+          secondary={{
+            text: t('common:cancel'),
+            onClick: onCancel,
+          }}
+        />
 
-      </DialogContent>
+      </Box>
     </Dialog>
   );
 };

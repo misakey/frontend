@@ -42,7 +42,7 @@ function LeaveBoxDialog({ box, t, open, onClose, onSuccess }) {
 
   return (
     <DialogConfirm
-      isDialogOpen={open}
+      open={open}
       onConfirm={onConfirm}
       onClose={onClose}
       onSuccess={onSuccess}

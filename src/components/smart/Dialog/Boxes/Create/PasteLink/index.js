@@ -16,7 +16,7 @@ import Formik from '@misakey/ui/Formik';
 import IconButtonMenuAccount from 'components/smart/IconButton/Menu/Account';
 import FormField from '@misakey/ui/Form/Field';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 import FormFieldTextField from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import Box from '@material-ui/core/Box';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
@@ -90,16 +90,19 @@ function PasteBoxLinkScreen({
             fullWidth
             variant="filled"
           />
-          <ButtonWithDialogPassword
-            standing={BUTTON_STANDINGS.TEXT}
-            text={t('boxes:pasteLink.goBack')}
-            onClick={onBack}
-          />
-          <BoxControls
+          <BoxControlsDialog
+            mt={2}
             primary={{
               type: 'submit',
               text: t('common:join'),
             }}
+            secondary={(
+              <ButtonWithDialogPassword
+                standing={BUTTON_STANDINGS.TEXT}
+                text={t('boxes:pasteLink.goBack')}
+                onClick={onBack}
+              />
+            )}
             formik
           />
         </DialogContent>

@@ -11,7 +11,6 @@ import useXsMediaQuery from '@misakey/hooks/useXsMediaQuery';
 import { useTranslation } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import IconButton from '@misakey/ui/IconButton';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
@@ -44,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const ListItemSecondaryActionAgent = ({ id, onRemove, role, isNew }) => {
+const SecondaryActionAgent = ({ id, onRemove, role, isNew }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const classes = useStyles();
@@ -88,45 +87,43 @@ const ListItemSecondaryActionAgent = ({ id, onRemove, role, isNew }) => {
 
   return (
     <>
-      <ListItemSecondaryAction>
-        {isXs && (
-          <BadgeNew onClick={onClick} isNew={isNew}>
-            <IconButton
-              color="secondary"
-              onClick={onClick}
-              size="small"
-            >
-              {isNil(anchorEl) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-            </IconButton>
-          </BadgeNew>
-        )}
-        {(!isXs && hasOnRemove) && (
-          <BadgeNew onClick={onClick} isNew={isNew}>
-            <Button
-              standing={BUTTON_STANDINGS.CANCEL}
-              color="secondary"
-              onClick={onClick}
-              text={(
-                <>
-                  {t(`organizations:agents.role.${role}`)}
-                  {isNil(anchorEl) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-                </>
-              )}
-              size="small"
-            />
-          </BadgeNew>
-        )}
-        {!hasMenu && (
-          <BadgeNew isNew={isNew}>
-            <Subtitle
-              color="secondary"
-              classes={{ root: clsx(classes.subtitleRoot, classes.subtitleStatus) }}
-            >
+      {isXs && (
+      <BadgeNew onClick={onClick} isNew={isNew}>
+        <IconButton
+          color="secondary"
+          onClick={onClick}
+          size="small"
+        >
+          {isNil(anchorEl) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+        </IconButton>
+      </BadgeNew>
+      )}
+      {(!isXs && hasOnRemove) && (
+      <BadgeNew onClick={onClick} isNew={isNew}>
+        <Button
+          standing={BUTTON_STANDINGS.CANCEL}
+          color="secondary"
+          onClick={onClick}
+          text={(
+            <>
               {t(`organizations:agents.role.${role}`)}
-            </Subtitle>
-          </BadgeNew>
-        )}
-      </ListItemSecondaryAction>
+              {isNil(anchorEl) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+            </>
+              )}
+          size="small"
+        />
+      </BadgeNew>
+      )}
+      {!hasMenu && (
+      <BadgeNew isNew={isNew}>
+        <Subtitle
+          color="secondary"
+          classes={{ root: clsx(classes.subtitleRoot, classes.subtitleStatus) }}
+        >
+          {t(`organizations:agents.role.${role}`)}
+        </Subtitle>
+      </BadgeNew>
+      )}
       {hasMenu && (
         <Menu
           anchorEl={anchorEl}
@@ -154,17 +151,17 @@ const ListItemSecondaryActionAgent = ({ id, onRemove, role, isNew }) => {
   );
 };
 
-ListItemSecondaryActionAgent.propTypes = {
+SecondaryActionAgent.propTypes = {
   onRemove: PropTypes.func,
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   role: PropTypes.oneOf(ROLES),
   isNew: PropTypes.bool,
 };
 
-ListItemSecondaryActionAgent.defaultProps = {
+SecondaryActionAgent.defaultProps = {
   onRemove: null,
   role: AGENT,
   isNew: false,
 };
 
-export default ListItemSecondaryActionAgent;
+export default SecondaryActionAgent;

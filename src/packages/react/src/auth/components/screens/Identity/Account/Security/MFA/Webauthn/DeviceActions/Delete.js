@@ -68,7 +68,7 @@ const AccountMFADeviceActionDelete = (
     <>
       <DialogConfirm
         onConfirm={onConfirm}
-        isDialogOpen={isConfirmDeleteDialogOpened}
+        open={isConfirmDeleteDialogOpened}
         onClose={onCloseConfirmDeleteDialog}
         confirmButtonText={t('common:delete')}
         title={t('account:security.MFA.webauthn.devicesList.confirmDelete.title')}

@@ -24,7 +24,7 @@ import AppBarStatic from '@misakey/ui/AppBar/Static';
 import BoxEventsAppBar from 'components/screens/app/Boxes/Read/Events/AppBar';
 import CreateBoxSuggestions from 'components/smart/Box/CreateSuggestions';
 import MuiLink from '@material-ui/core/Link';
-import Title from '@misakey/ui/Typography/Title';
+import TitleBold from '@misakey/ui/Typography/Title/Bold';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
@@ -115,7 +115,7 @@ function NoAccess({ box, belongsToCurrentUser, t }) {
             <Box
               display="flex"
               flexDirection="column"
-              alignItems="flex-start"
+              alignItems="center"
               width="100%"
             >
               {isFetching ? (<AvatarBoxSkeleton size={LARGE} />) : (
@@ -124,11 +124,16 @@ function NoAccess({ box, belongsToCurrentUser, t }) {
                   size={LARGE}
                 />
               )}
-              <Box mt={2}>
+              <Box
+                display="flex"
+                flexDirection="column"
+                mt={2}
+                width="100%"
+              >
                 {isFetching && <Skeleton width="300" />}
-                {!isNil(title) && <Title align="left">{t('boxes:read.noaccess.title', { title })}</Title>}
-                {isNil(title) && !isFetching && <Title align="left">{t('boxes:read.noaccess.defaultTitle')}</Title>}
-                <Subtitle>
+                {!isNil(title) && <TitleBold align="center">{t('boxes:read.noaccess.title', { title })}</TitleBold>}
+                {isNil(title) && !isFetching && <TitleBold align="center">{t('boxes:read.noaccess.defaultTitle')}</TitleBold>}
+                <Subtitle align="center">
                   <Trans values={{ creatorName }} i18nKey="boxes:read.noaccess.subtitle">
                     {'Message '}
                     <MuiLink {...linkProps}>{'{{creatorName}}'}</MuiLink>
@@ -146,7 +151,7 @@ function NoAccess({ box, belongsToCurrentUser, t }) {
             <Divider variant="middle" />
           </Box>
 
-          <CreateBoxSuggestions />
+          <CreateBoxSuggestions display="flex" flexDirection="column" />
         </Container>
         <FooterFullScreen />
       </Box>

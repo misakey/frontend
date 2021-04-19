@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import UserSchema from '@misakey/react/auth/store/schemas/User';
-import authRoutes from '@misakey/react/auth/routes';
 
-import { generatePath, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { senderMatchesIdentityId } from 'helpers/sender';
 import isNil from '@misakey/core/helpers/isNil';
 
+import useIdentityPublicTo from '@misakey/react/auth/hooks/useIdentityPublicTo';
 import { useSelector } from 'react-redux';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
@@ -29,12 +29,7 @@ const ListItemMemberPublicLink = ({ component: Component, member, ...props }) =>
 
   const { id } = useSafeDestr(member);
 
-  const identityPublicTo = useMemo(
-    () => (isNil(id)
-      ? null
-      : generatePath(authRoutes.identities.public, { id })),
-    [id],
-  );
+  const identityPublicTo = useIdentityPublicTo(id);
 
   const listItemProps = useMemo(
     () => (isMe || isNil(identityPublicTo)

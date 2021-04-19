@@ -1,4 +1,4 @@
-import { isDesktopDevice } from 'helpers/devices';
+import { isDesktopDevice } from '@misakey/core/helpers/devices';
 import isNil from '@misakey/core/helpers/isNil';
 
 import { useTranslation } from 'react-i18next';

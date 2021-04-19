@@ -12,7 +12,7 @@ import { useClearUser } from '@misakey/hooks/useActions/loginSecret';
 
 import CardUser from '@misakey/ui/Card/User';
 import IconButton from '@material-ui/core/IconButton';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsCard from '@misakey/ui/Box/Controls/Card';
 import { UserManagerContext } from '@misakey/react/auth/components/OidcProvider/Context';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Box from '@material-ui/core/Box';
@@ -87,7 +87,7 @@ const AuthLoginIdentifierNoAccount = ({ userPublicData }) => {
         )}
         {...userPublicData}
       />
-      <BoxControls primary={primary} secondary={secondary} flexDirection="column" alignSelf="center" width={300} />
+      <BoxControlsCard primary={primary} secondary={secondary} />
     </Box>
   );
 };

@@ -25,6 +25,7 @@ function VaultUploadDialog({
   initialStatus,
   open,
   onClose,
+  autoFocus,
 }) {
   const dispatch = useDispatch();
   const identityId = useSelector(authSelectors.identityId);
@@ -73,6 +74,7 @@ function VaultUploadDialog({
       initialStatus={initialStatus}
       open={open}
       onClose={onClose}
+      autoFocus={autoFocus}
     />
   );
 }
@@ -82,12 +84,14 @@ VaultUploadDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   initialValues: PropTypes.object,
   initialStatus: PropTypes.object,
+  autoFocus: PropTypes.bool,
 };
 
 VaultUploadDialog.defaultProps = {
   open: false,
   initialValues: INITIAL_VALUES,
   initialStatus: INITIAL_STATUS,
+  autoFocus: false,
 };
 
 export default VaultUploadDialog;

@@ -38,7 +38,7 @@ const LinkFeedback = ({ text, details, onClick, ...rest }) => {
         {text}
       </Link>
       <DialogConfirm
-        isDialogOpen={isDialogOpen}
+        open={isDialogOpen}
         onClose={onClose}
         onConfirm={noop}
         title={text}

@@ -44,7 +44,7 @@ import Redirect from '@misakey/ui/Redirect';
 import TitleBold from '@misakey/ui/Typography/Title/Bold';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import TransRequireAccess from '@misakey/ui/Trans/RequireAccess';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsCard from '@misakey/ui/Box/Controls/Card';
 import ButtonForgotPassword from '@misakey/react/auth/components/Button/ForgotPassword';
 import ButtonInitAuthStep from '@misakey/react/auth/components/Button/InitAuthStep';
 import ButtonForgotPasswordCancel from '@misakey/react/auth/components/Button/ForgotPassword/Cancel';
@@ -83,9 +83,6 @@ const getSecretError = compose(
 
 // HOOKS
 const useStyles = makeStyles(() => ({
-  buttonRoot: {
-    width: 'auto',
-  },
   cardOverflowVisible: {
     overflow: 'visible',
   },
@@ -229,6 +226,38 @@ const AuthLoginSecret = ({ identifier, userPublicData, loginChallenge, client, r
     methodMetadata,
   );
 
+  const secondary = useMemo(
+    () => {
+      if (methodName === IDENTITY_EMAILED_CODE) {
+        return (
+          <ButtonInitAuthStep
+            loginChallenge={loginChallenge}
+            methodName={methodName}
+            identityId={identityId}
+            successText={t('auth:login.form.action.getANewCode.success')}
+            text={t('auth:login.form.action.getANewCode.button')}
+          />
+        );
+      }
+      if (methodName === IDENTITY_PASSWORD) {
+        return (
+          <ButtonForgotPassword
+            text={t('auth:login.form.action.forgotPassword')}
+          />
+        );
+      }
+      if ([TOTP, TOTP_RECOVERY].includes(methodName)) {
+        return (
+          <ButtonSwitchTotpMethod
+            methodName={methodName}
+          />
+        );
+      }
+      return null;
+    },
+    [identityId, loginChallenge, methodName, t],
+  );
+
   if (!isNil(redirectTo)) {
     return (
       <Redirect
@@ -301,29 +330,7 @@ const AuthLoginSecret = ({ identifier, userPublicData, loginChallenge, client, r
                   margin="none"
                 />
               </CardUser>
-              {methodName === IDENTITY_EMAILED_CODE && (
-              <ButtonInitAuthStep
-                classes={{ root: classes.buttonRoot }}
-                loginChallenge={loginChallenge}
-                methodName={methodName}
-                identityId={identityId}
-                successText={t('auth:login.form.action.getANewCode.success')}
-                text={t('auth:login.form.action.getANewCode.button')}
-              />
-              )}
-              {methodName === IDENTITY_PASSWORD && (
-              <ButtonForgotPassword
-                classes={{ root: classes.buttonRoot }}
-                text={t('auth:login.form.action.forgotPassword')}
-              />
-              )}
-              {[TOTP, TOTP_RECOVERY].includes(methodName) && (
-              <ButtonSwitchTotpMethod
-                methodName={methodName}
-                classes={{ root: classes.buttonRoot }}
-              />
-              )}
-              <BoxControls
+              <BoxControlsCard
                 mt={2}
                 formik
                 primary={{
@@ -331,6 +338,7 @@ const AuthLoginSecret = ({ identifier, userPublicData, loginChallenge, client, r
                   disabled: methodName === WEBAUTHN,
                   isLoading: isFetchingMetadata,
                 }}
+                secondary={secondary}
               />
             </Box>
           </Box>

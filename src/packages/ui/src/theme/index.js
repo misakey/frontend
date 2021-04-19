@@ -113,7 +113,6 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
     MuiAccordionDetails: {
       root: {
         flexDirection: 'column',
-        alignItems: 'flex-start',
         padding: 0,
         '& > ul': {
           width: '100%',

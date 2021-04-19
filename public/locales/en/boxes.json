@@ -222,8 +222,8 @@
     "dialog": {
       "title": "New private space",
       "pasteLink": "I have an invitation link",
-      "content": "New private space",
-      "success": "Private space has been successfully created!"
+      "success": "Private space has been successfully created!",
+      "organization": "In\u00a0<1><0></0></1>"
     },
     "error": {
       "updateSecretStorage": "An error occurred while updating the vault, be sure to keep your invitation link to avoid loosing access to your private space."
@@ -279,6 +279,8 @@
   },
   "notifications": {
     "title": "Notifications",
+    "active": "Active",
+    "inactive": "Inactive",
     "mute": "Mute",
     "unmute": "Unmute",
     "byIdentity": {

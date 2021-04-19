@@ -30,7 +30,7 @@ import usePropChanged from '@misakey/hooks/usePropChanged';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import AppBarStatic from '@misakey/ui/AppBar/Static';
-import Title from '@misakey/ui/Typography/Title';
+import TitleBold from '@misakey/ui/Typography/Title/Bold';
 import MuiLink from '@material-ui/core/Link';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Box from '@material-ui/core/Box';
@@ -41,7 +41,7 @@ import Container from '@material-ui/core/Container';
 import ListItemIdentifier from '@misakey/ui/ListItem/Identifier';
 import List from '@material-ui/core/List';
 import CardUserSignOut from '@misakey/react/auth/components/Card/User/SignOut';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsCard from '@misakey/ui/Box/Controls/Card';
 import AvatarBox from '@misakey/ui/Avatar/Box';
 import AvatarBoxSkeleton from '@misakey/ui/Avatar/Box/Skeleton';
 import FooterFullScreen from '@misakey/ui/Footer/FullScreen';
@@ -187,7 +187,7 @@ function MustJoin({ box, t }) {
             <Box
               display="flex"
               flexDirection="column"
-              alignItems="flex-start"
+              alignItems="center"
               width="100%"
             >
               {isFetching ? (<AvatarBoxSkeleton size={LARGE} />) : (
@@ -196,11 +196,16 @@ function MustJoin({ box, t }) {
                   size={LARGE}
                 />
               )}
-              <Box mt={2} width="100%">
+              <Box
+                display="flex"
+                flexDirection="column"
+                mt={2}
+                width="100%"
+              >
                 {isFetching && <Skeleton width="300" />}
-                {!isNil(title) && <Title align="left" gutterBottom={false}>{t('common:connect.title', { resourceName: title })}</Title>}
-                {isNil(title) && !isFetching && <Title align="left" gutterBottom={false}>{t('boxes:read.mustjoin.defaultTitle')}</Title>}
-                <Subtitle>
+                {!isNil(title) && <TitleBold align="center" gutterBottom={false}>{t('common:connect.title', { resourceName: title })}</TitleBold>}
+                {isNil(title) && !isFetching && <TitleBold align="center" gutterBottom={false}>{t('boxes:read.mustjoin.defaultTitle')}</TitleBold>}
+                <Subtitle align="center">
                   {isNil(creatorProfileTo)
                     ? <Skeleton width={300} />
                     : <TransRequireAccess querier={creatorName} to={creatorProfileTo} />}
@@ -225,7 +230,7 @@ function MustJoin({ box, t }) {
                       </Trans>
                     )}
                 </Subtitle>
-                <BoxControls
+                <BoxControlsCard
                   mt={2}
                   primary={{
                     onClick: onJoin,

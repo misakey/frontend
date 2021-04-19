@@ -12,6 +12,7 @@ const BoxControlsCentered = ({ secondary, ...rest }) => {
 
   return (
     <BoxControls
+      secondary={secondary}
       justifyContent={justifyContent}
       {...rest}
     />

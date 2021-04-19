@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import isFunction from '@misakey/core/helpers/isFunction';
 
+export const HAS_INTERSECTION_OBSERVER = ('IntersectionObserver' in window);
+
 // inspired from https://medium.com/the-non-traditional-developer/how-to-use-an-intersectionobserver-in-a-react-hook-9fb061ac6cb5
 export default (nodeRef, callback, shouldObserve, { root = null, rootMargin = '0px 0px 0px 0px', threshold = 0 } = {}) => {
   const [entry, updateEntry] = useState({});
@@ -8,7 +10,7 @@ export default (nodeRef, callback, shouldObserve, { root = null, rootMargin = '0
   const observer = useRef(null);
 
   useEffect(() => {
-    observer.current = ('IntersectionObserver' in window) ? new window.IntersectionObserver(
+    observer.current = HAS_INTERSECTION_OBSERVER ? new window.IntersectionObserver(
       ([firstEntry]) => {
         if (isFunction(callback)) {
           callback(firstEntry);

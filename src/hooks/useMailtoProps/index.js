@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from 'react';
 import noop from '@misakey/core/helpers/noop';
-import { isFirefox, isDesktopDevice } from 'helpers/devices';
+import { isFirefox, isDesktopDevice } from '@misakey/core/helpers/devices';
 
 const isFirefoxDesktop = isFirefox && isDesktopDevice;
 

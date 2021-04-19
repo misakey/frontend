@@ -18,7 +18,7 @@ import DialogConfirm from '@misakey/ui/Dialog/Confirm';
 // COMPONENTS
 const DialogEventDelete = ({
   boxId, eventId, onDelete,
-  onClose, isDialogOpen,
+  onClose, open,
   t,
   ...rest
 }) => {
@@ -48,7 +48,7 @@ const DialogEventDelete = ({
   return (
     <DialogConfirm
       onConfirm={onConfirm}
-      isDialogOpen={isDialogOpen}
+      open={open}
       onClose={onClose}
       confirmButtonText={t('common:delete')}
       title={t('boxes:read.events.delete.title')}
@@ -63,7 +63,7 @@ DialogEventDelete.propTypes = {
   eventId: PropTypes.string.isRequired,
   onDelete: PropTypes.func,
   onClose: PropTypes.func.isRequired,
-  isDialogOpen: PropTypes.bool.isRequired,
+  open: PropTypes.bool.isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,
 };

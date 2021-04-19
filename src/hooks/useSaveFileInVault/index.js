@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 
 import routes from 'routes';
 import { useSelector, useDispatch } from 'react-redux';
@@ -28,8 +28,8 @@ export default () => {
 
   const vaultKey = useSelector(getVaultKey);
 
-  const seeAction = useMemo(
-    () => <SnackbarActionSee to={routes.documents._} />,
+  const seeAction = useCallback(
+    (key) => <SnackbarActionSee id={key} to={routes.documents._} />,
     [],
   );
 

@@ -31,7 +31,7 @@ import Screen from '@misakey/ui/Screen';
 import ListConsent from '@misakey/react/auth/components/List/Consent';
 import TitleBold from '@misakey/ui/Typography/Title/Bold';
 import Box from '@material-ui/core/Box';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsCard from '@misakey/ui/Box/Controls/Card';
 import Redirect from '@misakey/ui/Redirect';
 import { Form } from 'formik';
 import Formik from '@misakey/ui/Formik';
@@ -159,7 +159,7 @@ const AuthConsent = ({
           ) : (
             <>
               <ListConsent {...client} />
-              <BoxControls
+              <BoxControlsCard
                 formik
                 primary={primary}
               />

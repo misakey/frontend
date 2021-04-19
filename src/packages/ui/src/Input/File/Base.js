@@ -1,7 +1,8 @@
 import React, { useMemo, useCallback, forwardRef } from 'react';
-
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+
+import { isDesktopDevice } from '@misakey/core/helpers/devices';
 
 import isArray from '@misakey/core/helpers/isArray';
 import resolveAny from '@misakey/core/helpers/resolveAny';
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    border: `1px dashed ${theme.palette.primary.main}`,
+    border: isDesktopDevice ? `1px dashed ${theme.palette.primary.main}` : null,
     '&:active, &.active': {
       border: `1px solid ${theme.palette.primary.main}`,
     },
@@ -65,6 +66,16 @@ const InputFileBase = forwardRef(({
       ? clsx(classes.container, internalClasses.container, ACTIVE_CLASS)
       : clsx(classes.container, internalClasses.container)),
     [classes.container, internalClasses.container, dragActive],
+  );
+
+  const labelAdornmentOrActive = useMemo(
+    () => {
+      if (!isDesktopDevice) { return null; }
+      return dragActive
+        ? dragActiveLabelAdornment || labelAdornment
+        : labelAdornment;
+    },
+    [dragActive, dragActiveLabelAdornment, labelAdornment],
   );
 
   const onClear = useCallback(
@@ -111,7 +122,7 @@ const InputFileBase = forwardRef(({
 
   return (
     <div className={containerClassName} {...dragEvents}>
-      {dragActive ? dragActiveLabelAdornment || labelAdornment : labelAdornment}
+      {labelAdornmentOrActive}
       <label htmlFor={name}>
         <input
           id={name}

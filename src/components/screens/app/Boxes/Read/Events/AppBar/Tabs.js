@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
 import { Link, useRouteMatch } from 'react-router-dom';
@@ -11,7 +11,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useTranslation } from 'react-i18next';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 
-import Tabs from '@misakey/ui/Tabs';
+import AppBarTabs from '@misakey/ui/AppBar/Tabs';
 import Tab from '@misakey/ui/Tab';
 
 // CONSTANTS
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const AppBarMenuTabs = ({ boxId }) => {
+const BoxesAppBarTabs = forwardRef(({ boxId, disabled, ...rest }, ref) => {
   const classes = useStyles();
   const routeFilesMatch = useRouteMatch(routes.boxes.read.files);
   const isRouteFile = useMemo(
@@ -42,12 +42,21 @@ const AppBarMenuTabs = ({ boxId }) => {
   const routeFiles = useGeneratePathKeepingSearchAndHash(routes.boxes.read.files, { id: boxId });
   const routeEvents = useGeneratePathKeepingSearchAndHash(routes.boxes.read._, { id: boxId });
 
+  const tabsProps = useMemo(
+    () => ({
+      value: tabSelected,
+      'aria-label': t('boxes:read.menu.label'),
+      indicatorColor: 'background',
+      textColor: 'background',
+    }),
+    [t, tabSelected],
+  );
+
   return (
-    <Tabs
-      value={tabSelected}
-      aria-label={t('boxes:read.menu.label')}
-      indicatorColor="background"
-      textColor="background"
+    <AppBarTabs
+      ref={ref}
+      tabsProps={tabsProps}
+      {...rest}
     >
       <Tab
         classes={{ root: classes.tabRoot }}
@@ -55,7 +64,7 @@ const AppBarMenuTabs = ({ boxId }) => {
         component={Link}
         to={routeEvents}
         value={TABS.discussion}
-      // size="small"
+        disabled={disabled}
       />
       <Tab
         classes={{ root: classes.tabRoot }}
@@ -63,14 +72,19 @@ const AppBarMenuTabs = ({ boxId }) => {
         component={Link}
         value={TABS.files}
         to={routeFiles}
-      // size="small"
+        disabled={disabled}
       />
-    </Tabs>
+    </AppBarTabs>
   );
-};
+});
 
-AppBarMenuTabs.propTypes = {
+BoxesAppBarTabs.propTypes = {
   boxId: PropTypes.string.isRequired,
+  disabled: PropTypes.bool,
 };
 
-export default AppBarMenuTabs;
+BoxesAppBarTabs.defaultProps = {
+  disabled: false,
+};
+
+export default BoxesAppBarTabs;

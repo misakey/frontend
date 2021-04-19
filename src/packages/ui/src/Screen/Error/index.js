@@ -9,7 +9,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 import isNil from '@misakey/core/helpers/isNil';
 
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 import IconButton from '@material-ui/core/IconButton';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -110,7 +110,7 @@ function ScreenError({ t, className,
           )}
           {children}
           {!hideRefreshAction && (
-            <BoxControls
+            <BoxControlsDialog
               m={2}
               primary={{
                 onClick: forceRefresh,

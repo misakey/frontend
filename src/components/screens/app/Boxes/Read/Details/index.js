@@ -1,48 +1,77 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 import routes from 'routes';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
-import { AVATAR_SIZE, APPBAR_HEIGHT } from '@misakey/ui/constants/sizes';
+import {
+  LARGE, LARGE_AVATAR_SIZE, LARGE_AVATAR_SM_SIZE,
+  TOOLBAR_MIN_HEIGHT,
+} from '@misakey/ui/constants/sizes';
 import BoxesSchema from 'store/schemas/Boxes';
 
 import { makeStyles } from '@material-ui/core/styles';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import useBoxRights from 'hooks/useBoxRights';
+import useTheme from '@material-ui/core/styles/useTheme';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
 import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
 import Box from '@material-ui/core/Box';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
+import Title from '@misakey/ui/Typography/Title';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import BoxAvatar from '@misakey/ui/Avatar/Box';
-import ElevationScroll from '@misakey/ui/ElevationScroll';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemShare from 'components/smart/ListItem/Boxes/Share';
 import ListItemLeave from 'components/smart/ListItem/Boxes/Leave';
 import ListItemDelete from 'components/smart/ListItem/Boxes/Delete';
 import ListItemMemberPublicLink from 'components/smart/ListItem/Member/PublicLink';
 import ListItemBoxMute from 'components/smart/ListItem/Boxes/Mute';
+import ElevationScroll from '@misakey/ui/ElevationScroll';
+import AppBarScroll from '@misakey/ui/AppBar/Scroll';
+import AppBarStatic from '@misakey/ui/AppBar/Static';
+import DialogBoxesDeleteContextProvider from 'components/smart/Dialog/Boxes/Delete/Context';
+import DialogBoxesLeaveContextProvider from 'components/smart/Dialog/Boxes/Leave/Context';
+import DetailsListShortcuts from 'components/screens/app/Boxes/Read/Details/List/Shortcuts';
 
 // CONSTANTS
 const CONTENT_SPACING = 2;
+const SCROLL_THRESHOLD = LARGE_AVATAR_SIZE + 16;
+const SM_SCROLL_THRESHOLD = LARGE_AVATAR_SM_SIZE + 16;
+
+const PRIMARY_TYPO_PROPS = {
+  variant: 'body1',
+  noWrap: true,
+  color: 'textPrimary',
+};
+const SECONDARY_TYPO_PROPS = {
+  variant: 'body2',
+  color: 'textSecondary',
+};
+const TOOLBAR_PROPS = {
+  minHeight: `${TOOLBAR_MIN_HEIGHT}px !important`,
+};
+
+const OBSERVER_OPTIONS = {
+  threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+};
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   avatar: {
-    width: `calc(3 * ${AVATAR_SIZE}px)`,
-    height: `calc(3 * ${AVATAR_SIZE}px)`,
     fontSize: theme.typography.h4.fontSize,
     margin: theme.spacing(2, 0),
   },
   content: {
     boxSizing: 'border-box',
-    maxHeight: `calc(100% - ${APPBAR_HEIGHT}px)`,
+    maxHeight: `calc(100% - ${TOOLBAR_MIN_HEIGHT}px)`,
     overflow: 'auto',
   },
   subheader: {
@@ -51,12 +80,72 @@ const useStyles = makeStyles((theme) => ({
   primaryText: {
     color: theme.palette.text.primary,
   },
+  listItemRoot: {
+    width: '100%',
+    paddingTop: theme.spacing(0),
+    paddingBottom: theme.spacing(0),
+    minHeight: TOOLBAR_MIN_HEIGHT,
+  },
+  listitemTextRoot: {
+    margin: theme.spacing(0),
+  },
 }));
 
+// COMPONENTS
+const WrapperContext = ({ canLeave, canDelete, children, ...rest }) => {
+  if (canLeave && canDelete) {
+    return (
+      <DialogBoxesLeaveContextProvider {...rest}>
+        <DialogBoxesDeleteContextProvider {...rest}>
+          {children}
+        </DialogBoxesDeleteContextProvider>
+      </DialogBoxesLeaveContextProvider>
+    );
+  }
+  if (canLeave) {
+    return (
+      <DialogBoxesLeaveContextProvider {...rest}>
+        {children}
+      </DialogBoxesLeaveContextProvider>
+    );
+  }
+  if (canDelete) {
+    return (
+      <DialogBoxesDeleteContextProvider {...rest}>
+        {children}
+      </DialogBoxesDeleteContextProvider>
+    );
+  }
+  return children;
+};
+
+WrapperContext.propTypes = {
+  canLeave: PropTypes.bool,
+  canDelete: PropTypes.bool,
+  children: PropTypes.node,
+};
+
+WrapperContext.defaultProps = {
+  canLeave: false,
+  canDelete: false,
+  children: null,
+};
+
 function BoxDetails({ box, belongsToCurrentUser, t }) {
+  const theme = useTheme();
+  const isDownSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const { replace } = useHistory();
   const classes = useStyles();
   // useRef seems buggy with ElevationScroll
   const [contentRef, setContentRef] = useState();
+  const targetRef = useRef();
+
+  const onContentRef = useCallback(
+    (ref) => {
+      setContentRef(ref);
+    },
+    [setContentRef],
+  );
 
   const {
     id,
@@ -70,10 +159,49 @@ function BoxDetails({ box, belongsToCurrentUser, t }) {
   // @FIXME factorize rules
   const { canDelete, canLeave } = useBoxRights(box, belongsToCurrentUser);
 
+  const onLeaveOrDeleteSuccess = useCallback(
+    () => {
+      replace(routes.boxes._);
+      return Promise.resolve();
+    },
+    [replace],
+  );
+
+  const scrollThreshold = useMemo(
+    () => (isDownSm ? SM_SCROLL_THRESHOLD : SCROLL_THRESHOLD),
+    [isDownSm],
+  );
+
   return (
-    <>
+    <WrapperContext
+      box={box}
+      canLeave={canLeave}
+      canDelete={canDelete}
+      onSuccess={onLeaveOrDeleteSuccess}
+    >
       <ElevationScroll target={contentRef}>
-        <AppBarDrawer position="static" disableOffset>
+        <AppBarScroll
+          toolbarProps={TOOLBAR_PROPS}
+          component={AppBarStatic}
+          scrollTarget={contentRef}
+          scrollThreshold={scrollThreshold}
+          targetRef={targetRef}
+          observerOptions={OBSERVER_OPTIONS}
+          transitionChildren={(
+            <ListItem disableGutters classes={{ root: classes.listItemRoot }}>
+              <ListItemAvatar>
+                <BoxAvatar title={title} />
+              </ListItemAvatar>
+              <ListItemText
+                primary={title}
+                secondary={t('boxes:read.details.menu.members.count', { count: members.length })}
+                primaryTypographyProps={PRIMARY_TYPO_PROPS}
+                secondaryTypographyProps={SECONDARY_TYPO_PROPS}
+                classes={{ root: classes.listitemTextRoot }}
+              />
+            </ListItem>
+        )}
+        >
           <IconButtonAppBar
             aria-label={t('common:goBack')}
             edge="start"
@@ -82,22 +210,32 @@ function BoxDetails({ box, belongsToCurrentUser, t }) {
           >
             <ArrowBack />
           </IconButtonAppBar>
-        </AppBarDrawer>
+        </AppBarScroll>
       </ElevationScroll>
-      <Box p={CONTENT_SPACING} pt={0} ref={(ref) => setContentRef(ref)} className={classes.content}>
+      <Box p={CONTENT_SPACING} pt={0} ref={onContentRef} className={classes.content}>
         <Box display="flex" flexDirection="column" alignItems="center">
           <BoxAvatar
+            ref={targetRef}
             classes={{ root: classes.avatar }}
             title={title || ''}
+            size={LARGE}
           />
-          <Typography variant="h5" align="center" color="textPrimary">
+          <Title gutterBottom={false} align="center">
             {title}
-          </Typography>
-          <Typography variant="body2" color="textSecondary">
+          </Title>
+          <Subtitle gutterBottom={false}>
             {t('boxes:read.details.menu.members.count', { count: members.length })}
-          </Typography>
+          </Subtitle>
         </Box>
-        <List>
+        <DetailsListShortcuts
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-evenly"
+          box={box}
+          canLeave={canLeave}
+          canDelete={canDelete}
+        />
+        <List disablePadding>
           <ListItem
             // button
             divider
@@ -143,12 +281,14 @@ function BoxDetails({ box, belongsToCurrentUser, t }) {
           </ListItem>
           {canLeave && <ListItemLeave box={box} />}
           {canDelete && <ListItemDelete box={box} />}
-          <List subheader={(
-            <ListSubheader className={classes.subheader}>
-              <Typography noWrap variant="overline" color="textSecondary">
-                {t('boxes:read.details.menu.members.title')}
-              </Typography>
-            </ListSubheader>
+          <List
+            disablePadding
+            subheader={(
+              <ListSubheader className={classes.subheader}>
+                <Typography noWrap variant="overline" color="textSecondary">
+                  {t('boxes:read.details.menu.members.title')}
+                </Typography>
+              </ListSubheader>
           )}
           >
             {members.map((member) => (
@@ -162,8 +302,7 @@ function BoxDetails({ box, belongsToCurrentUser, t }) {
           </List>
         </List>
       </Box>
-    </>
-
+    </WrapperContext>
   );
 }
 

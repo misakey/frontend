@@ -14,7 +14,7 @@ import Box from '@material-ui/core/Box';
 import TitleBold from '@misakey/ui/Typography/Title/Bold';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import CardUserSignOut from '@misakey/react/auth/components/Card/User/SignOut';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsCard from '@misakey/ui/Box/Controls/Card';
 
 // CONSTANTS
 const { acr: getCurrentAcrSelector, expiresAt: EXPIRES_AT_SELECTOR } = authSelectors;
@@ -73,7 +73,7 @@ const DialogSigninRedirectUser = ({
       <TitleBold align="center" gutterBottom={false}>{title}</TitleBold>
       <Subtitle align="center">{subtitle}</Subtitle>
       <CardUserSignOut my={3} expired={sessionExpired} />
-      <BoxControls primary={{ text, onClick }} />
+      <BoxControlsCard primary={{ text, onClick }} />
     </Box>
   );
 };

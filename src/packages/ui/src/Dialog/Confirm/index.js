@@ -14,12 +14,25 @@ import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 import DialogTitleWithClose from '@misakey/ui/DialogTitle/WithCloseIcon';
 import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 import ConfirmDialogContent from './DialogContent';
+
+// CONSTANTS
+export const PROP_TYPES = {
+  onConfirm: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func,
+  open: PropTypes.bool.isRequired,
+  irreversible: PropTypes.bool,
+  children: PropTypes.node,
+  title: PropTypes.string,
+  t: PropTypes.func.isRequired,
+  confirmButtonText: PropTypes.string,
+};
 
 // COMPONENTS
 function DialogConfirm({
-  onConfirm, isDialogOpen, onClose, onSuccess,
+  onConfirm, open, onClose, onSuccess,
   title, children,
   confirmButtonText,
   irreversible,
@@ -54,7 +67,7 @@ function DialogConfirm({
     <Dialog
       maxWidth="sm"
       aria-labelledby="confirmation-dialog-title"
-      open={isDialogOpen}
+      open={open}
       fullScreen={fullScreen}
       onClose={onClose}
       onClick={stopPropagation}
@@ -64,7 +77,7 @@ function DialogConfirm({
       <ConfirmDialogContent>
         {children}
         <DialogActions>
-          <BoxControls
+          <BoxControlsDialog
             primary={{
               autoFocus: true,
               onClick,
@@ -79,17 +92,7 @@ function DialogConfirm({
   );
 }
 
-DialogConfirm.propTypes = {
-  onConfirm: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onSuccess: PropTypes.func,
-  isDialogOpen: PropTypes.bool.isRequired,
-  irreversible: PropTypes.bool,
-  children: PropTypes.node,
-  title: PropTypes.string,
-  t: PropTypes.func.isRequired,
-  confirmButtonText: PropTypes.string,
-};
+DialogConfirm.propTypes = PROP_TYPES;
 
 DialogConfirm.defaultProps = {
   irreversible: false,

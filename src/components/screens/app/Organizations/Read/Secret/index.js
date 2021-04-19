@@ -29,7 +29,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ButtonDrawerOrganization from 'components/smart/IconButton/Drawer/Organization';
 import TextField from '@misakey/ui/TextField';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 import Container from '@material-ui/core/Container';
 import DialogConfirm from '@misakey/ui/Dialog/Confirm';
 import Typography from '@misakey/ui/Typography';
@@ -173,7 +173,7 @@ const OrganizationsReadSecret = () => {
             message={t('organizations:secret.copy')}
             mode={MODE.both}
           />
-          <BoxControls
+          <BoxControlsDialog
             mt={2}
             primary={{
               text: t('organizations:secret.generate'),
@@ -182,7 +182,7 @@ const OrganizationsReadSecret = () => {
           />
           <DialogConfirm
             onConfirm={wrappedFetch}
-            isDialogOpen={dialogOpen}
+            open={dialogOpen}
             onClose={onClose}
             confirmButtonText={t('organizations:secret.generate')}
             title={t('organizations:secret.confirm.title')}

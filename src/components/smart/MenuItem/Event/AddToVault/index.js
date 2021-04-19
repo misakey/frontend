@@ -10,21 +10,24 @@ import AddToVaultIcon from '@misakey/ui/Icon/AddToVault';
 import { useSetPasswordContext } from '@misakey/react/auth/components/Dialog/Password/Create/Context';
 
 // COMPONENTS
-const MenuItemAddFileToVault = forwardRef(({ t, onSave, isSaved, disabled }, ref) => {
+const MenuItemAddFileToVault = forwardRef(({
+  t, onSave, isSaved, disabled, component: Component,
+}, ref) => {
   const { withPasswordOnClick } = useSetPasswordContext();
   const onClick = useMemo(() => withPasswordOnClick(onSave), [onSave, withPasswordOnClick]);
 
   return (
-    <ContextMenuItem ref={ref} onClick={onClick} disabled={disabled || isSaved}>
+    <Component ref={ref} onClick={onClick} disabled={disabled || isSaved}>
       <ListItemIcon>
         <AddToVaultIcon isSaved={isSaved} />
       </ListItemIcon>
       <ListItemText primary={isSaved ? t('common:savedInVault') : t('common:addToVault')} />
-    </ContextMenuItem>
+    </Component>
   );
 });
 
 MenuItemAddFileToVault.propTypes = {
+  component: PropTypes.elementType,
   // withTranslation
   t: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
@@ -33,6 +36,7 @@ MenuItemAddFileToVault.propTypes = {
 };
 
 MenuItemAddFileToVault.defaultProps = {
+  component: ContextMenuItem,
   disabled: false,
   isSaved: false,
 };

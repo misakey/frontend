@@ -36,7 +36,13 @@ const FieldCodeWithPasteButton = ({ fullWidth, ...props }) => {
   );
 
   return (
-    <Box display="flex" flexDirection="row" alignItems="center" flexWrap="wrap">
+    <Box
+      display="flex"
+      flexDirection="row"
+      alignItems="center"
+      flexWrap="wrap"
+      width={fullWidth ? '100%' : undefined}
+    >
       <FieldCodePaste
         {...props}
         fullWidth={fullWidth}

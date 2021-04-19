@@ -102,14 +102,13 @@ const BoxControls = ({ primary, secondary, formik, irreversible, ...rest }) => {
 BoxControls.propTypes = {
   formik: PropTypes.bool,
   irreversible: PropTypes.bool,
-  primary: PropTypes.oneOfType([PropTypes.object, PropTypes.node]),
+  primary: PropTypes.oneOfType([PropTypes.object, PropTypes.node]).isRequired,
   secondary: PropTypes.oneOfType([PropTypes.object, PropTypes.node]),
 };
 
 BoxControls.defaultProps = {
   formik: false,
   irreversible: false,
-  primary: null,
   secondary: null,
 };
 

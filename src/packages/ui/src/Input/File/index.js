@@ -2,6 +2,8 @@ import React, { useCallback, forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
 
+import { isDesktopDevice } from '@misakey/core/helpers/devices';
+
 import useCombinedRefs from '@misakey/hooks/useCombinedRefs';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
@@ -13,8 +15,9 @@ import InputFileBase from '@misakey/ui/Input/File/Base';
 // HOOKS
 const useStyles = makeStyles(() => ({
   container: {
-    height: '20rem',
+    minHeight: isDesktopDevice ? '15rem' : null,
     display: 'flex',
+    flexGrow: isDesktopDevice ? 1 : null,
     justifyContent: 'center',
   },
   input: {

@@ -356,7 +356,6 @@ function BoxSharing({ box, t }) {
                           component={ListItemUserWhitelisted}
                           skeleton={ListItemUserWhitelistedSkeleton}
                           key={id}
-                          id={id}
                           identifier={value}
                           members={members}
                           onRemove={onRemove}

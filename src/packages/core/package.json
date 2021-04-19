@@ -1,6 +1,6 @@
 {
   "name": "@misakey/core",
-  "version": "0.1.5",
+  "version": "0.2.5",
   "private": false,
   "license": "MIT",
   "author": "Misakey Team",
@@ -56,6 +56,7 @@
     "ramda": "^0.27.0",
     "tweetnacl": "^1.0.1",
     "tweetnacl-util": "^0.15.0",
+    "ua-parser-js": "^0.7.21",
     "uuid": "^3.3.3",
     "validator": "^13.0.0"
   },

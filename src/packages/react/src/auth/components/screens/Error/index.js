@@ -26,7 +26,7 @@ import TitleBold from '@misakey/ui/Typography/Title/Bold';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsCard from '@misakey/ui/Box/Controls/Card';
 import AuthErrorDetails from '@misakey/react/auth/components/screens/Error/Details';
 import CardUserSignOut from '@misakey/react/auth/components/Card/User/SignOut';
 import ButtonSignOut from '@misakey/react/auth/components/Button/SignOut';
@@ -204,7 +204,7 @@ const AuthError = ({ loginChallenge, error, t }) => {
             location={errorLocation}
           />
         )}
-        <BoxControls
+        <BoxControlsCard
           primary={primary}
           secondary={secondary}
         />

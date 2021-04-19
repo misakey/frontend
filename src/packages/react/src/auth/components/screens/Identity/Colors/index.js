@@ -21,8 +21,9 @@ import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathK
 
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Container from '@material-ui/core/Container';
+import Box from '@material-ui/core/Box';
 import ScreenAction from '@misakey/ui/Screen/Action';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 import CirclePickerField from '@misakey/ui/Form/Field/CirclePicker';
 
 // CONSTANTS
@@ -97,7 +98,7 @@ const AccountColor = ({ t, identity, isFetching, demoComponent: DemoComponent })
       isLoading={isLoading}
     >
       <Container maxWidth="md">
-        <Subtitle>
+        <Subtitle align="center">
           {t('account:accountColors.subtitle')}
         </Subtitle>
         <Formik
@@ -105,7 +106,7 @@ const AccountColor = ({ t, identity, isFetching, demoComponent: DemoComponent })
           onSubmit={onSubmit}
           initialValues={initialValues}
         >
-          <Form>
+          <Box component={Form} display="flex" flexDirection="column" alignItems="center">
             <Field name={FIELD_NAME}>
               {(fieldProps) => (
                 <CirclePickerField
@@ -114,7 +115,7 @@ const AccountColor = ({ t, identity, isFetching, demoComponent: DemoComponent })
                 />
               )}
             </Field>
-            <BoxControls
+            <BoxControlsDialog
               mt={3}
               primary={{
                 type: 'submit',
@@ -123,7 +124,7 @@ const AccountColor = ({ t, identity, isFetching, demoComponent: DemoComponent })
               }}
               formik
             />
-          </Form>
+          </Box>
         </Formik>
         {!isNil(DemoComponent) && <DemoComponent color={previewColor} />}
       </Container>

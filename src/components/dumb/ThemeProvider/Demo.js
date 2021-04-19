@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 
 import BoxSection from '@misakey/ui/Box/Section';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsCard from '@misakey/ui/Box/Controls/Card';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MuiLink from '@material-ui/core/Link';
@@ -52,8 +52,7 @@ const ColorsDemo = ({ color, t }) => (
           <ListItemText primaryTypographyProps={{ color: 'primary' }}><MuiLink>{t('components:colorDemo.chat')}</MuiLink></ListItemText>
         </ListItem>
       </List>
-      <BoxControls
-        width="50%"
+      <BoxControlsCard
         alignSelf="center"
         primary={{ text: t('components:colorDemo.button') }}
         secondary={{ standing: BUTTON_STANDINGS.TEXT, text: t('components:colorDemo.button') }}

@@ -1,9 +1,20 @@
-import React, { useMemo, useCallback, useState, useRef } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 
 import PropTypes from 'prop-types';
 import { useTranslation, Trans } from 'react-i18next';
 
+import FILE_PROP_TYPES from '@misakey/ui/constants/file/proptypes';
+
+import isNil from '@misakey/core/helpers/isNil';
+import formatFileSize from '@misakey/ui/helpers/formatFileSize';
+import isFunction from '@misakey/core/helpers/isFunction';
 import { makeStyles } from '@material-ui/core/styles/';
+
+import useGetFileIconFromType from 'hooks/useGetFileIconFromType';
+import useCalendarDateSince from '@misakey/hooks/useCalendarDateSince';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useContextMenuAnchorEl from '@misakey/hooks/useContextMenuAnchor/el';
+
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
@@ -11,28 +22,16 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Menu from '@material-ui/core/Menu';
-import Button from '@material-ui/core/Button';
-import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Box from '@material-ui/core/Box';
-import MenuItem from '@material-ui/core/MenuItem';
-import withDialogPassword from '@misakey/react/auth/components/Dialog/Password/with';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
-import isNil from '@misakey/core/helpers/isNil';
-import formatFileSize from '@misakey/ui/helpers/formatFileSize';
-import isFunction from '@misakey/core/helpers/isFunction';
+import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import AddToVaultIcon from '@misakey/ui/Icon/AddToVault';
 
-import useGetFileIconFromType from 'hooks/useGetFileIconFromType';
-import useCalendarDateSince from '@misakey/hooks/useCalendarDateSince';
-import FILE_PROP_TYPES from '@misakey/ui/constants/file/proptypes';
-import isElementFocusedByEvent from '@misakey/core/helpers/isElementFocusedByEvent';
-import useSafeDestr from '@misakey/hooks/useSafeDestr';
-
+// CONSTANTS
 const AVATAR_SIZE = '5rem';
-const ButtonWithDialogPassword = withDialogPassword(Button);
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -87,12 +86,11 @@ export const FileListItemSkeleton = (props) => (
   </ListItem>
 );
 
-const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
+const FileListItem = ({ file, actions, onClick, ...rest }) => {
   const classes = useStyles();
   const { t } = useTranslation('common');
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const buttonRef = useRef();
 
   const {
     size,
@@ -136,6 +134,8 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
     [dateSince, displayName, isFromCurrentUser],
   );
 
+  const { onContextMenu } = useContextMenuAnchorEl({ onAnchor: setAnchorEl });
+
   const onMenuClick = useCallback(
     (event) => { setAnchorEl(event.currentTarget); }, [],
   );
@@ -143,10 +143,7 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
   const onItemClick = useCallback(
     (e) => {
       if (!isFunction(onClick)) { return; }
-      if (isElementFocusedByEvent(e, buttonRef.current)) {
-        e.preventDefault(); e.stopPropagation(); return;
-      }
-      onClick();
+      onClick(e);
     },
     [onClick],
   );
@@ -161,6 +158,7 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
     <ListItem
       button={!isNil(onClick)}
       disabled={!isNil(error)}
+      onContextMenu={onContextMenu}
       onClick={onItemClick}
       disableTouchRipple
       ContainerComponent={Box}
@@ -181,22 +179,12 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
           <>
             <Typography component="span" noWrap display="block" variant="caption">{secondary}</Typography>
             <Typography component="span" noWrap display="block" variant="caption">{tertiary}</Typography>
-            {!isNil(onSave) && (
-              <ButtonWithDialogPassword
-                ref={buttonRef}
-                size="small"
-                color="primary"
-                classes={{ root: classes.button }}
-                onClick={onSave}
-                disabled={!isNil(error) || isSaved}
-                startIcon={isSaved ? <CheckCircleIcon color="primary" /> : null}
-              >
-                {isSaved ? t('common:savedInVault') : t('common:addToVault')}
-              </ButtonWithDialogPassword>
-            )}
           </>
         )}
       />
+      {isSaved && (
+        <AddToVaultIcon color="action" isSaved />
+      )}
       {
         !isNil(actions) && (
           <ListItemSecondaryAction>
@@ -219,9 +207,7 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
               PaperProps={{ variant: 'outlined' }}
               transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
-              {actions.map(({ text, key, component: Component = MenuItem, ...props }) => (
-                <Component key={key} {...props}>{text}</Component>
-              ))}
+              {actions}
             </Menu>
           </ListItemSecondaryAction>
         )
@@ -232,13 +218,11 @@ const FileListItem = ({ file, actions, onClick, onSave, ...rest }) => {
 
 FileListItem.propTypes = {
   file: PropTypes.shape(FILE_PROP_TYPES).isRequired,
-  onSave: PropTypes.func,
-  actions: PropTypes.arrayOf(PropTypes.object),
+  actions: PropTypes.node,
   onClick: PropTypes.func,
 };
 
 FileListItem.defaultProps = {
-  onSave: null,
   actions: null,
   onClick: null,
 };

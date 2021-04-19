@@ -63,7 +63,6 @@
         "sent": "Files:{{filenamesSent}} were successfully sent."
       },
       "required": "You must send at least 1 file",
-      "max": "You cannot send more than 10 files in a row",
       "extension": "Following files with no extension couldn't be added:{{filenamesNoExtension}}"
     }
   },
@@ -242,10 +241,10 @@
     "code": {
       "label": "Code",
       "placeholder": "123456",
-      "helperText": "Type code obtained in your TOTP application",
+      "helperText": "Type TOTP obtained",
       "error": {
-        "forbidden": "This code is incorrect, please retry",
-        "malformed": "Code should contain 6 digits"
+        "forbidden": "Incorrect TOTP, please retry",
+        "malformed": "TOTP should contain 6 digits"
       }
     }
   },

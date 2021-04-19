@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useRef, Fragment, useEffect } from 'react';
 
-import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
 import isNil from '@misakey/core/helpers/isNil';
@@ -17,15 +16,16 @@ import isFunction from '@misakey/core/helpers/isFunction';
 import uniq from '@misakey/core/helpers/uniq';
 import prop from '@misakey/core/helpers/prop';
 import getEventFilesArray from '@misakey/core/helpers/event/getFilesArray';
-import { isDesktopDevice } from 'helpers/devices';
+import { isDesktopDevice } from '@misakey/core/helpers/devices';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useFormikContext } from 'formik';
 import useFieldErrors from '@misakey/hooks/useFieldErrors';
+import { useTranslation } from 'react-i18next';
 
 import InputFile from '@misakey/ui/Input/File';
 import InputFileFolder from '@misakey/ui/Input/File/Folder';
-import Typography from '@material-ui/core/Typography';
+import Title from '@misakey/ui/Typography/Title';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import TypographyPreWrapped from '@misakey/ui/Typography/PreWrapped';
 import BoxMessage from '@misakey/ui/Box/Message';
@@ -83,17 +83,14 @@ const groupByFolder = (files, errorKeys, uploadStatus, defaultName) => {
 };
 
 // HOOKS
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   label: {
-    color: theme.palette.text.secondary,
     textTransform: 'uppercase',
-    textAlign: 'center',
   },
 }));
 
 // COMPONENTS
 const FilesField = ({
-  t,
   onUpload,
   accept,
   labelFiles, labelFolder,
@@ -106,13 +103,16 @@ const FilesField = ({
   children,
   autoFocus,
   disabled,
+  flexGrow,
+  ...props
 }) => {
+  const { t } = useTranslation(['common', 'fields']);
   const globalErrorRef = useRef();
 
   const { status, isSubmitting, setStatus } = useFormikContext();
   const fieldStatus = useMemo(() => status[name], [status, name]);
 
-  const clearStatus = useCallback(
+  const onClearStatus = useCallback(
     () => {
       setStatus({ [name]: null });
     },
@@ -136,6 +136,11 @@ const FilesField = ({
     errorKeys,
     displayError,
   } = useFieldErrors(fieldConfig);
+
+  const onClearError = useCallback(
+    () => setError(null),
+    [setError],
+  );
 
   const isGlobalErrorKeys = useMemo(
     () => isArray(errorKeys)
@@ -195,7 +200,7 @@ const FilesField = ({
       if (!isNil(node)) {
         globalErrorRef.current = node;
         requestAnimationFrame(() => {
-          node.scrollIntoView();
+          node.scrollIntoView(false);
         });
       }
     },
@@ -214,8 +219,60 @@ const FilesField = ({
 
   return (
     <>
+      <Box
+        display="flex"
+        flexDirection="column"
+        flexGrow={isDesktopDevice ? flexGrow : undefined}
+        {...props}
+      >
+        <InputFile
+          accept={accept}
+          name={name}
+          onChange={onChange}
+          label={(
+            <Title
+              color="textSecondary"
+              gutterBottom={false}
+              align="center"
+              className={classes.label}
+            >
+              {labelFiles || t('fields:files.label')}
+            </Title>
+          )}
+          buttonText={(
+            <>
+              {t('fields:files.button.choose.label')}
+              <InsertDriveFileIcon />
+            </>
+          )}
+          autoFocus={autoFocus}
+          multiple
+          disabled={isSubmitting || disabled}
+        />
+        {isDesktopDevice && (
+        <InputFileFolder
+          accept={accept}
+          name={name}
+          onChange={onChange}
+          label={(
+            <Title color="textSecondary" gutterBottom={false} align="center" className={classes.label}>
+              {labelFolder || t('fields:folder.label')}
+            </Title>
+              )}
+          buttonText={(
+            <>
+              {t('fields:files.button.choose.label')}
+              <FolderIcon />
+            </>
+              )}
+          multiple
+          disabled={isSubmitting || disabled}
+        />
+        )}
+      </Box>
+      {children}
       {!isNil(fieldStatus) && (
-        <BoxMessage type="error" p={2} my={1} ref={onFocusNode} onClose={clearStatus}>
+        <BoxMessage type="error" p={2} my={1} ref={onFocusNode} onClose={onClearStatus}>
           <TypographyPreWrapped>
             {!isEmpty(filenamesErrors) && (
               t('fields:files.error.api.notSent', { filenamesErrors })
@@ -230,58 +287,12 @@ const FilesField = ({
         </BoxMessage>
       )}
       {displayError && isGlobalErrorKeys && (
-        <BoxMessage type="error" p={2} my={1} ref={onFocusNode} onClose={clearStatus}>
+        <BoxMessage type="error" p={2} my={1} ref={onFocusNode} onClose={onClearError}>
           <TypographyPreWrapped>
             {t(errorKeys)}
           </TypographyPreWrapped>
         </BoxMessage>
       )}
-      <Box display="flex" flexDirection="row">
-        <Box width={isDesktopDevice ? '50%' : '100%'}>
-          <InputFile
-            accept={accept}
-            name={name}
-            onChange={onChange}
-            label={(
-              <Typography variant="h6" className={classes.label}>
-                {labelFiles || t('fields:files.label')}
-              </Typography>
-            )}
-            buttonText={(
-              <>
-                {t('fields:files.button.choose.label')}
-                <InsertDriveFileIcon />
-              </>
-            )}
-            autoFocus={autoFocus}
-            multiple
-            disabled={isSubmitting || disabled}
-          />
-        </Box>
-        {isDesktopDevice && (
-          <Box width="50%" pl={1}>
-            <InputFileFolder
-              accept={accept}
-              name={name}
-              onChange={onChange}
-              label={(
-                <Typography variant="h6" className={classes.label}>
-                  {labelFolder || t('fields:folder.label')}
-                </Typography>
-              )}
-              buttonText={(
-                <>
-                  {t('fields:files.button.choose.label')}
-                  <FolderIcon />
-                </>
-              )}
-              multiple
-              disabled={isSubmitting || disabled}
-            />
-          </Box>
-        )}
-      </Box>
-      {children}
       {groups.map(({ key, files }) => (
         <Accordion
           key={key}
@@ -332,8 +343,7 @@ FilesField.propTypes = {
   children: PropTypes.node,
   autoFocus: PropTypes.bool,
   disabled: PropTypes.bool,
-  // withTranslation
-  t: PropTypes.func.isRequired,
+  flexGrow: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 FilesField.defaultProps = {
@@ -348,6 +358,7 @@ FilesField.defaultProps = {
   autoFocus: false,
   disabled: false,
   children: null,
+  flexGrow: null,
 };
 
-export default withTranslation(['fields', 'common'])(FilesField);
+export default FilesField;

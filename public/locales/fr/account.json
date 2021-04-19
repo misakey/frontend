@@ -162,7 +162,7 @@
     },
     "exportButton": {
       "fileName": "cle_privee_misakey",
-      "info": "Exporter ma clé privée"
+      "info": "Télécharger ma clé privée"
     }
   },
   "quota": {

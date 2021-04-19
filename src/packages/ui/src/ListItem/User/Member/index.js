@@ -10,7 +10,7 @@ import emailToDisplayName from '@misakey/core/helpers/emailToDisplayName';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 // HELPERS
-const pickUserProps = pick(['avatarUrl', 'displayName']);
+const pickUserProps = pick(['avatarUrl', 'displayName', 'id']);
 
 // COMPONENTS
 const ListItemUserMember = ({

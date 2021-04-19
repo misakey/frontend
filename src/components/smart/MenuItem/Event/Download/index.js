@@ -10,17 +10,20 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import DownloadIcon from '@material-ui/icons/GetApp';
 
 // COMPONENTS
-const MenuItemDownloadEvent = forwardRef(({ t, onDownload, disabled }, ref) => (
-  <ContextMenuItem ref={ref} onClick={onDownload} disabled={disabled}>
+const MenuItemDownloadEvent = forwardRef(({
+  t, onDownload, disabled, component: Component,
+}, ref) => (
+  <Component ref={ref} onClick={onDownload} disabled={disabled}>
     <ListItemIcon>
       <DownloadIcon />
     </ListItemIcon>
     <ListItemText primary={t('common:download')} />
-  </ContextMenuItem>
+  </Component>
 ));
 
 
 MenuItemDownloadEvent.propTypes = {
+  component: PropTypes.elementType,
   // withTranslation
   t: PropTypes.func.isRequired,
   onDownload: PropTypes.func.isRequired,
@@ -28,6 +31,7 @@ MenuItemDownloadEvent.propTypes = {
 };
 
 MenuItemDownloadEvent.defaultProps = {
+  component: ContextMenuItem,
   disabled: false,
 };
 

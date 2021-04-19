@@ -89,7 +89,7 @@ const Footer = ({
           }}
           expandIcon={<ExpandMoreIcon />}
         >
-          <Subtitle noWrap>
+          <Subtitle gutterBottom={false} noWrap>
             {title || t('components:footer.title')}
           </Subtitle>
           <Logo className={classes.logoRoot} />

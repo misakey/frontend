@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
@@ -66,18 +66,19 @@ export const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const AvatarSized = ({ classes, size, children, ...props }) => {
+const AvatarSized = forwardRef(({ classes, size, children, ...props }, ref) => {
   const internalClasses = useStyles({ size });
   const { root, ...rest } = useSafeDestr(classes);
   return (
     <Avatar
+      ref={ref}
       classes={{ root: clsx(root, internalClasses.avatarRoot), ...rest }}
       {...props}
     >
       {children}
     </Avatar>
   );
-};
+});
 
 AvatarSized.propTypes = {
   size: PropTypes.oneOf(SIZES),

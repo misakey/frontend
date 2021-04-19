@@ -27,11 +27,9 @@ import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathK
 import { Form } from 'formik';
 import FormField from '@misakey/ui/Form/Field';
 import Formik from '@misakey/ui/Formik';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsCard from '@misakey/ui/Box/Controls/Card';
 import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
 import Box from '@material-ui/core/Box';
-
-
 
 const {
   getRootKey,
@@ -128,7 +126,7 @@ const AccountPassword = ({ t, identity }) => {
       initialValues={INITIAL_VALUES}
     >
       {({ isSubmitting }) => (
-        <Form style={{ width: '100%' }}>
+        <Box component={Form} width="100%" display="flex" flexDirection="column">
           <Box mb={2}>
             <FormField
               type="password"
@@ -152,7 +150,7 @@ const AccountPassword = ({ t, identity }) => {
             component={FieldPasswordRevealable}
             variant="filled"
           />
-          <BoxControls
+          <BoxControlsCard
             mt={3}
             primary={{
               type: 'submit',
@@ -162,7 +160,7 @@ const AccountPassword = ({ t, identity }) => {
             }}
             formik
           />
-        </Form>
+        </Box>
       )}
     </Formik>
 

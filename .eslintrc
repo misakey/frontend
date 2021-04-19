@@ -58,7 +58,11 @@
           "./src/packages/store/src"
         ]
       ]
-    }
+    },
+    "import/external-module-folders": [
+      "node_modules",
+      "packages/core"
+    ]
   },
   "rules": {
     "import/no-restricted-paths": [

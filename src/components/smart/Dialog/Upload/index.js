@@ -34,6 +34,7 @@ import FieldFiles from 'components/dumb/Form/Field/Files';
 import BoxControls from '@misakey/ui/Box/Controls';
 import Link from '@material-ui/core/Link';
 import Formik from '@misakey/ui/Formik';
+import Box from '@material-ui/core/Box';
 import FieldBlobs from './BlobsField';
 
 // CONSTANTS
@@ -60,6 +61,8 @@ const isInProgress = compose(
 const useStyles = makeStyles((theme) => ({
   dialogContentRoot: {
     padding: theme.spacing(3),
+    display: 'flex',
+    flexDirection: 'column',
   },
 }));
 
@@ -202,7 +205,12 @@ function UploadDialog({
         onSubmit={onSubmit}
       >
         {({ resetForm, values }) => (
-          <Form>
+          <Box
+            component={Form}
+            display="flex"
+            flexDirection="column"
+            flexGrow="1"
+          >
             <DialogTitleWithClose
               title={t('components:dialogUpload.text', { count: values[BLOBS_FIELD_NAME].length })}
               onClose={getOnReset(resetForm)}
@@ -215,6 +223,7 @@ function UploadDialog({
                 primary={{
                   type: 'submit',
                   text: t('common:send'),
+                  disabled: isEmpty(values[BLOBS_FIELD_NAME]),
                 }}
                 formik
               />
@@ -229,21 +238,25 @@ function UploadDialog({
                 uploadStatus={blobsUploadStatus}
                 autoFocus={autoFocus}
                 disabled={!open}
+                flexGrow="1"
               >
                 <FormHelperText>
-                  {t('components:dialogUpload.helperText')}
-                &nbsp;
+                  <span>
+                    {t('components:dialogUpload.helperText')}
+                  </span>
+                  {' '}
                   <Link
                     href={t('components:dialogUpload.helperLink')}
                     target="_blank"
                     rel="noopener noreferrer"
+                    noWrap
                   >
                     {t('components:dialogUpload.helperLinkText')}
                   </Link>
                 </FormHelperText>
               </FieldFiles>
             </DialogContent>
-          </Form>
+          </Box>
         )}
       </Formik>
     </Dialog>

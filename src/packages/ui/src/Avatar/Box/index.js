@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-function AvatarBox({ src, title, lostKey, size, ...rest }) {
+const AvatarBox = forwardRef(({ src, title, lostKey, size, ...rest }, ref) => {
   const internalClasses = useStyles();
 
   // convert size values to fontSize values,
@@ -54,6 +54,7 @@ function AvatarBox({ src, title, lostKey, size, ...rest }) {
 
   return (
     <Avatar
+      ref={ref}
       alt={title}
       src={src}
       size={size}
@@ -63,7 +64,7 @@ function AvatarBox({ src, title, lostKey, size, ...rest }) {
       {content}
     </Avatar>
   );
-}
+});
 
 AvatarBox.propTypes = {
   src: PropTypes.string,

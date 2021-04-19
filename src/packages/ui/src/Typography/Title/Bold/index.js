@@ -8,7 +8,6 @@ import TypographyTitle from '@misakey/ui/Typography/Title';
 const useStyles = makeStyles((theme) => ({
   root: {
     fontWeight: theme.typography.fontWeightBold,
-    flexGrow: 1,
   },
 }));
 

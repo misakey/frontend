@@ -24,7 +24,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitleWithCloseIcon from '@misakey/ui/DialogTitle/WithCloseIcon';
 import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 import Box from '@material-ui/core/Box';
 
 // CONSTANTS
@@ -101,7 +101,7 @@ const DialogPassword = ({
             </Box>
           </DialogContent>
           <DialogActions>
-            <BoxControls
+            <BoxControlsDialog
               primary={{
                 type: 'submit',
                 text: submitText || t('common:validate'),

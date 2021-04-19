@@ -22,7 +22,7 @@ const withDialogShare = (Component) => {
     const { t } = useTranslation('common');
     const { id, title } = useSafeDestr(box);
 
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [open, setOpen] = useState(false);
 
     const {
       canShareNative,
@@ -45,16 +45,16 @@ const withDialogShare = (Component) => {
         if (isFunction(onClick)) {
           onClick(e);
         }
-        setIsDialogOpen(true);
+        setOpen(true);
       },
-      [onClick, setIsDialogOpen],
+      [onClick, setOpen],
     );
 
     const onClose = useCallback(
       () => {
-        setIsDialogOpen(false);
+        setOpen(false);
       },
-      [setIsDialogOpen],
+      [setOpen],
     );
 
     if (canShareNative) {
@@ -75,7 +75,7 @@ const withDialogShare = (Component) => {
           {...props}
         />
         <DialogConfirm
-          isDialogOpen={isDialogOpen}
+          open={open}
           onConfirm={onClose}
           onClose={onClose}
           title={t('common:share')}

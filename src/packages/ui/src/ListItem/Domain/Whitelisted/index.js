@@ -6,7 +6,8 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import ListItemDomain from '@misakey/ui/ListItem/Domain';
-import ListItemSecondaryActionWhitelist from '@misakey/ui/ListItemSecondaryAction/Whitelist';
+import IconButtonWhitelist from '@misakey/ui/IconButton/Whitelist';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 
 // COMPONENTS
 const ListItemDomainWhitelisted = ({ onRemove, id, ...rest }) => {
@@ -17,12 +18,14 @@ const ListItemDomainWhitelisted = ({ onRemove, id, ...rest }) => {
       {...rest}
       displayName={t('components:whitelist.domainTitle')}
     >
-      <ListItemSecondaryActionWhitelist
-        id={id}
-        color="primary"
-        accessStatus="needs_link"
-        onRemove={onRemove}
-      />
+      <ListItemSecondaryAction>
+        <IconButtonWhitelist
+          id={id}
+          color="primary"
+          accessStatus="needs_link"
+          onRemove={onRemove}
+        />
+      </ListItemSecondaryAction>
     </ListItemDomain>
   );
 };

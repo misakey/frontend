@@ -18,7 +18,6 @@ import Container from '@material-ui/core/Container';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import FooterSso from '@misakey/react/auth/components/Footer/Sso';
-import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -56,6 +55,9 @@ const useStyles = makeStyles((theme) => ({
   },
   cardContent: {
     paddingBottom: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
   },
 }));
 
@@ -79,11 +81,15 @@ const CardSso = ({ avatarSize, children, ...props }) => {
         {...props}
       >
         <CardContent className={classes.cardContent}>
-          <Box mb={3}>
+          <Box
+            display="flex"
+            flexDirection="column"
+            flexGrow={1}
+            mb={3}
+          >
             {children}
           </Box>
         </CardContent>
-        <BoxFlexFill />
         <FooterSso />
       </Card>
     </Container>

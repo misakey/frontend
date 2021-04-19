@@ -11,6 +11,7 @@ import { forbidden } from '@misakey/core/api/constants/errorTypes';
 
 import isNil from '@misakey/core/helpers/isNil';
 import { beginTotpEnroll, finishTotpEnroll } from '@misakey/core/auth/builder/identities';
+import dialogIsFullScreen from '@misakey/core/helpers/dialog/isFullScreen';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
@@ -20,11 +21,10 @@ import { Form } from 'formik';
 import Field from '@misakey/ui/Form/Field';
 import FieldCodePasteButton from '@misakey/ui/Form/Field/Code/WithPasteButton';
 import Formik from '@misakey/ui/Formik';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 import DialogContent from '@misakey/ui/DialogContent';
 import DialogTitleWithCloseFormik from '@misakey/ui/DialogTitle/WithCloseIcon/Formik';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
-import DialogActions from '@material-ui/core/DialogActions';
 import Box from '@material-ui/core/Box';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -34,7 +34,10 @@ const TOTP_CODE = 'code';
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   dialogContentRoot: {
-    padding: 0,
+    padding: theme.spacing(0, 0, 1, 0),
+    [dialogIsFullScreen(theme)]: {
+      paddingBottom: theme.spacing(0),
+    },
   },
   prewrap: {
     whiteSpace: 'pre-wrap',
@@ -128,6 +131,7 @@ function RegisterTotpDialogContent({ onClose, identityId, onSetRecoveryCodes }) 
             )}
             <Field
               name={TOTP_CODE}
+              fullWidth
               component={FieldCodePasteButton}
               variant="filled"
               autoFocus
@@ -138,16 +142,15 @@ function RegisterTotpDialogContent({ onClose, identityId, onSetRecoveryCodes }) 
               }}
             />
           </Box>
-        </DialogContent>
-        <DialogActions>
-          <BoxControls
+          <BoxControlsDialog
+            mt={1}
             primary={{
               type: 'submit',
               text: t('common:submit'),
             }}
             formik
           />
-        </DialogActions>
+        </DialogContent>
       </Form>
     </Formik>
   );

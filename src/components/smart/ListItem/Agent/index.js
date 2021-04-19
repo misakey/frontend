@@ -7,7 +7,8 @@ import { VISIBLE_ROLES } from '@misakey/ui/constants/organizations/roles';
 import { pickUsersPropsRemapIdentifier } from '@misakey/core/helpers/user';
 
 import ListItemUser from '@misakey/ui/ListItem/User';
-import ListItemSecondaryActionAgent from 'components/smart/ListItemSecondaryAction/Agent';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import SecondaryActionAgent from './SecondaryAction';
 
 // COMPONENTS
 const ListItemAgent = ({
@@ -20,7 +21,9 @@ const ListItemAgent = ({
   );
   return (
     <ListItemUser {...userProps} {...props}>
-      <ListItemSecondaryActionAgent id={id} onRemove={onRemove} isNew={isNew} role={role} />
+      <ListItemSecondaryAction>
+        <SecondaryActionAgent id={id} onRemove={onRemove} isNew={isNew} role={role} />
+      </ListItemSecondaryAction>
     </ListItemUser>
   );
 };

@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 import DialogContent from '@misakey/ui/DialogContent';
 import DialogTitleWithCloseFormik from '@misakey/ui/DialogTitle/WithCloseIcon/Formik';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
@@ -129,7 +129,7 @@ function ContactBoxDialog({ onClose, open, targetUser, ...props }) {
             />
           </DialogContent>
           <DialogActions>
-            <BoxControls
+            <BoxControlsDialog
               primary={{
                 type: 'submit',
                 text: t('common:contact'),

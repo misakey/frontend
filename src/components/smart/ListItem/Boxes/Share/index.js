@@ -12,7 +12,7 @@ import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathK
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
 // COMPONENTS
 const ListItemBoxShare = ({ box, t }) => {
@@ -33,7 +33,7 @@ const ListItemBoxShare = ({ box, t }) => {
           primary={t('common:share')}
           primaryTypographyProps={{ noWrap: true, variant: 'overline', color: 'textSecondary' }}
         />
-        <ChevronRightIcon />
+        <PersonAddIcon color="action" />
       </ListItem>
     </>
   );

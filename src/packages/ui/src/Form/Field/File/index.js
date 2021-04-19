@@ -54,6 +54,7 @@ const FileField = ({
   labelText,
   errorKeys,
   displayError,
+  autoFocus,
   ...rest
 }) => {
   const { value, name } = useModifier(fieldDestrProp, rest);
@@ -97,6 +98,7 @@ const FileField = ({
   return (
     <>
       <InputFile
+        autoFocus={autoFocus}
         accept={accept}
         name={name}
         onChange={onFileChange}
@@ -135,6 +137,7 @@ const FileField = ({
 
 FileField.propTypes = {
   accept: PropTypes.arrayOf(PropTypes.string),
+  autoFocus: PropTypes.bool,
   onUpload: PropTypes.func,
   onError: PropTypes.func,
   previewName: PropTypes.string,
@@ -153,6 +156,7 @@ FileField.propTypes = {
 };
 
 FileField.defaultProps = {
+  autoFocus: false,
   onUpload: undefined,
   onError: undefined,
   accept: [],

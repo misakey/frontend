@@ -15,25 +15,30 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import CopyIcon from '@material-ui/icons/FilterNone';
 
 // COMPONENTS
-const MenuItemCopyEvent = forwardRef(({ t, event }, ref) => {
+const MenuItemCopyEvent = forwardRef(({ t, event, component: Component }, ref) => {
   const value = useDecryptedEventText(event);
 
   const onClick = useCopy(value);
 
   return (
-    <ContextMenuItem ref={ref} onClick={onClick}>
+    <Component ref={ref} onClick={onClick}>
       <ListItemIcon>
         <CopyIcon />
       </ListItemIcon>
       <ListItemText primary={t('common:copy')} />
-    </ContextMenuItem>
+    </Component>
   );
 });
 
 MenuItemCopyEvent.propTypes = {
+  component: PropTypes.elementType,
   event: PropTypes.shape(EventSchema.propTypes).isRequired,
   // withTranslation
   t: PropTypes.func.isRequired,
+};
+
+MenuItemCopyEvent.defaultProps = {
+  component: ContextMenuItem,
 };
 
 export default withTranslation('common', { withRef: true })(MenuItemCopyEvent);

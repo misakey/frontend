@@ -4,9 +4,13 @@ import { withTranslation } from 'react-i18next';
 
 import useDownloadBackupKey from '@misakey/react/crypto/hooks/useDownloadBackupKey';
 
-import CardSimpleText from '@misakey/ui/Card/Simple/Text';
-import { BUTTON_STANDINGS } from '@misakey/ui/Button';
-import ButtonWithDialogPassword from '@misakey/react/auth/components/Dialog/Password/with/Button';
+import IconButtonWithDialogPassword from '@misakey/react/auth/components/Dialog/Password/with/IconButton';
+import ListItem from '@material-ui/core/ListItem';
+import ListBordered from '@misakey/ui/List/Bordered';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+
+import DownloadIcon from '@material-ui/icons/GetApp';
 
 // COMPONENTS
 const CardDownloadBackupKey = ({ t }) => {
@@ -15,17 +19,21 @@ const CardDownloadBackupKey = ({ t }) => {
   const onClick = useDownloadBackupKey(fileNamePrefix);
 
   return (
-    <CardSimpleText
-      text={t('account:vault.exportButton.info')}
-      button={(
-        <ButtonWithDialogPassword
-          standing={BUTTON_STANDINGS.TEXT}
-          text={t('common:download')}
-          onClick={onClick}
-          forceDialog
+    <ListBordered disablePadding>
+      <ListItem>
+        <ListItemText
+          primary={t('account:vault.exportButton.info')}
         />
-      )}
-    />
+        <ListItemSecondaryAction>
+          <IconButtonWithDialogPassword
+            onClick={onClick}
+            forceDialog
+          >
+            <DownloadIcon />
+          </IconButtonWithDialogPassword>
+        </ListItemSecondaryAction>
+      </ListItem>
+    </ListBordered>
   );
 };
 

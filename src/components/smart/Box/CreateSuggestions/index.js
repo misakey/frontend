@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import ButtonWithDialogPassword from '@misakey/react/auth/components/Dialog/Password/with/Button';
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsCard from '@misakey/ui/Box/Controls/Card';
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import Typography from '@material-ui/core/Typography';
@@ -18,19 +18,19 @@ const { hasCrypto: HAS_CRYPTO_SELECTOR } = authSelectors;
 // COMPONENTS
 const ButtonCreate = withDialogCreate(Button);
 
-const CreateBoxSuggestions = () => {
+const CreateBoxSuggestions = (props) => {
   const hasCrypto = useSelector(HAS_CRYPTO_SELECTOR);
 
   const { t } = useTranslation('components');
 
   return (
-    <Box pt={6}>
+    <Box pt={6} {...props}>
       {hasCrypto && (
         <>
           <Typography color="textSecondary" align="center">
             {t('components:createBoxSuggestions.createBox.text')}
           </Typography>
-          <BoxControls
+          <BoxControlsCard
             py={2}
             primary={(
               <ButtonCreate
@@ -46,7 +46,7 @@ const CreateBoxSuggestions = () => {
           <Typography color="textSecondary" align="center">
             {t('components:createBoxSuggestions.createAccount.text')}
           </Typography>
-          <BoxControls
+          <BoxControlsCard
             py={2}
             primary={(
               <ButtonWithDialogPassword

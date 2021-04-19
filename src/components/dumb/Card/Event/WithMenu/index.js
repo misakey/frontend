@@ -115,6 +115,7 @@ const CardEventWithMenu = forwardRef(({
         )}
       </CardEvent>
       <ContextMenu
+        anchorReference="anchorPosition"
         anchorPosition={anchorPosition}
         onClose={onCloseMenu}
       >

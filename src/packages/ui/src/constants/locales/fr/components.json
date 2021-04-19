@@ -164,7 +164,7 @@
       "files": "Nouveaux fichiers à chiffrer",
       "folder": "Nouveau dossier à chiffrer"
     },
-    "helperText": "Déposer les fichiers que vous souhaitez chiffrer.",
+    "helperText": "Ajoutez les fichiers que vous souhaitez chiffrer.",
     "helperLink": "https://docs.misakey.com/#/fr/",
     "helperLinkText": "En savoir plus",
     "progress": "Envoi de fichiers en cours",

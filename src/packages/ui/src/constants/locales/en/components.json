@@ -93,7 +93,7 @@
       "default": "An error occurred while saving the file!",
       "conflict": "This file is already saved in your vault!"
     },
-    "success": "File has been successfully saved in yout vault!"
+    "success": "File has been successfully saved in your vault!"
   },
   "signinRedirect": {
     "documentTitle": "Authentication",
@@ -154,7 +154,7 @@
       "files": "New files to encrypt",
       "folder": "New folder to encrypt"
     },
-    "helperText": "Drop the files you want to encrypt.",
+    "helperText": "Upload the files you want to encrypt.",
     "helperLink": "https://docs.misakey.com/#/en/",
     "helperLinkText": "Learn more",
     "progress": "File upload in progress",

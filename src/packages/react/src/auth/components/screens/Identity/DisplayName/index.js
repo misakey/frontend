@@ -22,7 +22,8 @@ import FormField from '@misakey/ui/Form/Field';
 import Formik from '@misakey/ui/Formik';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Container from '@material-ui/core/Container';
-import BoxControls from '@misakey/ui/Box/Controls';
+import Box from '@material-ui/core/Box';
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 import FieldText from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import ScreenAction from '@misakey/ui/Screen/Action';
 
@@ -102,7 +103,7 @@ const IdentityDisplayName = ({
             onSubmit={onSubmit}
             initialValues={initialValues}
           >
-            <Form>
+            <Box component={Form} display="flex" flexDirection="column">
               <FormField
                 type="text"
                 name={FIELD_NAME}
@@ -110,7 +111,7 @@ const IdentityDisplayName = ({
                 inputProps={{ 'data-matomo-ignore': true }}
                 variant="filled"
               />
-              <BoxControls
+              <BoxControlsDialog
                 mt={3}
                 primary={{
                   type: 'submit',
@@ -119,7 +120,7 @@ const IdentityDisplayName = ({
                 }}
                 formik
               />
-            </Form>
+            </Box>
           </Formik>
         )}
       </Container>

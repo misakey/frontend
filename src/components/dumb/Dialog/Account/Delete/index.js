@@ -17,7 +17,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import FormFieldTextFieldWithErrors from '@misakey/ui/Form/Field/TextFieldWithErrors';
-import BoxControls from '@misakey/ui/Box/Controls';
+import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 
 
 // CONSTANTS
@@ -26,6 +26,7 @@ const NO_ERROR = {};
 const EMAIL_INVALID_ERROR = { email: invalid };
 
 // COMPONENTS
+// @UNUSED
 const DeleteAccountDialog = ({ onClose, onSuccess, open, identity, t }) => {
   const validate = useCallback(
     (values) => (values.email.toLowerCase() !== identity.displayName.toLowerCase()
@@ -64,7 +65,7 @@ const DeleteAccountDialog = ({ onClose, onSuccess, open, identity, t }) => {
             />
           </DialogContent>
           <DialogActions>
-            <BoxControls
+            <BoxControlsDialog
               primary={{
                 type: 'submit',
                 text: t('common:delete'),
