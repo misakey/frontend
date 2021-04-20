@@ -1,6 +1,10 @@
 export const DRAWER_QUERY_PARAM = 'drawer';
 export const TMP_DRAWER_QUERY_PARAMS = 'tmpDrawer';
 export const SIDE_QUERY_PARAM = 'drawerSide';
+export const HIDE_DRAWER_MAP = [
+  [DRAWER_QUERY_PARAM, undefined],
+  [TMP_DRAWER_QUERY_PARAMS, undefined],
+];
 
 export const TMP_DRAWER_ACCOUNT_VALUE = 'account';
 export const TMP_DRAWER_ORG_VALUE = 'organization';

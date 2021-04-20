@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { Link, useLocation } from 'react-router-dom';
 
 import { selectors as orgSelectors } from 'store/reducers/identity/organizations';
 import routes from 'routes';
@@ -32,7 +33,9 @@ const { makeDenormalizeOrganization } = orgSelectors;
 // COMPONENTS
 const LinkWithDialogPassword = withDialogPassword(Link);
 
-const ListNavigationOrganization = (props) => {
+const ListNavigationOrganization = ({ nextSearchMap, ...props }) => {
+  const { search } = useLocation();
+
   const orgId = useOrgId();
   const selfOrgSelected = useMemo(
     () => isSelfOrg(orgId),
@@ -40,8 +43,11 @@ const ListNavigationOrganization = (props) => {
   );
 
   const nextSearch = useMemo(
-    () => getNextSearch('', new Map([['orgId', selfOrgSelected ? undefined : orgId]])),
-    [orgId, selfOrgSelected],
+    () => getNextSearch(search, new Map([
+      ['orgId', selfOrgSelected ? undefined : orgId],
+      ...nextSearchMap,
+    ])),
+    [nextSearchMap, orgId, search, selfOrgSelected],
   );
 
   const boxesTo = useGeneratePathKeepingSearchAndHash(routes.boxes._, undefined, nextSearch, '');
@@ -96,7 +102,15 @@ const ListNavigationOrganization = (props) => {
           </ListItemNavLink>
         )}
       </ListBordered>
-      {!selfOrgSelected && <ListDatatags x={false} t {...props} />}
+      {!selfOrgSelected && (
+      <ListDatatags
+        nextSearchMap={nextSearchMap}
+        organizationId={orgId}
+        x={false}
+        t
+        {...props}
+      />
+      )}
       {showAdminConfig && (
         <ListBordered t x={false} {...props}>
           <ListItemNavLink
@@ -125,6 +139,13 @@ const ListNavigationOrganization = (props) => {
       )}
     </>
   );
+};
+
+ListNavigationOrganization.propTypes = {
+  nextSearchMap: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+};
+ListNavigationOrganization.defaultProps = {
+  nextSearchMap: [],
 };
 
 export default ListNavigationOrganization;

@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+import PropTypes from 'prop-types';
 
 import { TO_PROP_TYPE } from '@misakey/ui/constants/propTypes';
 
@@ -17,7 +18,7 @@ import ListItemOrganizationCurrent from 'components/smart/ListItem/Organization/
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 // COMPONENTS
-const DrawerOrganizationContent = ({ backTo }) => {
+const DrawerOrganizationContent = ({ backTo, hideDrawerMap }) => {
   const { t } = useTranslation('common');
 
   return (
@@ -40,13 +41,18 @@ const DrawerOrganizationContent = ({ backTo }) => {
         </ListBordered>
       </AppBarStatic>
       <Suspense fallback={<SplashScreen />}>
-        <ListNavigationOrganization />
+        <ListNavigationOrganization nextSearchMap={hideDrawerMap} />
       </Suspense>
     </Box>
   );
 };
 DrawerOrganizationContent.propTypes = {
   backTo: TO_PROP_TYPE.isRequired,
+  hideDrawerMap: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+};
+
+DrawerOrganizationContent.defaultProps = {
+  hideDrawerMap: [],
 };
 
 export default DrawerOrganizationContent;

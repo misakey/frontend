@@ -9,6 +9,7 @@ import {
   TEMP_DRAWER_MOBILE_WIDTH,
   TEMP_DRAWER_DESKTOP_WIDTH,
   SIDES,
+  HIDE_DRAWER_MAP,
 } from '@misakey/ui/constants/drawers';
 
 import getNextSearch from '@misakey/core/helpers/getNextSearch';
@@ -62,9 +63,7 @@ const DrawerOrganization = (props) => {
     () => ({
       pathname,
       hash,
-      search: getNextSearch(search, new Map([
-        [TMP_DRAWER_QUERY_PARAMS, undefined],
-      ])),
+      search: getNextSearch(search, new Map(HIDE_DRAWER_MAP)),
     }),
     [hash, pathname, search],
   );
@@ -125,6 +124,7 @@ const DrawerOrganization = (props) => {
     >
       <DrawerOrganizationContent
         backTo={hideDrawerTo}
+        hideDrawerMap={HIDE_DRAWER_MAP}
       />
     </SwipeableDrawer>
   );

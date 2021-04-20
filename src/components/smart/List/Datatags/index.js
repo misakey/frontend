@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { forwardRef, useMemo } from 'react';
+import PropTypes from 'prop-types';
 
 import useFetchUserDatatags from 'hooks/useFetchUserDatatags';
 import { useTranslation } from 'react-i18next';
@@ -17,13 +18,18 @@ import InfoIcon from '@material-ui/icons/Info';
 import isEmpty from '@misakey/core/helpers/isEmpty';
 
 // COMPONENTS
-const ListDatatags = (props) => {
+const ListDatatags = forwardRef(({ organizationId, nextSearchMap, ...rest }, ref) => {
   const { t } = useTranslation('organizations');
 
-  const { isFetching, shouldFetch, datatags } = useFetchUserDatatags();
+  const datatagsParams = useMemo(
+    () => ({ organizationId }),
+    [organizationId],
+  );
+
+  const { isFetching, shouldFetch, datatags } = useFetchUserDatatags(datatagsParams);
 
   return (
-    <ListBordered {...props}>
+    <ListBordered ref={ref} {...rest}>
       {(isFetching || shouldFetch) ? (
         <ListItem>
           <ListItemIcon>
@@ -45,8 +51,14 @@ const ListDatatags = (props) => {
                 primary={t('organizations:datatags.empty')}
               />
             </ListItem>
-          ) : datatags.map(({ id, name, ...rest }) => (
-            <ListItemDatatagLink id={id} key={id} {...rest}>
+          ) : datatags.map(({ id, name, ...restDatatag }) => (
+            <ListItemDatatagLink
+              organizationId={organizationId}
+              id={id}
+              key={id}
+              nextSearchMap={nextSearchMap}
+              {...restDatatag}
+            >
               <ListItemIcon>
                 <LabelIcon />
               </ListItemIcon>
@@ -59,6 +71,15 @@ const ListDatatags = (props) => {
       )}
     </ListBordered>
   );
+});
+
+ListDatatags.propTypes = {
+  organizationId: PropTypes.string.isRequired,
+  nextSearchMap: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+};
+
+ListDatatags.defaultProps = {
+  nextSearchMap: [],
 };
 
 export default ListDatatags;

@@ -4,7 +4,6 @@ import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/a
 import { listDatatags } from '@misakey/core/api/helpers/builder/identities';
 import isNil from '@misakey/core/helpers/isNil';
 
-import useOrgId from '@misakey/react/auth/hooks/useOrgId';
 import { useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
@@ -15,11 +14,9 @@ const { makeDenormalizeDatatags } = datatagsSelectors;
 const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
 
 // HOOKS
-export default (isReady = true) => {
+export default ({ organizationId }, isReady = true) => {
   const dispatch = useDispatch();
   const handleHttpErrors = useHandleHttpErrors();
-
-  const organizationId = useOrgId();
 
   const meIdentityId = useSelector(IDENTITY_ID_SELECTOR);
 
@@ -43,10 +40,10 @@ export default (isReady = true) => {
   );
 
   const getdatatags = useCallback(
-    () => listDatatags(meIdentityId, { organizationId })
+    () => listDatatags(meIdentityId)
       .then(dispatchReceiveDatatags)
       .catch(handleHttpErrors),
-    [dispatchReceiveDatatags, handleHttpErrors, meIdentityId, organizationId],
+    [dispatchReceiveDatatags, handleHttpErrors, meIdentityId],
   );
 
   const fetchMetadata = useFetchEffect(
