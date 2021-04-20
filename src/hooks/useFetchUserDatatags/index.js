@@ -40,10 +40,10 @@ export default ({ organizationId }, isReady = true) => {
   );
 
   const getdatatags = useCallback(
-    () => listDatatags(meIdentityId)
+    () => listDatatags(meIdentityId, { organizationId })
       .then(dispatchReceiveDatatags)
       .catch(handleHttpErrors),
-    [dispatchReceiveDatatags, handleHttpErrors, meIdentityId],
+    [dispatchReceiveDatatags, handleHttpErrors, meIdentityId, organizationId],
   );
 
   const fetchMetadata = useFetchEffect(
