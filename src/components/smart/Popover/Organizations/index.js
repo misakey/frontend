@@ -131,11 +131,12 @@ const PopoverOrganizations = forwardRef(({ onClose, open, ...props }, ref) => {
           />
           {(isFetching) ? (
             <ListItemOrganizationSkeleton />
-          ) : otherOrganizations.map(({ id, name: orgName, currentIdentityRole }) => (
+          ) : otherOrganizations.map(({ id, name: orgName, logoUrl, currentIdentityRole }) => (
             <ListItemOrganizationLink
               key={id}
               id={id}
               name={orgName}
+              logoUrl={logoUrl}
               secondary={t(`organizations:role.${currentIdentityRole}`)}
               selected={orgId === id}
               onClick={onClose}

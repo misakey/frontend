@@ -32,7 +32,7 @@ export const useStyles = makeStyles((theme) => ({
 
 // COMPONENTS
 const ListItemOrganization = forwardRef(({
-  name, secondary, children, listItemTextProps, ...rest
+  name, logoUrl, secondary, children, listItemTextProps, ...rest
 }, ref) => {
   const classes = useStyles();
   return (
@@ -41,6 +41,7 @@ const ListItemOrganization = forwardRef(({
         <AvatarColorized
           size="small"
           text={name}
+          image={logoUrl}
           colorizedProp={BACKGROUND_COLOR}
         />
       </ListItemAvatar>
@@ -65,6 +66,7 @@ const ListItemOrganization = forwardRef(({
 
 ListItemOrganization.propTypes = {
   name: PropTypes.string,
+  logoUrl: PropTypes.string,
   secondary: PropTypes.node,
   children: PropTypes.node,
   listItemTextProps: PropTypes.object,
@@ -72,6 +74,7 @@ ListItemOrganization.propTypes = {
 
 ListItemOrganization.defaultProps = {
   name: '',
+  logoUrl: null,
   secondary: null,
   children: null,
   listItemTextProps: {},

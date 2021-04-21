@@ -33,7 +33,7 @@ const ListItemOrganizationCurrent = (props) => {
     [],
   );
   const organization = useSelector((state) => denormalizeOrganizationSelector(state, orgId));
-  const { name } = useSafeDestr(organization);
+  const { name, logoUrl } = useSafeDestr(organization);
 
   if (selfOrgSelected) {
     return <ListItemOrganizationSelf {...props} />;
@@ -48,6 +48,7 @@ const ListItemOrganizationCurrent = (props) => {
   return (
     <ListItemOrganization
       name={name}
+      logoUrl={logoUrl}
       {...props}
     />
   );
