@@ -18,11 +18,14 @@ export const getBoxMembersBuilder = (id) => API
   .send()
   .then((members) => members.map(objectToCamelCaseDeep));
 
-export const getBoxPublicBuilder = ({ id, invitationShareHash }) => API
-  .use(API.endpoints.boxes.public.read)
-  .build({ id }, undefined, objectToSnakeCase({ invitationShareHash }))
-  .send()
-  .then(objectToCamelCaseDeep);
+export const getBoxPublicBuilder = ({ id, invitationShareHash }) => {
+  const queryParams = invitationShareHash ? objectToSnakeCase({ invitationShareHash }) : undefined;
+  return API
+    .use(API.endpoints.boxes.public.read)
+    .build({ id }, undefined, queryParams)
+    .send()
+    .then(objectToCamelCaseDeep);
+};
 
 export const getBoxEventsBuilder = (id, queryParams = {}) => API
   .use(API.endpoints.boxes.events.find)
@@ -52,8 +55,6 @@ export const countBoxFilesEventsBuilder = (id, queryParams = {}) => API
 export const getUserBoxesBuilder = (payload) => API
   .use(API.endpoints.boxes.user.find)
   .build(null, null, objectToSnakeCase({
-    withBlobCount: true,
-    orderBy: 'updated_at DESC',
     ...payload,
   }))
   .send()

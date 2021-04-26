@@ -392,3 +392,16 @@ export async function deleteBoxKeyShares({ boxIds }) {
 
   return httpCallReturnBody(endpoint, httpRequestParams);
 }
+
+export async function getCryptoProvision({ userKeyShareHash }) {
+  const endpoint = {
+    method: 'GET',
+    path: '/crypto/provisions',
+  };
+  const httpRequestParams = {
+    queryParams: { userKeyShareHash },
+  };
+
+  const responseBody = await httpCallReturnBody(endpoint, httpRequestParams);
+  return objectToCamelCase(responseBody);
+}

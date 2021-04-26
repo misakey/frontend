@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import routes from 'routes';
 import { UUID4_REGEX } from '@misakey/ui/constants/regex';
-import { computeInvitationHash } from '@misakey/core/crypto/box/keySplitting';
+import { computeInvitationHash, parseInvitationShare } from '@misakey/core/crypto/box/keySplitting';
 import { BadKeyShareFormat } from '@misakey/core/crypto/Errors/classes';
 
 import isEmpty from '@misakey/core/helpers/isEmpty';
@@ -42,7 +42,8 @@ function Boxes({ match }) {
       return false;
     }
     try {
-      computeInvitationHash(locationHash.substr(1));
+      const { value: invitationShare } = parseInvitationShare(locationHash.slice(1));
+      computeInvitationHash(invitationShare);
       return false;
     } catch (error) {
       if (error instanceof BadKeyShareFormat) {

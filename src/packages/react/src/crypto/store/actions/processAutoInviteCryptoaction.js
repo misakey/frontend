@@ -1,8 +1,10 @@
 import { getCode } from '@misakey/core/helpers/apiError';
+import isNil from '@misakey/core/helpers/isNil';
 import { notFound } from '@misakey/core/api/constants/errorTypes';
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import { decryptCryptoaction } from '@misakey/core/crypto/cryptoactions';
+import { DecryptionKeyNotFound } from '@misakey/core/crypto/Errors/classes';
 import {
   getCryptoaction,
   deleteCryptoaction,
@@ -43,6 +45,10 @@ export default ({ cryptoactionId, boxId: notificationBoxId }) => (
 
     const getAsymSecretKey = makeGetAsymSecretKey();
     const secretKey = getAsymSecretKey(state, encryptionPublicKey);
+    if (isNil(secretKey)) {
+      throw new DecryptionKeyNotFound(`Public key: ${encryptionPublicKey}`);
+    }
+
     const decryptedCryptoaction = decryptCryptoaction(encrypted, secretKey);
     const { boxSecretKey } = decryptedCryptoaction;
 

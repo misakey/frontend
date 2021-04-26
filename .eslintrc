@@ -65,22 +65,23 @@
     ]
   },
   "rules": {
-    "import/no-restricted-paths": [
-      "error",
-      {
-        "basePath": "./src",
-        "zones": [
-          {
-            "message": "Cannot import file in @misakey/* packages",
-            "target": "./packages",
-            "from": "./",
-            "except": [
-              "./packages"
-            ]
-          }
-        ]
-      }
-    ],
+    // TODO remove it or repair it
+    // "import/no-restricted-paths": [
+    //   "error",
+    //   {
+    //     "basePath": "./src",
+    //     "zones": [
+    //       {
+    //         "message": "Cannot import file in @misakey/* packages",
+    //         "target": "./packages",
+    //         "from": "./",
+    //         "except": [
+    //           "./packages"
+    //         ]
+    //       }
+    //     ]
+    //   }
+    // ],
     "react/jsx-props-no-spreading": "off",
     "react/jsx-filename-extension": [
       1,

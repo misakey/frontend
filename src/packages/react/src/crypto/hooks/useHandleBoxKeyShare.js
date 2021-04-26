@@ -10,17 +10,25 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import changeBoxInvitationLink from '@misakey/react/crypto/store/actions/changeBoxInvitationLink';
+import { bulkJoinBoxes } from '@misakey/core/api/helpers/builder/identities';
 import logSentryException from '@misakey/core/helpers/log/sentry/exception';
-import { combineBoxKeyShares, fetchMisakeyKeyShare } from '@misakey/core/crypto/box/keySplitting';
+import { combineBoxKeyShares, fetchMisakeyKeyShare, parseInvitationShare } from '@misakey/core/crypto/box/keySplitting';
+import { processProvisionKeyShare } from '@misakey/core/crypto/provisions';
 import { selectors } from '@misakey/react/crypto/store/reducers';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import { InvalidHash } from '@misakey/core/crypto/Errors/classes';
 import setBoxSecrets from '@misakey/react/crypto/store/actions/setBoxSecrets';
+import addBoxesFromProvision from '@misakey/react/crypto/store/actions/addBoxesFromProvision';
 
 // SELECTORS
 const {
   makeGetAsymSecretKey,
   makeGetBoxKeyShare,
 } = selectors;
+const {
+  accountId: ACCOUNT_ID_SELECTOR,
+  identityId: IDENTITY_ID_SELECTOR,
+} = authSelectors;
 
 export default (box, boxIsReady, belongsToCurrentUser) => {
   const dispatch = useDispatch();
@@ -40,6 +48,9 @@ export default (box, boxIsReady, belongsToCurrentUser) => {
     [],
   );
   const secretKey = useSelector((state) => getAsymSecretKey(state, publicKey));
+
+  const accountId = useSelector(ACCOUNT_ID_SELECTOR);
+  const identityId = useSelector(IDENTITY_ID_SELECTOR);
 
   const isAllowedToFetch = useMemo(
     () => Boolean(boxIsReady && hasAccess && isMember !== false),
@@ -82,9 +93,30 @@ export default (box, boxIsReady, belongsToCurrentUser) => {
     [keyShareInStore, shouldRebuildSecretKey, isAllowedToFetch],
   );
 
-  const shouldCheckUrlKeyShare = useMemo(
-    () => !isNil(keyShareInUrl) && isNil(keyShareInStore) && isAllowedToFetch,
-    [keyShareInUrl, keyShareInStore, isAllowedToFetch],
+  const parsedInvitationShare = useMemo(
+    () => (isNil(keyShareInUrl) ? null : parseInvitationShare(keyShareInUrl)),
+    [keyShareInUrl],
+  );
+
+  const isProvisionKeyShare = useMemo(
+    () => (isNil(parsedInvitationShare) ? undefined : parsedInvitationShare.type === 'provision'),
+    [parsedInvitationShare],
+  );
+
+  const shouldCheckUrlBoxKeyShare = useMemo(
+    () => (
+      !isNil(parsedInvitationShare) && !isProvisionKeyShare
+      && isNil(keyShareInStore) && isAllowedToFetch
+    ),
+    [keyShareInStore, isAllowedToFetch, parsedInvitationShare, isProvisionKeyShare],
+  );
+
+  const shouldCheckUrlProvisionKeyShare = useMemo(
+    () => (
+      !isNil(parsedInvitationShare) && isProvisionKeyShare
+      && isNil(keyShareInStore) && isAllowedToFetch
+    ),
+    [keyShareInStore, isAllowedToFetch, parsedInvitationShare, isProvisionKeyShare],
   );
 
   const shouldCreateNewShares = useMemo(
@@ -104,6 +136,21 @@ export default (box, boxIsReady, belongsToCurrentUser) => {
 
   const fetchMisakeyKeyShareFromKeyShareInUrl = useCallback(
     () => fetchMisakeyKeyShare(keyShareInUrl), [keyShareInUrl],
+  );
+
+  const processProvisionKeyShareFromKeyShareInUrl = useCallback(
+    async () => {
+      const boxesSecret = await processProvisionKeyShare(
+        parsedInvitationShare.value,
+        accountId,
+      );
+
+      if (isEmpty(boxesSecret)) {
+        throw new Error('no boxes secrets retrieved from crypto provision');
+      }
+
+      return boxesSecret;
+    }, [accountId, parsedInvitationShare],
   );
 
   const fetchMisakeyKeyShareFromKeyShareInStore = useCallback(
@@ -196,6 +243,52 @@ export default (box, boxIsReady, belongsToCurrentUser) => {
     [enqueueSnackbar, t, removeHash],
   );
 
+  const onProvisionKeyShareProcessed = useCallback(
+    async (boxesSecret) => {
+      // the invitation key share of this box
+      // (to change the URL to the “canonical” URL of the current box)
+      let boxKeyShare;
+
+      // we join all boxes linked to the provision
+      // except the one corresponding to the URL
+      // since this one is already joined.
+      // XXX fragile; what about having the backend ignore “joins”
+      // for boxes we already joined?
+      const boxesToJoin = [];
+      boxesSecret.forEach(({ boxId: id, keyShare }) => {
+        if (id !== boxId) {
+          boxesToJoin.push(id);
+        } else {
+          boxKeyShare = keyShare;
+        }
+      });
+
+      if (!isEmpty(boxesToJoin)) {
+        await bulkJoinBoxes(identityId, boxesToJoin);
+      }
+      await dispatch(addBoxesFromProvision({ boxesSecret }));
+
+      // see above
+      setKeyShareInURL(boxKeyShare);
+
+      // XXX required for now,
+      // otherwise joined boxes do not appear in box list
+      // (only the one which ID was in the invitation list appears)
+      // TODO fix it;
+      // may be fixed in https://gitlab.misakey.dev/misakey/frontend/-/merge_requests/858
+      window.location.reload();
+    },
+    [dispatch, identityId, boxId, setKeyShareInURL],
+  );
+
+  const onProvisionProcessingError = useCallback(
+    (err) => {
+      enqueueSnackbar(t('common:anErrorOccurred'), { variant: 'error' });
+      logSentryException(err, 'processing crypto provision', { crypto: true });
+    },
+    [enqueueSnackbar, t],
+  );
+
   // If box key share is found in secret storage, check its validity in backend
   // and put it in url. It will also rebuild the secretKey if needed.
   // If box key share is invalid, it is removed from secret storage
@@ -212,10 +305,16 @@ export default (box, boxIsReady, belongsToCurrentUser) => {
   // It will also rebuild the secretKey if needed.
   // If box key share is invalid, PasteLink screen will be displayed
   // This can happen for user with or without account.
-  const { isFetching: isFetchingUrlKeyShare } = useFetchEffect(
+  const { isFetching: isFetchingBoxKeyShareFromUrl } = useFetchEffect(
     fetchMisakeyKeyShareFromKeyShareInUrl,
-    { shouldFetch: shouldCheckUrlKeyShare },
+    { shouldFetch: shouldCheckUrlBoxKeyShare },
     { onSuccess: onUrlKeyShareValid, onError: onUrlKeyShareInvalid },
+  );
+
+  const { isFetching: isProcessingProvisionKeyShare } = useFetchEffect(
+    processProvisionKeyShareFromKeyShareInUrl,
+    { shouldFetch: shouldCheckUrlProvisionKeyShare },
+    { onSuccess: onProvisionKeyShareProcessed, onError: onProvisionProcessingError },
   );
 
   // If no valid box key share is found in url or secret storage and user is the creator,
@@ -238,11 +337,17 @@ export default (box, boxIsReady, belongsToCurrentUser) => {
 
   return useMemo(
     () => ({
-      isReady: (!isFetchingKeyShareUsingStore && !isFetchingUrlKeyShare && !isBuildingSecretKey),
+      isReady: !(
+        isFetchingKeyShareUsingStore
+        || isProcessingProvisionKeyShare
+        || isFetchingBoxKeyShareFromUrl
+        || isBuildingSecretKey
+      ),
       isCreatingNewShares,
       secretKey,
     }),
-    [isBuildingSecretKey, isCreatingNewShares, isFetchingKeyShareUsingStore,
-      isFetchingUrlKeyShare, secretKey],
+    [isBuildingSecretKey, isCreatingNewShares,
+      isFetchingKeyShareUsingStore, isProcessingProvisionKeyShare,
+      isFetchingBoxKeyShareFromUrl, secretKey],
   );
 };

@@ -14,7 +14,7 @@ import isNil from '@misakey/core/helpers/isNil';
 import isEmpty from '@misakey/core/helpers/isEmpty';
 import { getCode } from '@misakey/core/helpers/apiError';
 import { getBoxPublicBuilder } from '@misakey/core/api/helpers/builder/boxes';
-import { computeInvitationHash } from '@misakey/core/crypto/box/keySplitting';
+import { computeInvitationHash, parseInvitationShare } from '@misakey/core/crypto/box/keySplitting';
 import { BadKeyShareFormat } from '@misakey/core/crypto/Errors/classes';
 
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
@@ -73,7 +73,9 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
         return null;
       }
       try {
-        return computeInvitationHash(locationHash.substr(1));
+        const { value: invitationShare } = parseInvitationShare(locationHash.slice(1));
+        computeInvitationHash(invitationShare);
+        return false;
       } catch (e) {
         if (e instanceof BadKeyShareFormat) {
           enqueueSnackbar(t('boxes:read.errors.malformed'), { variant: 'warning' });

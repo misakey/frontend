@@ -1,15 +1,14 @@
 
 
-import { useMemo, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { notFound } from '@misakey/core/api/constants/errorTypes';
 
 import { getCode } from '@misakey/core/helpers/apiError';
-import isEmpty from '@misakey/core/helpers/isEmpty';
 import isFunction from '@misakey/core/helpers/isFunction';
 import { getBoxPublicBuilder } from '@misakey/core/api/helpers/builder/boxes';
-import { computeInvitationHash } from '@misakey/core/crypto/box/keySplitting';
+import { computeInvitationHash, parseInvitationShare } from '@misakey/core/crypto/box/keySplitting';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import { InvalidHash } from '@misakey/core/crypto/Errors/classes';
@@ -17,8 +16,7 @@ import { InvalidHash } from '@misakey/core/crypto/Errors/classes';
 
 // HOOKS
 export default (id, onSuccess) => {
-  const { hash } = useLocation();
-  const invitationKeyShare = useMemo(() => (isEmpty(hash) ? null : hash.substr(1)), [hash]);
+  const { hash: locationHash } = useLocation();
   const handleHttpErrors = useHandleHttpErrors();
 
   const getBoxPublicInfo = useCallback(
@@ -43,7 +41,10 @@ export default (id, onSuccess) => {
   return useCallback(
     async () => {
       try {
-        const invitationShareHash = computeInvitationHash(invitationKeyShare);
+        const { value: invitationKeyShare, type } = parseInvitationShare(locationHash.slice(1));
+        const invitationShareHash = type === 'provision'
+          ? null
+          : computeInvitationHash(invitationKeyShare);
         return await getBoxPublicInfo(invitationShareHash);
       } catch (e) {
         const errorCode = getCode(e);
@@ -53,6 +54,6 @@ export default (id, onSuccess) => {
         throw e;
       }
     },
-    [invitationKeyShare, getBoxPublicInfo],
+    [locationHash, getBoxPublicInfo],
   );
 };

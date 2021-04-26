@@ -2,7 +2,7 @@ import { getKeyShareBuilder } from '@misakey/core/api/helpers/builder/boxes';
 import { getCode, getDetails } from '@misakey/core/helpers/apiError';
 import { notFound } from '@misakey/core/api/constants/errorTypes';
 
-import { InvalidHash } from '@misakey/core/crypto/Errors/classes';
+import { InvalidHash, BadKeyShareFormat } from '@misakey/core/crypto/Errors/classes';
 import { splitKey, combineShares, hashShare } from '@misakey/core/crypto/crypto/keySplitting';
 import { encryptCryptoaction, decryptCryptoaction } from '@misakey/core/crypto/cryptoactions';
 
@@ -64,4 +64,20 @@ export async function fetchMisakeyKeyShare(invitationKeyShare) {
     }
     throw error;
   }
+}
+
+/**
+ * returned `type` will be `"box"` or `"provision"`
+ */
+export function parseInvitationShare(share) {
+  const match = share.match(new RegExp('((?<type>provision):)?(?<value>[a-zA-Z0-9-_]+)'));
+  if (!match) {
+    throw new BadKeyShareFormat('location hash did not match regular expression');
+  }
+  const { value, type } = match.groups;
+  return {
+    value,
+    // no prefix -> box key share
+    type: type || 'box',
+  };
 }

@@ -6,3 +6,4 @@ export class SecretsNotLoadedOrCreated extends Error { name = 'SecretsNotLoadedO
 export class NoNewSecretKeys extends Error { name = 'NoNewSecretKeys' }
 export class InvalidHash extends Error {name = 'InvalidHash'}
 export class BadKeyShareFormat extends InvalidHash { name = 'BadKeyShareFormat' }
+export class DecryptionKeyNotFound extends Error { name = 'DecryptionKeyNotFound' }
