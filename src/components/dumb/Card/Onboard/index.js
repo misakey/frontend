@@ -49,7 +49,7 @@ const CardOnboard = ({ t }) => {
         </CardActionArea>
         <Box display="flex" flexDirection="column" flexShrink="0" mx={4} mt={2}>
           <ButtonConnect
-            authProps={{ extraStateParams: { shouldCreateAccount: true } }}
+            authProps={{ misakeyCallbackHints: { shouldCreateAccount: true } }}
             text={t('common:createAccount')}
           />
         </Box>

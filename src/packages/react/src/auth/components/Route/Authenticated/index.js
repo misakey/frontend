@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 
 import { Route } from 'react-router-dom';
 
-import useAskSigninWithLoginHint from '@misakey/react/auth/hooks/useAskSigninWithLoginHint';
+import useAskSigninWithHints from '@misakey/react/auth/hooks/useAskSigninWithHints';
 
 // CONSTANTS
 const {
@@ -19,7 +19,7 @@ const {
 const RouteAuthenticated = ({ route: RouteComponent, options, ...rest }) => {
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
 
-  const askSigninWithLoginHint = useAskSigninWithLoginHint(false);
+  const askSigninWithHints = useAskSigninWithHints(false);
 
   const shouldAskRedirect = useMemo(
     () => !isAuthenticated,
@@ -29,10 +29,10 @@ const RouteAuthenticated = ({ route: RouteComponent, options, ...rest }) => {
   useEffect(
     () => {
       if (shouldAskRedirect) {
-        askSigninWithLoginHint(options);
+        askSigninWithHints(options);
       }
     },
-    [shouldAskRedirect, options, askSigninWithLoginHint],
+    [shouldAskRedirect, options, askSigninWithHints],
   );
 
   if (!shouldAskRedirect) {

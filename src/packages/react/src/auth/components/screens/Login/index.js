@@ -25,14 +25,21 @@ import ScreenLoader from '@misakey/ui/Screen/Loader';
 
 // COMPONENTS
 const AuthLogin = ({
-  identifier, match, client: clientProvider, loginChallenge, loginHint, identity, ...props
+  identifier,
+  match,
+  client: clientProvider,
+  loginChallenge,
+  loginHint,
+  displayHints,
+  identity,
+  ...props
 }) => {
   const { t } = useTranslation('auth');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const handleHttpErrors = useHandleHttpErrors();
   const onSubmit = useOnIdentifierSubmit(loginChallenge);
 
-  const { identifier: identifierHint, client: clientHint } = useSafeDestr(loginHint);
+  const { client: clientHint } = useSafeDestr(displayHints);
 
   const client = useMemo(
     () => (!isNil(clientHint) ? clientHint : clientProvider),
@@ -45,8 +52,8 @@ const AuthLogin = ({
   );
 
   const identifierHintValid = useMemo(
-    () => !isEmpty(identifierHint) && (identifierHint === identifier || isNil(identifier)),
-    [identifierHint, identifier],
+    () => !isEmpty(loginHint) && (loginHint === identifier || isNil(identifier)),
+    [loginHint, identifier],
   );
 
   const userPublicData = useMemo(
@@ -61,14 +68,14 @@ const AuthLogin = ({
       if (!isEmpty(loginHint)) {
         if (identifierHintValid || identifierValid) {
           setIsSubmitting(true);
-          onSubmit(identifierHintValid ? identifierHint : identifier)
+          onSubmit(identifierHintValid ? loginHint : identifier)
             .catch(handleHttpErrors)
             .finally(() => setIsSubmitting(false));
         }
         onDone();
       }
     },
-    [onSubmit, identifierHint, identifier, identifierHintValid, identifierValid, handleHttpErrors],
+    [onSubmit, loginHint, identifier, identifierHintValid, identifierValid, handleHttpErrors],
   );
 
   useUpdateDocHead(t('auth:login.documentTitle'));
@@ -84,7 +91,7 @@ const AuthLogin = ({
           path={authRoutes.signIn.secret}
           render={(routerProps) => (
             <LoginSecret
-              {...loginHint} // should not override identifier
+              {...displayHints}
               {...routerProps}
               client={client}
               loginChallenge={loginChallenge}
@@ -99,7 +106,7 @@ const AuthLogin = ({
           path={match.path}
           render={(routerProps) => (
             <LoginIdentifier
-              {...loginHint} // should not override identifier
+              {...displayHints}
               {...routerProps}
               client={client}
               identifier={identifier}
@@ -121,6 +128,7 @@ AuthLogin.propTypes = {
   // CONNECT
   identifier: PropTypes.string,
   loginHint: SSO_PROP_TYPES.loginHint,
+  displayHints: SSO_PROP_TYPES.displayHints,
   client: SSO_PROP_TYPES.client.isRequired,
   identity: SSO_PROP_TYPES.identity,
   // ROUTER
@@ -130,13 +138,15 @@ AuthLogin.propTypes = {
 AuthLogin.defaultProps = {
   identity: null,
   identifier: '',
-  loginHint: {},
+  loginHint: null,
+  displayHints: {},
 };
 
 // CONNECT
 const mapStateToProps = (state) => ({
   identifier: state.sso.identifier || authSelectors.identifierValue(state),
   loginHint: state.sso.loginHint,
+  displayHints: state.sso.displayHints,
   identity: state.sso.identity,
   client: state.sso.client,
 });

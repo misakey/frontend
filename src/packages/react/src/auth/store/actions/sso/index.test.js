@@ -28,6 +28,7 @@ describe('testing sso actions', () => {
           requiredAcr: '2',
         },
         loginChallenge: 'dsfopkzklf',
+        displayHints: { resourceName: 'test' },
         loginHint: '',
         scope: ['openid'],
         acrValues: [ACR.toString()],

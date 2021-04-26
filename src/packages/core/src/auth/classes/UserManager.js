@@ -35,6 +35,12 @@ const BC_FREE_SILENT_LOCK = 'MisOidc:channel.bc_free_silent_lock';
 const BC_LOGOUT = 'MisOidc:channel.bc_logout';
 const BC_SIGNIN = 'MisOidc:channel.bc_signin';
 
+const DEFAULT_SETTINGS = {
+  tokenInfoStorage: localStorage,
+  stateStorage: sessionStorage,
+  misakeyCbHintsStorage: sessionStorage,
+};
+
 export default class UserManager extends OidcClient {
   #userValue
 
@@ -45,7 +51,7 @@ export default class UserManager extends OidcClient {
     const options = isFunction(onTokenExpirationChange)
       ? { onTokenExpirationChangeCbs: [onTokenExpirationChange] }
       : undefined;
-    super(settings, options);
+    super({ ...DEFAULT_SETTINGS, ...settings }, options);
 
     this.#userValue = null;
     this.disableAutomaticSilentRenew = disableAutomaticSilentRenew;
@@ -120,8 +126,14 @@ export default class UserManager extends OidcClient {
     }
   }
 
-  async signinRedirect(args = {}) {
-    return this.createSigninRequest(args)
+  async signinRedirect({
+    referrer = `${window.location.pathname}${window.location.search || ''}${window.location.hash || ''}`,
+    ...args
+  } = {}) {
+    return this.createSigninRequest({
+      referrer,
+      ...args,
+    })
       .then((url) => { window.location = url; })
       .catch((err) => {
         logSentryException(err, 'UserManager.signInRedirect', { auth: true });
@@ -178,7 +190,7 @@ export default class UserManager extends OidcClient {
 
   async signinEnd(url, { currentSub, silent } = {}) {
     return this.processSigninResponse(url)
-      .then(({ user, state }) => {
+      .then(({ user, callbackHints }) => {
         const { profile, expiresAt } = user;
 
         if (!isNil(currentSub)) {
@@ -193,7 +205,7 @@ export default class UserManager extends OidcClient {
         return {
           user: this.mapUserInfo(),
           expiresAt,
-          state,
+          callbackHints,
         };
       })
       .catch((err) => {

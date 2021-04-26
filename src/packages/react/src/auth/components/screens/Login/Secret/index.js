@@ -242,6 +242,8 @@ const AuthLoginSecret = ({ identifier, userPublicData, loginChallenge, client, r
       if (methodName === IDENTITY_PASSWORD) {
         return (
           <ButtonForgotPassword
+            identifier={identifier}
+            loginChallenge={loginChallenge}
             text={t('auth:login.form.action.forgotPassword')}
           />
         );
@@ -255,7 +257,7 @@ const AuthLoginSecret = ({ identifier, userPublicData, loginChallenge, client, r
       }
       return null;
     },
-    [identityId, loginChallenge, methodName, t],
+    [identifier, identityId, loginChallenge, methodName, t],
   );
 
   if (!isNil(redirectTo)) {
@@ -285,7 +287,12 @@ const AuthLoginSecret = ({ identifier, userPublicData, loginChallenge, client, r
               {showCancelForgotPassword ? (
                 <ButtonForgotPasswordCancel
                   color="background"
-                  text={t('auth:login.secret.cancelForgotPassword')}
+                  text={(
+                    <>
+                      <ArrowBackIcon />
+                      {t('auth:login.secret.cancelForgotPassword')}
+                    </>
+                    )}
                 />
               ) : (
                 <Button
@@ -297,7 +304,7 @@ const AuthLoginSecret = ({ identifier, userPublicData, loginChallenge, client, r
                       <ArrowBackIcon />
                       {t('auth:login.secret.changeAccount')}
                     </>
-                  )}
+                    )}
                 />
               )}
             </AppBar>

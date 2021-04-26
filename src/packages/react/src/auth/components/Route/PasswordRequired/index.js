@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 
 import { Route } from 'react-router-dom';
 
-import useAskSigninWithLoginHint from '@misakey/react/auth/hooks/useAskSigninWithLoginHint';
+import useAskSigninWithHints from '@misakey/react/auth/hooks/useAskSigninWithHints';
 import useAskToSetPassword from '@misakey/react/auth/hooks/useAskToSetPassword';
 import isNil from '@misakey/core/helpers/isNil';
 import isFunction from '@misakey/core/helpers/isFunction';
@@ -24,16 +24,16 @@ const RoutePasswordRequired = ({ route: RouteComponent, ...rest }) => {
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
   const hasCrypto = useSelector(HAS_CRYPTO_SELECTOR);
 
-  const askSigninWithLoginHint = useAskSigninWithLoginHint(false);
+  const askSigninWithHints = useAskSigninWithHints(false);
   const onAskToSetPassword = useAskToSetPassword();
 
   const requiredAction = useMemo(
     () => {
-      if (!isAuthenticated) { return askSigninWithLoginHint; }
+      if (!isAuthenticated) { return askSigninWithHints; }
       if (!hasCrypto) { return onAskToSetPassword; }
       return null;
     },
-    [askSigninWithLoginHint, hasCrypto, isAuthenticated, onAskToSetPassword],
+    [askSigninWithHints, hasCrypto, isAuthenticated, onAskToSetPassword],
   );
 
   const isAccessToRouteAllowed = useMemo(

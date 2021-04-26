@@ -22,6 +22,7 @@ describe('testing sso reducer', () => {
     },
     loginChallenge: 'defrthdr',
     loginHint: '',
+    displayHints: {},
     scope: ['openid'],
     acr: ACR,
     acrValues: [ACR.toString()],

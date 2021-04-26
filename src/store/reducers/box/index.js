@@ -229,12 +229,9 @@ export const removeBox = (id) => (dispatch, getState) => {
   });
 };
 
-export const receivePublicInfo = (id, { creator, ...rest }) => (dispatch) => {
-  const { entities, result } = normalize(creator, UserSchema.entity);
-  return batch(() => {
-    dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
-    dispatch(updateEntities([{ id, changes: { creator: result, ...rest } }], BoxesSchema));
-  });
+export const receivePublicInfo = (id, box) => (dispatch) => {
+  const { entities } = normalize({ id, ...box }, BoxesSchema.entity);
+  return dispatch(receiveEntities(entities, mergeReceiveNoEmpty));
 };
 
 export const addBoxEvent = (id, nextEvent, isMyEvent = false, filterId, onNotifyEvent) => (

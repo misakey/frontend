@@ -22,7 +22,7 @@ const IDENTITY_EMAILED_CODE_METADATA = 'codeSent';
  * @param {string} params.identityId identity ID for which authentication step will be initialized
  * @param {string} params.methodName method used by authentication step
  */
-export default ({ methodName, ...params }, { successText, disableSnackbar }) => {
+export default ({ methodName, ...params }, { successText, disableSnackbar } = {}) => {
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation('auth');
   const handleHttpErrors = useHandleHttpErrors();
@@ -45,6 +45,11 @@ export default ({ methodName, ...params }, { successText, disableSnackbar }) => 
           if (!disableSnackbar) {
             enqueueSnackbar(t('auth:login.form.error.conflict'), { variant: 'warning' });
           }
+          if (methodName === IDENTITY_EMAILED_CODE) {
+            // 409 with emailed code means it has been sent
+            dispatch(ssoSetMethodMetadata(methodName, IDENTITY_EMAILED_CODE_METADATA));
+          }
+
           // error is handled
           return;
         }

@@ -68,7 +68,13 @@ const AuthLoginIdentifier = ({
           identifier={identifier}
         />
       )}
-      {displayNoAccount && <AuthLoginIdentifierNoAccount userPublicData={userPublicData} />}
+      {displayNoAccount && (
+      <AuthLoginIdentifierNoAccount
+        userPublicData={userPublicData}
+        identifier={identifier}
+        loginChallenge={loginChallenge}
+      />
+      )}
     </CardSsoWithSlope>
   );
 };

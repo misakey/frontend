@@ -5,7 +5,7 @@ import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/a
 import { useSetPasswordContext } from '../../components/Dialog/Password/Create/Context';
 
 const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
-const CREATE_ACCOUNT_PARAMS = { extraStateParams: { shouldCreateAccount: true } };
+const CREATE_ACCOUNT_PARAMS = { misakeyCallbackHints: { shouldCreateAccount: true } };
 
 // HOOKS
 export default () => {

@@ -1,5 +1,5 @@
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
@@ -14,9 +14,9 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import { ssoUpdate, onSetIdentifier } from '@misakey/react/auth/store/actions/sso';
 
 import SnackbarActionAuthRestart from '@misakey/ui/Snackbar/Action/AuthRestart';
-import useGetAskedAuthState from '@misakey/react/auth/hooks/useGetAskedAuthState';
 import updateAuthIdentities from '@misakey/core/auth/builder/updateAuthIdentities';
 import computeNextAuthMethod from '@misakey/core/auth/helpers/computeNextAuthMethod';
+import { useAuthCallbackHintsContext } from '@misakey/react/auth/components/Context/AuthCallbackHints';
 
 export default (loginChallenge) => {
   const dispatch = useDispatch();
@@ -25,9 +25,21 @@ export default (loginChallenge) => {
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation('auth');
 
-  const { state } = useGetAskedAuthState();
+  const { getCallbackHints } = useAuthCallbackHintsContext();
+  const authCallbackHints = useMemo(() => getCallbackHints(), [getCallbackHints]);
 
-  const { shouldCreateAccount } = useSafeDestr(state);
+  const { shouldCreateAccount, resetPassword } = useSafeDestr(authCallbackHints);
+
+  const onError = useCallback(
+    (e) => {
+      const code = getCode(e);
+      enqueueSnackbar(t(`auth:error.flow.${code}`), {
+        variant: 'warning',
+        action: (key) => <SnackbarActionAuthRestart id={key} />,
+      });
+    },
+    [enqueueSnackbar, t],
+  );
 
   return useCallback(
     (nextIdentifier) => updateAuthIdentities({ loginChallenge, identifierValue: nextIdentifier })
@@ -35,7 +47,10 @@ export default (loginChallenge) => {
         const { identity, authnState } = response;
         const { hasCrypto } = identity;
         return Promise.all([
-          dispatch(ssoUpdate({ ...response, methodName: computeNextAuthMethod(authnState) })),
+          dispatch(ssoUpdate({
+            ...response,
+            methodName: computeNextAuthMethod(authnState, resetPassword),
+          })),
           dispatch(onSetIdentifier(nextIdentifier)),
         ]).then(() => {
           if (hasCrypto || !isNil(shouldCreateAccount)) {
@@ -43,13 +58,7 @@ export default (loginChallenge) => {
           }
         });
       })
-      .catch((e) => {
-        const code = getCode(e);
-        enqueueSnackbar(t(`auth:error.flow.${code}`), {
-          variant: 'warning',
-          action: (key) => <SnackbarActionAuthRestart id={key} />,
-        });
-      }),
-    [loginChallenge, dispatch, shouldCreateAccount, push, search, enqueueSnackbar, t],
+      .catch(onError),
+    [loginChallenge, onError, dispatch, resetPassword, shouldCreateAccount, push, search],
   );
 };

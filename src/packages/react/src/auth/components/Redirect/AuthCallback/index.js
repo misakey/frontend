@@ -42,7 +42,7 @@ const RedirectAuthCallback = ({ loadingPlaceholder, fallbackReferrer }) => {
     async () => {
       try {
         const {
-          state = {},
+          callbackHints = {},
           user,
           expiresAt,
         } = await userManager.signinCallback(window.location.href);
@@ -53,7 +53,7 @@ const RedirectAuthCallback = ({ loadingPlaceholder, fallbackReferrer }) => {
         });
 
         const { identityId } = user;
-        const { referrer: nextReferrer, shouldCreateAccount, resetPassword } = state;
+        const { referrer: nextReferrer, shouldCreateAccount, resetPassword } = callbackHints;
         setReferrer(nextReferrer);
 
         // auth flow is finished, user can be redirected to referrer
@@ -76,7 +76,7 @@ const RedirectAuthCallback = ({ loadingPlaceholder, fallbackReferrer }) => {
       } catch (e) {
         // this error has already been logged in Sentry by userManager
         enqueueSnackbar(t('common:anErrorOccurred'), { variant: 'warning' });
-        const { referrer: nextReferrer } = e.state || {};
+        const { referrer: nextReferrer } = e.callbackHints || {};
         setReferrer(nextReferrer);
         return setRedirect(true);
       }

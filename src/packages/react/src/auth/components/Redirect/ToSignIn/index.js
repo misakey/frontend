@@ -1,5 +1,5 @@
 
-import useAskSigninWithLoginHint from '@misakey/react/auth/hooks/useAskSigninWithLoginHint';
+import useAskSigninWithHints from '@misakey/react/auth/hooks/useAskSigninWithHints';
 import { useEffect } from 'react';
 
 // CONSTANTS
@@ -8,11 +8,11 @@ const SIGN_IN_REDIRECT_CONFIG = { referrer: '/' };
 
 // COMPONENTS
 const RedirectToSignIn = () => {
-  const askSigninWithLoginHint = useAskSigninWithLoginHint();
+  const askSigninWithHints = useAskSigninWithHints();
 
   useEffect(
     () => {
-      askSigninWithLoginHint(SIGN_IN_REDIRECT_CONFIG);
+      askSigninWithHints(SIGN_IN_REDIRECT_CONFIG);
     },
   );
 

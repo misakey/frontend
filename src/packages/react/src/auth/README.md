@@ -240,7 +240,8 @@ Build URL to ask auth flow to the backend OidcProvider and redirect browser on i
 | responseType (`string`) | The type of response desired from the OIDC provider | `"code"`, no other value is handled for now |
 | scope (`string`) | The scope being requested from the OIDC provider | the one passed to [userManager](#usermanager) |
 | referrer (`string`) | the URL (pathname) where user will be redirected at the end of the flow | pathname from where auth flow has be asked |
-| loginHint (`string`) | Stringify JSON object that contains hints about the user of the querier of auth flow. Handled props: `resourceName`, `creatorName`, `creatorIdentityId`, `client` (object with `name` and `logoUri`), `identifier` | `undefined` |
+| loginHint (`string`) | hint about the identifier that might be used for the auth flow | `undefined` |
+| displayHints (`string`) | Stringify JSON object that contains hints about the querier of auth flow. Handled props: `resourceName`, `client` (object with `name` and `logoUri`), `identifier` | `undefined` |
 | acrValues (`number`) | Authentication Context Class Reference: specify the minimum ACR asked for the authentication flow | `null`, backend will compute the ACR according to user identity |
 | extraQueryParams (`object`) | -- |  |
 | display<br>maxAge<br>uiLocales<br>idTokenHint<br>resource<br>request<br>requestUri<br>responseMode | [See openid documentation](https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest) |
@@ -255,7 +256,7 @@ Display a prompt screen to ask user to authenticate with the arguments passed to
 - Same arguments than for [onSignIn](#onsignin)
 - `fullScreen` (boolean): put the « auth needed » screen in a dialog or full screen
 - `canCancelRedirect` (boolean): if the « auth needed » screen can be closed or not
-- `loginHints` (object): object that will be transformed in JSON stringified to be passed as `loginHint`
+- `displayHints` (object): object that will be transformed in JSON stringified to be passed as `displayHints`
 
 ### onSignOut
 

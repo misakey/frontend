@@ -7,8 +7,7 @@ import { ssoSetMethodName } from '@misakey/react/auth/store/actions/sso';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import { IDENTITY_PASSWORD } from '@misakey/core/auth/constants/amr';
-import { useUserManagerContext } from '@misakey/react/auth/components/OidcProvider/Context';
-import useGetAskedAuthState from '@misakey/react/auth/hooks/useGetAskedAuthState';
+import { useAuthCallbackHintsContext } from '@misakey/react/auth/components/Context/AuthCallbackHints';
 
 // COMPONENTS
 const ButtonForgotPasswordCancel = (props) => {
@@ -16,17 +15,15 @@ const ButtonForgotPasswordCancel = (props) => {
 
   const { resetForm } = useFormikContext();
 
-  const { userManager } = useUserManagerContext();
-
-  const { state, stateId } = useGetAskedAuthState();
+  const { updateCallbackHints } = useAuthCallbackHintsContext();
 
   const onClick = useCallback(
     async () => {
-      await userManager.storeState(stateId, { ...state, resetPassword: false });
+      await updateCallbackHints({ resetPassword: false });
       dispatch(ssoSetMethodName(IDENTITY_PASSWORD));
       resetForm();
     },
-    [dispatch, resetForm, state, stateId, userManager],
+    [dispatch, resetForm, updateCallbackHints],
   );
 
   return (

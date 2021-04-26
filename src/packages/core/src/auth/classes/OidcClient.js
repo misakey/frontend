@@ -15,7 +15,6 @@
 // limitations under the License.
 
 import { handleResponse } from '@misakey/core/api/Endpoint/send';
-import isString from '@misakey/core/helpers/isString';
 import isNil from '@misakey/core/helpers/isNil';
 import objectToSnakeCase from '@misakey/core/helpers/objectToSnakeCase';
 import pick from '@misakey/core/helpers/pick';
@@ -29,21 +28,17 @@ import log from '@misakey/core/helpers/log';
 import isArray from '@misakey/core/helpers/isArray';
 import snakeCase from '@misakey/core/helpers/snakeCase';
 import trimStart from '@misakey/core/helpers/trimStart';
-import isJSON from '@misakey/core/helpers/isJSON';
+import getCbHintsKeyFromState from '@misakey/core/auth/helpers/getCbHintsKeyFromState';
 
 const TOKEN_INFO_STORE_KEY = 'misoidc:tokenInfo';
 const STATE_STORE_PREFIX = 'misoidc:state';
-
-const mergeLoginHint = (loginHint, object) => {
-  const current = isString(loginHint) && isJSON(loginHint) ? JSON.parse(loginHint) : {};
-  return JSON.stringify({ ...current, ...object });
-};
+const MISAKEY_CA_HINTS_PREFIX = 'misoidc:cbHints';
 
 export default class OidcClient {
   #tokenInfoValue
 
   constructor(
-    { authority, clientId, clockSkew, redirectUri, scope = 'openid tos privacy_policy' } = {},
+    { authority, clientId, clockSkew, redirectUri, scope = 'openid tos privacy_policy', stateStorage, tokenInfoStorage, misakeyCbHintsStorage } = {},
     { onTokenExpirationChangeCbs = [] } = {},
   ) {
     this.authority = authority;
@@ -58,8 +53,9 @@ export default class OidcClient {
       authorization: `${authority}/oauth2/auth`,
     };
 
-    this.stateStorage = sessionStorage;
-    this.tokenInfoStorage = localStorage;
+    this.misakeyCbHintsStorage = misakeyCbHintsStorage;
+    this.stateStorage = stateStorage;
+    this.tokenInfoStorage = tokenInfoStorage;
 
     // expiresAt value (expiration date of the access token) is stored
     // in localStorage to know if a session were existing on the app before
@@ -78,9 +74,11 @@ export default class OidcClient {
     authority = this.authority,
     extraQueryParams = {},
     acrValues,
-    referrer = `${window.location.pathname}${window.location.search || ''}${window.location.hash || ''}`,
-    loginHint,
+    referrer,
     extraStateParams,
+    // important, even if it's empty, the existence of
+    // the field is used as a condition in the auth flow
+    misakeyCallbackHints = '{}',
     ...rest
   }) {
     const err = validateProperties(
@@ -111,10 +109,8 @@ export default class OidcClient {
       query.set('acr_values', acrValues);
     }
 
-    query.set('login_hint', mergeLoginHint(loginHint, { state: stateId }));
-
     const optional = pick(
-      ['prompt', 'display', 'maxAge', 'uiLocales', 'idTokenHint',
+      ['prompt', 'loginHint', 'display', 'maxAge', 'uiLocales', 'idTokenHint',
         'resource', 'request', 'requestUri', 'responseMode'],
       rest,
     );
@@ -131,17 +127,53 @@ export default class OidcClient {
       }
     });
 
+    const cbHintsKey = getCbHintsKeyFromState(stateId);
+    query.set('cbHintsKey', cbHintsKey);
+
     const url = `${endpointUrl}?${query.toString()}`;
 
     await this.storeState(signinState.id, signinState);
+    await this.storeCallbackHints(cbHintsKey, misakeyCallbackHints);
     return url;
   }
 
+  storeCallbackHints(id, values) {
+    if (isNil(this.misakeyCbHintsStorage)) {
+      log('misakeyCbHintsStorage is nil, no hints stored');
+      return Promise.resolve(null);
+    }
+    return Promise.resolve(this.misakeyCbHintsStorage.setItem(`${MISAKEY_CA_HINTS_PREFIX}.${id}`, JSON.stringify(values)));
+  }
+
+  removeCallbackHints(id) {
+    if (isNil(this.misakeyCbHintsStorage)) {
+      log('misakeyCbHintsStorage is nil, no hints stored');
+      return null;
+    }
+    return this.misakeyCbHintsStorage.removeItem(`${MISAKEY_CA_HINTS_PREFIX}.${id}`);
+  }
+
+  getCallbackHints(id) {
+    const hints = this.misakeyCbHintsStorage.getItem(`${MISAKEY_CA_HINTS_PREFIX}.${id}`);
+    if (isNil(hints)) {
+      return null;
+    }
+    return JSON.parse(hints);
+  }
+
   storeState(id, values) {
+    if (isNil(this.stateStorage)) {
+      log('stateStorage is nil, no state stored');
+      return Promise.resolve(null);
+    }
     return Promise.resolve(this.stateStorage.setItem(`${STATE_STORE_PREFIX}.${id}`, JSON.stringify(values)));
   }
 
   removeState(id) {
+    if (isNil(this.stateStorage)) {
+      log('stateStorage is nil, no state stored');
+      return null;
+    }
     return this.stateStorage.removeItem(`${STATE_STORE_PREFIX}.${id}`);
   }
 
@@ -325,14 +357,22 @@ export default class OidcClient {
       throw new Error('Could not finalize auth flow: missing state in storage');
     }
 
+    const { referrer } = state;
+    const cbHintsKey = getCbHintsKeyFromState(stateId);
+    const misakeyCallbackHints = this.getCallbackHints(cbHintsKey);
+    // referrer is a callbackHints no matter the origin domain of the request
+    // misakeyCallbackHints are only used on misakey domain
+    const callbackHints = { ...misakeyCallbackHints, referrer };
+
     try {
       const user = await this.validateSigninResponse(state, params);
-      this.removeState(stateId);
-      return { user, state };
+      return { user, callbackHints };
     } catch (err) {
       this.clearTokenInfo();
+      return Promise.reject(new SigninResponseError(err, callbackHints));
+    } finally {
       this.removeState(stateId);
-      return Promise.reject(new SigninResponseError(err, state));
+      this.removeCallbackHints(cbHintsKey);
     }
   }
 }

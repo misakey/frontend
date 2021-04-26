@@ -56,7 +56,9 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const DialogSigninRedirect = ({
   acrValues,
-  loginHints,
+  loginHint,
+  creator,
+  displayHints,
   userManager,
   open,
   onClose,
@@ -69,7 +71,8 @@ const DialogSigninRedirect = ({
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation(['components', 'common']);
 
-  const { resourceName, creatorName, creatorIdentityId, client } = useSafeDestr(loginHints);
+  const { displayName: creatorName, id: creatorIdentityId } = useSafeDestr(creator);
+  const { resourceName, client } = useSafeDestr(displayHints);
   const expiresAt = useSelector(EXPIRES_AT_SELECTOR);
   const { name: clientName, logoUri: clientLogo } = useSafeDestr(client);
 
@@ -166,18 +169,21 @@ const DialogSigninRedirect = ({
   );
 
   const onSignInRedirect = useCallback(
-    ({ loginHints: newLoginHints, ...restOptions } = {}) => {
-      const hints = isNil(newLoginHints) ? loginHints : { ...loginHints, ...newLoginHints };
-      const loginHint = JSON.stringify(hints);
+    ({ displayHints: newDisplayHints, ...restOptions } = {}) => {
+      const extraQueryParams = {
+        displayHints: JSON.stringify(
+          isNil(newDisplayHints) ? displayHints : { ...displayHints, ...newDisplayHints },
+        ),
+      };
       // user choices `restOptions` on this dialog should override pre-asked params for UX coherence
-      const options = { loginHint, acrValues, ...props, ...restOptions };
+      const options = { extraQueryParams, acrValues, ...props, ...restOptions };
       return userManager
         .signinRedirect(options)
         .catch(() => {
           enqueueSnackbar(t('common:error.storage'), { variant: 'warning', persist: true });
         });
     },
-    [acrValues, enqueueSnackbar, loginHints, props, t, userManager],
+    [acrValues, displayHints, enqueueSnackbar, props, t, userManager],
   );
 
   return (
@@ -230,7 +236,12 @@ const DialogSigninRedirect = ({
 
 DialogSigninRedirect.propTypes = {
   acrValues: PropTypes.number,
-  loginHints: PropTypes.object,
+  loginHint: PropTypes.string,
+  displayHints: PropTypes.object,
+  creator: PropTypes.shape({
+    name: PropTypes.string,
+    logoUri: PropTypes.string,
+  }),
   userManager: PropTypes.object.isRequired,
   canCancelRedirect: PropTypes.bool.isRequired,
   // DialogConfirm
@@ -241,7 +252,9 @@ DialogSigninRedirect.propTypes = {
 
 DialogSigninRedirect.defaultProps = {
   acrValues: null,
-  loginHints: {},
+  displayHints: {},
+  loginHint: null,
+  creator: {},
   onClose: null,
   fullScreen: false,
 };

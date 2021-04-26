@@ -8,7 +8,7 @@ import { selectors } from '@misakey/react/auth/store/reducers/auth';
 
 import ContactBoxDialog from 'components/smart/Dialog/Boxes/Contact';
 import { useSetPasswordContext } from '@misakey/react/auth/components/Dialog/Password/Create/Context';
-import useAskSigninWithLoginHint from '@misakey/react/auth/hooks/useAskSigninWithLoginHint';
+import useAskSigninWithHints from '@misakey/react/auth/hooks/useAskSigninWithHints';
 
 // COMPONENTS
 const withDialogContact = (Component) => {
@@ -20,7 +20,7 @@ const withDialogContact = (Component) => {
     const [isDialogContactOpened, setIsDialogContactOpened] = useState(false);
 
     const { onOpenSetPasswordDialog } = useSetPasswordContext();
-    const askSigninWithLoginHint = useAskSigninWithLoginHint();
+    const askSigninWithHints = useAskSigninWithHints();
 
     const isAuthenticated = useSelector(selectors.isAuthenticated);
     const hasCrypto = useSelector(selectors.hasCrypto);
@@ -32,7 +32,7 @@ const withDialogContact = (Component) => {
     const onWrapperClick = useCallback(
       (...args) => {
         if (!isAuthenticated) {
-          askSigninWithLoginHint({ extraStateParams: { shouldCreateAccount: true } });
+          askSigninWithHints({ misakeyCallbackHints: { shouldCreateAccount: true } });
           return;
         }
         if (!hasCrypto) {
@@ -45,7 +45,7 @@ const withDialogContact = (Component) => {
           onClick(...args);
         }
       },
-      [askSigninWithLoginHint, hasCrypto, isAuthenticated, onClick, onOpenSetPasswordDialog],
+      [askSigninWithHints, hasCrypto, isAuthenticated, onClick, onOpenSetPasswordDialog],
     );
 
     return (

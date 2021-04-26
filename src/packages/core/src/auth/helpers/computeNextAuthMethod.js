@@ -4,10 +4,12 @@ import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 // IDENTITY_EMAILED_CODE can always be performed
 const DEFAULT = IDENTITY_EMAILED_CODE;
 
-export default ({ currentAcr, availableAmrs }) => {
+export default ({ currentAcr, availableAmrs }, resetPassword = false) => {
   switch (currentAcr) {
     case '0':
-      return availableAmrs.includes(IDENTITY_PASSWORD) ? IDENTITY_PASSWORD : IDENTITY_EMAILED_CODE;
+      return availableAmrs.includes(IDENTITY_PASSWORD) && !resetPassword
+        ? IDENTITY_PASSWORD
+        : IDENTITY_EMAILED_CODE;
     case '1':
     case '2':
       if (availableAmrs.includes(TOTP)) { return TOTP; }

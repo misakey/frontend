@@ -159,7 +159,7 @@ const IdentityPublicReadOnly = forwardRef(({ t }, ref) => {
         {!isAuthenticated && (
           <>
             <ButtonConnect
-              authProps={{ extraStateParams: { shouldCreateAccount: true } }}
+              authProps={{ misakeyCallbackHints: { shouldCreateAccount: true } }}
               text={t('common:createAccount')}
             />
             <Box ml={2}>

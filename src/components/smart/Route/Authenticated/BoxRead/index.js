@@ -1,4 +1,9 @@
 import React, { useState, useMemo, useCallback, useContext, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { useLocation, useRouteMatch, Route } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { useTranslation } from 'react-i18next';
 
 import PropTypes from 'prop-types';
 
@@ -13,15 +18,11 @@ import { computeInvitationHash } from '@misakey/core/crypto/box/keySplitting';
 import { BadKeyShareFormat } from '@misakey/core/crypto/Errors/classes';
 
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
-import { makeDenormalizeBoxSelector } from 'store/reducers/box';
+import { makeDenormalizeBoxSelector, receivePublicInfo } from 'store/reducers/box';
 
-import { useSelector } from 'react-redux';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import { useLocation, useRouteMatch, Route } from 'react-router-dom';
-import { useSnackbar } from 'notistack';
-import { useTranslation } from 'react-i18next';
 
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 
@@ -30,18 +31,14 @@ const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
 
 // COMPONENTS
 const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...rest }) => {
-  const [loginHints, setLoginHints] = useState();
+  const [displayHints, setDisplayHints] = useState(undefined);
   const [error, setError] = useState(false);
   const { askSigninRedirect } = useContext(UserManagerContext);
 
   const handleHttpErrors = useHandleHttpErrors();
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation('boxes');
-
-  const askSigninProps = useMemo(
-    () => (isNil(loginHints) ? options : { ...options, loginHints }),
-    [loginHints, options],
-  );
+  const dispatch = useDispatch();
 
   // locationHash is a URL hash
   // (see https://developer.mozilla.org/en-US/docs/Web/API/URL/hash),
@@ -59,8 +56,14 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   // if box and box title are already in store, don't refetch
   const box = useSelector((state) => denormalizeBoxSelector(state, id));
 
+
   const { title, creator } = useSafeDestr(box);
   const { displayName: creatorName, id: creatorIdentityId } = useSafeDestr(creator);
+
+  const askSigninProps = useMemo(
+    () => ({ ...options, displayHints, creator }),
+    [creator, displayHints, options],
+  );
 
   const isAuthenticated = useSelector(IS_AUTHENTICATED_SELECTOR);
 
@@ -84,9 +87,10 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   const shouldFetch = useMemo(
     () => !isAuthenticated
       && !isNil(id) && isNil(title)
-      && !isNil(invitationShareHash) && isNil(loginHints)
+      && !isNil(invitationShareHash)
+      && isNil(displayHints)
       && !error,
-    [isAuthenticated, id, title, invitationShareHash, loginHints, error],
+    [isAuthenticated, id, title, invitationShareHash, displayHints, error],
   );
 
   const getBoxPublic = useCallback(
@@ -107,14 +111,11 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
   );
 
   const onSuccess = useCallback(
-    ({ title: resourceName, creator: { displayName, id: creatorId } = {} }) => {
-      setLoginHints({
-        resourceName,
-        creatorName: displayName,
-        creatorIdentityId: creatorId,
-      });
+    ({ title: resourceName, ...boxRest }) => {
+      setDisplayHints({ resourceName });
+      dispatch(receivePublicInfo(id, { title: resourceName, ...boxRest }));
     },
-    [],
+    [dispatch, id],
   );
 
   const { isFetching } = useFetchEffect(
@@ -139,8 +140,8 @@ const RouteAuthenticatedBoxRead = ({ route: RouteComponent, options, path, ...re
 
   useEffect(
     () => {
-      if (!isNil(title) || !isNil(creatorName) || !isNil(creatorIdentityId)) {
-        setLoginHints({ resourceName: title, creatorName, creatorIdentityId });
+      if (!isNil(title)) {
+        setDisplayHints({ resourceName: title });
       }
     },
     [title, creatorName, creatorIdentityId],

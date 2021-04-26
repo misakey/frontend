@@ -11,7 +11,6 @@ import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react/auth/store/reducers
 import retry from '@misakey/core/helpers/retry';
 import isNil from '@misakey/core/helpers/isNil';
 import isEmpty from '@misakey/core/helpers/isEmpty';
-import isString from '@misakey/core/helpers/isString';
 import pickAll from '@misakey/core/helpers/pickAll';
 import every from '@misakey/core/helpers/every';
 import difference from '@misakey/core/helpers/difference';
@@ -26,6 +25,7 @@ import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import ScreenLoader from '@misakey/ui/Screen/Loader';
+import AuthCallbackHintsContextProvider from '../Context/AuthCallbackHints';
 
 // LAZY
 const AuthError = lazy(() => retry(() => import('@misakey/react/auth/components/screens/Error')));
@@ -136,17 +136,17 @@ const Auth = ({
   );
 
   const onSuccess = useCallback(
-    ({ scope, loginHint: stringifiedLoginHint, ...loginInfo }) => {
-      const loginHint = isString(stringifiedLoginHint) ? JSON.parse(stringifiedLoginHint) : null;
-      const { identifier } = loginHint || {};
+    ({ scope, loginHint, displayHints: stringifiedHints, ...loginInfo }) => {
+      const displayHints = isEmpty(stringifiedHints) ? undefined : JSON.parse(stringifiedHints);
       batch(() => {
-        if (!isNil(identifier)) {
-          dispatchSetIdentifier(identifier);
+        if (!isNil(loginHint)) {
+          dispatchSetIdentifier(loginHint);
         }
         dispatchSsoUpdate({
           ...loginInfo,
           scope: scope.join(' '),
           loginHint,
+          displayHints,
           loginChallenge,
         });
       });
@@ -184,7 +184,7 @@ const Auth = ({
   }
 
   return (
-    <>
+    <AuthCallbackHintsContextProvider>
       <ScreenLoader isLoading={isFetching} />
       <Switch>
         {(hasLoginInfoError || hasNoFlowParams) && (
@@ -209,7 +209,7 @@ const Auth = ({
           render={(routerProps) => <Login {...routerProps} loginChallenge={loginChallenge} />}
         />
       </Switch>
-    </>
+    </AuthCallbackHintsContextProvider>
   );
 };
 

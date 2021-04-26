@@ -4,7 +4,6 @@ import { UserManagerContext } from '@misakey/react/auth/components/OidcProvider/
 import { useSelector } from 'react-redux';
 
 import isNil from '@misakey/core/helpers/isNil';
-import isEmpty from '@misakey/core/helpers/isEmpty';
 
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
@@ -14,7 +13,7 @@ import useGetOrgFromSearchCallback from '@misakey/react/auth/hooks/useGetOrgFrom
 const { identifierValue: IDENTIFIER_VALUE_SELECTOR } = authSelectors;
 
 // HELPERS
-const toClientLoginHint = ({ name, logoUrl }) => ({ client: { name, logoUri: logoUrl } });
+const toClientDisplayHint = ({ name, logoUrl }) => ({ client: { name, logoUri: logoUrl } });
 
 // HOOKS
 export default (canCancel = true) => {
@@ -22,40 +21,33 @@ export default (canCancel = true) => {
 
   const identifier = useSelector(IDENTIFIER_VALUE_SELECTOR);
 
-  const identifierLoginHint = useMemo(
-    () => (isNil(identifier) ? {} : { identifier }),
+  const loginHint = useMemo(
+    () => (isNil(identifier) ? undefined : identifier),
     [identifier],
   );
 
   const { organization, shouldFetch, fetch } = useGetOrgFromSearchCallback();
 
-  const storedClientLoginHint = useMemo(
-    () => {
-      if (isNil(organization)) { return {}; }
-      return toClientLoginHint(organization);
+  const getCurrentOrg = useCallback(
+    async () => {
+      if (shouldFetch) {
+        const org = await fetch();
+        return org;
+      }
+      return Promise.resolve(organization);
     },
-    [organization],
+    [fetch, organization, shouldFetch],
   );
 
   return useCallback(
     async (options, overrideCanCancel) => {
-      let loginHints = isEmpty(storedClientLoginHint) && isEmpty(identifierLoginHint)
-        ? undefined
-        : { ...storedClientLoginHint, ...identifierLoginHint };
-      if (shouldFetch) {
-        const org = await fetch();
-        const clientLoginHint = toClientLoginHint(org);
-        loginHints = {
-          ...storedClientLoginHint,
-          ...clientLoginHint,
-          ...identifierLoginHint,
-        };
-      }
+      const org = await getCurrentOrg();
+      const displayHints = isNil(org) ? undefined : toClientDisplayHint(org);
       return askSigninRedirect(
-        { loginHints, ...options },
+        { loginHint, displayHints, ...options },
         isNil(overrideCanCancel) ? canCancel : overrideCanCancel,
       );
     },
-    [storedClientLoginHint, identifierLoginHint, shouldFetch, askSigninRedirect, canCancel, fetch],
+    [getCurrentOrg, askSigninRedirect, loginHint, canCancel],
   );
 };
