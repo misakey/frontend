@@ -35,11 +35,11 @@ const BC_FREE_SILENT_LOCK = 'MisOidc:channel.bc_free_silent_lock';
 const BC_LOGOUT = 'MisOidc:channel.bc_logout';
 const BC_SIGNIN = 'MisOidc:channel.bc_signin';
 
-const DEFAULT_SETTINGS = {
+const DEFAULT_SETTINGS = typeof window !== 'undefined' ? {
   tokenInfoStorage: localStorage,
   stateStorage: sessionStorage,
   misakeyCbHintsStorage: sessionStorage,
-};
+} : {};
 
 export default class UserManager extends OidcClient {
   #userValue
