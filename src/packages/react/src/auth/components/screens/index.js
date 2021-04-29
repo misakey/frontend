@@ -206,7 +206,13 @@ const Auth = ({
         />
         <Route
           path={authRoutes.signIn._}
-          render={(routerProps) => <Login {...routerProps} loginChallenge={loginChallenge} />}
+          render={(routerProps) => (
+            <Login
+              {...routerProps}
+              isFetchingLoginInfo={isFetching}
+              loginChallenge={loginChallenge}
+            />
+          )}
         />
       </Switch>
     </AuthCallbackHintsContextProvider>

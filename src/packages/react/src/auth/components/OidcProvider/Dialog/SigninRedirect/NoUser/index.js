@@ -34,8 +34,7 @@ const DialogSigninRedirectNoUser = ({ onSignInRedirect, title, subtitle }) => {
   const onSubmit = useCallback(
     ({ [STEP.identifier]: identifier, [SHOULD_CREATE_ACCOUNT]: shouldCreateAccount }) => {
       const misakeyCallbackHints = { shouldCreateAccount };
-      // prompt: 'login' to ensure to erase eventual previous session
-      onSignInRedirect({ prompt: 'login', misakeyCallbackHints, loginHint: identifier });
+      onSignInRedirect({ misakeyCallbackHints, loginHint: identifier });
     },
     [onSignInRedirect],
   );

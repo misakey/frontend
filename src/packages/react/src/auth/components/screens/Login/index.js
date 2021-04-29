@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 
 import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react/auth/store/reducers/sso';
 import authRoutes from '@misakey/react/auth/routes';
-import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import isNil from '@misakey/core/helpers/isNil';
 import isEmpty from '@misakey/core/helpers/isEmpty';
@@ -29,9 +28,9 @@ const AuthLogin = ({
   match,
   client: clientProvider,
   loginChallenge,
-  loginHint,
   displayHints,
   identity,
+  isFetchingLoginInfo,
   ...props
 }) => {
   const { t } = useTranslation('auth');
@@ -51,31 +50,29 @@ const AuthLogin = ({
     [identifier],
   );
 
-  const identifierHintValid = useMemo(
-    () => !isEmpty(loginHint) && (loginHint === identifier || isNil(identifier)),
-    [loginHint, identifier],
-  );
-
   const userPublicData = useMemo(
     () => (isNil(identity) ? {} : { ...pick(['displayName', 'avatarUrl'], identity), identifier }),
     [identifier, identity],
   );
 
+  const isLoading = useMemo(
+    () => isSubmitting || isFetchingLoginInfo,
+    [isFetchingLoginInfo, isSubmitting],
+  );
+
   useNotDoneEffect(
     (onDone) => {
-      // if auth flow is launched with Misakey,
-      // there is always a loginHint that contains the state at the end
-      if (!isEmpty(loginHint)) {
-        if (identifierHintValid || identifierValid) {
+      if (!isFetchingLoginInfo) {
+        if (identifierValid) {
           setIsSubmitting(true);
-          onSubmit(identifierHintValid ? loginHint : identifier)
+          onSubmit(identifier)
             .catch(handleHttpErrors)
             .finally(() => setIsSubmitting(false));
         }
         onDone();
       }
     },
-    [onSubmit, loginHint, identifier, identifierHintValid, identifierValid, handleHttpErrors],
+    [onSubmit, identifier, identifierValid, handleHttpErrors],
   );
 
   useUpdateDocHead(t('auth:login.documentTitle'));
@@ -98,6 +95,7 @@ const AuthLogin = ({
               identifier={identifier}
               identity={identity}
               userPublicData={userPublicData}
+              isLoading={isLoading}
               {...props}
             />
           )}
@@ -113,7 +111,7 @@ const AuthLogin = ({
               identity={identity}
               userPublicData={userPublicData}
               loginChallenge={loginChallenge}
-              isLoading={isSubmitting}
+              isLoading={isLoading}
               {...props}
             />
           )}
@@ -125,9 +123,9 @@ const AuthLogin = ({
 
 AuthLogin.propTypes = {
   loginChallenge: PropTypes.string.isRequired,
+  isFetchingLoginInfo: PropTypes.bool,
   // CONNECT
   identifier: PropTypes.string,
-  loginHint: SSO_PROP_TYPES.loginHint,
   displayHints: SSO_PROP_TYPES.displayHints,
   client: SSO_PROP_TYPES.client.isRequired,
   identity: SSO_PROP_TYPES.identity,
@@ -137,15 +135,14 @@ AuthLogin.propTypes = {
 
 AuthLogin.defaultProps = {
   identity: null,
+  isFetchingLoginInfo: false,
   identifier: '',
-  loginHint: null,
   displayHints: {},
 };
 
 // CONNECT
 const mapStateToProps = (state) => ({
-  identifier: state.sso.identifier || authSelectors.identifierValue(state),
-  loginHint: state.sso.loginHint,
+  identifier: state.sso.identifier,
   displayHints: state.sso.displayHints,
   identity: state.sso.identity,
   client: state.sso.client,

@@ -15,6 +15,7 @@ import Card from '@material-ui/core/Card';
 import Box from '@material-ui/core/Box';
 import CardHeader from '@material-ui/core/CardHeader';
 import AvatarUser from '@misakey/ui/Avatar/User';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 // HELPERS
 const isNotEmptyUser = any(complement(isEmpty));
@@ -66,6 +67,7 @@ const CardUser = ({
   children,
   disablePadding,
   hideSkeleton,
+  isLoading,
   ...props
 }) => {
   const classes = useStyles({ disablePadding, expired });
@@ -79,20 +81,24 @@ const CardUser = ({
 
   const subheader = useMemo(
     () => {
+      if (isLoading) { return <Skeleton width={400} />; }
       if (expired) {
         const fromNow = isEmpty(expiresAt) ? '' : moment(expiresAt).fromNow();
         return t('common:expired', { fromNow });
       }
       return isNotEmpty ? toLower(identifier) : t('common:noSession');
     },
-    [expired, expiresAt, isNotEmpty, identifier, t],
+    [isLoading, expired, isNotEmpty, identifier, t, expiresAt],
   );
 
   const title = useMemo(
-    () => (isNotEmpty
-      ? displayName
-      : t('common:identity')),
-    [isNotEmpty, displayName, t],
+    () => {
+      if (isLoading) {
+        return <Skeleton width={200} />;
+      }
+      return isNotEmpty ? displayName : t('common:identity');
+    },
+    [isLoading, isNotEmpty, displayName, t],
   );
 
   return (
@@ -132,6 +138,7 @@ CardUser.propTypes = {
   children: PropTypes.node,
   disablePadding: PropTypes.bool,
   hideSkeleton: PropTypes.bool,
+  isLoading: PropTypes.bool,
 };
 
 CardUser.defaultProps = {
@@ -144,6 +151,7 @@ CardUser.defaultProps = {
   children: null,
   disablePadding: false,
   hideSkeleton: false,
+  isLoading: false,
 };
 
 export default CardUser;

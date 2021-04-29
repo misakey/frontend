@@ -89,7 +89,9 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-const AuthLoginSecret = ({ identifier, userPublicData, loginChallenge, client, resourceName }) => {
+const AuthLoginSecret = ({
+  identifier, userPublicData, loginChallenge, client, resourceName, isLoading,
+}) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation(['common', 'auth']);
@@ -314,7 +316,7 @@ const AuthLoginSecret = ({ identifier, userPublicData, loginChallenge, client, r
             <Box display="flex" flexDirection="column">
               <TitleBold align="center" gutterBottom={false}>
                 <Trans i18nKey={`auth:login.secret.${methodName}.title`} values={{ resourceName: isEmpty(resourceName) ? name : resourceName }}>
-                  <span>{'{{resourceName}}'}</span>
+                  <span>{'Access to {{resourceName}}'}</span>
                 </Trans>
               </TitleBold>
               <Subtitle align="center">
@@ -322,6 +324,7 @@ const AuthLoginSecret = ({ identifier, userPublicData, loginChallenge, client, r
               </Subtitle>
               <CardUser
                 my={3}
+                isLoading={isLoading}
                 className={classes.cardOverflowVisible}
                 action={(
                   <IconButton aria-label={t('common:signOut')} onClick={onClearUser}>
@@ -357,6 +360,7 @@ const AuthLoginSecret = ({ identifier, userPublicData, loginChallenge, client, r
 
 AuthLoginSecret.propTypes = {
   identifier: PropTypes.string,
+  isLoading: PropTypes.bool,
   loginChallenge: PropTypes.string.isRequired,
   client: SSO_PROP_TYPES.client.isRequired,
   resourceName: PropTypes.string,
@@ -367,6 +371,7 @@ AuthLoginSecret.propTypes = {
 AuthLoginSecret.defaultProps = {
   identifier: '',
   resourceName: '',
+  isLoading: false,
 };
 
 export default AuthLoginSecret;

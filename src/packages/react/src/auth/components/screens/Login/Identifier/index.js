@@ -61,7 +61,7 @@ const AuthLoginIdentifier = ({
         {displayNoAccount ? t('auth:login.identifier.noAccount', { clientName: name })
           : <TransRequireAccess i18nKey="auth:login.identifier.requireAccess.title" />}
       </Subtitle>
-      {isLoading && <CardUser my={3} {...userPublicData} />}
+      {isLoading && <CardUser my={3} isLoading {...userPublicData} />}
       {displayForm && (
         <AuthLoginIdentifierForm
           loginChallenge={loginChallenge}
