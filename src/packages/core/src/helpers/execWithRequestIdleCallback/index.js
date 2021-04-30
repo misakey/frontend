@@ -4,7 +4,7 @@ import isFunction from '@misakey/core/helpers/isFunction';
 // For now requestIdleCallback is used for function
 // that used asked so we cannot wait long for execute them
 export default (fn, options = { timeout: 2000 }, abortIfUnavailable = false) => {
-  if (isFunction(window.requestIdleCallback)) {
+  if (typeof window !== 'undefined' && isFunction(window.requestIdleCallback)) {
     window.requestIdleCallback(fn, options);
   } else if (!abortIfUnavailable) {
     fn();

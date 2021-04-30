@@ -10,6 +10,7 @@ config: >-
       authority: 'https://auth.misakey.com/_',
       clientId: 'f27effe1-5d57-4b70-bf73-939feef50f71',
       redirectUri: 'https://api.misakey.com/auth/callback',
+      enableAutomaticSilentRenew: true,
     },
     SENTRY: {
       debug: false,

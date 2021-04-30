@@ -15,6 +15,7 @@ config: >-
       authority: 'https://auth.preprod.misakey.dev/_',
       clientId: 'f1f6c6c8-2b91-4a63-8797-cb0fffdcf3df',
       redirectUri: 'https://api.preprod.misakey.dev/auth/callback',
+      enableAutomaticSilentRenew: true,
     },
     SENTRY: {
       debug: false,

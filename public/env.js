@@ -11,6 +11,7 @@ window.env = {
     authority: 'https://auth.misakey.com.local/_',
     clientId: SELF_CLIENT_ID,
     redirectUri: 'https://api.misakey.com.local/auth/callback',
+    enableAutomaticSilentRenew: true,
   },
   SENTRY: {
     debug: false,

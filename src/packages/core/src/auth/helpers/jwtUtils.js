@@ -14,8 +14,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { jws, KEYUTIL as KeyUtil } from 'jsrsasign';
-
 import isNil from '@misakey/core/helpers/isNil';
 import isArray from '@misakey/core/helpers/isArray';
 
@@ -81,7 +79,6 @@ export const validateJwtAttributes = (
 
 export const validateJwt = async (
   jwt,
-  keyMaterials,
   issuer,
   audience,
   clockSkew,
@@ -89,24 +86,9 @@ export const validateJwt = async (
   timeInsensitive,
 ) => {
   try {
-    const { e, n } = keyMaterials;
-    if (isNil(e) || isNil(n)) {
-      return Promise.reject(new Error('RSA key missing key material'));
-    }
-    const key = KeyUtil.getKey(keyMaterials);
-
-    const payload = await validateJwtAttributes(
+    return await validateJwtAttributes(
       jwt, issuer, audience, clockSkew, now, timeInsensitive,
     );
-    try {
-      if (!jws.JWS.verify(jwt, key, ['RS256'])) {
-        return Promise.reject(new Error('signature validation failed'));
-      }
-
-      return payload;
-    } catch (err) {
-      return Promise.reject(new Error(`signature validation failed: ${err.message}`));
-    }
   } catch (err) {
     return Promise.reject(err);
   }

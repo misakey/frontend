@@ -1,6 +1,6 @@
 {
   "name": "@misakey/core",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "private": false,
   "license": "MIT",
   "author": "Misakey Team",
@@ -49,7 +49,6 @@
     "comlink": "^4.3.0",
     "copy-to-clipboard": "^3.3.1",
     "http-status-codes": "^2.x",
-    "jsrsasign": "^10.1.4",
     "lodash": "^4.17.20",
     "moment": "^2.x",
     "path-to-regexp": "^3.0.0",

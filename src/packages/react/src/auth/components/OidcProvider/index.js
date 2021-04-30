@@ -192,7 +192,7 @@ OidcProvider.propTypes = {
   children: PropTypes.node,
   config: PropTypes.shape({
     authority: PropTypes.string.isRequired,
-    disableAutomaticSilentRenew: PropTypes.bool,
+    enableAutomaticSilentRenew: PropTypes.bool,
     clientId: PropTypes.string.isRequired,
     scope: PropTypes.string,
   }),
@@ -203,7 +203,7 @@ OidcProvider.defaultProps = {
   children: null,
   config: {
     scope: 'openid tos privacy_policy',
-    disableAutomaticSilentRenew: true,
+    enableAutomaticSilentRenew: true,
   },
   redirectProps: {},
 };

@@ -14,7 +14,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { handleResponse } from '@misakey/core/api/Endpoint/send';
 import isNil from '@misakey/core/helpers/isNil';
 import objectToSnakeCase from '@misakey/core/helpers/objectToSnakeCase';
 import pick from '@misakey/core/helpers/pick';
@@ -78,7 +77,7 @@ export default class OidcClient {
     extraStateParams,
     // important, even if it's empty, the existence of
     // the field is used as a condition in the auth flow
-    misakeyCallbackHints = '{}',
+    misakeyCallbackHints = '',
     ...rest
   }) {
     const err = validateProperties(
@@ -222,23 +221,6 @@ export default class OidcClient {
     return this.tokenInfoStorage.removeItem(TOKEN_INFO_STORE_KEY);
   }
 
-  async getSigningKeys() {
-    if (!isNil(this.signingKeys)) {
-      return Promise.resolve(this.signingKeys);
-    }
-
-    return fetch(this.endpoints.jwksUri)
-      .then(handleResponse)
-      .then(({ keys }) => {
-        if (isNil(keys)) {
-          throw new Error('Missing keys on keyset');
-        }
-
-        this.signingKeys = keys;
-        return this.signingKeys;
-      });
-  }
-
   async validateIdToken(state, response) {
     const { nonce: stateNonce, clientId, acrValues: askedAcr } = state;
     const { idToken, expiresAt } = response;
@@ -269,24 +251,10 @@ export default class OidcClient {
       return Promise.reject(new Error('Invalid nonce in id_token'));
     }
 
-    const { kid } = header;
-
-    return this.getSigningKeys().then((keys) => {
-      if (isNil(keys)) {
-        return Promise.reject(new Error('No signing keys from metadata'));
-      }
-
-      const [key] = keys.filter(({ kid: keyKid }) => keyKid === kid);
-
-      if (isNil(key)) {
-        return Promise.reject(new Error('No key matching kid or alg found in signing keys'));
-      }
-
-      return validateJwt(idToken, key, this.issuer, clientId, this.clockSkew).then(() => {
-        response.profile = payload;
-        this.tokenInfo = { expiresAt };
-        return response;
-      });
+    return validateJwt(idToken, this.issuer, clientId, this.clockSkew).then(() => {
+      response.profile = payload;
+      this.tokenInfo = { expiresAt };
+      return response;
     });
   }
 
@@ -333,6 +301,10 @@ export default class OidcClient {
       return Promise.reject(new Error(errorUri));
     }
 
+    const expiresAt = expiry || (new Date(
+      new Date().getTime() + parseInt(expiresIn, 10) * 1000,
+    )).toISOString();
+
     const params = {
       error,
       errorDescription,
@@ -343,7 +315,7 @@ export default class OidcClient {
       scope,
       profile,
       expiresIn,
-      expiresAt: expiry,
+      expiresAt,
       stateId,
     };
 
@@ -359,7 +331,7 @@ export default class OidcClient {
 
     const { referrer } = state;
     const cbHintsKey = getCbHintsKeyFromState(stateId);
-    const misakeyCallbackHints = this.getCallbackHints(cbHintsKey);
+    const misakeyCallbackHints = this.getCallbackHints(cbHintsKey) || {};
     // referrer is a callbackHints no matter the origin domain of the request
     // misakeyCallbackHints are only used on misakey domain
     const callbackHints = { ...misakeyCallbackHints, referrer };

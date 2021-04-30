@@ -139,7 +139,7 @@ const oidcConfig = {
   redirect_uri: 'https://api.misakey.com.local/auth/callback',
 }
 
-// required only if you haven't set `config.disableAutomaticSilentRenew` to true in `OidcProvider`
+// required only if you have set `config.enableAutomaticSilentRenew` to true in `OidcProvider`
 oidcSilentRenewalWrapper(oidcConfig, () => {
   // integrate auth reducers
   const store = createStore(reducers);
@@ -192,7 +192,7 @@ const AuthButton = () => {
 | clientId (`string`) | the identifier of client application registered with the OIDC provider | required |
 | redirectUri (`string`) | The redirect URI of the client application to receive a response from the OIDC provider | required |
 | scope (`string`) | The scope being requested from the OIDC provider | default: `openid tos privacy_policy` |
-| disableAutomaticSilentRenew (`boolean`) | disable silent token renewal | default: `false` |
+| enableAutomaticSilentRenew (`boolean`) | enable silent token renewal | default: `false` |
 | clockSkew (`number`) |  The window of time (in seconds) to allow the current time to deviate when validating id_token's iat, nbf, and exp values | default: `300` |
 
 #### Methods
