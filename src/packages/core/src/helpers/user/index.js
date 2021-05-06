@@ -9,7 +9,7 @@ export const pickUserProps = pick(USER_PROPS);
 
 export const pickUserPropsIdentifierValue = pick([...USER_PROPS, 'identifierValue']);
 
-export const pickUsersPropsRemapIdentifier = compose(
+export const pickUserPropsRemapIdentifier = compose(
   ({ identifierValue, ...rest }) => ({ ...rest, identifier: identifierValue }),
   pickUserPropsIdentifierValue,
 );

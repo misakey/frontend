@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import UserSchema from '@misakey/react/auth/store/schemas/User';
 import { VISIBLE_ROLES } from '@misakey/ui/constants/organizations/roles';
 
-import { pickUsersPropsRemapIdentifier } from '@misakey/core/helpers/user';
+import { pickUserPropsRemapIdentifier } from '@misakey/core/helpers/user';
 
 import ListItemUser from '@misakey/ui/ListItem/User';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -16,7 +16,7 @@ const ListItemAgent = ({
   onRemove, identity, ...props
 }) => {
   const userProps = useMemo(
-    () => pickUsersPropsRemapIdentifier(identity),
+    () => pickUserPropsRemapIdentifier(identity),
     [identity],
   );
   return (

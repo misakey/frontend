@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 import { SIZES, MEDIUM } from '@misakey/ui/constants/sizes';
@@ -16,7 +16,10 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-const CardSsoWithSlope = ({ avatar, avatarSize, header, children, slopeProps, ...props }) => {
+const CardSsoWithSlope = forwardRef(({
+  avatar, avatarSize,
+  header, children, slopeProps, ...props
+}, ref) => {
   const classes = useStyles();
 
   return (
@@ -29,6 +32,7 @@ const CardSsoWithSlope = ({ avatar, avatarSize, header, children, slopeProps, ..
       hideFooter
     >
       <CardSso
+        ref={ref}
         avatarSize={avatarSize}
         {...props}
       >
@@ -36,7 +40,7 @@ const CardSsoWithSlope = ({ avatar, avatarSize, header, children, slopeProps, ..
       </CardSso>
     </ScreenSlope>
   );
-};
+});
 
 CardSsoWithSlope.propTypes = {
   avatar: PropTypes.node,

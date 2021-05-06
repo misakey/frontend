@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const CardSso = ({ avatarSize, children, ...props }) => {
+const CardSso = forwardRef(({ avatarSize, children, ...props }, ref) => {
   const classes = useStyles({ avatarSize });
 
   const fullScreen = useDialogFullScreen();
@@ -75,6 +75,7 @@ const CardSso = ({ avatarSize, children, ...props }) => {
       disableGutters={fullScreen}
     >
       <Card
+        ref={ref}
         classes={{ root: classes.cardRoot }}
         square={fullScreen}
         raised
@@ -94,7 +95,7 @@ const CardSso = ({ avatarSize, children, ...props }) => {
       </Card>
     </Container>
   );
-};
+});
 
 CardSso.propTypes = {
   avatarSize: PropTypes.oneOf(SIZES),

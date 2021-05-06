@@ -1,0 +1,57 @@
+{
+  "subject_identity": {
+    "id": "646468b9-3885-4d3b-bd99-1bd4607d5135",
+    "account_id": null,
+    "identifier_value": "cedric.dupuis@misakey.com",
+    "identifier_kind": "email",
+    "display_name": "Cedric Dupuis",
+    "notifications": "minimal",
+    "avatar_url": null,
+    "color": null,
+    "level": 10,
+    "mfa_method": "disabled",
+    "pubkey": null,
+    "non_identified_pubkey": null,
+    "pubkey_aes_rsa": null,
+    "non_identified_pubkey_aes_rsa": null,
+    "has_crypto": false,
+    "has_totp_secret": false
+  },
+  "acr": "2",
+  "scope": [
+    "openid",
+    "tos",
+    "privacy_policy"
+  ],
+  "context": {
+    "acr_values": [
+      "2"
+    ],
+    "aid": "646468b9-3885-4d3b-bd99-1bd4607d5135",
+    "amrs": [
+      "emailed_code",
+      "account_creation"
+    ],
+    "login_hint": "{\"identifier\":\"cedric.dupuis@misakey.com\",\"state\":\"5a575417d1d049f4b227e4bee95e085f\"}",
+    "mid": "8c3e8757-a5dc-4bd7-998e-6e399cdcc19f"
+  },
+  "client": {
+    "id": "cc411b8f-28bf-4d4e-abd9-99226b41da27",
+    "name": "",
+    "logo_uri": "https://static.misakey.com/ssoClientsLogo/misakey.png",
+    "tos_uri": "https://about.misakey.com/#/fr/legals/tos/",
+    "policy_uri": "https://about.misakey.com/#/fr/legals/privacy-policy/"
+  },
+  "requested_consents": [
+    {
+      "scope": "tos",
+      "type": "tos",
+      "already_consented": false
+    },
+    {
+      "scope": "privacy_policy",
+      "type": "privacy_policy",
+      "already_consented": false
+    }
+  ]
+}

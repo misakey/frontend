@@ -3,11 +3,28 @@ import API from '@misakey/core/api';
 
 import objectToSnakeCase from '@misakey/core/helpers/objectToSnakeCase';
 import objectToCamelCaseDeep from '@misakey/core/helpers/objectToCamelCaseDeep';
+// import datatags from '@misakey/core/api/API/endpoints/mocks/consent/datatags';
+// import tospp from '@misakey/core/api/API/endpoints/mocks/consent/tospp';
 
-export const consent = ({ identityId, consentChallenge, consentedScopes }) => API
+// HELPERS
+const remapConsentInfo = ({ context, subjectIdentity, ...rest }) => {
+  const { mid: identityId } = context;
+  const authnState = {
+    identityId,
+  };
+  return {
+    authnState,
+    ...context,
+    subjectIdentity,
+    ...rest,
+  };
+};
+
+export const consent = ({ acr, subjectIdentityId, consentChallenge, consentedScopes }) => API
   .use(API.endpoints.auth.consent.create)
   .build(null, objectToSnakeCase({
-    identityId,
+    acr,
+    subjectIdentityId,
     consentChallenge,
     consentedScopes,
   }))
@@ -19,12 +36,10 @@ export const getInfo = ({ consentChallenge }) => API
   .build(null, null, objectToSnakeCase({ consentChallenge }))
   .send()
   .then(objectToCamelCaseDeep)
-  .then(({ context: { mid: identityId }, ...rest }) => {
-    const authnState = {
-      identityId,
-    };
-    return {
-      authnState,
-      ...rest,
-    };
-  });
+  .then(remapConsentInfo);
+
+// export const getInfo = () => {
+//   const response = objectToCamelCaseDeep(datatags);
+//   const remapped = remapConsentInfo(response);
+//   return Promise.resolve(remapped);
+// };

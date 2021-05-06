@@ -1,97 +1,201 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useEffect, useReducer, Suspense } from 'react';
 
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { withTranslation, Trans } from 'react-i18next';
-import * as Sentry from '@sentry/browser';
-import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-import { FEEDBACK } from '@misakey/ui/constants/emails';
-import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react/auth/store/reducers/sso';
-import { CONSENTED_SCOPES_KEY, CONSENT_SCOPES } from '@misakey/core/auth/constants/consent';
-import { APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER, LARGE } from '@misakey/ui/constants/sizes';
+import { selectors as ssoSelectors } from '@misakey/react/auth/store/reducers/sso';
+import { MISAKEY_CONSENT_SCOPES, CONSENT_TYPE_DATATAG, CONSENTED_SCOPES_KEY } from '@misakey/core/auth/constants/consent';
 
 
 import objectToCamelCase from '@misakey/core/helpers/objectToCamelCase';
 import isNil from '@misakey/core/helpers/isNil';
 import isEmpty from '@misakey/core/helpers/isEmpty';
+import redirect from '@misakey/core/helpers/redirect';
+import partition from '@misakey/core/helpers/partition';
 import { getDetails } from '@misakey/core/helpers/apiError';
 import { consent } from '@misakey/core/auth/builder/consent';
 
+import { useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useGetConsentInfo from '@misakey/hooks/useGetConsentInfo';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import useNotDoneEffect from '@misakey/hooks/useNotDoneEffect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import usePropChanged from '@misakey/hooks/usePropChanged';
 
-import Screen from '@misakey/ui/Screen';
-import ListConsent from '@misakey/react/auth/components/List/Consent';
-import TitleBold from '@misakey/ui/Typography/Title/Bold';
-import Box from '@material-ui/core/Box';
-import BoxControlsCard from '@misakey/ui/Box/Controls/Card';
-import Redirect from '@misakey/ui/Redirect';
-import { Form } from 'formik';
-import Formik from '@misakey/ui/Formik';
-import Alert from '@material-ui/lab/Alert';
-import CardSsoWithSlope from '@misakey/react/auth/components/Card/Sso/WithSlope';
-import AvatarClientSso from '@misakey/ui/Avatar/Client/Sso';
+import CardRequestedConsentOrganization from '@misakey/react/auth/components/Card/RequestedConsent/Organization';
+import CardRequestedConsentMisakey from '@misakey/react/auth/components/Card/RequestedConsent/Misakey';
+import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 
 // CONSTANTS
-const INITIAL_VALUES = {
-  [CONSENTED_SCOPES_KEY]: CONSENT_SCOPES,
-};
+const {
+  client: CLIENT_SELECTOR,
+  subjectIdentity: SUBJECT_IDENTITY_SELECTOR,
+  requestedConsents: REQUESTED_CONSENTS_SELECTOR,
+  acr: ACR_SELECTOR,
+} = ssoSelectors;
 
-const SLOPE_PROPS = {
-  // @FIXME approximate spacing to align card content with slope
-  height: APPBAR_HEIGHT + AVATAR_SIZE * LARGE_MULTIPLIER + 126,
+const INITIAL_STATE = {
+  step: 0,
+  scopes: ['openid'],
+  formikBag: {},
+};
+const CONSENT = Symbol('CONSENT');
+const RESET = Symbol('RESET');
+
+// HELPERS
+const consentReducer = (state, { type, step, scopes, formikBag }) => {
+  if (type === CONSENT) {
+    return {
+      ...state,
+      step,
+      scopes: [...state.scopes, ...scopes],
+      formikBag,
+    };
+  }
+  if (type === RESET) {
+    return INITIAL_STATE;
+  }
+  return state;
 };
 
 // COMPONENTS
-const AuthConsent = ({
-  authnState,
-  client,
-  t,
-}) => {
-  const [redirectTo, setRedirectTo] = useState(null);
+const AuthConsent = () => {
+  const [{
+    step,
+    scopes,
+    formikBag: { setSubmitting },
+  }, dispatch] = useReducer(consentReducer, INITIAL_STATE);
+  const [stepChanged, resetStepChanged] = usePropChanged(step);
+
   const { enqueueSnackbar } = useSnackbar();
   const handleHttpErrors = useHandleHttpErrors();
+  const { t } = useTranslation('auth');
 
   const searchParams = useLocationSearchParams(objectToCamelCase);
 
   const { consentChallenge } = useSafeDestr(searchParams);
 
-  const { identityId } = useSafeDestr(authnState);
+  const client = useSelector(CLIENT_SELECTOR);
+  const subjectIdentity = useSelector(SUBJECT_IDENTITY_SELECTOR);
+  const { id: identityId } = useSafeDestr(subjectIdentity);
+  const requestedConsents = useSelector(REQUESTED_CONSENTS_SELECTOR);
+  const acr = useSelector(ACR_SELECTOR);
 
-  const { id, tosUri, policyUri, name } = useSafeDestr(client);
+  const [misakeyConsents, otherConsents] = useMemo(
+    () => partition(requestedConsents, ({ scope }) => MISAKEY_CONSENT_SCOPES.includes(scope)),
+    [requestedConsents],
+  );
 
-  const hasMissingClientUris = useMemo(
-    () => !isEmpty(id) && (isEmpty(tosUri) || isEmpty(policyUri)),
-    [id, tosUri, policyUri],
+  const misakeyNeededConsents = useMemo(
+    () => misakeyConsents.filter(({ alreadyConsented }) => alreadyConsented === false),
+    [misakeyConsents],
+  );
+
+  const showMisakeyConsent = useMemo(
+    () => !isEmpty(misakeyNeededConsents),
+    [misakeyNeededConsents],
+  );
+
+  const datatagConsents = useMemo(
+    () => otherConsents.filter(({ type }) => type === CONSENT_TYPE_DATATAG),
+    [otherConsents],
+  );
+
+  const groupedByOrgConsents = useMemo(
+    () => datatagConsents
+      .reduce((aggr, orgConsent) => {
+        const { details } = orgConsent;
+        const { producerOrganization } = details;
+        const { id } = producerOrganization;
+        const consentsByOrg = aggr[id];
+        if (isNil(consentsByOrg)) {
+          return {
+            ...aggr,
+            [id]: {
+              organization: producerOrganization,
+              consents: [orgConsent],
+            },
+          };
+        }
+        return {
+          ...aggr,
+          [id]: {
+            ...consentsByOrg,
+            consents: [...consentsByOrg.consents, orgConsent],
+          },
+        };
+      },
+      {}),
+    [datatagConsents],
+  );
+
+  const currentStepConsent = useMemo(
+    () => (step === 0 ? {} : groupedByOrgConsents[step]),
+    [groupedByOrgConsents, step],
+  );
+
+  const consentKeys = useMemo(
+    () => (showMisakeyConsent
+      ? [0, ...Object.keys(groupedByOrgConsents)]
+      : Object.keys(groupedByOrgConsents)),
+    [groupedByOrgConsents, showMisakeyConsent],
+  );
+
+  const currentStepIndex = useMemo(
+    () => consentKeys.findIndex((consentKey) => consentKey === step),
+    [consentKeys, step],
+  );
+  const nextStep = useMemo(
+    () => consentKeys[currentStepIndex + 1],
+    [consentKeys, currentStepIndex],
   );
 
   const getConsentInfo = useGetConsentInfo(consentChallenge);
 
+  const onConsent = useCallback(
+    () => consent({
+      acr,
+      subjectIdentityId: identityId,
+      consentChallenge,
+      [CONSENTED_SCOPES_KEY]: scopes,
+    })
+      .then((response) => {
+        const { redirectTo: nextRedirectTo } = objectToCamelCase(response);
+        return redirect(nextRedirectTo);
+      })
+      .catch((e) => {
+        const details = getDetails(e);
+        if (!isNil(details.consentedLegalScope) || !isNil(details.requestedLegalScope)) {
+          return enqueueSnackbar(t('auth:consent.error', { variant: 'error' }));
+        }
+        return handleHttpErrors(e);
+      }).finally(() => { setSubmitting(false); }),
+    [
+      acr, consentChallenge, identityId, scopes,
+      enqueueSnackbar, handleHttpErrors, setSubmitting, t,
+    ],
+  );
+
+  const onNext = useCallback(
+    (consentedScopes, formikBag = {}) => dispatch({
+      type: CONSENT,
+      scopes: consentedScopes,
+      step: nextStep,
+      formikBag,
+    }),
+    [nextStep],
+  );
+
   const onSubmit = useCallback(
-    (values, { setSubmitting }) => {
-      setRedirectTo(null);
-      return consent({ identityId, consentChallenge, ...values })
-        .then((response) => {
-          const { redirectTo: nextRedirectTo } = objectToCamelCase(response);
-          setRedirectTo(nextRedirectTo);
-        })
-        .catch((e) => {
-          const details = getDetails(e);
-          if (!isNil(details.consentedLegalScope) || !isNil(details.requestedLegalScope)) {
-            return enqueueSnackbar(t('auth:consent.error', { variant: 'error' }));
-          }
-          return handleHttpErrors(e);
-        })
-        .finally(() => { setSubmitting(false); });
+    ({ [CONSENTED_SCOPES_KEY]: consentedScopes }, formikBag) => {
+      onNext(consentedScopes, formikBag);
+      if (!isNil(nextStep)) {
+        formikBag.setSubmitting(false);
+      }
     },
-    [consentChallenge, enqueueSnackbar, handleHttpErrors, identityId, t],
+    [nextStep, onNext],
   );
 
   const shouldFetch = useMemo(
@@ -101,94 +205,67 @@ const AuthConsent = ({
 
   const { isFetching } = useFetchEffect(getConsentInfo, { shouldFetch });
 
-  const primary = useMemo(() => ({ text: t('common:accept'), isLoading: isFetching }), [isFetching, t]);
-
-  useNotDoneEffect(
-    (onDone) => {
-      if (hasMissingClientUris) {
-        const missing = [];
-        if (isEmpty(tosUri)) {
-          missing.push('tos');
-        }
-        if (isEmpty(policyUri)) {
-          missing.push('pp');
-        }
-        const errorMessage = `[missing consent link]: client ${name} - ${missing.join('|')}`;
-        Sentry.captureMessage(errorMessage, 'error');
-        onDone();
-      }
-    },
-    [id, name, tosUri, policyUri],
+  const consentInfoReady = useMemo(
+    () => !isFetching && !shouldFetch,
+    [isFetching, shouldFetch],
   );
 
   useUpdateDocHead(t('auth:consent.documentTitle'));
 
-  if (!isNil(redirectTo)) {
+  useEffect(
+    () => {
+      if (consentInfoReady && !showMisakeyConsent && step === 0) {
+        onNext([]);
+      }
+      if (isNil(step)) {
+        onConsent();
+      }
+    },
+    [consentInfoReady, onConsent, onNext, onSubmit, showMisakeyConsent, step],
+  );
+
+  useEffect(
+    () => {
+      if (stepChanged) {
+        setTimeout(
+          () => {
+            resetStepChanged();
+          },
+          300,
+        );
+      }
+    },
+    [resetStepChanged, stepChanged],
+  );
+
+  if (!consentInfoReady || (consentInfoReady && !showMisakeyConsent && step === 0)) {
+    return <SplashScreenWithTranslation />;
+  }
+
+  if (step === 0) {
     return (
-      <Redirect
-        to={redirectTo}
-        forceRefresh
-        manualRedirectPlaceholder={(
-          <Screen isLoading />
-        )}
+      <CardRequestedConsentMisakey
+        client={client}
+        onSubmit={onSubmit}
+        isFetching={isFetching}
       />
     );
   }
-
-  return (
-    <CardSsoWithSlope
-      slopeProps={SLOPE_PROPS}
-      avatar={<AvatarClientSso client={client} />}
-      avatarSize={LARGE}
-    >
-      <Formik
-        initialValues={INITIAL_VALUES}
-        onSubmit={onSubmit}
-      >
-        <Box component={Form} display="flex" flexDirection="column">
-          <TitleBold align="center">
-            {t('auth:consent.title')}
-          </TitleBold>
-          {hasMissingClientUris ? (
-            <Alert severity="warning">
-              <Trans i18nKey="auth:consent.missing">
-                Une erreur est survenue lors de votre inscription, merci de le signaler à
-                <Link href={`mailto:${FEEDBACK}`} color="inherit">{FEEDBACK}</Link>
-              </Trans>
-            </Alert>
-          ) : (
-            <>
-              <ListConsent {...client} />
-              <BoxControlsCard
-                formik
-                primary={primary}
-              />
-            </>
-          )}
-        </Box>
-      </Formik>
-    </CardSsoWithSlope>
-  );
+  if (!isNil(step)) {
+    return (
+      <Suspense fallback={<SplashScreenWithTranslation />}>
+        <CardRequestedConsentOrganization
+          client={client}
+          {...currentStepConsent}
+          subjectIdentity={subjectIdentity}
+          onSubmit={onSubmit}
+          isFetching={isFetching}
+          stepChanged={stepChanged}
+        />
+      </Suspense>
+    );
+  }
+  return null;
 };
 
-AuthConsent.propTypes = {
-  // withTranslation
-  t: PropTypes.func.isRequired,
-  // CONNECT
-  authnState: SSO_PROP_TYPES.authnState,
-  client: SSO_PROP_TYPES.client,
-};
-
-AuthConsent.defaultProps = {
-  authnState: null,
-  client: null,
-};
-
-// CONNECT
-const mapStateToProps = (state) => ({
-  authnState: state.sso.authnState,
-  client: state.sso.client,
-});
-
-
-export default connect(mapStateToProps, {})(withTranslation(['auth', 'common'])(AuthConsent));
+export default AuthConsent;

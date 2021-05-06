@@ -11,7 +11,6 @@ const DatatagsSchema = {
   propTypes: {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    organizationId: PropTypes.string.isRequired,
     createdAt: PropTypes.string,
   },
 };

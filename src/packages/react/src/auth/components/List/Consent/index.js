@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -20,18 +20,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const ListConsent = ({ tosUri, policyUri, id, name, logoUri, ...props }) => {
+const ListConsent = forwardRef(({ tosUri, policyUri, id, name, logoUri, ...props }, ref) => {
   const classes = useStyles();
 
   return (
-    <List classes={{ root: classes.listRoot }} {...props}>
+    <List ref={ref} classes={{ root: classes.listRoot }} {...props}>
       {tosUri
         && <ListItemTOS classes={{ container: classes.listItemContainer }} href={tosUri} />}
       {policyUri
         && <ListItemPrivacy classes={{ container: classes.listItemContainer }} href={policyUri} />}
     </List>
   );
-};
+});
 
 ListConsent.propTypes = {
   id: PropTypes.string,

@@ -1,6 +1,6 @@
 import { schema } from 'normalizr';
 import PropTypes from 'prop-types';
-import DatatagsSchema from 'store/schemas/Datatags';
+import DatatagsSchema from '@misakey/react/auth/store/schemas/Datatags';
 
 import isNil from '@misakey/core/helpers/isNil';
 
@@ -9,7 +9,7 @@ const entity = new schema.Entity('organizationDatatags', {
 }, {
   idAttribute: ({ id }) => {
     if (isNil(id)) {
-      return window.env.SELF_CLIENT_ID;
+      return window.env.SELF_CLIENT.id;
     }
     return id;
   },

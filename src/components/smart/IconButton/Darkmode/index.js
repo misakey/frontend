@@ -7,7 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 
 import { toggleDarkmode } from 'store/actions/devicePreferences';
 
-const DarkmodeSwitch = ({ onToggleDarkmode }) => (
+const IconButtonDarkmode = ({ onToggleDarkmode }) => (
   <IconButton
     edge="start"
     aria-label="Toggle Darkmode"
@@ -17,7 +17,7 @@ const DarkmodeSwitch = ({ onToggleDarkmode }) => (
   </IconButton>
 );
 
-DarkmodeSwitch.propTypes = {
+IconButtonDarkmode.propTypes = {
   onToggleDarkmode: PropTypes.func.isRequired,
 };
 
@@ -25,4 +25,4 @@ const mapDispatchToProps = (dispatch) => ({
   onToggleDarkmode: () => dispatch(toggleDarkmode()),
 });
 
-export default connect(null, mapDispatchToProps)(DarkmodeSwitch);
+export default connect(null, mapDispatchToProps)(IconButtonDarkmode);

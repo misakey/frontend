@@ -14,7 +14,7 @@ import Divider from '@material-ui/core/Divider';
 import withIdentity from 'components/smart/withIdentity';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import Footer from '@misakey/ui/Footer';
-import DarkmodeSwitch from 'components/smart/Switch/Darkmode';
+import IconButtonDarkmode from 'components/smart/IconButton/Darkmode';
 
 // CONSTANTS
 const FOOTER_CONTAINER_PROPS = { mx: 2 };
@@ -47,7 +47,7 @@ const BoxAccount = forwardRef(({ children, onClose, ...props }, ref) => {
       <AppBarStatic>
         {children}
         <BoxFlexFill />
-        <DarkmodeSwitch />
+        <IconButtonDarkmode />
       </AppBarStatic>
       <Box display="flex" flexDirection="column" alignItems="center" flexShrink="0">
         <CardIdentityThumbnailWithIdentity onClick={handleClose} />

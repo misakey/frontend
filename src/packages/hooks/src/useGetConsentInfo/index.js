@@ -10,7 +10,10 @@ export default (consentChallenge) => {
   return useCallback(
     () => getInfo({ consentChallenge })
       .then(
-        (response) => Promise.resolve(dispatch(ssoUpdate(response))),
+        ({ scope, ...rest }) => Promise.resolve(dispatch(ssoUpdate({
+          scope: scope.join(' '),
+          ...rest,
+        }))),
       ),
     [consentChallenge, dispatch],
   );

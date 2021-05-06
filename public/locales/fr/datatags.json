@@ -1,0 +1,10 @@
+{
+  "default": "Discussion",
+  "default_plural": "Discussions",
+  "salary": "Salaire",
+  "salary_plural": "Salaires",
+  "contract": "Contrat",
+  "contract_plural": "Contrats",
+  "purchase": "Achat",
+  "purchase_plural": "Achats"
+}

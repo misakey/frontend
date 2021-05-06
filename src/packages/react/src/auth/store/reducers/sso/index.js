@@ -1,5 +1,12 @@
 import PropTypes from 'prop-types';
 
+import { PROP_TYPES as REQUESTED_CONSENT_PROP_TYPES } from '@misakey/react/auth/constants/propTypes/requestedConsent';
+import {
+  SSO_RESET, SSO_UPDATE, SSO_IDENTITY_RESET,
+  SSO_SET_IDENTIFIER, SSO_SET_METHOD_METADATA, SSO_SET_METHOD_NAME,
+} from '@misakey/react/auth/store/actions/sso';
+import { AMRS, IDENTITY_PASSWORD, IDENTITY_EMAILED_CODE, WEBAUTHN } from '@misakey/core/auth/constants/amr';
+
 import isNil from '@misakey/core/helpers/isNil';
 import prop from '@misakey/core/helpers/prop';
 import path from '@misakey/core/helpers/path';
@@ -7,11 +14,10 @@ import { parseAcrValues, parseAcr } from '@misakey/core/helpers/parseAcr';
 import createResetOnSignOutReducer from '@misakey/react/auth/store/reducers/helpers/createResetOnSignOutReducer';
 import { createSelector } from 'reselect';
 
-import { SSO_RESET, SSO_UPDATE, SSO_IDENTITY_RESET, SSO_SET_IDENTIFIER, SSO_SET_METHOD_NAME, SSO_SET_METHOD_METADATA } from '@misakey/react/auth/store/actions/sso';
-import { AMRS, IDENTITY_PASSWORD, IDENTITY_EMAILED_CODE, WEBAUTHN } from '@misakey/core/auth/constants/amr';
 
 // HELPERS
 const getMethodName = prop('methodName');
+const getState = prop('sso');
 
 // CONSTANTS
 export const PROP_TYPES = {
@@ -60,6 +66,16 @@ export const PROP_TYPES = {
   scope: PropTypes.string,
   acr: PropTypes.number,
   acrValues: PropTypes.arrayOf(PropTypes.string),
+  requestedConsents: PropTypes.arrayOf(PropTypes.shape(REQUESTED_CONSENT_PROP_TYPES)),
+  // not an identity schema because we didn't finish flow
+  subjectIdentity: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    accountId: PropTypes.string,
+    identifierValue: PropTypes.string.isRequired,
+    identifierKind: PropTypes.string.isRequired,
+    displayName: PropTypes.string.isRequired,
+    avatarUrl: PropTypes.string,
+  }),
 };
 
 // INITIAL STATE
@@ -78,9 +94,9 @@ export const INITIAL_STATE = {
   scope: null,
   acr: null,
   acrValues: [],
+  requestedConsents: [],
+  subjectIdentity: null,
 };
-
-const getState = prop('sso');
 
 export const selectors = {
   authnState: createSelector(
@@ -123,9 +139,17 @@ export const selectors = {
     getState,
     prop('scope'),
   ),
+  subjectIdentity: createSelector(
+    getState,
+    prop('subjectIdentity'),
+  ),
+  requestedConsents: createSelector(
+    getState,
+    prop('requestedConsents'),
+  ),
   methodName: createSelector(
     getState,
-    prop('methodName'),
+    getMethodName,
   ),
   methodMetadata: createSelector(
     getState,

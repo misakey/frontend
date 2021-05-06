@@ -9,7 +9,7 @@ const entity = new schema.Entity('organizationAgents', {
 }, {
   idAttribute: ({ id }) => {
     if (isNil(id)) {
-      return window.env.SELF_CLIENT_ID;
+      return window.env.SELF_CLIENT.id;
     }
     return id;
   },

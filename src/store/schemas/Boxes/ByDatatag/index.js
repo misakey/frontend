@@ -2,7 +2,7 @@ import { schema } from 'normalizr';
 import PropTypes from 'prop-types';
 
 import BoxesSchema from 'store/schemas/Boxes';
-import DatatagsSchema from 'store/schemas/Datatags';
+import DatatagsSchema from '@misakey/react/auth/store/schemas/Datatags';
 
 import isNil from '@misakey/core/helpers/isNil';
 import isEmpty from '@misakey/core/helpers/isEmpty';

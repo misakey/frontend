@@ -1,0 +1,129 @@
+{
+  "subject_identity": {
+    "id": "646468b9-3885-4d3b-bd99-1bd4607d5135",
+    "account_id": null,
+    "identifier_value": "cedric.dupuis@misakey.com",
+    "identifier_kind": "email",
+    "display_name": "Cedric Dupuis",
+    "notifications": "minimal",
+    "avatar_url": null,
+    "color": null,
+    "level": 10,
+    "mfa_method": "disabled",
+    "pubkey": null,
+    "non_identified_pubkey": null,
+    "pubkey_aes_rsa": null,
+    "non_identified_pubkey_aes_rsa": null,
+    "has_crypto": false,
+    "has_totp_secret": false
+  },
+  "acr": "2",
+  "scope": [
+    "openid",
+    "tos",
+    "privacy_policy"
+  ],
+  "context": {
+    "acr_values": [
+      "2"
+    ],
+    "aid": "646468b9-3885-4d3b-bd99-1bd4607d5135",
+    "amrs": [
+      "emailed_code",
+      "account_creation"
+    ],
+    "login_hint": "{\"identifier\":\"cedric.dupuis@misakey.com\",\"state\":\"5a575417d1d049f4b227e4bee95e085f\"}",
+    "mid": "8c3e8757-a5dc-4bd7-998e-6e399cdcc19f"
+  },
+  "client": {
+    "id": "cc411b8f-28bf-4d4e-abd9-99226b41da27",
+    "name": "Misakey",
+    "logo_uri": "https://static.misakey.com/ssoClientsLogo/misakey.png",
+    "tos_uri": "https://about.misakey.com/#/fr/legals/tos/",
+    "policy_uri": "https://about.misakey.com/#/fr/legals/privacy-policy/"
+  },
+  "requested_consents": [
+    {
+      "scope": "tos",
+      "type": "tos",
+      "already_consented": false
+    },
+    {
+      "scope": "privacy_policy",
+      "type": "privacy_policy",
+      "already_consented": false
+    },
+    {
+      "scope": "datatag.first.test",
+      "type": "datatag",
+      "details": {
+        "datatag": {
+          "id": "1",
+          "name": "Factures",
+          "organization_id": "polololo-28bf-4d4e-abd9-99226b41da27"
+        },
+        "producer_organization": {
+          "id": "polololo-28bf-4d4e-abd9-99226b41da27",
+          "name": "org test",
+          "creator_id": "1",
+          "logo_url": "https://static.misakey.com/ssoClientsLogo/misakey.png"
+        }
+      },
+      "already_consented": false
+    },
+    {
+      "scope": "datatag.second.test",
+      "type": "datatag",
+      "details": {
+        "datatag": {
+          "id": "1",
+          "name": "Historique de paiement",
+          "organization_id": "polololo-28bf-4d4e-abd9-99226b41da27"
+        },
+        "producer_organization": {
+          "id": "polololo-28bf-4d4e-abd9-99226b41da27",
+          "name": "org test",
+          "creator_id": "1",
+          "logo_url": "https://static.misakey.com/ssoClientsLogo/misakey.png"
+        }
+      },
+      "already_consented": false
+    },
+    {
+      "scope": "datatag.third.test",
+      "type": "datatag",
+      "details": {
+        "datatag": {
+          "id": "1",
+          "name": "Bons de commande",
+          "organization_id": "polololo-28bf-4d4e-abd9-99226b41da27"
+        },
+        "producer_organization": {
+          "id": "polololo-28bf-4d4e-abd9-99226b41da27",
+          "name": "Test",
+          "creator_id": "1",
+          "logo_url": "https://static.misakey.com/ssoClientsLogo/misakey.png"
+        }
+      },
+      "already_consented": false
+    },
+    {
+      "scope": "datatag.first.other",
+      "type": "datatag",
+      "details": {
+        "datatag": {
+          "id": "2",
+          "name": "First",
+          "organization_id": "papapapa-28bf-4d4e-abd9-99226b41da27"
+        },
+        "producer_organization": {
+          "id": "papapapa-28bf-4d4e-abd9-99226b41da27",
+          "name": "Other",
+          "creator_id": "1",
+          "logo_url": "https://static.misakey.com/img/MisakeyLogoTypo.svg"
+        }
+      },
+      "already_consented": false
+    }
+  ]
+}

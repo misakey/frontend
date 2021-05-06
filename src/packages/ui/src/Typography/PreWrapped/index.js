@@ -14,6 +14,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+// COMPONENTS
 const TypographyPreWrapped = ({ className, ...props }) => {
   const classes = useStyles();
 

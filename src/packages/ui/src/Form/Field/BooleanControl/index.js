@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 import isEmpty from '@misakey/core/helpers/isEmpty';
+import isNil from '@misakey/core/helpers/isNil';
 import isFunction from '@misakey/core/helpers/isFunction';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
@@ -24,6 +25,7 @@ const FieldBooleanControl = ({
   control: Control,
   classes,
   displayError, errorKeys, field, form, helperText,
+  defaultValue,
   label,
   labels,
   t, ...rest
@@ -31,16 +33,21 @@ const FieldBooleanControl = ({
   const { value, name } = useSafeDestr(field);
   const { setFieldValue } = useSafeDestr(form);
 
+  const checked = useMemo(
+    () => (isNil(value) ? defaultValue : value),
+    [defaultValue, value],
+  );
+
   const isXs = useXsMediaQuery();
 
   const { onChange, ...fieldRest } = useMemo(() => field, [field]);
 
   const onControlChange = useCallback(
     (e) => {
-      setFieldValue(name, !value);
+      setFieldValue(name, !checked);
       if (isFunction()) { onChange(e); }
     },
-    [setFieldValue, name, value, onChange],
+    [setFieldValue, name, checked, onChange],
   );
 
   const labelOrLabelsValue = useMemo(
@@ -48,9 +55,9 @@ const FieldBooleanControl = ({
       if (isEmpty(labels)) {
         return label;
       }
-      return labels[value];
+      return labels[checked];
     },
-    [label, labels, value],
+    [label, labels, checked],
   );
 
   const labelPlacement = useMemo(
@@ -66,7 +73,7 @@ const FieldBooleanControl = ({
           control={(
             <Control
               className={classes.control}
-              checked={value}
+              checked={checked}
               onChange={onControlChange}
               {...fieldRest}
               {...omitTranslationProps(rest)}
@@ -89,6 +96,7 @@ FieldBooleanControl.propTypes = {
   className: PropTypes.string,
   displayError: PropTypes.bool.isRequired,
   errorKeys: PropTypes.arrayOf(PropTypes.string).isRequired,
+  defaultValue: PropTypes.bool,
   field: PropTypes.shape({
     name: PropTypes.string.isRequired,
     value: PropTypes.bool,
@@ -109,6 +117,7 @@ FieldBooleanControl.propTypes = {
 FieldBooleanControl.defaultProps = {
   classes: {},
   className: '',
+  defaultValue: undefined,
   helperText: '',
   label: '',
   labels: {},

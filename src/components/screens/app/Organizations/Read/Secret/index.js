@@ -5,11 +5,13 @@ import {
   SMALL_AVATAR_SIZE,
   SMALL_AVATAR_SM_SIZE,
 } from '@misakey/ui/constants/sizes';
+import { selectors as orgSelectors } from 'store/reducers/identity/organizations';
 
 import isNil from '@misakey/core/helpers/isNil';
 import { generateOrganizationSecretBuilder } from '@misakey/core/api/helpers/builder/organizations';
 
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import useFetchCallback from '@misakey/hooks/useFetch/callback';
@@ -37,10 +39,13 @@ import Typography from '@misakey/ui/Typography';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
 // CONSTANTS
+const { makeDenormalizeOrganization } = orgSelectors;
+
 const TOOLBAR_PROPS = {
   minHeight: `${TOOLBAR_MIN_HEIGHT}px !important`,
 };
 const IDENTIFIER_FIELD = 'organization_identifier';
+const SLUG_FIELD = 'organization_slug';
 const FIELD_NAME = 'organization_secret';
 
 // HOOKS
@@ -75,6 +80,13 @@ const OrganizationsReadSecret = () => {
   useUpdateDocHead(t('organizations:secret.title'));
 
   const orgId = useOrgId();
+
+  const denormalizeOrganizationSelector = useMemo(
+    () => makeDenormalizeOrganization(),
+    [],
+  );
+  const organization = useSelector((state) => denormalizeOrganizationSelector(state, orgId));
+  const { slug } = useSafeDestr(organization);
 
   const generateOrganizationSecret = useCallback(
     () => generateOrganizationSecretBuilder(orgId),
@@ -161,6 +173,21 @@ const OrganizationsReadSecret = () => {
             }}
             helperText={t('organizations:secret.identifier')}
             value={orgId}
+          />
+          <TextField
+            name={SLUG_FIELD}
+            InputProps={{
+              readOnly: true,
+              endAdornment: (
+                <ButtonCopy
+                  value={slug}
+                  message={t('organizations:secret.slug')}
+                  mode={MODE.icon}
+                />
+              ),
+            }}
+            helperText={t('organizations:secret.slug')}
+            value={slug}
           />
           <TextField
             name={FIELD_NAME}

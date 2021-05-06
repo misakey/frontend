@@ -1,8 +1,8 @@
 import { denormalize, normalize } from 'normalizr';
 import { createSelector } from 'reselect';
 
-import DatatagsByOrganizationSchema from 'store/schemas/Datatags/ByOrganization';
-import DatatagsSchema from 'store/schemas/Datatags';
+import DatatagsByOrganizationSchema from '@misakey/react/auth/store/schemas/Datatags/ByOrganization';
+import DatatagsSchema from '@misakey/react/auth/store/schemas/Datatags';
 
 import { receiveEntities } from '@misakey/store/actions/entities';
 

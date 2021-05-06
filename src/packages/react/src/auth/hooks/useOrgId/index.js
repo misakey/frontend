@@ -7,7 +7,7 @@ export default (defaultValue = true) => {
   const { orgId } = useLocationSearchParams();
 
   return useMemo(
-    () => (isNil(orgId) && defaultValue === true ? window.env.SELF_CLIENT_ID : orgId),
+    () => (isNil(orgId) && defaultValue === true ? window.env.SELF_CLIENT.id : orgId),
     [defaultValue, orgId],
   );
 };
