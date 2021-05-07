@@ -37,7 +37,7 @@ export default class OidcClient {
   #tokenInfoValue
 
   constructor(
-    { authority, clientId, clockSkew, redirectUri, scope = 'openid tos privacy_policy', stateStorage, tokenInfoStorage, misakeyCbHintsStorage } = {},
+    { authority, clientId, clockSkew, redirectUri, scope = '', stateStorage, tokenInfoStorage, misakeyCbHintsStorage } = {},
     { onTokenExpirationChangeCbs = [] } = {},
   ) {
     this.authority = authority;

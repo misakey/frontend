@@ -30,7 +30,7 @@ describe('testing sso actions', () => {
         loginChallenge: 'dsfopkzklf',
         displayHints: { resourceName: 'test' },
         loginHint: '',
-        scope: ['openid'],
+        scope: [],
         acrValues: [ACR.toString()],
       };
 

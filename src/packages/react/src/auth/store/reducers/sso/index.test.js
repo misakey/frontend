@@ -23,7 +23,7 @@ describe('testing sso reducer', () => {
     loginChallenge: 'defrthdr',
     loginHint: '',
     displayHints: {},
-    scope: ['openid'],
+    scope: [],
     acr: ACR,
     acrValues: [ACR.toString()],
   };
@@ -59,7 +59,7 @@ describe('testing sso reducer', () => {
       },
       loginChallenge: 'dsfopkzklf',
       loginHint: '',
-      scope: ['openid'],
+      scope: [],
       acrValues: [OTHER_ACR.toString()],
     };
 

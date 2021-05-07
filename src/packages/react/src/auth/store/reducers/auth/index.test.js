@@ -16,7 +16,7 @@ describe('testing auth reducer', () => {
   });
 
   describe('LOAD_USER_INFO', () => {
-    const user = { scope: 'openid user', identityId: 'test', accountId: 'test', acr: 1 };
+    const user = { scope: 'user', identityId: 'test', accountId: 'test', acr: 1 };
 
     it('should handle LOAD_USER_INFO, initial state', () => {
       expect(reducer(INITIAL_STATE, { type: LOAD_USER_INFO, ...user })).toEqual({

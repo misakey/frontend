@@ -10,7 +10,7 @@ describe('testing auth actions', () => {
       expect(authReset()).toEqual({ type: AUTH_RESET });
     });
     it('should create a LOAD_USER_INFO action', () => {
-      const user = { scope: 'openid user', accountId: 'test', identityId: 'test' };
+      const user = { scope: 'user', accountId: 'test', identityId: 'test' };
       expect(loadUser(user)).toEqual({
         type: LOAD_USER_INFO,
         ...user,
@@ -32,7 +32,7 @@ describe('testing auth actions', () => {
     const dispatchMock = (...args) => Promise.resolve(...args);
 
     it('should create a LOAD_USER_INFO thunk', async () => {
-      const user = { scope: 'openid user', accountId: 'test', identityId: 'test' };
+      const user = { scope: 'user', accountId: 'test', identityId: 'test' };
 
       const thunk = loadUserThunk(user);
       expect.assertions(1);

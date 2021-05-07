@@ -202,7 +202,7 @@ OidcProvider.propTypes = {
 OidcProvider.defaultProps = {
   children: null,
   config: {
-    scope: 'openid tos privacy_policy',
+    scope: '',
     enableAutomaticSilentRenew: true,
   },
   redirectProps: {},

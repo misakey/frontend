@@ -38,7 +38,7 @@ const {
 
 const INITIAL_STATE = {
   step: 0,
-  scopes: ['openid'],
+  scopes: [],
   formikBag: {},
 };
 const CONSENT = Symbol('CONSENT');
