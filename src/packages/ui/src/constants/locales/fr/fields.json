@@ -202,11 +202,14 @@
   },
   "boxes": {
     "name": {
-      "label": "Titre",
-      "helperText": "Un titre approprié vous aidera à retrouver l'espace privé",
+      "label": "Sujet",
+      "helperText": "Un sujet approprié vous aidera à retrouver l'espace privé",
       "error": {
-        "malformed": "Le titre doit contenir entre 5 et 50 caractères"
+        "malformed": "Le sujet doit contenir entre 5 et 50 caractères"
       }
+    },
+    "ownerOrgId": {
+      "label": "Dans"
     },
     "invitationLink": {
       "label": "Lien d'invitation",

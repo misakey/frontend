@@ -12,16 +12,21 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 const DrawerAccountContent = ({ backTo, ...props }) => {
   const { t } = useTranslation('common');
   return (
-    <BoxAccount {...props} minHeight="100%" overflow="hidden">
-      <IconButtonAppBar
-        aria-label={t('common:goBack')}
-        edge="start"
-        component={Link}
-        to={backTo}
-      >
-        <ArrowBack />
-      </IconButtonAppBar>
-    </BoxAccount>
+    <BoxAccount
+      actions={(
+        <IconButtonAppBar
+          aria-label={t('common:goBack')}
+          edge="start"
+          component={Link}
+          to={backTo}
+        >
+          <ArrowBack />
+        </IconButtonAppBar>
+    )}
+      {...props}
+      minHeight="100%"
+      overflow="hidden"
+    />
   );
 };
 

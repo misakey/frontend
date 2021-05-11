@@ -3,7 +3,7 @@ import { PROP_TYPES as SSO_PROP_TYPES } from '@misakey/react/auth/store/reducers
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import AvatarClient from '@misakey/ui/Avatar/Client';
+import AvatarClient from '@misakey/ui/Avatar/Client/Grow';
 import { LARGE } from '@misakey/ui/constants/sizes';
 
 // COMPONENTS

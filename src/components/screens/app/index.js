@@ -11,7 +11,6 @@ import Home from 'components/screens/app/Home';
 import Redirect from '@misakey/ui/Redirect';
 import SplashScreen from '@misakey/ui/Screen/Splash/WithTranslation';
 import AccountMenuContext from 'components/smart/Menu/Account/Context';
-import OrganizationDrawer from 'components/smart/Drawer/Organization';
 import ScreenSplashOidc from '@misakey/ui/Screen/Splash/Oidc';
 import BoxesContextProvider from 'components/smart/Context/Boxes';
 
@@ -58,7 +57,6 @@ const BoxesApp = () => {
   return (
     <Suspense fallback={<SplashScreen />}>
       <SetPasswordContextProvider>
-        <OrganizationDrawer />
         <AccountMenuContext>
           <BoxesContextProvider>
             <Switch>

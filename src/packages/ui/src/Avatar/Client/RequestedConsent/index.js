@@ -7,7 +7,7 @@ import OrganizationsSchema from '@misakey/react/auth/store/schemas/Organizations
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import AvatarClient from '@misakey/ui/Avatar/Client';
+import AvatarClient from '@misakey/ui/Avatar/Client/Grow';
 import Box from '@material-ui/core/Box';
 
 // COMPONENTS

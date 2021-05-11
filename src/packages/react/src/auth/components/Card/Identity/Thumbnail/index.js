@@ -22,8 +22,7 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 // HOOKS
 const useStyles = makeStyles((theme) => ({
   avatarDetailedRoot: {
-    margin: theme.spacing(1, 1),
-    padding: theme.spacing(1, 0),
+    margin: theme.spacing(0, 1, 1),
   },
   cardActionArea: {
     borderRadius: theme.shape.borderRadius,
@@ -56,7 +55,7 @@ const CardIdentityThumbnail = ({ identity, onClick, ...props }) => {
   } = useSafeDestr(identity);
 
   return (
-    <Box mx={4} mb={4}>
+    <Box mx={4}>
       <Card elevation={0}>
         <CardActionArea
           draggable="false"
@@ -70,12 +69,15 @@ const CardIdentityThumbnail = ({ identity, onClick, ...props }) => {
               image={avatarUrl}
               title={displayName}
               subtitle={identifierValue}
-              classes={{ root: classes.avatarDetailedRoot }}
+              classes={{
+                root: classes.avatarDetailedRoot,
+              }}
               {...props}
             />
           ) : (
             <AvatarDetailedSkeleton
-              title={displayName}
+              title
+              subtitle
               {...props}
             />
           )}
@@ -84,6 +86,7 @@ const CardIdentityThumbnail = ({ identity, onClick, ...props }) => {
           component={LinkAccountMisakey}
           standing={BUTTON_STANDINGS.MAIN}
           onClick={handleClick}
+          fullWidth
         />
       </Card>
     </Box>

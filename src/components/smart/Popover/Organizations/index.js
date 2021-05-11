@@ -41,7 +41,7 @@ const SELF_ORG_TO = routes.boxes._;
 
 // COMPONENTS
 const IconButtonCreate = withDialogPassword(IconButtonAppBar);
-
+// @UNUSED
 const PopoverOrganizations = forwardRef(({ onClose, open, ...props }, ref) => {
   const { t } = useTranslation('organizations');
   const { replace } = useHistory();
@@ -137,7 +137,7 @@ const PopoverOrganizations = forwardRef(({ onClose, open, ...props }, ref) => {
               id={id}
               name={orgName}
               logoUrl={logoUrl}
-              secondary={t(`organizations:role.${currentIdentityRole}`)}
+              secondary={t([`organizations:role.${currentIdentityRole}`, 'organizations:role.default'])}
               selected={orgId === id}
               onClick={onClose}
             />

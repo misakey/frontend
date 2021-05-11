@@ -133,7 +133,9 @@ describe('testing pagination reducers helpers', () => {
             });
             it('should handle action, other state', () => {
               const itemCount = 5;
-              const otherState = { [filterId]: { byPagination: {}, itemCount: 30 } };
+              const otherState = {
+                [filterId]: { byPagination: {}, bySearchPagination: {}, itemCount: 30 },
+              };
               const nextState = {
                 ...otherState,
                 [filterId]: { ...otherState[filterId], itemCount },
@@ -159,6 +161,7 @@ describe('testing pagination reducers helpers', () => {
                     11: ids[1],
                     12: ids[2],
                   },
+                  bySearchPagination: {},
                 },
               };
               expect(reducer(INITIAL_STATE, {
@@ -242,6 +245,7 @@ describe('testing pagination reducers helpers', () => {
                     1: 'a340',
                     2: 'bef9',
                   },
+                  bySearchPagination: {},
                   itemCount: 10,
                 },
                 other: {
@@ -251,6 +255,7 @@ describe('testing pagination reducers helpers', () => {
                     2: 'Test3',
                     3: 'Test4',
                   },
+                  bySearchPagination: {},
                   itemCount: 4,
                 },
               };
@@ -265,6 +270,7 @@ describe('testing pagination reducers helpers', () => {
                     2: otherState[filterId].byPagination[1],
                     3: otherState[filterId].byPagination[2],
                   },
+                  bySearchPagination: {},
                 },
               };
               expect(reducer(otherState, {
@@ -296,6 +302,7 @@ describe('testing pagination reducers helpers', () => {
                     3: id,
                     4: 'ferth',
                   },
+                  bySearchPagination: {},
                   itemCount: 10,
                 },
               };
@@ -310,6 +317,7 @@ describe('testing pagination reducers helpers', () => {
                     2: otherState[filterId].byPagination[2],
                     3: otherState[filterId].byPagination[4],
                   },
+                  bySearchPagination: {},
                 },
               };
               expect(reducer(otherState, {

@@ -15,7 +15,7 @@ const { removePaginatedId } = actionCreators;
 const { makeGetBySearchPagination, makeGetByPagination } = selectors;
 
 // HOOKS
-export const useOnRemoveBox = (search = null) => {
+export const useOnRemoveBox = (filterId, search = null) => {
   const dispatch = useDispatch();
 
   const cleanBackup = useCallback(
@@ -29,7 +29,7 @@ export const useOnRemoveBox = (search = null) => {
   );
 
   const dispatchRemovePaginatedBox = useCallback(
-    (filterId, boxId) => batch(async () => {
+    (boxId) => batch(async () => {
       dispatch(removePaginatedId(filterId, boxId, search));
       const box = await Promise.resolve(dispatch(removeBox(boxId)));
       // Cleanup has not priority regarding fluidity of the app
@@ -38,7 +38,7 @@ export const useOnRemoveBox = (search = null) => {
       execWithRequestIdleCallback(() => cleanBackup(box), undefined, /* abortIfUnavailable */ true);
       return box;
     }),
-    [cleanBackup, dispatch, search],
+    [cleanBackup, dispatch, filterId, search],
   );
 
   return dispatchRemovePaginatedBox;

@@ -1,9 +1,10 @@
 import { actionCreators, selectors } from 'store/reducers/userBoxes/pagination';
-import { receiveJoinedBoxesByDatatag } from 'store/reducers/box';
+import { receiveJoinedBoxes } from 'store/reducers/box';
 
 import pickAll from '@misakey/core/helpers/pickAll';
 import isNil from '@misakey/core/helpers/isNil';
 import isFunction from '@misakey/core/helpers/isFunction';
+import equals from '@misakey/core/helpers/equals';
 import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/core/helpers/offsetLimitRange';
 import { getUserBoxesBuilder, countUserBoxesBuilder } from '@misakey/core/api/helpers/builder/boxes';
 import objectToCamelCase from '@misakey/core/helpers/objectToCamelCase';
@@ -11,12 +12,13 @@ import debounce from '@misakey/core/helpers/debounce';
 import getMissingIndexes from '@misakey/core/helpers/getMissingIndexes';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import { useMemo, useCallback } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import usePrevPropEffect from '@misakey/hooks/usePrevPropEffect';
 import { useDispatch, useSelector } from 'react-redux';
 
 // CONSTANTS
-const { receivePaginatedItemCount, receivePaginatedIds } = actionCreators;
+const { receivePaginatedItemCount, receivePaginatedIds, resetSearchPagination } = actionCreators;
 const {
   makeGetBySearchPagination, makeGetByPagination, makeGetItemCount, makeGetSearch,
 } = selectors;
@@ -25,7 +27,7 @@ const {
 /**
  * @param {String} filterId id to group by
  * @param {Object} [queryParams={}] to add to payload
- * @param {String} [search=null] search
+ * @param {Object} [search=null] search
  * @param {Function} [onError=null] on error specific handler
  * @returns {{byPagination: Object, itemCount: Number, loadMoreItems: Function}}
  * where:
@@ -34,6 +36,7 @@ const {
  * - loadMoreItems is a function to call to ask for more items
  */
 export default (filterId, queryParams = {}, search = null, onError = null) => {
+  const [isFetchingBoxes, setIsFetchingBoxes] = useState(false);
   const handleHttpErrors = useHandleHttpErrors();
 
   const hasSearch = useMemo(() => !isNil(search), [search]);
@@ -41,7 +44,7 @@ export default (filterId, queryParams = {}, search = null, onError = null) => {
   // payload for API
   const payload = useMemo(
     () => ({
-      ...(hasSearch ? { search } : {}),
+      ...(hasSearch ? search : {}),
       ...queryParams,
     }),
     [hasSearch, search, queryParams],
@@ -74,8 +77,8 @@ export default (filterId, queryParams = {}, search = null, onError = null) => {
   // ---
 
   const dispatchReceiveBoxes = useCallback(
-    (data, { offset, limit }, metadata) => Promise.resolve(
-      dispatch(receiveJoinedBoxesByDatatag(data, metadata)),
+    (data, { offset, limit }) => Promise.resolve(
+      dispatch(receiveJoinedBoxes(data)),
     )
       .then(({ result }) => dispatch(receivePaginatedIds(filterId, offset, limit, result, search))),
     [dispatch, filterId, search],
@@ -83,22 +86,25 @@ export default (filterId, queryParams = {}, search = null, onError = null) => {
 
   // API data fetching:
   // get boxes
-  // check missing applications in store
-  // get applications
   const get = useCallback(
-    (pagination) => getUserBoxesBuilder({ ...payload, ...pagination })
-      .then((response) => dispatchReceiveBoxes(
-        response.map(objectToCamelCase),
-        pagination,
-        payload,
-      ))
-      .catch((e) => {
-        if (isFunction(onError)) {
-          onError(e);
-        } else {
-          handleHttpErrors(e);
-        }
-      }),
+    (pagination) => {
+      setIsFetchingBoxes(true);
+      return getUserBoxesBuilder({ ...payload, ...pagination })
+        .then((response) => dispatchReceiveBoxes(
+          response.map(objectToCamelCase),
+          pagination,
+        ))
+        .catch((e) => {
+          if (isFunction(onError)) {
+            onError(e);
+          } else {
+            handleHttpErrors(e);
+          }
+        })
+        .finally(() => {
+          setIsFetchingBoxes(false);
+        });
+    },
     [dispatchReceiveBoxes, handleHttpErrors, onError, payload],
   );
 
@@ -157,10 +163,26 @@ export default (filterId, queryParams = {}, search = null, onError = null) => {
     [handleHttpErrors, onError],
   );
 
-  useFetchEffect(
+  const { isFetching: isFetchingCount } = useFetchEffect(
     getCount,
     { shouldFetch, deps: [filterId, payload] },
     { onSuccess, onError: handleError },
+  );
+
+  const isFetching = useMemo(
+    () => isFetchingCount || isFetchingBoxes,
+    [isFetchingBoxes, isFetchingCount],
+  );
+
+  usePrevPropEffect(
+    search,
+    (prevSearch, nextSearch) => {
+      // on first search, no need to reset search pagination
+      if (!isNil(prevSearch) && !equals(prevSearch, nextSearch)) {
+        dispatch(resetSearchPagination(filterId));
+      }
+    },
+    [dispatch, filterId],
   );
 
   // extra memoization layer because of object format
@@ -168,8 +190,9 @@ export default (filterId, queryParams = {}, search = null, onError = null) => {
     () => ({
       byPagination,
       itemCount,
+      isFetching,
       loadMoreItems,
     }),
-    [byPagination, itemCount, loadMoreItems],
+    [byPagination, isFetching, itemCount, loadMoreItems],
   );
 };

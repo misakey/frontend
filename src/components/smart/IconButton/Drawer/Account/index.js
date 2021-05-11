@@ -11,6 +11,7 @@ import isNil from '@misakey/core/helpers/isNil';
 import IconButtonAccount from 'components/smart/IconButton/Account';
 
 // COMPONENTS
+// @UNUSED @DEPRECATED
 function IconButtonDrawerAccount({ side, ...props }) {
   const { pathname, search, hash } = useLocation();
 

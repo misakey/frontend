@@ -36,7 +36,9 @@
   "incompatibleBrowser": "Cette fonctionnalité n'est pas disponible sur ce navigateur pour l'instant\u00a0:(",
   "irreversible": "Cette action est irréversible",
   "loading": "Chargement",
+  "manage": "Gérer l'organisation",
   "more": "Plus",
+  "moreCount": "{{count}} de plus",
   "next": "Suivant",
   "newMessages": "Nouveaux messages",
   "ok": "OK",
@@ -82,6 +84,7 @@
   "unlock": "Déverrouiller",
   "validate": "Valider",
   "view": "Voir",
+  "workspaces": "Espaces",
   "you": "{{displayName}} (Vous)",
   "anErrorOccurred": "Nous sommes désolés, une erreur est survenue",
   "errorPleaseRetryOrRefresh": "Une erreur est survenue; veuillez réessayer ou rafraîchir",
@@ -91,7 +94,7 @@
   "drawerMenu": {
     "tabs": {
       "document": "Documents",
-      "chat": "Espaces privés"
+      "chat": "Discussions"
     }
   },
   "account": {

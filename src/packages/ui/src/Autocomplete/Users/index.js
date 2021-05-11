@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const AutocompleteWhitelist = ({
+const AutocompleteUsers = ({
   onChange, getOptionDisabled,
   textFieldProps, name, value,
   errorIndexes,
@@ -256,7 +256,7 @@ const AutocompleteWhitelist = ({
   );
 };
 
-AutocompleteWhitelist.propTypes = {
+AutocompleteUsers.propTypes = {
   options: PropTypes.arrayOf(PropTypes.shape(USER_EL_PROP_TYPE)),
   name: PropTypes.string.isRequired,
   value: PropTypes.arrayOf(PropTypes.shape(USER_EL_PROP_TYPE)),
@@ -266,7 +266,7 @@ AutocompleteWhitelist.propTypes = {
   errorIndexes: PropTypes.arrayOf(PropTypes.number),
 };
 
-AutocompleteWhitelist.defaultProps = {
+AutocompleteUsers.defaultProps = {
   options: [],
   value: [],
   textFieldProps: {},
@@ -274,4 +274,4 @@ AutocompleteWhitelist.defaultProps = {
   errorIndexes: [],
 };
 
-export default AutocompleteWhitelist;
+export default AutocompleteUsers;

@@ -6,10 +6,8 @@ import BoxesSchema from 'store/schemas/Boxes';
 import { useTranslation } from 'react-i18next';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useUpdateBoxSettings from 'hooks/useUpdateBoxSettings';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import ButtonShortcut from '@misakey/ui/Button/Shortcut';
 
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -17,18 +15,9 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 // CONSTANTS
 const DEFAULT_SETTINGS = { muted: false };
 
-// HOOKS
-const useStyles = makeStyles(() => ({
-  buttonLabel: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-}));
-
 // COMPONENTS
 const IconButtonBoxesMute = forwardRef(({ box, ...rest }, ref) => {
   const { t } = useTranslation('boxes');
-  const classes = useStyles();
 
   const { settings: { muted } = DEFAULT_SETTINGS, id: boxId } = useSafeDestr(box);
   const { wrappedFetch: onUpdateBoxSettings } = useUpdateBoxSettings(boxId, !muted);
@@ -39,19 +28,14 @@ const IconButtonBoxesMute = forwardRef(({ box, ...rest }, ref) => {
   );
 
   return (
-    <Button
+    <ButtonShortcut
       ref={ref}
-      variant="text"
-      classes={{ label: classes.buttonLabel }}
       onClick={onUpdateBoxSettings}
-      aria-label={label}
+      label={label}
       {...rest}
     >
       {muted ? <NotificationsOffIcon color="action" /> : <NotificationsIcon color="primary" />}
-      <Typography variant="caption" color="textSecondary">
-        {label}
-      </Typography>
-    </Button>
+    </ButtonShortcut>
   );
 });
 

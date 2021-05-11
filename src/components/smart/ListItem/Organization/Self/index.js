@@ -1,4 +1,5 @@
 import React, { useMemo, forwardRef } from 'react';
+import PropTypes from 'prop-types';
 
 import { useTranslation } from 'react-i18next';
 
@@ -14,7 +15,7 @@ const AVATAR_PROPS = {
 };
 
 // COMPONENTS
-const ListItemOrganizationSelf = forwardRef((props, ref) => {
+const ListItemOrganizationSelf = forwardRef(({ secondary, ...props }, ref) => {
   const { t } = useTranslation('organizations');
   const classes = useStyles();
 
@@ -27,9 +28,9 @@ const ListItemOrganizationSelf = forwardRef((props, ref) => {
         noWrap: true,
         variant: 'body2',
       },
-      secondary: null,
+      secondary,
     }),
-    [t],
+    [secondary, t],
   );
 
   return (
@@ -46,5 +47,13 @@ const ListItemOrganizationSelf = forwardRef((props, ref) => {
     />
   );
 });
+
+ListItemOrganizationSelf.propTypes = {
+  secondary: PropTypes.node,
+};
+
+ListItemOrganizationSelf.defaultProps = {
+  secondary: null,
+};
 
 export default ListItemOrganizationSelf;

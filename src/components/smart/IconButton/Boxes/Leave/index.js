@@ -4,26 +4,15 @@ import PropTypes from 'prop-types';
 import BoxesSchema from 'store/schemas/Boxes';
 
 import { useTranslation } from 'react-i18next';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import { useDialogBoxesLeaveContext } from 'components/smart/Dialog/Boxes/Leave/Context';
 
-import NoMeetingRoomIcon from '@material-ui/icons/NoMeetingRoom';
+import ButtonShortcut from '@misakey/ui/Button/Shortcut';
 
-// HOOKS
-const useStyles = makeStyles(() => ({
-  buttonLabel: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-}));
+import NoMeetingRoomIcon from '@material-ui/icons/NoMeetingRoom';
 
 // COMPONENTS
 const IconButtonBoxesLeave = forwardRef(({ box, ...rest }, ref) => {
   const { t } = useTranslation('boxes');
-  const classes = useStyles();
 
   const label = useMemo(
     () => t('boxes:read.details.menu.leave.primary'),
@@ -33,19 +22,14 @@ const IconButtonBoxesLeave = forwardRef(({ box, ...rest }, ref) => {
   const { onOpen } = useDialogBoxesLeaveContext();
 
   return (
-    <Button
+    <ButtonShortcut
       ref={ref}
       onClick={onOpen}
-      variant="text"
-      classes={{ label: classes.buttonLabel }}
-      aria-label={label}
+      label={label}
       {...rest}
     >
       <NoMeetingRoomIcon color="action" />
-      <Typography variant="caption" color="textSecondary">
-        {label}
-      </Typography>
-    </Button>
+    </ButtonShortcut>
   );
 });
 

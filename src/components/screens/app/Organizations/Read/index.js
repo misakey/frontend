@@ -17,6 +17,8 @@ import useFetchOrganizations from 'hooks/useFetchOrganizations';
 
 import OrganizationsReadSecret from 'components/screens/app/Organizations/Read/Secret';
 import OrganizationsReadAgents from 'components/screens/app/Organizations/Read/Agents';
+import OrganizationsReadHome from 'components/screens/app/Organizations/Read/Home';
+import DrawerOrganizationManagement from 'components/smart/Drawer/Organization/Management';
 import RoutePasswordRequired from '@misakey/react/auth/components/Route/PasswordRequired';
 
 // CONSTANTS
@@ -37,7 +39,7 @@ const OrganizationsRead = () => {
 
   const { currentIdentityRole } = useSafeDestr(organization);
 
-  const redirectToSecret = useGeneratePathKeepingSearchAndHash(routes.organizations.secret);
+  const redirectToHome = useGeneratePathKeepingSearchAndHash(routes.organizations._);
 
   const canAdmin = useMemo(
     () => !isSelfOrg(orgId) && currentIdentityRole === ADMIN,
@@ -81,22 +83,30 @@ const OrganizationsRead = () => {
                     to={redirectToSelfOrg}
                   />
                 ) : (
-                  <Switch>
-                    <RoutePasswordRequired
-                      exact
-                      path={routes.organizations.secret}
-                      component={OrganizationsReadSecret}
-                    />
-                    <RoutePasswordRequired
-                      exact
-                      path={routes.organizations.agents}
-                      component={OrganizationsReadAgents}
-                    />
-                    <Redirect
-                      from={path}
-                      to={redirectToSecret}
-                    />
-                  </Switch>
+                  <>
+                    <DrawerOrganizationManagement />
+                    <Switch>
+                      <RoutePasswordRequired
+                        exact
+                        path={routes.organizations.secret}
+                        component={OrganizationsReadSecret}
+                      />
+                      <RoutePasswordRequired
+                        exact
+                        path={routes.organizations.agents}
+                        component={OrganizationsReadAgents}
+                      />
+                      <RoutePasswordRequired
+                        exact
+                        path={routes.organizations._}
+                        component={OrganizationsReadHome}
+                      />
+                      <Redirect
+                        from={path}
+                        to={redirectToHome}
+                      />
+                    </Switch>
+                  </>
                 )}
               </>
             )}

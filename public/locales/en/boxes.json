@@ -1,5 +1,5 @@
 {
-  "documentTitle": "Private spaces",
+  "documentTitle": "Discussions",
   "closedVault": {
     "saveForLater": "Save for later",
     "create": "Setup password",
@@ -34,6 +34,17 @@
         "text": "This private space has been deleted",
         "text_plural": "These private spaces have been deleted"
       }
+    },
+    "search": {
+      "title": {
+        "short": "Discussions",
+        "long": "Search in Discussions"
+      },
+      "facets": {
+        "organization": "Applications",
+        "datatag": "Categories"
+      },
+      "boxes": "Discussions"
     }
   },
   "read": {
@@ -222,8 +233,15 @@
     "dialog": {
       "title": "New private space",
       "pasteLink": "I have an invitation link",
-      "success": "Private space has been successfully created!",
-      "organization": "In\u00a0<1><0></0></1>"
+      "success": "Discussion has been successfully created!",
+      "organization": {
+        "self": "{{displayName}} (Personal plan)",
+        "other": {
+          "admin": "{{name}} (Administrator)",
+          "agent": "{{name}} (Agent)",
+          "default": "{{name}} (Member)"
+        }
+      }
     },
     "error": {
       "updateSecretStorage": "An error occurred while updating the vault, be sure to keep your invitation link to avoid loosing access to your private space."
@@ -235,7 +253,7 @@
       "description": "Please type “delete” to confirm",
       "confirmValue": "delete"
     },
-    "success": "Private space has been deleted."
+    "success": "Discussion has been deleted."
   },
   "leave": {
     "dialog": {
@@ -272,8 +290,8 @@
       "leave": "You left the private space",
       "kick": "You have been removed from the private space “{{title}}”",
       "delete": {
-        "you": "Private space deleted",
-        "they": "Private space “{{title}}” has been deleted"
+        "you": "Discussion deleted",
+        "they": "Discussion “{{title}}” has been deleted"
       }
     }
   },
@@ -331,5 +349,9 @@
       "title": "Send a message to {{displayName}}",
       "subtitle": "A private space is going to be created between you and {{displayName}}.\n{{displayName}} will appear as a member when he or she would have accepted to join the private space."
     }
+  },
+  "drawer": {
+    "boxes": "Discussions",
+    "documents": "Saved files"
   }
 }

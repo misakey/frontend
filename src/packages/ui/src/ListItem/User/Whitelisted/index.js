@@ -30,6 +30,7 @@ const ListItemUserWhitelisted = ({
   onRemove,
   identifier,
   id,
+  restrictionId,
   autoInvite,
   isOwner,
   isSubject,
@@ -96,7 +97,7 @@ const ListItemUserWhitelisted = ({
     >
       <ListItemSecondaryAction>
         <IconButtonWhitelist
-          id={id}
+          id={restrictionId}
           onRemove={canRemove ? onRemove : null}
           color={subtitleColor}
           accessStatus={accessStatus}
@@ -114,6 +115,7 @@ ListItemUserWhitelisted.propTypes = {
   isOwner: PropTypes.bool,
   isSubject: PropTypes.bool,
   id: PropTypes.string.isRequired,
+  restrictionId: PropTypes.string,
 };
 
 ListItemUserWhitelisted.defaultProps = {
@@ -123,6 +125,7 @@ ListItemUserWhitelisted.defaultProps = {
   isMember: false,
   isOwner: false,
   isSubject: false,
+  restrictionId: null,
 };
 
 export default ListItemUserWhitelisted;

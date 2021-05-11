@@ -44,3 +44,11 @@ export const SMALL_BUTTON_HEIGHT = 30;
 
 // ACCORDION
 export const ACCORDION_MIN_HEIGHT = 48;
+
+// CIRCULAR PROGRESS
+export const CIRCULAR_PROGRESS_SIZES = {
+  [SMALL]: 32,
+  default: 36,
+  [MEDIUM]: 36,
+  [LARGE]: 47,
+};

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect, useReducer } from 'react';
+import { useMemo, useCallback, useRef, useEffect, useReducer } from 'react';
 import { useSnackbar } from 'notistack';
 
 import isFunction from '@misakey/core/helpers/isFunction';
@@ -19,7 +19,9 @@ const RESET = Symbol('RESET');
 const INITIAL_STATE = {
   data: undefined,
   error: null,
+  called: false,
   isFetching: false,
+  done: false,
 };
 
 // HOOKS
@@ -72,11 +74,15 @@ export default (
       if (type === FETCHING) {
         internalFetchingCount.current += 1;
         internalErrorRef.current = undefined;
-        return { ...state, isFetching: true, error: INITIAL_STATE.error };
+        return { ...state,
+          isFetching: true,
+          called: true,
+          done: false,
+          error: INITIAL_STATE.error };
       }
       if (type === DONE) {
         internalFetchingCount.current -= 1;
-        return { ...state, isFetching: false };
+        return { ...state, isFetching: false, done: true };
       }
       if (type === DATA) {
         return { ...state, data };
@@ -86,7 +92,7 @@ export default (
     [isCanceled, internalErrorRef, internalFetchingCount],
   );
 
-  const [{ data, error, isFetching }, dispatch] = useReducer(reducer, INITIAL_STATE);
+  const [{ data, error, isFetching, done, called }, dispatch] = useReducer(reducer, INITIAL_STATE);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -196,5 +202,17 @@ export default (
     [internalFetchingCount],
   );
 
-  return { data, error, isFetching, wrappedFetch, internalFetchingCount, internalErrorRef };
+  return useMemo(
+    () => ({
+      data,
+      error,
+      isFetching,
+      done,
+      called,
+      wrappedFetch,
+      internalFetchingCount,
+      internalErrorRef,
+    }),
+    [called, data, done, error, isFetching, wrappedFetch],
+  );
 };

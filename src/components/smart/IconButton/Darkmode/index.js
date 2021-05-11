@@ -7,11 +7,11 @@ import IconButton from '@material-ui/core/IconButton';
 
 import { toggleDarkmode } from 'store/actions/devicePreferences';
 
-const IconButtonDarkmode = ({ onToggleDarkmode }) => (
+const IconButtonDarkmode = ({ onToggleDarkmode, ...props }) => (
   <IconButton
-    edge="start"
     aria-label="Toggle Darkmode"
     onClick={onToggleDarkmode}
+    {...props}
   >
     <InvertColorsIcon />
   </IconButton>

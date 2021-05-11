@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 
 // CONSTANTS
-const DEFAULT_VALUE = ''; // no datatag by default
+const DEFAULT_VALUE = undefined; // no datatag filtering by default
 
 // HOOKS
 export default (defaultValue = true) => {

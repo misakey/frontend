@@ -143,13 +143,14 @@ const IconButtonWhitelist = ({ id, color, accessStatus, onRemove }) => {
 
 IconButtonWhitelist.propTypes = {
   onRemove: PropTypes.func,
-  id: PropTypes.string.isRequired,
+  id: PropTypes.string,
   accessStatus: PropTypes.string.isRequired,
   color: PropTypes.string,
 };
 
 IconButtonWhitelist.defaultProps = {
   onRemove: null,
+  id: null,
   color: 'inherit',
 };
 

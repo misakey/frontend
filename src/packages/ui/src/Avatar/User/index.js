@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -9,12 +9,12 @@ import Avatar from '@misakey/ui/Avatar';
 import PersonIcon from '@material-ui/icons/Person';
 
 // COMPONENTS
-const AvatarUser = ({
+const AvatarUser = forwardRef(({
   identifier,
   displayName,
   avatarUrl,
   ...rest
-}) => {
+}, ref) => {
   const isNotEmptyUser = useMemo(
     () => isAnyNotEmpty([identifier, displayName, avatarUrl]),
     [identifier, displayName, avatarUrl],
@@ -23,6 +23,7 @@ const AvatarUser = ({
   if (isNotEmptyUser) {
     return (
       <AvatarColorized
+        ref={ref}
         text={displayName || identifier}
         image={avatarUrl}
         {...rest}
@@ -31,11 +32,11 @@ const AvatarUser = ({
   }
 
   return (
-    <Avatar>
-      <PersonIcon {...rest} />
+    <Avatar ref={ref} {...rest}>
+      <PersonIcon />
     </Avatar>
   );
-};
+});
 
 
 AvatarUser.propTypes = {

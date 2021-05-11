@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export default ({ name, prefix, suffix }) => {
+export default ({ name, prefix = '', suffix = '' }) => {
   const { t } = useTranslation('fields');
   const label = useMemo(
     () => t([`fields:${prefix}${name}${suffix}.label`, `fields:${name}.label`], ''),

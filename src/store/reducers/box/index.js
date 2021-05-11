@@ -5,7 +5,6 @@ import { normalize, denormalize } from 'normalizr';
 import { MEMBER_JOIN, MEMBER_LEAVE, MEMBER_KICK, MSG_FILE } from '@misakey/core/api/constants/boxes/events';
 
 import BoxesSchema from 'store/schemas/Boxes';
-import BoxesByDatatagSchema from 'store/schemas/Boxes/ByDatatag';
 import BoxEventsSchema from 'store/schemas/Boxes/Events';
 import UserSchema from '@misakey/react/auth/store/schemas/User';
 import { BLUR_TEXT, CLEAR_TEXT } from 'store/actions/box';
@@ -19,7 +18,7 @@ import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStra
 
 import createResetOnSignOutReducer from '@misakey/react/auth/store/reducers/helpers/createResetOnSignOutReducer';
 
-import { transformReferrerEvent, isMemberEventType, isAccessModeEventType, getEventForNormalization } from 'helpers/boxEvent';
+import { transformReferrerEvent, isMemberEventType, isAccessModeEventType, getEventForNormalization } from '@misakey/ui/helpers/boxEvent';
 import pluck from '@misakey/core/helpers/pluck';
 import propOr from '@misakey/core/helpers/propOr';
 import props from '@misakey/core/helpers/props';
@@ -41,7 +40,7 @@ const {
 } = fileEventsActionCreators;
 const { makeGetItemCount } = fileEventsSelectors;
 const { makeIsPaginationAlreadyFetched } = boxPaginationSelectors;
-const { getDatatagById } = datatagSelectors;
+const { makeGetDatatagById } = datatagSelectors;
 
 // HELPERS
 const omitText = (values) => omit(values, ['text']);
@@ -69,7 +68,19 @@ const getNextMembers = ({ type, sender }, members) => {
 export const makeDenormalizeBoxSelector = () => createSelector(
   (state) => state.entities,
   (_, id) => id,
-  (entities, id) => denormalize(id, BoxesSchema.entity, entities),
+  (entities, id) => (isNil(id) ? null : denormalize(id, BoxesSchema.entity, entities)),
+);
+
+export const makeGetBoxMembersSelector = () => createSelector(
+  (state) => state.entities.boxes,
+  (_, id) => id,
+  (entities, id) => (isNil(id) ? null : path([id, 'members'], entities)),
+);
+
+export const makeDenormalizeBoxMembersSelector = () => createSelector(
+  (state) => state.entities,
+  makeGetBoxMembersSelector(),
+  (entities, ids) => (isNil(ids) ? null : denormalize(ids, UserSchema.collection, entities)),
 );
 
 export const makeGetMissingPublicKeysSelector = () => createSelector(
@@ -119,59 +130,22 @@ export const makeGetBoxText = () => createSelector(
 );
 
 // THUNKS
-export const receiveJoinedBoxesByDatatag = (
-  boxes,
-  { ownerOrgId, datatagId },
-  processStrategy = mergeReceiveNoEmpty,
-) => (dispatch, getState) => {
-  const datatag = getDatatagById(getState(), datatagId);
-
-  const entity = {
-    organizationId: ownerOrgId,
-    boxes: boxes.map((box) => ({
-      isMember: true,
-      hasAccess: true,
-      ...box,
-      lastEvent: getEventForNormalization(box.lastEvent),
-    })),
-    datatag,
-    datatagId,
-  };
-
-  const normalized = normalize(
-    entity,
-    BoxesByDatatagSchema.entity,
-  );
-  const { entities, result } = normalized;
-  const boxIds = path(['boxesByDatatag', result, 'boxes'], entities);
-
-  dispatch(receiveEntities(entities, processStrategy));
-  return Promise.resolve({ result: boxIds });
-};
-
-// @UNUSED
 export const receiveJoinedBoxes = (
   boxes,
-  { ownerOrgId, datatagId },
   processStrategy = mergeReceiveNoEmpty,
 ) => (dispatch, getState) => {
-  const datatag = getDatatagById(getState(), datatagId);
-
-  const entity = {
-    organizationId: ownerOrgId,
-    boxes: boxes.map((box) => ({
+  const getDatatagById = makeGetDatatagById();
+  const state = getState();
+  const normalized = normalize(
+    boxes.map(({ datatagId, ...box }) => ({
       isMember: true,
       hasAccess: true,
       ...box,
       lastEvent: getEventForNormalization(box.lastEvent),
+      datatagId,
+      datatag: getDatatagById(state, datatagId),
     })),
-    datatag,
-    datatagId,
-  };
-
-  const normalized = normalize(
-    entity,
-    BoxesByDatatagSchema.entity,
+    BoxesSchema.collection,
   );
   const { entities } = normalized;
 

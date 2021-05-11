@@ -30,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
     height: `calc(${theme.typography.body2.fontSize} * ${theme.typography.body2.lineHeight})`,
   },
   expansionPanelRoot: {
+    borderTop: 'none',
+    borderLeft: 'none',
+    borderRight: 'none',
     backgroundColor: theme.palette.background.default,
     boxSizing: 'border-box',
     '&.Mui-expanded': {

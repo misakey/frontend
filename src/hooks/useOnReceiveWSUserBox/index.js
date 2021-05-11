@@ -9,7 +9,7 @@ import { receiveWSEditEvent, addBoxEvent } from 'store/reducers/box';
 import { updateEntities } from '@misakey/store/actions/entities';
 import { addNewNotification } from 'store/actions/identity/notifications';
 
-import { isMeLeaveEvent, isMeKickEvent, isMeJoinEvent, isMeEvent } from 'helpers/boxEvent';
+import { isMeLeaveEvent, isMeKickEvent, isMeJoinEvent, isMeEvent } from '@misakey/ui/helpers/boxEvent';
 import path from '@misakey/core/helpers/path';
 import isNil from '@misakey/core/helpers/isNil';
 import log from '@misakey/core/helpers/log';
@@ -34,7 +34,7 @@ const {
 const idParamPath = path(['params', 'id']);
 
 // HOOKS
-export default (search) => {
+export default (filterId, search) => {
   const onRemoveBox = useOnRemoveBox(search);
   const dispatch = useDispatch();
 
@@ -72,13 +72,13 @@ export default (search) => {
   const autojoinBoxInvitations = useAutojoinBoxInvitations(identityId);
 
   const onDelete = useCallback(
-    ({ boxId, ownerOrgId }) => {
+    ({ boxId }) => {
       if (idRefMatchesDeletedBoxId(boxId)) {
         replace(generatePath(routes.boxes._, undefined, undefined, ''));
       }
-      return onRemoveBox(ownerOrgId, boxId);
+      return onRemoveBox(filterId, boxId);
     },
-    [idRefMatchesDeletedBoxId, onRemoveBox, replace, generatePath],
+    [idRefMatchesDeletedBoxId, onRemoveBox, filterId, replace, generatePath],
   );
 
   const onDeleteSuccess = useCallback(
@@ -142,7 +142,7 @@ export default (search) => {
 
       // New event
       if (type === NEW_EVENT) {
-        const { referrerId, type: eventType, boxId, ownerOrgId } = object;
+        const { referrerId, type: eventType, boxId } = object;
         if (CHANGE_EVENT_TYPES.includes(eventType) && !isNil(referrerId)) {
           return Promise.resolve(dispatch(receiveWSEditEvent(object)));
         }
@@ -158,21 +158,20 @@ export default (search) => {
               [{ id: boxId, changes: { hasAccess: true, isMember: true } }],
               BoxesSchema,
             ));
-            dispatch(addBoxEvent(boxId, object, true, ownerOrgId, onNotifyEvent));
+            dispatch(addBoxEvent(boxId, object, true, filterId, onNotifyEvent));
           });
         }
         const isMyEvent = isMeEvent(object, identityId);
         return Promise.resolve(
-          dispatch(addBoxEvent(boxId, object, isMyEvent, ownerOrgId, onNotifyEvent)),
+          dispatch(addBoxEvent(boxId, object, isMyEvent, filterId, onNotifyEvent)),
         );
       }
       log(`Receive unknown WS type: ${type}`);
       return Promise.resolve();
     },
     [
-      onDelete, onDeleteSuccess, onNotifyEvent,
-      dispatch, autojoinBoxInvitations, enqueueSnackbar,
-      identityId, leaveSuccess,
+      onDelete, onDeleteSuccess, onNotifyEvent, dispatch, autojoinBoxInvitations,
+      identityId, filterId, enqueueSnackbar, leaveSuccess,
     ],
   );
 };

@@ -6,7 +6,10 @@
   "role": {
     "admin": "Administrateur",
     "agent": "Agent",
-    "null": "Membre"
+    "default": "Membre"
+  },
+  "home": {
+    "title": "Accueil"
   },
   "secret": {
     "title": "Génération de secret",
@@ -40,9 +43,5 @@
       "text": "{{count}} admin",
       "text_plural": "{{count}} admins"
     }
-  },
-  "navigation": {
-    "boxes": "Discussions",
-    "documents": "Fichiers sauvegardés"
   }
 }

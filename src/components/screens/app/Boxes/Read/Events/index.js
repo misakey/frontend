@@ -144,6 +144,7 @@ function BoxEvents({ box, t, belongsToCurrentUser }) {
               <BoxEventsAppBar
                 box={box}
                 belongsToCurrentUser={belongsToCurrentUser}
+                identityId={identityId}
               />
             </Box>
             {!hasCrypto && (

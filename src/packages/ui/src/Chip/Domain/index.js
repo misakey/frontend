@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.background.default,
     },
   },
+  errorForceColor: {
+    color: theme.palette.error.main,
+  },
 }));
 
 const useEvents = (onClick, onDelete) => useMemo(() => {
@@ -54,7 +57,7 @@ const ChipDomain = forwardRef(({
       classes={{ root: classes.chipRoot }}
       ref={ref}
       component="div"
-      icon={error ? <ErrorOutlineIcon color="error" fontSize="small" /> : null}
+      icon={error ? <ErrorOutlineIcon className={classes.errorForceColor} color="error" fontSize="small" /> : null}
       avatar={error ? null : (
         <Avatar>
           {error

@@ -18,7 +18,7 @@ import AppBarStatic from '@misakey/ui/AppBar/Static';
 import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
 import withDialogCreate from 'components/smart/Dialog/Boxes/Create/with';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
-import ButtonDrawerOrganization from 'components/smart/IconButton/Drawer/Organization';
+import IconButtonDrawerBoxes from 'components/smart/IconButton/Drawer/Boxes';
 
 import AddIcon from '@material-ui/icons/Add';
 
@@ -57,7 +57,7 @@ function ListHeader({ t }) {
       color="primary"
       toolbarProps={TOOLBAR_PROPS}
     >
-      <ButtonDrawerOrganization />
+      <IconButtonDrawerBoxes color="background" />
       <Subtitle gutterBottom={false} color="background">{t('boxes:documentTitle')}</Subtitle>
       <BoxFlexFill />
       {(selfOrgSelected || canCreateOnOrg) && (

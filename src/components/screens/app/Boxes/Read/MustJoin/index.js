@@ -190,7 +190,7 @@ function MustJoin({ box, t }) {
               alignItems="center"
               width="100%"
             >
-              {isFetching ? (<AvatarBoxSkeleton size={LARGE} />) : (
+              {(isFetching || shouldFetch) ? (<AvatarBoxSkeleton size={LARGE} />) : (
                 <AvatarBox
                   title={title}
                   size={LARGE}

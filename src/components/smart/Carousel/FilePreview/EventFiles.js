@@ -5,7 +5,7 @@ import { makeGetEventSelector } from 'store/reducers/box';
 import { makeDenormalizeFileSelector } from 'store/reducers/files/saved/decrypted';
 import { selectors as cryptoSelectors } from '@misakey/react/crypto/store/reducers';
 
-import { getEventEncryptedFileId } from 'helpers/boxEvent';
+import { getEventEncryptedFileId } from '@misakey/ui/helpers/boxEvent';
 import prop from '@misakey/core/helpers/prop';
 import isNil from '@misakey/core/helpers/isNil';
 

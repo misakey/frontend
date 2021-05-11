@@ -35,7 +35,9 @@
   "identity": "Identity",
   "irreversible": "This action is irreversible",
   "loading": "Loading",
+  "manage": "Manage Organization",
   "more": "More",
+  "moreCount": "{{count}} more",
   "next": "Next",
   "newMessages": "New messages",
   "noSession": "No authenticated session",
@@ -76,6 +78,7 @@
   "unlock": "Unlock",
   "validate": "Validate",
   "view": "View",
+  "workspaces": "Workspaces",
   "you": "{{displayName}} (You)",
   "anErrorOccurred": "Sorry, an error occurred",
   "errorPleaseRetryOrRefresh": "An error occurred; please retry or refresh",
@@ -85,7 +88,7 @@
   "drawerMenu": {
     "tabs": {
       "document": "Documents",
-      "chat": "Private spaces"
+      "chat": "Discussions"
     }
   },
   "account": {

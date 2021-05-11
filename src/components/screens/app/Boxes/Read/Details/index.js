@@ -10,12 +10,16 @@ import {
   TOOLBAR_MIN_HEIGHT,
 } from '@misakey/ui/constants/sizes';
 import BoxesSchema from 'store/schemas/Boxes';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
+
+import isEmpty from '@misakey/core/helpers/isEmpty';
 
 import { makeStyles } from '@material-ui/core/styles';
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
 import useBoxRights from 'hooks/useBoxRights';
 import useTheme from '@material-ui/core/styles/useTheme';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useSelector } from 'react-redux';
 
 import IconButtonAppBar from '@misakey/ui/IconButton/AppBar';
 import Box from '@material-ui/core/Box';
@@ -27,7 +31,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import BoxAvatar from '@misakey/ui/Avatar/Box';
+import BoxAvatar from 'components/smart/Avatar/Box';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemShare from 'components/smart/ListItem/Boxes/Share';
 import ListItemLeave from 'components/smart/ListItem/Boxes/Leave';
@@ -40,8 +44,10 @@ import AppBarStatic from '@misakey/ui/AppBar/Static';
 import DialogBoxesDeleteContextProvider from 'components/smart/Dialog/Boxes/Delete/Context';
 import DialogBoxesLeaveContextProvider from 'components/smart/Dialog/Boxes/Leave/Context';
 import DetailsListShortcuts from 'components/screens/app/Boxes/Read/Details/List/Shortcuts';
+import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 
 // CONSTANTS
+const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
 const CONTENT_SPACING = 2;
 const SCROLL_THRESHOLD = LARGE_AVATAR_SIZE + 16;
 const SM_SCROLL_THRESHOLD = LARGE_AVATAR_SM_SIZE + 16;
@@ -147,11 +153,19 @@ function BoxDetails({ box, belongsToCurrentUser, t }) {
     [setContentRef],
   );
 
+  const identityId = useSelector(IDENTITY_ID_SELECTOR);
+
   const {
     id,
     title,
     members = [],
+    ownerOrgId,
+    lostKey,
   } = useMemo(() => box, [box]);
+  const isEmptyMembers = useMemo(
+    () => isEmpty(members),
+    [members],
+  );
 
   const goBack = useGeneratePathKeepingSearchAndHash(routes.boxes.read._, { id });
   // const routeFiles = useGeneratePathKeepingSearchAndHash(routes.boxes.read.files, { id });
@@ -172,6 +186,10 @@ function BoxDetails({ box, belongsToCurrentUser, t }) {
     [isDownSm],
   );
 
+  if (isEmptyMembers) {
+    return <SplashScreenWithTranslation />;
+  }
+
   return (
     <WrapperContext
       box={box}
@@ -190,7 +208,14 @@ function BoxDetails({ box, belongsToCurrentUser, t }) {
           transitionChildren={(
             <ListItem disableGutters classes={{ root: classes.listItemRoot }}>
               <ListItemAvatar>
-                <BoxAvatar title={title} />
+                <BoxAvatar
+                  title={title}
+                  members={members}
+                  ownerOrgId={ownerOrgId}
+                  lostKey={lostKey}
+                  identityId={identityId}
+                  isFetching={isEmptyMembers}
+                />
               </ListItemAvatar>
               <ListItemText
                 primary={title}
@@ -217,7 +242,11 @@ function BoxDetails({ box, belongsToCurrentUser, t }) {
           <BoxAvatar
             ref={targetRef}
             classes={{ root: classes.avatar }}
-            title={title || ''}
+            title={title}
+            members={members}
+            ownerOrgId={ownerOrgId}
+            lostKey={lostKey}
+            identityId={identityId}
             size={LARGE}
           />
           <Title gutterBottom={false} align="center">

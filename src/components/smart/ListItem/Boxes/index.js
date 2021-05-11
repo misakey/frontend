@@ -1,27 +1,29 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
-import { withTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 
+import { SMALL } from '@misakey/ui/constants/sizes';
 import BoxesSchema from 'store/schemas/Boxes';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
+import { selectors as cryptoSelectors } from '@misakey/react/crypto/store/reducers';
 
 import isNil from '@misakey/core/helpers/isNil';
 import isEmpty from '@misakey/core/helpers/isEmpty';
-import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
-import { getBoxEventLastDate } from 'helpers/boxEvent';
+import { getBoxEventLastDate } from '@misakey/ui/helpers/boxEvent';
 import getNextSearch from '@misakey/core/helpers/getNextSearch';
 import isSelfOrg from 'helpers/isSelfOrg';
 
+
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { selectors as cryptoSelectors } from '@misakey/react/crypto/store/reducers';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
 import useBoxRights from 'hooks/useBoxRights';
 import useContextMenuAnchorEl from '@misakey/hooks/useContextMenuAnchor/el';
 import useIsMountedRef from '@misakey/hooks/useIsMountedRef';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useGeneratePathKeepingSearchAndHashCallback from '@misakey/hooks/useGeneratePathKeepingSearchAndHash/callback';
+import { useSelector } from 'react-redux';
+import useFetchBoxMembers from 'hooks/useFetchBoxMembers';
 
 import Skeleton from '@material-ui/lab/Skeleton';
 import Box from '@material-ui/core/Box';
@@ -29,26 +31,28 @@ import Typography from '@material-ui/core/Typography';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
-import Badge from '@misakey/ui/Badge';
-import BoxAvatar from '@misakey/ui/Avatar/Box';
-import BoxAvatarSkeleton from '@misakey/ui/Avatar/Box/Skeleton';
+import ListItemTextTertiary from '@misakey/ui/ListItemText/Tertiary';
+import Badge from '@material-ui/core/Badge';
+import BoxAvatar from 'components/smart/Avatar/Box';
+import AvatarSkeleton from '@misakey/ui/Avatar/Skeleton';
 import TypographyDateSince from 'components/dumb/Typography/DateSince';
 import BoxEventsAccordingToType from 'components/smart/Box/Event';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Menu from '@material-ui/core/Menu';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItemBoxMute from 'components/smart/MenuItem/Box/Mute';
 import MenuItemBoxLeave from 'components/smart/MenuItem/Box/Leave';
 import MenuItemBoxDelete from 'components/smart/MenuItem/Box/Delete';
+import ChipDatatag from 'components/smart/Chip/Datatag';
+
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 
 // CONSTANTS
 const DEFAULT_SETTINGS = { muted: false };
 
-const {
-  makeGetAsymSecretKey,
-} = cryptoSelectors;
+const { identityId: IDENTITY_ID_SELECTOR } = authSelectors;
+const { makeGetAsymSecretKey } = cryptoSelectors;
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -62,19 +66,39 @@ const useStyles = makeStyles((theme) => ({
   background: {
     visibility: '0.5',
   },
+  badgeMenuButtonRoot: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  badgeMenuButtonBadge: {
+    transform: 'none',
+    top: 'auto',
+    right: -12, // to match button edge-end,
+    backgroundColor: theme.palette.action.disabledBackground,
+    color: theme.palette.getContrastText(theme.palette.action.disabledBackground),
+  },
+  badgeMenuButtonColorPrimary: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.getContrastText(theme.palette.primary.main),
+  },
   menuButton: ({ isActionVisible }) => ({
     visibility: isActionVisible ? 'visible' : 'hidden',
   }),
   listItemRoot: ({ isActionVisible }) => ({
-    paddingRight: isActionVisible ? theme.spacing(6) : theme.spacing(2),
+    paddingRight: isActionVisible ? theme.spacing(6) : null,
   }),
-  listItemSelected: {
-    '& > .MuiListItemAvatar-root .MuiAvatar-root': {
-      backgroundColor: theme.palette.primary.main,
+  listItemGutters: {
+    paddingLeft: theme.spacing(1),
+    '&.Mui-selected.MuiListItem-gutters': {
+      paddingLeft: 5,
     },
+    paddingRight: theme.spacing(1),
   },
-  titleSpaced: {
-    marginRight: theme.spacing(1),
+  listItemAvatarRoot: {
+    paddingRight: theme.spacing(1),
+  },
+  tertiaryFlex: {
+    display: 'flex',
   },
 }));
 
@@ -89,12 +113,13 @@ export const BoxListItemSkeleton = ({ classes, toRoute, nextSearchMap, ...props 
       classes={{
         root: clsx(root, internalClasses.listItemRoot),
         selected: clsx(selected, internalClasses.listItemSelected),
+        gutters: internalClasses.listItemGutters,
         ...restClasses,
       }}
       {...props}
     >
-      <ListItemAvatar>
-        <BoxAvatarSkeleton />
+      <ListItemAvatar classes={{ root: internalClasses.listItemAvatarRoot }}>
+        <AvatarSkeleton />
       </ListItemAvatar>
       <ListItemText
         primary={(
@@ -140,7 +165,7 @@ BoxListItemSkeleton.defaultProps = {
   nextSearchMap: [],
 };
 
-function BoxListItem({ box, toRoute, nextSearchMap, ContainerProps, classes, t, ...rest }) {
+function BoxListItem({ id, box, toRoute, nextSearchMap, ContainerProps, classes, ...rest }) {
   const [anchorEl, setAnchorEl] = useState(null);
   // prefer state variable over css because hover is not enough to handle UX
   const [isActionVisible, setIsActionVisible] = useState(false);
@@ -153,20 +178,26 @@ function BoxListItem({ box, toRoute, nextSearchMap, ContainerProps, classes, t, 
   const generatePath = useGeneratePathKeepingSearchAndHashCallback();
 
   const {
-    id,
     title,
     publicKey,
     lastEvent = {},
     eventsCount = 0,
     settings: { muted } = DEFAULT_SETTINGS,
     ownerOrgId,
-  } = useMemo(() => box || {}, [box]);
+    datatagId,
+    members,
+  } = useSafeDestr(box);
+
+  const isOwnerOrgSelfOrg = useMemo(
+    () => isSelfOrg(ownerOrgId),
+    [ownerOrgId],
+  );
 
   const nextSearch = useMemo(
-    () => (isSelfOrg(ownerOrgId)
+    () => (isOwnerOrgSelfOrg
       ? getNextSearch(search, new Map([['orgId', undefined], ...nextSearchMap]))
       : getNextSearch(search, new Map([['orgId', ownerOrgId], ...nextSearchMap]))),
-    [nextSearchMap, ownerOrgId, search],
+    [isOwnerOrgSelfOrg, nextSearchMap, ownerOrgId, search],
   );
 
   const linkProps = useMemo(
@@ -178,14 +209,7 @@ function BoxListItem({ box, toRoute, nextSearchMap, ContainerProps, classes, t, 
     [generatePath, id, nextSearch, toRoute],
   );
 
-  const secondary = useMemo(
-    () => (isNil(box) || isEmpty(lastEvent)
-      ? null // @FIXME we could create a Skeleton
-      : (
-        <BoxEventsAccordingToType box={box} event={lastEvent} preview />
-      )),
-    [lastEvent, box],
-  );
+  const identityId = useSelector(IDENTITY_ID_SELECTOR);
 
   const getAsymSecretKey = useMemo(
     () => makeGetAsymSecretKey(),
@@ -205,25 +229,29 @@ function BoxListItem({ box, toRoute, nextSearchMap, ContainerProps, classes, t, 
     [canBeDecrypted],
   );
 
+  const secondary = useMemo(
+    () => {
+      if (isNil(box) || isEmpty(lastEvent)) {
+        return <Skeleton width={300} />;
+      }
+      return <BoxEventsAccordingToType box={box} event={lastEvent} preview />;
+    },
+    [box, lastEvent],
+  );
+
   const showEventsCount = useMemo(
     () => canBeDecrypted,
     [canBeDecrypted],
   );
 
   const badgeProps = useMemo(
-    () => {
-      if (muted) {
-        return {
-          badgeContent: <NotificationsOffIcon style={{ fontSize: 12 }} />,
-          color: 'primary',
-        };
-      }
-      return {
-        badgeContent: showEventsCount ? eventsCount : 0,
-        color: 'primary',
-      };
-    },
-    [muted, showEventsCount, eventsCount],
+    () => ({
+      badgeContent: showEventsCount ? eventsCount : 0,
+      color: muted ? 'default' : 'primary',
+      variant: isActionVisible ? 'dot' : 'standard',
+      showZero: false,
+    }),
+    [showEventsCount, eventsCount, muted, isActionVisible],
   );
 
   const date = useMemo(
@@ -261,6 +289,21 @@ function BoxListItem({ box, toRoute, nextSearchMap, ContainerProps, classes, t, 
     [setIsActionVisible, isMounted],
   );
 
+  const { called, isFetching, wrappedFetch } = useFetchBoxMembers(id);
+  const shouldFetch = useMemo(
+    () => !lostKey && isOwnerOrgSelfOrg && isNil(members) && !called && !isFetching,
+    [called, isFetching, isOwnerOrgSelfOrg, lostKey, members],
+  );
+
+  useEffect(
+    () => {
+      if (shouldFetch) {
+        wrappedFetch();
+      }
+    },
+    [shouldFetch, wrappedFetch],
+  );
+
   if (isNil(id) || isNil(title)) {
     return null;
   }
@@ -276,36 +319,67 @@ function BoxListItem({ box, toRoute, nextSearchMap, ContainerProps, classes, t, 
       classes={{
         root: clsx(root, internalClasses.listItemRoot),
         selected: clsx(selected, internalClasses.listItemSelected),
+        gutters: internalClasses.listItemGutters,
         ...restClasses,
       }}
       onContextMenu={onContextMenu}
       {...linkProps}
-      {...omitTranslationProps(rest)}
+      {...rest}
     >
-      <ListItemAvatar>
-        <Badge {...badgeProps}>
-          <BoxAvatar
-            title={title}
-            lostKey={lostKey}
-          />
-        </Badge>
+      <ListItemAvatar classes={{ root: internalClasses.listItemAvatarRoot }}>
+        <BoxAvatar
+          title={title}
+          lostKey={lostKey}
+          identityId={identityId}
+          ownerOrgId={ownerOrgId}
+          members={members}
+          isFetching={isFetching}
+        />
       </ListItemAvatar>
-      <ListItemText
+      <ListItemTextTertiary
         className={internalClasses.listItemText}
         primary={(
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography className={internalClasses.titleSpaced} noWrap>{title}</Typography>
-            {!isActionVisible && <TypographyDateSince date={date} className="hideOnHover" />}
+            <Box
+              overflow="hidden"
+              display="flex"
+              flexDirection="row"
+              alignItems="center"
+              mr={1}
+            >
+              <Typography noWrap>{title}</Typography>
+              {muted && (
+                <NotificationsOffIcon color="disabled" fontSize="small" />
+              )}
+            </Box>
+            {!isActionVisible
+            && (
+              <TypographyDateSince date={date} />
+            )}
           </Box>
         )}
         secondary={secondary}
-        primaryTypographyProps={{ noWrap: true, display: 'block' }}
-        secondaryTypographyProps={{ noWrap: true, display: 'block', component: Box }}
+        tertiary={(
+          <ChipDatatag size={SMALL} datatagId={datatagId} />
+        )}
+        primaryTypographyProps={{ noWrap: true, display: 'block', component: Box }}
+        secondaryTypographyProps={{ noWrap: true, display: 'block', variant: 'body2', component: Box }}
+        tertiaryTypographyProps={{
+          noWrap: true, display: 'inline', component: Box, className: internalClasses.tertiaryFlex }}
       />
       <ListItemSecondaryAction>
-        <IconButton className={internalClasses.menuButton} onClick={onContextMenu} edge="end" aria-label="menu-more">
-          <MoreVertIcon />
-        </IconButton>
+        <Badge
+          classes={{
+            root: internalClasses.badgeMenuButtonRoot,
+            badge: internalClasses.badgeMenuButtonBadge,
+            colorPrimary: internalClasses.badgeMenuButtonColorPrimary,
+          }}
+          {...badgeProps}
+        >
+          <IconButton className={internalClasses.menuButton} onClick={onContextMenu} edge="end" aria-label="menu-more">
+            <MoreHorizIcon />
+          </IconButton>
+        </Badge>
         <Menu
           id={`menu-box-${id}`}
           anchorEl={anchorEl}
@@ -333,11 +407,10 @@ BoxListItem.propTypes = {
     root: PropTypes.string,
     selected: PropTypes.string,
   }),
+  id: PropTypes.string.isRequired,
   box: PropTypes.shape(BoxesSchema.propTypes),
   toRoute: PropTypes.string,
   nextSearchMap: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
-  // withTranslation
-  t: PropTypes.func.isRequired,
 };
 
 BoxListItem.defaultProps = {
@@ -348,4 +421,4 @@ BoxListItem.defaultProps = {
   nextSearchMap: [],
 };
 
-export default withTranslation('common')(BoxListItem);
+export default BoxListItem;

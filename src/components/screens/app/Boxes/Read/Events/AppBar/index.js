@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import routes from 'routes';
 
 import { TOOLBAR_MIN_HEIGHT, SMALL } from '@misakey/ui/constants/sizes';
+import { MAX_MEMBERS } from '@misakey/ui/constants/avatars';
 import { LIMITED } from '@misakey/ui/constants/accessModes';
 import BoxesSchema from 'store/schemas/Boxes';
 
@@ -32,7 +33,6 @@ import IconSharing from '@misakey/ui/Icon/Sharing';
 export const HEADER_MIN_HEIGHT = 2 * TOOLBAR_MIN_HEIGHT;
 
 const SKELETON_WIDTH = 100;
-const MAX_MEMBERS = 3;
 
 const TOOLBAR_PROPS = {
   display: 'flex',
@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
+const EventsAppBar = ({ box, t, belongsToCurrentUser, identityId, disabled, ...props }) => {
   const classes = useStyles();
   const {
     title,
@@ -106,6 +106,11 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
   const isTheOnlyMember = useMemo(
     () => members.length === 1 && belongsToCurrentUser,
     [belongsToCurrentUser, members.length],
+  );
+
+  const membersWithoutSelf = useMemo(
+    () => members.filter(({ id: memberId }) => memberId !== identityId),
+    [identityId, members],
   );
 
   const membersText = useMemo(
@@ -184,8 +189,9 @@ const EventsAppBar = ({ box, t, belongsToCurrentUser, disabled, ...props }) => {
           ) : null}
           text={!isTheOnlyMember ? (
             <AvatarGroupMembers
+              alt={t('common:share')}
               max={MAX_MEMBERS}
-              members={members}
+              members={membersWithoutSelf}
               size={SMALL}
             />
           ) : t('common:share')}
@@ -204,11 +210,13 @@ EventsAppBar.propTypes = {
   box: PropTypes.shape(BoxesSchema.propTypes).isRequired,
   belongsToCurrentUser: PropTypes.bool.isRequired,
   disabled: PropTypes.bool,
+  identityId: PropTypes.string,
   // withTranslation
   t: PropTypes.func.isRequired,
 };
 
 EventsAppBar.defaultProps = {
+  identityId: null,
   disabled: false,
 };
 

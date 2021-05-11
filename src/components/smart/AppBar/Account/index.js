@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
@@ -7,44 +8,25 @@ import { useSelector } from 'react-redux';
 import AppBarStatic from '@misakey/ui/AppBar/Static';
 import IconButtonMenuAccount from 'components/smart/IconButton/Menu/Account';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
-import Box from '@material-ui/core/Box';
-import ListBordered from '@misakey/ui/List/Bordered';
-import ListItemOrganizationCurrent from 'components/smart/ListItem/Organization/Current';
 import IconButtonNotificationsMisakey from 'components/smart/IconButton/Notifications/Misakey';
 import MenuNotificationsMisakey from 'components/smart/Menu/Notifications/Misakey';
-import PopoverOrganizations from 'components/smart/Popover/Organizations';
 import isNil from '@misakey/core/helpers/isNil';
 
 // CONSTANTS
 const { hasCrypto: hasCryptoSelector } = authSelectors;
 
 // COMPONENTS
-const AppBarAccount = (props) => {
-  const [orgAnchorEl, setOrgAnchorEl] = useState(null);
+const AppBarAccount = ({ component: Component, children, ...props }) => {
   const [notifAnchorEl, setNotifAnchorEl] = useState(null);
   const notifButtonRef = useRef();
 
   const hasCrypto = useSelector(hasCryptoSelector);
-
-  const onOrgClick = useCallback(
-    (event) => {
-      setOrgAnchorEl(event.currentTarget);
-    },
-    [setOrgAnchorEl],
-  );
 
   const onNotifClick = useCallback(
     (event) => {
       setNotifAnchorEl(event.currentTarget);
     },
     [setNotifAnchorEl],
-  );
-
-  const onOrgClose = useCallback(
-    () => {
-      setOrgAnchorEl(null);
-    },
-    [setOrgAnchorEl],
   );
 
   const onNotifClose = useCallback(
@@ -67,44 +49,35 @@ const AppBarAccount = (props) => {
   );
 
   return (
-    <AppBarStatic
+    <Component
       {...props}
     >
-      <ListBordered
-        dense
-        disablePadding
-      >
-        <ListItemOrganizationCurrent
-          button
-          onClick={onOrgClick}
-        />
-        <PopoverOrganizations
-          anchorEl={orgAnchorEl}
-          open={Boolean(orgAnchorEl)}
-          onClose={onOrgClose}
-        />
-      </ListBordered>
-      <BoxFlexFill />
-      <Box mr={1}>
-        <IconButtonNotificationsMisakey
-          ref={notifButtonRef}
-          selected={Boolean(notifAnchorEl)}
-          onClick={onNotifClick}
-          size="small"
-        />
-        <MenuNotificationsMisakey
-          anchorEl={notifAnchorEl}
-          open={Boolean(notifAnchorEl)}
-          onClose={onNotifClose}
-
-        />
-      </Box>
       <IconButtonMenuAccount />
-    </AppBarStatic>
+      {children
+        || <BoxFlexFill />}
+      <IconButtonNotificationsMisakey
+        ref={notifButtonRef}
+        selected={Boolean(notifAnchorEl)}
+        onClick={onNotifClick}
+        size="small"
+      />
+      <MenuNotificationsMisakey
+        anchorEl={notifAnchorEl}
+        open={Boolean(notifAnchorEl)}
+        onClose={onNotifClose}
+      />
+    </Component>
   );
 };
 
 AppBarAccount.propTypes = {
+  component: PropTypes.elementType,
+  children: PropTypes.node,
+};
+
+AppBarAccount.defaultProps = {
+  component: AppBarStatic,
+  children: null,
 };
 
 export default AppBarAccount;

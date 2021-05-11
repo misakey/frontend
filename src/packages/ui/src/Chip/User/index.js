@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 
 import isFunction from '@misakey/core/helpers/isFunction';
 
+import makeStyles from '@material-ui/core/styles/makeStyles';
+
 import AvatarColorized from '@misakey/ui/Avatar/Colorized';
 import Chip from '@misakey/ui/Chip';
 
@@ -23,12 +25,20 @@ const useEvents = (onClick, onDelete) => useMemo(() => {
   return events;
 }, [onClick, onDelete]);
 
+const useStyles = makeStyles((theme) => ({
+  errorForceColor: {
+    color: theme.palette.error.main,
+  },
+}));
+
+// COMPONENTS
 const ChipUser = forwardRef(({
   identifier, displayName, label, avatarUrl,
   error,
   onClick, onDelete,
   ...props
 }, ref) => {
+  const classes = useStyles();
   const events = useEvents(onClick, onDelete);
 
   const errorProps = useMemo(
@@ -40,7 +50,7 @@ const ChipUser = forwardRef(({
     <Chip
       ref={ref}
       component="div"
-      icon={error ? (<ErrorOutlineIcon color="error" fontSize="small" />) : null}
+      icon={error ? (<ErrorOutlineIcon className={classes.errorForceColor} color="error" fontSize="small" />) : null}
       avatar={
         error ? null
           : <AvatarColorized text={displayName || identifier} image={avatarUrl} />

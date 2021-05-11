@@ -183,6 +183,12 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
         },
       },
     },
+    MuiListItemAvatar: {
+      root: {
+        minWidth: null,
+        paddingRight: 16,
+      },
+    },
     MuiTooltip: {
       tooltip: {
         backgroundColor: fade(BLACK, 0.5),

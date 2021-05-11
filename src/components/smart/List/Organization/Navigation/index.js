@@ -6,7 +6,6 @@ import { selectors as orgSelectors } from 'store/reducers/identity/organizations
 import routes from 'routes';
 import { ADMIN } from '@misakey/ui/constants/organizations/roles';
 
-import isSelfOrg from 'helpers/isSelfOrg';
 import getNextSearch from '@misakey/core/helpers/getNextSearch';
 
 import useGeneratePathKeepingSearchAndHash from '@misakey/hooks/useGeneratePathKeepingSearchAndHash';
@@ -16,14 +15,11 @@ import useOrgId from '@misakey/react/auth/hooks/useOrgId';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import ListBordered from '@misakey/ui/List/Bordered';
-import ListDatatags from 'components/smart/List/Datatags';
 import ListItemNavLink from '@misakey/ui/ListItem/NavLink';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import withDialogPassword from '@misakey/react/auth/components/Dialog/Password/with';
 
-import ChatIcon from '@material-ui/icons/Chat';
-import SaveIcon from '@material-ui/icons/Save';
+import HomeIcon from '@material-ui/icons/Home';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import GroupIcon from '@material-ui/icons/Group';
 
@@ -31,26 +27,20 @@ import GroupIcon from '@material-ui/icons/Group';
 const { makeDenormalizeOrganization } = orgSelectors;
 
 // COMPONENTS
-const LinkWithDialogPassword = withDialogPassword(Link);
-
 const ListNavigationOrganization = ({ nextSearchMap, ...props }) => {
   const { search } = useLocation();
 
   const orgId = useOrgId();
-  const selfOrgSelected = useMemo(
-    () => isSelfOrg(orgId),
-    [orgId],
-  );
 
   const nextSearch = useMemo(
     () => getNextSearch(search, new Map([
-      ['orgId', selfOrgSelected ? undefined : orgId],
+      ['orgId', orgId],
       ...nextSearchMap,
     ])),
-    [nextSearchMap, orgId, search, selfOrgSelected],
+    [nextSearchMap, orgId, search],
   );
 
-  const boxesTo = useGeneratePathKeepingSearchAndHash(routes.boxes._, undefined, nextSearch, '');
+  const homeTo = useGeneratePathKeepingSearchAndHash(routes.organizations._, undefined, nextSearch, '');
   const tokenTo = useGeneratePathKeepingSearchAndHash(routes.organizations.secret, undefined, nextSearch, '');
   const agentsTo = useGeneratePathKeepingSearchAndHash(routes.organizations.agents, undefined, nextSearch, '');
 
@@ -64,8 +54,8 @@ const ListNavigationOrganization = ({ nextSearchMap, ...props }) => {
   const { currentIdentityRole } = useSafeDestr(organization);
 
   const showAdminConfig = useMemo(
-    () => !selfOrgSelected && currentIdentityRole === ADMIN,
-    [selfOrgSelected, currentIdentityRole],
+    () => currentIdentityRole === ADMIN,
+    [currentIdentityRole],
   );
 
   const { t } = useTranslation('organizations');
@@ -78,39 +68,18 @@ const ListNavigationOrganization = ({ nextSearchMap, ...props }) => {
         {...props}
       >
         <ListItemNavLink
-          path={routes.boxes._}
+          path={routes.organizations._}
           button
-          component={LinkWithDialogPassword}
-          to={boxesTo}
+          component={Link}
+          to={homeTo}
+          exact
         >
           <ListItemIcon>
-            <ChatIcon />
+            <HomeIcon />
           </ListItemIcon>
-          <ListItemText>{t('organizations:navigation.boxes')}</ListItemText>
+          <ListItemText>{t('organizations:home.title')}</ListItemText>
         </ListItemNavLink>
-        {selfOrgSelected && (
-          <ListItemNavLink
-            path={routes.documents._}
-            button
-            component={LinkWithDialogPassword}
-            to={routes.documents._}
-          >
-            <ListItemIcon>
-              <SaveIcon />
-            </ListItemIcon>
-            <ListItemText>{t('organizations:navigation.documents')}</ListItemText>
-          </ListItemNavLink>
-        )}
       </ListBordered>
-      {!selfOrgSelected && (
-      <ListDatatags
-        nextSearchMap={nextSearchMap}
-        organizationId={orgId}
-        x={false}
-        t
-        {...props}
-      />
-      )}
       {showAdminConfig && (
         <ListBordered t x={false} {...props}>
           <ListItemNavLink

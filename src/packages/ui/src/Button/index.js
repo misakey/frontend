@@ -53,10 +53,9 @@ const getStandingProps = (standing, color) => {
 };
 
 const makeStyles = (theme) => ({
-  wrapper: {
+  root: {
     position: 'relative',
   },
-  root: { width: '100%' },
   text: ({ color }) => (isBackground(color) ? {
     color: theme.palette.background.paper,
     '&.Mui-disabled': {
@@ -125,29 +124,31 @@ const Button = forwardRef(({
     [standing, color],
   );
 
-  const { wrapper, buttonProgress, ...restClasses } = useSafeDestr(classes);
+  const { buttonProgress, ...restClasses } = useSafeDestr(classes);
 
   return (
-    <span className={wrapper}>
-      <MUIButton
-        ref={ref}
-        classes={restClasses}
-        {...standingProps}
-        disabled={disabledOrLoading}
-        {...rest}
-      >
-        {text}
-      </MUIButton>
+    <MUIButton
+      ref={ref}
+      classes={restClasses}
+      {...standingProps}
+      disabled={disabledOrLoading}
+      {...rest}
+    >
+      {text}
       {isLoading && (
-        <CircularProgress size={24} className={buttonProgress} {...progressProps} />
+        <CircularProgress
+          size={24}
+          disableShrink
+          className={buttonProgress}
+          {...progressProps}
+        />
       )}
-    </span>
+    </MUIButton>
   );
 });
 
 Button.propTypes = {
   classes: PropTypes.shape({
-    wrapper: PropTypes.string,
     root: PropTypes.string,
     label: PropTypes.string,
     buttonProgress: PropTypes.string,
@@ -165,7 +166,6 @@ Button.propTypes = {
 
 Button.defaultProps = {
   classes: {
-    wrapper: '',
     root: '',
     label: '',
     buttonProgress: '',

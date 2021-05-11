@@ -1,19 +1,20 @@
-import React, { useCallback, useMemo } from 'react';
-
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 
 import BoxesSchema from 'store/schemas/Boxes';
-
-import { normalize, denormalize } from 'normalizr';
-import isNil from '@misakey/core/helpers/isNil';
-import omit from '@misakey/core/helpers/omit';
-import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import { getBoxBuilder } from '@misakey/core/api/helpers/builder/boxes';
-import useOnGetBoxError from 'hooks/useFetchBoxDetails/onError';
-
+import { makeDenormalizeBoxSelector } from 'store/reducers/box';
 import { mergeReceiveNoEmpty } from '@misakey/store/reducers/helpers/processStrategies';
 import { receiveEntities } from '@misakey/store/actions/entities';
+
+import { normalize } from 'normalizr';
+import isNil from '@misakey/core/helpers/isNil';
+import omit from '@misakey/core/helpers/omit';
+import { getBoxBuilder } from '@misakey/core/api/helpers/builder/boxes';
+
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
+import useOnGetBoxError from 'hooks/useFetchBoxDetails/onError';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import { useSelector, useDispatch } from 'react-redux';
 
 import BoxListItem, { BoxListItemSkeleton } from 'components/smart/ListItem/Boxes';
 import { ROW_PROP_TYPES } from 'components/smart/WindowedList';
@@ -39,13 +40,36 @@ Skeleton.defaultProps = {
 };
 
 
-const Row = ({ style, index, data, box, id, dispatchReceivedBox, ...rest }) => {
+const Row = ({ style, index, data, ...rest }) => {
+  const [shouldFetchDelayed, setShouldFetchDelayed] = useState(false);
+  const dispatch = useDispatch();
+
+  const {
+    byPagination, selectedId,
+    guttersTop = 0, classes = {},
+  } = useSafeDestr(data);
+
+  const id = useMemo(
+    () => byPagination[index],
+    [byPagination, index],
+  );
+
+  const selected = useMemo(
+    () => !isNil(selectedId) && selectedId === id,
+    [id, selectedId],
+  );
+
+  const denormalizeBoxSelector = useMemo(
+    () => makeDenormalizeBoxSelector(),
+    [],
+  );
+
+  const box = useSelector((state) => denormalizeBoxSelector(state, id));
+
   const getBox = useCallback(
     () => getBoxBuilder(id),
     [id],
   );
-
-  const { guttersTop = 0, classes = {} } = useMemo(() => data, [data]);
 
   const shouldFetch = useMemo(() => isNil(box) && !isNil(id), [box, id]);
 
@@ -59,19 +83,46 @@ const Row = ({ style, index, data, box, id, dispatchReceivedBox, ...rest }) => {
 
   const onError = useOnGetBoxError(id);
 
+  const dispatchReceivedBox = useCallback(
+    (response) => {
+      const normalized = normalize(response, BoxesSchema.entity);
+      const { entities } = normalized;
+      return Promise.resolve(dispatch(receiveEntities(entities, mergeReceiveNoEmpty)));
+    },
+    [dispatch],
+  );
+
   const { isFetching } = useFetchEffect(
     getBox,
-    { shouldFetch },
+    { shouldFetch: shouldFetchDelayed },
     { onSuccess: dispatchReceivedBox, onError },
   );
 
-  if (isFetching) {
+  // Wait for all pending store updates before fetching
+  useEffect(
+    () => {
+      if (shouldFetch) {
+        setTimeout(
+          () => {
+            setShouldFetchDelayed(true);
+          },
+          300,
+        );
+      } else {
+        setShouldFetchDelayed(false);
+      }
+    },
+    [shouldFetch],
+  );
+
+  if (shouldFetch || isFetching) {
     return (
       <Skeleton
         ContainerProps={ContainerProps}
         style={style}
         index={index}
         data={data}
+        selected={selected}
         {...rest}
       />
     );
@@ -79,9 +130,11 @@ const Row = ({ style, index, data, box, id, dispatchReceivedBox, ...rest }) => {
 
   return (
     <BoxListItem
+      id={id}
       ContainerProps={ContainerProps}
       classes={classes}
       box={box}
+      selected={selected}
       {...omitInternalData(data)}
       {...rest}
     />
@@ -91,39 +144,10 @@ const Row = ({ style, index, data, box, id, dispatchReceivedBox, ...rest }) => {
 Row.propTypes = {
   ...ROW_PROP_TYPES,
   data: PropTypes.object,
-  selected: PropTypes.bool,
-  // CONNECT
-  box: PropTypes.shape(BoxesSchema.propTypes),
-  id: PropTypes.string,
-  dispatchReceivedBox: PropTypes.func.isRequired,
 };
 
 Row.defaultProps = {
   data: {},
-  box: null,
-  id: null,
-  selected: false,
 };
 
-// CONNECT
-const mapStateToProps = (state, { index, data: { byPagination, selectedId } }) => {
-  const id = byPagination[index];
-  const box = isNil(id)
-    ? null
-    : denormalize(id, BoxesSchema.entity, state.entities);
-  return {
-    id,
-    box,
-    selected: !isNil(selectedId) && selectedId === id,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => ({
-  dispatchReceivedBox: (data) => {
-    const normalized = normalize(data, BoxesSchema.entity);
-    const { entities } = normalized;
-    return Promise.resolve(dispatch(receiveEntities(entities, mergeReceiveNoEmpty)));
-  },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Row);
+export default Row;

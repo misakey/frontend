@@ -1,9 +1,9 @@
 import React, { useMemo, useCallback } from 'react';
+import PropTypes from 'prop-types';
 
 import { useHistory, useLocation } from 'react-router-dom';
 
 import {
-  TMP_DRAWER_ORG_VALUE,
   TMP_DRAWER_QUERY_PARAMS,
   SIDE_QUERY_PARAM,
   TEMP_DRAWER_MOBILE_WIDTH,
@@ -19,7 +19,6 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import useDrawerLayout from '@misakey/hooks/useDrawerLayout';
 
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import DrawerOrganizationContent from 'components/smart/Drawer/Organization/Content';
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -29,7 +28,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 // COMPONENTS
-const DrawerOrganization = (props) => {
+const DrawerTemporary = ({ searchKey, children, ...props }) => {
   const { replace } = useHistory();
   const { pathname, search, hash } = useLocation();
 
@@ -56,7 +55,7 @@ const DrawerOrganization = (props) => {
   const classes = useStyles({ drawerWidth });
 
   const isTmpDrawerOpen = useMemo(
-    () => tmpDrawerSearch === TMP_DRAWER_ORG_VALUE, [tmpDrawerSearch],
+    () => tmpDrawerSearch === searchKey, [searchKey, tmpDrawerSearch],
   );
 
   const hideDrawerTo = useMemo(
@@ -73,10 +72,10 @@ const DrawerOrganization = (props) => {
       pathname,
       hash,
       search: getNextSearch(search, new Map([
-        [TMP_DRAWER_QUERY_PARAMS, TMP_DRAWER_ORG_VALUE],
+        [TMP_DRAWER_QUERY_PARAMS, searchKey],
       ])),
     }),
-    [hash, pathname, search],
+    [hash, pathname, search, searchKey],
   );
 
   const exitedTo = useMemo(
@@ -122,12 +121,18 @@ const DrawerOrganization = (props) => {
       {...swipeableProps}
       {...props}
     >
-      <DrawerOrganizationContent
-        backTo={hideDrawerTo}
-        hideDrawerMap={HIDE_DRAWER_MAP}
-      />
+      {children}
     </SwipeableDrawer>
   );
 };
 
-export default DrawerOrganization;
+DrawerTemporary.propTypes = {
+  searchKey: PropTypes.string.isRequired,
+  children: PropTypes.node,
+};
+
+DrawerTemporary.defaultProps = {
+  children: null,
+};
+
+export default DrawerTemporary;

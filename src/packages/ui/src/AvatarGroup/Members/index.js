@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 
 import { useStyles as useAvatarStyles } from '@misakey/ui/Avatar';
 
@@ -23,7 +24,6 @@ const computeMaxWidth = (
   max, avatarSize,
 ) => max * avatarSize - Math.max(0, max - 1) * NEGATIVE_MARGIN;
 
-// HOOKS
 export const getResponsiveMaxWidth = (isDownSm, { size, max }) => {
   if (isDownSm) {
     if (size === LARGE) {
@@ -43,6 +43,8 @@ export const getResponsiveMaxWidth = (isDownSm, { size, max }) => {
   return computeMaxWidth(max, AVATAR_SIZE);
 };
 
+
+// HOOKS
 const useStyles = makeStyles((theme) => ({
   avatarGroupRoot: ({ size, max }) => ({
     maxWidth: getResponsiveMaxWidth(false, { size, max }),
@@ -53,12 +55,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const AvatarGroupMembers = ({ members, max, size, ...rest }) => {
+const AvatarGroupMembers = ({ members, max, size, classes: { root, avatar }, ...rest }) => {
   const avatarGroupClasses = useStyles({ max, size });
   const avatarClasses = useAvatarStyles({ size });
   return (
     <AvatarGroup
-      classes={{ avatar: avatarClasses.avatarRoot, root: avatarGroupClasses.avatarGroupRoot }}
+      classes={{
+        avatar: clsx(avatarClasses.avatarRoot, avatar),
+        root: clsx(avatarGroupClasses.avatarGroupRoot, root) }}
       max={max}
       {...rest}
     >
@@ -76,11 +80,16 @@ AvatarGroupMembers.propTypes = {
   })).isRequired,
   max: PropTypes.number,
   size: PropTypes.oneOf(SIZES),
+  classes: PropTypes.shape({
+    root: PropTypes.string,
+    avatar: PropTypes.string,
+  }),
 };
 
 AvatarGroupMembers.defaultProps = {
   max: 3,
   size: MEDIUM,
+  classes: {},
 };
 
 export default AvatarGroupMembers;

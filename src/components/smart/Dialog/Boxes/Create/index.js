@@ -1,15 +1,19 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation, Trans } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import routes from 'routes';
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
+import { selectors as orgSelectors } from 'store/reducers/identity/organizations';
 import { boxNameFieldValidationSchema } from 'constants/validationSchemas/boxes';
 import setBoxSecrets from '@misakey/react/crypto/store/actions/setBoxSecrets';
 
 import { createBoxBuilder } from '@misakey/core/api/helpers/builder/boxes';
 import getRandomTitle from '@misakey/core/helpers/getRandomTitle';
 import isFunction from '@misakey/core/helpers/isFunction';
+import isNil from '@misakey/core/helpers/isNil';
+import prop from '@misakey/core/helpers/prop';
+import isSelfOrg from 'helpers/isSelfOrg';
 import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
 import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 import dialogIsFullScreen from '@misakey/core/helpers/dialog/isFullScreen';
@@ -18,13 +22,13 @@ import { createCryptoForNewBox } from '@misakey/core/crypto/box/creation';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 import useOrgId from '@misakey/react/auth/hooks/useOrgId';
+import useFetchOrganizations from 'hooks/useFetchOrganizations';
 import useGeneratePathKeepingSearchAndHashCallback from '@misakey/hooks/useGeneratePathKeepingSearchAndHash/callback';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
-import Box from '@material-ui/core/Box';
 import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
@@ -37,15 +41,24 @@ import Dialog from '@material-ui/core/Dialog';
 import FieldText from '@misakey/ui/Form/Field/TextFieldWithErrors';
 import IconButtonMenuAccount from 'components/smart/IconButton/Menu/Account';
 import DialogBoxesCreatePasteLink from 'components/smart/Dialog/Boxes/Create/PasteLink';
-import ListItemOrganizationCurrent from 'components/smart/ListItem/Organization/Current';
-import ListBordered from '@misakey/ui/List/Bordered';
+import AutocompleteOrganizationField from 'components/smart/Autocomplete/Organization/Field';
 
 // CONSTANTS
 const { hasCrypto: hasCryptoSelector } = authSelectors;
+const { makeDenormalizeOrganization } = orgSelectors;
 const FIELD_BOX_NAME = 'name';
-const INITIAL_VALUES = { [FIELD_BOX_NAME]: '' };
+const FIELD_ORG = 'ownerOrgId';
+const INITIAL_VALUES = {
+  [FIELD_BOX_NAME]: '',
+  [FIELD_ORG]: '',
+};
 
 const DESCRIPTION_ID = 'create-box-dialog-description';
+
+const SELF_ORG = { id: window.env.SELF_CLIENT.id };
+
+// HELPERS
+const idProp = prop('id');
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -83,7 +96,42 @@ function CreateBoxDialog({
 
   const hasCrypto = useSelector(hasCryptoSelector);
 
+  const denormalizeOrgSelector = useMemo(
+    () => makeDenormalizeOrganization(),
+    [],
+  );
   const ownerOrgId = useOrgId();
+  const organization = useSelector((state) => denormalizeOrgSelector(state, ownerOrgId));
+  const isOrgSelfOrg = useMemo(
+    () => isSelfOrg(ownerOrgId),
+    [ownerOrgId],
+  );
+
+  const initialValues = useMemo(
+    () => ({
+      ...INITIAL_VALUES,
+      [FIELD_ORG]: isOrgSelfOrg ? SELF_ORG : organization,
+    }),
+    [organization, isOrgSelfOrg],
+  );
+
+  const {
+    isFetching: isFetchingOrganizations,
+    shouldFetch: shouldFetchOrganizations,
+    organizations,
+  } = useFetchOrganizations();
+  const options = useMemo(
+    () => ([
+      ...(organizations || []).filter(({ id }) => !isSelfOrg(id)),
+      SELF_ORG,
+    ]),
+    [organizations],
+  );
+
+  const selectOrgFetching = useMemo(
+    () => shouldFetchOrganizations || isFetchingOrganizations || isNil(ownerOrgId),
+    [isFetchingOrganizations, ownerOrgId, shouldFetchOrganizations],
+  );
 
   useEffect(
     () => {
@@ -127,8 +175,8 @@ function CreateBoxDialog({
   );
 
   const onSubmitNewBox = useCallback(
-    (form, { setSubmitting }) => {
-      const title = form[FIELD_BOX_NAME] || placeholder;
+    ({ [FIELD_BOX_NAME]: name, [FIELD_ORG]: org }, { setSubmitting }) => {
+      const title = name || placeholder;
       const {
         boxSecretKey,
         boxPublicKey,
@@ -139,21 +187,21 @@ function CreateBoxDialog({
         title,
         publicKey: boxPublicKey,
         keyShare: misakeyKeyShare,
-        ownerOrgId,
+        ownerOrgId: idProp(org),
       })
         .then((response) => onSubmitNewBoxSuccess(response, boxSecretKey, invitationKeyShare))
         .catch(handleHttpErrors)
         .finally(() => { setSubmitting(false); });
     },
-    [handleHttpErrors, onSubmitNewBoxSuccess, placeholder, ownerOrgId],
+    [handleHttpErrors, onSubmitNewBoxSuccess, placeholder],
   );
 
   const onResetFormik = useCallback(
     (e, { resetForm }) => {
-      resetForm({ values: INITIAL_VALUES });
+      resetForm({ values: initialValues });
       onClose();
     },
-    [onClose],
+    [initialValues, onClose],
   );
 
   return (
@@ -177,7 +225,7 @@ function CreateBoxDialog({
         : (
           <Formik
             validationSchema={boxNameFieldValidationSchema}
-            initialValues={INITIAL_VALUES}
+            initialValues={initialValues}
             onSubmit={onSubmitNewBox}
           >
             <Form>
@@ -195,20 +243,15 @@ function CreateBoxDialog({
               <DialogContent
                 className={classes.dialogContentRoot}
               >
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  component={Trans}
-                  i18nKey="boxes:create.dialog.organization"
-                >
-                  In&nbsp;
-                  <ListBordered
-                    dense
-                    disablePadding
-                  >
-                    <ListItemOrganizationCurrent />
-                  </ListBordered>
-                </Box>
+                <AutocompleteOrganizationField
+                  name={FIELD_ORG}
+                  options={options}
+                  isLoading={selectOrgFetching}
+                  id="select-org"
+                  prefix="boxes."
+                  variant="filled"
+                  fullWidth
+                />
                 <Field
                   component={FieldText}
                   className={classes.inputField}
@@ -254,4 +297,4 @@ CreateBoxDialog.defaultProps = {
   onSuccess: null,
 };
 
-export default withTranslation(['common', 'boxes'])(CreateBoxDialog);
+export default withTranslation(['common', 'boxes', 'organizations'])(CreateBoxDialog);

@@ -195,11 +195,14 @@
   },
   "boxes": {
     "name": {
-      "label": "Title",
+      "label": "Subject",
       "helperText": "An appropriate subject will help you find the private space",
       "error": {
-        "malformed": "Title must be between 5 and 50 characters long"
+        "malformed": "Subject must be between 5 and 50 characters long"
       }
+    },
+    "ownerOrgId": {
+      "label": "From"
     },
     "delete": {
       "confirm": {
@@ -225,7 +228,7 @@
     "contact": {
       "dialog": {
         "title": {
-          "label": "Private space name",
+          "label": "Discussion name",
           "error": {
             "malformed": "Name must be between 5 and 50 characters long"
           }

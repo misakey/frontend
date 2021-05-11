@@ -2,6 +2,7 @@ import accounts from './accounts';
 import auth from './auth';
 import boxes from './boxes';
 import organizations from './organizations';
+import datatags from './datatags';
 import identities from './identities';
 import sso from './sso';
 import user from './user';
@@ -13,6 +14,7 @@ export default {
   auth,
   boxes,
   organizations,
+  datatags,
   files,
   identities,
   sso,

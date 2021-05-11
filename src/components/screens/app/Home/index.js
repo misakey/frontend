@@ -7,13 +7,10 @@ import { notFound } from '@misakey/core/api/constants/errorTypes';
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import isNil from '@misakey/core/helpers/isNil';
-import isEmpty from '@misakey/core/helpers/isEmpty';
 import getNextSearch from '@misakey/core/helpers/getNextSearch';
 
 import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
 import { useSelector } from 'react-redux';
-import useOrgId from '@misakey/react/auth/hooks/useOrgId';
-import useDatatagId from 'hooks/useDatatagId';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 
 import ScreenDrawerContextProvider from 'components/smart/Screen/Drawer';
@@ -22,6 +19,7 @@ import VaultLockedScreen from 'components/screens/app/VaultLocked';
 import VaultDocuments from 'components/screens/app/Documents';
 import Boxes from 'components/screens/app/Boxes';
 import RoutePasswordRequired from '@misakey/react/auth/components/Route/PasswordRequired';
+import BoxesDrawer from 'components/smart/Drawer/Boxes';
 
 // CONSTANTS
 const { isAuthenticated: IS_AUTHENTICATED_SELECTOR } = authSelectors;
@@ -34,25 +32,9 @@ function Home() {
 
   const shouldDisplayLockedScreen = useShouldDisplayLockedScreen();
 
-  const ownerOrgId = useOrgId();
-
-  const datatagId = useDatatagId();
-
   const noDatatagSearch = useMemo(
     () => getNextSearch(search, new Map([['datatagId', undefined]])),
     [search],
-  );
-
-  const filterId = useMemo(
-    () => (isEmpty(datatagId) ? ownerOrgId : datatagId),
-    [ownerOrgId, datatagId],
-  );
-
-  const queryParams = useMemo(
-    () => (!isNil(ownerOrgId)
-      ? { ownerOrgId, datatagId }
-      : { datatagId }),
-    [ownerOrgId, datatagId],
   );
 
   const onError = useCallback(
@@ -85,14 +67,12 @@ function Home() {
         ? <VaultLockedScreen />
         : (
           <BoxesList
-            filterId={filterId}
-            queryParams={queryParams}
             onError={onError}
             isFullWidth={isFullWidth}
           />
         );
     },
-    [isAuthenticated, shouldDisplayLockedScreen, filterId, queryParams, onError, isFullWidth],
+    [isAuthenticated, shouldDisplayLockedScreen, onError, isFullWidth],
   );
 
   return (
@@ -101,6 +81,7 @@ function Home() {
       isFullWidth={isFullWidth}
       initialIsDrawerOpen={isNothingSelected}
     >
+      <BoxesDrawer />
       <Switch>
         <RoutePasswordRequired
           path={routes.documents._}

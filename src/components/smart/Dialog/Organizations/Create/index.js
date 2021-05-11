@@ -34,9 +34,9 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 2),
   },
   dialogTitleTitle: {
-    position: 'absolute',
-    left: '50%',
-    transform: 'translateX(-50%)',
+    display: 'flex',
+    flexGrow: 1,
+    color: theme.palette.getContrastText(theme.palette.primary.main),
   },
   dialogTitleIconButton: {
     color: theme.palette.getContrastText(theme.palette.primary.main),
@@ -80,6 +80,7 @@ const DialogOrganizationsCreate = ({ onClose, onSuccess, ...props }) => {
   return (
     <Dialog
       fullWidth
+      fullScreen={fullScreen}
       onClose={onClose}
       {...props}
     >

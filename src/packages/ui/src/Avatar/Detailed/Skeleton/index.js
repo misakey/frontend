@@ -32,13 +32,13 @@ const AvatarDetailedSkeleton = ({ title, subtitle }) => {
 };
 
 AvatarDetailedSkeleton.propTypes = {
-  title: PropTypes.string,
-  subtitle: PropTypes.string,
+  title: PropTypes.bool,
+  subtitle: PropTypes.bool,
 };
 
 AvatarDetailedSkeleton.defaultProps = {
-  title: null,
-  subtitle: null,
+  title: false,
+  subtitle: false,
 };
 
 export default AvatarDetailedSkeleton;

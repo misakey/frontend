@@ -5,6 +5,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import routes from 'routes';
+import { BOXES_FILTER_ID } from 'constants/pagination/filterId';
 
 import isNil from '@misakey/core/helpers/isNil';
 import isSelfOrg from 'helpers/isSelfOrg';
@@ -53,7 +54,7 @@ const WindowedListBoxes = forwardRef(({
     byPagination,
     itemCount,
     loadMoreItems,
-  } = usePaginateBoxesByStatus(filterId, queryParams, search, onError);
+  } = usePaginateBoxesByStatus(BOXES_FILTER_ID, queryParams, search, onError);
 
   const itemData = useMemo(
     () => ({
@@ -132,7 +133,7 @@ const WindowedListBoxes = forwardRef(({
       component={WindowedListInfiniteLoaded}
       loadMoreItems={loadMoreItems}
       itemCount={itemCount}
-      itemSize={72}
+      itemSize={88}
       itemData={itemData}
       innerElementType={innerElementType}
       {...props}

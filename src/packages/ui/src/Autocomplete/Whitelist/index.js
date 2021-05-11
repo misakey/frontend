@@ -277,6 +277,7 @@ const AutocompleteWhitelist = ({
             }}
             {...params}
             {...textFieldProps}
+            readOnly
           />
         )}
         noOptionsText={null}
@@ -289,6 +290,7 @@ const AutocompleteWhitelist = ({
         forcePopupIcon={false}
         disableClearable
         {...props}
+        options={[{ identifierValue: 'toto' }]}
       />
       {!isEmpty(value) && (
         <BoxControls

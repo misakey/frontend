@@ -1,19 +1,13 @@
 import React, { useMemo, forwardRef } from 'react';
-
 import PropTypes from 'prop-types';
+
+import { CIRCULAR_PROGRESS_SIZES } from '@misakey/ui/constants/sizes';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Box from '@material-ui/core/Box';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-// CONSTANTS
-const DEFAULT_SIZE = 36;
-const SIZES = {
-  small: 32,
-  default: DEFAULT_SIZE,
-  large: 47,
-};
 
 // HOOKS
 const useStyles = makeStyles(() => ({
@@ -35,7 +29,7 @@ const IconProgress = forwardRef(({
   const classes = useStyles();
 
   const size = useMemo(
-    () => SIZES[fontSize],
+    () => CIRCULAR_PROGRESS_SIZES[fontSize],
     [fontSize],
   );
 

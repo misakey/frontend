@@ -34,6 +34,17 @@
         "text": "Cet espace privé a été supprimé",
         "text_plural": "Ces espaces privés ont été supprimés"
       }
+    },
+    "search": {
+      "title": {
+        "short": "Discussions",
+        "long": "Rechercher dans Discussions"
+      },
+      "facets": {
+        "organization": "Applications",
+        "datatag": "Catégories"
+      },
+      "boxes": "Discussions"
     }
   },
   "read": {
@@ -222,7 +233,14 @@
       "title": "Nouvel espace privé",
       "pasteLink": "J'ai un lien d'invitation",
       "success": "L'espace privé a été créé avec succès\u00a0!",
-      "organization": "Dans\u00a0<1><0></0></1>"
+      "organization": {
+        "self": "{{displayName}} (Espace personnel)",
+        "other": {
+          "admin": "{{name}} (Administrateur)",
+          "agent": "{{name}} (Agent)",
+          "default": "{{name}} (Membre)"
+        }
+      }
     },
     "error": {
       "updateSecretStorage": "Une erreur s'est produite lors de la mise à jour du coffre-fort. Assurez-vous de garder le lien d'invitation de l'espace privé afin de ne pas perdre la clé de déchiffrement."
@@ -330,5 +348,9 @@
       "title": "Envoyer un message à {{displayName}}",
       "subtitle": "Un espace privé sera créé et partagé entre vous et {{displayName}}.\n{{displayName}} apparaîtra comme membre quand il ou elle aura accepté de rejoindre l'espace privé."
     }
+  },
+  "drawer": {
+    "boxes": "Discussions",
+    "documents": "Fichiers sauvegardés"
   }
 }

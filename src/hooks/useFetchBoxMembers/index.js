@@ -7,42 +7,46 @@ import { normalize } from 'normalizr';
 import { getBoxMembersBuilder } from '@misakey/core/api/helpers/builder/boxes';
 
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import useUpdatedRef from '@misakey/hooks/useUpdatedRef';
+import { batch, useDispatch } from 'react-redux';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
-import { getBoxById } from 'store/reducers/box';
-import isEmpty from '@misakey/core/helpers/isEmpty';
+import useFetchCallback from '@misakey/hooks/useFetch/callback';
 
 // HOOKS
-// @UNUSED
 export default (boxId) => {
   const dispatch = useDispatch();
   const handleHttpErrors = useHandleHttpErrors();
-  const { hasAccess, ...rest } = useSelector((state) => getBoxById(state, boxId) || {});
+
+  const boxIdRef = useUpdatedRef(boxId);
 
   const dispatchReceiveBoxMembers = useCallback(
-    (members) => {
+    (response) => {
       const normalized = normalize(
-        members,
+        response,
         UserSchema.collection,
       );
       const { entities, result } = normalized;
-      return Promise.all([
-        dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
-        dispatch(updateEntities([{ id: boxId, changes: { members: result } }], BoxesSchema)),
-      ]);
+      return batch(
+        () => Promise.all([
+          dispatch(receiveEntities(entities, mergeReceiveNoEmpty)),
+          dispatch(updateEntities([{
+            id: boxIdRef.current, changes: { members: result },
+          }], BoxesSchema)),
+        ]),
+      );
     },
-    [boxId, dispatch],
+    [boxIdRef, dispatch],
   );
 
-  return useCallback(
-    () => {
-      if (!hasAccess || isEmpty(rest)) {
-        return Promise.resolve();
-      }
-      return getBoxMembersBuilder(boxId)
-        .then((result) => dispatchReceiveBoxMembers(result))
-        .catch(handleHttpErrors);
-    },
-    [boxId, dispatchReceiveBoxMembers, handleHttpErrors, hasAccess, rest],
+  const onSuccess = useCallback(
+    (result) => dispatchReceiveBoxMembers(result),
+    [dispatchReceiveBoxMembers],
   );
+
+  const get = useCallback(
+    () => getBoxMembersBuilder(boxIdRef.current),
+    [boxIdRef],
+  );
+
+  return useFetchCallback(get, { onSuccess, onError: handleHttpErrors });
 };

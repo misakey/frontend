@@ -23,6 +23,8 @@ const BoxesSchema = {
   propTypes: {
     publicKey: PropTypes.string,
     id: PropTypes.string.isRequired,
+    ownerOrgId: PropTypes.string,
+    datatagId: PropTypes.string,
     title: PropTypes.string,
     accessMode: PropTypes.oneOf(ACCESS_MODES),
     serverCreatedAt: PropTypes.string,

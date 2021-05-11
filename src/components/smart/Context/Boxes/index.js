@@ -1,6 +1,7 @@
 import React, { useMemo, createContext, useContext } from 'react';
 
 import PropTypes from 'prop-types';
+import { BOXES_FILTER_ID } from 'constants/pagination/filterId';
 
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
@@ -33,7 +34,7 @@ const BoxesContextProvider = ({ children }) => {
     [identityId],
   );
 
-  const onReceiveWSUserBox = useOnReceiveWSUserBox(search);
+  const onReceiveWSUserBox = useOnReceiveWSUserBox(BOXES_FILTER_ID, search);
 
   const socketRef = useWebSocket(webSocketEndpoint, onReceiveWSUserBox);
 

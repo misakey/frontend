@@ -6,7 +6,10 @@
   "role": {
     "admin": "Administrator",
     "agent": "Agent",
-    "null": "Member"
+    "default": "Member"
+  },
+  "home": {
+    "title": "Home"
   },
   "secret": {
     "title": "Secret generation",
@@ -40,9 +43,5 @@
       "text": "{{count}} admin",
       "text_plural": "{{count}} admins"
     }
-  },
-  "navigation": {
-    "boxes": "Private spaces",
-    "documents": "Saved files"
   }
 }

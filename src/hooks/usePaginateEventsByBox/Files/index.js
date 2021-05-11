@@ -12,7 +12,7 @@ import { makeOffsetLimitFromRange, makeRangeFromOffsetLimit } from '@misakey/cor
 import { getBoxFilesEventsBuilder, countBoxFilesEventsBuilder } from '@misakey/core/api/helpers/builder/boxes';
 import objectToCamelCase from '@misakey/core/helpers/objectToCamelCase';
 import getMissingIndexes from '@misakey/core/helpers/getMissingIndexes';
-import { getEventForNormalization } from 'helpers/boxEvent';
+import { getEventForNormalization } from '@misakey/ui/helpers/boxEvent';
 
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';

@@ -26,6 +26,25 @@ const EMPTY_OBJECT = {};
 const getIdPaginatedIndex = (pagination, id) => invertObj(pagination)[id];
 const getSubstateOrInitial = (filterId, items) => propOr(INITIAL_SUB_STATE, filterId)(items);
 
+const getRemovedPagination = (paginatedIndex, currentByPagination) => {
+  const unchangedRange = range(0, paginatedIndex);
+  const unchangedByPagination = pick(unchangedRange, currentByPagination);
+
+  const nextByPagination = Object.entries(currentByPagination)
+    .reduce((aggr, [key, value]) => {
+      const intKey = parseInt(key, 10);
+      if (intKey > paginatedIndex) {
+        return {
+          ...aggr,
+          [intKey - 1]: value,
+        };
+      }
+      // unchanged
+      return aggr;
+    }, unchangedByPagination);
+  return nextByPagination;
+};
+
 // ACTION HANDLERS
 // @FIXME what should happen to byPagination if itemCount changes with already paginated items ?
 const onReceivePaginatedItemCount = (state, { filterId, itemCount }) => {
@@ -92,13 +111,14 @@ const onAddPaginatedId = (state, { filterId, id, search = null }) => {
 };
 
 const onRemovePaginatedId = (state, { filterId, id, search = null }) => {
-  const stateKey = !isNil(search) ? BY_SEARCH_PAGINATION : BY_PAGINATION;
   const currentStateById = getSubstateOrInitial(filterId, state);
-  const currentByPagination = currentStateById[stateKey];
+  const currentByPagination = currentStateById[BY_PAGINATION];
+  const currentBySearchPagination = currentStateById[BY_SEARCH_PAGINATION];
   const paginatedIndex = getIdPaginatedIndex(currentByPagination, id);
+  const paginatedSearchIndex = getIdPaginatedIndex(currentByPagination, id);
   const currentItemCount = currentStateById.itemCount;
 
-  if (isNil(paginatedIndex)) {
+  if (isNil(paginatedIndex) && isNil(paginatedSearchIndex)) {
     // if element is not found but we already have the itemCount
     // decrement it
     if (!isNil(currentItemCount)) {
@@ -113,32 +133,62 @@ const onRemovePaginatedId = (state, { filterId, id, search = null }) => {
     return state;
   }
 
-  const unchangedRanged = range(0, paginatedIndex);
-  const unchangedByPagination = pick(unchangedRanged, currentByPagination);
+  if (isNil(paginatedIndex)) {
+    const nextBySearchPagination = getRemovedPagination(
+      paginatedSearchIndex,
+      currentBySearchPagination,
+    );
 
-  const nextByPagination = Object.entries(currentByPagination)
-    .reduce((aggr, [key, value]) => {
-      const intKey = parseInt(key, 10);
-      if (intKey > paginatedIndex) {
-        return {
-          ...aggr,
-          [intKey - 1]: value,
-        };
-      }
-      // unchanged
-      return aggr;
-    }, unchangedByPagination);
+    return {
+      ...state,
+      [filterId]: {
+        ...currentStateById,
+        search,
+        [BY_SEARCH_PAGINATION]: nextBySearchPagination,
+        itemCount: currentItemCount - 1,
+      },
+    };
+  }
+
+  if (isNil(paginatedSearchIndex)) {
+    const nextByPagination = getRemovedPagination(paginatedIndex, currentByPagination);
+
+    return {
+      ...state,
+      [filterId]: {
+        ...currentStateById,
+        search,
+        [BY_PAGINATION]: nextByPagination,
+        itemCount: currentItemCount - 1,
+      },
+    };
+  }
+
+  const nextByPagination = getRemovedPagination(paginatedIndex, currentByPagination);
+  const nextBySearchPagination = getRemovedPagination(
+    paginatedSearchIndex,
+    currentBySearchPagination,
+  );
 
   return {
     ...state,
     [filterId]: {
       ...currentStateById,
       search,
-      [stateKey]: nextByPagination,
+      [BY_PAGINATION]: nextByPagination,
+      [BY_SEARCH_PAGINATION]: nextBySearchPagination,
       itemCount: currentItemCount - 1,
     },
   };
 };
+
+const onResetSearchPagination = (state, { filterId }) => ({
+  ...state,
+  [filterId]: {
+    ...getSubstateOrInitial(filterId, state),
+    [BY_SEARCH_PAGINATION]: INITIAL_SUB_STATE[BY_SEARCH_PAGINATION],
+  },
+});
 
 const onResetPagination = (state, { filterId }) => ({
   ...state,
@@ -160,6 +210,7 @@ export const makePaginationReducer = (prefix, getState, initialState = INITIAL_S
   const ADD_PAGINATED_ID = Symbol(`${uppercasedPrefix}_ADD_PAGINATED_ID`);
   const REMOVE_PAGINATED_ID = Symbol(`${uppercasedPrefix}_REMOVE_PAGINATED_ID`);
   const RESET_PAGINATION = Symbol(`${uppercasedPrefix}_RESET_PAGINATION`);
+  const RESET_SEARCH_PAGINATION = Symbol(`${uppercasedPrefix}_RESET_SEARCH_PAGINATION`);
 
   // ACTION CREATORS
   const receivePaginatedItemCount = (filterId, itemCount) => ({
@@ -193,6 +244,11 @@ export const makePaginationReducer = (prefix, getState, initialState = INITIAL_S
 
   const resetPagination = (filterId) => ({
     type: RESET_PAGINATION,
+    filterId,
+  });
+
+  const resetSearchPagination = (filterId) => ({
+    type: RESET_SEARCH_PAGINATION,
     filterId,
   });
 
@@ -232,6 +288,7 @@ export const makePaginationReducer = (prefix, getState, initialState = INITIAL_S
     [ADD_PAGINATED_ID]: onAddPaginatedId,
     [REMOVE_PAGINATED_ID]: onRemovePaginatedId,
     [RESET_PAGINATION]: onResetPagination,
+    [RESET_SEARCH_PAGINATION]: onResetSearchPagination,
   });
 
   return {
@@ -241,6 +298,7 @@ export const makePaginationReducer = (prefix, getState, initialState = INITIAL_S
       ADD_PAGINATED_ID,
       REMOVE_PAGINATED_ID,
       RESET_PAGINATION,
+      RESET_SEARCH_PAGINATION,
     },
     actionCreators: {
       receivePaginatedItemCount,
@@ -248,6 +306,7 @@ export const makePaginationReducer = (prefix, getState, initialState = INITIAL_S
       addPaginatedId,
       removePaginatedId,
       resetPagination,
+      resetSearchPagination,
     },
     selectors,
     reducer,

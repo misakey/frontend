@@ -7,7 +7,8 @@ export const HIDE_DRAWER_MAP = [
 ];
 
 export const TMP_DRAWER_ACCOUNT_VALUE = 'account';
-export const TMP_DRAWER_ORG_VALUE = 'organization';
+export const TMP_DRAWER_ORG_MANAGEMENT_VALUE = 'organization';
+export const TMP_DRAWER_BOXES_VALUE = 'boxes';
 
 export const PERMANENT_DRAWER_DESKTOP_WIDTH = '30%';
 export const PERMANENT_DRAWER_MOBILE_WIDTH = '100%';

@@ -21,7 +21,7 @@ export const useLayoutStyles = makeStyles((theme) => ({
     },
   },
   avatar: {
-    margin: theme.spacing(2, 0),
+    margin: theme.spacing(1, 0),
   },
   wrapTextAnywhere: {
     overflowWrap: 'anywhere',
@@ -29,7 +29,7 @@ export const useLayoutStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const AvatarDetailed = ({ text, image, title, subtitle, classes }) => {
+const AvatarDetailed = ({ text, image, title, subtitle, classes, ...rest }) => {
   const layoutClasses = useLayoutStyles();
 
   return (
@@ -39,6 +39,7 @@ const AvatarDetailed = ({ text, image, title, subtitle, classes }) => {
         text={text}
         image={image}
         size={LARGE}
+        {...rest}
       />
       <Title classes={{ root: classes.wrapTextAnywhere }} gutterBottom={false} align="center">
         {title}
