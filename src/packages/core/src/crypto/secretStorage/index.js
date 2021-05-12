@@ -57,7 +57,7 @@ export function encryptSecretWithRootKey(secret, rootKey) {
   );
 }
 
-function decryptSecretWithRootKey(encryptedSecret, rootKey) {
+export function decryptSecretWithRootKey(encryptedSecret, rootKey) {
   const {
     ciphertext,
     nonce,
