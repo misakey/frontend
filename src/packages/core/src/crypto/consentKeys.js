@@ -118,6 +118,7 @@ export function handleKeysForConsent({
       if (isEmpty(details)) {
         // this is not an error;
         // scopes like 'tos' etc have no 'details'
+        consentedScopes[scope] = {};
         return;
       }
 

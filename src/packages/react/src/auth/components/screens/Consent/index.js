@@ -159,7 +159,13 @@ const AuthConsent = () => {
       acr,
       subjectIdentityId: identityId,
       consentChallenge,
-      [CONSENTED_SCOPES_KEY]: scopes,
+      // backend expects consented scopes to be a mapping
+      // scope -> extra data,
+      // with extra data being some crypto for datatag scopes
+      // and an empty object for other scopes.
+      // TODO in https://gitlab.misakey.dev/misakey/frontend/-/issues/1179 let this conversion be managed by
+      // function handleKeysForConsent
+      [CONSENTED_SCOPES_KEY]: Object.fromEntries(scopes.map((scope) => [scope, {}])),
     })
       .then((response) => {
         const { redirectTo: nextRedirectTo } = objectToCamelCase(response);
