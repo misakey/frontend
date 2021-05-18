@@ -107,52 +107,47 @@ export function handleKeysForConsent({
   asymKeysMapping,
   consumerPublicKey,
 }) {
-  const consentedScopes = {};
   const newAsymKeys = {};
 
-  acceptedRequestedConsents.forEach(
-    ({
-      scope,
-      details,
-    }) => {
-      if (isEmpty(details)) {
-        // this is not an error;
-        // scopes like 'tos' etc have no 'details'
-        consentedScopes[scope] = {};
-        return;
-      }
+  const consentedScopes = acceptedRequestedConsents.reduce((acc, { scope, details }) => {
+    if (isEmpty(details)) {
+      return { ...acc, [scope]: {} };
+    }
+    const {
+      consentPublicKey: maybeConsentPublicKey,
+      producerOrganization: {
+        publicKey: producerPublicKey,
+      },
+    } = details;
 
-      const {
-        consentPublicKey: maybeConsentPublicKey,
-        producerOrganization: {
-          publicKey: producerPublicKey,
-        },
-      } = details;
+    const {
+      consentSecretKey,
+      newConsentKey,
+    } = getOrCreateConsentKey({
+      maybeConsentPublicKey,
+      asymKeysMapping,
+      producerOrSubjectPublicKey: producerPublicKey,
+    });
 
-      const {
-        consentSecretKey,
-        newConsentKey,
-      } = getOrCreateConsentKey({
-        maybeConsentPublicKey,
-        asymKeysMapping,
-        producerOrSubjectPublicKey: producerPublicKey,
-      });
+    const encryptedConsentSecretKey = encryptConsentSecretKey({
+      secretKey: consentSecretKey,
+      recipientPublicKey: consumerPublicKey,
+    });
 
-      const encryptedConsentSecretKey = encryptConsentSecretKey({
-        secretKey: consentSecretKey,
-        recipientPublicKey: consumerPublicKey,
-      });
+    const scopeData = {
+      encryptedConsentSecretKey,
+    };
 
-      consentedScopes[scope] = {
-        encryptedConsentSecretKey,
-      };
+    if (!isEmpty(newConsentKey)) {
+      scopeData.newConsentKey = newConsentKey;
+      newAsymKeys[newConsentKey.publicKey] = consentSecretKey;
+    }
 
-      if (!isEmpty(newConsentKey)) {
-        consentedScopes[scope].newConsentKey = newConsentKey;
-        newAsymKeys[newConsentKey.publicKey] = consentSecretKey;
-      }
-    },
-  );
+    return {
+      ...acc,
+      [scope]: scopeData,
+    };
+  }, {});
 
   return {
     consentedScopes,

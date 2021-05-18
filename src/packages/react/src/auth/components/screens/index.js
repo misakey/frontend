@@ -19,6 +19,7 @@ import getNextSearch from '@misakey/core/helpers/getNextSearch';
 import objectToSnakeCase from '@misakey/core/helpers/objectToSnakeCase';
 import nonePass from '@misakey/core/helpers/nonePass';
 import getLoginInfo from '@misakey/core/auth/builder/getLoginInfo';
+import { stringify as scopeStringify } from '@misakey/core/helpers/scope';
 
 import useLocationSearchParams from '@misakey/hooks/useLocationSearchParams';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
@@ -136,7 +137,7 @@ const Auth = ({
   );
 
   const onSuccess = useCallback(
-    ({ scope, loginHint, displayHints: stringifiedHints, ...loginInfo }) => {
+    ({ scope: scopeArray, loginHint, displayHints: stringifiedHints, ...loginInfo }) => {
       const displayHints = isEmpty(stringifiedHints) ? undefined : JSON.parse(stringifiedHints);
       batch(() => {
         if (!isNil(loginHint)) {
@@ -144,7 +145,7 @@ const Auth = ({
         }
         dispatchSsoUpdate({
           ...loginInfo,
-          scope: scope.join(' '),
+          scope: scopeStringify(scopeArray),
           loginHint,
           displayHints,
           loginChallenge,
@@ -224,7 +225,7 @@ Auth.propTypes = {
   match: PropTypes.shape({ path: PropTypes.string }).isRequired,
   // CONNECT
   isAuthenticated: PropTypes.bool,
-  currentAcr: PropTypes.string,
+  currentAcr: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   sso: PropTypes.shape(SSO_PROP_TYPES).isRequired,
   dispatchSsoUpdate: PropTypes.func.isRequired,
   dispatchSetIdentifier: PropTypes.func.isRequired,

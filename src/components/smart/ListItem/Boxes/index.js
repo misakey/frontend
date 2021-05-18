@@ -194,10 +194,8 @@ function BoxListItem({ id, box, toRoute, nextSearchMap, ContainerProps, classes,
   );
 
   const nextSearch = useMemo(
-    () => (isOwnerOrgSelfOrg
-      ? getNextSearch(search, new Map([['orgId', undefined], ...nextSearchMap]))
-      : getNextSearch(search, new Map([['orgId', ownerOrgId], ...nextSearchMap]))),
-    [isOwnerOrgSelfOrg, nextSearchMap, ownerOrgId, search],
+    () => getNextSearch(search, new Map(nextSearchMap)),
+    [nextSearchMap, search],
   );
 
   const linkProps = useMemo(

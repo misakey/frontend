@@ -1,5 +1,8 @@
-import { selectors } from '@misakey/react/auth/store/reducers/auth';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
+import { selectors as ssoSelectors } from '@misakey/react/auth/store/reducers/sso';
+
 import logSentryException from '@misakey/core/helpers/log/sentry/exception';
+import propOrEmptyObject from '@misakey/core/helpers/propOr/emptyObject';
 import asyncBatch from '@misakey/react/crypto/store/helpers/reduxBatchAsync';
 
 import {
@@ -9,7 +12,8 @@ import {
 
 import processSetBoxKeyShareCryptoAction from './processSetBoxKeyShareCryptoAction';
 
-const { accountId: getAccountId } = selectors;
+const { accountId: ACCOUNT_ID_SELECTOR } = authSelectors;
+const { subjectIdentity: SUBJECT_IDENTITY_SELECTOR } = ssoSelectors;
 
 /**
  * pullCryptoactions fetches the cryptoactions for the current account
@@ -24,7 +28,11 @@ const { accountId: getAccountId } = selectors;
 export default () => (
   async (dispatch, getState) => {
     const state = getState();
-    const accountId = getAccountId(state);
+    const accountIdAuth = ACCOUNT_ID_SELECTOR(state);
+    const subjectIdentity = SUBJECT_IDENTITY_SELECTOR(state);
+    const accountIdSso = propOrEmptyObject('accountId', subjectIdentity);
+
+    const accountId = accountIdAuth || accountIdSso;
 
     // cryptoactions is supposed to be an array
     const cryptoactions = await listCryptoActions({ accountId });

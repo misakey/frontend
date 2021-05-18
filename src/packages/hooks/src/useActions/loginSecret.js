@@ -1,10 +1,11 @@
 import { useCallback } from 'react';
 
 import { onResetSsoIdentity } from '@misakey/react/auth/store/actions/sso';
+import { clearIdentity } from '@misakey/react/auth/store/actions/auth';
 
 import authRoutes from '@misakey/react/auth/routes';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, batch } from 'react-redux';
 
 import { useHistory } from 'react-router-dom';
 
@@ -14,7 +15,10 @@ export const useClearUser = () => {
   const { push } = useHistory();
 
   return useCallback(
-    () => Promise.resolve(dispatch(onResetSsoIdentity()))
+    () => batch(() => Promise.all([
+      dispatch(onResetSsoIdentity()),
+      dispatch(clearIdentity()),
+    ]))
       .then(() => {
         push(authRoutes.signIn._);
       }),

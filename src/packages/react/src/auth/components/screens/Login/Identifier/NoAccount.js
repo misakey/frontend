@@ -2,26 +2,32 @@ import React, { useMemo, useContext, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
 
+import { selectors as ssoSelectors } from '@misakey/react/auth/store/reducers/sso';
 import authRoutes from '@misakey/react/auth/routes';
 import { BUTTON_STANDINGS } from '@misakey/ui/Button';
 import { ssoSetMethodName } from '@misakey/react/auth/store/actions/sso';
 import { IDENTITY_EMAILED_CODE } from '@misakey/core/auth/constants/amr';
 import { UserManagerContext } from '@misakey/react/auth/components/OidcProvider/Context';
 
+import { hasConsentDataScope } from '@misakey/core/helpers/scope';
+import isNil from '@misakey/core/helpers/isNil';
+
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useClearUser } from '@misakey/hooks/useActions/loginSecret';
 import useResetAuthHref from '@misakey/react/auth/hooks/useResetAuthHref';
+import { useAuthCallbackHintsContext } from '@misakey/react/auth/components/Context/AuthCallbackHints';
 
 import CardUser from '@misakey/ui/Card/User';
 import IconButton from '@material-ui/core/IconButton';
 import BoxControlsCard from '@misakey/ui/Box/Controls/Card';
 import Box from '@material-ui/core/Box';
-import isNil from '@misakey/core/helpers/isNil';
+import BoxMessage from '@misakey/ui/Box/Message';
 
 import CloseIcon from '@material-ui/icons/Close';
-import { useAuthCallbackHintsContext } from '@misakey/react/auth/components/Context/AuthCallbackHints';
+// CONSTANTS
+const { scope: SCOPE_SELECTOR } = ssoSelectors;
 
 // COMPONENTS
 const AuthLoginIdentifierNoAccount = ({ identifier, loginChallenge, userPublicData }) => {
@@ -30,6 +36,12 @@ const AuthLoginIdentifierNoAccount = ({ identifier, loginChallenge, userPublicDa
   const { userManager } = useContext(UserManagerContext);
   const { push } = useHistory();
   const dispatch = useDispatch();
+
+  const scope = useSelector(SCOPE_SELECTOR);
+  const hasDataConsentScope = useMemo(
+    () => hasConsentDataScope(scope),
+    [scope],
+  );
 
   const { getCallbackHints, updateCallbackHints } = useAuthCallbackHintsContext();
   const authCallbackHints = useMemo(() => getCallbackHints(), [getCallbackHints]);
@@ -76,12 +88,14 @@ const AuthLoginIdentifierNoAccount = ({ identifier, loginChallenge, userPublicDa
   );
 
   const secondary = useMemo(
-    () => ({
-      text: t('auth:login.identifier.oneTimeCode'),
-      onClick: onNext,
-      standing: BUTTON_STANDINGS.TEXT,
-    }),
-    [onNext, t],
+    () => (hasDataConsentScope
+      ? null
+      : ({
+        text: t('auth:login.identifier.oneTimeCode'),
+        onClick: onNext,
+        standing: BUTTON_STANDINGS.TEXT,
+      })),
+    [hasDataConsentScope, onNext, t],
   );
 
   return (
@@ -96,6 +110,15 @@ const AuthLoginIdentifierNoAccount = ({ identifier, loginChallenge, userPublicDa
         )}
         {...userPublicData}
       />
+      {hasDataConsentScope && (
+        <BoxMessage
+          my={1}
+          type="info"
+          text={t('auth:login.identifier.creationRequired')}
+          border={false}
+          typographyProps={{ variant: 'caption' }}
+        />
+      )}
       <BoxControlsCard primary={primary} secondary={secondary} />
     </Box>
   );

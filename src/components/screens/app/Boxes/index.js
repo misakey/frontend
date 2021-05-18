@@ -12,7 +12,7 @@ import isEmpty from '@misakey/core/helpers/isEmpty';
 import path from '@misakey/core/helpers/path';
 
 import useSetBoxKeyShareInUrl from '@misakey/react/crypto/hooks/useSetBoxKeyShareInUrl';
-import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
+import useShouldDisplayLockedScreen from '@misakey/hooks/useShouldDisplayLockedScreen';
 
 import BoxRead from 'components/screens/app/Boxes/Read';
 import BoxNone from 'components/screens/app/Boxes/None';

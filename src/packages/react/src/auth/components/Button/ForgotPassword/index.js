@@ -1,17 +1,18 @@
-import React, { useCallback, useContext, useMemo } from 'react';
-import { useFormikContext } from 'formik';
+import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import { useDispatch } from 'react-redux';
+import { IDENTITY_EMAILED_CODE } from '@misakey/core/auth/constants/amr';
 
 import { ssoSetMethodName } from '@misakey/react/auth/store/actions/sso';
 import isNil from '@misakey/core/helpers/isNil';
 
+import useOnResetPasswordRedirect from '@misakey/react/auth/hooks/useOnResetPasswordRedirect';
 import useResetAuthHref from '@misakey/react/auth/hooks/useResetAuthHref';
-import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
-import { IDENTITY_EMAILED_CODE } from '@misakey/core/auth/constants/amr';
 import { useAuthCallbackHintsContext } from '@misakey/react/auth/components/Context/AuthCallbackHints';
-import { UserManagerContext } from '../../OidcProvider/Context';
+import { useFormikContext } from 'formik';
+import { useDispatch } from 'react-redux';
+
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 // COMPONENTS
 const ButtonForgotPassword = ({ loginChallenge, identifier, ...props }) => {
@@ -19,24 +20,21 @@ const ButtonForgotPassword = ({ loginChallenge, identifier, ...props }) => {
 
   const { resetForm } = useFormikContext();
 
-  const { userManager } = useContext(UserManagerContext);
-
   const { getCallbackHints, updateCallbackHints } = useAuthCallbackHintsContext();
 
   const authCallbackHints = useMemo(() => getCallbackHints(), [getCallbackHints]);
 
   const resetAuthHref = useResetAuthHref(loginChallenge);
 
-  const onResetPasswordRedirect = useCallback(
-    () => {
-      userManager.signinRedirect({
-        loginHint: identifier,
-        misakeyCallbackHints: { resetPassword: true },
-        referrer: resetAuthHref,
-      });
-    },
-    [identifier, resetAuthHref, userManager],
+  const resetPasswordRedirectConfig = useMemo(
+    () => ({
+      loginHint: identifier,
+      referrer: resetAuthHref,
+    }),
+    [identifier, resetAuthHref],
   );
+
+  const onResetPasswordRedirect = useOnResetPasswordRedirect(resetPasswordRedirectConfig);
 
   const onResetPassword = useCallback(
     async () => {
@@ -70,8 +68,6 @@ const ButtonForgotPassword = ({ loginChallenge, identifier, ...props }) => {
 ButtonForgotPassword.propTypes = {
   loginChallenge: PropTypes.string.isRequired,
   identifier: PropTypes.string.isRequired,
-  isFormDisabled: PropTypes.bool.isRequired,
-  toggleIsFormDisabled: PropTypes.func.isRequired,
 };
 
 export default ButtonForgotPassword;

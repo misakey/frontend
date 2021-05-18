@@ -21,6 +21,7 @@ const RedirectAuthCallback = ({ loadingPlaceholder, fallbackReferrer }) => {
   const [referrer, setReferrer] = useState(false);
   const [isDialogOpened, setIsDialogOpened] = useState(false);
   const [isReset, setIsReset] = useState(false);
+  const [canSkipCreation, setCanSkipCreation] = useState(true);
 
   const { userManager } = useUserManagerContext();
 
@@ -53,7 +54,12 @@ const RedirectAuthCallback = ({ loadingPlaceholder, fallbackReferrer }) => {
         });
 
         const { identityId } = user;
-        const { referrer: nextReferrer, shouldCreateAccount, resetPassword } = callbackHints;
+        const {
+          referrer: nextReferrer,
+          shouldCreateAccount,
+          resetPassword,
+          canSkipCreation: hintCanSkipCreation = true,
+        } = callbackHints;
         setReferrer(nextReferrer);
 
         // auth flow is finished, user can be redirected to referrer
@@ -72,6 +78,7 @@ const RedirectAuthCallback = ({ loadingPlaceholder, fallbackReferrer }) => {
         }
 
         setIsDialogOpened(true);
+        setCanSkipCreation(hintCanSkipCreation);
         return setIsReset(resetPassword);
       } catch (e) {
         // this error has already been logged in Sentry by userManager
@@ -97,7 +104,12 @@ const RedirectAuthCallback = ({ loadingPlaceholder, fallbackReferrer }) => {
 
   return (
     <>
-      <DialogCreatePassword open={isDialogOpened} onClose={onClose} isReset={isReset} />
+      <DialogCreatePassword
+        canSkipCreation={canSkipCreation}
+        open={isDialogOpened}
+        onClose={onClose}
+        isReset={isReset}
+      />
       {!isDialogOpened && loadingPlaceholder}
     </>
   );

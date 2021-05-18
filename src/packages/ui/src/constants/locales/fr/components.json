@@ -200,5 +200,10 @@
     "title": "Sécurité",
     "ariaLabel": "Aller à Sécurité du compte",
     "text": "Mot de passe {{passwordStatus}}, MFA {{MFAStatus}}"
+  },
+  "lockedScreen": {
+    "documentTitle": "Interface verrouillée",
+    "text": "Votre coffre-fort est verrouillé",
+    "helperText": "Saisissez votre mot de passe"
   }
 }

@@ -21,3 +21,9 @@ export const getRootKeyShareBuilder = (userLocalShareHash) => API
   .build({ userLocalShareHash })
   .send()
   .then(objectToCamelCaseDeep);
+
+export const getRootKeyShareFromAuthFlowBuilder = (userLocalShareHash) => API
+  .use(API.endpoints.auth.rootKeyShares.read)
+  .build({ userLocalShareHash })
+  .send()
+  .then(objectToCamelCaseDeep);

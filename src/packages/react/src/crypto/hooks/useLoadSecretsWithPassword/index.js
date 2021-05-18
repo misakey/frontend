@@ -19,7 +19,7 @@ import {
 import {
   decryptSecretStorageWithPassword,
 } from '@misakey/core/crypto/secretStorage';
-import useFetchSecretStorage from './useFetchSecretStorage';
+import useFetchSecretStorage from '@misakey/react/crypto/hooks/useFetchSecretStorage';
 
 // CONSTANTS
 const {
@@ -27,7 +27,7 @@ const {
 } = authSelectors;
 
 // HOOKS
-export default ((skipUpdate = false) => {
+export default ((skipUpdate = false, isReady = true) => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation('common');
@@ -37,7 +37,7 @@ export default ((skipUpdate = false) => {
   const {
     data: encryptedSecretStorage,
     accountNeedsMigration,
-  } = useFetchSecretStorage();
+  } = useFetchSecretStorage(isReady);
 
   const decryptWithPassword = useCallback(
     async (password) => {

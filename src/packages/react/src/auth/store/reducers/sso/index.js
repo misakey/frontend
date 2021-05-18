@@ -9,6 +9,7 @@ import { AMRS, IDENTITY_PASSWORD, IDENTITY_EMAILED_CODE, WEBAUTHN } from '@misak
 
 import isNil from '@misakey/core/helpers/isNil';
 import prop from '@misakey/core/helpers/prop';
+import pick from '@misakey/core/helpers/pick';
 import path from '@misakey/core/helpers/path';
 import { parseAcrValues, parseAcr } from '@misakey/core/helpers/parseAcr';
 import createResetOnSignOutReducer from '@misakey/react/auth/store/reducers/helpers/createResetOnSignOutReducer';
@@ -36,8 +37,8 @@ export const PROP_TYPES = {
   }),
   authnState: PropTypes.shape({
     identityId: PropTypes.string,
-    currentAcr: PropTypes.number,
-    requiredAcr: PropTypes.number,
+    currentAcr: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    requiredAcr: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     currentAmrs: PropTypes.arrayOf(PropTypes.string),
     availableAmrs: PropTypes.arrayOf(PropTypes.string),
   }),
@@ -67,6 +68,7 @@ export const PROP_TYPES = {
   acr: PropTypes.number,
   acrValues: PropTypes.arrayOf(PropTypes.string),
   requestedConsents: PropTypes.arrayOf(PropTypes.shape(REQUESTED_CONSENT_PROP_TYPES)),
+  requestUrl: PropTypes.string,
   // not an identity schema because we didn't finish flow
   subjectIdentity: PropTypes.shape({
     id: PropTypes.string.isRequired,
@@ -75,13 +77,14 @@ export const PROP_TYPES = {
     identifierKind: PropTypes.string.isRequired,
     displayName: PropTypes.string.isRequired,
     avatarUrl: PropTypes.string,
+    hasCrypto: PropTypes.bool.isRequired,
   }),
 };
 
 // INITIAL STATE
 export const INITIAL_STATE = {
   client: {},
-  identifier: null,
+  identifier: '',
   identity: null,
   authnState: {},
   methodName: null,
@@ -95,6 +98,7 @@ export const INITIAL_STATE = {
   acr: null,
   acrValues: [],
   requestedConsents: [],
+  requestUrl: null,
   subjectIdentity: null,
 };
 
@@ -142,6 +146,10 @@ export const selectors = {
   subjectIdentity: createSelector(
     getState,
     prop('subjectIdentity'),
+  ),
+  requestUrl: createSelector(
+    getState,
+    prop('requestUrl'),
   ),
   requestedConsents: createSelector(
     getState,
@@ -207,11 +215,7 @@ function onUpdate(state, { sso: { acrValues, acr, ...rest } }) {
 function onClearSsoUpdate(state) {
   return {
     ...state,
-    identity: null,
-    identifier: null,
-    authnState: {},
-    methodName: null,
-    metadata: {},
+    ...pick(['identity', 'identifier', 'authnState', 'methodName', 'metadata'], INITIAL_STATE),
   };
 }
 

@@ -6,7 +6,6 @@ import { useHistory, generatePath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
-import getNextSearch from '@misakey/core/helpers/getNextSearch';
 import isFunction from '@misakey/core/helpers/isFunction';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
@@ -17,7 +16,7 @@ const SeeButton = ({ details: notifDetails, onClick }) => {
 
   const { t } = useTranslation('common');
 
-  const { boxId, ownerOrgId } = useSafeDestr(notifDetails);
+  const { boxId } = useSafeDestr(notifDetails);
 
   const handleClick = useCallback(
     (e) => {
@@ -26,10 +25,9 @@ const SeeButton = ({ details: notifDetails, onClick }) => {
       }
       history.push({
         pathname: generatePath(routes.boxes.read._, { id: boxId }),
-        search: getNextSearch('', new Map([['orgId', ownerOrgId]])),
       });
     },
-    [onClick, history, boxId, ownerOrgId],
+    [onClick, history, boxId],
   );
 
   return (

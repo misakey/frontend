@@ -12,14 +12,17 @@
     "title": "Accueil"
   },
   "secret": {
-    "title": "Génération de secret",
-    "generate": "Générer un nouveau secret",
+    "title": "Génération de secrets",
+    "generate": "Générer de nouveaux secrets",
     "identifier": "Identifiant de l'organisation",
     "slug": "Slug de l'organization",
-    "copy": "Copiez et stockez ce code secret en sécurité, il vous permettra d'identifier une machine par API",
+    "copy": "Copiez et stockez ces secrets en sécurité, ils vous permettront d'identifier une machine par API",
     "confirm": {
-      "title": "Êtes-vous sûr·e de vouloir générer un nouveau secret\u00a0?",
-      "body": "Le secret précédent sera révoqué et les services l'utilisant n'auront plus d'autorisation le temps de les mettre à jour"
+      "title": "Êtes-vous sûr·e de vouloir générer de nouveaux secrets\u00a0?",
+      "body": "Les secrets précédents seront révoqués et les services les utilisant n'auront plus d'autorisation le temps de les mettre à jour"
+    },
+    "crypto": {
+      "conflict": "Secret crypto déjà existant. Contactez <1>feedback@misakey.com</1> pour en générer un nouveau"
     }
   },
   "datatags": {

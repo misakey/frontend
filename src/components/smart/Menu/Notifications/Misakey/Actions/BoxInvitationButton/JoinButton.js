@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
 import logSentryException from '@misakey/core/helpers/log/sentry/exception';
-import getNextSearch from '@misakey/core/helpers/getNextSearch';
 import isFunction from '@misakey/core/helpers/isFunction';
 
 import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
@@ -29,13 +28,11 @@ function JoinButton({ id, details: notifDetails, onClick }) {
           processAutoInviteCryptoaction(notifDetails),
         );
         dispatch(markNotificationAsUsed(id));
-        const { ownerOrgId } = notifDetails;
         if (isFunction(onClick)) {
           onClick(e);
         }
         history.push({
           pathname: generatePath(routes.boxes.read._, { id: notificationBoxId }),
-          search: getNextSearch('', new Map([['orgId', ownerOrgId]])),
         });
       } catch (error) {
         logSentryException(error);

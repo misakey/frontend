@@ -190,5 +190,10 @@
     "title": "Security",
     "ariaLabel": "Go to Account security",
     "text": "Password {{passwordStatus}}, MFA {{MFAStatus}}"
+  },
+  "lockedScreen": {
+    "documentTitle": "Locked interface",
+    "text": "Your vault is locked",
+    "helperText": "Type your password"
   }
 }

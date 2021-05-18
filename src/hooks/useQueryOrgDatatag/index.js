@@ -9,6 +9,7 @@ import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import getNextSearch from '@misakey/core/helpers/getNextSearch';
 
 // HOOKS
+// @UNUSED
 export default (box) => {
   const { ownerOrgId, datatagId } = useSafeDestr(box);
   const { search, ...restLocation } = useLocation();

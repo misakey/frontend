@@ -1,86 +1,22 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
-import { LARGE, APPBAR_HEIGHT, AVATAR_SIZE, LARGE_MULTIPLIER } from '@misakey/ui/constants/sizes';
-import { openVaultValidationSchema } from '@misakey/react/auth/constants/validationSchemas/vault';
-import { PREHASHED_PASSWORD } from '@misakey/react/auth/constants/account/password';
-import { invalid } from '@misakey/core/api/constants/errorTypes';
+import { LARGE } from '@misakey/ui/constants/sizes';
 import { SIDES } from '@misakey/ui/constants/drawers';
-import { getCurrentUserSelector } from '@misakey/react/auth/store/reducers/auth';
-import {
-  DecryptionError,
-} from '@misakey/core/crypto/Errors/classes';
 
-import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 import isNil from '@misakey/core/helpers/isNil';
 
 import useGetOrgFromSearch from '@misakey/react/auth/hooks/useGetOrgFromSearch';
-import { useSelector } from 'react-redux';
-import useLoadSecretsWithPassword from '@misakey/react/crypto/hooks/useLoadSecretsWithPassword';
-import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import { Form } from 'formik';
-import Formik from '@misakey/ui/Formik';
-import FormField from '@misakey/ui/Form/Field';
-import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
 import IconButtonMenuAccount from 'components/smart/IconButton/Menu/Account';
 import AppBarDrawer from 'components/smart/Screen/Drawer/AppBar';
-import FormHelperTextInCard from '@misakey/ui/FormHelperText/InCard';
-import CardUserSignOut from '@misakey/react/auth/components/Card/User/SignOut';
-import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
-import BoxControlsCard from '@misakey/ui/Box/Controls/Card';
-import Box from '@material-ui/core/Box';
-import CardSsoWithSlope from '@misakey/react/auth/components/Card/Sso/WithSlope';
-import TitleBold from '@misakey/ui/Typography/Title/Bold';
+import ScreenLockedAuth from '@misakey/ui/Screen/Locked/Auth';
+import AvatarMisakey from '@misakey/ui/Avatar/Misakey';
 import AvatarColorized, { BACKGROUND_COLOR } from '@misakey/ui/Avatar/Colorized';
 
-// CONSTANTS
-const INITIAL_VALUES = {
-  [PREHASHED_PASSWORD]: '',
-};
-
-const SLOPE_PROPS = {
-  // @FIXME approximate spacing to align card content with slope
-  height: APPBAR_HEIGHT + AVATAR_SIZE * LARGE_MULTIPLIER + 102,
-};
-
-// HOOKS
-const useStyles = makeStyles(() => ({
-  cardOverflowVisible: {
-    overflow: 'visible',
-  },
-}));
-
 // COMPONENTS
-function VaultLocked({ t }) {
-  const classes = useStyles();
-
-  const openVaultWithPassword = useLoadSecretsWithPassword();
-
-  const currentUser = useSelector(getCurrentUserSelector);
-  const { displayName, avatarUrl, identifierValue } = useSafeDestr(currentUser);
-
-  const onSubmit = useCallback(
-    async ({ [PREHASHED_PASSWORD]: password }, { setFieldError }) => {
-      try {
-        await openVaultWithPassword(password);
-      } catch (error) {
-        if (error instanceof DecryptionError) {
-          setFieldError(PREHASHED_PASSWORD, invalid);
-          return;
-        }
-        logSentryException(error, 'openning vault with password', { crypto: true });
-      }
-    },
-    [openVaultWithPassword],
-  );
-
-  useUpdateDocHead(t('boxes:vault.lockedScreen.documentTitle'));
-
+function VaultLocked(props) {
   const { organization } = useGetOrgFromSearch();
   const { name, logoUrl } = useSafeDestr(organization);
 
@@ -102,57 +38,16 @@ function VaultLocked({ t }) {
   );
 
   return (
-    <CardSsoWithSlope
-      slopeProps={SLOPE_PROPS}
+    <ScreenLockedAuth
       avatar={avatar}
-      avatarSize={LARGE}
       header={(
         <AppBarDrawer color="primary" side={SIDES.LEFT}>
           <IconButtonMenuAccount />
         </AppBarDrawer>
       )}
-    >
-      <Formik
-        onSubmit={onSubmit}
-        initialValues={INITIAL_VALUES}
-        validationSchema={openVaultValidationSchema}
-      >
-        <Box component={Form} display="flex" flexDirection="column" width="100%" justifyContent="center">
-          <TitleBold align="center" gutterBottom={false}>{t('boxes:vault.lockedScreen.text')}</TitleBold>
-          <CardUserSignOut
-            my={3}
-            className={classes.cardOverflowVisible}
-            avatarUrl={avatarUrl}
-            displayName={displayName}
-            identifier={identifierValue}
-          >
-            <FormField
-              name={PREHASHED_PASSWORD}
-              variant="filled"
-              component={FieldPasswordRevealable}
-              helperText={t('boxes:vault.lockedScreen.helperText')}
-              margin="none"
-              inputProps={{ 'data-matomo-ignore': true }}
-              FormHelperTextProps={{ component: FormHelperTextInCard }}
-              fullWidth
-              autoFocus
-            />
-          </CardUserSignOut>
-          <BoxControlsCard
-            primary={{
-              type: 'submit',
-              text: t('common:unlock'),
-            }}
-            formik
-          />
-        </Box>
-      </Formik>
-    </CardSsoWithSlope>
+      {...props}
+    />
   );
 }
 
-VaultLocked.propTypes = {
-  t: PropTypes.func.isRequired,
-};
-
-export default withTranslation(['common', 'boxes'])(VaultLocked);
+export default VaultLocked;

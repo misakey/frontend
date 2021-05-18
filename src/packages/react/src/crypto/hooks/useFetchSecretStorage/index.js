@@ -1,29 +1,40 @@
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
+import { selectors as ssoSelectors } from '@misakey/react/auth/store/reducers/sso';
+import { selectors } from '@misakey/react/crypto/store/reducers';
+import { conflict } from '@misakey/core/api/constants/errorTypes';
+import storeEncryptedSecretStorageData from '@misakey/react/crypto/store/actions/storeEncryptedSecretStorageData';
+
+import isNil from '@misakey/core/helpers/isNil';
+import { getCode } from '@misakey/core/helpers/apiError';
+import { getSecretStorage } from '@misakey/core/crypto/HttpApi';
+
 import { useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
-import isNil from '@misakey/core/helpers/isNil';
-import { conflict } from '@misakey/core/api/constants/errorTypes';
-import { getCode } from '@misakey/core/helpers/apiError';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
-import { getSecretStorage } from '@misakey/core/crypto/HttpApi';
-import storeEncryptedSecretStorageData from '@misakey/react/crypto/store/actions/storeEncryptedSecretStorageData';
-import { selectors } from '@misakey/react/crypto/store/reducers';
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 // CONSTANTS
-const { isAuthenticated: IS_AUTH_SELECTOR, hasCrypto: HAS_CRYPTO_SELECTOR } = authSelectors;
+const { hasCrypto: HAS_CRYPTO_AUTH_SELECTOR } = authSelectors;
+const { subjectIdentity: SUBJECT_IDENTITY_SELECTOR } = ssoSelectors;
 
 // HOOKS
-export default (() => {
+export default ((isReady = true, loadStorage = getSecretStorage) => {
   const areSecretsLoaded = useSelector(selectors.isCryptoLoaded);
   const dispatch = useDispatch();
 
-  const hasCrypto = useSelector(HAS_CRYPTO_SELECTOR);
+  const hasCryptoAuth = useSelector(HAS_CRYPTO_AUTH_SELECTOR);
+  const subjectIdentity = useSelector(SUBJECT_IDENTITY_SELECTOR);
+  const { hasCrypto: hasCryptoSso } = useSafeDestr(subjectIdentity);
   const { data } = useSelector(selectors.getEncryptedSecretStorageData);
-  const isAuthenticated = useSelector(IS_AUTH_SELECTOR);
+
+  const hasCrypto = useMemo(
+    () => (isNil(subjectIdentity) ? hasCryptoAuth : hasCryptoSso),
+    [hasCryptoAuth, hasCryptoSso, subjectIdentity],
+  );
 
   const shouldFetch = useMemo(
-    () => isAuthenticated && !areSecretsLoaded && isNil(data) && hasCrypto === true,
-    [hasCrypto, areSecretsLoaded, data, isAuthenticated],
+    () => isReady && !areSecretsLoaded && isNil(data) && hasCrypto === true,
+    [hasCrypto, areSecretsLoaded, data, isReady],
   );
 
   const onSuccess = useCallback(
@@ -52,7 +63,7 @@ export default (() => {
   );
 
   const { isFetching, error: fetchError } = useFetchEffect(
-    getSecretStorage,
+    loadStorage,
     { shouldFetch },
     { onSuccess, onError },
   );

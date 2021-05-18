@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -14,6 +14,8 @@ import { Redirect as RouterRedirect } from 'react-router-dom';
 
 // COMPONENTS
 function Redirect({ forceRefresh, to, manualRedirectPlaceholder, ...props }) {
+  const isRedirecting = useRef(false);
+
   const stringTo = useMemo(
     () => (isObject(to)
       ? locationToString(to)
@@ -26,13 +28,44 @@ function Redirect({ forceRefresh, to, manualRedirectPlaceholder, ...props }) {
     [stringTo],
   );
 
-  if (forceRefresh && isSamePage(href)) {
-    window.location.reload();
-    return manualRedirectPlaceholder;
-  }
+  const isHrefSamePage = useMemo(
+    () => isSamePage(href),
+    [href],
+  );
 
-  if (!isSameHost(href) || forceRefresh) {
-    window.location.replace(href);
+  const isHrefSameHost = useMemo(
+    () => isSameHost(href),
+    [href],
+  );
+
+  const shouldReload = useMemo(
+    () => forceRefresh && isHrefSamePage,
+    [forceRefresh, isHrefSamePage],
+  );
+
+  // always check after shouldReload
+  const shouldReplace = useMemo(
+    () => !isHrefSameHost || forceRefresh,
+    [forceRefresh, isHrefSameHost],
+  );
+
+  useEffect(
+    () => {
+      if (isRedirecting.current === true) {
+        return;
+      }
+      isRedirecting.current = true;
+      if (shouldReload) {
+        window.location.reload();
+      }
+      if (shouldReplace) {
+        window.location.replace(href);
+      }
+    },
+    [href, shouldReload, shouldReplace],
+  );
+
+  if (shouldReload || shouldReplace) {
     return manualRedirectPlaceholder;
   }
 

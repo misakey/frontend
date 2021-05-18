@@ -14,7 +14,6 @@ import useHandleProvisionKeyShare from '@misakey/react/crypto/hooks/useHandlePro
 import { useBoxEventSubmitContext } from 'components/smart/Box/Event/Submit/Context';
 import useFetchBoxDetails from 'hooks/useFetchBoxDetails';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
-import useQueryOrgDatatag from 'hooks/useQueryOrgDatatag';
 import { useDispatch } from 'react-redux';
 
 import BoxReadContextProvider from 'components/smart/Context/Boxes/BoxRead';
@@ -85,7 +84,6 @@ function BoxRead({ match }) {
   );
 
   useUpdateDocHead(documentTitle);
-  useQueryOrgDatatag(box);
 
   if (displayLoadingScreen) {
     return <SplashScreenWithTranslation />;

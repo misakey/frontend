@@ -34,8 +34,11 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Slide from '@material-ui/core/Slide';
+import AppBar from '@misakey/ui/AppBar';
+import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 
 import LabelIcon from '@material-ui/icons/Label';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 // CONSTANTS
@@ -55,6 +58,7 @@ const useStyles = makeStyles(() => ({
 const CardRequestedConsentOrganization = forwardRef(({
   organization, client, consents, subjectIdentity,
   onSubmit, isFetching, stepChanged,
+  onSignOut,
 }, ref) => {
   const classes = useStyles();
   const { t } = useTranslation(['common', 'datatags']);
@@ -87,9 +91,11 @@ const CardRequestedConsentOrganization = forwardRef(({
       const consentedScopes = Object.entries(values)
         .reduce((aggr, [scope, consented]) => (consented === true ? [...aggr, scope] : aggr), []);
 
-      return onSubmit({ [CONSENTED_SCOPES_KEY]: consentedScopes }, ...rest);
+      const consentedConsents = consents.filter(({ scope }) => consentedScopes.includes(scope));
+
+      return onSubmit({ [CONSENTED_SCOPES_KEY]: consentedConsents }, ...rest);
     },
-    [onSubmit],
+    [consents, onSubmit],
   );
 
   return (
@@ -108,6 +114,21 @@ const CardRequestedConsentOrganization = forwardRef(({
       )}
         avatarSize={LARGE}
         ref={ref}
+        header={(
+          <AppBar color="primary">
+            <Button
+              color="background"
+              standing={BUTTON_STANDINGS.TEXT}
+              onClick={onSignOut}
+              text={(
+                <>
+                  <ArrowBackIcon />
+                  {t('auth:login.secret.changeAccount')}
+                </>
+              )}
+            />
+          </AppBar>
+        )}
       >
         <Formik
           enableReinitialize
@@ -171,6 +192,7 @@ CardRequestedConsentOrganization.propTypes = {
   consents: PropTypes.arrayOf(PropTypes.shape(REQUESTED_CONSENT_DATATAG_PROP_TYPES)),
   subjectIdentity: SSO_PROP_TYPES.subjectIdentity.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  onSignOut: PropTypes.func.isRequired,
   isFetching: PropTypes.bool,
   stepChanged: PropTypes.bool,
 };

@@ -1,23 +1,29 @@
 
 import React, { useCallback, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
+
+import authRoutes from '@misakey/react/auth/routes';
+import { selectors as ssoSelectors } from '@misakey/react/auth/store/reducers/sso';
+import { ssoUpdate, onSetIdentifier } from '@misakey/react/auth/store/actions/sso';
+
+import { getCode } from '@misakey/core/helpers/apiError';
+import isNil from '@misakey/core/helpers/isNil';
+import updateAuthIdentities from '@misakey/core/auth/builder/updateAuthIdentities';
+import computeNextAuthMethod from '@misakey/core/auth/helpers/computeNextAuthMethod';
+import { hasConsentDataScope } from '@misakey/core/helpers/scope';
+
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { useTranslation } from 'react-i18next';
-
-import authRoutes from '@misakey/react/auth/routes';
-import { getCode } from '@misakey/core/helpers/apiError';
-import isNil from '@misakey/core/helpers/isNil';
-
-import useSafeDestr from '@misakey/hooks/useSafeDestr';
-
-import { ssoUpdate, onSetIdentifier } from '@misakey/react/auth/store/actions/sso';
-
-import SnackbarActionAuthRestart from '@misakey/ui/Snackbar/Action/AuthRestart';
-import updateAuthIdentities from '@misakey/core/auth/builder/updateAuthIdentities';
-import computeNextAuthMethod from '@misakey/core/auth/helpers/computeNextAuthMethod';
 import { useAuthCallbackHintsContext } from '@misakey/react/auth/components/Context/AuthCallbackHints';
 
+import SnackbarActionAuthRestart from '@misakey/ui/Snackbar/Action/AuthRestart';
+
+// CONSTANTS
+const { scope: SCOPE_SELECTOR } = ssoSelectors;
+
+// HOOKS
 export default (loginChallenge) => {
   const dispatch = useDispatch();
   const { push } = useHistory();
@@ -25,10 +31,23 @@ export default (loginChallenge) => {
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation('auth');
 
+  const scope = useSelector(SCOPE_SELECTOR);
+
+  const hasDataConsentScope = useMemo(
+    () => hasConsentDataScope(scope),
+    [scope],
+  );
+
   const { getCallbackHints } = useAuthCallbackHintsContext();
   const authCallbackHints = useMemo(() => getCallbackHints(), [getCallbackHints]);
 
   const { shouldCreateAccount, resetPassword } = useSafeDestr(authCallbackHints);
+
+  // we require account creation before data sharing consent
+  const mustAskAccountCreation = useMemo(
+    () => hasDataConsentScope === true && shouldCreateAccount === false,
+    [hasDataConsentScope, shouldCreateAccount],
+  );
 
   const onError = useCallback(
     (e) => {
@@ -53,12 +72,16 @@ export default (loginChallenge) => {
           })),
           dispatch(onSetIdentifier(nextIdentifier)),
         ]).then(() => {
-          if (hasCrypto || !isNil(shouldCreateAccount)) {
+          if (hasCrypto || (!isNil(shouldCreateAccount) && !mustAskAccountCreation)) {
             push({ pathname: authRoutes.signIn.secret, search });
           }
         });
       })
       .catch(onError),
-    [loginChallenge, onError, dispatch, resetPassword, shouldCreateAccount, push, search],
+    [
+      loginChallenge, onError, dispatch, resetPassword,
+      shouldCreateAccount, mustAskAccountCreation,
+      push, search,
+    ],
   );
 };

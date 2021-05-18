@@ -73,19 +73,34 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const BoxMessage = forwardRef(({
-  children, className, icon, isLoading, text, type, onClose, ...rest
+  children,
+  className, classes: { root, icon: iconClasses, text: textClasses },
+  typographyProps,
+  icon, text, type,
+  isLoading, onClose, ...rest
 }, ref) => {
-  const classes = useStyles();
+  const internalClasses = useStyles();
   return (
     <Grow in>
-      <BoxSection ref={ref} className={clsx(classes.root, classes[type], className)} {...rest}>
+      <BoxSection
+        ref={ref}
+        className={clsx(
+          internalClasses.root, internalClasses[type], className, root,
+        )}
+        {...rest}
+      >
         <Icon
           component={isNil(icon) ? ICONS_BY_TYPE[type] : icon}
-          className={classes.icon}
+          className={clsx(internalClasses.icon, iconClasses)}
           fontSize={ICON_SIZE}
         />
         {!isEmpty(text) && (
-          <Typography className={classes.text} color="inherit" gutterBottom={children}>
+          <Typography
+            className={clsx(internalClasses.text, textClasses)}
+            color="inherit"
+            gutterBottom={children}
+            {...typographyProps}
+          >
             {text}
           </Typography>
         )}
@@ -104,7 +119,12 @@ const BoxMessage = forwardRef(({
 
 BoxMessage.propTypes = {
   children: PropTypes.node,
-  classes: PropTypes.objectOf(PropTypes.string),
+  classes: PropTypes.shape({
+    root: PropTypes.string,
+    icon: PropTypes.string,
+    text: PropTypes.string,
+  }),
+  typographyProps: PropTypes.object,
   className: PropTypes.string,
   icon: PropTypes.elementType,
   isLoading: PropTypes.bool,
@@ -116,6 +136,7 @@ BoxMessage.propTypes = {
 BoxMessage.defaultProps = {
   children: null,
   classes: {},
+  typographyProps: {},
   className: '',
   icon: null,
   isLoading: false,

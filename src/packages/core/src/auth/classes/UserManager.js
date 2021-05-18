@@ -22,6 +22,7 @@ import isNil from '@misakey/core/helpers/isNil';
 import isEmpty from '@misakey/core/helpers/isEmpty';
 import isString from '@misakey/core/helpers/isString';
 import log from '@misakey/core/helpers/log';
+import locationToReferrer from '@misakey/core/auth/helpers/locationToReferrer';
 import isFunction from '@misakey/core/helpers/isFunction';
 import isEqual from '@misakey/core/helpers/isEqual';
 import logSentryException from '@misakey/core/helpers/log/sentry/exception';
@@ -127,7 +128,7 @@ export default class UserManager extends OidcClient {
   }
 
   async signinRedirect({
-    referrer = `${window.location.pathname}${window.location.search || ''}${window.location.hash || ''}`,
+    referrer = locationToReferrer(),
     ...args
   } = {}) {
     return this.createSigninRequest({

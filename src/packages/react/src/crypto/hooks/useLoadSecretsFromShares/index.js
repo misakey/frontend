@@ -11,7 +11,7 @@ import { decryptSecretStorageWithRootKey } from '@misakey/core/crypto/secretStor
 import { getCode } from '@misakey/core/helpers/apiError';
 import { notFound as notFoundError } from '@misakey/core/api/constants/errorTypes';
 import { selectors } from '@misakey/react/crypto/store/reducers';
-import useFetchSecretStorage from './useFetchSecretStorage';
+import useFetchSecretStorage from '@misakey/react/crypto/hooks/useFetchSecretStorage';
 
 // CONSTANTS
 const {

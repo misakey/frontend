@@ -12,14 +12,17 @@
     "title": "Home"
   },
   "secret": {
-    "title": "Secret generation",
-    "generate": "Generate a new secret",
+    "title": "Secrets generation",
+    "generate": "Generate new secrets",
     "identifier": "Organization's identifier",
     "slug": "Organization's slug",
-    "copy": "Copy and store this secret code safe, it will allow you to identify a machine through API",
+    "copy": "Copy and store these secrets safe, they will allow you to identify a machine through API",
     "confirm": {
-      "title": "Are you sure you want to generate a new secret?",
-      "body": "Previous secret will be revoked and services using it will no longer be authorized until you update them"
+      "title": "Are you sure you want to generate new secrets?",
+      "body": "Previous secrets will be revoked and services using them will no longer be authorized until you update them"
+    },
+    "crypto": {
+      "conflict": "Crypto secret already exists. Contact <1>feedback@misakey.com</1> to generate a new one"
     }
   },
   "datatags": {

@@ -7,16 +7,11 @@ import {
 } from '@misakey/ui/constants/sizes';
 import { selectors as orgSelectors } from 'store/reducers/identity/organizations';
 
-import isNil from '@misakey/core/helpers/isNil';
-import { generateOrganizationSecretBuilder } from '@misakey/core/api/helpers/builder/organizations';
-
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
-import useFetchCallback from '@misakey/hooks/useFetch/callback';
 import useOrgId from '@misakey/react/auth/hooks/useOrgId';
-import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 
 import ElevationScroll from '@misakey/ui/ElevationScroll';
@@ -33,8 +28,8 @@ import ButtonDrawerOrganization from 'components/smart/IconButton/Drawer/Organiz
 import TextField from '@misakey/ui/TextField';
 import BoxControlsDialog from '@misakey/ui/Box/Controls/Dialog';
 import Container from '@material-ui/core/Container';
-import DialogConfirm from '@misakey/ui/Dialog/Confirm';
 import Typography from '@misakey/ui/Typography';
+import SecretsDialog from 'components/screens/app/Organizations/Read/Secret/Dialog';
 
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
@@ -46,7 +41,6 @@ const TOOLBAR_PROPS = {
 };
 const IDENTIFIER_FIELD = 'organization_identifier';
 const SLUG_FIELD = 'organization_slug';
-const FIELD_NAME = 'organization_secret';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -72,7 +66,6 @@ const useStyles = makeStyles((theme) => ({
 const OrganizationsReadSecret = () => {
   const { t } = useTranslation(['common', 'organizations']);
   const classes = useStyles();
-  const handleHttpErrors = useHandleHttpErrors();
 
   const [contentRef, setContentRef] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -87,11 +80,6 @@ const OrganizationsReadSecret = () => {
   );
   const organization = useSelector((state) => denormalizeOrganizationSelector(state, orgId));
   const { slug } = useSafeDestr(organization);
-
-  const generateOrganizationSecret = useCallback(
-    () => generateOrganizationSecretBuilder(orgId),
-    [orgId],
-  );
 
   const onContentRef = useCallback(
     (ref) => {
@@ -108,18 +96,6 @@ const OrganizationsReadSecret = () => {
   const onClose = useCallback(
     () => setDialogOpen(false),
     [setDialogOpen],
-  );
-
-  const { data, wrappedFetch } = useFetchCallback(
-    generateOrganizationSecret,
-    { onError: handleHttpErrors },
-  );
-
-  const { secret } = useSafeDestr(data);
-
-  const secretOrEmpty = useMemo(
-    () => (isNil(secret) ? '' : secret),
-    [secret],
   );
 
   return (
@@ -189,17 +165,6 @@ const OrganizationsReadSecret = () => {
             helperText={t('organizations:secret.slug')}
             value={slug}
           />
-          <TextField
-            name={FIELD_NAME}
-            InputProps={{ readOnly: true }}
-            helperText={t('organizations:secret.copy')}
-            value={secretOrEmpty}
-          />
-          <ButtonCopy
-            value={secret}
-            message={t('organizations:secret.copy')}
-            mode={MODE.both}
-          />
           <BoxControlsDialog
             mt={2}
             primary={{
@@ -207,18 +172,12 @@ const OrganizationsReadSecret = () => {
               onClick: onDialog,
             }}
           />
-          <DialogConfirm
-            onConfirm={wrappedFetch}
+          <SecretsDialog
+            orgId={orgId}
             open={dialogOpen}
             onClose={onClose}
-            confirmButtonText={t('organizations:secret.generate')}
-            title={t('organizations:secret.confirm.title')}
-            irreversible
-          >
-            <Typography color="textSecondary">
-              {t('organizations:secret.confirm.body')}
-            </Typography>
-          </DialogConfirm>
+            slug={slug}
+          />
         </Container>
       </Box>
     </>

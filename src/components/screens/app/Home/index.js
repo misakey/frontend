@@ -9,7 +9,7 @@ import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/a
 import isNil from '@misakey/core/helpers/isNil';
 import getNextSearch from '@misakey/core/helpers/getNextSearch';
 
-import useShouldDisplayLockedScreen from 'hooks/useShouldDisplayLockedScreen';
+import useShouldDisplayLockedScreen from '@misakey/hooks/useShouldDisplayLockedScreen';
 import { useSelector } from 'react-redux';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 

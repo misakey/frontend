@@ -68,11 +68,12 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1, 2),
     padding: theme.spacing(0),
     display: 'flex',
+    minHeight: 36,
   },
 }));
 
 // COMPONENTS
-function DialogCreatePassword({ open, onClose, isReset, ...rest }) {
+function DialogCreatePassword({ open, onClose, isReset, canSkipCreation, ...rest }) {
   const classes = useStyles();
   const { t } = useTranslation(['auth', 'common']);
   const dispatch = useDispatch();
@@ -157,17 +158,19 @@ function DialogCreatePassword({ open, onClose, isReset, ...rest }) {
       PaperProps={{
         header: (
           <DialogTitle className={classes.dialogTitle}>
-            <Button
-              color="background"
-              standing={BUTTON_STANDINGS.TEXT}
-              onClick={onClose}
-              text={(
-                <>
-                  <ArrowBackIcon />
-                  {t(`auth:account.${i18nTextKey}.back`)}
-                </>
-              )}
-            />
+            {(isReset || canSkipCreation) && (
+              <Button
+                color="background"
+                standing={BUTTON_STANDINGS.TEXT}
+                onClick={onClose}
+                text={(
+                  <>
+                    <ArrowBackIcon />
+                    {t(`auth:account.${i18nTextKey}.back`)}
+                  </>
+                )}
+              />
+            )}
           </DialogTitle>
         ),
         slopeProps: SLOPE_PROPS,
@@ -181,7 +184,7 @@ function DialogCreatePassword({ open, onClose, isReset, ...rest }) {
         initialValues={INITIAL_VALUES}
         validationSchema={setPasswordValidationSchema}
       >
-        <Form>
+        <Box component={Form} height="100%">
           <CardSso
             avatar={avatar}
             avatarSize={LARGE}
@@ -218,7 +221,7 @@ function DialogCreatePassword({ open, onClose, isReset, ...rest }) {
               />
             </Box>
           </CardSso>
-        </Form>
+        </Box>
       </Formik>
     </Dialog>
   );
@@ -229,11 +232,13 @@ DialogCreatePassword.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool,
   isReset: PropTypes.bool,
+  canSkipCreation: PropTypes.bool,
 };
 
 DialogCreatePassword.defaultProps = {
   open: false,
   isReset: false,
+  canSkipCreation: true,
 };
 
 export default DialogCreatePassword;

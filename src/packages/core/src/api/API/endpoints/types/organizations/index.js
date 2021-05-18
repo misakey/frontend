@@ -17,6 +17,13 @@ export default {
       withCsrfToken: true,
     },
   },
+  crypto: {
+    create: {
+      method: 'PUT',
+      path: '/organizations/:id/crypto',
+      withCsrfToken: true,
+    },
+  },
   agents: {
     count: {
       method: 'HEAD',

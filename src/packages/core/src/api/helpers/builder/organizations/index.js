@@ -3,6 +3,7 @@ import API from '@misakey/core/api';
 import objectToCamelCase from '@misakey/core/helpers/objectToCamelCase';
 import objectToCamelCaseDeep from '@misakey/core/helpers/objectToCamelCaseDeep';
 import objectToSnakeCase from '@misakey/core/helpers/objectToSnakeCase';
+import objectToSnakeCaseDeep from '@misakey/core/helpers/objectToSnakeCaseDeep';
 
 export const createOrganizationBuilder = (payload) => API
   .use(API.endpoints.organizations.create)
@@ -21,6 +22,11 @@ export const generateOrganizationSecretBuilder = (id) => API
   .build({ id })
   .send()
   .then(objectToCamelCase);
+
+export const generateOrganizationCryptoBuilder = (id, requestPayload) => API
+  .use(API.endpoints.organizations.crypto.create)
+  .build({ id }, objectToSnakeCaseDeep(requestPayload, { ignoreBase64: true }))
+  .send();
 
 export const countOrganizationAgents = (id, queryParams) => API
   .use(API.endpoints.organizations.agents.count)

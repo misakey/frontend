@@ -10,6 +10,7 @@ import authRoutes from '@misakey/react/auth/routes';
 import { passwordValidationSchema } from '@misakey/react/auth/constants/validationSchemas/identity';
 import { invalid, forbidden } from '@misakey/core/api/constants/errorTypes';
 import { selectors as cryptoSelectors } from '@misakey/react/crypto/store/reducers';
+import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import { getCode } from '@misakey/core/helpers/apiError';
 import { changePassword, fetchPwdHashParams } from '@misakey/core/auth/builder/accounts';
@@ -31,11 +32,12 @@ import BoxControlsCard from '@misakey/ui/Box/Controls/Card';
 import FieldPasswordRevealable from '@misakey/ui/Form/Field/Password/Revealable';
 import Box from '@material-ui/core/Box';
 
+// CONSTANTS
 const {
   getRootKey,
 } = cryptoSelectors;
+const { isAuthenticated: IS_AUTH_SELECTOR } = authSelectors;
 
-// CONSTANTS
 const INITIAL_VALUES = {
   [OLD_PASSWORD_KEY]: '',
   [NEW_PASSWORD_KEY]: '',
@@ -59,7 +61,8 @@ const AccountPassword = ({ t, identity }) => {
 
   const handleHttpErrors = useHandleHttpErrors();
 
-  const openVaultWithPassword = useLoadSecretsWithPassword();
+  const isAuthenticated = useSelector(IS_AUTH_SELECTOR);
+  const openVaultWithPassword = useLoadSecretsWithPassword(false, isAuthenticated);
 
   const { accountId } = useMemo(() => identity || {}, [identity]);
 

@@ -78,5 +78,9 @@ export default {
       path: '/auth/account-root-key-shares',
       withCsrfToken: true,
     },
+    read: {
+      method: 'GET',
+      path: '/auth/account-root-key-shares/:userLocalShareHash',
+    },
   },
 };

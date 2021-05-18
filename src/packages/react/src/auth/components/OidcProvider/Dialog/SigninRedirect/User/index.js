@@ -1,14 +1,15 @@
 import React, { useMemo, useCallback } from 'react';
 import moment from 'moment';
-
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 
 import { getCurrentUserSelector, selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import isNil from '@misakey/core/helpers/isNil';
 import isEmpty from '@misakey/core/helpers/isEmpty';
+
+import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
 import Box from '@material-ui/core/Box';
 import TitleBold from '@misakey/ui/Typography/Title/Bold';
@@ -25,6 +26,7 @@ const DialogSigninRedirectUser = ({
 }) => {
   const { t } = useTranslation(['common', 'components']);
   const currentUser = useSelector(getCurrentUserSelector);
+  const { identifierValue } = useSafeDestr(currentUser);
   const currentAcr = useSelector(getCurrentAcrSelector);
 
   const expiresAt = useSelector(EXPIRES_AT_SELECTOR);
@@ -65,11 +67,20 @@ const DialogSigninRedirectUser = ({
     [sessionExpired, insufficientACR, defaultSubtitle, t, acrValues],
   );
 
-  const onClick = useCallback(() => onSignInRedirect(), [onSignInRedirect]);
+  const onClick = useCallback(
+    () => (isNil(identifierValue)
+      ? onSignInRedirect()
+      : onSignInRedirect({ loginHint: identifierValue })),
+    [identifierValue, onSignInRedirect],
+  );
   const text = useMemo(() => (sessionExpired ? t('common:continue') : t('common:validate')), [sessionExpired, t]);
 
   return (
-    <Box>
+    <Box
+      display="flex"
+      flexDirection="column"
+      flexGrow={1}
+    >
       <TitleBold align="center" gutterBottom={false}>{title}</TitleBold>
       <Subtitle align="center">{subtitle}</Subtitle>
       <CardUserSignOut my={3} expired={sessionExpired} />
