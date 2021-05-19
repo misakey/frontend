@@ -29,6 +29,9 @@ const ListItemOrganizationSelf = forwardRef(({ secondary, ...props }, ref) => {
         variant: 'body2',
       },
       secondary,
+      secondaryTypographyProps: {
+        noWrap: true,
+      },
     }),
     [secondary, t],
   );

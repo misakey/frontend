@@ -60,6 +60,10 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     backgroundColor: theme.palette.background.default,
   },
+  containerRoot: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
 }));
 
 // COMPONENTS
@@ -134,7 +138,7 @@ const OrganizationsReadSecret = () => {
         </Box>
       </ElevationScroll>
       <Box ref={onContentRef} pb={2} className={classes.content}>
-        <Container maxWidth="sm">
+        <Container maxWidth="sm" classes={{ root: classes.containerRoot }}>
           <TextField
             name={IDENTIFIER_FIELD}
             InputProps={{

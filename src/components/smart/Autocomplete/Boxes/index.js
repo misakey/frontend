@@ -220,9 +220,9 @@ const AutocompleteBoxes = ({
         );
       }
       if (facet === FACET_DATATAG) {
-        return <Typography>{t(`datatags:${name}`)}</Typography>;
+        return <Typography noWrap>{t(`datatags:${name}`)}</Typography>;
       }
-      return <Typography>{name}</Typography>;
+      return <Typography noWrap>{name}</Typography>;
     },
     [t],
   );
@@ -362,9 +362,13 @@ const AutocompleteBoxes = ({
                 component="ul"
                 className={classes.chipList}
               >
-                {value.map(({ name, id }) => (
+                {value.map(({ name, id, facet }) => (
                   <li key={name}>
-                    <ChipFacet id={id} label={name} onDelete={onDelete} />
+                    <ChipFacet
+                      id={id}
+                      label={facet === FACET_DATATAG ? t(`datatags:${name}`) : name}
+                      onDelete={onDelete}
+                    />
                   </li>
                 ))}
               </Box>

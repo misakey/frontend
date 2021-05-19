@@ -55,6 +55,9 @@ const useStyles = makeStyles((theme) => ({
   textPadded: {
     padding: theme.spacing(1),
   },
+  actionsRoot: {
+    flexDirection: 'column',
+  },
 }));
 
 // COMPONENTS
@@ -202,7 +205,7 @@ const OrganizationsReadSecretDialog = ({ onClose, open, orgId, slug }) => {
               </IconButton>
             </Box>
 
-            <TypographyPreWrappedCode>
+            <TypographyPreWrappedCode className={classes.textPadded}>
               {secrets}
             </TypographyPreWrappedCode>
           </Paper>

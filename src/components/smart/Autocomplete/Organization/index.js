@@ -52,10 +52,7 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: 9 + theme.spacing(INPUT_EXTRA_SPACING),
         paddingBottom: 9 + theme.spacing(INPUT_EXTRA_SPACING),
       },
-      minWidth: '50%',
-      [theme.breakpoints.only('xs')]: {
-        minWidth: '100%',
-      },
+      minWidth: 'auto',
     },
   },
 }));

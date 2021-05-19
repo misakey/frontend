@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       width: MENU_FULLSCREEN,
       height: '100%',
+      borderRadius: 0,
     },
   }),
   menuList: {

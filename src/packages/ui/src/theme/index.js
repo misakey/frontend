@@ -152,6 +152,11 @@ export const getThemeOptions = (isDarkMode = false, color = null) => ({
         borderRadius: '10px',
       },
     },
+    MuiDialogActions: {
+      root: {
+        flexDirection: 'column',
+      },
+    },
     MuiFilledInput: {
       root: {
         backgroundColor: isEmpty(color) ? fade(common.primary, 0.03) : fade(color, 0.03),

@@ -24,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  typographyAlignedRadius: {
+    marginLeft: theme.spacing(1.5),
+  },
 }));
 
 // COMPONENTS
@@ -90,7 +93,7 @@ const BoxControls = ({ primary, secondary, formik, irreversible, ...rest }) => {
       {irreversible
         ? (
           <Box display="flex" flexDirection="column">
-            <TypographyIrreversible />
+            <TypographyIrreversible classes={{ root: classes.typographyAlignedRadius }} />
             {primaryNode}
           </Box>
         )

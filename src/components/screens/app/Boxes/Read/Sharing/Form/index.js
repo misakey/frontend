@@ -308,7 +308,10 @@ function ShareBoxForm({
             renderValue: (value) => (
               <ListItemAccessLevel disableGutters value={value} dense />
             ),
-            MenuProps: { MenuListProps: { disablePadding: true } },
+            MenuProps: {
+              MenuListProps: { disablePadding: true },
+              marginThreshold: 0,
+            },
             IconComponent: isCurrentUserOwner ? ArrowDropDownIcon : alwaysNull,
           }}
         >
