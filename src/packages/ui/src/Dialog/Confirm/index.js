@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import isNil from '@misakey/core/helpers/isNil';
 import isFunction from '@misakey/core/helpers/isFunction';
@@ -19,14 +19,13 @@ import ConfirmDialogContent from './DialogContent';
 
 // CONSTANTS
 export const PROP_TYPES = {
-  onConfirm: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func,
   onSuccess: PropTypes.func,
   open: PropTypes.bool.isRequired,
   irreversible: PropTypes.bool,
   children: PropTypes.node,
   title: PropTypes.string,
-  t: PropTypes.func.isRequired,
   confirmButtonText: PropTypes.string,
 };
 
@@ -36,10 +35,10 @@ function DialogConfirm({
   title, children,
   confirmButtonText,
   irreversible,
-  t,
   ...rest
 }) {
   const fullScreen = useDialogFullScreen();
+  const { t } = useTranslation('common');
 
   const text = useMemo(
     () => (isNil(confirmButtonText) ? t('common:ok') : confirmButtonText),
@@ -58,8 +57,13 @@ function DialogConfirm({
     [onClose, onSuccess],
   );
 
+  const handleConfirm = useMemo(
+    () => (isFunction(onConfirm) ? onConfirm : Promise.resolve),
+    [onConfirm],
+  );
+
   const { wrappedFetch: onClick, isFetching: isValidating } = useFetchCallback(
-    onConfirm,
+    handleConfirm,
     { onSuccess: handleSuccess },
   );
 
@@ -98,8 +102,9 @@ DialogConfirm.defaultProps = {
   irreversible: false,
   confirmButtonText: null,
   title: null,
+  onConfirm: null,
   onSuccess: null,
   children: null,
 };
 
-export default withTranslation(['common'])(DialogConfirm);
+export default DialogConfirm;

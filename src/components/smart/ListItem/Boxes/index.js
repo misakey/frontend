@@ -47,6 +47,7 @@ import ChipDatatag from 'components/smart/Chip/Datatag';
 
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
+import ContextBoxDialogs from 'components/smart/Context/Boxes/Dialogs';
 
 // CONSTANTS
 const DEFAULT_SETTINGS = { muted: false };
@@ -307,95 +308,101 @@ function BoxListItem({ id, box, toRoute, nextSearchMap, ContainerProps, classes,
   }
 
   return (
-    <ListItem
-      key={id}
-      ContainerProps={{
-        onMouseEnter: showAction,
-        onMouseLeave: hideAction,
-        ...ContainerProps,
-      }}
-      classes={{
-        root: clsx(root, internalClasses.listItemRoot),
-        selected: clsx(selected, internalClasses.listItemSelected),
-        gutters: internalClasses.listItemGutters,
-        ...restClasses,
-      }}
-      onContextMenu={onContextMenu}
-      {...linkProps}
-      {...rest}
+    <ContextBoxDialogs
+      box={box}
+      canLeave={canLeave}
+      canDelete={canDelete}
     >
-      <ListItemAvatar classes={{ root: internalClasses.listItemAvatarRoot }}>
-        <BoxAvatar
-          title={title}
-          lostKey={lostKey}
-          identityId={identityId}
-          ownerOrgId={ownerOrgId}
-          members={members}
-          isFetching={isFetching}
-        />
-      </ListItemAvatar>
-      <ListItemTextTertiary
-        className={internalClasses.listItemText}
-        primary={(
-          <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Box
-              overflow="hidden"
-              display="flex"
-              flexDirection="row"
-              alignItems="center"
-              mr={1}
-            >
-              <Typography noWrap>{title}</Typography>
-              {muted && (
+      <ListItem
+        key={id}
+        ContainerProps={{
+          onMouseEnter: showAction,
+          onMouseLeave: hideAction,
+          ...ContainerProps,
+        }}
+        classes={{
+          root: clsx(root, internalClasses.listItemRoot),
+          selected: clsx(selected, internalClasses.listItemSelected),
+          gutters: internalClasses.listItemGutters,
+          ...restClasses,
+        }}
+        onContextMenu={onContextMenu}
+        {...linkProps}
+        {...rest}
+      >
+        <ListItemAvatar classes={{ root: internalClasses.listItemAvatarRoot }}>
+          <BoxAvatar
+            title={title}
+            lostKey={lostKey}
+            identityId={identityId}
+            ownerOrgId={ownerOrgId}
+            members={members}
+            isFetching={isFetching}
+          />
+        </ListItemAvatar>
+        <ListItemTextTertiary
+          className={internalClasses.listItemText}
+          primary={(
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Box
+                overflow="hidden"
+                display="flex"
+                flexDirection="row"
+                alignItems="center"
+                mr={1}
+              >
+                <Typography noWrap>{title}</Typography>
+                {muted && (
                 <NotificationsOffIcon color="disabled" fontSize="small" />
-              )}
-            </Box>
-            {!isActionVisible
+                )}
+              </Box>
+              {!isActionVisible
             && (
               <TypographyDateSince date={date} />
             )}
-          </Box>
+            </Box>
         )}
-        secondary={secondary}
-        tertiary={(
-          <ChipDatatag size={SMALL} datatagId={datatagId} />
+          secondary={secondary}
+          tertiary={(
+            <ChipDatatag size={SMALL} datatagId={datatagId} />
         )}
-        primaryTypographyProps={{ noWrap: true, display: 'block', component: Box }}
-        secondaryTypographyProps={{ noWrap: true, display: 'block', variant: 'body2', component: Box }}
-        tertiaryTypographyProps={{
-          noWrap: true, display: 'inline', component: Box, className: internalClasses.tertiaryFlex }}
-      />
-      <ListItemSecondaryAction>
-        <Badge
-          classes={{
-            root: internalClasses.badgeMenuButtonRoot,
-            badge: internalClasses.badgeMenuButtonBadge,
-            colorPrimary: internalClasses.badgeMenuButtonColorPrimary,
-          }}
-          {...badgeProps}
-        >
-          <IconButton className={internalClasses.menuButton} onClick={onContextMenu} edge="end" aria-label="menu-more">
-            <MoreHorizIcon />
-          </IconButton>
-        </Badge>
-        <Menu
-          id={`menu-box-${id}`}
-          anchorEl={anchorEl}
-          open={!isNil(anchorEl)}
-          onClose={onClose}
-          onClick={onClose}
-          keepMounted
-          variant="menu"
-          MenuListProps={{ disablePadding: true }}
-          PaperProps={{ variant: 'outlined' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        >
-          <MenuItemBoxMute box={box} />
-          {canDelete && <MenuItemBoxDelete box={box} onClose={hideAction} />}
-          {canLeave && <MenuItemBoxLeave box={box} onClose={hideAction} />}
-        </Menu>
-      </ListItemSecondaryAction>
-    </ListItem>
+          primaryTypographyProps={{ noWrap: true, display: 'block', component: Box }}
+          secondaryTypographyProps={{ noWrap: true, display: 'block', variant: 'body2', component: Box }}
+          tertiaryTypographyProps={{
+            noWrap: true, display: 'inline', component: Box, className: internalClasses.tertiaryFlex }}
+        />
+        <ListItemSecondaryAction>
+          <Badge
+            classes={{
+              root: internalClasses.badgeMenuButtonRoot,
+              badge: internalClasses.badgeMenuButtonBadge,
+              colorPrimary: internalClasses.badgeMenuButtonColorPrimary,
+            }}
+            {...badgeProps}
+          >
+            <IconButton className={internalClasses.menuButton} onClick={onContextMenu} edge="end" aria-label="menu-more">
+              <MoreHorizIcon />
+            </IconButton>
+          </Badge>
+          <Menu
+            id={`menu-box-${id}`}
+            anchorEl={anchorEl}
+            open={!isNil(anchorEl)}
+            onClose={onClose}
+            onClick={onClose}
+            keepMounted
+            variant="menu"
+            MenuListProps={{ disablePadding: true }}
+            PaperProps={{ variant: 'outlined' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            <MenuItemBoxMute box={box} />
+            {canDelete && <MenuItemBoxDelete box={box} onClose={hideAction} />}
+            {canLeave && <MenuItemBoxLeave box={box} onClose={hideAction} />}
+          </Menu>
+        </ListItemSecondaryAction>
+      </ListItem>
+    </ContextBoxDialogs>
   );
 }
 

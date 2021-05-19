@@ -41,8 +41,7 @@ import ListItemBoxMute from 'components/smart/ListItem/Boxes/Mute';
 import ElevationScroll from '@misakey/ui/ElevationScroll';
 import AppBarScroll from '@misakey/ui/AppBar/Scroll';
 import AppBarStatic from '@misakey/ui/AppBar/Static';
-import DialogBoxesDeleteContextProvider from 'components/smart/Dialog/Boxes/Delete/Context';
-import DialogBoxesLeaveContextProvider from 'components/smart/Dialog/Boxes/Leave/Context';
+import ContextBoxDialogs from 'components/smart/Context/Boxes/Dialogs';
 import DetailsListShortcuts from 'components/screens/app/Boxes/Read/Details/List/Shortcuts';
 import SplashScreenWithTranslation from '@misakey/ui/Screen/Splash/WithTranslation';
 
@@ -98,45 +97,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // COMPONENTS
-const WrapperContext = ({ canLeave, canDelete, children, ...rest }) => {
-  if (canLeave && canDelete) {
-    return (
-      <DialogBoxesLeaveContextProvider {...rest}>
-        <DialogBoxesDeleteContextProvider {...rest}>
-          {children}
-        </DialogBoxesDeleteContextProvider>
-      </DialogBoxesLeaveContextProvider>
-    );
-  }
-  if (canLeave) {
-    return (
-      <DialogBoxesLeaveContextProvider {...rest}>
-        {children}
-      </DialogBoxesLeaveContextProvider>
-    );
-  }
-  if (canDelete) {
-    return (
-      <DialogBoxesDeleteContextProvider {...rest}>
-        {children}
-      </DialogBoxesDeleteContextProvider>
-    );
-  }
-  return children;
-};
-
-WrapperContext.propTypes = {
-  canLeave: PropTypes.bool,
-  canDelete: PropTypes.bool,
-  children: PropTypes.node,
-};
-
-WrapperContext.defaultProps = {
-  canLeave: false,
-  canDelete: false,
-  children: null,
-};
-
 function BoxDetails({ box, belongsToCurrentUser, t }) {
   const theme = useTheme();
   const isDownSm = useMediaQuery(theme.breakpoints.down('sm'));
@@ -191,7 +151,7 @@ function BoxDetails({ box, belongsToCurrentUser, t }) {
   }
 
   return (
-    <WrapperContext
+    <ContextBoxDialogs
       box={box}
       canLeave={canLeave}
       canDelete={canDelete}
@@ -331,7 +291,7 @@ function BoxDetails({ box, belongsToCurrentUser, t }) {
           </List>
         </List>
       </Box>
-    </WrapperContext>
+    </ContextBoxDialogs>
   );
 }
 

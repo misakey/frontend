@@ -1,4 +1,4 @@
-import React, { useState, useCallback, forwardRef } from 'react';
+import React, { useCallback, forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -9,6 +9,7 @@ import isNil from '@misakey/core/helpers/isNil';
 
 import { useBoxEditEventContext } from 'components/smart/Box/Event/Edit/Context';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useMountedState from '@misakey/hooks/useMountedState';
 
 import ContextMenuItem from '@misakey/ui/Menu/ContextMenu/MenuItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -20,7 +21,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 // COMPONENTS
 const MenuItemDeleteEvent = forwardRef(({ t, event, boxId, component: Component }, ref) => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useMountedState(false);
 
   const { id: eventId } = useSafeDestr(event);
 

@@ -40,9 +40,8 @@ const DialogEventDelete = ({
         } else {
           handleHttpErrors(error);
         }
-      })
-      .finally(onClose),
-    [boxId, eventId, onDelete, enqueueSnackbar, handleHttpErrors, onClose, t],
+      }),
+    [boxId, eventId, onDelete, enqueueSnackbar, handleHttpErrors, t],
   );
 
   return (

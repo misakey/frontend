@@ -1,6 +1,9 @@
-import React, { createContext, useContext, useMemo, useState, useCallback } from 'react';
-
+import React, { createContext, useContext, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
+
+import omit from '@misakey/core/helpers/omit';
+
+import useMountedState from '@misakey/hooks/useMountedState';
 
 import DialogConfirm, { PROP_TYPES as DIALOG_CONFIRM_PROP_TYPES } from '@misakey/ui/Dialog/Confirm';
 
@@ -18,16 +21,16 @@ const DialogConfirmContextProvider = ({
   provider: Provider, component: Component,
   children, ...rest
 }) => {
-  const [open, setOpen] = useState();
+  const [open, setOpen] = useMountedState(false);
 
   const onOpen = useCallback(
     () => setOpen(true),
-    [],
+    [setOpen],
   );
 
   const onClose = useCallback(
     () => setOpen(false),
-    [],
+    [setOpen],
   );
 
   const contextValue = useMemo(
@@ -50,7 +53,7 @@ DialogConfirmContextProvider.propTypes = {
   children: PropTypes.node,
   provider: PropTypes.elementType,
   component: PropTypes.elementType,
-  ...DIALOG_CONFIRM_PROP_TYPES,
+  ...omit(DIALOG_CONFIRM_PROP_TYPES, ['onClose', 'open']),
 };
 
 DialogConfirmContextProvider.defaultProps = {

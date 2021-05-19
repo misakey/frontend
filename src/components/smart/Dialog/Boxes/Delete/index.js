@@ -2,21 +2,21 @@ import React, { useCallback, useMemo } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Form, Field } from 'formik';
 
 import { ACCESS_RM, ACCESS_BULK } from '@misakey/core/api/constants/boxes/events';
 import BoxesSchema from 'store/schemas/Boxes';
 import { boxDeletionDialogValidationSchema } from 'constants/validationSchemas/boxes';
 
-import { deleteBoxBuilder, createBulkBoxEventBuilder } from '@misakey/core/api/helpers/builder/boxes';
+import { deleteBoxBuilder, createBulkBoxEventBuilder, getBoxAccessesBuilder } from '@misakey/core/api/helpers/builder/boxes';
 import isFunction from '@misakey/core/helpers/isFunction';
 import isEmpty from '@misakey/core/helpers/isEmpty';
+
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useHandleHttpErrors from '@misakey/hooks/useHandleHttpErrors';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
-import useBoxAccessesEffect from 'hooks/useBoxAccesses/effect';
 import useDialogFullScreen from '@misakey/hooks/useDialogFullScreen';
 
 import FormFieldTextField from '@misakey/ui/Form/Field/TextFieldWithErrors';
@@ -43,22 +43,33 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
+function DeleteBoxDialog({ box, open, onClose, onSuccess }) {
   const classes = useStyles();
+  const { t } = useTranslation(['boxes', 'common']);
   const handleHttpErrors = useHandleHttpErrors();
   const fullScreen = useDialogFullScreen();
 
-  const { id, accesses, title } = useSafeDestr(box);
+  const { id, title } = useSafeDestr(box);
 
-  const { isFetching } = useBoxAccessesEffect(box, open);
+  const handleSuccess = useCallback(
+    () => {
+      onClose();
+      if (isFunction(onSuccess)) {
+        return onSuccess();
+      }
+      return Promise.resolve();
+    },
+    [onClose, onSuccess],
+  );
 
-  const onDeleteSuccess = useCallback(
-    () => (isFunction(onSuccess) ? onSuccess() : Promise.resolve()),
-    [onSuccess],
+  const onFetchAccesses = useCallback(
+    () => getBoxAccessesBuilder(id),
+    [id],
   );
 
   const onSubmit = useCallback(
-    (form) => {
+    async (form) => {
+      const accesses = await onFetchAccesses();
       const events = (accesses || []).map(({ id: referrerId }) => ({
         type: ACCESS_RM,
         referrerId,
@@ -70,10 +81,10 @@ function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
           events,
         }))
         .then(() => deleteBoxBuilder(id, form[FIELD_NAME])
-          .then(onDeleteSuccess)
+          .then(handleSuccess)
           .catch(handleHttpErrors));
     },
-    [handleHttpErrors, onDeleteSuccess, id, accesses],
+    [onFetchAccesses, id, handleSuccess, handleHttpErrors],
   );
 
   const confirmValue = useMemo(
@@ -127,7 +138,6 @@ function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
                 primary={{
                   type: 'submit',
                   text: t('common:delete'),
-                  disabled: isFetching,
                 }}
                 irreversible
                 formik
@@ -135,8 +145,6 @@ function DeleteBoxDialog({ box, t, open, onClose, onSuccess }) {
             </DialogActions>
           </Form>
         </Formik>
-
-
       </DialogContent>
     </Dialog>
   );
@@ -147,12 +155,10 @@ DeleteBoxDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func,
-  // withTranslation
-  t: PropTypes.func.isRequired,
 };
 
 DeleteBoxDialog.defaultProps = {
   onSuccess: null,
 };
 
-export default withTranslation(['boxes', 'common'])(DeleteBoxDialog);
+export default DeleteBoxDialog;
