@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 // COMPONENTS
 const OrganizationReadHome = () => {
   const classes = useStyles();
-  const { t } = useTranslation('organization');
+  const { t } = useTranslation('organizations');
   const orgId = useOrgId();
 
   const [contentRef, setContentRef] = useState();
