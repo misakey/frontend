@@ -5,8 +5,12 @@ import isArray from '../isArray';
 import isObject from '../isObject';
 import isUUID from '../isUUID';
 
-function shouldSkip(key, { ignoreBase64 }) {
+function shouldSkip(key, { ignoreBase64, ignoreDotted }) {
   if (ignoreBase64 && isProbablyBase64(key)) {
+    return true;
+  }
+
+  if (ignoreDotted && (key.indexOf('.') !== -1)) {
     return true;
   }
 
@@ -17,7 +21,10 @@ function shouldSkip(key, { ignoreBase64 }) {
   return false;
 }
 
-export default function objectToCamelCaseDeep(object, { ignoreBase64 = false } = {}) {
+export default function objectToCamelCaseDeep(
+  object,
+  { ignoreBase64 = false, ignoreDotted = false } = {},
+) {
   // in JS an array is also an object
   if (isArray(object)) {
     return object.map((value) => (
@@ -30,11 +37,11 @@ export default function objectToCamelCaseDeep(object, { ignoreBase64 = false } =
   const newObject = {};
 
   Object.entries(object).forEach(([key, value]) => {
-    const newKey = shouldSkip(key, { ignoreBase64 }) ? key : camelCase(key);
+    const newKey = shouldSkip(key, { ignoreBase64, ignoreDotted }) ? key : camelCase(key);
 
     newObject[newKey] = (
       isObject(value)
-        ? objectToCamelCaseDeep(value, { ignoreBase64 })
+        ? objectToCamelCaseDeep(value, { ignoreBase64, ignoreDotted })
         : value
     );
   });

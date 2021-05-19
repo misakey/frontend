@@ -15,7 +15,7 @@ import isUUID from '../isUUID';
  */
 export default function objectToSnakeCaseDeep(
   object,
-  { ignoreBase64 = false, excludedKeys = [] } = {},
+  { ignoreBase64 = false, ignoreDotted = false, excludedKeys = [] } = {},
 ) {
   // in JS an array is also an object
   if (isArray(object)) {
@@ -30,13 +30,17 @@ export default function objectToSnakeCaseDeep(
 
   Object.entries(object).forEach(([key, value]) => {
     const isIgnoredBase64 = ignoreBase64 && isProbablyBase64(key);
+    const isIgnoredDotted = ignoreDotted && (key.indexOf('.') !== -1);
     const isExcludedKey = excludedKeys.includes(key);
-    const shouldConvert = !isExcludedKey && !isIgnoredBase64 && !isUUID(key);
+    const shouldConvert = !isExcludedKey && !isIgnoredBase64 && !isIgnoredDotted && !isUUID(key);
     const newKey = shouldConvert ? snakeCase(key) : key;
 
     // If key matched one of `excludedKeys`, do not process the value either
     if (isObject(value) && !isExcludedKey) {
-      newObject[newKey] = objectToSnakeCaseDeep(value, { ignoreBase64, excludedKeys });
+      newObject[newKey] = objectToSnakeCaseDeep(
+        value,
+        { ignoreBase64, ignoreDotted, excludedKeys },
+      );
     } else {
       newObject[newKey] = value;
     }

@@ -2,6 +2,7 @@
 import API from '@misakey/core/api';
 
 import objectToSnakeCase from '@misakey/core/helpers/objectToSnakeCase';
+import objectToSnakeCaseDeep from '@misakey/core/helpers/objectToSnakeCaseDeep';
 import objectToCamelCaseDeep from '@misakey/core/helpers/objectToCamelCaseDeep';
 // import datatags from '@misakey/core/api/API/endpoints/mocks/consent/datatags';
 // import tospp from '@misakey/core/api/API/endpoints/mocks/consent/tospp';
@@ -22,12 +23,15 @@ const remapConsentInfo = ({ context, subjectIdentity, ...rest }) => {
 
 export const consent = ({ acr, subjectIdentityId, consentChallenge, consentedScopes }) => API
   .use(API.endpoints.auth.consent.create)
-  .build(null, objectToSnakeCase({
-    acr,
-    subjectIdentityId,
-    consentChallenge,
-    consentedScopes,
-  }))
+  .build(null, objectToSnakeCaseDeep(
+    {
+      acr,
+      subjectIdentityId,
+      consentChallenge,
+      consentedScopes,
+    },
+    { ignoreDotted: true },
+  ))
   .send();
 
 
