@@ -9,6 +9,9 @@ import { useSelector } from 'react-redux';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useAutojoinBoxInvitations from 'hooks/useAutojoinBoxInvitations';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import logSentryException from '@misakey/core/helpers/log/sentry/exception';
+import { getCode } from '@misakey/core/helpers/apiError';
+import { notFound } from '@misakey/core/api/constants/errorTypes';
 
 // CONSTANTS
 const {
@@ -89,17 +92,32 @@ export default () => {
     [onReset, identityId, autojoinBoxInvitations],
   );
 
-  const onSuccess = useCallback(
+  const onDone = useCallback(
     () => {
       dispatch({ type: DONE });
     },
     [dispatch],
   );
 
+  const onError = useCallback(
+    (error) => {
+      const code = getCode(error);
+      // admin must have deleted the box before the member join it
+      if (code !== notFound) {
+        logSentryException(error, 'autojoinBoxInvitations', { crypto: true });
+      }
+      // do not inform user about the error as it's a "background" action,
+      // they couldn't understand what caused the error, they will have access to
+      // the notification in their notif menu anyway
+      onDone();
+    },
+    [onDone],
+  );
+
   useFetchEffect(
     joinNotifications,
     { shouldFetch },
-    { onSuccess },
+    { onSuccess: onDone, onError },
   );
 
   return useMemo(
