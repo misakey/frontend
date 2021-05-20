@@ -35,7 +35,7 @@ const idParamPath = path(['params', 'id']);
 
 // HOOKS
 export default (filterId, search) => {
-  const onRemoveBox = useOnRemoveBox(search);
+  const onRemoveBox = useOnRemoveBox(filterId, search);
   const dispatch = useDispatch();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -76,9 +76,9 @@ export default (filterId, search) => {
       if (idRefMatchesDeletedBoxId(boxId)) {
         replace(generatePath(routes.boxes._, undefined, undefined, ''));
       }
-      return onRemoveBox(filterId, boxId);
+      return onRemoveBox(boxId);
     },
-    [idRefMatchesDeletedBoxId, onRemoveBox, filterId, replace, generatePath],
+    [idRefMatchesDeletedBoxId, onRemoveBox, replace, generatePath],
   );
 
   const onDeleteSuccess = useCallback(

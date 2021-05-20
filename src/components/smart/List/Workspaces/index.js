@@ -124,16 +124,15 @@ const ListWorkspaces = forwardRef((props, ref) => {
         dense
       />
       {organizationsReady
-        ? (otherOrganizations).map(({ id, name: orgName, logoUrl }) => (
+        ? (otherOrganizations).map(({ id, name: orgName, logoUrl, currentIdentityRole }) => (
           <ListItemOrganizationLink
             key={id}
             id={id}
             name={orgName}
             logoUrl={logoUrl}
-            secondary={t('common:manage')}
+            secondary={isNil(currentIdentityRole) ? t('common:member') : t('common:manage')}
             dense
-            target="_blank"
-            rel="noopener noreferrer"
+            disabled={isNil(currentIdentityRole)}
           />
         )) : (
           <ListItemOrganizationSkeleton />

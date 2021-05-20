@@ -290,7 +290,6 @@ const AutocompleteWhitelist = ({
         forcePopupIcon={false}
         disableClearable
         {...props}
-        options={[{ identifierValue: 'toto' }]}
       />
       {!isEmpty(value) && (
         <BoxControls
