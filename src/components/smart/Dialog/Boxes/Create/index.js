@@ -122,7 +122,8 @@ function CreateBoxDialog({
   } = useFetchOrganizations();
   const options = useMemo(
     () => ([
-      ...(organizations || []).filter(({ id }) => !isSelfOrg(id)),
+      ...(organizations || [])
+        .filter(({ id, currentIdentityRole }) => !isSelfOrg(id) && !isNil(currentIdentityRole)),
       SELF_ORG,
     ]),
     [organizations],

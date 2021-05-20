@@ -32,7 +32,7 @@ const MenuAccount = ({ onClose, ...props }) => {
         onClose={onClose}
       >
         <Box mx={2}>
-          <ListWorkspaces />
+          <ListWorkspaces onSelectItem={onClose} />
         </Box>
       </BoxAccount>
     </MenuFullScreen>

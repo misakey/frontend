@@ -1,5 +1,6 @@
 import React, { forwardRef, useMemo, useState, useCallback } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import routes from 'routes';
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
@@ -32,7 +33,7 @@ const { identity: IDENTITY_SELECTOR } = authSelectors;
 
 // COMPONENTS
 const IconButtonCreate = withDialogPassword(IconButtonAppBar);
-const ListWorkspaces = forwardRef((props, ref) => {
+const ListWorkspaces = forwardRef(({ onSelectItem, ...props }, ref) => {
   const { t } = useTranslation('common');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -87,8 +88,9 @@ const ListWorkspaces = forwardRef((props, ref) => {
         pathname: routes.organizations._,
         search: getNextSearch('', new Map([['orgId', id]])),
       });
+      onSelectItem();
     },
-    [onAddOrganization, replace],
+    [onAddOrganization, onSelectItem, replace],
   );
 
   return (
@@ -122,6 +124,7 @@ const ListWorkspaces = forwardRef((props, ref) => {
         selected={selfOrgSelected}
         secondary={displayName}
         dense
+        onClick={onSelectItem}
       />
       {organizationsReady
         ? (otherOrganizations).map(({ id, name: orgName, logoUrl, currentIdentityRole }) => (
@@ -133,6 +136,7 @@ const ListWorkspaces = forwardRef((props, ref) => {
             secondary={isNil(currentIdentityRole) ? t('common:member') : t('common:manage')}
             dense
             disabled={isNil(currentIdentityRole)}
+            onClick={onSelectItem}
           />
         )) : (
           <ListItemOrganizationSkeleton />
@@ -140,5 +144,13 @@ const ListWorkspaces = forwardRef((props, ref) => {
     </List>
   );
 });
+
+ListWorkspaces.propTypes = {
+  onSelectItem: PropTypes.func,
+};
+
+ListWorkspaces.defaultProps = {
+  onSelectItem: null,
+};
 
 export default ListWorkspaces;
