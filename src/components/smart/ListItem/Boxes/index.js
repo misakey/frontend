@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, useEffect } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
@@ -12,8 +12,6 @@ import isNil from '@misakey/core/helpers/isNil';
 import isEmpty from '@misakey/core/helpers/isEmpty';
 import { getBoxEventLastDate } from '@misakey/ui/helpers/boxEvent';
 import getNextSearch from '@misakey/core/helpers/getNextSearch';
-import isSelfOrg from 'helpers/isSelfOrg';
-
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
@@ -23,7 +21,6 @@ import useIsMountedRef from '@misakey/hooks/useIsMountedRef';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useGeneratePathKeepingSearchAndHashCallback from '@misakey/hooks/useGeneratePathKeepingSearchAndHash/callback';
 import { useSelector } from 'react-redux';
-import useFetchBoxMembers from 'hooks/useFetchBoxMembers';
 
 import Skeleton from '@material-ui/lab/Skeleton';
 import Box from '@material-ui/core/Box';
@@ -189,11 +186,6 @@ function BoxListItem({ id, box, toRoute, nextSearchMap, ContainerProps, classes,
     members,
   } = useSafeDestr(box);
 
-  const isOwnerOrgSelfOrg = useMemo(
-    () => isSelfOrg(ownerOrgId),
-    [ownerOrgId],
-  );
-
   const nextSearch = useMemo(
     () => getNextSearch(search, new Map(nextSearchMap)),
     [nextSearchMap, search],
@@ -288,21 +280,6 @@ function BoxListItem({ id, box, toRoute, nextSearchMap, ContainerProps, classes,
     [setIsActionVisible, isMounted],
   );
 
-  const { called, isFetching, wrappedFetch } = useFetchBoxMembers(id);
-  const shouldFetch = useMemo(
-    () => !lostKey && isOwnerOrgSelfOrg && isNil(members) && !called && !isFetching,
-    [called, isFetching, isOwnerOrgSelfOrg, lostKey, members],
-  );
-
-  useEffect(
-    () => {
-      if (shouldFetch) {
-        wrappedFetch();
-      }
-    },
-    [shouldFetch, wrappedFetch],
-  );
-
   if (isNil(id) || isNil(title)) {
     return null;
   }
@@ -337,7 +314,6 @@ function BoxListItem({ id, box, toRoute, nextSearchMap, ContainerProps, classes,
             identityId={identityId}
             ownerOrgId={ownerOrgId}
             members={members}
-            isFetching={isFetching}
           />
         </ListItemAvatar>
         <ListItemTextTertiary

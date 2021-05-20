@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 
 import UserSchema from '@misakey/react/auth/store/schemas/User';
 import { selectors as orgSelectors } from 'store/reducers/identity/organizations';
-import { MAX_MEMBERS } from '@misakey/ui/constants/avatars';
+// import { MAX_MEMBERS } from '@misakey/ui/constants/avatars';
 import { MEDIUM, SIZES } from '@misakey/ui/constants/sizes';
 
 import isSelfOrg from 'helpers/isSelfOrg';
-import isEmpty from '@misakey/core/helpers/isEmpty';
+// import isEmpty from '@misakey/core/helpers/isEmpty';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import { useSelector } from 'react-redux';
@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 import AvatarSkeleton from '@misakey/ui/Avatar/Skeleton';
 import AvatarColorized, { BACKGROUND_COLOR } from '@misakey/ui/Avatar/Colorized';
 import IconStackLostKey from '@misakey/ui/Icon/Stack/LostKey';
-import AvatarGroupMembersFixed from '@misakey/ui/AvatarGroup/Members/Fixed';
+// import AvatarGroupMembersFixed from '@misakey/ui/AvatarGroup/Members/Fixed';
 import AvatarClient from '@misakey/ui/Avatar/Client';
 
 // CONSTANTS
@@ -47,15 +47,15 @@ const AvatarBox = forwardRef(({
   const organization = useSelector((state) => getOrganizationSelector(state, ownerOrgId));
   const { logoUrl, name } = useSafeDestr(organization);
 
-  const membersWithoutSelf = useMemo(
-    () => (members || []).filter(({ id: memberId }) => memberId !== identityId),
-    [identityId, members],
-  );
+  // const membersWithoutSelf = useMemo(
+  //   () => (members || []).filter(({ id: memberId }) => memberId !== identityId),
+  //   [identityId, members],
+  // );
 
-  const isTheOnlyMember = useMemo(
-    () => !isEmpty(members) && isEmpty(membersWithoutSelf),
-    [members, membersWithoutSelf],
-  );
+  // const isTheOnlyMember = useMemo(
+  //   () => !isEmpty(members) && isEmpty(membersWithoutSelf),
+  //   [members, membersWithoutSelf],
+  // );
 
   if (isFetching) {
     return (
@@ -82,28 +82,29 @@ const AvatarBox = forwardRef(({
   }
 
   if (isSelfOrgBox) {
-    if (isTheOnlyMember) {
-      return (
-        <AvatarColorized
-          ref={ref}
-          text={title}
-          textLength={TEXT_LENGTH}
-          size={size}
-          colorizedProp={BACKGROUND_COLOR}
-          {...props}
-        />
-      );
-    }
-
+    // @FIXME: uncomment once backend returns members in boxes list
+    // if (isTheOnlyMember) {
     return (
-      <AvatarGroupMembersFixed
+      <AvatarColorized
         ref={ref}
-        max={MAX_MEMBERS}
-        members={membersWithoutSelf}
+        text={title}
+        textLength={TEXT_LENGTH}
         size={size}
+        colorizedProp={BACKGROUND_COLOR}
         {...props}
       />
     );
+    // }
+
+    // return (
+    //   <AvatarGroupMembersFixed
+    //     ref={ref}
+    //     max={MAX_MEMBERS}
+    //     members={membersWithoutSelf}
+    //     size={size}
+    //     {...props}
+    //   />
+    // );
   }
   return (
     <AvatarClient
