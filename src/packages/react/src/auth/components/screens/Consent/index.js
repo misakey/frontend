@@ -209,7 +209,9 @@ const AuthConsent = () => {
         }
         return handleHttpErrors(e);
       }).finally(() => {
-        if (isMountedRef.current) {
+        // in case step is nil, there is no formikBag holding setSubmitting
+        // it happens with scope=no_legal
+        if (isMountedRef.current && !isNil(setSubmitting)) {
           setSubmitting(false);
         }
       }),

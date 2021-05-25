@@ -45,12 +45,12 @@ import configureI18n from '@misakey/ui/i18n';
 
 // helpers
 import isNil from '@misakey/core/helpers/isNil';
-import oidcSilentRenewalWrapper from '@misakey/core/auth/helpers/oidcSilentRenewalWrapper'; // Silent auth
+import oidcClientRoutesWrapper from '@misakey/core/auth/helpers/oidcClientRoutesWrapper';
 import sentryBeforeSend from '@misakey/core/helpers/sentry/beforeSend';
 
 /* END OF IMPORTS */
 
-oidcSilentRenewalWrapper(window.env.AUTH, () => {
+oidcClientRoutesWrapper(window.env.AUTH, () => {
   if (window.env.ENV !== 'development' || window.env.SENTRY.debug === true) {
     const sentryConfig = window.env.SENTRY;
     if (!isNil(window.bundleVersion)) {

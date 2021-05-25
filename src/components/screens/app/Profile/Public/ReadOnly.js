@@ -171,7 +171,7 @@ const IdentityPublicReadOnly = forwardRef(({ t }, ref) => {
         )}
       </AppBarStatic>
       <Container ref={ref} className={classes.container} maxWidth="sm">
-        <Card elevation={0}>
+        <Card elevation={0} component={Box} display="flex" flexDirection="column" alignItems="center">
           {isFetching ? (
             <AvatarDetailedSkeleton />
           ) : (
@@ -199,7 +199,6 @@ const IdentityPublicReadOnly = forwardRef(({ t }, ref) => {
               <ButtonContactMailto email={identifierValue} />
             )
           )}
-
         </Card>
         <CardIdentityHeader>{t('account:sections.myIdentifiers.title')}</CardIdentityHeader>
         <CardList>

@@ -128,7 +128,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 // Silent auth 
-import oidcSilentRenewalWrapper from '@misakey/core/auth/helpers/oidcSilentRenewalWrapper'; 
+import oidcClientRoutesWrapper from '@misakey/core/auth/helpers/oidcClientRoutesWrapper'; 
 
 // OIDC provider
 import OidcProvider from '@misakey/react/auth/components/OidcProvider';
@@ -139,8 +139,10 @@ const oidcConfig = {
   redirect_uri: 'https://api.misakey.com.local/auth/callback',
 }
 
-// required only if you have set `config.enableAutomaticSilentRenew` to true in `OidcProvider`
-oidcSilentRenewalWrapper(oidcConfig, () => {
+// required only if:
+// - you use silent auth (you have set `config.enableAutomaticSilentRenew` to true in `OidcProvider`)
+// - you want to use `/signIn` route
+oidcClientRoutesWrapper(oidcConfig, () => {
   // integrate auth reducers
   const store = createStore(reducers);
 

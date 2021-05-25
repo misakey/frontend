@@ -77,7 +77,7 @@ export default class OidcClient {
     extraStateParams,
     // important, even if it's empty, the existence of
     // the field is used as a condition in the auth flow
-    misakeyCallbackHints = '',
+    misakeyCallbackHints = {},
     ...rest
   }) {
     const err = validateProperties(
