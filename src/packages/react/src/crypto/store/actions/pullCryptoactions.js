@@ -1,16 +1,20 @@
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 import { selectors as ssoSelectors } from '@misakey/react/auth/store/reducers/sso';
 
+import log from '@misakey/core/helpers/log';
 import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 import propOrEmptyObject from '@misakey/core/helpers/propOr/emptyObject';
 import asyncBatch from '@misakey/react/crypto/store/helpers/reduxBatchAsync';
-
+import {
+  DecryptionKeyNotFound,
+} from '@misakey/core/crypto/Errors/classes';
 import {
   listCryptoActions,
   deleteCryptoaction,
 } from '@misakey/core/crypto/HttpApi';
 
 import processSetBoxKeyShareCryptoAction from './processSetBoxKeyShareCryptoAction';
+import processConsentKeyCryptoAction from './processConsentKeyCryptoAction';
 
 const { accountId: ACCOUNT_ID_SELECTOR } = authSelectors;
 const { subjectIdentity: SUBJECT_IDENTITY_SELECTOR } = ssoSelectors;
@@ -58,12 +62,22 @@ export default () => (
                 cryptoaction,
               }));
               break;
+            case 'consent_key':
+              // action processConsentKeyCryptoAction takes care of updating secret storage
+              await dispatch(processConsentKeyCryptoAction({
+                cryptoaction,
+              }));
+              break;
             default:
               wasProcessed = false;
               break;
           }
         } catch (error) {
-          logSentryException(error, 'processing cryptoaction', { crypto: true });
+          if (error instanceof DecryptionKeyNotFound) {
+            log(`skipping cryptoaction: ${error}`, 'warn');
+          } else {
+            logSentryException(error, 'processing cryptoaction', { crypto: true });
+          }
           wasProcessed = false;
         }
 

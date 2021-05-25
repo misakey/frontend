@@ -1,10 +1,12 @@
 import addBoxesFromProvision from '@misakey/react/crypto/store/actions/addBoxesFromProvision';
+import addConsentKey from '@misakey/react/crypto/store/actions/addConsentKey';
 import { selectors } from '@misakey/react/crypto/store/reducers';
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import isNil from '@misakey/core/helpers/isNil';
 import isEmpty from '@misakey/core/helpers/isEmpty';
 import isFunction from '@misakey/core/helpers/isFunction';
+import promiseAllNoFailFast from '@misakey/core/helpers/promiseAllNoFailFast';
 import { bulkJoinBoxes } from '@misakey/core/api/helpers/builder/identities';
 import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 import { parseInvitationShare } from '@misakey/core/crypto/box/keySplitting';
@@ -12,7 +14,7 @@ import { processProvisionKeyShare } from '@misakey/core/crypto/provisions';
 
 import { useMemo, useCallback } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, batch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { useTranslation } from 'react-i18next';
 import useFetchEffect from '@misakey/hooks/useFetch/effect';
@@ -87,7 +89,7 @@ export default (box, isReady, onJoin) => {
 
   const processProvisionKeyShareFromKeyShareInUrl = useCallback(
     async () => {
-      const boxesSecret = await processProvisionKeyShare(
+      const { boxesSecret, consentSecretKeys } = await processProvisionKeyShare(
         parsedInvitationShare.value,
         accountId,
       );
@@ -96,7 +98,7 @@ export default (box, isReady, onJoin) => {
         throw new Error('no boxes secrets retrieved from crypto provision');
       }
 
-      return boxesSecret;
+      return { boxesSecret, consentSecretKeys };
     }, [accountId, parsedInvitationShare],
   );
 
@@ -106,7 +108,7 @@ export default (box, isReady, onJoin) => {
   );
 
   const onProvisionKeyShareProcessed = useCallback(
-    async (boxesSecret) => {
+    async ({ boxesSecret, consentSecretKeys }) => {
       // the invitation key share of this box
       // (to change the URL to the “canonical” URL of the current box)
       let boxKeyShare;
@@ -132,6 +134,10 @@ export default (box, isReady, onJoin) => {
         }
       }
       await dispatch(addBoxesFromProvision({ boxesSecret }));
+
+      await batch(() => promiseAllNoFailFast(consentSecretKeys.map((consentSecretKey) => (
+        dispatch(addConsentKey({ consentSecretKey }))
+      ))));
 
       // see above
       setKeyShareInURL(boxKeyShare);

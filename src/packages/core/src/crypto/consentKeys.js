@@ -1,7 +1,6 @@
 import isEmpty from '@misakey/core/helpers/isEmpty';
 import { generateAsymmetricKeyPair } from '@misakey/core/crypto/crypto';
 import { encryptCryptoaction } from '@misakey/core/crypto/cryptoactions';
-import { DecryptionKeyNotFound } from '@misakey/core/crypto/Errors/classes';
 
 export function encryptConsentSecretKey({ secretKey, recipientPublicKey }) {
   return {
@@ -40,12 +39,44 @@ export function createNewConsentKey(producerOrSubjectPublicKey) {
   };
 }
 
+function tryGettingConsentSecretKey({ maybeConsentPublicKey, asymKeysMapping }) {
+  if (isEmpty(maybeConsentPublicKey)) {
+    return {
+      consentSecretKey: null,
+      forceCreation: false,
+    };
+  }
+
+  // `maybeConsentPublicKey` is *not* empty
+  const consentPublicKey = maybeConsentPublicKey;
+  const consentSecretKey = asymKeysMapping[consentPublicKey];
+  if (isEmpty(consentSecretKey)) {
+    // We don't have the secret key
+    // matching the consent public key suggested by backend,
+    // so we will have to create a new one
+    return {
+      consentSecretKey: null,
+      forceCreation: true,
+    };
+  }
+
+  return {
+    consentSecretKey,
+    forceCreation: false,
+  };
+}
+
 export function getOrCreateConsentKey({
   maybeConsentPublicKey,
   asymKeysMapping,
   producerOrSubjectPublicKey,
 }) {
-  if (isEmpty(maybeConsentPublicKey)) {
+  const {
+    consentSecretKey,
+    forceCreation,
+  } = tryGettingConsentSecretKey({ maybeConsentPublicKey, asymKeysMapping });
+
+  if (isEmpty(consentSecretKey)) {
     const {
       publicKey,
       secretKey,
@@ -61,16 +92,13 @@ export function getOrCreateConsentKey({
       newConsentKey: {
         publicKey,
         encryptedSecretKey,
+        // XXX not enforced by backend at the moment during consent flow
+        // (only during box creation)
+        forceCreation,
       },
     };
   }
 
-  // `maybeConsentPublicKey` is *not* empty
-  const consentPublicKey = maybeConsentPublicKey;
-  const consentSecretKey = asymKeysMapping[consentPublicKey];
-  if (isEmpty(consentSecretKey)) {
-    throw new DecryptionKeyNotFound(`consent public key: ${consentPublicKey}`);
-  }
   return {
     consentSecretKey,
     newConsentKey: null,

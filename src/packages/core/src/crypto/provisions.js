@@ -16,7 +16,7 @@ export async function processProvisionKeyShare(value, accountId) {
   // combineShare still expects to receive an *object* for the misakey share
   const provisionSecretKey = combineShares(value, { misakeyShare: misakeyKeyShare });
 
-  // checking the secret key we computed matches the provision public key
+  // checking that the secret key we just computed matches the provision public key
   const { publicKey: rebuiltPublicKey } = keyPairFromSecretKey(provisionSecretKey);
   if (rebuiltPublicKey !== provisionPublicKey) {
     // this is a very weird case
@@ -24,6 +24,9 @@ export async function processProvisionKeyShare(value, accountId) {
     // we would expect the backend not to have returned a provision
     throw Error('computed provision secret key does not match public key');
   }
+
+  // TODO factorize processing of cryptoactions with the `pullCryptoaction` mechanism
+  // (currently present in `@misakey/react`, not `@misakey/core`)
 
   const cryptoactions = await listCryptoActions({ accountId });
 
@@ -37,22 +40,45 @@ export async function processProvisionKeyShare(value, accountId) {
         encryptedBoxInvitationKeyShare,
       } = cryptoaction;
 
-      if (type !== 'invitation' || encryptionPublicKey !== provisionPublicKey) {
+      if (encryptionPublicKey !== provisionPublicKey) {
         return accumulator;
       }
 
-      const { boxSecretKey } = decryptCryptoaction(encrypted, provisionSecretKey);
-      const { boxKeyShare } = decryptCryptoaction(encryptedBoxInvitationKeyShare, boxSecretKey);
+      switch (type) {
+        case 'invitation':
+          {
+            const { boxSecretKey } = decryptCryptoaction(encrypted, provisionSecretKey);
+            const { boxKeyShare } = decryptCryptoaction(
+              encryptedBoxInvitationKeyShare,
+              boxSecretKey,
+            );
 
-      accumulator.push({
-        boxId,
-        secretKey: boxSecretKey,
-        keyShare: boxKeyShare,
-      });
+            accumulator.boxesSecret.push({
+              boxId,
+              secretKey: boxSecretKey,
+              keyShare: boxKeyShare,
+            });
+          }
+          break;
+        case 'consent_key':
+          {
+            const { consentSecretKey } = decryptCryptoaction(encrypted, provisionSecretKey);
+
+            accumulator.consentSecretKeys.push(consentSecretKey);
+          }
+          break;
+        default:
+          // do nothing
+          break;
+      }
+
 
       return accumulator;
     },
-    [],
+    {
+      boxesSecret: [],
+      consentSecretKeys: [],
+    },
   );
 
   return boxes;
