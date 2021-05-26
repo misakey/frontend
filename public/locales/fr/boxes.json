@@ -6,6 +6,10 @@
     "open": "Ouvrir mon compte"
   },
   "list": {
+    "provision": {
+      "joining": "Accès à {{count}} discussion via provision",
+      "joining_plural": "Accès à {{count}} discussions via provision"
+    },
     "events": {
       "preview": {
         "message": {

@@ -3,18 +3,15 @@ import React, { useMemo, useCallback } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import routes from 'routes';
-import { receiveJoinedBoxes } from 'store/reducers/box';
 
 import isNil from '@misakey/core/helpers/isNil';
 import useUpdateDocHead from '@misakey/hooks/useUpdateDocHead';
 
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
 import useHandleBoxKeyShare from '@misakey/react/crypto/hooks/useHandleBoxKeyShare';
-import useHandleProvisionKeyShare from '@misakey/react/crypto/hooks/useHandleProvisionKeyShare';
 import { useBoxEventSubmitContext } from 'components/smart/Box/Event/Submit/Context';
 import useFetchBoxDetails from 'hooks/useFetchBoxDetails';
 import useBoxBelongsToCurrentUser from 'hooks/useBoxBelongsToCurrentUser';
-import { useDispatch } from 'react-redux';
 
 import BoxReadContextProvider from 'components/smart/Context/Boxes/BoxRead';
 import InputBoxesUploadContext from 'components/smart/Input/Boxes/Upload/Context';
@@ -43,25 +40,14 @@ function BoxRead({ match }) {
     secretKey,
   } = useHandleBoxKeyShare(box, isReady, belongsToCurrentUser);
 
-  const dispatch = useDispatch();
-
-  const onJoin = useCallback(
-    (boxes) => Promise.resolve(dispatch(receiveJoinedBoxes(boxes))),
-    [dispatch],
-  );
-
-  const {
-    isReady: isProvisionKeyShareReady,
-  } = useHandleProvisionKeyShare(box, isReady, onJoin);
-
   const displayLoadingScreen = useMemo(
-    () => !isReady || !isBoxKeyShareReady || !isProvisionKeyShareReady,
-    [isBoxKeyShareReady, isProvisionKeyShareReady, isReady],
+    () => !isReady || !isBoxKeyShareReady,
+    [isBoxKeyShareReady, isReady],
   );
 
   const shouldShowPasteScreen = useMemo(
-    () => isNil(secretKey) && !isNil(publicKey) && isBoxKeyShareReady && isProvisionKeyShareReady,
-    [isBoxKeyShareReady, isProvisionKeyShareReady, publicKey, secretKey],
+    () => isNil(secretKey) && !isNil(publicKey) && isBoxKeyShareReady,
+    [isBoxKeyShareReady, publicKey, secretKey],
   );
 
   const shouldShowNoAccessScreen = useMemo(() => hasAccess !== true, [hasAccess]);

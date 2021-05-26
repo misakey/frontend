@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -7,14 +7,15 @@ import { useTranslation } from 'react-i18next';
 import AvatarColorized, { BACKGROUND_COLOR } from '@misakey/ui/Avatar/Colorized';
 
 // COMPONENTS
-function AvatarClient({
+const AvatarClient = forwardRef(({
   children, src, name,
   ...rest
-}) {
+}, ref) => {
   const { t } = useTranslation('components');
 
   return (
     <AvatarColorized
+      ref={ref}
       alt={t('components:client.logoAlt', { clientName: name })}
       image={src}
       text={name}
@@ -22,7 +23,7 @@ function AvatarClient({
       {...rest}
     />
   );
-}
+});
 
 AvatarClient.propTypes = {
   children: PropTypes.node,

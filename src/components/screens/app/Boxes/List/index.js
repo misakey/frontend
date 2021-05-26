@@ -1,18 +1,21 @@
 import React, { useMemo, useState, useCallback } from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { TOOLBAR_MIN_HEIGHT } from '@misakey/ui/constants/sizes';
 import { selectors } from '@misakey/react/crypto/store/reducers';
+import { receiveJoinedBoxes } from 'store/reducers/box';
 
-import omitTranslationProps from '@misakey/core/helpers/omit/translationProps';
+import isNil from '@misakey/core/helpers/isNil';
 
 import useFetchOrganizations from 'hooks/useFetchOrganizations';
 import useFetchDatatags from 'hooks/useFetchDatatags';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import useXsMediaQuery from '@misakey/hooks/useXsMediaQuery';
 import useLoadedAnimation from '@misakey/hooks/useLoadedAnimation';
+import useFetchAutojoinBoxInvitations from 'hooks/useFetchAutojoinBoxInvitations';
+import useHandleProvisionKeyShare from '@misakey/react/crypto/hooks/useHandleProvisionKeyShare';
 
 import ElevationScroll from '@misakey/ui/ElevationScroll';
 import ListHeader from 'components/screens/app/Boxes/List/Header/List';
@@ -23,6 +26,7 @@ import BoxFlexFill from '@misakey/ui/Box/FlexFill';
 import AutocompleteBoxes, { FACET_ORGANIZATION, FACET_DATATAG } from 'components/smart/Autocomplete/Boxes';
 import SearchIcon from '@material-ui/icons/Search';
 import ScreenSplashVault from '@misakey/ui/Screen/Splash/Vault';
+import Subtitle from '@misakey/ui/Typography/Subtitle';
 import Vault from './Content/Vault';
 import NoVault from './Content/NoVault';
 
@@ -37,7 +41,9 @@ const AUTOCOMPLETE_BOXES_ANCHOR_POSITION = {
 };
 
 // COMPONENTS
-function BoxesList({ t, isFullWidth, ...props }) {
+function BoxesList({ isFullWidth, ...props }) {
+  const { t } = useTranslation(['common', 'boxes']);
+
   const [contentRef, setContentRef] = useState();
   const [value, setValue] = useState([]);
   const isXs = useXsMediaQuery();
@@ -66,17 +72,37 @@ function BoxesList({ t, isFullWidth, ...props }) {
     isFetching: isFetchingOrganizations,
     shouldFetch: shouldFetchOrganizations,
     organizations,
-  } = useFetchOrganizations();
+  } = useFetchOrganizations({ isReady: isCryptoLoaded });
   const {
     isFetching: isFetchingDatatags,
     shouldFetch: shouldFetchDatatags,
     datatags,
-  } = useFetchDatatags();
+  } = useFetchDatatags({ isReady: isCryptoLoaded });
+
+  const dispatch = useDispatch();
+
+  const onJoin = useCallback(
+    (boxes) => Promise.resolve(dispatch(receiveJoinedBoxes(boxes))),
+    [dispatch],
+  );
+
+  const {
+    done: isProvisionKeyShareDone,
+    provisionCount,
+  } = useHandleProvisionKeyShare(true, onJoin);
+
+  const { done } = useFetchAutojoinBoxInvitations();
 
   const boxListReady = useMemo(
     () => !isFetchingOrganizations && !shouldFetchOrganizations
-      && !isFetchingDatatags && !shouldFetchDatatags,
-    [isFetchingDatatags, isFetchingOrganizations, shouldFetchDatatags, shouldFetchOrganizations],
+      && !isFetchingDatatags && !shouldFetchDatatags
+      && isProvisionKeyShareDone && done,
+    [
+      done,
+      isFetchingDatatags, shouldFetchDatatags,
+      isFetchingOrganizations, shouldFetchOrganizations,
+      isProvisionKeyShareDone,
+    ],
   );
   const boxListReadyAnimation = useLoadedAnimation(!boxListReady);
 
@@ -120,7 +146,7 @@ function BoxesList({ t, isFullWidth, ...props }) {
             />
             {!isXs && <BoxFlexFill />}
           </AppbarAccount>
-          <ListHeader {...omitTranslationProps(props)} />
+          <ListHeader {...props} />
         </Box>
       </ElevationScroll>
       {boxListReadyAnimation ? (
@@ -132,19 +158,25 @@ function BoxesList({ t, isFullWidth, ...props }) {
                 ref={onContentRef}
                 // search={search}
                 isFullWidth={isFullWidth}
-                {...omitTranslationProps(props)}
+                {...props}
               />
             )
             : (
               <NoVault
                 ref={onContentRef}
                 isFullWidth={isFullWidth}
-                {...omitTranslationProps(props)}
+                {...props}
               />
             )}
         </>
       ) : (
-        <ScreenSplashVault done={boxListReady} />
+        <ScreenSplashVault done={boxListReady}>
+          {!isNil(provisionCount) && (
+            <Subtitle>
+              {t('boxes:list.provision.joining', { count: provisionCount })}
+            </Subtitle>
+          )}
+        </ScreenSplashVault>
       )}
     </>
   );
@@ -152,12 +184,10 @@ function BoxesList({ t, isFullWidth, ...props }) {
 
 BoxesList.propTypes = {
   isFullWidth: PropTypes.bool,
-  // withTranslation
-  t: PropTypes.func.isRequired,
 };
 
 BoxesList.defaultProps = {
   isFullWidth: false,
 };
 
-export default withTranslation(['common', 'boxes'])(BoxesList);
+export default BoxesList;

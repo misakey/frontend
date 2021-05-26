@@ -5,30 +5,20 @@ import { DRAWER_QUERY_PARAM, TMP_DRAWER_QUERY_PARAMS } from '@misakey/ui/constan
 import routes from 'routes';
 
 import path from '@misakey/core/helpers/path';
-import isNil from '@misakey/core/helpers/isNil';
 
-import useLoadedAnimation from '@misakey/hooks/useLoadedAnimation';
 import { useRouteMatch } from 'react-router-dom';
 // import { useLocation, useHistory } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import useFetchAutojoinBoxInvitations from 'hooks/useFetchAutojoinBoxInvitations';
 
 // import getNextSearch from '@misakey/core/helpers/getNextSearch';
 
 import List from '@material-ui/core/List';
-import Box from '@material-ui/core/Box';
 import WindowedListBoxes from 'components/smart/WindowedList/UserBoxes';
-import IconProgress from '@misakey/ui/Icon/Progress';
 // import Button, { BUTTON_STANDINGS } from '@misakey/ui/Button';
 // import FilledInput from '@material-ui/core/FilledInput';
 
-import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
-import DoneIcon from '@material-ui/icons/Done';
-import UpdateIcon from '@material-ui/icons/Update';
-
 // CONSTANTS
 const NEXT_SEARCH_MAP = [[DRAWER_QUERY_PARAM, undefined], [TMP_DRAWER_QUERY_PARAMS, undefined]];
-const PROGRESS_PROPS = { disableShrink: true };
 // HELPERS
 const paramsIdPath = path(['params', 'id']);
 
@@ -75,8 +65,6 @@ const VaultOpen = forwardRef(({ search, isFullWidth, ...props }, ref) => {
     [match],
   );
 
-  const { done, joining } = useFetchAutojoinBoxInvitations();
-  const loadedAnimation = useLoadedAnimation(!done);
 
   // const { search: locationSearch, pathname } = useLocation();
   // const { push } = useHistory();
@@ -118,21 +106,7 @@ const VaultOpen = forwardRef(({ search, isFullWidth, ...props }, ref) => {
         itemClasses={{ container: classes.listItemContainer, root: classes.listItemContainer }}
         itemProps={{ nextSearchMap: NEXT_SEARCH_MAP }}
         {...props}
-      >
-        {(!loadedAnimation) && (
-          <Box className={classes.loader}>
-            <IconProgress
-              isLoading={!done}
-              done={done}
-              color="primary"
-              fontSize="small"
-              Icon={isNil(joining) ? HourglassEmptyIcon : UpdateIcon}
-              DoneIcon={DoneIcon}
-              progressProps={PROGRESS_PROPS}
-            />
-          </Box>
-        )}
-      </List>
+      />
     </>
   );
 });

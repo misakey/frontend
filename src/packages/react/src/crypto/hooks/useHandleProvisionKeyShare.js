@@ -1,6 +1,5 @@
 import addBoxesFromProvision from '@misakey/react/crypto/store/actions/addBoxesFromProvision';
 import addConsentKey from '@misakey/react/crypto/store/actions/addConsentKey';
-import { selectors } from '@misakey/react/crypto/store/reducers';
 import { selectors as authSelectors } from '@misakey/react/auth/store/reducers/auth';
 
 import isNil from '@misakey/core/helpers/isNil';
@@ -12,43 +11,34 @@ import logSentryException from '@misakey/core/helpers/log/sentry/exception';
 import { parseInvitationShare } from '@misakey/core/crypto/box/keySplitting';
 import { processProvisionKeyShare } from '@misakey/core/crypto/provisions';
 
-import { useMemo, useCallback } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector, batch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { useTranslation } from 'react-i18next';
-import useFetchEffect from '@misakey/hooks/useFetch/effect';
 import useSafeDestr from '@misakey/hooks/useSafeDestr';
+import useFetchEffect from '@misakey/hooks/useFetch/effect';
 
 // SELECTORS
-const {
-  makeGetBoxKeyShare,
-} = selectors;
 const {
   accountId: ACCOUNT_ID_SELECTOR,
   identityId: IDENTITY_ID_SELECTOR,
 } = authSelectors;
 
 // HOOKS
-export default (box, isReady, onJoin) => {
+export default (isReady, onJoin) => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const { replace } = useHistory();
 
+  const [provisionCount, setProvisionCount] = useState(null);
 
   const { t } = useTranslation('boxes');
 
   const { enqueueSnackbar } = useSnackbar();
   const { pathname, hash: locationHash, search } = useLocation();
 
-  const { id: boxId, hasAccess, isMember } = useSafeDestr(box);
-
   const accountId = useSelector(ACCOUNT_ID_SELECTOR);
   const identityId = useSelector(IDENTITY_ID_SELECTOR);
-
-  const isAllowedToFetch = useMemo(
-    () => Boolean(isReady && hasAccess && isMember !== false),
-    [isReady, hasAccess, isMember],
-  );
 
   // Note that the "hash" here is the "hash" part of the URL
   // (see https://developer.mozilla.org/en-US/docs/Web/API/URL/hash)
@@ -63,32 +53,29 @@ export default (box, isReady, onJoin) => {
       ? null
       : locationHash.substr(1)
   ), [locationHash]);
-  const getBoxKeyShare = useMemo(
-    () => makeGetBoxKeyShare(),
-    [],
-  );
-  const keyShareInStore = useSelector((state) => getBoxKeyShare(state, boxId));
 
   const parsedInvitationShare = useMemo(
     () => (isNil(keyShareInUrl) ? null : parseInvitationShare(keyShareInUrl)),
     [keyShareInUrl],
   );
+  const { type } = useSafeDestr(parsedInvitationShare);
 
   const isProvisionKeyShare = useMemo(
-    () => (isNil(parsedInvitationShare) ? undefined : parsedInvitationShare.type === 'provision'),
-    [parsedInvitationShare],
+    () => type === 'provision',
+    [type],
   );
 
   const shouldCheckUrlProvisionKeyShare = useMemo(
     () => (
       !isNil(parsedInvitationShare) && isProvisionKeyShare
-      && isNil(keyShareInStore) && isAllowedToFetch
+      && isReady
     ),
-    [keyShareInStore, isAllowedToFetch, parsedInvitationShare, isProvisionKeyShare],
+    [isReady, parsedInvitationShare, isProvisionKeyShare],
   );
 
   const processProvisionKeyShareFromKeyShareInUrl = useCallback(
     async () => {
+      setProvisionCount(null);
       const { boxesSecret, consentSecretKeys } = await processProvisionKeyShare(
         parsedInvitationShare.value,
         accountId,
@@ -97,35 +84,21 @@ export default (box, isReady, onJoin) => {
       if (isEmpty(boxesSecret)) {
         throw new Error('no boxes secrets retrieved from crypto provision');
       }
+      setProvisionCount(boxesSecret.length);
 
       return { boxesSecret, consentSecretKeys };
     }, [accountId, parsedInvitationShare],
   );
 
-  const setKeyShareInURL = useCallback(
-    (keyShare) => { history.replace({ pathname, search, hash: `#${keyShare}` }); },
-    [history, pathname, search],
+  const clearKeyShareInURL = useCallback(
+    () => { replace({ pathname, search, hash: '' }); },
+    [pathname, replace, search],
   );
 
   const onProvisionKeyShareProcessed = useCallback(
     async ({ boxesSecret, consentSecretKeys }) => {
-      // the invitation key share of this box
-      // (to change the URL to the “canonical” URL of the current box)
-      let boxKeyShare;
-
       // we join all boxes linked to the provision
-      // except the one corresponding to the URL
-      // since this one is already joined.
-      // XXX fragile; what about having the backend ignore “joins”
-      // for boxes we already joined?
-      const boxesToJoin = [];
-      boxesSecret.forEach(({ boxId: id, keyShare }) => {
-        if (id !== boxId) {
-          boxesToJoin.push(id);
-        } else {
-          boxKeyShare = keyShare;
-        }
-      });
+      const boxesToJoin = boxesSecret.map(({ boxId: id }) => id);
 
       if (!isEmpty(boxesToJoin)) {
         const joined = await bulkJoinBoxes(identityId, boxesToJoin);
@@ -139,10 +112,11 @@ export default (box, isReady, onJoin) => {
         dispatch(addConsentKey({ consentSecretKey }))
       ))));
 
-      // see above
-      setKeyShareInURL(boxKeyShare);
+      // once all boxes from provision are joined,
+      // we clear provision hash from url
+      clearKeyShareInURL();
     },
-    [dispatch, setKeyShareInURL, boxId, identityId, onJoin],
+    [dispatch, clearKeyShareInURL, identityId, onJoin],
   );
 
   const onProvisionProcessingError = useCallback(
@@ -159,12 +133,21 @@ export default (box, isReady, onJoin) => {
     { onSuccess: onProvisionKeyShareProcessed, onError: onProvisionProcessingError },
   );
 
+  const done = useMemo(
+    () => !isProcessingProvisionKeyShare,
+    [isProcessingProvisionKeyShare],
+  );
+
   return useMemo(
     () => ({
-      isReady: !isProcessingProvisionKeyShare,
+      shouldCheckUrlProvisionKeyShare,
+      done,
+      provisionCount,
     }),
     [
-      isProcessingProvisionKeyShare,
+      shouldCheckUrlProvisionKeyShare,
+      done,
+      provisionCount,
     ],
   );
 };
