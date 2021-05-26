@@ -6,15 +6,15 @@ config: >-
     API_WS_ENDPOINT: 'wss://api.misakey.com',
     GAPI_CLIENT_ID: '932593622193-c6i3ghh44ip9hhbh2heempuugcbk94n7.apps.googleusercontent.com',
     SELF_CLIENT: {
-      id: 'f27effe1-5d57-4b70-bf73-939feef50f71'
+      id: 'f27effe1-5d57-4b70-bf73-939feef50f71',
       name: 'Misakey',
-      logoUri: 'https://static.misakey.com/ssoClientsLogo/misakey.png',
+      logoUri: 'https://static.misakey.com/ssoClientsLogo/misakey.png'
     },
     AUTH: {
       authority: 'https://auth.misakey.com/_',
       clientId: 'f27effe1-5d57-4b70-bf73-939feef50f71',
       redirectUri: 'https://api.misakey.com/auth/callback',
-      enableAutomaticSilentRenew: true,
+      enableAutomaticSilentRenew: true
     },
     SENTRY: {
       debug: false,
