@@ -8251,10 +8251,10 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-jsrsasign@^10.1.4:
-  version "10.1.4"
-  resolved "https://registry.yarnpkg.com/jsrsasign/-/jsrsasign-10.1.4.tgz#8fca72f4bce9b0cb24fe3390df60a5b4a059b446"
-  integrity sha512-j+bG6EaQ/SBvQvnI8M2x3Wawz8jx3fBViPClAw84QpsnLSjtr5fobp5W2TAljpAhboxWvbkZmd/KDBm+hckqJQ==
+jsrsasign@^11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/jsrsasign/-/jsrsasign-11.0.0.tgz#766570c21f87d68075a142f5188f7e583cee9d70"
+  integrity sha512-BtRwVKS+5dsgPpAtzJcpo5OoWjSs1/zllSBG0+8o8/aV0Ki76m6iZwHnwnsqoTdhfFZDN1XIdcaZr5ZkP+H2gg==
 
 jss-plugin-camel-case@^10.0.0, jss-plugin-camel-case@^10.0.3:
   version "10.5.0"
