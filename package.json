@@ -80,7 +80,7 @@
     "i18next-browser-languagedetector": "^4.2.0",
     "i18next-xhr-backend": "^3.2.2",
     "js-base64": "2.5.2",
-    "jsrsasign": "^10.1.4",
+    "jsrsasign": "^11.0.0",
     "jszip": "^3.4.0",
     "lodash": "^4.17.20",
     "material-design-icons": "^3.0.1",
